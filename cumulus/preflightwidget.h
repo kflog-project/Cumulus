@@ -23,7 +23,6 @@
 #include <QTabWidget>
 
 class PreFlightGliderPage;
-class PreFlightFlarmPage;
 class PreFlightMiscPage;
 class PreFlightTaskList;
 class PreFlightWaypointPage;
@@ -127,8 +126,6 @@ private:
   PreFlightGliderPage *gliderpage;
   PreFlightMiscPage *miscpage;
   PreFlightWaypointPage *wppage;
-  PreFlightFlarmPage *flarmpage;
-
   QTabWidget* tabWidget;
 };
 

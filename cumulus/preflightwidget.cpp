@@ -22,7 +22,6 @@
 #include "map.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
-#include "preflightflarmpage.h"
 #include "preflighttasklist.h"
 #include "preflightmiscpage.h"
 #include "preflightwaypointpage.h"
@@ -61,18 +60,6 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( miscpage );
-#ifdef QSCROLLER
-  QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
-#endif
-
-  tabWidget->addTab(sa, "");
-
-  flarmpage = new PreFlightFlarmPage(this);
-
-  sa = new QScrollArea;
-  sa->setWidgetResizable( true );
-  sa->setFrameStyle( QFrame::NoFrame );
-  sa->setWidget( flarmpage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
 #endif
@@ -145,7 +132,6 @@ void PreFlightWidget::setLabels()
   tabWidget->setTabText( 1, tr("Task") );
   tabWidget->setTabText( 2, tr("Waypoints") );
   tabWidget->setTabText( 3, tr("Common") );
-  tabWidget->setTabText( 4, tr("Flarm") );
 }
 
 /** Used to handle language change events */
@@ -286,48 +272,40 @@ void PreFlightWidget::slot_reject()
 
 void PreFlightWidget::slot_keyRight()
 {
-  if (tabWidget->currentWidget() == gliderpage)
+  int tabCount = tabWidget->count();
+  int curIndex = tabWidget->currentIndex();
+
+  if( tabCount == 0 || curIndex == -1 )
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(taskpage));
+      return;
     }
-  else if (tabWidget->currentWidget() == taskpage)
+
+  int nextIndex = curIndex + 1;
+
+  if( nextIndex >= tabCount )
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(wppage));
+      nextIndex = 0;
     }
-  else if (tabWidget->currentWidget() == wppage)
-    {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
-    }
-  else if (tabWidget->currentWidget() == miscpage)
-    {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(flarmpage));
-    }
-  else if (tabWidget->currentWidget() == flarmpage)
-    {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
-    }
+
+  tabWidget->setCurrentIndex( nextIndex );
 }
 
 void PreFlightWidget::slot_keyLeft()
 {
-  if (tabWidget->currentWidget() == flarmpage)
+  int tabCount = tabWidget->count();
+  int curIndex = tabWidget->currentIndex();
+
+  if( tabCount == 0 || curIndex == -1 )
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(miscpage));
+      return;
     }
-  if (tabWidget->currentWidget() == miscpage)
+
+  int nextIndex = curIndex - 1;
+
+  if( nextIndex < 0 )
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(wppage));
+      nextIndex = tabCount - 1;
     }
-  else if (tabWidget->currentWidget() == wppage)
-    {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(taskpage));
-    }
-  else if (tabWidget->currentWidget() == taskpage)
-    {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
-    }
-  else if (tabWidget->currentWidget() == gliderpage)
-    {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(flarmpage));
-    }
+
+  tabWidget->setCurrentIndex( nextIndex );
 }

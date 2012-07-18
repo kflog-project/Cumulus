@@ -133,6 +133,11 @@ private slots:
    */
   void slotShowTaskViewWidget();
 
+  /**
+   * Makes the Flarm widget visible.
+   */
+  void slotShowFlarmWidget();
+
 private:
 
   /** task list widget */

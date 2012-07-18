@@ -347,7 +347,7 @@ bool Flarm::extractPflac(const QStringList& stringList)
 {
   /**
    * PFLAC,<QueryType>,<Key>,<Value>
-   * Attention, resonse can be "$PFLAC,A,ERROR*"
+   * Attention, response can be "$PFLAC,A,ERROR*"
    */
   if ( stringList[0] != "$PFLAC" || stringList.size() < 3 )
       {

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
 ***********************************************************************/
 
 /**
+ * \class GpsClient
+ *
  * \author Axel Pauli
  *
  * \brief GPS client manager

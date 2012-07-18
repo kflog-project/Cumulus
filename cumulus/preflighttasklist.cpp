@@ -31,6 +31,10 @@
 #include "layout.h"
 #include "wgspoint.h"
 
+#ifdef FLARM
+#include "preflightflarmpage.h"
+#endif
+
 PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   QWidget( parent ),
   editTask(0),
@@ -197,7 +201,18 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   tlLayout->addWidget( taskList, 10 );
 
   QPushButton *tlShowButton = new QPushButton( tr("Show") );
+
+#ifndef FLARM
   tlLayout->addWidget( tlShowButton, 0, Qt::AlignRight );
+#else
+  QPushButton *tlFlarmButton = new QPushButton( tr("Flarm") );
+  QHBoxLayout* hbl = new QHBoxLayout;
+  hbl->addWidget( tlFlarmButton, 0, Qt::AlignLeft );
+  hbl->addWidget( tlShowButton, 0, Qt::AlignRight );
+  tlLayout->addLayout( hbl );
+
+  connect( tlFlarmButton, SIGNAL(pressed()), SLOT(slotShowFlarmWidget()) );
+#endif
 
   taskLayout->addWidget( taskListWidget );
 
@@ -935,4 +950,26 @@ void PreFlightTaskList::selectLastTask()
 
   // select first entry in the list, if last selection could not be found
   taskList->setCurrentItem( taskList->topLevelItem(0) );
+}
+
+void PreFlightTaskList::slotShowFlarmWidget()
+{
+  FlightTask *task = 0;
+
+  QList<QTreeWidgetItem*> selectList = taskList->selectedItems();
+
+  if( selectList.size() > 0 )
+    {
+      QTreeWidgetItem* selected = taskList->selectedItems().at(0);
+
+      if ( selected->text( 0 ) != " " )
+        {
+          int id = selected->text( 0 ).toInt() - 1;
+
+          task = flightTaskList.at( id );
+        }
+    }
+
+  PreFlightFlarmPage* pffp = new PreFlightFlarmPage( task, this );
+  pffp->setVisible( true );
 }

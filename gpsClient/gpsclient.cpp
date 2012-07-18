@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2011 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -204,7 +204,7 @@ bool GpsClient::readGpsData()
   if( bytes == -1 )
     {
       qWarning() << "GpsClient::readGpsData(): Read error"
-                 << errno << "," << strerror(errno);
+                  << errno << "," << strerror(errno);
       return false;
     }
 
@@ -245,7 +245,7 @@ int GpsClient::writeGpsData( const char *sentence )
   // write sentence to gps device
   int result = write (fd, cmd.toLatin1().data(), cmd.length());
 
-  if (result != (int) cmd.length())
+  if (result != -1 && result != cmd.length())
     {
       qWarning() << "GpsClient::writeGpsData Only"
                  << result
@@ -691,7 +691,7 @@ void GpsClient::readServerMsg()
     {
       // such messages length are not defined. we will ignore that.
       qWarning() << method
-                 << "message" << msgLen << "too large, ignoring it!";
+                  << "message" << msgLen << "too large, ignoring it!";
 
       setShutdownFlag(true);
       return; // Error occurred
@@ -715,14 +715,29 @@ void GpsClient::readServerMsg()
   qDebug() << method << "Received Message:" << buf;
 #endif
 
-  // Split the received message into its single parts. Space is used
-  // as separator.
+  // Split the received message into its two parts. Space is used as separator
+  // between the command word and the optional content of the message.
   QString qbuf( buf );
-  QStringList args = qbuf.split(" ");
-  delete [] buf;
+
+  delete[] buf;
   buf = 0;
 
-  // look, what server is requesting
+  int spaceIdx = qbuf.indexOf( QChar(' ') );
+
+  QStringList args;
+
+  if( spaceIdx == -1 )
+    {
+      args.append(qbuf);
+      args.append("");
+    }
+  else
+    {
+      args.append(qbuf.left(spaceIdx));
+      args.append(qbuf.mid(spaceIdx+1));
+    }
+
+  // look, what the server is requesting
  if( MSG_MAGIC == args[0] )
     {
       // check protocol versions, reply with pos or neg
@@ -740,22 +755,26 @@ void GpsClient::readServerMsg()
 
       writeServerMsg( MSG_POS );
     }
-  else if( MSG_OPEN == args[0] && args.count() == 3 )
+  else if( MSG_OPEN == args[0] )
     {
-      // Initialization of GPS device is requested. The message
-      // consists of two parts separated by spaces.
-      // 1) device name
-      // 2) io speed
+      QStringList devArgs = args[1].split(QChar(' '));
 
-      bool res = openGps( args[1].toLatin1().data(), args[2].toUInt() );
+      if( devArgs.size() == 2 )
+        {
+          // Initialization of GPS device is requested. The message
+          // consists of two parts separated by spaces.
+          // 1) device name
+          // 2) io speed
+          bool res = openGps( devArgs[0].toLatin1().data(), devArgs[1].toUInt() );
 
-      if( res )
-        {
-          writeServerMsg( MSG_POS );
-        }
-      else
-        {
-          writeServerMsg( MSG_NEG );
+          if( res )
+            {
+              writeServerMsg( MSG_POS );
+            }
+          else
+            {
+              writeServerMsg( MSG_NEG );
+            }
         }
     }
   else if( MSG_CLOSE == args[0] )
@@ -779,7 +798,7 @@ void GpsClient::readServerMsg()
   else if( MSG_SM == args[0] && args.count() == 2 )
     {
       // Sent message to the GPS device
-      int res = writeGpsData( args[1].toLatin1() );
+      int res = writeGpsData( args[1].toLatin1().data() );
 
       if( res == -1 )
         {
@@ -815,11 +834,10 @@ void GpsClient::readServerMsg()
     }
   else
     {
-      qWarning() << method << "Unknown message received:" << buf;
+      qWarning() << method << "Unknown message received:" << qbuf;
       writeServerMsg( MSG_NEG );
     }
 
-  delete [] buf;
   return;
 }
 

@@ -938,11 +938,12 @@ bool GpsCon::sendSentence(const QString& sentence)
     }
 
   QString msg = QString("%1 %2").arg(MSG_SM).arg(sentence);
+  QString answer;
 
   writeClientMessage( 0, msg.toLatin1().data() );
-  readClientMessage( 0, msg );
+  readClientMessage( 0, answer );
 
-  if( msg == MSG_NEG )
+  if( answer == MSG_NEG )
     {
       qWarning() << method << msg << "failed!";
       return false;

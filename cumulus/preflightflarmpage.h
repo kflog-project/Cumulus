@@ -39,6 +39,7 @@
 class QComboBox;
 class QLabel;
 class QLineEdit;
+class FlightTask;
 
 class PreFlightFlarmPage : public QWidget
 {
@@ -50,11 +51,20 @@ class PreFlightFlarmPage : public QWidget
 
  public:
 
-  PreFlightFlarmPage(QWidget *parent=0);
+  PreFlightFlarmPage(FlightTask* ftask=0, QWidget *parent=0);
 
   virtual ~PreFlightFlarmPage();
 
  private slots:
+
+ /** Requests the Flarm data from the device.*/
+ void slotRequestFlarmData();
+
+ /** Sends all IGC data to the Flarm. */
+ void slotWriteFlarmData();
+
+ /** Sets all IGC data as defined in Cumulus. */
+ void slotSetIgcData();
 
  /** Called to update version info. */
   void slotUpdateVersions( const Flarm::FlarmVersion& info );
@@ -62,11 +72,18 @@ class PreFlightFlarmPage : public QWidget
   /** Called to update error info. */
   void slotUpdateErrors( const Flarm::FlarmError& info );
 
+  /** Called to update configuration info. */
+  void slotUpdateConfiguration( const QStringList& info );
+
  private:
+
+  /** Loads the available Flarm data into the label displays. */
+  void loadFlarmData();
 
   QLabel*    hwVersion;
   QLabel*    swVersion;
   QLabel*    obstVersion;
+  QLabel*    flarmId;
   QLabel*    errSeverity;
   QLabel*    errCode;
   QComboBox* logInt;
@@ -76,6 +93,9 @@ class PreFlightFlarmPage : public QWidget
   QLineEdit* gliderType;
   QLineEdit* compId;
   QLineEdit* compClass;
+  QLabel*    task;
+
+  FlightTask* m_ftask;
 };
 
 #endif
