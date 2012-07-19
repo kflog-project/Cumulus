@@ -110,11 +110,16 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   if (QString(name) == "taskselection")
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(taskpage));
+      lastPage = 1;
     }
   else
     {
       tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
+      lastPage = 0;
     }
+
+  connect( tabWidget, SIGNAL(currentChanged( int)),
+            SLOT(slot_tabChanged(int)) );
 
   setLabels();
   setVisible( true );
@@ -161,6 +166,19 @@ void PreFlightWidget::keyReleaseEvent( QKeyEvent* event )
         QWidget::keyReleaseEvent( event );
         break;
     }
+}
+
+void PreFlightWidget::slot_tabChanged( int index )
+{
+  // Save done changes on glider page when it is left to have them available
+  // on task page. E.g. Flarm IGC setup page. The method save is only called,
+  // if the task page is selected as new page after the glider page.
+  if( index == 1 && lastPage == 0 )
+    {
+      gliderpage->save();
+    }
+
+  lastPage = index;
 }
 
 void PreFlightWidget::slot_accept()

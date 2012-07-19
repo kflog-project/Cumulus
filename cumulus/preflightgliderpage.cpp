@@ -259,7 +259,4 @@ void PreFlightGliderPage::showEvent(QShowEvent *)
 
 void PreFlightGliderPage::hideEvent( QHideEvent * )
 {
-  // Save done changes on this page when it is left to have them available
-  // on other pages. E.g. Flarm IGC setup page.
-  save();
 }

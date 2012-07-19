@@ -120,6 +120,11 @@ private slots:
   void slot_keyLeft();
   void slot_keyRight();
 
+  /**
+   * Called, if a new tabulator is pressed in the tab bar.
+   */
+  void slot_tabChanged( int index );
+
 private:
 
   PreFlightTaskList *taskpage;
@@ -127,6 +132,9 @@ private:
   PreFlightMiscPage *miscpage;
   PreFlightWaypointPage *wppage;
   QTabWidget* tabWidget;
+
+  // index of last selected page
+  int lastPage;
 };
 
 #endif
