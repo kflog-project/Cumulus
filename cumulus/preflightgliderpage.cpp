@@ -37,9 +37,9 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
 
   QLabel* lblPilot = new QLabel(tr("Pilot:"), this);
   topLayout->addWidget(lblPilot, row, 0);
-  lblPilot = new QLabel(this);
-  lblPilot->setText( GeneralConfig::instance()->getSurname() );
-  topLayout->addWidget(lblPilot, row, 1);
+  edtPilot = new QLineEdit(this);
+  edtPilot->setText( GeneralConfig::instance()->getSurname() );
+  topLayout->addWidget(edtPilot, row, 1);
 
   QLabel* lblLoad = new QLabel(tr("Added load:"), this);
   topLayout->addWidget(lblLoad, row, 2);
@@ -186,7 +186,8 @@ void PreFlightGliderPage::getCurrent()
 void PreFlightGliderPage::save()
 {
   extern Calculator* calculator;
-//  qDebug("## s00 ## calculator:  %s", calculator->gliderType().toLatin1().data() );
+
+  GeneralConfig::instance()->setSurname(edtPilot->text().trimmed());
 
   Glider* glider = list->getSelectedGlider(false);
 
@@ -205,8 +206,7 @@ void PreFlightGliderPage::save()
       glider->polar()->setWater(spinWater->value(), 0);
       // @AP: save changed added load permanently
       list->save();
-      // @AP: take glider from list
-      glider = list->getSelectedGlider(true);
+      glider = new Glider(*list->getSelectedGlider(false));
       calculator->setGlider(glider);
       list->setStoredSelection(glider);
     }
@@ -255,4 +255,11 @@ void PreFlightGliderPage::showEvent(QShowEvent *)
 {
   slotGliderChanged();
   list->setFocus();
+}
+
+void PreFlightGliderPage::hideEvent( QHideEvent * )
+{
+  // Save done changes on this page when it is left to have them available
+  // on other pages. E.g. Flarm IGC setup page.
+  save();
 }

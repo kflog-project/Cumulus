@@ -467,13 +467,9 @@ void MainWindow::slotCreateApplicationWidgets()
   _globalMapView = viewMap;
   view = mapView;
 
-  QFont fnt = font();
-  fnt.setBold(true);
-
   listViewTabs = new QTabWidget( this );
   listViewTabs->setObjectName("listViewTabs");
   listViewTabs->resize( this->size() );
-  listViewTabs->setFont( fnt );
 
   viewWP = new WaypointListView( this );
 
@@ -484,16 +480,8 @@ void MainWindow::slotCreateApplicationWidgets()
   itemList.clear();
   itemList << MapContents::OutLandingList;
   viewOL = new AirfieldListView( itemList, this ); // outlandings
-
   viewRP = new ReachpointListView( this );
   viewTP = new TaskListView( this );
-
-  viewWP->setFont( fnt );
-  viewAF->setFont( fnt );
-  viewOL->setFont( fnt );
-  viewRP->setFont( fnt );
-  viewTP->setFont( fnt );
-
   viewCF = new QWidget( this );
 
   // set visibility of lists to false

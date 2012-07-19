@@ -20,9 +20,9 @@
  *
  * \author Axel Pauli
  *
- * \brief A widget for pre-flight Flarm settings.
+ * \brief A widget for pre-flight Flarm IGC settings.
  *
- * A widget for pre-flight Flarm settings.
+ * A widget for pre-flight Flarm IGC settings.
  *
  * \date 2012
  *
@@ -33,12 +33,15 @@
 #define PREFLIGHT_FLARM_PAGE_H_
 
 #include <QWidget>
+#include <QMessageBox>
 
 #include "flarm.h"
 
 class QComboBox;
 class QLabel;
 class QLineEdit;
+class QPushButton;
+class QTimer;
 class FlightTask;
 
 class PreFlightFlarmPage : public QWidget
@@ -78,10 +81,22 @@ class PreFlightFlarmPage : public QWidget
   /** Called to update configuration info. */
   void slotUpdateConfiguration( const QStringList& info );
 
+  /** Called if the connection timer has expired. */
+  void slotTimeout();
+
+  /** Called if the widget is closed. */
+  void slotClose();
+
  private:
 
   /** Loads the available Flarm data into the label displays. */
   void loadFlarmData();
+
+  /** Toggles operation of buttons. */
+  void enableButtons( const bool toggle );
+
+  /** Shows a popup message box to the user. */
+  void messageBox( QMessageBox::Icon icon, QString message, QString title="" );
 
   QLabel*    hwVersion;
   QLabel*    swVersion;
@@ -97,6 +112,13 @@ class PreFlightFlarmPage : public QWidget
   QLineEdit* compId;
   QLineEdit* compClass;
   QLineEdit* task;
+
+  QPushButton* readButton;
+  QPushButton* writeButton;
+  QPushButton* setButton;
+  QPushButton* clearButton;
+
+  QTimer*    m_timer;
 
   FlightTask* m_ftask;
 };

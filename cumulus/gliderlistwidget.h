@@ -26,7 +26,7 @@
  * This widget manages a list of gliders and provides some additional editor
  * functions.
  *
- * \date 2002-2010
+ * \date 2002-2012
  *
  */
 

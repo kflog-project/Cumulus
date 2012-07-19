@@ -62,7 +62,9 @@ public:
 
 protected:
 
-  void showEvent(QShowEvent *event);
+  virtual void showEvent(QShowEvent *event);
+
+  virtual void hideEvent ( QHideEvent *event ) ;
 
 private:
 
@@ -71,8 +73,8 @@ private:
    */
   void getCurrent();
 
-
   GliderListWidget *list;
+  QLineEdit        *edtPilot;
   QLineEdit        *edtCoPilot;
   QSpinBox         *spinLoad;
   QSpinBox         *spinWater;

@@ -923,8 +923,8 @@ void GpsCon::writeClientMessage( uint index, const char *msg  )
 }
 
 /**
- * Sends NMEA input sentence to the GPS receiver. Checksum is calculated by this
- * routine. Don't add an asterix at the end of the passed sentence! That is
+ * Sends a NMEA command sentence to the GPS receiver. Checksum is calculated by
+ * this routine. Don't add an asterix at the end of the passed sentence! That is
  * part of the check sum.
  */
 bool GpsCon::sendSentence(const QString& sentence)

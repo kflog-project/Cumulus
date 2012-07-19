@@ -22,6 +22,8 @@
  *
  * \author Axel Pauli
  *
+ * \date 2004-2012
+ *
  * \brief GPS client manager
  *
  * This class manages the connection and supervision to a GPS device via

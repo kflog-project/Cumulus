@@ -2215,7 +2215,7 @@ uint GpsNmea::calcCheckSum (int pos, const QString& sentence)
     {
       uchar c = (sentence[i]).toAscii();
 
-      if( c == '$' ) // Start sign will not be considered
+      if( c == '$' || c == '!' ) // Start sign will not to be considered
         continue;
 
       if( c == '*' ) // End of sentence reached

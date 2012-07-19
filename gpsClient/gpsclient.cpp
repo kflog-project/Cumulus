@@ -131,7 +131,7 @@ fd_set *GpsClient::getReadFdMask()
 }
 
 // Processes incoming read events. They can come from the server or
-// from the Gps device.
+// from the GGS device.
 void GpsClient::processEvent( fd_set *fdMask )
 {
   if( ipcPort )
@@ -146,7 +146,14 @@ void GpsClient::processEvent( fd_set *fdMask )
           // is more effective as to wait for a new select call.
           while( loops++ < 32 )
             {
-              // Check, if bytes are available in the receiver buffer because we
+              readServerMsg();
+
+              if( shutdown == true )
+                {
+                  break;
+                }
+
+              // Check, if more bytes are available in the receiver buffer because we
               // use blocking IO.
               int bytes = 0;
 
@@ -164,8 +171,6 @@ void GpsClient::processEvent( fd_set *fdMask )
                 {
                   break;
                 }
-
-              readServerMsg();
             }
         }
     }
@@ -313,7 +318,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
 #ifdef BLUEZ
 
-  // Define a reg. expression for a bluetooth address like "XX:XX:XX:XX:XX:XX"
+  // Define a reg. expression for a Bluetooth address like "XX:XX:XX:XX:XX:XX"
   QRegExp regExp("([0-9A-Fa-f]{2,2}:){5,5}[0-9A-Fa-f]{2,2}");
 
   if( QString(deviceIn).contains(QRegExp( regExp )) )
@@ -640,7 +645,7 @@ uchar GpsClient::calcCheckSum( const char *sentence )
     {
       uchar c = (uchar) sentence[i];
 
-      if( c == '$' || c == '!' ) // Start sign will not be considered
+      if( c == '$' || c == '!' ) // Start sign will not to be considered
         {
           continue;
         }
@@ -855,7 +860,7 @@ void GpsClient::readServerMsg()
   else if( MSG_SHD == args[0] )
     {
       // Shutdown is requested by the server. This message will not be
-      // acknowledge!
+      // acknowledged!
       setShutdownFlag(true);
     }
   else

@@ -23,6 +23,9 @@
 #include "mainwindow.h"
 #include "preflightflarmpage.h"
 
+// Timeout in ms for waiting for response
+#define RESP_TO 10000
+
 PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QWidget(parent),
   m_ftask(ftask)
@@ -40,7 +43,37 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
       resize( _globalMainWindow->size() );
     }
 
-  QVBoxLayout *allLayout  = new QVBoxLayout(this);
+  /*
+    * AP: It was a longer fight to get running the widget in a scroll area. The
+    * trick is, to put the scroll area into an own layout and add this layout
+    * to the parent widget. The dialog form itself must be put into an own,
+    * widget which is passed to the scroll area widget. That ensures that the
+    * scroll area fills out the parent widget. A good example was to find here:
+    *
+    * http://wiki.forum.nokia.com/index.php/Shows_the_use_of_QScrollArea
+    */
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget as container for the dialog layout.
+  QWidget* form = new QWidget(this);
+
+  QScrollArea* sa = new QScrollArea( this );
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( form );
+#ifdef QSCROLLER
+  QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+#endif
+
+  // Add scroll area to an own layout
+  sal->addWidget( sa );
+
+  // Pass scroll area layout to the parent widget.
+  setLayout( sal );
+
+  QVBoxLayout *allLayout  = new QVBoxLayout(form);
   QGridLayout* gridLayout = new QGridLayout;
 
   gridLayout->addWidget( new QLabel(tr("Id:")), 0, 0 );
@@ -74,7 +107,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   gridLayout->addWidget( obstVersion, 1, 7 );
 
   gridLayout->setColumnStretch( 8, 10 );
-  allLayout->addLayout(gridLayout );
+
+  QGroupBox *dataBox = new QGroupBox(tr("Flarm Data"));
+  dataBox->setLayout( gridLayout );
+
+  allLayout->addWidget(dataBox );
+  allLayout->addSpacing( 10 );
 
   //----------------------------------------------------------------------------
 
@@ -90,6 +128,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   lineLayout->addStretch( 10 );
 
   allLayout->addLayout(lineLayout );
+  allLayout->addSpacing( 10 );
 
   //----------------------------------------------------------------------------
 
@@ -138,10 +177,6 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
     {
       task->setText( m_ftask->getTaskName() );
     }
-  else
-    {
-      task->setText( tr("none") );
-    }
 
   allLayout->addLayout(gridLayout );
   allLayout->addStretch( 10 );
@@ -153,34 +188,40 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   QPushButton* cmd = new QPushButton(tr("Read"), this);
   hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), this, SLOT(slotRequestFlarmData()));
+  connect (cmd, SIGNAL(clicked()), SLOT(slotRequestFlarmData()));
+  readButton = cmd;
 
   hbbox->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Set"), this);
   hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), this, SLOT(slotSetIgcData()));
+  connect (cmd, SIGNAL(clicked()), SLOT(slotSetIgcData()));
+  setButton = cmd;
 
   hbbox->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Clear"), this);
   hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), this, SLOT(slotClearIgcData()));
+  connect (cmd, SIGNAL(clicked()), SLOT(slotClearIgcData()));
+  clearButton = cmd;
 
   hbbox->addSpacing( 10 );
   cmd = new QPushButton(tr("Write"), this);
   hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), this, SLOT(slotWriteFlarmData()));
+  connect (cmd, SIGNAL(clicked()), SLOT(slotWriteFlarmData()));
+  writeButton = cmd;
 
   hbbox->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Close"), this);
   hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), this, SLOT(close()));
+  connect (cmd, SIGNAL(clicked()), SLOT(slotClose()));
 
   allLayout->addLayout( hbbox );
+
   //----------------------------------------------------------------------------
 
+  // Add Flarm signals to our slots to get Flarm data.
   connect( Flarm::instance(), SIGNAL(flarmVersionInfo(const Flarm::FlarmVersion&)),
             this, SLOT(slotUpdateVersions(const Flarm::FlarmVersion&)) );
 
@@ -190,8 +231,23 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   connect( Flarm::instance(), SIGNAL(flarmConfigurationInfo( const QStringList&)),
             this, SLOT(slotUpdateConfiguration( const QStringList&)) );
 
+  // Timer for command time supervision
+  m_timer = new QTimer( this );
+  m_timer->setSingleShot( true );
+  m_timer->setInterval( RESP_TO );
+
+  connect( m_timer, SIGNAL(timeout()), SLOT(slotTimeout()));
+
+  // Load available Flarm data
   loadFlarmData();
-  slotRequestFlarmData();
+
+  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+  if( status.valid == true )
+    {
+      // Request Flarm data, if Flarm device was recognized.
+      slotRequestFlarmData();
+    }
 }
 
 PreFlightFlarmPage::~PreFlightFlarmPage()
@@ -230,6 +286,11 @@ void PreFlightFlarmPage::slotSetIgcData()
   gliderId->setText( glider->registration() );
   gliderType->setText( glider->type() );
   compId->setText( glider->callSign() );
+
+  if( m_ftask )
+    {
+      task->setText( m_ftask->getTaskName() );
+    }
 }
 
 void PreFlightFlarmPage::slotClearIgcData()
@@ -241,6 +302,7 @@ void PreFlightFlarmPage::slotClearIgcData()
   gliderType->clear();
   compId->clear();
   compClass->clear();
+  task->clear();
 }
 
 void PreFlightFlarmPage::slotRequestFlarmData()
@@ -251,9 +313,16 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 
   if( status.valid != true )
     {
-      qDebug() << "PFFP::slotRequestFlarmData: No Flarm device is connected!";
+      QString text0 = tr("No connection to the Flarm device!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+
+      qDebug() << "PFFP::slotRequestFlarmData:" << text0;
       return;
     }
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+  enableButtons( false );
 
   // Flarm is asked to report some data. The results are reported via signals.
   GpsNmea::gps->sendSentence( "$PFLAE,R" ); // Error status
@@ -268,6 +337,8 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERTYPE" );
   GpsNmea::gps->sendSentence( "$PFLAC,R,COMPID" );
   GpsNmea::gps->sendSentence( "$PFLAC,R,COMPCLASS" );
+
+  m_timer->start();
 }
 
 void PreFlightFlarmPage::slotUpdateVersions( const Flarm::FlarmVersion& info )
@@ -291,10 +362,13 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
    * PFLAC,<QueryType>,<Key>,<Value>
    * Attention, response can be "$PFLAC,A,ERROR*"
    */
-
   if( info[2] == "ERROR" )
     {
-      qWarning() << "$PFLAC reported an Error!" << info.join(",");
+      slotTimeout();
+      QString text0 = tr("Flarm Error");
+      QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
+      messageBox( QMessageBox::Warning, text0, text1 );
+      qWarning() << "$PFLAC error!" << info.join(",");
       return;
     }
 
@@ -354,12 +428,19 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
   if( info[2] == "COMPCLASS" )
     {
       compClass->setText( info[3] );
+
+      if( info[1] == "A" )
+        {
+          // If this item is reported, we assume, that the connection to the
+          // Flarm device was possible and data have been delivered.
+          slotTimeout();
+        }
+
       return;
     }
 
   qWarning() << "PFFP::slotUpdateConfiguration:"
-              << "Key=" << info[2]
-              << "Value=" << info[3]
+              << info.join(",")
               << "not processed!";
 }
 
@@ -372,7 +453,11 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   if( status.valid != true )
     {
-      qDebug() << "PFFP::slotWriteFlarmData: no Flarm device is connected!";
+      QString text0 = tr("No connection to the Flarm device!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+
+      qDebug() << "PFFP::slotWriteFlarmData:" << text0;
       return;
     }
 
@@ -380,6 +465,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
     {
       GpsNmea::gps->sendSentence( "$PFLAC,S,LOGINT," + logInt->currentText() );
     }
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+  enableButtons( false );
 
   GpsNmea::gps->sendSentence( "$PFLAC,S,PILOT," + pilot->text().trimmed() );
   GpsNmea::gps->sendSentence( "$PFLAC,S,COPIL," + copil->text().trimmed() );
@@ -438,4 +526,64 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
       GpsNmea::gps->sendSentence( cmd );
     }
+
+  m_timer->start();
+}
+
+void PreFlightFlarmPage::slotTimeout()
+{
+  QApplication::restoreOverrideCursor();
+  enableButtons( true );
+
+  // Note, this method is also called in case on no timeout to enable the
+  // buttons and to restore the cursor. Therefore a running timer must be
+  // stooped too.
+  if( m_timer->isActive() )
+    {
+      m_timer->stop();
+    }
+  else
+    {
+      QString text0 = tr("No response from Flarm device!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+    }
+}
+
+void PreFlightFlarmPage::slotClose()
+{
+  QApplication::restoreOverrideCursor();
+  m_timer->stop();
+  close();
+}
+
+void PreFlightFlarmPage::enableButtons( const bool toggle )
+{
+  readButton->setEnabled( toggle );
+  writeButton->setEnabled( toggle );
+  setButton->setEnabled( toggle );
+  clearButton->setEnabled( toggle );
+}
+
+/** Shows a popup message box to the user. */
+void PreFlightFlarmPage::messageBox(  QMessageBox::Icon icon,
+                                           QString message,
+                                           QString title )
+{
+  QMessageBox mb( icon,
+                  title,
+                  message,
+                  QMessageBox::Ok,
+                  this );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
 }

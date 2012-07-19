@@ -753,12 +753,15 @@ void SettingsPageAirspace::slot_openLoadDialog()
 void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
 {
   GeneralConfig * conf = GeneralConfig::instance();
-  bool changed=false;
+  bool changed = false;
 
   // changed |= spinBorderValue != spinBorderDrawing->value();
   // changed |= spinAsLineWidthValue != spinAsLineWidth->value();
+  QString where;
 
-  changed |= conf->getForceAirspaceDrawingEnabled() != enableBorderDrawing->isChecked();
+  changed |= conf->getAirspaceDrawingBorder() != spinBorderDrawing->value();
+  changed |= conf->getAirspaceDrawBorderEnabled() != (enableBorderDrawing->checkState() == Qt::Checked ? true : false);
+
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirC) != (drawAirspaceC->checkState() == Qt::Checked ? true : false);
@@ -769,10 +772,18 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirF) != (drawAirspaceF->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Restricted) != (drawRestricted->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Danger) != (drawDanger->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getItemDrawingEnabled(BaseMapElement::Prohibited) != (drawProhibited->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Tmz) != (drawTMZ->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::LowFlight) != (drawLowFlight->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::WaveWindow) != (drawWaveWindow->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::GliderSector) != (drawGliderSector->checkState() == Qt::Checked ? true : false);
+
+  if( changed )
+    {
+      where += tr("drawing");
+    }
+
+  changed = false;
 
   changed |= conf->getBorderColorAirspaceA() != borderColorAirspaceA->palette().color(QPalette::Window);
   changed |= conf->getBorderColorAirspaceB() != borderColorAirspaceB->palette().color(QPalette::Window);
@@ -785,9 +796,22 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getBorderColorControlD() != borderColorControlD->palette().color(QPalette::Window);
   changed |= conf->getBorderColorRestricted() != borderColorRestricted->palette().color(QPalette::Window);
   changed |= conf->getBorderColorDanger() != borderColorDanger->palette().color(QPalette::Window);
+  changed |= conf->getBorderColorProhibited() != borderColorProhibited->palette().color(QPalette::Window);
   changed |= conf->getBorderColorTMZ() != borderColorTMZ->palette().color(QPalette::Window);
   changed |= conf->getBorderColorLowFlight() != borderColorLowFlight->palette().color(QPalette::Window);
   changed |= conf->getBorderColorGliderSector() != borderColorGliderSector->palette().color(QPalette::Window);
+
+  if( changed )
+    {
+      if( ! where.isEmpty() )
+        {
+          where += ", ";
+        }
+
+      where += tr("border");
+    }
+
+  changed = false;
 
   changed |= conf->getFillColorAirspaceA() != fillColorAirspaceA->palette().color(QPalette::Window);
   changed |= conf->getFillColorAirspaceB() != fillColorAirspaceB->palette().color(QPalette::Window);
@@ -800,14 +824,25 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getFillColorControlD() != fillColorControlD->palette().color(QPalette::Window);
   changed |= conf->getFillColorRestricted() != fillColorRestricted->palette().color(QPalette::Window);
   changed |= conf->getFillColorDanger() != fillColorDanger->palette().color(QPalette::Window);
+  changed |= conf->getFillColorProhibited() != fillColorProhibited->palette().color(QPalette::Window);
   changed |= conf->getFillColorTMZ() != fillColorTMZ->palette().color(QPalette::Window);
   changed |= conf->getFillColorLowFlight() != fillColorLowFlight->palette().color(QPalette::Window);
   changed |= conf->getFillColorGliderSector() != fillColorGliderSector->palette().color(QPalette::Window);
 
-  if (changed)
+  if( changed )
+    {
+      if( ! where.isEmpty() )
+        {
+          where += ", ";
+        }
+
+      where += tr("fill");
+    }
+
+  if( ! where.isEmpty() )
   {
     warn=true;
-    warnings.append(tr("The Airspace drawing settings"));
+    warnings.append(tr("The Airspace settings") + " (" + where + ")" );
   }
 }
 

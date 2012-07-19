@@ -30,6 +30,7 @@
 #include "speed.h"
 #include "layout.h"
 #include "wgspoint.h"
+#include "rowdelegate.h"
 
 #ifdef FLARM
 #include "preflightflarmpage.h"
@@ -178,6 +179,10 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskList->setSelectionMode(QAbstractItemView::SingleSelection);
   taskList->setColumnCount(5);
   taskList->setFocus();
+
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  taskList->setItemDelegate( new RowDelegate( taskList, afMargin ) );
 
 #ifdef QSCROLLER
   QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
