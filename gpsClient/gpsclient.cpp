@@ -140,7 +140,33 @@ void GpsClient::processEvent( fd_set *fdMask )
 
       if( sfd != -1 && FD_ISSET( sfd, fdMask ) )
         {
-          readServerMsg();
+          int loops = 0;
+
+          // Try to process several messages from the client in order. That
+          // is more effective as to wait for a new select call.
+          while( loops++ < 32 )
+            {
+              // Check, if bytes are available in the receiver buffer because we
+              // use blocking IO.
+              int bytes = 0;
+
+              // Number of bytes currently in the socket receiver buffer.
+              if( ioctl( sfd, FIONREAD, &bytes) == -1 )
+                {
+                  qWarning() << "GpsClient::processEvent():"
+                              << "ioctl() returns with Errno="
+                              << errno
+                              << "," << strerror(errno);
+                  break;
+                }
+
+              if( bytes <= 0 )
+                {
+                  break;
+                }
+
+              readServerMsg();
+            }
         }
     }
 
@@ -726,7 +752,7 @@ void GpsClient::readServerMsg()
 
   QStringList args;
 
-  if( spaceIdx == -1 )
+  if( spaceIdx == -1 || qbuf.size() == spaceIdx )
     {
       args.append(qbuf);
       args.append("");
