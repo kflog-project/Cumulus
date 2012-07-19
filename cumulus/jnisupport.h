@@ -7,6 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2010 by Josua Dietze
+**                   2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -33,6 +34,12 @@ bool initJni();
  * Java code (playSound) is in QtMain.java
  */
 bool jniPlaySound(int stream, QString soundName);
+
+/**
+ * Forward a GPS command sentence to the Android OS. Android pass it to the
+ * connected GPS device.
+ */
+void jniGpsCmd(QString cmd);
 
 /**
  * Get path to the internal data directory from Android.

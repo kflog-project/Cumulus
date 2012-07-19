@@ -942,6 +942,14 @@ public class CumulusActivity extends QtActivity
       }
    }
 
+  /**
+   * Forward a GPS sentence command to the connected GPS device.
+   */
+  void gpsCmd( String cmd )
+  {
+	return;
+  }
+  
   synchronized private void dimmScreen( float value )
     {
       // Log.v(TAG, "dimmScreen(" + value  + ")");

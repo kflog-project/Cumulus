@@ -42,6 +42,7 @@ static jmethodID m_AppDataDirID   = 0;
 static jmethodID m_languageID     = 0;
 static jmethodID m_playSoundID    = 0;
 static jmethodID m_dimmScreenID   = 0;
+static jmethodID m_gpsCmdID       = 0;
 
 extern MainWindow *_globalMainWindow;
 
@@ -228,7 +229,7 @@ static JNINativeMethod methods[] = {
 	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
-  {"isRootWindow", "()Z", (bool *)isRootWindow}
+        {"isRootWindow", "()Z", (bool *)isRootWindow}
 };
 
 /**
@@ -342,6 +343,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_gpsCmdID = m_jniEnv->GetMethodID( clazz,
+                                      "gpsCmd",
+                                      "(Ljava/lang/String;)V");
+
+  if (isJavaExceptionOccured())
+    {
+      qDebug() << "initJni: could not get ID of gpsCmd";
+      return false;
+    }
+
   return true;
 }
 
@@ -427,6 +438,30 @@ bool jniPlaySound(int stream, QString soundName)
 
   return true;
 }
+
+bool jniGpsCmd(QString cmd)
+{
+  if (!jniEnv())
+    {
+      return false;
+    }
+
+  jstring jgpsCmd = m_jniEnv->NewString((jchar*) cmd.constData(),
+                                        (jsize) cmd.length());
+
+  m_jniEnv->CallVoidMethod( m_jniProxyObject,
+                            m_gpsCmdID,
+                            jgpsCmd );
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniGpsCmd: exception when calling Java method \"gpsCmd\"");
+      return false;
+    }
+
+  return true;
+}
+
 
 void jniDimmScreen( bool newState )
 {
