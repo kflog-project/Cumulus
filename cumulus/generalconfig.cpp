@@ -124,7 +124,7 @@ void GeneralConfig::load()
   _airspaceFileList     = value("FileList", QStringList(QString("All"))).toStringList();
 
   _asNoDrawing          = value("AirspaceNoDrawing", false ).toBool();;
-  _asDrawingBorder    = value("AirspaceNoDrawingBorder", 100).toInt();
+  _asDrawingBorder      = value("AirspaceNoDrawingBorder", 100).toInt();
 
 
 #if ! defined (MAEMO) && ! defined (ANDROID)

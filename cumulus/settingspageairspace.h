@@ -217,7 +217,6 @@ class SettingsPageAirspace : public QWidget
     QSpinBox*  spinAsLineWidth;
 
     // values of spin boxes after load
-    int spinBorderValue;
     int spinAsLineWidthValue;
 
     SettingsPageAirspaceFilling*  m_fillingDlg;

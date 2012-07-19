@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-07-19 AP: BUGFIX: Airspace drawing upper border option did not work
+                   due to an programming error.
+
 [+] 2012-07-19 AP: Flarm IGC setup support added to pre-flight task page.
                    A task declaration can be written to Flarm now.
 

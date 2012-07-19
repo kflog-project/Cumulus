@@ -438,16 +438,8 @@ void SettingsPageAirspace::slot_load()
 
   enableBorderDrawing->setChecked(enabled);
   slot_enabledToggled(enabled);
-
-#if 0
   spinBorderDrawing->setValue( conf->getAirspaceDrawingBorder() );
 
-  // save spinbox value for later change check
-  spinBorderValue = spinBorderDrawing->value();
-#endif
-
-  // save spinbox value for later change check
-  // spinAsLineWidthValue = conf->getAirspaceLineWidth();
   // spinAsLineWidth->setValue( spinAsLineWidthValue );
 
   drawAirspaceA->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::AirA) ? Qt::Checked : Qt::Unchecked );
@@ -755,7 +747,6 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed = false;
 
-  // changed |= spinBorderValue != spinBorderDrawing->value();
   // changed |= spinAsLineWidthValue != spinAsLineWidth->value();
   QString where;
 
