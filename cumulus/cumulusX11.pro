@@ -39,6 +39,9 @@ CONFIG += welt2000thread
 # Enable classical menu bar, if define is set. Otherwise a context menu is used.
 # DEFINES += USE_MENUBAR
 
+# Activate this define, if Qt class QScroller is available.
+# DEFINES += QSCROLLER
+
 #version check for Qt 4.7
 ! contains(QT_VERSION, ^4\\.[78]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
@@ -278,7 +281,7 @@ flarm {
 		           flarmlistview.h \
 		           flarmradarview.h \
 		           flarmwidget.h \
-		           preflightflarmpage.h \
+		           preflightflarmpage.h
 		           
 		SOURCES += flarm.cpp \
 		           flarmaliaslist.cpp \

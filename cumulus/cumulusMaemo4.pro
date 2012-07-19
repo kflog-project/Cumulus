@@ -40,6 +40,9 @@ CONFIG += welt2000thread
 # Enable classical menu bar, if define is set. Otherwise a context menu is used.
 # DEFINES += USE_MENUBAR
 
+# Activate this define, if Qt class QScroller is available.
+# DEFINES += QSCROLLER
+
 HEADERS = \
     aboutwidget.h \
     airfieldlistview.h \
@@ -275,14 +278,16 @@ flarm {
 		           flarmdisplay.h \
 		           flarmlistview.h \
 		           flarmradarview.h \
-		           flarmwidget.h
+		           flarmwidget.h \
+		           preflightflarmpage.h
 		           
 		SOURCES += flarm.cpp \
 		           flarmaliaslist.cpp \
 		           flarmdisplay.cpp \
 		           flarmlistview.cpp \
 		           flarmradarview.cpp \
-		           flarmwidget.cpp
+		           flarmwidget.cpp \
+		           preflightflarmpage.cpp
 		           
 		DEFINES += FLARM
 }

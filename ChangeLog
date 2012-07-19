@@ -18,8 +18,8 @@ Cumulus changelog
 [+] 2012-07-19 AP: Flarm IGC setup support added to pre-flight task page.
                    A task declaration can be written to Flarm now.
 
-[-] 2012-07-19 AP: BUGFIX: Airspace configuration change warning fixed, when
-                   settings were stored.
+[-] 2012-07-19 AP: BUGFIX: Undesired airspace configuration change warning
+                   fixed, when settings were stored.
 
 [*] 2012-07-17 AP: Cumulus 2.15.2 for all devices released.
 

@@ -29,7 +29,7 @@ CONFIG += qt \
 # These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
 
-# Activate this define, if QtClass QScroller is available.
+# Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
 # Enable Flarm feature, if not wanted comment out the next line with a hash
@@ -279,15 +279,17 @@ flarm {
                flarmdisplay.h \
                flarmlistview.h \
                flarmradarview.h \
-               flarmwidget.h
-
+               flarmwidget.h \
+               preflightflarmpage.h
+               
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
                flarmdisplay.cpp \
                flarmlistview.cpp \
                flarmradarview.cpp \
-               flarmwidget.cpp
-
+               flarmwidget.cpp \
+               preflightflarmpage.cpp
+               
     DEFINES += FLARM
 }
 

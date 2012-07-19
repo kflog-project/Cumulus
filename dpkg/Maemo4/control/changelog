@@ -1,3 +1,13 @@
+cumulus (2.16.0) stable; urgency=low
+
+  * Flarm IGC setup support added to pre-flight task page. A task declaration
+    can be written to Flarm now.
+
+  * BUGFIX: Undesired airspace configuration change warning fixed, when settings
+    were stored.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 19 Jul 2012 21:10:00 +0200
+
 cumulus (2.15.2) stable; urgency=low
 
   * Popup Menu modified. GPS and airspace status moved to an own menu point
