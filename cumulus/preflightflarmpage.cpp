@@ -22,6 +22,7 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "preflightflarmpage.h"
+#include "varspinbox.h"
 
 // Timeout in ms for waiting for response
 #define RESP_TO 10000
@@ -119,12 +120,14 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QHBoxLayout* lineLayout = new QHBoxLayout;
 
   lineLayout->addWidget( new QLabel(tr("Log Interval:")));
-  logInt = new QComboBox;
-  QStringList list;
-  list << "?" << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8";
-  logInt->addItems(list);
-  logInt->setCurrentIndex ( 0 );
-  lineLayout->addWidget( logInt );
+  logInt = new QSpinBox(this);
+  logInt->setRange(0, 8);
+  logInt->setSingleStep(1);
+  logInt->setSuffix(" s");
+  logInt->setSpecialValueText("?");
+  logInt->setValue(0);
+  VarSpinBox* vli = new VarSpinBox(logInt);
+  lineLayout->addWidget( vli );
   lineLayout->addStretch( 10 );
 
   allLayout->addLayout(lineLayout );
@@ -295,7 +298,7 @@ void PreFlightFlarmPage::slotSetIgcData()
 
 void PreFlightFlarmPage::slotClearIgcData()
 {
-  logInt->setCurrentIndex ( 0 );
+  logInt->setValue( 0 );
   pilot->clear();
   copil->clear();
   gliderId->clear();
@@ -381,15 +384,15 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
   if( info[2] == "LOGINT" )
     {
       bool ok;
-      int idx = info[3].toInt(&ok);
+      int val = info[3].toInt(&ok);
 
-      if( ok && idx > 0 && idx < 9 )
+      if( ok && val > 0 && val < 9 )
         {
-          logInt->setCurrentIndex( idx );
+          logInt->setValue( val );
         }
       else
         {
-          logInt->setCurrentIndex( 0 );
+          logInt->setValue( 0 );
         }
 
       return;
@@ -461,9 +464,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       return;
     }
 
-  if( logInt->currentIndex() > 0 )
+  if( logInt->value() > 0 )
     {
-      GpsNmea::gps->sendSentence( "$PFLAC,S,LOGINT," + logInt->currentText() );
+      GpsNmea::gps->sendSentence( "$PFLAC,S,LOGINT," + QString::number(logInt->value()) );
     }
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );

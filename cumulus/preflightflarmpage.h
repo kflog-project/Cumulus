@@ -37,10 +37,10 @@
 
 #include "flarm.h"
 
-class QComboBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
+class QSpinBox;
 class QTimer;
 class FlightTask;
 
@@ -104,7 +104,7 @@ class PreFlightFlarmPage : public QWidget
   QLabel*    flarmId;
   QLabel*    errSeverity;
   QLabel*    errCode;
-  QComboBox* logInt;
+  QSpinBox*  logInt;
   QLineEdit* pilot;
   QLineEdit* copil;
   QLineEdit* gliderId;
