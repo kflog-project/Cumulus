@@ -2101,6 +2101,9 @@ bool GpsNmea::sendSentence(const QString command)
       return serial->sendSentence( command );
     }
 
+
+  return false;
+
 #else
 
   // We have to add the checksum and cr lf to the command.
@@ -2113,8 +2116,6 @@ bool GpsNmea::sendSentence(const QString command)
   return jniGpsCmd( cmd );
 
 #endif
-
-  return false;
 }
 
 #if 0

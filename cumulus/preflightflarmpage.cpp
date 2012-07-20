@@ -330,27 +330,37 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   // Disable button pressing.
   enableButtons( false );
 
+  bool res = true;
+
   // Flarm is asked to report some data. The results are reported via signals.
-  GpsNmea::gps->sendSentence( "$PFLAE,R" ); // Error status
-  GpsNmea::gps->sendSentence( "$PFLAV,R" ); // Versions
+  res &= GpsNmea::gps->sendSentence( "$PFLAE,R" ); // Error status
+  res &= GpsNmea::gps->sendSentence( "$PFLAV,R" ); // Versions
 
   // Activate NMEA data sending
-  GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
 
   // set range to 25500m
-  GpsNmea::gps->sendSentence( "$PFLAC,S,RANGE,25500" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,RANGE,25500" );
 
   // Request different configuration items.
-  GpsNmea::gps->sendSentence( "$PFLAC,R,ID" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,LOGINT" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,PILOT" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,COPIL" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERID" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERTYPE" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,COMPID" );
-  GpsNmea::gps->sendSentence( "$PFLAC,R,COMPCLASS" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,ID" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,LOGINT" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,PILOT" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,COPIL" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERID" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERTYPE" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,COMPID" );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,COMPCLASS" );
 
   m_timer->start();
+
+  if( res == false )
+    {
+      slotTimeout();
+      QString text0 = tr("Flarm device not reachable!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+    }
 }
 
 void PreFlightFlarmPage::slotUpdateVersions( const Flarm::FlarmVersion& info )
@@ -483,16 +493,18 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
   enableButtons( false );
 
-  GpsNmea::gps->sendSentence( "$PFLAC,S,PILOT," + pilot->text().trimmed() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,COPIL," + copil->text().trimmed() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERID," + gliderId->text().trimmed() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERTYPE," + gliderType->text().trimmed() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,COMPID," + compId->text().trimmed() );
-  GpsNmea::gps->sendSentence( "$PFLAC,S,COMPCLASS," + compClass->text().trimmed() );
+  bool res = true;
+
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,PILOT," + pilot->text().trimmed() );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,COPIL," + copil->text().trimmed() );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERID," + gliderId->text().trimmed() );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERTYPE," + gliderType->text().trimmed() );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,COMPID," + compId->text().trimmed() );
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,COMPCLASS," + compClass->text().trimmed() );
 
   if( m_ftask == 0 )
     {
-      GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," );
+      res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," );
       return;
     }
 
@@ -500,11 +512,11 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   if( tpList.isEmpty() )
     {
-      GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," );
+      res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," );
       return;
     }
 
-  GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," + m_ftask->getTaskName());
+  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," + m_ftask->getTaskName());
 
   for( int i = 0; i < tpList.count(); i++ )
     {
@@ -538,10 +550,18 @@ void PreFlightFlarmPage::slotWriteFlarmData()
                     + "," + lon + ","
                     + tp->name + " - " + tp->description;
 
-      GpsNmea::gps->sendSentence( cmd );
+      res &= GpsNmea::gps->sendSentence( cmd );
     }
 
   m_timer->start();
+
+  if( res == false )
+    {
+      slotTimeout();
+      QString text0 = tr("Flarm device not reachable!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+    }
 }
 
 void PreFlightFlarmPage::slotTimeout()
