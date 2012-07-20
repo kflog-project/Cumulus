@@ -236,7 +236,7 @@ static JNINativeMethod methods[] = {
 	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
-				{"isRootWindow", "()Z", (bool *)isRootWindow}
+	{"isRootWindow", "()Z", (bool *)isRootWindow}
 };
 
 /**
@@ -352,7 +352,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   m_gpsCmdID = m_jniEnv->GetMethodID( clazz,
                                       "gpsCmd",
-                                      "(Ljava/lang/String;)V");
+                                      "(Ljava/lang/String;)Z");
 
   if (isJavaExceptionOccured())
     {
@@ -456,17 +456,16 @@ bool jniGpsCmd(QString& cmd)
   jstring jgpsCmd = m_jniEnv->NewString((jchar*) cmd.constData(),
                                         (jsize) cmd.length());
 
-  m_jniEnv->CallVoidMethod( m_jniProxyObject,
-                            m_gpsCmdID,
-                            jgpsCmd );
-
+  jboolean result = (jboolean) m_jniEnv->CallBooleanMethod( m_jniProxyObject,
+                                                            m_gpsCmdID,
+                                                            jgpsCmd );
   if (isJavaExceptionOccured())
     {
       qWarning("jniGpsCmd: exception when calling Java method \"gpsCmd\"");
       return false;
     }
 
-  return true;
+  return result;
 }
 
 

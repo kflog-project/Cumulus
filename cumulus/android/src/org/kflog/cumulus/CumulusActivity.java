@@ -945,14 +945,17 @@ public class CumulusActivity extends QtActivity
   /**
    * Forward a GPS NMEA command to the connected GPS device.
    */
-  void gpsCmd( String cmd )
+  boolean gpsCmd( String cmd )
   {
   	Log.v(TAG, "gpsCmd(): " + cmd );
   	
-		if( m_btService != null && gpsEnabled == true )
-			{
-				m_btService.write(cmd.getBytes());
-			}
+	if( m_btService != null && gpsEnabled == true )
+		{
+			m_btService.write(cmd.getBytes());
+			return true;
+		}
+		
+	return false;
   }
   
   synchronized private void dimmScreen( float value )
@@ -978,10 +981,9 @@ public class CumulusActivity extends QtActivity
   void dimmScreen( boolean newState )
     {
       // Log.v(TAG, "dimmScreen(" + newState  + ")");
-
-			// save requested dimm state from C++ API side.
-			setRequestedDimmState( newState );
-		}
+	  // save requested dimm state from C++ API side.
+	  setRequestedDimmState( newState );
+	}
 
   String getAppDataDir()
   {
