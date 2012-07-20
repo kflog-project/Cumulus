@@ -51,6 +51,7 @@
 
 #ifdef ANDROID
 #include "androidevents.h"
+#include "jnisupport.h"
 #endif
 
 #ifdef FLARM
@@ -2103,7 +2104,7 @@ bool GpsNmea::sendSentence(const QString command)
 #else
 
   // We have to add the checksum and cr lf to the command.
-  uint csum = calcCheckSum( 0, command );
+  uint csum = calcCheckSum( command.toAscii().data() );
   QString check;
   check.sprintf ("*%02X\r\n", csum);
   QString cmd (command + check);
@@ -2214,41 +2215,37 @@ void GpsNmea::forceReset()
 
 }
 
+/**
 
-/** This function calculates the checksum in the sentence.
+This function calculates the checksum of the sentence.
 
 NMEA-0183 Standard
 The optional checksum field consists of a "*" and two hex digits
 representing the exclusive OR of all characters between, but not
 including, the "$" and "*".  A checksum is required on some sentences.
 */
-uint GpsNmea::calcCheckSum (int pos, const QString& sentence)
+uchar GpsNmea::calcCheckSum( const char *sentence )
 {
   uchar sum = 0;
 
-  for( int i = 1; i < pos; i++ )
+  for( uint i = 1; i < strlen( sentence ); i++ )
     {
-      uchar c = (sentence[i]).toAscii();
+      uchar c = (uchar) sentence[i];
 
       if( c == '$' || c == '!' ) // Start sign will not to be considered
-        continue;
+        {
+          continue;
+        }
 
       if( c == '*' ) // End of sentence reached
-        break;
+        {
+          break;
+        }
 
       sum ^= c;
     }
 
   return sum;
-}
-
-/** This function checks if the checksum in the sentence matches the sentence.
- *  It returns true if it matches, and false otherwise. */
-bool GpsNmea::checkCheckSum(int pos, const QString& sentence)
-{
-  uchar check = (uchar) sentence.right( 2 ).toUShort( 0, 16 );
-
-  return (check == calcCheckSum( pos, sentence ));
 }
 
 /** This function calculates the STD altitude from the passed MSL altitude. */

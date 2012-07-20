@@ -637,13 +637,10 @@ class GpsNmea : public QObject
     /** This function is called to indicate that a negative fix has been received. */
     void fixNOK( const char* who );
 
-  private:
+    /** This function calculates the checksum of the sentence. */
+    static uchar calcCheckSum( const char *sentence );
 
-    /** This function calculates the checksum in the sentence. */
-    static uint calcCheckSum (int pos, const QString& sentence);
-    /** This function checks if the checksum in the sentence matches the sentence.
-     *  It return true if it matches, and false otherwise. */
-    static bool checkCheckSum(int pos, const QString& sentence);
+  private:
 
     /** This function calculates the STD altitude from the passed MSL altitude. */
     void calcStdAltitude(const Altitude& altitude);

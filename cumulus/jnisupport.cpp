@@ -236,7 +236,7 @@ static JNINativeMethod methods[] = {
 	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
-        {"isRootWindow", "()Z", (bool *)isRootWindow}
+				{"isRootWindow", "()Z", (bool *)isRootWindow}
 };
 
 /**
@@ -446,7 +446,7 @@ bool jniPlaySound(int stream, QString soundName)
   return true;
 }
 
-bool jniGpsCmd(QString cmd)
+bool jniGpsCmd(QString& cmd)
 {
   if (!jniEnv())
     {
