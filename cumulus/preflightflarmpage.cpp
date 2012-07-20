@@ -190,6 +190,9 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QHBoxLayout* hbbox = new QHBoxLayout;
 
   QPushButton* cmd = new QPushButton(tr("Read"), this);
+#ifndef ANDROID
+  cmd->setToolTip( tr("Read data from Flarm") );
+#endif
   hbbox->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotRequestFlarmData()));
   readButton = cmd;
@@ -197,6 +200,9 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   hbbox->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Set"), this);
+#ifndef ANDROID
+  cmd->setToolTip( tr("Set Cumulus data") );
+#endif
   hbbox->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotSetIgcData()));
   setButton = cmd;
@@ -204,12 +210,18 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   hbbox->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Clear"), this);
+#ifndef ANDROID
+  cmd->setToolTip( tr("Clear input fields") );
+#endif
   hbbox->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotClearIgcData()));
   clearButton = cmd;
 
   hbbox->addSpacing( 10 );
   cmd = new QPushButton(tr("Write"), this);
+#ifndef ANDROID
+  cmd->setToolTip( tr("Write data to Flarm") );
+#endif
   hbbox->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotWriteFlarmData()));
   writeButton = cmd;
@@ -310,28 +322,25 @@ void PreFlightFlarmPage::slotClearIgcData()
 
 void PreFlightFlarmPage::slotRequestFlarmData()
 {
-  // Check, if Flarm is connected. In this case there should be available
-  // some Flarm status data.
-  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
-
-  if( status.valid != true )
-    {
-      QString text0 = tr("No connection to the Flarm device!");
-      QString text1 = tr("Error");
-      messageBox( QMessageBox::Warning, text0, text1 );
-
-      qDebug() << "PFFP::slotRequestFlarmData:" << text0;
-      return;
-    }
-
+  // It is not clear, if a Flarm device is connected. We send out
+  // some requests to check that. If no answer is reported in a certain
+  // time the supervision timer will reset this request.
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  // Disable button pressing.
   enableButtons( false );
 
   // Flarm is asked to report some data. The results are reported via signals.
   GpsNmea::gps->sendSentence( "$PFLAE,R" ); // Error status
   GpsNmea::gps->sendSentence( "$PFLAV,R" ); // Versions
 
-  // Different configuration items.
+  // Activate NMEA data sending
+  GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
+
+  // set range to 25500m
+  GpsNmea::gps->sendSentence( "$PFLAC,S,RANGE,25500" );
+
+  // Request different configuration items.
   GpsNmea::gps->sendSentence( "$PFLAC,R,ID" );
   GpsNmea::gps->sendSentence( "$PFLAC,R,LOGINT" );
   GpsNmea::gps->sendSentence( "$PFLAC,R,PILOT" );
@@ -365,6 +374,13 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
    * PFLAC,<QueryType>,<Key>,<Value>
    * Attention, response can be "$PFLAC,A,ERROR*"
    */
+  if( info[1] != "A" )
+    {
+      qWarning() << "PFFP::sUC: Missing query type A!"
+                 << info.join(",");
+      return;
+    }
+
   if( info[2] == "ERROR" )
     {
       slotTimeout();
@@ -430,21 +446,16 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
 
   if( info[2] == "COMPCLASS" )
     {
+      // If this item is reported, we assume, that the connection to the
+      // Flarm device was possible and data have been delivered.
       compClass->setText( info[3] );
-
-      if( info[1] == "A" )
-        {
-          // If this item is reported, we assume, that the connection to the
-          // Flarm device was possible and data have been delivered.
-          slotTimeout();
-        }
-
+      slotTimeout();
       return;
     }
 
-  qWarning() << "PFFP::slotUpdateConfiguration:"
-              << info.join(",")
-              << "not processed!";
+  qDebug() << "PFFP::slotUpdateConfiguration:"
+           << info.join(",")
+           << "not processed!";
 }
 
 /** Sends all IGC data to the Flarm. */

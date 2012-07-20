@@ -948,7 +948,11 @@ public class CumulusActivity extends QtActivity
   void gpsCmd( String cmd )
   {
   	Log.v(TAG, "gpsCmd(): " + cmd );
-	  return;
+  	
+		if( m_btService != null && gpsEnabled == true )
+			{
+				m_btService.write(cmd.getBytes());
+			}
   }
   
   synchronized private void dimmScreen( float value )
