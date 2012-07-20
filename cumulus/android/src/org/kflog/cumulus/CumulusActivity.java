@@ -943,11 +943,12 @@ public class CumulusActivity extends QtActivity
    }
 
   /**
-   * Forward a GPS sentence command to the connected GPS device.
+   * Forward a GPS NMEA command to the connected GPS device.
    */
   void gpsCmd( String cmd )
   {
-	return;
+  	Log.v(TAG, "gpsCmd(): " + cmd );
+	  return;
   }
   
   synchronized private void dimmScreen( float value )
