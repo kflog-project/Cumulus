@@ -2092,11 +2092,26 @@ void GpsNmea::slot_reset()
 
 bool GpsNmea::sendSentence(const QString command)
 {
+#ifndef ANDROID
+
   if( serial )
     {
-      // Only a serial can forward commnds to the GPS.
+      // Only a serial can forward commands to the GPS.
       return serial->sendSentence( command );
     }
+
+#else
+
+  // We have to add the checksum and cr lf to the command.
+  uint csum = calcCheckSum( 0, command );
+  QString check;
+  check.sprintf ("*%02X\r\n", csum);
+  QString cmd (command + check);
+
+  // Forward command to the java part via jni
+  return jniGpsCmd( cmd );
+
+#endif
 
   return false;
 }

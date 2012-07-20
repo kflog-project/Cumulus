@@ -16,6 +16,12 @@
  **
  ***********************************************************************/
 
+/*
+ * Look here for more info about jni usage under Android:
+ *
+ * http://developer.android.com/guide/practices/jni.html
+ */
+
 #include <unistd.h>
 #include <jni.h>
 
@@ -223,6 +229,7 @@ static bool isRootWindow()
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
  * (I = integer, J = long, F = float, D = double, V = void etc. )
+ * see: http://java.sun.com/docs/books/jni/html/types.html#65751
  */
 static JNINativeMethod methods[] = {
 	{"nativeGpsFix", "(DDDFFFJ)V", (void *)nativeGpsFix},
