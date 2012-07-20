@@ -717,7 +717,7 @@ public class BluetoothService
 						mmOutStream.write(buffer);
 
 						// Share the sent message back to the UI Activity
-						mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
+						// mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
 					}
 				catch (IOException e)
 					{
