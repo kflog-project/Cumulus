@@ -924,7 +924,7 @@ bool PreFlightTaskList::createFlarmTaskList( FlightTask* flightTask )
       stream << "$PFLAC,S,ADDWP,"
              << lat
              << "," << lon << ","
-             << tp->name << " - " << tp->description
+             << tp->name
              << endl;
     }
 
