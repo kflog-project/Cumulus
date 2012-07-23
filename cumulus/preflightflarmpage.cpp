@@ -87,12 +87,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   gridLayout->addWidget( radioId, 0, 4 );
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Status:")), 0, 6);
+  gridLayout->addWidget( new QLabel(tr("St:")), 0, 6);
   errSeverity = new QLabel("???");
   gridLayout->addWidget( errSeverity, 0, 7 );
   gridLayout->setColumnMinimumWidth( 8, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Error:")), 0, 9);
+  gridLayout->addWidget( new QLabel(tr("Err:")), 0, 9);
   errCode = new QLabel("???");
   gridLayout->addWidget( errCode, 0, 10 );
 
