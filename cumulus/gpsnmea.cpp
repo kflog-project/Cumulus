@@ -2101,7 +2101,6 @@ bool GpsNmea::sendSentence(const QString command)
       return serial->sendSentence( command );
     }
 
-
   return false;
 
 #else

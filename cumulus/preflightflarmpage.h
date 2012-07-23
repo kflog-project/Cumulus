@@ -41,7 +41,9 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 class QSpinBox;
+class QStringList;
 class QTimer;
+
 class FlightTask;
 
 class PreFlightFlarmPage : public QWidget
@@ -79,7 +81,7 @@ class PreFlightFlarmPage : public QWidget
   void slotUpdateErrors( const Flarm::FlarmError& info );
 
   /** Called to update configuration info. */
-  void slotUpdateConfiguration( const QStringList& info );
+  void slotUpdateConfiguration( QStringList& info );
 
   /** Called if the connection timer has expired. */
   void slotTimeout();
@@ -97,6 +99,9 @@ class PreFlightFlarmPage : public QWidget
 
   /** Shows a popup message box to the user. */
   void messageBox( QMessageBox::Icon icon, QString message, QString title="" );
+
+  /** Send next command to Flarm from list. */
+  void nextFlarmCommand();
 
   QLabel*    hwVersion;
   QLabel*    swVersion;
@@ -118,9 +123,15 @@ class PreFlightFlarmPage : public QWidget
   QPushButton* setButton;
   QPushButton* clearButton;
 
-  QTimer*    m_timer;
+  QTimer* m_timer;
 
   FlightTask* m_ftask;
+
+  // List with commands to be sent to Flarm step by step.
+  QStringList m_cmdList;
+
+  // List index pointing to the next command to be sent.
+  int m_cmdIdx;
 };
 
 #endif

@@ -268,7 +268,7 @@ int GpsClient::writeGpsData( const char *sentence )
       return -1;
     }
 
-  uint csum = calcCheckSum( sentence );
+  uchar csum = calcCheckSum( sentence );
   QString check;
   check.sprintf ("*%02X\r\n", csum);
   QString cmd (sentence + check);

@@ -343,7 +343,7 @@ bool Flarm::extractPflae(const QStringList& stringList)
   return true;
 }
 
-bool Flarm::extractPflac(const QStringList& stringList)
+bool Flarm::extractPflac(QStringList& stringList)
 {
   /**
    * PFLAC,<QueryType>,<Key>,<Value>

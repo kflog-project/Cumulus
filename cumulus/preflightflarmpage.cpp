@@ -243,8 +243,8 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   connect( Flarm::instance(), SIGNAL(flarmErrorInfo( const Flarm::FlarmError&)),
             this, SLOT(slotUpdateErrors(const Flarm::FlarmError&)) );
 
-  connect( Flarm::instance(), SIGNAL(flarmConfigurationInfo( const QStringList&)),
-            this, SLOT(slotUpdateConfiguration( const QStringList&)) );
+  connect( Flarm::instance(), SIGNAL(flarmConfigurationInfo( QStringList&)),
+            this, SLOT(slotUpdateConfiguration( QStringList&)) );
 
   // Timer for command time supervision
   m_timer = new QTimer( this );
@@ -329,30 +329,37 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 
   // Disable button pressing.
   enableButtons( false );
+  m_cmdIdx = 0;
+  m_cmdList.clear();
 
-  bool res = true;
+  m_cmdList << "$PFLAE,R"
+            << "$PFLAV,R"
+            << "$PFLAC,S,NMEAOUT,1"
+            << "$PFLAC,S,RANGE,25500"
+            << "$PFLAC,R,ID"
+            << "$PFLAC,R,LOGINT"
+            << "$PFLAC,R,PILOT"
+            << "$PFLAC,R,COPIL"
+            << "$PFLAC,R,GLIDERID"
+            << "$PFLAC,R,GLIDERTYPE"
+            << "$PFLAC,R,COMPID"
+            << "$PFLAC,R,COMPCLASS";
 
-  // Flarm is asked to report some data. The results are reported via signals.
-  res &= GpsNmea::gps->sendSentence( "$PFLAE,R" ); // Error status
-  res &= GpsNmea::gps->sendSentence( "$PFLAV,R" ); // Versions
+  nextFlarmCommand();
+}
 
-  // Activate NMEA data sending
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
+void PreFlightFlarmPage::nextFlarmCommand()
+{
+   if( m_cmdIdx >= m_cmdList.size() )
+     {
+       // nothing more to send
+       slotTimeout();
+       return;
+     }
 
-  // set range to 25500m
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,RANGE,25500" );
-
-  // Request different configuration items.
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,ID" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,LOGINT" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,PILOT" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,COPIL" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERID" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,GLIDERTYPE" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,COMPID" );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,R,COMPCLASS" );
-
-  m_timer->start();
+   bool res = GpsNmea::gps->sendSentence( m_cmdList.at(m_cmdIdx) );
+   m_cmdIdx++;
+   m_timer->start();
 
   if( res == false )
     {
@@ -368,15 +375,17 @@ void PreFlightFlarmPage::slotUpdateVersions( const Flarm::FlarmVersion& info )
   hwVersion->setText( info.hwVersion);
   swVersion->setText( info.swVersion);
   obstVersion->setText( info.obstVersion);
+  nextFlarmCommand();
 }
 
 void PreFlightFlarmPage::slotUpdateErrors( const Flarm::FlarmError& info )
 {
   errSeverity->setText( info.severity);
   errCode->setText( info.errorCode);
+  nextFlarmCommand();
 }
 
-void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
+void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 {
   /**
    * The complete received $PFLAC sentence is the input here.
@@ -387,23 +396,37 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
   if( info[1] != "A" )
     {
       qWarning() << "PFFP::sUC: Missing query type A!"
-                 << info.join(",");
+                  << info.join(",");
       return;
     }
 
-  if( info[2] == "ERROR" )
+  if( info[2].startsWith( "ERROR" ) || info[2].startsWith( "WARNING" ))
     {
       slotTimeout();
       QString text0 = tr("Flarm Error");
       QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
-      messageBox( QMessageBox::Warning, text0, text1 );
+      messageBox( QMessageBox::Warning, text1, text0 );
       qWarning() << "$PFLAC error!" << info.join(",");
+      return;
+    }
+
+  if( info.size() < 4 )
+    {
+      qWarning() << "$PFLAC too less parameters!" << info.join(",");
+      slotTimeout();
+      return;
+    }
+
+  if( info[2] == "NMEAOUT" || info[2] == "RANGE" )
+    {
+      nextFlarmCommand();
       return;
     }
 
   if( info[2] == "ID" )
     {
       flarmId->setText( info[3] );
+      nextFlarmCommand();
       return;
     }
 
@@ -421,36 +444,42 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
           logInt->setValue( 0 );
         }
 
+      nextFlarmCommand();
       return;
     }
 
   if( info[2] == "PILOT" )
     {
       pilot->setText( info[3] );
+      nextFlarmCommand();
       return;
     }
 
   if( info[2] == "COPIL" )
     {
       copil->setText( info[3] );
+      nextFlarmCommand();
       return;
     }
 
   if( info[2] == "GLIDERID" )
     {
       gliderId->setText( info[3] );
+      nextFlarmCommand();
       return;
     }
 
   if( info[2] == "GLIDERTYPE" )
     {
       gliderType->setText( info[3] );
+      nextFlarmCommand();
       return;
     }
 
   if( info[2] == "COMPID" )
     {
       compId->setText( info[3] );
+      nextFlarmCommand();
       return;
     }
 
@@ -459,13 +488,19 @@ void PreFlightFlarmPage::slotUpdateConfiguration( const QStringList& info )
       // If this item is reported, we assume, that the connection to the
       // Flarm device was possible and data have been delivered.
       compClass->setText( info[3] );
-      slotTimeout();
+      nextFlarmCommand();
       return;
     }
 
-  qDebug() << "PFFP::slotUpdateConfiguration:"
-           << info.join(",")
-           << "not processed!";
+  if( info[2] == "NEWTASK" || info[2] ==  "ADDWP" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  qWarning() << "PFFP::slotUpdateConfiguration:"
+              << info.join(",")
+              << "not processed!";
 }
 
 /** Sends all IGC data to the Flarm. */
@@ -492,31 +527,77 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
   enableButtons( false );
+  m_cmdIdx = 0;
+  m_cmdList.clear();
 
-  bool res = true;
+  m_cmdList << "$PFLAC,S,PILOT," + pilot->text().trimmed()
+            << "$PFLAC,S,COPIL," + copil->text().trimmed()
+            << "$PFLAC,S,GLIDERID," + gliderId->text().trimmed()
+            << "$PFLAC,S,GLIDERTYPE," + gliderType->text().trimmed()
+            << "$PFLAC,S,COMPID," + compId->text().trimmed()
+            << "$PFLAC,S,COMPCLASS," + compClass->text().trimmed();
 
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,PILOT," + pilot->text().trimmed() );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,COPIL," + copil->text().trimmed() );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERID," + gliderId->text().trimmed() );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,GLIDERTYPE," + gliderType->text().trimmed() );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,COMPID," + compId->text().trimmed() );
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,COMPCLASS," + compClass->text().trimmed() );
+  QString tpName;
 
-  if( m_ftask == 0 )
+  if( ! task->text().isEmpty() &&
+      m_ftask != 0 && m_ftask->getTpList().isEmpty() == false )
     {
-      res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," );
+      tpName = m_ftask->getTaskName();
+    }
+
+  m_cmdList << "$PFLAC,S,NEWTASK," + tpName;
+
+  if( m_ftask == 0 || m_ftask->getTpList().isEmpty() )
+    {
+      nextFlarmCommand();
       return;
     }
 
+  // Flarm limits tasks in its length to 192 characters. We do check and
+  // adapt that here.
   QList<TaskPoint *>& tpList = m_ftask->getTpList();
+  int left = -1;
 
-  if( tpList.isEmpty() )
+  while( true )
     {
-      res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," );
-      return;
-    }
+      int sizeDescr = m_ftask->getTaskName().size();
 
-  res &= GpsNmea::gps->sendSentence( "$PFLAC,S,NEWTASK," + m_ftask->getTaskName());
+      for( int i = 0; i < tpList.count(); i++ )
+        {
+          sizeDescr += tpList.at(i)->name.left(left).size();
+        }
+
+      int total = 7 + (tpList.size() * 9) + sizeDescr;
+
+      if( total <= 192 )
+        {
+          break;
+        }
+
+      if( left == -1 )
+        {
+          left = 8;
+        }
+      else
+        {
+          left--;
+
+          if( left == -1 )
+            {
+              // Shorter is not possible, we must abort here.
+              QApplication::restoreOverrideCursor();
+              enableButtons( true );
+
+              QString text0 = tr("Task Error");
+              QString text1 = "<html>" + tr("Task") + " " +
+                               m_ftask->getTaskName() + " " + tr("is too long!") + "</html>";
+              messageBox( QMessageBox::Warning, text1, text0 );
+              qWarning() << "Task" << m_ftask->getTaskName()
+                          << "is longer as 192 characters";
+              return;
+            }
+        }
+    }
 
   for( int i = 0; i < tpList.count(); i++ )
     {
@@ -548,20 +629,12 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       QString cmd = "$PFLAC,S,ADDWP,"
                     + lat
                     + "," + lon + ","
-                    + tp->name + " - " + tp->description;
+                    + tp->name.left(left);
 
-      res &= GpsNmea::gps->sendSentence( cmd );
+      m_cmdList <<  cmd;
     }
 
-  m_timer->start();
-
-  if( res == false )
-    {
-      slotTimeout();
-      QString text0 = tr("Flarm device not reachable!");
-      QString text1 = tr("Error");
-      messageBox( QMessageBox::Warning, text0, text1 );
-    }
+  nextFlarmCommand();
 }
 
 void PreFlightFlarmPage::slotTimeout()

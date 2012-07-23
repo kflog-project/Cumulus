@@ -273,7 +273,7 @@ public:
    * @param stringList Flarm sentence $PFLAV as string list
    * @return true if a valid value exists otherwise false
    */
-  bool extractPflac(const QStringList& stringList);
+  bool extractPflac(QStringList& stringList);
 
   /**
    * Creates a hash key by using the passed parameters.
@@ -351,7 +351,7 @@ signals:
   /**
    * This signal is emitted if a new Flarm configuration info is available.
    */
-  void flarmConfigurationInfo( const QStringList& info );
+  void flarmConfigurationInfo( QStringList& info );
 
 private slots:
 
