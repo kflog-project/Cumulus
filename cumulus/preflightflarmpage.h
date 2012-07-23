@@ -100,7 +100,7 @@ class PreFlightFlarmPage : public QWidget
   /** Shows a popup message box to the user. */
   void messageBox( QMessageBox::Icon icon, QString message, QString title="" );
 
-  /** Send next command to Flarm from list. */
+  /** Send next command to Flarm from the command list. */
   void nextFlarmCommand();
 
   QLabel*    hwVersion;

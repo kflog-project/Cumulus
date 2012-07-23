@@ -434,7 +434,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
   if( info[2].startsWith( "ERROR" ) || info[2].startsWith( "WARNING" ))
     {
       slotTimeout();
-      QString text0 = tr("Flarm Error");
+      QString text0 = tr("Flarm Problem");
       QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
       messageBox( QMessageBox::Warning, text1, text0 );
       qWarning() << "$PFLAC error!" << info.join(",");
@@ -517,8 +517,6 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 
   if( info[2] == "COMPCLASS" )
     {
-      // If this item is reported, we assume, that the connection to the
-      // Flarm device was possible and data have been delivered.
       compClass->setText( info[3] );
       nextFlarmCommand();
       return;
