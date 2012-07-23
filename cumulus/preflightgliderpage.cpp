@@ -195,7 +195,7 @@ void PreFlightGliderPage::save()
     {
       if (glider->seats() == Glider::doubleSeater)
         {
-          glider->setCoPilot(edtCoPilot->text());
+          glider->setCoPilot(edtCoPilot->text().trimmed());
         }
       else
         {

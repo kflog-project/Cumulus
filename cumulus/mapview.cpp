@@ -995,7 +995,7 @@ void MapView::slot_glider( const QString& glider )
 {
   _statusGlider->setText( glider );
 
-  if( glider.isNull() )
+  if( glider.isEmpty() )
     {
       // reset arrival display because glider has been removed
       _glidepath->setValue("-");
