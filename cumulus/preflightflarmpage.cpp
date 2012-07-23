@@ -77,37 +77,47 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QVBoxLayout *allLayout  = new QVBoxLayout(form);
   QGridLayout* gridLayout = new QGridLayout;
 
-  gridLayout->addWidget( new QLabel(tr("Id:")), 0, 0 );
-  flarmId = new QLabel("???");
-  gridLayout->addWidget( flarmId, 0, 1 );
+  gridLayout->addWidget( new QLabel(tr("SN:")), 0, 0 );
+  serial = new QLabel("???");
+  gridLayout->addWidget( serial, 0, 1 );
   gridLayout->setColumnMinimumWidth( 2, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Status:")), 0, 3);
-  errSeverity = new QLabel("???");
-  gridLayout->addWidget( errSeverity, 0, 4 );
+  gridLayout->addWidget( new QLabel(tr("RId:")), 0, 3 );
+  radioId = new QLabel("???");
+  gridLayout->addWidget( radioId, 0, 4 );
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Error:")), 0, 6);
+  gridLayout->addWidget( new QLabel(tr("Status:")), 0, 6);
+  errSeverity = new QLabel("???");
+  gridLayout->addWidget( errSeverity, 0, 7 );
+  gridLayout->setColumnMinimumWidth( 8, 20 );
+
+  gridLayout->addWidget( new QLabel(tr("Error:")), 0, 9);
   errCode = new QLabel("???");
-  gridLayout->addWidget( errCode, 0, 7 );
+  gridLayout->addWidget( errCode, 0, 10 );
 
   //----------------------------------------------------------------------------
 
-  gridLayout->addWidget( new QLabel(tr("Hw:")), 1, 0);
-  hwVersion = new QLabel("???");
-  gridLayout->addWidget( hwVersion, 1, 1 );
+  gridLayout->addWidget( new QLabel(tr("Db:")), 1, 0);
+  obstVersion = new QLabel("???");
+  gridLayout->addWidget( obstVersion, 1, 1 );
   gridLayout->setColumnMinimumWidth( 2, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Sw:")), 1, 3);
-  swVersion = new QLabel("???");
-  gridLayout->addWidget( swVersion, 1, 4 );
+  gridLayout->addWidget( new QLabel(tr("Hw:")), 1, 3);
+  hwVersion = new QLabel("???");
+  gridLayout->addWidget( hwVersion, 1, 4 );
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Db:")), 1, 6);
-  obstVersion = new QLabel("???");
-  gridLayout->addWidget( obstVersion, 1, 7 );
+  gridLayout->addWidget( new QLabel(tr("Sw:")), 1, 6);
+  swVersion = new QLabel("???");
+  gridLayout->addWidget( swVersion, 1, 7 );
+  gridLayout->setColumnMinimumWidth( 8, 20 );
 
-  gridLayout->setColumnStretch( 8, 10 );
+  gridLayout->addWidget( new QLabel(tr("Igc:")), 1, 9);
+  igcVersion = new QLabel("???");
+  gridLayout->addWidget( igcVersion, 1, 10 );
+
+  gridLayout->setColumnStretch( 11, 10 );
 
   QGroupBox *dataBox = new QGroupBox(tr("Flarm Data"));
   dataBox->setLayout( gridLayout );
@@ -277,6 +287,9 @@ void PreFlightFlarmPage::loadFlarmData()
   version.hwVersion.isEmpty() ? hwVersion->setText("???") : hwVersion->setText(version.hwVersion);
   version.swVersion.isEmpty() ? swVersion->setText("???") : swVersion->setText(version.swVersion);
   version.obstVersion.isEmpty() ? obstVersion->setText("???") : obstVersion->setText(version.obstVersion);
+  version.igcVersion.isEmpty() ? igcVersion->setText("???") : igcVersion->setText(version.igcVersion);
+  version.serial.isEmpty() ? serial->setText("???") : serial->setText(version.serial);
+  version.radioId.isEmpty() ? radioId->setText("???") : radioId->setText(version.radioId);
 
   error.severity.isEmpty() ? errSeverity->setText("???") : errSeverity->setText(error.severity);
   error.errorCode.isEmpty() ? errCode->setText("???") : errCode->setText(error.errorCode);
@@ -336,7 +349,9 @@ void PreFlightFlarmPage::slotRequestFlarmData()
             << "$PFLAV,R"
             << "$PFLAC,S,NMEAOUT,1"
             << "$PFLAC,S,RANGE,25500"
-            << "$PFLAC,R,ID"
+            << "$PFLAC,R,RADIOID"
+            << "$PFLAC,R,IGCSER"
+            << "$PFLAC,R,SER"
             << "$PFLAC,R,LOGINT"
             << "$PFLAC,R,PILOT"
             << "$PFLAC,R,COPIL"
@@ -356,6 +371,8 @@ void PreFlightFlarmPage::nextFlarmCommand()
        slotTimeout();
        return;
      }
+
+   qDebug() << "Next" << m_cmdList.at(m_cmdIdx);
 
    bool res = GpsNmea::gps->sendSentence( m_cmdList.at(m_cmdIdx) );
    m_cmdIdx++;
@@ -387,6 +404,8 @@ void PreFlightFlarmPage::slotUpdateErrors( const Flarm::FlarmError& info )
 
 void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 {
+
+  qDebug() << "Ret" << info;
   /**
    * The complete received $PFLAC sentence is the input here.
    *
@@ -397,6 +416,13 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
     {
       qWarning() << "PFFP::sUC: Missing query type A!"
                   << info.join(",");
+      return;
+    }
+
+  if( info[2].startsWith( "ERROR(unknown command)" ) )
+    {
+      // Our command was unknown, we do ignore that and go on.
+      nextFlarmCommand();
       return;
     }
 
@@ -423,9 +449,10 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "ID" )
+  if( info[2] == "RADIOID" )
     {
-      flarmId->setText( info[3] );
+      radioId->setText( info[4] );
+      Flarm::getFlarmVersion().radioId = info[4];
       nextFlarmCommand();
       return;
     }
@@ -492,6 +519,22 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
+  if( info[2] == "IGCSER" )
+    {
+      igcVersion->setText( info[3] );
+      Flarm::getFlarmVersion().igcVersion = info[3];
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "SER" )
+    {
+      serial->setText( info[3] );
+      Flarm::getFlarmVersion().serial = info[3];
+      nextFlarmCommand();
+      return;
+    }
+
   if( info[2] == "NEWTASK" || info[2] ==  "ADDWP" )
     {
       nextFlarmCommand();
@@ -520,15 +563,15 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       return;
     }
 
-  if( logInt->value() > 0 )
-    {
-      GpsNmea::gps->sendSentence( "$PFLAC,S,LOGINT," + QString::number(logInt->value()) );
-    }
-
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
   enableButtons( false );
   m_cmdIdx = 0;
   m_cmdList.clear();
+
+  if( logInt->value() > 0 )
+    {
+      m_cmdList << ("$PFLAC,S,LOGINT," + QString::number(logInt->value()));
+    }
 
   m_cmdList << "$PFLAC,S,PILOT," + pilot->text().trimmed()
             << "$PFLAC,S,COPIL," + copil->text().trimmed()

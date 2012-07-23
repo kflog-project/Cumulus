@@ -106,7 +106,9 @@ class PreFlightFlarmPage : public QWidget
   QLabel*    hwVersion;
   QLabel*    swVersion;
   QLabel*    obstVersion;
-  QLabel*    flarmId;
+  QLabel*    igcVersion;
+  QLabel*    serial;
+  QLabel*    radioId;
   QLabel*    errSeverity;
   QLabel*    errCode;
   QSpinBox*  logInt;

@@ -118,6 +118,9 @@ public:
     QString hwVersion;
     QString swVersion;
     QString obstVersion;
+    QString igcVersion;
+    QString serial;
+    QString radioId;
   };
 
   /**
@@ -203,7 +206,7 @@ public:
   /**
    * @return the Flarm version structure
    */
-  static const FlarmVersion& getFlarmVersion()
+  static FlarmVersion& getFlarmVersion()
   {
     return flarmVersion;
   };
