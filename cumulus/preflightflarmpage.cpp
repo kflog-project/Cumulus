@@ -338,6 +338,9 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   // It is not clear, if a Flarm device is connected. We send out
   // some requests to check that. If no answer is reported in a certain
   // time the supervision timer will reset this request.
+  // It seems there are some new Flarm commands available, which are not listed
+  // in the current DataPortSpec paper 6.00.
+  // http://www.flarm.com/support/manual/developer/dataport_spec_6.00_addendum.txt
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Disable button pressing.
@@ -345,6 +348,8 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   m_cmdIdx = 0;
   m_cmdList.clear();
 
+  // Here we set NMEA output and a range of 25500m. All other set items are
+  // untouched.
   m_cmdList << "$PFLAE,R"
             << "$PFLAV,R"
             << "$PFLAC,S,NMEAOUT,1"
@@ -372,7 +377,7 @@ void PreFlightFlarmPage::nextFlarmCommand()
        return;
      }
 
-   qDebug() << "Next" << m_cmdList.at(m_cmdIdx);
+   // qDebug() << "Next" << m_cmdList.at(m_cmdIdx);
 
    bool res = GpsNmea::gps->sendSentence( m_cmdList.at(m_cmdIdx) );
    m_cmdIdx++;
@@ -404,8 +409,8 @@ void PreFlightFlarmPage::slotUpdateErrors( const Flarm::FlarmError& info )
 
 void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 {
+  // qDebug() << "Ret" << info;
 
-  qDebug() << "Ret" << info;
   /**
    * The complete received $PFLAC sentence is the input here.
    *

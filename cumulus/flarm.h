@@ -121,6 +121,16 @@ public:
     QString igcVersion;
     QString serial;
     QString radioId;
+
+    void reset()
+    {
+      hwVersion.clear();
+      swVersion.clear();
+      obstVersion.clear();
+      igcVersion.clear();
+      serial.clear();
+      radioId.clear();
+    };
   };
 
   /**
@@ -138,6 +148,12 @@ public:
   {
     QString severity;
     QString errorCode;
+
+    void reset()
+    {
+      severity.clear();
+      errorCode.clear();
+    };
    };
 
   /**
@@ -308,6 +324,8 @@ public:
   {
     pflaaHash.clear();
     flarmStatus.valid = false;
+    flarmVersion.reset();
+    flarmError.reset();
   };
 
   /**
