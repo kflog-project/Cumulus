@@ -323,6 +323,12 @@ void PreFlightFlarmPage::slotSetIgcData()
 
 void PreFlightFlarmPage::slotClearIgcData()
 {
+  clearUserInputFields();
+  task->clear();
+}
+
+void PreFlightFlarmPage::clearUserInputFields()
+{
   logInt->setValue( 0 );
   pilot->clear();
   copil->clear();
@@ -330,7 +336,6 @@ void PreFlightFlarmPage::slotClearIgcData()
   gliderType->clear();
   compId->clear();
   compClass->clear();
-  task->clear();
 }
 
 void PreFlightFlarmPage::slotRequestFlarmData()

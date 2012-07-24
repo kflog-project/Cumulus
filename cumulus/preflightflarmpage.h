@@ -97,6 +97,9 @@ class PreFlightFlarmPage : public QWidget
   /** Toggles operation of buttons. */
   void enableButtons( const bool toggle );
 
+  /** Clears all user input fields. */
+  void clearUserInputFields();
+
   /** Shows a popup message box to the user. */
   void messageBox( QMessageBox::Icon icon, QString message, QString title="" );
 
