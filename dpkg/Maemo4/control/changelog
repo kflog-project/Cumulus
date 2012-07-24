@@ -1,12 +1,15 @@
 cumulus (2.16.0) stable; urgency=low
 
+  * BUGFIX: Airspace drawing upper border option did not work due to a
+    programming error.
+
   * Flarm IGC setup support added to pre-flight task page. A task declaration
     can be written to Flarm now.
 
   * BUGFIX: Undesired airspace configuration change warning fixed, when settings
     were stored.
 
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 19 Jul 2012 21:10:00 +0200
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 24 Jul 2012 20:43:23 +0200
 
 cumulus (2.15.2) stable; urgency=low
 
