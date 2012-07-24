@@ -1757,7 +1757,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="35"/>
         <source>Flarm IGC Setup</source>
-        <translation></translation>
+        <translation>Flarm IGC Einstellungen</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="80"/>
@@ -1802,12 +1802,12 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="122"/>
         <source>Flarm Data</source>
-        <translation></translation>
+        <translation>Flarm Daten</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="132"/>
         <source>Log Interval:</source>
-        <translation></translation>
+        <translation>Log Intervall:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="151"/>
@@ -1822,32 +1822,32 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="162"/>
         <source>Glider Id:</source>
-        <translation></translation>
+        <translation>Segler Kz:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="166"/>
         <source>Glider Type:</source>
-        <translation>Flugzeug Typ:</translation>
+        <translation>Segler Typ:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="173"/>
         <source>Comp Id:</source>
-        <translation></translation>
+        <translation>Wett Kz:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="177"/>
         <source>Comp Class:</source>
-        <translation></translation>
+        <translation>Wett Klasse:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="184"/>
         <source>Task:</source>
-        <translation></translation>
+        <translation>Aufgabe:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="202"/>
         <source>Read</source>
-        <translation></translation>
+        <translation>Lesen</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="204"/>
@@ -1857,7 +1857,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="212"/>
         <source>Set</source>
-        <translation></translation>
+        <translation>Setzen</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="214"/>
@@ -1867,7 +1867,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="222"/>
         <source>Clear</source>
-        <translation></translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="224"/>
@@ -1877,7 +1877,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="231"/>
         <source>Write</source>
-        <translation></translation>
+        <translation>Schreiben</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="233"/>
