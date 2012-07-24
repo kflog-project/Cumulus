@@ -454,8 +454,10 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "RADIOID" )
+  if( info[2] == "RADIOID" && info.size() >= 5 )
     {
+      // $PFLAC,A,RADIOID,1,A832ED*    [ICAO ID]
+      // $PFLAC,A,RADIOID,2,DE4123*    [FLARM ID]
       radioId->setText( info[4] );
       Flarm::getFlarmVersion().radioId = info[4];
       nextFlarmCommand();
@@ -524,6 +526,8 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 
   if( info[2] == "IGCSER" )
     {
+      // $PFLAC,A,IGCSER,7JK*
+      // $PFLAC,A,IGCSER,*               [non-IGC device]
       igcVersion->setText( info[3] );
       Flarm::getFlarmVersion().igcVersion = info[3];
       nextFlarmCommand();
@@ -532,6 +536,11 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 
   if( info[2] == "SER" )
     {
+      // $PFLAC,R,SER
+      // Returns the device's serial number (32 bit unsigned integer).
+      // Example:
+      // $PFLAC,A,SER,1342*
+      // $PFLAC,A,SER,1828342834*
       serial->setText( info[3] );
       Flarm::getFlarmVersion().serial = info[3];
       nextFlarmCommand();
