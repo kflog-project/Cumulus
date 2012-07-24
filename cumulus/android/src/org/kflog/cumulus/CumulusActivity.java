@@ -520,8 +520,21 @@ public class CumulusActivity extends QtActivity
               }
           };
 
-        lm.addNmeaListener(nl);
-        lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, ll );
+        if( lm.addNmeaListener(nl) == false )
+          {
+            Log.e( TAG, "Cannont add NMEA listener to Location Manager!" );
+          }
+        
+        try
+          {
+            lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, ll );
+          }
+        catch( IllegalArgumentException e )
+          {
+            // It seems there is no GPS provider available on this device.
+            Log.e( TAG, "Device has no GPS provider: " + e.getMessage() );
+            lm = null;
+          }
       }
     
     /* Add an icon to the notification area while Cumulus runs, to
