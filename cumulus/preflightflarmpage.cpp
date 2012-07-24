@@ -350,6 +350,9 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 
   // Disable button pressing.
   enableButtons( false );
+
+  // Clear all user input fields to see if something is coming in.
+  clearUserInputFields();
   m_cmdIdx = 0;
   m_cmdList.clear();
 
