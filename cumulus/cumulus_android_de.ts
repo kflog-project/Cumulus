@@ -1892,29 +1892,29 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="389"/>
         <source>Flarm device not reachable!</source>
-        <translation></translation>
+        <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="390"/>
         <location filename="preflightflarmpage.cpp" line="571"/>
         <location filename="preflightflarmpage.cpp" line="710"/>
         <source>Error</source>
-        <translation></translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="437"/>
         <source>Flarm Problem</source>
-        <translation></translation>
+        <translation>Flarm Problem</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="570"/>
         <source>No connection to the Flarm device!</source>
-        <translation></translation>
+        <translation>Keine Verbindung zum Flarm Gerät!</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="646"/>
         <source>Task Error</source>
-        <translation></translation>
+        <translation>Aufgabenfehler</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="647"/>
@@ -1924,12 +1924,12 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightflarmpage.cpp" line="648"/>
         <source>is too long!</source>
-        <translation></translation>
+        <translation>ist zu lang!</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="709"/>
         <source>No response from Flarm device!</source>
-        <translation></translation>
+        <translation>Keine Antwort vom Flarm Gerät!</translation>
     </message>
 </context>
 <context>
