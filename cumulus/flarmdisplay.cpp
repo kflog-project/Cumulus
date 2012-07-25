@@ -394,7 +394,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
       // Draw object as circle, triangle or square
       QPixmap object;
-      QColor color(Qt::black);
+      QColor color;
 
       if( acft.Alarm == Flarm::Important )
         {
@@ -418,18 +418,33 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       if( acft.TurnRate != INT_MIN )
         {
           // Object is circling, not yet supported by FLARM atm.
+          if( color.isValid() == false )
+            {
+              color = getLiftColor( acft.ClimbRate );
+            }
+
           MapConfig::createCircle( object, 30, color,
                                    1.0, Qt::transparent, pen );
         }
       else if( acft.Track != INT_MIN )
         {
           // Object with track info
+          if( color.isValid() == false )
+             {
+               color = getLiftColor( acft.ClimbRate );
+             }
+
           MapConfig::createTriangle( object, 34, color, relTrack,
                                      1.0, Qt::transparent, pen );
         }
       else
         {
           // Object without track info
+          if( color.isValid() == false )
+             {
+               color = Qt::black;
+             }
+
           MapConfig::createSquare( object, 30, color, 1.0, pen );
         }
 
@@ -500,4 +515,79 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       // store the draw coordinates for mouse snapping
       objectHash.insert( it.key(), QPoint(centerX + east, centerY - north) );
     }
+}
+
+/** Returns a color related to the current lift. */
+QColor FlarmDisplay::getLiftColor( double lift )
+{
+  if( lift == INT_MIN )
+    {
+      // lift is undefined
+      return Qt::black;
+    }
+
+  short sl = static_cast<short>(lift * 10.0);
+
+  if( sl < -40 )
+    {
+      return QColor("#1874cd");
+    }
+
+  if( sl < -30 )
+    {
+      return QColor("#1e90ff");
+    }
+
+  if( sl < -20 )
+    {
+      return QColor("#00bfff");
+    }
+
+  if( sl < -10 )
+    {
+      return QColor("#87cefa");
+    }
+
+  if( sl < -5 )
+    {
+      return QColor("#00e5ff");
+    }
+
+  if( sl < 0 )
+    {
+      return QColor("#60f5ff");
+    }
+
+  if( sl < 5 )
+    {
+      return QColor("#90EE90");
+    }
+
+  if( sl < 10 )
+    {
+      return QColor("#FFFF00");
+    }
+
+  if( sl < 20 )
+    {
+      return QColor("#FFD700");
+    }
+
+  if( sl < 30 )
+    {
+      return QColor("#FFA500");
+    }
+
+  if( sl < 40 )
+    {
+      return QColor("#FF8C00");
+    }
+
+  if( sl < 50 )
+    {
+      return QColor("#FF7F50");
+    }
+
+  // Default is black
+  return Qt::black;
 }

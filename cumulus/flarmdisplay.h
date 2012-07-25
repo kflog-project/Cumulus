@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,7 +24,7 @@
  *
  * This widget shows the Flarm display view.
  *
- * \date 2010-2011
+ * \date 2010-2012
  *
  * \version $Id$
  */
@@ -123,6 +123,9 @@ public:
 
   /** Creates the background picture with the radar screen. */
   void createBackground();
+
+  /** Returns a color related to the current lift. */
+  QColor getLiftColor( double lift );
 
 private:
 
