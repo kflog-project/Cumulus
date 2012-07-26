@@ -26,13 +26,14 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
-#include "flarmcrc.h"
 
+#include "flarmcrc.h"
 #include "flarmbincom.h"
 
+unsigned short FlarmBinCom::m_Seq = 0;
+
 FlarmBinCom::FlarmBinCom( int socket) :
-  m_Socket(socket),
-  m_Seq(0x0)
+  m_Socket(socket)
 {
 }
 
@@ -158,7 +159,8 @@ bool FlarmBinCom::getRecordInfo( char* sData )
    const char *strSource,
    size_t count);
    */
-  strncpy_s(sData, MAXSIZE, (const char*) &(m.data[2]), m.hdr.length - 2 - HDR_LENGTH);
+  // strncpy_s(sData, MAXSIZE, (const char*) &(m.data[2]), m.hdr.length - 2 - HDR_LENGTH);
+  strncpy( sData, (const char*) &(m.data[2]), m.hdr.length - 2 - HDR_LENGTH );
 
   sData[m.hdr.length - 2 - HDR_LENGTH] = 0;
   // printf( "Length: %i\r\n", m.hdr.length);
@@ -195,8 +197,16 @@ bool FlarmBinCom::getIGDData( char* sData, unsigned int* progress)
   char* igcdata = (char*) &(m.data[3]); // skip first two bytes (sequence number) and progress
   int dataSize = m.hdr.length - 3 - HDR_LENGTH;
 
-  // copy over
-  _memccpy(sData, igcdata, 0, dataSize);
+  /* copy over
+  void *_memccpy(
+     void *dest,
+     const void *src,
+     int c,
+     size_t count
+   ); */
+  // _memccpy(sData, igcdata, 0, dataSize);
+
+  memccpy(sData, igcdata, 0, dataSize);
   // ensure null termination
   sData[dataSize] = 0;
   return true;
@@ -236,7 +246,7 @@ bool FlarmBinCom::sendMsg( Message* mMsg)
   header[7] = crc >> 8; // mCrc.getCRC() >> 8;
 
   // send the stuff
-  m_Serial->write(STARTFRAME);
+  writeChar(STARTFRAME);
 
   for (int i = 0; i < HDR_LENGTH; i++)
     {
@@ -253,7 +263,7 @@ bool FlarmBinCom::sendMsg( Message* mMsg)
 
 bool FlarmBinCom::rcvMsg( Message* mMsg)
 {
-  // wait for startframe
+  // wait for start frame
   unsigned char ch = 0;
   /*
    SYSTEMTIME  start, end;
@@ -262,7 +272,7 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
   do
     {
       // printf( "Waiting for startframe\n");
-      if (m_Serial->read(&ch) == false)
+      if( readChar(&ch) <= 0 )
         {
           // printf( "No StartFrame\n");
           return false;
@@ -321,19 +331,16 @@ bool FlarmBinCom::rcv( unsigned char* b)
 {
   *b = 0xff;
 
-  if (!m_Serial->read(b))
+  if( readChar(b) <= 0 )
     {
       // printf( "received %i bytesm char 0x %x\r\n", nb, *b);
       return false;
     }
-  /*
-   if( c == STARTFRAME)
-   return true;
-   */
+
   // printf( "r:0x%02x ", *b);
   if (*b == ESCAPE)
     {
-      if (!m_Serial->read(b))
+      if( readChar(b) <= 0 )
         {
           // printf( "Read failed\n");
           return false;
@@ -366,15 +373,16 @@ void  FlarmBinCom::send( unsigned char c)
     {
       // DWORD nb;
       case STARTFRAME:
-        m_Serial->write(ESCAPE);
-        m_Serial->write(ESC_START);
+        writeChar(ESCAPE);
+        writeChar(ESC_START);
         break;
       case ESCAPE:
-        m_Serial->write(ESCAPE);
-        m_Serial->write(ESC_ESC);
+        writeChar(ESCAPE);
+        writeChar(ESC_ESC);
         break;
       default:
-        m_Serial->write(c);
+        writeChar(c);
+        break;
      }
 }
 
@@ -403,75 +411,42 @@ int FlarmBinCom::writeChar(const unsigned char c)
 
 int FlarmBinCom::readChar(unsigned char* b)
 {
-  int done = 0;
+  // Check, if something available to read
+  int done = ioctl( m_Socket, FIONREAD, &done );
 
-  while( true )
+  if( done < 0 )
     {
-      done = read( m_Socket, b, sizeof(unsigned char) );
-
-      if( done < 0 )
-        {
-          if ( errno == EINTR )
-            {
-              continue; // Ignore interrupts
-            }
-
-          if( errno == EAGAIN || errno == EWOULDBLOCK )
-            {
-              // No data available, wait for a certain time for them.
-              int maxFds = getdtablesize();
-
-              while( true )
-                {
-                  fd_set readFds;
-                  FD_ZERO( &readFds );
-                  FD_SET( m_Socket, &readFds );
-
-                  struct timeval timerInterval;
-                  timerInterval.tv_sec  =  3;
-                  timerInterval.tv_usec =  0;
-
-                  done = select( maxFds, &readFds, (fd_set *) 0,
-                                 (fd_set *) 0, &timerInterval );
-
-                  if( done == -1 ) // Select returned with error
-                    {
-                      if( errno == EINTR )
-                        {
-                          continue; // interrupted select call, do it again
-                        }
-                      else
-                        {
-                          break;
-                        }
-                    }
-                  else if( done > 0 ) // read event occurred
-                    {
-                      // read one character
-                      done = read( m_Socket, b, sizeof(unsigned char) );
-                      break;
-                    }
-                  else if( done == 0 )
-                    {
-                      // timeout after 3 second.
-                      return -1;
-                    }
-
-                  break;
-                }
-            }
-        }
-
-      if( done == 0 ) // Nothing read, should normally not happen
-        {
-          qWarning() << "FlarmBinCom::readChar(): 0 bytes read!";
-          return -1;
-        }
-
-      break;
+      // Error
+      return done;
     }
 
-  return done;
+  if( done > 0 )
+    {
+      // we can read bytes and return
+      return read( m_Socket, b, sizeof(unsigned char) );
+    }
+
+  // No data available, wait for it until timeout
+  int maxFds = getdtablesize();
+
+  fd_set readFds;
+  FD_ZERO( &readFds );
+  FD_SET( m_Socket, &readFds );
+
+  struct timeval timerInterval;
+  timerInterval.tv_sec  =  3;
+  timerInterval.tv_usec =  0;
+
+  done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );
+
+  if( done <= 0 )
+    {
+      // done = -1 -> Error
+      // done = 0  -> Timeout
+      return done;
+    }
+
+  return read( m_Socket, b, sizeof(unsigned char) );
 }
 
 /**

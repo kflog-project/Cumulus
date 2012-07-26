@@ -34,6 +34,10 @@
 #include "protocol.h"
 #include "ipc.h"
 
+#ifdef FLARM
+#include "flarmbincom.h"
+#endif
+
 #ifdef BLUEZ
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
@@ -854,7 +858,6 @@ void GpsClient::readServerMsg()
         }
 
       // qDebug() << "GPS-Keys:" << gpsMessageFilter;
-
       writeServerMsg( MSG_POS );
     }
   else if( MSG_SHD == args[0] )
@@ -862,6 +865,15 @@ void GpsClient::readServerMsg()
       // Shutdown is requested by the server. This message will not be
       // acknowledged!
       setShutdownFlag(true);
+    }
+  else if( MSG_FLARM_FLIGHT_LIST_REQ == args[0] )
+    {
+      // Flarm flight list is requested
+      writeServerMsg( MSG_POS );
+
+#ifdef FLARM
+      getFlarmFlightList();
+#endif
     }
   else
     {
@@ -967,3 +979,77 @@ uint GpsClient::getBaudrate(int rate)
       return B4800;
     }
 }
+
+#ifdef FLARM
+
+void GpsClient::getFlarmFlightList()
+{
+  const char* pflax = "$PFLAX\r\n";
+
+  FlarmBinCom fbc( fd );
+
+  // Precondition is that the NMEA output of the Flarm device was disabled by
+  // the calling method before.
+  // Switch connection to binary mode.
+  if( write( fd, pflax, strlen(pflax)) <= 0 )
+    {
+      // Switch to binary mode failed
+      flarmFlightListError();
+      return;
+    }
+
+  if( fbc.ping() == false )
+    {
+      fbc.exit();
+      flarmFlightListError();
+      return;
+    }
+
+  // read out log records
+  int recNo = 0;
+  char buffer[MAXSIZE];
+  QStringList flights;
+
+  while( true )
+    {
+      if( fbc.selectRecord( recNo ) == true )
+        {
+          recNo++;
+
+          if( fbc.getRecordInfo( buffer ) )
+            {
+              flights << QString( buffer );
+            }
+          else
+            {
+              fbc.exit();
+              flarmFlightListError();
+              return;
+            }
+        }
+      else
+        {
+          // No more records available
+          break;
+        }
+    }
+
+  fbc.exit();
+
+  // Send back flight headers to application
+  QByteArray ba;
+  ba.append( MSG_FLARM_FLIGHT_LIST_RES );
+  ba.append( " " );
+  ba.append( flights.join("\n") );
+  writeForwardMsg( ba.data() );
+}
+
+void GpsClient::flarmFlightListError()
+{
+  QByteArray ba;
+  ba.append( MSG_FLARM_FLIGHT_LIST_RES );
+  ba.append( " Error" );
+  writeForwardMsg( ba.data() );
+}
+
+#endif

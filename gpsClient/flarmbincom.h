@@ -93,7 +93,12 @@ class FlarmBinCom
 {
  public:
 
-  FlarmBinCom(int s);
+  /**
+   * Contructor of class.
+   *
+   * \param socket Opened socket to Flarm device.
+   */
+  FlarmBinCom(int socket);
 
   ~FlarmBinCom();
 
@@ -134,8 +139,10 @@ class FlarmBinCom
 
   unsigned short computeCRC(Message* mMsg);
 
+  /** Socket to Flarm device. */
   int m_Socket;
-  unsigned short m_Seq;
+
+  static unsigned short m_Seq;
 
 };
 

@@ -175,6 +175,16 @@ public:
 
   void readSentenceFromBuffer();
 
+#ifdef FLARM
+
+  /** Gets the flight list from the Flarm device. */
+  void getFlarmFlightList();
+
+  /** Reports an error to the calling application. */
+  void flarmFlightListError();
+
+#endif
+
   //----------------------------------------------------------------------
   // Private data elements of Class
   //----------------------------------------------------------------------
@@ -240,6 +250,7 @@ public:
    * reporting.
    */
   QSet<QString> unknownsReported;
+
 };
 
 #endif
