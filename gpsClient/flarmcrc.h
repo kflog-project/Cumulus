@@ -23,13 +23,15 @@
 #define FLARM_CRC_H_
 
 /**
- * \class flarmCrc
+ * \class FlarmCrc
  *
  * \author Flarm, Axel Pauli
  *
  * \date 2012
  *
  * \brief Flarm CRC calculation formula.
+ *
+ * \version $Id$
  *
  */
 
