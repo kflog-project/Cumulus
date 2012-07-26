@@ -61,9 +61,23 @@ class PreFlightMiscPage : public QWidget
  private slots:
 
   /**
-   * When called, the flight logbook dialog is opened.
+   * Called to open the flight logbook dialog.
    */
   void slotOpenLogbook();
+
+#ifdef FLARM
+
+  /**
+   * Called to open the Flarm flight dialog.
+   */
+  void slotOpenFlarmFlights();
+
+  /**
+   * Called when configuration was updated.
+   */
+  void slotUpdateConfiguration( QStringList& list );
+
+#endif
 
  private:
 

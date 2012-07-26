@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2011 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 
 //------- Used by Command/Response channel -------//
 
-#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.4_Axel@kflog.org"
+#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.5_Axel@kflog.org"
 
 #define MSG_MAGIC      "\\Magic\\"
 
@@ -58,10 +58,16 @@
 // GPS message keys to be processed.
 #define MSG_GPS_KEYS   "\\Gps_Msg_Keys\\"
 
+// Flarm Flight list is requested
+#define MSG_FLARM_FLIGHT_LIST_REQ   "\\Flarm_Flight_List\\"
+
 //------- Used by Forward data channel -------//
 
 // GPS data message
-#define MSG_GPS_DATA  "\\Gps_Data\\"
+#define MSG_GPS_DATA  "#Gps_Data#"
+
+// Flarm flight list response
+#define MSG_FLARM_FLIGHT_LIST_RES  "#Flarm_Flight_List#"
 
 #define MSG_CON_OFF     "#GPS_Connection_off#"
 

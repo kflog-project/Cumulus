@@ -984,6 +984,7 @@ uint GpsClient::getBaudrate(int rate)
 
 void GpsClient::getFlarmFlightList()
 {
+  // Binary command for Flarm interface
   const char* pflax = "$PFLAX\r\n";
 
   FlarmBinCom fbc( fd );
@@ -1005,7 +1006,7 @@ void GpsClient::getFlarmFlightList()
       return;
     }
 
-  // read out log records
+  // read out flight header log records
   int recNo = 0;
   char buffer[MAXSIZE];
   QStringList flights;

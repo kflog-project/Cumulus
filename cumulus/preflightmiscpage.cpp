@@ -27,6 +27,11 @@
 #include "logbook.h"
 #include "varspinbox.h"
 
+#ifdef FLARM
+#include "flarm.h"
+#include "gpsnmea.h"
+#endif
+
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   QWidget(parent)
 {
@@ -116,6 +121,18 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   topLayout->addWidget(hspin, row, 1);
   row++;
 
+#ifdef FLARM
+
+  lbl = new QLabel(tr("Flarm flight book:"));
+  topLayout->addWidget(lbl, row, 0);
+  button = new QPushButton( tr("Open") );
+  topLayout->addWidget(button, row, 1 );
+  row++;
+
+  connect(button, SIGNAL(pressed()), SLOT(slotOpenFlarmFlights()));
+
+#endif
+
   topLayout->setRowStretch(row, 10);
 }
 
@@ -197,3 +214,27 @@ void PreFlightMiscPage::slotOpenLogbook()
   QWidget* lbw = new Logbook( this );
   lbw->setVisible( true );
 }
+
+#ifdef FLARM
+
+/**
+ * Called to open the Flarm flight dialog.
+ */
+void PreFlightMiscPage::slotOpenFlarmFlights()
+{
+  connect( Flarm::instance(), SIGNAL(flarmConfigurationInfo( QStringList&)),
+            SLOT(slotUpdateConfiguration( QStringList&)) );
+
+  // Switch off NMEA output of Flarm device.
+  GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,0" );
+}
+
+void PreFlightMiscPage::slotUpdateConfiguration( QStringList& list )
+{
+  if( list.size() >= 4 && list[1] == "A" && list[2] == "NMEAOUT" && list[3] == "0" )
+    {
+
+    }
+}
+
+#endif
