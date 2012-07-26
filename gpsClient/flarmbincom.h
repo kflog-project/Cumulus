@@ -117,17 +117,24 @@ class FlarmBinCom
    */
   bool getIGDData(char* sData, unsigned int* progress);
 
-  // sending / receiving
+  /** Sends a message to the Flarm. */
   bool sendMsg(Message* mMsg);
+
+  /** Receives a message from the Flarm. */
   bool rcvMsg(Message* mMsg);
 
  private:
 
-  bool rcv(unsigned char* b);
   void send(unsigned char c);
+  bool rcv(unsigned char* b);
+
+  // Low level port methods.
+  int writeChar(const unsigned char c);
+  int readChar(unsigned char* b);
+
   unsigned short computeCRC(Message* mMsg);
 
-  int m_Serial;
+  int m_Socket;
   unsigned short m_Seq;
 
 };

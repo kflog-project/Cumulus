@@ -19,14 +19,20 @@
 **
 ***********************************************************************/
 
+#include <errno.h>
+#include <unistd.h>
 #include <string.h>
-
+#include <fcntl.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
 #include "flarmcrc.h"
+
 #include "flarmbincom.h"
 
-FlarmBinCom::FlarmBinCom( int s) :
-  m_Serial(s),
-  m_Seq(0x3338)
+FlarmBinCom::FlarmBinCom( int socket) :
+  m_Socket(socket),
+  m_Seq(0x0)
 {
 }
 
@@ -38,7 +44,7 @@ FlarmBinCom::~FlarmBinCom()
 // commands
 //////////////////////////////////
 
-bool FlarmBinCom::ping( void)
+bool FlarmBinCom::ping()
 {
   Message m;
   m.hdr.type = FRAME_PING;
@@ -370,6 +376,102 @@ void  FlarmBinCom::send( unsigned char c)
       default:
         m_Serial->write(c);
      }
+}
+
+
+int FlarmBinCom::writeChar(const unsigned char c)
+{
+  int done = -1;
+
+  while(true)
+    {
+      done = write( m_Socket, &c, sizeof(c) );
+
+      if( done < 0 )
+        {
+          if ( errno == EINTR )
+            {
+              continue; // Ignore interrupts
+            }
+        }
+
+      break;
+    }
+
+  return done;
+}
+
+int FlarmBinCom::readChar(unsigned char* b)
+{
+  int done = 0;
+
+  while( true )
+    {
+      done = read( m_Socket, b, sizeof(unsigned char) );
+
+      if( done < 0 )
+        {
+          if ( errno == EINTR )
+            {
+              continue; // Ignore interrupts
+            }
+
+          if( errno == EAGAIN || errno == EWOULDBLOCK )
+            {
+              // No data available, wait for a certain time for them.
+              int maxFds = getdtablesize();
+
+              while( true )
+                {
+                  fd_set readFds;
+                  FD_ZERO( &readFds );
+                  FD_SET( m_Socket, &readFds );
+
+                  struct timeval timerInterval;
+                  timerInterval.tv_sec  =  3;
+                  timerInterval.tv_usec =  0;
+
+                  done = select( maxFds, &readFds, (fd_set *) 0,
+                                 (fd_set *) 0, &timerInterval );
+
+                  if( done == -1 ) // Select returned with error
+                    {
+                      if( errno == EINTR )
+                        {
+                          continue; // interrupted select call, do it again
+                        }
+                      else
+                        {
+                          break;
+                        }
+                    }
+                  else if( done > 0 ) // read event occurred
+                    {
+                      // read one character
+                      done = read( m_Socket, b, sizeof(unsigned char) );
+                      break;
+                    }
+                  else if( done == 0 )
+                    {
+                      // timeout after 3 second.
+                      return -1;
+                    }
+
+                  break;
+                }
+            }
+        }
+
+      if( done == 0 ) // Nothing read, should normally not happen
+        {
+          qWarning() << "FlarmBinCom::readChar(): 0 bytes read!";
+          return -1;
+        }
+
+      break;
+    }
+
+  return done;
 }
 
 /**
