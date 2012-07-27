@@ -106,9 +106,9 @@ class FlarmBinCom
 
   bool exit();
 
-  bool setBaudRate(int nSpeedKey);
+  bool setBaudRate( const int nSpeedKey );
 
-  bool selectRecord(int nRecord);
+  bool selectRecord(const int nRecord);
 
   /**
    * Copies the info string of the currently selected record
@@ -130,7 +130,7 @@ class FlarmBinCom
 
  private:
 
-  void send(unsigned char c);
+  void send(const unsigned char c);
   bool rcv(unsigned char* b);
 
   // Low level port methods.

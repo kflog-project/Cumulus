@@ -29,6 +29,7 @@
 
 #ifdef FLARM
 #include "flarm.h"
+#include "flarmlogbook.h"
 #include "gpsnmea.h"
 #endif
 
@@ -211,30 +212,19 @@ void PreFlightMiscPage::save()
 
 void PreFlightMiscPage::slotOpenLogbook()
 {
-  QWidget* lbw = new Logbook( this );
+  Logbook* lbw = new Logbook( this );
   lbw->setVisible( true );
 }
 
 #ifdef FLARM
 
 /**
- * Called to open the Flarm flight dialog.
+ * Called to open the Flarm flight download dialog.
  */
 void PreFlightMiscPage::slotOpenFlarmFlights()
 {
-  connect( Flarm::instance(), SIGNAL(flarmConfigurationInfo( QStringList&)),
-            SLOT(slotUpdateConfiguration( QStringList&)) );
-
-  // Switch off NMEA output of Flarm device.
-  GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,0" );
-}
-
-void PreFlightMiscPage::slotUpdateConfiguration( QStringList& list )
-{
-  if( list.size() >= 4 && list[1] == "A" && list[2] == "NMEAOUT" && list[3] == "0" )
-    {
-
-    }
+  FlarmLogbook* flb = new FlarmLogbook( this );
+  flb->setVisible( true );
 }
 
 #endif

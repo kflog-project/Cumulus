@@ -143,7 +143,19 @@ class GpsCon : public QObject
      */
     void sendGpsKeys();
 
-    signals:
+#ifdef FLARM
+
+    /** Requests a flight list from a Flarm device. */
+    bool getFlightListFromFlarm();
+
+    /** Requests the download of the passed flight indexes from the Flarm
+     * device.
+     */
+    bool downloadFlightsFromFlarm( QString& flightIndexes );
+
+#endif
+
+  signals:
     /**
      * This signal is send every time a new sentence has arrived.
      */
@@ -158,6 +170,21 @@ class GpsCon : public QObject
      * This signal is send, if the GPS connection has been established.
      */
     void gpsConnectionOn();
+
+    /**
+     * This signal is emitted, when a new Flarm flight list was received.
+     */
+    void newFlarmFlightList(const QString& list);
+
+    /**
+     * This signal is emitted, when a new Flarm flight download info was received.
+     */
+    void newFlarmFlightDownloadInfo(const QString& info);
+
+    /**
+     * This signal is emitted, when a new Flarm flight download progress was received.
+     */
+    void newFlarmFlightDownloadProgress(const int idx, const int progress);
 
  private:
 

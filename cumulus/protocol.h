@@ -61,13 +61,22 @@
 // Flarm Flight list is requested
 #define MSG_FLARM_FLIGHT_LIST_REQ   "\\Flarm_Flight_List\\"
 
+// Flarm Flight download is requested
+#define MSG_FLARM_FLIGHT_DOWNLOAD   "\\Flarm_Flight_Download\\"
+
 //------- Used by Forward data channel -------//
 
 // GPS data message
 #define MSG_GPS_DATA  "#Gps_Data#"
 
 // Flarm flight list response
-#define MSG_FLARM_FLIGHT_LIST_RES  "#Flarm_Flight_List#"
+#define MSG_FLARM_FLIGHT_LIST_RES  "#FFLR#"
+
+// Flarm flight download response, used to report results.
+#define MSG_FLARM_FLIGHT_DOWNLOAD_INFO  "#FFDI#"
+
+// Flarm flight download progress, used to report dowload progress.
+#define MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS  "#FFDP#"
 
 #define MSG_CON_OFF     "#GPS_Connection_off#"
 

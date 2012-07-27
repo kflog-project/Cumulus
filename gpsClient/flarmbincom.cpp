@@ -27,6 +27,8 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 
+#include <QtCore>
+
 #include "flarmcrc.h"
 #include "flarmbincom.h"
 
@@ -88,7 +90,7 @@ bool FlarmBinCom::exit()
   return true;
 }
 
-bool FlarmBinCom::setBaudRate( int nSpeedKey)
+bool FlarmBinCom::setBaudRate( const int nSpeedKey )
 {
   Message m;
   m.hdr.type = FRAME_SETBAUDRATE;
@@ -110,7 +112,7 @@ bool FlarmBinCom::setBaudRate( int nSpeedKey)
   return true;
 }
 
-bool FlarmBinCom::selectRecord( int nRecord)
+bool FlarmBinCom::selectRecord( const int nRecord )
 {
   Message m;
   m.hdr.type = FRAME_SELECTRECORD;
@@ -367,9 +369,9 @@ bool FlarmBinCom::rcv( unsigned char* b)
 }
 
 
-void  FlarmBinCom::send( unsigned char c)
+void  FlarmBinCom::send( const unsigned char c)
 {
-  switch (c)
+  switch( c )
     {
       // DWORD nb;
       case STARTFRAME:
@@ -452,7 +454,7 @@ int FlarmBinCom::readChar(unsigned char* b)
 /**
  * CRC computation. Length information in header must be correct!
  */
-unsigned short FlarmBinCom::computeCRC( Message * mMsg)
+unsigned short FlarmBinCom::computeCRC( Message* mMsg)
 {
   FlarmCrc mCrc;
 

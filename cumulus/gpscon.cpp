@@ -840,6 +840,31 @@ void GpsCon::getDataFromClient()
           emit gpsConnectionOn();
           qDebug(MSG_CON_ON);
         }
+      else if( MSG_FLARM_FLIGHT_LIST_RES )
+        {
+          // A Flarm flight list was received.
+          msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_LIST_RES) - 1);
+          emit newFlarmFlightList(msg);
+        }
+
+      else if( MSG_FLARM_FLIGHT_DOWNLOAD_INFO )
+         {
+           // A Flarm flight download info was received.
+           msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_DOWNLOAD_INFO) - 1);
+           emit newFlarmFlightDownloadInfo(msg);
+         }
+      else if( MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS )
+         {
+           // A Flarm flight list was received.
+           msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_LIST_RES) - 1);
+
+           QStringList args = msg.split(",");
+
+           if( args.size() == 2 )
+             {
+               emit newFlarmFlightDownloadProgress(args[0].toInt(), args[1].toInt() );
+             }
+         }
       else
         {
           qWarning() << "GpsCon::getDataFromClient(): Protocol Error!" << msg;
@@ -988,3 +1013,49 @@ void GpsCon::sendGpsKeys()
 #endif
     }
 }
+
+#ifdef FLARM
+
+bool GpsCon::getFlightListFromFlarm()
+{
+  QString method = "GPSCon::getFlightListFromFlarm():";
+  QString msg = MSG_FLARM_FLIGHT_LIST_REQ;
+
+  writeClientMessage( 0, msg.toAscii().data() );
+  readClientMessage( 0, msg );
+
+  if( msg == MSG_NEG )
+    {
+      qWarning() << method << msg << "failed!";
+      return false;
+    }
+
+#ifdef DEBUG
+   qDebug() << method << msg << "succeeded!";
+#endif
+
+  return true;
+}
+
+bool GpsCon::downloadFlightsFromFlarm( QString& flightIndexes )
+{
+  QString method = "GPSCon::downloadFlightsFromFlarm():";
+  QString msg = QString("%1 %2").arg(MSG_FLARM_FLIGHT_DOWNLOAD).arg(flightIndexes);
+
+  writeClientMessage( 0, msg.toAscii().data() );
+  readClientMessage( 0, msg );
+
+  if( msg == MSG_NEG )
+    {
+      qWarning() << method << msg << "failed!";
+      return false;
+    }
+
+#ifdef DEBUG
+   qDebug() << method << msg << "succeeded!";
+#endif
+
+  return true;
+}
+
+#endif

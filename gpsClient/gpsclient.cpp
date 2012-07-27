@@ -875,6 +875,15 @@ void GpsClient::readServerMsg()
       getFlarmFlightList();
 #endif
     }
+ else if( MSG_FLARM_FLIGHT_DOWNLOAD == args[0] && args.count() == 2 )
+   {
+     // Flarm flight download is requested
+     writeServerMsg( MSG_POS );
+
+#ifdef FLARM
+     downloadFlarmFlightList(args[1]);
+#endif
+   }
   else
     {
       qWarning() << method << "Unknown message received:" << qbuf;
@@ -990,15 +999,17 @@ void GpsClient::getFlarmFlightList()
   FlarmBinCom fbc( fd );
 
   // Precondition is that the NMEA output of the Flarm device was disabled by
-  // the calling method before.
+  // the calling method before!
+
   // Switch connection to binary mode.
-  if( write( fd, pflax, strlen(pflax)) <= 0 )
+  if( write( fd, pflax, strlen(pflax) ) <= 0 )
     {
       // Switch to binary mode failed
       flarmFlightListError();
       return;
     }
 
+  // Check connection
   if( fbc.ping() == false )
     {
       fbc.exit();
@@ -1006,7 +1017,7 @@ void GpsClient::getFlarmFlightList()
       return;
     }
 
-  // read out flight header log records
+  // read out flight header records
   int recNo = 0;
   char buffer[MAXSIZE];
   QStringList flights;
@@ -1035,13 +1046,23 @@ void GpsClient::getFlarmFlightList()
         }
     }
 
+  // Switch back connection to text mode.
   fbc.exit();
 
   // Send back flight headers to application
   QByteArray ba;
   ba.append( MSG_FLARM_FLIGHT_LIST_RES );
   ba.append( " " );
-  ba.append( flights.join("\n") );
+
+  if( flights.size() )
+    {
+      ba.append( flights.join("\n") );
+    }
+  else
+    {
+      ba.append( " Empty" );
+    }
+
   writeForwardMsg( ba.data() );
 }
 
@@ -1051,6 +1072,57 @@ void GpsClient::flarmFlightListError()
   ba.append( MSG_FLARM_FLIGHT_LIST_RES );
   ba.append( " Error" );
   writeForwardMsg( ba.data() );
+}
+
+void GpsClient::downloadFlarmFlightList(QString& indexes)
+{
+  QStringList idxList = indexes.split(",");
+
+  if( idxList.size() == 0 )
+    {
+      return;
+    }
+
+  // Binary command for Flarm interface
+  const char* pflax = "$PFLAX\r\n";
+
+  FlarmBinCom fbc( fd );
+
+  // Precondition is that the NMEA output of the Flarm device was disabled by
+  // the calling method before!
+
+  // Switch connection to binary mode.
+  if( write( fd, pflax, strlen(pflax) ) <= 0 )
+    {
+      // Switch to binary mode failed
+      flarmFlightListError();
+      return;
+    }
+
+  // Check connection
+  if( fbc.ping() == false )
+    {
+      fbc.exit();
+      flarmFlightListError();
+      return;
+    }
+}
+
+void GpsClient::flarmFlightDowloadInfo( QString& info )
+{
+  QString msg = QString("%1 %2").arg(MSG_FLARM_FLIGHT_DOWNLOAD_INFO).arg(info);
+
+  writeForwardMsg( msg.toAscii().data() );
+}
+
+/** Reports the flight download progress to the calling application. */
+void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
+{
+  QString msg = QString("%1 %2,%3").arg(MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS)
+                                   .arg(idx)
+                                   .arg(progress);
+
+  writeForwardMsg( msg.toAscii().data() );
 }
 
 #endif

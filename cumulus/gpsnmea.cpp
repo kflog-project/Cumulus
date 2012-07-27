@@ -249,6 +249,18 @@ void GpsNmea::createGpsConnection()
   connect (gpsObject, SIGNAL(newSentence(const QString&)),
            this, SIGNAL(newSentence(const QString&)) );
 
+  // Broadcasts that a new Flarm flight list is available
+  connect (gpsObject, SIGNAL(newFlarmFlightList(const QString&)),
+           this, SIGNAL(newFlarmFlightList(const QString&)) );
+
+  // Broadcasts that a new Flarm flight download info is available
+  connect (gpsObject, SIGNAL(newFlarmFlightDownloadInfo(const QString&)),
+           this, SIGNAL( newFlarmFlightDownloadInfo(const QString&)) );
+
+  // Broadcasts that a new Flarm flight download progress is available
+  connect (gpsObject, SIGNAL(newFlarmFlightDownloadProgress(const int, const int)),
+           this, SIGNAL(newFlarmFlightDownloadProgress(const int, const int)) );
+
   // The connection to the GPS receiver or daemon has been lost
   connect (gpsObject, SIGNAL(gpsConnectionOff()),
            this, SLOT( _slotGpsConnectionOff()) );
@@ -256,6 +268,10 @@ void GpsNmea::createGpsConnection()
   // The connection to the GPS receiver or daemon has been established
   connect (gpsObject, SIGNAL(gpsConnectionOn()),
            this, SLOT( _slotGpsConnectionOn()) );
+
+  connect (gpsObject, SIGNAL(gpsConnectionOn()),
+           this, SLOT( _slotGpsConnectionOn()) );
+
 #endif
 }
 
@@ -2116,6 +2132,51 @@ bool GpsNmea::sendSentence(const QString command)
 
 #endif
 }
+
+#ifdef FLARM
+
+/** Requests a flight list from a Flarm device. */
+bool GpsNmea::getFlightListFromFlarm()
+{
+#ifndef ANDROID
+
+  if( serial )
+    {
+      // No GPS data available, if flights are downlaoded from Flarm
+      timeOutFix->stop();
+
+      // Only a serial can request a Flarm fight list.
+      return serial->getFlightListFromFlarm();
+    }
+
+#endif
+
+  return false;
+}
+
+/** Requests the download of the passed flight indexes from the Flarm
+ * device.
+ */
+bool GpsNmea::downloadFlightsFromFlarm( QString& flightIndexes )
+{
+#ifndef ANDROID
+
+  if( serial )
+    {
+      // No GPS data available, if flights are downloaded from Flarm
+      timeOutFix->stop();
+
+      /// Only a serial can request a Flarm file download.
+      return serial->downloadFlightsFromFlarm( flightIndexes );
+    }
+
+#endif
+
+  return false;
+}
+
+#endif // FLARM
+
 
 #if 0
 /** This slot is called to reset the gps device to factory settings */

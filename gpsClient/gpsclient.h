@@ -183,6 +183,18 @@ public:
   /** Reports an error to the calling application. */
   void flarmFlightListError();
 
+  /**
+   * Downloads the requested flights. The list can contain one or more
+   * flight numbers.
+   */
+  void downloadFlarmFlightList( QString& flightNo );
+
+  /** Reports an info to the calling application. */
+  void flarmFlightDowloadInfo( QString& info );
+
+  /** Reports the download progress to the calling application. */
+  void flarmFlightDowloadProgress( const int idx, const int progress );
+
 #endif
 
   //----------------------------------------------------------------------

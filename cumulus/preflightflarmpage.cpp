@@ -575,7 +575,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   if( status.valid != true )
     {
-      QString text0 = tr("No connection to the Flarm device!");
+      QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
 
@@ -707,7 +707,7 @@ void PreFlightFlarmPage::slotTimeout()
 
   // Note, this method is also called in case on no timeout to enable the
   // buttons and to restore the cursor. Therefore a running timer must be
-  // stooped too.
+  // stopped too.
   if( m_timer->isActive() )
     {
       m_timer->stop();

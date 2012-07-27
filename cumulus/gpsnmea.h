@@ -382,6 +382,18 @@ class GpsNmea : public QObject
       */
     bool sendSentence(const QString command);
 
+#ifdef FLARM
+
+    /** Requests a flight list from a Flarm device. */
+    bool getFlightListFromFlarm();
+
+    /** Requests the download of the passed flight indexes from the Flarm
+     * device.
+     */
+    bool downloadFlightsFromFlarm( QString& flightIndexes );
+
+#endif
+
     /**
      * Puts all desired GPS message keys into the passed hash. This method is
      * thread safe.
@@ -391,6 +403,7 @@ class GpsNmea : public QObject
     static void getGpsMessageKeys( QHash<QString, short>& gpsKeys );
 
   public slots: // Public slots
+
     /**
      * This slot is called by the GpsCon object when a new
      * sentence has arrived on the serial port. The argument
@@ -543,15 +556,26 @@ class GpsNmea : public QObject
      */
     void newSentence(const QString&);
 
-#ifdef FLARM
-
     /**
      * This signal is send to indicate that the number of received
      * Flarms has been changed.
      */
     void newFlarmCount( int newCount );
 
-#endif
+    /**
+     * This signal is emitted, when a new Flarm flight list was received.
+     */
+    void newFlarmFlightList(const QString& list);
+
+    /**
+     * This signal is emitted, when a new Flarm flight download info was received.
+     */
+    void newFlarmFlightDownloadInfo(const QString& info);
+
+    /**
+     * This signal is emitted, when a new Flarm flight download progress was received.
+     */
+    void newFlarmFlightDownloadProgress(const int idx, const int progress);
 
   private:
 

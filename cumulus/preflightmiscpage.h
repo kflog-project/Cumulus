@@ -68,14 +68,9 @@ class PreFlightMiscPage : public QWidget
 #ifdef FLARM
 
   /**
-   * Called to open the Flarm flight dialog.
+   * Called to open the Flarm download flight dialog.
    */
   void slotOpenFlarmFlights();
-
-  /**
-   * Called when configuration was updated.
-   */
-  void slotUpdateConfiguration( QStringList& list );
 
 #endif
 
