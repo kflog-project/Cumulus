@@ -25,13 +25,13 @@
 /**
  * \class FlarmBinCom
  *
- * \author Flarm, Axel Pauli
+ * \author Flarm Technology GmbH, Axel Pauli
  *
  * \date 2012
  *
  * \brief Flarm binary communication interface.
  *
- *  \version $Id$
+ * \version $Id$
  *
  */
 
@@ -53,7 +53,7 @@
 // Telegram IDs
 #define FRAME_PING          0x01
 #define FRAME_SETBAUDRATE   0x02
-#define FRAME_SETLEDS           0x03
+#define FRAME_SETLEDS       0x03
 #define FRAME_FLASHUPLOAD   0x10
 #define FRAME_EXIT          0x12
 
@@ -88,6 +88,7 @@ typedef struct {
   unsigned char data[MAXSIZE];
 } Message;
 
+class QString;
 
 class FlarmBinCom
 {
@@ -102,12 +103,21 @@ class FlarmBinCom
 
   ~FlarmBinCom();
 
+  /**
+   * Checks the connection.
+   */
   bool ping();
 
+  /**
+   * Resets the Flarm device back to the text-based protocol.
+   */
   bool exit();
 
   bool setBaudRate( const int nSpeedKey );
 
+  /**
+   * Selects the flight record to be read as next.
+   */
   bool selectRecord(const int nRecord);
 
   /**
@@ -119,8 +129,16 @@ class FlarmBinCom
   /**
    * Returns a chunk of the IGC file.
    * String is null terminated, sData must at least hold 600 bytes.
+   *
+   * \param sData character array for IGC chunk.
+   *
+   * \param progress Download progress in percent.
+   *
+   * \return true if data available otherwise false.
    */
   bool getIGDData(char* sData, unsigned int* progress);
+
+ private:
 
   /** Sends a message to the Flarm. */
   bool sendMsg(Message* mMsg);
@@ -128,22 +146,28 @@ class FlarmBinCom
   /** Receives a message from the Flarm. */
   bool rcvMsg(Message* mMsg);
 
- private:
-
+  /** Sends a character in escape mode.*/
   void send(const unsigned char c);
+
+  /** Gets a character in escape mode.*/
   bool rcv(unsigned char* b);
 
-  // Low level port methods.
+  /** Low level write character port method. */
   int writeChar(const unsigned char c);
+
+  /** Low level read character port method. */
   int readChar(unsigned char* b);
 
+  /** Calculates the CRC checksum according too the XMODEM algorithm. */
   unsigned short computeCRC(Message* mMsg);
+
+  /** Dumps the passed data array as hex string. */
+  QString dumpHex( const uchar* data, int length );
 
   /** Socket to Flarm device. */
   int m_Socket;
 
   static unsigned short m_Seq;
-
 };
 
 #endif /* FLARM_BIN_COM_H_ */

@@ -25,7 +25,7 @@
 /**
  * \class FlarmCrc
  *
- * \author Flarm, Axel Pauli
+ * \author Flarm Technology GmbH, Axel Pauli
  *
  * \date 2012
  *

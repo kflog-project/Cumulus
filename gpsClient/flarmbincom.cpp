@@ -27,12 +27,15 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 
-#include <QtCore>
+#include <QtGui>
 
 #include "flarmcrc.h"
 #include "flarmbincom.h"
 
-unsigned short FlarmBinCom::m_Seq = 0;
+unsigned short FlarmBinCom::m_Seq = 0x1;
+
+// Enable DEBUG_RS to dump out the messages on the interface in hex format
+// DEFINE DEBUG_SR 1
 
 FlarmBinCom::FlarmBinCom( int socket) :
   m_Socket(socket)
@@ -57,12 +60,23 @@ bool FlarmBinCom::ping()
 
   if(rcvMsg(&m) == false)
     {
+      qDebug() << "rcvMsg Error rcvMsg";
       return false;
     }
 
   if (m.hdr.type != FRAME_ACK)
     {
-      // printf( "Nack \r\n");
+      // printf( "\nPing NAck\n");
+      qDebug() << "Ping NAck";
+      return false;
+    }
+
+  if( m.data[0] != (m_Seq & 0xff) && m.data[1] != (m_Seq >> 8) )
+    {
+      qDebug("m.data[0]=%d m.data[1]=%d m_Seq[0]=%d m_Seq[1]=%d",
+               m.data[0], m.data[1], m_Seq & 0xff, (m_Seq >> 8) );
+
+      qDebug() << "Ping answer SeqNo wrong!";
       return false;
     }
 
@@ -185,7 +199,10 @@ bool FlarmBinCom::getIGDData( char* sData, unsigned int* progress)
 
   if (m.hdr.type == FRAME_NACK)
     {
-      // finished, closing record
+      // @AP Note: A NACK means not the end of the transmission. It seems that
+      // a Nack is also returned to a request, if no data are available at the
+      // moment. The right end of the transmission is reached, if the last
+      // character of a record is EOF (0x1A).
       sData[0] = 0;
       return true;
     }
@@ -196,17 +213,10 @@ bool FlarmBinCom::getIGDData( char* sData, unsigned int* progress)
 
   // progress
   *progress = (int) m.data[2];
-  char* igcdata = (char*) &(m.data[3]); // skip first two bytes (sequence number) and progress
-  int dataSize = m.hdr.length - 3 - HDR_LENGTH;
 
-  /* copy over
-  void *_memccpy(
-     void *dest,
-     const void *src,
-     int c,
-     size_t count
-   ); */
-  // _memccpy(sData, igcdata, 0, dataSize);
+  // skip first two bytes (sequence number) and progress
+  char* igcdata = (char*) &(m.data[3]);
+  int dataSize = m.hdr.length - 3 - HDR_LENGTH;
 
   memccpy(sData, igcdata, 0, dataSize);
   // ensure null termination
@@ -247,6 +257,14 @@ bool FlarmBinCom::sendMsg( Message* mMsg)
   header[6] = crc & 0xff; //mCrc.getCRC() & 0xff;
   header[7] = crc >> 8; // mCrc.getCRC() >> 8;
 
+#ifdef DEBUG_SR
+  QString dump = dumpHex( (const uchar*) "s", 1) +
+                 dumpHex( header, HDR_LENGTH) +
+                 dumpHex( mMsg->data, mMsg->hdr.length - HDR_LENGTH);
+
+  qDebug() << "S:" << dump;
+#endif
+
   // send the stuff
   writeChar(STARTFRAME);
 
@@ -273,10 +291,10 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
    */
   do
     {
-      // printf( "Waiting for startframe\n");
+      // printf( "Waiting for start frame\n");
       if( readChar(&ch) <= 0 )
         {
-          // printf( "No StartFrame\n");
+          // printf( "No start frame\n");
           return false;
         }
     }
@@ -315,6 +333,14 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
           return false;
         }
     }
+
+#ifdef DEBUG_SR
+  QString dump = dumpHex( (const uchar*) "s", 1) +
+                 dumpHex( hdr, HDR_LENGTH) +
+                 dumpHex( mMsg->data, mMsg->hdr.length - HDR_LENGTH);
+
+  qDebug() << "R:" << dump;
+#endif
 
   // check crc
   unsigned short crc = computeCRC(mMsg);
@@ -393,6 +419,8 @@ int FlarmBinCom::writeChar(const unsigned char c)
 {
   int done = -1;
 
+  // qDebug("%02X ", c);
+
   while(true)
     {
       done = write( m_Socket, &c, sizeof(c) );
@@ -403,6 +431,8 @@ int FlarmBinCom::writeChar(const unsigned char c)
             {
               continue; // Ignore interrupts
             }
+
+          qDebug() << "writeChar Error";
         }
 
       break;
@@ -413,19 +443,20 @@ int FlarmBinCom::writeChar(const unsigned char c)
 
 int FlarmBinCom::readChar(unsigned char* b)
 {
-  // Check, if something available to read
-  int done = ioctl( m_Socket, FIONREAD, &done );
-
-  if( done < 0 )
-    {
-      // Error
-      return done;
-    }
+  // Note, non blocking IO is set on the socket.
+  int done = read( m_Socket, b, sizeof(unsigned char) );
 
   if( done > 0 )
     {
-      // we can read bytes and return
-      return read( m_Socket, b, sizeof(unsigned char) );
+      // qDebug("%02X ", *b);
+      return true;
+    }
+
+  if( done == 0 || (done == -1 && errno != EWOULDBLOCK) )
+    {
+      // Error
+      qDebug() << "readCharErr" << errno << strerror(errno);
+      return false;
     }
 
   // No data available, wait for it until timeout
@@ -441,14 +472,24 @@ int FlarmBinCom::readChar(unsigned char* b)
 
   done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );
 
-  if( done <= 0 )
+  if( done == 0 )
     {
-      // done = -1 -> Error
+      qDebug() << "select() returns with timeout";
       // done = 0  -> Timeout
       return done;
     }
 
-  return read( m_Socket, b, sizeof(unsigned char) );
+  if( done < 0 )
+    {
+      qDebug() << "select() returns errno" << errno << strerror(errno);
+      // done = -1 -> Error
+      return done;
+    }
+
+  done = read( m_Socket, b, sizeof(unsigned char) );
+
+  // qDebug("%02X ", *b);
+  return done;
 }
 
 /**
@@ -473,4 +514,17 @@ unsigned short FlarmBinCom::computeCRC( Message* mMsg)
     }
 
   return mCrc.getCRC();
+}
+
+QString FlarmBinCom::dumpHex( const uchar* data, int length )
+{
+  QString out;
+
+  for( int i = 0; i < length; i++ )
+    {
+      ushort byte = data[i];
+      out += QString("%1 ").arg( byte, 2, 16, QChar('0'));
+    }
+
+  return out;
 }
