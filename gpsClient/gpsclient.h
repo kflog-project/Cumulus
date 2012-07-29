@@ -184,16 +184,29 @@ public:
   void flarmFlightListError();
 
   /**
-   * Downloads the requested flights. The list can contain one or more
-   * flight numbers.
+   * Downloads the requested flights. The args string contains the destination
+   * directory and one or more flight numbers. The single elements are separated
+   * by vertical tabs.
    */
-  void downloadFlarmFlightList( QString& flightNo );
+  void downloadFlarmFlightList( QString& args );
 
   /** Reports an info to the calling application. */
-  void flarmFlightDowloadInfo( QString& info );
+  void flarmFlightDowloadInfo( QString info );
 
   /** Reports the download progress to the calling application. */
   void flarmFlightDowloadProgress( const int idx, const int progress );
+
+  /**
+   * Switches the Flarm device into the binary mode.
+   *
+   * \return True on success otherwise false.
+   */
+  bool FlarmBinMode();
+
+  /**
+   * Resets the Farm device. Should be called only if Flarm is in binary mode.
+   */
+  bool flarmReset();
 
 #endif
 
@@ -262,6 +275,9 @@ public:
    * reporting.
    */
   QSet<QString> unknownsReported;
+
+  /** activate flag for flarm */
+  bool initFlarm;
 
 };
 

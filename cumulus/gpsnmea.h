@@ -387,10 +387,16 @@ class GpsNmea : public QObject
     /** Requests a flight list from a Flarm device. */
     bool getFlightListFromFlarm();
 
-    /** Requests the download of the passed flight indexes from the Flarm
+    /**
+     * Requests the download of the passed flight indexes from the Flarm
      * device.
      */
     bool downloadFlightsFromFlarm( QString& flightIndexes );
+
+    /**
+     * Requests to reset the Flarm device.
+     */
+    bool resetFlarm();
 
 #endif
 

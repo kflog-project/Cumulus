@@ -72,6 +72,7 @@ GpsClient::GpsClient( const ushort portIn )
   datapointer      = databuffer;
   dbsize           = 0;
   badSentences     = 0;
+  initFlarm        = false;
 
   // establish a connection to the server
   if( ipcPort )
@@ -424,7 +425,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
       newtio.c_iflag = IGNCR; // no cr
 
-      newtio.c_oflag = ONLCR; // map nl to cr-nl
+      // newtio.c_oflag = ONLCR; // map nl to cr-nl
 
       // raw input without any echo
       newtio.c_lflag = ~(ICANON | ECHO | ECHOE | ISIG );
@@ -669,7 +670,31 @@ uchar GpsClient::calcCheckSum( const char *sentence )
 void GpsClient::toController()
 {
   // Null time is used to switch off the timeout control.
-  if( last.isNull() == false && last.elapsed() > TO_CONLOST )
+  if( last.isNull() )
+    {
+      return;
+    }
+
+#ifdef FLARM
+
+  if( initFlarm )
+    {
+      if( last.elapsed() > 30000  )
+        {
+          // Enable NMEA output of Flarm after 30s after reset.
+          initFlarm = false;
+          writeGpsData("$PFLAC,S,NMEAOUT,1");
+
+          // set next retry time point
+          last.start();
+        }
+
+      return;
+    }
+
+#endif
+
+  if( last.elapsed() > TO_CONLOST )
     {
       if( connectionLost == false )
         {
@@ -866,24 +891,30 @@ void GpsClient::readServerMsg()
       // acknowledged!
       setShutdownFlag(true);
     }
+
+#ifdef FLARM
+
   else if( MSG_FLARM_FLIGHT_LIST_REQ == args[0] )
     {
       // Flarm flight list is requested
       writeServerMsg( MSG_POS );
-
-#ifdef FLARM
       getFlarmFlightList();
-#endif
     }
  else if( MSG_FLARM_FLIGHT_DOWNLOAD == args[0] && args.count() == 2 )
    {
      // Flarm flight download is requested
      writeServerMsg( MSG_POS );
-
-#ifdef FLARM
      downloadFlarmFlightList(args[1]);
-#endif
    }
+ else if( MSG_FLARM_RESET == args[0] )
+   {
+     // Flarm reset is requested
+     writeServerMsg( MSG_POS );
+     flarmReset();
+   }
+
+#endif
+
   else
     {
       qWarning() << method << "Unknown message received:" << qbuf;
@@ -936,7 +967,7 @@ void GpsClient::writeForwardMsg( const char *msg )
 
   if( done < 0 )
     {
-      if( errno == EAGAIN || errno == EWOULDBLOCK )
+      if( errno == EWOULDBLOCK )
         {
           // The write call would block because the transfer queue is full.
           // In this case we discard the message.
@@ -991,28 +1022,61 @@ uint GpsClient::getBaudrate(int rate)
 
 #ifdef FLARM
 
-void GpsClient::getFlarmFlightList()
+bool GpsClient::FlarmBinMode()
 {
-  // Binary command for Flarm interface
-  const char* pflax = "$PFLAX\r\n";
+  // Binary switch command for Flarm interface
+  const char* pflax = "$PFLAX\n";
 
   FlarmBinCom fbc( fd );
 
   // Precondition is that the NMEA output of the Flarm device was disabled by
   // the calling method before!
 
-  // Switch connection to binary mode.
-  if( write( fd, pflax, strlen(pflax) ) <= 0 )
+  qDebug() << "Switch Flarm to binary mode";
+
+  // I made the experience, that the Flarm device did not answer to the first
+  // binary transfer switch. Therefore I make several tries. Flarm tool makes
+  // the same, as I could observe with a RS232 port sniffer.
+  bool pingOk = false;
+  int loop = 5;
+
+  while( loop-- )
     {
-      // Switch to binary mode failed
-      flarmFlightListError();
-      return;
+      // Switch connection to binary mode.
+      if( write( fd, pflax, strlen(pflax) ) <= 0 )
+        {
+          // write failed
+          return false;
+        }
+
+      // qDebug() << "Send Ping";
+
+      // Check connection with a ping command.
+      if( fbc.ping() == true )
+        {
+          pingOk = true;
+          break;
+        }
     }
 
-  // Check connection
-  if( fbc.ping() == false )
+  if( pingOk == false )
     {
-      fbc.exit();
+      // Switch to binary mode failed
+      qWarning() << "Could not switch to binary mode!";
+    }
+
+  return pingOk;
+}
+
+void GpsClient::getFlarmFlightList()
+{
+  // Swich off timeout control
+  last = QTime();
+
+  FlarmBinCom fbc( fd );
+
+  if( FlarmBinMode() == false )
+    {
       flarmFlightListError();
       return;
     }
@@ -1034,9 +1098,9 @@ void GpsClient::getFlarmFlightList()
             }
           else
             {
-              fbc.exit();
-              flarmFlightListError();
-              return;
+              // Entry not available, although select answered positive!
+              // Not conform to the specification.
+              break;
             }
         }
       else
@@ -1045,9 +1109,6 @@ void GpsClient::getFlarmFlightList()
           break;
         }
     }
-
-  // Switch back connection to text mode.
-  fbc.exit();
 
   // Send back flight headers to application
   QByteArray ba;
@@ -1072,43 +1133,114 @@ void GpsClient::flarmFlightListError()
   ba.append( MSG_FLARM_FLIGHT_LIST_RES );
   ba.append( " Error" );
   writeForwardMsg( ba.data() );
+
+  // qDebug() << ba;
 }
 
-void GpsClient::downloadFlarmFlightList(QString& indexes)
+void GpsClient::downloadFlarmFlightList(QString& args)
 {
-  QStringList idxList = indexes.split(",");
+  // The argument string contains at the first position the destination directory
+  // for the files and then the indexes of the flights separated by vertical tabs.
+  QStringList idxList = args.split("\v");
 
-  if( idxList.size() == 0 )
+  if( idxList.size() < 2 )
     {
       return;
     }
 
-  // Binary command for Flarm interface
-  const char* pflax = "$PFLAX\r\n";
+  // Switch off timeout control
+  last = QTime();
 
   FlarmBinCom fbc( fd );
 
-  // Precondition is that the NMEA output of the Flarm device was disabled by
-  // the calling method before!
-
-  // Switch connection to binary mode.
-  if( write( fd, pflax, strlen(pflax) ) <= 0 )
+  if( FlarmBinMode() == false )
     {
-      // Switch to binary mode failed
-      flarmFlightListError();
+      flarmFlightDowloadInfo( "Error" );
       return;
     }
 
-  // Check connection
-  if( fbc.ping() == false )
+  // read out flights
+  char buffer[MAXSIZE];
+  uint progress = 0;
+
+  // Check, if the download directory exists. Here we take the directory element
+  // from the list.
+  QDir igcDir( idxList.takeFirst() );
+
+  if( igcDir.exists() == false )
     {
-      fbc.exit();
-      flarmFlightListError();
-      return;
+      igcDir.mkpath( igcDir.absolutePath() );
     }
+
+  // TODO Prüfen, ob noch genügend Platz auf der Disk ist! Sollte die rufende routine machen!
+
+  for( int idx = 0; idx < idxList.size(); idx++ )
+    {
+      // Select the flight to be downloaded
+      int recNo = idxList.at(idx).toInt();
+      QStringList flightData;
+
+      if( fbc.selectRecord(recNo ) == true )
+        {
+          // read flight header data
+          if( fbc.getRecordInfo( buffer ) )
+            {
+              flightData = QString( buffer ).split("|");
+            }
+          else
+            {
+              // Entry not available, although select answered positive!
+              // Not conform to the specification.
+              flarmFlightDowloadInfo( "Error" );
+              return;
+            }
+
+          // Open an IGC file for writing download data.
+          QFile f( igcDir.absolutePath() + "/" + flightData.at(0) );
+
+          if( ! f.open( QIODevice::WriteOnly ) )
+            {
+              // could not open file ...
+              qWarning() << "Cannot open file: " << f.fileName();
+              flarmFlightDowloadInfo( "Error open file" );
+              return;
+            }
+
+          uint lastProgress = -1;
+          bool eof = false;
+
+          while( fbc.getIGDData(buffer, &progress) )
+            {
+              if( lastProgress != progress )
+                {
+                  // That eliminates a lot of intermediate steps
+                  flarmFlightDowloadProgress(recNo, progress);
+                  lastProgress = progress;
+                }
+
+              if( buffer[strlen(buffer) - 1] == 0x1A )
+                {
+                  // EOF was send by the Flarm, remove it from the stream.
+                   buffer[strlen(buffer) - 1] = '\0';
+                   eof = true;
+                 }
+
+              f.write(buffer);
+
+              if( eof )
+                {
+                  break;
+                }
+            }
+
+          f.close();
+        }
+     }
+
+  flarmFlightDowloadInfo( "Finished" );
 }
 
-void GpsClient::flarmFlightDowloadInfo( QString& info )
+void GpsClient::flarmFlightDowloadInfo( QString info )
 {
   QString msg = QString("%1 %2").arg(MSG_FLARM_FLIGHT_DOWNLOAD_INFO).arg(info);
 
@@ -1123,6 +1255,25 @@ void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
                                    .arg(progress);
 
   writeForwardMsg( msg.toAscii().data() );
+}
+
+bool GpsClient::flarmReset()
+{
+  // Swich off timeout control
+  last = QTime();
+
+  if( ! FlarmBinMode() )
+    {
+      last.currentTime();
+      qWarning() << "resetFlarm(): switch2binMode failed!";
+      return false;
+    }
+
+  FlarmBinCom fbc( fd );
+  bool res = fbc.exit();
+  initFlarm = true;
+  last.currentTime();
+  return res;
 }
 
 #endif

@@ -153,6 +153,11 @@ class GpsCon : public QObject
      */
     bool downloadFlightsFromFlarm( QString& flightIndexes );
 
+    /**
+     * Requests to reset the Flarm device.
+     */
+    bool resetFlarm();
+
 #endif
 
   signals:

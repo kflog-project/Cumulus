@@ -2142,7 +2142,8 @@ bool GpsNmea::getFlightListFromFlarm()
 
   if( serial )
     {
-      // No GPS data available, if flights are downlaoded from Flarm
+      // No GPS data are available, if flights are downloaded from Flarm.
+      // The timer must be stopped to prevent TO actions.
       timeOutFix->stop();
 
       // Only a serial can request a Flarm fight list.
@@ -2163,7 +2164,8 @@ bool GpsNmea::downloadFlightsFromFlarm( QString& flightIndexes )
 
   if( serial )
     {
-      // No GPS data available, if flights are downloaded from Flarm
+      // No GPS data are available, if flights are downloaded from Flarm.
+      // The timer must be stopped to prevent TO actions.
       timeOutFix->stop();
 
       /// Only a serial can request a Flarm file download.
@@ -2173,6 +2175,27 @@ bool GpsNmea::downloadFlightsFromFlarm( QString& flightIndexes )
 #endif
 
   return false;
+}
+
+
+bool GpsNmea::resetFlarm()
+{
+#ifndef ANDROID
+
+  if( serial )
+    {
+      // No GPS data are available, if flights are downloaded from Flarm.
+      // The timer must be stopped to prevent TO actions.
+      timeOutFix->stop();
+
+      /// Only a serial can request a Flarm reset.
+      return serial->resetFlarm();
+    }
+
+#endif
+
+  return false;
+
 }
 
 #endif // FLARM

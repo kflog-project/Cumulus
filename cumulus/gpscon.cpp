@@ -1058,4 +1058,28 @@ bool GpsCon::downloadFlightsFromFlarm( QString& flightIndexes )
   return true;
 }
 
+/**
+ * Requests to reset the Flarm device.
+ */
+bool GpsCon::resetFlarm()
+{
+  QString method = "GPSCon::resetFlarm():";
+  QString msg;
+
+  writeClientMessage( 0, MSG_FLARM_RESET );
+  readClientMessage( 0, msg );
+
+  if( msg == MSG_NEG )
+    {
+      qWarning() << method << msg << "failed!";
+      return false;
+    }
+
+#ifdef DEBUG
+   qDebug() << method << msg << "succeeded!";
+#endif
+
+  return true;
+}
+
 #endif
