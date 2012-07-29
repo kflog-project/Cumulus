@@ -33,7 +33,7 @@
 
 #define MSG_MAGIC      "\\Magic\\"
 
-#define MSG_POS	       "\\Positive\\"
+#define MSG_POS	"\\Positive\\"
 
 #define MSG_NEG        "\\Negative\\"
 
@@ -53,7 +53,7 @@
 #define MSG_FGPS_OFF   "\\Gps_Data_Off\\"
 
 // shutdown request
-#define MSG_SHD	       "\\Shutdown\\"
+#define MSG_SHD	"\\Shutdown\\"
 
 // GPS message keys to be processed.
 #define MSG_GPS_KEYS   "\\Gps_Msg_Keys\\"
@@ -63,6 +63,9 @@
 
 // Flarm Flight download is requested
 #define MSG_FLARM_FLIGHT_DOWNLOAD   "\\Flarm_Flight_Download\\"
+
+// Flarm Reset is requested
+#define MSG_FLARM_RESET   "\\Flarm_Reset\\"
 
 //------- Used by Forward data channel -------//
 
