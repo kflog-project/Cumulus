@@ -113,6 +113,12 @@ class FlarmBinCom
    */
   bool exit();
 
+  /**
+   * Set a new baud rate on the serial interface.
+   * 0: 4800 bps
+   * ...
+   * 5: 57600 bps
+   */
   bool setBaudRate( const int nSpeedKey );
 
   /**
@@ -127,14 +133,15 @@ class FlarmBinCom
   bool getRecordInfo(char* sData);
 
   /**
-   * Returns a chunk of the IGC file.
+   * Returns a chunk of the IGC file of the selected flight record.
    * String is null terminated, sData must at least hold 600 bytes.
+   * Transfer is finished, if EOF 0x1A is sent as last character.
    *
    * \param sData character array for IGC chunk.
    *
    * \param progress Download progress in percent.
    *
-   * \return true if data available otherwise false.
+   * \return true if data available in error case false.
    */
   bool getIGDData(char* sData, unsigned int* progress);
 
@@ -167,6 +174,7 @@ class FlarmBinCom
   /** Socket to Flarm device. */
   int m_Socket;
 
+  /** Message sequence number. */
   static unsigned short m_Seq;
 };
 
