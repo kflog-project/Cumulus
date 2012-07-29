@@ -60,23 +60,17 @@ bool FlarmBinCom::ping()
 
   if(rcvMsg(&m) == false)
     {
-      qDebug() << "rcvMsg Error rcvMsg";
       return false;
     }
 
   if (m.hdr.type != FRAME_ACK)
     {
-      // printf( "\nPing NAck\n");
-      qDebug() << "Ping NAck";
       return false;
     }
 
   if( m.data[0] != (m_Seq & 0xff) && m.data[1] != (m_Seq >> 8) )
     {
-      qDebug("m.data[0]=%d m.data[1]=%d m_Seq[0]=%d m_Seq[1]=%d",
-               m.data[0], m.data[1], m_Seq & 0xff, (m_Seq >> 8) );
-
-      qDebug() << "Ping answer SeqNo wrong!";
+      qWarning() << "Ping answer SeqNo wrong!";
       return false;
     }
 
@@ -167,20 +161,10 @@ bool FlarmBinCom::getRecordInfo( char* sData )
       return false;
     }
 
-  /*
-   *
-   errno_t strncpy_s(
-   char *strDest,
-   size_t sizeInBytes,
-   const char *strSource,
-   size_t count);
-   */
   // strncpy_s(sData, MAXSIZE, (const char*) &(m.data[2]), m.hdr.length - 2 - HDR_LENGTH);
   strncpy( sData, (const char*) &(m.data[2]), m.hdr.length - 2 - HDR_LENGTH );
 
   sData[m.hdr.length - 2 - HDR_LENGTH] = 0;
-  // printf( "Length: %i\r\n", m.hdr.length);
-
   return true;
 }
 
@@ -254,8 +238,8 @@ bool FlarmBinCom::sendMsg( Message* mMsg)
   // crc
   unsigned short crc = computeCRC(mMsg);
 
-  header[6] = crc & 0xff; //mCrc.getCRC() & 0xff;
-  header[7] = crc >> 8; // mCrc.getCRC() >> 8;
+  header[6] = crc & 0xff;
+  header[7] = crc >> 8;
 
 #ifdef DEBUG_SR
   QString dump = dumpHex( (const uchar*) "s", 1) +
@@ -285,10 +269,7 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
 {
   // wait for start frame
   unsigned char ch = 0;
-  /*
-   SYSTEMTIME  start, end;
-   GetSystemTime( & start);
-   */
+
   do
     {
       // printf( "Waiting for start frame\n");
@@ -300,11 +281,6 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
     }
 
   while (STARTFRAME != ch);
-  /*
-   GetSystemTime( & end);
-   printf( "r: %li  ", -start.wSecond*1000 - start.wMilliseconds + end.wSecond*1000 + end.wMilliseconds);
-   printf( "startframe found\n");
-   */
 
   unsigned char hdr[HDR_LENGTH];
 
@@ -313,7 +289,6 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
     {
       if (rcv(&hdr[i]) == false)
         {
-          // printf( "Unable to receive header\n");
           return false;
         }
     }
@@ -347,7 +322,6 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
 
   if (crc != mMsg->hdr.crc)
     {
-      // printf( "CRC wrong!\n");
       return false;
     }
 
@@ -361,22 +335,18 @@ bool FlarmBinCom::rcv( unsigned char* b)
 
   if( readChar(b) <= 0 )
     {
-      // printf( "received %i bytesm char 0x %x\r\n", nb, *b);
       return false;
     }
 
-  // printf( "r:0x%02x ", *b);
   if (*b == ESCAPE)
     {
       if( readChar(b) <= 0 )
         {
-          // printf( "Read failed\n");
           return false;
         }
 
       switch (*b)
         {
-          // case STARTFRAME : return true; break;
           case ESC_ESC:
             *b = ESCAPE;
             break;
@@ -399,7 +369,6 @@ void  FlarmBinCom::send( const unsigned char c)
 {
   switch( c )
     {
-      // DWORD nb;
       case STARTFRAME:
         writeChar(ESCAPE);
         writeChar(ESC_START);
@@ -432,7 +401,7 @@ int FlarmBinCom::writeChar(const unsigned char c)
               continue; // Ignore interrupts
             }
 
-          qDebug() << "writeChar Error";
+          qDebug() << "writeCharErr" << errno << strerror(errno);
         }
 
       break;
@@ -443,7 +412,7 @@ int FlarmBinCom::writeChar(const unsigned char c)
 
 int FlarmBinCom::readChar(unsigned char* b)
 {
-  // Note, non blocking IO is set on the socket.
+  // Note, non blocking IO is set on our file descriptor.
   int done = read( m_Socket, b, sizeof(unsigned char) );
 
   if( done > 0 )
@@ -454,7 +423,6 @@ int FlarmBinCom::readChar(unsigned char* b)
 
   if( done == 0 || (done == -1 && errno != EWOULDBLOCK) )
     {
-      // Error
       qDebug() << "readCharErr" << errno << strerror(errno);
       return false;
     }
@@ -467,21 +435,21 @@ int FlarmBinCom::readChar(unsigned char* b)
   FD_SET( m_Socket, &readFds );
 
   struct timeval timerInterval;
-  timerInterval.tv_sec  =  3;
+  timerInterval.tv_sec  =  3; // 3s timeout
   timerInterval.tv_usec =  0;
 
   done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );
 
   if( done == 0 )
     {
-      qDebug() << "select() returns with timeout";
+      qDebug() << "select() Timeout";
       // done = 0  -> Timeout
       return done;
     }
 
   if( done < 0 )
     {
-      qDebug() << "select() returns errno" << errno << strerror(errno);
+      qWarning() << "select() Err" << errno << strerror(errno);
       // done = -1 -> Error
       return done;
     }
