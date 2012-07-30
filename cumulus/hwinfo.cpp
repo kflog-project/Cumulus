@@ -21,6 +21,8 @@
 
 using namespace std;
 
+#include <sys/vfs.h>
+
 #include <iostream>
 #include <malloc.h>
 #include <stdio.h>
@@ -250,4 +252,35 @@ bool HwInfo::isMounted( const QString& mountPoint )
 
   return result;
 #endif
+}
+
+/**
+ * Returns the free size of the file system in bytes for non root users.
+ * The passed path must be exist otherwise the call will fail!
+ */
+ulong HwInfo::getFreeUserSpace( QString& path )
+{
+  struct statfs buf;
+  int res;
+
+  res = statfs( path.toLatin1().data(), &buf );
+
+  if( res )
+    {
+      qWarning( "DownloadManager(%d): Free space check failed for %s!",
+                __LINE__, path.toLatin1().data() );
+
+      perror("GetFreeUserSpace");
+      return 0;
+    }
+
+#if 0
+  qDebug() << "DM: FSBlockSize=" << buf.f_bsize
+           << "FSSizeInBlocks=" << buf.f_blocks
+           << "FreeAvail=" << buf.f_bfree
+           << "FreeAvailNonRoot=" << buf.f_bavail*buf.f_bsize/(1024*1024) << "MB";
+#endif
+
+  // free size available to non-superuser in bytes
+  return buf.f_bavail * buf.f_bsize;
 }

@@ -255,7 +255,7 @@ void GpsNmea::createGpsConnection()
 
   // Broadcasts that a new Flarm flight download info is available
   connect (gpsObject, SIGNAL(newFlarmFlightDownloadInfo(const QString&)),
-           this, SIGNAL( newFlarmFlightDownloadInfo(const QString&)) );
+           this, SIGNAL(newFlarmFlightDownloadInfo(const QString&)) );
 
   // Broadcasts that a new Flarm flight download progress is available
   connect (gpsObject, SIGNAL(newFlarmFlightDownloadProgress(const int, const int)),
@@ -2155,10 +2155,7 @@ bool GpsNmea::getFlightListFromFlarm()
   return false;
 }
 
-/** Requests the download of the passed flight indexes from the Flarm
- * device.
- */
-bool GpsNmea::downloadFlightsFromFlarm( QString& flightIndexes )
+bool GpsNmea::downloadFlightsFromFlarm( QString& flightData )
 {
 #ifndef ANDROID
 
@@ -2169,7 +2166,7 @@ bool GpsNmea::downloadFlightsFromFlarm( QString& flightIndexes )
       timeOutFix->stop();
 
       /// Only a serial can request a Flarm file download.
-      return serial->downloadFlightsFromFlarm( flightIndexes );
+      return serial->downloadFlightsFromFlarm( flightData );
     }
 
 #endif

@@ -904,7 +904,7 @@ void GpsClient::readServerMsg()
    {
      // Flarm flight download is requested
      writeServerMsg( MSG_POS );
-     downloadFlarmFlightList(args[1]);
+     getFlarmIgcFiles(args[1]);
    }
  else if( MSG_FLARM_RESET == args[0] )
    {
@@ -1022,7 +1022,7 @@ uint GpsClient::getBaudrate(int rate)
 
 #ifdef FLARM
 
-bool GpsClient::FlarmBinMode()
+bool GpsClient::flarmBinMode()
 {
   // Binary switch command for Flarm interface
   const char* pflax = "$PFLAX\n";
@@ -1075,7 +1075,7 @@ void GpsClient::getFlarmFlightList()
 
   FlarmBinCom fbc( fd );
 
-  if( FlarmBinMode() == false )
+  if( flarmBinMode() == false )
     {
       flarmFlightListError();
       return;
@@ -1137,7 +1137,7 @@ void GpsClient::flarmFlightListError()
   // qDebug() << ba;
 }
 
-void GpsClient::downloadFlarmFlightList(QString& args)
+void GpsClient::getFlarmIgcFiles(QString& args)
 {
   // The argument string contains at the first position the destination directory
   // for the files and then the indexes of the flights separated by vertical tabs.
@@ -1153,7 +1153,7 @@ void GpsClient::downloadFlarmFlightList(QString& args)
 
   FlarmBinCom fbc( fd );
 
-  if( FlarmBinMode() == false )
+  if( flarmBinMode() == false )
     {
       flarmFlightDowloadInfo( "Error" );
       return;
@@ -1167,12 +1167,14 @@ void GpsClient::downloadFlarmFlightList(QString& args)
   // from the list.
   QDir igcDir( idxList.takeFirst() );
 
-  if( igcDir.exists() == false )
+  if( ! igcDir.exists() )
     {
-      igcDir.mkpath( igcDir.absolutePath() );
+      if( ! igcDir.mkpath( igcDir.absolutePath() ) )
+        {
+          flarmFlightDowloadInfo( "Error create directory" );
+          return;
+        }
     }
-
-  // TODO Prüfen, ob noch genügend Platz auf der Disk ist! Sollte die rufende routine machen!
 
   for( int idx = 0; idx < idxList.size(); idx++ )
     {
@@ -1220,7 +1222,7 @@ void GpsClient::downloadFlarmFlightList(QString& args)
 
               if( buffer[strlen(buffer) - 1] == 0x1A )
                 {
-                  // EOF was send by the Flarm, remove it from the stream.
+                  // EOF was send by the Flarm, remove it from the data stream.
                    buffer[strlen(buffer) - 1] = '\0';
                    eof = true;
                  }
@@ -1262,7 +1264,7 @@ bool GpsClient::flarmReset()
   // Swich off timeout control
   last = QTime();
 
-  if( ! FlarmBinMode() )
+  if( ! flarmBinMode() )
     {
       last.currentTime();
       qWarning() << "resetFlarm(): switch2binMode failed!";

@@ -125,6 +125,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   row++;
 
 #ifdef FLARM
+  topLayout->setRowMinimumHeight(row, 10);
+  row++;
 
   lbl = new QLabel(tr("Flarm flight book:"));
   topLayout->addWidget(lbl, row, 0);

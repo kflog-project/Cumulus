@@ -714,7 +714,7 @@ void PreFlightFlarmPage::slotTimeout()
     }
   else
     {
-      QString text0 = tr("No response from Flarm device!");
+      QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
     }

@@ -184,11 +184,11 @@ public:
   void flarmFlightListError();
 
   /**
-   * Downloads the requested flights. The args string contains the destination
+   * Downloads the requested IGC flights. The args string contains the destination
    * directory and one or more flight numbers. The single elements are separated
    * by vertical tabs.
    */
-  void downloadFlarmFlightList( QString& args );
+  void getFlarmIgcFiles( QString& args );
 
   /** Reports an info to the calling application. */
   void flarmFlightDowloadInfo( QString info );
@@ -201,7 +201,7 @@ public:
    *
    * \return True on success otherwise false.
    */
-  bool FlarmBinMode();
+  bool flarmBinMode();
 
   /**
    * Resets the Farm device. Should be called only if Flarm is in binary mode.

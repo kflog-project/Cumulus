@@ -18,20 +18,22 @@
 #include <QtGui>
 
 #include "generalconfig.h"
+#include "hwinfo.h"
 #include "igclogger.h"
 #include "flarmlogbook.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "rowdelegate.h"
 
-// Timeout in ms for waiting for response
+// Timeout in ms for waiting for response of Flarm device.
 #define RESP_TO 10000
 
 /**
  * Constructor
  */
 FlarmLogbook::FlarmLogbook( QWidget *parent ) :
-  QWidget( parent )
+  QWidget( parent ),
+  resetFlarm( false )
 {
   setObjectName("FlarmLogbook");
   setWindowFlags(Qt::Tool);
@@ -53,16 +55,10 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   // hide vertical headers
   // QHeaderView *vHeader = m_table->verticalHeader();
   // vHeader->setVisible(false);
-
-  QHeaderView* hHeader = m_table->horizontalHeader();
+  // QHeaderView* hHeader = m_table->horizontalHeader();
 
   // that makes trouble on N810
   // hHeader->setStretchLastSection( true );
-  hHeader->setClickable( true );
-
-  connect( hHeader, SIGNAL(sectionClicked(int)),
-           this, SLOT(slot_HeaderClicked(int)) );
-
   setTableHeader();
   topLayout->addWidget( m_table, 5 );
   topLayout->addSpacing( 10 );
@@ -71,20 +67,40 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   m_downloadButton  = new QPushButton( tr("Download"));
   m_closeButton     = new QPushButton( tr("Close"));
 
+  m_downloadButton->setEnabled( false );
+
   connect( m_readButton, SIGNAL(clicked() ), this, SLOT(slot_ReadFlights()) );
   connect( m_downloadButton, SIGNAL(clicked() ), this, SLOT(slot_DownloadFlights()) );
-  connect( m_closeButton, SIGNAL(clicked() ), this, SLOT(slot_Close()) );
+  connect( m_closeButton, SIGNAL(clicked() ), this, SLOT(close()) );
 
   // horizontal box with operator buttons
   QHBoxLayout *hbBox = new QHBoxLayout;
-
+  hbBox->setContentsMargins( 0, 0, 0, 0 );
   hbBox->addWidget( m_readButton );
   hbBox->addSpacing( 10 );
   hbBox->addWidget( m_downloadButton );
   hbBox->addSpacing( 10 );
   hbBox->addWidget( m_closeButton );
 
-  topLayout->addLayout( hbBox );
+  m_buttonWidget = new QWidget( this );
+  m_buttonWidget->setLayout( hbBox );
+  topLayout->addWidget( m_buttonWidget );
+
+  // horizontal box with progressbar
+  QHBoxLayout *hpBox = new QHBoxLayout;
+  hpBox->setContentsMargins( 0, 0, 0, 0 );
+  hpBox->addWidget( new QLabel(tr("File:")) );
+  hpBox->addSpacing( 10 );
+  m_progressLabel = new QLabel;
+  hpBox->addWidget( m_progressLabel );
+  hpBox->addSpacing( 10 );
+  m_progressBar = new QProgressBar;
+  hpBox->addWidget( m_progressBar );
+
+  m_progressWidget = new QWidget( this );
+  m_progressWidget->setLayout( hpBox );
+  m_progressWidget->setVisible(false);
+  topLayout->addWidget( m_progressWidget );
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   m_table->setStyleSheet( style );
@@ -111,7 +127,7 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
 
   // Delivers the Flarm flight list.
   connect(GpsNmea::gps, SIGNAL(newFlarmFlightList(const QString&)),
-           this, SLOT(slot_LogbookData(const QString&)) );
+           this, SLOT(slot_FlarmLogbookData(const QString&)) );
 
   // Delivers a Flarm download info.
   connect(GpsNmea::gps, SIGNAL(newFlarmFlightDownloadInfo(const QString&)),
@@ -129,8 +145,16 @@ FlarmLogbook::~FlarmLogbook()
 void FlarmLogbook::enableButtons( const bool toggle )
 {
   m_readButton->setEnabled( toggle );
-  m_downloadButton->setEnabled( toggle );
   m_closeButton->setEnabled( toggle );
+
+  if( toggle && m_table->rowCount() > 0 )
+    {
+      m_downloadButton->setEnabled( true );
+    }
+  else
+    {
+      m_downloadButton->setEnabled( false );
+    }
 }
 
 void FlarmLogbook::showEvent( QShowEvent *event )
@@ -139,6 +163,28 @@ void FlarmLogbook::showEvent( QShowEvent *event )
 
   // m_table->resizeColumnsToContents();
   // m_table->resizeRowsToContents();
+}
+
+void FlarmLogbook::closeEvent( QCloseEvent* event )
+{
+  QApplication::restoreOverrideCursor();
+  m_timer->stop();
+
+  disconnect( Flarm::instance(), SIGNAL(flarmConfigurationInfo(QStringList&)),
+               this, SLOT(slot_UpdateConfiguration( QStringList&)) );
+
+  if( resetFlarm )
+    {
+      // Flarm decice must be reset to normal mode.
+      GpsNmea::gps->resetFlarm();
+    }
+  else
+    {
+      // Enable NMEA output again. Errors are ignored.
+      GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
+    }
+
+  event->accept();
 }
 
 void FlarmLogbook::setTableHeader()
@@ -166,20 +212,30 @@ void FlarmLogbook::setTableHeader()
 
   item = new QTableWidgetItem( tr("Reg") );
   m_table->setHorizontalHeaderItem( 7, item );
+
+  m_table->resizeColumnsToContents();
 }
 
-/** Called if configuration updates from Flarm device are available. */
 void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 {
-  if( info.size() >= 4 && info[1] == "A" && info[2] == "NMEAOUT" && info[3] == "0" )
+  if( info.size() >= 4 &&
+      info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" && info[3] == "0" )
     {
-      // NMEA output of Flarm is swichted off, we can request the download
-      // of the Flight overview.
+      // Flarm has answered and switched off its NMEA output. So we know,
+      // that a Flarm is connected to us and we can request the download
+      // of the Flight overview now.
+
+      // Remembered us that Flarm must be reset if window is closed.
+      resetFlarm = true;
 
       // Restart timer for connection supervision.
       m_timer->start();
 
-      // As next request the flight list
+      // As next request the flight list from the Flarm device.
+      // The Flarm answer is delivered via the slots:
+      //
+      // 1. slot_FlarmLogbookData() with flight list
+      // 2.
       if( GpsNmea::gps->getFlightListFromFlarm() == false )
         {
           slot_Timeout();
@@ -193,34 +249,41 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
       // Problem occurred. Abort further actions.
       slot_Timeout();
       QString text0 = tr("Flarm Problem");
-      QString text1 = tr("Cannot disable NMEA output of Flarm!");
+      QString text1 = tr("Cannot disable NMEA output!");
       messageBox( QMessageBox::Warning, text1, text0 );
       qWarning() << "FL::SUC: NMEAOUT error!" << info.join(",");
     }
 }
 
-void FlarmLogbook::slot_LogbookData( QString& list )
+void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 {
-  slot_Timeout();
-  m_table->clear();
-  setTableHeader();
-  m_logbook.clear();
+  m_logbook.clear(); // remove old content
 
-  if( list.size() == 0 )
+  // Clear table content.
+  for( int i = m_table->rowCount() - 1; i >= 0; i-- )
     {
-      // no data in logbook.
+      // Remove row from table.
+      m_table->removeRow(i);
+    }
+
+  // Stop timer
+  slot_Timeout();
+
+  if( data.size() == 0 )
+    {
+      // No data delivered, should normally not happen.
       return;
     }
 
-  if( list.startsWith("Error") )
+  if( data.startsWith("Error") )
     {
-      QString text0 = tr("Flarm flight list not readable!");
+      QString text0 = tr("Flarm flight list read error!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
       return;
     }
 
-  if( list.startsWith("Empty") )
+  if( data.startsWith("Empty") )
     {
       QString text0 = tr("Flarm flight list is empty!");
       QString text1 = tr("Info");
@@ -228,13 +291,15 @@ void FlarmLogbook::slot_LogbookData( QString& list )
       return;
     }
 
-  // The passed string must be split in its single lines.
-  m_logbook = list.split("\n");
+  // The passed data string must be split in its single lines.
+  m_logbook = data.split("\n");
 
   for( int row = 0; row < m_logbook.size(); row++ )
     {
       m_table->setRowCount( m_table->rowCount() + 1 );
 
+      // A Flarm flight info has several entries, which are separated by a pipe
+      // character.
       QStringList line = m_logbook.at(row).split("|");
 
       for( int col = 0; col < line.size() && col < 8; col++ )
@@ -255,13 +320,25 @@ void FlarmLogbook::slot_LogbookData( QString& list )
 
   m_table->resizeColumnsToContents();
   m_table->resizeRowsToContents();
+
+  if( m_table->rowCount() )
+    {
+      m_downloadButton->setEnabled( true );
+    }
 }
 
 void FlarmLogbook::slot_ReadFlights()
 {
-  m_table->clear();
-  enableButtons( false );
+  // Read button was pressed to get the flight list from the Flarm device.
 
+  // Clear table content.
+  for( int i = m_table->rowCount() - 1; i >= 0; i-- )
+    {
+      // Remove row from table.
+      m_table->removeRow(i);
+    }
+
+  enableButtons( false );
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Activate timer for connection supervision.
@@ -274,18 +351,90 @@ void FlarmLogbook::slot_ReadFlights()
       QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
-      return;
     }
 
-  // The answer is delivered via the slot slot_UpdateConfiguration.
+  // The Flarm answer is delivered via the slot slot_UpdateConfiguration.
 }
 
 void FlarmLogbook::slot_DownloadFlights()
 {
+  // The download button was pressed to download the selected flights from the
+  // table.
   if( m_table->rowCount() == 0 )
     {
       return;
     }
+
+  QString selectedEnties;
+  ushort fc = 0;
+
+  for( int i = 0; i < m_table->rowCount() ; i++ )
+    {
+      // Check, if item is selected.
+      QTableWidgetItem *item = m_table->item( i, 0 );
+
+      if( item && item->isSelected() )
+        {
+          selectedEnties += "\v" + QString::number(i);
+          fc++;
+        }
+    }
+
+  if( selectedEnties.isEmpty() )
+    {
+      // nothing is selected
+      return;
+    }
+
+  QString destination = GeneralConfig::instance()->getUserDataDirectory();
+
+  // Check the free space at the user's file system.
+  ulong space = HwInfo::getFreeUserSpace( destination );
+
+  destination += "/flarmIgc";
+
+  qDebug() << "slot_DownloadFlights(): Free space:" << space << "at" << destination;
+
+  if( space < ( fc * 1024 * 1024) )
+    {
+      // Per file a free space of 1MB is calculated.
+      QString text0 = "<html>" +
+                      tr("Too less free space on:") +
+                      "<br><br>" +
+                      destination +
+                      "<br><br>" +
+                      tr("Download not possible!") +
+                      "</html>";
+
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+      return;
+    }
+
+  // Prepare the download request. First argument is the destination directory
+  // for the download, as next follows the flight numbers to be requested for
+  // the download. As field separator vertical tab '\v' is used.
+  QString args = destination + selectedEnties;
+
+  enableButtons( false );
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  // Activate timer for connection supervision.
+  m_timer->start();
+
+  if( GpsNmea::gps->downloadFlightsFromFlarm( args ) == false )
+    {
+      slot_Timeout();
+      QString text0 = tr("Flarm device not reachable!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+    }
+
+  // Hide buttons and show a progressbar there
+  m_buttonWidget->hide();
+  m_progressWidget->show();
+  m_progressLabel->clear();
+  m_progressBar->reset();
 }
 
 /**
@@ -293,7 +442,29 @@ void FlarmLogbook::slot_DownloadFlights()
  */
 void FlarmLogbook::slot_FlarmFlightDownloadInfo( const QString& info )
 {
+  // The following messages can be reported:
+  // 1. Error ..., the was an error, downlaod aborted
+  // 2. Finished, all downloads are finished.
+  if( info.startsWith( "Error" ) )
+    {
+      slot_Timeout();
+      QString text0 = tr("Flarm download error!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+      return;
+    }
 
+  if( info.startsWith( "Finished" ) )
+    {
+      slot_Timeout();
+      QString text0 = tr("Flights downloaded!");
+      QString text1 = tr("Finished");
+      messageBox( QMessageBox::Information, text0, text1 );
+      return;
+    }
+
+  qWarning() << "FlarmLogbook::slot_FlarmFlightDownloadInfo(): unknown info"
+              << info;
 }
 
 /**
@@ -302,7 +473,10 @@ void FlarmLogbook::slot_FlarmFlightDownloadInfo( const QString& info )
 void FlarmLogbook::slot_FlarmFlightDownloadProgress( const int idx,
                                                             const int progress)
 {
-
+  // Restart timer supervision.
+  m_timer->start();
+  m_progressLabel->setText( QString::number( idx + 1 ) );
+  m_progressBar->setValue( progress );
 }
 
 /** Called if the connection timer has expired. */
@@ -310,6 +484,8 @@ void FlarmLogbook::slot_Timeout()
 {
   QApplication::restoreOverrideCursor();
   enableButtons( true );
+  m_buttonWidget->show();
+  m_progressWidget->hide();
 
   // Note, this method is also called in case on no timeout to enable the
   // buttons and to restore the cursor. Therefore a running timer must be
@@ -320,26 +496,10 @@ void FlarmLogbook::slot_Timeout()
     }
   else
     {
-      QString text0 = tr("No response from Flarm device!");
+      QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
     }
-}
-
-void FlarmLogbook::slot_Close()
-{
-  QApplication::restoreOverrideCursor();
-  m_timer->stop();
-
-  disconnect( Flarm::instance(), SIGNAL(flarmConfigurationInfo(QStringList&)),
-               this, SLOT(slot_UpdateConfiguration( QStringList&)) );
-
-  // Enable NMEA output again. Errors are ignored.
-  GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
-
-  setVisible( false );
-  emit closed();
-  QWidget::close();
 }
 
 /** Shows a popup message box to the user. */

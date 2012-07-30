@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm
- **                   2008-2010 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -151,6 +151,11 @@ class HwInfo
      * @returns true in case of success otherwise false.
      */
     static bool isMounted( const QString& mountPoint );
+
+    /**
+     * Returns the free size of the file system in bytes for non root users.
+     */
+    static ulong getFreeUserSpace( QString& path );
 
   private:
     /**

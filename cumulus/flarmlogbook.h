@@ -37,6 +37,8 @@
 #include <QWidget>
 #include <QMessageBox>
 
+class QLabel;
+class QProgressBar;
 class QPushButton;
 class QStringList;
 class QTableWidget;
@@ -65,13 +67,20 @@ protected:
 
   virtual void showEvent( QShowEvent *event );
 
-public slots:
+  virtual void closeEvent ( QCloseEvent * event );
 
-  /** Loads the logbook data into the table. */
-  void slot_LogbookData( QString& list );
+private slots:
 
-  /** Called if configuration updates from Flarm device are available. */
+  /**
+   * Called if configuration updates from Flarm device are delivered.
+   */
   void slot_UpdateConfiguration( QStringList& info );
+
+  /**
+   * Called when Flarm logbook data are delivered.
+   * The delivered string can also contain error information.
+   */
+  void slot_FlarmLogbookData( const QString& data );
 
   /**
    * This slot is called, when a new Flarm flight download info was received.
@@ -83,8 +92,6 @@ public slots:
    */
   void slot_FlarmFlightDownloadProgress(const int idx, const int progress);
 
-private slots:
-
   /** Removes all selected rows from the table. */
   void slot_ReadFlights();
 
@@ -93,9 +100,6 @@ private slots:
 
   /** Called if the connection timer has expired. */
   void slot_Timeout();
-
-  /** Close button press is handled here. */
-  void slot_Close();
 
 signals:
 
@@ -110,11 +114,29 @@ private:
   /** Toggles operation of buttons. */
   void enableButtons( const bool toggle );
 
+  /**
+   * flag to remember to reset the Flarm device after successfully setting
+   * into binary mode.
+   */
+  bool resetFlarm;
+
   /** Timer for connection supervision. */
   QTimer* m_timer;
 
   /** Table widget with columns for the logbook entries. */
   QTableWidget* m_table;
+
+  /** Button widget */
+  QWidget* m_buttonWidget;
+
+  /** Progress widget */
+  QWidget* m_progressWidget;
+
+  /** Progress label.*/
+  QLabel* m_progressLabel;
+
+  /** Progressbar.*/
+  QProgressBar* m_progressBar;
 
   /** Read flights button. */
   QPushButton* m_readButton;
