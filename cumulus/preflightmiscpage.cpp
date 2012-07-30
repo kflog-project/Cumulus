@@ -21,10 +21,12 @@
 #include <QtGui>
 
 #include "preflightmiscpage.h"
-#include "igclogger.h"
+
+#include "calculator.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "logbook.h"
+#include "igclogger.h"
 #include "varspinbox.h"
 
 #ifdef FLARM
@@ -130,7 +132,17 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   topLayout->addWidget(button, row, 1 );
   row++;
 
-  connect(button, SIGNAL(pressed()), SLOT(slotOpenFlarmFlights()));
+  extern Calculator *calculator;
+
+  if( calculator->moving() )
+    {
+      // Disable Flarm flight downloads if we are moving.
+      button->setEnabled( false );
+    }
+  else
+    {
+      connect(button, SIGNAL(pressed()), SLOT(slotOpenFlarmFlights()));
+    }
 
 #endif
 
