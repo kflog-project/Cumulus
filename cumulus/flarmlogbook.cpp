@@ -33,7 +33,8 @@
  */
 FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   QWidget( parent ),
-  resetFlarm( false )
+  m_resetFlarm( false ),
+  m_ignoreClose( false )
 {
   setObjectName("FlarmLogbook");
   setWindowFlags(Qt::Tool);
@@ -48,7 +49,7 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing(5);
 
-  m_table = new QTableWidget( 0, 8, this );
+  m_table = new QTableWidget( 0, 6, this );
   m_table->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_table->setAlternatingRowColors( true );
 
@@ -89,7 +90,7 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   // horizontal box with progressbar
   QHBoxLayout *hpBox = new QHBoxLayout;
   hpBox->setContentsMargins( 0, 0, 0, 0 );
-  hpBox->addWidget( new QLabel(tr("File:")) );
+  hpBox->addWidget( new QLabel(tr("Flight:")) );
   hpBox->addSpacing( 10 );
   m_progressLabel = new QLabel;
   hpBox->addWidget( m_progressLabel );
@@ -167,21 +168,25 @@ void FlarmLogbook::showEvent( QShowEvent *event )
 
 void FlarmLogbook::closeEvent( QCloseEvent* event )
 {
+  if( m_ignoreClose )
+    {
+      event->ignore();
+      return;
+    }
+
   QApplication::restoreOverrideCursor();
   m_timer->stop();
 
   disconnect( Flarm::instance(), SIGNAL(flarmConfigurationInfo(QStringList&)),
                this, SLOT(slot_UpdateConfiguration( QStringList&)) );
 
-  if( resetFlarm )
+  if( m_resetFlarm )
     {
-      // Flarm decice must be reset to normal mode.
-      GpsNmea::gps->resetFlarm();
-    }
-  else
-    {
-      // Enable NMEA output again. Errors are ignored.
-      GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,1" );
+      // Flarm device must be reset to normal mode.
+      if( ! GpsNmea::gps->resetFlarm() )
+        {
+          qWarning() << "FL::closeEvent(): Reset Flarm failed!";
+        }
     }
 
   event->accept();
@@ -195,29 +200,25 @@ void FlarmLogbook::setTableHeader()
   item = new QTableWidgetItem( tr("To") );
   m_table->setHorizontalHeaderItem( 1, item );
 
-  item = new QTableWidgetItem( tr("Lg") );
+  item = new QTableWidgetItem( tr("Ft") );
   m_table->setHorizontalHeaderItem( 2, item );
 
-  item = new QTableWidgetItem( tr("Ft") );
+  item = new QTableWidgetItem( tr("Pilot") );
   m_table->setHorizontalHeaderItem( 3, item );
 
-  item = new QTableWidgetItem( tr("Pilot") );
+  item = new QTableWidgetItem( tr("Type") );
   m_table->setHorizontalHeaderItem( 4, item );
 
-  item = new QTableWidgetItem( tr("Co") );
+  item = new QTableWidgetItem( tr("Ix") );
   m_table->setHorizontalHeaderItem( 5, item );
-
-  item = new QTableWidgetItem( tr("Type") );
-  m_table->setHorizontalHeaderItem( 6, item );
-
-  item = new QTableWidgetItem( tr("Reg") );
-  m_table->setHorizontalHeaderItem( 7, item );
 
   m_table->resizeColumnsToContents();
 }
 
 void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 {
+  // qDebug() << "slot_UpdateConfiguration" << info;
+
   if( info.size() >= 4 &&
       info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" && info[3] == "0" )
     {
@@ -226,16 +227,17 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
       // of the Flight overview now.
 
       // Remembered us that Flarm must be reset if window is closed.
-      resetFlarm = true;
+      m_resetFlarm = true;
 
       // Restart timer for connection supervision.
       m_timer->start();
 
       // As next request the flight list from the Flarm device.
-      // The Flarm answer is delivered via the slots:
+      // The Flarm answer is delivered via the slot:
       //
-      // 1. slot_FlarmLogbookData() with flight list
-      // 2.
+      // slot_FlarmLogbookData()
+      //
+      // with flight list info.
       if( GpsNmea::gps->getFlightListFromFlarm() == false )
         {
           slot_Timeout();
@@ -291,25 +293,39 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
       return;
     }
 
+  /*
+    Returned flight entries by Flarm V5.06
+    27LG7QX1.IGC|2012-07-21|11:48:35|03:09:36|Hans-Georg Grund||105
+    27AG7QX2.IGC|2012-07-10|09:50:50|05:12:10|Axel Pauli||105
+    27AG7QX1.IGC|2012-07-10|09:33:42|00:06:20|Axel Pauli||105
+  */
   // The passed data string must be split in its single lines.
   m_logbook = data.split("\n");
 
   for( int row = 0; row < m_logbook.size(); row++ )
     {
-      m_table->setRowCount( m_table->rowCount() + 1 );
-
       // A Flarm flight info has several entries, which are separated by a pipe
       // character.
       QStringList line = m_logbook.at(row).split("|");
 
-      for( int col = 0; col < line.size() && col < 8; col++ )
+      if( line.size() < 7 )
+        {
+          qWarning() << "slot_FlarmLogbookData: 7 entries expected:"
+                      << line.size()
+                      << line;
+          break;
+        }
+
+      m_table->setRowCount( m_table->rowCount() + 1 );
+
+      for( int col = 0; col < line.size() && col < 6; col++ )
         {
           QTableWidgetItem* item;
 
-          item = new QTableWidgetItem( line.at(col) );
+          item = new QTableWidgetItem( line.at(col + 1) );
           item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
-          if( col >= 0 && col <= 3 )
+          if( col >= 0 && col <= 2 )
             {
               item->setTextAlignment( Qt::AlignCenter );
             }
@@ -343,6 +359,18 @@ void FlarmLogbook::slot_ReadFlights()
 
   // Activate timer for connection supervision.
   m_timer->start();
+
+  m_ignoreClose = true;
+
+  if( m_resetFlarm == true )
+    {
+      // Flarm was already switched to the binary mode. We simulate a callback
+      // to the update slot.
+      QStringList info;
+      info << "$PFLAC" << "A" << "NMEAOUT" << "0";
+      slot_UpdateConfiguration(  info );
+      return;
+    }
 
   // As first switch off NMEA output of Flarm device.
   if( GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,0" ) == false )
@@ -393,7 +421,7 @@ void FlarmLogbook::slot_DownloadFlights()
 
   destination += "/flarmIgc";
 
-  qDebug() << "slot_DownloadFlights(): Free space:" << space << "at" << destination;
+  qDebug() << "FlarmDownload: Free space:" << ((float) space/ (1024*1024)) << "MB at" << destination;
 
   if( space < ( fc * 1024 * 1024) )
     {
@@ -421,6 +449,8 @@ void FlarmLogbook::slot_DownloadFlights()
 
   // Activate timer for connection supervision.
   m_timer->start();
+
+  m_ignoreClose = true;
 
   if( GpsNmea::gps->downloadFlightsFromFlarm( args ) == false )
     {
@@ -484,6 +514,8 @@ void FlarmLogbook::slot_Timeout()
 {
   QApplication::restoreOverrideCursor();
   enableButtons( true );
+
+  m_ignoreClose = false;
   m_buttonWidget->show();
   m_progressWidget->hide();
 

@@ -803,9 +803,9 @@ void GpsCon::getDataFromClient()
       if( ioctl( server.getClientSock( 1 ), FIONREAD, &bytes) == -1 )
         {
           qWarning() << "GpsCon::getDataFromClient():"
-                     << "ioctl() returns with ERROR: errno="
-                     << errno
-                     << "," << strerror(errno);
+                      << "ioctl() returns with ERROR: errno="
+                      << errno
+                      << "," << strerror(errno);
           break;
         }
 
@@ -840,23 +840,22 @@ void GpsCon::getDataFromClient()
           emit gpsConnectionOn();
           qDebug(MSG_CON_ON);
         }
-      else if( MSG_FLARM_FLIGHT_LIST_RES )
+      else if( msg.startsWith(MSG_FLARM_FLIGHT_LIST_RES) )
         {
           // A Flarm flight list was received.
           msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_LIST_RES) - 1);
           emit newFlarmFlightList(msg);
         }
-
-      else if( MSG_FLARM_FLIGHT_DOWNLOAD_INFO )
+      else if( msg.startsWith(MSG_FLARM_FLIGHT_DOWNLOAD_INFO) )
          {
-           // A Flarm flight download info was received.
+           // A Flarm download flight info was received.
            msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_DOWNLOAD_INFO) - 1);
            emit newFlarmFlightDownloadInfo(msg);
          }
-      else if( MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS )
+      else if( msg.startsWith(MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS) )
          {
-           // A Flarm flight list was received.
-           msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_LIST_RES) - 1);
+           // A Flarm download progress info was received.
+           msg = msg.right(msg.length() - strlen(MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS) - 1);
 
            QStringList args = msg.split(",");
 
@@ -897,14 +896,6 @@ void GpsCon::readClientMessage( uint index, QString &result )
                  << errno
                  << strerror(errno);
       return; // Error occurred
-    }
-
-  if( msgLen > 256 )
-    {
-      // such messages length are not defined. we will ignore that.
-      qWarning( "GPSCon::readClientMessage(%d): "
-                "message %d too large, ignoring it!", index, msgLen );
-      return;
     }
 
   char *buf = new char[msgLen+1];

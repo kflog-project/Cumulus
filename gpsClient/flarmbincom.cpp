@@ -32,10 +32,10 @@
 #include "flarmcrc.h"
 #include "flarmbincom.h"
 
-unsigned short FlarmBinCom::m_Seq = 0x1;
+unsigned short FlarmBinCom::m_Seq = 0;
 
 // Enable DEBUG_RS to dump out the messages on the interface in hex format
-// DEFINE DEBUG_SR 1
+// #define DEBUG_SR 1
 
 FlarmBinCom::FlarmBinCom( int socket) :
   m_Socket(socket)
@@ -217,9 +217,8 @@ bool FlarmBinCom::sendMsg( Message* mMsg)
   // prepare/copy header
   unsigned char header[HDR_LENGTH];
 
-  // add sequence number
-  mMsg->hdr.seq = m_Seq;
-  m_Seq++;
+  // add the next sequence number
+  mMsg->hdr.seq = ++m_Seq;
 
   // length
   header[0] = mMsg->hdr.length & 0xff;
@@ -299,6 +298,12 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
   mMsg->hdr.type = hdr[5];
   mMsg->hdr.crc = hdr[6] + (hdr[7] << 8);
 
+  if( (mMsg->hdr.length - HDR_LENGTH) > MAXSIZE )
+    {
+      qWarning() << "FlarmBinCom::rcvMsg() buffer overflow! bs="
+                  << MAXSIZE << "ds=" << (mMsg->hdr.length - HDR_LENGTH);
+    }
+
   // receive payload
   for (int i = 0; i < mMsg->hdr.length - HDR_LENGTH; i++)
     {
@@ -316,6 +321,13 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
 
   qDebug() << "R:" << dump;
 #endif
+
+  // Check sequence numbers.
+  if( mMsg->data[0] != (m_Seq & 0xff) && mMsg->data[1] != (m_Seq >> 8) )
+    {
+      qWarning( "RcvMsg: SeqNo mismatch! RMT=0x%02X, Sent=%04x, Rev=%04x",
+                  mMsg->hdr.type, m_Seq, mMsg->data[0] + (mMsg->data[1] << 8) );
+    }
 
   // check crc
   unsigned short crc = computeCRC(mMsg);

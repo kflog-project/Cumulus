@@ -115,10 +115,13 @@ private:
   void enableButtons( const bool toggle );
 
   /**
-   * flag to remember to reset the Flarm device after successfully setting
+   * Flag to remember to reset the Flarm device after successfully setting
    * into binary mode.
    */
-  bool resetFlarm;
+  bool m_resetFlarm;
+
+  /** Flag to prevent unwanted window close. */
+  bool m_ignoreClose;
 
   /** Timer for connection supervision. */
   QTimer* m_timer;

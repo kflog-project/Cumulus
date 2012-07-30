@@ -17,15 +17,17 @@
 **
 ***********************************************************************/
 
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/ioctl.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
 
 #include <QtCore>
 
@@ -253,8 +255,12 @@ bool GpsClient::readGpsData()
 
       readSentenceFromBuffer();
 
-      // update supervision timer/variables
-      last.start();
+      if( ! initFlarm )
+        {
+          // update supervision timer/variables
+          last.start();
+        }
+
       connectionLost = false;
     }
 
@@ -399,8 +405,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       if( device.startsWith("/dev/") )
         {
           qDebug() << "GpsClient::openGps: Device '"
-                   << deviceIn
-                   << "' is not a TTY!";
+                    << deviceIn
+                    << "' is not a TTY!";
         }
     }
   else
@@ -594,7 +600,7 @@ bool GpsClient::verifyCheckSum( const char *sentence )
   // do start with a dollar sign or an exclamation mark.
   if( sentence[0] != '$' && sentence[0] != '!' )
     {
-      qWarning() << "GpsClient::verifyCheckSum: ignore sentence" << sentence;
+      qWarning() << "GpsClient::CheckSumError:" << sentence;
 
       badSentences++;
 
@@ -679,9 +685,9 @@ void GpsClient::toController()
 
   if( initFlarm )
     {
-      if( last.elapsed() > 30000  )
+      if( last.elapsed() >= 60000  )
         {
-          // Enable NMEA output of Flarm after 30s after reset.
+          // Enable NMEA output of Flarm after 60s after reset.
           initFlarm = false;
           writeGpsData("$PFLAC,S,NMEAOUT,1");
 
@@ -747,7 +753,7 @@ void GpsClient::readServerMsg()
       return; // Error occurred
     }
 
-  if( msgLen > 256 )
+  if( msgLen > 512 )
     {
       // such messages length are not defined. we will ignore that.
       qWarning() << method
@@ -1032,7 +1038,7 @@ bool GpsClient::flarmBinMode()
   // Precondition is that the NMEA output of the Flarm device was disabled by
   // the calling method before!
 
-  qDebug() << "Switch Flarm to binary mode";
+  // qDebug() << "Switch Flarm to binary mode";
 
   // I made the experience, that the Flarm device did not answer to the first
   // binary transfer switch. Therefore I make several tries. Flarm tool makes
@@ -1046,10 +1052,8 @@ bool GpsClient::flarmBinMode()
       if( write( fd, pflax, strlen(pflax) ) <= 0 )
         {
           // write failed
-          return false;
+          break;
         }
-
-      // qDebug() << "Send Ping";
 
       // Check connection with a ping command.
       if( fbc.ping() == true )
@@ -1062,7 +1066,7 @@ bool GpsClient::flarmBinMode()
   if( pingOk == false )
     {
       // Switch to binary mode failed
-      qWarning() << "Could not switch to binary mode!";
+      qWarning() << "GpsClient::flarmBinMode(): Switch failed!";
     }
 
   return pingOk;
@@ -1070,7 +1074,7 @@ bool GpsClient::flarmBinMode()
 
 void GpsClient::getFlarmFlightList()
 {
-  // Swich off timeout control
+  // Switch off timeout control
   last = QTime();
 
   FlarmBinCom fbc( fd );
@@ -1092,15 +1096,18 @@ void GpsClient::getFlarmFlightList()
         {
           recNo++;
 
-          if( fbc.getRecordInfo( buffer ) )
+          for( int loop = 0; loop < 2; loop++ )
             {
-              flights << QString( buffer );
-            }
-          else
-            {
-              // Entry not available, although select answered positive!
-              // Not conform to the specification.
-              break;
+              // A record exits but the getRecordInfo returns a NACK result
+              // with a wrong sequence number. We make some retries as workaround.
+              if( fbc.getRecordInfo( buffer ) )
+                {
+                  flights << QString( buffer );
+                  break;
+                }
+
+              // If the record is not selected again, the Flarm ist beleidigt!
+              fbc.selectRecord( recNo -1 );
             }
         }
       else
@@ -1266,15 +1273,14 @@ bool GpsClient::flarmReset()
 
   if( ! flarmBinMode() )
     {
-      last.currentTime();
-      qWarning() << "resetFlarm(): switch2binMode failed!";
+      last.start();
       return false;
     }
 
   FlarmBinCom fbc( fd );
   bool res = fbc.exit();
   initFlarm = true;
-  last.currentTime();
+  last.start();
   return res;
 }
 
