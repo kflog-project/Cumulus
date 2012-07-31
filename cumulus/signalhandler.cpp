@@ -136,6 +136,7 @@ void signalHandler( int sig )
 
     default:
       signal = "Unknown";
+      break;
   }
 
   fprintf( stderr, "Signal %d, %s caught\n", sig, signal );

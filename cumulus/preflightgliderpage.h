@@ -53,7 +53,7 @@ public:
 
   PreFlightGliderPage( QWidget *parent=0 );
 
-  ~PreFlightGliderPage();
+  virtual ~PreFlightGliderPage();
 
   /**
    * Saves the current settings permanently.

@@ -385,8 +385,10 @@ OTHER_FILES += \
     android/src/org/kflog/cumulus/BluetoothService.java \
     android/version.xml \
     android/res/values/cumulus.xml \
-    android/res/values-de/cumulus.xml
+    android/res/values-de/cumulus.xml \
+    android/assets/QtIndustrius-14.jar
 
 LIBS += -lstdc++
 
 TRANSLATIONS = cumulus_android_de.ts
+

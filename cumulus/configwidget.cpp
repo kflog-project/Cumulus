@@ -36,7 +36,9 @@
 #include "mainwindow.h"
 #endif
 
+#ifdef INTERNET
 extern MapContents *_globalMapContents;
+#endif
 
 ConfigWidget::ConfigWidget(QWidget *parent) :
   QWidget(parent), loadConfig(true)
