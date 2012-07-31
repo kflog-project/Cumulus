@@ -420,7 +420,9 @@ void FlarmLogbook::slot_DownloadFlights()
 
   qDebug() << "FlarmDownload: Free space:" << ((float) space/ (1024*1024)) << "MB at" << destination;
 
-  if( space < ( fc * 1024 * 1024) )
+  const ulong mb = 1024 * 1024;
+
+  if( space < ( fc * mb) )
     {
       // Per file a free space of 1MB is calculated.
       QString text0 = "<html>" +
