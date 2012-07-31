@@ -17,6 +17,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "generalconfig.h"
 #include "hwinfo.h"
 #include "igclogger.h"
@@ -50,16 +51,12 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   topLayout->setSpacing(5);
 
   m_table = new QTableWidget( 0, 6, this );
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(m_table);
+
   m_table->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_table->setAlternatingRowColors( true );
 
-  // hide vertical headers
-  // QHeaderView *vHeader = m_table->verticalHeader();
-  // vHeader->setVisible(false);
-  // QHeaderView* hHeader = m_table->horizontalHeader();
-
-  // that makes trouble on N810
-  // hHeader->setStretchLastSection( true );
   setTableHeader();
   topLayout->addWidget( m_table, 5 );
   topLayout->addSpacing( 10 );
