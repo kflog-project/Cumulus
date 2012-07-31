@@ -559,13 +559,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
 #ifdef MAEMO5
 
-    case 50:
+    case 30:
       // Handle sentences created by GPS Maemo Client process. These sentenceIns
       // contain no checksum items.
       __ExtractMaemo0( slst );
       return;
 
-    case 51:
+    case 31:
       // Handle sentences created by GPS Maemo Client process. These sentenceIns
       // contain no checksum items.
       __ExtractMaemo1( slst );
