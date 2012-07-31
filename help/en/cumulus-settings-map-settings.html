@@ -1,168 +1,183 @@
 <!-- $Id$ -->
 <html>
 <head>
-  <title>Cumulus Settings</title>
-  <link rel="stylesheet" type="text/css" href="text.css">
+<title>Cumulus Settings</title>
+<link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
 <body>
 
-<table width="100%">
-    <tr>
-      <td></td>
-      <td align="center"><a href="cumulus.html">start</a></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td align="left"><a href="cumulus-settings-glider.html">back</a></td>
-      <td align="center"><a href="cumulus-settings.html">overview</a></td>
-      <td align="right"><a href="cumulus-settings-map-objects.html">next</a></td>
-    </tr>
-</table>
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">start</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="left"><a href="cumulus-settings-glider.html">back</a></td>
+			<td align="center"><a href="cumulus-settings.html">overview</a></td>
+			<td align="right"><a href="cumulus-settings-map-objects.html">next</a></td>
+		</tr>
+	</table>
 
-<h4 align="center">Settings - Maps</h4>
+	<h4 align="center">Settings - Maps</h4>
 
-<b>Maps</b>
+	<b>Maps</b>
 
-<p>
-On this page you can set the maps storage location and the map basic data.
-</p>
+	<p>On this page you can set the maps storage location and the map
+		basic data.</p>
 
-<dl>
+	<dl>
 
-<a name="Maps">
-<dt><b>Maps Location</b></dt>
-</a>
+		<a name="Maps">
+			<dt>
+				<b>Maps Location</b>
+			</dt>
+		</a>
 
-<dd>
-As location for the map data for Maemo (Nokia Internet Tablet)
-you should define a directory on one of the SD cards. With the help of
-the button <i>Maps</i> you can open a directory selection dialog and
-navigate to the SD card locations to find under <i>/media/mmc[1|2]</i>.
-In the text field beside the button you can see the current selection.
-You can modify the text field also by hand and set so your preferred location.
-</dd>
+		<dd>
+			As location for the map data for Maemo (Nokia Internet Tablet) you
+			should define a directory on one of the SD cards. With the help of
+			the button <i>Maps</i> you can open a directory selection dialog and
+			navigate to the SD card locations to find under <i>/media/mmc[1|2]</i>.
+			In the text field beside the button you can see the current
+			selection. You can modify the text field also by hand and set so your
+			preferred location.
+		</dd>
 
-<br><a name="Projection">
-<dt><b>Projection</b></dt>
-</a>
+		<br>
+		<a name="Projection">
+			<dt>
+				<b>Projection</b>
+			</dt>
+		</a>
 
-<dd>The coordinate points of the raw maps Cumulus uses are not projected.
-They are coded according to WGS84 datum. Therefore all these points are
-projected on first loading. There are many types of map projections available.
-You need a projection because the earth is a sphere (or close to it) and your
-map is flat.
+		<dd>
+			The coordinate points of the raw maps Cumulus uses are not projected.
+			They are coded according to WGS84 datum. Therefore all these points
+			are projected on first loading. There are many types of map
+			projections available. You need a projection because the earth is a
+			sphere (or close to it) and your map is flat.
 
-<p>Cumulus supports two projections:</p>
+			<p>Cumulus supports two projections:</p>
 
-<ol>
-  <li><i>Plate Carr&eacute;e</i> - Equidistant Cylindrical Projection</li>
-  <li><i>Lambert</i> - Conical Orthomorphic Projection</li>
-</ol>
+			<ol>
+				<li><i>Plate Carr&eacute;e</i> - Equidistant Cylindrical
+					Projection</li>
+				<li><i>Lambert</i> - Conical Orthomorphic Projection</li>
+			</ol>
 
-<p>
-The first is computationally simpler and thus the preferred one in Cumulus.
-The latter is more complex, so your maps will take much longer on first load
-but it is more realistic.
-Each map projection needs a basis from where to work. 
+			<p>
+				The first is computationally simpler and thus the preferred one in
+				Cumulus. The latter is more complex, so your maps will take much
+				longer on first load but it is more realistic. Each map projection
+				needs a basis from where to work. <br>For the <i>Plate
+					Carr&eacute;e</i> projection choose a parallel close to your home base.
+				If the option <i>Projection follows Home Position</i> is activated,
+				the parallel is automatically set to the latitude of your Home
+				Position in the assumption that the Home Position is your preferred
+				flight space. That ensures an unskewed map display and you are not
+				forced to set this parallel by hand. That is the default setting. <br>For
+				<i>Lambert</i> projection you should select the parallels so that
+				they are covering the area you are flying. For example, you could
+				choose the parallels from your official flying map. Then you will
+				have an equal look like these maps. You should select the longitude
+				from the middle of the area you are flying. It is needed because of
+				some technical reasons not for the projection itself. No automatic
+				update of projection data is done here. You must do that always by
+				hand. Therefore use this kind of projection only, if you are
+				familiar with the Lambert projection. <br> After changing the
+				projection kind or the standard parallel values Cumulus is forced to
+				recompile your map files.
+			</p>
 
-<br>For the <i>Plate
-Carr&eacute;e</i> projection choose a parallel close to your home base.
-If the option <i>Projection follows Home Position</i> is activated, the
-parallel is automatically set to the latitude of your Home Position in the
-assumption that the Home Position is your preferred flight space. That ensures
-an unskewed map display and you are not forced to set this parallel by hand.
-That is the default setting.
+			<p>
+				<b>Please note that:</b> If you don't set the projection options
+				correctly, you will likely end up with a blue screen or a skewed
+				map. This is especially so if you are far away from the coordinates
+				used in the projection!
+			</p>
+		</dd>
 
-<br>For <i>Lambert</i>
-projection you should select the parallels so that they are covering the area
-you are flying. For example, you could choose the
-parallels from your official flying map. Then you will have an equal
-look like these maps. You should select the longitude from the middle
-of the area you are flying. It is needed because of some technical
-reasons not for the projection itself. No automatic update of projection data
-is done here. You must do that always by hand. Therefore use this kind of
-projection only, if you are familiar with the Lambert projection.
-<br>
-After changing the projection kind or the standard
-parallel values Cumulus is forced to recompile your map files.
-</p>
+		<dt>
+			<b>Projection follows Home Position</b>
+		</dt>
 
-<p>
-<b>Please note that:</b> If you don't set the projection options correctly,
-you will likely end up with a blue screen or a skewed map. This
-is especially so if you are far away from the coordinates used in the
-projection!
-</p>
-</dd>
+		<dd>
+			If this check box is selected a Home Position change will trigger
+			automatically a recompilation of the map files. This option ensures
+			best drawing results but it is only available for the <i>Plate
+				Carr&eacute;e</i> projection.
+		</dd>
 
-<dt><b>Projection follows Home Position</b></dt>
+		<br>
+		<dt>
+			<b>Unload unused maps from RAM</b>
+		</dt>
 
-<dd>
-If this check box is selected a Home Position change will trigger automatically
-a recompilation of the map files. This option ensures best drawing results but
-it is only available for the <i>Plate Carr&eacute;e</i> projection.
-</dd>
+		<dd>Cumulus supports two strategies for keeping maps in memory.
+			Maps are only loaded if needed, but they can either stay there until
+			they really need to be moved out of memory, or they can be removed
+			sooner. The first strategy is more suited for users who want to zoom
+			in and out a lot and have plenty of memory in their device, the
+			latter strategy is the default one and to be recommended for people
+			with lower memory devices.</dd>
 
-<br><dt><b>Unload unused maps from RAM</b></dt>
+		<br>
+		<a name="Download">
+			<dt>
+				<b>Set Proxy</b>
+			</dt>
+		</a>
 
-<dd>
-Cumulus supports two strategies for keeping maps in memory.
-Maps are only loaded if needed, but they can either stay there until
-they really need to be moved out of memory, or they can be removed
-sooner. The first strategy is more suited for users who want to zoom in
-and out a lot and have plenty of memory in their device, the latter
-strategy is the default one and to be recommended for people with
-lower memory devices.
-</dd>
+		<dd>
+			Press the <i>Set Proxy</i> button if a proxy is needed for downloads
+			from the Internet. That opens a dialog box where you can make the
+			necessary host and port entries. Let all fields empty if you need no
+			proxy. The configured proxy is displayed right of the setup button.
+		</dd>
 
-<br><a name="Download">
-<dt><b>Set Proxy</b></dt>
-</a>
+		<br>
+		<dt>
+			<b>Center Latitude/Longitude</b>
+		</dt>
 
-<dd>
-Press the <i>Set Proxy</i> button if a proxy is needed for downloads from the
-Internet. That opens a dialog box where you can make the necessary host and
-port entries. Let all fields empty if you need no proxy. The configured proxy
-is displayed right of the setup button.
-</dd>
+		<dd>The coordinates of your center point around that map files
+			shall be downloaded from the Internet.</dd>
 
-<br><dt><b>Center Latitude/Longitude</b></dt>
+		<br>
+		<dt>
+			<b>Install Maps and Distance</b>
+		</dt>
 
-<dd>
-The coordinates of your center point around that map files shall be downloaded
-from the Internet.
-</dd>
+		<dd>
+			Define a distance in the spin box around your center point and press
+			then the <i>Install Maps</i> button. Cumulus tries to download all
+			map files from the KFLog Map Room, which lays around the center
+			point. Ensure that an active Internet connection is available to that
+			time. Otherwise all downloads do fail. If Cumulus is in move (faster
+			as 5 Km/h) no downloads are executed. If all download requests are
+			processed you will get once a result message. Cumulus does not record
+			a special log file for that. If Cumulus is started in a X-Terminal
+			window you can see the single results as debug messages.
+		</dd>
 
-<br><dt><b>Install Maps and Distance</b></dt>
+	</dl>
 
-<dd>
-Define a distance in the spin box around your center point and press then the
-<i>Install Maps</i> button. Cumulus tries to download all map files from the
-KFLog Map Room, which lays around the center point. Ensure that an active Internet
-connection is available to that time. Otherwise all downloads do fail. If Cumulus
-is in move (faster as 5 Km/h) no downloads are executed. If all download requests
-are processed you will get once a result message. Cumulus does not record a special
-log file for that. If Cumulus is started in a X-Terminal window you can see the
-single results as debug messages.
-</dd>
+	<p></p>
 
-</dl>
-
-<p></p>
-
-<table width="100%">
-    <tr>
-      <td></td>
-      <td align="center"><a href="cumulus.html">start</a></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td align="left"><a href="cumulus-settings-glider.html">back</a></td>
-      <td align="center"><a href="cumulus-settings.html">overview</a></td>
-      <td align="right"><a href="cumulus-settings-map-objects.html">next</a></td>
-    </tr>
-</table>
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">start</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="left"><a href="cumulus-settings-glider.html">back</a></td>
+			<td align="center"><a href="cumulus-settings.html">overview</a></td>
+			<td align="right"><a href="cumulus-settings-map-objects.html">next</a></td>
+		</tr>
+	</table>
 
 </body>
 </html>

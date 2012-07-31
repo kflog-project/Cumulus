@@ -7,7 +7,9 @@
 <title>Getting started with Android</title>
 
 <style type="text/css">
-body { background-color:#CCF2FF; }
+body {
+	background-color: #CCF2FF;
+}
 </style>
 
 </head>
@@ -15,15 +17,16 @@ body { background-color:#CCF2FF; }
 
 	<H3 ALIGN=CENTER>Getting started with Android</H3>
 
-  <h4>Introduction</h4>
+	<h4>Introduction</h4>
 
 	Cumulus is a well established Open Source flight navigation software
 	made for (but not limited to) soaring pilots written in C++. The
 	primary hardware targets were Sharp's Zaurus devices and later Nokia's
 	Internet tablets. Both are able to run Qt software with relatively
 	little adaptation efforts which made it possible to use large parts of
-	the desktop flight preparation software	<i>KFlog</i>, created for the KDE
-	framework. The Android Lighthouse	project provides a development kit, called
+	the desktop flight preparation software
+	<i>KFlog</i>, created for the KDE framework. The Android Lighthouse
+	project provides a development kit, called
 	<i>Necessitas</i>, for integrating Qt C++ applications into the Android
 	environment with little or no changes, embedded in as native libraries
 	controlled by the JNI API (Java Native Interface).
@@ -36,20 +39,16 @@ body { background-color:#CCF2FF; }
 			Furthermore we recommend a screen diagonal greater than 4" otherwise
 			you have problems to use your fingers for the operation.
 		<li>The device must run Android Release 2.2.x (Froyo) or higher.
+
 		
 		<li>The screen should be good readable in sunshine.
-		
 		<li>An external storage medium (SD-Card) is needed for storing of
 			map and flight data.
-			
 		<li>If no internal GPS receiver is available Bluetooth radio is a
 			must for connection to external BT GPS devices.
-			
 		<li>Optional your device should have a Wireless Ethernet
 			connection to access the Internet for data downloads.
-			
 		<li>During longer flights you need an external power supply.
-		
 		<li>A device mount is recommended for usage in flight.
 	</ul>
 
@@ -57,20 +56,20 @@ body { background-color:#CCF2FF; }
 
 	The last release package is to find on Google play as
 
-	<a href="https://play.google.com/store/search?q=cumulus+from+kflog.org&c=apps">Cumulus from kflog.org</a>.
+	<a
+		href="https://play.google.com/store/search?q=cumulus+from+kflog.org&c=apps">Cumulus
+		from kflog.org</a>. Download the package and install it on your device.
 
-	Download the package and install it on your device.
-	
 	<h4>Permissions required by Cumulus</h4>
-	
+
 	Cumulus requires the following Android system permissions:
-	
+
 	<ul>
-	  <li>Location service updates (GPS)
-	  <li>Internet access
-	  <li>Bluetooth and Bluetooth administration
-	  <li>Wakelock
-	  <li>Read and write access for the SD-card
+		<li>Location service updates (GPS)
+		<li>Internet access
+		<li>Bluetooth and Bluetooth administration
+		<li>Wakelock
+		<li>Read and write access for the SD-card
 	</ul>
 
 	<h4>First startup of Cumulus</h4>
@@ -80,47 +79,49 @@ body { background-color:#CCF2FF; }
 		Internet connection running because Cumulus requires the installation
 		of the <i>Ministro</i> App. Ministro is a system wide Qt shared
 		libraries installer and provider service. It acts as a bridge between
-		your App and the needed Qt C++ libraries. If you cancel the installation,
-		Cumulus is not runable. So long Cumulus is installed at your device
-		you should not remove the Ministro App. Otherwise you will be
-		requested to reinstall it.
+		your App and the needed Qt C++ libraries. If you cancel the
+		installation, Cumulus is not runable. So long Cumulus is installed at
+		your device you should not remove the Ministro App. Otherwise you will
+		be requested to reinstall it.
 	</p>
 
 	<p>Furthermore the needed maps and the Welt2000 data file are
 		automatically dowloaded from the Internet, if you allow that.</p>
-		
-	<p>It is recommended to setup the font sizes of the GUI and the Menu labels to
-	   a value, which is optimal adapted to your device. To do that, open the menu
-	   item <i>General</i> and step to the tabulator <i>Look&amp;Feel</i>, the last
-	   one at the right side. On the page you can see two buttons, which will open
-	   a font dialog, if you press them. Choose a font size, which
-	   is optimal adapted to your device. Make only small changes and test the results.
-	   To get full running a new selected font, it is recommended to restart Cumulus.
-	   Especially the Menu font should be adapted by you, that it is better useable
-	   with fingers.
-	 </p>	
+
+	<p>
+		It is recommended to setup the font sizes of the GUI and the Menu
+		labels to a value, which is optimal adapted to your device. To do
+		that, open the menu item <i>General</i> and step to the tabulator <i>Look&amp;Feel</i>,
+		the last one at the right side. On the page you can see two buttons,
+		which will open a font dialog, if you press them. Choose a font size,
+		which is optimal adapted to your device. Make only small changes and
+		test the results. To get full running a new selected font, it is
+		recommended to restart Cumulus. Especially the Menu font should be
+		adapted by you, that it is better useable with fingers.
+	</p>
 
 	<h4>Configuration of Cumulus</h4>
 
 	<p>
 		If you set your home position and your flying radius you should have
 		an Internet connection running that all the required maps can be
-		downloaded automatically. The maps and all other data as waypoint files,
-		IGC logger files, flight task file, a.s.o are	installed at the SD-card under
-		the root path <i>/sdcard/Cumulus</i>. You can access this directory also
-		from your PC, if you couple your device with it via USB.
+		downloaded automatically. The maps and all other data as waypoint
+		files, IGC logger files, flight task file, a.s.o are installed at the
+		SD-card under the root path <i>/sdcard/Cumulus</i>. You can access
+		this directory also from your PC, if you couple your device with it
+		via USB.
 	</p>
 	<p>
 		Airspace files have to be installed in <I>/sdcard/Cumulus/maps/airspaces</I>.
 		You can download them by using your Internet browser and as
-		destination that directory. On the airspace setting page you can determine
-		which airspace files should be loaded during run-time by Cumulus.
-		Cumulus understands only airspace files in <i>OpenAir</i> format.
-		Such files are to find for Germany (Deutschland) on the
-	  <a href="http://www.daec.de/fachbereiche/luftraum-flugbetrieb/luftraumdaten/">
-	  DAeC Webpage</a>.
-	  Otherwise look <a href="http://soaringweb.org/Airspace/HomePage.html">here</a>,
-	  if you can find something for your country..
+		destination that directory. On the airspace setting page you can
+		determine which airspace files should be loaded during run-time by
+		Cumulus. Cumulus understands only airspace files in <i>OpenAir</i>
+		format. Such files are to find for Germany (Deutschland) on the <a
+			href="http://www.daec.de/fachbereiche/luftraum-flugbetrieb/luftraumdaten/">
+			DAeC Webpage</a>. Otherwise look <a
+			href="http://soaringweb.org/Airspace/HomePage.html">here</a>, if you
+		can find something for your country..
 	</p>
 
 	<h4>GPS activation</h4>
@@ -134,63 +135,69 @@ body { background-color:#CCF2FF; }
 		radio you can connect to an external GPS device.
 	</p>
 
-  <h4>Menu usage</h4>
-  
-  <p>
-    Cumulus has two different menus. The Android menu can be opened by pressing
-    the Android menu button. It provides some shortcuts to the important setup
-    pages of Cumulus and the GPS switch to control the mode. To show the
-    application menu, touch the <i>Menu</i> or the <i>S2f</i> field at the bottom
-    of the value display area on the left side. Touching the little boxes left
-    of the map can open additional dialogs for configuration or toggle the
-    display to show another content. Here are a short list about all:
-    
-    <ul>
-    <li><b>Menu/S2f</b> Opens the application menu.</i>
-    <li><b>Mc</b> Opens the McCready dialog.</li> 
-    <li><b>Var</b> Opens the Variometer dialog.</li> 
-    <li><b>Msl</b> Opens the altimeter dialog.</li> 
-    <li><b>Wd/LD</b> Tooggles the display between wind and long distance.</li> 
-    <li><b>Trk</b> Opens the Flarm radar view.</li> 
-    <li><b>Brg</b> Tooggles the display between bearing and reverse bearing.</li> 
-    <li><b>Dis/Eta</b> Tooggles the display between distance and ETA.</li> 
-    <li><b>Bearing icon</b> Creates a new waypoint at the current position
-           (a little black square).</li> 
-    <li><b>Arr</b> Opens the list view.</li> 
-    <li><b>To</b> Opens the task or list view.</li> 
-    </ul>
-    
-  </p>
+	<h4>Menu usage</h4>
+
+	<p>
+		Cumulus has two different menus. The Android menu can be opened by
+		pressing the Android menu button. It provides some shortcuts to the
+		important setup pages of Cumulus and the GPS switch to control the
+		mode. To show the application menu, touch the <i>Menu</i> or the <i>S2f</i>
+		field at the bottom of the value display area on the left side.
+		Touching the little boxes left of the map can open additional dialogs
+		for configuration or toggle the display to show another content. Here
+		are a short list about all:
+	<ul>
+		<li><b>Menu/S2f</b> Opens the application menu.</i>
+		<li><b>Mc</b> Opens the McCready dialog.</li>
+		<li><b>Var</b> Opens the Variometer dialog.</li>
+		<li><b>Msl</b> Opens the altimeter dialog.</li>
+		<li><b>Wd/LD</b> Tooggles the display between wind and long
+			distance.</li>
+		<li><b>Trk</b> Opens the Flarm radar view.</li>
+		<li><b>Brg</b> Tooggles the display between bearing and reverse
+			bearing.</li>
+		<li><b>Dis/Eta</b> Tooggles the display between distance and ETA.</li>
+		<li><b>Bearing icon</b> Creates a new waypoint at the current
+			position (a little black square).</li>
+		<li><b>Arr</b> Opens the list view.</li>
+		<li><b>To</b> Opens the task or list view.</li>
+	</ul>
+
+	</p>
 
 	<h4>Usage note</h4>
 
-	<p>The native Qt GUI part has some restrictions in its usage. Therefore
-		some GUI elements, e.g. color dialog, are not optimal to operate.</p>
-		
-  <p>Cumulus provides an online help. Please have a look into it, if you have
-  questions about the usage. The
-  <a href="http://www.kflog.org/cumulus/documentation/">Online Help</a>
-  is also to find on the Cumulus web page in two languages, in English and German.
-  </p>
+	<p>The native Qt GUI part has some restrictions in its usage.
+		Therefore some GUI elements, e.g. color dialog, are not optimal to
+		operate.</p>
+
+	<p>
+		Cumulus provides an online help. Please have a look into it, if you
+		have questions about the usage. The <a
+			href="http://www.kflog.org/cumulus/documentation/">Online Help</a> is
+		also to find on the Cumulus web page in two languages, in English and
+		German.
+	</p>
 
 	<h4>Remarks to Android</h4>
 
 	<p>A big problem is the variety of OS releases and that the
 		manufacturers can modify the Android OS provided by Google. That can
 		cause additional problems during run-time and makes a testing not more
-		possible by us on every device and for every OS release. Also the native Qt
-		GUI library port for Android is not yet error free.</p>
+		possible by us on every device and for every OS release. Also the
+		native Qt GUI library port for Android is not yet error free.</p>
 
 	<p>
 		If you step in problems with the GUI surface you can install the App <i>Ministro
-		configuration tool</i>. In that App you can change the used Qt library
+			configuration tool</i>. In that App you can change the used Qt library
 		source. Normally <i>stable</i> is used. Try out <i>testing</i> or <i>unstable</i>
 		and see if the observed issue is fixed.
 	</p>
-	
+
 	<hr>
 	<p>
-	<i>Author:</i> Axel Pauli, &nbsp;&nbsp;&nbsp; <i>$LastChangedDate$</i>
+		<i>Author:</i> Axel Pauli, &nbsp;&nbsp;&nbsp; <i>$LastChangedDate:
+			2012-07-19 16:42:14 +0200 (Do, 19 Jul 2012) $</i>
 	</p>
 
 </body>

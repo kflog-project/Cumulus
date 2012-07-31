@@ -2,228 +2,304 @@
 
 <html>
 <head>
-  <title>Cumulus Einstellungen</title>
-  <link rel="stylesheet" type="text/css" href="text.css">
+<title>Cumulus Einstellungen</title>
+<link rel="stylesheet" type="text/css" href="text.css">
 </head>
 <body>
 
-  <table width="100%">
-  <tr>
-    <td></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
-  </tr>
-  </table>
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+			<td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
+		</tr>
+	</table>
 
-  <h4 align="center">Einstellungen - GPS</h4>
+	<h4 align="center">Einstellungen - GPS</h4>
 
-  <b>GPS</b>
+	<b>GPS</b>
 
-  <p>
-  W&auml;hlen Sie hier die Ger&auml;teschnittstelle und die korrekte
-  &Uuml;bertragungsrate aus. Schauen Sie in das Handbuch Ihres
-  GPS-Empf&auml;ngers um diese Daten zu erfahren.
-  </p>
-  
-  <p>
-  Unter Android ist diese Seite nahezu leer. Bitte benutzen Sie hier die
-  Android Men&uuml;taste, um den GPS Empfang ein- bzw. auszuschalten.
-  </p>
-  
-  <p>Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die Anzahl
-  der empfangenen Satelliten, deren Signalst&auml;rke und die empfangenen NMEA
-  Datens&auml;tze sehen k&ouml;nnen. Diese &Uuml;bersicht kann mit der <i>g</i>-Taste oder
-  duch antippen des GPS Status Indikators in der Statusleiste ge&ouml;ffnet werden.
-  </p>
+	<p>W&auml;hlen Sie hier die Ger&auml;teschnittstelle und die
+		korrekte &Uuml;bertragungsrate aus. Schauen Sie in das Handbuch Ihres
+		GPS-Empf&auml;ngers um diese Daten zu erfahren.</p>
 
-  <p><b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer g&uuml;ltigen
-  Checksumme. Es kann ebenfalls einige propriet&auml;re Datens&auml;tze verarbeiten,
-  die von Ger&auml;ten wie, Cambridge, Volkslogger, Flarm oder LX angeboten werden.
-  Solche Daten sind Wind, barometrische H&ouml;he, Variometer, MacCready,
-  Kollisions- und Hindernisinformationen.</p>
+	<p>Unter Android ist diese Seite nahezu leer. Bitte benutzen Sie
+		hier die Android Men&uuml;taste, um den GPS Empfang ein- bzw.
+		auszuschalten.</p>
 
-  <h5>GPS Ger&auml;te</h5>
+	<p>
+		Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die
+		Anzahl der empfangenen Satelliten, deren Signalst&auml;rke und die
+		empfangenen NMEA Datens&auml;tze sehen k&ouml;nnen. Diese
+		&Uuml;bersicht kann mit der <i>g</i>-Taste oder duch antippen des GPS
+		Status Indikators in der Statusleiste ge&ouml;ffnet werden.
+	</p>
 
-  In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle ausw&auml;hlen, &uuml;ber die
-  die Verbindung zum GPS Empf&auml;nger hergestellt werden soll:
-  <p>
-  <ul>
-    <li> Serialle Schittstelle (RS232) z.B. /dev/ttyS0.
-    <li> Bluetooth Schittstelle z.B. /dev/rfcomm0
-    <li> USB Schittstelle z.B. /dev/ttyUSB0
-    <li> BT Adapter
-    <li> GPS Location
-    <li> Cumulus NMEA Simulator
-  </ul>
-  </p>
+	<p>
+		<b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer
+		g&uuml;ltigen Checksumme. Es kann ebenfalls einige propriet&auml;re
+		Datens&auml;tze verarbeiten, die von Ger&auml;ten wie, Cambridge,
+		Volkslogger, Flarm oder LX angeboten werden. Solche Daten sind Wind,
+		barometrische H&ouml;he, Variometer, MacCready, Kollisions- und
+		Hindernisinformationen.
+	</p>
 
-  <p>
-  Serielle and Bluetooth Schittstellen ben&ouml;tigen eine Geschwindigkeitsangabe
-  zur &Uuml;bertragung. Die NMEA Standard &Uuml;bertragungsgeschwindigkeit betragt
-  4800 bps. Bei Bluetooth kann sie auch h&ouml;her liegen.</p>
-  <p>
-  Wenn Sie ein Nokia Internet Tablet N800/N810/N900 verwenden, dann sollte
-  der Eintrag <i>GPS Location</i> Ihre erste Wahl sein, au&szlig;er Sie wollen sich
-  per USB zum GPS Empf&auml;nger verbinden. In solch einem Fall w&auml;hlen Sie
-  bitte den Eintrag <i>/dev/ttyUSB0</i> aus. Falls Sie einen RS232-USB Konverter
-  verwenden, m&uuml;ssen Sie auch eine passende &Uuml;bertragungsgeschwingigkeit dazu
-  ausw&auml;hlen.</p>
+	<h5>GPS Ger&auml;te</h5>
 
-  <p>Eine andere Auswahlm&ouml;glichkeit ist der Eintrag <i>BT-Adapter</i>. Wenn
-  Sie diesen w&auml;hlen, startet Cumulus automatisch einen Suchlauf nach
-  erreichbaren Bluetooth Ger&auml;ten in Ihrer Umgebung. Werden solche
-  Ger&auml;te gefunden, werden Sie in einem Combobox Dialog nach einiger Zeit
-  angeboten. W&auml;hlen Sie dort einen passenden Eintrag aus. War Ihre Auswahl
-  falsch, so m&uuml;ssen Sie Cumulus neu starten. Eine andere M&ouml;glichkeit
-  gibt es in diesem Fall nicht. Der direkte Kontakt eines GPS Ger&auml;tes &uuml;ber
-  Bluetooth bietet f&uuml;r Cumulus die M&ouml;glichkeit auch alle angebotenen NMEA
-  Datens&auml;tze von diesem Ger&auml;t ungefiltert zu erhalten. Das selbe
-  gilt f&uuml;r RS232 und USB Schnittstellen.</p>
-  <p>
-  Ist Ihre Schittstelle nicht in der Liste zu finden, so &auml;ndern Sie
-  einfach einen bestehenden Eintrag, entspreched Ihren W&uuml;nschen, ab.
-  </p>
+	In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle
+	ausw&auml;hlen, &uuml;ber die die Verbindung zum GPS Empf&auml;nger
+	hergestellt werden soll:
+	<p>
+	<ul>
+		<li>Serialle Schittstelle (RS232) z.B. /dev/ttyS0.
+		<li>Bluetooth Schittstelle z.B. /dev/rfcomm0
+		<li>USB Schittstelle z.B. /dev/ttyUSB0
+		<li>BT Adapter
+		<li>GPS Location
+		<li>Cumulus NMEA Simulator
+	</ul>
+	</p>
 
-  <h5>H&ouml;henreferenz</h5>
+	<p>Serielle and Bluetooth Schittstellen ben&ouml;tigen eine
+		Geschwindigkeitsangabe zur &Uuml;bertragung. Die NMEA Standard
+		&Uuml;bertragungsgeschwindigkeit betragt 4800 bps. Bei Bluetooth kann
+		sie auch h&ouml;her liegen.</p>
+	<p>
+		Wenn Sie ein Nokia Internet Tablet N800/N810/N900 verwenden, dann
+		sollte der Eintrag <i>GPS Location</i> Ihre erste Wahl sein,
+		au&szlig;er Sie wollen sich per USB zum GPS Empf&auml;nger verbinden.
+		In solch einem Fall w&auml;hlen Sie bitte den Eintrag <i>/dev/ttyUSB0</i>
+		aus. Falls Sie einen RS232-USB Konverter verwenden, m&uuml;ssen Sie
+		auch eine passende &Uuml;bertragungsgeschwingigkeit dazu
+		ausw&auml;hlen.
+	</p>
 
-  Die Standardeinstellung ist GPS. Die meisten GPS Ger&auml;te liefern die H&ouml;he auf
-  den Meeresspiegel bezogen, als sogenanntes MSL (mean sea level). Manche
-  Ger&auml;te liefern auch die H&ouml;he auf den zu Grunde liegenden Ellipsiod bezogen
-  oder haben eine eingebaute Drucksonde. Wenn Ihre angezeigte H&ouml;he immer um
-  einen konstanten Betrag von der richtigen H&ouml;he &uuml;ber dem Meer abweicht, so
-  l&auml;&szlig;t sich dieses mittels des H&ouml;hendialogs korregieren. Dies
-  trifft haups&auml;chlich bei Drucksonden zu. Tippen Sie auf die H&ouml;henanzeige
-  in der Kartenansicht und der Dialog wird ge&ouml;ffnet. Selektieren
-  Sie das Feld Abgleich und &auml;ndern Sie mit den Plus bzw. Minus Tasten den
-  eingestellten Wert. Positive Werte werden zur angezeigten H&ouml;he dazu addiert,
-  negative Werten werden abgezogen. Wenn ein GPS Fix existiert, wird der
-  Korrekturwert sofort auf die Anzeige angewendet.
-  <p>
-  Einige Ger&auml;te, z.B. Flarm, k&ouml;nnen H&ouml;henangaben liefern, die
-  von ihrer eingebauten Drucksonde stammen. Um diese Daten zu nutzen, m&uuml;ssen
-  Sie den Eintrag <i>Druck</i> bei der H&ouml;henreferenz Einstellung
-  ausw&auml;hlen.
-  </p>
-  <p><b>Achtung! Wenn Sie den Eintrag Druck gew&auml;hlt haben, erwartet
-  Cumulus spezielle NMEA Datens&auml;tze von Ihren angeschlossenen Ger&auml;t.
-  Andernfalls werden weder H&ouml;he noch Variometer Daten angezeigt!</b>
-  </p>
-  <p>
-  Von nachfolgend aufgef&uuml;hrten Ger&auml;ten werden Zusatzinformationen
-  von Cumulus verarbeitet. Zusatzinformationen wie QNH oder McCready k&ouml;nnen
-  die Benutzereinstellungen in Cumulus &uuml;berschreiben, da sie stets eine
-  h&ouml;here Priorit&auml;t gegen&uuml;ber den internen Einstellungen haben!
-  </p>
+	<p>
+		Eine andere Auswahlm&ouml;glichkeit ist der Eintrag <i>BT-Adapter</i>.
+		Wenn Sie diesen w&auml;hlen, startet Cumulus automatisch einen
+		Suchlauf nach erreichbaren Bluetooth Ger&auml;ten in Ihrer Umgebung.
+		Werden solche Ger&auml;te gefunden, werden Sie in einem Combobox
+		Dialog nach einiger Zeit angeboten. W&auml;hlen Sie dort einen
+		passenden Eintrag aus. War Ihre Auswahl falsch, so m&uuml;ssen Sie
+		Cumulus neu starten. Eine andere M&ouml;glichkeit gibt es in diesem
+		Fall nicht. Der direkte Kontakt eines GPS Ger&auml;tes &uuml;ber
+		Bluetooth bietet f&uuml;r Cumulus die M&ouml;glichkeit auch alle
+		angebotenen NMEA Datens&auml;tze von diesem Ger&auml;t ungefiltert zu
+		erhalten. Das selbe gilt f&uuml;r RS232 und USB Schnittstellen.
+	</p>
+	<p>Ist Ihre Schittstelle nicht in der Liste zu finden, so
+		&auml;ndern Sie einfach einen bestehenden Eintrag, entspreched Ihren
+		W&uuml;nschen, ab.</p>
 
-  <table border="1" cellpadding="5">
-  <tr><th>Ger&auml;t</th><th>verarbeitete Daten</th></tr>
+	<h5>H&ouml;henreferenz</h5>
 
-  <tr>
-  <th>Cambrigde</th>
-    <td>Es liefert H&ouml;hendaten (MSL und STD), die von einer
-        Drucksonde stammen, QNH, Wind und Variometer Daten.</td>
-  </tr>
+	Die Standardeinstellung ist GPS. Die meisten GPS Ger&auml;te liefern
+	die H&ouml;he auf den Meeresspiegel bezogen, als sogenanntes MSL (mean
+	sea level). Manche Ger&auml;te liefern auch die H&ouml;he auf den zu
+	Grunde liegenden Ellipsiod bezogen oder haben eine eingebaute
+	Drucksonde. Wenn Ihre angezeigte H&ouml;he immer um einen konstanten
+	Betrag von der richtigen H&ouml;he &uuml;ber dem Meer abweicht, so
+	l&auml;&szlig;t sich dieses mittels des H&ouml;hendialogs korregieren.
+	Dies trifft haups&auml;chlich bei Drucksonden zu. Tippen Sie auf die
+	H&ouml;henanzeige in der Kartenansicht und der Dialog wird
+	ge&ouml;ffnet. Selektieren Sie das Feld Abgleich und &auml;ndern Sie
+	mit den Plus bzw. Minus Tasten den eingestellten Wert. Positive Werte
+	werden zur angezeigten H&ouml;he dazu addiert, negative Werten werden
+	abgezogen. Wenn ein GPS Fix existiert, wird der Korrekturwert sofort
+	auf die Anzeige angewendet.
+	<p>
+		Einige Ger&auml;te, z.B. Flarm, k&ouml;nnen H&ouml;henangaben liefern,
+		die von ihrer eingebauten Drucksonde stammen. Um diese Daten zu
+		nutzen, m&uuml;ssen Sie den Eintrag <i>Druck</i> bei der
+		H&ouml;henreferenz Einstellung ausw&auml;hlen.
+	</p>
+	<p>
+		<b>Achtung! Wenn Sie den Eintrag Druck gew&auml;hlt haben,
+			erwartet Cumulus spezielle NMEA Datens&auml;tze von Ihren
+			angeschlossenen Ger&auml;t. Andernfalls werden weder H&ouml;he noch
+			Variometer Daten angezeigt!</b>
+	</p>
+	<p>Von nachfolgend aufgef&uuml;hrten Ger&auml;ten werden
+		Zusatzinformationen von Cumulus verarbeitet. Zusatzinformationen wie
+		QNH oder McCready k&ouml;nnen die Benutzereinstellungen in Cumulus
+		&uuml;berschreiben, da sie stets eine h&ouml;here Priorit&auml;t
+		gegen&uuml;ber den internen Einstellungen haben!</p>
 
-  <tr>
-  <th>Volkslogger</th>
-  <td>Es liefert H&ouml;hendaten bezogen auf STD, die von einer
-      Drucksonde stammen. Um die richtige MSL H&ouml;he zu bekommen, muss der
-      korrekte QHN Wert im H&ouml;hendialog eingestellt werden. Weiterhin m&uuml;ssen
-      Sie das Senden des PGCS Datensatzes im Volkslogger Einstellmen&uuml;
-      aktivieren.</td>
-  </tr>
+	<table border="1" cellpadding="5">
+		<tr>
+			<th>Ger&auml;t</th>
+			<th>verarbeitete Daten</th>
+		</tr>
 
-  <th>LX Navigation</th>
-  <td>Es liefert H&ouml;hendaten bezogen auf MSL, die von einer Drucksonde
-      stammen und Wind Daten. Manche Ger&auml;te liefern auch noch McCready und
-      Variometer Daten. Dazu muss das Senden der LXWP Datens&auml;tze im
-      Einstellmen&uuml; des Ger&auml;tes aktiviert werden. Bei einem LX20 m&uuml;ssen Sie
-      in das Passwort Men&uuml; gehen, das aktuelle Passwort (Standard ist 96990)
-      eingeben und ins NMEA Men&uuml; dann wechseln. Hier setzen Sie den Eintrag
-      LXWP? auf 'Y'. Setzen Sie die &Uuml;bertragungsgeschwingigkeit in Cumulus
-      auf 4800 bps. Das ist die Standardgeschwindigkeit des LX Ger&auml;tes
-      unabh&auml;ngig von der eingestellten &Uuml;bertragungsgeschwingigkeit zum PC.
-      </td>
-  </tr>
+		<tr>
+			<th>Cambrigde</th>
+			<td>Es liefert H&ouml;hendaten (MSL und STD), die von einer
+				Drucksonde stammen, QNH, Wind und Variometer Daten.</td>
+		</tr>
 
-  <th>FLARM</th>
-  <td>Hardware Version 2 und sp&auml;ter. Es liefert H&ouml;hendaten
-      bezogen auf MSL, die von einer Drucksonde stammen und Informationen
-      &uuml;ber Flugzeuge und Bodenhindenisse. Aktivieren Sie im
-      FLARM Ger&auml;te Men&uuml; das Senden der PGRMZ, GPRMC, GPGGA, GPGSA
-      und der propriet&auml;ren FLARM Datens&auml;tze. Weitere Hinweise zur
-      Flarm Benutzung in Cumulus finden Sie auch auf der Seite
-      <a href="cumulus-flarm.html">Flarm</a>.</td>
-  </tr>
-  </table>
+		<tr>
+			<th>Volkslogger</th>
+			<td>Es liefert H&ouml;hendaten bezogen auf STD, die von einer
+				Drucksonde stammen. Um die richtige MSL H&ouml;he zu bekommen, muss
+				der korrekte QHN Wert im H&ouml;hendialog eingestellt werden.
+				Weiterhin m&uuml;ssen Sie das Senden des PGCS Datensatzes im
+				Volkslogger Einstellmen&uuml; aktivieren.</td>
+		</tr>
 
-  <h5>Abgleich der Systemuhr</h5>
+		<th>LX Navigation</th>
+		<td>Es liefert H&ouml;hendaten bezogen auf MSL, die von einer
+			Drucksonde stammen und Wind Daten. Manche Ger&auml;te liefern auch
+			noch McCready und Variometer Daten. Dazu muss das Senden der LXWP
+			Datens&auml;tze im Einstellmen&uuml; des Ger&auml;tes aktiviert
+			werden. Bei einem LX20 m&uuml;ssen Sie in das Passwort Men&uuml;
+			gehen, das aktuelle Passwort (Standard ist 96990) eingeben und ins
+			NMEA Men&uuml; dann wechseln. Hier setzen Sie den Eintrag LXWP? auf
+			'Y'. Setzen Sie die &Uuml;bertragungsgeschwingigkeit in Cumulus auf
+			4800 bps. Das ist die Standardgeschwindigkeit des LX Ger&auml;tes
+			unabh&auml;ngig von der eingestellten
+			&Uuml;bertragungsgeschwingigkeit zum PC.</td>
+		</tr>
 
-  Cumulus gestattet auch das Abgleichen der Systemuhr des PDA
-  auf die GPS Zeit, wenn die Option <i>Sync Clock</i> aktiviert wird.
-  Dazu muss das Programm aber unter dem Benutzer <i>root</i> laufen. Bei den
-  Nokia Internet Tablets ist diese Option nicht verf&uuml;gbar, da Cumulus dort
-  nur unter dem Benutzernamen <i>user</i> laufen kann.
-  
-  <h5>Speichere NMEA Daten</h5>
-  
-  Wenn die Option <i>Speichere NMEA Daten</i> aktiviert ist, wird der empfangene
-  NMEA Datenstrom in eine Datei geschriebenen. Die Datei tr&auml;gt den Namen
-  <i>CumulusNmea.log</i> und wird im Benuzter Datenverzeichnis abgelegt.
-  Nach jedem Neustart von Cumulus oder wenn diese Option im
-  Einstellungsmen&uuml; aktiviert wird, wird eine neue Datei ge&ouml;ffnet.
-  Der Inhalt der vorhergehenden Datei wird in <i>CumulusNmea.log.old</i>
-  gerettet. Eine weitere Sicherung gibt es dann nicht mehr. Sie k&ouml;nnen
-  diese Option zu Analysezwecken oder f&uuml;r eine sp&auml;tere
-  Weiterverarbeitung der GPS Daten benutzen. Wir empfehlen, diese Option nur zu
-  Analysezwecken zu benutzen, da sie auch die Leistungsf&auml;higkeit des
-  Prozessors einschr&auml;nken kann.
+		<th>FLARM</th>
+		<td>Hardware Version 2 und sp&auml;ter. Es liefert
+			H&ouml;hendaten bezogen auf MSL, die von einer Drucksonde stammen und
+			Informationen &uuml;ber Flugzeuge und Bodenhindenisse. Aktivieren Sie
+			im FLARM Ger&auml;te Men&uuml; das Senden der PGRMZ, GPRMC, GPGGA,
+			GPGSA und der propriet&auml;ren FLARM Datens&auml;tze. Weitere
+			Hinweise zur Flarm Benutzung in Cumulus finden Sie auch auf der Seite
+			<a href="cumulus-flarm.html">Flarm</a>.
+		</td>
+		</tr>
+	</table>
 
-  <h5>Verarbeitete GPS Datens&auml;tze</h5>
+	<h5>Abgleich der Systemuhr</h5>
 
-  Cumulus verarbeitet die folgenden NMEA and propriet&auml;ren Datens&auml;tze:
-  <p>
-  <table border="1" cellpadding="5">
-    <tr><th>NMEA Id</th> <th>Beschreibung</th></tr>
-    <tr><td>$GPRMC</td> <td>Recommended Minimum Specific GNSS Data</td></tr>
-    <tr><td>$GPGLL</td> <td>Geographic Position - Latitude and Longitude</td></tr>
-    <tr><td>$GPGGA</td> <td>Global Positioning System Fixed Data</td></tr>
-    <tr><td>$GPGSA</td> <td>GNSS DOP and Active Satellites</td></tr>
-    <tr><td>$GPGSV</td> <td>GNSS Satellites in View</td></tr>
-    <tr><td>$GPDTM</td> <td>Map datum</td></tr>
-    <tr><td>$PGRMZ</td> <td>Garmin and FLARM proprietary sentence with barometric or GPS altitude data.</td></tr>
+	Cumulus gestattet auch das Abgleichen der Systemuhr des PDA auf die GPS
+	Zeit, wenn die Option
+	<i>Sync Clock</i> aktiviert wird. Dazu muss das Programm aber unter dem
+	Benutzer
+	<i>root</i> laufen. Bei den Nokia Internet Tablets ist diese Option
+	nicht verf&uuml;gbar, da Cumulus dort nur unter dem Benutzernamen
+	<i>user</i> laufen kann.
 
-    <tr><td>$PFLAU</td> <td>FLARM proprietary sentence with status, intruder and obstacle data.</td></tr>
-    <tr><td>$PFLAA</td> <td>FLARM proprietary sentence with data about other aircraft around.</td></tr>
+	<h5>Speichere NMEA Daten</h5>
 
-    <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
-    <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QHN setting,
-                        wind direction, MacCready, wind speed and variometer </td></tr>
-    <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
-    <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
-    <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
-    <tr><td>$MAEMO0</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
-    <tr><td>$MAEMO1</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used.</td></tr>
-  </table>
-  </p>
+	Wenn die Option
+	<i>Speichere NMEA Daten</i> aktiviert ist, wird der empfangene NMEA
+	Datenstrom in eine Datei geschriebenen. Die Datei tr&auml;gt den Namen
+	<i>CumulusNmea.log</i> und wird im Benuzter Datenverzeichnis abgelegt.
+	Nach jedem Neustart von Cumulus oder wenn diese Option im
+	Einstellungsmen&uuml; aktiviert wird, wird eine neue Datei
+	ge&ouml;ffnet. Der Inhalt der vorhergehenden Datei wird in
+	<i>CumulusNmea.log.old</i> gerettet. Eine weitere Sicherung gibt es
+	dann nicht mehr. Sie k&ouml;nnen diese Option zu Analysezwecken oder
+	f&uuml;r eine sp&auml;tere Weiterverarbeitung der GPS Daten benutzen.
+	Wir empfehlen, diese Option nur zu Analysezwecken zu benutzen, da sie
+	auch die Leistungsf&auml;higkeit des Prozessors einschr&auml;nken kann.
 
-  <table width="100%">
-  <tr>
-  <td></td>
-  <td align="center"><a href="cumulus.html">Anfang</a></td>
-  <td></td>
-  </tr>
-  <tr>
-  <td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
-  <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-  <td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
-  </tr>
-  </table>
+	<h5>Verarbeitete GPS Datens&auml;tze</h5>
+
+	Cumulus verarbeitet die folgenden NMEA and propriet&auml;ren
+	Datens&auml;tze:
+	<p>
+	<table border="1" cellpadding="5">
+		<tr>
+			<th>NMEA Id</th>
+			<th>Beschreibung</th>
+		</tr>
+		<tr>
+			<td>$GPRMC</td>
+			<td>Recommended Minimum Specific GNSS Data</td>
+		</tr>
+		<tr>
+			<td>$GPGLL</td>
+			<td>Geographic Position - Latitude and Longitude</td>
+		</tr>
+		<tr>
+			<td>$GPGGA</td>
+			<td>Global Positioning System Fixed Data</td>
+		</tr>
+		<tr>
+			<td>$GPGSA</td>
+			<td>GNSS DOP and Active Satellites</td>
+		</tr>
+		<tr>
+			<td>$GPGSV</td>
+			<td>GNSS Satellites in View</td>
+		</tr>
+		<tr>
+			<td>$GPDTM</td>
+			<td>Map datum</td>
+		</tr>
+		<tr>
+			<td>$PGRMZ</td>
+			<td>Garmin and FLARM proprietary sentence with barometric or GPS
+				altitude data.</td>
+		</tr>
+
+		<tr>
+			<td>$PFLAU</td>
+			<td>FLARM proprietary sentence with status, intruder and
+				obstacle data.</td>
+		</tr>
+		<tr>
+			<td>$PFLAA</td>
+			<td>FLARM proprietary sentence with data about other aircraft
+				around.</td>
+		</tr>
+
+		<tr>
+			<td>$PCAID</td>
+			<td>Cambridge proprietary sentence with STD altitude</td>
+		</tr>
+		<tr>
+			<td>!w</td>
+			<td>Cambridge proprietary sentence with MSL altitude, QHN
+				setting, wind direction, MacCready, wind speed and variometer</td>
+		</tr>
+		<tr>
+			<td>$PGCS</td>
+			<td>Volkslogger proprietary sentence with STD altitude</td>
+		</tr>
+		<tr>
+			<td>$LXWP0</td>
+			<td>LX Navigation proprietary sentence with MSL altitude,
+				variometer and wind data</td>
+		</tr>
+		<tr>
+			<td>$LXWP2</td>
+			<td>LX Navigation proprietary sentence with McCready data</td>
+		</tr>
+		<tr>
+			<td>$MAEMO0</td>
+			<td>Cumulus internal proprietary sentence, if LibLocation from
+				MAEMO 5 is used.</td>
+		</tr>
+		<tr>
+			<td>$MAEMO1</td>
+			<td>Cumulus internal proprietary sentence, if LibLocation from
+				MAEMO 5 is used.</td>
+		</tr>
+	</table>
+	</p>
+
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+			<td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
+		</tr>
+	</table>
 
 </body>
 </html>

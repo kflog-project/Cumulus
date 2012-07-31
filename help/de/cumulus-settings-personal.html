@@ -2,158 +2,188 @@
 
 <html>
 <head>
-  <title>Cumulus Einstellungen</title>
-  <link rel="stylesheet" type="text/css" href="text.css">
+<title>Cumulus Einstellungen</title>
+<link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
 <body>
 
-  <table width="100%">
-  <tr>
-    <td></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td></td>
-  </tr>
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td></td>
+		</tr>
 
-  <tr>
-    <td align="left"><a href="cumulus-settings.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-gps.html">weiter</a></td>
-  </tr>
-  </table>
+		<tr>
+			<td align="left"><a href="cumulus-settings.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+			<td align="right"><a href="cumulus-settings-gps.html">weiter</a></td>
+		</tr>
+	</table>
 
-  <h4 align="center">Einstellungen - Pers&ouml;nliches</h4>
+	<h4 align="center">Einstellungen - Pers&ouml;nliches</h4>
 
-  <b>Pers&ouml;nliches</b>
+	<b>Pers&ouml;nliches</b>
 
-  <p>
-  Hier definieren Sie ihre pers&ouml;nlichen Daten.
-  </p>
+	<p>Hier definieren Sie ihre pers&ouml;nlichen Daten.</p>
 
-  <dl>
+	<dl>
 
-  <dt><b>Piloten Name</b></dt>
+		<dt>
+			<b>Piloten Name</b>
+		</dt>
 
-  <dd>
-     Dieser Eintrag wird ins IGC-Logfile geschrieben.
-  </dd>
+		<dd>Dieser Eintrag wird ins IGC-Logfile geschrieben.</dd>
 
-  <br><dt><b>Sprache</b></dt>
+		<br>
+		<dt>
+			<b>Sprache</b>
+		</dt>
 
-  <dd>
-     W&auml;hlen Sie Ihre gew&uuml;nschte Sprache aus. Englisch ist immer der Standard,
-     auch f&uuml;r den Fehlerfall. Nach einem Sprachwechsel m&uuml;ssen Sie Cumulus
-     neu starten, um eine vollst&auml;ndig &uuml;bersetzte Oberfl&auml;che zu
-     bekommen.
-  </dd>
+		<dd>W&auml;hlen Sie Ihre gew&uuml;nschte Sprache aus. Englisch
+			ist immer der Standard, auch f&uuml;r den Fehlerfall. Nach einem
+			Sprachwechsel m&uuml;ssen Sie Cumulus neu starten, um eine
+			vollst&auml;ndig &uuml;bersetzte Oberfl&auml;che zu bekommen.</dd>
 
-  <br><dt><b>Heimatplatz Land</b></dt>
-  
-  <dd>
-    Ihr Heimatplatzland ist als zwei Buchstabenkode entsprechend nach ISO 3166
-    hier einzutragen. &Ouml;ffnen Sie den Wegpunkteditor um einen neuen Wegpunkt
-    anzulegen, wird das Land im Editor auf Ihr Heimatland vordefiniert.
-    Der L&auml;nderkode wird automatisch neu gesetzt, wenn Sie eine neue
-    Heimatposition in einer der &Uuml;bersichtslisten ausw&auml;hlen.
-  </dd>
+		<br>
+		<dt>
+			<b>Heimatplatz Land</b>
+		</dt>
 
-  <br><dt><a name="HomeSiteElevation"></a><b>Heimatplatz H&ouml;he</b></dt>
+		<dd>Ihr Heimatplatzland ist als zwei Buchstabenkode entsprechend
+			nach ISO 3166 hier einzutragen. &Ouml;ffnen Sie den Wegpunkteditor um
+			einen neuen Wegpunkt anzulegen, wird das Land im Editor auf Ihr
+			Heimatland vordefiniert. Der L&auml;nderkode wird automatisch neu
+			gesetzt, wenn Sie eine neue Heimatposition in einer der
+			&Uuml;bersichtslisten ausw&auml;hlen.</dd>
 
-  <dd>
-    Tragen Sie hier die H&ouml;he von Ihrem Heimatplatz &uuml;ber dem Meer ein. Dieser Wert
-    wird in Betracht genommen, wenn im H&ouml;hendialog AHL (H&ouml;he &uuml;ber dem Heimatplatz)
-    ausgew&auml;hlt wird. In diesem Fall ist die angezeigte H&ouml;he in Cumulus auf Ihren
-    Heimatplatz bezogen und wird auch als QFE bezeichnet.
-  </dd>
+		<br>
+		<dt>
+			<a name="HomeSiteElevation"></a><b>Heimatplatz H&ouml;he</b>
+		</dt>
 
-  <br><dt><b>Heimatplatz Koordinaten</b></dt>
+		<dd>Tragen Sie hier die H&ouml;he von Ihrem Heimatplatz &uuml;ber
+			dem Meer ein. Dieser Wert wird in Betracht genommen, wenn im
+			H&ouml;hendialog AHL (H&ouml;he &uuml;ber dem Heimatplatz)
+			ausgew&auml;hlt wird. In diesem Fall ist die angezeigte H&ouml;he in
+			Cumulus auf Ihren Heimatplatz bezogen und wird auch als QFE
+			bezeichnet.</dd>
 
-  <dd>
-    Die Heimatplatz Koordinaten werden benutzt f&uuml;r:
+		<br>
+		<dt>
+			<b>Heimatplatz Koordinaten</b>
+		</dt>
 
-    <p><ul>
-      <li>Die <a href="cumulus-settings-map-settings.html#Projection">Karten Projektionseinstellungen</a></li>
-      <li>Die <a href="cumulus-manual.html">Manuelle Navigation</a></li>
-      <li>Als Mittelpunkt f&uuml;r die <a href="cumulus-settings-airfields.html#Radius">Welt2000</a>
-           Flugplatzdatei, wenn die Radius Option aktiviert ist.</li>
-      <li>Als vordefinierter
-          <a href="cumulus-settings-map-settings.html#CenterPoint">
-          Mittelpunkt</a> f&uuml;r die Karten Download Prozedur.</li>
-    </ul></p>
+		<dd>
+			Die Heimatplatz Koordinaten werden benutzt f&uuml;r:
 
-    Die Heimatplatz Koordinaten k&ouml;nnen ebenso in den Flugplatz- und
-    Wegpunktanzeigen gesetzt werden. In diesem Fall werden die Koordinaten
-    von diesen Seiten &uuml;bernommen und ein manueller Eintrag ist hier nicht
-    notwendig. Die voreingestellte Position ist auf das Brandenburger Tor,
-    in der Mitte Berlins (DE), gesetzt.
-  </dd>
+			<p>
+			<ul>
+				<li>Die <a href="cumulus-settings-map-settings.html#Projection">Karten
+						Projektionseinstellungen</a></li>
+				<li>Die <a href="cumulus-manual.html">Manuelle Navigation</a></li>
+				<li>Als Mittelpunkt f&uuml;r die <a
+					href="cumulus-settings-airfields.html#Radius">Welt2000</a>
+					Flugplatzdatei, wenn die Radius Option aktiviert ist.
+				</li>
+				<li>Als vordefinierter <a
+					href="cumulus-settings-map-settings.html#CenterPoint">
+						Mittelpunkt</a> f&uuml;r die Karten Download Prozedur.
+				</li>
+			</ul>
+			</p>
 
-  <br><dt><a name="DataDirectory"></a><b>Datenverzeichnis</b></dt>
+			Die Heimatplatz Koordinaten k&ouml;nnen ebenso in den Flugplatz- und
+			Wegpunktanzeigen gesetzt werden. In diesem Fall werden die
+			Koordinaten von diesen Seiten &uuml;bernommen und ein manueller
+			Eintrag ist hier nicht notwendig. Die voreingestellte Position ist
+			auf das Brandenburger Tor, in der Mitte Berlins (DE), gesetzt.
+		</dd>
 
-  <dd>
-      Mit Hifle des Knopfes <b>Datenverzeichnis</b> und dem Texteingabefeld
-      daneben, k&ouml;nnen Sie einen neuen Speicherort f&uuml;r die Wegpunkt-,
-      Aufgaben- und IGC-Logger Dateien definieren. Als Standard ist in
-      Cumulus daf&uuml;r eingestellt:
+		<br>
+		<dt>
+			<a name="DataDirectory"></a><b>Datenverzeichnis</b>
+		</dt>
 
-      <p><ul>
-        <li><b>$HOME/Cumulus</b> auf dem Desktop PC
-        <li><b>$HOME/MyDocs/Cumulus</b> unter Maemo (Nokia Internet Tablet)
-        <li><b>/sdcard/Cumulus</b> unter Android
-      </ul></p>
+		<dd>
+			Mit Hifle des Knopfes <b>Datenverzeichnis</b> und dem Texteingabefeld
+			daneben, k&ouml;nnen Sie einen neuen Speicherort f&uuml;r die
+			Wegpunkt-, Aufgaben- und IGC-Logger Dateien definieren. Als Standard
+			ist in Cumulus daf&uuml;r eingestellt:
 
-      <p>Auf den Nokia Internet Tablets N8x0 ist es empfehlenswert, ein
-      neues Verzeichnis, was auf einer SD Speicherkarte liegt,
-      zu definieren. Daf&uuml;r kommen die Wurzelverzeichnisse <i>/media/mmc1</i>
-      f&uuml;r die
-      externe Karte oder <i>/media/mmc2</i> f&uuml;r die interne Karte in Frage. Diese
-      sind &uuml;ber USB bzw. auch &uuml;ber den Maemo Datei Manager zugreifbar. So lassen
-      sich Dateien sehr bequem zwischen dem PC und dem Tablet &uuml;bertragen.</p>
+			<p>
+			<ul>
+				<li><b>$HOME/Cumulus</b> auf dem Desktop PC
+				<li><b>$HOME/MyDocs/Cumulus</b> unter Maemo (Nokia Internet
+					Tablet)
+				<li><b>/sdcard/Cumulus</b> unter Android
+			</ul>
+			</p>
 
-      <p>Wenn Sie den Knopf <b>Datenverzeichnis</b> dr&uuml;cken, &ouml;ffnet sich ein
-      Verzeichnisdialog, &uuml;ber den Sie zu einem neuen Speicherort navigieren
-      k&ouml;nnen. Benutzen Sie kurze Doppeltipps auf dem Nokia Internet Tablet,
-      um zwischen den Verzeichnissen zu wechseln. Der Dialog zeigt nur
-      existierende Verzeichnisse an. Um ein neues anzulegen, f&uuml;gen Sie den
-      Namen des gew&uuml;nschten Unterverzeichnisses im Textfeld hinten an und
-      verlassen den Dialog mit der OK Taste.Cumulus erzeugt dann automatisch
-      alle erforderlichen Unterverzeichnisse.</p>
+			<p>
+				Auf den Nokia Internet Tablets N8x0 ist es empfehlenswert, ein neues
+				Verzeichnis, was auf einer SD Speicherkarte liegt, zu definieren.
+				Daf&uuml;r kommen die Wurzelverzeichnisse <i>/media/mmc1</i>
+				f&uuml;r die externe Karte oder <i>/media/mmc2</i> f&uuml;r die
+				interne Karte in Frage. Diese sind &uuml;ber USB bzw. auch &uuml;ber
+				den Maemo Datei Manager zugreifbar. So lassen sich Dateien sehr
+				bequem zwischen dem PC und dem Tablet &uuml;bertragen.
+			</p>
 
-      <p>z.B.</p>
+			<p>
+				Wenn Sie den Knopf <b>Datenverzeichnis</b> dr&uuml;cken, &ouml;ffnet
+				sich ein Verzeichnisdialog, &uuml;ber den Sie zu einem neuen
+				Speicherort navigieren k&ouml;nnen. Benutzen Sie kurze Doppeltipps
+				auf dem Nokia Internet Tablet, um zwischen den Verzeichnissen zu
+				wechseln. Der Dialog zeigt nur existierende Verzeichnisse an. Um ein
+				neues anzulegen, f&uuml;gen Sie den Namen des gew&uuml;nschten
+				Unterverzeichnisses im Textfeld hinten an und verlassen den Dialog
+				mit der OK Taste.Cumulus erzeugt dann automatisch alle
+				erforderlichen Unterverzeichnisse.
+			</p>
 
-      <p><b>/media/mmc1/Cumulus</b> oder <b>/media/mmc2/Cumulus</b></p>
+			<p>z.B.</p>
 
-      <p>sollten gute Pl&auml;tze f&uuml;r die Nokia Internet Tablets N8x0 sein.</p>
-      
-      <p>
-      <b>Achtung!</b> Falls Sie ein neues Verzeichnis anlegen, kopiert
-      Cumulus <b>nicht</b> automatisch alle Dateien aus dem alten Bereich in
-      den neuen. Das m&uuml;ssen Sie von Hand tun, wenn Cumulus <b>nicht l&auml;uft!</b>
-      </p>
-  </dd>
-  
-  <dt><a name="Proxy"></a><b>Proxy</b></dt>
+			<p>
+				<b>/media/mmc1/Cumulus</b> oder <b>/media/mmc2/Cumulus</b>
+			</p>
 
-  <dd>
-    Wenn Sie auf das Internet nur &uuml;ber einen Proxy zugreifen k&ouml;nnen,
-    so dr&uuml;cken Sie auf den Kopf <i>Proxy</i> und definieren ihn dort.
-  </dd>
-<dl>
+			<p>sollten gute Pl&auml;tze f&uuml;r die Nokia Internet Tablets
+				N8x0 sein.</p>
 
-  <p>
-  <table width="100%">
-  <tr>
-    <td></td>
-    <td align="center"><a href="cumulus.html">Anfang</a></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td align="left"><a href="cumulus-settings.html">zur&uuml;ck</a></td>
-    <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-    <td align="right"><a href="cumulus-settings-gps.html">weiter</a></td>
-  </tr>
-  </table>
-  </p>
+			<p>
+				<b>Achtung!</b> Falls Sie ein neues Verzeichnis anlegen, kopiert
+				Cumulus <b>nicht</b> automatisch alle Dateien aus dem alten Bereich
+				in den neuen. Das m&uuml;ssen Sie von Hand tun, wenn Cumulus <b>nicht
+					l&auml;uft!</b>
+			</p>
+		</dd>
 
+		<dt>
+			<a name="Proxy"></a><b>Proxy</b>
+		</dt>
+
+		<dd>
+			Wenn Sie auf das Internet nur &uuml;ber einen Proxy zugreifen
+			k&ouml;nnen, so dr&uuml;cken Sie auf den Kopf <i>Proxy</i> und
+			definieren ihn dort.
+		</dd>
+		<dl>
+
+			<p>
+			<table width="100%">
+				<tr>
+					<td></td>
+					<td align="center"><a href="cumulus.html">Anfang</a></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="left"><a href="cumulus-settings.html">zur&uuml;ck</a></td>
+					<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+					<td align="right"><a href="cumulus-settings-gps.html">weiter</a></td>
+				</tr>
+			</table>
+			</p>
 </body>
 </html>

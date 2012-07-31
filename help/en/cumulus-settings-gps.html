@@ -1,279 +1,327 @@
 <!-- $Id$ -->
 <html>
 <head>
-  <title>Cumulus Settings</title>
-  <link rel="stylesheet" type="text/css" href="text.css">
+<title>Cumulus Settings</title>
+<link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
 <body>
 
-  <table width="100%">
-    <tbody>
-      <tr>
-        <td></td>
-        <td align="center"><a href="cumulus.html">start</a></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
-        <td align="center"><a href="cumulus-settings.html">overview</a></td>
-        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
-      </tr>
-    </tbody>
-  </table>
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-personal.html">back</a></td>
+				<td align="center"><a href="cumulus-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
 
-  <h4 align="center">Settings - GPS and other peripheral devices</h4>
+	<h4 align="center">Settings - GPS and other peripheral devices</h4>
 
-  <b>GPS</b>
+	<b>GPS</b>
 
-  <p>
-  This page is used for entering the connection information for the primary GPS
-  device used by Cumulus for navigation. Please refer to your GPS manual for
-  these connection values. Cumulus can also accept and process data from other
-  peripherals such as Cambridge, Volkslogger, Flarm or LX Navigation.
-  </p>
-  
-  <p>
-  Under Android this page is nearly empty. Please use the Android menu key
-  to switch on/off your desired GPS device.
-  </p>
-  
-  <p>
-  Cumulus can provide you with some status information concerning your GPS
-  reception. If you want to know what satellites are in view, where they
-  are, how strong their signal is, or if you want to take a look at the
-  raw NMEA stream of your GPS, use the <b><i>G</i></b> key or click on
-  the GPS status indicator in the status bar. This will open a status
-  dialog for the GPS. The dialog can be closed with the "close" button.
-  </p>
+	<p>This page is used for entering the connection information for
+		the primary GPS device used by Cumulus for navigation. Please refer to
+		your GPS manual for these connection values. Cumulus can also accept
+		and process data from other peripherals such as Cambridge,
+		Volkslogger, Flarm or LX Navigation.</p>
 
-  <h5>GPS Device</h5>
+	<p>Under Android this page is nearly empty. Please use the Android
+		menu key to switch on/off your desired GPS device.</p>
+
+	<p>
+		Cumulus can provide you with some status information concerning your
+		GPS reception. If you want to know what satellites are in view, where
+		they are, how strong their signal is, or if you want to take a look at
+		the raw NMEA stream of your GPS, use the <b><i>G</i></b> key or click
+		on the GPS status indicator in the status bar. This will open a status
+		dialog for the GPS. The dialog can be closed with the "close" button.
+	</p>
+
+	<h5>GPS Device</h5>
 
 	In the combo box you can select the connection type to be used for your
 	GPS or peripheral connection. The following alternatives are available:
-	
-	<p>
-  <table border="1" cellpadding="5">
-  <tr><th>Item</th><th>Description</th></tr>
-  
-  <tr>
-    <th>GPS Location</th>
-    <td>
-        only for using the Location Service provided by the
-        Internet Tablets N8x0/N900. Users of the N8x0
-        or N900 can make use of the option in the tablet's
-        own Settings/Control panel/GPS location to use either the
-        built-in GPS receiver or an external Bluetooth GPS device.
-    </td>
-  </tr>
 
-  <tr>
-    <th>BT Adapter</th>
-    <td>
-        for direct connection to an external Bluetooth device.
-        In this case Cumulus will automatically scan your
-        environment for a reachable device, and, if it
-        finds one, will open up a combo box dialog from
-        which you can make the appropriate selection.
-        A wrong selection will mean that you will have
-        to restart Cumulus!
-    </td>
-  </tr>
-
-  <tr>
-    <th>/dev/ttyUSB0</th>
-    <td>
-        for a USB GPS device or, e.g., a USB-serial adaptor
-    </td>
-  </tr>
-
-  <tr>
-    <th>/tmp/nmeasim</th>
-    <td>
-        for the Cumulus NMEA Simulator
-    </td>
-  </tr>
-  </table>
-	</p>
-	
 	<p>
-	Serial devices and RS232-USB adapters also need to be given a speed rate for
-	their operation. The default serial NMEA connection speed is 4800 bps but we
-	recommend always to use the maximum supported speed.
-	</p>
-	<p>
-	If your device is not found in the selection list, you can change
-	one of the predefined entries to what you need, e.g. /dev/ttyS0 for an RS232
-	serial device or /dev/rfcomm0 for a Bluetooth device.
+	<table border="1" cellpadding="5">
+		<tr>
+			<th>Item</th>
+			<th>Description</th>
+		</tr>
+
+		<tr>
+			<th>GPS Location</th>
+			<td>only for using the Location Service provided by the Internet
+				Tablets N8x0/N900. Users of the N8x0 or N900 can make use of the
+				option in the tablet's own Settings/Control panel/GPS location to
+				use either the built-in GPS receiver or an external Bluetooth GPS
+				device.</td>
+		</tr>
+
+		<tr>
+			<th>BT Adapter</th>
+			<td>for direct connection to an external Bluetooth device. In
+				this case Cumulus will automatically scan your environment for a
+				reachable device, and, if it finds one, will open up a combo box
+				dialog from which you can make the appropriate selection. A wrong
+				selection will mean that you will have to restart Cumulus!</td>
+		</tr>
+
+		<tr>
+			<th>/dev/ttyUSB0</th>
+			<td>for a USB GPS device or, e.g., a USB-serial adaptor</td>
+		</tr>
+
+		<tr>
+			<th>/tmp/nmeasim</th>
+			<td>for the Cumulus NMEA Simulator</td>
+		</tr>
+	</table>
 	</p>
 
-  <h5>Speed (bps):</h5>
-  
-  This will have the greyed-out default value unless e.g. the connection selected
-  above is to a device whose speed can be manually set.
-  
-  <h5>Altitude Reference</h5>
+	<p>Serial devices and RS232-USB adapters also need to be given a
+		speed rate for their operation. The default serial NMEA connection
+		speed is 4800 bps but we recommend always to use the maximum supported
+		speed.</p>
+	<p>If your device is not found in the selection list, you can
+		change one of the predefined entries to what you need, e.g. /dev/ttyS0
+		for an RS232 serial device or /dev/rfcomm0 for a Bluetooth device.</p>
 
-  <table border="1" cellpadding="5">
-  <tr><th>Item</th><th>Description</th></tr>
-  
-  <tr>
-    <th>GPS</th>
-    <td>
-      The default selection is GPS. Most GPS devices send MSL (mean sea
-      level) altitudes, but some send HAE (Height above ellipsoid).
-    </td>
-  </tr>
-  
-  <tr>
-    <th>Pressure</th>
-    <td>
-      Some logger devices can deliver altitude values derived from a pressure
-      sensor. If you want to use these pressure data, select this alternative.
-      <br><b>Please note!</b> If you have selected the pressure item, Cumulus
-      expects to receive the appropriate NMEA records from the connected peripheral
-      device. Without these you will not get any altitude data displayed at all,
-      nor will you get a variometer reading, unless this information is supplied
-      separately by the peripheral!
-    </td>
-  </tr>
-  </table>
+	<h5>Speed (bps):</h5>
 
-  <p>
-  If your displayed altitude always deviates by a constant factor from the
-  expected value, you can correct this in the altitude dialog. This is opened
-  by tapping on the altitude display in the map view. Add your correction
-  value in the spin box labelled "Leveling". Positive values will be added to
-  and negative values subtracted from the delivered altitude value.
-  For pressure values, the correction will be applied immediately. For
-  GPS values, the correction will only be applied when a GPS fix is established.
-  </p>
+	This will have the greyed-out default value unless e.g. the connection
+	selected above is to a device whose speed can be manually set.
 
-  <h5>Processed data from supported devices</h5>
-  
-  <p>
-	Cumulus processes additional data from the devices listed below, if they are
-  connected, but only if the data sentences have a valid checksum. Data from 
-  external devices are the first choice for Cumulus before its own calculation is started. 
-  This means that the wind, variometer and MacCready data from these peripheral devices 
-  will be accepted and used automatically, if they are available. The MSL and STD altitudes 
-  derived from a pressure sensor, however, are only made use of if specifically asked for, i.e.,
-   "Pressure" must be selected in the menu.
-   </p>
+	<h5>Altitude Reference</h5>
+
+	<table border="1" cellpadding="5">
+		<tr>
+			<th>Item</th>
+			<th>Description</th>
+		</tr>
+
+		<tr>
+			<th>GPS</th>
+			<td>The default selection is GPS. Most GPS devices send MSL
+				(mean sea level) altitudes, but some send HAE (Height above
+				ellipsoid).</td>
+		</tr>
+
+		<tr>
+			<th>Pressure</th>
+			<td>Some logger devices can deliver altitude values derived from
+				a pressure sensor. If you want to use these pressure data, select
+				this alternative. <br>
+			<b>Please note!</b> If you have selected the pressure item, Cumulus
+				expects to receive the appropriate NMEA records from the connected
+				peripheral device. Without these you will not get any altitude data
+				displayed at all, nor will you get a variometer reading, unless this
+				information is supplied separately by the peripheral!
+			</td>
+		</tr>
+	</table>
+
+	<p>If your displayed altitude always deviates by a constant factor
+		from the expected value, you can correct this in the altitude dialog.
+		This is opened by tapping on the altitude display in the map view. Add
+		your correction value in the spin box labelled "Leveling". Positive
+		values will be added to and negative values subtracted from the
+		delivered altitude value. For pressure values, the correction will be
+		applied immediately. For GPS values, the correction will only be
+		applied when a GPS fix is established.</p>
+
+	<h5>Processed data from supported devices</h5>
+
+	<p>Cumulus processes additional data from the devices listed below,
+		if they are connected, but only if the data sentences have a valid
+		checksum. Data from external devices are the first choice for Cumulus
+		before its own calculation is started. This means that the wind,
+		variometer and MacCready data from these peripheral devices will be
+		accepted and used automatically, if they are available. The MSL and
+		STD altitudes derived from a pressure sensor, however, are only made
+		use of if specifically asked for, i.e., "Pressure" must be selected in
+		the menu.</p>
 	<p>
-  <table border="1" cellpadding="5">
-  <tr><th>Device</th><th>Processed data</th></tr>
-  
-  <tr>
-    <th>Cambridge</th>
-    <td>
-      This can deliver altitude values (MSL and STD) derived from a pressure
-      sensor. Cumulus also uses the QNH, wind and McCready data from the
-      Cambridge !w proprietary sentence (see below).
-    </td>
-  </tr>
-  
-  <tr>
-    <th>Volkslogger</th>
-    <td>
-      This can deliver the STD altitude derived from a pressure sensor.
-      To get the right MSL altitude, you have to set the correct QNH value in the
-      Cumulus  <a href="cumulus-preflight-settings-common.html">
-      Preflight Settings/Common</a> or in the altitude dialog. Furthermore,
-      in the Volkslogger setup menu, you have to enable the sending of PGCS
-      records.
-    </td>
-  </tr>
+	<table border="1" cellpadding="5">
+		<tr>
+			<th>Device</th>
+			<th>Processed data</th>
+		</tr>
 
-  <tr>
-    <th>LX Navigation</th>
-    <td>
-      This can deliver altitude values derived from a pressure sensor and wind data.
-      Some devices can also deliver McCready and variometer data.
-      Enable the sending of LXWP records in the LX setup menu, as follows
-      (e.g. on an LX20 device you will have to enter the password - the default
-      is 96990): go to the NMEA menu, where you should set the entry LXWP? to
-      'Y'. Set the transfer speed in Cumulus to 4800 bps - the LX20 device uses
-      this speed for NMEA transfer regardless of the selected PC transfer speed.
-    </td>
-  </tr>
+		<tr>
+			<th>Cambridge</th>
+			<td>This can deliver altitude values (MSL and STD) derived from
+				a pressure sensor. Cumulus also uses the QNH, wind and McCready data
+				from the Cambridge !w proprietary sentence (see below).</td>
+		</tr>
 
-  <tr>
-    <th>FLARM</th>
-    <td>
-      Hardware version 2 or later. This can deliver altitude values
-	    derived from a pressure sensor, as well as aircraft and ground obstacles
-	    information. Enable the sending of these data in the FLARM setup menu.
-	    Look also at the page <a href="cumulus-flarm.html">Cumulus Flarm</a>
-	    for more information.
-    </td>
-  </tr>
-  </table>
-  </p>
-  
-  <h5>Sync Clock</h5>
+		<tr>
+			<th>Volkslogger</th>
+			<td>This can deliver the STD altitude derived from a pressure
+				sensor. To get the right MSL altitude, you have to set the correct
+				QNH value in the Cumulus <a
+				href="cumulus-preflight-settings-common.html"> Preflight
+					Settings/Common</a> or in the altitude dialog. Furthermore, in the
+				Volkslogger setup menu, you have to enable the sending of PGCS
+				records.
+			</td>
+		</tr>
 
-  If the option <i>Sync Clock</i>
-  is activated, Cumulus is able to synchronize the PDA system clock to the
-  GPStime, but this will only work, if Cumulus is running as user "root". On the
-  Nokia Internet tablet this feature is switched off, because user processes are
-  not normally running under the root user.
+		<tr>
+			<th>LX Navigation</th>
+			<td>This can deliver altitude values derived from a pressure
+				sensor and wind data. Some devices can also deliver McCready and
+				variometer data. Enable the sending of LXWP records in the LX setup
+				menu, as follows (e.g. on an LX20 device you will have to enter the
+				password - the default is 96990): go to the NMEA menu, where you
+				should set the entry LXWP? to 'Y'. Set the transfer speed in Cumulus
+				to 4800 bps - the LX20 device uses this speed for NMEA transfer
+				regardless of the selected PC transfer speed.</td>
+		</tr>
 
-  <h5>Save NMEA Data</h5>
-  
-  If the option <i>Save NMEA Data</i> is activated, the received NMEA data stream
-  is logged into a file. The file is stored in the user's data directory and
-  it has the name <i>CumulusNmea.log</i>. After each new start of Cumulus
-  or if this option is activated in the setup menu, a new log file is opened.
-  The content of the previous file is save as backup copy with the name
-  <i>CumulusNmea.log.old</i>. You can use this option to save the GPS NMEA data
-  for a later analyze or any other post-processing. We recommend to use this
-  option only for special purposes because it has also influence to the
-  performance in general.
+		<tr>
+			<th>FLARM</th>
+			<td>Hardware version 2 or later. This can deliver altitude
+				values derived from a pressure sensor, as well as aircraft and
+				ground obstacles information. Enable the sending of these data in
+				the FLARM setup menu. Look also at the page <a
+				href="cumulus-flarm.html">Cumulus Flarm</a> for more information.
+			</td>
+		</tr>
+	</table>
+	</p>
 
-  <h5>Processed GPS sentences</h5>
+	<h5>Sync Clock</h5>
 
-  Cumulus processes the following NMEA and proprietary sentences:
+	If the option
+	<i>Sync Clock</i> is activated, Cumulus is able to synchronize the PDA
+	system clock to the GPStime, but this will only work, if Cumulus is
+	running as user "root". On the Nokia Internet tablet this feature is
+	switched off, because user processes are not normally running under the
+	root user.
 
-  <p>
-  <table border="1" cellpadding="5">
-    <tr><th>NMEA Id</th> <th>Description</th></tr>
-    <tr><td>$GPRMC</td> <td>Recommended Minimum Specific GNSS Data</td></tr>
-    <tr><td>$GPGLL</td> <td>Geographic Position - Latitude and Longitude</td></tr>
-    <tr><td>$GPGGA</td> <td>Global Positioning System Fixed Data</td></tr>
-    <tr><td>$GPGSA</td> <td>GNSS DOP and Active Satellites</td></tr>
-    <tr><td>$GPGSV</td> <td>GNSS Satellites in View</td></tr>
-    <tr><td>$GPDTM</td> <td>Map datum</td></tr>
-    <tr><td>$PGRMZ</td> <td>Garmin and FLARM proprietary sentence with barometric or GPS altitude data</td></tr>
+	<h5>Save NMEA Data</h5>
 
-    <tr><td>$PFLAU</td> <td>FLARM proprietary sentence with status, intruder and obstacle data</td></tr>
-    <tr><td>$PFLAA</td> <td>FLARM proprietary sentence with data about other aircraft around</td></tr>
+	If the option
+	<i>Save NMEA Data</i> is activated, the received NMEA data stream is
+	logged into a file. The file is stored in the user's data directory and
+	it has the name
+	<i>CumulusNmea.log</i>. After each new start of Cumulus or if this
+	option is activated in the setup menu, a new log file is opened. The
+	content of the previous file is save as backup copy with the name
+	<i>CumulusNmea.log.old</i>. You can use this option to save the GPS
+	NMEA data for a later analyze or any other post-processing. We
+	recommend to use this option only for special purposes because it has
+	also influence to the performance in general.
 
-    <tr><td>$PCAID</td> <td>Cambridge proprietary sentence with STD altitude</td></tr>
-    <tr><td>!w</td> <td>Cambridge proprietary sentence with MSL altitude, QNH setting,
-                        wind direction, MacCready value, wind speed and variometer data</td></tr>
-    <tr><td>$PGCS</td> <td>Volkslogger proprietary sentence with STD altitude</td></tr>
-    <tr><td>$LXWP0</td> <td>LX Navigation proprietary sentence with MSL altitude, variometer and wind data</td></tr>
-    <tr><td>$LXWP2</td> <td>LX Navigation proprietary sentence with McCready data</td></tr>
-    <tr><td>$MAEMO0</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used</td></tr>
-    <tr><td>$MAEMO1</td> <td>Cumulus internal proprietary sentence, if LibLocation from MAEMO 5 is used</td></tr>
-  </table>
-  </p>
+	<h5>Processed GPS sentences</h5>
 
-  <table width="100%">
-    <tbody>
-      <tr>
-        <td></td>
-        <td align="center"><a href="cumulus.html">start</a></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td align="left"><a href="cumulus-settings-personal.html">back</a></td>
-        <td align="center"><a href="cumulus-settings.html">overview</a></td>
-        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
-      </tr>
-    </tbody>
-  </table>
+	Cumulus processes the following NMEA and proprietary sentences:
+
+	<p>
+	<table border="1" cellpadding="5">
+		<tr>
+			<th>NMEA Id</th>
+			<th>Description</th>
+		</tr>
+		<tr>
+			<td>$GPRMC</td>
+			<td>Recommended Minimum Specific GNSS Data</td>
+		</tr>
+		<tr>
+			<td>$GPGLL</td>
+			<td>Geographic Position - Latitude and Longitude</td>
+		</tr>
+		<tr>
+			<td>$GPGGA</td>
+			<td>Global Positioning System Fixed Data</td>
+		</tr>
+		<tr>
+			<td>$GPGSA</td>
+			<td>GNSS DOP and Active Satellites</td>
+		</tr>
+		<tr>
+			<td>$GPGSV</td>
+			<td>GNSS Satellites in View</td>
+		</tr>
+		<tr>
+			<td>$GPDTM</td>
+			<td>Map datum</td>
+		</tr>
+		<tr>
+			<td>$PGRMZ</td>
+			<td>Garmin and FLARM proprietary sentence with barometric or GPS
+				altitude data</td>
+		</tr>
+
+		<tr>
+			<td>$PFLAU</td>
+			<td>FLARM proprietary sentence with status, intruder and
+				obstacle data</td>
+		</tr>
+		<tr>
+			<td>$PFLAA</td>
+			<td>FLARM proprietary sentence with data about other aircraft
+				around</td>
+		</tr>
+
+		<tr>
+			<td>$PCAID</td>
+			<td>Cambridge proprietary sentence with STD altitude</td>
+		</tr>
+		<tr>
+			<td>!w</td>
+			<td>Cambridge proprietary sentence with MSL altitude, QNH
+				setting, wind direction, MacCready value, wind speed and variometer
+				data</td>
+		</tr>
+		<tr>
+			<td>$PGCS</td>
+			<td>Volkslogger proprietary sentence with STD altitude</td>
+		</tr>
+		<tr>
+			<td>$LXWP0</td>
+			<td>LX Navigation proprietary sentence with MSL altitude,
+				variometer and wind data</td>
+		</tr>
+		<tr>
+			<td>$LXWP2</td>
+			<td>LX Navigation proprietary sentence with McCready data</td>
+		</tr>
+		<tr>
+			<td>$MAEMO0</td>
+			<td>Cumulus internal proprietary sentence, if LibLocation from
+				MAEMO 5 is used</td>
+		</tr>
+		<tr>
+			<td>$MAEMO1</td>
+			<td>Cumulus internal proprietary sentence, if LibLocation from
+				MAEMO 5 is used</td>
+		</tr>
+	</table>
+	</p>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-personal.html">back</a></td>
+				<td align="center"><a href="cumulus-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
 
 </body>
 </html>
