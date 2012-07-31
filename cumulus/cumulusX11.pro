@@ -65,6 +65,7 @@ HEADERS = \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
+    flickcharm.h \
     filetools.h \
     flighttask.h \
     fontdialog.h \
@@ -180,6 +181,7 @@ SOURCES = \
     calculator.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
+    flickcharm.cpp \
     filetools.cpp \
     flighttask.cpp \
     fontdialog.cpp \
