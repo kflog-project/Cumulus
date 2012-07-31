@@ -50,8 +50,6 @@ static jmethodID m_playSoundID    = 0;
 static jmethodID m_dimmScreenID   = 0;
 static jmethodID m_gpsCmdID       = 0;
 
-extern MainWindow *_globalMainWindow;
-
 // Function declarations
 bool jniEnv();
 bool isJavaExceptionOccured();
