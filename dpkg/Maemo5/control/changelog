@@ -2,7 +2,7 @@ cumulus (2.16.1) stable; urgency=low
 
   * BUGFIX: wrong routing of Maemo5 GPS sentences fixed.
   
-  -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 31 Jul 2012 22:43:23 +0200
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 31 Jul 2012 23:10:55 +0200
 
 cumulus (2.16.0) stable; urgency=low
 
