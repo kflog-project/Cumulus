@@ -25,6 +25,7 @@
 #include <QtGui>
 
 #include "configwidget.h"
+#include "flickcharm.h"
 #include "generalconfig.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
@@ -60,6 +61,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sppArea->setWidget( spp );
 #ifdef QSCROLLER
   QScroller::grabGesture(sppArea, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(sppArea);
 #endif
   m_tabWidget->addTab( sppArea, tr( "Personal" ) );
 
@@ -81,6 +85,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmsArea->setWidget( spms );
 #ifdef QSCROLLER
   QScroller::grabGesture(spmsArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(spmsArea);
 #endif
   m_tabWidget->addTab( spmsArea, tr( "Map Settings" ) );
 
@@ -91,6 +98,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmoArea->setWidget( spmo );
 #ifdef QSCROLLER
   QScroller::grabGesture(spmoArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(spmoArea);
 #endif
   m_tabWidget->addTab( spmoArea, tr( "Map Objects" ) );
 
@@ -101,6 +111,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sptcArea->setWidget( sptc );
 #ifdef QSCROLLER
   QScroller::grabGesture(sptcArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(sptcArea);
 #endif
   m_tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
 
@@ -111,6 +124,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spsArea->setWidget( spt );
 #ifdef QSCROLLER
   QScroller::grabGesture(spsArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(spsArea);
 #endif
   m_tabWidget->addTab( spsArea, tr( "Task" ) );
 
@@ -121,6 +137,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spafArea->setWidget( spaf );
 #ifdef QSCROLLER
   QScroller::grabGesture(spafArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(spafArea);
 #endif
   m_tabWidget->addTab( spafArea, tr( "Airfields" ) );
 
@@ -131,6 +150,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   asArea->setWidget( spa );
 #ifdef QSCROLLER
   QScroller::grabGesture(asArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(asArea);
 #endif
   m_tabWidget->addTab( asArea, tr( "Airspaces" ) );
 
@@ -144,6 +166,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   infoArea->setWidget( spi );
 #ifdef QSCROLLER
   QScroller::grabGesture(infoArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(infoArea);
 #endif
   m_tabWidget->addTab( infoArea, tr( "Information" ) );
 
@@ -154,6 +179,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   splnfArea->setWidget( splnf );
 #ifdef QSCROLLER
   QScroller::grabGesture(splnfArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(splnfArea);
 #endif
   m_tabWidget->addTab( splnfArea, tr( "Look&&Feel" ) );
 

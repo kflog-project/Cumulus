@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "settingspagemapobjects.h"
 #include "generalconfig.h"
 #include "varspinbox.h"
@@ -90,6 +91,9 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(loadOptions, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(loadOptions);
 #endif
 
   loadOptions->setShowGrid( true );

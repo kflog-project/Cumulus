@@ -23,6 +23,7 @@
 #include "airspace.h"
 #include "basemapelement.h"
 #include "distance.h"
+#include "flickcharm.h"
 #include "generalconfig.h"
 #include "settingspageairspace.h"
 #include "mainwindow.h"
@@ -57,6 +58,9 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   drawOptions = new QTableWidget(8, 6, this);
   // drawOptions->setShowGrid( false );
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(drawOptions);
+
   connect( drawOptions, SIGNAL(cellClicked ( int, int )),
            SLOT(slot_toggleCheckBox( int, int )));
 
@@ -1633,6 +1637,19 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   fileTable->setToolTip( tr("Use check boxes to activate or deactivate file loading.") );
   fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   fileTable->setShowGrid( true );
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(fileTable);
+
+  QString style = "QTableView QTableCornerButton::section { background: gray }";
+  fileTable->setStyleSheet( style );
+
+  QHeaderView *vHeader = fileTable->verticalHeader();
+  style = "QHeaderView::section { width: 2em }";
+  vHeader->setStyleSheet( style );
+
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  fileTable->setItemDelegate( new RowDelegate( fileTable, afMargin ) );
 
   connect( fileTable, SIGNAL(cellClicked ( int, int )),
            SLOT(slot_toggleCheckBox( int, int )) );

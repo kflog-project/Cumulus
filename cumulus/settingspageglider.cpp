@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "generalconfig.h"
 #include "settingspageglider.h"
 #include "glidereditor.h"
@@ -53,6 +54,9 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   editrow->addWidget(cmdDel,1);
 
   list = new GliderListWidget(this);
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(list);
+
   topLayout->addWidget(list, 10);
 
   connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));

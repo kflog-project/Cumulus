@@ -17,6 +17,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "fontdialog.h"
 #include "layout.h"
 #include "mainwindow.h"
@@ -67,6 +68,13 @@ FontDialog::FontDialog (QWidget *parent) :
   fontList  = new QListWidget;
   styleList = new QListWidget;
   sizeList  = new QListWidget;
+
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(fontList);
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(styleList);
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(sizeList);
 
   fontList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   styleList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
