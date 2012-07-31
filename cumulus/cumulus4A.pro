@@ -282,7 +282,8 @@ flarm {
                flarmlistview.h \
                flarmradarview.h \
                flarmwidget.h \
-               preflightflarmpage.h
+               preflightflarmpage.h \
+               flarmlogbook.h
                
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
@@ -290,7 +291,8 @@ flarm {
                flarmlistview.cpp \
                flarmradarview.cpp \
                flarmwidget.cpp \
-               preflightflarmpage.cpp
+               preflightflarmpage.cpp \
+               flarmlogbook.cpp
                
     DEFINES += FLARM
 }
