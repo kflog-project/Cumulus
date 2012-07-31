@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-07-31 AP: BUGFIX: wrong routing of Maemo5 GPS sentences fixed.
+
+[*] 2012-07-24 AP: Cumulus 2.16.0 for all devices released.
+
 [-] 2012-07-19 AP: BUGFIX: Airspace drawing upper border option did not work
                    due to a programming error.
 
