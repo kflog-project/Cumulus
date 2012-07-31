@@ -57,7 +57,7 @@
 #undef ERROR_LOG
 #endif
 
-// define connection lost timeout in milli seconds
+// Define connection lost timeout in milli seconds
 #define TO_CONLOST  10000
 
 
@@ -336,7 +336,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       fd = socket( AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM );
 
-      fcntl( fd, F_SETFL, O_NONBLOCK ); // NON blocking io is requested
+      // NON blocking io is requested!
+      fcntl( fd, F_SETFL, O_NONBLOCK );
 
       struct sockaddr_rc addr;
 
@@ -416,28 +417,45 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       // copy current values into new structure for changes
       memcpy( &newtio, &oldtio, sizeof(newtio) );
 
-      // prepare new port settings for:
-      // - canonical input (line oriented input)
+      // http://www.mkssoftware.com/docs/man5/struct_termios.5.asp
+      //
+      // Prepare serial port settings for raw mode. That is important
+      // otherwise Flarm binary communication do not work!
+      //
+      // - no canonical input (no line oriented input)
       // - 8 data bits
       // - no parity
-      // - no cr
-      // - blocking mode
+      // - no interpretation of special characters
+      // - no hardware control
 
-      newtio.c_cflag &= ~PARENB;
-      newtio.c_cflag &= ~CSTOPB;
-      newtio.c_cflag &= ~CSIZE;
+      // Port control modes
+      // CS8    8 bits per byte
+      // CLOCAL Ignore modem status lines
+      // CREAD  Enable receiver
+      newtio.c_cflag = CS8 | CLOCAL | CREAD;
 
-      newtio.c_cflag |= CS8 | CLOCAL | CREAD;
+      // Port input modes
+      // raw input without any special handling
+      newtio.c_iflag = 0;
 
-      newtio.c_iflag = IGNCR; // no cr
+      // Port output modes
+      // raw output without any special handling
+      newtio.c_oflag = 0;
 
-      // newtio.c_oflag = ONLCR; // map nl to cr-nl
+      // Port local modes
+      // raw input/output without any special handling
+      newtio.c_lflag = 0;
 
-      // raw input without any echo
-      newtio.c_lflag = ~(ICANON | ECHO | ECHOE | ISIG );
-
-      newtio.c_cc[VMIN] = 1;
-
+      // The values of the MIN and TIME members of the c_cc array of the termios
+      // structure are used to determine how to process the bytes received.
+      //
+      // MIN represents the minimum number of bytes that should be received when
+      // the read() function returns successfully.
+      //
+      // TIME is a timer of 0.1 second granularity (or as close to that value as
+      // can be accommodated) that is used to time out bursty and short-term data
+      // transmissions.
+      newtio.c_cc[VMIN]  = 1;
       newtio.c_cc[VTIME] = 0;
 
       // AP: Note, the setting of the speed must be done at last
@@ -978,7 +996,7 @@ void GpsClient::writeForwardMsg( const char *msg )
           // The write call would block because the transfer queue is full.
           // In this case we discard the message.
           qWarning() << method
-                     << "Write would block, drop Message!";
+                      << "Write would block, drop Message!";
         }
       else
         {
@@ -1096,18 +1114,16 @@ void GpsClient::getFlarmFlightList()
         {
           recNo++;
 
-          for( int loop = 0; loop < 2; loop++ )
+          if( fbc.getRecordInfo( buffer ) )
             {
-              // A record exits but the getRecordInfo returns a NACK result
-              // with a wrong sequence number. We make some retries as workaround.
-              if( fbc.getRecordInfo( buffer ) )
-                {
-                  flights << QString( buffer );
-                  break;
-                }
-
-              // If the record is not selected again, the Flarm ist beleidigt!
-              fbc.selectRecord( recNo -1 );
+              flights << QString( buffer );
+            }
+          else
+            {
+              qWarning() << "GpsClient::getFlarmFlightList(): GetRecordInfo("
+                          << (recNo - 1)
+                          << ") failed!";
+              break;
             }
         }
       else
