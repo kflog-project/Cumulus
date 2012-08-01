@@ -167,13 +167,21 @@ void FlickCharm::activateOn(QWidget *widget)
 {
     QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>(widget);
     if (scrollArea) {
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        //scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        //scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        // scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        // scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        // Show little scrollbars that the user can see the movement possibility.
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+        QScrollBar* hsb = scrollArea->horizontalScrollBar();
+        QScrollBar* vsb = scrollArea->verticalScrollBar();
+        hsb->setMinimumHeight( 10 );
+        hsb->setMaximumHeight( 10 );
+        vsb->setMinimumWidth( 10 );
+        vsb->setMaximumWidth( 10 );
 
         QWidget *viewport = scrollArea->viewport();
-
         viewport->installEventFilter(this);
         scrollArea->installEventFilter(this);
 
