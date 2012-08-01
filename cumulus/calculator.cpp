@@ -1681,11 +1681,12 @@ void Calculator::slot_startTask()
 }
 
 /**
- * @returns true if we are faster in move as or equal 35km/h.
+ * @returns true if we move us over the user's defined speed limit.
  */
 bool Calculator::moving()
 {
-  const double SpeedLimit = 35000.0 / 3600.0; // 35Km/h as m/s
+  // set speed limit in m/s
+  const double SpeedLimit = GeneralConfig::instance()->getAutoLoggerStartSpeed() * 1000.0 / 3600.0;
   const int TimeLimit = 7; // time limit in seconds
 
   if( samplelist.count() < TimeLimit )
