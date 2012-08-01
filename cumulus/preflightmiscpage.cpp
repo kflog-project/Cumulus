@@ -108,7 +108,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_logAutoStartSpeed->setPrefix( "> " );
   m_logAutoStartSpeed->setDecimals( 1 );
   m_logAutoStartSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  VarSpinBox* hspin = new VarSpinBox( m_logAutoStartSpeed );
+  hspin = new VarSpinBox( m_logAutoStartSpeed );
   topLayout->addWidget( hspin, row, 1 );
   row++;
 
@@ -204,10 +204,9 @@ void PreFlightMiscPage::load()
 
   Speed speed;
   // speed is stored in Km/h
-
-  // TODO definition in GeneralConfig
-  speed.setKph( GeneralConfig::instance()->getScreenSaverSpeedLimit() );
+  speed.setKph( GeneralConfig::instance()->getAutoLoggerStartSpeed() );
   m_logAutoStartSpeed->setValue( speed.getValueInUnit( m_speedUnit ) );
+
   // save loaded value for change control
   m_loadedSpeed = m_logAutoStartSpeed->value();
 }
@@ -258,9 +257,8 @@ void PreFlightMiscPage::save()
       Speed speed;
       speed.setValueInUnit( m_logAutoStartSpeed->value(), m_speedUnit );
 
-      // TODO GeneralConfig:: def
       // store speed in Km/h
-      GeneralConfig::instance()->setScreenSaverSpeedLimit( speed.getKph() );
+      GeneralConfig::instance()->setAutoLoggerStartSpeed( speed.getKph() );
     }
 }
 

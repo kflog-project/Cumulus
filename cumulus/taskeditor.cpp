@@ -19,6 +19,7 @@
 #include <QtGui>
 
 #include "airfield.h"
+#include "flickcharm.h"
 #include "taskeditor.h"
 #include "mapcontents.h"
 #include "flighttask.h"
@@ -34,8 +35,8 @@ extern MapContents *_globalMapContents;
 extern MainWindow  *_globalMainWindow;
 
 TaskEditor::TaskEditor( QWidget* parent,
-                        QStringList &taskNamesInUse,
-                        FlightTask* task ) :
+                           QStringList &taskNamesInUse,
+                           FlightTask* task ) :
   QWidget( parent ),
   taskNamesInUse( taskNamesInUse ),
   lastSelectedItem(0)
@@ -79,7 +80,6 @@ TaskEditor::TaskEditor( QWidget* parent,
   taskList->setSelectionBehavior(QAbstractItemView::SelectRows);
   taskList->setSelectionMode(QAbstractItemView::SingleSelection);
   taskList->setColumnCount(4);
-
   taskList->hideColumn( 0 );
 
   QStringList sl;
@@ -89,44 +89,57 @@ TaskEditor::TaskEditor( QWidget* parent,
      << tr("Length");
 
   taskList->setHeaderLabels(sl);
-
   taskList->header()->setResizeMode( QHeaderView::ResizeToContents );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(taskList);
+#endif
 
   upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
   upButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   upButton->setToolTip( tr("move selected waypoint up") );
-
+#endif
   downButton = new QPushButton( this );
   downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
   downButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   downButton->setToolTip( tr("move selected waypoint down") );
-
+#endif
   invertButton = new QPushButton( this );
   invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png")) );
   invertButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   invertButton->setToolTip( tr("reverse waypoint order") );
-
+#endif
   addButton = new QPushButton( this );
   addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png")) );
   addButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   addButton->setToolTip( tr("add waypoint") );
-
+#endif
   delButton = new QPushButton( this );
   delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png")) );
   delButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   delButton->setToolTip( tr("remove waypoint") );
-
+#endif
   QPushButton* okButton = new QPushButton( this );
   okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
   okButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   okButton->setToolTip( tr("save task") );
-
+#endif
   QPushButton* cancelButton = new QPushButton( this );
   cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
   cancelButton->setIconSize(QSize(IconSize, IconSize));
+#ifndef ANDROID
   cancelButton->setToolTip( tr("cancel task") );
-
+#endif
   // all single widgets and layouts in this grid
   QGridLayout* totalLayout = new QGridLayout( this );
   totalLayout->setMargin(5);

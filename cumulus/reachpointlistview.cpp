@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "layout.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
@@ -62,6 +63,9 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
 #ifdef QSCROLLER
   list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(list);
 #endif
 
   QStringList sl;

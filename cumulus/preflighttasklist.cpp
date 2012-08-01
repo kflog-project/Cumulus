@@ -20,12 +20,13 @@
 
 #include <QtGui>
 
-#include "target.h"
+#include "flickcharm.h"
 #include "preflighttasklist.h"
 #include "generalconfig.h"
 #include "mapmatrix.h"
 #include "mapcontents.h"
 #include "taskeditor.h"
+#include "target.h"
 #include "distance.h"
 #include "speed.h"
 #include "layout.h"
@@ -180,13 +181,16 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
   taskList->setColumnCount(5);
   taskList->setFocus();
 
+#ifdef QSCROLLER
+  QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(taskList);
+#endif
+
   // set new row height from configuration
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
   taskList->setItemDelegate( new RowDelegate( taskList, afMargin ) );
-
-#ifdef QSCROLLER
-  QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
-#endif
 
   QStringList sl;
   sl << tr("No.")

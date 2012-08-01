@@ -18,8 +18,9 @@
 
 #include <QtGui>
 
-#include "glider.h"
 #include "calculator.h"
+#include "flickcharm.h"
+#include "glider.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "preflightgliderpage.h"
@@ -79,13 +80,25 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   row++;
 
   list = new GliderListWidget(this);
+#ifndef ANDROID
   list->setToolTip(tr("Select a glider to be used"));
+#endif
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(list);
+#endif
+
   topLayout->addWidget(list, row, 0, 1, 4);
   row++;
 
   //---------------------------------------------------------------------
   QPushButton* deselect = new QPushButton( tr("Deselect"), this );
+#ifndef ANDROID
   deselect->setToolTip( tr("Clear glider selection") );
+#endif
   topLayout->addWidget( deselect, row, 3 );
 
   //---------------------------------------------------------------------

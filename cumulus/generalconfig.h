@@ -841,6 +841,18 @@ class GeneralConfig : protected QSettings
     _screenSaverSpeedLimit = newValue;
   };
 
+  /** gets auto logger start speed in Km/h */
+  double getAutoLoggerStartSpeed() const
+  {
+    return _autoLoggerStartSpeed;
+  };
+
+  /** sets auto logger start speed in Km/h */
+  void setAutoLoggerStartSpeed( const double newValue )
+  {
+    _autoLoggerStartSpeed = newValue;
+  };
+
   /** gets QNH */
   int getQNH() const
   {
@@ -2286,6 +2298,8 @@ class GeneralConfig : protected QSettings
   int _kRecordInterval;
   // auto logger start mode
   bool _loggerAutostartMode;
+  // Auto logger start speed
+  double _autoLoggerStartSpeed;
   // true air speed
   int _tas;
   // wind direction

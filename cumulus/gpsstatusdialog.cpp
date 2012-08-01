@@ -20,6 +20,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 #include "mainwindow.h"
@@ -78,6 +79,9 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(nmeaScrollArea, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(nmeaScrollArea);
 #endif
 
   QVBoxLayout* nmeaBoxLayout = new QVBoxLayout;

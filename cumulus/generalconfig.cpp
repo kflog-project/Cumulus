@@ -240,6 +240,7 @@ void GeneralConfig::load()
   _windSpeed              = value( "WindSpeed", 0 ).toInt();
   _currentTask            = value( "CurrentTask", "").toString();
   _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
+  _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed ", 35).toDouble();
   endGroup();
 
   // Task scheme settings for cylinder-sector and nearest-touched
@@ -607,6 +608,7 @@ void GeneralConfig::save()
   setValue( "WindSpeed", _windSpeed );
   setValue( "CurrentTask", _currentTask);
   setValue( "FlightLogbookFileName", _flightLogbookFileName );
+  setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
   endGroup();
 
   // Task scheme settings for cylinder-sector and nearest touched

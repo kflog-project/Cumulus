@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "layout.h"
 #include "listwidgetparent.h"
 #include "generalconfig.h"
@@ -49,9 +50,13 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   filter = new ListViewFilter( list, this );
   filter->setObjectName( "ListViewFilter" );
+
 #ifdef QSCROLLER
   list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(list);
 #endif
 
   up = new QPushButton( this );

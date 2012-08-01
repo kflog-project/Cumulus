@@ -54,8 +54,13 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   editrow->addWidget(cmdDel,1);
 
   list = new GliderListWidget(this);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#else
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(list);
+#endif
 
   topLayout->addWidget(list, 10);
 

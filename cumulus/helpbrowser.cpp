@@ -19,6 +19,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "helpbrowser.h"
 #include "generalconfig.h"
 #include "layout.h"
@@ -35,6 +36,9 @@ HelpBrowser::HelpBrowser( QWidget *parent ) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(browser, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(browser);
 #endif
 
   browser->setOpenLinks( true );

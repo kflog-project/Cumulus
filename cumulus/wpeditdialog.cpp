@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "wpeditdialog.h"
 #include "wpeditdialogpagegeneral.h"
 #include "wpeditdialogpageaero.h"
@@ -70,6 +71,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   tabWidget->addTab( pgArea, tr("General") );
 #ifdef QSCROLLER
   QScroller::grabGesture(pgArea, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(pgArea);
 #endif
 
   QScrollArea* paArea = new QScrollArea( tabWidget );
@@ -80,6 +84,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   tabWidget->addTab( paArea, tr("Aero") );
 #ifdef QSCROLLER
   QScroller::grabGesture(paArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(paArea);
 #endif
 
   QScrollArea* pcArea = new QScrollArea( tabWidget );
@@ -91,6 +98,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   tabWidget->addTab( pcArea, tr("Comment") );
 #ifdef QSCROLLER
   QScroller::grabGesture(pcArea, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(pcArea);
 #endif
 
   connect(this, SIGNAL(load(Waypoint *)),

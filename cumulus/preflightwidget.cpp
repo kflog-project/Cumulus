@@ -18,10 +18,11 @@
 
 #include <QtGui>
 
-#include "preflightwidget.h"
+#include "flickcharm.h"
 #include "map.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
+#include "preflightwidget.h"
 #include "preflighttasklist.h"
 #include "preflightmiscpage.h"
 #include "preflightwaypointpage.h"
@@ -49,19 +50,34 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   tabWidget->addTab(taskpage, "");
 
   wppage = new PreFlightWaypointPage(this);
-  tabWidget->addTab(wppage, "");
+
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( wppage );
+#ifdef QSCROLLER
+  QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(sa);
+#endif
+
+  tabWidget->addTab(sa, "");
 
   connect( wppage, SIGNAL(waypointsAdded()),
             Map::getInstance(), SLOT(slotRedraw()) );
 
   miscpage = new PreFlightMiscPage(this);
 
-  QScrollArea* sa = new QScrollArea;
+  sa = new QScrollArea;
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( miscpage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+#else
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(sa);
 #endif
 
   tabWidget->addTab(sa, "");

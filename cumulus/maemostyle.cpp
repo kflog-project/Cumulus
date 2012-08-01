@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2011 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2008-2012 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
 #include "maemostyle.h"
 
 // new size values to be assigned
-#define SB_SIZE 25 // scrollbar size
+#define SB_SIZE 10 // scrollbar size
 #define CB_SIZE 20 // checkbox size
 #define RB_SIZE 20 // radio button size
 #define TB_SB_WIDTH 40 // tab bar scroll button width

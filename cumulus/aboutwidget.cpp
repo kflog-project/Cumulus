@@ -18,6 +18,7 @@
 #include <QtGui>
 
 #include "aboutwidget.h"
+#include "flickcharm.h"
 
 AboutWidget::AboutWidget( QWidget *parent ) :
   QWidget( parent, Qt::Window )
@@ -51,6 +52,13 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   QScroller::grabGesture(about, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(team, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(disclaimer, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(about);
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(team);
+  flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(disclaimer);
 #endif
 
   QPushButton *close = new QPushButton( tr("Ok"), this );

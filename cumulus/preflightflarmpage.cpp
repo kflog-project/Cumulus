@@ -18,6 +18,7 @@
 #include <QtGui>
 
 #include "calculator.h"
+#include "flickcharm.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
@@ -64,8 +65,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( form );
+
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(sa);
 #endif
 
   // Add scroll area to an own layout

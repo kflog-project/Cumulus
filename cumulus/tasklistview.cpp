@@ -22,6 +22,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "mainwindow.h"
 #include "tasklistview.h"
 #include "flighttask.h"
@@ -83,6 +84,9 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(list);
 #endif
 
   topLayout->addWidget(list, 10);

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
 #include "waypointlistwidget.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
@@ -33,6 +34,13 @@ WaypointListWidget::WaypointListWidget( QWidget *parent, bool showMovePage ) :
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WpTreeWidget");
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(list);
+#endif
 }
 
 WaypointListWidget::~WaypointListWidget()
