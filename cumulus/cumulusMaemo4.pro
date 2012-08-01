@@ -279,6 +279,7 @@ flarm {
 		           flarmaliaslist.h \
 		           flarmdisplay.h \
 		           flarmlistview.h \
+		           flarmlogbook.h \
 		           flarmradarview.h \
 		           flarmwidget.h \
 		           preflightflarmpage.h
@@ -287,6 +288,7 @@ flarm {
 		           flarmaliaslist.cpp \
 		           flarmdisplay.cpp \
 		           flarmlistview.cpp \
+		           flarmlogbook.cpp \
 		           flarmradarview.cpp \
 		           flarmwidget.cpp \
 		           preflightflarmpage.cpp
