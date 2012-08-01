@@ -48,81 +48,101 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 
   // get current set altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
-  altUnit = Altitude::getUnit();
+  m_altUnit = Altitude::getUnit();
 
   VarSpinBox* hspin;
 
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
-  edtMinimalArrival = new QSpinBox;
+  m_edtMinimalArrival = new QSpinBox;
 
-  if (altUnit == Altitude::meters)
+  if (m_altUnit == Altitude::meters)
     {
-      edtMinimalArrival->setMaximum(1000);
-      edtMinimalArrival->setSingleStep(10);
+      m_edtMinimalArrival->setMaximum(1000);
+      m_edtMinimalArrival->setSingleStep(10);
     }
   else
     {
-      edtMinimalArrival->setMaximum(3000);
-      edtMinimalArrival->setSingleStep(100);
+      m_edtMinimalArrival->setMaximum(3000);
+      m_edtMinimalArrival->setSingleStep(100);
     }
 
-  edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
-  hspin = new VarSpinBox(edtMinimalArrival);
+  m_edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
+  hspin = new VarSpinBox(m_edtMinimalArrival);
   topLayout->addWidget(hspin, row, 1);
   topLayout->setColumnStretch(2, 2);
   row++;
 
   lbl = new QLabel(tr("Arrival altitude display:"));
   topLayout->addWidget(lbl, row, 0);
-  edtArrivalAltitude = new QComboBox;
-  edtArrivalAltitude->addItem( tr("Landing Target"), GeneralConfig::landingTarget );
-  edtArrivalAltitude->addItem( tr("Next Target"), GeneralConfig::nextTarget );
-  topLayout->addWidget(edtArrivalAltitude, row, 1);
+  m_edtArrivalAltitude = new QComboBox;
+  m_edtArrivalAltitude->addItem( tr("Landing Target"), GeneralConfig::landingTarget );
+  m_edtArrivalAltitude->addItem( tr("Next Target"), GeneralConfig::nextTarget );
+  topLayout->addWidget(m_edtArrivalAltitude, row, 1);
   row++;
 
   lbl = new QLabel(tr("QNH:"));
   topLayout->addWidget(lbl, row, 0);
-  edtQNH = new QSpinBox(this);
-  edtQNH->setObjectName("QNH");
-  edtQNH->setMaximum(1999);
-  edtQNH->setSuffix(" hPa");
-  hspin = new VarSpinBox(edtQNH);
+  m_edtQNH = new QSpinBox(this);
+  m_edtQNH->setObjectName("QNH");
+  m_edtQNH->setMaximum(1999);
+  m_edtQNH->setSuffix(" hPa");
+  hspin = new VarSpinBox(m_edtQNH);
   topLayout->addWidget(hspin, row, 1);
   row++;
 
-  topLayout->setRowMinimumHeight(row, 25);
+  topLayout->setRowMinimumHeight(row, 10);
   row++;
 
-  chkLogAutoStart = new QCheckBox(tr("Autostart IGC logger"));
-  topLayout->addWidget(chkLogAutoStart, row, 0 );
+  m_chkLogAutoStart = new QCheckBox(tr("Autostart IGC logger"));
+  topLayout->addWidget(m_chkLogAutoStart, row, 0 );
 
-  QPushButton* button = new QPushButton( tr("Logbook") );
-  topLayout->addWidget(button, row, 1 );
+  // get current used horizontal speed unit. This unit must be considered
+  // during storage.
+  m_speedUnit = Speed::getHorizontalUnit();
+
+  m_logAutoStartSpeed = new QDoubleSpinBox( this );
+  m_logAutoStartSpeed->setButtonSymbols(QSpinBox::PlusMinus);
+  m_logAutoStartSpeed->setRange( 1.0, 99.0);
+  m_logAutoStartSpeed->setSingleStep( 1 );
+  m_logAutoStartSpeed->setPrefix( "> " );
+  m_logAutoStartSpeed->setDecimals( 1 );
+  m_logAutoStartSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  VarSpinBox* hspin = new VarSpinBox( m_logAutoStartSpeed );
+  topLayout->addWidget( hspin, row, 1 );
   row++;
-
-  connect(button, SIGNAL(pressed()), SLOT(slotOpenLogbook()));
 
   lbl = new QLabel(tr("B-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
-  bRecordInterval = new QSpinBox(this);
-  bRecordInterval->setMinimum(1);
-  bRecordInterval->setMaximum(60);
-  bRecordInterval->setSuffix(" s");
-  hspin = new VarSpinBox(bRecordInterval);
+  m_bRecordInterval = new QSpinBox(this);
+  m_bRecordInterval->setMinimum(1);
+  m_bRecordInterval->setMaximum(60);
+  m_bRecordInterval->setSuffix(" s");
+  hspin = new VarSpinBox(m_bRecordInterval);
   topLayout->addWidget(hspin, row, 1);
   row++;
 
   lbl = new QLabel(tr("K-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
-  kRecordInterval = new QSpinBox(this);
-  kRecordInterval->setMinimum(0);
-  kRecordInterval->setMaximum(300);
-  kRecordInterval->setSpecialValueText(tr("Off"));
-  kRecordInterval->setSuffix(" s");
-  hspin = new VarSpinBox(kRecordInterval);
+  m_kRecordInterval = new QSpinBox(this);
+  m_kRecordInterval->setMinimum(0);
+  m_kRecordInterval->setMaximum(300);
+  m_kRecordInterval->setSpecialValueText(tr("Off"));
+  m_kRecordInterval->setSuffix(" s");
+  hspin = new VarSpinBox(m_kRecordInterval);
   topLayout->addWidget(hspin, row, 1);
   row++;
+
+  topLayout->setRowMinimumHeight(row, 10);
+  row++;
+
+  lbl = new QLabel(tr("My flight book:"));
+  topLayout->addWidget(lbl, row, 0);
+  QPushButton* button = new QPushButton( tr("Open") );
+  topLayout->addWidget(button, row, 1 );
+  row++;
+
+  connect(button, SIGNAL(pressed()), SLOT(slotOpenLogbook()));
 
 #ifdef FLARM
   topLayout->setRowMinimumHeight(row, 10);
@@ -130,6 +150,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 
   lbl = new QLabel(tr("Flarm flight book:"));
   topLayout->addWidget(lbl, row, 0);
+
   button = new QPushButton( tr("Open") );
   topLayout->addWidget(button, row, 1 );
   row++;
@@ -163,23 +184,32 @@ void PreFlightMiscPage::load()
   // @AP: Arrival Altitude is always saved as meter.
   Altitude minArrival = conf->getSafetyAltitude();
 
-  if (altUnit == Altitude::meters) // user wants meters
+  if (m_altUnit == Altitude::meters) // user wants meters
     {
-      edtMinimalArrival->setValue((int) rint(minArrival.getMeters()));
-      edtMinimalArrival->setSingleStep(50);
+      m_edtMinimalArrival->setValue((int) rint(minArrival.getMeters()));
+      m_edtMinimalArrival->setSingleStep(50);
     }
   else // user gets feet
     {
-      edtMinimalArrival->setValue((int) rint(minArrival.getFeet()));
-      edtMinimalArrival->setSingleStep(100);
+      m_edtMinimalArrival->setValue((int) rint(minArrival.getFeet()));
+      m_edtMinimalArrival->setSingleStep(100);
     }
 
-  edtArrivalAltitude->setCurrentIndex( conf->getArrivalAltitudeDisplay() );
+  m_edtArrivalAltitude->setCurrentIndex( conf->getArrivalAltitudeDisplay() );
 
-  edtQNH->setValue( conf->getQNH() );
-  bRecordInterval->setValue( conf->getBRecordInterval() );
-  kRecordInterval->setValue( conf->getKRecordInterval() );
-  chkLogAutoStart->setChecked( conf->getLoggerAutostartMode() );
+  m_edtQNH->setValue( conf->getQNH() );
+  m_bRecordInterval->setValue( conf->getBRecordInterval() );
+  m_kRecordInterval->setValue( conf->getKRecordInterval() );
+  m_chkLogAutoStart->setChecked( conf->getLoggerAutostartMode() );
+
+  Speed speed;
+  // speed is stored in Km/h
+
+  // TODO definition in GeneralConfig
+  speed.setKph( GeneralConfig::instance()->getScreenSaverSpeedLimit() );
+  m_logAutoStartSpeed->setValue( speed.getValueInUnit( m_speedUnit ) );
+  // save loaded value for change control
+  m_loadedSpeed = m_logAutoStartSpeed->value();
 }
 
 void PreFlightMiscPage::save()
@@ -187,7 +217,7 @@ void PreFlightMiscPage::save()
   GeneralConfig *conf = GeneralConfig::instance();
   IgcLogger     *log  = IgcLogger::instance();
 
-  if( chkLogAutoStart->isChecked() )
+  if( m_chkLogAutoStart->isChecked() )
     {
       if ( ! log->getIsLogging() )
         {
@@ -203,25 +233,35 @@ void PreFlightMiscPage::save()
         }
     }
 
-  conf->setLoggerAutostartMode( chkLogAutoStart->isChecked() );
+  conf->setLoggerAutostartMode( m_chkLogAutoStart->isChecked() );
 
   // @AP: Store altitude always as meter.
-  if (altUnit == Altitude::meters)
+  if (m_altUnit == Altitude::meters)
     {
-      conf->setSafetyAltitude(Altitude(edtMinimalArrival->value()));
+      conf->setSafetyAltitude(Altitude(m_edtMinimalArrival->value()));
     }
   else
     {
       Altitude currentAlt; // Altitude will be converted to feet
 
-      currentAlt.setFeet((double) edtMinimalArrival->value());
+      currentAlt.setFeet((double) m_edtMinimalArrival->value());
       conf->setSafetyAltitude(currentAlt);
     }
 
-  conf->setArrivalAltitudeDisplay( (GeneralConfig::ArrivalAltitudeDisplay) edtArrivalAltitude->itemData(edtArrivalAltitude->currentIndex()).toInt() );
-  conf->setQNH(edtQNH->value());
-  conf->setBRecordInterval(bRecordInterval->value());
-  conf->setKRecordInterval(kRecordInterval->value());
+  conf->setArrivalAltitudeDisplay( (GeneralConfig::ArrivalAltitudeDisplay) m_edtArrivalAltitude->itemData(m_edtArrivalAltitude->currentIndex()).toInt() );
+  conf->setQNH(m_edtQNH->value());
+  conf->setBRecordInterval(m_bRecordInterval->value());
+  conf->setKRecordInterval(m_kRecordInterval->value());
+
+  if( m_loadedSpeed != m_logAutoStartSpeed->value() )
+    {
+      Speed speed;
+      speed.setValueInUnit( m_logAutoStartSpeed->value(), m_speedUnit );
+
+      // TODO GeneralConfig:: def
+      // store speed in Km/h
+      GeneralConfig::instance()->setScreenSaverSpeedLimit( speed.getKph() );
+    }
 }
 
 void PreFlightMiscPage::slotOpenLogbook()

@@ -33,12 +33,15 @@
 #define PREFLIGHT_MISCPAGE_H
 
 #include <QWidget>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QPushButton>
-#include <QSpinBox>
 
 #include "altitude.h"
+#include "speed.h"
+
+class QCheckBox;
+class QComboBox;
+class QPushButton;
+class QSpinBox;
+class QDoubleSpinBox;
 
 class PreFlightMiscPage : public QWidget
 {
@@ -76,15 +79,21 @@ class PreFlightMiscPage : public QWidget
 
  private:
 
-  QCheckBox*   chkLogAutoStart;
-  QSpinBox*    edtMinimalArrival;
-  QComboBox*   edtArrivalAltitude;
-  QSpinBox*    edtQNH;
-  QSpinBox*    bRecordInterval; // B-Record logging interval in seconds
-  QSpinBox*    kRecordInterval; // K-Record logging interval in seconds
+  QCheckBox*      m_chkLogAutoStart;
+  QDoubleSpinBox* m_logAutoStartSpeed;
+  QSpinBox*       m_edtMinimalArrival;
+  QComboBox*      m_edtArrivalAltitude;
+  QSpinBox*       m_edtQNH;
+  QSpinBox*       m_bRecordInterval; // B-Record logging interval in seconds
+  QSpinBox*       m_kRecordInterval; // K-Record logging interval in seconds
+
+  double m_loadedSpeed;
+
+  /** saves horizontal speed unit during construction of object */
+  Speed::speedUnit m_speedUnit;
 
   /** saves altitude unit set during construction of object */
-  Altitude::altitudeUnit altUnit;
+  Altitude::altitudeUnit m_altUnit;
 };
 
 #endif
