@@ -20,7 +20,7 @@
 #include "maemostyle.h"
 
 // new size values to be assigned
-#define SB_SIZE 25 // scrollbar size
+#define SB_SIZE 35 // scrollbar size
 #define CB_SIZE 20 // checkbox size
 #define RB_SIZE 20 // radio button size
 #define TB_SB_WIDTH 40 // tab bar scroll button width
