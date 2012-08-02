@@ -61,6 +61,11 @@ FlickCharm::~FlickCharm()
 
 void FlickCharm::activateOn(QWidget *widget)
 {
+#ifdef MAEMO4
+  // Do not work properly on MAEMO4
+  return;
+#endif
+
   QAbstractScrollArea *scrollArea = dynamic_cast<QAbstractScrollArea*>(widget);
 
   if (scrollArea)

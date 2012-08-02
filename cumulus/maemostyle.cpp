@@ -60,13 +60,11 @@ int MaemoProxyStyle::pixelMetric( PixelMetric metric,
       // increase height of radio button
       return RB_SIZE;
     }
-#if 0
   else if( metric == PM_TabBarScrollButtonWidth )
     {
       // increase width of tab bar buttons
       return TB_SB_WIDTH;
     }
-#endif
   else
     {
       // call default style handler
