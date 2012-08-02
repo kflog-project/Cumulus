@@ -1167,7 +1167,7 @@ nach
     </message>
     <message>
         <source>&amp;Add to Custom Colors</source>
-        <translation>Zu Benutzer Farben &amp;hinzufügen</translation>
+        <translation>&amp;Hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -2079,7 +2079,7 @@ nach
     </message>
     <message>
         <source>Script import requires a qualifier</source>
-        <translation type="unfinished">Skript-Import erfordert Qualifizierer.</translation>
+        <translation>Skript-Import erfordert Qualifizierer.</translation>
     </message>
     <message>
         <source>Library import requires a version</source>
