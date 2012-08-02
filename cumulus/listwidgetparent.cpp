@@ -177,29 +177,35 @@ void ListWidgetParent::slot_listItemClicked(QTreeWidgetItem* li, int)
  */
 void ListWidgetParent::slot_PageUp()
 {
-  QTreeWidgetItem *item = list->currentItem();
-
-  if( item )
+  if( up->isDown() )
     {
-      QModelIndex index = list->currentIndex();
-      QRect rect = list->visualRect( index );
+      QTreeWidgetItem *item = list->currentItem();
 
-      // Calculate rows per page. Headline must be subtracted.
-      int pageRows = ( list->height() / rect.height() ) - 1;
-
-      int itemIdx = list->indexOfTopLevelItem( item );
-      int newIdx  = itemIdx - pageRows;
-
-      if( filter->activeFilter() )
+      if( item )
         {
-          if( newIdx < filter->activeFilter()->beginIdx )
-            {
-              newIdx = filter->activeFilter()->beginIdx;
-            }
+          QModelIndex index = list->currentIndex();
+          QRect rect = list->visualRect( index );
 
-          list->setCurrentItem( list->topLevelItem(newIdx) );
-          list->scrollToItem( list->topLevelItem(newIdx) );
+          // Calculate rows per page. Headline must be subtracted.
+          int pageRows = ( list->height() / rect.height() ) - 1;
+
+          int itemIdx = list->indexOfTopLevelItem( item );
+          int newIdx  = itemIdx - pageRows;
+
+          if( filter->activeFilter() )
+            {
+              if( newIdx < filter->activeFilter()->beginIdx )
+                {
+                  newIdx = filter->activeFilter()->beginIdx;
+                }
+
+              list->setCurrentItem( list->topLevelItem(newIdx) );
+              list->scrollToItem( list->topLevelItem(newIdx) );
+            }
         }
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slot_PageUp()));
     }
 }
 
@@ -208,28 +214,34 @@ void ListWidgetParent::slot_PageUp()
  */
 void ListWidgetParent::slot_PageDown()
 {
-  QTreeWidgetItem *item = list->currentItem();
-
-  if( item )
+  if( down->isDown() )
     {
-      QModelIndex index = list->currentIndex();
-      QRect rect = list->visualRect( index );
+      QTreeWidgetItem *item = list->currentItem();
 
-      // Calculate rows per page. Headline must be subtracted.
-      int pageRows = ( list->height() / rect.height() ) - 1;
-
-      int itemIdx = list->indexOfTopLevelItem( item );
-      int newIdx  = itemIdx + pageRows;
-
-      if( filter->activeFilter() )
+      if( item )
         {
-          if( newIdx >= filter->activeFilter()->endIdx )
-            {
-              newIdx = filter->activeFilter()->endIdx - 1;
-            }
+          QModelIndex index = list->currentIndex();
+          QRect rect = list->visualRect( index );
 
-          list->setCurrentItem( list->topLevelItem(newIdx) );
-          list->scrollToItem( list->topLevelItem(newIdx) );
+          // Calculate rows per page. Headline must be subtracted.
+          int pageRows = ( list->height() / rect.height() ) - 1;
+
+          int itemIdx = list->indexOfTopLevelItem( item );
+          int newIdx  = itemIdx + pageRows;
+
+          if( filter->activeFilter() )
+            {
+              if( newIdx >= filter->activeFilter()->endIdx )
+                {
+                  newIdx = filter->activeFilter()->endIdx - 1;
+                }
+
+              list->setCurrentItem( list->topLevelItem(newIdx) );
+              list->scrollToItem( list->topLevelItem(newIdx) );
+            }
         }
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slot_PageDown()));
     }
 }

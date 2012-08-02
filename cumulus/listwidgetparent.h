@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,7 +30,7 @@
  *
  * Subclassed by \ref AirfieldListWidget and \ref WaypointListWidget.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */

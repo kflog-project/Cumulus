@@ -56,12 +56,13 @@ FlickCharm::FlickCharm(QObject *parent): QObject(parent)
 
 FlickCharm::~FlickCharm()
 {
+  qDebug() << "~FlickCharm()";
   delete d;
 }
 
 void FlickCharm::activateOn(QWidget *widget)
 {
-#ifdef ANDROID
+#ifndef ANDROID
   // Do not work properly on MAEMO
   return;
 #endif
