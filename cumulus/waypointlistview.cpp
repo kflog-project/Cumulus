@@ -52,19 +52,19 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   cmdNew->setToolTip( tr( "Add a new waypoint" ) );
   editRow->addWidget( cmdNew );
 
-  QPushButton *cmdEdit = new QPushButton( this );
+  cmdEdit = new QPushButton( this );
   cmdEdit->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "edit_new.png" ) ) );
   cmdEdit->setIconSize( QSize( IconSize, IconSize ) );
   cmdEdit->setToolTip( tr( "Edit selected waypoint" ) );
   editRow->addWidget( cmdEdit );
 
-  QPushButton *cmdDel = new QPushButton( this );
+  cmdDel = new QPushButton( this );
   cmdDel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
   cmdDel->setIconSize( QSize( IconSize, IconSize ) );
   cmdDel->setToolTip( tr( "Delete selected waypoints" ) );
   editRow->addWidget( cmdDel );
 
-  QPushButton *cmdDelAll = new QPushButton( this );
+  cmdDelAll = new QPushButton( this );
   cmdDelAll->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "clear.png" ) ) );
   cmdDelAll->setIconSize( QSize( IconSize, IconSize ) );
   cmdDelAll->setToolTip( tr( "Delete all waypoints" ) );
@@ -86,7 +86,7 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   QPushButton *cmdClose = new QPushButton( tr( "Close" ), this );
   buttonRow->addWidget( cmdClose );
 
-  QPushButton *cmdInfo = new QPushButton( tr( "Info" ), this );
+  cmdInfo = new QPushButton( tr( "Info" ), this );
   buttonRow->addWidget( cmdInfo );
 
   cmdSelect = new QPushButton( tr( "Select" ), this );
@@ -106,7 +106,7 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   connect( cmdPriority, SIGNAL(clicked()), this, SLOT(slot_changeDataDisplay()) );
   connect( cmdInfo, SIGNAL(clicked()), this, SLOT(slot_Info()) );
   connect( cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()) );
-  connect( listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_Selected()) );
+  connect( listw, SIGNAL(wpSelectionChanged()), this, SLOT(slot_selectionChanged()) );
   connect( this, SIGNAL(done()), listw, SLOT(slot_Done()) );
 }
 
@@ -132,9 +132,11 @@ void WaypointListView::showEvent(QShowEvent *)
   homeChanged = false;
 }
 
-/** This signal is called to indicate that a selection has been made. */
+
 void WaypointListView::slot_Select()
 {
+  // Select button is pressed. Emits the current selected waypoint as signal
+  // and closes the widget.
   Waypoint *w = listw->getCurrentWaypoint();
 
   if ( w )
@@ -171,9 +173,48 @@ void WaypointListView::slot_Close()
     }
 }
 
-void WaypointListView::slot_Selected()
+void WaypointListView::slot_selectionChanged()
 {
+  if( calculator->moving() )
+    {
+      cmdHome->setVisible(false);
+      homeChanged = false;
+    }
+  else
+    {
+      cmdHome->setVisible(true);
+    }
+
+  QList<QTreeWidgetItem *> itemList = listw->listWidget()->selectedItems();
+
+  if( itemList.isEmpty() )
+    {
+      cmdSelect->setEnabled( false );
+      cmdHome->setEnabled( false );
+      cmdInfo->setEnabled( false );
+      cmdEdit->setEnabled( false );
+      cmdDel->setEnabled( false );
+      cmdDelAll->setEnabled( false );
+      return;
+    }
+
+  if( itemList.size() > 1 )
+    {
+      cmdSelect->setEnabled( false );
+      cmdHome->setEnabled( false );
+      cmdInfo->setEnabled( false );
+      cmdEdit->setEnabled( false );
+      cmdDel->setEnabled( true );
+      cmdDelAll->setEnabled( true );
+      return;
+    }
+
   cmdSelect->setEnabled( true );
+  cmdHome->setEnabled( true );
+  cmdInfo->setEnabled( true );
+  cmdEdit->setEnabled( true );
+  cmdDel->setEnabled( true );
+  cmdDelAll->setEnabled( true );
 
   Waypoint *w = listw->getCurrentWaypoint();
 
@@ -182,8 +223,21 @@ void WaypointListView::slot_Selected()
       if( w->equals( calculator->getselectedWp() ) )
         {
           cmdSelect->setEnabled( false );
+          return;
+        }
+
+      GeneralConfig *conf = GeneralConfig::instance();
+
+      if( conf->getHomeLat() == w->origP.lat() &&
+          conf->getHomeLon() == w->origP.lon() )
+        {
+          // Selected item is the home position. Disable button press.
+          cmdHome->setEnabled( false );
+          return;
         }
     }
+
+  cmdSelect->setEnabled( true );
 }
 
 /** Called when a new waypoint needs to be made. */
@@ -380,8 +434,8 @@ void WaypointListView::slot_setHome()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getHomeLat() == _wp->origP.lat() && conf->getHomeLon()
-      == _wp->origP.lon() )
+  if( conf->getHomeLat() == _wp->origP.lat() &&
+      conf->getHomeLon() == _wp->origP.lon() )
     {
       // no new coordinates, ignore request
       return;

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2002      by André Somers
-**                  2007-2011 by Axel Pauli
+**                  2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This widget provides a list of waypoints and a means to select one.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */
@@ -62,9 +62,21 @@ public:
     return listw->getCurrentWaypoint();
   };
 
+protected:
+
+  virtual void showEvent(QShowEvent* event);
+
 public slots:
+
   /**
-   * This slot is called to indicate that a selection has been made.
+    * Called if a waypoint has been added.
+    */
+   void slot_wpAdded(Waypoint& wp);
+
+private slots:
+
+  /**
+   * This slot is called if the select button is pressed.
    */
   void slot_Select();
 
@@ -107,11 +119,6 @@ public slots:
   void slot_wpEdited(Waypoint& wp);
 
   /**
-   * Called if a waypoint has been added.
-   */
-  void slot_wpAdded(Waypoint& wp);
-
-  /**
    * Called to set a waypoint as homesite
    */
   void slot_setHome();
@@ -128,6 +135,11 @@ public slots:
    * Called to change the displayed data according their priority.
    */
   void slot_changeDataDisplay();
+
+  /**
+   * Called, if the selection in the list is changed.
+   */
+  void slot_selectionChanged();
 
 signals: // Signals
   /**
@@ -168,20 +180,16 @@ private:
   QPushButton*        cmdSelect;
   QPushButton*        cmdHome;
   QPushButton*        cmdPriority;
+  QPushButton*        cmdInfo;
+  QPushButton*        cmdEdit;
+  QPushButton*        cmdDel;
+  QPushButton*        cmdDelAll;
 
   /** that shall store a home position change */
   bool homeChanged;
 
   /** Old priority of edited waypoint. */
   Waypoint::Priority priorityOfEditedWp;
-
-private slots:
-
-  void slot_Selected();
-
-protected:
-
-  void showEvent(QShowEvent *);
 };
 
 #endif

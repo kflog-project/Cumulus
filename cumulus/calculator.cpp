@@ -88,6 +88,7 @@ Calculator::Calculator(QObject* parent) :
   wpTouchCounter = 0;
   taskEndReached = false;
   manualInFlight = false;
+  _cruiseDirection = -1;
 
   // hook up the internal backend components
   connect (_vario, SIGNAL(newVario(const Speed&)),
