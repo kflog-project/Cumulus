@@ -136,12 +136,7 @@ dpkg_install_de:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
 	install --mode=644 help/de/*.html help/de/text.css icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/cumulus_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
-	if [ -f "$(MY_QT_TRANSLATIONS)/qt_de.qm" ]; \
-	then \
-		install --mode=644 $(MY_QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm; \
-	else \
-		install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm; \
-	fi
+	install --mode=644 locale/de/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm
 
 # installs all language dependend parts
 .PHONY : install
@@ -152,7 +147,7 @@ install:	langpacks
 	install -d $(INSTALL_ROOT)/locale/de
 	install --mode=644 help/de/*.html help/de/text.css help/de/cumulus.png $(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/cumulus_de.qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
-	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(INSTALL_ROOT)/locale/de/qt_de.qm
+	install --mode=644 locale/de/qt_de.qm $(INSTALL_ROOT)/locale/de/qt_de.qm
 
 .PHONY : deinstall
 
@@ -167,7 +162,9 @@ langpacks: langpack_de
 
 langpack_de:
 	cd cumulus; \
-	$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de.qm
+	  $(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm cumulus_de.qm
+	cd locale/de; \
+		$(LRELEASE) -silent -removeidentical -nounfinished qt_de.ts -qm qt_de.qm
 
 # copies debian language package to web page
 

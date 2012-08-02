@@ -120,8 +120,9 @@ install_lang:
 	cd cumulus; \
 		$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
 	chmod 644 $(INSTALL_ROOT)/locale/de/cumulus_de.qm
-	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(INSTALL_ROOT)/locale/de/qt_de.qm;
-	
+	cd locale/de; \
+		$(LRELEASE) -silent -removeidentical -nounfinished qt_de.ts -qm $(INSTALL_ROOT)/locale/de/qt_de.qm
+	chmod 644 $(INSTALL_ROOT)/locale/de/qt_de.qm
 
 .PHONY : deinstall
 deinstall:
