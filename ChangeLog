@@ -15,7 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2012-07-31 AP: BUGFIX: wrong routing of Maemo5 GPS sentences fixed.
+[+] 2012-07-31 AP: Kinetic finger scrolling added for Android.
+
+[+] 2012-07-31 AP: Flarm IGC file download support added.
+
+[*] 2012-07-31 AP: Cumulus 2.16.1 for N900 released.
+
+[-] 2012-07-31 AP: BUGFIX: Wrong routing of Maemo5 GPS sentences fixed. Delivery
+                   made for N900 only.
 
 [*] 2012-07-24 AP: Cumulus 2.16.0 for all devices released.
 

@@ -61,8 +61,8 @@ FlickCharm::~FlickCharm()
 
 void FlickCharm::activateOn(QWidget *widget)
 {
-#ifdef MAEMO4
-  // Do not work properly on MAEMO4
+#ifdef MAEMO
+  // Do not work properly on MAEMO
   return;
 #endif
 

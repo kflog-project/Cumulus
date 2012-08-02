@@ -1,6 +1,6 @@
-cumulus (2.16.2) stable; urgency=low
+cumulus (2.17.0) stable; urgency=low
 
-  * Flarm IGC download support added
+  * Flarm IGC download support added.
   
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 02 Aug 2012 21:53:14 +0200
 
