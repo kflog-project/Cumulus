@@ -13,6 +13,10 @@ TEMPLATE   = app
 CONFIG     = qt warn_on
 #CONFIG     = qt warn_on debug
 
+# Put all generated objects into an extra directory
+OBJECTS_DIR = .obj
+MOC_DIR     = .obj
+
 #version check for Qt 4.7
 ! contains(QT_VERSION, ^4\\.[78]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")

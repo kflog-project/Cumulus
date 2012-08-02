@@ -13,6 +13,10 @@ TEMPLATE   = app
 CONFIG     = qt warn_on release
 #CONFIG     = qt warn_on debug
 
+# Put all generated objects into an extra directory
+OBJECTS_DIR = .obj
+MOC_DIR     = .obj
+
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += bluetooth
 
