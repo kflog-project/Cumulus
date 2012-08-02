@@ -21,8 +21,9 @@
 #include <QtGui>
 
 #include "tpinfowidget.h"
-#include "generalconfig.h"
+#include "flickcharm.h"
 #include "flighttask.h"
+#include "generalconfig.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
 #include "calculator.h"
@@ -53,6 +54,14 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   p.setColor(QPalette::Window, Qt::white);
   text->setPalette(p);
   text->setAutoFillBackground(true);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(text, QScroller::LeftMouseButtonGesture);
+#else
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(text);
+#endif
+
   topLayout->addWidget(text, 5 );
 
   QHBoxLayout *buttonrow = new QHBoxLayout;
