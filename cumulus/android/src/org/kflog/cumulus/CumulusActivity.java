@@ -550,7 +550,11 @@ public class CumulusActivity extends QtActivity
 
     notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
     notification.flags |= Notification.FLAG_ONGOING_EVENT;
-    notificationManager.notify(1, notification);
+    
+    if( notificationManager != null )
+    {
+    	notificationManager.notify(1, notification);
+    }
     
     Log.d(TAG, "onCreate exit" );
   }
@@ -621,10 +625,12 @@ public class CumulusActivity extends QtActivity
           m_btService.stop();
         }
       
+      notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+      
       if( notificationManager != null )
-      	{
-      		notificationManager.cancel(1);
-      	}
+      {
+      	notificationManager.cancelAll();
+      }
 
       // call super class
       super.onDestroy();
