@@ -247,8 +247,6 @@ void WpEditDialogPageGeneral::setWaypointType(int type)
       index = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(0));
     }
 
-  qDebug() << "setWaypointType: type=" << type << "Index=" << index;
-
   cmbType->setCurrentIndex(index);
 }
 
