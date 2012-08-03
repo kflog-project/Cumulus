@@ -55,7 +55,7 @@ static jmethodID m_byte2Gps       = 0;
 bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
-void forwardNmea( QString& nmea );
+static void forwardNmea( QString& nmea );
 
 // ---- The native methods ---
 
@@ -247,7 +247,7 @@ static JNINativeMethod methods[] = {
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
-        {"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps}
+				{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps}
 };
 
 /**
