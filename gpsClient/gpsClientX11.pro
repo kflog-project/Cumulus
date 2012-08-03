@@ -17,7 +17,7 @@ CONFIG     = qt warn_on
 OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 
-#version check for Qt 4.7
+#version check for Qt 4.7 and 4.8
 ! contains(QT_VERSION, ^4\\.[78]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
   error("Use at least Qt 4.7. or higher!")
@@ -48,9 +48,11 @@ bluetooth {
 
 flarm {
     HEADERS += flarmbincom.h \
+               flarmbincomlinux.h \
                flarmcrc.h
                
     SOURCES += flarmbincom.cpp \
+               flarmbincomlinux.cpp \
                flarmcrc.cpp
                
     DEFINES += FLARM
