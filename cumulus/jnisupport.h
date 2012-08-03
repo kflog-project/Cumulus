@@ -37,9 +37,15 @@ bool jniPlaySound(int stream, QString soundName);
 
 /**
  * Forward a GPS command sentence to the Android OS. Android pass it to the
- * connected GPS device.
+ * connected BT GPS device.
  */
 bool jniGpsCmd(QString& cmd);
+
+/**
+ * Forward a byte to the Android OS. Android pass it to the
+ * connected BT GPS device.
+ */
+bool jniByte2Gps(const char byte);
 
 /**
  * Get path to the internal data directory from Android.

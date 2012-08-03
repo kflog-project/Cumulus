@@ -215,13 +215,14 @@ public class CumulusActivity extends QtActivity
 
   // Native C++ functions
   public static native void nativeGpsFix( double latitude,
-                                          double longitude,
-                                          double altitude,
-                                          float speed,
-                                          float heading,
-                                          float accu,
-                                          long time );
+                                             double longitude,
+                                             double altitude,
+                                             float speed,
+                                             float heading,
+                                             float accu,
+                                             long time );
 
+  public static native void nativeByteFromGps(byte newByte);
   public static native void nativeNmeaString(String nmea);
   public static native void nativeGpsStatus(int status);
   public static native void nativeKeypress(char code);
@@ -962,7 +963,7 @@ public class CumulusActivity extends QtActivity
    }
 
   /**
-   * Forward a GPS NMEA command to the connected GPS device.
+   * Forward a GPS NMEA command to the BT connected GPS device.
    */
   boolean gpsCmd( String cmd )
   {
@@ -970,13 +971,27 @@ public class CumulusActivity extends QtActivity
   	
 	if( m_btService != null && gpsEnabled == true )
 		{
-			m_btService.write(cmd.getBytes());
+			m_btService.write( cmd.getBytes() );
 			return true;
 		}
 		
 	return false;
   }
   
+  /**
+   * Forward a byte to the BT connected GPS device.
+   */
+  bool byte2Gps( byte newByte )
+  {
+	if( m_btService != null && gpsEnabled == true )
+	{
+		m_btService.write( newByte );
+		return true;
+	}
+	
+	return false;
+  }
+
   synchronized private void dimmScreen( float value )
     {
       // Log.v(TAG, "dimmScreen(" + value  + ")");
@@ -991,7 +1006,7 @@ public class CumulusActivity extends QtActivity
 
       setCurScreenBrightness( value );
     }
-
+  
   /**
    * This method is called by the native code to handle the screen dimming.
    *

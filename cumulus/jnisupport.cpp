@@ -49,11 +49,13 @@ static jmethodID m_languageID     = 0;
 static jmethodID m_playSoundID    = 0;
 static jmethodID m_dimmScreenID   = 0;
 static jmethodID m_gpsCmdID       = 0;
+static jmethodID m_byte2Gps       = 0;
 
 // Function declarations
 bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
+void forwardNmea( QString& nmea );
 
 // ---- The native methods ---
 
@@ -96,6 +98,14 @@ static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
 
 static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 {
+  const char * nativeString = env->GetStringUTFChars(jnmea, 0);
+  QString qnmea(nativeString);
+  env->ReleaseStringUTFChars(jnmea, nativeString);
+  forwardNmea( qnmea );
+}
+
+static void forwardNmea( QString& qnmea )
+{
   static QHash<QString, short> gpsKeys;
   static GeneralConfig* gci = 0;
   static bool init = false;
@@ -106,10 +116,6 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
       gci = GeneralConfig::instance();
       init = true;
     }
-
-  const char * nativeString = env->GetStringUTFChars(jnmea, 0);
-  QString qnmea(nativeString);
-  env->ReleaseStringUTFChars(jnmea, nativeString);
 
   if( gci->getGpsNmeaLogState() == false )
     {
@@ -223,10 +229,16 @@ static bool isRootWindow()
   return MainWindow::isRootWindow();
 }
 
+static void nativeByteFromGps(JNIEnv* /*env*/, jobject /*myobject*/, jbyte byte)
+{
+  // A byte was read from the Java part from the BT port.
+
+}
+
 /* The array of native methods to register.
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
- * (I = integer, J = long, F = float, D = double, V = void etc. )
+ * ( B = byte, I = integer, J = long, F = float, D = double, V = void etc. )
  * see: http://java.sun.com/docs/books/jni/html/types.html#65751
  */
 static JNINativeMethod methods[] = {
@@ -234,7 +246,8 @@ static JNINativeMethod methods[] = {
 	{"nativeGpsStatus", "(I)V", (void *)nativeGpsStatus},
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
-	{"isRootWindow", "()Z", (bool *)isRootWindow}
+	{"isRootWindow", "()Z", (bool *)isRootWindow},
+        {"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps}
 };
 
 /**
@@ -358,6 +371,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_byte2Gps= m_jniEnv->GetMethodID( clazz,
+                                     "byte2Gps",
+                                     "(B)Z");
+
+  if (isJavaExceptionOccured())
+  {
+    qDebug() << "initJni: could not get ID of byte2Gps";
+    return false;
+  }
+
   return true;
 }
 
@@ -460,6 +483,25 @@ bool jniGpsCmd(QString& cmd)
   if (isJavaExceptionOccured())
     {
       qWarning("jniGpsCmd: exception when calling Java method \"gpsCmd\"");
+      return false;
+    }
+
+  return result;
+}
+
+bool jniByte2Gps(const char byte)
+{
+  if (!jniEnv())
+    {
+      return false;
+    }
+
+  jboolean result = (jboolean) m_jniEnv->CallBooleanMethod( m_jniProxyObject,
+                                                            m_byte2Gps,
+                                                            static_cast<jbyte> (byte) );
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniByte2Gps: exception when calling Java method \"byte2Gps\"");
       return false;
     }
 
