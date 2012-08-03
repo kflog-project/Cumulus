@@ -30,6 +30,7 @@
 
 #include "jnisupport.h"
 #include "androidevents.h"
+#include "gpsconandroid.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
@@ -55,7 +56,6 @@ static jmethodID m_byte2Gps       = 0;
 bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
-static void forwardNmea( QString& nmea );
 
 // ---- The native methods ---
 
@@ -101,37 +101,7 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
   const char * nativeString = env->GetStringUTFChars(jnmea, 0);
   QString qnmea(nativeString);
   env->ReleaseStringUTFChars(jnmea, nativeString);
-  forwardNmea( qnmea );
-}
-
-static void forwardNmea( QString& qnmea )
-{
-  static QHash<QString, short> gpsKeys;
-  static GeneralConfig* gci = 0;
-  static bool init = false;
-
-  if( init == false )
-    {
-      GpsNmea::getGpsMessageKeys( gpsKeys );
-      gci = GeneralConfig::instance();
-      init = true;
-    }
-
-  if( gci->getGpsNmeaLogState() == false )
-    {
-      // Check, if sentence is of interest for us.
-      QString item = qnmea.mid( 0, qnmea.indexOf( QChar(',') ) );
-
-      if( gpsKeys.contains(item) == false )
-        {
-          // Ignore undesired sentences for performance reasons. They are
-          // only forwarded, if data file logging is switched on.
-          return;
-        }
-    }
-
-  GpsNmeaEvent *ne = new GpsNmeaEvent(qnmea);
-  QCoreApplication::postEvent( GpsNmea::gps, ne, Qt::HighEventPriority );
+  GpsConAndroid::forwardNmea( qnmea );
 }
 
 static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
@@ -231,8 +201,9 @@ static bool isRootWindow()
 
 static void nativeByteFromGps(JNIEnv* /*env*/, jobject /*myobject*/, jbyte byte)
 {
-  // A byte was read from the Java part from the BT port.
-
+  // A byte was read from the Java part via the BT port. It is forwarded to the
+  // GPS data handler class for Android.
+  GpsConAndroid::rcvByte( (const char) byte );
 }
 
 /* The array of native methods to register.
@@ -247,7 +218,7 @@ static JNINativeMethod methods[] = {
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
-				{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps}
+	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps}
 };
 
 /**

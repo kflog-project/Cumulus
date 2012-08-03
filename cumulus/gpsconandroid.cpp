@@ -17,19 +17,24 @@
  **
  ***********************************************************************/
 
+#include <unistd.h>
+
 #include <QtGui>
 
 #include "androidevents.h"
-#include "flarm.h"
 #include "generalconfig.h"
 #include "gpsconandroid.h"
 #include "gpsnmea.h"
+#include "jnisupport.h"
+
+#ifdef FLARM
+#include "flarm.h"
+#include "frambincomandroid.h"
+#endif
 
 // static members
 QByteArray GpsConAndroid::rcvBuffer;
 QMutex     GpsConAndroid::mutex;
-
-
 
 GpsConAndroid::GpsConAndroid(QObject* parent) : QObject(parent)
 {
@@ -40,9 +45,24 @@ GpsConAndroid::~GpsConAndroid()
 {
 }
 
+bool GpsConAndroid::sndBytes( QByteArray& bytes )
+{
+  // Called to transfer a byte stream to the GPS port of the java part.
+  QMutexLocker locker(&mutex);
+
+  bool ok = true;
+
+  for( int i = 0; i < bytes.size(); i++ )
+    {
+      ok &= jniByte2Gps( bytes.at(i) );
+    }
+
+  return ok;
+}
+
 void GpsConAndroid::rcvByte( const char byte )
 {
-  // Called if a byte is read from the GPS port on the java part.
+  // Called if a byte is read from the GPS port of the java part.
   QMutexLocker locker(&mutex);
 
   rcvBuffer.append( byte );
@@ -60,6 +80,31 @@ void GpsConAndroid::rcvByte( const char byte )
   // Flarm works in binary mode, do nothing more as to store the byte.
   // Another thread will read it.
   return;
+}
+
+bool GpsConAndroid::getByte( unsigned char* b )
+{
+  // Called to read out a byte from the byte buffer.
+  int loop = 30; // TImeout is 3s
+
+  while( loop-- )
+    {
+      mutex.lock();
+
+      if( rcvBuffer.size() > 0 )
+        {
+          *b = rcvBuffer.at(0);
+          rcvBuffer.remove( 0, 1);
+          mutex.unlock();
+          return true;
+        }
+
+      mutex.unlock();
+      usleep( 100 * 1000 ); // Wait 100ms
+    }
+
+  qWarning() << "GpsConAndroid::getByte(): Timeout!";
+  return false;
 }
 
 static void GpsConAndroid::forwardNmea( QString& qnmea )
@@ -144,3 +189,233 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
   return false;
 }
 
+#ifdef FLARM
+
+bool GpsConAndroid::flarmBinMode()
+{
+  // Binary switch command for Flarm interface
+  const QByteArray pflax = QByteArray("$PFLAX\n");
+
+  FlarmBinComAndroid fbc;
+
+  // Precondition is that the NMEA output of the Flarm device was disabled by
+  // the calling method before!
+
+  // qDebug() << "Switch Flarm to binary mode";
+
+  // I made the experience, that the Flarm device did not answer to the first
+  // binary transfer switch. Therefore I make several tries. Flarm tool makes
+  // the same, as I could observe with a RS232 port sniffer.
+  bool pingOk = false;
+  int loop = 5;
+
+  while( loop-- )
+    {
+      // Switch connection to binary mode.
+      if( sndBytes(pflax) == false )
+        {
+          // write failed
+          break;
+        }
+
+      // Check connection with a ping command.
+      if( fbc.ping() == true )
+        {
+          pingOk = true;
+          break;
+        }
+    }
+
+  if( pingOk == false )
+    {
+      // Switch to binary mode failed
+      qWarning() << "GpsConAndroid::flarmBinMode(): Switch failed!";
+    }
+
+  return pingOk;
+}
+
+
+// This action must be executed in a thread.
+void GpsConAndroid::getFlarmFlightList()
+{
+  FlarmBinComAndroid fbc( fd );
+
+  if( flarmBinMode() == false )
+    {
+      emit newFlarmFlightList( "Error" );
+      return;
+    }
+
+  // read out flight header records
+  int recNo = 0;
+  char buffer[MAXSIZE];
+  QStringList flights;
+
+  while( true )
+    {
+      if( fbc.selectRecord( recNo ) == true )
+        {
+          recNo++;
+
+          if( fbc.getRecordInfo( buffer ) )
+            {
+              flights << QString( buffer );
+            }
+          else
+            {
+              qWarning() << "GpsConAndroid::getFlarmFlightList(): GetRecordInfo("
+                          << (recNo - 1)
+                          << ") failed!";
+              break;
+            }
+        }
+      else
+        {
+          // No more records available
+          break;
+        }
+    }
+
+  // Send back flight headers to application
+  QString list;
+
+  if( flights.size() )
+    {
+      list = flights.join("\n");
+    }
+  else
+    {
+      list = "Empty";
+    }
+
+  emit newFlarmFlightList( list );
+}
+
+// This action must be executed in a thread.
+void GpsConAndroid::getFlarmIgcFiles(QString& args)
+{
+  // The argument string contains at the first position the destination directory
+  // for the files and then the indexes of the flights separated by vertical tabs.
+  QStringList idxList = args.split("\v");
+
+  if( idxList.size() < 2 )
+    {
+      return;
+    }
+
+  FlarmBinComAndroid fbc( fd );
+
+  if( flarmBinMode() == false )
+    {
+      flarmFlightDowloadInfo( "Error" );
+      return;
+    }
+
+  // read out flights
+  char buffer[MAXSIZE];
+  uint progress = 0;
+
+  // Check, if the download directory exists. Here we take the directory element
+  // from the list.
+  QDir igcDir( idxList.takeFirst() );
+
+  if( ! igcDir.exists() )
+    {
+      if( ! igcDir.mkpath( igcDir.absolutePath() ) )
+        {
+          flarmFlightDowloadInfo( "Error create directory" );
+          return;
+        }
+    }
+
+  for( int idx = 0; idx < idxList.size(); idx++ )
+    {
+      // Select the flight to be downloaded
+      int recNo = idxList.at(idx).toInt();
+      QStringList flightData;
+
+      if( fbc.selectRecord(recNo ) == true )
+        {
+          // read flight header data
+          if( fbc.getRecordInfo( buffer ) )
+            {
+              flightData = QString( buffer ).split("|");
+            }
+          else
+            {
+              // Entry not available, although select answered positive!
+              // Not conform to the specification.
+              flarmFlightDowloadInfo( "Error" );
+              return;
+            }
+
+          // Open an IGC file for writing download data.
+          QFile f( igcDir.absolutePath() + "/" + flightData.at(0) );
+
+          if( ! f.open( QIODevice::WriteOnly ) )
+            {
+              // could not open file ...
+              qWarning() << "Cannot open file: " << f.fileName();
+              flarmFlightDowloadInfo( "Error open file" );
+              return;
+            }
+
+          uint lastProgress = -1;
+          bool eof = false;
+
+          while( fbc.getIGDData(buffer, &progress) )
+            {
+              if( lastProgress != progress )
+                {
+                  // That eliminates a lot of intermediate steps
+                  flarmFlightDowloadProgress(recNo, progress);
+                  lastProgress = progress;
+                }
+
+              if( buffer[strlen(buffer) - 1] == 0x1A )
+                {
+                  // EOF was send by the Flarm, remove it from the data stream.
+                   buffer[strlen(buffer) - 1] = '\0';
+                   eof = true;
+                 }
+
+              f.write(buffer);
+
+              if( eof )
+                {
+                  break;
+                }
+            }
+
+          f.close();
+        }
+     }
+
+  flarmFlightDowloadInfo( "Finished" );
+}
+
+void GpsConAndroid::flarmFlightDowloadInfo( QString info )
+{
+  emit newFlarmFlightDownloadInfo( info );
+}
+
+/** Reports the flight download progress to the calling application. */
+void GpsConAndroid::flarmFlightDowloadProgress( const int idx, const int progress )
+{
+  emit newFlarmFlightDownloadProgress( idx, progress );
+}
+
+bool GpsConAndroid::flarmReset()
+{
+  if( ! flarmBinMode() )
+    {
+     return false;
+    }
+
+  FlarmBinComAndroid fbc( fd );
+  bool res = fbc.exit();
+  return res;
+}
+
+#endif
