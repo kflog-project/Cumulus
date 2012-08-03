@@ -37,7 +37,7 @@
 #include "ipc.h"
 
 #ifdef FLARM
-#include "flarmbincom.h"
+#include "flarmbincomlinux.h"
 #endif
 
 #ifdef BLUEZ
@@ -1051,7 +1051,7 @@ bool GpsClient::flarmBinMode()
   // Binary switch command for Flarm interface
   const char* pflax = "$PFLAX\n";
 
-  FlarmBinCom fbc( fd );
+  FlarmBinComLinux fbc( fd );
 
   // Precondition is that the NMEA output of the Flarm device was disabled by
   // the calling method before!
@@ -1095,7 +1095,7 @@ void GpsClient::getFlarmFlightList()
   // Switch off timeout control
   last = QTime();
 
-  FlarmBinCom fbc( fd );
+  FlarmBinComLinux fbc( fd );
 
   if( flarmBinMode() == false )
     {
@@ -1174,7 +1174,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
   // Switch off timeout control
   last = QTime();
 
-  FlarmBinCom fbc( fd );
+  FlarmBinComLinux fbc( fd );
 
   if( flarmBinMode() == false )
     {
@@ -1293,7 +1293,7 @@ bool GpsClient::flarmReset()
       return false;
     }
 
-  FlarmBinCom fbc( fd );
+  FlarmBinComLinux fbc( fd );
   bool res = fbc.exit();
   initFlarm = true;
   last.start();

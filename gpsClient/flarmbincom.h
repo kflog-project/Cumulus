@@ -94,14 +94,9 @@ class FlarmBinCom
 {
  public:
 
-  /**
-   * Contructor of class.
-   *
-   * \param socket Opened socket to Flarm device.
-   */
-  FlarmBinCom(int socket);
+  FlarmBinCom();
 
-  ~FlarmBinCom();
+  virtual ~FlarmBinCom();
 
   /**
    * Checks the connection.
@@ -145,6 +140,14 @@ class FlarmBinCom
    */
   bool getIGDData(char* sData, unsigned int* progress);
 
+ protected:
+
+  /** Low level write character port method. Must be implemented by the user. */
+  virtual int writeChar(const unsigned char c) = 0;
+
+  /** Low level read character port method. Must be implemented by the user. */
+  virtual int readChar(unsigned char* b) = 0;
+
  private:
 
   /** Sends a message to the Flarm. */
@@ -159,20 +162,11 @@ class FlarmBinCom
   /** Gets a character in escape mode.*/
   bool rcv(unsigned char* b);
 
-  /** Low level write character port method. */
-  int writeChar(const unsigned char c);
-
-  /** Low level read character port method. */
-  int readChar(unsigned char* b);
-
   /** Calculates the CRC checksum according too the XMODEM algorithm. */
   unsigned short computeCRC(Message* mMsg);
 
   /** Dumps the passed data array as hex string. */
   QString dumpHex( const uchar* data, int length );
-
-  /** Socket to Flarm device. */
-  int m_Socket;
 
   /** Message sequence number. */
   static unsigned short m_Seq;
