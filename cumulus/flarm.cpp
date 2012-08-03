@@ -15,6 +15,8 @@
 **
 ***********************************************************************/
 
+#include <cmath>
+
 #include <QtCore>
 
 #include "altitude.h"
@@ -29,17 +31,19 @@ bool Flarm::collectPflaa = false;
 Flarm::FlarmStatus  Flarm::flarmStatus;
 Flarm::FlarmVersion Flarm::flarmVersion;
 Flarm::FlarmError   Flarm::flarmError;
+Flarm::ProtocolMode Flarm::m_protocolMode = text;
 
 QHash<QString, Flarm::FlarmAcft> Flarm::pflaaHash;
+QMutex Flarm::m_mutex;
 
 Flarm::Flarm(QObject* parent) : QObject(parent)
 {
   flarmStatus.valid = false;
 
   // Setup timer for data clearing
-  timer = new QTimer( this );
-  timer->setSingleShot( true );
-  connect( timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
+  m_timer = new QTimer( this );
+  m_timer->setSingleShot( true );
+  connect( m_timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
 
   // Load Flarm alias data
   FlarmAliasList::loadAliasData();
@@ -451,7 +455,7 @@ void Flarm::collectPflaaFinished()
   // Start Flarm PFLAA data clearing supervision. There is no other way
   // of solution because the PFLAA sentences are only sent if other
   // aircrafts are in view of the FLARM receiver.
-  timer->start( 3000 );
+  m_timer->start( 3000 );
 
   // Emit signal, if further processing in radar view is required.
   if( Flarm::getCollectPflaa() )
@@ -563,4 +567,19 @@ void Flarm::createTrafficMessage()
   text += "</table></html>";
 
   emit flarmTrafficInfo( text );
+}
+
+enum Flarm::ProtocolMode Flarm::getProtocolMode()
+{
+  m_mutex.lock();
+  enum Flarm::ProtocolMode pm = m_protocolMode;
+  m_mutex.unlock();
+  return pm;
+}
+
+void Flarm::setPotocolMode( enum Flarm::ProtocolMode pm )
+{
+  m_mutex.lock();
+  m_protocolMode = pm;
+  m_mutex.unlock();
 }

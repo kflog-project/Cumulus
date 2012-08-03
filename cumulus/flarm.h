@@ -34,8 +34,9 @@
 #include <QString>
 #include <QTime>
 #include <QHash>
-#include <QPoint>
+#include <QMutex>
 
+class QPoint;
 class QStringList;
 class QTimer;
 
@@ -68,12 +69,20 @@ public:
   /**
    * FLARM GPS fix definitions.
    */
-
   enum GpsStatus
   {
     NoFix=0,
     GroundFix=1,
     MovingFix=2
+  };
+
+  /**
+   * Flarm protocol mode. Can be text or binary.
+   */
+  enum ProtocolMode
+  {
+    text,
+    binary
   };
 
   /**
@@ -295,6 +304,11 @@ public:
   bool extractPflac(QStringList& stringList);
 
   /**
+   * PFLAA data collection is finished.
+   */
+  void collectPflaaFinished();
+
+  /**
    * Creates a hash key by using the passed parameters.
    *
    * @param idType 'ID-Type' tag of Flarm sentence $PFLAA
@@ -328,10 +342,9 @@ public:
     flarmError.reset();
   };
 
-  /**
-   * PFLAA data collection is finished.
-   */
-  void collectPflaaFinished();
+  static enum ProtocolMode getProtocolMode();
+
+  static void setPotocolMode( enum ProtocolMode pm );
 
 private:
 
@@ -376,7 +389,7 @@ signals:
 
 private slots:
 
-  /** Called if timer has expired. Used for Flarm data clearing. */
+  /** Called if m_timer has expired. Used for Flarm data clearing. */
   void slotTimeout();
 
 private:
@@ -407,7 +420,12 @@ private:
   static QHash<QString, FlarmAcft> pflaaHash;
 
   /** Timer for data clearing. */
-  QTimer *timer;
+  QTimer* m_timer;
+
+  /** Flarm protocol mode.  */
+  static enum ProtocolMode m_protocolMode;
+
+  static QMutex m_mutex;
 };
 
 #endif /* FLARM_H_ */
