@@ -76,6 +76,7 @@ HEADERS = \
     glidereditor.h \
     gliderflightdialog.h \
     gliderlistwidget.h \
+    gpsconandroid.h \
     gpsnmea.h \
     gpsstatusdialog.h \
     coordedit.h \
@@ -192,6 +193,7 @@ SOURCES = \
     glidereditor.cpp \
     gliderflightdialog.cpp \
     gliderlistwidget.cpp \
+    gpsconandroid.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
     coordedit.cpp \
