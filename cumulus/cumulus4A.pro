@@ -283,22 +283,28 @@ SOURCES = \
 flarm {
     HEADERS += flarm.h \
                flarmaliaslist.h \
+               flarmbincom.h \
+               flarmbincomandroid.h \
+               flarmcrc.h \
                flarmdisplay.h \
                flarmlistview.h \
                flarmradarview.h \
                flarmwidget.h \
                preflightflarmpage.h \
                flarmlogbook.h
-               
+
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
+               flarmbincom.cpp \
+               flarmbincomandroid.cpp \
+               flarmcrc.cpp \
                flarmdisplay.cpp \
                flarmlistview.cpp \
                flarmradarview.cpp \
                flarmwidget.cpp \
                preflightflarmpage.cpp \
                flarmlogbook.cpp
-               
+
     DEFINES += FLARM
 }
 
@@ -400,4 +406,3 @@ OTHER_FILES += \
 LIBS += -lstdc++
 
 TRANSLATIONS = cumulus_android_de.ts
-

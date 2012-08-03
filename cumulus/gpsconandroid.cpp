@@ -29,7 +29,7 @@
 
 #ifdef FLARM
 #include "flarm.h"
-#include "frambincomandroid.h"
+#include "flarmbincomandroid.h"
 #endif
 
 // static members
@@ -107,7 +107,7 @@ bool GpsConAndroid::getByte( unsigned char* b )
   return false;
 }
 
-static void GpsConAndroid::forwardNmea( QString& qnmea )
+void GpsConAndroid::forwardNmea( QString& qnmea )
 {
   static QHash<QString, short> gpsKeys;
   static GeneralConfig* gci = 0;
@@ -194,7 +194,7 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
 bool GpsConAndroid::flarmBinMode()
 {
   // Binary switch command for Flarm interface
-  const QByteArray pflax = QByteArray("$PFLAX\n");
+  QByteArray pflax = QByteArray("$PFLAX\n");
 
   FlarmBinComAndroid fbc;
 
@@ -239,7 +239,7 @@ bool GpsConAndroid::flarmBinMode()
 // This action must be executed in a thread.
 void GpsConAndroid::getFlarmFlightList()
 {
-  FlarmBinComAndroid fbc( fd );
+  FlarmBinComAndroid fbc;
 
   if( flarmBinMode() == false )
     {
@@ -304,7 +304,7 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
       return;
     }
 
-  FlarmBinComAndroid fbc( fd );
+  FlarmBinComAndroid fbc;
 
   if( flarmBinMode() == false )
     {
@@ -413,7 +413,7 @@ bool GpsConAndroid::flarmReset()
      return false;
     }
 
-  FlarmBinComAndroid fbc( fd );
+  FlarmBinComAndroid fbc;
   bool res = fbc.exit();
   return res;
 }

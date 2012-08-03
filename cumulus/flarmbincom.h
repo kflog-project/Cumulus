@@ -38,8 +38,11 @@
 // protocol version
 #define MYVERSION           0x01
 
+#ifdef PAGESIZE
+#undef PAGESIZE
 // FLASH Seitengrösse aus dataflash.h
 #define PAGESIZE 528
+#endif
 
 // maximale frame size
 #define MAXSIZE     600

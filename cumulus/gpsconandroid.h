@@ -22,7 +22,7 @@
  *
  * \author Axel Pauli
  *
- * \brief GPS connection interface from and to Android Java part.
+ * \brief GPS connection interface from and to Android's Java part.
  *
  * This module manages the GPS data transfer to and from the Android Java
  * part.
@@ -49,7 +49,7 @@ class GpsConAndroid : public QObject
 
  public:
 
-  GpsConAndroid( QObject parent=0 );
+  GpsConAndroid( QObject* parent=0 );
 
   virtual ~GpsConAndroid();
 
@@ -61,11 +61,11 @@ class GpsConAndroid : public QObject
 
   static bool verifyCheckSum( const char *sentence );
 
- private:
-
   static void forwardNmea( QString& qnmea );
 
 #ifdef FLARM
+
+ private:
 
   /** Gets the flight list from the Flarm device. */
   void getFlarmFlightList();
