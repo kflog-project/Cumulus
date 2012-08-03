@@ -58,8 +58,15 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   drawOptions = new QTableWidget(8, 6, this);
   // drawOptions->setShowGrid( false );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(drawOptions, QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(drawOptions);
+#endif
 
   connect( drawOptions, SIGNAL(cellClicked ( int, int )),
            SLOT(slot_toggleCheckBox( int, int )));
@@ -1637,8 +1644,15 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   fileTable->setToolTip( tr("Use check boxes to activate or deactivate file loading.") );
   fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   fileTable->setShowGrid( true );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(fileTable, QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(fileTable);
+#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   fileTable->setStyleSheet( style );

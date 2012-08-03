@@ -69,12 +69,22 @@ FontDialog::FontDialog (QWidget *parent) :
   styleList = new QListWidget;
   sizeList  = new QListWidget;
 
+#ifdef QSCROLLER
+  QScroller::grabGesture(fontList, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(styleList, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(sizeList, QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
+
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(fontList);
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(styleList);
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(sizeList);
+
+#endif
 
   fontList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   styleList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

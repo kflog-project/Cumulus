@@ -51,8 +51,15 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   topLayout->setSpacing(5);
 
   m_table = new QTableWidget( 0, 6, this );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(m_table, QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(m_table);
+#endif
 
   m_table->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_table->setAlternatingRowColors( true );
