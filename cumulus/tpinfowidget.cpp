@@ -57,7 +57,9 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(text, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(text);
 #endif

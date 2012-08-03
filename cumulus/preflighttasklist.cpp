@@ -183,7 +183,9 @@ PreFlightTaskList::PreFlightTaskList( QWidget* parent ) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(taskList);
 #endif

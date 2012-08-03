@@ -71,7 +71,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   tabWidget->addTab( pgArea, tr("General") );
 #ifdef QSCROLLER
   QScroller::grabGesture(pgArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(pgArea);
 #endif
@@ -84,7 +86,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   tabWidget->addTab( paArea, tr("Aero") );
 #ifdef QSCROLLER
   QScroller::grabGesture(paArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(paArea);
 #endif
@@ -98,7 +102,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   tabWidget->addTab( pcArea, tr("Comment") );
 #ifdef QSCROLLER
   QScroller::grabGesture(pcArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(pcArea);
 #endif

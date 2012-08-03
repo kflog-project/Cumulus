@@ -68,7 +68,9 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(sa);
 #endif

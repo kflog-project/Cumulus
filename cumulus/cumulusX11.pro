@@ -42,6 +42,9 @@ CONFIG += welt2000thread
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
+# Activate this define, if class FlickCharm shall be used for kinetic finger scrolling.
+# DEFINES += FLICK_CHARM
+
 #version check for Qt 4.7
 ! contains(QT_VERSION, ^4\\.[78]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")

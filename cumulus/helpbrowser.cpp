@@ -36,7 +36,9 @@ HelpBrowser::HelpBrowser( QWidget *parent ) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(browser, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(browser);
 #endif

@@ -62,11 +62,6 @@ FlickCharm::~FlickCharm()
 
 void FlickCharm::activateOn(QWidget *widget)
 {
-#ifndef ANDROID
-  // Do not work properly on MAEMO
-  return;
-#endif
-
   QAbstractScrollArea *scrollArea = dynamic_cast<QAbstractScrollArea*>(widget);
 
   if (scrollArea)
@@ -78,12 +73,14 @@ void FlickCharm::activateOn(QWidget *widget)
       scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
       scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
+#if 0
       QScrollBar* hsb = scrollArea->horizontalScrollBar();
       QScrollBar* vsb = scrollArea->verticalScrollBar();
       hsb->setMinimumHeight( 10 );
       hsb->setMaximumHeight( 10 );
       vsb->setMinimumWidth( 10 );
       vsb->setMaximumWidth( 10 );
+#endif
 
       QWidget *viewport = scrollArea->viewport();
 

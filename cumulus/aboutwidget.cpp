@@ -52,7 +52,9 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   QScroller::grabGesture(about, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(team, QScroller::LeftMouseButtonGesture);
   QScroller::grabGesture(disclaimer, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(about);
   flickCharm = new FlickCharm(this);

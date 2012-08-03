@@ -20,7 +20,7 @@
 #include "androidstyle.h"
 
 // new size values to be assigned
-#ifdef SCROLLER
+#if definded QSCROLLER || defined FLICK_CHARM
 #define SB_SIZE 10 // scrollbar size, now only an indicator, thanks to kinetic scrolling
 #else
 #define SB_SIZE 40

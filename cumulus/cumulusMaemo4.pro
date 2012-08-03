@@ -43,6 +43,9 @@ CONFIG += welt2000thread
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
+# Activate this define, if class FlickCharm shall be used for kinetic finger scrolling.
+# DEFINES += FLICK_CHARM
+
 HEADERS = \
     aboutwidget.h \
     airfieldlistview.h \

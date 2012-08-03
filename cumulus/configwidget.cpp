@@ -61,7 +61,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sppArea->setWidget( spp );
 #ifdef QSCROLLER
   QScroller::grabGesture(sppArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(sppArea);
 #endif
@@ -85,7 +87,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmsArea->setWidget( spms );
 #ifdef QSCROLLER
   QScroller::grabGesture(spmsArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(spmsArea);
 #endif
@@ -98,7 +102,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spmoArea->setWidget( spmo );
 #ifdef QSCROLLER
   QScroller::grabGesture(spmoArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(spmoArea);
 #endif
@@ -111,7 +117,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   sptcArea->setWidget( sptc );
 #ifdef QSCROLLER
   QScroller::grabGesture(sptcArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(sptcArea);
 #endif
@@ -124,7 +132,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spsArea->setWidget( spt );
 #ifdef QSCROLLER
   QScroller::grabGesture(spsArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(spsArea);
 #endif
@@ -137,7 +147,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   spafArea->setWidget( spaf );
 #ifdef QSCROLLER
   QScroller::grabGesture(spafArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(spafArea);
 #endif
@@ -150,7 +162,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   asArea->setWidget( spa );
 #ifdef QSCROLLER
   QScroller::grabGesture(asArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(asArea);
 #endif
@@ -166,7 +180,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   infoArea->setWidget( spi );
 #ifdef QSCROLLER
   QScroller::grabGesture(infoArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(infoArea);
 #endif
@@ -179,7 +195,9 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   splnfArea->setWidget( splnf );
 #ifdef QSCROLLER
   QScroller::grabGesture(splnfArea, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(splnfArea);
 #endif

@@ -39,7 +39,9 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
 
 #ifdef QSCROLLER
   QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(list);
 #endif

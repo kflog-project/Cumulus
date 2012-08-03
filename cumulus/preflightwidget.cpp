@@ -57,7 +57,9 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   sa->setWidget( wppage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(sa);
 #endif
@@ -75,7 +77,9 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   sa->setWidget( miscpage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   flickCharm = new FlickCharm(this);
   flickCharm->activateOn(sa);
 #endif

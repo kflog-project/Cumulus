@@ -91,7 +91,9 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 
 #ifdef QSCROLLER
   QScroller::grabGesture(loadOptions, QScroller::LeftMouseButtonGesture);
-#else
+#endif
+
+#ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
   flickCharm->activateOn(loadOptions);
 #endif

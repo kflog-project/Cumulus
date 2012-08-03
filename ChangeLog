@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-08-02 AP: BUGFIX: Long string labels of German translation shorten
+                   for color dialog. That makes the dialog buttons fully visible
+                   for Android.
+                   
 [+] 2012-07-31 AP: Kinetic finger scrolling added for Android.
 
 [+] 2012-07-31 AP: Flarm IGC file download support added.

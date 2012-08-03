@@ -32,6 +32,9 @@ DEFINES += ANDROID CUMULUS
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
+# Activate this define, if class FlickCharm shall be used for kinetic finger scrolling.
+DEFINES += FLICK_CHARM
+
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
 
