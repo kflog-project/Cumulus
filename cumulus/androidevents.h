@@ -20,7 +20,7 @@
 
 /**
  *
- * \author Josua Dietze
+ * \author Josua Dietze, Axel Pauli
  *
  * \brief Custom events for using Android Location service
  *        and getting soft keyboard state via JNI native methods.
@@ -34,6 +34,7 @@
 #ifndef ANDROID_EVENTS_H
 #define ANDROID_EVENTS_H
 
+#include <QtCore>
 #include <QEvent>
 
 /* Posted by the native method "gpsFix" which is called from Java object
@@ -124,7 +125,6 @@ class GpsStatusEvent : public QEvent
 /* Posted by the native method "gpsNmeaString" which is called from Java object
  * LocationListener, method "onNmeaReceived"
  */
-
 class GpsNmeaEvent : public QEvent
 {
   public:
@@ -146,28 +146,69 @@ class GpsNmeaEvent : public QEvent
     QString m_nmeaSentence;
 };
 
-/* Posted by the native method "keyboardAction" which is called from Java
- * if the software keyboard is activated
- */
-class KeyboardActionEvent : public QEvent
+class FlarmFlightListEvent : public QEvent
 {
   public:
 
-    KeyboardActionEvent( const int keyboardAction ) :
-      QEvent( (QEvent::Type)(QEvent::User+2) ),
-      m_keyboardAction(keyboardAction)
-    {};
+  FlarmFlightListEvent( const QString& list ) :
+    QEvent( (QEvent::Type) (QEvent::User+3) ),
+    m_list(list)
+  {};
 
-    virtual ~KeyboardActionEvent() {};
+  virtual ~FlarmFlightListEvent() {};
 
-    int action() const
-      {
-        return m_keyboardAction;
-      };
+  QString& flightList()
+    {
+       return m_list;
+    };
 
-  private:
+ private:
 
-    int m_keyboardAction;
+  QString m_list;
+};
+
+class FlarmFlightDownloadInfoEvent : public QEvent
+{
+  public:
+
+  FlarmFlightDownloadInfoEvent( const QString& info ) :
+    QEvent( (QEvent::Type) (QEvent::User+4) ),
+    m_info(info)
+  {};
+
+  virtual ~FlarmFlightDownloadInfoEvent() {};
+
+  QString& flightDownloadInfo()
+    {
+       return m_info;
+    };
+
+ private:
+
+  QString m_info;
+};
+
+class FlarmFlightDownloadProgressEvent : public QEvent
+{
+  public:
+
+  FlarmFlightDownloadProgressEvent( const int idx, const int progress ) :
+    QEvent( (QEvent::Type) (QEvent::User+5) ),
+    m_idx(idx),
+    m_progress(progress)
+  {};
+
+  virtual ~FlarmFlightDownloadProgressEvent() {};
+
+  void flightDownloadInfo( int& idx, int& progress )
+    {
+       return;
+    };
+
+ private:
+
+  int m_idx;
+  int m_progress;
 };
 
 #endif
