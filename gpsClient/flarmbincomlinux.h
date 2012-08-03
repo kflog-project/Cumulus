@@ -29,7 +29,7 @@
  *
  * \date 2012
  *
- * \brief Flarm binary low level communication routines for Linux.
+ * \brief Flarm binary low level port routines for Linux.
  *
  * \version $Id$
  *

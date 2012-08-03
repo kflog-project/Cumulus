@@ -17,8 +17,9 @@
 **
 ***********************************************************************/
 
-#include <errno.h>
+#include <cerrno>
 #include <unistd.h>
+
 #include <fcntl.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -27,10 +28,6 @@
 #include <QtGui>
 
 #include "flarmbincomlinux.h"
-
-
-// Enable DEBUG_RS to dump out the messages on the interface in hex format
-// #define DEBUG_SR 1
 
 FlarmBinComLinux::FlarmBinComLinux( int socket ) :
   FlarmBinCom(),
