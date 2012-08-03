@@ -85,7 +85,7 @@ void GpsConAndroid::rcvByte( const char byte )
 bool GpsConAndroid::getByte( unsigned char* b )
 {
   // Called to read out a byte from the byte buffer.
-  int loop = 30; // TImeout is 3s
+  int loop = 60; // TImeout is 3s
 
   while( loop-- )
     {
@@ -100,7 +100,7 @@ bool GpsConAndroid::getByte( unsigned char* b )
         }
 
       mutex.unlock();
-      usleep( 100 * 1000 ); // Wait 100ms
+      usleep( 50 * 1000 ); // Wait 50ms
     }
 
   qWarning() << "GpsConAndroid::getByte(): Timeout!";
@@ -243,7 +243,9 @@ void GpsConAndroid::getFlarmFlightList()
 
   if( flarmBinMode() == false )
     {
-      emit newFlarmFlightList( "Error" );
+       // Hand over the flight list data as event to the GUI thread.
+      FlarmFlightListEvent *event = new FlarmFlightListEvent("Error");
+      QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
       return;
     }
 
@@ -289,7 +291,10 @@ void GpsConAndroid::getFlarmFlightList()
       list = "Empty";
     }
 
-  emit newFlarmFlightList( list );
+  // Hand over the flight list data as event to the GUI thread.
+  FlarmFlightListEvent *event = new FlarmFlightListEvent(list);
+  QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
+  return;
 }
 
 // This action must be executed in a thread.
@@ -397,15 +402,20 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
 
 void GpsConAndroid::flarmFlightDowloadInfo( QString info )
 {
-  emit newFlarmFlightDownloadInfo( info );
+  // Hand over the flight download info as event to the GUI thread.
+  FlarmFlightDownloadInfoEvent *event = new FlarmFlightDownloadInfoEvent(info);
+  QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
 }
 
 /** Reports the flight download progress to the calling application. */
 void GpsConAndroid::flarmFlightDowloadProgress( const int idx, const int progress )
 {
-  emit newFlarmFlightDownloadProgress( idx, progress );
+  // Hand over the flight download progress data as event to the GUI thread.
+  FlarmFlightDownloadProgressEvent *event = new FlarmFlightDownloadProgressEvent( idx, progress );
+  QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
 }
 
+// Must be done in a thread
 bool GpsConAndroid::flarmReset()
 {
   if( ! flarmBinMode() )

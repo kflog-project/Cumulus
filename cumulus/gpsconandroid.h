@@ -103,24 +103,9 @@ class GpsConAndroid : public QObject
   signals:
 
   /**
-   * This signal ie emitted, when a new byte was received from the Java part.
+   * This signal is emitted, when a new byte was received from the Java part.
    */
   void newByte();
-
-  /**
-   * This signal is emitted, when a new Flarm flight list was received.
-   */
-  void newFlarmFlightList(const QString& list);
-
-  /**
-   * This signal is emitted, when a new Flarm flight download info was received.
-   */
-  void newFlarmFlightDownloadInfo(const QString& info);
-
-  /**
-   * This signal is emitted, when a new Flarm flight download progress was received.
-   */
-  void newFlarmFlightDownloadProgress(const int idx, const int progress);
 
  private:
 
