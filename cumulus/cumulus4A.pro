@@ -283,6 +283,7 @@ SOURCES = \
 flarm {
     HEADERS += flarm.h \
                flarmaliaslist.h \
+               flarmbase.h \
                flarmbincom.h \
                flarmbincomandroid.h \
                flarmcrc.h \
@@ -295,6 +296,7 @@ flarm {
 
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
+               flarmbase.cpp \
                flarmbincom.cpp \
                flarmbincomandroid.cpp \
                flarmcrc.cpp \
