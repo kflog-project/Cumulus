@@ -403,143 +403,142 @@ public class CumulusActivity extends QtActivity
     if( lm == null )
       {
         Log.w(TAG, "System said: LOCATION_SERVICE is null!" );
-      }
 
-      ll = new LocationListener()
-        {
-          @Override
-          public void onLocationChanged(Location loc)
+        ll = new LocationListener()
           {
-            if( gpsEnabled == true && nmeaIsReceived == false )
+            @Override
+            public void onLocationChanged(Location loc)
             {
-              // If the GPS device do not deliver raw NMEA sentences, we
-              // forward these GPS data which is provided here. Otherwise
-              // our application gets no GPS data.
-            	try
-            		{
-                  nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
-                                loc.getAltitude(),
-                                loc.getSpeed(), loc.getBearing(),
-                                loc.getAccuracy(), loc.getTime());
-            		}
-          	  catch(UnsatisfiedLinkError e)
-          	    { 
-          	      // Ignore exception, if native part is not yet loaded.
-          	    }
-             }
-          }
-
-          @Override
-          public void onProviderDisabled(String provider)
-          {
-            Log.d(TAG, "onProviderDisabled: Provider=" + provider);
-
-            if( provider == LocationManager.GPS_PROVIDER )
-            {
-                if( lm != null && nl != null )
-                {
-                    lm.removeNmeaListener(nl);
-                    nl = null;
-                  }
-
-              // GPS receiver is disconnected
-              Log.d(TAG, "onProviderDisabled: GPS=False");
-              
-              reportGpsStatus(0);
-              gpsEnabled = false;
-              nmeaIsReceived = false;
-            }
-          }
-
-          @Override
-          public void onProviderEnabled(String provider)
-          {
-            Log.d(TAG, "onProviderEnabled: Provider=" + provider);
-
-            if( provider.equals(LocationManager.GPS_PROVIDER) )
+              if( gpsEnabled == true && nmeaIsReceived == false )
               {
-                // GPS receiver is connected
-                Log.d(TAG, "onProviderEnabled: GPS=True");
-                
-                if( lm != null )
+                // If the GPS device do not deliver raw NMEA sentences, we
+                // forward these GPS data which is provided here. Otherwise
+                // our application gets no GPS data.
+              	try
+              		{
+                    nativeGpsFix( loc.getLatitude(), loc.getLongitude(),
+                                  loc.getAltitude(),
+                                  loc.getSpeed(), loc.getBearing(),
+                                  loc.getAccuracy(), loc.getTime());
+              		}
+            	  catch(UnsatisfiedLinkError e)
+            	    { 
+            	      // Ignore exception, if native part is not yet loaded.
+            	    }
+               }
+            }
+  
+            @Override
+            public void onProviderDisabled(String provider)
+            {
+              Log.d(TAG, "onProviderDisabled: Provider=" + provider);
+  
+              if( provider == LocationManager.GPS_PROVIDER )
+              {
+                  if( lm != null && nl != null )
                   {
-                    nl = new GpsStatus.NmeaListener()
-                      {
-                        public void onNmeaReceived( long timestamp, String nmea )
-                          {
-                            nmeaIsReceived = true;
-    
-                            if( gpsEnabled )
-                              {
-                                // Forward GPS data only, if user has enabled that.
-                                try
-                                  {
-                                    nativeNmeaString(nmea);
-                                  }
-                                catch(UnsatisfiedLinkError e)
-                                  { 
-                                    // Ignore exception, if native part is not yet loaded.
-                                  }
-                              }
-                          }
-                      };
-                  }
-
-                reportGpsStatus(1);
-                gpsEnabled = true;
+                      lm.removeNmeaListener(nl);
+                      nl = null;
+                    }
+  
+                // GPS receiver is disconnected
+                Log.d(TAG, "onProviderDisabled: GPS=False");
+                
+                reportGpsStatus(0);
+                gpsEnabled = false;
                 nmeaIsReceived = false;
               }
-          }
-
-          @Override
-          public void onStatusChanged(String provider, int status, Bundle extras)
-            {
-              // If the number of satellites changes, this method is always called.
-              // Therefore we report only right status changes.
-              Log.d(TAG, "onStatusChanged: Provider=" + provider +
-                     ", Status=" + status);
-
-              if( provider.equals(LocationManager.GPS_PROVIDER) && gpsEnabled )
-              {
-                if( status == LocationProvider.AVAILABLE )
-                  {
-                    if( lastGpsStatus != status )
-                      {
-                        // GPS receiver is connected
-                      	reportGpsStatus(1);
-                      }
-                  }
-                else
-                  {
-                    if( lastGpsStatus != status )
-                      {
-                        // GPS receiver is disconnected
-                      	reportGpsStatus(0);
-                      }
-                  }
-
-                // save the last reported status
-                lastGpsStatus = status;
-              }
             }
-        };
-
-      if( lm.addNmeaListener(nl) == false )
-        {
-          Log.e( TAG, "Cannot add NMEA listener to Location Manager!" );
-        }
+  
+            @Override
+            public void onProviderEnabled(String provider)
+            {
+              Log.d(TAG, "onProviderEnabled: Provider=" + provider);
+  
+              if( provider.equals(LocationManager.GPS_PROVIDER) )
+                {
+                  // GPS receiver is connected
+                  Log.d(TAG, "onProviderEnabled: GPS=True");
+                  
+                  if( lm != null )
+                    {
+                      nl = new GpsStatus.NmeaListener()
+                        {
+                          public void onNmeaReceived( long timestamp, String nmea )
+                            {
+                              nmeaIsReceived = true;
       
-      try
-        {
-          lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, ll );
-        }
-      catch( IllegalArgumentException e )
-        {
-          // It seems there is no GPS provider available on this device.
-          Log.e( TAG, "Device has no GPS provider: " + e.getMessage() );
-          lm = null;
-        }
-    }
+                              if( gpsEnabled )
+                                {
+                                  // Forward GPS data only, if user has enabled that.
+                                  try
+                                    {
+                                      nativeNmeaString(nmea);
+                                    }
+                                  catch(UnsatisfiedLinkError e)
+                                    { 
+                                      // Ignore exception, if native part is not yet loaded.
+                                    }
+                                }
+                            }
+                        };
+                    }
+  
+                  reportGpsStatus(1);
+                  gpsEnabled = true;
+                  nmeaIsReceived = false;
+                }
+            }
+  
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras)
+              {
+                // If the number of satellites changes, this method is always called.
+                // Therefore we report only right status changes.
+                Log.d(TAG, "onStatusChanged: Provider=" + provider +
+                       ", Status=" + status);
+  
+                if( provider.equals(LocationManager.GPS_PROVIDER) && gpsEnabled )
+                {
+                  if( status == LocationProvider.AVAILABLE )
+                    {
+                      if( lastGpsStatus != status )
+                        {
+                          // GPS receiver is connected
+                        	reportGpsStatus(1);
+                        }
+                    }
+                  else
+                    {
+                      if( lastGpsStatus != status )
+                        {
+                          // GPS receiver is disconnected
+                        	reportGpsStatus(0);
+                        }
+                    }
+  
+                  // save the last reported status
+                  lastGpsStatus = status;
+                }
+              }
+          };
+  
+        if( lm.addNmeaListener(nl) == false )
+          {
+            Log.e( TAG, "Cannot add NMEA listener to Location Manager!" );
+          }
+        
+        try
+          {
+            lm.requestLocationUpdates( LocationManager.GPS_PROVIDER, 1000, 0, ll );
+          }
+        catch( IllegalArgumentException e )
+          {
+            // It seems there is no GPS provider available on this device.
+            Log.e( TAG, "Device has no GPS provider: " + e.getMessage() );
+            lm = null;
+          }
+      }
     
     /* Add an icon to the notification area while Cumulus runs, to
        remind the user that we're sucking his battery empty. */
