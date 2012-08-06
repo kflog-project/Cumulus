@@ -1077,7 +1077,7 @@ bool GpsClient::flarmBinMode()
       // Check connection with a ping command.
       if( fbc.ping() == true )
         {
-          FlarmBase::setPotocolMode( FlarmBase::binary );
+          FlarmBase::setProtocolMode( FlarmBase::binary );
           pingOk = true;
           break;
         }
