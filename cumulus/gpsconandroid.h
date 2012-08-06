@@ -67,13 +67,8 @@ class GpsConAndroid : public QObject
 
 #ifdef FLARM
 
- private:
-
   /** Gets the flight list from the Flarm device. */
   void getFlarmFlightList();
-
-  /** Reports an error to the calling application. */
-  void flarmFlightListError();
 
   /**
    * Downloads the requested IGC flights. The args string contains the destination
@@ -81,24 +76,6 @@ class GpsConAndroid : public QObject
    * by vertical tabs.
    */
   void getFlarmIgcFiles( QString& args );
-
-  /** Reports an info to the calling application. */
-  void flarmFlightDowloadInfo( QString info );
-
-  /** Reports the download progress to the calling application. */
-  void flarmFlightDowloadProgress( const int idx, const int progress );
-
-  /**
-   * Switches the Flarm device into the binary mode.
-   *
-   * \return True on success otherwise false.
-   */
-  bool flarmBinMode();
-
-  /**
-   * Resets the Farm device. Should be called only if Flarm is in binary mode.
-   */
-  bool flarmReset();
 
   /**
    * Starts a thread which gets the Flarm flight list.
@@ -109,6 +86,29 @@ class GpsConAndroid : public QObject
    * Starts a thread which executes the Flarm flight IGC downloads.
    */
   void startGetFlarmIgcFiles( QString& flightData );
+
+  /**
+   * Resets the Farm device. Should be called only if Flarm is in binary mode.
+   */
+  bool flarmReset();
+
+  /**
+   * Switches the Flarm device into the binary mode.
+   *
+   * \return True on success otherwise false.
+   */
+  bool flarmBinMode();
+
+ private:
+
+  /** Reports an error to the calling application. */
+  void flarmFlightListError();
+
+  /** Reports an info to the calling application. */
+  void flarmFlightDowloadInfo( QString info );
+
+  /** Reports the download progress to the calling application. */
+  void flarmFlightDowloadProgress( const int idx, const int progress );
 
  private slots:
 
@@ -143,8 +143,6 @@ class GpsConAndroid : public QObject
 
 /******************************************************************************/
 
-class QThread;
-
 /**
 * \class FlarmFlightListThread
 *
@@ -156,6 +154,8 @@ class QThread;
 *
 * \version $Id$
 */
+
+#include <QThread>
 
 class FlarmFlightListThread : public QThread
 {
@@ -177,7 +177,6 @@ class FlarmFlightListThread : public QThread
 
 /******************************************************************************/
 
-class QThread;
 
 /**
 * \class FlarmIgcFilesThread
@@ -190,6 +189,8 @@ class QThread;
 *
 * \version $Id$
 */
+
+#include <QThread>
 
 class FlarmIgcFilesThread : public QThread
 {

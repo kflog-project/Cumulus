@@ -981,15 +981,17 @@ public class CumulusActivity extends QtActivity
   /**
    * Forward a byte to the BT connected GPS device.
    */
-  bool byte2Gps( byte newByte )
+  boolean byte2Gps( byte newByte )
   {
-	if( m_btService != null && gpsEnabled == true )
-	{
-		m_btService.write( newByte );
-		return true;
-	}
+  	if( m_btService != null && gpsEnabled == true )
+  	{
+  	  byte[] data = new byte[1];
+  	  data[0] = newByte;
+  		m_btService.write( data );
+  		return true;
+  	}
 	
-	return false;
+	  return false;
   }
 
   synchronized private void dimmScreen( float value )

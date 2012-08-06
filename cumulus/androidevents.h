@@ -202,6 +202,8 @@ class FlarmFlightDownloadProgressEvent : public QEvent
 
   void flightDownloadInfo( int& idx, int& progress )
     {
+       idx = m_idx;
+       progress = m_progress;
        return;
     };
 

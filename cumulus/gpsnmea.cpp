@@ -2163,7 +2163,7 @@ bool GpsNmea::getFlarmFlightList()
   // The timer must be stopped to prevent TO actions.
   timeOutFix->stop();
   GpsConAndroid gca;
-  gca->startGetFlarmFlightList();
+  gca.startGetFlarmFlightList();
   return true;
 }
 
@@ -2193,7 +2193,7 @@ bool GpsNmea::getFlarmIgcFiles( QString& flightData )
   // The timer must be stopped to prevent TO actions.
   timeOutFix->stop();
   GpsConAndroid gca;
-  gca->startGetFlarmIgcFiles( flightData );
+  gca.startGetFlarmIgcFiles( flightData );
   return true;
 }
 
@@ -2223,7 +2223,7 @@ bool GpsNmea::flarmReset()
   // The timer must be stopped to prevent TO actions.
   timeOutFix->stop();
   GpsConAndroid gca;
-  return gca->flarmReset();
+  return gca.flarmReset();
 }
 
 #endif

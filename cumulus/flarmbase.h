@@ -266,7 +266,7 @@ class FlarmBase
     return m_protocolMode;
   };
 
-  static void setPotocolMode( enum ProtocolMode pm )
+  static void setProtocolMode( enum ProtocolMode pm )
   {
     QMutexLocker ml(&m_mutex);
     m_protocolMode = pm;

@@ -29,7 +29,7 @@
 #include "jnisupport.h"
 
 #ifdef FLARM
-#include "flarm.h"
+#include "flarmbase.h"
 #include "flarmbincomandroid.h"
 #endif
 
@@ -52,7 +52,7 @@ GpsConAndroid::~GpsConAndroid()
 bool GpsConAndroid::sndByte( const char byte )
 {
   // Called to transfer a byte to the GPS port of the java part.
-  QMutexLocker locker(&mutexWrite)
+  QMutexLocker locker(&mutexWrite);
   return jniByte2Gps( byte );
 }
 
@@ -78,7 +78,7 @@ void GpsConAndroid::rcvByte( const char byte )
 
   rcvBuffer.append( byte );
 
-  if( Flarm::getProtocolMode() == Flarm::text && byte == '\n' )
+  if( FlarmBase::getProtocolMode() == FlarmBase::text && byte == '\n' )
     {
       // Flarm works in text mode and the complete GPS sentence must be
       // forwarded to GpsNmea.
@@ -234,7 +234,7 @@ bool GpsConAndroid::flarmBinMode()
       // Check connection with a ping command.
       if( fbc.ping() == true )
         {
-          Flarm::setProtocolMode( Flarm::binary );
+          FlarmBase::setProtocolMode( FlarmBase::binary );
           pingOk = true;
           break;
         }
