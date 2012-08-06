@@ -35,6 +35,7 @@
 #include <QString>
 #include <QHash>
 #include <QMutex>
+#include <QMutexLocker>
 
 class QPoint;
 class QStringList;
