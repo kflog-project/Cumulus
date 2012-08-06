@@ -812,6 +812,11 @@ QString IgcLogger::createFileName(const QString& path)
 
 void IgcLogger::slotFlightModeChanged( Calculator::FlightMode newFlightMode )
 {
+  if( newFlightMode == _flightMode )
+    {
+      return;
+    }
+
   _flightMode = newFlightMode;
 
   if( GeneralConfig::instance()->getLoggerAutostartMode() == false )
