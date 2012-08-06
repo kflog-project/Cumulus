@@ -24,7 +24,7 @@
  *
  * \brief GPS connection interface from and to Android's Java part.
  *
- * This module manages the GPS data transfer to and from the Android Java
+ * This class manages the GPS data transfer to and from the Android Java
  * part.
  *
  * \date 2012
