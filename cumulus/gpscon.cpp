@@ -1007,9 +1007,9 @@ void GpsCon::sendGpsKeys()
 
 #ifdef FLARM
 
-bool GpsCon::getFlightListFromFlarm()
+bool GpsCon::getFlarmFlightList()
 {
-  QString method = "GPSCon::getFlightListFromFlarm():";
+  QString method = "GPSCon::getFlarmFlightList():";
   QString msg = MSG_FLARM_FLIGHT_LIST_REQ;
 
   writeClientMessage( 0, msg.toAscii().data() );
@@ -1028,9 +1028,9 @@ bool GpsCon::getFlightListFromFlarm()
   return true;
 }
 
-bool GpsCon::downloadFlightsFromFlarm( QString& flightIndexes )
+bool GpsCon::getFlarmIgcFiles( QString& flightIndexes )
 {
-  QString method = "GPSCon::downloadFlightsFromFlarm():";
+  QString method = "GPSCon::getFlarmIgcFiles():";
   QString msg = QString("%1 %2").arg(MSG_FLARM_FLIGHT_DOWNLOAD).arg(flightIndexes);
 
   writeClientMessage( 0, msg.toAscii().data() );
@@ -1052,9 +1052,9 @@ bool GpsCon::downloadFlightsFromFlarm( QString& flightIndexes )
 /**
  * Requests to reset the Flarm device.
  */
-bool GpsCon::resetFlarm()
+bool GpsCon::flarmReset()
 {
-  QString method = "GPSCon::resetFlarm():";
+  QString method = "GPSCon::flarmReset():";
   QString msg;
 
   writeClientMessage( 0, MSG_FLARM_RESET );

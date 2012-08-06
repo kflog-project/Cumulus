@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   gpscona.cpp
+ **   gpsconandroid.cpp
  **
  **   This file is part of Cumulus
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2012 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2012 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  **
  ***********************************************************************/
 
+#include <signal.h>
 #include <unistd.h>
 
 #include <QtGui>
@@ -34,7 +35,9 @@
 
 // static members
 QByteArray GpsConAndroid::rcvBuffer;
-QMutex     GpsConAndroid::mutex;
+QMutex     GpsConAndroid::mutexRead;
+QMutex     GpsConAndroid::mutexWrite;
+QMutex     GpsConAndroid::mutexAction;
 
 GpsConAndroid::GpsConAndroid(QObject* parent) : QObject(parent)
 {
@@ -43,12 +46,20 @@ GpsConAndroid::GpsConAndroid(QObject* parent) : QObject(parent)
 
 GpsConAndroid::~GpsConAndroid()
 {
+  qDebug() << "~GpsConAndroid()";
+}
+
+bool GpsConAndroid::sndByte( const char byte )
+{
+  // Called to transfer a byte to the GPS port of the java part.
+  QMutexLocker locker(&mutexWrite)
+  return jniByte2Gps( byte );
 }
 
 bool GpsConAndroid::sndBytes( QByteArray& bytes )
 {
   // Called to transfer a byte stream to the GPS port of the java part.
-  QMutexLocker locker(&mutex);
+  QMutexLocker locker(&mutexWrite);
 
   bool ok = true;
 
@@ -63,7 +74,7 @@ bool GpsConAndroid::sndBytes( QByteArray& bytes )
 void GpsConAndroid::rcvByte( const char byte )
 {
   // Called if a byte is read from the GPS port of the java part.
-  QMutexLocker locker(&mutex);
+  QMutexLocker locker(&mutexRead);
 
   rcvBuffer.append( byte );
 
@@ -85,21 +96,21 @@ void GpsConAndroid::rcvByte( const char byte )
 bool GpsConAndroid::getByte( unsigned char* b )
 {
   // Called to read out a byte from the byte buffer.
-  int loop = 60; // TImeout is 3s
+  int loop = 60; // Timeout is 3s
 
   while( loop-- )
     {
-      mutex.lock();
+      mutexRead.lock();
 
       if( rcvBuffer.size() > 0 )
         {
           *b = rcvBuffer.at(0);
           rcvBuffer.remove( 0, 1);
-          mutex.unlock();
+          mutexRead.unlock();
           return true;
         }
 
-      mutex.unlock();
+      mutexRead.unlock();
       usleep( 50 * 1000 ); // Wait 50ms
     }
 
@@ -193,6 +204,8 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
 
 bool GpsConAndroid::flarmBinMode()
 {
+  qDebug() << "GpsConAndroid::flarmBinMode()";
+
   // Binary switch command for Flarm interface
   QByteArray pflax = QByteArray("$PFLAX\n");
 
@@ -221,6 +234,7 @@ bool GpsConAndroid::flarmBinMode()
       // Check connection with a ping command.
       if( fbc.ping() == true )
         {
+          Flarm::setProtocolMode( Flarm::binary );
           pingOk = true;
           break;
         }
@@ -235,10 +249,12 @@ bool GpsConAndroid::flarmBinMode()
   return pingOk;
 }
 
-
 // This action must be executed in a thread.
 void GpsConAndroid::getFlarmFlightList()
 {
+  qDebug() << "GpsConAndroid::getFlarmFlightList()";
+
+  QMutexLocker locker(&mutexAction);
   FlarmBinComAndroid fbc;
 
   if( flarmBinMode() == false )
@@ -300,6 +316,10 @@ void GpsConAndroid::getFlarmFlightList()
 // This action must be executed in a thread.
 void GpsConAndroid::getFlarmIgcFiles(QString& args)
 {
+  qDebug() << "GpsConAndroid::getFlarmIgcFiles()" << args;
+
+  QMutexLocker locker(&mutexAction);
+
   // The argument string contains at the first position the destination directory
   // for the files and then the indexes of the flights separated by vertical tabs.
   QStringList idxList = args.split("\v");
@@ -415,9 +435,10 @@ void GpsConAndroid::flarmFlightDowloadProgress( const int idx, const int progres
   QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
 }
 
-// Must be done in a thread
 bool GpsConAndroid::flarmReset()
 {
+  qDebug() << "GpsConAndroid::flarmReset()";
+
   if( ! flarmBinMode() )
     {
      return false;
@@ -425,7 +446,100 @@ bool GpsConAndroid::flarmReset()
 
   FlarmBinComAndroid fbc;
   bool res = fbc.exit();
+
+  // Enable NMEA output of Flarm after 60 seconds. Flarm needs some time to
+  // coming up again after a reset.
+  QTimer::singleShot( 60000, this, SLOT(slot_FlarmTextMode()) );
   return res;
+}
+
+void GpsConAndroid::slot_FlarmTextMode()
+{
+  // Enable NMEA output of Flarm device.
+  if( GpsNmea::gps->sendSentence( QString("$PFLAC,S,NMEAOUT,1") ) == false )
+    {
+      qWarning() << "GpsConAndroid::slot_FlarmTextMode(): enable NMEA failed!";
+    }
+}
+
+/**
+ * Starts a thread which gets the Flarm flight list.
+ */
+void GpsConAndroid::startGetFlarmFlightList()
+{
+  qDebug() << "GpsConAndroid::startGetFlarmFlightList";
+
+  FlarmFlightListThread* thread = new FlarmFlightListThread(this);
+  thread->start();
+}
+
+/**
+ * Starts a thread which executes the Flarm flight IGC downloads.
+ */
+void GpsConAndroid::startGetFlarmIgcFiles( QString& flightData )
+{
+  qDebug() << "GpsConAndroid::FlarmFlightListThread";
+
+  FlarmIgcFilesThread* thread = new FlarmIgcFilesThread( this, flightData );
+  thread->start();
+}
+
+// A better approach would be:
+// http://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+FlarmFlightListThread::FlarmFlightListThread( QObject *parent ) : QThread( parent )
+{
+  setObjectName( "FlarmFlightListThread" );
+
+  // Activate self destroy after finish signal has been caught.
+  connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
+}
+
+FlarmFlightListThread::~FlarmFlightListThread()
+{
+  qDebug() << "~FlarmFlightListThread()";
+}
+
+void FlarmFlightListThread::run()
+{
+  qDebug() << "FlarmFlightListThread::run()";
+
+  sigset_t sigset;
+  sigfillset( &sigset );
+
+  // deactivate all signals in this thread
+  pthread_sigmask( SIG_SETMASK, &sigset, 0 );
+
+  GpsConAndroid gca;
+  gca.getFlarmFlightList();
+}
+
+FlarmIgcFilesThread::FlarmIgcFilesThread( QObject *parent, QString& flightData ) :
+  QThread( parent ),
+  m_flightData( flightData )
+{
+  setObjectName( "FlarmIgcFilesThread" );
+
+  // Activate self destroy after finish signal has been caught.
+  connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
+}
+
+FlarmIgcFilesThread::~FlarmIgcFilesThread()
+{
+  qDebug() << "~FlarmIgcFilesThread()";
+}
+
+void FlarmIgcFilesThread::run()
+{
+  qDebug() << "FlarmIgcFilesThread::run()";
+
+  sigset_t sigset;
+  sigfillset( &sigset );
+
+  // deactivate all signals in this thread
+  pthread_sigmask( SIG_SETMASK, &sigset, 0 );
+
+  GpsConAndroid gca;
+  gca.startGetFlarmIgcFiles( m_flightData );
 }
 
 #endif

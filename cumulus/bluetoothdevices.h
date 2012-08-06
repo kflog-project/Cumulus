@@ -70,9 +70,6 @@ class BluetoothDevices : public QThread
 
  private slots:
 
-  /** Called to delete the thread. */
-  void slot_Destroy();
-
   /**
    * Starts the Bluetooth device search.
    */

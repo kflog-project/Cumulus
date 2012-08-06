@@ -52,6 +52,7 @@
 #ifdef ANDROID
 #include "androidevents.h"
 #include "jnisupport.h"
+#include "gpsconandroid.h"
 #endif
 
 #ifdef FLARM
@@ -98,13 +99,9 @@ GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
   connect (timeOutFix, SIGNAL(timeout()), this, SLOT(_slotTimeoutFix()));
 
   // Load last used device
-  gpsDevice   = GeneralConfig::instance()->getGpsDevice();
+  gpsDevice = GeneralConfig::instance()->getGpsDevice();
 
-#ifndef ANDROID
-  serial = static_cast<GpsCon *> (0);
-#else
-  serial = static_cast<QObject *> (0);
-#endif
+  serial = 0;
 
   nmeaLogFile = static_cast<QFile *> (0);
 
@@ -2107,10 +2104,10 @@ void GpsNmea::slot_reset()
 
 }
 
-bool GpsNmea::sendSentence(const QString command)
-{
 #ifndef ANDROID
 
+bool GpsNmea::sendSentence(const QString command)
+{
   if( serial )
     {
       // Only a serial can forward commands to the GPS.
@@ -2118,9 +2115,12 @@ bool GpsNmea::sendSentence(const QString command)
     }
 
   return false;
+}
 
 #else
 
+bool GpsNmea::sendSentence(const QString command)
+{
   // We have to add the checksum and cr lf to the command.
   uint csum = calcCheckSum( command.toAscii().data() );
   QString check;
@@ -2129,17 +2129,19 @@ bool GpsNmea::sendSentence(const QString command)
 
   // Forward command to the java part via jni
   return jniGpsCmd( cmd );
+}
 
 #endif
-}
+
+//------------------------------------------------------------------------------
 
 #ifdef FLARM
 
-/** Requests a flight list from a Flarm device. */
-bool GpsNmea::getFlightListFromFlarm()
-{
 #ifndef ANDROID
 
+/** Requests a flight list from a Flarm device. */
+bool GpsNmea::getFlarmFlightList()
+{
   if( serial )
     {
       // No GPS data are available, if flights are downloaded from Flarm.
@@ -2147,18 +2149,30 @@ bool GpsNmea::getFlightListFromFlarm()
       timeOutFix->stop();
 
       // Only a serial can request a Flarm fight list.
-      return serial->getFlightListFromFlarm();
+      return serial->getFlarmFlightList();
     }
-
-#endif
 
   return false;
 }
 
-bool GpsNmea::downloadFlightsFromFlarm( QString& flightData )
+#else
+
+/** Requests a flight list from a Flarm device. */
+bool GpsNmea::getFlarmFlightList()
 {
+  // The timer must be stopped to prevent TO actions.
+  timeOutFix->stop();
+  GpsConAndroid gca;
+  gca->startGetFlarmFlightList();
+  return true;
+}
+
+#endif
+
 #ifndef ANDROID
 
+bool GpsNmea::getFlarmIgcFiles( QString& flightData )
+{
   if( serial )
     {
       // No GPS data are available, if flights are downloaded from Flarm.
@@ -2166,19 +2180,29 @@ bool GpsNmea::downloadFlightsFromFlarm( QString& flightData )
       timeOutFix->stop();
 
       /// Only a serial can request a Flarm file download.
-      return serial->downloadFlightsFromFlarm( flightData );
+      return serial->getFlarmIgcFiles( flightData );
     }
-
-#endif
 
   return false;
 }
 
+#else
 
-bool GpsNmea::resetFlarm()
+bool GpsNmea::getFlarmIgcFiles( QString& flightData )
 {
+  // The timer must be stopped to prevent TO actions.
+  timeOutFix->stop();
+  GpsConAndroid gca;
+  gca->startGetFlarmIgcFiles( flightData );
+  return true;
+}
+
+#endif
+
 #ifndef ANDROID
 
+bool GpsNmea::flarmReset()
+{
   if( serial )
     {
       // No GPS data are available, if flights are downloaded from Flarm.
@@ -2186,17 +2210,27 @@ bool GpsNmea::resetFlarm()
       timeOutFix->stop();
 
       /// Only a serial can request a Flarm reset.
-      return serial->resetFlarm();
+      return serial->flarmReset();
     }
+
+  return false;
+}
+
+#else
+
+bool GpsNmea::flarmReset()
+{
+  // The timer must be stopped to prevent TO actions.
+  timeOutFix->stop();
+  GpsConAndroid gca;
+  return gca->flarmReset();
+}
 
 #endif
 
-  return false;
-
-}
-
 #endif // FLARM
 
+//------------------------------------------------------------------------------
 
 #if 0
 /** This slot is called to reset the gps device to factory settings */
@@ -2613,145 +2647,172 @@ void GpsNmea::slot_closeNmeaLogFile()
  * jnisupport.cpp. GPS data handling duplicated from other NMEA functions.
  */
 bool GpsNmea::event(QEvent *event)
-  {
-    if( ! _enableGpsDataProcessing )
-      {
-        return true;
-      }
+{
+  if( ! _enableGpsDataProcessing )
+    {
+      return true;
+    }
 
-    // Handles NMEA sentences forwarded by the Android system
-    if( event->type() == QEvent::User + 2 )
-      {
-        GpsNmeaEvent *gpsNmeaEvent = static_cast<GpsNmeaEvent *>(event);
-        slot_sentence( gpsNmeaEvent->sentence() );
-        emit newSentence( gpsNmeaEvent->sentence() );
-        return true;
-      }
+  // Handles NMEA sentences forwarded by the Android system
+  if( event->type() == QEvent::User + 2 )
+    {
+      GpsNmeaEvent *gpsNmeaEvent = static_cast<GpsNmeaEvent *>(event);
+      slot_sentence( gpsNmeaEvent->sentence() );
+      emit newSentence( gpsNmeaEvent->sentence() );
+      return true;
+    }
 
-    if( event->type() == QEvent::User )
-      {
-        static ulong called = 0;
+  if( event->type() == QEvent::User )
+    {
+      static ulong called = 0;
 
-        called++;
+      called++;
 
-        if( called == 10 )
-          {
-            // After 10 calls we assume, that no MNEA row data are delivered by
-            // Android. To enable wind calculation, we must reset the minimal
-            // sat count. That is a bad hack -:(
-            GeneralConfig::instance()->setMinSatCount( 0 );
-          }
+      if( called == 10 )
+        {
+          // After 10 calls we assume, that no MNEA row data are delivered by
+          // Android. To enable wind calculation, we must reset the minimal
+          // sat count. That is a bad hack -:(
+          GeneralConfig::instance()->setMinSatCount( 0 );
+        }
 
-        // Report status change otherwise the glider symbol is not activated on the map.
-        dataOK();
-        fixOK( "ALC");
+      // Report status change otherwise the glider symbol is not activated on the map.
+      dataOK();
+      fixOK( "ALC");
 
-        QString msg = "$ANDROID,";
+      QString msg = "$ANDROID,";
 
-        GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
+      GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
-        // Handle altitude
-        Altitude newAlt(0);
-        double alt = gpsFixEvent->altitude();
+      // Handle altitude
+      Altitude newAlt(0);
+      double alt = gpsFixEvent->altitude();
 
-        // Consider user's altitude correction
-        newAlt.setMeters( alt + _userAltitudeCorrection.getMeters() );
+      // Consider user's altitude correction
+      newAlt.setMeters( alt + _userAltitudeCorrection.getMeters() );
 
-        _lastGNSSAltitude = newAlt;
+      _lastGNSSAltitude = newAlt;
 
-        if ( _lastMslAltitude != newAlt )
-          {
-            _lastMslAltitude = newAlt;
-            calcStdAltitude( newAlt );
-            emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-          }
+      if ( _lastMslAltitude != newAlt )
+        {
+          _lastMslAltitude = newAlt;
+          calcStdAltitude( newAlt );
+          emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+        }
 
-        msg += newAlt.getText( true, 0 );
+      msg += newAlt.getText( true, 0 );
 
-        // Handle position
-        int lat = (int) rint(gpsFixEvent->latitude()  * 600000.0);
-        int lon = (int) rint(gpsFixEvent->longitude() * 600000.0);
+      // Handle position
+      int lat = (int) rint(gpsFixEvent->latitude()  * 600000.0);
+      int lon = (int) rint(gpsFixEvent->longitude() * 600000.0);
 
-        QPoint newPoint (lat, lon);
+      QPoint newPoint (lat, lon);
 
-        if ( _lastCoord != newPoint )
-          {
-            _lastCoord = newPoint;
-            emit newPosition( _lastCoord );
-          }
+      if ( _lastCoord != newPoint )
+        {
+          _lastCoord = newPoint;
+          emit newPosition( _lastCoord );
+        }
 
-        msg += "," + QString::number( gpsFixEvent->latitude(), 'f' );
-        msg += "," + QString::number( gpsFixEvent->longitude(), 'f' );
+      msg += "," + QString::number( gpsFixEvent->latitude(), 'f' );
+      msg += "," + QString::number( gpsFixEvent->longitude(), 'f' );
 
-        // Handle speed
-        Speed newSpeedFix;
-        newSpeedFix.setMps( (double) gpsFixEvent->speed() );
+      // Handle speed
+      Speed newSpeedFix;
+      newSpeedFix.setMps( (double) gpsFixEvent->speed() );
 
-        if ( newSpeedFix != _lastSpeed && fabs((newSpeedFix - _lastSpeed).getMps()) > 0.3 )
-          {
-            // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
-            _lastSpeed = newSpeedFix;
-            emit newSpeed( _lastSpeed );
-          }
+      if ( newSpeedFix != _lastSpeed && fabs((newSpeedFix - _lastSpeed).getMps()) > 0.3 )
+        {
+          // report speed change only if the difference is greater than 0.3m/s, 1.08Km/h
+          _lastSpeed = newSpeedFix;
+          emit newSpeed( _lastSpeed );
+        }
 
-        msg += "," + newSpeedFix.getHorizontalText( true, 1 );
+      msg += "," + newSpeedFix.getHorizontalText( true, 1 );
 
-        // Handle heading
-        double newHeadingFix = gpsFixEvent->heading();
+      // Handle heading
+      double newHeadingFix = gpsFixEvent->heading();
 
-        if ( newHeadingFix != _lastHeading )
-          {
-            _lastHeading = newHeadingFix;
-            emit newHeading( _lastHeading );
-          }
+      if ( newHeadingFix != _lastHeading )
+        {
+          _lastHeading = newHeadingFix;
+          emit newHeading( _lastHeading );
+        }
 
-        msg += "," + QString::number( (int) rint(newHeadingFix) );
+      msg += "," + QString::number( (int) rint(newHeadingFix) );
 
-        // Handle time
-        QDateTime fix_utc;
-        fix_utc.setMSecsSinceEpoch( gpsFixEvent->time() );
+      // Handle time
+      QDateTime fix_utc;
+      fix_utc.setMSecsSinceEpoch( gpsFixEvent->time() );
 
-        fix_utc = fix_utc.toUTC();
+      fix_utc = fix_utc.toUTC();
 
-        if( fix_utc.time() != _lastRmcTime )
-          {
-            _lastRmcTime = fix_utc.time();
-            emit newFix( _lastRmcTime );
-          }
+      if( fix_utc.time() != _lastRmcTime )
+        {
+          _lastRmcTime = fix_utc.time();
+          emit newFix( _lastRmcTime );
+        }
 
-        msg += "," + fix_utc.toString(Qt::ISODate);
+      msg += "," + fix_utc.toString(Qt::ISODate);
 
-        // emits the new message that something is to see in GPS status widget
-        emit newSentence( msg );
+      // emits the new message that something is to see in GPS status widget
+      emit newSentence( msg );
 
-        if( nmeaLogFile && nmeaLogFile->isOpen() )
-          {
-            // Write message into log file
-            nmeaLogFile->write(msg.toAscii().data());
-          }
+      if( nmeaLogFile && nmeaLogFile->isOpen() )
+        {
+          // Write message into log file
+          nmeaLogFile->write(msg.toAscii().data());
+        }
 
-        // Handle accuracy
-        return true;
-      }
+      // Handle accuracy
+      return true;
+    }
 
-    // Handles reported status changes of the Android GPS receiver
-    if( event->type() == QEvent::User + 1 )
-      {
-        GpsStatusEvent *gpsStatusEvent = static_cast<GpsStatusEvent *>(event);
+  // Handles reported status changes of the Android GPS receiver
+  if( event->type() == QEvent::User + 1 )
+    {
+      GpsStatusEvent *gpsStatusEvent = static_cast<GpsStatusEvent *>(event);
 
-        GpsStatus status = static_cast<GpsNmea::GpsStatus>(gpsStatusEvent->status());
+      GpsStatus status = static_cast<GpsNmea::GpsStatus>(gpsStatusEvent->status());
 
-        if( status == notConnected )
-          {
-            _slotGpsConnectionOff();
-          }
-        else
-          {
-            _slotGpsConnectionOn();
-          }
+      if( status == notConnected )
+        {
+          _slotGpsConnectionOff();
+        }
+      else
+        {
+          _slotGpsConnectionOn();
+        }
 
-        return true;
-      }
+      return true;
+    }
+
+  // Handles a flight list returned by Flarm
+  if( event->type() == QEvent::User + 3 )
+    {
+      FlarmFlightListEvent *fe = static_cast<FlarmFlightListEvent *>(event);
+      emit newFlarmFlightList( fe->flightList() );
+      return true;
+    }
+
+  // Handles a flight download info returned by Flarm
+  if( event->type() == QEvent::User + 4 )
+    {
+      FlarmFlightDownloadInfoEvent *fe = static_cast<FlarmFlightDownloadInfoEvent *>(event);
+      emit newFlarmFlightDownloadInfo( fe->flightDownloadInfo() );
+      return true;
+    }
+
+  // Handles a flight download progress returned by Flarm
+  if( event->type() == QEvent::User + 5 )
+    {
+      FlarmFlightDownloadProgressEvent *fe = static_cast<FlarmFlightDownloadProgressEvent *>(event);
+
+      int idx, progress;
+      fe->flightDownloadInfo( idx, progress );
+      emit newFlarmFlightDownloadProgress( idx, progress );
+      return true;
+    }
 
   // call the default event processing
   return QObject::event(event);

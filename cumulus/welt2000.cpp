@@ -1685,7 +1685,7 @@ Welt2000Thread::Welt2000Thread( QObject *parent ) : QThread( parent )
   setObjectName( "Welt2000Thread" );
 
   // Activate self destroy after finish signal has been caught.
-  connect( this, SIGNAL(finished()), this, SLOT(slot_Destroy()) );
+  connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
 }
 
 Welt2000Thread::~Welt2000Thread()
@@ -1726,12 +1726,6 @@ void Welt2000Thread::run()
       delete gliderfieldList;
       delete outlandingList;
     }
-}
-
-void Welt2000Thread::slot_Destroy()
-{
-  // deletes the thread object after execution is finished
-  delete this;
 }
 
 #endif

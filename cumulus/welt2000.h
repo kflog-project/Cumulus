@@ -315,11 +315,6 @@ class Welt2000Thread : public QThread
    */
   void run();
 
- private slots:
-
-  /** Called to delete the thread. */
-  void slot_Destroy();
-
  signals:
 
   /**

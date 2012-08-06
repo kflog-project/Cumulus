@@ -21,10 +21,8 @@
 
 #include "flarmbincomandroid.h"
 #include "gpsconandroid.h"
-#include "jnisupport.h"
 
-FlarmBinComAndroid::FlarmBinComAndroid() :
-  FlarmBinCom()
+FlarmBinComAndroid::FlarmBinComAndroid() : FlarmBinCom()
 {
 }
 
@@ -34,7 +32,7 @@ FlarmBinComAndroid::~FlarmBinComAndroid()
 
 int FlarmBinComAndroid::writeChar(const unsigned char c)
 {
-  if( jniByte2Gps( c ) )
+  if( GpsConAndroid::sndByte( c ) )
     {
       return 1;
     }

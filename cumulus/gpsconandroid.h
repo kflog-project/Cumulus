@@ -55,6 +55,8 @@ class GpsConAndroid : public QObject
 
   static void rcvByte( const char byte );
 
+  static bool sndByte( const char byte );
+
   static bool sndBytes( QByteArray& bytes );
 
   static bool getByte( unsigned char* b );
@@ -98,9 +100,26 @@ class GpsConAndroid : public QObject
    */
   bool flarmReset();
 
+  /**
+   * Starts a thread which gets the Flarm flight list.
+   */
+  void startGetFlarmFlightList();
+
+  /**
+   * Starts a thread which executes the Flarm flight IGC downloads.
+   */
+  void startGetFlarmIgcFiles( QString& flightData );
+
+ private slots:
+
+  /**
+   * Called to activte the Flarm text mode.
+   */
+  void slot_FlarmTextMode();
+
 #endif
 
-  signals:
+ signals:
 
   /**
    * This signal is emitted, when a new byte was received from the Java part.
@@ -112,8 +131,86 @@ class GpsConAndroid : public QObject
   /** Receive buffer for GPS data from java part. */
   static QByteArray rcvBuffer;
 
-  /** Thread synchronizer. */
-  static QMutex mutex;
+  /** Thread synchronizer for read action. */
+  static QMutex mutexRead;
+
+  /** Thread synchronizer for write action. */
+  static QMutex mutexWrite;
+
+  /** Thread synchronizer for actions. */
+  static QMutex mutexAction;
+};
+
+/******************************************************************************/
+
+class QThread;
+
+/**
+* \class FlarmFlightListThread
+*
+* \author Axel Pauli
+*
+* \brief Class to execute a read of a Flarm flight list in an extra thread.
+*
+* \date 2012
+*
+* \version $Id$
+*/
+
+class FlarmFlightListThread : public QThread
+{
+  Q_OBJECT
+
+ public:
+
+  FlarmFlightListThread( QObject *parent );
+
+  virtual ~FlarmFlightListThread();
+
+ protected:
+
+  /**
+   * That is the main method of the thread.
+   */
+  void run();
+};
+
+/******************************************************************************/
+
+class QThread;
+
+/**
+* \class FlarmIgcFilesThread
+*
+* \author Axel Pauli
+*
+* \brief Class to execute a download of Flarm IGC files in an extra thread.
+*
+* \date 2012
+*
+* \version $Id$
+*/
+
+class FlarmIgcFilesThread : public QThread
+{
+  Q_OBJECT
+
+ public:
+
+  FlarmIgcFilesThread( QObject *parent, QString& flightData );
+
+  virtual ~FlarmIgcFilesThread();
+
+ protected:
+
+  /**
+   * That is the main method of the thread.
+   */
+  void run();
+
+ private:
+
+  QString m_flightData;
 };
 
 #endif

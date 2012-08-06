@@ -47,11 +47,13 @@ bluetooth {
 }
 
 flarm {
-    HEADERS += ../cumulus/flarmbincom.h \
+    HEADERS += ../cumulus/flarmbase.h \
+               ../cumulus/flarmbincom.h \
                ../cumulus/flarmbincomlinux.h \
                ../cumulus/flarmcrc.h
                
-    SOURCES += ../cumulus/flarmbincom.cpp \
+    SOURCES += ../cumulus/flarmbase.cpp \
+               ../cumulus/flarmbincom.cpp \
                ../cumulus/flarmbincomlinux.cpp \
                ../cumulus/flarmcrc.cpp
                

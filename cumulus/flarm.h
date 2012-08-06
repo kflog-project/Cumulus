@@ -25,6 +25,8 @@
  * This class parses Flarm sentences and provides the results to the caller.
  *
  * \date 2010-2012
+ *
+ * \version $Id$
  */
 
 #ifndef FLARM_H
@@ -33,18 +35,18 @@
 #include <QObject>
 #include <QString>
 #include <QTime>
-#include <QHash>
-#include <QMutex>
+
+#include "flarmbase.h"
 
 class QPoint;
 class QStringList;
 class QTimer;
 
-class Flarm : public QObject
+class Flarm : public QObject, public FlarmBase
 {
   Q_OBJECT
 
-private:
+ private:
 
   /**
    * Constructor is private because this is a singleton class.
@@ -53,144 +55,7 @@ private:
 
   Q_DISABLE_COPY ( Flarm )
 
-public:
-
-  /**
-   * FLARM Alarm Level definitions.
-   */
-  enum AlarmLevel
-  {
-    No=0,
-    Low=1,
-    Important=2,
-    Urgent=3
-  };
-
-  /**
-   * FLARM GPS fix definitions.
-   */
-  enum GpsStatus
-  {
-    NoFix=0,
-    GroundFix=1,
-    MovingFix=2
-  };
-
-  /**
-   * Flarm protocol mode. Can be text or binary.
-   */
-  enum ProtocolMode
-  {
-    text,
-    binary
-  };
-
-  /**
-   * \struct FlarmStatus
-   *
-   * \author Axel Pauli
-   *
-   * \brief FLARM status structure.
-   *
-   * FLARM status structure. It contains the last data of the PFLAU sentence.
-   *
-   * \date 2010
-   */
-  struct FlarmStatus
-  {
-    bool    valid; // true displays a valid filled structure
-    short   RX;
-    short   TX;
-    enum    GpsStatus Gps;
-    short   Power;
-    enum AlarmLevel Alarm;
-    QString RelativeBearing;  // can be empty
-    short   AlarmType;
-    QString RelativeVertical; // can be empty
-    QString RelativeDistance; // can be empty
-    QString ID;               // can be empty
-  };
-
-  /**
-   * \struct FlarmVersion
-   *
-   * \author Axel Pauli
-   *
-   * \brief FLARM version structure.
-   *
-   * FLARM version structure. It contains the version data reported by the Flarm.
-   *
-   * \date 2012
-   */
-  struct FlarmVersion
-  {
-    QString hwVersion;
-    QString swVersion;
-    QString obstVersion;
-    QString igcVersion;
-    QString serial;
-    QString radioId;
-
-    void reset()
-    {
-      hwVersion.clear();
-      swVersion.clear();
-      obstVersion.clear();
-      igcVersion.clear();
-      serial.clear();
-      radioId.clear();
-    };
-  };
-
-  /**
-   * \struct FlarmError
-   *
-   * \author Axel Pauli
-   *
-   * \brief FLARM error structure.
-   *
-   * FLARM error structure. It contains the error status reported by the Flarm.
-   *
-   * \date 2012
-   */
-  struct FlarmError
-  {
-    QString severity;
-    QString errorCode;
-
-    void reset()
-    {
-      severity.clear();
-      errorCode.clear();
-    };
-   };
-
-  /**
-   * \struct FlarmAcft
-   *
-   * \author Axel Pauli
-   *
-   * \brief FLARM aircraft data structure.
-   *
-   * FLARM aircraft data structure. It contains the data of a PFLAA sentence.
-   *
-   * \date 2010
-   */
-  struct FlarmAcft
-  {
-    QTime   TimeStamp;  // Creation time of this structure
-    enum AlarmLevel Alarm;
-    int     RelativeNorth;
-    int     RelativeEast;
-    int     RelativeVertical;
-    int     IdType;
-    QString ID;
-    int     Track;       // 0-359 or INT_MIN in stealth mode
-    double  TurnRate;    // degrees per second or INT_MIN in stealth mode
-    double  GroundSpeed; // meters per second or INT_MIN in stealth mode
-    double  ClimbRate;   // meters per second or INT_MIN in stealth mode
-    short   AcftType;
-  };
+ public:
 
   virtual ~Flarm();
 
@@ -202,46 +67,6 @@ public:
     static Flarm instance;
 
     return &instance;
-  };
-
-  /**
-   * @param flag true or false to switch on/off PFLAA data collection.
-   */
-  static void setCollectPflaa( bool flag )
-  {
-    collectPflaa = flag;
-  };
-
-  /**
-   * @return flag return current state of PFLAA data collection flag.
-   */
-  static bool getCollectPflaa()
-  {
-    return collectPflaa;
-  };
-
-  /**
-   * @return the Flarm status structure with the last parsed data
-   */
-  static const FlarmStatus& getFlarmStatus()
-  {
-    return flarmStatus;
-  };
-
-  /**
-   * @return the Flarm version structure
-   */
-  static FlarmVersion& getFlarmVersion()
-  {
-    return flarmVersion;
-  };
-
-  /**
-   * @return the Flarm error structure
-   */
-  static const FlarmError& getFlarmError()
-  {
-    return flarmError;
   };
 
   /**
@@ -308,52 +133,14 @@ public:
    */
   void collectPflaaFinished();
 
-  /**
-   * Creates a hash key by using the passed parameters.
-   *
-   * @param idType 'ID-Type' tag of Flarm sentence $PFLAA
-   * @param id 6-digit 'ID' hex value of Flarm sentence $PFLAA
-   * @return A hash key generated from the input.
-   */
-  static QString createHashKey( int idType, const QString& id )
-  {
-    Q_UNUSED(idType)
-    // return QString("%1-%2").arg(idType).arg(id);
-    // idType is not more considered due to alias selection
-    return QString(id);
-  };
-
-  /**
-   * @return the pflaaHash to the caller.
-   */
-  static const QHash<QString, FlarmAcft>& getPflaaHash()
-  {
-    return pflaaHash;
-  };
-
-  /**
-   * Resets the internal stored Flarm data.
-   */
-  static void reset()
-  {
-    pflaaHash.clear();
-    flarmStatus.valid = false;
-    flarmVersion.reset();
-    flarmError.reset();
-  };
-
-  static enum ProtocolMode getProtocolMode();
-
-  static void setPotocolMode( enum ProtocolMode pm );
-
-private:
+ private:
 
   /**
    * Creates a traffic message in HTML format and emits this message as signal.
    */
   void createTrafficMessage();
 
-signals:
+ signals:
 
   /**
    * This signal is emitted if a complete sequence of PFLAA sentences has been
@@ -387,45 +174,15 @@ signals:
    */
   void flarmConfigurationInfo( QStringList& info );
 
-private slots:
+ private slots:
 
   /** Called if m_timer has expired. Used for Flarm data clearing. */
   void slotTimeout();
 
-private:
-
-  /**
-   * Flarm status structure. Contains the data of the last parsed PFLAU
-   * sentence.
-   */
-  static FlarmStatus flarmStatus;
-
-  /**
-   * Flarm version data.
-   */
-  static FlarmVersion flarmVersion;
-
-  /**
-   * Flarm error data.
-   */
-  static struct FlarmError flarmError;
-
-  /** Flag to switch on the collecting of PFLAA data. */
-  static bool collectPflaa;
-
-  /**
-   * Hash map with collected PFLAA records. The key is a concatenation of
-   * the Flarm tags 'ID-Type' and 'ID'.
-   */
-  static QHash<QString, FlarmAcft> pflaaHash;
+ private:
 
   /** Timer for data clearing. */
   QTimer* m_timer;
-
-  /** Flarm protocol mode.  */
-  static enum ProtocolMode m_protocolMode;
-
-  static QMutex m_mutex;
 };
 
-#endif /* FLARM_H_ */
+#endif /* FLARM_H */

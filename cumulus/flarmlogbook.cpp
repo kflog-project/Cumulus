@@ -187,12 +187,14 @@ void FlarmLogbook::closeEvent( QCloseEvent* event )
   if( m_resetFlarm )
     {
       // Flarm device must be reset to normal mode.
-      if( ! GpsNmea::gps->resetFlarm() )
+      if( ! GpsNmea::gps->flarmReset() )
         {
           qWarning() << "FL::closeEvent(): Reset Flarm failed!";
         }
     }
 
+  // Set protocol mode of Flarm to text.
+  Flarm::setPotocolMode( Flarm::text );
   event->accept();
 }
 
@@ -242,7 +244,7 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
       // slot_FlarmLogbookData()
       //
       // with flight list info.
-      if( GpsNmea::gps->getFlightListFromFlarm() == false )
+      if( GpsNmea::gps->getFlarmFlightList() == false )
         {
           slot_Timeout();
           QString text0 = tr("Flarm device not reachable!");
@@ -458,7 +460,7 @@ void FlarmLogbook::slot_DownloadFlights()
 
   m_ignoreClose = true;
 
-  if( GpsNmea::gps->downloadFlightsFromFlarm( args ) == false )
+  if( GpsNmea::gps->getFlarmIgcFiles( args ) == false )
     {
       slot_Timeout();
       QString text0 = tr("Flarm device not reachable!");

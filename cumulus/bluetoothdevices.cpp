@@ -42,7 +42,7 @@ BluetoothDevices::BluetoothDevices( QObject *parent ) : QThread( parent )
   setObjectName( "BluetoothDevices" );
 
   // Activate self destroy after finish signal has been caught.
-  connect( this, SIGNAL(finished()), this, SLOT(slot_Destroy()) );
+  connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
 }
 
 BluetoothDevices::~BluetoothDevices()
@@ -197,10 +197,4 @@ void BluetoothDevices::slot_RetrieveBtDevice()
   // Stop the thread event loop.
   quit();
   return;
-}
-
-void BluetoothDevices::slot_Destroy()
-{
-  // deletes the thread object after execution is finished
-  delete this;
 }

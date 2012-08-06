@@ -25,28 +25,15 @@
 #include "flarmaliaslist.h"
 #include "generalconfig.h"
 
-// initialize static data items
-bool Flarm::collectPflaa = false;
-
-Flarm::FlarmStatus  Flarm::flarmStatus;
-Flarm::FlarmVersion Flarm::flarmVersion;
-Flarm::FlarmError   Flarm::flarmError;
-Flarm::ProtocolMode Flarm::m_protocolMode = text;
-
-QHash<QString, Flarm::FlarmAcft> Flarm::pflaaHash;
-QMutex Flarm::m_mutex;
-
-Flarm::Flarm(QObject* parent) : QObject(parent)
+Flarm::Flarm(QObject* parent) : QObject(parent), FlarmBase()
 {
-  flarmStatus.valid = false;
+  // Load Flarm alias data
+  FlarmAliasList::loadAliasData();
 
   // Setup timer for data clearing
   m_timer = new QTimer( this );
   m_timer->setSingleShot( true );
   connect( m_timer, SIGNAL(timeout()), this, SLOT(slotTimeout()) );
-
-  // Load Flarm alias data
-  FlarmAliasList::loadAliasData();
 }
 
 Flarm::~Flarm()
@@ -58,7 +45,7 @@ Flarm::~Flarm()
  */
 bool Flarm::extractPflau( const QStringList& stringList )
 {
-  flarmStatus.valid = false;
+  m_flarmStatus.valid = false;
 
   if ( stringList[0] != "$PFLAU" || stringList.size() < 11 )
     {
@@ -75,75 +62,75 @@ bool Flarm::extractPflau( const QStringList& stringList )
   short value;
 
   // RX number of received devices
-  flarmStatus.RX = 0;
+  m_flarmStatus.RX = 0;
   value = stringList[1].toShort( &ok );
 
   if( ok )
     {
-      flarmStatus.RX = value;
+      m_flarmStatus.RX = value;
     }
 
   // TX Transmission status
-  flarmStatus.TX = 0;
+  m_flarmStatus.TX = 0;
   value = stringList[2].toShort( &ok );
 
   if( ok )
     {
-      flarmStatus.TX = value;
+      m_flarmStatus.TX = value;
     }
 
   // GPS status
-  flarmStatus.Gps = NoFix;
+  m_flarmStatus.Gps = NoFix;
   value = stringList[3].toShort( &ok );
 
   if( ok )
     {
-      flarmStatus.Gps = static_cast<enum GpsStatus> (value);
+      m_flarmStatus.Gps = static_cast<enum GpsStatus> (value);
     }
 
   // Power status
-  flarmStatus.Power = 0;
+  m_flarmStatus.Power = 0;
   value = stringList[4].toShort( &ok );
 
   if( ok )
     {
-      flarmStatus.Power = value;
+      m_flarmStatus.Power = value;
     }
 
   // AlarmLevel
   value = stringList[5].toShort( &ok );
-  flarmStatus.Alarm = No;
+  m_flarmStatus.Alarm = No;
 
   if( ok )
     {
-      flarmStatus.Alarm = static_cast<enum AlarmLevel> (value);
+      m_flarmStatus.Alarm = static_cast<enum AlarmLevel> (value);
     }
 
   // RelativeBearing
-  flarmStatus.RelativeBearing = stringList[6];
+  m_flarmStatus.RelativeBearing = stringList[6];
 
   // AlarmType
   value = stringList[7].toShort( &ok );
-  flarmStatus.AlarmType = 0;
+  m_flarmStatus.AlarmType = 0;
 
   if( ok )
     {
-      flarmStatus.AlarmType = value;
+      m_flarmStatus.AlarmType = value;
     }
 
   // RelativeVertical
-  flarmStatus.RelativeVertical = stringList[8];
+  m_flarmStatus.RelativeVertical = stringList[8];
 
   // RelativeDistance
-  flarmStatus.RelativeDistance = stringList[9];
+  m_flarmStatus.RelativeDistance = stringList[9];
 
   // ID 6-digit hex value
-  flarmStatus.ID = stringList[10];
+  m_flarmStatus.ID = stringList[10];
 
-  flarmStatus.valid = true;
+  m_flarmStatus.valid = true;
 
-  if( flarmStatus.Alarm != No && flarmStatus.AlarmType != 0 &&
-      flarmStatus.RelativeBearing.isEmpty() == false &&
+  if( m_flarmStatus.Alarm != No && m_flarmStatus.AlarmType != 0 &&
+      m_flarmStatus.RelativeBearing.isEmpty() == false &&
       GeneralConfig::instance()->getPopupFlarmAlarms() == true )
     {
       createTrafficMessage();
@@ -263,19 +250,19 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   // is put or updated in the pflaaHash hash dictionary.
   QString key = createHashKey( aircraft.IdType, aircraft.ID );
 
-  if( collectPflaa == true || key == FlarmDisplay::getSelectedObject() )
+  if( m_collectPflaa == true || key == FlarmDisplay::getSelectedObject() )
     {
       // first check, if record is already contained in the hash.
-      if( pflaaHash.contains( key ) == true )
+      if( m_pflaaHash.contains( key ) == true )
         {
           // update entry
-          FlarmAcft& aircraftEntry = pflaaHash[key];
+          FlarmAcft& aircraftEntry = m_pflaaHash[key];
           aircraftEntry = aircraft;
         }
       else
         {
           // insert new entry
-          pflaaHash.insert( key, aircraft );
+          m_pflaaHash.insert( key, aircraft );
         }
     }
 
@@ -294,11 +281,11 @@ bool Flarm::extractPflav(const QStringList& stringList)
    PFLAV,<QueryType>,<HwVersion>,<SwVersion>,<ObstVersion>
    $PFLAV,A,2.00,5.00,alps20110221_*
   */
-  flarmVersion.hwVersion   = stringList[2];
-  flarmVersion.swVersion   = stringList[3];
-  flarmVersion.obstVersion = stringList[4];
+  m_flarmVersion.hwVersion   = stringList[2];
+  m_flarmVersion.swVersion   = stringList[3];
+  m_flarmVersion.obstVersion = stringList[4];
 
-  emit flarmVersionInfo( flarmVersion );
+  emit flarmVersionInfo( m_flarmVersion );
   return true;
 }
 
@@ -340,10 +327,10 @@ bool Flarm::extractPflae(const QStringList& stringList)
       return false;
     }
 
-  flarmError.severity  = stringList[2];
-  flarmError.errorCode = stringList[3];
+  m_flarmError.severity  = stringList[2];
+  m_flarmError.errorCode = stringList[3];
 
-  emit flarmErrorInfo( flarmError );
+  emit flarmErrorInfo( m_flarmError );
   return true;
 }
 
@@ -365,14 +352,14 @@ bool Flarm::extractPflac(QStringList& stringList)
 
 bool Flarm::getFlarmRelativeBearing( int &relativeBearing )
 {
-  if( ! flarmStatus.valid && flarmStatus.RelativeBearing.isEmpty() )
+  if( ! m_flarmStatus.valid && m_flarmStatus.RelativeBearing.isEmpty() )
     {
       return false;
     }
 
   bool ok;
 
-  relativeBearing = flarmStatus.RelativeBearing.toInt( &ok );
+  relativeBearing = m_flarmStatus.RelativeBearing.toInt( &ok );
 
   if( ok )
     {
@@ -386,14 +373,14 @@ bool Flarm::getFlarmRelativeBearing( int &relativeBearing )
 
 bool Flarm::getFlarmRelativeVertical( int &relativeVertical )
 {
-  if( ! flarmStatus.valid && flarmStatus.RelativeVertical.isEmpty() )
+  if( ! m_flarmStatus.valid && m_flarmStatus.RelativeVertical.isEmpty() )
     {
       return false;
     }
 
   bool ok;
 
-  relativeVertical = flarmStatus.RelativeVertical.toInt( &ok );
+  relativeVertical = m_flarmStatus.RelativeVertical.toInt( &ok );
 
   if( ok )
     {
@@ -407,14 +394,14 @@ bool Flarm::getFlarmRelativeVertical( int &relativeVertical )
 
 bool Flarm::getFlarmRelativeDistance( int &relativeDistance )
 {
-  if( ! flarmStatus.valid && flarmStatus.RelativeDistance.isEmpty() )
+  if( ! m_flarmStatus.valid && m_flarmStatus.RelativeDistance.isEmpty() )
     {
       return false;
     }
 
   bool ok;
 
-  relativeDistance = flarmStatus.RelativeDistance.toInt( &ok );
+  relativeDistance = m_flarmStatus.RelativeDistance.toInt( &ok );
 
   if( ok )
     {
@@ -434,7 +421,7 @@ void Flarm::collectPflaaFinished()
   // Check the hash dictionary for expired data. This old data items have to
   // be removed. Seems to be the best place, to do it after the end trigger as
   // to trust that following methods will do that.
-  QMutableHashIterator<QString, Flarm::FlarmAcft> it(pflaaHash);
+  QMutableHashIterator<QString, Flarm::FlarmAcft> it(m_pflaaHash);
 
   while( it.hasNext() )
     {
@@ -467,7 +454,7 @@ void Flarm::collectPflaaFinished()
 /** Called if timer has expired. Used for Flarm PFLAA data clearing. */
 void Flarm::slotTimeout()
 {
-  pflaaHash.clear();
+  m_pflaaHash.clear();
 
   // Emit signal, if further processing in radar view is required.
   if( Flarm::getCollectPflaa() )
@@ -479,7 +466,7 @@ void Flarm::slotTimeout()
 void Flarm::createTrafficMessage()
 {
   bool ok;
-  int dir = flarmStatus.RelativeBearing.toInt(&ok);
+  int dir = m_flarmStatus.RelativeBearing.toInt(&ok);
   int ta;
 
   if( ! ok )
@@ -503,7 +490,7 @@ void Flarm::createTrafficMessage()
   // Traffic angle for arrow picture
   ta = (dir == 12) ? 0 : dir * 30;
 
-  int rvert = flarmStatus.RelativeVertical.toInt(&ok);
+  int rvert = m_flarmStatus.RelativeVertical.toInt(&ok);
 
   QString rverts = (rvert > 0) ? "+" : "";
 
@@ -512,17 +499,17 @@ void Flarm::createTrafficMessage()
       return;
     }
 
-  int rdist = flarmStatus.RelativeDistance.toInt(&ok);
+  int rdist = m_flarmStatus.RelativeDistance.toInt(&ok);
 
   if( ! ok )
     {
       return;
     }
 
-  QString almType = ( flarmStatus.AlarmType != 3 ) ? tr("Traffic") : tr("Obstacle");
+  QString almType = ( m_flarmStatus.AlarmType != 3 ) ? tr("Traffic") : tr("Obstacle");
   QString almlevel;
 
-  switch( flarmStatus.Alarm )
+  switch( m_flarmStatus.Alarm )
   {
   case 1:
     almlevel = tr("Info");
@@ -556,7 +543,7 @@ void Flarm::createTrafficMessage()
           "<td align=right>" + Altitude::getText( rdist, true, 0 ) + "</td></tr>";
 
   // If an alias is known, it is added to the table
-  QString alias = FlarmAliasList::getAliasHash().value( flarmStatus.ID );
+  QString alias = FlarmAliasList::getAliasHash().value( m_flarmStatus.ID );
 
   if( alias.isEmpty() == false )
     {
@@ -567,19 +554,4 @@ void Flarm::createTrafficMessage()
   text += "</table></html>";
 
   emit flarmTrafficInfo( text );
-}
-
-enum Flarm::ProtocolMode Flarm::getProtocolMode()
-{
-  m_mutex.lock();
-  enum Flarm::ProtocolMode pm = m_protocolMode;
-  m_mutex.unlock();
-  return pm;
-}
-
-void Flarm::setPotocolMode( enum Flarm::ProtocolMode pm )
-{
-  m_mutex.lock();
-  m_protocolMode = pm;
-  m_mutex.unlock();
 }

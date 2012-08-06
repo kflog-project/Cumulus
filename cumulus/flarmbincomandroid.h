@@ -54,4 +54,4 @@ class FlarmBinComAndroid : public FlarmBinCom
 
 };
 
-#endif /* FLARM_BIN_COM_LINUX_H_ */
+#endif /* FLARM_BIN_COM_ANDROID_H_ */

@@ -385,18 +385,19 @@ class GpsNmea : public QObject
 #ifdef FLARM
 
     /** Requests a flight list from a Flarm device. */
-    bool getFlightListFromFlarm();
+    bool getFlarmFlightList();
 
     /**
-     * Requests the download of the passed flight indexes from the Flarm
-     * device.
+     * Downloads the requested IGC flights. The args string contains the destination
+     * directory and one or more flight numbers. The single elements are separated
+     * by vertical tabs.
      */
-    bool downloadFlightsFromFlarm( QString& flightIndexes );
+    bool getFlarmIgcFiles( QString& flightIndexes );
 
     /**
      * Requests to reset the Flarm device.
      */
-    bool resetFlarm();
+    bool flarmReset();
 
 #endif
 
