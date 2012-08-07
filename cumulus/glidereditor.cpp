@@ -18,14 +18,15 @@
 
 #include <QtGui>
 
+#include "flickcharm.h"
+#include "generalconfig.h"
 #include "glidereditor.h"
+#include "layout.h"
 #include "polardialog.h"
 #include "polar.h"
-#include "speed.h"
 #include "mapview.h"
-#include "generalconfig.h"
 #include "mainwindow.h"
-#include "layout.h"
+#include "speed.h"
 #include "varspinbox.h"
 
 extern MapView *_globalMapView;
@@ -72,6 +73,16 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
       comboType = new QComboBox(this);
       comboType->setEditable(false);
       comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(comboType->view(), QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(comboType->view());
+#endif
+
       itemsLayout->addWidget(comboType, row, 1, 1, 3);
       row++;
     }
