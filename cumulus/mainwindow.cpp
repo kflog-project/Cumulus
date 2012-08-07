@@ -1712,6 +1712,9 @@ void MainWindow::closeEvent( QCloseEvent* event )
     case QMessageBox::Yes:
       // save and exit
       event->accept();
+#ifdef ANDROID
+      jniShutdown();
+#endif
       QMainWindow::closeEvent(event);
       break;
     case QMessageBox::No:

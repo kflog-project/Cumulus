@@ -29,6 +29,11 @@
 bool initJni();
 
 /**
+ * Called, when the GUI is going to shutdown to stop JNI transfer.
+ */
+void jniShutdown();
+
+/**
  * Make Android OS play a sound. stream=0 will set STREAM_NOTIFICATION as
  * audio stream, stream=1 will set STREAM_ALARM.
  * Java code (playSound) is in QtMain.java

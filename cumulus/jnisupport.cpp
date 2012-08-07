@@ -52,10 +52,19 @@ static jmethodID m_dimmScreenID   = 0;
 static jmethodID m_gpsCmdID       = 0;
 static jmethodID m_byte2Gps       = 0;
 
+// Shutdown flag to disable message transfer to the GUI.
+static bool shutdown = false;
+
 // Function declarations
 bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
+
+void jniShutdown()
+{
+  // Set shutdown flag to true.
+  shutdown = true;
+}
 
 // ---- The native methods ---
 
@@ -72,16 +81,19 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
                              jfloat accuracy,
                              jlong time )
 {
-  // qDebug("*** nativeGpsFix: lat %f, lon %f", lati, longi);
-  GpsFixEvent *ge = new GpsFixEvent( latitude,
-                                     longitude,
-                                     altitude,
-                                     speed,
-                                     heading,
-                                     accuracy,
-                                     time );
+  if( ! shutdown )
+    {
+      // qDebug("*** nativeGpsFix: lat %f, lon %f", lati, longi);
+      GpsFixEvent *ge = new GpsFixEvent( latitude,
+                                         longitude,
+                                         altitude,
+                                         speed,
+                                         heading,
+                                         accuracy,
+                                         time );
 
-  QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
+      QCoreApplication::postEvent( GpsNmea::gps, ge, Qt::HighEventPriority );
+    }
 }
 
 /**
@@ -92,25 +104,32 @@ static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
                                 jobject /*myproxyobject*/,
                                 jint status )
 {
-  GpsStatusEvent *ge = new GpsStatusEvent( status );
-  QCoreApplication::postEvent( GpsNmea::gps, ge );
+  if( ! shutdown )
+    {
+      GpsStatusEvent *ge = new GpsStatusEvent( status );
+      QCoreApplication::postEvent( GpsNmea::gps, ge );
+    }
 }
 
 static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 {
-  const char * nativeString = env->GetStringUTFChars(jnmea, 0);
-  QString qnmea(nativeString);
-  env->ReleaseStringUTFChars(jnmea, nativeString);
-  GpsConAndroid::forwardNmea( qnmea );
+  if( ! shutdown )
+    {
+      const char * nativeString = env->GetStringUTFChars(jnmea, 0);
+      QString qnmea(nativeString);
+      env->ReleaseStringUTFChars(jnmea, nativeString);
+
+      GpsConAndroid::forwardNmea( qnmea );
+    }
 }
 
 static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 {
   // qDebug("JNI nativeKeypress: code is %d", (unsigned int) code);
 
-  if( MainWindow::isRootWindow() == false )
+  if( shutdown == true || MainWindow::isRootWindow() == false )
     {
-      // Forward keys only if the root window is active.
+      // Forward keys only if the root window is active and shutdown is false.
       return;
     }
 
@@ -203,7 +222,10 @@ static void nativeByteFromGps(JNIEnv* /*env*/, jobject /*myobject*/, jbyte byte)
 {
   // A byte was read from the Java part via the BT port. It is forwarded to the
   // GPS data handler class for Android.
-  GpsConAndroid::rcvByte( (const char) byte );
+  if( ! shutdown )
+    {
+      GpsConAndroid::rcvByte( (const char) byte );
+    }
 }
 
 /* The array of native methods to register.
@@ -416,7 +438,7 @@ bool jniEnv()
 
 bool jniPlaySound(int stream, QString soundName)
 {
-  if (!jniEnv())
+  if (!jniEnv() || shutdown )
     {
       return false;
     }
@@ -440,7 +462,7 @@ bool jniPlaySound(int stream, QString soundName)
 
 bool jniGpsCmd(QString& cmd)
 {
-  if (!jniEnv())
+  if (!jniEnv() || shutdown )
     {
       return false;
     }
@@ -462,7 +484,7 @@ bool jniGpsCmd(QString& cmd)
 
 bool jniByte2Gps(const char byte)
 {
-  if (!jniEnv())
+  if (!jniEnv() || shutdown )
     {
       return false;
     }
@@ -482,7 +504,7 @@ bool jniByte2Gps(const char byte)
 
 void jniDimmScreen( bool newState )
 {
-  if (!jniEnv())
+  if (!jniEnv() || shutdown )
     {
       return;
     }
@@ -533,6 +555,11 @@ QString jniGetLanguage()
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult )
 {
   strResult = "";
+
+  if( shutdown )
+    {
+      return false;
+    }
 
   if (!jniEnv())
     {
