@@ -15,11 +15,19 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-08-07 AP: Combo boxes for sky directions replaced against toggle buttons
+                   in coordinate editor. Makes the operation under Android simpler
+                   as before.
+                   
+[o] 2012-08-07 AP: Kinetic finger scrolling added to combo boxes with large
+                   lists only for Android.                    
+
 [-] 2012-08-02 AP: BUGFIX: Long string labels of German translation shorten
                    for color dialog. That makes the dialog buttons fully visible
                    for Android.
                    
-[+] 2012-07-31 AP: Kinetic finger scrolling added for Android.
+[+] 2012-07-31 AP: Kinetic finger scrolling added for Android only. On N8x0/N900
+                   it does not work in the expected manner.
 
 [+] 2012-07-31 AP: Flarm IGC file download support added.
 
