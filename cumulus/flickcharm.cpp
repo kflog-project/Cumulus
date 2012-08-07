@@ -56,7 +56,6 @@ FlickCharm::FlickCharm(QObject *parent): QObject(parent)
 
 FlickCharm::~FlickCharm()
 {
-  qDebug() << "~FlickCharm()";
   delete d;
 }
 

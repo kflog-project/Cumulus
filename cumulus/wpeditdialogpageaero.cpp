@@ -18,13 +18,12 @@
 
 #include <cmath>
 
-#include <QLabel>
-#include <QGridLayout>
-#include <QBoxLayout>
+#include <QtGui>
 
-#include "wpeditdialogpageaero.h"
 #include "altitude.h"
 #include "airfield.h"
+#include "flickcharm.h"
+#include "wpeditdialogpageaero.h"
 
 WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QWidget(parent, Qt::WindowStaysOnTopHint)
@@ -70,12 +69,32 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   topLayout->addWidget(lblRun, row, 0);
   edtRunway1 = new QComboBox(this);
   edtRunway1->setEditable(false);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(edtRunway1->view(), QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(edtRunway1->view());
+#endif
+
   topLayout->addWidget(edtRunway1, row++, 1);
 
   QLabel *lblRun1 = new QLabel(tr("Runway heading2:"),  this);
   topLayout->addWidget(lblRun1, row, 0);
   edtRunway2 = new QComboBox(this);
   edtRunway2->setEditable(false);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(edtRunway2->view(), QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(edtRunway2->view());
+#endif
+
   topLayout->addWidget(edtRunway2, row++, 1);
 
   QLabel *lblSurface = new QLabel(tr("Surface:"),  this);

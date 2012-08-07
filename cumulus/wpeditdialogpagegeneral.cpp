@@ -20,11 +20,12 @@
 
 #include <QtGui>
 
-#include "wpeditdialogpagegeneral.h"
-#include "generalconfig.h"
 #include "altitude.h"
 #include "basemapelement.h"
+#include "flickcharm.h"
+#include "generalconfig.h"
 #include "wgspoint.h"
+#include "wpeditdialogpagegeneral.h"
 
 WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QWidget(parent)
@@ -119,6 +120,16 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   cmbType = new QComboBox(this);
   cmbType->setObjectName("Type");
   cmbType->setEditable(false);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(cmbType->view(), QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(cmbType->view());
+#endif
+
   topLayout->addWidget(cmbType, row++, 1);
 
   // init combo boxes
