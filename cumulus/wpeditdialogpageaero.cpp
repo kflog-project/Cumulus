@@ -128,7 +128,9 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
 
   QLabel *lblLand = new QLabel(tr("Landable:"),  this);
   topLayout->addWidget(lblLand, row, 0);
-  chkLandable = new QCheckBox(this);
+
+  // Set spaces as label to make the checkbox better operable.
+  chkLandable = new QCheckBox("          ", this);
   topLayout->addWidget(chkLandable,  row++ ,  1);
 
   topLayout->setRowStretch(row++, 10);
