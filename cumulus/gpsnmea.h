@@ -40,6 +40,7 @@
 #include <QString>
 #include <QList>
 #include <QDateTime>
+#include <QEvent>
 #include <QPoint>
 #include <QTimer>
 #include <QHash>
@@ -53,8 +54,10 @@
 
 #ifndef ANDROID
 #include "gpscon.h"
-#else
-#include <QEvent>
+#endif
+
+#ifdef ANDROID
+#include "gpsconandroid.h"
 #endif
 
 struct SatInfo
@@ -756,11 +759,14 @@ class GpsNmea : public QObject
     /** selected GPS device */
     QString gpsDevice;
 
-#ifndef ANDROID
     /** The reference to the used serial connection */
-    GpsCon* serial;
-#else
     QObject* serial;
+
+#ifdef ANDROID
+#ifdef FLARM
+    /** Flarm interface for Android. */
+    GpsConAndroid gca;
+#endif
 #endif
 
     /** Flag to enable/disable the GPS data processing. */

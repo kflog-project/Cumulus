@@ -80,6 +80,7 @@ void GpsConAndroid::rcvByte( const char byte )
 
   if( FlarmBase::getProtocolMode() == FlarmBase::text && byte == '\n' )
     {
+      qDebug() << "rcvByte T=" << byte;
       // Flarm works in text mode and the complete GPS sentence must be
       // forwarded to GpsNmea.
       QString ns( rcvBuffer.data() );
@@ -87,6 +88,8 @@ void GpsConAndroid::rcvByte( const char byte )
       rcvBuffer.clear();
       return;
     }
+
+  qDebug() << "rcvByte B=" << byte;
 
   // Flarm works in binary mode, do nothing more as to store the byte.
   // Another thread will read it.
