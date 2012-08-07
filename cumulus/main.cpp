@@ -35,6 +35,7 @@
  */
 
 #include <clocale>
+#include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
 #include <sys/types.h>
@@ -183,6 +184,9 @@ int main(int argc, char *argv[])
 #endif
 
       logDir += "/cumulus.log";
+
+      // Save one old log file version.
+      rename( logDir.toAscii().data(), (logDir + ".old").toAscii().data() );
 
       int i = open( logDir.toLatin1().data(), O_RDWR|O_CREAT|O_TRUNC,
                     S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );

@@ -618,6 +618,14 @@ public class CumulusActivity extends QtActivity
     {
       Log.d(TAG, "onDestroy" );
 
+      notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+      
+      if( notificationManager != null )
+        {
+        	notificationManager.cancelAll();
+        	Log.d(TAG, "onDestroy: Cancel all Notifs now" );
+        }
+
       if( nl != null )
         {
           lm.removeNmeaListener(nl);
@@ -634,13 +642,6 @@ public class CumulusActivity extends QtActivity
           m_btService.stop();
         }
       
-      notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-      
-      if( notificationManager != null )
-      {
-      	notificationManager.cancelAll();
-      }
-
       // call super class
       super.onDestroy();
     }
