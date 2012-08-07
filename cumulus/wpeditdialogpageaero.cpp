@@ -91,7 +91,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
 #endif
 
 #ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm = new FlickCharm(this);
   flickCharm->activateOn(edtRunway2->view());
 #endif
 
