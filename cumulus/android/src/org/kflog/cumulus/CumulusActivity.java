@@ -403,7 +403,9 @@ public class CumulusActivity extends QtActivity
     if( lm == null )
       {
         Log.w(TAG, "System said: LOCATION_SERVICE is null!" );
-
+      }
+    else
+    	{
         ll = new LocationListener()
           {
             @Override
