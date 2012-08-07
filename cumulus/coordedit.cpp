@@ -23,11 +23,7 @@
 
 #include <cmath>
 
-#include <QHBoxLayout>
-#include <QIntValidator>
-#include <QRegExpValidator>
-#include <QLabel>
-#include <QFontMetrics>
+#include <QtGui>
 
 #include "coordedit.h"
 #include "wgspoint.h"

@@ -113,8 +113,6 @@ class CoordEdit : public QWidget
      */
     void showEvent(QShowEvent *);
 
-  private:
-
     /** Input fields for coordinate */
     QLineEdit *degreeBox;
     QLineEdit *minuteBox;
