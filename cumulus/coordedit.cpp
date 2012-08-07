@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001 by Harald Maier
 **                   2009 by Axel Pauli complete redesign done
-**                   2011 by Axel Pauli Bug fixing
+**                   2009-2012 by Axel Pauli
 **
 **   Email:           axel@kflog.org
 **
@@ -87,10 +87,12 @@ CoordEdit::CoordEdit(QWidget *parent) : QWidget( parent )
       hbox->addSpacing( spaceItem2 );
     }
 
-  // add combo box for sky directions
-  directionBox = new QComboBox( this );
-  hbox->addWidget( directionBox );
+  // add push button as toggle for the sky directions
+  skyDirection = new QPushButton( this );
+  hbox->addWidget( skyDirection );
   hbox->addStretch( 10 );
+
+  connect( skyDirection, SIGNAL(pressed()), SLOT(slot_changeSkyDirection()) );
 
   setLayout( hbox );
 
@@ -154,7 +156,30 @@ void CoordEdit::showEvent( QShowEvent * )
       degreeBox->setMaximumWidth( strWidth );
     }
 
-  directionBox->setMinimumContentsLength( 2 );
+  int height = degreeBox->minimumSizeHint().height();
+
+  skyDirection->setMinimumSize( height + height / 2, height );
+  skyDirection->setMaximumSize( height + height / 2, height );
+}
+
+void CoordEdit::slot_changeSkyDirection()
+{
+  if( skyDirection->text() == "N" )
+    {
+      skyDirection->setText( "S" );
+    }
+  else if( skyDirection->text() == "S" )
+    {
+      skyDirection->setText( "N" );
+    }
+  else if( skyDirection->text() == "E" )
+    {
+      skyDirection->setText( "W" );
+    }
+  else if( skyDirection->text() == "W" )
+    {
+      skyDirection->setText( "E" );
+    }
 }
 
 /**
@@ -180,7 +205,7 @@ bool CoordEdit::isInputChanged()
       changed |= iniSecond != secondBox->text();
     }
 
-  changed |= iniDirection != directionBox->currentText();
+  changed |= iniDirection != skyDirection->text();
 
   return changed;
 }
@@ -225,27 +250,23 @@ LatEdit::LatEdit(QWidget *parent, const int base) : CoordEdit(parent)
       secondBox->setValidator( eValidator );
     }
 
-  directionBox->addItem( QString(" N") );
-  directionBox->addItem( QString(" S") );
-
   // Set all edit fields to zero.
   setKFLogDegree(0);
 
   // Set default sky direction.
   if (base >= 0)
     {
-      directionBox->setCurrentIndex( 0 );
+      skyDirection->setText( "N" );
     }
   else
     {
-      directionBox->setCurrentIndex( 1 );
+      skyDirection->setText( "S" );
     }
 }
 
 /**
  * Sets the controls for the longitude editor.
  */
-
 LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
 {
   setObjectName("LongEdit");
@@ -283,20 +304,17 @@ LongEdit::LongEdit(QWidget *parent, const int base) : CoordEdit(parent)
       secondBox->setValidator( eValidator );
     }
 
-  directionBox->addItem( QString(" E") );
-  directionBox->addItem( QString(" W") );
-
   // Set all edit fields to zero
   setKFLogDegree(0);
 
   // Set the default sky direction.
   if (base >= 0)
     {
-      directionBox->setCurrentIndex( 0 );
+      skyDirection->setText( "E" );
     }
   else
     {
-      directionBox->setCurrentIndex( 1 );
+      skyDirection->setText( "W" );
     }
 }
 
@@ -354,7 +372,7 @@ int CoordEdit::KFLogDegree()
       input = degreeBox->text() + degreeChar;
     }
 
-  input += " " + directionBox->currentText().trimmed();
+  input += " " + skyDirection->text().trimmed();
 
   // This method make the conversion to the internal KFLog degree format.
   return WGSPoint::degreeToNum( input );
@@ -467,18 +485,32 @@ void CoordEdit::setKFLogDegree( const int coord, const bool isLat )
       iniDegree = posDeg;
     }
 
-  // Set sky direction in combo box
+  // Set the sky direction as label in the push button
   if (coord < 0)
     {
-      directionBox->setCurrentIndex(1);
+      if( isLat )
+        {
+          skyDirection->setText( "S" );
+        }
+      else
+        {
+          skyDirection->setText( "W" );
+        }
     }
   else
     {
-      directionBox->setCurrentIndex(0);
+      if( isLat )
+        {
+          skyDirection->setText( "N" );
+        }
+      else
+        {
+          skyDirection->setText( "E" );
+        }
     }
 
   // Save initial value of sky direction.
-  iniDirection = directionBox->currentText();
+  iniDirection = skyDirection->text();
 }
 
 /** Sets all edit fields to the passed coordinate value in KFLog format. */

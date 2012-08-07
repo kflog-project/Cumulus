@@ -7,7 +7,8 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Harald Maier
-**                   2009-2010 by Axel Pauli complete redesign done
+**                   2009      by Axel Pauli complete redesign done
+**                   2009-2012 by Axel Pauli
 **
 **   Email: axel@kflog.org
 **
@@ -33,16 +34,17 @@
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2010
+ * \date 2001-2012
 */
 
 #ifndef COOR_DEDIT_H
 #define COOR_DEDIT_H
 
 #include <QWidget>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QString>
+
+class QLineEdit;
+class QString;
+class QPushButton;
 
 /**
  * \class CoordEdit
@@ -59,7 +61,7 @@
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2010
+ * \date 2001-2012
  */
 
 class CoordEdit : public QWidget
@@ -99,6 +101,11 @@ class CoordEdit : public QWidget
      */
     void slot_textEdited( const QString& text );
 
+    /**
+     * Used to change the sky direction label in the push button.
+     */
+    void slot_changeSkyDirection();
+
   protected:
 
     /**
@@ -106,13 +113,15 @@ class CoordEdit : public QWidget
      */
     void showEvent(QShowEvent *);
 
+  private:
+
     /** Input fields for coordinate */
     QLineEdit *degreeBox;
     QLineEdit *minuteBox;
     QLineEdit *secondBox;
 
     /** Sky directions */
-    QComboBox *directionBox;
+    QPushButton *skyDirection;
 
     /** Initial values saved here for change control. */
     int     iniKflogDegree;
@@ -136,7 +145,7 @@ class CoordEdit : public QWidget
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2010
+ * \date 2001-2012
  */
 class LatEdit : public CoordEdit
 {
