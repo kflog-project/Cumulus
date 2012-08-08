@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-08-07 AP: BUGFIX: Shutdown function and flag introduced in jniSupport
+                   to avoid message forwarding to C++ GUI part in case of shutdown.
+                   Otherwise we can get an exception in the shutdown phase
+                   because the C++ part has already terminated but not the java
+                   part which delivers GPS data via JNI to the C++ part.
+
 [o] 2012-08-07 AP: Combo boxes for sky directions replaced against toggle buttons
                    in coordinate editor. Makes the operation under Android simpler
                    as before.
