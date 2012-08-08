@@ -228,6 +228,8 @@ bool GpsConAndroid::flarmBinMode()
   bool pingOk = false;
   int loop = 5;
 
+  FlarmBase::setProtocolMode( FlarmBase::binary );
+
   while( loop-- )
     {
       // Switch connection to binary mode.
@@ -240,7 +242,6 @@ bool GpsConAndroid::flarmBinMode()
       // Check connection with a ping command.
       if( fbc.ping() == true )
         {
-          FlarmBase::setProtocolMode( FlarmBase::binary );
           pingOk = true;
           break;
         }
