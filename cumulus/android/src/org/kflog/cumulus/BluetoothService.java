@@ -678,6 +678,7 @@ public class BluetoothService
 					{
 						try
 							{
+								/*
 								// Read a line from the InputStream
 								String line = mmInReader.readLine();
 								
@@ -687,6 +688,12 @@ public class BluetoothService
 									}
 								
 								CumulusActivity.nativeNmeaString( line );
+								*/
+								
+								// read a character from the input stream and pass it via JNI
+								// to the native C++ part.
+								int character = mmInReader.read();
+								CumulusActivity.nativeByteFromGps( (byte) character );
 							}
 						
 						catch (IOException e)

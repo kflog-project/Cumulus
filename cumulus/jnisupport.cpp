@@ -62,7 +62,10 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
 
 void jniShutdown()
 {
-  // Set shutdown flag to true.
+  // Set shutdown flag to true. This function is called by the MainWindow
+  // class, to signal a shutdown of the application. In that case all
+  // message forwarding has to be stopped to the GUI part. Otherwise the
+  // App can crash in the shutdown phase.
   shutdown = true;
 }
 
@@ -291,7 +294,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: Exception when calling CallStaticObjectMethod";
+      qWarning() << "initJni: Exception when calling CallStaticObjectMethod";
       return false;
     }
 
@@ -312,7 +315,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
                                           "()Ljava/lang/String;");
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: could not get ID of getAddDataDir";
+      qWarning() << "initJni: could not get ID of getAddDataDir";
       return false;
     }
 
@@ -321,7 +324,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
                                           "()Ljava/lang/String;");
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: could not get ID of getAppDataDir";
+      qWarning() << "initJni: could not get ID of getAppDataDir";
       return false;
     }
 
@@ -330,7 +333,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
                                         "()Ljava/lang/String;");
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: could not get ID of getLanguage";
+      qWarning() << "initJni: could not get ID of getLanguage";
       return false;
     }
 
@@ -340,7 +343,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: could not get ID of playSound";
+      qWarning() << "initJni: could not get ID of playSound";
       return false;
     }
 
@@ -350,7 +353,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: could not get ID of playSound";
+      qWarning() << "initJni: could not get ID of playSound";
       return false;
     }
 
@@ -360,7 +363,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   if (isJavaExceptionOccured())
     {
-      qDebug() << "initJni: could not get ID of gpsCmd";
+      qWarning() << "initJni: could not get ID of gpsCmd";
       return false;
     }
 
@@ -370,7 +373,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   if (isJavaExceptionOccured())
   {
-    qDebug() << "initJni: could not get ID of byte2Gps";
+    qWarning() << "initJni: could not get ID of byte2Gps";
     return false;
   }
 
@@ -563,7 +566,7 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
 
   if (!jniEnv())
     {
-      qDebug() << "jniCallStringMethod: jniEnv failed, can't call Java method" << method;
+      qWarning() << "jniCallStringMethod: jniEnv failed, can't call Java method" << method;
       return false;
     }
 
@@ -571,7 +574,7 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
 
   if (isJavaExceptionOccured())
     {
-      qDebug() << "jniCallStringMethod: Exception when calling Java method" << method;
+      qWarning() << "jniCallStringMethod: Exception when calling Java method" << method;
       return false;
     }
 

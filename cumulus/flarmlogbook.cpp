@@ -193,7 +193,7 @@ void FlarmLogbook::closeEvent( QCloseEvent* event )
         }
     }
 
-  // Set protocol mode of Flarm to text.
+  // Set protocol mode of Flarm back to text.
   Flarm::setProtocolMode( Flarm::text );
   event->accept();
 }

@@ -24,10 +24,11 @@
  *
  * \brief GPS connection interface from and to Android's Java part.
  *
- * This class manages the GPS data transfer to and from the Android Java
- * part.
+ * This class manages the GPS data transfer to and from the Android Java part.
  *
  * \date 2012
+ *
+ * \version $Id$
  */
 
 #ifndef GPS_CON_ANDROID_H
@@ -63,6 +64,10 @@ class GpsConAndroid : public QObject
 
   static bool verifyCheckSum( const char *sentence );
 
+  /**
+   * Forwards a NMEA message as event to the related method running in the
+   * GUI thread.
+   */
   static void forwardNmea( QString& qnmea );
 
 #ifdef FLARM
@@ -113,18 +118,11 @@ class GpsConAndroid : public QObject
  private slots:
 
   /**
-   * Called to activte the Flarm text mode.
+   * Called to activte the Flarm NMEA output.
    */
-  void slot_FlarmTextMode();
+  void slot_FlarmEnableNmeaOut();
 
 #endif
-
- signals:
-
-  /**
-   * This signal is emitted, when a new byte was received from the Java part.
-   */
-  void newByte();
 
  private:
 

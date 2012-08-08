@@ -80,7 +80,6 @@ void GpsConAndroid::rcvByte( const char byte )
 
   if( FlarmBase::getProtocolMode() == FlarmBase::text && byte == '\n' )
     {
-      qDebug() << "rcvByte T=" << byte;
       // Flarm works in text mode and the complete GPS sentence must be
       // forwarded to GpsNmea.
       QString ns( rcvBuffer.data() );
@@ -89,7 +88,13 @@ void GpsConAndroid::rcvByte( const char byte )
       return;
     }
 
-  qDebug() << "rcvByte B=" << byte;
+  // We check the buffer size to avoid a blocking case.
+  if( rcvBuffer.size() > 8*1024 )
+    {
+      // More than 8KB received, we will clear the buffer.
+      rcvBuffer.clear();
+      qWarning() << "GpsConAndroid::rcvByte: 8KB reached, rcvBuffer is cleared!";
+    }
 
   // Flarm works in binary mode, do nothing more as to store the byte.
   // Another thread will read it.
@@ -216,8 +221,6 @@ bool GpsConAndroid::flarmBinMode()
 
   // Precondition is that the NMEA output of the Flarm device was disabled by
   // the calling method before!
-
-  // qDebug() << "Switch Flarm to binary mode";
 
   // I made the experience, that the Flarm device did not answer to the first
   // binary transfer switch. Therefore I make several tries. Flarm tool makes
@@ -450,18 +453,21 @@ bool GpsConAndroid::flarmReset()
   FlarmBinComAndroid fbc;
   bool res = fbc.exit();
 
+  // Switch Flarm back to text mode.
+  FlarmBase::setProtocolMode( FlarmBase::text );
+
   // Enable NMEA output of Flarm after 60 seconds. Flarm needs some time to
   // coming up again after a reset.
-  QTimer::singleShot( 60000, this, SLOT(slot_FlarmTextMode()) );
+  QTimer::singleShot( 60000, this, SLOT(slot_FlarmEnableNmeaOut()) );
   return res;
 }
 
-void GpsConAndroid::slot_FlarmTextMode()
+void GpsConAndroid::slot_FlarmEnableNmeaOut()
 {
   // Enable NMEA output of Flarm device.
   if( GpsNmea::gps->sendSentence( QString("$PFLAC,S,NMEAOUT,1") ) == false )
     {
-      qWarning() << "GpsConAndroid::slot_FlarmTextMode(): enable NMEA failed!";
+      qWarning() << "GpsConAndroid::slot_FlarmEnableNmeaOut(): enable NMEAOUT failed!";
     }
 }
 
