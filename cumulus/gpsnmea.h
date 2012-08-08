@@ -759,14 +759,20 @@ class GpsNmea : public QObject
     /** selected GPS device */
     QString gpsDevice;
 
+#ifndef ANDROID
     /** The reference to the used serial connection */
-    QObject* serial;
+    GpsCon* serial;
+#endif
 
 #ifdef ANDROID
+    /** Fake serial connection pointer for Android. */
+    QObject* serial;
+
 #ifdef FLARM
     /** Flarm interface for Android. */
     GpsConAndroid gca;
 #endif
+
 #endif
 
     /** Flag to enable/disable the GPS data processing. */

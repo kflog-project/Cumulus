@@ -609,53 +609,65 @@ void ReachpointListView::slot_Home()
 
 void ReachpointListView::slot_PageUp()
 {
-  if( list->topLevelItemCount() == 0 )
+  if( cmdPageUp->isDown() )
     {
-      return;
-    }
+      if( list->topLevelItemCount() == 0 )
+        {
+          return;
+        }
 
-  // Get the vertical scrollbar position. It returns the number of hidden rows.
-  int sbValue = list->verticalScrollBar()->value();
+      // Get the vertical scrollbar position. It returns the number of hidden rows.
+      int sbValue = list->verticalScrollBar()->value();
 
-  if( sbValue == 0 )
-    {
-      // No rows are hidden
-      return;
-    }
+      if( sbValue == 0 )
+        {
+          // No rows are hidden
+          return;
+        }
 
-  QRect rect = list->visualItemRect(list->topLevelItem(0));
+      QRect rect = list->visualItemRect(list->topLevelItem(0));
 
-  // Calculate rows per page. Headline must be subtracted.
-  int pageRows = ( list->height() / rect.height() ) - 1;
+      // Calculate rows per page. Headline must be subtracted.
+      int pageRows = ( list->height() / rect.height() ) - 1;
 
-  int newIdx = sbValue - pageRows;
+      int newIdx = sbValue - pageRows;
 
-  if( newIdx >= 0 )
-    {
-      list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
-    }
-  else
-    {
-      list->scrollToItem( list->topLevelItem(0), QAbstractItemView::PositionAtTop );
+      if( newIdx >= 0 )
+        {
+          list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
+        }
+      else
+        {
+          list->scrollToItem( list->topLevelItem(0), QAbstractItemView::PositionAtTop );
+        }
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slot_PageUp()));
     }
 }
 
 void ReachpointListView::slot_PageDown()
 {
-  if( list->topLevelItemCount() == 0 )
+  if( cmdPageDown->isDown() )
     {
-      return;
-    }
+      if( list->topLevelItemCount() == 0 )
+        {
+          return;
+        }
 
-  QRect rect = list->visualItemRect(list->topLevelItem(0));
+      QRect rect = list->visualItemRect(list->topLevelItem(0));
 
-  // Calculate rows per page. Headline must be subtracted.
-  int pageRows = ( list->height() / rect.height() ) - 1;
+      // Calculate rows per page. Headline must be subtracted.
+      int pageRows = ( list->height() / rect.height() ) - 1;
 
-  int newIdx = list->verticalScrollBar()->value() + pageRows;
+      int newIdx = list->verticalScrollBar()->value() + pageRows;
 
-  if( newIdx < list->topLevelItemCount() )
-    {
-      list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
+      if( newIdx < list->topLevelItemCount() )
+        {
+          list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
+        }
+
+      // Start repetition timer, to check, if button is longer pressed.
+      QTimer::singleShot(300, this, SLOT(slot_PageDown()));
     }
 }
