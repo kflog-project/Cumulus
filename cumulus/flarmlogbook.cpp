@@ -215,7 +215,7 @@ void FlarmLogbook::setTableHeader()
   item = new QTableWidgetItem( tr("Type") );
   m_table->setHorizontalHeaderItem( 4, item );
 
-  item = new QTableWidgetItem( tr("Ix") );
+  item = new QTableWidgetItem( tr("Idx") );
   m_table->setHorizontalHeaderItem( 5, item );
 
   m_table->resizeColumnsToContents();
