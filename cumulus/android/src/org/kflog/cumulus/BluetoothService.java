@@ -697,13 +697,12 @@ public class BluetoothService
 							}
 						
 						catch (IOException e)
-							{
-								Log.e(TAG, "ConnectedThread: read failed", e);
-								
+							{								
 								if( getAbort() == false )
 								  {
 								    // Only notify a connection lost, if the socket was not closed
 								    // by our software.
+										Log.e(TAG, "ConnectedThread: read failed", e);
 								    connectionLost();
 								  }
 								
