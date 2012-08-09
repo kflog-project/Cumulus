@@ -494,6 +494,8 @@ void GpsConAndroid::startGetFlarmIgcFiles( QString& flightData )
   thread->start();
 }
 
+//#############################################################################
+
 // A better approach would be:
 // http://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
 FlarmFlightListThread::FlarmFlightListThread( QObject *parent ) : QThread( parent )
@@ -523,6 +525,8 @@ void FlarmFlightListThread::run()
   gca.getFlarmFlightList();
 }
 
+//#############################################################################
+
 FlarmIgcFilesThread::FlarmIgcFilesThread( QObject *parent, QString& flightData ) :
   QThread( parent ),
   m_flightData( flightData )
@@ -540,7 +544,7 @@ FlarmIgcFilesThread::~FlarmIgcFilesThread()
 
 void FlarmIgcFilesThread::run()
 {
-  qDebug() << "FlarmIgcFilesThread::run()";
+  qDebug() << "FlarmIgcFilesThread::run():" << m_flightData;
 
   sigset_t sigset;
   sigfillset( &sigset );
@@ -549,7 +553,7 @@ void FlarmIgcFilesThread::run()
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   GpsConAndroid gca;
-  gca.startGetFlarmIgcFiles( m_flightData );
+  gca.getFlarmIgcFiles( m_flightData );
 }
 
 #endif
