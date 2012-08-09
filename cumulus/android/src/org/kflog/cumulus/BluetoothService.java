@@ -36,6 +36,7 @@
 
 package org.kflog.cumulus;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -634,10 +635,10 @@ public class BluetoothService
 	 */
 	private class ConnectedThread extends Thread
 	{
-		private final BluetoothSocket   mmSocket;
-		private final BufferedReader    mmInReader;
-		private final OutputStream      mmOutStream;
-		private boolean                 mAbort;
+		private final BluetoothSocket     mmSocket;
+		private final BufferedInputStream mmInReader;
+		private final OutputStream        mmOutStream;
+		private boolean                   mAbort;
 		
 		/**
 		 * @param socket An opened Bluetooth socket.
@@ -663,7 +664,7 @@ public class BluetoothService
 						Log.e(TAG, "ConnectedThread: temp socket streams not created", e);
 					}
 				
-				mmInReader  = new BufferedReader(new InputStreamReader(tmpIn));
+				mmInReader  = new BufferedInputStream((tmpIn));
 				mmOutStream = tmpOut;
 			}
 
@@ -690,10 +691,25 @@ public class BluetoothService
 								CumulusActivity.nativeNmeaString( line );
 								*/
 								
-								// read a character from the input stream and pass it via JNI
+								// Read a character from the input stream and pass it via JNI
 								// to the native C++ part.
 								int character = mmInReader.read();
-								CumulusActivity.nativeByteFromGps( (byte) character );
+								
+								if( character == -1 )
+									{
+										Log.w(TAG, "BtConnectedThread read -1 (EOF)");
+										
+										if( getAbort() == false )
+										  {
+										    // Only notify a connection lost, if the socket was not closed
+										    // by our software.
+										    connectionLost();
+										  }
+
+										break;
+									}
+								
+								CumulusActivity.nativeByteFromGps( (byte) (character & 0xff) );
 							}
 						
 						catch (IOException e)
