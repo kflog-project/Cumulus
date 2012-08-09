@@ -2789,6 +2789,9 @@ bool GpsNmea::event(QEvent *event)
     {
       FlarmFlightListEvent *fe = static_cast<FlarmFlightListEvent *>(event);
       emit newFlarmFlightList( fe->flightList() );
+
+      qDebug() << "GpsNmea::FlarmFlightListEvent" << fe->flightList();
+
       return true;
     }
 
@@ -2797,6 +2800,9 @@ bool GpsNmea::event(QEvent *event)
     {
       FlarmFlightDownloadInfoEvent *fe = static_cast<FlarmFlightDownloadInfoEvent *>(event);
       emit newFlarmFlightDownloadInfo( fe->flightDownloadInfo() );
+
+      qDebug() << "GpsNmea::FlarmFlightDownloadInfoEvent" << fe->flightDownloadInfo();
+
       return true;
     }
 
@@ -2808,6 +2814,9 @@ bool GpsNmea::event(QEvent *event)
       int idx, progress;
       fe->flightDownloadInfo( idx, progress );
       emit newFlarmFlightDownloadProgress( idx, progress );
+
+      qDebug() << "GpsNmea::newFlarmFlightDownloadProgress" << idx << progress;
+
       return true;
     }
 

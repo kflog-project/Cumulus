@@ -265,6 +265,8 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 
 void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 {
+  qDebug() << "FlarmLogbook::slot_FlarmLogbookData" << data;
+
   m_logbook.clear(); // remove old content
 
   // Clear table content.

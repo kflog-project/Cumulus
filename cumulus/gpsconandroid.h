@@ -118,7 +118,7 @@ class GpsConAndroid : public QObject
  private slots:
 
   /**
-   * Called to activte the Flarm NMEA output.
+   * Called to activate the Flarm NMEA output.
    */
   void slot_FlarmEnableNmeaOut();
 
