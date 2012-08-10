@@ -202,6 +202,7 @@ void AirfieldListView::slot_Home()
     {
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );
+      conf->setHomeName( _wp->name );
       conf->setHomeCoord( _wp->origP );
       conf->setHomeElevation( Distance(_wp->elevation) );
 

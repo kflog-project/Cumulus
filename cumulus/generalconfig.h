@@ -955,6 +955,17 @@ class GeneralConfig : protected QSettings
     _homeCountryCode = newValue;
   };
 
+  /** Gets the homesite name */
+  QString &getHomeName()
+    {
+      return _homeName;
+    };
+  /** Sets the homesite name */
+  void setHomeName( const QString newValue )
+  {
+    _homeName = newValue;
+  };
+
   /** gets homesite Latitude */
   int getHomeLat() const
   {
@@ -2313,6 +2324,8 @@ class GeneralConfig : protected QSettings
   QString _homeCountryCode;
   // Homesite elevation
   Distance _homeElevation;
+  // Homesite name
+  QString _homeName;
   // Homesite coordinates
   QPoint _home;
   // Center Latitude

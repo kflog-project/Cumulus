@@ -534,10 +534,7 @@ void MapView::slot_Waypoint(const Waypoint *wp)
             }
         }
 
-      if( wp->name != tr("Home") )
-        {
-          dest += QString("(%1)").arg(Altitude::getText(wp->elevation, false, 0));
-        }
+      dest += QString("(%1)").arg(Altitude::getText(wp->elevation, false, 0));
 
       _waypoint->setValue(dest);
     }

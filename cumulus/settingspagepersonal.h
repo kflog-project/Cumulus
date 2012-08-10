@@ -99,6 +99,7 @@ private:
   QLineEdit *edtName;
   QComboBox *langBox;
   QLineEdit *edtHomeCountry;
+  QLineEdit *edtHomeName;
   LatEdit   *edtHomeLat;
   LongEdit  *edtHomeLong;
   QSpinBox  *spinHomeElevation;

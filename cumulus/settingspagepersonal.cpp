@@ -59,10 +59,20 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QRegExp rx("[A-Za-z]{2}");
   edtHomeCountry->setValidator( new QRegExpValidator(rx, this) );
 
+#ifndef ANDROID
   connect( edtHomeCountry, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedCountry( const QString& )) );
+#endif
 
   topLayout->addWidget(edtHomeCountry, row, 1);
+  row++;
+
+  lbl = new QLabel(tr("Home site name:"), this);
+  topLayout->addWidget(lbl, row, 0);
+
+  edtHomeName = new QLineEdit(this);
+  edtHomeName->setMaxLength(8);
+  topLayout->addWidget(edtHomeName, row, 1);
   row++;
 
   lbl = new QLabel(tr("Home site elevation:"), this);
@@ -126,6 +136,7 @@ void SettingsPagePersonal::slot_load()
 
   edtName->setText( conf->getSurname() );
   edtHomeCountry->setText( conf->getHomeCountryCode() );
+  edtHomeName->setText( conf->getHomeName() );
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
 
@@ -184,8 +195,18 @@ void SettingsPagePersonal::slot_save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  conf->setSurname( edtName->text() );
-  conf->setHomeCountryCode( edtHomeCountry->text() );
+  conf->setSurname( edtName->text().trimmed() );
+  conf->setHomeCountryCode( edtHomeCountry->text().trimmed().toUpper() );
+
+  if( edtHomeName->text().trimmed().isEmpty() )
+    {
+      conf->setHomeName( tr("Home") );
+    }
+  else
+    {
+      conf->setHomeName( edtHomeName->text().trimmed() );
+    }
+
   conf->setLanguage( langBox->currentText() );
 
   Distance homeElevation;
@@ -269,6 +290,7 @@ void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
 
   changed  = (edtName->text() != conf->getSurname());
   changed |= (langBox->currentText() != conf->getLanguage());
+  changed |= (edtHomeName->text() != conf->getHomeName());
   changed |= checkIsHomePositionChanged();
   changed |= spinHomeElevationValue != spinHomeElevation->value();
   changed |= (userDataDir->text() != conf->getUserDataDirectory());

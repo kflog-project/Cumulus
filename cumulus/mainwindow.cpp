@@ -2793,7 +2793,7 @@ void MainWindow::slotNavigate2Home()
 {
   Waypoint wp;
 
-  wp.name = tr("Home");
+  wp.name = GeneralConfig::instance()->getHomeName();
   wp.description = tr("Home Site");
   wp.origP.setPos( GeneralConfig::instance()->getHomeCoord() );
   wp.elevation = GeneralConfig::instance()->getHomeElevation().getMeters();
