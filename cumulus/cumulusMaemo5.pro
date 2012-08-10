@@ -280,6 +280,7 @@ SOURCES = \
 flarm {
     HEADERS += flarm.h \
                flarmaliaslist.h \
+               flarmbase.h \
                flarmdisplay.h \
                flarmlistview.h \
                flarmlogbook.h \
@@ -290,6 +291,7 @@ flarm {
                
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
+               flarmbase.cpp \
                flarmdisplay.cpp \
                flarmlistview.cpp \
                flarmlogbook.cpp \
