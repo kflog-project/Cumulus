@@ -22,7 +22,8 @@
  *
  * \author Axel Pauli
  *
- * \brief GPS connection interface from and to Android's Java part.
+ * \brief GPS connection interface from and to Android's Java part as singleton
+ *        class.
  *
  * This class manages the GPS data transfer to and from the Android Java part.
  *
@@ -46,13 +47,26 @@ class GpsConAndroid : public QObject
 
  private:
 
+  /**
+   * Constructor is private because this is a singleton class.
+   */
+  GpsConAndroid( QObject* parent=0 );
+
   Q_DISABLE_COPY( GpsConAndroid )
 
  public:
 
-  GpsConAndroid( QObject* parent=0 );
-
   virtual ~GpsConAndroid();
+
+  /**
+   * @return The single instance of the class.
+   */
+  static GpsConAndroid* instance()
+  {
+    static GpsConAndroid instance;
+
+    return &instance;
+  };
 
   static void rcvByte( const char byte );
 

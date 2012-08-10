@@ -161,7 +161,7 @@ bool FlarmBinCom::getRecordInfo( char* sData )
   return true;
 }
 
-bool FlarmBinCom::getIGDData( char* sData, unsigned int* progress)
+bool FlarmBinCom::getIGCData( char* sData, unsigned int* progress)
 {
   Message m;
   m.hdr.type = FRAME_GETIGCDATA;

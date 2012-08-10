@@ -396,7 +396,7 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
           uint lastProgress = -1;
           bool eof = false;
 
-          while( fbc.getIGDData(buffer, &progress) )
+          while( fbc.getIGCData(buffer, &progress) )
             {
               if( lastProgress != progress )
                 {
@@ -521,8 +521,7 @@ void FlarmFlightListThread::run()
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
-  GpsConAndroid gca;
-  gca.getFlarmFlightList();
+  GpsConAndroid::instance()->getFlarmFlightList();
 }
 
 //#############################################################################
@@ -552,8 +551,7 @@ void FlarmIgcFilesThread::run()
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
-  GpsConAndroid gca;
-  gca.getFlarmIgcFiles( m_flightData );
+  GpsConAndroid::instance()->getFlarmIgcFiles( m_flightData );
 }
 
 #endif

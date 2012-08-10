@@ -141,7 +141,7 @@ class FlarmBinCom
    *
    * \return true if data available in error case false.
    */
-  bool getIGDData(char* sData, unsigned int* progress);
+  bool getIGCData(char* sData, unsigned int* progress);
 
  protected:
 

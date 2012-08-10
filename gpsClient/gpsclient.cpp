@@ -1236,7 +1236,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
           uint lastProgress = -1;
           bool eof = false;
 
-          while( fbc.getIGDData(buffer, &progress) )
+          while( fbc.getIGCData(buffer, &progress) )
             {
               if( lastProgress != progress )
                 {

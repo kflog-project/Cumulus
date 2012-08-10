@@ -56,10 +56,6 @@
 #include "gpscon.h"
 #endif
 
-#ifdef ANDROID
-#include "gpsconandroid.h"
-#endif
-
 struct SatInfo
   {
     int fixValidity;
@@ -765,14 +761,8 @@ class GpsNmea : public QObject
 #endif
 
 #ifdef ANDROID
-    /** Fake serial connection pointer for Android. */
+    /** Fake a serial connection pointer for Android. */
     QObject* serial;
-
-#ifdef FLARM
-    /** Flarm interface for Android. */
-    GpsConAndroid gca;
-#endif
-
 #endif
 
     /** Flag to enable/disable the GPS data processing. */
