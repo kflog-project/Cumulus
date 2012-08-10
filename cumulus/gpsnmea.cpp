@@ -2788,6 +2788,7 @@ bool GpsNmea::event(QEvent *event)
   if( event->type() == QEvent::User + 3 )
     {
       FlarmFlightListEvent *fe = static_cast<FlarmFlightListEvent *>(event);
+      emit newFlarmFlightList( fe->flightList() );
       return true;
     }
 
