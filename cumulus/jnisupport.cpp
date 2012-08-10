@@ -447,7 +447,7 @@ bool jniDetachCurrentThread()
       return false;
     }
 
-  jint res = DetachCurrentThread(m_jvm);
+  jint res = m_jvm->DetachCurrentThread();
 
   if( res != 0 )
     {

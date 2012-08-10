@@ -104,7 +104,7 @@ void GpsConAndroid::rcvByte( const char byte )
 bool GpsConAndroid::getByte( unsigned char* b )
 {
   // Called to read out a byte from the byte buffer.
-  int loop = 60; // Timeout is 3s
+  int loop = 3000 / 10; // Timeout is 3s
 
   while( loop-- )
     {
@@ -119,7 +119,7 @@ bool GpsConAndroid::getByte( unsigned char* b )
         }
 
       mutexRead.unlock();
-      usleep( 50 * 1000 ); // Wait 50ms
+      usleep( 10 * 1000 ); // Wait 10ms
     }
 
   qWarning() << "GpsConAndroid::getByte(): Timeout!";
@@ -463,20 +463,7 @@ bool GpsConAndroid::flarmReset()
 
   // Switch Flarm back to text mode.
   FlarmBase::setProtocolMode( FlarmBase::text );
-
-  // Enable NMEA output of Flarm after 60 seconds. Flarm needs some time to
-  // coming up again after a reset.
-  QTimer::singleShot( 60000, this, SLOT(slot_FlarmEnableNmeaOut()) );
   return res;
-}
-
-void GpsConAndroid::slot_FlarmEnableNmeaOut()
-{
-  // Enable NMEA output of Flarm device.
-  if( GpsNmea::gps->sendSentence( QString("$PFLAC,S,NMEAOUT,1") ) == false )
-    {
-      qWarning() << "GpsConAndroid::slot_FlarmEnableNmeaOut(): enable NMEAOUT failed!";
-    }
 }
 
 /**
@@ -529,6 +516,9 @@ void FlarmFlightListThread::run()
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   GpsConAndroid::instance()->getFlarmFlightList();
+
+  // Detach the thread from the VM before return otherwise the Dalvik VM is sauer!
+  jniDetachCurrentThread();
 }
 
 //#############################################################################
@@ -559,6 +549,9 @@ void FlarmIgcFilesThread::run()
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   GpsConAndroid::instance()->getFlarmIgcFiles( m_flightData );
+
+  // Detach the thread from the VM before return otherwise the Dalvik VM is sauer!
+  jniDetachCurrentThread();
 }
 
 #endif

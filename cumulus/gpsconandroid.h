@@ -129,13 +129,6 @@ class GpsConAndroid : public QObject
   /** Reports the download progress to the calling application. */
   void flarmFlightDowloadProgress( const int idx, const int progress );
 
- private slots:
-
-  /**
-   * Called to activate the Flarm NMEA output.
-   */
-  void slot_FlarmEnableNmeaOut();
-
 #endif
 
  private:
