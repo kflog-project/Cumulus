@@ -28,6 +28,8 @@
  * actions are not visible or with command buttons.
  *
  * \date 2004-2012
+ *
+ * \version $Id$
  */
 
 #ifndef TASK_LIST_VIEW_H
@@ -97,7 +99,7 @@ private:
 public slots:
 
   /**
-   * This signal is called to indicate that a selection has been made.
+   * This slot is called if the select button has been clicked.
    */
   void slot_Select();
 
@@ -113,7 +115,7 @@ public slots:
   void slot_Info();
 
   /**
-   * Called when the list view should be closed without selection.
+   * This slot is called if the close button has been clicked.
    */
   void slot_Close ();
 
@@ -127,6 +129,13 @@ public slots:
    * configuration changes of task sector items
    */
   void slot_updateTask();
+
+private slots:
+  /**
+   * This slot is called if the user changes the selection in the
+   * task list.
+   */
+  void slot_Selected();
 
 signals:
 
@@ -176,12 +185,6 @@ private:
   QTreeWidgetItem * _newSelectedTp;
   QString         _selectText;
   QString         _unselectText;
-
-private slots:
-  /**
-   * This slot is called if the user selects a task point in the task
-   */
-  void slot_Selected();
 
 private:
 

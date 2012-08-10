@@ -237,8 +237,6 @@ void Calculator::slot_Position( QPoint& newPositionValue )
     true, change was done by an user interaction.*/
 void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 {
-  // qDebug( "Calculator::slot_WaypointChange(): NewWp=%x", newWp );
-
   if ( false ) // newWp
     {
       qDebug( "Calculator::slot_WaypointChange(): NewWpName=%s(%d)",

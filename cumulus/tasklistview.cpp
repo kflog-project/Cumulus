@@ -196,6 +196,7 @@ void TaskListView::slot_Start()
 
 void TaskListView::slot_Selected()
 {
+  // Selected item has been changed in the task list by the user.
   _newSelectedTp = list->currentItem();
 
   if ( _newSelectedTp == static_cast<QTreeWidgetItem *> (0) )
@@ -216,7 +217,7 @@ void TaskListView::slot_Selected()
   if ( _selectedTp->taskPointIndex == 0 )
     {
       QTreeWidgetItem* tpBelow = list->itemBelow( _newSelectedTp );
-      _TaskPointItem *tpiBelow = 0;;
+      _TaskPointItem *tpiBelow = 0;
       TaskPoint *below = 0;
 
       if( tpBelow )
@@ -250,8 +251,8 @@ void TaskListView::slot_Selected()
       cmdSelect->setText(_selectText);
     }
 
-  // qDebug("New Selected Task point name: %s, Index=%d",
-  //        _selectedTp->name.toLatin1().data(), _selectedTp->taskPointIndex );
+  // qDebug( "New Selected Task point name: %s, Index=%d",
+  //         _selectedTp->name.toLatin1().data(), _selectedTp->taskPointIndex );
 }
 
 void TaskListView::showEvent(QShowEvent *)
@@ -300,11 +301,11 @@ void TaskListView::showEvent(QShowEvent *)
   list->setFocus();
 }
 
-/** This signal is called to indicate that a selection has been made. */
+/** This slot is called if the select button has been clicked */
 void TaskListView::slot_Select()
 {
-  // qDebug("TaskListView::slot_Select(): Selected WP= %s, Index=%d",
-  //       _selectedTp->name.latin1(), _selectedTp->taskPointIndex );
+  //  qDebug() << "TaskListView::slot_Select(): Selected WP=" << _selectedTp->name
+  //            << "Index=" << _selectedTp->taskPointIndex;
 
   if (_newSelectedTp == _currSelectedTp)
     {
