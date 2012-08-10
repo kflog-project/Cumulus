@@ -22,11 +22,11 @@
 #include <cmath>
 #include <QtGui>
 
+#include "calculator.h"
 #include "flighttask.h"
 #include "generalconfig.h"
 #include "map.h"
 #include "mapcalc.h"
-#include "calculator.h"
 #include "speed.h"
 
 #undef CUMULUS_DEBUG
@@ -106,7 +106,7 @@ FlightTask::~FlightTask()
 /**
  * Determines the type of the task.
  **/
-void FlightTask::__determineTaskType()
+void FlightTask::determineTaskType()
 {
   distance_task = 0;
   distance_total = 0;
@@ -278,7 +278,7 @@ void FlightTask::__determineTaskType()
  * Calculates the task point sector angles in radian. The sector angle
  * between two task points is the bisecting line of the angle.
  */
-double FlightTask::__calculateSectorAngles( int loop )
+double FlightTask::calculateSectorAngles( int loop )
 {
   // get configured sector angle
   GeneralConfig *conf = GeneralConfig::instance();
@@ -375,7 +375,7 @@ double FlightTask::__calculateSectorAngles( int loop )
  * distances in km, the bearings in radian, the true heading and the wca
  * in degree the ground speed in m/s.
  */
-void FlightTask::__setTaskPointData()
+void FlightTask::setTaskPointData()
 {
   int cnt = tpList->count();
 
@@ -1205,17 +1205,17 @@ bool FlightTask::checkSector( const Distance& dist2TP,
 
 ReachablePoint::reachable
 FlightTask::calculateFinalGlidePath( const int taskPointIndex,
-                                     Altitude &arrivalAlt,
-                                     Speed &bestSpeed )
+                                          Altitude &arrivalAlt,
+                                          Speed &bestSpeed )
 {
-  uint wpCount = tpList->count();
+  int wpCount = tpList->count();
 
   arrivalAlt.setInvalid();
   bestSpeed.setInvalid();
 
-  if( (uint) (taskPointIndex + 1) >= wpCount )
+  if( taskPointIndex >= wpCount )
     {
-      // taskPointIndex points to the end of list
+      // taskPointIndex points behind the end of the list
       return ReachablePoint::no;
     }
 
@@ -1230,12 +1230,12 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   Altitude arrAlt(0);
   Speed speed(0);
 
-  // calculate bearing from current position to next task point from
+  // calculate bearing from current position to the next task point from
   // task in radian
   int bearing = int ( rint( getBearingWgs( calculator->getlastPosition(),
                                            tpList->at( taskPointIndex )->origP ) ));
 
-  // calculate distance from current position to next task point from
+  // calculate distance from current position to the next task point from
   // task in km
   QPoint p1 = calculator->getlastPosition();
   QPoint p2 = tpList->at( taskPointIndex )->origP;
@@ -1251,7 +1251,7 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
     }
 
 #ifdef CUMULUS_DEBUG
-  qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
+  qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%.1fm, ArrAlt=%.1f",
           tpList->at( taskPointIndex )->name.toLatin1().data(),
           bearing*180/M_PI,
           distance,
@@ -1259,10 +1259,10 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
           arrAlt.getMeters() );
 #endif
 
-  // summarize single altitudes
+  // Summarize single altitudes, if the taskpoint is not the last one.
   usedAlt = curAlt-arrAlt;
 
-  for( uint i=taskPointIndex; i+1 < wpCount; i++ )
+  for( int i=taskPointIndex; i+1 < wpCount; i++ )
     {
       if( tpList->at(i)->origP == tpList->at(i+1)->origP )
         {
@@ -1274,7 +1274,7 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
                                    tpList->at( i+1 )->elevation,
                                    arrAlt, speed );
 #ifdef CUMULUS_DEBUG
-      qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%dm, ArrAlt=%.1f",
+      qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%.1m, ArrAlt=%.1f",
               tpList->at( i+1 )->name.toLatin1().data(),
               tpList->at( i+1 )->bearing*180/M_PI,
               tpList->at( i+1 )->distance,
@@ -1429,8 +1429,8 @@ void FlightTask::setTaskPointList(QList<TaskPoint*> *newtpList)
  */
 void FlightTask::updateTask()
 {
-  __setTaskPointData();
-  __determineTaskType();
+  setTaskPointData();
+  determineTaskType();
 
   for(int loop = 0; loop < tpList->count(); loop++)
     {
@@ -1438,7 +1438,7 @@ void FlightTask::updateTask()
       tpList->at(loop)->taskPointIndex = loop;
 
       // calculate turn point sector angles
-      __calculateSectorAngles( loop );
+      calculateSectorAngles( loop );
     }
 }
 
@@ -1504,5 +1504,5 @@ QList<TaskPoint*> *FlightTask::copyTpList(QList<TaskPoint*> *tpListIn)
 void FlightTask::setPlanningType(const int type)
 {
   __planningType = type;
-  __setTaskPointData();
+  setTaskPointData();
 }

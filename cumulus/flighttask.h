@@ -26,7 +26,9 @@
  *
  * \brief Class to handle all things of a flight task.
  *
- * \date 2002-2010
+ * \date 2002-2012
+ *
+ * \version $Id$
  */
 
 #ifndef FLIGHT_TASK_H
@@ -276,7 +278,7 @@ class FlightTask : public BaseMapElement
   void setFaiRules( const bool newValue )
   {
     faiRules = newValue;
-    __determineTaskType();
+    determineTaskType();
   };
 
   /* returns FAI rule flag */
@@ -423,19 +425,19 @@ class FlightTask : public BaseMapElement
   /**
    * Determines the type of the task.
    */
-  void __determineTaskType();
+  void determineTaskType();
 
   /**
    * Calculates the task point sector angles in radians. The sector angle
    * between two task points is the bisecting line of the angle.
    */
-  double __calculateSectorAngles( int loop );
+  double calculateSectorAngles( int loop );
 
   /**
    * Sets the status of the task points, the durations in seconds and
    * the distances in km.
    */
-  void __setTaskPointData();
+  void setTaskPointData();
 
   /** Flight task with single task points. */
   QList<TaskPoint*> *tpList;
