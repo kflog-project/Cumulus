@@ -29,6 +29,11 @@
 bool initJni();
 
 /**
+ * Called to detach the current thread from the VM.
+ */
+bool jniDetachCurrentThread();
+
+/**
  * Called, when the GUI is going to shutdown to stop JNI transfer.
  */
 void jniShutdown();

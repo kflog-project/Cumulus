@@ -439,6 +439,25 @@ bool jniEnv()
   return true;
 }
 
+bool jniDetachCurrentThread()
+{
+  if (m_jvm == 0)
+    {
+      qWarning() << "jniDCT: No Java VM available!";
+      return false;
+    }
+
+  jint res = DetachCurrentThread(m_jvm);
+
+  if( res != 0 )
+    {
+      qWarning("jniDCT: failure during DetachCurrentThread");
+      return false;
+    }
+
+  return true;
+}
+
 bool jniPlaySound(int stream, QString soundName)
 {
   if (!jniEnv() || shutdown )
