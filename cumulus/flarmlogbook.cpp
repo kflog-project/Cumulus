@@ -223,12 +223,12 @@ void FlarmLogbook::setTableHeader()
 
 void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 {
-  // qDebug() << "slot_UpdateConfiguration" << info;
+  qDebug() << "slot_UpdateConfiguration" << info;
 
   if( info.size() >= 4 &&
-      info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" && info[3] == "0" )
+      info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" )
     {
-      // Flarm has answered and switched off its NMEA output. So we know,
+      // Flarm has answered to our NMEAOUT request. So we know,
       // that a Flarm is connected to us and we can request the download
       // of the Flight overview now.
 
@@ -251,15 +251,6 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
           QString text1 = tr("Error");
           messageBox( QMessageBox::Warning, text0, text1 );
         }
-    }
-  else
-    {
-      // Problem occurred. Abort further actions.
-      slot_Timeout();
-      QString text0 = tr("Flarm Problem");
-      QString text1 = tr("Cannot disable NMEA output!");
-      messageBox( QMessageBox::Warning, text1, text0 );
-      qWarning() << "FL::SUC: NMEAOUT error!" << info.join(",");
     }
 }
 
@@ -380,8 +371,8 @@ void FlarmLogbook::slot_ReadFlights()
       return;
     }
 
-  // As first switch off NMEA output of Flarm device.
-  if( GpsNmea::gps->sendSentence( "$PFLAC,S,NMEAOUT,0" ) == false )
+  // As first test with requesting setting of NMEAOUT, if a Flarm device is connected.
+  if( GpsNmea::gps->sendSentence( "$PFLAC,R,NMEAOUT" ) == false )
     {
       slot_Timeout();
       QString text0 = tr("Flarm device not reachable!");
