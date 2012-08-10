@@ -60,8 +60,15 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 #endif
   topLayout->addWidget(edtName, row++, 1, 1, 3);
 
+#ifndef ANDROID
   connect( edtName, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedName( const QString& )) );
+#else
+  // Android makes trouble, if word detection is enabled. Therefore the
+  // entered string is modified, when the finish signal is emitted.
+  connect( edtName, SIGNAL(editingFinished()),
+           this, SLOT(slot_textEditedNameFinished()) );
+#endif
 
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
@@ -86,8 +93,15 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QRegExp rx("[A-Za-z]{2}");
   edtCountry->setValidator( new QRegExpValidator(rx, this) );
 
+#ifndef ANDROID
   connect( edtCountry, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedCountry( const QString& )) );
+#else
+  // Android makes trouble, if word detection is enabled. Therefore the
+  // entered string is modified, when the finish signal is emitted.
+  connect( edtCountry, SIGNAL(editingFinished()),
+           this, SLOT(slot_textEditedCountryFinished()) );
+#endif
 
   topLayout->addWidget(edtCountry, row++, 1, 1, 2);
 
@@ -227,6 +241,22 @@ void WpEditDialogPageGeneral::slot_textEditedCountry( const QString& text )
 {
   // Change edited text to upper cases
   edtCountry->setText( text.toUpper() );
+}
+
+/**
+ * Called to make all text to upper cases.
+ */
+void WpEditDialogPageGeneral::slot_textEditedNameFinished()
+{
+  edtName->setText( edtName->text().trimmed().toUpper() );
+}
+
+/**
+ * Called to make all text to upper cases.
+ */
+void WpEditDialogPageGeneral::slot_textEditedCountryFinished()
+{
+  edtCountry->setText( edtCountry->text().trimmed().toUpper() );
 }
 
 /** return internal type of waypoint */

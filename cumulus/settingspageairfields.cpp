@@ -119,8 +119,12 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   listLayout->setRowStretch(grow, 10);
   listLayout->setColumnStretch(2, 10);
 
+#ifndef ANDROID
+  // Android makes trouble, if word detection is enabled and the input is
+  // changed by us.
   connect( countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
+#endif
 }
 
 SettingsPageAirfields::~SettingsPageAirfields()
@@ -202,7 +206,7 @@ void SettingsPageAirfields::slot_save()
         }
     }
 
-  conf->setWelt2000CountryFilter(countryFilter->text());
+  conf->setWelt2000CountryFilter(countryFilter->text().trimmed().toUpper());
   conf->setWelt2000HomeRadius(homeRadius->value());
 
   if( loadOutlandings->checkState() == Qt::Checked )

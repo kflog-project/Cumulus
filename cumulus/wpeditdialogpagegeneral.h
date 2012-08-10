@@ -23,7 +23,7 @@
  *
  * \brief This is the general page for the waypoint editor dialog
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  */
@@ -76,6 +76,16 @@ private slots:
    * Called to make all text to upper cases.
    */
   void slot_textEditedCountry( const QString& text );
+
+  /**
+   * Called to make all text to upper cases.
+   */
+  void slot_textEditedNameFinished();
+
+  /**
+   * Called to make all text to upper cases.
+   */
+  void slot_textEditedCountryFinished();
 
 private:
 

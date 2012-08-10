@@ -15,7 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2012-08-07 AP: BUGFIX: If a task was set and the last taskpoint was
+[-] 2012-08-10 AP: BUGFIX Android: If word detection is enabled by Android,
+                   the waypoint editor had problems with input handling of
+                   waypoint name and country.
+
+[-] 2012-08-10 AP: BUGFIX: If a task was set and the last taskpoint was
                    selected, the arrival altitude display showed always zero.
 
 [-] 2012-08-07 AP: BUGFIX Android: Shutdown function and flag introduced in
