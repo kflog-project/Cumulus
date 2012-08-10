@@ -558,20 +558,20 @@
     </message>
     <message>
         <location filename="flarmlogbook.cpp" line="250"/>
-        <location filename="flarmlogbook.cpp" line="385"/>
-        <location filename="flarmlogbook.cpp" line="466"/>
-        <location filename="flarmlogbook.cpp" line="539"/>
+        <location filename="flarmlogbook.cpp" line="387"/>
+        <location filename="flarmlogbook.cpp" line="468"/>
+        <location filename="flarmlogbook.cpp" line="541"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
         <location filename="flarmlogbook.cpp" line="251"/>
-        <location filename="flarmlogbook.cpp" line="289"/>
-        <location filename="flarmlogbook.cpp" line="386"/>
-        <location filename="flarmlogbook.cpp" line="445"/>
-        <location filename="flarmlogbook.cpp" line="467"/>
-        <location filename="flarmlogbook.cpp" line="490"/>
-        <location filename="flarmlogbook.cpp" line="540"/>
+        <location filename="flarmlogbook.cpp" line="291"/>
+        <location filename="flarmlogbook.cpp" line="388"/>
+        <location filename="flarmlogbook.cpp" line="447"/>
+        <location filename="flarmlogbook.cpp" line="469"/>
+        <location filename="flarmlogbook.cpp" line="492"/>
+        <location filename="flarmlogbook.cpp" line="542"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -586,42 +586,42 @@
         <translation>NMEA Ausgabe nicht abschaltbar!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="288"/>
+        <location filename="flarmlogbook.cpp" line="290"/>
         <source>Flarm flight list read error!</source>
         <translation>Flarm Fluglisten Lesefehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="296"/>
+        <location filename="flarmlogbook.cpp" line="298"/>
         <source>Flarm flight list is empty!</source>
         <translation>Flarm Flugliste ist leer!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="297"/>
+        <location filename="flarmlogbook.cpp" line="299"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="438"/>
+        <location filename="flarmlogbook.cpp" line="440"/>
         <source>Too less free space on:</source>
         <translation>Zu wenig Platz auf:</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="442"/>
+        <location filename="flarmlogbook.cpp" line="444"/>
         <source>Download not possible!</source>
         <translation>Download nicht möglich!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="489"/>
+        <location filename="flarmlogbook.cpp" line="491"/>
         <source>Flarm download error!</source>
         <translation>Flarm Download Fehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="498"/>
+        <location filename="flarmlogbook.cpp" line="500"/>
         <source>Flights downloaded!</source>
         <translation>Flüge runter geladen!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="499"/>
+        <location filename="flarmlogbook.cpp" line="501"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
