@@ -1,0 +1,94 @@
+<!-- $Id: cumulus-settings-information.html 5402 2012-07-31 13:22:52Z axel $ -->
+<html>
+<head>
+<title>Cumulus Settings</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-units.html">back</a></td>
+				<td align="center"><a href="cumulus-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-settings-look-feel.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 align="center">Settings - Information</h4>
+
+	<b>Information</b>
+
+	<p>
+		In the text field beside the button <i>Sound Player</i> you can enter
+		a command line sound tool, which is called by Cumulus to play alarm or
+		notification sounds. Pressing the push button will raise a file
+		selection box. With the help of the box you can navigate to a command
+		line sound player tool like aplay, gstreamer, ... and select it. If
+		the sound file must be placed inside the command arguments you can use
+		the <i>%s</i> as a dummy argument for that.
+	</p>
+
+	<p>
+		Example:<br> <br> /usr/bin/aplay<br> or<br>
+		/usr/bin/aplay %s<br> <br> do the same. Note that you have
+		to add the full path name to the sound tool, that it works sure.
+	</p>
+
+	<p>In the spin boxes you can configure the display duration of the
+		information windows. The information windows can appear automatically
+		(warnings) or if you touch a symbol on the map. After given time is
+		expired it will be removed automatically unless the time is set to
+		zero. In this case the user must quit the window manually by hand
+		touch.</p>
+
+	<p>All times are defined in seconds. To make the display duration
+		more sensitive with the amount of information to be displayed the real
+		time is weighted with them. That means more items to display will
+		extend the window stay time.</p>
+
+	<p>With the item Warning suppress time you can suppress the same
+		airspace warning for a certain time to be defined in minutes here.
+		Multiple warnings are generated, if you move between the different
+		warning distances, definable under the tabulator Airspace e.g. during
+		circling. The value zero switches off the suppression.</p>
+
+	<p>An audible alarm can be switched on/off. It is used to emphasize
+		special situations like approaching near to airspaces. The general
+		default is on.</p>
+
+	<p>The Nearst Site Calculator is computing the distances and the
+		reachability to the nearst sites in flight. If this feature is
+		unwanted, it can be switched off here to spare processing resources.</p>
+
+	<p>
+		The button <i>Reset to defaults</i> can be used to reset all done
+		changes to the initial state. The settings here take immediate effect,
+		if the OK button is pressed.
+	</p>
+
+	<p></p>
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-units.html">back</a></td>
+				<td align="center"><a href="cumulus-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-settings-look-feel.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>

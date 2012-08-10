@@ -342,7 +342,7 @@ private:
    * redraw is already in progress, a new redraw is scheduled so the
    * redraw can take place on a later time.
    */
-  void __redrawMap(mapLayer fromLayer=baseLayer, bool queueRequest=true);
+  void p_redrawMap(mapLayer fromLayer=baseLayer, bool queueRequest=true);
 
   /**
    * Draws the base layer of the map.
@@ -350,7 +350,7 @@ private:
    * to the features of the landscape.
    * It is drawn on an empty canvas.
    */
-  void __drawBaseLayer();
+  void p_drawBaseLayer();
 
   /**
    * Draws the aero layer of the map.
@@ -362,7 +362,7 @@ private:
    *      needs to be done if a change in which airspaces are drawn can be
    *      expected. Otherwise, it's better to re-use the current list.
    */
-  void __drawAeroLayer(bool reset = true);
+  void p_drawAeroLayer(bool reset = true);
 
   /**
    * Draws the navigation layer of the map.
@@ -370,7 +370,7 @@ private:
    * waypoints.
    * It is drawn on top of the aero layer.
    */
-  void __drawNavigationLayer();
+  void p_drawNavigationLayer();
 
   /**
    * Draws the information layer of the map.
@@ -378,19 +378,19 @@ private:
    * trail, the position indicator and the scale.
    * It is drawn on top of the navigation layer.
    */
-  void __drawInformationLayer();
+  void p_drawInformationLayer();
 
   /**
    * Draws the task which is currently planned
    * @arg drawnWp List of drawn waypoints, if taskpoint label drawing
    *      option is set.
    */
-  void __drawPlannedTask(QPainter *taskP, QList<Waypoint*> &drawnWp);
+  void p_drawPlannedTask(QPainter *taskP, QList<Waypoint*> &drawnWp);
 
   /**
    * Draws the grid on the map.
    */
-  void __drawGrid();
+  void p_drawGrid();
 
   /**
    * Draws the airspaces on the map
@@ -399,7 +399,7 @@ private:
    *            airspaces are drawn can be expected. Otherwise, it's
    *            better to re-use the current list.
    */
-  void __drawAirspaces(bool reset);
+  void p_drawAirspaces(bool reset);
 
   /**
    * Draws the waypoints of the active waypoint catalog to the map.
@@ -407,23 +407,23 @@ private:
    * @arg drawnWp List of drawn waypoints, if waypoint label drawing
    *      option is set.
    */
-  void __drawWaypoints(QPainter *wpPainter, QList<Waypoint*> &drawnWp);
+  void p_drawWaypoints(QPainter *wpPainter, QList<Waypoint*> &drawnWp);
 
   /**
    * Draws a trail indicating the flight path taken.
    */
-  void __drawTrail();
+  void p_drawTrail();
 
   /**
    * Calculates the trails points to be used for trail drawing. This method must
    * be always called after a projection change.
    */
-  void __calculateTrailPoints();
+  void p_calculateTrailPoints();
 
   /**
    * Draws a label with additional information on demand beside a map icon.
    */
-  void __drawLabel( QPainter* painter,          // painter to be used
+  void p_drawLabel( QPainter* painter,          // painter to be used
                     const int xShift,           // x offset from the center point
                     const QString& name,        // name of point
                     const QPoint& dispP,        // projected point at the display
@@ -433,23 +433,23 @@ private:
   /**
    * Draws the city labels at the map.
    */
-  void _drawCityLabels( QPixmap& pixmap );
+  void p_drawCityLabels( QPixmap& pixmap );
 
   /**
    * Display Info about Airspace items
    */
-  void __displayAirspaceInfo(const QPoint& current);
+  void p_displayAirspaceInfo(const QPoint& current);
 
   /**
    * Display detailed info about a MapItem
    */
-  void __displayDetailedItemInfo(const QPoint& current);
+  void p_displayDetailedItemInfo(const QPoint& current);
 
   /**
    * Check, if a zoom button was pressed.
    * Return true in this case otherwise false.
    */
-  bool __zoomButtonPress(const QPoint& current);
+  bool p_zoomButtonPress(const QPoint& current);
 
   /**
    * This function sets the map rotation and redraws the map
@@ -472,17 +472,17 @@ private:
   /**
    * Draws the glider symbol on the pixmap
    */
-  void __drawGlider();
+  void p_drawGlider();
 
   /**
    * Draws a scale on the pixmap.
    */
-  void __drawScale(QPainter& scaleP);
+  void p_drawScale(QPainter& scaleP);
 
   /**
    * Draws the X symbol on the pixmap
    */
-  void __drawX();
+  void p_drawX();
 
   /**
    * This function draws a "direction line" on the map if a waypoint
@@ -490,19 +490,19 @@ private:
    * coordinate of the position symbol on the map, so we don't
    * have to calculate that all over again.
    */
-  void __drawDirectionLine(const QPoint& from);
+  void p_drawDirectionLine(const QPoint& from);
 
   /**
    * This function draws a "track line" beginning from the current position in
    * the moving direction.
    */
-  void __drawTrackLine(const QPoint& from);
+  void p_drawTrackLine(const QPoint& from);
 
   /**
    * Draws a relative bearing indicator in the upper map area, if the flight
    * state is cruising or wave.
    */
-  void __drawRelBearingInfo();
+  void p_drawRelBearingInfo();
 
 #ifdef FLARM
 
@@ -510,17 +510,17 @@ private:
    * Draws the Flarm most important reported object and
    * the user selected object.
    */
-  void __drawOtherAircraft();
+  void p_drawOtherAircraft();
 
   /**
    * Draws the most important object reported by Flarm.
    */
-  void __drawMostRelevantObject( const Flarm::FlarmStatus& status );
+  void p_drawMostRelevantObject( const Flarm::FlarmStatus& status );
 
   /**
    * Draws the user selected Flarm object.
    */
-  void __drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft );
+  void p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft );
 
   /** Pixmaps used by Flarm for object drawing */
   QPixmap blackCircle;

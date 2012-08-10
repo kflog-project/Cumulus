@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2012-08-10 AP: If moving away from a violated airspace no longer alarms are 
+                   generated, if movement is from inside, to very near, to near
+                   and out side.
+                   
 [-] 2012-08-10 AP: BUGFIX Android: If word detection is enabled by Android,
                    the waypoint editor had problems with input handling of
                    waypoint name and country.

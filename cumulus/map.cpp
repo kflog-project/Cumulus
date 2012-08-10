@@ -139,13 +139,13 @@ Map::~Map()
 /**
  * Display Info about Airspace items
 */
-void Map::__displayAirspaceInfo(const QPoint& current)
+void Map::p_displayAirspaceInfo(const QPoint& current)
 {
   static QPointer<WhatsThat> box;
 
   if( mutex() || ! isVisible() || ! box.isNull() )
     {
-      //qDebug("Map::__displayAirspaceInfo: Map drawing in progress: return");
+      //qDebug("Map::p_displayAirspaceInfo: Map drawing in progress: return");
       return;
     }
 
@@ -206,7 +206,7 @@ void Map::__displayAirspaceInfo(const QPoint& current)
  * Check, if a zoom button on the map was pressed. Handle zoom request and
  * return true in this case otherwise false.
  */
-bool Map::__zoomButtonPress(const QPoint& point)
+bool Map::p_zoomButtonPress(const QPoint& point)
 {
   int plusWidth  = _globalMapConfig->getPlusButton().width();
   int minusWidth = _globalMapConfig->getMinusButton().width();
@@ -235,11 +235,11 @@ bool Map::__zoomButtonPress(const QPoint& point)
 /**
  * Display detailed Info about an airfield, a glider site or a waypoint.
 */
-void Map::__displayDetailedItemInfo(const QPoint& current)
+void Map::p_displayDetailedItemInfo(const QPoint& current)
 {
   if( mutex() )
     {
-      //qDebug("Map::__displayDetailedItemInfo: Map drawing in progress: return");
+      //qDebug("Map::p_displayDetailedItemInfo: Map drawing in progress: return");
       return;
     }
 
@@ -313,7 +313,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
             }
           else
             {
-              qWarning( "Map::__displayDetailedItemInfo: ListType %d is unknown",
+              qWarning( "Map::p_displayDetailedItemInfo: ListType %d is unknown",
                         searchList[l] );
               break;
             }
@@ -485,7 +485,7 @@ void Map::__displayDetailedItemInfo(const QPoint& current)
   // @ee maybe we can show airspace info
   if( !found )
     {
-      __displayAirspaceInfo( current );
+      p_displayAirspaceInfo( current );
     }
 }
 
@@ -620,12 +620,12 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
       case Qt::LeftButton: // press generates mouse LeftButton immediately
         // qDebug("MR-LeftButton");
 
-        if( __zoomButtonPress( event->pos() ) )
+        if( p_zoomButtonPress( event->pos() ) )
           {
             break;
           }
 
-        __displayDetailedItemInfo( event->pos() );
+        p_displayDetailedItemInfo( event->pos() );
         break;
 
       case Qt::MidButton:
@@ -686,7 +686,7 @@ void Map::slotNewWind()
 }
 
 
-void Map::__drawAirspaces( bool reset )
+void Map::p_drawAirspaces( bool reset )
 {
   QPainter cuAeroMapP;
 
@@ -801,7 +801,7 @@ void Map::__drawAirspaces( bool reset )
 }
 
 
-void Map::__drawGrid()
+void Map::p_drawGrid()
 {
   const QRect mapBorder = _globalMapMatrix->getViewBorder();
 
@@ -914,7 +914,7 @@ void Map::__drawGrid()
   gridP.end();
 }
 
-void Map::__drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
+void Map::p_drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
 {
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 
@@ -931,7 +931,7 @@ void Map::__drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
 /**
  * Draw a trail displaying the flight path if feature is turned on
  */
-void Map::__drawTrail()
+void Map::p_drawTrail()
 {
   static uint counter = 0;
 
@@ -1035,7 +1035,7 @@ void Map::__drawTrail()
   // qDebug("Tail, drawTime=%d ms", t.elapsed());
 }
 
-void Map::__calculateTrailPoints()
+void Map::p_calculateTrailPoints()
 {
   // clears the trail point list because map projection has been changed.
   m_trailPoints.clear();
@@ -1091,13 +1091,13 @@ void Map::resizeEvent(QResizeEvent* event)
   slotDraw();
 }
 
-void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
+void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
 {
   static bool first = true; // mark first calling of method
 
   static QSize lastSize; // Save the last used window size
 
-//  qDebug( "Map::__redrawMap from layer=%d, first=%d, isVisible=%d, isEnable=%d, mutex=%d",
+//  qDebug( "Map::p_redrawMap from layer=%d, first=%d, isVisible=%d, isEnable=%d, mutex=%d",
 //          fromLayer, first, isVisible(), _isEnable, mutex());
 
   // First call after creation of object can pass
@@ -1121,13 +1121,13 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   if( mutex() && queueRequest )
     {
       // @AP: we queue only the redraw request, timer will be started
-      // again by __redrawMap() method.
+      // again by p_redrawMap() method.
       _isRedrawEvent = true;
 
       // schedule requested layer
       m_scheduledFromLayer = qMin(m_scheduledFromLayer, fromLayer);
 
-      // qDebug("Map::__redrawMap(): mutex is locked, returning");
+      // qDebug("Map::p_redrawMap(): mutex is locked, returning");
       return;
     }
 
@@ -1177,22 +1177,22 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
         }
 
       //actually start doing our drawing
-      __drawBaseLayer();
+      p_drawBaseLayer();
     }
 
   if (fromLayer < navigationLayer)
     {
-      __drawAeroLayer(fromLayer < aeroLayer);
+      p_drawAeroLayer(fromLayer < aeroLayer);
     }
 
   if (fromLayer < informationLayer)
     {
-      __drawNavigationLayer();
+      p_drawNavigationLayer();
     }
 
   if (fromLayer < topLayer)
     {
-      __drawInformationLayer();
+      p_drawInformationLayer();
     }
 
   // copy the new map content into the paint buffer
@@ -1208,7 +1208,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
 
   //QDateTime dt = QDateTime::currentDateTime();
   //QString dtStr = dt.toString(Qt::ISODate);
-  // qDebug("%s: Map::__redrawMap: repaint(%dx%d) is called",
+  // qDebug("%s: Map::p_redrawMap: repaint(%dx%d) is called",
   //       dtStr.toAscii().data(), this->rect().width(),this->rect().height() );
 
   if( first )
@@ -1228,7 +1228,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   // the scheduler timers will be restarted to handle it.
   if( _isRedrawEvent )
     {
-      qDebug("Map::__redrawMap(): queued redraw event found, schedule Redraw");
+      qDebug("Map::p_redrawMap(): queued redraw event found, schedule Redraw");
       _isRedrawEvent = false;
       scheduleRedraw( m_scheduledFromLayer );
     }
@@ -1237,7 +1237,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
   // scheduler timers will be restarted to handle it.
   if( _isResizeEvent )
     {
-      qDebug("Map::__redrawMap(): queued resize event found, schedule Redraw");
+      qDebug("Map::p_redrawMap(): queued resize event found, schedule Redraw");
       scheduleRedraw();
     }
 
@@ -1250,7 +1250,7 @@ void Map::__redrawMap(mapLayer fromLayer, bool queueRequest)
  * to the features of the landscape.
  * It is drawn on an empty pixmap.
  */
-void Map::__drawBaseLayer()
+void Map::p_drawBaseLayer()
 {
   if( !_isEnable )
     {
@@ -1313,11 +1313,11 @@ void Map::__drawBaseLayer()
   // draw the city labels if scale is not to high
   if( cs <= 100.0 )
     {
-      _drawCityLabels( m_pixBaseMap );
+      p_drawCityLabels( m_pixBaseMap );
     }
 
   // calculate the tail points because projection has been changed
-  __calculateTrailPoints();
+  p_calculateTrailPoints();
 }
 
 /**
@@ -1326,13 +1326,13 @@ void Map::__drawBaseLayer()
  * grid.
  * It is drawn on top of the base layer
  */
-void Map::__drawAeroLayer(bool reset)
+void Map::p_drawAeroLayer(bool reset)
 {
   // first, copy the base map to the aero map
   m_pixAeroMap = m_pixBaseMap;
 
-  __drawAirspaces(reset);
-  __drawGrid();
+  p_drawAirspaces(reset);
+  p_drawGrid();
 }
 
 /**
@@ -1341,7 +1341,7 @@ void Map::__drawAeroLayer(bool reset)
  * outlanding sites and waypoints.
  * It is drawn on top of the aero layer.
  */
-void Map::__drawNavigationLayer()
+void Map::p_drawNavigationLayer()
 {
   m_pixNavigationMap = m_pixAeroMap;
 
@@ -1364,8 +1364,8 @@ void Map::__drawNavigationLayer()
   _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
-  __drawWaypoints(&navP, drawnWp);
-  __drawPlannedTask(&navP, drawnWp);
+  p_drawWaypoints(&navP, drawnWp);
+  p_drawPlannedTask(&navP, drawnWp);
 
   // Now the labels of the drawn objects will be drawn, if activated via options.
   // Put all drawn labels into a set to avoid multiple drawing of them.
@@ -1397,7 +1397,7 @@ void Map::__drawNavigationLayer()
       // store label to be drawn
       labelSet.insert( corrString );
 
-      __drawLabel( &navP,
+      p_drawLabel( &navP,
                    iconSize / 2 + 3,
                    drawnAf[i]->getWPName(),
                    drawnAf[i]->getMapPosition(),
@@ -1420,7 +1420,7 @@ void Map::__drawNavigationLayer()
       // store label to be drawn
       labelSet.insert( corrString );
 
-      __drawLabel( &navP,
+      p_drawLabel( &navP,
                    iconSize / 2 + 3,
                    drawnWp[i]->name,
                    _globalMapMatrix->map( drawnWp[i]->projP ),
@@ -1429,7 +1429,7 @@ void Map::__drawNavigationLayer()
     }
 
   // and finally draw a scale indicator on top of this
-  __drawScale(navP);
+  p_drawScale(navP);
 
   navP.end();
 }
@@ -1440,7 +1440,7 @@ void Map::__drawNavigationLayer()
  * trail and the position indicator.
  * It is drawn on top of the navigation layer.
  */
-void Map::__drawInformationLayer()
+void Map::p_drawInformationLayer()
 {
   m_pixInformationMap = m_pixNavigationMap;
 
@@ -1448,11 +1448,11 @@ void Map::__drawInformationLayer()
   // is selected by the user.
   if( ShowGlider && calculator->isManualInFlight() == false)
     {
-      __drawGlider();
-      __drawTrail();
+      p_drawGlider();
+      p_drawTrail();
 
 #ifdef FLARM
-      __drawOtherAircraft();
+      p_drawOtherAircraft();
 #endif
 
     }
@@ -1461,7 +1461,7 @@ void Map::__drawInformationLayer()
   // the manual mode.
   if( ShowGlider == false || calculator->isManualInFlight() )
     {
-      __drawX();
+      p_drawX();
     }
 
   // draw the wind arrow, if pixmap was initialized by slot slotNewWind
@@ -1517,11 +1517,11 @@ void Map::slotRedrawMap()
   m_scheduledFromLayer = topLayer;
 
   // do drawing
-  __redrawMap(drawLayer);
+  p_redrawMap(drawLayer);
 }
 
 /** Draws the waypoints of the waypoint catalog on the map */
-void Map::__drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
+void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 {
   extern MapConfig* _globalMapConfig;
 
@@ -1675,7 +1675,7 @@ void Map::__drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 /** Draws a label beside the map icon. It is assumed, that the icon is to see
  *  at the screen.
  */
-void Map::__drawLabel( QPainter* painter,
+void Map::p_drawLabel( QPainter* painter,
                        const int xShift,       // x offset from the center point
                        const QString& name,    // name of point
                        const QPoint& dispP,    // projected point at the display
@@ -1810,7 +1810,7 @@ void Map::__drawLabel( QPainter* painter,
   painter->restore();
 }
 
-void Map::_drawCityLabels( QPixmap& pixmap )
+void Map::p_drawCityLabels( QPixmap& pixmap )
 {
   if( m_drawnCityList.size() == 0 )
     {
@@ -1959,7 +1959,7 @@ void Map::setShowGlider( const bool& _newVal)
 
 
 /** Draws a scale indicator on the pixmap. */
-void Map::__drawScale(QPainter& scaleP)
+void Map::p_drawScale(QPainter& scaleP)
 {
   QPen pen;
   QBrush brush(Qt::white);
@@ -2155,7 +2155,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
                   else
                     {
                       // this is the faster redraw
-                      __redrawMap( informationLayer, false );
+                      p_redrawMap( informationLayer, false );
 
                       lastDisplay = QTime::currentTime();
                     }
@@ -2164,7 +2164,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
           else
             {
               // if we are in manual mode, the real center is the cross, not the glider
-              __redrawMap( informationLayer );
+              p_redrawMap( informationLayer );
             }
         }
     }
@@ -2181,7 +2181,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
             }
           else
             {
-              __redrawMap( informationLayer );
+              p_redrawMap( informationLayer );
             }
         }
     }
@@ -2212,7 +2212,7 @@ void Map::slotSwitchManualInFlight()
 #ifdef FLARM
 
 /** Draws the most important aircraft reported by Flarm. */
-void Map::__drawOtherAircraft()
+void Map::p_drawOtherAircraft()
 {
 
 #ifndef MAEMO
@@ -2264,26 +2264,26 @@ void Map::__drawOtherAircraft()
       if( status.ID == flarmAcft.ID )
         {
           // Draw only selected object because both objects are identical
-          __drawSelectedFlarmObject( flarmAcft );
+          p_drawSelectedFlarmObject( flarmAcft );
         }
       else
         {
           // Draw both most relevant object and selected object
-          __drawSelectedFlarmObject( flarmAcft );
-          __drawMostRelevantObject( status );
+          p_drawSelectedFlarmObject( flarmAcft );
+          p_drawMostRelevantObject( status );
         }
     }
   else
     {
       // Draw most relevant object.
-      __drawMostRelevantObject( status );
+      p_drawMostRelevantObject( status );
     }
 }
 
 /**
  * Draws the most important object reported by Flarm.
  */
-void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
+void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
 {
 
 #if defined ANDROID || defined MAEMO
@@ -2402,7 +2402,7 @@ void Map::__drawMostRelevantObject( const Flarm::FlarmStatus& status )
 /**
  * Draws the user selected Flarm object.
  */
-void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
+void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 {
 #if defined ANDROID || defined MAEMO
   const int diameter = 30;
@@ -2524,7 +2524,7 @@ void Map::__drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 #endif
 
 /** Draws the glider symbol on the pixmap */
-void Map::__drawGlider()
+void Map::p_drawGlider()
 {
   // get the projected coordinates of the current position
   QPoint projPos = _globalMapMatrix->wgsToMap(curGPSPos);
@@ -2557,12 +2557,12 @@ void Map::__drawGlider()
   rot=((rot+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not usefull.
 
   // now, draw the line from the glider symbol to the waypoint
-  __drawDirectionLine(QPoint(Rx,Ry));
+  p_drawDirectionLine(QPoint(Rx,Ry));
 
   // draws a line from the current position into the movement direction.
-  __drawTrackLine( QPoint(Rx,Ry) );
+  p_drawTrackLine( QPoint(Rx,Ry) );
 
-  __drawRelBearingInfo();
+  p_drawRelBearingInfo();
 
   // @ee the glider pixmap contains all rotated glider symbols.
   QPainter p(&m_pixInformationMap);
@@ -2571,7 +2571,7 @@ void Map::__drawGlider()
 
 
 /** Draws the X symbol on the pixmap */
-void Map::__drawX()
+void Map::p_drawX()
 {
   // get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(curMANPos);
@@ -2592,7 +2592,7 @@ void Map::__drawX()
   if(!ShowGlider)
     {
       // now, draw the line from the X symbol to the waypoint
-      __drawDirectionLine(QPoint(Rx,Ry));
+      p_drawDirectionLine(QPoint(Rx,Ry));
     }
 
   // @ee draw preloaded pixmap
@@ -2761,7 +2761,7 @@ void Map::slotSetScale(const double& newScale)
  * selected. The QPoint is the projected & mapped coordinate of the position symbol
  * on the map, so we don't have to calculate that all over again.
  */
-void Map::__drawDirectionLine(const QPoint& from)
+void Map::p_drawDirectionLine(const QPoint& from)
 {
   if ( ! GeneralConfig::instance()->getTargetLineDrawState() )
     {
@@ -2796,7 +2796,7 @@ void Map::__drawDirectionLine(const QPoint& from)
  * This function draws a "track line" beginning from the current position in
  * the moving direction.
  */
-void Map::__drawTrackLine(const QPoint& from)
+void Map::p_drawTrackLine(const QPoint& from)
 {
   if( ! GeneralConfig::instance()->getTrackLineDrawState() ||
       ! calculator || ! calculator->getselectedWp() )
@@ -2839,7 +2839,7 @@ void Map::__drawTrackLine(const QPoint& from)
  * Draws a relative bearing indicator in the upper map area, if the flight
  * state is cruising or wave.
  */
-void Map::__drawRelBearingInfo()
+void Map::p_drawRelBearingInfo()
 {
   if( ! GeneralConfig::instance()->getMapShowRelBearingInfo() ||
       ! calculator || ! calculator->getselectedWp() ||
@@ -3027,8 +3027,10 @@ void Map::checkAirspace(const QPoint& pos)
           // collect all conflicting airspaces
           allVeryNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
 
-          // Check, if airspace is already known as conflict
-          if( ! _veryNearAsMap.contains( pSpace->getInfoString() ) )
+          // Check, if airspace is already known as conflict. A warning is setup
+          // only, if the previous state was not inside to avoid senseless alarms.
+          if( ! _veryNearAsMap.contains( pSpace->getInfoString() ) &&
+              ! _insideAsMap.contains( pSpace->getInfoString() ) )
             {
               // insert new airspace text and airspace type into the hash
               newVeryNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
@@ -3042,8 +3044,12 @@ void Map::checkAirspace(const QPoint& pos)
           // collect all conflicting airspaces
           allNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
 
-          // Check, if airspace is already known as conflict
-          if( ! _nearAsMap.contains( pSpace->getInfoString() ) )
+          // Check, if airspace is already known as conflict. A warning is setup
+          // only, if the previous state was not inside or very near to avoid
+          // senseless alarms.
+          if( ! _nearAsMap.contains( pSpace->getInfoString() ) &&
+              ! _veryNearAsMap.contains( pSpace->getInfoString() ) &&
+              ! _insideAsMap.contains( pSpace->getInfoString() ) )
             {
               // insert new airspace text and airspace type into the hash
               newNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
@@ -3091,8 +3097,8 @@ void Map::checkAirspace(const QPoint& pos)
   QString msg; // status message containing all conflicting airspaces
 
   // Only the airspace with the highest priority will be displayed and updated.
-  // First we do look step by step for new results according to our predefined priority.
-
+  // First we do look step by step for new results according to our predefined
+  // priority.
   if ( ! newInsideAsMap.isEmpty() )
     {
       // new inside has been found

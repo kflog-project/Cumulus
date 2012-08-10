@@ -1,0 +1,377 @@
+<!-- $Id: cumulus-flarm.html 5402 2012-07-31 13:22:52Z axel $ -->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Cumulus Flarm</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tr>
+			<td align="left"><a href="cumulus-tasks.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td align="right"><a href="cumulus-file-locations.html">weiter</a></td>
+		</tr>
+	</table>
+
+	<h3 align="center">Flarm</h3>
+
+	Cumulus kann auch mit einem Flarmger&auml;t verbunden werden und ist in
+	der Lage, die vom Flarmger&auml;t gelieferten NMEA und
+	propriet&auml;ren Datens&auml;tze zu verarbeiten. Flarm meldet Ihnen
+	ein Objekt, wenn es zu einer Ber&uuml;hrung oder gef&auml;hrlichen
+	Begegnung kommen k&ouml;nnte. Es wird immer nur das im Augenblick
+	gef&auml;hrlichste Objekt gemeldet. Dieses Objekt und ein von Ihnen
+	zus&auml;tzlich ausgew&auml;hltes werden von Cumulus nur auf der Karte
+	angezeigt, um diese nicht mit Flarm Informationen zu &uuml;berladen.
+	Ein vollst&auml;ndiges Bild aller empfangenen Flarm Kontakte sehen Sie
+	nur in der Radaransicht.
+
+	<font color="#CC0000">
+		<h4>Warnung</h4> <b>Bitte beachten Sie, dass Cumulus Sie nicht vor
+			gef&auml;hrlichen Objekten warnt, wie es Flarm tut. Cumulus ersetzt
+			kein Flarmger&auml;t, es ist nur eine Erg&auml;nzung zu ihm! </b>
+	</font>
+
+	<h4>Flarm Anschluss</h4>
+
+	Flarmger&auml;te verf&uuml;gen nur &uuml;ber ein bidirektionales
+	serielles RS232 Interface. Cumulus kann mit einem Flarmger&auml;t
+	&uuml;ber diese Schnittstelle oder mittels eines RS232-USB bzw.
+	RS232-Bluetooth Adapters verbunden werden, je nach zur Verf&uuml;gung
+	stehender Hardware von Ihrem PDA. Bei einem USB Anschluss muss der USB
+	Port den OTG (On-the-go) Mode &uuml;nterst&uuml;tzen. Das ist im Moment
+	nur beim Nokia Internet Tablet N8x0 der Fall aber nicht beim N900
+	Model.
+
+	<h4>Flarm Konfiguration</h4>
+
+	Um die spezifischen Flarmdaten zu erhalten, m&uuml;ssen Sie im Flarm
+	Konfigurationsmen&uuml; die Option NMEAOUT einschalten. Aktivieren Sie
+	hierzu das Senden der GPRMC, GPGGA, GPPSA, PGRMZ und der Flarm
+	spezifischen Datens&auml;tze. Als &Uuml;bertragungsgeschwindigkeit
+	w&auml;hlen Sie 57,6 kBaud aus. Cumulus sendet keine
+	Initialisierungsdaten zum Flarm. Daher m&uuml;ssen Sie das Flarm
+	mittels einer Initialisierungsdatei
+	<i>flarmcfg.txt</i>, enthalten auf einer Micro SD Karte, die ins Flarm
+	vor dem Einschalten geschoben wird, konfigurieren. Ein anderer Weg ist
+	das Benutzen des Flarm Tools auf einem PC, an dem das Flarm
+	angeschlossen wird. Sehen Sie auch in der
+	<b>FLARM DATA PORT SPECIFICATIONS</b> nach, wie man Flarm zu
+	konfigurieren hat, zu finden auf der Webseite
+	<a href="http://www.flarm.org">www.flarm.org</a>.
+
+	<h4>Cumulus GPS Einstellungen</h4>
+
+	W&auml;hlen Sie im
+	<a href="cumulus-settings-gps.html">Einstellungen/GPS</a> Men&uuml;
+	eine serielle, Bluetooth oder USB Schnittstelle, entsprechend Ihrer
+	verf&uuml;gbaren Hardware aus und setzen Sie die
+	&Uuml;bertragungsgeschwindigkeit auf 57600. Als
+	<b>H&ouml;henreferenz</b> stellen Sie die Auswahl
+	<b>Druck</b> ein. Das stellt sicher, dass die H&ouml;hendaten von der
+	Flarm Drucksonde auch genommen werden. Kalibrieren Sie die gelieferte
+	H&ouml;he auf die erwartete H&ouml;he im H&ouml;hendialog. Dieser kann
+	durch tippen auf die H&ouml;henanzeige in der Kartenansicht
+	ge&ouml;ffnet werden.
+
+	<h4>Flarm Radaransicht</h4>
+
+	Sie &ouml;ffnen die Flarm Radaransicht durch tippen auf die Track (Trk)
+	Anzeige in der Kartenansicht. Die Radaransicht besteht aus einem
+	inneren und &auml;u&szlig;eren Kreis und einem Kreuz in der Mitte. Oben
+	ist die Richtung 12Uhr. In der linken oberen Ecke sehen Sie den gerade
+	ausgew&auml;hlten Ma&szlig;stab und auf der rechten Fensterseite haben
+	Sie verschiedene Bedienkn&ouml;pfe von oben nach unten angeordnet:
+
+	<p></p>
+	<blockquote>
+		<table>
+			<tr>
+				<td><b>Ma&szlig;stab:</b></td>
+				<td>Durch dr&uuml;cken vom Zoom Knopf k&ouml;nnen Sie zwischen
+					drei verschiedenen Ma&szlig;st&auml;ben (0.5, 1.0, 6.0 Km)
+					umschalten. Die aktuelle Auswahl wird in der linken oberen Ecke
+					angezeigt.</td>
+			</tr>
+
+			<tr>
+				<td><a href="#ListView"><b>Liste:</b></a></td>
+				<td>Durch dr&uuml;cken vom Listenknopf wird ein neues Fenster
+					mit einer Listen&uuml;bersicht aller gerade empfangenen Flarm
+					Kontakte ge&ouml;ffnet.</td>
+			</tr>
+
+			<tr>
+				<td><b>Zeit:</b></td>
+				<td>Durch dr&uuml;cken vom Zeitknopf wird die Auffrischungszeit
+					der Radaransicht zwischen 1, 2 und 3 Sekunden umlaufend
+					umgeschaltet. Standard sind 2 Sekunden. Die Auffrischungszeit hat
+					ebenfalls Einflu&szlig; auf die Prozessorlast und die
+					Objektauswahl.</td>
+			</tr>
+
+			<tr>
+				<td><a href="#AliasList"><b>Aliase:</b></a></td>
+				<td>Durch dr&uuml;cken vom Affenknopf wird eine
+					Tabellen&uuml;bersicht ge&ouml;ffnet, in der Sie Ihre definierten
+					Flarm Aliasnamen einsehen und bearbeiten k&ouml;nnen.</td>
+			</tr>
+
+			<tr>
+				<td><b>Plus&nbsp;Zeichen:</b></a></td>
+				<td>Der Plusknopf ist nur zu sehen, wenn zuvor ein Flarm Objekt
+					ausgew&auml;hlt wurde. Durch das Dr&uuml;cken vom Plusknopf
+					&ouml;ffnet sich ein Dialogfenster, wo Sie einen Aliasnamen
+					f&uuml;r das ausgew&auml;hlte Flarm Objekt eingeben k&ouml;nnen.
+					Der eingegebene Name wird zur Aliasliste hinzugef&uuml;gt, wenn Sie
+					den Dialog &uuml;ber den <i>Ok</i> Knopf verlassen. Ein bereits
+					existierender Eintrag wird mit den neuen Daten &uuml;berschrieben.
+				</td>
+			</tr>
+
+			<tr>
+				<td><b>Schlie&szlig;en:</b></td>
+				<td>Durch dr&uuml;cken vom Schlie&szlig;enknopf wird in die
+					Kartenansicht zur&uuml;ck gekehrt.</td>
+			</tr>
+		</table>
+	</blockquote>
+
+	Flarm Objekte werden in der Radaransicht in verschiedenen Formen,
+	entsprechend den zu ihnen gelieferten Informationen, angezeigt.
+
+	<p></p>
+	<blockquote>
+		<table>
+			<tr>
+				<td><b>Quadrat:</b></td>
+				<td>Wenn keine Kursinformation zum Flarm Objekt verf&uuml;gbar
+					ist oder es sich um ein Hindernis Objekt handelt, wird es als
+					Quadrat gezeichnet.</td>
+			</tr>
+
+			<tr>
+				<td><b>Pfeilspitze:</b></td>
+				<td>Wenn eine Kursinformation zum Flarm Objekt verf&uuml;gbar
+					ist, wird es als Pfeilspitze gezeichnet. Die Spitze zeigt in die
+					Bewegungsrichtung des Objektes.</td>
+			</tr>
+		</table>
+	</blockquote>
+
+	Objekte werden in verschiedenen Farben dargestellt, entsprechend der
+	ihnen zugeordneten Alarmwertigkeit und in Abh&auml;ngigkeit ihrer
+	Auswahl. Die verwendeten Farben sind:
+
+	<p></p>
+	<blockquote>
+		<table>
+			<tr>
+				<td><b>Schwarz:</b></td>
+				<td>Das Objekt hat <i>keine</i> oder nur eine <i>geringe</i>
+					Alarmwertigkeit.
+				</td>
+			</tr>
+
+			<tr>
+				<td><b>Orange:</b></td>
+				<td>Das Objekt hat eine <i>hohe</i> Alarmwertigkeit.
+				</td>
+			</tr>
+
+			<tr>
+				<td><b>Rot:</b></td>
+				<td>Das Objekt hat eine <i>dringende</i> Alarmwertigkeit. Eine
+					Kollision mit dem Objekt kann unmittelbar bevor stehen.
+				</td>
+			</tr>
+
+			<tr>
+				<td><b>Magenta:</b></td>
+				<td>Das Objekt wurde durch den Benutzer ausgew&auml;hlt. In
+					diesem Fall wird die Alarmwertigkeit des Objektes nicht
+					ber&uuml;cksichtigt.</td>
+			</tr>
+		</table>
+	</blockquote>
+
+	Wenn Sie auf ein Flarm Objekt in der Radaransicht tippen, bekommen Sie
+	zus&auml;tzliche Informationen angezeigt, falls solche verf&uuml;gbar
+	sind. Alle diese Informationen werden in der Farbe Magenta dargestellt.
+	Diese sind:
+
+	<p></p>
+	<blockquote>
+		<table>
+			<tr>
+				<td><b>Flarm Kennung:</b></td>
+				<td>Die Kennung des selektierten Flarm Objektes wird in der
+					linken unteren Fensterecke als 6 stellige Hexadezimalzahl
+					angezeigt. Wenn ein Aliasname f&uuml;r die Flarm Kennung definiert
+					wurde, wird dieser statt dessen zur Anzeige genommen.</td>
+			</tr>
+
+			<tr>
+				<td><b>Entfernung:</b></td>
+				<td>Die Entfernung zum selektierten Flarm Objekt wird in der
+					unteren rechten Fensterecke angezeigt.</td>
+			</tr>
+
+			<tr>
+				<td><b>Vertikaler Abstand und Steigrate:</b></td>
+				<td>Der vertikale Abstand und die Steigrate des selektierten
+					Flarm Objektes werden in der oberen rechten Fensterecke angezeigt.
+				</td>
+			</tr>
+		</table>
+	</blockquote>
+
+	<h4>
+		<a name="ListView"></a>Flarm Listen&uuml;bersicht
+	</h4>
+
+	Wenn Sie den Listenknopf in der Radaransicht dr&uuml;cken, wird ein
+	neues Fenster mit einer Listenansicht ge&ouml;ffnet, in der alle gerade
+	empfangenen Flarm Kontakte zu sehen sind. Die folgenden Daten
+	k&ouml;nnen darin zu sehen sein:
+
+	<p></p>
+	<blockquote>
+		<table>
+			<tr>
+				<td><b>Flarm Kennung:</b></td>
+				<td>Die Kennung des Flarm Objektes wird als 6 stellige
+					Hexadezimalzahl angezeigt. Wenn ein Aliasname f&uuml;r die Flarm
+					Kennung definiert wurde, wird dieser statt dessen zur Anzeige
+					genommen.</td>
+			</tr>
+
+			<tr>
+				<td><b>Entfernung:</b></td>
+				<td>Die Entfernung zum Flarm Objekt von der eigenen Position
+					aus.</td>
+			</tr>
+
+			<tr>
+				<td><b>Vertikaler Abstand:</b></td>
+				<td>Der vertikale Abstand zum Flarm Objekt &uuml;berhalb oder
+					unterhalb zur eigenen Position. Kann positiv oder negativ sein.</td>
+			<tr>
+				<td><b>Relativer Kurs:</b></td>
+				<td>Der relative Kurs zum Flarm Objekt vom eigenen Kurs aus
+					gesehen als Pfeilspitze.</td>
+			<tr>
+				<td><b>Grundgeschwindigkeit:</b></td>
+				<td>Die Geschwingigkeit &uuml;ber Grund vom Flarm Objekt.</td>
+			<tr>
+				<td><b>Steigrate:</b></td>
+				<td>Die Steigrate vom Flarm Objekt. Kann positiv oder negativ
+					sein.</td>
+			</tr>
+		</table>
+	</blockquote>
+
+	Einen bestimmtem Listeneintrag k&ouml;nnen Sie durch tippen auf ihn
+	ausw&auml;hlen. Wenn Sie dann den Knopf
+	<b>W&auml;hlen</b> dr&uuml;cken, wird das Fenster geschlossen und zur
+	Radaransicht zur&uuml;ckgekehrt. In dieser werden nun alle
+	verf&uuml;gbaren Zusatzdaten des gew&auml;hlten Objektes mit angezeigt.
+	Eine einmal gemachte Auswahl kann r&uuml;ckgesetzt werden, indem Sie
+	den
+	<b>Abw&auml;hlen</b> Knopf, gefolgt vom
+	<b>Schlie&szlig;en</b> Knopf dr&uuml;cken.
+
+	<h4>
+		<a name="AliasList"></a>Flarm Aliasliste
+	</h4>
+
+	Wenn Sie den Affenknopf dr&uuml;cken, wird ein neues Fenster mit einer
+	Tabellen&uuml;bersicht ge&ouml;ffnet, in der Sie alle definierten Flarm
+	Aliasnamen sehen k&ouml;nnen. Eine 6 stellige Hexadezimalkennung kann
+	durch einen sprechenden Namen ersetzt werden. Die L&auml;nge des
+	Aliasnamens ist auf 15 Zeichen begrenzt. Um einen neuen Aliasnamen
+	hinzu zuf&uuml;gen, dr&uuml;cken Sie den
+	<i>Plus</i> Knopf. Daraufhin wird eine neue Zeile ans Ende der Tabelle
+	angeh&auml;ngt. In der linken Spalte tragen Sie die Flarmkennung ein,
+	die Sie ersetzen wollen und in der rechten Spalte den dazu
+	gew&uuml;nschten Aliasnamen. Ein bestehender Eintrag kann durch klicken
+	auf die entsprechende Zelle ge&auml;ndert werden.
+	<b>Achtung!</b> Wenn Sie mehrere gleiche Flarmkennungen zur Tabelle
+	hinzu f&uuml;gen, wird nur der letzte Eintrag abgespeichert. Wenn Sie
+	ein oder mehrere Eintr&auml;ge l&ouml;schen wollen, so selektieren Sie
+	diese und dr&uuml;cken auf den
+	<i>M&uuml;lleimer</i> Knopf.
+
+	<p>
+		Verlassen Sie das Fenster mit dem <i>Ok</i> Knopf, um Ihre gemachten
+		&Auml;nderungen zu speichern oder mit dem <i>X</i> Knopf, um sie zu
+		verwerfen.
+	</p>
+
+	<p>
+		Sie haben die M&ouml;glichkeit, eine Zeile in der Tabelle zu
+		selektieren und das Fenster mit dem <i>Ok</i> Knopf zu verlassen. Das
+		ausgew&auml;hlte Flarm Objekt wird dann Ihre neue Auswahl in der
+		Radaranzeige. Wollen Sie ein selektiertes Objekt in der Radaranzeige
+		wieder deselektieren, gehen Sie in die Aliasliste, selektieren dort
+		nichts und verlassen das Fenster wieder mit dem <i>Ok</i> Knopf.
+	</p>
+
+	<h4>Flarm Aliasdatei</h4>
+
+	Der Inhalt der Flarm Aliastabelle wird in einer Datei mit dem Namen
+	<a href="cumulus-file-locations.html">cumulus-flarm.txt</a>
+	gespeichert. Dieser Dateiname ist hard kodiert und die Datei wird im
+	Benutzer
+	<a href="cumulus-settings-personal.html#DataDirectory">
+		Datenverzeichnis</a> abgelegt.
+	<p>Das Format der Flarm Aliasdatei ist sehr einfach. Eine
+		Kommentarzeile beginnt mit einem Raute- oder Dollarzeichen ganz links
+		und endet mit dem Zeilenendezeichen. Ein g&uuml;ltiger Eintrag hat das
+		folgende Format:</p>
+
+	<blockquote>
+		<b>&lt;Flarm-Id&gt; '=' &lt;Alias-Name&gt;</b>
+
+		<p>
+			<b>Beispiel:</b>
+		<pre>
+# Flarm Alias Datei, Kommentarzeile
+$ Das ist auch eine Kommentarzeile
+ABCDEF=Kumpel Klaus
+</pre>
+		</p>
+	</blockquote>
+
+	Beachten Sie, dass auf beiden Seiten des Gleichheitszeichens keine
+	Leerzeichen erlaubt sind!
+
+	<h4>
+		<a name="DataUpdate"></a>Flarm Datenaktualit&auml;t
+	</h4>
+
+	Flarm Daten altern sehr schnell, besonders wenn die Objekte kreisen.
+	Flarm sendet normalerweise jede Sekunde Daten &uuml;ber die gesehenen
+	Objekte. Wenn aber ein Flarm Kontakt den Sichtbereich
+	verl&auml;&szlig;t, erh&auml;lt Cumulus dar&uuml;ber keine Information.
+	Um die gesammelten Daten zu reinigen, werden regelm&auml;&szlig;ig alle
+	Flarm Kontakte gel&ouml;scht, die nicht innerhalb von drei Sekunden
+	aktualisiert wurden.
+
+	<p>Die Daten in der Flarm Listen&uuml;bersicht werden nur alle drei
+		Sekunden aktualisiert, um die Prozessorlast zu reduzieren.</p>
+
+	<table width="100%">
+		<tr>
+			<td align="left"><a href="cumulus-tasks.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td align="right"><a href="cumulus-file-locations.html">weiter</a></td>
+		</tr>
+	</table>
+
+</body>
+</html>

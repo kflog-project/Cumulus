@@ -1,0 +1,167 @@
+<!-- $Id: cumulus-file-locations.html 4006 2010-04-28 21:01:24Z axel $ -->
+
+<html>
+<head>
+<title>Dateien und Speicherorte</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tr>
+			<td align="left"><a href="cumulus-flarm.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td align="right"><a href="cumulus-about.html">weiter</a></td>
+		</tr>
+	</table>
+
+	<h3 align="center">Wurzelverzeichnisse ($ROOT)</h3>
+
+	<table border="1" width="100%">
+
+		<tr>
+			<th>Nr</th>
+			<th>Betriebssystem</th>
+			<th>Wurzelverzeichnis</th>
+			<th>Beschreibung</th>
+		</tr>
+
+		<tr>
+			<td>1</td>
+			<td>Linux Desktop e.g. Ubuntu</td>
+			<td>$HOME</td>
+			<td>Heimatverzeichnis des eingeloggten Benutzers</td>
+		</tr>
+
+		<tr>
+			<td>2</td>
+			<td>Android</td>
+			<td>/sdcard</td>
+			<td>Das Wurzelverzeichnis vom Android Benutzer liegt auf der
+				SD-Karte</td>
+		</tr>
+
+		<tr>
+			<td>3</td>
+			<td>Maemo 4 and 5</td>
+			<td>/media/mmc1<br> /media/mmc2<br> /home/user/MyDocs<br>
+			</td>
+			<td>Wurzelverzeichnis von Maemo 4 and 5 Benutzern</td>
+		</tr>
+
+	</table>
+
+	<h3 align="center">Dateien und Speicherorte</h3>
+
+	<table border="1" width="100%">
+
+		<tr>
+			<th>Nr</th>
+			<th>Verzeichnis</th>
+			<th>Datei</th>
+			<th>Beschreibung</th>
+		</tr>
+
+		<tr>
+			<td>1</td>
+			<td>$ROOT/.config</td>
+			<td>Cumulus.conf</td>
+			<td>Datei mit den Konfigurationsdaten von Cumulus</td>
+		</tr>
+
+		<tr>
+			<td>2</td>
+			<td>/opt/cumulus/etc</td>
+			<td>glider.pol</td>
+			<td>Datei mit den Polardaten der Segelflugzeuge</td>
+		</tr>
+
+		<tr>
+			<td>3</td>
+			<td>$ROOT/Cumulus</td>
+			<td>task.tsk</td>
+			<td>Flugaufgaben Datei</td>
+		</tr>
+
+		<tr>
+			<td>4</td>
+			<td>$ROOT/Cumulus</td>
+			<td>cumulus.[kwp|kflogwp]</td>
+			<td>Wegpunkt bin&auml;r oder XML Datei</td>
+		</tr>
+
+		<tr>
+			<td>5</td>
+			<td>$ROOT/Cumulus</td>
+			<td>*.IGC</td>
+			<td>IGC Logger Dateien</td>
+		</tr>
+
+		<tr>
+			<td>6</td>
+			<td>$ROOT/Cumulus</td>
+			<td>cumulus-flarm.txt</td>
+			<td>Datei mit Flarm Alias Namen</td>
+		</tr>
+
+		<tr>
+			<td>7</td>
+			<td>$ROOT/Cumulus</td>
+			<td>cumulus-flarm.tsk</td>
+			<td>Datei mit Flarm Aufgaben Deklaration</td>
+		</tr>
+
+		<tr>
+			<td>8</td>
+			<td>$ROOT/Cumulus</td>
+			<td>cumulus-logbook.txt</td>
+			<td>Flugbuch Datei</td>
+		</tr>
+
+		<tr>
+			<td>9</td>
+			<td>$ROOT/Cumulus/maps/[airfields|airspaces|landscape]</td>
+			<td>Karten Dateien</td>
+			<td>diverse Karten Dateien</td>
+		</tr>
+	</table>
+
+	<p>
+		<b>Achtung!</b>
+	</p>
+
+	Unter Maemo (gilt f&uuml;r die Nokia Ger&auml;te N800, N810 and N900)
+	wird der Speicherort f&uuml;r die Dateien, gelistet unter den Punkten
+	3-8, in Einstellungen/Personal als das
+	<a href="cumulus-settings-personal.html#DataDirectory">Daten
+		Verzeichnis</a> definiert. Kann Cumulus dort keinen Eintrag finden,
+	versucht es an folgenden Orten das fehlende Verzeichnis anzulegen:
+
+	<OL>
+		<LI>/media/mmc1/Cumulus</LI>
+		<LI>/media/mmc2/Cumulus</LI>
+		<LI>/home/user/MyDocs/Cumulus</LI>
+	</OL>
+
+	<p>
+		Der Speicherort f&uuml;r die unter 9 genannten Dateien wird in
+		Einstellungen/Karte festgelegt. Neben dem Knopf <a
+			href="cumulus-settings-map-settings.html#Maps">Karten</a>, ist das
+		Haupverzeichnis zu sehen, unter dem in den Unterverzeichnissen
+		airfields, airspaces und landscape die verschiedenen Kartendateien
+		abgelegt sind.
+	</p>
+
+	<p>
+	<table width="100%">
+		<tr>
+			<td align="left"><a href="cumulus-flarm.html">zur&uuml;ck</a></td>
+			<td align="center"><a href="cumulus.html">Anfang</a></td>
+			<td align="right"><a href="cumulus-about.html">weiter</a></td>
+		</tr>
+	</table>
+	</p>
+
+</body>
+</html>

@@ -34,6 +34,7 @@
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/c++/4.6"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-pc-linux-gnu/4.1.2/include/g++-v4"/>
+									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/Qt"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/QtCore"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/QtGui"/>
@@ -113,6 +114,7 @@
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/QtXml"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/Qt"/>
+									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.273133215" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="FLARM=1"/>
@@ -187,6 +189,7 @@
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/QtXml"/>
 									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include/Qt"/>
+									<listOptionValue builtIn="false" value="/opt/qt4.8.1/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1583799400" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="INTERNET=1"/>
