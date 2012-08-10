@@ -276,8 +276,8 @@ public:
    */
   QSet<QString> unknownsReported;
 
-  /** activate flag for flarm */
-  bool initFlarm;
+  /** activate flag for timeout after Flarm reset. */
+  bool activateTimeout;
 
 };
 

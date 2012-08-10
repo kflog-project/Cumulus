@@ -75,7 +75,7 @@ GpsClient::GpsClient( const ushort portIn )
   datapointer      = databuffer;
   dbsize           = 0;
   badSentences     = 0;
-  initFlarm        = false;
+  activateTimeout  = false;
 
   // establish a connection to the server
   if( ipcPort )
@@ -256,11 +256,15 @@ bool GpsClient::readGpsData()
 
       readSentenceFromBuffer();
 
-      if( ! initFlarm )
+#ifdef FLARM
+
+      if( ! activateTimeout )
         {
           // update supervision timer/variables
           last.start();
         }
+
+#endif
 
       connectionLost = false;
     }
@@ -702,15 +706,12 @@ void GpsClient::toController()
 
 #ifdef FLARM
 
-  if( initFlarm )
+  if( activateTimeout )
     {
       if( last.elapsed() >= 60000  )
         {
-          // Enable NMEA output of Flarm after 60s after reset.
-          initFlarm = false;
-          writeGpsData("$PFLAC,S,NMEAOUT,1");
-
-          // set next retry time point
+          // Activate timeout again after a Flarm reset. Flarm needs ca. 35s
+          // to come up again.
           last.start();
         }
 
@@ -1201,8 +1202,12 @@ void GpsClient::getFlarmIgcFiles(QString& args)
         }
     }
 
+  QTime dlTime;
+
   for( int idx = 0; idx < idxList.size(); idx++ )
     {
+      dlTime.start();
+
       // Select the flight to be downloaded
       int recNo = idxList.at(idx).toInt();
       QStringList flightData;
@@ -1261,6 +1266,9 @@ void GpsClient::getFlarmIgcFiles(QString& args)
             }
 
           f.close();
+
+          qDebug() << flightData.at(0) << "downloaded in"
+                    << (dlTime.elapsed() / 1000.0) << "s";
         }
      }
 
@@ -1286,7 +1294,7 @@ void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
 
 bool GpsClient::flarmReset()
 {
-  // Swich off timeout control
+  // Switch off timeout control
   last = QTime();
 
   if( ! flarmBinMode() )
@@ -1297,7 +1305,7 @@ bool GpsClient::flarmReset()
 
   FlarmBinComLinux fbc( fd );
   bool res = fbc.exit();
-  initFlarm = true;
+  activateTimeout = true;
   last.start();
   return res;
 }

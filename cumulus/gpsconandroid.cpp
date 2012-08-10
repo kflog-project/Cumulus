@@ -46,7 +46,7 @@ GpsConAndroid::GpsConAndroid(QObject* parent) : QObject(parent)
 
 GpsConAndroid::~GpsConAndroid()
 {
-  qDebug() << "~GpsConAndroid()";
+  // qDebug() << "~GpsConAndroid()";
 }
 
 bool GpsConAndroid::sndByte( const char byte )
@@ -212,7 +212,7 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
 
 bool GpsConAndroid::flarmBinMode()
 {
-  qDebug() << "GpsConAndroid::flarmBinMode()";
+  // qDebug() << "GpsConAndroid::flarmBinMode()";
 
   // Binary switch command for Flarm interface
   QByteArray pflax = QByteArray("$PFLAX\n");
@@ -259,7 +259,7 @@ bool GpsConAndroid::flarmBinMode()
 // This action must be executed in a thread.
 void GpsConAndroid::getFlarmFlightList()
 {
-  qDebug() << "GpsConAndroid::getFlarmFlightList()";
+  // qDebug() << "GpsConAndroid::getFlarmFlightList()";
 
   QMutexLocker locker(&mutexAction);
   FlarmBinComAndroid fbc;
@@ -323,7 +323,7 @@ void GpsConAndroid::getFlarmFlightList()
 // This action must be executed in a thread.
 void GpsConAndroid::getFlarmIgcFiles(QString& args)
 {
-  qDebug() << "GpsConAndroid::getFlarmIgcFiles()" << args;
+  // qDebug() << "GpsConAndroid::getFlarmIgcFiles()" << args;
 
   QMutexLocker locker(&mutexAction);
 
@@ -361,8 +361,12 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
         }
     }
 
+  QTime dlTime;
+
   for( int idx = 0; idx < idxList.size(); idx++ )
     {
+      dlTime.start();
+
       // Select the flight to be downloaded
       int recNo = idxList.at(idx).toInt();
       QStringList flightData;
@@ -421,6 +425,9 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
             }
 
           f.close();
+
+          qDebug() << flightData.at(0) << "downloaded in"
+                    << (dlTime.elapsed() / 1000.0) << "s";
         }
      }
 
@@ -444,7 +451,7 @@ void GpsConAndroid::flarmFlightDowloadProgress( const int idx, const int progres
 
 bool GpsConAndroid::flarmReset()
 {
-  qDebug() << "GpsConAndroid::flarmReset()";
+  // qDebug() << "GpsConAndroid::flarmReset()";
 
   if( ! flarmBinMode() )
     {
@@ -477,7 +484,7 @@ void GpsConAndroid::slot_FlarmEnableNmeaOut()
  */
 void GpsConAndroid::startGetFlarmFlightList()
 {
-  qDebug() << "GpsConAndroid::startGetFlarmFlightList";
+  // qDebug() << "GpsConAndroid::startGetFlarmFlightList";
 
   FlarmFlightListThread* thread = new FlarmFlightListThread(this);
   thread->start();
@@ -488,7 +495,7 @@ void GpsConAndroid::startGetFlarmFlightList()
  */
 void GpsConAndroid::startGetFlarmIgcFiles( QString& flightData )
 {
-  qDebug() << "GpsConAndroid::FlarmFlightListThread";
+  // qDebug() << "GpsConAndroid::FlarmFlightListThread";
 
   FlarmIgcFilesThread* thread = new FlarmIgcFilesThread( this, flightData );
   thread->start();
@@ -508,12 +515,12 @@ FlarmFlightListThread::FlarmFlightListThread( QObject *parent ) : QThread( paren
 
 FlarmFlightListThread::~FlarmFlightListThread()
 {
-  qDebug() << "~FlarmFlightListThread()";
+  // qDebug() << "~FlarmFlightListThread()";
 }
 
 void FlarmFlightListThread::run()
 {
-  qDebug() << "FlarmFlightListThread::run()";
+  // qDebug() << "FlarmFlightListThread::run()";
 
   sigset_t sigset;
   sigfillset( &sigset );
@@ -538,12 +545,12 @@ FlarmIgcFilesThread::FlarmIgcFilesThread( QObject *parent, QString& flightData )
 
 FlarmIgcFilesThread::~FlarmIgcFilesThread()
 {
-  qDebug() << "~FlarmIgcFilesThread()";
+  // qDebug() << "~FlarmIgcFilesThread()";
 }
 
 void FlarmIgcFilesThread::run()
 {
-  qDebug() << "FlarmIgcFilesThread::run():" << m_flightData;
+  // qDebug() << "FlarmIgcFilesThread::run():" << m_flightData;
 
   sigset_t sigset;
   sigfillset( &sigset );

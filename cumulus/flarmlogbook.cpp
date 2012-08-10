@@ -223,8 +223,6 @@ void FlarmLogbook::setTableHeader()
 
 void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 {
-  qDebug() << "slot_UpdateConfiguration" << info;
-
   if( info.size() >= 4 &&
       info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" )
     {
@@ -256,8 +254,6 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 
 void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 {
-  qDebug() << "FlarmLogbook::slot_FlarmLogbookData" << data;
-
   m_logbook.clear(); // remove old content
 
   // Clear table content.
