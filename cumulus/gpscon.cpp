@@ -459,7 +459,6 @@ bool GpsCon::startClientProcess()
           // process is alive, do nothing
 
 #ifdef DEBUG
-
           qDebug() << method
                    << "gpsClient process"
                    << getPid()

@@ -229,8 +229,6 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
       wp->priority=( enum Waypoint::Priority ) cmbImportance->currentIndex();
-
-      qDebug() << "wp->priority" << cmbImportance->currentIndex();
     }
 }
 
