@@ -557,21 +557,21 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="250"/>
-        <location filename="flarmlogbook.cpp" line="378"/>
-        <location filename="flarmlogbook.cpp" line="459"/>
-        <location filename="flarmlogbook.cpp" line="532"/>
+        <location filename="flarmlogbook.cpp" line="248"/>
+        <location filename="flarmlogbook.cpp" line="374"/>
+        <location filename="flarmlogbook.cpp" line="455"/>
+        <location filename="flarmlogbook.cpp" line="528"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="251"/>
-        <location filename="flarmlogbook.cpp" line="282"/>
-        <location filename="flarmlogbook.cpp" line="379"/>
-        <location filename="flarmlogbook.cpp" line="438"/>
-        <location filename="flarmlogbook.cpp" line="460"/>
-        <location filename="flarmlogbook.cpp" line="483"/>
-        <location filename="flarmlogbook.cpp" line="533"/>
+        <location filename="flarmlogbook.cpp" line="249"/>
+        <location filename="flarmlogbook.cpp" line="278"/>
+        <location filename="flarmlogbook.cpp" line="375"/>
+        <location filename="flarmlogbook.cpp" line="434"/>
+        <location filename="flarmlogbook.cpp" line="456"/>
+        <location filename="flarmlogbook.cpp" line="479"/>
+        <location filename="flarmlogbook.cpp" line="529"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
@@ -584,42 +584,42 @@
         <translation type="obsolete">NMEA Ausgabe nicht abschaltbar!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="281"/>
+        <location filename="flarmlogbook.cpp" line="277"/>
         <source>Flarm flight list read error!</source>
         <translation>Flarm Fluglisten Lesefehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="289"/>
+        <location filename="flarmlogbook.cpp" line="285"/>
         <source>Flarm flight list is empty!</source>
         <translation>Flarm Flugliste ist leer!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="290"/>
+        <location filename="flarmlogbook.cpp" line="286"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="431"/>
+        <location filename="flarmlogbook.cpp" line="427"/>
         <source>Too less free space on:</source>
         <translation>Zu wenig Platz auf:</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="435"/>
+        <location filename="flarmlogbook.cpp" line="431"/>
         <source>Download not possible!</source>
         <translation>Download nicht möglich!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="482"/>
+        <location filename="flarmlogbook.cpp" line="478"/>
         <source>Flarm download error!</source>
         <translation>Flarm Download Fehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="491"/>
+        <location filename="flarmlogbook.cpp" line="487"/>
         <source>Flights downloaded!</source>
         <translation>Flüge runter geladen!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="492"/>
+        <location filename="flarmlogbook.cpp" line="488"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
@@ -670,9 +670,8 @@
 <context>
     <name>GeneralConfig</name>
     <message>
-        <location filename="generalconfig.cpp" line="311"/>
         <source>HOME</source>
-        <translation>Heimat</translation>
+        <translation type="obsolete">Heimat</translation>
     </message>
 </context>
 <context>
@@ -5055,6 +5054,11 @@ Namen für den neuen Wegpunkt</translation>
         <location filename="wpeditdialogpagegeneral.cpp" line="168"/>
         <source>high</source>
         <translation>hoch</translation>
+    </message>
+    <message>
+        <location filename="wpeditdialogpagegeneral.cpp" line="169"/>
+        <source>top</source>
+        <translation>höchste</translation>
     </message>
 </context>
 </TS>
