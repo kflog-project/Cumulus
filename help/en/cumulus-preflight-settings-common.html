@@ -1,171 +1,161 @@
 <!-- $Id$ -->
 <html>
 <head>
-<title>Cumulus Preflight Settings</title>
-<link rel="stylesheet" type="text/css" href="text.css">
+  <title>Cumulus Preflight Settings</title>
+  <link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
 
 <body>
-	<table width="100%">
-		<tbody>
-			<tr>
-				<td></td>
-				<td align="center"><a href="cumulus.html">start</a></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td align="left"><a
-					href="cumulus-preflight-settings-waypoint.html">back</a></td>
-				<td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
-				<td align="right"><a href="cumulus-display.html">next</a></td>
-			</tr>
-		</tbody>
-	</table>
+  <table width="100%">
+    <tbody>
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-preflight-settings-waypoint.html">back</a></td>
+    <td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
+    <td align="right"><a href="cumulus-display.html">next</a></td>
+    </tr>
+  </tbody>
+</table>
 
 
-	<h4 align="center">Preflight Settings - Common</h4>
+<h4 align="center">Preflight Settings - Common</h4>
 
-	<b>Common</b>
+<b>Common</b>
 
-	<p>This is where you enter various common preflight data.</p>
+<p>This is where you enter various common preflight data.</p>
+    
+<dl>
 
-	<dl>
+  <a name="ArrivalAltitude"><dt><b>Arrival Altitude</b></dt>
+  </a>
+  
+  <dd>
+  The arrival altitude is your chosen safety (reserve) altitude above the terrain
+  altitude of your goal when on final glide. In calculating the final 
+  glide parameters, the value entered here is added to the elevation of
+  the selected target. For many situations, the default value of 200 metres 
+  would be sensible. The units used for this value are set in
+  <a href="cumulus-settings-units.html">Settings/Units</a>.
+  </dd>
 
-		<a name="ArrivalAltitude"><dt>
-				<b>Arrival Altitude</b>
-			</dt> </a>
+  <br><dt><b>Arrival Altitude Display</b></dt>
+  
+  <dd>
+  The arrival altitude display selection is only active, if a flight task
+  and a glider are setup. The arrival altitude is calculated above the selected
+  target. Tow different display targets can be selected.
+  
+  <br><br><ul>
+  <li><b>Landing target:</b> Displays the arrival altitude above the landing
+      target by taken into account of all turnpoints starting at the current
+      position. That is the default setting.</li>
+      
+  <li><b>Next target:</b> Displays the arrival altitude above the next
+      turnpoint target starting at the current position.</li>
+  </ul>
 
-		<dd>
-			The arrival altitude is your chosen safety (reserve) altitude above
-			the terrain altitude of your goal when on final glide. In calculating
-			the final glide parameters, the value entered here is added to the
-			elevation of the selected target. For many situations, the default
-			value of 200 metres would be sensible. The units used for this value
-			are set in <a href="cumulus-settings-units.html">Settings/Units</a>.
-		</dd>
+  </dd>
 
-		<br>
-		<dt>
-			<b>Arrival Altitude Display</b>
-		</dt>
+  <br><dt><b>QNH</b></dt>
+  
+  <dd>
+  The area QNH (as given by ATC) is entered in hPa (hectopascal). It is only
+  used in calculation of the vertical warning distance to airspace
+  boundaries expressed as flight levels. The default value is 1013 hPa.
+  </dd>
 
-		<dd>
-			The arrival altitude display selection is only active, if a flight
-			task and a glider are setup. The arrival altitude is calculated above
-			the selected target. Tow different display targets can be selected. <br>
-			<br>
-			<ul>
-				<li><b>Landing target:</b> Displays the arrival altitude above
-					the landing target by taken into account of all turnpoints starting
-					at the current position. That is the default setting.</li>
+  <a name="autologger">
+  <br><dt><b>Autostart logging</b></dt>
 
-				<li><b>Next target:</b> Displays the arrival altitude above the
-					next turnpoint target starting at the current position.</li>
-			</ul>
+  <dd>
+    If you activate this check box, Cumulus automatically starts the IGC
+    logging when you start to move faster as displayed in the spinbox. With
+    the help of the spinbox you can adjust the speed limit to your needs. The
+    current logger status is signaled by a variously-coloured field in the <a
+      href="cumulus-display.html#Status_Bar">status bar</a>. After landing the
+    flight is closed, if 90s no moving could be detected. If the GPS signal
+    breaks down, the same condition is applied.
+  </dd>
 
-		</dd>
+  <br><dt><b>B-Record Interval</b></dt>
 
-		<br>
-		<dt>
-			<b>QNH</b>
-		</dt>
+  <dd>Interval for logging of the IGC B-Record. Default time is
+  10 seconds. Note that shorter times will increase the log file size and the
+  processor load.
+  </dd>
 
-		<dd>The area QNH (as given by ATC) is entered in hPa
-			(hectopascal). It is only used in calculation of the vertical warning
-			distance to airspace boundaries expressed as flight levels. The
-			default value is 1013 hPa.</dd>
+  <br><dt><b>K-Record Interval</b></dt>
 
-		<br>
-		<dt>
-			<b>Autostart logging</b>
-		</dt>
+  <dd>Interval for logging of the IGC K-Record. Default is <i>None</i>,
+	i.e., switched off. If you enter a valid time, the following
+	additional items are logged, if they are available. Otherwise default values
+	are used.
 
-		<dd>
-			If you activate this check box, Cumulus automatically starts the IGC
-			logging when you start to move faster than 35 km/h. The current
-			logger status is signaled by a variously-coloured field in the <a
-				href="cumulus-display.html#Status_Bar">status bar</a>. After landing
-			the flight is closed, if 90s no moving could be detected. If the GPS
-			signal breaks down, the same condition is applied.
-		</dd>
+	<p><ul>
+		<li>HDT, true heading as 3 numbers</li>
+		<li>TAS, true airspeed as 3 numbers with unit kph</li>
+		<li>WDI, wind direction as 3 numbers</li>
+		<li>WSP, wind speed in km/h as 3 numbers</li>
+		<li>VAT, compensated variometer (total energy/netto) vertical speed in m/s
+		    and decimals with sign if negative.</li>
+	</ul></p>
 
-		<br>
-		<dt>
-			<b>Logbook</b>
-		</dt>
+  Note that the activation of this option will increase the log file size and the
+  processor load.
+	</dd>
+  
+  <br><dt><b>Logbook</b></dt>
+  
+  <dd> If Autostart logging is enabled, Cumulus records the basic data of your
+  flight into a logbook. Pressing the button <i>Logbook</i> opens a window,
+  where all flight logs are listed. If you want you can remove selected or all
+  entries. The Logbook is a pure ASCII data file in a CSV format. Semicolon
+  is used as separator.
+  </dd>
+  
+  <br><dt><b>Flarm Logbook</b></dt>
 
-		<dd>
-			If Autostart logging is enabled, Cumulus records the basic data of
-			your flight into a logbook. Pressing the button <i>Logbook</i> opens
-			a window, where all flight logs are listed. If you want you can
-			remove selected or all entries. The Logbook is a pure ASCII data file
-			in a CSV format. Semicolon is used as separator.
-		</dd>
+  <dd>
+    Pressing the button <i>Flarm Logbook</i> opens a new window. If you press
+    the button <i>Read</i> a flight overview is downloaded from the Flarm
+    device and displayed in the list. Now you can select one or more flights.
+    If you press the button <i>Download</i> all selected flights are downloaded
+    to your device into your defined
+    <a href="cumulus-settings-personal.html#DataDirectory">data directory</a>.
+    All flight are stored there under the subdirectory <i>flarmIgc</i>.
+  </dd>
 
-		<br>
-		<dt>
-			<b>B-Record Interval</b>
-		</dt>
+  </dl>
 
-		<dd>Interval for logging of the IGC B-Record. Default time is 10
-			seconds. Note that shorter times will increase the log file size and
-			the processor load.</dd>
+It should be noted that the Cumulus IGC logger does not fulfill in all respects 
+the IGC requirements for glider flight documentation. There is no security G-Record 
+written into the log file, because the PDA device cannot be secured against external 
+manipulation. Furthermore, there are not always pressure altitude values available, 
+as required by the IGC. For more information about the FAI IGC requirements, including 
+the IGC logger formats, see
+<a href="http://www.fai.org/gliding/gnss/tech_spec_gnss.asp">here</a>.
 
-		<br>
-		<dt>
-			<b>K-Record Interval</b>
-		</dt>
+<p></p>
 
-		<dd>
-			Interval for logging of the IGC K-Record. Default is <i>None</i>,
-			i.e., switched off. If you enter a valid time, the following
-			additional items are logged, if they are available. Otherwise default
-			values are used.
-
-			<p>
-			<ul>
-				<li>HDT, true heading as 3 numbers</li>
-				<li>TAS, true airspeed as 3 numbers with unit kph</li>
-				<li>WDI, wind direction as 3 numbers</li>
-				<li>WSP, wind speed in km/h as 3 numbers</li>
-				<li>VAT, compensated variometer (total energy/netto) vertical
-					speed in m/s and decimals with sign if negative.</li>
-			</ul>
-			</p>
-
-			Note that the activation of this option will increase the log file
-			size and the processor load.
-		</dd>
-
-	</dl>
-
-	It should be noted that the Cumulus IGC logger does not fulfill in all
-	respects the IGC requirements for glider flight documentation. There is
-	no security G-Record written into the log file, because the PDA device
-	cannot be secured against external manipulation. Furthermore, there are
-	not always pressure altitude values available, as required by the IGC.
-	For more information about the FAI IGC requirements, including the IGC
-	logger formats, see
-	<a href="http://www.fai.org/gliding/gnss/tech_spec_gnss.asp">here</a>.
-
-	<p></p>
-
-	<table width="100%">
-		<tbody>
-			<tr>
-				<td></td>
-				<td align="center"><a href="cumulus.html">start</a></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td align="left"><a
-					href="cumulus-preflight-settings-waypoint.html">back</a></td>
-				<td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
-				<td align="right"><a href="cumulus-display.html">next</a></td>
-			</tr>
-		</tbody>
-	</table>
+<table width="100%">
+    <tbody>
+    <tr>
+    <td></td>
+    <td align="center"><a href="cumulus.html">start</a></td>
+    <td></td>
+    </tr>
+    <tr>
+    <td align="left"><a href="cumulus-preflight-settings-waypoint.html">back</a></td>
+    <td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
+    <td align="right"><a href="cumulus-display.html">next</a></td>
+    </tr>
+  </tbody>
+</table>
 
 </body>
 </html>
