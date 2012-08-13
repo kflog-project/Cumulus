@@ -1800,13 +1800,15 @@ int GeneralConfig::getWaypointScaleBorder( const Waypoint::Priority importance) 
     case Waypoint::High:
 
       // qDebug("Priority=%d, value=%d", priority, _wayPointScaleBorders[priority] );
-
       return _wayPointScaleBorders[importance];
-      break;
+
+    case Waypoint::Top:
+      // Cumulus does not support Top priority. All is mapped to High.
+      return _wayPointScaleBorders[Waypoint::High];
 
     default:
       qWarning("getWaypointScaleBorder(): Undefined Importance=%d passed!", importance );
-      return 0;
+      return _wayPointScaleBorders[Waypoint::Low];
   }
 }
 

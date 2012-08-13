@@ -166,6 +166,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   cmbImportance->addItem(tr("low"));
   cmbImportance->addItem(tr("normal"));
   cmbImportance->addItem(tr("high"));
+  cmbImportance->addItem(tr("top"));
 
   topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2, 10);
@@ -228,6 +229,8 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
       wp->elevation=static_cast<int> (rint(Altitude::convertToMeters(edtElev->text().toDouble())));
       wp->type=getWaypointType();
       wp->priority=( enum Waypoint::Priority ) cmbImportance->currentIndex();
+
+      qDebug() << "wp->priority" << cmbImportance->currentIndex();
     }
 }
 

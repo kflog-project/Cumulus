@@ -26,7 +26,7 @@
 #include "varspinbox.h"
 
 // Timeout in ms for waiting for response
-#define RESP_TO 10000
+#define RESP_TO 30000
 
 PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QWidget(parent),

@@ -27,7 +27,7 @@
 #include "rowdelegate.h"
 
 // Timeout in ms for waiting for response of Flarm device.
-#define RESP_TO 10000
+#define RESP_TO 30000
 
 /**
  * Constructor
