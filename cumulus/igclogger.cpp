@@ -825,9 +825,10 @@ void IgcLogger::slotFlightModeChanged( Calculator::FlightMode newFlightMode )
       return;
     }
 
-  if( newFlightMode == Calculator::standstill || newFlightMode == Calculator::unknown )
+  if( (newFlightMode == Calculator::standstill || newFlightMode == Calculator::unknown) &&
+      _logfile.isOpen() )
     {
-      // Close logfile after a certain time of still stand or unknown mode.
+      // Close an opened logfile after a certain time of still stand or unknown mode.
       closeTimer->start( TOAL * 1000);
     }
   else

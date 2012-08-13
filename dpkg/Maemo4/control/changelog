@@ -1,5 +1,7 @@
 cumulus (2.17.0) stable; urgency=low
 
+  * Do not reporting a landing, if IGC log file was not opened.
+  
   * Home site name added to personal page.
   
   * If moving away from a violated airspace no longer alarms are generated, if
