@@ -1,8 +1,19 @@
 cumulus (2.17.0) stable; urgency=low
 
-  * Flarm IGC download support added.
+  * Home site name added to personal page.
   
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 02 Aug 2012 21:53:14 +0200
+  * If moving away from a violated airspace no longer alarms are generated, if
+    movement is from inside, to very near, to near and out side.
+
+  * If a task was set and the last taskpoint was selected, the arrival altitude
+    display showed always zero.
+
+  * Combo boxes for sky directions replaced against toggle buttons in coordinate
+    editor. Makes the operation with fingers simpler as before.
+    
+  * Flarm IGC file download support added.
+  
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 13 Aug 2012 21:53:14 +0200
 
 cumulus (2.16.0) stable; urgency=low
 
