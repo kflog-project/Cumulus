@@ -176,9 +176,7 @@ bool FlarmBinCom::getIGCData( char* sData, unsigned int* progress)
 
   if (m.hdr.type == FRAME_NACK)
     {
-      // @AP Note: A NACK means not the end of the transmission. It seems that
-      // a Nack is also returned to a request, if no data are available at the
-      // moment. The right end of the transmission is reached, if the last
+      // @AP Note: The right end of the transmission is reached, if the last
       // character of a record is EOF (0x1A).
       sData[0] = 0;
       return true;
