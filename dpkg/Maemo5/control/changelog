@@ -1,7 +1,10 @@
 cumulus (2.17.0) stable; urgency=low
 
+  * Overflow issue fixed in HwInfo::getFreeUserSpace. Reported free disk space
+    was wrong.
+    
   * Do not reporting a landing, if IGC log file was not opened.
-
+  
   * Home site name added to personal page.
   
   * If moving away from a violated airspace no longer alarms are generated, if
@@ -15,7 +18,7 @@ cumulus (2.17.0) stable; urgency=low
     
   * Flarm IGC file download support added.
   
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 13 Aug 2012 21:53:14 +0200
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 14 Aug 2012 21:53:14 +0200
 
 cumulus (2.16.1) stable; urgency=low
 
