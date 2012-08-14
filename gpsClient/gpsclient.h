@@ -49,6 +49,7 @@
 #include <QByteArray>
 #include <QQueue>
 #include <QSet>
+#include <QTime>
 
 #include "ipc.h"
 
@@ -278,6 +279,9 @@ public:
 
   /** activate flag for timeout after Flarm reset. */
   bool activateTimeout;
+
+  /** Timeout control for Flarm IGC download. */
+  QTime downloadTimeControl;
 
 };
 

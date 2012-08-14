@@ -275,7 +275,7 @@ void GpsConAndroid::getFlarmFlightList()
   // read out flight header records
   int recNo = 0;
   char buffer[MAXSIZE];
-  QStringList flights;
+  int flights = 0;
 
   while( true )
     {
@@ -285,7 +285,10 @@ void GpsConAndroid::getFlarmFlightList()
 
           if( fbc.getRecordInfo( buffer ) )
             {
-              flights << QString( buffer );
+              QString qbuffer( buffer );
+              FlarmFlightListEvent *event = new FlarmFlightListEvent(qbuffer);
+              QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
+              flights++;
             }
           else
             {
@@ -302,20 +305,20 @@ void GpsConAndroid::getFlarmFlightList()
         }
     }
 
-  // Send back flight headers to application
-  QString list;
+  // Send back flight headers answer to application
+  QString answer;
 
-  if( flights.size() )
+  if( flights == 0 )
     {
-      list = flights.join("\n");
+      answer = "Empty";
     }
   else
     {
-      list = "Empty";
+      answer = "End";
     }
 
   // Hand over the flight list data as event to the GUI thread.
-  FlarmFlightListEvent *event = new FlarmFlightListEvent(list);
+  FlarmFlightListEvent *event = new FlarmFlightListEvent(answer);
   QCoreApplication::postEvent( GpsNmea::gps, event, Qt::HighEventPriority );
   return;
 }
@@ -366,6 +369,7 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
   for( int idx = 0; idx < idxList.size(); idx++ )
     {
       dlTime.start();
+      downloadTimeControl.start();
 
       // Select the flight to be downloaded
       int recNo = idxList.at(idx).toInt();
@@ -402,8 +406,12 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
 
           while( fbc.getIGCData(buffer, &progress) )
             {
-              if( lastProgress != progress )
+              if( lastProgress != progress || downloadTimeControl.elapsed() >= 10000 )
                 {
+                  // After a certain time a progress must be reported otherwise
+                  // the GUI thread runs in a timeout.
+                  downloadTimeControl.start();
+
                   // That eliminates a lot of intermediate steps
                   flarmFlightDowloadProgress(recNo, progress);
                   lastProgress = progress;

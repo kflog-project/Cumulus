@@ -40,6 +40,7 @@
 class QByteArray;
 class QMutex;
 class QString;
+class QTime;
 
 class GpsConAndroid : public QObject
 {
@@ -144,6 +145,9 @@ class GpsConAndroid : public QObject
 
   /** Thread synchronizer for actions. */
   static QMutex mutexAction;
+
+  /** Timeout control for Flarm IGC download. */
+  QTime downloadTimeControl;
 };
 
 /******************************************************************************/

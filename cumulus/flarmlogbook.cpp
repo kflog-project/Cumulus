@@ -254,18 +254,7 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 
 void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 {
-  m_logbook.clear(); // remove old content
-
-  // Clear table content.
-  for( int i = m_table->rowCount() - 1; i >= 0; i-- )
-    {
-      // Remove row from table.
-      m_table->removeRow(i);
-    }
-
-  // Stop timer
-  slot_Timeout();
-
+  // A new flight header is delivered or a status message.
   if( data.size() == 0 )
     {
       // No data delivered, should normally not happen.
@@ -274,6 +263,8 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 
   if( data.startsWith("Error") )
     {
+      // Stop timer
+      slot_Timeout();
       QString text0 = tr("Flarm flight list read error!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
@@ -282,9 +273,25 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 
   if( data.startsWith("Empty") )
     {
+      // Stop timer
+      slot_Timeout();
       QString text0 = tr("Flarm flight list is empty!");
       QString text1 = tr("Info");
       messageBox( QMessageBox::Information, text0, text1 );
+      return;
+    }
+
+  if( data.startsWith("End") )
+    {
+      // Stop timer
+      slot_Timeout();
+
+      // All flight headers are received
+      if( m_table->rowCount() )
+        {
+          m_downloadButton->setEnabled( true );
+        }
+
       return;
     }
 
@@ -294,53 +301,51 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
     27AG7QX2.IGC|2012-07-10|09:50:50|05:12:10|Axel Pauli||105
     27AG7QX1.IGC|2012-07-10|09:33:42|00:06:20|Axel Pauli||105
   */
-  // The passed data string must be split in its single lines.
-  m_logbook = data.split("\n");
 
-  for( int row = 0; row < m_logbook.size(); row++ )
+  // Restart supervision timer
+  m_timer->start();
+
+  // Append the new flight header to the flight logbook list.
+  m_logbook.append( data );
+
+  // A Flarm flight header has several entries, which are separated by a pipe
+  // character.
+  QStringList line = data.split("|");
+
+  if( line.size() < 7 )
     {
-      // A Flarm flight info has several entries, which are separated by a pipe
-      // character.
-      QStringList line = m_logbook.at(row).split("|");
+      qWarning() << "slot_FlarmLogbookData: 7 entries expected:"
+                  << line.size()
+                  << line;
+      return;
+    }
 
-      if( line.size() < 7 )
+  m_table->setRowCount( m_table->rowCount() + 1 );
+
+  for( int col = 0; col < line.size() && col < 6; col++ )
+    {
+      QTableWidgetItem* item;
+
+      item = new QTableWidgetItem( line.at(col + 1) );
+      item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+
+      if( col >= 0 && col <= 2 )
         {
-          qWarning() << "slot_FlarmLogbookData: 7 entries expected:"
-                      << line.size()
-                      << line;
-          break;
+          item->setTextAlignment( Qt::AlignCenter );
         }
 
-      m_table->setRowCount( m_table->rowCount() + 1 );
-
-      for( int col = 0; col < line.size() && col < 6; col++ )
-        {
-          QTableWidgetItem* item;
-
-          item = new QTableWidgetItem( line.at(col + 1) );
-          item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-
-          if( col >= 0 && col <= 2 )
-            {
-              item->setTextAlignment( Qt::AlignCenter );
-            }
-
-          m_table->setItem( row, col, item );
-        }
+      m_table->setItem( m_table->rowCount() - 1 , col, item );
     }
 
   m_table->resizeColumnsToContents();
   m_table->resizeRowsToContents();
-
-  if( m_table->rowCount() )
-    {
-      m_downloadButton->setEnabled( true );
-    }
 }
 
 void FlarmLogbook::slot_ReadFlights()
 {
   // Read button was pressed to get the flight list from the Flarm device.
+
+  m_logbook.clear(); // remove old content
 
   // Clear table content.
   for( int i = m_table->rowCount() - 1; i >= 0; i-- )
@@ -348,6 +353,9 @@ void FlarmLogbook::slot_ReadFlights()
       // Remove row from table.
       m_table->removeRow(i);
     }
+
+  m_table->resizeColumnsToContents();
+  m_table->resizeRowsToContents();
 
   enableButtons( false );
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );

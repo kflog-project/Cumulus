@@ -1109,7 +1109,7 @@ void GpsClient::getFlarmFlightList()
   // read out flight header records
   int recNo = 0;
   char buffer[MAXSIZE];
-  QStringList flights;
+  int  flights = 0;
 
   while( true )
     {
@@ -1119,7 +1119,16 @@ void GpsClient::getFlarmFlightList()
 
           if( fbc.getRecordInfo( buffer ) )
             {
-              flights << QString( buffer );
+              // Send single flight header to application. That is done in this
+              // way because the read out of the flight list can take different
+              // time in dependency of the UART transfer speed. If the time is
+              // too long, a timeout will raise an error box in the GUI thread.
+              QByteArray ba;
+              ba.append( MSG_FLARM_FLIGHT_LIST_RES );
+              ba.append( " " );
+              ba.append( buffer );
+              writeForwardMsg( ba.data() );
+              flights++;
             }
           else
             {
@@ -1136,18 +1145,18 @@ void GpsClient::getFlarmFlightList()
         }
     }
 
-  // Send back flight headers to application
   QByteArray ba;
   ba.append( MSG_FLARM_FLIGHT_LIST_RES );
-  ba.append( " " );
 
-  if( flights.size() )
+  if( flights == 0 )
     {
-      ba.append( flights.join("\n") );
+      // The flight list in Flarm is empty.
+      ba.append( " Empty" );
     }
   else
     {
-      ba.append( " Empty" );
+      // All flight headers are transfered.
+      ba.append( " End" );
     }
 
   writeForwardMsg( ba.data() );
@@ -1207,6 +1216,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
   for( int idx = 0; idx < idxList.size(); idx++ )
     {
       dlTime.start();
+      downloadTimeControl.start();
 
       // Select the flight to be downloaded
       int recNo = idxList.at(idx).toInt();
@@ -1243,8 +1253,12 @@ void GpsClient::getFlarmIgcFiles(QString& args)
 
           while( fbc.getIGCData(buffer, &progress) )
             {
-              if( lastProgress != progress )
+              if( lastProgress != progress || downloadTimeControl.elapsed() >= 10000 )
                 {
+                  // After a certain time a progress must be reported otherwise
+                  // the GUI thread runs in a timeout.
+                  downloadTimeControl.start();
+
                   // That eliminates a lot of intermediate steps
                   flarmFlightDowloadProgress(recNo, progress);
                   lastProgress = progress;
