@@ -412,15 +412,15 @@ void FlarmLogbook::slot_DownloadFlights()
   QString destination = GeneralConfig::instance()->getUserDataDirectory();
 
   // Check the free space at the user's file system.
-  ulong space = HwInfo::getFreeUserSpace( destination );
+  double space = HwInfo::getFreeUserSpace( destination );
 
   destination += "/flarmIgc";
 
-  qDebug() << "FlarmDownload: Free space:" << ((float) space/ (1024*1024)) << "MB at" << destination;
+  qDebug() << "FlarmDownload: Free space:" << space << "MB at" << destination;
 
-  const ulong mb = 1024 * 1024;
+  const ulong OneMB = 1024 * 1024;
 
-  if( space < ( fc * mb) )
+  if( space <  double(fc * OneMB) )
     {
       // Per file a free space of 1MB is calculated.
       QString text0 = "<html>" +

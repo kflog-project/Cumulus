@@ -29,8 +29,6 @@
 #include "calculator.h"
 #include "gpsnmea.h"
 
-const ulong DownloadManager::MinFsSpace = 25*1024*1024; // 25MB
-
 /**
  * Creates a download manager instance.
  */
@@ -39,7 +37,8 @@ DownloadManager::DownloadManager( QObject *parent ) :
   client(0),
   downloadRunning(false),
   requests(0),
-  errors(0)
+  errors(0),
+  MinFsSpaceInMB(25)
 {
   client = new HttpClient(this, false);
 
@@ -77,10 +76,10 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
 
   // Check free size of destination file system. If size is less than 25MB the
   // download is rejected.
-  if( getFreeUserSpace( destDir ) < MinFsSpace )
+  if( getFreeUserSpace( destDir ) < MinFsSpaceInMB )
     {
-      qWarning( "DownloadManager(%d): Free space on %s less than %ldMB!",
-                __LINE__, destDir.toLatin1().data(), MinFsSpace/(1024*1024) );
+      qWarning( "DownloadManager(%d): Free space on %s less than %.1fMB!",
+                __LINE__, destDir.toLatin1().data(), MinFsSpaceInMB );
 
       mutex.unlock();
       return false;
@@ -205,10 +204,10 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
 
   // Check free size of destination file system. If size is less than 25MB the
   // download is not executed.
-  if( getFreeUserSpace( destDir ) < MinFsSpace )
+  if( getFreeUserSpace( destDir ) < MinFsSpaceInMB )
     {
-      qWarning( "DownloadManager(%d): Free space on %s less than %ldMB!",
-                __LINE__, destDir.toLatin1().data(), MinFsSpace/(1024*1024) );
+      qWarning( "DownloadManager(%d): Free space on %s less than %.1fMB!",
+                __LINE__, destDir.toLatin1().data(), MinFsSpaceInMB );
 
       mutex.unlock();
 
@@ -246,7 +245,7 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
  * Returns the free size of the file system in bytes for non root users.
  * The passed path must be exist otherwise the call will fail!
  */
-ulong DownloadManager::getFreeUserSpace( QString& path )
+double DownloadManager::getFreeUserSpace( QString& path )
 {
   struct statfs buf;
   int res;
@@ -259,16 +258,19 @@ ulong DownloadManager::getFreeUserSpace( QString& path )
                 __LINE__, path.toLatin1().data() );
 
       perror("GetFreeUserSpace");
-      return 0;
+      return 0.0;
     }
 
 #if 0
-  qDebug() << "DM: FSBlockSize=" << buf.f_bsize
-           << "FSSizeInBlocks=" << buf.f_blocks
-           << "FreeAvail=" << buf.f_bfree
-           << "FreeAvailNonRoot=" << buf.f_bavail*buf.f_bsize/(1024*1024) << "MB";
+    qDebug() << "Path=" << path
+             << "FSBlockSize=" << buf.f_bsize
+             << "FSSizeInBlocks=" << buf.f_blocks
+             << "FreeAvail=" << buf.f_bfree
+             << "FreeAvailNonRoot=" << buf.f_bavail
+             << "FreeAvailNonRoot=" << ( double (buf.f_bavail) * double (buf.f_bsize) / double(1024 * 1024) )
+             << "MB";
 #endif
 
-  // free size available to non-superuser in bytes
-  return buf.f_bavail * buf.f_bsize;
+    // free size available to non-superuser in megabytes
+    return ( double (buf.f_bavail) * double (buf.f_bsize) / double(1024 * 1024) );
 }

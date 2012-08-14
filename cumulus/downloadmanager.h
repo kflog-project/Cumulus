@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2012 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,9 @@
  * This class handles the HTTP download requests in Cumulus. Downloads
  * of different map files can be requested.
  *
- * \date 2010
+ * \date 2010-2012
+ *
+ * \version $Id$
  */
 
 #ifndef DOWNLOAD_MANAGER_H
@@ -82,7 +84,7 @@ class DownloadManager : public QObject
   /**
    * Returns the free size of the file system in bytes for non root users.
    */
-  ulong getFreeUserSpace( QString& path );
+  double getFreeUserSpace( QString& path );
 
  private slots:
 
@@ -115,10 +117,10 @@ class DownloadManager : public QObject
   int errors;
 
   /**
-   * Required minimum space in bytes on file system destination to
+   * Required minimum space in MB on file system destination to
    * execute the download request.
    */
-  static const ulong MinFsSpace;
+  const double MinFsSpaceInMB;
 };
 
 #endif /* DOWNLOAD_MANAGER_H */

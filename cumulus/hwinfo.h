@@ -27,7 +27,9 @@
  * return things like the type of a device and other useful hardware
  * information.
  *
- * \date 2004-2010
+ * \date 2004-2012
+ *
+ * \version $Id$
  */
 
 #ifndef CLASS_HWINFO
@@ -153,9 +155,9 @@ class HwInfo
     static bool isMounted( const QString& mountPoint );
 
     /**
-     * Returns the free size of the file system in bytes for non root users.
+     * Returns the free size of the file system in MB bytes for non root users.
      */
-    static ulong getFreeUserSpace( QString& path );
+    static double getFreeUserSpace( QString& path );
 
   private:
     /**
@@ -167,6 +169,7 @@ class HwInfo
      * Because this is a singleton, don't allow copies and assignments.
      */
     HwInfo(const HwInfo& ){};
+
     HwInfo& operator=(const HwInfo& ){return *this;};
 
     static HwInfo *theInstance;

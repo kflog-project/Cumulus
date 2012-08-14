@@ -15,7 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2012-08-10 AP: Do not reporting a landing, if IGC log file was not opened.
+[-] 2012-08-14 AP: BUGFIX: Overflow issue fixed in HwInfo::getFreeUserSpace.
+                   Reported free disk space was wrong.
+
+[-] 2012-08-13 AP: BUGFIX: Do not reporting a landing, if IGC log file was not
+                   opened.
 
 [+] 2012-08-10 AP: Home site name added to personal page.
 

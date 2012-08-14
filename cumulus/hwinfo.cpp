@@ -255,10 +255,10 @@ bool HwInfo::isMounted( const QString& mountPoint )
 }
 
 /**
- * Returns the free size of the file system in bytes for non root users.
+ * Returns the free size of the file system in MB bytes for non root users.
  * The passed path must be exist otherwise the call will fail!
  */
-ulong HwInfo::getFreeUserSpace( QString& path )
+double HwInfo::getFreeUserSpace( QString& path )
 {
   struct statfs buf;
   int res;
@@ -271,16 +271,19 @@ ulong HwInfo::getFreeUserSpace( QString& path )
                 __LINE__, path.toLatin1().data() );
 
       perror("GetFreeUserSpace");
-      return 0;
+      return 0.0;
     }
 
 #if 0
-  qDebug() << "DM: FSBlockSize=" << buf.f_bsize
+  qDebug() << "Path=" << path
+           << "FSBlockSize=" << buf.f_bsize
            << "FSSizeInBlocks=" << buf.f_blocks
            << "FreeAvail=" << buf.f_bfree
-           << "FreeAvailNonRoot=" << buf.f_bavail*buf.f_bsize/(1024*1024) << "MB";
+           << "FreeAvailNonRoot=" << buf.f_bavail
+           << "FreeAvailNonRoot=" << ( double (buf.f_bavail) * double (buf.f_bsize) / double(1024 * 1024) )
+           << "MB";
 #endif
 
-  // free size available to non-superuser in bytes
-  return buf.f_bavail * buf.f_bsize;
+  // free size available to non-superuser in megabytes
+  return ( double (buf.f_bavail) * double (buf.f_bsize) / double(1024 * 1024) );
 }
