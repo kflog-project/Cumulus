@@ -15,13 +15,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2012-08-14 AP: Timeout handling for Flarm download modified.
+[-] 2012-08-15 AP: BUGFIX: Free space check bug fixed in FlarmLogbook.
 
-[*] 2012-08-14 AP: Cumulus 2.17.0 for all devices released.
+[-] 2012-08-14 AP: BUGFIX: Timeout handling for Flarm download modified to avoid
+                   popup of error boxes.
 
--------------------------------------------------
+[*] 2012-08-14 AP: Cumulus 2.17.0 only for Android released.
+
+--------------------------------------------------
 Cumulus 2.17.x (Development based on X11/Qt-4.8.2)
--------------------------------------------------
+--------------------------------------------------
 
 [-] 2012-08-14 AP: BUGFIX: Overflow issue fixed in HwInfo::getFreeUserSpace.
                    Reported free disk space was wrong.

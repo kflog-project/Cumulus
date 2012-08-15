@@ -1093,6 +1093,32 @@ bool GpsClient::flarmBinMode()
   return pingOk;
 }
 
+/***********************************************************************
+  Flight list example from Flarm
+
+ "28CG2XH1.IGC|2012-08-12|10:22:00|02:48:43|Lauzemis|75|Club"
+ "28BG2XH5.IGC|2012-08-11|15:09:33|00:12:48|Lauzemis|75|Club"
+ "28BG2XH4.IGC|2012-08-11|14:14:08|00:10:37|Lauzemis|75|Club"
+ "28BG2XH3.IGC|2012-08-11|13:21:36|00:13:44|Lauzemis|75|Club"
+ "28BG2XH2.IGC|2012-08-11|11:30:31|00:39:04|Lauzemis|75|Club"
+ "28BG2XH1.IGC|2012-08-11|11:00:17|00:12:37|Lauzemis|75|Club"
+ "284G2XH6.IGC|2012-08-04|15:57:58|00:18:00|Lauzemis|75|Club"
+ "284G2XH5.IGC|2012-08-04|14:35:18|00:14:16|Lauzemis|75|Club"
+ "284G2XH4.IGC|2012-08-04|14:01:43|00:14:54|Lauzemis|75|Club"
+ "284G2XH3.IGC|2012-08-04|13:13:26|00:17:20|Lauzemis|75|Club"
+ "284G2XH2.IGC|2012-08-04|12:34:52|00:15:13|Lauzemis|75|Club"
+ "284G2XH1.IGC|2012-08-04|11:50:58|00:22:18|Lauzemis|75|Club"
+ "281G2XH5.IGC|2012-08-01|16:24:43|00:12:20|Lauzemis|75|Club"
+ "281G2XH4.IGC|2012-08-01|14:05:11|00:15:00|Lauzemis|75|Club"
+ "281G2XH3.IGC|2012-08-01|13:44:35|00:12:28|Lauzemis|75|Club"
+ "281G2XH2.IGC|2012-08-01|12:00:59|01:12:00|Lauzemis|75|Club"
+ "281G2XH1.IGC|2012-08-01|10:12:36|01:41:43|Lauzemis|75|Club"
+ "27VG2XH3.IGC|2012-07-31|12:13:40|00:18:24|Lauzemis|75|Club"
+ "27VG2XH2.IGC|2012-07-31|11:47:43|00:14:21|Lauzemis|75|Club"
+ "27VG2XH1.IGC|2012-07-31|10:20:31|00:25:28|Lauzemis|75|Club"
+
+************************************************************************/
+
 void GpsClient::getFlarmFlightList()
 {
   // Switch off timeout control
@@ -1119,12 +1145,12 @@ void GpsClient::getFlarmFlightList()
 
           if( fbc.getRecordInfo( buffer ) )
             {
-              // Send single flight header to application. That is done in this
-              // way because the read out of the flight list can take different
-              // time in dependency of the UART transfer speed. If the time is
-              // too long, a timeout will raise an error box in the GUI thread.
-              QByteArray ba;
-              ba.append( MSG_FLARM_FLIGHT_LIST_RES );
+              // Send every flight header to the application. That is done in this
+              // way because the read out of the whole flight list can take different
+              // times in dependency of the UART transfer speed and the amount of
+              // entries. If the time is too long, a timeout will raise an error
+              // box in the GUI thread.
+              QByteArray ba( MSG_FLARM_FLIGHT_LIST_RES );
               ba.append( " " );
               ba.append( buffer );
               writeForwardMsg( ba.data() );
@@ -1145,8 +1171,7 @@ void GpsClient::getFlarmFlightList()
         }
     }
 
-  QByteArray ba;
-  ba.append( MSG_FLARM_FLIGHT_LIST_RES );
+  QByteArray ba( MSG_FLARM_FLIGHT_LIST_RES );
 
   if( flights == 0 )
     {
@@ -1164,12 +1189,9 @@ void GpsClient::getFlarmFlightList()
 
 void GpsClient::flarmFlightListError()
 {
-  QByteArray ba;
-  ba.append( MSG_FLARM_FLIGHT_LIST_RES );
+  QByteArray ba( MSG_FLARM_FLIGHT_LIST_RES );
   ba.append( " Error" );
   writeForwardMsg( ba.data() );
-
-  // qDebug() << ba;
 }
 
 void GpsClient::getFlarmIgcFiles(QString& args)

@@ -212,10 +212,8 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
 
 bool GpsConAndroid::flarmBinMode()
 {
-  // qDebug() << "GpsConAndroid::flarmBinMode()";
-
   // Binary switch command for Flarm interface
-  QByteArray pflax = QByteArray("$PFLAX\n");
+  QByteArray pflax("$PFLAX\n");
 
   FlarmBinComAndroid fbc;
 
@@ -259,8 +257,6 @@ bool GpsConAndroid::flarmBinMode()
 // This action must be executed in a thread.
 void GpsConAndroid::getFlarmFlightList()
 {
-  // qDebug() << "GpsConAndroid::getFlarmFlightList()";
-
   QMutexLocker locker(&mutexAction);
   FlarmBinComAndroid fbc;
 
@@ -327,7 +323,6 @@ void GpsConAndroid::getFlarmFlightList()
 void GpsConAndroid::getFlarmIgcFiles(QString& args)
 {
   // qDebug() << "GpsConAndroid::getFlarmIgcFiles()" << args;
-
   QMutexLocker locker(&mutexAction);
 
   // The argument string contains at the first position the destination directory

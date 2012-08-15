@@ -237,7 +237,7 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
       m_timer->start();
 
       // As next request the flight list from the Flarm device.
-      // The Flarm answer is delivered via the slot:
+      // The Flarm answers are delivered via the slot:
       //
       // slot_FlarmLogbookData()
       //
@@ -426,7 +426,8 @@ void FlarmLogbook::slot_DownloadFlights()
 
   qDebug() << "FlarmDownload: Free space:" << space << "MB at" << destination;
 
-  const ulong OneMB = 1024 * 1024;
+  // 1 MB is taken as estimated size for every flight.
+  const ulong OneMB = 1;
 
   if( space <  double(fc * OneMB) )
     {
