@@ -1,5 +1,9 @@
-cumulus (2.17.0) stable; urgency=low
+cumulus (2.17.1) stable; urgency=low
 
+  * Free space check bug fixed in FlarmLogbook.
+
+  * Timeout handling for Flarm download modified to avoid popup of error boxes.
+  
   * Overflow issue fixed in HwInfo::getFreeUserSpace. Reported free disk space
     was wrong.
     
@@ -18,7 +22,7 @@ cumulus (2.17.0) stable; urgency=low
     
   * Flarm IGC file download support added.
   
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 14 Aug 2012 21:53:14 +0200
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 15 Aug 2012 18:53:14 +0200
 
 cumulus (2.16.0) stable; urgency=low
 
