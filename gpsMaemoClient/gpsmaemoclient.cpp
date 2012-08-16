@@ -19,28 +19,25 @@
 
 using namespace std;
 
-#include <stdio.h>
 #include <iostream>
+
+#include <cstdio>
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
+#include <fcntl.h>
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
 #include <sys/ioctl.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-#include <netdb.h>
 
 #include <QtCore>
 
 #include "gpsmaemoclient.h"
 #include "protocol.h"
 #include "ipc.h"
-#include "hwinfo.h"
 
 // #define DEBUG 1
-
-// Size of internal message queue.
-#define QUEUE_SIZE 250
 
 #ifndef MAEMO4
 // Defines alive check timeout 10 minutes
