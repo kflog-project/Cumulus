@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-** Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
+** Copyright (c): 2010-2012 by Axel Pauli (axel@kflog.org)
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -1011,7 +1011,7 @@ void GpsMaemoClient::readServerMsg()
       exit(-1); // Error occurred
     }
 
-  if( msgLen > 256 )
+  if( msgLen > 512 )
     {
       // such messages length are not defined. we will ignore that.
       qWarning() << method
@@ -1028,8 +1028,7 @@ void GpsMaemoClient::readServerMsg()
   if( done <= 0 )
     {
       clientData.closeSock();
-      delete [] buf;
-      buf = 0;
+      delete[] buf;
       exit(-1); // Error occurred
     }
 
@@ -1037,12 +1036,27 @@ void GpsMaemoClient::readServerMsg()
    qDebug() << method << "Received Message:" << buf;
 #endif
 
-  // Split the received message into its single parts. Space is used
-  // as separator.
-  QString qbuf( buf );
-  QStringList args = qbuf.split(" ");
-  delete [] buf;
-  buf = 0;
+   // Split the received message into its two parts. Space is used as separator
+   // between the command word and the optional content of the message.
+   QString qbuf( buf );
+
+   delete[] buf;
+   buf = 0;
+
+   int spaceIdx = qbuf.indexOf( QChar(' ') );
+
+   QStringList args;
+
+   if( spaceIdx == -1 || qbuf.size() == spaceIdx )
+     {
+       args.append(qbuf);
+       args.append("");
+     }
+   else
+     {
+       args.append(qbuf.left(spaceIdx));
+       args.append(qbuf.mid(spaceIdx+1));
+     }
 
   // look, what server is requesting
   if( MSG_MAGIC == args[0] )
@@ -1113,11 +1127,10 @@ void GpsMaemoClient::readServerMsg()
     }
   else
     {
-      qWarning() << method << "Unknown message received:" << buf;
+      qWarning() << method << "Unknown message received:" << qbuf;
       writeServerMsg( MSG_NEG );
     }
 
-  delete [] buf;
   return;
 }
 

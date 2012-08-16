@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2010-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -34,6 +34,10 @@
  *
  * Because LibLocation in MAEMO4 does not report continuous altitude information
  * the GPS daemon is directly connected by this class.
+ *
+ * \date 2010-2012
+ *
+ * \version $Id$
  *
  */
 
