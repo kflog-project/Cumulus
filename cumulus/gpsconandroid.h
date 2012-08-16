@@ -36,11 +36,11 @@
 #define GPS_CON_ANDROID_H
 
 #include <QObject>
+#include <QTime>
 
 class QByteArray;
 class QMutex;
 class QString;
-class QTime;
 
 class GpsConAndroid : public QObject
 {
