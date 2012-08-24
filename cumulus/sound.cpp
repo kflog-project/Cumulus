@@ -6,19 +6,16 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2008-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QApplication>
-#include <QFileInfo>
-#include <QStringList>
-#include <QProcess>
+#include <QtGui>
 
 #include "sound.h"
 #include "generalconfig.h"
@@ -30,7 +27,7 @@ Sound::Sound( QString &sound, QObject *parent ) : QThread( parent )
   _sound = sound;
   setTerminationEnabled(true);
 
-  connect( this, SIGNAL(finished()), this, SLOT(slot_destroy()) );
+  connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
 }
 
 Sound::~Sound()
@@ -45,6 +42,8 @@ Sound::~Sound()
  */
 void Sound::run()
 {
+  QMutexLocker locker( &mutex );
+
   QFileInfo info = QFileInfo( _sound );
 
   if( ! info.isReadable() )
@@ -74,13 +73,6 @@ void Sound::run()
       return;
     }
 
-  // Try to lock mutex. If mutex is locked we return immediately to avoid a
-  // system overload.
-  if( mutex.tryLock() == false )
-    {
-      return;
-    }
-
   QString cmd;
 
   if( player.contains( "%s" ) )
@@ -100,12 +92,4 @@ void Sound::run()
   // QProcess::execute( cmd ) did not work at this place. Maybe it
   // uses also threads. The good old c-function system() works solid.
   system( cmd.toLatin1().data() );
-
-  mutex.unlock();
-}
-
-void Sound::slot_destroy()
-{
-  // deletes the thread object after execution is finished
-  delete this;
 }

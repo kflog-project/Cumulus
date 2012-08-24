@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2008-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief A class for playing of sound files in a separate thread.
  *
- * \date 2008
+ * \date 2008-2012
  */
 
 #ifndef Sound_H
@@ -44,11 +44,6 @@ class Sound : public QThread
  protected:
 
   void run();
-
-  private slots:
-
-  // called to delete the thread
-  void slot_destroy();
 
  private:
 
