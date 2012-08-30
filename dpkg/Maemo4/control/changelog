@@ -1,3 +1,11 @@
+cumulus (2.17.2) stable; urgency=low
+
+  * Some altimeter dialog settings modified to become valid immediately.
+
+  * Wrong Vg value display fixed in FlarmListView.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 30 Aug 2012 15:53:14 +0200
+
 cumulus (2.17.1) stable; urgency=low
 
   * Free space check bug fixed in FlarmLogbook.
