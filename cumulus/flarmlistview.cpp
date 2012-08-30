@@ -210,9 +210,14 @@ void FlarmListView::fillItemList( QString& object2Select )
          << aliasHash.value( acft.ID, acft.ID )
          << Distance::getText( distAcft, true, -1 )
          << vertical
-         << ""
-         << Speed( acft.GroundSpeed ).getHorizontalText( false, 0 )
-         << climb;
+         << "";
+
+      if( acft.GroundSpeed != INT_MIN )
+        {
+          sl << Speed( acft.GroundSpeed ).getHorizontalText( false, 0 );
+        }
+
+      sl << climb;
 
       QTreeWidgetItem* item = new QTreeWidgetItem( sl );
       item->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );

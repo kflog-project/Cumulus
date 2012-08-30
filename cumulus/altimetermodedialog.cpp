@@ -377,25 +377,36 @@ void AltimeterModeDialog::load()
   m_saveQnh = conf->getQNH();
 
   spinQnh->setValue( m_saveQnh );
-
   startTimer();
 }
 
 void AltimeterModeDialog::slotModeChanged( int mode )
 {
   _mode = mode;
+  GeneralConfig::instance()->setAltimeterMode( _mode );
+
+  emit newAltimeterMode();     // informs MapView
+  emit newAltimeterSettings(); // informs GpsNmea
   startTimer();
 }
 
 void AltimeterModeDialog::slotUnitChanged( int unit )
 {
   _unit = unit;
+
+  // The new unit is set temporary to see the correct value.
+  Altitude::setUnit( (enum Altitude::altitudeUnit) _unit );
+  emit newAltimeterMode(); // informs MapView
   startTimer();
 }
 
 void AltimeterModeDialog::slotReferenceChanged( int ref )
 {
   _ref = ref;
+  GeneralConfig::instance()->setGpsAltitude( _ref );
+
+  emit newAltimeterMode();     // informs MapView
+  emit newAltimeterSettings(); // informs GpsNmea
   startTimer();
 }
 
