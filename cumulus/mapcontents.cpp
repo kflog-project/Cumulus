@@ -3183,6 +3183,26 @@ bool MapContents::isInWaypointList(const QString& name )
   return false;
 }
 
+Waypoint* MapContents::getWaypointFromList( const Waypoint* wp )
+{
+  if( wp == 0 )
+    {
+      return 0;
+    }
+
+  for( int i=0; i < wpList.count(); i++ )
+    {
+      Waypoint& wpItem = wpList[i];
+
+      if( wpItem == *wp )
+        {
+          return &wpItem;
+        }
+    }
+
+  return 0;
+}
+
 /**
  * @Returns how often the name of the waypoint in the argument
  * matches one of the waypoints in the list.

@@ -33,7 +33,6 @@ WaypointListView::WaypointListView( QMainWindow *parent ) :
   priorityOfEditedWp( Waypoint::Top )
 {
   setObjectName("WaypointListView");
-  par = parent;
 
   QGridLayout *topLayout = new QGridLayout( this );
 
@@ -304,10 +303,7 @@ void WaypointListView::slot_deleteWp(Waypoint& wp)
   // Second delete the waypoint
   listw->deleteWaypoint( wp );
 
-  if( par )
-    {
-      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
-    }
+  MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
 }
 
 /** Called when the selected waypoints should be deleted from the catalog */
@@ -359,11 +355,8 @@ void WaypointListView::slot_deleteWPs()
       // Second delete all selected waypoints
       listw->deleteSelectedWaypoints();
 
-      if( par )
-        {
-          ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
-        }
-    }
+      MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+   }
 }
 
 /** Called to remove all waypoints of the catalog. */
@@ -415,31 +408,19 @@ void WaypointListView::slot_deleteAllWPs()
       // Second delete all waypoints
       listw->deleteAllWaypoints();
 
-      if( par )
-        {
-          ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
-        }
+      MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
     }
 }
 
 /** Called if a waypoint has been edited. */
 void WaypointListView::slot_wpEdited(Waypoint& wp)
 {
-  //  qDebug("WaypointListView::slot_wpEdited");
+  qDebug() << "WaypointListView::slot_wpEdited():" << wp.name;
+
   listw->updateCurrentWaypoint( wp );
+  listw->fillItemList();
 
-  if( listw->getWaypointPriority() != Waypoint::Top &&
-      priorityOfEditedWp != wp.priority )
-    {
-      // We must update the list view because the waypoint priority has been
-      // changed.
-      listw->fillItemList();
-    }
-
-  if( par )
-    {
-      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
-    }
+  MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
 }
 
 /** Called if a waypoint should be added. */
@@ -448,10 +429,7 @@ void WaypointListView::slot_addWp(Waypoint& wp)
   // qDebug("WaypointListView::slot_addWp(): name=%s", wp->name.toLatin1().data());
   listw->addWaypoint( wp );
 
-  if( par )
-    {
-      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
-    }
+  MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
 }
 
 /** Called to set a new home position */

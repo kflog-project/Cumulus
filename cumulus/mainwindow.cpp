@@ -645,6 +645,8 @@ void MainWindow::slotCreateApplicationWidgets()
             viewWP, SLOT( slot_addWp( Waypoint& ) ) );
   connect( viewInfo, SIGNAL( deleteWaypoint( Waypoint& ) ),
             viewWP, SLOT( slot_deleteWp( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( waypointEdited( Waypoint& ) ),
+            viewWP, SLOT( slot_wpEdited( Waypoint& ) ) );
   connect( viewInfo, SIGNAL( selectWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),

@@ -109,6 +109,11 @@ signals:
    */
   void gotoHomePosition();
 
+  /**
+   * Emitted if a waypoint was edited.
+   */
+  void waypointEdited(Waypoint& wp);
+
 protected:
 
   /**
@@ -175,6 +180,11 @@ private slots:
    * This slot is called if the delete button is clicked.
    */
   void slot_delete();
+
+  /**
+   * This slot is called when the waypoint editing is finished.
+   */
+  void slot_edited( Waypoint& wp);
 
 private: // Private attributes
 

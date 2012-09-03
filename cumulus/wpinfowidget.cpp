@@ -21,19 +21,21 @@
 
 #include <QtGui>
 
-#include "mainwindow.h"
+#include "altitude.h"
 #include "basemapelement.h"
-#include "wpinfowidget.h"
+#include "gpsnmea.h"
 #include "generalconfig.h"
 #include "calculator.h"
+#include "mainwindow.h"
 #include "mapcontents.h"
 #include "mapcalc.h"
-#include "wgspoint.h"
-#include "altitude.h"
 #include "sonne.h"
-#include "gpsnmea.h"
+#include "wgspoint.h"
+#include "wpeditdialog.h"
+#include "wpinfowidget.h"
 
 extern Calculator *calculator;
+extern MapContents* _globalMapContents;
 
 WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   QWidget(parent)
@@ -594,7 +596,39 @@ void WPInfoWidget::slot_arrivalClose()
 
 void WPInfoWidget::slot_edit()
 {
+  qDebug() << "WPInfoWidget::slot_edit()" << _wp.name;;
 
+  // Search the waypoint object in the global waypoint list.
+  Waypoint* wplelem = _globalMapContents->getWaypointFromList( &_wp );
+
+  if( wplelem == 0 )
+    {
+      // No waypoint object found in the global waypoint list.
+      return;
+    }
+
+  // TODO Check, if waypoint is set in calculator as target. Then we must
+  // update the selection.
+
+  WpEditDialog *dlg = new WpEditDialog( this, wplelem );
+
+  connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
+            SLOT(slot_edited(Waypoint &)) );
+
+  dlg->setVisible( true );
+}
+
+void WPInfoWidget::slot_edited( Waypoint& wp )
+{
+  qDebug() << "WPInfoWidget::slot_edited()" << wp.name;
+
+  // Update display after edition of waypoint.
+  showWP( _lastView, wp );
+
+  // TODO: Update a possible calculator selection
+
+
+  emit waypointEdited( wp );
 }
 
 void WPInfoWidget::slot_delete()
@@ -620,9 +654,8 @@ void WPInfoWidget::slot_delete()
 
 #endif
 
-  if( mb.exec() == QMessageBox::Yes && _wp.wpListMember )
+  if( mb.exec() == QMessageBox::Yes )
     {
-      // Check, if the displayed point is a pure waypoint.
       emit deleteWaypoint( _wp );
       return slot_SwitchBack();
     }

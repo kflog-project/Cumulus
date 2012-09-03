@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2011 by Axel Pauli
+ **                   2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map-files as value lists.
  *
- * \date 2000-2011
+ * \date 2000-2012
  *
  * \version $Id$
  */
@@ -223,6 +223,17 @@ class MapContents : public QObject
      * matches one of the waypoints in the list.
      */
     bool isInWaypointList( const QString& name );
+
+    /**
+     * Gets the pointer of the waypoint from the waypoint list which is equal
+     * to the passed waypoint.
+     *
+     * \param wp waypoint to be serached in waypoint list
+     *
+     * \return Null if no waypoint match was found otherwise a pointer to the
+     * waypoint object.
+     */
+    Waypoint* getWaypointFromList( const Waypoint* wp );
 
     /**
      * @return how often the name of the waypoint in the argument

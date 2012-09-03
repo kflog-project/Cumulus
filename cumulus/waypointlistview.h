@@ -32,7 +32,6 @@
 #define WAYPOINT_LISTVIEW_H
 
 #include <QWidget>
-#include <QMainWindow>
 #include <QPushButton>
 
 #include "waypointlistwidget.h"
@@ -181,7 +180,6 @@ signals: // Signals
 private:
 
   WaypointListWidget* listw;
-  QMainWindow*        par;
   QPushButton*        cmdSelect;
   QPushButton*        cmdHome;
   QPushButton*        cmdPriority;
