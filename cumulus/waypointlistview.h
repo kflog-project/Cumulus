@@ -69,9 +69,14 @@ protected:
 public slots:
 
   /**
-    * Called if a waypoint has been added.
+    * Called if a waypoint should be added.
     */
-   void slot_wpAdded(Waypoint& wp);
+   void slot_addWp(Waypoint& wp);
+
+   /**
+     * Called if a waypoint should be deleted.
+     */
+    void slot_deleteWp(Waypoint& wp);
 
 private slots:
 

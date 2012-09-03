@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2011 by Axel Pauli
+**                   2009-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  *
  * This widget displays a list of waypoints and provides some management methods.
  *
- * \date 2002-2011
+ * \date 2002-2012
  *
  * \version $Id$
  *
@@ -83,6 +83,11 @@ public:
    * Removes the currently highlighted waypoint.
    */
   void deleteCurrentWaypoint();
+
+  /**
+   * Removes the passed waypoint.
+   */
+  void deleteWaypoint(Waypoint &wp);
 
   /**
    * @param wp Adds a waypoint to the list.

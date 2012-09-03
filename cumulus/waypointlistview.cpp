@@ -246,7 +246,7 @@ void WaypointListView::slot_newWP()
   WpEditDialog *dlg = new WpEditDialog( this, 0 );
 
   connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
-           SLOT(slot_wpAdded(Waypoint &)) );
+           SLOT(slot_addWp(Waypoint &)) );
 
   dlg->setVisible( true );
 }
@@ -275,6 +275,38 @@ void WaypointListView::slot_editWP()
                SLOT(slot_wpEdited(Waypoint &)) );
 
       dlg->setVisible( true );
+    }
+}
+
+/**
+ * Called if a waypoint shall be removed.
+ */
+void WaypointListView::slot_deleteWp(Waypoint& wp)
+{
+  qDebug() << "WaypointListView::slot_deleteWp():" << wp.name;
+
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
+
+  if( wpList.size() == 0 )
+    {
+      return;
+    }
+
+  // The calculator can own a selected waypoint. Important! First
+  // announce deletion of waypoint for cancel to have a valid instance.
+  const Waypoint* wpc = calculator->getselectedWp();
+
+  if( wpc && *wpc == wp )
+    {
+      emit deleteWaypoint( &wp );
+    }
+
+  // Second delete the waypoint
+  listw->deleteWaypoint( wp );
+
+  if( par )
+    {
+      ((MainWindow*) par)->viewMap->_theMap->scheduleRedraw( Map::waypoints );
     }
 }
 
@@ -410,10 +442,10 @@ void WaypointListView::slot_wpEdited(Waypoint& wp)
     }
 }
 
-/** Called if a waypoint has been added. */
-void WaypointListView::slot_wpAdded(Waypoint& wp)
+/** Called if a waypoint should be added. */
+void WaypointListView::slot_addWp(Waypoint& wp)
 {
-  // qDebug("WaypointListView::slot_wpAdded(): name=%s", wp->name.toLatin1().data());
+  // qDebug("WaypointListView::slot_addWp(): name=%s", wp->name.toLatin1().data());
   listw->addWaypoint( wp );
 
   if( par )

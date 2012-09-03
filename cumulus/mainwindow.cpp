@@ -641,9 +641,11 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotShowContextMenu() ) );
 #endif
 
-  connect( viewInfo, SIGNAL( waypointAdded( Waypoint& ) ),
-           viewWP, SLOT( slot_wpAdded( Waypoint& ) ) );
-  connect( viewInfo, SIGNAL( waypointSelected( Waypoint*, bool ) ),
+  connect( viewInfo, SIGNAL( addWaypoint( Waypoint& ) ),
+            viewWP, SLOT( slot_addWp( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( deleteWaypoint( Waypoint& ) ),
+            viewWP, SLOT( slot_deleteWp( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( selectWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
@@ -2460,7 +2462,7 @@ void MainWindow::slotRememberWaypoint()
   wp.isLandable = false;
   wp.country = GeneralConfig::instance()->getHomeCountryCode();
 
-  viewWP->slot_wpAdded( wp );
+  viewWP->slot_addWp( wp );
 
   // qDebug("WP lat=%d, lon=%d", wp.origP.lat(), wp.origP.lon() );
 }

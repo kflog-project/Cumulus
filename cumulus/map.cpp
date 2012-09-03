@@ -369,6 +369,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               w->length = siteRunway.length;
               w->comment = siteComment;
               w->country = siteCountry;
+              w->wpListMember = false;
 
               found = true;
               lastDist = dX+dY;
@@ -477,7 +478,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
   if( found )
     {
-      // qDebug ("Waypoint: %s", w->name.toLatin1().data() );
+      qDebug() << "Waypoint=" << w->name << "wpListMember=" << w->wpListMember;
       emit waypointSelected( w );
       return;
     }

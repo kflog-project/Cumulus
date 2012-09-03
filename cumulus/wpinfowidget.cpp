@@ -17,7 +17,7 @@
  ***********************************************************************/
 
 #include <cmath>
-#include <time.h>
+#include <ctime>
 
 #include <QtGui>
 
@@ -33,7 +33,7 @@
 #include "sonne.h"
 #include "gpsnmea.h"
 
-extern Calculator   *calculator;
+extern Calculator *calculator;
 
 WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   QWidget(parent)
@@ -80,6 +80,18 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   buttonrow2->addWidget(cmdArrival);
   connect(cmdArrival, SIGNAL(clicked()),
           this, SLOT(slot_arrival()));
+
+  cmdEdit = new QPushButton(tr("Edit"), this);
+  cmdEdit->setFont(bfont);
+  buttonrow2->addWidget(cmdEdit);
+  connect(cmdArrival, SIGNAL(clicked()),
+          this, SLOT(slot_edit()));
+
+  cmdRemove = new QPushButton(tr("Delete"), this);
+  cmdRemove->setFont(bfont);
+  buttonrow2->addWidget(cmdRemove);
+  connect(cmdRemove, SIGNAL(clicked()),
+          this, SLOT(slot_delete()));
 
   buttonrow1=new QHBoxLayout;
   topLayout->addLayout(buttonrow1);
@@ -132,7 +144,7 @@ WPInfoWidget::~WPInfoWidget()
 /** This slot get called on the timer timeout. */
 void WPInfoWidget::slot_timeout()
 {
-  if(--_timerCount==0)
+  if( --_timerCount == 0 )
     {
       timer->stop();
       slot_SwitchBack();
@@ -156,7 +168,7 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
   // save passed waypoint
   _wp = wp;
 
-  // Check if new point is in the waypoint list, so make sure we can add it.
+  // Check if new point is already in the waypoint list, so make sure we can add it.
   if (_globalMapContents->isInWaypointList(wp.origP))
     {
       cmdAddWaypoint->setVisible( false );
@@ -173,16 +185,38 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
   GeneralConfig *conf = GeneralConfig::instance();
   QPoint home = conf->getHomeCoord();
 
+  bool moving = ( calculator->moving() ||
+                  ( calculator->currentFlightMode() != Calculator::unknown &&
+                    calculator->currentFlightMode() != Calculator::standstill ) );
+
   // Show the home button only if we are not to fast in move to avoid
   // wrong usage. The redefinition of the home position can trigger
   // a reload of the airfield list.
-  if( home == wp.origP || calculator->moving() )
+  if( home == wp.origP || moving )
     {
       cmdHome->setVisible( false );
     }
   else
     {
       cmdHome->setVisible( true );
+    }
+
+  cmdArrival->setVisible( false );
+  cmdEdit->setVisible( false );
+  cmdRemove->setVisible( false );
+
+  if( moving )
+    {
+      cmdArrival->setVisible( true );
+    }
+  else
+    {
+      // Show only these command buttons, if the point is a real waypoint.
+      if( wp.taskPointIndex == -1 && wp.wpListMember == true )
+        {
+          cmdEdit->setVisible( true );
+          cmdRemove->setVisible( true );
+        }
     }
 
   // Check if Waypoint is not selected, so make sure we can select it.
@@ -216,8 +250,8 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
 
   writeText();
 
-  // @AP: load the time from user configuration
-  _timerCount = GeneralConfig::instance()->getInfoDisplayTime();
+  // @AP: load the display time from user configuration
+  _timerCount = conf->getInfoDisplayTime();
 
   if( _timerCount > 0 )
     {
@@ -447,7 +481,7 @@ void WPInfoWidget::slot_KeepOpen()
 /** This slot is called if the unselect Waypoint button is clicked. */
 void WPInfoWidget::slot_unselectWaypoint()
 {
-  emit waypointSelected(0, true);
+  emit selectWaypoint(0, true);
 
   return slot_SwitchBack();
 }
@@ -463,22 +497,21 @@ void WPInfoWidget::slot_selectWaypoint()
       return slot_unselectWaypoint();
     }
 
-  emit waypointSelected(&_wp, true);
+  emit selectWaypoint(&_wp, true);
 
   return slot_SwitchBack();
 }
-
 
 /** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
   _wp.priority = Waypoint::High; //priority is high
-  emit waypointAdded(_wp);
+  _wp.wpListMember = true;
+  emit addWaypoint(_wp);
 
   cmdAddWaypoint->setVisible( false );
   slot_KeepOpen();
 }
-
 
 /**
  *  This slot is called if the Home button is clicked. The change of the home
@@ -557,4 +590,40 @@ void WPInfoWidget::slot_arrivalClose()
 {
   // switch on close shortcut keys
   scClose->setEnabled(true);
+}
+
+void WPInfoWidget::slot_edit()
+{
+
+}
+
+void WPInfoWidget::slot_delete()
+{
+  qDebug() << "WPInfoWidget::slot_delete()";
+
+  slot_KeepOpen(); // Stop timer
+
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Delete?" ),
+                  tr( "Delete waypoint" ) + " " + _wp.name + "?",
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
+
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes && _wp.wpListMember )
+    {
+      // Check, if the displayed point is a pure waypoint.
+      emit deleteWaypoint( _wp );
+      return slot_SwitchBack();
+    }
 }

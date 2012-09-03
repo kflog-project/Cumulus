@@ -28,7 +28,7 @@
 #include "mapmatrix.h"
 #include "waitscreen.h"
 
-extern MapMatrix*  _globalMapMatrix;
+extern MapMatrix* _globalMapMatrix;
 
 #define KFLOG_FILE_MAGIC 0x404b464c
 #define FILE_TYPE_WAYPOINTS 0x50
@@ -271,6 +271,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.comment = wpComment;
           wp.priority = ( enum Waypoint::Priority ) wpImportance;
           wp.country = wpCountry;
+          wp.wpListMember = true;
 
           if( fileFormat < WP_FILE_FORMAT_ID_3 )
             {
@@ -537,6 +538,7 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString&
 
       if( wpList )
         {
+          w.wpListMember = true;
           wpList->append( w );
         }
 
@@ -996,6 +998,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
       if( wpList )
         {
           // Add waypoint to list
+          wp.wpListMember = true;
           wpList->append( wp );
         }
 
@@ -1421,6 +1424,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       if( wpList )
         {
           // Add waypoint to list
+          wp.wpListMember = true;
           wpList->append( wp );
         }
 

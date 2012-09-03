@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,15 @@
  *
  * \author André Somers, Axel Pauli
  *
- * \brief This widget shows the details of a waypoint.
+ * \brief This widget shows the details of a waypoint together with some
+ * command buttons for executing different actions.
  *
- *\date 2002-2010
+ * This widget shows the details of a waypoint together with some
+ * command buttons for executing different actions.
+ *
+ * \date 2002-2012
+ *
+ * $Id$
  */
 
 #ifndef WP_INFO_WIDGET_H
@@ -79,14 +85,19 @@ public slots:
 signals:
 
   /**
-   * Emitted if a waypoint has been added to the list.
+   * Emitted if a waypoint should be added to the list.
    */
-  void waypointAdded(Waypoint& wp);
+  void addWaypoint(Waypoint& wp);
 
   /**
-   * Emitted if a waypoint has been selected.
+   * Emitted if a waypoint should be selected.
    */
-  void waypointSelected(Waypoint*, bool);
+  void selectWaypoint(Waypoint*, bool);
+
+  /**
+   * Emitted if a waypoint should be deleted.
+   */
+  void deleteWaypoint(Waypoint& wp);
 
   /**
    * Emitted if a new home position is selected
@@ -155,6 +166,16 @@ private slots:
    */
   void slot_arrivalClose();
 
+  /**
+   * This slot is called if the edit button is clicked.
+   */
+  void slot_edit();
+
+  /**
+   * This slot is called if the delete button is clicked.
+   */
+  void slot_delete();
+
 private: // Private attributes
 
   /**
@@ -173,6 +194,8 @@ private: // Private attributes
   QPushButton* cmdSelectWaypoint;
   QPushButton* cmdUnselectWaypoint;
   QPushButton* cmdArrival;
+  QPushButton* cmdEdit;
+  QPushButton* cmdRemove;
 
   QShortcut* scClose;
 

@@ -52,6 +52,8 @@ WaypointListWidget::~WaypointListWidget()
 /** Clears and refills the waypoint item list. */
 void WaypointListWidget::fillItemList()
 {
+  qDebug() << "WaypointListWidget::fillItemList()";
+
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -228,6 +230,41 @@ void WaypointListWidget::deleteCurrentWaypoint()
   list->setUpdatesEnabled(true);
 }
 
+void WaypointListWidget::deleteWaypoint(Waypoint &wp)
+{
+  qDebug() << "WaypointListWidget::deleteWaypoint():" << wp.name << "ListCount=" << list->topLevelItemCount();
+
+  // Set the waypoint to be deleted as the current item.
+  for( int i = 0; i < list->topLevelItemCount(); i++ )
+    {
+      _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (list->topLevelItem(i));
+
+      if( ! wpi )
+        {
+          continue;
+        }
+
+      qDebug() << wp.name << wp.type << wp.description << wp.origP << wp.taskPointIndex;
+      qDebug() << wpi->wp.name << wpi->wp.type << wpi->wp.description << wpi->wp.origP << wpi->wp.taskPointIndex;
+
+      if( wpi->wp == wp )
+        {
+          qDebug() << "Wp found";
+          // If the waypoints are identical remove the waypoint from the lists.
+          list->setCurrentItem( wpi );
+          deleteCurrentWaypoint();
+          return;
+        }
+    }
+
+  qDebug() << "Wp in listview not found";
+
+  // remove waypoint from waypoint list in MapContents
+  _globalMapContents->getWaypointList().removeAll( wp );
+  // save the modified catalog
+  _globalMapContents->saveWaypointList();
+}
+
 /** Called if a waypoint has been edited. */
 void WaypointListWidget::updateCurrentWaypoint(Waypoint& wp)
 {
@@ -266,13 +303,14 @@ void WaypointListWidget::updateCurrentWaypoint(Waypoint& wp)
 }
 
 /** Called if a waypoint has been added. */
-void WaypointListWidget::addWaypoint(Waypoint& newWp)
+void WaypointListWidget::addWaypoint( Waypoint& newWp )
 {
   // put new waypoint into the global waypoint list
   QList<Waypoint> &wpList = _globalMapContents->getWaypointList();
 
   // A waypoint name is limited to 8 characters and has only upper cases.
   newWp.name = newWp.name.left(8).toUpper();
+  newWp.wpListMember = true;
 
   wpList.append( newWp );
 

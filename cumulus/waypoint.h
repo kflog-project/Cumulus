@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2011 by Axel Pauli
+ **                         2008-2012 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -56,7 +56,7 @@ class TaskPointTypes
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2011
+ * \date 1999-2012
  *
  * \version $Id$
  */
@@ -119,6 +119,8 @@ class Waypoint
   enum TaskPointTypes::TaskPointType taskPointType;
   /** Country as two letter code, where the waypoint is to find. */
   QString country;
+  /** Flag to indicate that the waypoint is a member of the waypoint list. */
+  bool wpListMember;
 };
 
 #endif

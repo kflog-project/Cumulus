@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2011 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,9 +31,10 @@ Waypoint::Waypoint()
   elevation      = 0;
   frequency      = 0.;
   isLandable     = false;
-  priority     = Waypoint::Low;
+  priority       = Waypoint::Low;
   taskPointIndex = -1;
   taskPointType  = TaskPointTypes::NotSet;
+  wpListMember   = false;
 
   origP.setPos(0,0);
   projP.setX(0);
@@ -62,6 +63,7 @@ Waypoint::Waypoint(const Waypoint& inst)
   priority       = inst.priority;
   taskPointIndex = inst.taskPointIndex;
   taskPointType  = inst.taskPointType;
+  wpListMember   = inst.wpListMember;
 }
 
 Waypoint::~Waypoint()
