@@ -18,8 +18,14 @@ Cumulus changelog
 [+] 2012-09-04 AP: Waypoint management made easier. If the waypoint info is
                    requested by the user from the map the info display allows
                    now to delete or edit the shown waypoint. The same is possible
-                   if the waypoint info is requested from the waypoint list
-                   overview.
+                   if the waypoint info is requested from the waypoint list view.
+                   
+[-] 2012-09-04 AP: BUGFIX: If a selected target waypoint was edited its data
+                   were never updated after editing at the arrival map display
+                   and in the gliding calculator.
+                   
+[-] 2012-09-04 AP: BUGFIX: If the data of a selected target waypoint were
+                   removed the arrival map display was sometimes not reset.
 
 [*] 2012-08-30 AP: Cumulus 2.17.2 only for Android released.
 
