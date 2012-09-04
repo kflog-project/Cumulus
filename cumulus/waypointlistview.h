@@ -32,6 +32,7 @@
 #define WAYPOINT_LISTVIEW_H
 
 #include <QWidget>
+#include <QPoint>
 #include <QPushButton>
 
 #include "waypointlistwidget.h"
@@ -47,7 +48,7 @@ private:
 
 public:
 
-  WaypointListView(QMainWindow *parent=0);
+  WaypointListView(QWidget *parent=0);
 
   virtual ~WaypointListView();
 
@@ -70,12 +71,12 @@ public slots:
   /**
     * Called if a waypoint should be added.
     */
-   void slot_addWp(Waypoint& wp);
+  void slot_addWp(Waypoint& wp);
 
    /**
      * Called if a waypoint should be deleted.
      */
-    void slot_deleteWp(Waypoint& wp);
+  void slot_deleteWp(Waypoint& wp);
 
 private slots:
 
@@ -93,7 +94,7 @@ private slots:
   /**
    * Called when the listview should be closed without selection
    */
-  void slot_Close ();
+  void slot_Close();
 
   /**
    * Called when the selected waypoints should be deleted from the
@@ -145,16 +146,17 @@ private slots:
    */
   void slot_selectionChanged();
 
-signals: // Signals
+signals:
+
   /**
    * This signal is emitted if a new waypoint is selected.
    */
-  void newWaypoint(Waypoint*, bool);
+  void newWaypoint(Waypoint* wp, bool);
 
   /**
    * This signal is emitted if a waypoint is deleted.
    */
-  void deleteWaypoint(Waypoint*);
+  void deleteWaypoint( Waypoint* wp );
 
   /**
    * This signal is send if the selection is done, and
@@ -165,12 +167,12 @@ signals: // Signals
   /**
    * Emitted if the user clicks the Info button.
    */
-  void info(Waypoint*);
+  void info( Waypoint* wp );
 
   /**
    * Emitted if a new home position is selected.
    */
-  void newHomePosition(const QPoint&);
+  void newHomePosition( const QPoint& newHome );
 
   /**
    * Emitted to move the map to the new home position.
@@ -188,11 +190,11 @@ private:
   QPushButton*        cmdDel;
   QPushButton*        cmdDelAll;
 
-  /** that shall store a home position change */
-  bool homeChanged;
+  /** that stores a home position change */
+  bool m_homeChanged;
 
-  /** Old priority of edited waypoint. */
-  Waypoint::Priority priorityOfEditedWp;
+  /** Remember flag, if edited waypoint is the selected target. */
+  bool m_editedWpIsTarget;
 };
 
 #endif

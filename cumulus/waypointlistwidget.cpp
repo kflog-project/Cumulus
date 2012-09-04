@@ -52,8 +52,6 @@ WaypointListWidget::~WaypointListWidget()
 /** Clears and refills the waypoint item list. */
 void WaypointListWidget::fillItemList()
 {
-  qDebug() << "WaypointListWidget::fillItemList()";
-
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -232,9 +230,7 @@ void WaypointListWidget::deleteCurrentWaypoint()
 
 void WaypointListWidget::deleteWaypoint(Waypoint &wp)
 {
-  qDebug() << "WaypointListWidget::deleteWaypoint():" << wp.name << "ListCount=" << list->topLevelItemCount();
-
-  // Set the waypoint to be deleted as the current item.
+  // Sets the waypoint to be deleted as the current item.
   for( int i = 0; i < list->topLevelItemCount(); i++ )
     {
       _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (list->topLevelItem(i));
@@ -244,24 +240,19 @@ void WaypointListWidget::deleteWaypoint(Waypoint &wp)
           continue;
         }
 
-      qDebug() << wp.name << wp.type << wp.description << wp.origP << wp.taskPointIndex;
-      qDebug() << wpi->wp.name << wpi->wp.type << wpi->wp.description << wpi->wp.origP << wpi->wp.taskPointIndex;
-
       if( wpi->wp == wp )
         {
-          qDebug() << "Wp found";
-          // If the waypoints are identical remove the waypoint from the lists.
+          // If the waypoints are identical remove the waypoint from the list.
           list->setCurrentItem( wpi );
           deleteCurrentWaypoint();
           return;
         }
     }
 
-  qDebug() << "Wp in listview not found";
-
-  // remove waypoint from waypoint list in MapContents
+  // There is on waypoint in the waypoint list view.
+  // Remove waypoint from global waypoint list in MapContents
   _globalMapContents->getWaypointList().removeAll( wp );
-  // save the modified catalog
+  // Save the modified waypoint list as file.
   _globalMapContents->saveWaypointList();
 }
 
@@ -329,7 +320,6 @@ void WaypointListWidget::addWaypoint( Waypoint& newWp )
   resizeListColumns();
 
   list->setUpdatesEnabled(true);
-  // qDebug("WaypointListWidget::addWaypoint: name=%s", wp.name.toLatin1().data() );
 }
 
 WaypointListWidget::_WaypointItem::_WaypointItem( Waypoint& waypoint ) :

@@ -618,7 +618,7 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotMapDrawEvent( bool ) ) );
   connect( Map::instance, SIGNAL( firstDrawingFinished() ),
            this, SLOT( slotFinishStartUp() ) );
-  connect( Map::instance, SIGNAL( waypointSelected( Waypoint* ) ),
+  connect( Map::instance, SIGNAL( showPoi( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( Map::instance, SIGNAL( alarm( const QString&, const bool ) ),
            this, SLOT( slotAlarm( const QString&, const bool ) ) );
@@ -1871,11 +1871,10 @@ void MainWindow::slotTabChanged( int index )
     }
 }
 
-
 /** Write property of internal view. */
 void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 {
-  // qDebug("MainWindow::setView called with argument %d", newVal);
+  // qDebug() << "MainWindow::setView(): view=" << newVal << "WP=" << (wp ? wp->name : "Null");
 
   switch ( newVal )
     {
@@ -1930,7 +1929,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       // and airspace filling, edited waypoints or tasks can be outdated in the
       // meantime.
       Map::instance->scheduleRedraw( Map::aeroLayer );
-
       break;
 
     case wpView:
@@ -1955,7 +1953,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case rpView:
@@ -2009,7 +2006,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case olView:
@@ -2034,7 +2030,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case tpView:
@@ -2065,7 +2060,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case infoView:
@@ -2094,7 +2088,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case tpSwitchView:
@@ -2117,7 +2110,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case cfView:
@@ -2136,7 +2128,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     case flarmView:
@@ -2152,7 +2143,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
       break;
 
     default:
@@ -2282,7 +2272,7 @@ void MainWindow::slotSwitchToInfoView()
     }
 }
 
-/** @ee This slot is called to switch to the info view with selected waypoint. */
+/** This slot is called to switch to the info view and to show the waypoint data. */
 void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 {
   if( wp )

@@ -41,12 +41,12 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   QWidget(parent)
 {
   setObjectName("WPInfoWidget");
-  mainWindow = parent;
-  _lastView = MainWindow::mapView;
-  _wp.name = "";
-  homeChanged = false;
+  m_mainWindow = parent;
+  m_returnView = MainWindow::mapView;
+  m_homeChanged = false;
+  m_editedWpIsTarget = false;
 
-  resize(parent->size());
+  resize( parent->size() );
 
   QFont bfont = font();
   bfont.setBold(true);
@@ -68,32 +68,27 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   cmdAddWaypoint = new QPushButton(tr("Add Waypoint"), this);
   cmdAddWaypoint->setFont(bfont);
   buttonrow2->addWidget(cmdAddWaypoint);
-  connect(cmdAddWaypoint, SIGNAL(clicked()),
-          this, SLOT(slot_addAsWaypoint()));
+  connect(cmdAddWaypoint, SIGNAL(clicked()), SLOT(slot_addAsWaypoint()));
 
   cmdHome = new QPushButton(tr("Home"), this);
   cmdHome->setFont(bfont);
   buttonrow2->addWidget(cmdHome);
-  connect(cmdHome, SIGNAL(clicked()),
-          this, SLOT(slot_setNewHome()));
+  connect(cmdHome, SIGNAL(clicked()), SLOT(slot_setNewHome()));
 
   cmdArrival = new QPushButton(tr("Arrival"), this);
   cmdArrival->setFont(bfont);
   buttonrow2->addWidget(cmdArrival);
-  connect(cmdArrival, SIGNAL(clicked()),
-          this, SLOT(slot_arrival()));
+  connect(cmdArrival, SIGNAL(clicked()), SLOT(slot_arrival()));
 
   cmdEdit = new QPushButton(tr("Edit"), this);
   cmdEdit->setFont(bfont);
   buttonrow2->addWidget(cmdEdit);
-  connect(cmdArrival, SIGNAL(clicked()),
-          this, SLOT(slot_edit()));
+  connect(cmdEdit, SIGNAL(clicked()), SLOT(slot_edit()));
 
-  cmdRemove = new QPushButton(tr("Delete"), this);
-  cmdRemove->setFont(bfont);
-  buttonrow2->addWidget(cmdRemove);
-  connect(cmdRemove, SIGNAL(clicked()),
-          this, SLOT(slot_delete()));
+  cmdDelete = new QPushButton(tr("Delete"), this);
+  cmdDelete->setFont(bfont);
+  buttonrow2->addWidget(cmdDelete);
+  connect(cmdDelete, SIGNAL(clicked()), SLOT(slot_delete()));
 
   buttonrow1=new QHBoxLayout;
   topLayout->addLayout(buttonrow1);
@@ -101,42 +96,33 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   cmdClose = new QPushButton(tr("Close"), this);
   cmdClose->setFont(bfont);
   buttonrow1->addWidget(cmdClose);
-  connect(cmdClose, SIGNAL(clicked()),
-          this, SLOT(slot_SwitchBack()));
+  connect(cmdClose, SIGNAL(clicked()), SLOT(slot_SwitchBack()));
 
   // Activate keyboard shortcut cancel to close the window too
   scClose = new QShortcut( this );
 
 #ifndef ANDROID
   scClose->setKey( Qt::Key_Escape );
-#else
-  scClose->setKey( Qt::Key_Close );
+  connect( scClose, SIGNAL(activated()), SLOT( slot_SwitchBack() ));
 #endif
-
-  connect( scClose, SIGNAL(activated()),
-           this, SLOT( slot_SwitchBack() ));
 
   cmdKeep = new QPushButton(tr("Stop"), this);
   cmdKeep->setFont(bfont);
   buttonrow1->addWidget(cmdKeep);
-  connect(cmdKeep, SIGNAL(clicked()),
-          this, SLOT(slot_KeepOpen()));
+  connect(cmdKeep, SIGNAL(clicked()), SLOT(slot_KeepOpen()));
 
   cmdUnselectWaypoint = new QPushButton(tr("Unselect"), this);
   cmdUnselectWaypoint->setFont(bfont);
   buttonrow1->addWidget(cmdUnselectWaypoint);
-  connect(cmdUnselectWaypoint, SIGNAL(clicked()),
-          this, SLOT(slot_unselectWaypoint()));
+  connect(cmdUnselectWaypoint, SIGNAL(clicked()), SLOT(slot_unselectWaypoint()));
 
   cmdSelectWaypoint = new QPushButton(tr("Select"), this);
   cmdSelectWaypoint->setFont(bfont);
   buttonrow1->addWidget(cmdSelectWaypoint);
-  connect(cmdSelectWaypoint, SIGNAL(clicked()),
-          this, SLOT(slot_selectWaypoint()));
+  connect(cmdSelectWaypoint, SIGNAL(clicked()), SLOT(slot_selectWaypoint()));
 
-  timer=new QTimer(this);
-  connect(timer, SIGNAL(timeout()),
-          this, SLOT(slot_timeout()));
+  m_timer=new QTimer(this);
+  connect(m_timer, SIGNAL(timeout()), SLOT(slot_timeout()));
 }
 
 WPInfoWidget::~WPInfoWidget()
@@ -146,32 +132,32 @@ WPInfoWidget::~WPInfoWidget()
 /** This slot get called on the timer timeout. */
 void WPInfoWidget::slot_timeout()
 {
-  if( --_timerCount == 0 )
+  if( --m_timerCount == 0 )
     {
-      timer->stop();
+      m_timer->stop();
       slot_SwitchBack();
     }
   else
     {
-      QString txt = tr("Close (%1)").arg(_timerCount);
+      QString txt = tr("Close (%1)").arg(m_timerCount);
       cmdClose->setText(txt);
     }
 }
 
-/** This method is called by MainWindow to set the view to
+/** This method is called by the MainWindow to set the view to
  * which there must be returned and the waypoint to view. */
-bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
+bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
 {
-  extern MapContents* _globalMapContents;
+  // qDebug() << "WPInfoWidget::showWP(): returnView=" << returnView << "WP=" << wp.name;
 
   // save return view
-  _lastView = lastView;
+  m_returnView = returnView;
 
   // save passed waypoint
-  _wp = wp;
+  m_wp = wp;
 
   // Check if new point is already in the waypoint list, so make sure we can add it.
-  if (_globalMapContents->isInWaypointList(wp.origP))
+  if( _globalMapContents->isInWaypointList(wp.origP) )
     {
       cmdAddWaypoint->setVisible( false );
     }
@@ -181,7 +167,7 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
     }
 
   // Reset home changed
-  homeChanged = false;
+  m_homeChanged = false;
 
   // check, if current home position is different from waypoint
   GeneralConfig *conf = GeneralConfig::instance();
@@ -205,7 +191,7 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
 
   cmdArrival->setVisible( false );
   cmdEdit->setVisible( false );
-  cmdRemove->setVisible( false );
+  cmdDelete->setVisible( false );
 
   if( moving )
     {
@@ -217,7 +203,7 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
       if( wp.taskPointIndex == -1 && wp.wpListMember == true )
         {
           cmdEdit->setVisible( true );
-          cmdRemove->setVisible( true );
+          cmdDelete->setVisible( true );
         }
     }
 
@@ -253,12 +239,12 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
   writeText();
 
   // @AP: load the display time from user configuration
-  _timerCount = conf->getInfoDisplayTime();
+  m_timerCount = conf->getInfoDisplayTime();
 
-  if( _timerCount > 0 )
+  if( m_timerCount > 0 )
     {
-      timer->start(1000);
-      QString txt = tr("Close (%1)").arg(_timerCount);
+      m_timer->start(1000);
+      QString txt = tr("Close (%1)").arg(m_timerCount);
       cmdClose->setText(txt);
       cmdKeep->setVisible( true );
     }
@@ -278,16 +264,14 @@ bool WPInfoWidget::showWP(int lastView, const Waypoint& wp)
  */
 void WPInfoWidget::showEvent(QShowEvent *)
 {
-  // qDebug("WPInfoWidget::showEvent(): name=%s", name());
-
-  // resize to size of parent, could be changed in the meantime as the widget was hidden
-  resize(mainWindow->size());
+  // Resize to size of parent, could be changed in the meantime as the widget was hidden.
+  resize(m_mainWindow->size());
 }
 
 /** This method actually fills the widget with the info to be displayed. */
 void WPInfoWidget::writeText()
 {
-  if( _wp.name.isEmpty() )
+  if( m_wp.name.isEmpty() )
     {
       text->setHtml("<html><big><center><b>" +
                     tr("No waypoint data available") +
@@ -300,31 +284,31 @@ void WPInfoWidget::writeText()
       QString tmp;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt+= "<html><center><b>" + _wp.description + " (" + _wp.name;
+      itxt+= "<html><center><b>" + m_wp.description + " (" + m_wp.name;
 
-      if( !_wp.icao.isEmpty() )
+      if( !m_wp.icao.isEmpty() )
         {
-          itxt += ",&nbsp;" + _wp.icao;
+          itxt += ",&nbsp;" + m_wp.icao;
         }
 
-      if( !_wp.country.isEmpty() )
+      if( !m_wp.country.isEmpty() )
         {
-          itxt += ",&nbsp;" + _wp.country;
+          itxt += ",&nbsp;" + m_wp.country;
         }
 
-      itxt+= ")<p>" + BaseMapElement::item2Text(_wp.type, tr("(unknown)"));
+      itxt+= ")<p>" + BaseMapElement::item2Text(m_wp.type, tr("(unknown)"));
 
-      if( _wp.isLandable )
+      if( m_wp.isLandable )
         {
           itxt += "</b></center>";
 
           QString tmp2 = tr("Unknown");
 
           // @AP: show runway in both directions
-          uint rwh1 = _wp.runway / 256;
-          uint rwh2 = _wp.runway % 256;
+          uint rwh1 = m_wp.runway / 256;
+          uint rwh2 = m_wp.runway % 256;
 
-          // qDebug("wp.rw=%d rwh1=%d rwh2=%d", _wp.runway, rwh1, rwh2);
+          // qDebug("wp.rw=%d rwh1=%d rwh2=%d", m_wp.runway, rwh1, rwh2);
 
           if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
             {
@@ -352,16 +336,16 @@ void WPInfoWidget::writeText()
             }
 
           itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-                  Runway::item2Text(_wp.surface, tr("Unknown")) + ")</td>" +
+                  Runway::item2Text(m_wp.surface, tr("Unknown")) + ")</td>" +
                   "<td>" + tr("Length: ") + "</td><td><b>";
 
-          if( _wp.length <= 0 )
+          if( m_wp.length <= 0 )
             {
               itxt += tr("Unknown") + "</b></td></tr>";
             }
           else
             {
-              tmp = QString("%1 m</b></td></tr>").arg(_wp.length);
+              tmp = QString("%1 m</b></td></tr>").arg(m_wp.length);
               itxt += tmp;
             }
         }
@@ -374,10 +358,10 @@ void WPInfoWidget::writeText()
       Altitude::altitudeUnit currentUnit = Altitude::getUnit();
 
       Altitude::setUnit(Altitude::meters);
-      QString meters = Altitude::getText(_wp.elevation, true, 0);
+      QString meters = Altitude::getText(m_wp.elevation, true, 0);
 
       Altitude::setUnit(Altitude::feet);
-      QString feet = Altitude::getText(_wp.elevation, true, 0);
+      QString feet = Altitude::getText(m_wp.elevation, true, 0);
 
       // restore save unit
        Altitude::setUnit(currentUnit);
@@ -395,9 +379,9 @@ void WPInfoWidget::writeText()
              "</b></td>";
          }
 
-       if( _wp.frequency > 0.0 )
+       if( m_wp.frequency > 0.0 )
          {
-           tmp = QString("<td>" + tr("Frequency:") + "</td><td><b>%1&nbsp;MHz</b></td></tr>").arg(_wp.frequency, 0, 'f', 3);
+           tmp = QString("<td>" + tr("Frequency:") + "</td><td><b>%1&nbsp;MHz</b></td></tr>").arg(m_wp.frequency, 0, 'f', 3);
            itxt += tmp;
          }
        else
@@ -409,7 +393,7 @@ void WPInfoWidget::writeText()
       QDate date = QDate::currentDate();
 
       // calculate Sunrise and Sunset
-      bool res = Sonne::sonneAufUnter( sr, ss, date, _wp.origP , tz );
+      bool res = Sonne::sonneAufUnter( sr, ss, date, m_wp.origP , tz );
 
       if( res )
         {
@@ -422,8 +406,8 @@ void WPInfoWidget::writeText()
                            " " + tz + "</b></td></tr>" );
         }
 
-      QString lat = WGSPoint::printPos(_wp.origP.x(),true);
-      QString lon = WGSPoint::printPos(_wp.origP.y(),false);
+      QString lat = WGSPoint::printPos(m_wp.origP.x(),true);
+      QString lon = WGSPoint::printPos(m_wp.origP.y(),false);
 
       lat = lat.replace(QRegExp(" "), "&nbsp;");
       lon = lon.replace(QRegExp(" "), "&nbsp;");
@@ -434,10 +418,10 @@ void WPInfoWidget::writeText()
               lon +
               "</b></td></tr>";
 
-      if( _wp.comment.isEmpty() == false )
+      if( m_wp.comment.isEmpty() == false )
         {
           itxt += "<tr><td>" + tr("Comment") + ":</td>"
-                  "<td colspan=3>" + _wp.comment + "</td></tr>";
+                  "<td colspan=3>" + m_wp.comment + "</td></tr>";
         }
 
       itxt+="</table></html>";
@@ -449,36 +433,29 @@ void WPInfoWidget::writeText()
 /** Hide widget and return to the calling view in MainWindow */
 void WPInfoWidget::slot_SwitchBack()
 {
-  timer->stop();
+  m_timer->stop();
   text->clearFocus();
   setVisible( false );
 
-  if( _lastView == MainWindow::infoView )
-    {
-      // make sure last view isn't this view
-      _lastView = MainWindow::mapView;
-    }
+  // Return to the calling view
+  m_mainWindow->setView( (MainWindow::appView) m_returnView );
 
-  mainWindow->setView( (MainWindow::appView) _lastView );
-
-  // Check, if we have not a valid GPS fix. In this case we do move the map
+  // Check, if we have no GPS fix. In this case we do move the map
   // to the new home position.
-  if( homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
+  if( m_homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       emit gotoHomePosition();
-      homeChanged = false;
+      m_homeChanged = false;
     }
 }
-
 
 /** This slot is called by the KeepOpen button to... yes... keep the dialog open. :-) */
 void WPInfoWidget::slot_KeepOpen()
 {
-  timer->stop();
+  m_timer->stop();
   cmdClose->setText( tr( "Close" ) );
   cmdKeep->setVisible( false );
 }
-
 
 /** This slot is called if the unselect Waypoint button is clicked. */
 void WPInfoWidget::slot_unselectWaypoint()
@@ -487,7 +464,6 @@ void WPInfoWidget::slot_unselectWaypoint()
 
   return slot_SwitchBack();
 }
-
 
 /** This slot is called if the Select Waypoint button is clicked */
 void WPInfoWidget::slot_selectWaypoint()
@@ -499,7 +475,7 @@ void WPInfoWidget::slot_selectWaypoint()
       return slot_unselectWaypoint();
     }
 
-  emit selectWaypoint(&_wp, true);
+  emit selectWaypoint(&m_wp, true);
 
   return slot_SwitchBack();
 }
@@ -507,9 +483,9 @@ void WPInfoWidget::slot_selectWaypoint()
 /** This slot is called if the Add Waypoint button is clicked. */
 void WPInfoWidget::slot_addAsWaypoint()
 {
-  _wp.priority = Waypoint::High; //priority is high
-  _wp.wpListMember = true;
-  emit addWaypoint(_wp);
+  m_wp.priority = Waypoint::High; //priority is high
+  m_wp.wpListMember = true;
+  emit addWaypoint(m_wp);
 
   cmdAddWaypoint->setVisible( false );
   slot_KeepOpen();
@@ -526,7 +502,7 @@ void WPInfoWidget::slot_setNewHome()
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Set home site" ),
-                  tr( "Use point<br><b>%1</b><br>as your home site?").arg(_wp.name) +
+                  tr( "Use point<br><b>%1</b><br>as your home site?").arg(m_wp.name) +
                   tr("<br>Change can take<br>a few seconds and more."),
                   QMessageBox::Yes | QMessageBox::No,
                   this );
@@ -545,26 +521,22 @@ void WPInfoWidget::slot_setNewHome()
 
   if( mb.exec() == QMessageBox::Yes )
     {
-      //QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                       QEventLoop::ExcludeSocketNotifiers );
+                                         QEventLoop::ExcludeSocketNotifiers );
 
       QCoreApplication::flush();
 
       // save new home position and elevation
       GeneralConfig *conf = GeneralConfig::instance();
-      conf->setHomeCountryCode( _wp.country );
-      conf->setHomeName( _wp.name );
-      conf->setHomeCoord( _wp.origP );
-      conf->setHomeElevation( Distance(_wp.elevation) );
+      conf->setHomeCountryCode( m_wp.country );
+      conf->setHomeName( m_wp.name );
+      conf->setHomeCoord( m_wp.origP );
+      conf->setHomeElevation( Distance(m_wp.elevation) );
 
-      emit newHomePosition( _wp.origP );
-      homeChanged = true;
+      emit newHomePosition( m_wp.origP );
+      m_homeChanged = true;
       cmdHome->setVisible( false );
-
-      //QApplication::restoreOverrideCursor();
-    }
+   }
 }
 
 /**
@@ -572,7 +544,6 @@ void WPInfoWidget::slot_setNewHome()
  */
 void WPInfoWidget::slot_arrival()
 {
-  // qDebug("WPInfoWidget::slot_arrival()");
   slot_KeepOpen(); // Stop timer
 
   // switch off all accelerator keys
@@ -580,26 +551,25 @@ void WPInfoWidget::slot_arrival()
 
   // create arrival info widget
   TPInfoWidget *arrivalInfo = new TPInfoWidget( this );
-  arrivalInfo->prepareArrivalInfoText( &_wp );
+  arrivalInfo->prepareArrivalInfoText( &m_wp );
   arrivalInfo->showTP( false );
 
-  connect( arrivalInfo, SIGNAL(closed()),
-           this, SLOT(slot_arrivalClose()));
+  connect( arrivalInfo, SIGNAL(closed()), SLOT(slot_arrivalClose()));
 }
 
 // sets focus back to wp text view after closing arrival widget
 void WPInfoWidget::slot_arrivalClose()
 {
-  // switch on close shortcut keys
+  // switch on close shortcut key
   scClose->setEnabled(true);
 }
 
 void WPInfoWidget::slot_edit()
 {
-  qDebug() << "WPInfoWidget::slot_edit()" << _wp.name;;
+  slot_KeepOpen(); // Stop timer
 
   // Search the waypoint object in the global waypoint list.
-  Waypoint* wplelem = _globalMapContents->getWaypointFromList( &_wp );
+  Waypoint* wplelem = _globalMapContents->getWaypointFromList( &m_wp );
 
   if( wplelem == 0 )
     {
@@ -607,8 +577,18 @@ void WPInfoWidget::slot_edit()
       return;
     }
 
-  // TODO Check, if waypoint is set in calculator as target. Then we must
-  // update the selection.
+  // Check, if waypoint is set in calculator as target. Then we must
+  // update the selection after the editing is finished.
+  const Waypoint* calcWp = calculator->getselectedWp();
+
+  if( calcWp != 0 && m_wp == *calcWp )
+    {
+      m_editedWpIsTarget = true;
+    }
+  else
+    {
+      m_editedWpIsTarget = false;
+    }
 
   WpEditDialog *dlg = new WpEditDialog( this, wplelem );
 
@@ -620,26 +600,37 @@ void WPInfoWidget::slot_edit()
 
 void WPInfoWidget::slot_edited( Waypoint& wp )
 {
-  qDebug() << "WPInfoWidget::slot_edited()" << wp.name;
+  // Update display widget after edition of waypoint.
+  showWP( m_returnView, wp );
 
-  // Update display after edition of waypoint.
-  showWP( _lastView, wp );
+  slot_KeepOpen(); // Stop timer again
 
-  // TODO: Update a possible calculator selection
+  if( m_editedWpIsTarget == true )
+    {
+      // Update the target waypoint in the calculator
+      emit selectWaypoint(&wp, true);
+    }
 
-
-  emit waypointEdited( wp );
+  if( m_returnView == MainWindow::mapView || m_returnView == MainWindow::infoView )
+    {
+      // The map has called the info view so we must store only the global
+      // waypoint list now after the edit.
+      _globalMapContents->saveWaypointList();
+    }
+  else
+    {
+      // Propagate the waypoint change to the waypoint list view.
+      emit waypointEdited( wp );
+    }
 }
 
 void WPInfoWidget::slot_delete()
 {
-  qDebug() << "WPInfoWidget::slot_delete()";
-
   slot_KeepOpen(); // Stop timer
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Delete?" ),
-                  tr( "Delete waypoint" ) + " " + _wp.name + "?",
+                  tr( "Delete waypoint" ) + " " + m_wp.name + "?",
                   QMessageBox::Yes | QMessageBox::No,
                   this );
 
@@ -656,7 +647,7 @@ void WPInfoWidget::slot_delete()
 
   if( mb.exec() == QMessageBox::Yes )
     {
-      emit deleteWaypoint( _wp );
+      emit deleteWaypoint( m_wp );
       return slot_SwitchBack();
     }
 }

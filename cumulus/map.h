@@ -265,9 +265,9 @@ private slots:
 signals:
 
   /**
-   * Is emitted when left button click on the map
+   * Is emitted when left button is clicked on the map in the near of a POI.
    */
-  void waypointSelected(Waypoint *);
+  void showPoi(Waypoint *);
 
   /**
    * Is emitted when an alarm has to be signaled to the user.

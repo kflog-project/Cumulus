@@ -8,6 +8,5 @@
 			<provider copy-of="extension" id="org.eclipse.cdt.ui.UserLanguageSettingsProvider"/>
 		</extension>
 	</configuration>
-	<configuration id="cdt.managedbuild.toolchain.gnu.base.151648933.1952045887" name="Linux Cumulus"/>
-	<configuration id="cdt.managedbuild.toolchain.gnu.base.151648933.785126881" name="CityReplace"/>
+	<configuration id="cdt.managedbuild.toolchain.gnu.base.151648933.1367526811" name="Android"/>
 </project>

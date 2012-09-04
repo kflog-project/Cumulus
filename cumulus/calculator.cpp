@@ -348,9 +348,7 @@ void Calculator::slot_WaypointDelete(Waypoint* newWp)
 {
   // @AP: check, if waypoint to be deleted is selected. In this case a
   // deselection must be done
-  if ( selectedWp &&
-       selectedWp->origP == newWp->origP &&
-       selectedWp->taskPointIndex == newWp->taskPointIndex )
+  if ( newWp && selectedWp && *selectedWp == *newWp )
     {
       wpTouched = false;
       wpTouchCounter = 0;

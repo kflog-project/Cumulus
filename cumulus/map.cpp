@@ -478,8 +478,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
   if( found )
     {
-      qDebug() << "Waypoint=" << w->name << "wpListMember=" << w->wpListMember;
-      emit waypointSelected( w );
+      emit showPoi( w );
       return;
     }
 

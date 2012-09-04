@@ -66,19 +66,19 @@ public:
    * This method is called by MainWindow to set the view to which
    * there must be returned and the waypoint to view.
    */
-  bool showWP(int lastView, const Waypoint& wp);
+  bool showWP(int returnView, const Waypoint& wp);
 
 public slots:
 
   /**
-   * No descriptions
+   * Is called to return to the calling view.
    */
   void slot_SwitchBack();
 
   /**
    * This slot is called by the KeepOpen button to...
    * yes... keep the dialog open. :-)
-   * Any timer that would close the dialog will be stopped.
+   * The timer that would close the dialog will be stopped.
    */
   void slot_KeepOpen();
 
@@ -92,7 +92,7 @@ signals:
   /**
    * Emitted if a waypoint should be selected.
    */
-  void selectWaypoint(Waypoint*, bool);
+  void selectWaypoint(Waypoint* wp, bool userAction);
 
   /**
    * Emitted if a waypoint should be deleted.
@@ -124,11 +124,6 @@ protected:
 private:
 
   /**
-   * Set the visibility of the widget buttons
-   */
-  void setButtonsVisibility();
-
-  /**
    * This method actually fills the widget with the info.
    */
   void writeText();
@@ -137,7 +132,7 @@ private:
 private slots:
 
   /**
-   * This slot get called on the timer timeout.
+   * This slot get called on the m_timer timeout.
    */
   void slot_timeout();
 
@@ -205,36 +200,39 @@ private: // Private attributes
   QPushButton* cmdUnselectWaypoint;
   QPushButton* cmdArrival;
   QPushButton* cmdEdit;
-  QPushButton* cmdRemove;
+  QPushButton* cmdDelete;
 
   QShortcut* scClose;
 
   /**
-   * Reference to a timer. When this timer fires, the view
+   * Reference to a m_timer. When this m_timer fires, the view
    * is returned to the previous one. This allow for a brief
    * display of data (i.e.: what is the frequency of my target
    * field?) after which the view is automatically returned to
    * the last one.
    */
-  QTimer* timer;
+  QTimer* m_timer;
 
   /** TimerCount */
-  int _timerCount;
+  int m_timerCount;
 
   /** Reference to the waypoint who's details to be displayed. */
-  Waypoint _wp;
+  Waypoint m_wp;
 
   /** last selected waypoint  */
-  Waypoint myWp;
+  Waypoint m_myWp;
 
   /** contains the ID of the last view (the view that called this one) */
-  int _lastView;
+  int m_returnView;
 
   /** contains a reference to the parent, the application */
-  MainWindow *mainWindow;
+  MainWindow* m_mainWindow;
 
   /** that shall store a home position change */
-  bool homeChanged;
+  bool m_homeChanged;
+
+  /** Remember flag, if edited waypoint is the selected target. */
+  bool m_editedWpIsTarget;
 };
 
 #endif

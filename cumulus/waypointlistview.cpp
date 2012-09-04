@@ -27,10 +27,10 @@
 
 extern MapContents* _globalMapContents;
 
-WaypointListView::WaypointListView( QMainWindow *parent ) :
+WaypointListView::WaypointListView( QWidget *parent ) :
   QWidget(parent),
-  homeChanged( false ),
-  priorityOfEditedWp( Waypoint::Top )
+  m_homeChanged( false ),
+  m_editedWpIsTarget( false )
 {
   setObjectName("WaypointListView");
 
@@ -128,7 +128,7 @@ void WaypointListView::showEvent(QShowEvent *)
     }
 
   // Reset home changed
-  homeChanged = false;
+  m_homeChanged = false;
 }
 
 
@@ -165,10 +165,10 @@ void WaypointListView::slot_Close()
 
   // Check, if we have not a valid GPS fix. In this case we do move the map
   // to the new home position.
-  if( homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
+  if( m_homeChanged == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
       emit gotoHomePosition();
-      homeChanged = false;
+      m_homeChanged = false;
     }
 }
 
@@ -177,7 +177,7 @@ void WaypointListView::slot_selectionChanged()
   if( calculator->moving() )
     {
       cmdHome->setVisible(false);
-      homeChanged = false;
+      m_homeChanged = false;
     }
   else
     {
@@ -265,25 +265,33 @@ void WaypointListView::slot_editWP()
 
   if( wp )
     {
-      // Save old priority for later check.
-      priorityOfEditedWp = wp->priority;
+      // Check, if waypoint is set in calculator as target. Then we must
+      // update the selection after the editing is finished.
+      const Waypoint* calcWp = calculator->getselectedWp();
+
+      if( calcWp != 0 && *wp == *calcWp )
+        {
+          m_editedWpIsTarget = true;
+        }
+      else
+        {
+          m_editedWpIsTarget = false;
+        }
 
       WpEditDialog *dlg = new WpEditDialog( this, wp );
 
       connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
-               SLOT(slot_wpEdited(Waypoint &)) );
+                SLOT(slot_wpEdited(Waypoint &)) );
 
       dlg->setVisible( true );
     }
 }
 
 /**
- * Called if a waypoint shall be removed.
+ * Called if a waypoint shall be deleted.
  */
 void WaypointListView::slot_deleteWp(Waypoint& wp)
 {
-  qDebug() << "WaypointListView::slot_deleteWp():" << wp.name;
-
   QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
   if( wpList.size() == 0 )
@@ -345,9 +353,10 @@ void WaypointListView::slot_deleteWPs()
             {
               Waypoint* wpl = wpList.at(i);
 
-              if( wpc == wpl )
+              if( *wpc == *wpl )
                 {
                   emit deleteWaypoint( wpl );
+                  break;
                 }
             }
         }
@@ -401,6 +410,7 @@ void WaypointListView::slot_deleteAllWPs()
               if( *wpc == wpl )
                 {
                   emit deleteWaypoint( &wpl );
+                  break;
                 }
             }
         }
@@ -413,9 +423,13 @@ void WaypointListView::slot_deleteAllWPs()
 }
 
 /** Called if a waypoint has been edited. */
-void WaypointListView::slot_wpEdited(Waypoint& wp)
+void WaypointListView::slot_wpEdited( Waypoint& wp )
 {
-  qDebug() << "WaypointListView::slot_wpEdited():" << wp.name;
+  if( m_editedWpIsTarget == true )
+    {
+      // Update the target waypoint in the calculator.
+      emit newWaypoint( &wp, true );
+    }
 
   listw->updateCurrentWaypoint( wp );
   listw->fillItemList();
@@ -424,9 +438,8 @@ void WaypointListView::slot_wpEdited(Waypoint& wp)
 }
 
 /** Called if a waypoint should be added. */
-void WaypointListView::slot_addWp(Waypoint& wp)
+void WaypointListView::slot_addWp( Waypoint& wp )
 {
-  // qDebug("WaypointListView::slot_addWp(): name=%s", wp->name.toLatin1().data());
   listw->addWaypoint( wp );
 
   MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
@@ -478,7 +491,7 @@ void WaypointListView::slot_setHome()
       conf->setHomeElevation( Distance(_wp->elevation) );
 
       emit newHomePosition( _wp->origP );
-      homeChanged = true;
+      m_homeChanged = true;
     }
 }
 

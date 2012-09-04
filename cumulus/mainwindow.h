@@ -146,7 +146,7 @@ public:
   AirfieldListView *viewOL;   // outlandings
   ReachpointListView *viewRP; // reachable points
   TaskListView *viewTP;       // task points
-  WPInfoWidget *viewInfo;     // waypoint info
+  WPInfoWidget *viewInfo;     // POI info
   QTabWidget *listViewTabs;
 
   /** empty view for config "dialog" */
@@ -193,8 +193,8 @@ public slots:
   void slotSwitchToMapView();
   /** This slot is called to switch to the info view. */
   void slotSwitchToInfoView();
-  /** This slot is called to switch to the info view with selected waypoint. */
-  void slotSwitchToInfoView(Waypoint*);
+  /** This slot is called to switch to the info view and to show the waypoint data. */
+  void slotSwitchToInfoView(Waypoint* wp);
   /** Opens the config "dialog". */
   void slotOpenConfig();
   /** Opens the pre-flight "dialog". */

@@ -35,6 +35,9 @@
 #ifndef WAYPOINT_LIST_WIDGET_H
 #define WAYPOINT_LIST_WIDGET_H
 
+#include <QList>
+#include <QTreeWidgetItem>
+
 #include "listwidgetparent.h"
 #include "waypoint.h"
 

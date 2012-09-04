@@ -155,7 +155,6 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
 
 WpEditDialog::~WpEditDialog()
 {
-  // qDebug("WpEditDialog::~WpEditDialog()");
 }
 
 /** This method is called to load the waypoint data in the tab widgets.
@@ -172,13 +171,12 @@ void WpEditDialog::loadWaypointData()
 /** Called if OK button is pressed */
 void WpEditDialog::accept()
 {
-  // qDebug ("WpEditDialog::accept");
-
   // get waypoint data from the tab widgets and save them in a new object
   Waypoint newWp;
   emit save( &newWp );
   newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
   newWp.comment = comment->toPlainText();
+  newWp.wpListMember = _wp->wpListMember;
 
   // Make some mandatory consistency checks
   if( checkWaypointData( newWp ) == false )
