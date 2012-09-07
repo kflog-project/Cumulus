@@ -60,6 +60,35 @@ bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
 
+#ifdef SDK_A4
+
+// Necessitas has moved the JNI interface to another file in SDK alpha 4.
+// Therefore we can provide an own JNI_ONLOAD function.
+// http://developer.android.com/guide/practices/jni.html
+jint JNI_OnLoad(JavaVM* vm, void* reserved)
+{
+  JNIEnv* env;
+
+  if( vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK )
+    {
+      return -1;
+    }
+
+  // Get jclass with env->FindClass.
+  // Register methods with env->RegisterNatives.
+
+  bool ok = initJni( vm, env );
+
+  if( ok )
+    {
+      return JNI_VERSION_1_6;
+    }
+
+  return -1;
+}
+
+#endif
+
 void jniShutdown()
 {
   // Set shutdown flag to true. This function is called by the MainWindow
