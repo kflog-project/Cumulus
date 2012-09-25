@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **   Copyright (c):  2006-2011 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2012 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -151,7 +151,10 @@
  * This class can read, parse and filter a Welt2000 file and store its content
  * in a binary format.
  *
- * \date 2006-2011
+ * \date 2006-2012
+ *
+ * version $Id$
+ *
  */
 
 class Welt2000
@@ -181,6 +184,14 @@ class Welt2000
   bool load( QList<Airfield>& airfieldList,
              QList<Airfield>& gliderfieldList,
              QList<Airfield>& outlandingList );
+
+  /**
+   * Checks for a Welt2000 update by comparing headers of current installed
+   * Welt2000 file and the newer file.
+   *
+   * \return true, if an update shall be made otherwise false
+   */
+  bool check4update();
 
  private:
 

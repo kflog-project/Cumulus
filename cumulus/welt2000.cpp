@@ -297,6 +297,63 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
 }
 
 
+bool Welt2000::check4update()
+{
+  // Update check string for welt2000, must be adapted after every Welt2000 update!
+  const char* w2000CheckString = "$ UPDATED AT: 12.SEP.2012";
+  const int ckeckLineNo = 17;
+
+  QString path2File;
+
+  // Search for Welt2000 source file.
+  bool exits = MapContents::locateFile( "airfields/welt2000.txt", path2File );
+
+  if( ! exits )
+    {
+      // No welt2000 exists and we return false in this case because we cannot
+      // check the update state.
+      return false;
+    }
+
+  QFile in(path2File);
+
+  if( ! in.open(QIODevice::ReadOnly) )
+    {
+      return false;
+    }
+
+  QTextStream ins(&in);
+  ins.setCodec( "ISO 8859-15" );
+
+  int lineNo = 0;
+
+  while( ! in.atEnd() )
+    {
+      QString line;
+      line = in.readLine(256);
+      lineNo++;
+
+      if( lineNo == ckeckLineNo )
+        {
+          // The constant ckeckLineNo, it contains a date
+          in.close();
+
+          if( line.startsWith(w2000CheckString) )
+            {
+              return true;
+            }
+          else
+            {
+              return false;
+            }
+        }
+    }
+
+  in.close();
+  return false;
+}
+
+
 /**
  * The passed file has to be a welt2000 file. All not relevant
  * entries, like turn points, will be filtered out. A new file is
