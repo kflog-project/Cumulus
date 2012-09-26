@@ -356,6 +356,14 @@ bool Welt2000::check4update()
     }
 
   in.close();
+
+  if( lineNo < ckeckLineNo )
+    {
+      // The file seems to be empty or has too less lines. We trigger a reload
+      // in this case.
+      ret = true;
+    }
+
   return ret;
 }
 
