@@ -2163,6 +2163,18 @@ class GeneralConfig : protected QSettings
       return _flightLogbookFileName;
     };
 
+  /** Gets welt2000 update marker. */
+  int getWelt2000UpdateMarker() const
+  {
+    return _welt2000UpdateMarker;
+  };
+
+  /** Sets welt2000 update marker. */
+  void setWelt2000UpdateMarker( const int newValue )
+  {
+    _welt2000UpdateMarker = newValue;
+  };
+
  private:
 
   /** loads the terrain default colors */
@@ -2573,6 +2585,9 @@ class GeneralConfig : protected QSettings
   bool _targetLineDrawState;
   // Track line draw state
   bool _trackLineDrawState;
+
+  // Welt2000 update marker
+  int _welt2000UpdateMarker;
 
   /** Waypoint drawing scale borders. Addressed by waypoint priority
    *  (Low=0, Normal=1, High=2). It contains the scale borders defined

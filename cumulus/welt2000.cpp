@@ -299,8 +299,11 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
 
 bool Welt2000::check4update()
 {
-  // Update check string for welt2000, must be adapted after every Welt2000 update!
+  // Update check string for Welt2000, must be adapted after every Welt2000 update!
   const char* w2000CheckString = "$ UPDATED AT: 12.SEP.2012";
+
+  // Line number in welt2000 file, on which the w2000CheckString is expected.
+  // Note! Line counting starts with 1.
   const int ckeckLineNo = 17;
 
   QString path2File;
@@ -325,34 +328,36 @@ bool Welt2000::check4update()
   QTextStream ins(&in);
   ins.setCodec( "ISO 8859-15" );
 
+  bool ret = false;
   int lineNo = 0;
 
   while( ! in.atEnd() )
     {
       QString line;
-      line = in.readLine(256);
+      line = in.readLine(128);
       lineNo++;
 
-      if( lineNo == ckeckLineNo )
+      // The constant ckeckLineNo addresses a line which contains the
+      // expected string to be compared.
+      if( lineNo < ckeckLineNo )
         {
-          // The constant ckeckLineNo, it contains a date
-          in.close();
-
-          if( line.startsWith(w2000CheckString) )
-            {
-              return true;
-            }
-          else
-            {
-              return false;
-            }
+          continue;
         }
+
+      if( line.startsWith(w2000CheckString) == false )
+        {
+          // The expected data is not to find in the line of the read file.
+          // We assume, that this is an older Welt2000 file. This assumption
+          // is not right, if the user has installed a newer file as we expect.
+          ret = true;
+        }
+
+      break;
     }
 
   in.close();
-  return false;
+  return ret;
 }
-
 
 /**
  * The passed file has to be a welt2000 file. All not relevant

@@ -321,6 +321,7 @@ void GeneralConfig::load()
   _welt2000LoadOutlandings  = value("Welt2000LoadOutlandings", false ).toBool();
   _welt2000Link             = value("Welt2000Link", "http://www.segelflug.de/vereine/welt2000/download").toString();
   _welt2000FileName         = value("Welt2000FileName", "WELT2000.TXT").toString();
+  _welt2000UpdateMarker     = value("Welt2000UpdateMarker", 0 ).toInt();
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
@@ -681,6 +682,7 @@ void GeneralConfig::save()
   setValue("Welt2000CountryFilter", _welt2000CountryFilter);
   setValue("Welt2000HomeRadius", _welt2000HomeRadius);
   setValue("Welt2000LoadOutlandings", _welt2000LoadOutlandings);
+  setValue("Welt2000UpdateMarker", _welt2000UpdateMarker);
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {

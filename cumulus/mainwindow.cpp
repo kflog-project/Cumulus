@@ -51,10 +51,11 @@
 #include "sound.h"
 #include "target.h"
 #include "time_cu.h"
+#include "waypoint.h"
+#include "welt2000.h"
+#include "wgspoint.h"
 #include "windanalyser.h"
 #include "wpeditdialog.h"
-#include "wgspoint.h"
-#include "waypoint.h"
 
 #ifdef ANDROID
 
@@ -855,6 +856,9 @@ void MainWindow::slotFinishStartUp()
 #ifdef ANDROID
   forceFocus();
 #endif
+
+  // Call update check
+  QTimer::singleShot(3000, this, SLOT(slotCheck4Updates()));
 
   qDebug( "End startup Cumulus" );
 }
@@ -2882,6 +2886,57 @@ void MainWindow::slotTakeoff( QDateTime& dt )
 void MainWindow::slotLanded( QDateTime& dt )
 {
   slotNotification( tr("landed")+ dt.time().toString(" HH:mm"), true );
+}
+
+/**
+ * Called to check for Welt2000 updates.
+ */
+void MainWindow::slotCheck4Updates()
+{
+  // Use last update date 12.09.2012 as ignore key
+  const int ignore = 12092012;
+
+  if( GeneralConfig::instance()->getWelt2000UpdateMarker() == ignore )
+    {
+      // Ignore marker has been set by the user
+      qDebug() << "MainWindow::slotCheck4Updates: Ignore marker" << ignore << "is set";
+      return;
+    }
+
+  Welt2000 w2000;
+
+  if( w2000.check4update() == false )
+    {
+      return;
+    }
+
+  QMessageBox mb(this);
+
+  mb.setWindowTitle( tr("Welt2000") );
+  mb.setIcon( QMessageBox::Information );
+  mb.setText( tr("<html><b>Welt2000 update available!<br><br>"
+                 "Install it?<br><br>Requires Internet access.</b></html>") );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No | QMessageBox::Ignore );
+  mb.setDefaultButton( QMessageBox::Yes );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  int answer = mb.exec();
+
+  if( answer == QMessageBox::Yes )
+    {
+      _globalMapContents->slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+    }
+  else if( answer == QMessageBox::Ignore )
+    {
+      GeneralConfig::instance()->setWelt2000UpdateMarker( ignore );
+    }
 }
 
 // resize the list view tabs, if requested

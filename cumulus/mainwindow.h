@@ -398,6 +398,11 @@ private slots:
    */
   void slotFinishStartUp();
 
+  /**
+   * Called to check for Welt2000 updates.
+   */
+  void slotCheck4Updates();
+
 private:
 
   /**
