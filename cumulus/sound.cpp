@@ -15,6 +15,8 @@
 **
 ***********************************************************************/
 
+#include <cstdio>
+
 #include <QtGui>
 
 #include "sound.h"
@@ -48,7 +50,7 @@ void Sound::run()
 
   if( ! info.isReadable() )
     {
-      QApplication::beep();
+      printf("\a");
       qWarning("Sound file %s is not readable", _sound.toLatin1().data() );
       return;
     }
@@ -57,7 +59,7 @@ void Sound::run()
 
   if( player.isEmpty() )
     {
-      QApplication::beep();
+      printf("\a");
       qWarning("No sound player defined by user" );
       return;
     }
@@ -68,7 +70,7 @@ void Sound::run()
 
   if( ! info.isExecutable() )
     {
-      QApplication::beep();
+      printf("\a");
       qWarning("Sound player %s is not executable", player.toLatin1().data() );
       return;
     }
