@@ -1,4 +1,4 @@
-cumulus (2.18.0-1) stable; urgency=low
+cumulus (2.18.0-2) stable; urgency=low
 
   * BUGFIX: Crash fixed, if a sound player was defined but the binary did not
     exist.
