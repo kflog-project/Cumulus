@@ -1,5 +1,8 @@
 cumulus (2.18.0) stable; urgency=low
 
+  * BUGFIX: Crash fixed, if a sound player was defined but the binary did not
+    exist.
+
   * Welt2000 update user notification added.
 
   * Waypoint management made easier. If the waypoint info is requested by the

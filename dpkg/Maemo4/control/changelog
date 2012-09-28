@@ -1,3 +1,10 @@
+cumulus (2.18.0-1) stable; urgency=low
+
+  * BUGFIX: Crash fixed, if a sound player was defined but the binary did not
+    exist.
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Thu, 28 Sep 2012 18:13:47 +0200
+
 cumulus (2.18.0) stable; urgency=low
 
   * Welt2000 update user notification added.
