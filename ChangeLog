@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-09-28 AP: BUGFIX: Crash fixed, if a sound player was defined but the
+                   binary did not exist. Only valid for N8x0, N900 and Linux
+                   desktop.
+
 [*] 2012-09-27 AP: Cumulus 2.18.0 for Android released.
 
 [+] 2012-09-26 AP: Welt2000 update user notification added.
