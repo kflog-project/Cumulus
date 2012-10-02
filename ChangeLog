@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2012-09-28 AP: Cumulus 2.18.0 for Linux desktop, N8x0 and N900 released.
+
 [-] 2012-09-28 AP: BUGFIX: Crash fixed, if a sound player was defined but the
                    binary did not exist. Only valid for N8x0, N900 and Linux
                    desktop.
