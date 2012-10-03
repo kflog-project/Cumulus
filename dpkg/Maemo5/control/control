@@ -1,7 +1,7 @@
 Source: cumulus
 Section: user/navigation
 Priority: optional
-Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
 Build-Depends: debhelper (>= 5), libbluetooth3-dev (>= 4.60), libqt4-dev (>= 4.7.0~git20100909), libosso-dev (>= 2.32), libglib2.0-dev (>= 2.20.3), libstdc++6-4.2-dev (>= 4.2.1), liblocation-dev (>= 0.102), libc6-dev (>= 2.5.1)
 Standards-Version: 3.7.2
 

@@ -1,7 +1,7 @@
 Source: cumulus
 Section: user/navigation
 Priority: optional
-Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.2
 

@@ -1,3 +1,9 @@
+cumulus (2.18.0-3) stable; urgency=low
+
+  * Built with Qt release 4.8.3 
+  
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Wed, 03 Oct 2012 20:56:25 +0200
+ 
 cumulus (2.18.0-2) stable; urgency=low
 
   * BUGFIX: Crash fixed, if a sound player was defined but the binary did not
