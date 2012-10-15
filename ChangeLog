@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2012-10-15 AP: Cumulus 2.18.1 only for Android released. Contains changes in
+                   Android build and delivery structure (includes Qt libraries).
+
+[-] 2012-10-15 AP: Bugfix: Old Qt libraries added to Android package, because
+                   new Necessitas seems to be incompatible to the old release.
+                   Got a user report, that installation of Cumuls fails, if new
+                   Necessitas is used for Qt library download.
+
 [*] 2012-09-28 AP: Cumulus 2.18.0 for Linux desktop, N8x0 and N900 released.
 
 [-] 2012-09-28 AP: BUGFIX: Crash fixed, if a sound player was defined but the
