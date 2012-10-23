@@ -56,6 +56,8 @@ OpenAirParser::OpenAirParser()
   h_projection = (ProjectionBase *) 0;
 
   initializeBaseMapping();
+
+  QLocale::setDefault(QLocale::C);
 }
 
 OpenAirParser::~OpenAirParser()
@@ -318,7 +320,7 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 
   while( ! in.atEnd() )
     {
-      QString line = in.readLine();
+      QString line = in.readLine().trimmed();
       _lineNumber++;
 
       // qDebug("reading line %d: '%s'", _lineNumber, line.toLatin1().data());
@@ -500,8 +502,11 @@ void OpenAirParser::parseLine(QString& line)
 
       //polygon coordinate
       QString coord = line.mid(3);
-      parseCoordinate(coord, lat, lon);
-      asPA.append(QPoint(lat, lon));
+
+      if( parseCoordinate(coord, lat, lon) )
+        {
+          asPA.append(QPoint(lat, lon));
+        }
       // qDebug( "addDP: lat=%d, lon=%d", lat, lon );
       return;
     }
@@ -959,118 +964,142 @@ bool OpenAirParser::parseCoordinate(QString& line, int& lat, int& lon)
   result &= parseCoordinatePart(part1, lat, lon);
   result &= parseCoordinatePart(part2, lat, lon);
 
-  qDebug() << "parseCoordinate:" << line << "P1=" << part1 << "P2=" << rtptart22;
-
   return result;
 }
 
 
 bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
 {
-  const double factor[4]=
-  {
-    600000, 10000, 166.666666667, 0
-  };
-
-  const double factor100[4]=
-  {
-    600000, 600000, 10000, 0
-  };
-
-  bool decimal = false;
-  int cur_factor = 0;
-  double part = 0;
-  bool ok = false, found = false;
+  bool ok, ok1, ok2 = false;
   int value = 0;
-  int len = 0, pos = 0;
-  // qDebug("line=%s", line.toLatin1().data() );
 
-  QRegExp reg("[0-9]+");
-
-  if (line.isEmpty())
+  if( line.isEmpty() )
     {
-      qWarning("Tried to parse empty coordinate part! Line %d", _lineNumber);
+      qWarning("OAP: Tried to parse empty coordinate part! Line %d", _lineNumber);
       return false;
     }
 
-  while( cur_factor < 3 && line.length() )
-    {
-      pos=reg.indexIn(line, pos+len);
-      len = reg.matchedLength();
+  // A input line can contain elements like:
+  // P1= "50:11:31.1504N" P2= " 17:42:38.5171E"
 
-      if (pos==-1)
+  QStringList sl = line.split(QChar(':'));
+  QString skyDirection;
+
+  if( sl.size() == 1 )
+    {
+      // One element is contained, that means decimal degrees
+      QString deg = sl.at(0).trimmed();
+      skyDirection = deg.right(1);
+
+      if( skyDirection != "N" && skyDirection != "S" && skyDirection != "W" && skyDirection != "E" )
         {
-          break;
+          qWarning() << "OAP::parseCoordinatePart: wrong sky direction at line" << _lineNumber;
+          return false;
         }
-      else
+
+      deg = deg.left( deg.size() - 1 );
+
+      double ddeg = deg.toDouble(&ok);
+
+      if( ! ok )
         {
-          part=line.mid(pos, len).toInt(&ok);
-          if (ok)
-            {
-              if ( decimal )
-                {
-                  value+=(int) rint(part / pow(10,len) * factor100[cur_factor]);
-                  // qDebug("part=%f add=%d v=%d  cf=%d %d", part, int(part / pow(10,len) * factor100[cur_factor]), value, cur_factor, decimal );
-                }
-              else
-                {
-                  value+=(int) rint(part * factor[cur_factor]);
-                  // qDebug("part=%f add=%d v=%d  cf=%d %d", part, int(part * factor[cur_factor]), value, cur_factor, decimal );
-                }
-              found=true;
-            }
-          else
-            {
-              break;
-            }
+          qWarning() << "OAP::parseCoordinatePart: wrong coordinate value"
+                      << line << "at line" << _lineNumber;
+          return false;
         }
-      if (line.mid(pos+len,1)==":")
-        {
-          len++;
-          decimal = false;
-          cur_factor++;
-          continue;
-        }
-      else if( line.mid(pos+len,1) == "." )
-        {
-          len++;
-          cur_factor++;
-          decimal = true;
-          continue;
-        }
+
+      value = static_cast<int> (rint(ddeg * 600000.0));
     }
-
-  if (!found)
+  else if( sl.size() == 2 )
     {
+      // Two elements are contained
+      QString deg = sl.at(0).trimmed();
+      QString min = sl.at(1).trimmed();
+
+      skyDirection = min.right(1);
+
+      if( skyDirection != "N" && skyDirection != "S" && skyDirection != "W" && skyDirection != "E" )
+        {
+          qWarning() << "OAP::parseCoordinatePart: wrong sky direction at line" << _lineNumber;
+          return false;
+        }
+
+      min = min.left( min.size() - 1 );
+
+      double ddeg = deg.toDouble(&ok);
+      double dmin = min.toDouble(&ok1);
+
+      if( ! ok || ! ok1 )
+        {
+          qWarning() << "OAP::parseCoordinatePart: wrong coordinate value"
+                      << line << "at line" << _lineNumber;
+          return false;
+        }
+
+      value = static_cast<int> (rint((ddeg * 600000.0) + (dmin * 10000.0)));
+    }
+  else if( sl.size() == 3 )
+    {
+      // Three elements are contained
+      QString deg = sl.at(0).trimmed();
+      QString min = sl.at(1).trimmed();
+      QString sec = sl.at(2).trimmed();
+
+      skyDirection = sec.right(1);
+
+      if( skyDirection != "N" && skyDirection != "S" && skyDirection != "W" && skyDirection != "E" )
+        {
+          qWarning() << "OAP::parseCoordinatePart: wrong sky direction" << skyDirection << "at line" << _lineNumber;
+          return false;
+        }
+
+      sec = sec.left( sec.size() - 1 );
+
+      double ddeg = deg.toDouble(&ok);
+      double dmin = min.toDouble(&ok1);
+      double dsec = sec.toDouble(&ok2);
+
+      if( ! ok || ! ok1 || ! ok2 )
+        {
+          qWarning() << "OAP::parseCoordinatePart: wrong coordinate value"
+                      << line << "at line" << _lineNumber;
+          return false;
+        }
+
+      value = static_cast<int> (rint((600000.0 * ddeg) + (10000.0 * (dmin + (dsec / 60.0)))));
+    }
+  else
+    {
+      qWarning("OAP::parseCoordinatePart: unknown format! Line %d", _lineNumber);
       return false;
     }
 
-  // qDebug("%s value=%d", line.ascii(), value);
+  if( skyDirection == "N" )
+    {
+      lat = value;
+      return true;
+    }
 
-  if (line.indexOf('N')>0)
+  if( skyDirection == "S" )
     {
-      lat=value;
+      lat = -value;
       return true;
     }
-  if (line.indexOf('S')>0)
+
+  if( skyDirection == "E" )
     {
-      lat=-value;
+      lon = value;
       return true;
     }
-  if (line.indexOf('E')>0)
+
+  if( skyDirection == "W" )
     {
-      lon=value;
-      return true;
-    }
-  if (line.indexOf('W')>0)
-    {
-      lon=-value;
+      lon = -value;
       return true;
     }
 
   return false;
 }
-
 
 bool OpenAirParser::parseCoordinate(QString& line, QPoint& coord)
 {
@@ -1080,7 +1109,6 @@ bool OpenAirParser::parseCoordinate(QString& line, QPoint& coord)
   coord.setY(lon);
   return result;
 }
-
 
 bool OpenAirParser::parseVariable(QString line)
 {
