@@ -943,13 +943,23 @@ bool OpenAirParser::parseCoordinate(QString& line, int& lat, int& lon)
 
   QRegExp reg("[NSEW]");
   pos = reg.indexIn(line, 0);
-  if (pos==-1)
-    return false;
 
-  QString part1=line.left(pos+1);
-  QString part2=line.mid(pos+1);
+  if( pos == -1 )
+    {
+      qWarning() << "OAP::parseCoordinate: line"
+                  << _lineNumber
+                  << "missing sky directions!";
+
+      return false;
+    }
+
+  QString part1 = line.left(pos+1);
+  QString part2 = line.mid(pos+1);
+
   result &= parseCoordinatePart(part1, lat, lon);
   result &= parseCoordinatePart(part2, lat, lon);
+
+  qDebug() << "parseCoordinate:" << line << "P1=" << part1 << "P2=" << rtptart22;
 
   return result;
 }
@@ -961,16 +971,18 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
   {
     600000, 10000, 166.666666667, 0
   };
+
   const double factor100[4]=
   {
     600000, 600000, 10000, 0
   };
-  bool decimal=false;
-  int cur_factor=0;
-  double part=0;
-  bool ok=false, found=false;
-  int value=0;
-  int len=0, pos=0;
+
+  bool decimal = false;
+  int cur_factor = 0;
+  double part = 0;
+  bool ok = false, found = false;
+  int value = 0;
+  int len = 0, pos = 0;
   // qDebug("line=%s", line.toLatin1().data() );
 
   QRegExp reg("[0-9]+");
@@ -981,7 +993,7 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
       return false;
     }
 
-  while (cur_factor<3 && line.length())
+  while( cur_factor < 3 && line.length() )
     {
       pos=reg.indexIn(line, pos+len);
       len = reg.matchedLength();
@@ -1019,7 +1031,7 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
           cur_factor++;
           continue;
         }
-      else if (line.mid(pos+len,1)==".")
+      else if( line.mid(pos+len,1) == "." )
         {
           len++;
           cur_factor++;
@@ -1029,7 +1041,9 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
     }
 
   if (!found)
-    return false;
+    {
+      return false;
+    }
 
   // qDebug("%s value=%d", line.ascii(), value);
 
@@ -1053,6 +1067,7 @@ bool OpenAirParser::parseCoordinatePart(QString& line, int& lat, int& lon)
       lon=-value;
       return true;
     }
+
   return false;
 }
 
