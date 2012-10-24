@@ -147,8 +147,11 @@ int main(int argc, char *argv[])
   free( startDir );
 #endif
 
-  // Do always write a log file. Its very helpful for analysis.
-  bool isLog2File = true; // conf->getLog2FileMode();
+#ifdef MAEMO
+  bool isLog2File = true;
+#else
+  bool isLog2File = conf->getLog2FileMode();
+#endif
 
   QString logDir = "/tmp";
 
