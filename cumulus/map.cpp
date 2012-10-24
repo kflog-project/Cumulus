@@ -17,7 +17,7 @@
  **
  ***********************************************************************/
 
-#include <ctype>
+#include <ctype.h>
 #include <cstdlib>
 #include <cmath>
 
