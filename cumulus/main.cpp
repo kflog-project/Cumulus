@@ -38,7 +38,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
-#include <sys/types.h>
+#include <sys/types>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <libgen.h>
@@ -147,7 +147,8 @@ int main(int argc, char *argv[])
   free( startDir );
 #endif
 
-  bool isLog2File = conf->getLog2FileMode();
+  // Do always write a log file. Its very helpful for analysis.
+  bool isLog2File = true; // conf->getLog2FileMode();
 
   QString logDir = "/tmp";
 
