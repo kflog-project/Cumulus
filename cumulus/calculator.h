@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2011 by Axel Pauli
+**                   2008-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -547,6 +547,14 @@ public slots:
    */
   void slot_startTask();
 
+  /**
+   * Called to set the minumum altitude to a new value.
+   */
+  void slot_setMinAltitude( const Altitude& altitude )
+  {
+    m_minAltitude = altitude;
+  }
+
 signals: // Signals
 
   /**
@@ -664,6 +672,11 @@ signals: // Signals
   /** sent on activate/deactivate of manualInFlight mode */
   void switchManualInFlight();
 
+  /**
+   * Sent if a new gained altitude is available.
+   */
+  void newGainedAltitude( const Altitude& );
+
 private: // Private methods
   /**
    * Sets a new selected waypoint. The old waypoint instance is
@@ -698,6 +711,11 @@ private: // Private methods
    * Calculates the current and required LD to the selected waypoint
    */
   void calcLD();
+
+  /**
+   * Calculates the altitude gain.
+   */
+  void calcAltitudeGain();
 
   /**
    * Determines the status of the flight:
@@ -801,6 +819,12 @@ private: // Private attributes
   bool taskEndReached;
 
   bool manualInFlight;
+
+  /** minimum altitude for determining altitude gain. */
+  Altitude m_minAltitude;
+
+  /** Altitude gain. */
+  Altitude m_gainedAltitude;
 };
 
 extern Calculator* calculator;

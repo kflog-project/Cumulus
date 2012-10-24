@@ -38,7 +38,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
-#include <sys/types>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <libgen.h>
