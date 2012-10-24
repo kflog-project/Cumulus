@@ -90,7 +90,7 @@ Calculator::Calculator(QObject* parent) :
   taskEndReached = false;
   manualInFlight = false;
   _cruiseDirection = -1;
-  m_minAltitude = INT_MIN;
+  m_minimumAltitude = INT_MIN;
 
   // hook up the internal backend components
   connect (_vario, SIGNAL(newVario(const Speed&)),
@@ -177,7 +177,6 @@ void Calculator::slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns)
 
   calcGlidePath();
   calcAltitudeGain();
-  // qDebug("slot_Altitude");
 }
 
 /** Called if a new heading has been obtained */
@@ -1712,25 +1711,26 @@ bool Calculator::moving()
 }
 
 /**
- * Calculates the altitude gain. The variable m_minAltitude must be set
+ * Calculates the altitude gain. The variable m_minimumAltitude must be set
  * to a senseful value before, to enable the calculation.
  */
 void Calculator::calcAltitudeGain()
 {
-  if( m_minAltitude.getMeters() == double(INT_MIN) )
+  if( m_minimumAltitude.getMeters() == double(INT_MIN) )
     {
+      // Gain calculation is not desired..
       return;
     }
 
-  if( lastAltitude < m_minAltitude )
+  if( lastAltitude < m_minimumAltitude )
     {
       // We have sunken and store the new deep point.
-      m_minAltitude = lastAltitude;
+      m_minimumAltitude = lastAltitude;
     }
-  else if( lastAltitude > m_minAltitude )
+  else if( lastAltitude > m_minimumAltitude )
     {
       // We are about the stored minimum altitude. That means we had a lift.
-      Altitude lift = lastAltitude - m_minAltitude;
+      Altitude lift = lastAltitude - m_minimumAltitude;
 
       if( lift > m_gainedAltitude )
         {

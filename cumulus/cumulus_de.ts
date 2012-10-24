@@ -161,16 +161,21 @@
     </message>
     <message>
         <location filename="altimetermodedialog.cpp" line="137"/>
+        <source>AltGain:</source>
+        <translation>H-Gewinn:</translation>
+    </message>
+    <message>
+        <location filename="altimetermodedialog.cpp" line="152"/>
         <source>Leveling:</source>
         <translation>Abgleich:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="150"/>
+        <location filename="altimetermodedialog.cpp" line="165"/>
         <source>Altitude:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="155"/>
+        <location filename="altimetermodedialog.cpp" line="170"/>
         <source>QNH:</source>
         <translation></translation>
     </message>
@@ -191,58 +196,58 @@
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="calculator.cpp" line="252"/>
+        <location filename="calculator.cpp" line="254"/>
         <source>Replace current task point?</source>
         <translation>Aufgabenpunkt ersetzen?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="253"/>
+        <location filename="calculator.cpp" line="255"/>
         <source>&lt;html&gt;A flight task is activated!&lt;br&gt;This selection will stop the automatic task point switch.To avoid that make a selection from task menu.&lt;br&gt;Do You really want to replace?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="435"/>
+        <location filename="calculator.cpp" line="437"/>
         <source>Task target reached</source>
         <translation>Aufgabenziel erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="440"/>
+        <location filename="calculator.cpp" line="442"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="446"/>
+        <location filename="calculator.cpp" line="448"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="463"/>
+        <location filename="calculator.cpp" line="465"/>
         <source>Taskpoint area reached</source>
         <translation>Wendepunktbereich erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="513"/>
+        <location filename="calculator.cpp" line="515"/>
         <source>Automatic taskpoint switch</source>
         <translation>Automatische Wendepunktschaltung</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1583"/>
-        <location filename="calculator.cpp" line="1588"/>
+        <location filename="calculator.cpp" line="1585"/>
+        <location filename="calculator.cpp" line="1590"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1589"/>
+        <location filename="calculator.cpp" line="1591"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1650"/>
+        <location filename="calculator.cpp" line="1652"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1651"/>
+        <location filename="calculator.cpp" line="1653"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -4751,7 +4756,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="wpinfowidget.cpp" line="68"/>
         <source>Add Waypoint</source>
-        <translation type="unfinished">+ Wegpunkt</translation>
+        <translation>+ Wegpunkt</translation>
     </message>
     <message>
         <location filename="wpinfowidget.cpp" line="73"/>

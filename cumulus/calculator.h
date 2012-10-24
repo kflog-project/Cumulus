@@ -402,6 +402,22 @@ public:
    */
   bool moving();
 
+  /**
+   * @return The minimum altitude object.
+   */
+  Altitude getMinimumAltitude()
+  {
+    return m_minimumAltitude;
+  }
+
+  /**
+   * @return The gained altitude object.
+   */
+  Altitude getGainedAltitude()
+  {
+    return m_gainedAltitude;
+  }
+
 public slots:
 
   /**
@@ -548,11 +564,13 @@ public slots:
   void slot_startTask();
 
   /**
-   * Called to set the minumum altitude to a new value.
+   * Called to set the minimum altitude to the current altitude value.
+   * That also resets the gained altitude.
    */
-  void slot_setMinAltitude( const Altitude& altitude )
+  void slot_setMinimumAltitude()
   {
-    m_minAltitude = altitude;
+    m_gainedAltitude = 0;
+    m_minimumAltitude = lastAltitude;
   }
 
 signals: // Signals
@@ -821,7 +839,7 @@ private: // Private attributes
   bool manualInFlight;
 
   /** minimum altitude for determining altitude gain. */
-  Altitude m_minAltitude;
+  Altitude m_minimumAltitude;
 
   /** Altitude gain. */
   Altitude m_gainedAltitude;

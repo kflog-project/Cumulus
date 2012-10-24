@@ -17,7 +17,7 @@
  **
  ***********************************************************************/
 
-#include <ctype.h>
+#include <ctype>
 #include <cstdlib>
 #include <cmath>
 
@@ -61,7 +61,7 @@ extern MapView     *_globalMapView;
 Map *Map::instance = static_cast<Map *>(0);
 
 Map::Map(QWidget* parent) : QWidget(parent),
-  TrailListLength( 300 )
+  TrailListLength( 420 )
 {
 //  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
@@ -1032,7 +1032,7 @@ void Map::p_drawTrail()
       p.end();
     }
 
-  // qDebug("Tail, drawTime=%d ms", t.elapsed());
+  // qDebug("Trail, drawTime=%d ms", t.elapsed());
 }
 
 void Map::p_calculateTrailPoints()

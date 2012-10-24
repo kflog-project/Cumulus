@@ -134,7 +134,22 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   altitudeLayout->setSpacing( 15 );
   int row = 0;
 
-  QLabel* lbl = new QLabel( tr( "Leveling:" ), this );
+  QLabel* lbl = new QLabel( tr( "AltGain:" ), this );
+  altitudeLayout->addWidget( lbl, row, 0 );
+
+  altitudeGainDisplay = new QLineEdit;
+  altitudeGainDisplay->setReadOnly( true );
+  altitudeLayout->addWidget( altitudeGainDisplay, row, 1 );
+
+  setAltitudeGain = new QPushButton( "S", this );
+  altitudeLayout->addWidget( setAltitudeGain, row++, 2 );
+
+  connect( setAltitudeGain, SIGNAL(pressed()), SLOT(slotResetGainedAltitude()) );
+
+  connect( calculator, SIGNAL(newGainedAltitude(const Altitude&)),
+           this, SLOT( slotAltitudeGain(const Altitude&)) );
+
+  lbl = new QLabel( tr( "Leveling:" ), this );
   altitudeLayout->addWidget( lbl, row, 0 );
   spinLeveling = new QSpinBox( this );
   spinLeveling->setMinimum( -1000 );
@@ -372,6 +387,8 @@ void AltimeterModeDialog::load()
       break;
   }
 
+  slotAltitudeGain( calculator->getGainedAltitude() );
+
   m_saveLeveling = spinLeveling->value();
 
   m_saveQnh = conf->getQNH();
@@ -514,6 +531,19 @@ void AltimeterModeDialog::slotSpinValueChanged( const QString& text )
 {
   Q_UNUSED( text )
   // Restarts the timer after a spin box value change
+  startTimer();
+}
+
+void AltimeterModeDialog::slotAltitudeGain(const Altitude& altitudeGainIn )
+{
+  altitudeGainDisplay->setText( Altitude::getText(altitudeGainIn.getMeters(), true, 0) );
+}
+
+void AltimeterModeDialog::slotResetGainedAltitude()
+{
+  Altitude alt(0);
+  slotAltitudeGain(alt);
+  calculator->slot_setMinimumAltitude();
   startTimer();
 }
 

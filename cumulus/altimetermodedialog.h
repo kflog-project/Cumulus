@@ -36,6 +36,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QLineEdit>
 #include <QTimer>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -110,6 +111,9 @@ private:
   /** Altitude display */
   QLabel* _altitudeDisplay;
 
+  /** Altitude gain display */
+  QLineEdit* altitudeGainDisplay;
+
   /** Spin box for altitude leveling */
   QSpinBox* spinLeveling;
 
@@ -121,6 +125,8 @@ private:
   QPushButton *pplus;
   QPushButton *minus;
   QPushButton *mminus;
+
+  QPushButton *setAltitudeGain;
 
   /** Save the initial values here. They are needed in the reject case. */
   int m_saveMode;
@@ -139,6 +145,9 @@ public slots:
 
   /** This slot is being called if the altitude value has been changed. */
   void slotAltitudeChanged(const Altitude& altitude );
+
+  /** This slot is being called if the altitude gain value has been changed. */
+  void slotAltitudeGain(const Altitude& altitudeGain );
 
 private slots:
 
@@ -171,6 +180,12 @@ private slots:
    * related spin box which has the current focus.
    */
   void slotChangeSpinValue();
+
+  /**
+   * This slot is called if the S button is pressed. It resets the gained
+   * altitude display and informs the calculator about that.
+   */
+  void slotResetGainedAltitude();
 
 signals:
 
