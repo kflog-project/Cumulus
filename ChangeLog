@@ -15,6 +15,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-10-24 AP: New feature gain altitude added to altitude dialog. If the
+                   S button is pressed, the gained altitude is calculated and
+                   displayed in the dialog. That is a cool feature, if you
+                   have to make a certain altitude gain, e.g. for the Silver-C,
+                   Gold-C or a diamond.
+
+[-] 2012-10-23 AP: Bugfix: Additional checks added in OpenAir parser to prevent
+                   that wrong defined coordinates are taken over. That caused
+                   sometimes a crash.
+
 [*] 2012-10-15 AP: Cumulus 2.18.1 only for Android released. Contains changes in
                    Android build and delivery structure (includes Qt libraries).
 
