@@ -133,6 +133,8 @@
 #define GLIDER_SECTOR    66 // used for glider sectors
 #define EMPTY_POINT      67 // used for empty points
 #define PROHIBITED       68 // used for prohibited airspace
-#define LAST_ENTRY       69 // This must be always the last entry!!!
+#define AIR_G            69
+#define AIR_UKN          70
+#define LAST_ENTRY       71 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

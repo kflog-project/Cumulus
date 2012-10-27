@@ -143,6 +143,9 @@ private:
   uint _objCounter; // counter for allocated objects
   bool _isCurrentAirspace;
 
+  // Set, if a parse error was detected
+  bool _parseError;
+
   // Read condition flags
   bool _acRead;
   bool _anRead;
