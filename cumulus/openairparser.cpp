@@ -16,8 +16,8 @@
  **
  ***********************************************************************/
 
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <unistd.h>
 
 #include <QtCore>
@@ -708,8 +708,8 @@ void OpenAirParser::initializeBaseMapping()
   m_baseTypeMap.insert("AirC", BaseMapElement::AirC);
   m_baseTypeMap.insert("AirD", BaseMapElement::AirD);
   m_baseTypeMap.insert("AirE", BaseMapElement::AirE);
-  m_baseTypeMap.insert("AirG", BaseMapElement::AirG);
-  m_baseTypeMap.insert("AirUkn", BaseMapElement::AirUkn);
+  //m_baseTypeMap.insert("AirG", BaseMapElement::AirG);
+  //m_baseTypeMap.insert("AirUkn", BaseMapElement::AirUkn);
   m_baseTypeMap.insert("WaveWindow", BaseMapElement::WaveWindow);
   m_baseTypeMap.insert("AirF", BaseMapElement::AirF);
   m_baseTypeMap.insert("ControlC", BaseMapElement::ControlC);
@@ -733,8 +733,8 @@ void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
   m_stringTypeMap.insert("D", "AirD");
   m_stringTypeMap.insert("E", "AirE");
   m_stringTypeMap.insert("F", "AirF");
-  m_stringTypeMap.insert("G", "AirG");
-  m_stringTypeMap.insert("UKN", "AirUkn");
+  //m_stringTypeMap.insert("G", "AirG");
+  //m_stringTypeMap.insert("UKN", "AirUkn");
   m_stringTypeMap.insert("GP", "Restricted");
   m_stringTypeMap.insert("R", "Restricted");
   m_stringTypeMap.insert("P", "Prohibited");
@@ -802,18 +802,20 @@ void OpenAirParser::parseType(QString& line)
 
   if (!m_stringTypeMap.contains(line))
     {
-      //no mapping from the found type to a Cumulus basetype was found
-      qWarning("OAP: Line=%d Type, '%s' not mapped to basetype. Object not interpreted.", _lineNumber, line.toLatin1().data());
+      // no mapping from the found type to a Cumulus basetype was found
+      qWarning("OAP: Line=%d AS Type, '%s' not mapped to a basetype. Object ignored.",
+               _lineNumber, line.toLatin1().data());
       _isCurrentAirspace = false; //stop accepting other lines in this object
       return;
     }
   else
     {
       QString stringType = m_stringTypeMap[line];
+
       if (!m_baseTypeMap.contains(stringType))
         {
           //the indicated basetype is not a valid Cumulus basetype.
-          qWarning( "OAP: Line=%d, Type '%s' is not a valid basetype. Object not interpreted.",
+          qWarning( "OAP: Line=%d, Type '%s' is not a valid basetype. Object ignored.",
                     _lineNumber, stringType.toLatin1().data());
           _isCurrentAirspace = false; //stop accepting other lines in this object
           return;
@@ -1630,4 +1632,3 @@ bool OpenAirParser::setHeaderData( QString &path )
   h_headerIsValid = true; // save read result here too
   return true;
 }
-
