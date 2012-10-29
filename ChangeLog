@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-10-29 AP: Bugfix: GPS settings dialog, alternative added device was
+                   never displayed in the GPS device list.
+
 [+] 2012-10-24 AP: New feature gain altitude added to altitude dialog. If the
                    S button is pressed, the gained altitude is calculated and
                    displayed in the dialog. That is a cool feature, if you

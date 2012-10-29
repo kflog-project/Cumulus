@@ -20,6 +20,7 @@
  * in their incoming order one after another, not in parallel.
  */
 
+#include <unistd.h>
 #include <sys/vfs.h>
 
 #include <QtCore>
