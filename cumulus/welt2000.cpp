@@ -331,10 +331,10 @@ bool Welt2000::check4update()
   bool ret = false;
   int lineNo = 0;
 
-  while( ! in.atEnd() )
+  while( ! ins.atEnd() )
     {
       QString line;
-      line = in.readLine(128);
+      line = ins.readLine(128);
       lineNo++;
 
       // The constant ckeckLineNo addresses a line which contains the
