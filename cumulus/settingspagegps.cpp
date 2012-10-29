@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright(c): 2002      by Andrè Somers,
-**                 2007-2011 by Axel Pauli
+**                 2007-2012 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -56,12 +56,10 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->addItem("/dev/ttyS2");
   GpsDev->addItem("/dev/ttyS3");
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
+#ifdef BLUEZ
   // Bluetooth default devices
   GpsDev->addItem("/dev/rfcomm0");
   GpsDev->addItem("/dev/rfcomm1");
-#ifdef BLUEZ
-  // Bluetooth default adapter
-  GpsDev->addItem(BT_ADAPTER);
 #endif
   // add entry for NMEA simulator choice
   GpsDev->addItem(NMEASIM_DEVICE);
@@ -139,6 +137,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
     {
 #ifndef MAEMO
       GpsDev->addItem( devText );
+      GpsDev->setCurrentIndex(GpsDev->findText( devText ));
 #else
       // On Maemo we select the first entry, the Maemo GPS daemon as default
       GpsDev->setCurrentIndex(0);
