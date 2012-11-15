@@ -1,3 +1,15 @@
+cumulus (2.19.0) stable; urgency=low
+
+  * New feature gain altitude added to altitude dialog. If the S button is
+    pressed, the gained altitude is calculated and displayed in the dialog.
+    That is a cool feature, if you have to make a certain altitude gain, e.g.
+    for the Silver-C, Gold-C or a diamond.
+
+  * Bugfix: Additional checks added in OpenAir parser to prevent that wrong
+    defined coordinates are taken over. That caused sometimes a crash.
+
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Wed, 24 Oct 2012 23:35:42 +0200
+
 cumulus (2.18.0) stable; urgency=low
 
   * BUGFIX: Crash fixed, if a sound player was defined but the binary did not
