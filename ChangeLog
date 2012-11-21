@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2012-11-15 AP: Cumulus 2.19.0 released.
+
 [-] 2012-10-29 AP: Bugfix: GPS settings dialog, alternative added device was
                    never displayed in the GPS device list.
 
