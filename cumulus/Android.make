@@ -58,9 +58,9 @@ $(A_LIB_DIR)/$(QT_PLUGIN): $(QT_PLUGIN_DIR)/$(QT_PLUGIN)
 	$(STRIP) $(A_LIB_DIR)/$(QT_PLUGIN)
 
 	
-copy_jar:	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
+copy_jar:	$(ASSET_DIR)/$(QT_JAR)
 	
-$(ASSET_DIR)/$(QT_JAR)):	$(QT_JAR_DIR)/$(QT_JAR)
+$(ASSET_DIR)/$(QT_JAR):	$(QT_JAR_DIR)/$(QT_JAR)
 	install --mode=644 $< $(ASSET_DIR)
 
 check:
