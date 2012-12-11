@@ -51,4 +51,8 @@ check:
 	fi
 	@test -d "$(A_LIB_DIR)" || mkdir -p $(A_LIB_DIR)
 
+clean:
+	rm -f $(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
+	rm -f $(addprefix $(ASSET_DIR)/, $(QT_JAR))
+
 	
