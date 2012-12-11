@@ -1,3 +1,9 @@
+cumulus (2.19.1) stable; urgency=low
+
+  * Build with Qt4.8.4
+  
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 11 Dec 2012 22:52:56 +0100
+  
 cumulus (2.19.0) stable; urgency=low
 
   * New feature gain altitude added to altitude dialog. If the S button is
