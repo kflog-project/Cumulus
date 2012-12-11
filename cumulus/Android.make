@@ -42,7 +42,7 @@ copy_qt:	$(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
 
 $(addprefix $(A_LIB_DIR)/, $(QT_LIBS)):	$(addprefix $(QT_LIB_DIR)/, $(QT_LIBS))
 	install --mode=755 $< $(A_LIB_DIR)
-	$(STRIP) $(A_LIB_DIR)/$@
+	$(STRIP) $@
 	
 copy_jar:	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
 	
