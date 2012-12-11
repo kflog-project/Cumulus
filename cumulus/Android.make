@@ -41,13 +41,13 @@ copy:	check copy_qt copy_jar
 copy_qt:	$(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
 
 $(addprefix $(A_LIB_DIR)/, $(QT_LIBS)):	$(addprefix $(QT_LIB_DIR)/, $(QT_LIBS))
-	install --mode=755 $(addprefix $(QT_LIB_DIR)/, $<) $(A_LIB_DIR)
-	$(STRIP) $(addprefix $(A_LIB_DIR)/, $<)
+	install --mode=755 $< $(A_LIB_DIR)
+	$(STRIP) $(A_LIB_DIR)/$@
 	
 copy_jar:	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
 	
 $(addprefix $(ASSET_DIR)/, $(QT_JAR)):	$(QT_JAR_DIR)/$(QT_JAR)
-	install --mode=644 $(QT_JAR_DIR)/$(QT_JAR) $(ASSET_DIR)
+	install --mode=644 $< $(ASSET_DIR)
 
 check:
 	@if [ -z "$(PROJECT_DIR)" ]; \
