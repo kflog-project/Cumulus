@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2012-12-11 AP: Build with Qt4.8.4
+
+--------------------------------------------------
+Cumulus 2.19.x (Development based on X11/Qt-4.8.4)
+--------------------------------------------------
+
 [*] 2012-11-15 AP: Cumulus 2.19.0 released.
 
 [-] 2012-10-29 AP: Bugfix: GPS settings dialog, alternative added device was
