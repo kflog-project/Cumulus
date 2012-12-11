@@ -31,17 +31,23 @@ A_LIB_DIR = $(PROJECT_DIR)/android/libs/armeabi-v7a
 
 ASSET_DIR = $(PROJECT_DIR)/android/assets
 
+# Note that the Project directory must be passed to every make call!
+
 usage:
 	@echo "call: $(MAKE) -f Android.make PROJECT_DIR=<project-dir>"
 
 copy:	check copy_qt copy_jar
 
-copy_qt:
-	cp $(addprefix $(QT_LIB_DIR)/, $(QT_LIBS)) $(A_LIB_DIR)
-	cd $(A_LIB_DIR); $(STRIP) $(QT_LIBS)
+copy_qt:	$(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
+
+$(addprefix $(A_LIB_DIR)/, $(QT_LIBS)):	$(addprefix $(QT_LIB_DIR)/, $(QT_LIBS))
+	install --mode=755 $(addprefix $(QT_LIB_DIR)/, $<) $(A_LIB_DIR)
+	$(STRIP) $(addprefix $(A_LIB_DIR)/, $<)
 	
-copy_jar:
-	cp $(QT_JAR_DIR)/$(QT_JAR) $(ASSET_DIR)
+copy_jar:	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
+	
+$(addprefix $(ASSET_DIR)/, $(QT_JAR)):	$(QT_JAR_DIR)/$(QT_JAR)
+	install --mode=644 $(QT_JAR_DIR)/$(QT_JAR) $(ASSET_DIR)
 
 check:
 	@if [ -z "$(PROJECT_DIR)" ]; \
@@ -54,5 +60,3 @@ check:
 clean:
 	rm -f $(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
 	rm -f $(addprefix $(ASSET_DIR)/, $(QT_JAR))
-
-	
