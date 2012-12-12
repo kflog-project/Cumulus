@@ -25,6 +25,12 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/**
+ * This file was patched, to load all Qt libraries from a fixed position.
+ * 
+ * $Id$
+ */
+
 package org.kde.necessitas.origo;
 
 import java.io.File;
