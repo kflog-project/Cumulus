@@ -23,7 +23,6 @@
  */
 
 #include <unistd.h>
-#include <jni.h>
 
 #include <QtGui>
 #include <QWindowSystemInterface>

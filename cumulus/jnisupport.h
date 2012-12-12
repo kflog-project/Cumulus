@@ -20,13 +20,15 @@
  * Android interface between Java part and Qt C++ part.
  */
 
+#include <jni.h>
+
 #include <QString>
 
 /**
  * Returns true if the java native methods could be registered successfully
  * otherwise false.
  */
-bool initJni();
+bool initJni(JavaVM* vm, JNIEnv* env);
 
 /**
  * Called to detach the current thread from the VM.
