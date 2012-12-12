@@ -60,8 +60,6 @@ bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
 
-#ifdef SDK_A4
-
 // Necessitas has moved the JNI interface to another file in SDK alpha 4.
 // Therefore we can provide an own JNI_ONLOAD function.
 // http://developer.android.com/guide/practices/jni.html
@@ -87,8 +85,6 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
   return -1;
 }
 
-#endif
-
 void jniShutdown()
 {
   // Set shutdown flag to true. This function is called by the MainWindow
@@ -104,14 +100,14 @@ void jniShutdown()
  * Called from the Java code on every location update by LocationListener ll
  */
 static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
-                             jobject /*myproxyobject*/,
-                             jdouble latitude,
-                             jdouble longitude,
-                             jdouble altitude,
-                             jfloat speed,
-                             jfloat heading,
-                             jfloat accuracy,
-                             jlong time )
+                          jobject /*myproxyobject*/,
+                          jdouble latitude,
+                          jdouble longitude,
+                          jdouble altitude,
+                          jfloat speed,
+                          jfloat heading,
+                          jfloat accuracy,
+                          jlong time )
 {
   if( ! shutdown )
     {
@@ -133,8 +129,8 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
  */
 
 static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
-                                jobject /*myproxyobject*/,
-                                jint status )
+                             jobject /*myproxyobject*/,
+                             jint status )
 {
   if( ! shutdown )
     {
