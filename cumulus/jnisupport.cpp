@@ -292,7 +292,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   if( clazz == 0 )
     {
-      qWarning( "initJni: FindClass 'org/kflog/cumulus7/CumulusActivity' failed!" );
+      qWarning( "initJni: FindClass 'org/kflog/cumulus/CumulusActivity' failed!" );
       return false;
     }
 
