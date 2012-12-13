@@ -176,7 +176,7 @@ void WpEditDialog::accept()
   emit save( &newWp );
   newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
   newWp.comment = comment->toPlainText();
-  newWp.wpListMember = _wp->wpListMember;
+  newWp.wpListMember = _wp ? _wp->wpListMember : false;
 
   // Make some mandatory consistency checks
   if( checkWaypointData( newWp ) == false )
