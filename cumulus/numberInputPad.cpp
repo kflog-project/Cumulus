@@ -34,6 +34,9 @@ NumberInputPad::NumberInputPad( QString text, QWidget *parent ) :
   // Save the current state of the software input panel
   m_autoSip = qApp->autoSipEnabled();
 
+  // Disable software input panel
+  qApp->setAutoSipEnabled( false );
+
   int row = 0;
   QGridLayout* gl = new QGridLayout(this);
   gl->setMargin(5);
