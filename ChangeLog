@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2012-12-13 AP: Bugfix: Cumulus is crashed, if a new waypoint was added and
+                   saved due to modifications in the waypoint handling.
+
 [+] 2012-12-11 AP: Build with Qt4.8.4
 
 --------------------------------------------------
