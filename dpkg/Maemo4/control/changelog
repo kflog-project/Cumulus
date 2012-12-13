@@ -1,3 +1,10 @@
+cumulus (2.19.2) stable; urgency=low
+
+  * Bugfix: Cumulus is crashed, if a new waypoint was added and saved
+    due to modifications in the waypoint handling.
+  
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 13 Dec 2012 18:00:00 +0100
+
 cumulus (2.19.1) stable; urgency=low
 
   * Build with Qt4.8.4
