@@ -22,7 +22,8 @@
  *
  * \brief Number input and editor pad.
  *
- * This widget can be used to enter a number or to modify it.
+ * This widget can be used to enter a number or to modify it with an own
+ * provided keypad.
  *
  * \date 2012
  *
