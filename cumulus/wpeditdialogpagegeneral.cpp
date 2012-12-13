@@ -123,6 +123,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addLayout(elevLayout, row++, 1);
 
   edtElev = new QLineEdit(this);
+  edtElev->setValidator( new QRegExpValidator(QRegExp("[1-9][0-9]*"), this) );
+
   elevLayout->addWidget(edtElev);
   QLabel * lblElevUnit = new QLabel(Altitude::getUnitText(), this);
   elevLayout->addWidget(lblElevUnit);

@@ -56,7 +56,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QBoxLayout *elevLayout = new QHBoxLayout();
   topLayout->addLayout(elevLayout, row++, 1);
   edtLength = new QLineEdit(this);
-  QRegExp rx("[0-9]*");
+  QRegExp rx("[1-9][0-9]*");
   edtLength->setValidator( new QRegExpValidator(rx, this) );
 
   elevLayout->addWidget(edtLength);
