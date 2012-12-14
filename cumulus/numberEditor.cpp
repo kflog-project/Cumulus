@@ -76,4 +76,5 @@ void NumberEditor::slot_Number( const QString& number )
   m_nip = 0;
   m_number = number;
   setText();
+  emit numberEdited( number );
 }

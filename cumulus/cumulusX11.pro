@@ -81,6 +81,7 @@ HEADERS = \
     gpsnmea.h \
     gpsstatusdialog.h \
     coordedit.h \
+    coordeditnumpad.h \
     helpbrowser.h \
     hwinfo.h \
     igclogger.h \
@@ -106,6 +107,8 @@ HEADERS = \
     messagehandler.h \
     messagewidget.h \
     multilayout.h \
+    NumberEditor.h \
+    numberInputPad.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -182,6 +185,8 @@ SOURCES = \
     basemapelement.cpp \
     configwidget.cpp \
     calculator.cpp \
+    coordedit.cpp \
+    coordeditnumpad.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     flickcharm.cpp \
@@ -196,7 +201,6 @@ SOURCES = \
     gpscon.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
-    coordedit.cpp \
     helpbrowser.cpp \
     hwinfo.cpp \
     igclogger.cpp \
@@ -219,6 +223,8 @@ SOURCES = \
     mapview.cpp \
     messagehandler.cpp \
     messagewidget.cpp \
+    NumberEditor.cpp \
+    numberInputPad.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \

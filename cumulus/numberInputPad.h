@@ -37,11 +37,12 @@
 #include <QPushButton>
 #include <QString>
 #include <QValidator>
-#include <QWidget>
+
+#include <QFrame>
 
 class QSignalMapper;
 
-class NumberInputPad : public QWidget
+class NumberInputPad : public QFrame
 {
   Q_OBJECT
 
@@ -51,13 +52,14 @@ class NumberInputPad : public QWidget
 
  public:
 
-  NumberInputPad( const QString text="", QWidget *parent=0 );
+  NumberInputPad( const QString number="", QWidget *parent=0 );
 
   virtual ~NumberInputPad();
 
-  void setNumber( const QString& text )
+  void setNumber( const QString& number )
   {
-    m_editor->setText(text);
+    m_setNumber = number;
+    m_editor->setText(number);
   };
 
   QString getNumber()
@@ -70,6 +72,11 @@ class NumberInputPad : public QWidget
     m_decimal->setVisible( flag );
   };
 
+  void setPmVisible( const bool flag )
+  {
+    m_pm->setVisible( flag );
+  };
+
   void setValidator( QValidator* validator )
   {
     m_editor->setValidator( validator );
@@ -80,6 +87,11 @@ class NumberInputPad : public QWidget
     m_editor->setInputMask( mask );
   };
 
+  void setMaxLength( int max )
+  {
+    m_editor->setMaxLength( max );
+  };
+
  signals:
 
   void number( const QString& text );
@@ -87,6 +99,11 @@ class NumberInputPad : public QWidget
  private slots:
 
   void buttonPressed( const QString& text );
+
+  /**
+   * Toogles a leading minus sign.
+   */
+  void slot_Pm();
 
   void slot_Ok();
 
@@ -104,6 +121,7 @@ class NumberInputPad : public QWidget
   QPushButton* m_left;
   QPushButton* m_right;
   QPushButton* m_decimal;
+  QPushButton* m_pm;
   QPushButton* m_num0;
   QPushButton* m_num1;
   QPushButton* m_num2;
@@ -119,6 +137,9 @@ class NumberInputPad : public QWidget
 
   /** The state of the SIP */
   bool m_autoSip;
+
+  /** The set number to be edited*/
+  QString m_setNumber;
 };
 
 #endif // NumberInputPad_h

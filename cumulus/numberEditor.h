@@ -69,6 +69,11 @@ class NumberEditor : public QLabel
     return m_number;
   };
 
+  QString number()
+  {
+    return m_number;
+  };
+
   void setPrefix(const QString prefix)
   {
     m_prefix = prefix;
@@ -112,6 +117,10 @@ class NumberEditor : public QLabel
     * Handles mouse button presses.
     */
    void mousePressEvent( QMouseEvent* event );
+
+ signals:
+
+   void numberEdited( const QString& number );
 
  private slots:
 

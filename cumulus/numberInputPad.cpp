@@ -17,15 +17,20 @@
 
 #include <QtGui>
 
+#include "generalconfig.h"
 #include "numberInputPad.h"
 
 /**
  * Constructor
  */
-NumberInputPad::NumberInputPad( QString text, QWidget *parent ) :
-  QWidget( parent ),
-  m_autoSip(true)
+NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
+  QFrame( parent ),
+  m_autoSip(true),
+  m_setNumber(number)
 {
+  setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
+  setLineWidth ( 3 );
+
   setObjectName("NumberInputPad");
   setWindowFlags(Qt::Tool);
   setWindowModality( Qt::WindowModal );
@@ -42,10 +47,11 @@ NumberInputPad::NumberInputPad( QString text, QWidget *parent ) :
   gl->setMargin(5);
 
   m_editor = new QLineEdit;
-  m_editor->setText( text );
+  m_editor->setText( number );
   gl->addWidget( m_editor, row, 0, 1, 5 );
 
-  m_ok = new QPushButton( "Ok" );
+  m_ok = new QPushButton( " " );
+  m_ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
   gl->addWidget( m_ok, row, 6 );
   row++;
 
@@ -83,6 +89,10 @@ NumberInputPad::NumberInputPad( QString text, QWidget *parent ) :
 
   m_num0 = new QPushButton( "0" );
   gl->addWidget( m_num0, row, 4 );
+
+  m_pm = new QPushButton( "+-" );
+  gl->addWidget( m_pm, row, 6 );
+
   row++;
 
   m_decimal = new QPushButton( "." );
@@ -100,7 +110,8 @@ NumberInputPad::NumberInputPad( QString text, QWidget *parent ) :
   m_delRight = new QPushButton( "x>" );
   gl->addWidget( m_delRight, row, 4 );
 
-  m_cancel = new QPushButton( "X" );
+  m_cancel = new QPushButton( " " );
+  m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
   gl->addWidget( m_cancel, row, 6 );
 
   m_signalMapper = new QSignalMapper(this);
@@ -140,8 +151,11 @@ NumberInputPad::NumberInputPad( QString text, QWidget *parent ) :
   connect( m_signalMapper, SIGNAL(mapped(const QString &)),
            this, SLOT(buttonPressed(const QString &)));
 
+  connect( m_pm, SIGNAL(pressed() ), this, SLOT(slot_Pm()) );
   connect( m_ok, SIGNAL(pressed() ), this, SLOT(slot_Ok()) );
   connect( m_cancel, SIGNAL(pressed() ), this, SLOT(slot_Close()) );
+
+  qDebug() << "NumberInputPad: number=" << number;
 }
 
 NumberInputPad::~NumberInputPad()
@@ -152,15 +166,19 @@ NumberInputPad::~NumberInputPad()
 
 void NumberInputPad::buttonPressed( const QString& text )
 {
+  qDebug() << "NumberInputPad::buttonPressed text=" << text;
+
   QRegExp rxNumber("[0-9]");
 
   if( rxNumber.exactMatch(text) )
     {
       // 0...9 was pressed
+      m_editor->setSelection(m_editor->cursorPosition(), 1);
       m_editor->insert( text );
     }
   else if( text == "." && m_editor->text().contains(".") == false )
     {
+      m_editor->setSelection(m_editor->cursorPosition(), 1);
       m_editor->insert( text );
     }
   else if( text == "<" )
@@ -183,15 +201,58 @@ void NumberInputPad::buttonPressed( const QString& text )
   m_editor->setFocus();
 }
 
+void NumberInputPad::slot_Pm()
+{
+  if( m_editor->text().startsWith("-") )
+    {
+      m_editor->setText( m_editor->text().remove(0, 1) );
+    }
+  else
+    {
+      m_editor->setCursorPosition( 0 );
+      m_editor->insert( "-" );
+      m_editor->end( false );
+    }
+
+  m_editor->setFocus();
+}
+
 void NumberInputPad::slot_Ok()
 {
   qDebug() << "NumberInputPad::slot_Ok():" << m_editor->text();
-  emit number( m_editor->text() );
-  slot_Close();
+
+  const QValidator* validator = m_editor->validator();
+
+  QString value = m_editor->text();
+
+  int pos = 0;
+
+  if( validator != 0 )
+    {
+      if( validator->validate( value, pos ) == QValidator::Acceptable )
+        {
+          emit number( value );
+        }
+      else
+        {
+          // Validator said nok, return initial number.
+          emit number( m_setNumber );
+        }
+    }
+  else
+    {
+      // Return edited number.
+      emit number( value );
+    }
+
+  setVisible( false );
+  QWidget::close();
 }
 
 void NumberInputPad::slot_Close()
 {
+  // Nothing should be changed, return initial number.
+  emit number( m_setNumber );
   setVisible( false );
   QWidget::close();
 }

@@ -22,6 +22,9 @@
 #include "settingspagepersonal.h"
 #include "varspinbox.h"
 
+#include "numberInputPad.h"
+#include "numberEditor.h"
+
 #ifdef INTERNET
 #include "proxydialog.h"
 #endif
@@ -89,13 +92,13 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   lbl = new QLabel(tr("Home site latitude:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtHomeLat = new LatEdit(this, conf->getHomeLat());
+  edtHomeLat = new LatEditNumPad(this, conf->getHomeLat());
   topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Home site longitude:"), this);
   topLayout->addWidget(lbl, row, 0);
-  edtHomeLong = new LongEdit(this, conf->getHomeLon());
+  edtHomeLong = new LongEditNumPad(this, conf->getHomeLon());
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
@@ -122,8 +125,30 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
 #endif
 
+  row++;
+
+  QPushButton* numPad = new QPushButton("NumPad");
+  topLayout->addWidget(numPad, row, 0);
+  connect( numPad, SIGNAL(pressed() ), this, SLOT(slot_numPad()) );
+
+  row++;
+  NumberEditor* ne = new NumberEditor(this, "text", "vor ", " nach");
+  topLayout->addWidget(ne, row, 0);
+
   topLayout->setRowStretch(row, 10);
   topLayout->setColumnStretch( 2, 10 );
+}
+
+void SettingsPagePersonal::slot_numPad()
+{
+  NumberInputPad* nip = new NumberInputPad("", this);
+
+  //nip->setInputMask( "999.99999" );
+  //QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9]\\.[0-9]{5})|([0-1][0-7][0-9]\\.[0-9]{5})|(180\\.00000)" ), this );
+  //nip->setValidator( eValidator );
+
+
+  nip->show();
 }
 
 SettingsPagePersonal::~SettingsPagePersonal()
