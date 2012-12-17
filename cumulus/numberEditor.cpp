@@ -46,6 +46,7 @@ NumberEditor::NumberEditor( QWidget *parent,
   setBackgroundRole( QPalette::Light );
   setAutoFillBackground( true );
   setAlignment(Qt::AlignCenter);
+  setMargin(2);
   setText();
 }
 
