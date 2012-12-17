@@ -33,6 +33,8 @@
 #ifndef NumberInputPad_h
 #define NumberInputPad_h
 
+#include <QtGui>
+
 #include <QLineEdit>
 #include <QPushButton>
 #include <QString>
@@ -41,6 +43,7 @@
 #include <QFrame>
 
 class QSignalMapper;
+class QTimer;
 
 class NumberInputPad : public QFrame
 {
@@ -58,8 +61,10 @@ class NumberInputPad : public QFrame
 
   void setNumber( const QString& number )
   {
+    qDebug() << "setNumber" << number;
     m_setNumber = number;
     m_editor->setText(number);
+    m_editor->setCursorPosition( 0 );
   };
 
   QString getNumber()
@@ -92,13 +97,27 @@ class NumberInputPad : public QFrame
     m_editor->setMaxLength( max );
   };
 
+  void home()
+  {
+    m_editor->setCursorPosition( 0 );
+  };
+
+ protected:
+
+  /**
+   * Catch show events in this class to set the widths of some widgets.
+   */
+  void showEvent( QShowEvent* event );
+
  signals:
 
   void number( const QString& text );
 
  private slots:
 
-  void buttonPressed( const QString& text );
+  void slot_ButtonPressed( QWidget *widget );
+
+  void slot_Repeat();
 
   /**
    * Toogles a leading minus sign.
@@ -122,6 +141,7 @@ class NumberInputPad : public QFrame
   QPushButton* m_right;
   QPushButton* m_decimal;
   QPushButton* m_pm;
+  QPushButton* m_home;
   QPushButton* m_num0;
   QPushButton* m_num1;
   QPushButton* m_num2;
@@ -135,11 +155,16 @@ class NumberInputPad : public QFrame
 
   QSignalMapper* m_signalMapper;
 
+  QTimer* m_timer;
+
   /** The state of the SIP */
   bool m_autoSip;
 
   /** The set number to be edited*/
   QString m_setNumber;
+
+  /** To remember the last pressed button */
+  QPushButton* m_pressedButton;
 };
 
 #endif // NumberInputPad_h
