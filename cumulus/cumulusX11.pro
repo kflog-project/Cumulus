@@ -45,6 +45,9 @@ CONFIG += welt2000thread
 # Activate this define, if class FlickCharm shall be used for kinetic finger scrolling.
 # DEFINES += FLICK_CHARM
 
+# Enable this feature, if the own number key pad shall be used for number input.
+# CONFIG += numberpad
+
 #version check for Qt 4.7
 ! contains(QT_VERSION, ^4\\.[78]\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
@@ -81,7 +84,6 @@ HEADERS = \
     gpsnmea.h \
     gpsstatusdialog.h \
     coordedit.h \
-    coordeditnumpad.h \
     helpbrowser.h \
     hwinfo.h \
     igclogger.h \
@@ -107,8 +109,6 @@ HEADERS = \
     messagehandler.h \
     messagewidget.h \
     multilayout.h \
-    NumberEditor.h \
-    numberInputPad.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -186,7 +186,6 @@ SOURCES = \
     configwidget.cpp \
     calculator.cpp \
     coordedit.cpp \
-    coordeditnumpad.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     flickcharm.cpp \
@@ -223,8 +222,6 @@ SOURCES = \
     mapview.cpp \
     messagehandler.cpp \
     messagewidget.cpp \
-    NumberEditor.cpp \
-    numberInputPad.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
@@ -286,6 +283,8 @@ SOURCES = \
     wpinfowidget.cpp
     
 flarm {
+    DEFINES += FLARM
+
 		HEADERS += flarm.h \
 		           flarmaliaslist.h \
 		           flarmbase.h \
@@ -305,12 +304,12 @@ flarm {
 		           flarmradarview.cpp \
 		           flarmwidget.cpp \
 		           preflightflarmpage.cpp
-		           
-		DEFINES += FLARM
 }
 
 internet {
 		QT += network
+		
+		DEFINES += INTERNET
 		
     HEADERS += airspacedownloaddialog.h \
                downloadmanager.h \
@@ -321,8 +320,6 @@ internet {
 		           downloadmanager.cpp \
 		           httpclient.cpp \
 		           proxydialog.cpp
-		           
-		DEFINES += INTERNET
 }
 
 bluetooth {
@@ -337,6 +334,18 @@ bluetooth {
 
 welt2000thread {
     DEFINES += WELT2000_THREAD
+}
+
+numberpad {
+    DEFINES += USE_NUM_PAD
+
+    HEADERS += coordeditnumpad.h \
+               numberEditor.h \
+               numberInputPad.h
+    
+    SOURCES += coordeditnumpad.cpp \
+               numberEditor.cpp \
+               numberInputPad.cpp
 }
 
 TARGET = cumulus
