@@ -56,7 +56,7 @@ NumberEditor::~NumberEditor()
 
 void NumberEditor::mousePressEvent( QMouseEvent* event )
 {
-  // Opens the number input pad after amouse press.
+  // Opens the number input pad after a mouse press.
   if( ! m_nip )
     {
       m_nip = new NumberInputPad( m_number, this );
@@ -65,7 +65,8 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setValidator( m_validator );
       m_nip->setMaxLength( m_maxLength );
       m_nip->setInputMask( m_inputMask );
-      connect( m_nip, SIGNAL(number(const QString&) ), SLOT(slot_Number(const QString&)) );
+      connect( m_nip, SIGNAL(number(const QString&) ),
+               SLOT(slot_Number(const QString&)) );
       m_nip->show();
     }
 

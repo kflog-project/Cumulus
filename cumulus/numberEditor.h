@@ -40,7 +40,6 @@
 class QMouseEvent;
 class NumberInputPad;
 
-
 class NumberEditor : public QLabel
 {
   Q_OBJECT
@@ -58,29 +57,29 @@ class NumberEditor : public QLabel
 
   virtual ~NumberEditor();
 
-  void setNumber(const QString number)
+  void setNumber( const QString number )
   {
     m_number = number;
     setText();
   };
 
-  QString getNumber()
+  QString getNumber() const
   {
     return m_number;
   };
 
-  QString number()
+  QString number() const
   {
     return m_number;
   };
 
-  void setPrefix(const QString prefix)
+  void setPrefix( const QString prefix )
   {
     m_prefix = prefix;
     setText();
   };
 
-  void setSuffix(const QString suffix)
+  void setSuffix( const QString suffix )
   {
     m_suffix = suffix;
     setText();
@@ -106,6 +105,11 @@ class NumberEditor : public QLabel
     m_inputMask = inputMask;
   };
 
+  /**
+   * Sets the maximum input field length.
+   *
+   * \param max Maximum characters accepted by the input field.
+   */
   void setMaxLength( int max )
   {
     m_maxLength = max;

@@ -185,8 +185,6 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_timer->setSingleShot( true );
 
   connect( m_timer, SIGNAL(timeout()), this, SLOT(slot_Repeat()));
-
-  qDebug() << "NumberInputPad: number=" << number;
 }
 
 NumberInputPad::~NumberInputPad()
@@ -211,9 +209,8 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
       return;
     }
 
+  // Find out, which button was pressed.
   QString text = button->text();
-
-  qDebug() << "NumberInputPad::slot_ButtonPressed text=" << text;
 
   QRegExp rxNumber("[0-9]");
 
@@ -256,12 +253,14 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
       m_pressedButton = 0;
     }
 
-  qDebug() << "NumberInputPad::slot_ButtonPressed pressed=" << button->text()
-           << "isDown()=" << button->isDown();
-
   if( m_pressedButton )
     {
+      // Setup a timer to handle a longer button press as repeat.
       m_timer->start(300);
+    }
+  else
+    {
+      m_timer->stop();
     }
 }
 
@@ -293,7 +292,7 @@ void NumberInputPad::slot_Pm()
 
 void NumberInputPad::slot_Ok()
 {
-  qDebug() << "NumberInputPad::slot_Ok():" << m_editor->text();
+  m_timer->stop();
 
   const QValidator* validator = m_editor->validator();
 
@@ -325,6 +324,8 @@ void NumberInputPad::slot_Ok()
 
 void NumberInputPad::slot_Close()
 {
+  m_timer->stop();
+
   // Nothing should be changed, return initial number.
   emit number( m_setNumber );
   setVisible( false );

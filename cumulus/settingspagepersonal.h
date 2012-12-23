@@ -41,7 +41,12 @@
 #include <QSpinBox>
 
 #include "altitude.h"
+
+#ifdef USE_NUM_PAD
 #include "coordeditnumpad.h"
+#else
+#include "coordedit.h"
+#endif
 
 class SettingsPagePersonal : public QWidget
 {
@@ -85,8 +90,6 @@ private slots:
   /** Called, if something has entered in edtHomeCountry. */
   void slot_textEditedCountry( const QString& input );
 
-  void slot_numPad();
-
 #ifdef INTERNET
 
   /** Called, if proxy button was pressed. */
@@ -102,10 +105,16 @@ private:
   QComboBox *langBox;
   QLineEdit *edtHomeCountry;
   QLineEdit *edtHomeName;
-  LatEditNumPad   *edtHomeLat;
-  LongEditNumPad  *edtHomeLong;
   QSpinBox  *spinHomeElevation;
   QLineEdit *userDataDir;
+
+#ifdef USE_NUM_PAD
+  LatEditNumPad   *edtHomeLat;
+  LongEditNumPad  *edtHomeLong;
+#else
+  LatEdit  *edtHomeLat;
+  LongEdit *edtHomeLong;
+#endif
 
 #ifdef INTERNET
   QLabel* proxyDisplay;
@@ -116,7 +125,7 @@ private:
   /**
    * saves current altitude unit during construction of object
    */
-  Altitude::altitudeUnit altUnit;
+  Altitude::altitudeUnit m_altUnit;
 };
 
 #endif

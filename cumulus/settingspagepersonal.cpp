@@ -22,9 +22,6 @@
 #include "settingspagepersonal.h"
 #include "varspinbox.h"
 
-#include "numberInputPad.h"
-#include "numberEditor.h"
-
 #ifdef INTERNET
 #include "proxydialog.h"
 #endif
@@ -37,7 +34,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
-  altUnit = Altitude::getUnit();
+  m_altUnit = Altitude::getUnit();
 
   GeneralConfig *conf = GeneralConfig::instance();
   QGridLayout* topLayout = new QGridLayout(this);
@@ -92,13 +89,25 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   lbl = new QLabel(tr("Home site latitude:"), this);
   topLayout->addWidget(lbl, row, 0);
+
+#ifdef USE_NUM_PAD
   edtHomeLat = new LatEditNumPad(this, conf->getHomeLat());
+#else
+  edtHomeLat = new LatEdit(this, conf->getHomeLat());
+#endif
+
   topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Home site longitude:"), this);
   topLayout->addWidget(lbl, row, 0);
+
+#ifdef USE_NUM_PAD
   edtHomeLong = new LongEditNumPad(this, conf->getHomeLon());
+#else
+  edtHomeLong = new LongEdit(this, conf->getHomeLon());
+#endif
+
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
@@ -122,33 +131,12 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   proxyDisplay = new QLabel;
   topLayout->addWidget(proxyDisplay, row, 1, 1, 2);
+  row++;
 
 #endif
 
-  row++;
-
-  QPushButton* numPad = new QPushButton("NumPad");
-  topLayout->addWidget(numPad, row, 0);
-  connect( numPad, SIGNAL(pressed() ), this, SLOT(slot_numPad()) );
-
-  row++;
-  NumberEditor* ne = new NumberEditor(this, "text", "vor ", " nach");
-  topLayout->addWidget(ne, row, 0);
-
   topLayout->setRowStretch(row, 10);
   topLayout->setColumnStretch( 2, 10 );
-}
-
-void SettingsPagePersonal::slot_numPad()
-{
-  NumberInputPad* nip = new NumberInputPad("", this);
-
-  //nip->setInputMask( "999.99999" );
-  //QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9]\\.[0-9]{5})|([0-1][0-7][0-9]\\.[0-9]{5})|(180\\.00000)" ), this );
-  //nip->setValidator( eValidator );
-
-
-  nip->show();
 }
 
 SettingsPagePersonal::~SettingsPagePersonal()
@@ -165,7 +153,7 @@ void SettingsPagePersonal::slot_load()
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
 
-  if( altUnit == Altitude::meters )
+  if( m_altUnit == Altitude::meters )
     { // user wants meters
       spinHomeElevation->setValue((int) rint(conf->getHomeElevation().getMeters()));
     }
@@ -236,7 +224,7 @@ void SettingsPagePersonal::slot_save()
 
   Distance homeElevation;
 
-  if( altUnit == Altitude::meters )
+  if( m_altUnit == Altitude::meters )
     {
       homeElevation.setMeters( spinHomeElevation->value() );
     }

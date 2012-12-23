@@ -67,7 +67,12 @@ class NumberInputPad : public QFrame
     m_editor->setCursorPosition( 0 );
   };
 
-  QString getNumber()
+  QString getNumber() const
+  {
+    return m_editor->text();
+  };
+
+  QString uumber() const
   {
     return m_editor->text();
   };
