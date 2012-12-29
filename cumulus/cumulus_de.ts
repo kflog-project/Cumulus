@@ -1428,7 +1428,7 @@
     <message>
         <location filename="mainwindow.cpp" line="1703"/>
         <source>Terminating Cumulus&lt;br&gt;&lt;b&gt;Are you sure?&lt;/b&gt;</source>
-        <translation>Cumuls beenden&lt;br&gt;&lt;b&gt;Wirklich?&lt;/b&gt;</translation>
+        <translation>Cumulus beenden&lt;br&gt;&lt;b&gt;Wirklich?&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1350"/>
