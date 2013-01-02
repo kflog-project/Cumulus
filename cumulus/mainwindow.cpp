@@ -2331,7 +2331,7 @@ void MainWindow::slotVersion()
   aw->setWindowTitle( tr( "About Cumulus") );
   aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
-  QString header( tr("<html>Cumulus %1, &copy; 2002-2012, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2013, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
 
   aw->setHeaderText( header );
 
