@@ -115,6 +115,16 @@ class NumberEditor : public QLabel
     m_maxLength = max;
   };
 
+  /**
+   * Gets the maximum input field length.
+   *
+   * \return Maximum characters accepted by the input field.
+   */
+  int maxLength()
+  {
+    return m_maxLength;
+  };
+
  protected:
 
    /**

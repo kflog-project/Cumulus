@@ -46,7 +46,7 @@ CONFIG += welt2000thread
 # CONFIG += flickcharm
 
 # Enable this feature, if the own number key pad shall be used for number input.
-# CONFIG += numberpad
+CONFIG += numberpad
 
 #version check for Qt 4.7
 ! contains(QT_VERSION, ^4\\.[78]\\..*) {

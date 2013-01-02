@@ -222,7 +222,7 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
 
       // degreeBox->setInputMask( inputMask );
       degreeBox->setMaxLength(inputMaskD.size());
-      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9]\\.[0-9]{5})|(90\\.00000)" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9]\\.[0-9]{1,5})|(90\\.0{1,5})" ), this );
       degreeBox->setValidator( eValidator );
       degreeBox->setPmVisible( false );
     }
@@ -240,7 +240,7 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
 
       // minuteBox->setInputMask( inputMaskM );
       minuteBox->setMaxLength(inputMaskM.size());
-      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{3}" ), this );
+      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{1,3}" ), this );
       minuteBox->setValidator( eValidator );
       minuteBox->setPmVisible( false );
     }
@@ -294,21 +294,29 @@ LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPa
 
   if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
-      degreeBox->setInputMask( "999.99999" );
-      eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9]\\.[0-9]{5})|([0-1][0-7][0-9]\\.[0-9]{5})|(180\\.00000)" ), this );
+      QString inputMaskD("999.99999");
+
+      // degreeBox->setInputMask( "999.99999" );
+      degreeBox->setMaxLength(inputMaskD.size());
+      eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9]\\.[0-9]{1,5})|([0-1][0-7][0-9]\\.[0-9]{1,5})|(180\\.0{1,5})" ), this );
       degreeBox->setValidator( eValidator );
       degreeBox->setPmVisible( false );
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
-      degreeBox->setInputMask( "999" );
+      QString inputMaskD("999");
+      QString inputMaskM("99.999");
+
+      // degreeBox->setInputMask( "999" );
+      degreeBox->setMaxLength(inputMaskD.size());
       eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9])|(1[0-7][0-9])|180" ), this );
       degreeBox->setValidator( eValidator );
       degreeBox->setPmVisible( false );
       degreeBox->setDecimalVisible( false );
 
-      minuteBox->setInputMask( "99.999" );
-      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{3}" ), this );
+      // minuteBox->setInputMask( "99.999" );
+      minuteBox->setMaxLength(inputMaskM.size());
+      eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{1,3}" ), this );
       minuteBox->setValidator( eValidator );
       minuteBox->setPmVisible( false );
     }
@@ -393,15 +401,46 @@ int CoordEditNumPad::KFLogDegree()
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
-      input = degreeBox->number() + degreeChar + " " +
-              minuteBox->number() + "'";
+      // Add missing zeros, if needed
+      QString number = minuteBox->number();
+      int maxLen     = minuteBox->maxLength();
+
+      qDebug() << "number=" << number << "maxLen" << maxLen << "Diff=" << (maxLen - number.size());
+
+      if( maxLen != 32767 && maxLen > 0 && number.size() < maxLen )
+        {
+          int end = maxLen - number.size();
+
+          for( int i = 0; i < end; i++ )
+            {
+              number.append("0");
+            }
+        }
+
+      input = degreeBox->number() + degreeChar + " " + number + "'";
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
-      input = degreeBox->number() + degreeChar;
+      // Add missing zeros, if needed
+      QString number = degreeBox->number();
+      int maxLen     = degreeBox->maxLength();
+
+      int end = maxLen - number.size();
+
+      if( maxLen != 32767 && maxLen > 0 && number.size() < maxLen )
+        {
+          for( int i = 0; i < end; i++ )
+            {
+              number.append("0");
+            }
+        }
+
+      input = number + degreeChar;
     }
 
   input += " " + skyDirection->text().trimmed();
+
+  qDebug() << "CoordEditNumPad::KFLogDegree(): Input=" << input;
 
   // This method make the conversion to the internal KFLog degree format.
   return WGSPoint::degreeToNum( input );
