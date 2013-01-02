@@ -43,8 +43,11 @@ CONFIG += welt2000thread
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
-# Activate this define, if class FlickCharm shall be used for kinetic finger scrolling.
-# DEFINES += FLICK_CHARM
+# Activate this feature, if class FlickCharm shall be used for kinetic finger scrolling.
+# CONFIG += flickcharm
+
+# Enable this feature, if the own number key pad shall be used for number input.
+CONFIG += numberpad
 
 HEADERS = \
     aboutwidget.h \
@@ -63,7 +66,6 @@ HEADERS = \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
-    flickcharm.h \
     filetools.h \
     flighttask.h \
     fontdialog.h \
@@ -180,7 +182,6 @@ SOURCES = \
     calculator.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
-    flickcharm.cpp \
     filetools.cpp \
     flighttask.cpp \
     fontdialog.cpp \
@@ -329,6 +330,26 @@ bluetooth {
 
 welt2000thread {
     DEFINES += WELT2000_THREAD
+}
+
+flickcharm {
+    DEFINES += FLICK_CHARM
+    
+    HEADERS += flickcharm.h
+    
+    SOURCES += flickcharm.cpp
+}
+
+numberpad {
+    DEFINES += USE_NUM_PAD
+
+    HEADERS += coordeditnumpad.h \
+               numberEditor.h \
+               numberInputPad.h
+    
+    SOURCES += coordeditnumpad.cpp \
+               numberEditor.cpp \
+               numberInputPad.cpp
 }
 
 TARGET = cumulus
