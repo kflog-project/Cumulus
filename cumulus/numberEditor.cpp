@@ -71,6 +71,14 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       connect( m_nip, SIGNAL(number(const QString&) ),
                SLOT(slot_Number(const QString&)) );
       m_nip->show();
+
+#ifdef ANDROID
+      m_nip->getEditor()->setFocus();
+
+      QPoint pos = mapToGlobal(QPoint( width()/2 - m_nip.width()/2, height()/2 - m_nip.height()/2 ));
+      m_nip.move( pos );
+#endif
+
     }
 
   event->accept();

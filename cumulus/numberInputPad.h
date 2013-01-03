@@ -106,6 +106,16 @@ class NumberInputPad : public QFrame
     m_editor->setCursorPosition( 0 );
   };
 
+  /**
+   * Returns the editor widget to the caller.
+   *
+   * \return The editor widget.
+   */
+  QLineEdit* getEditor()
+  {
+    return m_editor;
+  };
+
  protected:
 
   /**
