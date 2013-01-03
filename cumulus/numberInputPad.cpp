@@ -33,7 +33,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   setLineWidth ( 3 );
 
   setObjectName("NumberInputPad");
-  setWindowFlags(Qt::Dialog);
+  setWindowFlags(Qt::Tool);
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 
