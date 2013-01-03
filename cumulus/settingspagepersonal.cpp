@@ -89,7 +89,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   edtHomeElevation->setMaxLength(6);
   edtHomeElevation->setAlignment( Qt::AlignLeft );
 
-  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(^0|^-?[1-9][0-9]{0,4})$" ), this );
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(0|-?[1-9][0-9]{0,4})" ), this );
   edtHomeElevation->setValidator( eValidator );
   topLayout->addWidget(edtHomeElevation, row, 1);
 #else

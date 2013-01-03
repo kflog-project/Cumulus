@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief Configuration settings for map loading and drawing..
  *
- * \date 2002-2011
+ * \date 2002-2013
  *
  * \version $Id$
  *
@@ -35,8 +35,13 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QTableWidgetItem>
-#include <QSpinBox>
 #include <QStringList>
+
+#ifdef USE_NUM_PAD
+class NumberEditor;
+#else
+class QSpinBox;
+#endif
 
 class SettingsPageMapObjects : public QWidget
 {
@@ -126,10 +131,16 @@ private:
   QTableWidgetItem *liRelBearingInfo;
   QTableWidgetItem *liFlightTrail;
 
+#ifdef USE_NUM_PAD
+  NumberEditor *m_wpLowScaleLimit;
+  NumberEditor *m_wpNormalScaleLimit;
+  NumberEditor *m_wpHighScaleLimit;
+#else
   // Spin boxes with scale limits according to their priority.
-  QSpinBox *wpLowScaleLimitSpinBox;
-  QSpinBox *wpNormalScaleLimitSpinBox;
-  QSpinBox *wpHighScaleLimitSpinBox;
+  QSpinBox *m_wpLowScaleLimit;
+  QSpinBox *m_wpNormalScaleLimit;
+  QSpinBox *m_wpHighScaleLimit;
+#endif
 
   /** Auto sip flag storage. */
   bool m_autoSip;

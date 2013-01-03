@@ -149,7 +149,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   installRadius->setPmVisible( false );
   installRadius->setMaxLength(6);
   installRadius->setSuffix( " " + Distance::getUnitText() );
-  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(^0|^[1-9][0-9]{0,5})$" ), this );
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
   installRadius->setValidator( eValidator );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
   topLayout->addWidget(installRadius, row++, 1);

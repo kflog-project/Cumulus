@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,10 +18,18 @@
 
 #include <QtGui>
 
-#include "flickcharm.h"
 #include "settingspagemapobjects.h"
 #include "generalconfig.h"
+
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#else
 #include "varspinbox.h"
+#endif
 
 SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   QWidget(parent),
@@ -41,47 +49,92 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   QHBoxLayout *hBox = new QHBoxLayout( wpGroup );
   hBox->setSpacing( 5 );
 
-  VarSpinBox* hspin;
-
   QLabel *label = new QLabel( tr("Low"), wpGroup );
   hBox->addWidget( label );
-  wpLowScaleLimitSpinBox = new QSpinBox( wpGroup );
-  wpLowScaleLimitSpinBox->setPrefix( "< ");
-  wpLowScaleLimitSpinBox->setRange(0, 1200);
-  wpLowScaleLimitSpinBox->setSingleStep(5);
 
-  hspin = new VarSpinBox(wpLowScaleLimitSpinBox);
-  hBox->addWidget( hspin );
-  connect( wpLowScaleLimitSpinBox, SIGNAL(valueChanged(int)),
+#ifdef USE_NUM_PAD
+  m_wpLowScaleLimit = new NumberEditor( wpGroup );
+  m_wpLowScaleLimit->setDecimalVisible( false );
+  m_wpLowScaleLimit->setPmVisible( false );
+  m_wpLowScaleLimit->setMaxLength(4);
+  m_wpLowScaleLimit->setPrefix( "< ");
+  m_wpLowScaleLimit->setMaximum( 1200 );
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]*)" ), this );
+  m_wpLowScaleLimit->setValidator( eValidator );
+  hBox->addWidget( m_wpLowScaleLimit );
+  connect( m_wpLowScaleLimit, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpLowScaleLimitChanged(int)) );
+#else
+  VarSpinBox* hspin;
+
+  m_wpLowScaleLimit = new QSpinBox( wpGroup );
+  m_wpLowScaleLimit->setPrefix( "< ");
+  m_wpLowScaleLimit->setRange(0, 1200);
+  m_wpLowScaleLimit->setSingleStep(5);
+
+  hspin = new VarSpinBox(m_wpLowScaleLimit);
+  hBox->addWidget( hspin );
+  connect( m_wpLowScaleLimit, SIGNAL(valueChanged(int)),
+           this, SLOT(slot_wpLowScaleLimitChanged(int)) );
+#endif
 
   hBox->addSpacing( 5 );
 
   label = new QLabel( tr("Normal"), wpGroup );
   hBox->addWidget( label );
-  wpNormalScaleLimitSpinBox = new QSpinBox( wpGroup );
-  wpNormalScaleLimitSpinBox->setPrefix( "< ");
-  wpNormalScaleLimitSpinBox->setRange(0, 1200);
-  wpNormalScaleLimitSpinBox->setSingleStep(5);
 
-  hspin = new VarSpinBox(wpNormalScaleLimitSpinBox);
-  hBox->addWidget( hspin );
-  connect( wpNormalScaleLimitSpinBox, SIGNAL(valueChanged(int)),
+#ifdef USE_NUM_PAD
+  m_wpNormalScaleLimit = new NumberEditor( wpGroup );
+  m_wpNormalScaleLimit->setDecimalVisible( false );
+  m_wpNormalScaleLimit->setPmVisible( false );
+  m_wpNormalScaleLimit->setMaxLength(4);
+  m_wpNormalScaleLimit->setPrefix( "< ");
+  m_wpNormalScaleLimit->setMaximum( 1200 );
+  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]*)" ), this );
+  m_wpNormalScaleLimit->setValidator( eValidator );
+  hBox->addWidget( m_wpNormalScaleLimit );
+  connect( m_wpNormalScaleLimit, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpNormalScaleLimitChanged(int)) );
+#else
+  m_wpNormalScaleLimit = new QSpinBox( wpGroup );
+  m_wpNormalScaleLimit->setPrefix( "< ");
+  m_wpNormalScaleLimit->setRange(0, 1200);
+  m_wpNormalScaleLimit->setSingleStep(5);
+
+  hspin = new VarSpinBox(m_wpNormalScaleLimit);
+  hBox->addWidget( hspin );
+  connect( m_wpNormalScaleLimit, SIGNAL(valueChanged(int)),
+           this, SLOT(slot_wpNormalScaleLimitChanged(int)) );
+#endif
 
   hBox->addSpacing( 5 );
 
   label = new QLabel( tr("High"), wpGroup );
   hBox->addWidget( label );
-  wpHighScaleLimitSpinBox = new QSpinBox( wpGroup );
-  wpHighScaleLimitSpinBox->setPrefix( "< ");
-  wpHighScaleLimitSpinBox->setRange(0, 1200);
-  wpHighScaleLimitSpinBox->setSingleStep(5);
 
-  hspin = new VarSpinBox(wpHighScaleLimitSpinBox);
-  hBox->addWidget( hspin );
-  connect( wpHighScaleLimitSpinBox, SIGNAL(valueChanged(int)),
+#ifdef USE_NUM_PAD
+  m_wpHighScaleLimit = new NumberEditor( wpGroup );
+  m_wpHighScaleLimit->setDecimalVisible( false );
+  m_wpHighScaleLimit->setPmVisible( false );
+  m_wpHighScaleLimit->setMaxLength(4);
+  m_wpHighScaleLimit->setPrefix( "< ");
+  m_wpHighScaleLimit->setMaximum( 1200 );
+  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]*)" ), this );
+  m_wpHighScaleLimit->setValidator( eValidator );
+  hBox->addWidget( m_wpHighScaleLimit );
+  connect( m_wpHighScaleLimit, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpHighScaleLimitChanged(int)) );
+#else
+  m_wpHighScaleLimit = new QSpinBox( wpGroup );
+  m_wpHighScaleLimit->setPrefix( "< ");
+  m_wpHighScaleLimit->setRange(0, 1200);
+  m_wpHighScaleLimit->setSingleStep(5);
+
+  hspin = new VarSpinBox(m_wpHighScaleLimit);
+  hBox->addWidget( hspin );
+  connect( m_wpHighScaleLimit, SIGNAL(valueChanged(int)),
+           this, SLOT(slot_wpHighScaleLimitChanged(int)) );
+#endif
 
   hBox->addStretch( 10 );
 
@@ -122,18 +175,18 @@ SettingsPageMapObjects::~SettingsPageMapObjects()
 {}
 
 /**
- * Called, if the value in the normal scale spin box has been changed.
+ * Called, if the value in the low scale spin box has been changed.
  */
 void SettingsPageMapObjects::slot_wpLowScaleLimitChanged( int newValue )
 {
-  if( newValue > wpNormalScaleLimitSpinBox->value() )
+  if( newValue > m_wpNormalScaleLimit->value() )
     {
       // Check new value to ensure that current value of normal priority
       // is not exceeded. In such a case a reset is done.
-      wpLowScaleLimitSpinBox->setValue( wpNormalScaleLimitSpinBox->value() );
+      m_wpLowScaleLimit->setValue( m_wpNormalScaleLimit->value() );
     }
 
-  wpLowScaleLimitSpinBox->setMaximum( wpNormalScaleLimitSpinBox->value() );
+  m_wpLowScaleLimit->setMaximum( m_wpNormalScaleLimit->value() );
 }
 
 /**
@@ -141,23 +194,23 @@ void SettingsPageMapObjects::slot_wpLowScaleLimitChanged( int newValue )
  */
 void SettingsPageMapObjects::slot_wpNormalScaleLimitChanged( int newValue )
 {
-  if( newValue > wpHighScaleLimitSpinBox->value() )
+  if( newValue > m_wpHighScaleLimit->value() )
     {
       // Check new value to ensure that current value of high priority
       // is not exceeded. In such a case a reset is done.
-      wpNormalScaleLimitSpinBox->setValue( wpHighScaleLimitSpinBox->value() );
+      m_wpNormalScaleLimit->setValue( m_wpHighScaleLimit->value() );
     }
 
-  if( wpLowScaleLimitSpinBox->value() > wpNormalScaleLimitSpinBox->value() )
+  if( m_wpLowScaleLimit->value() > m_wpNormalScaleLimit->value() )
     {
       // Check normal value to ensure that current value of low priority
       // is not exceeded. In such a case a reset is done.
-      wpLowScaleLimitSpinBox->setValue( wpNormalScaleLimitSpinBox->value() );
+      m_wpLowScaleLimit->setValue( m_wpNormalScaleLimit->value() );
     }
 
   // set max ranges according to the new passed value
-  wpNormalScaleLimitSpinBox->setMaximum( wpHighScaleLimitSpinBox->value() );
-  wpLowScaleLimitSpinBox->setMaximum( wpNormalScaleLimitSpinBox->value() );
+  m_wpNormalScaleLimit->setMaximum( m_wpHighScaleLimit->value() );
+  m_wpLowScaleLimit->setMaximum( m_wpNormalScaleLimit->value() );
 }
 
 /**
@@ -165,23 +218,23 @@ void SettingsPageMapObjects::slot_wpNormalScaleLimitChanged( int newValue )
  */
 void SettingsPageMapObjects::slot_wpHighScaleLimitChanged( int newValue )
 {
-  if( newValue < wpNormalScaleLimitSpinBox->value() )
+  if( newValue < m_wpNormalScaleLimit->value() )
     {
       // Check new value to ensure that current value of normal priority
       // is not exceeded. In such a case a reset is done.
-      wpNormalScaleLimitSpinBox->setValue( newValue );
+      m_wpNormalScaleLimit->setValue( newValue );
     }
 
-  if( wpLowScaleLimitSpinBox->value() > wpNormalScaleLimitSpinBox->value() )
+  if( m_wpLowScaleLimit->value() > m_wpNormalScaleLimit->value() )
     {
       // Check low value to ensure that current value of normal priority
       // is not exceeded. In such a case a reset is done.
-      wpLowScaleLimitSpinBox->setValue( wpNormalScaleLimitSpinBox->value() );
+      m_wpLowScaleLimit->setValue( m_wpNormalScaleLimit->value() );
     }
 
   // set the new maxims for low and normal scale limit spin boxes
-  wpNormalScaleLimitSpinBox->setMaximum( newValue );
-  wpLowScaleLimitSpinBox->setMaximum( newValue );
+  m_wpNormalScaleLimit->setMaximum( newValue );
+  m_wpLowScaleLimit->setMaximum( newValue );
 }
 
 
@@ -208,13 +261,13 @@ void SettingsPageMapObjects::slot_load()
   liFlightTrail->setCheckState( conf->getMapDrawTrail() ? Qt::Checked : Qt::Unchecked );
   // Load scale values for spin boxes. Note! The load order is important because a value change
   // of the spin box will generate a signal.
-  wpHighScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::High ));
-  wpNormalScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::Normal ));
-  wpLowScaleLimitSpinBox->setValue( conf->getWaypointScaleBorder( Waypoint::Low ));
+  m_wpHighScaleLimit->setValue( conf->getWaypointScaleBorder( Waypoint::High ));
+  m_wpNormalScaleLimit->setValue( conf->getWaypointScaleBorder( Waypoint::Normal ));
+  m_wpLowScaleLimit->setValue( conf->getWaypointScaleBorder( Waypoint::Low ));
 
   // set maximums
-  wpLowScaleLimitSpinBox->setMaximum( wpNormalScaleLimitSpinBox->value() );
-  wpNormalScaleLimitSpinBox->setMaximum( wpHighScaleLimitSpinBox->value() );
+  m_wpLowScaleLimit->setMaximum( m_wpNormalScaleLimit->value() );
+  m_wpNormalScaleLimit->setMaximum( m_wpHighScaleLimit->value() );
 }
 
 /** Called to initiate saving to the configuration file. */
@@ -238,9 +291,9 @@ void SettingsPageMapObjects::slot_save()
   conf->setMapShowRelBearingInfo(liRelBearingInfo->checkState() == Qt::Checked ? true : false);
   conf->setMapDrawTrail(liFlightTrail->checkState() == Qt::Checked ? true : false);
 
-  conf->setWaypointScaleBorder( Waypoint::Low, wpLowScaleLimitSpinBox->value() );
-  conf->setWaypointScaleBorder( Waypoint::Normal, wpNormalScaleLimitSpinBox->value() );
-  conf->setWaypointScaleBorder( Waypoint::High, wpHighScaleLimitSpinBox->value() );
+  conf->setWaypointScaleBorder( Waypoint::Low, m_wpLowScaleLimit->value() );
+  conf->setWaypointScaleBorder( Waypoint::Normal, m_wpNormalScaleLimit->value() );
+  conf->setWaypointScaleBorder( Waypoint::High, m_wpHighScaleLimit->value() );
 }
 
 /** Fills the list with load options */
@@ -376,9 +429,9 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked ) != liRelBearingInfo->checkState();
   changed |= ( conf->getMapDrawTrail() ? Qt::Checked : Qt::Unchecked ) != liFlightTrail->checkState();
 
-  changed |= ( conf->getWaypointScaleBorder( Waypoint::Low )    != wpLowScaleLimitSpinBox->value() );
-  changed |= ( conf->getWaypointScaleBorder( Waypoint::Normal ) != wpNormalScaleLimitSpinBox->value() );
-  changed |= ( conf->getWaypointScaleBorder( Waypoint::High )   != wpHighScaleLimitSpinBox->value() );
+  changed |= ( conf->getWaypointScaleBorder( Waypoint::Low )    != m_wpLowScaleLimit->value() );
+  changed |= ( conf->getWaypointScaleBorder( Waypoint::Normal ) != m_wpNormalScaleLimit->value() );
+  changed |= ( conf->getWaypointScaleBorder( Waypoint::High )   != m_wpHighScaleLimit->value() );
 
   if (changed)
     {

@@ -116,6 +116,26 @@ class NumberInputPad : public QFrame
     return m_editor;
   };
 
+  /**
+   * Sets the maximum input value.
+   *
+   * \param maximum The new maximum input value
+   */
+  void setMaximum( const int maximum )
+  {
+    m_intMaximum = maximum;
+  };
+
+  /**
+   * Returns the maximum input value.
+   *
+   * \return The new maximum input value
+   */
+  int maximum() const
+  {
+    return m_intMaximum;
+  };
+
  protected:
 
   /**
@@ -125,13 +145,23 @@ class NumberInputPad : public QFrame
 
  signals:
 
-  void number( const QString& text );
+  /**
+   * Emitted, if the widget is closed. The text is the last input.
+   */
+  void numberEdited( const QString& text );
+
+  /**
+   * Emitted, if a new acceptable input is available.
+   */
+  void valueChanged( int i );
 
  private slots:
 
   void slot_ButtonPressed( QWidget *widget );
 
   void slot_Repeat();
+
+  void slot_TextChanged( const QString& text );
 
   /**
    * Toggles a leading minus sign.
@@ -176,6 +206,12 @@ class NumberInputPad : public QFrame
 
   /** The set number to be edited*/
   QString m_setNumber;
+
+  /** The maximum allowed input value. */
+  int m_intMaximum;
+
+  /** The minimum allowed input value. */
+  int m_intMinimum;
 
   /** To remember the last pressed button */
   QPushButton* m_pressedButton;

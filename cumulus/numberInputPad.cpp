@@ -15,6 +15,7 @@
 **
 ***********************************************************************/
 
+#include <climits>
 #include <QtGui>
 
 #include "generalconfig.h"
@@ -27,6 +28,8 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   QFrame( parent ),
   m_autoSip(true),
   m_setNumber(number),
+  m_intMaximum(INT_MAX),
+  m_intMinimum(INT_MIN),
   m_pressedButton( 0 )
 {
   setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
@@ -48,6 +51,9 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   gl->setMargin(5);
 
   m_editor = new QLineEdit;
+  connect( m_editor, SIGNAL(textChanged(const QString&)),
+           this, SLOT(slot_TextChanged(const QString&)) );
+
   setNumber( number );
   gl->addWidget( m_editor, row, 0, 1, 5 );
 
@@ -264,6 +270,24 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
     }
 }
 
+void NumberInputPad::slot_TextChanged( const QString& text )
+{
+  if( ! text.contains(".") )
+    {
+      // Check integer value against the allowed maximum.
+      bool ok;
+      int value = text.toInt( &ok );
+
+      if( ok && value > m_intMaximum )
+        {
+          // Reset input to allowed maximum
+          m_editor->setText( QString::number(m_intMaximum) );
+        }
+
+      emit valueChanged( m_editor->text().toInt() );
+    }
+}
+
 void NumberInputPad::slot_Repeat()
 {
   if( m_pressedButton && m_pressedButton->isDown() )
@@ -304,7 +328,7 @@ void NumberInputPad::slot_Ok()
     {
       if( validator->validate( value, pos ) == QValidator::Acceptable )
         {
-          emit number( value );
+          emit numberEdited( value );
         }
       else
         {
@@ -315,7 +339,7 @@ void NumberInputPad::slot_Ok()
   else
     {
       // Return edited number.
-      emit number( value );
+      emit numberEdited( value );
     }
 
   setVisible( false );
@@ -327,7 +351,7 @@ void NumberInputPad::slot_Close()
   m_timer->stop();
 
   // Nothing should be changed, return initial number.
-  emit number( m_setNumber );
+  emit numberEdited( m_setNumber );
   setVisible( false );
   QWidget::close();
 }

@@ -146,6 +146,27 @@ class NumberEditor : public QLabel
   };
 
   /**
+   * Sets the maximum input value.
+   *
+   * \param maximum The new maximum input value
+   */
+  void setMaximum( const int maximum )
+  {
+    m_intMax = maximum;
+  };
+
+  /**
+   * Returns the maximum input value.
+   *
+   * \return The new maximum input value
+   */
+  int maximum() const
+  {
+    return m_intMax;
+  };
+
+
+  /**
    * Sets the title of the number editor pad.
    *
    * \param title Title to be set in the editor pad.
@@ -166,9 +187,11 @@ class NumberEditor : public QLabel
 
    void numberEdited( const QString& number );
 
+   void valueChanged( int i );
+
  private slots:
 
-  void slot_Number( const QString& number );
+  void slot_NumberEdited( const QString& number );
 
  private:
 
@@ -192,6 +215,7 @@ class NumberEditor : public QLabel
   QValidator* m_validator;
   QString m_inputMask;
   int m_maxLength;
+  int m_intMax;
 };
 
 #endif /* NUMBER_EDITOR_H_ */

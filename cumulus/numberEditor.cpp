@@ -15,6 +15,8 @@
 **
 ***********************************************************************/
 
+#include <climits>
+
 #include <QtGui>
 
 #include "mainwindow.h"
@@ -38,7 +40,8 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_pmFlag(true),
   m_validator(0),
   m_inputMask(""),
-  m_maxLength(32767)
+  m_maxLength(32767),
+  m_intMax(INT_MAX)
 {
 //  QPalette p = palette();
 //  p.setColor( QPalette::Window, Qt::white );
@@ -68,9 +71,13 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setPmVisible( m_pmFlag );
       m_nip->setValidator( m_validator );
       m_nip->setMaxLength( m_maxLength );
+      m_nip->setMaximum( m_intMax );
       m_nip->setInputMask( m_inputMask );
-      connect( m_nip, SIGNAL(number(const QString&) ),
-               SLOT(slot_Number(const QString&)) );
+      connect( m_nip, SIGNAL(numberEdited(const QString&) ),
+               SLOT(slot_NumberEdited(const QString&)) );
+      connect( m_nip, SIGNAL(valueChanged(int) ),
+               this, SIGNAL(valueChanged(int)) );
+
       m_nip->show();
 
 #ifdef ANDROID
@@ -99,7 +106,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
   event->accept();
 }
 
-void NumberEditor::slot_Number( const QString& number )
+void NumberEditor::slot_NumberEdited( const QString& number )
 {
   m_nip = 0;
   m_number = number;
