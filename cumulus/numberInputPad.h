@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012 Axel Pauli
+**   Copyright (c): 2012-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  * This widget can be used to enter a number or to modify it with an own
  * provided keypad.
  *
- * \date 2012
+ * \date 2012-2013
  *
  * \version $Id$
  */
@@ -61,7 +61,6 @@ class NumberInputPad : public QFrame
 
   void setNumber( const QString& number )
   {
-    qDebug() << "setNumber" << number;
     m_setNumber = number;
     m_editor->setText(number);
     m_editor->setCursorPosition( 0 );
@@ -69,12 +68,12 @@ class NumberInputPad : public QFrame
 
   QString getNumber() const
   {
-    return m_editor->text();
+    return m_editor->text().trimmed();
   };
 
-  QString uumber() const
+  QString number() const
   {
-    return m_editor->text();
+    return m_editor->text().trimmed();
   };
 
   void setDecimalVisible( const bool flag )
@@ -125,7 +124,7 @@ class NumberInputPad : public QFrame
   void slot_Repeat();
 
   /**
-   * Toogles a leading minus sign.
+   * Toggles a leading minus sign.
    */
   void slot_Pm();
 

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012 Axel Pauli
+**   Copyright (c): 2012-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  * This widget can be used to display a number in a QLabel and to edit it
  * by using an own number keypad.
  *
- * \date 2012
+ * \date 2012-2013
  *
  * \version $Id$
  */
@@ -71,6 +71,26 @@ class NumberEditor : public QLabel
   QString number() const
   {
     return m_number;
+  };
+
+  /**
+   * Sets the integer value in the display field.
+   *
+   * \param value Value to be displayed
+   */
+  void setValue( const int value )
+  {
+    setNumber( QString::number( value ) );
+  };
+
+  /**
+   * Returns the displayed value as integer.
+   *
+   * \return displayed value as integer or zero in error case.
+   */
+  int value() const
+  {
+    return m_number.toInt();
   };
 
   void setPrefix( const QString prefix )
@@ -125,6 +145,16 @@ class NumberEditor : public QLabel
     return m_maxLength;
   };
 
+  /**
+   * Sets the title of the number editor pad.
+   *
+   * \param title Title to be set in the editor pad.
+   */
+  void setTitle( QString title )
+  {
+    m_title = title;
+  };
+
  protected:
 
    /**
@@ -154,6 +184,7 @@ class NumberEditor : public QLabel
   QString m_prefix;
   QString m_number;
   QString m_suffix;
+  QString m_title;
 
   bool m_decimalFlag;
   bool m_pmFlag;

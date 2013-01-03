@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  *
  * Configuration settings for personal settings.
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  */
@@ -38,14 +38,21 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStringList>
-#include <QSpinBox>
 
 #include "altitude.h"
 
 #ifdef USE_NUM_PAD
+
+class NumberEditor;
+
 #include "coordeditnumpad.h"
+
 #else
+
+class QSpinBox;
+
 #include "coordedit.h"
+
 #endif
 
 class SettingsPagePersonal : public QWidget
@@ -99,19 +106,18 @@ private slots:
 
 private:
 
-  bool loadConfig; // control loading of configuration data
-
   QLineEdit *edtName;
   QComboBox *langBox;
   QLineEdit *edtHomeCountry;
   QLineEdit *edtHomeName;
-  QSpinBox  *spinHomeElevation;
   QLineEdit *userDataDir;
 
 #ifdef USE_NUM_PAD
+  NumberEditor    *edtHomeElevation;
   LatEditNumPad   *edtHomeLat;
   LongEditNumPad  *edtHomeLong;
 #else
+  QSpinBox *edtHomeElevation;
   LatEdit  *edtHomeLat;
   LongEdit *edtHomeLong;
 #endif
@@ -120,7 +126,10 @@ private:
   QLabel* proxyDisplay;
 #endif
 
-  int spinHomeElevationValue;
+  /**
+   * Initial elevation value after load from configuration.
+   */
+  int m_initalHomeElevationValue;
 
   /**
    * saves current altitude unit during construction of object

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012 Axel Pauli
+**   Copyright (c): 2012-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -32,6 +32,7 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_prefix(prefix),
   m_number(number),
   m_suffix(suffix),
+  m_title(tr("edit number")),
   m_decimalFlag(true),
   m_pmFlag(true),
   m_validator(0),
@@ -61,6 +62,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
   if( ! m_nip )
     {
       m_nip = new NumberInputPad( m_number, this );
+      m_nip->setWindowTitle( m_title );
       m_nip->setDecimalVisible( m_decimalFlag );
       m_nip->setPmVisible( m_pmFlag );
       m_nip->setValidator( m_validator );

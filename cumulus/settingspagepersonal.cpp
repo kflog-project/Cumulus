@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,12 +22,16 @@
 #include "settingspagepersonal.h"
 #include "varspinbox.h"
 
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#endif
+
 #ifdef INTERNET
 #include "proxydialog.h"
 #endif
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
-  QWidget(parent), loadConfig(true)
+  QWidget(parent)
 {
   setObjectName("SettingsPagePersonal");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -78,13 +82,26 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
 
-  spinHomeElevation = new QSpinBox;
-  spinHomeElevation->setSingleStep( 10 );
-  spinHomeElevation->setMaximum( 9999 );
-  spinHomeElevation->setMinimum( -999 );
-  spinHomeElevation->setSuffix( " " + Altitude::getUnitText() );
-  VarSpinBox* hspin = new VarSpinBox( spinHomeElevation );
+#ifdef USE_NUM_PAD
+  edtHomeElevation = new NumberEditor( this );
+  edtHomeElevation->setDecimalVisible( false );
+  edtHomeElevation->setSuffix( " " + Altitude::getUnitText() );
+  edtHomeElevation->setMaxLength(6);
+  edtHomeElevation->setAlignment( Qt::AlignLeft );
+
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(^0|^-?[1-9][0-9]{0,4})$" ), this );
+  edtHomeElevation->setValidator( eValidator );
+  topLayout->addWidget(edtHomeElevation, row, 1);
+#else
+  edtHomeElevation = new QSpinBox;
+  edtHomeElevation->setSingleStep( 10 );
+  edtHomeElevation->setMaximum( 9999 );
+  edtHomeElevation->setMinimum( -999 );
+  edtHomeElevation->setSuffix( " " + Altitude::getUnitText() );
+  VarSpinBox* hspin = new VarSpinBox( edtHomeElevation );
   topLayout->addWidget(hspin, row, 1);
+#endif
+
   row++;
 
   lbl = new QLabel(tr("Home site latitude:"), this);
@@ -155,15 +172,15 @@ void SettingsPagePersonal::slot_load()
 
   if( m_altUnit == Altitude::meters )
     { // user wants meters
-      spinHomeElevation->setValue((int) rint(conf->getHomeElevation().getMeters()));
+      edtHomeElevation->setValue((int) rint(conf->getHomeElevation().getMeters()));
     }
   else
     { // user get feet
-      spinHomeElevation->setValue((int) rint(conf->getHomeElevation().getFeet()));
+      edtHomeElevation->setValue((int) rint(conf->getHomeElevation().getFeet()));
     }
 
   // save spinbox value for later change check
-  spinHomeElevationValue = spinHomeElevation->value();
+  m_initalHomeElevationValue = edtHomeElevation->value();
 
   userDataDir->setText( conf->getUserDataDirectory() );
 
@@ -226,11 +243,11 @@ void SettingsPagePersonal::slot_save()
 
   if( m_altUnit == Altitude::meters )
     {
-      homeElevation.setMeters( spinHomeElevation->value() );
+      homeElevation.setMeters( edtHomeElevation->value() );
     }
   else
     {
-      homeElevation.setFeet( spinHomeElevation->value() );
+      homeElevation.setFeet( edtHomeElevation->value() );
     }
 
   conf->setHomeElevation(homeElevation);
@@ -305,7 +322,7 @@ void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
   changed |= (langBox->currentText() != conf->getLanguage());
   changed |= (edtHomeName->text() != conf->getHomeName());
   changed |= checkIsHomePositionChanged();
-  changed |= spinHomeElevationValue != spinHomeElevation->value();
+  changed |= m_initalHomeElevationValue != edtHomeElevation->value();
   changed |= (userDataDir->text() != conf->getUserDataDirectory());
 
   if (changed)
