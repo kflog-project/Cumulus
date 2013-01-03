@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,16 +18,18 @@
 
 #include <QtGui>
 
-#include "settingspagemapsettings.h"
+#include "distance.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
-#include "distance.h"
+#include "settingspagemapsettings.h"
 #include "varspinbox.h"
 
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#endif
+
 #ifdef INTERNET
-
 #include "httpclient.h"
-
 #endif
 
 /***********************************************************/
@@ -40,7 +42,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   setObjectName("SettingsPageMapSettings");
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-  currentProjType = ProjectionBase::Unknown;
+  m_currentProjType = ProjectionBase::Unknown;
   GeneralConfig *conf = GeneralConfig::instance();
   QGridLayout *topLayout = new QGridLayout(this);
 
@@ -61,21 +63,39 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   cmbProjection->addItem(tr("Lambert"));
   cmbProjection->addItem(tr("Plate Carrée")); // Qt::Key_Eacute
 
-  connect(cmbProjection, SIGNAL(activated(int)),
-          this, SLOT(slot_selectProjection(int)));
+  connect( cmbProjection, SIGNAL(activated(int)),
+          this, SLOT(slot_selectProjection(int)) );
 
   topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
-  edtLat1=new LatEdit(this, conf->getHomeLat());
+
+#ifdef USE_NUM_PAD
+  edtLat1 = new LatEditNumPad(this, conf->getHomeLat());
+#else
+  edtLat1 = new LatEdit(this, conf->getHomeLat());
+#endif
+
   topLayout->addWidget(edtLat1, row++, 1, 1, 2);
 
   edtLat2Label = new QLabel(tr("2. St. Parallel:"), this);
   topLayout->addWidget(edtLat2Label, row, 0);
+
+#ifdef USE_NUM_PAD
+  edtLat2 = new LatEditNumPad(this, conf->getHomeLat());
+#else
   edtLat2 = new LatEdit(this, conf->getHomeLat());
+#endif
+
   topLayout->addWidget(edtLat2, row++, 1, 1, 2);
 
   edtLonLabel = new QLabel(tr("Origin Longitude:"), this);
   topLayout->addWidget(edtLonLabel, row, 0);
-  edtLon = new LongEdit(this, conf->getHomeLon());
+
+#ifdef USE_NUM_PAD
+  edtLon = new LongEditNumPad(this, conf->getLambertOrign());
+#else
+  edtLon = new LongEdit(this, conf->getLambertOrign());
+#endif
+
   topLayout->addWidget(edtLon, row++, 1, 1, 2);
 
   //------------------------------------------------------------------------------
@@ -96,12 +116,24 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   QLabel *label = new QLabel(tr("Center Latitude:"), this);
   topLayout->addWidget(label, row, 0);
+
+#ifdef USE_NUM_PAD
+  edtCenterLat = new LatEditNumPad(this, conf->getHomeLat());
+#else
   edtCenterLat = new LatEdit(this, conf->getHomeLat());
+#endif
+
   topLayout->addWidget(edtCenterLat, row++, 1, 1, 2);
 
   label = new QLabel(tr("Center Longitude:"), this);
   topLayout->addWidget(label, row, 0);
+
+#ifdef USE_NUM_PAD
+  edtCenterLon = new LongEditNumPad(this, conf->getHomeLon());
+#else
   edtCenterLon = new LongEdit(this, conf->getHomeLon());
+#endif
+
   topLayout->addWidget(edtCenterLon, row++, 1, 1, 2);
 
   installMaps = new QPushButton( tr("Install Maps"), this );
@@ -110,6 +142,18 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   connect(installMaps, SIGNAL( clicked()), this, SLOT(slot_installMaps()) );
 
+#ifdef USE_NUM_PAD
+  installRadius = new NumberEditor( this );
+  installRadius->setToolTip( tr("Radius around center point") );
+  installRadius->setDecimalVisible( false );
+  installRadius->setPmVisible( false );
+  installRadius->setMaxLength(6);
+  installRadius->setSuffix( " " + Distance::getUnitText() );
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(^0|^[1-9][0-9]{0,5})$" ), this );
+  installRadius->setValidator( eValidator );
+  installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
+  topLayout->addWidget(installRadius, row++, 1);
+#else
   installRadius = new QSpinBox;
   installRadius->setToolTip( tr("Radius around center point") );
   installRadius->setRange( 0, 20000 );
@@ -119,8 +163,9 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   installRadius->setSuffix( " " + Distance::getUnitText() );
   VarSpinBox* hspin = new VarSpinBox(installRadius);
   topLayout->addWidget(hspin, row++, 1 );
-
 #endif
+
+#endif // #ifdef INTERNET
 
   topLayout->setColumnStretch( 2, 10 );
   topLayout->setRowStretch( row, 10 );
@@ -151,27 +196,26 @@ void SettingsPageMapSettings::slot_load()
 
 #endif
 
-  currentProjType = conf->getMapProjectionType();
-  lambertV1 =       conf->getLambertParallel1();
-  lambertV2 =       conf->getLambertParallel2();
-  lambertOrigin =   conf->getLambertOrign();
-  cylinPar =        conf->getCylinderParallel();
+  m_currentProjType = conf->getMapProjectionType();
+  m_lambertV1 =       conf->getLambertParallel1();
+  m_lambertV2 =       conf->getLambertParallel2();
+  m_lambertOrigin =   conf->getLambertOrign();
+  m_cylinPar =        conf->getCylinderParallel();
 
   // @AP: Note, that the index of the list starts with 0 but the
   // ProjectionType uses zero for unknown. So we must subtract 1
   // to get the right value.
-  int projIndex = currentProjType - 1;
+  int projIndex = m_currentProjType - 1;
   cmbProjection->setCurrentIndex(projIndex);
   slot_selectProjection(projIndex);
 }
 
-
 void SettingsPageMapSettings::slot_save()
 {
-  // @AP: here we must overtake the new user values at first. After that
-  // we can store them.
+  // @AP: here we must take over the new user values at first.
+  // After that we can store them.
   // Check, if input string values have been changed. If not, no
-  // overtake of values to avoid rounding errors. They can appear if
+  // take over of values to avoid rounding errors. They can appear if
   // the position formats will be changed between DMS <-> DDM vice
   // versa.
 
@@ -182,17 +226,17 @@ void SettingsPageMapSettings::slot_save()
 
       if( edtLat1->isInputChanged() )
         {
-          lambertV1 = edtLat1->KFLogDegree();
+          m_lambertV1 = edtLat1->KFLogDegree();
         }
 
       if( edtLat2->isInputChanged() )
         {
-          lambertV2 = edtLat2->KFLogDegree();
+          m_lambertV2 = edtLat2->KFLogDegree();
         }
 
       if( edtLon->isInputChanged() )
         {
-          lambertOrigin = edtLon->KFLogDegree();
+          m_lambertOrigin = edtLon->KFLogDegree();
         }
 
       break;
@@ -201,7 +245,7 @@ void SettingsPageMapSettings::slot_save()
 
       if( edtLat1->isInputChanged() )
         {
-          cylinPar = edtLat1->KFLogDegree();
+          m_cylinPar = edtLat1->KFLogDegree();
         }
 
       break;
@@ -215,11 +259,11 @@ void SettingsPageMapSettings::slot_save()
 #ifdef INTERNET
   conf->setMapInstallRadius( installRadius->value() );
 #endif
-  conf->setMapProjectionType( currentProjType );
-  conf->setLambertParallel1( lambertV1 );
-  conf->setLambertParallel2( lambertV2 );
-  conf->setLambertOrign( lambertOrigin );
-  conf->setCylinderParallel( cylinPar );
+  conf->setMapProjectionType( m_currentProjType );
+  conf->setLambertParallel1( m_lambertV1 );
+  conf->setLambertParallel2( m_lambertV2 );
+  conf->setLambertOrign( m_lambertOrigin );
+  conf->setCylinderParallel( m_cylinPar );
 }
 
 #ifdef INTERNET
@@ -252,7 +296,6 @@ void SettingsPageMapSettings::slot_installMaps()
   mb.move( pos );
 
 #endif
-
 
   if( mb.exec() == QMessageBox::No )
     {
@@ -314,10 +357,10 @@ void SettingsPageMapSettings::slot_selectProjection(int index)
         edtLonLabel->setVisible(true);
         edtLon->setVisible(true);
         chkProjectionFollowHome->setVisible(false);
-        edtLat1->setKFLogDegree(lambertV1);
-        edtLat2->setKFLogDegree(lambertV2);
-        edtLon->setKFLogDegree(lambertOrigin);
-        currentProjType = ProjectionBase::Lambert;
+        edtLat1->setKFLogDegree(m_lambertV1);
+        edtLat2->setKFLogDegree(m_lambertV2);
+        edtLon->setKFLogDegree(m_lambertOrigin);
+        m_currentProjType = ProjectionBase::Lambert;
         break;
 
       case 1: // Plate Carreé
@@ -328,10 +371,10 @@ void SettingsPageMapSettings::slot_selectProjection(int index)
         edtLonLabel->setVisible(false);
         edtLon->setVisible(false);
         chkProjectionFollowHome->setVisible(true);
-        edtLat1->setKFLogDegree(cylinPar);
+        edtLat1->setKFLogDegree(m_cylinPar);
         edtLat2->setKFLogDegree(0);
         edtLon->setKFLogDegree(0);
-        currentProjType = ProjectionBase::Cylindric;
+        m_currentProjType = ProjectionBase::Cylindric;
         break;
     }
 }
@@ -384,7 +427,7 @@ bool SettingsPageMapSettings::checkIsProjectionChanged()
         break;
     }
 
-  changed |= ( conf->getMapProjectionType() != currentProjType );
+  changed |= ( conf->getMapProjectionType() != m_currentProjType );
 
   // qDebug( "SettingsPageMapSettings::()checkIsProjectionChanged: %d", changed );
   return changed;

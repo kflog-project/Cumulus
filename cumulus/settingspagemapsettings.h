@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,9 @@
  *
  * \brief Configuration settings for map projection.
  *
- * \date 2002-2012
+ * \date 2002-2013
+ *
+ * \version $Id$
  *
  */
 
@@ -36,12 +38,25 @@
 #include <QStringList>
 #include <QPushButton>
 #include <QLabel>
-#include <QSpinBox>
 #include <QPoint>
 
-#include "coordedit.h"
 #include "projectionbase.h"
 #include "distance.h"
+
+#ifdef USE_NUM_PAD
+
+class NumberEditor;
+
+#include "coordeditnumpad.h"
+
+#else
+
+class QSpinBox;
+
+#include "coordedit.h"
+
+#endif
+
 
 class SettingsPageMapSettings : public QWidget
 {
@@ -121,29 +136,47 @@ class SettingsPageMapSettings : public QWidget
   QCheckBox   *chkUnloadUnneeded;
   QCheckBox   *chkProjectionFollowHome;
   QComboBox   *cmbProjection;
-  LatEdit     *edtLat1;
   QLabel      *edtLat2Label;
-  LatEdit     *edtLat2;
   QLabel      *edtLonLabel;
+
+#ifdef USE_NUM_PAD
+  LatEditNumPad   *edtLat1;
+  LatEditNumPad   *edtLat2;
+  LongEditNumPad  *edtLon;
+#else
+  LatEdit     *edtLat1;
+  LatEdit     *edtLat2;
   LongEdit    *edtLon;
+#endif
+
 
 #ifdef INTERNET
 
   QCheckBox   *chkDownloadMissingMaps;
   QPushButton *installMaps;
+
+#ifdef USE_NUM_PAD
+
+  NumberEditor    *installRadius;
+  LatEditNumPad   *edtCenterLat;
+  LongEditNumPad  *edtCenterLon;
+
+#else
+
   QSpinBox    *installRadius;
   LatEdit     *edtCenterLat;
   LongEdit    *edtCenterLon;
 
 #endif
+#endif
 
-  int cylinPar;
-  int lambertV1;
-  int lambertV2;
-  int lambertOrigin;
+  int m_cylinPar;
+  int m_lambertV1;
+  int m_lambertV2;
+  int m_lambertOrigin;
 
-  // variable currentProjType is an enumeration ProjectionBase::ProjectionType
-  int currentProjType;
+  // variable m_currentProjType is an enumeration ProjectionBase::ProjectionType
+  int m_currentProjType;
 };
 
 #endif
