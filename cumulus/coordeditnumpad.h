@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001      by Harald Maier
 **                   2009      by Axel Pauli complete redesign done
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   Email: axel@kflog.org
 **
@@ -17,25 +17,9 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: CoordEditNumPad.h 5473 2012-08-07 12:50:04Z axel $
+**   $Id$
 **
 ***********************************************************************/
-
-/**
- * \author Harald Maier, Axel Pauli
- *
- * \brief Editor widget for WGS84 coordinates.
- *
- * This class is used to edit WGS84 coordinates. It is subclassed by
- * two extensions to handle latitude and longitude coordinates. Three
- * different coordinate formats are supported.
- *
- * -degrees, minutes, seconds
- * -degrees and decimal minutes
- * -decimal degrees
- *
- * \date 2001-2012
-*/
 
 #ifndef COORD_EDIT_NUM_PAD_H
 #define COORD_EDIT_NUM_PAD_H
@@ -61,7 +45,7 @@ class NumberEditor;
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2012
+ * \date 2001-2013
  */
 
 class CoordEditNumPad : public QWidget
@@ -143,7 +127,7 @@ class CoordEditNumPad : public QWidget
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2012
+ * \date 2001-2013
  */
 class LatEditNumPad : public CoordEditNumPad
 {
@@ -179,7 +163,7 @@ public:
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2010
+ * \date 2001-2013
  */
 class LongEditNumPad : public CoordEditNumPad
 {

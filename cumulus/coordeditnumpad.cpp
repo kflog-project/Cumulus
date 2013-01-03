@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001 by Harald Maier
 **                   2009 by Axel Pauli complete redesign done
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   Email:           axel@kflog.org
 **
@@ -17,7 +17,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: coordedit.cpp 5473 2012-08-07 12:50:04Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
