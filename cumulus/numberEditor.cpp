@@ -17,6 +17,7 @@
 
 #include <QtGui>
 
+#include "mainwindow.h"
 #include "numberInputPad.h"
 #include "numberEditor.h"
 
@@ -73,10 +74,24 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->show();
 
 #ifdef ANDROID
+
+      // Sets the window's background to another color.
+      m_nip->setAutoFillBackground( true );
+      m_nip->setBackgroundRole( QPalette::Window );
+      m_nip->setPalette( QPalette( QColor( Qt::lightGray ) ) );
+
+      QSize ms = m_nip->minimumSizeHint();
+      ms += QSize(10, 10);
+
+      // A dialog is not centered over the parent and not limited in
+      // its size under Android. Therefore this must be done by our self.
+      m_nip->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
+                          (MainWindow::mainWindow()->height() - ms.height()) / 2,
+                           ms.width(), ms.height() );
+
+      // That do not work under Android.
       m_nip->getEditor()->setFocus();
 
-      QPoint pos = mapToGlobal(QPoint( width()/2 - m_nip.width()/2, height()/2 - m_nip.height()/2 ));
-      m_nip.move( pos );
 #endif
 
     }
