@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012 by Axel Pauli
+#                2012-2013 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -29,12 +29,6 @@ CONFIG += qt \
 # These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
 
-# Activate this define, if Qt class QScroller is available.
-# DEFINES += QSCROLLER
-
-# Activate this define, if class FlickCharm shall be used for kinetic finger scrolling.
-DEFINES += FLICK_CHARM
-
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
 
@@ -47,6 +41,15 @@ CONFIG += welt2000thread
 
 # Enable classical menu bar, if define is set. Otherwise a context menu is used.
 # DEFINES += USE_MENUBAR
+
+# Activate this define, if Qt class QScroller is available.
+# DEFINES += QSCROLLER
+
+# Activate this feature, if class FlickCharm shall be used for kinetic finger scrolling.
+CONFIG += flickcharm
+
+# Enable this feature, if the own number key pad shall be used for number input.
+CONFIG += numberpad
 
 HEADERS = \
     aboutwidget.h \
@@ -67,7 +70,6 @@ HEADERS = \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
-    flickcharm.h \
     filetools.h \
     flighttask.h \
     fontdialog.h \
@@ -184,7 +186,6 @@ SOURCES = \
     calculator.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
-    flickcharm.cpp \
     filetools.cpp \
     flighttask.cpp \
     fontdialog.cpp \
@@ -328,6 +329,26 @@ internet {
 
 welt2000thread {
     DEFINES += WELT2000_THREAD
+}
+
+flickcharm {
+    DEFINES += FLICK_CHARM
+    
+    HEADERS += flickcharm.h
+    
+    SOURCES += flickcharm.cpp
+}
+
+numberpad {
+    DEFINES += USE_NUM_PAD
+
+    HEADERS += coordeditnumpad.h \
+               numberEditor.h \
+               numberInputPad.h
+    
+    SOURCES += coordeditnumpad.cpp \
+               numberEditor.cpp \
+               numberInputPad.cpp
 }
 
 # Files managed and needed by Necessitas
