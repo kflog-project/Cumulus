@@ -46,6 +46,8 @@ class NumberEditor;
  * -decimal degrees
  *
  * \date 2001-2013
+ *
+ *  * \version $Id$
  */
 
 class CoordEditNumPad : public QWidget
