@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,6 +31,10 @@
 
 #include "altitude.h"
 
+#ifdef USE_NUM_PAD
+class NumberEditor;
+#endif
+
 class SettingsPageAirspaceWarnings;
 class SettingsPageAirspaceFilling;
 class SettingsPageAirspaceLoading;
@@ -47,7 +51,7 @@ class SettingsPageAirspaceLoading;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  *
@@ -135,17 +139,18 @@ class SettingsPageAirspace : public QWidget
 
   signals:
 
-  /**
-   * Emitted if the airspace colors have been updated
-   */
-  void airspaceColorsUpdated();
+    /**
+     * Emitted if the airspace colors have been updated
+     */
+    void airspaceColorsUpdated();
 
-  /**
-   * Emitted if an airspace shall be installed
-   */
-  void downloadAirspace( QString& url );
+    /**
+     * Emitted if an airspace shall be installed
+     */
+    void downloadAirspace( QString& url );
 
   protected:
+
     /**
      * saves current altitude unit during construction of object
      */
@@ -212,9 +217,14 @@ class SettingsPageAirspace : public QWidget
     QWidget* fillColorWaveWindow;
     QWidget* fillColorGliderSector;
 
-    QCheckBox* enableBorderDrawing;
-    QSpinBox*  spinBorderDrawing;
-    QSpinBox*  spinAsLineWidth;
+    QSpinBox*  m_spinAsLineWidth;
+    QCheckBox* m_enableBorderDrawing;
+
+#ifdef USE_NUM_PAD
+  NumberEditor* m_borderDrawingValue;
+#else
+    QSpinBox*  m_borderDrawingValue;
+#endif
 
     // values of spin boxes after load
     int spinAsLineWidthValue;

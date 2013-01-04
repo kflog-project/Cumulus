@@ -36,6 +36,10 @@
 #include "airspacedownloaddialog.h"
 #endif
 
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#endif
+
 extern MapContents *_globalMapContents;
 
 SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
@@ -99,18 +103,32 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   QHBoxLayout *hbox = new QHBoxLayout;
 
-  enableBorderDrawing = new QCheckBox(tr("Ignore AS"), this);
-  enableBorderDrawing->setChecked(false);
-  hbox->addWidget( enableBorderDrawing );
-  connect( enableBorderDrawing, SIGNAL(toggled(bool)),
+  m_enableBorderDrawing = new QCheckBox(tr("Ignore AS"), this);
+  m_enableBorderDrawing->setChecked(false);
+  hbox->addWidget( m_enableBorderDrawing );
+  connect( m_enableBorderDrawing, SIGNAL(toggled(bool)),
            SLOT(slot_enabledToggled(bool)));
 
-  spinBorderDrawing = new QSpinBox;
-  spinBorderDrawing->setPrefix(">FL ");
-  spinBorderDrawing->setRange( 50, 500 );
-  spinBorderDrawing->setSingleStep( 1 );
-  VarSpinBox* hspin = new VarSpinBox( spinBorderDrawing );
+#ifdef USE_NUM_PAD
+  m_borderDrawingValue = new NumberEditor;
+  m_borderDrawingValue->setDecimalVisible( false );
+  m_borderDrawingValue->setPmVisible( false );
+  m_borderDrawingValue->setMaxLength(3);
+  m_borderDrawingValue->setPrefix( ">FL ");
+  m_borderDrawingValue->setMaximum( 500 );
+  m_borderDrawingValue->setTitle("50...500");
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([5-9][0-9]|[1-4][0-9][0-9]|500)" ), this );
+  m_borderDrawingValue->setValidator( eValidator );
+  hbox->addWidget( m_borderDrawingValue );
+#else
+  m_borderDrawingValue = new QSpinBox;
+  m_borderDrawingValue->setPrefix(">FL ");
+  m_borderDrawingValue->setRange( 50, 500 );
+  m_borderDrawingValue->setSingleStep( 1 );
+  VarSpinBox* hspin = new VarSpinBox( m_borderDrawingValue );
   hbox->addWidget( hspin );
+#endif
+
   hbox->addStretch( 10 );
 
   cmdColorDefaults = new QPushButton(tr("Color Defaults"), this);
@@ -447,9 +465,9 @@ void SettingsPageAirspace::slot_load()
   GeneralConfig *conf = GeneralConfig::instance();
   bool enabled = conf->getAirspaceDrawBorderEnabled();
 
-  enableBorderDrawing->setChecked(enabled);
+  m_enableBorderDrawing->setChecked(enabled);
   slot_enabledToggled(enabled);
-  spinBorderDrawing->setValue( conf->getAirspaceDrawingBorder() );
+  m_borderDrawingValue->setValue( conf->getAirspaceDrawingBorder() );
 
   // spinAsLineWidth->setValue( spinAsLineWidthValue );
 
@@ -509,8 +527,8 @@ void SettingsPageAirspace::slot_save()
   GeneralConfig * conf = GeneralConfig::instance();
   AirspaceWarningDistance awd;
 
-  conf->setAirspaceDrawingBorder(spinBorderDrawing->value());
-  conf->setAirspaceDrawBorderEnabled(enableBorderDrawing->checkState() == Qt::Checked ? true : false);
+  conf->setAirspaceDrawingBorder(m_borderDrawingValue->value());
+  conf->setAirspaceDrawBorderEnabled(m_enableBorderDrawing->checkState() == Qt::Checked ? true : false);
 
   // conf->setAirspaceLineWidth( spinAsLineWidth->value() );
 
@@ -761,8 +779,8 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   // changed |= spinAsLineWidthValue != spinAsLineWidth->value();
   QString where;
 
-  changed |= conf->getAirspaceDrawingBorder() != spinBorderDrawing->value();
-  changed |= conf->getAirspaceDrawBorderEnabled() != (enableBorderDrawing->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getAirspaceDrawingBorder() != m_borderDrawingValue->value();
+  changed |= conf->getAirspaceDrawBorderEnabled() != (m_enableBorderDrawing->checkState() == Qt::Checked ? true : false);
 
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirA) != (drawAirspaceA->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::AirB) != (drawAirspaceB->checkState() == Qt::Checked ? true : false);
@@ -850,7 +868,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
 
 void SettingsPageAirspace::slot_enabledToggled(bool enabled)
 {
-  spinBorderDrawing->setEnabled(enabled);
+  m_borderDrawingValue->setEnabled(enabled);
 }
 
 /******************************************************************************/
