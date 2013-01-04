@@ -52,7 +52,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QGridLayout* weltLayout = new QGridLayout(weltGroup);
 
   int grow = 0;
-  VarSpinBox* hspin;
   QLabel* lbl = new QLabel(tr("Country Filter:"), (weltGroup));
   weltLayout->addWidget(lbl, grow, 0);
 
@@ -78,7 +77,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   m_homeRadius->setRange(1, 10000);
   m_homeRadius->setSingleStep(50);
   m_homeRadius->setSuffix( " " + Distance::getUnitText() );
-  hspin = new VarSpinBox(m_homeRadius);
+  VarSpinBox* hspin = new VarSpinBox(m_homeRadius);
   weltLayout->addWidget(hspin, grow, 1 );
 #endif
 
@@ -115,22 +114,50 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   lbl = new QLabel(tr( "More space in AF/WP/OL lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
+
+#ifdef USE_NUM_PAD
+  m_afMargin = new NumberEditor( this );
+  m_afMargin->setDecimalVisible( false );
+  m_afMargin->setPmVisible( false );
+  m_afMargin->setMaxLength(2);
+  m_afMargin->setSuffix( tr(" Pixels") );
+  m_afMargin->setMaximum( 30 );
+  m_afMargin->setTitle("0...30");
+  eValidator = new QRegExpValidator( QRegExp( "([0-9]|[1-2][0-9]|30)" ), this );
+  m_afMargin->setValidator( eValidator );
+  listLayout->addWidget(m_afMargin, grow, 1 );
+#else
   m_afMargin = new QSpinBox;
   m_afMargin->setRange(0, 30);
   m_afMargin->setSingleStep(1);
   m_afMargin->setSuffix( tr(" Pixels") );
   hspin = new VarSpinBox(m_afMargin);
   listLayout->addWidget(hspin, grow, 1);
+#endif
 
   grow++;
   lbl = new QLabel(tr( "More space in Emergency list:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
+
+#ifdef USE_NUM_PAD
+  m_rpMargin = new NumberEditor( this );
+  m_rpMargin->setDecimalVisible( false );
+  m_rpMargin->setPmVisible( false );
+  m_rpMargin->setMaxLength(2);
+  m_rpMargin->setSuffix( tr(" Pixels") );
+  m_rpMargin->setMaximum( 30 );
+  m_rpMargin->setTitle("0...30");
+  eValidator = new QRegExpValidator( QRegExp( "([0-9]|[1-2][0-9]|30)" ), this );
+  m_rpMargin->setValidator( eValidator );
+  listLayout->addWidget(m_rpMargin, grow, 1 );
+#else
   m_rpMargin = new QSpinBox;
   m_rpMargin->setRange(0, 30);
   m_rpMargin->setSingleStep(1);
   m_rpMargin->setSuffix( tr(" Pixels") );
   hspin = new VarSpinBox(m_rpMargin);
   listLayout->addWidget(hspin, grow, 1);
+#endif
 
   grow++;
   listLayout->setRowStretch(grow, 10);

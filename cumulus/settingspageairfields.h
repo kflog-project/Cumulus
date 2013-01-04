@@ -24,23 +24,26 @@
  *
  * \date 2008-2013
  *
+ * \version $Id$
+ *
  */
 
 #ifndef SETTINGS_PAGE_AIRFIELDS_H
 #define SETTINGS_PAGE_AIRFIELDS_H
 
 #include <QWidget>
-#include <QSpinBox>
+#include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QStringList>
-#include <QCheckBox>
 #include <QPushButton>
 
 #include "distance.h"
 
 #ifdef USE_NUM_PAD
 class NumberEditor;
+#else
+class QSpinBox;
 #endif
 
 class SettingsPageAirfields : public QWidget
@@ -126,13 +129,24 @@ class SettingsPageAirfields : public QWidget
   /** Radius around home position for Welt2000 data file */
 
 #ifdef USE_NUM_PAD
-  NumberEditor* m_homeRadius;
-#else
-  QSpinBox* m_homeRadius;
-#endif
 
-  /** Check box to load outlandings or not. */
-  QCheckBox* m_loadOutlandings;
+  /** Home radius. */
+  NumberEditor* m_homeRadius;
+
+  /** Pixels to add to the row height in airfield/waypoint lists
+   *  (for easy finger selection)
+   */
+  NumberEditor* m_afMargin;
+
+  /** Pixels to add to the row height in emergency (reachable points) list
+   *  (for easy finger selection)
+   */
+  NumberEditor* m_rpMargin;
+
+#else
+
+  /** Home radius. */
+  QSpinBox* m_homeRadius;
 
   /** Pixels to add to the row height in airfield/waypoint lists
    *  (for easy finger selection)
@@ -143,6 +157,11 @@ class SettingsPageAirfields : public QWidget
    *  (for easy finger selection)
    */
   QSpinBox* m_rpMargin;
+
+  #endif
+
+  /** Check box to load outlandings or not. */
+  QCheckBox* m_loadOutlandings;
 
   /** stores distance unit set during construction of object */
   Distance::distanceUnit m_distUnit;
