@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2012 Axel Pauli
+ **   Copyright (c): 2008-2013 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
  *
  * \brief Contains the airfield data settings.
  *
- * \date 2008-2012
+ * \date 2008-2013
  *
  * \version $Id$
  */
