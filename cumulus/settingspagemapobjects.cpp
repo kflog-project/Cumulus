@@ -79,6 +79,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 #endif
 
   hBox->addSpacing( 5 );
+  hBox->addStretch( 5 );
 
   label = new QLabel( tr("Normal"), wpGroup );
   hBox->addWidget( label );
@@ -108,6 +109,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
 #endif
 
   hBox->addSpacing( 5 );
+  hBox->addStretch( 5 );
 
   label = new QLabel( tr("High"), wpGroup );
   hBox->addWidget( label );
@@ -136,7 +138,7 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
            this, SLOT(slot_wpHighScaleLimitChanged(int)) );
 #endif
 
-  hBox->addStretch( 10 );
+  //hBox->addStretch( 10 );
 
   //---------------------------------------------------------------------------
   // table with 8 rows and 2 columns
