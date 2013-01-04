@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2003-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -54,8 +54,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget(new QLabel(tr("Airfield display time:"), this), row, 0);
   spinAirfield = new QSpinBox;
   spinAirfield->setObjectName("spinAirfield");
-  spinAirfield->setMaximum(60);
+  spinAirfield->setRange(0, 60);
   spinAirfield->setSuffix( " s" );
+  spinAirfield->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinAirfield);
   topLayout->addWidget( hspin, row, 1 );
   row++;
@@ -63,8 +64,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget(new QLabel(tr("Airspace display time:"), this), row, 0);
   spinAirspace = new QSpinBox;
   spinAirspace->setObjectName("spinAirspace");
-  spinAirspace->setMaximum(60);
+  spinAirspace->setRange(0, 60);
   spinAirspace->setSuffix( " s" );
+  spinAirspace->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinAirspace);
   topLayout->addWidget( hspin, row, 1 );
   row++;
@@ -72,8 +74,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget(new QLabel(tr("Info display time:"), this), row, 0);
   spinInfo = new QSpinBox;
   spinInfo->setObjectName("spinInfo");
-  spinInfo->setMaximum(60);
+  spinInfo->setRange(0, 60);
   spinInfo->setSuffix( " s" );
+  spinInfo->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinInfo);
   topLayout->addWidget( hspin, row, 1 );
   row++;
@@ -81,8 +84,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this), row, 0);
   spinWaypoint = new QSpinBox;
   spinWaypoint->setObjectName("spinWaypoint");
-  spinWaypoint->setMaximum(60);
+  spinWaypoint->setRange(0, 60);
   spinWaypoint->setSuffix( " s" );
+  spinWaypoint->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinWaypoint);
   topLayout->addWidget( hspin, row, 1 );
   row++;
@@ -90,8 +94,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->addWidget(new QLabel(tr("Warning display time:"), this), row, 0);
   spinWarning = new QSpinBox;
   spinWarning->setObjectName("spinWarning");
-  spinWarning->setMaximum(60);
+  spinWarning->setRange(0, 60);
   spinWarning->setSuffix( " s" );
+  spinWarning->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinWarning);
   topLayout->addWidget( hspin, row, 1 );
   row++;
