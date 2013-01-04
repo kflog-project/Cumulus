@@ -31,6 +31,10 @@
 #include "settingspageairfields.h"
 #include "varspinbox.h"
 
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#endif
+
 #ifdef INTERNET
 #include "httpclient.h"
 #endif
@@ -48,40 +52,53 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QGridLayout* weltLayout = new QGridLayout(weltGroup);
 
   int grow = 0;
+  VarSpinBox* hspin;
   QLabel* lbl = new QLabel(tr("Country Filter:"), (weltGroup));
   weltLayout->addWidget(lbl, grow, 0);
 
-  countryFilter = new QLineEdit(weltGroup);
-  weltLayout->addWidget(countryFilter, grow, 1, 1, 3);
+  m_countryFilter = new QLineEdit(weltGroup);
+  weltLayout->addWidget(m_countryFilter, grow, 1, 1, 3);
   grow++;
 
   lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
 
-  homeRadius = new QSpinBox;
-  homeRadius->setRange(1, 10000);
-  homeRadius->setSingleStep(50);
-  homeRadius->setSuffix( " " + Distance::getUnitText() );
-  VarSpinBox* hspin = new VarSpinBox(homeRadius);
+#ifdef USE_NUM_PAD
+  m_homeRadius = new NumberEditor( this );
+  m_homeRadius->setDecimalVisible( false );
+  m_homeRadius->setPmVisible( false );
+  m_homeRadius->setMaxLength(4);
+  m_homeRadius->setSuffix( " " + Distance::getUnitText() );
+  m_homeRadius->setMaximum( 9999 );
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
+  m_homeRadius->setValidator( eValidator );
+  weltLayout->addWidget(m_homeRadius, grow, 1 );
+#else
+  m_homeRadius = new QSpinBox;
+  m_homeRadius->setRange(1, 10000);
+  m_homeRadius->setSingleStep(50);
+  m_homeRadius->setSuffix( " " + Distance::getUnitText() );
+  hspin = new VarSpinBox(m_homeRadius);
   weltLayout->addWidget(hspin, grow, 1 );
+#endif
 
-  loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
-  weltLayout->addWidget(loadOutlandings, grow, 2, Qt::AlignRight );
+  m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
+  weltLayout->addWidget(m_loadOutlandings, grow, 2, Qt::AlignRight );
   grow++;
 
 #ifdef INTERNET
 
   weltLayout->setRowMinimumHeight(grow++, 10);
 
-  installWelt2000 = new QPushButton( tr("Install"), weltGroup );
-  installWelt2000->setToolTip(tr("Install Welt2000 data"));
-  weltLayout->addWidget(installWelt2000, grow, 0 );
+  m_installWelt2000 = new QPushButton( tr("Install"), weltGroup );
+  m_installWelt2000->setToolTip(tr("Install Welt2000 data"));
+  weltLayout->addWidget(m_installWelt2000, grow, 0 );
 
-  connect( installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
+  connect( m_installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
 
-  welt2000FileName = new QLineEdit(weltGroup);
-  welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
-  weltLayout->addWidget(welt2000FileName, grow, 1, 1, 3);
+  m_welt2000FileName = new QLineEdit(weltGroup);
+  m_welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
+  weltLayout->addWidget(m_welt2000FileName, grow, 1, 1, 3);
 
 #endif
 
@@ -98,21 +115,21 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   lbl = new QLabel(tr( "More space in AF/WP/OL lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
-  afMargin = new QSpinBox;
-  afMargin->setRange(0, 60);
-  afMargin->setSingleStep(2);
-  afMargin->setSuffix( tr(" Pixels") );
-  hspin = new VarSpinBox(afMargin);
+  m_afMargin = new QSpinBox;
+  m_afMargin->setRange(0, 30);
+  m_afMargin->setSingleStep(1);
+  m_afMargin->setSuffix( tr(" Pixels") );
+  hspin = new VarSpinBox(m_afMargin);
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;
   lbl = new QLabel(tr( "More space in Emergency list:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
-  rpMargin = new QSpinBox;
-  rpMargin->setRange(0, 60);
-  rpMargin->setSingleStep(2);
-  rpMargin->setSuffix( tr(" Pixels") );
-  hspin = new VarSpinBox(rpMargin);
+  m_rpMargin = new QSpinBox;
+  m_rpMargin->setRange(0, 30);
+  m_rpMargin->setSingleStep(1);
+  m_rpMargin->setSuffix( tr(" Pixels") );
+  hspin = new VarSpinBox(m_rpMargin);
   listLayout->addWidget(hspin, grow, 1);
 
   grow++;
@@ -122,7 +139,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 #ifndef ANDROID
   // Android makes trouble, if word detection is enabled and the input is
   // changed by us.
-  connect( countryFilter, SIGNAL(textChanged(const QString&)),
+  connect( m_countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
 #endif
 }
@@ -142,30 +159,30 @@ void SettingsPageAirfields::slot_load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  countryFilter->setText(conf->getWelt2000CountryFilter());
+  m_countryFilter->setText(conf->getWelt2000CountryFilter());
   // @AP: radius value is stored without considering unit.
-  homeRadius->setValue(conf->getWelt2000HomeRadius());
+  m_homeRadius->setValue(conf->getWelt2000HomeRadius());
 
   if( conf->getWelt2000LoadOutlandings() )
     {
-      loadOutlandings->setCheckState( Qt::Checked );
+      m_loadOutlandings->setCheckState( Qt::Checked );
     }
   else
     {
-      loadOutlandings->setCheckState( Qt::Unchecked );
+      m_loadOutlandings->setCheckState( Qt::Unchecked );
     }
 
 #ifdef INTERNET
 
-  welt2000FileName->setText( conf->getWelt2000FileName() );
+  m_welt2000FileName->setText( conf->getWelt2000FileName() );
 
 #endif
 
-  afMargin->setValue(conf->getListDisplayAFMargin());
-  rpMargin->setValue(conf->getListDisplayRPMargin());
+  m_afMargin->setValue(conf->getListDisplayAFMargin());
+  m_rpMargin->setValue(conf->getListDisplayRPMargin());
 
   // sets home radius enabled/disabled in dependency to filter string
-  slot_filterChanged(countryFilter->text());
+  slot_filterChanged(m_countryFilter->text());
 }
 
 /**
@@ -178,7 +195,7 @@ void SettingsPageAirfields::slot_save()
   // We will check, if the country entries of Welt2000 are
   // correct. If not a warning message is displayed and the
   // modifications are discarded.
-  QStringList clist = countryFilter->text().split(QRegExp("[, ]"),
+  QStringList clist = m_countryFilter->text().split(QRegExp("[, ]"),
                       QString::SkipEmptyParts);
 
   for (QStringList::Iterator it = clist.begin(); it != clist.end(); ++it)
@@ -206,10 +223,10 @@ void SettingsPageAirfields::slot_save()
         }
     }
 
-  conf->setWelt2000CountryFilter(countryFilter->text().trimmed().toUpper());
-  conf->setWelt2000HomeRadius(homeRadius->value());
+  conf->setWelt2000CountryFilter(m_countryFilter->text().trimmed().toUpper());
+  conf->setWelt2000HomeRadius(m_homeRadius->value());
 
-  if( loadOutlandings->checkState() == Qt::Checked )
+  if( m_loadOutlandings->checkState() == Qt::Checked )
     {
       conf->setWelt2000LoadOutlandings( true );
     }
@@ -218,8 +235,8 @@ void SettingsPageAirfields::slot_save()
       conf->setWelt2000LoadOutlandings( false );
     }
 
-  conf->setListDisplayAFMargin(afMargin->value());
-  conf->setListDisplayRPMargin(rpMargin->value());
+  conf->setListDisplayAFMargin(m_afMargin->value());
+  conf->setListDisplayRPMargin(m_rpMargin->value());
 }
 
 /**
@@ -256,7 +273,7 @@ void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
  */
 void SettingsPageAirfields::slot_installWelt2000()
 {
-  QString wfn = welt2000FileName->text().trimmed();
+  QString wfn = m_welt2000FileName->text().trimmed();
 
   if( wfn.isEmpty() )
     {
@@ -317,12 +334,12 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed = changed || (conf->getWelt2000CountryFilter() != countryFilter->text());
-  changed = changed || (conf->getWelt2000HomeRadius() != homeRadius->value());
+  changed = changed || (conf->getWelt2000CountryFilter() != m_countryFilter->text());
+  changed = changed || (conf->getWelt2000HomeRadius() != m_homeRadius->value());
 
   bool currentState = false;
 
-  if( loadOutlandings->checkState() == Qt::Checked )
+  if( m_loadOutlandings->checkState() == Qt::Checked )
     {
       currentState = true;
     }
@@ -341,8 +358,8 @@ bool SettingsPageAirfields::checkIsListDisplayChanged()
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed = changed || (conf->getListDisplayAFMargin() != afMargin->value());
-  changed = changed || (conf->getListDisplayRPMargin() != rpMargin->value());
+  changed = changed || (conf->getListDisplayAFMargin() != m_afMargin->value());
+  changed = changed || (conf->getListDisplayRPMargin() != m_rpMargin->value());
 
   // qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
   return changed;
