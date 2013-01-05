@@ -343,10 +343,12 @@ numberpad {
     DEFINES += USE_NUM_PAD
 
     HEADERS += coordeditnumpad.h \
+               doubleNumberEditor.h \
                numberEditor.h \
                numberInputPad.h
     
     SOURCES += coordeditnumpad.cpp \
+               doubleNumberEditor.cpp \
                numberEditor.cpp \
                numberInputPad.cpp
 }
