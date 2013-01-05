@@ -41,8 +41,13 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_validator(0),
   m_inputMask(""),
   m_maxLength(32767),
-  m_intMax(INT_MAX)
+  m_intMax(false, INT_MAX),
+  m_intMin(false, INT_MIN),
+  m_doubleMax(false,INT_MAX),
+  m_doubleMin(false, INT_MIN)
 {
+  setObjectName("NumberEditor");
+
 //  QPalette p = palette();
 //  p.setColor( QPalette::Window, Qt::white );
 //  setPalette(p);
@@ -51,13 +56,27 @@ NumberEditor::NumberEditor( QWidget *parent,
   setBackgroundRole( QPalette::Light );
   setAutoFillBackground( true );
   setAlignment(Qt::AlignCenter);
-  setMargin(1);
+  setMargin(2);
   setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+
+  QSizePolicy sp = sizePolicy();
+  sp.setVerticalPolicy( QSizePolicy::Fixed );
+  setSizePolicy( sp );
+
   setText();
 }
 
 NumberEditor::~NumberEditor()
 {
+}
+
+void NumberEditor::showEvent( QShowEvent* event )
+{
+  QSize size = minimumSizeHint();
+  setMinimumHeight( size.height() );
+  setMaximumHeight( size.height() );
+
+  QLabel::showEvent(event);
 }
 
 void NumberEditor::mousePressEvent( QMouseEvent* event )
@@ -71,12 +90,19 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setPmVisible( m_pmFlag );
       m_nip->setValidator( m_validator );
       m_nip->setMaxLength( m_maxLength );
-      m_nip->setMaximum( m_intMax );
       m_nip->setInputMask( m_inputMask );
+
+      if( m_intMax.first ) m_nip->setIntMaximum( m_intMax.second );
+      if( m_intMin.first ) m_nip->setIntMinimum( m_intMin.second );
+      if( m_doubleMax.first ) m_nip->setDoubleMaximum( m_doubleMax.second );
+      if( m_doubleMin.first ) m_nip->setDoubleMinimum( m_doubleMin.second );
+
       connect( m_nip, SIGNAL(numberEdited(const QString&) ),
                SLOT(slot_NumberEdited(const QString&)) );
       connect( m_nip, SIGNAL(valueChanged(int) ),
                this, SIGNAL(valueChanged(int)) );
+      connect( m_nip, SIGNAL(valueChanged(double) ),
+               this, SIGNAL(valueChanged(double)) );
 
       m_nip->show();
 
@@ -108,6 +134,8 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 
 void NumberEditor::slot_NumberEdited( const QString& number )
 {
+  qDebug() << "NumberEditor::slot_NumberEdited=" << number;
+
   m_nip = 0;
   m_number = number;
   setText();

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2012 Axel Pauli
+**   Copyright (c):  2007-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,6 +22,11 @@
 #include "flighttask.h"
 #include "mapcontents.h"
 #include "varspinbox.h"
+
+#ifdef USE_NUM_PAD
+#include "doubleNumberEditor.h"
+#include "numberEditor.h"
+#endif
 
 extern MapContents  *_globalMapContents;
 
@@ -155,12 +160,23 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
       unit = " nm";
     }
 
+#ifdef USE_NUM_PAD
+  cylinderRadius = new DoubleNumberEditor( this );
+  cylinderRadius->setDecimalVisible( true );
+  cylinderRadius->setPmVisible( false );
+  cylinderRadius->setMaxLength(10);
+  cylinderRadius->setSuffix( unit );
+  cylinderRadius->setDecimals( 3 );
+  hbox->addWidget( cylinderRadius );
+#else
   cylinderRadius = new QDoubleSpinBox( this );
   cylinderRadius->setRange(0.1, 1000.0);
   cylinderRadius->setSingleStep(0.1);
   cylinderRadius->setSuffix( unit );
   vspin = new VarSpinBox( cylinderRadius, this, VarSpinBox::Vertical );
   hbox->addWidget( vspin );
+#endif
+
   hbox->addStretch(10);
 
   cylinderGroup->setLayout(hbox);
@@ -179,26 +195,61 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   lbl = new QLabel( tr("Inner Radius:"), sectorGroup );
   sectorLayout->addWidget( lbl, row1, 0 );
 
+#ifdef USE_NUM_PAD
+  innerSectorRadius = new DoubleNumberEditor( sectorGroup );
+  innerSectorRadius->setDecimalVisible( true );
+  innerSectorRadius->setPmVisible( false );
+  innerSectorRadius->setMaxLength(10);
+  innerSectorRadius->setSuffix( unit );
+  innerSectorRadius->setDecimals( 3 );
+  sectorLayout->addWidget( innerSectorRadius, row1, 1 );
+#else
   innerSectorRadius = new QDoubleSpinBox( sectorGroup );
   innerSectorRadius->setRange(0.0, 10.0);
   innerSectorRadius->setSingleStep(0.1);
   innerSectorRadius->setSuffix( unit );
   vspin = new VarSpinBox( innerSectorRadius );
   sectorLayout->addWidget( vspin, row1, 1 );
+#endif
 
   row1++;
   lbl = new QLabel( tr("Outer Radius:"), sectorGroup );
   sectorLayout->addWidget( lbl, row1, 0 );
+
+#ifdef USE_NUM_PAD
+  outerSectorRadius = new DoubleNumberEditor( sectorGroup );
+  outerSectorRadius->setDecimalVisible( true );
+  outerSectorRadius->setPmVisible( false );
+  outerSectorRadius->setMaxLength(10);
+  outerSectorRadius->setSuffix( unit );
+  outerSectorRadius->setDecimals( 3 );
+  sectorLayout->addWidget( outerSectorRadius, row1, 1 );
+#else
   outerSectorRadius = new QDoubleSpinBox( sectorGroup );
   outerSectorRadius->setRange(0.1, 1000.0);
   outerSectorRadius->setSingleStep(0.1);
   outerSectorRadius->setSuffix( unit );
   vspin = new VarSpinBox( outerSectorRadius );
   sectorLayout->addWidget( vspin, row1, 1 );
+#endif
 
   row1++;
   lbl = new QLabel( tr("Angle:"), sectorGroup );
   sectorLayout->addWidget( lbl, row1, 0 );
+
+#ifdef USE_NUM_PAD
+  sectorAngle = new NumberEditor( sectorGroup );
+  sectorAngle->setDecimalVisible( false );
+  sectorAngle->setPmVisible( false );
+  sectorAngle->setMaxLength(3);
+  sectorAngle->setSuffix( QString(Qt::Key_degree) );
+  sectorAngle->setMaximum( 180 );
+  sectorAngle->setTitle("90...180");
+  sectorAngle->setValue( conf->getTaskSectorAngle() );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(9[0-9]|1[0-7][0-9]|180)" ), this );
+  sectorAngle->setValidator( eValidator );
+  sectorLayout->addWidget( sectorAngle, row1, 1 );
+#else
   sectorAngle = new QSpinBox( sectorGroup );
   sectorAngle->setRange( 90, 180 );
   sectorAngle->setSingleStep( 5 );
@@ -207,6 +258,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   sectorAngle->setValue( conf->getTaskSectorAngle() );
   vspin = new VarSpinBox( sectorAngle );
   sectorLayout->addWidget( vspin, row1, 1 );
+#endif
 
   sectorLayout->setColumnStretch(2, 10);
 
@@ -288,7 +340,14 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   connect( csScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedCS(int)) );
   connect( ntScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedNT(int)) );
-  connect( outerSectorRadius, SIGNAL(valueChanged(double)), this, SLOT(slot_outerSBChanged(double)) );
+
+#ifdef USE_NUM_PAD
+  connect( outerSectorRadius, SIGNAL(numberEdited(const QString& )),
+          this, SLOT(slot_outerSBChanged(const QString& )) );
+#else
+  connect( outerSectorRadius, SIGNAL(valueChanged(double)),
+           this, SLOT(slot_outerSBChanged(double)) );
+#endif
 }
 
 // Destructor of class
@@ -311,7 +370,7 @@ void SettingsPageTask::hideEvent( QHideEvent *)
 // value of outer spin box changed
 void SettingsPageTask::slot_outerSBChanged( double /* value */ )
 {
-  // set max range of inner radius spin box to current value of this box
+  // set max range of inner sector to current value of outer sector
   innerSectorRadius->setMaximum( outerSectorRadius->value() );
 
   if( innerSectorRadius->value() > outerSectorRadius->value() )
@@ -319,6 +378,11 @@ void SettingsPageTask::slot_outerSBChanged( double /* value */ )
       // inner spin box value must be less equal outer spin box value
       innerSectorRadius->setValue( outerSectorRadius->value() );
     }
+}
+
+void SettingsPageTask::slot_outerSBChanged( const QString& /* value */ )
+{
+  slot_outerSBChanged( 1.0 );
 }
 
 // Set the passed scheme widget as active and the other one to
@@ -420,10 +484,13 @@ void SettingsPageTask::slot_load()
       outerSectorRadius->setValue( oRadius.getNautMiles() );
     }
 
-  // Save loaded integer values of spin boxes
-  loadedCylinderRadius = cylinderRadius->value();
+  // Save the loaded values from the configuration
+  loadedCylinderRadius    = cylinderRadius->value();
   loadedInnerSectorRadius = innerSectorRadius->value();
   loadedOuterSectorRadius = outerSectorRadius->value();
+
+  // Check the validity of inner and outer sector.
+  slot_outerSBChanged( 1.0 );
 
   drawShape->setChecked( conf->getTaskDrawShape() );
   fillShape->setChecked( conf->getTaskFillShape() );

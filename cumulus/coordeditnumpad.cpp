@@ -188,18 +188,18 @@ bool CoordEditNumPad::isInputChanged()
 
   if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
-      changed |= iniDegree != degreeBox->number();
+      changed |= iniDegree != degreeBox->text();
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
-      changed |= iniDegree != degreeBox->number();
-      changed |= iniMinute != minuteBox->number();
+      changed |= iniDegree != degreeBox->text();
+      changed |= iniMinute != minuteBox->text();
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
-      changed |= iniDegree != degreeBox->number();
-      changed |= iniMinute != minuteBox->number();
-      changed |= iniSecond != secondBox->number();
+      changed |= iniDegree != degreeBox->text();
+      changed |= iniMinute != minuteBox->text();
+      changed |= iniSecond != secondBox->text();
     }
 
   changed |= iniDirection != skyDirection->text();
@@ -358,20 +358,20 @@ LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPa
 /** Used to check the user input in the editor fields. */
 void CoordEditNumPad::slot_numberEdited( const QString& )
 {
-  if( degreeBox->number() == "90" || degreeBox->number() == "180" )
+  if( degreeBox->text() == "90" || degreeBox->text() == "180" )
     {
       // If the degree box is set to the possible maximum, the other
       // boxes must be set to zero to prevent senseless results.
       if ( WGSPoint::getFormat() == WGSPoint::DDM )
           {
-            minuteBox->setNumber( "00.000" );
+            minuteBox->setText( "00.000" );
             return;
          }
 
       if ( WGSPoint::getFormat() == WGSPoint::DMS )
         {
-          minuteBox->setNumber( "00");
-          secondBox->setNumber( "00");
+          minuteBox->setText( "00");
+          secondBox->setText( "00");
           return;
         }
     }
@@ -395,14 +395,14 @@ int CoordEditNumPad::KFLogDegree()
 
   if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
-      input = degreeBox->number() + degreeChar + " " +
-              minuteBox->number() + "' " +
-              secondBox->number() + "\"";
+      input = degreeBox->text() + degreeChar + " " +
+              minuteBox->text() + "' " +
+              secondBox->text() + "\"";
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
       // Add missing zeros, if needed
-      QString number = minuteBox->number();
+      QString number = minuteBox->text();
       int maxLen     = minuteBox->maxLength();
 
       qDebug() << "number=" << number << "maxLen" << maxLen << "Diff=" << (maxLen - number.size());
@@ -417,12 +417,12 @@ int CoordEditNumPad::KFLogDegree()
             }
         }
 
-      input = degreeBox->number() + degreeChar + " " + number + "'";
+      input = degreeBox->text() + degreeChar + " " + number + "'";
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
       // Add missing zeros, if needed
-      QString number = degreeBox->number();
+      QString number = degreeBox->text();
       int maxLen     = degreeBox->maxLength();
 
       int end = maxLen - number.size();
@@ -478,9 +478,9 @@ void CoordEditNumPad::setKFLogDegree( const int coord, const bool isLat )
       sec = abs(sec);
       posSec.sprintf("%02d", sec);
 
-      degreeBox->setNumber( posDeg );
-      minuteBox->setNumber( posMin );
-      secondBox->setNumber( posSec );
+      degreeBox->setText( posDeg );
+      minuteBox->setText( posMin );
+      secondBox->setText( posSec );
 
       // save initial values
       iniDegree = posDeg;
@@ -512,8 +512,8 @@ void CoordEditNumPad::setKFLogDegree( const int coord, const bool isLat )
           posMin.insert(0, "0");
         }
 
-      degreeBox->setNumber( posDeg );
-      minuteBox->setNumber( posMin );
+      degreeBox->setText( posDeg );
+      minuteBox->setText( posMin );
 
       // save initial values
       iniDegree = posDeg;
@@ -547,7 +547,7 @@ void CoordEditNumPad::setKFLogDegree( const int coord, const bool isLat )
             }
         }
 
-      degreeBox->setNumber( posDeg );
+      degreeBox->setText( posDeg );
 
       // save initial value
       iniDegree = posDeg;

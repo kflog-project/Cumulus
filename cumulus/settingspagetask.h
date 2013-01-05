@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2012 by Axel Pauli
+**   Copyright (c):  2007-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief Configuration settings for flight tasks.
  *
- * \date 2007-2012
+ * \date 2007-2013
  *
  * \version $Id$
  *
@@ -41,6 +41,11 @@
 #include <QDoubleSpinBox>
 
 #include "altitude.h"
+
+#ifdef USE_NUM_PAD
+class DoubleNumberEditor;
+class NumberEditor;
+#endif
 
 class SettingsPageTask : public QWidget
 {
@@ -75,8 +80,11 @@ private slots:
   // radio button of nt scheme was pressed
   void slot_buttonPressedNT( int newScheme );
 
-  // value inner spin box changed
+  // value of outer spin box changed
   void slot_outerSBChanged( double value );
+
+  // value of outer spin box changed
+  void slot_outerSBChanged( const QString& value );
 
   /** Opens the color chooser dialog for the target line */
   void slot_editTlColor();
@@ -92,13 +100,26 @@ private:
 
   // Cylinder widgets
   QGroupBox*      cylinderGroup;
-  QDoubleSpinBox* cylinderRadius; // Radius of cylinder task point in meter or feet
+
+#ifdef USE_NUM_PAD
+  /** Radius of cylinder task point in meter or feet. */
+  DoubleNumberEditor* cylinderRadius;
+#else
+  QDoubleSpinBox* cylinderRadius;
+#endif
 
   // Sector widgets
   QGroupBox*      sectorGroup;
+
+#ifdef USE_NUM_PAD
+  DoubleNumberEditor* innerSectorRadius; // inner sector radius of task point in meter or feet
+  DoubleNumberEditor* outerSectorRadius; // outer sector radius of task point in meter or feet
+  NumberEditor*       sectorAngle;       // 0-180 degrees
+#else
   QDoubleSpinBox* innerSectorRadius; // inner sector radius of task point in meter or feet
   QDoubleSpinBox* outerSectorRadius; // outer sector radius of task point in meter or feet
   QSpinBox*       sectorAngle;       // 0-180 degrees
+#endif
 
   // Drawing options
   QGroupBox* shapeGroup;

@@ -28,8 +28,10 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   QFrame( parent ),
   m_autoSip(true),
   m_setNumber(number),
-  m_intMaximum(INT_MAX),
-  m_intMinimum(INT_MIN),
+  m_intMaximum(false, INT_MAX),
+  m_intMinimum(false, INT_MIN),
+  m_doubleMaximum(false, 0.0),
+  m_doubleMinimum(false, 0.0),
   m_pressedButton( 0 )
 {
   setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
@@ -272,19 +274,43 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
 
 void NumberInputPad::slot_TextChanged( const QString& text )
 {
-  if( ! text.contains(".") )
-    {
-      // Check integer value against the allowed maximum.
-      bool ok;
-      int value = text.toInt( &ok );
+  // Check input as integer value against the allowed maximum/minimum.
+  bool ok;
+  int iValue = text.toInt( &ok );
 
-      if( ok && value > m_intMaximum )
+  if( ok )
+    {
+      if( m_intMaximum.first && iValue > m_intMaximum.second )
         {
           // Reset input to allowed maximum
-          m_editor->setText( QString::number(m_intMaximum) );
+          m_editor->setText( QString::number(m_intMaximum.second) );
+        }
+      else if( m_intMinimum.first && iValue < m_intMinimum.second )
+        {
+          // Reset input to allowed minimum
+          m_editor->setText( QString::number(m_intMinimum.second) );
         }
 
       emit valueChanged( m_editor->text().toInt() );
+    }
+
+  // Check value as double against the allowed maximum/minimum.
+  double dValue = text.toDouble( &ok );
+
+  if( ok )
+    {
+      if( m_doubleMaximum.first && dValue > m_doubleMaximum.second )
+        {
+          // Reset input to allowed maximum
+          m_editor->setText( QString::number(m_doubleMaximum.second) );
+        }
+      else if( m_doubleMinimum.first && dValue > m_doubleMinimum.second )
+        {
+          // Reset input to allowed minimum
+          m_editor->setText( QString::number(m_doubleMinimum.second) );
+        }
+
+      emit valueChanged( m_editor->text().toDouble() );
     }
 }
 

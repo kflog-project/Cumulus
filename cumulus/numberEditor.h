@@ -22,8 +22,8 @@
  *
  * \brief Number editor and display.
  *
- * This widget can be used to display a number in a QLabel and to edit it
- * by using an own number keypad.
+ * This widget can be used to display a text in a QLabel and to edit it
+ * by using an own text keypad.
  *
  * \date 2012-2013
  *
@@ -34,6 +34,7 @@
 #define NUMBER_EDITOR_H_
 
 #include <QLabel>
+#include <QPair>
 #include <QString>
 #include <QValidator>
 
@@ -57,18 +58,18 @@ class NumberEditor : public QLabel
 
   virtual ~NumberEditor();
 
-  void setNumber( const QString number )
+  void setText( const QString number )
   {
     m_number = number;
     setText();
   };
 
-  QString getNumber() const
+  QString getText() const
   {
     return m_number;
   };
 
-  QString number() const
+  QString text() const
   {
     return m_number;
   };
@@ -80,7 +81,7 @@ class NumberEditor : public QLabel
    */
   void setValue( const int value )
   {
-    setNumber( QString::number( value ) );
+    setText( QString::number( value ) );
   };
 
   /**
@@ -146,28 +147,80 @@ class NumberEditor : public QLabel
   };
 
   /**
-   * Sets the maximum input value.
+   * Sets the integer maximum input value.
    *
-   * \param maximum The new maximum input value
+   * \param maximum The integer maximum input value
    */
   void setMaximum( const int maximum )
   {
-    m_intMax = maximum;
+    m_intMax.first = true;
+    m_intMax.second = maximum;
   };
 
   /**
-   * Returns the maximum input value.
+   * Returns the integer maximum input value.
    *
-   * \return The new maximum input value
+   * \return The integer maximum input value
    */
-  int maximum() const
+  int maximum()
   {
-    return m_intMax;
+    return m_intMax.second;
   };
 
+  /**
+   * Returns the validity of the integer maximum value.
+   *
+   * \return The validity of the integer maximum value.
+   */
+  virtual bool maximumValid() const
+  {
+    return m_intMax.first;
+  };
 
   /**
-   * Sets the title of the number editor pad.
+   * Sets the integer minimum input value.
+   *
+   * \param minimum The new integer minimum input value
+   */
+  void setMinimum( const int minimum )
+  {
+    m_intMin.first = true;
+    m_intMin.second = minimum;
+  };
+
+  /**
+   * Returns the integer minimum input value.
+   *
+   * \return The integer minimum input value
+   */
+  int minimum() const
+  {
+    return m_intMin.second;
+  };
+
+  /**
+   * Returns the validity of the integer minimum value.
+   *
+   * \return The validity of the integer minimum value.
+   */
+  virtual bool minimumValid() const
+  {
+    return m_intMin.first;
+  };
+
+  /**
+   * Sets a minimum maximum range.
+   */
+  void setRange( int minimum, int maximum )
+  {
+    m_intMin.first = true;
+    m_intMin.second = minimum;
+    m_intMax.first = true;
+    m_intMax.second = maximum;
+  };
+
+  /**
+   * Sets the title of the text editor pad.
    *
    * \param title Title to be set in the editor pad.
    */
@@ -176,31 +229,31 @@ class NumberEditor : public QLabel
     m_title = title;
   };
 
- protected:
-
-   /**
-    * Handles mouse button presses.
-    */
-   void mousePressEvent( QMouseEvent* event );
-
- signals:
+  signals:
 
    void numberEdited( const QString& number );
 
    void valueChanged( int i );
 
- private slots:
+   void valueChanged( double d );
 
-  void slot_NumberEdited( const QString& number );
+  protected slots:
 
- private:
+   virtual void slot_NumberEdited( const QString& number );
+
+ protected:
+
+ /**
+  * Handles mouse button presses.
+  */
+  void mousePressEvent( QMouseEvent* event );
+
+  void showEvent( QShowEvent *event );
 
   void setText()
   {
     QLabel::setText( m_prefix + m_number + m_suffix );
   };
-
- private:
 
   NumberInputPad* m_nip;
 
@@ -215,7 +268,13 @@ class NumberEditor : public QLabel
   QValidator* m_validator;
   QString m_inputMask;
   int m_maxLength;
-  int m_intMax;
+
+  QPair<bool, int> m_intMax;
+  QPair<bool, int> m_intMin;
+
+  /** These pairs can be used in a derived class to manipulate them. */
+  QPair<bool, double> m_doubleMax;
+  QPair<bool, double> m_doubleMin;
 };
 
 #endif /* NUMBER_EDITOR_H_ */

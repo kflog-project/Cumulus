@@ -36,6 +36,7 @@
 #include <QtGui>
 
 #include <QLineEdit>
+#include <QPair>
 #include <QPushButton>
 #include <QString>
 #include <QValidator>
@@ -117,23 +118,87 @@ class NumberInputPad : public QFrame
   };
 
   /**
-   * Sets the maximum input value.
+   * Sets the maximum integer input value.
    *
    * \param maximum The new maximum input value
    */
-  void setMaximum( const int maximum )
+  void setIntMaximum( const int maximum )
   {
-    m_intMaximum = maximum;
+    m_intMaximum.first = true;
+    m_intMaximum.second = maximum;
   };
 
   /**
-   * Returns the maximum input value.
+   * Returns the maximum integer input value.
    *
-   * \return The new maximum input value
+   * \return The new maximum integer input value
    */
-  int maximum() const
+  QPair<bool, int> intMaximum() const
   {
     return m_intMaximum;
+  };
+
+  /**
+   * Sets the minimum integer input value.
+   *
+   * \param maximum The new minimum input value
+   */
+  void setIntMinimum( const int minimum )
+  {
+    m_intMinimum.first = true;
+    m_intMinimum.second = minimum;
+  };
+
+  /**
+   * Returns the minimum integer input value.
+   *
+   * \return The minimum integer input value
+   */
+  QPair<bool, int> intMinimum() const
+  {
+    return m_intMinimum;
+  };
+
+  /**
+   * Sets the maximum double input value.
+   *
+   * \param maximum The new maximum input value
+   */
+  void setDoubleMaximum( const int maximum )
+  {
+    m_doubleMaximum.first = true;
+    m_doubleMaximum.second = maximum;
+  };
+
+  /**
+   * Returns the maximum double input value.
+   *
+   * \return The new maximum double input value
+   */
+  QPair<bool, double> doubleMaximum() const
+  {
+    return m_doubleMaximum;
+  };
+
+  /**
+   * Sets the minimum double input value.
+   *
+   * \param maximum The new minimum input value
+   */
+  void setDoubleMinimum( const int minimum )
+  {
+    m_doubleMinimum.first = true;
+    m_doubleMinimum.second = minimum;
+  };
+
+  /**
+   * Returns the minimum double input value.
+   *
+   * \return The minimum integer input value
+   */
+  QPair<bool, double> doubleMinimum() const
+  {
+    return m_doubleMinimum;
   };
 
  protected:
@@ -154,6 +219,11 @@ class NumberInputPad : public QFrame
    * Emitted, if a new acceptable input is available.
    */
   void valueChanged( int i );
+
+  /**
+   * Emitted, if a new acceptable input is available.
+   */
+  void valueChanged( double d );
 
  private slots:
 
@@ -207,11 +277,17 @@ class NumberInputPad : public QFrame
   /** The set number to be edited*/
   QString m_setNumber;
 
-  /** The maximum allowed input value. */
-  int m_intMaximum;
+  /** The maximum allowed integer input value. */
+  QPair<bool, int> m_intMaximum;
 
-  /** The minimum allowed input value. */
-  int m_intMinimum;
+  /** The minimum allowed integer input value. */
+  QPair<bool, int> m_intMinimum;
+
+  /** The maximum allowed double input value. */
+  QPair<bool, double> m_doubleMaximum;
+
+  /** The minimum allowed double input value. */
+  QPair<bool, double> m_doubleMinimum;
 
   /** To remember the last pressed button */
   QPushButton* m_pressedButton;
