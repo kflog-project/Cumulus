@@ -353,11 +353,13 @@ numberpad {
 
     HEADERS += coordeditnumpad.h \
     					 doubleNumberEditor.h \
+    					 glidereditornumpad.h \
                numberEditor.h \
                numberInputPad.h
     
     SOURCES += coordeditnumpad.cpp \
     					 doubleNumberEditor.cpp \
+    					 glidereditornumpad.cpp \
                numberEditor.cpp \
                numberInputPad.cpp
 }

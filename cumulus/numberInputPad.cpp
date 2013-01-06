@@ -318,7 +318,7 @@ void NumberInputPad::slot_TextChanged( const QString& text )
           // Reset input to allowed maximum
           m_editor->setText( QString::number(m_doubleMaximum.second) );
         }
-      else if( m_doubleMinimum.first && dValue > m_doubleMinimum.second )
+      else if( m_doubleMinimum.first && dValue < m_doubleMinimum.second )
         {
           // Reset input to allowed minimum
           m_editor->setText( QString::number(m_doubleMinimum.second) );

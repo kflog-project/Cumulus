@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,11 +18,19 @@
 
 #include <QtGui>
 
-#include "flickcharm.h"
+#include "layout.h"
 #include "generalconfig.h"
 #include "settingspageglider.h"
+
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
+#ifdef USE_NUM_PAD
+#include  "glidereditornumpad.h"
+#else
 #include "glidereditor.h"
-#include "layout.h"
+#endif
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
 {
@@ -53,18 +61,18 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   cmdDel->setIconSize( QSize(IconSize, IconSize) );
   editrow->addWidget(cmdDel,1);
 
-  list = new GliderListWidget(this);
+  m_list = new GliderListWidget(this);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_list, QScroller::LeftMouseButtonGesture);
 #endif
 
 #ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+  flickCharm->activateOn(m_list);
 #endif
 
-  topLayout->addWidget(list, 10);
+  topLayout->addWidget(m_list, 10);
 
   connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
@@ -78,15 +86,19 @@ SettingsPageGlider::~SettingsPageGlider()
 
 void SettingsPageGlider::showEvent(QShowEvent *)
 {
-  list->setFocus();
+  m_list->setFocus();
 }
 
 /** Called when a new glider needs to be made. */
 void SettingsPageGlider::slot_new()
 {
-  GliderEditor *editor = new GliderEditor(this, 0);
-  connect(editor, SIGNAL(newGlider(Glider*)), list, SLOT(slot_Added(Glider *)));
+#ifdef USE_NUM_PAD
+  GliderEditorNumPad *editor = new GliderEditorNumPad(this, 0 );
+#else
+  GliderEditor *editor = new GliderEditor(this, 0 );
+#endif
 
+  connect(editor, SIGNAL(newGlider(Glider*)), m_list, SLOT(slot_Added(Glider *)));
   editor->setVisible( true );
 }
 
@@ -94,7 +106,7 @@ void SettingsPageGlider::slot_new()
 /** Called when the selected glider needs must be opened in the editor */
 void SettingsPageGlider::slot_edit()
 {
-  Glider *selectedGlider = list->getSelectedGlider();
+  Glider *selectedGlider = m_list->getSelectedGlider();
 
   if( selectedGlider == 0 )
     {
@@ -102,16 +114,20 @@ void SettingsPageGlider::slot_edit()
       return;
     }
 
+#ifdef USE_NUM_PAD
+  GliderEditorNumPad *editor = new GliderEditorNumPad(this, selectedGlider );
+#else
   GliderEditor *editor = new GliderEditor(this, selectedGlider );
-  connect(editor, SIGNAL(editedGlider(Glider *)), list, SLOT(slot_Edited(Glider *)));
+#endif
 
+  connect(editor, SIGNAL(editedGlider(Glider *)), m_list, SLOT(slot_Edited(Glider *)));
   editor->setVisible( true );
 }
 
 /** Called when the selected glider should be deleted from the catalog */
 void SettingsPageGlider::slot_delete()
 {
-  Glider *glider = list->getSelectedGlider();
+  Glider *glider = m_list->getSelectedGlider();
 
   if( !glider )
     {
@@ -137,19 +153,19 @@ void SettingsPageGlider::slot_delete()
 
   if( mb.exec() == QMessageBox::Yes )
     {
-      list->slot_Deleted( glider );
+      m_list->slot_Deleted( glider );
     }
 }
 
-/** Called to fill the tree list */
+/** Called to fill the tree m_list */
 void SettingsPageGlider::slot_load()
 {
-  list->fillList();
+  m_list->fillList();
 }
 
 void SettingsPageGlider::slot_save()
 {
-  list->save();
+  m_list->save();
 }
 
 /* Called to ask is confirmation on the close is needed. */
@@ -157,7 +173,7 @@ void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
 {
   /* set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
     _changed, because that way we might erase a warning flag set by another page! */
-  if( list->hasChanged() )
+  if( m_list->hasChanged() )
     {
       warn = true;
       warnings.append( tr( "The Glider list" ) );

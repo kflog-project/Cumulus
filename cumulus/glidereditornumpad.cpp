@@ -1,32 +1,33 @@
 /***********************************************************************
  **
- **   glidereditor.cpp
+ **   glidereditornumpad.cpp
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
+ **   $Id: glidereditor.cpp 5471 2012-08-07 10:58:09Z axel $
  **
  ***********************************************************************/
 
 #include <QtGui>
 
+#include "doubleNumberEditor.h"
 #include "generalconfig.h"
-#include "glidereditor.h"
+#include "glidereditornumpad.h"
 #include "layout.h"
-#include "polardialog.h"
-#include "polar.h"
 #include "mapview.h"
 #include "mainwindow.h"
+#include "numberEditor.h"
+#include "polar.h"
+#include "polardialog.h"
 #include "speed.h"
-#include "varspinbox.h"
 
 #ifdef FLICK_CHARM
 #include "flickcharm.h"
@@ -34,9 +35,9 @@
 
 extern MapView *_globalMapView;
 
-GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
+GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   QWidget(parent),
-  gliderCreated(false)
+  m_gliderCreated(false)
 {
   setWindowFlags(Qt::Tool);
   setWindowModality( Qt::WindowModal );
@@ -48,21 +49,21 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
 
   // save current horizontal/vertical speed unit. This unit must be considered
   // during storage.
-  currHSpeedUnit = Speed::getHorizontalUnit();
-  currVSpeedUnit = Speed::getVerticalUnit();
+  m_currHSpeedUnit = Speed::getHorizontalUnit();
+  m_currVSpeedUnit = Speed::getVerticalUnit();
 
   if (glider == 0)
     {
       setWindowTitle(tr("New Glider"));
-      isNew = true;
+      m_isNew = true;
     }
   else
     {
       setWindowTitle(tr("Edit Glider"));
-      isNew = false;
+      m_isNew = false;
     }
 
-  _glider = glider;
+  m_glider = glider;
 
   QHBoxLayout* topLayout = new QHBoxLayout(this);
   QGridLayout* itemsLayout = new QGridLayout;
@@ -70,7 +71,7 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->setVerticalSpacing(10);
   int row = 0;
 
-  if( isNew )
+  if( m_isNew )
     {
       itemsLayout->addWidget(new QLabel(tr("Glider Pool:"), this), row, 0);
       comboType = new QComboBox(this);
@@ -100,10 +101,10 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(edtGReg, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
-  comboSeats = new QComboBox(this);
-  comboSeats->addItem("1");
-  comboSeats->addItem("2");
-  itemsLayout->addWidget(comboSeats, row, 3);
+  m_seats = new QPushButton( this );
+  itemsLayout->addWidget(m_seats, row, 3);
+
+  connect( m_seats, SIGNAL(pressed()), SLOT(slot_changeSeats()) );
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 0);
@@ -111,13 +112,16 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(edtGCall, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);
-  spinWingArea = new QDoubleSpinBox(this);
-  spinWingArea->setRange(0.0, 100.0);
-  spinWingArea->setSingleStep(1.0);
+
+  m_dneWingArea = new DoubleNumberEditor(this);
+  m_dneWingArea->setDecimalVisible( true );
+  m_dneWingArea->setPmVisible( false );
+  m_dneWingArea->setMaxLength(7);
+  //m_dneWingArea->setRange(0.0, 100.0);
+  m_dneWingArea->setDecimals( 2 );
   QChar tsChar(Qt::Key_twosuperior);
-  spinWingArea->setSuffix( QString(" m") + tsChar );
-  VarSpinBox* hspin = new VarSpinBox(spinWingArea);
-  itemsLayout->addWidget(hspin, row, 3);
+  m_dneWingArea->setSuffix( QString(" m") + tsChar );
+  itemsLayout->addWidget(m_dneWingArea, row, 3);
   row++;
 
   itemsLayout->setRowMinimumHeight(row++, 10);
@@ -128,140 +132,118 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   int srow = 0;
 
   spinboxLayout->addWidget(new QLabel("v1:", this), srow, 0);
-  spinV1 = new QDoubleSpinBox(this);
-  spinV1->setObjectName("v1");
-  spinV1->setRange(0.0, 250.0);
-  spinV1->setSingleStep(1.0);
-  spinV1->setButtonSymbols(QSpinBox::NoButtons);
-  spinV1->setSuffix( " " + Speed::getHorizontalUnitText() );
-  spinboxLayout->addWidget(spinV1, srow, 1);
+
+  m_dneV1 = new DoubleNumberEditor(this);
+  m_dneV1->setDecimalVisible( true );
+  m_dneV1->setPmVisible( false );
+  m_dneV1->setMaxLength(5);
+  m_dneV1->setRange(0.0, 250.0);
+  m_dneV1->setDecimals( 1 );
+  m_dneV1->setSuffix( " " + Speed::getHorizontalUnitText() );
+  spinboxLayout->addWidget(m_dneV1, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w1:", this), srow, 2);
-  spinW1 = new QDoubleSpinBox(this);
-  spinW1->setObjectName("w1");
 
-  if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
-    {
-      spinW1->setRange(-25.0, 0);
-      spinW1->setSingleStep(0.01);
-    }
-  else
-    {
-      spinW1->setRange(-1000.0, 0);
-      spinW1->setSingleStep(2.0);
-    }
+  m_dneW1 = new DoubleNumberEditor(this);
+  m_dneW1->setDecimalVisible( true );
+  m_dneW1->setPmVisible( true );
+  m_dneW1->setMaxLength(7);
+  m_dneW1->setDecimals( 1 );
+  m_dneW1->setSuffix( " " + Speed::getVerticalUnitText() );
 
-  spinW1->setButtonSymbols(QSpinBox::NoButtons);
-  spinW1->setSuffix( " " + Speed::getVerticalUnitText() );
-  spinboxLayout->addWidget(spinW1, srow, 3);
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "-[0-9]+\\.?[0-9]*" ), this );
+  m_dneW1->setValidator(eValidator);
+
+  spinboxLayout->addWidget(m_dneW1, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Empty weight:"), this), srow, 4);
-  emptyWeight = new QSpinBox(this);
-  emptyWeight->setObjectName("emptyWeight");
-  emptyWeight->setRange(0, 1000);
-  emptyWeight->setSingleStep(5);
-  emptyWeight->setButtonSymbols(QSpinBox::NoButtons);
+
+  emptyWeight = new NumberEditor( this );
+  emptyWeight->setDecimalVisible( false );
+  emptyWeight->setPmVisible( false );
+  emptyWeight->setMaxLength(4);
   emptyWeight->setSuffix(" kg");
+  emptyWeight->setRange( 0, 9999 );
   spinboxLayout->addWidget(emptyWeight, srow, 5);
   srow++;
 
   spinboxLayout->addWidget(new QLabel("v2", this), srow, 0);
-  spinV2 = new QDoubleSpinBox(this);
-  spinV2->setRange(0.0, 250.0);
-  spinV2->setSingleStep(1.0);
-  spinV2->setButtonSymbols(QSpinBox::NoButtons);
-  spinV2->setSuffix( " " + Speed::getHorizontalUnitText() );
-  spinboxLayout->addWidget(spinV2, srow, 1);
+
+  m_dneV2 = new DoubleNumberEditor(this);
+  m_dneV2->setDecimalVisible( true );
+  m_dneV2->setPmVisible( false );
+  m_dneV2->setMaxLength(5);
+  m_dneV2->setRange(0.0, 250.0);
+  m_dneV2->setDecimals( 1 );
+  m_dneV2->setSuffix( " " + Speed::getHorizontalUnitText() );
+  spinboxLayout->addWidget(m_dneV2, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w2:", this), srow, 2);
-  spinW2 = new QDoubleSpinBox(this);
 
-  if( Speed::getVerticalUnit() !=  Speed::feetPerMinute )
-    {
-      spinW2->setRange(-25.0, 0);
-      spinW2->setSingleStep(0.01);
-    }
-  else
-    {
-      spinW2->setRange(-1000.0, 0);
-      spinW2->setSingleStep(2.0);
-    }
+  m_dneW2 = new DoubleNumberEditor(this);
+  m_dneW2->setDecimalVisible( true );
+  m_dneW2->setPmVisible( true );
+  m_dneW2->setMaxLength(7);
+  m_dneW2->setDecimals( 1 );
+  m_dneW2->setSuffix( " " + Speed::getVerticalUnitText() );
 
-  spinW2->setButtonSymbols(QSpinBox::NoButtons);
-  spinW2->setSuffix( " " + Speed::getVerticalUnitText() );
-  spinboxLayout->addWidget(spinW2, srow, 3);
+  eValidator = new QRegExpValidator( QRegExp( "-[0-9]+\\.?[0-9]*" ), this );
+  m_dneW2->setValidator(eValidator);
+
+  spinboxLayout->addWidget(m_dneW2, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Added load:"), this), srow, 4);
-  addedLoad = new QSpinBox(this);
-  addedLoad->setObjectName("addedLoad");
-  addedLoad->setRange(0, 1000);
-  addedLoad->setSingleStep(5);
-  addedLoad->setButtonSymbols(QSpinBox::NoButtons);
+
+  addedLoad = new NumberEditor( this );
+  addedLoad->setDecimalVisible( false );
+  addedLoad->setPmVisible( false );
+  addedLoad->setMaxLength(4);
   addedLoad->setSuffix(" kg");
+  addedLoad->setRange( 0, 9999 );
   spinboxLayout->addWidget(addedLoad, srow, 5);
   srow++;
 
   spinboxLayout->addWidget(new QLabel("v3:", this), srow, 0);
-  spinV3 = new QDoubleSpinBox(this);
-  spinV3->setRange(0.0, 250.0);
-  spinV3->setSingleStep(1.0);
-  spinV3->setButtonSymbols(QSpinBox::NoButtons);
-  spinV3->setSuffix( " " + Speed::getHorizontalUnitText() );
-  spinboxLayout->addWidget(spinV3, srow, 1);
+
+  m_dneV3 = new DoubleNumberEditor(this);
+  m_dneV3->setDecimalVisible( true );
+  m_dneV3->setPmVisible( false );
+  m_dneV3->setMaxLength(5);
+  m_dneV3->setRange(0.0, 250.0);
+  m_dneV3->setDecimals( 1 );
+  m_dneV3->setSuffix( " " + Speed::getHorizontalUnitText() );
+  spinboxLayout->addWidget(m_dneV3, srow, 1);
 
   spinboxLayout->addWidget(new QLabel("w3:", this), srow, 2);
-  spinW3 = new QDoubleSpinBox(this);
 
-  if( Speed::getVerticalUnit() != Speed::feetPerMinute )
-    {
-      spinW3->setRange(-25.0, 0);
-      spinW3->setSingleStep(0.01);
-    }
-  else
-    {
-      spinW3->setRange(-1000.0, 0);
-      spinW3->setSingleStep(2.0);
-    }
+  m_dneW3 = new DoubleNumberEditor(this);
+  m_dneW3->setDecimalVisible( true );
+  m_dneW3->setPmVisible( true );
+  m_dneW3->setMaxLength(7);
+  m_dneW3->setDecimals( 1 );
+  m_dneW3->setSuffix( " " + Speed::getVerticalUnitText() );
 
-  spinW3->setButtonSymbols(QSpinBox::NoButtons);
-  spinW3->setSuffix( " " + Speed::getVerticalUnitText() );
-  spinboxLayout->addWidget(spinW3, srow, 3);
+  eValidator = new QRegExpValidator( QRegExp( "-[0-9]+\\.?[0-9]*" ), this );
+  m_dneW3->setValidator(eValidator);
+
+  spinboxLayout->addWidget(m_dneW3, srow, 3);
 
   spinboxLayout->addWidget(new QLabel(tr("Max. water:"), this), srow, 4);
-  spinWater = new QSpinBox(this);
-  spinWater->setObjectName("spinWater");
-  spinWater->setRange(0, 1000);
-  spinWater->setSingleStep(5);
-  spinWater->setButtonSymbols(QSpinBox::NoButtons);
-  spinWater->setSuffix(" l");
-  spinboxLayout->addWidget(spinWater, srow++, 5);
+
+  addedWater = new NumberEditor( this );
+  addedWater->setDecimalVisible( false );
+  addedWater->setPmVisible( false );
+  addedWater->setMaxLength(4);
+  addedWater->setSuffix(" l");
+  addedWater->setRange( 0, 9999 );
+  spinboxLayout->addWidget(addedWater, srow++, 5);
   spinboxLayout->setColumnStretch(6, 10);
   spinboxLayout->setRowMinimumHeight(srow++, 20);
-
-  // take a bold font for the plus and minus sign
-  QFont bFont = font();
-  bFont.setBold(true);
-
-  plus  = new QPushButton("+");
-  minus = new QPushButton("-");
-
-  plus->setToolTip( tr("Increase number value") );
-  minus->setToolTip( tr("Decrease number value") );
-
-  plus->setFont(bFont);
-  minus->setFont(bFont);
-
-  // The buttons have no focus policy to avoid a focus change during click of them.
-  plus->setFocusPolicy(Qt::NoFocus);
-  minus->setFocusPolicy(Qt::NoFocus);
 
   buttonShow = new QPushButton(tr("Show Polar"));
 
   QHBoxLayout* buttonRow = new QHBoxLayout;
   buttonRow->setSpacing(0);
-  buttonRow->addWidget( plus );
-  buttonRow->addSpacing( 20 );
-  buttonRow->addWidget( minus );
   buttonRow->addStretch( 10 );
   buttonRow->addWidget( buttonShow );
 
@@ -272,14 +254,12 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   itemsLayout->setColumnStretch( 1, 10 );
   itemsLayout->setColumnStretch( 4, 20 );
 
-  if( isNew )
+  if( m_isNew )
     {
       connect (comboType, SIGNAL(activated(const QString&)),
                this, SLOT(slotActivated(const QString&)));
     }
 
-  connect(plus, SIGNAL(pressed()), this, SLOT(slotIncrementBox()));
-  connect(minus, SIGNAL(pressed()), this, SLOT(slotDecrementBox()));
   connect(buttonShow, SIGNAL(pressed()), this, SLOT(slotButtonShow()));
 
   // Add ok and cancel buttons
@@ -307,7 +287,7 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   topLayout->addLayout(itemsLayout);
   topLayout->addLayout(buttonBox);
 
-  if (isNew)
+  if (m_isNew)
     {
       readPolarData();
     }
@@ -319,31 +299,22 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
   show();
 }
 
-GliderEditor::~GliderEditor()
+GliderEditorNumPad::~GliderEditorNumPad()
 {
 }
 
-void GliderEditor::showEvent( QShowEvent *event )
+void GliderEditorNumPad::showEvent( QShowEvent *event )
 {
   Q_UNUSED(event)
-
-  int height = buttonShow->height();
-
-  // Take the current height of the widget to make the buttons symmetrically.
-  plus->setMaximumSize( height, height );
-  plus->setMinimumSize( height, height );
-
-  minus->setMaximumSize( height, height );
-  minus->setMinimumSize( height, height );
 }
 
-Polar* GliderEditor::getPolar()
+Polar* GliderEditorNumPad::getPolar()
 {
   int pos = comboType->currentIndex();
 
-  if ((pos >= 0) && (pos < _polars.count()))
+  if ((pos >= 0) && (pos < m_polars.count()))
     {
-      return &(_polars[pos]);
+      return &(m_polars[pos]);
     }
   else
     {
@@ -352,72 +323,72 @@ Polar* GliderEditor::getPolar()
 }
 
 /** Called to initiate loading of the configuration file. */
-void GliderEditor::load()
+void GliderEditorNumPad::load()
 {
-  if (_glider)
+  if (m_glider)
     {
-      edtGType->setText(_glider->type());
-      edtGReg->setText(_glider->registration());
-      edtGCall->setText(_glider->callSign());
-      spinWingArea->setValue( _glider->polar()->wingArea() );
-      spinWater->setValue(_glider->maxWater());
+      edtGType->setText(m_glider->type());
+      edtGReg->setText(m_glider->registration());
+      edtGCall->setText(m_glider->callSign());
+      m_dneWingArea->setValue( m_glider->polar()->wingArea() );
+      addedWater->setValue(m_glider->maxWater());
 
-      if (_glider->seats() == Glider::doubleSeater)
+      if (m_glider->seats() == Glider::doubleSeater)
         {
-          comboSeats->setCurrentIndex(1);
+          m_seats->setText("2");
         }
       else
         {
-          comboSeats->setCurrentIndex(0);
+          m_seats->setText("1");
         }
 
-      spinV1->setValue( _glider->polar()->v1().getHorizontalValue() );
-      spinV2->setValue( _glider->polar()->v2().getHorizontalValue() );
-      spinV3->setValue( _glider->polar()->v3().getHorizontalValue() );
+      m_dneV1->setValue( m_glider->polar()->v1().getHorizontalValue() );
+      m_dneV2->setValue( m_glider->polar()->v2().getHorizontalValue() );
+      m_dneV3->setValue( m_glider->polar()->v3().getHorizontalValue() );
 
-      spinW1->setValue( _glider->polar()->w1().getVerticalValue() );
-      spinW2->setValue( _glider->polar()->w2().getVerticalValue() );
-      spinW3->setValue( _glider->polar()->w3().getVerticalValue() );
+      m_dneW1->setValue( m_glider->polar()->w1().getVerticalValue() );
+      m_dneW2->setValue( m_glider->polar()->w2().getVerticalValue() );
+      m_dneW3->setValue( m_glider->polar()->w3().getVerticalValue() );
 
-      emptyWeight->setValue((int) _glider->polar()->emptyWeight());
-      double load = _glider->polar()->grossWeight() -
-                    _glider->polar()->emptyWeight();
+      emptyWeight->setValue((int) m_glider->polar()->emptyWeight());
+      double load = m_glider->polar()->grossWeight() -
+                    m_glider->polar()->emptyWeight();
 
       addedLoad->setValue((int) load);
 
       // Save load values to avoid rounding errors during save
-      currV1 = spinV1->value();
-      currV2 = spinV2->value();
-      currV3 = spinV3->value();
+      m_currV1 = m_dneV1->value();
+      m_currV2 = m_dneV2->value();
+      m_currV3 = m_dneV3->value();
 
-      currW1 = spinW1->value();
-      currW1 = spinW2->value();
-      currW1 = spinW3->value();
+      m_currW1 = m_dneW1->value();
+      m_currW1 = m_dneW2->value();
+      m_currW1 = m_dneW3->value();
     }
 }
 
 /** called to initiate saving to the configuration file */
-void GliderEditor::save()
+void GliderEditorNumPad::save()
 {
-  if( !_glider )
+  if( !m_glider )
     {
-      _glider = new Glider;
+      m_glider = new Glider;
     }
 
   // Note: If the following strings contains a semicolon it must be replaced
   // by another character. Otherwise storing will fail.
-  _glider->setType(edtGType->text().trimmed().replace(";", ","));
-  _glider->setRegistration(edtGReg->text().trimmed().replace(";", ","));
-  _glider->setCallSign(edtGCall->text().trimmed().replace(";", ","));
-  _glider->setMaxWater(spinWater->value());
+  m_glider->setType(edtGType->text().trimmed().replace(";", ","));
+  m_glider->setRegistration(edtGReg->text().trimmed().replace(";", ","));
+  m_glider->setCallSign(edtGCall->text().trimmed().replace(";", ","));
+  m_glider->setMaxWater(addedWater->value());
 
-  if (comboSeats->currentIndex() == 1)
+  if (m_seats->text() == "2" )
     {
-      _glider->setSeats(Glider::doubleSeater);
+      m_glider->setSeats(Glider::doubleSeater);
     }
   else
     {
-      _glider->setSeats(Glider::singleSeater);
+      m_glider->setSeats(Glider::singleSeater);
     }
 
   Speed V1, V2, V3, W1, W2, W3;
@@ -427,97 +398,97 @@ void GliderEditor::save()
   Speed::speedUnit vSpeedUnit = Speed::getVerticalUnit();
 
   // set units valid during load of speeds
-  Speed::setHorizontalUnit( currHSpeedUnit );
-  Speed::setVerticalUnit( currVSpeedUnit );
+  Speed::setHorizontalUnit( m_currHSpeedUnit );
+  Speed::setVerticalUnit( m_currVSpeedUnit );
 
   // Save values only, if they were changed to avoid rounding errors.
-  if( spinV1->value() != currV1 )
+  if( m_dneV1->value() != m_currV1 )
     {
-      V1.setHorizontalValue(spinV1->value());
+      V1.setHorizontalValue(m_dneV1->value());
     }
   else
     {
-      V1.setHorizontalValue( _glider->polar()->v1().getHorizontalValue() );
+      V1.setHorizontalValue( m_glider->polar()->v1().getHorizontalValue() );
     }
 
-  if( spinV2->value() != currV2 )
+  if( m_dneV2->value() != m_currV2 )
     {
-       V2.setHorizontalValue(spinV2->value());
+       V2.setHorizontalValue(m_dneV2->value());
     }
   else
     {
-      V2.setHorizontalValue( _glider->polar()->v2().getHorizontalValue() );
+      V2.setHorizontalValue( m_glider->polar()->v2().getHorizontalValue() );
     }
 
-  if( spinV3->value() != currV3 )
+  if( m_dneV3->value() != m_currV3 )
      {
-        V3.setHorizontalValue(spinV3->value());
+        V3.setHorizontalValue(m_dneV3->value());
      }
   else
     {
-      V3.setHorizontalValue( _glider->polar()->v3().getHorizontalValue() );
+      V3.setHorizontalValue( m_glider->polar()->v3().getHorizontalValue() );
     }
 
-  if( spinW1->value() != currW1 )
+  if( m_dneW1->value() != m_currW1 )
      {
-        W1.setVerticalValue(spinW1->value());
+        W1.setVerticalValue(m_dneW1->value());
      }
   else
     {
-      W1.setVerticalValue( _glider->polar()->w1().getVerticalValue() );
+      W1.setVerticalValue( m_glider->polar()->w1().getVerticalValue() );
     }
 
-  if( spinW2->value() != currW2 )
+  if( m_dneW2->value() != m_currW2 )
      {
-        W2.setVerticalValue(spinW2->value());
+        W2.setVerticalValue(m_dneW2->value());
      }
   else
     {
-      W2.setVerticalValue( _glider->polar()->w2().getVerticalValue() );
+      W2.setVerticalValue( m_glider->polar()->w2().getVerticalValue() );
     }
 
-  if( spinW3->value() != currW3 )
+  if( m_dneW3->value() != m_currW3 )
      {
-        W3.setVerticalValue(spinW3->value());
+        W3.setVerticalValue(m_dneW3->value());
      }
   else
     {
-      W3.setVerticalValue( _glider->polar()->w3().getVerticalValue() );
+      W3.setVerticalValue( m_glider->polar()->w3().getVerticalValue() );
     }
 
   // restore current speed units.
   Speed::setHorizontalUnit( hSpeedUnit );
   Speed::setVerticalUnit( vSpeedUnit );
 
-  // qDebug("_polar->emptyWeight() %f  _polar->grossWeight() %f",
-  //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
-  Polar polar( _glider->type(),
+  // qDebug("m_polar->emptyWeight() %f  m_polar->grossWeight() %f",
+  //         (float)m_glider->polar()->emptyWeight(),  (float)m_glider->polar()->grossWeight() );
+  Polar polar( m_glider->type(),
                V1, W1, V2, W2, V3, W3,
                0.0,
-               spinWingArea->value(),
+               m_dneWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );
 
-  _glider->setPolar( polar );
+  m_glider->setPolar( polar );
 
   // emit glider object to GliderListWidget
-  if (isNew)
+  if (m_isNew)
     {
-      emit newGlider(_glider);
+      emit newGlider(m_glider);
     }
   else
     {
-      emit editedGlider(_glider);
+      emit editedGlider(m_glider);
     }
 
-  isNew = false;
+  m_isNew = false;
   // ownership of glider object is passed to GliderListWidget
-  gliderCreated = false;
+  m_gliderCreated = false;
 }
 
-void GliderEditor::readPolarData()
+void GliderEditorNumPad::readPolarData()
 {
-  // qDebug ("GliderEditor::readPolarData ");
+  // qDebug ("GliderEditorNumPad::readPolarData ");
 
 #warning "location of glider.pol file is CUMULUS_ROOT/etc"
 
@@ -589,19 +560,19 @@ void GliderEditor::readPolarData()
           polar.setMaxWater(list[11].toInt());
           polar.setSeats(list[12].toInt());
 
-          _polars.append( polar );
+          m_polars.append( polar );
         }
 
       file.close();
 
-      if( _polars.size() )
+      if( m_polars.size() )
         {
           // sort polar data list according to their names
-          qSort( _polars.begin(), _polars.end(), Polar::lessThan );
+          qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
 
-          for( int i = 0; i < _polars.size(); i++ )
+          for( int i = 0; i < m_polars.size(); i++ )
             {
-              comboType->addItem( _polars[i].name() );
+              comboType->addItem( m_polars[i].name() );
             }
         }
 
@@ -654,7 +625,7 @@ void GliderEditor::readPolarData()
               w3.setMps(list[7].toDouble());
               pol=new Polar(this, glidertype,v1,w1,v2,w2,v3,w3,0.0,0.0,0.0,maxgross);
               pol->setMaxWater(maxwater);
-              _polars.append(pol);
+              m_polars.append(pol);
               break;
             }
         }
@@ -665,72 +636,84 @@ void GliderEditor::readPolarData()
 }
 
 /** called when a glider type has been selected */
-void GliderEditor::slotActivated(const QString& type)
+void GliderEditorNumPad::slotActivated(const QString& type)
 {
-  if( !_glider )
+  if( !m_glider )
     {
-      _glider = new Glider();
-      gliderCreated = true;
+      m_glider = new Glider();
+      m_gliderCreated = true;
     }
 
   edtGType->setText( type );
-  _glider->setType( type );
+  m_glider->setType( type );
 
-  _polar = getPolar();
+  m_polar = getPolar();
 
-  if( _polar )
+  if( m_polar )
     {
-      _glider->setPolar( *_polar );
+      m_glider->setPolar( *m_polar );
 
-      spinWingArea->setValue( _polar->wingArea() );
-      spinV1->setValue( _polar->v1().getHorizontalValue() );
-      spinW1->setValue( _polar->w1().getVerticalValue() );
-      spinV2->setValue( _polar->v2().getHorizontalValue() );
-      spinW2->setValue( _polar->w2().getVerticalValue() );
-      spinV3->setValue( _polar->v3().getHorizontalValue() );
-      spinW3->setValue( _polar->w3().getVerticalValue() );
+      m_dneWingArea->setValue( m_polar->wingArea() );
+      m_dneV1->setValue( m_polar->v1().getHorizontalValue() );
+      m_dneW1->setValue( m_polar->w1().getVerticalValue() );
+      m_dneV2->setValue( m_polar->v2().getHorizontalValue() );
+      m_dneW2->setValue( m_polar->w2().getVerticalValue() );
+      m_dneV3->setValue( m_polar->v3().getHorizontalValue() );
+      m_dneW3->setValue( m_polar->w3().getVerticalValue() );
 
-      emptyWeight->setValue( (int) _polar->emptyWeight() );
-      double load = _polar->grossWeight() - _polar->emptyWeight();
+      emptyWeight->setValue( (int) m_polar->emptyWeight() );
+      double load = m_polar->grossWeight() - m_polar->emptyWeight();
       addedLoad->setValue( (int) load );
 
-      spinWater->setValue( _polar->maxWater() );
+      addedWater->setValue( m_polar->maxWater() );
 
-      if( _polar->seats() == 2 )
+      if( m_polar->seats() == 2 )
         {
-          comboSeats->setCurrentIndex( 1 );
+          m_seats->setText( "2" );
         }
       else
         {
-          comboSeats->setCurrentIndex( 0 );
+          m_seats->setText( "1" );
         }
     }
 }
 
-void GliderEditor::slotButtonShow()
+void GliderEditorNumPad::slotButtonShow()
 {
   // we create a polar object on the fly to allow test of changed polar values without saving
   Speed V1, V2, V3, W1, W2, W3;
-  V1.setHorizontalValue(spinV1->value());
-  V2.setHorizontalValue(spinV2->value());
-  V3.setHorizontalValue(spinV3->value());
+  V1.setHorizontalValue(m_dneV1->value());
+  V2.setHorizontalValue(m_dneV2->value());
+  V3.setHorizontalValue(m_dneV3->value());
 
-  W1.setVerticalValue(spinW1->value());
-  W2.setVerticalValue(spinW2->value());
-  W3.setVerticalValue(spinW3->value());
+  W1.setVerticalValue(m_dneW1->value());
+  W2.setVerticalValue(m_dneW2->value());
+  W3.setVerticalValue(m_dneW3->value());
 
   Polar polar( edtGType->text(),
                V1, W1, V2, W2, V3, W3, 0.0,
-               spinWingArea->value(),
+               m_dneWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );
 
-  polar.setWater(spinWater->value(), 0);
+  polar.setWater(addedWater->value(), 0);
   PolarDialog* dlg = new PolarDialog( polar, this );
   dlg->setVisible(true);
 }
 
-void GliderEditor::accept()
+void GliderEditorNumPad::slot_changeSeats()
+{
+  if( m_seats->text() == "1" )
+    {
+      m_seats->setText( "2" );
+    }
+  else if( m_seats->text() == "2" )
+    {
+      m_seats->setText( "1" );
+    }
+}
+
+void GliderEditorNumPad::accept()
 {
   edtGType->setText(edtGType->text().trimmed()); //remove spaces
   edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
@@ -772,65 +755,15 @@ void GliderEditor::accept()
   mb.exec();
 }
 
-void GliderEditor::reject()
+void GliderEditorNumPad::reject()
 {
   // @AP: delete glider, if it was allocated in this class and not
   // emitted in accept method to avoid a memory leak.
-  if (gliderCreated && _glider)
+  if (m_gliderCreated && m_glider)
     {
-      delete _glider;
-      _glider = 0;
+      delete m_glider;
+      m_glider = 0;
     }
 
   QWidget::close();
-}
-
-void GliderEditor::slotIncrementBox()
-{
-  if( ! plus->isDown() )
-    {
-      return;
-    }
-
-  // Look which spin box has the focus.
-  QAbstractSpinBox* spinBoxList[] = { spinV1, spinV2, spinV3, spinW1, spinW2, spinW3,
-                                      emptyWeight, addedLoad, spinWater };
-
-  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
-    {
-      if( QApplication::focusWidget() == spinBoxList[i] )
-        {
-          spinBoxList[i]->stepUp();
-          spinBoxList[i]->setFocus();
-
-          // Start repetition timer, to check, if button is longer pressed.
-           QTimer::singleShot(250, this, SLOT(slotIncrementBox()));
-          return;
-        }
-    }
-}
-
-void GliderEditor::slotDecrementBox()
-{
-  if( ! minus->isDown() )
-    {
-      return;
-    }
-
-  // Look which spin box has the focus.
-  QAbstractSpinBox* spinBoxList[] = { spinV1, spinV2, spinV3, spinW1, spinW2, spinW3,
-                                      emptyWeight, addedLoad, spinWater };
-
-  for( uint i = 0; i < (sizeof(spinBoxList) / sizeof(spinBoxList[0])); i++ )
-    {
-      if( QApplication::focusWidget() == spinBoxList[i] )
-        {
-          spinBoxList[i]->stepDown();
-          spinBoxList[i]->setFocus();
-
-          // Start repetition timer, to check, if button is longer pressed.
-          QTimer::singleShot(250, this, SLOT(slotDecrementBox()));
-          return;
-        }
-    }
 }

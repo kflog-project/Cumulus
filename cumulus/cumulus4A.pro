@@ -349,12 +349,14 @@ numberpad {
     DEFINES += USE_NUM_PAD
 
     HEADERS += coordeditnumpad.h \
-               doubleNumberEditor.h \
+    					 doubleNumberEditor.h \
+    					 glidereditornumpad.h \
                numberEditor.h \
                numberInputPad.h
     
     SOURCES += coordeditnumpad.cpp \
-               doubleNumberEditor.cpp \
+    					 doubleNumberEditor.cpp \
+    					 glidereditornumpad.cpp \
                numberEditor.cpp \
                numberInputPad.cpp
 }

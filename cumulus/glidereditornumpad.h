@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   glidereditor.h
+**   glidereditornumpad.h
 **
 **   This file is part of Cumulus.
 **
@@ -12,12 +12,12 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**  $Id$
+**  $Id: glidereditor.h 4836 2012-01-18 21:51:04Z axel $
 **
 ***********************************************************************/
 
 /**
- * \class GliderEditor
+ * \class GliderEditorNumPad
  *
  * \author Eggert Ehmke, Axel Pauli
  *
@@ -25,48 +25,49 @@
  *
  * \date 2002-2013
  *
- * \version $Id$
+ * \version $Id: glidereditor.h 4836 2012-01-18 21:51:04Z axel $
  */
 
-#ifndef GLIDER_EDITOR_H
-#define GLIDER_EDITOR_H
+#ifndef GLIDER_EDITOR_NUMPAD_H
+#define GLIDER_EDITOR_NUMPAD_H
 
 #include <QWidget>
 
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPushButton>
-#include <QSpinBox>
-#include <QDoubleSpinBox>
 #include <QList>
 
 #include "polar.h"
 #include "glider.h"
 
-class GliderEditor : public QWidget
+class DoubleNumberEditor;
+class NumberEditor;
+
+class GliderEditorNumPad : public QWidget
 {
   Q_OBJECT
 
 private:
 
-  Q_DISABLE_COPY ( GliderEditor )
+  Q_DISABLE_COPY ( GliderEditorNumPad )
 
-public:
+ public:
 
-  GliderEditor(QWidget* parent=0, Glider* glider=0);
+  GliderEditorNumPad(QWidget* parent=0, Glider* glider=0);
 
-  virtual ~GliderEditor();
+  virtual ~GliderEditorNumPad();
 
   /**
    * @return The currently selected polar is returned.
    */
   Polar* getPolar();
 
-protected:
+ protected:
 
   void showEvent( QShowEvent *event );
 
-private:
+ private:
 
   /**
    * Reads in the data from the Cumulus polar file.
@@ -83,7 +84,7 @@ private:
     */
   void load();
 
-public slots:
+ public slots:
 
   /**
     * Called when a glider type has been selected in the combo box.
@@ -95,7 +96,10 @@ public slots:
     */
   void slotButtonShow();
 
-private slots:
+ private slots:
+
+  /** Called, when the seat button is pressed. */
+  void slot_changeSeats();
 
   /** Called when Ok button is pressed */
   void accept();
@@ -103,17 +107,7 @@ private slots:
   /** Called when Cancel button is pressed */
   void reject();
 
-  /**
-  * This slot increments the value in the spin box which has the current focus.
-  */
-  void slotIncrementBox();
-
-  /**
-  * This slot decrements the value in the spin box which has the current focus.
-  */
-  void slotDecrementBox();
-
-signals:
+ signals:
 
   /**
     * Send if a glider has been edited.
@@ -125,52 +119,51 @@ signals:
     */
   void newGlider(Glider*);
 
-private:
+ private:
 
   QComboBox* comboType;
-  QDoubleSpinBox* spinV1;
-  QDoubleSpinBox* spinW1;
-  QDoubleSpinBox* spinV2;
-  QDoubleSpinBox* spinW2;
-  QDoubleSpinBox* spinV3;
-  QDoubleSpinBox* spinW3;
-  QDoubleSpinBox* spinWingArea;
+
+  DoubleNumberEditor* m_dneV1;
+  DoubleNumberEditor* m_dneW1;
+  DoubleNumberEditor* m_dneV2;
+  DoubleNumberEditor* m_dneW2;
+  DoubleNumberEditor* m_dneV3;
+  DoubleNumberEditor* m_dneW3;
+  DoubleNumberEditor* m_dneWingArea;
+
   QLineEdit* edtGType;
   QLineEdit* edtGReg;
   QLineEdit* edtGCall;
-  QPushButton* buttonShow;
-  QSpinBox* emptyWeight;
-  QSpinBox* addedLoad;
-  QSpinBox* spinWater;
-  QComboBox* comboSeats;
 
-  /** Button to increase spinbox value. */
-  QPushButton *plus;
-  /** Button to decrease spinbox value. */
-  QPushButton *minus;
+  QPushButton*  buttonShow;
+  NumberEditor* emptyWeight;
+  NumberEditor* addedLoad;
+  NumberEditor* addedWater;
+  QPushButton*  m_seats;
 
-  QList<Polar> _polars;
-  Glider * _glider;
-  Polar  * _polar;
-  bool isNew;
+  QList<Polar> m_polars;
+  Glider*      m_glider;
+  Polar*       m_polar;
+  bool         m_isNew;
+
   /** Flag to indicate if a glider object was created by this class */
-  bool gliderCreated;
+  bool m_gliderCreated;
 
   /**
    * saves current horizontal/vertical speed unit during construction of object
    */
-  Speed::speedUnit currHSpeedUnit;
-  Speed::speedUnit currVSpeedUnit;
+  Speed::speedUnit m_currHSpeedUnit;
+  Speed::speedUnit m_currVSpeedUnit;
 
   /**
-   * Loaded values in spin boxes.
+   * Loaded speed values.
    */
-  double currV1;
-  double currV2;
-  double currV3;
-  double currW1;
-  double currW2;
-  double currW3;
+  double m_currV1;
+  double m_currV2;
+  double m_currV3;
+  double m_currW1;
+  double m_currW2;
+  double m_currW3;
 };
 
 #endif
