@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: numberEditor.h 5648 2013-01-03 21:35:48Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -28,7 +28,7 @@
  *
  * \date 2013
  *
- * \version $Id: numberEditor.h 5648 2013-01-03 21:35:48Z axel $
+ * \version $Id$
  */
 
 #ifndef DOUBLE_NUMBER_EDITOR_H_
@@ -152,10 +152,6 @@ class DoubleNumberEditor : public NumberEditor
   {
     return m_precision;
   };
-
- signals:
-
-  void numberEdited( const QString& number );
 
  protected slots:
 

@@ -134,8 +134,6 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 
 void NumberEditor::slot_NumberEdited( const QString& number )
 {
-  qDebug() << "NumberEditor::slot_NumberEdited=" << number;
-
   m_nip = 0;
   m_number = number;
   setText();

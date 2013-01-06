@@ -124,6 +124,9 @@ HEADERS = \
     runway.h \
     settingspageairfields.h \
     settingspageairspace.h \
+    settingspageairspacefilling.h \
+    settingspageairspaceloading.h \
+    settingspageairspacewarnings.h \
     settingspagegps.h \
     settingspageglider.h \
     settingspageinformation.h \
@@ -235,6 +238,9 @@ SOURCES = \
     runway.cpp \
     settingspageairfields.cpp \
     settingspageairspace.cpp \
+    settingspageairspacefilling.cpp \
+    settingspageairspaceloading.cpp \
+    settingspageairspacewarnings.cpp \
     settingspagegps.cpp \
     settingspageglider.cpp \
     settingspageinformation.cpp \
@@ -344,10 +350,12 @@ numberpad {
     DEFINES += USE_NUM_PAD
 
     HEADERS += coordeditnumpad.h \
+    					 doubleNumberEditor.h \
                numberEditor.h \
                numberInputPad.h
     
     SOURCES += coordeditnumpad.cpp \
+    					 doubleNumberEditor.cpp \
                numberEditor.cpp \
                numberInputPad.cpp
 }

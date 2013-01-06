@@ -129,6 +129,9 @@ HEADERS = \
     runway.h \
     settingspageairfields.h \
     settingspageairspace.h \
+    settingspageairspacefilling.h \
+    settingspageairspaceloading.h \
+    settingspageairspacewarnings.h \
     settingspagegps.h \
     settingspageglider.h \
     settingspageinformation.h \
@@ -239,6 +242,9 @@ SOURCES = \
     runway.cpp \
     settingspageairfields.cpp \
     settingspageairspace.cpp \
+    settingspageairspacefilling.cpp \
+    settingspageairspaceloading.cpp \
+    settingspageairspacewarnings.cpp \
     settingspagegps.cpp \
     settingspageglider.cpp \
     settingspageinformation.cpp \
