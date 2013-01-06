@@ -229,11 +229,25 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
       m_editor->insert( text );
       m_pressedButton = button;
     }
-  else if( text == "." && m_editor->text().contains(".") == false )
+  else if( text == "." )
     {
-      m_editor->setSelection(m_editor->cursorPosition(), 1);
-      m_editor->insert( text );
-      m_pressedButton = 0;
+      if( m_editor->text().contains(".") == false )
+        {
+          // First input of decimal point
+          m_editor->setSelection(m_editor->cursorPosition(), 1);
+          m_editor->insert( text );
+          m_pressedButton = 0;
+        }
+      else
+        {
+          // Check, if decimal point is at the old place. Under this condition
+          // move cursor one position to the right and accept input.
+          if( m_editor->text().indexOf(".") == m_editor->cursorPosition() )
+            {
+              m_editor->setSelection(m_editor->cursorPosition(), 1);
+              m_pressedButton = 0;
+            }
+        }
     }
   else if( text == "<-" )
     {
