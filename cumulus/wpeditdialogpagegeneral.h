@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2011 by Axel Pauli (axel@kflog.org)
+**                   2008-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This is the general page for the waypoint editor dialog
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  */
@@ -38,6 +38,15 @@
 
 #include "coordedit.h"
 #include "waypoint.h"
+
+#ifdef USE_NUM_PAD
+
+#include "coordeditnumpad.h"
+
+class DoubleNumberEditor;
+class NumberEditor;
+
+#endif
 
 class WpEditDialogPageGeneral : public QWidget
 {
@@ -89,25 +98,30 @@ private slots:
 
 private:
 
-  QLineEdit *edtName;
-  QLineEdit *edtDescription;
-  QLineEdit *edtCountry;
+  QLineEdit *m_edtName;
+  QLineEdit *m_edtDescription;
+  QLineEdit *m_edtCountry;
 
-  LatEdit   *edtLat;
-  LongEdit  *edtLong;
-  QLineEdit *edtElev;
+#ifdef USE_NUM_PAD
+  LatEditNumPad  *m_edtLat;
+  LongEditNumPad *m_edtLong;
+  NumberEditor   *m_edtElev;
+#else
+  LatEdit   *m_edtLat;
+  LongEdit  *m_edtLong;
+  QLineEdit *m_edtElev;
+#endif
 
-  QComboBox *cmbType;
-  QComboBox *cmbImportance;
+  QComboBox *m_cmbType;
+  QComboBox *m_cmbImportance;
 
   // Store loaded values and reuse them, if no coordinates
   // have been changed to avoid rounding errors caused by conversions.
-  int loadedLat;
-  int loadedLon;
+  int m_loadedLat;
+  int m_loadedLon;
 
   int getWaypointType();
   void setWaypointType(int type);
-
 };
 
 #endif

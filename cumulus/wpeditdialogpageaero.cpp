@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,8 +22,16 @@
 
 #include "altitude.h"
 #include "airfield.h"
-#include "flickcharm.h"
 #include "wpeditdialogpageaero.h"
+
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
+#ifdef USE_NUM_PAD
+#include "doubleNumberEditor.h"
+#include "numberEditor.h"
+#endif
 
 WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QWidget(parent, Qt::WindowStaysOnTopHint)
@@ -42,28 +50,56 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
 
   QLabel *lblFrequency = new QLabel(tr("Frequency:"),  this);
   topLayout->addWidget(lblFrequency, row, 0);
+
+#ifdef USE_NUM_PAD
+  edtFrequency = new DoubleNumberEditor( this );
+  edtFrequency->setDecimalVisible( true );
+  edtFrequency->setPmVisible( false );
+  edtFrequency->setMaxLength(7);
+  edtFrequency->setSuffix( tr(" MHz") );
+  edtFrequency->setDecimals( 3 );
+  edtFrequency->setAlignment( Qt::AlignLeft );
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.[0-9]{1,3})" ), this );
+  edtFrequency->setValidator( eValidator );
+  edtFrequency->setText("0.0");
+#else
   edtFrequency = new QLineEdit(this);
   edtFrequency->setMaxLength(7); // limit name to 7 characters
   edtFrequency->setInputMask("999.999");
   edtFrequency->setText("000.000");
+#endif
 
   topLayout->addWidget(edtFrequency, row++, 1);
-
   topLayout->setRowMinimumHeight(row++,  10);
 
   QLabel *lblLen = new QLabel(tr("Length:"),  this);
   topLayout->addWidget(lblLen, row, 0);
   QBoxLayout *elevLayout = new QHBoxLayout();
   topLayout->addLayout(elevLayout, row++, 1);
+
+#ifdef USE_NUM_PAD
+  edtLength = new NumberEditor( this );
+  edtLength->setDecimalVisible( false );
+  edtLength->setPmVisible( false );
+  edtLength->setMaxLength(6);
+  edtLength->setAlignment( Qt::AlignLeft );
+  edtLength->setSuffix( " " + Altitude::getUnitText() );
+  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
+  edtLength->setValidator( eValidator );
+  edtLength->setText("0");
+#else
   edtLength = new QLineEdit(this);
   QRegExp rx("[1-9][0-9]*");
   edtLength->setValidator( new QRegExpValidator(rx, this) );
+#endif
 
   elevLayout->addWidget(edtLength);
 
+#ifndef USE_NUM_PAD
   // Note! We take as runway length unit the altitude unit (m/ft)
   QLabel *lblLenUnit = new QLabel(Altitude::getUnitText(),  this);
   elevLayout->addWidget(lblLenUnit);
+#endif
 
   QLabel *lblRun = new QLabel(tr("Runway heading1:"),  this);
   topLayout->addWidget(lblRun, row, 0);

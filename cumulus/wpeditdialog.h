@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * The WpEditDialog widget allows the creation of a new waypoint or the
  * modification of an existing waypoint. It is a modal window.
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  */
@@ -112,9 +112,9 @@ signals:
 
 private:
 
-    Waypoint * _wp;
-    QString oldName; // old name of waypoint before rename
-    QTextEdit * comment;
+    Waypoint*  m_wp;
+    QString    m_oldName; // old name of waypoint before rename
+    QTextEdit* m_comment;
 };
 
 #endif

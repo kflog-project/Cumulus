@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2009 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This is the general page for the waypoint editor dialog
  *
- * \date 2002-2009
+ * \date 2002-2013
  */
 
 #ifndef WPEDIT_DIALOG_PAGE_AERO_H
@@ -35,6 +35,12 @@
 #include <QCheckBox>
 
 #include "waypoint.h"
+
+#ifdef USE_NUM_PAD
+class DoubleNumberEditor;
+class NumberEditor;
+#endif
+
 
 class WpEditDialogPageAero : public QWidget
 {
@@ -60,13 +66,19 @@ public slots:
 
 private:
 
-  QLineEdit *edtICAO;
-  QLineEdit *edtFrequency;
-  QComboBox *edtRunway1;
-  QComboBox *edtRunway2;
-  QLineEdit *edtLength;
-  QCheckBox *chkLandable;
-  QComboBox *cmbSurface;
+  QLineEdit* edtICAO;
+  QComboBox* edtRunway1;
+  QComboBox* edtRunway2;
+  QCheckBox* chkLandable;
+  QComboBox* cmbSurface;
+
+#ifdef USE_NUM_PAD
+  DoubleNumberEditor* edtFrequency;
+  NumberEditor*       edtLength;
+#else
+  QLineEdit* edtFrequency;
+  QLineEdit* edtLength;
+#endif
 
   int getSurface();
   void setSurface(int s);

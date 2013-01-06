@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,7 +18,6 @@
 
 #include <QtGui>
 
-#include "flickcharm.h"
 #include "wpeditdialog.h"
 #include "wpeditdialogpagegeneral.h"
 #include "wpeditdialogpageaero.h"
@@ -27,6 +26,10 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "layout.h"
+
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
 
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
@@ -49,15 +52,15 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   if( wp == 0 )
     {
       setWindowTitle(tr("New Waypoint"));
-      oldName = "";
+      m_oldName = "";
     }
   else
     {
       setWindowTitle(tr("Edit Waypoint"));
-      oldName = wp->name;
+      m_oldName = wp->name;
     }
 
-  _wp = wp;
+  m_wp = wp;
 
   QTabWidget* tabWidget = new QTabWidget(this);
 
@@ -96,9 +99,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   QScrollArea* pcArea = new QScrollArea( tabWidget );
   pcArea->setWidgetResizable( true );
   pcArea->setFrameStyle( QFrame::NoFrame );
-  comment = new QTextEdit(this);
-  comment->setWordWrapMode(QTextOption::WordWrap);
-  pcArea->setWidget( comment );
+  m_comment = new QTextEdit(this);
+  m_comment->setWordWrapMode(QTextOption::WordWrap);
+  pcArea->setWidget( m_comment );
   tabWidget->addTab( pcArea, tr("Comment") );
 #ifdef QSCROLLER
   QScroller::grabGesture(pcArea, QScroller::LeftMouseButtonGesture);
@@ -161,10 +164,10 @@ WpEditDialog::~WpEditDialog()
  *  The load will be done only for existing wayppoint objects. */
 void WpEditDialog::loadWaypointData()
 {
-  if( _wp )
+  if( m_wp )
     {
-      emit load(_wp);
-      comment->setText(_wp->comment);
+      emit load(m_wp);
+      m_comment->setText(m_wp->comment);
     }
 }
 
@@ -175,8 +178,8 @@ void WpEditDialog::accept()
   Waypoint newWp;
   emit save( &newWp );
   newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
-  newWp.comment = comment->toPlainText();
-  newWp.wpListMember = _wp ? _wp->wpListMember : false;
+  newWp.comment = m_comment->toPlainText();
+  newWp.wpListMember = m_wp ? m_wp->wpListMember : false;
 
   // Make some mandatory consistency checks
   if( checkWaypointData( newWp ) == false )
@@ -185,7 +188,7 @@ void WpEditDialog::accept()
       return;
     }
 
-  if( _wp == 0 )
+  if( m_wp == 0 )
     {
       if( isWaypointNameInList( newWp.name ) )
         {
@@ -203,7 +206,7 @@ void WpEditDialog::accept()
       // Update existing waypoint item with edited data. Note that the object in the
       // global waypoint list is updated because we work with a reference to it!
       // Therefore we use a temporary object for saving and checking.
-      if( oldName != newWp.name && isWaypointNameInList( newWp.name ) )
+      if( m_oldName != newWp.name && isWaypointNameInList( newWp.name ) )
         {
           // The waypoint name of the saved object was modified and the new name
           // is already in use in the global list. To avoid multiple entries with
@@ -212,10 +215,10 @@ void WpEditDialog::accept()
         }
 
       // Update old waypoint object
-      *_wp = newWp;
+      *m_wp = newWp;
 
       // The modified waypoint is posted to the subscribers
-      emit wpListChanged( *_wp );
+      emit wpListChanged( *m_wp );
     }
 
   QWidget::close();
