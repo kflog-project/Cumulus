@@ -21,6 +21,10 @@
 #include "mainwindow.h"
 #include "settingspageairspaceloading.h"
 
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
 /*
  * Because Maemo 5 is using a special dialog design this window is declared
  * as a tool window.
