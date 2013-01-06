@@ -40,7 +40,6 @@
 #include <QDoubleSpinBox>
 #include <QList>
 
-#include "coordedit.h"
 #include "polar.h"
 #include "glider.h"
 
