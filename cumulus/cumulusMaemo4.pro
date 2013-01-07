@@ -1,7 +1,7 @@
 ##################################################################
 # Cumulus Maemo 4.2 project file for qmake
 #
-# Copyright (c): 2008-2012 Axel Pauli
+# Copyright (c): 2008-2013 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -351,13 +351,19 @@ numberpad {
 
     HEADERS += coordeditnumpad.h \
     					 doubleNumberEditor.h \
+    					 glidereditornumpad.h \
                numberEditor.h \
-               numberInputPad.h
+               numberInputPad.h \
+               settingspageairspacefillingnumpad.h \
+               settingspageairspacewarningsnumpad.h
     
     SOURCES += coordeditnumpad.cpp \
     					 doubleNumberEditor.cpp \
+    					 glidereditornumpad.cpp \
                numberEditor.cpp \
-               numberInputPad.cpp
+               numberInputPad.cpp \
+               settingspageairspacefillingnumpad.cpp \
+               settingspageairspacewarningsnumpad.cpp
 }
 
 TARGET = cumulus
