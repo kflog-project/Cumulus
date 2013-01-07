@@ -352,13 +352,17 @@ numberpad {
     					 doubleNumberEditor.h \
     					 glidereditornumpad.h \
                numberEditor.h \
-               numberInputPad.h
+               numberInputPad.h \
+               settingspageairspacefillingnumpad.h \
+               settingspageairspacewarningsnumpad.h
     
     SOURCES += coordeditnumpad.cpp \
     					 doubleNumberEditor.cpp \
     					 glidereditornumpad.cpp \
                numberEditor.cpp \
-               numberInputPad.cpp
+               numberInputPad.cpp \
+               settingspageairspacefillingnumpad.cpp \
+               settingspageairspacewarningsnumpad.cpp
 }
 
 # Files managed and needed by Necessitas
