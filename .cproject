@@ -34,6 +34,7 @@
 									<listOptionValue builtIn="false" value="WELT2000_THREAD=1"/>
 									<listOptionValue builtIn="false" value="FLARM=1"/>
 									<listOptionValue builtIn="false" value="INTERNET=1"/>
+									<listOptionValue builtIn="false" value="USE_NUM_PAD=1"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.477649421" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
