@@ -229,6 +229,16 @@ class NumberEditor : public QLabel
     m_title = title;
   };
 
+  /**
+   * Sets a user tip in the text editor pad.
+   *
+   * \param tip Tip to be set in the editor pad.
+   */
+  void setTip( QString tip )
+  {
+    m_tip = tip;
+  };
+
   signals:
 
    void numberEdited( const QString& number );
@@ -261,6 +271,7 @@ class NumberEditor : public QLabel
   QString m_number;
   QString m_suffix;
   QString m_title;
+  QString m_tip;
 
   bool m_decimalFlag;
   bool m_pmFlag;

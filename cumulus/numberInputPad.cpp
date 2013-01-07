@@ -52,6 +52,11 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   QGridLayout* gl = new QGridLayout(this);
   gl->setMargin(5);
 
+  m_tipLabel = new QLabel;
+  m_tipLabel->setAlignment(Qt::AlignCenter);
+  gl->addWidget( m_tipLabel, row, 0, 1, 5 );
+  row++;
+
   m_editor = new QLineEdit;
   connect( m_editor, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_TextChanged(const QString&)) );
@@ -205,6 +210,23 @@ void NumberInputPad::showEvent( QShowEvent* /* event */ )
 {
   m_editor->setFocus();
   m_editor->home( false );
+  m_tipLabel->text().isEmpty() ? m_tipLabel->hide() : m_tipLabel->show();
+}
+
+void NumberInputPad::setTip( QString tip )
+{
+  m_tipLabel->setText( tip );
+
+  if( tip.isEmpty() )
+    {
+      m_tipLabel->hide();
+      return;
+    }
+
+  if( isVisible() )
+    {
+      m_tipLabel->show();
+    }
 }
 
 void NumberInputPad::slot_ButtonPressed( QWidget* widget )

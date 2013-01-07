@@ -201,6 +201,13 @@ class NumberInputPad : public QFrame
     return m_doubleMinimum;
   };
 
+  /**
+   * Sets a user tip in the text editor pad.
+   *
+   * \param tip Tip to be set in the editor pad.
+   */
+  void setTip( QString tip );
+
  protected:
 
   /**
@@ -270,6 +277,9 @@ class NumberInputPad : public QFrame
   QSignalMapper* m_signalMapper;
 
   QTimer* m_timer;
+
+  /** A user tip label, what is expected as input. */
+  QLabel* m_tipLabel;
 
   /** The state of the SIP */
   bool m_autoSip;

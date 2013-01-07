@@ -91,6 +91,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setValidator( m_validator );
       m_nip->setMaxLength( m_maxLength );
       m_nip->setInputMask( m_inputMask );
+      m_nip->setTip( m_tip );
 
       if( m_intMax.first ) m_nip->setIntMaximum( m_intMax.second );
       if( m_intMin.first ) m_nip->setIntMinimum( m_intMin.second );
