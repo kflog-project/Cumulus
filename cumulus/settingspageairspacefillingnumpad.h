@@ -33,7 +33,7 @@ class NumberEditor;
  * \brief Configuration settings for airspace fillings.
  *
  * Configuration settings for airspace fillings. For the number edit
- * a own opouped number pad is used.
+ * an own number pad is opened as popup on mouse request.
  *
  * \date 2013
  *
@@ -57,7 +57,7 @@ class SettingsPageAirspaceFillingNumPad: public QWidget
  public slots:
 
   /**
-   * Called to initiate saving to the configuration file.
+   * Called to initiate saving to the configuration file with widget closing.
    */
   void slot_save();
 

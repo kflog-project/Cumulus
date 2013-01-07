@@ -46,6 +46,7 @@ SettingsPageAirspaceFillingNumPad::SettingsPageAirspaceFillingNumPad(QWidget *pa
   QHBoxLayout* fillLayout = new QHBoxLayout(fillGroup);
 
   m_enableFilling = new QCheckBox(tr("Enable filling"));
+  m_enableFilling->setChecked(true);
   connect(m_enableFilling, SIGNAL(toggled(bool)), SLOT(slot_enabledToggled(bool)));
 
   fillLayout->addWidget( m_enableFilling );
@@ -123,10 +124,8 @@ SettingsPageAirspaceFillingNumPad::SettingsPageAirspaceFillingNumPad(QWidget *pa
 
   connect(m_reset,    SIGNAL(clicked()), this, SLOT(slot_reset()));
   connect(m_defaults, SIGNAL(clicked()), this, SLOT(slot_defaults()));
-
   connect(buttonBox, SIGNAL(accepted()), this, SLOT(slot_save()));
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(slot_reject()));
-
   slot_load();
 }
 
@@ -197,7 +196,7 @@ void SettingsPageAirspaceFillingNumPad::slot_reset()
 {
   if( ! m_enableFilling->isChecked() )
     {
-      // spinboxes are insensitive, do nothing
+      // input fields are insensitive, do nothing
       return;
     }
 
@@ -230,7 +229,6 @@ void SettingsPageAirspaceFillingNumPad::slot_save()
   // @AP: initiate a redraw of airspaces on the map due to color modifications.
   //      Not the best solution but it is working ;-)
   Map::getInstance()->scheduleRedraw(Map::airspaces);
-
   close();
 }
 

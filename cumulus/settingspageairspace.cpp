@@ -29,7 +29,6 @@
 #include "mapdefaults.h"
 #include "mapcontents.h"
 #include "settingspageairspace.h"
-#include "settingspageairspacefilling.h"
 #include "settingspageairspaceloading.h"
 #include "settingspageairspacewarnings.h"
 #include "varspinbox.h"
@@ -44,6 +43,10 @@
 
 #ifdef USE_NUM_PAD
 #include "numberEditor.h"
+#include "settingspageairspacefillingnumpad.h"
+#include "settingspageairspacewarningsnumpad.h"
+#else
+#include "settingspageairspacefilling.h"
 #endif
 
 extern MapContents *_globalMapContents;
@@ -726,6 +729,10 @@ void SettingsPageAirspace::slot_startDownload( QString &url )
 /* Called to open the airspace warning dialog. */
 void SettingsPageAirspace::slot_openFillDialog()
 {
+#ifdef USE_NUM_PAD
+  SettingsPageAirspaceFillingNumPad* dlg = new SettingsPageAirspaceFillingNumPad(this);
+  dlg->setVisible( true );
+#else
   SettingsPageAirspaceFilling* dlg = new SettingsPageAirspaceFilling(this);
   dlg->setVisible( true );
 
@@ -742,11 +749,16 @@ void SettingsPageAirspace::slot_openFillDialog()
                      ms.width(), ms.height() );
 
 #endif
+#endif
 }
 
 /* Called to open the airspace warning dialog. */
 void SettingsPageAirspace::slot_openWarningDialog()
 {
+#ifdef USE_NUM_PAD
+  SettingsPageAirspaceWarningsNumPad* dlg = new SettingsPageAirspaceWarningsNumPad(this);
+  dlg->setVisible( true );
+#else
   SettingsPageAirspaceWarnings* dlg = new SettingsPageAirspaceWarnings(this);
   dlg->setVisible( true );
 
@@ -762,6 +774,7 @@ void SettingsPageAirspace::slot_openWarningDialog()
                     (MainWindow::mainWindow()->height() - ms.height()) / 2,
                      ms.width(), ms.height() );
 
+#endif
 #endif
 }
 
