@@ -62,47 +62,47 @@ SettingsPageAirspaceWarningsNumPad::SettingsPageAirspaceWarningsNumPad(QWidget *
   int row = 0;
 
   QGridLayout* mVGroupLayout = new QGridLayout(m_distanceGroup);
+  mVGroupLayout->setHorizontalSpacing(10);
+  mVGroupLayout->setVerticalSpacing(10);
   mVGroupLayout->setRowMinimumHeight ( row++, 8 );
 
   // row 0
   QLabel* lbl;
   lbl = new QLabel(tr("Lateral"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 1 );
+  mVGroupLayout->addWidget(lbl, row, 0 );
   lbl = new QLabel(tr("Above"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 2 );
+  mVGroupLayout->addWidget(lbl, row, 1 );
   lbl = new QLabel(tr("Below"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 3 );
+  mVGroupLayout->addWidget(lbl, row, 2 );
   row++;
 
   //row 1
   lbl = new QLabel(tr("Near"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 0, Qt::AlignRight|Qt::AlignVCenter);
+  mVGroupLayout->addWidget(lbl, row, 3, Qt::AlignLeft|Qt::AlignVCenter);
 
   m_horiWarnDist = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_horiWarnDist, row, 1);
+  mVGroupLayout->addWidget(m_horiWarnDist, row, 0);
 
   m_aboveWarnDist = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_aboveWarnDist, row, 2);
+  mVGroupLayout->addWidget(m_aboveWarnDist, row, 1);
 
   m_belowWarnDist = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_belowWarnDist, row, 3);
+  mVGroupLayout->addWidget(m_belowWarnDist, row, 2);
   row++;
 
   // row 2
   lbl = new QLabel(tr("Very Near"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 0, Qt::AlignRight|Qt::AlignVCenter);
+  mVGroupLayout->addWidget(lbl, row, 3, Qt::AlignLeft|Qt::AlignVCenter);
 
   m_horiWarnDistVN = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_horiWarnDistVN, row, 1);
+  mVGroupLayout->addWidget(m_horiWarnDistVN, row, 0);
 
   m_aboveWarnDistVN = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_aboveWarnDistVN, row, 2);
+  mVGroupLayout->addWidget(m_aboveWarnDistVN, row, 1);
 
   m_belowWarnDistVN = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_belowWarnDistVN, row, 3);
+  mVGroupLayout->addWidget(m_belowWarnDistVN, row, 2);
   row++;
-
-  //mVGroupLayout->setColumnStretch(4, 5);
 
   topLayout->addSpacing(20);
   topLayout->addStretch(10);
@@ -135,8 +135,12 @@ NumberEditor* SettingsPageAirspaceWarningsNumPad::createNumEd( QWidget* parent )
   numEd->setPmVisible( false );
   numEd->setMaxLength(7);
   numEd->setSuffix( unit );
-  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,6})" ), this );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,7})" ), this );
   numEd->setValidator( eValidator );
+
+  // Sets a minimum width for the widget
+  int mw1 = QFontMetrics(font()).width("9999999 " + unit) + 10;
+  numEd->setMinimumWidth( mw1 );
 
   return numEd;
 }

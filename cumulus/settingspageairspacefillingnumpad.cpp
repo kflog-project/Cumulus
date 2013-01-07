@@ -57,55 +57,55 @@ SettingsPageAirspaceFillingNumPad::SettingsPageAirspaceFillingNumPad(QWidget *pa
 
   int row = 0;
   QGridLayout * mVGroupLayout = new QGridLayout(m_distanceGroup);
-  // mVGroupLayout->setContentsMargins(0, 0, 0, 0);
+  mVGroupLayout->setHorizontalSpacing(10);
+  mVGroupLayout->setVerticalSpacing(10);
   mVGroupLayout->setRowMinimumHeight ( row++, 8 );
 
   // row 0
   QLabel* lbl;
   lbl = new QLabel(tr("Not near"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 1);
+  mVGroupLayout->addWidget(lbl, row, 0);
   lbl = new QLabel(tr("Near"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 2);
+  mVGroupLayout->addWidget(lbl, row, 1);
   lbl = new QLabel(tr("Very near"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 3);
+  mVGroupLayout->addWidget(lbl, row, 2);
   lbl = new QLabel(tr("Inside"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 4);
+  mVGroupLayout->addWidget(lbl, row, 3);
   row++;
 
   // row 1
   lbl = new QLabel(tr("Vertical"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 0);
+  mVGroupLayout->addWidget(lbl, row, 4, Qt::AlignLeft|Qt::AlignVCenter);
 
   m_verticalNotNear = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_verticalNotNear, row, 1);
+  mVGroupLayout->addWidget(m_verticalNotNear, row, 0);
 
   m_verticalNear = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_verticalNear, row, 2);
+  mVGroupLayout->addWidget(m_verticalNear, row, 1);
 
   m_verticalVeryNear = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_verticalVeryNear, row, 3);
+  mVGroupLayout->addWidget(m_verticalVeryNear, row, 2);
 
   m_verticalInside = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_verticalInside, row, 4);
+  mVGroupLayout->addWidget(m_verticalInside, row, 3);
 
-  mVGroupLayout->setColumnMinimumWidth( 5, 20 );
   row++;
 
   // row 2
   lbl = new QLabel(tr("Lateral"), m_distanceGroup);
-  mVGroupLayout->addWidget(lbl, row, 0);
+  mVGroupLayout->addWidget(lbl, row, 4, Qt::AlignLeft|Qt::AlignVCenter);
 
   m_lateralNotNear = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_lateralNotNear, row, 1);
+  mVGroupLayout->addWidget(m_lateralNotNear, row, 0);
 
   m_lateralNear = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_lateralNear, row, 2);
+  mVGroupLayout->addWidget(m_lateralNear, row, 1);
 
   m_lateralVeryNear = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_lateralVeryNear, row, 3);
+  mVGroupLayout->addWidget(m_lateralVeryNear, row, 2);
 
   m_lateralInside = createNumEd( m_distanceGroup );
-  mVGroupLayout->addWidget(m_lateralInside, row, 4);
+  mVGroupLayout->addWidget(m_lateralInside, row, 3);
   row++;
 
   topLayout->addSpacing(20);
@@ -145,6 +145,9 @@ NumberEditor* SettingsPageAirspaceFillingNumPad::createNumEd( QWidget* parent )
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,2})" ), this );
   numEd->setValidator( eValidator );
 
+  // Sets a minimum width for the widget
+  int mw1 = QFontMetrics(font()).width("100 %") + 10;
+  numEd->setMinimumWidth( mw1 );
   return numEd;
 }
 
