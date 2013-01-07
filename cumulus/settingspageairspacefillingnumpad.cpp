@@ -141,7 +141,7 @@ NumberEditor* SettingsPageAirspaceFillingNumPad::createNumEd( QWidget* parent )
   numEd->setMaxLength(3);
   numEd->setSuffix( " %" );
   numEd->setMaximum( 100 );
-  numEd->setTitle("0...100");
+  numEd->setTip("0...100");
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,2})" ), this );
   numEd->setValidator( eValidator );
 
