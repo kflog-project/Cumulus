@@ -352,13 +352,21 @@ numberpad {
 
     HEADERS += coordeditnumpad.h \
     					 doubleNumberEditor.h \
+    					 glidereditornumpad.h \
                numberEditor.h \
-               numberInputPad.h
+               numberInputPad.h \
+               preflighttaskpage.h \
+               settingspageairspacefillingnumpad.h \
+               settingspageairspacewarningsnumpad.h
     
     SOURCES += coordeditnumpad.cpp \
     					 doubleNumberEditor.cpp \
+    					 glidereditornumpad.cpp \
                numberEditor.cpp \
-               numberInputPad.cpp
+               numberInputPad.cpp \
+               preflighttaskpage.cpp \
+               settingspageairspacefillingnumpad.cpp \
+               settingspageairspacewarningsnumpad.cpp
 }
 
 TARGET = cumulus

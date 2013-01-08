@@ -66,9 +66,9 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   m_edtLoad->setRange(0, 1000);
   m_edtLoad->setSingleStep(5);
   m_edtLoad->setSuffix(" kg");
-  m_vsLoad = new VarSpinBox(m_edtLoad);
-  m_vsLoad->setEnabled(false);
-  topLayout->addWidget(m_vsLoad, row, 3);
+  m_vsbLoad = new VarSpinBox(m_edtLoad);
+  m_vsbLoad->setEnabled(false);
+  topLayout->addWidget(m_vsbLoad, row, 3);
 #endif
 
   row++;
@@ -189,7 +189,7 @@ void PreFlightGliderPage::slotGliderChanged()
       m_edtLoad->setEnabled(true);
       m_edtWater->setEnabled(glider->maxWater() != 0 );
 #else
-      m_vsLoad->setEnabled(true);
+      m_vsbLoad->setEnabled(true);
       m_vsbWater->setEnabled(glider->maxWater() != 0 );
 #endif
 
@@ -214,7 +214,7 @@ void PreFlightGliderPage::slotGliderDeselected()
   m_edtLoad->setEnabled(false);
   m_edtWater->setEnabled(false);
 #else
-  m_vsLoad->setEnabled(false);
+  m_vsbLoad->setEnabled(false);
   m_vsbWater->setEnabled(false);
 #endif
 
@@ -244,7 +244,7 @@ void PreFlightGliderPage::getCurrent()
   m_edtLoad->setEnabled(true);
   m_edtWater->setEnabled(glider->maxWater() != 0);
 #else
-  m_vsLoad->setEnabled(true);
+  m_vsbLoad->setEnabled(true);
   m_vsbWater->setEnabled(glider->maxWater() != 0);
 #endif
 
