@@ -125,7 +125,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   m_borderDrawingValue->setMaxLength(3);
   m_borderDrawingValue->setPrefix( ">FL ");
   m_borderDrawingValue->setMaximum( 500 );
-  m_borderDrawingValue->setTitle("50...500");
+  m_borderDrawingValue->setTip("50...500");
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([5-9][0-9]|[1-4][0-9][0-9]|500)" ), this );
   m_borderDrawingValue->setValidator( eValidator );
   hbox->addWidget( m_borderDrawingValue );
