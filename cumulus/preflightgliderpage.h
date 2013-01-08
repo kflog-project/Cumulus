@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008-2012 Axel Pauli
+**   Copyright (c):  2003 by André Somers, 2008-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,9 @@
  *
  * \author André Somers, Axel Pauli
  *
- * \brief A widget for the pre-flight glider settings.
+ * \brief A widget for the pre-flight glider selection and settings.
  *
- * \date 2003-2012
+ * \date 2003-2013
  *
  * \version $Id$
  *
@@ -35,11 +35,15 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QSpinBox>
+
+#ifdef USE_NUM_PAD
+class NumberEditor;
+#else
+class QSpinBox;
+class VarSpinBox;
+#endif
 
 #include "gliderlistwidget.h"
-
-class VarSpinBox;
 
 class PreFlightGliderPage : public QWidget
 {
@@ -64,8 +68,6 @@ protected:
 
   virtual void showEvent(QShowEvent *event);
 
-  virtual void hideEvent ( QHideEvent *event ) ;
-
 private:
 
   /**
@@ -73,27 +75,43 @@ private:
    */
   void getCurrent();
 
-  GliderListWidget *list;
-  QLineEdit        *edtPilot;
-  QLineEdit        *edtCoPilot;
-  QSpinBox         *spinLoad;
-  QSpinBox         *spinWater;
-  Glider           *lastGlider;
-  QLabel           *wingLoad;
+  GliderListWidget *m_gliderList;
+  QLineEdit        *m_edtPilot;
+  QLineEdit        *m_edtCoPilot;
+  Glider           *m_lastGlider;
+  QLabel           *m_wingLoad;
 
-  VarSpinBox       *hspinLoad;
-  VarSpinBox       *hspinWater;
+#ifdef USE_NUM_PAD
+  NumberEditor     *m_edtLoad;
+  NumberEditor     *m_edtWater;
+#else
+  QSpinBox         *m_edtLoad;
+  QSpinBox         *m_edtWater;
+  VarSpinBox       *m_vsbLoad;
+  VarSpinBox       *m_vsbWater;
+#endif
 
 private slots:
 
+  /**
+   * Called, if the glider selection was changed.
+   */
   void slotGliderChanged();
+
+  /**
+   * Called, if a glider deselection was made.
+   */
   void slotGliderDeselected();
 
   /**
-   * Updates the wingload label, if it is available.
+   * Updates the wingload label.
    */
   void slotUpdateWingLoad(int value);
 
+  /**
+   * Updates the wingload label.
+   */
+  void slotNumberEdited( const QString& number );
 };
 
 #endif

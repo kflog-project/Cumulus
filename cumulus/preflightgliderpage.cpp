@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -19,16 +19,24 @@
 #include <QtGui>
 
 #include "calculator.h"
-#include "flickcharm.h"
-#include "glider.h"
 #include "generalconfig.h"
+#include "glider.h"
 #include "layout.h"
 #include "preflightgliderpage.h"
+
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#else
 #include "varspinbox.h"
+#endif
 
 PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   QWidget(parent),
-  lastGlider(0)
+  m_lastGlider(0)
 {
   setObjectName("PreFlightGliderPage");
   int row = 0;
@@ -38,62 +46,86 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
 
   QLabel* lblPilot = new QLabel(tr("Pilot:"), this);
   topLayout->addWidget(lblPilot, row, 0);
-  edtPilot = new QLineEdit(this);
-  edtPilot->setText( GeneralConfig::instance()->getSurname() );
-  topLayout->addWidget(edtPilot, row, 1);
+  m_edtPilot = new QLineEdit(this);
+  m_edtPilot->setText( GeneralConfig::instance()->getSurname() );
+  topLayout->addWidget(m_edtPilot, row, 1);
 
   QLabel* lblLoad = new QLabel(tr("Added load:"), this);
   topLayout->addWidget(lblLoad, row, 2);
-  spinLoad = new QSpinBox(this);
-  spinLoad->setRange(0, 1000);
-  spinLoad->setSingleStep(5);
-  spinLoad->setSuffix(" kg");
-  hspinLoad = new VarSpinBox(spinLoad);
-  hspinLoad->setEnabled(false);
-  topLayout->addWidget(hspinLoad, row, 3);
+
+#ifdef USE_NUM_PAD
+  m_edtLoad = new NumberEditor;
+  m_edtLoad->setDecimalVisible( false );
+  m_edtLoad->setPmVisible( false );
+  m_edtLoad->setMaxLength(4);
+  m_edtLoad->setSuffix(" kg");
+  m_edtLoad->setRange( 0, 9999 );
+  topLayout->addWidget(m_edtLoad, row, 3);
+#else
+  m_edtLoad = new QSpinBox(this);
+  m_edtLoad->setRange(0, 1000);
+  m_edtLoad->setSingleStep(5);
+  m_edtLoad->setSuffix(" kg");
+  m_vsLoad = new VarSpinBox(m_edtLoad);
+  m_vsLoad->setEnabled(false);
+  topLayout->addWidget(m_vsLoad, row, 3);
+#endif
+
   row++;
 
   QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
   topLayout->addWidget(lblCoPilot, row, 0);
-  edtCoPilot = new QLineEdit(this);
-  topLayout->addWidget(edtCoPilot, row, 1);
+  m_edtCoPilot = new QLineEdit(this);
+  topLayout->addWidget(m_edtCoPilot, row, 1);
 
   QLabel* lblWater = new QLabel(tr("Water ballast:"), this);
   topLayout->addWidget(lblWater, row, 2);
-  spinWater = new QSpinBox(this);
-  spinWater->setRange(0, 500);
-  spinWater->setSingleStep(5);
-  spinWater->setSuffix(" l");
-  hspinWater = new VarSpinBox(spinWater);
-  hspinWater->setEnabled(false);
-  topLayout->addWidget(hspinWater, row, 3);
+
+#ifdef USE_NUM_PAD
+  m_edtWater = new NumberEditor;
+  m_edtWater->setDecimalVisible( false );
+  m_edtWater->setPmVisible( false );
+  m_edtWater->setMaxLength(4);
+  m_edtWater->setSuffix(" l");
+  m_edtWater->setRange( 0, 9999 );
+  topLayout->addWidget(m_edtWater, row, 3);
+#else
+  m_edtWater = new QSpinBox(this);
+  m_edtWater->setRange(0, 1000);
+  m_edtWater->setSingleStep(5);
+  m_edtWater->setSuffix(" l");
+  m_vsbWater = new VarSpinBox(m_edtWater);
+  m_vsbWater->setEnabled(false);
+  topLayout->addWidget(m_vsbWater, row, 3);
+#endif
+
   row++;
 
   QLabel* lblWLoad = new QLabel(tr("Wing load:"), this);
   topLayout->addWidget(lblWLoad, row, 2);
-  wingLoad = new QLabel;
-  wingLoad->setFocusPolicy(Qt::NoFocus);
-  topLayout->addWidget(wingLoad, row, 3);
+  m_wingLoad = new QLabel;
+  m_wingLoad->setFocusPolicy(Qt::NoFocus);
+  topLayout->addWidget(m_wingLoad, row, 3);
   row++;
 
   topLayout->setRowMinimumHeight ( row, 10 );
   row++;
 
-  list = new GliderListWidget(this);
+  m_gliderList = new GliderListWidget(this);
 #ifndef ANDROID
-  list->setToolTip(tr("Select a glider to be used"));
+  m_gliderList->setToolTip(tr("Select a glider to be used"));
 #endif
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_gliderList, QScroller::LeftMouseButtonGesture);
 #endif
 
 #ifdef FLICK_CHARM
   FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+  flickCharm->activateOn(m_gliderList);
 #endif
 
-  topLayout->addWidget(list, row, 0, 1, 4);
+  topLayout->addWidget(m_gliderList, row, 0, 1, 4);
   row++;
 
   //---------------------------------------------------------------------
@@ -104,14 +136,21 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   topLayout->addWidget( deselect, row, 3 );
 
   //---------------------------------------------------------------------
-  list->fillList();
-  list->clearSelection();
+  m_gliderList->fillList();
+  m_gliderList->clearSelection();
   getCurrent();
 
   connect(deselect, SIGNAL(clicked()), this, SLOT(slotGliderDeselected()) );
-  connect(list, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()));
-  connect(spinLoad, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateWingLoad(int)));
-  connect(spinWater, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateWingLoad(int)));
+  connect(m_gliderList, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()));
+
+#ifdef USE_NUM_PAD
+  connect(m_edtLoad, SIGNAL(numberEdited(const QString&)), this, SLOT(slotNumberEdited(const QString&)));
+  connect(m_edtWater, SIGNAL(numberEdited(const QString&)), this, SLOT(slotNumberEdited(const QString&)));
+#else
+  connect(m_edtLoad, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateWingLoad(int)));
+  connect(m_edtWater, SIGNAL(valueChanged(int)), this, SLOT(slotUpdateWingLoad(int)));
+#endif
+
 }
 
 PreFlightGliderPage::~PreFlightGliderPage()
@@ -121,33 +160,39 @@ PreFlightGliderPage::~PreFlightGliderPage()
 void PreFlightGliderPage::slotGliderChanged()
 {
   // save co-pilot before new selection
-  if(lastGlider)
+  if(m_lastGlider)
     {
-      if (lastGlider->seats() == Glider::doubleSeater)
+      if (m_lastGlider->seats() == Glider::doubleSeater)
         {
-          lastGlider->setCoPilot(edtCoPilot->text());
+          m_lastGlider->setCoPilot(m_edtCoPilot->text());
         }
       else
         {
-          lastGlider->setCoPilot("");
+          m_lastGlider->setCoPilot("");
         }
     }
 
-  Glider* glider = list->getSelectedGlider();
+  Glider* glider = m_gliderList->getSelectedGlider();
 
-  lastGlider = glider;
+  m_lastGlider = glider;
 
   if( glider )
     {
-      edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
-      edtCoPilot->setText(glider->coPilot());
+      m_edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
+      m_edtCoPilot->setText(glider->coPilot());
 
-      spinLoad->setValue( (int) rint(glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
-      hspinLoad->setEnabled(true);
+      m_edtLoad->setValue( (int) rint(glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
+      m_edtWater->setMaximum(glider->maxWater() );
+      m_edtWater->setValue(glider->polar()->water() );
 
-      spinWater->setMaximum(glider->maxWater() );
-      hspinWater->setEnabled(glider->maxWater() != 0 );
-      spinWater->setValue(glider->polar()->water() );
+#ifdef USE_NUM_PAD
+      m_edtLoad->setEnabled(true);
+      m_edtWater->setEnabled(glider->maxWater() != 0 );
+#else
+      m_vsLoad->setEnabled(true);
+      m_vsbWater->setEnabled(glider->maxWater() != 0 );
+#endif
+
     }
 
   slotUpdateWingLoad(0);
@@ -156,20 +201,25 @@ void PreFlightGliderPage::slotGliderChanged()
 void PreFlightGliderPage::slotGliderDeselected()
 {
   // clear last stored glider
-  lastGlider = static_cast<Glider *> (0);
+  m_lastGlider = static_cast<Glider *> (0);
 
   // clear list selection
-  list->clearSelection();
+  m_gliderList->clearSelection();
 
-  // clear spinboxes
-  spinLoad->setValue(0);
-  spinWater->setValue(0);
+  // clear values
+  m_edtLoad->setValue(0);
+  m_edtWater->setValue(0);
 
-  hspinLoad->setEnabled(false);
-  hspinWater->setEnabled(false);
+#ifdef USE_NUM_PAD
+  m_edtLoad->setEnabled(false);
+  m_edtWater->setEnabled(false);
+#else
+  m_vsLoad->setEnabled(false);
+  m_vsbWater->setEnabled(false);
+#endif
 
 // clear wing load label
-  wingLoad->setText("");
+  m_wingLoad->setText("");
 }
 
 void PreFlightGliderPage::getCurrent()
@@ -183,53 +233,59 @@ void PreFlightGliderPage::getCurrent()
       return;
     }
 
-  list->selectItemFromReg( glider->registration() );
+  m_gliderList->selectItemFromReg( glider->registration() );
 
-  edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
-  edtCoPilot->setText(glider->coPilot());
+  m_edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
+  m_edtCoPilot->setText(glider->coPilot());
 
-  spinLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
-  hspinLoad->setEnabled(true);
+  m_edtLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
 
-  spinWater->setMaximum(glider->maxWater());
-  hspinWater->setEnabled(glider->maxWater() != 0);
-  spinWater->setValue(glider->polar()->water());
+#ifdef USE_NUM_PAD
+  m_edtLoad->setEnabled(true);
+  m_edtWater->setEnabled(glider->maxWater() != 0);
+#else
+  m_vsLoad->setEnabled(true);
+  m_vsbWater->setEnabled(glider->maxWater() != 0);
+#endif
 
-  lastGlider = list->getSelectedGlider();
+  m_edtWater->setMaximum(glider->maxWater());
+  m_edtWater->setValue(glider->polar()->water());
+
+  m_lastGlider = m_gliderList->getSelectedGlider();
 }
 
 void PreFlightGliderPage::save()
 {
   extern Calculator* calculator;
 
-  GeneralConfig::instance()->setSurname(edtPilot->text().trimmed());
+  GeneralConfig::instance()->setSurname(m_edtPilot->text().trimmed());
 
-  Glider* glider = list->getSelectedGlider(false);
+  Glider* glider = m_gliderList->getSelectedGlider(false);
 
   if(glider)
     {
       if (glider->seats() == Glider::doubleSeater)
         {
-          glider->setCoPilot(edtCoPilot->text().trimmed());
+          glider->setCoPilot(m_edtCoPilot->text().trimmed());
         }
       else
         {
           glider->setCoPilot("");
         }
 
-      glider->polar()->setGrossWeight(spinLoad->value() + glider->polar()->emptyWeight() );
-      glider->polar()->setWater(spinWater->value(), 0);
+      glider->polar()->setGrossWeight(m_edtLoad->value() + glider->polar()->emptyWeight() );
+      glider->polar()->setWater(m_edtWater->value(), 0);
       // @AP: save changed added load permanently
-      list->save();
-      glider = new Glider(*list->getSelectedGlider(false));
+      m_gliderList->save();
+      glider = new Glider(*m_gliderList->getSelectedGlider(false));
       calculator->setGlider(glider);
-      list->setStoredSelection(glider);
+      m_gliderList->setStoredSelection(glider);
     }
   else
     {
       // no selected glider, reset of stored selection
       calculator->setGlider( static_cast<Glider *> (0) );
-      list->setStoredSelection( static_cast<Glider *> (0) );
+      m_gliderList->setStoredSelection( static_cast<Glider *> (0) );
     }
 }
 
@@ -237,12 +293,14 @@ void PreFlightGliderPage::slotUpdateWingLoad( int value )
 {
   Q_UNUSED(value)
 
-  Glider* glider = list->getSelectedGlider();
+  qDebug() << "PreFlightGliderPage::slotUpdateWingLoad:" << value;
+
+  Glider* glider = m_gliderList->getSelectedGlider();
 
   if( glider == 0 || glider->polar() == 0 || glider->polar()->wingArea() == 0.0 )
     {
       // Clear label
-      wingLoad->setText("");
+      m_wingLoad->setText("");
       return;
     }
 
@@ -252,7 +310,7 @@ void PreFlightGliderPage::slotUpdateWingLoad( int value )
 
   if( polar->emptyWeight() )
     {
-      wload = (polar->emptyWeight() + spinLoad->value() + spinWater->value()) / polar->wingArea();
+      wload = (polar->emptyWeight() + m_edtLoad->value() + m_edtWater->value()) / polar->wingArea();
     }
 
   QString msg = "";
@@ -263,15 +321,19 @@ void PreFlightGliderPage::slotUpdateWingLoad( int value )
             QChar(Qt::Key_twosuperior);
     }
 
-  wingLoad->setText(msg);
+  m_wingLoad->setText(msg);
+}
+
+void PreFlightGliderPage::slotNumberEdited( const QString& number )
+{
+  Q_UNUSED( number )
+
+  // Updates the wing load, if load or water have been edited.
+  slotUpdateWingLoad( 0 );
 }
 
 void PreFlightGliderPage::showEvent(QShowEvent *)
 {
   slotGliderChanged();
-  list->setFocus();
-}
-
-void PreFlightGliderPage::hideEvent( QHideEvent * )
-{
+  m_gliderList->setFocus();
 }
