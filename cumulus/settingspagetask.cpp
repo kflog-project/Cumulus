@@ -244,7 +244,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   sectorAngle->setMaxLength(3);
   sectorAngle->setSuffix( QString(Qt::Key_degree) );
   sectorAngle->setMaximum( 180 );
-  sectorAngle->setTitle("90...180");
+  sectorAngle->setTip("90...180");
   sectorAngle->setValue( conf->getTaskSectorAngle() );
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(9[0-9]|1[0-7][0-9]|180)" ), this );
   sectorAngle->setValidator( eValidator );
