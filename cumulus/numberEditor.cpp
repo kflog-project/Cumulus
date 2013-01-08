@@ -44,7 +44,8 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_intMax(false, INT_MAX),
   m_intMin(false, INT_MIN),
   m_doubleMax(false, double(INT_MAX)),
-  m_doubleMin(false, double(INT_MIN))
+  m_doubleMin(false, double(INT_MIN)),
+  m_specialValueText("")
 {
   setObjectName("NumberEditor");
 
@@ -139,4 +140,42 @@ void NumberEditor::slot_NumberEdited( const QString& number )
   m_number = number;
   setText();
   emit numberEdited( number );
+}
+
+void NumberEditor::setText()
+{
+  if( m_specialValueText.isEmpty() )
+    {
+      // No special text is set.
+      QLabel::setText( m_prefix + m_number + m_suffix );
+    }
+  else
+    {
+      bool iOk;
+      bool dOk;
+
+      int i = m_number.toInt(&iOk);
+
+      double d = m_number.toDouble(&dOk);
+
+      if( m_number.contains(".") == false && m_intMin.first == true && iOk )
+        {
+          if( i == m_intMin.second )
+            {
+              QLabel::setText( m_specialValueText );
+            }
+
+          return;
+        }
+
+      if( m_number.contains(".") && m_doubleMin.first == true && dOk )
+        {
+          if( d == m_doubleMin.second )
+            {
+              QLabel::setText( m_specialValueText );
+            }
+
+          return;
+        }
+    }
 }

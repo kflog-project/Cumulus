@@ -64,14 +64,31 @@ class NumberEditor : public QLabel
     setText();
   };
 
+  /**
+   * Returns only the number text without prefix and suffix.
+   */
   QString getText() const
   {
     return m_number;
   };
 
-  QString text() const
+  /**
+   * Returns only the number text without prefix and suffix.
+   */
+  QString cleanText() const
   {
     return m_number;
+  };
+
+  QString specialValueText() const
+  {
+    return m_specialValueText;
+  };
+
+  void setSpecialValueText( const QString & text )
+  {
+    m_specialValueText = text;
+    setText();
   };
 
   /**
@@ -283,10 +300,7 @@ class NumberEditor : public QLabel
   /**
    * Sets the number with prefix and suffix in the display label.
    */
-  void setText()
-  {
-    QLabel::setText( m_prefix + m_number + m_suffix );
-  };
+  void setText();
 
   NumberInputPad* m_nip;
 
@@ -309,6 +323,9 @@ class NumberEditor : public QLabel
   /** These pairs can be used in a derived class to manipulate them. */
   QPair<bool, double> m_doubleMax;
   QPair<bool, double> m_doubleMin;
+
+  /** Special-value text for display if minimum condition is true. */
+  QString m_specialValueText;
 };
 
 #endif /* NUMBER_EDITOR_H_ */
