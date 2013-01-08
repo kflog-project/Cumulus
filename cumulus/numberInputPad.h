@@ -164,7 +164,7 @@ class NumberInputPad : public QFrame
    *
    * \param maximum The new maximum input value
    */
-  void setDoubleMaximum( const int maximum )
+  void setDoubleMaximum( const double maximum )
   {
     m_doubleMaximum.first = true;
     m_doubleMaximum.second = maximum;
@@ -185,7 +185,7 @@ class NumberInputPad : public QFrame
    *
    * \param maximum The new minimum input value
    */
-  void setDoubleMinimum( const int minimum )
+  void setDoubleMinimum( const double minimum )
   {
     m_doubleMinimum.first = true;
     m_doubleMinimum.second = minimum;

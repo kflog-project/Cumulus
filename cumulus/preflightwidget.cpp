@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,17 +18,25 @@
 
 #include <QtGui>
 
-#include "flickcharm.h"
 #include "map.h"
 #include "mapcontents.h"
 #include "preflightgliderpage.h"
 #include "preflightwidget.h"
-#include "preflighttasklist.h"
 #include "preflightmiscpage.h"
 #include "preflightwaypointpage.h"
 
 #include "calculator.h"
 #include "layout.h"
+
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
+#ifdef USE_NUM_PAD
+#include "preflighttaskpage.h"
+#else
+#include "preflighttasklist.h"
+#endif
 
 extern MapContents* _globalMapContents;
 
@@ -43,18 +51,23 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
   tabWidget = new QTabWidget(this);
   tabWidget->setTabPosition(QTabWidget::West);
 
-  gliderpage = new PreFlightGliderPage(this);
-  tabWidget->addTab(gliderpage, "");
+  m_gliderpage = new PreFlightGliderPage(this);
+  tabWidget->addTab(m_gliderpage, "");
 
-  taskpage = new PreFlightTaskList(this);
-  tabWidget->addTab(taskpage, "");
+#ifdef USE_NUM_PAD
+  m_taskpage = new PreFlightTaskPage(this);
+#else
+  m_taskpage = new PreFlightTaskList(this);
+#endif
 
-  wppage = new PreFlightWaypointPage(this);
+  tabWidget->addTab(m_taskpage, "");
+
+  m_wppage = new PreFlightWaypointPage(this);
 
   QScrollArea* sa = new QScrollArea;
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
-  sa->setWidget( wppage );
+  sa->setWidget( m_wppage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
 #endif
@@ -66,15 +79,15 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   tabWidget->addTab(sa, "");
 
-  connect( wppage, SIGNAL(waypointsAdded()),
+  connect( m_wppage, SIGNAL(waypointsAdded()),
             Map::getInstance(), SLOT(slotRedraw()) );
 
-  miscpage = new PreFlightMiscPage(this);
+  m_miscpage = new PreFlightMiscPage(this);
 
   sa = new QScrollArea;
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
-  sa->setWidget( miscpage );
+  sa->setWidget( m_miscpage );
 #ifdef QSCROLLER
   QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
 #endif
@@ -123,18 +136,18 @@ PreFlightWidget::PreFlightWidget(QWidget* parent, const char* name) :
 
   setLayout(contentLayout);
 
-  miscpage->load();
-  wppage->load();
+  m_miscpage->load();
+  m_wppage->load();
 
   // check to see which tabulator to bring forward
   if (QString(name) == "taskselection")
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(taskpage));
+      tabWidget->setCurrentIndex(tabWidget->indexOf(m_taskpage));
       lastPage = 1;
     }
   else
     {
-      tabWidget->setCurrentIndex(tabWidget->indexOf(gliderpage));
+      tabWidget->setCurrentIndex(tabWidget->indexOf(m_gliderpage));
       lastPage = 0;
     }
 
@@ -195,7 +208,7 @@ void PreFlightWidget::slot_tabChanged( int index )
   // if the task page is selected as new page after the glider page.
   if( index == 1 && lastPage == 0 )
     {
-      gliderpage->save();
+      m_gliderpage->save();
     }
 
   lastPage = index;
@@ -206,7 +219,7 @@ void PreFlightWidget::slot_accept()
   FlightTask *curTask = _globalMapContents->getCurrentTask();
 
   // Note we have overtaken the ownership about this object!
-  FlightTask *newTask = taskpage->takeSelectedTask();
+  FlightTask *newTask = m_taskpage->takeSelectedTask();
 
   bool newTaskPassed = true;
 
@@ -289,9 +302,9 @@ void PreFlightWidget::slot_accept()
       emit newTaskSelected();
     }
 
-  gliderpage->save();
-  miscpage->save();
-  wppage->save();
+  m_gliderpage->save();
+  m_miscpage->save();
+  m_wppage->save();
   GeneralConfig::instance()->save();
 
   setVisible( false );

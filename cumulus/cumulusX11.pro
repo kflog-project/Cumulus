@@ -356,6 +356,7 @@ numberpad {
     					 glidereditornumpad.h \
                numberEditor.h \
                numberInputPad.h \
+               preflighttaskpage.h \
                settingspageairspacefillingnumpad.h \
                settingspageairspacewarningsnumpad.h
     
@@ -364,6 +365,7 @@ numberpad {
     					 glidereditornumpad.cpp \
                numberEditor.cpp \
                numberInputPad.cpp \
+               preflighttaskpage.cpp \
                settingspageairspacefillingnumpad.cpp \
                settingspageairspacewarningsnumpad.cpp
 }

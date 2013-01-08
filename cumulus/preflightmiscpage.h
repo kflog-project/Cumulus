@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers
-**                   2008-2012 Axel Pauli
+**                   2008-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *
  * \author André Somers, Axel Pauli
  *
- * \brief A widget for preflight miscellaneous settings.
+ * \brief A widget for pre-flight miscellaneous settings.
  *
- * \date 2004-2012
+ * \date 2004-2013
  *
  * \version $Id$
  *
@@ -41,7 +41,13 @@ class QCheckBox;
 class QComboBox;
 class QPushButton;
 class QSpinBox;
+
+#ifdef USE_NUM_PAD
+class DoubleNumberEditor;
+class NumberEditor;
+#else
 class QDoubleSpinBox;
+#endif
 
 class PreFlightMiscPage : public QWidget
 {
@@ -80,12 +86,19 @@ class PreFlightMiscPage : public QWidget
  private:
 
   QCheckBox*      m_chkLogAutoStart;
-  QDoubleSpinBox* m_logAutoStartSpeed;
-  QSpinBox*       m_edtMinimalArrival;
   QComboBox*      m_edtArrivalAltitude;
-  QSpinBox*       m_edtQNH;
   QSpinBox*       m_bRecordInterval; // B-Record logging interval in seconds
   QSpinBox*       m_kRecordInterval; // K-Record logging interval in seconds
+
+#ifdef USE_NUM_PAD
+  DoubleNumberEditor* m_logAutoStartSpeed;
+  NumberEditor*       m_edtMinimalArrival;
+  NumberEditor*       m_edtQNH;
+#else
+  QDoubleSpinBox*     m_logAutoStartSpeed;
+  QSpinBox*           m_edtMinimalArrival;
+  QSpinBox*           m_edtQNH;
+#endif
 
   double m_loadedSpeed;
 

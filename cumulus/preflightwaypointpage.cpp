@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011 by Axel Pauli
+**   Copyright (c):  2011-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,6 +25,10 @@
 #include "mapcontents.h"
 #include "waypointcatalog.h"
 
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#endif
+
 extern MapContents* _globalMapContents;
 
 // Minimum amount of required free memory to start import of a waypoint file.
@@ -33,95 +37,123 @@ extern MapContents* _globalMapContents;
 
 PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   QWidget(parent),
-  centerRef(Position),
-  _waypointFileFormat(GeneralConfig::Binary)
+  m_centerRef(Position),
+  m_waypointFileFormat(GeneralConfig::Binary)
 {
   setObjectName("PreFlightWaypointPage");
 
-  wpTypesBox = new QComboBox;
-  wpTypesBox->addItem( tr("All"), WaypointCatalog::All );
-  wpTypesBox->addItem( tr("Airfields"), WaypointCatalog::Airfields );
-  wpTypesBox->addItem( tr("Gliderfields"), WaypointCatalog::Gliderfields );
-  wpTypesBox->addItem( tr("Outlandings"), WaypointCatalog::Outlandings );
-  wpTypesBox->addItem( tr("Other Points"), WaypointCatalog::OtherPoints );
+  m_wpTypesBox = new QComboBox;
+  m_wpTypesBox->addItem( tr("All"), WaypointCatalog::All );
+  m_wpTypesBox->addItem( tr("Airfields"), WaypointCatalog::Airfields );
+  m_wpTypesBox->addItem( tr("Gliderfields"), WaypointCatalog::Gliderfields );
+  m_wpTypesBox->addItem( tr("Outlandings"), WaypointCatalog::Outlandings );
+  m_wpTypesBox->addItem( tr("Other Points"), WaypointCatalog::OtherPoints );
 
-  wpRadiusBox = new QComboBox;
-  wpRadiusBox->setEditable( true );
-  wpRadiusBox->setValidator( new QIntValidator(1, 5000, this) );
+#ifdef USE_NUM_PAD
+  m_wpRadiusBox = new NumberEditor;
+  m_wpRadiusBox->setDecimalVisible( false );
+  m_wpRadiusBox->setPmVisible( false );
+  m_wpRadiusBox->setMaxLength(4);
+  m_wpRadiusBox->setSuffix( " " + Distance::getUnitText() );
+  m_wpRadiusBox->setMaximum( 9999 );
+  m_wpRadiusBox->setText( "500" );
+
+  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
+  m_wpRadiusBox->setValidator( eValidator );
+
+  int mw = QFontMetrics(font()).width("9999 Km") + 10;
+  m_wpRadiusBox->setMinimumWidth( mw );
+#else
+
+  m_wpRadiusBox = new QComboBox;
+  m_wpRadiusBox->setEditable( true );
+  m_wpRadiusBox->setValidator( new QIntValidator(1, 5000, this) );
   QStringList itemList;
   itemList << "10" << "50" << "100" << "300" << "500" << "1000" << "2000";
-  wpRadiusBox->addItems( itemList );
-  wpRadiusBox->setCurrentIndex( 4 );
+  m_wpRadiusBox->addItems( itemList );
+  m_wpRadiusBox->setCurrentIndex( 4 );
 #ifdef MAEMO5  
-  wpRadiusBox->setMinimumWidth( wpRadiusBox->sizeHint().width() );
+  m_wpRadiusBox->setMinimumWidth( m_wpRadiusBox->sizeHint().width() );
+#endif
 #endif
   
   QFormLayout* selectLayout1 = new QFormLayout;
-  selectLayout1->addRow( tr("Type:"), wpTypesBox );
+  selectLayout1->addRow( tr("Type:"), m_wpTypesBox );
 
   QFormLayout* selectLayout2 = new QFormLayout;
+
+#ifdef USE_NUM_PAD
+  selectLayout2->addRow( tr("Radius") + ":", m_wpRadiusBox );
+
+#else
   selectLayout2->addRow( tr("Radius") + " (" + Distance::getUnitText() + "):",
-                         wpRadiusBox );
+                         m_wpRadiusBox );
+#endif
 
   QHBoxLayout* selectLayout = new QHBoxLayout;
   selectLayout->setSpacing( 5 );
   selectLayout->addLayout( selectLayout1 );
   selectLayout->addLayout( selectLayout2 );
 
-  selectGroup = new QGroupBox( tr("Select") );
-  selectGroup->setLayout( selectLayout );
+  m_selectGroup = new QGroupBox( tr("Select") );
+  m_selectGroup->setLayout( selectLayout );
 
   //---------------------------------------------------------------------------
-  positionRB = new QRadioButton(tr("Position"));
-  homeRB     = new QRadioButton(tr("Homesite"));
-  airfieldRB = new QRadioButton(tr("Airfield"));
+  m_positionRB = new QRadioButton(tr("Position"));
+  m_homeRB     = new QRadioButton(tr("Homesite"));
+  m_airfieldRB = new QRadioButton(tr("Airfield"));
 
-  homeRB->setChecked( true );
+  m_homeRB->setChecked( true );
 
   QButtonGroup* radiusButtonGroup = new QButtonGroup(this);
   radiusButtonGroup->setExclusive(true);
-  radiusButtonGroup->addButton( positionRB, Position );
-  radiusButtonGroup->addButton( homeRB, Home );
-  radiusButtonGroup->addButton( airfieldRB, Airfield );
+  radiusButtonGroup->addButton( m_positionRB, Position );
+  radiusButtonGroup->addButton( m_homeRB, Home );
+  radiusButtonGroup->addButton( m_airfieldRB, Airfield );
 
   connect( radiusButtonGroup, SIGNAL( buttonClicked(int)),
            this, SLOT(slotSelectCenterReference(int)));
 
-  centerLat = new LatEdit;
-  centerLon = new LongEdit;
+#ifdef USE_NUM_PAD
+  m_centerLat = new LatEditNumPad;
+  m_centerLon = new LongEditNumPad;
+#else
+  m_centerLat = new LatEdit;
+  m_centerLon = new LongEdit;
+#endif
 
-  centerLatLabel = new QLabel(tr("Latitude:"));
-  centerLonLabel = new QLabel(tr("Longitude:"));
+  m_centerLatLabel = new QLabel(tr("Latitude:"));
+  m_centerLonLabel = new QLabel(tr("Longitude:"));
 
   QGridLayout* latLonGrid = new QGridLayout;
   latLonGrid->setSpacing( 10 );
-  latLonGrid->addWidget( centerLatLabel, 0 , 0 );
-  latLonGrid->addWidget( centerLat, 0, 1 );
-  latLonGrid->addWidget( centerLonLabel, 1 , 0 );
-  latLonGrid->addWidget( centerLon, 1, 1 );
+  latLonGrid->addWidget( m_centerLatLabel, 0 , 0 );
+  latLonGrid->addWidget( m_centerLat, 0, 1 );
+  latLonGrid->addWidget( m_centerLonLabel, 1 , 0 );
+  latLonGrid->addWidget( m_centerLon, 1, 1 );
   latLonGrid->setColumnStretch( 2, 5 );
 
-  homeLabel   = new QLabel;
-  airfieldBox = new QComboBox;
+  m_homeLabel   = new QLabel;
+  m_airfieldBox = new QComboBox;
 
   QGridLayout* centerPointGrid = new QGridLayout;
   centerPointGrid->setSpacing( 5 );
-  centerPointGrid->addWidget( positionRB, 0, 0 );
-  centerPointGrid->addWidget( homeRB, 1, 0 );
-  centerPointGrid->addWidget( airfieldRB, 2, 0 );
+  centerPointGrid->addWidget( m_positionRB, 0, 0 );
+  centerPointGrid->addWidget( m_homeRB, 1, 0 );
+  centerPointGrid->addWidget( m_airfieldRB, 2, 0 );
 
   QVBoxLayout* centerPointVBox = new QVBoxLayout;
 
   centerPointVBox->setMargin( 0 );
   centerPointVBox->addLayout( latLonGrid );
-  centerPointVBox->addWidget( homeLabel );
-  centerPointVBox->addWidget( airfieldBox );
+  centerPointVBox->addWidget( m_homeLabel );
+  centerPointVBox->addWidget( m_airfieldBox );
 
   centerPointGrid->addLayout( centerPointVBox, 0, 2, 3, 1 );
   centerPointGrid->setColumnStretch( 1, 5 );
 
-  centerPointGroup = new QGroupBox( tr("Center Point") );
-  centerPointGroup->setLayout( centerPointGrid );
+  m_centerPointGroup = new QGroupBox( tr("Center Point") );
+  m_centerPointGroup->setLayout( centerPointGrid );
 
   //---------------------------------------------------------------------------
   QPushButton* loadButton = new QPushButton( tr("Load") );
@@ -129,11 +161,11 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
 
   connect( loadButton, SIGNAL(clicked()), this, SLOT(slotImportFile()) );
 
-  filterToggle = new QCheckBox( tr("Filter") );
-  filterToggle->setCheckable( true );
-  filterToggle->setChecked( true );
+  m_filterToggle = new QCheckBox( tr("Filter") );
+  m_filterToggle->setCheckable( true );
+  m_filterToggle->setChecked( true );
 
-  connect( filterToggle, SIGNAL(stateChanged(int)),
+  connect( m_filterToggle, SIGNAL(stateChanged(int)),
            this, SLOT(slotToggleFilter(int)) );
 
   slotToggleFilter( Qt::Checked );
@@ -141,33 +173,33 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   QHBoxLayout* controlBox = new QHBoxLayout;
   controlBox->addWidget( loadButton );
   controlBox->addStretch( 5 );
-  controlBox->addWidget( filterToggle );
+  controlBox->addWidget( m_filterToggle );
 
   QVBoxLayout* wpiBox = new QVBoxLayout;
   wpiBox->setSpacing( 5 );
-  wpiBox->addWidget( selectGroup );
-  wpiBox->addWidget( centerPointGroup );
+  wpiBox->addWidget( m_selectGroup );
+  wpiBox->addWidget( m_centerPointGroup );
   wpiBox->addSpacing( 5 );
   wpiBox->addLayout( controlBox );
 
   QGroupBox* wpiGroup = new QGroupBox( tr("Waypoint Import") );
   wpiGroup->setLayout( wpiBox );
 
-  wpFileFormatBox = new QComboBox;
-  wpFileFormatBox->addItem( tr("Binary"), 0 );
-  wpFileFormatBox->addItem( tr("XML"), 1 );
+  m_wpFileFormatBox = new QComboBox;
+  m_wpFileFormatBox->addItem( tr("Binary"), 0 );
+  m_wpFileFormatBox->addItem( tr("XML"), 1 );
 
-  wpPriorityBox = new QComboBox;
-  wpPriorityBox->addItem( tr("Source"), 3 );
-  wpPriorityBox->addItem( tr("Low"), 0 );
-  wpPriorityBox->addItem( tr("Normal"), 1 );
-  wpPriorityBox->addItem( tr("High"), 2 );
+  m_wpPriorityBox = new QComboBox;
+  m_wpPriorityBox->addItem( tr("Source"), 3 );
+  m_wpPriorityBox->addItem( tr("Low"), 0 );
+  m_wpPriorityBox->addItem( tr("Normal"), 1 );
+  m_wpPriorityBox->addItem( tr("High"), 2 );
 
   QFormLayout* storageLayout = new QFormLayout;
-  storageLayout->addRow( tr("Storage Format:"), wpFileFormatBox );
+  storageLayout->addRow( tr("Storage Format:"), m_wpFileFormatBox );
 
   QFormLayout* priorityLayout = new QFormLayout;
-  priorityLayout->addRow( tr("Priority:"), wpPriorityBox );
+  priorityLayout->addRow( tr("Priority:"), m_wpPriorityBox );
 
   QHBoxLayout* buttomLayout = new QHBoxLayout;
   buttomLayout->setSpacing( 5 );
@@ -191,13 +223,13 @@ void PreFlightWaypointPage::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  _waypointFileFormat = conf->getWaypointFileFormat();
+  m_waypointFileFormat = conf->getWaypointFileFormat();
 
-  wpFileFormatBox->setCurrentIndex( _waypointFileFormat );
+  m_wpFileFormatBox->setCurrentIndex( m_waypointFileFormat );
 
-  wpPriorityBox->setCurrentIndex( conf->getWaypointPriority() );
+  m_wpPriorityBox->setCurrentIndex( conf->getWaypointPriority() );
 
-  homeLabel->setText( WGSPoint::printPos(conf->getHomeLat(), true) +
+  m_homeLabel->setText( WGSPoint::printPos(conf->getHomeLat(), true) +
                       " - " +
                       WGSPoint::printPos(conf->getHomeLon(), false) );
 
@@ -205,26 +237,26 @@ void PreFlightWaypointPage::load()
 
   loadAirfieldComboBox();
 
-  int idx = airfieldBox->findText( conf->getWaypointAirfieldReference() );
+  int idx = m_airfieldBox->findText( conf->getWaypointAirfieldReference() );
 
   if( idx == -1 )
     {
       idx = 1;
     }
 
-  airfieldBox->setCurrentIndex( idx );
+  m_airfieldBox->setCurrentIndex( idx );
 }
 
 void PreFlightWaypointPage::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) wpFileFormatBox->itemData(wpFileFormatBox->currentIndex()).toInt() );
-  conf->setWaypointPriority( wpPriorityBox->currentIndex() );
-  conf->setWaypointCenterReference( centerRef );
-  conf->setWaypointAirfieldReference( airfieldBox->currentText() );
+  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) m_wpFileFormatBox->itemData(m_wpFileFormatBox->currentIndex()).toInt() );
+  conf->setWaypointPriority( m_wpPriorityBox->currentIndex() );
+  conf->setWaypointCenterReference( m_centerRef );
+  conf->setWaypointAirfieldReference( m_airfieldBox->currentText() );
 
-  if( _waypointFileFormat != wpFileFormatBox->currentIndex() &&
+  if( m_waypointFileFormat != m_wpFileFormatBox->currentIndex() &&
       _globalMapContents->getWaypointList().size() > 0 )
     {
       // Waypoint storage format has been changed, store all waypoints
@@ -262,38 +294,38 @@ void PreFlightWaypointPage::save()
 /** Stores the new selected radius */
 void PreFlightWaypointPage::slotSelectCenterReference( int reference )
 {
-  centerRef = static_cast<enum PreFlightWaypointPage::CenterReference>(reference);
+  m_centerRef = static_cast<enum PreFlightWaypointPage::CenterReference>(reference);
 
-  switch( centerRef )
+  switch( m_centerRef )
   {
     case PreFlightWaypointPage::Home:
-      homeRB->setChecked( true );
-      centerLat->setVisible(false);
-      centerLon->setVisible(false);
-      centerLatLabel->setVisible(false);
-      centerLonLabel->setVisible(false);
-      airfieldBox->setVisible(false);
-      homeLabel->setVisible(true);
+      m_homeRB->setChecked( true );
+      m_centerLat->setVisible(false);
+      m_centerLon->setVisible(false);
+      m_centerLatLabel->setVisible(false);
+      m_centerLonLabel->setVisible(false);
+      m_airfieldBox->setVisible(false);
+      m_homeLabel->setVisible(true);
       break;
     case PreFlightWaypointPage::Airfield:
-      airfieldRB->setChecked( true );
-      centerLat->setVisible(false);
-      centerLon->setVisible(false);
-      centerLatLabel->setVisible(false);
-      centerLonLabel->setVisible(false);
-      airfieldBox->setVisible(true);
-      homeLabel->setVisible(false);
+      m_airfieldRB->setChecked( true );
+      m_centerLat->setVisible(false);
+      m_centerLon->setVisible(false);
+      m_centerLatLabel->setVisible(false);
+      m_centerLonLabel->setVisible(false);
+      m_airfieldBox->setVisible(true);
+      m_homeLabel->setVisible(false);
       break;
     case PreFlightWaypointPage::Position:
     default:
-      positionRB->setChecked( true );
-      centerRef = PreFlightWaypointPage::Position;
-      centerLat->setVisible(true);
-      centerLon->setVisible(true);
-      centerLatLabel->setVisible(true);
-      centerLonLabel->setVisible(true);
-      airfieldBox->setVisible(false);
-      homeLabel->setVisible(false);
+      m_positionRB->setChecked( true );
+      m_centerRef = PreFlightWaypointPage::Position;
+      m_centerLat->setVisible(true);
+      m_centerLon->setVisible(true);
+      m_centerLatLabel->setVisible(true);
+      m_centerLonLabel->setVisible(true);
+      m_airfieldBox->setVisible(false);
+      m_homeLabel->setVisible(false);
       break;
     }
 }
@@ -303,8 +335,8 @@ void PreFlightWaypointPage::slotSelectCenterReference( int reference )
  */
 void PreFlightWaypointPage::slotToggleFilter( int toggle )
 {
-  selectGroup->setEnabled( (toggle == Qt::Checked ? true : false) );
-  centerPointGroup->setEnabled( (toggle == Qt::Checked ? true : false) );
+  m_selectGroup->setEnabled( (toggle == Qt::Checked ? true : false) );
+  m_centerPointGroup->setEnabled( (toggle == Qt::Checked ? true : false) );
 }
 
 void PreFlightWaypointPage::slotImportFile()
@@ -334,32 +366,36 @@ void PreFlightWaypointPage::slotImportFile()
 
   catalog.showProgress( true );
 
-  if( filterToggle->isChecked() )
+  if( m_filterToggle->isChecked() )
     {
       // We have to set the filter values before catalog reading.
       enum WaypointCatalog::WpType type = (enum WaypointCatalog::WpType)
-          wpTypesBox->itemData(wpTypesBox->currentIndex()).toInt();
+          m_wpTypesBox->itemData(m_wpTypesBox->currentIndex()).toInt();
 
-      int radius = wpRadiusBox->currentText().toInt();
+#ifdef USE_NUM_PAD
+      int radius = m_wpRadiusBox->value();
+#else
+      int radius = m_wpRadiusBox->currentText().toInt();
+#endif
 
       WGSPoint wgsPoint;
 
-      if( positionRB->isChecked() )
+      if( m_positionRB->isChecked() )
         {
-          wgsPoint = WGSPoint( centerLat->KFLogDegree(), centerLon->KFLogDegree() );
+          wgsPoint = WGSPoint( m_centerLat->KFLogDegree(), m_centerLon->KFLogDegree() );
         }
-      else if( homeRB->isChecked() )
+      else if( m_homeRB->isChecked() )
         {
           GeneralConfig *conf = GeneralConfig::instance();
           wgsPoint = WGSPoint( conf->getHomeLat(), conf->getHomeLon() );
         }
-      else if( airfieldRB->isChecked() )
+      else if( m_airfieldRB->isChecked() )
         {
-          QString s = airfieldBox->currentText();
+          QString s = m_airfieldBox->currentText();
 
-          if( airfieldDict.contains(s) )
+          if( m_airfieldDict.contains(s) )
             {
-              SinglePoint *sp = airfieldDict.value(s);
+              SinglePoint *sp = m_airfieldDict.value(s);
               wgsPoint = sp->getWGSPosition();
             }
         }
@@ -542,7 +578,7 @@ void PreFlightWaypointPage::slotImportFile()
       nameCoordDict.insert( wpList.at(i).name, wpcString );
 
       // Look, which waypoint priority has to be used for the import.
-      int priority = wpPriorityBox->itemData(wpPriorityBox->currentIndex()).toInt();
+      int priority = m_wpPriorityBox->itemData(m_wpPriorityBox->currentIndex()).toInt();
 
       if( priority != 3 )
         {
@@ -593,8 +629,8 @@ void PreFlightWaypointPage::loadAirfieldComboBox()
 {
   int searchList[] = { MapContents::GliderfieldList, MapContents::AirfieldList };
 
-  airfieldDict.clear();
-  airfieldBox->clear();
+  m_airfieldDict.clear();
+  m_airfieldBox->clear();
 
   QStringList airfieldList;
 
@@ -604,11 +640,11 @@ void PreFlightWaypointPage::loadAirfieldComboBox()
       {
         SinglePoint *hitElement = (SinglePoint *) _globalMapContents->getElement(searchList[l], loop );
         airfieldList.append( hitElement->getName() );
-        airfieldDict.insert( hitElement->getName(), hitElement );
+        m_airfieldDict.insert( hitElement->getName(), hitElement );
       }
   }
 
   airfieldList.sort();
-  airfieldBox->addItems( airfieldList );
-  airfieldBox->setCurrentIndex( 0 );
+  m_airfieldBox->addItems( airfieldList );
+  m_airfieldBox->setCurrentIndex( 0 );
 }

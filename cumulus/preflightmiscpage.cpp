@@ -35,6 +35,11 @@
 #include "gpsnmea.h"
 #endif
 
+#ifdef USE_NUM_PAD
+#include "doubleNumberEditor.h"
+#include "numberEditor.h"
+#endif
+
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   QWidget(parent)
 {
@@ -54,6 +59,19 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
+#ifdef USE_NUM_PAD
+  m_edtMinimalArrival = new NumberEditor;
+  m_edtMinimalArrival->setDecimalVisible( false );
+  m_edtMinimalArrival->setPmVisible( false );
+  m_edtMinimalArrival->setRange( 0, 9999);
+  m_edtMinimalArrival->setMaxLength(4);
+  m_edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
+
+  int maw = QFontMetrics(font()).width("9999 ft") + 10;
+  m_edtMinimalArrival->setMinimumWidth( maw );
+
+  topLayout->addWidget(m_edtMinimalArrival, row, 1);
+#else
   m_edtMinimalArrival = new QSpinBox;
 
   if (m_altUnit == Altitude::meters)
@@ -70,6 +88,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
   hspin = new VarSpinBox(m_edtMinimalArrival);
   topLayout->addWidget(hspin, row, 1);
+#endif
+
   topLayout->setColumnStretch(2, 2);
   row++;
 
@@ -83,12 +103,27 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 
   lbl = new QLabel(tr("QNH:"));
   topLayout->addWidget(lbl, row, 0);
+
+#ifdef USE_NUM_PAD
+  m_edtQNH = new NumberEditor;
+  m_edtQNH->setDecimalVisible( false );
+  m_edtQNH->setPmVisible( false );
+  m_edtQNH->setRange( 0, 9999);
+  m_edtQNH->setMaxLength(4);
+  m_edtQNH->setSuffix(" hPa");
+
+  int mqw = QFontMetrics(font()).width("9999 hPa") + 10;
+  m_edtQNH->setMinimumWidth( mqw );
+
+  topLayout->addWidget(m_edtQNH, row, 1);
+#else
   m_edtQNH = new QSpinBox(this);
-  m_edtQNH->setObjectName("QNH");
   m_edtQNH->setMaximum(1999);
   m_edtQNH->setSuffix(" hPa");
   hspin = new VarSpinBox(m_edtQNH);
   topLayout->addWidget(hspin, row, 1);
+#endif
+
   row++;
 
   topLayout->setRowMinimumHeight(row, 10);
@@ -101,6 +136,21 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // during storage.
   m_speedUnit = Speed::getHorizontalUnit();
 
+#ifdef USE_NUM_PAD
+  m_logAutoStartSpeed = new DoubleNumberEditor( this );
+  m_logAutoStartSpeed->setDecimalVisible( true );
+  m_logAutoStartSpeed->setPmVisible( false );
+  m_logAutoStartSpeed->setMaxLength(4);
+  m_logAutoStartSpeed->setRange( 1.0, 99.9);
+  m_logAutoStartSpeed->setPrefix( "> " );
+  m_logAutoStartSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  m_logAutoStartSpeed->setDecimals( 1 );
+
+  int mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
+  m_logAutoStartSpeed->setMinimumWidth( mlw );
+
+  topLayout->addWidget( m_logAutoStartSpeed, row, 1 );
+#else
   m_logAutoStartSpeed = new QDoubleSpinBox( this );
   m_logAutoStartSpeed->setButtonSymbols(QSpinBox::PlusMinus);
   m_logAutoStartSpeed->setRange( 1.0, 99.0);
@@ -110,6 +160,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_logAutoStartSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
   hspin = new VarSpinBox( m_logAutoStartSpeed );
   topLayout->addWidget( hspin, row, 1 );
+#endif
+
   row++;
 
   lbl = new QLabel(tr("B-Record Interval:"));
@@ -187,12 +239,18 @@ void PreFlightMiscPage::load()
   if (m_altUnit == Altitude::meters) // user wants meters
     {
       m_edtMinimalArrival->setValue((int) rint(minArrival.getMeters()));
+
+#ifndef USE_NUM_PAD
       m_edtMinimalArrival->setSingleStep(50);
+#endif
     }
   else // user gets feet
     {
       m_edtMinimalArrival->setValue((int) rint(minArrival.getFeet()));
+
+#ifndef USE_NUM_PAD
       m_edtMinimalArrival->setSingleStep(100);
+#endif
     }
 
   m_edtArrivalAltitude->setCurrentIndex( conf->getArrivalAltitudeDisplay() );

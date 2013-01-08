@@ -293,8 +293,6 @@ void PreFlightGliderPage::slotUpdateWingLoad( int value )
 {
   Q_UNUSED(value)
 
-  qDebug() << "PreFlightGliderPage::slotUpdateWingLoad:" << value;
-
   Glider* glider = m_gliderList->getSelectedGlider();
 
   if( glider == 0 || glider->polar() == 0 || glider->polar()->wingArea() == 0.0 )

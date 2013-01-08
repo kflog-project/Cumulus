@@ -239,17 +239,37 @@ class NumberEditor : public QLabel
     m_tip = tip;
   };
 
-  signals:
+ signals:
 
-   void numberEdited( const QString& number );
+  /**
+   * Emitted, if the number editor is closed by the user to give back the
+   * edited value. If the value was not edited, the initial value is returned.
+   */
+  void numberEdited( const QString& number );
 
-   void valueChanged( int i );
+  /**
+   * Emitted after every user input, if the edited number is valid.
+   *
+   * @param i The new integer value.
+   */
+  void valueChanged( int i );
 
-   void valueChanged( double d );
+  /**
+   * Emitted after every user input, if the edited number is valid.
+   *
+   * @param d The new double value.
+   */
+  void valueChanged( double d );
 
-  protected slots:
+ protected slots:
 
-   virtual void slot_NumberEdited( const QString& number );
+  /**
+   * Called if the number editor was closed. Can be overwritten in a derived
+   * class.
+   *
+   * \param The edited number
+   */
+  virtual void slot_NumberEdited( const QString& number );
 
  protected:
 
@@ -260,6 +280,9 @@ class NumberEditor : public QLabel
 
   void showEvent( QShowEvent *event );
 
+  /**
+   * Sets the number with prefix and suffix in the display label.
+   */
   void setText()
   {
     QLabel::setText( m_prefix + m_number + m_suffix );

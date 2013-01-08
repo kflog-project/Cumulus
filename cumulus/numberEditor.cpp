@@ -43,8 +43,8 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_maxLength(32767),
   m_intMax(false, INT_MAX),
   m_intMin(false, INT_MIN),
-  m_doubleMax(false,INT_MAX),
-  m_doubleMin(false, INT_MIN)
+  m_doubleMax(false, double(INT_MAX)),
+  m_doubleMin(false, double(INT_MIN))
 {
   setObjectName("NumberEditor");
 

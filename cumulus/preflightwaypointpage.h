@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011 by Axel Pauli
+**   Copyright (c):  2011-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * The supported waypoint formats are the Seeyou cup format and the KFLog
  * XML waypoint format.
  *
- * \date 2011
+ * \date 2011-2013
  *
  * \version $Id$
  *
@@ -44,8 +44,16 @@
 #include <QRadioButton>
 #include <QString>
 
-#include "coordedit.h"
 #include "singlepoint.h"
+
+#ifdef USE_NUM_PAD
+#include "coordeditnumpad.h"
+
+class NumberEditor;
+
+#else
+#include "coordedit.h"
+#endif
 
 class PreFlightWaypointPage : public QWidget
 {
@@ -105,33 +113,39 @@ public:
 
 private:
 
-  QHash<QString, SinglePoint*> airfieldDict;
+  QHash<QString, SinglePoint*> m_airfieldDict;
 
-  enum CenterReference centerRef;
+  enum CenterReference m_centerRef;
 
-  LatEdit*  centerLat;
-  LongEdit* centerLon;
+#ifdef USE_NUM_PAD
+  LatEditNumPad   *m_centerLat;
+  LongEditNumPad  *m_centerLon;
+  NumberEditor    *m_wpRadiusBox;
+#else
+  LatEdit*  m_centerLat;
+  LongEdit* m_centerLon;
+  QComboBox* m_wpRadiusBox;
+#endif
 
-  QComboBox* wpTypesBox;
-  QComboBox* wpRadiusBox;
-  QComboBox* airfieldBox;
-  QComboBox* wpPriorityBox;
-  QComboBox* wpFileFormatBox;
+  QComboBox* m_wpTypesBox;
+  QComboBox* m_airfieldBox;
+  QComboBox* m_wpPriorityBox;
+  QComboBox* m_wpFileFormatBox;
 
-  QRadioButton* positionRB;
-  QRadioButton* homeRB;
-  QRadioButton* airfieldRB;
+  QRadioButton* m_positionRB;
+  QRadioButton* m_homeRB;
+  QRadioButton* m_airfieldRB;
 
-  QLabel* centerLatLabel;
-  QLabel* centerLonLabel;
-  QLabel* homeLabel;
+  QLabel* m_centerLatLabel;
+  QLabel* m_centerLonLabel;
+  QLabel* m_homeLabel;
 
-  QCheckBox* filterToggle;
-  QGroupBox* selectGroup;
-  QGroupBox* centerPointGroup;
+  QCheckBox* m_filterToggle;
+  QGroupBox* m_selectGroup;
+  QGroupBox* m_centerPointGroup;
 
   /** Saved waypoint file format after load. */
-  int _waypointFileFormat;
+  int m_waypointFileFormat;
 };
 
 #endif

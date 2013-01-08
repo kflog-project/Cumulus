@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,14 @@
 
 class PreFlightGliderPage;
 class PreFlightMiscPage;
-class PreFlightTaskList;
 class PreFlightWaypointPage;
 class Waypoint;
+
+#ifdef USE_NUM_PAD
+class PreFlightTaskPage;
+#else
+class PreFlightTaskList;
+#endif
 
 /**
  * \class PreFlightWidget
@@ -38,7 +43,7 @@ class Waypoint;
  * This widget provides an interface to set all the pre-flight settings like
  * glider type, copilot, task, amount of water taken on, etc.
  *
- * \date 2003-2012
+ * \date 2003-2013
  */
 class PreFlightWidget : public QWidget
 {
@@ -127,11 +132,16 @@ private slots:
 
 private:
 
-  PreFlightTaskList *taskpage;
-  PreFlightGliderPage *gliderpage;
-  PreFlightMiscPage *miscpage;
-  PreFlightWaypointPage *wppage;
-  QTabWidget* tabWidget;
+  PreFlightGliderPage*   m_gliderpage;
+  PreFlightMiscPage*     m_miscpage;
+  PreFlightWaypointPage* m_wppage;
+  QTabWidget*            tabWidget;
+
+#ifdef USE_NUM_PAD
+  PreFlightTaskPage* m_taskpage;
+#else
+  PreFlightTaskList* m_taskpage;
+#endif
 
   // index of last selected page
   int lastPage;
