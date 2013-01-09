@@ -252,7 +252,7 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
       m_editor->insert( text );
       m_pressedButton = button;
     }
-  else if( text == "." )
+  else if( button == m_decimal ) // "."
     {
       if( m_editor->text().contains(".") == false )
         {
@@ -272,27 +272,27 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
             }
         }
     }
-  else if( text == "<-" )
+  else if( button == m_left ) // "<-"
     {
       m_editor->cursorBackward( false );
       m_pressedButton = m_left;
     }
-  else if( text == "->" )
+  else if( button == m_right ) // "->"
     {
       m_editor->cursorForward( false );
       m_pressedButton = m_right;
     }
-  else if( text == "<x" )
+  else if( button == m_delLeft ) // "<x"
     {
       m_editor->backspace();
       m_pressedButton = m_delLeft;
     }
-  else if( text == "x>" )
+  else if( button == m_delRight ) // "x>"
     {
       m_editor->del();
       m_pressedButton = m_delRight;
     }
-  else if( text == "H" )
+  else if( button == m_home ) // "H"
     {
       m_editor->home( false );
       m_pressedButton = 0;
