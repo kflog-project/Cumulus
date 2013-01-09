@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -137,8 +137,9 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   QLabel* lbl = new QLabel( tr( "AltGain:" ), this );
   altitudeLayout->addWidget( lbl, row, 0 );
 
-  altitudeGainDisplay = new QLineEdit;
+  altitudeGainDisplay = new QLineEdit( this );
   altitudeGainDisplay->setReadOnly( true );
+  altitudeGainDisplay->setFont( font() );
   altitudeLayout->addWidget( altitudeGainDisplay, row, 1 );
 
   setAltitudeGain = new QPushButton( "S", this );
