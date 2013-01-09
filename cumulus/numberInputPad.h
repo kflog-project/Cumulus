@@ -234,6 +234,7 @@ class NumberInputPad : public QFrame
 
  private slots:
 
+  void slot_DigitPressed( QWidget *widget );
   void slot_ButtonPressed( QWidget *widget );
 
   void slot_Repeat();
@@ -274,7 +275,8 @@ class NumberInputPad : public QFrame
   QPushButton* m_num8;
   QPushButton* m_num9;
 
-  QSignalMapper* m_signalMapper;
+  QSignalMapper* m_digitSignalMapper;
+  QSignalMapper* m_buttonSignalMapper;
 
   QTimer* m_timer;
 
@@ -300,7 +302,7 @@ class NumberInputPad : public QFrame
   QPair<bool, double> m_doubleMinimum;
 
   /** To remember the last pressed button */
-  QPushButton* m_pressedButton;
+  QAbstractButton* m_pressedButton;
 };
 
 #endif // NumberInputPad_h
