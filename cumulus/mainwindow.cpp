@@ -358,8 +358,6 @@ void MainWindow::slotCreateDisclaimer()
         "</div>"
         "</html>");
 
-  QApplication::beep();
-
   MessageWidget *mw = new MessageWidget( disclaimer, this );
   connect( mw, SIGNAL(yesClicked()), SLOT(slotCreateSplash()) );
   connect( mw, SIGNAL(noClicked()), SLOT(close()) );
