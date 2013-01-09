@@ -49,15 +49,15 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   qApp->setAutoSipEnabled( false );
 
   int row = 0;
-  QGridLayout* gl = new QGridLayout(this);
+  QGridLayout* gl = new QGridLayout (this);
   gl->setMargin(5);
 
-  m_tipLabel = new QLabel(this);
+  m_tipLabel = new QLabel (this);
   m_tipLabel->setAlignment(Qt::AlignCenter);
   gl->addWidget( m_tipLabel, row, 0, 1, 5 );
   row++;
 
-  m_editor = new QLineEdit(this);
+  m_editor = new QLineEdit (this);
 
   connect( m_editor, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_TextChanged(const QString&)) );
@@ -65,7 +65,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   setNumber( number );
   gl->addWidget( m_editor, row, 0, 1, 5 );
 
-  m_ok = new QPushButton( " " );
+  m_ok = new QPushButton( " ", this );
   m_ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
   gl->addWidget( m_ok, row, 6 );
   row++;
@@ -116,19 +116,25 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_decimal = new QPushButton( ".", this );
   gl->addWidget( m_decimal, row, 0 );
 
-  m_left = new QPushButton( "<-", this );
+  QStyle* style = QApplication::style();
+  
+  m_left = new QPushButton(this);
+  m_left->setIcon (style->standardIcon(QStyle::SP_ArrowLeft));
   gl->addWidget( m_left, row, 1 );
 
-  m_right = new QPushButton( "->", this );
+  m_right = new QPushButton( this );
+  m_right->setIcon (style->standardIcon(QStyle::SP_ArrowRight));
   gl->addWidget( m_right, row, 2 );
 
-  m_delLeft = new QPushButton( "<x", this );
+  m_delLeft = new QPushButton( this );
+  m_delLeft->setIcon (style->standardIcon(QStyle::SP_MediaSkipBackward));
   gl->addWidget( m_delLeft, row, 3 );
 
-  m_delRight = new QPushButton( "x>", this );
+  m_delRight = new QPushButton( this );
+  m_delRight->setIcon (style->standardIcon(QStyle::SP_MediaSkipForward));
   gl->addWidget( m_delRight, row, 4 );
 
-  m_cancel = new QPushButton( " " );
+  m_cancel = new QPushButton( " ", this );
   m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
   gl->addWidget( m_cancel, row, 6 );
 
@@ -152,43 +158,46 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_num8->setFocusPolicy( Qt::NoFocus );
   m_num9->setFocusPolicy( Qt::NoFocus );
 
-  m_signalMapper = new QSignalMapper(this);
+  m_digitSignalMapper = new QSignalMapper(this);
+  m_buttonSignalMapper = new QSignalMapper(this);
 
-  connect(m_num1, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num2, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num3, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num4, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num5, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num6, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num7, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num8, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num9, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_num0, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_decimal, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_left, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_right, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_delLeft, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_delRight, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
-  connect(m_home, SIGNAL(pressed()), m_signalMapper, SLOT(map()));
+  connect(m_num1, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num2, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num3, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num4, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num5, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num6, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num7, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num8, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num9, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_num0, SIGNAL(pressed()), m_digitSignalMapper, SLOT(map()));
+  connect(m_decimal, SIGNAL(pressed()), m_buttonSignalMapper, SLOT(map()));
+  connect(m_left, SIGNAL(pressed()), m_buttonSignalMapper, SLOT(map()));
+  connect(m_right, SIGNAL(pressed()), m_buttonSignalMapper, SLOT(map()));
+  connect(m_delLeft, SIGNAL(pressed()), m_buttonSignalMapper, SLOT(map()));
+  connect(m_delRight, SIGNAL(pressed()), m_buttonSignalMapper, SLOT(map()));
+  connect(m_home, SIGNAL(pressed()), m_buttonSignalMapper, SLOT(map()));
 
-  m_signalMapper->setMapping(m_num1, m_num1);
-  m_signalMapper->setMapping(m_num2, m_num2);
-  m_signalMapper->setMapping(m_num3, m_num3);
-  m_signalMapper->setMapping(m_num4, m_num4);
-  m_signalMapper->setMapping(m_num5, m_num5);
-  m_signalMapper->setMapping(m_num6, m_num6);
-  m_signalMapper->setMapping(m_num7, m_num7);
-  m_signalMapper->setMapping(m_num8, m_num8);
-  m_signalMapper->setMapping(m_num9, m_num9);
-  m_signalMapper->setMapping(m_num0, m_num0);
-  m_signalMapper->setMapping(m_decimal, m_decimal);
-  m_signalMapper->setMapping(m_left, m_left);
-  m_signalMapper->setMapping(m_right, m_right);
-  m_signalMapper->setMapping(m_delLeft, m_delLeft);
-  m_signalMapper->setMapping(m_delRight, m_delRight);
-  m_signalMapper->setMapping(m_home, m_home);
+  m_digitSignalMapper->setMapping(m_num1, m_num1);
+  m_digitSignalMapper->setMapping(m_num2, m_num2);
+  m_digitSignalMapper->setMapping(m_num3, m_num3);
+  m_digitSignalMapper->setMapping(m_num4, m_num4);
+  m_digitSignalMapper->setMapping(m_num5, m_num5);
+  m_digitSignalMapper->setMapping(m_num6, m_num6);
+  m_digitSignalMapper->setMapping(m_num7, m_num7);
+  m_digitSignalMapper->setMapping(m_num8, m_num8);
+  m_digitSignalMapper->setMapping(m_num9, m_num9);
+  m_digitSignalMapper->setMapping(m_num0, m_num0);
+  m_buttonSignalMapper->setMapping(m_decimal, m_decimal);
+  m_buttonSignalMapper->setMapping(m_left, m_left);
+  m_buttonSignalMapper->setMapping(m_right, m_right);
+  m_buttonSignalMapper->setMapping(m_delLeft, m_delLeft);
+  m_buttonSignalMapper->setMapping(m_delRight, m_delRight);
+  m_buttonSignalMapper->setMapping(m_home, m_home);
 
-  connect( m_signalMapper, SIGNAL(mapped(QWidget *)),
+  connect( m_digitSignalMapper, SIGNAL(mapped(QWidget *)),
+           this, SLOT(slot_DigitPressed(QWidget *)));
+  connect( m_buttonSignalMapper, SIGNAL(mapped(QWidget *)),
            this, SLOT(slot_ButtonPressed(QWidget *)));
 
   connect( m_pm, SIGNAL(pressed() ), this, SLOT(slot_Pm()) );
@@ -230,6 +239,34 @@ void NumberInputPad::setTip( QString tip )
     }
 }
 
+void NumberInputPad::slot_DigitPressed( QWidget* widget )
+{
+  QPushButton* button = dynamic_cast<QPushButton*> (widget);
+
+  if( button == 0 )
+    {
+      // Cast failed!
+      return;
+    }
+
+  QString text = button->text();
+
+  // 0...9 was pressed
+  m_editor->setSelection(m_editor->cursorPosition(), 1);
+  m_editor->insert( text );
+  m_pressedButton = button;
+
+  if( m_pressedButton )
+    {
+      // Setup a timer to handle a longer button press as repeat.
+      m_timer->start(300);
+    }
+  else
+    {
+      m_timer->stop();
+    }
+}
+
 void NumberInputPad::slot_ButtonPressed( QWidget* widget )
 {
   QPushButton* button = dynamic_cast<QPushButton*> (widget);
@@ -240,25 +277,15 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
       return;
     }
 
-  // Find out, which button was pressed.
-  QString text = button->text();
-
-  QRegExp rxNumber("[0-9]");
-
-  if( rxNumber.exactMatch(text) )
-    {
-      // 0...9 was pressed
-      m_editor->setSelection(m_editor->cursorPosition(), 1);
-      m_editor->insert( text );
-      m_pressedButton = button;
-    }
-  else if( button == m_decimal ) // "."
+  m_pressedButton = button;
+  
+  if( button == m_decimal )
     {
       if( m_editor->text().contains(".") == false )
         {
           // First input of decimal point
           m_editor->setSelection(m_editor->cursorPosition(), 1);
-          m_editor->insert( text );
+          m_editor->insert( "." );
           m_pressedButton = 0;
         }
       else
@@ -272,27 +299,23 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
             }
         }
     }
-  else if( button == m_left ) // "<-"
+  else if( button == m_left )
     {
       m_editor->cursorBackward( false );
-      m_pressedButton = m_left;
     }
-  else if( button == m_right ) // "->"
+  else if( button == m_right )
     {
       m_editor->cursorForward( false );
-      m_pressedButton = m_right;
     }
-  else if( button == m_delLeft ) // "<x"
+  else if( button == m_delLeft )
     {
       m_editor->backspace();
-      m_pressedButton = m_delLeft;
     }
-  else if( button == m_delRight ) // "x>"
+  else if( button == m_delRight )
     {
       m_editor->del();
-      m_pressedButton = m_delRight;
     }
-  else if( button == m_home ) // "H"
+  else if( button == m_home )
     {
       m_editor->home( false );
       m_pressedButton = 0;
