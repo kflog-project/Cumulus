@@ -52,12 +52,12 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   QGridLayout* gl = new QGridLayout(this);
   gl->setMargin(5);
 
-  m_tipLabel = new QLabel;
+  m_tipLabel = new QLabel(this);
   m_tipLabel->setAlignment(Qt::AlignCenter);
   gl->addWidget( m_tipLabel, row, 0, 1, 5 );
   row++;
 
-  m_editor = new QLineEdit;
+  m_editor = new QLineEdit(this);
 
   connect( m_editor, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_TextChanged(const QString&)) );
@@ -74,58 +74,58 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   gl->setColumnMinimumWidth( 5, 5 );
   row++;
 
-  m_num1 = new QPushButton( "1" );
+  m_num1 = new QPushButton( "1", this );
   gl->addWidget( m_num1, row, 0 );
 
-  m_num2 = new QPushButton( "2" );
+  m_num2 = new QPushButton( "2", this );
   gl->addWidget( m_num2, row, 1 );
 
-  m_num3 = new QPushButton( "3" );
+  m_num3 = new QPushButton( "3", this );
   gl->addWidget( m_num3, row, 2 );
 
-  m_num4 = new QPushButton( "4" );
+  m_num4 = new QPushButton( "4", this );
   gl->addWidget( m_num4, row, 3 );
 
-  m_num5 = new QPushButton( "5" );
+  m_num5 = new QPushButton( "5", this );
   gl->addWidget( m_num5, row, 4 );
 
-  m_home = new QPushButton( "H" );
+  m_home = new QPushButton( "H", this );
   gl->addWidget( m_home, row, 6 );
   row++;
 
-  m_num6 = new QPushButton( "6" );
+  m_num6 = new QPushButton( "6", this );
   gl->addWidget( m_num6, row, 0 );
 
-  m_num7 = new QPushButton( "7" );
+  m_num7 = new QPushButton( "7", this );
   gl->addWidget( m_num7, row, 1 );
 
-  m_num8 = new QPushButton( "8" );
+  m_num8 = new QPushButton( "8", this );
   gl->addWidget( m_num8, row, 2 );
 
-  m_num9 = new QPushButton( "9" );
+  m_num9 = new QPushButton( "9", this );
   gl->addWidget( m_num9, row, 3 );
 
-  m_num0 = new QPushButton( "0" );
+  m_num0 = new QPushButton( "0", this );
   gl->addWidget( m_num0, row, 4 );
 
-  m_pm = new QPushButton( "+-" );
+  m_pm = new QPushButton( "+-", this );
   gl->addWidget( m_pm, row, 6 );
 
   row++;
 
-  m_decimal = new QPushButton( "." );
+  m_decimal = new QPushButton( ".", this );
   gl->addWidget( m_decimal, row, 0 );
 
-  m_left = new QPushButton( "<-" );
+  m_left = new QPushButton( "<-", this );
   gl->addWidget( m_left, row, 1 );
 
-  m_right = new QPushButton( "->" );
+  m_right = new QPushButton( "->", this );
   gl->addWidget( m_right, row, 2 );
 
-  m_delLeft = new QPushButton( "<x" );
+  m_delLeft = new QPushButton( "<x", this );
   gl->addWidget( m_delLeft, row, 3 );
 
-  m_delRight = new QPushButton( "x>" );
+  m_delRight = new QPushButton( "x>", this );
   gl->addWidget( m_delRight, row, 4 );
 
   m_cancel = new QPushButton( " " );
