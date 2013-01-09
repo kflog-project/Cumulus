@@ -8,7 +8,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2012 by Axel Pauli
+ **   Copyright (c):  2008-2013 by Axel Pauli
  **
  **   Email of maintainer: axel@kflog.org
  **
@@ -25,10 +25,10 @@
  * \brief Main of Cumulus
  *
  * This file contains the start procedure of the Cumulus GUI. Cumulus is a C++
- * Application built with the QT/X11 SDK from Nokia. Qt is a cross-platform
+ * Application built with the Qt/X11 SDK. Qt is a cross-platform
  * application and UI framework. See here for more information:
  *
- * http://qt.nokia.com
+ * http://qt-project.org/
  *
  * Cumulus is built with the release 4.8.x.
  *

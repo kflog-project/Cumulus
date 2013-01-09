@@ -3,7 +3,7 @@
  -----------------------------------------
  begin                : Sun Jul 21 2002
  copyright            : (C) 2002      by André Somers
- ported to Qt4.x      : (C) 2007-2012 by Axel Pauli
+ ported to Qt4.x      : (C) 2007-2013 by Axel Pauli
  maintainer           : axel@kflog.org
 
  $Id$
@@ -2352,7 +2352,7 @@ void MainWindow::slotVersion()
           "<hml>"
           "<b>Project Leader</b>"
           "<blockquote>"
-          "Axel Pauli &lt;<a href=\"mailto:axel&#64;kflog.org\">axel&#64;kflog.org</a>&gt;"
+          "Axel Pauli &lt;<a href=\"mailto:kflog.cumulus&#64;gmail.com\">kflog.cumulus&#64;gmail.com</a>&gt;"
           "</blockquote>"
           "<b>Developers</b>"
           "<blockquote>"
