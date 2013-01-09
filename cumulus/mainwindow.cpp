@@ -1548,7 +1548,7 @@ void MainWindow::createActions()
 
   actionHelpAboutApp = new QAction( tr( "About Cumulus" ), this );
 #ifndef ANDROID
-  actionHelpAboutApp->setShortcut(Qt::Key_V);
+  actionHelpAboutApp->setShortcut(Qt::Key_V + Qt::SHIFT);
 #endif
   addAction( actionHelpAboutApp );
   connect( actionHelpAboutApp, SIGNAL( triggered() ),
@@ -2340,7 +2340,7 @@ void MainWindow::slotVersion()
           "Cumulus %1, compiled at %2 with QT %3<br><br>"
           "Homepage: <a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br><br>"
           "Software Repository: <a href=\"https://svn.kflog.org/svn/repos/cumulus/qt4\">https://svn.kflog.org/svn/repos/cumulus/qt4</a><br><br>"
-          "Report bugs to: <a href=\"mailto:kflog.cumulus&#64;googlemail.com\">kflog.cumulus&#64;googlemail.com</a><br><br>"
+          "Report bugs to: <a href=\"mailto:kflog.cumulus&#64;gmail.com\">kflog.cumulus&#64;gmail.com</a><br><br>"
           "Published under the <a href=\"http://www.gnu.org/licenses/licenses.html#GPL\">GPL</a>"
           "</html>" ).arg( QCoreApplication::applicationVersion() )
                      .arg( GeneralConfig::instance()->getBuiltDate() )

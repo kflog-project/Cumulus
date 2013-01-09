@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2012 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2008-2013 by Axel Pauli (axel@kflog.org)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -19,13 +19,16 @@
 
 #include <QtGui>
 
-#include "flickcharm.h"
 #include "helpbrowser.h"
 #include "generalconfig.h"
 #include "layout.h"
 
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
 HelpBrowser::HelpBrowser( QWidget *parent ) :
-  QWidget(parent, Qt::Window),
+  QWidget(parent, Qt::Tool),
   firstCall(true)
 {
   setWindowTitle(tr("Cumulus Help"));

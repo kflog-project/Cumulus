@@ -24,7 +24,7 @@
 #endif
 
 AboutWidget::AboutWidget( QWidget *parent ) :
-  QWidget( parent, Qt::Window )
+  QWidget( parent, Qt::Tool )
 {
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
