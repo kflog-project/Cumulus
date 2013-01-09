@@ -21,7 +21,7 @@ following components are mandatory:
   d) The Qt header files
   e) The Bluetooth header files and the libbluetooth library
   
-At least a Qt Release 4.7.0 or higher has to be used.
+At least a Qt Release 4.8.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
 that. For XUbuntu 11.10 you have to execute the following command to get them:
