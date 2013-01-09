@@ -360,7 +360,7 @@ void MainWindow::slotCreateDisclaimer()
 
   MessageWidget *mw = new MessageWidget( disclaimer, this );
   connect( mw, SIGNAL(yesClicked()), SLOT(slotCreateSplash()) );
-  connect( mw, SIGNAL(noClicked()), SLOT(close()) );
+  connect( mw, SIGNAL(noClicked()), qApp, SLOT(quit()));
 
   setCentralWidget( mw );
   setVisible( true );
