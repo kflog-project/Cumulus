@@ -25,6 +25,10 @@
 #include "mapcontents.h"
 #include "waypointcatalog.h"
 
+#ifdef FLICK_CHARM
+#include "flickcharm.h"
+#endif
+
 #ifdef USE_NUM_PAD
 #include "numberEditor.h"
 #endif
@@ -135,6 +139,15 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
 
   m_homeLabel   = new QLabel;
   m_airfieldBox = new QComboBox;
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(m_airfieldBox->view(), QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef FLICK_CHARM
+  FlickCharm *flickCharm = new FlickCharm(this);
+  flickCharm->activateOn(m_airfieldBox->view());
+#endif
 
   QGridLayout* centerPointGrid = new QGridLayout;
   centerPointGrid->setSpacing( 5 );
