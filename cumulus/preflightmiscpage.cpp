@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -177,6 +177,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_bRecordInterval->setDecimalVisible( false );
   m_bRecordInterval->setPmVisible( false );
   m_bRecordInterval->setRange( 1, 60);
+  m_bRecordInterval->setTip("1...60");
   m_bRecordInterval->setMaxLength(2);
   m_bRecordInterval->setSuffix(" s");
 
@@ -206,6 +207,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_kRecordInterval->setDecimalVisible( false );
   m_kRecordInterval->setPmVisible( false );
   m_kRecordInterval->setRange( 0, 300);
+  m_kRecordInterval->setTip("0...300");
   m_kRecordInterval->setMaxLength(3);
   m_kRecordInterval->setSuffix(" s");
   m_kRecordInterval->setSpecialValueText(tr("Off"));
