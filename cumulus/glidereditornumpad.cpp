@@ -117,7 +117,6 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   m_dneWingArea->setDecimalVisible( true );
   m_dneWingArea->setPmVisible( false );
   m_dneWingArea->setMaxLength(7);
-  //m_dneWingArea->setRange(0.0, 100.0);
   m_dneWingArea->setDecimals( 2 );
   QChar tsChar(Qt::Key_twosuperior);
   m_dneWingArea->setSuffix( QString(" m") + tsChar );

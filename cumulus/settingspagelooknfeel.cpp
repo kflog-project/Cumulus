@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2009-2012 Axel Pauli
+**   Copyright (c): 2009-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,12 +21,16 @@
 
 #include <QtGui>
 
+#include "fontdialog.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "settingspagelooknfeel.h"
-#include "varspinbox.h"
 
-#include "fontdialog.h"
+#ifdef USE_NUM_PAD
+#include "doubleNumberEditor.h"
+#else
+#include "varspinbox.h"
+#endif
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QWidget(parent),
@@ -46,8 +50,8 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
 
   QLabel * lbl = new QLabel(tr("GUI Style:"), this);
   topLayout->addWidget( lbl, row, 0 );
-  styleBox = new QComboBox(this);
-  topLayout->addWidget(styleBox, row, 1 );
+  m_styleBox = new QComboBox(this);
+  topLayout->addWidget(m_styleBox, row, 1 );
   row++;
 
   // Put available styles in combo box
@@ -56,46 +60,65 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
 
   foreach( style, styles )
     {
-      styleBox->addItem(style);
+      m_styleBox->addItem(style);
     }
 
   lbl = new QLabel(tr("GUI Font:"), this);
   topLayout->addWidget(lbl, row, 0);
-  fontDialog = new QPushButton(tr("Select Font"));
-  fontDialog->setObjectName("fontDialog");
-  topLayout->addWidget( fontDialog, row, 1 );
+  m_fontDialog = new QPushButton(tr("Select Font"));
+  m_fontDialog->setObjectName("fontDialog");
+  topLayout->addWidget( m_fontDialog, row, 1 );
 
-  connect(fontDialog, SIGNAL(clicked()), this, SLOT(slot_openFontDialog()));
+  connect(m_fontDialog, SIGNAL(clicked()), this, SLOT(slot_openFontDialog()));
   row++;
 
   lbl = new QLabel(tr("GUI Menu Font:"), this);
   topLayout->addWidget(lbl, row, 0);
-  menuFontDialog = new QPushButton(tr("Select Font"));
-  menuFontDialog->setObjectName("menuFontDialog");
-  topLayout->addWidget( menuFontDialog, row, 1 );
+  m_menuFontDialog = new QPushButton(tr("Select Font"));
+  m_menuFontDialog->setObjectName("menuFontDialog");
+  topLayout->addWidget( m_menuFontDialog, row, 1 );
 
-  connect(menuFontDialog, SIGNAL(clicked()), this, SLOT(slot_openMenuFontDialog()));
+  connect(m_menuFontDialog, SIGNAL(clicked()), this, SLOT(slot_openMenuFontDialog()));
   row++;
 
   lbl = new QLabel(tr("Map sidebar color:"), this);
   topLayout->addWidget(lbl, row, 0);
-  editMapFrameColor = new QPushButton(tr("Select Color"));
-  topLayout->addWidget( editMapFrameColor, row, 1 );
-  connect(editMapFrameColor, SIGNAL(clicked()), this, SLOT(slot_openColorDialog()));
+  m_editMapFrameColor = new QPushButton(tr("Select Color"));
+  topLayout->addWidget( m_editMapFrameColor, row, 1 );
+  connect(m_editMapFrameColor, SIGNAL(clicked()), this, SLOT(slot_openColorDialog()));
   row++;
 
   lbl = new QLabel(tr("Screensaver on:"), this);
   topLayout->addWidget(lbl, row, 0);
-  screenSaverSpeedLimit = new QDoubleSpinBox( this );
-  screenSaverSpeedLimit->setButtonSymbols(QSpinBox::PlusMinus);
-  screenSaverSpeedLimit->setRange( 0.0, 99.0);
-  screenSaverSpeedLimit->setSpecialValueText(tr("Off"));
-  screenSaverSpeedLimit->setSingleStep( 1 );
-  screenSaverSpeedLimit->setPrefix( "< " );
-  screenSaverSpeedLimit->setDecimals( 1 );
-  screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  VarSpinBox* hspin = new VarSpinBox( screenSaverSpeedLimit );
+
+#ifdef USE_NUM_PAD
+  m_screenSaverSpeedLimit = new DoubleNumberEditor( this );
+  m_screenSaverSpeedLimit->setDecimalVisible( true );
+  m_screenSaverSpeedLimit->setPmVisible( false );
+  m_screenSaverSpeedLimit->setMaxLength(4);
+  m_screenSaverSpeedLimit->setRange( 0.0, 99.9);
+  m_screenSaverSpeedLimit->setSpecialValueText(tr("Off"));
+  m_screenSaverSpeedLimit->setPrefix( "< " );
+  m_screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  m_screenSaverSpeedLimit->setDecimals( 1 );
+
+  int mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
+  m_screenSaverSpeedLimit->setMinimumWidth( mlw );
+
+  topLayout->addWidget( m_screenSaverSpeedLimit, row, 1 );
+#else
+  m_screenSaverSpeedLimit = new QDoubleSpinBox( this );
+  m_screenSaverSpeedLimit->setButtonSymbols(QSpinBox::PlusMinus);
+  m_screenSaverSpeedLimit->setRange( 0.0, 99.0);
+  m_screenSaverSpeedLimit->setSpecialValueText(tr("Off"));
+  m_screenSaverSpeedLimit->setSingleStep( 1 );
+  m_screenSaverSpeedLimit->setPrefix( "< " );
+  m_screenSaverSpeedLimit->setDecimals( 1 );
+  m_screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
+  VarSpinBox* hspin = new VarSpinBox( m_screenSaverSpeedLimit );
   topLayout->addWidget( hspin, row, 1 );
+#endif
+
   row++;
 
 #if 0
@@ -134,11 +157,11 @@ void SettingsPageLookNFeel::slot_load()
   m_currentMenuFont     = conf->getGuiMenuFont();
 
   // search item to be selected
-  int idx = styleBox->findText( conf->getGuiStyle() );
+  int idx = m_styleBox->findText( conf->getGuiStyle() );
 
   if( idx != -1 )
     {
-      styleBox->setCurrentIndex(idx);
+      m_styleBox->setCurrentIndex(idx);
     }
 
   m_currentMapFrameColor = conf->getMapFrameColor();
@@ -146,9 +169,9 @@ void SettingsPageLookNFeel::slot_load()
   Speed speed;
   // speed is stored in Km/h
   speed.setKph( GeneralConfig::instance()->getScreenSaverSpeedLimit() );
-  screenSaverSpeedLimit->setValue( speed.getValueInUnit( m_unit ) );
+  m_screenSaverSpeedLimit->setValue( speed.getValueInUnit( m_unit ) );
   // save loaded value for change control
-  m_loadedSpeed = screenSaverSpeedLimit->value();
+  m_loadedSpeed = m_screenSaverSpeedLimit->value();
 
   // virtualKeybord->setChecked( conf->getVirtualKeyboard() );
 }
@@ -168,9 +191,9 @@ void SettingsPageLookNFeel::slot_save()
       conf->setGuiMenuFont( m_currentMenuFont );
     }
 
-  if( conf->getGuiStyle() != styleBox->currentText() )
+  if( conf->getGuiStyle() != m_styleBox->currentText() )
     {
-      conf->setGuiStyle( styleBox->currentText() );
+      conf->setGuiStyle( m_styleBox->currentText() );
       conf->setOurGuiStyle();
     }
 
@@ -179,10 +202,10 @@ void SettingsPageLookNFeel::slot_save()
       conf->setMapFrameColor( m_currentMapFrameColor );
     }
 
-  if( m_loadedSpeed != screenSaverSpeedLimit->value() )
+  if( m_loadedSpeed != m_screenSaverSpeedLimit->value() )
     {
       Speed speed;
-      speed.setValueInUnit( screenSaverSpeedLimit->value(), m_unit );
+      speed.setValueInUnit( m_screenSaverSpeedLimit->value(), m_unit );
 
       // store speed in Km/h
       GeneralConfig::instance()->setScreenSaverSpeedLimit( speed.getKph() );
@@ -206,10 +229,10 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
 
   changed |= conf->getGuiFont() != m_currentFont;
   changed |= conf->getGuiMenuFont() != m_currentMenuFont;
-  changed |= conf->getGuiStyle() != styleBox->currentText();
+  changed |= conf->getGuiStyle() != m_styleBox->currentText();
   // changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
   changed |= conf->getMapFrameColor() != m_currentMapFrameColor;
-  changed |= m_loadedSpeed != screenSaverSpeedLimit->value() ;
+  changed |= m_loadedSpeed != m_screenSaverSpeedLimit->value() ;
 
   if (changed)
     {

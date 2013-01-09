@@ -111,16 +111,44 @@ class NumberEditor : public QLabel
     return m_number.toInt();
   };
 
+  /**
+   * The prefix is prepended to the start of the displayed value. Typical use
+   * is to display a unit of measurement or a currency symbol.
+   *
+   * @param prefix
+   */
   void setPrefix( const QString prefix )
   {
     m_prefix = prefix;
     setText();
   };
 
+  /**
+   * @return The set prefix for the display.
+   */
+  QString prefix() const
+  {
+    return m_prefix;
+  };
+
+  /**
+   * The suffix is appended to the end of the displayed value. Typical use is
+   * to display a unit of measurement or a currency symbol.
+   *
+   * @param suffix The suffix for the display.
+   */
   void setSuffix( const QString suffix )
   {
     m_suffix = suffix;
     setText();
+  };
+
+  /**
+   * @return The set suffix for the display.
+   */
+  QString suffix () const
+  {
+    return m_suffix;
   };
 
   void setDecimalVisible( const bool flag )
@@ -135,7 +163,18 @@ class NumberEditor : public QLabel
 
   void setValidator( QValidator* validator )
   {
+    if( m_validator )
+      {
+        delete m_validator;
+      }
+
     m_validator = validator;
+
+    if( validator == 0 )
+      {
+        // We install a default validator, if the user resets its validator.
+        m_validator = new QRegExpValidator( QRegExp( "([0-9]+|[0-9]+\\.[0-9]+)" ), this );
+      }
   };
 
   void setInputMask( const QString inputMask )

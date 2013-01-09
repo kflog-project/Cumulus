@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2012 Axel Pauli
+**   Copyright (c):  2008-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,9 @@
  *
  * \brief Configuration settings for personal look and feel.
  *
- * \date 2008-2010
+ * \date 2008-2013
+ *
+ * \version $Id$
  *
  */
 
@@ -34,9 +36,14 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QPushButton>
-#include <QDoubleSpinBox>
 
 #include "speed.h"
+
+#ifdef USE_NUM_PAD
+class DoubleNumberEditor;
+#else
+class QDoubleSpinBox;
+#endif
 
 class SettingsPageLookNFeel : public QWidget
 {
@@ -89,12 +96,17 @@ private:
   QString m_currentMenuFont; // current selected menu font is saved here
   QColor  m_currentMapFrameColor; // current color of map frame
 
-  QComboBox      *styleBox;
-  QPushButton    *fontDialog;
-  QPushButton    *menuFontDialog;
-  QPushButton    *editMapFrameColor;
-  QDoubleSpinBox *screenSaverSpeedLimit;
-  QCheckBox      *virtualKeybord;
+  QComboBox      *m_styleBox;
+  QPushButton    *m_fontDialog;
+  QPushButton    *m_menuFontDialog;
+  QPushButton    *m_editMapFrameColor;
+  QCheckBox      *m_virtualKeybord;
+
+#ifdef USE_NUM_PAD
+  DoubleNumberEditor *m_screenSaverSpeedLimit;
+#else
+  QDoubleSpinBox *m_screenSaverSpeedLimit;
+#endif
 
   /** saves horizontal speed m_unit during construction of object */
   Speed::speedUnit m_unit;

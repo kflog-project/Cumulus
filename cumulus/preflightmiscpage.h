@@ -87,14 +87,16 @@ class PreFlightMiscPage : public QWidget
 
   QCheckBox*      m_chkLogAutoStart;
   QComboBox*      m_edtArrivalAltitude;
-  QSpinBox*       m_bRecordInterval; // B-Record logging interval in seconds
-  QSpinBox*       m_kRecordInterval; // K-Record logging interval in seconds
 
 #ifdef USE_NUM_PAD
+  NumberEditor*       m_bRecordInterval; // B-Record logging interval in seconds
+  NumberEditor*       m_kRecordInterval; // K-Record logging interval in seconds
   DoubleNumberEditor* m_logAutoStartSpeed;
   NumberEditor*       m_edtMinimalArrival;
   NumberEditor*       m_edtQNH;
 #else
+  QSpinBox*           m_bRecordInterval; // B-Record logging interval in seconds
+  QSpinBox*           m_kRecordInterval; // K-Record logging interval in seconds
   QDoubleSpinBox*     m_logAutoStartSpeed;
   QSpinBox*           m_edtMinimalArrival;
   QSpinBox*           m_edtQNH;

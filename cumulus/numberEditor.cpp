@@ -48,12 +48,6 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_specialValueText("")
 {
   setObjectName("NumberEditor");
-
-//  QPalette p = palette();
-//  p.setColor( QPalette::Window, Qt::white );
-//  setPalette(p);
-//  setAutoFillBackground( true );
-
   setBackgroundRole( QPalette::Light );
   setAutoFillBackground( true );
   setAlignment(Qt::AlignCenter);
@@ -63,6 +57,10 @@ NumberEditor::NumberEditor( QWidget *parent,
   QSizePolicy sp = sizePolicy();
   sp.setVerticalPolicy( QSizePolicy::Fixed );
   setSizePolicy( sp );
+
+  // We set a default validator to prevent wrong input from an external
+  // keyboard, if no own validator is defined by the caller.
+  m_validator = new QRegExpValidator( QRegExp( "([0-9]+|[0-9]+\\.[0-9]+)" ), this );
 
   setText();
 }
@@ -89,9 +87,9 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setWindowTitle( m_title );
       m_nip->setDecimalVisible( m_decimalFlag );
       m_nip->setPmVisible( m_pmFlag );
-      m_nip->setValidator( m_validator );
       m_nip->setMaxLength( m_maxLength );
       m_nip->setInputMask( m_inputMask );
+      m_nip->setValidator( m_validator );
       m_nip->setTip( m_tip );
 
       if( m_intMax.first ) m_nip->setIntMaximum( m_intMax.second );
@@ -144,38 +142,40 @@ void NumberEditor::slot_NumberEdited( const QString& number )
 
 void NumberEditor::setText()
 {
-  if( m_specialValueText.isEmpty() )
+  if( m_specialValueText.isEmpty() ||
+      ( m_intMin.first == false && m_doubleMin.first == false ) )
     {
-      // No special text is set.
+      // No special text nor minimums are set.
       QLabel::setText( m_prefix + m_number + m_suffix );
+      return;
     }
-  else
+
+  // Check for special value setting
+  bool iOk;
+  bool dOk;
+
+  int    i = m_number.toInt(&iOk);
+  double d = m_number.toDouble(&dOk);
+
+  if( iOk && m_intMin.first == true && m_number.contains(".") == false )
     {
-      bool iOk;
-      bool dOk;
-
-      int i = m_number.toInt(&iOk);
-
-      double d = m_number.toDouble(&dOk);
-
-      if( m_number.contains(".") == false && m_intMin.first == true && iOk )
+      // Check special handling for integer
+      if( i == m_intMin.second )
         {
-          if( i == m_intMin.second )
-            {
-              QLabel::setText( m_specialValueText );
-            }
-
-          return;
-        }
-
-      if( m_number.contains(".") && m_doubleMin.first == true && dOk )
-        {
-          if( d == m_doubleMin.second )
-            {
-              QLabel::setText( m_specialValueText );
-            }
-
+          QLabel::setText( m_specialValueText );
           return;
         }
     }
+  else if( dOk && m_doubleMin.first == true && m_number.contains(".") )
+    {
+      // Check special handling for double
+      if( d == m_doubleMin.second )
+        {
+          QLabel::setText( m_specialValueText );
+          return;
+        }
+    }
+
+  // No special handling condition was true
+  QLabel::setText( m_prefix + m_number + m_suffix );
 }

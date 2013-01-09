@@ -139,8 +139,8 @@ NumberEditor* SettingsPageAirspaceWarningsNumPad::createNumEd( QWidget* parent )
   numEd->setValidator( eValidator );
 
   // Sets a minimum width for the widget
-  int mw1 = QFontMetrics(font()).width("9999999 " + unit) + 10;
-  numEd->setMinimumWidth( mw1 );
+  int mw = QFontMetrics(font()).width("9999999 " + unit) + 10;
+  numEd->setMinimumWidth( mw );
 
   return numEd;
 }

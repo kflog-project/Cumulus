@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2012 by Axel Pauli
+ **                   2007-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1645,7 +1645,14 @@ void GeneralConfig::setOurGuiStyle()
 
 #ifdef ANDROID
 
-  QStyle* style = QApplication::setStyle( _guiStyle );
+  // QStyle* style = QApplication::setStyle( _guiStyle );
+
+#warning "GUI Style for Android is hard coded to Plastique"
+
+  // The Android style makes trouble, therefore we use only Plastique atm.
+  QStyle* style = QApplication::setStyle( "Plastique" );
+
+
   QApplication::setStyle( new AndroidProxyStyle( style ) );
 
 #else

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2003-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief Configuration settings for popup window display times and alarm sound.
  *
- * \date 2003-2012
+ * \date 2003-2013
  *
  * \version $Id$
  *
@@ -32,10 +32,15 @@
 #define  SettingsPageInformation_H
 
 #include <QWidget>
-#include <QSpinBox>
 #include <QCheckBox>
 #include <QPushButton>
 #include <QLineEdit>
+
+#ifdef USE_NUM_PAD
+class NumberEditor;
+#else
+class QSpinBox;
+#endif
 
 class SettingsPageInformation : public QWidget
 {
@@ -50,12 +55,6 @@ class SettingsPageInformation : public QWidget
   SettingsPageInformation(QWidget *parent=0);
 
   virtual ~SettingsPageInformation();
-
-  protected:
-
-  virtual void showEvent( QShowEvent *event );
-
-  virtual void hideEvent( QHideEvent *event );
 
   public slots: // Public slots
   /**
@@ -85,25 +84,39 @@ class SettingsPageInformation : public QWidget
 
  private:
 
+  /**
+   * Creates an default NumberEditor instance.
+   *
+   * @return an NumberEditor instance
+   */
+  NumberEditor* createNumEd( QWidget* parent=0 );
+
 #ifndef ANDROID
   QLineEdit*   soundTool;
 #endif
 
+#ifdef USE_NUM_PAD
+  NumberEditor* spinAirfield;
+  NumberEditor* spinAirspace;
+  NumberEditor* spinWaypoint;
+  NumberEditor* spinWarning;
+  NumberEditor* spinInfo;
+  NumberEditor* spinSuppress;
+#else
   QSpinBox*    spinAirfield;
   QSpinBox*    spinAirspace;
   QSpinBox*    spinWaypoint;
   QSpinBox*    spinWarning;
   QSpinBox*    spinInfo;
   QSpinBox*    spinSuppress;
+#endif
+
   QCheckBox*   checkAlarmSound;
   QCheckBox*   checkFlarmAlarms;
   QCheckBox*   calculateNearestSites;
   QPushButton* buttonReset;
 
   bool m_loadConfig; // control loading of config data
-
-  /** Auto sip flag storage. */
-  bool m_autoSip;
 };
 
 #endif // SettingsPageInformation_h

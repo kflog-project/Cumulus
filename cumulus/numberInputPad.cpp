@@ -58,6 +58,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   row++;
 
   m_editor = new QLineEdit;
+
   connect( m_editor, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_TextChanged(const QString&)) );
 
@@ -382,7 +383,13 @@ void NumberInputPad::slot_Ok()
 
   const QValidator* validator = m_editor->validator();
 
-  QString value = m_editor->text();
+  QString value = m_editor->text().trimmed();
+
+  if( value.isEmpty() )
+    {
+      // Empty value is not allowed as ok.
+      return;
+    }
 
   int pos = 0;
 

@@ -20,7 +20,12 @@
 #include "generalconfig.h"
 #include "mapdefaults.h"
 #include "settingspageinformation.h"
+
+#ifdef USE_NUM_PAD
+#include "numberEditor.h"
+#else
 #include "varspinbox.h"
+#endif
 
 SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   QWidget(parent), m_loadConfig(true)
@@ -49,19 +54,28 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
 #endif
 
-  VarSpinBox* hspin;
-
   topLayout->addWidget(new QLabel(tr("Airfield display time:"), this), row, 0);
+
+#ifdef USE_NUM_PAD
+  spinAirfield = createNumEd( this );
+  topLayout->addWidget( spinAirfield, row, 1 );
+#else
   spinAirfield = new QSpinBox;
   spinAirfield->setObjectName("spinAirfield");
   spinAirfield->setRange(0, 60);
   spinAirfield->setSuffix( " s" );
   spinAirfield->setSpecialValueText(tr("Off"));
-  hspin = new VarSpinBox(spinAirfield);
+  VarSpinBox* hspin = new VarSpinBox(spinAirfield);
   topLayout->addWidget( hspin, row, 1 );
-  row++;
+#endif
 
+  row++;
   topLayout->addWidget(new QLabel(tr("Airspace display time:"), this), row, 0);
+
+#ifdef USE_NUM_PAD
+  spinAirspace = createNumEd( this );
+  topLayout->addWidget( spinAirspace, row, 1 );
+#else
   spinAirspace = new QSpinBox;
   spinAirspace->setObjectName("spinAirspace");
   spinAirspace->setRange(0, 60);
@@ -69,9 +83,15 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinAirspace->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinAirspace);
   topLayout->addWidget( hspin, row, 1 );
-  row++;
+#endif
 
+  row++;
   topLayout->addWidget(new QLabel(tr("Info display time:"), this), row, 0);
+
+#ifdef USE_NUM_PAD
+  spinInfo = createNumEd( this );
+  topLayout->addWidget( spinInfo, row, 1 );
+#else
   spinInfo = new QSpinBox;
   spinInfo->setObjectName("spinInfo");
   spinInfo->setRange(0, 60);
@@ -79,9 +99,15 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinInfo->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinInfo);
   topLayout->addWidget( hspin, row, 1 );
-  row++;
+#endif
 
+  row++;
   topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this), row, 0);
+
+#ifdef USE_NUM_PAD
+  spinWaypoint = createNumEd( this );
+  topLayout->addWidget( spinWaypoint, row, 1 );
+#else
   spinWaypoint = new QSpinBox;
   spinWaypoint->setObjectName("spinWaypoint");
   spinWaypoint->setRange(0, 60);
@@ -89,9 +115,15 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWaypoint->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinWaypoint);
   topLayout->addWidget( hspin, row, 1 );
-  row++;
+#endif
 
+  row++;
   topLayout->addWidget(new QLabel(tr("Warning display time:"), this), row, 0);
+
+#ifdef USE_NUM_PAD
+  spinWarning = createNumEd( this );
+  topLayout->addWidget( spinWarning, row, 1 );
+#else
   spinWarning = new QSpinBox;
   spinWarning->setObjectName("spinWarning");
   spinWarning->setRange(0, 60);
@@ -99,9 +131,27 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinWarning->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinWarning);
   topLayout->addWidget( hspin, row, 1 );
-  row++;
+#endif
 
+  row++;
   topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this), row, 0);
+
+#ifdef USE_NUM_PAD
+  spinSuppress = new NumberEditor;
+  spinSuppress->setDecimalVisible( false );
+  spinSuppress->setPmVisible( false );
+  spinSuppress->setMaxLength(3);
+  spinSuppress->setRange(0, 900);
+  spinSuppress->setSpecialValueText(tr("Off"));
+  spinSuppress->setSuffix( " min" );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3})" ), this );
+  spinSuppress->setValidator( eValidator );
+
+  // Sets a minimum width for the widget
+  int mw = QFontMetrics(font()).width(QString("999 min")) + 10;
+  spinSuppress->setMinimumWidth( mw );
+  topLayout->addWidget( spinSuppress, row, 1 );
+#else
   spinSuppress = new QSpinBox;
   spinSuppress->setObjectName("spinSuppress");
   spinSuppress->setMaximum(900);
@@ -109,6 +159,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinSuppress->setSpecialValueText(tr("Off"));
   hspin = new VarSpinBox(spinSuppress);
   topLayout->addWidget( hspin, row, 1 );
+#endif
 
   buttonReset = new QPushButton (tr("Defaults"), this);
   topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
@@ -143,16 +194,24 @@ SettingsPageInformation::~SettingsPageInformation()
 {
 }
 
-void SettingsPageInformation::showEvent( QShowEvent* )
+NumberEditor* SettingsPageInformation::createNumEd( QWidget* parent )
 {
-  // Switch off automatic software input panel popup
-  m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( false );
-}
+  NumberEditor* numEd = new NumberEditor( parent );
+  numEd->setDecimalVisible( false );
+  numEd->setPmVisible( false );
+  numEd->setMaxLength(2);
+  numEd->setRange(0, 60);
+  numEd->setTip("0...60");
+  numEd->setSpecialValueText(tr("Off"));
+  numEd->setSuffix( " s" );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
+  numEd->setValidator( eValidator );
 
-void SettingsPageInformation::hideEvent( QHideEvent* )
-{
-  qApp->setAutoSipEnabled( m_autoSip );
+  // Sets a minimum width for the widget
+  int mw = QFontMetrics(font()).width(QString("99 s")) + 10;
+  numEd->setMinimumWidth( mw );
+
+  return numEd;
 }
 
 void SettingsPageInformation::slot_load()

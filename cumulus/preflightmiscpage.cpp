@@ -27,7 +27,6 @@
 #include "layout.h"
 #include "logbook.h"
 #include "igclogger.h"
-#include "varspinbox.h"
 
 #ifdef FLARM
 #include "flarm.h"
@@ -38,6 +37,8 @@
 #ifdef USE_NUM_PAD
 #include "doubleNumberEditor.h"
 #include "numberEditor.h"
+#else
+#include "varspinbox.h"
 #endif
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
@@ -55,8 +56,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // storage. The internal storage is always in meters.
   m_altUnit = Altitude::getUnit();
 
-  VarSpinBox* hspin;
-
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
 #ifdef USE_NUM_PAD
@@ -66,6 +65,9 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_edtMinimalArrival->setRange( 0, 9999);
   m_edtMinimalArrival->setMaxLength(4);
   m_edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
+
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,4})" ), this );
+  m_edtMinimalArrival->setValidator( eValidator );
 
   int maw = QFontMetrics(font()).width("9999 ft") + 10;
   m_edtMinimalArrival->setMinimumWidth( maw );
@@ -86,7 +88,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
     }
 
   m_edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
-  hspin = new VarSpinBox(m_edtMinimalArrival);
+  VarSpinBox* hspin = new VarSpinBox(m_edtMinimalArrival);
   topLayout->addWidget(hspin, row, 1);
 #endif
 
@@ -111,6 +113,9 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_edtQNH->setRange( 0, 9999);
   m_edtQNH->setMaxLength(4);
   m_edtQNH->setSuffix(" hPa");
+
+  eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,4})" ), this );
+  m_edtQNH->setValidator( eValidator );
 
   int mqw = QFontMetrics(font()).width("9999 hPa") + 10;
   m_edtQNH->setMinimumWidth( mqw );
@@ -166,16 +171,54 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 
   lbl = new QLabel(tr("B-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
+
+#ifdef USE_NUM_PAD
+  m_bRecordInterval = new NumberEditor;
+  m_bRecordInterval->setDecimalVisible( false );
+  m_bRecordInterval->setPmVisible( false );
+  m_bRecordInterval->setRange( 1, 60);
+  m_bRecordInterval->setMaxLength(2);
+  m_bRecordInterval->setSuffix(" s");
+
+  eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
+  m_bRecordInterval->setValidator( eValidator );
+
+  int mbrw = QFontMetrics(font()).width("99 s") + 10;
+  m_bRecordInterval->setMinimumWidth( mbrw );
+
+  topLayout->addWidget(m_bRecordInterval, row, 1);
+#else
   m_bRecordInterval = new QSpinBox(this);
   m_bRecordInterval->setMinimum(1);
   m_bRecordInterval->setMaximum(60);
   m_bRecordInterval->setSuffix(" s");
   hspin = new VarSpinBox(m_bRecordInterval);
   topLayout->addWidget(hspin, row, 1);
+#endif
+
   row++;
 
   lbl = new QLabel(tr("K-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
+
+#ifdef USE_NUM_PAD
+  m_kRecordInterval = new NumberEditor;
+  m_kRecordInterval->setDecimalVisible( false );
+  m_kRecordInterval->setPmVisible( false );
+  m_kRecordInterval->setRange( 0, 300);
+  m_kRecordInterval->setMaxLength(3);
+  m_kRecordInterval->setSuffix(" s");
+  m_kRecordInterval->setSpecialValueText(tr("Off"));
+
+  eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
+  m_kRecordInterval->setValidator( eValidator );
+
+  int mkrw = QFontMetrics(font()).width("999 s") + 10;
+  m_kRecordInterval->setMinimumWidth( mkrw );
+
+  topLayout->addWidget(m_kRecordInterval, row, 1);
+#else
+
   m_kRecordInterval = new QSpinBox(this);
   m_kRecordInterval->setMinimum(0);
   m_kRecordInterval->setMaximum(300);
@@ -183,6 +226,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_kRecordInterval->setSuffix(" s");
   hspin = new VarSpinBox(m_kRecordInterval);
   topLayout->addWidget(hspin, row, 1);
+#endif
+
   row++;
 
   topLayout->setRowMinimumHeight(row, 10);
