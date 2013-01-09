@@ -417,8 +417,6 @@ int CoordEditNumPad::KFLogDegree()
       QString number = minuteBox->text();
       int maxLen     = minuteBox->maxLength();
 
-      qDebug() << "number=" << number << "maxLen" << maxLen << "Diff=" << (maxLen - number.size());
-
       if( maxLen != 32767 && maxLen > 0 && number.size() < maxLen )
         {
           int end = maxLen - number.size();
@@ -451,8 +449,6 @@ int CoordEditNumPad::KFLogDegree()
     }
 
   input += " " + skyDirection->text().trimmed();
-
-  qDebug() << "CoordEditNumPad::KFLogDegree(): Input=" << input;
 
   // This method make the conversion to the internal KFLog degree format.
   return WGSPoint::degreeToNum( input );
