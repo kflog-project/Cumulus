@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,7 +18,10 @@
 #include <QtGui>
 
 #include "aboutwidget.h"
+
+#ifdef FLICK_CHARM
 #include "flickcharm.h"
+#endif
 
 AboutWidget::AboutWidget( QWidget *parent ) :
   QWidget( parent, Qt::Window )
