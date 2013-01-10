@@ -358,15 +358,23 @@ public class QtActivity extends Activity
                     
           Log.d(QtApplication.QtTAG, "startApp, jarDir=" + jarDir + ", jarOut=" + jarOut);
 
-          // Package version control install file marker.
-          File pvcFile = new File( jarDir + File.separator + "pvc_" + String.valueOf(getPackageVersionCode()) );
+          // Package version control install file name marker.
+          String pvcFileName = jarDir + File.separator + "pvc_" + String.valueOf(getPackageVersionCode());
+          
+          File pvcFile = new File( pvcFileName );
+          
+          if( ! pvcFile.exists() )
+            {
+              Log.d( QtApplication.QtTAG, "startApp, Version control file " +
+                     pvcFileName + " does not exists!" );
+            }
 
           File jarFile = new File( jarOut );
          
           if( pvcFile.exists() == false || jarFile.exists() == false ||
               jarFile.isFile() == false || jarFile.length() == 0 )
           	{
-          	  Log.d(QtApplication.QtTAG, "startApp, file" + qtJar + " must be installed!");
+          	  Log.d(QtApplication.QtTAG, "startApp, Jar file " + qtJar + " must be installed!");
           	  
           	  // The Qt Jar file must be copied.
               InputStream ips = getApplicationContext().getAssets().open(qtJar);
