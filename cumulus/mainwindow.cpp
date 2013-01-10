@@ -2,9 +2,12 @@
  mainwindow.cpp  -  main application class
  -----------------------------------------
  begin                : Sun Jul 21 2002
- copyright            : (C) 2002      by André Somers
+
+ copyright            : (C) 2002 by André Somers
+
  ported to Qt4.x      : (C) 2007-2013 by Axel Pauli
- maintainer           : axel@kflog.org
+
+ maintainer           : Axel Pauli <kflog.cumulus@gmail.com>
 
  $Id$
 
@@ -372,17 +375,16 @@ void MainWindow::slotCreateDisclaimer()
 
 void MainWindow::slotDisclaimerQuit()
 {
-  qDebug() << "MainWindow::slotDisclaimerQuit(): Entry";
   // This slot is called, if the disclaimer was rejected by the user.
   // We quit the application now.
+  qWarning() << "Disclaimer was rejected by the user. Abort further processing!";
+
 #ifdef ANDROID
       jniShutdown();
 #endif
 
   hide();
   qApp->quit();
-
-  qDebug() << "MainWindow::slotDisclaimerQuit(): Exit";
 }
 
 /**
@@ -1172,7 +1174,7 @@ void MainWindow::slotSetMenuFontSize()
     }
 
   qDebug() << "MenuFont PointSize=" << userFont.pointSize()
-            << "FontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
+           << "FontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
 
   GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
   GeneralConfig::instance()->save();

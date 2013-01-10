@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
    copyright            : (C) 2002      by André Somers
    ported to Qt4.x/X11  : (C) 2007-2013 by Axel Pauli
-   email                : axel@kflog.org
+   email                : Axel Pauli <kflog.cumulus@gmail.com>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
