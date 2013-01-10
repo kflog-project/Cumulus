@@ -360,10 +360,25 @@ void MainWindow::slotCreateDisclaimer()
 
   MessageWidget *mw = new MessageWidget( disclaimer, this );
   connect( mw, SIGNAL(yesClicked()), SLOT(slotCreateSplash()) );
-  connect( mw, SIGNAL(noClicked()), qApp, SLOT(quit()));
+  connect( mw, SIGNAL(noClicked()), SLOT(slotDisclaimerQuit()));
 
   setCentralWidget( mw );
   setVisible( true );
+}
+
+void MainWindow::slotDisclaimerQuit()
+{
+  qDebug() << "MainWindow::slotDisclaimerQuit(): Entry";
+  // This slot is called, if the disclaimer was rejected by the user.
+  // We quit the application now.
+#ifdef ANDROID
+      jniShutdown();
+#endif
+
+  hide();
+  qApp->quit();
+
+  qDebug() << "MainWindow::slotDisclaimerQuit(): Exit";
 }
 
 /**

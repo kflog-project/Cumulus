@@ -186,10 +186,16 @@ public slots:
    */
   void slotNavigate2Home();
   /**
-   * Exits Cumulus
+   * Exits the Cumulus main window, if File->Exit was called by the user.
    */
   void slotFileQuit();
-  /** Switches to mapview. */
+  /**
+   * Exits Cumulus, if the disclaimer was rejected..
+   */
+  void slotDisclaimerQuit();
+  /**
+   * Switches to the mapview.
+   */
   void slotSwitchToMapView();
   /** This slot is called to switch to the info view. */
   void slotSwitchToInfoView();
