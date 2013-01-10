@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012      by Axel Pauli
+ **                   2012-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -63,6 +63,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -540,10 +541,18 @@ public class CumulusActivity extends QtActivity
       super.onDestroy();
     }
 
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+      boolean ok = super.onTouchEvent(event);
+      return ok;
+    }
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-		// System.out.println("QtMain.onKeyDown, key pressed: "+event.toString());
+          Log.d(TAG, "onKeyDown, key pressed: " + event.toString());
 	  
 	  // There was a problem report on Google Developer, that a native function
 	  // was not found. Maybe it was not yet loaded.
@@ -581,8 +590,8 @@ public class CumulusActivity extends QtActivity
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
+		Log.d(TAG, "onKeyUp, key pressed: " + event.toString());
 
-		// System.out.println("QtMain.onKeyUp, key released: "+event.toString());
 		if( keyCode == KeyEvent.KEYCODE_BACK )
 			{
 				return true;
