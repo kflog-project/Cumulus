@@ -26,7 +26,7 @@
 */
 
 /**
- * This file was patched, to load all Qt libraries from a fixed position.
+ * This file was patched by Cumulus, to load all Qt libraries from a fixed position.
  * 
  * $Id$
  */
@@ -36,6 +36,7 @@ package org.kde.necessitas.origo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -307,10 +309,36 @@ public class QtActivity extends Activity
         errorDialog.show();
     }
 
+    /**
+     * Retrieves the package version code from the manifest.
+     *
+     * @return The package version code
+     */
+    private int getPackageVersionCode()
+    {
+      PackageInfo packageInfo;
+
+      int version = -1;
+
+      try
+      {
+        packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+
+        version = packageInfo.versionCode;
+      }
+      catch (NameNotFoundException e)
+      {
+        Log.e(QtApplication.QtTAG, "Package Info not found: " + e.getMessage());
+      }
+
+      return version;
+    }
+
     private void startApp(final boolean firstStart)
     {
-    	Log.d(QtApplication.QtTAG, "startApp, firstStart=" + firstStart );
-        try
+    	Log.v(QtApplication.QtTAG, "startApp, firstStart=" + firstStart );
+    	
+      try
         {            		
           ArrayList<String> libraryList= new ArrayList<String>();
 
@@ -330,10 +358,17 @@ public class QtActivity extends Activity
                     
           Log.d(QtApplication.QtTAG, "startApp, jarDir=" + jarDir + ", jarOut=" + jarOut);
 
-          File jarFile = new File( jarOut );
+          // Package version control install file marker.
+          File pvcFile = new File( jarDir + File.separator + "pvc_" + String.valueOf(getPackageVersionCode()) );
 
-          if( jarFile.exists() == false || jarFile.isFile() == false || jarFile.length() == 0 )
+          File jarFile = new File( jarOut );
+         
+          if( pvcFile.exists() == false || jarFile.exists() == false ||
+              jarFile.isFile() == false || jarFile.length() == 0 )
           	{
+          	  Log.v(QtApplication.QtTAG, "startApp, file" + qtJar + " must be installed!");
+          	  
+          	  // The Qt Jar file must be copied.
               InputStream ips = getApplicationContext().getAssets().open(qtJar);
                  
               int size;
@@ -349,6 +384,17 @@ public class QtActivity extends Activity
               fos.flush();
               fos.close();
               ips.close();
+              
+              try
+                {
+                  // Store an install marker file
+                  OutputStream out = new FileOutputStream( pvcFile );
+                  out.close();
+                }
+              catch (Exception e)
+                {
+                  Log.e(QtApplication.QtTAG, "PVC add file error: " + e.getMessage());
+                }        
           	}
  
           String dexPaths = new String();
@@ -369,8 +415,6 @@ public class QtActivity extends Activity
             Log.e(QtApplication.QtTAG, "Can't create main activity", e);
         }
     }
-
-
 
     /////////////////////////// forward all notifications ////////////////////////////
     /////////////////////////// Super class calls ////////////////////////////////////
