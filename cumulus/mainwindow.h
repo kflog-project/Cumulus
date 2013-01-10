@@ -3,7 +3,7 @@
                              -------------------
    begin                : Sun Jul 21 2002
    copyright            : (C) 2002      by André Somers
-   ported to Qt4.x/X11  : (C) 2007-2012 by Axel Pauli
+   ported to Qt4.x/X11  : (C) 2007-2013 by Axel Pauli
    email                : axel@kflog.org
 
    This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  */
@@ -124,12 +124,12 @@ public:
    */
   static bool isRootWindow()
   {
-    return _rootWindow;
+    return m_rootWindow;
   };
 
   static void setRootWindow( bool value)
   {
-    _rootWindow = value;
+    m_rootWindow = value;
   };
 
 #ifdef ANDROID
@@ -507,27 +507,27 @@ private:
   QPointer<QWidget> configView;
 
   // visibility of menu bar
-  bool menuBarVisible;
+  bool m_menuBarVisible;
 
   // instance of IGC logger class
-  IgcLogger *logger;
+  IgcLogger* m_logger;
 
   // Store here, if the lists are visible or not.
-  bool _taskListVisible;
-  bool _reachpointListVisible;
-  bool _outlandingListVisible;
+  bool m_taskListVisible;
+  bool m_reachpointListVisible;
+  bool m_outlandingListVisible;
 
   // Flag to store if the root window is visible or not. Used by Android for the
   // menu display. Android popups only its menu if the main window is active and
   // not covered by another widget.
-  static bool _rootWindow;
+  static bool m_rootWindow;
 
 #if defined ANDROID || defined MAEMO
 
 private:
 
   /** Timer for triggering display on. */
-  QTimer *displayTrigger;
+  QTimer* m_displayTrigger;
 
 private slots:
 

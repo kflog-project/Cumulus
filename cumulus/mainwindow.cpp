@@ -111,7 +111,7 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
  */
 MapView *_globalMapView = static_cast<MapView *> (0);
 
-bool MainWindow::_rootWindow = true;
+bool MainWindow::m_rootWindow = true;
 
 // A signal SIGCONT has been catched. It is send out
 // when the cumulus process was stopped and then reactivated.
@@ -129,7 +129,7 @@ static void resumeGpsConnection( int sig )
 MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 {
   _globalMainWindow = this;
-  menuBarVisible = false;
+  m_menuBarVisible = false;
   listViewTabs = 0;
   configView = 0;
 
@@ -143,7 +143,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   setupMenu = 0;
   helpMenu = 0;
 
-  logger = static_cast<IgcLogger *> (0);
+  m_logger = static_cast<IgcLogger *> (0);
+
+#if defined ANDROID || defined MAEMO
+  m_displayTrigger = static_cast<QTimer *> (0);
+#endif
 
   // Overwrite old default.
   GeneralConfig::instance()->setMapLowerLimit(5);
@@ -499,9 +503,9 @@ void MainWindow::slotCreateApplicationWidgets()
   viewCF = new QWidget( this );
 
   // set visibility of lists to false
-  _taskListVisible       = false;
-  _reachpointListVisible = false;
-  _outlandingListVisible = false;
+  m_taskListVisible       = false;
+  m_reachpointListVisible = false;
+  m_outlandingListVisible = false;
 
   listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
   listViewTabs->addTab( viewAF, tr( "Airfields" ) );
@@ -514,7 +518,7 @@ void MainWindow::slotCreateApplicationWidgets()
   // create GPS object
   GpsNmea::gps = new GpsNmea( this );
   GpsNmea::gps->blockSignals( true );
-  logger = IgcLogger::instance();
+  m_logger = IgcLogger::instance();
 
   createActions();
 
@@ -554,7 +558,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            this, SLOT( slotGpsStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation(SatInfo&) ),
-           logger, SLOT( slotConstellation(SatInfo&) ) );
+           m_logger, SLOT( slotConstellation(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation(SatInfo&) ),
            calculator->getWindAnalyser(), SLOT( slot_newConstellation(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( newSpeed(Speed&) ),
@@ -715,26 +719,26 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_setFlightStatus(Calculator::FlightMode) ) );
 
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
-           logger, SLOT( slotTaskSectorTouched() ) );
+           m_logger, SLOT( slotTaskSectorTouched() ) );
   connect( calculator, SIGNAL( taskInfo( const QString&, const bool ) ),
            this, SLOT( slotNotification( const QString&, const bool ) ) );
   connect( calculator, SIGNAL( newSample() ),
-           logger, SLOT( slotMakeFixEntry() ) );
+           m_logger, SLOT( slotMakeFixEntry() ) );
   connect( calculator, SIGNAL( flightModeChanged(Calculator::FlightMode) ),
-           logger, SLOT( slotFlightModeChanged(Calculator::FlightMode) ) );
+           m_logger, SLOT( slotFlightModeChanged(Calculator::FlightMode) ) );
 
   connect( ( QObject* ) calculator->getReachList(), SIGNAL( newReachList() ),
            this, SLOT( slotNewReachList() ) );
 
-  connect( logger, SIGNAL( logging( bool ) ),
+  connect( m_logger, SIGNAL( logging( bool ) ),
            viewMap, SLOT( slot_setLoggerStatus() ) );
-  connect( logger, SIGNAL( logging( bool ) ),
+  connect( m_logger, SIGNAL( logging( bool ) ),
             SLOT( slotLogging( bool ) ) );
-  connect( logger, SIGNAL( madeEntry() ),
+  connect( m_logger, SIGNAL( madeEntry() ),
            viewMap, SLOT( slot_LogEntry() ) );
-  connect( logger, SIGNAL( takeoffTime(QDateTime&) ),
+  connect( m_logger, SIGNAL( takeoffTime(QDateTime&) ),
             SLOT( slotTakeoff(QDateTime&) ) );
-  connect( logger, SIGNAL( landingTime(QDateTime&) ),
+  connect( m_logger, SIGNAL( landingTime(QDateTime&) ),
             SLOT( slotLanded(QDateTime&) ) );
 
   calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
@@ -816,7 +820,7 @@ void MainWindow::slotFinishStartUp()
   if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
     {
       // set logger in standby mode
-      logger->Standby();
+      m_logger->Standby();
     }
 
   setNearestOrReachableHeaders();
@@ -842,27 +846,27 @@ void MainWindow::slotFinishStartUp()
       osso_display_blanking_pause( ossoContext );
 
       // setup timer to prevent screen blank
-      displayTrigger = new QTimer(this);
-      displayTrigger->setSingleShot(true);
+      m_displayTrigger = new QTimer(this);
+      m_displayTrigger->setSingleShot(true);
 
-      connect( displayTrigger, SIGNAL(timeout()),
+      connect( m_displayTrigger, SIGNAL(timeout()),
                this, SLOT(slotDisplayTrigger()) );
 
       // start timer with 10s
-      displayTrigger->start( 10000 );
+      m_displayTrigger->start( 10000 );
     }
 
 #elif ANDROID
 
   // setup timer to prevent screen blank
-  displayTrigger = new QTimer(this);
-  displayTrigger->setSingleShot(true);
+  m_displayTrigger = new QTimer(this);
+  m_displayTrigger->setSingleShot(true);
 
-  connect( displayTrigger, SIGNAL(timeout()),
+  connect( m_displayTrigger, SIGNAL(timeout()),
            this, SLOT(slotDisplayTrigger()) );
 
   // start timer with 10s
-  displayTrigger->start( 10000 );
+  m_displayTrigger->start( 10000 );
 
 #endif
 
@@ -886,20 +890,32 @@ MainWindow::~MainWindow()
   // GeneralConfig::instance()->setWindowSize( size() );
   // GeneralConfig::instance()->save();
 
-  delete logger;
+  if( m_logger )
+    {
+      delete m_logger;
+    }
 
 #ifdef MAEMO
 
   // stop Maemo screen saver off triggering
   if( ossoContext )
     {
-      displayTrigger->stop();
+      if( m_displayTrigger )
+        {
+          m_displayTrigger->stop();
+        }
+
       osso_deinitialize( ossoContext );
     }
+#endif
 
-#elif ANDROID
+#ifdef ANDROID
 
-  displayTrigger->stop();
+  if( m_displayTrigger )
+    {
+
+      m_displayTrigger->stop();
+    }
 
 #endif
 
@@ -1482,7 +1498,7 @@ void MainWindow::createActions()
   actionToggleLogging->setCheckable(true);
   addAction( actionToggleLogging );
   connect ( actionToggleLogging, SIGNAL( triggered() ),
-             logger, SLOT( slotToggleLogging() ) );
+             m_logger, SLOT( slotToggleLogging() ) );
 
   actionToggleTrailDrawing = new QAction( tr( "Flight trail" ), this );
   actionToggleTrailDrawing->setCheckable(true);
@@ -1763,12 +1779,12 @@ void MainWindow::slotToggleMenu()
 
 #endif
 
-      menuBarVisible = true;
+      m_menuBarVisible = true;
       menuBar()->setVisible( true );
     }
   else
     {
-      menuBarVisible = false;
+      m_menuBarVisible = false;
       menuBar()->setVisible( false );
     }
 
@@ -1898,7 +1914,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case mapView:
 
-      _rootWindow = true;
+      m_rootWindow = true;
 
       // @AP: set focus to MainWindow widget, otherwise F-Key events will
       // not routed to it
@@ -1908,7 +1924,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       // @AP: We display the menu bar only in the map view widget,
       // if it is visible. In all other views we hide it to save
       // space for the other widgets.
-      if( menuBarVisible )
+      if( m_menuBarVisible )
         {
           menuBar()->setVisible( true );
         }
@@ -1950,7 +1966,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case wpView:
 
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -1974,7 +1990,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case rpView:
       {
-        _rootWindow = false;
+        m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2003,7 +2019,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case afView:
 
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2027,7 +2043,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case olView:
 
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2057,7 +2073,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
           return;
         }
 
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2086,7 +2102,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
           return;
         }
 
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2109,7 +2125,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case tpSwitchView:
 
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2131,7 +2147,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case cfView:
       // called if configuration or preflight widget was created
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2149,7 +2165,7 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
     case flarmView:
       // called if Flarm view is created
-      _rootWindow = false;
+      m_rootWindow = false;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2193,7 +2209,7 @@ void MainWindow::setNearestOrReachableHeaders()
   actionViewReachpoints->setText( header );
 
   // update list view tabulator header
-  listViewTabs->setTabText( _taskListVisible ? 2 : 1, header );
+  listViewTabs->setTabText( m_taskListVisible ? 2 : 1, header );
 }
 
 /** Switches to mapview. */
@@ -2301,7 +2317,7 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 /** Opens the configuration widget */
 void MainWindow::slotOpenConfig()
 {
-  _rootWindow = false;
+  m_rootWindow = false;
   setWindowTitle( tr("Cumulus Settings") );
   ConfigWidget *cDlg = new ConfigWidget( this );
   cDlg->resize( size() );
@@ -2526,17 +2542,17 @@ void MainWindow::slotReadconfig()
  // Check, if reachable list is to show or not
   if( conf->getNearestSiteCalculatorSwitch() )
     {
-      if( ! _reachpointListVisible )
+      if( ! m_reachpointListVisible )
         {
           // list was not visible before
-          listViewTabs->insertTab( _taskListVisible ? 2 : 1, viewRP, tr( "Reachable" ) );
+          listViewTabs->insertTab( m_taskListVisible ? 2 : 1, viewRP, tr( "Reachable" ) );
           calculator->newSites();
-          _reachpointListVisible = true;
+          m_reachpointListVisible = true;
         }
     }
   else
     {
-      if( _reachpointListVisible )
+      if( m_reachpointListVisible )
         {
           // changes in listViewTabs trigger  (if viewRP was last active),
           // this slot calls setView and tries to set the view to viewRP
@@ -2550,30 +2566,30 @@ void MainWindow::slotReadconfig()
           calculator->clearReachable();
           viewRP->clearList(); // this clears the reachable list in the view
           Map::instance->scheduleRedraw(Map::waypoints);
-          _reachpointListVisible = false;
+          m_reachpointListVisible = false;
         }
     }
 
   // Check, if outlanding list is to show or not
   if( conf->getWelt2000LoadOutlandings() )
     {
-      if( ! _outlandingListVisible )
+      if( ! m_outlandingListVisible )
         {
           // list was not visible before, add it to the end of the tabs
           listViewTabs->addTab( viewOL, tr( "Outlandings" ) );
-          _outlandingListVisible = true;
+          m_outlandingListVisible = true;
         }
     }
   else
     {
-      if( _outlandingListVisible )
+      if( m_outlandingListVisible )
         {
           listViewTabs->blockSignals( true );
           listViewTabs->removeTab( listViewTabs->indexOf(viewOL) );
           listViewTabs->blockSignals( false );
           viewRP->clearList();  // this clears the outlanding list in the view
           Map::instance->scheduleRedraw(Map::outlandings);
-          _outlandingListVisible = false;
+          m_outlandingListVisible = false;
         }
     }
 
@@ -2657,7 +2673,7 @@ void MainWindow::slotPreFlightTask()
 /** Opens the pre-flight widget and brings the selected tabulator to the front */
 void MainWindow::slotOpenPreFlight(const char *tabName)
 {
-  _rootWindow = false;
+  m_rootWindow = false;
   setWindowTitle( tr("Pre-Flight Settings") );
   PreFlightWidget* cDlg = new PreFlightWidget( this, tabName );
   cDlg->setObjectName("PreFlightDialog");
@@ -2689,21 +2705,21 @@ void MainWindow::slotPreFlightDataChanged()
 {
   if ( _globalMapContents->getCurrentTask() == static_cast<FlightTask *> (0) )
     {
-      if ( _taskListVisible )
+      if ( m_taskListVisible )
         {
           // see comment for removeTab( viewRP )
           listViewTabs->blockSignals( true );
           listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
           listViewTabs->blockSignals( false );
-          _taskListVisible = false;
+          m_taskListVisible = false;
         }
     }
   else
     {
-      if ( !_taskListVisible )
+      if ( !m_taskListVisible )
         {
           listViewTabs->insertTab( 0, viewTP, tr( "Task" ) );
-          _taskListVisible = true;
+          m_taskListVisible = true;
         }
     }
 
@@ -2731,7 +2747,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_F11 )
     {
       // Open setup from Android menu
-      if ( _rootWindow )
+      if ( m_rootWindow )
         {
           slotOpenConfig();
         }
@@ -2742,7 +2758,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_F12 )
     {
       // Open pre-flight setup from Android menu
-      if ( _rootWindow )
+      if ( m_rootWindow )
         {
           slotPreFlightGlider();
         }
@@ -2753,7 +2769,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_F13 )
     {
       // Open GPS status window from Android menu
-      if ( _rootWindow )
+      if ( m_rootWindow )
         {
           actionStatusGPS->activate(QAction::Trigger);
         }
@@ -2764,7 +2780,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_D )
     {
       // toggle left map sidebar
-      if ( _rootWindow )
+      if ( m_rootWindow )
         {
           slotToggleMapSidebar();
         }
@@ -2787,7 +2803,7 @@ void MainWindow::keyReleaseEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_Close )
     {
       // Quit application is requested from Android menu to ensure a safe shutdown.
-      if ( _rootWindow )
+      if ( m_rootWindow )
         {
           close();
           return;
@@ -2874,7 +2890,7 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
 void MainWindow::slotSubWidgetOpened()
 {
   // Set the root window flag
-  _rootWindow = false;
+  m_rootWindow = false;
 }
 
 /**
@@ -2883,7 +2899,7 @@ void MainWindow::slotSubWidgetOpened()
 void MainWindow::slotSubWidgetClosed()
 {
   // Set the root window flag
-  _rootWindow = true;
+  m_rootWindow = true;
 }
 
 /**
@@ -2994,7 +3010,7 @@ void MainWindow::slotDisplayTrigger()
 
   // Restart the timer because we use a single shot timer to avoid
   // multiple triggering in case of delays. Next trigger is in 10s.
-  displayTrigger->start( 10000 );
+  m_displayTrigger->start( 10000 );
 }
 
 #endif
@@ -3023,7 +3039,7 @@ void MainWindow::slotDisplayTrigger()
 
   // Restart the timer because we use a single shot timer to avoid
   // multiple triggering in case of delays. Next trigger is in 10s.
-  displayTrigger->start( 10000 );
+  m_displayTrigger->start( 10000 );
 }
 
 void MainWindow::forceFocus()
