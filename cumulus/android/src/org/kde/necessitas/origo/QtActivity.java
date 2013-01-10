@@ -336,7 +336,7 @@ public class QtActivity extends Activity
 
     private void startApp(final boolean firstStart)
     {
-    	Log.v(QtApplication.QtTAG, "startApp, firstStart=" + firstStart );
+    	Log.d(QtApplication.QtTAG, "startApp, firstStart=" + firstStart );
     	
       try
         {            		
@@ -366,7 +366,7 @@ public class QtActivity extends Activity
           if( pvcFile.exists() == false || jarFile.exists() == false ||
               jarFile.isFile() == false || jarFile.length() == 0 )
           	{
-          	  Log.v(QtApplication.QtTAG, "startApp, file" + qtJar + " must be installed!");
+          	  Log.d(QtApplication.QtTAG, "startApp, file" + qtJar + " must be installed!");
           	  
           	  // The Qt Jar file must be copied.
               InputStream ips = getApplicationContext().getAssets().open(qtJar);
