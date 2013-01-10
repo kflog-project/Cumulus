@@ -65,9 +65,10 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   setNumber( number );
   gl->addWidget( m_editor, row, 0, 1, 5 );
 
-  m_ok = new QPushButton( " ", this );
-  m_ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
-  gl->addWidget( m_ok, row, 6 );
+
+  m_cancel = new QPushButton( " ", this );
+  m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
+  gl->addWidget( m_cancel, row, 6 );
   row++;
 
   gl->setRowMinimumHeight( row, 5 );
@@ -89,7 +90,8 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_num5 = new QPushButton( "5", this );
   gl->addWidget( m_num5, row, 4 );
 
-  m_home = new QPushButton( "H", this );
+  m_home = new QPushButton( " ", this );
+  m_home->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
   gl->addWidget( m_home, row, 6 );
   row++;
 
@@ -118,25 +120,25 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   QStyle* style = QApplication::style();
   
-  m_left = new QPushButton(this);
-  m_left->setIcon (style->standardIcon(QStyle::SP_ArrowLeft));
+  m_left = new QPushButton( " ", this);
+  m_left->setIcon(style->standardIcon(QStyle::SP_ArrowLeft));
   gl->addWidget( m_left, row, 1 );
 
-  m_right = new QPushButton( this );
-  m_right->setIcon (style->standardIcon(QStyle::SP_ArrowRight));
+  m_right = new QPushButton( " ", this );
+  m_right->setIcon(style->standardIcon(QStyle::SP_ArrowRight));
   gl->addWidget( m_right, row, 2 );
 
-  m_delLeft = new QPushButton( this );
-  m_delLeft->setIcon (style->standardIcon(QStyle::SP_MediaSkipBackward));
+  m_delLeft = new QPushButton( " ", this );
+  m_delLeft->setIcon(style->standardIcon(QStyle::SP_MediaSkipBackward));
   gl->addWidget( m_delLeft, row, 3 );
 
-  m_delRight = new QPushButton( this );
+  m_delRight = new QPushButton( " ", this );
   m_delRight->setIcon (style->standardIcon(QStyle::SP_MediaSkipForward));
   gl->addWidget( m_delRight, row, 4 );
 
-  m_cancel = new QPushButton( " ", this );
-  m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
-  gl->addWidget( m_cancel, row, 6 );
+  m_ok = new QPushButton( " ", this );
+  m_ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
+  gl->addWidget( m_ok, row, 6 );
 
   m_ok->setFocusPolicy( Qt::NoFocus );
   m_cancel->setFocusPolicy( Qt::NoFocus );
@@ -256,15 +258,8 @@ void NumberInputPad::slot_DigitPressed( QWidget* widget )
   m_editor->insert( text );
   m_pressedButton = button;
 
-  if( m_pressedButton )
-    {
-      // Setup a timer to handle a longer button press as repeat.
-      m_timer->start(300);
-    }
-  else
-    {
-      m_timer->stop();
-    }
+  // Setup a timer to handle a longer button press as repeat.
+  m_timer->start(300);
 }
 
 void NumberInputPad::slot_ButtonPressed( QWidget* widget )

@@ -60,6 +60,11 @@ class NumberInputPad : public QFrame
 
   virtual ~NumberInputPad();
 
+  /**
+   * Sets the number to be edited in the editor.
+   *
+   * @param number The number to be edited.
+   */
   void setNumber( const QString& number )
   {
     m_setNumber = number;
@@ -234,11 +239,30 @@ class NumberInputPad : public QFrame
 
  private slots:
 
+ /**
+  * Called if a digit button is pressed.
+  *
+  * \param widget Button object which is pressed.
+  */
   void slot_DigitPressed( QWidget *widget );
+
+  /**
+   * Called if a non digit button is pressed.
+   *
+   * \param widget Button object which is pressed.
+   */
   void slot_ButtonPressed( QWidget *widget );
 
+  /**
+   * Timer slot to handle a longer button press as press again..
+   */
   void slot_Repeat();
 
+  /**
+   * Called if the input text in the editor is changed.
+   *
+   * @param text The new input text.
+   */
   void slot_TextChanged( const QString& text );
 
   /**
@@ -246,8 +270,14 @@ class NumberInputPad : public QFrame
    */
   void slot_Pm();
 
+  /**
+   * Called if ok button is pressed.
+   */
   void slot_Ok();
 
+  /**
+   * Called if close button is pressed.
+   */
   void slot_Close();
 
  private:
