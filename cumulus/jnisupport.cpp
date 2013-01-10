@@ -152,7 +152,7 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 
 static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
 {
-  // qDebug("JNI nativeKeypress: code is %d", (unsigned int) code);
+  qDebug("JNI nativeKeypress: code is %d", (unsigned int) code);
 
   if( shutdown == true || MainWindow::isRootWindow() == false )
     {
@@ -444,7 +444,7 @@ bool jniEnv()
   JavaVMAttachArgs args;
   args.name = 0;
   args.group = 0;
-  args.version = JNI_VERSION_1_4;
+  args.version = JNI_VERSION_1_6;
 
   m_jvm->AttachCurrentThread(&m_jniEnv, &args);
 
