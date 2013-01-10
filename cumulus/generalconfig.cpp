@@ -228,11 +228,11 @@ void GeneralConfig::load()
 
   // Preflight settings
   beginGroup("Preflight Data");
-  _safetyAltitude.setMeters(  value( "Arrival Altitude", 200.0 ).toDouble() );
+  _safetyAltitude.setMeters(  value( "Arrival Altitude", 250.0 ).toDouble() );
   _arrivalAltitudeDisplay = (enum ArrivalAltitudeDisplay) value( "ArrivalAltitudeDisplay",
                                     GeneralConfig::landingTarget ).toInt();
   _qnh                    = value( "QNH", 1013 ).toInt();
-  _bRecordInterval        = value( "B-RecordLoggerInterval", 10 ).toInt();
+  _bRecordInterval        = value( "B-RecordLoggerInterval", 3 ).toInt();
   _kRecordInterval        = value( "K-RecordLoggerInterval", 0 ).toInt();
   _loggerAutostartMode    = value( "LoggerAutostartMode", true ).toBool();
   _tas                    = value( "TAS", 100 ).toInt();
