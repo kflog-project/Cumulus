@@ -6,13 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2001      by Harald Maier
-**                   2009      by Axel Pauli complete redesign done
-**                   2009-2013 by Axel Pauli
-**
-**   Email: axel@kflog.org
-**
-************************************************************************
+**   Copyright (c): 2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -33,19 +27,20 @@ class NumberEditor;
 /**
  * \class CoordEditNumPad
  *
- * \author Harald Maier, Axel Pauli
+ * \author Axel Pauli
  *
  * \brief Editor widget for WGS84 coordinates.
  *
  * This class is used to edit WGS84 coordinates. It is subclassed by
  * two extensions to handle latitude and longitude coordinates. Three
- * different coordinate formats are supported.
+ * different coordinate formats are supported. For the number input an own
+ * number keypad widget is popup.
  *
  * -degrees, minutes, seconds
  * -degrees and decimal minutes
  * -decimal degrees
  *
- * \date 2001-2013
+ * \date 2013
  *
  * \version $Id$
  */

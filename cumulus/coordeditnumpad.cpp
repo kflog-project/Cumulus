@@ -6,13 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2001 by Harald Maier
-**                   2009 by Axel Pauli complete redesign done
-**                   2009-2013 by Axel Pauli
-**
-**   Email:           axel@kflog.org
-**
-************************************************************************
+**   Copyright (c): 2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -220,7 +214,6 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
     {
       QString inputMaskD("99.99999");
 
-      // degreeBox->setInputMask( inputMask );
       degreeBox->setMaxLength(inputMaskD.size());
       eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9]\\.[0-9]{1,5})|(90\\.0{1,5})" ), this );
       degreeBox->setValidator( eValidator );
@@ -232,7 +225,6 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
       QString inputMaskD("99");
       QString inputMaskM("99.999");
 
-      // degreeBox->setInputMask( inputMaskD );
       degreeBox->setMaxLength(inputMaskD.size());
       eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9])|90" ), this );
       degreeBox->setValidator( eValidator );
@@ -240,7 +232,6 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
       degreeBox->setPmVisible( false );
       degreeBox->setDecimalVisible( false );
 
-      // minuteBox->setInputMask( inputMaskM );
       minuteBox->setMaxLength(inputMaskM.size());
       eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{1,3}" ), this );
       minuteBox->setValidator( eValidator );
@@ -250,7 +241,7 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
       QString inputMask("99");
-      // degreeBox->setInputMask( "99");
+
       degreeBox->setMaxLength(inputMask.size());
       eValidator = new QRegExpValidator( QRegExp( "([0-8][0-9])|90" ), this );
       degreeBox->setValidator( eValidator );
@@ -258,7 +249,6 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
       degreeBox->setPmVisible( false );
       degreeBox->setDecimalVisible( false );
 
-      // minuteBox->setInputMask( "99");
       minuteBox->setMaxLength(inputMask.size());
       eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]" ), this );
       minuteBox->setValidator( eValidator );
@@ -266,7 +256,6 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
       minuteBox->setPmVisible( false );
       minuteBox->setDecimalVisible( false );
 
-      // secondBox->setInputMask( "99");
       secondBox->setMaxLength(inputMask.size());
       eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]" ), this );
       secondBox->setValidator( eValidator );
@@ -302,7 +291,6 @@ LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPa
     {
       QString inputMaskD("999.99999");
 
-      // degreeBox->setInputMask( "999.99999" );
       degreeBox->setMaxLength(inputMaskD.size());
       eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9]\\.[0-9]{1,5})|([0-1][0-7][0-9]\\.[0-9]{1,5})|(180\\.0{1,5})" ), this );
       degreeBox->setValidator( eValidator );
@@ -314,7 +302,6 @@ LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPa
       QString inputMaskD("999");
       QString inputMaskM("99.999");
 
-      // degreeBox->setInputMask( "999" );
       degreeBox->setMaxLength(inputMaskD.size());
       eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9])|(1[0-7][0-9])|180" ), this );
       degreeBox->setValidator( eValidator );
@@ -322,7 +309,6 @@ LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPa
       degreeBox->setPmVisible( false );
       degreeBox->setDecimalVisible( false );
 
-      // minuteBox->setInputMask( "99.999" );
       minuteBox->setMaxLength(inputMaskM.size());
       eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]\\.[0-9]{1,3}" ), this );
       minuteBox->setValidator( eValidator );
@@ -331,21 +317,21 @@ LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPa
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
-      degreeBox->setInputMask( "999");
+      degreeBox->setMaxLength(3);
       eValidator = new QRegExpValidator( QRegExp( "(0[0-9][0-9])|(1[0-7][0-9])|180" ), this );
       degreeBox->setValidator( eValidator );
       degreeBox->setTip("000...180");
       degreeBox->setPmVisible( false );
       degreeBox->setDecimalVisible( false );
 
-      minuteBox->setInputMask( "99");
+      minuteBox->setMaxLength(2);
       eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]" ), this );
       minuteBox->setValidator( eValidator );
       minuteBox->setTip("00...59");
       minuteBox->setPmVisible( false );
       minuteBox->setDecimalVisible( false );
 
-      secondBox->setInputMask( "99");
+      secondBox->setMaxLength(2);
       eValidator = new QRegExpValidator( QRegExp( "[0-5][0-9]" ), this );
       secondBox->setValidator( eValidator );
       secondBox->setTip("00...59");
