@@ -314,25 +314,58 @@ public class QtActivity extends Activity
      *
      * @return The package version code
      */
-    private int getPackageVersionCode()
-    {
-      PackageInfo packageInfo;
+	private int getPackageVersionCode()
+		{
+			PackageInfo packageInfo;
 
-      int version = -1;
+			int version = -1;
 
-      try
-      {
-        packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			try
+				{
+					packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 
-        version = packageInfo.versionCode;
-      }
-      catch (NameNotFoundException e)
-      {
-        Log.e(QtApplication.QtTAG, "Package Info not found: " + e.getMessage());
-      }
+					version = packageInfo.versionCode;
+				}
+			catch (NameNotFoundException e)
+				{
+					Log.e(QtApplication.QtTAG, "Package Info not found: " + e.getMessage());
+				}
 
-      return version;
-    }
+			return version;
+		}
+    
+	/**
+	 * Removes all files in the passed directory. Subdirectories are not touched.
+	 * 
+	 * @param directoryName Name of directory
+	 */
+	private void removeDirContent( String directoryName )
+		{
+			File directory = new File( directoryName );
+			
+			if( ! directory.exists() )
+				{
+					return;
+				}
+
+			// Get all files in directory
+			File[] files = directory.listFiles();
+
+			for( File file : files )
+				{
+					// Delete only files
+					if(file.isDirectory() )
+						{
+							continue;
+						}
+
+					if( !file.delete() )
+						{
+							// Failed to delete file
+							Log.d( QtApplication.QtTAG, "removeDirContent: Failed to delete " + file );
+						}
+				}
+		}
 
     private void startApp(final boolean firstStart)
     {
@@ -367,6 +400,11 @@ public class QtActivity extends Activity
             {
               Log.d( QtApplication.QtTAG, "startApp, Version control file " +
                      pvcFileName + " does not exists!" );
+              
+              // It seems, that the application has just installed or the user has
+              // removed all its data. In this case the Jar output directory must be
+              // cleared to prevent the usage of outdated data.
+              removeDirContent( jarDir );
             }
 
           File jarFile = new File( jarOut );
