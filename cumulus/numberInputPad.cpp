@@ -274,6 +274,9 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
 
   m_pressedButton = button;
   
+  // make a deselect of the text to prevent unwanted behavior.
+  m_editor->deselect();
+
   if( button == m_decimal )
     {
       if( m_editor->text().contains(".") == false )
@@ -281,7 +284,6 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
           // First input of decimal point
           m_editor->setSelection(m_editor->cursorPosition(), 1);
           m_editor->insert( "." );
-          m_pressedButton = 0;
         }
       else
         {
@@ -289,10 +291,11 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
           // move cursor one position to the right and accept input.
           if( m_editor->text().indexOf(".") == m_editor->cursorPosition() )
             {
-              m_editor->setSelection(m_editor->cursorPosition(), 1);
-              m_pressedButton = 0;
+              m_editor->cursorForward( false );
             }
         }
+
+      m_pressedButton = 0;
     }
   else if( button == m_left )
     {
