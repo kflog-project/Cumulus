@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-01-10 AP: Bugfix: Application has crashed, if the disclaimer was
+                   rejected by the user.
+
 [+] 2013-01-09 AP: Number input handling completely changed to an own solution
                    with a number keypad widget. That makes the number input
                    handling easier especially under Android where the virtual
