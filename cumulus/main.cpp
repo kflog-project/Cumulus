@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
   while (addDir.isEmpty())
     {
       qDebug() << " Waiting for Cumulus addDir ...";
-      sleep(1);
+      usleep(250000);
       addDir = jniGetAddDataDir();
     }
 
@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
   while (appDir.isEmpty())
     {
       qDebug() << " Waiting for Cumulus appDir ...";
-      sleep(1);
+      usleep(250000);
       appDir = jniGetAppDataDir();
     }
 
