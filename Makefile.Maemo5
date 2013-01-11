@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Maemo5
 #
-# Copyright (c): 2010-2012 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2010-2013 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -248,7 +248,7 @@ qmake: cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator
 .PHONY : resetdate
 
 resetdate:
-	rm -rf cumulus/main.o
+	rm -rf cumulus/builddate.o
 
 cumulus/Makefile: cumulus/cumulusMaemo5.pro
 	cd cumulus; $(QMAKE) cumulusMaemo5.pro -o Makefile

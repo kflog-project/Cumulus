@@ -59,12 +59,30 @@
 int main(int argc, char *argv[])
 {
   // Workaround to start browser from QTextView
-  qputenv ( "BROWSER", "browser --url" );
+  qputenv( "BROWSER", "browser --url" );
+
+  // @AP: Reset the locale that is used for number formatting to "C" locale.
+  setlocale(LC_NUMERIC, "C");
+
+#ifndef ANDROID
+  // Note this must be called before QApplication constructor
+  QApplication::setGraphicsSystem( "raster" );
+#endif
+
+  QApplication app(argc, argv, true);
+
+  QCoreApplication::setApplicationName( "Cumulus" );
+  QCoreApplication::setApplicationVersion( CU_VERSION );
+  QCoreApplication::setOrganizationName( "KFLog" );
+  QCoreApplication::setOrganizationDomain( "www.kflog.org" );
+
+  // Make sure the application uses utf8 encoding for translated widgets
+  QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
 #ifdef ANDROID
 
   // Gets the additional data dir from our app. That is normally the storage
-  // path to the SDCard.
+  // path to the SD-Card.
   QString addDir = jniGetAddDataDir();
 
   while (addDir.isEmpty())
@@ -105,25 +123,8 @@ int main(int argc, char *argv[])
 
 #endif /* ANDROID */
 
-  QApplication::setGraphicsSystem( "raster" );
-  QApplication app(argc, argv, true);
-
   // @AP: we installing our own message handler
   qInstallMsgHandler(messageHandler);
-
-  // @AP: Reset the locale that is used for number formatting to "C" locale.
-  setlocale(LC_NUMERIC, "C");
-
-  QCoreApplication::setApplicationName( "Cumulus" );
-  QCoreApplication::setApplicationVersion( CU_VERSION );
-  QCoreApplication::setOrganizationName( "KFLog" );
-  QCoreApplication::setOrganizationDomain( "www.kflog.org" );
-
-  // Make sure the application uses utf8 encoding for translated widgets
-  QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
-
-  // Store Build date
-  conf->setBuiltDate( __DATE__ );
 
   // @AP: to make trace output available, if process is started via
   // QT/X11, we can redirect all output into a file, if configuration option

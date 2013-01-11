@@ -181,6 +181,7 @@ SOURCES = \
     altitude.cpp \
     authdialog.cpp \
     basemapelement.cpp \
+    builddate.cpp \
     configwidget.cpp \
     calculator.cpp \
     distance.cpp \

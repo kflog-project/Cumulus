@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2012 by Axel Pauli
+**                   2007-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -69,6 +69,8 @@
 #define AS_FILL_INSIDE    20
 
 class QTranslator;
+
+extern const char* CumulusBuildDate;
 
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings
@@ -175,16 +177,10 @@ class GeneralConfig : protected QSettings
   };
 
   /** gets the built date of Cumulus */
-  QString &getBuiltDate()
+  static QString getBuiltDate()
     {
-      return _builtDate;
+      return QString(CumulusBuildDate);
     };
-
-  /** sets the built date of Cumulus */
-  void setBuiltDate( QString newBuiltDate )
-  {
-    _builtDate = newBuiltDate;
-  };
 
   /** gets the user data directory where waypoint file, task file,
       glider.pol, logger files are stored */
