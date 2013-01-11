@@ -63,7 +63,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -260,6 +259,35 @@ public class CumulusActivity extends QtActivity
         m_objectRef = this;
       }
 
+		// Get the internal data directory for our App.
+	  String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
+
+    // Check, if the internal data are already installed. To check that, a special
+	  // file name is checked, which is created after data installation. The file name
+    // includes the package version, to ensure that with every new version the data
+    // are reinstalled.
+	  String pvcAppFileName = "pvc_" + String.valueOf(getPackageVersionCode());
+	  
+    File pvcAppFile = new File( appDataDir + File.separator + pvcAppFileName );
+
+    Log.d(TAG, "pvcApp=" + pvcAppFile.getAbsolutePath());
+
+    if (! pvcAppFile.exists() )
+      {
+      	// We do the data install in an extra thread to minimize the runtime in our activity.
+      	AppDataInstallThread adit = new AppDataInstallThread( appDataDir, pvcAppFileName );
+      	adit.start();
+      }
+    else
+    	{
+        // The app data seems to be installed, make dir info for other threads available.
+        synchronized(appDataPath)
+        {
+          appDataPath = appDataDir;
+        }
+    	}
+    
+    // Call super class, that will load the native C++ part of Cumulus
     super.onCreate( savedInstanceState );
 
     boolean dataFolderAvailable = false;
@@ -323,6 +351,9 @@ public class CumulusActivity extends QtActivity
     
     if( doInstall == true )
       {
+      	// At first remove all package version control files.
+      	removePvcFiles( addDataDir.getAbsolutePath() );
+      	
         // It seems there are some needed files not installed, do it again.
         boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
 
@@ -348,46 +379,6 @@ public class CumulusActivity extends QtActivity
     synchronized(addDataPath)
     {
       addDataPath = tmpString;
-    }
-
-		// Get the internal data directory for our App.
-	  String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
-
-    // Check, if the internal data are already installed. To check that, a special
-	  // file name is checked, which is created after data installation. The file name
-    // includes the package version, to ensure that with every new version the data
-    // are reinstalled.
-    File pvcAppFile = new File( appDataDir + "/pvc_" + String.valueOf(getPackageVersionCode()) );
-
-    Log.d(TAG, "pvcApp=" + pvcAppFile.getAbsolutePath());
-
-    if (! pvcAppFile.exists() )
-      {
-        // It seems that our App data are not installed. Do that job now.
-        boolean res = installAppData( appDataDir, getAssets() );
-
-        if( res == false )
-          {
-            showDialog(DIALOG_ZIP_ERR);
-            return;
-          }
-
-        try
-          {
-            // Store an install marker file
-            OutputStream out = new FileOutputStream( pvcAppFile );
-            out.close();
-          }
-        catch (Exception e)
-          {
-            Log.e(TAG, "PVC app file error: " + e.getMessage());
-          }
-        }
-
-    // another thread is waiting for this info
-    synchronized(appDataPath)
-    {
-      appDataPath = appDataDir;
     }
 
     Window w = getWindow();
@@ -541,18 +532,10 @@ public class CumulusActivity extends QtActivity
       super.onDestroy();
     }
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-      boolean ok = super.onTouchEvent(event);
-      return ok;
-    }
-
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
-          Log.d(TAG, "onKeyDown, key pressed: " + event.toString());
+    Log.d(TAG, "onKeyDown, key pressed: " + event.toString());
 	  
 	  // There was a problem report on Google Developer, that a native function
 	  // was not found. Maybe it was not yet loaded.
@@ -569,7 +552,7 @@ public class CumulusActivity extends QtActivity
     
         if( keyCode == KeyEvent.KEYCODE_MENU )
           {
-            if(isRootWindow() )
+            if( isRootWindow() )
               {
                 // Only the root window can show this dialog.
                 showDialog(DIALOG_MENU_ID);
@@ -1288,6 +1271,96 @@ public class CumulusActivity extends QtActivity
   	    }
 		}
 
+	/**
+	 * Removes all pvc_... files in the passed directory.
+	 * 
+	 * @param directoryName Name of directory
+	 */
+	private void removePvcFiles( String directoryName )
+		{
+			File directory = new File( directoryName );
+			
+			if( ! directory.exists() )
+				{
+					return;
+				}
+
+			// Get all files in directory
+			File[] files = directory.listFiles();
+
+			for (File file : files)
+				{
+					if( file.isFile() && file.getName().startsWith("pvc_") )
+						{
+    					if( ! file.delete() )
+    						{
+    							// Failed to delete file
+    							Log.d( TAG, "removeDirContent: Failed to delete " + file );
+    						}
+						}
+				}
+		}
+
+	private class AppDataInstallThread extends Thread
+	{
+		private String m_appDataDirName;
+		private String m_pvcAppFileName;
+		
+		/**
+		 * Constructor of app data install thread.
+		 * 
+		 * @param appDataDirName The full path name of the app data directory
+		 * 
+		 * @param pvcAppFileName The simple file name of the package version control file.
+		 */
+		AppDataInstallThread( String appDataDirName, String pvcAppFileName )
+  		{
+  			super( "AppDataInstall" );
+  			
+  			m_appDataDirName = appDataDirName;
+  			m_pvcAppFileName = pvcAppFileName;
+  		}
+		
+		public void run()
+			{
+				Log.i( TAG, "AppData are installed now!");
+				
+	    	// At first remove all package version control files.
+	    	removePvcFiles( m_appDataDirName );
+
+	      boolean res = installAppData( m_appDataDirName, getAssets() );
+
+	      if( res == false )
+	        {
+	          // FIXME: we need an error message here to the GUI thraed.
+	        	// showDialog(DIALOG_ZIP_ERR);
+	          return;
+	        }
+
+	      try
+	        {
+	  			  File pvcAppFile = new File( m_appDataDirName + File.separator + m_pvcAppFileName );
+
+	          // Store an install marker file
+	          OutputStream out = new FileOutputStream( pvcAppFile );
+	          out.close();
+	        }
+	      catch (Exception e)
+	        {
+	          Log.e(TAG, "PVC app file error: " + e.getMessage());
+	        }
+
+	      
+				Log.i( TAG, "AppData install finished.");
+
+			  // another thread is waiting for this info
+			  synchronized(appDataPath)
+			  {
+			    appDataPath = m_appDataDirName;
+			  }
+		  }
+	}
+	
   private boolean installAppData( String appDir, AssetManager am )
   {
     InputStream stream = null;
