@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012 by Axel Pauli
+ **                   2012-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -51,8 +51,9 @@ static jmethodID m_dimmScreenID   = 0;
 static jmethodID m_gpsCmdID       = 0;
 static jmethodID m_byte2Gps       = 0;
 
-// Shutdown flag to disable message transfer to the GUI.
-static bool shutdown = false;
+// Shutdown flag to disable message transfer to the GUI. It is reset by the
+// MainWindow class.
+static bool shutdown = true;
 
 // Function declarations
 bool jniEnv();
@@ -84,13 +85,13 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
   return -1;
 }
 
-void jniShutdown()
+void jniShutdown( bool option )
 {
-  // Set shutdown flag to true. This function is called by the MainWindow
-  // class, to signal a shutdown of the application. In that case all
-  // message forwarding has to be stopped to the GUI part. Otherwise the
-  // App can crash in the shutdown phase.
-  shutdown = true;
+  // Sets the shutdown flag to true or false. This function is called by the
+  // MainWindow class, to signal a shutdown or startup complete of the
+  // application. In shutdown case all message forwarding has to be stopped to
+  // the GUI part. Otherwise the App can crash in the shutdown phase.
+  shutdown = option;
 }
 
 // ---- The native methods ---
@@ -601,11 +602,6 @@ QString jniGetLanguage()
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult )
 {
   strResult = "";
-
-  if( shutdown )
-    {
-      return false;
-    }
 
   if (!jniEnv())
     {

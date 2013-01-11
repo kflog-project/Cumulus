@@ -38,7 +38,7 @@ bool jniDetachCurrentThread();
 /**
  * Called, when the GUI is going to shutdown to stop JNI transfer.
  */
-void jniShutdown();
+void jniShutdown( bool option=true);
 
 /**
  * Make Android OS play a sound. stream=0 will set STREAM_NOTIFICATION as

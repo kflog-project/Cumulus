@@ -421,7 +421,7 @@ void MainWindow::slotCreateSplash()
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(1000, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(500, this, SLOT(slotCreateApplicationWidgets()));
 }
 
 /**
@@ -873,6 +873,10 @@ void MainWindow::slotFinishStartUp()
 #endif
 
 #ifdef ANDROID
+
+  // Enable JNI transfer now.
+  jniShutdown( false );
+
   forceFocus();
 #endif
 
