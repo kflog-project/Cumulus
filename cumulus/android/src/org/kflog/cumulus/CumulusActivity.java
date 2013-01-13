@@ -77,7 +77,7 @@ import org.kflog.cumulus.R;
  * 
  * @author Axel Pauli
  * 
- * @date 2012
+ * @date 2012-2013
  * 
  * @version $Id$
  * 
@@ -137,11 +137,11 @@ public class CumulusActivity extends QtActivity
   private LocationListener       ll               = null;
   private GpsStatus.Listener     gl               = null;
   private GpsStatus.NmeaListener nl               = null;
-  private boolean               gpsEnabled       = false;
-  private boolean               nmeaIsReceived   = false;
-  private boolean               locationUpdated  = false;
-  private int                   lastGpsStatus     = -1;
-  private boolean               infoBoxesVisible = true;
+  private boolean                gpsEnabled       = false;
+  private boolean                nmeaIsReceived   = false;
+  private boolean                locationUpdated  = false;
+  private int                    lastGpsStatus    = -1;
+  private boolean                infoBoxesVisible = true;
 
   static private String          appDataPath      = "";
   static private String          addDataPath      = "";
@@ -166,26 +166,26 @@ public class CumulusActivity extends QtActivity
          {
            switch (msg.what)
              {
-                case BluetoothService.MESSAGE_STATE_CHANGE:
+               case BluetoothService.MESSAGE_STATE_CHANGE:
 
-                   Log.i( TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1 );
+               Log.i( TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1 );
 
-                   switch (msg.arg1)
-                     {
-                       case BluetoothService.STATE_CONNECTED:
-                         reportGpsStatus(1);
-                         break;
+               switch (msg.arg1)
+                 {
+                   case BluetoothService.STATE_CONNECTED:
+                     reportGpsStatus(1);
+                     break;
 
-                       case BluetoothService.STATE_CONNECTING:
-                         break;
+                   case BluetoothService.STATE_CONNECTING:
+                     break;
 
-                       case BluetoothService.STATE_LISTEN:
-                         break;
+                   case BluetoothService.STATE_LISTEN:
+                     break;
 
-                       case BluetoothService.STATE_NONE:
-                         reportGpsStatus(0);
-                         break;
-                     }
+                   case BluetoothService.STATE_NONE:
+                     reportGpsStatus(0);
+                     break;
+                 }
                break;
 
 						 case BluetoothService.MESSAGE_WRITE:
@@ -280,106 +280,92 @@ public class CumulusActivity extends QtActivity
       }
     else
     	{
-        // The app data seems to be installed, make dir info for other threads available.
+        // The app data seems to be installed, make directory info for other threads available.
         synchronized(appDataPath)
         {
           appDataPath = appDataDir;
         }
     	}
     
-    // Call super class, that will load the native C++ part of Cumulus
+    boolean sdCardOk        = false;
+    boolean cumulusFolderOk = false;
+
+    String ess = Environment.getExternalStorageState();
+
+    if( Environment.MEDIA_MOUNTED.equals(ess) )
+      {
+        sdCardOk = true;
+        
+        // SD-Card is mounted, check, if the Cumulus directory exists
+        File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
+        
+        if( addDataDir.exists() )
+          {
+           cumulusFolderOk = true;
+          }
+        else
+          {
+            cumulusFolderOk = addDataDir.mkdir();
+          }
+        
+        if( cumulusFolderOk == true )
+        {
+          // Check, if the external data are already installed. To check that, a special
+          // file name is checked, which is created after data installation. The file name
+          // includes the package version, to ensure that with every new version the data
+          // are reinstalled.
+          String pvcAddFileName = "pvc_" + String.valueOf(getPackageVersionCode());
+
+          File pvcAddFile = new File( addDataDir.getAbsolutePath() + File.separator + pvcAddFileName );
+
+          Log.d(TAG, "pvcAdd=" + pvcAddFile.getAbsolutePath());
+          
+          boolean doInstall = ! pvcAddFile.exists();
+          
+          if( doInstall == false )
+            {
+              // We check the existence of different files
+              File helpFile   = new File( addDataDir.getAbsolutePath() + "/help/en/cumulus.html" );
+              File deFile     = new File( addDataDir.getAbsolutePath() + "/locale/de/cumulus_de.qm" );
+              File notifyFile = new File( addDataDir.getAbsolutePath() + "/sounds/Notify.wav" );
+              File alarmFile  = new File( addDataDir.getAbsolutePath() + "/sounds/Alarm.wav" );
+             
+              if( ! helpFile.exists()   || ! deFile.exists() ||
+                  ! notifyFile.exists() || ! alarmFile.exists() )
+                {
+                  // There are missing files, require a new installation.
+                  doInstall = true;
+                }
+            }
+          
+          if( doInstall == true )
+            {
+              // Extract zip file from asset folder. That task is done in an extra thread.
+              AddDataInstallThread adit =
+                  new AddDataInstallThread( addDataDir.getAbsolutePath(), pvcAddFileName);
+              adit.start();
+            }
+        }
+      }
+    
+    // Call super class, that will load the native C++ part of Cumulus.
     super.onCreate( savedInstanceState );
 
-    boolean dataFolderAvailable = false;
-
-    String state = Environment.getExternalStorageState();
-
-    String tmpString = "";
-
-    if (! Environment.MEDIA_MOUNTED.equals(state))
+    // Check the state of the mounted SD-Card
+    if( ! sdCardOk )
       {
-        Log.d(TAG, "Exiting, SdCard is not mounted!" );
+        Log.e(TAG, "Exiting, SdCard is not mounted!" );
         showDialog(DIALOG_NO_SDCARD);
         return;
       }
 
-    // We can read and write the media
-    dataFolderAvailable = true;
-
-    // We check, if our external data folder is available
-    File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
-
-    tmpString = addDataDir.getAbsolutePath();
-
-    if( ! addDataDir.exists() )
+    // Check the state of the Cumulus folder at the SD-Card
+    if( ! cumulusFolderOk )
       {
-        dataFolderAvailable = addDataDir.mkdir();
-      }
-    
-    if( ! dataFolderAvailable )
-    	{
-        Log.d(TAG, "Cannot create folder Cumulus on the SD card!" );
+        Log.e(TAG, "Cannot create folder Cumulus on the SD card!" );
         showDialog(DIALOG_NO_DATA_FOLDER);
-        return;    		
-    	}
- 
-    // Check, if the external data are already installed. To check that, a special
-	  // file name is checked, which is created after data installation. The file name
-    // includes the package version, to ensure that with every new version the data
-    // are reinstalled.
-    File pvcAddFile = new File( addDataDir + "/pvc_" + String.valueOf(getPackageVersionCode()) );
-
-    Log.d(TAG, "pvcAdd=" + pvcAddFile.getAbsolutePath());
-    
-    boolean doInstall = ! pvcAddFile.exists();
-    
-    if( doInstall == false )
-    	{
-        // We check the existence of different files
-        File helpFile   = new File( addDataDir.getAbsolutePath() + "/help/en/cumulus.html" );
-        File deFile     = new File( addDataDir.getAbsolutePath() + "/locale/de/cumulus_de.qm" );
-        File notifyFile = new File( addDataDir.getAbsolutePath() + "/sounds/Notify.wav" );
-        File alarmFile  = new File( addDataDir.getAbsolutePath() + "/sounds/Alarm.wav" );
-       
-				if( ! helpFile.exists()   || ! deFile.exists() ||
-						! notifyFile.exists() || ! alarmFile.exists() )
-					{
-						// There are missing files, require a new installation.
-						doInstall = true;
-					}
-   	  }
-    
-    if( doInstall == true )
-      {
-      	// At first remove all package version control files.
-      	removePvcFiles( addDataDir.getAbsolutePath() );
-      	
-        // It seems there are some needed files not installed, do it again.
-        boolean res = installAddData( addDataDir.getAbsolutePath(), getAssets() );
-
-        if( res == false )
-          {
-            showDialog(DIALOG_ZIP_ERR);
-            return;
-          }
-        
-        try
-          {
-            // Store an install marker file
-            OutputStream out = new FileOutputStream( pvcAddFile );
-            out.close();
-          }
-        catch (Exception e)
-          {
-            Log.e(TAG, "PVC add file error: " + e.getMessage());
-          }        
+        return;
       }
-
-    // another thread on C++ side is waiting for this info
-    synchronized(addDataPath)
-    {
-      addDataPath = tmpString;
-    }
 
     Window w = getWindow();
     w.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
@@ -1306,6 +1292,8 @@ public class CumulusActivity extends QtActivity
 		private String m_appDataDirName;
 		private String m_pvcAppFileName;
 		
+    private Handler m_Handler;
+
 		/**
 		 * Constructor of app data install thread.
 		 * 
@@ -1319,6 +1307,10 @@ public class CumulusActivity extends QtActivity
   			
   			m_appDataDirName = appDataDirName;
   			m_pvcAppFileName = pvcAppFileName;
+  			
+  		  // Creates a handler in the calling thread to pass later back results to it
+  			// from the running thread.
+  			m_Handler = new Handler();
   		}
 		
 		public void run()
@@ -1350,8 +1342,7 @@ public class CumulusActivity extends QtActivity
 	          Log.e(TAG, "PVC app file error: " + e.getMessage());
 	        }
 
-	      
-				Log.i( TAG, "AppData install finished.");
+	      Log.i( TAG, "AppData install finished.");
 
 			  // another thread is waiting for this info
 			  synchronized(appDataPath)
@@ -1362,77 +1353,144 @@ public class CumulusActivity extends QtActivity
 	}
 	
   private boolean installAppData( String appDir, AssetManager am )
-  {
-    InputStream stream = null;
-
-    String appDataFile = getString(R.string.appDataFile);
-
-    try
     {
-      stream = am.open( appDataFile );
+      InputStream stream = null;
+
+      String appDataFile = getString(R.string.appDataFile);
+
+      try
+        {
+          stream = am.open(appDataFile);
+        }
+      catch (IOException e)
+        {
+
+          Log.e(TAG, "installAppData: File " + appDataFile + " not found!");
+          return false;
+        }
+
+      boolean res = unzip(stream, appDir);
+
+      try
+        {
+          stream.close();
+        }
+      catch (IOException e)
+        {
+        }
+
+      if( !res )
+        {
+          Log.e(TAG, "installAppData failed!");
+        }
+
+      Log.d(TAG, "installAppData succeeded!");
+
+      return res;
     }
-    catch (IOException e)
+
+  private class AddDataInstallThread extends Thread
     {
+      private String m_addDataDirName;
+      private String m_pvcAddFileName;
+      
+      private Handler m_Handler;
+      
+      /**
+       * Constructor of add data install thread.
+       * 
+       * @param addDataDirName The full path name of the add data directory
+       * 
+       * @param pvcAddFileName The simple file name of the package version control file.
+       */
+      AddDataInstallThread( String addDataDirName, String pvcAddFileName )
+        {
+          super( "AddDataInstall" );
+          
+          m_addDataDirName = addDataDirName;
+          m_pvcAddFileName = pvcAddFileName;
+          
+          // Creates a handler in the calling thread to pass later back results to it
+          // from the running thread.
+          m_Handler = new Handler();
 
-      Log.e("AppDataDir", "File " + appDataFile + " not found!");
-      return false;
+        }
+      
+      public void run()
+        {
+          Log.i( TAG, "AddData are installed now!");
+          
+          // At first remove all package version control files.
+          removePvcFiles( m_addDataDirName );
+          
+          // Extract zip file from asset folder
+          boolean res = installAddData( m_addDataDirName, getAssets() );
+    
+          if( res == false )
+            {
+              // FIXME: we need an error message here to the GUI thread.
+              // showDialog(DIALOG_ZIP_ERR);
+              return;
+            }
+          
+          try
+            {
+              File pvcAddFile = new File( m_addDataDirName + File.separator + m_pvcAddFileName );
+    
+              // Store an install marker file
+              OutputStream out = new FileOutputStream( pvcAddFile );
+              out.close();
+            }
+          catch (Exception e)
+            {
+              Log.e(TAG, "PVC add file error: " + e.getMessage());
+            }        
+          
+          Log.i( TAG, "AddData install finished.");
+    
+          // another thread is waiting for this info
+          synchronized(addDataPath)
+          {
+            addDataPath = m_addDataDirName;
+          }
+        }
     }
-
-    boolean res = unzip(stream, appDir);
-
-    try
-    {
-      stream.close();
-    }
-    catch (IOException e)
-    {
-    }
-
-    if (!res)
-    {
-      Log.e("AppDataInstall", "Data install failed!");
-    }
-
-    Log.d("AppDataInstall", "AppData install succeeded!");
-
-    return res;
-  }
-
+  
   private boolean installAddData( String addDir, AssetManager am )
-  {
-    String addDataFile = getString(R.string.addDataFile);
-
-    InputStream stream = null;
-
-    try
     {
-      stream = am.open( addDataFile );
-    }
-    catch (IOException e)
-    {
-      Log.e("AddDataInstall", e.getMessage() );
-      return false;
-    }
+      String addDataFile = getString(R.string.addDataFile);
 
-    boolean res = unzip(stream, addDir);
+      InputStream stream = null;
 
-    try
-    {
-      stream.close();
+      try
+        {
+          stream = am.open(addDataFile);
+        }
+      catch (IOException e)
+        {
+          Log.e( TAG, "InstallAddData error: " + e.getMessage());
+          return false;
+        }
+
+      boolean res = unzip(stream, addDir);
+
+      try
+        {
+          stream.close();
+        }
+      catch (IOException e)
+        {
+        }
+
+      if( !res )
+        {
+          Log.e( TAG, "InstallAddData failed!");
+        }
+
+      Log.d( TAG, "InstallAddData install succeeded!");
+
+      return res;
     }
-    catch (IOException e)
-    {
-    }
-
-    if (!res)
-    {
-      Log.e("AddDataInstall", "Data install failed!");
-    }
-
-    Log.d("AddDataInstall", "AddData install succeeded!");
-
-    return res;
-  }
 
   public boolean unzip(InputStream stream, String destPath)
   {
