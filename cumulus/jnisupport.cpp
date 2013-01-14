@@ -40,16 +40,17 @@
  */
 #define CumulusActivityClassName "org/kflog/cumulus/CumulusActivity"
 
-static JavaVM*   m_jvm            = 0;
-static JNIEnv*   m_jniEnv         = 0;
-static jobject   m_jniProxyObject = 0; // Java instance of CumulusActivity
-static jmethodID m_AddDataDirID   = 0;
-static jmethodID m_AppDataDirID   = 0;
-static jmethodID m_languageID     = 0;
-static jmethodID m_playSoundID    = 0;
-static jmethodID m_dimmScreenID   = 0;
-static jmethodID m_gpsCmdID       = 0;
-static jmethodID m_byte2Gps       = 0;
+static JavaVM*   m_jvm                = 0;
+static JNIEnv*   m_jniEnv             = 0;
+static jobject   m_jniProxyObject     = 0; // Java instance of CumulusActivity
+static jmethodID m_AddDataDirID       = 0;
+static jmethodID m_AddDataInstalledID = 0;
+static jmethodID m_AppDataDirID       = 0;
+static jmethodID m_languageID         = 0;
+static jmethodID m_playSoundID        = 0;
+static jmethodID m_dimmScreenID       = 0;
+static jmethodID m_gpsCmdID           = 0;
+static jmethodID m_byte2Gps           = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -397,10 +398,20 @@ bool initJni( JavaVM* vm, JNIEnv* env )
                                      "(B)Z");
 
   if (isJavaExceptionOccured())
-  {
-    qWarning() << "initJni: could not get ID of byte2Gps";
-    return false;
-  }
+    {
+      qWarning() << "initJni: could not get ID of byte2Gps";
+      return false;
+    }
+
+  m_AddDataInstalledID = m_jniEnv->GetMethodID( clazz,
+                                                "addDataInstalled",
+                                                "()Z");
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning() << "initJni: could not get ID of addDataInstalled";
+      return false;
+    }
 
   return true;
 }
@@ -587,6 +598,25 @@ QString jniGetAddDataDir()
 
   Q_UNUSED(ok)
   return dir;
+}
+
+bool jniAddDataInstalled()
+{
+  if (!jniEnv() || shutdown )
+    {
+      return;
+    }
+
+  jboolean result = (jboolean) m_jniEnv->CallStaticBooleanMethod( m_jniProxyObject,
+                                                                  m_AddDataInstalledID );
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniDimmScreen: exception when calling Java method \"addDataInstalled\"");
+      return false;
+    }
+
+  return result;
 }
 
 QString jniGetLanguage()

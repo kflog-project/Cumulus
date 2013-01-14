@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2010 by Josua Dietze
-**                   2012 by Axel Pauli
+**                   2012-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -69,6 +69,13 @@ QString jniGetAppDataDir();
  * the path to the sdcard.
  */
 QString jniGetAddDataDir();
+
+/**
+ * Gets the install state of the AddData.
+ *
+ * @return true AddData are installed, otherwise false.
+ */
+bool jniAddDataInstalled();
 
 /**
  * Gets the user's default language from Android.

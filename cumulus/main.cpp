@@ -64,6 +64,26 @@ int main(int argc, char *argv[])
   // @AP: Reset the locale that is used for number formatting to "C" locale.
   setlocale(LC_NUMERIC, "C");
 
+#ifdef ANDROID
+
+  // Gets the additional data directory from our app. That is normally the
+  // storage path to the SD-Card as /sdcard/Cumulus.
+  QString addDir = jniGetAddDataDir();
+
+  while( addDir.isEmpty() )
+    {
+      qDebug() << " Waiting for Cumulus addDir ...";
+      usleep(250000);
+      addDir = jniGetAddDataDir();
+    }
+
+  // Nice trick to overwrite the HOME directory under Android by us ;-)
+  // That must be done before the QApplication constructor is called.
+  // Otherwise another HOME is used by QApplication.
+  qputenv ( "HOME", addDir.toLatin1().data() );
+
+#endif
+
 #ifndef ANDROID
   // Note this must be called before QApplication constructor
   QApplication::setGraphicsSystem( "raster" );
@@ -79,24 +99,6 @@ int main(int argc, char *argv[])
   // Make sure the application uses utf8 encoding for translated widgets
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
 
-#ifdef ANDROID
-
-  // Gets the additional data dir from our app. That is normally the storage
-  // path to the SD-Card.
-  QString addDir = jniGetAddDataDir();
-
-  while (addDir.isEmpty())
-    {
-      qDebug() << " Waiting for Cumulus addDir ...";
-      usleep(250000);
-      addDir = jniGetAddDataDir();
-    }
-
-  // Nice trick to overwrite the HOME directory under Android by us ;-)
-  qputenv ( "HOME", addDir.toLatin1().data() );
-
-#endif
-
   // Note, that first $HOME must be overwritten under Android otherwise the
   // setting file is created/searched in the internal data area under:
   // /data/data/org.kflog.cumulus/files. That is the $HOME, set by Necessitas.
@@ -104,9 +106,18 @@ int main(int argc, char *argv[])
 
 #ifdef ANDROID
 
+  // Set the add data directory in our configuration
   conf->setDataRoot( addDir );
 
-  // Gets the internal data dir from our app
+  // As next we must wait, that the add data are installed. That is done
+  // at the Java side.
+  while( jniAddDataInstalled == false )
+    {
+      qDebug() << " Waiting for Cumulus addData installed ...";
+      usleep(250000);
+    }
+
+  // Gets the internal data directory from our app
   QString appDir = jniGetAppDataDir();
 
   while (appDir.isEmpty())
