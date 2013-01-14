@@ -59,7 +59,7 @@ usage:
 	@echo "  release      - Cleans the build area before build"
 	@echo "  dpkg         - Builds a Debian package file under the directory dpkg"
 	
-all:	qmake resetdate
+all:	qmake
 	@echo "Using Qt version $(QTVERSION)"
 	cd cumulus; make
 	cd gpsClient; make
@@ -132,10 +132,6 @@ deinstall:
 release: clean all
 
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
-
-.PHONY : resetdate
-resetdate:
-	rm -rf cumulus/builddate.o
 
 cumulus/Makefile: cumulus/cumulusX11.pro
 	cd cumulus; $(QMAKE) cumulusX11.pro -o Makefile
