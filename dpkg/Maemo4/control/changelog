@@ -1,3 +1,13 @@
+cumulus (2.20.0) stable; urgency=low
+
+  * Bugfix: Application has crashed, if the disclaimer was rejected by the user.
+
+  * Number input handling completely changed to an own solution with a number
+    keypad widget. That makes the number input handling easier especially under
+    Android where the virtual keyboard made often problems.
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Mon, 14 Jan 2013 22:08:57 +0100
+
 cumulus (2.19.2) stable; urgency=low
 
   * Bugfix: Cumulus is crashed, if a new waypoint was added and saved
