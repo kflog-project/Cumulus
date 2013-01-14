@@ -145,6 +145,10 @@ public class CumulusActivity extends QtActivity
 
   static private String          appDataPath      = "";
   static private String          addDataPath      = "";
+  
+  // Set to true, if the data at /sdcard/Cumulus are available
+  static private boolean         m_addDataInstalled = false;
+  
   static private Object          m_objectRef      = null;
   static private Object          m_ActivityMutex  = new Object();
   
@@ -215,12 +219,12 @@ public class CumulusActivity extends QtActivity
 
   // Native C++ functions
   public static native void nativeGpsFix( double latitude,
-                                             double longitude,
-                                             double altitude,
-                                             float speed,
-                                             float heading,
-                                             float accu,
-                                             long time );
+                                          double longitude,
+                                          double altitude,
+                                          float speed,
+                                          float heading,
+                                          float accu,
+                                          long time );
 
   public static native void nativeByteFromGps(byte newByte);
   public static native void nativeNmeaString(String nmea);
@@ -239,6 +243,18 @@ public class CumulusActivity extends QtActivity
           return m_objectRef;
         }
     }
+  
+  /**
+   * Called from JNI to get the add data install state.
+   */
+  private static boolean addDataInstalled()
+    {
+      synchronized(m_ActivityMutex)
+        {
+          return m_addDataInstalled;
+        }
+    }
+  
 
   @Override
   public void onCreate( Bundle savedInstanceState )
@@ -260,31 +276,31 @@ public class CumulusActivity extends QtActivity
       }
 
 		// Get the internal data directory for our App.
-	  String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
+	  final String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
 
     // Check, if the internal data are already installed. To check that, a special
-	  // file name is checked, which is created after data installation. The file name
+	  // file name is used, which is created after data installation. The file name
     // includes the package version, to ensure that with every new version the data
     // are reinstalled.
-	  String pvcAppFileName = "pvc_" + String.valueOf(getPackageVersionCode());
+	  final String pvcFileName = "pvc_" + String.valueOf(getPackageVersionCode());
 	  
-    File pvcAppFile = new File( appDataDir + File.separator + pvcAppFileName );
+    File pvcAppFile = new File( appDataDir + File.separator + pvcFileName );
 
     Log.d(TAG, "pvcApp=" + pvcAppFile.getAbsolutePath());
 
     if (! pvcAppFile.exists() )
       {
       	// We do the data install in an extra thread to minimize the runtime in our activity.
-      	AppDataInstallThread adit = new AppDataInstallThread( appDataDir, pvcAppFileName );
+      	AppDataInstallThread adit = new AppDataInstallThread( appDataDir, pvcFileName );
       	adit.start();
       }
     else
     	{
-        // The app data seems to be installed, make directory info for other threads available.
+        // The app data seem to be installed, make directory info for other threads available.
         synchronized(appDataPath)
-        {
-          appDataPath = appDataDir;
-        }
+          {
+            appDataPath = appDataDir;
+          }
     	}
     
     boolean sdCardOk        = false;
@@ -292,6 +308,9 @@ public class CumulusActivity extends QtActivity
 
     String ess = Environment.getExternalStorageState();
 
+    // Cumulus user application data are installed at the SD-Card in the folder
+    // Cumulus. So we need to check, if the SD-Card is mounted with read/write access
+    // and if the Cumulus directory exists.
     if( Environment.MEDIA_MOUNTED.equals(ess) )
       {
         sdCardOk = true;
@@ -310,13 +329,17 @@ public class CumulusActivity extends QtActivity
         
         if( cumulusFolderOk == true )
         {
+          // Other treads waiting for this info
+          synchronized( addDataPath )
+            {
+              addDataPath = addDataDir.getAbsolutePath();
+            }
+
           // Check, if the external data are already installed. To check that, a special
-          // file name is checked, which is created after data installation. The file name
+          // file name is used, which is created after data installation. The file name
           // includes the package version, to ensure that with every new version the data
           // are reinstalled.
-          String pvcAddFileName = "pvc_" + String.valueOf(getPackageVersionCode());
-
-          File pvcAddFile = new File( addDataDir.getAbsolutePath() + File.separator + pvcAddFileName );
+          File pvcAddFile = new File( addDataDir.getAbsolutePath() + File.separator + pvcFileName );
 
           Log.d(TAG, "pvcAdd=" + pvcAddFile.getAbsolutePath());
           
@@ -324,7 +347,8 @@ public class CumulusActivity extends QtActivity
           
           if( doInstall == false )
             {
-              // We check the existence of different files
+              // We additionally check the existence of different files.
+              // Maybe the user has removed them in the meantime.
               File helpFile   = new File( addDataDir.getAbsolutePath() + "/help/en/cumulus.html" );
               File deFile     = new File( addDataDir.getAbsolutePath() + "/locale/de/cumulus_de.qm" );
               File notifyFile = new File( addDataDir.getAbsolutePath() + "/sounds/Notify.wav" );
@@ -340,12 +364,21 @@ public class CumulusActivity extends QtActivity
           
           if( doInstall == true )
             {
-              // Extract zip file from asset folder. That task is done in an extra thread.
-              AddDataInstallThread adit =
-                  new AddDataInstallThread( addDataDir.getAbsolutePath(), pvcAddFileName);
+              // Extract zip file from asset folder. That task is done in
+              // an extra thread.
+              AddDataInstallThread adit = new AddDataInstallThread(
+                  addDataDir.getAbsolutePath(), pvcFileName);
               adit.start();
             }
-        }
+          else
+            {
+              // The add data seem to be installed, make directory info for other threads available.              
+              synchronized(m_ActivityMutex)
+                {
+                  m_addDataInstalled = true;
+                }
+            }
+         }
       }
     
     // Call super class, that will load the native C++ part of Cumulus.
@@ -354,7 +387,7 @@ public class CumulusActivity extends QtActivity
     // Check the state of the mounted SD-Card
     if( ! sdCardOk )
       {
-        Log.e(TAG, "Exiting, SdCard is not mounted!" );
+        Log.e(TAG, "Exiting, SdCard is not mounted or not writeable!" );
         showDialog(DIALOG_NO_SDCARD);
         return;
       }
@@ -1315,7 +1348,7 @@ public class CumulusActivity extends QtActivity
 		
 		public void run()
 			{
-				Log.i( TAG, "AppData are installed now!");
+			  Log.i( TAG, "AppData are installed at: " + m_appDataDirName );
 				
 	    	// At first remove all package version control files.
 	    	removePvcFiles( m_appDataDirName );
@@ -1324,8 +1357,15 @@ public class CumulusActivity extends QtActivity
 
 	      if( res == false )
 	        {
-	          // FIXME: we need an error message here to the GUI thraed.
-	        	// showDialog(DIALOG_ZIP_ERR);
+            m_Handler.post( new Runnable()
+                            {
+                              @Override
+                              public void run()
+                                {
+                                  showDialog(DIALOG_ZIP_ERR);
+                                }
+                            } );              
+
 	          return;
 	        }
 
@@ -1418,7 +1458,7 @@ public class CumulusActivity extends QtActivity
       
       public void run()
         {
-          Log.i( TAG, "AddData are installed now!");
+          Log.i( TAG, "AddData are installed at: " + m_addDataDirName );
           
           // At first remove all package version control files.
           removePvcFiles( m_addDataDirName );
@@ -1428,8 +1468,14 @@ public class CumulusActivity extends QtActivity
     
           if( res == false )
             {
-              // FIXME: we need an error message here to the GUI thread.
-              // showDialog(DIALOG_ZIP_ERR);
+              m_Handler.post( new Runnable()
+                              {
+                                @Override
+                                public void run()
+                                  {
+                                    showDialog(DIALOG_ZIP_ERR);
+                                  }
+                              } );              
               return;
             }
           
@@ -1449,10 +1495,10 @@ public class CumulusActivity extends QtActivity
           Log.i( TAG, "AddData install finished.");
     
           // another thread is waiting for this info
-          synchronized(addDataPath)
-          {
-            addDataPath = m_addDataDirName;
-          }
+          synchronized(m_ActivityMutex)
+            {
+              m_addDataInstalled = true;
+            }
         }
     }
   
@@ -1499,7 +1545,7 @@ public class CumulusActivity extends QtActivity
       ZipInputStream zis = new ZipInputStream(new BufferedInputStream(stream));
       ZipEntry entry;
 
-      // Read each entry from the ZipInputStream until no more entry found
+      // Read each entry from the ZipInputStream until no more entry is found
       // indicated by a null return value of the getNextEntry() method.
       while ((entry = zis.getNextEntry()) != null)
       {
@@ -1672,12 +1718,14 @@ public class CumulusActivity extends QtActivity
             setCurrentDimmState( rds );
 
             // Activate first dimm state of screen.
-            mHandler.post(new Runnable() {
-              @Override
-              public void run() {
-                  dimmScreen( DIMM1_SCREEN_VALUE );
-                }
-              });
+            mHandler.post(new Runnable()
+                            {
+                              @Override
+                              public void run()
+                                {
+                                  dimmScreen(DIMM1_SCREEN_VALUE);
+                                }
+                            } );
             return;
           }
       }

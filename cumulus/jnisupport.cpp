@@ -42,6 +42,7 @@
 
 static JavaVM*   m_jvm                = 0;
 static JNIEnv*   m_jniEnv             = 0;
+static jclass    m_CumActClass        = 0;
 static jobject   m_jniProxyObject     = 0; // Java instance of CumulusActivity
 static jmethodID m_AddDataDirID       = 0;
 static jmethodID m_AddDataInstalledID = 0;
@@ -334,6 +335,9 @@ bool initJni( JavaVM* vm, JNIEnv* env )
   // http://developer.android.com/guide/practices/design/jni.html
 
   // TODO: free this reference at the end of main
+  m_CumActClass = (jclass) m_jniEnv->NewGlobalRef(clazz);
+
+  // TODO: free this reference at the end of main
   m_jniProxyObject = m_jniEnv->NewGlobalRef(result);
 
   m_AddDataDirID = m_jniEnv->GetMethodID( clazz,
@@ -403,9 +407,9 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
-  m_AddDataInstalledID = m_jniEnv->GetMethodID( clazz,
-                                                "addDataInstalled",
-                                                "()Z");
+  m_AddDataInstalledID = m_jniEnv->GetStaticMethodID( clazz,
+                                                      "addDataInstalled",
+                                                      "()Z");
 
   if (isJavaExceptionOccured())
     {
@@ -602,17 +606,17 @@ QString jniGetAddDataDir()
 
 bool jniAddDataInstalled()
 {
-  if (!jniEnv() || shutdown )
+  if( !jniEnv() )
     {
-      return;
+      return false;
     }
 
-  jboolean result = (jboolean) m_jniEnv->CallStaticBooleanMethod( m_jniProxyObject,
+  jboolean result = (jboolean) m_jniEnv->CallStaticBooleanMethod( m_CumActClass,
                                                                   m_AddDataInstalledID );
 
   if (isJavaExceptionOccured())
     {
-      qWarning("jniDimmScreen: exception when calling Java method \"addDataInstalled\"");
+      qWarning("jniAddDataInstalled: exception when calling Java method \"addDataInstalled\"");
       return false;
     }
 

@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 
   // As next we must wait, that the add data are installed. That is done
   // at the Java side.
-  while( jniAddDataInstalled == false )
+  while( jniAddDataInstalled() == false )
     {
       qDebug() << " Waiting for Cumulus addData installed ...";
       usleep(250000);
