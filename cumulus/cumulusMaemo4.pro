@@ -24,6 +24,13 @@ CONFIG = qt \
 
 # CONFIG = debug qt warn_on
 
+# The next 3 lines shall force a compilation of the date stamp file
+rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
+
+QMAKE_EXTRA_TARGETS += rm_build_date
+
+PRE_TARGETDEPS += rm_build_date
+
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
 
