@@ -94,6 +94,11 @@ void jniShutdown( bool option )
   // application. In shutdown case all message forwarding has to be stopped to
   // the GUI part. Otherwise the App can crash in the shutdown phase.
   shutdown = option;
+
+  if( shutdown == true )
+    {
+      jniDetachCurrentThread();
+    }
 }
 
 // ---- The native methods ---
