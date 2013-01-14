@@ -26,6 +26,13 @@ CONFIG += qt \
           warn_on \
           release
 
+# The next 3 lines shall force a compilation of the date stamp file
+rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
+
+QMAKE_EXTRA_TARGETS += rm_build_date
+
+PRE_TARGETDEPS += rm_build_date
+
 # These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
 
