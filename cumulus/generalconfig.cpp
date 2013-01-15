@@ -291,7 +291,7 @@ void GeneralConfig::load()
   _mapLoadCities                  = value( "LoadCities", true ).toBool();
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
   _mapLoadForests                 = value( "LoadForests", false ).toBool();
-  _drawTrail                      = value( "DrawTrail", false ).toBool();
+  _drawTrail                      = value( "DrawTrail", true ).toBool();
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
