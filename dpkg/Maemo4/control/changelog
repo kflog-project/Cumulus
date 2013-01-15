@@ -6,11 +6,11 @@ cumulus (2.20.0) stable; urgency=low
     keypad widget. That makes the number input handling easier especially under
     Android where the virtual keyboard made often problems.
     
- -- Axel Pauli <kflog.cumulus@googlemail.com>  Mon, 14 Jan 2013 22:08:57 +0100
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 15 Jan 2013 20:15:14 +0100
 
 cumulus (2.19.2) stable; urgency=low
 
-  * Bugfix: Cumulus is crashed, if a new waypoint was added and saved
+  * Bugfix: Cumulus has crashed, if a new waypoint was added and saved
     due to modifications in the waypoint handling.
   
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 13 Dec 2012 18:00:00 +0100
