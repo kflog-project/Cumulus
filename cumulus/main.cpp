@@ -129,9 +129,6 @@ int main(int argc, char *argv[])
 
   conf->setAppRoot( appDir );
 
-  qDebug() << "Cumulus addDir and QtHome set to" << addDir;
-  qDebug() << "Cumulus appDir set to" << appDir;
-
 #endif /* ANDROID */
 
   // @AP: we installing our own message handler
@@ -219,7 +216,7 @@ int main(int argc, char *argv[])
 
   qDebug() << "Cumulus addDir and QtHome:" << addDir;
   qDebug() << "Cumulus appDir:" << appDir;
-  qDebug() << "Cumulus LogDir:" << logDir;
+  qDebug() << "Cumulus logDir:" << logDir;
 
 #endif
 
