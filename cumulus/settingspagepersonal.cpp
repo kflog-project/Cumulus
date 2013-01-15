@@ -129,13 +129,22 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
+#ifdef ANDROID
+  QLabel* userDirSelection = new QLabel( tr("Data Directory") + ":", this );
+#else
   QPushButton* userDirSelection = new QPushButton( tr("Data Directory"), this );
   userDirSelection->setToolTip(tr("Select your personal data directory"));
-  topLayout->addWidget(userDirSelection, row, 0);
 
   connect(userDirSelection, SIGNAL( clicked()), this, SLOT(slot_openDirectoryDialog()) );
+#endif
+
+  topLayout->addWidget(userDirSelection, row, 0);
 
   userDataDir = new QLineEdit(this);
+#ifdef ANDROID
+  userDataDir->setReadOnly( true );
+#endif
+
   topLayout->addWidget(userDataDir, row, 1, 1, 2);
   row++;
 

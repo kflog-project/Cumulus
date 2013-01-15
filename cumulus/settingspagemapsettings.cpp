@@ -48,13 +48,23 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   int row=0;
 
-  mapSelection = new QPushButton( tr("Maps"), this );
+#ifdef ANDROID
+  QLabel* mapSelection = new QLabel( tr("Maps") + ":", this );
+#else
+  QPushButton* mapSelection = new QPushButton( tr("Maps"), this );
   mapSelection->setToolTip(tr("Select your personal map directory"));
-  topLayout->addWidget(mapSelection, row, 0 );
 
   connect(mapSelection, SIGNAL( clicked()), this, SLOT(slot_openFileDialog()) );
+#endif
+
+  topLayout->addWidget(mapSelection, row, 0 );
 
   mapDirectory = new QLineEdit( this );
+
+#ifdef ANDROID
+  mapDirectory->setReadOnly(true);
+#endif
+
   topLayout->addWidget(mapDirectory, row++, 1, 1, 2 );
 
   topLayout->addWidget(new QLabel(tr("Projection:"), this), row, 0 );

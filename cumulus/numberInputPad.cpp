@@ -119,7 +119,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   gl->addWidget( m_decimal, row, 0 );
 
   QStyle* style = QApplication::style();
-  
+
   m_left = new QPushButton( " ", this);
   m_left->setIcon(style->standardIcon(QStyle::SP_ArrowLeft));
   gl->addWidget( m_left, row, 1 );
@@ -206,10 +206,13 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   connect( m_ok, SIGNAL(pressed() ), this, SLOT(slot_Ok()) );
   connect( m_cancel, SIGNAL(pressed() ), this, SLOT(slot_Close()) );
 
-  m_timer = new QTimer( this );
-  m_timer->setSingleShot( true );
+  m_timerButton = new QTimer( this );
+  m_timerButton->setSingleShot( true );
+  m_timerDigit = new QTimer( this );
+  m_timerDigit->setSingleShot( true );
 
-  connect( m_timer, SIGNAL(timeout()), this, SLOT(slot_Repeat()));
+  connect( m_timerButton, SIGNAL(timeout()), this, SLOT(slot_RepeatButton()));
+  connect( m_timerDigit, SIGNAL(timeout()), this, SLOT(slot_RepeatDigit()));
 }
 
 NumberInputPad::~NumberInputPad()
@@ -259,7 +262,7 @@ void NumberInputPad::slot_DigitPressed( QWidget* widget )
   m_pressedButton = button;
 
   // Setup a timer to handle a longer button press as repeat.
-  m_timer->start(300);
+  m_timerDigit->start(300);
 }
 
 void NumberInputPad::slot_ButtonPressed( QWidget* widget )
@@ -273,7 +276,7 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
     }
 
   m_pressedButton = button;
-  
+
   // make a deselect of the text to prevent unwanted behavior.
   m_editor->deselect();
 
@@ -322,11 +325,11 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
   if( m_pressedButton )
     {
       // Setup a timer to handle a longer button press as repeat.
-      m_timer->start(300);
+      m_timerButton->start(300);
     }
   else
     {
-      m_timer->stop();
+      m_timerButton->stop();
     }
 }
 
@@ -372,11 +375,23 @@ void NumberInputPad::slot_TextChanged( const QString& text )
     }
 }
 
-void NumberInputPad::slot_Repeat()
+void NumberInputPad::slot_RepeatButton()
 {
   if( m_pressedButton && m_pressedButton->isDown() )
     {
       slot_ButtonPressed( m_pressedButton );
+    }
+  else
+    {
+      m_pressedButton = 0;
+    }
+}
+
+void NumberInputPad::slot_RepeatDigit()
+{
+  if( m_pressedButton && m_pressedButton->isDown() )
+    {
+      slot_DigitPressed( m_pressedButton );
     }
   else
     {
@@ -400,7 +415,8 @@ void NumberInputPad::slot_Pm()
 
 void NumberInputPad::slot_Ok()
 {
-  m_timer->stop();
+  m_timerButton->stop();
+  m_timerDigit->stop();
 
   const QValidator* validator = m_editor->validator();
 
@@ -438,7 +454,8 @@ void NumberInputPad::slot_Ok()
 
 void NumberInputPad::slot_Close()
 {
-  m_timer->stop();
+  m_timerButton->stop();
+  m_timerDigit->stop();
 
   // Nothing should be changed, return initial number.
   emit numberEdited( m_setNumber );

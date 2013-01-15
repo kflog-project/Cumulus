@@ -256,7 +256,12 @@ class NumberInputPad : public QFrame
   /**
    * Timer slot to handle a longer button press as press again..
    */
-  void slot_Repeat();
+  void slot_RepeatButton();
+
+  /**
+   * Timer slot to handle a longer digit  press as press again..
+   */
+  void slot_RepeatDigit();
 
   /**
    * Called if the input text in the editor is changed.
@@ -308,7 +313,8 @@ class NumberInputPad : public QFrame
   QSignalMapper* m_digitSignalMapper;
   QSignalMapper* m_buttonSignalMapper;
 
-  QTimer* m_timer;
+  QTimer* m_timerButton;
+  QTimer* m_timerDigit;
 
   /** A user tip label, what is expected as input. */
   QLabel* m_tipLabel;

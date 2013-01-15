@@ -131,7 +131,6 @@ class SettingsPageMapSettings : public QWidget
 
  private:
 
-  QPushButton *mapSelection;
   QLineEdit   *mapDirectory;
   QCheckBox   *chkUnloadUnneeded;
   QCheckBox   *chkProjectionFollowHome;

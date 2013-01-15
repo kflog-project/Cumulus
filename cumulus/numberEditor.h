@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2013 Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -68,6 +68,14 @@ class NumberEditor : public QLabel
    * Returns only the number text without prefix and suffix.
    */
   QString getText() const
+  {
+    return m_number;
+  };
+
+  /**
+   * Returns only the number text without prefix and suffix.
+   */
+  QString text() const
   {
     return m_number;
   };
