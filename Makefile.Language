@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus Language release for Maemo
 #
-# Copyright (c): 2010-2012 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2010-2013 by Axel Pauli <kflog.cumulus@gmail.com>
 # 
 # $Id$
 #
@@ -23,7 +23,7 @@ SRC_PACK=-sa -S
 BIN_PACK=-b
 
 # current Qt version
-QT_VERSION=4.7.2
+QT_VERSION=4.8.4
 
 # my installation directory of Qt translations
 MY_QT_TRANSLATIONS=/opt/qt$(QT_VERSION)/translations
