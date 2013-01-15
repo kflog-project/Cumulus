@@ -10,7 +10,7 @@
  **
  **   Copyright (c):  2008-2013 by Axel Pauli
  **
- **   Email of maintainer: axel@kflog.org
+ **   Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -30,7 +30,7 @@
  *
  * http://qt-project.org/
  *
- * Cumulus is built with the release 4.8.x.
+ * Cumulus is built with the Qt release 4.8.x.
  *
  */
 
