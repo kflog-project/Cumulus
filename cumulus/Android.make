@@ -82,5 +82,6 @@ check:
 
 clean:
 	rm -f $(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
+	rm -f $(addprefix $(A_LIB_DIR)/, gdbserver)
 	rm -f $(A_LIB_DIR)/$(QT_PLUGIN)
 	rm -f $(ASSET_DIR)/$(QT_JAR)
