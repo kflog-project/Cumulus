@@ -133,7 +133,6 @@ public class CumulusActivity extends QtActivity
 
   private AsyncPlayer            apl, npl;
   private LocationManager        lm               = null;
-  private String                 bestProvider;
   private LocationListener       ll               = null;
   private GpsStatus.Listener     gl               = null;
   private GpsStatus.NmeaListener nl               = null;
@@ -146,6 +145,12 @@ public class CumulusActivity extends QtActivity
   static private String          appDataPath      = "";
   static private String          addDataPath      = "";
   
+  // Check flag for SD-Card mounted and accessible
+  private boolean m_sdCardOk                      = false;
+  
+  // Check flag if Cumulus data folder on the SD-Card is accessible
+  private boolean m_cumulusFolderOk               = false;
+
   // Set to true, if the data at /sdcard/Cumulus are available
   static private boolean         m_addDataInstalled = false;
   
@@ -255,6 +260,17 @@ public class CumulusActivity extends QtActivity
         }
     }
   
+  /**
+   * Called from the QtActivity.onCreate to get information if the App is startable
+   * or not. If not, QtActivity.onCreate returns without starting the native part.
+   * 
+   * @return The result of the pre-checks. True if all is ok otherwise false
+   */
+  @Override
+  protected boolean checkPreconditions()
+    {
+      return( m_sdCardOk && m_cumulusFolderOk ) ;
+    }
 
   @Override
   public void onCreate( Bundle savedInstanceState )
@@ -302,9 +318,6 @@ public class CumulusActivity extends QtActivity
             appDataPath = appDataDir;
           }
     	}
-    
-    boolean sdCardOk        = false;
-    boolean cumulusFolderOk = false;
 
     String ess = Environment.getExternalStorageState();
 
@@ -313,21 +326,21 @@ public class CumulusActivity extends QtActivity
     // and if the Cumulus directory exists.
     if( Environment.MEDIA_MOUNTED.equals(ess) )
       {
-        sdCardOk = true;
+        m_sdCardOk = true;
         
         // SD-Card is mounted, check, if the Cumulus directory exists
         File addDataDir = new File(Environment.getExternalStorageDirectory(), "Cumulus");
         
         if( addDataDir.exists() )
           {
-           cumulusFolderOk = true;
+           m_cumulusFolderOk = true;
           }
         else
           {
-            cumulusFolderOk = addDataDir.mkdir();
+            m_cumulusFolderOk = addDataDir.mkdir();
           }
         
-        if( cumulusFolderOk == true )
+        if( m_cumulusFolderOk == true )
         {
           // Other treads waiting for this info
           synchronized( addDataPath )
@@ -385,7 +398,7 @@ public class CumulusActivity extends QtActivity
     super.onCreate( savedInstanceState );
 
     // Check the state of the mounted SD-Card
-    if( ! sdCardOk )
+    if( ! m_sdCardOk )
       {
         Log.e(TAG, "Exiting, SdCard is not mounted or not writeable!" );
         showDialog(DIALOG_NO_SDCARD);
@@ -393,7 +406,7 @@ public class CumulusActivity extends QtActivity
       }
 
     // Check the state of the Cumulus folder at the SD-Card
-    if( ! cumulusFolderOk )
+    if( ! m_cumulusFolderOk )
       {
         Log.e(TAG, "Cannot create folder Cumulus on the SD card!" );
         showDialog(DIALOG_NO_DATA_FOLDER);

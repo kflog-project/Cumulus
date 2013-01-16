@@ -309,11 +309,21 @@ public class QtActivity extends Activity
         errorDialog.show();
     }
 
-    /**
-     * Retrieves the package version code from the manifest.
-     *
-     * @return The package version code
-     */
+  /**
+   * Call be overwritten in a derived class to make necessary precondition checks.
+   *
+   * @return Trie if preconditions are ok otherwise false.
+   */
+  protected boolean checkPreconditions()
+    {
+      return true;
+    }
+    
+  /**
+   * Retrieves the package version code from the manifest.
+   *
+   * @return The package version code
+   */
 	private int getPackageVersionCode()
 		{
 			PackageInfo packageInfo;
@@ -622,6 +632,13 @@ public class QtActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        
+        if( checkPreconditions() == false )
+          {
+            Log.w( QtApplication.QtTAG, "checkPreconditions are false, QtActivity.onCreate is finished!" );
+            return;
+          }
+        
         if (QtApplication.m_delegateObject != null && QtApplication.onCreate != null)
         {
             QtApplication.invokeDelegateMethod(QtApplication.onCreate, savedInstanceState);
