@@ -8,7 +8,7 @@
     copyright            : (C) 2002 by André Somers
                          :     2013 by Axel Pauli
 
-    Email of maintainer  : axel@kflog.org
+    Email of maintainer  : Axel Pauli <kflog.cumulus@gmail.com>
 
  ***************************************************************************/
 
