@@ -59,7 +59,7 @@ class PreFlightTaskPage : public QWidget
 
   PreFlightTaskPage( QWidget* parent );
 
-  ~PreFlightTaskPage();
+  virtual ~PreFlightTaskPage();
 
   /** Takes out the selected task from the task list. */
   FlightTask* takeSelectedTask();
