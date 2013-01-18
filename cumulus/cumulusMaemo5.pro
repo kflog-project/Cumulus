@@ -191,7 +191,6 @@ SOURCES = \
     builddate.cpp \
     configwidget.cpp \
     calculator.cpp \
-    builddate.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
