@@ -55,6 +55,11 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_tipLabel = new QLabel (this);
   m_tipLabel->setAlignment(Qt::AlignCenter);
   gl->addWidget( m_tipLabel, row, 0, 1, 5 );
+
+#ifdef MAEMO5
+  gl->setRowStretch(row, 5);
+#endif
+
   row++;
 
   m_editor = new QLineEdit (this);
