@@ -225,16 +225,7 @@ void NumberInputPad::showEvent( QShowEvent* /* event */ )
 {
   m_editor->setFocus();
   m_editor->home( false );
-
-#ifndef MAEMO5
   m_tipLabel->text().isEmpty() ? m_tipLabel->hide() : m_tipLabel->show();
-#else
-  if( m_tipLabel->text().isEmpty() )
-    {
-      // Show always the text label under Maemo5.
-      m_tipLabel->setText( " " );
-    }
-#endif
 }
 
 void NumberInputPad::setTip( QString tip )
