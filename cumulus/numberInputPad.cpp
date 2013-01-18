@@ -229,9 +229,9 @@ void NumberInputPad::showEvent( QShowEvent* /* event */ )
 #ifndef MAEMO5
   m_tipLabel->text().isEmpty() ? m_tipLabel->hide() : m_tipLabel->show();
 #else
-  m_tipLabel->text().isEmpty()
+  if( m_tipLabel->text().isEmpty() )
     {
-      // Show always the text label under Maemo.
+      // Show always the text label under Maemo5.
       m_tipLabel->setText( " " );
     }
 #endif
