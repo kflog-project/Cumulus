@@ -65,6 +65,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 #ifndef ANDROID
   m_tas->setToolTip( tr("True Air Speed") );
 #endif
+  m_tas->setPmVisible(false);
   m_tas->setRange( 0, 999);
   m_tas->setMaxLength(3);
   m_tas->setValue( GeneralConfig::instance()->getTas() );
@@ -79,7 +80,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 #ifndef ANDROID
   m_windDirection->setToolTip( tr("Wind Direction") );
 #endif
-  m_windDirection->setFocusPolicy(Qt::StrongFocus);
+  m_windDirection->setPmVisible(false);
   m_windDirection->setRange( 0, 360 );
   m_windDirection->setTip("0...360");
   m_windDirection->setMaxLength(3);
@@ -95,6 +96,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 #ifndef ANDROID
   m_windSpeed->setToolTip( tr("Wind Speed") );
 #endif
+  m_windSpeed->setPmVisible(false);
   m_windSpeed->setRange( 0, 999 );
   m_windSpeed->setMaxLength(3);
   m_windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
