@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2012 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2013 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -300,7 +300,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
 bool Welt2000::check4update()
 {
   // Update check string for Welt2000, must be adapted after every Welt2000 update!
-  const char* w2000CheckString = "$ UPDATED AT: 12.SEP.2012";
+  const char* w2000CheckString = "$ UPDATED AT: 03.FEB.2013";
 
   // Line number in welt2000 file, on which the w2000CheckString is expected.
   // Note! Line counting starts with 1.
