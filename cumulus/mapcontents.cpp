@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include <QtGui>
+#include <QMessageBox>
 
 #include "airfield.h"
 #include "airspace.h"
@@ -3277,6 +3278,12 @@ void MapContents::AddPointToRect(QRect& rect, const QPoint& point)
  */
 bool MapContents::compareProjections(ProjectionBase* p1, ProjectionBase* p2)
 {
+  // Check input parameters, if they are not null.
+  if ( p1 == 0 || p2 == 0 )
+    {
+      return false;
+    }
+
   if ( p1->projectionType() != p2->projectionType() )
     {
       return false;

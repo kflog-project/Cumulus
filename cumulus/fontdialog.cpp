@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012 by Axel Pauli
+**   Copyright (c): 2012-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,11 +16,14 @@
 ***********************************************************************/
 
 #include <QtGui>
+#include <QGroupBox>
+#include <QDialogButtonBox>
 
 #include "flickcharm.h"
 #include "fontdialog.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "rowdelegate.h"
 
 FontDialog::FontDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
@@ -29,6 +32,11 @@ FontDialog::FontDialog (QWidget *parent) :
   // setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
   setWindowTitle(tr("Select Font"));
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
   QFont cft = font();
 
@@ -68,6 +76,15 @@ FontDialog::FontDialog (QWidget *parent) :
   fontList  = new QListWidget;
   styleList = new QListWidget;
   sizeList  = new QListWidget;
+
+#ifdef ANDROID
+  // set new row height from configuration for all lists
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+
+  fontList->setItemDelegate( new RowDelegate( fontList, afMargin ) );
+  styleList->setItemDelegate( new RowDelegate( styleList, afMargin ) );
+  sizeList->setItemDelegate( new RowDelegate( sizeList, afMargin ) );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture(fontList, QScroller::LeftMouseButtonGesture);
