@@ -800,6 +800,8 @@ void GeneralConfig::save()
   setValue( "Position", _unitPos );
   setValue( "Time", _unitTime );
   endGroup();
+
+  sync();
 }
 
 /** gets altimeter mode */
