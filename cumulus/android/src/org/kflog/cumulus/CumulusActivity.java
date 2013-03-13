@@ -61,6 +61,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -156,6 +157,9 @@ public class CumulusActivity extends QtActivity
   
   static private Object          m_objectRef      = null;
   static private Object          m_ActivityMutex  = new Object();
+  
+  // Information about the default display
+  private DisplayMetrics displayMetrics            = new DisplayMetrics();
   
   private NotificationManager notificationManager  = null;
 
@@ -285,6 +289,9 @@ public class CumulusActivity extends QtActivity
     Log.d(TAG, "DEVICE=" + Build.DEVICE);
     Log.d(TAG, "BOARD=" + Build.BOARD);
     Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
+    
+    getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    Log.d(TAG, "DISPLAY_METRICS=" + displayMetrics.toString());
 
     synchronized (m_ActivityMutex)
       {
@@ -1065,6 +1072,29 @@ public class CumulusActivity extends QtActivity
       Configuration config = getResources().getConfiguration();
       return config.locale.getDisplayLanguage();
   	}
+
+  /**
+   * Gets the display metrics from the Android system and return them as key value
+   * string to the caller.
+   * 
+   * @return display metrics as key value string
+   */
+  String getDisplayMetrics()
+    {
+      getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+      
+      StringBuffer buffer = new StringBuffer();
+      
+      buffer.append("density=").append(displayMetrics.density).append(';')
+            .append("densityDpi=").append(displayMetrics.densityDpi).append(';')
+            .append("heightPixels=").append(displayMetrics.heightPixels).append(';')
+            .append("scaledDensity=").append(displayMetrics.scaledDensity).append(';')
+            .append("widthPixels=").append(displayMetrics.widthPixels).append(';')
+            .append("xdpi=").append(displayMetrics.xdpi).append(';')
+            .append("ydpi=").append(displayMetrics.ydpi).append(';');
+          
+      return buffer.toString();
+    }
 
 	private void toggleGps()
 	{
