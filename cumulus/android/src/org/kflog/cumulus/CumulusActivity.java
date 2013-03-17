@@ -1047,25 +1047,37 @@ public class CumulusActivity extends QtActivity
   void dimmScreen( boolean newState )
     {
       // Log.v(TAG, "dimmScreen(" + newState  + ")");
-	  // save requested dimm state from C++ API side.
-	  setRequestedDimmState( newState );
-	}
+  	  // save requested dimm state from C++ API side.
+  	  setRequestedDimmState( newState );
+  	}
 
+  /**
+   * This method returns the data directory of the App. Called via jni to pass
+   * this info to the native C++ side.
+   * 
+   * @return The data directory of the App
+   */
   String getAppDataDir()
-  {
-    synchronized(appDataPath)
-      {
-        return appDataPath;
-      }
-  }
+    {
+      synchronized(appDataPath)
+        {
+          return appDataPath;
+        }
+    }
 
+  /**
+   * This method returns the additional data directory of the App. Called via jni to
+   *  pass this info to the native C++ side.
+   * 
+   * @return The additional data directory of the App
+   */
   String getAddDataDir()
-  {
-      synchronized(addDataPath)
-      {
-        return addDataPath;
-      }
-  }
+    {
+        synchronized(addDataPath)
+        {
+          return addDataPath;
+        }
+    }
   
   String getLanguage()
   	{
@@ -1094,6 +1106,47 @@ public class CumulusActivity extends QtActivity
             .append("ydpi=").append(displayMetrics.ydpi).append(';');
           
       return buffer.toString();
+    }
+  
+  /**
+   * Called from the native side to signal a shutdown. In that case all connections
+   * at java side should be closed to avoid a calling of the native side.
+   */
+  synchronized void nativeShutdown()
+    {
+      Log.d(TAG, "nativeShutdown" );
+
+      notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+      
+      if( notificationManager != null )
+        {
+          notificationManager.cancelAll();
+          Log.d(TAG, "nativeShutdown: Cancel all Notifs now" );
+        }
+
+      if( lm != null && nl != null )
+        {
+          lm.removeNmeaListener(nl);
+          nl = null;
+        }
+
+      if( lm != null & ll != null )
+        {         
+          lm.removeUpdates(ll);
+          ll = null;
+        }
+      
+      if( lm != null )
+        {
+          lm = null;
+        }
+
+      if( m_btService != null )
+        {
+          // terminate all BT threads
+          m_btService.stop();
+          m_btService = null;
+        }
     }
 
 	private void toggleGps()
