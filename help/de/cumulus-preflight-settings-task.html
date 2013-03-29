@@ -34,13 +34,13 @@
 
 	<h5>Fenster Beschreibung</h5>
 
-	In einer Liste&uuml;bersicht sehen Sie hier alle Ihre definierten
+	In der Listen&uuml;bersicht sehen Sie hier alle Ihre definierten
 	Flugaufgaben. Selektieren Sie eine Aufgabe und dr&uuml;cken Sie dann
-	den Knopf	<i>Zeigen</i> um die Aufgabendetails zu sehen.
-	Gleichzeitig wird diese Aufgabe als die zu fliegende angesehen,
-	wenn Sie das Men&uuml; &uuml;ber die <b>Ok</b> Taste verlassen. In diesem Fall
-  wird die ausgew&auml;hlte
-	Aufgabe auf der Karte gezeichnet.
+	den Knopf	<i>Zeigen</i>, um die Aufgabendetails zu sehen. In der Spalte Typ
+	sehen Sie die dem Aufgabenpunkt zugeordneten Wendepunkt Figuren als rote
+	Bildchen. Wenn Sie das Men&uuml; &uuml;ber die
+	<b>Ok</b> Taste verlassen, wird diese Aufgabe auch als die zu fliegende
+  angesehen und auf der Karte gezeichnet.
 
 	<p>
 		Cumlus merkt sich die zuletzt von Ihnen selektierte Aufgabe. Wenn Sie
@@ -48,8 +48,9 @@
 		Listeneintag an und verlassen das Fenster mit der <b>Ok</b> Taste.
 	</p>
 
-	<p>Im oberen Teil des Fensters sind drei Spinboxen zu sehen. In der
-		linken Spinbox k&ouml;nnen Sie Ihre geplante wahre Fluggeschwindigkeit
+	<p>
+	  Im oberen Teil des Fensters sind drei Eingabeboxen zu sehen. In der
+		linken Box k&ouml;nnen Sie Ihre geplante wahre Fluggeschwindigkeit
 		durch die Luft (TAS) vorgeben. Daneben k&ouml;nnen Sie noch die
 		Windrichtung (WD) und die Windgeschwindigkeit (WS) eingeben. Wenn die
 		TAS und die Windgeschwindigkeit gr&ouml;&szlig;er Null sind, werden
@@ -61,37 +62,49 @@
 		die Winddreiecksberechnung fehl schl&auml;gt, wird die Spalte
 		ebenfalls mit TC (true course) beschriftet. In diesem Fall werden die
 		Spalten Windkorrekturwinkel (WCA) und Geschwindigkeit &uuml;ber Grund
-		(GS) mit einem Minuszeichen belegt.</p>
+		(GS) mit einem Minuszeichen belegt.
+	</p>
 
 	<h5>Automatische Weiterschaltung</h5>
 
-	Um die automatische Weiterschaltung beim Erreichen eines Wendepunktes
-	zu aktivieren, m&uuml;ssen Sie in der Aufgabenanzeige, den ersten
-	Anflugpunkt per Hand selektieren. Alternativ man man das auch &uuml;ber
-	die Taste
-	<b>B</b> machen. Aber beachten Sie folgenden Unterschied. Die Taste
-	<b>B</b> w&auml;hlt immer den ersten Anflugpunkt der Aufgabe aus,
-	w&auml;hrend Sie in der Aufgabenanzeige einen beliebigen Anflugpunkt
-	ausw&auml;hlen k&ouml;nnen.
-	</p>
-
-	<p>Wenn Sie den ersten Anflugpunkt bereits am Boden selektieren,
-		wird die automatische Weiterschaltung erst aktiviert, wenn Sie sich
-		schneller als 35 Km/h bewegen.</p>
+	Vorbedingung ist, dass Sie zuvor eine Aufgabe ausgew&auml;hlt haben und
+	sich in der Kartenansicht befinden. Ber&uuml;hren Sie nun die Box mit
+	der Beschriftung
+	<i>To</i> oben links in der Ecke, um die Aufgabenanzeige zu
+	&ouml;ffnen. Um die Aufgabe zu aktivieren dr&uuml;cken Sie nun den
+	<i>Start</i> Knopf. Damit wird der Beginn Punkt der Aufgabe
+	ausgew&auml;hlt und die automatische Weiterschaltung nach der Wendepunkt
+	Passage ist aktiviert. Von Hand k&ouml;nnen Sie auch einen beliebigen
+	anderen Punkt zum Anflug ausw&auml;hlen.
 
 	<p>
-		Haben Sie sich dem Ziel bis auf eine bestimmte Entfernung
-		gen&auml;hert, wird automatisch zum n&auml;chsten Aufgabenpunkt
-		weitergeschaltet. Die entsprechenden Entfernungen stellen Sie im
-		Men&uuml;punkt <a href="cumulus-settings-task.html">Einstellungen/Aufgaben</a>
-		ein. Fliegen Sie an einem Aufgabenpunkt zu weit vorbei, wird nicht
-		automatisch auf den n&auml;chsten Aufgabenpunkt weiter geschaltet. Das
-		m&uuml;ssen Sie dann in der Aufgabenanzeige selber von Hand tun.
+	  Wenn Sie den ersten Anflugpunkt bereits am Boden ausw&auml;hlen,
+		wird die automatische Weiterschaltung erst aktiviert, wenn Sie sich
+		schneller als unter <a href="cumulus-preflight-settings-common.html#AutostartIgcLogger">
+		Autostart IGC Logger</a> definiert, bewegen.
+  </p>
+
+	<p>
+		Haben Sie sich dem Aufgabenpunkt bis auf eine bestimmte Entfernung
+		gen&auml;hert (Kreis oder Sektor) oder ihn passiert (LInie), wird
+		automatisch zum n&auml;chsten Aufgabenpunkt weitergeschaltet. Die
+		entsprechenden Grundeinstellungen dazu machen Sie im Men&uuml;punkt
+		<a href="cumulus-settings-task.html">Einstellungen/Aufgaben</a>. Pro
+		Aufgabenpunkt sind auch Individuelle Einstellungen m&ouml;glich. Diese
+		werden im Aufgabenpunkt Editor gemacht und &uuml;berschreiben die
+		allgemeinen Grundeinstellungen.
 	</p>
+
+  <p>
+    <b>Achtung!</b> Wenn Sie einen Wendepunkt wie Linie, Sektor oder Kreis
+    nicht nach den vorgegebenen Regeln passieren, m&uuml;ssen Sie von Hand
+    auf den n&auml;chsten Wendepunkt in der Aufgabenanzeige umschalten.
+  </p>
+
 
 	<h5>Aufgaben Verwaltung</h5>
 
-	Eine bestehende Aufgabe k&ouml;nnen Sie durch das Klicken auf die
+	Eine bestehende Aufgabe k&ouml;nnen Sie durch Klicken auf die
 	entsprechenden Bildchen in der oberen rechten Fensterecke modifizieren
 	bzw. l&ouml;schen. Wenn Sie eine neue Aufgabe definieren wollen, so
 	klicken Sie das Pluszeichen an. Damit wird ein neues Fenster
@@ -102,7 +115,34 @@
 	der Reihenfolge Ihrer Wegpunkte in der Aufgabe. Das Kreiszeichen kehrt
 	die Reihenfolge der Wendepunkte einer bestehenden Aufgabe um.
 
-  <a name="Flarm_Setup">
+	<p>
+		Wenn Sie einen Aufgabenpunkt im Aufgaben Editor ausw&auml;hlen und den
+		<i>Bleistift</i> Knopf dr&uuml;cken, wird ein neuer Editor
+		ge&ouml;ffnet, in dem Sie die Figur des Aufgabenpunktes und die dazu
+		geh&ouml;rigen Eigenschaften individuell ab&auml;ndern k&ouml;nnen. Ein von
+		Ihnen modifizierter Aufgabenpunkt wird in der Typspalte von der
+		Aufgabenanzeige Gelb hinterlegt. Modifizierte Aufgabenpunkte oder auch
+		die ganze Aufgabe werden durch dr&uuml;cken des <i>Pinsel</i> Kopfes
+		auf ihre Grundeinstellungen zur&uuml;ck gesetzt. Die Grundeinstellungen
+		werden in <a href="cumulus-settings-task.html">Einstellungen/Aufgaben</a>
+		gemacht.
+		<br>
+		Start und Landepunkt k&ouml;nnen nicht editiert werden. Sie benutzen als
+		Wendepunkt Figur einen Kreis mit einem Radius von 500 Metern.
+	</p>
+
+	<p>
+		<b>Achtung!</b> Wenn Sie Aufgabenpunkte in ihrer Aufgabe modifiziert
+		haben und f&uuml;gen neue Punkte hinzu oder verschieben sie oder
+		l&ouml;schen welche, werden alle Aufgabenpunkte auf ihre
+		Grundeinstellungen zur&uuml;ck gesetzt. Daher machen Sie zuerst ihre
+		Aufgabe von den Punkten her fertig und &auml;ndern dann erst einzelne
+		Wendepunkte individuell ab. Das R&uuml;cksetzen der Aufgabenpunkte
+		findet nicht statt, wenn Sie nur die Aufgabe umdrehen, d.h. Start und
+		Landung vertauschen.
+	</p>
+
+	<a name="Flarm_Setup">
   <h5>Flarm IGC Daten definieren</h5>
   
   Wenn Sie den Knopf <i>Flarm</i> dr&uuml;cken, wird ein neues Fenster

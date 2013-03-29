@@ -38,40 +38,48 @@
 
 	In a list overview you can see all defined tasks by you. Select a task
 	entry and click the button
-	<I>Show</i> to see the details of that task. In the upper line you can
-	see different spin boxes. In one of them you can enter your true air
-	speed TAS you want to fly. Also wind direction and wind speed can be
-	entered. If TAS and wind speed are greater than zero they will be
-	included in the task calculation. In this case you can see under the
-	column TH (true heading) the course to be flown to reach the next
-	target. In the other case the column is named TC (true course). That
-	means wind speed or TAS are zero. If wind triangle calculation fails,
-	you will also see the column TC (true course). In such a case wind
-	correction angle (WCA) and ground speed (GS) are set to a dash.
+	<I>Show</i> to see the details of that task. In the type column you can see
+	the assigned taskpoint figures to the taskpoints as little red icons.
+	
+	<br><br> In the upper line you can see different boxes. In one of them
+	you can enter your true air speed TAS you want to fly. Also wind
+	direction and wind speed can be entered. If TAS and wind speed are
+	greater than zero they will be included in the task calculation. In
+	this case you can see under the column TH (true heading) the course to
+	be flown to reach the next target. In the other case the column is
+	named TC (true course). That means wind speed or TAS are zero. If wind
+	triangle calculation fails, you will also see the column TC (true
+	course). In such a case wind correction angle (WCA) and ground speed
+	(GS) are set to a dash.
 
 	<p>If you leave the menu with the OK button, the selected task is
-		treated as to fly now. In this case the task is drawn on the map.</p>
+		 treated as to fly now. In this case the task is drawn on the map.</p>
 
 	<h5>Automatic task point switch</h5>
 
-	To activate the automatic task point switch, you have to select in the
-	task view the first approach point by hand. Alternatively you can use
-	the shortcut key
-	<b>b</b> to do that. But note the difference. The shortcut key
-	<b>b</b> will always select the first approach point of a flight task
-	whilst in the task view you can select any point. If you could not
-	touch a task point sector or cylinder you must select by hand the next
-	task point. There is no automatic switch done to the next point as some
-	GPS devices are doing.
+  Precondition is, you have selected a task before and you are now in the map
+  view. Open the task view by touching the <i>To</i> box in the upper left
+  corner of the map display.
+	To activate the automatic task point switch, you have to press the
+	<i>Start</i> button in that view.	That sets the selection to the begin
+	point of the task. Alternatively you can select any other point by hand.
+	But note the difference. The <i>Start</i> button will always select the
+	first approach point of a flight task whilst in the task view you can
+	select any point. If you could not touch a task point line, sector or
+	circle you must select by hand the next task point. There is no
+	automatic switch done to the next point as some GPS devices are doing.
+
 	<p>
 		If you select the first approach point already on ground and move
-		faster as defined
-		<a href="cumulus-preflight-settings-common.html#autologger">here</a>,
-	  the automatic switch to the next task point will
-		become active. If you approach into the sector described by the task
-		point switch radius, the next task point is selected automatically.
-		The task point switch behaviour can be configured in <a
-			href="cumulus-settings-task.html"> Settings/Task</a>.
+		faster as defined <a
+			href="cumulus-preflight-settings-common.html#autologger">here</a>,
+		the automatic switch to the next task point will become active. If you
+		pass the line or approach into the sector or circle described by the
+		task point switch radius, the next task point is selected
+		automatically. The common task point switch behaviour can be configured in <a
+			href="cumulus-settings-task.html"> Settings-Task</a>. Furthermore you
+		have the possibility to edit every taskpoint in the task editor and to overwrite
+		the common assigned taskpoint behaviour.
 	</p>
 
 	<h5>Task management</h5>
@@ -83,7 +91,30 @@
 	list to be used for task definition. Use the arrows for moving up/down
 	of task points or to the change the order of the task points.
 
-  <a name="Flarm_Setup"><h5>Flarm IGC data setup</h5>
+	<p>
+		Furthermore you can edit single taskpoints by selecting them and
+		pressing the pencil button to change their assigned task figure, the
+		values of a task figure and the auto zoom flag. A modified taskpoint
+		is marked with a yellow background in the type column of the task
+		display. Modified taskpoints or the whole task can be reset to the
+		configuration default values, which are defined in
+		<a href="cumulus-settings-task.html">Settings-Task</a>, with the
+		<i>Brush</i> button.
+		<br>
+		The start and the landing taskpoints cannot be edit. They use a default
+		circle task figure with a radius of 500 meters.
+	</p>
+	
+	<p>
+	<b>Please note!</b> If you have taskpoints modified in your task and you add,
+	move or remove taskpoints, all before made changes are reset to the
+	configuration defaults. Therefore make first the task complete, before you
+	will start to edit the taskpoint figures. The is one exception. If you change
+	only the order of the task, exchange start and landing, no taskpoints are
+	reset.
+	</p>
+
+	<a name="Flarm_Setup"><h5>Flarm IGC data setup</h5>
   
   If you press the button <i>Flarm</i> a new window is opened with different
   entry fields and buttons.

@@ -23,26 +23,57 @@
 	<p>
 		Tasks are routes between waypoints which are handled as turnpoints
 		here. They can be created and modified in the <a
-			href="cumulus-preflight-settings-task.html"> Preflight
-			Settings/Task</a> menu. The task is drawn on the map using a dark magenta
-		line with clearly marked turnpoint sectors. The turnpoint sectors can
-		be configured under <a href="cumulus-settings-task.html"> Settings
-			Task</a>. Currently only <i>classic</i> tasks are supported. Support for
-		newer task types, start lines, etc. will be added in a future version.
+		href="cumulus-preflight-settings-task.html"> Preflight
+	  Settings-Task</a> menu. The task is drawn on the map using a dark magenta
+		line with clearly marked turnpoint figures. The turnpoint figures can
+		be configured under <a href="cumulus-settings-task.html"> Settings-Task</a>. Currently three taskpoint figures, line, circle and sector with  
+    symmetrical angels are supported.
 	</p>
 
 	<p>A task comprises at least four waypoints. That is also the
 		minimum if you will fly a direct route. The used points have the
 		following names in the display:
-	<ul>
-		<li>Takeoff - take off place</li>
-		<li>Begin - here starts the task</li>
-		<li>Route - one or more route points, can be omitted for a direct
-			route</li>
-		<li>End - here ends the task</li>
-		<li>Landing - landing place</li>
-	</ul>
-
+		
+	<p><table border="1">
+	
+	  <tr>
+	    <th>Taskpoint</th>
+	    <th>Short Form</th>
+	    <th>Description</th>
+	  </tr>
+	  
+		<tr>
+		<td>Takeoff</td>
+		<td>TO</td>
+		<td>Take off place</td>
+	  </tr>
+	
+	  <tr>
+	  <td>Begin</td>
+	  <td>B</td>
+	  <td>Here starts the task</td>
+	  </tr>
+	  
+	  <tr>
+	  <td>Route</td>
+	  <td>R</td>
+	  <td>One or more route points, can be omitted for a direct route</td>
+	  </tr>
+	
+	  <tr>
+	  <td>End</td>
+	  <td>E</td>
+	  <td>Here ends the task</td>
+	  </tr>
+	
+	  <tr>
+	  <td>Landing</td>
+	  <td>LG</td>
+	  <td>Landing place</td>
+	  </tr>
+	
+	</table></p>
+ 
 	<b>Note:</b> Takeoff and Begin also End and Landing can be the same
 	points. If you will fly a direct route no route points have to be
 	defined.
@@ -51,9 +82,9 @@
 	<p>
 		Tasks can be edited too with KFLog on the Linux desktop, where you can
 		more easily maintain the list. ATM Cumulus supports only one task
-		file. This file is installed under your selected <a
-			href="cumulus-settings-personal.html#DataDirectory"> Data
-			Directory</a>. As task file name must be used <i>tasks.tsk</i>. This is a
+		file. This file is installed under your selected 
+		<a href="cumulus-settings-personal.html#DataDirectory"> Data
+		Directory</a>. As task file name must be used <i>tasks.tsk</i>. This is a
 		hard coded name. Please make only task file transfer between your
 		desktop and your PDA when Cumulus is not running. Otherwise the
 		results are undefined.

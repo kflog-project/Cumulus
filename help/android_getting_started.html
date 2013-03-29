@@ -39,8 +39,6 @@ body {
 			Furthermore we recommend a screen diagonal greater than 4" otherwise
 			you have problems to use your fingers for the operation.
 		<li>The device must run Android Release 2.2.x (Froyo) or higher.
-
-		
 		<li>The screen should be good readable in sunshine.
 		<li>An external storage medium (SD-Card) is needed for storing of
 			map and flight data.
@@ -74,30 +72,21 @@ body {
 
 	<h4>First startup of Cumulus</h4>
 
-	<p>
-		On the first run of Cumulus after the installation you should have an
-		Internet connection running because Cumulus requires the installation
-		of the <i>Ministro</i> App. Ministro is a system wide Qt shared
-		libraries installer and provider service. It acts as a bridge between
-		your App and the needed Qt C++ libraries. If you cancel the
-		installation, Cumulus is not runable. So long Cumulus is installed at
-		your device you should not remove the Ministro App. Otherwise you will
-		be requested to reinstall it.
-	</p>
-
-	<p>Furthermore the needed maps and the Welt2000 data file are
-		automatically dowloaded from the Internet, if you allow that.</p>
+	<p>On the first startup of Cumulus after the installation you should
+		have an Internet connection running to download the needed maps and
+		the Welt2000 data file. Cumulus ask you for permission before it starts
+		any download actions.</p>
 
 	<p>
 		It is recommended to setup the font sizes of the GUI and the Menu
 		labels to a value, which is optimal adapted to your device. To do
-		that, open the menu item <i>General</i> and step to the tabulator <i>Look&amp;Feel</i>,
-		the last one at the right side. On the page you can see two buttons,
+		that, open the menu item <i>General</i> and touch the entry
+		<i>Look&amp;Feel</i> in the list. On the page you can see two buttons,
 		which will open a font dialog, if you press them. Choose a font size,
 		which is optimal adapted to your device. Make only small changes and
 		test the results. To get full running a new selected font, it is
 		recommended to restart Cumulus. Especially the Menu font should be
-		adapted by you, that it is better useable with fingers.
+		adapted by you, that it is better usable with fingers.
 	</p>
 
 	<h4>Configuration of Cumulus</h4>
@@ -119,17 +108,22 @@ body {
         Press the button install to get download all maps around the center
         point from the Internet.</li>
     </ul>
-    
+
 		The maps and all other data as waypoint files, IGC logger files, flight
-    task file, a.s.o are installed at the
-		SD-card under the root path <i>/sdcard/Cumulus</i>. You can access
-		this directory also from your PC, if you couple your device with it
-		via USB.
+		task file, a.s.o are stored at the SD-card of the Android device. If
+		your device has already a built in SD-card, this one is normally used.
+		To see, which SD-card is used by Cumulus, press the Android Menu
+		button, then Setup->General, Personal. Beside the label
+		<b>Data Directory</b> the path to the storage directory is listed. You can
+	  access this directory also from your PC, if you couple your device with it
+	  via USB.
 	</p>
   
 	<p>
 		Airspace files have to be installed in <I>/sdcard/Cumulus/maps/airspaces</I>.
-		You can download them by using your Internet browser and as
+		The subpath <i>/sdcard</i> can be another. If that is true, please read the
+		previous paragraph.
+		You can download the airspace files by using your Internet browser and as
 		destination that directory. On the airspace setting page you can
 		determine which airspace files should be loaded during run-time by
 		Cumulus. Cumulus understands only airspace files in <i>OpenAir</i>
@@ -202,13 +196,6 @@ body {
 		cause additional problems during run-time and makes a testing not more
 		possible by us on every device and for every OS release. Also the
 		native Qt GUI library port for Android is not yet error free.</p>
-
-	<p>
-		If you step in problems with the GUI surface you can install the App <i>Ministro
-			configuration tool</i>. In that App you can change the used Qt library
-		source. Normally <i>stable</i> is used. Try out <i>testing</i> or <i>unstable</i>
-		and see if the observed issue is fixed.
-	</p>
 
 	<hr>
 	<p>

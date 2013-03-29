@@ -16,7 +16,7 @@
 		<tr>
 			<td align="left"><a href="cumulus-settings-terrain.html">back</a></td>
 			<td align="center"><a href="cumulus-settings.html">overview</a></td>
-			<td align="right"><a href="cumulus-settings-airfields.html">next</a></td>
+			<td align="right"><a href="cumulus-settings-lines.html">next</a></td>
 		</tr>
 	</table>
 
@@ -24,96 +24,78 @@
 
 	<b>Task</b>
 
-	<p>Here you can define the task turnpoint schemes and the drawing
-		options.</p>
+	<p>Here you can define general task related turn point attributes and figures.</p>
 
 	<dl>
-		<dt>
-			<b>TP Scheme</b>
-		</dt>
-
-		<dd>
-			The turnpoint scheme defines how the automatic switch to the next
-			turnpoint is executed, if a flight task is active. A flight task can
-			be defined and activated in the <a
-				href="cumulus-preflight-settings-task.html">Preflight setup Task
-				Dialog</a>. Two turnpoint schemes are supported, Cylinder and Sector.
-			Whichever is selected, the appropriate definition window will appear
-			containing the selectable parameters.
-		</dd>
-
-		<br>
 		<dt>
 			<b>Switch Scheme</b>
 		</dt>
 
 		<dd>
-			The automatic task turnpoint switch provides two modes. In both cases
-			the area specified by the cylinder or sector has to be actually
-			entered, or at least touched. <i>Minimum</i> means that the switch to
-			the next task point will be executed after the distance to the TP,
-			which has up to that time been decreasing, starts to increase, i.e.,
-			the minimum distance to the current turnpoint has been reached. <i>Touched</i>
-			means that the switch occurs when the the outer border of the
-			cylinder or sector is first crossed. In both arrival cases, the IGC
-			logger interval is automatically set to one second for a duration of
-			30s to ensure the recording of the turnpoint passage.
+			The switch scheme defines how the automatic switch to the next
+			turn point is executed, if a flight task is active. A flight task can
+			be defined and activated in the <a
+				href="cumulus-preflight-settings-task.html">Preflight setup Task
+				dialog</a>. The automatic task turn point switch provides two modes. In
+			both cases the area specified by the circle or sector has to
+			be actually entered, or at least touched. <i>Minimum</i> means that
+			the switch to the next task point will be executed after the distance
+			to the TP, which has up to that time been decreasing, starts to
+			increase, i.e., the minimum distance to the current turn point has
+			been reached. <i>Touched</i> means that the switch occurs when the
+			the outer border of the cylinder or sector is first crossed. In both
+			arrival cases, the IGC logger interval is automatically set to one
+			second for a duration of 30s to ensure the recording of the turn point
+			passage.
 		</dd>
 
 		<br>
 		<dt>
-			<b>Cylinder</b>
+			<b>Shape Box</b>
 		</dt>
 
-		<dd>If Cylinder is selected in the TP Scheme, you can here define
-			its radius centred on the turnpoint.</dd>
+		<dd>
+			Here you can define whether the Circle/Sector used has an outer
+			border line or not, and whether this is filled with a transparent
+			colour. Switching off both will make the turn point invisible, if it
+			is not otherwise marked by a symbol, such as an airfield. <br>
+			The filling defines the transparency of the drawn task point figure.
+		</dd>
 
 		<br>
 		<dt>
-			<b>Sector</b>
+			<b>Zoom</b>
 		</dt>
 
-		<dd>If Sector is selected in the TP Scheme, you can here define a
-			Sector centred on the turnpoint. Three parameters can be used for the
-			sector configuration. "Inner radius" defines a circle around the task
-			point, whose radius can vary between zero and the value of "Outer
-			radius". If the inner and outer radii are equal, the result will be a
-			full circle without a sector. The angle of the sector can vary
-			between 90 and 180 degrees.</dd>
+		<dd>
+			The check box with the Name <i>Auto</i> defines, if the map is zoomed
+			in automatically in the near of the turn point to make the turn point
+			details better visible. If the turn point is passed the old zoom level
+			is activated again except the user has changed the zoom level in the
+			meantime.
+		</dd>
 
 		<br>
 		<dt>
-			<b>Shape</b>
+			<b>Task Point Figures</b>
 		</dt>
 
-		<dd>Here you can define whether the Cylinder/Sector used has an
-			outer border line or not, and whether this is filled with a
-			transparent colour. Switching off both will make the turnpoint
-			invisible, if it is not otherwise marked by a symbol, such as an
-			airfield.</dd>
-
-		<br>
-		<dt>
-			<b>Line to target point</b>
-		</dt>
-
-		<dd>Here you can define the width and the colour of the task
-			target line. Furthermore you can define, if a bearing line from your
-			current position to your selected target shall be drawn. This line is
-			drawn in different colors, if a glider has been selected according to
-			the reachability of the selected target. The used width is the same
-			as for the target line.</dd>
-
-
-		<br>
-		<dt>
-			<b>Line in flight direction</b>
-		</dt>
-
-		<dd>Here you can define the width, the color and the drawing of a
-			line in flight direction. This line shows you the direction in which
-			you are moving.</dd>
-
+		<dd>
+			Three different task point figures are supported for the start, finish
+			and observation (route) point. Task point figures can be a line, a sector or a
+			circle together with its provide values. A circle expect always a radius
+			value in its input box. If a sector is selected as task point figure,
+			you can define a sector centered on the turnpoint. Three
+			parameters can be used for the sector configuration. Radius 1 the
+			<i>Inner radius</i> defines a circle around the task point, whose
+			radius can vary between zero and the value of Radius 2 the
+			<i>Outer radius</i>. If the inner and outer radii are equal, the
+			result will be a full circle without a sector. The angle of the
+			sector can vary between 1 and 360 degrees.<br>
+			In the <i>Schema</i> box you can define, which of the provided task
+			point figures should be the default. This default definition can be
+			overwritten in the taskpoint editor for every single task point.
+		</dd>
 	</dl>
 
 	<p></p>
@@ -127,7 +109,7 @@
 		<tr>
 			<td align="left"><a href="cumulus-settings-terrain.html">back</a></td>
 			<td align="center"><a href="cumulus-settings.html">overview</a></td>
-			<td align="right"><a href="cumulus-settings-airfields.html">next</a></td>
+			<td align="right"><a href="cumulus-settings-lines.html">next</a></td>
 		</tr>
 	</table>
 </body>

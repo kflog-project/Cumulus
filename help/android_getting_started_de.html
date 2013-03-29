@@ -40,7 +40,8 @@ body {
 			oder h&ouml;her installiert sein.
 		<li>Der Bildschirm sollte gut in der Sonne ablesbar sein.
 		<li>Ein externes Speichermedium (SD-Karte) ist zum Speichern von
-			Karten- und Flugdaten erforderlich.
+			Karten- und Flugdaten erforderlich, sofern kein intenes bereits
+			im Ger&auml;t eingebaut ist.
 		<li>Wenn kein interner GPS Empf&auml;nger vorhanden ist, sollte
 			eine Bluetooth Schnittstelle vorhanden sein, um externe BT GPS
 			Ger&auml;te benutzen zu k&ouml;nnen.
@@ -77,67 +78,72 @@ body {
 
 	<h4>Erster Start von Cumulus nach der Installation</h4>
 
+	<p>Beim ersten Aufruf von Cumulus nach der Installation sollte eine Internet
+	  Verbindung existieren, damit die ben&ouml;tigten Landkarten und die
+	  Welt2000 Datei automatisch aus dem Internet runter geladen werden
+	  k&ouml;nnen, wenn Sie das erlauben.</p>
+
 	<p>
-		Beim ersten Aufruf von Cumulus nach der Installation, fordert Cumulus
-		die Installation der App <i>Ministro</i> an. Die Ministro App ist ein
-		systemweiter Installations- und Verwaltungsservice f&uuml;r die Qt C++
-		GUI Bibliotheken, die Cumulus zur Laufzeit ben&ouml;tigt. Bitte
-		deinstallieren Sie die Ministro App nicht, solange Sie Cumulus
-		benutzen wollen. Ansonsten fordert Cumulus die Installation erneut an.
+		Um den nativen Teil von Cumulus besser bedienen zu k&ouml;nnen, passen
+		Sie sich die Schriftgr&ouml;&szlig;en an. Es sind zu viele Ger&auml;te
+		auf dem Markt, um f&uuml;r alle einen vern&uuml;nftigen Standard
+		anzubieten. Man kann das &uuml;ber den Men&uuml;eintrag <b>Einstellungen->Allgemein</b>
+		und den Tabulator <b>Look&amp;Feel</b> machen. Auf der Seite findet
+		man 2 Kn&ouml;pfe &uuml;ber die man einen Auswahldialog aufrufen kann.
+		Setzen Sie in diesem die Schriftgr&ouml;&szlig;e insbesondere f&uuml;r
+		das GUI Men&uuml; auf einen Ihnen angenehmen Wert. &Auml;ndern Sie nur
+		in kleinen Schritten und pr&uuml;fen Sie das Aussehen danach. Damit
+		die &Auml;nderung voll wirksam wird, sollte man das Programm neu
+		starten.
 	</p>
-
-	<p>Weiterhin werden die ben&ouml;tigten Karten und die Welt2000
-		Datei automatisch aus dem Internet runter geladen, wenn Sie das
-		erlauben.</p>
-
-	<p>Um den nativen Teil von Cumulus besser bedienen zu k&ouml;nnen,
-		passen Sie sich die Schriftgr&ouml;&szlig;en an. Es sind zu viele
-		Ger&auml;te auf dem Markt, um f&uuml;r alle einen vern&uuml;nftigen
-		Standard anzubieten. Man kann das &uuml;ber den Men&uuml;eintrag
-		Einstellungen->Allgemein und den Tabulator Look&Feel machen. Auf der
-		Seite findet man 2 Kn&ouml;pfe &uuml;ber die man einen Auswahldialog
-		aufrufen kann. Setzen Sie in diesem die Schriftgr&ouml;&szlig;e
-		insbesondere f&uuml;r das GUI Men&uuml; auf einen Ihnen angenehmen
-		Wert. &Auml;ndern Sie nur in kleinen Schritten und pr&uuml;fen Sie das
-		Aussehen danach. Damit die &Auml;nderung voll wirksam wird, sollte man
-		das Programm neu starten.</p>
 
 	<h4>Konfiguration von Cumulus</h4>
 
-	<p>
-    Als erstes sollten Sie Ihre Heimadaten und danach den Kartenradius
-    f&uuml;r den Downlaod aus dem Internet setzen. Dazu sollten Sie folgendes tun:
-    
-    <ul>
-      <li>Stellen Sie eine Verbindung von Ihren Android Ger&auml;t mit dem Internet
-          her.</li>
-      <li>Starten Sie Cumulus.</li>
-      <li>Dr&uuml;cken Sie die Android Men&uuml; Taste und w&auml;hlen Sie das Men&uuml; Einstellungen
-          Allgemein Pers&ouml;nliches aus. Hier tragen Sie bitte mindestens Breite
-          und L&auml;nge Ihres Heimatplatzes ein. Verlassen Sie das Men&uuml; nun &uuml;ber
-          die gr&uuml;ne Ok Taste.</li>
-      <li>Dr&uuml;cken Sie erneut die Android Men&uuml; Taste und w&auml;hlen Sie nun das Men&uuml;
-          Einstellungen Allgemein Karte Einstellungen aus. Ganz unten k&ouml;nnen
-          Sie den Radius um die angezeigten Mittelpunkt Koordinaten einstellen.
-          Dr&uuml;cken Sie Installiere Karten, wenn alles f&uuml;r Sie richtig eingestellt
-          ist. Nun werden alle Karten um den Mittelpunkt herrum aus denm Internet
-          runter geladen</li>
+	<p>Als erstes sollten Sie Ihre Heimadaten und danach den
+		Kartenradius f&uuml;r den Downlaod aus dem Internet setzen. Dazu
+		sollten Sie folgendes tun:
+	
+	<ul>
+		<li>Stellen Sie eine Verbindung von Ihren Android Ger&auml;t mit
+			dem Internet her.</li>
+		<li>Starten Sie Cumulus.</li>
+		<li>Dr&uuml;cken Sie die Android Men&uuml; Taste und w&auml;hlen
+			Sie das Men&uuml; <b>Einstellungen - Allgemein -
+				Pers&ouml;nliches</b> aus. Hier tragen Sie bitte mindestens Breite und
+			L&auml;nge Ihres Heimatplatzes ein. Verlassen Sie das Men&uuml; nun
+			&uuml;ber die gr&uuml;ne Ok Taste.
+		</li>
+		<li>Dr&uuml;cken Sie erneut die Android Men&uuml; Taste und
+			w&auml;hlen Sie nun das Men&uuml; Einstellungen Allgemein Karte
+			Einstellungen aus. Ganz unten k&ouml;nnen Sie den Radius um die
+			angezeigten Mittelpunkt Koordinaten einstellen. Dr&uuml;cken Sie
+			Installiere Karten, wenn alles f&uuml;r Sie richtig eingestellt ist.
+			Nun werden alle Karten um den Mittelpunkt herrum aus denm Internet
+			runter geladen</li>
+	</ul>
 
-    </ul>    
-		Die Karten
-		und andere Dateien wie Wegpunkt-, IGC Logger und Aufgabendateien usw.
-		werden auf der SD-Karte unter dem Wurzelverzeichnis <i>/sdcard/Cumulus</i>
-		abgelegt. Auf dieses Verzeichnis k&ouml;nnen Sie auch vom PC aus
-		zugreifen, wenn Sie Ihr Ger&auml;t mittels USB koppeln.
+	Die Karten und andere Dateien wie Wegpunkt-, IGC Logger und
+	Aufgabendateien usw. werden auf der SD-Karte Ihres Ger&auml;tes
+	gespeichert. Ist eine SD Karte bereits fest im Ger&auml;t eingebaut,
+	wie z.B. beim Galaxy S III, wird diese in der Regel verwendet. Um genau
+	zu wissen, welche SD-Karte bei meheren M&ouml;glichkeiten von Cumulus
+	benutzt wird, &ouml;ffnen Sie den Men&uuml;punkt <b>Einstellungen -
+	Allgemein - Pers&ouml;nliches</b> und sehen sich den Eintrag Datenverzeichnis
+	an. Auf dieses Verzeichnis k&ouml;nnen Sie auch vom PC aus zugreifen,
+	wenn Sie Ihr Ger&auml;t mittels USB koppeln.
 	</p>
 
 	<p>
 		Luftraum Dateien sind im Ordner <I>/sdcard/Cumulus/maps/airspaces</I>
-		abzulegen. Diese k&ouml;nnen Sie mit Ihrem Internetbrowser runter
-		laden und gleich in dem genannten Verzeichnis als Ziel ablegen. Auf
-		der Luftraum Konfigurationsseite k&ouml;nnen Sie festlegen, welche
-		Dateien zur Laufzeit von Cumulus geladen werden sollen. Cumulus kann
-		nur das <i>OpenAir</i> Datei Format verarbeiten. Entsprechende Dateien
+		abzulegen. Der erste Pfadteil <i>/sdcard</i> kann auch anders hei&szlig;en.
+		&Ouml;ffnen Sie den Men&uuml;punkt <b>Einstellungen - Allgemein -
+		Pers&ouml;nliches</b> und sehen sich den Eintrag Datenverzeichnis an,
+		falls Sie über <i>/sdcard</i> nicht weiter kommen. Die Luftraum Dateien
+		k&ouml;nnen Sie auch mit Ihrem Internetbrowser vom Android Ger&auml;
+		runter laden und gleich in dem genannten Verzeichnis als Ziel ablegen.
+		Auf der Luftraum Konfigurationsseite k&ouml;nnen Sie festlegen, welche
+		Dateien zur Laufzeit von Cumulus geladen werden sollen. <b>Cumulus kann
+		nur das <i>OpenAir</i> Datei Format verarbeiten.</b> Entsprechende Dateien
 		sind f&uuml;r Deutschland auf der <a
 			href="http://www.daec.de/fachbereiche/luftraum-flugbetrieb/luftraumdaten/">DAeC
 			Webseite</a> zu finden. Ansonsten schauen Sie <a
@@ -172,6 +178,7 @@ body {
 		ber&uuml;hren werden entweder neue Konfigurationsdialoge ge&ouml;ffnet
 		oder die Anzeige auf einen anderen Inhalt umgeschaltet. Hier eine
 		kurze Liste zu allem:
+	
 	<ul>
 		<li><b>Men&uuml;/S2f</b> &Ouml;ffnet das Applikationsnem&uuml;.</i>
 		<li><b>Mc</b> &Ouml;ffnet den McCready Dialog.</li>
@@ -212,16 +219,6 @@ body {
 		zu Laufzeit Problemen f&uuml;hren und macht auch ein testen durch uns
 		f&uuml;r alle Ger&auml;te und Releases unm&ouml;glich. Der native QT
 		GUI Anteil ist ebenfalls nicht v&ouml;llig fehlerfrei.</p>
-
-	<p>
-		Wenn Sie Probleme mit der Darstellung der Oberfl&auml;che haben, dann
-		k&ouml;nnen Sie die App <i>Ministro Configuration Tool</i> noch
-		installieren. In dieser App k&ouml;nnen Sie die Qt Bibliotheksquelle
-		&auml;ndern. Als Standard ist <i>stable</i> eingestellt. Probieren Sie
-		<i>testing</i> oder <i>unstable</i> aus, ob damit eine Besserung ein
-		tritt. <b>Bitte beachten Sie!</b> Beide Einstellungen k&ouml;nnen neue
-		Fehler hervor bringen.
-	</p>
 
 	<hr>
 	<p>
