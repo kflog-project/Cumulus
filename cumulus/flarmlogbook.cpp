@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012 Axel Pauli
+**   Copyright (c): 2012-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,9 +15,16 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "generalconfig.h"
 #include "hwinfo.h"
 #include "igclogger.h"
@@ -52,13 +59,15 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
 
   m_table = new QTableWidget( 0, 6, this );
 
+  m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(m_table, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(m_table);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( m_table->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   m_table->setSelectionBehavior( QAbstractItemView::SelectRows );

@@ -16,7 +16,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "generalconfig.h"
 #include "altitude.h"
@@ -45,8 +49,8 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
 
   // set font size to a reasonable and usable value
   QFont cf = font();
-  cf.setPixelSize( DialogMinFontSize );
   cf.setBold( true );
+  Layout::fitDialogFont( cf );
   setFont(cf);
 
   QGroupBox* altMode = new QGroupBox( this );

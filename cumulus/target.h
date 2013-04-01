@@ -1,14 +1,11 @@
 /***************************************************************************
-        target.h  -  Defines Cumulus release version for the build target.
-	             This file is also used during Debian package build
-                     as release information.
+  target.h - Defines Cumulus release version for the build target.
+             This file is also used during Debian package build
+             as release information.
 
-                             -------------------
-    begin                : Mon Jul 22 2002
-    copyright            : (C) 2002 by André Somers
-                         :     2013 by Axel Pauli
+  copyright: (C) 20007-2013 by Axel Pauli
 
-    Email of maintainer  : Axel Pauli <kflog.cumulus@gmail.com>
+  Email of maintainer: kflog.cumulus@gmail.com
 
  ***************************************************************************/
 
@@ -26,6 +23,6 @@
 #ifndef target_h
 #define target_h
 
-#define CU_VERSION "2.20.2"
+#define CU_VERSION "5.0.1"
 
 #endif

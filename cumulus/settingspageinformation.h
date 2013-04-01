@@ -36,11 +36,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 
-#ifdef USE_NUM_PAD
 class NumberEditor;
-#else
-class QSpinBox;
-#endif
 
 class SettingsPageInformation : public QWidget
 {
@@ -56,22 +52,29 @@ class SettingsPageInformation : public QWidget
 
   virtual ~SettingsPageInformation();
 
-  public slots: // Public slots
-  /**
-   * Called to initiate saving to the configuration file.
-   */
-  void slot_save();
+  signals:
 
   /**
-   * Called to initiate loading of the configuration file
+   * Emitted, if settings have been changed.
    */
-  void slot_load();
+  void settingsChanged();
 
   private slots:
+
   /**
    * Called to restore the factory settings
    */
   void slot_setFactoryDefault();
+
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
 #ifndef ANDROID
 
@@ -84,6 +87,12 @@ class SettingsPageInformation : public QWidget
 
  private:
 
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
   /**
    * Creates an default NumberEditor instance.
    *
@@ -95,28 +104,17 @@ class SettingsPageInformation : public QWidget
   QLineEdit*   soundTool;
 #endif
 
-#ifdef USE_NUM_PAD
   NumberEditor* spinAirfield;
   NumberEditor* spinAirspace;
   NumberEditor* spinWaypoint;
   NumberEditor* spinWarning;
   NumberEditor* spinInfo;
   NumberEditor* spinSuppress;
-#else
-  QSpinBox*    spinAirfield;
-  QSpinBox*    spinAirspace;
-  QSpinBox*    spinWaypoint;
-  QSpinBox*    spinWarning;
-  QSpinBox*    spinInfo;
-  QSpinBox*    spinSuppress;
-#endif
 
   QCheckBox*   checkAlarmSound;
   QCheckBox*   checkFlarmAlarms;
   QCheckBox*   calculateNearestSites;
   QPushButton* buttonReset;
-
-  bool m_loadConfig; // control loading of config data
 };
 
 #endif // SettingsPageInformation_h

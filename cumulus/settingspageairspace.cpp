@@ -18,53 +18,82 @@
 
 #include <cmath>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "airspace.h"
 #include "basemapelement.h"
 #include "distance.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "map.h"
 #include "mapdefaults.h"
 #include "mapcontents.h"
+#include "numberEditor.h"
+
 #include "settingspageairspace.h"
+#include "settingspageairspacefillingnumpad.h"
+#include "settingspageairspacewarningsnumpad.h"
 #include "settingspageairspaceloading.h"
 #include "settingspageairspacewarnings.h"
-#include "varspinbox.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 #ifdef INTERNET
 #include "airspacedownloaddialog.h"
 #endif
 
-#ifdef USE_NUM_PAD
-#include "numberEditor.h"
-#include "settingspageairspacefillingnumpad.h"
-#include "settingspageairspacewarningsnumpad.h"
-#else
-#include "settingspageairspacefilling.h"
-#endif
-
 extern MapContents *_globalMapContents;
 
 SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
-  QWidget( parent ),
-  m_autoSip( true )
+  QWidget( parent )
 {
   setObjectName("SettingsPageAirspace");
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Airspaces") );
 
-  // save current altitude unit. This unit must be considered during
-  // storage. The internal storage is always in meters.
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
-  altUnit = Altitude::getUnit();
-  QString unit = (altUnit == Altitude::meters) ? " m" : " ft";
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
 
-  QGridLayout *topLayout = new QGridLayout(this);
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal );
+
+  QGridLayout *topLayout = new QGridLayout(sw);
   topLayout->setMargin(3);
 
   int row=0;
@@ -72,13 +101,15 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawOptions = new QTableWidget(8, 6, this);
   // drawOptions->setShowGrid( false );
 
+  drawOptions->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  drawOptions->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(drawOptions, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( drawOptions->viewport(), QScroller::QtScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(drawOptions);
+#ifdef QSCROLLER
+  QtScroller::grabGesture( drawOptions->viewport(), QtScroller::QtScroller::LeftMouseButtonGesture );
 #endif
 
   connect( drawOptions, SIGNAL(cellClicked ( int, int )),
@@ -118,7 +149,6 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   connect( m_enableBorderDrawing, SIGNAL(toggled(bool)),
            SLOT(slot_enabledToggled(bool)));
 
-#ifdef USE_NUM_PAD
   m_borderDrawingValue = new NumberEditor;
   m_borderDrawingValue->setDecimalVisible( false );
   m_borderDrawingValue->setPmVisible( false );
@@ -129,15 +159,6 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([5-9][0-9]|[1-4][0-9][0-9]|500)" ), this );
   m_borderDrawingValue->setValidator( eValidator );
   hbox->addWidget( m_borderDrawingValue );
-#else
-  m_borderDrawingValue = new QSpinBox;
-  m_borderDrawingValue->setPrefix(">FL ");
-  m_borderDrawingValue->setRange( 50, 500 );
-  m_borderDrawingValue->setSingleStep( 1 );
-  VarSpinBox* hspin = new VarSpinBox( m_borderDrawingValue );
-  hbox->addWidget( hspin );
-#endif
-
   hbox->addStretch( 10 );
 
   cmdColorDefaults = new QPushButton(tr("Color Defaults"), this);
@@ -146,23 +167,6 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   topLayout->addLayout( hbox, row, 0, 1, 3 );
   row++;
-
-#if 0
-  hbox = new QHBoxLayout;
-  hbox->addWidget( new QLabel(tr("Line Width:"), this ));
-
-  spinAsLineWidth = new QSpinBox;
-  spinAsLineWidth->setRange( 1, 5 );
-  spinAsLineWidth->setSingleStep( 1 );
-  hspin = new VarSpinBox( spinAsLineWidth );
-  hbox->addWidget( hspin );
-  hbox->addStretch( 10 );
-  hbox->setEnabled( false );
-
-  topLayout->addLayout( hbox, row, 0, 1, 2 );
-  row++;
-#endif
-
   topLayout->setRowMinimumHeight( row++, 10 );
 
   // All buttons are put into a hbox.
@@ -447,6 +451,34 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawOptions->setItem( row++, col, liDummy );
 
   drawOptions->resizeColumnsToContents();
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageAirspace::~SettingsPageAirspace()
@@ -458,18 +490,20 @@ void SettingsPageAirspace::showEvent(QShowEvent *)
   // align all columns to contents before showing
   drawOptions->resizeColumnsToContents();
   drawOptions->setFocus();
-
-  // Switch off automatic software input panel popup
-  m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( true );
 }
 
-void SettingsPageAirspace::hideEvent( QHideEvent *)
+void SettingsPageAirspace::slotAccept()
 {
-  qApp->setAutoSipEnabled( m_autoSip );
+  save();
+  QWidget::close();
 }
 
-void SettingsPageAirspace::slot_load()
+void SettingsPageAirspace::slotReject()
+{
+  QWidget::close();
+}
+
+void SettingsPageAirspace::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
   bool enabled = conf->getAirspaceDrawBorderEnabled();
@@ -531,15 +565,17 @@ void SettingsPageAirspace::slot_load()
   fillColorGliderSector->setPalette( QPalette(conf->getFillColorGliderSector()));
 }
 
-void SettingsPageAirspace::slot_save()
+void SettingsPageAirspace::save()
 {
+  if( checkChanges() == false )
+    {
+      return;
+    }
+
   GeneralConfig * conf = GeneralConfig::instance();
-  AirspaceWarningDistance awd;
 
   conf->setAirspaceDrawingBorder(m_borderDrawingValue->value());
   conf->setAirspaceDrawBorderEnabled(m_enableBorderDrawing->checkState() == Qt::Checked ? true : false);
-
-  // conf->setAirspaceLineWidth( spinAsLineWidth->value() );
 
   conf->setItemDrawingEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
   conf->setItemDrawingEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
@@ -590,6 +626,8 @@ void SettingsPageAirspace::slot_save()
   conf->setFillColorTMZ(fillColorTMZ->palette().color(QPalette::Window));
   conf->setFillColorLowFlight(fillColorLowFlight->palette().color(QPalette::Window));
   conf->setFillColorGliderSector(fillColorGliderSector->palette().color(QPalette::Window));
+
+  conf->save();
 
   emit airspaceColorsUpdated();
 
@@ -729,53 +767,15 @@ void SettingsPageAirspace::slot_startDownload( QString &url )
 /* Called to open the airspace warning dialog. */
 void SettingsPageAirspace::slot_openFillDialog()
 {
-#ifdef USE_NUM_PAD
   SettingsPageAirspaceFillingNumPad* dlg = new SettingsPageAirspaceFillingNumPad(this);
   dlg->setVisible( true );
-#else
-  SettingsPageAirspaceFilling* dlg = new SettingsPageAirspaceFilling(this);
-  dlg->setVisible( true );
-
-#ifdef ANDROID
-
-  QSize ms = dlg->minimumSizeHint();
-
-  ms += QSize(10, 10);
-
-  // A dialog is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  dlg->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
-                    (MainWindow::mainWindow()->height() - ms.height()) / 2,
-                     ms.width(), ms.height() );
-
-#endif
-#endif
 }
 
 /* Called to open the airspace warning dialog. */
 void SettingsPageAirspace::slot_openWarningDialog()
 {
-#ifdef USE_NUM_PAD
   SettingsPageAirspaceWarningsNumPad* dlg = new SettingsPageAirspaceWarningsNumPad(this);
   dlg->setVisible( true );
-#else
-  SettingsPageAirspaceWarnings* dlg = new SettingsPageAirspaceWarnings(this);
-  dlg->setVisible( true );
-
-#ifdef ANDROID
-
-  QSize ms = dlg->minimumSizeHint();
-
-  ms += QSize(10, 10);
-
-  // A dialog is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  dlg->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
-                    (MainWindow::mainWindow()->height() - ms.height()) / 2,
-                     ms.width(), ms.height() );
-
-#endif
-#endif
 }
 
 /* Called to open the airspace loading selection dialog. */
@@ -789,14 +789,10 @@ void SettingsPageAirspace::slot_openLoadDialog()
   dlg->setVisible( true );
 }
 
-/* Called to ask is confirmation on the close is needed. */
-void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
+bool SettingsPageAirspace::checkChanges()
 {
   GeneralConfig * conf = GeneralConfig::instance();
   bool changed = false;
-
-  // changed |= spinAsLineWidthValue != spinAsLineWidth->value();
-  QString where;
 
   changed |= conf->getAirspaceDrawingBorder() != m_borderDrawingValue->value();
   changed |= conf->getAirspaceDrawBorderEnabled() != (m_enableBorderDrawing->checkState() == Qt::Checked ? true : false);
@@ -817,13 +813,6 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getItemDrawingEnabled(BaseMapElement::WaveWindow) != (drawWaveWindow->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::GliderSector) != (drawGliderSector->checkState() == Qt::Checked ? true : false);
 
-  if( changed )
-    {
-      where += tr("drawing");
-    }
-
-  changed = false;
-
   changed |= conf->getBorderColorAirspaceA() != borderColorAirspaceA->palette().color(QPalette::Window);
   changed |= conf->getBorderColorAirspaceB() != borderColorAirspaceB->palette().color(QPalette::Window);
   changed |= conf->getBorderColorAirspaceC() != borderColorAirspaceC->palette().color(QPalette::Window);
@@ -839,18 +828,6 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getBorderColorTMZ() != borderColorTMZ->palette().color(QPalette::Window);
   changed |= conf->getBorderColorLowFlight() != borderColorLowFlight->palette().color(QPalette::Window);
   changed |= conf->getBorderColorGliderSector() != borderColorGliderSector->palette().color(QPalette::Window);
-
-  if( changed )
-    {
-      if( ! where.isEmpty() )
-        {
-          where += ", ";
-        }
-
-      where += tr("border");
-    }
-
-  changed = false;
 
   changed |= conf->getFillColorAirspaceA() != fillColorAirspaceA->palette().color(QPalette::Window);
   changed |= conf->getFillColorAirspaceB() != fillColorAirspaceB->palette().color(QPalette::Window);
@@ -868,21 +845,7 @@ void SettingsPageAirspace::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getFillColorLowFlight() != fillColorLowFlight->palette().color(QPalette::Window);
   changed |= conf->getFillColorGliderSector() != fillColorGliderSector->palette().color(QPalette::Window);
 
-  if( changed )
-    {
-      if( ! where.isEmpty() )
-        {
-          where += ", ";
-        }
-
-      where += tr("fill");
-    }
-
-  if( ! where.isEmpty() )
-  {
-    warn=true;
-    warnings.append(tr("The Airspace settings") + " (" + where + ")" );
-  }
+  return changed;
 }
 
 void SettingsPageAirspace::slot_enabledToggled(bool enabled)

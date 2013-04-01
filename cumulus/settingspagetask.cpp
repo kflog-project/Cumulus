@@ -15,84 +15,102 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
-
-#include "settingspagetask.h"
-#include "generalconfig.h"
-#include "flighttask.h"
-#include "mapcontents.h"
-#include "varspinbox.h"
-
-#ifdef USE_NUM_PAD
-#include "doubleNumberEditor.h"
-#include "numberEditor.h"
+#else
+#include <QtWidgets>
 #endif
 
-extern MapContents  *_globalMapContents;
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
+#include "doubleNumberEditor.h"
+#include "generalconfig.h"
+#include "layout.h"
+#include "numberEditor.h"
+#include "settingspagetask.h"
 
 SettingsPageTask::SettingsPageTask( QWidget *parent) :
   QWidget( parent ),
-  loadedCylinderRadius(0),
-  loadedInnerSectorRadius(0),
-  loadedOuterSectorRadius(0),
-  m_autoSip(true)
+  m_selectedSwitchScheme(0),
+  m_distUnit(Distance::getUnit()),
+  m_startLineValue(0),
+  m_startRingValue(0),
+  m_startSectorInnerRadiusValue(0),
+  m_startSectorOuterRadiusValue(0),
+  m_startSectorAngleValue(0),
+  m_finishLineValue(0),
+  m_finishRingValue(0),
+  m_finishSectorInnerRadiusValue(0),
+  m_finishSectorOuterRadiusValue(0),
+  m_finishSectorAngleValue(0),
+  m_obsCircleRadiusValue(0),
+  m_obsSectorInnerRadiusValue(0),
+  m_obsSectorOuterRadiusValue(0),
+  m_obsSectorAngleValue(0)
 {
   setObjectName("SettingsPageTask");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Task") );
 
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-  int row = 0;
-  VarSpinBox* vspin = 0;
-
-  QGridLayout *topLayout = new QGridLayout( this );
-  topLayout->setMargin(3);
-  topLayout->setSpacing(3);
-
-  QGroupBox *tsBox = new QGroupBox( tr("TP Scheme"), this );
-  topLayout->addWidget( tsBox, row, 0 );
-
-  QRadioButton* cylinder = new QRadioButton( tr("Cylinder"), this );
-  QRadioButton* sector   = new QRadioButton( tr("Sector"), this );
-
-  csScheme = new QButtonGroup(this);
-  csScheme->addButton( cylinder, 0 );
-  csScheme->addButton( sector, 1 );
-
-  QVBoxLayout *vbox = new QVBoxLayout;
-  vbox->addWidget( cylinder );
-  vbox->addWidget( sector );
-  vbox->addStretch(1);
-  tsBox->setLayout(vbox);
-
-  cylinder->setEnabled(true);
-  cylinder->setChecked(false);
-  sector->setEnabled(true);
-  sector->setChecked(false);
-
-  // set active button as selected
-  selectedCSScheme = (int) conf->getActiveCSTaskScheme();
-
-  if( csScheme->button(selectedCSScheme) )
+  if( parent )
     {
-      csScheme->button(selectedCSScheme)->setChecked(true);
+      resize( parent->size() );
     }
 
-  //---------------------------------------------------------------
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
 
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal );
+
+  GeneralConfig *conf = GeneralConfig::instance();
+  int row = 0;
+
+  QGridLayout *topLayout = new QGridLayout(sw);
+  //contentLayout->addLayout(topLayout);
+
+  topLayout->setMargin(10);
+  topLayout->setSpacing(20);
+  topLayout->setColumnStretch( 3, 5 );
+
+  //---------------------------------------------------------------
   QGroupBox *ssBox = new QGroupBox( tr("Switch Scheme"), this );
-  topLayout->addWidget( ssBox, row, 1 );
+  topLayout->addWidget( ssBox, row, 0 );
 
   ntScheme = new QButtonGroup(this);
-
   QRadioButton* nearest  = new QRadioButton( tr("Minimum"), this );
   QRadioButton* touched  = new QRadioButton( tr("Touched"), this );
 
   ntScheme->addButton( nearest, 0 );
   ntScheme->addButton( touched, 1 );
 
-  vbox = new QVBoxLayout;
+  QVBoxLayout* vbox = new QVBoxLayout;
   vbox->addWidget( nearest );
   vbox->addWidget( touched );
   vbox->addStretch(1);
@@ -103,251 +121,322 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   touched->setChecked(true);
 
   // set active button as selected
-  selectedNTScheme = (int) conf->getActiveNTTaskScheme();
+  m_selectedSwitchScheme = (int) conf->getActiveTaskSwitchScheme();
 
-  if( ntScheme->button(selectedNTScheme) )
+  if( ntScheme->button(m_selectedSwitchScheme) )
     {
-      ntScheme->button(selectedNTScheme)->setEnabled(true);
+      ntScheme->button(m_selectedSwitchScheme)->setChecked(true);
     }
+
+  connect( ntScheme, SIGNAL(buttonClicked(int)),
+           this, SLOT(slot_buttonPressedNT(int)) );
 
   //--------------------------------------------------------------
   // as next shape group is added
-  shapeGroup = new QGroupBox( tr("Shape"), this );
-  topLayout->addWidget( shapeGroup, row, 2 );
+  QGroupBox* shapeGroup = new QGroupBox( tr("Shape"), this );
+  topLayout->addWidget( shapeGroup, row, 1 );
 
-  vbox = new QVBoxLayout;
-  drawShape = new QCheckBox( tr("Draw Shape"), this );
-  fillShape = new QCheckBox( tr("Fill Shape"), this );
+  QGridLayout *gBox = new QGridLayout;
+  shapeGroup->setLayout(gBox);
 
-  vbox->addWidget( drawShape );
-  vbox->addWidget( fillShape );
-  vbox->addStretch(1);
+  m_drawShape = new QCheckBox( tr("Draw"), this );
+  gBox->addWidget(m_drawShape, 0, 0 );
+  m_fillShape = new QCheckBox( tr("Fill"), this );
+  gBox->addWidget(m_fillShape, 1, 0 );
+  gBox->setColumnStretch( 2, 5 );
 
-  shapeGroup->setLayout(vbox);
+  connect( m_fillShape, SIGNAL(stateChanged(int)),
+           SLOT(slot_fillShapeStateChanged(int)) );
 
-  drawShape->setChecked( conf->getTaskDrawShape() );
-  fillShape->setChecked( conf->getTaskFillShape() );
+  m_transShape = new NumberEditor( this );
+  m_transShape->setDecimalVisible( false );
+  m_transShape->setPmVisible( false );
+  m_transShape->setMaxLength(3);
+  m_transShape->setSuffix( " %" );
+  m_transShape->setRange( 0, 100 );
+  m_transShape->setTip(tr("Opacity ") + "0...100");
+  m_transShape->setValue( 0 );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,2})" ), this );
+  m_transShape->setValidator( eValidator );
+
+  // Sets a minimum width for the widget
+  int mw1 = QFontMetrics(font()).width("100 %") + 10;
+  m_transShape->setMinimumWidth( mw1 );
+  gBox->addWidget(m_transShape, 1, 1 );
+
+  m_drawShape->setChecked( conf->getTaskDrawShape() );
+  m_fillShape->setChecked( conf->getTaskFillShape() );
+
+  //--------------------------------------------------------------
+  // as next auto zoom group is added
+  QGroupBox* zoomGroup = new QGroupBox( tr("Zoom"), this );
+  topLayout->addWidget( zoomGroup, row, 2 );
+
+  QVBoxLayout *zBox = new QVBoxLayout;
+  zoomGroup->setLayout(zBox);
+
+  m_autoZoom = new QCheckBox( tr("Auto"), this );
+  zBox->addWidget(m_autoZoom);
+  zBox->addStretch(10);
+
+  m_autoZoom->setChecked( conf->getTaskPointAutoZoom() );
+
+#ifdef ANDROID
+  topLayout->setRowMinimumHeight( ++row, 30 );
+#endif
 
   row++;
 
   //--------------------------------------------------------------
-  // as next cylinder group is added
-  cylinderGroup = new QGroupBox( tr("Cylinder"), this );
-  topLayout->addWidget( cylinderGroup, row++, 0, 1, 3 );
+  // as next start group is added
+  QGroupBox* startGroup1 = new QGroupBox( tr("Start"), this );
+  topLayout->addWidget( startGroup1, row, 0 );
+  QFormLayout *formLayout = new QFormLayout;
+  startGroup1->setLayout(formLayout);
 
-  QHBoxLayout *hbox = new QHBoxLayout;
+  m_startLine = createDNE( this );
+  m_startLine->setTip(tr("Line Length"));
+  formLayout->addRow(tr("Line:"), m_startLine);
 
-  QLabel *lbl = new QLabel( tr("Radius:"), this );
-  hbox->addWidget( lbl );
+  m_startRing = createDNE( this );
+  m_startRing->setTip(tr("Circle Radius"));
+  formLayout->addRow(tr("Circle:"), m_startRing);
 
-  // get current distance unit. This unit must be considered during
-  // storage. The internal storage is always in meters.
-  distUnit = Distance::getUnit();
+  //--------------------------------------------------------------
+  // as next inner sector group is added
+  QGroupBox* startGroup2 = new QGroupBox( tr("Sector"), this );
+  topLayout->addWidget( startGroup2, row, 1 );
+  formLayout = new QFormLayout;
+  startGroup2->setLayout(formLayout);
 
-  const char *unit = "";
+  m_startSectorInnerRadius = createDNE( this );
+  m_startSectorInnerRadius->setTip(tr("Inner Radius"));
+  formLayout->addRow(tr("Radius 1:"), m_startSectorInnerRadius);
 
-  // Input accepts different units
-  if( distUnit == Distance::kilometers )
+  m_startSectorOuterRadius = createDNE( this );
+  m_startSectorOuterRadius->setTip(tr("Outer Radius"));
+  formLayout->addRow(tr("Radius 2:"), m_startSectorOuterRadius);
+
+  m_startSectorAngle = createNE( this );
+  m_startSectorAngle->setTip(tr("Angle"));
+  formLayout->addRow(tr("Angle:"), m_startSectorAngle);
+
+  //--------------------------------------------------------------
+  // as next inner scheme group is added
+  QGroupBox* startGroup3 = new QGroupBox( tr("Scheme"), this );
+  topLayout->addWidget( startGroup3, row, 2 );
+  formLayout = new QFormLayout;
+  startGroup3->setLayout(formLayout);
+
+  QRadioButton* circle = new QRadioButton( tr("Circle"), this );
+  QRadioButton* sector = new QRadioButton( tr("Sector"), this );
+  QRadioButton* line   = new QRadioButton( tr("Line"), this );
+
+  startScheme = new QButtonGroup(this);
+  startScheme->addButton( circle, 0 );
+  startScheme->addButton( sector, 1 );
+  startScheme->addButton( line, 2 );
+
+  formLayout->addWidget( circle );
+  formLayout->addWidget( sector );
+  formLayout->addWidget( line );
+
+  circle->setEnabled(true);
+  circle->setChecked(false);
+  sector->setEnabled(true);
+  sector->setChecked(false);
+  line->setEnabled(true);
+  line->setChecked(false);
+
+  // set active button as selected
+  m_selectedStartScheme = (int) conf->getActiveTaskStartScheme();
+
+  if( startScheme->button(m_selectedStartScheme) )
     {
-      unit = " km";
+      startScheme->button(m_selectedStartScheme)->setChecked(true);
     }
-  else if( distUnit == Distance::miles )
+
+#ifdef ANDROID
+  topLayout->setRowMinimumHeight( ++row, 30 );
+#endif
+
+  row++;
+
+  //--------------------------------------------------------------
+  // as next finish group is added
+  QGroupBox* finishGroup1 = new QGroupBox( tr("Finish"), this );
+  topLayout->addWidget( finishGroup1, row, 0 );
+  formLayout = new QFormLayout;
+  finishGroup1->setLayout(formLayout);
+
+  m_finishLine = createDNE( this );
+  m_finishLine->setTip(tr("Line Length"));
+  formLayout->addRow(tr("Line:"), m_finishLine);
+
+  m_finishRing = createDNE( this );
+  m_finishRing->setTip(tr("Circle Radius"));
+  formLayout->addRow(tr("Circle"), m_finishRing);
+
+  //--------------------------------------------------------------
+  // as next inner sector group is added
+  QGroupBox* finishGroup2 = new QGroupBox( tr("Sector"), this );
+  topLayout->addWidget( finishGroup2, row, 1 );
+  formLayout = new QFormLayout;
+  finishGroup2->setLayout(formLayout);
+
+  m_finishSectorInnerRadius = createDNE( this );
+  m_finishSectorInnerRadius->setTip(tr("Inner Radius"));
+  formLayout->addRow(tr("Radius 1:"), m_finishSectorInnerRadius);
+
+  m_finishSectorOuterRadius = createDNE( this );
+  m_finishSectorOuterRadius->setTip(tr("Outer Radius"));
+  formLayout->addRow(tr("Radius 2:"), m_finishSectorOuterRadius);
+
+  m_finishSectorAngle = createNE( this );
+  m_finishSectorAngle->setTip(tr("Angle"));
+  formLayout->addRow(tr("Angle:"), m_finishSectorAngle);
+
+  //--------------------------------------------------------------
+  // as next inner scheme group is added
+  QGroupBox* finishGroup3 = new QGroupBox( tr("Scheme"), this );
+  topLayout->addWidget( finishGroup3, row, 2 );
+  formLayout = new QFormLayout;
+  finishGroup3->setLayout(formLayout);
+
+  circle = new QRadioButton( tr("Circle"), this );
+  sector = new QRadioButton( tr("Sector"), this );
+  line   = new QRadioButton( tr("Line"), this );
+
+  finishScheme = new QButtonGroup(this);
+  finishScheme->addButton( circle, 0 );
+  finishScheme->addButton( sector, 1 );
+  finishScheme->addButton( line, 2 );
+
+  formLayout->addWidget( circle );
+  formLayout->addWidget( sector );
+  formLayout->addWidget( line );
+
+  circle->setEnabled(true);
+  circle->setChecked(false);
+  sector->setEnabled(true);
+  sector->setChecked(false);
+  line->setEnabled(true);
+  line->setChecked(false);
+
+  // set active button as selected
+  m_selectedFinishScheme = (int) conf->getActiveTaskFinishScheme();
+
+  if( finishScheme->button(m_selectedFinishScheme) )
     {
-      unit = " ml";
+      finishScheme->button(m_selectedFinishScheme)->setChecked(true);
     }
-  else // if( distUnit == Distance::nautmiles )
+
+#ifdef ANDROID
+  topLayout->setRowMinimumHeight( ++row, 30 );
+#endif
+
+  row++;
+
+  //--------------------------------------------------------------
+  // as next observation zone is added
+  QGroupBox* obZoneGroup1 = new QGroupBox( tr("Observation"), this );
+  topLayout->addWidget( obZoneGroup1, row, 0 );
+  formLayout = new QFormLayout;
+  obZoneGroup1->setLayout(formLayout);
+
+  m_obsCircleRadius = createDNE( this );
+  m_obsCircleRadius->setTip(tr("Circle Radius"));
+  formLayout->addRow(tr("Circle:"), m_obsCircleRadius);
+
+  //--------------------------------------------------------------
+  // as next inner sector group is added
+  QGroupBox* obZoneGroup2 = new QGroupBox( tr("Sector"), this );
+  topLayout->addWidget( obZoneGroup2, row, 1 );
+  formLayout = new QFormLayout;
+  obZoneGroup2->setLayout(formLayout);
+
+  m_obsSectorInnerRadius = createDNE( this );
+  m_obsSectorInnerRadius->setTip(tr("Inner Radius"));
+  formLayout->addRow(tr("Radius 1:"), m_obsSectorInnerRadius);
+
+  m_obsSectorOuterRadius = createDNE( this );
+  m_obsSectorOuterRadius->setTip(tr("Outer Radius"));
+  formLayout->addRow(tr("Radius 2:"), m_obsSectorOuterRadius);
+
+  m_obsSectorAngle = createNE( this );
+  m_obsSectorAngle->setTip(tr("Sector Angle"));
+  formLayout->addRow(tr("Angle:"), m_obsSectorAngle);
+
+  //--------------------------------------------------------------
+  // as next inner observer scheme group is added
+  QGroupBox* obZoneGroup3 = new QGroupBox( tr("Scheme"), this );
+  topLayout->addWidget( obZoneGroup3, row, 2 );
+  formLayout = new QFormLayout;
+  obZoneGroup3->setLayout(formLayout);
+
+  circle = new QRadioButton( tr("Circle"), this );
+  sector = new QRadioButton( tr("Sector"), this );
+  // no line for observer area
+
+  obsScheme = new QButtonGroup(this);
+  obsScheme->addButton( circle, 0 );
+  obsScheme->addButton( sector, 1 );
+
+  formLayout->addWidget( circle );
+  formLayout->addWidget( sector );
+
+  circle->setEnabled(true);
+  circle->setChecked(false);
+  sector->setEnabled(true);
+  sector->setChecked(false);
+
+  // set active button as selected
+  m_selectedObsScheme = (int) conf->getActiveTaskObsScheme();
+
+  if( obsScheme->button(m_selectedObsScheme) )
     {
-      unit = " nm";
+      obsScheme->button(m_selectedObsScheme)->setChecked(true);
     }
 
-#ifdef USE_NUM_PAD
-  cylinderRadius = new DoubleNumberEditor( this );
-  cylinderRadius->setDecimalVisible( true );
-  cylinderRadius->setPmVisible( false );
-  cylinderRadius->setMaxLength(10);
-  cylinderRadius->setSuffix( unit );
-  cylinderRadius->setDecimals( 3 );
-  hbox->addWidget( cylinderRadius );
-#else
-  cylinderRadius = new QDoubleSpinBox( this );
-  cylinderRadius->setRange(0.1, 1000.0);
-  cylinderRadius->setSingleStep(0.1);
-  cylinderRadius->setSuffix( unit );
-  vspin = new VarSpinBox( cylinderRadius, this, VarSpinBox::Vertical );
-  hbox->addWidget( vspin );
-#endif
-
-  hbox->addStretch(10);
-
-  cylinderGroup->setLayout(hbox);
-
   //--------------------------------------------------------------
-  // as next sector group is added
-  sectorGroup = new QGroupBox( tr("Sector"), this );
-  topLayout->addWidget( sectorGroup, row++, 0, 1, 3 );
+  // Connect sector check controls.
+  connect( m_startSectorOuterRadius, SIGNAL(numberEdited(const QString&)),
+           this, SLOT(slot_outerSectorStartChanged(const QString&)) );
+  connect( m_finishSectorOuterRadius, SIGNAL(numberEdited(const QString&)),
+           this, SLOT(slot_outerSectorFinishChanged(const QString&)) );
+  connect( m_obsSectorOuterRadius, SIGNAL(numberEdited(const QString&)),
+           this, SLOT(slot_outerSectorObsChanged(const QString&)) );
+  connect( startScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedSS(int)) );
+  connect( finishScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedFS(int)) );
+  connect( obsScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedOS(int)) );
 
-  QGridLayout *sectorLayout = new QGridLayout( sectorGroup );
-  sectorLayout->setMargin(10);
-  sectorLayout->setSpacing(3);
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  int row1 = 0;
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  lbl = new QLabel( tr("Inner Radius:"), sectorGroup );
-  sectorLayout->addWidget( lbl, row1, 0 );
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
-#ifdef USE_NUM_PAD
-  innerSectorRadius = new DoubleNumberEditor( sectorGroup );
-  innerSectorRadius->setDecimalVisible( true );
-  innerSectorRadius->setPmVisible( false );
-  innerSectorRadius->setMaxLength(10);
-  innerSectorRadius->setSuffix( unit );
-  innerSectorRadius->setDecimals( 3 );
-  sectorLayout->addWidget( innerSectorRadius, row1, 1 );
-#else
-  innerSectorRadius = new QDoubleSpinBox( sectorGroup );
-  innerSectorRadius->setRange(0.0, 10.0);
-  innerSectorRadius->setSingleStep(0.1);
-  innerSectorRadius->setSuffix( unit );
-  vspin = new VarSpinBox( innerSectorRadius );
-  sectorLayout->addWidget( vspin, row1, 1 );
-#endif
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
-  row1++;
-  lbl = new QLabel( tr("Outer Radius:"), sectorGroup );
-  sectorLayout->addWidget( lbl, row1, 0 );
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
 
-#ifdef USE_NUM_PAD
-  outerSectorRadius = new DoubleNumberEditor( sectorGroup );
-  outerSectorRadius->setDecimalVisible( true );
-  outerSectorRadius->setPmVisible( false );
-  outerSectorRadius->setMaxLength(10);
-  outerSectorRadius->setSuffix( unit );
-  outerSectorRadius->setDecimals( 3 );
-  sectorLayout->addWidget( outerSectorRadius, row1, 1 );
-#else
-  outerSectorRadius = new QDoubleSpinBox( sectorGroup );
-  outerSectorRadius->setRange(0.1, 1000.0);
-  outerSectorRadius->setSingleStep(0.1);
-  outerSectorRadius->setSuffix( unit );
-  vspin = new VarSpinBox( outerSectorRadius );
-  sectorLayout->addWidget( vspin, row1, 1 );
-#endif
-
-  row1++;
-  lbl = new QLabel( tr("Angle:"), sectorGroup );
-  sectorLayout->addWidget( lbl, row1, 0 );
-
-#ifdef USE_NUM_PAD
-  sectorAngle = new NumberEditor( sectorGroup );
-  sectorAngle->setDecimalVisible( false );
-  sectorAngle->setPmVisible( false );
-  sectorAngle->setMaxLength(3);
-  sectorAngle->setSuffix( QString(Qt::Key_degree) );
-  sectorAngle->setMaximum( 180 );
-  sectorAngle->setTip("90...180");
-  sectorAngle->setValue( conf->getTaskSectorAngle() );
-  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "(9[0-9]|1[0-7][0-9]|180)" ), this );
-  sectorAngle->setValidator( eValidator );
-  sectorLayout->addWidget( sectorAngle, row1, 1 );
-#else
-  sectorAngle = new QSpinBox( sectorGroup );
-  sectorAngle->setRange( 90, 180 );
-  sectorAngle->setSingleStep( 5 );
-  sectorAngle->setSuffix( QString(Qt::Key_degree) );
-  sectorAngle->setWrapping( true );
-  sectorAngle->setValue( conf->getTaskSectorAngle() );
-  vspin = new VarSpinBox( sectorAngle );
-  sectorLayout->addWidget( vspin, row1, 1 );
-#endif
-
-  sectorLayout->setColumnStretch(2, 10);
-
-  //--------------------------------------------------------------
-  // as next the target line group is added
-  tlGroup = new QGroupBox( tr("Target Line"), this );
-
-  QGridLayout *tlLayout = new QGridLayout( tlGroup );
-  tlLayout->setMargin(10);
-  tlLayout->setSpacing(10);
-  row1 = 0;
-
-  lbl = new QLabel( tr("Width:"), tlGroup );
-  tlLayout->addWidget( lbl, row1, 0 );
-
-  tlWidth = new QSpinBox( tlGroup );
-  tlWidth->setRange( 1, 10 );
-  tlWidth->setSingleStep( 1 );
-  vspin = new VarSpinBox( tlWidth, this, VarSpinBox::Vertical );
-  tlLayout->addWidget( vspin, row1, 1 );
-
-  row1++;
-  tlColorLabel = new QLabel( tr("Color:"), tlGroup );
-  tlLayout->addWidget( tlColorLabel, row1, 0 );
-
-  tlColorButton = new QPushButton( tlGroup );
-  tlLayout->addWidget( tlColorButton, row1, 1 );
-
-  row1++;
-  tlCheckBox = new QCheckBox( tr("Draw") );
-  tlLayout->addWidget( tlCheckBox, row1, 0, 1, 2 );
-
-  // on click the color chooser dialog will be opened
-  connect( tlColorButton, SIGNAL(clicked()), this, SLOT(slot_editTlColor()) );
-
-  //--------------------------------------------------------------
-  // as next the track line group is added
-  trGroup = new QGroupBox( tr("Track Line"), this );
-
-  QGridLayout *trLayout = new QGridLayout( trGroup );
-  trLayout->setMargin(10);
-  trLayout->setSpacing(10);
-  row1 = 0;
-
-  lbl = new QLabel( tr("Width:"), trGroup );
-  trLayout->addWidget( lbl, row1, 0 );
-
-  trWidth = new QSpinBox( trGroup );
-  trWidth->setRange( 1, 10 );
-  trWidth->setSingleStep( 1 );
-  vspin = new VarSpinBox( trWidth, this, VarSpinBox::Vertical );
-  trLayout->addWidget( vspin, row1, 1 );
-
-  row1++;
-  trColorLabel = new QLabel( tr("Color:"), trGroup );
-  trLayout->addWidget( trColorLabel, row1, 0 );
-
-  trColorButton = new QPushButton( trGroup );
-  trLayout->addWidget( trColorButton, row1, 1 );
-
-  row1++;
-  trCheckBox = new QCheckBox( tr("Draw") );
-  trLayout->addWidget( trCheckBox, row1, 0, 1, 2 );
-
-  // on click the color chooser dialog will be opened
-  connect( trColorButton, SIGNAL(clicked()), this, SLOT(slot_editTrColor()) );
-
-  //--------------------------------------------------------------
-  hbox = new QHBoxLayout;
-  hbox->addWidget( cylinderGroup );
-  hbox->addWidget( sectorGroup );
-  hbox->addWidget( tlGroup );
-  hbox->addWidget( trGroup );
-  hbox->addStretch( 10 );
-
-  topLayout->addLayout( hbox, row++, 0, 1, 3 );
-  topLayout->setRowStretch( row, 10 );
-  //--------------------------------------------------------------
-
-  connect( csScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedCS(int)) );
-  connect( ntScheme, SIGNAL(buttonClicked(int)), this, SLOT(slot_buttonPressedNT(int)) );
-
-#ifdef USE_NUM_PAD
-  connect( outerSectorRadius, SIGNAL(numberEdited(const QString& )),
-          this, SLOT(slot_outerSBChanged(const QString& )) );
-#else
-  connect( outerSectorRadius, SIGNAL(valueChanged(double)),
-           this, SLOT(slot_outerSBChanged(double)) );
-#endif
+  load();
 }
 
 // Destructor of class
@@ -355,277 +444,314 @@ SettingsPageTask::~SettingsPageTask()
 {
 }
 
-void SettingsPageTask::showEvent(QShowEvent *)
+void SettingsPageTask::slotAccept()
 {
-  // Switch off automatic software input panel popup
-  m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( false );
+  save();
+  emit settingsChanged();
+  QWidget::close();
 }
 
-void SettingsPageTask::hideEvent( QHideEvent *)
+void SettingsPageTask::slotReject()
 {
-  qApp->setAutoSipEnabled( m_autoSip );
+  QWidget::close();
 }
 
-// value of outer spin box changed
-void SettingsPageTask::slot_outerSBChanged( double /* value */ )
+DoubleNumberEditor* SettingsPageTask::createDNE( QWidget* parent )
 {
-  // set max range of inner sector to current value of outer sector
-  innerSectorRadius->setMaximum( outerSectorRadius->value() );
+  DoubleNumberEditor* dne = new DoubleNumberEditor( parent );
+  dne->setDecimalVisible( true );
+  dne->setPmVisible( false );
+  dne->setMaxLength(10);
+  dne->setSuffix( " " + Distance::getUnitText() );
+  dne->setDecimals( 3 );
+  dne->setValue( 0 );
+  dne->setMinimum( 0 );
+  return dne;
+}
 
-  if( innerSectorRadius->value() > outerSectorRadius->value() )
+NumberEditor* SettingsPageTask::createNE( QWidget* parent )
+{
+  NumberEditor* ne = new NumberEditor( parent );
+  ne->setDecimalVisible( false );
+  ne->setPmVisible( false );
+  ne->setMaxLength(3);
+  ne->setSuffix( QString(Qt::Key_degree) );
+  ne->setRange( 1, 360 );
+  ne->setTip("1...360");
+  ne->setValue( 90 );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "[1-9][0-9]{0,2}" ), this );
+  ne->setValidator( eValidator );
+  return ne;
+}
+
+void SettingsPageTask::slot_fillShapeStateChanged( int state )
+{
+  if( state == Qt::Unchecked )
     {
-      // inner spin box value must be less equal outer spin box value
-      innerSectorRadius->setValue( outerSectorRadius->value() );
-    }
-}
-
-void SettingsPageTask::slot_outerSBChanged( const QString& /* value */ )
-{
-  slot_outerSBChanged( 1.0 );
-}
-
-// Set the passed scheme widget as active and the other one to
-// inactive
-void SettingsPageTask::slot_buttonPressedCS( int newScheme )
-{
-  selectedCSScheme = newScheme;
-
-  if( newScheme == GeneralConfig::Sector )
-    {
-      sectorGroup->setVisible(true);
-      cylinderGroup->setVisible(false);
+      m_transShape->setEnabled(false);
     }
   else
     {
-      sectorGroup->setVisible(false);
-      cylinderGroup->setVisible(true);
+      m_transShape->setEnabled(true);
     }
 }
+
+// value of outer sector box changed
+void SettingsPageTask::slot_outerSectorStartChanged( const QString& value )
+{
+  bool ok;
+  double d = value.toDouble( &ok );
+
+  if( ! ok )
+    {
+      return;
+    }
+
+  // set max range of inner sector to current value of outer sector
+  m_startSectorInnerRadius->setMaximum( d );
+
+  if( m_startSectorInnerRadius->value() > d )
+    {
+      // inner spin box value must be less equal outer spin box d
+      m_startSectorInnerRadius->setValue( d );
+    }
+}
+
+// value of outer sector box changed
+void SettingsPageTask::slot_outerSectorFinishChanged( const QString& value )
+{
+  bool ok;
+  double d = value.toDouble( &ok );
+
+  if( ! ok )
+    {
+      return;
+    }
+
+  // set max range of inner sector to current value of outer sector
+  m_finishSectorInnerRadius->setMaximum( d );
+
+  if( m_finishSectorInnerRadius->value() > d )
+    {
+      // inner spin box value must be less equal outer spin box value
+      m_finishSectorInnerRadius->setValue( d );
+    }
+}
+
+// value of outer sector box changed
+void SettingsPageTask::slot_outerSectorObsChanged( const QString& value )
+{
+  bool ok;
+  double d = value.toDouble( &ok );
+
+  if( ! ok )
+    {
+      return;
+    }
+
+  // set max range of inner sector to current value of outer sector
+  m_obsSectorInnerRadius->setMaximum( d );
+
+  if( m_obsSectorInnerRadius->value() > d )
+    {
+      // inner spin box value must be less equal outer spin box value
+      m_obsSectorInnerRadius->setValue( d );
+    }
+}
+
+// Start Scheme changed
+void SettingsPageTask::slot_buttonPressedSS(int newScheme)
+{
+  m_selectedStartScheme = newScheme;
+}
+
+// Finish Scheme changed
+void SettingsPageTask::slot_buttonPressedFS(int newScheme)
+{
+  m_selectedFinishScheme = newScheme;
+}
+
+// Observer Scheme changed
+void SettingsPageTask::slot_buttonPressedOS(int newScheme)
+{
+  m_selectedObsScheme = newScheme;
+}
+
 
 void SettingsPageTask::slot_buttonPressedNT( int newScheme )
 {
-  selectedNTScheme = newScheme;
+  m_selectedSwitchScheme = newScheme;
 }
 
-void SettingsPageTask::slot_editTlColor()
-{
-  // Enable software input panel for color dialog
-  qApp->setAutoSipEnabled( true );
-
-  // Open color chooser dialog to edit the target line color
-  QString title = tr("Target Line Color");
-  QColor newColor = QColorDialog::getColor( tlColor, this, title );
-
-  if( newColor.isValid() && tlColor != newColor )
-    {
-      tlColor = newColor;
-      // determine pixmap size to be used for icons in dependency of the used font
-      int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
-      QSize pixmapSize = QSize( size, size );
-      QPixmap pixmap(pixmapSize);
-      pixmap.fill( newColor );
-      tlColorButton->setIcon( QIcon(pixmap) );
-    }
-
-  qApp->setAutoSipEnabled( m_autoSip );
-}
-
-void SettingsPageTask::slot_editTrColor()
-{
-  // Enable software input panel for color dialog
-  qApp->setAutoSipEnabled( true );
-
-  // Open color chooser dialog to edit the track line color
-  QString title = tr("Track Line Color");
-  QColor newColor = QColorDialog::getColor( trColor, this, title );
-
-  if( newColor.isValid() && trColor != newColor )
-    {
-      trColor = newColor;
-      // determine pixmap size to be used for icons in dependency of the used font
-      int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
-      QSize pixmapSize = QSize( size, size );
-      QPixmap pixmap(pixmapSize);
-      pixmap.fill( newColor );
-      trColorButton->setIcon( QIcon(pixmap) );
-    }
-
-  qApp->setAutoSipEnabled( m_autoSip );
-}
-
-void SettingsPageTask::slot_load()
+void SettingsPageTask::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  slot_buttonPressedCS( (int) conf->getActiveCSTaskScheme() );
+  m_selectedSwitchScheme = (int) conf->getActiveTaskSwitchScheme();
 
-  // @AP: radius is always fetched in meters.
-  Distance cRadius = conf->getTaskCylinderRadius();
-  Distance iRadius = conf->getTaskSectorInnerRadius();
-  Distance oRadius = conf->getTaskSectorOuterRadius();
-
-  if( distUnit == Distance::kilometers ) // user gets meters
+  if( ntScheme->button(m_selectedSwitchScheme) )
     {
-      cylinderRadius->setValue( cRadius.getKilometers() );
-      innerSectorRadius->setValue( iRadius.getKilometers() );
-      outerSectorRadius->setValue( oRadius.getKilometers() );
+      ntScheme->button(m_selectedSwitchScheme)->setChecked(true);
     }
-  else if( distUnit == Distance::miles ) // user gets miles
+
+  m_drawShape->setChecked( conf->getTaskDrawShape() );
+  m_fillShape->setChecked( conf->getTaskFillShape() );
+  m_transShape->setValue( conf->getTaskShapeAlpha() );
+  m_autoZoom->setChecked( conf->getTaskPointAutoZoom() );
+
+  m_selectedStartScheme = (int) conf->getActiveTaskStartScheme();
+
+  if( startScheme->button(m_selectedStartScheme) )
     {
-      cylinderRadius->setValue( cRadius.getMiles() );
-      innerSectorRadius->setValue( iRadius.getMiles() );
-      outerSectorRadius->setValue( oRadius.getMiles() );
+      startScheme->button(m_selectedStartScheme)->setChecked(true);
+    }
+
+  m_startLineValue               = conf->getTaskStartLineLength();
+  m_startRingValue               = conf->getTaskStartRingRadius();
+  m_startSectorInnerRadiusValue  = conf->getTaskStartSectorIRadius();
+  m_startSectorOuterRadiusValue  = conf->getTaskStartSectorORadius();
+  m_startSectorAngleValue        = conf->getTaskStartSectorAngel();
+
+  if( finishScheme->button(m_selectedFinishScheme) )
+    {
+      finishScheme->button(m_selectedFinishScheme)->setChecked(true);
+    }
+
+  m_finishLineValue              = conf->getTaskFinishLineLength();
+  m_finishRingValue              = conf->getTaskFinishRingRadius();
+  m_finishSectorInnerRadiusValue = conf->getTaskFinishSectorIRadius();
+  m_finishSectorOuterRadiusValue = conf->getTaskFinishSectorORadius();
+  m_finishSectorAngleValue       = conf->getTaskFinishSectorAngel();
+
+  if( obsScheme->button(m_selectedObsScheme) )
+    {
+      obsScheme->button(m_selectedObsScheme)->setChecked(true);
+    }
+
+  m_obsCircleRadiusValue      = conf->getTaskObsCircleRadius();
+  m_obsSectorInnerRadiusValue   = conf->getTaskObsSectorInnerRadius();
+  m_obsSectorOuterRadiusValue   = conf->getTaskObsSectorOuterRadius();
+  m_obsSectorAngleValue         = conf->getTaskObsSectorAngle();
+
+  if( m_distUnit == Distance::kilometers ) // user gets meters
+    {
+      m_startLine->setValue( m_startLineValue.getKilometers() );
+      m_startRing->setValue( m_startRingValue.getKilometers() );
+      m_startSectorInnerRadius->setValue( m_startSectorInnerRadiusValue.getKilometers() );
+      m_startSectorOuterRadius->setValue( m_startSectorOuterRadiusValue.getKilometers() );
+
+      m_finishLine->setValue( m_finishLineValue.getKilometers() );
+      m_finishRing->setValue( m_finishRingValue.getKilometers() );
+      m_finishSectorInnerRadius->setValue( m_finishSectorInnerRadiusValue.getKilometers() );
+      m_finishSectorOuterRadius->setValue( m_finishSectorOuterRadiusValue.getKilometers() );
+
+      m_obsCircleRadius->setValue( m_obsCircleRadiusValue.getKilometers() );
+      m_obsSectorInnerRadius->setValue( m_obsSectorInnerRadiusValue.getKilometers() );
+      m_obsSectorOuterRadius->setValue( m_obsSectorOuterRadiusValue.getKilometers() );
+    }
+  else if( m_distUnit == Distance::miles ) // user gets miles
+    {
+      m_startLine->setValue( m_startLineValue.getMiles() );
+      m_startRing->setValue( m_startRingValue.getMiles() );
+      m_startSectorInnerRadius->setValue( m_startSectorInnerRadiusValue.getMiles() );
+      m_startSectorOuterRadius->setValue( m_startSectorOuterRadiusValue.getMiles() );
+
+      m_finishLine->setValue( m_finishLineValue.getMiles() );
+      m_finishRing->setValue( m_finishRingValue.getMiles() );
+      m_finishSectorInnerRadius->setValue( m_finishSectorInnerRadiusValue.getMiles() );
+      m_finishSectorOuterRadius->setValue( m_finishSectorOuterRadiusValue.getMiles() );
+
+      m_obsCircleRadius->setValue( m_obsCircleRadiusValue.getMiles() );
+      m_obsSectorInnerRadius->setValue( m_obsSectorInnerRadiusValue.getMiles() );
+      m_obsSectorOuterRadius->setValue( m_obsSectorOuterRadiusValue.getMiles() );
     }
   else // ( distUnit == Distance::nautmiles )
     {
-      cylinderRadius->setValue( cRadius.getNautMiles() );
-      innerSectorRadius->setValue( iRadius.getNautMiles() );
-      outerSectorRadius->setValue( oRadius.getNautMiles() );
+      m_startLine->setValue( m_startLineValue.getNautMiles() );
+      m_startRing->setValue( m_startRingValue.getNautMiles() );
+      m_startSectorInnerRadius->setValue( m_startSectorInnerRadiusValue.getNautMiles() );
+      m_startSectorOuterRadius->setValue( m_startSectorOuterRadiusValue.getNautMiles() );
+
+      m_finishLine->setValue( m_finishLineValue.getNautMiles() );
+      m_finishRing->setValue( m_finishRingValue.getNautMiles() );
+      m_finishSectorInnerRadius->setValue( m_finishSectorInnerRadiusValue.getNautMiles() );
+      m_finishSectorOuterRadius->setValue( m_finishSectorOuterRadiusValue.getNautMiles() );
+
+      m_obsCircleRadius->setValue( m_obsCircleRadiusValue.getNautMiles() );
+      m_obsSectorInnerRadius->setValue( m_obsSectorInnerRadiusValue.getNautMiles() );
+      m_obsSectorOuterRadius->setValue( m_obsSectorOuterRadiusValue.getNautMiles() );
     }
 
-  // Save the loaded values from the configuration
-  loadedCylinderRadius    = cylinderRadius->value();
-  loadedInnerSectorRadius = innerSectorRadius->value();
-  loadedOuterSectorRadius = outerSectorRadius->value();
-
   // Check the validity of inner and outer sector.
-  slot_outerSBChanged( 1.0 );
+  m_startSectorInnerRadius->setMaximum( m_startSectorOuterRadius->value() );
+  m_finishSectorInnerRadius->setMaximum( m_finishSectorOuterRadius->value() );
+  m_obsSectorInnerRadius->setMaximum( m_obsSectorOuterRadius->value() );
 
-  drawShape->setChecked( conf->getTaskDrawShape() );
-  fillShape->setChecked( conf->getTaskFillShape() );
-
-  // load the target line color
-  tlColor = conf->getTargetLineColor();
-  selectedTlColor = tlColor;
-
-  // determine pixmap size to be used for icons in dependency of the used font
-  int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
-  QSize pixmapSize = QSize( size, size );
-  QPixmap pixmap(pixmapSize);
-  pixmap.fill( tlColor );
-  tlColorButton->setIcon( QIcon(pixmap) );
-  tlColorButton->setMinimumHeight( tlColorLabel->size().height() );
-
-  seletedTlWidth = conf->getTargetLineWidth();
-  tlWidth->setValue( seletedTlWidth );
-  tlCheckBox->setChecked( conf->getTargetLineDrawState() );
-
-  // load the track line color
-  trColor = conf->getTrackLineColor();
-  selectedTrColor = trColor;
-  pixmap.fill( trColor );
-  trColorButton->setIcon( QIcon(pixmap) );
-  trColorButton->setMinimumHeight( trColorLabel->size().height() );
-
-  seletedTrWidth = conf->getTrackLineWidth();
-  trWidth->setValue( seletedTrWidth );
-  trCheckBox->setChecked( conf->getTrackLineDrawState() );
+  m_startSectorAngle->setValue( m_startSectorAngleValue );
+  m_finishSectorAngle->setValue( m_finishSectorAngleValue );
+  m_obsSectorAngle->setValue( m_obsSectorAngleValue );
 }
 
-void SettingsPageTask::slot_save()
+void SettingsPageTask::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  conf->setActiveCSTaskScheme( (GeneralConfig::ActiveCSTaskScheme) selectedCSScheme );
-  conf->setActiveNTTaskScheme( (GeneralConfig::ActiveNTTaskScheme) selectedNTScheme );
+  conf->setActiveTaskSwitchScheme( (GeneralConfig::ActiveTaskSwitchScheme) m_selectedSwitchScheme );
+  conf->setTaskDrawShape( m_drawShape->isChecked() );
+  conf->setTaskFillShape( m_fillShape->isChecked() );
+  conf->setTaskShapeAlpha(m_transShape->value() );
+  conf->setTaskPointAutoZoom( m_autoZoom->isChecked() );
 
-  // @AP: radius is always saved in meters. Save is done only after a
-  // real change to avoid rounding errors.
-  Distance cRadius;
-  Distance iRadius;
-  Distance oRadius;
+  conf->setActiveTaskStartScheme( (GeneralConfig::ActiveTaskFigureScheme) m_selectedStartScheme );
+  setDistanceValue( m_startLineValue, m_startLine );
+  setDistanceValue( m_startRingValue, m_startRing );
+  setDistanceValue( m_startSectorInnerRadiusValue, m_startSectorInnerRadius );
+  setDistanceValue( m_startSectorOuterRadiusValue, m_startSectorOuterRadius );
 
-  if( loadedCylinderRadius != cylinderRadius->value() )
+  conf->setActiveTaskFinishScheme( (GeneralConfig::ActiveTaskFigureScheme) m_selectedFinishScheme );
+  setDistanceValue( m_finishLineValue, m_finishLine );
+  setDistanceValue( m_finishRingValue, m_finishRing );
+  setDistanceValue( m_finishSectorInnerRadiusValue, m_finishSectorInnerRadius );
+  setDistanceValue( m_finishSectorOuterRadiusValue, m_finishSectorOuterRadius );
+
+  conf->setActiveTaskObsScheme( (GeneralConfig::ActiveTaskFigureScheme) m_selectedObsScheme );
+  setDistanceValue( m_obsCircleRadiusValue, m_obsCircleRadius );
+  setDistanceValue( m_obsSectorInnerRadiusValue, m_obsSectorInnerRadius );
+  setDistanceValue( m_obsSectorOuterRadiusValue, m_obsSectorOuterRadius );
+
+  conf->setTaskStartLineLength( m_startLineValue );
+  conf->setTaskStartRingRadius( m_startRingValue  );
+  conf->setTaskStartSectorIRadius( m_startSectorInnerRadiusValue );
+  conf->setTaskStartSectorORadius( m_startSectorOuterRadiusValue );
+
+  conf->setTaskFinishLineLength( m_finishLineValue );
+  conf->setTaskFinishRingRadius( m_finishRingValue );
+  conf->setTaskFinishSectorIRadius( m_finishSectorInnerRadiusValue );
+  conf->setTaskFinishSectorORadius( m_finishSectorOuterRadiusValue );
+
+  conf->setTaskObsCircleRadius( m_obsCircleRadiusValue );
+  conf->setTaskObsSectorInnerRadius( m_obsSectorInnerRadiusValue );
+  conf->setTaskObsSectorOuterRadius( m_obsSectorOuterRadiusValue );
+
+  conf->setTaskStartSectorAngel( m_startSectorAngle->value() );
+  conf->setTaskFinishSectorAngel( m_finishSectorAngle->value() );
+  conf->setTaskObsSectorAngle( m_obsSectorAngle->value() );
+
+  conf->save();
+}
+
+void SettingsPageTask::setDistanceValue( Distance& dest, DoubleNumberEditor* src)
+{
+  if( m_distUnit == Distance::kilometers ) // user gets kilometers
     {
-      if( distUnit == Distance::kilometers ) // user gets kilometers
-        {
-          cRadius.setKilometers( cylinderRadius->value() );
-        }
-      else if( distUnit == Distance::miles ) // user gets miles
-        {
-          cRadius.setMiles( cylinderRadius->value() );
-        }
-      else // ( distUnit == Distance::nautmiles )
-        {
-          cRadius.setNautMiles( cylinderRadius->value() );
-        }
-
-      conf->setTaskCylinderRadius( cRadius );
+      dest.setKilometers( src->value() );
     }
-
-  if( loadedInnerSectorRadius != innerSectorRadius->value() )
+  else if( m_distUnit == Distance::miles ) // user gets miles
     {
-      if( distUnit == Distance::kilometers ) // user gets kilometers
-        {
-          iRadius.setKilometers( innerSectorRadius->value() );
-        }
-      else if( distUnit == Distance::miles ) // user gets miles
-        {
-          iRadius.setMiles( innerSectorRadius->value() );
-        }
-      else // ( distUnit == Distance::nautmiles )
-        {
-          iRadius.setNautMiles( innerSectorRadius->value() );
-        }
-
-      conf->setTaskSectorInnerRadius( iRadius );
+      dest.setMiles( src->value() );
     }
-
-  if( loadedOuterSectorRadius != outerSectorRadius->value() )
+  else // ( distUnit == Distance::nautmiles )
     {
-      if( distUnit == Distance::kilometers ) // user gets kilometers
-        {
-          oRadius.setKilometers( outerSectorRadius->value() );
-        }
-      else if( distUnit == Distance::miles ) // user gets miles
-        {
-          oRadius.setMiles( outerSectorRadius->value() );
-        }
-      else // ( distUnit == Distance::nautmiles )
-        {
-          oRadius.setNautMiles( outerSectorRadius->value() );
-        }
-
-      conf->setTaskSectorOuterRadius( oRadius );
+      dest.setNautMiles( src->value() );
     }
-
-  conf->setTaskSectorAngle( sectorAngle->value() );
-
-  conf->setTaskDrawShape( drawShape->isChecked() );
-  conf->setTaskFillShape( fillShape->isChecked() );
-
-  // If a flight task is set, we must update the sector angles in it
-   FlightTask *task = _globalMapContents->getCurrentTask();
-
-   if( task != 0 )
-     {
-       task->updateTask();
-     }
-
-   // save task target line items
-   if( selectedTlColor != tlColor )
-     {
-       conf->setTargetLineColor( tlColor );
-     }
-
-   if( seletedTlWidth != tlWidth->value() )
-     {
-       conf->setTargetLineWidth( tlWidth->value() );
-     }
-
-   conf->setTargetLineDrawState( tlCheckBox->isChecked() );
-
-   // save task track line items
-   if( selectedTrColor != trColor )
-     {
-       conf->setTrackLineColor( trColor );
-     }
-
-   if( seletedTrWidth != trWidth->value() )
-     {
-       conf->setTrackLineWidth( trWidth->value() );
-     }
-
-   conf->setTrackLineDrawState( trCheckBox->isChecked() );
 }

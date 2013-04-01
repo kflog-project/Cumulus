@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2012 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2004-2013 by Axel Pauli (axel@kflog.org)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,7 +15,11 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "vario.h"
 #include "variomodedialog.h"
@@ -39,8 +43,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   // set font size to a reasonable and usable value
   QFont cf = font();
-  cf.setPixelSize( DialogMinFontSize );
   cf.setBold( true );
+  Layout::fitDialogFont( cf );
   setFont(cf);
 
   QGridLayout* gridLayout = new QGridLayout(this);

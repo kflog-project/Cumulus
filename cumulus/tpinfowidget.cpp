@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2012 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2007-2013 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,10 +18,17 @@
 #include <cmath>
 #include <ctime>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "tpinfowidget.h"
-#include "flickcharm.h"
 #include "flighttask.h"
 #include "generalconfig.h"
 #include "mapcalc.h"
@@ -36,51 +43,57 @@ extern MapContents*  _globalMapContents;
 extern Calculator*   calculator;
 
 TPInfoWidget::TPInfoWidget( QWidget *parent ) :
-  QWidget( parent )
+  QWidget( parent ),
+  m_timerCount(0),
+  m_parent(parent)
 {
   setObjectName("TPInfoWidget");
   setAttribute( Qt::WA_DeleteOnClose );
-  this->parent = parent;
-  resize( parent->size() );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
   QFont bfont = font();
   bfont.setBold(true);
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
-  text = new QTextEdit(this);
-  text->setReadOnly( true );
+  m_text = new QTextEdit(this);
+  m_text->setReadOnly( true );
   QPalette p = palette();
   p.setColor(QPalette::Window, Qt::white);
-  text->setPalette(p);
-  text->setAutoFillBackground(true);
+  m_text->setPalette(p);
+  m_text->setAutoFillBackground(true);
+
+  connect( m_text, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(text, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( m_text->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(text);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( m_text->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
-  topLayout->addWidget(text, 5 );
+  topLayout->addWidget(m_text, 5 );
 
   QHBoxLayout *buttonrow = new QHBoxLayout;
   topLayout->addLayout(buttonrow);
 
-  cmdClose = new QPushButton(tr("Close"), this);
-  cmdClose->setFont(bfont);
-  buttonrow->addWidget(cmdClose);
-  connect(cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
+  m_cmdClose = new QPushButton(tr("Close"), this);
+  m_cmdClose->setFont(bfont);
+  buttonrow->addWidget(m_cmdClose);
+  connect(m_cmdClose, SIGNAL(clicked()), this, SLOT(slot_Close()));
 
-  cmdKeep = new QPushButton(tr("Stop"), this);
-  cmdKeep->setFont(bfont);
-  buttonrow->addWidget(cmdKeep);
-  connect(cmdKeep, SIGNAL(clicked()), this, SLOT(slot_KeepOpen()));
+  m_cmdKeep = new QPushButton(tr("Stop"), this);
+  m_cmdKeep->setFont(bfont);
+  buttonrow->addWidget(m_cmdKeep);
+  connect(m_cmdKeep, SIGNAL(clicked()), this, SLOT(slot_KeepOpen()));
 
-  timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
+  m_timer = new QTimer(this);
+  connect(m_timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
   // activate keyboard shortcuts for closing of widget
   connect( new QShortcut( Qt::Key_Escape, this ), SIGNAL(activated()),
@@ -110,15 +123,15 @@ void TPInfoWidget::slot_Close()
     widget will be closed automatically. */
 void TPInfoWidget::slot_Timeout()
 {
-  if( --_timerCount == 0 )
+  if( --m_timerCount == 0 )
     {
-      timer->stop();
+      m_timer->stop();
       slot_Close();
     }
   else
     {
-      QString txt = tr("Close (%1)").arg(_timerCount);
-      cmdClose->setText(txt);
+      QString txt = tr("Close (%1)").arg(m_timerCount);
+      m_cmdClose->setText(txt);
     }
 }
 
@@ -130,20 +143,20 @@ void TPInfoWidget::showTP( bool automaticClose )
 {
   // @AP: load the time from user configuration
   GeneralConfig *conf = GeneralConfig::instance();
-  _timerCount = conf->getInfoDisplayTime();
+  m_timerCount = conf->getInfoDisplayTime();
 
-  if( _timerCount > 0 && automaticClose )
+  if( m_timerCount > 0 && automaticClose )
     {
-      timer->start(1000);
-      QString txt = tr("Close (%1)").arg(_timerCount);
-      cmdClose->setText(txt);
-      cmdKeep->show();
+      m_timer->start(1000);
+      QString txt = tr("Close (%1)").arg(m_timerCount);
+      m_cmdClose->setText(txt);
+      m_cmdKeep->show();
     }
   else
     {
       // Timer is set to zero, no automatic window close
-      cmdClose->setText(tr("Close"));
-      cmdKeep->hide();
+      m_cmdClose->setText(tr("Close"));
+      m_cmdKeep->hide();
     }
 
   QWidget::show();
@@ -454,7 +467,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   }
 
   display += "</table></big><html>";
-  text->setHtml( display );
+  m_text->setHtml( display );
 }
 
 /**
@@ -600,7 +613,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
     {
       // no flight task point resp. flight task active
       display += "</table>";
-      text->setHtml( display );
+      m_text->setHtml( display );
       return;
     }
 
@@ -610,7 +623,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
     {
       // to less task points in list
       display += "</table>";
-      text->setHtml( display );
+      m_text->setHtml( display );
       return;
     }
 
@@ -623,7 +636,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       // Waypoint is identical in position to landing point of flight
       // task. So we do display nothing more.
       display += "</table>";
-      text->setHtml( display );
+      m_text->setHtml( display );
      return;
     }
 
@@ -716,14 +729,22 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
        }
 
     display += "</table></big></html>";
-    text->setHtml( display );
+    m_text->setHtml( display );
 }
 
 /** This slot is called by the Keep Open button to keep the dialog open. :-) */
 void TPInfoWidget::slot_KeepOpen()
 {
-  timer->stop();
-  cmdClose->setText(tr("Close"));
-  cmdKeep->hide();
-  text->setFocus();
+  m_timer->stop();
+  m_cmdClose->setText(tr("Close"));
+  m_cmdKeep->hide();
+  m_text->setFocus();
+}
+
+void TPInfoWidget::slotCursorChanged()
+{
+  // Clear cursor's m_text selection.
+  QTextCursor textCursor = m_text->textCursor();
+  textCursor.clearSelection();
+  m_text->setTextCursor( textCursor );
 }

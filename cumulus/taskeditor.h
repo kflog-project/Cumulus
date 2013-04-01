@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2011 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,25 +26,29 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2011
+ * \date 2002-2013
+ *
+ * \version $Id$
  */
 
 #ifndef TaskEditor_H
 #define TaskEditor_H
 
-#include <QList>
-#include <QString>
-#include <QTreeWidget>
-#include <QLineEdit>
-#include <QWidget>
-#include <QStringList>
 #include <QComboBox>
+#include <QLineEdit>
+#include <QList>
+#include <QPixmap>
 #include <QPushButton>
+#include <QString>
+#include <QStringList>
+#include <QTreeWidget>
+#include <QWidget>
 
 #include "flighttask.h"
-#include "waypoint.h"
 #include "listviewfilter.h"
 #include "listwidgetparent.h"
+#include "waypoint.h"
+#include "taskpoint.h"
 
 class TaskEditor : public QWidget
 {
@@ -62,17 +66,13 @@ public:
   /** Destructor */
   virtual ~TaskEditor();
 
-private:
   /**
-   * aligns the task list columns to their contents
+   * Sets the default task point figure schemas. That must be done after an
+   * insert, move and remove action on the task point list.
+   *
+   * @param tpList A list containing the task points.
    */
-  void resizeTaskListColumns();
-
-  /**
-   * Enables/disables the command buttons of the editor in dependency
-   * of contained task points.
-   */
-  void enableCommandButtons();
+  static void setTaskPointFigureSchemas( QList<TaskPoint *>& tpList );
 
 signals:
 
@@ -99,6 +99,15 @@ signals:
   /** Creates the list in reverse order. */
   void slotInvertWaypoints();
 
+  /** Edit waypoint (define sector etc) */
+  void slotEditTaskPoint ();
+
+  /** Called, if a task point has been edited. */
+  void slotTaskPointEdited( TaskPoint* editedTaskPoint );
+
+  /** Called to reset all task points to their task figure default schema. */
+  void slotSetTaskPointsDefaultSchema();
+
   /** Toggle between WP or AF list on user request */
   void slotToggleList( int );
 
@@ -106,7 +115,7 @@ signals:
    * Called to check the item selection. If item Total is called, the selection
    * is reset to the previous row.
    */
-  void slotItemClicked( QTreeWidgetItem* item, int column );
+  void slotCurrentItemChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous);
 
   /** Handles button press ok. */
   void slotAccept();
@@ -116,23 +125,35 @@ signals:
 
  private:
 
-  /** describes the current edit state of object */
-  enum EditState
-  {
-    create, edit
-  };
+   /** describes the current edit state of the object */
+   enum EditState
+   {
+     create, edit
+   };
 
-  /** */
-  void __showWPList();
+   /**
+    * aligns the task list columns to their contents
+    */
+   void resizeTaskListColumns();
 
-  /** */
-  void __showAFList();
+   /**
+    * Enables/disables the command buttons of the editor in dependency
+    * of contained task points.
+    */
+   void enableCommandButtons();
 
-  /** */
-  void __showTask();
+  /** shows the updated task */
+  void showTask();
 
   /** creates a deep copy of the waypoint list */
   QList<Waypoint*> *copyWpList();
+
+  /**
+   * Swap the task point schema data between the two task points.
+   */
+  void swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 );
+
+  //----------------- data items -----------------------------------------------
 
   /** list containing defined tasks */
   QTreeWidget* taskList;
@@ -159,7 +180,7 @@ signals:
   QList<TaskPoint *> tpList;
 
   /** Flight task to be edited */
-  FlightTask* planTask;
+  FlightTask* task2Edit;
 
   /** Flag for indication of edit state */
   enum EditState editState;
@@ -179,6 +200,8 @@ signals:
   QPushButton* invertButton;
   QPushButton* addButton;
   QPushButton* delButton;
+  QPushButton* editButton;
+  QPushButton* defaultButton;
 };
 
 #endif // TaskEditor_H

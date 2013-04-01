@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  * actions. Can be used in two modes, as display only, buttons for
  * actions are not visible or with command buttons.
  *
- * \date 2004-2012
+ * \date 2004-2013
  *
  * \version $Id$
  */
@@ -202,9 +202,13 @@ private:
          * @param tpList Parent of QTreeWidget.
          * @param point Data of task point to be set.
          * @param wtCalcFlag Flag to indicate if wind triangle calculation
+         * @param showTpIcon Flag to indicate that the turnpoint icon should be set
          *        was successful for all task legs or not.
          */
-        _TaskPointItem( QTreeWidget* tpList, TaskPoint* point, bool wtCalcFlag );
+        _TaskPointItem( QTreeWidget* tpList,
+                        TaskPoint* point,
+                        bool wtCalcFlag,
+                        bool showTpIcon );
 
         /** Returns the task point of this item. */
         TaskPoint *getTaskPoint() const

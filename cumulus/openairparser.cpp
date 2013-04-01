@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2012 by Axel Pauli
+ **                   2009-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -43,7 +43,7 @@
 #define FILE_TYPE_AIRSPACE_C 0x61
 
 // version used for files created from OpenAir data
-#define FILE_VERSION_AIRSPACE_C 202
+#define FILE_VERSION_AIRSPACE_C 203
 
 extern MapMatrix*    _globalMapMatrix;
 
@@ -374,6 +374,7 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 
           compFile.setFileName( cfn );
           out.setDevice( &compFile );
+          out.setVersion( QDataStream::Qt_4_7 );
 
           if ( !compFile.open(QIODevice::WriteOnly) )
             {
@@ -605,7 +606,7 @@ void OpenAirParser::parseLine(QString& line)
 
   // unknown record type
   qDebug( "OAP::parseLine: unknown type at line (%d): %s", _lineNumber,
-          line.toAscii().data());
+          line.toLatin1().data());
 }
 
 
@@ -1453,6 +1454,7 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
   qDebug() << "OAP: Reading" << path;
 
   QDataStream in(&inFile);
+  in.setVersion( QDataStream::Qt_4_7 );
 
   // This was the order used by ealier cumulus
   // implementations. Because OpenAir does not support these all a
@@ -1592,6 +1594,7 @@ bool OpenAirParser::setHeaderData( QString &path )
     }
 
   QDataStream in(&inFile);
+  in.setVersion( QDataStream::Qt_4_7 );
 
   in >> h_magic;
 

@@ -17,21 +17,23 @@
 
 #include <cmath>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "preflightwaypointpage.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "generalconfig.h"
 #include "hwinfo.h"
+#include "layout.h"
 #include "mapcontents.h"
-#include "waypointcatalog.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
-
-#ifdef USE_NUM_PAD
 #include "numberEditor.h"
-#endif
+#include "preflightwaypointpage.h"
+#include "waypointcatalog.h"
 
 extern MapContents* _globalMapContents;
 
@@ -45,6 +47,43 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   m_waypointFileFormat(GeneralConfig::Binary)
 {
   setObjectName("PreFlightWaypointPage");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("PreFlight - Waypoints") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
 
   m_wpTypesBox = new QComboBox;
   m_wpTypesBox->addItem( tr("All"), WaypointCatalog::All );
@@ -53,7 +92,6 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   m_wpTypesBox->addItem( tr("Outlandings"), WaypointCatalog::Outlandings );
   m_wpTypesBox->addItem( tr("Other Points"), WaypointCatalog::OtherPoints );
 
-#ifdef USE_NUM_PAD
   m_wpRadiusBox = new NumberEditor;
   m_wpRadiusBox->setDecimalVisible( false );
   m_wpRadiusBox->setPmVisible( false );
@@ -67,32 +105,13 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
 
   int mw = QFontMetrics(font()).width("9999 Km") + 10;
   m_wpRadiusBox->setMinimumWidth( mw );
-#else
 
-  m_wpRadiusBox = new QComboBox;
-  m_wpRadiusBox->setEditable( true );
-  m_wpRadiusBox->setValidator( new QIntValidator(1, 5000, this) );
-  QStringList itemList;
-  itemList << "10" << "50" << "100" << "300" << "500" << "1000" << "2000";
-  m_wpRadiusBox->addItems( itemList );
-  m_wpRadiusBox->setCurrentIndex( 4 );
-#ifdef MAEMO5  
-  m_wpRadiusBox->setMinimumWidth( m_wpRadiusBox->sizeHint().width() );
-#endif
-#endif
-  
   QFormLayout* selectLayout1 = new QFormLayout;
   selectLayout1->addRow( tr("Type:"), m_wpTypesBox );
 
   QFormLayout* selectLayout2 = new QFormLayout;
 
-#ifdef USE_NUM_PAD
   selectLayout2->addRow( tr("Radius") + ":", m_wpRadiusBox );
-
-#else
-  selectLayout2->addRow( tr("Radius") + " (" + Distance::getUnitText() + "):",
-                         m_wpRadiusBox );
-#endif
 
   QHBoxLayout* selectLayout = new QHBoxLayout;
   selectLayout->setSpacing( 5 );
@@ -118,13 +137,8 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   connect( radiusButtonGroup, SIGNAL( buttonClicked(int)),
            this, SLOT(slotSelectCenterReference(int)));
 
-#ifdef USE_NUM_PAD
   m_centerLat = new LatEditNumPad;
   m_centerLon = new LongEditNumPad;
-#else
-  m_centerLat = new LatEdit;
-  m_centerLon = new LongEdit;
-#endif
 
   m_centerLatLabel = new QLabel(tr("Latitude:"));
   m_centerLonLabel = new QLabel(tr("Longitude:"));
@@ -140,13 +154,15 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   m_homeLabel   = new QLabel;
   m_airfieldBox = new QComboBox;
 
+  m_airfieldBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_airfieldBox->view()->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(m_airfieldBox->view(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( m_airfieldBox->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(m_airfieldBox->view());
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( m_airfieldBox->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QGridLayout* centerPointGrid = new QGridLayout;
@@ -163,7 +179,8 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   centerPointVBox->addWidget( m_airfieldBox );
 
   centerPointGrid->addLayout( centerPointVBox, 0, 2, 3, 1 );
-  centerPointGrid->setColumnStretch( 1, 5 );
+  centerPointGrid->setColumnMinimumWidth( 1, 20 );
+  centerPointGrid->setColumnStretch( 3, 5 );
 
   m_centerPointGroup = new QGroupBox( tr("Center Point") );
   m_centerPointGroup->setLayout( centerPointGrid );
@@ -220,12 +237,44 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   buttomLayout->addLayout( priorityLayout );
 
   //---------------------------------------------------------------------------
-  QVBoxLayout* widgetLayout = new QVBoxLayout( this );
+  // The parent of the layout is the scroll widget
+  QVBoxLayout* widgetLayout = new QVBoxLayout(sw);
+
   widgetLayout->setSpacing( 10 );
   widgetLayout->addWidget( wpiGroup );
   widgetLayout->addSpacing( 20 );
   widgetLayout->addLayout( buttomLayout );
   widgetLayout->addStretch( 10 );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+
+  contentLayout->addSpacing( 20 );
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 PreFlightWaypointPage::~PreFlightWaypointPage()
@@ -385,11 +434,7 @@ void PreFlightWaypointPage::slotImportFile()
       enum WaypointCatalog::WpType type = (enum WaypointCatalog::WpType)
           m_wpTypesBox->itemData(m_wpTypesBox->currentIndex()).toInt();
 
-#ifdef USE_NUM_PAD
       int radius = m_wpRadiusBox->value();
-#else
-      int radius = m_wpRadiusBox->currentText().toInt();
-#endif
 
       WGSPoint wgsPoint;
 
@@ -660,4 +705,18 @@ void PreFlightWaypointPage::loadAirfieldComboBox()
   airfieldList.sort();
   m_airfieldBox->addItems( airfieldList );
   m_airfieldBox->setCurrentIndex( 0 );
+}
+
+void PreFlightWaypointPage::slotAccept()
+{
+  save();
+  GeneralConfig::instance()->save();
+  emit closingWidget();
+  QWidget::close();
+}
+
+void PreFlightWaypointPage::slotReject()
+{
+  emit closingWidget();
+  QWidget::close();
 }

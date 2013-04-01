@@ -37,16 +37,11 @@
 #include <QString>
 
 #include "coordedit.h"
-#include "waypoint.h"
-
-#ifdef USE_NUM_PAD
-
 #include "coordeditnumpad.h"
+#include "waypoint.h"
 
 class DoubleNumberEditor;
 class NumberEditor;
-
-#endif
 
 class WpEditDialogPageGeneral : public QWidget
 {
@@ -102,15 +97,9 @@ private:
   QLineEdit *m_edtDescription;
   QLineEdit *m_edtCountry;
 
-#ifdef USE_NUM_PAD
   LatEditNumPad  *m_edtLat;
   LongEditNumPad *m_edtLong;
   NumberEditor   *m_edtElev;
-#else
-  LatEdit   *m_edtLat;
-  LongEdit  *m_edtLong;
-  QLineEdit *m_edtElev;
-#endif
 
   QComboBox *m_cmbType;
   QComboBox *m_cmbImportance;

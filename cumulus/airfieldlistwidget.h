@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This widget provides a list of airfields and a means to select one.
  *
- * \date 2002-2010
+ * \date 2002-2013
  *
  */
 
@@ -66,8 +66,8 @@ public:
 
 private:
 
-    Waypoint wp;
-    QVector<enum MapContents::MapContentsListID> itemList;
+    Waypoint m_wp;
+    QVector<enum MapContents::MapContentsListID> m_itemList;
 
 class _AirfieldItem : public QTreeWidgetItem
   {

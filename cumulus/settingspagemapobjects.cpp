@@ -16,30 +16,70 @@
 **
 ************************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
-
-#include "settingspagemapobjects.h"
-#include "generalconfig.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
-
-#ifdef USE_NUM_PAD
-#include "numberEditor.h"
 #else
-#include "varspinbox.h"
+#include <QtWidgets>
 #endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
+#include "generalconfig.h"
+#include "layout.h"
+#include "numberEditor.h"
+#include "settingspagemapobjects.h"
 
 SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   QWidget(parent),
   m_autoSip( true )
 {
   setObjectName("SettingsPageMapObjects");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Map Objects") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // The parent of the layout is the scroll widget
+  QGridLayout* topLayout = new QGridLayout(sw);
+  topLayout->setMargin(5);
 
   int row=0;
-  QGridLayout* topLayout = new QGridLayout(this);
-  topLayout->setMargin(5);
 
   //---------------------------------------------------------------------------
   // The three waypoint scale limits are put in a group box
@@ -52,7 +92,6 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   QLabel *label = new QLabel( tr("Low"), wpGroup );
   hBox->addWidget( label );
 
-#ifdef USE_NUM_PAD
   m_wpLowScaleLimit = new NumberEditor( wpGroup );
   m_wpLowScaleLimit->setDecimalVisible( false );
   m_wpLowScaleLimit->setPmVisible( false );
@@ -64,19 +103,6 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   hBox->addWidget( m_wpLowScaleLimit );
   connect( m_wpLowScaleLimit, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpLowScaleLimitChanged(int)) );
-#else
-  VarSpinBox* hspin;
-
-  m_wpLowScaleLimit = new QSpinBox( wpGroup );
-  m_wpLowScaleLimit->setPrefix( "< ");
-  m_wpLowScaleLimit->setRange(0, 1200);
-  m_wpLowScaleLimit->setSingleStep(5);
-
-  hspin = new VarSpinBox(m_wpLowScaleLimit);
-  hBox->addWidget( hspin );
-  connect( m_wpLowScaleLimit, SIGNAL(valueChanged(int)),
-           this, SLOT(slot_wpLowScaleLimitChanged(int)) );
-#endif
 
   hBox->addSpacing( 5 );
   hBox->addStretch( 5 );
@@ -84,7 +110,6 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   label = new QLabel( tr("Normal"), wpGroup );
   hBox->addWidget( label );
 
-#ifdef USE_NUM_PAD
   m_wpNormalScaleLimit = new NumberEditor( wpGroup );
   m_wpNormalScaleLimit->setDecimalVisible( false );
   m_wpNormalScaleLimit->setPmVisible( false );
@@ -96,17 +121,6 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   hBox->addWidget( m_wpNormalScaleLimit );
   connect( m_wpNormalScaleLimit, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpNormalScaleLimitChanged(int)) );
-#else
-  m_wpNormalScaleLimit = new QSpinBox( wpGroup );
-  m_wpNormalScaleLimit->setPrefix( "< ");
-  m_wpNormalScaleLimit->setRange(0, 1200);
-  m_wpNormalScaleLimit->setSingleStep(5);
-
-  hspin = new VarSpinBox(m_wpNormalScaleLimit);
-  hBox->addWidget( hspin );
-  connect( m_wpNormalScaleLimit, SIGNAL(valueChanged(int)),
-           this, SLOT(slot_wpNormalScaleLimitChanged(int)) );
-#endif
 
   hBox->addSpacing( 5 );
   hBox->addStretch( 5 );
@@ -114,7 +128,6 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   label = new QLabel( tr("High"), wpGroup );
   hBox->addWidget( label );
 
-#ifdef USE_NUM_PAD
   m_wpHighScaleLimit = new NumberEditor( wpGroup );
   m_wpHighScaleLimit->setDecimalVisible( false );
   m_wpHighScaleLimit->setPmVisible( false );
@@ -126,31 +139,21 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   hBox->addWidget( m_wpHighScaleLimit );
   connect( m_wpHighScaleLimit, SIGNAL(valueChanged(int)),
            this, SLOT(slot_wpHighScaleLimitChanged(int)) );
-#else
-  m_wpHighScaleLimit = new QSpinBox( wpGroup );
-  m_wpHighScaleLimit->setPrefix( "< ");
-  m_wpHighScaleLimit->setRange(0, 1200);
-  m_wpHighScaleLimit->setSingleStep(5);
-
-  hspin = new VarSpinBox(m_wpHighScaleLimit);
-  hBox->addWidget( hspin );
-  connect( m_wpHighScaleLimit, SIGNAL(valueChanged(int)),
-           this, SLOT(slot_wpHighScaleLimitChanged(int)) );
-#endif
-
   //hBox->addStretch( 10 );
 
   //---------------------------------------------------------------------------
   // table with 8 rows and 2 columns
   loadOptions = new QTableWidget(8, 2, this);
 
+  loadOptions->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  loadOptions->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(loadOptions, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( loadOptions->viewport(), QScroller::QtScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(loadOptions);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( loadOptions->viewport(), QtScroller::QtScroller::LeftMouseButtonGesture);
 #endif
 
   loadOptions->setShowGrid( true );
@@ -171,10 +174,49 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   loadOptions->setHorizontalHeaderItem( 1, item );
 
   topLayout->addWidget( loadOptions, row++, 0 );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageMapObjects::~SettingsPageMapObjects()
 {}
+
+void SettingsPageMapObjects::slotAccept()
+{
+  save();
+  QWidget::close();
+}
+
+void SettingsPageMapObjects::slotReject()
+{
+  QWidget::close();
+}
 
 /**
  * Called, if the value in the low scale spin box has been changed.
@@ -240,8 +282,7 @@ void SettingsPageMapObjects::slot_wpHighScaleLimitChanged( int newValue )
 }
 
 
-/** Called to initiate loading of the configuration file */
-void SettingsPageMapObjects::slot_load()
+void SettingsPageMapObjects::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -272,9 +313,13 @@ void SettingsPageMapObjects::slot_load()
   m_wpNormalScaleLimit->setMaximum( m_wpHighScaleLimit->value() );
 }
 
-/** Called to initiate saving to the configuration file. */
-void SettingsPageMapObjects::slot_save()
+void SettingsPageMapObjects::save()
 {
+  if( ! checkChanges() )
+    {
+      return;
+    }
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setMapLoadIsoLines( liIsolines->checkState() == Qt::Checked ? true : false );
@@ -296,6 +341,8 @@ void SettingsPageMapObjects::slot_save()
   conf->setWaypointScaleBorder( Waypoint::Low, m_wpLowScaleLimit->value() );
   conf->setWaypointScaleBorder( Waypoint::Normal, m_wpNormalScaleLimit->value() );
   conf->setWaypointScaleBorder( Waypoint::High, m_wpHighScaleLimit->value() );
+
+  emit settingsChanged();
 }
 
 /** Fills the list with load options */
@@ -374,20 +421,13 @@ void SettingsPageMapObjects::fillLoadOptionList()
   loadOptions->setItem( row++, col, liDummy );
 }
 
-void SettingsPageMapObjects::showEvent(QShowEvent *)
+void SettingsPageMapObjects::showEvent( QShowEvent *event )
 {
   // align all columns to contents before showing
   loadOptions->resizeColumnsToContents();
   loadOptions->setFocus();
 
-  // Switch off automatic software input panel popup
-  m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( false );
-}
-
-void SettingsPageMapObjects::hideEvent( QHideEvent *)
-{
-  qApp->setAutoSipEnabled( m_autoSip );
+  QWidget::showEvent( event );
 }
 
 /**
@@ -405,14 +445,9 @@ void SettingsPageMapObjects::slot_toggleCheckBox( int row, int column )
   item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
 }
 
-/* Called to ask is confirmation on close is needed. */
-void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
+bool SettingsPageMapObjects::checkChanges()
 {
-    /* set warn to 'true' if the data has changed. Note that we can NOT
-    just set warn equal to _changed, because that way we might erase a
-    warning flag set by another page! */
-
-  bool changed=false;
+  bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed |= ( conf->getMapLoadIsoLines() ? Qt::Checked : Qt::Unchecked ) != liIsolines->checkState();
@@ -435,9 +470,5 @@ void SettingsPageMapObjects::slot_query_close(bool& warn, QStringList& warnings)
   changed |= ( conf->getWaypointScaleBorder( Waypoint::Normal ) != m_wpNormalScaleLimit->value() );
   changed |= ( conf->getWaypointScaleBorder( Waypoint::High )   != m_wpHighScaleLimit->value() );
 
-  if (changed)
-    {
-      warn=true;
-      warnings.append(tr("The Map Objects"));
-    }
+  return changed;
 }

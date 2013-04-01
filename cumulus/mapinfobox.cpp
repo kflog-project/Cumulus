@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2012 by Axel Pauli
+                               2008-2013 by Axel Pauli
 
     email                : axel@kflog.org
     
@@ -14,25 +14,29 @@
 
 /***************************************************************************
  *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
+ *   This program is free software; you can redistribute it and/or modifsetFonty  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
-#include "mapinfobox.h"
-
-#include <QtGui>
 #include <cmath>
 
-#include "generalconfig.h"
+#ifndef QT_5
+#include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-CuLabel::CuLabel( QWidget * parent, Qt::WFlags flags ) :
+#include "generalconfig.h"
+#include "mapinfobox.h"
+
+CuLabel::CuLabel( QWidget * parent, Qt::WindowFlags flags ) :
   QLabel( parent, flags )
 {}
 
-CuLabel::CuLabel( const QString& text, QWidget* parent, Qt::WFlags flags ) :
+CuLabel::CuLabel( const QString& text, QWidget* parent, Qt::WindowFlags flags ) :
   QLabel( text, parent, flags )
 {}
 
@@ -45,13 +49,18 @@ void CuLabel::mousePressEvent ( QMouseEvent* event )
 
 //------------------------------------------------------------------------------
 
+// The maximum default height of the infobox in pixels
+#define MAXIMUM_INFO_BOX_HEIGHT 60
+
 MapInfoBox::MapInfoBox( QWidget *parent,
                         const QString& borderColor,
                         bool unitInPretext,
                         bool minusInPretext,
-                        int fontDotsize ) :
+                        int fontDotsize) :
   QFrame( parent ),
-  _textBGColor( "white" )
+  m_textBGColor( "white" ),
+  m_maxFontDotsize( fontDotsize ),
+  m_maxTextLabelFontHeight( -1 )
 {
   // Maximum pretext width in pixels. That value is a hard coded limit now!
   const int ptw = 35;
@@ -63,12 +72,12 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 
   if( f.pointSize() != -1 )
     {
-      _fontUnit = "pt";
+      m_fontUnit = "pt";
       f.setPointSize( start );
     }
   else
     {
-      _fontUnit = "px";
+      m_fontUnit = "px";
       f.setPixelSize( start );
     }
 
@@ -102,41 +111,37 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
 
-  _maxFontDotsize = fontDotsize;
+  m_preWidget = new QWidget( this );
 
-  _preWidget = new QWidget( this );
-  //_preWidget->setFixedWidth( ptw );
-
-  QVBoxLayout* preLayout = new QVBoxLayout( _preWidget );
+  QVBoxLayout* preLayout = new QVBoxLayout( m_preWidget );
   preLayout->setContentsMargins(3,0,3,0);
   preLayout->setSpacing(3);
 
-  _ptext = new QLabel( this );
-  _ptext->setFont(f);
-  _ptext->setMargin(0);
-  _ptext->setIndent(0);
-  _ptext->setTextFormat(Qt::PlainText);
-  _ptext->setScaledContents(true);
+  m_ptext = new QLabel( this );
+  m_ptext->setFont(f);
+  m_ptext->setMargin(0);
+  m_ptext->setIndent(0);
+  m_ptext->setTextFormat(Qt::PlainText);
+  m_ptext->setScaledContents(true);
 
-  QPalette p = _ptext->palette();
+  QPalette p = m_ptext->palette();
   p.setColor( QPalette::WindowText, Qt::black );
-  _ptext->setPalette(p);
-  _ptext->setFixedWidth( QFontMetrics(f).boundingRect("MM").width() );
+  m_ptext->setPalette(p);
+  m_ptext->setFixedWidth( QFontMetrics(f).boundingRect("MM").width() );
 
-  preLayout->addWidget(_ptext );
-  preLayout->addWidget(_ptext );
+  preLayout->addWidget(m_ptext );
 
   if( minusInPretext )
     {
-      _pminus = new QLabel( this );
-      _pminus->setFont(f);
-      _pminus->setMargin(0);
-      _pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
-      _pminus->setFixedWidth( 25 );
-      _pminus->setScaledContents(true);
+      m_pminus = new QLabel( this );
+      m_pminus->setFont(f);
+      m_pminus->setMargin(0);
+      m_pminus->setPixmap( GeneralConfig::instance()->loadPixmap( "minus.png" ) );
+      m_pminus->setFixedWidth( 25 );
+      m_pminus->setScaledContents(true);
       preLayout->addStretch( 1 );
-      preLayout->addWidget( _pminus );
-     _pminus->setVisible(false);
+      preLayout->addWidget( m_pminus );
+     m_pminus->setVisible(false);
     }
 
   preLayout->addStretch( 10 );
@@ -144,39 +149,38 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   if( unitInPretext )
     {
       // A unit shall be displayed in the pre-text box.
-      _punit = new QLabel( this );
-      _punit->setFont(f);
-      _punit->setMargin(0);
-      _punit->setIndent(0);
-      _punit->setTextFormat(Qt::PlainText);
-      _punit->setScaledContents(true);
+      m_punit = new QLabel( this );
+      m_punit->setFont(f);
+      m_punit->setMargin(0);
+      m_punit->setIndent(0);
+      m_punit->setTextFormat(Qt::PlainText);
+      m_punit->setScaledContents(true);
 
-      p = _punit->palette();
+      p = m_punit->palette();
       p.setColor( QPalette::WindowText, Qt::black );
 
-      _punit->setPalette(p);
+      m_punit->setPalette(p);
 
-      //_punit->setFixedWidth( fm.boundingRect("MM").width() );
-      preLayout->addWidget(_punit, 0, Qt::AlignRight);
+      //m_punit->setFixedWidth( fm.boundingRect("MM").width() );
+      preLayout->addWidget(m_punit, 0, Qt::AlignRight);
     }
 
-  topLayout->addWidget( _preWidget );
+  topLayout->addWidget( m_preWidget );
 
-  _text = new QLabel( this );
+  m_text = new QLabel( this );
 
-  topLayout->addWidget(_text, 10);
+  topLayout->addWidget(m_text, 10);
 
-  _text->setStyleSheet( QString( "border-style: none;"
-                                 "border-width: 0px;"
-                                 "background-color: %1;"
-                                 "padding-left: 1px;"
-                                 "padding-right: 1px;"
-                                 "margin: 0px;"
-                                 "font-size: %2%3;"
-                                 "text-align: left;" )
-                                 .arg(_textBGColor)
-                                 .arg(fontDotsize)
-                                 .arg(_fontUnit) );
+  m_text->setStyleSheet( QString( "border-style: none;"
+                                  "border-width: 0px;"
+                                  "background-color: %1;"
+                                  "padding-left: 1px;"
+                                  "padding-right: 1px;"
+                                  "margin: 0px;"
+                                  "text-align: left;" )
+                                  .arg(m_textBGColor) );
+
+  m_text->setIndent( 5 );
 
   setValue("-");
   setPreText("");
@@ -188,9 +192,10 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixm
 {
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
-  _text = new QLabel(this);
-  _text->setPixmap(pixmap);
-  topLayout->addWidget( _text );
+  m_text = new QLabel(this);
+  m_text->setPixmap(pixmap);
+  m_text->setScaledContents(true);
+  topLayout->addWidget( m_text );
 }
 
 void MapInfoBox::basics( const QString& borderColor )
@@ -204,41 +209,41 @@ void MapInfoBox::basics( const QString& borderColor )
   setPalette(p);
   setFrameStyle( QFrame::Box | QFrame::Plain );
   setLineWidth(3);
-  setMaximumHeight(60);
+  setMaximumHeight( MAXIMUM_INFO_BOX_HEIGHT );
 
-  _preText = QString("");
-  _preUnit = QString("");
-  _value =  QString("");
-  _ptext = 0; // can be unused
-  _pminus = 0; // can be unused
-  _punit = 0; // can be unused
-  _preWidget = 0;  // can be unused
+  m_preText = QString("");
+  m_preUnit = QString("");
+  m_value =  QString("");
+  m_ptext = 0; // can be unused
+  m_pminus = 0; // can be unused
+  m_punit = 0; // can be unused
+  m_preWidget = 0;  // can be unused
 }
 
-/** Write property of QString _preText. */
+/** Write property of QString m_preText. */
 void MapInfoBox::setPreText( const QString& newVal )
 {
   // Are we text or pixmap? For pixmap, ptext is unused
-  if ( _ptext == 0 )
+  if ( m_ptext == 0 )
     {
       return;
     }
 
-  _preText = newVal;
-  _ptext->setText(_preText);
+  m_preText = newVal;
+  m_ptext->setText(m_preText);
 }
 
-/** Write property of QString _preUnit. */
+/** Write property of QString m_preUnit. */
 void MapInfoBox::setPreUnit( const QString& newVal )
 {
   // pre-unit can be unused
-  if ( _punit == 0 )
+  if ( m_punit == 0 )
     {
       return;
     }
 
-  _preUnit = newVal;
-  _punit->setText(_preUnit);
+  m_preUnit = newVal;
+  m_punit->setText(m_preUnit);
 }
 
 
@@ -246,152 +251,154 @@ void MapInfoBox::setPreUnit( const QString& newVal )
 void MapInfoBox::setPixmap( const QPixmap& newPixmap )
 {
   // Are we text or pixmap? For pixmap, ptext is unused
-  if ( _ptext != 0 )
+  if ( m_ptext != 0 )
     {
       return;
     }
 
-  _text->setPixmap(newPixmap);
+  m_text->setPixmap(newPixmap);
 }
 
-/** Write property of QString _value. */
+/** Write property of QString m_value. */
 void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 {
-  int fontDotsize   = _maxFontDotsize;
-  int lastValueSize = _value.size();
+  int lastValueSize = m_value.size();
 
-  _value = newVal;
+  m_value = newVal;
 
-  if( _pminus && showEvent == false )
+  if( m_pminus && showEvent == false )
     {
-      if( _value.startsWith( '-' ) && _value.size() > 1 )
+      if( m_value.startsWith( '-' ) && m_value.size() > 1 )
         {
-          _value = _value.remove( 0, 1 );
-          _pminus->setVisible(true);
+          m_value = m_value.remove( 0, 1 );
+          m_pminus->setVisible(true);
         }
       else
         {
-          _pminus->setVisible(false);
+          m_pminus->setVisible(false);
         }
     }
 
-  _text->setText( _value );
+  m_text->setText( m_value );
 
-  if( _value.isEmpty() )
+  if( m_value.isEmpty() || m_maxTextLabelFontHeight == -1 )
     {
-      // We ignore empty values in further processing
+      // We return on empty value or on an undefined maximum font size
       return;
     }
 
-  if( ! isVisible() )
-    {
-      // We make no style actions if the widget is hidden.
-      // return;
-    }
-
 #ifdef DEBUG
-  qDebug() << _preText << _value
-           << "MSH=" <<  minimumSizeHint().width() << "W=" << width()
+  qDebug() << "MapInfoBox::setValue:"
+           << m_preText << m_value
+           << "MSH=" <<  m_text->minimumSizeHint() << "Size=" << m_text->size()
+           << "lastValueSize" << lastValueSize
+           << "newValSize" << newVal.size()
            << "Visible" << isVisible();
 #endif
 
-  if( (minimumSizeHint().width() - 5) > width() || lastValueSize != _value.size() )
+  if( m_maxTextLabelFontHeight == -1 )
     {
-      // Do only setup a new style, if it is really necessary.
-      _text->setStyleSheet( QString( "border-style: none;"
-                                     "border-width: 0px;"
-                                     "background-color: %1;"
-                                     "padding-left: 1px;"
-                                     "padding-right: 1px;"
-                                     "margin: 0px;"
-                                     "font-size: %2%3;"
-                                     "text-align: left;" )
-                                     .arg(_textBGColor)
-                                     .arg(fontDotsize)
-                                     .arg(_fontUnit) );
+      // Determine the maximum font height for the text label.
+      // This call sets also the new calculated font size.
+      determineMaxFontHeight();
     }
 
-  //@JD: set font size dynamically depending on size hint after
-  //     displaying the new value.
-  int diff = minimumSizeHint().width() - 5 - width();
-
-  /** @AP: Check font size too, to avoid running under zero. Had this
-   * behavior during my tests. Can cause a very long loop time.
-   */
-  while( diff > 0 && fontDotsize >= 7 )
+  // Check, if the label font has to be adapted to a new width. The trick is
+  // to compare the minimum size hint width with the width of the box. The
+  // minimum size hint includes different dependencies which are not so easy to
+  // recognize.
+  if( m_text->minimumSizeHint().width() <= m_text->width() &&
+      lastValueSize == newVal.size() &&
+      showEvent == false )
     {
-      diff /= 5;
+      // The displayed value fits the box.
+      m_text->setText( m_value );
+      return;
+    }
 
-      if( diff < 1 )
+  // Assumption is, that the current font height is calculated and set before.
+  int start = 0;
+
+  if( m_text->font().pointSize() != -1 )
+    {
+      start = m_text->font().pointSize();
+    }
+  else
+    {
+      start = m_text->font().pixelSize();
+    }
+
+  QFont tf = m_text->font();
+
+  while( start > 6 )
+    {
+      // The text to be displayed is to big. So we do lower the font and check
+      // what the minimumSizeHint do say.
+      if( m_text->minimumSizeHint().width() <= m_text->width() )
         {
-          diff = 1;
+          // Size hint say I fit in the box
+          break;
         }
-      else if( diff > 5 )
+
+      if( tf.pointSize() != -1 )
         {
-          diff = 5;
+          tf.setPointSize(--start);
         }
+      else
+        {
+          tf.setPixelSize(--start);
+       }
 
-      fontDotsize -= diff;
-
-      _text->setStyleSheet( QString( "border-style: none;"
-                                     "border-width: 0px;"
-                                     "background-color: %1;"
-                                     "padding-left: 1px;"
-                                     "padding-right: 1px;"
-                                     "margin: 0px;"
-                                     "font-size: %2%3;"
-                                     "text-align: left;" )
-                                     .arg(_textBGColor)
-                                     .arg( fontDotsize )
-                                     .arg(_fontUnit) );
-
-      diff = minimumSizeHint().width() - 5 - width();
+      m_text->setFont(tf);
+    }
 
 #ifdef DEBUG
-      qDebug() << "Loop MSH=" <<  minimumSizeHint().width()
-               << "W=" << width()
-               << "Diff=" << diff
-               << "FoSize=" << fontDotsize;
+  qDebug() << "MapInfoBox::setValue() Return: newVal=" << newVal
+           << "BoxWidth=" << m_text->width()
+           << "MinSizeHint" << m_text->minimumSizeHint()
+           << "Start=" << start
+           << "tf=" << tf.toString()
+           << "Font=" << m_text->font().toString();
 #endif
 
-    }
 }
 
 void MapInfoBox::setTextLabelBGColor( const QString& newValue )
 {
-  _textBGColor = newValue;
+  m_textBGColor = newValue;
 
-  _text->setStyleSheet( QString( "border-style: none;"
+  m_text->setStyleSheet( QString( "border-style: none;"
                                  "border-width: 0px;"
                                  "background-color: %1;"
                                  "padding-left: 1px;"
                                  "padding-right: 1px;"
                                  "margin: 0px;"
-                                 "font-size: %2%3;"
                                  "text-align: left;" )
-                                 .arg(_textBGColor)
-                                 .arg( _maxFontDotsize )
-                                 .arg(_fontUnit) );
-  setValue( _value );
+                                 .arg(m_textBGColor) );
+  setValue( m_value );
 };
 
 void MapInfoBox::setPreWidgetsBGColor( const QColor& newValue )
 {
-  if( _preWidget )
+  if( m_preWidget )
     {
-      _preWidget->setAutoFillBackground( true );
-      _preWidget->setBackgroundRole( QPalette::Window );
-      _preWidget->setPalette( QPalette( newValue ) );
+      m_preWidget->setAutoFillBackground( true );
+      m_preWidget->setBackgroundRole( QPalette::Window );
+      m_preWidget->setPalette( QPalette( newValue ) );
     }
 }
 
 void MapInfoBox::showEvent(QShowEvent *event)
 {
-  if( _ptext != 0 )
+  // reset this variable to force a recalculation
+  m_maxTextLabelFontHeight = -1;
+
+  if( m_text->pixmap() == 0 )
     {
       // Update text box only, if it is a text box. Calling setValue shall ensure
       // that the font is adapted to the layout size.
-      setValue( _value, true );
+      determineMaxFontHeight();
+      setValue( m_value, true );
     }
 
   QFrame::showEvent( event );
@@ -399,7 +406,95 @@ void MapInfoBox::showEvent(QShowEvent *event)
 
 void MapInfoBox::mousePressEvent( QMouseEvent* event )
 {
-  Q_UNUSED( event )
-
   emit mousePress();
+  event->accept();
+}
+
+void MapInfoBox::resizeEvent( QResizeEvent* event )
+{
+  // Call base class
+  QFrame::resizeEvent( event );
+
+  // reset this variable to force a recalculation
+  m_maxTextLabelFontHeight = -1;
+
+  if( m_text->pixmap() == 0 )
+    {
+      // We are a text label.
+     determineMaxFontHeight();
+
+      if( isVisible() )
+        {
+          setValue( m_value, true );
+        }
+    }
+}
+
+void MapInfoBox::determineMaxFontHeight()
+{
+  if( m_text->pixmap() != 0)
+    {
+      // MapInfoBox is not a text display box.
+      return;
+    }
+
+  QFont fontRef = m_text->font();
+
+  if( fontRef.pointSize() != -1 )
+    {
+      fontRef.setPointSize( m_maxFontDotsize );
+    }
+  else
+    {
+      fontRef.setPixelSize( m_maxFontDotsize );
+    }
+
+  int value = m_maxFontDotsize;
+
+  // Adapt the font point size to the given pixel height.
+  while( value >= 7 )
+    {
+      QFontMetrics qfm(fontRef);
+
+      int diff = qfm.boundingRect("XM").height() - m_text->height();
+
+      if( diff > 0 )
+        {
+          if( diff > 100 )
+            {
+              value -= 10;
+            }
+          if( diff > 50 )
+            {
+              value -= 5;
+            }
+          else if( diff > 25 )
+            {
+              value -= 3;
+            }
+          else
+            {
+              value--;
+            }
+
+          // Determine, what kind of font is used
+          if( fontRef.pointSize() != -1 )
+            {
+              fontRef.setPointSize( value );
+            }
+          else
+            {
+              fontRef.setPixelSize( value );
+            }
+
+          continue;
+        }
+
+      break;
+    }
+
+  // Set the new font size for the text label.
+  m_text->setFont( fontRef );
+
+  m_maxTextLabelFontHeight = value;
 }

@@ -22,6 +22,11 @@
  */
 
 #include <QtGui>
+#include <QFormLayout>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QPushButton>
 
 #include "authdialog.h"
 

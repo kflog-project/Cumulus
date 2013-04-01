@@ -17,6 +17,12 @@
 ***********************************************************************/
 
 #include <QtGui>
+#include <QApplication>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QDialogButtonBox>
 
 #include "airspacewarningdistance.h"
 #include "altitude.h"

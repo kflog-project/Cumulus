@@ -79,8 +79,27 @@ bool jniAddDataInstalled();
 
 /**
  * Gets the user's default language from Android.
+ *
+ *  @return The language used by Android.
  */
 QString jniGetLanguage();
+
+/**
+ * Gets the display metrics elements used by Android as hash in key value
+ * notation. The key is a string, the value a floating number.
+ *
+ *  density=<float>
+ *  densityDpi=<float>
+ *  heightPixels=<int>
+ *  scaledDensity=<float>
+ *  widthPixels=<int>
+ *  xdpi=<float>
+ *  ydpi=<float>
+ *
+ * @return The display metrics used by Android
+ */
+
+QHash<QString, float> jniGetDisplayMetrics();
 
 /**
  * Tells the android activity to switch on/off the dimming of the screen.

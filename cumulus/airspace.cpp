@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -21,8 +21,9 @@
 
 #include "airspace.h"
 #include "airregion.h"
-#include "generalconfig.h"
 #include "calculator.h"
+#include "generalconfig.h"
+#include "mapconfig.h"
 
 Airspace::Airspace( QString name,
                        BaseMapElement::objectType oType,
@@ -154,9 +155,17 @@ void Airspace::drawRegion( QPainter* targetP,
 
   QPen drawP = glConfig->getDrawPen(typeID);
   drawP.setJoinStyle(Qt::RoundJoin);
-  // increase drawPen, it is to small under X11
-  //@JD: polygon drawing blew it up further for some reason, thus reduced increasing
-  drawP.setWidth(drawP.width() + 1);
+
+  int lw = GeneralConfig::instance()->getAirspaceLineWidth();
+
+  extern MapConfig* _globalMapConfig;
+
+  if( lw > 1 && _globalMapConfig->useSmallIcons() )
+    {
+      lw = (lw + 1) / 2;
+    }
+
+  drawP.setWidth(lw);
 
   targetP->setPen(drawP);
   targetP->setBrush(drawB);

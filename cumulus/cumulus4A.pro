@@ -15,11 +15,16 @@
 
 QT += core gui xml
 
-TARGET   = Cumulus
+# Qt5 needs the QtWidgets library
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = Cumulus
+
 TEMPLATE = app
 
 # it seems the next two lines are important for Necessitas
 CONFIG += mobility
+
 MOBILITY =
 
 CONFIG += qt \
@@ -52,17 +57,23 @@ CONFIG += welt2000thread
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
-# Activate this feature, if class FlickCharm shall be used for kinetic finger scrolling.
-CONFIG += flickcharm
+# Activate this, if Qt class QScroller is not available.
+CONFIG += qtscroller
 
-# Enable this feature, if the own number key pad shall be used for number input.
+# Must be always enabled now otherwise you will get compile errors.
 CONFIG += numberpad
+
+#version check for Qt 4.7 / Qt 5.x
+! contains(QT_VERSION, ^4\\.[78]\\..*|^5\\..*) {
+  message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
+  error("Use at least Qt 4.7. or higher!")
+}
 
 HEADERS = \
     aboutwidget.h \
+    airfield.h \
     airfieldlistview.h \
     airfieldlistwidget.h \
-    airfield.h \
     airregion.h \
     airspace.h \
     airspacewarningdistance.h \
@@ -72,8 +83,9 @@ HEADERS = \
     androidstyle.h \
     authdialog.h \
     basemapelement.h \
-    configwidget.h \
     calculator.h \
+    configwidget.h \
+    coordedit.h \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
@@ -81,14 +93,13 @@ HEADERS = \
     flighttask.h \
     fontdialog.h \
     generalconfig.h \
-    glider.h \
     glidereditor.h \
     gliderflightdialog.h \
+    glider.h \
     gliderlistwidget.h \
     gpsconandroid.h \
     gpsnmea.h \
     gpsstatusdialog.h \
-    coordedit.h \
     helpbrowser.h \
     hwinfo.h \
     igclogger.h \
@@ -117,11 +128,10 @@ HEADERS = \
     openairparser.h \
     polardialog.h \
     polar.h \
-    preflightwidget.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
-    preflighttasklist.h \
     preflightwaypointpage.h \
+    preflightwidget.h \
     projectionbase.h \
     projectioncylindric.h \
     projectionlambert.h \
@@ -134,13 +144,14 @@ HEADERS = \
     rowdelegate.h \
     runway.h \
     settingspageairfields.h \
-    settingspageairspace.h \
     settingspageairspacefilling.h \
+    settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageairspacewarnings.h \
     settingspageglider.h \
     settingspagegps4a.h \
     settingspageinformation.h \
+    settingspagelines.h \
     settingspagelooknfeel.h \
     settingspagemapobjects.h \
     settingspagemapsettings.h \
@@ -156,7 +167,10 @@ HEADERS = \
     splash.h \
     target.h \
     taskeditor.h \
+    taskfilemanager.h \
+    taskline.h \
     tasklistview.h \
+    taskpointeditor.h \
     taskpoint.h \
     time_cu.h \
     tpinfowidget.h \
@@ -166,6 +180,7 @@ HEADERS = \
     vector.h \
     waitscreen.h \
     waypointcatalog.h \
+    waypoint.h \
     waypointlistview.h \
     waypointlistwidget.h \
     welt2000.h \
@@ -177,14 +192,13 @@ HEADERS = \
     wpeditdialog.h \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
-    waypoint.h \
     wpinfowidget.h
 
 SOURCES = \
     aboutwidget.cpp \
+    airfield.cpp \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
-    airfield.cpp \
     airregion.cpp \
     airspace.cpp \
     altimetermodedialog.cpp \
@@ -193,8 +207,9 @@ SOURCES = \
     authdialog.cpp \
     basemapelement.cpp \
     builddate.cpp \
-    configwidget.cpp \
     calculator.cpp \
+    configwidget.cpp \
+    coordedit.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
@@ -208,7 +223,6 @@ SOURCES = \
     gpsconandroid.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
-    coordedit.cpp \
     helpbrowser.cpp \
     hwinfo.cpp \
     igclogger.cpp \
@@ -234,11 +248,10 @@ SOURCES = \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
-    preflightwidget.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
-    preflighttasklist.cpp \
     preflightwaypointpage.cpp \
+    preflightwidget.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
@@ -256,6 +269,7 @@ SOURCES = \
     settingspageglider.cpp \
     settingspagegps4a.cpp \
     settingspageinformation.cpp \
+    settingspagelines.cpp \
     settingspagelooknfeel.cpp \
     settingspagemapobjects.cpp \
     settingspagemapsettings.cpp \
@@ -269,10 +283,12 @@ SOURCES = \
     sound.cpp \
     speed.cpp \
     splash.cpp \
-    target.h \
     taskeditor.cpp \
+    taskfilemanager.cpp \
+    taskline.cpp \
     tasklistview.cpp \
     taskpoint.cpp \
+    taskpointeditor.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
     vario.cpp \
@@ -281,6 +297,7 @@ SOURCES = \
     vector.cpp \
     waitscreen.cpp \
     waypointcatalog.cpp \
+    waypoint.cpp \
     waypointlistview.cpp \
     waypointlistwidget.cpp \
     welt2000.cpp \
@@ -289,13 +306,14 @@ SOURCES = \
     windanalyser.cpp \
     windmeasurementlist.cpp \
     windstore.cpp \
-    waypoint.cpp \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp
 
 flarm {
+    DEFINES += FLARM
+
     HEADERS += flarm.h \
                flarmaliaslist.h \
                flarmbase.h \
@@ -345,20 +363,10 @@ welt2000thread {
     DEFINES += WELT2000_THREAD
 }
 
-flickcharm {
-    DEFINES += FLICK_CHARM
-    
-    HEADERS += flickcharm.h
-    
-    SOURCES += flickcharm.cpp
-}
-
 numberpad {
-    DEFINES += USE_NUM_PAD
-
     HEADERS += coordeditnumpad.h \
-    					 doubleNumberEditor.h \
-    					 glidereditornumpad.h \
+               doubleNumberEditor.h \
+               glidereditornumpad.h \
                numberEditor.h \
                numberInputPad.h \
                preflighttaskpage.h \
@@ -366,13 +374,35 @@ numberpad {
                settingspageairspacewarningsnumpad.h
     
     SOURCES += coordeditnumpad.cpp \
-    					 doubleNumberEditor.cpp \
-    					 glidereditornumpad.cpp \
+               doubleNumberEditor.cpp \
+               glidereditornumpad.cpp \
                numberEditor.cpp \
                numberInputPad.cpp \
                preflighttaskpage.cpp \
                settingspageairspacefillingnumpad.cpp \
                settingspageairspacewarningsnumpad.cpp
+}
+
+qtscroller {
+
+    DEFINES += QTSCROLLER_NO_WEBKIT QTSCROLLER
+
+    INCLUDEPATH += QtScroller QtScroller/include QtScroller/src
+
+    HEADERS += QtScroller/src/qtflickgesture_p.h \
+               QtScroller/src/qtscroller.h \
+               QtScroller/src/qtscroller_p.h \
+               QtScroller/src/qtscrollerfilter_p.h \
+               QtScroller/src/qtscrollerproperties.h \
+               QtScroller/src/qtscrollerproperties_p.h \
+               QtScroller/src/qtscrollevent.h \
+               QtScroller/src/qtscrollevent_p.h
+
+    SOURCES += QtScroller/src/qtflickgesture.cpp \
+               QtScroller/src/qtscroller.cpp \
+               QtScroller/src/qtscrollerfilter.cpp \
+               QtScroller/src/qtscrollerproperties.cpp \
+               QtScroller/src/qtscrollevent.cpp
 }
 
 # Files managed and needed by Necessitas

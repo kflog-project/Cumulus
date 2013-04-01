@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c): 2008-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,14 +29,14 @@
  *
  * \author Axel Pauli
  *
- * \brief This class provides a widget usable as help browser.
+ * \brief This class provides a widget usable as help m_browser.
  *
- * Creates a help browser widget as single window and loads
+ * Creates a help m_browser widget as single window and loads
  * the Cumulus help file into it according to the selected
  * language. The user can navigate through the text, zoom in and out,
  * maximize/normalize the window display size.
  *
- * \date 2008-2012
+ * \date 2008-2013
  *
  * \version $Id$
  */
@@ -52,6 +52,7 @@ private:
  public:
 
   HelpBrowser( QWidget *parent=0 );
+
   virtual ~HelpBrowser();
   
   /** catch show events */
@@ -71,12 +72,15 @@ private:
   /** User request, to zoom out the document. */
   void slotZoomOut();
 
+  /** Called, if the cursor position is changed to clear the text selection. */
+  void slotCursorChanged();
+
  private:
 
   bool firstCall;
-  QTextBrowser* browser;
-  QPushButton*  zoomIn;
-  QPushButton*  zoomOut;
+  QTextBrowser* m_browser;
+  QPushButton*  m_zoomIn;
+  QPushButton*  m_zoomOut;
 };
 
 #endif

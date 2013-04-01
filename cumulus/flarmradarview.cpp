@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,7 +15,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "flarm.h"
 #include "flarmaliaslist.h"
@@ -114,13 +118,13 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 
   vbox->setSpacing(0);
   vbox->addWidget( zoomButton );
-  vbox->addSpacing(10);
+  vbox->addSpacing(20);
   vbox->addWidget( listButton );
-  vbox->addSpacing(10);
+  vbox->addSpacing(20);
   vbox->addWidget( updateButton );
-  vbox->addSpacing(10);
+  vbox->addSpacing(20);
   vbox->addWidget( aliasButton );
-  vbox->addSpacing(10);
+  vbox->addSpacing(20);
   vbox->addWidget( addButton );
   vbox->addStretch(2);
   vbox->addWidget( closeButton );

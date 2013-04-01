@@ -16,60 +16,73 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "layout.h"
 #include "generalconfig.h"
+#include "glidereditornumpad.h"
 #include "settingspageglider.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
-
-#ifdef USE_NUM_PAD
-#include  "glidereditornumpad.h"
-#else
-#include "glidereditor.h"
-#endif
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
 {
   setObjectName("SettingsPageGlider");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Gliders") );
 
-  resize(parent->size());
-  QBoxLayout *topLayout = new QVBoxLayout(this);
-  topLayout->setSpacing(5);
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  QBoxLayout *topLayout = new QVBoxLayout;
+  contentLayout->addLayout(topLayout);
+
+  topLayout->setSpacing(10);
   QBoxLayout *editrow=new QHBoxLayout;
   topLayout->addLayout(editrow);
   editrow->setSpacing(0);
   editrow->addStretch(10);
 
+  const int iconSize = Layout::iconSize( font() );
+
   QPushButton * cmdNew = new QPushButton(this);
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
-  cmdNew->setIconSize( QSize(IconSize, IconSize) );
+  cmdNew->setIconSize( QSize(iconSize, iconSize) );
   editrow->addWidget(cmdNew,1);
 
-  editrow->addSpacing(10);
+  editrow->addSpacing(20);
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  cmdEdit->setIconSize( QSize(IconSize, IconSize) );
+  cmdEdit->setIconSize( QSize(iconSize, iconSize) );
   editrow->addWidget(cmdEdit,1);
 
-  editrow->addSpacing(10);
+  editrow->addSpacing(20);
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "delete.png" )) );
-  cmdDel->setIconSize( QSize(IconSize, IconSize) );
+  cmdDel->setIconSize( QSize(iconSize, iconSize) );
   editrow->addWidget(cmdDel,1);
 
   m_list = new GliderListWidget(this);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(m_list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(m_list);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( m_list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   topLayout->addWidget(m_list, 10);
@@ -77,6 +90,34 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   connect(cmdNew,  SIGNAL(clicked()), this, SLOT(slot_new()));
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
   connect(cmdDel,  SIGNAL(clicked()), this, SLOT(slot_delete()));
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageGlider::~SettingsPageGlider()
@@ -89,14 +130,22 @@ void SettingsPageGlider::showEvent(QShowEvent *)
   m_list->setFocus();
 }
 
+void SettingsPageGlider::slotAccept()
+{
+  save();
+  emit settingsChanged();
+  QWidget::close();
+}
+
+void SettingsPageGlider::slotReject()
+{
+  QWidget::close();
+}
+
 /** Called when a new glider needs to be made. */
 void SettingsPageGlider::slot_new()
 {
-#ifdef USE_NUM_PAD
   GliderEditorNumPad *editor = new GliderEditorNumPad(this, 0 );
-#else
-  GliderEditor *editor = new GliderEditor(this, 0 );
-#endif
 
   connect(editor, SIGNAL(newGlider(Glider*)), m_list, SLOT(slot_Added(Glider *)));
   editor->setVisible( true );
@@ -114,11 +163,7 @@ void SettingsPageGlider::slot_edit()
       return;
     }
 
-#ifdef USE_NUM_PAD
   GliderEditorNumPad *editor = new GliderEditorNumPad(this, selectedGlider );
-#else
-  GliderEditor *editor = new GliderEditor(this, selectedGlider );
-#endif
 
   connect(editor, SIGNAL(editedGlider(Glider *)), m_list, SLOT(slot_Edited(Glider *)));
   editor->setVisible( true );
@@ -158,24 +203,17 @@ void SettingsPageGlider::slot_delete()
 }
 
 /** Called to fill the tree m_list */
-void SettingsPageGlider::slot_load()
+void SettingsPageGlider::load()
 {
   m_list->fillList();
 }
 
-void SettingsPageGlider::slot_save()
+void SettingsPageGlider::save()
 {
   m_list->save();
-}
 
-/* Called to ask is confirmation on the close is needed. */
-void SettingsPageGlider::slot_query_close(bool& warn, QStringList& warnings)
-{
-  /* set warn to 'true' if the data has changed. Note that we can NOT just set warn equal to
-    _changed, because that way we might erase a warning flag set by another page! */
   if( m_list->hasChanged() )
     {
-      warn = true;
-      warnings.append( tr( "The Glider list" ) );
+      emit settingsChanged();
     }
 }

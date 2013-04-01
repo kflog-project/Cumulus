@@ -17,7 +17,11 @@
 
 #include <climits>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "mainwindow.h"
 #include "numberInputPad.h"
@@ -45,7 +49,8 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_intMin(false, INT_MIN),
   m_doubleMax(false, double(INT_MAX)),
   m_doubleMin(false, double(INT_MIN)),
-  m_specialValueText("")
+  m_specialValueText(""),
+  m_fixHeight( true )
 {
   setObjectName("NumberEditor");
   setBackgroundRole( QPalette::Light );
@@ -71,9 +76,12 @@ NumberEditor::~NumberEditor()
 
 void NumberEditor::showEvent( QShowEvent* event )
 {
-  QSize size = minimumSizeHint();
-  setMinimumHeight( size.height() );
-  setMaximumHeight( size.height() );
+  if( m_fixHeight == true )
+    {
+      QSize size = minimumSizeHint();
+      setMinimumHeight( size.height() );
+      setMaximumHeight( size.height() );
+    }
 
   QLabel::showEvent(event);
 }

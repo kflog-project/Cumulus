@@ -1,15 +1,15 @@
 /***************************************************************************
-                          mapview.cpp  -  This file is part of Cumulus.
-                             -------------------
-    begin                : Sun Jul 21 2002
+  mapview.cpp
 
-    copyright            : (C) 2002      by Andre Somers
-                               2008      by Josua Dietze
-                               2008-2012 by Axel Pauli
+  This file is part of Cumulus.
 
-    email                : axel@kflog.org
+  begin                : Sun Jul 21 2002
 
-    $Id$
+  copyright            : (C) 2002      by Andre Somers
+                             2008      by Josua Dietze
+                             2008-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+
+  $Id$
 
  ***************************************************************************/
 
@@ -22,7 +22,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "altimetermodedialog.h"
 #include "filetools.h"
@@ -43,7 +47,6 @@
 #include "variomodedialog.h"
 #include "waypointcatalog.h"
 #include "waypoint.h"
-#include "wgspoint.h"
 
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
@@ -82,29 +85,51 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // three 'grouping' widgets with slightly differing
   // background color and fixed width (to avoid frequent resizing)
 
-  //widget to group waypoint functions
-  QWidget *wayBar = new QWidget( this );
-  wayBar->setFixedWidth(216);
-  wayBar->setContentsMargins(-9,-9,-9,-6);
+  // This fixed size is based on a screen resolution of 800x480. Android devices
+  // like the Galaxy III have a screen resolution of 1280x720. To handle that
+  // in a better way, a second fixed size limit is introduced.
+  int leftFixedWidth = 220;
 
+  if( parent->size().width() > 1000 )
+    {
+      // For higher resolution screens
+      leftFixedWidth = 280;
+    }
+
+  // If we have screens with a larger resolution, the heught of the info boxes
+  // are increased. The default height is 60 pixels. For higher resolution we
+  // should use 70 pixels.
+  int textLabelBoxHeight = 60;
+
+  if( parent->size().height() > 600 )
+    {
+      // For higher resolution screens
+      textLabelBoxHeight = 70;
+    }
+
+  // widget to group waypoint functions
+  QWidget *wayBar = new QWidget( this );
+  wayBar->setFixedWidth(leftFixedWidth);
+  wayBar->setContentsMargins(-9,-9,-9,-6);
   wayBar->setAutoFillBackground(true);
   wayBar->setBackgroundRole(QPalette::Window);
   wayBar->setPalette( QPalette(QColor(Qt::lightGray)) );
 
   // vertical layout for waypoint widgets
-  QBoxLayout *wayLayout = new QVBoxLayout( wayBar );
+  QVBoxLayout *wayLayout = new QVBoxLayout( wayBar );
   wayLayout->setSpacing(2);
 
   //add Waypoint widget (whole line)
   _waypoint = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _waypoint->setPreText("To");
   _waypoint->setValue("-");
+  _waypoint->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   wayLayout->addWidget( _waypoint, 1 );
   connect(_waypoint, SIGNAL(mousePress()),
           MainWindow::mainWindow(), SLOT(slotSwitchToWPListViewExt()));
 
   //layout for Glide Path and Relative Bearing
-  QBoxLayout *GRLayout = new QHBoxLayout;
+  QHBoxLayout *GRLayout = new QHBoxLayout;
   wayLayout->addLayout(GRLayout);
   GRLayout->setSpacing(2);
 
@@ -114,7 +139,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _glidepath->setValue("-");
   _glidepath->setPreText("Arr");
   _glidepath->setPreUnit( Altitude::getUnitText() );
-  _glidepath->setFixedHeight(60);
+  _glidepath->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   GRLayout->addWidget( _glidepath );
 
   connect(_glidepath, SIGNAL(mousePress()),
@@ -122,11 +147,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // add Relative Bearing widget
   QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
-  _rel_bearing = new MapInfoBox( this, conf->getMapFrameColor().name(), arrow);
-  _rel_bearing->setFixedSize(60,60);
+  _rel_bearing = new MapInfoBox( this, conf->getMapFrameColor().name(), arrow );
+  _rel_bearing->setFixedSize(textLabelBoxHeight, textLabelBoxHeight);
   _rel_bearing->setToolTip( tr("Click here to save current position as waypoint") );
   GRLayout->addWidget(_rel_bearing);
-//  _rel_bearing->setPixmap( arrow );
 
   connect(_rel_bearing, SIGNAL(mousePress()),
           MainWindow::mainWindow(), SLOT(slotRememberWaypoint()) );
@@ -141,6 +165,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _distance->setPreText("Dis");
   _distance->setValue("-");
   _distance->setPreUnit( Distance::getUnitText() );
+  _distance->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _distance );
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -149,6 +174,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _eta->setVisible(false);
   _eta->setPreText( "Eta" );
   _eta->setValue("-");
+  _eta->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _eta );
   connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -162,14 +188,15 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _bearingBGColor = wayBar->palette().color(QPalette::Window);
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
+  _bearing->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _bearing);
   connect(_bearing, SIGNAL(mousePress()), this, SLOT(slot_toggleBearing()));
 
   sideLayout->addWidget( wayBar, 3 );
 
-  //widget to group common displays
+  // widget to group common displays
   QWidget *commonBar = new QWidget( this );
-  commonBar->setFixedWidth(216);
+  commonBar->setFixedWidth(leftFixedWidth);
   commonBar->setContentsMargins( -9, -6, -9, -6);
   commonBar->setAutoFillBackground(true);
   commonBar->setBackgroundRole(QPalette::Window);
@@ -190,6 +217,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   _speed->setPreText("Gs");
   _speed->setValue("-");
+  _speed->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _speed);
 
   //add Heading widget
@@ -197,6 +225,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //_heading = new MapInfoBox( this, QColor(Qt::darkGray).name() );
   _heading->setPreText("Trk");
   _heading->setValue("-");
+  _heading->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _heading);
 
 #ifdef FLARM
@@ -211,6 +240,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _wind = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _wind->setPreText("Wd");
   _wind->setValue("-");
+  _wind->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget(_wind );
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
@@ -219,6 +249,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _ld->setVisible(false);
   _ld->setPreText( "LD" );
   _ld->setValue("-/-");
+  _ld->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget( _ld );
   connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
 
@@ -232,6 +263,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _altitude->setPreText(AltimeterModeDialog::mode2String());
   _altitude->setPreUnit( Altitude::getUnitText() );
   _altitude->setValue("-");
+  _altitude->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   VALayout->addWidget( _altitude, 3 );
   connect(_altitude, SIGNAL(mousePress()), this, SLOT(slot_AltimeterDialog()));
 
@@ -239,14 +271,15 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), false, true );
   _vario->setPreText("Var");
   _vario->setValue("-");
+  _vario->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   VALayout->addWidget(_vario, 2 );
   connect(_vario, SIGNAL(mousePress()), this, SLOT(slot_VarioDialog()));
 
   sideLayout->addWidget( commonBar, 3 );
 
-  //widget to group McCready functions
+  // widget to group McCready functions
   QWidget *mcBar = new QWidget( this );
-  mcBar->setFixedWidth(216);
+  mcBar->setFixedWidth(leftFixedWidth);
   mcBar->setContentsMargins(-9,-6,-9,-9);
 
   mcBar->setAutoFillBackground(true);
@@ -260,6 +293,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //add McCready widget
   _mc = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _mc->setPreText("Mc");
+  _mc->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   calculator->glider() ? _mc->setValue("0.0") : _mc->setValue("-");
   MSLayout->addWidget( _mc );
   connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
@@ -270,6 +304,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly->setValue(tr("Menu"));
   _speed2fly->setPreUnit( "|=|" );
   _speed2fly->setVisible( false );
+  _speed2fly->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   MSLayout->addWidget( _speed2fly );
   connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
 
@@ -278,6 +313,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _menuToggle->setPreTextWidgetVisible( false );
   _menuToggle->setTextLabelBGColor( "lightGray" );
   _menuToggle->setValue(tr("Menu"));
+  _menuToggle->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   MSLayout->addWidget( _menuToggle );
   connect(_menuToggle, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
 
@@ -340,7 +376,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   QFont font = _statusbar->font();
   font.setBold(true);
-  Layout::adaptFont( font, StatusbarFontHeight );
+  Layout::fitStatusbarFont( font );
   _statusbar->setFont(font);
 
   // Fixing the height caused some times problems on larger screens
@@ -348,6 +384,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // _statusbar->setFixedHeight(fm.boundingRect("WE°'?\"").height() + 6 );
 
   _statusGps = new CuLabel(tr("Man"), _statusbar);
+  _statusGps->setFont(font);
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
@@ -355,6 +392,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
+  _statusFlightstatus->setFont(font);
   _statusFlightstatus->setLineWidth(0);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
   _statusFlightstatus->setMargin(0);
@@ -364,6 +402,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #ifdef FLARM
 
   _statusFlarm = new CuLabel( tr( "F" ), _statusbar );
+  _statusFlarm->setFont(font);
   _statusFlarm->setLineWidth( 0 );
   _statusFlarm->setAlignment( Qt::AlignCenter );
   _statusFlarm->setMargin( 0 );
@@ -373,23 +412,27 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #endif
 
   _statusPosition = new QLabel(_statusbar);
+  _statusPosition->setFont(font);
   _statusPosition->setLineWidth(0);
   _statusPosition->setAlignment(Qt::AlignCenter);
   _statusPosition->setMargin(0);
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
+  _statusGlider->setFont(font);
   _statusGlider->setLineWidth(0);
   _statusGlider->setAlignment(Qt::AlignCenter);
   _statusGlider->setMargin(0);
   _statusbar->addWidget(_statusGlider);
 
   _statusInfo = new QLabel(_statusbar);
+  _statusInfo->setFont(font);
   _statusInfo->setAlignment(Qt::AlignCenter);
   _statusInfo->setMargin(0);
   _statusbar->addWidget(_statusInfo, 1);
 
   QFrame* filler = new QFrame(_statusbar);
+  filler->setFont(font);
   filler->setLineWidth(0);
   _statusbar->addWidget(filler);
   topLayout->addWidget(_statusbar);
@@ -461,7 +504,7 @@ void MapView::showEvent( QShowEvent* event )
 /** called if heading has changed */
 void MapView::slot_Heading(int head)
 {
-  static QTime lastDisplay;
+  static QTime lastDisplay = QTime::currentTime();
 
   // The display is updated every 1 seconds only.
   // That will reduce the X-Server load.
@@ -488,7 +531,7 @@ void MapView::slot_Speed(const Speed& speed)
     }
   else
     {
-      static QTime lastDisplay;
+      static QTime lastDisplay = QTime::currentTime();
 
       // The display is updated every 1 seconds only.
       // That will reduce the X-Server load.
@@ -565,7 +608,7 @@ void MapView::slot_Bearing(int bearing)
     }
   else
     {
-      static QTime lastDisplay;
+      static QTime lastDisplay = QTime::currentTime();
 
       // The display is updated every 1 seconds only.
       // That will reduce the X-Server load.
@@ -639,7 +682,7 @@ void MapView::slot_RelBearing(int relbearing)
       return;
     }
 
-  static QTime lastDisplay;
+  static QTime lastDisplay = QTime::currentTime();
 
   // The display is updated every 1 seconds only.
   // That will reduce the X-Server load.
@@ -673,7 +716,7 @@ void MapView::slot_Distance(const Distance& distance)
     }
   else
     {
-      static QTime lastDisplay;
+      static QTime lastDisplay = QTime::currentTime();
 
       // The display is updated every 1 seconds only.
       // That will reduce the X-Server load.
@@ -704,7 +747,7 @@ void MapView::slot_ETA(const QTime& eta)
     }
   else
     {
-      static QTime lastDisplay;
+      static QTime lastDisplay = QTime::currentTime();
 
       // The display is updated every 1 seconds only.
       // That will reduce the X-Server load.
@@ -727,7 +770,7 @@ void MapView::slot_ETA(const QTime& eta)
 /** This slot is called if a new position fix has been established. */
 void MapView::slot_Position(const QPoint& position, const int source)
 {
-  static QTime lastDisplay;
+  static QTime lastDisplay = QTime::currentTime();
 
   // remember for slot_settingsChange
   lastPositionChangeSource = source;
@@ -776,15 +819,15 @@ void MapView::slot_GPSStatus(GpsNmea::GpsStatus status)
   switch ( status )
     {
     case GpsNmea::validFix:
-      slot_info( tr( "GPS new fix" ) );
+      slot_info( tr( "GPS OK" ) );
       color = Qt::green;
       break;
     case GpsNmea::noFix:
-      slot_info(tr( "GPS fix lost" ) );
+      slot_info(tr( "GPS no fix" ) );
       color = Qt::yellow;
       break;
     default:
-      slot_info( tr( "GPS lost" ) );
+      slot_info( tr( "GPS ?" ) );
       color = Qt::red;
       break;
     }
@@ -888,7 +931,7 @@ void MapView::slot_Mc (const Speed& mc)
 /** This slot is called if a new variometer value has been set */
 void MapView::slot_Vario (const Speed& vario)
 {
-  static QTime lastDisplay;
+  static QTime lastDisplay = QTime::currentTime();
 
   // The display is updated every 1 seconds only.
   // That will reduce the X-Server load.
@@ -932,7 +975,7 @@ void MapView::slot_Wind(Vector& wind)
 /** This slot is called if a new current LD value has been set */
 void MapView::slot_LD( const double& rLD, const double& cLD )
 {
-  static QTime lastDisplay;
+  static QTime lastDisplay = QTime::currentTime();
 
   // The display is updated every 1 seconds only.
   // That will reduce the X-Server load.

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,27 +16,36 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "airfield.h"
-#include "flickcharm.h"
-#include "taskeditor.h"
-#include "mapcontents.h"
-#include "flighttask.h"
-#include "distance.h"
-#include "generalconfig.h"
-#include "mainwindow.h"
-#include "listwidgetparent.h"
 #include "airfieldlistwidget.h"
-#include "waypointlistwidget.h"
+#include "distance.h"
+#include "flighttask.h"
+#include "generalconfig.h"
 #include "layout.h"
+#include "listwidgetparent.h"
+#include "mainwindow.h"
+#include "mapcontents.h"
+#include "rowdelegate.h"
+#include "taskeditor.h"
+#include "taskpoint.h"
+#include "taskpointeditor.h"
+#include "waypointlistwidget.h"
 
 extern MapContents *_globalMapContents;
-extern MainWindow  *_globalMainWindow;
 
 TaskEditor::TaskEditor( QWidget* parent,
-                           QStringList &taskNamesInUse,
-                           FlightTask* task ) :
+                        QStringList &taskNamesInUse,
+                        FlightTask* task ) :
   QWidget( parent ),
   taskNamesInUse( taskNamesInUse ),
   lastSelectedItem(0)
@@ -46,23 +55,23 @@ TaskEditor::TaskEditor( QWidget* parent,
   setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
 
-  if( _globalMainWindow )
+  if( MainWindow::mainWindow() )
     {
       // Resize the dialog to the same size as the main window has. That will
       // completely hide the parent window.
-      resize( _globalMainWindow->size() );
+      resize( MainWindow::mainWindow()->size() );
     }
 
   if ( task )
     {
-      planTask = task;
+      task2Edit = task;
       editState = TaskEditor::edit;
-      setWindowTitle(planTask->getTaskTypeString());
+      setWindowTitle( task2Edit->getTaskTypeString() );
       editedTaskName = task->getTaskName();
     }
   else
     {
-      planTask = new FlightTask( 0, false, "" );
+      task2Edit = new FlightTask( 0, false, "" );
       editState = TaskEditor::create;
       setWindowTitle(tr("New Task"));
     }
@@ -82,6 +91,13 @@ TaskEditor::TaskEditor( QWidget* parent,
   taskList->setColumnCount(4);
   taskList->hideColumn( 0 );
 
+  const int iconSize = Layout::iconSize( font() );
+  taskList->setIconSize( QSize(iconSize, iconSize) );
+
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  taskList->setItemDelegate( new RowDelegate( taskList, afMargin ) );
+
   QStringList sl;
   sl << tr("ID")
      << tr("Type")
@@ -89,56 +105,62 @@ TaskEditor::TaskEditor( QWidget* parent,
      << tr("Length");
 
   taskList->setHeaderLabels(sl);
+#if QT_VERSION >= 0x050000
+  taskList->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+#else
   taskList->header()->setResizeMode( QHeaderView::ResizeToContents );
-
-#ifdef QSCROLLER
-  QScroller::grabGesture(taskList, QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(taskList);
+  taskList->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  taskList->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( taskList->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( taskList->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
-  upButton->setIconSize(QSize(IconSize, IconSize));
+  upButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   upButton->setToolTip( tr("move selected waypoint up") );
 #endif
   downButton = new QPushButton( this );
   downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
-  downButton->setIconSize(QSize(IconSize, IconSize));
+  downButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   downButton->setToolTip( tr("move selected waypoint down") );
 #endif
   invertButton = new QPushButton( this );
   invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png")) );
-  invertButton->setIconSize(QSize(IconSize, IconSize));
+  invertButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   invertButton->setToolTip( tr("reverse waypoint order") );
 #endif
   addButton = new QPushButton( this );
   addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png")) );
-  addButton->setIconSize(QSize(IconSize, IconSize));
+  addButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   addButton->setToolTip( tr("add waypoint") );
 #endif
   delButton = new QPushButton( this );
   delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png")) );
-  delButton->setIconSize(QSize(IconSize, IconSize));
+  delButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   delButton->setToolTip( tr("remove waypoint") );
 #endif
   QPushButton* okButton = new QPushButton( this );
   okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
-  okButton->setIconSize(QSize(IconSize, IconSize));
+  okButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   okButton->setToolTip( tr("save task") );
 #endif
   QPushButton* cancelButton = new QPushButton( this );
   cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
-  cancelButton->setIconSize(QSize(IconSize, IconSize));
+  cancelButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cancelButton->setToolTip( tr("cancel task") );
 #endif
@@ -156,10 +178,13 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
+  buttonLayout->addSpacing(10);
   buttonLayout->addWidget( upButton );
+  buttonLayout->addSpacing(10);
   buttonLayout->addWidget( downButton );
-  buttonLayout->addSpacing(20);
+  buttonLayout->addSpacing(30);
   buttonLayout->addWidget( addButton  );
+  buttonLayout->addSpacing(10);
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 0, 2, 2, 1 );
@@ -170,7 +195,26 @@ TaskEditor::TaskEditor( QWidget* parent,
   totalLayout->addWidget( listSelectCB, 0, 3 );
 
   QHBoxLayout *hbBox = new QHBoxLayout;
-  hbBox->setSpacing(0);
+
+  QStyle* style = QApplication::style();
+  defaultButton = new QPushButton;
+  defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
+  defaultButton->setIconSize(QSize(iconSize, iconSize));
+#ifndef ANDROID
+  defaultButton->setToolTip(tr("Set task figure default schemas"));
+#endif
+  hbBox->addWidget(defaultButton);
+  hbBox->addSpacing(25);
+
+  editButton = new QPushButton;
+  editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
+  editButton->setIconSize(QSize(iconSize, iconSize));
+#ifndef ANDROID
+  editButton->setToolTip(tr("Edit selected waypoint"));
+#endif
+  hbBox->addWidget(editButton);
+  hbBox->setSpacing(10);
+
   hbBox->addWidget(okButton);
 
   // add some space between the two buttons to prevent unwanted pressing
@@ -202,7 +246,7 @@ TaskEditor::TaskEditor( QWidget* parent,
       totalLayout->addWidget( waypointList[i], 1, 3, 1, 4 );
     }
 
-  totalLayout->setColumnStretch( 1, 4 );
+  totalLayout->setColumnStretch( 1, 20 );
   totalLayout->setColumnStretch( 4, 2 );
 
   // first selection is WPList if wp's are defined
@@ -216,9 +260,9 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   if ( editState == TaskEditor::edit )
     {
-      taskName->setText( planTask->getTaskName() );
+      taskName->setText( task2Edit->getTaskName() );
 
-      QList<TaskPoint *> tmpList = planTask->getTpList();
+      QList<TaskPoint *> tmpList = task2Edit->getTpList();
 
       // @AP: Make a deep copy from all elements of the list
       for ( int i=0; i < tmpList.count(); i++ )
@@ -227,7 +271,7 @@ TaskEditor::TaskEditor( QWidget* parent,
         }
     }
 
-  __showTask();
+  showTask();
 
   connect( addButton,    SIGNAL( clicked() ),
            this, SLOT( slotAddWaypoint() ) );
@@ -240,6 +284,12 @@ TaskEditor::TaskEditor( QWidget* parent,
   connect( invertButton, SIGNAL( clicked() ),
            this, SLOT( slotInvertWaypoints() ) );
 
+
+  connect( defaultButton, SIGNAL(clicked()),
+           this, SLOT(slotSetTaskPointsDefaultSchema()));
+  connect( editButton, SIGNAL(clicked()),
+           this, SLOT(slotEditTaskPoint()));
+
   connect( okButton, SIGNAL( clicked() ),
            this, SLOT( slotAccept() ) );
   connect( cancelButton, SIGNAL( clicked() ),
@@ -247,9 +297,8 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
-
-  connect( taskList, SIGNAL( itemClicked( QTreeWidgetItem*, int)),
-           this, SLOT(slotItemClicked( QTreeWidgetItem*, int)) );
+  connect( taskList, SIGNAL (currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+           this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );
 }
 
 TaskEditor::~TaskEditor()
@@ -258,7 +307,7 @@ TaskEditor::~TaskEditor()
   tpList.clear();
 }
 
-void TaskEditor::__showTask()
+void TaskEditor::showTask()
 {
   if ( tpList.count() == 0 )
     {
@@ -266,14 +315,15 @@ void TaskEditor::__showTask()
       return;
     }
 
-  planTask->setTaskPointList( FlightTask::copyTpList( &tpList ) );
+  // That updates all task internal data
+  task2Edit->setTaskPointList( FlightTask::copyTpList( &tpList ) );
 
-  QString txt = planTask->getTaskTypeString() +
-                " / " + planTask->getTaskDistanceString();
+  QString txt = task2Edit->getTaskTypeString() +
+                " / " + task2Edit->getTaskDistanceString();
 
   setWindowTitle(txt);
 
-  QList<TaskPoint *> tmpList = planTask->getTpList();
+  QList<TaskPoint *> tmpList = task2Edit->getTpList();
 
   taskList->clear();
 
@@ -282,7 +332,7 @@ void TaskEditor::__showTask()
 
   double distTotal = 0.0;
 
-  for( int loop = 0; loop < tmpList.count(); loop++ )
+  for( int loop = 0; loop < tmpList.size(); loop++ )
     {
       TaskPoint* tp = tmpList.at( loop );
       typeName = tp->getTaskPointTypeString();
@@ -294,7 +344,35 @@ void TaskEditor::__showTask()
 
       rowList.clear();
       rowList << idString << typeName << tp->name << distance;
-      taskList->addTopLevelItem( new QTreeWidgetItem(rowList, 0) );
+
+      const int iconSize = Layout::iconSize( font() );
+
+      QTreeWidgetItem* item = new QTreeWidgetItem(rowList, 0);
+
+      bool showIcon = true;
+
+      if( tmpList.size() >= 2 &&
+          ((loop == 0 && tmpList.at(0)->origP == tmpList.at(1)->origP ) ||
+           (loop == tmpList.size()-1 &&
+            tmpList.at(tmpList.size()-1)->origP == tmpList.at(tmpList.size()-2)->origP )) )
+        {
+          // If start and begin point or end and landing point are identical
+          // no task figure icon is shown in the list entry.
+          showIcon = false;
+        }
+
+      if( tmpList.size() > 1 && showIcon )
+        {
+          item->setIcon ( 1, tp->getIcon( iconSize ) );
+        }
+
+      if( tp->getUserEditFlag() == true )
+        {
+          // Mark the user edited entry
+          item->setBackground( 1, QBrush(Qt::yellow) );
+        }
+
+      taskList->addTopLevelItem( item );
 
       // reselect last selected item
       if( lastSelectedItem == loop )
@@ -311,15 +389,16 @@ void TaskEditor::__showTask()
       distance = Distance::getText( distTotal*1000, true, 1 );
 
       rowList.clear();
-      rowList << "Total" << tr("Total") << "" << distance;
+      rowList << "Total" << "" << tr("Total") << distance;
 
       QTreeWidgetItem* item = new QTreeWidgetItem(rowList, 0);
 
+      // make the total line unselectable
       item->setFlags( Qt::ItemIsEnabled );
 
       QFont font = item->font(1);
       font.setBold( true );
-      item->setFont( 1, font );
+      item->setFont( 2, font );
       item->setFont( 3, font );
       taskList->addTopLevelItem( item );
     }
@@ -367,14 +446,15 @@ void TaskEditor::slotAddWaypoint()
       lastSelectedItem = id;
     }
 
-  __showTask();
+  setTaskPointFigureSchemas( tpList );
+  showTask();
 }
 
 void TaskEditor::slotRemoveWaypoint()
 {
   QTreeWidgetItem* selected = taskList->currentItem();
 
-  if( selected == 0 || selected->text( 0 ) == "Total" )
+  if( selected == 0 )
     {
       return;
     }
@@ -394,14 +474,15 @@ void TaskEditor::slotRemoveWaypoint()
       lastSelectedItem = id;
     }
 
-  __showTask();
+  setTaskPointFigureSchemas( tpList );
+  showTask();
 }
 
 void TaskEditor::slotInvertWaypoints()
 {
-  if ( tpList.count() < 2 )
+  if ( tpList.count() < 4 )
     {
-      // not possible to invert order, if elements are less 2
+      // not possible to invert order, if elements are less 4
       return;
     }
 
@@ -416,7 +497,35 @@ void TaskEditor::slotInvertWaypoints()
   // After an invert the first task item is selected.
   lastSelectedItem = 0;
 
-  __showTask();
+  // Swap schema data between begin and and point.
+  swapTaskPointSchemas( tpList[1], tpList[ tpList.count() - 2 ] );
+  showTask();
+}
+
+void TaskEditor::slotEditTaskPoint ()
+{
+  int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
+
+  if( id < 0 )
+  {
+    return;
+  }
+
+  TaskPoint* modPoint = tpList.at(id);
+  TaskPointEditor *tpe = new TaskPointEditor(this, modPoint );
+
+  connect( tpe, SIGNAL(taskPointEdited(TaskPoint*)),
+           this, SLOT(slotTaskPointEdited(TaskPoint*)));
+
+  tpe->setVisible( true );
+}
+
+void TaskEditor::slotTaskPointEdited( TaskPoint* editedTaskPoint )
+{
+  Q_UNUSED( editedTaskPoint )
+
+  // That updates the task point list in the flight task.
+  showTask();
 }
 
 void TaskEditor::slotAccept()
@@ -493,15 +602,15 @@ void TaskEditor::slotAccept()
     }
 
   // Take over changed task data and publish it
-  planTask->setTaskName(txt);
+  task2Edit->setTaskName(txt);
 
   if ( editState == TaskEditor::create )
     {
-      emit newTask( planTask );
+      emit newTask( task2Edit );
     }
   else
     {
-      emit editedTask( planTask );
+      emit editedTask( task2Edit );
     }
 
   // closes and destroys window
@@ -510,19 +619,17 @@ void TaskEditor::slotAccept()
 
 void TaskEditor::slotReject()
 {
-  // qDebug("TaskEditor::reject()");
-
   // delete rejected task object
-  delete planTask;
-  // closes and destroys window
+  delete task2Edit;
+
+  // close and destroy window
   close();
 }
 
 void TaskEditor::slotMoveWaypointUp()
 {
   if( taskList->selectedItems().size() == 0 ||
-      taskList->topLevelItemCount() <= 2 ||
-      taskList->currentItem()->text( 0 ) == "Total" )
+      taskList->topLevelItemCount() <= 2 )
     {
       return;
     }
@@ -539,14 +646,14 @@ void TaskEditor::slotMoveWaypointUp()
 
   tpList.move( id, id - 1 );
 
-  __showTask();
+  setTaskPointFigureSchemas( tpList );
+  showTask();
 }
 
 void TaskEditor::slotMoveWaypointDown()
 {
   if( taskList->selectedItems().size() == 0 ||
-      taskList->topLevelItemCount() <= 2 ||
-      taskList->currentItem()->text(0) == "Total" )
+      taskList->topLevelItemCount() <= 2 )
     {
       return;
     }
@@ -565,7 +672,8 @@ void TaskEditor::slotMoveWaypointDown()
 
   tpList.move(id,  id + 1);
 
-  __showTask();
+  setTaskPointFigureSchemas( tpList );
+  showTask();
 }
 
 /** Toggle between WP/AF/... list on user request */
@@ -584,16 +692,10 @@ void TaskEditor::slotToggleList(int index)
     }
 }
 
-void TaskEditor::slotItemClicked( QTreeWidgetItem* item, int column )
+void TaskEditor::slotCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
-  Q_UNUSED( column )
-
-  if( item && item->text(0) == "Total" )
-    {
-      // It is not allowed to select the last row. We move the selection
-      // one row up.
-      taskList->setCurrentItem( taskList->itemAbove( item ) );
-    }
+  Q_UNUSED(current)
+  Q_UNUSED(previous)
 
   enableCommandButtons();
 }
@@ -607,6 +709,8 @@ void TaskEditor::enableCommandButtons()
       invertButton->setEnabled( false );
       addButton->setEnabled( true );
       delButton->setEnabled( false );
+      editButton->setEnabled (false);
+      defaultButton->setEnabled (false);
     }
   else if( tpList.size() == 1 )
     {
@@ -615,6 +719,8 @@ void TaskEditor::enableCommandButtons()
       invertButton->setEnabled( false );
       addButton->setEnabled( true );
       delButton->setEnabled( true );
+      editButton->setEnabled (false);
+      defaultButton->setEnabled (false);
     }
   else
     {
@@ -628,7 +734,11 @@ void TaskEditor::enableCommandButtons()
           taskList->setCurrentItem(taskList->topLevelItem(taskList->indexOfTopLevelItem(0)));
         }
 
-      if( taskList->indexOfTopLevelItem(taskList->currentItem()) > 0 )
+      int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
+
+      bool isNotFirstOrLast = true;
+
+      if( id > 0 )
         {
           upButton->setEnabled( true );
         }
@@ -636,9 +746,9 @@ void TaskEditor::enableCommandButtons()
         {
           // At the first position, no up allowed
           upButton->setEnabled( false );
+          isNotFirstOrLast = false;
         }
 
-      int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
 
       if( id == -1 || id == taskList->topLevelItemCount() - 1 ||
           ( id == taskList->topLevelItemCount() - 2 &&
@@ -646,10 +756,135 @@ void TaskEditor::enableCommandButtons()
         {
           // At the last allowed down position. No further down allowed.
           downButton->setEnabled( false );
+          isNotFirstOrLast = false;
         }
       else
         {
           downButton->setEnabled( true );
         }
+
+      if( tpList.size() >= 4 )
+        {
+          editButton->setEnabled( isNotFirstOrLast );
+          defaultButton->setEnabled( true );
+        }
+      else
+        {
+          // Task has not enough points, disable task point editing.
+          editButton->setEnabled( false );
+          defaultButton->setEnabled( false );
+        }
+    }
+}
+
+void TaskEditor::swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 )
+{
+  Distance d1, d2;
+
+  d1 = tp1->getTaskCircleRadius();
+  d2 = tp2->getTaskCircleRadius();
+
+  tp1->setTaskCircleRadius( d2 );
+  tp2->setTaskCircleRadius( d1 );
+
+  d1 = tp1->getTaskSectorInnerRadius();
+  d2 = tp2->getTaskSectorInnerRadius();
+
+  tp1->setTaskSectorInnerRadius( d2 );
+  tp2->setTaskSectorInnerRadius( d1 );
+
+  d1 = tp1->getTaskSectorOuterRadius();
+  d2 = tp2->getTaskSectorOuterRadius();
+
+  tp1->setTaskSectorOuterRadius( d2 );
+  tp2->setTaskSectorOuterRadius( d1 );
+
+  double l1, l2;
+
+  l1 = tp1->getTaskLine().getLineLength();
+  l2 = tp2->getTaskLine().getLineLength();
+
+  tp1->getTaskLine().setLineLength( l2 );
+  tp2->getTaskLine().setLineLength( l1 );
+
+  int a1, a2;
+
+  a1 = tp1->getTaskSectorAngle();
+  a2 = tp2->getTaskSectorAngle();
+
+  tp1->setTaskSectorAngle( a2 );
+  tp2->setTaskSectorAngle( a1 );
+
+  enum GeneralConfig::ActiveTaskFigureScheme tfs1, tfs2;
+
+  tfs1 = tp1->getActiveTaskPointFigureScheme();
+  tfs2 = tp2->getActiveTaskPointFigureScheme();
+
+  tp1->setActiveTaskPointFigureScheme( tfs2 );
+  tp2->setActiveTaskPointFigureScheme( tfs1 );
+
+  bool e1, e2;
+
+  e1 = tp1->getUserEditFlag();
+  e2 = tp2->getUserEditFlag();
+
+  tp1->setUserEditFlag( e2 );
+  tp2->setUserEditFlag( e1 );
+}
+
+void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList )
+{
+  // As first set the right task point type
+  for( int i = 0; i < tpList.size(); i++ )
+    {
+      if( i == 0 )
+        {
+          tpList.at(i)->taskPointType = TaskPointTypes::TakeOff;
+        }
+      else if( i == 1 )
+        {
+          tpList.at(i)->taskPointType = TaskPointTypes::Begin;
+        }
+      else if( tpList.size() >= 4 && i == tpList.size() - 2 )
+        {
+          tpList.at(i)->taskPointType = TaskPointTypes::End;
+        }
+      else if( tpList.size() >= 4 && i == tpList.size() - 1 )
+        {
+          tpList.at(i)->taskPointType = TaskPointTypes::Landing;
+        }
+      else
+        {
+          tpList.at(i)->taskPointType = TaskPointTypes::RouteP;
+        }
+
+      // Set task point figure schema to default.
+      tpList.at(i)->setConfigurationDefaults();
+    }
+}
+
+void TaskEditor::slotSetTaskPointsDefaultSchema()
+{
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Defaults?" ),
+                  tr( "Reset all TP schemas to default configuration values?" ),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
+
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::Yes )
+    {
+      setTaskPointFigureSchemas( tpList );
+      showTask();
     }
 }

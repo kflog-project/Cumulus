@@ -30,6 +30,8 @@
 #include <linux/limits.h>
 
 #include <QtGui>
+#include <QMessageBox>
+#include <QInputDialog>
 
 #include "generalconfig.h"
 #include "mapview.h"
@@ -736,7 +738,7 @@ void GpsCon::slot_ListenEvent( int socket )
       // now we check the protocol version
       QString msg = QString("%1 %2").arg(MSG_MAGIC).arg(MSG_PROTOCOL);
 
-      writeClientMessage( 0, msg.toAscii().data() );
+      writeClientMessage( 0, msg.toLatin1().data() );
       readClientMessage( 0, msg );
 
       if( msg == MSG_NEG )
@@ -1011,7 +1013,7 @@ bool GpsCon::getFlarmFlightList()
   QString method = "GPSCon::getFlarmFlightList():";
   QString msg = MSG_FLARM_FLIGHT_LIST_REQ;
 
-  writeClientMessage( 0, msg.toAscii().data() );
+  writeClientMessage( 0, msg.toLatin1().data() );
   readClientMessage( 0, msg );
 
   if( msg == MSG_NEG )
@@ -1032,7 +1034,7 @@ bool GpsCon::getFlarmIgcFiles( QString& flightIndexes )
   QString method = "GPSCon::getFlarmIgcFiles():";
   QString msg = QString("%1 %2").arg(MSG_FLARM_FLIGHT_DOWNLOAD).arg(flightIndexes);
 
-  writeClientMessage( 0, msg.toAscii().data() );
+  writeClientMessage( 0, msg.toLatin1().data() );
   readClientMessage( 0, msg );
 
   if( msg == MSG_NEG )

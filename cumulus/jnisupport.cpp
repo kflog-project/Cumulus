@@ -48,10 +48,12 @@ static jmethodID m_AddDataDirID       = 0;
 static jmethodID m_AddDataInstalledID = 0;
 static jmethodID m_AppDataDirID       = 0;
 static jmethodID m_languageID         = 0;
+static jmethodID m_DisplayMetricsID   = 0;
 static jmethodID m_playSoundID        = 0;
 static jmethodID m_dimmScreenID       = 0;
 static jmethodID m_gpsCmdID           = 0;
 static jmethodID m_byte2Gps           = 0;
+static jmethodID m_nativeShutdownID   = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -97,6 +99,21 @@ void jniShutdown( bool option )
 
   if( shutdown == true )
     {
+      bool ok = jniEnv();
+
+      if( ok )
+        {
+          // Tells the Java side, that the native part is going down. The java side
+          // removes all handlers, which can call the native side to avoid
+          // unexpected behavior.
+          m_jniEnv->CallVoidMethod( m_jniProxyObject, m_nativeShutdownID );
+
+          if (isJavaExceptionOccured())
+            {
+              qWarning("jniShutdown: exception when calling Java method \"nativeShutdown\"");
+            }
+        }
+
       jniDetachCurrentThread();
     }
 }
@@ -366,9 +383,20 @@ bool initJni( JavaVM* vm, JNIEnv* env )
   m_languageID = m_jniEnv->GetMethodID( clazz,
                                         "getLanguage",
                                         "()Ljava/lang/String;");
+
   if (isJavaExceptionOccured())
     {
       qWarning() << "initJni: could not get ID of getLanguage";
+      return false;
+    }
+
+  m_DisplayMetricsID = m_jniEnv->GetMethodID( clazz,
+                                              "getDisplayMetrics",
+                                              "()Ljava/lang/String;");
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning() << "initJni: could not get ID of getDisplayMetrics";
       return false;
     }
 
@@ -381,6 +409,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       qWarning() << "initJni: could not get ID of playSound";
       return false;
     }
+
+  m_nativeShutdownID = m_jniEnv->GetMethodID( clazz,
+                                              "nativeShutdown",
+                                              "()V");
+
+  if (isJavaExceptionOccured())
+  {
+    qWarning() << "initJni: could not get ID of nativeShutdown";
+    return false;
+  }
 
   m_dimmScreenID = m_jniEnv->GetMethodID( clazz,
                                           "dimmScreen",
@@ -636,6 +674,54 @@ QString jniGetLanguage()
 
   Q_UNUSED(ok)
   return lang;
+}
+
+QHash<QString, float> jniGetDisplayMetrics()
+{
+  QString displayMetrics;
+
+  bool ok = jniCallStringMethod( "getDisplayMetrics", m_DisplayMetricsID, displayMetrics );
+
+  Q_UNUSED(ok)
+
+  QHash<QString, float> dmh;
+
+  if( displayMetrics.size() == 0 )
+    {
+      // No metrics are returned
+      return dmh;
+    }
+
+  // The returned string is a key value string separated with semicolons with
+  // the following content:
+  // density=<float>;
+  // densityDpi=<float>;
+  // heightPixels=<int>;
+  // scaledDensity=<float>;
+  // widthPixels=<int>;
+  // xdpi=<float>;
+  // ydpi=<float>;
+
+  QStringList kvList = displayMetrics.split(";", QString::SkipEmptyParts );
+
+  if( kvList.size() == 0 )
+    {
+      // No metrics are returned
+      return dmh;
+    }
+
+  for( int i = 0; i < kvList.size(); i++ )
+    {
+      // Split the elements into key and value
+      QStringList kvPair = kvList.at(i).split("=");
+
+      if( kvPair.size() == 2 )
+        {
+          dmh.insert( kvPair.at(0), kvPair.at(1).toFloat() );
+        }
+    }
+
+  return dmh;
 }
 
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult )

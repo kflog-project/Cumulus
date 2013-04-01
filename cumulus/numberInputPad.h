@@ -40,7 +40,7 @@
 #include <QPushButton>
 #include <QString>
 #include <QValidator>
-
+#include <QLabel>
 #include <QFrame>
 
 class QSignalMapper;

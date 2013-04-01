@@ -18,6 +18,7 @@
 
 #include <unistd.h>
 #include <QtGui>
+#include <QGridLayout>
 
 #include "waitscreen.h"
 #include "generalconfig.h"

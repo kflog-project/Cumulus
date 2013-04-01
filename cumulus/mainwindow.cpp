@@ -37,12 +37,17 @@
 #include <signal.h>
 #include <sys/ioctl.h>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "aboutwidget.h"
 #include "calculator.h"
 #include "configwidget.h"
 #include "generalconfig.h"
+#include "gliderlistwidget.h"
 #include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
@@ -152,8 +157,24 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   m_displayTrigger = static_cast<QTimer *> (0);
 #endif
 
-  // Overwrite old default.
-  GeneralConfig::instance()->setMapLowerLimit(5);
+  // This is used to make it possible to reset some user configuration items once.
+  int rc = GeneralConfig::instance()->getResetConfiguration();
+
+  if( rc != 2 )
+    {
+      GeneralConfig::instance()->setResetConfiguration(2);
+
+      // Overwrite old default.
+      GeneralConfig::instance()->setMapLowerLimit(5);
+
+#ifdef ANDROID
+
+      // Reset used Gui fonts for Android to force a recalculation.
+      GeneralConfig::instance()->setGuiFont( "" );
+      GeneralConfig::instance()->setGuiMenuFont( "" );
+
+#endif
+    }
 
   // Get application font for user adaptions.
   QFont appFt = QApplication::font();
@@ -163,14 +184,14 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
            appFt.pointSize(),
            appFt.pixelSize(),
            appFt.weight(),
-           QFontMetrics(appFt).boundingRect("XM").height() );
+           QFontMetrics(appFt).height() );
 
   QString fontString = GeneralConfig::instance()->getGuiFont();
   QFont userFont;
 
   if( fontString.isEmpty() )
     {
-      // No Gui font is defined, we try to define a sensefull default.
+      // No Gui font is defined, we try to define a senseful default.
       QFont appFont = QApplication::font();
 
 #ifdef ANDROID
@@ -187,8 +208,9 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       appFont.setStyle( QFont::StyleNormal );
       appFont.setStyleHint( QFont::SansSerif );
 
-      Layout::adaptFont( appFont, GuiFontHeight );
+      Layout::fitGuiFont( appFont );
       QApplication::setFont( appFont );
+      GeneralConfig::instance()->setGuiFont( appFont.toString() );
     }
   else if( userFont.fromString( fontString ) )
     {
@@ -203,7 +225,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
            appFt.pointSize(),
            appFt.pixelSize(),
            appFt.weight(),
-           QFontMetrics(appFt).boundingRect("XM").height() );
+           QFontMetrics(appFt).height() );
 
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
@@ -220,14 +242,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   qApp->setStyleSheet( style );
 
 #endif
-
-  // Display available input methods
-  QStringList inputMethods = QInputContextFactory::keys();
-
-  foreach( QString inputMethod, inputMethods )
-    {
-      qDebug() << "InputMethod: " << inputMethod;
-    }
 
   qDebug() << "AutoSipEnabled:" << qApp->autoSipEnabled();
 
@@ -646,6 +660,8 @@ void MainWindow::slotCreateApplicationWidgets()
            this, SLOT( slotNotification( const QString&, const bool ) ) );
   connect( Map::instance, SIGNAL( newPosition( QPoint& ) ),
            calculator, SLOT( slot_changePosition( QPoint& ) ) );
+  connect( Map::instance, SIGNAL( userZoom() ),
+           calculator, SLOT( slot_userMapZoom() ) );
 
 #ifdef FLARM
   connect( Flarm::instance(), SIGNAL( flarmTrafficInfo( QString& ) ),
@@ -701,6 +717,8 @@ void MainWindow::slotCreateApplicationWidgets()
            Map::getInstance(), SLOT( slotPosition( const QPoint&, const int ) ) );
   connect( calculator, SIGNAL( switchManualInFlight() ),
            Map::getInstance(), SLOT( slotSwitchManualInFlight() ) );
+  connect( calculator, SIGNAL( switchMapScale(const double&) ),
+           Map::getInstance(), SLOT( slotSetScale(const double&) ) );
   connect( calculator, SIGNAL( glidePath( const Altitude& ) ),
            viewMap, SLOT( slot_GlidePath( const Altitude& ) ) );
   connect( calculator, SIGNAL( bestSpeed( const Speed& ) ),
@@ -1170,18 +1188,21 @@ void MainWindow::slotSetMenuFontSize()
   QString fontString = GeneralConfig::instance()->getGuiMenuFont();
   QFont userFont;
 
+  qDebug() << "MainWindow::slotSetMenuFontSize(): fontString=" << fontString;
+
   if( fontString.isEmpty() || userFont.fromString( fontString ) == false )
     {
+      qDebug() << "MainWindow::slotSetMenuFontSize() adapting font size";
       // take current font as alternative and adapt it.
       userFont = font();
-      Layout::adaptFont( userFont, GuiMenuFontHeight );
+      Layout::fitGuiMenuFont( userFont );
+
+      GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
+      GeneralConfig::instance()->save();
     }
 
-  qDebug() << "MenuFont PointSize=" << userFont.pointSize()
-           << "FontHeight=" << QFontMetrics(userFont).boundingRect("XM").height();
-
-  GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
-  GeneralConfig::instance()->save();
+  qDebug() << "MainWindow::slotSetMenuFontSize(): MenuFont PointSize=" << userFont.pointSize()
+           << "FontHeight=" << QFontMetrics(userFont).height();
 
   if( contextMenu )
     {
@@ -1527,7 +1548,7 @@ void MainWindow::createActions()
 #endif
   addAction( actionSelectTask );
   connect ( actionSelectTask, SIGNAL( triggered() ),
-             this, SLOT( slotPreFlightTask() ) );
+             this, SLOT( slotOpenPreFlightConfig() ) );
 
   actionStartFlightTask = new QAction( tr( "Start flight task" ), this );
   actionStartFlightTask->setShortcut(Qt::Key_B);
@@ -1556,7 +1577,7 @@ void MainWindow::createActions()
 #endif
   addAction( actionPreFlight );
   connect ( actionPreFlight, SIGNAL( triggered() ),
-            this, SLOT( slotPreFlightGlider() ) );
+            this, SLOT( slotOpenPreFlightConfig() ) );
 
   actionSetupConfig = new QAction( tr ( "General" ), this );
 #ifndef ANDROID
@@ -2324,18 +2345,14 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 void MainWindow::slotOpenConfig()
 {
   m_rootWindow = false;
-  setWindowTitle( tr("Cumulus Settings") );
+
   ConfigWidget *cDlg = new ConfigWidget( this );
-  cDlg->resize( size() );
   configView = static_cast<QWidget *> (cDlg);
 
   setView( cfView );
 
-  connect( cDlg, SIGNAL( settingsChanged() ), this, SLOT( slotReadconfig() ) );
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
-  connect( cDlg,  SIGNAL( welt2000ConfigChanged() ),
-           _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
@@ -2502,6 +2519,8 @@ void MainWindow::slotRememberWaypoint()
     start of the program to read the initial configuration. */
 void MainWindow::slotReadconfig()
 {
+  qDebug() << "MainWindow::slotReadconfig()";
+
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();
   viewMap->slot_settingsChange();
@@ -2649,7 +2668,8 @@ void MainWindow::slotEnsureVisible()
 {
   if ( calculator->getselectedWp() )
     {
-      double newScale = _globalMapMatrix->ensureVisible( calculator->getselectedWp() ->origP );
+      double newScale = _globalMapMatrix->ensureVisible( calculator->getselectedWp()->origP );
+
       if ( newScale > 0 )
         {
           Map::instance->slotSetScale( newScale );
@@ -2661,49 +2681,16 @@ void MainWindow::slotEnsureVisible()
     }
 }
 
-
-/** Opens the preflight dialog and brings the selected tabulator in foreground */
-void MainWindow::slotPreFlightGlider()
-{
-  slotOpenPreFlight("gliderselection");
-}
-
-
-/** Opens the preflight dialog and brings the selected tabulator in foreground */
-void MainWindow::slotPreFlightTask()
-{
-  slotOpenPreFlight("taskselection");
-}
-
-
-/** Opens the pre-flight widget and brings the selected tabulator to the front */
-void MainWindow::slotOpenPreFlight(const char *tabName)
+void MainWindow::slotOpenPreFlightConfig()
 {
   m_rootWindow = false;
-  setWindowTitle( tr("Pre-Flight Settings") );
-  PreFlightWidget* cDlg = new PreFlightWidget( this, tabName );
-  cDlg->setObjectName("PreFlightDialog");
-  cDlg->resize( size() );
+
+  PreFlightWidget* cDlg = new PreFlightWidget( this );
   configView = static_cast<QWidget *> (cDlg);
 
   setView( cfView );
-
-  connect( cDlg, SIGNAL( settingsChanged() ),
-           this, SLOT( slotPreFlightDataChanged() ) );
-
-  connect( cDlg, SIGNAL( settingsChanged() ),
-           IgcLogger::instance(), SLOT( slotReadConfig() ) );
-
-  connect( cDlg, SIGNAL( newTaskSelected() ),
-           IgcLogger::instance(), SLOT( slotNewTaskSelected() ) );
-
-  connect( cDlg, SIGNAL( newWaypoint( Waypoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
-
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
-
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
-
   cDlg->setVisible( true );
 }
 
@@ -2766,7 +2753,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
       // Open pre-flight setup from Android menu
       if ( m_rootWindow )
         {
-          slotPreFlightGlider();
+          slotOpenPreFlightConfig();
         }
 
       return;

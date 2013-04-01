@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,11 +16,18 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
-#include "layout.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "generalconfig.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
@@ -56,18 +63,19 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
-  list->setColumnCount(8);
-  list->hideColumn(7);
+  list->setColumnCount(7);
+  list->hideColumn(6);
   list->setFocusPolicy(Qt::StrongFocus);
 
+  list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QStringList sl;
@@ -75,7 +83,6 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   sl << tr(" Name")
      << tr("Dist.")
      << tr("Course")
-     << tr("R")
      << tr("Arrvial")
      << tr("Length")
      << tr(" SS");
@@ -84,7 +91,6 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
 
   list->setColumnWidth( 0, 160 );
   list->setColumnWidth( 1, 74 );
-  list->setColumnWidth( 3, 24 ); // the bearing icon
 
   fillRpList();
 
@@ -166,25 +172,27 @@ ReachpointListView::~ReachpointListView()
 /** Retrieves the reachable points from the map contents, and fills the list. */
 void ReachpointListView::fillRpList()
 {
-  //qDebug() << "ReachpointListView::fillRpList() vvalue=" << list->verticalScrollBar()->value();
+  // qDebug() << "ReachpointListView::fillRpList() vvalue=" << list->verticalScrollBar()->value();
 
   if ( calculator == static_cast<Calculator *>(0) )
     {
       return;
     }
 
-  int safetyAlt = (int)GeneralConfig::instance()->getSafetyAltitude().getMeters();
+  int safetyAlt = (int) GeneralConfig::instance()->getSafetyAltitude().getMeters();
 
   // Save the vertical scrollbar position. It returns the number of hidden rows.
   int vvalue = list->verticalScrollBar()->value();
 
   QTreeWidgetItem* selectedItem = 0;
   QString sname = "";
-  QPixmap icon;
-  QPixmap iconImage;
-  QBitmap iconMask;
   QPainter pnt;
-  icon = QPixmap(18, 18);
+
+  // calculate the needed icon size
+  QFontMetrics qfm( font() );
+  int iconSize = qfm.height() - 8;
+
+  list->setIconSize( QSize(iconSize, iconSize) );
 
   // Check, if an item selection has been made.
   QList<QTreeWidgetItem *> il = list->selectedItems();
@@ -282,50 +290,64 @@ void ReachpointListView::fillRpList()
       sl << rp.getName()
       << rp.getDistance().getText(false,1)
       << bearing
-      << ""
       << arrival
       << rLen
       <<  " " + ss + " " + tz
       << key;
 
       QTreeWidgetItem* li = new QTreeWidgetItem( sl );
+
       li->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
-      li->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
 
       list->addTopLevelItem( li );
 
-      // create landing site type icon
-      pnt.begin(&icon);
+      QColor iconColor;
 
       if ( rp.getReachable() == ReachablePoint::yes )
         {
-          icon.fill( QColor(0,255,0) );
+          iconColor = QColor(0, 255, 0);
         }
       else if ( rp.getReachable() == ReachablePoint::belowSafety )
         {
-          icon.fill( QColor(255,0,255) );
+          iconColor = QColor(255, 0, 255);
         }
       else
         {
-          icon.fill( Qt::white );
+          iconColor = Qt::transparent;
         }
 
-      pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(rp.getType(),false,true) );
-      pnt.end();
+      // create landing site type icon
+      QPixmap sitePm = _globalMapConfig->getPixmap(rp.getType(), false, false);
+      QPixmap icon( sitePm.size() + QSize(1, 1) );
+      icon.fill( iconColor );
+
+      QPainter painter;
+      painter.begin(&icon);
+      painter.drawPixmap( 1, 1, sitePm );
+      painter.end();
+
       QIcon qi;
       qi.addPixmap( icon );
-      qi.addPixmap( icon, QIcon::Selected );
       li->setIcon( 0, qi );
 
-      // set Pixmap for rel. Bearing
-      int rot=((relbearing+7)/15) % 24;
-      QPixmap arrow;
-      arrow = _arrows.copy( rot*16, 0, 16, 16);
-      qi.addPixmap( arrow );
-      qi.addPixmap( arrow, QIcon::Selected );
-      li->setIcon( 3, qi );
+      QPixmap directionPm;
+
+      QPen pen(Qt::black);
+      pen.setWidth(0);
+
+      // Draw a triangle pointing into direction of landing site
+      MapConfig::createTriangle( directionPm,
+                                 iconSize,
+                                 Qt::black,
+                                 relbearing,
+                                 1.0,
+                                 Qt::transparent,
+                                 pen );
+
+      li->setIcon( 2, directionPm );
 
       // store name of last selected to avoid jump to first element on each fill
       if ( rp.getName() == sname )
@@ -357,13 +379,13 @@ void ReachpointListView::fillRpList()
     }
 
   // sort list
-  list->sortItems( 7, Qt::DescendingOrder );
+  list->sortItems( 6, Qt::DescendingOrder );
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
   list->resizeColumnToContents(2);
+  list->resizeColumnToContents(3);
   list->resizeColumnToContents(4);
   list->resizeColumnToContents(5);
-  list->resizeColumnToContents(6);
 
 #if 0
   if ( selectedItem == 0 )
@@ -617,29 +639,25 @@ void ReachpointListView::slot_PageUp()
           return;
         }
 
-      // Get the vertical scrollbar position. It returns the number of hidden rows.
-      int sbValue = list->verticalScrollBar()->value();
-
-      if( sbValue == 0 )
-        {
-          // No rows are hidden
-          return;
-        }
-
+      // That is the height of one row in the list
       QRect rect = list->visualItemRect(list->topLevelItem(0));
 
       // Calculate rows per page. Headline must be subtracted.
       int pageRows = ( list->height() / rect.height() ) - 1;
 
-      int newIdx = sbValue - pageRows;
+      int newPos = list->verticalScrollBar()->value() - (rect.height() * pageRows);
 
-      if( newIdx >= 0 )
+      int minPos = list->verticalScrollBar()->minimum();
+
+      if( newPos > minPos )
         {
-          list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
+          list->verticalScrollBar()->setValue( newPos );
         }
       else
         {
-          list->scrollToItem( list->topLevelItem(0), QAbstractItemView::PositionAtTop );
+          // Begin of list is reached
+          list->verticalScrollBar()->setValue( minPos );
+          return;
         }
 
       // Start repetition timer, to check, if button is longer pressed.
@@ -656,16 +674,25 @@ void ReachpointListView::slot_PageDown()
           return;
         }
 
+      // That is the height of one row in the list
       QRect rect = list->visualItemRect(list->topLevelItem(0));
 
       // Calculate rows per page. Headline must be subtracted.
       int pageRows = ( list->height() / rect.height() ) - 1;
 
-      int newIdx = list->verticalScrollBar()->value() + pageRows;
+      int newPos = list->verticalScrollBar()->value() + (rect.height() * pageRows);
 
-      if( newIdx < list->topLevelItemCount() )
+      int maxPos = list->verticalScrollBar()->maximum();
+
+      if( newPos < maxPos )
         {
-          list->scrollToItem( list->topLevelItem(newIdx), QAbstractItemView::PositionAtTop );
+          list->verticalScrollBar()->setValue( newPos );
+        }
+      else
+        {
+          // End of list is reached
+          list->verticalScrollBar()->setValue( maxPos );
+          return;
         }
 
       // Start repetition timer, to check, if button is longer pressed.

@@ -303,6 +303,26 @@ class NumberEditor : public QLabel
     m_tip = tip;
   };
 
+  /**
+   * The status of the fixed label height flag.
+   *
+   * @return true if activeted otherwise false
+   */
+  bool getFixHeight() const
+  {
+    return m_fixHeight;
+  };
+
+  /**
+   * The new state of the fixed label height flag.
+   *
+   * @param newValue new state of the related flag
+   */
+  void setFixHeight( bool newValue )
+  {
+    m_fixHeight = newValue;
+  };
+
  signals:
 
   /**
@@ -373,6 +393,9 @@ class NumberEditor : public QLabel
 
   /** Special-value text for display if minimum condition is true. */
   QString m_specialValueText;
+
+  /** Fix height flag of the label. */
+  bool m_fixHeight;
 };
 
 #endif /* NUMBER_EDITOR_H_ */

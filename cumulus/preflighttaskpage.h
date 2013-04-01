@@ -88,7 +88,26 @@ class PreFlightTaskPage : public QWidget
    */
   void updateWayTime();
 
-private slots:
+ signals:
+
+   /**
+    * Emitted, if settings have been changed.
+    */
+   void newTaskSelected();
+
+   /**
+    * Emitted, if a new waypoint was selected.
+    *
+    * @param newWaypoint new selected waypoint.
+    */
+   void newWaypoint( Waypoint* newWaypoint, bool userAction );
+
+   /**
+    * Emitted, if the widget is closed.
+    */
+   void closingWidget();
+
+ private slots:
 
   /** Called, if TAS or wind have been updated. */
   void slotNumberEdited( const QString& number );
@@ -126,7 +145,17 @@ private slots:
    */
   void slotShowFlarmWidget();
 
-private:
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
+ private:
 
   /** task list widget */
   QWidget *m_taskListWidget;

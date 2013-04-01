@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2007-2010 by Axel Pauli, axel@kflog.org
+ **   Copyright (c): 2007-2013 by Axel Pauli, axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,7 +27,9 @@
  * The widget will be closed automatically after a configurable time period,
  * if user do nothing. The user can stop the automatic close.
  *
- * \date 2007-2010
+ * \date 2007-2013
+ *
+ * \version $Id$
  */
 
 #ifndef TP_INFO_WIDGET_H
@@ -109,6 +111,12 @@ class TPInfoWidget : public QWidget
    */
   void slot_Timeout();
 
+  /**
+   * Called, if the cursor position in the text is changed to clear the text
+   * selection.
+   */
+  void slotCursorChanged();
+
  protected:
 
     /**
@@ -122,25 +130,25 @@ class TPInfoWidget : public QWidget
    * This is the widget that actually contains the info we
    * want to display.
    */
-  QTextEdit *text;
+  QTextEdit* m_text;
 
   /**  */
-  QPushButton *cmdClose;
+  QPushButton* m_cmdClose;
 
   /**  */
-  QPushButton *cmdKeep;
+  QPushButton* m_cmdKeep;
 
   /**
    * Reference to a timer. When this timer fires, the widget is
    * automatically closed.
    */
-  QTimer *timer;
+  QTimer* m_timer;
 
   /** TimerCount */
-  int _timerCount;
+  int m_timerCount;
 
-  /** Contains a reference to the parent of the application. */
-  QWidget *parent;
+  /** Contains a reference to the m_parent of the application. */
+  QWidget* m_parent;
 };
 
 #endif

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2012 by Axel Pauli
+**   Copyright (c):  2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,21 +15,67 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "altitude.h"
-#include "generalconfig.h"
-#include "settingspageterraincolors.h"
 #include "elevationcolorimage.h"
+#include "generalconfig.h"
+#include "layout.h"
+#include "settingspageterraincolors.h"
 #include "varspinbox.h"
 
 SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QWidget(parent),
+  colorsChanged(false),
   m_autoSip( true )
 {
   setObjectName("SettingsPageTerrainColors");
 
-  colorsChanged = false;
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Terrain Colors") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal );
 
   /**
    * Altitude levels in meters to be displayed in color combo box.
@@ -104,7 +150,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   groundColor = GeneralConfig::instance()->getGroundColor();
 
   // put all widgets in a HBox layout
-  QHBoxLayout *topLayout = new QHBoxLayout(this);
+  QHBoxLayout *topLayout = new QHBoxLayout(sw);
 
   // create elevation color bar as image
   elevationImage = new ElevationColorImage( &terrainColor[0], this );
@@ -229,6 +275,34 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   topLayout->addLayout( offsetLayout );
   topLayout->insertSpacing(1, 60 );
   topLayout->addStretch( 10 );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageTerrainColors::~SettingsPageTerrainColors()
@@ -245,6 +319,22 @@ void SettingsPageTerrainColors::showEvent(QShowEvent *)
 void SettingsPageTerrainColors::hideEvent( QHideEvent *)
 {
   qApp->setAutoSipEnabled( m_autoSip );
+}
+
+void SettingsPageTerrainColors::slotAccept()
+{
+  if( colorsChanged )
+    {
+      save();
+      emit settingsChanged();
+    }
+
+  QWidget::close();
+}
+
+void SettingsPageTerrainColors::slotReject()
+{
+  QWidget::close();
 }
 
 /**
@@ -386,7 +476,7 @@ void SettingsPageTerrainColors::slot_setColorDefaults()
 /**
  * Called to initiate saving to the configuration file.
  */
-void SettingsPageTerrainColors::slot_save()
+void SettingsPageTerrainColors::save()
 {
   if( colorsChanged )
     {
@@ -401,25 +491,13 @@ void SettingsPageTerrainColors::slot_save()
     }
 
   GeneralConfig::instance()->setElevationColorOffset( elevationOffset->value() );
+  GeneralConfig::instance()->save();
 }
 
 /**
  * Called to initiate loading of the configuration file
  */
-void SettingsPageTerrainColors::slot_load()
+void SettingsPageTerrainColors::load()
 {
   elevationOffset->setValue( GeneralConfig::instance()->getElevationColorOffset() );
-}
-
-/**
- * Called to ask is confirmation on the close is needed.
- */
-void SettingsPageTerrainColors::slot_query_close(bool& warn, QStringList& warnings)
-{
-  if( colorsChanged ||
-      GeneralConfig::instance()->getElevationColorOffset() != elevationOffset->value() )
-    {
-      warn = true;
-      warnings.append(tr("The Terrain color settings"));
-    }
 }

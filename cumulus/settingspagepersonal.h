@@ -40,20 +40,9 @@
 #include <QStringList>
 
 #include "altitude.h"
-
-#ifdef USE_NUM_PAD
-
-class NumberEditor;
-
 #include "coordeditnumpad.h"
 
-#else
-
-class QSpinBox;
-
-#include "coordedit.h"
-
-#endif
+class NumberEditor;
 
 class SettingsPagePersonal : public QWidget
 {
@@ -78,18 +67,17 @@ public:
   /** Checks if the home longitude has been changed */
   bool checkIsHomeLongitudeChanged();
 
-public slots:
-
-  /** Called to initiate saving to the configuration file */
-  void slot_save();
-
-  /** Called to initiate loading of the configuration file. */
-  void slot_load();
-
-  /** Called to ask is confirmation on the close is needed. */
-  void slot_query_close(bool& warn, QStringList& warnings);
-
 private slots:
+
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
   /** Called to open the directory selection dialog */
   void slot_openDirectoryDialog();
@@ -104,7 +92,28 @@ private slots:
 
 #endif
 
+signals:
+
+  /**
+   * Emitted, if settings have been changed.
+   */
+  void settingsChanged();
+
+  /**
+   * Emitted, if the home position was changed.
+   */
+  void homePositionChanged();
+
 private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+  /** Called to check, if something has been changed by the user. */
+  bool checkChanges();
 
   QLineEdit *edtName;
   QComboBox *langBox;
@@ -112,15 +121,9 @@ private:
   QLineEdit *edtHomeName;
   QLineEdit *userDataDir;
 
-#ifdef USE_NUM_PAD
   NumberEditor    *edtHomeElevation;
   LatEditNumPad   *edtHomeLat;
   LongEditNumPad  *edtHomeLong;
-#else
-  QSpinBox *edtHomeElevation;
-  LatEdit  *edtHomeLat;
-  LongEdit *edtHomeLong;
-#endif
 
 #ifdef INTERNET
   QLabel* proxyDisplay;

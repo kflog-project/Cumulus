@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -34,12 +34,13 @@
 #include "gpsnmea.h"
 #include "limitedlist.h"
 #include "polar.h"
+#include "reachablelist.h"
 #include "speed.h"
-#include "windstore.h"
+#include "taskpoint.h"
 #include "vario.h"
 #include "vector.h"
 #include "waypoint.h"
-#include "reachablelist.h"
+#include "windstore.h"
 
 class ReachableList;
 class WindAnalyser;
@@ -47,13 +48,15 @@ class WindAnalyser;
 /**
  * \class FlightSample
  *
- * \author Andrè Somers
+ * \author Andrè Somers, Axel Pauli
  *
  * \brief A single sample from a flight data.
  *
  * This class represents a single sample of flight data obtained.
  *
- * \date 2002-2011
+ * \date 2002-2013
+ *
+ * \version $Id$
  */
 class FlightSample
 {
@@ -112,7 +115,9 @@ public:
  *
  * This is a Singleton class.
  *
- * \date 2002-2010
+ * \date 2002-2013
+ *
+ * \version $Id$
  */
 class Calculator : public QObject
 {
@@ -162,9 +167,14 @@ public:
   const Distance& getlastDistance() const { return lastDistance; };
 
   /**
-   * Read property of Waypoint* selectedWp.
+   * Return the selected waypoint object.
    */
   const Waypoint* getselectedWp() const { return selectedWp; };
+
+  /**
+   * Return the selected waypoint as taskpoint object.
+   */
+  const TaskPoint* getselectedTp() const { return selectedWp; };
 
   /**
    * Read property of Altitude lastAltitude.
@@ -573,6 +583,18 @@ public slots:
     m_minimumAltitude = lastAltitude;
   }
 
+  /**
+   * Called, if the user has zoomed the map. That will reset the auto zoom value
+   * to prevent an unwanted auto zoom.
+   */
+  void slot_userMapZoom();
+
+  /**
+   * Called by a timer event, to zoom back the map to the old zoom value after
+   * passing a task point.
+   */
+  void slot_switchMapScaleBack();
+
 signals: // Signals
 
   /**
@@ -695,12 +717,17 @@ signals: // Signals
    */
   void newGainedAltitude( const Altitude& );
 
+  /**
+   * Sent if the map shall change the zoom factor
+   */
+  void switchMapScale(const double& newScale);
+
 private: // Private methods
   /**
    * Sets a new selected waypoint. The old waypoint instance is
    * deleted and a new one allocated.
    */
-  void setSelectedWp( const Waypoint* newWp );
+  void setSelectedWp( Waypoint* newWp );
 
   /**
    * Calculates the distance to the currently selected waypoint and
@@ -753,8 +780,8 @@ private: // Private attributes
   int lastBearing;
   /** Contains the last calculated distance to the waypoint */
   Distance lastDistance;
-  /** Reference to the selected waypoint */
-  Waypoint* selectedWp;
+  /** Selected waypoint, stored as task point */
+  TaskPoint* selectedWp;
   /** Contains the last calculated ETA */
   QTime lastETA;
   /** contains the current state of ETA calculation */
@@ -843,6 +870,12 @@ private: // Private attributes
 
   /** Altitude gain. */
   Altitude m_gainedAltitude;
+
+  /** Last task point passage state. */
+  enum TaskPoint::PassageState m_lastTpPassageState;
+
+  /** Last used zoom factor. */
+  double m_lastZoomFactor;
 };
 
 extern Calculator* calculator;

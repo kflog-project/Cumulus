@@ -10,7 +10,7 @@
  **
  **   Copyright (c):  2008-2013 by Axel Pauli
  **
- **   Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
+ **   Email of maintainer: axel@kflog.org
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -30,7 +30,7 @@
  *
  * http://qt-project.org/
  *
- * Cumulus is built with the Qt release 4.8.x.
+ * Cumulus cab be built with the release 4.8.x. and 5.0.x
  *
  */
 
@@ -85,8 +85,10 @@ int main(int argc, char *argv[])
 #endif
 
 #ifndef ANDROID
+#if QT_VERSION < 0x050000
   // Note this must be called before QApplication constructor
   QApplication::setGraphicsSystem( "raster" );
+#endif
 #endif
 
   QApplication app(argc, argv, true);
@@ -97,7 +99,9 @@ int main(int argc, char *argv[])
   QCoreApplication::setOrganizationDomain( "www.kflog.org" );
 
   // Make sure the application uses utf8 encoding for translated widgets
+#if QT_VERSION < 0x050000
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
+#endif
 
   // Note, that first $HOME must be overwritten under Android otherwise the
   // setting file is created/searched in the internal data area under:
@@ -132,7 +136,11 @@ int main(int argc, char *argv[])
 #endif /* ANDROID */
 
   // @AP: we installing our own message handler
+#if QT_VERSION < 0x050000
   qInstallMsgHandler(messageHandler);
+#else
+  qInstallMessageHandler(messageHandler);
+#endif
 
   // @AP: to make trace output available, if process is started via
   // QT/X11, we can redirect all output into a file, if configuration option
@@ -199,7 +207,7 @@ int main(int argc, char *argv[])
       logDir += "/cumulus.log";
 
       // Save one old log file version.
-      rename( logDir.toAscii().data(), (logDir + ".old").toAscii().data() );
+      rename( logDir.toLatin1().data(), (logDir + ".old").toLatin1().data() );
 
       int i = open( logDir.toLatin1().data(), O_RDWR|O_CREAT|O_TRUNC,
                     S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH );
@@ -216,7 +224,7 @@ int main(int argc, char *argv[])
 
   qDebug() << "Cumulus addDir and QtHome:" << addDir;
   qDebug() << "Cumulus appDir:" << appDir;
-  qDebug() << "Cumulus logDir:" << logDir;
+  qDebug() << "Cumulus LogDir:" << logDir;
 
 #endif
 
@@ -297,6 +305,18 @@ int main(int argc, char *argv[])
           int res = QFontDatabase::addApplicationFont( fontList.at(i) );
           qDebug() << "Try to add font" << fontList.at(i) << "to data base with ID=" << res;
         }
+    }
+
+  QHash <QString, float> dmh = jniGetDisplayMetrics();
+
+  QHashIterator<QString, float> i(dmh);
+
+  qDebug() << "Android display metrics as key value list";
+
+  while( i.hasNext() )
+    {
+      i.next();
+      qDebug() << i.key() << "=" << i.value();
     }
 
 #endif

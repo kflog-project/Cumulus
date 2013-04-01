@@ -201,17 +201,24 @@ public slots:
   void slotSwitchToInfoView();
   /** This slot is called to switch to the info view and to show the waypoint data. */
   void slotSwitchToInfoView(Waypoint* wp);
-  /** Opens the config "dialog". */
+
+  /** Opens the general configuration dialog. */
   void slotOpenConfig();
-  /** Opens the pre-flight "dialog". */
-  void slotOpenPreFlight(const char *tabName);
-  /** This slot is called if the configuration has changed and at the start of the program to read the initial configuration. */
+
+  /** Opens the pre-flight dialog. */
+  void slotOpenPreFlightConfig();
+
+  /**
+   * This slot is called if the configuration has changed and at the start
+   * of the program to read the initial configuration.
+   */
   void slotReadconfig();
-  /** Called if the status of the GPS changes, and controls the availability of manual navigation. */
+
+  /**
+   * Called if the status of the GPS changes, and controls the availability
+   * of manual navigation.
+   */
   void slotGpsStatus(GpsNmea::GpsStatus status);
-  /** Opens the pre flight dialog */
-  void slotPreFlightGlider();
-  void slotPreFlightTask();
   /** shows resp. signals a notification */
   void slotNotification (const QString&, const bool sound=true);
   /** shows resp. signals an alarm */

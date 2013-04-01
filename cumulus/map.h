@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This class provides the basic functions for the map display.
  *
- * \date 1999-2012
+ * \date 1999-2013
  *
  * \version $Id$
  *
@@ -294,6 +294,11 @@ signals:
    */
   void newPosition( QPoint& newPosition );
 
+  /**
+   * Is emitted, if a zoom button is pressed by the user.
+   */
+  void userZoom();
+
 protected:
   /**
    * Redefinition of paintEvent.
@@ -493,10 +498,10 @@ private:
   void p_drawDirectionLine(const QPoint& from);
 
   /**
-   * This function draws a "track line" beginning from the current position in
+   * This function draws a "heading line" beginning from the current position in
    * the moving direction.
    */
-  void p_drawTrackLine(const QPoint& from);
+  void p_drawHeadingLine(const QPoint& from);
 
   /**
    * Draws a relative bearing indicator in the upper map area, if the flight

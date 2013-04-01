@@ -527,7 +527,7 @@ void Flarm::createTrafficMessage()
   // Load an arrow pixmap to show the traffic direction more in detail.
   QString arrow;
   arrow.sprintf("%s/icons/windarrows/wind-arrow-80px-%03d.png",
-                 GeneralConfig::instance()->getAppRoot().toAscii().data(),
+                 GeneralConfig::instance()->getAppRoot().toLatin1().data(),
                  ta );
 
   QString text = "<html><table border=1 cellpadding=\"5\"><tr><th align=center colspan=\"2\">" +

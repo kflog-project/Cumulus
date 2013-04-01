@@ -18,21 +18,22 @@
 
 #include <cmath>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "altitude.h"
 #include "basemapelement.h"
 #include "generalconfig.h"
+#include "numberEditor.h"
 #include "wgspoint.h"
 #include "wpeditdialogpagegeneral.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
-
-#ifdef USE_NUM_PAD
-#include "numberEditor.h"
-#endif
 
 WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QWidget(parent)
@@ -117,23 +118,13 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblLat = new QLabel(tr("Latitude:"), this);
   topLayout->addWidget(lblLat, row, 0);
 
-#ifdef USE_NUM_PAD
   m_edtLat = new LatEditNumPad(this, conf->getHomeLat());
-#else
-  m_edtLat = new LatEdit(this, conf->getHomeLat());
-#endif
-
   topLayout->addWidget(m_edtLat, row++, 1, 1, 2);
 
   QLabel * lblLon = new QLabel(tr("Longitude:"), this);
   topLayout->addWidget(lblLon, row, 0);
 
-#ifdef USE_NUM_PAD
   m_edtLong = new LongEditNumPad(this, conf->getHomeLon());
-#else
-  m_edtLong = new LongEdit(this, conf->getHomeLon());
-#endif
-
   topLayout->addWidget(m_edtLong, row++, 1, 1, 2);
 
   QLabel * lblElev = new QLabel(tr("Elevation:"), this);
@@ -141,7 +132,6 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QBoxLayout * elevLayout = new QHBoxLayout();
   topLayout->addLayout(elevLayout, row++, 1);
 
-#ifdef USE_NUM_PAD
   m_edtElev = new NumberEditor( this );
   m_edtElev->setDecimalVisible( false );
   m_edtElev->setSuffix( " " + Altitude::getUnitText() );
@@ -150,17 +140,10 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_edtElev->setText("0");
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(0|-?[1-9][0-9]{0,4})" ), this );
   m_edtElev->setValidator( eValidator );
-#else
-  m_edtElev = new QLineEdit(this);
-  m_edtElev->setValidator( new QRegExpValidator(QRegExp("[1-9][0-9]*"), this) );
-#endif
-
   elevLayout->addWidget(m_edtElev);
 
-#ifndef USE_NUM_PAD
   QLabel * lblElevUnit = new QLabel(Altitude::getUnitText(), this);
   elevLayout->addWidget(lblElevUnit);
-#endif
 
   topLayout->setRowMinimumHeight(row++, 10);
 
@@ -169,14 +152,15 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_cmbType = new QComboBox(this);
   m_cmbType->setObjectName("Type");
   m_cmbType->setEditable(false);
+  m_cmbType->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  m_cmbType->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(m_cmbType->view(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(m_cmbType->view());
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   topLayout->addWidget(m_cmbType, row++, 1);

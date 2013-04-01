@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2012 modified by Axel Pauli
+ **                   2008-2013 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -262,7 +262,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
   double cs = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
   // snap distance
-  delta = SnapRadius;
+  delta = Layout::mouseSnapRadius();
 
   // Manhattan distance is used to found the point.
   int lastDist = 2 * delta + 1;
@@ -1019,15 +1019,18 @@ void Map::p_drawTrail()
         }
     }
 
+  // we do take the task course line width
+  qreal penWidth = GeneralConfig::instance()->getMapTrailLineWidth();
+  QColor color = GeneralConfig::instance()->getMapTrailColor();
+
   if( m_tpp.isEmpty() == false )
     {
       // draw the trail
       QPainter p;
       p.begin( &m_pixInformationMap );
 
-      QPen pen( Qt::black, 4 );
+      QPen pen( color, penWidth );
       p.setPen(pen);
-
       p.drawPath(m_tpp);
       p.end();
     }
@@ -2144,7 +2147,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
                 }
               else
                 {
-                  static QTime lastDisplay;
+                  static QTime lastDisplay = QTime::currentTime();
 
                   // The display is updated every 1 seconds only.
                   // That will reduce the X-Server load.
@@ -2560,7 +2563,7 @@ void Map::p_drawGlider()
   p_drawDirectionLine(QPoint(Rx,Ry));
 
   // draws a line from the current position into the movement direction.
-  p_drawTrackLine( QPoint(Rx,Ry) );
+  p_drawHeadingLine( QPoint(Rx,Ry) );
 
   p_drawRelBearingInfo();
 
@@ -2568,7 +2571,6 @@ void Map::p_drawGlider()
   QPainter p(&m_pixInformationMap);
   p.drawPixmap( Rx-40, Ry-40, _glider, rot*80, 0, 80, 80 );
 }
-
 
 /** Draws the X symbol on the pixmap */
 void Map::p_drawX()
@@ -2600,10 +2602,11 @@ void Map::p_drawX()
   p.drawPixmap(  Rx-20, Ry-20, _cross );
 }
 
-
 /** Used to zoom into the map. Will schedule a redraw. */
 void Map::slotZoomIn()
 {
+  emit userZoom();
+
   // @AP: block zoom events, if map is redrawn
   if( mutex() )
     {
@@ -2642,7 +2645,6 @@ void Map::slotZoomIn()
   _globalMapView->message( msg );
 }
 
-
 /** Used . Will schedule a redraw. */
 void Map::slotRedraw()
 {
@@ -2654,6 +2656,7 @@ void Map::slotRedraw()
 /** Used to zoom the map out. Will schedule a redraw. */
 void Map::slotZoomOut()
 {
+  emit userZoom();
 
   // @AP: block zoom events, if map is redrawn
   if( mutex() )
@@ -2692,7 +2695,6 @@ void Map::slotZoomOut()
   QString msg = QString(tr("Zoom scale 1:%1")).arg(zoomFactor, 0, 'f', 0);
   _globalMapView->message( msg );
 }
-
 
 /**
  * This function schedules a redraw of the map. It sets two timers:
@@ -2793,12 +2795,12 @@ void Map::p_drawDirectionLine(const QPoint& from)
 }
 
 /**
- * This function draws a "track line" beginning from the current position in
+ * This function draws a "heading line" beginning from the current position in
  * the moving direction.
  */
-void Map::p_drawTrackLine(const QPoint& from)
+void Map::p_drawHeadingLine(const QPoint& from)
 {
-  if( ! GeneralConfig::instance()->getTrackLineDrawState() ||
+  if( ! GeneralConfig::instance()->getHeadingLineDrawState() ||
       ! calculator || ! calculator->getselectedWp() )
     {
       return;
@@ -2824,8 +2826,8 @@ void Map::p_drawTrackLine(const QPoint& from)
   QPoint to( toX, toY );
 
   // we do take the task course line width
-  qreal penWidth = GeneralConfig::instance()->getTrackLineWidth();
-  QColor color = GeneralConfig::instance()->getTrackLineColor();
+  qreal penWidth = GeneralConfig::instance()->getHeadingLineWidth();
+  QColor color = GeneralConfig::instance()->getHeadingLineColor();
 
   QPainter lineP;
   lineP.begin(&m_pixInformationMap);

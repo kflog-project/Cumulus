@@ -19,16 +19,15 @@
 
 #include <QtGui>
 
-#include "flarmdisplay.h"
-#include "flarmaliaslist.h"
-#include "flarm.h"
-#include "distance.h"
 #include "altitude.h"
-#include "speed.h"
 #include "calculator.h"
 #include "distance.h"
-#include "mapconfig.h"
+#include "flarmaliaslist.h"
+#include "flarmdisplay.h"
+#include "flarm.h"
 #include "layout.h"
+#include "mapconfig.h"
+#include "speed.h"
 
 // Initialize static variables
 enum FlarmDisplay::Zoom FlarmDisplay::zoomLevel = FlarmDisplay::Low;
@@ -119,7 +118,21 @@ void FlarmDisplay::createBackground()
   painter.drawEllipse( centerX - width/2, centerY - height/2, width, height );
 
   QFont f = painter.font();
-  f.setPixelSize(FlarmDisplayPainterFontPixelSize);
+
+  float fdpfps = FlarmDisplayPainterFontPixelSize;
+
+#ifdef ANDROID
+
+  float sd = Layout::getScaledDensity();
+
+  if( sd > 1.0 )
+    {
+      fdpfps *= sd;
+    }
+
+#endif
+
+  f.setPixelSize( (int) rint(fdpfps) );
   f.setBold( true );
   painter.setFont(f);
 
@@ -229,7 +242,8 @@ void FlarmDisplay::mousePressEvent( QMouseEvent *event )
   bool found = false;
 
   // Radius for Mouse Snapping
-  int delta = 25, dX = 0, dY = 0;
+  int delta = Layout::mouseSnapRadius();
+  int dX = 0, dY = 0;
 
   // Manhattan distance to found point.
   int lastDist = 2*delta + 1;
@@ -454,7 +468,19 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           QFont f = painter.font();
 
           // Note that we set the font's pixel size!
-          f.setPixelSize(FlarmDisplayPainterFontPixelSize);
+          float fdpfps = FlarmDisplayPainterFontPixelSize;
+
+#ifdef ANDROID
+
+          float sd = Layout::getScaledDensity();
+
+          if( sd > 1.0 )
+            {
+              fdpfps *= sd;
+            }
+
+#endif
+          f.setPixelSize( (int) rint(fdpfps) );
           f.setBold( true );
           painter.setFont(f);
 

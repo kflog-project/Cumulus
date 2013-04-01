@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 by Axel Pauli
+**   Copyright (c):  2012-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -17,23 +17,44 @@
 
 #include "layout.h"
 
-void Layout::adaptFont( QFont& fontRef,
-                           const int pxHeight,
-                           const int startPointSize,
-                           const int minPointSize )
-{
-  fontRef.setPointSize( startPointSize );
+#ifdef ANDROID
+#include "jnisupport.h"
+#endif
 
+void Layout::adaptFont( QFont& fontRef,
+                        const int pxHeight,
+                        const int startPointSize,
+                        const int minPointSize )
+{
   int start = startPointSize;
 
+  // Set font size to start value
+  if( fontRef.pointSize() != -1 )
+    {
+      fontRef.setPointSize( start );
+    }
+  else
+    {
+      fontRef.setPixelSize( start );
+    }
+
   // Adapt the font point size to the given pixel height.
-  while( start >= minPointSize )
+  while( start > minPointSize )
     {
       QFontMetrics qfm(fontRef);
 
-      if( (qfm.boundingRect("XM").height() ) > pxHeight )
+      if( (qfm.height() ) > pxHeight )
         {
-          fontRef.setPointSize( --start );
+          // Determine, what kind of font is used
+          if( fontRef.pointSize() != -1 )
+            {
+              fontRef.setPointSize( --start );
+            }
+          else
+            {
+              fontRef.setPixelSize( --start );
+            }
+
           continue;
         }
       else
@@ -60,4 +81,171 @@ int Layout::maxTextWidth( const QStringList& list, const QFont& font )
     }
 
   return width;
+}
+
+#ifdef ANDROID
+
+float Layout::getScaledDensity()
+{
+  QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+  return dmh.value( "scaledDensity", 0.0 );
+}
+
+#endif
+
+int Layout::mouseSnapRadius()
+{
+#ifndef ANDROID
+
+  // return the fixed value
+  return SnapRadius;
+
+#else
+
+  // calculate mouse snap radius according to the scaled density.
+  int sr = SnapRadius;
+
+  // calculate radius in dependency of the scale factor
+  QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+  float sd = dmh.value( "scaledDensity", 0.0 );
+
+  if( sd > 1.0 )
+    {
+      sr = (int) rint( sr * sd );
+    }
+
+  return sr;
+
+#endif
+}
+
+void Layout::fitGuiFont( QFont& font )
+{
+#ifndef ANDROID
+
+  // return the fixed value
+  Layout::adaptFont( font, GuiFontHeight );
+
+#else
+
+  // calculate GUI font height according to the screen size
+  QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+  // Get screen height from Android
+  float hp = dmh.value( "heightPixels", 0.0 );
+
+  // We want to display 14 lines in the height of the display
+  int gfh = (int) rint( hp / 14.);
+
+  Layout::adaptFont( font, gfh );
+
+  // Check maximum of point size and lower it, if necessary.
+  if( font.pointSize() > 14 )
+    {
+      font.setPointSize( 14 );
+    }
+
+#endif
+
+    qDebug() << "Layout::fitGuiFont=" << font.toString()
+             << "FontHeight=" << QFontMetrics(font).height();
+}
+
+void Layout::fitGuiMenuFont( QFont& font )
+{
+#ifndef ANDROID
+
+  // return the fixed value
+  Layout::adaptFont( font, GuiMenuFontHeight );
+
+#else
+
+  // calculate GUI menu font height according to the screen size
+  QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+  // Get screen height from Android
+  float hp = dmh.value( "heightPixels", 0.0 );
+
+  // We want to display 11 lines in the height of the display. That should
+  // be a good value for a menu font
+  int gmfh = (int) rint( hp / 11.);
+
+  Layout::adaptFont( font, gmfh );
+
+  // Check maximum of point size and lower it, if necessary.
+  if( font.pointSize() > 18 )
+    {
+      font.setPointSize( 18 );
+    }
+
+#endif
+
+  qDebug() << "Layout::fitGuiMenuFont=" << font.toString()
+           << "FontHeight=" << QFontMetrics(font).height();
+}
+
+void Layout::fitDialogFont( QFont& font )
+{
+#ifndef ANDROID
+
+  // return the fixed value
+  Layout::adaptFont( font, DialogMinFontSize );
+
+#else
+
+  // calculate GUI font height according to the screen size
+  QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+  // Get screen height from Android
+  float hp = dmh.value( "heightPixels", 0.0 );
+
+  // We want to display 12 lines in the height of the display
+  int dfh = (int) rint( hp / 12.);
+
+  Layout::adaptFont( font, dfh );
+
+  // Check maximum of point size and lower it, if necessary.
+  if( font.pointSize() > 16 )
+    {
+      font.setPointSize( 16 );
+    }
+
+#endif
+
+  qDebug() << "Layout::fitDialogFont=" << font.toString()
+           << "FontHeight=" << QFontMetrics(font).height();
+}
+
+void Layout::fitStatusbarFont( QFont& font )
+{
+#ifndef ANDROID
+
+  // return the fixed value
+  Layout::adaptFont( font, StatusbarFontHeight );
+
+#else
+
+  // calculate GUI font height according to the screen size
+  QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+  // Get screen height from Android
+  float hp = dmh.value( "heightPixels", 0.0 );
+
+  // // We want to display 17 lines in the height of the display
+  int sbfh = (int) rint( hp / 17.);
+
+  Layout::adaptFont( font, sbfh );
+
+  // Check maximum of point size and lower it, if necessary.
+  if( font.pointSize() > 12 )
+    {
+      font.setPointSize( 12 );
+    }
+
+#endif
+
+    qDebug() << "Layout::fitStatusbarFont=" << font.toString()
+             << "FontHeight=" << QFontMetrics(font).height();
 }

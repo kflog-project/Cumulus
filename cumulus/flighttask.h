@@ -7,15 +7,12 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2012 by Axel Pauli
+**                   2007-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 **   $Id$
-**
-**   This class provides calculation, drawing and other support
-**   for flight tasks and contains the data of a task.
 **
 ***********************************************************************/
 
@@ -26,7 +23,11 @@
  *
  * \brief Class to handle all things of a flight task.
  *
- * \date 2002-2012
+ * This class provides calculation, drawing and other support
+ * for flight tasks and contains the data of the flight task.
+ *
+ *
+ * \date 2002-2013
  *
  * \version $Id$
  */
@@ -226,7 +227,7 @@ class FlightTask : public BaseMapElement
   /** */
   int getPlanningType() const
   {
-    return __planningType;
+    return _planningType;
   };
 
   /** returns the planned cruising speed */
@@ -319,17 +320,6 @@ class FlightTask : public BaseMapElement
                         int ora, int ira,
                         int sba, int sa );
 
-
-  /** check, if task sector has been arrived.
-   * dist2TP: distance to task point
-   * position: current position as WGS84 datum
-   * taskPointIndex: index of TP in waypoint list
-   * returns true, if inside of sector otherwise false
-   */
-  bool checkSector( const Distance& dist2TP,
-                    const QPoint& position,
-                    const int taskPointIndex );
-
   /**
    * updates the internal task data
    */
@@ -381,37 +371,33 @@ class FlightTask : public BaseMapElement
  private:
 
   /**
-   * Does all map drawing actions for task points using cylinder scheme
    *
-   */
-  void circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawnTp );
-
-  /**
-   * Reimplemented from BaseMapElement.
    * Draws a circle around the given position.
    *
-   * Painter as Cumulus special painter device
-   * coordinate as projected position of the point
-   * scaled radius as meters
-   * fillColor, do not fill, if set to invalid
-   * drawShape, if set to true, draw outer circle with black color
+   * @param painter Painter Painter to be used
+   * @param centerCoordinate coordinate of center point as projected position
+   * @param radius The scaled radius in meters
+   * @param fillColor The fillColor. Do not fill, if it is set to false
+   * @param drawShape If set to true, draw outer circle with black color
    */
 
   void drawCircle( QPainter* painter,
-		   QPoint& centerCoordinate, const int radius,
-		   QColor& fillColor, const bool drawShape=true );
+		   QPoint& centerCoordinate,
+		   const int radius,
+		   QColor& fillColor,
+		   const bool drawShape=true );
 
   /**
    * Draws a sector around the given position.
    *
-   * Painter as Cumulus special painter device
-   * coordinate as projected position of the point
-   * scaled inner radius as meters
-   * scaled outer radius as meters
-   * bisector angle in degrees
-   * spanning angle in degrees
-   * fillColor, do not fill, if set to invalid
-   * drawShape, if set to true, draw outer circle with black color
+   * @param painter Painter Painter to be used
+   * @param centerCoordinate coordinate of center point as projected position
+   * @param innerRadius scaled inner radius as meters
+   * @param outerRadius scaled outer radius as meters
+   * @param biangle bisector angle in degrees
+   * @param spanning angle in degrees
+   * @param fillColor, do not fill, if set to invalid
+   * @param drawShape, if set to true, draw outer circle with black color
    */
 
   void drawSector( QPainter* painter,
@@ -472,7 +458,7 @@ class FlightTask : public BaseMapElement
   int duration_total;
 
   /** planned task type */
-  int __planningType;
+  int _planningType;
 
   /** task name */
   QString _taskName;

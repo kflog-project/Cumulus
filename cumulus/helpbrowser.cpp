@@ -17,15 +17,19 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "helpbrowser.h"
 #include "generalconfig.h"
 #include "layout.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 HelpBrowser::HelpBrowser( QWidget *parent ) :
   QWidget(parent, Qt::Tool),
@@ -35,79 +39,83 @@ HelpBrowser::HelpBrowser( QWidget *parent ) :
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
   setAttribute(Qt::WA_DeleteOnClose);
 
-  browser = new QTextBrowser(this);
+  m_browser = new QTextBrowser(this);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(browser, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_browser->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(browser);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture(m_browser->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
-  browser->setOpenLinks( true );
-  browser->setOpenExternalLinks( true );
+  m_browser->setOpenLinks( true );
+  m_browser->setOpenExternalLinks( true );
+
+  connect( m_browser, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
+
+  // get the icon size to be used
+  const int iconSize = Layout::iconSize( font() );
 
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
-  home->setIconSize(QSize(IconSize, IconSize));
+  home->setIconSize(QSize(iconSize, iconSize));
   home->setToolTip( tr("Begin") );
 
   QPushButton *back = new QPushButton();
   back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "left.png") ) );
-  back->setIconSize(QSize(IconSize, IconSize));
+  back->setIconSize(QSize(iconSize, iconSize));
   back->setToolTip( tr("Backward") );
 
   QPushButton *forward = new QPushButton();
   forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "right.png") ) );
-  forward->setIconSize(QSize(IconSize, IconSize));
+  forward->setIconSize(QSize(iconSize, iconSize));
   forward->setToolTip( tr("Forward") );
 
-  zoomIn = new QPushButton();
-  zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
-  zoomIn->setIconSize(QSize(IconSize, IconSize));
-  zoomIn->setToolTip( tr("Zoom in") );
+  m_zoomIn = new QPushButton();
+  m_zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
+  m_zoomIn->setIconSize(QSize(iconSize, iconSize));
+  m_zoomIn->setToolTip( tr("Zoom in") );
 
-  zoomOut = new QPushButton();
-  zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
-  zoomOut->setIconSize(QSize(IconSize, IconSize));
-  zoomOut->setToolTip( tr("Zoom out") );
+  m_zoomOut = new QPushButton();
+  m_zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
+  m_zoomOut->setIconSize(QSize(iconSize, iconSize));
+  m_zoomOut->setToolTip( tr("Zoom out") );
 
   QPushButton *close = new QPushButton();
   close->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "cancel.png") ) );
-  close->setIconSize(QSize(IconSize, IconSize));
+  close->setIconSize(QSize(iconSize, iconSize));
   close->setToolTip( tr("Close") );
 
   QHBoxLayout *butLayout = new QHBoxLayout;
+  butLayout->setSpacing( 25 );
   butLayout->addWidget( home );
   butLayout->addWidget( back );
   butLayout->addWidget( forward );
-  butLayout->addWidget( zoomIn );
-  butLayout->addWidget( zoomOut );
+  butLayout->addWidget( m_zoomIn );
+  butLayout->addWidget( m_zoomOut );
   butLayout->addStretch();
   butLayout->addWidget( close );
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
   mainLayout->addLayout( butLayout );
-  mainLayout->addWidget( browser );
+  mainLayout->addWidget( m_browser );
   setLayout( mainLayout );
 
-  connect( home, SIGNAL(released()),    browser, SLOT(home()));
-  connect( back, SIGNAL(released()),    browser, SLOT(backward()));
-  connect( forward, SIGNAL(released()), browser, SLOT(forward()));
-  connect( zoomIn, SIGNAL(pressed()),  this, SLOT( slotZoomIn()));
-  connect( zoomOut, SIGNAL(pressed()), this, SLOT( slotZoomOut()));
+  connect( home, SIGNAL(released()),    m_browser, SLOT(home()));
+  connect( back, SIGNAL(released()),    m_browser, SLOT(backward()));
+  connect( forward, SIGNAL(released()), m_browser, SLOT(forward()));
+  connect( m_zoomIn, SIGNAL(pressed()),  this, SLOT( slotZoomIn()));
+  connect( m_zoomOut, SIGNAL(pressed()), this, SLOT( slotZoomOut()));
   connect( close, SIGNAL(released()),   this, SLOT( close()));
 }
 
 HelpBrowser::~HelpBrowser()
 {
-  // qDebug("HelpBrowser::~HelpBrowser()");
 }
 
 /** Catch show events. If the first event is caught, we will load
- *  the help file into the browser.
+ *  the help file into the m_browser.
  */
 void HelpBrowser::showEvent( QShowEvent * )
 {
@@ -163,20 +171,20 @@ void HelpBrowser::showEvent( QShowEvent * )
 
   QUrl url = QUrl::fromLocalFile( helpFile );
 
-  browser->setSource( url );
+  m_browser->setSource( url );
 }
 
 /** User request, to zoom into the document. */
 void HelpBrowser::slotZoomIn()
 {
-  if( zoomIn->isDown() )
+  if( m_zoomIn->isDown() )
     {
-      QFont curFt = browser->currentFont();
+      QFont curFt = m_browser->currentFont();
 
       if( (curFt.pointSize() != -1 && curFt.pointSize() < 24) ||
           (curFt.pixelSize() != -1 && curFt.pixelSize() < 24) )
         {
-          browser->zoomIn();
+          m_browser->zoomIn();
         }
 
       // Start repetition timer, to check, if button is longer pressed.
@@ -187,19 +195,27 @@ void HelpBrowser::slotZoomIn()
 /** User request, to zoom out the document. */
 void HelpBrowser::slotZoomOut()
 {
-  if( zoomOut->isDown() )
+  if( m_zoomOut->isDown() )
     {
-      QFont curFt = browser->currentFont();
+      QFont curFt = m_browser->currentFont();
 
       if( (curFt.pointSize() != -1 && curFt.pointSize() > 8) ||
           (curFt.pixelSize() != -1 && curFt.pixelSize() > 8))
         {
-          browser->zoomOut();
+          m_browser->zoomOut();
         }
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotZoomOut()));
     }
+}
+
+void HelpBrowser::slotCursorChanged()
+{
+  // Clear cursor's text selection.
+  QTextCursor textCursor = m_browser->textCursor();
+  textCursor.clearSelection();
+  m_browser->setTextCursor( textCursor );
 }
 
 /** catch certain key events for special handling */

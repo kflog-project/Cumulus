@@ -18,8 +18,17 @@
 
 #include <climits>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
+#include "calculator.h"
 #include "distance.h"
 #include "generalconfig.h"
 #include "layout.h"
@@ -28,8 +37,9 @@
 #include "numberEditor.h"
 #include "preflighttaskpage.h"
 #include "speed.h"
-#include "taskeditor.h"
 #include "target.h"
+#include "taskeditor.h"
+#include "taskfilemanager.h"
 #include "wgspoint.h"
 #include "rowdelegate.h"
 
@@ -37,26 +47,37 @@
 #include "preflightflarmpage.h"
 #endif
 
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
-
 PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   QWidget( parent ),
   m_editTask(0)
 {
   setObjectName("PreFlightTaskPage");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("PreFlight - Task") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
 
   int msw = QFontMetrics(font()).width("999 Km/h") + 10;
   int mdw = QFontMetrics(font()).width("999" + QString(Qt::Key_degree)) + 10;
 
-  QVBoxLayout* taskLayout = new QVBoxLayout( this );
+  QVBoxLayout* taskLayout = new QVBoxLayout;
+  contentLayout->addLayout( taskLayout, 5 );
+
   taskLayout->setSpacing(5);
-  taskLayout->setMargin(5);
+  taskLayout->setMargin(0);
 
   QHBoxLayout* editrow = new QHBoxLayout;
   editrow->setSpacing(5);
   taskLayout->addLayout( editrow );
+  taskLayout->addSpacing( 10 );
 
   QLabel *label = new QLabel( tr("TAS"), this );
   editrow->addWidget(label);
@@ -105,27 +126,29 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   editrow->addWidget(m_windSpeed);
   editrow->addStretch(10);
 
+  const int iconSize = Layout::iconSize( font() );
+
   QPushButton * cmdNew = new QPushButton;
   cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
-  cmdNew->setIconSize(QSize(IconSize, IconSize));
+  cmdNew->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cmdNew->setToolTip(tr("Define a new task"));
 #endif
   editrow->addWidget(cmdNew);
 
-  editrow->addSpacing(10);
+  editrow->addSpacing(20);
   QPushButton * cmdEdit = new QPushButton;
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  cmdEdit->setIconSize(QSize(IconSize, IconSize));
+  cmdEdit->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cmdEdit->setToolTip(tr("Edit selected task"));
 #endif
   editrow->addWidget(cmdEdit);
 
-  editrow->addSpacing(10);
+  editrow->addSpacing(20);
   QPushButton * cmdDel = new QPushButton;
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
-  cmdDel->setIconSize(QSize(IconSize, IconSize));
+  cmdDel->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cmdDel->setToolTip(tr("Remove selected task"));
 #endif
@@ -135,6 +158,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   m_taskListWidget = new QWidget( this );
   QVBoxLayout *tlLayout = new QVBoxLayout( m_taskListWidget );
+  tlLayout->setMargin( 0 );
 
   m_taskList = new QTreeWidget;
 
@@ -150,14 +174,15 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_taskList->setSelectionMode(QAbstractItemView::SingleSelection);
   m_taskList->setColumnCount(5);
   m_taskList->setFocus();
+  m_taskList->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_taskList->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(m_taskList, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_taskList->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(m_taskList);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture(m_taskList->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
   // set new row height from configuration
@@ -236,6 +261,32 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   connect( tvCloseButton, SIGNAL(pressed()),
            this, SLOT( slotShowTaskListWidget() ) );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
 
   loadTaskList();
 }
@@ -412,7 +463,6 @@ FlightTask* PreFlightTaskPage::takeSelectedTask()
 /** load tasks from file*/
 bool PreFlightTaskPage::loadTaskList()
 {
-  extern MapMatrix *_globalMapMatrix;
   QStringList rowList;
 
   while ( !m_flightTaskList.isEmpty() )
@@ -422,14 +472,12 @@ bool PreFlightTaskPage::loadTaskList()
 
   m_taskNames.clear();
 
-#warning "task list file 'tasks.tsk' is stored at User Data Directory"
+  TaskFileManager tfm;
+  tfm.setTas( m_tas->value() );
 
-  // currently hard coded file name
-  QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
-
-  if ( ! f.open( QIODevice::ReadOnly ) )
+  if( tfm.loadTaskList( m_flightTaskList ) == false )
     {
-      // could not read file ...
+      // could not read file
       rowList << " " << tr("(No tasks defined)");
       m_taskList->addTopLevelItem( new QTreeWidgetItem(m_taskList, rowList, 0) );
       m_taskList->setCurrentItem( m_taskList->itemAt(0,m_taskList->topLevelItemCount()-1) );
@@ -447,107 +495,28 @@ bool PreFlightTaskPage::loadTaskList()
       return false;
     }
 
-  QTextStream stream( &f );
-  QString line;
-  bool isTask( false );
-  QString numTask, taskName;
-  QStringList tmpList;
-  QList<TaskPoint *> *tpList = 0;
-
-  while ( !stream.atEnd() )
+  for( int i = 0; i < m_flightTaskList.size(); i++ )
     {
-      line = stream.readLine();
+      FlightTask* task = m_flightTaskList.at(i);
 
-      if ( line.mid( 0, 1 ) == "#" )
-        {
-          continue;
-        }
+      QString taskNum = QString("%1").arg(i + 1, 2, 10, QLatin1Char('0'));
 
-      if ( line.mid( 0, 2 ) == "TS" )
-        {
-          // new task ...
-          isTask = true;
+      rowList << taskNum
+              << task->getTaskName()
+              << task->getTaskTypeString()
+              << task->getTaskDistanceString()
+              << "";
 
-          if ( tpList != 0 )
-            {
-              // remove all elements from previous incomplete step
-              qDeleteAll(*tpList);
-              tpList->clear();
-            }
-          else
-            {
-              tpList = new QList<TaskPoint *>;
-            }
+      QTreeWidgetItem *item = new QTreeWidgetItem( m_taskList, rowList, 0 );
+      item->setTextAlignment( 0, Qt::AlignCenter);
+      item->setTextAlignment( 3, Qt::AlignRight);
+      item->setTextAlignment( 4, Qt::AlignRight);
 
-          tmpList = line.split( ",", QString::KeepEmptyParts );
-          taskName = tmpList.at(1);
-        }
-      else
-        {
-          if ( line.mid( 0, 2 ) == "TW" && isTask )
-            {
-              // new task point
-              TaskPoint* tp = new TaskPoint;
-              tpList->append( tp );
+      m_taskList->addTopLevelItem( item );
+      rowList.clear();
 
-              tmpList = line.split( ",", QString::KeepEmptyParts );
-
-              tp->origP.setLat( tmpList.at( 1 ).toInt() );
-              tp->origP.setLon( tmpList.at( 2 ) .toInt() );
-              tp->projP = _globalMapMatrix->wgsToMap( tp->origP );
-              tp->elevation = tmpList.at( 3 ).toInt();
-              tp->name = tmpList.at( 4 );
-              tp->icao = tmpList.at( 5 );
-              tp->description = tmpList.at( 6 );
-              tp->frequency = tmpList.at( 7 ).toDouble();
-              tp->comment = tmpList.at( 8 );
-              tp->isLandable = tmpList.at( 9 ).toInt();
-              tp->runway = tmpList.at( 10 ).toInt();
-              tp->length = tmpList.at( 11 ).toInt();
-              tp->surface = tmpList.at( 12 ).toInt();
-              tp->type = tmpList.at( 13 ).toInt();
-            }
-          else
-            {
-              if ( line.mid( 0, 2 ) == "TE" && isTask )
-                {
-                  // task complete
-                  isTask = false;
-                  FlightTask* task = new FlightTask( tpList, true,
-                                                     taskName, m_tas->value() );
-                  m_flightTaskList.append( task );
-
-                  tpList = 0; // ownership was overtaken by FlighTask
-                  numTask.sprintf( "%02d", m_flightTaskList.count() );
-
-                  rowList << numTask
-                          << taskName
-                          << task->getTaskTypeString()
-                          << task->getTaskDistanceString()
-                          << "";
-
-                  QTreeWidgetItem *item = new QTreeWidgetItem( m_taskList, rowList, 0 );
-                  item->setTextAlignment( 0, Qt::AlignCenter);
-                  item->setTextAlignment( 3, Qt::AlignRight);
-                  item->setTextAlignment( 4, Qt::AlignRight);
-
-                  m_taskList->addTopLevelItem( item );
-                  rowList.clear();
-
-                  // save task name
-                  m_taskNames << taskName;
-                }
-            }
-        }
-    }
-
-  f.close();
-
-  if ( tpList != 0 )
-    {
-      // remove all elements from previous incomplete step
-      qDeleteAll(*tpList);
-      delete tpList;
+      // save task name
+      m_taskNames << task->getTaskName();
     }
 
   if ( m_flightTaskList.count() == 0 )
@@ -559,7 +528,7 @@ bool PreFlightTaskPage::loadTaskList()
     }
   else
     {
-      rowList << " " << tr("(Reset selection)") << tr("none");
+      rowList << " " << tr("(Reset selection)");
     }
 
   m_taskList->addTopLevelItem( new QTreeWidgetItem(m_taskList, rowList, 0) );
@@ -604,6 +573,8 @@ void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
  */
 void PreFlightTaskPage::slotEditTask()
 {
+  qDebug() << "PreFlightTaskPage::slotEditTask()";
+
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
 
@@ -639,7 +610,7 @@ void PreFlightTaskPage::slotEditTask()
  */
 void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
 {
-  // qDebug("PreFlightTaskPage::slotEditTaskList()");
+  qDebug("PreFlightTaskPage::slotEditTaskList()");
 
   // search task item being edited
   int index = m_flightTaskList.indexOf( m_editTask );
@@ -727,48 +698,9 @@ void PreFlightTaskPage::slotDeleteTask()
 
 bool PreFlightTaskPage::saveTaskList()
 {
-  // currently hard coded ...
-  QFile f( GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk" );
+  TaskFileManager tfm;
 
-  if ( !f.open( QIODevice::WriteOnly ) )
-    {
-      qWarning( "Could not write to task-file %s", f.fileName().toLatin1().data() );
-      return false;
-    }
-
-  QTextStream stream( &f );
-
-  // writing file-header
-  QDateTime dt = QDateTime::currentDateTime();
-  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
-
-  stream << "# KFLog/Cumulus-Task-File created at "
-         << dtStr << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
-
-  for ( int i=0; i < m_flightTaskList.count(); i++ )
-    {
-      FlightTask *task = m_flightTaskList.at(i);
-      QList<TaskPoint *> tpList = task->getTpList();
-
-      stream << "TS," << task->getTaskName() << "," << tpList.count() << endl;
-
-      for ( int j=0; j < tpList.count(); j++ )
-        {
-          // saving each task point ...
-          TaskPoint* tp = tpList.at(j);
-          stream << "TW," << tp->origP.x() << "," << tp->origP.y() << ","
-          << tp->elevation << "," << tp->name << "," << tp->icao << ","
-          << tp->description << "," << tp->frequency << ","
-          << tp->comment << "," << tp->isLandable << "," << tp->runway << ","
-          << tp->length << "," << tp->surface << "," << tp->type << endl;
-        }
-
-      stream << "TE" << endl;
-    }
-
-  f.close();
-  return true;
+  return tfm.saveTaskList( m_flightTaskList );
 }
 
 /** Creates a task definition file in Flarm format. */
@@ -897,4 +829,102 @@ void PreFlightTaskPage::slotShowFlarmWidget()
 
   PreFlightFlarmPage* pffp = new PreFlightFlarmPage( task, this );
   pffp->setVisible( true );
+}
+
+void PreFlightTaskPage::slotAccept()
+{
+  extern MapContents *_globalMapContents;
+
+  FlightTask *curTask = _globalMapContents->getCurrentTask();
+
+  // Note we have taken over the ownership about this object!
+  FlightTask *newTask = takeSelectedTask();
+
+  bool newTaskPassed = true;
+
+  // Check, if a new task has been passed for accept.
+  if (curTask && newTask && curTask->getTaskName() == newTask->getTaskName())
+    {
+      newTaskPassed = false; // task names identical
+    }
+
+  if( curTask && newTask && newTaskPassed )
+    {
+      QMessageBox mb( QMessageBox::Question,
+                      tr( "Replace current task?" ),
+                      tr( "<html>"
+                          "Do you want to replace the current task?<br>"
+                          "A selected target is reset to task start."
+                          "</html>" ),
+                      QMessageBox::Yes | QMessageBox::No,
+                      this );
+
+      mb.setDefaultButton( QMessageBox::No );
+
+    #ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+    #endif
+
+      if( mb.exec() != QMessageBox::Yes )
+        {
+          // do nothing change
+          delete newTask;
+          slotReject();
+          return;
+        }
+    }
+
+  // Forward of new task in every case, user can have modified
+  // content. MapContent will overtake the ownership of the task
+  // object.
+  _globalMapContents->setCurrentTask(newTask);
+
+  // @AP: Open problem with waypoint selection, if user has modified
+  // task content. We ignore that atm.
+  if ( newTask == static_cast<FlightTask *> (0) )
+    {
+      // No new task has been passed. Check, if a selected waypoint
+      // exists and this waypoint belongs to a task. In this case we
+      // will reset the selection.
+      extern Calculator* calculator;
+      const Waypoint *calcWp = calculator->getselectedWp();
+
+      if( calcWp && calcWp->taskPointIndex != -1 )
+        {
+          // reset taskpoint selection
+          emit newWaypoint(static_cast<Waypoint *> (0), true);
+        }
+    }
+  else
+    {
+      extern Calculator* calculator;
+
+      // If a waypoint selection exists, we do overwrite it with the begin
+      // point of the new flight task.
+      if( calculator->getselectedWp() )
+        {
+          // Reset taskpoint selection in calculator to prevent user query.
+          emit newWaypoint(static_cast<Waypoint *> (0), true);
+
+          // Select the start point of the new task.
+          calculator->slot_startTask();
+        }
+
+      // Inform others about the new task
+      emit newTaskSelected();
+    }
+
+  emit closingWidget();
+  QWidget::close();
+}
+
+void PreFlightTaskPage::slotReject()
+{
+  emit closingWidget();
+  QWidget::close();
 }

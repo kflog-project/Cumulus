@@ -22,8 +22,6 @@ CONFIG = qt \
     warn_on \
     release
 
-# CONFIG = debug qt warn_on
-
 # The next 3 lines shall force a compilation of the date stamp file
 rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
 
@@ -50,17 +48,17 @@ CONFIG += welt2000thread
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 
-# Activate this feature, if class FlickCharm shall be used for kinetic finger scrolling.
-# CONFIG += flickcharm
+# Activate this, if Qt class QScroller is not available.
+# CONFIG += qtscroller
 
-# Enable this feature, if the own number key pad shall be used for number input.
+# Must be always enabled now otherwise you will get compile errors.
 CONFIG += numberpad
 
 HEADERS = \
     aboutwidget.h \
+    airfield.h \
     airfieldlistview.h \
     airfieldlistwidget.h \
-    airfield.h \
     airregion.h \
     airspace.h \
     airspacewarningdistance.h \
@@ -68,8 +66,9 @@ HEADERS = \
     altitude.h \
     authdialog.h \
     basemapelement.h \
-    configwidget.h \
     calculator.h \
+    configwidget.h \
+    coordedit.h \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
@@ -77,14 +76,13 @@ HEADERS = \
     flighttask.h \
     fontdialog.h \
     generalconfig.h \
-    glider.h \
     glidereditor.h \
     gliderflightdialog.h \
+    glider.h \
     gliderlistwidget.h \
     gpscon.h \
     gpsnmea.h \
     gpsstatusdialog.h \
-    coordedit.h \
     helpbrowser.h \
     hwinfo.h \
     igclogger.h \
@@ -96,6 +94,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    listwidgetparent.h \
     logbook.h \
     maemostyle.h \
     mainwindow.h \
@@ -113,11 +112,10 @@ HEADERS = \
     openairparser.h \
     polardialog.h \
     polar.h \
-    preflightwidget.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
     preflightwaypointpage.h \
-    preflighttasklist.h \
+    preflightwidget.h \
     projectionbase.h \
     projectioncylindric.h \
     projectionlambert.h \
@@ -130,13 +128,14 @@ HEADERS = \
     rowdelegate.h \
     runway.h \
     settingspageairfields.h \
-    settingspageairspace.h \
     settingspageairspacefilling.h \
+    settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageairspacewarnings.h \
-    settingspagegps.h \
     settingspageglider.h \
+    settingspagegps.h \
     settingspageinformation.h \
+    settingspagelines.h \
     settingspagelooknfeel.h \
     settingspagemapobjects.h \
     settingspagemapsettings.h \
@@ -152,7 +151,10 @@ HEADERS = \
     splash.h \
     target.h \
     taskeditor.h \
+    taskfilemanager.h \
+    taskline.h \
     tasklistview.h \
+    taskpointeditor.h \
     taskpoint.h \
     time_cu.h \
     tpinfowidget.h \
@@ -162,6 +164,7 @@ HEADERS = \
     vector.h \
     waitscreen.h \
     waypointcatalog.h \
+    waypoint.h \
     waypointlistview.h \
     waypointlistwidget.h \
     welt2000.h \
@@ -173,15 +176,13 @@ HEADERS = \
     wpeditdialog.h \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
-    waypoint.h \
-    wpinfowidget.h \
-    listwidgetparent.h
-
+    wpinfowidget.h
+    
 SOURCES = \
     aboutwidget.cpp \
+    airfield.cpp \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
-    airfield.cpp \
     airregion.cpp \
     airspace.cpp \
     altimetermodedialog.cpp \
@@ -189,8 +190,9 @@ SOURCES = \
     authdialog.cpp \
     basemapelement.cpp \
     builddate.cpp \
-    configwidget.cpp \
     calculator.cpp \
+    configwidget.cpp \
+    coordedit.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \
@@ -204,7 +206,6 @@ SOURCES = \
     gpscon.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
-    coordedit.cpp \
     helpbrowser.cpp \
     hwinfo.cpp \
     igclogger.cpp \
@@ -214,6 +215,7 @@ SOURCES = \
     layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    listwidgetparent.cpp \
     logbook.cpp \
     maemostyle.cpp \
     main.cpp \
@@ -230,11 +232,10 @@ SOURCES = \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
-    preflightwidget.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
     preflightwaypointpage.cpp \
-    preflighttasklist.cpp \
+    preflightwidget.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
@@ -249,9 +250,10 @@ SOURCES = \
     settingspageairspacefilling.cpp \
     settingspageairspaceloading.cpp \
     settingspageairspacewarnings.cpp \
-    settingspagegps.cpp \
     settingspageglider.cpp \
+    settingspagegps.cpp \
     settingspageinformation.cpp \
+    settingspagelines.cpp \
     settingspagelooknfeel.cpp \
     settingspagemapobjects.cpp \
     settingspagemapsettings.cpp \
@@ -265,10 +267,12 @@ SOURCES = \
     sound.cpp \
     speed.cpp \
     splash.cpp \
-    target.h \
     taskeditor.cpp \
+    taskfilemanager.cpp \
+    taskline.cpp \
     tasklistview.cpp \
     taskpoint.cpp \
+    taskpointeditor.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
     vario.cpp \
@@ -277,6 +281,7 @@ SOURCES = \
     vector.cpp \
     waitscreen.cpp \
     waypointcatalog.cpp \
+    waypoint.cpp \
     waypointlistview.cpp \
     waypointlistwidget.cpp \
     welt2000.cpp \
@@ -285,12 +290,10 @@ SOURCES = \
     windanalyser.cpp \
     windmeasurementlist.cpp \
     windstore.cpp \
-    waypoint.cpp \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
-    wpinfowidget.cpp \
-    listwidgetparent.cpp
+    wpinfowidget.cpp
     
 flarm {
 		HEADERS += flarm.h \
@@ -346,17 +349,7 @@ welt2000thread {
     DEFINES += WELT2000_THREAD
 }
 
-flickcharm {
-    DEFINES += FLICK_CHARM
-    
-    HEADERS += flickcharm.h
-    
-    SOURCES += flickcharm.cpp
-}
-
 numberpad {
-    DEFINES += USE_NUM_PAD
-
     HEADERS += coordeditnumpad.h \
     					 doubleNumberEditor.h \
     					 glidereditornumpad.h \

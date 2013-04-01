@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,9 +18,16 @@
 
 #include "airfieldlistwidget.h"
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "generalconfig.h"
 #include "mapconfig.h"
 #include "calculator.h"
@@ -38,15 +45,14 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
   list->setObjectName("AfTreeWidget");
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
-  this->itemList = itemList;
+  this->m_itemList = itemList;
 
   // For outlandings we do display the comment instead of ICAO in the list view
   if( itemList.at(0) == MapContents::OutLandingList )
@@ -63,20 +69,23 @@ AirfieldListWidget::~AirfieldListWidget()
 /** Clears and refills the airfield item list. */
 void AirfieldListWidget::fillItemList()
 {
+  // call base class
+  ListWidgetParent::fillItemList();
+
   list->setUpdatesEnabled(false);
   list->clear();
 
   configRowHeight();
 
-  for ( int item = 0; item < itemList.size(); item++ )
+  for ( int item = 0; item < m_itemList.size(); item++ )
     {
-      int nr = _globalMapContents->getListLength(itemList.at(item));
+      int nr = _globalMapContents->getListLength(m_itemList.at(item));
 
       // qDebug("fillItemList N: %d, items %d", item, nr );
 
       for (int i=0; i<nr; i++ )
         {
-          Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( itemList.at(item), i ));
+          Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( m_itemList.at(item), i ));
           filter->addListItem( new _AirfieldItem(site) );
         }
     }
@@ -110,23 +119,23 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
 
   Airfield* site = afItem->airfield;
 
-  wp.name = site->getWPName();
-  wp.origP = site->getWGSPosition();
-  wp.elevation = site->getElevation();
-  wp.projP = site->getPosition();
-  wp.description = site->getName();
-  wp.type = site->getTypeID();
-  wp.elevation = site->getElevation();
-  wp.icao = site->getICAO();
-  wp.frequency = site->getFrequency();
-  wp.runway = site->getRunway().direction;
-  wp.length = site->getRunway().length;
-  wp.surface = site->getRunway().surface;
-  wp.comment = site->getComment();
-  wp.isLandable = true;
-  wp.country = site->getCountry();
+  m_wp.name = site->getWPName();
+  m_wp.origP = site->getWGSPosition();
+  m_wp.elevation = site->getElevation();
+  m_wp.projP = site->getPosition();
+  m_wp.description = site->getName();
+  m_wp.type = site->getTypeID();
+  m_wp.elevation = site->getElevation();
+  m_wp.icao = site->getICAO();
+  m_wp.frequency = site->getFrequency();
+  m_wp.runway = site->getRunway().direction;
+  m_wp.length = site->getRunway().length;
+  m_wp.surface = site->getRunway().surface;
+  m_wp.comment = site->getComment();
+  m_wp.isLandable = true;
+  m_wp.country = site->getCountry();
 
-  return &wp;
+  return &m_wp;
 }
 
 AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site) :
@@ -148,6 +157,8 @@ AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site) :
       setText(3, site->getComment());
     }
 
-  // create landing site type icon
-  setIcon( 0, _globalMapConfig->getListIcon(site->getTypeID()) );
+  // set landing site type icon
+  QPixmap afPm = _globalMapConfig->getPixmap(site->getTypeID(), false, false);
+
+  setIcon( 0, QIcon( afPm) );
 }

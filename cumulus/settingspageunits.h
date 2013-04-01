@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,9 @@
  *
  * \brief Configuration settings for personal units.
  *
- * \date 2002-2010
+ * \date 2002-2013
+ *
+ * \version $Id$
  *
  */
 
@@ -32,7 +34,6 @@
 
 #include <QWidget>
 #include <QComboBox>
-#include <QStringList>
 
 class SettingsPageUnits : public QWidget
 {
@@ -48,22 +49,36 @@ public:
 
   virtual ~SettingsPageUnits();
 
-public slots:
+  signals:
 
   /**
-   * Called to initiate loading of the configuration file
+   * Emitted, if settings have been changed.
    */
-  void slot_load();
+  void settingsChanged();
+
+private slots:
 
   /**
-   * called to initiate saving to the configuration file.
+   * Called if the Ok button is pressed.
    */
-  void slot_save();
+  void slotAccept();
 
-  /** Called to ask is confirmation on the close is needed. */
-  void slot_query_close(bool& warn, QStringList& warnings);
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
 private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+  /** Called to check, if something has been changed by the user. */
+  bool checkChanges();
+
   /**
    * This function returns the location of the value in the array.
    */

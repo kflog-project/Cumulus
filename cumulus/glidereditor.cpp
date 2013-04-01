@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,7 +16,15 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "generalconfig.h"
 #include "glidereditor.h"
@@ -27,10 +35,6 @@
 #include "mainwindow.h"
 #include "speed.h"
 #include "varspinbox.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 extern MapView *_globalMapView;
 
@@ -77,13 +81,15 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
       comboType->setEditable(false);
       comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
+      comboType->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+      comboType->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(comboType->view(), QScroller::LeftMouseButtonGesture);
+      QScroller::grabGesture( comboType->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(comboType->view());
+#ifdef QTSCROLLER
+      QtScroller::grabGesture( comboType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
       itemsLayout->addWidget(comboType, row, 1, 1, 3);

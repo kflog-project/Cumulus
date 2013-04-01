@@ -15,13 +15,17 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "aboutwidget.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 AboutWidget::AboutWidget( QWidget *parent ) :
   QWidget( parent, Qt::Tool )
@@ -52,19 +56,20 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   tabWidget->addTab( disclaimer, tr("Disclaimer") );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(about, QScroller::LeftMouseButtonGesture);
-  QScroller::grabGesture(team, QScroller::LeftMouseButtonGesture);
-  QScroller::grabGesture(disclaimer, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(about->viewport(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(team->viewport(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(disclaimer->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(about);
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(team);
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(disclaimer);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture(about->viewport(), QtScroller::LeftMouseButtonGesture);
+  QtScroller::grabGesture(team->viewport(), QtScroller::LeftMouseButtonGesture);
+  QtScroller::grabGesture(disclaimer->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
+
+  connect( about, SIGNAL(cursorPositionChanged()), SLOT(slotAboutCursorChanged()));
+  connect( team, SIGNAL(cursorPositionChanged()), SLOT(slotTeamCursorChanged()));
+  connect( disclaimer, SIGNAL(cursorPositionChanged()), SLOT(slotDisclaimerCursorChanged()));
 
   QPushButton *close = new QPushButton( tr("Ok"), this );
 
@@ -80,4 +85,28 @@ AboutWidget::AboutWidget( QWidget *parent ) :
   vbox->addWidget( close );
 
   connect( close, SIGNAL(clicked()),  this, SLOT( close()) );
+}
+
+void AboutWidget::slotAboutCursorChanged()
+{
+  // Clear cursor's text selection.
+  QTextCursor textCursor = about->textCursor();
+  textCursor.clearSelection();
+  about->setTextCursor( textCursor );
+}
+
+void AboutWidget::slotTeamCursorChanged()
+{
+  // Clear cursor's text selection.
+  QTextCursor textCursor = team->textCursor();
+  textCursor.clearSelection();
+  team->setTextCursor( textCursor );
+}
+
+void AboutWidget::slotDisclaimerCursorChanged()
+{
+  // Clear cursor's text selection.
+  QTextCursor textCursor = disclaimer->textCursor();
+  textCursor.clearSelection();
+  disclaimer->setTextCursor( textCursor );
 }

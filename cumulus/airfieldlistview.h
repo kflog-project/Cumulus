@@ -30,6 +30,7 @@
 #ifndef AIRFIELD_LIST_VIEW_H
 #define AIRFIELD_LIST_VIEW_H
 
+#include <QMetaObject>
 #include <QPushButton>
 #include <QBoxLayout>
 #include <QMainWindow>

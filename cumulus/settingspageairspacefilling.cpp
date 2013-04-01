@@ -16,7 +16,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "altitude.h"
 #include "generalconfig.h"

@@ -6,8 +6,8 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2010  by Axel Pauli
+**   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
+**                   2008-2013  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -74,6 +74,17 @@ double getBearingWgs(QPoint p1, QPoint p2);
  * Converts a x/y position into a polar-coordinate.
  */
 double polar(double y, double x);
+
+/**
+ * Calculate the position of the target point, described by start point, length
+ * and direction angle with the help of the polar coordinate transformation.
+ *
+ * @param startPos The start point in KFLog coordinate format
+ * @param double The distance to the the target point in meters
+ * @param direction The course angle to the target point
+ * @return The end point in KFLog coordinate format
+ */
+QPoint getPosition( QPoint startPos, double distance, int direction );
 
 /**
  * Calculates the direction of the vector pointing to the outside

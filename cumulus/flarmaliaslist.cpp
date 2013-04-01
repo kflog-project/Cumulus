@@ -16,6 +16,13 @@
 ***********************************************************************/
 
 #include <QtGui>
+#include <QGroupBox>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QTableWidget>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QInputDialog>
 
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
@@ -61,7 +68,11 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   QHeaderView* hHeader = list->horizontalHeader();
   hHeader->setStretchLastSection( true );
+#if QT_VERSION >= 0x050000
+  hHeader->setSectionsClickable( true );
+#else
   hHeader->setClickable( true );
+#endif
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );

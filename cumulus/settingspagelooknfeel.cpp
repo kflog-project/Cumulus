@@ -19,33 +19,76 @@
  * This class represents the personal style settings.
  */
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
+#include "doubleNumberEditor.h"
 #include "fontdialog.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "settingspagelooknfeel.h"
-
-#ifdef USE_NUM_PAD
-#include "doubleNumberEditor.h"
-#else
-#include "varspinbox.h"
-#endif
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QWidget(parent),
   m_loadConfig(true),
   m_currentFont(""),
-  m_currentMenuFont(""),
-  m_autoSip(true)
+  m_currentMenuFont("")
 {
   setObjectName("SettingsPageLookNFeel");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Look&Feel") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // The parent of the layout is the scroll widget
+  QGridLayout* topLayout = new QGridLayout(sw);
 
   // get current used horizontal speed m_unit. This m_unit must be considered
   // during storage.
   m_unit = Speed::getHorizontalUnit();
 
-  QGridLayout* topLayout = new QGridLayout(this);
   int row=0;
 
   QLabel * lbl = new QLabel(tr("GUI Style:"), this);
@@ -91,7 +134,6 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   lbl = new QLabel(tr("Screensaver on:"), this);
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   m_screenSaverSpeedLimit = new DoubleNumberEditor( this );
   m_screenSaverSpeedLimit->setDecimalVisible( true );
   m_screenSaverSpeedLimit->setPmVisible( false );
@@ -104,53 +146,58 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
 
   int mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
   m_screenSaverSpeedLimit->setMinimumWidth( mlw );
-
   topLayout->addWidget( m_screenSaverSpeedLimit, row, 1 );
-#else
-  m_screenSaverSpeedLimit = new QDoubleSpinBox( this );
-  m_screenSaverSpeedLimit->setButtonSymbols(QSpinBox::PlusMinus);
-  m_screenSaverSpeedLimit->setRange( 0.0, 99.0);
-  m_screenSaverSpeedLimit->setSpecialValueText(tr("Off"));
-  m_screenSaverSpeedLimit->setSingleStep( 1 );
-  m_screenSaverSpeedLimit->setPrefix( "< " );
-  m_screenSaverSpeedLimit->setDecimals( 1 );
-  m_screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  VarSpinBox* hspin = new VarSpinBox( m_screenSaverSpeedLimit );
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
-
-#if 0
-  virtualKeybord = new QCheckBox(tr("Virtual Keyboard"), this);
-  virtualKeybord->setObjectName("VirtualKeyboard");
-  virtualKeybord->setChecked(false);
-  topLayout->addWidget( virtualKeybord, row, 0 );
-  row++;
-#endif
 
   topLayout->setRowStretch( row, 10 );
   topLayout->setColumnStretch( 2, 10 );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageLookNFeel::~SettingsPageLookNFeel()
 {
 }
 
-void SettingsPageLookNFeel::showEvent( QShowEvent* )
+void SettingsPageLookNFeel::slotAccept()
 {
-  // Switch off automatic software input panel popup
-  m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( false );
+  save();
+  emit settingsChanged();
+  QWidget::close();
 }
 
-void SettingsPageLookNFeel::hideEvent( QHideEvent* )
+void SettingsPageLookNFeel::slotReject()
 {
-  qApp->setAutoSipEnabled( m_autoSip );
+  QWidget::close();
 }
 
-/** Called to initiate loading of the configuration items. */
-void SettingsPageLookNFeel::slot_load()
+void SettingsPageLookNFeel::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
   m_currentFont         = conf->getGuiFont();
@@ -172,34 +219,37 @@ void SettingsPageLookNFeel::slot_load()
   m_screenSaverSpeedLimit->setValue( speed.getValueInUnit( m_unit ) );
   // save loaded value for change control
   m_loadedSpeed = m_screenSaverSpeedLimit->value();
-
-  // virtualKeybord->setChecked( conf->getVirtualKeyboard() );
 }
 
-/** called to initiate saving to the configuration items */
-void SettingsPageLookNFeel::slot_save()
+void SettingsPageLookNFeel::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
+
+  short changes = 0;
 
   if( conf->getGuiFont() != m_currentFont )
     {
       conf->setGuiFont( m_currentFont );
+      changes++;
     }
 
   if( conf->getGuiMenuFont() != m_currentMenuFont )
     {
       conf->setGuiMenuFont( m_currentMenuFont );
+      changes++;
     }
 
   if( conf->getGuiStyle() != m_styleBox->currentText() )
     {
       conf->setGuiStyle( m_styleBox->currentText() );
       conf->setOurGuiStyle();
+      changes++;
     }
 
   if( conf->getMapFrameColor() != m_currentMapFrameColor )
     {
       conf->setMapFrameColor( m_currentMapFrameColor );
+      changes++;
     }
 
   if( m_loadedSpeed != m_screenSaverSpeedLimit->value() )
@@ -209,16 +259,20 @@ void SettingsPageLookNFeel::slot_save()
 
       // store speed in Km/h
       GeneralConfig::instance()->setScreenSaverSpeedLimit( speed.getKph() );
-    }
+      changes++;
+   }
 
-  // Note! enabling/disabling requires GUI restart
-  // conf->setVirtualKeyboard( virtualKeybord->isChecked() );
+  if( changes )
+    {
+      conf->save();
+      emit settingsChanged();
+    }
 }
 
 /**
  * Called to ask is confirmation on the close is needed.
  */
-void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings )
+bool SettingsPageLookNFeel::checkChanges()
 {
   /* set warn to 'true' if the data has changed. Note that we can NOT
      just set warn equal to _changed, because that way we might erase
@@ -230,15 +284,10 @@ void SettingsPageLookNFeel::slot_query_close( bool& warn, QStringList& warnings 
   changed |= conf->getGuiFont() != m_currentFont;
   changed |= conf->getGuiMenuFont() != m_currentMenuFont;
   changed |= conf->getGuiStyle() != m_styleBox->currentText();
-  // changed |= conf->getVirtualKeyboard() != virtualKeybord->isChecked();
   changed |= conf->getMapFrameColor() != m_currentMapFrameColor;
   changed |= m_loadedSpeed != m_screenSaverSpeedLimit->value() ;
 
-  if (changed)
-    {
-      warn=true;
-      warnings.append(tr("The Look&Feel settings"));
-    }
+  return changed;
 }
 
 /** Called to open the font dialog */
@@ -289,10 +338,12 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
       ok = currFont.fromString( m_currentMenuFont );
     }
 
+  // If a none default font is defined, we get here an error. But that is not
+  // really an error, therefore we ignore that here.
   if( ! ok )
     {
       // fall back uses current default font
-      currFont = font();
+      // currFont = font();
     }
 
   QFont newFt = FontDialog::getFont( ok, currFont, this, tr("GUI Menu Font"));
@@ -313,6 +364,7 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
 void SettingsPageLookNFeel::slot_openColorDialog()
 {
   // Enable software input panel for color dialog
+  bool ase = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( true );
 
   // get current color
@@ -329,5 +381,5 @@ void SettingsPageLookNFeel::slot_openColorDialog()
       m_currentMapFrameColor = newColor;
     }
 
-  qApp->setAutoSipEnabled( m_autoSip );
+  qApp->setAutoSipEnabled( ase );
 }

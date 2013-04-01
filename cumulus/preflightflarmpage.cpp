@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012 by Axel Pauli
+ **   Copyright (c): 2012-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,10 +15,17 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "calculator.h"
-#include "flickcharm.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
@@ -67,12 +74,11 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   sa->setWidget( form );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(sa, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(sa);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   // Add scroll area to an own layout

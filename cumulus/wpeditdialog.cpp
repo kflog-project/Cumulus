@@ -16,7 +16,15 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "wpeditdialog.h"
 #include "wpeditdialogpagegeneral.h"
@@ -26,10 +34,6 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "layout.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
@@ -72,13 +76,13 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   WpEditDialogPageGeneral *pageG = new WpEditDialogPageGeneral(this);
   pgArea->setWidget( pageG );
   tabWidget->addTab( pgArea, tr("General") );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(pgArea, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( pgArea->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(pgArea);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( pgArea->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QScrollArea* paArea = new QScrollArea( tabWidget );
@@ -87,13 +91,13 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   WpEditDialogPageAero *pageA = new WpEditDialogPageAero(this);
   paArea->setWidget( pageA );
   tabWidget->addTab( paArea, tr("Aero") );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(paArea, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( paArea->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(paArea);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( paArea->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QScrollArea* pcArea = new QScrollArea( tabWidget );
@@ -103,13 +107,13 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   m_comment->setWordWrapMode(QTextOption::WordWrap);
   pcArea->setWidget( m_comment );
   tabWidget->addTab( pcArea, tr("Comment") );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(pcArea, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( pcArea->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(pcArea);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( pcArea->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   connect(this, SIGNAL(load(Waypoint *)),
@@ -140,9 +144,10 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
-  buttonBox->addWidget(cancel, 2);
-  buttonBox->addSpacing(20);
-  buttonBox->addWidget(ok, 2);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
   buttonBox->addStretch(2);
 
   QHBoxLayout *mainLayout = new QHBoxLayout;

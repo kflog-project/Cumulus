@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -17,7 +17,15 @@
 
 #include <cmath>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "flarmlistview.h"
 #include "flarmaliaslist.h"
@@ -46,6 +54,16 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
   list = new QTreeWidget( this );
+  list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
 
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
@@ -80,7 +98,8 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   headerItem->setTextAlignment( 5, Qt::AlignCenter );
   headerItem->setTextAlignment( 6, Qt::AlignCenter );
 
-  list->setColumnWidth( 4, 25 );
+  QFontMetrics qfm( font() );
+  list->setColumnWidth( 4, qfm.height() );
 
   connect( list, SIGNAL(itemClicked( QTreeWidgetItem*, int )),
            this, SLOT(slot_ListItemClicked( QTreeWidgetItem*, int )) );

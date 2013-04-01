@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2012 by Axel Pauli
+                               2008-2013 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -235,7 +235,7 @@ void GpsNmea::createGpsConnection()
   // later. This is also valid hence Maemo5.
   QString callPath = GeneralConfig::instance()->getAppRoot() + "/bin";
 
-  serial = new GpsCon(this, callPath.toAscii().data());
+  serial = new GpsCon(this, callPath.toLatin1().data());
 
   gpsObject = serial;
 
@@ -342,7 +342,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   if( nmeaLogFile && nmeaLogFile->isOpen() )
     {
       // Write sentence into log file
-      nmeaLogFile->write(sentenceIn.toAscii().data());
+      nmeaLogFile->write(sentenceIn.toLatin1().data());
     }
 
   if( sentenceIn.isEmpty() )
@@ -939,7 +939,7 @@ void GpsNmea::__ExtractPflau( const QStringList& slst )
 
   if( res )
     {
-      static QTime lastReporting;
+      static QTime lastReporting = QTime::currentTime();
 
       // Check the GPS fix state reported by Flarm.
       const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
@@ -2122,7 +2122,7 @@ bool GpsNmea::sendSentence(const QString command)
 bool GpsNmea::sendSentence(const QString command)
 {
   // We have to add the checksum and cr lf to the command.
-  uint csum = calcCheckSum( command.toAscii().data() );
+  uint csum = calcCheckSum( command.toLatin1().data() );
   QString check;
   check.sprintf ("*%02X\r\n", csum);
   QString cmd (command + check);
@@ -2758,7 +2758,7 @@ bool GpsNmea::event(QEvent *event)
       if( nmeaLogFile && nmeaLogFile->isOpen() )
         {
           // Write message into log file
-          nmeaLogFile->write(msg.toAscii().data());
+          nmeaLogFile->write(msg.toLatin1().data());
         }
 
       // Handle accuracy

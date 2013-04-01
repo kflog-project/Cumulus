@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010-2012 by Axel Pauli
+**   Copyright (c):  2010-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2012
+ * \date 2010-2013
  *
  * \version $Id$
  *
@@ -98,10 +98,10 @@
 #define StatusbarFontHeight 20
 
 // GUI font height in pixels
-#define GuiFontHeight 24
+#define GuiFontHeight 16
 
 // GUI menu font height in pixels
-#define GuiMenuFontHeight 32
+#define GuiMenuFontHeight 22
 
 // Map scale bar font height in pixels
 #define MapScalebarFontHeight 20
@@ -121,7 +121,7 @@
 // Flarm display painter font height in pixels
 #define FlarmDisplayPainterFontPixelSize 24
 
-// WhatsThat font point size
+// WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
 #define WhatsThatFontPointSize 16
 
 #else
@@ -175,13 +175,13 @@ class Layout
    *
    * \param fontRef        Reference to a font object
    * \param pxHeight       maximum font height in pixels
-   * \param startPointSize start optimization with this point size
-   * \param minPointSize   minimum font point size
+   * \param startPointSize start optimization with this point/pixel size
+   * \param minPointSize   minimum font point/pixel size
    */
   static void adaptFont( QFont& fontRef,
-                           const int pxHeight,
-                           const int startPointSize=30,
-                           const int minPointSize=6 );
+                         const int pxHeight,
+                         const int startPointSize=30,
+                         const int minPointSize=6 );
 
   /**
    * Calculates the maximum text width according to the passed font.
@@ -192,6 +192,47 @@ class Layout
    * \return The maximum text width
    */
   static int maxTextWidth( const QStringList& list, const QFont& font );
+
+  /**
+   * Calculates a icon size according to the passed font.
+   *
+   * @param font Font to be used for icon size calculation
+   *
+   * @return Icon size related to passed font.
+   */
+  static int iconSize( const QFont& font )
+  {
+    QFontMetrics qfm( font );
+
+    return( qfm.height() - 4 );
+  }
+
+  /**
+   * Calculates a mouse snap radius adapted to the screen resolution under
+   * Android.
+   *
+   * @return mouse snap radius
+   */
+  static int mouseSnapRadius();
+
+  static void fitGuiFont( QFont& font );
+
+  static void fitGuiMenuFont( QFont& font );
+
+  static void fitDialogFont( QFont& font );
+
+  static void fitStatusbarFont( QFont& font );
+
+#ifdef ANDROID
+
+  /**
+   * Gets the scaled density of the screen resolution by Android.
+   *
+   * @return The scaled density of the screen resolution.
+   */
+  static float getScaledDensity();
+
+#endif
 
 };
 

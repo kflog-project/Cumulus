@@ -25,6 +25,7 @@
 #include <cstdlib>
 
 #include <QtGui>
+#include <QMessageBox>
 
 #include "igclogger.h"
 #include "gpsnmea.h"

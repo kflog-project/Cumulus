@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2010  by Axel Pauli
+**                   2008-2013  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,10 +16,11 @@
 **
 ***********************************************************************/
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <cmath>
 
 #include <QtGlobal>
+#include <QtCore>
 
 #include "mapcalc.h"
 #include "mapmatrix.h"
@@ -160,7 +161,7 @@ double getBearing2(QPoint p1, QPoint p2)
 */
 double getBearingWgs( QPoint p1, QPoint p2 )
 {
-    // Arcus computing constant for kflog corordinates. PI is devided by
+    // Arcus computing constant for kflog coordinates. PI is devided by
     // 180 degrees multiplied with 600.000 because one degree in kflog
     // is multiplied with this resolution factor.
     const double pi_180 = M_PI / 108000000.0;
@@ -254,6 +255,62 @@ double outsideVector(QPoint center, QPoint p1, QPoint p2)
       }
 }
 
+QPoint getPosition( QPoint startPos, double distance, int direction )
+{
+  if( distance == 0 )
+    {
+      return QPoint();
+    }
+
+  // Um den Endpunkt der Kurslinie zu berechnen, muss man die Polarkoordinaten
+  // Transformation benutzen.
+
+  // Kurswinkel in Bogenmass umrechnen
+  double heading = static_cast<double>(direction) * M_PI / 180.0;
+
+  // Berechnung der Strecke von einer Bogenminute in Kilometer in N-S Richtung.
+  // Das ist identisch zur nautischen Meile in Metern.
+  // Nautische Meile in Kilometer
+  double distLat = MILE_kfl / 1000.;
+
+  // Berechnung der Strecke von einer Bogenminute in Kilometer in E-W Richtung
+  // Das entspricht einer nautischen Meile, die man mit dem Kosinus der Breite
+  // multiplizieren muss, da die Laengengrade zum Pol hin schmaler werden.
+  // Die Breite muss noch durch 600000 geteilt werden, damit das Format stimmt.
+  // Ergenis liegt im Kilometern vor.
+  double distLon = MILE_kfl * cos((startPos.x() / 600000.) * M_PI / 180.0) / 1000.;
+
+  // qDebug() << "distLat=" << distLat << "distLon=" << distLon;
+
+  // Km pro Grad in N-S Richtung berechnen
+  double kmLat = distLat * 60.;
+
+  // Km pro Grad in E-W Richtung berechnen
+  double kmLon = distLon * 60.;
+
+  // Entfernung zum Ziel in Kilometer umrechnen
+  distance /= 1000.;
+
+  // Linien Endpunkte mittels Polarkoordinaten Transformation berechnen
+  double x = cos(heading) * distance;
+  double y = sin(heading) * distance;
+
+  // Kilometer Koordinaten in Grad umrechnen.
+  double xg = x / kmLat;
+  double yg = y / kmLon;
+
+  // qDebug() << "X=" << x << "Y=" << y << "kmLat=" << kmLat << "kmLon=" << kmLon
+  //          << "xg=" << rint(xg*600000) << "yg=" << rint(yg*600000);
+
+  // Koordinaten ins KFLog Format transformieren
+  int xkflog = static_cast<int> (rint(xg * 600000.));
+  int ykflog = static_cast<int> (rint(yg * 600000.));
+
+  // Den Endpunkt in Startpunkt Richtung verschieden.
+  QPoint target = QPoint( xkflog, ykflog ) + startPos;
+  return( target );
+}
+
 double normalize(double angle)
 {
     //we needed to use a modulo for the integer version. We should
@@ -277,7 +334,6 @@ int normalize(int angle)
     return normalize(angle-360);*/
     return angle;
 }
-
 
 int angleDiff(int ang1, int ang2)
 {

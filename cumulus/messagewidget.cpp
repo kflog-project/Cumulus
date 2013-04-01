@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012 Axel Pauli
+**   Copyright (c): 2012-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,7 +15,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "messagewidget.h"
 
@@ -71,6 +75,8 @@ MessageWidget::~MessageWidget()
 
 void MessageWidget::showEvent( QShowEvent* )
 {
+  qDebug() << "MessageWidget::showEvent: font=" << font().toString();
+
   QSize ws = size();
 
   QTextDocument *doc = m_text->document();
@@ -81,9 +87,9 @@ void MessageWidget::showEvent( QShowEvent* )
     {
       ds = doc->size().toSize();
 
-      // qDebug() << "ds=" << ds << "ws=" << ws
-      //          << "FPS=" << m_text->currentFont().pointSize()
-      //          << "Diff=" << (ws - ds - QSize(20, 50 ));
+      qDebug() << "ds=" << ds << "ws=" << ws
+               << "FPS=" << m_text->currentFont().pointSize()
+               << "Diff=" << (ws - ds - QSize(20, 50 ));
 
       if( (ws - ds - QSize(20, 50 )).isValid() == false )
         {
@@ -97,9 +103,14 @@ void MessageWidget::showEvent( QShowEvent* )
   if( m_text->currentFont().pointSize() != -1 && font().pointSize() != -1 &&
       m_text->currentFont().pointSize() < font().pointSize() )
     {
+      int mwPs  = m_text->currentFont().pointSize();
+      int guiPs = font().pointSize();
+
       // Make the global font smaller, if the document font was narrowed.
       QFont cf = font();
       cf.setPointSize(m_text->currentFont().pointSize());
       QApplication::setFont( cf );
+      qDebug() << "MessageWidget: GUI font has narrowed from"
+               << guiPs << "to" << mwPs;
     }
 }

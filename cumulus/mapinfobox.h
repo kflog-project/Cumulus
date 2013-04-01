@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2011 by Axel Pauli
+                               2008-2013 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -52,9 +52,9 @@ private:
 
 public:
 
-  CuLabel ( QWidget *parent, Qt::WFlags flags=0 );
+  CuLabel ( QWidget *parent, Qt::WindowFlags flags=0 );
 
-  CuLabel ( const QString &text, QWidget *parent, Qt::WFlags flags=0 );
+  CuLabel ( const QString &text, QWidget *parent, Qt::WindowFlags flags=0 );
 
 signals:
 
@@ -79,11 +79,12 @@ protected:
  * pre-text or a pixmap. Optionally it can be clicked and connected to
  * a slot. Used on the \ref MapView.
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  *
  */
+
 class MapInfoBox : public QFrame
 {
   Q_OBJECT
@@ -105,7 +106,7 @@ public:
   virtual ~MapInfoBox() {};
 
   /**
-   * Write property of QString _preText.
+   * Write property of QString m_preText.
    */
   void setPreText( const QString& _newVal);
 
@@ -114,10 +115,10 @@ public:
    */
   void setPreTextVisible( bool visible )
   {
-    _ptext->setVisible( visible );
+    m_ptext->setVisible( visible );
 
-    if( _punit ) _punit->setVisible( visible );
-    if( _pminus ) _pminus->setVisible( visible );
+    if( m_punit ) m_punit->setVisible( visible );
+    if( m_pminus ) m_pminus->setVisible( visible );
   };
 
   /**
@@ -125,24 +126,24 @@ public:
    */
   void setPreTextWidgetVisible( bool visible )
   {
-    _preWidget->setVisible( visible );
+    m_preWidget->setVisible( visible );
   };
 
   /**
-   * Write property of QString _preUnit.
+   * Write property of QString m_preUnit.
    */
   void setPreUnit( const QString& _newVal);
 
   /**
-   * Read property of QString _preText.
+   * Read property of QString m_preText.
    */
   const QString& getPreText()
   {
-    return _preText;
+    return m_preText;
   };
 
   /**
-   * Write property of QString _value.
+   * Write property of QString m_value.
    */
   void setValue( const QString& _newVal, bool showEvent=false );
 
@@ -157,11 +158,11 @@ public:
   void setPreWidgetsBGColor( const QColor& newValue );
 
   /**
-   * Read property of QString _value.
+   * Read property of QString m_value.
    */
   const QString& getValue() const
   {
-    return _value;
+    return m_value;
   };
 
   /**
@@ -169,12 +170,12 @@ public:
    */
   QLabel* getPreTextLabelWidget() const
   {
-    return _ptext;
+    return m_ptext;
   };
 
   QWidget* getPreWidget() const
   {
-    return _preWidget;
+    return m_preWidget;
   };
 
   /**
@@ -182,10 +183,22 @@ public:
    */
   QLabel* getTextLabelWidget() const
   {
-    return _text;
+    return m_text;
   };
 
   void setPixmap( const QPixmap& newPixmap );
+
+  /** Gets the maximum height of the text label box. */
+  int getMapInfoBoxMaxlHeight() const
+  {
+    return maximumHeight();
+  }
+
+  /** Sets the maximum height of the text label box. */
+  void setMapInfoBoxMaxHeight( int value )
+  {
+    setMaximumHeight( value );
+  }
 
 signals:
 
@@ -199,14 +212,24 @@ protected:
   /**
    * Reimplemented from QWidget
    */
-  void mousePressEvent( QMouseEvent * event );
+  void mousePressEvent( QMouseEvent* event );
 
   /**
    * Reimplemented from QWidget
    */
-  void showEvent(QShowEvent *event);
+  void showEvent(QShowEvent* event);
+
+  /**
+   * Reimplemented from QWidget
+   */
+  void resizeEvent( QResizeEvent* event );
 
 private:
+
+  /**
+   * Determines the maximum usable font height in the text label box.
+   */
+  void determineMaxFontHeight();
 
   /**
    * Initializes the basics of this widget.
@@ -216,27 +239,29 @@ private:
   void basics( const QString& borderColor );
 
   /** The upper text displayed before the value. */
-  QString _preText;
+  QString m_preText;
   /** The lower text displayed before the value. */
-  QString _preUnit;
+  QString m_preUnit;
   /** The value of the box */
-  QString _value;
+  QString m_value;
   /** The text window label background color. */
-  QString _textBGColor;
+  QString m_textBGColor;
   /** Pointer to the internal text label */
-  QLabel  *_text;
+  QLabel  *m_text;
   /** Pointer to the internal pre-text label */
-  QLabel  *_ptext;
+  QLabel  *m_ptext;
   /** Pointer to the internal pre-unit label */
-  QLabel  *_punit;
+  QLabel  *m_punit;
   /** Pointer to the pre-text minus sign */
-  QLabel  *_pminus;
+  QLabel  *m_pminus;
   /** Widget containing pre labels. */
-  QWidget* _preWidget;
-  /** The maximum font size */
-  int _maxFontDotsize;
+  QWidget* m_preWidget;
+  /** The maximum font dot size passed in the constructor. */
+  int m_maxFontDotsize;
   /** The font unit to be used in style sheet definition. */
-  QString _fontUnit;
+  QString m_fontUnit;
+  /** The maximum text label font height. */
+  int m_maxTextLabelFontHeight;
 };
 
 #endif

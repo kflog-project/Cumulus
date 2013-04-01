@@ -40,11 +40,7 @@
 
 #include "distance.h"
 
-#ifdef USE_NUM_PAD
 class NumberEditor;
-#else
-class QSpinBox;
-#endif
 
 class SettingsPageAirfields : public QWidget
 {
@@ -76,32 +72,22 @@ class SettingsPageAirfields : public QWidget
    */
   bool checkIsListDisplayChanged();
 
-  protected:
-
-  void showEvent( QShowEvent *event );
-
-  public slots: // Public slots
-  /**
-   * Called to initiate saving to the configuration file.
-   */
-  void slot_save();
-
-  /**
-   * Called to initiate loading of the configuration file
-   */
-  void slot_load();
-
-  /**
-   * Called to ask is confirmation on the close is needed.
-   */
-  void slot_query_close(bool& warn, QStringList& warnings);
-
   private slots: // Private slots
 
   /**
    * Called if the text of the filter has been changed
    */
   void slot_filterChanged( const QString& text );
+
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
 #ifdef INTERNET
 
@@ -119,16 +105,35 @@ class SettingsPageAirfields : public QWidget
    */
   void downloadWelt2000( const QString& welt2000FileName );
 
+  /**
+   * This signal is emitted, if Welt2000 items have been changed to trigger
+   * a reload of the data file.
+   */
+  void reloadWelt2000();
+
+  /**
+   * Emitted, if settings have been changed.
+   */
+  void settingsChanged();
+
 #endif
 
   private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  bool save();
+
+  /** Called to check, if something has been changed by the user. */
+  bool checkChanges();
+
 
   /** Country filter for Welt2000 data file */
   QLineEdit* m_countryFilter;
 
   /** Radius around home position for Welt2000 data file */
-
-#ifdef USE_NUM_PAD
 
   /** Home radius. */
   NumberEditor* m_homeRadius;
@@ -142,23 +147,6 @@ class SettingsPageAirfields : public QWidget
    *  (for easy finger selection)
    */
   NumberEditor* m_rpMargin;
-
-#else
-
-  /** Home radius. */
-  QSpinBox* m_homeRadius;
-
-  /** Pixels to add to the row height in airfield/waypoint lists
-   *  (for easy finger selection)
-   */
-  QSpinBox* m_afMargin;
-
-  /** Pixels to add to the row height in emergency (reachable points) list
-   *  (for easy finger selection)
-   */
-  QSpinBox* m_rpMargin;
-
-  #endif
 
   /** Check box to load outlandings or not. */
   QCheckBox* m_loadOutlandings;

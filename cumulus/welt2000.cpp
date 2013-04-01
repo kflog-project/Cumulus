@@ -47,7 +47,7 @@
 #define FILE_TYPE_AIRFIELD_C 0x63
 
 // version used for files created from welt2000 data
-#define FILE_VERSION_AIRFIELD_C 205
+#define FILE_VERSION_AIRFIELD_C 206
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
@@ -714,6 +714,7 @@ bool Welt2000::parse( QString& path,
       compileFile = fi.path() + "/welt2000.txc";
       compFile.setFileName( compileFile );
       out.setDevice( &compFile );
+      out.setVersion( QDataStream::Qt_4_7 );
 
       if( !compFile.open(QIODevice::WriteOnly) )
         {
@@ -1465,6 +1466,7 @@ bool Welt2000::readCompiledFile( QString &path,
     }
 
   QDataStream in(&inFile);
+  in.setVersion( QDataStream::Qt_4_7 );
 
   quint32 magic;
   qint8 fileType;
@@ -1698,6 +1700,7 @@ bool Welt2000::setHeaderData( QString &path )
     }
 
   QDataStream in(&inFile);
+  in.setVersion( QDataStream::Qt_4_7 );
 
   in >> h_magic;
 

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,7 +16,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "gliderflightdialog.h"
 #include "calculator.h"
@@ -45,8 +49,8 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   // set font size to a reasonable and usable value
   QFont cf = font();
-  cf.setPixelSize( DialogMinFontSize );
   cf.setBold( true );
+  Layout::fitDialogFont( cf );
   setFont(cf);
 
   QGridLayout* gridLayout = new QGridLayout(this);

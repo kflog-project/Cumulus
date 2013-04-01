@@ -16,17 +16,22 @@
 **
 ************************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "distance.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "mapcontents.h"
-#include "settingspagemapsettings.h"
-#include "varspinbox.h"
-
-#ifdef USE_NUM_PAD
 #include "numberEditor.h"
-#endif
+#include "settingspagemapsettings.h"
 
 #ifdef INTERNET
 #include "httpclient.h"
@@ -40,13 +45,49 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   QWidget(parent)
 {
   setObjectName("SettingsPageMapSettings");
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Map") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal );
 
   m_currentProjType = ProjectionBase::Unknown;
   GeneralConfig *conf = GeneralConfig::instance();
-  QGridLayout *topLayout = new QGridLayout(this);
-
   int row=0;
+
+  QGridLayout *topLayout = new QGridLayout(sw);
 
 #ifdef ANDROID
   QLabel* mapSelection = new QLabel( tr("Maps") + ":", this );
@@ -78,34 +119,20 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->addWidget(new QLabel(tr("1. St. Parallel:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   edtLat1 = new LatEditNumPad(this, conf->getHomeLat());
-#else
-  edtLat1 = new LatEdit(this, conf->getHomeLat());
-#endif
-
   topLayout->addWidget(edtLat1, row++, 1, 1, 2);
 
   edtLat2Label = new QLabel(tr("2. St. Parallel:"), this);
   topLayout->addWidget(edtLat2Label, row, 0);
 
-#ifdef USE_NUM_PAD
   edtLat2 = new LatEditNumPad(this, conf->getHomeLat());
-#else
-  edtLat2 = new LatEdit(this, conf->getHomeLat());
-#endif
-
   topLayout->addWidget(edtLat2, row++, 1, 1, 2);
 
   edtLonLabel = new QLabel(tr("Origin Longitude:"), this);
   topLayout->addWidget(edtLonLabel, row, 0);
 
-#ifdef USE_NUM_PAD
-  edtLon = new LongEditNumPad(this, conf->getLambertOrign());
-#else
-  edtLon = new LongEdit(this, conf->getLambertOrign());
-#endif
 
+  edtLon = new LongEditNumPad(this, conf->getLambertOrign());
   topLayout->addWidget(edtLon, row++, 1, 1, 2);
 
   //------------------------------------------------------------------------------
@@ -127,23 +154,13 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   QLabel *label = new QLabel(tr("Center Latitude:"), this);
   topLayout->addWidget(label, row, 0);
 
-#ifdef USE_NUM_PAD
   edtCenterLat = new LatEditNumPad(this, conf->getHomeLat());
-#else
-  edtCenterLat = new LatEdit(this, conf->getHomeLat());
-#endif
-
   topLayout->addWidget(edtCenterLat, row++, 1, 1, 2);
 
   label = new QLabel(tr("Center Longitude:"), this);
   topLayout->addWidget(label, row, 0);
 
-#ifdef USE_NUM_PAD
   edtCenterLon = new LongEditNumPad(this, conf->getHomeLon());
-#else
-  edtCenterLon = new LongEdit(this, conf->getHomeLon());
-#endif
-
   topLayout->addWidget(edtCenterLon, row++, 1, 1, 2);
 
   installMaps = new QPushButton( tr("Install Maps"), this );
@@ -152,7 +169,6 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   connect(installMaps, SIGNAL( clicked()), this, SLOT(slot_installMaps()) );
 
-#ifdef USE_NUM_PAD
   installRadius = new NumberEditor( this );
   installRadius->setToolTip( tr("Radius around center point") );
   installRadius->setDecimalVisible( false );
@@ -163,33 +179,57 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   installRadius->setValidator( eValidator );
   installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
   topLayout->addWidget(installRadius, row++, 1);
-#else
-  installRadius = new QSpinBox;
-  installRadius->setToolTip( tr("Radius around center point") );
-  installRadius->setRange( 0, 20000 );
-  installRadius->setWrapping(true);
-  installRadius->setSingleStep( 100 );
-  installRadius->setValue( GeneralConfig::instance()->getMapInstallRadius() );
-  installRadius->setSuffix( " " + Distance::getUnitText() );
-  VarSpinBox* hspin = new VarSpinBox(installRadius);
-  topLayout->addWidget(hspin, row++, 1 );
-#endif
 
 #endif // #ifdef INTERNET
 
   topLayout->setColumnStretch( 2, 10 );
   topLayout->setRowStretch( row, 10 );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageMapSettings::~SettingsPageMapSettings()
 {
 }
 
-void SettingsPageMapSettings::showEvent(QShowEvent *)
+void SettingsPageMapSettings::slotAccept()
 {
+  save();
+  QWidget::close();
 }
 
-void SettingsPageMapSettings::slot_load()
+void SettingsPageMapSettings::slotReject()
+{
+  QWidget::close();
+}
+
+void SettingsPageMapSettings::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -220,18 +260,45 @@ void SettingsPageMapSettings::slot_load()
   slot_selectProjection(projIndex);
 }
 
-void SettingsPageMapSettings::slot_save()
+void SettingsPageMapSettings::save()
 {
+  if( checkChanges() == false )
+    {
+      return;
+    }
+
+  if( checkIsProjectionChanged() )
+    {
+      QMessageBox mb( QMessageBox::Information,
+                      "Cumulus",
+                      tr( "<html>"
+                      "<b>Map projection was changed!</b><p>"
+                      "System update can take a few seconds and more!"
+                      "</html>" ),
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      // Under Android the box must be moved into the center of the desktop screen.
+      // Note the box must be set as first to visible otherwise move will not work.
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
+    }
+
   // @AP: here we must take over the new user values at first.
   // After that we can store them.
   // Check, if input string values have been changed. If not, no
   // take over of values to avoid rounding errors. They can appear if
   // the position formats will be changed between DMS <-> DDM vice
   // versa.
-
   switch(cmbProjection->currentIndex())
     {
-
     case 0:
 
       if( edtLat1->isInputChanged() )
@@ -274,6 +341,15 @@ void SettingsPageMapSettings::slot_save()
   conf->setLambertParallel2( m_lambertV2 );
   conf->setLambertOrign( m_lambertOrigin );
   conf->setCylinderParallel( m_cylinPar );
+  conf->save();
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                   QEventLoop::ExcludeSocketNotifiers );
+  QCoreApplication::flush();
+  emit settingsChanged();
+  QApplication::restoreOverrideCursor();
 }
 
 #ifdef INTERNET
@@ -389,13 +465,8 @@ void SettingsPageMapSettings::slot_selectProjection(int index)
     }
 }
 
-/* Called to ask is confirmation on the close is needed. */
-void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings)
+bool SettingsPageMapSettings::checkChanges()
 {
-  /* set warn to 'true' if the data has changed. Note that we can NOT
-    just set warn equal to _changed, because that way we might erase a
-    warning flag set by another page! */
-
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -409,11 +480,7 @@ void SettingsPageMapSettings::slot_query_close(bool& warn, QStringList& warnings
 
   changed |= checkIsProjectionChanged();
 
-  if (changed)
-    {
-      warn = true;
-      warnings.append(tr("The Map Settings"));
-    }
+  return changed;
 }
 
 /**

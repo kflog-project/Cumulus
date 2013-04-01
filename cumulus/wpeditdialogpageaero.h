@@ -36,11 +36,8 @@
 
 #include "waypoint.h"
 
-#ifdef USE_NUM_PAD
 class DoubleNumberEditor;
 class NumberEditor;
-#endif
-
 
 class WpEditDialogPageAero : public QWidget
 {
@@ -72,13 +69,8 @@ private:
   QCheckBox* chkLandable;
   QComboBox* cmbSurface;
 
-#ifdef USE_NUM_PAD
   DoubleNumberEditor* edtFrequency;
   NumberEditor*       edtLength;
-#else
-  QLineEdit* edtFrequency;
-  QLineEdit* edtLength;
-#endif
 
   int getSurface();
   void setSurface(int s);

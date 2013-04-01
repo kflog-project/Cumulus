@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -17,6 +17,7 @@
 ***********************************************************************/
 
 #include <QtGui>
+#include <QHBoxLayout>
 
 #include "layout.h"
 #include "listviewfilter.h"
@@ -53,6 +54,12 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
     {
       this->setVisible( false );
     }
+
+  // calculate the needed icon size
+  QFontMetrics qfm( font() );
+  int iconSize = qfm.height() - 8;
+
+  tw->setIconSize( QSize(iconSize, iconSize) );
 }
 
 ListViewFilter::~ListViewFilter()

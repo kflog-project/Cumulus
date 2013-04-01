@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2012 by Axel Pauli
+**                   2007-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,7 +16,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "waypointlistview.h"
 #include "generalconfig.h"
@@ -43,37 +47,38 @@ WaypointListView::WaypointListView( QWidget *parent ) :
 
   // create a vertical command button row and put it at the right widget side
   QVBoxLayout *editRow = new QVBoxLayout;
+  editRow->setSpacing( 20 );
   editRow->addStretch( 10 );
+
+  const int iconSize = Layout::iconSize( font() );
 
   QPushButton *cmdNew = new QPushButton( this );
   cmdNew->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
-  cmdNew->setIconSize( QSize( IconSize, IconSize ) );
+  cmdNew->setIconSize( QSize( iconSize, iconSize ) );
   cmdNew->setToolTip( tr( "Add a new waypoint" ) );
   editRow->addWidget( cmdNew );
 
   cmdEdit = new QPushButton( this );
   cmdEdit->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "edit_new.png" ) ) );
-  cmdEdit->setIconSize( QSize( IconSize, IconSize ) );
+  cmdEdit->setIconSize( QSize( iconSize, iconSize ) );
   cmdEdit->setToolTip( tr( "Edit selected waypoint" ) );
   editRow->addWidget( cmdEdit );
 
   cmdDel = new QPushButton( this );
   cmdDel->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
-  cmdDel->setIconSize( QSize( IconSize, IconSize ) );
+  cmdDel->setIconSize( QSize( iconSize, iconSize ) );
   cmdDel->setToolTip( tr( "Delete selected waypoints" ) );
   editRow->addWidget( cmdDel );
 
   cmdDelAll = new QPushButton( this );
   cmdDelAll->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "clear.png" ) ) );
-  cmdDelAll->setIconSize( QSize( IconSize, IconSize ) );
+  cmdDelAll->setIconSize( QSize( iconSize, iconSize ) );
   cmdDelAll->setToolTip( tr( "Delete all waypoints" ) );
   editRow->addWidget( cmdDelAll );
 
-  editRow->addSpacing( 10 );
-
   cmdHome = new QPushButton( this );
   cmdHome->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png" ) ) );
-  cmdHome->setIconSize( QSize( IconSize, IconSize ) );
+  cmdHome->setIconSize( QSize( iconSize, iconSize ) );
   cmdHome->setToolTip( tr( "Set home site to selected waypoint" ) );
   editRow->addWidget( cmdHome );
 

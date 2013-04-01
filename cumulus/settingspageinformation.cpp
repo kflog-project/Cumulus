@@ -17,25 +17,72 @@
 
 #include <QtGui>
 
-#include "generalconfig.h"
-#include "mapdefaults.h"
-#include "settingspageinformation.h"
-
-#ifdef USE_NUM_PAD
-#include "numberEditor.h"
+#ifndef QT_5
+#include <QtGui>
 #else
-#include "varspinbox.h"
+#include <QtWidgets>
 #endif
 
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
+#include "generalconfig.h"
+#include "layout.h"
+#include "mapdefaults.h"
+#include "numberEditor.h"
+#include "settingspageinformation.h"
+
 SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
-  QWidget(parent), m_loadConfig(true)
+  QWidget(parent)
 {
   setObjectName("SettingsPageInformation");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Information") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // The parent of the layout is the scroll widget
+  QGridLayout *topLayout = new QGridLayout(sw);
+
+  topLayout->setHorizontalSpacing(20);
+  topLayout->setVerticalSpacing(10);
 
   int row=0;
-  QGridLayout *topLayout = new QGridLayout( this );
-  topLayout->setHorizontalSpacing(10);
-  topLayout->setVerticalSpacing(10);
 
 #ifndef ANDROID
 
@@ -56,87 +103,31 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   topLayout->addWidget(new QLabel(tr("Airfield display time:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   spinAirfield = createNumEd( this );
   topLayout->addWidget( spinAirfield, row, 1 );
-#else
-  spinAirfield = new QSpinBox;
-  spinAirfield->setObjectName("spinAirfield");
-  spinAirfield->setRange(0, 60);
-  spinAirfield->setSuffix( " s" );
-  spinAirfield->setSpecialValueText(tr("Off"));
-  VarSpinBox* hspin = new VarSpinBox(spinAirfield);
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
   topLayout->addWidget(new QLabel(tr("Airspace display time:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   spinAirspace = createNumEd( this );
   topLayout->addWidget( spinAirspace, row, 1 );
-#else
-  spinAirspace = new QSpinBox;
-  spinAirspace->setObjectName("spinAirspace");
-  spinAirspace->setRange(0, 60);
-  spinAirspace->setSuffix( " s" );
-  spinAirspace->setSpecialValueText(tr("Off"));
-  hspin = new VarSpinBox(spinAirspace);
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
   topLayout->addWidget(new QLabel(tr("Info display time:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   spinInfo = createNumEd( this );
   topLayout->addWidget( spinInfo, row, 1 );
-#else
-  spinInfo = new QSpinBox;
-  spinInfo->setObjectName("spinInfo");
-  spinInfo->setRange(0, 60);
-  spinInfo->setSuffix( " s" );
-  spinInfo->setSpecialValueText(tr("Off"));
-  hspin = new VarSpinBox(spinInfo);
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
   topLayout->addWidget(new QLabel(tr("Waypoint display time:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   spinWaypoint = createNumEd( this );
   topLayout->addWidget( spinWaypoint, row, 1 );
-#else
-  spinWaypoint = new QSpinBox;
-  spinWaypoint->setObjectName("spinWaypoint");
-  spinWaypoint->setRange(0, 60);
-  spinWaypoint->setSuffix( " s" );
-  spinWaypoint->setSpecialValueText(tr("Off"));
-  hspin = new VarSpinBox(spinWaypoint);
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
   topLayout->addWidget(new QLabel(tr("Warning display time:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   spinWarning = createNumEd( this );
   topLayout->addWidget( spinWarning, row, 1 );
-#else
-  spinWarning = new QSpinBox;
-  spinWarning->setObjectName("spinWarning");
-  spinWarning->setRange(0, 60);
-  spinWarning->setSuffix( " s" );
-  spinWarning->setSpecialValueText(tr("Off"));
-  hspin = new VarSpinBox(spinWarning);
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
   topLayout->addWidget(new QLabel(tr("Warning suppress time:"), this), row, 0);
 
-#ifdef USE_NUM_PAD
   spinSuppress = new NumberEditor;
   spinSuppress->setDecimalVisible( false );
   spinSuppress->setPmVisible( false );
@@ -151,18 +142,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   int mw = QFontMetrics(font()).width(QString("999 min")) + 10;
   spinSuppress->setMinimumWidth( mw );
   topLayout->addWidget( spinSuppress, row, 1 );
-#else
-  spinSuppress = new QSpinBox;
-  spinSuppress->setObjectName("spinSuppress");
-  spinSuppress->setMaximum(900);
-  spinSuppress->setSuffix( " min" );
-  spinSuppress->setSpecialValueText(tr("Off"));
-  hspin = new VarSpinBox(spinSuppress);
-  topLayout->addWidget( hspin, row, 1 );
-#endif
 
   buttonReset = new QPushButton (tr("Defaults"), this);
-  topLayout->addWidget( buttonReset, row, 2, Qt::AlignRight );
+  topLayout->addWidget( buttonReset, row, 2, Qt::AlignLeft );
   row++;
 
   checkAlarmSound = new QCheckBox(tr("Alarm Sound"), this);
@@ -186,12 +168,52 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->setRowStretch ( row, 10 );
   topLayout->setColumnStretch( 2, 10 );
 
-  connect( buttonReset, SIGNAL(clicked()),
-           this, SLOT(slot_setFactoryDefault()));
+  connect( buttonReset, SIGNAL(clicked()), SLOT(slot_setFactoryDefault()) );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageInformation::~SettingsPageInformation()
 {
+}
+
+void SettingsPageInformation::slotAccept()
+{
+  save();
+  GeneralConfig::instance()->save();
+  emit settingsChanged();
+  QWidget::close();
+}
+
+void SettingsPageInformation::slotReject()
+{
+  QWidget::close();
 }
 
 NumberEditor* SettingsPageInformation::createNumEd( QWidget* parent )
@@ -214,20 +236,8 @@ NumberEditor* SettingsPageInformation::createNumEd( QWidget* parent )
   return numEd;
 }
 
-void SettingsPageInformation::slot_load()
+void SettingsPageInformation::load()
 {
-  // block multiple loads to avoid reset of changed values in the spin
-  // boxes
-
-  if( m_loadConfig )
-    {
-      m_loadConfig = false;
-    }
-  else
-    {
-      return;
-    }
-
   GeneralConfig *conf = GeneralConfig::instance();
 
 #ifndef ANDROID
@@ -245,7 +255,7 @@ void SettingsPageInformation::slot_load()
   calculateNearestSites->setChecked( conf->getNearestSiteCalculatorSwitch() );
 }
 
-void SettingsPageInformation::slot_save()
+void SettingsPageInformation::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -267,7 +277,7 @@ void SettingsPageInformation::slot_save()
 void SettingsPageInformation::slot_setFactoryDefault()
 {
 #ifndef ANDROID
-  soundTool->setText("");
+  soundTool->setText( SoundPlayer );
 #endif
 
   spinAirfield->setValue(AIRFIELD_DISPLAY_TIME_DEFAULT);

@@ -44,16 +44,10 @@
 #include <QRadioButton>
 #include <QString>
 
+#include "coordeditnumpad.h"
 #include "singlepoint.h"
 
-#ifdef USE_NUM_PAD
-#include "coordeditnumpad.h"
-
 class NumberEditor;
-
-#else
-#include "coordedit.h"
-#endif
 
 class PreFlightWaypointPage : public QWidget
 {
@@ -90,12 +84,27 @@ private slots:
    */
   void slotImportFile();
 
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
 signals:
 
   /**
    * Signal is emitted, when new waypoints have been added to the global list.
    */
   void waypointsAdded();
+
+  /**
+   * Emitted, if the widget is closed.
+   */
+  void closingWidget();
 
 private:
 
@@ -117,15 +126,9 @@ private:
 
   enum CenterReference m_centerRef;
 
-#ifdef USE_NUM_PAD
   LatEditNumPad   *m_centerLat;
   LongEditNumPad  *m_centerLon;
   NumberEditor    *m_wpRadiusBox;
-#else
-  LatEdit*  m_centerLat;
-  LongEdit* m_centerLon;
-  QComboBox* m_wpRadiusBox;
-#endif
 
   QComboBox* m_wpTypesBox;
   QComboBox* m_airfieldBox;

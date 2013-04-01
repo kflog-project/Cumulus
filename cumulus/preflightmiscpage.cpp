@@ -18,15 +18,24 @@
 
 #include <cmath>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "preflightmiscpage.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "calculator.h"
+#include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "logbook.h"
 #include "igclogger.h"
+#include "numberEditor.h"
+#include "preflightmiscpage.h"
 
 #ifdef FLARM
 #include "flarm.h"
@@ -34,19 +43,51 @@
 #include "gpsnmea.h"
 #endif
 
-#ifdef USE_NUM_PAD
-#include "doubleNumberEditor.h"
-#include "numberEditor.h"
-#else
-#include "varspinbox.h"
-#endif
-
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   QWidget(parent)
 {
   setObjectName("PreFlightMiscPage");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("PreFlight - Common") );
 
-  QGridLayout *topLayout = new QGridLayout(this);
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa>viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // Top layout's parent is the scroll widget
+  QGridLayout *topLayout = new QGridLayout(sw);
+
   int row = 0;
 
   QLabel *lbl = new QLabel(tr("Minimal arrival altitude:"));
@@ -58,7 +99,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 
   // Input accept only feet and meters all other make no sense. Therefore all
   // other (FL) is treated as feet.
-#ifdef USE_NUM_PAD
   m_edtMinimalArrival = new NumberEditor;
   m_edtMinimalArrival->setDecimalVisible( false );
   m_edtMinimalArrival->setPmVisible( false );
@@ -73,25 +113,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_edtMinimalArrival->setMinimumWidth( maw );
 
   topLayout->addWidget(m_edtMinimalArrival, row, 1);
-#else
-  m_edtMinimalArrival = new QSpinBox;
-
-  if (m_altUnit == Altitude::meters)
-    {
-      m_edtMinimalArrival->setMaximum(1000);
-      m_edtMinimalArrival->setSingleStep(10);
-    }
-  else
-    {
-      m_edtMinimalArrival->setMaximum(3000);
-      m_edtMinimalArrival->setSingleStep(100);
-    }
-
-  m_edtMinimalArrival->setSuffix(" " + Altitude::getUnitText());
-  VarSpinBox* hspin = new VarSpinBox(m_edtMinimalArrival);
-  topLayout->addWidget(hspin, row, 1);
-#endif
-
   topLayout->setColumnStretch(2, 2);
   row++;
 
@@ -106,7 +127,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   lbl = new QLabel(tr("QNH:"));
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   m_edtQNH = new NumberEditor;
   m_edtQNH->setDecimalVisible( false );
   m_edtQNH->setPmVisible( false );
@@ -121,14 +141,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_edtQNH->setMinimumWidth( mqw );
 
   topLayout->addWidget(m_edtQNH, row, 1);
-#else
-  m_edtQNH = new QSpinBox(this);
-  m_edtQNH->setMaximum(1999);
-  m_edtQNH->setSuffix(" hPa");
-  hspin = new VarSpinBox(m_edtQNH);
-  topLayout->addWidget(hspin, row, 1);
-#endif
-
   row++;
 
   topLayout->setRowMinimumHeight(row, 10);
@@ -141,7 +153,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   // during storage.
   m_speedUnit = Speed::getHorizontalUnit();
 
-#ifdef USE_NUM_PAD
   m_logAutoStartSpeed = new DoubleNumberEditor( this );
   m_logAutoStartSpeed->setDecimalVisible( true );
   m_logAutoStartSpeed->setPmVisible( false );
@@ -155,24 +166,11 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_logAutoStartSpeed->setMinimumWidth( mlw );
 
   topLayout->addWidget( m_logAutoStartSpeed, row, 1 );
-#else
-  m_logAutoStartSpeed = new QDoubleSpinBox( this );
-  m_logAutoStartSpeed->setButtonSymbols(QSpinBox::PlusMinus);
-  m_logAutoStartSpeed->setRange( 1.0, 99.0);
-  m_logAutoStartSpeed->setSingleStep( 1 );
-  m_logAutoStartSpeed->setPrefix( "> " );
-  m_logAutoStartSpeed->setDecimals( 1 );
-  m_logAutoStartSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
-  hspin = new VarSpinBox( m_logAutoStartSpeed );
-  topLayout->addWidget( hspin, row, 1 );
-#endif
-
   row++;
 
   lbl = new QLabel(tr("B-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   m_bRecordInterval = new NumberEditor;
   m_bRecordInterval->setDecimalVisible( false );
   m_bRecordInterval->setPmVisible( false );
@@ -188,21 +186,11 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_bRecordInterval->setMinimumWidth( mbrw );
 
   topLayout->addWidget(m_bRecordInterval, row, 1);
-#else
-  m_bRecordInterval = new QSpinBox(this);
-  m_bRecordInterval->setMinimum(1);
-  m_bRecordInterval->setMaximum(60);
-  m_bRecordInterval->setSuffix(" s");
-  hspin = new VarSpinBox(m_bRecordInterval);
-  topLayout->addWidget(hspin, row, 1);
-#endif
-
   row++;
 
   lbl = new QLabel(tr("K-Record Interval:"));
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   m_kRecordInterval = new NumberEditor;
   m_kRecordInterval->setDecimalVisible( false );
   m_kRecordInterval->setPmVisible( false );
@@ -219,17 +207,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_kRecordInterval->setMinimumWidth( mkrw );
 
   topLayout->addWidget(m_kRecordInterval, row, 1);
-#else
-
-  m_kRecordInterval = new QSpinBox(this);
-  m_kRecordInterval->setMinimum(0);
-  m_kRecordInterval->setMaximum(300);
-  m_kRecordInterval->setSpecialValueText(tr("Off"));
-  m_kRecordInterval->setSuffix(" s");
-  hspin = new VarSpinBox(m_kRecordInterval);
-  topLayout->addWidget(hspin, row, 1);
-#endif
-
   row++;
 
   topLayout->setRowMinimumHeight(row, 10);
@@ -269,6 +246,34 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
 #endif
 
   topLayout->setRowStretch(row, 10);
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 PreFlightMiscPage::~PreFlightMiscPage()
@@ -286,18 +291,10 @@ void PreFlightMiscPage::load()
   if (m_altUnit == Altitude::meters) // user wants meters
     {
       m_edtMinimalArrival->setValue((int) rint(minArrival.getMeters()));
-
-#ifndef USE_NUM_PAD
-      m_edtMinimalArrival->setSingleStep(50);
-#endif
     }
   else // user gets feet
     {
       m_edtMinimalArrival->setValue((int) rint(minArrival.getFeet()));
-
-#ifndef USE_NUM_PAD
-      m_edtMinimalArrival->setSingleStep(100);
-#endif
     }
 
   m_edtArrivalAltitude->setCurrentIndex( conf->getArrivalAltitudeDisplay() );
@@ -365,6 +362,21 @@ void PreFlightMiscPage::save()
       // store speed in Km/h
       GeneralConfig::instance()->setAutoLoggerStartSpeed( speed.getKph() );
     }
+}
+
+void PreFlightMiscPage::slotAccept()
+{
+  save();
+  GeneralConfig::instance()->save();
+  emit settingsChanged();
+  emit closingWidget();
+  QWidget::close();
+}
+
+void PreFlightMiscPage::slotReject()
+{
+  emit closingWidget();
+  QWidget::close();
 }
 
 void PreFlightMiscPage::slotOpenLogbook()

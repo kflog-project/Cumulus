@@ -1154,7 +1154,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       if( ! ok )
         {
           qWarning("CUP Read (%d): Invalid waypoint type '%s'. Ignoring it.",
-                   lineNo, list[6].toAscii().data() );
+                   lineNo, list[6].toLatin1().data() );
           continue;
         }
 

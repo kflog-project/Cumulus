@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2012 by Axel Pauli
+**   Copyright (c):  2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * The user can modify the assigned color via a color chooser dialog, if he wants that.
  * The widget shows the altitudes in the user selected unit (meter/feed).
  *
- * \date 2002-2011
+ * \date 2002-2013
  *
  * \version $Id$
  *
@@ -52,35 +52,26 @@ private:
 
   Q_DISABLE_COPY ( SettingsPageTerrainColors )
 
-public:
+ public:
 
   SettingsPageTerrainColors(QWidget *parent=0);
 
   virtual ~SettingsPageTerrainColors();
 
-protected:
+ protected:
 
   virtual void showEvent(QShowEvent *);
 
   virtual void hideEvent(QHideEvent *);
 
-public slots:
+ signals:
 
   /**
-   * Called to initiate saving to the configuration file.
+   * Emitted, if settings have been changed.
    */
-  void slot_save();
+  void settingsChanged();
 
-  /**
-   * Called to initiate loading of the configuration file
-   */
-  void slot_load();
-  /**
-   * Called to ask is confirmation on the close is needed.
-   */
-  void slot_query_close(bool& warn, QStringList& warnings);
-
-  private slots:
+ private slots:
 
   /**
    * Called to edit the color of the combo box selection
@@ -97,7 +88,24 @@ public slots:
    */
   void slot_setColorDefaults();
 
-private:
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
+ private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
 
   // size of the color pixmaps used in icons
   QSize pixmapSize;

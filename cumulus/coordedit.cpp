@@ -24,6 +24,10 @@
 #include <cmath>
 
 #include <QtGui>
+#include <QPushButton>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QLineEdit>
 
 #include "coordedit.h"
 #include "wgspoint.h"

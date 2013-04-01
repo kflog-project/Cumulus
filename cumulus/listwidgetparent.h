@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -76,9 +76,9 @@ class ListWidgetParent : public QWidget
 
     /**
      * Retrieves the locations from the map contents and fills
-     * the list. The user must implement this method in his subclass.
+     * the list. It sets the icon size of the list depending of the used font.
      */
-    virtual void fillItemList() = 0;
+    virtual void fillItemList();
 
     /**
      * Clears and refills the item list, if items are loaded. Called

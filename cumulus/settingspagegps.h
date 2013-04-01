@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,9 @@
  *
  * \brief Configuration settings for the GPS device.
  *
- * \date 2002-2010
+ * \date 2002-2013
+ *
+ * \version $Id$
  *
  */
 
@@ -36,45 +38,36 @@
 
 class SettingsPageGPS : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  private:
+ private:
 
-    Q_DISABLE_COPY ( SettingsPageGPS )
+  Q_DISABLE_COPY ( SettingsPageGPS )
 
-  public:
+ public:
 
-    SettingsPageGPS( QWidget *parent=0 );
-    virtual ~SettingsPageGPS();
+  SettingsPageGPS( QWidget *parent=0 );
 
-  private:
+  virtual ~SettingsPageGPS();
 
-    QComboBox*   GpsDev;
-    QComboBox*   GpsSpeed;
-    QComboBox*   GpsAltitude;
-    QCheckBox*   checkSyncSystemClock;
-    QCheckBox*   saveNmeaData;
-
-  public slots:
-
-    /**
-     * Called to initiate saving to the configuration file.
-     */
-    void slot_save();
-
-    /**
-     * Called to initiate loading of the configuration file
-     */
-    void slot_load();
-
-  private slots:
+ private slots:
 
   /**
    * Called when the GPS device is changed.
    */
   void slot_gpsDeviceChanged( const QString& text );
 
-  signals:
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
+ signals:
 
   /**
    * Emitted when the NMEA logging into a file shall be started.
@@ -85,6 +78,26 @@ class SettingsPageGPS : public QWidget
    * Emitted when the NMEA logging into a file shall be ended.
    */
   void endNmeaLog();
+
+  /**
+   * Emitted, if settings have been changed.
+   */
+  void settingsChanged();
+
+ private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+
+  QComboBox*   GpsDev;
+  QComboBox*   GpsSpeed;
+  QComboBox*   GpsAltitude;
+  QCheckBox*   checkSyncSystemClock;
+  QCheckBox*   saveNmeaData;
 };
 
 #endif

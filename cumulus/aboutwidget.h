@@ -25,7 +25,7 @@
  * This widget displays the about application data in a tabbed window
  * decorated this a headline and an icon on top.
  *
- * \date 2010-2011
+ * \date 2010-2013
  *
  * \version $Id$
  *
@@ -35,6 +35,7 @@
 #define ABOUT_WIDGET_H
 
 #include <QWidget>
+#include <QMetaObject>
 #include <QLabel>
 #include <QTextBrowser>
 #include <QString>
@@ -104,6 +105,17 @@ class AboutWidget : public QWidget
   {
     disclaimer->setHtml( text );
   };
+
+ private slots:
+
+  /** Called, if the cursor position is changed to clear the text selection. */
+  void slotAboutCursorChanged();
+
+  /** Called, if the cursor position is changed to clear the text selection. */
+  void slotTeamCursorChanged();
+
+  /** Called, if the cursor position is changed to clear the text selection. */
+  void slotDisclaimerCursorChanged();
 
  private:
 

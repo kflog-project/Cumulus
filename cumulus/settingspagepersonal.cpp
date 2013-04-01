@@ -16,15 +16,20 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "generalconfig.h"
-#include "settingspagepersonal.h"
-#include "varspinbox.h"
-
-#ifdef USE_NUM_PAD
+#include "layout.h"
 #include "numberEditor.h"
-#endif
+#include "settingspagepersonal.h"
 
 #ifdef INTERNET
 #include "proxydialog.h"
@@ -34,14 +39,53 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QWidget(parent)
 {
   setObjectName("SettingsPagePersonal");
-  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Personal") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // The parent of the layout is the scroll widget
+  QGridLayout* topLayout = new QGridLayout(sw);
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
   m_altUnit = Altitude::getUnit();
 
   GeneralConfig *conf = GeneralConfig::instance();
-  QGridLayout* topLayout = new QGridLayout(this);
+
   int row=0;
 
   QLabel * lbl = new QLabel(tr("Pilot name:"), this);
@@ -82,7 +126,6 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   edtHomeElevation = new NumberEditor( this );
   edtHomeElevation->setDecimalVisible( false );
   edtHomeElevation->setSuffix( " " + Altitude::getUnitText() );
@@ -93,39 +136,19 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(0|-?[1-9][0-9]{0,4})" ), this );
   edtHomeElevation->setValidator( eValidator );
   topLayout->addWidget(edtHomeElevation, row, 1);
-#else
-  edtHomeElevation = new QSpinBox;
-  edtHomeElevation->setSingleStep( 10 );
-  edtHomeElevation->setMaximum( 9999 );
-  edtHomeElevation->setMinimum( -999 );
-  edtHomeElevation->setSuffix( " " + Altitude::getUnitText() );
-  VarSpinBox* hspin = new VarSpinBox( edtHomeElevation );
-  topLayout->addWidget(hspin, row, 1);
-#endif
-
   row++;
 
   lbl = new QLabel(tr("Home site latitude:"), this);
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   edtHomeLat = new LatEditNumPad(this, conf->getHomeLat());
-#else
-  edtHomeLat = new LatEdit(this, conf->getHomeLat());
-#endif
-
   topLayout->addWidget(edtHomeLat, row, 1, 1, 2);
   row++;
 
   lbl = new QLabel(tr("Home site longitude:"), this);
   topLayout->addWidget(lbl, row, 0);
 
-#ifdef USE_NUM_PAD
   edtHomeLong = new LongEditNumPad(this, conf->getHomeLon());
-#else
-  edtHomeLong = new LongEdit(this, conf->getHomeLon());
-#endif
-
   topLayout->addWidget(edtHomeLong, row, 1, 1, 2);
   row++;
 
@@ -164,13 +187,51 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   topLayout->setRowStretch(row, 10);
   topLayout->setColumnStretch( 2, 10 );
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPagePersonal::~SettingsPagePersonal()
 {}
 
-/** Called to initiate loading of the configuration file. */
-void SettingsPagePersonal::slot_load()
+void SettingsPagePersonal::slotAccept()
+{
+  save();
+  QWidget::close();
+}
+
+void SettingsPagePersonal::slotReject()
+{
+  QWidget::close();
+}
+
+void SettingsPagePersonal::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -230,9 +291,15 @@ void SettingsPagePersonal::slot_load()
 
 }
 
-/** called to initiate saving to the configuration file */
-void SettingsPagePersonal::slot_save()
+void SettingsPagePersonal::save()
 {
+  if( checkChanges() == false )
+    {
+      return;
+    }
+
+  bool homeChanged = checkIsHomePositionChanged();
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setSurname( edtName->text().trimmed() );
@@ -276,6 +343,46 @@ void SettingsPagePersonal::slot_save()
     {
       conf->setHomeLon( edtHomeLong->KFLogDegree() );
     }
+
+  if( homeChanged )
+    {
+      if( conf->getMapProjectionType() == ProjectionBase::Cylindric &&
+          conf->getMapProjectionFollowsHome() == true )
+        {
+          // @AP: In case of cylinder projection and an active projection follows home
+          // option and a latitude change of the home position, the projection
+          // parallel is set to the new home latitude. That shall ensure
+          // optimized results during map drawing. Note, that is only
+          // supported for the cylinder projection!
+          conf->setCylinderParallel( conf->getHomeLat() );
+
+          QMessageBox mb( QMessageBox::Information,
+                           "Cumulus",
+                           tr( "<html>"
+                           "<b>Home position was changed!</b><p>"
+                           "System update can take a few seconds and more!"
+                           "</html>" ),
+                           QMessageBox::Ok,
+                           this );
+
+     #ifdef ANDROID
+
+           // Under Android the box must be moved into the center of the desktop screen.
+           // Note the box must be set as first to visible otherwise move will not work.
+           mb.show();
+           QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+           mb.move( pos );
+
+     #endif
+
+           mb.exec();
+        }
+
+      emit homePositionChanged();
+    }
+
+  conf->save();
+  emit settingsChanged();
 }
 
 /**
@@ -322,8 +429,7 @@ bool SettingsPagePersonal::checkIsHomeLongitudeChanged()
   return changed;
 }
 
-/** Called to ask is confirmation on the close is needed. */
-void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
+bool SettingsPagePersonal::checkChanges()
 {
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -335,12 +441,7 @@ void SettingsPagePersonal::slot_query_close( bool& warn, QStringList& warnings )
   changed |= m_initalHomeElevationValue != edtHomeElevation->value();
   changed |= (userDataDir->text() != conf->getUserDataDirectory());
 
-  if (changed)
-    {
-    // set warn to 'true' if the data has been changed.
-      warn = true;
-      warnings.append(tr("The Personal settings"));
-    }
+  return changed;
 }
 
 /** Called to open the directory selection dialog */

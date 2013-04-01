@@ -16,6 +16,9 @@
 ***********************************************************************/
 
 #include <QtGui>
+#include <QSpinBox>
+#include <QBoxLayout>
+#include <QPushButton>
 
 #include "varspinbox.h"
 

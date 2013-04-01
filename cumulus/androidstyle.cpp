@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2012-2013 Axel Pauli, axel@kflog.org
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
 #include "androidstyle.h"
 
 // new size values to be assigned
-#if defined QSCROLLER || defined FLICK_CHARM
+#if defined QSCROLLER || defined QTSCROLLER
 #define SB_SIZE 10 // scrollbar size, now only an indicator, thanks to kinetic scrolling
 #else
 #define SB_SIZE 40

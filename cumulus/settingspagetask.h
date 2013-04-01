@@ -38,14 +38,11 @@
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QPushButton>
-#include <QDoubleSpinBox>
 
-#include "altitude.h"
+#include "distance.h"
 
-#ifdef USE_NUM_PAD
 class DoubleNumberEditor;
 class NumberEditor;
-#endif
 
 class SettingsPageTask : public QWidget
 {
@@ -61,115 +58,142 @@ public:
 
   virtual ~SettingsPageTask();
 
-protected:
+signals:
 
-  virtual void showEvent(QShowEvent *);
-
-  virtual void hideEvent(QHideEvent *);
-
-public slots:
-
-  void slot_load();
-  void slot_save();
+  /**
+   * Emitted, if settings have been changed.
+   */
+  void settingsChanged();
 
 private slots:
 
-  // radio button of cs scheme was pressed
-  void slot_buttonPressedCS( int newScheme );
-
-  // radio button of nt scheme was pressed
+  // radio button of Nearest/Touch scheme was pressed
   void slot_buttonPressedNT( int newScheme );
 
-  // value of outer spin box changed
-  void slot_outerSBChanged( double value );
+  // value of outer sector box changed
+  void slot_outerSectorStartChanged( const QString& value );
 
-  // value of outer spin box changed
-  void slot_outerSBChanged( const QString& value );
+  // value of outer sector box changed
+  void slot_outerSectorFinishChanged( const QString& value );
 
-  /** Opens the color chooser dialog for the target line */
-  void slot_editTlColor();
+  // value of outer sector box changed
+  void slot_outerSectorObsChanged( const QString& value );
 
-  /** Opens the color chooser dialog for the track line */
-  void slot_editTrColor();
+  // fill shape checkbox state changed
+  void slot_fillShapeStateChanged ( int state );
+
+  // Start Scheme changed
+  void slot_buttonPressedSS(int);
+
+  // Finish Scheme changed
+  void slot_buttonPressedFS(int);
+
+  // Observer Scheme changed
+  void slot_buttonPressedOS(int);
+
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
 private:
 
-  // active scheme
-  QButtonGroup* csScheme; // cylinder-sector scheme
-  QButtonGroup* ntScheme; // nearst-touched scheme
+  /**
+   * Creates a default DoubleNumberEditor instance.
+   *
+   * @return a DoubleNumberEditor instance
+   */
+  DoubleNumberEditor* createDNE( QWidget* parent=0 );
 
-  // Cylinder widgets
-  QGroupBox*      cylinderGroup;
+  /**
+   * Creates a default NumberEditor instance.
+   *
+   * @return a NumberEditor instance
+   */
+  NumberEditor* createNE( QWidget* parent=0 );
 
-#ifdef USE_NUM_PAD
-  /** Radius of cylinder task point in meter or feet. */
-  DoubleNumberEditor* cylinderRadius;
-#else
-  QDoubleSpinBox* cylinderRadius;
-#endif
+  /**
+   * Sets the distance in the destination according to source value and selected
+   * user distance unit.
+   *
+   * @param dest Distance to be checked and set
+   *
+   * @param src Distance value from double editor used as check input
+   */
+  void setDistanceValue( Distance& dest, DoubleNumberEditor* src);
 
-  // Sector widgets
-  QGroupBox*      sectorGroup;
+  /** Called to load the configuration file data. */
+  void load();
 
-#ifdef USE_NUM_PAD
-  DoubleNumberEditor* innerSectorRadius; // inner sector radius of task point in meter or feet
-  DoubleNumberEditor* outerSectorRadius; // outer sector radius of task point in meter or feet
-  NumberEditor*       sectorAngle;       // 0-180 degrees
-#else
-  QDoubleSpinBox* innerSectorRadius; // inner sector radius of task point in meter or feet
-  QDoubleSpinBox* outerSectorRadius; // outer sector radius of task point in meter or feet
-  QSpinBox*       sectorAngle;       // 0-180 degrees
-#endif
+  /** Called to save the configuration file data.*/
+  void save();
 
   // Drawing options
-  QGroupBox* shapeGroup;
-  QCheckBox* drawShape;
-  QCheckBox* fillShape;
+  QGroupBox* m_shapeGroup;
+  QCheckBox* m_drawShape;
+  QCheckBox* m_fillShape;
 
-  // target line options
-  QGroupBox*   tlGroup;
-  QSpinBox*    tlWidth;
-  QPushButton* tlColorButton;
-  QCheckBox*   tlCheckBox;
-  QLabel*      tlColorLabel;
+  // Zoom option
+  QCheckBox* m_autoZoom;
 
-  // temporary storage of target line color
-  QColor tlColor;
-  QColor selectedTlColor;
+  QButtonGroup* ntScheme;       // nearest-touch schema
+  QButtonGroup* startScheme;    // circle-sector scheme
+  QButtonGroup* finishScheme;   // circle-sector scheme
+  QButtonGroup* obsScheme;      // circle-sector scheme
 
-  // store selected target line width
-  int seletedTlWidth;
+  NumberEditor* m_transShape; // 0...100%
 
-  // track line options
-  QGroupBox*   trGroup;
-  QSpinBox*    trWidth;
-  QPushButton* trColorButton;
-  QCheckBox*   trCheckBox;
-  QLabel*      trColorLabel;
+  // Start options
+  DoubleNumberEditor* m_startLine; // length in  distance unit
+  DoubleNumberEditor* m_startRing; // Radius in distance unit
+  DoubleNumberEditor* m_startSectorInnerRadius; // Radius in distance unit
+  DoubleNumberEditor* m_startSectorOuterRadius; // Radius in distance unit
+  NumberEditor*       m_startSectorAngle; // 1-360 degrees
 
-  // temporary storage of track line color
-  QColor trColor;
-  QColor selectedTrColor;
+  // Finish options
+  DoubleNumberEditor* m_finishLine; // length in distance unit
+  DoubleNumberEditor* m_finishRing; // Radius in distance unit
+  DoubleNumberEditor* m_finishSectorInnerRadius; // Radius in distance unit
+  DoubleNumberEditor* m_finishSectorOuterRadius; // Radius in distance unit
+  NumberEditor*       m_finishSectorAngle; // 1-360 degrees
 
-  // store selected track line width
-  int seletedTrWidth;
+  // Observation Zone options
+  DoubleNumberEditor* m_obsCircleRadius; // Radius in distance unit
+  DoubleNumberEditor* m_obsSectorInnerRadius; // Radius in distance unit
+  DoubleNumberEditor* m_obsSectorOuterRadius; // Radius in distance unit
+  NumberEditor*       m_obsSectorAngle; // 1-360 degrees
+
+  // Store selected NT scheme button
+  int m_selectedSwitchScheme;
+  int m_selectedStartScheme;
+  int m_selectedFinishScheme;
+  int m_selectedObsScheme;
 
   /** saves distance unit set during construction of object */
-  Distance::distanceUnit distUnit;
+  Distance::distanceUnit m_distUnit;
 
-  // store selected cs scheme button
-  int selectedCSScheme;
-  // store selected nt scheme button
-  int selectedNTScheme;
-  // store cylinder radius after load
-  double loadedCylinderRadius;
-  // store inner sector radius after load
-  double loadedInnerSectorRadius;
-  // store outer sector radius after load
-  double loadedOuterSectorRadius;
+  /** The loaded configuration values are saved in those variables. */
+  Distance m_startLineValue;
+  Distance m_startRingValue;
+  Distance m_startSectorInnerRadiusValue;
+  Distance m_startSectorOuterRadiusValue;
+  int      m_startSectorAngleValue;
 
-  /** Auto sip flag storage. */
-  bool m_autoSip;
+  Distance m_finishLineValue;
+  Distance m_finishRingValue;
+  Distance m_finishSectorInnerRadiusValue;
+  Distance m_finishSectorOuterRadiusValue;
+  int      m_finishSectorAngleValue;
+
+  Distance m_obsCircleRadiusValue;
+  Distance m_obsSectorInnerRadiusValue;
+  Distance m_obsSectorOuterRadiusValue;
+  int      m_obsSectorAngleValue;
 };
 
 #endif

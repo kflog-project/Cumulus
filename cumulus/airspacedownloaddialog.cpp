@@ -16,6 +16,11 @@
 ***********************************************************************/
 
 #include <QtGui>
+#include <QApplication>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QMessageBox>
 
 #include "airspacedownloaddialog.h"
 #include "generalconfig.h"

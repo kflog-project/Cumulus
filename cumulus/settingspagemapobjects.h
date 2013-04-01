@@ -37,11 +37,7 @@
 #include <QTableWidgetItem>
 #include <QStringList>
 
-#ifdef USE_NUM_PAD
 class NumberEditor;
-#else
-class QSpinBox;
-#endif
 
 class SettingsPageMapObjects : public QWidget
 {
@@ -65,23 +61,12 @@ protected:
    */
   virtual void showEvent(QShowEvent *);
 
-  virtual void hideEvent(QHideEvent *);
-
-public slots:
-  /**
-   * Called to initiate saving to the configuration file.
-   */
-  void slot_save();
+signals:
 
   /**
-   * Called to initiate loading of the configuration file
+   * Emitted, if settings have been changed.
    */
-  void slot_load();
-
-  /**
-   * Called to ask is confirmation on the close is needed.
-   */
-  void slot_query_close(bool& warn, QStringList& warningWaypoints);
+  void settingsChanged();
 
 private slots:
 
@@ -105,7 +90,26 @@ private slots:
    */
   void slot_wpHighScaleLimitChanged( int newValue );
 
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
 private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+  /** Called to check, if something has been changed by the user. */
+  bool checkChanges();
 
   /**
    * Fills the list with load options
@@ -131,16 +135,9 @@ private:
   QTableWidgetItem *liRelBearingInfo;
   QTableWidgetItem *liFlightTrail;
 
-#ifdef USE_NUM_PAD
   NumberEditor *m_wpLowScaleLimit;
   NumberEditor *m_wpNormalScaleLimit;
   NumberEditor *m_wpHighScaleLimit;
-#else
-  // Spin boxes with scale limits according to their priority.
-  QSpinBox *m_wpLowScaleLimit;
-  QSpinBox *m_wpNormalScaleLimit;
-  QSpinBox *m_wpHighScaleLimit;
-#endif
 
   /** Auto sip flag storage. */
   bool m_autoSip;

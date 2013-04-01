@@ -21,6 +21,10 @@
  */
 
 #include <QtGui>
+#include <QFormLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QMessageBox>
 
 #include "proxydialog.h"
 #include "generalconfig.h"

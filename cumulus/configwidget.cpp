@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2012 by Axel Pauli
+ **                   2007-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -17,474 +17,225 @@
  ***********************************************************************/
 
 /**
- * This is the configuration widget of Cumulus. General settings are
+ * This is the configuration widget of Cumulus. All general settings are
  * handled here. These are in general not related to the preflight
  * preparation. For that exists a separate configuration widget.
  */
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "configwidget.h"
-#include "flickcharm.h"
 #include "generalconfig.h"
-#include "mapconfig.h"
-#include "mapcontents.h"
 #include "gpsnmea.h"
 #include "layout.h"
-
-#ifdef ANDROID
-#include "androidevents.h"
 #include "mainwindow.h"
-#endif
+#include "mapconfig.h"
+#include "mapcontents.h"
+#include "rowdelegate.h"
 
-#ifdef INTERNET
-extern MapContents *_globalMapContents;
-#endif
+#include "settingspageairfields.h"
+#include "settingspageairspace.h"
+#include "settingspageglider.h"
+#include "settingspageinformation.h"
+#include "settingspagelines.h"
+#include "settingspagelooknfeel.h"
+#include "settingspagemapobjects.h"
+#include "settingspagemapsettings.h"
+#include "settingspagepersonal.h"
+#include "settingspageunits.h"
+#include "settingspagetask.h"
+#include "settingspageterraincolors.h"
 
-ConfigWidget::ConfigWidget(QWidget *parent) :
-  QWidget(parent), loadConfig(true)
-{
-  // qDebug("ConfigWidget: height=%d, width=%d", parent->height(), parent->width());
-  setAttribute( Qt::WA_DeleteOnClose );
-  setWindowTitle( tr("General Settings") );
-
-#ifdef ANDROID
-  fullSize = parent->size();
-#endif
-
-  m_tabWidget = new QTabWidget( this );
-
-  QScrollArea* sppArea = new QScrollArea( m_tabWidget );
-  sppArea->setWidgetResizable( true );
-  sppArea->setFrameStyle( QFrame::NoFrame );
-  spp = new SettingsPagePersonal( this );
-  sppArea->setWidget( spp );
-#ifdef QSCROLLER
-  QScroller::grabGesture(sppArea, QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(sppArea);
-#endif
-  m_tabWidget->addTab( sppArea, tr( "Personal" ) );
-
-#ifdef ANDROID
-  spg = new SettingsPageGPS4A( this );
+#ifndef ANDROID
+#include "settingspagegps.h"
 #else
-  spg = new SettingsPageGPS( this );
+#include "settingspagegps4a.h"
 #endif
 
-  m_tabWidget->addTab( spg, tr( "GPS" ) );
+// Menu labels
+#define AIRFIELDS       "Airfields"
+#define AIRSPACES       "Airspaces"
+#define GLIDERS         "Gliders"
+#define GPS             "GPS"
+#define INFORMATION     "Information"
+#define LINES           "Lines"
+#define LOOK_FEEL       "Look&Feel"
+#define MAP_OBJECTS     "Map Objects"
+#define MAP_SETTINGS    "Map Settings"
+#define PERSONAL        "Personal"
+#define TASK            "Task"
+#define TERRAIN_COLORS  "Terrain Colors"
+#define UNITS           "Units"
 
-  spgl = new SettingsPageGlider( this );
-  m_tabWidget->addTab( spgl, tr( "Gliders" ) );
+ConfigWidget::ConfigWidget( QWidget* parent ) :
+  QWidget(parent)
+{
+  setObjectName("ConfigWidget");
+  setWindowTitle( tr("General Settings") );
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
 
-  QScrollArea* spmsArea = new QScrollArea( m_tabWidget );
-  spmsArea->setWidgetResizable( true );
-  spmsArea->setFrameStyle( QFrame::NoFrame );
-  spms = new SettingsPageMapSettings( this );
-  spmsArea->setWidget( spms );
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  m_headerLabels  << tr("Airfields")
+                  << tr("Airspaces")
+                  << tr("Gliders")
+                  << tr("GPS")
+                  << tr("Information")
+                  << tr("Lines")
+                  << tr("Look&Feel")
+                  << tr("Map Objects")
+                  << tr("Map Settings")
+                  << tr("Personal")
+                  << tr("Task")
+                  << tr("Terrain Colors")
+                  << tr("Units");
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  m_setupTree = new QTreeWidget( this );
+  m_setupTree->setRootIsDecorated( false );
+  m_setupTree->setItemsExpandable( false );
+  m_setupTree->setSortingEnabled( true );
+  m_setupTree->setSelectionMode( QAbstractItemView::SingleSelection );
+  m_setupTree->setSelectionBehavior( QAbstractItemView::SelectRows );
+  m_setupTree->setAlternatingRowColors(true);
+  m_setupTree->setColumnCount( 1 );
+  m_setupTree->setFocusPolicy( Qt::StrongFocus );
+  m_setupTree->setUniformRowHeights(true);
+  m_setupTree->setHeaderLabel( tr( "Settings Menu" ) );
+
+  m_headerLabels << ( tr( "Settings Menu" ) );
+
+  // Set additional space per row
+  RowDelegate* rowDelegate = new RowDelegate( m_setupTree, 10 );
+  m_setupTree->setItemDelegate( rowDelegate );
+
+  QTreeWidgetItem* headerItem = m_setupTree->headerItem();
+  headerItem->setTextAlignment( 0, Qt::AlignCenter );
+
+  m_setupTree->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_setupTree->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(spmsArea, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_setupTree->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(spmsArea);
-#endif
-  m_tabWidget->addTab( spmsArea, tr( "Map Settings" ) );
-
-  QScrollArea* spmoArea = new QScrollArea( m_tabWidget );
-  spmoArea->setWidgetResizable( true );
-  spmoArea->setFrameStyle( QFrame::NoFrame );
-  spmo = new SettingsPageMapObjects( this );
-  spmoArea->setWidget( spmo );
-#ifdef QSCROLLER
-  QScroller::grabGesture(spmoArea, QScroller::LeftMouseButtonGesture);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture(m_setupTree->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(spmoArea);
-#endif
-  m_tabWidget->addTab( spmoArea, tr( "Map Objects" ) );
+  connect( m_setupTree, SIGNAL(itemClicked( QTreeWidgetItem*, int )),
+           this, SLOT( slotPageClicked( QTreeWidgetItem*, int )) );
 
-  QScrollArea* sptcArea = new QScrollArea( m_tabWidget );
-  sptcArea->setWidgetResizable( true );
-  sptcArea->setFrameStyle( QFrame::NoFrame );
-  sptc = new SettingsPageTerrainColors( this );
-  sptcArea->setWidget( sptc );
-#ifdef QSCROLLER
-  QScroller::grabGesture(sptcArea, QScroller::LeftMouseButtonGesture);
-#endif
+  contentLayout->addWidget( m_setupTree, 5 );
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(sptcArea);
-#endif
-  m_tabWidget->addTab( sptcArea, tr( "Terrain Colors" ) );
+  QTreeWidgetItem* item = new QTreeWidgetItem;
+  item->setText( 0, tr(PERSONAL) );
+  item->setData( 0, Qt::UserRole, PERSONAL );
+  // item->setIcon( 0, _mainWindow->getPixmap("kde_identity_32.png") );
+  m_setupTree->addTopLevelItem( item );
 
-  QScrollArea* spsArea = new QScrollArea( m_tabWidget );
-  spsArea->setWidgetResizable( true );
-  spsArea->setFrameStyle( QFrame::NoFrame );
-  spt = new SettingsPageTask( this );
-  spsArea->setWidget( spt );
-#ifdef QSCROLLER
-  QScroller::grabGesture(spsArea, QScroller::LeftMouseButtonGesture);
-#endif
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(GPS) );
+  item->setData( 0, Qt::UserRole, GPS );
+  m_setupTree->addTopLevelItem( item );
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(spsArea);
-#endif
-  m_tabWidget->addTab( spsArea, tr( "Task" ) );
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(GLIDERS) );
+  item->setData( 0, Qt::UserRole, GLIDERS );
+  m_setupTree->addTopLevelItem( item );
 
-  QScrollArea* spafArea = new QScrollArea( m_tabWidget );
-  spafArea->setWidgetResizable( true );
-  spafArea->setFrameStyle( QFrame::NoFrame );
-  spaf = new SettingsPageAirfields( this );
-  spafArea->setWidget( spaf );
-#ifdef QSCROLLER
-  QScroller::grabGesture(spafArea, QScroller::LeftMouseButtonGesture);
-#endif
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(MAP_SETTINGS) );
+  item->setData( 0, Qt::UserRole, MAP_SETTINGS );
+  m_setupTree->addTopLevelItem( item );
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(spafArea);
-#endif
-  m_tabWidget->addTab( spafArea, tr( "Airfields" ) );
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(MAP_OBJECTS) );
+  item->setData( 0, Qt::UserRole, MAP_OBJECTS );
+  m_setupTree->addTopLevelItem( item );
 
-  QScrollArea* asArea = new QScrollArea( m_tabWidget );
-  asArea->setWidgetResizable( true );
-  asArea->setFrameStyle( QFrame::NoFrame );
-  spa = new SettingsPageAirspace( this );
-  asArea->setWidget( spa );
-#ifdef QSCROLLER
-  QScroller::grabGesture(asArea, QScroller::LeftMouseButtonGesture);
-#endif
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(TASK) );
+  item->setData( 0, Qt::UserRole, TASK );
+  m_setupTree->addTopLevelItem( item );
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(asArea);
-#endif
-  m_tabWidget->addTab( asArea, tr( "Airspaces" ) );
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(LINES) );
+  item->setData( 0, Qt::UserRole, LINES );
+  m_setupTree->addTopLevelItem( item );
 
-  spu = new SettingsPageUnits( this );
-  m_tabWidget->addTab( spu, tr( "Units" ) );
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(AIRFIELDS) );
+  item->setData( 0, Qt::UserRole, AIRFIELDS );
+  m_setupTree->addTopLevelItem( item );
 
-  QScrollArea* infoArea = new QScrollArea( m_tabWidget );
-  infoArea->setWidgetResizable( true );
-  infoArea->setFrameStyle( QFrame::NoFrame );
-  spi = new SettingsPageInformation( this );
-  infoArea->setWidget( spi );
-#ifdef QSCROLLER
-  QScroller::grabGesture(infoArea, QScroller::LeftMouseButtonGesture);
-#endif
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(AIRSPACES) );
+  item->setData( 0, Qt::UserRole, AIRSPACES );
+  m_setupTree->addTopLevelItem( item );
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(infoArea);
-#endif
-  m_tabWidget->addTab( infoArea, tr( "Information" ) );
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(TERRAIN_COLORS) );
+  item->setData( 0, Qt::UserRole, TERRAIN_COLORS );
+  m_setupTree->addTopLevelItem( item );
 
-  QScrollArea* splnfArea = new QScrollArea( m_tabWidget );
-  splnfArea->setWidgetResizable( true );
-  splnfArea->setFrameStyle( QFrame::NoFrame );
-  splnf = new SettingsPageLookNFeel( this );
-  splnfArea->setWidget( splnf );
-#ifdef QSCROLLER
-  QScroller::grabGesture(splnfArea, QScroller::LeftMouseButtonGesture);
-#endif
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(UNITS) );
+  item->setData( 0, Qt::UserRole, UNITS );
+  m_setupTree->addTopLevelItem( item );
 
-#ifdef FLICK_CHARM
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(splnfArea);
-#endif
-  m_tabWidget->addTab( splnfArea, tr( "Look&&Feel" ) );
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(INFORMATION) );
+  item->setData( 0, Qt::UserRole, INFORMATION );
+  m_setupTree->addTopLevelItem( item );
+
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(LOOK_FEEL) );
+  item->setData( 0, Qt::UserRole, LOOK_FEEL );
+  m_setupTree->addTopLevelItem( item );
+
+  m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
 
   QPushButton *cancel = new QPushButton(this);
-  cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(IconSize, IconSize));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QPushButton *ok = new QPushButton(this);
-  ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
-  ok->setIconSize(QSize(IconSize, IconSize));
-  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-
   QLabel *titlePix = new QLabel(this);
-  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png") );
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
   buttonBox->addStretch(2);
-  buttonBox->addWidget( cancel, 2 );
-  buttonBox->addSpacing(30);
-  buttonBox->addWidget( ok, 2 );
+  buttonBox->addWidget(cancel, 1);
   buttonBox->addStretch(2);
-  buttonBox->addWidget( titlePix, 1 );
+  buttonBox->addWidget(titlePix);
+  contentLayout->addStretch( 10 );
+  contentLayout->addLayout(buttonBox);
 
-  connect(ok, SIGNAL(released()), this, SLOT(accept()));
-  connect(cancel, SIGNAL(released()), this, SLOT(reject()));
-
-  QShortcut* sc = new QShortcut( this );
-  sc->setKey( Qt::Key_Close );
-  connect( sc, SIGNAL( activated() ), this, SLOT( reject() ) );
-  sc = new QShortcut( this );
-  sc->setKey(Qt::Key_Escape);
-  connect( sc, SIGNAL( activated() ), this, SLOT( reject() ) );
-
-  connect(this, SIGNAL(load()), spp, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spgl, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spg, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spt, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spms, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spmo, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spaf, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spa, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spu, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), spi, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), splnf, SLOT(slot_load()));
-  connect(this, SIGNAL(load()), sptc, SLOT(slot_load()));
-
-  connect(this, SIGNAL(reload()), spu, SLOT(slot_load()));
-
-  connect(this, SIGNAL(save()), spp, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spgl, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spg, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spt, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spms, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spmo, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spaf, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spa, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spi, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), spu, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), splnf, SLOT(slot_save()));
-  connect(this, SIGNAL(save()), sptc, SLOT(slot_save()));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spp, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spgl, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spms, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spmo, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spaf, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spa, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          splnf, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          sptc, SLOT(slot_query_close(bool&, QStringList&)));
-
-  connect(this, SIGNAL(query_close(bool&, QStringList& )),
-          spu, SLOT(slot_query_close(bool&, QStringList&)));
-
-  extern MapConfig *_globalMapConfig;
-
-  connect(spa, SIGNAL(airspaceColorsUpdated()),
-          _globalMapConfig, SLOT(slotReloadAirspaceColors()));
-
-  connect(spg, SIGNAL(startNmeaLog()),
-          GpsNmea::gps, SLOT(slot_openNmeaLogFile()));
-
-  connect(spg, SIGNAL(endNmeaLog()),
-          GpsNmea::gps, SLOT(slot_closeNmeaLogFile()));
-
-#ifdef INTERNET
-
-  connect(spa, SIGNAL(downloadAirspace( QString& )),
-          _globalMapContents, SLOT(slotDownloadAirspace( QString& )));
-
-  connect(spms, SIGNAL(downloadMapArea( const QPoint&, const Distance& )),
-          _globalMapContents, SLOT(slotDownloadMapArea( const QPoint&, const Distance&)));
-
-  connect(spaf, SIGNAL(downloadWelt2000( const QString& )),
-          _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )));
-
-#endif
-
-  QHBoxLayout *contentLayout = new QHBoxLayout;
-  contentLayout->addWidget( m_tabWidget );
-  contentLayout->addLayout( buttonBox );
-
-  setLayout( contentLayout );
-
-  slot_LoadCurrent();
-  m_tabWidget->setCurrentWidget( spp );
-
-#ifdef ANDROID
-  MainWindow::mainWindow()->forceFocus();
-#endif
+  m_setupTree->setMinimumWidth( Layout::maxTextWidth( m_headerLabels, font() ) + 100 );
+  setVisible( true );
 }
 
 ConfigWidget::~ConfigWidget()
 {
-  // qDebug("~ConfigWidget() is called");
-}
-
-/** This slot is called if the window will be shown or resized */
-void ConfigWidget::slot_LoadCurrent()
-{
-  // Block multiple loads to avoid reset of changed values in the configuration
-  // tabulators.
-  if( loadConfig == false )
-    {
-      return;
-    }
-
-  loadConfig = false;
-  emit load();
-}
-
-/** Called if OK button is pressed */
-void ConfigWidget::accept()
-{
-  hide();
-
-  // save some change states before restoring of data
-  bool homeLatitudeChange = spp->checkIsHomeLatitudeChanged();
-  bool homePositionChange = spp->checkIsHomePositionChanged();
-  bool projectionChange   = spms->checkIsProjectionChanged();
-  bool welt2000Change     = spaf->checkIsWelt2000Changed();
-
-  // All setting pages will save their configuration data
-  emit save();
-
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  if( conf->getMapProjectionType() == ProjectionBase::Cylindric &&
-      conf->getMapProjectionFollowsHome() == true &&
-      homeLatitudeChange == true )
-    {
-      // @AP: In case of cylinder projection and an active projection follows home
-      // option and a latitude change of the home position, the projection
-      // parallel is set to the new home latitude. That shall ensure
-      // optimized results during map drawing. Note, that is only
-      // supported for the cylinder projection!
-      projectionChange = true;
-      conf->setCylinderParallel( conf->getHomeLat() );
-    }
-
-  // save all configuration items permanently into the configuration file
-  GeneralConfig::instance()->save();
-
-  if( projectionChange == true || welt2000Change == true )
-    {
-      QMessageBox mb( QMessageBox::Information,
-                      "Cumulus",
-                      tr( "<html>"
-                      "<b>Configuration settings have been changed!</b><p>"
-                      "Update of system can take a few seconds and more!"
-                      "</html>" ),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      // Under Android the box must be moved into the center of the desktop screen.
-      // Note the box must be set as first to visible otherwise move will not work.
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
-    }
-
-  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                   QEventLoop::ExcludeSocketNotifiers );
-
-  QCoreApplication::flush();
-
-  emit settingsChanged();
-
-  if( projectionChange == false &&
-      ( welt2000Change == true ||
-      ( conf->getWelt2000CountryFilter() == "" &&
-        homePositionChange == true )))
-    {
-      // @AP: There was a change in the Welt2000 configuration data. We must
-      // trigger a reload of these data. This is only done, if
-      // a) The projection has not been changed. A projection change includes
-      //    a reload of Welt2000 data.
-      // b) The Welt2000 country filter is not set and
-      //    the home position has been changed.
-      // c) Welt2000 configuration items have been changed
-      emit welt2000ConfigChanged();
-    }
-
-  // Check, if we have not a valid GPS fix. In this case we do move the map
-  // to the new home position.
-  if( homePositionChange == true && GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
-    {
-      emit gotoHomePosition();
-    }
-
-  QApplication::restoreOverrideCursor();
-
-  emit closeConfig();
-  QWidget::close();
-}
-
-/** Called if the Cancel button is pressed */
-void ConfigWidget::reject()
-{
-  bool need_warning=false;
-  QStringList changed_pages;
-  emit query_close(need_warning, changed_pages);
-  QString pagelist;
-  QString separator;
-
-  if( need_warning )
-    {
-      for( int i = 0; i < changed_pages.count(); i++ )
-        {
-          pagelist += QString("<li>%1</li>").arg(changed_pages[i]);
-        }
-
-      QMessageBox mb( QMessageBox::Warning,
-                      "Close without saving!",
-                      tr("<html>You have changed:<b><ul>%1</ul></b>Discard changes?</html>").arg(pagelist),
-                      QMessageBox::QMessageBox::Save | QMessageBox::Discard,
-                      this );
-
-      mb.setDefaultButton( QMessageBox::Save );
-
-#ifdef ANDROID
-
-      // Under Android the box must be moved into the center of the desktop screen.
-      // Note the box must be set as first to visible otherwise move will not work.
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      if( mb.exec() == QMessageBox::Save )
-        { // the user pressed save
-          accept();
-          return;
-        }
-    }
-
-  setVisible(false);
-  emit reload();
-  emit closeConfig();
-  QWidget::close();
 }
 
 void ConfigWidget::keyReleaseEvent( QKeyEvent* event )
@@ -494,11 +245,222 @@ void ConfigWidget::keyReleaseEvent( QKeyEvent* event )
     {
       case Qt::Key_Close:
       case Qt::Key_Escape:
-        reject();
+        slotReject();
         break;
 
       default:
         QWidget::keyReleaseEvent( event );
         break;
     }
+}
+
+/**
+ * Called, if an item is pressed in the tree view.
+ */
+void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
+{
+  Q_UNUSED( column );
+
+  QString itemText = item->data( 0, Qt::UserRole ).toString();
+
+  if( itemText == AIRFIELDS )
+    {
+      extern MapContents* _globalMapContents;
+
+      SettingsPageAirfields* page = new SettingsPageAirfields( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      connect( page,  SIGNAL( reloadWelt2000() ),
+                 _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
+
+      connect( page, SIGNAL(downloadWelt2000( const QString& )),
+               _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == AIRSPACES )
+    {
+      extern MapConfig*   _globalMapConfig;
+      extern MapContents* _globalMapContents;
+
+      SettingsPageAirspace* page = new SettingsPageAirspace( this );
+
+      connect( page, SIGNAL(airspaceColorsUpdated()),
+               _globalMapConfig, SLOT(slotReloadAirspaceColors()));
+
+      connect( page, SIGNAL(downloadAirspace( QString& )),
+              _globalMapContents, SLOT(slotDownloadAirspace( QString& )));
+
+      page->show();
+      return;
+    }
+
+  if( itemText == GLIDERS )
+    {
+      SettingsPageGlider* page = new SettingsPageGlider( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == GPS )
+    {
+
+#ifndef ANDROID
+      SettingsPageGPS* page = new SettingsPageGPS( this );
+#else
+      SettingsPageGPS4A* page = new SettingsPageGPS4A( this );
+#endif
+
+      connect( page, SIGNAL(settingsChanged()),
+               GpsNmea::gps, SLOT(slot_reset()) );
+
+      connect( page, SIGNAL(startNmeaLog()),
+               GpsNmea::gps, SLOT(slot_openNmeaLogFile()) );
+
+      connect( page , SIGNAL(endNmeaLog()),
+               GpsNmea::gps, SLOT(slot_closeNmeaLogFile()) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == INFORMATION )
+    {
+      SettingsPageInformation* page = new SettingsPageInformation( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == LINES )
+    {
+      SettingsPageLines* page = new SettingsPageLines( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == LOOK_FEEL )
+    {
+      SettingsPageLookNFeel* page = new SettingsPageLookNFeel( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == MAP_OBJECTS )
+    {
+      SettingsPageMapObjects* page = new SettingsPageMapObjects( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == MAP_SETTINGS )
+    {
+      extern MapContents* _globalMapContents;
+
+      SettingsPageMapSettings* page = new SettingsPageMapSettings( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      connect( page, SIGNAL(downloadMapArea( const QPoint&, const Distance& )),
+              _globalMapContents, SLOT(slotDownloadMapArea( const QPoint&, const Distance&)));
+
+
+      page->show();
+      return;
+    }
+
+  if( itemText == PERSONAL )
+    {
+      SettingsPagePersonal* page = new SettingsPagePersonal( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      connect( page, SIGNAL( homePositionChanged() ),
+               this, SLOT( slotNewHomePosition() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == TASK )
+    {
+      SettingsPageTask* page = new SettingsPageTask( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == TERRAIN_COLORS )
+    {
+      SettingsPageTerrainColors* page = new SettingsPageTerrainColors( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  if( itemText == UNITS )
+    {
+      SettingsPageUnits* page = new SettingsPageUnits( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+}
+
+void ConfigWidget::slotNewHomePosition()
+{
+  // Check, if we have not a valid GPS fix. In this case we do move the map
+  // to the new home position.
+  if( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
+    {
+      emit gotoHomePosition();
+    }
+}
+
+void ConfigWidget::slotAccept()
+{
+  setVisible( false );
+  emit closeConfig();
+  QWidget::close();
+}
+
+void ConfigWidget::slotReject()
+{
+  setVisible( false );
+  emit closeConfig();
+  QWidget::close();
 }

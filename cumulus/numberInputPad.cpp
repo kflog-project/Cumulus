@@ -16,9 +16,15 @@
 ***********************************************************************/
 
 #include <climits>
+
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "generalconfig.h"
+#include "layout.h"
 #include "numberInputPad.h"
 
 /**
@@ -70,9 +76,12 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   setNumber( number );
   gl->addWidget( m_editor, row, 0, 1, 5 );
 
+  int iconSize = Layout::iconSize( font() );
+  QSize qis( iconSize, iconSize );
 
   m_cancel = new QPushButton( " ", this );
   m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
+  m_cancel->setIconSize( qis );
   gl->addWidget( m_cancel, row, 6 );
   row++;
 
@@ -97,6 +106,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   m_home = new QPushButton( " ", this );
   m_home->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
+  m_home->setIconSize( qis );
   gl->addWidget( m_home, row, 6 );
   row++;
 
@@ -127,22 +137,27 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   m_left = new QPushButton( " ", this);
   m_left->setIcon(style->standardIcon(QStyle::SP_ArrowLeft));
+  m_left->setIconSize( qis );
   gl->addWidget( m_left, row, 1 );
 
   m_right = new QPushButton( " ", this );
   m_right->setIcon(style->standardIcon(QStyle::SP_ArrowRight));
+  m_right->setIconSize( qis );
   gl->addWidget( m_right, row, 2 );
 
   m_delLeft = new QPushButton( " ", this );
   m_delLeft->setIcon(style->standardIcon(QStyle::SP_MediaSkipBackward));
+  m_delLeft->setIconSize( qis );
   gl->addWidget( m_delLeft, row, 3 );
 
   m_delRight = new QPushButton( " ", this );
   m_delRight->setIcon (style->standardIcon(QStyle::SP_MediaSkipForward));
+  m_delRight->setIconSize( qis );
   gl->addWidget( m_delRight, row, 4 );
 
   m_ok = new QPushButton( " ", this );
   m_ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
+  m_ok->setIconSize( qis );
   gl->addWidget( m_ok, row, 6 );
 
   m_ok->setFocusPolicy( Qt::NoFocus );
@@ -226,11 +241,13 @@ NumberInputPad::~NumberInputPad()
   qApp->setAutoSipEnabled( m_autoSip );
 }
 
-void NumberInputPad::showEvent( QShowEvent* /* event */ )
+void NumberInputPad::showEvent( QShowEvent* event )
 {
   m_editor->setFocus();
   m_editor->home( false );
   m_tipLabel->text().isEmpty() ? m_tipLabel->hide() : m_tipLabel->show();
+
+  QFrame::showEvent( event );
 }
 
 void NumberInputPad::setTip( QString tip )

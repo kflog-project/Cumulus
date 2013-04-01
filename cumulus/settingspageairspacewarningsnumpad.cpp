@@ -15,7 +15,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "airspacewarningdistance.h"
 #include "altitude.h"

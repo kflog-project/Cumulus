@@ -16,6 +16,8 @@
  **
  ***********************************************************************/
 
+// #define MAP_FLOAT 1
+
 #include <cmath>
 
 #include <QtGlobal>
@@ -550,23 +552,35 @@ void MapMatrix::slotInitMatrix()
     }
 }
 
-double MapMatrix::ensureVisible(const QPoint& point)
+double MapMatrix::ensureVisible(const QPoint& point2Show, QPoint center )
 {
-  //get distances in both x and y directions, and add some extra space
-  double xDist=dist(point.x(), mapCenterLon, mapCenterLat, mapCenterLon)*1.10;
-  double yDist=dist(mapCenterLat, point.y(), mapCenterLat, mapCenterLon)*1.10;
+  if( center.isNull() )
+    {
+      // No center point is defined, so we take the normal map center point.
+      center = QPoint( mapCenterLat, mapCenterLon );
+    }
+
+  // get distances in both x and y directions in km and add some extra space
+  double xDist = dist(point2Show.x(), center.y(), center.x(), center.y()) * 1.3;
+  double yDist = dist(center.x(), point2Show.y(), center.x(), center.y()) * 1.3;
+
+  qDebug() << "MapMatrix::ensureVisible xdist=" << xDist << "ydist=" << yDist;
 
   //calculate the scale needed to display that distance on the map
-  double xScale=2.0 * (xDist*1000.0) / mapViewSize.height();
-  double yScale=2.0 * (yDist*1000.0) / mapViewSize.width();
+  double xScale = 2.0 * (xDist * 1000.0) / mapViewSize.height();
+  double yScale = 2.0 * (yDist * 1000.0) / mapViewSize.width();
 
-  //we obviously need the bigger of the two scales
+  // we obviously need the bigger of the two scales
   double newScale = qMax(xScale, yScale);
+
+  qDebug() << "MapMatrix::ensureVisible xscale=" << xScale << "yscale=" << yScale
+           << "NewScale=" << newScale;
 
   if (newScale <= MIN_SCALE)
     {
-      //we only zoom if we can fit it on the map with the minimum scale or more
-      newScale = qMax(newScale, MAX_SCALE); //maximum zoom is the minimum scale
+      // we only zoom if we can fit it on the map with the minimum scale or more.
+      // maximum zoom is the minimum scale border
+      newScale = qMax(newScale, static_cast<double>(VAL_BORDER_L));
       cScale = newScale;
       return cScale;
     }
@@ -647,13 +661,20 @@ void MapMatrix::slotSetNewHome(const QPoint& newHome)
   conf->save();
 }
 
-/*
+#ifdef MAP_FLOAT
+
 // The old function using Qt (floating point)
 QPolygon MapMatrix::map(const QPolygon &a) const
 {
-    return worldMatrix.map(a);
+  return worldMatrix.map(a);
 }
-*/
+
+QPoint MapMatrix::map(const QPoint& p) const
+{
+  return worldMatrix.map(p);
+}
+
+#else
 
 // The new function using fixed point multiplication
 QPolygon MapMatrix::map(const QPolygon &a) const
@@ -698,3 +719,5 @@ QPoint MapMatrix::map(const QPoint& p) const
   return QPoint( fp24p8toi( mulfp8p24(m11,fx) + mulfp8p24(m21,fy) + dx),
                  fp24p8toi( mulfp8p24(m22,fy) + mulfp8p24(m12,fx) + dy) );
 }
+
+#endif

@@ -16,23 +16,6 @@
 **
 ***********************************************************************/
 
-#ifndef _PreFlightWidget_h
-#define _PreFlightWidget_h
-
-#include <QString>
-#include <QTabWidget>
-
-class PreFlightGliderPage;
-class PreFlightMiscPage;
-class PreFlightWaypointPage;
-class Waypoint;
-
-#ifdef USE_NUM_PAD
-class PreFlightTaskPage;
-#else
-class PreFlightTaskList;
-#endif
-
 /**
  * \class PreFlightWidget
  *
@@ -44,12 +27,25 @@ class PreFlightTaskList;
  * glider type, copilot, task, amount of water taken on, etc.
  *
  * \date 2003-2013
+ *
+ * \version $Id$
  */
+
+#ifndef _PreFlightWidget_h
+#define _PreFlightWidget_h
+
+#include <QString>
+#include <QStringList>
+#include <QTreeWidget>
+#include <QWidget>
+
+class QCheckBox;
+
 class PreFlightWidget : public QWidget
 {
   Q_OBJECT
 
-private:
+ private:
 
   /**
    * That macro forbids the copy constructor and the assignment operator.
@@ -60,11 +56,10 @@ public:
 
   /**
    * Constructor
+   *
    * @param parent Pointer to parent widget
-   * @param name Name of the page to be displayed. Current options: "taskselection".
-   *             Any other string will select the glider page.
    */
-  PreFlightWidget(QWidget *parent, const char* name);
+  PreFlightWidget(QWidget *parent);
 
   /**
    * Destructor
@@ -73,27 +68,9 @@ public:
 
 protected:
 
-  /** Used to handle language change events */
-  virtual void changeEvent( QEvent* event );
-
   void keyReleaseEvent( QKeyEvent* event );
 
-private:
-
-  /** Sets all widget labels, which need a translation. */
-  void setLabels();
-
-signals:
-
-  /**
-   * This signal is emitted if the settings are changed
-   */
-  void settingsChanged();
-
-  /**
-   * This signal is emitted if a new waypoint is selected.
-   */
-  void newWaypoint(Waypoint *, bool);
+ signals:
 
   /**
    * This signal is emitted before the widget is closed.
@@ -101,50 +78,30 @@ signals:
    */
   void closeConfig();
 
-  /**
-   * This signal is emitted, if a new task has been selected. IGC logger
-   * uses this info to restart the flight recording.
-   */
-  void newTaskSelected();
-
-protected slots:
+ private slots:
 
   /**
    * Called if dialog is accepted (OK button is clicked)
    */
-  void slot_accept();
+  void slotAccept();
 
   /**
    * Called if dialog is rejected (X button is clicked)
    */
-  void slot_reject();
-
-private slots:
-
-  // shortcuts for switching between tabulators
-  void slot_keyLeft();
-  void slot_keyRight();
+  void slotReject();
 
   /**
-   * Called, if a new tabulator is pressed in the tab bar.
+   * Called, if an item is pressed in the tree view.
    */
-  void slot_tabChanged( int index );
+  void slotPageClicked( QTreeWidgetItem * item, int column );
 
-private:
+ private:
 
-  PreFlightGliderPage*   m_gliderpage;
-  PreFlightMiscPage*     m_miscpage;
-  PreFlightWaypointPage* m_wppage;
-  QTabWidget*            tabWidget;
+  QTreeWidget* m_setupTree;
+  QCheckBox*   m_menuCb;
 
-#ifdef USE_NUM_PAD
-  PreFlightTaskPage* m_taskpage;
-#else
-  PreFlightTaskList* m_taskpage;
-#endif
-
-  // index of last selected page
-  int lastPage;
+  /** List with all header labels. */
+  QStringList m_headerLabels;
 };
 
 #endif

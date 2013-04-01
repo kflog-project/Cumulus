@@ -15,15 +15,19 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "settingspageairspaceloading.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 /*
  * Because Maemo 5 is using a special dialog design this window is declared
@@ -53,13 +57,19 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   fileTable->setShowGrid( true );
 
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  fileTable->setItemDelegate( new RowDelegate( fileTable, afMargin ) );
+
+  fileTable->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  fileTable->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(fileTable, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( fileTable->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(fileTable);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( fileTable->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
@@ -68,10 +78,6 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   QHeaderView *vHeader = fileTable->verticalHeader();
   style = "QHeaderView::section { width: 2em }";
   vHeader->setStyleSheet( style );
-
-  // set new row height from configuration
-  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
-  fileTable->setItemDelegate( new RowDelegate( fileTable, afMargin ) );
 
   connect( fileTable, SIGNAL(cellClicked ( int, int )),
            SLOT(slot_toggleCheckBox( int, int )) );

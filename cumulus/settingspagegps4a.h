@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 by Axel Pauli
+**   Copyright (c):  2012-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,9 @@
  *
  * \brief GPS Configuration settings for Android.
  *
- * \date 2012
+ * \date 2012-2013
+ *
+ * \version $Id$
  *
  */
 
@@ -35,36 +37,31 @@
 
 class SettingsPageGPS4A : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
-  private:
+ private:
 
-    Q_DISABLE_COPY ( SettingsPageGPS4A )
+  Q_DISABLE_COPY ( SettingsPageGPS4A )
 
-  public:
+ public:
 
-    SettingsPageGPS4A( QWidget *parent=0 );
+  SettingsPageGPS4A( QWidget *parent=0 );
 
-    virtual ~SettingsPageGPS4A();
+  virtual ~SettingsPageGPS4A();
 
-  private:
+ private slots:
 
-    QComboBox*   GpsAltitude;
-    QCheckBox*   saveNmeaData;
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
 
-  public slots:
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
-    /**
-     * Called to initiate saving to the configuration file.
-     */
-    void slot_save();
-
-    /**
-     * Called to initiate loading of the configuration file
-     */
-    void slot_load();
-
-  signals:
+ signals:
 
   /**
    * Emitted when the NMEA logging into a file shall be started.
@@ -75,6 +72,22 @@ class SettingsPageGPS4A : public QWidget
    * Emitted when the NMEA logging into a file shall be ended.
    */
   void endNmeaLog();
+
+  /**
+   * Emitted, if settings have been changed.
+   */
+  void settingsChanged();
+
+ private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+  QComboBox*   GpsAltitude;
+  QCheckBox*   saveNmeaData;
 };
 
 #endif

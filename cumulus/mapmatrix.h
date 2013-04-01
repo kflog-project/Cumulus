@@ -274,15 +274,24 @@ public:
   /** */
   void writeMatrixOptions();
 
-  /** This function tries to make the given point visible on the
-   * map, using only scaling.  This may fail if the point is too
+  /**
+   * This function tries to make the given point visible on the
+   * map, using only scaling. This may fail if the point is too
    * far away, so that the required scale is bigger than the
    * limit. If the function fails, the current projection is not
-   * changed and false is returned. If the function succeeds, the
+   * changed and 0 is returned. If the function succeeds, the
    * scale is changed so that the greatest level of detail can be
    * seen while keeping the point on the map. The new scale is
-   * returned. */
-  double ensureVisible(const QPoint& point);
+   * returned.
+   *
+   * \param point2Show The point at the map to show
+   *
+   * \param center The center point of the map. If the center position is 0,0
+   *        the mapCenterLat and mapCenterLon are taken.
+   *
+   * \return 0 if scale calculation fails otherwise the visibility scale
+   */
+  double ensureVisible(const QPoint& point2Show, QPoint center=QPoint(0,0) );
 
   /**
    * @returns an indication of the current draw scale, 0 to 2. 0 is small scale, 2 very big scale

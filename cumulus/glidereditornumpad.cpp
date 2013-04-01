@@ -16,7 +16,15 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
@@ -28,10 +36,6 @@
 #include "polar.h"
 #include "polardialog.h"
 #include "speed.h"
-
-#ifdef FLICK_CHARM
-#include "flickcharm.h"
-#endif
 
 extern MapView *_globalMapView;
 
@@ -79,12 +83,13 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
       comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(comboType->view(), QScroller::LeftMouseButtonGesture);
+      comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+      QScroller::grabGesture( comboType->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(comboType->view());
+#ifdef QTSCROLLER
+      comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+      QtScroller::grabGesture( comboType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
       itemsLayout->addWidget(comboType, row, 1, 1, 3);

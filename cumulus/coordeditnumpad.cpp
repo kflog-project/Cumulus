@@ -18,6 +18,8 @@
 #include <cmath>
 
 #include <QtGui>
+#include <QPushButton>
+#include <QHBoxLayout>
 
 #include "coordeditnumpad.h"
 #include "numberEditor.h"
@@ -51,7 +53,7 @@ CoordEditNumPad::CoordEditNumPad(QWidget *parent) : QWidget( parent )
   degreeBox->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
   hbox->addWidget( degreeBox );
   hbox->addSpacing( spaceItem1 );
-  label = new QLabel( "\260", this );
+  label = new QLabel( QString(Qt::Key_degree), this );
   hbox->addWidget( label );
   hbox->addSpacing( spaceItem2 );
 

@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   settingspageairfields.h
+ **   settingspageairfields.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -25,15 +25,20 @@
  * \version $Id$
  */
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "generalconfig.h"
-#include "settingspageairfields.h"
-#include "varspinbox.h"
-
-#ifdef USE_NUM_PAD
+#include "layout.h"
 #include "numberEditor.h"
-#endif
+#include "settingspageairfields.h"
 
 #ifdef INTERNET
 #include "httpclient.h"
@@ -43,8 +48,47 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QWidget(parent)
 {
   setObjectName("SettingsPageAirfields");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Airfields") );
 
-  QVBoxLayout *topLayout = new QVBoxLayout(this);
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // The parent of the layout is the scroll widget
+  QVBoxLayout *topLayout = new QVBoxLayout(sw);
 
   QGroupBox* weltGroup = new QGroupBox(tr("Welt2000"), this);
   topLayout->addWidget(weltGroup);
@@ -62,7 +106,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   lbl = new QLabel(tr("Home Radius:"), weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
 
-#ifdef USE_NUM_PAD
   m_homeRadius = new NumberEditor( this );
   m_homeRadius->setDecimalVisible( false );
   m_homeRadius->setPmVisible( false );
@@ -72,14 +115,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
   m_homeRadius->setValidator( eValidator );
   weltLayout->addWidget(m_homeRadius, grow, 1 );
-#else
-  m_homeRadius = new QSpinBox;
-  m_homeRadius->setRange(1, 10000);
-  m_homeRadius->setSingleStep(50);
-  m_homeRadius->setSuffix( " " + Distance::getUnitText() );
-  VarSpinBox* hspin = new VarSpinBox(m_homeRadius);
-  weltLayout->addWidget(hspin, grow, 1 );
-#endif
 
   m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
   weltLayout->addWidget(m_loadOutlandings, grow, 2, Qt::AlignRight );
@@ -115,7 +150,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   lbl = new QLabel(tr( "More space in AF/WP/OL lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
 
-#ifdef USE_NUM_PAD
   m_afMargin = new NumberEditor( this );
   m_afMargin->setDecimalVisible( false );
   m_afMargin->setPmVisible( false );
@@ -126,20 +160,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   eValidator = new QRegExpValidator( QRegExp( "([0-9]|[1-2][0-9]|30)" ), this );
   m_afMargin->setValidator( eValidator );
   listLayout->addWidget(m_afMargin, grow, 1 );
-#else
-  m_afMargin = new QSpinBox;
-  m_afMargin->setRange(0, 30);
-  m_afMargin->setSingleStep(1);
-  m_afMargin->setSuffix( tr(" Pixels") );
-  hspin = new VarSpinBox(m_afMargin);
-  listLayout->addWidget(hspin, grow, 1);
-#endif
-
   grow++;
   lbl = new QLabel(tr( "More space in Emergency list:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
 
-#ifdef USE_NUM_PAD
   m_rpMargin = new NumberEditor( this );
   m_rpMargin->setDecimalVisible( false );
   m_rpMargin->setPmVisible( false );
@@ -150,15 +174,6 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   eValidator = new QRegExpValidator( QRegExp( "([0-9]|[1-2][0-9]|30)" ), this );
   m_rpMargin->setValidator( eValidator );
   listLayout->addWidget(m_rpMargin, grow, 1 );
-#else
-  m_rpMargin = new QSpinBox;
-  m_rpMargin->setRange(0, 30);
-  m_rpMargin->setSingleStep(1);
-  m_rpMargin->setSuffix( tr(" Pixels") );
-  hspin = new VarSpinBox(m_rpMargin);
-  listLayout->addWidget(hspin, grow, 1);
-#endif
-
   grow++;
   listLayout->setRowStretch(grow, 10);
   listLayout->setColumnStretch(2, 10);
@@ -169,20 +184,64 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   connect( m_countryFilter, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
 #endif
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageAirfields::~SettingsPageAirfields()
 {
 }
 
-void SettingsPageAirfields::showEvent(QShowEvent *)
+void SettingsPageAirfields::slotAccept()
 {
+  if( checkChanges() )
+    {
+      if( save() == false )
+        {
+          return;
+        }
+
+      emit settingsChanged();
+    }
+
+  QWidget::close();
+}
+
+void SettingsPageAirfields::slotReject()
+{
+  QWidget::close();
 }
 
 /**
  * Called to initiate loading of the configuration file
  */
-void SettingsPageAirfields::slot_load()
+void SettingsPageAirfields::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -215,9 +274,12 @@ void SettingsPageAirfields::slot_load()
 /**
  * Called to initiate saving to the configuration file.
  */
-void SettingsPageAirfields::slot_save()
+bool SettingsPageAirfields::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
+
+  // Store change state.
+  bool welt2000Changed = checkIsWelt2000Changed();
 
   // We will check, if the country entries of Welt2000 are
   // correct. If not a warning message is displayed and the
@@ -225,15 +287,15 @@ void SettingsPageAirfields::slot_save()
   QStringList clist = m_countryFilter->text().split(QRegExp("[, ]"),
                       QString::SkipEmptyParts);
 
-  for (QStringList::Iterator it = clist.begin(); it != clist.end(); ++it)
+  for( int i = 0; i < clist.size(); i++ )
     {
-      QString s = *it;
+      const QString& s = clist.at(i);
 
-      if (s.length() != 2 || s.contains(QRegExp("[A-Za-z]")) != 2)
+      if( ! (s.length() == 2 && s.contains(QRegExp("[A-Za-z][A-Za-z]")) == true) )
         {
           QMessageBox mb( QMessageBox::Warning,
                           tr( "Please check entries" ),
-                          tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma.<br>Your modification will not be saved!"),
+                          tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma!"),
                           QMessageBox::Ok,
                           this );
 
@@ -246,7 +308,7 @@ void SettingsPageAirfields::slot_save()
 
 #endif
           mb.exec();
-          return;
+          return false;
         }
     }
 
@@ -264,6 +326,14 @@ void SettingsPageAirfields::slot_save()
 
   conf->setListDisplayAFMargin(m_afMargin->value());
   conf->setListDisplayRPMargin(m_rpMargin->value());
+  conf->save();
+
+  if( welt2000Changed == true )
+    {
+      emit reloadWelt2000();
+    }
+
+  return true;
 }
 
 /**
@@ -275,22 +345,14 @@ void SettingsPageAirfields::slot_filterChanged(const QString& text)
 }
 
 /* Called to ask is confirmation on the close is needed. */
-void SettingsPageAirfields::slot_query_close(bool& warn, QStringList& warnings)
+bool SettingsPageAirfields::checkChanges()
 {
-  /* set warn to 'true' if the data has changed. Note that we can NOT
-   just set warn equal to _changed, because that way we might erase a
-   warning flag set by another page! */
-
   bool changed = false;
 
   changed = changed || checkIsWelt2000Changed();
   changed = changed || checkIsListDisplayChanged();
 
-  if (changed)
-    {
-      warn = true;
-      warnings.append(tr("The Airfield settings"));
-    }
+  return changed;
 }
 
 #ifdef INTERNET

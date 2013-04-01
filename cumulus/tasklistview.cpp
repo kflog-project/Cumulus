@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,17 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
+#include "layout.h"
 #include "mainwindow.h"
 #include "tasklistview.h"
 #include "flighttask.h"
@@ -82,14 +90,22 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   list->setFocusPolicy(Qt::NoFocus);
   setHeader();
 
+  list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
+
+  // calculates the needed icon size
+  const int iconSize = Layout::iconSize( font() );
+
+  // Sets the icon size of a list entry
+  list->setIconSize( QSize(iconSize, iconSize) );
 
   topLayout->addWidget(list, 10);
 
@@ -393,10 +409,22 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
 
   QList<TaskPoint *> tmpList = _task->getTpList();
 
-  for ( int loop = 0; loop < tmpList.count(); loop++ )
+  for ( int loop = 0; loop < tmpList.size(); loop++ )
     {
+      bool showTpIcon = true;
+
+      if( tmpList.size() >= 2 &&
+          ((loop == 0 && tmpList.at(0)->origP == tmpList.at(1)->origP ) ||
+           (loop == tmpList.size()-1 &&
+            tmpList.at(tmpList.size()-1)->origP == tmpList.at(tmpList.size()-2)->origP )) )
+        {
+          // If start and begin point or end and landing point are identical
+          // no task figure icon is shown in the list entry.
+          showTpIcon = false;
+        }
+
       TaskPoint* tp = tmpList.at( loop );
-      _TaskPointItem* _tp = new _TaskPointItem( list, tp, _task->getWtCalcFlag() );
+      _TaskPointItem* _tp = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), showTpIcon );
 
       if ( calcWp && calcWp->origP == tp->origP )
         {
@@ -410,7 +438,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     {
       QTreeWidgetItem *item = new QTreeWidgetItem( list );
 
-      item->setText( 0, tr("Total") );
+      item->setText( 1, tr("Total") );
       item->setText( 2, _task->getTotalDistanceString( false ) );
       item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
@@ -493,17 +521,10 @@ void TaskListView::clear()
   setHeader();
 }
 
-/**
- * This class constructor sets all data of a QTreeWidgetItem.
- *
- * @param tpList Parent of QTreeWidget.
- * @param point Data of task point to be set.
- * @param wtCalcFlag Flag to indicate if wind triangle calculation
- *        was successful for all task legs or not.
- */
 TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
                                               TaskPoint *point,
-                                              bool wtCalcFlag ) :
+                                              bool wtCalcFlag,
+                                              bool showTpIcon ) :
   QTreeWidgetItem(tpList)
 {
   tp = point; // save passed task point for later use
@@ -514,6 +535,13 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
   Sonne::sonneAufUnter( sr, ss, date, tp->origP, tz );
 
   setText(0, tp->getTaskPointTypeString());
+
+  if( showTpIcon )
+    {
+      const int iconSize = Layout::iconSize( tpList->font() );
+      setIcon ( 0, tp->getIcon( iconSize ) );
+    }
+
   setText(1, tp->name);
   setText(2, " " + Distance::getText(tp->distance*1000, false, 1));
   setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
@@ -578,5 +606,5 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
   setText(7, " " + ss + " " + tz);
   setText(8, " " + tp->description);
 
-  setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->type, false, true)) );
+  setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->type, false, false)) );
 }

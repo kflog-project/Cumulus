@@ -40,23 +40,11 @@
 #include <QLabel>
 #include <QPoint>
 
-#include "projectionbase.h"
+#include "coordeditnumpad.h"
 #include "distance.h"
-
-#ifdef USE_NUM_PAD
+#include "projectionbase.h"
 
 class NumberEditor;
-
-#include "coordeditnumpad.h"
-
-#else
-
-class QSpinBox;
-
-#include "coordedit.h"
-
-#endif
-
 
 class SettingsPageMapSettings : public QWidget
 {
@@ -83,11 +71,12 @@ class SettingsPageMapSettings : public QWidget
    */
   bool checkIsProjectionChanged();
 
- protected:
-
-  void showEvent(QShowEvent *);
-
  signals:
+
+   /**
+    * Emitted, if settings have been changed.
+    */
+   void settingsChanged();
 
 #ifdef INTERNET
 
@@ -95,23 +84,17 @@ class SettingsPageMapSettings : public QWidget
 
 #endif
 
- public slots:
-  /**
-   * Called to initiate saving to the configuration file.
-   */
-  void slot_save();
-
-  /**
-   * Called to initiate loading of the configuration file
-   */
-  void slot_load();
-
-  /**
-   * Called to ask is confirmation on the close is needed.
-   */
-  void slot_query_close(bool& warn, QStringList& warnings);
-
  private slots:
+
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 
   void slot_selectProjection(int);
 
@@ -131,6 +114,15 @@ class SettingsPageMapSettings : public QWidget
 
  private:
 
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+  /** Called to check, if something has been changed by the user. */
+  bool checkChanges();
+
   QLineEdit   *mapDirectory;
   QCheckBox   *chkUnloadUnneeded;
   QCheckBox   *chkProjectionFollowHome;
@@ -138,35 +130,19 @@ class SettingsPageMapSettings : public QWidget
   QLabel      *edtLat2Label;
   QLabel      *edtLonLabel;
 
-#ifdef USE_NUM_PAD
   LatEditNumPad   *edtLat1;
   LatEditNumPad   *edtLat2;
   LongEditNumPad  *edtLon;
-#else
-  LatEdit     *edtLat1;
-  LatEdit     *edtLat2;
-  LongEdit    *edtLon;
-#endif
-
 
 #ifdef INTERNET
 
   QCheckBox   *chkDownloadMissingMaps;
   QPushButton *installMaps;
 
-#ifdef USE_NUM_PAD
-
   NumberEditor    *installRadius;
   LatEditNumPad   *edtCenterLat;
   LongEditNumPad  *edtCenterLon;
 
-#else
-
-  QSpinBox    *installRadius;
-  LatEdit     *edtCenterLat;
-  LongEdit    *edtCenterLon;
-
-#endif
 #endif
 
   int m_cylinPar;

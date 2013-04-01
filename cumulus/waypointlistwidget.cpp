@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,9 +16,16 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "waypointlistwidget.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
@@ -36,12 +43,11 @@ WaypointListWidget::WaypointListWidget( QWidget *parent, bool showMovePage ) :
   list->setObjectName("WpTreeWidget");
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 }
 
@@ -52,6 +58,8 @@ WaypointListWidget::~WaypointListWidget()
 /** Clears and refills the waypoint item list. */
 void WaypointListWidget::fillItemList()
 {
+  ListWidgetParent::fillItemList();
+
   list->setUpdatesEnabled(false);
   list->clear();
 
@@ -66,12 +74,12 @@ void WaypointListWidget::fillItemList()
       if( priority > Waypoint::High )
         {
           // Show all waypoints.
-          list->addTopLevelItem( new _WaypointItem(wp) );
+          list->addTopLevelItem( new WaypointItem(wp) );
         }
       else if( priority == wp.priority )
         {
           // Show only desired waypoints.
-          list->addTopLevelItem( new _WaypointItem(wp) );
+          list->addTopLevelItem( new WaypointItem(wp) );
         }
     }
 
@@ -98,7 +106,7 @@ Waypoint* WaypointListWidget::getCurrentWaypoint()
     }
 
   // Now we're left with the real waypoints
-  _WaypointItem* wpi = dynamic_cast<_WaypointItem *> ( li );
+  WaypointItem* wpi = dynamic_cast<WaypointItem *> ( li );
 
   if( !wpi )
     {
@@ -121,7 +129,7 @@ QList<Waypoint *> WaypointListWidget::getSelectedWaypoints()
     {
       for( int i = 0; i < itemList.size(); i++ )
         {
-          _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (itemList.at(i));
+          WaypointItem* wpi = dynamic_cast<WaypointItem *> (itemList.at(i));
 
             if ( ! wpi )
               {
@@ -152,7 +160,7 @@ void WaypointListWidget::deleteSelectedWaypoints()
 
       for( int i = 0; i < itemList.size(); i++ )
         {
-          _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (itemList.at(i));
+          WaypointItem* wpi = dynamic_cast<WaypointItem *> (itemList.at(i));
 
           if( ! wpi )
             {
@@ -233,7 +241,7 @@ void WaypointListWidget::deleteWaypoint(Waypoint &wp)
   // Sets the waypoint to be deleted as the current item.
   for( int i = 0; i < list->topLevelItemCount(); i++ )
     {
-      _WaypointItem* wpi = dynamic_cast<_WaypointItem *> (list->topLevelItem(i));
+      WaypointItem* wpi = dynamic_cast<WaypointItem *> (list->topLevelItem(i));
 
       if( ! wpi )
         {
@@ -311,7 +319,7 @@ void WaypointListWidget::addWaypoint( Waypoint& newWp )
   // retrieve the reference of the appended waypoint from the global list
   Waypoint& wp = wpList.last();
 
-  filter->addListItem( new _WaypointItem(wp) );
+  filter->addListItem( new WaypointItem(wp) );
 
   // resort WP list and reset filter and view
   list->setUpdatesEnabled(false);
@@ -322,25 +330,17 @@ void WaypointListWidget::addWaypoint( Waypoint& newWp )
   list->setUpdatesEnabled(true);
 }
 
-WaypointListWidget::_WaypointItem::_WaypointItem( Waypoint& waypoint ) :
+WaypointListWidget::WaypointItem::WaypointItem( Waypoint& waypoint ) :
   QTreeWidgetItem(),  wp(waypoint)
 {
-  QPainter pnt;
-  QPixmap selectIcon;
-
   setText(0, wp.name);
-  setText(1, wp.description);
+  setText(1, wp.description.left(15));
   setText(2, wp.country);
   setTextAlignment(2, Qt::AlignCenter);
   setText(3, wp.icao);
 
-  selectIcon = QPixmap( 18, 18 );
-  pnt.begin(&selectIcon);
-  selectIcon.fill( Qt::white );
-  pnt.drawPixmap(1, 1, _globalMapConfig->getPixmap(wp.type, false, true) );
-  pnt.end();
-  QIcon icon;
-  icon.addPixmap( _globalMapConfig->getPixmap(wp.type, false, true) );
-  icon.addPixmap( selectIcon, QIcon::Selected );
+  QPixmap wpPm = _globalMapConfig->getPixmap(wp.type, false, false);
+
+  QIcon icon( wpPm );
   setIcon( 0, icon );
 }

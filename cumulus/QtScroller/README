@@ -1,0 +1,93 @@
+
+This is the new kinetic scroller code from Qt 4.8 (master), refactored as an
+add-on solution for both Qt 4.7 and Qt 4.6.
+
+
+Building the libQtScroller library
+==================================
+Just run qmake "qtscroller.pro" and "make". The result should be a static
+libQtScroller.a in lib/ and three built example binaries in examples/.
+
+Please make sure to try out examples/plot/ to get an overview of all the
+parameters that are available to influence the kinetic scrolling.
+
+(If you are using Qt Creator to build for Symbian, make sure to remove the
+Make SIS build step in the project settings and add a custom build step
+which calls 'make sis' in the directory of the example you want to run. 
+Otherwise Creator will try to run 'make sis' in the project's base directory
+and will fail in the end since a project of type 'SUBDIRS' can't be
+deployed)
+
+
+Using the libQtScroller library
+===============================
+Basically you just add the following line to your project's .pro file:
+include(/path/to/qtscroller/qtscroller.pri)
+This will take care of setting up the include and library paths as well as
+the additional link library.
+
+To use kinetic scrolling in your QWidget based application, using Qt's
+standard widgets:
+==========
+#include <QtScroller>
+
+....
+
+myarea = new QAbstractScrollAreaDerivedClass();
+myweb = new QWebView();
+
+// if your device DOES support touch events, please replace
+// LeftMouseButtonGesture with TouchGesture!
+QtScroller::grabGesture(myarea->viewport(), QtScroller::LeftMouseButtonGesture);
+QtScroller::grabGesture(myweb, QtScroller::LeftMouseButtonGesture);
+==========
+
+To use kinetic scrolling in your QGraphicsItem based application (or if you
+want to scroll non-QAbstractScrollArea derived, custom widgets):
+Please take a look at examples/graphicsview/. The grabGesture() call is
+always the same, but you have to handle two new events for your own
+widgets/graphicsitems: QtScrollEvent and QtScrollPrepareEvent.
+
+
+Why static?
+===========
+libQtScroller is only meant to be a short term solution to make kinetic
+scrolling available for all Qt applications now instead of when 4.8 comes
+around. Please consider it as a bunch of add-on files for your project and
+not so much as a library.
+If you can not link statically due to the LGPL license then please at least
+do not install this lib as a system library.
+
+
+WebKit
+======
+libQtScroller includes kinetic scrolling for QWebView (without overshoot):
+this means that all applications using libQtScroller have to be linked
+against QtWebKit (qtscroller.pri takes care of this technicality though). 
+If you do not want to have that dependency, then just call qmake as
+'qmake CONFIG+=no-webkit' when building the solution.
+
+
+What happens when Qt 4.8 is released
+====================================
+Your binary will still work, but they won't magically use the Qt 4.8
+QScroller implementation. In order to ensure that from Qt 4.8 nobody is
+relying on the solution, we have included some #errors in the headers to
+prevent compiling against Qt 4.8.
+The proper way is to replace all occurences of "QtScroller" with "QScroller"
+and recompile against Qt 4.8. You may need to tweak a few things here and
+there if you get build errors (the Qt 4.8 QScroller API is not completely
+frozen yet).
+
+
+Documentation
+=============
+The API docs are mostly complete and are embedded within the .cpp files as
+usual. We do not have an online, HTML version yet.
+
+
+Feedback
+========
+Just send a mail our way:
+"Robert Griebl" <robert.griebl@nokia.com>
+"Ralf Engels" <ralf.engels@nokia.com>

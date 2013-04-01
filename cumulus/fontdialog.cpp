@@ -15,11 +15,16 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
-#include <QGroupBox>
-#include <QDialogButtonBox>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "fontdialog.h"
 #include "layout.h"
 #include "mainwindow.h"
@@ -29,22 +34,16 @@ FontDialog::FontDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint)
 {
   setObjectName("FontDialog");
-  // setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
   setWindowTitle(tr("Select Font"));
-
-  if( parent )
-    {
-      resize( parent->size() );
-    }
 
   QFont cft = font();
 
 #ifdef ANDROID
 
-  if( cft.pointSize() > 9 )
+  if( cft.pointSize() > 10 )
     {
-      cft.setPointSize( 9 );
+      cft.setPointSize( 10 );
     }
 
 #elif MAEMO
@@ -77,35 +76,39 @@ FontDialog::FontDialog (QWidget *parent) :
   styleList = new QListWidget;
   sizeList  = new QListWidget;
 
-#ifdef ANDROID
+  // fontList->setResizeMode( QListView::Adjust );
+  // styleList->setResizeMode( QListView::Adjust );
+  // sizeList->setResizeMode( QListView::Adjust );
+
   // set new row height from configuration for all lists
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
 
   fontList->setItemDelegate( new RowDelegate( fontList, afMargin ) );
   styleList->setItemDelegate( new RowDelegate( styleList, afMargin ) );
   sizeList->setItemDelegate( new RowDelegate( sizeList, afMargin ) );
-#endif
-
-#ifdef QSCROLLER
-  QScroller::grabGesture(fontList, QScroller::LeftMouseButtonGesture);
-  QScroller::grabGesture(styleList, QScroller::LeftMouseButtonGesture);
-  QScroller::grabGesture(sizeList, QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef FLICK_CHARM
-
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(fontList);
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(styleList);
-  flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(sizeList);
-
-#endif
 
   fontList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   styleList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   sizeList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+  fontList->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  fontList->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+  styleList->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  styleList->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+  sizeList->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  sizeList->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture(fontList->viewport(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(styleList->viewport(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(sizeList->viewport(), QScroller::LeftMouseButtonGesture);
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture(fontList->viewport(), QtScroller::LeftMouseButtonGesture);
+  QtScroller::grabGesture(styleList->viewport(), QtScroller::LeftMouseButtonGesture);
+  QtScroller::grabGesture(sizeList->viewport(), QtScroller::LeftMouseButtonGesture);
+#endif
 
   connect( fontList, SIGNAL(itemClicked(QListWidgetItem *)),
             this, SLOT(slotFontListClicked(QListWidgetItem *)));
@@ -121,9 +124,9 @@ FontDialog::FontDialog (QWidget *parent) :
   QGridLayout* gl = new QGridLayout;
   gl->setMargin(0);
   gl->setSpacing(10);
-  gl->setColumnStretch(0, 30);
-  gl->setColumnStretch(1, 20);
-  gl->setColumnStretch(2, 10);
+  gl->setColumnStretch(0, 3);
+  gl->setColumnStretch(1, 0);
+  gl->setColumnStretch(2, 0);
 
   gl->addWidget( new QLabel(tr("Font")), 0, 0 );
   gl->addWidget( new QLabel(tr("Style")), 0, 1 );
@@ -145,7 +148,7 @@ FontDialog::FontDialog (QWidget *parent) :
   gBox->setLayout(vbox);
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
-                                                         QDialogButtonBox::Ok );
+                                                      QDialogButtonBox::Ok );
   QHBoxLayout *hBox = new QHBoxLayout;
   hBox->addWidget(gBox, 10);
   hBox->addSpacing( 20 );
@@ -166,17 +169,24 @@ FontDialog::FontDialog (QWidget *parent) :
 
   fdl.append(tr("Font"));
   int w = Layout::maxTextWidth( fdl, font() );
-  fontLabel->setMaximumWidth( w + 60 );
-  fontList->setMaximumWidth( w + 60 );
+  fontLabel->setMinimumWidth( w + 50 );
+  fontList->setMinimumWidth( w + 50 );
 
   fdl.clear();
   fdl.append(tr("Size"));
   w = Layout::maxTextWidth( fdl, font() );
-  sizeLabel->setMaximumWidth( w + 70 );
-  sizeList->setMaximumWidth( w + 70 );
+  sizeLabel->setMaximumWidth( w + 40 );
+  sizeList->setMaximumWidth( w + 40 );
+  sizeLabel->setMinimumWidth( w + 40 );
+  sizeList->setMinimumWidth( w + 40 );
 
   // select the default application font
   selectFont(font());
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 }
 
 /**
@@ -210,6 +220,11 @@ void FontDialog::slotFontListClicked( QListWidgetItem* item )
   styleLabel->setText( fstl.at(0) );
 
   QList<int> fsl = fdb.pointSizes ( item->text(), fstl.at(0) );
+
+  if( fsl.isEmpty() )
+    {
+      fsl = QFontDatabase::standardSizes();
+    }
 
   if( fsl.isEmpty() )
     {
@@ -319,7 +334,8 @@ void FontDialog::selectFont( const QFont& font )
     }
   else
     {
-      fontLabel->clear();
+      // fontLabel->clear();
+      slotFontListClicked( fontList->currentItem() );
     }
 
   if( selectItem( styleList, style ) )
@@ -328,7 +344,8 @@ void FontDialog::selectFont( const QFont& font )
     }
   else
     {
-      styleLabel->clear();
+      // styleLabel->clear();
+      styleLabel->setText(style);
     }
 
   if( selectItem( sizeList, pSize ) )
@@ -337,7 +354,8 @@ void FontDialog::selectFont( const QFont& font )
     }
   else
     {
-      sizeLabel->clear();
+     // sizeLabel->clear();
+      sizeLabel->setText(pSize);
     }
 
   updateSampleText();

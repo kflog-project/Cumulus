@@ -71,7 +71,7 @@ class Waypoint
 
   Waypoint();
   Waypoint(const Waypoint& inst);
-  ~Waypoint();
+  virtual ~Waypoint();
 
   /** Compare current instance with another */
   bool equals( const Waypoint *second ) const;

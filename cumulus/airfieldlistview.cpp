@@ -19,6 +19,8 @@
 #include "airfieldlistview.h"
 
 #include <QtGui>
+#include <QShortcut>
+#include <QMessageBox>
 
 #include "generalconfig.h"
 #include "calculator.h"

@@ -36,12 +36,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#ifdef USE_NUM_PAD
 class NumberEditor;
-#else
-class QSpinBox;
-class VarSpinBox;
-#endif
 
 #include "gliderlistwidget.h"
 
@@ -49,11 +44,11 @@ class PreFlightGliderPage : public QWidget
 {
   Q_OBJECT
 
-  private:
+ private:
 
   Q_DISABLE_COPY ( PreFlightGliderPage )
 
-public:
+ public:
 
   PreFlightGliderPage( QWidget *parent=0 );
 
@@ -64,11 +59,11 @@ public:
    */
   void save();
 
-protected:
+ protected:
 
   virtual void showEvent(QShowEvent *event);
 
-private:
+ private:
 
   /**
    * Selects the current activated glider, if a selection exists.
@@ -81,17 +76,22 @@ private:
   Glider           *m_lastGlider;
   QLabel           *m_wingLoad;
 
-#ifdef USE_NUM_PAD
   NumberEditor     *m_edtLoad;
   NumberEditor     *m_edtWater;
-#else
-  QSpinBox         *m_edtLoad;
-  QSpinBox         *m_edtWater;
-  VarSpinBox       *m_vsbLoad;
-  VarSpinBox       *m_vsbWater;
-#endif
 
-private slots:
+ signals:
+
+   /**
+    * Emitted, if settings have been changed.
+    */
+   void settingsChanged();
+
+   /**
+    * Emitted, if the widget is closed.
+    */
+   void closingWidget();
+
+ private slots:
 
   /**
    * Called, if the glider selection was changed.
@@ -112,6 +112,16 @@ private slots:
    * Updates the wingload label.
    */
   void slotNumberEdited( const QString& number );
+
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
 };
 
 #endif

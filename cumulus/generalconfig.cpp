@@ -16,22 +16,21 @@
  **
  ***********************************************************************/
 
-#include <iostream>
-using namespace std;
-
 #include <cstdlib>
 #include <cmath>
+#include <iostream>
 
 #include <QtGui>
+#include <QApplication>
 
-#include "generalconfig.h"
-#include "hwinfo.h"
-#include "gpsnmea.h"
-#include "speed.h"
 #include "altitude.h"
 #include "distance.h"
-#include "time_cu.h"
+#include "generalconfig.h"
+#include "gpsnmea.h"
+#include "hwinfo.h"
 #include "preflightwaypointpage.h"
+#include "speed.h"
+#include "time_cu.h"
 
 #ifdef MAEMO
 #include "maemostyle.h"
@@ -107,6 +106,7 @@ void GeneralConfig::load()
   _guiMenuFont           = value("MenuFont", "").toString();
   _virtualKeyboard       = value("VirtualKeyboard", false).toBool();
   _screenSaverSpeedLimit = value("ScreenSaverSpeedLimit", 10).toDouble();
+  _resetConfiguration    = value("ResetConfiguration", 0).toInt();
   endGroup();
 
   // Airspace warning distances
@@ -126,12 +126,7 @@ void GeneralConfig::load()
   _asNoDrawing          = value("AirspaceNoDrawing", false ).toBool();;
   _asDrawingBorder      = value("AirspaceNoDrawingBorder", 100).toInt();
 
-
-#if ! defined (MAEMO) && ! defined (ANDROID)
-  _airspaceLineWidth = value( "AirSpaceLineWidth", 5 ).toInt();
-#else
-  _airspaceLineWidth = value( "AirSpaceLineWidth", 7 ).toInt();
-#endif
+  _airspaceLineWidth = value( "AirSpaceBorderLineWidth", AirSpaceBorderLineWidth ).toInt();
 
   // Airspace drawing types, set all to true as default
   for( int i=0; i < BaseMapElement::objectTypeSize; i++ )
@@ -243,39 +238,62 @@ void GeneralConfig::load()
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed ", 35).toDouble();
   endGroup();
 
-  // Task scheme settings for cylinder-sector and nearest-touched
+  beginGroup("Preflight Window");
+    _closePreFlightMenu = value( "CloseMenu", true ).toBool();
+  endGroup();
+
+  // Task scheme settings for circle-sector and nearest-touched
   beginGroup("Task Scheme");
-  _taskActiveCSScheme = (enum ActiveCSTaskScheme) value( "ActiveCSScheme",
+  _taskActiveStartScheme = (enum ActiveTaskFigureScheme) value( "ActiveStartScheme",
+                                                         GeneralConfig::Line ).toInt();
+  _taskActiveFinishScheme = (enum ActiveTaskFigureScheme) value( "ActiveFinishScheme",
+                                                         GeneralConfig::Circle ).toInt();
+  _taskActiveObsScheme = (enum ActiveTaskFigureScheme) value( "ActiveObserverScheme",
                                                          GeneralConfig::Sector ).toInt();
-  _taskActiveNTScheme = (enum ActiveNTTaskScheme) value( "ActiveNTScheme",
+  _taskActiveSwitchScheme = (enum ActiveTaskSwitchScheme) value( "ActiveSwitchScheme",
                                                          GeneralConfig::Touched ).toInt();
-  _taskDrawShape  = value( "DrawShape", true ).toBool();
-  _taskFillShape  = value( "FillShape", true ).toBool();
-  _taskShapeAlpha = value( "ShapeAlpha", 20 ).toInt(); // transparency is in %
+  _taskDrawShape     = value( "DrawShape", true ).toBool();
+  _taskFillShape     = value( "FillShape", true ).toBool();
+  _taskPointAutoZoom = value( "AutoZoom", true ).toBool();
+  _taskShapeAlpha    = value( "ShapeAlpha", 20 ).toInt(); // transparency is in %
   endGroup();
 
-  beginGroup("Task Scheme Cylinder");
-  _taskCylinderRadius.setMeters( value( "Radius", 1000.0 ).toDouble() );
+  beginGroup("Task Scheme Start");
+  _taskStartLineLength.setMeters( value( "Line", 1000.0 ).toDouble() );
+  _taskStartRingRadius.setMeters( value( "Ring", 500.0 ).toDouble() );
+  _taskStartSectorIRadius.setMeters( value( "InnerRadius", 0.0 ).toDouble() );
+  _taskStartSectorORadius.setMeters( value( "OuterRadius", 3000.0 ).toDouble() );
+  _taskStartSectorAngel = value( "Angle", 90).toInt();
   endGroup();
 
-  beginGroup("Task Scheme Sector");
-  _taskSectorInnerRadius.setMeters( value( "InnerRadius", 0.0 ).toDouble() );
-  _taskSectorOuterRadius.setMeters( value( "OuterRadius", 3000.0 ).toDouble() );
-  _taskSectorAngle     = value( "Angle", 90).toInt();
+  beginGroup("Task Scheme Finish");
+  _taskFinishLineLength.setMeters( value( "Line", 1000.0 ).toDouble() );
+  // FAI Sporting code Annex A says, finish ring radius at least 3 km
+  _taskFinishRingRadius.setMeters( value( "Ring", 3000.0 ).toDouble() );
+  _taskFinishSectorIRadius.setMeters( value( "InnerRadius", 0.0 ).toDouble() );
+  _taskFinishSectorORadius.setMeters( value( "OuterRadius", 3000.0 ).toDouble() );
+  _taskFinishSectorAngel = value( "Angle", 90).toInt();
+  endGroup();
+
+  beginGroup("Task Scheme Observation Zone");
+  _taskObsCircleRadius.setMeters( value( "CircleRadius", 500.0 ).toDouble() );
+  _taskObsSectorInnerRadius.setMeters( value( "SectorInnerRadius", 0.0 ).toDouble() );
+  _taskObsSectorOuterRadius.setMeters( value( "SectorOuterRadius", 3000.0 ).toDouble() );
+  _taskObsSectorAngle = value( "SectorAngle", 90).toInt();
   endGroup();
 
   beginGroup("Task");
-#if ! defined (MAEMO) && ! defined (ANDROID)
-  _targetLineWidth = value( "TargetLineWidth", 5 ).toInt();
-#else
-  _targetLineWidth = value( "TargetLineWidth", 7 ).toInt();
-#endif
-  _targetLineColor = QColor( value("TargetLineColor", QColor(Qt::darkMagenta).name()).toString() );
+  _taskLineWidth = value( "TaskLineWidth", TaskLineWidth ).toInt();
+  _taskLineColor = QColor( value("TaskLineColor", TaskLineColor).toString() );
   _targetLineDrawState = value( "TargetLineDrawing", true ).toBool();
+  _targetLineWidth = value( "TargetLineWidth", TargetLineWidth ).toInt();
 
-  _trackLineWidth = value( "TrackLineWidth", 2 ).toInt();
-  _trackLineColor = QColor( value("TrackLineColor", QColor(Qt::gray).name()).toString() );
-  _trackLineDrawState = value( "TrackLineDrawing", true ).toBool();
+  _taskFiguresColor = QColor( value("TaskFiguresColor", TaskFiguresColor).toString() );
+  _taskFiguresLineWidth = value( "TaskFiguresLineWidth", TaskFiguresLineWidth ).toInt();
+
+  _headingLineWidth = value( "HeadingLineWidth", HeadingLineWidth ).toInt();
+  _headingLineColor = QColor( value("HeadingLineColor", HeadingLineColor).toString() );
+  _headingLineDrawState = value( "HeadingLineDrawing", true ).toBool();
   endGroup();
 
   beginGroup("Map");
@@ -292,6 +310,8 @@ void GeneralConfig::load()
   _mapLoadWaterways               = value( "LoadWaterways", true ).toBool();
   _mapLoadForests                 = value( "LoadForests", false ).toBool();
   _drawTrail                      = value( "DrawTrail", true ).toBool();
+  _mapTrailLineColor              = value( "TrailLineColor", TrailLineColor).toString();
+  _mapTrailLineWidth              = value( "TrailLineWidth", TrailLineWidth ).toInt();
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
@@ -392,9 +412,9 @@ void GeneralConfig::load()
 
   beginGroup("Information");
 #ifdef MAEMO4
-  _soundPlayer           = value( "SoundPlayer", "/opt/cumulus/bin/aplay" ).toString();
+  _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
 #else
-  _soundPlayer           = value( "SoundPlayer", "/usr/bin/aplay" ).toString();
+  _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
 #endif
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
@@ -495,6 +515,7 @@ void GeneralConfig::save()
   setValue("MenuFont", _guiMenuFont);
   setValue("VirtualKeyboard", _virtualKeyboard);
   setValue("ScreenSaverSpeedLimit", _screenSaverSpeedLimit);
+  setValue("ResetConfiguration", _resetConfiguration);
   endGroup();
 
   // Airspace warning distances
@@ -512,7 +533,7 @@ void GeneralConfig::save()
   setValue("AirspaceNoDrawing", _asNoDrawing);
   setValue("AirspaceNoDrawingBorder", _asDrawingBorder);
 
-  setValue("AirSpaceLineWidth", _airspaceLineWidth);
+  setValue("AirSpaceBorderLineWidth", _airspaceLineWidth);
   setValue("FileList", _airspaceFileList);
 
   // Airspace warning types
@@ -613,32 +634,55 @@ void GeneralConfig::save()
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
   endGroup();
 
-  // Task scheme settings for cylinder-sector and nearest touched
+  beginGroup("Preflight Window");
+    setValue( "CloseMenu", _closePreFlightMenu );
+  endGroup();
+
+  // Task scheme settings for circle-sector and nearest touched
   beginGroup("Task Scheme");
-  setValue( "ActiveCSScheme", _taskActiveCSScheme );
-  setValue( "ActiveNTScheme", _taskActiveNTScheme );
+  setValue( "ActiveStartScheme", _taskActiveStartScheme );
+  setValue( "ActiveFinishScheme", _taskActiveFinishScheme );
+  setValue( "ActiveObserverScheme", _taskActiveObsScheme );
+  setValue( "ActiveSwitchScheme", _taskActiveSwitchScheme );
   setValue( "DrawShape", _taskDrawShape );
   setValue( "FillShape", _taskFillShape );
+  setValue( "AutoZoom", _taskPointAutoZoom );
   setValue( "ShapeAlpha", _taskShapeAlpha );
   endGroup();
 
-  beginGroup("Task Scheme Cylinder");
-  setValue( "Radius",    _taskCylinderRadius.getMeters() );
+  beginGroup("Task Scheme Start");
+  setValue( "Line", _taskStartLineLength.getMeters() );
+  setValue( "Ring", _taskStartRingRadius.getMeters() );
+  setValue( "InnerRadius", _taskStartSectorIRadius.getMeters() );
+  setValue( "OuterRadius", _taskStartSectorORadius.getMeters() );
+  setValue( "Angle", _taskStartSectorAngel );
   endGroup();
 
-  beginGroup("Task Scheme Sector");
-  setValue( "InnerRadius", _taskSectorInnerRadius.getMeters() );
-  setValue( "OuterRadius", _taskSectorOuterRadius.getMeters() );
-  setValue( "Angle",       _taskSectorAngle );
+  beginGroup("Task Scheme Finish");
+  setValue( "Line", _taskFinishLineLength.getMeters() );
+  setValue( "Ring", _taskFinishRingRadius.getMeters() );
+  setValue( "InnerRadius", _taskFinishSectorIRadius.getMeters() );
+  setValue( "OuterRadius", _taskFinishSectorORadius.getMeters() );
+  setValue( "Angle", _taskFinishSectorAngel);
+  endGroup();
+
+  beginGroup("Task Scheme Observation Zone");
+  setValue( "CircleRadius",    _taskObsCircleRadius.getMeters() );
+  setValue( "SectorInnerRadius", _taskObsSectorInnerRadius.getMeters() );
+  setValue( "SectorOuterRadius", _taskObsSectorOuterRadius.getMeters() );
+  setValue( "SectorAngle",       _taskObsSectorAngle );
   endGroup();
 
   beginGroup("Task");
-  setValue( "TargetLineWidth", _targetLineWidth );
-  setValue( "TargetLineColor", _targetLineColor.name() );
+  setValue( "TaskLineWidth", _taskLineWidth );
+  setValue( "TaskLineColor", _taskLineColor.name() );
   setValue( "TargetLineDrawing", _targetLineDrawState );
-  setValue( "TrackLineWidth", _trackLineWidth );
-  setValue( "TrackLineColor", _trackLineColor.name() );
-  setValue( "TrackLineDrawing", _trackLineDrawState );
+  setValue( "TargetLineWidth", _targetLineWidth );
+  setValue( "TaskFiguresColor", _taskFiguresColor.name() );
+  setValue( "TaskFiguresLineWidth", _taskFiguresLineWidth );
+  setValue( "HeadingLineWidth", _headingLineWidth );
+  setValue( "HeadingLineColor", _headingLineColor.name() );
+  setValue( "HeadingLineDrawing", _headingLineDrawState );
   endGroup();
 
   beginGroup("Map");
@@ -658,7 +702,11 @@ void GeneralConfig::save()
   setValue( "LoadCities", _mapLoadCities   );
   setValue( "LoadWaterways", _mapLoadWaterways );
   setValue( "LoadForests", _mapLoadForests );
+
   setValue( "DrawTrail", _drawTrail );
+  setValue( "TrailColor", _mapTrailLineColor.name() );
+  setValue( "TrailLineWidth", _mapTrailLineWidth);
+
   setValue( "ShowAirfieldLabels", _mapShowAirfieldLabels );
   setValue( "ShowTaskPointLabels", _mapShowTaskPointLabels );
   setValue( "ShowOutLandingLabels", _mapShowOutLandingLabels );
@@ -801,6 +849,7 @@ void GeneralConfig::save()
   setValue( "Time", _unitTime );
   endGroup();
 
+  // Save all to disk
   sync();
 }
 

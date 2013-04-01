@@ -7,15 +7,12 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2012 by Axel Pauli
+**                   2007-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 **   $Id$
-**
-**   This class provides calculation, drawing and other support
-**   for flight tasks and contains the data of a task.
 **
 ***********************************************************************/
 
@@ -49,7 +46,7 @@ FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
   distance_total(0),
   distance_task(0),
   duration_total(0),
-  __planningType(RouteBased),
+  _planningType(RouteBased),
   _taskName(taskName)
 {
   // Check, if a valid object has been passed
@@ -92,7 +89,7 @@ FlightTask::FlightTask( const FlightTask& inst )
   distance_total = inst.distance_total;
   distance_task = inst.distance_task;
   duration_total = inst.duration_total;
-  __planningType = inst.__planningType;
+  _planningType = inst._planningType;
   _taskName = inst._taskName;
 }
 
@@ -281,8 +278,7 @@ void FlightTask::determineTaskType()
 double FlightTask::calculateSectorAngles( int loop )
 {
   // get configured sector angle
-  GeneralConfig *conf = GeneralConfig::instance();
-  const double sectorAngle = conf->getTaskSectorAngle() * M_PI/180.;
+  const double sectorAngle = tpList->at(loop)->getTaskSectorAngle() * M_PI/180.;
 
   double bisectorAngle = 0.0;
   double minAngle = 0.0;
@@ -295,7 +291,9 @@ double FlightTask::calculateSectorAngles( int loop )
   // In some cases during planning, this method is called with wrong
   // loop-values. Therefore we must check the id before calculating
   // the direction
-  switch( tpList->at(loop)->taskPointType )
+  int taskPointType = tpList->at(loop)->taskPointType;
+
+  switch( taskPointType )
     {
     case TaskPointTypes::Begin:
 
@@ -335,7 +333,7 @@ double FlightTask::calculateSectorAngles( int loop )
       if(loop >= 1 && loop < tpList->count())
         {
           // direction to the previous point:
-          bisectorAngle=getBearing( tpList->at(loop)->origP, tpList->at(loop-1)->origP );
+          bisectorAngle = getBearing( tpList->at(loop)->origP, tpList->at(loop-1)->origP );
         }
       break;
 
@@ -343,9 +341,30 @@ double FlightTask::calculateSectorAngles( int loop )
       break;
     }
 
-  // save bisector angle
+  // set bisector angle of task point
   bisectorAngle = normalize( bisectorAngle );
   tpList->at(loop)->angle = bisectorAngle;
+
+  // Update line settings, if required.
+  if( tpList->at(loop)->getActiveTaskPointFigureScheme() == GeneralConfig::Line )
+    {
+      // set bisector angle for the task line as course direction
+      if( taskPointType != TaskPointTypes::End )
+        {
+          tpList->at(loop)->getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) );
+        }
+      else
+        {
+          // direction to the previous point must be inverted in case of end point.
+          tpList->at(loop)->getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) + 180 );
+        }
+
+      // set the center point of the task line
+      tpList->at(loop)->getTaskLine().setLineCenter( tpList->at(loop)->origP );
+
+      // calculate all line elements after a new setting
+      tpList->at(loop)->getTaskLine().calculateElements();
+    }
 
   // invert bisector angle
   double invertAngle = bisectorAngle;
@@ -562,7 +581,7 @@ QString FlightTask::getTaskTypeString() const
     case FlightTask::ZielS:
       return QObject::tr("Free Distance");
     case FlightTask::ZielR:
-      return QObject::tr("Free Out and Return Distance");
+      return QObject::tr("Free Out and Return");
     case FlightTask::FAI:
       return QObject::tr("FAI Triangle");
     case FlightTask::Dreieck:
@@ -599,16 +618,13 @@ bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
  */
 void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 {
-  // qDebug ("FlightTask::drawTask");
+  // qDebug() << __PRETTY_FUNCTION__;
 
   // get user defined scheme items
-  GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig* conf = GeneralConfig::instance();
 
-  if( conf->getActiveCSTaskScheme() == GeneralConfig::Cylinder )
-    {
-      // Cylinder scheme is active, handle this in extra method
-      return circleSchemeDrawing( painter, drawnTp );
-    }
+  // Load the currently selected task point.
+  const TaskPoint* selectedTp = calculator->getselectedTp();
 
   // load task point label option
   const bool drawTpLabels = conf->getMapShowTaskPointLabels();
@@ -617,37 +633,79 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
   const bool fillShape = conf->getTaskFillShape();
   const bool drawShape = conf->getTaskDrawShape();
 
-  const int sectorAngle = conf->getTaskSectorAngle();
-
-  const double OUTR = conf->getTaskSectorOuterRadius().getMeters();
-  const double INR = conf->getTaskSectorInnerRadius().getMeters();
-
-  const int ora = (int) rint(OUTR / glMapMatrix->getScale());
-  const int ira = (int) rint(INR / glMapMatrix->getScale());
-
   // fetch map measures
   const int w = Map::getInstance()->size().width();
   const int h = Map::getInstance()->size().height();
 
   // Set pen color and width for the course line
-  QColor courseLineColor = conf->getTargetLineColor();
-  qreal courseLineWidth  = conf->getTargetLineWidth();
+  QColor courseLineColor = conf->getTaskLineColor();
+  qreal courseLineWidth  = conf->getTaskLineWidth();
 
   // qDebug("QDesktop: w=%d, h=%d, ora=%d", w, h, ora );
 
-  QRect viewport( -ora, -ora, w+2*ora, h+2*ora);
-  painter->setClipRegion( viewport );
-  painter->setClipping( true );
+  // Save the current painter state.
+  painter->save();
 
   for( int loop=0; loop < tpList->count(); loop++ )
     {
+      // qDebug() << "draw taskpoint:" << tpList->at(loop)->name
+      //          << tpList->at(loop)->getTaskPointFigureString();
+
+      // Load the sector data
+      const int SectorAngle = tpList->at(loop)->getTaskSectorAngle();
+      const double Sor      = tpList->at(loop)->getTaskSectorOuterRadius().getMeters();
+      const double Sir      = tpList->at(loop)->getTaskSectorInnerRadius().getMeters();
+
+      int sorScaled = 0; // scaled sector outer radius
+      int sirScaled = 0; // scaled sector inner radius
+      int crScaled  = 0;  // scaled circle radius
+      int llScaled  = 0;  // scaled line length
+
+      // Load the circle data
+      const double circleRadius = tpList->at(loop)->getTaskCircleRadius().getMeters();
+
+      // Load the line data
+      const double lineLength = tpList->at(loop)->getTaskLineLength().getMeters();
+
+      // Determine what task figure has to be drawn.
+      enum GeneralConfig::ActiveTaskFigureScheme figure =
+          tpList->at(loop)->getActiveTaskPointFigureScheme();
+
+      QRect viewport;
+
+      switch( figure )
+      {
+        case GeneralConfig::Line:
+          // scale length to map
+          llScaled = (int) rint(lineLength / glMapMatrix->getScale());
+          viewport.setRect( -10-llScaled, -10-llScaled, w+llScaled, h+llScaled );
+          break;
+        case GeneralConfig::Circle:
+          // scale radius to map
+          crScaled = (int) rint(circleRadius / glMapMatrix->getScale());
+          viewport.setRect( -10-crScaled, -10-crScaled, w+2*crScaled, h+2*crScaled );
+          break;
+        case GeneralConfig::Sector:
+          // scale radius to map
+          sorScaled = (int) rint(Sor / glMapMatrix->getScale());
+          sirScaled = (int) rint(Sir / glMapMatrix->getScale());
+          viewport.setRect(-sorScaled, -sorScaled, w+2*sorScaled, h+2*sorScaled);
+          break;
+        default:
+          qWarning() << "FlightTask::drawTask:" << "Unknown task figure type" << figure;
+          continue;
+      }
+
+      painter->setClipRegion( viewport );
+      painter->setClipping( true );
+
       // Append all waypoints to the label list on user request
       if( drawTpLabels )
         {
           drawnTp.append( tpList->at(loop) );
         }
 
-      // map projected point to map
+      // map projected point to map display
       QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projP));
 
       bool mPointIsContained = viewport.contains(mPoint);
@@ -678,23 +736,38 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
       case TaskPointTypes::RouteP:
 
         if( mPointIsContained )
-          {
-            QColor c;
+        {
+            QColor color;
 
             if( fillShape )
               {
-                c = QColor(Qt::green);
+                color = QColor(Qt::green);
               }
 
-            drawSector( painter,
-            mPoint,
-            ira,
-            ora,
-            biangle,
-            sectorAngle,
-            c,
-            drawShape );
-          }
+            switch (figure)
+            {
+                case GeneralConfig::Line:
+                    tpList->at(loop)->getTaskLine().drawLine(painter);
+                    break;
+                case GeneralConfig::Circle:
+                    // Draw circle around given position
+                    drawCircle( painter, mPoint, crScaled, color, drawShape );
+                    break;
+                case GeneralConfig::Sector:
+                    drawSector( painter,
+                                mPoint,
+                                sirScaled,
+                                sorScaled,
+                                biangle,
+                                SectorAngle,
+                                color,
+                                drawShape );
+                    break;
+                default:
+                    qWarning() << "FlightTask::drawTask:" << "Unknown task figure type" << figure;
+                    continue;
+            }
+        }
 
         if( loop )
           {
@@ -709,21 +782,49 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 
         if( mPointIsContained )
           {
-            QColor c;
+            if( selectedTp != 0 && selectedTp->taskPointIndex != -1 &&
+                // Task end point is selected
+                selectedTp->taskPointIndex == tpList->at( tpList->size() - 2 )->taskPointIndex &&
+                // Check, if task start and end point are identically
+                tpList->at(1)->origP == tpList->at( tpList->size() - 2 )->origP )
+              {
+                // The selected TP is the end point and start and end point are
+                // identically. In this case the start task figure
+                // is not drawn to get more clearness about the task end figure.
+                break;
+              }
+
+            QColor color;
 
             if( fillShape )
               {
-                c = QColor(Qt::green);
+                color = QColor(Qt::green);
               }
 
-            drawSector( painter,
-            mPoint,
-            ira,
-            ora,
-            biangle,
-            sectorAngle,
-            c,
-            drawShape );
+            switch ( figure )
+            {
+            case GeneralConfig::Line:
+                tpList->at(loop)->getTaskLine().drawLine(painter);
+                // draw boxes for debugging purposes
+                // tpList->at(loop)->getTaskLine().drawRegionBoxes( painter );
+                break;
+            case GeneralConfig::Circle:
+                drawCircle( painter, mPoint, crScaled, color, drawShape );
+                break;
+            case GeneralConfig::Sector:
+                drawSector( painter,
+                            mPoint,
+                            sirScaled,
+                            sorScaled,
+                            biangle,
+                            SectorAngle,
+                            color,
+                            drawShape );
+                break;
+            default:
+                qWarning() << "FlightTask::drawTask:" << "Unknown task figure type" << figure;
+                continue;
+            }
           }
 
         // Draw line from take off to begin, if both not identical
@@ -739,23 +840,53 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 
       case TaskPointTypes::End:
 
+        if( selectedTp != 0 && selectedTp->taskPointIndex != -1 &&
+            // Check, if task start and end point are identically
+            tpList->at(1)->origP == tpList->at( tpList->size() - 2 )->origP &&
+            // Check if task start point or first route point is selected
+            ( selectedTp->taskPointIndex == tpList->at(1)->taskPointIndex ||
+              selectedTp->taskPointIndex == tpList->at(2)->taskPointIndex ) )
+          {
+            // The selected TP is the start point or the first route point
+            // and start and end point are identically.
+            // In this case the end task figure is not drawn to get more
+            // clearness about the task start figure.
+            mPointIsContained = false;
+          }
+
         if( mPointIsContained )
           {
-            QColor c;
+            QColor color;
 
             if( fillShape )
               {
-                c = QColor(Qt::cyan);
+                color = QColor(Qt::cyan);
               }
 
-            drawSector( painter,
-            mPoint,
-            ira,
-            ora,
-            biangle,
-            sectorAngle,
-            c,
-            drawShape );
+            switch ( figure )
+            {
+                case GeneralConfig::Line:
+                    tpList->at(loop)->getTaskLine().drawLine(painter);
+                    // draw boxes for debugging purposes
+                    // tpList->at(loop)->getTaskLine().drawRegionBoxes( painter );
+                    break;
+                case GeneralConfig::Circle:
+                    drawCircle( painter, mPoint, crScaled, color, drawShape );
+                    break;
+                case GeneralConfig::Sector:
+                    drawSector( painter,
+                                mPoint,
+                                sirScaled,
+                                sorScaled,
+                                biangle,
+                                SectorAngle,
+                                color,
+                                drawShape );
+                    break;
+                default:
+                    qWarning() << "FlightTask::drawTask:" << "Unknown task figure type" << figure;
+                    continue;
+            }
           }
 
         painter->setPen(QPen(courseLineColor, courseLineWidth));
@@ -765,9 +896,60 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 
       default:
 
-        // Can be take off or landing point
-        // Draw line from End to Landing point, if both not identical
-        if( loop &&
+       // Can be take off or landing point
+       if( loop == 0 && mPointIsContained &&
+           tpList->size() >= 2 &&
+           // take off point != begin point
+           tpList->at(0)->origP != tpList->at(1)->origP &&
+           // no taskpoint is selected
+           ( selectedTp == 0 ||
+           // a taskpoint selection is active
+           ( selectedTp != 0 && selectedTp->taskPointIndex != -1 &&
+           // task end point is not selected
+           selectedTp->taskPointIndex != tpList->at( tpList->size() - 2 )->taskPointIndex &&
+           // task landing point is not selected
+           selectedTp->taskPointIndex != tpList->at( tpList->size() - 1 )->taskPointIndex ) ))
+          {
+           // Draw a circle around the start point, if start and begin point
+           // are not the same and task end point and task landing point
+           // are not selected.
+            QColor color;
+
+            if( fillShape )
+              {
+                color = QColor(Qt::green);
+              }
+
+            drawCircle( painter, mPoint, crScaled, color, drawShape );
+          }
+        else if( loop == tpList->size()-1 && mPointIsContained &&
+                 tpList->size() >= 2 &&
+                 // landing point != end point
+                 tpList->at(loop)->origP != tpList->at(loop-1)->origP &&
+                 // no taskpoint is selected
+                 ( selectedTp == 0 ||
+                 // a taskpoint selection is active
+                 ( selectedTp != 0 && selectedTp->taskPointIndex != -1 &&
+                 // task take off point is not selected
+                 selectedTp->taskPointIndex != tpList->at(0)->taskPointIndex &&
+                 // task begin point is not selected
+                 selectedTp->taskPointIndex != tpList->at(1)->taskPointIndex )))
+          {
+            // Draw a circle around the landing point, if end and landing point
+            // are not the same and task take off point and task begin point
+            // are not selected.
+            QColor color;
+
+            if( fillShape )
+              {
+                color = QColor(Qt::cyan);
+              }
+
+            drawCircle( painter, mPoint, crScaled, color, drawShape );
+          }
+
+        // Draw a line from the End to the Landing point, if both are not identical
+        if( loop && tpList->size() >= 2 &&
             tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
@@ -778,150 +960,9 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
         break;
       }
     }
-}
 
-/**
- * Does all map drawing actions for task points using cylinder scheme.
- * FAI rules does not play a role for drawing.
- *
- */
-void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawnTp )
-{
-  // get user defined scheme items
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  const bool fillShape     = conf->getTaskFillShape();
-  const bool drawShape     = conf->getTaskDrawShape();
-  const bool drawTpLabels  = conf->getMapShowTaskPointLabels();
-
-  // fetch current scale, scale uses unit meter/pixel
-  const double cs = glMapMatrix->getScale(MapMatrix::CurrentScale);
-
-  // fetch configured radius
-  const double radius = conf->getTaskCylinderRadius().getMeters();
-  // scale radius to map
-  const int r = (int) rint(radius / glMapMatrix->getScale());
-
-  // fetch map measures
-  const int w = Map::getInstance()->size().width();
-  const int h = Map::getInstance()->size().height();
-
-  // Set pen color and width for the course line
-  QColor courseLineColor = conf->getTargetLineColor();
-  qreal courseLineWidth  = conf->getTargetLineWidth();
-
-  QRect viewport( -10-r, -10-r, w+2*r, h+2*r );
-
-  for( int loop=0; loop < tpList->count(); loop++ )
-    {
-      // Append all waypoints to the label list on user request
-      if( drawTpLabels )
-        {
-          drawnTp.append( tpList->at(loop) );
-        }
-
-      QPoint mPoint (glMapMatrix->map(tpList->at(loop)->projP));
-
-      bool mPointIsContained = viewport.contains(mPoint);
-
-      if( mPointIsContained )
-        {
-          painter->setPen(QPen(Qt::black));
-          painter->setBrush( QBrush( Qt::black, Qt::SolidPattern ) );
-          painter->drawRect( mPoint.x()-5, mPoint.y()-5, 10, 10 );
-        }
-
-      if( loop )
-        {
-          // Draws the course line
-          painter->setPen(QPen(courseLineColor, courseLineWidth));
-          painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-                             glMapMatrix->map(tpList->at(loop)->projP) );
-        }
-
-      if( cs > 350.0 || ( drawShape == false && fillShape == false ) )
-        {
-          // Don't make sense to draw task points at this scale. They are not really
-          // visible resp. drawing is disabled by user
-          continue;
-        }
-
-      // qDebug("MappedPoint: x=%d, y=%d", mPoint.x(), mPoint.y() );
-
-      if( ! mPointIsContained )
-        {
-          // ignore not visible points
-          continue;
-        }
-
-      QColor color;
-
-      if( fillShape )
-        {
-          // determine fill color
-          switch(tpList->at(loop)->taskPointType)
-            {
-            case TaskPointTypes::TakeOff:
-
-              if( tpList->count() > loop &&
-                  tpList->at(loop)->origP == tpList->at(loop+1)->origP )
-                {
-                  // TakeOff and Begin point are identical
-                  continue;
-                }
-
-              color = QColor(Qt::gray);
-              break;
-
-            case TaskPointTypes::Begin:
-
-              if( tpList->count() > 1 &&
-                  tpList->at(loop)->origP == tpList->at(tpList->count()-2)->origP )
-                {
-                  color = QColor(Qt::yellow); // Begin is also End, yellow is taken as color
-                }
-              else
-                {
-                  color = QColor(Qt::red);
-                }
-              break;
-
-            case TaskPointTypes::RouteP:
-              color = QColor(Qt::green);
-              break;
-
-            case TaskPointTypes::End:
-
-              if( tpList->count() > 1
-                  && tpList->at(loop)->origP == tpList->at(1)->origP )
-                {
-                  continue; // End is also Begin, yellow is taken as color
-                }
-
-              color = QColor(Qt::cyan);
-              break;
-
-            case TaskPointTypes::Landing:
-              if( loop > 1 &&
-                  tpList->at(loop)->origP == tpList->at(loop-1)->origP )
-                {
-                  // End and Landing point are identical
-                  continue;
-                }
-
-              color = QColor(Qt::gray);
-              break;
-
-            default:
-              // should normally never happens
-              color = QColor(Qt::magenta);
-              break;
-            }
-        }
-
-      // Draw circle around given position
-      drawCircle( painter, mPoint, r, color, drawShape );
-    } // End of For
+  // Restore the previous painter state.
+  painter->restore();
 }
 
 /**
@@ -933,11 +974,17 @@ void FlightTask::circleSchemeDrawing( QPainter* painter, QList<Waypoint*> &drawn
  * drawShape, if set to true, draw outer circle with black color
  */
 
-void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
-           const int radius,
-           QColor& fillColor, const bool drawShape )
+void FlightTask::drawCircle( QPainter* painter,
+                             QPoint& centerCoordinate,
+                             const int radius,
+                             QColor& fillColor,
+                             const bool drawShape )
 {
-  if( radius == 0 || (fillColor.isValid() == false && drawShape == false) )
+  // fetch current scale, scale uses unit meter/pixel
+  const double cs = glMapMatrix->getScale(MapMatrix::CurrentScale);
+
+  if( cs > 350 || radius == 0 ||
+      (fillColor.isValid() == false && drawShape == false) )
     {
       return;
     }
@@ -959,8 +1006,10 @@ void FlightTask::drawCircle( QPainter* painter, QPoint& centerCoordinate,
     {
       // We draw the shape after the filling because filling would
       // overwrite our shape
+      qreal lineWidth  = GeneralConfig::instance()->getTaskFiguresLineWidth();
+      QColor& color = GeneralConfig::instance()->getTaskFiguresColor();
       painter->setBrush(Qt::NoBrush);
-      painter->setPen(QPen(QColor(Qt::black), 3));
+      painter->setPen(QPen(color, lineWidth));
       painter->drawEllipse( centerCoordinate.x()-radius, centerCoordinate.y()-radius,
                             radius*2, radius*2 );
     }
@@ -1028,8 +1077,10 @@ void FlightTask::drawSector( QPainter* painter,
     {
       // We draw the shape after the filling because filling would
       // overwrite our shape
+      qreal lineWidth  = GeneralConfig::instance()->getTaskFiguresLineWidth();
+      QColor& color = GeneralConfig::instance()->getTaskFiguresColor();
       painter->setBrush(Qt::NoBrush);
-      painter->setPen(QPen(QColor(Qt::black), 3));
+      painter->setPen(QPen(color, lineWidth));
       painter->drawPath( pp );
     }
 }
@@ -1080,116 +1131,12 @@ void FlightTask::calculateSector( QPainterPath& pp,
       // The big arc around the center point.
       pp.arcTo( (qreal) ocx,(qreal) ocy, (qreal) (2 * ora), (qreal) (2 * ora), (qreal) (w1+sa/2), (qreal) -sa );
 
-      // The small arc around the center point and opposite to the
+      // The small arc around the center point and inside to the
       // big arc. Can have the same size as big arc.
-      pp.arcTo( (qreal) icx, (qreal) icy, (qreal) (2 * ira), (qreal) (2 * ira), (qreal) (w1 - sa+sa/2), (qreal) -(360-sa) );
+      pp.arcTo( (qreal) icx, (qreal) icy, (qreal) (2 * ira), (qreal) (2 * ira), (qreal) (w1 - sa/2), (qreal) sa );
     }
 
   pp.closeSubpath();
-}
-
-/** Check, if task sector has been arrived.
- *
- * dist2TP: distance to task point
- * position: current position as WGS84 datum
- * taskPointIndex: index of TP in taskpoint list
- *
- * returns true, if inside of sector otherwise false
- */
-bool FlightTask::checkSector( const Distance& dist2TP,
-                              const QPoint& position,
-                              const int taskPointIndex )
-{
-  if( taskPointIndex >= tpList->count() )
-    {
-      // taskPointIndex out of range
-      return false;
-    }
-
-  // get user defined scheme items
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  const enum GeneralConfig::ActiveCSTaskScheme scheme = conf->getActiveCSTaskScheme();
-
-  if( scheme == GeneralConfig::Cylinder )
-    {
-      // Cylinder scheme is active
-      double cylinderRadius = conf->getTaskCylinderRadius().getMeters();
-
-      if( dist2TP.getMeters() < cylinderRadius )
-        {
-          // We are inside cylinder
-          return true;
-        }
-
-      return false;
-    }
-
-  // Sector scheme is active, get sector radiuses
-  const double innerRadius = conf->getTaskSectorInnerRadius().getMeters();
-  const double outerRadius = conf->getTaskSectorOuterRadius().getMeters();
-
-  if( dist2TP.getMeters() > outerRadius )
-    {
-      // we are outside of outer radius, sector angle has not to be
-      // considered
-      return false;
-    }
-
-  if( ( innerRadius > 0.0 || innerRadius == outerRadius ) &&
-      dist2TP.getMeters() < innerRadius )
-    {
-      // we are inside of inner radius, sector angle has not to be
-      // considered
-      return true;
-    }
-
-  // Do special check for landing point
-  if( tpList->at( taskPointIndex )->taskPointType == TaskPointTypes::Landing )
-    {
-      // 1. Here we do apply only the outer radius check.
-      // 2. DMST said target reached, if 1km radius has been arrived.
-      if( dist2TP.getMeters() < outerRadius ||
-          dist2TP.getMeters() < 1000.0 )
-        {
-          // We are inside outer radius
-          return true;
-        }
-      else
-        {
-          return false;
-        }
-    }
-
-  // Here we are inside of outer radius, therefore we have to
-  // check the sector angle.
-  const double minAngle = tpList->at( taskPointIndex )->minAngle;
-  const double maxAngle = tpList->at( taskPointIndex )->maxAngle;
-
-  // calculate bearing from tp to current position
-  const double bearing = getBearingWgs( tpList->at( taskPointIndex )->origP, position );
-
-#ifdef CUMULUS_DEBUG
-  qDebug( "FlightTask::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",
-          minAngle*180./M_PI,
-          maxAngle*180./M_PI,
-          bearing*180./M_PI );
-#endif
-
-  if( minAngle > maxAngle &&
-      ( bearing > minAngle || bearing < maxAngle ) )
-    {
-      // we are inside of sector and sector includes north direction
-      return true;
-    }
-
-  if( bearing > minAngle && bearing < maxAngle )
-    {
-      // we are inside of sector between 0...360
-      return true;
-    }
-
-  return false;
 }
 
 /**
@@ -1432,13 +1379,13 @@ void FlightTask::updateTask()
   setTaskPointData();
   determineTaskType();
 
-  for(int loop = 0; loop < tpList->count(); loop++)
+  for (int loop = 0; loop < tpList->count(); loop++)
     {
       // number point with index
       tpList->at(loop)->taskPointIndex = loop;
 
       // calculate turn point sector angles
-      calculateSectorAngles( loop );
+      calculateSectorAngles(loop);
     }
 }
 
@@ -1503,6 +1450,6 @@ QList<TaskPoint*> *FlightTask::copyTpList(QList<TaskPoint*> *tpListIn)
 
 void FlightTask::setPlanningType(const int type)
 {
-  __planningType = type;
+  _planningType = type;
   setTaskPointData();
 }

@@ -39,11 +39,7 @@
 
 #include "speed.h"
 
-#ifdef USE_NUM_PAD
 class DoubleNumberEditor;
-#else
-class QDoubleSpinBox;
-#endif
 
 class SettingsPageLookNFeel : public QWidget
 {
@@ -59,24 +55,12 @@ public:
 
   virtual ~SettingsPageLookNFeel();
 
-protected:
-
-  virtual void showEvent( QShowEvent *event );
-
-  virtual void hideEvent( QHideEvent *event );
-
-public slots:
-
-  /** called to initiate saving to the configuration file */
-  void slot_save();
-
-  /** Called to initiate loading of the configuration file. */
-  void slot_load();
+signals:
 
   /**
-   * Called to ask is confirmation on close is needed.
+   * Emitted, if settings have been changed.
    */
-  void slot_query_close(bool& warn, QStringList& warnings);
+  void settingsChanged();
 
 private slots:
 
@@ -89,7 +73,26 @@ private slots:
   /** Called to open the color dialog */
   void slot_openColorDialog();
 
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
 private:
+
+  /** Called to load the configuration file data. */
+  void load();
+
+  /** Called to save the configuration file data.*/
+  void save();
+
+  /** Called to check, if something has been changed by the user. */
+  bool checkChanges();
 
   bool    m_loadConfig; // control loading of configuration data
   QString m_currentFont; // current selected font is saved here
@@ -102,20 +105,13 @@ private:
   QPushButton    *m_editMapFrameColor;
   QCheckBox      *m_virtualKeybord;
 
-#ifdef USE_NUM_PAD
   DoubleNumberEditor *m_screenSaverSpeedLimit;
-#else
-  QDoubleSpinBox *m_screenSaverSpeedLimit;
-#endif
 
   /** saves horizontal speed m_unit during construction of object */
   Speed::speedUnit m_unit;
 
   /** loaded speed for change control */
   double m_loadedSpeed;
-
-  /** Auto sip flag storage. */
-  bool m_autoSip;
 };
 
 #endif

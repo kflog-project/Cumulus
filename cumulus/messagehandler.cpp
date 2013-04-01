@@ -18,6 +18,7 @@
  ***********************************************************************/
 
 #include <QtCore>
+#include <QString>
 
 #include <cstdio>
 #include <cstdlib>
@@ -26,7 +27,11 @@
 #include "generalconfig.h"
 #include "messagehandler.h"
 
-void messageHandler(QtMsgType type, const char* msg)
+#if QT_VERSION >= 0x050000
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+#else
+void messageHandler(QtMsgType type, const char *msg)
+#endif
 {
   static GeneralConfig *conf = static_cast<GeneralConfig *> (0);
   static bool sysLogMode = false;
@@ -57,23 +62,28 @@ void messageHandler(QtMsgType type, const char* msg)
 
   if( ! sysLogMode ) // normal logging via stderr
     {
+#if QT_VERSION >= 0x050000
+#define MSG msg.toLocal8Bit().constData()
+#else
+#define MSG msg
+#endif
       switch( type )
         {
           case QtDebugMsg:
-            fprintf( stderr, "Debug: %s\n", msg );
+            fprintf( stderr, "Debug: %s\n", MSG);
             break;
           case QtWarningMsg:
-            fprintf( stderr, "Warning: %s\n", msg );
+            fprintf( stderr, "Warning: %s\n", MSG);
             break;
           case QtCriticalMsg:
-            fprintf(stderr, "Critical: %s\n", msg);
+            fprintf(stderr, "Critical: %s\n", MSG);
             break;
           case QtFatalMsg:
-            fprintf( stderr, "Fatal: %s\n", msg );
+            fprintf( stderr, "Fatal: %s\n", MSG);
             abort();
             break;
           default:
-            fprintf( stderr, "Default: %s\n", msg );
+            fprintf( stderr, "Default: %s\n", MSG);
             break;
         }
 
@@ -84,20 +94,20 @@ void messageHandler(QtMsgType type, const char* msg)
   switch( type )
   {
     case QtDebugMsg:
-      syslog( LOG_DEBUG, "Debug: %s", msg );
+      syslog( LOG_DEBUG, "Debug: %s", MSG);
       break;
     case QtWarningMsg:
-      syslog( LOG_WARNING, "Warning: %s", msg );
+      syslog( LOG_WARNING, "Warning: %s", MSG);
       break;
     case QtCriticalMsg:
-      syslog( LOG_CRIT, "Critical: %s", msg );
+      syslog( LOG_CRIT, "Critical: %s", MSG);
       break;
     case QtFatalMsg:
-      syslog( LOG_CRIT, "Fatal: %s", msg );
+      syslog( LOG_CRIT, "Fatal: %s", MSG);
       abort();
       break;
     default:
-      syslog( LOG_DEBUG, "Default: %s", msg );
+      syslog( LOG_DEBUG, "Default: %s", MSG);
       break;
   }
 }

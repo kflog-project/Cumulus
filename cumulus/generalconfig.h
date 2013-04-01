@@ -27,7 +27,7 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2012
+ * \date 2004-2013
  *
  * \version $Id$
  */
@@ -68,6 +68,26 @@
 #define AS_FILL_VERY_NEAR 15
 #define AS_FILL_INSIDE    20
 
+// default line width options
+#define AirSpaceBorderLineWidth 5
+#define TaskLineWidth 5
+#define TargetLineWidth 5
+#define TaskFiguresLineWidth 5
+#define HeadingLineWidth 5
+#define TrailLineWidth 4
+
+// default line color options
+#define TaskLineColor QColor(Qt::darkMagenta).name()
+#define TaskFiguresColor QColor(Qt::red).name()
+#define HeadingLineColor QColor(Qt::gray).name()
+#define TrailLineColor QColor(Qt::black).name()
+
+#ifdef MAEMO4
+#define SoundPlayer "/opt/cumulus/bin/aplay"
+#else
+#define SoundPlayer "/usr/bin/aplay"
+#endif
+
 class QTranslator;
 
 extern const char* CumulusBuildDate;
@@ -82,14 +102,14 @@ class GeneralConfig : protected QSettings
     never, standstill, circling, cruising, wave, always
   };
 
-  // CS Task scheme data
-  enum ActiveCSTaskScheme
+  // Task figure scheme
+  enum ActiveTaskFigureScheme
   {
-    Cylinder = 0, Sector = 1
+    Undefined = -1, Circle = 0, Sector = 1, Line = 2
   };
 
-  // CS Task scheme data
-  enum ActiveNTTaskScheme
+  // Task switch scheme
+  enum ActiveTaskSwitchScheme
   {
     Nearst = 0, Touched = 1
   };
@@ -1457,12 +1477,12 @@ class GeneralConfig : protected QSettings
     _lambertOrign = newValue;
   };
 
-  /** gets Cylinder Parallel */
+  /** gets Circle Parallel */
   int getCylinderParallel()  const
   {
     return _cylinderParallel;
   };
-  /** sets Cylinder Parallel */
+  /** sets Circle Parallel */
   void setCylinderParallel( const int newValue )
   {
     _cylinderParallel = newValue;
@@ -1925,28 +1945,52 @@ class GeneralConfig : protected QSettings
     _arrivalAltitudeDisplay = newValue;
   };
 
-  /** Gets the active cs task scheme */
-  enum ActiveCSTaskScheme getActiveCSTaskScheme() const
+  /** Gets the active task start scheme */
+  enum ActiveTaskFigureScheme getActiveTaskStartScheme() const
   {
-    return _taskActiveCSScheme;
+    return _taskActiveStartScheme;
   };
 
-  /** Sets the active cs task scheme */
-  void setActiveCSTaskScheme( const enum ActiveCSTaskScheme newValue )
+  /** Sets the active task start scheme */
+  void setActiveTaskStartScheme( const enum ActiveTaskFigureScheme newValue )
   {
-    _taskActiveCSScheme = newValue;
+    _taskActiveStartScheme = newValue;
   };
 
-  /** Gets the active nt task scheme */
-  enum ActiveNTTaskScheme getActiveNTTaskScheme() const
+  /** Gets the active task finish scheme */
+  enum ActiveTaskFigureScheme getActiveTaskFinishScheme() const
   {
-    return _taskActiveNTScheme;
+    return _taskActiveFinishScheme;
+  };
+
+  /** Sets the active task finish scheme */
+  void setActiveTaskFinishScheme( const enum ActiveTaskFigureScheme newValue )
+  {
+    _taskActiveFinishScheme = newValue;
+  };
+
+  /** Gets the active task observer scheme */
+  enum ActiveTaskFigureScheme getActiveTaskObsScheme() const
+  {
+    return _taskActiveObsScheme;
+  };
+
+  /** Sets the active task observer scheme */
+  void setActiveTaskObsScheme( const enum ActiveTaskFigureScheme newValue )
+  {
+    _taskActiveObsScheme = newValue;
+  };
+
+  /** Gets the active task switch scheme */
+  enum ActiveTaskSwitchScheme getActiveTaskSwitchScheme() const
+  {
+    return _taskActiveSwitchScheme;
   };
 
   /** Sets the active nt task scheme */
-  void setActiveNTTaskScheme( const enum ActiveNTTaskScheme newValue )
+  void setActiveTaskSwitchScheme( const enum ActiveTaskSwitchScheme newValue )
   {
-    _taskActiveNTScheme = newValue;
+    _taskActiveSwitchScheme = newValue;
   };
 
   /** Gets task shape alpha transparency. 0 represents a fully
@@ -1964,18 +2008,6 @@ class GeneralConfig : protected QSettings
   void setTaskShapeAlpha( const int newValue )
   {
     _taskShapeAlpha = newValue;
-  };
-
-  /** Gets task cylinder radius in meters */
-  Distance &getTaskCylinderRadius()
-    {
-      return _taskCylinderRadius;
-    };
-
-  /** Sets task cylinder radius. Unit must be meters. */
-  void setTaskCylinderRadius( const Distance &newValue )
-  {
-    _taskCylinderRadius = newValue;
   };
 
   /** gets cylinder/sector draw option */
@@ -2001,40 +2033,184 @@ class GeneralConfig : protected QSettings
     _taskFillShape = newValue;
   };
 
-  /** Gets task sector inner radius in meters */
-  Distance &getTaskSectorInnerRadius()
+  /** gets taskpoint auto zoom option */
+  bool getTaskPointAutoZoom() const
   {
-    return _taskSectorInnerRadius;
+    return _taskPointAutoZoom;
   };
 
-  /** Sets task sector inner radius. Unit must be meters. */
-  void setTaskSectorInnerRadius( const Distance &newValue )
+  /** sets taskpoint auto zoom option */
+  void setTaskPointAutoZoom( const bool newValue )
   {
-    _taskSectorInnerRadius = newValue;
+    _taskPointAutoZoom = newValue;
   };
 
-  /** Gets task sector outer radius in meters */
-  Distance &getTaskSectorOuterRadius()
-    {
-      return _taskSectorOuterRadius;
-    };
-
-  /** Sets task sector outer radius. Unit must be meters. */
-  void setTaskSectorOuterRadius( const Distance &newValue )
+  /** Gets the length of the finish line. */
+  Distance getTaskFinishLineLength() const
   {
-    _taskSectorOuterRadius = newValue;
+    return _taskFinishLineLength;
   };
 
-  /** Gets task sector angle 90-180 degrees.  */
-  int getTaskSectorAngle() const
+  /** Sets the length of the finish line. */
+  void setTaskFinishLineLength( const Distance& taskFinishLineLength )
   {
-    return _taskSectorAngle;
+    _taskFinishLineLength = taskFinishLineLength;
   };
 
-  /** Sets task sector angle 90-180 degrees.  */
-  void setTaskSectorAngle( const int newValue )
+  /** Gets the radius of the finish ring. */
+  Distance getTaskFinishRingRadius() const
   {
-    _taskSectorAngle = newValue;
+    return _taskFinishRingRadius;
+  };
+
+  /** Sets the radius of the finish ring. */
+  void setTaskFinishRingRadius( const Distance& taskFinishRingRadius )
+  {
+    _taskFinishRingRadius = taskFinishRingRadius;
+  };
+
+  /** Gets the angle of the task finish sector. */
+  int getTaskFinishSectorAngel() const
+  {
+    return _taskFinishSectorAngel;
+  };
+
+  /** Sets the angle of the task finish sector. */
+  void setTaskFinishSectorAngel( const int taskFinishSectorAngel )
+  {
+    _taskFinishSectorAngel = taskFinishSectorAngel;
+  };
+
+  /** Gets the inner radius of the task finish sector. */
+  Distance getTaskFinishSectorIRadius() const
+  {
+    return _taskFinishSectorIRadius;
+  };
+
+  /** Sets the inner radius of the task finish sector. */
+  void setTaskFinishSectorIRadius( const Distance& taskFinishSectorIRadius )
+  {
+    _taskFinishSectorIRadius = taskFinishSectorIRadius;
+  };
+
+  /** Gets the outer radius of the task finish sector. */
+  Distance getTaskFinishSectorORadius() const
+  {
+    return _taskFinishSectorORadius;
+  };
+
+  /** Sets the outer radius of the task finish sector. */
+  void setTaskFinishSectorORadius( const Distance& taskFinishSectorORadius )
+  {
+    _taskFinishSectorORadius = taskFinishSectorORadius;
+  };
+
+  /** Gets the length of the start line. */
+  Distance getTaskStartLineLength() const
+  {
+    return _taskStartLineLength;
+  };
+
+  /** Sets the length of the start line. */
+  void setTaskStartLineLength( const Distance& taskStartLineLength )
+  {
+    _taskStartLineLength = taskStartLineLength;
+  };
+
+  /** Gets the radius of the start ring. */
+  Distance getTaskStartRingRadius() const
+  {
+    return _taskStartRingRadius;
+  };
+
+  /** Sets the radius of the start ring. */
+  void setTaskStartRingRadius( const Distance& taskStartRingRadius )
+  {
+    _taskStartRingRadius = taskStartRingRadius;
+  };
+
+  /** Gets the angle of the task start sector. */
+  int getTaskStartSectorAngel() const
+  {
+    return _taskStartSectorAngel;
+  };
+
+  /** Sets the angle of the task start sector. */
+  void setTaskStartSectorAngel( const int taskStartSectorAngel )
+  {
+    _taskStartSectorAngel = taskStartSectorAngel;
+  };
+
+  /** Gets the inner radius of the task start sector. */
+  Distance getTaskStartSectorIRadius() const
+  {
+    return _taskStartSectorIRadius;
+  };
+
+  /** Sets the inner radius of the task start sector. */
+  void setTaskStartSectorIRadius( const Distance& taskStartSectorIRadius )
+  {
+    _taskStartSectorIRadius = taskStartSectorIRadius;
+  };
+
+  /** Gets the outer radius of the task start sector. */
+  Distance getTaskStartSectorORadius() const
+  {
+    return _taskStartSectorORadius;
+  };
+
+  /** Sets the outer radius of the task start sector. */
+  void setTaskStartSectorORadius( const Distance& taskStartSectorORadius )
+  {
+    _taskStartSectorORadius = taskStartSectorORadius;
+  };
+
+  /** Gets task observation zone circle radius in meters */
+  Distance &getTaskObsCircleRadius()
+  {
+    return _taskObsCircleRadius;
+  };
+
+  /** Sets task observation zone circle radius. Unit must be meters. */
+  void setTaskObsCircleRadius( const Distance &newValue )
+  {
+    _taskObsCircleRadius = newValue;
+  };
+
+  /** Gets task observation zone sector inner radius in meters */
+  Distance &getTaskObsSectorInnerRadius()
+  {
+    return _taskObsSectorInnerRadius;
+  };
+
+  /** Sets task observation zone sector inner radius. Unit must be meters. */
+  void setTaskObsSectorInnerRadius( const Distance &newValue )
+  {
+    _taskObsSectorInnerRadius = newValue;
+  };
+
+  /** Gets task observation zone sector outer radius in meters */
+  Distance &getTaskObsSectorOuterRadius()
+  {
+    return _taskObsSectorOuterRadius;
+  };
+
+  /** Sets task observation zone sector outer radius. Unit must be meters. */
+  void setTaskObsSectorOuterRadius( const Distance &newValue )
+  {
+    _taskObsSectorOuterRadius = newValue;
+  };
+
+  /** Gets task observation zone sector angle 1-360 degrees.  */
+  int getTaskObsSectorAngle() const
+  {
+    return _taskObsSectorAngle;
+  };
+
+  /** Sets task sector angle 1-360 degrees.  */
+  void setTaskObsSectorAngle( const int newValue )
+  {
+    _taskObsSectorAngle = newValue;
   };
 
   /** gets the target line draw state */
@@ -2048,15 +2224,27 @@ class GeneralConfig : protected QSettings
     _targetLineDrawState = newValue;
   };
 
-  /** gets the track line draw state */
-  bool getTrackLineDrawState() const
+  /** gets target line width */
+  int getTargetLineWidth() const
   {
-    return _trackLineDrawState;
+    return _targetLineWidth;
+  };
+
+  /** sets target line width */
+  void setTargetLineWidth(const int newValue)
+  {
+    _targetLineWidth = newValue;
+  };
+
+  /** gets the heading line draw state */
+  bool getHeadingLineDrawState() const
+  {
+    return _headingLineDrawState;
   };
   /** sets the track line draw state */
-  void setTrackLineDrawState(const bool newValue)
+  void setHeadingLineDrawState(const bool newValue)
   {
-    _trackLineDrawState = newValue;
+    _headingLineDrawState = newValue;
   };
 
   /** Gets the GPS default device depending on the hardware type */
@@ -2092,52 +2280,52 @@ class GeneralConfig : protected QSettings
     _elevationColorOffset = newValue;
   };
 
-  /** Sets the target line color */
-  void setTargetLineColor( const QColor& newValue )
+  /** Sets the task line color */
+  void setTaskLineColor( const QColor& newValue )
   {
-    _targetLineColor = newValue;
+    _taskLineColor = newValue;
   };
 
-  /** Gets the target line color */
-  QColor& getTargetLineColor()
+  /** Gets the task line color */
+  QColor& getTaskLineColor()
   {
-    return _targetLineColor;
+    return _taskLineColor;
   };
 
-  /** gets target line width */
-  int getTargetLineWidth() const
+  /** gets task line width */
+  int getTaskLineWidth() const
   {
-    return _targetLineWidth;
+    return _taskLineWidth;
   };
 
-  /** sets target line width */
-  void setTargetLineWidth(const int newValue)
+  /** sets task line width */
+  void setTaskLineWidth(const int newValue)
   {
-    _targetLineWidth = newValue;
+    _taskLineWidth = newValue;
   };
 
-  /** Sets the track line color */
-  void setTrackLineColor( const QColor& newValue )
+  /** Sets the heading line color */
+  void setHeadingLineColor( const QColor& newValue )
   {
-    _trackLineColor = newValue;
+    _headingLineColor = newValue;
   };
 
-  /** Gets the track line color */
-  QColor& getTrackLineColor()
+  /** Gets the heading line color */
+  QColor& getHeadingLineColor()
   {
-    return _trackLineColor;
+    return _headingLineColor;
   };
 
-  /** gets track line width */
-  int getTrackLineWidth() const
+  /** gets the heading line width */
+  int getHeadingLineWidth() const
   {
-    return _trackLineWidth;
+    return _headingLineWidth;
   };
 
-  /** sets track line width */
-  void setTrackLineWidth(const int newValue)
+  /** sets the heading line width */
+  void setHeadingLineWidth(const int newValue)
   {
-    _trackLineWidth = newValue;
+    _headingLineWidth = newValue;
   };
 
   /** Gets waypoint scale border. */
@@ -2146,6 +2334,55 @@ class GeneralConfig : protected QSettings
   /** Sets waypoint scale border. */
   void setWaypointScaleBorder( const Waypoint::Priority importance,
                                const int newScale );
+
+
+  /** Gets the map trail color. */
+  QColor& getMapTrailColor()
+  {
+    return _mapTrailLineColor;
+  };
+
+  /** Sets the map trail color. */
+  void setMapTrailColor(QColor mapTrailColor)
+  {
+    _mapTrailLineColor = mapTrailColor;
+  };
+
+  /** Gets the map trail line width. */
+  int getMapTrailLineWidth() const
+  {
+    return _mapTrailLineWidth;
+  };
+
+  /** Sets the map trail line width. */
+  void setMapTrailLineWidth(int mapTrailLineWidth)
+  {
+    _mapTrailLineWidth = mapTrailLineWidth;
+  };
+
+  /** Gets the task figures color. */
+  QColor& getTaskFiguresColor()
+  {
+    return _taskFiguresColor;
+  };
+
+  /** Sets the task figures color. */
+  void setTaskFiguresColor(const QColor& taskFigureColor)
+  {
+    _taskFiguresColor = taskFigureColor;
+  };
+
+  /** Gets the task figures line width. */
+  int getTaskFiguresLineWidth() const
+  {
+    return _taskFiguresLineWidth;
+  };
+
+  /** Sets the task figures line width. */
+  void setTaskFiguresLineWidth(int taskFigureLineWidth)
+  {
+    _taskFiguresLineWidth = taskFigureLineWidth;
+  };
 
   /** Gets the Flarm alias file name. */
   const QString &getFlarmAliasFileName() const
@@ -2169,6 +2406,29 @@ class GeneralConfig : protected QSettings
   void setWelt2000UpdateMarker( const int newValue )
   {
     _welt2000UpdateMarker = newValue;
+  };
+
+  /** gets the pre-flight menu close flag */
+  bool getClosePreFlightMenu() const
+  {
+    return _closePreFlightMenu;
+  };
+  /** sets the the pre-flight menu close flag */
+  void setClosePreFlightMenu(const bool newValue)
+  {
+    _closePreFlightMenu = newValue;
+  };
+
+  /** Gets reset configuration value. */
+  int getResetConfiguration() const
+  {
+    return _resetConfiguration;
+  };
+
+  /** Sets reset configuration value. */
+  void setResetConfiguration( const int newValue )
+  {
+    _resetConfiguration = newValue;
   };
 
  private:
@@ -2196,17 +2456,23 @@ class GeneralConfig : protected QSettings
   // Internet proxy
   QString _proxy;
 
-  // Task target line color
-  QColor _targetLineColor;
+  // Task line color
+  QColor _taskLineColor;
 
-  // Task target line width
-  int _targetLineWidth;
+  // Task line width
+  int _taskLineWidth;
 
-  // Task track line color
-  QColor _trackLineColor;
+  // Task figure color
+  QColor _taskFiguresColor;
 
-  // Task track line width
-  int _trackLineWidth;
+  // Task figure line width
+  int _taskFiguresLineWidth;
+
+  // Heading line color
+  QColor _headingLineColor;
+
+  // Heading line width
+  int _headingLineWidth;
 
   // terrain colors
   QColor _terrainColors[SIZEOF_TERRAIN_COLORS];
@@ -2325,7 +2591,7 @@ class GeneralConfig : protected QSettings
   int _windDirection;
   // wind speed
   int _windSpeed;
-  // current selected task
+  // The name of the current selected task
   QString _currentTask;
 
   // Homesite country code
@@ -2407,6 +2673,10 @@ class GeneralConfig : protected QSettings
   bool _mapLoadForests;
   // Map trail
   bool _drawTrail;
+  // Map trail line color
+  QColor _mapTrailLineColor;
+  // Map trail line width
+  int _mapTrailLineWidth;
 
   // Map Lower Limit
   int _mapLowerLimit;
@@ -2555,32 +2825,55 @@ class GeneralConfig : protected QSettings
   // unit time
   int _unitTime;
 
-  // aktive cs task scheme
-  enum ActiveCSTaskScheme _taskActiveCSScheme;
-  enum ActiveNTTaskScheme _taskActiveNTScheme;
+  // aktive task figure scheme
+  enum ActiveTaskFigureScheme _taskActiveStartScheme;
+  enum ActiveTaskFigureScheme _taskActiveFinishScheme;
+  enum ActiveTaskFigureScheme _taskActiveObsScheme;
+  enum ActiveTaskSwitchScheme _taskActiveSwitchScheme;
 
   // arrival altitude display selection
   enum ArrivalAltitudeDisplay _arrivalAltitudeDisplay;
 
-  // Task shape alpha transparency
-  int _taskShapeAlpha;
+  // Task start options
+  Distance _taskStartLineLength;
+  Distance _taskStartRingRadius;
+  Distance _taskStartSectorIRadius;
+  Distance _taskStartSectorORadius;
+  int      _taskStartSectorAngel;
 
-  // Cylinder scheme
-  Distance _taskCylinderRadius;
+  // Task finish options
+  Distance _taskFinishLineLength;
+  Distance _taskFinishRingRadius;
+  Distance _taskFinishSectorIRadius;
+  Distance _taskFinishSectorORadius;
+  int      _taskFinishSectorAngel;
 
-  // Sector scheme
-  Distance _taskSectorInnerRadius;
-  Distance _taskSectorOuterRadius;
-  int _taskSectorAngle;
+  // Task observation Circle
+  Distance _taskObsCircleRadius;
 
-  // Cylinder/Sector draw options
+  // Task observation Sector scheme
+  Distance _taskObsSectorInnerRadius;
+  Distance _taskObsSectorOuterRadius;
+  int      _taskObsSectorAngle;
+
+  // Circle/Sector draw options
   bool _taskDrawShape;
   bool _taskFillShape;
 
+  // Task point auto zoom
+  bool _taskPointAutoZoom;
+
+  // Task shape alpha transparency, used during filling of the shape
+  int _taskShapeAlpha;
+
   // Target line draw state
   bool _targetLineDrawState;
-  // Track line draw state
-  bool _trackLineDrawState;
+
+  // Target line width
+  int _targetLineWidth;
+
+  // Heading line draw state
+  bool _headingLineDrawState;
 
   // Welt2000 update marker
   int _welt2000UpdateMarker;
@@ -2596,6 +2889,12 @@ class GeneralConfig : protected QSettings
 
   /** Translator for other Qt library languages as English. */
   QTranslator *qtTranslator;
+
+  // Flag to handle preflight menu close
+  bool _closePreFlightMenu;
+
+  // variable to handle configuration resets
+  int _resetConfiguration;
 };
 
 #endif

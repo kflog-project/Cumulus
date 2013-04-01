@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2010 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,22 +16,71 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "speed.h"
 #include "altitude.h"
 #include "distance.h"
-#include "wgspoint.h"
+#include "generalconfig.h"
+#include "layout.h"
 #include "mapcalc.h"
 #include "settingspageunits.h"
-#include "generalconfig.h"
 #include "time_cu.h"
+#include "wgspoint.h"
 
 SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
 {
   setObjectName("SettingsPageUnits");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - Units") );
 
-  QGridLayout *topLayout = new QGridLayout(this);
+  if( parent )
+    {
+      resize( parent->size() );
+    }
+
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout;
+  setLayout(contentLayout);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  // The parent of the layout is the scroll widget
+  QGridLayout *topLayout = new QGridLayout(sw);
+
   int row=0;
 
   QLabel *label = new QLabel(tr("Altitude:"), this);
@@ -107,9 +156,9 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   UnitPosition->setObjectName("UnitPosition");
   UnitPosition->setEditable(false);
   topLayout->addWidget(UnitPosition,row++,1);
-  UnitPosition->addItem("ddd\260mm'ss\"");
-  UnitPosition->addItem("ddd\260mm.mmm'");
-  UnitPosition->addItem("ddd.ddddd\260");
+  UnitPosition->addItem(QString("ddd") + Qt::Key_degree + "mm'ss\"");
+  UnitPosition->addItem(QString("ddd") + Qt::Key_degree + "mm.mmm'");
+  UnitPosition->addItem(QString("ddd.ddddd") + Qt::Key_degree);
   positions[0] = WGSPoint::DMS;
   positions[1] = WGSPoint::DDM;
   positions[2] = WGSPoint::DDD;
@@ -127,13 +176,57 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
 
   topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2, 10);
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  contentLayout->addLayout(buttonBox);
+
+  load();
 }
 
 SettingsPageUnits::~SettingsPageUnits()
 {}
 
-/** Called to initiate loading of the configuration file */
-void SettingsPageUnits::slot_load()
+void SettingsPageUnits::slotAccept()
+{
+  if( checkChanges() )
+    {
+      save();
+      GeneralConfig::instance()->save();
+      emit settingsChanged();
+    }
+
+  QWidget::close();
+}
+
+void SettingsPageUnits::slotReject()
+{
+  QWidget::close();
+}
+
+void SettingsPageUnits::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -147,7 +240,7 @@ void SettingsPageUnits::slot_load()
 }
 
 /** called to initiate saving to the configuration file. */
-void SettingsPageUnits::slot_save()
+void SettingsPageUnits::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
   // save the entries
@@ -187,7 +280,7 @@ int SettingsPageUnits::searchItem(int* p, int value, int max)
 }
 
 /** Called to ask is confirmation on the close is needed. */
-void SettingsPageUnits::slot_query_close(bool& warn, QStringList& warnings)
+bool SettingsPageUnits::checkChanges()
 {
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -200,10 +293,5 @@ void SettingsPageUnits::slot_query_close(bool& warn, QStringList& warnings)
   changed |= conf->getUnitPos()   != positions[UnitPosition->currentIndex()];
   changed |= conf->getUnitTime()  != times[UnitTime->currentIndex()];
 
-  if (changed)
-    {
-    // set warn to 'true' if the data has been changed.
-      warn = true;
-      warnings.append(tr("The Unit settings"));
-    }
+  return changed;
 }

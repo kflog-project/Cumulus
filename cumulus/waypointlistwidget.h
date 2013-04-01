@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  *
  * This widget displays a list of waypoints and provides some management methods.
  *
- * \date 2002-2012
+ * \date 2002-2013
  *
  * \version $Id$
  *
@@ -35,6 +35,7 @@
 #ifndef WAYPOINT_LIST_WIDGET_H
 #define WAYPOINT_LIST_WIDGET_H
 
+#include <QFont>
 #include <QList>
 #include <QTreeWidgetItem>
 
@@ -129,14 +130,16 @@ private:
    *
    * \brief A user waypoint item element used by the \ref WaypointListWidget.
    *
-   * \date 2002-2010
+   * \date 2002-2013
    */
 
-  class _WaypointItem : public QTreeWidgetItem
+  class WaypointItem : public QTreeWidgetItem
     {
       public:
-          _WaypointItem(Waypoint&);
-          Waypoint &wp;
+
+        WaypointItem(Waypoint& wp);
+
+        Waypoint &wp;
     };
 };
 

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -46,6 +46,9 @@ GliderListWidget::GliderListWidget(QWidget *parent) :
   QStringList sl;
   sl << tr("Type") << tr("Registration") << tr("Callsign");
   setHeaderLabels(sl);
+
+  setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 }
 
 GliderListWidget::~GliderListWidget()
@@ -149,6 +152,8 @@ void GliderListWidget::save()
     }
 
   config.endGroup();
+  config.sync();
+
   _changed = false;
 }
 

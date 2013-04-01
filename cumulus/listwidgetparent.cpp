@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2012 by Axel Pauli
+**                   2009-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,9 +16,16 @@
 **
 ************************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "layout.h"
 #include "listwidgetparent.h"
 #include "generalconfig.h"
@@ -51,14 +58,17 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   filter = new ListViewFilter( list, this );
   filter->setObjectName( "ListViewFilter" );
 
+  list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
 #ifdef QSCROLLER
   list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  QScroller::grabGesture(list, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(list);
+#ifdef QTSCROLLER
+  list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   up = new QPushButton( this );
@@ -122,6 +132,16 @@ void ListWidgetParent::showEvent( QShowEvent *event )
   // align columns to contents before showing
   resizeListColumns();
   list->setFocus();
+}
+
+void ListWidgetParent::fillItemList()
+{
+  // calculates the needed icon size
+  QFontMetrics qfm( font() );
+  int iconSize = qfm.height() - 8;
+
+  // Sets the icon size of a list entry
+  list->setIconSize( QSize(iconSize, iconSize) );
 }
 
 /**

@@ -20,6 +20,7 @@
 #include <ctime>
 
 #include <QtGui>
+#include <QMessageBox>
 
 #include "altitude.h"
 #include "basemapelement.h"

@@ -42,12 +42,8 @@ class QComboBox;
 class QPushButton;
 class QSpinBox;
 
-#ifdef USE_NUM_PAD
 class DoubleNumberEditor;
 class NumberEditor;
-#else
-class QDoubleSpinBox;
-#endif
 
 class PreFlightMiscPage : public QWidget
 {
@@ -74,6 +70,16 @@ class PreFlightMiscPage : public QWidget
    */
   void slotOpenLogbook();
 
+  /**
+   * Called if the Ok button is pressed.
+   */
+  void slotAccept();
+
+  /**
+   * Called if the Cancel button is pressed.
+   */
+  void slotReject();
+
 #ifdef FLARM
 
   /**
@@ -83,24 +89,27 @@ class PreFlightMiscPage : public QWidget
 
 #endif
 
+ signals:
+
+  /**
+   * Emitted, if settings have been changed.
+   */
+  void settingsChanged();
+
+  /**
+   * Emitted, if the widget is closed.
+   */
+  void closingWidget();
+
  private:
 
-  QCheckBox*      m_chkLogAutoStart;
-  QComboBox*      m_edtArrivalAltitude;
-
-#ifdef USE_NUM_PAD
+  QCheckBox*          m_chkLogAutoStart;
+  QComboBox*          m_edtArrivalAltitude;
   NumberEditor*       m_bRecordInterval; // B-Record logging interval in seconds
   NumberEditor*       m_kRecordInterval; // K-Record logging interval in seconds
   DoubleNumberEditor* m_logAutoStartSpeed;
   NumberEditor*       m_edtMinimalArrival;
   NumberEditor*       m_edtQNH;
-#else
-  QSpinBox*           m_bRecordInterval; // B-Record logging interval in seconds
-  QSpinBox*           m_kRecordInterval; // K-Record logging interval in seconds
-  QDoubleSpinBox*     m_logAutoStartSpeed;
-  QSpinBox*           m_edtMinimalArrival;
-  QSpinBox*           m_edtQNH;
-#endif
 
   double m_loadedSpeed;
 

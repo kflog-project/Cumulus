@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2012 by Axel Pauli
+**                  2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,9 +18,16 @@
 
 #include <cmath>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
-#include "flickcharm.h"
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 #include "mainwindow.h"
@@ -78,12 +85,11 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaScrollArea->setWidget(nmeaBox);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(nmeaScrollArea, QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( nmeaScrollArea->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef FLICK_CHARM
-  FlickCharm *flickCharm = new FlickCharm(this);
-  flickCharm->activateOn(nmeaScrollArea);
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( nmeaScrollArea->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QVBoxLayout* nmeaBoxLayout = new QVBoxLayout;
@@ -266,7 +272,7 @@ void GpsStatusDialog::slot_SaveNmeaData()
         }
 
       QString str = nmeaList.join( "" );
-      file.write( str.toAscii() );
+      file.write( str.toLatin1() );
       file.close();
 
       // The stored data is cleared from the list.

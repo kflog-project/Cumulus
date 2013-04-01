@@ -20,6 +20,7 @@
  */
 #include <QtGui>
 #include <QtNetwork>
+#include <QMessageBox>
 
 #include "httpclient.h"
 #include "authdialog.h"
@@ -127,7 +128,7 @@ bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
                  QCoreApplication::applicationVersion() + " (Qt/X11)";
 
   request.setUrl( QUrl( _url, QUrl::TolerantMode ));
-  request.setRawHeader( "User-Agent", appl.toAscii() );
+  request.setRawHeader( "User-Agent", appl.toLatin1() );
 
   reply = manager->get(request);
 
