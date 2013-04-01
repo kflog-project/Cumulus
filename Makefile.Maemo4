@@ -161,8 +161,7 @@ dpkg:
 dpkg_prepare:
 	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
-	#svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/branches/taskpoint $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
