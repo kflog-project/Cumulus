@@ -15,7 +15,41 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[*] 2013-01-18 AP: Cumulus 2.20.1 released.
+[*] 2013-03-31 AP: Cumulus 5.0.1 released.
+
+[o] 2013-03-29 AP: Online help pages updated
+
+[+] 2013-03-18 AP/EE: Additional task support configuration items have been
+                   added like start and finish line and variable sector angles.
+                   A new task point editor was programmed to configure single
+                   task points according to the user wishes.
+
+[-] 2013-03-18 AP: Bugfix: Added a Qt version tag to the compiled data streams
+                   of Welt2000 and openair parser to avoid crashes, if you go
+                   back from Qt5 to Qt4.
+                   
+[-] 2013-03-17 AP: Tried to optimize different Qt widgets for a better operation
+                   with fingers under Android. A backport of kinetic finger
+                   scrolling has been added to all widgets. Also the font
+                   adaption to different screens under Android has been approved.
+
+[-] 2013-03-12 AP: Bugfix: QTime has another behavior under Qt5. It must be
+                   correct initialized to get an elapsed value.
+
+[-] 2013-02-24 AP: Bugfix: ReachpointListView up down buttons did not work.
+
+[+] 2013-02-10 EE: Portage made to Qt5 for all sources.
+
+[+] 2013-02-10 AP: Auto zoom added, if the near of a task point is reached.
+                   This feature can be switched on/off via a configuration option.
+
+[+] 2013-02-03 AP: Settings menu modified from a tab menu to a list menu.
+
+[+] 2013-01-27 AP: Preflight menu modified from a tab menu to a list menu.
+
+[+] 2013-01-25 AP: Settings line widget added.
+
+[+] 2013-01-20 AP: Start and finish line added to the task handling.
 
 [-] 2013-01-10 AP: Bugfix: Application has crashed, if the disclaimer was
                    rejected by the user.

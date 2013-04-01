@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -1315,7 +1315,7 @@ void GpsClient::flarmFlightDowloadInfo( QString info )
 {
   QString msg = QString("%1 %2").arg(MSG_FLARM_FLIGHT_DOWNLOAD_INFO).arg(info);
 
-  writeForwardMsg( msg.toAscii().data() );
+  writeForwardMsg( msg.toLatin1().data() );
 }
 
 /** Reports the flight download progress to the calling application. */
@@ -1325,7 +1325,7 @@ void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
                                    .arg(idx)
                                    .arg(progress);
 
-  writeForwardMsg( msg.toAscii().data() );
+  writeForwardMsg( msg.toLatin1().data() );
 }
 
 bool GpsClient::flarmReset()

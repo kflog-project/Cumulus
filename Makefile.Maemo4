@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Maemo4
 #
-# Copyright (c): 2008-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+# Copyright (c): 2008-2013 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -58,7 +58,7 @@ usage:
 	@echo "  copy2web     - Copies Cumulus application package to web page"
 	@echo "  copylang2web - Copies Cumulus language package to web page"
 
-all:	$(QMAKE)
+all:	$(QMAKE) resetdate
 	cd cumulus; make
 	cd gpsClient; make
 	cd gpsMaemoClient; make
@@ -161,7 +161,8 @@ dpkg:
 dpkg_prepare:
 	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+	#svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/branches/taskpoint $(CUMULUS_DEB)
 
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
@@ -255,6 +256,9 @@ copylang2web:
 qmake:	cumulus/Makefile gpsClient/Makefile gpsMaemoClient/Makefile nmeaSimulator/Makefile
 
 .PHONY : resetdate
+
+resetdate:
+	rm -rf cumulus/builddate.o
 
 cumulus/Makefile: cumulus/cumulusMaemo4.pro
 	cd cumulus; $(QMAKE) cumulusMaemo4.pro -o Makefile

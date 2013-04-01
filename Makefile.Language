@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus Language release for Maemo
 #
-# Copyright (c): 2010-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+# Copyright (c): 2010-2013 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -113,7 +113,7 @@ dpkg_src_de:
 dpkg_make:
 	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/branches/taskpoint $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \

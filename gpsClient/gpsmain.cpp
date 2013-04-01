@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2010 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -19,11 +19,11 @@
 
 using namespace std;
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
-#include <errno.h>
-#include <string.h>
+#include <cerrno>
+#include <cstring>
 #include <libgen.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -132,8 +132,12 @@ int main( int argc, char* argv[] )
       usage( argv[0] );
     }
 
+#ifdef QT_5
   // install message handler
+  qInstallMessageHandler(0);
+#else
   qInstallMsgHandler(0);
+#endif
 
   // install signal handler for catching termination requests
   initSignalHandler();

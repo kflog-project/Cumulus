@@ -1,16 +1,25 @@
-cumulus (2.20.1) stable; urgency=low
+cumulus (5.0.1) stable; urgency=low
 
-  * Bugfix: Application has crashed, if the disclaimer was rejected by the user.
-
-  * Number input handling completely changed to an own solution with a number
-    keypad widget. That makes the number input handling easier especially under
-    Android where the virtual keyboard made often problems.
+  * Task support enhanced by start and finish line. Single turnpoints of a task
+    can be configured individually now.
     
- -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 16 Jan 2013 20:15:14 +0100
+  * Added a Qt version tag to the compiled data streams of Welt2000 and openair
+    parser to avoid crashes, if you go back from Qt5 to Qt4.
+    
+  * Bugfix: ReachpointListView up down buttons did not work.
+  
+  * Auto zoom added, if the near of a turnpoint is reached. This feature can be
+    switched on/off via a configuration option.
+    
+  * Settings menu modified from a tab menu to a list menu.
+  
+  * Preflight menu modified from a tab menu to a list menu.
+      
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Sun, 31 Mar 2013 20:29:59 +0200
 
 cumulus (2.19.2) stable; urgency=low
 
-  * Bugfix: Cumulus has crashed, if a new waypoint was added and saved
+  * Bugfix: Cumulus is crashed, if a new waypoint was added and saved
     due to modifications in the waypoint handling.
   
  -- Axel Pauli <kflog.cumulus@googlemail.com>  Tue, 13 Dec 2012 18:00:00 +0100
