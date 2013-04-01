@@ -3,7 +3,7 @@
                              -------------------
     begin                : 11.01.2012
 
-    copyright            : (C) 2012 by Axel Pauli
+    copyright            : (C) 2012-2013 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -65,9 +65,9 @@ int Play::startPlaying( const int skip, const int pause )
 
       line += "\r\n";
 
-      int size = write( m_fifo, line.toAscii().data(), line.length() );
+      int size = write( m_fifo, line.toLatin1().data(), line.length() );
 
-      std::cout << line.toAscii().data();
+      std::cout << line.toLatin1().data();
 
       if( line.startsWith("$GPRMC") )
         {

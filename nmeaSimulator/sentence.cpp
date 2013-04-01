@@ -2,7 +2,7 @@
                           sentence.cpp - description
                              -------------------
     begin                : 17.08.2010
-    copyright            : (C) 2010-2012 by Axel Pauli
+    copyright            : (C) 2010-2013 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -56,9 +56,9 @@ int Sentence::send( QString& sentence, int fd )
   QString sum = QString("%1").arg(calcCheckSum( pos, string ), 2, 16,  QChar('0')).toUpper();
   string = QString("%1%2\r\n").arg(string).arg(sum);
 
-  int sent = write( fd, string.toAscii().data(), string.length() );
+  int sent = write( fd, string.toLatin1().data(), string.length() );
 
-  cout << string.toAscii().data();
+  cout << string.toLatin1().data();
   return sent;
 }
 
@@ -68,7 +68,7 @@ uint Sentence::calcCheckSum (int pos, const QString& sentence)
 
   for( int i = 1; i < pos; i++ )
     {
-      sum ^= uint( sentence[i].toAscii() );
+      sum ^= uint( sentence[i].toLatin1() );
     }
 
   return sum;

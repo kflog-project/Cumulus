@@ -2,7 +2,7 @@
                           gpgsa.cpp  -  description
                              -------------------
     begin                : 24.10.2009
-    copyright            : (C) 2009 by Axel Pauli
+    copyright            : (C) 2009-2013 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -76,9 +76,9 @@ int GPGSA::send( QStringList& satIds, QString& pdop, QString& hdop, QString &vdo
   scheck.sprintf ("%02X\n", sum);
   sentence += scheck;
 
-  int sent = write( fd, sentence.toAscii().data(), sentence.length() );
+  int sent = write( fd, sentence.toLatin1().data(), sentence.length() );
 
-  cout << sentence.toAscii().data();
+  cout << sentence.toLatin1().data();
   return sent;
 }
 
@@ -88,7 +88,7 @@ uint GPGSA::calcCheckSum (int pos, const QString& sentence)
 
   for (int i = 1; i < pos; i++)
     {
-      sum ^= uint(sentence[i].toAscii());
+      sum ^= uint(sentence[i].toLatin1());
     }
 
   return sum;

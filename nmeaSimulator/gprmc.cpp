@@ -2,7 +2,7 @@
                           gprmc.cpp  -  description
                              -------------------
     begin                : 23.12.2003
-    copyright            : (C) 2003 by Eckhard Völlm, by 2009 Axel Pauli
+    copyright            : (C) 2003 by Eckhard Völlm, by 2009-2013 Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -76,7 +76,7 @@ uint GPRMC::calcCheckSum (int pos, const QString& sentence)
 
   for( int i = 1; i < pos; i++ )
     {
-      sum ^= uint( sentence[i].toAscii() );
+      sum ^= uint( sentence[i].toLatin1() );
     }
 
   return sum;
@@ -116,9 +116,9 @@ int GPRMC::send( double lat, double lon, float speed, float course, int fd )
   scheck.sprintf( "%02X\n", sum );
   sentence += scheck;
 
-  int sent = write( fd, sentence.toAscii().data(), (int) sentence.length() );
+  int sent = write( fd, sentence.toLatin1().data(), (int) sentence.length() );
 
-  cout << sentence.toAscii().data();
+  cout << sentence.toLatin1().data();
   return sent;
 }
 
