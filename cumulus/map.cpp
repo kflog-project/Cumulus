@@ -1314,7 +1314,7 @@ void Map::p_drawBaseLayer()
   baseMapP.end();
 
   // draw the city labels if scale is not to high
-  if( cs <= 100.0 )
+  if( cs <= 60.0 )
     {
       p_drawCityLabels( m_pixBaseMap );
     }
