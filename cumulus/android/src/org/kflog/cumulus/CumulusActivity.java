@@ -569,6 +569,7 @@ public class CumulusActivity extends QtActivity
       
       if( isFinishing() == false )
         {
+    	  // Terminate the App, if the OS has called the onDestroy method
     	  Log.d(TAG, "onDestroy: isFinishing() is false, calling exit!" );  	  
     	  System.exit(0);
         }
