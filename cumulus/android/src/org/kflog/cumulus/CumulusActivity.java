@@ -567,15 +567,15 @@ public class CumulusActivity extends QtActivity
           m_btService.stop();
         }
       
+      // call super class
+      super.onDestroy();
+
       if( isFinishing() == false )
         {
     	  // Terminate the App, if the OS has called the onDestroy method
     	  Log.d(TAG, "onDestroy: isFinishing() is false, calling exit!" );  	  
     	  System.exit(0);
         }
-      
-      // call super class
-      super.onDestroy();
     }
 
 	@Override
