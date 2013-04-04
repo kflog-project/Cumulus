@@ -15,6 +15,21 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-04-04 AP: Bugfix: Defined the Cumulus application in the android manifest
+                   as persistent. That prevents the destroy of the activity, if
+                   the screen is switched off with the power button. The result
+                   before after switch screen on was always a black screen.
+
+[o] 2013-04-04 AP: Maximum scale to 1:60 reduced where city labels are drawn.
+                   Too much overlapping of labels in the region of Berlin.
+                   the former maximum scale was 1:100.
+
+[-] 2013-04-04 AP: Bugfix: Predictive text recognition disabled in QLineEdit
+                   class objects to prevent senseless input under Android.
+
+[-] 2013-04-01 AP: Bugfix: Dynamic font calculation for Android made trouble
+                   on Nexus 7 because no maximum font size limits were defined.
+
 [*] 2013-03-31 AP: Cumulus 5.0.1 released.
 
 [o] 2013-03-29 AP: Online help pages updated
