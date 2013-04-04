@@ -43,9 +43,13 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   topLayout->setMargin(5);
   int row=0;
 
+  Qt::InputMethodHints imh;
+
   QLabel *lblIcao = new QLabel(tr("ICAO:"),  this);
   topLayout->addWidget(lblIcao, row, 0);
   edtICAO = new QLineEdit(this);
+  imh = (edtICAO->inputMethodHints() | Qt::ImhNoPredictiveText);
+  edtICAO->setInputMethodHints(imh);
   edtICAO->setMaxLength(4); // limit name to 4 characters
   topLayout->addWidget(edtICAO, row++, 1);
 

@@ -107,6 +107,7 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
 
   itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
   edtGReg = new QLineEdit(this);
+  imh = (edtGReg->inputMethodHints() | Qt::ImhNoPredictiveText);
   edtGReg->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGReg, row, 1);
 

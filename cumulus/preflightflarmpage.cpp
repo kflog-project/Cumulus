@@ -158,15 +158,21 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   //----------------------------------------------------------------------------
 
+  Qt::InputMethodHints imh;
+
   gridLayout = new QGridLayout;
   int row = 0;
 
   gridLayout->addWidget( new QLabel(tr("Pilot:")), row, 0);
   pilot = new QLineEdit;
+  imh = (pilot->inputMethodHints() | Qt::ImhNoPredictiveText);
+  pilot->setInputMethodHints(imh);
+
   gridLayout->addWidget( pilot, row, 1 );
 
   gridLayout->addWidget( new QLabel(tr("Co-Pilot:")), row, 2);
   copil = new QLineEdit;
+  copil->setInputMethodHints(imh);
   gridLayout->addWidget( copil, row, 3 );
   row++;
 
@@ -174,10 +180,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   gridLayout->addWidget( new QLabel(tr("Glider Id:")), row, 0);
   gliderId = new QLineEdit;
+  gliderId->setInputMethodHints(imh);
   gridLayout->addWidget( gliderId, row, 1 );
 
   gridLayout->addWidget( new QLabel(tr("Glider Type:")), row, 2);
   gliderType = new QLineEdit;
+  gliderType->setInputMethodHints(imh);
   gridLayout->addWidget( gliderType, row, 3 );
   row++;
 
@@ -185,10 +193,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   gridLayout->addWidget( new QLabel(tr("Comp Id:")), row, 0 );
   compId = new QLineEdit;
+  compId->setInputMethodHints(imh);
   gridLayout->addWidget( compId, row, 1 );
 
   gridLayout->addWidget( new QLabel(tr("Comp Class:")), row, 2);
   compClass = new QLineEdit;
+  compClass->setInputMethodHints(imh);
   gridLayout->addWidget( compClass, row, 3 );
   row++;
 
@@ -196,6 +206,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   gridLayout->addWidget( new QLabel(tr("Task:")), row, 0);
   task = new QLineEdit;
+  task->setInputMethodHints(imh);
   task->setReadOnly( true );
   gridLayout->addWidget( task, row, 1 );
 

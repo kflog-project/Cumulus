@@ -55,9 +55,13 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   GeneralConfig *conf = GeneralConfig::instance();
 
+  Qt::InputMethodHints imh;
+
   QLabel * lblName = new QLabel(tr("Name(8):"), this);
   topLayout->addWidget(lblName, row, 0);
   m_edtName = new QLineEdit(this);
+  imh = (m_edtName->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_edtName->setInputMethodHints(imh);
   m_edtName->setMaxLength(8); // limit name to 8 characters
 #ifndef ANDROID
   m_edtName->setMinimumWidth( 27*charWidth );
@@ -81,6 +85,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
   m_edtDescription = new QLineEdit(this);
+  imh = (m_edtDescription->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_edtDescription->setInputMethodHints(imh);
   m_edtDescription->setMaxLength(25); // limit name to 25 characters
 #ifndef ANDROID
   m_edtDescription->setMinimumWidth( 27*charWidth );
@@ -94,6 +100,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblCountry = new QLabel(tr("Country(2):"), this);
   topLayout->addWidget(lblCountry, row, 0);
   m_edtCountry = new QLineEdit(this);
+  imh = (m_edtCountry->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_edtCountry->setInputMethodHints(imh);
   m_edtCountry->setMaxLength(2); // limit name to 2 characters
   m_edtCountry->setMinimumWidth( 3*charWidth );
   m_edtCountry->setMaximumWidth( 3*charWidth );
