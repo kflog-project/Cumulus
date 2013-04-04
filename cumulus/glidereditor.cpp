@@ -96,13 +96,18 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
       row++;
     }
 
+  Qt::InputMethodHints imh;
+
   itemsLayout->addWidget(new QLabel(tr("Glider Type:"), this), row, 0);
   edtGType = new QLineEdit(this);
+  imh = (edtGType->inputMethodHints() | Qt::ImhNoPredictiveText);
+  edtGType->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGType, row, 1, 1, 3);
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
   edtGReg = new QLineEdit(this);
+  edtGReg->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGReg, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
@@ -114,6 +119,7 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
 
   itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 0);
   edtGCall = new QLineEdit(this);
+  edtGCall->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGCall, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);
