@@ -299,6 +299,12 @@ signals:
    */
   void userZoom();
 
+  /**
+   * Is emitted, to switch on/off the map display boxes, if the user moves
+   * in left/right direction on the map.
+   */
+  void showInfoBoxes( bool show );
+
 protected:
   /**
    * Redefinition of paintEvent.

@@ -286,6 +286,9 @@ class MapView : public QWidget
     /** Opens the GPS status dialog */
     void slot_gpsStatusDialog();
 
+    /** Show/hide the map info boxes. */
+    void slot_showInfoBoxes( bool show );
+
 #ifdef FLARM
 
     /** This slot is called if the number of received Flarms has been changed.*/

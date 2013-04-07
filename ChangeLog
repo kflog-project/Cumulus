@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-04-07 AP: Map info boxes can be switched on/off by moving left/right
+                   on the map with the mouse/fingers, if a GPS Fix is available.
+                   Otherwise the map is moved.
+
+[o] 2013-04-07 AP: Glider Pegase added to gilder polar file.
+
 [-] 2013-04-04 AP: Bugfix: Defined the Cumulus application in the android manifest
                    as persistent. That prevents the destroy of the activity, if
                    the screen is switched off with the power button. The result

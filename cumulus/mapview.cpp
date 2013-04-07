@@ -1400,6 +1400,11 @@ void MapView::slot_gliderFlightDialog()
   MainWindow::setRootWindow( false );
 }
 
+void MapView::slot_showInfoBoxes( bool show )
+{
+  _sidebarWidget->setVisible( show );
+}
+
 /**
  * @writes a message into the status bar for the given time. Default
  * is 5s. If time is zero, the message will never disappear.

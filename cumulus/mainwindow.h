@@ -461,6 +461,7 @@ private:
   QAction* actionZoomOutZ;
 
   QAction* actionToggleStatusbar;
+  QAction* actionToggleMapSidebar;
   QAction* actionToggleWindowSize;
   QAction* actionToggleAfLabels;
   QAction* actionToggleOlLabels;
@@ -480,7 +481,7 @@ private:
   QAction* actionHelpAboutQt;
   QAction* actionStartFlightTask;
 
-  /* shortcut to toggle the lft map sidebar. */
+  /* shortcut to toggle the left map sidebar. */
   QShortcut* scToggleMapSidebar;
 
   /* shortcut for exit application */

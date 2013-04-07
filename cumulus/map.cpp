@@ -550,8 +550,7 @@ void Map::mouseMoveEvent( QMouseEvent* event )
 {
   // qDebug() << "Map::mouseMoveEvent(): Pos=" << event->pos();
 
-  if( _mouseMoveIsActive == false &&
-     ( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix || calculator->isManualInFlight() ) )
+  if( _mouseMoveIsActive == false )
     {
       QPoint dist = _beginMapMove - event->pos();
 
@@ -570,37 +569,62 @@ void Map::mouseMoveEvent( QMouseEvent* event )
 
 void Map::mouseReleaseEvent( QMouseEvent* event )
 {
-  // qDebug() << "Map::mouseReleaseEvent(): Pos=" << event->pos();
-
   m_showASSTimer->stop();
 
   if( m_ignoreMouseRelease )
     {
       m_ignoreMouseRelease = false;
+      event->accept();
       return;
     }
 
   if( _mouseMoveIsActive )
     {
-      // User has released the mouse button after a mouse move. We move
-      // the map to the new position if we are in manual mode or the GPS
-      // is not connected
+      // User has released the mouse button after a mouse move.
       _mouseMoveIsActive = false;
 
       QApplication::restoreOverrideCursor();
       QPoint dist = _beginMapMove - event->pos();
-      QPoint center( width()/2, height()/2 );
 
-      center += dist;
+      if( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix )
+        {
+          qDebug() << "Map::mouseReleaseEvent: GPS-FIX dist=" << dist;
 
-      // Center Map to new center point
-      _globalMapMatrix->centerToPoint( center );
-      QPoint newPos = _globalMapMatrix->mapToWgs( center );
+          // We check, if the user has moved in east or west direction on the
+          // map. If that is true the visibility of the map display boxes can
+          // be changed.
+          if( abs(dist.y()) < abs(dist.x() * 4) && abs(dist.x()) >= 75 )
+            {
+              if( dist.x() < 0 )
+                {
+                  // move to right
+                  emit showInfoBoxes( true );
+                }
+              else
+                {
+                  // move to left
+                  emit showInfoBoxes( false );
+                }
+            }
+        }
+      else
+        {
+          // We move the map to the new position if we are in manual mode
+          // or the GPS is not connected
+          QPoint center( width()/2, height()/2 );
 
-      // Coordinates are toggled, don't know why
-      curMANPos = QPoint(newPos.y(), newPos.x());
-      emit newPosition( curMANPos );
-      scheduleRedraw();
+          center += dist;
+
+          // Center Map to new center point
+          _globalMapMatrix->centerToPoint( center );
+          QPoint newPos = _globalMapMatrix->mapToWgs( center );
+
+          // Coordinates are toggled, don't know why
+          curMANPos = QPoint(newPos.y(), newPos.x());
+          emit newPosition( curMANPos );
+          scheduleRedraw();
+        }
+
       event->accept();
       return;
     }

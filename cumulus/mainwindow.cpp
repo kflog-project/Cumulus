@@ -662,6 +662,8 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_changePosition( QPoint& ) ) );
   connect( Map::instance, SIGNAL( userZoom() ),
            calculator, SLOT( slot_userMapZoom() ) );
+  connect( Map::instance, SIGNAL( showInfoBoxes(bool) ),
+           viewMap, SLOT( slot_showInfoBoxes(bool) ) );
 
 #ifdef FLARM
   connect( Flarm::instance(), SIGNAL( flarmTrafficInfo( QString& ) ),
@@ -1153,6 +1155,7 @@ void MainWindow::createContextMenu()
   labelMenu->addAction( actionToggleWindowSize );
 #endif
 
+  labelMenu->addAction( actionToggleMapSidebar );
   labelMenu->addAction( actionToggleStatusbar );
 
   mapMenu = contextMenu->addMenu(tr("Map") + " ");
@@ -1427,7 +1430,7 @@ void MainWindow::createActions()
   connect( actionViewInfo, SIGNAL( triggered() ),
             this, SLOT( slotSwitchToInfoView() ) );
 
-  actionToggleStatusbar = new QAction( tr( "Statusbar "), this );
+  actionToggleStatusbar = new QAction( tr( "Statusbar"), this );
   actionToggleStatusbar->setCheckable(true);
   actionToggleStatusbar->setChecked(true);
   addAction( actionToggleStatusbar );
@@ -1619,10 +1622,17 @@ void MainWindow::createActions()
   connect( actionHelpAboutQt, SIGNAL(triggered()), qApp, SLOT(aboutQt()) );
 #endif
 
+  actionToggleMapSidebar = new QAction( tr( "Map Info Boxes"), this );
+  actionToggleMapSidebar->setCheckable(true);
+  actionToggleMapSidebar->setChecked(true);
+  addAction( actionToggleMapSidebar );
+  connect( actionToggleMapSidebar, SIGNAL( toggled( bool ) ),
+           viewMap, SLOT( slot_showInfoBoxes(bool) ) );
+
   scToggleMapSidebar = new QShortcut( this );
   scToggleMapSidebar->setKey(Qt::Key_D);
   connect( scToggleMapSidebar, SIGNAL( activated() ),
-            this, SLOT( slotToggleMapSidebar() ) );
+           actionToggleMapSidebar, SLOT( toggle() ) );
 
   // Cumulus can be closed by using Escape key. This key is also as
   // hardware key available under Maemo.
