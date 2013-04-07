@@ -152,7 +152,7 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   m_dneW1->setDecimalVisible( true );
   m_dneW1->setPmVisible( true );
   m_dneW1->setMaxLength(7);
-  m_dneW1->setDecimals( 1 );
+  m_dneW1->setDecimals( 2 );
   m_dneW1->setSuffix( " " + Speed::getVerticalUnitText() );
 
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "-[0-9]+\\.?[0-9]*" ), this );
@@ -188,7 +188,7 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   m_dneW2->setDecimalVisible( true );
   m_dneW2->setPmVisible( true );
   m_dneW2->setMaxLength(7);
-  m_dneW2->setDecimals( 1 );
+  m_dneW2->setDecimals( 2 );
   m_dneW2->setSuffix( " " + Speed::getVerticalUnitText() );
 
   eValidator = new QRegExpValidator( QRegExp( "-[0-9]+\\.?[0-9]*" ), this );
@@ -224,7 +224,7 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   m_dneW3->setDecimalVisible( true );
   m_dneW3->setPmVisible( true );
   m_dneW3->setMaxLength(7);
-  m_dneW3->setDecimals( 1 );
+  m_dneW3->setDecimals( 2 );
   m_dneW3->setSuffix( " " + Speed::getVerticalUnitText() );
 
   eValidator = new QRegExpValidator( QRegExp( "-[0-9]+\\.?[0-9]*" ), this );

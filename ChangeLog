@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-04-07 AP: Bugfix: Sink speed in glider editor contained only one decimal.
+                   Changed it back to two.
+
 [+] 2013-04-07 AP: Map info boxes can be switched on/off by moving left/right
                    on the map with the mouse/fingers, if a GPS Fix is available.
                    Otherwise the map is moved.
