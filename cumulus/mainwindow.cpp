@@ -1844,8 +1844,7 @@ void MainWindow::slotShowContextMenu()
 
 void MainWindow::slotToggleMapSidebar()
 {
-  QWidget* w = viewMap->getSidebarWidget();
-  w->setVisible( ! w->isVisible() );
+  actionToggleMapSidebar->toggle();
 }
 
 void MainWindow::slotToggleAfLabels( bool toggle )
