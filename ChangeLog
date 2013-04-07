@@ -31,7 +31,7 @@ Cumulus changelog
 
 [o] 2013-04-04 AP: Maximum scale to 1:60 reduced where city labels are drawn.
                    Too much overlapping of labels in the region of Berlin.
-                   the former maximum scale was 1:100.
+                   The former maximum scale was 1:100.
 
 [-] 2013-04-04 AP: Bugfix: Predictive text recognition disabled in QLineEdit
                    class objects to prevent senseless input under Android.

@@ -1,3 +1,19 @@
+cumulus (5.1.0) stable; urgency=low
+
+  * Bugfix: Sink speed in glider editor contained only one decimal. Changed it
+    back to two.
+
+  * Map info boxes can be switched on/off by moving left/right on the map with
+    the mouse/fingers, if a GPS Fix is available. Otherwise the map is moved.
+
+  * Glider Pegase added to gilder polar file.
+
+  * Maximum scale to 1:60 reduced where city labels are drawn. Too much
+    overlapping of labels in the region of Berlin. The former maximum scale
+    was 1:100.
+    
+ -- Axel Pauli <kflog.cumulus@googlemail.com>  Sun, 07 Apr 2013 20:50:54 +0200
+
 cumulus (5.0.1) stable; urgency=low
 
   * Task support enhanced by start and finish line. Single turnpoints of a task
