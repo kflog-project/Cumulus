@@ -663,7 +663,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( Map::instance, SIGNAL( userZoom() ),
            calculator, SLOT( slot_userMapZoom() ) );
   connect( Map::instance, SIGNAL( showInfoBoxes(bool) ),
-           viewMap, SLOT( slot_showInfoBoxes(bool) ) );
+           actionToggleMapSidebar, SLOT( setChecked(bool) ) );
 
 #ifdef FLARM
   connect( Flarm::instance(), SIGNAL( flarmTrafficInfo( QString& ) ),
@@ -1077,6 +1077,7 @@ void MainWindow::createMenuBar()
   labelMenu->addAction( actionToggleWindowSize );
 #endif
 
+  labelMenu->addAction( actionToggleMapSidebar );
   labelMenu->addAction( actionToggleStatusbar );
 
   mapMenu = menuBar()->addMenu(tr("Map"));
