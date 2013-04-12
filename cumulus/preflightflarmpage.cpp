@@ -141,25 +141,31 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   //----------------------------------------------------------------------------
 
   QHBoxLayout* lineLayout = new QHBoxLayout;
+  lineLayout->setSpacing( 10 );
 
-  lineLayout->addWidget( new QLabel(tr("Log Interval:")));
-  logInt = new QSpinBox(this);
+  lineLayout->addWidget( new QLabel(tr("LogInt:")));
+  logInt = new QSpinBox;
   logInt->setRange(0, 8);
   logInt->setSingleStep(1);
-  logInt->setSuffix(" s");
+  logInt->setSuffix("s");
   logInt->setSpecialValueText("?");
   logInt->setValue(0);
   VarSpinBox* vli = new VarSpinBox(logInt);
   lineLayout->addWidget( vli );
+
+  lineLayout->addWidget( new QLabel(tr("Priv:")));
+  priv = new QPushButton("?");
+  lineLayout->addWidget( priv );
+
+  connect( priv, SIGNAL(pressed()), SLOT(slotChangePrivMode()) );
+
   lineLayout->addStretch( 10 );
 
   allLayout->addLayout(lineLayout );
   allLayout->addSpacing( 10 );
 
   //----------------------------------------------------------------------------
-
   Qt::InputMethodHints imh;
-
   gridLayout = new QGridLayout;
   int row = 0;
 
@@ -354,6 +360,7 @@ void PreFlightFlarmPage::slotClearIgcData()
 void PreFlightFlarmPage::clearUserInputFields()
 {
   logInt->setValue( 0 );
+  priv->setText( "?" );
   pilot->clear();
   copil->clear();
   gliderId->clear();
@@ -390,6 +397,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
             << "$PFLAC,R,IGCSER"
             << "$PFLAC,R,SER"
             << "$PFLAC,R,LOGINT"
+            << "$PFLAC,R,PRIV"
             << "$PFLAC,R,PILOT"
             << "$PFLAC,R,COPIL"
             << "$PFLAC,R,GLIDERID"
@@ -514,6 +522,13 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
+  if( info[2] == "PRIV" )
+    {
+      priv->setText( info[3] );
+      nextFlarmCommand();
+      return;
+    }
+
   if( info[2] == "PILOT" )
     {
       pilot->setText( info[3] );
@@ -613,6 +628,11 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   if( logInt->value() > 0 )
     {
       m_cmdList << ("$PFLAC,S,LOGINT," + QString::number(logInt->value()));
+    }
+
+  if( priv->text() != "?" )
+    {
+      m_cmdList << "$PFLAC,S,PRIV," + priv->text();
     }
 
   m_cmdList << "$PFLAC,S,PILOT," + pilot->text().trimmed()
@@ -747,6 +767,25 @@ void PreFlightFlarmPage::slotClose()
   QApplication::restoreOverrideCursor();
   m_timer->stop();
   close();
+}
+
+void PreFlightFlarmPage::slotChangePrivMode()
+{
+  if( priv->text() == "?" )
+    {
+      // Private mode was not set to a real value, ignore call.
+      return;
+    }
+
+  // Toggle buuton text
+  if( priv->text() == "0" )
+    {
+      priv->setText( "1" );
+    }
+  else
+    {
+      priv->setText( "0" );
+    }
 }
 
 void PreFlightFlarmPage::enableButtons( const bool toggle )

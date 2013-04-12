@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 by Axel Pauli
+**   Copyright (c):  2012-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,7 +24,7 @@
  *
  * A widget for pre-flight Flarm IGC settings.
  *
- * \date 2012
+ * \date 2012-2013
  *
  * \version $Id$
  */
@@ -89,6 +89,9 @@ class PreFlightFlarmPage : public QWidget
   /** Called if the widget is closed. */
   void slotClose();
 
+  /** Called if the priv buttopn is pressed. */
+  void slotChangePrivMode();
+
  private:
 
   /** Loads the available Flarm data into the label displays. */
@@ -106,22 +109,23 @@ class PreFlightFlarmPage : public QWidget
   /** Send next command to Flarm from the command list. */
   void nextFlarmCommand();
 
-  QLabel*    hwVersion;
-  QLabel*    swVersion;
-  QLabel*    obstVersion;
-  QLabel*    igcVersion;
-  QLabel*    serial;
-  QLabel*    radioId;
-  QLabel*    errSeverity;
-  QLabel*    errCode;
-  QSpinBox*  logInt;
-  QLineEdit* pilot;
-  QLineEdit* copil;
-  QLineEdit* gliderId;
-  QLineEdit* gliderType;
-  QLineEdit* compId;
-  QLineEdit* compClass;
-  QLineEdit* task;
+  QLabel*      hwVersion;
+  QLabel*      swVersion;
+  QLabel*      obstVersion;
+  QLabel*      igcVersion;
+  QLabel*      serial;
+  QLabel*      radioId;
+  QLabel*      errSeverity;
+  QLabel*      errCode;
+  QSpinBox*    logInt;
+  QPushButton* priv;
+  QLineEdit*   pilot;
+  QLineEdit*   copil;
+  QLineEdit*   gliderId;
+  QLineEdit*   gliderType;
+  QLineEdit*   compId;
+  QLineEdit*   compClass;
+  QLineEdit*   task;
 
   QPushButton* readButton;
   QPushButton* writeButton;

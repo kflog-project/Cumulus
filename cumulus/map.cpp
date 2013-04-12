@@ -60,8 +60,14 @@ extern MapView     *_globalMapView;
 
 Map *Map::instance = static_cast<Map *>(0);
 
+#ifdef MAEMO
+#define TRAIL_LENGTH 7*60
+#else
+#define TRAIL_LENGTH 10*60
+#endif
+
 Map::Map(QWidget* parent) : QWidget(parent),
-  TrailListLength( 420 )
+  TrailListLength( TRAIL_LENGTH )
 {
 //  qDebug( "Map::Map parent window size is %dx%d, width=%d, height=%d",
 //          size().width(),
@@ -1043,7 +1049,6 @@ void Map::p_drawTrail()
         }
     }
 
-  // we do take the task course line width
   qreal penWidth = GeneralConfig::instance()->getMapTrailLineWidth();
   QColor color = GeneralConfig::instance()->getMapTrailColor();
 
@@ -1052,7 +1057,6 @@ void Map::p_drawTrail()
       // draw the trail
       QPainter p;
       p.begin( &m_pixInformationMap );
-
       QPen pen( color, penWidth );
       p.setPen(pen);
       p.drawPath(m_tpp);
