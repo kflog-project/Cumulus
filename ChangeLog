@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-04-11 AP: Preflight Flarm page, stealth mode button added to show and
+                   to change that mode. 
+
 [*] 2013-04-07 AP: Cumulus 5.1.0 released.
 
 [-] 2013-04-07 AP: Bugfix: Sink speed in glider editor contained only one decimal.
