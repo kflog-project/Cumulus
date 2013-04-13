@@ -594,12 +594,10 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
 
       if( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix )
         {
-          qDebug() << "Map::mouseReleaseEvent: GPS-FIX dist=" << dist;
-
           // We check, if the user has moved in east or west direction on the
           // map. If that is true the visibility of the map display boxes can
           // be changed.
-          if( abs(dist.y()) < abs(dist.x() * 4) && abs(dist.x()) >= 75 )
+          if( abs(dist.y()) < abs(dist.x() / 4) && abs(dist.x()) >= 75 )
             {
               if( dist.x() < 0 )
                 {
