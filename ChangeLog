@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-04-16 AP: A Debian source package can be build now for the X11 desktop
+                   version of Cumulus.
+
 [o] 2013-04-11 AP: Preflight Flarm page, stealth mode button added to show and
                    to change that mode. 
 
