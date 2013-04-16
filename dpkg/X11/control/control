@@ -2,8 +2,8 @@
 Source: cumulus
 Section: other
 Priority: optional
-Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
-Build-Depends: debhelper (>= 8.0.0)
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), g++ (>= 4:4.7), libbluetooth-dev (>= 4.99), libqt4-dev (>= 4:4.7.0), libqt4-dev-bin (>= 4:4.7.0), qt4-qmake (>= 4:4.7.0), qt4-linguist-tools (>= 4:4.7.0) 
 Standards-Version: 3.9.2
 Homepage: http://www.kflog.org/cumulus/
 #Vcs-Git: git://git.debian.org/collab-maint/cumulus-2.12.2.git
