@@ -74,6 +74,19 @@
 				selection will mean that you will have to restart Cumulus!</td>
 		</tr>
 
+    <tr>
+      <th>/dev/ttyS0</th>
+      <td>for a serial GPS device like Flarm, using an RS232 interface.
+          <b>Note!</b> On a Linux desktop, e.g. Ubuntu, it is required, that
+          the Cumulus user must be a member of the Linux group <i>dialout</i>.
+          Otherwise the device ttyS0 cannot be opened. Execute the following
+          command to enable that:
+          <p>
+          <i>sudo gpasswd --add &lt;cumulus_user&gt; dialout</i>
+          </p>
+       </td>
+    </tr>
+
 		<tr>
 			<th>/dev/ttyUSB0</th>
 			<td>for a USB GPS device or, e.g., a USB-serial adaptor</td>

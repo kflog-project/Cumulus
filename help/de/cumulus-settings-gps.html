@@ -56,7 +56,7 @@
 	hergestellt werden soll:
 	<p>
 	<ul>
-		<li>Serialle Schittstelle (RS232) z.B. /dev/ttyS0.
+		<li>Serielle Schittstelle (RS232) z.B. /dev/ttyS0 f&uuml;r ein Flarm Ger&auml;t.
 		<li>Bluetooth Schittstelle z.B. /dev/rfcomm0
 		<li>USB Schittstelle z.B. /dev/ttyUSB0
 		<li>BT Adapter
@@ -65,10 +65,23 @@
 	</ul>
 	</p>
 
-	<p>Serielle and Bluetooth Schittstellen ben&ouml;tigen eine
-		Geschwindigkeitsangabe zur &Uuml;bertragung. Die NMEA Standard
-		&Uuml;bertragungsgeschwindigkeit betragt 4800 bps. Bei Bluetooth kann
-		sie auch h&ouml;her liegen.</p>
+	<p>Serielle Schittstellen und Seriell-USB Adapter ben&ouml;tigen eine
+		Geschwindigkeitsangabe f&uuml;r die &Uuml;bertragung. Die NMEA Standard
+		&Uuml;bertragungsgeschwindigkeit betragt 4800 bps kann bei Erfordernis
+		aber auch h&ouml;her gew&auml;lht werden.</p>
+
+	<p>
+		<b>Achtung!</b> Bei Auswahl einer seriellen Schnittstelle wie <i>ttyS0</i>
+		ist es unter Umst&auml;den auf einem Linux Sytem, wie Ubuntu, noch
+		erforderlich, den Cumulus Benutzer die Linux Gruppe <i>dialout</i>
+		zuzuweisen, damit er auf das serielle Ger&auml;t auch zugreifen darf.
+		Das kann man mit folgenden Kommando tun:
+	</p>
+
+	<p>
+  <i>sudo gpasswd --add &lt;cumulus_user&gt; dialout</i>
+  </p>
+	  
 	<p>
 		Wenn Sie ein Nokia Internet Tablet N800/N810/N900 verwenden, dann
 		sollte der Eintrag <i>GPS Location</i> Ihre erste Wahl sein,
@@ -92,6 +105,7 @@
 		angebotenen NMEA Datens&auml;tze von diesem Ger&auml;t ungefiltert zu
 		erhalten. Das selbe gilt f&uuml;r RS232 und USB Schnittstellen.
 	</p>
+	
 	<p>Ist Ihre Schittstelle nicht in der Liste zu finden, so
 		&auml;ndern Sie einfach einen bestehenden Eintrag, entspreched Ihren
 		W&uuml;nschen, ab.</p>
