@@ -28,6 +28,12 @@ CUMULUS_REL=cumulus-$(VERSION)
 CUMULUS_DEB_ROOT=dpkg/X11
 CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
+# Debian source package options
+SRC_PACK=-sa -S
+
+# Debian binary package options
+BIN_PACK=-b
+
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
 
@@ -37,11 +43,11 @@ ifeq "$(shell dh_make -v | grep -c 'version 0\.58')" "1"
 endif
 
 # date in debian package format
-DATE=`date +'%a, %d %b %Y %H:%M:%S %z'`
+DATE=$(shell date -R)
 
 # Reset language environment because the date can be formatted according
 # to local rules. That does not like dpkg-buildpackage.
-LANG=
+LANG=C
 
 .PHONY : usage
 
@@ -57,7 +63,8 @@ usage:
 	@echo "  install      - Installs Cumulus under $(INSTALL_ROOT)"
 	@echo "  deinstall    - Deinstalls Cumulus under $(INSTALL_ROOT)"
 	@echo "  release      - Cleans the build area before build"
-	@echo "  dpkg         - Builds a Debian package file under the directory dpkg"
+	@echo "  dpkg         - Builds a Debian binary package under the directory dpkg"
+	@echo "  dpkg_src     - Builds a Debian source package under the directory dpkg"
 	
 all:	qmake
 	@echo "Using Qt version $(QTVERSION)"
@@ -146,11 +153,21 @@ nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 # call target dpkg to build a debian Cumulus package
 ####################################################
 
-.PHONY : dpkg dpkg_prepare dpkg_make dpkg_build
+.PHONY : dpkg dpkg_src dpkg_prepare dpkg_make dpkg_build
 
+# This target builds a Debian binary package
 dpkg:
-	@echo "===== Building a Debian package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.X11 VERSION=$(VERSION) dpkg_prepare dpkg_make dpkg_build
+	@echo "===== Building a Debian binary package for Cumulus $(VERSION) ====="
+	@$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
+		DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" \
+		dpkg_prepare dpkg_make dpkg_build
+
+# This target builds a Debian source package. 
+dpkg_src:
+	@echo "===== Building a Debian source package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
+		DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" \
+		dpkg_prepare dpkg_make dpkg_build
 
 # This target prepares the Debian build. A fresh copy of Cumulus is cheched out
 # from subversion. Therefore you need subversion access!
@@ -165,9 +182,9 @@ dpkg_prepare:
 dpkg_make:
 	@rm -rf $(CUMULUS_DEB)/debian
 	cd $(CUMULUS_DEB); \
-	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
-	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -s --native $(DH_MAKE_OPT)
+	echo '\n' | dh_make --packagename cumulus -c GPL $(DH_MAKE_OPT)
 	cd $(CUMULUS_DEB)/dpkg/X11/control; \
 	cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
@@ -176,7 +193,7 @@ dpkg_make:
 # This target builds the debian package, if all is prepared before.
 dpkg_build:
 	cd $(CUMULUS_DEB); \
-	dpkg-buildpackage -rfakeroot -b
+	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
 
 # Copies all files of KFLog into the debian package area. It is called by the
 # Debian rule file.
