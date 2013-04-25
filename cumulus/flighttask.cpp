@@ -304,7 +304,7 @@ double FlightTask::calculateSectorAngles( int loop )
       // directions to the next point
       if(tpList->count() >= loop + 1)
         {
-          bisectorAngle = getBearing(tpList->at(loop)->origP, tpList->at(loop+1)->origP);
+          bisectorAngle = getBearing(tpList->at(loop)->wgsPoint, tpList->at(loop+1)->wgsPoint);
         }
       break;
 
@@ -318,9 +318,9 @@ double FlightTask::calculateSectorAngles( int loop )
       if( loop >= 1 && tpList->count() >= loop + 1 )
         {
           // vector pointing to the outside of the two points
-          bisectorAngle = outsideVector(tpList->at(loop)->origP,
-                                        tpList->at(loop-1)->origP,
-                                        tpList->at(loop+1)->origP);
+          bisectorAngle = outsideVector(tpList->at(loop)->wgsPoint,
+                                        tpList->at(loop-1)->wgsPoint,
+                                        tpList->at(loop+1)->wgsPoint);
         }
       break;
 
@@ -333,7 +333,7 @@ double FlightTask::calculateSectorAngles( int loop )
       if(loop >= 1 && loop < tpList->count())
         {
           // direction to the previous point:
-          bisectorAngle = getBearing( tpList->at(loop)->origP, tpList->at(loop-1)->origP );
+          bisectorAngle = getBearing( tpList->at(loop)->wgsPoint, tpList->at(loop-1)->wgsPoint );
         }
       break;
 
@@ -360,7 +360,7 @@ double FlightTask::calculateSectorAngles( int loop )
         }
 
       // set the center point of the task line
-      tpList->at(loop)->getTaskLine().setLineCenter( tpList->at(loop)->origP );
+      tpList->at(loop)->getTaskLine().setLineCenter( tpList->at(loop)->wgsPoint );
 
       // calculate all line elements after a new setting
       tpList->at(loop)->getTaskLine().calculateElements();
@@ -447,12 +447,12 @@ void FlightTask::setTaskPointData()
       tpList->at(n)->groundSpeed = 0.0;
       tpList->at(n)->wtResult = false;
 
-      if( tpList->at(n-1)->origP != tpList->at(n)->origP )
+      if( tpList->at(n-1)->wgsPoint != tpList->at(n)->wgsPoint )
         {
           // Points are not identical, do calculate navigation parameters.
           // calculate bearing
-          tpList->at(n)->bearing = getBearing( tpList->at(n-1)->origP,
-                                               tpList->at(n)->origP );
+          tpList->at(n)->bearing = getBearing( tpList->at(n-1)->wgsPoint,
+                                               tpList->at(n)->wgsPoint );
 
           // calculate distance
           tpList->at(n)->distance = dist(tpList->at(n-1), tpList->at(n));
@@ -706,7 +706,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
         }
 
       // map projected point to map display
-      QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projP));
+      QPoint mPoint(glMapMatrix->map(tpList->at(loop)->projPoint));
 
       bool mPointIsContained = viewport.contains(mPoint);
 
@@ -723,8 +723,8 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
             {
               painter->setPen(QPen(courseLineColor, courseLineWidth));
               // Draws the course line
-              painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-                                 glMapMatrix->map(tpList->at(loop)->projP) );
+              painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projPoint),
+                                 glMapMatrix->map(tpList->at(loop)->projPoint) );
             }
         }
 
@@ -772,8 +772,8 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
         if( loop )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
-            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-                               glMapMatrix->map(tpList->at(loop)->projP) );
+            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projPoint),
+                               glMapMatrix->map(tpList->at(loop)->projPoint) );
           }
 
         break;
@@ -786,7 +786,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
                 // Task end point is selected
                 selectedTp->taskPointIndex == tpList->at( tpList->size() - 2 )->taskPointIndex &&
                 // Check, if task start and end point are identically
-                tpList->at(1)->origP == tpList->at( tpList->size() - 2 )->origP )
+                tpList->at(1)->wgsPoint == tpList->at( tpList->size() - 2 )->wgsPoint )
               {
                 // The selected TP is the end point and start and end point are
                 // identically. In this case the start task figure
@@ -829,11 +829,11 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 
         // Draw line from take off to begin, if both not identical
         if( loop &&
-            tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
+            tpList->at(loop - 1)->wgsPoint != tpList->at(loop)->wgsPoint )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
-            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-                               glMapMatrix->map(tpList->at(loop)->projP) );
+            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projPoint),
+                               glMapMatrix->map(tpList->at(loop)->projPoint) );
           }
 
         break;
@@ -842,7 +842,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 
         if( selectedTp != 0 && selectedTp->taskPointIndex != -1 &&
             // Check, if task start and end point are identically
-            tpList->at(1)->origP == tpList->at( tpList->size() - 2 )->origP &&
+            tpList->at(1)->wgsPoint == tpList->at( tpList->size() - 2 )->wgsPoint &&
             // Check if task start point or first route point is selected
             ( selectedTp->taskPointIndex == tpList->at(1)->taskPointIndex ||
               selectedTp->taskPointIndex == tpList->at(2)->taskPointIndex ) )
@@ -890,8 +890,8 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
           }
 
         painter->setPen(QPen(courseLineColor, courseLineWidth));
-        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-                           glMapMatrix->map(tpList->at(loop)->projP) );
+        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projPoint),
+                           glMapMatrix->map(tpList->at(loop)->projPoint) );
         break;
 
       default:
@@ -900,7 +900,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
        if( loop == 0 && mPointIsContained &&
            tpList->size() >= 2 &&
            // take off point != begin point
-           tpList->at(0)->origP != tpList->at(1)->origP &&
+           tpList->at(0)->wgsPoint != tpList->at(1)->wgsPoint &&
            // no taskpoint is selected
            ( selectedTp == 0 ||
            // a taskpoint selection is active
@@ -925,7 +925,7 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
         else if( loop == tpList->size()-1 && mPointIsContained &&
                  tpList->size() >= 2 &&
                  // landing point != end point
-                 tpList->at(loop)->origP != tpList->at(loop-1)->origP &&
+                 tpList->at(loop)->wgsPoint != tpList->at(loop-1)->wgsPoint &&
                  // no taskpoint is selected
                  ( selectedTp == 0 ||
                  // a taskpoint selection is active
@@ -950,11 +950,11 @@ void FlightTask::drawTask( QPainter* painter, QList<Waypoint*> &drawnTp )
 
         // Draw a line from the End to the Landing point, if both are not identical
         if( loop && tpList->size() >= 2 &&
-            tpList->at(loop - 1)->origP != tpList->at(loop)->origP )
+            tpList->at(loop - 1)->wgsPoint != tpList->at(loop)->wgsPoint )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
-            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projP),
-                               glMapMatrix->map(tpList->at(loop)->projP ) );
+            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->projPoint),
+                               glMapMatrix->map(tpList->at(loop)->projPoint ) );
           }
 
         break;
@@ -1180,12 +1180,12 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   // calculate bearing from current position to the next task point from
   // task in radian
   int bearing = int ( rint( getBearingWgs( calculator->getlastPosition(),
-                                           tpList->at( taskPointIndex )->origP ) ));
+                                           tpList->at( taskPointIndex )->wgsPoint ) ));
 
   // calculate distance from current position to the next task point from
   // task in km
   QPoint p1 = calculator->getlastPosition();
-  QPoint p2 = tpList->at( taskPointIndex )->origP;
+  QPoint p2 = tpList->at( taskPointIndex )->wgsPoint;
   double distance = dist( &p1, &p2 );
 
   bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
@@ -1211,7 +1211,7 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   for( int i=taskPointIndex; i+1 < wpCount; i++ )
     {
-      if( tpList->at(i)->origP == tpList->at(i+1)->origP )
+      if( tpList->at(i)->wgsPoint == tpList->at(i+1)->wgsPoint )
         {
           continue; // points are equal, we ignore them
         }
@@ -1397,7 +1397,7 @@ void FlightTask::updateProjection()
   for(int loop = 0; loop < tpList->count(); loop++)
     {
       // calculate projection data
-      tpList->at(loop)->projP = _globalMapMatrix->wgsToMap(tpList->at(loop)->origP);
+      tpList->at(loop)->projPoint = _globalMapMatrix->wgsToMap(tpList->at(loop)->wgsPoint);
     }
 }
 

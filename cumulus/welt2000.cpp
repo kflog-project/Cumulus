@@ -58,10 +58,16 @@ extern MapMatrix*    _globalMapMatrix;
 // set static member variable
 QMutex Welt2000::mutex;
 
-Welt2000::Welt2000()
+Welt2000::Welt2000() :
+  c_homeRadius(0),
+  h_magic(0),
+  h_fileType(0),
+  h_fileVersion(0),
+  h_homeRadius(0),
+  h_outlandings(false),
+  h_projection(static_cast<ProjectionBase *> (0)),
+  h_headerIsValid(false)
 {
-  h_projection = (ProjectionBase *) 0;
-
   // prepare base mappings of Cumulus
   c_baseTypeMap.insert( "IntAirport", BaseMapElement::IntAirport );
   c_baseTypeMap.insert( "Airport", BaseMapElement::Airport );
@@ -1227,10 +1233,11 @@ bool Welt2000::parse( QString& path,
 
       ushort rwDir = 0;
       ushort rwDir1 = 0;
+      ushort rwDir2 = 0;
 
       if( ! buf.isEmpty() )
         {
-          rwDir = buf.toUShort(&ok);
+          rwDir1 = buf.toUShort(&ok);
         }
 
       // extract second direction
@@ -1238,21 +1245,21 @@ bool Welt2000::parse( QString& path,
 
       if( ! buf.isEmpty() )
         {
-          rwDir1 = buf.toUShort(&ok1);
+          rwDir2 = buf.toUShort(&ok1);
         }
 
-      if( ! ok || ! ok1 || rwDir < 1 || rwDir > 36 || rwDir1 < 1 || rwDir1 > 36 )
+      if( ! ok || ! ok1 || rwDir1 < 1 || rwDir1 > 36 || rwDir2 < 1 || rwDir2 > 36 )
         {
 #ifndef MAEMO
           qWarning( "W2000, Line %d: %s (%s) missing or wrong runway direction, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
 #endif
-          rwDir = rwDir1 = 0;
+          rwDir = rwDir1 = rwDir2 = 0;
         }
 
       // Put both directions together in one variable, first direction in the
       // upper part.
-      rwDir = rwDir*256 + rwDir1;
+      rwDir = rwDir1*256 + rwDir2;
 
       // runway length in meters, must be multiplied by 10
       buf = line.mid(29,3).trimmed();
@@ -1325,11 +1332,44 @@ bool Welt2000::parse( QString& path,
           af++;
         }
 
-      // create an runway object
-      Runway rw( rwLen, rwDir, rwSurface, true );
+      /* Runway description from Welt2000.txt file
+       *
+       * A: 08/26 MEANS THAT THERE IS ONLY ONE RUNWAYS 08 AND (26=08 + 18)
+       * B: 17/07 MEANS THAT THERE ARE TWO RUNWAYS,
+       *          BUT 17 IS THE MAIN RWY SURFACE LENGTH
+       * C: IF BOTH DIRECTIONS ARE IDENTICAL (04/04),
+       *    THIS DIRECTION IS STRONGLY RECOMMENDED
+       */
+
+      // create the runway objects and store them in the list
+      QList<Runway> rwyList;
+      Runway rwy( rwLen, rwDir, rwSurface, true );
+
+      // Check, how many runways do we have
+      if( rwDir == 0 )
+        {
+          // Runway directions undefined
+          rwyList.append( rwy );
+        }
+      else if( rwDir1 == rwDir2 || abs(rwDir1-rwDir2) == 18 )
+        {
+          // WE have only one runway
+          rwyList.append( rwy );
+        }
+      else
+        {
+          // We have two runways
+          int inverseDir = rwDir1 > 18 ? rwDir1-18 : rwDir1 + 18;
+          rwy.heading = rwDir1*256 + inverseDir;
+          rwyList.append( rwy );
+
+          inverseDir = rwDir2 > 18 ? rwDir2-18 : rwDir2 + 18;
+          rwy.heading = rwDir2*256 + inverseDir;
+          rwyList.append( rwy );
+        }
 
       Airfield af( afName, icao.trimmed(), gpsName, afType,
-                   wgsPos, position, rw, elevation, fFrequency,
+                   wgsPos, position, rwyList, elevation, fFrequency,
                    country, commentLong );
 
       if( afType == BaseMapElement::Outlanding )
@@ -1618,7 +1658,7 @@ bool Welt2000::readCompiledFile( QString &path,
       in >> rwLen;
       in >> rwSurface;
       // create an runway object
-      Runway rw( rwLen ,rwDir, rwSurface, 1 );
+      Runway rwy( rwLen ,rwDir, rwSurface, 1 );
 
       // read comment
       ShortLoad(in, utf8_temp);
@@ -1640,8 +1680,36 @@ bool Welt2000::readCompiledFile( QString &path,
           continue;
         }
 
+      QList<Runway> rwyList;
+
+      int rwDir1 = rwDir/256;
+      int rwDir2 = rwDir%256;
+
+      // Check, how many runways do we have
+      if( rwDir == 0 )
+        {
+          // Runway directions undefined
+          rwyList.append( rwy );
+        }
+      else if( rwDir1 == rwDir2 || abs(rwDir1-rwDir2) == 18 )
+        {
+          // WE have only one runway
+          rwyList.append( rwy );
+        }
+      else
+        {
+          // We have two runways
+          int inverseDir = rwDir1 > 18 ? rwDir1-18 : rwDir1 + 18;
+          rwy.heading = rwDir1*256 + inverseDir;
+          rwyList.append( rwy );
+
+          inverseDir = rwDir2 > 18 ? rwDir2-18 : rwDir2 + 18;
+          rwy.heading = rwDir2*256 + inverseDir;
+          rwyList.append( rwy );
+        }
+
       Airfield af( afName, icao, gpsName, (BaseMapElement::objectType) afType,
-                   wgsPos, position, rw, elevation, frequency, country, comment );
+                   wgsPos, position, rwyList, elevation, frequency, country, comment );
 
       if( afType == BaseMapElement::Gliderfield )
         {

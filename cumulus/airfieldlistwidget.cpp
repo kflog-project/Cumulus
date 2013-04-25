@@ -120,20 +120,27 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
   Airfield* site = afItem->airfield;
 
   m_wp.name = site->getWPName();
-  m_wp.origP = site->getWGSPosition();
+  m_wp.wgsPoint = site->getWGSPosition();
   m_wp.elevation = site->getElevation();
-  m_wp.projP = site->getPosition();
+  m_wp.projPoint = site->getPosition();
   m_wp.description = site->getName();
   m_wp.type = site->getTypeID();
   m_wp.elevation = site->getElevation();
   m_wp.icao = site->getICAO();
   m_wp.frequency = site->getFrequency();
-  m_wp.runway = site->getRunway().direction;
-  m_wp.length = site->getRunway().length;
-  m_wp.surface = site->getRunway().surface;
   m_wp.comment = site->getComment();
   m_wp.isLandable = true;
   m_wp.country = site->getCountry();
+
+  if( site->getRunwayList().size() > 0 )
+    {
+      // We take the last runway from the list as default for the waypoint
+      m_wp.runway  = site->getRunwayList().last().heading;
+      m_wp.length  = site->getRunwayList().last().length;
+      m_wp.surface = site->getRunwayList().last().surface;
+    }
+
+  m_wp.rwyList = site->getRunwayList();
 
   return &m_wp;
 }

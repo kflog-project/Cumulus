@@ -176,7 +176,7 @@ void AirfieldListView::slot_Home()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getHomeCoord() == _wp->origP )
+  if( conf->getHomeCoord() == _wp->wgsPoint )
     {
       // no new coordinates, ignore request
       return;
@@ -205,10 +205,10 @@ void AirfieldListView::slot_Home()
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );
       conf->setHomeName( _wp->name );
-      conf->setHomeCoord( _wp->origP );
+      conf->setHomeCoord( _wp->wgsPoint );
       conf->setHomeElevation( Distance(_wp->elevation) );
 
-      emit newHomePosition( _wp->origP );
+      emit newHomePosition( _wp->wgsPoint );
       homeChanged = true;
     }
 }

@@ -232,8 +232,8 @@ void WaypointListView::slot_selectionChanged()
 
       GeneralConfig *conf = GeneralConfig::instance();
 
-      if( conf->getHomeLat() == w->origP.lat() &&
-          conf->getHomeLon() == w->origP.lon() )
+      if( conf->getHomeLat() == w->wgsPoint.lat() &&
+          conf->getHomeLon() == w->wgsPoint.lon() )
         {
           // Selected item is the home position. Disable button press.
           cmdHome->setEnabled( false );
@@ -462,8 +462,8 @@ void WaypointListView::slot_setHome()
 
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( conf->getHomeLat() == _wp->origP.lat() &&
-      conf->getHomeLon() == _wp->origP.lon() )
+  if( conf->getHomeLat() == _wp->wgsPoint.lat() &&
+      conf->getHomeLon() == _wp->wgsPoint.lon() )
     {
       // no new coordinates, ignore request
       return;
@@ -492,10 +492,10 @@ void WaypointListView::slot_setHome()
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );
       conf->setHomeName( _wp->name );
-      conf->setHomeCoord( _wp->origP );
+      conf->setHomeCoord( _wp->wgsPoint );
       conf->setHomeElevation( Distance(_wp->elevation) );
 
-      emit newHomePosition( _wp->origP );
+      emit newHomePosition( _wp->wgsPoint );
       m_homeChanged = true;
     }
 }

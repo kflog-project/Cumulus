@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2009 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,15 +21,24 @@
 #include "basemapelement.h"
 
 MapMatrix* BaseMapElement::glMapMatrix = 0;
-MapConfig* BaseMapElement::glConfig = 0;
+MapConfig* BaseMapElement::glConfig    = 0;
 
 QHash<int, QString> BaseMapElement::objectTranslations;
 QStringList         BaseMapElement::sortedTranslations;
 
+BaseMapElement::BaseMapElement() :
+  name("???"),
+  typeID(NotSelected),
+  MapSegment(0)
+{
+}
+
 BaseMapElement::BaseMapElement( const QString& n,
                                 const objectType tID,
-                                const unsigned short secID )
-  : name(n), typeID(tID), MapSegment(secID)
+                                const unsigned short secID ) :
+  name(n),
+  typeID(tID),
+  MapSegment(secID)
 {
 }
 

@@ -237,7 +237,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   // calculate Bearing
   int bearing= int( rint(getBearingWgs( calculator->getlastPosition(),
-                                        nextTP->origP ) * 180/M_PI) );
+                                        nextTP->wgsPoint ) * 180/M_PI) );
   // glide path
   calculator->glidePath( bearing, dist2Next,
                          nextTP->elevation,
@@ -326,7 +326,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
 
-  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->origP, tz );
+  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->wgsPoint, tz );
 
   if( res )
     {
@@ -347,7 +347,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   if( ( nextTP->taskPointType != TaskPointTypes::Landing &&
         nextTP->taskPointType != TaskPointTypes::End ) ||
       ( nextTP->taskPointType == TaskPointTypes::End &&
-        nextTP->origP != tpList.at( tpList.count() - 1 )->origP ) )
+        nextTP->wgsPoint != tpList.at( tpList.count() - 1 )->wgsPoint ) )
   {
     TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
     no1.sprintf( "%02d", finalTP->taskPointIndex );
@@ -450,7 +450,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     QString sr, ss, tz;
     QDate date = QDate::currentDate();
 
-    bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, tz );
+    bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->wgsPoint, tz );
 
     if( res )
       {
@@ -491,7 +491,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
 
   // calculate distance to passed waypoint
   distance2Target.setKilometers(dist(double(lastPosition.x()), double(lastPosition.y()),
-				     wp->origP.lat(), wp->origP.lon()));
+				     wp->wgsPoint.lat(), wp->wgsPoint.lon()));
 
   // Prepare output data
   QString display;
@@ -517,7 +517,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   ReachablePoint::reachable reach = ReachablePoint::no;
 
   // calculate Bearing
-  int bearing= int( rint(getBearingWgs( lastPosition, wp->origP ) * 180/M_PI) );
+  int bearing= int( rint(getBearingWgs( lastPosition, wp->wgsPoint ) * 180/M_PI) );
 
   // glide path
   calculator->glidePath( bearing, distance2Target,
@@ -593,7 +593,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
 
-  bool res = Sonne::sonneAufUnter( sr, ss, date, wp->origP, tz );
+  bool res = Sonne::sonneAufUnter( sr, ss, date, wp->wgsPoint, tz );
 
   if( res )
     {
@@ -630,7 +630,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
 
   if( ( wp->taskPointType == TaskPointTypes::End &&
-        wp->origP == finalTP->origP ) ||
+        wp->wgsPoint == finalTP->wgsPoint ) ||
         wp->taskPointType == TaskPointTypes::Landing )
     {
       // Waypoint is identical in position to landing point of flight
@@ -718,7 +718,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       }
 
     // calculate sunset for the landing destination
-    res = Sonne::sonneAufUnter( sr, ss, date, finalTP->origP, tz );
+    res = Sonne::sonneAufUnter( sr, ss, date, finalTP->wgsPoint, tz );
 
     if( res )
       {

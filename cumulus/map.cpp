@@ -356,7 +356,6 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               siteWgsPosition = site->getWGSPosition();
               sitePosition = site->getPosition();
               siteElevation = site->getElevation();
-              const Runway &siteRunway = site->getRunway();
               siteComment = site->getComment();
               siteCountry = site->getCountry();
 
@@ -364,18 +363,27 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               w->name = siteName;
               w->description = siteDescription;
               w->type = siteType;
-              w->origP = siteWgsPosition;
-              w->projP = sitePosition;
+              w->wgsPoint = siteWgsPosition;
+              w->projPoint = sitePosition;
               w->elevation = siteElevation;
               w->icao = siteIcao;
               w->frequency = siteFrequency;
-              w->isLandable = siteRunway.isOpen;
-              w->surface = siteRunway.surface;
-              w->runway = siteRunway.direction;
-              w->length = siteRunway.length;
               w->comment = siteComment;
               w->country = siteCountry;
               w->wpListMember = false;
+
+              Runway siteRunway;
+
+              if( site->getRunwayList().size() )
+                {
+                  siteRunway = site->getRunwayList().last();
+                  w->rwyList = site->getRunwayList();
+                }
+
+              w->isLandable = siteRunway.isOpen;
+              w->surface = siteRunway.surface;
+              w->runway = siteRunway.heading;
+              w->length = siteRunway.length;
 
               found = true;
               lastDist = dX+dY;
@@ -402,7 +410,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
           continue;
         }
 
-      QPoint sitePos( _globalMapMatrix->map( wp.projP ) );
+      QPoint sitePos( _globalMapMatrix->map( wp.projPoint ) );
 
       if( ! snapRect.contains(sitePos) )
         {
@@ -450,7 +458,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
         {
           TaskPoint* tp = tpList[i];
 
-          QPoint sitePos( _globalMapMatrix->map( tp->projP ) );
+          QPoint sitePos( _globalMapMatrix->map( tp->projPoint ) );
 
           if( ! snapRect.contains(sitePos) )
             {
@@ -1437,7 +1445,7 @@ void Map::p_drawNavigationLayer()
   // Second draw all collected waypoint and task point lables
   for( int i = 0; i < drawnWp.size(); i++ )
     {
-      QString corrString = WGSPoint::coordinateString( drawnWp[i]->origP );
+      QString corrString = WGSPoint::coordinateString( drawnWp[i]->wgsPoint );
 
       if( labelSet.contains( corrString ) )
         {
@@ -1452,8 +1460,8 @@ void Map::p_drawNavigationLayer()
       p_drawLabel( &navP,
                    iconSize / 2 + 3,
                    drawnWp[i]->name,
-                   _globalMapMatrix->map( drawnWp[i]->projP ),
-                   drawnWp[i]->origP,
+                   _globalMapMatrix->map( drawnWp[i]->projPoint ),
+                   drawnWp[i]->wgsPoint,
                    drawnWp[i]->isLandable );
     }
 
@@ -1602,7 +1610,7 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
         }
 
         // Project map point onto screen display.
-        QPoint dispP = _globalMapMatrix->map(wp.projP);
+        QPoint dispP = _globalMapMatrix->map(wp.projPoint);
 
         // Check, if point lays in the visible screen area
         if( ! testRect.contains(dispP) )
@@ -1663,7 +1671,7 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
           }
 
         // Consider reachability during drawing. The circles must be drawn at first.
-        enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.origP);
+        enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.wgsPoint);
 
         if (reachable == ReachablePoint::yes)
           {
@@ -1679,7 +1687,14 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
                                  _globalMapConfig->getMagentaCircle(iconSize));
           }
 
-        int shift = wp.runway/256 >= 18 ? (wp.runway/256)-18 : wp.runway/256;
+        int rwyHeading = 0;
+
+        if( wp.rwyList.size() > 0 )
+          {
+            rwyHeading = wp.rwyList.first().heading;
+          }
+
+        int shift = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
 
         if( _globalMapConfig->isRotatable(wp.type) )
           {
@@ -1768,7 +1783,7 @@ void Map::p_drawLabel( QPainter* painter,
   if( calculator && calculator->getselectedWp() )
     {
       if( calculator->getselectedWp()->name == name &&
-          calculator->getselectedWp()->origP == origP )
+          calculator->getselectedWp()->wgsPoint == origP )
         {
           isSelected = true;
         }
@@ -2798,7 +2813,7 @@ void Map::p_drawDirectionLine(const QPoint& from)
 
   if (calculator && calculator->getselectedWp())
     {
-      QPoint to  = _globalMapMatrix->map(calculator->getselectedWp()->projP);
+      QPoint to  = _globalMapMatrix->map(calculator->getselectedWp()->projPoint);
 
       if( from == to )
         {
@@ -2806,7 +2821,7 @@ void Map::p_drawDirectionLine(const QPoint& from)
           return;
         }
 
-      QColor col = ReachableList::getReachColor(calculator->getselectedWp()->origP);
+      QColor col = ReachableList::getReachColor(calculator->getselectedWp()->wgsPoint);
 
       // we do take the task course line width
       qreal penWidth = GeneralConfig::instance()->getTargetLineWidth();

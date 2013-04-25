@@ -30,6 +30,7 @@
 #define WPEDIT_DIALOG_PAGE_AERO_H
 
 #include <QWidget>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QCheckBox>
@@ -43,37 +44,64 @@ class WpEditDialogPageAero : public QWidget
 {
   Q_OBJECT
 
-public:
+ public:
 
   WpEditDialogPageAero(QWidget *parent=0);
 
   virtual ~WpEditDialogPageAero();
 
-public slots:
+ public slots:
 
   /**
    * Called if the data needs to be saved.
    */
-  void slot_save(Waypoint * wp);
+  void slot_save(Waypoint* wp);
 
   /**
    * Called if the page needs to load data from the waypoint
    */
-  void slot_load(Waypoint * wp);
+  void slot_load(Waypoint* wp);
 
-private:
+ private slots:
+
+ void slot_stateChangedRwy1Enable( int state )
+   {
+     gboxRunway1->setEnabled( state == 0 ? false : true );
+   };
+
+ void slot_stateChangedRwy2Enable( int state )
+   {
+     gboxRunway2->setEnabled( state == 0 ? false : true );
+   };
+
+ private:
 
   QLineEdit* edtICAO;
-  QComboBox* edtRunway1;
-  QComboBox* edtRunway2;
-  QCheckBox* chkLandable;
-  QComboBox* cmbSurface;
-
   DoubleNumberEditor* edtFrequency;
-  NumberEditor*       edtLength;
 
-  int getSurface();
-  void setSurface(int s);
+  QGroupBox* gboxRunway1;
+  QGroupBox* gboxRunway2;
+
+  QCheckBox* chkRwy1Enable;
+  QCheckBox* chkRwy2Enable;
+
+  QComboBox* cmbRwy1Heading;
+  QComboBox* cmbRwy2Heading;
+
+  QCheckBox* chkRwy1Both;
+  QCheckBox* chkRwy2Both;
+
+  QCheckBox* chkRwy1Usable;
+  QCheckBox* chkRwy2Usable;
+
+  QComboBox* cmbRwy1Surface;
+  QComboBox* cmbRwy2Surface;
+
+  NumberEditor* edtRwy1Length;
+  NumberEditor* edtRwy2Length;
+
+  int getSurface( QComboBox* cbox );
+  void setSurface( QComboBox* cbox, int s );
 };
 
 #endif

@@ -546,7 +546,7 @@ void IgcLogger::writeHeader()
       TaskPoint *tp = tpList.at(i);
 
       _stream << "C"
-              << formatPosition( tp->origP )
+              << formatPosition( tp->wgsPoint )
               << tp->name << "\r\n";
     }
 }

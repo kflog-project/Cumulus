@@ -2494,7 +2494,7 @@ void MainWindow::slotRememberWaypoint()
     {
       const Waypoint &wpItem = wpList.at(i);
 
-      if ( wpItem.origP == pos )
+      if ( wpItem.wgsPoint == pos )
         {
           return ; // we have such position already
         }
@@ -2505,8 +2505,8 @@ void MainWindow::slotRememberWaypoint()
   Waypoint wp;
 
   wp.name = name;
-  wp.origP = calculator->getlastPosition();
-  wp.projP = _globalMapMatrix->wgsToMap( wp.origP );
+  wp.wgsPoint = calculator->getlastPosition();
+  wp.projPoint = _globalMapMatrix->wgsToMap( wp.wgsPoint );
   wp.description = tr( "user created" );
   wp.comment = tr("created by remember action at") + QString(" ") +
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
@@ -2665,7 +2665,7 @@ void MainWindow::slotCenterToWaypoint()
 
   if ( calculator->getselectedWp() )
     {
-      _globalMapMatrix->centerToLatLon( calculator->getselectedWp()->origP );
+      _globalMapMatrix->centerToLatLon( calculator->getselectedWp()->wgsPoint );
       Map::instance->scheduleRedraw();
 
     }
@@ -2678,7 +2678,7 @@ void MainWindow::slotEnsureVisible()
 {
   if ( calculator->getselectedWp() )
     {
-      double newScale = _globalMapMatrix->ensureVisible( calculator->getselectedWp()->origP );
+      double newScale = _globalMapMatrix->ensureVisible( calculator->getselectedWp()->wgsPoint );
 
       if ( newScale > 0 )
         {
@@ -2825,7 +2825,7 @@ void MainWindow::slotNavigate2Home()
 
   wp.name = GeneralConfig::instance()->getHomeName();
   wp.description = tr("Home Site");
-  wp.origP.setPos( GeneralConfig::instance()->getHomeCoord() );
+  wp.wgsPoint.setPos( GeneralConfig::instance()->getHomeCoord() );
   wp.elevation = GeneralConfig::instance()->getHomeElevation().getMeters();
   wp.country = GeneralConfig::instance()->getHomeCountryCode();
 

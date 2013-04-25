@@ -2432,14 +2432,14 @@ void MapContents::slotReloadMapData()
 
   if ( wp )
     {
-      wp->projP = _globalMapMatrix->wgsToMap(wp->origP);
+      wp->projPoint = _globalMapMatrix->wgsToMap(wp->wgsPoint);
     }
 
   // Update the global waypoint list
   for ( int loop = 0; loop < wpList.count(); loop++ )
     {
       // recalculate projection data
-      wpList[loop].projP = _globalMapMatrix->wgsToMap(wpList[loop].origP);
+      wpList[loop].projPoint = _globalMapMatrix->wgsToMap(wpList[loop].wgsPoint);
     }
 
   // Make a recalculation of the reachable sites. The projection of
@@ -3156,7 +3156,7 @@ bool MapContents::isInWaypointList(const QPoint& wgsCoord)
     {
       const Waypoint& wpItem = wpList.at(i);
 
-      if ( wgsCoord == wpItem.origP )
+      if ( wgsCoord == wpItem.wgsPoint )
         {
           return true;
         }

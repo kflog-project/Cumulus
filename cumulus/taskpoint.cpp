@@ -64,7 +64,7 @@ TaskPoint::TaskPoint( const Waypoint& wp ) : Waypoint( wp )
   groundSpeed = 0.0;
   wtResult = false;
 
-  m_taskLine.setLineCenter( wp.origP );
+  m_taskLine.setLineCenter( wp.wgsPoint );
 
   // The waypoint class contains the taskpoint type. We must initialize the
   // taskpoint according to its given type.
@@ -216,7 +216,7 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
 
   // Here we are inside of outer radius, therefore we have to check the sector angle.
   // Calculate bearing from TP to current position
-  const double bearing = getBearingWgs( origP, position );
+  const double bearing = getBearingWgs( wgsPoint, position );
 
 #ifdef CUMULUS_DEBUG
   qDebug( "FlightTask::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",

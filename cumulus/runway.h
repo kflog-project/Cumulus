@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2009 Axel Pauli
+**   Copyright (c): 2008-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,15 +25,15 @@
  * This class is used for defining a runway together with its surface and the
  * translation types.
  *
- * \date 2008-2010
+ * \date 2008-2013
  *
  */
 
 #ifndef RUNWAY_H
 #define RUNWAY_H
 
-#include <QString>
 #include <QHash>
+#include <QString>
 #include <QStringList>
 
 class Runway
@@ -46,10 +46,22 @@ public:
    */
   enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3, Sand = 4};
 
+  Runway() :
+    length(0),
+    heading(0),
+    surface(Unknown),
+    isOpen(false),
+    isBidirectional(true),
+    width(0)
+    {
+    };
+
   Runway( const unsigned short len,
-          const unsigned short dir,
+          const unsigned short head,
           const unsigned short surf,
-          const bool open );
+          const bool open=true,
+          const bool bidirectional=true,
+          const unsigned short width=0 );
 
   virtual ~Runway() {};
 
@@ -68,6 +80,10 @@ public:
    */
   static QStringList& getSortedTranslationList();
 
+  /**
+   * Prints out all runway data.
+   */
+  void printData();
 
   /**
    * The length of the runway, given in meters.
@@ -75,10 +91,10 @@ public:
   unsigned short length;
 
   /**
-   * The direction of the runway, given in steps of 1/10 degree (0-36).
-   * Two directions are stored in every byte. (dir1*256+dir2).
+   * The heading of the runway, given in steps of 1/10 degree (0-36).
+   * Two headings are stored in every byte. (dir1*256 + dir2).
    */
-  unsigned short direction;
+  unsigned short heading;
 
   /**
    * The surface of the runway, one of SurfaceType, see above.
@@ -89,6 +105,16 @@ public:
    * Flag to indicate if the runway is open or closed.
    */
   bool isOpen;
+
+  /**
+   * Flag to indicate if the runway is bidirectional or not.
+   */
+  bool isBidirectional;
+
+  /**
+   * The width of the runway, given in meters.
+   */
+  unsigned short width;
 
   /**
    * Static pointer to surface translations

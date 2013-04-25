@@ -182,7 +182,7 @@ void WpEditDialog::accept()
   // get waypoint data from the tab widgets and save them in a new object
   Waypoint newWp;
   emit save( &newWp );
-  newWp.projP = _globalMapMatrix->wgsToMap( newWp.origP );
+  newWp.projPoint = _globalMapMatrix->wgsToMap( newWp.wgsPoint );
   newWp.comment = m_comment->toPlainText();
   newWp.wpListMember = m_wp ? m_wp->wpListMember : false;
 
@@ -277,7 +277,7 @@ bool WpEditDialog::checkWaypointData( Waypoint& wp )
       return false;
     }
 
-  if( wp.origP == QPoint(0,0) )
+  if( wp.wgsPoint == QPoint(0,0) )
       {
         QMessageBox mb( QMessageBox::Warning,
                         tr( "Coordinates?" ),

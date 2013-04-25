@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2011 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -28,7 +28,7 @@
  * Class for one entry in the \ref ReachableList class. It covers all belonging
  * to a reachable point element.
  *
- * \date 2004-2011
+ * \date 2004-2013
  *
  * \version $Id$
  */
@@ -38,11 +38,13 @@
 
 #include <cmath>
 
+#include <QList>
 #include <QString>
 #include <QPoint>
 
 #include "distance.h"
 #include "altitude.h"
+#include "runway.h"
 #include "wgspoint.h"
 #include "waypoint.h"
 
@@ -52,31 +54,28 @@ class ReachablePoint
 
   enum reachable{ no, belowSafety, yes };
 
-  ReachablePoint(QString name,
-                 QString icao,
-                 QString description,
-                 QString country,
-                 bool orignAfl,
-                 short type,
-                 float frequency,
-                 WGSPoint pos,
-                 QPoint ppos,
-                 float elevation,
-                 QString comment,
-                 Distance distance,
-                 short bearing,
-                 Altitude arrivAlt,
-                 short rwDir,
-                 float rwLen,
-                 short rwSurf,
-                 bool rwOpen );
+  ReachablePoint( QString name,
+                  QString icao,
+                  QString description,
+                  QString country,
+                  bool orignAfl,
+                  short type,
+                  float frequency,
+                  WGSPoint pos,
+                  QPoint ppos,
+                  float elevation,
+                  QString comment,
+                  Distance& distance,
+                  short bearing,
+                  Altitude& arrivAlt,
+                  QList<Runway>& rwyList );
 
 
-  ReachablePoint(Waypoint& wp,
-                 bool orignAfl,
-                 Distance& distance,
-                 short bearing,
-                 Altitude& arrivAlt );
+  ReachablePoint( Waypoint& wp,
+                  bool orignAfl,
+                  Distance& distance,
+                  short bearing,
+                  Altitude& arrivAlt );
 
   ~ReachablePoint();
 
@@ -132,7 +131,12 @@ class ReachablePoint
 
   float getRunwayLength() const
   {
-    return _wp.length;
+    if( _wp.rwyList.size() > 0 )
+      {
+        return _wp.rwyList.first().length;
+      }
+
+    return 0.0;
   }
 
   Altitude getArrivalAlt() const
@@ -152,7 +156,7 @@ class ReachablePoint
 
   WGSPoint& getWgsPos()
   {
-    return _wp.origP;
+    return _wp.wgsPoint;
   };
 
   const Waypoint *getWaypoint() const

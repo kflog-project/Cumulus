@@ -712,7 +712,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       int degree, intMin;
       double min;
 
-      WGSPoint::calcPos( tp->origP.x(), degree, min );
+      WGSPoint::calcPos( tp->wgsPoint.x(), degree, min );
 
       // Minute is expected as 1/1000
       intMin = static_cast<int> (rint(min * 1000));
@@ -722,7 +722,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
                     arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
                     arg( (degree < 0) ? QString("S") : QString("N") );
 
-      WGSPoint::calcPos( tp->origP.y(), degree, min );
+      WGSPoint::calcPos( tp->wgsPoint.y(), degree, min );
 
       intMin = static_cast<int> (rint(min * 1000));
 

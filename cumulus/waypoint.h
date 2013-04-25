@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2012 by Axel Pauli
+ **                         2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,9 +20,11 @@
 #ifndef __Waypoint__
 #define __Waypoint__
 
+#include <QList>
 #include <QPoint>
 #include <QString>
 
+#include "runway.h"
 #include "wgspoint.h"
 
 /**
@@ -35,7 +37,7 @@
  * Definitions of possible task point types. Must be done here to avoid
  * recursive include loop.
  *
- * \date 1999-2011
+ * \date 1999-2013
  *
  * \version $Id$
  */
@@ -56,7 +58,7 @@ class TaskPointTypes
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2012
+ * \date 1999-2013
  *
  * \version $Id$
  */
@@ -82,27 +84,36 @@ class Waypoint
   /** The type of the waypoint */
   short type;
   /** The original lat/lon position (WGS84) of the waypoint in KFLOG's internal format. */
-  WGSPoint origP;
+  WGSPoint wgsPoint;
   /** The projected map position of the waypoint. */
-  QPoint projP;
+  QPoint projPoint;
   /** long name or description of waypoint */
   QString description;
   /** ICAO name */
   QString icao;
   /** comment concerning point*/
   QString comment;
-  /** internal surface id */
+
+  /** flag that waypoint is landable */
+  bool isLandable;
+
+  /** runway surface */
   short surface;
-  /** Heading of runway. Range 0-36 inclusive. 0 stands for an undefined runway. */
+  /** Heading of runway as two bytes. Range 0-36 inclusive. 0 stands for an undefined runway. */
   short runway;
   /** length of runway, in meters */
   float length;
-  /** elevation of runway, in meters */
+
+  /**
+   * A list of runways is managed by the airfield object. If a waypoint is
+   * derived temporary from an airfield object, these data is also taken over.
+   */
+  QList<Runway> rwyList;
+
+  /** elevation of waypoint in meters */
   float elevation;
   /** frequency of contact for waypoint, in MHz */
   float frequency;
-  /** flag for landable*/
-  bool isLandable;
   /** contains an priority indication for the waypoint
    * 0=low
    * 1=normal

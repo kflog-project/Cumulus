@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2011 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -139,7 +139,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
 
       for ( int i=0; i < wpList.count(); i++ )
         {
-          WGSPoint pt = wpList.at(i).origP;
+          WGSPoint pt = wpList.at(i).wgsPoint;
 
           if (! bbox.contains(pt))
             {
@@ -221,7 +221,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
           QPoint sitePosition = site->getPosition();
           float siteElevation = site->getElevation();
           QString siteComment = site->getComment();
-          Runway siteRunway = site->getRunway();
+          QList<Runway> siteRwyList = site->getRunwayList();
 
           if (! bbox.contains(siteWgsPosition) )
             {
@@ -262,10 +262,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
                              distance,
                              bearing,
                              altitude,
-                             siteRunway.direction,
-                             siteRunway.length,
-                             siteRunway.surface,
-                             siteRunway.isOpen );
+                             siteRwyList );
           append(rp);
 
           // qDebug("%s(%d) %f %d° %d", rp.getName().toLatin1().data(), rp.getElevation(),  rp.getDistance().getKilometers(), rp.getBearing(), (int)rp->getArrivalAlt().getMeters() );
@@ -370,7 +367,7 @@ void ReachableList::calculateDataInList()
     {
       // recalculate Distance
       ReachablePoint& p = (*this)[i];
-      WGSPoint pt = p.getWaypoint()->origP;
+      WGSPoint pt = p.getWaypoint()->wgsPoint;
       Altitude arrivalAlt;
       Distance distance;
       Speed bestSpeed;
@@ -538,7 +535,7 @@ void ReachableList::removeDoubles()
 
           //qDebug("i=%d j=%d, P1=%s, P2=%s,", i, j, p1.getWaypoint()->name.toLatin1().data(), p2.getWaypoint()->name.toLatin1().data());
 
-          if ( p2.getWaypoint()->origP == p1.getWaypoint()->origP )
+          if ( p2.getWaypoint()->wgsPoint == p1.getWaypoint()->wgsPoint )
             {
               //qDebug("  points are the same");
               // ok, the points are the same. Now we choose which one to remove

@@ -158,9 +158,9 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
 
               tmpList = line.split( ",", QString::KeepEmptyParts );
 
-              tp->origP.setLat( tmpList.at( 1 ).toInt() );
-              tp->origP.setLon( tmpList.at( 2 ) .toInt() );
-              tp->projP = _globalMapMatrix->wgsToMap( tp->origP );
+              tp->wgsPoint.setLat( tmpList.at( 1 ).toInt() );
+              tp->wgsPoint.setLon( tmpList.at( 2 ) .toInt() );
+              tp->projPoint = _globalMapMatrix->wgsToMap( tp->wgsPoint );
               tp->elevation = tmpList.at( 3 ).toInt();
               tp->name = tmpList.at( 4 );
               tp->icao = tmpList.at( 5 );
@@ -274,8 +274,8 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
           // saving each task point ...
           TaskPoint* tp = tpList.at(j);
           stream << "TW,"
-                 << tp->origP.x() << ","
-                 << tp->origP.y() << ","
+                 << tp->wgsPoint.x() << ","
+                 << tp->wgsPoint.y() << ","
                  << tp->elevation << ","
                  << tp->name << ","
                  << tp->icao << ","

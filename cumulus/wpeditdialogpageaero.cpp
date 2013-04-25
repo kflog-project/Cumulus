@@ -39,22 +39,14 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
 {
   setObjectName("WpEditDialogPageAero");
 
-  QGridLayout *topLayout = new QGridLayout(this);
-  topLayout->setMargin(5);
-  int row=0;
+  QVBoxLayout* topLayout = new QVBoxLayout(this);
+  topLayout->setMargin(10);
+
+  QGridLayout *qgl = new QGridLayout;
+  qgl->setMargin(0);
+  topLayout->addLayout( qgl );
 
   Qt::InputMethodHints imh;
-
-  QLabel *lblIcao = new QLabel(tr("ICAO:"),  this);
-  topLayout->addWidget(lblIcao, row, 0);
-  edtICAO = new QLineEdit(this);
-  imh = (edtICAO->inputMethodHints() | Qt::ImhNoPredictiveText);
-  edtICAO->setInputMethodHints(imh);
-  edtICAO->setMaxLength(4); // limit name to 4 characters
-  topLayout->addWidget(edtICAO, row++, 1);
-
-  QLabel *lblFrequency = new QLabel(tr("Frequency:"),  this);
-  topLayout->addWidget(lblFrequency, row, 0);
 
   edtFrequency = new DoubleNumberEditor( this );
   edtFrequency->setDecimalVisible( true );
@@ -66,157 +58,374 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.[0-9]{1,3})" ), this );
   edtFrequency->setValidator( eValidator );
   edtFrequency->setText("0.0");
-  topLayout->addWidget(edtFrequency, row++, 1);
-  topLayout->setRowMinimumHeight(row++,  10);
 
-  QLabel *lblLen = new QLabel(tr("Length:"),  this);
-  topLayout->addWidget(lblLen, row, 0);
-  QBoxLayout *elevLayout = new QHBoxLayout();
-  topLayout->addLayout(elevLayout, row++, 1);
+  QFormLayout *qfl = new QFormLayout;
+  qfl->addRow(tr("Frequency:"), edtFrequency);
+  qgl->addLayout(qfl, 0, 0);
 
-  edtLength = new NumberEditor( this );
-  edtLength->setDecimalVisible( false );
-  edtLength->setPmVisible( false );
-  edtLength->setMaxLength(6);
-  edtLength->setAlignment( Qt::AlignLeft );
-  edtLength->setSuffix( " " + Altitude::getUnitText() );
-  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
-  edtLength->setValidator( eValidator );
-  edtLength->setText("0");
-  elevLayout->addWidget(edtLength);
+  edtICAO = new QLineEdit;
+  imh = (edtICAO->inputMethodHints() | Qt::ImhNoPredictiveText);
+  edtICAO->setInputMethodHints(imh);
+  edtICAO->setMaxLength(4); // limit name to 4 characters
+
+  qfl = new QFormLayout;
+  qfl->addRow(tr("ICAO:"), edtICAO);
+  qgl->addLayout(qfl, 0, 2);
+
+  qgl->setColumnStretch(1, 10);
+  qgl->setRowMinimumHeight(1, 20);
+
+  //----------------------------------------------------------------------------
+  QHBoxLayout* hboxEnabRwy = new QHBoxLayout;
+
+  chkRwy1Enable = new QCheckBox( tr("Runway 1") );
+  hboxEnabRwy->addWidget( chkRwy1Enable );
+
+  chkRwy2Enable = new QCheckBox( tr("Runway 2") );
+  hboxEnabRwy->addWidget( chkRwy2Enable );
+
+  topLayout->addLayout( hboxEnabRwy );
+
+  //----------------------------------------------------------------------------
+  gboxRunway1 = new QGroupBox( tr("Runway 1"), this );
+  gboxRunway1->setEnabled(false);
+  topLayout->addWidget( gboxRunway1 );
+
+  QHBoxLayout* grpLayout1 = new QHBoxLayout;
+  gboxRunway1->setLayout( grpLayout1 );
+
+  QHBoxLayout* hbox = new QHBoxLayout;
+
+  chkRwy1Both = new QCheckBox( tr("bidirectional") );
+  hbox->addWidget( chkRwy1Both );
+
+  qgl = new QGridLayout;
+  qgl->setMargin(0);
+  grpLayout1->addLayout(qgl);
+
+  cmbRwy1Heading = new QComboBox;
+  cmbRwy1Heading->setEditable(false);
+  cmbRwy1Heading->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  cmbRwy1Heading->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( cmbRwy1Heading->view()->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( cmbRwy1Heading->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  qfl = new QFormLayout;
+  qfl->addRow(tr("Heading:"), cmbRwy1Heading);
+
+  qgl->addLayout( qfl, 0, 0 );
+
+  edtRwy1Length = new NumberEditor( this );
+  edtRwy1Length->setDecimalVisible( false );
+  edtRwy1Length->setPmVisible( false );
+  edtRwy1Length->setMaxLength(6);
+  edtRwy1Length->setAlignment( Qt::AlignLeft );
 
   // Note! We take as runway length unit the altitude unit (m/ft)
-  QLabel *lblLenUnit = new QLabel(Altitude::getUnitText(),  this);
-  elevLayout->addWidget(lblLenUnit);
+  edtRwy1Length->setSuffix( " " + Altitude::getUnitText() );
+  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
+  edtRwy1Length->setValidator( eValidator );
+  edtRwy1Length->setText("0");
 
-  QLabel *lblRun = new QLabel(tr("Runway heading1:"),  this);
-  topLayout->addWidget(lblRun, row, 0);
-  edtRunway1 = new QComboBox(this);
-  edtRunway1->setEditable(false);
-  edtRunway1->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  edtRunway1->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+  qfl = new QFormLayout;
+  qfl->addRow(tr("Length:"), edtRwy1Length);
+  qgl->addLayout( qfl, 0, 1 );
+
+  cmbRwy1Surface = new QComboBox;
+  cmbRwy1Surface->setEditable(false);
+  cmbRwy1Surface->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  cmbRwy1Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( edtRunway1->view()->viewport(), QScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( edtRunway1->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+  QtScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
-  topLayout->addWidget(edtRunway1, row++, 1);
+  qfl = new QFormLayout;
+  qfl->addRow(tr("Surface:"), cmbRwy1Surface);
+  qgl->addLayout( qfl, 0, 2 );
 
-  QLabel *lblRun1 = new QLabel(tr("Runway heading2:"),  this);
-  topLayout->addWidget(lblRun1, row, 0);
-  edtRunway2 = new QComboBox(this);
-  edtRunway2->setEditable(false);
-  edtRunway2->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  edtRunway2->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+  chkRwy1Both = new QCheckBox( tr("both") );
+  chkRwy1Both->setChecked( true );
+  qgl->addWidget( chkRwy1Both, 1, 0, 1, 2 );
+
+  chkRwy1Usable = new QCheckBox( tr("usable") );
+  chkRwy1Usable->setChecked( true );
+  qgl->addWidget( chkRwy1Usable, 1, 2, 1, 2 );
+
+  //----------------------------------------------------------------------------
+  gboxRunway2 = new QGroupBox( tr("Runway 2"), this );
+  gboxRunway2->setEnabled(false);
+  topLayout->addWidget( gboxRunway2 );
+
+  QHBoxLayout* grpLayout2 = new QHBoxLayout;
+  gboxRunway2->setLayout( grpLayout2 );
+
+  hbox = new QHBoxLayout;
+
+  chkRwy2Both = new QCheckBox( tr("bidirectional") );
+  hbox->addWidget( chkRwy2Both );
+
+  qgl = new QGridLayout;
+  qgl->setMargin(0);
+  grpLayout2->addLayout(qgl);
+
+  cmbRwy2Heading = new QComboBox;
+  cmbRwy2Heading->setEditable(false);
+  cmbRwy2Heading->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  cmbRwy2Heading->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(edtRunway2>view()->viewport(), QScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( cmbRwy2Heading->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( edtRunway2->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+  QtScroller::grabGesture( cmbRwy2Heading->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
-  topLayout->addWidget(edtRunway2, row++, 1);
+  qfl = new QFormLayout;
+  qfl->addRow(tr("Heading:"), cmbRwy2Heading);
+  qgl->addLayout( qfl, 0, 0 );
 
-  QLabel *lblSurface = new QLabel(tr("Surface:"),  this);
-  topLayout->addWidget(lblSurface, row, 0);
-  cmbSurface = new QComboBox(this);
-  cmbSurface->setObjectName("Surface");
-  cmbSurface->setEditable(false);
-  topLayout->addWidget(cmbSurface, row++, 1);
+  edtRwy2Length = new NumberEditor( this );
+  edtRwy2Length->setDecimalVisible( false );
+  edtRwy2Length->setPmVisible( false );
+  edtRwy2Length->setMaxLength(6);
+  edtRwy2Length->setAlignment( Qt::AlignLeft );
+
+  // Note! We take as runway length unit the altitude unit (m/ft)
+  edtRwy2Length->setSuffix( " " + Altitude::getUnitText() );
+  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
+  edtRwy2Length->setValidator( eValidator );
+  edtRwy2Length->setText("0");
+
+  qfl = new QFormLayout;
+  qfl->addRow(tr("Length:"), edtRwy2Length);
+  qgl->addLayout( qfl, 0, 1 );
+
+  cmbRwy2Surface = new QComboBox;
+  cmbRwy2Surface->setEditable(false);
+  cmbRwy2Surface->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  cmbRwy2Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  qfl = new QFormLayout;
+  qfl->addRow(tr("Surface:"), cmbRwy2Surface);
+  qgl->addLayout( qfl, 0, 2 );
+
+  chkRwy2Both = new QCheckBox( tr("both") );
+  chkRwy2Both->setChecked( true );
+  qgl->addWidget( chkRwy2Both, 1, 0, 1, 2 );
+
+  chkRwy2Usable = new QCheckBox( tr("usable") );
+  chkRwy2Usable->setChecked( true );
+  qgl->addWidget( chkRwy2Usable, 1, 2, 1, 2 );
+
+  topLayout->addStretch( 10 );
+
+  //----------------------------------------------------------------------------
 
   // init combo boxes
-  edtRunway1->addItem( "--" );
-  edtRunway2->addItem( "--" );
+  cmbRwy1Heading->addItem( "--" );
+  cmbRwy2Heading->addItem( "--" );
 
   for( int i = 1; i <= 36; i++ )
     {
       QString item;
       item = QString("%1").arg(i, 2, 10, QLatin1Char('0'));
 
-      edtRunway1->addItem( item );
-      edtRunway2->addItem( item );
+      cmbRwy1Heading->addItem( item );
+      cmbRwy2Heading->addItem( item );
     }
 
   QStringList &tlist = Runway::getSortedTranslationList();
 
   for( int i=0; i < tlist.size(); i++ )
     {
-      cmbSurface->addItem( tlist.at(i) );
+      cmbRwy1Surface->addItem( tlist.at(i) );
+      cmbRwy2Surface->addItem( tlist.at(i) );
     }
 
-  cmbSurface->setCurrentIndex(cmbSurface->count()-1);
+  cmbRwy1Surface->setCurrentIndex(cmbRwy1Surface->count()-1);
+  cmbRwy2Surface->setCurrentIndex(cmbRwy1Surface->count()-1);
 
-  QLabel *lblLand = new QLabel(tr("Landable:"),  this);
-  topLayout->addWidget(lblLand, row, 0);
+  connect( chkRwy1Enable, SIGNAL(stateChanged(int)),
+           SLOT(slot_stateChangedRwy1Enable(int)) );
 
-  // Set spaces as label to make the checkbox better operable.
-  chkLandable = new QCheckBox("          ", this);
-  topLayout->addWidget(chkLandable,  row++ ,  1);
-
-  topLayout->setRowStretch(row++, 10);
-  topLayout->setColumnStretch(2,  10);
-
+  connect( chkRwy2Enable, SIGNAL(stateChanged(int)),
+           SLOT(slot_stateChangedRwy2Enable(int)) );
 }
 
 WpEditDialogPageAero::~WpEditDialogPageAero()
 {}
 
 /** Called if the page needs to load data from the waypoint */
-void WpEditDialogPageAero::slot_load(Waypoint *wp)
+void WpEditDialogPageAero::slot_load( Waypoint *wp )
 {
-  if ( wp )
+  if( ! wp )
     {
-      edtICAO->setText(wp->icao);
-      edtRunway1->setCurrentIndex(wp->runway / 256);
-      edtRunway2->setCurrentIndex(wp->runway % 256);
-      edtLength->setText(Altitude::getText((wp->length), false, -1));
-      setSurface(wp->surface);
-      chkLandable->setChecked(wp->isLandable);
+      return;
+    }
 
-      QString tmp = QString("%1").arg(wp->frequency, 0, 'f', 3);
+  edtICAO->setText(wp->icao);
 
-      while( tmp.size() < 7 )
+  QString tmp = QString("%1").arg(wp->frequency, 0, 'f', 3);
+
+  while( tmp.size() < 7 )
+    {
+      // Add leading zeros, that is not supported by floating point
+      // formatting.
+      tmp.insert(0, "0");
+    }
+
+  edtFrequency->setText(tmp);
+
+  // switch off both, that is the default.
+  chkRwy1Enable->setCheckState( Qt::Unchecked );
+  chkRwy2Enable->setCheckState( Qt::Unchecked );
+
+  if( wp->rwyList.size() > 0 )
+    {
+      for( int i = 0; i < wp->rwyList.size() && i < 2; i++ )
         {
-          // Add leading zeros, that is not supported by floating point
-          // formatting.
-          tmp.insert(0, "0");
-        }
+          Runway rwy = wp->rwyList.at(i);
 
-      edtFrequency->setText(tmp);
+          if( i == 0 )
+            {
+              chkRwy1Enable->setCheckState( Qt::Checked );
+
+              cmbRwy1Heading->setCurrentIndex( rwy.heading / 256 );
+              edtRwy1Length->setText( Altitude::getText((rwy.length), false, -1) );
+              setSurface( cmbRwy1Surface, rwy.surface );
+              chkRwy1Usable->setChecked( rwy.isOpen );
+
+              if( rwy.isBidirectional || ( rwy.heading / 256 != rwy.heading % 256) )
+                {
+                  chkRwy1Both->setChecked( true );
+                }
+              else
+                {
+                  chkRwy1Both->setChecked( false );
+                }
+            }
+          else if( i == 1 )
+            {
+              chkRwy2Enable->setCheckState( Qt::Checked );
+
+              cmbRwy2Heading->setCurrentIndex( rwy.heading / 256 );
+              edtRwy2Length->setText( Altitude::getText((rwy.length), false, -1) );
+              setSurface( cmbRwy2Surface, rwy.surface );
+              chkRwy2Usable->setChecked( rwy.isOpen );
+
+              if( rwy.isBidirectional || ( rwy.heading / 256 != rwy.heading % 256) )
+                {
+                  chkRwy2Both->setChecked( true );
+                }
+              else
+                {
+                  chkRwy2Both->setChecked( false );
+                }
+            }
+        }
     }
 }
 
 /** Called if the data needs to be saved. */
-void WpEditDialogPageAero::slot_save(Waypoint *wp)
+void WpEditDialogPageAero::slot_save( Waypoint *wp )
 {
-  if (wp)
+  if( ! wp )
     {
-      wp->icao = edtICAO->text();
-      wp->runway = (edtRunway1->currentIndex() * 256) + edtRunway2->currentIndex();
-      wp->length = static_cast<float> (Altitude::convertToMeters(edtLength->text().toDouble()));
-      wp->surface = getSurface();
-      wp->isLandable = chkLandable->isChecked();
+      return;
+    }
 
-      bool ok;
-      wp->frequency = edtFrequency->text().toFloat(&ok);
+  wp->icao = edtICAO->text();
 
-      if( ! ok )
+  bool ok;
+  wp->frequency = edtFrequency->text().toFloat(&ok);
+
+  if( ! ok )
+    {
+      wp->frequency = 0.0;
+    }
+
+  wp->rwyList.clear();
+
+  // If the runway heading is not defined, all data are ignored!
+  if( chkRwy1Enable->isChecked() && cmbRwy1Heading->currentIndex() > 0 )
+    {
+      Runway rwy;
+
+      rwy.length = static_cast<float> (Altitude::convertToMeters(edtRwy1Length->text().toDouble()));
+      rwy.surface = getSurface( cmbRwy1Surface );
+      rwy.isOpen = chkRwy1Usable->isChecked();
+      rwy.isBidirectional = chkRwy1Both->isChecked();
+
+      int hdg1 = cmbRwy1Heading->currentIndex();
+      int hdg2 = hdg1 > 18 ? hdg1 - 18 : hdg1 + 18;
+
+      if( rwy.isBidirectional )
         {
-          wp->frequency = 0.0;
+          rwy.heading = (hdg1 * 256) + hdg2;
         }
+      else
+        {
+          rwy.heading = (hdg1 * 256) + hdg1;
+        }
+
+      wp->rwyList.append( rwy );
+    }
+
+  // If the runway heading is not defined, all data are ignored!
+  if( chkRwy2Enable->isChecked() && cmbRwy2Heading->currentIndex() > 0 )
+    {
+      Runway rwy;
+
+      rwy.length = static_cast<float> (Altitude::convertToMeters(edtRwy2Length->text().toDouble()));
+      rwy.surface = getSurface( cmbRwy2Surface );
+      rwy.isOpen = chkRwy2Usable->isChecked();
+      rwy.isBidirectional = chkRwy2Both->isChecked();
+
+      int hdg1 = cmbRwy2Heading->currentIndex();
+      int hdg2 = hdg1 > 18 ? hdg1 - 18 : hdg1 + 18;
+
+      if( rwy.isBidirectional )
+        {
+          rwy.heading = (hdg1 * 256) + hdg2;
+        }
+      else
+        {
+          rwy.heading = (hdg1 * 256) + hdg1;
+        }
+
+      wp->rwyList.append( rwy );
     }
 }
 
 /** return internal type of surface */
-int WpEditDialogPageAero::getSurface()
+int WpEditDialogPageAero::getSurface(QComboBox* cbox)
 {
-  int s = cmbSurface->currentIndex();
+  if( ! cbox )
+    {
+      return -1;
+    }
+
+  int s = cbox->currentIndex();
 
   if (s != -1)
     {
@@ -232,10 +441,14 @@ int WpEditDialogPageAero::getSurface()
   return s;
 }
 
-/** set surface type in combo box
-translate internal id to index */
-void WpEditDialogPageAero::setSurface(int s)
+/** set surface type in combo box translate internal id to index */
+void WpEditDialogPageAero::setSurface(QComboBox* cbox, int s)
 {
+  if( ! cbox )
+    {
+      return;
+    }
+
   if (s != -1)
     {
       s = Runway::getSortedTranslationList().indexOf(Runway::item2Text(s));
@@ -245,5 +458,5 @@ void WpEditDialogPageAero::setSurface(int s)
       s = Runway::getSortedTranslationList().indexOf(Runway::item2Text(0));
     }
 
-  cmbSurface->setCurrentIndex(s);
+  cbox->setCurrentIndex(s);
 }

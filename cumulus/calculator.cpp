@@ -289,7 +289,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
   // all is correct before distribution.
   if ( newWp )
     {
-      newWp->projP = _globalMapMatrix->wgsToMap( newWp->origP );
+      newWp->projPoint = _globalMapMatrix->wgsToMap( newWp->wgsPoint );
     }
 
   // save new selected waypoint
@@ -330,7 +330,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
           // Tasks with less 4 entries are incomplete!
           for ( int i=0; i < tpList.count() && tpList.count() > 3; i++ )
             {
-              if ( selectedWp->origP == tpList.at(i)->origP &&
+              if ( selectedWp->wgsPoint == tpList.at(i)->wgsPoint &&
                    selectedWp->taskPointIndex == tpList.at(i)->taskPointIndex )
                 {
                   selectedWpInList = i;
@@ -387,7 +387,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
   Distance curDistance;
 
   curDistance.setKilometers( dist(double(lastPosition.x()), double(lastPosition.y()),
-                             selectedWp->origP.lat(), selectedWp->origP.lon()) );
+                             selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon()) );
 
   if ( curDistance == lastDistance )
     {
@@ -437,7 +437,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
       // if that feature is enabled.
       m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
-      QPoint tpWgs(selectedWp->origP.lat(), selectedWp->origP.lon() );
+      QPoint tpWgs(selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon() );
 
       double newZoomFactor = _globalMapMatrix->ensureVisible( tpWgs, lastPosition );
 
@@ -552,7 +552,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
           // calculate the distance to the next waypoint
           Distance dist2Next( dist(double(lastPosition.x()), double(lastPosition.y()),
-                                   nextWp->origP.lat(), nextWp->origP.lon()) * 1000);
+                                   nextWp->wgsPoint.lat(), nextWp->wgsPoint.lon()) * 1000);
           lastDistance = dist2Next;
 
           // announce task point change as none user interaction
@@ -566,7 +566,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // to end point, we will suppress the info message
           if ( ! ( lastWp->taskPointType == TaskPointTypes::End &&
                    nextWp->taskPointType == TaskPointTypes::Landing &&
-                   lastWp->origP == nextWp->origP ) )
+                   lastWp->wgsPoint == nextWp->wgsPoint ) )
             {
 
               emit taskInfo( tr("TP passed"), true );
@@ -862,7 +862,7 @@ void Calculator::calcBearing()
     }
   else
     {
-      double result = getBearing(lastPosition, selectedWp->origP);
+      double result = getBearing(lastPosition, selectedWp->wgsPoint);
       iresult = int (rint(result * 180./M_PI) );
       if (iresult!=lastBearing)
         {
@@ -906,7 +906,7 @@ void Calculator::slot_changePosition(int direction)
     case MapMatrix::Waypoint:
       if (selectedWp)
         {
-          lastPosition = selectedWp->origP;
+          lastPosition = selectedWp->wgsPoint;
         }
       break;
     case MapMatrix::Position:
@@ -1674,13 +1674,13 @@ void Calculator::slot_CheckHomeSiteSelection()
   GeneralConfig *conf = GeneralConfig::instance();
 
   if( selectedWp && selectedWp->name == tr("Home") &&
-      selectedWp->origP != conf->getHomeCoord() )
+      selectedWp->wgsPoint != conf->getHomeCoord() )
     {
       Waypoint wp;
 
       wp.name = tr("Home");
       wp.description = tr("Home Site");
-      wp.origP.setPos( conf->getHomeCoord() );
+      wp.wgsPoint.setPos( conf->getHomeCoord() );
 
       slot_WaypointChange( &wp, true );
     }
@@ -1714,7 +1714,7 @@ void Calculator::slot_startTask()
     // The start point of a task depends of the type. If first and
     // second point are identical, we take always the second one
     // otherwise the first.
-    if( tpList.at(0)->origP != tpList.at(1)->origP )
+    if( tpList.at(0)->wgsPoint != tpList.at(1)->wgsPoint )
       {
         // take first task point
         // tp2Taken = tpList.at(0);

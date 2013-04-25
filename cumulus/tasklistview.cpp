@@ -247,7 +247,7 @@ void TaskListView::slot_Selected()
         }
 
       if( ! (below && below->taskPointIndex == 1 &&
-             below->origP != _selectedTp->origP) )
+             below->wgsPoint != _selectedTp->wgsPoint) )
         {
           // Take-off point should not be selectable in taskview, if it is
           // identical to the start point.
@@ -292,7 +292,7 @@ void TaskListView::showEvent(QShowEvent *)
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
       // flight task. In this case the taskPointIndex should be unequal to -1.
-      if ( calcWp && calcWp->origP == tp->origP &&
+      if ( calcWp && calcWp->wgsPoint == tp->wgsPoint &&
            calcWp->taskPointIndex == tp->taskPointIndex )
         {
           list->setCurrentItem( list->topLevelItem(i), 0 );
@@ -414,9 +414,9 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       bool showTpIcon = true;
 
       if( tmpList.size() >= 2 &&
-          ((loop == 0 && tmpList.at(0)->origP == tmpList.at(1)->origP ) ||
+          ((loop == 0 && tmpList.at(0)->wgsPoint == tmpList.at(1)->wgsPoint ) ||
            (loop == tmpList.size()-1 &&
-            tmpList.at(tmpList.size()-1)->origP == tmpList.at(tmpList.size()-2)->origP )) )
+            tmpList.at(tmpList.size()-1)->wgsPoint == tmpList.at(tmpList.size()-2)->wgsPoint )) )
         {
           // If start and begin point or end and landing point are identical
           // no task figure icon is shown in the list entry.
@@ -426,7 +426,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       TaskPoint* tp = tmpList.at( loop );
       _TaskPointItem* _tp = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), showTpIcon );
 
-      if ( calcWp && calcWp->origP == tp->origP )
+      if ( calcWp && calcWp->wgsPoint == tp->wgsPoint )
         {
           list->setCurrentItem( _tp, 0 );
           _currSelectedTp = _tp;
@@ -532,7 +532,7 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
   // calculate sunset for the task point
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
-  Sonne::sonneAufUnter( sr, ss, date, tp->origP, tz );
+  Sonne::sonneAufUnter( sr, ss, date, tp->wgsPoint, tz );
 
   setText(0, tp->getTaskPointTypeString());
 

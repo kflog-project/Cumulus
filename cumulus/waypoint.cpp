@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2013 by Axel Pauli (axel@kflog.org)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -36,9 +36,9 @@ Waypoint::Waypoint()
   taskPointType  = TaskPointTypes::NotSet;
   wpListMember   = false;
 
-  origP.setPos(0,0);
-  projP.setX(0);
-  projP.setY(0);
+  wgsPoint.setPos(0,0);
+  projPoint.setX(0);
+  projPoint.setY(0);
 }
 
 // Copy constructor
@@ -48,8 +48,8 @@ Waypoint::Waypoint(const Waypoint& inst)
   //          inst.name.toLatin1().data(), inst.taskPointIndex );
   name           = inst.name;
   type           = inst.type;
-  origP          = inst.origP;
-  projP          = inst.projP;
+  wgsPoint       = inst.wgsPoint;
+  projPoint      = inst.projPoint;
   description    = inst.description;
   icao           = inst.icao;
   comment        = inst.comment;
@@ -64,6 +64,7 @@ Waypoint::Waypoint(const Waypoint& inst)
   taskPointIndex = inst.taskPointIndex;
   taskPointType  = inst.taskPointType;
   wpListMember   = inst.wpListMember;
+  rwyList        = inst.rwyList;
 }
 
 Waypoint::~Waypoint()
@@ -81,7 +82,7 @@ bool Waypoint::equals( const Waypoint *second ) const
   if( this->name == second->name &&
       this->type == second->type &&
       this->description == second->description &&
-      this->origP == second->origP &&
+      this->wgsPoint == second->wgsPoint &&
       this->taskPointIndex == second->taskPointIndex )
     {
       return true;
@@ -95,7 +96,7 @@ bool Waypoint::operator==( const Waypoint& second ) const
   if( name == second.name &&
       type == second.type &&
       description == second.description &&
-      origP == second.origP &&
+      wgsPoint == second.wgsPoint &&
       taskPointIndex == second.taskPointIndex )
     {
       return true;

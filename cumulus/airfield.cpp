@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2011 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,30 +27,26 @@ Airfield::Airfield( const QString& name,
                     const BaseMapElement::objectType typeId,
                     const WGSPoint& wgsPos,
                     const QPoint& pos,
-                    const Runway& rw,
+                    const QList<Runway>& rwList,
                     const float elevation,
                     const float frequency,
                     const QString country,
                     const QString comment,
                     bool winch,
                     bool towing,
-                    bool landable ) :
+                    bool landable,
+                    const float atis ) :
   SinglePoint(name, shortName, typeId, wgsPos, pos, elevation, country, comment),
-  icao(icao),
-  frequency(frequency),
-  rwData(rw),
-  winch(winch),
-  towing(towing),
-  landable(landable)
+  m_icao(icao),
+  m_frequency(frequency),
+  m_atis(atis),
+  m_rwList(rwList),
+  m_winch(winch),
+  m_towing(towing),
+  m_rwShift(0),
+  m_landable(landable)
 {
-  // calculate the default runway shift in 1/10 degrees.
-  rwShift = 90/10; // default direction is 90 degrees
-
-  // calculate the real runway shift in 1/10 degrees.
-  if ( rwData.direction/256 <= 36 )
-    {
-      rwShift = (rwData.direction/256 >= 18 ? (rwData.direction/256)-18 : rwData.direction/256);
-    }
+  calculateRunwayShift();
 }
 
 Airfield::~Airfield()
@@ -68,16 +64,16 @@ QString Airfield::getInfoString() const
          "<IMG SRC=" + path + "/" + glConfig->getPixmapName(typeID) + "></TD>"
          "<TD>" + name;
 
-  if (!icao.isEmpty())
+  if (!m_icao.isEmpty())
     {
-      text += " (" + icao + ")";
+      text += " (" + m_icao + ")";
     }
 
   text += "<FONT SIZE=-1><BR><BR>" + elev;
 
-  if (frequency > 0)
+  if (m_frequency > 0)
     {
-      text += "&nbsp;/&nbsp;" + frequencyAsString() + "&nbsp;Mhz.";
+      text += "&nbsp;/&nbsp;" + frequencyAsString(m_frequency) + "&nbsp;Mhz.";
     }
 
   text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";
@@ -122,14 +118,14 @@ bool Airfield::drawMapElement( QPainter* targetP )
 
   if( glConfig->isRotatable( typeID ) )
     {
-      QPixmap image( glConfig->getPixmapRotatable(typeID, winch) );
+      QPixmap image( glConfig->getPixmapRotatable(typeID, m_winch) );
 
       // All icons are squares. So we can only take the height as size parameter.
       int size = image.height();
 
       targetP->drawPixmap( curPos.x() - size/2,
                            curPos.y() - size/2,
-                           image, rwShift*iconSize, 0, size, size );
+                           image, m_rwShift*iconSize, 0, size, size );
     }
   else
     {

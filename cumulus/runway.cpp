@@ -6,16 +6,16 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2009 Axel Pauli
+**   Copyright (c): 2008-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
 **   $Id$
 **
 ***********************************************************************/
 
-#include <QObject>
+#include <QtCore>
 
 #include "runway.h"
 
@@ -24,14 +24,28 @@ QHash<int, QString> Runway::surfaceTranslations;
 QStringList Runway::sortedTranslations;
 
 Runway::Runway( const unsigned short len,
-                const unsigned short dir,
+                const unsigned short head,
                 const unsigned short surf,
-                const bool open )
+                const bool open,
+                const bool bidirectional,
+                const unsigned short rwWidth )
  : length(len),
-   direction(dir),
+   heading(head),
    surface(surf),
-   isOpen(open)
+   isOpen(open),
+   isBidirectional(bidirectional),
+   width(rwWidth)
 {
+}
+
+void Runway::printData()
+{
+  qDebug() << "RWY-Heading=" << (heading / 256) << "/"<< (heading & 255)
+           << "Length=" << length
+           << "Width=" << width
+           << "Sfc=" << surface
+           << "Open=" << isOpen
+           << "BiDir=" << isBidirectional;
 }
 
 /**

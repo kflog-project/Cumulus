@@ -352,9 +352,9 @@ void TaskEditor::showTask()
       bool showIcon = true;
 
       if( tmpList.size() >= 2 &&
-          ((loop == 0 && tmpList.at(0)->origP == tmpList.at(1)->origP ) ||
+          ((loop == 0 && tmpList.at(0)->wgsPoint == tmpList.at(1)->wgsPoint ) ||
            (loop == tmpList.size()-1 &&
-            tmpList.at(tmpList.size()-1)->origP == tmpList.at(tmpList.size()-2)->origP )) )
+            tmpList.at(tmpList.size()-1)->wgsPoint == tmpList.at(tmpList.size()-2)->wgsPoint )) )
         {
           // If start and begin point or end and landing point are identical
           // no task figure icon is shown in the list entry.

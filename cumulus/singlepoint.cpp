@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2011 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -17,9 +17,16 @@
  ***********************************************************************/
 
 #include <QtGui>
+
 #include "singlepoint.h"
 
 extern MapMatrix* _globalMapMatrix;
+
+SinglePoint::SinglePoint() :
+  BaseMapElement(),
+  elevation(0.0)
+{
+}
 
 SinglePoint::SinglePoint( const QString& n,
                           const QString& shortName,
@@ -36,7 +43,7 @@ SinglePoint::SinglePoint( const QString& n,
   shortName(shortName),
   curPos(pos),
   elevation(elevation),
-  country(country.toUpper()),
+  country(country.toUpper().left(2)),
   comment(comment)
 {
 }

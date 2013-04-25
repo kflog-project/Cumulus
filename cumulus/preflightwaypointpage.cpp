@@ -406,11 +406,12 @@ void PreFlightWaypointPage::slotImportFile()
   QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
 
   QString filter;
-  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT);;");
+  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT *.aip *.AIP);;");
   filter.append(tr("XML") + " (*.kflogwp *.KFLOGWP);;");
   filter.append(tr("Binary") + " (*.kwp *.KWP);;");
   filter.append(tr("SeeYou") + " (*.cup *.CUP);;");
-  filter.append(tr("CAI") + " (*.dat *.DAT)");
+  filter.append(tr("CAI") + " (*.dat *.DAT);;");
+  filter.append(tr("AIP") + " (*.aip *.AIP)");
 
   QString fName = QFileDialog::getOpenFileName( this,
                                                 tr("Open waypoint catalog"),
@@ -424,7 +425,7 @@ void PreFlightWaypointPage::slotImportFile()
   QString fSuffix = QFileInfo( fName ).suffix().toLower();
   QList<Waypoint> wpList;
   WaypointCatalog catalog;
-  QString errorMsg;
+  QString errorInfo;
 
   catalog.showProgress( true );
 
@@ -470,7 +471,7 @@ void PreFlightWaypointPage::slotImportFile()
     }
   else if( fSuffix == "kflogwp")
     {
-      wpCount = catalog.readXml( fName, 0, errorMsg );
+      wpCount = catalog.readXml( fName, 0, errorInfo );
     }
   else if( fSuffix == "cup")
     {
@@ -480,16 +481,20 @@ void PreFlightWaypointPage::slotImportFile()
     {
       wpCount = catalog.readDat( fName, 0 );
     }
+  else if( fSuffix == "aip")
+    {
+      wpCount = catalog.readOpenAip( fName, 0, errorInfo );
+    }
 
   if( wpCount == -1 )
     {
-      // Should normally not happens. Error occurred, return only.
+      // Should normally not happen. Error occurred, return only.
       return;
     }
 
   if( wpCount == 0 )
     {
-      if( errorMsg.isEmpty() )
+      if( errorInfo.isEmpty() )
         {
           QMessageBox mb( QMessageBox::Information,
                           tr( "No entries read" ),
@@ -515,7 +520,7 @@ void PreFlightWaypointPage::slotImportFile()
         {
           QMessageBox mb( QMessageBox::Critical,
                           tr("Error in file ") + QFileInfo( fName ).fileName(),
-                          errorMsg,
+                          errorInfo,
                           QMessageBox::Ok,
                           this );
 
@@ -566,7 +571,7 @@ void PreFlightWaypointPage::slotImportFile()
     }
   else if( fSuffix == "kflogwp")
     {
-      wpCount = catalog.readXml( fName, &wpList, errorMsg );
+      wpCount = catalog.readXml( fName, &wpList, errorInfo );
     }
   else if( fSuffix == "cup")
     {
@@ -575,6 +580,10 @@ void PreFlightWaypointPage::slotImportFile()
   else if( fSuffix == "dat")
     {
       wpCount = catalog.readDat( fName, &wpList );
+    }
+  else if( fSuffix == "aip")
+    {
+      wpCount = catalog.readOpenAip( fName, &wpList, errorInfo );
     }
 
   //check free memory
@@ -612,7 +621,7 @@ void PreFlightWaypointPage::slotImportFile()
   for( int i = 0; i < wpGlobalList.size(); i++ )
     {
       nameCoordDict.insert( wpGlobalList.at(i).name,
-                     WGSPoint::coordinateString( wpGlobalList.at(i).origP ) );
+                     WGSPoint::coordinateString( wpGlobalList.at(i).wgsPoint ) );
     }
 
   int added = 0;
@@ -623,7 +632,7 @@ void PreFlightWaypointPage::slotImportFile()
       // Look, if name is known and fetch coordinate string
       QString dcString = nameCoordDict.value( wpList.at(i).name, "" );
 
-      QString wpcString = WGSPoint::coordinateString( wpList.at(i).origP );
+      QString wpcString = WGSPoint::coordinateString( wpList.at(i).wgsPoint );
 
       if( dcString != "" && dcString == wpcString )
         {

@@ -212,15 +212,15 @@ void WpEditDialogPageGeneral::slot_load(Waypoint *wp)
       m_edtName->setText( wp->name.left( 8 ).toUpper() );
       m_edtDescription->setText( wp->description );
       m_edtCountry->setText( wp->country );
-      m_edtLat->setKFLogDegree( wp->origP.lat() );
-      m_edtLong->setKFLogDegree( wp->origP.lon() );
+      m_edtLat->setKFLogDegree( wp->wgsPoint.lat() );
+      m_edtLong->setKFLogDegree( wp->wgsPoint.lon() );
       m_edtElev->setText( Altitude::getText( (wp->elevation), false, -1 ) );
       setWaypointType( wp->type );
       m_cmbImportance->setCurrentIndex( wp->priority );
 
       // save loaded values
-      m_loadedLat = wp->origP.lat();
-      m_loadedLon = wp->origP.lon();
+      m_loadedLat = wp->wgsPoint.lat();
+      m_loadedLon = wp->wgsPoint.lon();
     }
 }
 
@@ -237,20 +237,20 @@ void WpEditDialogPageGeneral::slot_save(Waypoint *wp)
 
       if( m_edtLat->isInputChanged() )
         {
-          wp->origP.setLat( m_edtLat->KFLogDegree() );
+          wp->wgsPoint.setLat( m_edtLat->KFLogDegree() );
         }
       else
         {
-          wp->origP.setLat( m_loadedLat );
+          wp->wgsPoint.setLat( m_loadedLat );
         }
 
       if( m_edtLong->isInputChanged() )
         {
-          wp->origP.setLon( m_edtLong->KFLogDegree() );
+          wp->wgsPoint.setLon( m_edtLong->KFLogDegree() );
         }
       else
         {
-          wp->origP.setLon( m_loadedLon );
+          wp->wgsPoint.setLon( m_loadedLon );
         }
 
       wp->elevation = static_cast<float> (Altitude::convertToMeters(m_edtElev->text().toDouble()));

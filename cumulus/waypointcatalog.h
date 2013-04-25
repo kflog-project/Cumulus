@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001 by Harald Maier
 **          modified 2002 by Andre Somers
-**          modified 2008-2011 by Axel Pauli
+**          modified 2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,10 @@
  *
  * \brief Waypoint catalog file handling.
  *
- * This class reads or writes the waypoint catalog data into a file.
+ * This class reads or writes the waypoint catalog data into a file. Filters can
+ * be set to reduce the data mount to be read.
  *
- * \date 2002-2011
+ * \date 2002-2013
  */
 
 #ifndef WAYPOINT_CATALOG_H
@@ -86,6 +87,20 @@ class WaypointCatalog
   int readDat( QString catalog, QList<Waypoint>* wpList );
 
   /**
+   * Reads the content of an OpenAip XML file.
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \param errorInfo Additional text describing error situation more in detail.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readOpenAip( QString catalog, QList<Waypoint>* wpList, QString& errorInfo );
+
+  /**
    * Sets a filter used during read.
    *
    * \param typeIn The waypoint type to be read in.
@@ -122,6 +137,54 @@ class WaypointCatalog
   };
 
  private:
+
+  /**
+   * Reads the navigation aid content of an OpenAip XML file.
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \param errorInfo Additional text describing error situation more in detail.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readOpenAipNavAids( QString catalog,
+                          QList<Waypoint>* wpList,
+                          QString& errorInfo );
+
+  /**
+   * Reads the hotspot content of an OpenAip XML file.
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \param errorInfo Additional text describing error situation more in detail.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readOpenAipHotspots( QString catalog,
+                           QList<Waypoint>* wpList,
+                           QString& errorInfo );
+
+  /**
+   * Reads the airfield content of an OpenAip XML file.
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \param errorInfo Additional text describing error situation more in detail.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readOpenAipAirfields( QString catalog,
+                            QList<Waypoint>* wpList,
+                            QString& errorInfo );
 
   /**
    * \return True, if waypoint type has passed the filter otherwise false.

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2011 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,7 +29,7 @@
  * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
- * \date 2000-2011
+ * \date 2000-2013
  *
  * \version $Id$
  */
@@ -82,6 +82,11 @@ public:
   enum elevationType {NotSet, MSL, GND, FL, STD, UNLTD};
 
   /**
+   * Default constructor
+   */
+  BaseMapElement();
+
+  /**
    * Creates a new (virtual) map element.
    *
    * @param  name  The name of the element.
@@ -117,11 +122,19 @@ public:
   virtual void printMapElement(QPainter* printP, bool isText);
 
   /**
-   * @return the name of the element.
+   * @return The name of the element.
    */
   virtual const QString& getName() const
   {
     return name;
+  };
+
+  /**
+   * @param value The new name of the element.
+   */
+  virtual void setName( QString value )
+  {
+    name = value;
   };
 
   /**
@@ -130,6 +143,14 @@ public:
   virtual objectType getTypeID() const
   {
     return typeID;
+  };
+
+  /**
+   * @param The new typeID of the element.
+   */
+  virtual void setTypeID( const objectType value )
+  {
+    typeID = value;
   };
 
   /**

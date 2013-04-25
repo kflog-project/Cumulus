@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -19,8 +19,15 @@
 #include <cmath>
 #include <ctime>
 
+#ifndef QT_5
 #include <QtGui>
-#include <QMessageBox>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "altitude.h"
 #include "basemapelement.h"
@@ -56,6 +63,14 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 
   text = new QTextEdit(this);
   text->setReadOnly( true );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( text->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( text->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
 
   QPalette p = palette();
   p.setColor(QPalette::Window, Qt::white);
@@ -158,7 +173,7 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
   m_wp = wp;
 
   // Check if new point is already in the waypoint list, so make sure we can add it.
-  if( _globalMapContents->isInWaypointList(wp.origP) )
+  if( _globalMapContents->isInWaypointList(wp.wgsPoint) )
     {
       cmdAddWaypoint->setVisible( false );
     }
@@ -181,7 +196,7 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
   // Show the home button only if we are not to fast in move to avoid
   // wrong usage. The redefinition of the home position can trigger
   // a reload of the airfield list.
-  if( home == wp.origP || moving )
+  if( home == wp.wgsPoint || moving )
     {
       cmdHome->setVisible( false );
     }
@@ -213,7 +228,7 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
 
   if( calcWp )
     {
-      if( wp.origP == calcWp->origP )
+      if( wp.wgsPoint == calcWp->wgsPoint )
         {
           cmdUnselectWaypoint->setVisible( true );
           cmdSelectWaypoint->setVisible( false );
@@ -285,7 +300,7 @@ void WPInfoWidget::writeText()
       QString tmp;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt+= "<html><center><b>" + m_wp.description + " (" + m_wp.name;
+      itxt += "<html><center><b>" + m_wp.description + " (" + m_wp.name;
 
       if( !m_wp.icao.isEmpty() )
         {
@@ -297,62 +312,64 @@ void WPInfoWidget::writeText()
           itxt += ",&nbsp;" + m_wp.country;
         }
 
-      itxt+= ")<p>" + BaseMapElement::item2Text(m_wp.type, tr("(unknown)"));
+      itxt += ")<p>" + BaseMapElement::item2Text(m_wp.type, tr("(unknown)")) +
+              "</b></center>" +
+              table;
 
-      if( m_wp.isLandable )
+      if( m_wp.isLandable || m_wp.rwyList.size() > 0 )
         {
-          itxt += "</b></center>";
-
-          QString tmp2 = tr("Unknown");
-
-          // @AP: show runway in both directions
-          uint rwh1 = m_wp.runway / 256;
-          uint rwh2 = m_wp.runway % 256;
-
-          // qDebug("wp.rw=%d rwh1=%d rwh2=%d", m_wp.runway, rwh1, rwh2);
-
-          if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
+          if( m_wp.rwyList.size() == 0 )
             {
-              // heading lays in the expected range
-             if( rwh1 == rwh2 || abs( rwh1-rwh2) == 18 )
+              // The runway list contains no entries. To make the handling
+              // easier, we put the single runway data of the waypoint
+              // into the runway list.
+              m_wp.rwyList.append( Runway(m_wp.length, m_wp.runway, m_wp.surface, true, true) );
+            }
+
+          for( int i = 0; i < m_wp.rwyList.size(); i++ )
+            {
+              Runway rwy = m_wp.rwyList[i];
+
+              if( ! rwy.isOpen )
                 {
-                  // a) If both directions are equal, there is only one landing direction.
-                  // b) If the difference is 18, there are two landing directions,
-                  //    where the first direction is the preferred one.
-                  tmp2 = QString("<b>%1/%2</b>").arg(rwh1, 2, 10, QLatin1Char('0')).
-                                 arg(rwh2, 2, 10, QLatin1Char('0'));
+                  continue;
+                }
+
+              QString tmp2 = tr("Unknown");
+
+              // @AP: show runway in both directions
+              uint rwh1 = rwy.heading / 256;
+              uint rwh2 = rwy.heading % 256;
+
+              // qDebug("wp.rw=%d rwh1=%d rwh2=%d", rwy.runway, rwh1, rwh2);
+
+              if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
+                {
+                  // heading lays in the expected range
+                 if( rwh1 == rwh2 || abs( rwh1-rwh2) == 18 )
+                    {
+                      // a) If both directions are equal, there is only one landing direction.
+                      // b) If the difference is 18, there are two landing directions,
+                      //    where the first direction is the preferred one.
+                      tmp2 = QString("<b>%1/%2</b>").arg(rwh1, 2, 10, QLatin1Char('0')).
+                                     arg(rwh2, 2, 10, QLatin1Char('0'));
+                    }
+                 }
+
+              itxt += "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
+                      Runway::item2Text(rwy.surface, tr("Unknown")) + ")</td>" +
+                      "<td>" + tr("Length: ") + "</td><td><b>";
+
+              if( rwy.length <= 0 )
+                {
+                  itxt += tr("Unknown") + "</b></td></tr>";
                 }
               else
-              {
-                int rwh1inv = rwh1 <= 18 ? rwh1+18 : rwh1-18;
-                int rwh2inv = rwh2 <= 18 ? rwh2+18 : rwh2-18;
-
-                // There are two different runways available
-                tmp2 = QString( "<b>%1/%2, %3/%4</b>").
-                                arg(rwh1, 2, 10, QLatin1Char('0')).
-                                arg(rwh1inv, 2, 10, QLatin1Char('0')).
-                                arg(rwh2, 2, 10, QLatin1Char('0')).
-                                arg(rwh2inv, 2, 10, QLatin1Char('0'));
-              }
+                {
+                  tmp = QString("%1 m</b></td></tr>").arg(rwy.length);
+                  itxt += tmp;
+                }
             }
-
-          itxt += table + "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-                  Runway::item2Text(m_wp.surface, tr("Unknown")) + ")</td>" +
-                  "<td>" + tr("Length: ") + "</td><td><b>";
-
-          if( m_wp.length <= 0 )
-            {
-              itxt += tr("Unknown") + "</b></td></tr>";
-            }
-          else
-            {
-              tmp = QString("%1 m</b></td></tr>").arg(m_wp.length);
-              itxt += tmp;
-            }
-        }
-      else
-        {
-          itxt += table;
         }
 
       // save current unit
@@ -394,7 +411,7 @@ void WPInfoWidget::writeText()
       QDate date = QDate::currentDate();
 
       // calculate Sunrise and Sunset
-      bool res = Sonne::sonneAufUnter( sr, ss, date, m_wp.origP , tz );
+      bool res = Sonne::sonneAufUnter( sr, ss, date, m_wp.wgsPoint , tz );
 
       if( res )
         {
@@ -407,8 +424,8 @@ void WPInfoWidget::writeText()
                            " " + tz + "</b></td></tr>" );
         }
 
-      QString lat = WGSPoint::printPos(m_wp.origP.x(),true);
-      QString lon = WGSPoint::printPos(m_wp.origP.y(),false);
+      QString lat = WGSPoint::printPos(m_wp.wgsPoint.x(),true);
+      QString lon = WGSPoint::printPos(m_wp.wgsPoint.y(),false);
 
       lat = lat.replace(QRegExp(" "), "&nbsp;");
       lon = lon.replace(QRegExp(" "), "&nbsp;");
@@ -531,10 +548,10 @@ void WPInfoWidget::slot_setNewHome()
       GeneralConfig *conf = GeneralConfig::instance();
       conf->setHomeCountryCode( m_wp.country );
       conf->setHomeName( m_wp.name );
-      conf->setHomeCoord( m_wp.origP );
+      conf->setHomeCoord( m_wp.wgsPoint );
       conf->setHomeElevation( Distance(m_wp.elevation) );
 
-      emit newHomePosition( m_wp.origP );
+      emit newHomePosition( m_wp.wgsPoint );
       m_homeChanged = true;
       cmdHome->setVisible( false );
    }
