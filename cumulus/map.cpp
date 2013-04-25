@@ -371,19 +371,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               w->comment = siteComment;
               w->country = siteCountry;
               w->wpListMember = false;
-
-              Runway siteRunway;
-
-              if( site->getRunwayList().size() )
-                {
-                  siteRunway = site->getRunwayList().last();
-                  w->rwyList = site->getRunwayList();
-                }
-
-              w->isLandable = siteRunway.isOpen;
-              w->surface = siteRunway.surface;
-              w->runway = siteRunway.heading;
-              w->length = siteRunway.length;
+              w->rwyList = site->getRunwayList();
 
               found = true;
               lastDist = dX+dY;
@@ -1457,12 +1445,19 @@ void Map::p_drawNavigationLayer()
       // store label to be drawn
       labelSet.insert( corrString );
 
+      bool isLandable = false;
+
+      if( drawnWp[i]->rwyList.size() > 0 )
+        {
+          isLandable = drawnWp[i]->rwyList.at(0).isOpen;
+        }
+
       p_drawLabel( &navP,
                    iconSize / 2 + 3,
                    drawnWp[i]->name,
                    _globalMapMatrix->map( drawnWp[i]->projPoint ),
                    drawnWp[i]->wgsPoint,
-                   drawnWp[i]->isLandable );
+                   isLandable );
     }
 
   // and finally draw a scale indicator on top of this

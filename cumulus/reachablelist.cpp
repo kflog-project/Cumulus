@@ -155,9 +155,17 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
 
           distance.setKilometers(dist(&lastPosition, &pt));
 
+          bool isLandable = false;
+
+          if( wpList.at(i).rwyList.size() > 0 )
+            {
+              isLandable = wpList.at(i).rwyList.at(0).isOpen;
+            }
+
+
           // check if point is a potential reachable candidate at best LD
           if ( (distance.getKilometers() > _maxReach ) ||
-               ! (wpList.at(i).isLandable ||
+               ! (isLandable ||
                  (wpList.at(i).type == BaseMapElement::Outlanding) )  )
             {
               continue;
