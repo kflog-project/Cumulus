@@ -343,7 +343,7 @@ void TaskEditor::showTask()
       idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
 
       rowList.clear();
-      rowList << idString << typeName << tp->name << distance;
+      rowList << idString << typeName << tp->getWPName() << distance;
 
       const int iconSize = Layout::iconSize( font() );
 
@@ -352,9 +352,9 @@ void TaskEditor::showTask()
       bool showIcon = true;
 
       if( tmpList.size() >= 2 &&
-          ((loop == 0 && tmpList.at(0)->wgsPoint == tmpList.at(1)->wgsPoint ) ||
+          ((loop == 0 && tmpList.at(0)->getWGSPosition() == tmpList.at(1)->getWGSPosition() ) ||
            (loop == tmpList.size()-1 &&
-            tmpList.at(tmpList.size()-1)->wgsPoint == tmpList.at(tmpList.size()-2)->wgsPoint )) )
+            tmpList.at(tmpList.size()-1)->getWGSPosition() == tmpList.at(tmpList.size()-2)->getWGSPosition() )) )
         {
           // If start and begin point or end and landing point are identical
           // no task figure icon is shown in the list entry.
@@ -419,7 +419,7 @@ void TaskEditor::resizeTaskListColumns()
 
 void TaskEditor::slotAddWaypoint()
 {
-  Waypoint *wp = waypointList[listSelectCB->currentIndex()]->getCurrentWaypoint();
+  Waypoint* wp = waypointList[listSelectCB->currentIndex()]->getCurrentWaypoint();
 
   if( wp == 0 )
     {
@@ -431,7 +431,10 @@ void TaskEditor::slotAddWaypoint()
   if( item == 0 )
     {
       // empty list
-      tpList.append( new TaskPoint(*wp) );
+
+      // A taskpoint is only a single point and not more!
+      TaskPoint* tp = new TaskPoint( *wp );
+      tpList.append( tp );
 
       // Remember last position.
       lastSelectedItem = 0;
@@ -440,7 +443,10 @@ void TaskEditor::slotAddWaypoint()
     {
       int id = taskList->indexOfTopLevelItem( item );
       id++;
-      tpList.insert( id, new TaskPoint(*wp) );
+
+      // A taskpoint is only a single point and not more!
+      TaskPoint* tp = new TaskPoint( *wp );
+      tpList.insert( id, tp );
 
       // Remember last position.
       lastSelectedItem = id;
@@ -839,23 +845,23 @@ void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList )
     {
       if( i == 0 )
         {
-          tpList.at(i)->taskPointType = TaskPointTypes::TakeOff;
+          tpList.at(i)->setTaskPointType(TaskPointTypes::TakeOff);
         }
       else if( i == 1 )
         {
-          tpList.at(i)->taskPointType = TaskPointTypes::Begin;
+          tpList.at(i)->setTaskPointType(TaskPointTypes::Begin);
         }
       else if( tpList.size() >= 4 && i == tpList.size() - 2 )
         {
-          tpList.at(i)->taskPointType = TaskPointTypes::End;
+          tpList.at(i)->setTaskPointType(TaskPointTypes::End);
         }
       else if( tpList.size() >= 4 && i == tpList.size() - 1 )
         {
-          tpList.at(i)->taskPointType = TaskPointTypes::Landing;
+          tpList.at(i)->setTaskPointType(TaskPointTypes::Landing);
         }
       else
         {
-          tpList.at(i)->taskPointType = TaskPointTypes::RouteP;
+          tpList.at(i)->setTaskPointType(TaskPointTypes::RouteP);
         }
 
       // Set task point figure schema to default.

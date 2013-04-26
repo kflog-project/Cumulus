@@ -15,6 +15,16 @@
  **
  ***********************************************************************/
 
+#ifndef TASK_POINT_H
+#define TASK_POINT_H
+
+#include "distance.h"
+#include "generalconfig.h"
+#include "singlepoint.h"
+#include "taskline.h"
+#include "taskpointtypes.h"
+#include "waypoint.h"
+
 /**
  * \class TaskPoint
  *
@@ -22,23 +32,14 @@
  *
  * \brief Contains all data attributes of a task point.
  *
- * This class is an extension of the waypoint class. It handles all data
+ * This class is an extension of the single point class. It handles all data
  * items concerning a flight task.
  *
  * \date 2010-2013
  *
  * \version $Id$
  */
-
-#ifndef TASK_POINT_H_
-#define TASK_POINT_H_
-
-#include "distance.h"
-#include "generalconfig.h"
-#include "taskline.h"
-#include "waypoint.h"
-
-class TaskPoint : public Waypoint
+class TaskPoint : public SinglePoint
 {
  public:
 
@@ -47,11 +48,45 @@ class TaskPoint : public Waypoint
    */
   enum PassageState{ Outside, Near, Passed };
 
-  TaskPoint();
-  TaskPoint( const Waypoint& wp );
-  TaskPoint( const TaskPoint& inst );
+  /**
+   * Default constructor.
+   */
+  TaskPoint( enum TaskPointTypes::TaskPointType type=TaskPointTypes::NotSet );
+
+  /**
+   * Constructs a taskpoint object from a waypoint object.
+   */
+  TaskPoint( const Waypoint& wp,
+             enum TaskPointTypes::TaskPointType type=TaskPointTypes::NotSet );
 
   virtual ~TaskPoint();
+
+  /**
+   * Sets the type of the task point.
+   *
+   * \param value The type of the task point.
+   */
+  void setTaskPointType( enum TaskPointTypes::TaskPointType value )
+    {
+      m_taskPointType = value;
+    };
+
+  /**
+   * Sets the type of the task point.
+   *
+   * \param value The type of the task point.
+   */
+  enum TaskPointTypes::TaskPointType getTaskPointType() const
+    {
+      return m_taskPointType;
+    };
+
+  /**
+   * Returns a waypoint object comtaining the taskpoint basic data.
+   *
+   * \return A waypoint object initialized with the taskpoint basic data.
+   */
+  Waypoint* getWaypointObject();
 
   /**
    * Checks the task point passage according to the assigned schema.
@@ -106,7 +141,10 @@ class TaskPoint : public Waypoint
   bool wtResult;
 
   //------------------------------------------------------------
- private:
+ protected:
+
+  /** The type of the task point. */
+  enum TaskPointTypes::TaskPointType m_taskPointType;
 
   enum GeneralConfig::ActiveTaskFigureScheme m_taskActiveTaskPointFigureScheme;
   Distance m_taskCircleRadius;
@@ -128,7 +166,33 @@ class TaskPoint : public Waypoint
    */
   bool m_userEdited;
 
+  /** Index of taskpoint in the flight task list */
+  short m_flightTaskListIndex;
+
+  /** A waypoint object, filled with the taskpoint basic data.*/
+  Waypoint m_wpObject;
+
  public:
+
+  /**
+   * Gets the flight task list index of this task point.
+   *
+   * \param value The new flight task list index of this task point.
+   */
+  void setFlightTaskListIndex( const short value )
+    {
+      m_flightTaskListIndex = value;
+    };
+
+  /**
+   * Sets the flight task list index of this task point
+   *
+   * \return The flight task list index of this task point.
+   */
+  short getFlightTaskListIndex() const
+    {
+      return m_flightTaskListIndex;
+    };
 
   /** Gets the active task point figure scheme. That can be cylinder, sector or line. */
   enum GeneralConfig::ActiveTaskFigureScheme getActiveTaskPointFigureScheme() const
@@ -281,4 +345,4 @@ class TaskPoint : public Waypoint
   QPixmap& createLineIcon( const int iconSize );
 };
 
-#endif /* TASK_POINT_H_ */
+#endif /* TASK_POINT_H */

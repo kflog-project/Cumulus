@@ -171,6 +171,7 @@ HEADERS = \
     tasklistview.h \
     taskpointeditor.h \
     taskpoint.h \
+    taskpointtypes.h \
     time_cu.h \
     tpinfowidget.h \
     vario.h \

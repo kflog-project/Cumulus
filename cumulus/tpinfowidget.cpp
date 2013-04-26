@@ -171,10 +171,10 @@ void TPInfoWidget::showEvent(QShowEvent *)
 
 /**
  * This method fills the widget with the taskpoint switch info. The
- * info is taken from the current active fligh task.
+ * info is taken from the current active flight task.
  *
  * currentTpIndex: index of current taskpoint in flight task
- * dist2Next: distance to next taskpoint in kilometers
+ * dist2Next: distance to the next taskpoint in kilometers
  *
  */
 void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
@@ -192,23 +192,23 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   if( tpList.count() < 4 || tpList.count() <= currentTpIndex+1 )
     {
-      // to less waypoints in list
+      // to less taskpoints in the list
       return;
     }
 
-  Waypoint *currentTP = tpList.at( currentTpIndex );
-  Waypoint *nextTP    = tpList.at( currentTpIndex+1 );
+  TaskPoint *currentTP = tpList.at( currentTpIndex );
+  TaskPoint *nextTP    = tpList.at( currentTpIndex + 1 );
 
   QString display;
   QString no1, no2;
-  QString currentTpDes = currentTP->description;
-  QString nextTpDes    = nextTP->description;
+  QString currentTpDes = currentTP->getName();
+  QString nextTpDes    = nextTP->getName();
 
   currentTpDes.replace(  QRegExp(" "), "&nbsp;" );
   nextTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
-  no1.sprintf( "%02d", currentTP->taskPointIndex );
-  no2.sprintf( "%02d", nextTP->taskPointIndex );
+  no1.sprintf( "%02d", currentTpIndex );
+  no2.sprintf( "%02d", currentTpIndex + 1 );
 
   display += "<html><center><big><b>" +
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
@@ -216,12 +216,12 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   display += "<table width=100% cellpadding=4 cellspacing=0 border=1><tr><th colspan=2 align=left>" +
     tr("Reached target") + " " + no1 + "</th>" +
-    "<th colspan=2 align=left>" + currentTP->name + "&nbsp;(" + currentTpDes + ")" +
+    "<th colspan=2 align=left>" + currentTP->getWPName() + "&nbsp;(" + currentTpDes + ")" +
     "</th></tr>";
 
   display += "<tr><th colspan=2 align=\"left\">" +
     tr("Next target") + " " + no2 + "</th>" +
-    "<th colspan=2 align=left>" + nextTP->name + "&nbsp;(" + nextTpDes + ")" +
+    "<th colspan=2 align=left>" + nextTP->getWPName() + "&nbsp;(" + nextTpDes + ")" +
     "</th></tr>";
 
   // to avoid wrapping in the table we have to code spaces as forced spaces in html
@@ -237,10 +237,10 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   // calculate Bearing
   int bearing= int( rint(getBearingWgs( calculator->getlastPosition(),
-                                        nextTP->wgsPoint ) * 180/M_PI) );
+                                        nextTP->getWGSPosition() ) * 180/M_PI) );
   // glide path
   calculator->glidePath( bearing, dist2Next,
-                         nextTP->elevation,
+                         nextTP->getElevation(),
                          arrivalAlt, bestSpeed );
 
   // fetch minimal arrival altitude
@@ -326,7 +326,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
 
-  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->wgsPoint, tz );
+  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->getWGSPositionRef(), tz );
 
   if( res )
     {
@@ -344,21 +344,21 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   //-----------------------------------------------------------------------
   // Show data of landing (final) target, if it is not already
   // included
-  if( ( nextTP->taskPointType != TaskPointTypes::Landing &&
-        nextTP->taskPointType != TaskPointTypes::End ) ||
-      ( nextTP->taskPointType == TaskPointTypes::End &&
-        nextTP->wgsPoint != tpList.at( tpList.count() - 1 )->wgsPoint ) )
+  if( ( nextTP->getTaskPointType() != TaskPointTypes::Landing &&
+        nextTP->getTaskPointType() != TaskPointTypes::End ) ||
+      ( nextTP->getTaskPointType() == TaskPointTypes::End &&
+        nextTP->getWGSPosition() != tpList.at( tpList.count() - 1 )->getWGSPosition() ) )
   {
     TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
-    no1.sprintf( "%02d", finalTP->taskPointIndex );
+    no1.sprintf( "%02d", finalTP->getFlightTaskListIndex() );
 
-    QString finalTpDes = finalTP->description;
+    QString finalTpDes = finalTP->getName();
 
     finalTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
     display += "<tr><th colspan=\"2\" align=\"left\">" +
       tr("Landing target") + " " + no1 + "</th>" +
-      "<th colspan=2 align=left>" + finalTP->name + "&nbsp;(" + finalTpDes + ")" +
+      "<th colspan=2 align=left>" + finalTP->getWPName() + "&nbsp;(" + finalTpDes + ")" +
       "</th></tr>";
 
     // distance in km to final target must be calculated
@@ -450,7 +450,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
     QString sr, ss, tz;
     QDate date = QDate::currentDate();
 
-    bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->wgsPoint, tz );
+    bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->getWGSPositionRef(), tz );
 
     if( res )
       {
@@ -627,11 +627,12 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       return;
     }
 
-  TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
+  TaskPoint *tp = tpList.at( wp->taskPointIndex );
+  TaskPoint *finalTp = tpList.at( tpList.count() - 1 );
 
-  if( ( wp->taskPointType == TaskPointTypes::End &&
-        wp->wgsPoint == finalTP->wgsPoint ) ||
-        wp->taskPointType == TaskPointTypes::Landing )
+  if( ( tp->getTaskPointType() == TaskPointTypes::End &&
+        tp->getWGSPosition() == finalTp->getWGSPosition() ) ||
+        tp->getTaskPointType() == TaskPointTypes::Landing )
     {
       // Waypoint is identical in position to landing point of flight
       // task. So we do display nothing more.
@@ -642,7 +643,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
 
   display += "<tr><th colspan=\"2\" align=\"left\">" +
     tr("Landing target") + "</th></tr>" +
-    "<tr><td colspan=\"2\">&nbsp;&nbsp;" + finalTP->name + " (" + finalTP->description + ")" +
+    "<tr><td colspan=\"2\">&nbsp;&nbsp;" + finalTp->getWPName() + " (" + finalTp->getComment() + ")" +
     "</td></tr>";
 
   // distance in km to final target must be calculated
@@ -718,7 +719,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       }
 
     // calculate sunset for the landing destination
-    res = Sonne::sonneAufUnter( sr, ss, date, finalTP->wgsPoint, tz );
+    res = Sonne::sonneAufUnter( sr, ss, date, finalTp->getWGSPositionRef(), tz );
 
     if( res )
       {

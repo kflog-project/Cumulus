@@ -83,10 +83,55 @@ TW,31099000,7310667,56,Dessau,EDAD,Dessau,118.175,,1,2331,980,2,5
 TE
 --------------------------------------------------------------------------------
 
- */
+*/
 
 bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
                                     QString fileName )
+{
+  while( ! flightTaskList.isEmpty() )
+    {
+      // Clears the list as first.
+      delete flightTaskList.takeFirst();
+    }
+
+  QString fn;
+
+  if( fileName.isEmpty() )
+    {
+      // Use task default file name
+      fn = m_taskFileName;
+    }
+
+  QFile f( fn );
+
+  if ( ! f.open( QIODevice::ReadOnly ) )
+    {
+      qWarning() << __FUNCTION__ << "Could not open task-file:" << fn;
+      return false;
+    }
+
+  QTextStream stream( &f );
+
+  // Read the first line to decide, which format version should be read.
+  QString line = stream.readLine().trimmed();
+
+  f.close();
+
+  if( line.startsWith( "# KFLog/Cumulus-Task-File V2.0") ||
+      line.startsWith( "# KFLog/Cumulus-Task-File created") ||
+      line.startsWith( "TS," ) ||
+      line.isEmpty() )
+    {
+      // Old format has to be read
+      return loadTaskListOld( flightTaskList, fileName );
+    }
+
+  // New format has to be read
+  return loadTaskListNew( flightTaskList, fileName );
+}
+
+bool TaskFileManager::loadTaskListOld( QList<FlightTask*>& flightTaskList,
+                                       QString fileName )
 {
   while( ! flightTaskList.isEmpty() )
     {
@@ -158,20 +203,22 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
 
               tmpList = line.split( ",", QString::KeepEmptyParts );
 
-              tp->wgsPoint.setLat( tmpList.at( 1 ).toInt() );
-              tp->wgsPoint.setLon( tmpList.at( 2 ) .toInt() );
-              tp->projPoint = _globalMapMatrix->wgsToMap( tp->wgsPoint );
-              tp->elevation = tmpList.at( 3 ).toInt();
-              tp->name = tmpList.at( 4 );
-              tp->icao = tmpList.at( 5 );
-              tp->description = tmpList.at( 6 );
-              tp->frequency = tmpList.at( 7 ).toDouble();
-              tp->comment = tmpList.at( 8 );
-              tp->isLandable = tmpList.at( 9 ).toInt();
-              tp->runway = tmpList.at( 10 ).toInt();
-              tp->length = tmpList.at( 11 ).toInt();
-              tp->surface = tmpList.at( 12 ).toInt();
-              tp->type = tmpList.at( 13 ).toInt();
+              WGSPoint wgsp( tmpList.at( 1 ).toInt(), tmpList.at( 2 ) .toInt() );
+
+              tp->setWGSPosition( wgsp );
+              tp->setPosition( _globalMapMatrix->wgsToMap( wgsp ) );
+              tp->setElevation( tmpList.at( 3 ).toInt() );
+              tp->setWPName( tmpList.at( 4 ) );
+              // tp->icao = tmpList.at( 5 );
+              tp->setName( tmpList.at( 6 ) );
+              // tp->frequency = tmpList.at( 7 ).toDouble();
+              tp->setComment( tmpList.at( 8 ) );
+              // tp->isLandable = tmpList.at( 9 ).toInt();
+              // tp->runway = tmpList.at( 10 ).toInt();
+              // tp->length = tmpList.at( 11 ).toInt();
+              // tp->surface = tmpList.at( 12 ).toInt();
+              // tp->type = tmpList.at( 13 ).toInt();
+              tp->setTypeID( BaseMapElement::Turnpoint ) ;
 
               if( tmpList.size() == 22 )
                 {
@@ -233,6 +280,135 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
   return true;
 }
 
+bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
+                                       QString fileName )
+{
+  while( ! flightTaskList.isEmpty() )
+    {
+      // Clears the list as first.
+      delete flightTaskList.takeFirst();
+    }
+
+  QString fn;
+
+  if( fileName.isEmpty() )
+    {
+      // Use task default file name
+      fn = m_taskFileName;
+    }
+
+  QFile f( fn );
+
+  if ( ! f.open( QIODevice::ReadOnly ) )
+    {
+      qWarning() << __FUNCTION__ << "Could not open task-file:" << fn;
+      return false;
+    }
+
+  QTextStream stream( &f );
+
+  bool isTask = false;
+
+  QString taskName;
+  QStringList tmpList;
+  QList<TaskPoint *> *tpList = 0;
+
+  while ( !stream.atEnd() )
+    {
+      QString line = stream.readLine().trimmed();
+
+      if ( line.isEmpty() || line.mid( 0, 1 ) == "#" )
+        {
+          // Ignore empty and comment lines
+          continue;
+        }
+
+      if ( line.mid( 0, 2 ) == "TS" )
+        {
+          // new task ...
+          isTask = true;
+
+          if ( tpList != 0 )
+            {
+              // remove all elements from previous incomplete steps
+              qDeleteAll(*tpList);
+              tpList->clear();
+            }
+          else
+            {
+              tpList = new QList<TaskPoint *>;
+            }
+
+          tmpList = line.split( ",", QString::KeepEmptyParts );
+
+          if( tmpList.size() < 2 ) continue;
+
+          taskName = tmpList.at(1);
+        }
+      else
+        {
+          if ( line.mid( 0, 2 ) == "TW" && isTask )
+            {
+              // new task point
+              TaskPoint* tp = new TaskPoint;
+              tpList->append( tp );
+
+              tmpList = line.split( ",", QString::KeepEmptyParts );
+
+              if( tmpList.size() < 16 ) continue;
+
+              WGSPoint wgsp( tmpList.at( 1 ).toInt(), tmpList.at( 2 ) .toInt() );
+
+              tp->setWGSPosition( wgsp );
+              tp->setPosition( _globalMapMatrix->wgsToMap( wgsp ) );
+              tp->setElevation( tmpList.at( 3 ).toInt() );
+              tp->setWPName( tmpList.at( 4 ) );
+              tp->setName( tmpList.at( 5 ) );
+              tp->setComment( tmpList.at( 6 ) );
+              tp->setTypeID( (BaseMapElement::objectType) tmpList.at( 7 ).toShort() ) ;
+
+              tp->setActiveTaskPointFigureScheme( static_cast<enum GeneralConfig::ActiveTaskFigureScheme> (tmpList.at( 8 ).toInt()) );
+              tp->setTaskLineLength( tmpList.at( 9 ).toDouble() );
+              tp->setTaskCircleRadius( tmpList.at( 10 ).toDouble() );
+              tp->setTaskSectorInnerRadius( tmpList.at( 11 ).toDouble() );
+              tp->setTaskSectorOuterRadius( tmpList.at( 12 ).toDouble() );
+              tp->setTaskSectorAngle( tmpList.at( 13 ).toInt() );
+              tp->setAutoZoom( tmpList.at( 14 ).toInt() > 0 ? true : false );
+              tp->setUserEditFlag( tmpList.at( 15 ).toInt() > 0 ? true : false );
+            }
+          else
+            {
+              if ( line.mid( 0, 2 ) == "TE" && isTask )
+                {
+                  // task complete
+                  isTask = false;
+
+                  FlightTask* task = new FlightTask( tpList, true, taskName, m_tas );
+                  flightTaskList.append( task );
+
+                  // ownership about the list is taken over by FlighTask
+                  tpList = 0;
+                }
+            }
+        }
+    }
+
+  if ( tpList != 0 )
+    {
+      // remove all elements from a previous incomplete step
+      qDeleteAll(*tpList);
+      delete tpList;
+    }
+
+  f.close();
+
+  qDebug() << "TFM:" << flightTaskList.size()
+           << "task objects read from file"
+           << fn;
+
+  return true;
+}
+
 bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
                                     QString fileName )
 {
@@ -258,7 +434,7 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
-  stream << "# KFLog/Cumulus-Task-File V2.0, created at "
+  stream << "# KFLog/Cumulus-Task-File V3.0, created at "
          << dtStr << " by Cumulus "
          << QCoreApplication::applicationVersion() << endl << endl;
 
@@ -274,19 +450,13 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
           // saving each task point ...
           TaskPoint* tp = tpList.at(j);
           stream << "TW,"
-                 << tp->wgsPoint.x() << ","
-                 << tp->wgsPoint.y() << ","
-                 << tp->elevation << ","
-                 << tp->name << ","
-                 << tp->icao << ","
-                 << tp->description << ","
-                 << tp->frequency << ","
-                 << tp->comment << ","
-                 << tp->isLandable << ","
-                 << tp->runway << ","
-                 << tp->length << ","
-                 << tp->surface << ","
-                 << tp->type << ","
+                 << tp->getWGSPosition().x() << ","
+                 << tp->getWGSPosition().y() << ","
+                 << tp->getElevation() << ","
+                 << tp->getWPName() << ","
+                 << tp->getName() << ","
+                 << tp->getComment() << ","
+                 << tp->getTypeID() << ","
                  << tp->getActiveTaskPointFigureScheme() << ","
                  << tp->getTaskLineLength().getMeters() << ","
                  << tp->getTaskCircleRadius().getMeters() << ","

@@ -15,7 +15,6 @@
  **
  ***********************************************************************/
 
-#include <QObject>
 #include <QtCore>
 
 #include "generalconfig.h"
@@ -25,74 +24,58 @@
 // Near check distance state as meters
 #define NEAR_DISTANCE 1000.0
 
-TaskPoint::TaskPoint()
+TaskPoint::TaskPoint( enum TaskPointTypes::TaskPointType type ) :
+  SinglePoint(),
+  angle(0.0),
+  minAngle(0.0),
+  maxAngle(0.0),
+  bearing(-1),
+  distance(0.0),
+  distTime(0),
+  wca(0.0),
+  trueHeading(-1.0),
+  groundSpeed(0.0),
+  wtResult(false),
+  m_taskPointType(type),
+  m_taskActiveTaskPointFigureScheme(GeneralConfig::Undefined),
+  m_taskSectorAngle(0),
+  m_autoZoom(false),
+  m_userEdited(false),
+  m_flightTaskListIndex(-1)
 {
-  bearing = -1;
-  angle = 0.;
-  minAngle = 0.;
-  maxAngle = 0.;
-  distance = 0.;
-  distTime = 0;
-  wca = 0.;
-  trueHeading = -1;
-  groundSpeed = 0.0;
-  wtResult = false;
-
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  m_taskActiveTaskPointFigureScheme = conf->getActiveTaskObsScheme();
-  m_taskLine.setLineLength( conf->getTaskStartLineLength().getMeters() );
-  m_taskCircleRadius = conf->getTaskObsCircleRadius();
-  m_taskSectorInnerRadius = conf->getTaskObsSectorInnerRadius();
-  m_taskSectorOuterRadius = conf->getTaskObsSectorOuterRadius();
-  m_taskSectorAngle = conf->getTaskObsSectorAngle();
-  m_autoZoom = conf->getTaskPointAutoZoom();
-  m_userEdited = false;
-}
-
-/** Construct object from waypoint reference */
-TaskPoint::TaskPoint( const Waypoint& wp ) : Waypoint( wp )
-{
-  bearing = -1;
-  angle = 0.;
-  minAngle = 0.;
-  maxAngle = 0.;
-  distance = 0.;
-  distTime = 0;
-  wca = 0;
-  trueHeading = -1;
-  groundSpeed = 0.0;
-  wtResult = false;
-
-  m_taskLine.setLineCenter( wp.wgsPoint );
-
-  // The waypoint class contains the taskpoint type. We must initialize the
-  // taskpoint according to its given type.
+  setTypeID( BaseMapElement::Turnpoint );
   setConfigurationDefaults();
 }
 
-/** Copy constructor */
-TaskPoint::TaskPoint( const TaskPoint& inst ) : Waypoint( inst )
+/** Construct object from a waypoint reference */
+TaskPoint::TaskPoint( const Waypoint& wp, enum TaskPointTypes::TaskPointType type ) :
+  SinglePoint( wp.description,
+               wp.name,
+               BaseMapElement::Turnpoint,
+               wp.wgsPoint,
+               wp.projPoint,
+               wp.elevation,
+               wp.country,
+               wp.comment ),
+  angle(0.0),
+  minAngle(0.0),
+  maxAngle(0.0),
+  bearing(-1),
+  distance(0.0),
+  distTime(0),
+  wca(0.0),
+  trueHeading(-1.0),
+  groundSpeed(0.0),
+  wtResult(false),
+  m_taskPointType(type),
+  m_taskActiveTaskPointFigureScheme(GeneralConfig::Undefined),
+  m_taskSectorAngle(0),
+  m_autoZoom(false),
+  m_userEdited(false),
+  m_flightTaskListIndex(-1)
 {
-  bearing     = inst.bearing;
-  angle       = inst.angle;
-  minAngle    = inst.minAngle;
-  maxAngle    = inst.maxAngle;
-  distance    = inst.distance;
-  distTime    = inst.distTime;
-  wca         = inst.wca;
-  trueHeading = inst.trueHeading;
-  groundSpeed = inst.groundSpeed;
-  wtResult    = inst.wtResult;
-
-  m_taskActiveTaskPointFigureScheme = inst.m_taskActiveTaskPointFigureScheme;
-  m_taskLine = inst.m_taskLine;
-  m_taskCircleRadius = inst.m_taskCircleRadius;
-  m_taskSectorInnerRadius = inst.m_taskSectorInnerRadius;
-  m_taskSectorOuterRadius = inst.m_taskSectorOuterRadius;
-  m_taskSectorAngle = inst.m_taskSectorAngle;
-  m_autoZoom = inst.m_autoZoom;
-  m_userEdited = inst.m_userEdited;
+  m_taskLine.setLineCenter( wp.wgsPoint );
+  setConfigurationDefaults();
 }
 
 TaskPoint::~TaskPoint()
@@ -100,12 +83,29 @@ TaskPoint::~TaskPoint()
   // qDebug( "TaskPoint::~TaskPoint(): name=%s, %X", name.toLatin1().data(), (uint) this );
 }
 
+Waypoint* TaskPoint::getWaypointObject()
+{
+  // Update data of waypoint object
+  m_wpObject.name = getWPName();
+  m_wpObject.description = getName();
+  m_wpObject.comment = getComment();
+  m_wpObject.type = getTypeID();
+  m_wpObject.wgsPoint = getWGSPosition();
+  m_wpObject.projPoint = getPosition();
+  m_wpObject.elevation = getElevation();
+  m_wpObject.taskPointIndex = getFlightTaskListIndex();
+  m_wpObject.country = getCountry();
+  m_wpObject.priority = Waypoint::High;
+
+  return &m_wpObject;
+}
+
 enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
                                                       const QPoint& position )
 {
   // qDebug() << "TaskPoint::checkPassage: TP-IDX=" << taskPointIndex;
 
-  if( taskPointIndex == -1 )
+  if( m_taskPointType == -1 )
     {
       // no active task point
       return Outside;
@@ -194,7 +194,7 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
     }
 
   // Do special check for landing point
-  if( taskPointType == TaskPointTypes::Landing )
+  if( m_taskPointType == TaskPointTypes::Landing )
     {
       // Here we do apply only the outer radius check.
       if( dist2TP.getMeters() < outerRadius )
@@ -216,7 +216,7 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
 
   // Here we are inside of outer radius, therefore we have to check the sector angle.
   // Calculate bearing from TP to current position
-  const double bearing = getBearingWgs( wgsPoint, position );
+  const double bearing = getBearingWgs( wgsPosition, position );
 
 #ifdef CUMULUS_DEBUG
   qDebug( "FlightTask::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",
@@ -244,7 +244,7 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
 /** Returns the type of a task point in a string format. */
 QString TaskPoint::getTaskPointTypeString() const
 {
-  switch( taskPointType )
+  switch( m_taskPointType )
     {
     case TaskPointTypes::TakeOff:
       return QObject::tr( "TO" );
@@ -311,7 +311,7 @@ void TaskPoint::setConfigurationDefaults()
 {
   GeneralConfig* conf = GeneralConfig::instance();
 
-  switch( taskPointType )
+  switch( m_taskPointType )
     {
       case TaskPointTypes::Begin:
         setTaskCircleRadius( conf->getTaskStartRingRadius() );

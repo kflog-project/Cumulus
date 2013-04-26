@@ -75,7 +75,7 @@ Calculator::Calculator(QObject* parent) :
   _calculateETA = false;
   _calculateVario = true;
   _calculateWind = true;
-  selectedWp = static_cast<TaskPoint *> (0);
+  selectedWp = static_cast<Waypoint *> (0);
   lastMc.setInvalid();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
@@ -330,8 +330,8 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
           // Tasks with less 4 entries are incomplete!
           for ( int i=0; i < tpList.count() && tpList.count() > 3; i++ )
             {
-              if ( selectedWp->wgsPoint == tpList.at(i)->wgsPoint &&
-                   selectedWp->taskPointIndex == tpList.at(i)->taskPointIndex )
+              if ( selectedWp->wgsPoint == tpList.at(i)->getWGSPosition() &&
+                   selectedWp->taskPointIndex == tpList.at(i)->getFlightTaskListIndex() )
                 {
                   selectedWpInList = i;
                   break;
@@ -424,7 +424,8 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
   if( moving() || GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
     {
-      passageState = selectedWp->checkPassage( curDistance, lastPosition );
+      TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
+      passageState = tp->checkPassage( curDistance, lastPosition );
     }
 
   if( autoWpSwitch &&
@@ -479,7 +480,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
       // Display a task end message under following conditions:
       // a) we touched the target radius
       // b) the last task point is selected
-      if ( selectedWp->taskPointType == TaskPointTypes::Landing && taskEndReached == false )
+      TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
+
+      if ( tp->getTaskPointType() == TaskPointTypes::Landing && taskEndReached == false )
         {
           taskEndReached = true;
           emit taskInfo( tr("Task ended"), true );
@@ -546,17 +549,19 @@ void Calculator::calcDistance( bool autoWpSwitch )
       if ( tpList.count() > selectedWpInList + 1 )
         {
           // this loop excludes the last WP
-          Waypoint *lastWp = tpList.at(selectedWpInList);
+          TaskPoint *lastWp = tpList.at(selectedWpInList);
           selectedWpInList++;
-          Waypoint *nextWp = tpList.at(selectedWpInList);
+          TaskPoint *nextWp = tpList.at(selectedWpInList);
 
           // calculate the distance to the next waypoint
-          Distance dist2Next( dist(double(lastPosition.x()), double(lastPosition.y()),
-                                   nextWp->wgsPoint.lat(), nextWp->wgsPoint.lon()) * 1000);
+          Distance dist2Next( dist( double(lastPosition.x()),
+                                    double(lastPosition.y()),
+                                    nextWp->getWGSPosition().lat(),
+                                    nextWp->getWGSPosition().lon() ) * 1000);
           lastDistance = dist2Next;
 
           // announce task point change as none user interaction
-          slot_WaypointChange( nextWp, false );
+          slot_WaypointChange( nextWp->getWaypointObject(), false );
 
           // zoom back the map to the last user's scale.
           slot_switchMapScaleBack();
@@ -564,15 +569,17 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // Here we send a notice to the user about the task point
           // switch. If end point is reached and landing point is identical
           // to end point, we will suppress the info message
-          if ( ! ( lastWp->taskPointType == TaskPointTypes::End &&
-                   nextWp->taskPointType == TaskPointTypes::Landing &&
-                   lastWp->wgsPoint == nextWp->wgsPoint ) )
+          if ( ! ( lastWp->getTaskPointType() == TaskPointTypes::End &&
+                   nextWp->getTaskPointType() == TaskPointTypes::Landing &&
+                   lastWp->getWGSPosition() == nextWp->getWGSPosition() ) )
             {
 
               emit taskInfo( tr("TP passed"), true );
 
               TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
-              tpInfo->prepareSwitchText( lastWp->taskPointIndex, dist2Next.getKilometers() );
+
+              tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
+                                         dist2Next.getKilometers() );
 
               // switch back to map view on close of tp info widget
               connect( tpInfo, SIGNAL( closed() ),
@@ -1632,18 +1639,7 @@ void Calculator::setSelectedWp( Waypoint* newWp )
   // make a deep copy of the new waypoint to be set
   if ( newWp != 0 )
     {
-      TaskPoint* tp = dynamic_cast<TaskPoint *>(newWp);
-
-      if( tp )
-        {
-          // new waypoint is a task point
-          selectedWp = new TaskPoint( *tp );
-        }
-      else
-        {
-          // new waypoint is only a simple waypoint
-          selectedWp = new TaskPoint( *newWp );
-        }
+      selectedWp = new Waypoint( *newWp );
 
       // Reset task point passage state
       m_lastTpPassageState = TaskPoint::Outside;
@@ -1700,71 +1696,71 @@ void Calculator::slot_startTask()
       return;
     }
 
-    QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint *> tpList = task->getTpList();
 
-    // Tasks with less 4 entries are incomplete! The selection
-    // of the start point is also senseless, request is ignored.
-    if( tpList.count() < 4 )
-      {
-        return;
-      }
+  // Tasks with less 4 entries are incomplete! The selection
+  // of the start point is also senseless, request is ignored.
+  if( tpList.count() < 4 )
+    {
+      return;
+    }
 
-    TaskPoint *tp2Taken;
+  TaskPoint *tp2Taken;
 
-    // The start point of a task depends of the type. If first and
-    // second point are identical, we take always the second one
-    // otherwise the first.
-    if( tpList.at(0)->wgsPoint != tpList.at(1)->wgsPoint )
-      {
-        // take first task point
-        // tp2Taken = tpList.at(0);
+  // The start point of a task depends of the type. If first and
+  // second point are identical, we take always the second one
+  // otherwise the first.
+  if( tpList.at(0)->getWGSPosition() != tpList.at(1)->getWGSPosition() )
+    {
+      // take first task point
+      // tp2Taken = tpList.at(0);
 
-        // 01.02.2013 AP: Always point begin is selected as first point.
-        // The former start point has only a comment function.
-        tp2Taken = tpList.at(1);
-      }
-    else
-      {
-        // take second task point
-        tp2Taken = tpList.at(1);
-      }
+      // 01.02.2013 AP: Always the begin point is selected as first point.
+      // The former start point has only a comment function.
+      tp2Taken = tpList.at(1);
+    }
+  else
+    {
+      // take second task point
+      tp2Taken = tpList.at(1);
+    }
 
-    if( selectedWp )
-      {
-        // Check, if another task point is already selected. In this case ask the
-        // user if the first point shall be really selected.
-        if( selectedWp->taskPointIndex != -1 &&
-            selectedWp->taskPointIndex != tp2Taken->taskPointIndex )
-          {
-            QMessageBox mb( QMessageBox::Question,
-                            tr( "Restart current task?" ),
-                            tr( "<html>"
-                                "A flight task is running!<br>"
-                                "This command will start the<br>"
-                                "task again at the beginning."
-                                "<br>Do You really want to restart?"
-                                "</html>" ),
-                            QMessageBox::Yes | QMessageBox::No,
-                            QApplication::desktop() );
+  if( selectedWp )
+    {
+      // Check, if another task point is already selected. In this case ask the
+      // user if the first point shall be really selected.
+      if( selectedWp->taskPointIndex != -1 &&
+          selectedWp->taskPointIndex != tp2Taken->getFlightTaskListIndex() )
+        {
+          QMessageBox mb( QMessageBox::Question,
+                          tr( "Restart current task?" ),
+                          tr( "<html>"
+                              "A flight task is running!<br>"
+                              "This command will start the<br>"
+                              "task again at the beginning."
+                              "<br>Do You really want to restart?"
+                              "</html>" ),
+                          QMessageBox::Yes | QMessageBox::No,
+                          QApplication::desktop() );
 
-            mb.setDefaultButton( QMessageBox::Yes );
+          mb.setDefaultButton( QMessageBox::Yes );
 
 #ifdef ANDROID
 
-            mb.show();
-            QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
-                                                                            QApplication::desktop()->height()/2 - mb.height()/2 ) );
-            mb.move( pos );
+          mb.show();
+          QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
+                                                                          QApplication::desktop()->height()/2 - mb.height()/2 ) );
+          mb.move( pos );
 
 #endif
-            if ( mb.exec() == QMessageBox::No )
-              {
-                return;
-              }
-          }
-      }
+          if ( mb.exec() == QMessageBox::No )
+            {
+              return;
+            }
+        }
+    }
 
-    slot_WaypointChange( tp2Taken, true );
+  slot_WaypointChange( tp2Taken->getWaypointObject(), true );
 }
 
 /**

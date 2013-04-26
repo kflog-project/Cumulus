@@ -446,7 +446,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
         {
           TaskPoint* tp = tpList[i];
 
-          QPoint sitePos( _globalMapMatrix->map( tp->projPoint ) );
+          QPoint sitePos( _globalMapMatrix->map( tp->getPosition() ) );
 
           if( ! snapRect.contains(sitePos) )
             {
@@ -467,7 +467,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
                 }
 
               found = true;
-              w = tp;
+              w = tp->getWaypointObject();
               lastDist = dX+dY;
 
               if( lastDist < (delta / 3) )
@@ -938,7 +938,7 @@ void Map::p_drawGrid()
   gridP.end();
 }
 
-void Map::p_drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
+void Map::p_drawPlannedTask( QPainter *taskP, QList<TaskPoint*> &drawnTp )
 {
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 
@@ -949,7 +949,7 @@ void Map::p_drawPlannedTask( QPainter *taskP, QList<Waypoint*> &drawnWp )
     }
 
   // Draw active task
-  task->drawTask( taskP, drawnWp );
+  task->drawTask( taskP, drawnTp );
 }
 
 /**
@@ -1381,6 +1381,7 @@ void Map::p_drawNavigationLayer()
   // for later label drawing:
   QList<Airfield*> drawnAf;
   QList<Waypoint*> drawnWp;
+  QList<TaskPoint*> drawnTp;
 
   QPainter navP;
 
@@ -1390,7 +1391,7 @@ void Map::p_drawNavigationLayer()
   _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
   p_drawWaypoints(&navP, drawnWp);
-  p_drawPlannedTask(&navP, drawnWp);
+  p_drawPlannedTask(&navP, drawnTp);
 
   // Now the labels of the drawn objects will be drawn, if activated via options.
   // Put all drawn labels into a set to avoid multiple drawing of them.
@@ -1430,7 +1431,7 @@ void Map::p_drawNavigationLayer()
                    true );
     }
 
-  // Second draw all collected waypoint and task point lables
+  // Second draw all collected waypoint point labels
   for( int i = 0; i < drawnWp.size(); i++ )
     {
       QString corrString = WGSPoint::coordinateString( drawnWp[i]->wgsPoint );
@@ -1458,6 +1459,29 @@ void Map::p_drawNavigationLayer()
                    _globalMapMatrix->map( drawnWp[i]->projPoint ),
                    drawnWp[i]->wgsPoint,
                    isLandable );
+    }
+
+  // Second draw all collected task point labels
+  for( int i = 0; i < drawnTp.size(); i++ )
+    {
+      QString corrString = WGSPoint::coordinateString( drawnTp[i]->getWGSPosition() );
+
+      if( labelSet.contains( corrString ) )
+        {
+          // A label with the same coordinates was already drawn
+          // We do ignore the repeated drawing.
+          continue;
+        }
+
+      // store label to be drawn
+      labelSet.insert( corrString );
+
+      p_drawLabel( &navP,
+                   iconSize / 2 + 3,
+                   drawnTp[i]->getWPName(),
+                   _globalMapMatrix->map( drawnTp[i]->getPosition() ),
+                   drawnTp[i]->getWGSPosition(),
+                   false );
     }
 
   // and finally draw a scale indicator on top of this

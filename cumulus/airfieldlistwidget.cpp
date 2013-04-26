@@ -129,17 +129,7 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
   m_wp.icao = site->getICAO();
   m_wp.frequency = site->getFrequency();
   m_wp.comment = site->getComment();
-  m_wp.isLandable = true;
   m_wp.country = site->getCountry();
-
-  if( site->getRunwayList().size() > 0 )
-    {
-      // We take the last runway from the list as default for the waypoint
-      m_wp.runway  = site->getRunwayList().last().heading;
-      m_wp.length  = site->getRunwayList().last().length;
-      m_wp.surface = site->getRunwayList().last().surface;
-    }
-
   m_wp.rwyList = site->getRunwayList();
 
   return &m_wp;

@@ -393,10 +393,10 @@ private:
 
   /**
    * Draws the task which is currently planned
-   * @arg drawnWp List of drawn waypoints, if taskpoint label drawing
+   * @arg drawnTp List of drawn taskpoints, if taskpoint label drawing
    *      option is set.
    */
-  void p_drawPlannedTask(QPainter *taskP, QList<Waypoint*> &drawnWp);
+  void p_drawPlannedTask(QPainter *taskP, QList<TaskPoint*> &drawnTp);
 
   /**
    * Draws the grid on the map.

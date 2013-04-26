@@ -113,6 +113,22 @@ class SinglePoint : public BaseMapElement
     };
 
   /**
+   * @return The WGS position of the element in kflog format.
+   */
+  virtual WGSPoint* getWGSPositionPtr()
+    {
+      return &wgsPosition;
+    };
+
+  /**
+   * @return The WGS position of the element in kflog format.
+   */
+  virtual WGSPoint& getWGSPositionRef()
+    {
+      return wgsPosition;
+    };
+
+  /**
    * @param newPos The new WGS position of the element in kflog format.
    */
   virtual void setWGSPosition( const WGSPoint& value )

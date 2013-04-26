@@ -316,16 +316,8 @@ void WPInfoWidget::writeText()
               "</b></center>" +
               table;
 
-      if( m_wp.isLandable || m_wp.rwyList.size() > 0 )
+      if( m_wp.rwyList.size() > 0 )
         {
-          if( m_wp.rwyList.size() == 0 )
-            {
-              // The runway list contains no entries. To make the handling
-              // easier, we put the single runway data of the waypoint
-              // into the runway list.
-              m_wp.rwyList.append( Runway(m_wp.length, m_wp.runway, m_wp.surface, true, true) );
-            }
-
           for( int i = 0; i < m_wp.rwyList.size(); i++ )
             {
               Runway rwy = m_wp.rwyList[i];
@@ -404,7 +396,7 @@ void WPInfoWidget::writeText()
          }
        else
          {
-           itxt+="<tr><td>&nbsp;</td><td>&nbsp;</td></tr>";
+           itxt+="<td>&nbsp;</td><td>&nbsp;</td>";
          }
 
       QString sr, ss, tz;

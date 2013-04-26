@@ -223,10 +223,9 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           in >> wpFrequency3;
         }
 
-       in >> wpLandable;
-
       if( fileFormat < WP_FILE_FORMAT_ID_4 )
         {
+          in >> wpLandable;
           in >> wpRunway;
 
           if( fileFormat < WP_FILE_FORMAT_ID_3 )
@@ -305,14 +304,6 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.wgsPoint.setLat(wpLatitude);
           wp.wgsPoint.setLon(wpLongitude);
           wp.projPoint = _globalMapMatrix->wgsToMap(wp.wgsPoint);
-          wp.isLandable = wpLandable;
-
-          if( fileFormat < WP_FILE_FORMAT_ID_4 )
-            {
-              wp.runway = wpRunway;
-              wp.surface = wpSurface;
-            }
-
           wp.comment = wpComment;
           wp.priority = ( enum Waypoint::Priority ) wpImportance;
           wp.country = wpCountry;
@@ -322,17 +313,11 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
             {
               wp.elevation = wpElevation;
               wp.frequency = wpFrequency;
-              wp.length = wpLength;
             }
           else
             {
               wp.elevation = wpElevation3;
               wp.frequency = wpFrequency3;
-
-              if( fileFormat < WP_FILE_FORMAT_ID_4 )
-                {
-                  wp.length = wpLength3;
-                }
             }
 
           if( fileFormat >= WP_FILE_FORMAT_ID_4 )
@@ -345,7 +330,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
             }
           else
             {
-              Runway rwy( wp.length, wp.runway, wp.surface );
+              Runway rwy( wpLength3, wpRunway, wpSurface );
               wp.rwyList.append( rwy );
             }
 
@@ -400,7 +385,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   qint32 wpLongitude;
   float wpElevation;
   float wpFrequency;
-  qint8 wpLandable;
   QString wpComment="";
   quint8 wpImportance;
 
@@ -430,7 +414,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           wpLongitude = wp.wgsPoint.lon();
           wpElevation = wp.elevation;
           wpFrequency = wp.frequency;
-          wpLandable = wp.isLandable;
           wpComment = wp.comment;
           wpImportance = wp.priority;
 
@@ -442,7 +425,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           out << wpLongitude;
           out << wpElevation;
           out << wpFrequency;
-          out << wpLandable;
           out << wpComment;
           out << wpImportance;
           out << wp.country;
@@ -569,9 +551,8 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString&
       w.projPoint = _globalMapMatrix->wgsToMap(w.wgsPoint);
       w.elevation = nm.namedItem("Elevation").toAttr().value().toFloat();
       w.frequency = nm.namedItem("Frequency").toAttr().value().toFloat();
-      w.isLandable = nm.namedItem("Landable").toAttr().value().toInt();
-      w.length = nm.namedItem("Length").toAttr().value().toFloat();
-      w.surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
+      float length = nm.namedItem("Length").toAttr().value().toFloat();
+      int surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
 
       int rdir = nm.namedItem("Runway").toAttr().value().toInt();
 
@@ -581,10 +562,10 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString&
           int rwh2 = rwh1 <= 18 ? rwh1+18 : rwh1-18;
 
           // put both directions into one variable, each in a byte
-          w.runway = (rwh1) * 256 + (rwh2);
+          int heading = (rwh1) * 256 + (rwh2);
 
           // Store runways in the runway list.
-          Runway rwy( w.length, w.runway, w.surface );
+          Runway rwy( length, heading, surface );
           w.rwyList.append( rwy );
         }
 
@@ -680,7 +661,7 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
       child.setAttribute( "Longitude", w.wgsPoint.lon() );
       child.setAttribute( "Elevation", w.elevation );
       child.setAttribute( "Frequency", w.frequency );
-      child.setAttribute( "Landable", w.isLandable );
+      child.setAttribute( "Landable", w.rwyList.size() > 0 ? true : false );
 
       // Only the main runway is stored as 10...36
       if( w.rwyList.size() )
@@ -859,7 +840,6 @@ int WaypointCatalog::readOpenAipNavAids( QString catalog,
       wp.comment = rp.getComment();
       wp.elevation = rp.getElevation();
       wp.frequency = rp.getFrequency();
-      wp.isLandable = false;
       wp.priority = Waypoint::Low;
       wp.country = rp.getCountry();
 
@@ -961,7 +941,6 @@ int WaypointCatalog::readOpenAipHotspots( QString catalog,
       wp.description = sp.getName();
       wp.comment = sp.getComment();
       wp.elevation = sp.getElevation();
-      wp.isLandable = false;
       wp.priority = Waypoint::Low;
       wp.country = sp.getCountry();
 
@@ -1059,17 +1038,11 @@ int WaypointCatalog::readOpenAipAirfields( QString catalog,
       wp.priority = Waypoint::Low;
       wp.country = af.getCountry();
       wp.icao = af.getICAO();
-      wp.isLandable = false;
       wp.frequency = af.getFrequency();
 
       if( af.getRunwayList().size() > 0 )
         {
-          wp.surface    = af.getRunwayList().first().surface;
-          wp.runway     = af.getRunwayList().first().heading;
-          wp.length     = af.getRunwayList().first().length;
-          wp.isLandable = af.getRunwayList().first().isOpen;
-
-          // Take over the whole runway list too.
+          // Take over the whole runway list.
           wp.rwyList = af.getRunwayList();
         }
 
@@ -1199,7 +1172,6 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
 
       Waypoint wp;
 
-      wp.isLandable = false;
       wp.priority = Waypoint::Low;
       wp.country = GeneralConfig::instance()->getHomeCountryCode();
 
@@ -1388,7 +1360,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
 
       if( list[4].contains("L") )
         {
-          wp.isLandable = true;
+          // wp.isLandable = true;
         }
 
       // Check filter, if type should be taken
@@ -1572,7 +1544,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       // See here for more info: http://download.naviter.com/docs/cup_format.pdf
       Waypoint wp;
 
-      wp.isLandable = false;
+      Runway rwy;
+
       wp.priority = Waypoint::Low;
 
       if( list[0].length() ) // long name of waypoint
@@ -1594,7 +1567,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       wp.name = list[1].replace( QRegExp("\""), "" ).left(8).toUpper();
       wp.country = list[2].left(2).toUpper();
       wp.icao = "";
-      wp.surface = Runway::Unknown;
+      rwy.surface = Runway::Unknown;
 
       // waypoint type
       uint wpType = list[6].toUInt(&ok);
@@ -1613,24 +1586,20 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         case 2:
           wp.type = BaseMapElement::Airfield;
-          wp.surface = Runway::Grass;
-          wp.isLandable = true;
+          rwy.surface = Runway::Grass;
           wp.priority = Waypoint::Normal;
           break;
         case 3:
           wp.type = BaseMapElement::Outlanding;
-          wp.isLandable = true;
           wp.priority = Waypoint::Normal;
           break;
         case 4:
           wp.type = BaseMapElement::Gliderfield;
-          wp.isLandable = true;
           wp.priority = Waypoint::Normal;
           break;
         case 5:
           wp.type = BaseMapElement::Airfield;
-          wp.surface = Runway::Concrete;
-          wp.isLandable = true;
+          rwy.surface = Runway::Concrete;
           wp.priority = Waypoint::Normal;
           break;
         case 9:
@@ -1735,7 +1704,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                   length *= 1609.34;
                 }
 
-              wp.length = length;
+              rwy.length = length;
             }
         }
 
@@ -1807,11 +1776,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
               int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
 
               // put both directions into one variable, each in a byte
-              wp.runway = (rwh1/10) * 256 + (rwh2/10);
-
-              // Store runway in the runway list.
-              Runway rwy( wp.length, wp.runway, wp.surface );
-              wp.rwyList.append( rwy );
+              rwy.heading = (rwh1/10) * 256 + (rwh2/10);
             }
         }
 
@@ -1846,7 +1811,10 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                       length *= 0.3048;
                     }
 
-                  wp.length = length;
+                  rwy.length = length;
+
+                  // Store runway in the runway list.
+                  wp.rwyList.append( rwy );
                 }
             }
         }

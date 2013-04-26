@@ -2512,12 +2512,9 @@ void MainWindow::slotRememberWaypoint()
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
   wp.priority = Waypoint::High; // high to make sure it is visible
   wp.frequency = 0.0;
-  wp.runway = 0;
-  wp.length = 0;
   AltitudeCollection alt = calculator->getAltitudeCollection();
   wp.elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
   wp.type = BaseMapElement::Landmark;
-  wp.isLandable = false;
   wp.country = GeneralConfig::instance()->getHomeCountryCode();
 
   viewWP->slot_addWp( wp );

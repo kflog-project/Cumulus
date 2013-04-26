@@ -230,7 +230,7 @@ void TaskListView::slot_Selected()
 
   _selectedTp = tpi->getTaskPoint();
 
-  if ( _selectedTp->taskPointIndex == 0 )
+  if ( _selectedTp->getFlightTaskListIndex() == 0 )
     {
       QTreeWidgetItem* tpBelow = list->itemBelow( _newSelectedTp );
       _TaskPointItem *tpiBelow = 0;
@@ -246,8 +246,8 @@ void TaskListView::slot_Selected()
             }
         }
 
-      if( ! (below && below->taskPointIndex == 1 &&
-             below->wgsPoint != _selectedTp->wgsPoint) )
+      if( ! (below && below->getFlightTaskListIndex() == 1 &&
+             below->getWGSPosition() != _selectedTp->getWGSPosition()) )
         {
           // Take-off point should not be selectable in taskview, if it is
           // identical to the start point.
@@ -292,8 +292,8 @@ void TaskListView::showEvent(QShowEvent *)
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
       // flight task. In this case the taskPointIndex should be unequal to -1.
-      if ( calcWp && calcWp->wgsPoint == tp->wgsPoint &&
-           calcWp->taskPointIndex == tp->taskPointIndex )
+      if ( calcWp && calcWp->wgsPoint == tp->getWGSPosition() &&
+           calcWp->taskPointIndex == tp->getFlightTaskListIndex() )
         {
           list->setCurrentItem( list->topLevelItem(i), 0 );
           _currSelectedTp = _tp;
@@ -414,9 +414,9 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       bool showTpIcon = true;
 
       if( tmpList.size() >= 2 &&
-          ((loop == 0 && tmpList.at(0)->wgsPoint == tmpList.at(1)->wgsPoint ) ||
+          ((loop == 0 && tmpList.at(0)->getWGSPosition() == tmpList.at(1)->getWGSPosition() ) ||
            (loop == tmpList.size()-1 &&
-            tmpList.at(tmpList.size()-1)->wgsPoint == tmpList.at(tmpList.size()-2)->wgsPoint )) )
+            tmpList.at(tmpList.size()-1)->getWGSPosition() == tmpList.at(tmpList.size()-2)->getWGSPosition() )) )
         {
           // If start and begin point or end and landing point are identical
           // no task figure icon is shown in the list entry.
@@ -426,7 +426,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       TaskPoint* tp = tmpList.at( loop );
       _TaskPointItem* _tp = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), showTpIcon );
 
-      if ( calcWp && calcWp->wgsPoint == tp->wgsPoint )
+      if ( calcWp && calcWp->wgsPoint == tp->getWGSPosition() )
         {
           list->setCurrentItem( _tp, 0 );
           _currSelectedTp = _tp;
@@ -493,7 +493,7 @@ void TaskListView::slot_updateTask()
 /** Returns a pointer to the currently highlighted task point. */
 Waypoint *TaskListView::getSelectedWaypoint()
 {
-  return _selectedTp;
+  return _selectedTp->getWaypointObject();
 }
 
 /** Resizes the columns of the task list to their contents. */
@@ -532,7 +532,7 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
   // calculate sunset for the task point
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
-  Sonne::sonneAufUnter( sr, ss, date, tp->wgsPoint, tz );
+  Sonne::sonneAufUnter( sr, ss, date, tp->getWGSPositionRef(), tz );
 
   setText(0, tp->getTaskPointTypeString());
 
@@ -542,7 +542,7 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
       setIcon ( 0, tp->getIcon( iconSize ) );
     }
 
-  setText(1, tp->name);
+  setText(1, tp->getWPName());
   setText(2, " " + Distance::getText(tp->distance*1000, false, 1));
   setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
 
@@ -604,7 +604,7 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
     }
 
   setText(7, " " + ss + " " + tz);
-  setText(8, " " + tp->description);
+  setText(8, " " + tp->getName());
 
-  setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->type, false, false)) );
+  setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->getTypeID(), false, false)) );
 }

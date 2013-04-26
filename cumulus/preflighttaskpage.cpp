@@ -573,7 +573,7 @@ void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
  */
 void PreFlightTaskPage::slotEditTask()
 {
-  qDebug() << "PreFlightTaskPage::slotEditTask()";
+  // qDebug() << "PreFlightTaskPage::slotEditTask()";
 
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
@@ -610,7 +610,7 @@ void PreFlightTaskPage::slotEditTask()
  */
 void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
 {
-  qDebug("PreFlightTaskPage::slotEditTaskList()");
+  // qDebug("PreFlightTaskPage::slotEditTaskList()");
 
   // search task item being edited
   int index = m_flightTaskList.indexOf( m_editTask );
@@ -753,7 +753,7 @@ bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
       int degree, intMin;
       double min;
 
-      WGSPoint::calcPos( tp->wgsPoint.x(), degree, min );
+      WGSPoint::calcPos( tp->getWGSPosition().x(), degree, min );
 
       // Minute is expected as 1/1000
       intMin = static_cast<int> (rint(min * 1000));
@@ -763,7 +763,7 @@ bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
                     arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
                     arg( (degree < 0) ? QString("S") : QString("N") );
 
-      WGSPoint::calcPos( tp->wgsPoint.y(), degree, min );
+      WGSPoint::calcPos( tp->getWGSPosition().y(), degree, min );
 
       intMin = static_cast<int> (rint(min * 1000));
 
@@ -775,7 +775,7 @@ bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
       stream << "$PFLAC,S,ADDWP,"
              << lat
              << "," << lon << ","
-             << tp->name
+             << tp->getWPName()
              << endl;
     }
 

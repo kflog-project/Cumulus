@@ -28,30 +28,6 @@
 #include "wgspoint.h"
 
 /**
- * \class TaskPointTypes
- *
- * \author Heiner Lamprecht, Florian Ehinger, André Somers, Axel Pauli
- *
- * \brief Kinds of a task point.
- *
- * Definitions of possible task point types. Must be done here to avoid
- * recursive include loop.
- *
- * \date 1999-2013
- *
- * \version $Id$
- */
-class TaskPointTypes
-{
-  public:
-  /**
-   * The possible task point types.
-   */
-  enum TaskPointType { NotSet = 0, TakeOff = 1, Begin = 2, RouteP = 4,
-                       End = 8, FreeP = 16, Landing = 32 };
-};
-
-/**
  * \class Waypoint
  *
  * \author Heiner Lamprecht, Florian Ehinger, André Somers, Axel Pauli
@@ -72,7 +48,9 @@ class Waypoint
   enum Priority { Low=0, Normal=1, High=2, Top=3 };
 
   Waypoint();
+
   Waypoint(const Waypoint& inst);
+
   virtual ~Waypoint();
 
   /** Compare current instance with another */
@@ -94,16 +72,6 @@ class Waypoint
   /** comment concerning point*/
   QString comment;
 
-  /** flag that waypoint is landable */
-  bool isLandable;
-
-  /** runway surface */
-  short surface;
-  /** Heading of runway as two bytes. Range 0-36 inclusive. 0 stands for an undefined runway. */
-  short runway;
-  /** length of runway, in meters */
-  float length;
-
   /**
    * A list of runways is managed by the airfield object. If a waypoint is
    * derived temporary from an airfield object, these data is also taken over.
@@ -112,24 +80,29 @@ class Waypoint
 
   /** elevation of waypoint in meters */
   float elevation;
-  /** frequency of contact for waypoint, in MHz */
+
+  /** frequency of contact for waypoint in MHz */
   float frequency;
+
   /** contains an priority indication for the waypoint
    * 0=low
    * 1=normal
-   * 2=high  */
-  enum Priority priority;
-  /** The index of the waypoint in the flight task list. A valid index is a
-   *  positive number and is set, when the waypoint is added to a flight task
-   *  list. The index is used in the automatic task point switch handling in the
-   *  Calculator class.
+   * 2=high
+   * 3=top
    */
-  /** Index of waypoint in flight task list */
+  enum Priority priority;
+
+  /**
+   * The index of the taskpoint in the flight task list, if the waypoint is
+   * filled with taskpoint data only. A valid index is a positive number and
+   * is set, when the taskpoint is added to a flight task list. The index is
+   * used in the automatic task point switch handling in the Calculator class.
+   */
   short taskPointIndex;
-  /** The type of the task point, if waypoint is used as a task point*/
-  enum TaskPointTypes::TaskPointType taskPointType;
+
   /** Country as two letter code, where the waypoint is to find. */
   QString country;
+
   /** Flag to indicate that the waypoint is a member of the waypoint list. */
   bool wpListMember;
 };

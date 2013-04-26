@@ -341,14 +341,14 @@ void TaskPointEditor::slot_buttonPressedCSL( int newScheme )
 void TaskPointEditor::load()
 {
   m_pointNameLabel->setText( tr("Turnpoint No %1 (%2): %3")
-                           .arg(m_workTp.taskPointIndex+1)
+                           .arg(m_workTp.getFlightTaskListIndex() + 1)
                            .arg(m_workTp.getTaskPointTypeString())
-                           .arg(m_workTp.name) );
+                           .arg(m_workTp.getWPName() ) );
 
   // Check task point type. If it is not type begin or end, the m_line
   // m_line selection must be invisible.
-  if( m_workTp.taskPointType != TaskPointTypes::Begin &&
-      m_workTp.taskPointType != TaskPointTypes::End )
+  if( m_workTp.getTaskPointType() != TaskPointTypes::Begin &&
+      m_workTp.getTaskPointType() != TaskPointTypes::End )
     {
       m_line->hide();
     }

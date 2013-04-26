@@ -25,15 +25,10 @@ Waypoint::Waypoint()
   comment        = "";
   country        = "";
   icao           = "";
-  surface        = 0;
-  runway         = 0;
-  length         = 0;
   elevation      = 0;
   frequency      = 0.;
-  isLandable     = false;
   priority       = Waypoint::Low;
   taskPointIndex = -1;
-  taskPointType  = TaskPointTypes::NotSet;
   wpListMember   = false;
 
   wgsPoint.setPos(0,0);
@@ -54,15 +49,10 @@ Waypoint::Waypoint(const Waypoint& inst)
   icao           = inst.icao;
   comment        = inst.comment;
   country        = inst.country;
-  surface        = inst.surface;
-  runway         = inst.runway;
-  length         = inst.length;
   elevation      = inst.elevation;
   frequency      = inst.frequency;
-  isLandable     = inst.isLandable;
   priority       = inst.priority;
   taskPointIndex = inst.taskPointIndex;
-  taskPointType  = inst.taskPointType;
   wpListMember   = inst.wpListMember;
   rwyList        = inst.rwyList;
 }

@@ -172,11 +172,6 @@ public:
   const Waypoint* getselectedWp() const { return selectedWp; };
 
   /**
-   * Return the selected waypoint as taskpoint object.
-   */
-  const TaskPoint* getselectedTp() const { return selectedWp; };
-
-  /**
    * Read property of Altitude lastAltitude.
    */
   const Altitude& getlastAltitude()const { return lastAltitude; };
@@ -780,8 +775,8 @@ private: // Private attributes
   int lastBearing;
   /** Contains the last calculated distance to the waypoint */
   Distance lastDistance;
-  /** Selected waypoint, stored as task point */
-  TaskPoint* selectedWp;
+  /** The currently selected waypoint */
+  Waypoint* selectedWp;
   /** Contains the last calculated ETA */
   QTime lastETA;
   /** contains the current state of ETA calculation */
@@ -854,7 +849,7 @@ private: // Private attributes
   bool _pastFirstFix;
   /** Direction of cruise if we are in cruising mode */
   int _cruiseDirection;
-  /** the index in wpList for the actual selected WP */
+  /** the index of the selected taskpoint in the flight task list. */
   int selectedWpInList;
   /** waypoint touch flag */
   bool wpTouched;

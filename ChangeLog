@@ -15,12 +15,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2013-04-26 AP: Waypoint editor modified. Two runways can be edited now as
+[o] 2013-04-26 AP: Class TaskPoint is now derived from SinglePoint and not more
+                   from Waypoint. A taskpoint has only the basic data of a
+                   single point and its special data. That is clearer to handle.
+
+[o] 2013-04-25 AP: Waypoint editor modified. Two runways can be edited now as
                    single runways. The runway handling has been modified in
                    airfield and waypoint data. The single runway data elements
                    have been replaced by a runway list in these data objects.
 
-[+] 2013-04-25 AP: A XML parser added to import Open AIP data files via the
+[+] 2013-04-24 AP: A XML parser added to import Open AIP data files via the
                    pre-flight waypoint page. Hotspot, navigation aid and
                    airfield data can be imported now.
 

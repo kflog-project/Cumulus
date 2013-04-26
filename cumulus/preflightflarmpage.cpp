@@ -669,7 +669,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
       for( int i = 0; i < tpList.count(); i++ )
         {
-          sizeDescr += tpList.at(i)->name.left(left).size();
+          sizeDescr += tpList.at(i)->getWPName().left(left).size();
         }
 
       int total = 7 + (tpList.size() * 9) + sizeDescr;
@@ -712,7 +712,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       int degree, intMin;
       double min;
 
-      WGSPoint::calcPos( tp->wgsPoint.x(), degree, min );
+      WGSPoint::calcPos( tp->getWGSPosition().x(), degree, min );
 
       // Minute is expected as 1/1000
       intMin = static_cast<int> (rint(min * 1000));
@@ -722,7 +722,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
                     arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
                     arg( (degree < 0) ? QString("S") : QString("N") );
 
-      WGSPoint::calcPos( tp->wgsPoint.y(), degree, min );
+      WGSPoint::calcPos( tp->getWGSPosition().y(), degree, min );
 
       intMin = static_cast<int> (rint(min * 1000));
 
@@ -734,7 +734,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       QString cmd = "$PFLAC,S,ADDWP,"
                     + lat
                     + "," + lon + ","
-                    + tp->name.left(left);
+                    + tp->getWPName().left(left);
 
       m_cmdList <<  cmd;
     }

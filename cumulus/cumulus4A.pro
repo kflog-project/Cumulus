@@ -170,8 +170,9 @@ HEADERS = \
     taskfilemanager.h \
     taskline.h \
     tasklistview.h \
-    taskpointeditor.h \
     taskpoint.h \
+    taskpointeditor.h \
+    taskpointtypes.h
     time_cu.h \
     tpinfowidget.h \
     vario.h \

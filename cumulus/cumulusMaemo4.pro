@@ -155,6 +155,7 @@ HEADERS = \
     taskline.h \
     tasklistview.h \
     taskpointeditor.h \
+    taskpointtypes.h \
     taskpoint.h \
     time_cu.h \
     tpinfowidget.h \

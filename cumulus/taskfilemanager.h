@@ -72,6 +72,10 @@ class TaskFileManager
    */
   bool loadTaskList( QList<FlightTask*>& flightTaskList, QString fileName="" );
 
+  bool loadTaskListOld( QList<FlightTask*>& flightTaskList, QString fileName="" );
+
+  bool loadTaskListNew( QList<FlightTask*>& flightTaskList, QString fileName="" );
+
   /** Saves all tasks contained in the list in the task file.
    *
    * \param flightTaskList List with the flight tasks to be stored
