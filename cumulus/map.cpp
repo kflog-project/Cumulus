@@ -279,6 +279,47 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
   //qDebug( "SnapRect %dx%d, delta=%d, w=%d, h=%d",
   //        current.x()-delta, current.y()-delta, delta, 2*delta, 2*delta );
 
+  // As first search in the current task list, if waypoints can be found.
+  FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
+
+  if( task != static_cast<FlightTask *> (0) && cs < 1024.0 )
+    {
+      QList<TaskPoint*>& tpList = task->getTpList();
+
+      for( int i = 0; i < tpList.size(); i++ )
+        {
+          TaskPoint* tp = tpList[i];
+
+          QPoint sitePos( _globalMapMatrix->map( tp->getPosition() ) );
+
+          if( ! snapRect.contains(sitePos) )
+            {
+              // @AP: Point lays outside of snap rectangle, we ignore it
+              continue;
+            }
+
+          dX = abs(sitePos.x() - current.x());
+          dY = abs(sitePos.y() - current.y());
+
+          if( dX < delta && dY < delta )
+            {
+              if( found && ((dX + dY) > lastDist) )
+                {
+                  continue; // the point we found earlier was closer
+                }
+
+              found = true;
+              w = tp->getWaypointObject();
+              lastDist = dX+dY;
+
+              if( lastDist < (delta / 3) )
+                {
+                  break;
+                }
+            }
+        }
+    }
+
   // @AP: On map scale higher as 1024 we don't evaluate anything
   for( int l = 0; l < 3 && cs < 1024.0; l++ )
     {
@@ -430,50 +471,6 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
             {
               // if we're very near, stop searching the list
               break;
-            }
-        }
-    }
-
-  // Search in the current task, if waypoints can be found. This waypoints have
-  // the most important display priority.
-  FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
-
-  if( task != static_cast<FlightTask *> (0) && cs < 1024.0 )
-    {
-      QList<TaskPoint*>& tpList = task->getTpList();
-
-      for( int i = 0; i < tpList.size(); i++ )
-        {
-          TaskPoint* tp = tpList[i];
-
-          QPoint sitePos( _globalMapMatrix->map( tp->getPosition() ) );
-
-          if( ! snapRect.contains(sitePos) )
-            {
-              // @AP: Point lays outside of snap rectangle, we ignore it
-              continue;
-            }
-
-          dX = abs(sitePos.x() - current.x());
-          dY = abs(sitePos.y() - current.y());
-
-          if( dX < delta && dY < delta )
-            {
-              if( found && ((dX + dY) > lastDist) )
-                { // subtle difference with airfields: replace already
-                  // found waypoint if we find a waypoint at the same
-                  // distance.
-                  continue; // the point we found earlier was closer
-                }
-
-              found = true;
-              w = tp->getWaypointObject();
-              lastDist = dX+dY;
-
-              if( lastDist < (delta / 3) )
-                {
-                  break;
-                }
             }
         }
     }
