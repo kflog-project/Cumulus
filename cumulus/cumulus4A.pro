@@ -172,7 +172,7 @@ HEADERS = \
     tasklistview.h \
     taskpoint.h \
     taskpointeditor.h \
-    taskpointtypes.h
+    taskpointtypes.h \
     time_cu.h \
     tpinfowidget.h \
     vario.h \
