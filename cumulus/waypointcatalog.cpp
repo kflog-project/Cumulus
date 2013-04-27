@@ -330,8 +330,12 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
             }
           else
             {
-              Runway rwy( wpLength3, wpRunway, wpSurface );
-              wp.rwyList.append( rwy );
+              if ( wpRunway > 0 )
+                {
+                  // Runway heading must be > 0 to be a right runway.
+                  Runway rwy( wpLength3, wpRunway, wpSurface );
+                  wp.rwyList.append( rwy );
+                }
             }
 
           wpList->append(wp);

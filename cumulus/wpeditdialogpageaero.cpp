@@ -242,13 +242,13 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   //----------------------------------------------------------------------------
 
   // init combo boxes
-  cmbRwy1Heading->addItem( "--" );
-  cmbRwy2Heading->addItem( "--" );
+  cmbRwy1Heading->addItem( " -- " );
+  cmbRwy2Heading->addItem( " -- " );
 
   for( int i = 1; i <= 36; i++ )
     {
       QString item;
-      item = QString("%1").arg(i, 2, 10, QLatin1Char('0'));
+      item = QString(" %1 ").arg(i, 2, 10, QLatin1Char('0'));
 
       cmbRwy1Heading->addItem( item );
       cmbRwy2Heading->addItem( item );
