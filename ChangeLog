@@ -15,6 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-04-28 AP: Runway heading combo selection boxes replaced by a number
+                   editor input widget in waypoint editor. 
+
+[-] 2013-04-28 AP: Bugfix: Negative numbers could not saved in number editor.
+
+[-] 2013-04-28 AP: Bugfix: Needless elevation unit removed in waypoint editor.
+
 [o] 2013-04-26 AP: Class TaskPoint is now derived from SinglePoint and not more
                    from Waypoint. A taskpoint has only the basic data of a
                    single point and its special data. That is clearer to handle.
