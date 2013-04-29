@@ -88,12 +88,22 @@ class NumberEditor : public QLabel
     return m_number;
   };
 
+  /**
+   * Gets the special text to be displayed as minimum value.
+   *
+   * \return Special minimum value text.
+   */
   QString specialValueText() const
   {
     return m_specialValueText;
   };
 
-  void setSpecialValueText( const QString & text )
+  /**
+   * Sets a special text to be displayed as minimum value.
+   *
+   * \param text Minimum value text
+   */
+  void setSpecialValueText( const QString& text )
   {
     m_specialValueText = text;
     setText();
@@ -181,7 +191,7 @@ class NumberEditor : public QLabel
     if( validator == 0 )
       {
         // We install a default validator, if the user resets its validator.
-        m_validator = new QRegExpValidator( QRegExp( "([0-9]+|[0-9]+\\.[0-9]+)" ), this );
+        m_validator = new QRegExpValidator( QRegExp( "-?([0-9]+|[0-9]+\\.[0-9]+)" ), this );
       }
   };
 
@@ -306,7 +316,7 @@ class NumberEditor : public QLabel
   /**
    * The status of the fixed label height flag.
    *
-   * @return true if activeted otherwise false
+   * @return true if activated otherwise false
    */
   bool getFixHeight() const
   {

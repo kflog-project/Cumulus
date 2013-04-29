@@ -65,7 +65,7 @@ NumberEditor::NumberEditor( QWidget *parent,
 
   // We set a default validator to prevent wrong input from an external
   // keyboard, if no own validator is defined by the caller.
-  m_validator = new QRegExpValidator( QRegExp( "([0-9]+|[0-9]+\\.[0-9]+)" ), this );
+  m_validator = new QRegExpValidator( QRegExp( "(-?[0-9]+|[0-9]+\\.[0-9]+)" ), this );
 
   setText();
 }

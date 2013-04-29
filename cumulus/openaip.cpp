@@ -854,17 +854,17 @@ bool OpenAip::readAirfieldRunway( QXmlStreamReader& xml, Airfield& af )
 
           if( elementName == "NAME" )
             {
-              // That element contains the usable runway directions
+              // That element contains the usable runway headings
               QString name = xml.readElementText();
 
               if( name.size() == 2 )
                 {
-                  // We have only one direction 06
+                  // We have only one runway heading 06
                   runway.heading = (name.toUShort() * 256) + name.toUShort();
                 }
               else if( name.size() == 5 )
                 {
-                  // WE have two directions 06/24
+                  // WE have two runway headings 06/24
                   ushort dir1 = name.left(2).toUShort() * 256;
                   ushort dir2 = name.mid(3, 2).toUShort();
 

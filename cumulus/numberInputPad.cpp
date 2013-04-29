@@ -429,9 +429,7 @@ void NumberInputPad::slot_Pm()
     }
   else
     {
-      m_editor->setCursorPosition( 0 );
-      m_editor->insert( "-" );
-      m_editor->end( false );
+      m_editor->setText( "-" + m_editor->text() );
     }
 }
 
