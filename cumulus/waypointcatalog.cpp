@@ -20,7 +20,6 @@
 #include <QtGui>
 #include <QtXml>
 
-#include "waypointcatalog.h"
 #include "distance.h"
 #include "generalconfig.h"
 #include "openaip.h"
@@ -29,6 +28,7 @@
 #include "mapmatrix.h"
 #include "radiopoint.h"
 #include "waitscreen.h"
+#include "waypointcatalog.h"
 
 extern MapMatrix* _globalMapMatrix;
 
@@ -333,7 +333,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
               if ( wpRunway > 0 )
                 {
                   // Runway heading must be > 0 to be a right runway.
-                  Runway rwy( wpLength3, wpRunway, wpSurface );
+                  Runway rwy( wpLength3, wpRunway, wpSurface, true, true );
                   wp.rwyList.append( rwy );
                 }
             }
@@ -562,14 +562,14 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString&
 
       if( rdir > 0 )
         {
-          int rwh1 = rdir <= 18 ? rdir+18 : rdir-18;
+          int rwh1 = rdir;
           int rwh2 = rwh1 <= 18 ? rwh1+18 : rwh1-18;
 
           // put both directions into one variable, each in a byte
           int heading = (rwh1) * 256 + (rwh2);
 
           // Store runways in the runway list.
-          Runway rwy( length, heading, surface );
+          Runway rwy( length, heading, surface, true, true );
           w.rwyList.append( rwy );
         }
 
@@ -1776,7 +1776,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
             {
               // Runway has only one direction entry 010...360.
               // We split it into two parts.
-              int rwh1 = rdir <= 180 ? rdir+180 : rdir-180;
+              int rwh1 = rdir;
               int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
 
               // put both directions into one variable, each in a byte
@@ -1816,6 +1816,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                     }
 
                   rwy.length = length;
+                  rwy.isOpen = true;
+                  rwy.isBidirectional = true;
 
                   // Store runway in the runway list.
                   wp.rwyList.append( rwy );
