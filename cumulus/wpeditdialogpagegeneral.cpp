@@ -145,13 +145,9 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_edtElev->setSuffix( " " + Altitude::getUnitText() );
   m_edtElev->setMaxLength(6);
   m_edtElev->setAlignment( Qt::AlignLeft );
+  m_edtElev->setRange(-1000, 999999);
   m_edtElev->setText("0");
-  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "(0|-?[1-9][0-9]{0,4})" ), this );
-  m_edtElev->setValidator( eValidator );
   elevLayout->addWidget(m_edtElev);
-
-  QLabel * lblElevUnit = new QLabel(Altitude::getUnitText(), this);
-  elevLayout->addWidget(lblElevUnit);
 
   topLayout->setRowMinimumHeight(row++, 10);
 
