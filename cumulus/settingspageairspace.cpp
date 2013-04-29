@@ -43,7 +43,6 @@
 #include "settingspageairspacefillingnumpad.h"
 #include "settingspageairspacewarningsnumpad.h"
 #include "settingspageairspaceloading.h"
-#include "settingspageairspacewarnings.h"
 
 #ifdef INTERNET
 #include "airspacedownloaddialog.h"
