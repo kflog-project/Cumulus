@@ -96,8 +96,12 @@ FlightTask::FlightTask( const FlightTask& inst )
 FlightTask::~FlightTask()
 {
   // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.toLatin1().data(), this );
-  qDeleteAll( *tpList );
-  delete tpList;
+  if( tpList != 0 )
+    {
+      qDeleteAll( *tpList );
+      delete tpList;
+      tpList = 0;
+    }
 }
 
 /**
