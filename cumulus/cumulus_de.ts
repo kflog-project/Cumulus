@@ -954,25 +954,25 @@
 <context>
     <name>GpsCon</name>
     <message>
-        <location filename="gpscon.cpp" line="225"/>
+        <location filename="gpscon.cpp" line="227"/>
         <source>Searching GPS BT devices</source>
         <oldsource>Searching GPS-BT devices</oldsource>
         <translation>Suche GPS BT Geräte</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="258"/>
-        <location filename="gpscon.cpp" line="351"/>
+        <location filename="gpscon.cpp" line="260"/>
+        <location filename="gpscon.cpp" line="353"/>
         <source>GPS device not reachable!</source>
         <translation>GPS Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="480"/>
+        <location filename="gpscon.cpp" line="482"/>
         <source>GPS daemon crashed!</source>
         <oldsource>GPS daemon process crashed!</oldsource>
         <translation>GPS Dämon abgestürtzt!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="640"/>
+        <location filename="gpscon.cpp" line="642"/>
         <source>GPS daemon start failed!</source>
         <oldsource>GPS daemon process start failed!</oldsource>
         <translation>GPS Dämon Start Fehler!</translation>
@@ -1710,58 +1710,58 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2704"/>
-        <location filename="map.cpp" line="2755"/>
+        <location filename="map.cpp" line="2701"/>
+        <location filename="map.cpp" line="2752"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3147"/>
+        <location filename="map.cpp" line="3144"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3151"/>
+        <location filename="map.cpp" line="3148"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3156"/>
-        <location filename="map.cpp" line="3511"/>
+        <location filename="map.cpp" line="3153"/>
+        <location filename="map.cpp" line="3508"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3167"/>
-        <location filename="map.cpp" line="3201"/>
-        <location filename="map.cpp" line="3350"/>
-        <location filename="map.cpp" line="3533"/>
+        <location filename="map.cpp" line="3164"/>
+        <location filename="map.cpp" line="3198"/>
+        <location filename="map.cpp" line="3347"/>
+        <location filename="map.cpp" line="3530"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3224"/>
-        <location filename="map.cpp" line="3259"/>
-        <location filename="map.cpp" line="3386"/>
-        <location filename="map.cpp" line="3547"/>
+        <location filename="map.cpp" line="3221"/>
+        <location filename="map.cpp" line="3256"/>
+        <location filename="map.cpp" line="3383"/>
+        <location filename="map.cpp" line="3544"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3282"/>
-        <location filename="map.cpp" line="3316"/>
-        <location filename="map.cpp" line="3422"/>
-        <location filename="map.cpp" line="3561"/>
+        <location filename="map.cpp" line="3279"/>
+        <location filename="map.cpp" line="3313"/>
+        <location filename="map.cpp" line="3419"/>
+        <location filename="map.cpp" line="3558"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3511"/>
+        <location filename="map.cpp" line="3508"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3521"/>
+        <location filename="map.cpp" line="3518"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
@@ -3178,12 +3178,12 @@ Alle Downloads verworfen!</translation>
         <translation>Leerpunkt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="589"/>
+        <location filename="flighttask.cpp" line="593"/>
         <source>not set</source>
         <translation>nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="591"/>
+        <location filename="flighttask.cpp" line="595"/>
         <source>Free Distance</source>
         <translation>Freie Strecke</translation>
     </message>
@@ -3192,49 +3192,49 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Zielrückkehrstrecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="593"/>
+        <location filename="flighttask.cpp" line="597"/>
         <source>Free Out and Return</source>
         <translation>ZR-Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="595"/>
+        <location filename="flighttask.cpp" line="599"/>
         <source>FAI Triangle</source>
         <translation>FAI Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="597"/>
+        <location filename="flighttask.cpp" line="601"/>
         <source>Triangle</source>
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="599"/>
+        <location filename="flighttask.cpp" line="603"/>
         <source>FAI Triangle Start on leg</source>
         <translation>FAI Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="601"/>
+        <location filename="flighttask.cpp" line="605"/>
         <source>Triangle Start on leg</source>
         <translation>Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="603"/>
+        <location filename="flighttask.cpp" line="607"/>
         <source>Broken off</source>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="606"/>
+        <location filename="flighttask.cpp" line="610"/>
         <location filename="runway.cpp" line="81"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1341"/>
-        <location filename="flighttask.cpp" line="1356"/>
+        <location filename="flighttask.cpp" line="1345"/>
+        <location filename="flighttask.cpp" line="1360"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1361"/>
+        <location filename="flighttask.cpp" line="1365"/>
         <source>too strong!</source>
         <translation>zu stark!</translation>
     </message>
@@ -3367,23 +3367,23 @@ Alle Downloads verworfen!</translation>
         <translation>Notlandefeld Nr:</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="291"/>
+        <location filename="gpscon.cpp" line="293"/>
         <source>GPS BT Devices?</source>
         <translation>GPS BT Geräte?</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="292"/>
+        <location filename="gpscon.cpp" line="294"/>
         <source>No GPS BT devices are in view!</source>
         <oldsource>No GPS BT devices are reachable!</oldsource>
         <translation>Keine GPS BT Geräte sind in Sicht!</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="327"/>
+        <location filename="gpscon.cpp" line="329"/>
         <source>Select GPS BT Device</source>
         <translation>GPS BT Geräteauswahl</translation>
     </message>
     <message>
-        <location filename="gpscon.cpp" line="328"/>
+        <location filename="gpscon.cpp" line="330"/>
         <source>GPS BT Device:</source>
         <translation>GPS BT Gerät:</translation>
     </message>
@@ -3405,28 +3405,28 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="139"/>
-        <location filename="waypointcatalog.cpp" line="1113"/>
-        <location filename="waypointcatalog.cpp" line="1482"/>
+        <location filename="waypointcatalog.cpp" line="1117"/>
+        <location filename="waypointcatalog.cpp" line="1486"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="723"/>
+        <location filename="waypointcatalog.cpp" line="727"/>
         <source>File does not exist!</source>
         <translation>Datei existiert nicht!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="729"/>
+        <location filename="waypointcatalog.cpp" line="733"/>
         <source>File is empty!</source>
         <translation>Datei ist leer!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="740"/>
+        <location filename="waypointcatalog.cpp" line="744"/>
         <source>No OpenAip data format!</source>
         <translation>Kein OpenAip Datenformat!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="758"/>
+        <location filename="waypointcatalog.cpp" line="762"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
     </message>
@@ -5918,39 +5918,49 @@ Namen für den neuen Wegpunkt</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="84"/>
-        <location filename="wpeditdialogpageaero.cpp" line="166"/>
+        <location filename="wpeditdialogpageaero.cpp" line="155"/>
         <source>Runway 2</source>
         <translation>SLB 2</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="99"/>
-        <location filename="wpeditdialogpageaero.cpp" line="175"/>
+        <location filename="wpeditdialogpageaero.cpp" line="164"/>
         <source>bidirectional</source>
         <translation>beidseitig</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="120"/>
-        <location filename="wpeditdialogpageaero.cpp" line="196"/>
+        <location filename="wpeditdialogpageaero.cpp" line="109"/>
+        <location filename="wpeditdialogpageaero.cpp" line="174"/>
         <source>Heading:</source>
         <translation>Richtung:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="137"/>
-        <location filename="wpeditdialogpageaero.cpp" line="212"/>
+        <location filename="wpeditdialogpageaero.cpp" line="126"/>
+        <location filename="wpeditdialogpageaero.cpp" line="190"/>
         <source>Length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="157"/>
-        <location filename="wpeditdialogpageaero.cpp" line="232"/>
+        <location filename="wpeditdialogpageaero.cpp" line="146"/>
+        <location filename="wpeditdialogpageaero.cpp" line="210"/>
         <source>both</source>
         <translation>beide</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="161"/>
-        <location filename="wpeditdialogpageaero.cpp" line="236"/>
+        <location filename="wpeditdialogpageaero.cpp" line="150"/>
+        <location filename="wpeditdialogpageaero.cpp" line="214"/>
         <source>usable</source>
         <translation>nutzbar</translation>
+    </message>
+    <message>
+        <location filename="wpeditdialogpageaero.cpp" line="260"/>
+        <source>Runway heading editor</source>
+        <translation>SLB Richtungseditor</translation>
+    </message>
+    <message>
+        <location filename="wpeditdialogpageaero.cpp" line="261"/>
+        <source>00=unknown</source>
+        <translation>00=unbekannt</translation>
     </message>
     <message>
         <source>Runway heading1:</source>
@@ -5961,8 +5971,8 @@ Namen für den neuen Wegpunkt</translation>
         <translation type="obsolete">Pistenrichtung 2:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="154"/>
-        <location filename="wpeditdialogpageaero.cpp" line="229"/>
+        <location filename="wpeditdialogpageaero.cpp" line="143"/>
+        <location filename="wpeditdialogpageaero.cpp" line="207"/>
         <source>Surface:</source>
         <translation>Oberfläche:</translation>
     </message>
@@ -6004,32 +6014,32 @@ Namen für den neuen Wegpunkt</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="158"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="154"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="187"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="183"/>
         <source>Importance:</source>
         <translation>Wertigkeit:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="193"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="189"/>
         <source>low</source>
         <translation>gering</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="194"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="190"/>
         <source>normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="195"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="191"/>
         <source>high</source>
         <translation>hoch</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="196"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="192"/>
         <source>top</source>
         <translation>höchste</translation>
     </message>
