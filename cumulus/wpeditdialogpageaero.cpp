@@ -132,11 +132,11 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   cmbRwy1Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( edtRwy1Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( edtRwy1Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+  QtScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   qfl = new QFormLayout;
@@ -196,11 +196,11 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   cmbRwy2Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( edtRwy2Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( edtRwy2Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+  QtScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   qfl = new QFormLayout;
