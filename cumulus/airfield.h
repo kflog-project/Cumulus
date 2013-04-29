@@ -237,7 +237,7 @@ class Airfield : public SinglePoint
   // Draws the element into the given painter.
   virtual bool drawMapElement( QPainter* targetP );
 
- private:
+ protected:
 
   /**
    * Calculates the runway shift for the icon to be drawn.
