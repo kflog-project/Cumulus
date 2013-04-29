@@ -145,7 +145,6 @@ HEADERS = \
     rowdelegate.h \
     runway.h \
     settingspageairfields.h \
-    settingspageairspacefilling.h \
     settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
@@ -265,7 +264,6 @@ SOURCES = \
     runway.cpp \
     settingspageairfields.cpp \
     settingspageairspace.cpp \
-    settingspageairspacefilling.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \
     settingspagegps4a.cpp \
