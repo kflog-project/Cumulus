@@ -58,23 +58,53 @@ class WpEditDialogPageAero : public QWidget
   void slot_save(Waypoint* wp);
 
   /**
-   * Called if the page needs to load data from the waypoint
+   * Called if the widget needs to load the data from the waypoint.
    */
   void slot_load(Waypoint* wp);
 
  private slots:
 
+ /**
+  * Called, if runway enable checkbox is selected/unselected.
+  *
+  * \param state The new state of check box.
+  */
  void slot_stateChangedRwy1Enable( int state )
    {
      gboxRunway1->setEnabled( state == 0 ? false : true );
    };
 
+ /**
+  * Called, if runway enable checkbox is selected/unselected.
+  *
+  * \param state The new state of check box.
+  */
  void slot_stateChangedRwy2Enable( int state )
    {
      gboxRunway2->setEnabled( state == 0 ? false : true );
    };
 
+ /**
+  * Called, if the runway heading editor is closed by the user.
+  *
+  * \param value New runway heading
+  */
+ void slot_rwy1HeadingEdited( const QString& value );
+
+ /**
+  * Called, if the runway heading editor is closed by the user.
+  *
+  * \param value New runway heading
+  */
+ void slot_rwy2HeadingEdited( const QString& value );
+
  private:
+
+  NumberEditor* createRunwayHeadingEditor( QWidget* parent=0 );
+
+  int getSurface( QComboBox* cbox );
+
+  void setSurface( QComboBox* cbox, int s );
 
   QLineEdit* edtICAO;
   DoubleNumberEditor* edtFrequency;
@@ -85,8 +115,8 @@ class WpEditDialogPageAero : public QWidget
   QCheckBox* chkRwy1Enable;
   QCheckBox* chkRwy2Enable;
 
-  QComboBox* cmbRwy1Heading;
-  QComboBox* cmbRwy2Heading;
+  NumberEditor* edtRwy1Heading;
+  NumberEditor* edtRwy2Heading;
 
   QCheckBox* chkRwy1Both;
   QCheckBox* chkRwy2Both;
@@ -99,9 +129,6 @@ class WpEditDialogPageAero : public QWidget
 
   NumberEditor* edtRwy1Length;
   NumberEditor* edtRwy2Length;
-
-  int getSurface( QComboBox* cbox );
-  void setSurface( QComboBox* cbox, int s );
 };
 
 #endif
