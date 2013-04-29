@@ -36,7 +36,6 @@
 #include <QComboBox>
 #include <QString>
 
-#include "coordedit.h"
 #include "coordeditnumpad.h"
 #include "waypoint.h"
 
