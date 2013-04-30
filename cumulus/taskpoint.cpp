@@ -21,8 +21,11 @@
 #include "mapcalc.h"
 #include "taskpoint.h"
 
-// Near check distance state as meters
+// Near check distance state as meters for circle and sector figure
 #define NEAR_DISTANCE 1000.0
+
+// Near check distance state as meters for a line figure
+#define NEAR_DISTANCE_LINE 2000.0
 
 TaskPoint::TaskPoint( enum TaskPointTypes::TaskPointType type ) :
   SinglePoint(),
@@ -152,7 +155,7 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
               return Near;
             }
         }
-      else if( dist2TP.getMeters() <= NEAR_DISTANCE )
+      else if( dist2TP.getMeters() <= NEAR_DISTANCE_LINE )
         {
           return Near;
         }

@@ -102,8 +102,24 @@ class WpEditDialogPageAero : public QWidget
 
   NumberEditor* createRunwayHeadingEditor( QWidget* parent=0 );
 
+  NumberEditor* createRunwayLengthEditor( QWidget* parent=0 );
+
+  /**
+   * Gets the runway surface as enumration.
+   *
+   * \param cbox Combobox to be queried
+   *
+   * \return The internal used surface type as integer enumeration.
+   */
   int getSurface( QComboBox* cbox );
 
+  /**
+   * Sets the runway surface text of the combobox at the given index.
+   *
+   * \param cbox Combobox to be used
+   *
+   * \param s The combobox index where is to set the translated surface text.
+   */
   void setSurface( QComboBox* cbox, int s );
 
   QLineEdit* edtICAO;

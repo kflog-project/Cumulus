@@ -726,7 +726,9 @@ private: // Private methods
 
   /**
    * Calculates the distance to the currently selected waypoint and
-   * emits newDistance if the distance has changed.
+   * emits newDistance if the distance has changed.  If a flight
+   * task has been activated, the automatic switch from one task point
+   * to the next is also controlled and handled here.
    */
   void calcDistance(const bool autoWpSwitch=true);
 

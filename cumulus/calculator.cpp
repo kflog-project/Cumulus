@@ -409,7 +409,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
       return;
     }
 
-  // load waypoint list from task
+  // load taskpoint list from task
   QList<TaskPoint *> tpList = task->getTpList();
 
   // Load active task switch scheme. Switch to next TP can be executed
@@ -465,12 +465,11 @@ void Calculator::calcDistance( bool autoWpSwitch )
     }
 
   // We set us a flag to remember, that we did arrive the radius of a
-  // task point. Must be done because we can have only one touch.
+  // task point. That must be done because we can have only one touch.
   if( passageState == TaskPoint::Passed && wpTouched == false && autoWpSwitch )
     {
       m_lastTpPassageState = TaskPoint::Passed;
-
-      wpTouched = true;
+      wpTouched            = true;
 
       // send a signal to the IGC logger to increase logging interval
       emit taskpointSectorTouched();
@@ -479,10 +478,30 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
       // Display a task end message under following conditions:
       // a) we touched the target radius
-      // b) the last task point is selected
+      // b) the landing task point is selected
+      // c) the end and landing task point are identically
       TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
 
-      if ( tp->getTaskPointType() == TaskPointTypes::Landing && taskEndReached == false )
+      bool tpEndEqLanding = false;
+      int sidx            = selectedWp->taskPointIndex;
+
+      if( sidx > 1 && sidx < tpList.size() - 1 )
+        {
+          TaskPoint* tpNext = tpList.at( sidx + 1 );
+
+          if( tp->getTaskPointType() == TaskPointTypes::End &&
+              tpNext->getTaskPointType() == TaskPointTypes::Landing &&
+              tp->getWGSPosition() == tpNext->getWGSPosition() )
+            {
+              // End and landing point are identically
+              tpEndEqLanding = true;
+              qDebug() << "#3 tpEndEqLanding = true";
+            }
+        }
+
+      if ( taskEndReached == false &&
+           ( tpEndEqLanding == true ||
+             tp->getTaskPointType() == TaskPointTypes::Landing ) )
         {
           taskEndReached = true;
           emit taskInfo( tr("Task ended"), true );
@@ -512,21 +531,35 @@ void Calculator::calcDistance( bool autoWpSwitch )
             {
               QTimer::singleShot(10000, this, SLOT(slot_switchMapScaleBack()));
             }
+
+          // Reset the task point index in the selected waypoint. That stops
+          // the further automatic task point switch.
+          selectedWp->taskPointIndex = -1;
         }
       else if ( taskEndReached == false )
         {
-          if ( ntScheme == GeneralConfig::Nearst )
+          if( tp->getActiveTaskPointFigureScheme() != GeneralConfig::Line )
             {
-              // Announce task point touch only, if nearest switch scheme is
-              // chosen by the user to avoid to much info for him.
-              emit taskInfo( tr("TP in sight"), true );
+              if( ntScheme == GeneralConfig::Nearst )
+                {
+                  // Announce task point touch only, if nearest switch scheme is
+                  // chosen by the user to avoid to much info for him.
+                  emit taskInfo( tr("TP in sight"), true );
+                  wpTouchCounter = 0;
+                }
+              else
+                {
+                  // Set touch counter in case of touch switch scheme is used,
+                  // to ensure that we were really inside of the task point
+                  // sector/circle
+                  wpTouchCounter = 5; // set touch counter to 5 events, ca. 5s
+                }
             }
           else
             {
-              // Set touch counter in case of touch switch scheme is used,
-              // to ensure that we were really inside of the task point
-              // sector/circle
-              wpTouchCounter = 5; // set touch counter to 5 events, ca. 5s
+              // A line figure has only one touch point to make the passing
+              // with the next position data visible.
+              wpTouchCounter = 1;
             }
         }
 

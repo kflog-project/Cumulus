@@ -210,12 +210,12 @@
         <translation type="obsolete">Aufgabenziel erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="493"/>
+        <location filename="calculator.cpp" line="512"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="499"/>
+        <location filename="calculator.cpp" line="518"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
@@ -239,40 +239,40 @@
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="488"/>
+        <location filename="calculator.cpp" line="507"/>
         <source>Task ended</source>
         <oldsource>Task end</oldsource>
         <translation>Aufgabe beendet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="522"/>
+        <location filename="calculator.cpp" line="547"/>
         <source>TP in sight</source>
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="577"/>
+        <location filename="calculator.cpp" line="610"/>
         <source>TP passed</source>
         <oldsource>TP switch</oldsource>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1672"/>
-        <location filename="calculator.cpp" line="1677"/>
+        <location filename="calculator.cpp" line="1705"/>
+        <location filename="calculator.cpp" line="1710"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1678"/>
+        <location filename="calculator.cpp" line="1711"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1736"/>
+        <location filename="calculator.cpp" line="1769"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1737"/>
+        <location filename="calculator.cpp" line="1770"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -3000,7 +3000,7 @@ Alle Downloads verworfen!</translation>
         <location filename="airspace.cpp" line="244"/>
         <location filename="flighttask.cpp" line="61"/>
         <location filename="flighttask.h" line="86"/>
-        <location filename="taskpoint.cpp" line="281"/>
+        <location filename="taskpoint.cpp" line="284"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -3436,73 +3436,73 @@ Alle Downloads verworfen!</translation>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Akzeptieren Sie die zuvor genannten Einschränkungen?&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="250"/>
+        <location filename="taskpoint.cpp" line="253"/>
         <source>TO</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="252"/>
+        <location filename="taskpoint.cpp" line="255"/>
         <source>B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="254"/>
+        <location filename="taskpoint.cpp" line="257"/>
         <source>R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="256"/>
+        <location filename="taskpoint.cpp" line="259"/>
         <source>E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="258"/>
+        <location filename="taskpoint.cpp" line="261"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="260"/>
+        <location filename="taskpoint.cpp" line="263"/>
         <source>LG</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="263"/>
         <location filename="taskpoint.cpp" line="266"/>
+        <location filename="taskpoint.cpp" line="269"/>
         <source>NS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="275"/>
+        <location filename="taskpoint.cpp" line="278"/>
         <source>Circle radius: %1</source>
         <translation>Kreis Radius: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="277"/>
+        <location filename="taskpoint.cpp" line="280"/>
         <source>Sector radius: %1</source>
         <translation>Sektor Radius: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="279"/>
+        <location filename="taskpoint.cpp" line="282"/>
         <source>Line: %1</source>
         <translation>Linie: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="294"/>
+        <location filename="taskpoint.cpp" line="297"/>
         <source>C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="297"/>
+        <location filename="taskpoint.cpp" line="300"/>
         <source>S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="300"/>
+        <location filename="taskpoint.cpp" line="303"/>
         <source>L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="303"/>
+        <location filename="taskpoint.cpp" line="306"/>
         <source>U</source>
         <translation></translation>
     </message>
@@ -3745,35 +3745,35 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspace</name>
     <message>
-        <location filename="settingspageairspace.cpp" line="125"/>
-        <location filename="settingspageairspace.cpp" line="134"/>
+        <location filename="settingspageairspace.cpp" line="124"/>
+        <location filename="settingspageairspace.cpp" line="133"/>
         <source>Border</source>
         <translation>Grenze</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="122"/>
-        <location filename="settingspageairspace.cpp" line="131"/>
+        <location filename="settingspageairspace.cpp" line="121"/>
+        <location filename="settingspageairspace.cpp" line="130"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="61"/>
+        <location filename="settingspageairspace.cpp" line="60"/>
         <source>Settings - Airspaces</source>
         <translation>Einstellungen - Lufträume</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="128"/>
-        <location filename="settingspageairspace.cpp" line="137"/>
+        <location filename="settingspageairspace.cpp" line="127"/>
+        <location filename="settingspageairspace.cpp" line="136"/>
         <source>Area</source>
         <translation>Raum</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="146"/>
+        <location filename="settingspageairspace.cpp" line="145"/>
         <source>Ignore AS</source>
         <translation>Ignoriere LR</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="164"/>
+        <location filename="settingspageairspace.cpp" line="163"/>
         <source>Color Defaults</source>
         <translation>Standard Farben</translation>
     </message>
@@ -3782,22 +3782,22 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Linienbreite:</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="178"/>
+        <location filename="settingspageairspace.cpp" line="177"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="187"/>
+        <location filename="settingspageairspace.cpp" line="186"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="193"/>
+        <location filename="settingspageairspace.cpp" line="192"/>
         <source>Warnings</source>
         <translation>Warnungen</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="199"/>
+        <location filename="settingspageairspace.cpp" line="198"/>
         <source>Filling</source>
         <translation>Füllung</translation>
     </message>
@@ -3825,100 +3825,61 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceFilling</name>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="38"/>
         <source>Airspace fill settings</source>
-        <translation>Luftraum Füllung</translation>
+        <translation type="obsolete">Luftraum Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="42"/>
         <source>Enable filling</source>
         <oldsource>Enable airspace filling</oldsource>
-        <translation>Aktiviere Füllung</translation>
+        <translation type="obsolete">Aktiviere Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="43"/>
         <source>Switch on/off Airspace filling</source>
-        <translation>Schalte Luftraum Füllung ein/aus</translation>
+        <translation type="obsolete">Schalte Luftraum Füllung ein/aus</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="49"/>
         <source>Spin step width</source>
-        <translation>Boxen Schrittweite</translation>
+        <translation type="obsolete">Boxen Schrittweite</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="50"/>
-        <source>1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settingspageairspacefilling.cpp" line="51"/>
-        <source>5</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settingspageairspacefilling.cpp" line="52"/>
-        <source>10</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settingspageairspacefilling.cpp" line="53"/>
-        <source>20</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settingspageairspacefilling.cpp" line="70"/>
         <source>Distances</source>
-        <translation>Abstände</translation>
+        <translation type="obsolete">Abstände</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="88"/>
         <source>Not near</source>
-        <translation>weit</translation>
+        <translation type="obsolete">weit</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="90"/>
         <source>Near</source>
-        <translation>nah</translation>
+        <translation type="obsolete">nah</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="92"/>
         <source>Very near</source>
-        <translation>dicht</translation>
+        <translation type="obsolete">dicht</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="94"/>
         <source>Inside</source>
-        <translation>innerhalb</translation>
+        <translation type="obsolete">innerhalb</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="106"/>
         <source>Increase number value</source>
-        <translation>Erhöhe Zahlenwert</translation>
+        <translation type="obsolete">Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="107"/>
         <source>Decrease number value</source>
-        <translation>Reduziere Zahlenwert</translation>
+        <translation type="obsolete">Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="117"/>
         <source>Vertical</source>
-        <translation>vertikal</translation>
+        <translation type="obsolete">vertikal</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="152"/>
         <source>Lateral</source>
-        <translation>lateral</translation>
+        <translation type="obsolete">lateral</translation>
     </message>
     <message>
-        <location filename="settingspageairspacefilling.cpp" line="188"/>
-        <source>Reset</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="settingspageairspacefilling.cpp" line="189"/>
         <source>Default</source>
-        <translation>Standard</translation>
+        <translation type="obsolete">Standard</translation>
     </message>
 </context>
 <context>
@@ -4005,70 +3966,57 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceWarnings</name>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="40"/>
         <source>Airspace warning settings</source>
-        <translation>Luftraum Warnung</translation>
+        <translation type="obsolete">Luftraum Warnung</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="49"/>
         <source>Enable Warnings</source>
         <oldsource>Enable Airspace Warning</oldsource>
-        <translation>Aktiviere Warnungen</translation>
+        <translation type="obsolete">Aktiviere Warnungen</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="52"/>
         <source>Switch on/off Airspace Warnings</source>
-        <translation>Luftraum Warnung ein/ausschalten</translation>
+        <translation type="obsolete">Luftraum Warnung ein/ausschalten</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="58"/>
         <source>Spin step width</source>
-        <translation>Boxen Schrittweite</translation>
+        <translation type="obsolete">Boxen Schrittweite</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="79"/>
         <source>Distances</source>
-        <translation>Abstände</translation>
+        <translation type="obsolete">Abstände</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="94"/>
         <source>Lateral</source>
-        <translation>lateral</translation>
+        <translation type="obsolete">lateral</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="96"/>
         <source>Above</source>
-        <translation>über</translation>
+        <translation type="obsolete">über</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="98"/>
         <source>Below</source>
-        <translation>unter</translation>
+        <translation type="obsolete">unter</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="110"/>
         <source>Increase number value</source>
-        <translation>Erhöhe Zahlenwert</translation>
+        <translation type="obsolete">Erhöhe Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="111"/>
         <source>Decrease number value</source>
-        <translation>Reduziere Zahlenwert</translation>
+        <translation type="obsolete">Reduziere Zahlenwert</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="121"/>
         <source>Near</source>
-        <translation>nah</translation>
+        <translation type="obsolete">nah</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="150"/>
         <source>Very Near</source>
-        <translation>dicht</translation>
+        <translation type="obsolete">dicht</translation>
     </message>
     <message>
-        <location filename="settingspageairspacewarnings.cpp" line="179"/>
         <source>Default</source>
-        <translation>Standard</translation>
+        <translation type="obsolete">Standard</translation>
     </message>
 </context>
 <context>
@@ -5918,47 +5866,61 @@ Namen für den neuen Wegpunkt</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="84"/>
-        <location filename="wpeditdialogpageaero.cpp" line="155"/>
+        <location filename="wpeditdialogpageaero.cpp" line="145"/>
         <source>Runway 2</source>
         <translation>SLB 2</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="99"/>
-        <location filename="wpeditdialogpageaero.cpp" line="164"/>
+        <location filename="wpeditdialogpageaero.cpp" line="154"/>
         <source>bidirectional</source>
         <translation>beidseitig</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="109"/>
-        <location filename="wpeditdialogpageaero.cpp" line="174"/>
+        <location filename="wpeditdialogpageaero.cpp" line="110"/>
+        <location filename="wpeditdialogpageaero.cpp" line="164"/>
         <source>Heading:</source>
         <translation>Richtung:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="126"/>
-        <location filename="wpeditdialogpageaero.cpp" line="190"/>
+        <location filename="wpeditdialogpageaero.cpp" line="116"/>
+        <location filename="wpeditdialogpageaero.cpp" line="170"/>
         <source>Length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="146"/>
-        <location filename="wpeditdialogpageaero.cpp" line="210"/>
+        <location filename="wpeditdialogpageaero.cpp" line="136"/>
+        <location filename="wpeditdialogpageaero.cpp" line="190"/>
         <source>both</source>
         <translation>beide</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="150"/>
-        <location filename="wpeditdialogpageaero.cpp" line="214"/>
+        <location filename="wpeditdialogpageaero.cpp" line="140"/>
+        <location filename="wpeditdialogpageaero.cpp" line="194"/>
         <source>usable</source>
         <translation>nutzbar</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="260"/>
-        <source>Runway heading editor</source>
-        <translation>SLB Richtungseditor</translation>
+        <location filename="wpeditdialogpageaero.cpp" line="240"/>
+        <source>Set Runway heading</source>
+        <translation>Setze SLB Richtung</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="261"/>
+        <location filename="wpeditdialogpageaero.cpp" line="258"/>
+        <source>Set Runway length</source>
+        <translation>Setze SLB Länge</translation>
+    </message>
+    <message>
+        <location filename="wpeditdialogpageaero.cpp" line="259"/>
+        <source>0=unknown</source>
+        <translation>0=unbekannt</translation>
+    </message>
+    <message>
+        <source>Runway heading editor</source>
+        <translation type="obsolete">SLB Richtungseditor</translation>
+    </message>
+    <message>
+        <location filename="wpeditdialogpageaero.cpp" line="241"/>
         <source>00=unknown</source>
         <translation>00=unbekannt</translation>
     </message>
@@ -5971,8 +5933,8 @@ Namen für den neuen Wegpunkt</translation>
         <translation type="obsolete">Pistenrichtung 2:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpageaero.cpp" line="143"/>
-        <location filename="wpeditdialogpageaero.cpp" line="207"/>
+        <location filename="wpeditdialogpageaero.cpp" line="133"/>
+        <location filename="wpeditdialogpageaero.cpp" line="187"/>
         <source>Surface:</source>
         <translation>Oberfläche:</translation>
     </message>

@@ -104,24 +104,14 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   grpLayout1->addLayout(qgl);
 
   edtRwy1Heading = createRunwayHeadingEditor();
+  slot_rwy1HeadingEdited( "0" );
 
   qfl = new QFormLayout;
   qfl->addRow(tr("Heading:"), edtRwy1Heading);
 
   qgl->addLayout( qfl, 0, 0 );
 
-  edtRwy1Length = new NumberEditor( this );
-  edtRwy1Length->setDecimalVisible( false );
-  edtRwy1Length->setPmVisible( false );
-  edtRwy1Length->setMaxLength(6);
-  edtRwy1Length->setAlignment( Qt::AlignLeft );
-
-  // Note! We take as runway length unit the altitude unit (m/ft)
-  edtRwy1Length->setSuffix( " " + Altitude::getUnitText() );
-  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
-  edtRwy1Length->setValidator( eValidator );
-  edtRwy1Length->setText("0");
-
+  edtRwy1Length = createRunwayLengthEditor();
   qfl = new QFormLayout;
   qfl->addRow(tr("Length:"), edtRwy1Length);
   qgl->addLayout( qfl, 0, 1 );
@@ -169,22 +159,12 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   grpLayout2->addLayout(qgl);
 
   edtRwy2Heading = createRunwayHeadingEditor();
-
+  slot_rwy2HeadingEdited( "0" );
   qfl = new QFormLayout;
   qfl->addRow(tr("Heading:"), edtRwy2Heading);
   qgl->addLayout( qfl, 0, 0 );
 
-  edtRwy2Length = new NumberEditor( this );
-  edtRwy2Length->setDecimalVisible( false );
-  edtRwy2Length->setPmVisible( false );
-  edtRwy2Length->setMaxLength(6);
-  edtRwy2Length->setAlignment( Qt::AlignLeft );
-
-  // Note! We take as runway length unit the altitude unit (m/ft)
-  edtRwy2Length->setSuffix( " " + Altitude::getUnitText() );
-  eValidator = new QRegExpValidator( QRegExp( "(0|[1-9][0-9]{0,5})" ), this );
-  edtRwy2Length->setValidator( eValidator );
-  edtRwy2Length->setText("0");
+  edtRwy2Length = createRunwayLengthEditor();
 
   qfl = new QFormLayout;
   qfl->addRow(tr("Length:"), edtRwy2Length);
@@ -219,7 +199,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
 
   //----------------------------------------------------------------------------
 
-  // init surface combo boxes
+  // initialize surface combo boxes
   QStringList &tlist = Runway::getSortedTranslationList();
 
   for( int i=0; i < tlist.size(); i++ )
@@ -257,11 +237,28 @@ NumberEditor* WpEditDialogPageAero::createRunwayHeadingEditor( QWidget* parent )
   ne->setSpecialValueText( "--" );
   ne->setValue( 0 );
   ne->setRange( 0, 36 );
-  ne->setTitle( tr("Runway heading editor") );
+  ne->setTitle( tr("Set Runway heading") );
   ne->setTip( tr("00=unknown") + ", 01...36");
   return ne;
 }
 
+NumberEditor* WpEditDialogPageAero::createRunwayLengthEditor( QWidget* parent )
+{
+  NumberEditor* ne = new NumberEditor( parent );
+  ne->setDecimalVisible( false );
+  ne->setPmVisible( false );
+  ne->setMaxLength(6);
+  ne->setAlignment( Qt::AlignLeft );
+
+  // Note! We take as runway length unit the altitude unit (m/ft)
+  ne->setSuffix( " " + Altitude::getUnitText() );
+  ne->setSpecialValueText( "-" );
+  ne->setRange( 0, 999999 );
+  ne->setValue( 0 );
+  ne->setTitle( tr("Set Runway length") );
+  ne->setTip( tr("0=unknown") + ", 1-9...");
+  return ne;
+}
 
 void WpEditDialogPageAero::slot_rwy1HeadingEdited( const QString& value )
 {
@@ -277,7 +274,6 @@ void WpEditDialogPageAero::slot_rwy2HeadingEdited( const QString& value )
   edtRwy2Heading->setText( iv );
 }
 
-/** Called if the page needs to load data from the waypoint */
 void WpEditDialogPageAero::slot_load( Waypoint *wp )
 {
   if( ! wp )
@@ -352,7 +348,6 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
     }
 }
 
-/** Called if the data needs to be saved. */
 void WpEditDialogPageAero::slot_save( Waypoint *wp )
 {
   if( ! wp )
@@ -423,7 +418,6 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
     }
 }
 
-/** return internal type of surface */
 int WpEditDialogPageAero::getSurface(QComboBox* cbox)
 {
   if( ! cbox )
@@ -447,7 +441,6 @@ int WpEditDialogPageAero::getSurface(QComboBox* cbox)
   return s;
 }
 
-/** set surface type in combo box translate internal id to index */
 void WpEditDialogPageAero::setSurface(QComboBox* cbox, int s)
 {
   if( ! cbox )

@@ -564,7 +564,7 @@ double MapMatrix::ensureVisible(const QPoint& point2Show, QPoint center )
   double xDist = dist(point2Show.x(), center.y(), center.x(), center.y()) * 1.3;
   double yDist = dist(center.x(), point2Show.y(), center.x(), center.y()) * 1.3;
 
-  qDebug() << "MapMatrix::ensureVisible xdist=" << xDist << "ydist=" << yDist;
+  // qDebug() << "MapMatrix::ensureVisible xdist=" << xDist << "ydist=" << yDist;
 
   //calculate the scale needed to display that distance on the map
   double xScale = 2.0 * (xDist * 1000.0) / mapViewSize.height();
@@ -573,8 +573,8 @@ double MapMatrix::ensureVisible(const QPoint& point2Show, QPoint center )
   // we obviously need the bigger of the two scales
   double newScale = qMax(xScale, yScale);
 
-  qDebug() << "MapMatrix::ensureVisible xscale=" << xScale << "yscale=" << yScale
-           << "NewScale=" << newScale;
+  // qDebug() << "MapMatrix::ensureVisible xscale=" << xScale << "yscale=" << yScale
+  //          << "NewScale=" << newScale;
 
   if (newScale <= MIN_SCALE)
     {
