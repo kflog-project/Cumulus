@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-04-30 AP: Bugfix: The begin and the end of a task were not correct
+                   handled, if the taskpoint figure was a line.
+
 [o] 2013-04-28 AP: Runway heading combo selection boxes replaced by a number
                    editor input widget in waypoint editor. 
 

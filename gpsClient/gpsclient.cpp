@@ -306,7 +306,7 @@ int GpsClient::writeGpsData( const char *sentence )
 // Opens the connection to the GPS. All old messages in the queue are removed.
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
-  qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
+  // qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
 
   device          = deviceIn;
   ioSpeedDevice   = ioSpeedIn;
