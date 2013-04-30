@@ -159,24 +159,24 @@
 		</dd>
 
 		<dt>
-			<b>Waypoint runway directions</b>
+			<b>Waypoint runway headings</b>
 		</dt>
 
 		<dd>
-			In the wayoint editor you have two combo boxes for runway directions.
-			The handling of runway directions is a little bit tricky and derived
-			from the Welt2000 handling. The following possibilities do exist:
+			In the wayoint editor you can define two different runways. To activate a
+			runway, click in the runway checkbox. That enables the other runway
+			input fields.
 
 			<p>
 			<ul>
-				<li><b>09/27</b> means there is one runway with two useable
-					directions. <b>Note! The difference between the two directions
-						must be always 18.</b>
-				<li><b>09/09</b> means there is one runway with only one
-					useable direction.
-				<li><b>09/18</b> means there are two runways 09/27 and 18/36
-					with two useable directions. <b>Note! The difference between
-						the two directions must not be equal 18.</b>
+				<li><b>Heading</b> The runway heading in the range 01...36. 0 means
+				there is no runway heading defined. In this case all other runway
+				entries are ignored after pressing save!</li>
+				<li><b>Length</b> The runway length in the user's preferred unit.</li>
+				<li><b>Surface</b> The surface of the runway.</li>
+				<li><b>both</b> If the box is checked the runway has to headings otherwise
+				 only one</li>
+				<li><b>usable</b> If the box is checked the runway is usable otherwise not.</li>
 			</ul>
 			</p>
 
