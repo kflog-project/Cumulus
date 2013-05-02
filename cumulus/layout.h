@@ -116,7 +116,7 @@
 #define FlarmDisplayTextPointSize 12
 
 // Flarm display icon point size
-#define FlarmDisplayIconPointSize 20
+#define FlarmDisplayIconPointSize 16
 
 // WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
 #define WhatsThatFontPointSize 16
@@ -158,7 +158,7 @@
 #define FlarmDisplayTextPointSize 12
 
 // Flarm display icon point size
-#define FlarmDisplayIconPointSize 18
+#define FlarmDisplayIconPointSize 16
 
 // WhatsThat font point size
 #define WhatsThatFontPointSize 16
