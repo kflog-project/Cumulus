@@ -113,7 +113,7 @@
 #define MapFlarmLabelFontPointSize 12
 
 // Flarm display text point size
-#define FlarmDisplayTextPointSize 16
+#define FlarmDisplayTextPointSize 14
 
 // Flarm display icon point size
 #define FlarmDisplayIconPointSize 20
@@ -155,7 +155,7 @@
 #define MapFlarmLabelFontPointSize 12
 
 // Flarm display text point size
-#define FlarmDisplayTextPointSize 16
+#define FlarmDisplayTextPointSize 14
 
 // Flarm display icon point size
 #define FlarmDisplayIconPointSize 20
