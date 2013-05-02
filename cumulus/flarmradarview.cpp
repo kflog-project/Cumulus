@@ -53,54 +53,48 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   QGroupBox* buttonBox = new QGroupBox( this );
   buttonBox->setContentsMargins(2,2,2,2);
 
-  int size = 40;
-
-#if defined MAEMO || defined ANDROID
-  size = 60;
-#endif
-
   int iconSize = Layout::getButtonSize();
 
   QPushButton *zoomButton  = new QPushButton;
   zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
   zoomButton->setIconSize(QSize(iconSize, iconSize));
   zoomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  zoomButton->setMinimumSize(size, size);
-  zoomButton->setMaximumSize(size, size);
+  zoomButton->setMinimumSize(iconSize, iconSize);
+  zoomButton->setMaximumSize(iconSize, iconSize);
 
   QPushButton *listButton  = new QPushButton;
   listButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
   listButton->setIconSize(QSize(iconSize, iconSize));
   listButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  listButton->setMinimumSize(size, size);
-  listButton->setMaximumSize(size, size);
+  listButton->setMinimumSize(iconSize, iconSize);
+  listButton->setMaximumSize(iconSize, iconSize);
 
   display->setUpdateInterval( 2 );
   updateButton = new QPushButton( "2s" );
   updateButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  updateButton->setMinimumSize(size, size);
-  updateButton->setMaximumSize(size, size);
+  updateButton->setMinimumSize(iconSize, iconSize);
+  updateButton->setMaximumSize(iconSize, iconSize);
 
   QPushButton *aliasButton  = new QPushButton;
   aliasButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("monkey32.png")));
   aliasButton->setIconSize(QSize(iconSize, iconSize));
   aliasButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  aliasButton->setMinimumSize(size, size);
-  aliasButton->setMaximumSize(size, size);
+  aliasButton->setMinimumSize(iconSize, iconSize);
+  aliasButton->setMaximumSize(iconSize, iconSize);
 
   QPushButton *closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   closeButton->setIconSize(QSize(iconSize, iconSize));
   closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  closeButton->setMinimumSize(size, size);
-  closeButton->setMaximumSize(size, size);
+  closeButton->setMinimumSize(iconSize, iconSize);
+  closeButton->setMaximumSize(iconSize, iconSize);
 
   addButton = new QPushButton;
   addButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("add.png")));
   addButton->setIconSize(QSize(iconSize, iconSize));
   addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  addButton->setMinimumSize(size, size);
-  addButton->setMaximumSize(size, size);
+  addButton->setMinimumSize(iconSize, iconSize);
+  addButton->setMaximumSize(iconSize, iconSize);
 
   if( FlarmDisplay::getSelectedObject().isEmpty() )
     {
