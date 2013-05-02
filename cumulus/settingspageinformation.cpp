@@ -94,7 +94,12 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
   connect(soundSelection, SIGNAL( clicked()), this, SLOT(slot_openToolDialog()) );
 
+  Qt::InputMethodHints imh;
+
   soundTool = new QLineEdit( this );
+  imh = (soundTool->inputMethodHints() | Qt::ImhNoPredictiveText);
+  soundTool->setInputMethodHints(imh);
+
   hBox->addWidget(soundTool);
   topLayout->addLayout( hBox, row++, 0, 1, 3 );
   topLayout->setRowMinimumHeight( row++, 10 );

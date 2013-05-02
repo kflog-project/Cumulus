@@ -20,11 +20,11 @@
  * for correctness and stored in the GeneralConfig data.
  */
 
+#ifndef QT_5
 #include <QtGui>
-#include <QFormLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QMessageBox>
+#else
+#include <QtWidgets>
+#endif
 
 #include "proxydialog.h"
 #include "generalconfig.h"
@@ -37,8 +37,15 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
   setAttribute( Qt::WA_DeleteOnClose );
   setSizeGripEnabled( true );
 
+  Qt::InputMethodHints imh;
+
   hostEdit = new QLineEdit;
   portEdit = new QLineEdit;
+
+  imh = (hostEdit->inputMethodHints() | Qt::ImhNoPredictiveText);
+  hostEdit->setInputMethodHints(imh);
+  portEdit->setInputMethodHints(imh);
+
   QIntValidator* iv = new QIntValidator(this);
   iv->setRange(0, 65535);
   portEdit->setValidator( iv );

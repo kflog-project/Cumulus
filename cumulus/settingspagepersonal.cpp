@@ -89,8 +89,15 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   int row=0;
 
   QLabel * lbl = new QLabel(tr("Pilot name:"), this);
+
   topLayout->addWidget(lbl, row, 0);
+
+  Qt::InputMethodHints imh;
+
   edtName = new QLineEdit(this);
+  imh = (edtName->inputMethodHints() | Qt::ImhNoPredictiveText);
+  edtName->setInputMethodHints(imh);
+
   topLayout->addWidget(edtName, row, 1, 1, 2);
   row++;
 
@@ -103,6 +110,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Home site country:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeCountry = new QLineEdit(this);
+  edtHomeCountry->setInputMethodHints(imh);
   edtHomeCountry->setMaxLength(2);
   QRegExp rx("[A-Za-z]{2}");
   edtHomeCountry->setValidator( new QRegExpValidator(rx, this) );
@@ -119,6 +127,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(lbl, row, 0);
 
   edtHomeName = new QLineEdit(this);
+  edtHomeName->setInputMethodHints(imh);
   edtHomeName->setMaxLength(8);
   topLayout->addWidget(edtHomeName, row, 1);
   row++;
@@ -164,6 +173,8 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(userDirSelection, row, 0);
 
   userDataDir = new QLineEdit(this);
+  userDataDir->setInputMethodHints(imh);
+
 #ifdef ANDROID
   userDataDir->setReadOnly( true );
 #endif

@@ -100,7 +100,11 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->addWidget(mapSelection, row, 0 );
 
+  Qt::InputMethodHints imh;
+
   mapDirectory = new QLineEdit( this );
+  imh = (mapDirectory->inputMethodHints() | Qt::ImhNoPredictiveText);
+  mapDirectory->setInputMethodHints(imh);
 
 #ifdef ANDROID
   mapDirectory->setReadOnly(true);

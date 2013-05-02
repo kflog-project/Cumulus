@@ -85,7 +85,6 @@ HEADERS = \
     basemapelement.h \
     calculator.h \
     configwidget.h \
-    coordedit.h \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
@@ -209,7 +208,6 @@ SOURCES = \
     builddate.cpp \
     calculator.cpp \
     configwidget.cpp \
-    coordedit.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \

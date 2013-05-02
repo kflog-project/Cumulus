@@ -11,6 +11,7 @@
                                                variables to prevent wrong floating
                                                point formatting.
                                2012 Axel Pauli Play option added
+                               2013 Axel Pauli ttySx enabled as additional device
 
     email                : axel@kflog.org
 
@@ -19,12 +20,15 @@
     NMEA simulator for Cumulus.
 
     The simulator is part of the cumulus package and can be used for
-    testing purposes. The output of the simulator is written into a
-    named pipe with name /tmp/nmeasim. Use the option device=... to
-    define another pipe as the default one. Serial devices are not
-    supported by this version. To read in the simulator data into
-    cumulus, open the configuration dialog in cumulus, select the GPS
-    tabulator and choose the /tmp/nmeasim device. Note, that the
+    testing purposes. The output of the simulator is written to different
+    devices, configurable with the device option.
+
+    a) device=ttyS0,4800 writes data into a serial device
+    b) device=/tmp/nmeasim writes data into a named pipe, default pipe name
+       is /tmp/nmeasim.
+
+    To read in the simulator data into cumulus, open the GPS configuration dialog
+    in cumulus and select the appropriate device. Note, that the
     devices must be the same on both sides. Now cumulus is ready to
     receive the data from the NMEA simulator.
 
@@ -40,16 +44,17 @@
  ***************************************************************************/
 
 #include <iostream>
-#include <stdlib.h>
-#include <errno.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cerrno>
+#include <cstdio>
 #include <unistd.h>
 #include <signal.h>
-#include <time.h>
+#include <ctime>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <locale.h>
+#include <clocale>
+#include <termios.h>
 
 #include <QtCore>
 
@@ -80,14 +85,30 @@ static    QString confFile;   // configuration file name
 
 static    QString sentences[10];
 
-// name of used pipe
-static    QString device = "/tmp/nmeasim";
+// The default pipe path for the simulator
+#define DEV_PIPE "/tmp/nmeasim"
 
+// Name of used default device, normally a pipe.
+static QString device = DEV_PIPE;
+
+// The device file descriptor to be used. Can be a tty or a pipe.
+static int devFd = -1;
+
+////////////////////////////////////////////////////////////////////////////////
 // Function declarations
+////////////////////////////////////////////////////////////////////////////////
+
+uint getBaudrate(int rate);
+
 void safeConfig();
 
-void fifoExit(int /* signal */ )
+void closeAndExit(int /* signal */ )
 {
+  if( devFd != -1 )
+    {
+      close(devFd);
+    }
+
   // safe current used parameters to file
   safeConfig();
 
@@ -100,25 +121,110 @@ void fifoExit(int /* signal */ )
 
 int init_io( void )
 {
-  int fd = -1;
-
   // SIGPIPE is receicved if cumulus was terminated and we try
   // to write into the pipe without other endpoint
-  signal(SIGPIPE, fifoExit);
+  signal(SIGPIPE, closeAndExit);
 
-  // SIGINT is received at key press of Crtl+C
-  signal(SIGINT, fifoExit);
+  // SIGINT is received at key press of Ctrl+C
+  signal(SIGINT, closeAndExit);
 
-  int ret = mkfifo(device.toLatin1(), S_IRUSR | S_IWUSR);
+  if( device.startsWith("tty") )
+    {
+      // A tty is used as device
+      QList<QString> ttyParams = device.split(",");
 
-  // no output if file exists, see comment in fifoExit
-  if(ret && errno != EEXIST) perror("mkfifo");
+      if( ttyParams.size() < 2 )
+        {
+          cerr << "Missing tty arguments! Expected are device=ttySx,<Speed>" << endl;
+          exit( -1 );
+        }
 
-  fd = open(device.toLatin1(), O_WRONLY);
+      bool ok;
+      QString tty = "/dev/" + ttyParams.at(0);
+      uint speed = getBaudrate( ttyParams.at(1).toInt(&ok) );
 
-  if( fd < 0 ) perror("open pipe");
+      if( ! ok )
+        {
+          cerr << "Wrong tty speed passed! Must be an integer value." << endl;
+          exit( -1 );
+        }
 
-  return ( fd );
+      devFd = open( tty.toLatin1().data(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK );
+
+      if( devFd == -1 )
+        {
+          perror( "Error open Simulator output device:" );
+          exit( -1 );
+        }
+
+      struct termios newtio;
+
+      // http://www.mkssoftware.com/docs/man5/struct_termios.5.asp
+      //
+      // Prepare serial port settings for raw mode. That is important
+      // otherwise Flarm binary communication do not work!
+      //
+      // - no canonical input (no line oriented input)
+      // - 8 data bits
+      // - no parity
+      // - no interpretation of special characters
+      // - no hardware control
+
+      // Port control modes
+      // CS8    8 bits per byte
+      // CLOCAL Ignore modem status lines
+      // CREAD  Enable receiver
+      newtio.c_cflag = CS8 | CLOCAL | CREAD;
+
+      // Port input modes
+      // raw input without any special handling
+      newtio.c_iflag = 0;
+
+      // Port output modes
+      // raw output without any special handling
+      newtio.c_oflag = 0;
+
+      // Port local modes
+      // raw input/output without any special handling
+      newtio.c_lflag = 0;
+
+      // The values of the MIN and TIME members of the c_cc array of the termios
+      // structure are used to determine how to process the bytes received.
+      //
+      // MIN represents the minimum number of bytes that should be received when
+      // the read() function returns successfully.
+      //
+      // TIME is a timer of 0.1 second granularity (or as close to that value as
+      // can be accommodated) that is used to time out bursty and short-term data
+      // transmissions.
+      newtio.c_cc[VMIN]  = 1;
+      newtio.c_cc[VTIME] = 0;
+
+      // AP: Note, the setting of the speed must be done at last
+      // because the manipulation of the c_iflag and c_oflag can
+      // destroy the already assigned values! Needed me several hours
+      // to find out that. Setting the baud rate under c_cflag seems
+      // also to work.
+      cfsetispeed( &newtio, speed ); // set baud rate for input
+      cfsetospeed( &newtio, speed ); // set baud rate for output
+      tcflush(devFd, TCIOFLUSH);
+      tcsetattr(devFd, TCSANOW, &newtio);
+      fcntl(devFd, F_SETFL, FNDELAY); // NON blocking io is requested
+    }
+  else
+    {
+      // A pipe is used as device
+      int ret = mkfifo(device.toLatin1(), S_IRUSR | S_IWUSR);
+
+      // no output if file exists, see comment in closeAndExit
+      if(ret && errno != EEXIST) perror("mkfifo");
+
+      devFd = open(device.toLatin1(), O_WRONLY);
+
+      if( devFd < 0 ) perror("open pipe");
+    }
+
+  return ( devFd );
 }
 
 void usleep( int t )
@@ -322,14 +428,14 @@ void readConfig()
   cout << "Configuration file read" << endl;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+// M A I N
+////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
   QString mode;
 
-  // The wind-Vector must be reversed as given *from*
-  // where the wind comes
-
+  // The wind-vector must be reversed as given *from* where the wind comes
   QStringList Argv;
 
   for (int i = 1; i <= argc; i++)
@@ -341,7 +447,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.4.0 for Cumulus, 2003-2008 E. Voellm, 2009-2012 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.5.0 for Cumulus, 2003-2008 E. Voellm, 2009-2013 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -361,6 +467,7 @@ int main(int argc, char **argv)
            << "              time=[s]: duration of operation" << endl
            << "              pause=[ms]: pause between to send periods" << endl
            << "              device=[path to named pipe]: write into this pipe, default is /tmp/nmeasim" << endl
+           << "              device=[ttySx,<speed>]: write to device ttySx with the given speed" << endl
            << "              file=[path to file]: to be played" << endl
            << "              skip=[number]: lines to be skipped in the play file" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
@@ -377,11 +484,11 @@ int main(int argc, char **argv)
   setlocale( LC_ALL, "" );
   setlocale( LC_NUMERIC, "C" );
   setenv( "LC_NUMERIC", "C", 1 );
+  setenv( "LANG", "C", 1 );
 
   // First of all read command configuration from file.
   // Determine configuration file position. It is normally stored in the home
   // directory of the user.
-
   const char *home = getenv("HOME");
 
   if( home )
@@ -479,6 +586,8 @@ int main(int argc, char **argv)
           cout << key.toLatin1().data() << endl;
         }
     }
+
+  cout << endl;
 
   glider myGl( lat, lon, speed, heading, wind, winddirTrue, altitude, climb );
   myGl.setFd( fifo );
@@ -580,4 +689,37 @@ int main(int argc, char **argv)
   safeConfig();
   close( fifo );
   return 0;
+}
+
+/**
+ * Translates the baud rate to a terminal speed definition.
+ */
+uint getBaudrate(int rate)
+{
+  switch (rate)
+    {
+    case 600:
+      return B600;
+    case 1200:
+      return B1200;
+    case 2400:
+      return B2400;
+    case 4800:
+      return B4800;
+    case 9600:
+      return B9600;
+    case 19200:
+      return B19200;
+    case 38400:
+      return B38400;
+    case 57600:
+      return B57600;
+    case 115200:
+      return B115200;
+    case 230400:
+      return B230400;
+    default:
+      cerr << "Warning: Baud rate " << rate << " is undefined, using 4800bps!" << endl;
+      return B4800;
+    }
 }

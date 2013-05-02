@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-05-01 AP: NMEA simulator expanded that GPS data can also be sent out
+                   via a serial device like ttyS0.
+
 [-] 2013-04-30 AP: Bugfix: The begin and the end of a task were not correct
                    handled, if the taskpoint figure was a line.
 

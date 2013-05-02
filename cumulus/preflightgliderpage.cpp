@@ -59,7 +59,12 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   int row = 0;
   QLabel* lblPilot = new QLabel(tr("Pilot:"), this);
   topLayout->addWidget(lblPilot, row, 0);
+
+  Qt::InputMethodHints imh;
+
   m_edtPilot = new QLineEdit(this);
+  imh = (m_edtPilot->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_edtPilot->setInputMethodHints(imh);
   m_edtPilot->setText( GeneralConfig::instance()->getSurname() );
   topLayout->addWidget(m_edtPilot, row, 1);
 
@@ -79,6 +84,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
   topLayout->addWidget(lblCoPilot, row, 0);
   m_edtCoPilot = new QLineEdit(this);
+  m_edtCoPilot->setInputMethodHints(imh);
   topLayout->addWidget(m_edtCoPilot, row, 1);
 
   QLabel* lblWater = new QLabel(tr("Water ballast:"), this);

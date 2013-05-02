@@ -15,7 +15,10 @@
 **
 ***********************************************************************/
 
+#include <QtGui>
+
 #include "layout.h"
+#include "mainwindow.h"
 
 #ifdef ANDROID
 #include "jnisupport.h"
@@ -248,4 +251,12 @@ void Layout::fitStatusbarFont( QFont& font )
 
     qDebug() << "Layout::fitStatusbarFont=" << font.toString()
              << "FontHeight=" << QFontMetrics(font).height();
+}
+
+int Layout::getMapZoomButtonSize()
+{
+  QFont font = MainWindow::mainWindow()->font();
+  font.setPointSize( 28 );
+
+  return QFontMetrics(font).height();
 }

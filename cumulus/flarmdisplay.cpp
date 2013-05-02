@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -119,21 +119,9 @@ void FlarmDisplay::createBackground()
 
   QFont f = painter.font();
 
-  float fdpfps = FlarmDisplayPainterFontPixelSize;
-
-#ifdef ANDROID
-
-  float sd = Layout::getScaledDensity();
-
-  if( sd > 1.0 )
-    {
-      fdpfps *= sd;
-    }
-
-#endif
-
-  f.setPixelSize( (int) rint(fdpfps) );
+  f.setPointSize( FlarmDisplayTextPointSize );
   f.setBold( true );
+
   painter.setFont(f);
 
   Distance distance( radius );
@@ -142,7 +130,7 @@ void FlarmDisplay::createBackground()
   QString unitText = QString("%1 Km").arg(distance.getKilometers(), 0, 'f', 1);
   QFontMetrics fm = QFontMetrics( font() );
 
-  painter.drawText( 10, fm.boundingRect(unitText).height() + 10, unitText );
+  painter.drawText( 5, fm.boundingRect(unitText).height() + 5, unitText );
   pen.setWidth(0);
   painter.setPen( pen );
 
@@ -306,6 +294,12 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       return;
     }
 
+  QFont font = this->font();
+  font.setPointSize( FlarmDisplayIconPointSize );
+
+  // Calculate an icon size from a font height.
+  int is = QFontMetrics(font).height();
+
   objectHash.clear();
 
   QMutableHashIterator<QString, Flarm::FlarmAcft> it(flarmAcfts);
@@ -437,7 +431,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               color = getLiftColor( acft.ClimbRate );
             }
 
-          MapConfig::createCircle( object, 30, color,
+          MapConfig::createCircle( object, is, color,
                                    1.0, Qt::transparent, pen );
         }
       else if( acft.Track != INT_MIN )
@@ -448,7 +442,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
                color = getLiftColor( acft.ClimbRate );
              }
 
-          MapConfig::createTriangle( object, 34, color, relTrack,
+          MapConfig::createTriangle( object, is+4, color, relTrack,
                                      1.0, Qt::transparent, pen );
         }
       else
@@ -459,7 +453,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
                color = Qt::black;
              }
 
-          MapConfig::createSquare( object, 30, color, 1.0, pen );
+          MapConfig::createSquare( object, is, color, 1.0, pen );
         }
 
       if( it.key() == selectedObject )
@@ -467,21 +461,9 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           // If a Flarm object is selected, we draw some additional information
           QFont f = painter.font();
 
-          // Note that we set the font's pixel size!
-          float fdpfps = FlarmDisplayPainterFontPixelSize;
-
-#ifdef ANDROID
-
-          float sd = Layout::getScaledDensity();
-
-          if( sd > 1.0 )
-            {
-              fdpfps *= sd;
-            }
-
-#endif
-          f.setPixelSize( (int) rint(fdpfps) );
+          f.setPointSize( FlarmDisplayTextPointSize );
           f.setBold( true );
+
           painter.setFont(f);
 
           QPen pen(color);
@@ -510,7 +492,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           textRect = painter.fontMetrics().boundingRect( text );
 
           painter.drawText( size().width() - 5 - textRect.width(),
-                            5 + f.pixelSize(), text );
+                            5 + painter.fontMetrics().height(), text );
 
           text = "";
 
@@ -530,7 +512,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               textRect = painter.fontMetrics().boundingRect( text );
 
               painter.drawText( size().width() - 5 - textRect.width(),
-                                10 + 2 * f.pixelSize(), text );
+                                5 + 2 * painter.fontMetrics().height(), text );
             }
         }
 

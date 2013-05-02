@@ -29,6 +29,7 @@
 
 #include "jnisupport.h"
 #include "androidevents.h"
+#include "calculator.h"
 #include "gpsconandroid.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
@@ -185,6 +186,8 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
       return;
     }
 
+  extern Calculator* calculator;
+
   unsigned int qtCode;
 
   switch( code )
@@ -201,7 +204,18 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
         qtCode = Qt::Key_F13;
         break;
 
-      case 28:
+      case 28: // Close is requested via the back key. That is not enabled,
+               // if Cumulus is in move to avoid an undesired press.
+        if( calculator != 0 && calculator->moving() )
+          {
+            return;
+          }
+
+        qtCode = Qt::Key_Close;
+        qDebug() << "JNI nativeKeypress: Close is sent";
+        break;
+
+      case 30: // Close is requested via the Android menu
         // The close key at the Android device is pressed. It is forwarded as
         // close key to close the main window.
         qtCode = Qt::Key_Close;

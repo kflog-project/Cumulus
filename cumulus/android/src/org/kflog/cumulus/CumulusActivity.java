@@ -782,7 +782,7 @@ public class CumulusActivity extends QtActivity
           							break;
           						case 3:
           							// Qt main window will get a quit
-          							nativeKeypress((char)28);
+          							nativeKeypress((char)30);
           							break;
         						}
         					}

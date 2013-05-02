@@ -44,9 +44,6 @@
 // Snap radius size on the map
 #define SnapRadius 25
 
-// Plus and minus button size at the map
-#define MapPMButtonSize 70
-
 // Dialog font size in pixels
 #define DialogMinFontSize 22
 
@@ -88,9 +85,6 @@
 // Snap radius size on the map
 #define SnapRadius 25
 
-// Plus and minus button size at the map
-#define MapPMButtonSize 70
-
 // Dialog font size in pixels
 #define DialogMinFontSize 22
 
@@ -115,11 +109,14 @@
 // Map bearing indicator font point size
 #define MapBearingIndicatorFontPointSize 12
 
-// Map Flarm painter font height in pixels
-#define MapFlarmPainterFontHeight 24
+// Map Flarm label font point size
+#define MapFlarmLabelFontPointSize 12
 
-// Flarm display painter font height in pixels
-#define FlarmDisplayPainterFontPixelSize 24
+// Flarm display text point size
+#define FlarmDisplayTextPointSize 16
+
+// Flarm display icon point size
+#define FlarmDisplayIconPointSize 20
 
 // WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
 #define WhatsThatFontPointSize 16
@@ -129,7 +126,6 @@
 #define IconSize 26
 #define ButtonSize 42
 #define SnapRadius 15
-#define MapPMButtonSize 50
 
 // Dialog font size in pixels
 #define DialogMinFontSize 22
@@ -155,11 +151,14 @@
 // Map bearing indicator font point size
 #define MapBearingIndicatorFontPointSize 12
 
-// Map Flarm painter font height in pixels
-#define MapFlarmPainterFontHeight 24
+// Map Flarm label font point size
+#define MapFlarmLabelFontPointSize 12
 
-// Flarm display painter font height in pixels
-#define FlarmDisplayPainterFontPixelSize 24
+// Flarm display text point size
+#define FlarmDisplayTextPointSize 16
+
+// Flarm display icon point size
+#define FlarmDisplayIconPointSize 20
 
 // WhatsThat font point size
 #define WhatsThatFontPointSize 16
@@ -222,6 +221,13 @@ class Layout
   static void fitDialogFont( QFont& font );
 
   static void fitStatusbarFont( QFont& font );
+
+  /**
+   * Gets the zoom button size in pixels drawn at the map.
+   *
+   * \return The size of the zoom buttons in pixels.
+   */
+  static int getMapZoomButtonSize();
 
 #ifdef ANDROID
 

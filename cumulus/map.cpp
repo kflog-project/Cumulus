@@ -2345,13 +2345,6 @@ void Map::p_drawOtherAircraft()
  */
 void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
 {
-
-#if defined ANDROID || defined MAEMO
-  const int diameter = 30;
-#else
-  const int diameter = 22;
-#endif
-
   if( status.RelativeBearing.isEmpty() ||
       status.RelativeVertical.isEmpty() ||
       status.RelativeDistance.isEmpty() ||
@@ -2397,8 +2390,19 @@ void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
       return;
     }
 
+  // Set font size used for text painting a little bit bigger, that
+  // the labels are good to see at the map.
+  QFont font = this->font();
+
+  // We use always the same point size independently from the screen size
+  font.setPointSize( MapFlarmLabelFontPointSize );
+
   // Check, which circle we do need
   QPainter painter( &m_pixInformationMap );
+  painter.setFont( font );
+
+  // Get the font's height in pixels.
+  int diameter = painter.fontMetrics().height();
 
   if( status.Alarm != Flarm::No )
     {
@@ -2415,12 +2419,6 @@ void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
     }
 
   // additional info can be drawn here, like horizontal and vertical distance
-
-  // Set font size used for text painting a little bit bigger, that
-  // the labels are good to see at the map.
-  QFont font = painter.font();
-  font.setPixelSize( MapFlarmPainterFontHeight );
-
   QString text = Distance::getText( relDistance, false, -1 ) + "/";
 
   if( relVertical > 0 )
@@ -2431,7 +2429,6 @@ void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
 
   text += Altitude::getText( relVertical, false, -1 );
 
-  painter.setFont( font );
   QRect textRect = painter.fontMetrics().boundingRect( text );
 
   int xOffset = 0;
@@ -2464,14 +2461,6 @@ void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
  */
 void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 {
-#if defined ANDROID || defined MAEMO
-  const int diameter = 30;
-  const int triangle = 34;
-#else
-  const int diameter = 22;
-  const int triangle = 26;
-#endif
-
   QPoint other;
   double distance = 0.0;
   int usedObjectSize;
@@ -2505,8 +2494,22 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
       return;
     }
 
+  // Set font size used for text painting a little bit bigger, that
+  // the labels are good to see at the map.
+  QFont font = this->font();
+
+  // We use always the same point size independently from the screen size
+  font.setPointSize( MapFlarmLabelFontPointSize );
+
   // Check, which circle we do need
   QPainter painter( &m_pixInformationMap );
+  painter.setFont( font );
+
+  // Get the font's height in pixels.
+  const int diameter = painter.fontMetrics().height();
+
+  font.setPointSize( MapFlarmLabelFontPointSize + 4 );
+  const int triangle = QFontMetrics(font).height();
 
   if( flarmAcft.Track == INT_MIN )
     {
@@ -2530,12 +2533,6 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
     }
 
   // additional info can be drawn here, like horizontal arelDistancend vertical distance
-
-  // Set font size used for text painting a little bit bigger, that
-  // the labels are good to see at the map.
-  QFont font = painter.font();
-  font.setPixelSize( MapFlarmPainterFontHeight );
-
   QString text = Distance::getText( distance, false, -1 );
 
   if( flarmAcft.ClimbRate != INT_MIN )
@@ -2553,7 +2550,6 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
       text += climb.getVerticalText( false, 1);
     }
 
-  painter.setFont( font );
   QRect textRect = painter.fontMetrics().boundingRect( text );
 
   int xOffset = 0;

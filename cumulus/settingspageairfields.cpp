@@ -99,7 +99,12 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QLabel* lbl = new QLabel(tr("Country Filter:"), (weltGroup));
   weltLayout->addWidget(lbl, grow, 0);
 
+  Qt::InputMethodHints imh;
+
   m_countryFilter = new QLineEdit(weltGroup);
+  imh = (m_countryFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_countryFilter->setInputMethodHints(imh);
+
   weltLayout->addWidget(m_countryFilter, grow, 1, 1, 3);
   grow++;
 
@@ -131,6 +136,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   connect( m_installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
 
   m_welt2000FileName = new QLineEdit(weltGroup);
+  m_welt2000FileName->setInputMethodHints(imh);
   m_welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
   weltLayout->addWidget(m_welt2000FileName, grow, 1, 1, 3);
 

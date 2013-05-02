@@ -76,8 +76,12 @@ TaskEditor::TaskEditor( QWidget* parent,
       setWindowTitle(tr("New Task"));
     }
 
+  Qt::InputMethodHints imh;
+
   taskName = new QLineEdit( this );
   taskName->setBackgroundRole( QPalette::Light );
+  imh = (taskName->inputMethodHints() | Qt::ImhNoPredictiveText);
+  taskName->setInputMethodHints(imh);
 
   taskList = new QTreeWidget( this );
   taskList->setObjectName("taskList");
