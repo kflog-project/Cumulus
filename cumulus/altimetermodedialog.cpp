@@ -197,7 +197,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   mminus = new QPushButton( "--", this );
   minus  = new QPushButton( "-", this );
 
-  int size = ButtonSize;
+  int size = Layout::getButtonSize();
 
   pplus->setMinimumSize( size, size );
   plus->setMinimumSize( size, size );

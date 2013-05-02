@@ -39,7 +39,6 @@
 //      That is a big difference to Android!
 
 #define IconSize 32
-#define ButtonSize 80
 
 // Snap radius size on the map
 #define SnapRadius 25
@@ -68,19 +67,21 @@
 // Map bearing indicator font point size
 #define MapBearingIndicatorFontPointSize 20
 
-// Map Flarm painter font height in pixels
-#define MapFlarmPainterFontHeight 24
+// Map Flarm label font point size
+#define MapFlarmLabelFontPointSize 12
 
-// Flarm display painter font height in pixels
-#define FlarmDisplayPainterFontPixelSize 24
+// Flarm display text point size
+#define FlarmDisplayTextPointSize 12
 
-// WhatsThat font point size
-#define WhatsThatFontPointSize 20
+// Flarm display icon point size
+#define FlarmDisplayIconPointSize 16
+
+// WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
+#define WhatsThatFontPointSize 16
 
 #elif defined ANDROID
 
 #define IconSize 32
-#define ButtonSize 80
 
 // Snap radius size on the map
 #define SnapRadius 25
@@ -124,7 +125,6 @@
 #else
 
 #define IconSize 26
-#define ButtonSize 42
 #define SnapRadius 15
 
 // Dialog font size in pixels
@@ -228,6 +228,8 @@ class Layout
    * \return The size of the zoom buttons in pixels.
    */
   static int getMapZoomButtonSize();
+
+  static int getButtonSize();
 
 #ifdef ANDROID
 

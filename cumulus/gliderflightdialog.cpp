@@ -96,6 +96,8 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   gridLayout->addWidget(spinWater, row, 1);
 
+  int ButtonSize = Layout::getButtonSize();
+
   buttonDump = new QPushButton (tr("Dump"), this);
   buttonDump->setMinimumHeight( ButtonSize );
   buttonDump->setFocusPolicy(Qt::NoFocus);
