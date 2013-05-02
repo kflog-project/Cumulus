@@ -127,7 +127,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setIconSize(QSize(size, size));
   cancel->setMinimumSize(size, size);
   cancel->setMaximumSize(size, size);
 
@@ -135,7 +135,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setIconSize(QSize(size, size));
   ok->setMinimumSize(size, size);
   ok->setMaximumSize(size, size);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
