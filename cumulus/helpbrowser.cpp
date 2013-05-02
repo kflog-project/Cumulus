@@ -55,7 +55,7 @@ HelpBrowser::HelpBrowser( QWidget *parent ) :
   connect( m_browser, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
 
   // get the icon size to be used
-  const int iconSize = Layout::iconSize( font() );
+  const int iconSize = Layout::getButtonSize();
 
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
