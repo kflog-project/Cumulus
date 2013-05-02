@@ -256,7 +256,7 @@ void Layout::fitStatusbarFont( QFont& font )
 int Layout::getMapZoomButtonSize()
 {
   QFont font = MainWindow::mainWindow()->font();
-  font.setPointSize( 26 );
+  font.setPointSize( 24 );
 
   return QFontMetrics(font).height();
 }
