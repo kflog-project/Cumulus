@@ -110,7 +110,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   ntScheme->addButton( nearest, 0 );
   ntScheme->addButton( touched, 1 );
 
-  m_reportSwitch = new QCheckBox( tr("Report switch"), this );
+  m_reportSwitch = new QCheckBox( tr("Report"), this );
 
   QVBoxLayout* vbox = new QVBoxLayout;
   vbox->addWidget( nearest );

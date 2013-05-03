@@ -97,12 +97,7 @@ Calculator::Calculator(QObject* parent) :
   m_minimumAltitude = INT_MIN;
   m_lastTpPassageState = TaskPoint::Outside;
   m_lastZoomFactor = -1.0;
-
-  m_resetMapZoomTimer = new QTimer();
-  m_resetMapZoomTimer->setSingleShot( true );
-
-  connect( m_resetMapZoomTimer, SIGNAL(timeout()),
-           this, SLOT(slot_switchMapScaleBack()) );
+  m_autoZoomRequests = 0;
 
   // hook up the internal backend components
   connect (_vario, SIGNAL(newVario(const Speed&)),
@@ -442,34 +437,31 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
       // Auto zoom in to make the task point figure better visible,
       // if that feature is enabled.
-      m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
-
-      QPoint tpWgs(selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon() );
-
-      double newZoomFactor = _globalMapMatrix->ensureVisible( tpWgs, lastPosition );
-
-      // qDebug() << "m_lastZoomFactor" << m_lastZoomFactor << "newZoomFactor" << newZoomFactor;
-
-      if( newZoomFactor > 0.0 && m_lastZoomFactor != newZoomFactor )
+      if( GeneralConfig::instance()->getTaskPointAutoZoom() == true )
         {
-          // qDebug() << "TP Near ->ZoomIn" << m_lastZoomFactor << newZoomFactor;
+          m_autoZoomRequests++;
 
-          // Stop the reset zoom timer
-          m_resetMapZoomTimer->stop();
+          m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
-          // Set map center to the current position
-          _globalMapMatrix->centerToLatLon( lastPosition );
+          QPoint tpWgs(selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon() );
 
-          // Zoom into the map
-          emit switchMapScale(newZoomFactor);
+          double newZoomFactor = _globalMapMatrix->ensureVisible( tpWgs, lastPosition );
 
-          // Notice user about the zoom
-          emit taskInfo( tr("TP zoom"), true );
-        }
-      else
-        {
-          // Reset last zoom factor
-          m_lastZoomFactor = -1.0;
+          // qDebug() << "m_lastZoomFactor" << m_lastZoomFactor << "newZoomFactor" << newZoomFactor;
+
+          if( newZoomFactor > 0.0 && m_lastZoomFactor != newZoomFactor )
+            {
+              // qDebug() << "TP Near ->ZoomIn" << m_lastZoomFactor << newZoomFactor;
+
+              // Set map center to the current position
+              _globalMapMatrix->centerToLatLon( lastPosition );
+
+              // Zoom into the map
+              emit switchMapScale(newZoomFactor);
+
+              // Notice user about the zoom
+              emit taskInfo( tr("TP zoom"), true );
+            }
         }
     }
 
@@ -504,8 +496,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
             {
               // End and landing point are identically
               tpEndEqLanding = true;
-              qDebug() << "#3 tpEndEqLanding = true";
-            }
+           }
         }
 
       if ( taskEndReached == false &&
@@ -536,9 +527,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
           box->show();
 
           // setup a timer to reset a task point approach zoom after 10s of passage
-          if( m_lastZoomFactor != -1 )
+          if( m_autoZoomRequests > 0 )
             {
-              m_resetMapZoomTimer->start( 10000 );
+              QTimer::singleShot( 10000, this, SLOT(slot_switchMapScaleBack()) );
             }
 
           // Reset the task point index in the selected waypoint. That stops
@@ -606,9 +597,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
           slot_WaypointChange( nextWp->getWaypointObject(), false );
 
           // setup a timer to reset a task point approach zoom after 10s of passage
-          if( m_lastZoomFactor != -1 )
+          if( m_autoZoomRequests > 0)
             {
-              m_resetMapZoomTimer->start( 10000 );
+              QTimer::singleShot( 10000, this, SLOT(slot_switchMapScaleBack()) );
             }
 
           // Here we send a notice to the user about the task point
@@ -1602,11 +1593,16 @@ void Calculator::slot_userMapZoom()
 {
   // Reset last zoom factor, if the user did a map zoom.
   m_lastZoomFactor = -1.0;
+
+  // Reset auto zoom request counter.
+  m_autoZoomRequests = 0;
 }
 
 void Calculator::slot_switchMapScaleBack()
 {
-  if( m_lastZoomFactor != -1.0 )
+  m_autoZoomRequests--;
+
+  if( m_autoZoomRequests == 0 && m_lastZoomFactor != -1.0 )
     {
       // Zoom back to the zoom factor before the task point has been touched.
       emit switchMapScale( m_lastZoomFactor );

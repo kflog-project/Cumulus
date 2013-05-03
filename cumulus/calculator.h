@@ -24,7 +24,6 @@
 #include <QPoint>
 #include <QString>
 #include <QTime>
-#include <QTimer>
 
 #include "altitude.h"
 #include "basemapelement.h"
@@ -876,9 +875,9 @@ private: // Private attributes
   double m_lastZoomFactor;
 
   /**
-   * Timer to reset a map zoom after timeout.
+   * Number of auto zoom requests.
    */
-  QTimer* m_resetMapZoomTimer;
+  int m_autoZoomRequests;
 };
 
 extern Calculator* calculator;
