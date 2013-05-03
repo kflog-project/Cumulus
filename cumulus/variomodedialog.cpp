@@ -92,17 +92,18 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   mminus  = new QPushButton("--", this);
   minus   = new QPushButton("-", this);
 
-  int size = Layout::getButtonSize();
+  int buttonSize = Layout::getButtonSize();
+  int iconSize   = buttonSize - 5;
 
-  pplus->setMinimumSize(size, size);
-  plus->setMinimumSize(size, size);
-  minus->setMinimumSize(size, size);
-  mminus->setMinimumSize(size, size);
+  pplus->setMinimumSize(buttonSize, buttonSize);
+  plus->setMinimumSize(buttonSize, buttonSize);
+  minus->setMinimumSize(buttonSize, buttonSize);
+  mminus->setMinimumSize(buttonSize, buttonSize);
 
-  pplus->setMaximumSize(size, size);
-  plus->setMaximumSize(size, size);
-  minus->setMaximumSize(size, size);
-  mminus->setMaximumSize(size, size);
+  pplus->setMaximumSize(buttonSize, buttonSize);
+  plus->setMaximumSize(buttonSize, buttonSize);
+  minus->setMaximumSize(buttonSize, buttonSize);
+  mminus->setMaximumSize(buttonSize, buttonSize);
 
   pplus->setFocusPolicy(Qt::NoFocus);
   plus->setFocusPolicy(Qt::NoFocus);
@@ -127,18 +128,15 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(size, size));
-  cancel->setMinimumSize(size, size);
-  cancel->setMaximumSize(size, size);
-
-  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  cancel->setIconSize(QSize(iconSize, iconSize));
+  cancel->setMinimumSize(buttonSize, buttonSize);
+  cancel->setMaximumSize(buttonSize, buttonSize);
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(size, size));
-  ok->setMinimumSize(size, size);
-  ok->setMaximumSize(size, size);
-  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  ok->setIconSize(QSize(iconSize, iconSize));
+  ok->setMinimumSize(buttonSize, buttonSize);
+  ok->setMaximumSize(buttonSize, buttonSize);
 
   QVBoxLayout *butLayout = new QVBoxLayout;
   butLayout->addWidget( cancel );

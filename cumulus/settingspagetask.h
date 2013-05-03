@@ -141,6 +141,9 @@ private:
   // Zoom option
   QCheckBox* m_autoZoom;
 
+  // report switch option
+  QCheckBox* m_reportSwitch;
+
   QButtonGroup* ntScheme;       // nearest-touch schema
   QButtonGroup* startScheme;    // circle-sector scheme
   QButtonGroup* finishScheme;   // circle-sector scheme

@@ -110,9 +110,12 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   ntScheme->addButton( nearest, 0 );
   ntScheme->addButton( touched, 1 );
 
+  m_reportSwitch = new QCheckBox( tr("Report switch"), this );
+
   QVBoxLayout* vbox = new QVBoxLayout;
   vbox->addWidget( nearest );
   vbox->addWidget( touched );
+  vbox->addWidget( m_reportSwitch );
   vbox->addStretch(1);
   ssBox->setLayout(vbox);
 
@@ -594,6 +597,7 @@ void SettingsPageTask::load()
       ntScheme->button(m_selectedSwitchScheme)->setChecked(true);
     }
 
+  m_reportSwitch->setChecked( conf->getReportTpSwitch() );
   m_drawShape->setChecked( conf->getTaskDrawShape() );
   m_fillShape->setChecked( conf->getTaskFillShape() );
   m_transShape->setValue( conf->getTaskShapeAlpha() );
@@ -697,6 +701,7 @@ void SettingsPageTask::save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setActiveTaskSwitchScheme( (GeneralConfig::ActiveTaskSwitchScheme) m_selectedSwitchScheme );
+  conf->setReportTpSwitch( m_reportSwitch->isChecked() );
   conf->setTaskDrawShape( m_drawShape->isChecked() );
   conf->setTaskFillShape( m_fillShape->isChecked() );
   conf->setTaskShapeAlpha(m_transShape->value() );

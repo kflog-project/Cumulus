@@ -96,40 +96,37 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   QGroupBox* buttonBox = new QGroupBox( this );
 
-  int size = 40;
-
-#if defined MAEMO || defined ANDROID
-  size = 60;
-#endif
+  int buttonSize = Layout::getButtonSize();
+  int iconSize   = buttonSize - 5;
 
   QPushButton *addButton  = new QPushButton;
   addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
-  addButton->setIconSize(QSize(IconSize, IconSize));
-  addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  addButton->setMinimumSize(size, size);
-  addButton->setMaximumSize(size, size);
+  addButton->setIconSize(QSize(iconSize, iconSize));
+  // addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  addButton->setMinimumSize(buttonSize, buttonSize);
+  addButton->setMaximumSize(buttonSize, buttonSize);
 
   deleteButton  = new QPushButton;
   deleteButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
-  deleteButton->setIconSize(QSize(IconSize, IconSize));
-  deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  deleteButton->setMinimumSize(size, size);
-  deleteButton->setMaximumSize(size, size);
+  deleteButton->setIconSize(QSize(iconSize, iconSize));
+  // deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  deleteButton->setMinimumSize(buttonSize, buttonSize);
+  deleteButton->setMaximumSize(buttonSize, buttonSize);
   deleteButton->setEnabled(false);
 
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  okButton->setIconSize(QSize(IconSize, IconSize));
-  okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  okButton->setMinimumSize(size, size);
-  okButton->setMaximumSize(size, size);
+  okButton->setIconSize(QSize(iconSize, iconSize));
+  // okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  okButton->setMinimumSize(buttonSize, buttonSize);
+  okButton->setMaximumSize(buttonSize, buttonSize);
 
   QPushButton *closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  closeButton->setIconSize(QSize(IconSize, IconSize));
-  closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  closeButton->setMinimumSize(size, size);
-  closeButton->setMaximumSize(size, size);
+  closeButton->setIconSize(QSize(iconSize, iconSize));
+  // closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  closeButton->setMinimumSize(buttonSize, buttonSize);
+  closeButton->setMaximumSize(buttonSize, buttonSize);
 
   connect( addButton, SIGNAL(clicked() ), this, SLOT(slot_AddRow()) );
   connect( deleteButton, SIGNAL(clicked() ), this, SLOT(slot_DeleteRows()) );

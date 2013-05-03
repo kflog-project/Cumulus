@@ -252,10 +252,12 @@ void GeneralConfig::load()
                                                          GeneralConfig::Sector ).toInt();
   _taskActiveSwitchScheme = (enum ActiveTaskSwitchScheme) value( "ActiveSwitchScheme",
                                                          GeneralConfig::Touched ).toInt();
-  _taskDrawShape     = value( "DrawShape", true ).toBool();
-  _taskFillShape     = value( "FillShape", true ).toBool();
-  _taskPointAutoZoom = value( "AutoZoom", true ).toBool();
-  _taskShapeAlpha    = value( "ShapeAlpha", 20 ).toInt(); // transparency is in %
+
+  _reportTaskpointSwitch = value( "ReportTaskpointSwitch", true ).toBool();
+  _taskDrawShape         = value( "DrawShape", true ).toBool();
+  _taskFillShape         = value( "FillShape", true ).toBool();
+  _taskPointAutoZoom     = value( "AutoZoom", true ).toBool();
+  _taskShapeAlpha        = value( "ShapeAlpha", 20 ).toInt(); // transparency is in %
   endGroup();
 
   beginGroup("Task Scheme Start");
@@ -644,6 +646,7 @@ void GeneralConfig::save()
   setValue( "ActiveFinishScheme", _taskActiveFinishScheme );
   setValue( "ActiveObserverScheme", _taskActiveObsScheme );
   setValue( "ActiveSwitchScheme", _taskActiveSwitchScheme );
+  setValue( "ReportTaskpointSwitch", _reportTaskpointSwitch );
   setValue( "DrawShape", _taskDrawShape );
   setValue( "FillShape", _taskFillShape );
   setValue( "AutoZoom", _taskPointAutoZoom );

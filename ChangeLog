@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-05-03 AP: Bugfix: The task parser stumbled if a taskpoint contains a
+                   comment text with a newline. Comment field removed from the
+                   saved tasks file.
+
 [-] 2013-05-01 AP: NMEA simulator expanded that GPS data can also be sent out
                    via a serial device like ttyS0.
 

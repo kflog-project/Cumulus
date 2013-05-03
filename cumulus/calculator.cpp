@@ -98,6 +98,12 @@ Calculator::Calculator(QObject* parent) :
   m_lastTpPassageState = TaskPoint::Outside;
   m_lastZoomFactor = -1.0;
 
+  m_resetMapZoomTimer = new QTimer();
+  m_resetMapZoomTimer->setSingleShot( true );
+
+  connect( m_resetMapZoomTimer, SIGNAL(timeout()),
+           this, SLOT(slot_switchMapScaleBack()) );
+
   // hook up the internal backend components
   connect (_vario, SIGNAL(newVario(const Speed&)),
            this, SLOT(slot_Variometer(const Speed&)));
@@ -448,6 +454,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
         {
           // qDebug() << "TP Near ->ZoomIn" << m_lastZoomFactor << newZoomFactor;
 
+          // Stop the reset zoom timer
+          m_resetMapZoomTimer->stop();
+
           // Set map center to the current position
           _globalMapMatrix->centerToLatLon( lastPosition );
 
@@ -529,7 +538,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // setup a timer to reset a task point approach zoom after 10s of passage
           if( m_lastZoomFactor != -1 )
             {
-              QTimer::singleShot(10000, this, SLOT(slot_switchMapScaleBack()));
+              m_resetMapZoomTimer->start( 10000 );
             }
 
           // Reset the task point index in the selected waypoint. That stops
@@ -596,8 +605,11 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // announce task point change as none user interaction
           slot_WaypointChange( nextWp->getWaypointObject(), false );
 
-          // zoom back the map to the last user's scale.
-          slot_switchMapScaleBack();
+          // setup a timer to reset a task point approach zoom after 10s of passage
+          if( m_lastZoomFactor != -1 )
+            {
+              m_resetMapZoomTimer->start( 10000 );
+            }
 
           // Here we send a notice to the user about the task point
           // switch. If end point is reached and landing point is identical
@@ -609,18 +621,22 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
               emit taskInfo( tr("TP passed"), true );
 
-              TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
+              if( GeneralConfig::instance()->getReportTpSwitch() == true )
+                {
+                  // Show a detailed switch info, if the user has configured that.
+                  TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
 
-              tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
-                                         dist2Next.getKilometers() );
+                  tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
+                                             dist2Next.getKilometers() );
 
-              // switch back to map view on close of tp info widget
-              connect( tpInfo, SIGNAL( closed() ),
-                       _globalMainWindow, SLOT( slotSwitchToMapView() ) );
+                  // switch back to map view on close of tp info widget
+                  connect( tpInfo, SIGNAL( closed() ),
+                           _globalMainWindow, SLOT( slotSwitchToMapView() ) );
 
-              // switch off all set accelerators
-              _globalMainWindow->setView( MainWindow::tpSwitchView );
-              tpInfo->showTP();
+                  // switch off all set accelerators
+                  _globalMainWindow->setView( MainWindow::tpSwitchView );
+                  tpInfo->showTP();
+                }
             }
         }
     }

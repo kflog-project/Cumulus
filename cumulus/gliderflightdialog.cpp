@@ -96,10 +96,11 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   gridLayout->addWidget(spinWater, row, 1);
 
-  int ButtonSize = Layout::getButtonSize();
+  int buttonSize = Layout::getButtonSize();
+  int iconSize   = buttonSize - 5;
 
   buttonDump = new QPushButton (tr("Dump"), this);
-  buttonDump->setMinimumHeight( ButtonSize );
+  buttonDump->setMinimumHeight( buttonSize );
   buttonDump->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *waterLayout = new QHBoxLayout;
@@ -131,15 +132,15 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   mminus = new QPushButton("--", this);
   minus  = new QPushButton("-", this);
 
-  pplus->setMinimumSize(ButtonSize, ButtonSize);
-  plus->setMinimumSize(ButtonSize, ButtonSize);
-  minus->setMinimumSize(ButtonSize, ButtonSize);
-  mminus->setMinimumSize(ButtonSize, ButtonSize);
+  pplus->setMinimumSize(buttonSize, buttonSize);
+  plus->setMinimumSize(buttonSize, buttonSize);
+  minus->setMinimumSize(buttonSize, buttonSize);
+  mminus->setMinimumSize(buttonSize, buttonSize);
 
-  pplus->setMaximumSize(ButtonSize, ButtonSize);
-  plus->setMaximumSize(ButtonSize, ButtonSize);
-  minus->setMaximumSize(ButtonSize, ButtonSize);
-  mminus->setMaximumSize(ButtonSize, ButtonSize);
+  pplus->setMaximumSize(buttonSize, buttonSize);
+  plus->setMaximumSize(buttonSize, buttonSize);
+  minus->setMaximumSize(buttonSize, buttonSize);
+  mminus->setMaximumSize(buttonSize, buttonSize);
 
   pplus->setFocusPolicy(Qt::NoFocus);
   plus->setFocusPolicy(Qt::NoFocus);
@@ -164,17 +165,17 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(IconSize, IconSize));
-  cancel->setMinimumSize(ButtonSize, ButtonSize);
-  cancel->setMaximumSize(ButtonSize, ButtonSize);
+  cancel->setIconSize(QSize(iconSize, iconSize));
+  cancel->setMinimumSize(buttonSize, buttonSize);
+  cancel->setMaximumSize(buttonSize, buttonSize);
 
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(IconSize, IconSize));
-  ok->setMinimumSize(ButtonSize, ButtonSize);
-  ok->setMaximumSize(ButtonSize, ButtonSize);
+  ok->setIconSize(QSize(iconSize, iconSize));
+  ok->setMinimumSize(buttonSize, buttonSize);
+  ok->setMaximumSize(buttonSize, buttonSize);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QVBoxLayout *butLayout = new QVBoxLayout;

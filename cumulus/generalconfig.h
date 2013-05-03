@@ -1993,6 +1993,22 @@ class GeneralConfig : protected QSettings
     _taskActiveSwitchScheme = newValue;
   };
 
+  /**
+   * Gets the report task point switch flag.
+   */
+  bool getReportTpSwitch() const
+  {
+    return _reportTaskpointSwitch;
+  };
+
+  /**
+   * Sets the report task point switch flag.
+   */
+  void setReportTpSwitch( const bool value )
+  {
+    _reportTaskpointSwitch = value;
+  };
+
   /** Gets task shape alpha transparency. 0 represents a fully
       transparent color, while 255 represents a fully opaque
       color. See also
@@ -2830,6 +2846,8 @@ class GeneralConfig : protected QSettings
   enum ActiveTaskFigureScheme _taskActiveFinishScheme;
   enum ActiveTaskFigureScheme _taskActiveObsScheme;
   enum ActiveTaskSwitchScheme _taskActiveSwitchScheme;
+
+  bool _reportTaskpointSwitch;
 
   // arrival altitude display selection
   enum ArrivalAltitudeDisplay _arrivalAltitudeDisplay;

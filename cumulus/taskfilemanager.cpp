@@ -55,31 +55,31 @@ A task consists of the TS key, several TW keys and a TE key.
 Example:
 
 TS,<TaskName>,<No of task points>
-TW,<Latitude>,<Longitude>,<Elevation>,<Name>,<ICAO>,<Description>,<Frequency>,
-   <Comment>,<landable><Runway-directions><Runway-length><Surface>
-   <Waypoint-type>,<ActiveTaskPointFigureScheme>,<TaskLineLength>,
+TW,<Latitude>,<Longitude>,<Elevation>,<WpName>,<LongName>,<Waypoint-type>,
+   <ActiveTaskPointFigureScheme>,<TaskLineLength>,
    <TaskCircleRadius>,<TaskSectorInnerRadius>,<TaskSectorOuterRadius>,
    <TaskSectorAngle>
 ...
 TE
 
 --------------------------------------------------------------------------------
-# KFLog/Cumulus-Task-File created at 2013-01-17 11:14:36 by Cumulus 2.20.0
+# KFLog/Cumulus-Task-File V3.0, created at 2013-05-03 14:39:49 by Cumulus 5.2.0
 
-TS,Dreieck 1,6
-TW,31488167,8450167,67,Eggersdo,EDCE,Eggersdorf Muenc,123,,1,1560,2240,1,5
-TW,31488167,8450167,67,Eggersdo,EDCE,Eggersdorf Muenc,123,,1,1560,2240,1,5
-TW,31567833,8545667,12,Neuharde,EDON,Neuhardenberg,119.125,,1,2074,2390,3,5
-TW,31548000,8349333,78,Strausbe,EDAY,Strausberg,123.05,,1,1303,1200,3,5
-TW,31488167,8450167,67,Eggersdo,EDCE,Eggersdorf Muenc,123,,1,1560,2240,1,5
-TW,31488167,8450167,67,Eggersdo,EDCE,Eggersdorf Muenc,123,,1,1560,2240,1,5
+TS,500 Diamant,6
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
+TW,31201333,7291667,80,Zerbst,Zerbst,61,1,1000,500,0,3000,90,1,0
+TW,30695333,8970167,238,Goerlitz,Goerlitz,61,1,1000,500,0,3000,90,1,0
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
 TE
-TS,EDCE-Dessau,5
-TW,31488167,8450167,67,Eggersdo,EDCE,Eggersdorf Muenc,123,,1,1560,2240,1,5
-TW,31488167,8450167,67,Eggersdo,EDCE,Eggersdorf Muenc,123,,1,1560,2240,1,5
-TW,31369167,8281333,33,Frieders,EDCF,Friedersdorf,122.2,,1,2845,950,1,5
-TW,31099000,7310667,56,Dessau,EDAD,Dessau,118.175,,1,2331,980,2,5
-TW,31099000,7310667,56,Dessau,EDAD,Dessau,118.175,,1,2331,980,2,5
+TS,ul robin,6
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,0,0,500,0,0,0,1,0
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,2,2000,500,0,3000,90,1,1
+TW,31140500,7917667,102,Reinsdor,Reinsdorf,61,1,0,500,0,3000,90,1,0
+TW,31139833,7831833,85,Oehna Ze,Oehna Zellendorf,61,1,0,500,500,3000,90,1,1
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,2,1000,3000,0,3000,90,1,0
+TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,0,0,500,0,0,0,1,0
 TE
 --------------------------------------------------------------------------------
 
@@ -212,7 +212,7 @@ bool TaskFileManager::loadTaskListOld( QList<FlightTask*>& flightTaskList,
               // tp->icao = tmpList.at( 5 );
               tp->setName( tmpList.at( 6 ) );
               // tp->frequency = tmpList.at( 7 ).toDouble();
-              tp->setComment( tmpList.at( 8 ) );
+              tp->setComment( "" );
               // tp->isLandable = tmpList.at( 9 ).toInt();
               // tp->runway = tmpList.at( 10 ).toInt();
               // tp->length = tmpList.at( 11 ).toInt();
@@ -355,26 +355,27 @@ bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
 
               tmpList = line.split( ",", QString::KeepEmptyParts );
 
-              if( tmpList.size() < 16 ) continue;
+              if( tmpList.size() < 14 ) continue;
 
               WGSPoint wgsp( tmpList.at( 1 ).toInt(), tmpList.at( 2 ) .toInt() );
 
+              int i = 3;
+
               tp->setWGSPosition( wgsp );
               tp->setPosition( _globalMapMatrix->wgsToMap( wgsp ) );
-              tp->setElevation( tmpList.at( 3 ).toInt() );
-              tp->setWPName( tmpList.at( 4 ) );
-              tp->setName( tmpList.at( 5 ) );
-              tp->setComment( tmpList.at( 6 ) );
-              tp->setTypeID( (BaseMapElement::objectType) tmpList.at( 7 ).toShort() ) ;
+              tp->setElevation( tmpList.at( i++ ).toInt() );
+              tp->setWPName( tmpList.at( i++ ) );
+              tp->setName( tmpList.at( i++ ) );
+              tp->setTypeID( (BaseMapElement::objectType) tmpList.at( i++ ).toShort() ) ;
 
-              tp->setActiveTaskPointFigureScheme( static_cast<enum GeneralConfig::ActiveTaskFigureScheme> (tmpList.at( 8 ).toInt()) );
-              tp->setTaskLineLength( tmpList.at( 9 ).toDouble() );
-              tp->setTaskCircleRadius( tmpList.at( 10 ).toDouble() );
-              tp->setTaskSectorInnerRadius( tmpList.at( 11 ).toDouble() );
-              tp->setTaskSectorOuterRadius( tmpList.at( 12 ).toDouble() );
-              tp->setTaskSectorAngle( tmpList.at( 13 ).toInt() );
-              tp->setAutoZoom( tmpList.at( 14 ).toInt() > 0 ? true : false );
-              tp->setUserEditFlag( tmpList.at( 15 ).toInt() > 0 ? true : false );
+              tp->setActiveTaskPointFigureScheme( static_cast<enum GeneralConfig::ActiveTaskFigureScheme> (tmpList.at( i++ ).toInt()) );
+              tp->setTaskLineLength( tmpList.at( i++ ).toDouble() );
+              tp->setTaskCircleRadius( tmpList.at( i++ ).toDouble() );
+              tp->setTaskSectorInnerRadius( tmpList.at( i++ ).toDouble() );
+              tp->setTaskSectorOuterRadius( tmpList.at( i++ ).toDouble() );
+              tp->setTaskSectorAngle( tmpList.at( i++ ).toInt() );
+              tp->setAutoZoom( tmpList.at( i++ ).toInt() > 0 ? true : false );
+              tp->setUserEditFlag( tmpList.at( i++ ).toInt() > 0 ? true : false );
             }
           else
             {
@@ -455,7 +456,6 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
                  << tp->getElevation() << ","
                  << tp->getWPName() << ","
                  << tp->getName() << ","
-                 << tp->getComment() << ","
                  << tp->getTypeID() << ","
                  << tp->getActiveTaskPointFigureScheme() << ","
                  << tp->getTaskLineLength().getMeters() << ","

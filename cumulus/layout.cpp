@@ -266,5 +266,12 @@ int Layout::getButtonSize()
   QFont font = MainWindow::mainWindow()->font();
   font.setPointSize( 18 );
 
-  return QFontMetrics(font).height();
+  int size = QFontMetrics(font).height();
+
+  if( size < 40 )
+    {
+      size = 40;
+    }
+
+  return size;
 }
