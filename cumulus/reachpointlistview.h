@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers, Eckhard Völlm,
-**                   2008-2011 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -174,7 +174,6 @@ private:
   RowDelegate* rowDelegate;
   QBoxLayout * buttonrow;
   Waypoint     selectedWp;
-  QPixmap      _arrows;
 
   QPushButton* cmdShowOl;
   QPushButton* cmdHideOl;

@@ -51,9 +51,6 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
 {
   setObjectName("ReachpointListView");
 
-  // load pixmap of arrows for relative bearing
-  _arrows = GeneralConfig::instance()->loadPixmap("arrows-15.png");
-
   list = new QTreeWidget;
   list->setObjectName("ReachpointView");
 
