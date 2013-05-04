@@ -104,21 +104,21 @@ void TaskLine::calculateElements()
 
 bool TaskLine::checkCrossing( const QPoint& position )
 {
-//  qDebug() << "checkCrossing" << "dir=" << m_direction << "Leng=" << m_lineLength
-//           << "IB=" << m_inboundRegion.isEmpty() << "OB=" << m_outboundRegion.isEmpty();
+  qDebug() << "checkCrossing" << "dir=" << m_direction << "Leng=" << m_lineLength
+           << "IB=" << m_inboundRegion.isEmpty() << "OB=" << m_outboundRegion.isEmpty();
 
   if( m_direction == -1 || m_lineLength == 0 ||
       m_inboundRegion.isEmpty() || m_outboundRegion.isEmpty() )
     {
       // It seems that the line data are not initialized.
-      // qDebug() << "TaskLine::checkCrossing: Input check -> Ret=false";
+      qDebug() << "TaskLine::checkCrossing: Input check -> Ret=false";
       return false;
     }
 
   // As first check, if we have the inbound region arrived
   if( m_inboundRegion.contains( position ) )
     {
-      // qDebug() << "TaskLine::checkCrossing: Inbound region true -> Ret=false";
+      qDebug() << "TaskLine::checkCrossing: Inbound region true -> Ret=false";
 
       m_inboundCounter++;
       m_outboundCounter = 0;
@@ -130,7 +130,7 @@ bool TaskLine::checkCrossing( const QPoint& position )
     {
       if( m_inboundCounter > 0 )
         {
-          // qDebug() << "TaskLine::checkCrossing: Outbound region true -> Ret=true";
+          qDebug() << "TaskLine::checkCrossing: Outbound region true -> Ret=true";
 
           // It seems we came from inbound. So we decide, that the line
           // has been crossed.
@@ -140,14 +140,14 @@ bool TaskLine::checkCrossing( const QPoint& position )
         }
       else
         {
-          // qDebug() << "TaskLine::checkCrossing: Outbound region true -> Ret=false";
+          qDebug() << "TaskLine::checkCrossing: Outbound region true -> Ret=false";
 
           m_outboundCounter++;
           return false;
         }
     }
 
-  // qDebug() << "TaskLine::checkCrossing: No regions -> Ret=false";
+  qDebug() << "TaskLine::checkCrossing: No regions -> Ret=false";
 
   // Outside of regions, we reset the counters.
   resetCounters();

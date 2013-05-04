@@ -433,12 +433,18 @@ void Calculator::calcDistance( bool autoWpSwitch )
       m_lastTpPassageState == TaskPoint::Outside &&
       passageState == TaskPoint::Near )
     {
+      qDebug() << "#1 WP=" << selectedWp->name
+               << "m_lastTpPassageState=" << m_lastTpPassageState
+               << "passageState=" << passageState;
+
       m_lastTpPassageState = passageState;
 
       // Auto zoom in to make the task point figure better visible,
       // if that feature is enabled.
       if( GeneralConfig::instance()->getTaskPointAutoZoom() == true )
         {
+          qDebug() << "#2 WP=" << selectedWp->name << "AutoZoom active";
+
           m_autoZoomRequests++;
 
           m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
@@ -469,11 +475,21 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // task point. That must be done because we can have only one touch.
   if( passageState == TaskPoint::Passed && wpTouched == false && autoWpSwitch )
     {
+      qDebug() << "#3 WP=" << selectedWp->name
+               << "TaskPoint::Passed, wpTouched0false"
+               << "sidx=" << selectedWp->taskPointIndex;
+
       m_lastTpPassageState = TaskPoint::Passed;
       wpTouched            = true;
 
       // send a signal to the IGC logger to increase logging interval
       emit taskpointSectorTouched();
+
+      // setup a timer to reset a task point approach zoom after 10s of passage
+      if( m_autoZoomRequests > 0)
+        {
+          QTimer::singleShot( 10000, this, SLOT(slot_switchMapScaleBack()) );
+        }
 
       // qDebug() << "emit taskpointSectorTouched(): m_lastZoomFactor="  << m_lastZoomFactor;
 
@@ -486,6 +502,10 @@ void Calculator::calcDistance( bool autoWpSwitch )
       bool tpEndEqLanding = false;
       int sidx            = selectedWp->taskPointIndex;
 
+      qDebug() << "#4 WP=" << selectedWp->name
+               << "sidx=" << selectedWp->taskPointIndex
+               << "tpList.size=" << tpList.size();
+
       if( sidx > 1 && sidx < tpList.size() - 1 )
         {
           TaskPoint* tpNext = tpList.at( sidx + 1 );
@@ -497,6 +517,12 @@ void Calculator::calcDistance( bool autoWpSwitch )
               // End and landing point are identically
               tpEndEqLanding = true;
            }
+
+          qDebug() << "#5 WP=" << selectedWp->name
+                   << tp->getTaskPointType()
+                   << tpNext->getTaskPointType()
+                   << (tp->getWGSPosition() == tpNext->getWGSPosition())
+                   << "tpEndEqLanding=" << tpEndEqLanding;
         }
 
       if ( taskEndReached == false &&
@@ -526,17 +552,11 @@ void Calculator::calcDistance( bool autoWpSwitch )
           WhatsThat *box = new WhatsThat( _globalMainWindow, text,  showTime );
           box->show();
 
-          // setup a timer to reset a task point approach zoom after 10s of passage
-          if( m_autoZoomRequests > 0 )
-            {
-              QTimer::singleShot( 10000, this, SLOT(slot_switchMapScaleBack()) );
-            }
-
           // Reset the task point index in the selected waypoint. That stops
           // the further automatic task point switch.
           selectedWp->taskPointIndex = -1;
         }
-      else if ( taskEndReached == false )
+      else if( taskEndReached == false )
         {
           if( tp->getActiveTaskPointFigureScheme() != GeneralConfig::Line )
             {
@@ -557,6 +577,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
             }
           else
             {
+              qDebug() << "#6 WP=" << selectedWp->name
+                       << "Line set wpTouchCounter = 1";
+
               // A line figure has only one touch point to make the passing
               // with the next position data visible.
               wpTouchCounter = 1;
@@ -576,6 +599,8 @@ void Calculator::calcDistance( bool autoWpSwitch )
        ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
          wpTouched == true )
     {
+      qDebug() << "#7 WP=" << selectedWp->name;
+
       wpTouched      = false;
       wpTouchCounter = 0;
 
@@ -596,12 +621,6 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // announce task point change as none user interaction
           slot_WaypointChange( nextWp->getWaypointObject(), false );
 
-          // setup a timer to reset a task point approach zoom after 10s of passage
-          if( m_autoZoomRequests > 0)
-            {
-              QTimer::singleShot( 10000, this, SLOT(slot_switchMapScaleBack()) );
-            }
-
           // Here we send a notice to the user about the task point
           // switch. If end point is reached and landing point is identical
           // to end point, we will suppress the info message
@@ -609,6 +628,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
                    nextWp->getTaskPointType() == TaskPointTypes::Landing &&
                    lastWp->getWGSPosition() == nextWp->getWGSPosition() ) )
             {
+              qDebug() << "#8 WP=" << selectedWp->name << "WP passed";
 
               emit taskInfo( tr("TP passed"), true );
 
@@ -1600,7 +1620,10 @@ void Calculator::slot_userMapZoom()
 
 void Calculator::slot_switchMapScaleBack()
 {
-  m_autoZoomRequests--;
+  if( m_autoZoomRequests > 0 )
+    {
+      m_autoZoomRequests--;
+    }
 
   if( m_autoZoomRequests == 0 && m_lastZoomFactor != -1.0 )
     {
