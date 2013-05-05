@@ -16,7 +16,8 @@ Cumulus changelog
 #===============================================================================#
 
 [-] 2013-05-05 AP: Bugfix: Auto logger start speed was never read from
-                   the configuration due to a spelling error.
+                   the configuration due to a spelling error. Thanks to
+                   Robin King who reported the bug to me.
 
 [-] 2013-05-03 AP: Bugfix: The task parser stumbled if a taskpoint contains a
                    comment text with a newline. Comment field removed from the
