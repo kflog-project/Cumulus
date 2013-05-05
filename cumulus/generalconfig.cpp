@@ -235,7 +235,7 @@ void GeneralConfig::load()
   _windSpeed              = value( "WindSpeed", 0 ).toInt();
   _currentTask            = value( "CurrentTask", "").toString();
   _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
-  _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed ", 35).toDouble();
+  _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
   endGroup();
 
   beginGroup("Preflight Window");
