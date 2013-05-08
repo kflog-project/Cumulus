@@ -51,51 +51,25 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
            display, SLOT(slot_ResetDisplay()) );
 
   QGroupBox* buttonBox = new QGroupBox( this );
-  buttonBox->setContentsMargins(2,2,2,2);
+  buttonBox->setContentsMargins(2, 2, 2, 2);
 
-  int buttonSize = Layout::getButtonSize();
-  int iconSize   = buttonSize - 5;
-
-  QPushButton *zoomButton  = new QPushButton;
+  zoomButton = new QPushButton;
   zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
-  zoomButton->setIconSize(QSize(iconSize, iconSize));
-  // zoomButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  zoomButton->setMinimumSize(buttonSize, buttonSize);
-  zoomButton->setMaximumSize(buttonSize, buttonSize);
 
-  QPushButton *listButton  = new QPushButton;
+  listButton  = new QPushButton;
   listButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
-  listButton->setIconSize(QSize(iconSize, iconSize));
-  // listButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  listButton->setMinimumSize(buttonSize, buttonSize);
-  listButton->setMaximumSize(buttonSize, buttonSize);
 
   display->setUpdateInterval( 2 );
   updateButton = new QPushButton( "2s" );
-  // updateButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  updateButton->setMinimumSize(buttonSize, buttonSize);
-  updateButton->setMaximumSize(buttonSize, buttonSize);
 
-  QPushButton *aliasButton  = new QPushButton;
+  aliasButton = new QPushButton;
   aliasButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("monkey32.png")));
-  aliasButton->setIconSize(QSize(iconSize, iconSize));
-  // aliasButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  aliasButton->setMinimumSize(buttonSize, buttonSize);
-  aliasButton->setMaximumSize(buttonSize, buttonSize);
 
-  QPushButton *closeButton = new QPushButton;
+  closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  closeButton->setIconSize(QSize(iconSize, iconSize));
-  // closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  closeButton->setMinimumSize(buttonSize, buttonSize);
-  closeButton->setMaximumSize(buttonSize, buttonSize);
 
   addButton = new QPushButton;
   addButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("add.png")));
-  addButton->setIconSize(QSize(iconSize, iconSize));
-  // addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  addButton->setMinimumSize(buttonSize, buttonSize);
-  addButton->setMaximumSize(buttonSize, buttonSize);
 
   if( FlarmDisplay::getSelectedObject().isEmpty() )
     {
@@ -135,6 +109,38 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
  */
 FlarmRadarView::~FlarmRadarView()
 {
+}
+
+void FlarmRadarView::showEvent( QShowEvent* )
+{
+  // According to the window height the button sizes are adapted.
+  int buttonSize = Layout::getButtonSize();
+  int iconSize   = buttonSize - 5;
+  int space      = 5 + 5*20 + 5;
+
+  int wh = height();
+
+  if( wh < ( (buttonSize * 6) + space ) )
+    {
+      // Not enough space in the window height. Recalculate button size.
+      buttonSize = (wh - space -5) / 6;
+      iconSize   = buttonSize - 5;
+    }
+
+  QPushButton* pba[6] = { zoomButton,
+                          listButton,
+                          updateButton,
+                          aliasButton,
+                          addButton,
+                          closeButton };
+
+  for( int i = 0; i < 6; i++ )
+    {
+      QPushButton* pb = pba[i];
+      pb->setIconSize(QSize(iconSize, iconSize));
+      pb->setMinimumSize(buttonSize, buttonSize);
+      pb->setMaximumSize(buttonSize, buttonSize);
+    }
 }
 
 /** Called if zoom level shall be changed. */

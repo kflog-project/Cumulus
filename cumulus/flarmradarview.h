@@ -38,6 +38,7 @@
 
 class QGroupBox;
 class QPushButton;
+class QShowEvent;
 class QString;
 
 class FlarmDisplay;
@@ -69,6 +70,10 @@ public:
     {
       return display;
     };
+
+protected:
+
+  void showEvent( QShowEvent *event );
 
 public slots:
 
@@ -110,6 +115,11 @@ private:
 
   /** Display with radar view. */
   FlarmDisplay* display;
+
+  QPushButton* zoomButton;
+  QPushButton* listButton;
+  QPushButton* aliasButton;
+  QPushButton* closeButton;
 
   /** Update interval button. */
   QPushButton* updateButton;
