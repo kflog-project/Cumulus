@@ -80,7 +80,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
 
   list = new QTreeWidget( this );
   list->setObjectName("TaskListView");
-  list->setColumnCount(9);
+  list->setColumnCount(10);
   list->setRootIsDecorated(false);
   list->setItemsExpandable(false);
   list->setUniformRowHeights(true);
@@ -169,17 +169,18 @@ void TaskListView::setHeader()
   if( _task && _task->getWtCalcFlag() == true )
     {
       course = tr("TH"); // true heading
-      list->showColumn( 3 );
       list->showColumn( 4 );
+      list->showColumn( 5 );
     }
   else
     {
       course = tr("TC"); // true course
-      list->hideColumn( 3 );
       list->hideColumn( 4 );
+      list->hideColumn( 5 );
     }
 
-  sl << tr("Type")
+  sl << tr("")
+     << tr("Type")
      << tr("Name")
      << tr("Way")
      << tr("GS")
@@ -200,6 +201,7 @@ void TaskListView::setHeader()
   headerItem->setTextAlignment( 6, Qt::AlignCenter );
   headerItem->setTextAlignment( 7, Qt::AlignCenter );
   headerItem->setTextAlignment( 8, Qt::AlignCenter );
+  headerItem->setTextAlignment( 9, Qt::AlignCenter );
 
   resizeTaskList();
 }
@@ -409,7 +411,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
 
   QList<TaskPoint *> tmpList = _task->getTpList();
 
-  for ( int loop = 0; loop < tmpList.size(); loop++ )
+  for( int loop = 0; loop < tmpList.size(); loop++ )
     {
       bool showTpIcon = true;
 
@@ -424,12 +426,22 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
         }
 
       TaskPoint* tp = tmpList.at( loop );
-      _TaskPointItem* _tp = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), showTpIcon );
+      _TaskPointItem* _tpi = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), showTpIcon );
+
+      if( tmpList.size() < 10 )
+        {
+          _tpi->setText( 0, QString::number(loop) );
+        }
+      else
+        {
+          QString no = QString("%1").arg(loop, 2, 10, QChar('0') );
+          _tpi->setText( 0, no );
+        }
 
       if ( calcWp && calcWp->wgsPoint == tp->getWGSPosition() )
         {
-          list->setCurrentItem( _tp, 0 );
-          _currSelectedTp = _tp;
+          list->setCurrentItem( _tpi, 0 );
+          _currSelectedTp = _tpi;
           _selectedTp = tp;
         }
     }
@@ -438,14 +450,14 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
     {
       QTreeWidgetItem *item = new QTreeWidgetItem( list );
 
-      item->setText( 1, tr("Total") );
-      item->setText( 2, _task->getTotalDistanceString( false ) );
-      item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+      item->setText( 2, tr("Total") );
+      item->setText( 3, _task->getTotalDistanceString( false ) );
+      item->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
 
       if( _task->getSpeed() != 0 )
         {
-          item->setText( 6, _task->getTotalDistanceTimeString() );
-          item->setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+          item->setText( 7, _task->getTotalDistanceTimeString() );
+          item->setTextAlignment( 7, Qt::AlignRight|Qt::AlignVCenter );
         }
 
       list->addTopLevelItem( item );
@@ -508,6 +520,7 @@ void TaskListView::resizeTaskList()
   list->resizeColumnToContents(6);
   list->resizeColumnToContents(7);
   list->resizeColumnToContents(8);
+  list->resizeColumnToContents(9);
 }
 
 void TaskListView::clear()
@@ -534,17 +547,17 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
   QDate date = QDate::currentDate();
   Sonne::sonneAufUnter( sr, ss, date, tp->getWGSPositionRef(), tz );
 
-  setText(0, tp->getTaskPointTypeString());
+  setText(1, tp->getTaskPointTypeString());
 
   if( showTpIcon )
     {
       const int iconSize = Layout::iconSize( tpList->font() );
-      setIcon ( 0, tp->getIcon( iconSize ) );
+      setIcon( 1, tp->getIcon( iconSize ) );
     }
 
-  setText(1, tp->getWPName());
-  setText(2, " " + Distance::getText(tp->distance*1000, false, 1));
-  setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+  setText(2, tp->getWPName());
+  setText(3, " " + Distance::getText(tp->distance*1000, false, 1));
+  setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
 
   // If wind calculation is available for all task legs, we do consider that
   // in task display.
@@ -554,57 +567,57 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
       int gsInt = static_cast<int> (rint(gs.getHorizontalValue()));
       QString gsString;
       gsString = QString("%1").arg(gsInt);
-      setText(3, gsString);
-      setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
+      setText(4, gsString);
+      setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
 
       int wca = static_cast<int> (tp->wca);
       QString wcaString;
       wcaString = QString("%1%2").arg(wca).arg(QString(Qt::Key_degree));
-      setText(4, wcaString);
-      setTextAlignment( 4, Qt::AlignCenter );
+      setText(5, wcaString);
+      setTextAlignment( 5, Qt::AlignCenter );
 
       int th = static_cast<int> (tp->trueHeading);
       QString thString;
       thString = QString("%1%2").arg(th).arg(QString(Qt::Key_degree));
-      setText(5, thString);
-      setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
+      setText(6, thString);
+      setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
     }
   else
     {
       // No wind calculation available, use dash as display value for ground
       // speed and wca.
-      setText(3, "-" ); // GS
+      setText(4, "-" ); // GS
       setTextAlignment( 3, Qt::AlignCenter );
-      setText(4, "-" ); // WCA
+      setText(5, "-" ); // WCA
       setTextAlignment( 4, Qt::AlignCenter );
 
       if ( tp->bearing == -1.0 )
         {
           // bearing is undefined
-          setText(5, "-");
-          setTextAlignment( 5, Qt::AlignCenter );
+          setText(6, "-");
+          setTextAlignment( 6, Qt::AlignCenter );
         }
       else
         {
           int bearing = (int) rint( tp->bearing*180./M_PI );
-          setText(5, " " + QString::number( bearing ) + QString(Qt::Key_degree));
-          setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
+          setText(6, " " + QString::number( bearing ) + QString(Qt::Key_degree));
+          setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
         }
     }
 
-  setText(6, " " + FlightTask::getDistanceTimeString(tp->distTime));
+  setText(7, " " + FlightTask::getDistanceTimeString(tp->distTime));
 
   if( tp->distTime == 0 )
     {
-      setTextAlignment( 6, Qt::AlignCenter );
+      setTextAlignment( 7, Qt::AlignCenter );
     }
   else
     {
-      setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+      setTextAlignment( 7, Qt::AlignRight|Qt::AlignVCenter );
     }
 
-  setText(7, " " + ss + " " + tz);
-  setText(8, " " + tp->getName());
+  setText(8, " " + ss + " " + tz);
+  setText(9, " " + tp->getName());
 
-  setIcon(1, QIcon(_globalMapConfig->getPixmap(tp->getTypeID(), false, false)) );
+  setIcon(2, QIcon(_globalMapConfig->getPixmap(tp->getTypeID(), false, false)) );
 }

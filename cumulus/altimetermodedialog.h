@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  *
  * This dialog is the user interface for the altimeter settings.
  *
- * \date 2004-2012
+ * \date 2004-2013
  *
  * \version $Id$
  *
@@ -87,29 +87,29 @@ private:
   bool changesDone();
 
   /** inactively timer control */
-  QTimer* timeout;
+  QTimer* m_timeout;
 
   /** Altitude references */
-  QRadioButton* _msl;
-  QRadioButton* _agl;
-  QRadioButton* _std;
-  QRadioButton* _ahl;
+  QRadioButton* m_msl;
+  QRadioButton* m_agl;
+  QRadioButton* m_std;
+  QRadioButton* m_ahl;
 
   /** Altitude modes */
-  int _mode; // 0: MSL,  1: STD,  2: AGL, 3: AHL
+  int m_mode; // 0: MSL,  1: STD,  2: AGL, 3: AHL
 
   /** Altitude units */
-  int _unit;     // 0: Meter,  1: Feet,  2: FL
-  QRadioButton* _meter;
-  QRadioButton* _feet;
+  int m_unit;     // 0: Meter,  1: Feet,  2: FL
+  QRadioButton* m_meter;
+  QRadioButton* m_feet;
 
   /** Altitude reference. */
   int _ref; // 0: Gps, 1: Baro
-  QRadioButton* _gps;
-  QRadioButton* _baro;
+  QRadioButton* m_gps;
+  QRadioButton* m_baro;
 
   /** Altitude display */
-  QLabel* _altitudeDisplay;
+  QLabel* m_altitudeDisplay;
 
   /** Altitude gain display */
   QLineEdit* altitudeGainDisplay;
@@ -125,6 +125,7 @@ private:
   QPushButton *pplus;
   QPushButton *minus;
   QPushButton *mminus;
+  QPushButton *reset;
 
   QPushButton *setAltitudeGain;
 

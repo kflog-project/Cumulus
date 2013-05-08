@@ -65,6 +65,7 @@ usage:
 	@echo "  release      - Cleans the build area before build"
 	@echo "  dpkg         - Builds a Debian binary package under the directory dpkg"
 	@echo "  dpkg_src     - Builds a Debian source package under the directory dpkg"
+	@echo "  tar          - Cleans the build area and builds a tar file from the source tree"
 	
 all:	qmake
 	@echo "Using Qt version $(QTVERSION)"
@@ -252,4 +253,9 @@ copysrc2web:
 	       cumulus_$(VERSION).orig.tar.gz \
 	       cumulus_$(VERSION)_source.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)
-	
+
+.PHONY : tar
+
+tar:	clean
+	@echo "Creating tar file in $$HOME"
+	@tar cjf $$HOME/cumulus.tar.bz2 .

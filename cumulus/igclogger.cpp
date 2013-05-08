@@ -389,7 +389,7 @@ void IgcLogger::Standby()
  */
 bool IgcLogger::isLogFileOpen()
 {
-#warning IGC Logfile is stored at User Data Directory
+  // IGC Logfile is stored at User Data Directory / igc
 
   if( _logfile.isOpen() )
     {
@@ -397,7 +397,7 @@ bool IgcLogger::isLogFileOpen()
       return true;
     }
 
-  QString path(GeneralConfig::instance()->getUserDataDirectory());
+  QString path(GeneralConfig::instance()->getUserDataDirectory() + "/igc");
 
   QString fname = createFileName(path);
 
@@ -412,7 +412,7 @@ bool IgcLogger::isLogFileOpen()
 
   if ( ! _logfile.open(QIODevice::WriteOnly) )
     {
-      qWarning( "IGC-Logger: Cannot open file %s", fname.toLatin1().data() );
+      qWarning() << "IGC-Logger: Cannot open file" << fname;
       return false;
     }
 

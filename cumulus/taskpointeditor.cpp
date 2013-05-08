@@ -342,7 +342,7 @@ void TaskPointEditor::load()
 {
   m_pointNameLabel->setText( tr("Turnpoint No %1 (%2): %3")
                            .arg(m_workTp.getFlightTaskListIndex() + 1)
-                           .arg(m_workTp.getTaskPointTypeString())
+                           .arg(m_workTp.getTaskPointTypeString(true))
                            .arg(m_workTp.getWPName() ) );
 
   // Check task point type. If it is not type begin or end, the m_line

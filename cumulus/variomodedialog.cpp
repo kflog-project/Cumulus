@@ -173,10 +173,6 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   signalMapper->setMapping(mminus, 3);
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slot_change(int)));
 
-  // restart timer, if value was changed
-  connect(spinTime, SIGNAL(valueChanged(int)), this, SLOT(slot_setTimer()));
-  connect(spinTEK,  SIGNAL(valueChanged(int)), this, SLOT(slot_setTimer()));
-
   load();
 
   // Switch off automatic software input panel popup
@@ -210,7 +206,7 @@ void VarioModeDialog::slot_tekChanged( bool newState )
       spinTime->setFocus();
     }
 
-  slot_setTimer();
+  timer->stop();
 }
 
 void VarioModeDialog::load()
@@ -323,7 +319,7 @@ void VarioModeDialog::slot_change( int newStep )
       return;
     }
 
-  slot_setTimer();
+  timer->stop();
 }
 
 void VarioModeDialog::slot_timePlus()

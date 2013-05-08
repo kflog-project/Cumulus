@@ -28,6 +28,9 @@
 #include "mapmatrix.h"
 #include "taskline.h"
 
+// Activate this define to get debug messages displayed
+// #define TL_DEBUG
+
 extern MapMatrix* _globalMapMatrix;
 
 TaskLine::TaskLine() :
@@ -104,21 +107,30 @@ void TaskLine::calculateElements()
 
 bool TaskLine::checkCrossing( const QPoint& position )
 {
-  qDebug() << "checkCrossing" << "dir=" << m_direction << "Leng=" << m_lineLength
-           << "IB=" << m_inboundRegion.isEmpty() << "OB=" << m_outboundRegion.isEmpty();
+#ifdef TL_DEBUG
+  qDebug() << "TL::checkCrossing" << "heading=" << m_direction
+           << "Length=" << m_lineLength
+           << "IBR=" << (! m_inboundRegion.isEmpty() )
+           << "OBR=" << (! m_outboundRegion.isEmpty() );
+#endif
 
   if( m_direction == -1 || m_lineLength == 0 ||
       m_inboundRegion.isEmpty() || m_outboundRegion.isEmpty() )
     {
       // It seems that the line data are not initialized.
+#ifdef TL_DEBUG
       qDebug() << "TaskLine::checkCrossing: Input check -> Ret=false";
+#endif
+
       return false;
     }
 
   // As first check, if we have the inbound region arrived
   if( m_inboundRegion.contains( position ) )
     {
-      qDebug() << "TaskLine::checkCrossing: Inbound region true -> Ret=false";
+#ifdef TL_DEBUG
+      qDebug() << "TL::checkCrossing: Inbound region true -> Ret=false";
+#endif
 
       m_inboundCounter++;
       m_outboundCounter = 0;
@@ -130,8 +142,9 @@ bool TaskLine::checkCrossing( const QPoint& position )
     {
       if( m_inboundCounter > 0 )
         {
-          qDebug() << "TaskLine::checkCrossing: Outbound region true -> Ret=true";
-
+#ifdef TL_DEBUG
+          qDebug() << "TL::checkCrossing: Outbound region true -> Ret=true";
+#endif
           // It seems we came from inbound. So we decide, that the line
           // has been crossed.
           m_inboundCounter = 0;
@@ -140,14 +153,17 @@ bool TaskLine::checkCrossing( const QPoint& position )
         }
       else
         {
-          qDebug() << "TaskLine::checkCrossing: Outbound region true -> Ret=false";
-
+#ifdef TL_DEBUG
+          qDebug() << "TL::checkCrossing: Outbound region true -> Ret=false";
+#endif
           m_outboundCounter++;
           return false;
         }
     }
 
-  qDebug() << "TaskLine::checkCrossing: No regions -> Ret=false";
+#ifdef TL_DEBUG
+  qDebug() << "TL::checkCrossing: No regions -> Ret=false";
+#endif
 
   // Outside of regions, we reset the counters.
   resetCounters();

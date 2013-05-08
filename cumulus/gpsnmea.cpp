@@ -1487,6 +1487,8 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
 /** Extract the heading from the NMEA sentence. */
 double GpsNmea::__ExtractHeading(const QString& headingstring)
 {
+  static uint report = 0;
+
   if( headingstring.isEmpty() )
     {
       return 0.0;
@@ -1501,7 +1503,7 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
       return 0.0;
     }
 
-  if ( heading != _lastHeading )
+  if ( heading != _lastHeading || (++report % 5) == 0 )
     {
       _lastHeading = heading;
       emit newHeading( _lastHeading );

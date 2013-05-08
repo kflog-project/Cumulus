@@ -258,6 +258,13 @@ int Layout::getMapZoomButtonSize()
   QFont font = MainWindow::mainWindow()->font();
   font.setPointSize( 22 );
 
+  int size = QFontMetrics(font).height();
+
+  if( size < 40 )
+    {
+      size = 40;
+    }
+
   return QFontMetrics(font).height();
 }
 

@@ -24,6 +24,7 @@
 #include <QPoint>
 #include <QString>
 #include <QTime>
+#include <QTimer>
 
 #include "altitude.h"
 #include "basemapelement.h"
@@ -327,7 +328,7 @@ public:
    */
   Glider* glider() const
     {
-      return _glider;
+      return m_glider;
     };
 
   /**
@@ -335,7 +336,7 @@ public:
    */
   QString gliderType () const
   {
-    return ( _glider != 0 ) ? _glider->type() : "";
+    return ( m_glider != 0 ) ? m_glider->type() : "";
   };
 
   /**
@@ -349,7 +350,7 @@ public:
    */
   Polar* getPolar()
   {
-    return _polar;
+    return m_polar;
   };
 
   /**
@@ -357,12 +358,12 @@ public:
    */
   ReachableList* getReachList()
   {
-      return _reachablelist;
+      return m_reachablelist;
   };
 
   void clearReachable()
   {
-      _reachablelist->clearLists();
+      m_reachablelist->clearLists();
   };
 
   /**
@@ -370,7 +371,7 @@ public:
    */
   const Vario* getVario()
   {
-      return _vario;
+      return m_vario;
   };
 
   /**
@@ -378,7 +379,7 @@ public:
    */
   void newSites()
     {
-      _reachablelist->calculateNewList();
+      m_reachablelist->calculateNewList();
     };
 
   /**
@@ -386,7 +387,7 @@ public:
    */
   const WindAnalyser* getWindAnalyser()
   {
-      return _windAnalyser;
+      return m_windAnalyser;
   };
 
   /**
@@ -399,7 +400,7 @@ public:
 
   bool isManualInFlight()
     {
-      return manualInFlight;
+      return m_manualInFlight;
     };
 
   /**
@@ -537,21 +538,21 @@ public slots:
    */
   void slot_toggleLDCalculation(const bool newVal)
   {
-    _calculateLD = newVal;
+    m_calculateLD = newVal;
   };
   /**
    * Called to switch on/off Variometer calculation
    */
   void slot_toggleVarioCalculation(const bool newVal)
   {
-    _calculateVario = newVal;
+    m_calculateVario = newVal;
   };
   /**
    * Called to switch on/off ETA calculation
    */
   void slot_toggleETACalculation(const bool newVal)
   {
-    _calculateETA = newVal;
+    m_calculateETA = newVal;
   };
 
   /** Called if a new wind measurement is available
@@ -770,6 +771,12 @@ private: // Private methods
    */
   void newFlightMode(Calculator::FlightMode);
 
+  /**
+   * Auto zoom in into the map, if the feature is enabled and a waypoint is
+   * selected.
+   */
+  void autoZoomInMap();
+
 private: // Private attributes
   /** Contains the last flight sample */
   FlightSample lastSample;
@@ -782,7 +789,7 @@ private: // Private attributes
   /** Contains the last calculated ETA */
   QTime lastETA;
   /** contains the current state of ETA calculation */
-  bool _calculateETA;
+  bool m_calculateETA;
   /** Contains the last known speed */
   Speed lastSpeed;
   /** Contains the last known best speed */
@@ -826,41 +833,37 @@ private: // Private attributes
   /** contains the last current LD */
   double lastCurrentLD;
   /** contains the current state of LD calculation */
-  bool _calculateLD;
+  bool m_calculateLD;
   /** contains the polar object of the selected glider */
-  Polar* _polar;
+  Polar* m_polar;
   /** contains some functions to provide variometer data */
-  Vario* _vario;
+  Vario* m_vario;
   /** contains the current state of vario calculation */
-  bool _calculateVario;
+  bool m_calculateVario;
   /** Contains the last known flight mode */
   FlightMode lastFlightMode;
   /** Last marker value used */
-  int _marker;
+  int m_marker;
   /** contains the current state of wind calculation */
-  bool _calculateWind;
+  bool m_calculateWind;
   /** contains functions to analyze the wind */
-  WindAnalyser * _windAnalyser;
+  WindAnalyser* m_windAnalyser;
   /** contains functions to analyze the wind */
-  ReachableList * _reachablelist;
+  ReachableList* m_reachablelist;
   /** maintains wind measurements and returns new wind values */
-  WindStore * _windStore;
+  WindStore* m_windStore;
   /** Info on the selected glider. */
-  Glider * _glider;
+  Glider* m_glider;
   /** Did we already receive a complete sentence? */
-  bool _pastFirstFix;
+  bool m_pastFirstFix;
   /** Direction of cruise if we are in cruising mode */
-  int _cruiseDirection;
+  int m_cruiseDirection;
   /** the index of the selected taskpoint in the flight task list. */
-  int selectedWpInList;
-  /** waypoint touch flag */
-  bool wpTouched;
-  /** waypoint touch counter */
-  int wpTouchCounter;
+  int m_selectedWpInList;
   /** task end touch flag */
-  bool taskEndReached;
+  bool m_taskEndReached;
 
-  bool manualInFlight;
+  bool m_manualInFlight;
 
   /** minimum altitude for determining altitude gain. */
   Altitude m_minimumAltitude;
@@ -875,9 +878,9 @@ private: // Private attributes
   double m_lastZoomFactor;
 
   /**
-   * Number of auto zoom requests.
+   * Timer to reset an auto map zoom after a taskpoint passage.
    */
-  int m_autoZoomRequests;
+  QTimer* m_resetAutoZoomTimer;
 };
 
 extern Calculator* calculator;

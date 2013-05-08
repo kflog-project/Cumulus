@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,14 +15,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
-#include <QGroupBox>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QMessageBox>
-#include <QInputDialog>
+#else
+#include <QtWidgets>
+#endif
 
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
@@ -48,7 +45,8 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   topLayout->setSpacing(5);
 
   list = new QTableWidget( 0, 2, this );
-  list->setSelectionBehavior( QAbstractItemView::SelectItems );
+  list->setSelectionBehavior( QAbstractItemView::SelectRows );
+  list->setSelectionMode( QAbstractItemView::SingleSelection );
   list->setAlternatingRowColors( true );
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";

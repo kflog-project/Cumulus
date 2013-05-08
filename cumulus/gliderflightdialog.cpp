@@ -131,28 +131,35 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   plus   = new QPushButton("+", this);
   mminus = new QPushButton("--", this);
   minus  = new QPushButton("-", this);
+  reset  = new QPushButton("R", this);
 
   pplus->setMinimumSize(buttonSize, buttonSize);
   plus->setMinimumSize(buttonSize, buttonSize);
   minus->setMinimumSize(buttonSize, buttonSize);
   mminus->setMinimumSize(buttonSize, buttonSize);
+  reset->setMinimumSize(buttonSize, buttonSize);
 
   pplus->setMaximumSize(buttonSize, buttonSize);
   plus->setMaximumSize(buttonSize, buttonSize);
   minus->setMaximumSize(buttonSize, buttonSize);
   mminus->setMaximumSize(buttonSize, buttonSize);
+  reset->setMaximumSize(buttonSize, buttonSize);
 
   pplus->setFocusPolicy(Qt::NoFocus);
   plus->setFocusPolicy(Qt::NoFocus);
   minus->setFocusPolicy(Qt::NoFocus);
   mminus->setFocusPolicy(Qt::NoFocus);
+  reset->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *pmLayout = new QHBoxLayout;
   pmLayout->setSpacing(5);
   pmLayout->addWidget(pplus, Qt::AlignLeft);
   pmLayout->addWidget(plus, Qt::AlignLeft);
   pmLayout->addSpacing(20);
-  pmLayout->addStretch(100);
+  pmLayout->addStretch(10);
+  pmLayout->addWidget(reset);
+  pmLayout->addStretch(10);
+  pmLayout->addSpacing(20);
   pmLayout->addWidget(minus, Qt::AlignRight);
   pmLayout->addWidget(mminus, Qt::AlignRight);
 
@@ -206,6 +213,8 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   signalMapper->setMapping(minus, 2);
   connect(mminus, SIGNAL(pressed()), signalMapper, SLOT(map()));
   signalMapper->setMapping(mminus, 3);
+  connect(reset, SIGNAL(pressed()), signalMapper, SLOT(map()));
+  signalMapper->setMapping(reset, 4);
   connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(slotChange(int)));
 
   // Switch off automatic software input panel popup
@@ -424,6 +433,9 @@ void GliderFlightDialog::slotChange( int newStep )
           spinMcCready->setSingleStep( mcBigStep );
           slotMcMinus();
           break;
+        case 4: // Reset was pressed
+          spinMcCready->setValue( 0 );
+          break;
         }
 
       return;
@@ -476,6 +488,8 @@ void GliderFlightDialog::slotChange( int newStep )
           spinBugs->setSingleStep( 5 );
           slotBugsMinus();
           break;
+        case 4: // Reset was pressed
+          spinBugs->setValue( 0 );
         }
 
       return;
@@ -485,8 +499,9 @@ void GliderFlightDialog::slotChange( int newStep )
 void GliderFlightDialog::slotSpinValueChanged( const QString& text )
 {
   Q_UNUSED( text )
-  // Restarts the timer after a spin box value change
-  startTimer();
+
+  // Stops the close timer after a spin box value change.
+  timer->stop();
 }
 
 void GliderFlightDialog::slotDump()

@@ -15,6 +15,20 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-05-08 AP: Reset button added to altitude and in-flight dialog. That
+                   resets the input field which has the focus to its initial
+                   value.
+
+[o] 2013-05-08 AP: New subdirectory igc introduced for storing of IGC files.
+
+[-] 2013-05-07 AP: Bugfix: Flight taskpoint switch did not work at slow speed.
+                   If end and landing point of a flight task were the same points
+                   the task end was not recognized.
+
+[o] 2013-05-07 AP: Behaviour of altitude, inflight and variometer dialog
+                   modified. If a value is changed, the close timer is stopped,
+                   so that the user must confirm or reject his done change.
+
 [-] 2013-05-05 AP: Bugfix: Auto logger start speed was never read from
                    the configuration due to a spelling error. Thanks to
                    Robin King who reported the bug to me.

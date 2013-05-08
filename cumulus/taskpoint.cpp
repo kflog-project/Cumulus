@@ -41,6 +41,8 @@ TaskPoint::TaskPoint( enum TaskPointTypes::TaskPointType type ) :
   wtResult(false),
   m_taskPointType(type),
   m_taskActiveTaskPointFigureScheme(GeneralConfig::Undefined),
+  m_lastPassageState(Outside),
+  m_lastDistance(-1),
   m_taskSectorAngle(0),
   m_autoZoom(false),
   m_userEdited(false),
@@ -50,7 +52,6 @@ TaskPoint::TaskPoint( enum TaskPointTypes::TaskPointType type ) :
   setConfigurationDefaults();
 }
 
-/** Construct object from a waypoint reference */
 TaskPoint::TaskPoint( const Waypoint& wp, enum TaskPointTypes::TaskPointType type ) :
   SinglePoint( wp.description,
                wp.name,
@@ -72,6 +73,8 @@ TaskPoint::TaskPoint( const Waypoint& wp, enum TaskPointTypes::TaskPointType typ
   wtResult(false),
   m_taskPointType(type),
   m_taskActiveTaskPointFigureScheme(GeneralConfig::Undefined),
+  m_lastPassageState(Outside),
+  m_lastDistance(-1),
   m_taskSectorAngle(0),
   m_autoZoom(false),
   m_userEdited(false),
@@ -103,10 +106,10 @@ Waypoint* TaskPoint::getWaypointObject()
   return &m_wpObject;
 }
 
-enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
+enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2Tp,
                                                       const QPoint& position )
 {
-  // qDebug() << "TaskPoint::checkPassage: TP-IDX=" << taskPointIndex;
+  // qDebug() << "TaskPoint::checkPassage: TP-IDX=" << m_flightTaskListIndex;
 
   if( m_taskPointType == -1 )
     {
@@ -114,115 +117,223 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
       return Outside;
     }
 
-  // get user defined scheme items
+  // get user defined scheme item
   const enum GeneralConfig::ActiveTaskFigureScheme scheme = getActiveTaskPointFigureScheme();
 
-  // qDebug() << "TaskPoint::checkPassage: Scheme=" << scheme;
+  if( scheme == GeneralConfig::Line )
+    {
+      return determineLinePassageState( dist2Tp, position );
+    }
 
   if( scheme == GeneralConfig::Circle )
     {
       // Circle scheme is active
-      double circleRadius = getTaskCircleRadius().getMeters();
-
-      if( dist2TP.getMeters() < circleRadius )
-        {
-          // We are inside the circle
-          return Passed;
-        }
-
-      if( dist2TP.getMeters() < circleRadius + NEAR_DISTANCE )
-        {
-          return Near;
-        }
-
-      return Outside;
+      return determineCirclePassageState( dist2Tp.getMeters(),
+                                          m_taskCircleRadius.getMeters() );
     }
 
-  if( scheme == GeneralConfig::Line )
+  if( scheme == GeneralConfig::Sector )
     {
-      if( dist2TP.getMeters() < getTaskLineLength().getMeters() )
+      return determineSectorPassageState( dist2Tp.getMeters(), position );
+    }
+
+  // That should normally not happen
+  m_lastDistance = -1.0;
+  m_lastPassageState = Outside;
+  return Outside;
+}
+
+enum TaskPoint::PassageState
+  TaskPoint::determineLinePassageState( const Distance& dist2Tp,
+                                        const QPoint& position )
+{
+  if( m_lastPassageState == Touched )
+    {
+      // A passed state was set before but as touched reported. Now we
+      // report the passed state.
+      m_lastPassageState = Outside;
+      return Passed;
+    }
+
+  if( dist2Tp.getMeters() < getTaskLineLength().getMeters() )
+    {
+      // We are inside of our observation zone to decide, if a line crossing
+      // has started.
+      bool state = getTaskLine().checkCrossing( position );
+
+      if( state == true )
         {
-          // We are inside of our observation zone to decide, if a line crossing
-          // has started.
-          bool state = getTaskLine().checkCrossing( position );
+          m_lastPassageState = Touched;
 
-          if( state == true )
-            {
-              return Passed;
-            }
-          else
-            {
-              return Near;
-            }
-        }
-      else if( dist2TP.getMeters() <= NEAR_DISTANCE_LINE )
-        {
-          return Near;
-        }
-
-      return Outside;
-    }
-
-  if( scheme != GeneralConfig::Sector )
-    {
-      return Outside;
-    }
-
-  // Sector scheme is active, get sector radiuses
-  const double innerRadius = getTaskSectorInnerRadius().getMeters();
-  const double outerRadius = getTaskSectorOuterRadius().getMeters();
-
-  if( dist2TP.getMeters() > outerRadius + NEAR_DISTANCE )
-    {
-      // we are outside of outer radius, sector angle has not to be
-      // considered
-      return Outside;
-    }
-
-  if( dist2TP.getMeters() > outerRadius )
-    {
-      // we are outside of outer radius, sector angle has not to be
-      // considered
-      return Near;
-    }
-
-  // the inner radius is considered as minimum. If we are inside the
-  // inner radius, we are outside of the sector.
-  if( ( innerRadius > 0.0 || innerRadius == outerRadius ) &&
-      dist2TP.getMeters() < innerRadius )
-    {
-      // we are inside of inner radius, sector angle has not to be
-      // considered
-      return Near;
-    }
-
-  // Do special check for landing point
-  if( m_taskPointType == TaskPointTypes::Landing )
-    {
-      // Here we do apply only the outer radius check.
-      if( dist2TP.getMeters() < outerRadius )
-        {
-          // We are inside outer radius
-          return Passed;
-        }
-
-      if( dist2TP.getMeters() < outerRadius + NEAR_DISTANCE )
-        {
-          // We are inside outer radius
-          return Near;
+          // WE return as first a touched that the logger interval is
+          // minimized. As next a passed is returned in every case.
+          return Touched;
         }
       else
         {
+          m_lastPassageState = Near;
+          return Near;
+        }
+    }
+  else if( dist2Tp.getMeters() <= NEAR_DISTANCE_LINE )
+    {
+      m_lastPassageState = Near;
+      return Near;
+    }
+
+  m_lastPassageState = Outside;
+  return Outside;
+}
+
+enum TaskPoint::PassageState
+  TaskPoint::determineCirclePassageState( const double dist2Tp,
+                                          const double insideRadius )
+{
+  enum GeneralConfig::ActiveTaskSwitchScheme tsSchema =
+    GeneralConfig::instance()->getActiveTaskSwitchScheme();
+
+  if( m_lastPassageState == TaskPoint::Touched )
+    {
+      if( tsSchema == GeneralConfig::Touched )
+        {
+          // We had one touch and report now the passage as valid.
+          m_lastDistance = -1.0;
+          m_lastPassageState = Outside;
+          return Passed;
+        }
+
+      if( tsSchema == GeneralConfig::Nearst )
+        {
+          // We had a touch and must now observe the further approach to the center
+          // of the taskpoint. If the minimum approach is reached, passed is reported
+          // otherwise touched.
+          if( dist2Tp < m_lastDistance )
+            {
+              // We are in further approach
+              m_lastDistance = dist2Tp;
+              m_lastPassageState = TaskPoint::Touched;
+              return TaskPoint::Touched;
+            }
+          else
+            {
+              // We have passed the minimum approach
+              m_lastDistance = -1.0;
+              m_lastPassageState = Outside;
+              return Passed;
+            }
+        }
+
+      qWarning() << "TaskPoint::determinePassageState(): unknown Task figure schema"
+                 << tsSchema;
+    }
+
+  if( dist2Tp < insideRadius && m_lastPassageState != TaskPoint::Touched )
+    {
+      // We have entered the circle the first time.
+      // There are two different situations now.
+      //
+      // First: If touched schema is set, we report as first touched and as next
+      //        passed.
+      //
+      // Second: If nearest scheme is set, we report as first touched and
+      //         the passed state not until the minimum approach is passed.
+      m_lastDistance = dist2Tp;
+      m_lastPassageState = TaskPoint::Touched;
+      return TaskPoint::Touched;
+    }
+
+  if( dist2Tp < insideRadius + NEAR_DISTANCE )
+    {
+      m_lastDistance = dist2Tp;
+      m_lastPassageState = TaskPoint::Near;
+      return TaskPoint::Near;
+    }
+
+  m_lastPassageState = TaskPoint::Outside;
+  m_lastDistance = -1.0;
+  return TaskPoint::Outside;
+}
+
+enum TaskPoint::PassageState
+  TaskPoint::determineSectorPassageState( const double dist2Tp,
+                                          const QPoint& position )
+{
+  enum GeneralConfig::ActiveTaskSwitchScheme tsSchema =
+    GeneralConfig::instance()->getActiveTaskSwitchScheme();
+
+  // get sector radii
+  const double innerRadius = getTaskSectorInnerRadius().getMeters();
+  const double outerRadius = getTaskSectorOuterRadius().getMeters();
+
+  if( m_lastPassageState == Touched )
+    {
+      if( tsSchema == GeneralConfig::Touched )
+        {
+          // Report passed because we had one touch.
+          m_lastDistance = -1.0;
+          m_lastPassageState = Outside;
+          return Passed;
+        }
+
+      if( tsSchema == GeneralConfig::Nearst )
+        {
+          if( dist2Tp > m_lastDistance )
+            {
+              // Report passed because we are moving away from the touched taskpoint.
+              m_lastDistance = -1.0;
+              m_lastPassageState = Outside;
+              return Passed;
+            }
+
+          if( innerRadius > 0 && dist2Tp < innerRadius )
+            {
+              // We have left the sector part.
+              m_lastDistance = -1.0;
+              m_lastPassageState = Outside;
+              return Passed;
+            }
+        }
+    }
+
+  if( m_lastPassageState != Touched )
+    {
+      if( dist2Tp > outerRadius + NEAR_DISTANCE )
+        {
+          // we are outside of outer radius, sector angle has not to be
+          // considered
+          m_lastDistance = -1.0;
+          m_lastPassageState = Outside;
           return Outside;
+        }
+
+      if( dist2Tp > outerRadius )
+        {
+          // we are outside of outer radius, sector angle has not to be
+          // considered
+          m_lastDistance = dist2Tp;
+          m_lastPassageState = Near;
+          return Near;
+        }
+
+      // the inner radius is considered as minimum. If we are inside the
+      // inner radius, we are outside of the sector.
+      if( ( innerRadius > 0.0 || innerRadius == outerRadius ) &&
+          dist2Tp < innerRadius )
+        {
+          // we are inside of inner radius, sector angle has not to be
+          // considered
+          m_lastDistance = dist2Tp;
+          m_lastPassageState = Near;
+          return Near;
         }
     }
 
   // Here we are inside of outer radius, therefore we have to check the sector angle.
   // Calculate bearing from TP to current position
-  const double bearing = getBearingWgs( wgsPosition, position );
+  const double bearing = getBearingWgs( getWGSPosition(), position );
 
 #ifdef CUMULUS_DEBUG
-  qDebug( "FlightTask::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",
+  qDebug( "TP::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",
           minAngle*180./M_PI,
           maxAngle*180./M_PI,
           bearing*180./M_PI );
@@ -231,45 +342,71 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2TP,
   if( minAngle > maxAngle &&
       ( bearing > minAngle || bearing < maxAngle ) )
     {
-      // we are inside of sector and sector includes north direction
-      return Passed;
+      // We are inside of sector and sector includes north direction
+      m_lastDistance = dist2Tp;
+      m_lastPassageState = Touched;
+      return Touched;
     }
 
   if( bearing > minAngle && bearing < maxAngle )
     {
-      // we are inside of sector between 0...360
+      // We are inside of sector between 0...360
+      m_lastDistance = dist2Tp;
+      m_lastPassageState = Touched;
+      return Touched;
+    }
+
+  if( m_lastPassageState == Touched )
+    {
+      // The sector is left in nearest schema. We report the passing now.
+      m_lastDistance = -1.0;
+      m_lastPassageState = Outside;
       return Passed;
     }
 
+  m_lastDistance = -1.0;
+  m_lastPassageState = Outside;
   return Outside;
 }
 
-/** Returns the type of a task point in a string format. */
-QString TaskPoint::getTaskPointTypeString() const
+QString TaskPoint::getTaskPointTypeString( bool detailed ) const
 {
   switch( m_taskPointType )
     {
     case TaskPointTypes::TakeOff:
-      return QObject::tr( "TO" );
+      if( detailed ) return QObject::tr( "Takeoff" );
+      else return QObject::tr( "TO" );
     case TaskPointTypes::Begin:
-      return QObject::tr( "B" );
+      if( detailed ) return QObject::tr( "Begin" );
+      else return QObject::tr( "B" );
     case TaskPointTypes::RouteP:
-      return QObject::tr( "R" );
+      if( detailed ) return QObject::tr( "Route" );
+      else return QObject::tr( "R" );
     case TaskPointTypes::End:
-      return QObject::tr( "E" );
+      if( detailed ) return QObject::tr( "End" );
+      else return QObject::tr( "E" );
     case TaskPointTypes::FreeP:
-      return QObject::tr( "F" );
+      if( detailed ) return QObject::tr( "Free Point" );
+      else return QObject::tr( "F" );
     case TaskPointTypes::Landing:
-      return QObject::tr( "LG" );
+      if( detailed ) return QObject::tr( "Landing" );
+      else return QObject::tr( "LG" );
     case TaskPointTypes::NotSet:
     default:
-      return QObject::tr( "NS" );
+      if( detailed ) return QObject::tr( "Not set" );
+      else return QObject::tr( "NS" );
     }
 
-  return QObject::tr( "NS" );
+  if( detailed )
+    {
+      return QObject::tr("Not set");
+    }
+  else
+    {
+      return QObject::tr("NS");
+    }
 }
 
-/** Returns the scheme of a task point in a string format. */
 QString TaskPoint::getTaskPointFigureString() const
 {
   switch( m_taskActiveTaskPointFigureScheme )
@@ -355,6 +492,9 @@ void TaskPoint::setConfigurationDefaults()
         break;
     }
 
+  m_lastPassageState = Outside;
+  m_lastDistance = -1;
+
   setAutoZoom( conf->getTaskPointAutoZoom() );
 
   // Reset user edited flag
@@ -386,9 +526,6 @@ QPixmap& TaskPoint::getIcon( const int iconSize )
   return emptyPm;
 }
 
-/**
- * Create a circle icon.
- */
 QPixmap& TaskPoint::createCircleIcon( const int iconSize )
 {
   static QPixmap circleIcon;
@@ -451,9 +588,6 @@ QPixmap& TaskPoint::createSectorIcon( const int iconSize )
   return sectorIcon;
 }
 
-/**
- * Create a line icon.
- */
 QPixmap& TaskPoint::createLineIcon( const int iconSize )
 {
   static QPixmap lineIcon;

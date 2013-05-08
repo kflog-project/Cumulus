@@ -46,7 +46,7 @@ class TaskPoint : public SinglePoint
   /**
    * This enumeration is used to describe the task point passage state.
    */
-  enum PassageState{ Outside, Near, Passed };
+  enum PassageState{ Outside, Near, Touched, Passed };
 
   /**
    * Default constructor.
@@ -72,9 +72,9 @@ class TaskPoint : public SinglePoint
     };
 
   /**
-   * Sets the type of the task point.
+   * Gets the type of the task point.
    *
-   * \param value The type of the task point.
+   * \return The type of the task point.
    */
   enum TaskPointTypes::TaskPointType getTaskPointType() const
     {
@@ -82,7 +82,7 @@ class TaskPoint : public SinglePoint
     };
 
   /**
-   * Returns a waypoint object comtaining the taskpoint basic data.
+   * Returns a waypoint object containing the taskpoint basic data.
    *
    * \return A waypoint object initialized with the taskpoint basic data.
    */
@@ -91,28 +91,70 @@ class TaskPoint : public SinglePoint
   /**
    * Checks the task point passage according to the assigned schema.
    *
-   * @param dist2TP Distance to taskpoint
+   * @param dist2Tp Distance to taskpoint
    *
    * @param position Current position as KFLOG WGS84 datum
    *
    * @return State of passage.
    */
-  enum PassageState checkPassage( const Distance& dist2TP, const QPoint& position );
+  enum PassageState checkPassage( const Distance& dist2Tp, const QPoint& position );
 
   /**
+   * Determines the task point passage for a line figure.
+   *
+   * @param dist2Tp Distance to taskpoint in meters
+   *
+   * @param position current WGS position as KFLOG WGS84 datum
+   *
+   * @return State of passage.
+   */
+  enum PassageState determineLinePassageState( const Distance& dist2Tp,
+                                               const QPoint& position );
+  /**
+   * Determines the task point passage for a circle figure.
+   *
+   * @param dist2Tp Distance to taskpoint in meters
+   *
+   * @param insideRadius Inside radius to taskpoint in meters
+   *
+   * @return State of passage.
+   */
+  enum PassageState determineCirclePassageState( const double dist2Tp,
+                                                 const double insideRadius );
+
+  /**
+   * Determines the task point passage for a sector figure.
+   *
+   * @param dist2Tp Distance to taskpoint in meters
+   *
+   * @param position current WGS position as KFLOG WGS84 datum
+   *
+   * @return State of passage.
+   */
+  enum PassageState determineSectorPassageState( const double dist2Tp,
+                                                 const QPoint& position );
+
+  /**
+   * Gets the type of a task point in a string format.
+   *
+   * \param detailed If true a long format is used.
+   *
    * \return The type of a task point in a string format.
    */
-  QString getTaskPointTypeString() const;
+  QString getTaskPointTypeString( bool detailed=false ) const;
 
   /**
-   * \return The figure of a task point in a string format. Figure can be
-   * a cylinder, a sector or a line description.m_userModified
-   */
-  QString getTaskPointFigureString () const;
-
-  /**
+   * Gets the figure of a task point as string format. Figure can be
+   * a cylinder, a sector or a line description.
    *
-   * @return A combined and shorten Task point type and figure schema string.
+   * \return The figure of a task point in a string format.
+   */
+  QString getTaskPointFigureString() const;
+
+  /**
+   *  Gets a combined and shorten task point type and figure schema string.
+   *
+   * \return A combined and shorten task point type and figure schema string.
    */
   QString getTaskPointTypeFigureString() const;
 
@@ -147,6 +189,18 @@ class TaskPoint : public SinglePoint
   enum TaskPointTypes::TaskPointType m_taskPointType;
 
   enum GeneralConfig::ActiveTaskFigureScheme m_taskActiveTaskPointFigureScheme;
+
+  /**
+   * The last calculated passage state of this task point.
+   */
+  enum PassageState m_lastPassageState;
+
+  /**
+   * The last calculated distance to the taskpoint center in meters. If the
+   * distance is undefined, a negative value is assigned.
+   */
+  double m_lastDistance;
+
   Distance m_taskCircleRadius;
   Distance m_taskSectorInnerRadius;
   Distance m_taskSectorOuterRadius;

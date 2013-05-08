@@ -71,57 +71,60 @@ Calculator::Calculator(QObject* parent) :
   lastDistance=-1;
   lastRequiredLD = -1.0;
   lastCurrentLD = -1.0;
-  _calculateLD = false;
-  _calculateETA = false;
-  _calculateVario = true;
-  _calculateWind = true;
+  m_calculateLD = false;
+  m_calculateETA = false;
+  m_calculateVario = true;
+  m_calculateWind = true;
   selectedWp = static_cast<Waypoint *> (0);
   lastMc.setInvalid();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
-  _polar = 0;
-  _vario = new Vario (this);
-  _windAnalyser = new WindAnalyser(this);
-  _reachablelist = new ReachableList(this);
-  _windStore = new WindStore(this);
+  m_polar = 0;
+  m_vario = new Vario (this);
+  m_windAnalyser = new WindAnalyser(this);
+  m_reachablelist = new ReachableList(this);
+  m_windStore = new WindStore(this);
   lastFlightMode=unknown;
-  _marker=0;
-  _glider=static_cast<Glider *> (0);
-  _pastFirstFix=false;
-  selectedWpInList = -1;
-  wpTouched = false;
-  wpTouchCounter = 0;
-  taskEndReached = false;
-  manualInFlight = false;
-  _cruiseDirection = -1;
+  m_marker=0;
+  m_glider=static_cast<Glider *> (0);
+  m_pastFirstFix=false;
+  m_selectedWpInList = -1;
+  m_taskEndReached = false;
+  m_manualInFlight = false;
+  m_cruiseDirection = -1;
   m_minimumAltitude = INT_MIN;
   m_lastTpPassageState = TaskPoint::Outside;
   m_lastZoomFactor = -1.0;
-  m_autoZoomRequests = 0;
+
+  m_resetAutoZoomTimer = new QTimer( this );
+  m_resetAutoZoomTimer->setSingleShot( true );
+
+  connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
+           this, SLOT(slot_switchMapScaleBack()) );
 
   // hook up the internal backend components
-  connect (_vario, SIGNAL(newVario(const Speed&)),
+  connect( m_vario, SIGNAL(newVario(const Speed&)),
            this, SLOT(slot_Variometer(const Speed&)));
 
   // The former calls to slot_newSample and slot_newFlightMode of the wind
   // analyzer are replaced by direct calls, when a new sample or flight
   // mode is available and the wind calculation is enabled. Wind calculation
   // can be disabled when the Logger device delivers already wind data.
-  connect (_windAnalyser, SIGNAL(newMeasurement(const Vector&, int)),
-           _windStore, SLOT(slot_Measurement(const Vector&, int)));
+  connect (m_windAnalyser, SIGNAL(newMeasurement(const Vector&, int)),
+           m_windStore, SLOT(slot_Measurement(const Vector&, int)));
 
-  connect (_windStore, SIGNAL(newWind(Vector&)),
+  connect (m_windStore, SIGNAL(newWind(Vector&)),
            this, SLOT(slot_Wind(Vector&)));
 
   connect (this, SIGNAL(newAltitude(const Altitude&)),
-           _windStore, SLOT(slot_Altitude(const Altitude&)));
+           m_windStore, SLOT(slot_Altitude(const Altitude&)));
 }
 
 Calculator::~Calculator()
 {
-  if ( _glider )
+  if ( m_glider )
     {
-      delete _glider;
+      delete m_glider;
     }
 
   if ( selectedWp )
@@ -189,7 +192,6 @@ void Calculator::slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns)
 /** Called if a new heading has been obtained */
 void Calculator::slot_Heading( const double& newHeadingValue )
 {
-  // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
   if ( lastSpeed.getMps() <= 0.3 )
     {
       // @AP: don't forward values, when the speed is nearly
@@ -201,17 +203,17 @@ void Calculator::slot_Heading( const double& newHeadingValue )
   lastHeading = static_cast<int> (rint(newHeadingValue));
 
   emit newHeading(lastHeading);
+
   // if we have no bearing, lastBearing is -1;
   // this is only a small mistake, relBearing points to north
   //@JD: but wrong showing of new relative bearing icon, so bail out
-  if (lastBearing < 0)
+  if( lastBearing < 0 )
     {
       return;
     }
 
   emit newRelBearing (lastBearing - lastHeading);
 }
-
 
 /** called if a new speed fix has been received */
 void Calculator::slot_Speed( Speed& newSpeedValue )
@@ -220,13 +222,12 @@ void Calculator::slot_Speed( Speed& newSpeedValue )
   emit newSpeed(newSpeedValue);
 }
 
-
 /** called if a new position-fix has been established. */
 void Calculator::slot_Position( QPoint& newPositionValue )
 {
   lastGPSPosition = newPositionValue;
 
-  if( ! manualInFlight )
+  if( ! m_manualInFlight )
     {
       lastPosition = lastGPSPosition;
     }
@@ -238,20 +239,13 @@ void Calculator::slot_Position( QPoint& newPositionValue )
   calcETA();
   calcGlidePath();
   // Calculate List of reachable items
-  _reachablelist->calculate(false);
+  m_reachablelist->calculate(false);
 }
-
 
 /** Called if a new waypoint has been selected. If user action is
     true, change was done by an user interaction.*/
 void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 {
-  if ( false ) // newWp
-    {
-      qDebug( "Calculator::slot_WaypointChange(): NewWpName=%s(%d)",
-              newWp->name.toLatin1().data(), newWp->taskPointIndex );
-    }
-
   if ( selectedWp && newWp &&
        selectedWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 )
     {
@@ -303,10 +297,8 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 
       // reset LD display
       emit newLD( lastRequiredLD=-1, lastCurrentLD=-1 );
-      selectedWpInList = -1;
-      wpTouched = false;
-      wpTouchCounter = 0;
-      taskEndReached = false;
+      m_selectedWpInList = -1;
+      m_taskEndReached = false;
       //@JD: reset bearing, and no more calculations
       lastBearing = -1;
       return;
@@ -317,10 +309,8 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
       // this was not an automatic switch, it was made manually by the
       // user in the tasklistview or initiated by pressing accept in the
       // preflight dialog.
-      wpTouched = false;
-      wpTouchCounter = 0;
-      taskEndReached = false;
-      selectedWpInList = -1;
+      m_taskEndReached = false;
+      m_selectedWpInList = -1;
 
       FlightTask *task = _globalMapContents->getCurrentTask();
 
@@ -334,7 +324,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
               if ( selectedWp->wgsPoint == tpList.at(i)->getWGSPosition() &&
                    selectedWp->taskPointIndex == tpList.at(i)->getFlightTaskListIndex() )
                 {
-                  selectedWpInList = i;
+                  m_selectedWpInList = i;
                   break;
                 }
             }
@@ -343,13 +333,16 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
         }
     }
 
-  calcDistance( !userAction );
+  if( userAction )
+    {
+      calcDistance( !userAction );
+    }
+
   calcBearing();
   calcETA();
   calcGlidePath();
   // for debug purpose trigger manually a calculation by selecting a waypoint
 }
-
 
 /**
  * Called if a waypoint has to be deleted.
@@ -360,9 +353,7 @@ void Calculator::slot_WaypointDelete(Waypoint* newWp)
   // deselection must be done
   if ( newWp && selectedWp && *selectedWp == *newWp )
     {
-      wpTouched = false;
-      wpTouchCounter = 0;
-      taskEndReached = false;
+      m_taskEndReached = false;
       setSelectedWp(0);
       calcBearing();
       calcETA();
@@ -399,7 +390,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // get active task
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if ( ! task || selectedWp->taskPointIndex == -1 || ! autoWpSwitch )
+  if ( ! task || selectedWp->taskPointIndex == -1 || autoWpSwitch == false )
     {
       // no task active,
       // no selected waypoint from a task
@@ -410,7 +401,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
       return;
     }
 
-  // load taskpoint list from task
+  // load task point list from task
   QList<TaskPoint *> tpList = task->getTpList();
 
   // Load active task switch scheme. Switch to next TP can be executed
@@ -418,93 +409,71 @@ void Calculator::calcDistance( bool autoWpSwitch )
   enum GeneralConfig::ActiveTaskSwitchScheme ntScheme =
     GeneralConfig::instance()->getActiveTaskSwitchScheme();
 
-  // If we are fast enough (speed > 35Km/h), we do check, if we could
-  // inside of an selected task area. This condition is not
-  // considered in manual mode to make testing possible.
   enum TaskPoint::PassageState passageState = TaskPoint::Outside;
 
-  if( moving() || GpsNmea::gps->getGpsStatus() != GpsNmea::validFix )
+  TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
+
+  passageState = tp->checkPassage( curDistance, lastPosition );
+
+  if( passageState == TaskPoint::Near )
     {
-      TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
-      passageState = tp->checkPassage( curDistance, lastPosition );
-    }
-
-  if( autoWpSwitch &&
-      m_lastTpPassageState == TaskPoint::Outside &&
-      passageState == TaskPoint::Near )
-    {
-      qDebug() << "#1 WP=" << selectedWp->name
-               << "m_lastTpPassageState=" << m_lastTpPassageState
-               << "passageState=" << passageState;
-
-      m_lastTpPassageState = passageState;
-
-      // Auto zoom in to make the task point figure better visible,
-      // if that feature is enabled.
-      if( GeneralConfig::instance()->getTaskPointAutoZoom() == true )
+      if( m_lastTpPassageState != passageState )
         {
-          qDebug() << "#2 WP=" << selectedWp->name << "AutoZoom active";
+          // Auto zoom in to make the task point figure better visible.
+          autoZoomInMap();
 
-          m_autoZoomRequests++;
-
-          m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
-
-          QPoint tpWgs(selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon() );
-
-          double newZoomFactor = _globalMapMatrix->ensureVisible( tpWgs, lastPosition );
-
-          // qDebug() << "m_lastZoomFactor" << m_lastZoomFactor << "newZoomFactor" << newZoomFactor;
-
-          if( newZoomFactor > 0.0 && m_lastZoomFactor != newZoomFactor )
+          if( tp->getActiveTaskPointFigureScheme() == GeneralConfig::Line )
             {
-              // qDebug() << "TP Near ->ZoomIn" << m_lastZoomFactor << newZoomFactor;
-
-              // Set map center to the current position
-              _globalMapMatrix->centerToLatLon( lastPosition );
-
-              // Zoom into the map
-              emit switchMapScale(newZoomFactor);
-
-              // Notice user about the zoom
-              emit taskInfo( tr("TP zoom"), true );
+              // Announce task point in sight for a line only, if nearest
+              // position is reached.
+              emit taskInfo( tr("TP in sight"), true );
             }
         }
+
+      m_lastTpPassageState = passageState;
     }
 
-  // We set us a flag to remember, that we did arrive the radius of a
-  // task point. That must be done because we can have only one touch.
-  if( passageState == TaskPoint::Passed && wpTouched == false && autoWpSwitch )
+  if( passageState == TaskPoint::Touched )
     {
-      qDebug() << "#3 WP=" << selectedWp->name
-               << "TaskPoint::Passed, wpTouched0false"
-               << "sidx=" << selectedWp->taskPointIndex;
-
-      m_lastTpPassageState = TaskPoint::Passed;
-      wpTouched            = true;
-
-      // send a signal to the IGC logger to increase logging interval
-      emit taskpointSectorTouched();
-
-      // setup a timer to reset a task point approach zoom after 10s of passage
-      if( m_autoZoomRequests > 0)
+      if( m_lastTpPassageState != passageState )
         {
-          QTimer::singleShot( 10000, this, SLOT(slot_switchMapScaleBack()) );
+          // Auto zoom in to make the task point figure better visible.
+          autoZoomInMap();
+
+          if( ntScheme == GeneralConfig::Nearst &&
+              tp->getActiveTaskPointFigureScheme() != GeneralConfig::Line )
+            {
+              // Announce task point touch only, if nearest switch scheme is
+              // chosen by the user and no line figure is active to avoid to
+              // much info for him.
+              emit taskInfo( tr("TP in sight"), true );
+            }
+
+          // Send a signal to the IGC logger to increase logging interval
+          emit taskpointSectorTouched();
         }
 
-      // qDebug() << "emit taskpointSectorTouched(): m_lastZoomFactor="  << m_lastZoomFactor;
+      m_lastTpPassageState = passageState;
+    }
 
-      // Display a task end message under following conditions:
-      // a) we touched the target radius
+  if( passageState == TaskPoint::Passed )
+    {
+      m_lastTpPassageState = TaskPoint::Passed;
+
+      // setup a timer to reset a task point approach zoom after 10s of passage
+      if( m_lastZoomFactor > 0)
+        {
+          m_resetAutoZoomTimer->start( 10000 );
+        }
+
+      // Display a task end message under the following conditions:
+      // a) we touched/passed the target radius
       // b) the landing task point is selected
       // c) the end and landing task point are identically
       TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
 
       bool tpEndEqLanding = false;
       int sidx            = selectedWp->taskPointIndex;
-
-      qDebug() << "#4 WP=" << selectedWp->name
-               << "sidx=" << selectedWp->taskPointIndex
-               << "tpList.size=" << tpList.size();
 
       if( sidx > 1 && sidx < tpList.size() - 1 )
         {
@@ -516,20 +485,14 @@ void Calculator::calcDistance( bool autoWpSwitch )
             {
               // End and landing point are identically
               tpEndEqLanding = true;
-           }
-
-          qDebug() << "#5 WP=" << selectedWp->name
-                   << tp->getTaskPointType()
-                   << tpNext->getTaskPointType()
-                   << (tp->getWGSPosition() == tpNext->getWGSPosition())
-                   << "tpEndEqLanding=" << tpEndEqLanding;
+            }
         }
 
-      if ( taskEndReached == false &&
+      if ( m_taskEndReached == false &&
            ( tpEndEqLanding == true ||
              tp->getTaskPointType() == TaskPointTypes::Landing ) )
         {
-          taskEndReached = true;
+          m_taskEndReached = true;
           emit taskInfo( tr("Task ended"), true );
 
           QString text = QString("<html>") +
@@ -552,84 +515,30 @@ void Calculator::calcDistance( bool autoWpSwitch )
           WhatsThat *box = new WhatsThat( _globalMainWindow, text,  showTime );
           box->show();
 
-          // Reset the task point index in the selected waypoint. That stops
+          // Reset the task point index of the selected waypoint. That stops
           // the further automatic task point switch.
           selectedWp->taskPointIndex = -1;
         }
-      else if( taskEndReached == false )
+      else if( m_taskEndReached == false )
         {
-          if( tp->getActiveTaskPointFigureScheme() != GeneralConfig::Line )
+          if ( tpList.count() > m_selectedWpInList + 1 )
             {
-              if( ntScheme == GeneralConfig::Nearst )
-                {
-                  // Announce task point touch only, if nearest switch scheme is
-                  // chosen by the user to avoid to much info for him.
-                  emit taskInfo( tr("TP in sight"), true );
-                  wpTouchCounter = 0;
-                }
-              else
-                {
-                  // Set touch counter in case of touch switch scheme is used,
-                  // to ensure that we were really inside of the task point
-                  // sector/circle
-                  wpTouchCounter = 5; // set touch counter to 5 events, ca. 5s
-                }
-            }
-          else
-            {
-              qDebug() << "#6 WP=" << selectedWp->name
-                       << "Line set wpTouchCounter = 1";
+              // this loop excludes the last WP
+              TaskPoint *lastWp = tpList.at(m_selectedWpInList);
+              m_selectedWpInList++;
+              TaskPoint *nextWp = tpList.at(m_selectedWpInList);
 
-              // A line figure has only one touch point to make the passing
-              // with the next position data visible.
-              wpTouchCounter = 1;
-            }
-        }
+              // calculate the distance to the next waypoint
+              Distance dist2Next( dist( double(lastPosition.x()),
+                                        double(lastPosition.y()),
+                                        nextWp->getWGSPosition().lat(),
+                                        nextWp->getWGSPosition().lon() ) * 1000);
+              curDistance = dist2Next;
 
-      lastDistance = curDistance;
-      emit newDistance(lastDistance);
-      return;
-    }
+              // announce task point change as none user interaction
+              slot_WaypointChange( nextWp->getWaypointObject(), false );
 
-  // We arrived the task point switch radius and after that event the
-  // wpTouchedCounter reaches zero or the nearest position to the TP is
-  // arrived. In this case we have to execute and announce the task
-  // point switch.
-  if ( ( curDistance.getMeters() > lastDistance.getMeters() ||
-       ( wpTouchCounter > 0 && --wpTouchCounter == 0 ) ) &&
-         wpTouched == true )
-    {
-      qDebug() << "#7 WP=" << selectedWp->name;
-
-      wpTouched      = false;
-      wpTouchCounter = 0;
-
-      if ( tpList.count() > selectedWpInList + 1 )
-        {
-          // this loop excludes the last WP
-          TaskPoint *lastWp = tpList.at(selectedWpInList);
-          selectedWpInList++;
-          TaskPoint *nextWp = tpList.at(selectedWpInList);
-
-          // calculate the distance to the next waypoint
-          Distance dist2Next( dist( double(lastPosition.x()),
-                                    double(lastPosition.y()),
-                                    nextWp->getWGSPosition().lat(),
-                                    nextWp->getWGSPosition().lon() ) * 1000);
-          lastDistance = dist2Next;
-
-          // announce task point change as none user interaction
-          slot_WaypointChange( nextWp->getWaypointObject(), false );
-
-          // Here we send a notice to the user about the task point
-          // switch. If end point is reached and landing point is identical
-          // to end point, we will suppress the info message
-          if ( ! ( lastWp->getTaskPointType() == TaskPointTypes::End &&
-                   nextWp->getTaskPointType() == TaskPointTypes::Landing &&
-                   lastWp->getWGSPosition() == nextWp->getWGSPosition() ) )
-            {
-              qDebug() << "#8 WP=" << selectedWp->name << "WP passed";
-
+              // Here we send a notice to the user about the task point switch.
               emit taskInfo( tr("TP passed"), true );
 
               if( GeneralConfig::instance()->getReportTpSwitch() == true )
@@ -651,12 +560,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
             }
         }
     }
-  else
-    {
-      lastDistance = curDistance;
-    }
 
-  emit newDistance(lastDistance);
+  lastDistance = curDistance;
+  emit newDistance( lastDistance );
 }
 
 /** Calculates the ETA (Estimated Time to Arrival) to the current
@@ -667,7 +573,7 @@ void Calculator::calcETA()
 
   // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
 
-  if ( ! _calculateETA || ! selectedWp ||
+  if ( ! m_calculateETA || ! selectedWp ||
        lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() )
     {
       if ( ! lastETA.isNull() )
@@ -716,7 +622,7 @@ void Calculator::calcETA()
     if required */
 void Calculator::calcLD()
 {
-  if ( ! selectedWp || _calculateLD == false || samplelist.count() < 2 )
+  if ( ! selectedWp || m_calculateLD == false || samplelist.count() < 2 )
     {
       return;
     }
@@ -819,7 +725,7 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
                            Speed &bestSpeed )
 {
 
-  if (!_polar)
+  if (!m_polar)
     {
       arrivalAlt.setInvalid();
       bestSpeed.setInvalid();
@@ -830,7 +736,7 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
 
   // we use the method described by Bob Hansen
   // get best speed for zero wind V0
-  Speed speed = _polar->bestSpeed(0.0, 0.0, lastMc);
+  Speed speed = m_polar->bestSpeed(0.0, 0.0, lastMc);
   //qDebug ("rough best speed: %f", speed.getKph());
 
   // wind has a negative vector!
@@ -852,11 +758,11 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
   Altitude givenAlt (lastAltitude - Altitude (aElevation) - minimalArrival);
 
   // improved speed for wind V1
-  speed = _polar->bestSpeed(headwind, 0.0, lastMc);
+  speed = m_polar->bestSpeed(headwind, 0.0, lastMc);
   //qDebug ("improved best speed: %f", speed.getKph());
   bestSpeed = speed;
   // the ld is over ground, so we take groundspeed
-  double ld =_polar->bestLD(speed, groundspeed.getSpeed(), 0.0);
+  double ld =m_polar->bestLD(speed, groundspeed.getSpeed(), 0.0);
 
   arrivalAlt = (givenAlt - (aDistance / ld));
 
@@ -873,7 +779,7 @@ void Calculator::calcGlidePath()
   Altitude arrivalAlt;
 
   // Calculate new glide path, if a waypoint is selected and a glider is defined.
-  if ( ! selectedWp || ! _glider )
+  if ( ! selectedWp || ! m_glider )
     {
       lastRequiredLD = -1;
       return;
@@ -908,38 +814,46 @@ void Calculator::calcGlidePath()
     }
 }
 
-/** Calculates the bearing to the currently selected waypoint, and emits signal newBearing if the bearing has changed. */
+/**
+ * Calculates the bearing to the currently selected waypoint and emits signal
+ * newBearing if the bearing has changed.
+ */
 void Calculator::calcBearing()
 {
-  int iresult;
-  int lH=lastHeading;
-  if (lH == -1)
-    lH=0;
+  int iresult = -1;
+  int lH = -1;
 
-  if (selectedWp==0)
+  if( lastHeading == -1 )
     {
-      iresult=-1;
-      if (iresult!=lastBearing)
+      lH = 0;
+    }
+
+  if( selectedWp == 0 )
+    {
+      if (iresult != lastBearing)
         {
-          lastBearing=iresult;
+          lastBearing = iresult;
+
           emit newBearing(-1000);
+
           // if we have no waypoint, let the rel bearing arrow point to north
-          emit newRelBearing (-lH);
+          emit newRelBearing(0);
         }
     }
   else
     {
-      double result = getBearing(lastPosition, selectedWp->wgsPoint);
+      double result = getBearing( lastPosition, selectedWp->wgsPoint );
+
       iresult = int (rint(result * 180./M_PI) );
-      if (iresult!=lastBearing)
+
+      if( iresult != lastBearing )
         {
-          lastBearing=iresult;
+          lastBearing = iresult;
           emit newBearing(lastBearing);
           emit newRelBearing (lastBearing - lH);
         }
     }
 }
-
 
 /** Called if the position is changed manually. */
 void Calculator::slot_changePosition(int direction)
@@ -1031,7 +945,7 @@ void Calculator::slot_changePosition(int direction)
   calcGlidePath();
 
   // calculate always when moving manually (big delta !)
-  _reachablelist->calculate(true);
+  m_reachablelist->calculate(true);
   //qDebug("Elevation: %d m",_globalMapContents->findElevation(lastPosition) );
 }
 
@@ -1089,7 +1003,7 @@ void Calculator::slot_changePosition(QPoint& newPosition)
 /** increment McCready value */
 void Calculator::slot_McUp()
 {
-  if( _glider && lastMc.getMps() <= MAX_MCCREADY - 0.5 )
+  if( m_glider && lastMc.getMps() <= MAX_MCCREADY - 0.5 )
     {
       lastMc.setMps( lastMc.getMps() + 0.5 );
       calcGlidePath();
@@ -1100,7 +1014,7 @@ void Calculator::slot_McUp()
 /** set McCready value */
 void Calculator::slot_Mc(const Speed& mc)
 {
-  if( _glider && lastMc.getMps() != mc.getMps() )
+  if( m_glider && lastMc.getMps() != mc.getMps() )
     {
       lastMc = mc;
       calcGlidePath();
@@ -1111,7 +1025,7 @@ void Calculator::slot_Mc(const Speed& mc)
 /** decrement McCready value; don't get negative */
 void Calculator::slot_McDown()
 {
-  if( _glider && lastMc.getMps() >= 0.5 )
+  if( m_glider && lastMc.getMps() >= 0.5 )
     {
       lastMc.setMps( lastMc.getMps() - 0.5 );
       calcGlidePath();
@@ -1124,11 +1038,11 @@ void Calculator::slot_McDown()
  */
 void Calculator::slot_WaterAndBugs( const int water, const int bugs )
 {
-  if( _glider &&
-      (_glider->polar()->water() != water ||
-       _glider->polar()->bugs() != bugs) )
+  if( m_glider &&
+      (m_glider->polar()->water() != water ||
+       m_glider->polar()->bugs() != bugs) )
     {
-      _glider->polar()->setWater( water, bugs );
+      m_glider->polar()->setWater( water, bugs );
       calcGlidePath();
     }
 }
@@ -1162,7 +1076,7 @@ void Calculator::slot_GpsVariometer(const Speed& lift)
   // Hey we got a variometer value directly from the GPS.
   // Therefore internal calculation is not needed and can be
   // switched off.
-  _calculateVario = false;
+  m_calculateVario = false;
 
   if (lastVario != lift)
     {
@@ -1197,8 +1111,8 @@ void Calculator::slot_settingsChanged ()
 
   // Switch on the internal variometer lift and wind calculation.
   // User could be changed the GPS device.
-  _calculateVario = true;
-  _calculateWind  = true;
+  m_calculateVario = true;
+  m_calculateWind  = true;
 
   slot_CheckHomeSiteSelection();
 }
@@ -1208,9 +1122,9 @@ void Calculator::slot_newFix( const QTime& newFixTime )
 {
   // before we start making samples, let's be sure we have all the
   // data we need for that. So, we wait for the second Fix.
-  if (!_pastFirstFix)
+  if (!m_pastFirstFix)
     {
-      _pastFirstFix = true;
+      m_pastFirstFix = true;
       return;
     }
 
@@ -1242,16 +1156,16 @@ void Calculator::slot_newFix( const QTime& newFixTime )
 
   // Call variometer calculation, if required. Can be switched off,
   // when GPS delivers variometer information.
-  if ( _calculateVario == true )
+  if ( m_calculateVario == true )
     {
-      _vario->newAltitude();
+      m_vario->newAltitude();
     }
 
   // Call wind analyzer calculation if required. Can be switched off,
   // when GPS delivers wind information.
-  if ( _calculateWind == true )
+  if ( m_calculateWind == true )
     {
-      _windAnalyser->slot_newSample();
+      m_windAnalyser->slot_newSample();
     }
 
   // Calculate LD
@@ -1359,7 +1273,7 @@ void Calculator::determineFlightStatus()
       break;
 
     case cruising: // we are flying from point A to point B
-      if (abs(angleDiff(lastHead, _cruiseDirection)) <=  MAXCRUISEANGDIFF &&
+      if (abs(angleDiff(lastHead, m_cruiseDirection)) <=  MAXCRUISEANGDIFF &&
           samplelist[0].vector.getSpeed().getMps() > 0.5 )
         {
           return;
@@ -1536,7 +1450,7 @@ void Calculator::determineFlightStatus()
           break_analysis = true;
 
           // save current heading for cruise check.
-          _cruiseDirection = samplelist[0].vector.getAngleDeg();
+          m_cruiseDirection = samplelist[0].vector.getAngleDeg();
           // qDebug("-->Cruise direction: %d.", _cruiseDirection);
         }
     }
@@ -1544,7 +1458,7 @@ void Calculator::determineFlightStatus()
   if (flightMode != lastFlightMode)
     {
       lastFlightMode = flightMode;
-      samplelist[0].marker = ++_marker;
+      samplelist[0].marker = ++m_marker;
       newFlightMode( flightMode );
       // qDebug( "new FlightMode: %d", lastFlightMode );
     }
@@ -1559,7 +1473,7 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
   if (flightMode != lastFlightMode)
     {
       lastFlightMode       = flightMode;
-      samplelist[0].marker = ++_marker;
+      samplelist[0].marker = ++m_marker;
       // qDebug("new FlightMode: %d",lastFlightMode);
       newFlightMode(flightMode);
     }
@@ -1569,18 +1483,18 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
       // Reset LD display
       emit newLD( -1.0, -1.0 );
       // reset first fix passed
-      _pastFirstFix = false;
+      m_pastFirstFix = false;
     }
 }
 
 /** This function is used internally to emit the flight mode signal with the marker value */
 void Calculator::newFlightMode(Calculator::FlightMode fm)
 {
-  if ( _calculateWind )
+  if ( m_calculateWind )
     {
       // Wind calculation can be disabled when the Logger device
       // delivers already wind data.
-      _windAnalyser->slot_newFlightMode( fm );
+      m_windAnalyser->slot_newFlightMode( fm );
     }
 
   emit flightModeChanged( fm );
@@ -1592,7 +1506,7 @@ void Calculator::slot_GpsWind( const Speed& speed, const short direction )
   // Hey we got a wind value directly from the GPS.
   // Therefore internal calculation is not needed and can be
   // switched off.
-  _calculateWind = false;
+  m_calculateWind = false;
 
   Vector v;
   v.setAngle( direction );
@@ -1613,19 +1527,11 @@ void Calculator::slot_userMapZoom()
 {
   // Reset last zoom factor, if the user did a map zoom.
   m_lastZoomFactor = -1.0;
-
-  // Reset auto zoom request counter.
-  m_autoZoomRequests = 0;
 }
 
 void Calculator::slot_switchMapScaleBack()
 {
-  if( m_autoZoomRequests > 0 )
-    {
-      m_autoZoomRequests--;
-    }
-
-  if( m_autoZoomRequests == 0 && m_lastZoomFactor != -1.0 )
+  if( m_lastZoomFactor != -1.0 )
     {
       // Zoom back to the zoom factor before the task point has been touched.
       emit switchMapScale( m_lastZoomFactor );
@@ -1638,23 +1544,23 @@ void Calculator::slot_switchMapScaleBack()
 /** Store the property of a new Glider. */
 void Calculator::setGlider(Glider* glider)
 {
-  if (_glider)
+  if (m_glider)
     {
-      delete _glider;
+      delete m_glider;
 
       // reset glider and polar object to avoid senseless calculations
-      _glider = 0;
-      _polar  = 0;
+      m_glider = 0;
+      m_polar  = 0;
     }
 
   if (glider)
     {
-      _glider = glider;
-      _polar = _glider->polar();
+      m_glider = glider;
+      m_polar = m_glider->polar();
       lastMc.setKph(0);
       calcETA();
       calcGlidePath();
-      emit newGlider( _glider->type() );
+      emit newGlider( m_glider->type() );
     }
   else
     {
@@ -1669,7 +1575,7 @@ void Calculator::setGlider(Glider* glider)
 
   // Recalculate the nearest reachable sites because
   // glider has been modified resp. removed.
-  _reachablelist->calculateNewList();
+  m_reachablelist->calculateNewList();
 }
 
 bool Calculator::matchesFlightMode(GeneralConfig::UseInMode mode)
@@ -1708,10 +1614,10 @@ void Calculator::setSelectedWp( Waypoint* newWp )
   if ( newWp != 0 )
     {
       selectedWp = new Waypoint( *newWp );
-
-      // Reset task point passage state
-      m_lastTpPassageState = TaskPoint::Outside;
     }
+
+  // Reset task point passage state
+  m_lastTpPassageState = TaskPoint::Outside;
 
   // inform mapView about the change
   emit newWaypoint(newWp);
@@ -1719,7 +1625,7 @@ void Calculator::setSelectedWp( Waypoint* newWp )
 
 void Calculator::setManualInFlight(bool switchOn)
 {
-  manualInFlight = switchOn;
+  m_manualInFlight = switchOn;
   // immediately put glider into center if outside
   // we can only switch off if GPS data coming in
   emit switchManualInFlight();
@@ -1889,6 +1795,40 @@ void Calculator::calcAltitudeGain()
           // Store the new gained altitude value.
           m_gainedAltitude = lift;
           emit newGainedAltitude( m_gainedAltitude );
+        }
+    }
+}
+
+void Calculator::autoZoomInMap()
+{
+  // Auto zoom in to make the task point figure better visible, if:
+  // -feature is enabled
+  // -selected waypoint is not a null pointer
+  // -there is no zoom already active
+
+  // Stop reset zoom timer
+  m_resetAutoZoomTimer->stop();
+
+  if( GeneralConfig::instance()->getTaskPointAutoZoom() == true &&
+      selectedWp != 0 &&
+      m_lastZoomFactor == -1 )
+    {
+      m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+
+      QPoint tpWgs(selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon() );
+
+      double newZoomFactor = _globalMapMatrix->ensureVisible( tpWgs, lastPosition );
+
+      if( newZoomFactor > 0.0 && m_lastZoomFactor != newZoomFactor )
+        {
+          // Set map center to the current position
+          _globalMapMatrix->centerToLatLon( lastPosition );
+
+          // Zoom into the map
+          emit switchMapScale(newZoomFactor);
+
+          // Notice user about the zoom
+          emit taskInfo( tr("TP zoom"), true );
         }
     }
 }
