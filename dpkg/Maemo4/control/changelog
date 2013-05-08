@@ -1,3 +1,60 @@
+cumulus (5.2.0) stable; urgency=low
+
+  * Reset button added to altitude and in-flight dialog. That
+    resets the input field which has the focus to its initial
+    value.
+    
+  * New subdirectory igc introduced for storing of IGC files.
+    
+  * Bugfix: Flight taskpoint switch did not work at slow speed.
+    If end and landing point of a flight task were the same points
+    the task end was not recognized.
+    
+  * Behaviour of altitude, inflight and variometer dialog
+    modified. If a value is changed, the close timer is stopped,
+    so that the user must confirm or reject his done change.
+    
+  * Bugfix: Auto logger start speed was never read from
+    the configuration due to a spelling error. Thanks to
+    Robin King who reported the bug to me.
+    
+  * Bugfix: The task parser stumbled if a taskpoint contains a
+    comment text with a newline. Comment field removed from the
+    saved tasks file.
+    
+  * NMEA simulator expanded that GPS data can also be sent out
+    via a serial device like ttyS0.
+    
+  * Bugfix: The begin and the end of a task were not correct
+    handled, if the taskpoint figure was a line.
+    
+  * Runway heading combo selection boxes replaced by a number
+    editor input widget in waypoint editor. 
+
+  * Bugfix: Negative numbers could not saved in number editor.
+
+  * Bugfix: Needless elevation unit removed in waypoint editor.
+
+  * Class TaskPoint is now derived from SinglePoint and not more
+    from Waypoint. A taskpoint has only the basic data of a
+    single point and its special data. That is clearer to handle.
+
+  * Waypoint editor modified. Two runways can be edited now as
+    single runways. The runway handling has been modified in
+    airfield and waypoint data. The single runway data elements
+    have been replaced by a runway list in these data objects.
+
+  * A XML parser added to import Open AIP data files via the pre-flight waypoint
+    page. Hotspot, navigation aid and airfield data can be imported now.
+
+  * A Debian source package can be build now for the X11 desktop
+    version of Cumulus.
+
+  * Preflight Flarm page, stealth mode button added to show and to change that
+    mode. 
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Wed, 08 May 2013 22:15:51 +0200
+
 cumulus (5.1.0) stable; urgency=low
 
   * Bugfix: Sink speed in glider editor contained only one decimal. Changed it
