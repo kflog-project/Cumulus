@@ -668,12 +668,12 @@
 <context>
     <name>FlarmRadarView</name>
     <message>
-        <location filename="flarmradarview.cpp" line="247"/>
+        <location filename="flarmradarview.cpp" line="253"/>
         <source>Add alias name</source>
         <translation>Alias Namen setzen</translation>
     </message>
     <message>
-        <location filename="flarmradarview.cpp" line="248"/>
+        <location filename="flarmradarview.cpp" line="254"/>
         <source>Alias name (15) for </source>
         <translation>Alias Name (15) für </translation>
     </message>
@@ -5872,7 +5872,7 @@ Namen für den neuen Wegpunkt</translation>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="72"/>
         <source>ICAO:</source>
-        <translation></translation>
+        <translation>ICAO</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="63"/>
