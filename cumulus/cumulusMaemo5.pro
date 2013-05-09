@@ -108,6 +108,7 @@ HEADERS = \
     messagehandler.h \
     messagewidget.h \
     multilayout.h \
+    openaip.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -226,6 +227,7 @@ SOURCES = \
     mapview.cpp \
     messagehandler.cpp \
     messagewidget.cpp \
+    openaip.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
