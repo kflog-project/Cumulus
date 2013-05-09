@@ -260,12 +260,12 @@ int Layout::getMapZoomButtonSize()
 
   int size = QFontMetrics(font).height();
 
-  if( size < 40 )
+  if( size < 60 )
     {
-      size = 40;
+      size = 60;
     }
 
-  return QFontMetrics(font).height();
+  return size;
 }
 
 int Layout::getButtonSize()
@@ -275,9 +275,9 @@ int Layout::getButtonSize()
 
   int size = QFontMetrics(font).height();
 
-  if( size < 40 )
+  if( size < 60 )
     {
-      size = 40;
+      size = 60;
     }
 
   return size;
