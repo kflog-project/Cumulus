@@ -382,9 +382,11 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
           // Abstand entspricht der Icon-Groesse
           if (dX < delta && dY < delta)
             {
-              if (found && ((dX+dY) >= lastDist))
+              if (found && ((dX+dY) > lastDist))
                 {
-                  continue; //the point we found earlier was closer
+                  // The point we found earlier was closer but a
+                  // taskpoint can be overwritten by an better point.
+                  continue;
                 }
 
               // qDebug ("Airfield: %s", hitElement->getName().toLatin1().data() );
