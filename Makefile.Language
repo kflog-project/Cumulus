@@ -113,7 +113,7 @@ dpkg_src_de:
 dpkg_make:
 	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/branches/taskpoint $(CUMULUS_DEB)
+	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
