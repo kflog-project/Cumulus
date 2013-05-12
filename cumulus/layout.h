@@ -68,13 +68,13 @@
 #define MapBearingIndicatorFontPointSize 20
 
 // Map Flarm label font point size
-#define MapFlarmLabelFontPointSize 16
+#define MapFlarmLabelFontPointSize 20
 
 // Flarm display text point size
 #define FlarmDisplayTextPointSize 20
 
 // Flarm display icon point size
-#define FlarmDisplayIconPointSize 24
+#define FlarmDisplayIconPointSize 28
 
 // WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
 #define WhatsThatFontPointSize 16
