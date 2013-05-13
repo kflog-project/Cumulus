@@ -160,7 +160,7 @@ nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 dpkg:
 	@echo "===== Building a Debian binary package for Cumulus $(VERSION) ====="
 	@$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
-		DPKG_OPT=$(BIN_PACK) DH_MAKE_OPT="-s --native" \
+		DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" \
 		dpkg_prepare dpkg_make dpkg_build
 
 # This target builds a Debian source package. 
