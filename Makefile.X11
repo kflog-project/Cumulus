@@ -29,10 +29,10 @@ CUMULUS_DEB_ROOT=dpkg/X11
 CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 
 # Debian source package options
-SRC_PACK=-sa -S
+SRC_PACK=-sa -S -us
 
 # Debian binary package options
-BIN_PACK=-b
+BIN_PACK=-b -us
 
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
