@@ -1711,58 +1711,58 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="2697"/>
-        <location filename="map.cpp" line="2748"/>
+        <location filename="map.cpp" line="2699"/>
+        <location filename="map.cpp" line="2750"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3140"/>
+        <location filename="map.cpp" line="3142"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3144"/>
+        <location filename="map.cpp" line="3146"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3149"/>
-        <location filename="map.cpp" line="3504"/>
+        <location filename="map.cpp" line="3151"/>
+        <location filename="map.cpp" line="3506"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3160"/>
-        <location filename="map.cpp" line="3194"/>
-        <location filename="map.cpp" line="3343"/>
-        <location filename="map.cpp" line="3526"/>
+        <location filename="map.cpp" line="3162"/>
+        <location filename="map.cpp" line="3196"/>
+        <location filename="map.cpp" line="3345"/>
+        <location filename="map.cpp" line="3528"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3217"/>
-        <location filename="map.cpp" line="3252"/>
-        <location filename="map.cpp" line="3379"/>
-        <location filename="map.cpp" line="3540"/>
+        <location filename="map.cpp" line="3219"/>
+        <location filename="map.cpp" line="3254"/>
+        <location filename="map.cpp" line="3381"/>
+        <location filename="map.cpp" line="3542"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3275"/>
-        <location filename="map.cpp" line="3309"/>
-        <location filename="map.cpp" line="3415"/>
-        <location filename="map.cpp" line="3554"/>
+        <location filename="map.cpp" line="3277"/>
+        <location filename="map.cpp" line="3311"/>
+        <location filename="map.cpp" line="3417"/>
+        <location filename="map.cpp" line="3556"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3504"/>
+        <location filename="map.cpp" line="3506"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3514"/>
+        <location filename="map.cpp" line="3516"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
