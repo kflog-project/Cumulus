@@ -275,10 +275,25 @@ int Layout::getButtonSize()
 
   int size = QFontMetrics(font).height();
 
+#ifndef ANDROID
+#ifdef MAEMO
+
+  // Maemo needs some tweaking
   if( size < 60 )
     {
       size = 60;
     }
+
+#else
+
+    // X11 needs some tweaking
+  if( size < 40 )
+    {
+      size = 40;
+    }
+
+#endif
+#endif
 
   return size;
 }

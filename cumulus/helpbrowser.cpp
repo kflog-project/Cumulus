@@ -27,8 +27,8 @@
 #include <QtScroller>
 #endif
 
-#include "helpbrowser.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 
 HelpBrowser::HelpBrowser( QWidget *parent ) :
@@ -55,31 +55,42 @@ HelpBrowser::HelpBrowser( QWidget *parent ) :
   connect( m_browser, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
 
   // get the icon size to be used
-  const int iconSize = Layout::getButtonSize();
+  const int buttonSize = Layout::getButtonSize();
+  const int iconSize   = buttonSize - 5;
 
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
   home->setIconSize(QSize(iconSize, iconSize));
+  home->setMinimumSize(buttonSize, buttonSize);
+  home->setMaximumSize(buttonSize, buttonSize);
   home->setToolTip( tr("Begin") );
 
   QPushButton *back = new QPushButton();
   back->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "left.png") ) );
   back->setIconSize(QSize(iconSize, iconSize));
+  back->setMinimumSize(buttonSize, buttonSize);
+  back->setMaximumSize(buttonSize, buttonSize);
   back->setToolTip( tr("Backward") );
 
   QPushButton *forward = new QPushButton();
   forward->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "right.png") ) );
   forward->setIconSize(QSize(iconSize, iconSize));
+  forward->setMinimumSize(buttonSize, buttonSize);
+  forward->setMaximumSize(buttonSize, buttonSize);
   forward->setToolTip( tr("Forward") );
 
   m_zoomIn = new QPushButton();
   m_zoomIn->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomin.png") ) );
   m_zoomIn->setIconSize(QSize(iconSize, iconSize));
+  m_zoomIn->setMinimumSize(buttonSize, buttonSize);
+  m_zoomIn->setMaximumSize(buttonSize, buttonSize);
   m_zoomIn->setToolTip( tr("Zoom in") );
 
   m_zoomOut = new QPushButton();
   m_zoomOut->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoomout.png") ) );
   m_zoomOut->setIconSize(QSize(iconSize, iconSize));
+  m_zoomOut->setMinimumSize(buttonSize, buttonSize);
+  m_zoomOut->setMaximumSize(buttonSize, buttonSize);
   m_zoomOut->setToolTip( tr("Zoom out") );
 
   QPushButton *close = new QPushButton();
