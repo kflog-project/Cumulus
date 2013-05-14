@@ -124,7 +124,7 @@
 
 #else
 
-#define IconSize 26
+#define IconSize 32
 #define SnapRadius 15
 
 // Dialog font size in pixels

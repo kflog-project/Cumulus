@@ -55,8 +55,13 @@ HelpBrowser::HelpBrowser( QWidget *parent ) :
   connect( m_browser, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
 
   // get the icon size to be used
-  const int buttonSize = Layout::getButtonSize();
-  const int iconSize   = buttonSize - 5;
+  int buttonSize = Layout::getButtonSize();
+
+#ifdef MAEMO
+  buttonSize = IconSize + 5;
+#endif
+
+  int iconSize   = buttonSize - 5;
 
   QPushButton *home = new QPushButton();
   home->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "home_new.png") ) );
