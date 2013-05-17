@@ -178,6 +178,9 @@ void FlarmListView::fillItemList( QString& object2Select )
       return;
     }
 
+  int iconSize = QFontMetrics(font()).height() - 4;
+  list->setIconSize( QSize(iconSize, iconSize) );
+
   QMutableHashIterator<QString, Flarm::FlarmAcft> it(flarmAcfts);
 
   while( it.hasNext() )
@@ -248,13 +251,11 @@ void FlarmListView::fillItemList( QString& object2Select )
 
       QPixmap pixmap;
 
-      int pixSize = QFontMetrics(font()).boundingRect("XM").height() - 2;
-
       if( north == 0 && east == 0 )
         {
           // Special case Flarm object is above or below us. We draw a circle.
           MapConfig::createCircle( pixmap,
-                                   pixSize,
+                                   iconSize,
                                    QColor(Qt::black),
                                    1.0 );
         }
@@ -267,7 +268,7 @@ void FlarmListView::fillItemList( QString& object2Select )
 
           // qDebug() << "ID=" << it.key() << "Alpha" << alpha << "H2O=" << heading2Object;
           MapConfig::createTriangle( pixmap,
-                                     pixSize,
+                                     iconSize,
                                      QColor(Qt::black),
                                      heading2Object,
                                      1.0,
