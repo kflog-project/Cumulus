@@ -104,11 +104,11 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawOptions->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( drawOptions->viewport(), QScroller::QtScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( drawOptions->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QSCROLLER
-  QtScroller::grabGesture( drawOptions->viewport(), QtScroller::QtScroller::LeftMouseButtonGesture );
+  QtScroller::grabGesture( drawOptions->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   connect( drawOptions, SIGNAL(cellClicked ( int, int )),

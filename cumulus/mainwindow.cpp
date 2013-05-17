@@ -195,7 +195,22 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       QFont appFont = QApplication::font();
 
 #ifdef ANDROID
-      appFont.setFamily( "Droid Sans" );
+      QFontDatabase fdb;
+
+      int weight = fdb.weight("Roboto", "Normal");
+
+      qDebug() << "Roboto weight=" << weight;
+
+      if( weight != -1 )
+        {
+          appFont.setFamily( "Roboto" );
+          qDebug() << "Android: set font family Roboto";
+        }
+      else
+        {
+          appFont.setFamily( "Droid Sans" );
+          qDebug() << "Android: set font family Droid Sans";
+        }
 #else
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
@@ -206,7 +221,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
       appFont.setWeight( QFont::Normal );
       appFont.setStyle( QFont::StyleNormal );
-      appFont.setStyleHint( QFont::SansSerif );
 
       Layout::fitGuiFont( appFont );
       QApplication::setFont( appFont );

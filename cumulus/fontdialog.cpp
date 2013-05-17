@@ -319,7 +319,9 @@ void FontDialog::updateSampleText()
       sampleText->setFont(newFont);
     }
 
-  sampleText->setText("AaBbYyZz");
+  sampleText->setText( QString("AaUu") +
+                       QChar(0xfeff00c4) + QChar(0xfeff00e4) +
+                       QChar(0xfeff00dc) + QChar(0xfeff00fc) );
 }
 
 void FontDialog::selectFont( const QFont& font )

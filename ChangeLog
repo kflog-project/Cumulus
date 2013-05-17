@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-05-17 AP: Bugfix: Table in settings airspaces was not moveable with
+                   fingers to to a programming issue.
+                   
+[-] 2013-05-17 AP: Bugfix: Widget flight log book had too big buttons under
+                   Android.
+
+[*] 2013-05-13 AP: Cumulus 5.2.0 released.
+
 [o] 2013-05-08 AP: Reset button added to altitude and in-flight dialog. That
                    resets the input field which has the focus to its initial
                    value.
