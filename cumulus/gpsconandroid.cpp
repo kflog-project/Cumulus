@@ -103,8 +103,9 @@ void GpsConAndroid::rcvByte( const char byte )
 
 bool GpsConAndroid::getByte( unsigned char* b )
 {
-  // Called to read out a byte from the byte buffer.
-  int loop = 3000 / 10; // Timeout is 3s
+  // Called to read out a byte from the byte buffer. Sometimes the Flarm needs
+  // a longer time to provide tha data. Therefore a timeout of 10s is necessary.
+  int loop = 10000 / 10; // Timeout is 10s
 
   while( loop-- )
     {
