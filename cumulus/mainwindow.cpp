@@ -215,7 +215,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
         }
       else
         {
-          weight = fdb.weight("Droid Sans", "Normal")
+          weight = fdb.weight("Droid Sans", "Normal");
 
           if( weight != -1 )
             {
