@@ -195,6 +195,13 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       QFont appFont = QApplication::font();
 
 #ifdef ANDROID
+
+      // Android knows normally only two fonts:
+      // a) Drois sanns
+      // b) Roboto
+      //
+      // If a wrong font is set umlauts maybe not correct displayed!
+
       QFontDatabase fdb;
 
       int weight = fdb.weight("Roboto", "Normal");
@@ -208,15 +215,27 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
         }
       else
         {
-          appFont.setFamily( "Droid Sans" );
-          qDebug() << "Android: set font family Droid Sans";
+          weight = fdb.weight("Droid Sans", "Normal")
+
+          if( weight != -1 )
+            {
+              appFont.setFamily( "Droid Sans" );
+              qDebug() << "Android: set font family Droid Sans";
+            }
+          else
+            {
+              qDebug() << "Android: using default font: " << appFt.family();
+            }
         }
+
 #else
+
 #ifdef MAEMO
       appFont.setFamily("Nokia Sans");
 #else
       appFont.setFamily("Sans Serif");
 #endif
+
 #endif
 
       appFont.setWeight( QFont::Normal );

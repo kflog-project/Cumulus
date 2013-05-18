@@ -15,8 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-05-18 AP: Bugfix Android: Timeout time for IGC file download from Flarm
+                   increased to 10s. That is needed after the last Flarm
+                   fimeware update v5.09 otherwise the last IGC file records
+                   with the security data are missing.
+
 [-] 2013-05-17 AP: Bugfix: Table in settings airspaces was not moveable with
-                   fingers to to a programming issue.
+                   fingers due to a programming issue.
                    
 [-] 2013-05-17 AP: Bugfix: Widget flight log book had too big buttons under
                    Android.

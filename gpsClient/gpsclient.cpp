@@ -1303,6 +1303,13 @@ void GpsClient::getFlarmIgcFiles(QString& args)
 
           f.close();
 
+          if( eof == false )
+            {
+              // Abort downloads due to timeout error
+              flarmFlightDowloadInfo( "Error" );
+              return;
+            }
+
           qDebug() << flightData.at(0) << "downloaded in"
                     << (dlTime.elapsed() / 1000.0) << "s";
         }
