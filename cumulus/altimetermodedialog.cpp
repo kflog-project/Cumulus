@@ -303,7 +303,7 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   connect( signalMapperUnit, SIGNAL(mapped(int)), this, SLOT(slotUnitChanged(int)) );
   connect( signalMapperReference, SIGNAL(mapped(int)), this, SLOT(slotReferenceChanged(int)) );
 
-  connect( m_timeout, SIGNAL(m_timeout()), this, SLOT(reject()) );
+  connect( m_timeout, SIGNAL(timeout()), this, SLOT(reject()) );
   connect( ok, SIGNAL(released()), this, SLOT(accept()) );
   connect( cancel, SIGNAL(released()), this, SLOT(reject()) );
 
