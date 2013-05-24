@@ -157,7 +157,6 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   checkAlarmSound->setChecked(true);
   topLayout->addWidget( checkAlarmSound, row, 0 );
 
-
   checkFlarmAlarms = new QCheckBox(tr("Flarm Alarms"), this);
   checkFlarmAlarms->setObjectName("checkFlarmAlarms");
   checkFlarmAlarms->setChecked(true);
@@ -168,6 +167,11 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   calculateNearestSites->setObjectName("calcNearest");
   calculateNearestSites->setChecked(true);
   topLayout->addWidget( calculateNearestSites, row, 0 );
+
+  inverseInfoDisplay = new QCheckBox(tr("Black Display"), this);
+  inverseInfoDisplay->setObjectName("inverseDisplay");
+  inverseInfoDisplay->setChecked(true);
+  topLayout->addWidget( inverseInfoDisplay, row, 1 );
   row++;
 
   topLayout->setRowStretch ( row, 10 );
@@ -258,6 +262,7 @@ void SettingsPageInformation::load()
   checkAlarmSound->setChecked( conf->getAlarmSoundOn() );
   checkFlarmAlarms->setChecked( conf->getPopupFlarmAlarms() );
   calculateNearestSites->setChecked( conf->getNearestSiteCalculatorSwitch() );
+  inverseInfoDisplay->setChecked( conf->getBlackBgInfoDisplay() );
 }
 
 void SettingsPageInformation::save()
@@ -277,6 +282,7 @@ void SettingsPageInformation::save()
   conf->setAlarmSoundOn( checkAlarmSound->isChecked() );
   conf->setPopupFlarmAlarms( checkFlarmAlarms->isChecked() );
   conf->setNearestSiteCalculatorSwitch( calculateNearestSites->isChecked() );
+  conf->setBlackBgInfoDisplay( inverseInfoDisplay->isChecked() );
 }
 
 void SettingsPageInformation::slot_setFactoryDefault()
@@ -293,6 +299,7 @@ void SettingsPageInformation::slot_setFactoryDefault()
   spinSuppress->setValue(WARNING_SUPPRESS_TIME_DEFAULT);
   checkAlarmSound->setChecked(ALARM_SOUND_DEFAULT);
   checkFlarmAlarms->setChecked( true );
+  inverseInfoDisplay->setChecked( false );
   calculateNearestSites->setChecked(NEAREST_SITE_CALCULATOR_DEFAULT);
 }
 

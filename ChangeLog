@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-05-22 AP: Background and text color of waypoint and taskpoint info
+                   display can be choosen between white/black and vise versa
+                   in settings information now. Black background and white
+                   text is mostly better to read in sunshine.
+
 [-] 2013-05-18 AP: Bugfix Android: Timeout time for IGC file download from Flarm
                    increased to 10s. That is needed after the last Flarm
                    fimeware update v5.09 otherwise the last IGC file records

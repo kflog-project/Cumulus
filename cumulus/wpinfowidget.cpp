@@ -63,6 +63,7 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 
   text = new QTextEdit(this);
   text->setReadOnly( true );
+  text->setAutoFillBackground(true);
 
 #ifdef QSCROLLER
   QScroller::grabGesture( text->viewport(), QScroller::LeftMouseButtonGesture );
@@ -71,10 +72,6 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 #ifdef QTSCROLLER
   QtScroller::grabGesture( text->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
-
-  QPalette p = palette();
-  p.setColor(QPalette::Window, Qt::white);
-  text->setPalette(p);
 
   topLayout->addWidget(text, 10);
 
@@ -287,6 +284,23 @@ void WPInfoWidget::showEvent(QShowEvent *)
 /** This method actually fills the widget with the info to be displayed. */
 void WPInfoWidget::writeText()
 {
+  QPalette p = palette();
+
+  if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
+    {
+      p.setColor(QPalette::Base, Qt::white);
+      text->setPalette(p);
+      p.setColor(QPalette::Text, Qt::black);
+      text->setPalette(p);
+    }
+  else
+    {
+      p.setColor(QPalette::Base, Qt::black);
+      text->setPalette(p);
+      p.setColor(QPalette::Text, Qt::white);
+      text->setPalette(p);
+    }
+
   if( m_wp.name.isEmpty() )
     {
       text->setHtml("<html><big><center><b>" +

@@ -433,6 +433,7 @@ void GeneralConfig::load()
   _alarmSound            = value( "AlarmSound", ALARM_SOUND_DEFAULT ).toBool();
   _popupAirspaceWarnings = value( "Popup Airspace Warnings", true ).toBool();
   _popupFlarmAlarms      = value( "PopupFlarmAlarms", true ).toBool();
+  _blackBgInfoDisplay    = value( "BlackBgInfoDisplay", false ).toBool();
   endGroup();
 
   beginGroup("GPS");
@@ -812,6 +813,7 @@ void GeneralConfig::save()
   setValue( "AlarmSound", _alarmSound );
   setValue( "Popup Airspace Warnings", _popupAirspaceWarnings );
   setValue( "PopupFlarmAlarms", _popupFlarmAlarms );
+  setValue( "BlackBgInfoDisplay", _blackBgInfoDisplay);
   endGroup();
 
   beginGroup("GPS");

@@ -1615,6 +1615,18 @@ class GeneralConfig : protected QSettings
     _popupFlarmAlarms = newValue;
   };
 
+  /** Gets flag for white or black info display background. */
+  bool getBlackBgInfoDisplay() const
+  {
+    return _blackBgInfoDisplay;
+  };
+
+  /** sets Popup Flarm alarms */
+  void setBlackBgInfoDisplay(const bool newValue)
+  {
+    _blackBgInfoDisplay = newValue;
+  };
+
   /** Gets the Gps Device */
   QString &getGpsDevice()
   {
@@ -2758,6 +2770,8 @@ class GeneralConfig : protected QSettings
   bool _popupAirspaceWarnings;
   // Popup Flarm Alarms
   bool _popupFlarmAlarms;
+  // White or black background for info displays
+  bool _blackBgInfoDisplay;
 
   // Gps device
   QString _gpsDevice;

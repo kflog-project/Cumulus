@@ -62,9 +62,6 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
 
   m_text = new QTextEdit(this);
   m_text->setReadOnly( true );
-  QPalette p = palette();
-  p.setColor(QPalette::Window, Qt::white);
-  m_text->setPalette(p);
   m_text->setAutoFillBackground(true);
 
   connect( m_text, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
@@ -178,8 +175,25 @@ void TPInfoWidget::showEvent(QShowEvent *)
  *
  */
 void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
-				      const double dist2Next )
+				                              const double dist2Next )
 {
+  QPalette p = palette();
+
+  if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
+    {
+      p.setColor(QPalette::Base, Qt::white);
+      m_text->setPalette(p);
+      p.setColor(QPalette::Text, Qt::black);
+      m_text->setPalette(p);
+    }
+  else
+    {
+      p.setColor(QPalette::Base, Qt::black);
+      m_text->setPalette(p);
+      p.setColor(QPalette::Text, Qt::white);
+      m_text->setPalette(p);
+    }
+
   FlightTask *task = _globalMapContents->getCurrentTask();
 
   if( ! task )

@@ -114,6 +114,8 @@ class SettingsPageInformation : public QWidget
   QCheckBox*   checkAlarmSound;
   QCheckBox*   checkFlarmAlarms;
   QCheckBox*   calculateNearestSites;
+  QCheckBox*   inverseInfoDisplay;
+
   QPushButton* buttonReset;
 };
 
