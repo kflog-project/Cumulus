@@ -498,6 +498,23 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       return;
     }
 
+  QPalette p = palette();
+
+  if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
+    {
+      p.setColor(QPalette::Base, Qt::white);
+      m_text->setPalette(p);
+      p.setColor(QPalette::Text, Qt::black);
+      m_text->setPalette(p);
+    }
+  else
+    {
+      p.setColor(QPalette::Base, Qt::black);
+      m_text->setPalette(p);
+      p.setColor(QPalette::Text, Qt::white);
+      m_text->setPalette(p);
+    }
+
   Distance distance2Target;
   QPoint lastPosition = calculator->getlastPosition();
   // fetch minimal arrival altitude
