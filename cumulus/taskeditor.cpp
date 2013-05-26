@@ -83,6 +83,14 @@ TaskEditor::TaskEditor( QWidget* parent,
   imh = (taskName->inputMethodHints() | Qt::ImhNoPredictiveText);
   taskName->setInputMethodHints(imh);
 
+  // The task name maximum length is 13 characters. We calculate
+  // the length of a M string of 13 characters. That is the maximum
+  // width of the QLineEdit widget.
+  QFontMetrics fm( font() );
+  int maxInputLength = fm.width("MMMMMMMMMMMMM");
+  taskName->setMinimumWidth( maxInputLength );
+  taskName->setMaximumWidth( maxInputLength );
+
   taskList = new QTreeWidget( this );
   taskList->setObjectName("taskList");
 
@@ -168,18 +176,51 @@ TaskEditor::TaskEditor( QWidget* parent,
 #ifndef ANDROID
   cancelButton->setToolTip( tr("cancel task") );
 #endif
+
   // all single widgets and layouts in this grid
   QGridLayout* totalLayout = new QGridLayout( this );
   totalLayout->setMargin(5);
 
+  QHBoxLayout* headlineLayout = new QHBoxLayout;
+  totalLayout->addLayout( headlineLayout, 0, 0, 1, 3 );
+
+  headlineLayout->setMargin(0);
+  headlineLayout->addWidget( new QLabel( tr("Name:") ) );
+  headlineLayout->addWidget( taskName );
+
+  // Combo box for toggling between waypoint, airfield, outlanding lists
+  listSelectCB = new QComboBox(this);
+  listSelectCB->setEditable(false);
+  headlineLayout->addWidget( listSelectCB );
+  //headlineLayout->addSpacing(25);
+
+  QStyle* style = QApplication::style();
+  defaultButton = new QPushButton;
+  defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
+  defaultButton->setIconSize(QSize(iconSize, iconSize));
+#ifndef ANDROID
+  defaultButton->setToolTip(tr("Set task figure default schemas"));
+#endif
+  headlineLayout->addWidget(defaultButton);
+  //headlineLayout->addSpacing(20);
+
+  editButton = new QPushButton;
+  editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
+  editButton->setIconSize(QSize(iconSize, iconSize));
+#ifndef ANDROID
+  editButton->setToolTip(tr("Edit selected waypoint"));
+#endif
+  headlineLayout->addWidget(editButton);
+  //headlineLayout->setSpacing(20);
+  headlineLayout->addWidget(okButton);
+  //headlineLayout->addSpacing(20);
+  headlineLayout->addWidget(cancelButton);
+
+  totalLayout->addWidget( taskList, 1, 0 );
+
   // contains the task editor buttons
   QVBoxLayout* buttonLayout = new QVBoxLayout;
   buttonLayout->setMargin(0);
-
-  totalLayout->addWidget( new QLabel( tr("Name:"), this ), 0, 0 );
-  totalLayout->addWidget( taskName, 0, 1 );
-  totalLayout->addWidget( taskList, 1, 0, 1, 2 );
-
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
   buttonLayout->addSpacing(10);
@@ -191,40 +232,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addSpacing(10);
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
-  totalLayout->addLayout( buttonLayout, 0, 2, 2, 1 );
-
-  // Combo box for toggling between waypoint, airfield, outlanding lists
-  listSelectCB = new QComboBox(this);
-  listSelectCB->setEditable(false);
-  totalLayout->addWidget( listSelectCB, 0, 3 );
-
-  QHBoxLayout *hbBox = new QHBoxLayout;
-
-  QStyle* style = QApplication::style();
-  defaultButton = new QPushButton;
-  defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
-  defaultButton->setIconSize(QSize(iconSize, iconSize));
-#ifndef ANDROID
-  defaultButton->setToolTip(tr("Set task figure default schemas"));
-#endif
-  hbBox->addWidget(defaultButton);
-  hbBox->addSpacing(20);
-
-  editButton = new QPushButton;
-  editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  editButton->setIconSize(QSize(iconSize, iconSize));
-#ifndef ANDROID
-  editButton->setToolTip(tr("Edit selected waypoint"));
-#endif
-  hbBox->addWidget(editButton);
-  hbBox->setSpacing(10);
-
-  hbBox->addWidget(okButton);
-
-  // add some space between the two buttons to prevent unwanted pressing
-  hbBox->addSpacing(20);
-  hbBox->addWidget(cancelButton);
-  totalLayout->addLayout( hbBox, 0, 5, 1, 2 );
+  totalLayout->addLayout( buttonLayout, 1, 1 );
 
   // descriptions of combo box selection elements
   listSelectText[0] = tr("Waypoints");
@@ -247,11 +255,8 @@ TaskEditor::TaskEditor( QWidget* parent,
   for( int i = 0; i < NUM_LISTS; i++ )
     {
       listSelectCB->addItem(listSelectText[i], i);
-      totalLayout->addWidget( waypointList[i], 1, 3, 1, 4 );
+      totalLayout->addWidget( waypointList[i], 1, 2 );
     }
-
-  totalLayout->setColumnStretch( 1, 50 );
-  totalLayout->setColumnStretch( 4, 2 );
 
   // first selection is WPList if wp's are defined
   // set index in combo box to selected list
@@ -287,7 +292,6 @@ TaskEditor::TaskEditor( QWidget* parent,
            this, SLOT( slotMoveWaypointDown() ) );
   connect( invertButton, SIGNAL( clicked() ),
            this, SLOT( slotInvertWaypoints() ) );
-
 
   connect( defaultButton, SIGNAL(clicked()),
            this, SLOT(slotSetTaskPointsDefaultSchema()));
