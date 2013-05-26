@@ -1,3 +1,12 @@
+cumulus (5.3.0) stable; urgency=low
+
+  * Background and text color of waypoint, taskpoint info display and flight
+    dialogs can be toggled between white/black and vise versa in settings
+    information now. Black background and white text is mostly better to read
+    in sunshine.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Sun, 26 May 2013 20:24:21 +0200
+
 cumulus (5.2.0) stable; urgency=low
 
   * Reset button added to altitude and in-flight dialog. That
