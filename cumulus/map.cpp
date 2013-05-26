@@ -820,7 +820,7 @@ void Map::p_drawAirspaces( bool reset )
     }
 
   cuAeroMapP.end();
-  qDebug("Airspace, drawTime=%d ms", t.elapsed());
+  // qDebug("Airspace, drawTime=%d ms", t.elapsed());
 }
 
 
