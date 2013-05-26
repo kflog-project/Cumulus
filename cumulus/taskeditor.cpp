@@ -83,11 +83,11 @@ TaskEditor::TaskEditor( QWidget* parent,
   imh = (taskName->inputMethodHints() | Qt::ImhNoPredictiveText);
   taskName->setInputMethodHints(imh);
 
-  // The task name maximum length is 13 characters. We calculate
-  // the length of a M string of 13 characters. That is the maximum
+  // The task name maximum length is 10 characters. We calculate
+  // the length of a M string of 10 characters. That is the maximum
   // width of the QLineEdit widget.
   QFontMetrics fm( font() );
-  int maxInputLength = fm.width("MMMMMMMMMMMMM");
+  int maxInputLength = fm.width("MMMMMMMMMM");
   taskName->setMinimumWidth( maxInputLength );
   taskName->setMaximumWidth( maxInputLength );
 
