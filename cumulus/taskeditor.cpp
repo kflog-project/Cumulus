@@ -208,7 +208,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   defaultButton->setToolTip(tr("Set task figure default schemas"));
 #endif
   hbBox->addWidget(defaultButton);
-  hbBox->addSpacing(25);
+  hbBox->addSpacing(20);
 
   editButton = new QPushButton;
   editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
@@ -222,7 +222,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   hbBox->addWidget(okButton);
 
   // add some space between the two buttons to prevent unwanted pressing
-  hbBox->addSpacing(25);
+  hbBox->addSpacing(20);
   hbBox->addWidget(cancelButton);
   totalLayout->addLayout( hbBox, 0, 5, 1, 2 );
 
@@ -250,7 +250,7 @@ TaskEditor::TaskEditor( QWidget* parent,
       totalLayout->addWidget( waypointList[i], 1, 3, 1, 4 );
     }
 
-  totalLayout->setColumnStretch( 1, 20 );
+  totalLayout->setColumnStretch( 1, 50 );
   totalLayout->setColumnStretch( 4, 2 );
 
   // first selection is WPList if wp's are defined

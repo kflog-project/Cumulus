@@ -43,6 +43,23 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   setModal(true);
   setWindowTitle (tr("Flight Parameters"));
 
+  QPalette p = palette();
+
+  if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
+    {
+      p.setColor(QPalette::Base, Qt::white);
+      setPalette(p);
+      p.setColor(QPalette::Text, Qt::black);
+      setPalette(p);
+    }
+  else
+    {
+      p.setColor(QPalette::Base, Qt::black);
+      setPalette(p);
+      p.setColor(QPalette::Text, Qt::white);
+      setPalette(p);
+    }
+
   // Mc step widths
   mcSmallStep = 0.5;
   mcBigStep   = 1.0;

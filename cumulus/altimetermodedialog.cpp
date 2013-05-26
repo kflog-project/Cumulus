@@ -47,6 +47,23 @@ AltimeterModeDialog::AltimeterModeDialog (QWidget *parent) :
   setWindowTitle( tr( "Altimeter Settings" ) );
   setAttribute( Qt::WA_DeleteOnClose );
 
+  QPalette p = palette();
+
+  if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
+    {
+      p.setColor(QPalette::Base, Qt::white);
+      setPalette(p);
+      p.setColor(QPalette::Text, Qt::black);
+      setPalette(p);
+    }
+  else
+    {
+      p.setColor(QPalette::Base, Qt::black);
+      setPalette(p);
+      p.setColor(QPalette::Text, Qt::white);
+      setPalette(p);
+    }
+
   // set font size to a reasonable and usable value
   QFont cf = font();
   cf.setBold( true );
