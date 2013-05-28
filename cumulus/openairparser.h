@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2005      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,8 +24,11 @@
  * \brief Parser for OpenAir SUA files
  *
  * This class implements a parser for OpenAir SUA files, containing
- * descriptions of airspace structures. The read structures are added
- * to the already present list of structures.
+ * descriptions of airspace structures.
+ *
+ * A description of the OpenAir format is to find here:
+ *
+ * http://www.winpilot.com/UsersGuide/UserAirspace.asp
  *
  * Since the build in airspace types do not exactly match the list of
  * airspaces found in "the world", it is possible to use a special
@@ -33,7 +36,7 @@
  * For a file named airspace.txt, the matching mapping file would be
  * named airspace_mappings.conf and must be placed in the same directory.
  *
- * \date 2005-2012
+ * \date 2005-2013
  *
  * \version $Id$
  */
@@ -102,7 +105,7 @@ private:  //member functions
   void newPA();
   void finishAirspace();
   void parseType(QString&);
-  void parseAltitude(QString&, BaseMapElement::elevationType&, int&);
+  void parseAltitude(QString&, BaseMapElement::elevationType&, uint&);
   bool parseCoordinate(QString&, int& lat, int& lon);
   bool parseCoordinate(QString&, QPoint&);
   bool parseCoordinatePart(QString&, int& lat, int& lon);
@@ -151,12 +154,11 @@ private:
   bool _anRead;
 
   QString asName;
-  //QString asTypeLetter;
   BaseMapElement::objectType asType;
   QPolygon asPA;
-  int asUpper;
+  unsigned int asUpper;
   BaseMapElement::elevationType asUpperType;
-  int asLower;
+  unsigned int asLower;
   BaseMapElement::elevationType asLowerType;
 
   QPoint _center;

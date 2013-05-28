@@ -43,7 +43,7 @@
 #define FILE_TYPE_AIRSPACE_C 0x61
 
 // version used for files created from OpenAir data
-#define FILE_VERSION_AIRSPACE_C 203
+#define FILE_VERSION_AIRSPACE_C 204
 
 extern MapMatrix*    _globalMapMatrix;
 
@@ -681,9 +681,9 @@ void OpenAirParser::finishAirspace()
       ShortSave( *_outbuf, asName );
       *_outbuf << quint8( asType );
       *_outbuf << quint8( asLowerType );
-      *_outbuf << qint16( asLower );
+      *_outbuf << quint16( asLower );
       *_outbuf << quint8( asUpperType );
-      *_outbuf << qint16( asUpper );
+      *_outbuf << quint32( asUpper );
       ShortSave( *_outbuf, astPA );
 
 #ifdef BOUNDING_BOX
@@ -830,7 +830,7 @@ void OpenAirParser::parseType(QString& line)
 }
 
 
-void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& type, int& alt)
+void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& type, uint& alt)
 {
   bool convertFromMeters = false;
   bool altitudeIsFeet = false;
@@ -839,7 +839,7 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
   int len = 0, pos = 0;
   QString part;
   bool ok;
-  int num = 0;
+  uint num = 0;
 
   type = BaseMapElement::NotSet;
   alt = 0;
@@ -938,7 +938,7 @@ void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& 
         }
 
       // try to interpret as a number
-      num = part.toInt(&ok);
+      num = part.toUInt(&ok);
 
       if (ok)
         {
@@ -1527,9 +1527,9 @@ bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
   QString name;
   quint8 type;
   quint8 lowerType;
-  qint16 lower;
+  quint16 lower;
   quint8 upperType;
-  qint16 upper;
+  quint32 upper;
   QPolygon pa;
 
   while ( ! in.atEnd() )

@@ -15,7 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2013-05-62 AP: Background and text color of waypoint, taskpoint info
+[-] 2013-05-28 AP: Bugfix: Overflow fixed in openair parser. The upper
+                   airspace border was wrong in a compiled file version, if
+                   the altitude was greater than 10000m.
+
+[+] 2013-05-26 AP: Background and text color of waypoint, taskpoint info
                    display and flight dialogs can be toggled between white/black
                    and vise versa in settings information now. Black background
                    and white text is mostly better to read in sunshine.

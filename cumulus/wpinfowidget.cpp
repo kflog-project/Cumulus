@@ -63,7 +63,6 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 
   text = new QTextEdit(this);
   text->setReadOnly( true );
-  text->setAutoFillBackground(true);
 
 #ifdef QSCROLLER
   QScroller::grabGesture( text->viewport(), QScroller::LeftMouseButtonGesture );
@@ -284,6 +283,8 @@ void WPInfoWidget::showEvent(QShowEvent *)
 /** This method actually fills the widget with the info to be displayed. */
 void WPInfoWidget::writeText()
 {
+  text->setAutoFillBackground(true);
+
   QPalette p = palette();
 
   if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )

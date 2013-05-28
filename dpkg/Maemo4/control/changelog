@@ -1,11 +1,14 @@
-cumulus (5.3.0) stable; urgency=low
+cumulus (5.3.1) stable; urgency=low
+
+  * Bugfix: Overflow fixed in openair parser. The upper airspace border was
+    wrong in a compiled file version, if the altitude was greater than 10000m.
 
   * Background and text color of waypoint, taskpoint info display and flight
     dialogs can be toggled between white/black and vise versa in settings
     information now. Black background and white text is mostly better to read
     in sunshine.
 
- -- Axel Pauli <kflog.cumulus@gmail.com>  Sun, 26 May 2013 20:24:21 +0200
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 28 May 2013 20:15:15 +0200
 
 cumulus (5.2.0) stable; urgency=low
 
