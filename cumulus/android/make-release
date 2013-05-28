@@ -1,0 +1,6 @@
+#!/bin/bash
+
+adb uninstall org.kflog.cumulus
+ant release
+adb install bin/Cumulus-release.apk
+
