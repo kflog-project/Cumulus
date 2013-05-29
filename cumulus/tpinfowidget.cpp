@@ -194,21 +194,13 @@ void TPInfoWidget::showEvent(QShowEvent *)
 void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 				                              const double dist2Next )
 {
-  QPalette p = palette();
-
   if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
     {
-      p.setColor(QPalette::Base, Qt::white);
-      m_text->setPalette(p);
-      p.setColor(QPalette::Text, Qt::black);
-      m_text->setPalette(p);
+      m_text->setStyleSheet( QString( "color: black; background-color: white;" ) );
     }
   else
     {
-      p.setColor(QPalette::Base, Qt::black);
-      m_text->setPalette(p);
-      p.setColor(QPalette::Text, Qt::white);
-      m_text->setPalette(p);
+      m_text->setStyleSheet( QString( "color: white; background-color: black;" ) );
     }
 
   FlightTask *task = _globalMapContents->getCurrentTask();
@@ -515,21 +507,13 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       return;
     }
 
-  QPalette p = palette();
-
   if( GeneralConfig::instance()->getBlackBgInfoDisplay() == false )
     {
-      p.setColor(QPalette::Base, Qt::white);
-      m_text->setPalette(p);
-      p.setColor(QPalette::Text, Qt::black);
-      m_text->setPalette(p);
+      m_text->setStyleSheet( QString( "color: black; background-color: white;" ) );
     }
   else
     {
-      p.setColor(QPalette::Base, Qt::black);
-      m_text->setPalette(p);
-      p.setColor(QPalette::Text, Qt::white);
-      m_text->setPalette(p);
+      m_text->setStyleSheet( QString( "color: white; background-color: black;" ) );
     }
 
   Distance distance2Target;

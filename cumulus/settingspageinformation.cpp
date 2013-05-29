@@ -171,10 +171,6 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   inverseInfoDisplay = new QCheckBox(tr("Black Display"), this);
   inverseInfoDisplay->setObjectName("inverseDisplay");
   inverseInfoDisplay->setChecked(false);
-#ifdef ANDROID
-  // Dd not work on Android
-  inverseInfoDisplay->setVisible(false);
-#endif
 
   topLayout->addWidget( inverseInfoDisplay, row, 1, 1, 2 );
   row++;

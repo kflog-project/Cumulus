@@ -21,6 +21,10 @@
 #include <QtWidgets>
 #endif
 
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
 #include "layout.h"
@@ -48,6 +52,16 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   list->setSelectionBehavior( QAbstractItemView::SelectRows );
   list->setSelectionMode( QAbstractItemView::SingleSelection );
   list->setAlternatingRowColors( true );
+  list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   list->setStyleSheet( style );
@@ -184,6 +198,7 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
   item = new QTableWidgetItem( col0 );
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   list->setItem( row, 0, item );
+  list->setCurrentItem( item );
 
   item = new QTableWidgetItem( col1 );
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
@@ -197,6 +212,7 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
     }
 
   list->resizeColumnToContents( 0 );
+  list->resizeRowsToContents();
 }
 
 void FlarmAliasList::slot_DeleteRows()

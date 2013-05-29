@@ -107,7 +107,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QScroller::grabGesture( drawOptions->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
-#ifdef QSCROLLER
+#ifdef QTSCROLLER
   QtScroller::grabGesture( drawOptions->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 

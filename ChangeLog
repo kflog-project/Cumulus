@@ -15,6 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-05-29 AP: Bugfix: The Flarm alias list was not moveable with
+                   fingers due to a programming issue. Furthermore a new
+                   added item was not selected. So it was not more visible,
+                   if the list was greater as the window.
+
+[*] 2013-05-28 AP: Cumulus 5.3.1 released.
+
 [-] 2013-05-28 AP: Bugfix: Overflow fixed in openair parser. The upper
                    airspace border was wrong in a compiled file version, if
                    the altitude was greater than 10000m.
