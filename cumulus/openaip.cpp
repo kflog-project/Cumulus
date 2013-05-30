@@ -716,13 +716,19 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
             }
           else if ( elementName == "NAME" )
             {
-              QString name = xml.readElementText();
+              // Airfield name lowered.
+              QString name = xml.readElementText().toLower();
+
+              // Convert airfield name to upper-lower cases
+              upperLowerName( name );
 
               // Long name
               af.setName( name );
 
-              // Short name only 8 characters long
-              af.setWPName( name.left(8) );
+              // Short name is only 8 characters long
+              QString sn = shortName(name);
+
+              af.setWPName( shortName(sn) );
             }
           else if ( elementName == "ICAO" )
             {
@@ -1001,4 +1007,58 @@ bool OpenAip::getUnitValueAsInteger( const QString number,
     }
 
   return false;
+}
+
+void OpenAip::upperLowerName( QString& name )
+{
+  name = name.toLower();
+
+  QSet<QChar> set;
+  set.insert( ' ' );
+  set.insert( '/' );
+  set.insert( '-' );
+  set.insert( '(' );
+
+  QChar lastChar(' ');
+
+  // Convert name to upper-lower cases
+  for( int i=0; i < name.size(); i++ )
+    {
+      if( set.contains(lastChar) )
+        {
+          name.replace( i, 1, name.mid(i,1).toUpper() );
+        }
+
+      lastChar = name[i];
+    }
+}
+
+/**
+ * Create a short name by removing undesired characters.
+ *
+ * \param name The name to be shorten.
+ *
+ * \return new short name 8 characters long
+ */
+QString OpenAip::shortName( QString& name )
+{
+  QString shortName;
+
+  for( int i = 0; i < name.size(); i++ )
+    {
+      if( name.at(i).isLetterOrNumber() == false )
+        {
+          continue;
+        }
+
+      shortName.append( name[i] );
+
+      if( shortName.size() == 8 )
+        {
+          // Limit short name to 8 characters.
+          break;
+        }
+    }
+
+  return shortName;
 }

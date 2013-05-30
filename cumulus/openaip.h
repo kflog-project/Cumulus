@@ -88,6 +88,22 @@ class OpenAip
    */
   bool readAirfields( QString fileName, QList<Airfield>& airfieldList, QString& errorInfo );
 
+  /**
+   * Upper and lower the words in the passed string.
+   *
+   * \param name The name to be processed.
+   */
+  void upperLowerName( QString& name );
+
+  /**
+   * Create a short name by removing undesired characters.
+   *
+   * \param name The name to be shorten.
+   *
+   * \return new short name 8 characters long
+   */
+  QString shortName( QString& name );
+
  private:
 
   bool readNavAidRecord( QXmlStreamReader& xml, RadioPoint& rp );

@@ -18,7 +18,7 @@
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.151648933.287721393" name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1701027307" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.target.gnu.platform.base.1531646424" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
-							<builder arguments="-f Makefile.X11" command="/usr/bin/make" enableAutoBuild="false" id="cdt.managedbuild.target.gnu.builder.base.396743689" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" parallelizationNumber="-1" superClass="cdt.managedbuild.target.gnu.builder.base"/>
+							<builder arguments="-f Makefile.X11" command="/usr/bin/make" enableAutoBuild="false" id="cdt.managedbuild.target.gnu.builder.base.396743689" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="false" superClass="cdt.managedbuild.target.gnu.builder.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1939914854" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1153962327" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.702474250" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -114,8 +114,13 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="Cumulus.null.335399885" name="Cumulus"/>
 	</storageModule>
-	<storageModule moduleId="refreshScope" versionNumber="1">
-		<resource resourceType="PROJECT" workspacePath="/Cumulus"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Android">
+			<resource resourceType="PROJECT" workspacePath="/Cumulus"/>
+		</configuration>
+		<configuration configurationName="Linux GCC">
+			<resource resourceType="PROJECT" workspacePath="/Cumulus"/>
+		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
@@ -293,7 +298,7 @@
 				</scannerInfoProvider>
 			</profile>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.151648933.1367526811;cdt.managedbuild.toolchain.gnu.base.151648933.1367526811.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1295571564;cdt.managedbuild.tool.gnu.cpp.compiler.input.1792380229">
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.151648933;cdt.managedbuild.toolchain.gnu.base.151648933.277431306;cdt.managedbuild.tool.gnu.cpp.compiler.base.1847949353;cdt.managedbuild.tool.gnu.cpp.compiler.input.2057670933">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
 				<buildOutputProvider>
@@ -336,7 +341,7 @@
 				</scannerInfoProvider>
 			</profile>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.151648933;cdt.managedbuild.toolchain.gnu.base.151648933.277431306;cdt.managedbuild.tool.gnu.cpp.compiler.base.1847949353;cdt.managedbuild.tool.gnu.cpp.compiler.input.2057670933">
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.toolchain.gnu.base.151648933.1367526811;cdt.managedbuild.toolchain.gnu.base.151648933.1367526811.;cdt.managedbuild.tool.gnu.cross.cpp.compiler.1295571564;cdt.managedbuild.tool.gnu.cpp.compiler.input.1792380229">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
 			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
 				<buildOutputProvider>
