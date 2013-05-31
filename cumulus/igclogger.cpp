@@ -54,6 +54,7 @@ IgcLogger::IgcLogger(QObject* parent) :
   closeTimer(0),
   _kRecordLogging(false),
   _backtrack( LimitedList<QStringList>(60) ),
+  flightNumber(0),
   _flightMode( Calculator::unknown)
 {
   if ( GeneralConfig::instance()->getLoggerAutostartMode() )

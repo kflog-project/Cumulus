@@ -294,19 +294,6 @@ int main(int argc, char *argv[])
         }
     }
 
-  QDir fontDir( appDir + "/fonts" );
-
-  if( fontDir.exists() )
-    {
-      QStringList fontList = fontDir.entryList ( QDir::Files|QDir::Readable );
-
-      for( int i = 0; i < fontList.size(); i++ )
-        {
-          int res = QFontDatabase::addApplicationFont( fontList.at(i) );
-          qDebug() << "Try to add font" << fontList.at(i) << "to data base with ID=" << res;
-        }
-    }
-
   QHash <QString, float> dmh = jniGetDisplayMetrics();
 
   QHashIterator<QString, float> i(dmh);

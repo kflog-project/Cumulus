@@ -34,7 +34,7 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <cstring>
-#include <signal.h>
+#include <csignal>
 #include <sys/ioctl.h>
 
 #ifndef QT_5
@@ -166,15 +166,23 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
       // Overwrite old default.
       GeneralConfig::instance()->setMapLowerLimit(5);
+    }
 
 #ifdef ANDROID
 
-      // Reset used Gui fonts for Android to force a recalculation.
+  // Reset wrong Gui Android fonts to force a recalculation.
+  if( GeneralConfig::instance()->getGuiFont().startsWith( "Sans Serif ") )
+    {
       GeneralConfig::instance()->setGuiFont( "" );
       GeneralConfig::instance()->setGuiMenuFont( "" );
+    }
+  else if( GeneralConfig::instance()->getGuiMenuFont().startsWith( "Sans Serif ") ) )
+    {
+      GeneralConfig::instance()->setGuiMenuFont( "" );
+    }
 
 #endif
-    }
+
 
   // Get application font for user adaptions.
   QFont appFt = QApplication::font();
@@ -197,7 +205,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 #ifdef ANDROID
 
       // Android knows normally only two fonts:
-      // a) Drois sanns
+      // a) Drois Sans
       // b) Roboto
       //
       // If a wrong font is set umlauts maybe not correct displayed!
@@ -1234,8 +1242,9 @@ void MainWindow::slotSetMenuFontSize()
       userFont = font();
       Layout::fitGuiMenuFont( userFont );
 
-      GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
-      GeneralConfig::instance()->save();
+      // Don't save the temporary set menu font.
+      // GeneralConfig::instance()->setGuiMenuFont( userFont.toString() );
+      // GeneralConfig::instance()->save();
     }
 
   qDebug() << "MainWindow::slotSetMenuFontSize(): MenuFont PointSize=" << userFont.pointSize()

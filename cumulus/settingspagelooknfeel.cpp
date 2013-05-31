@@ -342,8 +342,9 @@ void SettingsPageLookNFeel::slot_openMenuFontDialog()
   // really an error, therefore we ignore that here.
   if( ! ok )
     {
-      // fall back uses current default font
-      // currFont = font();
+      // fall back uses current default font adapted to the menu font.
+      currFont = font();
+      Layout::fitGuiMenuFont( currFont );
     }
 
   QFont newFt = FontDialog::getFont( ok, currFont, this, tr("GUI Menu Font"));

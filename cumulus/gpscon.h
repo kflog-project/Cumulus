@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2012 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c):  2004-2013 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -31,14 +31,11 @@
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as Cumulus.
  *
- * \date 2004-2012
+ * \date 2004-2013
  */
 
 #ifndef GPS_CON_H
 #define GPS_CON_H
-
-#include <unistd.h>
-#include <sys/types.h>
 
 #include <QObject>
 #include <QString>
@@ -290,9 +287,6 @@ class GpsCon : public QObject
 
     // Time of last client query
     QTime lastQuery;
-
-    // Socket port for ipc to server process
-    ushort ipcPort;
 
     // IPC instance to client process
     Ipc::Server server;
