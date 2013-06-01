@@ -170,19 +170,66 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
 
 #ifdef ANDROID
 
-  // Reset wrong Gui Android fonts to force a recalculation.
-  if( GeneralConfig::instance()->getGuiFont().startsWith( "Sans Serif ") )
+  // Check Android Gui fonts for existence to force a recalculation if needed.
+  QFontDatabase fdb;
+
+  QString gfs = GeneralConfig::instance()->getGuiFont();
+
+  if( gfs.isEmpty() == false )
     {
-      GeneralConfig::instance()->setGuiFont( "" );
-      GeneralConfig::instance()->setGuiMenuFont( "" );
+      QFont ft;
+      bool ok = ft.fromString( gfs );
+
+      if( ok == false )
+        {
+          // The defined font is not available. We reset it to force a recalculation.
+          GeneralConfig::instance()->setGuiFont( "" );
+        }
+      else
+        {
+          QList<int> psl = fdb.pointSizes( ft.family(), fdb.styleString(ft) );
+
+          qDebug() << "GuiFont" << gfs << "Points" << psl;
+
+          if( psl.size() == 0 )
+            {
+              // The defined font is not available. We reset it to force a recalculation.
+              GeneralConfig::instance()->setGuiFont( "" );
+
+              qWarning() << "GuiFont" << gfs << "not available, force font reset!";
+            }
+        }
     }
-  else if( GeneralConfig::instance()->getGuiMenuFont().startsWith( "Sans Serif ") ) )
+
+  QString mfs = GeneralConfig::instance()->getGuiMenuFont();
+
+  if( mfs.isEmpty() == false )
     {
-      GeneralConfig::instance()->setGuiMenuFont( "" );
+      QFont tf;
+      bool ok = tf.fromString( mfs );
+
+      if( ok == false )
+        {
+          // The defined font is not available. We reset it to force a recalculation.
+          GeneralConfig::instance()->setGuiMenuFont( "" );
+        }
+      else
+        {
+          QList<int> psl = fdb.pointSizes( tf.family(), fdb.styleString(tf) );
+
+          qDebug() << "GuiMenuFont" << mfs << "Points" << psl;
+
+          if( psl.size() == 0 )
+            {
+              // The defined font is not available. We reset it to force a recalculation.
+              GeneralConfig::instance()->setGuiMenuFont( "" );
+
+              qWarning() << "GuiMenuFont" << mfs << "not available, force font reset!";
+            }
+        }
     }
 
 #endif
-
 
   // Get application font for user adaptions.
   QFont appFt = QApplication::font();
@@ -209,9 +256,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
       // b) Roboto
       //
       // If a wrong font is set umlauts maybe not correct displayed!
-
-      QFontDatabase fdb;
-
       int weight = fdb.weight("Roboto", "Normal");
 
       qDebug() << "Roboto weight=" << weight;
