@@ -231,6 +231,15 @@ class Layout
 
   static int getButtonSize();
 
+  /**
+   * Adapts a font point size to a default point size.
+   *
+   * \param size Size to be adapted.
+   *
+   * \return The adapted font size.
+   */
+  static int font2defaultSize( const int size );
+
 #ifdef ANDROID
 
   /**

@@ -62,9 +62,19 @@ void Layout::adaptFont( QFont& fontRef,
         }
       else
         {
-          return;
+          break;
         }
      }
+
+  if( fontRef.pointSize() != -1 )
+    {
+      fontRef.setPointSize( font2defaultSize( fontRef.pointSize() ) );
+    }
+
+  qDebug() << "Layout::adaptFont: pxHeight=" << pxHeight
+           << "startPointSize=" << startPointSize
+           << "minPointSize" << minPointSize
+           << "CalcPointSize=" << fontRef.pointSize();
 }
 
 int Layout::maxTextWidth( const QStringList& list, const QFont& font )
@@ -296,4 +306,20 @@ int Layout::getButtonSize()
 #endif
 
   return size;
+}
+
+int Layout::font2defaultSize( const int size )
+{
+  // Font: "Roboto" "Normal" "6 7 8 9 10 11 12 14 16 18 20 22 24 26 28 36 48 72"
+  int sizeArray[17] = { 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
+
+  for( int i = 16; i >= 0; i-- )
+    {
+      if( sizeArray[i] <= size )
+        {
+          return sizeArray[i];
+        }
+    }
+
+  return sizeArray[0];
 }
