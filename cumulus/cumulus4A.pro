@@ -130,6 +130,7 @@ HEADERS = \
     polar.h \
     preflightgliderpage.h \
     preflightmiscpage.h \
+    preflightreturnerpage.h \
     preflightwaypointpage.h \
     preflightwidget.h \
     projectionbase.h \
@@ -249,6 +250,7 @@ SOURCES = \
     polardialog.cpp \
     preflightgliderpage.cpp \
     preflightmiscpage.cpp \
+    preflightreturnerpage.cpp \
     preflightwaypointpage.cpp \
     preflightwidget.cpp \
     projectionbase.cpp \

@@ -53,6 +53,7 @@ static jmethodID m_DisplayMetricsID   = 0;
 static jmethodID m_playSoundID        = 0;
 static jmethodID m_dimmScreenID       = 0;
 static jmethodID m_gpsCmdID           = 0;
+static jmethodID m_callReturnerID     = 0;
 static jmethodID m_byte2Gps           = 0;
 static jmethodID m_nativeShutdownID   = 0;
 
@@ -454,6 +455,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_callReturnerID = m_jniEnv->GetMethodID( clazz,
+                                            "callReturner",
+                                            "(Ljava/lang/String;)V");
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning() << "initJni: could not get ID of callReturner";
+      return false;
+    }
+
   m_byte2Gps= m_jniEnv->GetMethodID( clazz,
                                      "byte2Gps",
                                      "(B)Z");
@@ -599,6 +610,29 @@ bool jniGpsCmd(QString& cmd)
     }
 
   return result;
+}
+
+bool jniCallReturner( QString& smsText )
+{
+  if (!jniEnv() || shutdown )
+    {
+      return false;
+    }
+
+  jstring jsmsText = m_jniEnv->NewString((jchar*) smsText.constData(),
+                                        (jsize) smsText.length());
+
+  m_jniEnv->CallVoidMethod( m_jniProxyObject,
+                            m_callReturnerID,
+                            jsmsText );
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniGpsCmd: exception when calling Java method \"gpsCmd\"");
+      return false;
+    }
+
+  return true;
 }
 
 bool jniByte2Gps(const char byte)

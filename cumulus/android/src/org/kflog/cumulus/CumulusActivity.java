@@ -265,6 +265,76 @@ public class CumulusActivity extends QtActivity
     }
   
   /**
+   * Called from JNI to send a SMS to the returner. The SMS text consists of a
+   * mobile number, followed by a separator semicolon and the SMS text body.
+   * The mobile number can be omitted.
+   * 
+   * [<mobile-number>];<sms-text>
+   * 
+   * \param smsText Text to be sent as SMS to the returner.
+   * 
+   */
+  void callReturner( String smsText )
+    {
+		  String number = "";
+		  String text   = "";
+		  
+		  StringBuffer sb = new StringBuffer( smsText );
+		  
+		  int idx = sb.indexOf( ";" );
+		  
+		  if( idx != -1 )
+		  	{
+		  		if( idx == 0 )
+		  			{
+		  				// No mobile number is contained
+		  				if( sb.length() > idx + 1 )
+		  					{
+		  						text = sb.substring( idx + 1 );
+		  					}
+		  			}
+		  		else
+		  			{
+		  				// The SMS text contains a mobile number and a text body separated
+		  				// separated by a semicolon.
+		  				number = sb.substring( 0, idx );
+		  				
+		  				if( sb.length() > idx + 1 )
+		  					{
+		  						text = sb.substring( idx + 1 );
+		  					}		  				
+		  			}
+		  	}
+		  
+		  // The SMS must be sent in the GUI activity thread. Therefore we post
+		  // it to the SMS handler.
+		  final String fnumber = number;
+		  final String ftext   = text;
+		  
+		  runOnUiThread( new Runnable()
+		  	{
+	        @Override
+	        public void run()
+	        	{
+	        		// http://www.androidpit.de/de/android/wiki/view/SMS_senden_und_empfangen
+	        		// WE call the default SMS App to send the SMS.
+	      		  Intent intent = new Intent(Intent.ACTION_VIEW);
+	      		  intent.setType("vnd.android-dir/mms-sms");
+	      		  
+	      		  if( fnumber.length() > 0 )
+	      		  	{
+	      		  		intent.putExtra("address", fnumber);
+	      		  	}
+	      		  
+	      		  intent.putExtra("sms_body", ftext);
+	      		  
+	      		  // Call default SMS App
+	      		  startActivity(intent);
+	          }
+		  	});
+    }
+  
+  /**
    * Called from the QtActivity.onCreate to get information if the App is startable
    * or not. If not, QtActivity.onCreate returns without starting the native part.
    * 
@@ -297,7 +367,7 @@ public class CumulusActivity extends QtActivity
       {
         m_objectRef = this;
       }
-
+    
 		// Get the internal data directory for our App.
 	  final String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
 
@@ -572,9 +642,9 @@ public class CumulusActivity extends QtActivity
 
       if( isFinishing() == false )
         {
-    	  // Terminate the App, if the OS has called the onDestroy method
-    	  Log.d(TAG, "onDestroy: isFinishing() is false, calling exit!" );  	  
-    	  System.exit(0);
+	    	  // Terminate the App, if the OS has called the onDestroy method
+	    	  Log.d(TAG, "onDestroy: isFinishing() is false, calling exit!" );  	  
+	    	  System.exit(0);
         }
     }
 

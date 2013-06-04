@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-06-04 AP: On pre-fight a new page added with name Returner. This
+                   feature is only available under Android. After an outlanding
+                   the pilot can send a SMS to his returner containing the
+                   outlanding position coordinates.
+
 [o] 2013-05-29 AP: Airfield name handling in openAIP importer modified.
                    Upper lower case airfield names introduced.
 

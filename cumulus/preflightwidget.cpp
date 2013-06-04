@@ -33,16 +33,22 @@
 #include "preflightgliderpage.h"
 #include "preflightwidget.h"
 #include "preflightmiscpage.h"
+
+#ifdef ANDROID
+#include "preflightreturnerpage.h"
+#endif
+
 #include "preflighttaskpage.h"
 #include "preflightwaypointpage.h"
 #include "rowdelegate.h"
 
 // Menu labels
 #define PREFLIGHT "Preflight Menu"
+#define COMMON    "Common"
 #define GLIDER    "Glider"
+#define RETURNER  "Returner"
 #define TASK      "Task"
 #define WAYPOINTS "Waypoints"
-#define COMMON    "Common"
 
 PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   QWidget(parent)
@@ -99,7 +105,6 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   QTreeWidgetItem* item = new QTreeWidgetItem;
   item->setText( 0, tr(GLIDER) );
   item->setData( 0, Qt::UserRole, GLIDER );
-  // item->setIcon( 0, _mainWindow->getPixmap("kde_identity_32.png") );
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
@@ -116,6 +121,13 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   item->setText( 0, tr(COMMON) );
   item->setData( 0, Qt::UserRole, COMMON );
   m_setupTree->addTopLevelItem( item );
+
+#ifdef ANDROID
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(RETURNER) );
+  item->setData( 0, Qt::UserRole, RETURNER );
+  m_setupTree->addTopLevelItem( item );
+#endif
 
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
 
@@ -147,6 +159,9 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_headerLabels << ( tr ("Preflight Menu") )
                  << ( tr ("Glider") )
                  << ( tr ("Task") )
+#ifdef ANDROID
+                 << ( tr ("Returner") )
+#endif
                  << ( tr ("Waypoints") )
                  << ( tr ("Common") );
 
@@ -242,6 +257,23 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       pfwp->show();
     }
+
+#ifdef ANDROID
+
+  else if( itemText == RETURNER )
+    {
+      PreFlightReturnerPage* pfrp = new PreFlightReturnerPage( this );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pfrp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pfrp->show();
+    }
+
+#endif
+
 }
 
 void PreFlightWidget::slotAccept()

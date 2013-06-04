@@ -107,3 +107,10 @@ QHash<QString, float> jniGetDisplayMetrics();
  * @snewState true activates the screen dimm, false deactivates it.
  */
 void jniDimmScreen( bool newState );
+
+/**
+ * Calls the returner per SMS.
+ *
+ * \param smsText SMS text content.
+ */
+bool jniCallReturner( QString& smsText );

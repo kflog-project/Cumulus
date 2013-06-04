@@ -202,13 +202,13 @@ bool WGSPoint::calcFlarmPos( int radius, int bearing, QPoint& own, QPoint& other
 /**
  * The function seems to have problems, if the position is near 0° W/E.
  */
-QString WGSPoint::printPos(int coord, bool isLat)
+QString WGSPoint::printPos( int coord, bool isLat, int format )
 {
   QString pos, posDeg, posMin, posSec;
   int degree, min, sec;
   double decDegree, decMin;
 
-  if ( getFormat() == WGSPoint::DMS )
+  if ( format == WGSPoint::DMS )
     {
       // default is always degrees, minutes, seconds
       calcPos (coord, degree, min, sec);
@@ -228,7 +228,7 @@ QString WGSPoint::printPos(int coord, bool isLat)
       sec = abs(sec);
       posSec.sprintf(" %02d\"", sec);
     }
-  else if ( getFormat() == WGSPoint::DDM )
+  else if ( format == WGSPoint::DDM )
     {
       // degrees and decimal minutes
       calcPos (coord, degree, decMin);
@@ -253,7 +253,7 @@ QString WGSPoint::printPos(int coord, bool isLat)
           posMin.insert(0, "0");
         }
     }
-  else if ( getFormat() == WGSPoint::DDD )
+  else if ( format == WGSPoint::DDD )
     {
       // decimal degrees
       calcPos (coord, decDegree);

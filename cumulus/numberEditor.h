@@ -355,6 +355,16 @@ class NumberEditor : public QLabel
    */
   void valueChanged( double d );
 
+ public slots:
+
+ /**
+  * Clears the display filed.
+  */
+ void slot_Clear()
+ {
+   setText("");
+ };
+
  protected slots:
 
   /**

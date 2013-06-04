@@ -158,7 +158,7 @@ public:
      * Converts the given KFLOG coordinate into a readable WGS84 string.
      * ( xxx,xxxx°[N,S,E,W] )
      */
-    static QString printPos(int coord, bool isLat = true);
+    static QString printPos(int coord, bool isLat = true, int format=_format );
 
     /**
      * Converts a WGS84 coordinate string into the internal KFLog format.

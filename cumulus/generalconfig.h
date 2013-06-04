@@ -2459,6 +2459,30 @@ class GeneralConfig : protected QSettings
     _resetConfiguration = newValue;
   };
 
+  /** Gets the returner's mobile number. */
+  QString getReturnerMobileNumber()
+  {
+    return _returnerMobileNumber;
+  };
+
+  /** Sets the returner's mobile number. */
+  void setReturnerMobileNumber( const QString newValue )
+  {
+    _returnerMobileNumber = newValue;
+  };
+
+  /** Gets the returner's position format. */
+  int getReturnerPositionFormat() const
+  {
+    return _returnerPositionFormat;
+  };
+
+  /** Sets the returner's position format. */
+  void setReturnerPositionFormat( const int newValue )
+  {
+    _returnerPositionFormat = newValue;
+  };
+
  private:
 
   /** loads the terrain default colors */
@@ -2927,6 +2951,12 @@ class GeneralConfig : protected QSettings
 
   // variable to handle configuration resets
   int _resetConfiguration;
+
+  // Mobile number of returner
+  QString _returnerMobileNumber;
+
+  // Coordinate format used for returner position.
+  int _returnerPositionFormat;
 };
 
 #endif

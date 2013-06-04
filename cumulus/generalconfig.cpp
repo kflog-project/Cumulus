@@ -221,7 +221,7 @@ void GeneralConfig::load()
   _userDataDirectory = value("UserDataDir", "").toString();
   endGroup();
 
-  // Preflight settings
+  // Pre-flight settings
   beginGroup("Preflight Data");
   _safetyAltitude.setMeters(  value( "Arrival Altitude", 250.0 ).toDouble() );
   _arrivalAltitudeDisplay = (enum ArrivalAltitudeDisplay) value( "ArrivalAltitudeDisplay",
@@ -236,6 +236,11 @@ void GeneralConfig::load()
   _currentTask            = value( "CurrentTask", "").toString();
   _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
+  endGroup();
+
+  beginGroup("Returner");
+  _returnerMobileNumber   = value( "MobileNumber", "").toString();
+  _returnerPositionFormat = value( "PositionFormat", 0 ).toInt();
   endGroup();
 
   beginGroup("Preflight Window");
@@ -635,6 +640,11 @@ void GeneralConfig::save()
   setValue( "CurrentTask", _currentTask);
   setValue( "FlightLogbookFileName", _flightLogbookFileName );
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
+  endGroup();
+
+  beginGroup("Returner");
+  setValue( "MobileNumber", _returnerMobileNumber );
+  setValue( "PositionFormat", _returnerPositionFormat );
   endGroup();
 
   beginGroup("Preflight Window");
