@@ -90,6 +90,7 @@ PreFlightReturnerPage::PreFlightReturnerPage(QWidget *parent) :
   m_mobileNumber->setDecimalVisible( false );
   m_mobileNumber->setPmVisible( false );
   m_mobileNumber->setTip(tr("Mobile number"));
+  m_mobileNumber->setAlignment(Qt::AlignLeft);
   topLayout->addWidget(m_mobileNumber, row, 1);
 
   QPushButton *clear = new QPushButton( tr("Clear") );
