@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli
+**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -19,12 +19,15 @@
 #include <QtXml>
 
 #include "distance.h"
+#include "generalconfig.h"
+#include "mapcalc.h"
 #include "mapmatrix.h"
 #include "openaip.h"
 
 extern MapMatrix* _globalMapMatrix;
 
-OpenAip::OpenAip()
+OpenAip::OpenAip() :
+  m_filterRadius(0.0)
 {
 }
 
@@ -530,8 +533,15 @@ bool OpenAip::readHotspotRecord( QXmlStreamReader& xml, SinglePoint& sp )
 
 bool OpenAip::readAirfields( QString fileName,
                              QList<Airfield>& airfieldList,
-                             QString& errorInfo )
+                             QString& errorInfo,
+                             bool useFiltering )
 {
+  if( useFiltering )
+    {
+      // Load the user's defined filter data.
+      loadUserFilterValues();
+    }
+
   QFile file( fileName );
 
   if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
@@ -581,10 +591,40 @@ bool OpenAip::readAirfields( QString fileName,
             {
               Airfield af;
 
-              // read hotspot record
+              // read airfield record
               if( ! readAirfieldRecord( xml, af ) )
                 {
                   break;
+                }
+
+              if( useFiltering == true )
+                {
+                  if( af.getTypeID() == BaseMapElement::CivHeliport ||
+                      af.getTypeID() == BaseMapElement::MilHeliport )
+                    {
+                      // Filter out heli ports.
+                      continue;
+                    }
+
+                  if( m_countryFilterSet.isEmpty() == false )
+                    {
+                      if( m_countryFilterSet.contains(af.getCountry()) == false )
+                        {
+                          // The country filter said no
+                          continue;
+                        }
+                    }
+
+                  if( m_filterRadius > 0.0 )
+                    {
+                      double d = dist( &m_homePosition, af.getWGSPositionPtr() );
+
+                      if( d > m_filterRadius )
+                        {
+                          // The radius filter said no. To far away from home.
+                          continue;
+                        }
+                    }
                 }
 
               airfieldList.append( af );
@@ -1061,4 +1101,27 @@ QString OpenAip::shortName( QString& name )
     }
 
   return shortName;
+}
+
+void OpenAip::loadUserFilterValues()
+{
+  m_countryFilterSet.clear();
+  m_filterRadius = 0.0;
+
+  m_homePosition = _globalMapMatrix->getHomeCoord();
+
+  QString cFilter = GeneralConfig::instance()->getWelt2000CountryFilter().toUpper();
+
+  QStringList clist = cFilter.split( QRegExp("[, ]"), QString::SkipEmptyParts );
+
+  for( int i = 0; i < clist.size(); i++ )
+    {
+      m_countryFilterSet.insert( clist.at(i) );
+    }
+
+  int iRadius = GeneralConfig::instance()->getWelt2000HomeRadius();
+
+  // We must look, what unit the user has chosen. This unit must
+  // be considered during load of data items.
+  m_filterRadius = Distance::convertToMeters( iRadius ) / 1000.;
 }

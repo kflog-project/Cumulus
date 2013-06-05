@@ -358,7 +358,10 @@ void GeneralConfig::load()
 
   _groundColor = QColor( value("GroundColor", COLOR_LEVEL_GROUND.name()).toString() );
   _elevationColorOffset = value("ElevationColorOffset", 0).toInt();
+  endGroup();
 
+  beginGroup("Airfield Data");
+  _openAipAirfieldFileList = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
   endGroup();
 
   beginGroup("List Display");
@@ -754,7 +757,10 @@ void GeneralConfig::save()
 
   setValue("GroundColor", _groundColor.name());
   setValue("ElevationColorOffset", _elevationColorOffset);
+  endGroup();
 
+  beginGroup("Airfield Data");
+  setValue("OpenAipFileList", _openAipAirfieldFileList);
   endGroup();
 
   beginGroup("List Display");

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli
+**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -36,6 +36,7 @@
 #define OpenAip_h
 
 #include <QList>
+#include <QSet>
 #include <QString>
 #include <QXmlStreamReader>
 
@@ -84,9 +85,17 @@ class OpenAip
    *
    * \param filename File containing navigation aid definitions
    *
+   * \param airfieldList List in which the read airfields are stored
+   *
+   * \param errorInfo Info about read errors
+   *
+   * \param useFiltering If enabled, different filter rules will apply
+   *
    * \return true as success otherwise false
    */
-  bool readAirfields( QString fileName, QList<Airfield>& airfieldList, QString& errorInfo );
+  bool readAirfields( QString fileName, QList<Airfield>& airfieldList,
+                      QString& errorInfo,
+                      bool useFiltering=false );
 
   /**
    * Upper and lower the words in the passed string.
@@ -132,6 +141,27 @@ class OpenAip
    * \return true in case of success otherwise false
    */
   bool getUnitValueAsInteger( const QString number, const QString unit, int& result );
+
+  /**
+   * Loads the user's defined filter values from the configuration data.
+   */
+  void loadUserFilterValues();
+
+  /**
+   * Country filter with countries as two letter code in upper case.
+   */
+  QSet<QString> m_countryFilterSet;
+
+  /**
+   * Home position, used as center point for radius filter.
+   */
+  QPoint m_homePosition;
+
+  /**
+   * Radius in Km to be used for filtering. If set to <= 0, radius
+   * filter is ignored.
+   */
+  double m_filterRadius;
 };
 
 #endif /* OpenAip_h */

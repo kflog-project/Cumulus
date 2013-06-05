@@ -1400,6 +1400,18 @@ class GeneralConfig : protected QSettings
     _welt2000LoadOutlandings = newValue;
   };
 
+  /** Gets the openAIP airfield file list to be loaded. */
+  QStringList& getOpenAipAirfieldFileList()
+  {
+    return _openAipAirfieldFileList;
+  };
+
+  /** Sets the openAIP airfield file list to be loaded. */
+  void setOpenAipAirfieldFileList( const QStringList& newValue )
+  {
+    _openAipAirfieldFileList = newValue;
+  };
+
   /** gets the af/wp list page size */
   int getListDisplayPageSize() const
   {
@@ -2607,6 +2619,9 @@ class GeneralConfig : protected QSettings
 
   // Airspace files to be loaded
   QStringList _airspaceFileList;
+
+  // OpenAIP airfield list to be loaded
+  QStringList _openAipAirfieldFileList;
 
   // disclaimer version
   int _disclaimerVersion;

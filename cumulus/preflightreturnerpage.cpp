@@ -205,11 +205,18 @@ void PreFlightReturnerPage::slotCallReturner()
 
   const QPoint& position = calculator->getlastPosition();
 
-
   smsText += tr(" at location ") +
-             WGSPoint::printPos(position.x(),true, m_positionFormat->currentIndex() ) +
+             WGSPoint::printPos(position.x(), true, m_positionFormat->currentIndex() ) +
              " / "
-             + WGSPoint::printPos(position.y(),false, m_positionFormat->currentIndex() );
+             + WGSPoint::printPos(position.y(), false, m_positionFormat->currentIndex() )
+             + ". ";
+
+  double lat = static_cast<double>(position.x()) / 600000.0;
+  double lon = static_cast<double>(position.y()) / 600000.0;
+
+  // Add location link for Google maps a.s.o
+  smsText += "loc: " + QString("%1").arg( lat, 0, 'f', 5) + "," +
+                       QString("%1").arg( lon, 0, 'f', 5);
 
   jniCallReturner( smsText );
 }
