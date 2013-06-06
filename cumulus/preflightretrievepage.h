@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   preflightreturnerpage.h
+**   preflightretrievepage.h
 **
 **   This file is part of Cumulus.
 **
@@ -16,7 +16,7 @@
 ***********************************************************************/
 
 /**
- * \class PreFlightReturnerPage
+ * \class PreFlightRetrievePage
  *
  * \author Axel Pauli
  *
@@ -28,27 +28,27 @@
  *
  */
 
-#ifndef PREFLIGHT_RETURNER_PAGE_H
-#define PREFLIGHT_RETURNER_PAGE_H
+#ifndef PREFLIGHT_RETRIEVE_PAGE_H
+#define PREFLIGHT_RETRIEVE_PAGE_H
 
 #include <QWidget>
 
 class QComboBox;
 class NumberEditor;
 
-class PreFlightReturnerPage : public QWidget
+class PreFlightRetrievePage : public QWidget
 {
   Q_OBJECT
 
  private:
 
-  Q_DISABLE_COPY ( PreFlightReturnerPage )
+  Q_DISABLE_COPY ( PreFlightRetrievePage )
 
  public:
 
-  PreFlightReturnerPage(QWidget *parent=0);
+  PreFlightRetrievePage(QWidget *parent=0);
 
-  virtual ~PreFlightReturnerPage();
+  virtual ~PreFlightRetrievePage();
 
   void load();
 

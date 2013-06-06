@@ -35,7 +35,7 @@
 #include "preflightmiscpage.h"
 
 #ifdef ANDROID
-#include "preflightreturnerpage.h"
+#include "preflightretrievepage.h"
 #endif
 
 #include "preflighttaskpage.h"
@@ -46,7 +46,7 @@
 #define PREFLIGHT "Preflight Menu"
 #define COMMON    "Common"
 #define GLIDER    "Glider"
-#define RETURNER  "Returner"
+#define RETRIEVE  "Retrieve"
 #define TASK      "Task"
 #define WAYPOINTS "Waypoints"
 
@@ -124,8 +124,8 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
 #ifdef ANDROID
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(RETURNER) );
-  item->setData( 0, Qt::UserRole, RETURNER );
+  item->setText( 0, tr(RETRIEVE) );
+  item->setData( 0, Qt::UserRole, RETRIEVE );
   m_setupTree->addTopLevelItem( item );
 #endif
 
@@ -160,7 +160,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("Glider") )
                  << ( tr ("Task") )
 #ifdef ANDROID
-                 << ( tr ("Returner") )
+                 << ( tr ("Retrieve") )
 #endif
                  << ( tr ("Waypoints") )
                  << ( tr ("Common") );
@@ -260,7 +260,7 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
 #ifdef ANDROID
 
-  else if( itemText == RETURNER )
+  else if( itemText == RETRIEVE )
     {
       PreFlightReturnerPage* pfrp = new PreFlightReturnerPage( this );
 

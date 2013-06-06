@@ -2355,51 +2355,96 @@ Alle Downloads verworfen!</translation>
     </message>
 </context>
 <context>
-    <name>PreFlightReturnerPage</name>
+    <name>PreFlightRetrievePage</name>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="42"/>
-        <source>PreFlight - Returner</source>
+        <location filename="preflightretrievepage.cpp" line="42"/>
+        <source>PreFlight - Retrieve</source>
+        <oldsource>PreFlight - Returner</oldsource>
         <translation>Vorflug - Rückholer</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="82"/>
-        <source>Call your returner via SMS</source>
+        <location filename="preflightretrievepage.cpp" line="82"/>
+        <source>Call your retrieve via SMS</source>
         <translation>Rufe deinen Rückholer via SMS</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="86"/>
+        <location filename="preflightretrievepage.cpp" line="86"/>
         <source>Mobile number:</source>
         <translation>Handy Nummer:</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="92"/>
+        <location filename="preflightretrievepage.cpp" line="92"/>
         <source>Mobile number</source>
         <translation>Handy Nummer</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="95"/>
+        <location filename="preflightretrievepage.cpp" line="96"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="102"/>
+        <location filename="preflightretrievepage.cpp" line="103"/>
         <source>Coordinate format:</source>
         <translation>Koordinatenformat:</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="114"/>
-        <source>Call returner</source>
+        <location filename="preflightretrievepage.cpp" line="115"/>
+        <source>Call retrieve</source>
         <translation>Rufe Rückholer</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="187"/>
+        <location filename="preflightretrievepage.cpp" line="190"/>
+        <source>Pilot</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="preflightretrievepage.cpp" line="197"/>
         <source> has outlanded with glider</source>
         <translation> ist außengelandet mit Segler</translation>
     </message>
     <message>
-        <location filename="preflightreturnerpage.cpp" line="199"/>
+        <location filename="preflightretrievepage.cpp" line="208"/>
         <source> at location </source>
         <translation> am Punkt </translation>
+    </message>
+</context>
+<context>
+    <name>PreFlightReturnerPage</name>
+    <message>
+        <source>PreFlight - Returner</source>
+        <translation type="obsolete">Vorflug - Rückholer</translation>
+    </message>
+    <message>
+        <source>Call your returner via SMS</source>
+        <translation type="obsolete">Rufe deinen Rückholer via SMS</translation>
+    </message>
+    <message>
+        <source>Mobile number:</source>
+        <translation type="obsolete">Handy Nummer:</translation>
+    </message>
+    <message>
+        <source>Mobile number</source>
+        <translation type="obsolete">Handy Nummer</translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="obsolete">Löschen</translation>
+    </message>
+    <message>
+        <source>Coordinate format:</source>
+        <translation type="obsolete">Koordinatenformat:</translation>
+    </message>
+    <message>
+        <source>Call returner</source>
+        <translation type="obsolete">Rufe Rückholer</translation>
+    </message>
+    <message>
+        <source> has outlanded with glider</source>
+        <translation type="obsolete"> ist außengelandet mit Segler</translation>
+    </message>
+    <message>
+        <source> at location </source>
+        <translation type="obsolete"> am Punkt </translation>
     </message>
 </context>
 <context>
@@ -2888,7 +2933,8 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="preflightwidget.cpp" line="163"/>
-        <source>Returner</source>
+        <source>Retrieve</source>
+        <oldsource>Returner</oldsource>
         <translation>Rückholer</translation>
     </message>
     <message>
@@ -3509,17 +3555,17 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="72"/>
-        <location filename="openaip.cpp" line="145"/>
-        <location filename="openaip.cpp" line="434"/>
-        <location filename="openaip.cpp" line="574"/>
+        <location filename="openaip.cpp" line="75"/>
+        <location filename="openaip.cpp" line="148"/>
+        <location filename="openaip.cpp" line="437"/>
+        <location filename="openaip.cpp" line="584"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="110"/>
-        <location filename="openaip.cpp" line="399"/>
-        <location filename="openaip.cpp" line="539"/>
+        <location filename="openaip.cpp" line="113"/>
+        <location filename="openaip.cpp" line="402"/>
+        <location filename="openaip.cpp" line="549"/>
         <source>Cannot open file</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>

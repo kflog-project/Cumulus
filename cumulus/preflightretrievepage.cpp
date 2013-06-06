@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   preflightreturnerpage.cpp
+ **   preflightretrievepage.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -30,16 +30,16 @@
 #include "jnisupport.h"
 #include "layout.h"
 #include "numberEditor.h"
-#include "preflightreturnerpage.h"
+#include "preflightretrievepage.h"
 
-PreFlightReturnerPage::PreFlightReturnerPage(QWidget *parent) :
+PreFlightRetrievePage::PreFlightRetrievePage(QWidget *parent) :
   QWidget(parent)
 {
-  setObjectName("PreFlightReturnerPage");
+  setObjectName("PreFlightRetrievePage");
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("PreFlight - Returner") );
+  setWindowTitle( tr("PreFlight - Retrieve") );
 
   if( parent )
     {
@@ -79,7 +79,7 @@ PreFlightReturnerPage::PreFlightReturnerPage(QWidget *parent) :
 
   int row = 0;
 
-  QLabel *lbl = new QLabel( tr("Call your returner via SMS") );
+  QLabel *lbl = new QLabel( tr("Call your retrieve via SMS") );
   topLayout->addWidget(lbl, row, 0, 1, 4);
   row++;
 
@@ -112,7 +112,7 @@ PreFlightReturnerPage::PreFlightReturnerPage(QWidget *parent) :
   row++;
   topLayout->setRowStretch(row, 10);
   row++;
-  QPushButton *callReturner = new QPushButton(tr("Call returner"));
+  QPushButton *callReturner = new QPushButton(tr("Call retrieve"));
   topLayout->addWidget(callReturner, row, 0);
 
   QPushButton *cancel = new QPushButton(this);
@@ -145,11 +145,11 @@ PreFlightReturnerPage::PreFlightReturnerPage(QWidget *parent) :
   load();
 }
 
-PreFlightReturnerPage::~PreFlightReturnerPage()
+PreFlightRetrievePage::~PreFlightRetrievePage()
 {
 }
 
-void PreFlightReturnerPage::load()
+void PreFlightRetrievePage::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -157,7 +157,7 @@ void PreFlightReturnerPage::load()
   m_positionFormat->setCurrentIndex( conf->getReturnerPositionFormat() );
 }
 
-void PreFlightReturnerPage::save()
+void PreFlightRetrievePage::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -165,7 +165,7 @@ void PreFlightReturnerPage::save()
   conf->setReturnerPositionFormat( m_positionFormat->currentIndex() );
  }
 
-void PreFlightReturnerPage::slotAccept()
+void PreFlightRetrievePage::slotAccept()
 {
   save();
   GeneralConfig::instance()->save();
@@ -173,13 +173,13 @@ void PreFlightReturnerPage::slotAccept()
   QWidget::close();
 }
 
-void PreFlightReturnerPage::slotReject()
+void PreFlightRetrievePage::slotReject()
 {
   emit closingWidget();
   QWidget::close();
 }
 
-void PreFlightReturnerPage::slotCallReturner()
+void PreFlightRetrievePage::slotCallReturner()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
