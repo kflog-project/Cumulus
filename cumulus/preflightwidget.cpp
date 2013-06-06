@@ -262,7 +262,7 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
   else if( itemText == RETRIEVE )
     {
-      PreFlightReturnerPage* pfrp = new PreFlightReturnerPage( this );
+      PreFlightRetrievePage* pfrp = new PreFlightRetrievePage( this );
 
       if( m_menuCb->checkState() == Qt::Checked )
         {
