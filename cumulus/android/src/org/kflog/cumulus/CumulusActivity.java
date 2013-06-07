@@ -315,21 +315,33 @@ public class CumulusActivity extends QtActivity
 		  	{
 	        @Override
 	        public void run()
-	        	{
-	        		// http://www.androidpit.de/de/android/wiki/view/SMS_senden_und_empfangen
-	        		// WE call the default SMS App to send the SMS.
-	      		  Intent intent = new Intent(Intent.ACTION_VIEW);
-	      		  intent.setType("vnd.android-dir/mms-sms");
-	      		  
-	      		  if( fnumber.length() > 0 )
-	      		  	{
-	      		  		intent.putExtra("address", fnumber);
-	      		  	}
-	      		  
-	      		  intent.putExtra("sms_body", ftext);
-	      		  
-	      		  // Call default SMS App
-	      		  startActivity(intent);
+        	{
+        	  // http://www.androidpit.de/de/android/wiki/view/SMS_senden_und_empfangen
+        	  // WE call the default SMS App to send the SMS.
+      		  Intent intent = new Intent(Intent.ACTION_VIEW);
+      		  intent.setType("vnd.android-dir/mms-sms");
+      		  
+      		  if( fnumber.length() > 0 )
+      		  	{
+      		  		intent.putExtra("address", fnumber);
+      		  	}
+      		  
+      		  intent.putExtra("sms_body", ftext);
+      		  
+              try
+                {
+                  // Call default SMS App
+                  startActivity(intent);
+                }
+              catch (ActivityNotFoundException e)
+                {
+                  Log.e("SMS", "SMS activity unavailable: " + e.getMessage());
+                  
+                  Toast.makeText( getApplicationContext(),
+                		          getString(R.string.noSmsService),
+                                  Toast.LENGTH_LONG )
+                       .show();
+                }
 	          }
 		  	});
     }
