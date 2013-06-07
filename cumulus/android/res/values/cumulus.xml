@@ -37,5 +37,6 @@
 	<string name="toggles">Toggles</string>
 	<string name="togglesMenu">Menu Toggles</string>
 	<string name="mapInfoBarShow">Show info boxes</string>
-	<string name="mapInfoBarHide">Hide info boxes</string>
+  <string name="mapInfoBarHide">Hide info boxes</string>
+  <string name="noSmsService">SMS service unavailable!</string>
 </resources>
