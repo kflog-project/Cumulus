@@ -37,12 +37,16 @@
 
 #include "generalconfig.h"
 #include "layout.h"
+#include "mapcontents.h"
 #include "numberEditor.h"
 #include "settingspageairfields.h"
+#include "settingspageairfieldloading.h"
 
 #ifdef INTERNET
 #include "httpclient.h"
 #endif
+
+extern MapContents *_globalMapContents;
 
 SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   QWidget(parent)
@@ -90,38 +94,76 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   // The parent of the layout is the scroll widget
   QVBoxLayout *topLayout = new QVBoxLayout(sw);
 
-  QGroupBox* weltGroup = new QGroupBox(tr("Welt2000"), this);
-  topLayout->addWidget(weltGroup);
+  QGridLayout *sourceLayout = new QGridLayout;
+  QLabel* lbl = new QLabel( tr("Source:") );
+  sourceLayout->addWidget( lbl, 0, 0 );
+  m_sourceBox = new QComboBox;
+  m_sourceBox->addItem("OpenAIP");
+  m_sourceBox->addItem("Welt2000");
+  sourceLayout->addWidget( m_sourceBox, 0, 1 );
+  sourceLayout->setColumnStretch( 2, 5 );
+  topLayout->addLayout(sourceLayout);
 
-  QGridLayout* weltLayout = new QGridLayout(weltGroup);
+  connect( m_sourceBox, SIGNAL(currentIndexChanged(int)),
+           this, SLOT(slot_sourceChanged(int)));
+
+  m_oaipGroup = new QGroupBox( "www.openaip.net", this );
+  topLayout->addWidget(m_oaipGroup);
 
   int grow = 0;
-  QLabel* lbl = new QLabel(tr("Country Filter:"), (weltGroup));
+  QGridLayout *oaipLayout = new QGridLayout(m_oaipGroup);
+  lbl = new QLabel( tr("Home Radius:") );
+  oaipLayout->addWidget(lbl, grow, 0);
+
+  m_homeRadiusOaip = new NumberEditor( this );
+  m_homeRadiusOaip->setDecimalVisible( false );
+  m_homeRadiusOaip->setPmVisible( false );
+  m_homeRadiusOaip->setMaxLength(4);
+  m_homeRadiusOaip->setSuffix( " " + Distance::getUnitText() );
+  m_homeRadiusOaip->setSpecialValueText(tr("Off"));
+  m_homeRadiusOaip->setRange( 0, 9999 );
+  oaipLayout->addWidget(m_homeRadiusOaip, grow, 1);
+  grow++;
+
+  QPushButton *cmdLoadFiles = new QPushButton( tr("Load") );
+  oaipLayout->addWidget( cmdLoadFiles, grow, 0 );
+  oaipLayout->setColumnStretch( 2, 5 );
+
+  connect( cmdLoadFiles, SIGNAL(clicked()), this, SLOT(slot_openLoadDialog()) );
+
+  //----------------------------------------------------------------------------
+  m_weltGroup = new QGroupBox("www.segelflug.de/vereine/welt2000", this);
+  topLayout->addWidget(m_weltGroup);
+
+  QGridLayout* weltLayout = new QGridLayout(m_weltGroup);
+
+  grow = 0;
+  lbl = new QLabel(tr("Country Filter:"), (m_weltGroup));
   weltLayout->addWidget(lbl, grow, 0);
 
   Qt::InputMethodHints imh;
 
-  m_countryFilter = new QLineEdit(weltGroup);
+  m_countryFilter = new QLineEdit(m_weltGroup);
   imh = (m_countryFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_countryFilter->setInputMethodHints(imh);
 
   weltLayout->addWidget(m_countryFilter, grow, 1, 1, 3);
   grow++;
 
-  lbl = new QLabel(tr("Home Radius:"), weltGroup);
+  lbl = new QLabel(tr("Home Radius:"), m_weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
 
-  m_homeRadius = new NumberEditor( this );
-  m_homeRadius->setDecimalVisible( false );
-  m_homeRadius->setPmVisible( false );
-  m_homeRadius->setMaxLength(4);
-  m_homeRadius->setSuffix( " " + Distance::getUnitText() );
-  m_homeRadius->setMaximum( 9999 );
-  QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
-  m_homeRadius->setValidator( eValidator );
-  weltLayout->addWidget(m_homeRadius, grow, 1 );
+  m_homeRadiusW2000 = new NumberEditor( this );
+  m_homeRadiusW2000->setDecimalVisible( false );
+  m_homeRadiusW2000->setPmVisible( false );
+  m_homeRadiusW2000->setMaxLength(4);
+  m_homeRadiusW2000->setSuffix( " " + Distance::getUnitText() );
+  m_homeRadiusW2000->setRange( 0, 9999 );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
+  m_homeRadiusW2000->setValidator( eValidator );
+  weltLayout->addWidget(m_homeRadiusW2000, grow, 1 );
 
-  m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), weltGroup );
+  m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), m_weltGroup );
   weltLayout->addWidget(m_loadOutlandings, grow, 2, Qt::AlignRight );
   grow++;
 
@@ -129,13 +171,13 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   weltLayout->setRowMinimumHeight(grow++, 10);
 
-  m_installWelt2000 = new QPushButton( tr("Install"), weltGroup );
+  m_installWelt2000 = new QPushButton( tr("Install"), m_weltGroup );
   m_installWelt2000->setToolTip(tr("Install Welt2000 data"));
   weltLayout->addWidget(m_installWelt2000, grow, 0 );
 
   connect( m_installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
 
-  m_welt2000FileName = new QLineEdit(weltGroup);
+  m_welt2000FileName = new QLineEdit(m_weltGroup);
   m_welt2000FileName->setInputMethodHints(imh);
   m_welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
   weltLayout->addWidget(m_welt2000FileName, grow, 1, 1, 3);
@@ -224,6 +266,21 @@ SettingsPageAirfields::~SettingsPageAirfields()
 {
 }
 
+void SettingsPageAirfields::slot_sourceChanged( int index )
+{
+  // Toggle source visibility
+  if( index == 0 )
+    {
+      m_oaipGroup->setVisible( true );
+      m_weltGroup->setVisible( false );
+    }
+  else
+    {
+      m_oaipGroup->setVisible( false );
+      m_weltGroup->setVisible( true );
+    }
+}
+
 void SettingsPageAirfields::slotAccept()
 {
   if( checkChanges() )
@@ -251,9 +308,14 @@ void SettingsPageAirfields::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  m_countryFilter->setText(conf->getWelt2000CountryFilter());
+  m_sourceBox->setCurrentIndex( conf->getAirfieldSource() );
+  slot_sourceChanged( conf->getAirfieldSource() );
+
+  m_homeRadiusOaip->setValue( conf->getAirfieldHomeRadius() );
+  m_countryFilter->setText( conf->getWelt2000CountryFilter() );
+
   // @AP: radius value is stored without considering unit.
-  m_homeRadius->setValue(conf->getWelt2000HomeRadius());
+  m_homeRadiusW2000->setValue( conf->getAirfieldHomeRadius() );
 
   if( conf->getWelt2000LoadOutlandings() )
     {
@@ -284,55 +346,72 @@ bool SettingsPageAirfields::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  // Store change state.
+  // Save change states.
+  bool openAipChanged  = checkIsOpenAipChanged();
   bool welt2000Changed = checkIsWelt2000Changed();
 
-  // We will check, if the country entries of Welt2000 are
-  // correct. If not a warning message is displayed and the
-  // modifications are discarded.
-  QStringList clist = m_countryFilter->text().split(QRegExp("[, ]"),
-                      QString::SkipEmptyParts);
+  conf->setAirfieldSource( m_sourceBox->currentIndex() );
 
-  for( int i = 0; i < clist.size(); i++ )
+  // Look which source widget is active to decide what have to be saved.
+  if( m_sourceBox->currentIndex() == 0 )
     {
-      const QString& s = clist.at(i);
-
-      if( ! (s.length() == 2 && s.contains(QRegExp("[A-Za-z][A-Za-z]")) == true) )
-        {
-          QMessageBox mb( QMessageBox::Warning,
-                          tr( "Please check entries" ),
-                          tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                          QMessageBox::Ok,
-                          this );
-
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
-          mb.exec();
-          return false;
-        }
-    }
-
-  conf->setWelt2000CountryFilter(m_countryFilter->text().trimmed().toUpper());
-  conf->setWelt2000HomeRadius(m_homeRadius->value());
-
-  if( m_loadOutlandings->checkState() == Qt::Checked )
-    {
-      conf->setWelt2000LoadOutlandings( true );
+      conf->setAirfieldHomeRadius(m_homeRadiusOaip->value());
     }
   else
     {
-      conf->setWelt2000LoadOutlandings( false );
+      conf->setAirfieldHomeRadius(m_homeRadiusW2000->value());
+
+      // We will check, if the country entries of Welt2000 are
+      // correct. If not a warning message is displayed and the
+      // modifications are discarded.
+      QStringList clist = m_countryFilter->text().split(QRegExp("[, ]"),
+                          QString::SkipEmptyParts);
+
+      for( int i = 0; i < clist.size(); i++ )
+        {
+          const QString& s = clist.at(i);
+
+          if( ! (s.length() == 2 && s.contains(QRegExp("[A-Za-z][A-Za-z]")) == true) )
+            {
+              QMessageBox mb( QMessageBox::Warning,
+                              tr( "Please check entries" ),
+                              tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                              QMessageBox::Ok,
+                              this );
+
+#ifdef ANDROID
+
+              mb.show();
+              QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                               height()/2 - mb.height()/2 ));
+              mb.move( pos );
+
+#endif
+              mb.exec();
+              return false;
+            }
+        }
+
+      conf->setWelt2000CountryFilter(m_countryFilter->text().trimmed().toUpper());
+
+      if( m_loadOutlandings->checkState() == Qt::Checked )
+        {
+          conf->setWelt2000LoadOutlandings( true );
+        }
+      else
+        {
+          conf->setWelt2000LoadOutlandings( false );
+        }
     }
 
   conf->setListDisplayAFMargin(m_afMargin->value());
   conf->setListDisplayRPMargin(m_rpMargin->value());
   conf->save();
+
+  if( openAipChanged == true )
+    {
+      emit reloadOpenAip();
+    }
 
   if( welt2000Changed == true )
     {
@@ -350,13 +429,24 @@ void SettingsPageAirfields::slot_filterChanged(const QString& text)
   Q_UNUSED( text )
 }
 
-/* Called to ask is confirmation on the close is needed. */
+void SettingsPageAirfields::slot_openLoadDialog()
+{
+  SettingsPageAirfieldLoading* dlg = new SettingsPageAirfieldLoading(this);
+
+  connect( dlg, SIGNAL(fileListChanged()),
+           _globalMapContents, SLOT(slotReloadOpenAipAirfields()) );
+
+  dlg->setVisible( true );
+}
+
 bool SettingsPageAirfields::checkChanges()
 {
-  bool changed = false;
+  bool changed =
+      (GeneralConfig::instance()->getAirfieldSource() != m_sourceBox->currentIndex());
 
-  changed = changed || checkIsWelt2000Changed();
-  changed = changed || checkIsListDisplayChanged();
+  changed |= checkIsOpenAipChanged();
+  changed |= checkIsWelt2000Changed();
+  changed |= checkIsListDisplayChanged();
 
   return changed;
 }
@@ -420,17 +510,28 @@ void SettingsPageAirfields::slot_installWelt2000()
 
 #endif
 
+bool SettingsPageAirfields::checkIsOpenAipChanged()
+{
+  bool changed = false;
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  changed |= (conf->getAirfieldSource() == 1 && m_sourceBox->currentIndex() == 0);
+  changed |= (conf->getAirfieldHomeRadius() != m_homeRadiusOaip->value());
+
+  return changed;
+}
+
 /**
  * Checks, if the configuration of the Welt2000 has been changed
  */
 bool SettingsPageAirfields::checkIsWelt2000Changed()
 {
   bool changed = false;
-
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed = changed || (conf->getWelt2000CountryFilter() != m_countryFilter->text());
-  changed = changed || (conf->getWelt2000HomeRadius() != m_homeRadius->value());
+  changed |= (conf->getAirfieldSource() == 0 && m_sourceBox->currentIndex() == 1);
+  changed |= (conf->getWelt2000CountryFilter() != m_countryFilter->text());
+  changed |= (conf->getAirfieldHomeRadius() != m_homeRadiusW2000->value());
 
   bool currentState = false;
 
@@ -439,7 +540,7 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
       currentState = true;
     }
 
-  changed = changed || (conf->getWelt2000LoadOutlandings() != currentState);
+  changed |= (conf->getWelt2000LoadOutlandings() != currentState);
 
   // qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
   return changed;
@@ -453,8 +554,8 @@ bool SettingsPageAirfields::checkIsListDisplayChanged()
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed = changed || (conf->getListDisplayAFMargin() != m_afMargin->value());
-  changed = changed || (conf->getListDisplayRPMargin() != m_rpMargin->value());
+  changed |= (conf->getListDisplayAFMargin() != m_afMargin->value());
+  changed |= (conf->getListDisplayRPMargin() != m_rpMargin->value());
 
   // qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
   return changed;

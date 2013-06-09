@@ -71,10 +71,12 @@ void Layout::adaptFont( QFont& fontRef,
       fontRef.setPointSize( font2defaultSize( fontRef.pointSize() ) );
     }
 
+#if 0
   qDebug() << "Layout::adaptFont: pxHeight=" << pxHeight
            << "startPointSize=" << startPointSize
            << "minPointSize" << minPointSize
            << "CalcPointSize=" << fontRef.pointSize();
+#endif
 }
 
 int Layout::maxTextWidth( const QStringList& list, const QFont& font )

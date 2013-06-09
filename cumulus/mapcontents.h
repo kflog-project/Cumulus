@@ -335,6 +335,18 @@ class MapContents : public QObject
      */
     void slotReloadAirspaceData();
 
+    /**
+     * Reloads the OpenAIP airfield data files. Can be called after a
+     * configuration change.
+     */
+    void slotReloadOpenAipAirfields();
+
+    /**
+     * This slot is called by the OpenAip load thread to signal, that the
+     * requested airfield data have been loaded.
+     */
+    void slotOpenAipAirfieldLoadFinished( bool ok, QList<Airfield>* airfieldListIn );
+
 #ifdef INTERNET
     /**
      * This slot is called to download the Welt2000 file from the internet.
@@ -427,6 +439,11 @@ class MapContents : public QObject
      * Starts a thread, which is loading the requested Welt2000 data.
      */
     void loadWelt2000DataViaThread();
+
+    /**
+     * Starts a thread, which is loading the requested OpenAIP airfield data.
+     */
+    void loadOpenAipAirfieldsViaThread();
 
 #ifdef INTERNET
 
@@ -638,8 +655,8 @@ class MapContents : public QObject
 
 #endif
 
-    /** Mutex to protect Welt2000 actions. */
-    QMutex welt2000Mutex;
+    /** Mutex to protect airfield loading actions. */
+    QMutex airfieldLoadMutex;
   };
 
 #endif

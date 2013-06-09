@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-06-09 AP: On pre-fight airfield new feature openAIP added whichs allows
+                   the use of openAIP airfield files provided by www.openaip.net.
+                   Create an account at that webpage to get the access to such
+                   airfield files.
+
 [*] 2013-05-29 AP: Cumulus 5.4.0 only for Android released.
 
 [+] 2013-06-04 AP: On pre-fight a new page added with name Retriever. This

@@ -48,6 +48,8 @@
 #include "welt2000.h"
 #include "wgspoint.h"
 
+#include "openaipairfieldloader.h"
+
 extern MapView* _globalMapView;
 
 // number of last map tile, possible range goes 0...16200
@@ -67,7 +69,7 @@ extern MapView* _globalMapView;
 #define FILE_TYPE_TERRAIN_C   0x74
 #define FILE_TYPE_MAP_C       0x6d
 #define FILE_TYPE_AIRSPACE_C  0x61 // used by OpenAir parser
-#define FILE_TYPE_AIRFIELD_C  0x62 // used by Welt2000 parser
+#define FILE_TYPE_AIRFIELD_C  0x63 // used by Welt2000 parser
 
 // versions
 #define FILE_FORMAT_ID        100 // used to handle a previous version
@@ -1840,40 +1842,65 @@ void MapContents::proofeSection()
       // finally, sort the airspaces
       airspaceList.sort();
 
-      ws->slot_SetText2( tr( "Reading Welt2000 File" ) );
+      // Look, which airfield source has to be taken.
+      int airfieldSource = GeneralConfig::instance()->getAirfieldSource();
 
-      if( isReload == false )
+      if( airfieldSource == 0 )
         {
-          // Load airfield data not in an extra thread
-          Welt2000 welt2000;
+          // OpenAIP is defined as airfield source
+          ws->slot_SetText2( tr( "Reading OpenAIP airfield Files" ) );
 
-          if( ! welt2000.load( airfieldList, gliderfieldList, outLandingList ) )
+          if( isReload == false )
             {
-
-#ifdef INTERNET
-
-              if( __askUserForDownload() == true )
-                {
-                  // Welt2000 load failed, try to download a new Welt2000 File.
-                  slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
-                }
-#endif
+              // Load airfield data not in an extra thread
+              OpenAipAirfieldLoader afl;
+              afl.load( airfieldList );
+            }
+          else
+            {
+              // In case of an reload we assume, that OpenAIP airfield files
+              // are available. Therefore whole the reload is done in an extra
+              // thread because it can take a while and the GUI shall not be
+              // blocked by this action.
+              loadOpenAipAirfieldsViaThread();
             }
         }
       else
         {
+          // Welt2000 is defined as airfield source
+          ws->slot_SetText2( tr( "Reading Welt2000 File" ) );
 
-#ifdef WELT2000_THREAD
-          // In case of an reload we assume, a Welt2000 file is available.
-          // Therefore the reload is done in an extra thread because it can
-          // take a while and the GUI shall not be blocked by this action.
-          loadWelt2000DataViaThread();
-#else
-          // Old solution. Should be used, if not enough RAM is available
-          // because thread loading needs temporary more memory for parallel load.
-          Welt2000 welt2000;
-          welt2000.load( airfieldList, gliderfieldList, outLandingList );
+          if( isReload == false )
+            {
+              // Load airfield data not in an extra thread
+              Welt2000 welt2000;
+
+              if( ! welt2000.load( airfieldList, gliderfieldList, outLandingList ) )
+                {
+
+#ifdef INTERNET
+                  if( __askUserForDownload() == true )
+                    {
+                      // Welt2000 load failed, try to download a new Welt2000 File.
+                      slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+                    }
 #endif
+                }
+            }
+          else
+            {
+#ifdef WELT2000_THREAD
+              // In case of an reload we assume, a Welt2000 file is available.
+              // Therefore the reload is done in an extra thread because it can
+              // take a while and the GUI shall not be blocked by this action.
+              loadWelt2000DataViaThread();
+#else
+              // Old solution. Should be used, if not enough RAM is available
+              // because thread loading needs temporary more memory for parallel load.
+              Welt2000 welt2000;
+              welt2000.load( airfieldList, gliderfieldList, outLandingList );
+#endif
+            }
         }
 
       ws->slot_SetText1(tr("Loading maps done"));
@@ -2395,18 +2422,14 @@ void MapContents::slotReloadMapData()
   topoList.clear();
   villageList.clear();
 
-  welt2000Mutex.lock();
-
-  airfieldList.clear();
-  gliderfieldList.clear();
-  outLandingList.clear();
+  airfieldLoadMutex.lock();
 
   // free internal allocated memory in QList
   airfieldList    = QList<Airfield>();
   gliderfieldList = QList<Airfield>();
   outLandingList  = QList<Airfield>();
 
-  welt2000Mutex.unlock();
+  airfieldLoadMutex.unlock();
 
   // all isolines are cleared
   groundMap.clear();
@@ -2464,6 +2487,70 @@ void MapContents::slotReloadMapData()
   mutex = false; // unlock mutex
 }
 
+/**
+ * Starts a thread, which is loading the requested OpenAIP airfield data.
+ */
+void MapContents::loadOpenAipAirfieldsViaThread()
+{
+  QMutexLocker locker( &airfieldLoadMutex );
+
+  _globalMapView->slot_info( tr("Loading OpenAIP data") );
+
+  OpenAipThread *oaipThread = new OpenAipThread( this );
+
+  // Register a special data type for return results. That must be
+  // done to transfer the results between different threads.
+  qRegisterMetaType<AirfieldListPtr>("AirfieldListPtr");
+
+  // Connect the receiver of the results. It is located in this
+  // thread and not in the new opened thread.
+  connect( oaipThread,
+           SIGNAL(loadedList( bool, QList<Airfield>* )),
+           this,
+           SLOT(slotOpenAipAirfieldLoadFinished( bool, QList<Airfield>* )) );
+
+  oaipThread->start();
+}
+
+/**
+ * This slot is called by the OpenAipThread loader thread to signal, that the
+ * requested airfield data have been loaded. The passed lists must be
+ * deleted in this method.
+ */
+void MapContents::slotOpenAipAirfieldLoadFinished( bool ok,
+                                                   QList<Airfield>* airfieldListIn )
+{
+  QMutexLocker locker( &airfieldLoadMutex );
+
+  if( ok == false )
+    {
+      qWarning() << "OpenAIP load failed!";
+
+      _globalMapView->slot_info( tr("OpenAIP load failed") );
+
+      delete airfieldListIn;
+      return;
+    }
+
+  // Take over the new loaded list. The passed lists must be deleted!
+  airfieldList = QList<Airfield>();
+  airfieldList = *airfieldListIn;
+  delete airfieldListIn;
+
+  _globalMapView->slot_info( tr("OpenAIP loaded") );
+  emit mapDataReloaded();
+}
+
+void MapContents::slotReloadOpenAipAirfields()
+{
+  // Check, if OpenAIP is the airfield source.
+  if( GeneralConfig::instance()->getAirfieldSource() == 0 )
+    {
+      // Reload OpenAIP airfield data in an extra thread.
+      loadOpenAipAirfieldsViaThread();
+    }
+}
+
 #ifdef WELT2000_THREAD
 
 /**
@@ -2471,7 +2558,7 @@ void MapContents::slotReloadMapData()
  */
 void MapContents::loadWelt2000DataViaThread()
 {
-  QMutexLocker locker( &welt2000Mutex );
+  QMutexLocker locker( &airfieldLoadMutex );
 
   _globalMapView->slot_info( tr("loading Welt2000") );
 
@@ -2506,7 +2593,7 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
                                             QList<Airfield>* gliderfieldListIn,
                                             QList<Airfield>* outlandingListIn )
 {
-  QMutexLocker locker( &welt2000Mutex );
+  QMutexLocker locker( &airfieldLoadMutex );
 
   if( ok == false )
     {
@@ -2521,12 +2608,15 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
     }
 
   // Take over the new loaded lists. The passed lists must be deleted!
+  airfieldList = QList<Airfield>();
   airfieldList = *airfieldListIn;
   delete airfieldListIn;
 
+  gliderfieldList = QList<Airfield>();
   gliderfieldList = *gliderfieldListIn;
   delete gliderfieldListIn;
 
+  outLandingList = QList<Airfield>();
   outLandingList = *outlandingListIn;
   delete outlandingListIn;
 
@@ -2543,6 +2633,12 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
  */
 void MapContents::slotReloadWelt2000Data()
 {
+  // Check, if Welt2000 is the airfield source.
+  if( GeneralConfig::instance()->getAirfieldSource() != 1 )
+    {
+      return;
+    }
+
 #ifndef WELT2000_THREAD
 
   // @AP: defined a static mutex variable, to prevent the recursive
@@ -3094,7 +3190,6 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
 
 void MapContents::addDir (QStringList& list, const QString& _path, const QString& filter)
 {
-  //  qDebug ("addDir (%s, %s)", _path.toLatin1().data(), filter.toLatin1().data());
   QDir path (_path, filter);
 
   //JD was a bit annoyed by many notifications about nonexisting dirs
@@ -3106,6 +3201,7 @@ void MapContents::addDir (QStringList& list, const QString& _path, const QString
   for (QStringList::Iterator it = entries.begin(); it != entries.end(); ++it )
     {
       bool found = false;
+
       // look for other entries with same filename
       for (QStringList::Iterator it2 =  list.begin(); it2 != list.end(); ++it2)
         {
@@ -3113,10 +3209,10 @@ void MapContents::addDir (QStringList& list, const QString& _path, const QString
           if (path2.fileName() == *it)
             found = true;
         }
+
       if (!found)
         list += path.absoluteFilePath (*it);
     }
-  //  qDebug ("entries: %s", list.join(";").toLatin1().data());
 }
 
 

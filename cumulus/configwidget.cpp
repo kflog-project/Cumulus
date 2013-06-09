@@ -273,7 +273,10 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
                MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
 
       connect( page,  SIGNAL( reloadWelt2000() ),
-                 _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
+               _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
+
+      connect( page,  SIGNAL( reloadOpenAip() ),
+               _globalMapContents, SLOT( slotReloadOpenAipAirfields() ) );
 
       connect( page, SIGNAL(downloadWelt2000( const QString& )),
                _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )) );

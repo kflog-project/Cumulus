@@ -14,7 +14,6 @@
 **   $Id$
 **
 ***********************************************************************/
-#include <unistd.h>
 
 #include <QtCore>
 
@@ -25,20 +24,20 @@
 #include "openaip.h"
 #include "openaipairfieldloader.h"
 
-// type definition for compiled airfield files
-#define FILE_TYPE_AIRFIELD_C 0x64
+// Type definition for openAIP compiled airfield files. OAIP__AF
+#define FILE_TYPE_AIRFIELD_C 0x4f4149505f5f4146
 
-// version used for files created from openAIP data
+// Version used for compiled airfield files created from openAIP airfield data
 #define FILE_VERSION_AIRFIELD_C 0
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
 #endif
 
-extern MapMatrix*    _globalMapMatrix;
+extern MapMatrix* _globalMapMatrix;
 
 // set static member variable
-QMutex OpenAipAirfieldLoader::mutex;
+QMutex OpenAipAirfieldLoader::m_mutex;
 
 OpenAipAirfieldLoader::OpenAipAirfieldLoader() :
   h_magic(0),
@@ -58,8 +57,11 @@ OpenAipAirfieldLoader::~OpenAipAirfieldLoader()
     }
 }
 
-int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
+int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList, bool readSource )
 {
+  // Set a global lock during execution to avoid calls in parallel.
+  QMutexLocker locker( &m_mutex );
+
   QTime t;
   t.start();
   int loadCounter = 0; // number of successfully loaded files
@@ -71,7 +73,11 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
     {
       MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.aip" );
       MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.AIP" );
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.aic" );
+
+      if( readSource == false )
+        {
+          MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.aic" );
+        }
     }
 
   if( preselect.count() == 0 )
@@ -83,7 +89,7 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
   // First check, if we have found a file name in upper letters. That may
   // be true, if a file was downloaded from the Internet. We will convert
   // such a file name to lower cases and replace it in the file list.
-  for( int i = 0; i < preselect.size(); ++i )
+  for( int i = 0; i < preselect.size(); i++ )
     {
       if( preselect.at( i ).endsWith( ".AIP" ) )
         {
@@ -105,12 +111,13 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
   if( files.isEmpty() )
     {
       // No files shall be loaded
-      qWarning() << "OAIP: No airfield files defined for loading!";
+      qWarning() << "OAIP: No airfield files defined for loading by the user!";
       return loadCounter;
     }
 
   if( files.first() != "All" )
     {
+      // Tidy up the preselection list, if not all found files shall be loaded.
       for( int i = preselect.size() - 1; i >= 0; i-- )
         {
           QString file = QFileInfo(preselect.at(i)).completeBaseName() + ".aip";
@@ -155,13 +162,10 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
 
       // At first we found a binary file with the extension aic.
       aicName = preselect.first();
-
-      // Now we have to check if there's to find a source file with
-      // extension aip after the binary file
-      aicName = preselect.first();
       preselect.removeAt( 0 );
       aipName = aicName;
       aipName.replace( aipName.size() - 1, 1, QChar('p')  );
+      bool readSource = false;
 
       if ( ! preselect.isEmpty() && aipName == preselect.first() )
         {
@@ -173,96 +177,67 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
           if ( ! setHeaderData( aicName ) )
             {
               // Compiled file format is not the expected one, remove
-              // wrong file and start a reparsing of source file.
-              unlink( aicName.toLatin1().data() );
-
-              afListStart = airfieldList.size();
-
-              bool ok = openAip.readAirfields( aipName,
-                                               airfieldList,
-                                               errorInfo,
-                                               true );
-              if( ok )
-                {
-                  createCompiledFile( aicName, airfieldList, afListStart );
-                  loadCounter++;
-                }
-
-              preselect.removeAt( 0 );
-              continue;
+              // wrong file and require a reparsing of source files.
+              readSource = true;
             }
 
           // Do a date-time check. If the source file is younger in its
           // modification time as the compiled file, a new compilation
           // must be forced.
-
           QFileInfo fi(aipName);
           QDateTime lastModTxt = fi.lastModified();
 
           if ( h_creationDateTime < lastModTxt )
             {
               // Modification date-time of source is younger as from
-              // compiled file. Therefore we do start a reparsing of the
-              // source file.
-              unlink( aicName.toLatin1().data() );
-
-              afListStart = airfieldList.size();
-
-              bool ok = openAip.readAirfields( aipName,
-                                               airfieldList,
-                                               errorInfo,
-                                               true );
-              if( ok )
-                {
-                  createCompiledFile( aicName, airfieldList, afListStart );
-                  loadCounter++;
-                }
-
-              continue;
-            }
-
-          // Check date-time against the config file
-          QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
-          QFileInfo fiConf( confName );
-
-          if( fiConf.exists() && fi.isReadable() &&
-              h_creationDateTime < fiConf.lastModified() )
-            {
-              // Conf file was modified, make a new compilation. It is not
-              // deeper checked, what was modified due to the effort and
-              // in the assumption that a config file will not be changed
-              // every minute.
-              unlink( aicName.toLatin1().data() );
-
-              afListStart = airfieldList.size();
-
-              bool ok = openAip.readAirfields( aipName,
-                                               airfieldList,
-                                               errorInfo,
-                                               true );
-              if( ok )
-                {
-                  createCompiledFile( aicName, airfieldList, afListStart );
-                  loadCounter++;
-                }
-
-              continue;
+              // compiled file. Therefore we require a reparsing of the
+              // source files.
+              readSource = true;
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Time mismatch";
             }
 
           // Check, if the projection has been changed in the meantime
           ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
 
-          if ( ! MapContents::compareProjections( h_projection, currentProjection ) )
+          if( ! MapContents::compareProjections( h_projection, currentProjection ) )
             {
-              // Projection has changed in the meantime
+              // Projection has changed in the meantime. That requires a reparse
+              // of the source files.
               if( h_projection )
                 {
                   delete h_projection;
                   h_projection = 0;
                 }
 
-              unlink( aicName.toLatin1().data() );
+              readSource = true;
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Projection mismatch";
+            }
 
+          if( h_homeCoord != _globalMapMatrix->getHomeCoord() )
+            {
+              // Home position has been changed. That requires a reparse
+              // of the source files.
+              readSource = true;
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Home mismatch";
+            }
+
+          int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+
+          // We must look, which unit the user has chosen. This unit must
+          // be considered during load of data items.
+          double filterRadius = Distance::convertToMeters( iRadius );
+
+          if( h_homeRadius != filterRadius )
+            {
+              // Home radius has been changed. That requires a reparse
+              // of the source files.
+              readSource = true;
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Radius mismatch";
+            }
+
+          if( readSource == true )
+            {
+              QFile::remove( aicName );
               afListStart = airfieldList.size();
 
               bool ok = openAip.readAirfields( aipName,
@@ -288,7 +263,9 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList )
 
     } // End of While
 
-  qDebug("OAIP: %d airfield file(s) loaded in %dms", loadCounter, t.elapsed());
+  qDebug( "OAIP: %d airfield file(s) with %d items loaded in %dms",
+          loadCounter, airfieldList.size(), t.elapsed() );
+
   return loadCounter;
 }
 
@@ -308,20 +285,26 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
 
   if( file.open(QIODevice::WriteOnly) == false )
     {
-      qWarning( "OAIP: Can't open compiled airfield file %s for writing!"
+      qWarning( "OAIP: Can't open airfield file %s for writing!"
                " Aborting ...",
                fileName.toLatin1().data() );
 
       return false;
     }
 
-  qDebug("OAIP: writing file %s", fileName.toLatin1().data());
+  int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+
+  // We must look, which unit the user has chosen. This unit must
+  // be considered during load of data items.
+  double filterRadius = Distance::convertToMeters( iRadius );
+
+  qDebug() << "OAIP: creating file" << QFileInfo(fileName).fileName();
 
   out << quint32( KFLOG_FILE_MAGIC );
-  out << qint8( FILE_TYPE_AIRFIELD_C );
-  out << quint16( FILE_VERSION_AIRFIELD_C );
+  out << quint64( FILE_TYPE_AIRFIELD_C );
+  out << quint8( FILE_VERSION_AIRFIELD_C );
   out << QDateTime::currentDateTime();
-  out << h_homeRadius;
+  out << filterRadius;
   out << QPoint( _globalMapMatrix->getHomeCoord() );
 
 #ifdef BOUNDING_BOX
@@ -333,12 +316,13 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
 
   SaveProjection( out, _globalMapMatrix->getProjection() );
 
-  // write number of airfield records
+  // write number of airfield records to be stored
   out << quint32( airfieldList.size() - airfieldListStart );
 
+  // Storing starts at the given index.
   for( int i = airfieldListStart; i < airfieldList.size(); i++ )
     {
-      Airfield af = airfieldList[i];
+      Airfield& af = airfieldList[i];
 
       // airfield type
       out << quint8( af.getTypeID() );
@@ -359,7 +343,7 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
       // elevation in meters
       out << qint16( af.getElevation());
 
-      // frequency written as e.g. 126.575, is reduced to 16 bits
+      // frequency is written as e.g. 126.575, is reduced to 16 bits
       if( af.getFrequency() == 0.0 )
         {
           out << quint16(0);
@@ -392,7 +376,6 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
   return true;
 }
 
-
 bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
                                               QList<Airfield>& airfieldList )
 {
@@ -411,8 +394,8 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
   in.setVersion( QDataStream::Qt_4_7 );
 
   quint32 magic;
-  qint8 fileType;
-  quint16 fileVersion;
+  quint64 fileType;
+  quint8 fileVersion;
   QDateTime creationDateTime;
   QStringList countryList;
   double homeRadius;
@@ -424,22 +407,15 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
 
   ProjectionBase *projectionFromFile;
 
-  // airfield counter
-  quint32 afc;
+  // airfield record number
+  quint32 afrn;
 
   quint8 afType;
-  QString afName;
-  QString icao;
-  QString gpsName;
+  QByteArray utf8_temp;
   WGSPoint wgsPos;
   QPoint position;
   qint16 elevation;
   quint16 inFrequency;
-  QString comment;
-  QString country;
-  float frequency;
-  QByteArray utf8_temp;
-  QList<Runway> rwyList;
 
   in >> magic;
 
@@ -454,7 +430,7 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
 
   if( fileType != FILE_TYPE_AIRFIELD_C )
     {
-      qWarning( "OAIP: wrong file type %x read! Aborting ...", fileType );
+      qWarning( "OAIP: wrong file type %llx read! Aborting ...", fileType );
       inFile.close();
       return false;
     }
@@ -463,7 +439,7 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
 
   if( fileVersion != FILE_VERSION_AIRFIELD_C )
     {
-      qWarning( "OAIP: wrong file version %x read! Aborting ...", fileType );
+      qWarning( "OAIP: wrong file version %hhx read! Aborting ...", fileVersion );
       inFile.close();
       return false;
     }
@@ -483,13 +459,13 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
   delete projectionFromFile;
   projectionFromFile = 0;
 
-  // read number of elements in the file
-  in >> afc;
+  // read number of records in the file
+  in >> afrn;
 
   // Preallocate list memory for new elements to be added.
-  if( afc )
+  if( afrn )
     {
-      airfieldList.reserve( airfieldList.size() + afc );
+      airfieldList.reserve( airfieldList.size() + afrn );
     }
 
   uint counter = 0;
@@ -498,53 +474,61 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
     {
       counter++;
 
-      in >> afType;
-      ShortLoad(in, utf8_temp);
-      afName = QString::fromUtf8(utf8_temp);
+      Airfield af;
 
+      in >> afType;
+
+      af.setTypeID( static_cast<BaseMapElement::objectType>(afType) );
+
+      // read long name
       ShortLoad(in, utf8_temp);
-      gpsName= QString::fromUtf8(utf8_temp);
+      af.setName(QString::fromUtf8(utf8_temp));
+
+      // read short name
+      ShortLoad(in, utf8_temp);
+      af.setWPName(QString::fromUtf8(utf8_temp));
 
       // read the 2 letter country code
       ShortLoad(in, utf8_temp);
-      country = QString::fromUtf8(utf8_temp);
+      af.setCountry(QString::fromUtf8(utf8_temp));
 
+      // read ICAO
       ShortLoad(in, utf8_temp);
-      icao = QString::fromUtf8(utf8_temp);
+      af.setICAO(QString::fromUtf8(utf8_temp));
 
       // read comment
       ShortLoad(in, utf8_temp);
-      comment = QString::fromUtf8(utf8_temp);
+      af.setComment(QString::fromUtf8(utf8_temp));
 
-      in >> wgsPos;
-      in >> position;
-      in >> elevation;
+      in >> wgsPos; af.setWGSPosition(wgsPos);
+
+      in >> position; af.setPosition(position);
+
+      in >> elevation; af.setElevation(elevation);
+
       in >> inFrequency;
 
       if( inFrequency == 0 )
         {
-          frequency = 0.0;
+          af.setFrequency( 0.0 );
         }
       else
         {
-          frequency = (((float) inFrequency) / 1000.0) + 100.;
+          af.setFrequency((((float) inFrequency) / 1000.0) + 100.);
         }
 
       // The runway list has to be read
-      rwyList.clear();
+      quint8 listSize; in >> listSize;
 
-      quint8 listSize;
-      quint16 length;
-      quint16 width;
-      quint16 heading;
-      quint8 surface;
-      quint8 isOpen;
-      quint8 isBidirectional;
-
-      in >> listSize;
-
-      for( int i = 0; i < (int) listSize; i++ )
+      for( short i = 0; i < (short) listSize; i++ )
         {
+          quint16 length;
+          quint16 width;
+          quint16 heading;
+          quint8 surface;
+          quint8 isOpen;
+          quint8 isBidirectional;
+
           in >> length;
           in >> width;
           in >> heading;
@@ -553,26 +537,24 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
           in >> isBidirectional;
 
           Runway rwy( length, heading, surface, isOpen, isBidirectional, width );
-          rwyList.append(rwy);
+
+          af.addRunway( rwy );
         }
 
-      Airfield af( afName, icao, gpsName, (BaseMapElement::objectType) afType,
-                   wgsPos, position, rwyList, elevation, frequency, country, comment );
-
-      // Add an airfield site to the list.
+      // Add the airfield site to the list.
       airfieldList.append( af );
     }
 
   inFile.close();
 
-  //qDebug( "W2000: %d airfield objects read from file %s in %dms",
-  //        counter, basename(path.toLatin1().data()), t.elapsed() );
+  qDebug( "OAIP: %d airfields read from %s in %dms",
+          counter, fileName.toLatin1().data(), t.elapsed() );
 
   return true;
 }
 
 /**
- * Get the header data of a compiled file and put it in our class
+ * Reads the header data of a compiled file and put it in our class
  * variables.
  */
 bool OpenAipAirfieldLoader::setHeaderData( QString &path )
@@ -607,7 +589,7 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 
   if( h_magic != KFLOG_FILE_MAGIC )
     {
-      qWarning( "OpenAip: wrong magic key %x read! Aborting ...", h_magic );
+      qWarning( "OAIP: wrong magic key %x read! Aborting ...", h_magic );
       inFile.close();
       return false;
     }
@@ -616,7 +598,7 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 
   if( h_fileType != FILE_TYPE_AIRFIELD_C )
     {
-      qWarning( "OpenAip: wrong file type %x read! Aborting ...", h_fileType );
+      qWarning( "OAIP: wrong file type %llx read! Aborting ...", h_fileType );
       inFile.close();
       return false;
     }
@@ -625,7 +607,7 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 
   if( h_fileVersion != FILE_VERSION_AIRFIELD_C )
     {
-      qWarning( "OpenAip: wrong file version %x read! Aborting ...", h_fileVersion );
+      qWarning( "OAIP: wrong file version %hhx read! Aborting ...", h_fileVersion );
       inFile.close();
       return false;
     }
@@ -643,4 +625,51 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
   inFile.close();
   h_headerIsValid = true;
   return true;
+}
+
+/*------------------------- OpenAipThread ------------------------------------*/
+
+#include <signal.h>
+
+OpenAipThread::OpenAipThread( QObject *parent, bool readSource ) :
+  QThread( parent ),
+  m_readSource(readSource)
+{
+  setObjectName( "OpenAipThread" );
+
+  // Activate self destroy after finish signal has been caught.
+  connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
+}
+
+OpenAipThread::~OpenAipThread()
+{
+}
+
+void OpenAipThread::run()
+{
+  sigset_t sigset;
+  sigfillset( &sigset );
+
+  // deactivate all signals in this thread
+  pthread_sigmask( SIG_SETMASK, &sigset, 0 );
+
+  QList<Airfield>* airfieldList = new QList<Airfield>;
+
+  OpenAipAirfieldLoader oaipl;
+
+  bool ok = oaipl.load( *airfieldList, m_readSource );
+
+  /* It is expected that a receiver slot is connected to this signal. The
+   * receiver is responsible to delete the passed lists. Otherwise a big
+   * memory leak will occur.
+   */
+  emit loadedList( ok, airfieldList );
+
+  // Check is signal is connected to a slot.
+  if( receivers( SIGNAL( loadedList( bool, QList<Airfield>* )) ) == 0 )
+    {
+      qWarning() << "OpenAipThread: No Slot connection to Signal loadedList!";
+
+      delete airfieldList;
+    }
 }

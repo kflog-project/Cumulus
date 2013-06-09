@@ -606,6 +606,9 @@ bool OpenAip::readAirfields( QString fileName,
                       continue;
                     }
 
+#if 0
+                  // There is no need for country filtering because every country
+                  // is stored in an extra file.
                   if( m_countryFilterSet.isEmpty() == false )
                     {
                       if( m_countryFilterSet.contains(af.getCountry()) == false )
@@ -614,6 +617,7 @@ bool OpenAip::readAirfields( QString fileName,
                           continue;
                         }
                     }
+#endif
 
                   if( m_filterRadius > 0.0 )
                     {
@@ -1119,7 +1123,7 @@ void OpenAip::loadUserFilterValues()
       m_countryFilterSet.insert( clist.at(i) );
     }
 
-  int iRadius = GeneralConfig::instance()->getWelt2000HomeRadius();
+  int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
   // We must look, what unit the user has chosen. This unit must
   // be considered during load of data items.

@@ -245,7 +245,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           // the source must be started.
 
           // get home radius from configuration data
-          int iRadius = GeneralConfig::instance()->getWelt2000HomeRadius();
+          int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
           double dRadius;
 
           if( iRadius == 0 )
@@ -679,7 +679,7 @@ bool Welt2000::parse( QString& path,
   bool outlandings = conf->getWelt2000LoadOutlandings();
 
   // get home radius from configuration data
-  int radius = conf->getWelt2000HomeRadius();
+  int radius = conf->getAirfieldHomeRadius();
 
   if( radius == 0 )
     {
@@ -1569,7 +1569,7 @@ bool Welt2000::readCompiledFile( QString &path,
 
   if( fileVersion != FILE_VERSION_AIRFIELD_C )
     {
-      qWarning( "W2000: wrong file version %x read! Aborting ...", fileType );
+      qWarning( "W2000: wrong file version %x read! Aborting ...", fileVersion );
       inFile.close();
       return false;
     }
@@ -1730,8 +1730,8 @@ bool Welt2000::readCompiledFile( QString &path,
 
   inFile.close();
 
-  //qDebug( "W2000: %d airfield objects read from file %s in %dms",
-  //        counter, basename(path.toLatin1().data()), t.elapsed() );
+  qDebug( "W2000: %d airfields read from %s in %dms",
+          counter, basename(path.toLatin1().data()), t.elapsed() );
 
   return true;
 }

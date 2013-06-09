@@ -569,6 +569,9 @@ void MainWindow::slotCreateApplicationWidgets()
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
   connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
+           _globalMapContents, SLOT( slotReloadOpenAipAirfields() ) );
+
+  connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
            calculator, SLOT( slot_CheckHomeSiteSelection() ) );
 
   connect( _globalMapMatrix, SIGNAL( projectionChanged() ),

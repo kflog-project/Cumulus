@@ -1355,6 +1355,17 @@ class GeneralConfig : protected QSettings
     _mapInstallRadius = newValue;
   };
 
+  /** gets the airfield source */
+  int getAirfieldSource() const
+  {
+    return _airfieldSource;
+  };
+  /** sets the airfield source */
+  void setAirfieldSource( const int newValue )
+  {
+    _airfieldSource = newValue;
+  };
+
   /** Gets the welt2000 country filter */
   QString &getWelt2000CountryFilter()
     {
@@ -1378,15 +1389,15 @@ class GeneralConfig : protected QSettings
       return _welt2000FileName;
     };
 
-  /** gets the welt2000 home radius */
-  int getWelt2000HomeRadius() const
+  /** gets the airfield home radius */
+  int getAirfieldHomeRadius() const
   {
-    return _welt2000HomeRadius;
+    return _airfieldHomeRadius;
   };
-  /** sets the welt2000 home radius */
-  void setWelt2000HomeRadius( const int newValue )
+  /** sets the airfield home radius */
+  void setAirfieldHomeRadius( const int newValue )
   {
-    _welt2000HomeRadius = newValue;
+    _airfieldHomeRadius = newValue;
   };
 
   /** gets the welt2000 outlanding load flag */
@@ -2693,10 +2704,13 @@ class GeneralConfig : protected QSettings
   // Map install radius for download
   int _mapInstallRadius;
 
+  // Airfield source. 0 = OpenAip, 1 = Welt2000
+  int _airfieldSource;
+  // airfield home radius
+  int _airfieldHomeRadius;
+
   // Welt2000 country filter
   QString _welt2000CountryFilter;
-  // Welt2000 home radius
-  int _welt2000HomeRadius;
   // Welt2000 outlanding load flag
   bool _welt2000LoadOutlandings;
   // Welt2000 download link

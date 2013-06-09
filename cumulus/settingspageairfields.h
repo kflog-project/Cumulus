@@ -20,7 +20,11 @@
  *
  * \author Axel Pauli
  *
- * \brief Configuration settings for airfield loading from Welt2000.
+ * \brief Configuration settings for airfield data loading from Welt2000 and
+ * OpenAIP.
+ *
+ * Configuration settings for airfield data loading from Welt2000 and
+ * OpenAIP.
  *
  * \date 2008-2013
  *
@@ -32,7 +36,9 @@
 #define SETTINGS_PAGE_AIRFIELDS_H
 
 #include <QWidget>
+#include <QComboBox>
 #include <QCheckBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QStringList>
@@ -63,6 +69,11 @@ class SettingsPageAirfields : public QWidget
   virtual ~SettingsPageAirfields();
 
   /**
+   * Checks if the configuration of the OpenAIP has been changed
+   */
+  bool checkIsOpenAipChanged();
+
+  /**
    * Checks if the configuration of the Welt2000 has been changed
    */
   bool checkIsWelt2000Changed();
@@ -75,9 +86,19 @@ class SettingsPageAirfields : public QWidget
   private slots: // Private slots
 
   /**
+   * Called, if the source selection is changed.
+   */
+  void slot_sourceChanged( int index );
+
+  /**
    * Called if the text of the filter has been changed
    */
   void slot_filterChanged( const QString& text );
+
+  /**
+   * Called to open the airfield file load selection dialog.
+   */
+  void slot_openLoadDialog();
 
   /**
    * Called if the Ok button is pressed.
@@ -106,6 +127,12 @@ class SettingsPageAirfields : public QWidget
   void downloadWelt2000( const QString& welt2000FileName );
 
   /**
+   * This signal is emitted, if OpenAIP items have been changed to trigger
+   * a reload of all data files.
+   */
+  void reloadOpenAip();
+
+  /**
    * This signal is emitted, if Welt2000 items have been changed to trigger
    * a reload of the data file.
    */
@@ -129,14 +156,25 @@ class SettingsPageAirfields : public QWidget
   /** Called to check, if something has been changed by the user. */
   bool checkChanges();
 
+  /** Source selector */
+  QComboBox* m_sourceBox;
+
+  /** OpenAIP group box widget */
+  QGroupBox* m_oaipGroup;
+
+  /** Welt2000 group box widget */
+  QGroupBox* m_weltGroup;
 
   /** Country filter for Welt2000 data file */
   QLineEdit* m_countryFilter;
 
   /** Radius around home position for Welt2000 data file */
 
-  /** Home radius. */
-  NumberEditor* m_homeRadius;
+  /** Home radius OpenAIP. */
+  NumberEditor* m_homeRadiusOaip;
+
+  /** Home radius Welt2000. */
+  NumberEditor* m_homeRadiusW2000;
 
   /** Pixels to add to the row height in airfield/waypoint lists
    *  (for easy finger selection)
