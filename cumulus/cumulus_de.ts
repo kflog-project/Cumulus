@@ -79,14 +79,6 @@
         <translation>Luftraum Download</translation>
     </message>
     <message>
-        <source>Set Proxy</source>
-        <translation type="obsolete">Setze Proxy</translation>
-    </message>
-    <message>
-        <source>Enter Proxy data if needed</source>
-        <translation type="obsolete">Definiere Proxy bei Bedarf</translation>
-    </message>
-    <message>
         <location filename="airspacedownloaddialog.cpp" line="48"/>
         <source>Airspace Url:</source>
         <translation>Luftraum URL:</translation>
@@ -120,62 +112,62 @@
         <translation>Höhenmesser Einstellungen</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="57"/>
+        <location filename="altimetermodedialog.cpp" line="74"/>
         <source>MSL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="58"/>
+        <location filename="altimetermodedialog.cpp" line="75"/>
         <source>STD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="59"/>
+        <location filename="altimetermodedialog.cpp" line="76"/>
         <source>AGL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="60"/>
+        <location filename="altimetermodedialog.cpp" line="77"/>
         <source>AHL</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="92"/>
+        <location filename="altimetermodedialog.cpp" line="109"/>
         <source>Meters</source>
         <translation>Meter</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="98"/>
+        <location filename="altimetermodedialog.cpp" line="115"/>
         <source>Feet</source>
         <translation>Fuß</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="109"/>
+        <location filename="altimetermodedialog.cpp" line="126"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="115"/>
+        <location filename="altimetermodedialog.cpp" line="132"/>
         <source>Baro</source>
         <translation>Baro</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="141"/>
+        <location filename="altimetermodedialog.cpp" line="158"/>
         <source>AltGain:</source>
         <translation>H-Gewinn:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="157"/>
+        <location filename="altimetermodedialog.cpp" line="174"/>
         <source>Leveling:</source>
         <translation>Abgleich:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="170"/>
+        <location filename="altimetermodedialog.cpp" line="187"/>
         <source>Altitude:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="175"/>
+        <location filename="altimetermodedialog.cpp" line="192"/>
         <source>QNH:</source>
         <translation></translation>
     </message>
@@ -206,10 +198,6 @@
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Task target reached</source>
-        <translation type="obsolete">Aufgabenziel erreicht</translation>
-    </message>
-    <message>
         <location filename="calculator.cpp" line="501"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
@@ -218,14 +206,6 @@
         <location filename="calculator.cpp" line="507"/>
         <source>reached</source>
         <translation>erreicht</translation>
-    </message>
-    <message>
-        <source>Taskpoint area reached</source>
-        <translation type="obsolete">Wendepunktbereich erreicht</translation>
-    </message>
-    <message>
-        <source>Automatic taskpoint switch</source>
-        <translation type="obsolete">Automatische Wendepunktschaltung</translation>
     </message>
     <message>
         <location filename="calculator.cpp" line="332"/>
@@ -356,15 +336,6 @@
         <source>Units</source>
         <translation>Einheiten</translation>
     </message>
-    <message>
-        <source>&lt;html&gt;&lt;b&gt;Configuration settings have been changed!&lt;/b&gt;&lt;p&gt;Update of system can take a few seconds and more!&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt;&lt;b&gt;Configuration settings have been changed!&lt;/b&gt;&lt;p&gt;Update of system can take a few seconds!&lt;/html&gt;</oldsource>
-        <translation type="obsolete">&lt;html&gt;&lt;b&gt;Die Konfiguration wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;You have changed:&lt;b&gt;&lt;ul&gt;%1&lt;/ul&gt;&lt;/b&gt;Discard changes?&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Sie änderten:&lt;b&gt;&lt;ul&gt;%1&lt;/ul&gt;&lt;/b&gt;Änderungen verwerfen?&lt;/html&gt;</translation>
-    </message>
 </context>
 <context>
     <name>DownloadManager</name>
@@ -436,52 +407,52 @@
 <context>
     <name>FlarmAliasList</name>
     <message>
-        <location filename="flarmaliaslist.cpp" line="78"/>
+        <location filename="flarmaliaslist.cpp" line="92"/>
         <source> Flarm ID </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="81"/>
+        <location filename="flarmaliaslist.cpp" line="95"/>
         <source> Alias (15) </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="218"/>
+        <location filename="flarmaliaslist.cpp" line="234"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="219"/>
+        <location filename="flarmaliaslist.cpp" line="235"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="279"/>
+        <location filename="flarmaliaslist.cpp" line="295"/>
         <source>Missing Entry</source>
         <translation>Eingabe fehlt</translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="280"/>
+        <location filename="flarmaliaslist.cpp" line="296"/>
         <source>Please fill out all fields!</source>
         <translation>Füllen Sie alle Felder aus!</translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="379"/>
+        <location filename="flarmaliaslist.cpp" line="395"/>
         <source>Enter Flarm ID</source>
         <translation>Eingabe Flarm ID</translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="380"/>
+        <location filename="flarmaliaslist.cpp" line="396"/>
         <source>Flarm ID:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="384"/>
+        <location filename="flarmaliaslist.cpp" line="400"/>
         <source>Enter Alias</source>
         <translation>Eingabe Alias</translation>
     </message>
     <message>
-        <location filename="flarmaliaslist.cpp" line="385"/>
+        <location filename="flarmaliaslist.cpp" line="401"/>
         <source>Alias (15):</source>
         <translation></translation>
     </message>
@@ -617,14 +588,6 @@
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>Flarm Problem</source>
-        <translation type="obsolete">Flarm Problem</translation>
-    </message>
-    <message>
-        <source>Cannot disable NMEA output!</source>
-        <translation type="obsolete">NMEA Ausgabe nicht abschaltbar!</translation>
-    </message>
-    <message>
         <location filename="flarmlogbook.cpp" line="277"/>
         <source>Flarm flight list read error!</source>
         <translation>Flarm Fluglisten Lesefehler!</translation>
@@ -706,13 +669,6 @@
         <location filename="fontdialog.cpp" line="145"/>
         <source>Sample</source>
         <translation>Beispiel</translation>
-    </message>
-</context>
-<context>
-    <name>GeneralConfig</name>
-    <message>
-        <source>HOME</source>
-        <translation type="obsolete">Heimat</translation>
     </message>
 </context>
 <context>
@@ -909,27 +865,27 @@
         <translation>Flug Parameter</translation>
     </message>
     <message>
-        <location filename="gliderflightdialog.cpp" line="61"/>
+        <location filename="gliderflightdialog.cpp" line="78"/>
         <source>Flight time:</source>
         <translation>Flugzeit:</translation>
     </message>
     <message>
-        <location filename="gliderflightdialog.cpp" line="68"/>
+        <location filename="gliderflightdialog.cpp" line="85"/>
         <source>McCready:</source>
         <translation>McCready:</translation>
     </message>
     <message>
-        <location filename="gliderflightdialog.cpp" line="85"/>
+        <location filename="gliderflightdialog.cpp" line="102"/>
         <source>Water:</source>
         <translation>Wasser:</translation>
     </message>
     <message>
-        <location filename="gliderflightdialog.cpp" line="102"/>
+        <location filename="gliderflightdialog.cpp" line="119"/>
         <source>Dump</source>
         <translation>Ablassen</translation>
     </message>
     <message>
-        <location filename="gliderflightdialog.cpp" line="114"/>
+        <location filename="gliderflightdialog.cpp" line="131"/>
         <source>Bugs:</source>
         <translation>Mücken:</translation>
     </message>
@@ -1118,37 +1074,37 @@
 <context>
     <name>IgcLogger</name>
     <message>
-        <location filename="igclogger.cpp" line="477"/>
+        <location filename="igclogger.cpp" line="478"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="569"/>
+        <location filename="igclogger.cpp" line="570"/>
         <source>Stop Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="570"/>
+        <location filename="igclogger.cpp" line="571"/>
         <source>&lt;html&gt;Are you sure you want&lt;br&gt;stop logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Wollen Sie wirklich&lt;br&gt;den Logger stoppen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="599"/>
+        <location filename="igclogger.cpp" line="600"/>
         <source>Start Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="600"/>
+        <location filename="igclogger.cpp" line="601"/>
         <source>&lt;html&gt;You should select a glider&lt;br&gt;before start logging.&lt;br&gt;Continue start logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Vor Loggerstart&lt;br&gt;ein Flugzeug auswählen.&lt;br&gt;Logger wirklich starten?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="640"/>
+        <location filename="igclogger.cpp" line="641"/>
         <source>Restart Logging?</source>
         <translation>Neustart Logging?</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="641"/>
+        <location filename="igclogger.cpp" line="642"/>
         <source>&lt;html&gt;A new flight task was selected.&lt;br&gt;Restart logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine neue Flugaufgabe wurde ausgewählt.&lt;br&gt;Logging neu starten?&lt;/html&gt;</translation>
     </message>
@@ -1197,18 +1153,6 @@
         <location filename="logbook.cpp" line="179"/>
         <source>Date</source>
         <translation>Datum</translation>
-    </message>
-    <message>
-        <source>Takeoff</source>
-        <translation type="obsolete">Start</translation>
-    </message>
-    <message>
-        <source>Landing</source>
-        <translation type="obsolete">Landung</translation>
-    </message>
-    <message>
-        <source>Duration</source>
-        <translation type="obsolete">Dauer</translation>
     </message>
     <message>
         <location filename="logbook.cpp" line="182"/>
@@ -1268,437 +1212,398 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="395"/>
+        <location filename="mainwindow.cpp" line="447"/>
         <source>Disclaimer</source>
         <translation>Ausschluss</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="461"/>
+        <location filename="mainwindow.cpp" line="513"/>
         <source>Starting Cumulus...</source>
         <translation>Starte Cumulus...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="501"/>
+        <location filename="mainwindow.cpp" line="553"/>
         <source>Creating map elements...</source>
         <translation>Erzeuge Kartenobjekte...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="528"/>
+        <location filename="mainwindow.cpp" line="583"/>
         <source>Creating views...</source>
         <translation>Erzeuge Ansichten...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="559"/>
-        <location filename="mainwindow.cpp" line="1433"/>
+        <location filename="mainwindow.cpp" line="614"/>
+        <location filename="mainwindow.cpp" line="1489"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="560"/>
-        <location filename="mainwindow.cpp" line="1438"/>
+        <location filename="mainwindow.cpp" line="615"/>
+        <location filename="mainwindow.cpp" line="1494"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="580"/>
+        <location filename="mainwindow.cpp" line="635"/>
         <source>Setting up connections...</source>
         <translation>Stelle Verbindungen her...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="822"/>
+        <location filename="mainwindow.cpp" line="877"/>
         <source>Airspace Warnings</source>
         <translation>Luftraum Warnungen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="824"/>
+        <location filename="mainwindow.cpp" line="879"/>
         <source>&lt;html&gt;&lt;b&gt;Airspace warnings are disabled!&lt;br&gt;Enable now?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Luftraum Warnungen sind deaktiviert!&lt;br&gt;Jetzt aktivieren?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1074"/>
-        <location filename="mainwindow.cpp" line="1153"/>
+        <location filename="mainwindow.cpp" line="1129"/>
+        <location filename="mainwindow.cpp" line="1208"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1077"/>
-        <location filename="mainwindow.cpp" line="1156"/>
+        <location filename="mainwindow.cpp" line="1132"/>
+        <location filename="mainwindow.cpp" line="1211"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1092"/>
-        <location filename="mainwindow.cpp" line="1171"/>
+        <location filename="mainwindow.cpp" line="1147"/>
+        <location filename="mainwindow.cpp" line="1226"/>
         <source>Toggles</source>
         <translation>Umschalter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1093"/>
-        <location filename="mainwindow.cpp" line="1172"/>
+        <location filename="mainwindow.cpp" line="1148"/>
+        <location filename="mainwindow.cpp" line="1227"/>
         <source>Labels</source>
         <translation>Marken</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1116"/>
-        <location filename="mainwindow.cpp" line="1195"/>
+        <location filename="mainwindow.cpp" line="1171"/>
+        <location filename="mainwindow.cpp" line="1250"/>
         <source>Map</source>
         <translation>Karte</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1122"/>
-        <location filename="mainwindow.cpp" line="1201"/>
+        <location filename="mainwindow.cpp" line="1177"/>
+        <location filename="mainwindow.cpp" line="1256"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1126"/>
-        <location filename="mainwindow.cpp" line="1205"/>
+        <location filename="mainwindow.cpp" line="1181"/>
+        <location filename="mainwindow.cpp" line="1260"/>
         <source>Setup</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1131"/>
-        <location filename="mainwindow.cpp" line="1210"/>
-        <location filename="mainwindow.cpp" line="1635"/>
+        <location filename="mainwindow.cpp" line="1186"/>
+        <location filename="mainwindow.cpp" line="1265"/>
+        <location filename="mainwindow.cpp" line="1691"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1267"/>
+        <location filename="mainwindow.cpp" line="1323"/>
         <source>Setting up key shortcuts ...</source>
         <translation>Konfiguriere Tastenkürzel...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1278"/>
+        <location filename="mainwindow.cpp" line="1334"/>
         <source>Move up</source>
         <translation>Gehe hoch</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1284"/>
+        <location filename="mainwindow.cpp" line="1340"/>
         <source>Move right</source>
         <translation>Gehe rechts</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1290"/>
+        <location filename="mainwindow.cpp" line="1346"/>
         <source>Move down</source>
         <translation>Gehe runter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1296"/>
+        <location filename="mainwindow.cpp" line="1352"/>
         <source>Move left</source>
         <translation>Gehe links</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1302"/>
+        <location filename="mainwindow.cpp" line="1358"/>
         <source>Goto home site</source>
         <translation>Gehe zu Heimatort</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1314"/>
+        <location filename="mainwindow.cpp" line="1370"/>
         <source>Move to waypoint</source>
         <translation>Gehe zum Wegpunkt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1320"/>
-        <location filename="mainwindow.cpp" line="1343"/>
+        <location filename="mainwindow.cpp" line="1376"/>
+        <location filename="mainwindow.cpp" line="1399"/>
         <source>Open waypoint list</source>
         <translation>Öffne Wegpunktliste</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1331"/>
+        <location filename="mainwindow.cpp" line="1387"/>
         <source>McCready up</source>
         <translation>McCready hoch</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1337"/>
+        <location filename="mainwindow.cpp" line="1393"/>
         <source>McCready down</source>
         <translation>McCready runter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1365"/>
-        <location filename="mainwindow.cpp" line="1489"/>
+        <location filename="mainwindow.cpp" line="1421"/>
+        <location filename="mainwindow.cpp" line="1545"/>
         <source>Zoom in</source>
         <translation>Vergrößern</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1373"/>
-        <location filename="mainwindow.cpp" line="1499"/>
+        <location filename="mainwindow.cpp" line="1429"/>
+        <location filename="mainwindow.cpp" line="1555"/>
         <source>Zoom out</source>
         <translation>Verkleinern</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1380"/>
+        <location filename="mainwindow.cpp" line="1436"/>
         <source>Toggle menu</source>
         <translation>Menüschalter</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1467"/>
+        <location filename="mainwindow.cpp" line="1523"/>
         <source>Statusbar</source>
         <translation>Statusleiste</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1659"/>
+        <location filename="mainwindow.cpp" line="1715"/>
         <source>Map Info Boxes</source>
         <translation>Karte Info Boxen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2429"/>
+        <location filename="mainwindow.cpp" line="2485"/>
         <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2013, The Cumulus-Team&lt;/html&gt;</source>
         <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2013, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2433"/>
+        <location filename="mainwindow.cpp" line="2489"/>
         <source>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus/qt4&quot;&gt;https://svn.kflog.org/svn/repos/cumulus/qt4&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;Cumulus %1, kompiliert am %2 mit QT %3&lt;br&gt;&lt;br&gt;Heimatseite: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Archiv: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus&quot;&gt;https://svn.kflog.org/svn/repos/cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Melden Sie Probleme an: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;googlemail.com&quot;&gt;kflog.cumulus&amp;#64;googlemail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Veröffentlicht unter der &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2446"/>
+        <location filename="mainwindow.cpp" line="2502"/>
         <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2977"/>
+        <location filename="mainwindow.cpp" line="3033"/>
         <source>Welt2000</source>
         <translation>Welt2000</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2979"/>
+        <location filename="mainwindow.cpp" line="3035"/>
         <source>&lt;html&gt;&lt;b&gt;Welt2000 update available!&lt;br&gt;&lt;br&gt;Install it?&lt;br&gt;&lt;br&gt;Requires Internet access.&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Welt2000 Update verfügbar!&lt;br&gt;&lt;br&gt;Installieren?&lt;br&gt;&lt;br&gt;Erfordert Internet Zugriff.&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>AS Status</source>
-        <translation type="obsolete">LR Status</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="2544"/>
+        <location filename="mainwindow.cpp" line="2600"/>
         <source>created by remember action at</source>
         <translation>Erzeugt durch Benutzer am</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2943"/>
+        <location filename="mainwindow.cpp" line="2999"/>
         <source>takeoff</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2950"/>
+        <location filename="mainwindow.cpp" line="3006"/>
         <source>landed</source>
         <translation>gelandet</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1451"/>
-        <location filename="mainwindow.cpp" line="2754"/>
+        <location filename="mainwindow.cpp" line="1507"/>
+        <location filename="mainwindow.cpp" line="2810"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1457"/>
+        <location filename="mainwindow.cpp" line="1513"/>
         <source>Target Info</source>
         <translation>Ziel Info</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1596"/>
+        <location filename="mainwindow.cpp" line="1652"/>
         <source>GPS On/Off</source>
         <translation>GPS An/Aus</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1383"/>
+        <location filename="mainwindow.cpp" line="1439"/>
         <source>Open menu</source>
         <translation>Öffne Menü</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1427"/>
+        <location filename="mainwindow.cpp" line="1483"/>
         <source>Flarm Radar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1474"/>
+        <location filename="mainwindow.cpp" line="1530"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1479"/>
+        <location filename="mainwindow.cpp" line="1535"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1567"/>
+        <location filename="mainwindow.cpp" line="1623"/>
         <source>Flight trail</source>
         <oldsource>Trail</oldsource>
         <translation>Flugspur</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1574"/>
+        <location filename="mainwindow.cpp" line="1630"/>
         <source>Visualize waypoint</source>
         <translation>Wegpunkt visualisieren</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1582"/>
+        <location filename="mainwindow.cpp" line="1638"/>
         <source>Select task</source>
         <translation>Aufgabe wählen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1590"/>
+        <location filename="mainwindow.cpp" line="1646"/>
         <source>Start flight task</source>
         <translation>Start Flugaufgabe</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1611"/>
+        <location filename="mainwindow.cpp" line="1667"/>
         <source>Pre-flight</source>
         <translation>Vorflug</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1619"/>
+        <location filename="mainwindow.cpp" line="1675"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1627"/>
+        <location filename="mainwindow.cpp" line="1683"/>
         <source>In flight</source>
         <translation>Im Flug</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1642"/>
-        <location filename="mainwindow.cpp" line="2426"/>
+        <location filename="mainwindow.cpp" line="1698"/>
+        <location filename="mainwindow.cpp" line="2482"/>
         <source>About Cumulus</source>
         <translation>Über Cumulus</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1653"/>
+        <location filename="mainwindow.cpp" line="1709"/>
         <source>About Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1802"/>
+        <location filename="mainwindow.cpp" line="1858"/>
         <source>Terminating?</source>
         <translation>Beenden?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1803"/>
+        <location filename="mainwindow.cpp" line="1859"/>
         <source>Terminating Cumulus&lt;br&gt;&lt;b&gt;Are you sure?&lt;/b&gt;</source>
         <translation>Cumulus beenden&lt;br&gt;&lt;b&gt;Wirklich?&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1443"/>
-        <location filename="mainwindow.cpp" line="2270"/>
-        <location filename="mainwindow.cpp" line="2613"/>
+        <location filename="mainwindow.cpp" line="1499"/>
+        <location filename="mainwindow.cpp" line="2326"/>
+        <location filename="mainwindow.cpp" line="2669"/>
         <source>Reachable</source>
         <translation>Erreichbar</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1354"/>
+        <location filename="mainwindow.cpp" line="1410"/>
         <source>Set home site</source>
         <translation>Setze Heimat</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1403"/>
+        <location filename="mainwindow.cpp" line="1459"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1418"/>
+        <location filename="mainwindow.cpp" line="1474"/>
         <source>Exit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <source>Statusbar </source>
-        <translation type="obsolete">Statusleiste</translation>
-    </message>
-    <message>
-        <source>GPS Status</source>
-        <translation type="obsolete">GPS Status</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="1508"/>
+        <location filename="mainwindow.cpp" line="1564"/>
         <source>Airfield</source>
         <translation>Flugplatz</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1518"/>
+        <location filename="mainwindow.cpp" line="1574"/>
         <source>Outlanding</source>
         <translation>Landefeld</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1528"/>
+        <location filename="mainwindow.cpp" line="1584"/>
         <source>Taskpoint</source>
         <translation>Aufgabenpunkt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1538"/>
+        <location filename="mainwindow.cpp" line="1594"/>
         <source>Waypoint</source>
         <translation>Wegpunkt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1548"/>
+        <location filename="mainwindow.cpp" line="1604"/>
         <source>Extra Info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1558"/>
+        <location filename="mainwindow.cpp" line="1614"/>
         <source>Logging</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2275"/>
+        <location filename="mainwindow.cpp" line="2331"/>
         <source>Nearest</source>
         <translation>Nächste</translation>
     </message>
     <message>
-        <source>Cumulus Settings</source>
-        <translation type="obsolete">Cumulus Einstellungen</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2012, The Cumulus-Team&lt;/html&gt;</source>
-        <oldsource>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2011, The Cumulus-Team&lt;/html&gt;</oldsource>
-        <translation type="obsolete">&lt;html&gt;Cumulus %1, &amp;copy; 2002-2012, Das Cumulus-Team&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus/qt4&quot;&gt;https://svn.kflog.org/svn/repos/cumulus/qt4&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;googlemail.com&quot;&gt;kflog.cumulus&amp;#64;googlemail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</source>
-        <oldsource>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus&quot;&gt;https://svn.kflog.org/svn/repos/cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;googlemail.com&quot;&gt;kflog.cumulus&amp;#64;googlemail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</oldsource>
-        <translation type="obsolete">&lt;hml&gt;Cumulus %1, kompiliert am %2 mit QT %3&lt;br&gt;&lt;br&gt;Heimatseite: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Archiv: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus&quot;&gt;https://svn.kflog.org/svn/repos/cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Melden Sie Probleme an: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;googlemail.com&quot;&gt;kflog.cumulus&amp;#64;googlemail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Veröffentlicht unter der &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
-        <oldsource>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;/html&gt;</oldsource>
-        <translation type="obsolete">&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="2483"/>
+        <location filename="mainwindow.cpp" line="2539"/>
         <source>&lt;hml&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented by this application may be outdated or incorrect.&lt;p&gt;&lt;b&gt;Don&apos;t use this program if you cannot accept the disclaimer!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <oldsource>&lt;hml&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented in this software program may be outdated or incorrect.&lt;p&gt;&lt;b&gt;Don&apos;t use this program if you don&apos;t agree!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Durch Benutzung dieses Programms, akzeptieren Sie die zuvor genannten Einschränkungen!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2516"/>
+        <location filename="mainwindow.cpp" line="2572"/>
         <source>W%1-%2</source>
         <oldsource>WP%1-%2</oldsource>
         <translation>W%1-%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2543"/>
+        <location filename="mainwindow.cpp" line="2599"/>
         <source>user created</source>
         <translation>Benutzer erzeugt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2644"/>
+        <location filename="mainwindow.cpp" line="2700"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2719"/>
+        <location filename="mainwindow.cpp" line="2775"/>
         <source>Waypoint out of map range.</source>
         <translation>Wegpunkt außerhalb der Karte.</translation>
     </message>
     <message>
-        <source>Pre-Flight Settings</source>
-        <translation type="obsolete">Vorflug Einstellungen</translation>
-    </message>
-    <message>
-        <source>Home</source>
-        <translation type="obsolete">Heimat</translation>
-    </message>
-    <message>
-        <location filename="mainwindow.cpp" line="2857"/>
+        <location filename="mainwindow.cpp" line="2913"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
@@ -1770,185 +1675,205 @@
 <context>
     <name>MapContents</name>
     <message>
-        <location filename="mapcontents.cpp" line="232"/>
-        <location filename="mapcontents.cpp" line="249"/>
-        <location filename="mapcontents.cpp" line="257"/>
-        <location filename="mapcontents.cpp" line="694"/>
-        <location filename="mapcontents.cpp" line="711"/>
-        <location filename="mapcontents.cpp" line="719"/>
+        <location filename="mapcontents.cpp" line="234"/>
+        <location filename="mapcontents.cpp" line="251"/>
+        <location filename="mapcontents.cpp" line="259"/>
+        <location filename="mapcontents.cpp" line="696"/>
+        <location filename="mapcontents.cpp" line="713"/>
+        <location filename="mapcontents.cpp" line="721"/>
         <source>Out of memory! Map not loaded.</source>
         <translation>Speicher alle! Karte nicht geladen.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1593"/>
+        <location filename="mapcontents.cpp" line="1595"/>
         <source>%1 download(s) with %2 error(s) done.</source>
         <translation>%1 download(s) mit %2 Fehler(n) getan.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1596"/>
+        <location filename="mapcontents.cpp" line="1598"/>
         <source>Downloads finished</source>
         <translation>Downloads fertig</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1623"/>
+        <location filename="mapcontents.cpp" line="1625"/>
         <source>Network error occurred.
 All downloads are canceled!</source>
         <translation>Netzwerkfehler.
 Alle Downloads verworfen!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1626"/>
+        <location filename="mapcontents.cpp" line="1628"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1658"/>
+        <location filename="mapcontents.cpp" line="1660"/>
         <source>Download missing Data?</source>
         <translation>Fehlende Daten holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1659"/>
+        <location filename="mapcontents.cpp" line="1661"/>
         <source>Download missing Data from the Internet?</source>
         <translation>Fehlende Daten aus dem Internet holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1660"/>
+        <location filename="mapcontents.cpp" line="1662"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1742"/>
+        <location filename="mapcontents.cpp" line="1744"/>
         <source>Loading maps...</source>
         <translation>Lade Karten...</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1835"/>
+        <location filename="mapcontents.cpp" line="1837"/>
         <source>Reading OpenAir Files</source>
         <translation>Lese OpenAir Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1843"/>
+        <location filename="mapcontents.cpp" line="1851"/>
+        <source>Reading OpenAIP airfield Files</source>
+        <translation>Lese OpenAIP Dateien</translation>
+    </message>
+    <message>
+        <location filename="mapcontents.cpp" line="1871"/>
         <source>Reading Welt2000 File</source>
         <translation>Lese Welt2000 Datei</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1879"/>
+        <location filename="mapcontents.cpp" line="1906"/>
         <source>Loading maps done</source>
         <translation>Karten geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2476"/>
-        <location filename="mapcontents.cpp" line="2567"/>
+        <location filename="mapcontents.cpp" line="2497"/>
+        <source>Loading OpenAIP data</source>
+        <translation>Lade OpenAir Dateien</translation>
+    </message>
+    <message>
+        <location filename="mapcontents.cpp" line="2529"/>
+        <source>OpenAIP load failed</source>
+        <translation>OpenAIP Ladefehler</translation>
+    </message>
+    <message>
+        <location filename="mapcontents.cpp" line="2540"/>
+        <source>OpenAIP loaded</source>
+        <translation>OpenAIP geladen</translation>
+    </message>
+    <message>
+        <location filename="mapcontents.cpp" line="2563"/>
+        <location filename="mapcontents.cpp" line="2663"/>
         <source>loading Welt2000</source>
         <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2515"/>
+        <location filename="mapcontents.cpp" line="2602"/>
         <source>Welt2000 load failed</source>
         <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2533"/>
-        <location filename="mapcontents.cpp" line="2572"/>
+        <location filename="mapcontents.cpp" line="2623"/>
+        <location filename="mapcontents.cpp" line="2668"/>
         <source>Welt2000 loaded</source>
         <translation>Welt2000 geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2620"/>
+        <location filename="mapcontents.cpp" line="2716"/>
         <source>loading Airspaces</source>
         <translation>lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2628"/>
+        <location filename="mapcontents.cpp" line="2724"/>
         <source>Airspaces loaded</source>
         <translation>Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2661"/>
-        <location filename="mapcontents.cpp" line="2729"/>
+        <location filename="mapcontents.cpp" line="2757"/>
+        <location filename="mapcontents.cpp" line="2825"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2677"/>
-        <location filename="mapcontents.cpp" line="2741"/>
+        <location filename="mapcontents.cpp" line="2773"/>
+        <location filename="mapcontents.cpp" line="2837"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2693"/>
-        <location filename="mapcontents.cpp" line="2753"/>
+        <location filename="mapcontents.cpp" line="2789"/>
+        <location filename="mapcontents.cpp" line="2849"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2765"/>
+        <location filename="mapcontents.cpp" line="2861"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2773"/>
+        <location filename="mapcontents.cpp" line="2869"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2781"/>
+        <location filename="mapcontents.cpp" line="2877"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2789"/>
+        <location filename="mapcontents.cpp" line="2885"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2797"/>
+        <location filename="mapcontents.cpp" line="2893"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2811"/>
+        <location filename="mapcontents.cpp" line="2907"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2819"/>
+        <location filename="mapcontents.cpp" line="2915"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2827"/>
+        <location filename="mapcontents.cpp" line="2923"/>
         <source>Drawing motorways</source>
         <oldsource>Drawing highways</oldsource>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2835"/>
+        <location filename="mapcontents.cpp" line="2931"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2843"/>
+        <location filename="mapcontents.cpp" line="2939"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2851"/>
+        <location filename="mapcontents.cpp" line="2947"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2859"/>
+        <location filename="mapcontents.cpp" line="2955"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2867"/>
+        <location filename="mapcontents.cpp" line="2963"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2917"/>
+        <location filename="mapcontents.cpp" line="3013"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -1989,10 +1914,6 @@ Alle Downloads verworfen!</translation>
         <location filename="mapview.cpp" line="563"/>
         <source>TP</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Home</source>
-        <translation type="obsolete">Heimat</translation>
     </message>
     <message>
         <location filename="mapview.cpp" line="822"/>
@@ -2136,10 +2057,6 @@ Alle Downloads verworfen!</translation>
         <translation>Flarm Daten</translation>
     </message>
     <message>
-        <source>Log Interval:</source>
-        <translation type="obsolete">Log Intervall:</translation>
-    </message>
-    <message>
         <location filename="preflightflarmpage.cpp" line="146"/>
         <source>LogInt:</source>
         <translation></translation>
@@ -2249,10 +2166,6 @@ Alle Downloads verworfen!</translation>
         <translation>Flarm Problem</translation>
     </message>
     <message>
-        <source>No connection to the Flarm device!</source>
-        <translation type="obsolete">Keine Verbindung zum Flarm Gerät!</translation>
-    </message>
-    <message>
         <location filename="preflightflarmpage.cpp" line="696"/>
         <source>Task Error</source>
         <translation>Aufgabenfehler</translation>
@@ -2266,10 +2179,6 @@ Alle Downloads verworfen!</translation>
         <location filename="preflightflarmpage.cpp" line="698"/>
         <source>is too long!</source>
         <translation>ist zu lang!</translation>
-    </message>
-    <message>
-        <source>No response from Flarm device!</source>
-        <translation type="obsolete">Keine Antwort vom Flarm Gerät!</translation>
     </message>
 </context>
 <context>
@@ -2374,10 +2283,6 @@ Alle Downloads verworfen!</translation>
         <translation>Flarm Flugbuch:</translation>
     </message>
     <message>
-        <source>Logbook</source>
-        <translation type="obsolete">Logbuch</translation>
-    </message>
-    <message>
         <location filename="preflightmiscpage.cpp" line="171"/>
         <source>B-Record Interval:</source>
         <translation>B-Record Intervall:</translation>
@@ -2391,93 +2296,6 @@ Alle Downloads verworfen!</translation>
         <location filename="preflightmiscpage.cpp" line="201"/>
         <source>Off</source>
         <translation>Aus</translation>
-    </message>
-</context>
-<context>
-    <name>PreFlightTaskList</name>
-    <message>
-        <source>Wind Direction</source>
-        <translation type="obsolete">Wind Richtung</translation>
-    </message>
-    <message>
-        <source>Wind Speed</source>
-        <translation type="obsolete">Wind Geschwindigkeit</translation>
-    </message>
-    <message>
-        <source>Increase number value</source>
-        <translation type="obsolete">Erhöhe Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Decrease number value</source>
-        <translation type="obsolete">Reduziere Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Define a new task</source>
-        <translation type="obsolete">Neue Aufgabe definieren</translation>
-    </message>
-    <message>
-        <source>Edit selected task</source>
-        <translation type="obsolete">Editiere ausgewählte Aufgabe</translation>
-    </message>
-    <message>
-        <source>Remove selected task</source>
-        <translation type="obsolete">Lösche ausgewählte Aufgabe</translation>
-    </message>
-    <message>
-        <source>Select a flight task</source>
-        <translation type="obsolete">Flugaufgabe auswählen</translation>
-    </message>
-    <message>
-        <source>No.</source>
-        <translation type="obsolete">Nr.</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Distance</source>
-        <translation type="obsolete">Strecke</translation>
-    </message>
-    <message>
-        <source>Time</source>
-        <translation type="obsolete">Zeit</translation>
-    </message>
-    <message>
-        <source>Show</source>
-        <translation type="obsolete">Zeige</translation>
-    </message>
-    <message>
-        <source>Task display</source>
-        <translation type="obsolete">Aufgabenanzeige</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Schließen</translation>
-    </message>
-    <message>
-        <source>(No tasks defined)</source>
-        <translation type="obsolete">(Keine Aufgaben definiert)</translation>
-    </message>
-    <message>
-        <source>Delete Task?</source>
-        <translation type="obsolete">Aufgabe löschen?</translation>
-    </message>
-    <message>
-        <source>(Reset selection)</source>
-        <translation type="obsolete">(Reset Auswahl)</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">keiner</translation>
-    </message>
-    <message>
-        <source>Delete the selected task?</source>
-        <translation type="obsolete">Markierte Aufgabe löschen?</translation>
     </message>
 </context>
 <context>
@@ -2844,50 +2662,43 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightWidget</name>
     <message>
-        <source>Preflight settings</source>
-        <translation type="obsolete">Vorflug Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="preflightwidget.cpp" line="148"/>
+        <location filename="preflightwidget.cpp" line="160"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="149"/>
+        <location filename="preflightwidget.cpp" line="161"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="150"/>
+        <location filename="preflightwidget.cpp" line="163"/>
+        <source>Retrieve</source>
+        <translation>Rückholer</translation>
+    </message>
+    <message>
+        <location filename="preflightwidget.cpp" line="165"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="151"/>
+        <location filename="preflightwidget.cpp" line="166"/>
         <source>Common</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <source>Replace current task?</source>
-        <translation type="obsolete">Akt. Aufgabe ersetzen?</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="preflightwidget.cpp" line="51"/>
+        <location filename="preflightwidget.cpp" line="57"/>
         <source>Preflight Settings</source>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="74"/>
-        <location filename="preflightwidget.cpp" line="147"/>
+        <location filename="preflightwidget.cpp" line="80"/>
+        <location filename="preflightwidget.cpp" line="159"/>
         <source>Preflight Menu</source>
         <translation>Vorflug-Menü</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="123"/>
+        <location filename="preflightwidget.cpp" line="135"/>
         <source>close menu</source>
         <translation>Schließe Menü</translation>
     </message>
@@ -3189,10 +3000,6 @@ Alle Downloads verworfen!</translation>
         <translation>Freie Strecke</translation>
     </message>
     <message>
-        <source>Free Out and Return Distance</source>
-        <translation type="obsolete">Zielrückkehrstrecke</translation>
-    </message>
-    <message>
         <location filename="flighttask.cpp" line="597"/>
         <source>Free Out and Return</source>
         <translation>ZR-Strecke</translation>
@@ -3357,10 +3164,6 @@ Alle Downloads verworfen!</translation>
         <translation>Ende</translation>
     </message>
     <message>
-        <source>Free</source>
-        <translation type="obsolete">Frei</translation>
-    </message>
-    <message>
         <location filename="taskpoint.cpp" line="392"/>
         <source>Landing</source>
         <translation>Landung</translation>
@@ -3409,34 +3212,34 @@ Alle Downloads verworfen!</translation>
         <translation>Bitte schalten Sie Ihr BT GPS ein!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="139"/>
-        <location filename="waypointcatalog.cpp" line="1117"/>
-        <location filename="waypointcatalog.cpp" line="1486"/>
+        <location filename="waypointcatalog.cpp" line="141"/>
+        <location filename="waypointcatalog.cpp" line="1119"/>
+        <location filename="waypointcatalog.cpp" line="1488"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="727"/>
+        <location filename="waypointcatalog.cpp" line="729"/>
         <source>File does not exist!</source>
         <translation>Datei existiert nicht!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="733"/>
+        <location filename="waypointcatalog.cpp" line="735"/>
         <source>File is empty!</source>
         <translation>Datei ist leer!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="744"/>
+        <location filename="waypointcatalog.cpp" line="746"/>
         <source>No OpenAip data format!</source>
         <translation>Kein OpenAip Datenformat!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="762"/>
+        <location filename="waypointcatalog.cpp" line="764"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="398"/>
+        <location filename="mainwindow.cpp" line="450"/>
         <source>&lt;html&gt;This program comes with&lt;div align=&quot;center&quot;&gt;&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented in this software program may be outdated or incorrect.&lt;br&gt;&lt;br&gt;&lt;div align=&quot;center&quot;&gt;&lt;b&gt;Do You accept these terms?&lt;/b&gt;&lt;/div&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als Benutzer sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Akzeptieren Sie die zuvor genannten Einschränkungen?&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
@@ -3528,17 +3331,17 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="72"/>
-        <location filename="openaip.cpp" line="145"/>
-        <location filename="openaip.cpp" line="434"/>
-        <location filename="openaip.cpp" line="574"/>
+        <location filename="openaip.cpp" line="75"/>
+        <location filename="openaip.cpp" line="148"/>
+        <location filename="openaip.cpp" line="437"/>
+        <location filename="openaip.cpp" line="584"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="110"/>
-        <location filename="openaip.cpp" line="399"/>
-        <location filename="openaip.cpp" line="539"/>
+        <location filename="openaip.cpp" line="113"/>
+        <location filename="openaip.cpp" line="402"/>
+        <location filename="openaip.cpp" line="549"/>
         <source>Cannot open file</source>
         <translation>Datei nicht lesbar</translation>
     </message>
@@ -3632,133 +3435,139 @@ Alle Downloads verworfen!</translation>
     </message>
 </context>
 <context>
-    <name>SettingsPageAirfields</name>
+    <name>SettingsPageAirfieldLoading</name>
     <message>
-        <location filename="settingspageairfields.cpp" line="93"/>
-        <source>Welt2000</source>
-        <translation></translation>
+        <location filename="settingspageairfieldloading.cpp" line="43"/>
+        <source>Airfield loading settings</source>
+        <translation>Fluglätze Dateienauswahl</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="99"/>
+        <location filename="settingspageairfieldloading.cpp" line="59"/>
+        <source>Use check boxes to activate or deactivate file loading.</source>
+        <translation>Benutzen Sie die Checkboxen zum aktivieren oder deaktivieren des Datei Ladens.</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfieldloading.cpp" line="161"/>
+        <source>Select all</source>
+        <translation>Wähle alle</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfieldloading.cpp" line="331"/>
+        <source>Delete?</source>
+        <translation>Löschen?</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfieldloading.cpp" line="332"/>
+        <source>Delete selected entries?</source>
+        <translation>Auswahl löschen?</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsPageAirfields</name>
+    <message>
+        <location filename="settingspageairfields.cpp" line="141"/>
         <source>Country Filter:</source>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="111"/>
+        <location filename="settingspageairfields.cpp" line="115"/>
+        <location filename="settingspageairfields.cpp" line="153"/>
         <source>Home Radius:</source>
         <translation>Heimat Radius:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="124"/>
+        <location filename="settingspageairfields.cpp" line="166"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
     </message>
     <message>
-        <source>Set Proxy</source>
-        <translation type="obsolete">Setze Proxy</translation>
-    </message>
-    <message>
-        <source>Enter Proxy data if needed</source>
-        <translation type="obsolete">Definiere Proxy bei Bedarf</translation>
-    </message>
-    <message>
-        <source>Install Airfields</source>
-        <translation type="obsolete">Flugplätze installieren</translation>
-    </message>
-    <message>
-        <source>Install Welt2000 airfields</source>
-        <translation type="obsolete">Welt2000 Flugplätze installieren</translation>
-    </message>
-    <message>
-        <location filename="settingspageairfields.cpp" line="140"/>
+        <location filename="settingspageairfields.cpp" line="182"/>
         <source>Enter Welt2000 filename as to see on the web page</source>
         <translation>Welt2000 Dateiname wie er auf Webseite steht</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="150"/>
+        <location filename="settingspageairfields.cpp" line="192"/>
         <source>List Display</source>
         <translation>Listenanzeige</translation>
     </message>
     <message>
-        <source>Increase row height in AF/WP/OL Lists at:</source>
-        <oldsource>Entry Height Increase (Pixels) in AF/WP/OL Lists:</oldsource>
-        <translation type="obsolete">Zeilenhöhe in  AF/WP/OL Listen erhöhen um:</translation>
-    </message>
-    <message>
-        <location filename="settingspageairfields.cpp" line="163"/>
-        <location filename="settingspageairfields.cpp" line="177"/>
+        <location filename="settingspageairfields.cpp" line="205"/>
+        <location filename="settingspageairfields.cpp" line="219"/>
         <source> Pixels</source>
         <translation> Pixel</translation>
     </message>
     <message>
-        <source>Increase row height in Emergency List at:</source>
-        <translation type="obsolete">Zeilenhöhe in Notfalliste erhöhen um:</translation>
-    </message>
-    <message>
-        <location filename="settingspageairfields.cpp" line="54"/>
+        <location filename="settingspageairfields.cpp" line="58"/>
         <source>Settings - Airfields</source>
         <translation>Einstellungen - Flugplätze</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="132"/>
+        <location filename="settingspageairfields.cpp" line="98"/>
+        <source>Source:</source>
+        <translation>Quelle:</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="123"/>
+        <source>Off</source>
+        <translation>Aus</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="128"/>
+        <source>Load</source>
+        <translation>Laden</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="174"/>
         <source>Install</source>
         <translation>Installieren</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="133"/>
+        <location filename="settingspageairfields.cpp" line="175"/>
         <source>Install Welt2000 data</source>
         <translation>Installiere Welt2000 Daten</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="156"/>
+        <location filename="settingspageairfields.cpp" line="198"/>
         <source>More space in AF/WP/OL lists:</source>
         <translation>Mehr Raum in AF/WP/OL Listen:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="170"/>
+        <location filename="settingspageairfields.cpp" line="212"/>
         <source>More space in Emergency list:</source>
         <translation>Mehr Raum in Notfalliste:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="303"/>
+        <location filename="settingspageairfields.cpp" line="377"/>
         <source>Please check entries</source>
         <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="304"/>
+        <location filename="settingspageairfields.cpp" line="378"/>
         <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
         <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
     </message>
     <message>
-        <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma.&lt;br&gt;Your modification will not be saved!</source>
-        <translation type="obsolete">Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
-    </message>
-    <message>
-        <source>The Airfield settings</source>
-        <translation type="obsolete">Die Flugplatz Optionen</translation>
-    </message>
-    <message>
-        <location filename="settingspageairfields.cpp" line="376"/>
+        <location filename="settingspageairfields.cpp" line="466"/>
         <source>Welt2000 settings invalid!</source>
         <translation>Welt2000 Eingabe ungültig!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="377"/>
+        <location filename="settingspageairfields.cpp" line="467"/>
         <source>Please add a valid Welt2000 filename!</source>
         <translation>Bitte gültigen Welt2000 Dateinamen eintragen!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="395"/>
+        <location filename="settingspageairfields.cpp" line="485"/>
         <source>Download Welt2000?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="396"/>
+        <location filename="settingspageairfields.cpp" line="486"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="397"/>
+        <location filename="settingspageairfields.cpp" line="487"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>
@@ -3799,10 +3608,6 @@ Alle Downloads verworfen!</translation>
         <translation>Standard Farben</translation>
     </message>
     <message>
-        <source>Line Width:</source>
-        <translation type="obsolete">Linienbreite:</translation>
-    </message>
-    <message>
         <location filename="settingspageairspace.cpp" line="177"/>
         <source>Download</source>
         <translation>Download</translation>
@@ -3821,86 +3626,6 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspageairspace.cpp" line="198"/>
         <source>Filling</source>
         <translation>Füllung</translation>
-    </message>
-    <message>
-        <source>drawing</source>
-        <translation type="obsolete">zeichnen</translation>
-    </message>
-    <message>
-        <source>border</source>
-        <translation type="obsolete">Grenze</translation>
-    </message>
-    <message>
-        <source>fill</source>
-        <translation type="obsolete">füllen</translation>
-    </message>
-    <message>
-        <source>The Airspace settings</source>
-        <translation type="obsolete">Die Luftraumeinstellungen</translation>
-    </message>
-    <message>
-        <source>The Airspace drawing settings</source>
-        <translation type="obsolete">Die Luftraum Zeichnen Optionen</translation>
-    </message>
-</context>
-<context>
-    <name>SettingsPageAirspaceFilling</name>
-    <message>
-        <source>Airspace fill settings</source>
-        <translation type="obsolete">Luftraum Füllung</translation>
-    </message>
-    <message>
-        <source>Enable filling</source>
-        <oldsource>Enable airspace filling</oldsource>
-        <translation type="obsolete">Aktiviere Füllung</translation>
-    </message>
-    <message>
-        <source>Switch on/off Airspace filling</source>
-        <translation type="obsolete">Schalte Luftraum Füllung ein/aus</translation>
-    </message>
-    <message>
-        <source>Spin step width</source>
-        <translation type="obsolete">Boxen Schrittweite</translation>
-    </message>
-    <message>
-        <source>Distances</source>
-        <translation type="obsolete">Abstände</translation>
-    </message>
-    <message>
-        <source>Not near</source>
-        <translation type="obsolete">weit</translation>
-    </message>
-    <message>
-        <source>Near</source>
-        <translation type="obsolete">nah</translation>
-    </message>
-    <message>
-        <source>Very near</source>
-        <translation type="obsolete">dicht</translation>
-    </message>
-    <message>
-        <source>Inside</source>
-        <translation type="obsolete">innerhalb</translation>
-    </message>
-    <message>
-        <source>Increase number value</source>
-        <translation type="obsolete">Erhöhe Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Decrease number value</source>
-        <translation type="obsolete">Reduziere Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation type="obsolete">vertikal</translation>
-    </message>
-    <message>
-        <source>Lateral</source>
-        <translation type="obsolete">lateral</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Standard</translation>
     </message>
 </context>
 <context>
@@ -3964,80 +3689,29 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceLoading</name>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="42"/>
+        <location filename="settingspageairspaceloading.cpp" line="43"/>
         <source>Airspace loading settings</source>
         <translation>Luftraum Lade Konfiguration</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="56"/>
+        <location filename="settingspageairspaceloading.cpp" line="59"/>
         <source>Use check boxes to activate or deactivate file loading.</source>
         <translation>Benutzen Sie die Checkboxen zum aktivieren oder deaktivieren des Datei ladens.</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="88"/>
-        <source>Airspace Files</source>
-        <translation>Luftraum Dateien</translation>
+        <location filename="settingspageairspaceloading.cpp" line="335"/>
+        <source>Delete?</source>
+        <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="117"/>
+        <location filename="settingspageairspaceloading.cpp" line="336"/>
+        <source>Delete selected entries?</source>
+        <translation>Auswahl löschen?</translation>
+    </message>
+    <message>
+        <location filename="settingspageairspaceloading.cpp" line="161"/>
         <source>Select all</source>
         <translation>Wähle alle</translation>
-    </message>
-</context>
-<context>
-    <name>SettingsPageAirspaceWarnings</name>
-    <message>
-        <source>Airspace warning settings</source>
-        <translation type="obsolete">Luftraum Warnung</translation>
-    </message>
-    <message>
-        <source>Enable Warnings</source>
-        <oldsource>Enable Airspace Warning</oldsource>
-        <translation type="obsolete">Aktiviere Warnungen</translation>
-    </message>
-    <message>
-        <source>Switch on/off Airspace Warnings</source>
-        <translation type="obsolete">Luftraum Warnung ein/ausschalten</translation>
-    </message>
-    <message>
-        <source>Spin step width</source>
-        <translation type="obsolete">Boxen Schrittweite</translation>
-    </message>
-    <message>
-        <source>Distances</source>
-        <translation type="obsolete">Abstände</translation>
-    </message>
-    <message>
-        <source>Lateral</source>
-        <translation type="obsolete">lateral</translation>
-    </message>
-    <message>
-        <source>Above</source>
-        <translation type="obsolete">über</translation>
-    </message>
-    <message>
-        <source>Below</source>
-        <translation type="obsolete">unter</translation>
-    </message>
-    <message>
-        <source>Increase number value</source>
-        <translation type="obsolete">Erhöhe Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Decrease number value</source>
-        <translation type="obsolete">Reduziere Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Near</source>
-        <translation type="obsolete">nah</translation>
-    </message>
-    <message>
-        <source>Very Near</source>
-        <translation type="obsolete">dicht</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="obsolete">Standard</translation>
     </message>
 </context>
 <context>
@@ -4148,10 +3822,6 @@ Alle Downloads verworfen!</translation>
         <source>Delete selected glider?</source>
         <translation>Flugzeug löschen?</translation>
     </message>
-    <message>
-        <source>The Glider list</source>
-        <translation type="obsolete">Die Flugzeugliste</translation>
-    </message>
 </context>
 <context>
     <name>SettingsPageInformation</name>
@@ -4202,7 +3872,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageinformation.cpp" line="141"/>
-        <location filename="settingspageinformation.cpp" line="236"/>
+        <location filename="settingspageinformation.cpp" line="237"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
@@ -4232,7 +3902,7 @@ Alle Downloads verworfen!</translation>
         <translation>Schwarze Anzeige</translation>
     </message>
     <message>
-        <location filename="settingspageinformation.cpp" line="318"/>
+        <location filename="settingspageinformation.cpp" line="319"/>
         <source>Please select a sound player</source>
         <translation>Wähle Sound Player aus</translation>
     </message>
@@ -4354,25 +4024,17 @@ Alle Downloads verworfen!</translation>
         <translation>Aus</translation>
     </message>
     <message>
-        <source>Virtual Keyboard</source>
-        <translation type="obsolete">Virtuelle Tastatur</translation>
-    </message>
-    <message>
-        <source>The Look&amp;Feel settings</source>
-        <translation type="obsolete">Die Look&amp;Feel Optionen</translation>
-    </message>
-    <message>
         <location filename="settingspagelooknfeel.cpp" line="311"/>
         <source>GUI Font</source>
         <translation>GUI Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="349"/>
+        <location filename="settingspagelooknfeel.cpp" line="350"/>
         <source>GUI Menu Font</source>
         <translation>GUI Menü Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="374"/>
+        <location filename="settingspagelooknfeel.cpp" line="375"/>
         <source>Map sidebar color</source>
         <translation>Karte Randleistenfarbe</translation>
     </message>
@@ -4495,10 +4157,6 @@ Alle Downloads verworfen!</translation>
         <oldsource>Flight Trail</oldsource>
         <translation>Flugspur</translation>
     </message>
-    <message>
-        <source>The Map Objects</source>
-        <translation type="obsolete">Die Karten Objekte</translation>
-    </message>
 </context>
 <context>
     <name>SettingsPageMapSettings</name>
@@ -4559,14 +4217,6 @@ Alle Downloads verworfen!</translation>
         <translation>Lösche unbenutze Karten</translation>
     </message>
     <message>
-        <source>Set Proxy</source>
-        <translation type="obsolete">Setze Proxy</translation>
-    </message>
-    <message>
-        <source>Enter Proxy data if needed</source>
-        <translation type="obsolete">Definiere Proxy bei Bedarf</translation>
-    </message>
-    <message>
         <location filename="settingspagemapsettings.cpp" line="158"/>
         <source>Center Latitude:</source>
         <translation>Mittelpunkt Breite:</translation>
@@ -4615,10 +4265,6 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspagemapsettings.cpp" line="424"/>
         <source>Please select your map directory</source>
         <translation>Wählen Sie ein Kartenverzeichnis aus</translation>
-    </message>
-    <message>
-        <source>The Map Settings</source>
-        <translation type="obsolete">Die Karten Optionen</translation>
     </message>
 </context>
 <context>
@@ -4701,10 +4347,6 @@ Alle Downloads verworfen!</translation>
         <translation>&lt;html&gt;&lt;b&gt;Die Heimal Position wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>The Personal settings</source>
-        <translation type="obsolete">Die Persönlichen Optionen</translation>
-    </message>
-    <message>
         <location filename="settingspagepersonal.cpp" line="463"/>
         <source>Please select your data directory</source>
         <translation>Wählen Sie ein Datenverzeichnis aus</translation>
@@ -4712,14 +4354,6 @@ Alle Downloads verworfen!</translation>
 </context>
 <context>
     <name>SettingsPageTask</name>
-    <message>
-        <source>TP Scheme</source>
-        <translation type="obsolete">AP-Schema</translation>
-    </message>
-    <message>
-        <source>Cylinder</source>
-        <translation type="obsolete">Zylinder</translation>
-    </message>
     <message>
         <location filename="settingspagetask.cpp" line="210"/>
         <location filename="settingspagetask.cpp" line="235"/>
@@ -4881,22 +4515,6 @@ Alle Downloads verworfen!</translation>
         <translation>Sektor Winkel</translation>
     </message>
     <message>
-        <source>Draw Shape</source>
-        <translation type="obsolete">Zeichne Umriss</translation>
-    </message>
-    <message>
-        <source>Fill Shape</source>
-        <translation type="obsolete">Fülle Umriss</translation>
-    </message>
-    <message>
-        <source>Inner Radius:</source>
-        <translation type="obsolete">Innerer Radius:</translation>
-    </message>
-    <message>
-        <source>Outer Radius:</source>
-        <translation type="obsolete">Äußerer Radius:</translation>
-    </message>
-    <message>
         <location filename="settingspagetask.cpp" line="225"/>
         <location filename="settingspagetask.cpp" line="300"/>
         <location filename="settingspagetask.cpp" line="371"/>
@@ -4904,33 +4522,9 @@ Alle Downloads verworfen!</translation>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <source>Target Line</source>
-        <translation type="obsolete">Ziellinie</translation>
-    </message>
-    <message>
         <location filename="settingspagetask.cpp" line="145"/>
         <source>Draw</source>
         <translation>Zeichne</translation>
-    </message>
-    <message>
-        <source>Track Line</source>
-        <translation type="obsolete">Kurslinie</translation>
-    </message>
-    <message>
-        <source>Target Line Color</source>
-        <translation type="obsolete">Ziellinien Farbe</translation>
-    </message>
-    <message>
-        <source>Track Line Color</source>
-        <translation type="obsolete">Fluglinien Farbe</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">Breite:</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="obsolete">Farbe:</translation>
     </message>
 </context>
 <context>
@@ -4972,10 +4566,6 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspageterraincolors.cpp" line="258"/>
         <source>Elevation Offset</source>
         <translation>Höhenanpassung</translation>
-    </message>
-    <message>
-        <source>The Terrain color settings</source>
-        <translation type="obsolete">Die Geländefarben Optionen</translation>
     </message>
 </context>
 <context>
@@ -5086,135 +4676,131 @@ Alle Downloads verworfen!</translation>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
-    <message>
-        <source>The Unit settings</source>
-        <translation type="obsolete">Die Einheiten Optionen</translation>
-    </message>
 </context>
 <context>
     <name>TPInfoWidget</name>
     <message>
-        <location filename="tpinfowidget.cpp" line="82"/>
-        <location filename="tpinfowidget.cpp" line="155"/>
-        <location filename="tpinfowidget.cpp" line="754"/>
+        <location filename="tpinfowidget.cpp" line="99"/>
+        <location filename="tpinfowidget.cpp" line="172"/>
+        <location filename="tpinfowidget.cpp" line="772"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="87"/>
+        <location filename="tpinfowidget.cpp" line="104"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="130"/>
-        <location filename="tpinfowidget.cpp" line="148"/>
+        <location filename="tpinfowidget.cpp" line="147"/>
+        <location filename="tpinfowidget.cpp" line="165"/>
         <source>Close (%1)</source>
         <translation>Schließen (%1)</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="228"/>
+        <location filename="tpinfowidget.cpp" line="237"/>
         <source>Taskpoint switch</source>
         <translation>Aufgabenpunktschaltung</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="232"/>
+        <location filename="tpinfowidget.cpp" line="241"/>
         <source>Reached target</source>
         <translation>Erreichtes Ziel</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="237"/>
+        <location filename="tpinfowidget.cpp" line="246"/>
         <source>Next target</source>
         <translation>Nächstes Ziel</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="245"/>
-        <location filename="tpinfowidget.cpp" line="392"/>
-        <location filename="tpinfowidget.cpp" line="526"/>
-        <location filename="tpinfowidget.cpp" line="677"/>
+        <location filename="tpinfowidget.cpp" line="254"/>
+        <location filename="tpinfowidget.cpp" line="401"/>
+        <location filename="tpinfowidget.cpp" line="544"/>
+        <location filename="tpinfowidget.cpp" line="695"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="267"/>
-        <location filename="tpinfowidget.cpp" line="272"/>
-        <location filename="tpinfowidget.cpp" line="277"/>
-        <location filename="tpinfowidget.cpp" line="283"/>
-        <location filename="tpinfowidget.cpp" line="403"/>
-        <location filename="tpinfowidget.cpp" line="407"/>
-        <location filename="tpinfowidget.cpp" line="411"/>
-        <location filename="tpinfowidget.cpp" line="418"/>
-        <location filename="tpinfowidget.cpp" line="545"/>
-        <location filename="tpinfowidget.cpp" line="550"/>
-        <location filename="tpinfowidget.cpp" line="555"/>
-        <location filename="tpinfowidget.cpp" line="688"/>
-        <location filename="tpinfowidget.cpp" line="692"/>
-        <location filename="tpinfowidget.cpp" line="696"/>
+        <location filename="tpinfowidget.cpp" line="276"/>
+        <location filename="tpinfowidget.cpp" line="281"/>
+        <location filename="tpinfowidget.cpp" line="286"/>
+        <location filename="tpinfowidget.cpp" line="292"/>
+        <location filename="tpinfowidget.cpp" line="412"/>
+        <location filename="tpinfowidget.cpp" line="416"/>
+        <location filename="tpinfowidget.cpp" line="420"/>
+        <location filename="tpinfowidget.cpp" line="427"/>
+        <location filename="tpinfowidget.cpp" line="563"/>
+        <location filename="tpinfowidget.cpp" line="568"/>
+        <location filename="tpinfowidget.cpp" line="573"/>
+        <location filename="tpinfowidget.cpp" line="706"/>
+        <location filename="tpinfowidget.cpp" line="710"/>
+        <location filename="tpinfowidget.cpp" line="714"/>
         <source>Arrival Alt</source>
         <translation>Ankunftshöhe</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="284"/>
-        <location filename="tpinfowidget.cpp" line="333"/>
-        <location filename="tpinfowidget.cpp" line="336"/>
-        <location filename="tpinfowidget.cpp" line="355"/>
-        <location filename="tpinfowidget.cpp" line="419"/>
-        <location filename="tpinfowidget.cpp" line="457"/>
-        <location filename="tpinfowidget.cpp" line="460"/>
-        <location filename="tpinfowidget.cpp" line="479"/>
+        <location filename="tpinfowidget.cpp" line="293"/>
+        <location filename="tpinfowidget.cpp" line="342"/>
+        <location filename="tpinfowidget.cpp" line="345"/>
+        <location filename="tpinfowidget.cpp" line="364"/>
+        <location filename="tpinfowidget.cpp" line="428"/>
+        <location filename="tpinfowidget.cpp" line="466"/>
+        <location filename="tpinfowidget.cpp" line="469"/>
+        <location filename="tpinfowidget.cpp" line="488"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="298"/>
-        <location filename="tpinfowidget.cpp" line="422"/>
-        <location filename="tpinfowidget.cpp" line="571"/>
-        <location filename="tpinfowidget.cpp" line="702"/>
+        <location filename="tpinfowidget.cpp" line="307"/>
+        <location filename="tpinfowidget.cpp" line="431"/>
+        <location filename="tpinfowidget.cpp" line="589"/>
+        <location filename="tpinfowidget.cpp" line="720"/>
         <source>Vg</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="309"/>
-        <location filename="tpinfowidget.cpp" line="332"/>
-        <location filename="tpinfowidget.cpp" line="433"/>
-        <location filename="tpinfowidget.cpp" line="456"/>
-        <location filename="tpinfowidget.cpp" line="584"/>
-        <location filename="tpinfowidget.cpp" line="713"/>
+        <location filename="tpinfowidget.cpp" line="318"/>
+        <location filename="tpinfowidget.cpp" line="341"/>
+        <location filename="tpinfowidget.cpp" line="442"/>
+        <location filename="tpinfowidget.cpp" line="465"/>
+        <location filename="tpinfowidget.cpp" line="602"/>
+        <location filename="tpinfowidget.cpp" line="731"/>
         <source>Duration</source>
         <translation>Dauer</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="327"/>
-        <location filename="tpinfowidget.cpp" line="335"/>
-        <location filename="tpinfowidget.cpp" line="451"/>
-        <location filename="tpinfowidget.cpp" line="459"/>
-        <location filename="tpinfowidget.cpp" line="602"/>
-        <location filename="tpinfowidget.cpp" line="731"/>
+        <location filename="tpinfowidget.cpp" line="336"/>
+        <location filename="tpinfowidget.cpp" line="344"/>
+        <location filename="tpinfowidget.cpp" line="460"/>
+        <location filename="tpinfowidget.cpp" line="468"/>
+        <location filename="tpinfowidget.cpp" line="620"/>
+        <location filename="tpinfowidget.cpp" line="749"/>
         <source>ETA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="349"/>
-        <location filename="tpinfowidget.cpp" line="354"/>
-        <location filename="tpinfowidget.cpp" line="473"/>
-        <location filename="tpinfowidget.cpp" line="478"/>
-        <location filename="tpinfowidget.cpp" line="616"/>
-        <location filename="tpinfowidget.cpp" line="742"/>
+        <location filename="tpinfowidget.cpp" line="358"/>
+        <location filename="tpinfowidget.cpp" line="363"/>
+        <location filename="tpinfowidget.cpp" line="482"/>
+        <location filename="tpinfowidget.cpp" line="487"/>
+        <location filename="tpinfowidget.cpp" line="634"/>
+        <location filename="tpinfowidget.cpp" line="760"/>
         <source>Sunset</source>
         <translation>SU</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="374"/>
-        <location filename="tpinfowidget.cpp" line="659"/>
+        <location filename="tpinfowidget.cpp" line="383"/>
+        <location filename="tpinfowidget.cpp" line="677"/>
         <source>Landing target</source>
         <translation>Landeziel</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="514"/>
+        <location filename="tpinfowidget.cpp" line="532"/>
         <source>Arrival Info</source>
         <translation>Ankunftsinfo</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="518"/>
+        <location filename="tpinfowidget.cpp" line="536"/>
         <source>Selected target</source>
         <translation>Gewähltes Ziel</translation>
     </message>
@@ -5227,132 +4813,132 @@ Alle Downloads verworfen!</translation>
         <translation>Neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="106"/>
+        <location filename="taskeditor.cpp" line="114"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="107"/>
+        <location filename="taskeditor.cpp" line="115"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="108"/>
+        <location filename="taskeditor.cpp" line="116"/>
         <source>Waypoint</source>
         <translation>Wegpunkt</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="109"/>
+        <location filename="taskeditor.cpp" line="117"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="133"/>
+        <location filename="taskeditor.cpp" line="141"/>
         <source>move selected waypoint up</source>
         <translation>markierten Wegpunkt hoch schieben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="139"/>
+        <location filename="taskeditor.cpp" line="147"/>
         <source>move selected waypoint down</source>
         <translation>markierten Wegpunkt runter schieben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="145"/>
+        <location filename="taskeditor.cpp" line="153"/>
         <source>reverse waypoint order</source>
         <translation>Wegpunktreihenfolge umkehren</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="151"/>
+        <location filename="taskeditor.cpp" line="159"/>
         <source>add waypoint</source>
         <translation>Wegpunkt hinzufügen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="157"/>
+        <location filename="taskeditor.cpp" line="165"/>
         <source>remove waypoint</source>
         <translation>Wegpunkt löschen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="163"/>
+        <location filename="taskeditor.cpp" line="171"/>
         <source>save task</source>
         <translation>speichere Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="169"/>
+        <location filename="taskeditor.cpp" line="177"/>
         <source>cancel task</source>
         <translation>verwerfe Aufgabe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="179"/>
+        <location filename="taskeditor.cpp" line="188"/>
         <source>Name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="208"/>
+        <location filename="taskeditor.cpp" line="202"/>
         <source>Set task figure default schemas</source>
         <translation>Task Figuren auf Standard Schemas rücksetzen</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="217"/>
+        <location filename="taskeditor.cpp" line="211"/>
         <source>Edit selected waypoint</source>
         <translation>Editiere markierten Wegpunkt</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="230"/>
+        <location filename="taskeditor.cpp" line="238"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="231"/>
+        <location filename="taskeditor.cpp" line="239"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="232"/>
+        <location filename="taskeditor.cpp" line="240"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="396"/>
+        <location filename="taskeditor.cpp" line="400"/>
         <source>Total</source>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="548"/>
+        <location filename="taskeditor.cpp" line="552"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="549"/>
+        <location filename="taskeditor.cpp" line="553"/>
         <source>Task needs at least four waypoints</source>
         <translation>Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="572"/>
+        <location filename="taskeditor.cpp" line="576"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="573"/>
+        <location filename="taskeditor.cpp" line="577"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="597"/>
+        <location filename="taskeditor.cpp" line="601"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="598"/>
+        <location filename="taskeditor.cpp" line="602"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="879"/>
+        <location filename="taskeditor.cpp" line="883"/>
         <source>Defaults?</source>
         <translation>Standards?</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="880"/>
+        <location filename="taskeditor.cpp" line="884"/>
         <source>Reset all TP schemas to default configuration values?</source>
         <translation>Alle TP Schemas auf Konfugurationsstandard rücksetzen?</translation>
     </message>
@@ -5471,10 +5057,6 @@ Alle Downloads verworfen!</translation>
         <translation>Linie</translation>
     </message>
     <message>
-        <source>Cylinder</source>
-        <translation type="obsolete">Zylinder</translation>
-    </message>
-    <message>
         <location filename="taskpointeditor.cpp" line="111"/>
         <source>Radius:</source>
         <translation>Radius:</translation>
@@ -5528,17 +5110,17 @@ Alle Downloads verworfen!</translation>
         <translation>Variometer Einstellen</translation>
     </message>
     <message>
-        <location filename="variomodedialog.cpp" line="57"/>
+        <location filename="variomodedialog.cpp" line="74"/>
         <source>Time:</source>
         <translation>Zeit:</translation>
     </message>
     <message>
-        <location filename="variomodedialog.cpp" line="71"/>
+        <location filename="variomodedialog.cpp" line="88"/>
         <source>TEK Mode</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="variomodedialog.cpp" line="77"/>
+        <location filename="variomodedialog.cpp" line="94"/>
         <source>TEK Adjust:</source>
         <translation>TEK Abgleich:</translation>
     </message>
@@ -5546,143 +5128,143 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>WPInfoWidget</name>
     <message>
-        <location filename="wpinfowidget.cpp" line="81"/>
+        <location filename="wpinfowidget.cpp" line="80"/>
         <source>Add Waypoint</source>
         <translation>+ Wegpunkt</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="86"/>
+        <location filename="wpinfowidget.cpp" line="85"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="91"/>
+        <location filename="wpinfowidget.cpp" line="90"/>
         <source>Arrival</source>
         <translation>Ankunft</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="96"/>
+        <location filename="wpinfowidget.cpp" line="95"/>
         <source>Edit</source>
         <translation>Ändern</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="101"/>
+        <location filename="wpinfowidget.cpp" line="100"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="109"/>
-        <location filename="wpinfowidget.cpp" line="267"/>
-        <location filename="wpinfowidget.cpp" line="480"/>
+        <location filename="wpinfowidget.cpp" line="108"/>
+        <location filename="wpinfowidget.cpp" line="266"/>
+        <location filename="wpinfowidget.cpp" line="471"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="122"/>
+        <location filename="wpinfowidget.cpp" line="121"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="127"/>
+        <location filename="wpinfowidget.cpp" line="126"/>
         <source>Unselect</source>
         <translation>Abwählen</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="132"/>
+        <location filename="wpinfowidget.cpp" line="131"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="155"/>
-        <location filename="wpinfowidget.cpp" line="260"/>
+        <location filename="wpinfowidget.cpp" line="154"/>
+        <location filename="wpinfowidget.cpp" line="259"/>
         <source>Close (%1)</source>
         <translation>Schließen (%1)</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="307"/>
+        <location filename="wpinfowidget.cpp" line="298"/>
         <source>No waypoint data available</source>
         <translation>Keine Wegpunktdaten verfügbar</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="329"/>
+        <location filename="wpinfowidget.cpp" line="320"/>
         <source>(unknown)</source>
         <translation>(unbekannt)</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="344"/>
-        <location filename="wpinfowidget.cpp" line="366"/>
-        <location filename="wpinfowidget.cpp" line="371"/>
+        <location filename="wpinfowidget.cpp" line="335"/>
+        <location filename="wpinfowidget.cpp" line="357"/>
+        <location filename="wpinfowidget.cpp" line="362"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="365"/>
+        <location filename="wpinfowidget.cpp" line="356"/>
         <source>Runway: </source>
         <translation>Piste:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="367"/>
+        <location filename="wpinfowidget.cpp" line="358"/>
         <source>Length: </source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="530"/>
+        <location filename="wpinfowidget.cpp" line="521"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds and more.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden und mehr dauern.</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="656"/>
+        <location filename="wpinfowidget.cpp" line="647"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="657"/>
+        <location filename="wpinfowidget.cpp" line="648"/>
         <source>Delete waypoint</source>
         <translation>Lösche Wegpunkt</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="408"/>
+        <location filename="wpinfowidget.cpp" line="399"/>
         <source>Frequency:</source>
         <translation>Frequenz:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="395"/>
-        <location filename="wpinfowidget.cpp" line="401"/>
+        <location filename="wpinfowidget.cpp" line="386"/>
+        <location filename="wpinfowidget.cpp" line="392"/>
         <source>Elevation:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="426"/>
+        <location filename="wpinfowidget.cpp" line="417"/>
         <source>Sunrise:</source>
         <translation>SA:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="429"/>
+        <location filename="wpinfowidget.cpp" line="420"/>
         <source>Sunset:</source>
         <translation>SU:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="439"/>
+        <location filename="wpinfowidget.cpp" line="430"/>
         <source>Latitude:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="441"/>
+        <location filename="wpinfowidget.cpp" line="432"/>
         <source>Longitude:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="447"/>
+        <location filename="wpinfowidget.cpp" line="438"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="528"/>
+        <location filename="wpinfowidget.cpp" line="519"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="529"/>
+        <location filename="wpinfowidget.cpp" line="520"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
@@ -5947,31 +5529,15 @@ Namen für den neuen Wegpunkt</translation>
         <translation>0=unbekannt</translation>
     </message>
     <message>
-        <source>Runway heading editor</source>
-        <translation type="obsolete">SLB Richtungseditor</translation>
-    </message>
-    <message>
         <location filename="wpeditdialogpageaero.cpp" line="241"/>
         <source>00=unknown</source>
         <translation>00=unbekannt</translation>
-    </message>
-    <message>
-        <source>Runway heading1:</source>
-        <translation type="obsolete">Pistenrichtung 1:</translation>
-    </message>
-    <message>
-        <source>Runway heading2:</source>
-        <translation type="obsolete">Pistenrichtung 2:</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="133"/>
         <location filename="wpeditdialogpageaero.cpp" line="187"/>
         <source>Surface:</source>
         <translation>Oberfläche:</translation>
-    </message>
-    <message>
-        <source>Landable:</source>
-        <translation type="obsolete">Landbar:</translation>
     </message>
 </context>
 <context>

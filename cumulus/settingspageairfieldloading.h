@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   settingspageairspaceloading.h
+**   settingspageairfieldloading.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,48 +15,48 @@
 **
 ***********************************************************************/
 
-#ifndef SettingsPageAirSpaceLoading_h
-#define SettingsPageAirSpaceLoading_h
+#ifndef SettingsPageAirfieldLoading_h
+#define SettingsPageAirfieldLoading_h
 
 #include <QPushButton>
 #include <QWidget>
 #include <QTableWidget>
 
 /**
- * \class SettingsPageAirspaceLoading
+ * \class SettingsPageAirfieldLoading
  *
  * \author Axel Pauli
  *
- * \brief Configuration settings for airspace loading.
+ * \brief Configuration settings for OpenAIP airfield loading.
  *
- * This widget provides an airspace file selection table, where the user can
- * choose, which available airspace files shall be loaded or not loaded.
+ * This widget provides an airfield file selection table, where the user can
+ * choose, which available airfield files shall be loaded or not loaded.
  *
- * \date 2011-2013
+ * \date 2013
  *
  * \version $Id$
  *
  */
-class SettingsPageAirspaceLoading : public QWidget
+class SettingsPageAirfieldLoading : public QWidget
 {
   Q_OBJECT
 
 private:
 
-  Q_DISABLE_COPY ( SettingsPageAirspaceLoading )
+  Q_DISABLE_COPY ( SettingsPageAirfieldLoading )
 
 public:
 
-  SettingsPageAirspaceLoading( QWidget *parent=0 );
+  SettingsPageAirfieldLoading( QWidget *parent=0 );
 
-  virtual ~SettingsPageAirspaceLoading();
+  virtual ~SettingsPageAirfieldLoading();
 
 signals:
 
   /**
-   * Emitted, if the airspace file list has been changed.
+   * Emitted, if the file list has been changed.
    */
-  void airspaceFileListChanged();
+  void fileListChanged();
 
 private slots:
 
@@ -78,10 +78,10 @@ private slots:
 
 private:
 
-  /** Table containing loadable airspace files. */
+  /** Table containing loadable airfield files. */
   QTableWidget* m_fileTable;
 
   QPushButton *m_delButton;
 };
 
-#endif /* SettingsPageAirSpaceLoading_h */
+#endif /* SettingsPageAirfiledLoading_h */
