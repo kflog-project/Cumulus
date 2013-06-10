@@ -109,6 +109,7 @@ HEADERS = \
     messagewidget.h \
     multilayout.h \
     openaip.h \
+    openaipairfieldloader.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -128,6 +129,7 @@ HEADERS = \
     rowdelegate.h \
     runway.h \
     settingspageairfields.h \
+    settingspageairfieldloading.h \
     settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
@@ -228,6 +230,7 @@ SOURCES = \
     messagehandler.cpp \
     messagewidget.cpp \
     openaip.cpp \
+    openaipairfieldloader.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
@@ -245,6 +248,7 @@ SOURCES = \
     rowdelegate.cpp \
     runway.cpp \
     settingspageairfields.cpp \
+    settingspageairfieldloading.cpp \
     settingspageairspace.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \
