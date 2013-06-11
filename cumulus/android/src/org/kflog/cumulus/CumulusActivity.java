@@ -42,9 +42,11 @@ import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -226,6 +228,33 @@ public class CumulusActivity extends QtActivity
 						 }
 				 }
 		 };
+		 
+	// Create a BroadcastReceiver for listen to Bluetooth intents.
+  // See here: http://developer.android.com/guide/topics/connectivity/bluetooth.html
+	private final BroadcastReceiver bcReceiver =
+	  new BroadcastReceiver()
+			{
+				public void onReceive(Context context, Intent intent)
+					{
+						String action = intent.getAction();
+						
+						// Bluetooth discovery is finished
+						if( BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action))
+							{
+								Log.d( TAG, "BluetoothAdapter.ACTION_DISCOVERY_FINISHED" );
+							}
+						else if( BluetoothAdapter.ACTION_STATE_CHANGED.equals(action))
+							{
+								Log.d( TAG, "BluetoothAdapter.ACTION_STATE_CHANGED" );
+								
+								if(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_ON)
+									{
+										// Now the adapter is on
+										Log.d( TAG, "BluetoothAdapter.ACTION_STATE_CHANGED to ON" );
+									}
+							}
+					}
+			};
 
   // Native C++ functions
   public static native void nativeGpsFix( double latitude,
@@ -569,6 +598,13 @@ public class CumulusActivity extends QtActivity
     	notificationManager.notify(1, notification);
     }
     
+    // Register a BroadcastReceiver for BT intents
+    IntentFilter filter = new IntentFilter( BluetoothAdapter.ACTION_DISCOVERY_FINISHED );
+    filter.addAction( BluetoothAdapter.ACTION_STATE_CHANGED );
+    
+    // Don't forget to unregister during onDestroy
+    registerReceiver( bcReceiver, filter );
+    
     Log.d(TAG, "onCreate exit" );
   }
 
@@ -649,6 +685,9 @@ public class CumulusActivity extends QtActivity
           // terminate all BT threads
           m_btService.stop();
         }
+      
+      // unregister BT receiver.
+      unregisterReceiver( bcReceiver );
       
       // call super class
       super.onDestroy();

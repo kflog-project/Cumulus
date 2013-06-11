@@ -35,6 +35,7 @@
 #ifndef OpenAip_Airfield_Loader_h_
 #define OpenAip_Airfield_Loader_h_
 
+#include <QByteArray>
 #include <QDateTime>
 #include <QList>
 #include <QMutex>
@@ -109,7 +110,7 @@ class OpenAipAirfieldLoader
 
   // header data members of compiled file
   quint32         h_magic;
-  quint64         h_fileType;
+  QByteArray      h_fileType;
   quint8          h_fileVersion;
   QDateTime       h_creationDateTime;
   double          h_homeRadius;
