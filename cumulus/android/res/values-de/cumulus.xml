@@ -40,5 +40,6 @@
 	<string name="togglesMenu">Menü Umschalter</string>
 	<string name="mapInfoBarShow">Zeige Infoboxen</string>
 	<string name="mapInfoBarHide">Verstecke Infoboxen</string>
+	<string name="noPairedBtD">Keine gekoppelten Bluetooth Geräte verfügbar!</string>
 	<string name="noSmsService">SMS Service nicht verfügbar!</string>
 </resources>

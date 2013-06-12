@@ -38,5 +38,6 @@
 	<string name="togglesMenu">Menu Toggles</string>
 	<string name="mapInfoBarShow">Show info boxes</string>
   <string name="mapInfoBarHide">Hide info boxes</string>
+  <string name="noPairedBtD">No paired Bluetooth devices available!</string>
   <string name="noSmsService">SMS service unavailable!</string>
 </resources>

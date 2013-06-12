@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2013 by Axel Pauli
+ **                   2012-2013 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -81,6 +81,8 @@ import org.kflog.cumulus.R;
  * 
  * @author Axel Pauli
  * 
+ * @email <kflog.cumulus@gmail.com>
+ * 
  * @date 2012-2013
  * 
  * @version $Id$
@@ -105,6 +107,7 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_NO_DATA_FOLDER = 7;
   static final int               DIALOG_TOGGELS_ID     = 8;
   static final int               DIALOG_SETUP_ID       = 9;
+  static final int               DIALOG_NO_PAIRED_BTD  = 10;
 
   static final int               REQUEST_ENABLE_BT = 99;
 
@@ -170,6 +173,9 @@ public class CumulusActivity extends QtActivity
   private Set<BluetoothDevice>   m_pairedBtDevices = null;
   private String                 m_btMacArray[]    = null;
   private BluetoothService       m_btService       = null;
+  
+  // Used to signal, that we waiting to the on state of the Bluetooth adapter 
+  private boolean m_wait4BluetoothAdapterOn = false;
 
   /**
    *  The Handler that gets information back from the BluetoothService
@@ -213,7 +219,7 @@ public class CumulusActivity extends QtActivity
 						 case BluetoothService.MESSAGE_DEVICE_NAME:
 							 // shows the connected device's name
 							 Toast.makeText( getApplicationContext(),
-															 getString(R.string.connected2) +
+															 getString(R.string.connected2) + " " +
 															 msg.getData().getString(BluetoothService.DEVICE_NAME),
 															 Toast.LENGTH_LONG )
 									 .show();
@@ -245,12 +251,17 @@ public class CumulusActivity extends QtActivity
 							}
 						else if( BluetoothAdapter.ACTION_STATE_CHANGED.equals(action))
 							{
-								Log.d( TAG, "BluetoothAdapter.ACTION_STATE_CHANGED" );
+								int newState = intent.getIntExtra( BluetoothAdapter.EXTRA_STATE, -1 );
 								
-								if(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1) == BluetoothAdapter.STATE_ON)
+								Log.d( TAG, "BluetoothAdapter.ACTION_STATE_CHANGED to " + newState );
+								
+								if( newState == BluetoothAdapter.STATE_ON )
 									{
-										// Now the adapter is on
-										Log.d( TAG, "BluetoothAdapter.ACTION_STATE_CHANGED to ON" );
+										// Now the BT adapter is on and the BT device dialog can be shown.
+										if( m_wait4BluetoothAdapterOn == true )
+											{
+												createBtGpsDeviceDialog();
+											}
 									}
 							}
 					}
@@ -1097,6 +1108,20 @@ public class CumulusActivity extends QtActivity
         });
       alert = builder.create();
       break;
+      
+		case DIALOG_NO_PAIRED_BTD:
+			builder.setMessage( getString(R.string.noPairedBtD) )
+						 .setCancelable(false)
+						 .setPositiveButton( getString(android.R.string.ok),
+																 new DialogInterface.OnClickListener()
+																	 {
+												              public void onClick(DialogInterface dialog, int id)
+												              	{
+																		      CumulusActivity.this.finish();
+												                }
+											             });
+	    alert = builder.create();
+			break;
 
 		default:
 			return super.onCreateDialog(id);
@@ -1376,6 +1401,7 @@ public class CumulusActivity extends QtActivity
 				{
 					Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 					startActivityForResult( enableBtIntent, REQUEST_ENABLE_BT );
+				  m_wait4BluetoothAdapterOn = true;
 				}
 			else
 				{
@@ -1385,6 +1411,8 @@ public class CumulusActivity extends QtActivity
 
 	private void createBtGpsDeviceDialog()
 		{
+			m_wait4BluetoothAdapterOn = false;
+			
 			m_btMacArray = null;
 			m_pairedBtDevices = BluetoothAdapter.getDefaultAdapter().getBondedDevices();
 
@@ -1396,6 +1424,7 @@ public class CumulusActivity extends QtActivity
 			else
 				{
 					m_pairedBtDevices = null;
+					showDialog(DIALOG_NO_PAIRED_BTD);
 				}
 		}
 
@@ -1426,11 +1455,15 @@ public class CumulusActivity extends QtActivity
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 		{
+			Log.d( TAG, "onActivityResult ReqCode=" + requestCode + ", ResCode=" + resultCode );
+			
 			if( requestCode == REQUEST_ENABLE_BT )
 				{
+					// On single instance the result code is always NOK! Therefore we wait
+					// until the adapter on state is broadcasted.
 					if( resultCode == RESULT_OK )
 						{
-							createBtGpsDeviceDialog();
+							Log.d( TAG, "BluetoothAdapter is switched on by the user" );
 						}
 
 					return;
