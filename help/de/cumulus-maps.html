@@ -11,7 +11,7 @@
 		<tr>
 			<td align="left"><a href="cumulus-gettingstarted.html">zur&uuml;ck</a></td>
 			<td align="center"><a href="cumulus.html">Anfang</a></td>
-			<td align="right"><a href="cumulus-settings.html">weiter</a></td>
+			<td align="right"><a href="cumulus-maps-openAir.html">weiter</a></td>
 		</tr>
 	</table>
 
@@ -32,7 +32,7 @@
 				Einstellungen/Karte</a> finden Sie weitere Hinweise dazu.</li>
 
 		<li><b>Luftr&auml;ume:</b> Cumulus unterst&uuml;tzt nur das
-			OpenAir Dateiformat f&uuml;r Luftraumstrukturen. Suchen Sie bitte im
+			<i>OpenAir</i> Dateiformat f&uuml;r Luftraumstrukturen. Suchen Sie bitte im
 			Internet nach Dateien f&uuml;r Ihre Gegend wo Sie fliegen. Adressen
 			wo man solche Daten finden kann, sind:
 
@@ -43,16 +43,22 @@
 						Deutschland</a> ver&ouml;ffentlicht vom DAeC
 				<li>Das AIP des jeweiligen Landes, in dem Sie fliegen wollen.
 			</ul>
-		<li><b>Flugh&auml;fen, Flugpl&auml;tze und
-				Au&szlig;enlandefelder:</b> Diese Daten werden aus der Welt2000
-			Datenbasis bezogen. Mehr Informationen dazu sind unter Punkt <a
-			href="#Welt2000">Welt2000</a> zu finden.</li>
+		</li>
+		
+		<li><b>Quellen f&uuml;r Flugh&auml;fen, Flugpl&auml;tze und Au&szlig;enlandefelder sind:</b>
+			<ul>
+			  <li><a href="cumulus-maps-welt2000.html">Welt2000</a> Datenbasis. Diese
+			      ist der augenblickliche Standard in Cumulus.</li>
+			  <li><a href="cumulus-maps-openAIP.html">openAIP</a> Projekt, welches
+			  im Moment nur Flugplatzdaten anbietet aber keine Au&szlig;enlandefelder.
+			</ul>
+		</li>
 	</ul>
 
 	<p>Die Karten werden in Abh&auml;ngigkeit vom verwendeten Ger&auml;t in 
 	   unterschiedlichen Verzeichnissen installiert:</p>
 	<ul>
-		<li>In <i>$HOME/Cumulus/maps</i> (Desktop)
+		<li>In <i>$HOME/Cumulus/maps</i> (Linux Desktop)
 		<li>In <i>$HOME/MyDocs/Cumulus/maps</i> (Maemo).
 		<li>In <i>/sdcard/Cumulus/maps</i> auf der SD-Karte (Android)
 	</ul>
@@ -134,240 +140,11 @@
 		einstellen.
 	</p>
 
-	<h4>OpenAir Luftraumdateien</h4>
-
-	Cumulus kann nur Luftraumdateien im OpenAir Format lesen. Installieren
-	sie diese Dateien im Unterverzeichnis
-	<i>airspaces</i> und versehen sie diese mit der
-	<b>klein</b> geschrieben Endung
-	<i>.txt</i>. Cumulus benutzt bei den Luftraumdateien
-	standardm&auml;&szlig;ig die selbe interne Zuordnung der
-	Luftraumelemente wie bei den KFLog Dateien. Da sich aber bestimmte
-	OpenAir Elemente nicht eindeutig zuordnen lassen, bietet Cumulus einen
-	zus&auml;tzlichen Mapping Service an. Dazu ist eine Beschreibungsdatei
-	zu erstellen und diese im gleichen Verzeichnis wie die zugeh&ouml;rige
-	OpenAir Luftraumdatei abzulegen. Diese Datei muss den selben Basisnamen
-	(ohne
-	<i>.txt</i> Endung) tragen wie die Originaldatei und ist dann mit der
-	Kennung
-	<i>_mappings.conf</i> zu erweitern.
-
-	<p>
-		Beispiel: QuellDatei=<i>openair.txt</i>, MappingDatei=<i>openair_mappings.conf</i>
-	</p>
-
-	F&uuml;r seine interne Zuordnung verwendet Cumulus die folgenden
-	Elemente:
-
-	<ul>
-		<li>AirA
-		<li>AirB
-		<li>AirC
-		<li>AirD
-		<li>AirE
-		<li>AirF
-		<li>ControlC
-		<li>ControlD
-		<li>Danger
-		<li>Restricted
-		<li>LowFlight
-		<li>Tmz
-		<li>GliderSector
-		<li>WaveWindow
-	</ul>
-
-	Die Syntax f&uuml;r eine Mapping Datei sieht folgenderma&szlig;en aus.
-	Leerzeilen und Zeilen die mit
-	<i>#</i> or
-	<i>*</i> beginnen (Kommentarzeilen) werden ignoriert. Alle anderen
-	Zeilen sollten die Form
-	<i>Name = Wert</i> haben, immer nur ein Eintrag pro Zeile.
-	<i>Name</i> ist der Luftraumtyp aus der OpenAir Datei und
-	<i>Wert</i> die entsprechende Luftraumzuweisung f&uuml;r Cumulus. Die
-	Standardzuordnung ist folgenderma&szlig;en:
-
-	<ul>
-		<li>A = AirA
-		<li>B = AirB
-		<li>C = AirC
-		<li>D = AirD
-		<li>E = AirE
-		<li>F = AirF
-		<li>GP = Restricted
-		<li>R = Restricted
-		<li>TRA = Restricted
-		<li>Q = Danger
-		<li>CTR = ControlD
-		<li>TMZ = Tmz
-		<li>GSEC = GliderSector
-		<li>W = WaveWindow
-	</ul>
-
-	<p>Zum &auml;ndern m&uuml;ssen nur die Elemente neu definiert
-		werden, die eine andere Zuordnung erhalten sollen. Diese
-		&uuml;berschreiben dann die Standardzuordnung.</p>
-
-	<p>
-		Beispiel: <i>CTR=ControlC</i>
-	</p>
-
-	<p>
-		Hiermit wird die Standardzuordnung von <i>CTR</i> zu <i>ControlD</i>
-		auf <i>ControlC</i> ge&auml;ndert.
-	</p>
-
-	<p>
-		<b>Achtung!</b> Achten Sie auf die korrekte Schreibweise, alle
-		Zuordnungen sind davon abh&auml;gig.
-	</p>
-
-	<a name="Welt2000">
-		<h4>Benutzung von Welt2000 Flugplatz- und
-			Au&szlig;enlandefelderdaten</h4>
-	</a> Die Flugplatz- und Au&szlig;enlandefelderdaten werden von Cumulus aus
-	der Welt2000 Datei gelesen. Diese wurde von Michael Meier, auch bekannt
-	als Milomei, als eine gro&szlig;e Datei erstellt. Die Datei ist auf
-	dieser
-	<a href="http://www.segelflug.de/vereine/welt2000/">Seite</a> hier in
-	der Tabelle Downloads unter dem Namen
-	<i>WELT2000.TXT</i> zu finden.
-
-	<p>
-		Cumulus kann diese Datei auch selber herunter laden. Sehen Sie unter <a
-			href="cumulus-settings-airfields.html#Download">
-			Einstellungen/Flugpl&auml;tze</a> nach, wie das zu machen ist.
-	</p>
-
-	<p>
-		Die Welt2000 Datei ist im Unterverzeichnis <i>airfields</i> unter den
-		Namen <i>welt2000.txt</i> zu installieren. Da eine Welt2000 Datei die
-		ganze Welt beinhaltet, ist es erforderlich, die eingelesene Datenmenge
-		sinvoll zu begrenzen um einen Speicher&uuml;berlauf in Cumulus zu
-		vermeiden. Cumulus bietet dazu zwei Wege an:
-	</p>
-
-	<ol>
-		<li>Filtern nach L&auml;ndern</li>
-		<li>Filtern nach einem vorgegebenen Radius um die Heimatposition</li>
-	</ol>
-
-	Die entsprechenden Parameter dazu k&ouml;nnen Sie in dem Men&uuml;
-	<a href="cumulus-settings-airfields.html#Welt2000Filter">
-		Einstellungen/Flugpl&auml;tze</a> eingeben.
-
-	<p>
-		Ein Nachteil ist, dass Welt2000 nur drei Typen von Flugpl&auml;tzen
-		kennt (Flugplatz, Segelfluggel&auml;nde, UL-Platz) aber Cumulus eine
-		Menge mehr. Dieses Defizit wird &uuml;ber eine zus&auml;tzliche
-		Zuordnungsm&ouml;glichkeit f&uuml;r ICAO Kenner und Kurznamen von
-		Welt2000 Eintr&auml;gen zu Cumulus Kartenelementen wieder
-		ausgeglichen. In einer Konfigurationsdatei mit dem Namen <i>welt2000.conf</i>
-		kann man entsprechende Regeln daf&uuml;r definieren. Diese Datei ist
-		in dem selben Directory zu installieren, im dem auch die welt2000.txt
-		Datei zu finden ist. Folgende Syntax Konstrukte werden dabei
-		unterst&uuml;tzt:
-	<ul>
-		<li>Eine Kommentarzeile beginnt mit einem <i>#</i> Raute- oder <i>$</i>
-			Dollarzeichen und endet mit den Zeilenende.
-		<li><b>FILTER countries=</b><i>land1_1[,...,land_n]</i> <br>Diese
-			Zeile definiert eine L&auml;nderfilter Regel. Verschiedene
-			L&auml;nder k&ouml;nnen hintereinander durch Kommas getrennt
-			angegeben werden. Die L&auml;nderkennungen sind nach ISO-3166
-			kodiert. Falls eine solche Filterregel definiert wurde, werden nur
-			die darin aufgef&uuml;hrten L&auml;nder aus der Welt2000 Quelldatei
-			gelesen. Es ist m&ouml;glich, mehr als eine Filterregel zu
-			definieren. Da diese M&ouml;glichkeit auch &uuml;ber die
-			Oberfl&auml;che angeboten wird, sollten Sie diese Regel in der
-			Konfigurationsdatei <b>nicht</b> mehr anwenden. Eine Regel, die
-			&uuml;ber die Oberfl&auml;che definiert wurde, &uuml;berschreibt
-			immer die Regel aus der Konfigurationsdatei!
-		<li><b>MAP_SHORT_NAME</b> <i>kurz-name</i>=<i>cumulus-karten-element</i>
-
-			<br>Diese Zeile definiert eine Regel um einem Kurznamen (ersten
-			sechs links stehenden Zeichen) eines Welt2000 Eintrages ein
-			bestimmtes Cumulus Kartenelement zuzuweisen.
-		<li><b>MAP_ICAO</b> <i>icao-zeichen</i>=<i>cumulus-karten-element</i>
-
-			<br>Diese Zeile definiert eine Regel um einem ICAO Zeichen eines
-			Welt2000 Eintrages ein bestimmtes Cumulus Kartenelement zuzuweisen.
-	</ul>
-
-	Cumulus &uuml;nterst&uuml;tzt die folgenden Kartenelemente f&uuml;r
-	Flugpl&auml;tzte:
-
-	<ul>
-		<li>IntAirport
-		<li>Airport
-		<li>MilAirport
-		<li>CivMilAirport
-		<li>Airfield
-		<li>ClosedAirfield
-		<li>CivHeliport
-		<li>MilHeliport
-		<li>AmbHeliport
-		<li>Gliderfield
-		<li>UltraLight
-		<li>HangGlider
-	</ul>
-
-	<b>Achtung!</b> Beachten Sie, dass die Kartenelemente in der richtigen
-	Gro&szlig;-Klein-Schreibweise in den Zuweisungen verwendet werden,
-	damit sie auch funktionieren.
-
-	<p>
-		Kurzbeispiel f&uuml;r eine <i>welt2000.conf</i> Datei:
-	</p>
-
-	# Beispiel einer welt2000.conf Datei, beginnend mit einer
-	Kommentarzeile
-	<br>$ Dies ist ebenfalls eine Kommentarzeile
-	<br>#
-	<br># Es folgt eine L&auml;nderfilter Regel.
-	<br># Nur die L&auml;nder Deutschland, Polen und Tschechien werden
-	aus der welt2000.txt Quelle gelesen
-	<br>#
-	<b>Regel bitte nicht mehr verwenden, kann durch die GUI
-		&uuml;berschrieben werden!</b>
-	<br>FILTER countries=de,pl,cz
-	<br>#
-	<br># Es folgt eine ICAO Zuweisungsregel
-	<br># Dem deutschen int. Flugplatz Berlin-Sch&ouml;nefeld wird der
-	Type IntAirport zugewiesen
-	<br>MAP_ICAO EDDB=IntAirport
-	<br>#
-	<br># Es folgt eine Kurznamen Zuweisungsregel
-	<br># Dem deutschen Milit&auml;rflugplatz Holzdorf wird der Type
-	MilAirport zugewiesen
-	<br>MAP_SHORT_NAME HOLZD1=MilAirport
-
-	<p>
-		<b>Achtung!</b> Wenn eine neue welt2000.txt Datei installiert wurde,
-		kann der erste Aufruf von Cumulus danach etwas l&auml;nger brauchen
-		(ca. 20-40s) bis die gew&uuml;nschten Daten daraus extrahiert sind.
-		Cumulus generiert aus den extrahierten Daten eine komprimierte Datei,
-		die beim n&auml;chsten Start dann verwendet wird. Diese Datei
-		tr&auml;gt den Namen <i>welt2000.txc</i> und wird solange benutzt, wie
-		die Originaldatei, die Konfigurationsdatei, die Kartenprojektion oder
-		die Heimatposition nicht ge&auml;ndert werden. Das minimiert die
-		Einlesezeit nach einem Restart.
-	</p>
-
-	<p>
-		Falls Sie Korrekturen an Eintr&auml;gen in der Welt2000 Datei
-		vornehmen, so melden Sie diese bitte auch an Michael K&ouml;ster, der
-		die Quelle im Moment nach Milomeis Tod weiter pflegt. Seine
-		Emailadresse ist im Kopfteil der Welt2000 Datei bzw. auf dieser <a
-			href="http://www.segelflug.de/vereine/welt2000/">Webseite</a> zu
-		finden. Wir alle sollten dazu beitragen, dass die Welt2000 Datenbasis
-		so aktuell wie m&ouml;glich bleibt und denjenigen danken, die das
-		alles kostenlos in ihrer Freizeit machen.
-	</p>
-
 	<table width="100%">
 		<tr>
 			<td align="left"><a href="cumulus-gettingstarted.html">zur&uuml;ck</a></td>
 			<td align="center"><a href="cumulus.html">Anfang</a></td>
-			<td align="right"><a href="cumulus-settings.html">weiter</a></td>
+			<td align="right"><a href="cumulus-maps-openAir.html">weiter</a></td>
 		</tr>
 	</table>
 </body>

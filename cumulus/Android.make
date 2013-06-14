@@ -13,7 +13,7 @@
 #
 ##################################################################
 
-NECESSITAS_ROOT = /opt/necessitas4A
+NECESSITAS_ROOT = /home/axel/necessitas
 
 QT_A_DIR = $(NECESSITAS_ROOT)/Android/Qt/482/armeabi-v7a
 

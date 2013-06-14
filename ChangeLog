@@ -15,8 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-06-14 AP: Cumulus help pages updated.
+
+[-] 2013-06-12 AP: Android Bluetooth connection problem fixed.
+
 [+] 2013-06-10 AP: Remove file function and directory name display added to
-                   openair and airfield display table.
+                   openair and airfield table display.
                    
 [+] 2013-06-09 AP: On pre-fight airfield new feature openAIP added whichs allows
                    the use of openAIP airfield files provided by www.openaip.net.

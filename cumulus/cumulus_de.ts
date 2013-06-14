@@ -1011,49 +1011,49 @@
 <context>
     <name>HelpBrowser</name>
     <message>
-        <location filename="helpbrowser.cpp" line="38"/>
+        <location filename="helpbrowser.cpp" line="39"/>
         <source>Cumulus Help</source>
         <translation>Cumulus Hilfe</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="71"/>
+        <location filename="helpbrowser.cpp" line="72"/>
         <source>Begin</source>
         <translation>Beginn</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="78"/>
+        <location filename="helpbrowser.cpp" line="79"/>
         <source>Backward</source>
         <oldsource>Go backward</oldsource>
         <translation>Zurück</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="85"/>
+        <location filename="helpbrowser.cpp" line="86"/>
         <source>Forward</source>
         <oldsource>Go forward</oldsource>
         <translation>Vorwärts</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="92"/>
+        <location filename="helpbrowser.cpp" line="93"/>
         <source>Zoom in</source>
         <translation>Vergrößern</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="99"/>
+        <location filename="helpbrowser.cpp" line="100"/>
         <source>Zoom out</source>
         <translation>Verkleinern</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="104"/>
+        <location filename="helpbrowser.cpp" line="105"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="169"/>
+        <location filename="helpbrowser.cpp" line="170"/>
         <source>Missing help file</source>
         <translation>Keine Hilfedaten</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="170"/>
+        <location filename="helpbrowser.cpp" line="171"/>
         <source>&lt;html&gt;&lt;b&gt;The help file was not found.&lt;br&gt;Maybe it is not installed?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Hilfedatei nicht gefunden.&lt;br&gt;Ist sie installiert?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
@@ -3447,17 +3447,17 @@ Alle Downloads verworfen!</translation>
         <translation>Benutzen Sie die Checkboxen zum aktivieren oder deaktivieren des Datei Ladens.</translation>
     </message>
     <message>
-        <location filename="settingspageairfieldloading.cpp" line="161"/>
+        <location filename="settingspageairfieldloading.cpp" line="165"/>
         <source>Select all</source>
         <translation>Wähle alle</translation>
     </message>
     <message>
-        <location filename="settingspageairfieldloading.cpp" line="331"/>
+        <location filename="settingspageairfieldloading.cpp" line="335"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="settingspageairfieldloading.cpp" line="332"/>
+        <location filename="settingspageairfieldloading.cpp" line="336"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
@@ -3465,109 +3465,114 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirfields</name>
     <message>
-        <location filename="settingspageairfields.cpp" line="141"/>
+        <location filename="settingspageairfields.cpp" line="147"/>
         <source>Country Filter:</source>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="115"/>
-        <location filename="settingspageairfields.cpp" line="153"/>
+        <location filename="settingspageairfields.cpp" line="121"/>
+        <location filename="settingspageairfields.cpp" line="159"/>
         <source>Home Radius:</source>
         <translation>Heimat Radius:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="166"/>
+        <location filename="settingspageairfields.cpp" line="172"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="182"/>
+        <location filename="settingspageairfields.cpp" line="188"/>
         <source>Enter Welt2000 filename as to see on the web page</source>
         <translation>Welt2000 Dateiname wie er auf Webseite steht</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="192"/>
+        <location filename="settingspageairfields.cpp" line="198"/>
         <source>List Display</source>
         <translation>Listenanzeige</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="205"/>
-        <location filename="settingspageairfields.cpp" line="219"/>
+        <location filename="settingspageairfields.cpp" line="211"/>
+        <location filename="settingspageairfields.cpp" line="225"/>
         <source> Pixels</source>
         <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="58"/>
+        <location filename="settingspageairfields.cpp" line="59"/>
         <source>Settings - Airfields</source>
         <translation>Einstellungen - Flugplätze</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="98"/>
+        <location filename="settingspageairfields.cpp" line="99"/>
         <source>Source:</source>
         <translation>Quelle:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="123"/>
+        <location filename="settingspageairfields.cpp" line="106"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="129"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="128"/>
+        <location filename="settingspageairfields.cpp" line="134"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="174"/>
+        <location filename="settingspageairfields.cpp" line="180"/>
         <source>Install</source>
         <translation>Installieren</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="175"/>
+        <location filename="settingspageairfields.cpp" line="181"/>
         <source>Install Welt2000 data</source>
         <translation>Installiere Welt2000 Daten</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="198"/>
+        <location filename="settingspageairfields.cpp" line="204"/>
         <source>More space in AF/WP/OL lists:</source>
         <translation>Mehr Raum in AF/WP/OL Listen:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="212"/>
+        <location filename="settingspageairfields.cpp" line="218"/>
         <source>More space in Emergency list:</source>
         <translation>Mehr Raum in Notfalliste:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="377"/>
+        <location filename="settingspageairfields.cpp" line="383"/>
         <source>Please check entries</source>
         <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="378"/>
+        <location filename="settingspageairfields.cpp" line="384"/>
         <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
         <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="466"/>
+        <location filename="settingspageairfields.cpp" line="483"/>
         <source>Welt2000 settings invalid!</source>
         <translation>Welt2000 Eingabe ungültig!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="467"/>
+        <location filename="settingspageairfields.cpp" line="484"/>
         <source>Please add a valid Welt2000 filename!</source>
         <translation>Bitte gültigen Welt2000 Dateinamen eintragen!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="485"/>
+        <location filename="settingspageairfields.cpp" line="502"/>
         <source>Download Welt2000?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="486"/>
+        <location filename="settingspageairfields.cpp" line="503"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="487"/>
+        <location filename="settingspageairfields.cpp" line="504"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>
@@ -3689,27 +3694,32 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirspaceLoading</name>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="43"/>
+        <location filename="settingspageairspaceloading.cpp" line="44"/>
         <source>Airspace loading settings</source>
         <translation>Luftraum Lade Konfiguration</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="59"/>
+        <location filename="settingspageairspaceloading.cpp" line="60"/>
         <source>Use check boxes to activate or deactivate file loading.</source>
         <translation>Benutzen Sie die Checkboxen zum aktivieren oder deaktivieren des Datei ladens.</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="335"/>
+        <location filename="settingspageairspaceloading.cpp" line="124"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location filename="settingspageairspaceloading.cpp" line="346"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="336"/>
+        <location filename="settingspageairspaceloading.cpp" line="347"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
     <message>
-        <location filename="settingspageairspaceloading.cpp" line="161"/>
+        <location filename="settingspageairspaceloading.cpp" line="172"/>
         <source>Select all</source>
         <translation>Wähle alle</translation>
     </message>

@@ -31,9 +31,10 @@
 #include "helpbrowser.h"
 #include "layout.h"
 
-HelpBrowser::HelpBrowser( QWidget *parent ) :
+HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile ) :
   QWidget(parent, Qt::Tool),
-  firstCall(true)
+  firstCall(true),
+  m_helpFile(helpFile)
 {
   setWindowTitle(tr("Cumulus Help"));
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
@@ -147,7 +148,7 @@ void HelpBrowser::showEvent( QShowEvent * )
   QString lang = GeneralConfig::instance()->getLanguage();
 
   QString helpFile = GeneralConfig::instance()->getDataRoot() +
-    "/help/" + lang + "/cumulus.html";
+    "/help/" + lang + "/" + m_helpFile;
 
   // We do check, if the help file does exists
   QFileInfo info(helpFile);
@@ -157,7 +158,7 @@ void HelpBrowser::showEvent( QShowEvent * )
       // fall back to English as default
       lang = "en";
       helpFile = GeneralConfig::instance()->getDataRoot() +
-        "/help/" + lang + "/cumulus.html";
+        "/help/" + lang + "/" + m_helpFile;
       info.setFile(helpFile);
     }
 

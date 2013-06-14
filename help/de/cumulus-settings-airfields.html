@@ -25,21 +25,56 @@
 	<b>Flugpl&auml;tze</b>
 
 	<p>
-		Cumulus benutzt die Welt2000 Datei als Quelle f&uuml;r die
-		Flugpl&auml;tze und Au&szlig;enlandefelder. Sehen Sie <a
-			href="cumulus-maps.html#Welt2000">hier</a> f&uuml;r weitere
-		Informationen.
+		Cumulus kann zwei verschiedene Quellen:
+		
+		<ul>
+		  <li><a href="cumulus-maps-openAIP.html">openAIP</a></li>
+      <li><a href="cumulus-maps-welt2000.html">Welt2000</a></li>
+    </ul>
+  </p>
+  
+  <p>  
+		als Datenbasis f&uuml;r die Flugpl&auml;ze benutzen.
+		Der Standard ist <i>Welt2000</i>. Cumulus l&auml;d die <i>Welt2000</i> Datei
+		automatisch herunter, wenn sie nicht vorhanden ist oder wenn sie aktualisiert
+		wurde. Eine <i>Welt2000</i> Datei beinhaltet die Daten von der ganzen Welt,
+		weswegen sie auch sehr gro&szlig; ist.
+	</p>
+		
+	<p>
+		Das <a href="http://www.openaip.net"><i>openAIP</i></a> Projekt stellt pro
+		Land eine Datei bereit. Der Vorteil von <i>openAIP</i> ist, dass jeder
+		daran mitarbeiten kann, Nachteil ist, dass Cumulus diese Dateien nicht
+		automatisch runter laden und installieren kann, da Sie die Nutzungsbedingungen
+		bei <i>openAIP</i> als registrierter Benutzer dort anerkennen m&uuml;ssen.
 	</p>
 
+  <hr>
+  
 	<dl>
+    <dt>
+      <b>Source</b>
+    </dt>
 
-		<a name="Welt2000Filter">
-			<dt>
-				<b>Welt2000 L&auml;nder Filter</b>
-			</dt>
+    <dd>
+      Mit Hilfe der Box Quelle k&ouml;nnen Sie die Flugplatz Datenquelle
+      (openAIP / Welt2000) ausw&auml;hlen, die Cumulus benutzen soll.
+      F&uuml;r jede Quelle gibt es eine eigene Form, in deren Kopf der
+      Weblink zur Seite der gerade ausw&auml;hlten Quelle zu sehen ist.
+    </dd>
+   </dl>
+    
+   <hr>
+    
+   <dl>
+		<a name="Welt2000Filter"></a>
+		<dt>
+			<b>Welt2000 L&auml;nder Filter</b>
+		</dt>
 		</a>
 
-		<dd>Hier k&ouml;nnen Sie die L&auml;nder definieren, die Cumulus
+		<dd>
+		  Hier k&ouml;nnen Sie die L&auml;nder definieren, die Cumulus
 			aus der Welt2000 Datei einlesen soll. Verschiedene L&auml;nder
 			k&ouml;nnen hintereinander durch Kommas oder Leerzeichen getrennt
 			angegeben werden. Die L&auml;nderkennungen sind nach ISO-3166
@@ -47,13 +82,14 @@
 			darin aufgef&uuml;hrten L&auml;nder aus der Welt2000 Datei gelesen.
 			Falls Sie hier eine Regel eintragen, sollten Sie nicht dasselbe in
 			der Konfigurationsdatei machen. Die hier definierte Regel hat die
-			h&ouml;here Priotit&auml;t.</dd>
+			h&ouml;here Priotit&auml;t.
+	  </dd>
 
 		<br>
-		<a name="Radius">
-			<dt>
-				<b>Welt2000 Radius Filter</b>
-			</dt>
+		<a name="Welt2000Radius"></a>
+		<dt>
+			<b>Welt2000 Radius Filter</b>
+		</dt>
 		</a>
 
 		<dd>
@@ -68,10 +104,10 @@
 		</dd>
 
 		<br>
-		<a name="Welt2000Outlandings">
-			<dt>
-				<b>Welt2000 Lade Landefelder</b>
-			</dt>
+		<a name="Welt2000Outlandings"></a>
+		<dt>
+			<b>Welt2000 - Lade Landefelder</b>
+		</dt>
 		</a>
 
 		<dd>
@@ -81,58 +117,81 @@
 		</dd>
 
 		<br>
-		<a name="Download">
-			<dt>
-				<b>Setze Proxy</b>
-			</dt>
-		</a>
-
-		<dd>
-			Dr&uuml;cken Sie den Knopf <i>Setze Proxy</i>, wenn Sie einen Proxy
-			f&uuml;r Downloads aus dem Internet brauchen. Es wird eine Dialogbox
-			ge&ouml;ffnet, in der Sie den Host und den Port eingeben k&ouml;nnen.
-			Lassen Sie alle Felder leer, wenn Sie keinen Proxy ben&ouml;tigen.
-			Der gesetzte Proxy wird rechts neben dem Proxy Knopf angezeigt.
-		</dd>
-
-		<br>
+		<a name="Welt2000Download"></a>
 		<dt>
-			<b>Installiere Flugpl&auml;tze</b>
+			<b>Welt2000 - Installieren</b>
 		</dt>
 
 		<dd>
-			Cumulus kann die Welt2000 Datei aus dem Internet von der
-			entsprechenden Seite auch runterladen. Dabei ist die Angabe des
-			korrekten Dateinamens von entscheidender Bedeutung. Der Name
-			enth&auml;lt eine Datumsangabe, die sich immer wieder mal &auml;ndern
-			kann. Wenn der Download fehl schl&auml;gt, sollten Sie auf der Seite
-			<a href="http://www.segelflug.de/vereine/welt2000">hier</a> nach
-			schauen, wie der neue Dateiname ist. Gehen Sie dazu in die in die
-			letzte Zeile der Download Tabelle. Dort ist ein Eintrag <i>WELT2000.TXT</i>
-			zu sehen. Gehen Sie in die rechte Spalte, mit dem Datumslink und
-			schauen Sie nach, indem Sie den Link mit der Maus ber&uuml;hren, wie
-			der richtige Dateiname lautet. Dieser ist dann unten rechts in der
-			Browser Statusleiset zu sehen. Exakt diesen Namen in derselben
-			Schreibweise m&uuml;ssen Sie nun hier eintragen. <br> Wenn
-			Cumulus sich schneller als 5Km/h bewegt, wird kein Download mehr
-			ausgef&uuml;hrt. Wenn der Download abgearbeitet ist, wird eine
-			Ergebnismeldung angezeigt. Cumulus f&uuml;hrt keine spezielle
-			Logdatei &uuml;ber die Downloads. Wenn man Cumulus in einen
-			X-Terminal Fenster startet, kann man die einzelnen Ergebnisse als
-			Debug Nachrichten darin sehen.
-		</dd>
+		    Cumulus kann die Welt2000 Datei aus dem Internet von der
+				entsprechenden Seite auch runterladen, wenn es nicht in Bewegung
+				ist. Wenn der Download abgearbeitet ist, wird eine Ergebnismeldung
+				angezeigt. Cumulus f&uuml;hrt keine spezielle Logdatei &uuml;ber die
+				Downloads. Wenn man Cumulus in einen X-Terminal Fenster startet,
+				kann man die einzelnen Ergebnisse als Debug Nachrichten darin sehen.
+	  </dd>
 
 		<br>
 		<dt>
 			<b>Welt2000 Daten Neuladen</b>
 		</dt>
 
-		<dd>Wird die Heimatposition bzw. die Welt2000 Konfiguration
+		<dd>
+		  Wird die Heimatposition bzw. die Welt2000 Konfiguration
 			ver&auml;ndert oder eine neue Datei aus dem Internet herunter
 			geladen, wird automatisch ein Neuladen der Welt2000 Datei
-			ausgef&uuml;hrt.</dd>
+			ausgef&uuml;hrt.
+		</dd>
+    </dl>
+   
+    <hr>
+    
+    <dl>
+    <a name="openAIP_Radius"></a>
+    <dt>
+      <b>openAIP - Radius Filter</b>
+    </dt>
 
-		<br>
+    <dd>
+			Alle innerhalb des Radius um die Heimatposition liegenden
+			Flugpl&auml;tze werden aus den installierten und ausgew&auml;hlten
+			openAIP Dateien eingelesen.
+			<b>Achtung!</b> Ist Ihre gegenw&auml;rtige Position au&szlig;erhalb
+			des vorgegebenen Radius, werden keine Flug- und Landepl&auml;tze
+			mehr auf der Karte angezeigt.
+		</dd>
+
+    <br>
+    <dt>
+      <a name="openAIP_Load"><b>openAIP - Laden</b></a>
+    </dt>
+
+    <dd>
+      Wenn Sie den <i>Laden</i> Knopf dr&uuml;cken, wird eine Tabelle ge&ouml;ffnet
+      in der Sie alle ladbaren <i>openAIP</i> Flugplatzdateien sehen.
+      Im Kopf der Tabelle sehen Sie das Datenverzeichnis, in dem die angezeigten
+      Dateien zu finden sind.
+      <br>
+      In jeder Tabellenzeile gibt es links eine Checkbox, die man aktiviert,
+      wenn die entsprechende Datei geladen werden soll. Ist die Checkbox
+      deaktiviert, erfolgt kein Laden. Wenn Sie alle Dateien laden wollen,
+      so aktivieren Sie die Checkbox ganz oben links in der ersten
+      Tabellenzeile mit dem Titel <i>W&auml;hle alle</i>. <b>Beachten Sie!</b>
+      Wenn Sie eine Einzelauswahl vornehmen m&ouml;chten, muss die <i>W&auml;hle
+      alle</i> Checkbox <b>deaktiviert</b> sein.
+      <BR> Wenn Sie das Fenster mit <i>Ok</i>
+      verlassen, wird sofort ein Neuladen der Flugplatzdaten
+      angesto&szlig;en, falls Sie etwas ver&auml;ndert haben.
+      <br>
+      Wenn Sie einzelne Tabellenreihen selektieren, k&ouml;nnen Sie die darin
+      angezeigten Dateien l&ouml;schen, wenn sie auf den M&uuml;lleimer Knopf
+      dr&uuml;cken.
+    </dd>
+    </dl>
+    
+    <hr>
+
+		<dl>
 		<dt>
 			<b>Listen Anzeige</b>
 		</dt>
@@ -140,9 +199,9 @@
 		<dd>Im Listen Anzeige Bereich k&ouml;nnen Sie die Zeilenh&ouml;he
 			einiger Listen so ver&auml;ndern, dass sie besser lesbar werden.
 			Gleichzeitig sinkt damit aber die Anzahl der angezeigten
-			Eintr&auml;ge pro Listenseite.</dd>
-
-	</dl>
+			Eintr&auml;ge pro Listenseite.
+		</dd>
+	  </dl>
 
 	<p></p>
 	<table width="100%">
@@ -157,6 +216,6 @@
 			<td align="right"><a href="cumulus-settings-airspace.html">weiter</a></td>
 		</tr>
 	</table>
-
+  
 </body>
 </html>

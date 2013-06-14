@@ -76,6 +76,11 @@ private slots:
   /** Called, if the item selection in the table has changed. */
   void slot_itemSelectionChanged();
 
+  /**
+   * Called if the help button is clicked.
+   */
+  void slot_openHelp();
+
 private:
 
   /** Table containing loadable airspace files. */

@@ -101,6 +101,11 @@ class SettingsPageAirfields : public QWidget
   void slot_openLoadDialog();
 
   /**
+   * Called if the help button is clicked.
+   */
+  void slot_openHelp();
+
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();

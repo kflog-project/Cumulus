@@ -26,6 +26,7 @@
 #endif
 
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "settingspageairspaceloading.h"
@@ -120,6 +121,9 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   m_delButton->setMaximumSize(buttonSize, buttonSize);
   m_delButton->setEnabled( false );
 
+  QPushButton *helpButton = new QPushButton( tr("Help") );
+  helpButton->setMinimumHeight(buttonSize);
+
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
   okButton->setIconSize(QSize(iconSize, iconSize));
@@ -133,6 +137,7 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   cancelButton->setMaximumSize(buttonSize, buttonSize);
 
   connect( m_delButton, SIGNAL(clicked() ), this, SLOT(slot_DeleteRows()) );
+  connect( helpButton, SIGNAL(clicked() ), this, SLOT(slot_openHelp()) );
   connect( okButton, SIGNAL(clicked() ), this, SLOT(slot_save()) );
   connect( cancelButton, SIGNAL(clicked() ), this, SLOT(close()) );
 
@@ -141,6 +146,8 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
 
   buttonBox->setSpacing(0);
   buttonBox->addWidget( m_delButton );
+  buttonBox->addSpacing(20);
+  buttonBox->addWidget( helpButton );
   buttonBox->addStretch(2);
   buttonBox->addWidget( cancelButton );
   buttonBox->addSpacing(32);
@@ -390,4 +397,12 @@ void SettingsPageAirspaceLoading::slot_itemSelectionChanged()
     {
       m_delButton->setEnabled( false );
     }
+}
+
+void SettingsPageAirspaceLoading::slot_openHelp()
+{
+  HelpBrowser *hb = new HelpBrowser( this, "cumulus-maps-openAir.html" );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }

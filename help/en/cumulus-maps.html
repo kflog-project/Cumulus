@@ -12,7 +12,7 @@
 			<tr>
 				<td align="left"><a href="cumulus-gettingstarted.html">back</a></td>
 				<td align="center"><a href="cumulus.html">start</a></td>
-				<td align="right"><a href="cumulus-settings.html">next</a></td>
+				<td align="right"><a href="cumulus-maps-openAir.html">next</a></td>
 			</tr>
 		</tbody>
 	</table>
@@ -39,26 +39,33 @@
 						Airspace</a>
 				<li><a href="http://www.daec.de/aul/luftr_d.php">Airspace
 						Data Germany</a> published by the DAeC
-				<li>the AIP of the country you are interested in.
-			</ul></li>
+				<li>The AIP of the country you are interested in.
+			</ul>
+		</li>
 
-		<li><b>Airports, Airfields and Outlanding Points:</b> These data
-			are read from the Welt2000 data base. See <a href="#Welt2000">here</a>
-			for more information.</li>
+		<li><b>Airports, Airfields and Outlanding Points are taken from:</b> 
+			<ul>
+			 <li><a href="cumulus-maps-welt2000.html">Welt2000</a> data base as default.</li>
+			 <li><a href="cumulus-maps-openAIP.html">openAIP</a> project.
+				It provides only airfield data, no outlandings.</li>
+			</ul>
+	 </li>
 	</ul>
 
 	<p>The maps can be installed in different places:</p>
 
 	<ul>
-		<li>In <i>$HOME/Cumulus/maps</i> (Desktop)
-		<li>In <i>$HOME/MyDocs/Cumulus/maps</i> (Maemo).
+		<li>In <i>$HOME/Cumulus/maps</i> (Linux Desktop)
+		<li>In <i>$HOME/MyDocs/Cumulus/maps</i> (Maemo)
 		<li>In <i>/sdcard/Cumulus/maps</i> at the SD-card (Android)
 	</ul>
 
+  <p>
 	These are the default locations. On a PDA you should use an external
 	storage medium if possible, because the internal file system is often
 	limited in its capacity.
-
+  </p>
+  
 	<p>At the first startup on the Nokia Internet Tablet, Cumulus
 		itself tries to discover the best location for storing the map files.
 		The following places are checked for existence in chronological order:
@@ -70,12 +77,14 @@
 		<li>/home/user/MyDocs/Cumulus</li>
 	</ul>
 
+  <p>
 	The first match is taken and the necessary subdirectories are created
 	by Cumulus itself.
-
+  </p>
+  
 	<p>
-		<u>Please note! The map files have to be stored in different
-			subdirectories under the root map path.</u>
+		<b>Please note! The map files have to be stored in different
+			subdirectories under the root map path.</b>
 	</p>
 
 	<ul>
@@ -126,234 +135,12 @@
 	</p>
 
 	<p>
-		<b>OpenAir SUA map files</b>
-	</p>
-
-	<p>
-		Cumulus supports the commonly-available OpenAir SUA file format for
-		airspaces. Just put the map files in the subdirectory <i>airspaces</i>
-		and make sure they have the <i>.txt</i> extension written in <u>lower-case</u>
-		letters.
-	</p>
-
-	<p>In addition to the OpenAir files themselves, you can add a file
-		to configure the mapping of airspace types from the OpenAir file to
-		the types Cumulus uses. Cumulus recognizes the following types:</p>
-
-	<ul>
-		<li>AirA
-		<li>AirB
-		<li>AirC
-		<li>AirD
-		<li>AirE
-		<li>AirF
-		<li>ControlC
-		<li>ControlD
-		<li>Danger
-		<li>Restricted
-		<li>LowFlight
-		<li>Tmz
-		<li>GliderSector
-		<li>WaveWindow
-	</ul>
-
-	In order to create a mapping file, create a file with the same basename
-	as the OpenAir file (without the
-	<i>.txt</i> extension) and append
-	<i>_mappings.conf</i> to the basename.
-	<p>
-		Example: Sourcefile=<i>openair.txt</i>, Mappingfile=<i>openair_mappings.conf</i>
-	</p>
-
-	<p>
-		The mapping file must be placed in the same directory as the OpenAir
-		file. The syntax used in the file is simple. Lines starting with <i>#</i>
-		or <i>*</i> are ignored and can be used for comments. Empty lines are
-		also ignored. The rest of the lines should contain entries in the form
-		<i>key = value</i>, one entry per line. The key is the airspace type
-		in the OpenAir file you wish to map, and the value is the
-		corresponding Cumulus type you wish to assign. The default mappings
-		are:
-	</p>
-
-	<ul>
-		<li>A = AirA
-		<li>B = AirB
-		<li>C = AirC
-		<li>D = AirD
-		<li>E = AirE
-		<li>F = AirF
-		<li>GP = Restricted
-		<li>R = Restricted
-		<li>TRA = Restricted
-		<li>Q = Danger
-		<li>CTR = ControlD
-		<li>TMZ = Tmz
-		<li>GSEC = GliderSector
-		<li>W = WaveWindow
-	</ul>
-
-	<p>You only need to define the values you actually want to change
-		in the file. These instructions will overwrite the default mappings.</p>
-
-	<p>
-		Example: <i>CTR=ControlC</i>
-	</p>
-
-	<p>
-		This statement changes the assignment <i>ControlD</i> to <i>ControlC</i>.
-	</p>
-
-	<p>
-		<u>Remember that the mappings are case-sensitive!</u>
-	</p>
-
-	<p>
-		<a name="Welt2000"></a> <b>Usage of Welt2000 airfield and
-			outlanding data</b>
-	</p>
-
-	<p>
-		For airfields and outlandings, Cumulus uses the Welt2000 data base.
-		These data were originally compiled by Michael Meier (known as
-		Milomei) as one big file <i>WELT2000.TXT</i> found <a
-			href="http://www.segelflug.de/vereine/welt2000">here.</a>
-	</p>
-
-	<p>
-		Cumulus can download this file. See under <a
-			href="cumulus-settings-airfields.html#Download">Settings -
-			Airfields</a> for how to do that.
-	</p>
-
-	<p>
-		The Welt2000 file is installed in the subdirectory <i>airfields</i>.
-		It must have the name <i>welt2000.txt</i>. Because a Welt2000 file
-		covers the whole world, the amount of data to be read in must be
-		limited to only that required. Cumulus provides for this in two ways:
-	</p>
-
-	<ul>
-
-		<li>Filtering by countries or by a radius around your home
-			position, as defined in the configuration setup for <a
-			href="cumulus-settings-airfields.html#Welt2000Filter"> Airfields</a>.
-		</li>
-
-		<li>Filtering by countries defined in a configuration file with
-			the name <i>welt2000.conf</i>. See below for how to do that. This is
-			an old option and should not be used any more. Please rather make
-			your filter definitions in the Cumulus GUI as described above. <u>Note!</u>
-			A filter rule setup in the GUI will overwrite the rules defined in
-			the configuration file.
-		</li>
-
-	</ul>
-
-	<p>
-		One disadvantage of Welt2000 is that it recognizes only three types of
-		airfield (Airfield, Glider Field, Ultra Light Field), while Cumulus
-		recognizes a lot more. This lack can be overcome by additional
-		mapping. You can map the short names or ICAO identifiers of the
-		Welt2000 file entries onto other Cumulus map elements in a
-		configuration file, using the simple syntax shown below. The
-		configuration file must have the name <i>welt2000.conf</i> and must be
-		located in the same directory as the source file <i>welt2000.txt</i>.
-		The file uses the following syntax:
-	</p>
-
-	<ul>
-
-		<li>A comment line starts with a <i>#</i> hashmark or a <i>$</i>
-			dollar sign and ends with a new line.
-		</li>
-
-		<li><b>FILTER countries=</b><i>country_1[,...,country_n]</i> <br>
-
-			This line defines a country filter rule. Several countries can be
-			entered after the equal sign in one line as a comma-separated list.
-			The country identifiers have to be coded according to ISO-3166. If
-			such a rule is defined, only the listed countries will be extracted
-			from the Welt2000 source file. As mentioned above, the use of the
-			Cumulus GUI now makes this filter method obsolete. It is possible to
-			define more than one filter rule.</li>
-
-		<li><b>MAP_SHORT_NAME</b> <i>short-name</i>=<i>map-element-of-cumulus</i>
-			<br> This line defines a rule for the mapping of the short name
-			(the first six characters from the left) of a Welt2000 entry onto a
-			special Cumulus map element.</li>
-
-		<li><b>MAP_ICAO</b> <i>icao-sign</i>=<i>map-element-of-cumulus</i>
-			<br> This line defines a rule for the mapping of the ICAO
-			identifier of a Welt2000 entry onto a special Cumulus map element.</li>
-
-	</ul>
-
-	The supported Cumulus map elements for airfields are:
-
-	<ul>
-		<li>IntAirport</li>
-		<li>Airport</li>
-		<li>MilAirport</li>
-		<li>CivMilAirport</li>
-		<li>Airfield</li>
-		<li>ClosedAirfield</li>
-		<li>CivHeliport</li>
-		<li>MilHeliport</li>
-		<li>AmbHeliport</li>
-		<li>Gliderfield</li>
-		<li>UltraLight</li>
-		<li>HangGlider</li>
-	</ul>
-
-	<u>Remember that the cumulus map elements used in the mapping rules
-		are case-sensitive.</u>
-	<p>Short example of a welt2000.conf file:</p>
-
-	<p>
-		# Example of a welt2000.conf file, starting with a comment line <br>
-
-		$ This is also a comment line <br> # <br> # Now follows a
-		country filter definition rule <br> # Only the countries Germany,
-		Poland and the Czech Republic will be extracted from the welt2000.txt
-		source <br> FILTER countries=de,pl,cz <br> # <br> # Now
-		follows an ICAO identifier mapping rule <br> # The German airport
-		Berlin-Sch&ouml;nefeld is mapped to an international airport element <br>
-
-		MAP_ICAO EDDB=IntAirport <br> # <br> # Now follows a short
-		name mapping rule <br> # The German military airport Holzdorf is
-		mapped to a military airport element <br> MAP_SHORT_NAME
-		HOLZD1=MilAirport
-	</p>
-
-	<p>
-		<u>Please note the following!</u> If a new welt2000.txt file has been
-		installed, the first start-up of Cumulus after that will take a longer
-		time (ca. 10-20 seconds) while it extracts the desired data from it.
-		Cumulus generates a compressed file of the extracted data reuseable by
-		its later runs. This file carries the name <i>welt2000.txc</i> and
-		will be reused, as long as none of the following are changed: the
-		original source, the configuration file, the map projection or the
-		home position. This behaviour minimizes the read-in time after a
-		restart.
-	</p>
-
-	<p>
-		If you make any necessary corrections to the data of the Welt2000
-		file, please report all your changes to the guys who maintain the
-		source. Their email address is to be found in the header part of the
-		Welt2000 file or <a href="http://www.segelflug.de/vereine/welt2000/">at
-			this page.</a> We all should help to keep the Welt2000 source up-to-date
-		and also remember to thank the guys who do this valuable work.
-	</p>
-
-	<p>
 	<table width="100%">
 		<tbody>
 			<tr>
 				<td align="left"><a href="cumulus-gettingstarted.html">back</a></td>
 				<td align="center"><a href="cumulus.html">start</a></td>
-				<td align="right"><a href="cumulus-settings.html">next</a></td>
+				<td align="right"><a href="cumulus-maps-openAir.html">next</a></td>
 			</tr>
 		</tbody>
 	</table>

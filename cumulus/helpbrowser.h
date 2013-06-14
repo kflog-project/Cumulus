@@ -22,6 +22,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QString>
 #include <QTextBrowser>
 
 /**
@@ -51,10 +52,10 @@ private:
 
  public:
 
-  HelpBrowser( QWidget *parent=0 );
+  HelpBrowser( QWidget *parent=0, QString helpFile="cumulus.html" );
 
   virtual ~HelpBrowser();
-  
+
   /** catch show events */
   void showEvent( QShowEvent *event );
 
@@ -81,6 +82,9 @@ private:
   QTextBrowser* m_browser;
   QPushButton*  m_zoomIn;
   QPushButton*  m_zoomOut;
+
+  /** Name of help file to be displayed. */
+  QString m_helpFile;
 };
 
 #endif

@@ -22,24 +22,41 @@
 		</tbody>
 	</table>
 
-	<h4 align="center">Settings - Airfields</h4>
+	<h3 align="center">Settings - Airfields</h3>
 
 	<b>Airfields</b>
 
 	<p>
-		Cumulus uses the Welt2000 file as the airfield and outlanding sites'
-		data base. See <a href="cumulus-maps.html#Welt2000">here</a> for more
-		information.
-	</p>
+	  Cumulus can use two different sources
+	  <a href="cumulus-maps-openAIP.html">openAIP</a> and
+	  <a href="cumulus-maps-welt2000.html">Welt2000</a> as
+	  airfield database. The default is <i>Welt2000</i>, which is also automatically
+	  downloaded, if it is missing or was updated. <i>Welt2000</i> has stored all data
+	  in one file. <i>openAIP</i> uses one file per country. The advantage of 
+	  <i>openAIP</i> is, that you can bring in directly your own contributions or
+	  corrections on their webpages at <a href="http://www.openaip.net">
+	  www.openaip.net</a>. The disadvantage is, you have to download all the needed
+	  airfield files by hand because you need an account to login there and
+	  you have to accept their license policy.</p>
 
-	<p>The Welt2000 area on this menu page gives you various options
-		for loading airfield data.</p>
-
+  <hr>
+  
 	<dl>
+    <dt>
+      <b>Source</b>
+    </dt>
 
+    <dd>In the source box you can select the airfield source
+			(openAIP / Welt2000) to be used. There are different forms provided
+			for every source. In the headline of the form you can see the link to
+			the appropriate webpage.</dd>
+    
+    <hr>
+    
 		<a name="Welt2000Filter"></a>
+		<br>
 		<dt>
-			<b>Welt2000 Country Filter</b>
+			<b>Welt2000 - Country Filter</b>
 		</dt>
 
 		<dd>Here you can define the countries to be read from the
@@ -50,10 +67,10 @@
 			definitions from this GUI page will override the FILTER rule in the
 			configuration file.</dd>
 
-		<a name="Radius"></a>
+		<a name="Welt2000Radius"></a>
 		<br>
 		<dt>
-			<b>Welt2000 Radius Filter</b>
+			<b>Welt2000 - Radius Filter</b>
 		</dt>
 
 		<dd>
@@ -71,7 +88,7 @@
 
 		<a name="Welt2000Outlandings"></a>
 		<dt>
-			<b>Welt2000 Load Outlandings</b>
+			<b>Welt2000 - Load Outlandings</b>
 		</dt>
 
 		<dd>
@@ -79,42 +96,17 @@
 			sites contained in the selected region will be loaded too.
 		</dd>
 
-		<a name="Download"></a>
+		<a name="Welt2000Download"></a>
 		<br>
 		<dt>
-			<b>Set Proxy</b>
-		</dt>
-
-		<dd>
-			Press the <i>Set Proxy</i> button if a proxy is needed for downloads
-			from the Internet. This opens a dialog box where you can make the
-			necessary host and port entries. The syntax has the following format:
-			<i>proxy name:port</i>. If you do not need a proxy, all the fields
-			should remain empty. The configured proxy is displayed to the right
-			of the setup button.
-		</dd>
-
-		<br>
-		<dt>
-			<b>Install Airfields</b>
+			<b>Welt2000 - Install</b>
 		</dt>
 
 		<dd>
 			Cumulus can download the Welt2000 file containing the airfield data
-			from the relevant Internet web page. The correct file name is
-			important. The name has a date suffix that is changed from time to
-			time. If the download fails, please check <a
-				href="http://www.segelflug.de/vereine/welt2000">here</a> for the
-			correct file name. On the web page with the downloads, look at the
-			last row of the download table: here the entry <i>WELT2000.TXT</i> is
-			to be found. In the right-hand column is a date link. Go to this link
-			(e.g. with "Save link as ...") and check that the suffix (in the form
-			_YY_MM_DD) matches that of the filename in the editor field. <br>
-			If Cumulus is in motion (faster than 5 km/h) no download is carried
-			out. If the download request is processed, you will immediately
-			receive a result message. Although this message is not logged, it can
-			be seen as a debug message if Cumulus is started in an X-Terminal
-			window.
+			from the relevant Internet web page.
+			<br>
+			Note, if Cumulus is in motion no download is carried out.
 		</dd>
 
 		<br>
@@ -124,13 +116,49 @@
 
 		<dd>After a download or a change in home position or
 			configuration, Cumulus will trigger an automatic reload of the
-			Welt2000 data.</dd>
+			Welt2000 data.
+		</dd>
+		
+		<hr>
+		
+		<a name="openAIP_Radius"></a>
+    <br>
+    <dt>
+      <b>openAIP - Radius Filter</b>
+    </dt>
 
+    <dd>
+      All airfields lying inside your home position radius will be read
+      from the openAIP data files, which are selected on the load page.
+      <p>
+        <i><b>Please Note!</b> If the home position is too far away from
+          the area defined by the radius value, no airfield data
+          are shown on the map.</i>
+      </p>
+    </dd>
+    
+    <a name="openAIP_Load"></a>
+    <dt>
+      <b>openAIP - Load</b>
+    </dt>
+
+    <dd>
+			Pressing the <i>Load</i> button opens a table showing the loadable
+			openAIP airfield files. If
+			<i>Select all</i> is checked, all files are loaded by Cumulus. If you
+			want not to load all, deselect as first the checkbox
+			<i>Select all</i>. Only then you can make single selections of
+			airfield files. If you select a whole table row, you can remove the
+			selected data file by pressing the trash button. In the headline of
+			the table you can see the file directory.
+		</dd>
+		
 	</dl>
 
-	In the
-	<b>List Display</b> area you can define some general properties of the
-	airfield, waypoint and reachable lists.
+  <hr>
+
+	In the <b>List Display</b> area you can define some general list properties
+	applied to airfield, waypoint, reachable and other lists.
 
 	<p></p>
 	<table width="100%">

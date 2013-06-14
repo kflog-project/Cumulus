@@ -36,6 +36,7 @@
 #endif
 
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
@@ -101,11 +102,16 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   m_sourceBox->addItem("OpenAIP");
   m_sourceBox->addItem("Welt2000");
   sourceLayout->addWidget( m_sourceBox, 0, 1 );
+
+  QPushButton *cmdHelp = new QPushButton( tr("Help") );
+  sourceLayout->addWidget( cmdHelp, 0, 3 );
   sourceLayout->setColumnStretch( 2, 5 );
   topLayout->addLayout(sourceLayout);
 
   connect( m_sourceBox, SIGNAL(currentIndexChanged(int)),
            this, SLOT(slot_sourceChanged(int)));
+
+  connect( cmdHelp, SIGNAL(clicked()), this, SLOT(slot_openHelp()) );
 
   m_oaipGroup = new QGroupBox( "www.openaip.net", this );
   topLayout->addWidget(m_oaipGroup);
@@ -164,7 +170,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->addWidget(m_homeRadiusW2000, grow, 1 );
 
   m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), m_weltGroup );
-  weltLayout->addWidget(m_loadOutlandings, grow, 2, Qt::AlignRight );
+  weltLayout->addWidget(m_loadOutlandings, grow, 3, Qt::AlignRight );
   grow++;
 
 #ifdef INTERNET
@@ -437,6 +443,17 @@ void SettingsPageAirfields::slot_openLoadDialog()
            _globalMapContents, SLOT(slotReloadOpenAipAirfields()) );
 
   dlg->setVisible( true );
+}
+
+void SettingsPageAirfields::slot_openHelp()
+{
+  // Check, which help is requested.
+  QString file = (m_sourceBox->currentIndex() == 0 ? "cumulus-maps-openAIP.html" : "cumulus-maps-welt2000.html");
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 bool SettingsPageAirfields::checkChanges()
