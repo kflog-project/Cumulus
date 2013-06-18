@@ -1,0 +1,122 @@
+<!-- $Id$ -->
+<html>
+<head>
+<title>Cumulus Karten</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+  <table width="100%">
+    <tr>
+      <td align="left"><a href="cumulus-maps.html">zur&uuml;ck</a></td>
+      <td align="center"><a href="cumulus.html">Anfang</a></td>
+      <td align="right"><a href="cumulus-maps-welt2000.html">weiter</a></td>
+    </tr>
+  </table>
+
+	<h3 align="center">Karten - Luftraum</h3>
+
+	Cumulus kann nur <i>OpenAir</i> Luftraumdateien lesen. Adressen
+  wo man solche Daten finden kann, sind:
+
+      <ul>
+        <li><a href="http://soaringweb.org">Soaring Services - Airspace</a>
+            f&uuml;r die verschiedenen L&auml;der</li>
+        <li><a href="http://www.daec.de/aul/luftr_d.php">Luftraum
+            Deutschland</a> ver&ouml;ffentlicht vom DAeC</li>
+      </ul>
+    </li>
+
+	Installieren sie diese Dateien im
+	Unterverzeichnis .../maps/<i>airspaces</i> und versehen sie diese mit der
+	<b>klein</b> geschrieben Endung	<i>.txt</i>.
+	Da sich bestimmte OpenAir Luftraum Elemente nicht
+	eindeutig in Cumulus zuordnen lassen, bietet Cumulus einen
+	zus&auml;tzlichen Mapping Service an. Dazu ist eine Beschreibungsdatei
+	zu erstellen und diese im gleichen Verzeichnis wie die zugeh&ouml;rige
+	OpenAir Luftraumdatei abzulegen. Diese Datei muss den selben Basisnamen
+	(ohne	<i>.txt</i> Endung) tragen wie die Originaldatei und ist dann mit der
+	Kennung	<i>_mappings.conf</i> zu erweitern.
+
+	<p>
+    Beispiel: QuellDatei=<i>openair.txt</i>, MappingDatei=<i>openair_mappings.conf</i>
+  </p>
+
+  F&uuml;r seine interne Zuordnung verwendet Cumulus die folgenden
+  Elemente:
+
+  <ul>
+    <li>AirA
+    <li>AirB
+    <li>AirC
+    <li>AirD
+    <li>AirE
+    <li>AirF
+    <li>ControlC
+    <li>ControlD
+    <li>Danger
+    <li>Restricted
+    <li>LowFlight
+    <li>Tmz
+    <li>GliderSector
+    <li>WaveWindow
+  </ul>
+
+  Die Syntax f&uuml;r eine Mapping Datei sieht folgenderma&szlig;en aus.
+  Leerzeilen und Zeilen die mit
+  <i>#</i> or
+  <i>*</i> beginnen (Kommentarzeilen) werden ignoriert. Alle anderen
+  Zeilen sollten die Form
+  <i>Name = Wert</i> haben, immer nur ein Eintrag pro Zeile.
+  <i>Name</i> ist der Luftraumtyp aus der OpenAir Datei und
+  <i>Wert</i> die entsprechende Luftraumzuweisung f&uuml;r Cumulus. Die
+  Standardzuordnung ist folgenderma&szlig;en:
+
+  <ul>
+    <li>A = AirA
+    <li>B = AirB
+    <li>C = AirC
+    <li>D = AirD
+    <li>E = AirE
+    <li>F = AirF
+    <li>GP = Restricted
+    <li>R = Restricted
+    <li>TRA = Restricted
+    <li>Q = Danger
+    <li>CTR = ControlD
+    <li>TMZ = Tmz
+    <li>GSEC = GliderSector
+    <li>W = WaveWindow
+  </ul>
+
+	<p>Zum &auml;ndern m&uuml;ssen nur die Elemente neu definiert werden,
+		die eine andere Zuordnung erhalten sollen. Diese &uuml;berschreiben
+		dann die Standardzuordnung.</p>
+
+	<p>
+    Beispiel: <i>CTR=ControlC</i>
+  </p>
+
+  <p>
+    Hiermit wird die Standardzuordnung von <i>CTR</i> zu <i>ControlD</i>
+    auf <i>ControlC</i> ge&auml;ndert.
+  </p>
+
+  <p>
+    <b>Achtung!</b> Achten Sie auf die korrekte Schreibweise, alle
+    Zuordnungen sind davon abh&auml;gig.
+  </p>
+
+	<p>
+  <table width="100%">
+    <tr>
+      <td align="left"><a href="cumulus-maps.html">zur&uuml;ck</a></td>
+      <td align="center"><a href="cumulus.html">Anfang</a></td>
+      <td align="right"><a href="cumulus-maps-welt2000.html">weiter</a></td>
+    </tr>
+  </table>
+	</p>
+
+</body>
+</html>
