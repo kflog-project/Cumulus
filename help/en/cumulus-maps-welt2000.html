@@ -1,0 +1,165 @@
+<!-- $Id$ -->
+<html>
+<head>
+<title>Cumulus Maps</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td align="left"><a href="cumulus-maps-openAir.html">back</a></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td align="right"><a href="cumulus-maps-openAIP.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3 align="center">Maps - Welt2000</h3>
+	<p>
+		For airfields and outlandings Cumulus can use as a one possible source the
+		<i>Welt2000</i> data base. These data were originally compiled by Michael
+		Meier (known as Milomei) as one big file <i>WELT2000.TXT</i> found at
+		<a href="http://www.segelflug.de/vereine/welt2000">www.segelflug.de/vereine/welt2000</a>.
+	</p>
+
+	<p>
+		Cumulus downloads this file automatically, if it is missing or if it was updated.
+	  Furthermore you can execute a download on demand at the
+	  <a href="cumulus-settings-airfields.html#Download">Settings - Airfields</a>
+	  page, if you press the <i>Install</i> button there.
+	</p>
+
+	<p>
+		The Welt2000 file is installed in the directory .../maps/<i>airfields</i>.
+		It must have the name <i>welt2000.txt</i>. Because a Welt2000 file
+		covers the whole world, the amount of data to be read in must be
+		limited to only that required. Cumulus provides for this two ways on the
+		configuration
+    page <a href="cumulus-settings-airfields.html#Welt2000Filter">
+    Settings/Airfields - Welt2000</a>:
+	</p>
+
+	<ol>
+    <li>
+      Filtering by countries.
+    </li>
+    <li>
+      Filtering by a radius around your home position.
+    </li>
+	</ol>
+
+	<p>
+		One disadvantage of Welt2000 is that it recognizes only three types of
+		airfield (Airfield, Glider Field, Ultra Light Field), while Cumulus
+		recognizes a lot more. This lack can be overcome by additional
+		mapping. You can map the short names or ICAO identifiers of the
+		Welt2000 file entries onto other Cumulus map elements in a
+		configuration file, using the simple syntax shown below. The
+		configuration file must have the name <i>welt2000.conf</i> and must be
+		located in the same directory as the source file <i>welt2000.txt</i>.
+		The file uses the following syntax:
+	</p>
+
+	<ul>
+
+		<li>A comment line starts with a <i>#</i> hashmark or a <i>$</i>
+			dollar sign and ends with a new line.
+		</li>
+
+		<li><b>FILTER countries=</b><i>country_1[,...,country_n]</i> <br>
+
+			This line defines a country filter rule. Several countries can be
+			entered after the equal sign in one line as a comma-separated list.
+			The country identifiers have to be coded according to ISO-3166. If
+			such a rule is defined, only the listed countries will be extracted
+			from the Welt2000 source file. As mentioned above, the use of the
+			Cumulus GUI now makes this filter method obsolete. It is possible to
+			define more than one filter rule.</li>
+
+		<li><b>MAP_SHORT_NAME</b> <i>short-name</i>=<i>map-element-of-cumulus</i>
+			<br> This line defines a rule for the mapping of the short name
+			(the first six characters from the left) of a Welt2000 entry onto a
+			special Cumulus map element.</li>
+
+		<li><b>MAP_ICAO</b> <i>icao-sign</i>=<i>map-element-of-cumulus</i>
+			<br> This line defines a rule for the mapping of the ICAO
+			identifier of a Welt2000 entry onto a special Cumulus map element.</li>
+
+	</ul>
+
+	The supported Cumulus map elements for airfields are:
+
+	<ul>
+		<li>IntAirport</li>
+		<li>Airport</li>
+		<li>MilAirport</li>
+		<li>CivMilAirport</li>
+		<li>Airfield</li>
+		<li>ClosedAirfield</li>
+		<li>CivHeliport</li>
+		<li>MilHeliport</li>
+		<li>AmbHeliport</li>
+		<li>Gliderfield</li>
+		<li>UltraLight</li>
+		<li>HangGlider</li>
+	</ul>
+
+	<b>Remember that the cumulus map elements used in the mapping rules
+		are case-sensitive.</b>
+
+	<p>Short example of a welt2000.conf file:</p>
+
+	<p>
+		# Example of a welt2000.conf file, starting with a comment line <br>
+
+		$ This is also a comment line <br> # <br> # Now follows a
+		country filter definition rule <br> # Only the countries Germany,
+		Poland and the Czech Republic will be extracted from the welt2000.txt
+		source <br> FILTER countries=de,pl,cz <br> # <br> # Now
+		follows an ICAO identifier mapping rule <br> # The German airport
+		Berlin-Sch&ouml;nefeld is mapped to an international airport element <br>
+
+		MAP_ICAO EDDB=IntAirport <br> # <br> # Now follows a short
+		name mapping rule <br> # The German military airport Holzdorf is
+		mapped to a military airport element <br> MAP_SHORT_NAME
+		HOLZD1=MilAirport
+	</p>
+
+	<p>
+		<b>Please note the following!</b> If a new welt2000.txt file has been
+		installed, the first start-up of Cumulus after that will take a longer
+		time (ca. 10-20 seconds) while it extracts the desired data from it.
+		Cumulus generates a compressed file of the extracted data reuseable by
+		its later runs. This file carries the name <i>welt2000.txc</i> and
+		will be reused, as long as none of the following are changed: the
+		original source, the configuration file, the map projection or the
+		home position. This behaviour minimizes the read-in time after a
+		restart.
+	</p>
+
+	<p>
+		If you make any necessary corrections to the data of the Welt2000
+		file, please report all your changes to the team who maintain the
+		source. Their email address is to be found in the header part of the
+		Welt2000 file or <a href="http://www.segelflug.de/vereine/welt2000/">at
+	  this page.</a> We all should help to keep the Welt2000 source up-to-date
+		and also remember to thank the guys who do this valuable work.
+	</p>
+
+	<p>
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td align="left"><a href="cumulus-maps-openAir.html">back</a></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td align="right"><a href="cumulus-maps-openAIP.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!-- $Id$ -->
+<html>
+<head>
+<title>Cumulus Maps</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td align="left"><a href="cumulus-maps.html">back</a></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td align="right"><a href="cumulus-maps-welt2000.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3 align="center">Maps - Airspace</h3>
+
+	<p>
+	 	Cumulus supports only the commonly-available OpenAir SUA file format for
+		airspaces. Possible addresses where you can - maybe! - find information:
+  </p>
+  
+	<ul>
+	  <li><a href="http://soaringweb.org">Soaring Services - Airspace</a>
+	  for the countries of the world</li>
+	  <li><a href="http://www.daec.de/aul/luftr_d.php">Airspace
+	      Data Germany (Deutschland)</a> published by the DAeC</li>
+	</ul>
+     
+	<p>			
+		Just put your airspace files in the directory .../maps/<i>airspaces</i>
+		and make sure they have the <i>.txt</i> extension written in <i>lower-case</i>
+		letters.
+	</p>
+
+	<p>
+		Because you can have a lot of airspace files in the airspace
+		directory, maybe one for every country, it is useful to define, which
+		files should be loaded only to save run-time memory. That can be done
+		in the configuration setup for
+		<a href="cumulus-settings-airspace.html#openAir_Load"> Airspaces</a>.
+		Press the Load button to select the airspace files to be loaded.
+	</p>
+
+	<p>In addition to the OpenAir files themselves, you can add a file
+		to configure the mapping of airspace types from the OpenAir file to
+		the types Cumulus uses. Cumulus recognizes the following types:</p>
+
+	<ul>
+		<li>AirA
+		<li>AirB
+		<li>AirC
+		<li>AirD
+		<li>AirE
+		<li>AirF
+		<li>ControlC
+		<li>ControlD
+		<li>Danger
+		<li>Restricted
+		<li>LowFlight
+		<li>Tmz
+		<li>GliderSector
+		<li>WaveWindow
+	</ul>
+
+	In order to create a mapping file, create a file with the same basename
+	as the OpenAir file (without the
+	<i>.txt</i> extension) and append
+	<i>_mappings.conf</i> to the basename.
+	<p>
+		Example: Sourcefile=<i>openair.txt</i>, Mappingfile=<i>openair_mappings.conf</i>
+	</p>
+
+	<p>
+		The mapping file must be placed in the same directory as the OpenAir
+		file. The syntax used in the file is simple. Lines starting with <i>#</i>
+		or <i>*</i> are ignored and can be used for comments. Empty lines are
+		also ignored. The rest of the lines should contain entries in the form
+		<i>key = value</i>, one entry per line. The key is the airspace type
+		in the OpenAir file you wish to map, and the value is the
+		corresponding Cumulus type you wish to assign. The default mappings
+		are:
+	</p>
+
+	<ul>
+		<li>A = AirA
+		<li>B = AirB
+		<li>C = AirC
+		<li>D = AirD
+		<li>E = AirE
+		<li>F = AirF
+		<li>GP = Restricted
+		<li>R = Restricted
+		<li>TRA = Restricted
+		<li>Q = Danger
+		<li>CTR = ControlD
+		<li>TMZ = Tmz
+		<li>GSEC = GliderSector
+		<li>W = WaveWindow
+	</ul>
+
+	<p>You only need to define the values you actually want to change
+		in the file. These instructions will overwrite the default mappings.</p>
+
+	<p>
+		Example: <i>CTR=ControlC</i>
+	</p>
+
+	<p>
+		This statement changes the assignment <i>ControlD</i> to <i>ControlC</i>.
+	</p>
+
+	<p>
+		<b>Remember that the mappings are case-sensitive!</b>
+	</p>
+
+	<p>
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td align="left"><a href="cumulus-map.html">back</a></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td align="right"><a href="cumulus-maps-welt2000.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+	</p>
+
+</body>
+</html>
