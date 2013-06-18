@@ -36,8 +36,9 @@
 		Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die
 		Anzahl der empfangenen Satelliten, deren Signalst&auml;rke und die
 		empfangenen NMEA Datens&auml;tze sehen k&ouml;nnen. Diese
-		&Uuml;bersicht kann mit der <i>g</i>-Taste oder duch antippen des GPS
-		Status Indikators in der Statusleiste ge&ouml;ffnet werden.
+		&Uuml;bersicht kann mit der <i>g</i>-Taste, duch antippen des GPS
+		Status Indikators in der Statusleiste oder &uuml;ber <i>Men&uuml;/Status/GPS</i>
+		ge&ouml;ffnet werden.
 	</p>
 
 	<p>
@@ -54,60 +55,90 @@
 	In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle
 	ausw&auml;hlen, &uuml;ber die die Verbindung zum GPS Empf&auml;nger
 	hergestellt werden soll:
-	<p>
-	<ul>
-		<li>Serielle Schittstelle (RS232) z.B. /dev/ttyS0 f&uuml;r ein Flarm Ger&auml;t.
-		<li>Bluetooth Schittstelle z.B. /dev/rfcomm0
-		<li>USB Schittstelle z.B. /dev/ttyUSB0
-		<li>BT Adapter
-		<li>GPS Location
-		<li>Cumulus NMEA Simulator
-	</ul>
-	</p>
 
-	<p>Serielle Schittstellen und Seriell-USB Adapter ben&ouml;tigen eine
-		Geschwindigkeitsangabe f&uuml;r die &Uuml;bertragung. Die NMEA Standard
-		&Uuml;bertragungsgeschwindigkeit betragt 4800 bps kann bei Erfordernis
-		aber auch h&ouml;her gew&auml;lht werden.</p>
-
-	<p>
-		<b>Achtung!</b> Bei Auswahl einer seriellen Schnittstelle wie <i>ttyS0</i>
-		ist es unter Umst&auml;den auf einem Linux System wie Ubuntu noch
-		erforderlich, dem Cumulus Benutzer die Linux Gruppe <i>dialout</i>
-		zuzuweisen, damit er auf das serielle Ger&auml;t auch zugreifen darf.
-		Das kann man mit folgenden Kommando tun:
-	</p>
-
-	<p>
-  <i>sudo gpasswd --add &lt;cumulus_user&gt; dialout</i>
+  <p>
   </p>
-	  
-	<p>
-		Wenn Sie ein Nokia Internet Tablet N800/N810/N900 verwenden, dann
-		sollte der Eintrag <i>GPS Location</i> Ihre erste Wahl sein,
-		au&szlig;er Sie wollen sich per USB zum GPS Empf&auml;nger verbinden.
-		In solch einem Fall w&auml;hlen Sie bitte den Eintrag <i>/dev/ttyUSB0</i>
-		aus. Falls Sie einen RS232-USB Konverter verwenden, m&uuml;ssen Sie
-		auch eine passende &Uuml;bertragungsgeschwingigkeit dazu
-		ausw&auml;hlen.
-	</p>
+  
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Ger&auml;t</th>
+      <th>Beschreibung</th>
+    </tr>
 
+    <tr>
+      <th>GPS Location</th>
+      <td>Nur bei den Nokia Internet Tablets N8x0 und N900 verf&uuml;gbar,
+          um den eingebauten GPS Empf&auml;nger zu benutzen. Diese Auswahl
+          sollte in der Regel Ihre erste Wahl dort sein.</td>
+    </tr>
+
+    <tr>
+      <th>BT Adapter</th>
+      <td>
+        F&uuml;r die direkte Verbindung zu einem externen Bluetooth Ger&auml;t.
+        Wenn Sie diese Auswahl treffen, startet Cumulus automatisch einen
+		    Suchlauf nach erreichbaren Bluetooth Ger&auml;ten in Ihrer Umgebung.
+		    Werden solche Ger&auml;te gefunden, werden Sie Ihnen in einem Auswahl
+		    Dialog nach einiger Zeit angeboten. W&auml;hlen Sie dort einen
+		    passenden Eintrag aus. War Ihre Auswahl falsch, so m&uuml;ssen Sie
+		    Cumulus beenden und neu starten. Eine andere M&ouml;glichkeit gibt es
+		    in diesem Fall nicht.
+		  </td>
+    </tr>
+
+    <tr>
+      <th>/dev/ttyS0</th>
+      <td>
+        Serielle Schittstelle (RS232) wie bei einem FLARM Ger&auml;t
+				zu finden. Eine solche Schittstelle ben&ouml;tigt auch eine
+				Geschwindigkeitsangabe f&uuml;r die &Uuml;bertragung. Die NMEA
+				Standard &Uuml;bertragungsgeschwindigkeit betr&auml;gt 4800 bps,
+				kann bei Erfordernis aber auch h&ouml;her gew&auml;lht werden.
+
+				<p>
+			    <b>Achtung!</b> Bei Auswahl einer seriellen Schnittstelle wie <i>ttyS0</i>
+			    ist es unter Umst&auml;den auf einem Linux System wie Ubuntu noch
+			    erforderlich, dem Cumulus Benutzer die Linux Gruppe <i>dialout</i>
+			    zuzuweisen, damit er auf das serielle Ger&auml;t auch zugreifen darf.
+			    Das kann man mit folgenden Kommando tun:
+			    </p>
+			    
+				  <p>
+				  <i>sudo gpasswd --add &lt;cumulus_user&gt; dialout</i>
+				  </p>
+				  
+       </td>
+    </tr>
+
+    <tr>
+      <th>/dev/ttyUSB0</th>
+      <td>
+          F&uuml;r eine USB Ger&auml;tekopplung oder einem USB-RS232 Adapter, falls
+          das GPS Ger&auml;t nur ein serielles Interface hat. <b>Achtung!</b>
+          ein USB-RS232 Adapter ben&ouml;tigt auch eine Geschwindigkeitsangabe
+          f&uuml;r die &Uuml;bertragung.
+          <p>
+          <b>Achtung!</b> Bei einem USB Anschluss muss der USB Port des PDA den OTG
+          (On-the-go) Mode unterst&uuml;tzen.
+          </p>
+      </td>
+    </tr>
+
+    <tr>
+      <th>/tmp/nmeasim</th>
+      <td>F&uuml;r den Cumulus NMEA Simulator</td>
+    </tr>
+  </table>
+  
 	<p>
-		Eine andere Auswahlm&ouml;glichkeit ist der Eintrag <i>BT-Adapter</i>.
-		Wenn Sie diesen w&auml;hlen, startet Cumulus automatisch einen
-		Suchlauf nach erreichbaren Bluetooth Ger&auml;ten in Ihrer Umgebung.
-		Werden solche Ger&auml;te gefunden, werden Sie in einem Combobox
-		Dialog nach einiger Zeit angeboten. W&auml;hlen Sie dort einen
-		passenden Eintrag aus. War Ihre Auswahl falsch, so m&uuml;ssen Sie
-		Cumulus neu starten. Eine andere M&ouml;glichkeit gibt es in diesem
-		Fall nicht. Der direkte Kontakt eines GPS Ger&auml;tes &uuml;ber
-		Bluetooth bietet f&uuml;r Cumulus die M&ouml;glichkeit auch alle
+	  Der direkte Kontakt zu einem GPS Ger&auml;t &uuml;ber eine externe
+		Schnittstelle bietet f&uuml;r Cumulus die M&ouml;glichkeit auch alle
 		angebotenen NMEA Datens&auml;tze von diesem Ger&auml;t ungefiltert zu
-		erhalten. Das selbe gilt f&uuml;r RS232 und USB Schnittstellen.
+		erhalten.
 	</p>
 	
 	<p>Ist Ihre Schittstelle nicht in der Liste zu finden, so
-		&auml;ndern Sie einfach einen bestehenden Eintrag, entspreched Ihren
+		&auml;ndern Sie einfach einen bestehenden Eintrag entspreched Ihren
 		W&uuml;nschen, ab.</p>
 
 	<h5>H&ouml;henreferenz</h5>
@@ -127,7 +158,7 @@
 	abgezogen. Wenn ein GPS Fix existiert, wird der Korrekturwert sofort
 	auf die Anzeige angewendet.
 	<p>
-		Einige Ger&auml;te, z.B. Flarm, k&ouml;nnen H&ouml;henangaben liefern,
+		Einige Ger&auml;te, z.B. Flarms, k&ouml;nnen H&ouml;henangaben liefern,
 		die von ihrer eingebauten Drucksonde stammen. Um diese Daten zu
 		nutzen, m&uuml;ssen Sie den Eintrag <i>Druck</i> bei der
 		H&ouml;henreferenz Einstellung ausw&auml;hlen.
@@ -194,12 +225,9 @@
 	<h5>Abgleich der Systemuhr</h5>
 
 	Cumulus gestattet auch das Abgleichen der Systemuhr des PDA auf die GPS
-	Zeit, wenn die Option
-	<i>Sync Clock</i> aktiviert wird. Dazu muss das Programm aber unter dem
-	Benutzer
-	<i>root</i> laufen. Bei den Nokia Internet Tablets ist diese Option
-	nicht verf&uuml;gbar, da Cumulus dort nur unter dem Benutzernamen
-	<i>user</i> laufen kann.
+	Zeit, wenn die Option	<i>Sync Clock</i> aktiviert wird. Dazu muss das Programm
+  aber unter dem Benutzer	<i>root</i> laufen. Bei Android und den Nokia Internet
+  Tablets ist diese Option nicht verf&uuml;gbar.
 
 	<h5>Speichere NMEA Daten</h5>
 
@@ -218,7 +246,7 @@
 
 	<h5>Verarbeitete GPS Datens&auml;tze</h5>
 
-	Cumulus verarbeitet die folgenden NMEA and propriet&auml;ren
+	Cumulus verarbeitet die folgenden NMEA und propriet&auml;ren
 	Datens&auml;tze:
 	<p>
 	<table border="1" cellpadding="5">

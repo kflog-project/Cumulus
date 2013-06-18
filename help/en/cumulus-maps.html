@@ -30,7 +30,7 @@
 			need. See <a href="cumulus-settings-map-settings.html#Download">Map-Settings</a>
 			for more information.</li>
 
-		<li><b>Airspace:</b> Cumulus only supports the OpenAir file
+		<li><b>Airspaces:</b> Cumulus only supports the OpenAir file
 			format for airspace structures. Please search the Internet for files
 			of the region where you fly. Addresses where you can - maybe! - find
 			information:
@@ -38,7 +38,7 @@
 				<li><a href="http://soaringweb.org">Soaring Services -
 						Airspace</a>
 				<li><a href="http://www.daec.de/aul/luftr_d.php">Airspace
-						Data Germany</a> published by the DAeC
+						Data Germany (Deutschland)</a> published by the DAeC
 				<li>The AIP of the country you are interested in.
 			</ul>
 		</li>
@@ -52,21 +52,38 @@
 	 </li>
 	</ul>
 
-	<p>The maps can be installed in different places:</p>
+	<p>The maps are installed in different places depending on the used device:</p>
 
-	<ul>
-		<li>In <i>$HOME/Cumulus/maps</i> (Linux Desktop)
-		<li>In <i>$HOME/MyDocs/Cumulus/maps</i> (Maemo)
-		<li>In <i>/sdcard/Cumulus/maps</i> at the SD-card (Android)
-	</ul>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>OS</th>
+      <th>Map root directory</th>
+    </tr>
+    
+    <tr>
+      <th>Linux Desktop</th>
+      <td>$HOME/Cumulus/maps</td>
+    </tr>
+    
+    <tr>
+      <th>Maemo</th>
+      <td>$HOME/MyDocs/Cumulus/maps</td>
+    </tr>
+    
+    <tr>
+      <th>Android</th>
+      <td>/sdcard/Cumulus/maps (internal or external SD-card)</td>
+    </tr>
+  </table>
 
   <p>
-	These are the default locations. On a PDA you should use an external
-	storage medium if possible, because the internal file system is often
-	limited in its capacity.
+	  These are the default locations.
   </p>
   
-	<p>At the first startup on the Nokia Internet Tablet, Cumulus
+	<p>
+	  On the Nokia Internet Tablet you should use an external storage medium if
+	  possible, because the internal file system is limited in its capacity.
+	  At the first startup on the Nokia Internet Tablet, Cumulus
 		itself tries to discover the best location for storing the map files.
 		The following places are checked for existence in chronological order:
 	</p>
@@ -87,30 +104,40 @@
 			subdirectories under the root map path.</b>
 	</p>
 
-	<ul>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Directory</th>
+      <th>Map kind</th>
+    </tr>
 
-		<li>The ground and terrain data files have to be put into a
-			subdirectory called <i>landscape</i>.
-		</li>
-
-		<li>The airfield files have to be put into a subdirectory called
-			<i>airfields</i>.
-		</li>
-
-		<li>The airspace files have to be put into a subdirectory called
-			<i>airspaces</i>.
-		</li>
-
-	</ul>
+    <tr>
+      <th>.../maps/landscape</th>
+      <td>The ground and terrain data files</td>
+    </tr>
+  
+    <tr>
+      <th>.../maps/airfields</th>
+      <td>The airfield files</td>
+    </tr>
+    
+    <tr>
+      <th>.../maps/airspaces</th>
+      <td>The airspace files</td>
+    </tr>
+  </table>
 
 	<p>
 		If you want to install the maps elsewhere than the known locations,
 		you must give the path to the new map root directory in the Map
-		Settings configuration page (Setup-&gt;General setup-&gt;Map
-		Settings). Use the <a href="cumulus-settings-map-settings.html#Maps">Maps</a>
+		Settings configuration page (Setup-&gt;General-&gt;Map-Settings).
+		Use the <a href="cumulus-settings-map-settings.html#Maps">Maps</a>
 		button to navigate to the appropriate root directory under which the
 		expected maps' subdirectories are to be found.
 	</p>
+
+  <p>
+    <b>Note! Under Android you cannot change the map root directory.</b>
+  </p>
 
 	<p>Only load the airfields and the airspace maps for the area you
 		need. This will make Cumulus faster and save runtime memory. If you
@@ -125,12 +152,13 @@
 	<p>
 		The maps you install are not projected. This work is done on loading.
 		Because this is a computationally complex operation, the resulting
-		maps are stored again with a <i>.kfc or .txc</i> extension. For many
-		maps, these files are a bit smaller than the original files. The next
-		time Cumulus needs to load the file, it first tries to load this <i>compiled</i>
-		file to improve speed. In the <a
-			href="cumulus-settings-map-settings.html"> Map Settings</a> page you
-		can modify the behaviour of Cumulus for map projection and map
+		maps are stored again with a
+		<i>.kfc</i>, <i>.aic</i> or <i>.txc</i> extension. For many maps,
+		these files are a bit smaller than the original files. The next time
+		Cumulus needs to load the file, it first tries to load this
+		<i>compiled</i> file to improve speed. In the
+		<a href="cumulus-settings-map-settings.html"> Map Settings</a> page
+		you can modify the behaviour of Cumulus for map projection and map
 		compilation.
 	</p>
 

@@ -57,20 +57,41 @@
 
 	<p>Die Karten werden in Abh&auml;ngigkeit vom verwendeten Ger&auml;t in 
 	   unterschiedlichen Verzeichnissen installiert:</p>
-	<ul>
-		<li>In <i>$HOME/Cumulus/maps</i> (Linux Desktop)
-		<li>In <i>$HOME/MyDocs/Cumulus/maps</i> (Maemo).
-		<li>In <i>/sdcard/Cumulus/maps</i> auf der SD-Karte (Android)
-	</ul>
+	   
+	<table border="1" cellpadding="5">
+    <tr>
+      <th>OS</th>
+      <th>Karten-Wurzelverzeichnis</th>
+    </tr>
+    
+    <tr>
+      <th>Linux Desktop</th>
+      <td>$HOME/Cumulus/maps</td>
+    </tr>
+    
+    <tr>
+      <th>Maemo</th>
+      <td>$HOME/MyDocs/Cumulus/maps</td>
+    </tr>
+    
+    <tr>
+      <th>Android</th>
+      <td>/sdcard/Cumulus/maps (interne oder externe SD-Karte)</td>
+    </tr>
+	</table>
+	
+	<p>
+	  Das sind die Standardpl&auml;tze.
+  </p>
 
-	Das sind die Standardpl&auml;tze. Auf einem PDA sollten Sie als
-	Speicherort stets ein externes Medium w&auml;hlen, da das interne Dateisystem
-	oft im Speichervolumen begrenzt ist.
-
-	<p>Beim ersten Start von Cumulus auf den Nokia Internet Tablets
-		versucht Cumulus selbst den besten Speicherort f&uuml;r die Karten
-		heraus zu finden. Die folgenden Pl&auml;tze werden der Reihe nach
-		gepr&uuml;ft, ob sie existieren:</p>
+	<p>
+	  Auf den Nokia Internet Tablets sollten Sie als Speicherort stets
+		ein externes Medium w&auml;hlen, da das interne Dateisystem im
+		Speichervolumen begrenzt ist. Beim ersten Start von Cumulus auf den
+		Nokia Internet Tablets versucht Cumulus selbst den besten Speicherort
+		f&uuml;r die Karten heraus zu finden. Die folgenden Pl&auml;tze werden
+		der Reihe nach gepr&uuml;ft, ob sie existieren:
+  </p>
 
 	<ul>
 		<li>/media/mmc1/Cumulus</li>
@@ -86,28 +107,42 @@
 		Unterverzeichnissen unter dem jeweiligen Wurzelverzeichnis zu
 		speichern.
 	</p>
+  
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>Verzeichnis</th>
+      <th>Kartenart</th>
+    </tr>
 
-	<ul>
-		<li>Boden- und Gel&auml;ndekarten sind im Unterverzeichnis <i>landscape</i>
-			abzulegen.
-		</li>
-		<li>Flugplatzdaten sind im Unterverzeichnis <i>airfields</i>
-			abzulegen.
-		</li>
-		<li>Luftraumdateien sind im Unterverzeichnis <i>airspaces</i>
-			abzulegen.
-		</li>
-	</ul>
-
+    <tr>
+      <th>.../maps/landscape</th>
+      <td>Boden- und Gel&auml;nde Dateien</td>
+    </tr>
+  
+    <tr>
+      <th>.../maps/airfields</th>
+      <td>Flugplatz- und Au&szlig;enlandefelder Dateien</td>
+    </tr>
+    
+    <tr>
+      <th>.../maps/airspaces</th>
+      <td>Luftraum Dateien</td>
+    </tr>
+  </table>
+ 
 	<p>
 		Wenn Sie die Karten unter einem anderen Wurzelverzeichnis als den hier
 		genannten installieren, so m&uuml;ssen Sie anschlie&szlig;end das
 		Men&uuml; <a href="cumulus-settings-map-settings.html#Maps">
-			Einstellungen/Karte</a> aufrufen und den Pfad zum Wurzelverzeichnis der
+		Einstellungen/Karte</a> aufrufen und den Pfad zum Wurzelverzeichnis der
 		installierten Karten dort eintragen. Dr&uuml;cken Sie dazu auf den
 		Knopf <i>Karten</i> oben links in der Ecke des Men&uuml;s und
 		navigieren Sie zu Ihrem Installationsverzeichnis, dort wo Sie die
 		Karten abgelegt haben.
+	</p>
+	
+	<p>
+	  <b>Achtung! Bei Android kann man das Wurzelverzeichnis nicht &auml;ndern.</b>
 	</p>
 
 	<p>Laden Sie nur die Luftraumdateien und die Flugpl&auml;tze des
@@ -131,11 +166,12 @@
 		Die von Ihnen installierten Karten sind Rohdaten und noch nicht auf
 		eine bestimmte Projektion zugeschnitten. Das wird erst w&auml;hrend
 		des erstmaligen Ladens gemacht. Dabei werden die Kartendaten in das
-		neue Format konvertiert und in diesem auch als <i>.kfc</i> oder <i>.txc</i>
-		Dateien gespeichert. Dieser Vorgang nimmt einige Zeit in Anspruch, hat
-		aber den Vorteil, das die neuen Dateien kleiner sind und dann auch
-		schneller geladen werden k&ouml;nnen. In dem Men&uuml; <a
-			href="cumulus-settings-map-settings.html">Einstellungen/Karte</a>
+		neue Format konvertiert und in diesem auch als
+		<i>.kfc</i>, <i>.aic</i> oder <i>.txc</i> Dateien gespeichert. Dieser
+		Vorgang nimmt einige Zeit in Anspruch, hat aber den Vorteil, das die
+		neuen Dateien kleiner sind und dann auch schneller geladen werden
+		k&ouml;nnen. In dem Men&uuml;
+		<a href="cumulus-settings-map-settings.html">Einstellungen/Karte</a>
 		k&ouml;nnen Sie die Projektionsart und weitere Kartenparameter
 		einstellen.
 	</p>
