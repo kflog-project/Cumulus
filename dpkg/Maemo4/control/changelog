@@ -1,3 +1,10 @@
+cumulus (5.5.1) stable; urgency=low
+
+  * Bugfix: Value adaption in map info boxes modified. If a value was smaller
+    the display size was never increased.
+    
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 25 Jun 2013 22:31:52 +0200
+
 cumulus (5.5.0) stable; urgency=low
 
   * Remove file function and directory name display added to openair and
