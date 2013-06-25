@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-06-25 AP: Bugfix: Value adaption in map info boxes modified. If a
+                   value was smaller the display size was never increased.
+
+[*] 2013-06-20 AP: Cumulus 5.5.0 only for Android released.
+
 [o] 2013-06-18 AP: Cumulus help pages updated.
 
 [-] 2013-06-12 AP: Android Bluetooth connection problem fixed.
