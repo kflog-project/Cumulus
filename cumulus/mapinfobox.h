@@ -24,11 +24,12 @@
 #ifndef MAP_INFO_BOX_H
 #define MAP_INFO_BOX_H
 
-#include <QWidget>
-#include <QLabel>
-#include <QFont>
-#include <QString>
 #include <QEvent>
+#include <QFont>
+#include <QLabel>
+#include <QString>
+#include <QTime>
+#include <QWidget>
 
 /**
  * \class CuLabel
@@ -200,6 +201,19 @@ public:
     setMaximumHeight( value );
   }
 
+  /** Sets the minimum update time interval of the text label box. */
+  void setUpdateInterval( int value )
+  {
+    m_minUpdateInterval = value;
+    m_lastUpdateTime.setHMS( 0, 0, 0);
+  };
+
+  /** Gets the minimum update time interval of the text label box. */
+  int getUpdateInterval()
+  {
+    return m_minUpdateInterval;
+  };
+
 signals:
 
   /**
@@ -232,6 +246,11 @@ private:
   void determineMaxFontHeight();
 
   /**
+   * Adapt text to text label box.
+   */
+  void adaptText2LabelBox();
+
+  /**
    * Initializes the basics of this widget.
    *
    * @param borderColor Color to be used as border.
@@ -262,6 +281,14 @@ private:
   QString m_fontUnit;
   /** The maximum text label font height. */
   int m_maxTextLabelFontHeight;
+  /**
+   * Minimum update interval of display label in milli seconds. The variable
+   * is undefined, if set to zero.
+   */
+  int m_minUpdateInterval;
+
+  /* Last time of label update. */
+  QTime m_lastUpdateTime;
 };
 
 #endif

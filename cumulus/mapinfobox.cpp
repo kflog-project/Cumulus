@@ -7,9 +7,9 @@
                                2008-2013 by Axel Pauli
 
     email                : axel@kflog.org
-    
+
     $Id$
-    
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -30,6 +30,7 @@
 #endif
 
 #include "generalconfig.h"
+#include "layout.h"
 #include "mapinfobox.h"
 
 CuLabel::CuLabel( QWidget * parent, Qt::WindowFlags flags ) :
@@ -60,7 +61,9 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   QFrame( parent ),
   m_textBGColor( "white" ),
   m_maxFontDotsize( fontDotsize ),
-  m_maxTextLabelFontHeight( -1 )
+  m_maxTextLabelFontHeight( -1 ),
+  m_minUpdateInterval( 0 ),
+  m_lastUpdateTime(0, 0, 0)
 {
   // Maximum pretext width in pixels. That value is a hard coded limit now!
   const int ptw = 35;
@@ -201,7 +204,7 @@ MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixm
 void MapInfoBox::basics( const QString& borderColor )
 {
   QHBoxLayout* topLayout = new QHBoxLayout(this);
-  topLayout->setContentsMargins(0,0,0,0);
+  topLayout->setContentsMargins(0, 0, 0, 0);
   topLayout->setSpacing(0);
 
   QPalette p = palette();
@@ -281,86 +284,44 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
   m_text->setText( m_value );
 
-  if( m_value.isEmpty() || m_maxTextLabelFontHeight == -1 )
+  if( m_value.isEmpty() )
     {
-      // We return on empty value or on an undefined maximum font size
+      // We return on empty text.
       return;
     }
 
-#ifdef DEBUG
-  qDebug() << "MapInfoBox::setValue:"
-           << m_preText << m_value
-           << "MSH=" <<  m_text->minimumSizeHint() << "Size=" << m_text->size()
-           << "lastValueSize" << lastValueSize
-           << "newValSize" << newVal.size()
-           << "Visible" << isVisible();
-#endif
+  if( m_minUpdateInterval > 0 )
+    {
+      // A time update interval is set.
+      if( m_lastUpdateTime.elapsed() < m_minUpdateInterval )
+        {
+          // We return, if the next update time is not yet reached.
+          return;
+        }
+
+      m_lastUpdateTime.start();
+    }
 
   if( m_maxTextLabelFontHeight == -1 )
     {
-      // Determine the maximum font height for the text label.
-      // This call sets also the new calculated font size.
+      // Determine the maximum font height for the text label, if not set.
       determineMaxFontHeight();
     }
 
-  // Check, if the label font has to be adapted to a new width. The trick is
-  // to compare the minimum size hint width with the width of the box. The
-  // minimum size hint includes different dependencies which are not so easy to
-  // recognize.
-  if( m_text->minimumSizeHint().width() <= m_text->width() &&
+  // Check, if the label text fits in the label widget.
+  QFontMetrics qfm( m_text->font() );
+
+  if( (qfm.boundingRect( m_text->text() ).width() ) < m_text->width() &&
       lastValueSize == newVal.size() &&
-      showEvent == false )
+      showEvent == false)
     {
-      // The displayed value fits the box.
-      m_text->setText( m_value );
+      // The displayed value fits the label widget.
+      // The text size has not changed.
+      // No show event has occurred
       return;
     }
 
-  // Assumption is, that the current font height is calculated and set before.
-  int start = 0;
-
-  if( m_text->font().pointSize() != -1 )
-    {
-      start = m_text->font().pointSize();
-    }
-  else
-    {
-      start = m_text->font().pixelSize();
-    }
-
-  QFont tf = m_text->font();
-
-  while( start > 6 )
-    {
-      // The text to be displayed is to big. So we do lower the font and check
-      // what the minimumSizeHint do say.
-      if( m_text->minimumSizeHint().width() <= m_text->width() )
-        {
-          // Size hint say I fit in the box
-          break;
-        }
-
-      if( tf.pointSize() != -1 )
-        {
-          tf.setPointSize(--start);
-        }
-      else
-        {
-          tf.setPixelSize(--start);
-       }
-
-      m_text->setFont(tf);
-    }
-
-#ifdef DEBUG
-  qDebug() << "MapInfoBox::setValue() Return: newVal=" << newVal
-           << "BoxWidth=" << m_text->width()
-           << "MinSizeHint" << m_text->minimumSizeHint()
-           << "Start=" << start
-           << "tf=" << tf.toString()
-           << "Font=" << m_text->font().toString();
-#endif
-
+  adaptText2LabelBox();
 }
 
 void MapInfoBox::setTextLabelBGColor( const QString& newValue )
@@ -390,6 +351,8 @@ void MapInfoBox::setPreWidgetsBGColor( const QColor& newValue )
 
 void MapInfoBox::showEvent(QShowEvent *event)
 {
+  QFrame::showEvent( event );
+
   // reset this variable to force a recalculation
   m_maxTextLabelFontHeight = -1;
 
@@ -397,11 +360,8 @@ void MapInfoBox::showEvent(QShowEvent *event)
     {
       // Update text box only, if it is a text box. Calling setValue shall ensure
       // that the font is adapted to the layout size.
-      determineMaxFontHeight();
       setValue( m_value, true );
     }
-
-  QFrame::showEvent( event );
 }
 
 void MapInfoBox::mousePressEvent( QMouseEvent* event )
@@ -421,8 +381,6 @@ void MapInfoBox::resizeEvent( QResizeEvent* event )
   if( m_text->pixmap() == 0 )
     {
       // We are a text label.
-     determineMaxFontHeight();
-
       if( isVisible() )
         {
           setValue( m_value, true );
@@ -432,7 +390,7 @@ void MapInfoBox::resizeEvent( QResizeEvent* event )
 
 void MapInfoBox::determineMaxFontHeight()
 {
-  if( m_text->pixmap() != 0)
+  if( m_text->pixmap() != 0 )
     {
       // MapInfoBox is not a text display box.
       return;
@@ -440,42 +398,63 @@ void MapInfoBox::determineMaxFontHeight()
 
   QFont fontRef = m_text->font();
 
+  Layout::adaptFont( fontRef,
+                     m_text->height() + 2 * m_text->margin(),
+                     m_maxFontDotsize,
+                     7 );
+
+  // Set calculated font point size
   if( fontRef.pointSize() != -1 )
     {
-      fontRef.setPointSize( m_maxFontDotsize );
+      m_maxTextLabelFontHeight = fontRef.pointSize();
     }
   else
     {
-      fontRef.setPixelSize( m_maxFontDotsize );
+      m_maxTextLabelFontHeight = fontRef.pixelSize();
+    }
+}
+
+void MapInfoBox::adaptText2LabelBox()
+{
+  if( m_text->pixmap() != 0 || m_text->text().isEmpty() )
+    {
+      // MapInfoBox is not a text display box or text is empty.
+      return;
     }
 
-  int value = m_maxFontDotsize;
+  QFont fontRef = m_text->font();
 
-  // Adapt the font point size to the given pixel height.
-  while( value >= 7 )
+  // Check, if the font height maximum is set. If not calculate it.
+  if( m_maxTextLabelFontHeight == -1 )
+    {
+      determineMaxFontHeight();
+    }
+
+  if( fontRef.pointSize() != -1 )
+    {
+      fontRef.setPointSize( m_maxTextLabelFontHeight );
+    }
+  else
+    {
+      fontRef.setPixelSize( m_maxTextLabelFontHeight );
+    }
+
+  int value = m_maxTextLabelFontHeight;
+
+  // We have to consider the set style padding and the frame line width
+  int margin = m_text->margin() + 2 + m_text->lineWidth() * 2;
+
+  // We have to consider twice the set indent.
+  margin += ( m_text->indent() != -1 ) ? m_text->indent() * 2 : 0;
+
+  // Adapt the font point size to the given text box width.
+  while( value > 7 )
     {
       QFontMetrics qfm(fontRef);
 
-      int diff = qfm.boundingRect("XM").height() - m_text->height();
-
-      if( diff > 0 )
+      if( (qfm.boundingRect( m_text->text() ).width() + margin) > m_text->width() )
         {
-          if( diff > 100 )
-            {
-              value -= 10;
-            }
-          if( diff > 50 )
-            {
-              value -= 5;
-            }
-          else if( diff > 25 )
-            {
-              value -= 3;
-            }
-          else
-            {
-              value--;
-            }
+          value--;
 
           // Determine, what kind of font is used
           if( fontRef.pointSize() != -1 )
@@ -486,15 +465,13 @@ void MapInfoBox::determineMaxFontHeight()
             {
               fontRef.setPixelSize( value );
             }
-
-          continue;
         }
-
-      break;
+      else
+        {
+          break;
+        }
     }
 
   // Set the new font size for the text label.
   m_text->setFont( fontRef );
-
-  m_maxTextLabelFontHeight = value;
 }

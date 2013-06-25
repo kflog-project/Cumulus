@@ -166,6 +166,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _distance->setValue("-");
   _distance->setPreUnit( Distance::getUnitText() );
   _distance->setMapInfoBoxMaxHeight( textLabelBoxHeight );
+  _distance->setUpdateInterval( 750 );
   DEBLayout->addWidget( _distance );
   connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -174,6 +175,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _eta->setVisible(false);
   _eta->setPreText( "Eta" );
   _eta->setValue("-");
+  _eta->setUpdateInterval( 750 );
   _eta->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _eta );
   connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
@@ -188,6 +190,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _bearingBGColor = wayBar->palette().color(QPalette::Window);
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
+  _bearing->setUpdateInterval( 750 );
   _bearing->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _bearing);
   connect(_bearing, SIGNAL(mousePress()), this, SLOT(slot_toggleBearing()));
@@ -217,6 +220,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   _speed->setPreText("Gs");
   _speed->setValue("-");
+  _speed->setUpdateInterval( 750 );
   _speed->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _speed);
 
@@ -271,6 +275,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), false, true );
   _vario->setPreText("Var");
   _vario->setValue("-");
+  _vario->setUpdateInterval( 750 );
   _vario->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   VALayout->addWidget(_vario, 2 );
   connect(_vario, SIGNAL(mousePress()), this, SLOT(slot_VarioDialog()));
@@ -531,19 +536,6 @@ void MapView::slot_Speed(const Speed& speed)
     }
   else
     {
-      static QTime lastDisplay = QTime::currentTime();
-
-      // The display is updated every 1 seconds only.
-      // That will reduce the X-Server load.
-      if( lastDisplay.elapsed() < 750 )
-        {
-          return;
-        }
-      else
-        {
-          lastDisplay = QTime::currentTime();
-        }
-
       _speed->setValue(speed.getHorizontalText(false,0));
     }
 }
@@ -608,19 +600,6 @@ void MapView::slot_Bearing(int bearing)
     }
   else
     {
-      static QTime lastDisplay = QTime::currentTime();
-
-      // The display is updated every 1 seconds only.
-      // That will reduce the X-Server load.
-      if( lastDisplay.elapsed() < 750 )
-        {
-          return;
-        }
-      else
-        {
-          lastDisplay = QTime::currentTime();
-        }
-
       int ival = bearing;
 
       if( _bearingMode == 0 )
@@ -716,19 +695,6 @@ void MapView::slot_Distance(const Distance& distance)
     }
   else
     {
-      static QTime lastDisplay = QTime::currentTime();
-
-      // The display is updated every 1 seconds only.
-      // That will reduce the X-Server load.
-      if( lastDisplay.elapsed() < 750 )
-        {
-          return;
-        }
-      else
-        {
-          lastDisplay = QTime::currentTime();
-        }
-
       _distance->setValue(distance.getText(false, 1, (uint) 2 ) );
     }
 }
@@ -747,19 +713,6 @@ void MapView::slot_ETA(const QTime& eta)
     }
   else
     {
-      static QTime lastDisplay = QTime::currentTime();
-
-      // The display is updated every 1 seconds only.
-      // That will reduce the X-Server load.
-      if( lastDisplay.elapsed() < 750 )
-        {
-          return;
-        }
-      else
-        {
-          lastDisplay = QTime::currentTime();
-        }
-
       QString txt = QString("%1:%2").arg( eta.hour() )
                                     .arg( eta.minute(), 2, 10, QChar('0') );
       _eta->setValue(txt);
@@ -790,9 +743,9 @@ void MapView::slot_Position(const QPoint& position, const int source)
   if( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix &&
       source != Calculator::MAN )
     {
-      // If we have a valid fix the display is updated every 5 seconds only.
+      // If we have a valid fix the display is updated every 3 seconds only.
       // That will reduce the X-Server load.
-      if( lastDisplay.elapsed() < 5000 )
+      if( lastDisplay.elapsed() < 3000 )
         {
           return;
         }
@@ -931,22 +884,9 @@ void MapView::slot_Mc (const Speed& mc)
 /** This slot is called if a new variometer value has been set */
 void MapView::slot_Vario (const Speed& vario)
 {
-  static QTime lastDisplay = QTime::currentTime();
-
-  // The display is updated every 1 seconds only.
-  // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < 750 )
-    {
-      return;
-    }
-  else
-    {
-      lastDisplay = QTime::currentTime();
-    }
-
   QString varValue;
 
-  // if altitude has more than 3 digits, vario is rounded to one
+  // if altitude has more than 4 digits, vario is rounded to one
   // digit. Normal vario display is e.g. 1.1 (2 digits plus decimal
   // point)
   if( _altitude->getValue().size() > 4 )
