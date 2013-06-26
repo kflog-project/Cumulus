@@ -269,12 +269,20 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
   m_value = newVal;
 
-  if( m_pminus && showEvent == false )
+  if( m_pminus )
     {
-      if( m_value.startsWith( '-' ) && m_value.size() > 1 )
+      if( m_value.startsWith( '-' ) )
         {
           m_value = m_value.remove( 0, 1 );
-          m_pminus->setVisible(true);
+
+          if( m_value == "0.0" || m_value == "0" )
+            {
+              m_pminus->setVisible(false);
+            }
+          else
+            {
+              m_pminus->setVisible(true);
+            }
         }
       else
         {
@@ -290,7 +298,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
       return;
     }
 
-  if( m_minUpdateInterval > 0 )
+  if( m_minUpdateInterval > 0 && showEvent == false )
     {
       // A time update interval is set.
       if( m_lastUpdateTime.elapsed() < m_minUpdateInterval )
@@ -306,6 +314,9 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
     {
       // Determine the maximum font height for the text label, if not set.
       determineMaxFontHeight();
+
+      // force update of text label box adaption
+      showEvent = true;
     }
 
   // Check, if the label text fits in the label widget.
@@ -313,7 +324,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
   if( (qfm.boundingRect( m_text->text() ).width() ) < m_text->width() &&
       lastValueSize == newVal.size() &&
-      showEvent == false)
+      showEvent == false )
     {
       // The displayed value fits the label widget.
       // The text size has not changed.
