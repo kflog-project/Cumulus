@@ -269,35 +269,6 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
 
   m_value = newVal;
 
-  if( m_pminus )
-    {
-      if( m_value.startsWith( '-' ) )
-        {
-          m_value = m_value.remove( 0, 1 );
-
-          if( m_value == "0.0" || m_value == "0" )
-            {
-              m_pminus->setVisible(false);
-            }
-          else
-            {
-              m_pminus->setVisible(true);
-            }
-        }
-      else
-        {
-          m_pminus->setVisible(false);
-        }
-    }
-
-  m_text->setText( m_value );
-
-  if( m_value.isEmpty() )
-    {
-      // We return on empty text.
-      return;
-    }
-
   if( m_minUpdateInterval > 0 && showEvent == false )
     {
       // A time update interval is set.
@@ -308,6 +279,33 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
         }
 
       m_lastUpdateTime.start();
+    }
+
+  // Show new value in box.
+  // Note a minus sign is also used, if no value is available!
+  if( m_value.startsWith( QChar('-') ) && m_value.size() > 1 )
+    {
+      m_text->setText( m_value.mid(1) );
+
+      if( m_pminus )
+        {
+          m_pminus->setVisible( true );
+        }
+    }
+  else
+    {
+      m_text->setText( m_value );
+
+      if( m_pminus )
+        {
+          m_pminus->setVisible( false );
+        }
+    }
+
+  if( m_value.isEmpty() )
+    {
+      // We return on empty text.
+      return;
     }
 
   if( m_maxTextLabelFontHeight == -1 )
