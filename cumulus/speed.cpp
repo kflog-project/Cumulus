@@ -167,7 +167,7 @@ QString Speed::getVerticalText(bool withUnit, uint precision) const
 
   // @AP: Negative values near zero rounded to zero. The QString arg formatter
   //      cuts not the minus sign, if the value is rounded to zero.
-  double p10 = pow10(precision);
+  double p10 = pow( 10.0, precision);
   double vv  = rint( getVerticalValue() * p10 ) / p10;
 
   if (withUnit)
