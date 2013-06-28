@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : 2002      by Andre Somers
-                         : 2007-2010 by Axel Pauli
+                         : 2007-2012 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -21,6 +21,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <cmath>
 
 #include "speed.h"
 
@@ -163,14 +165,19 @@ QString Speed::getVerticalText(bool withUnit, uint precision) const
       precision = 0;
     }
 
+  // @AP: Negative values near zero rounded to zero. The QString arg formatter
+  //      cuts not the minus sign, if the value is rounded to zero.
+  double p10 = pow10(precision);
+  double vv  = rint( getVerticalValue() * p10 ) / p10;
+
   if (withUnit)
     {
-      result = QString("%1 %2").arg( getVerticalValue(), 0, 'f', precision )
+      result = QString("%1 %2").arg( vv, 0, 'f', precision )
                                .arg( getUnitText(_verticalUnit) );
     }
   else
     {
-      result = QString("%1").arg( getVerticalValue(), 0, 'f', precision );
+      result = QString("%1").arg( vv, 0, 'f', precision );
     }
 
   return result;
@@ -248,4 +255,3 @@ double Speed::getValueInUnit(speedUnit unit) const
         return getMps();
     }
 }
-
