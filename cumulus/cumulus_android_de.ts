@@ -1857,87 +1857,87 @@ Alle Downloads verworfen!</translation>
         <translation>Klicke hier um akt. Position als Wegpunkt zu speichern</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="304"/>
-        <location filename="mapview.cpp" line="315"/>
-        <location filename="mapview.cpp" line="912"/>
+        <location filename="mapview.cpp" line="309"/>
+        <location filename="mapview.cpp" line="320"/>
+        <location filename="mapview.cpp" line="865"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="386"/>
-        <location filename="mapview.cpp" line="846"/>
+        <location filename="mapview.cpp" line="391"/>
+        <location filename="mapview.cpp" line="799"/>
         <source>Man</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="394"/>
-        <location filename="mapview.cpp" line="1138"/>
+        <location filename="mapview.cpp" line="399"/>
+        <location filename="mapview.cpp" line="1078"/>
         <source>?</source>
         <comment>Unknown</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="404"/>
+        <location filename="mapview.cpp" line="409"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="563"/>
+        <location filename="mapview.cpp" line="555"/>
         <source>TP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="822"/>
+        <location filename="mapview.cpp" line="775"/>
         <source>GPS OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="826"/>
+        <location filename="mapview.cpp" line="779"/>
         <source>GPS no fix</source>
         <translation>GPS kein Fix</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="830"/>
+        <location filename="mapview.cpp" line="783"/>
         <source>GPS ?</source>
         <translation>GPS ?</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="837"/>
+        <location filename="mapview.cpp" line="790"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1141"/>
+        <location filename="mapview.cpp" line="1081"/>
         <source>S</source>
         <comment>Standstill</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1144"/>
+        <location filename="mapview.cpp" line="1084"/>
         <source>C</source>
         <comment>Cruising</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1147"/>
+        <location filename="mapview.cpp" line="1087"/>
         <source>L</source>
         <comment>Circling Left</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1150"/>
+        <location filename="mapview.cpp" line="1090"/>
         <source>R</source>
         <comment>Circling Right</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1178"/>
+        <location filename="mapview.cpp" line="1118"/>
         <source>L</source>
         <comment>Logging</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1188"/>
+        <location filename="mapview.cpp" line="1128"/>
         <source>Ls</source>
         <comment>LoggingStandby</comment>
         <translation></translation>
@@ -3198,8 +3198,8 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="141"/>
-        <location filename="waypointcatalog.cpp" line="1119"/>
-        <location filename="waypointcatalog.cpp" line="1488"/>
+        <location filename="waypointcatalog.cpp" line="1120"/>
+        <location filename="waypointcatalog.cpp" line="1489"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
@@ -3214,12 +3214,16 @@ Alle Downloads verworfen!</translation>
         <translation>Datei ist leer!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="746"/>
-        <source>No OpenAip data format!</source>
-        <translation>Kein OpenAip Datenformat!</translation>
+        <location filename="waypointcatalog.cpp" line="747"/>
+        <source>Invalid OpenAip data format!</source>
+        <translation>Ungültiges OpenAIP Datenformat!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="764"/>
+        <source>No OpenAip data format!</source>
+        <translation type="obsolete">Kein OpenAip Datenformat!</translation>
+    </message>
+    <message>
+        <location filename="waypointcatalog.cpp" line="765"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
     </message>
@@ -3316,17 +3320,16 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="75"/>
-        <location filename="openaip.cpp" line="148"/>
-        <location filename="openaip.cpp" line="437"/>
-        <location filename="openaip.cpp" line="584"/>
+        <location filename="openaip.cpp" line="220"/>
+        <location filename="openaip.cpp" line="523"/>
+        <location filename="openaip.cpp" line="684"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="113"/>
-        <location filename="openaip.cpp" line="402"/>
-        <location filename="openaip.cpp" line="549"/>
+        <location filename="openaip.cpp" line="173"/>
+        <location filename="openaip.cpp" line="476"/>
+        <location filename="openaip.cpp" line="637"/>
         <source>Cannot open file</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
