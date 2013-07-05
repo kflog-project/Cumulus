@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-07-05 AP: Adaption of OpenAIP read routines to new data format 1.1.
+                   Data format check added to prevent reading of unknown
+                   OpenAIP data formats.
+
+[*] 2013-07-02 AP: Cumulus 5.5.1 released
+
 [-] 2013-06-25 AP: Bugfix: Value adaption in map info boxes modified. If a
                    value was smaller the display size was never increased.
 

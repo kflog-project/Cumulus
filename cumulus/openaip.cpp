@@ -29,13 +29,16 @@ extern MapMatrix* _globalMapMatrix;
 OpenAip::OpenAip() :
   m_filterRadius(0.0)
 {
+  m_supportedDataFormats << "1.0" << "1.1";
 }
 
 OpenAip::~OpenAip()
 {
 }
 
-bool OpenAip::getRootElement( QString fileName, QString& dataItem )
+bool OpenAip::getRootElement( QString fileName,
+                              QString& dataFormat,
+                              QString& dataItem )
 {
   QFile file( fileName );
 
@@ -70,15 +73,40 @@ bool OpenAip::getRootElement( QString fileName, QString& dataItem )
 
           QString elementName = xml.name().toString();
 
-          if( elementCounter == 1 && elementName != "OPENAIP" )
-            {
-              QString errorInfo = QObject::tr("Wrong XML data format");
-              qWarning() << "OpenAip::readNavAids" << errorInfo;
-              file.close();
-              return false;
-            }
+          QString errorInfo = "OpenAip::getRootElement: ";
 
-          if( elementCounter == 2 )
+          if( elementCounter == 1 )
+            {
+              if( elementName != "OPENAIP" )
+                {
+                  errorInfo += "No OPENAIP XML file";
+                  qWarning() << errorInfo;
+                  file.close();
+                  return false;
+                }
+
+              QString version;
+
+              bool ok = readVersionAndFormat( xml, version, dataFormat );
+
+              if( ! ok )
+                {
+                  errorInfo += "Missing VERSION or DATAFORMAT attribute";
+                  qWarning() << errorInfo;
+                  file.close();
+                  return false;
+                }
+
+              if( ! m_supportedDataFormats.contains( dataFormat ) )
+                {
+                  errorInfo = "OPENAIP data format " + dataFormat +
+                              " is unsupported!";
+                  qWarning() << errorInfo;
+                  file.close();
+                  return false;
+                }
+            }
+          else if( elementCounter == 2 )
             {
               dataItem = xml.name().toString();
               file.close();
@@ -95,11 +123,43 @@ bool OpenAip::getRootElement( QString fileName, QString& dataItem )
                           " column=" + xml.columnNumber() +
                           " offset=" + xml.characterOffset();
 
-      qWarning() << "OpenAip::readNavAids: XML-Error" << errorInfo;
-     }
+      qWarning() << "OpenAip::getRootElement:" << errorInfo;
+    }
 
   file.close();
   return false;
+}
+
+bool OpenAip::readVersionAndFormat( QXmlStreamReader& xml,
+                                    QString& version,
+                                    QString& format )
+{
+  int error = 0;
+
+  // Get data format attribute
+  QXmlStreamAttributes attributes = xml.attributes();
+
+  if( attributes.hasAttribute("VERSION") )
+    {
+      version = attributes.value("VERSION").toString();
+    }
+  else
+    {
+      version.clear();
+      error++;
+    }
+
+  if( attributes.hasAttribute("DATAFORMAT") )
+    {
+      format = attributes.value("DATAFORMAT").toString();
+    }
+  else
+    {
+      format.clear();
+      error++;
+    }
+
+  return (error == 0) ? true : false;
 }
 
 bool OpenAip::readNavAids( QString fileName,
@@ -117,7 +177,12 @@ bool OpenAip::readNavAids( QString fileName,
 
   QXmlStreamReader xml( &file );
 
-  int elementCounter = 0;
+  int elementCounter   = 0;
+  bool oaipFormatOk = false;
+
+  // Reset version and data format variable
+  m_oaipVersion.clear();
+  m_oaipDataFormat.clear();
 
   while( !xml.atEnd() && ! xml.hasError() )
     {
@@ -142,8 +207,15 @@ bool OpenAip::readNavAids( QString fileName,
 
           // qDebug() << "StartElement=" << elementName;
 
+          if( elementCounter == 1 && elementName == "OPENAIP" )
+            {
+              oaipFormatOk =
+                  readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+            }
+
           if( (elementCounter == 1 && elementName != "OPENAIP") ||
-              (elementCounter == 2 && elementName != "NAVAIDS") )
+              (elementCounter == 2 && elementName != "NAVAIDS") ||
+              oaipFormatOk == false )
             {
               errorInfo = QObject::tr("Wrong XML data format");
               qWarning() << "OpenAip::readNavAids" << errorInfo;
@@ -249,7 +321,9 @@ bool OpenAip::readNavAidRecord( QXmlStreamReader& xml, RadioPoint& rp )
             }
           else if ( elementName == "NAME" )
             {
-              rp.setName( xml.readElementText() );
+              QString name = xml.readElementText();
+              upperLowerName( name );
+              rp.setName( name );
             }
           else if ( elementName == "ID" )
             {
@@ -406,7 +480,12 @@ bool OpenAip::readHotspots( QString fileName,
 
   QXmlStreamReader xml( &file );
 
-  int elementCounter = 0;
+  int elementCounter   = 0;
+  bool oaipFormatOk = false;
+
+  // Reset version and data format variable
+  m_oaipVersion.clear();
+  m_oaipDataFormat.clear();
 
   while( !xml.atEnd() && ! xml.hasError() )
     {
@@ -431,11 +510,18 @@ bool OpenAip::readHotspots( QString fileName,
 
           // qDebug() << "StartElement=" << elementName;
 
+          if( elementCounter == 1 && elementName == "OPENAIP" )
+            {
+              oaipFormatOk =
+                  readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+            }
+
           if( (elementCounter == 1 && elementName != "OPENAIP") ||
-              (elementCounter == 2 && elementName != "HOTSPOTS") )
+              (elementCounter == 2 && elementName != "HOTSPOTS") ||
+              oaipFormatOk == false )
             {
               errorInfo = QObject::tr("Wrong XML data format");
-              qWarning() << "OpenAip::readNavAid" << errorInfo;
+              qWarning() << "OpenAip::readHotspots" << errorInfo;
               file.close();
               return false;
             }
@@ -473,7 +559,7 @@ bool OpenAip::readHotspots( QString fileName,
                   " column=" + xml.columnNumber() +
                   " offset=" + xml.characterOffset();
 
-      qWarning() << "OpenAip::readNavAid: XML-Error" << errorInfo;
+      qWarning() << "OpenAip::readHotspots: XML-Error" << errorInfo;
       file.close();
       return false;
     }
@@ -510,6 +596,8 @@ bool OpenAip::readHotspotRecord( QXmlStreamReader& xml, SinglePoint& sp )
           else if ( elementName == "NAME" )
             {
               QString name = xml.readElementText();
+
+              upperLowerName( name );
 
               // Long name
               sp.setName( name );
@@ -553,7 +641,12 @@ bool OpenAip::readAirfields( QString fileName,
 
   QXmlStreamReader xml( &file );
 
-  int elementCounter = 0;
+  int elementCounter   = 0;
+  bool oaipFormatOk = false;
+
+  // Reset version and data format variable
+  m_oaipVersion.clear();
+  m_oaipDataFormat.clear();
 
   while( !xml.atEnd() && ! xml.hasError() )
     {
@@ -578,11 +671,18 @@ bool OpenAip::readAirfields( QString fileName,
 
           // qDebug() << "StartElement=" << elementName;
 
+          if( elementCounter == 1 && elementName == "OPENAIP" )
+            {
+              oaipFormatOk =
+                  readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+            }
+
           if( (elementCounter == 1 && elementName != "OPENAIP") ||
-              (elementCounter == 2 && elementName != "WAYPOINTS") )
+              (elementCounter == 2 && elementName != "WAYPOINTS") ||
+              oaipFormatOk == false )
             {
               errorInfo = QObject::tr("Wrong XML data format");
-              qWarning() << "OpenAip::readNavAid" << errorInfo;
+              qWarning() << "OpenAip::readAirfields" << errorInfo;
               file.close();
               return false;
             }
@@ -788,7 +888,14 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
             }
           else if ( elementName == "RWY" )
             {
-              readAirfieldRunway( xml, af );
+              if( m_oaipDataFormat == "1.0" )
+                {
+                  readAirfieldRunway10( xml, af );
+                }
+              else if( m_oaipDataFormat == "1.1" )
+                {
+                  readAirfieldRunway11( xml, af );
+                }
             }
         }
     }
@@ -876,7 +983,7 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
   return false;
 }
 
-bool OpenAip::readAirfieldRunway( QXmlStreamReader& xml, Airfield& af )
+bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
 {
   Runway runway;
 
@@ -964,6 +1071,163 @@ bool OpenAip::readAirfieldRunway( QXmlStreamReader& xml, Airfield& af )
                   runway.surface = Runway::Grass;
                 }
               else if( sfc == "GRVL" )
+                {
+                  runway.surface = Runway::Sand;
+                }
+              else if( sfc == "UNKN" )
+                {
+                  runway.surface = Runway::Unknown;
+                }
+              else
+                {
+                  runway.surface = Runway::Unknown;
+
+                  if( sfc.size() > 0 )
+                    {
+                      qWarning() << "OpenAip::readAirfieldRunway: unknown runway surface type"
+                                 << sfc;
+                    }
+                }
+            }
+          else if ( elementName == "LENGTH" )
+            {
+              int length = 0;
+              QString unit;
+
+              QXmlStreamAttributes attributes = xml.attributes();
+
+              if( attributes.hasAttribute("UNIT") )
+                {
+                  unit = attributes.value("UNIT").toString().toUpper();
+                }
+
+              if( getUnitValueAsInteger( xml.readElementText(), unit, length ) )
+                {
+                  runway.length = static_cast <ushort>(length);
+                }
+            }
+          else if ( elementName == "WIDTH" )
+            {
+              int width = 0;
+              QString unit;
+
+              QXmlStreamAttributes attributes = xml.attributes();
+
+              if( attributes.hasAttribute("UNIT") )
+                {
+                  unit = attributes.value("UNIT").toString().toUpper();
+                }
+
+              if( getUnitValueAsInteger( xml.readElementText(), unit, width ) )
+                {
+                  runway.width = static_cast <ushort>(width);
+                }
+            }
+        }
+    }
+
+  return false;
+}
+
+bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
+{
+  Runway runway;
+
+  // Get RWY OPERATIONS attribute
+  QXmlStreamAttributes attributes = xml.attributes();
+
+  if( attributes.hasAttribute("OPERATIONS") )
+    {
+      QString operations = attributes.value("OPERATIONS").toString();
+
+      if( operations == "ACTIVE" )
+        {
+          runway.isOpen = true;
+        }
+    }
+
+  int rwyNumber = 0;
+
+  while( !xml.atEnd() && ! xml.hasError() )
+    {
+      /* Read the next element from the stream.*/
+      QXmlStreamReader::TokenType token = xml.readNext();
+
+      if( token == QXmlStreamReader::EndElement )
+        {
+          if( xml.name() == "RWY" )
+            {
+              // All record data have been read inclusive the end element.
+              af.addRunway( runway );
+              return true;
+            }
+        }
+
+      /* If token is StartElement, we'll see if we can read it.*/
+      if( token == QXmlStreamReader::StartElement )
+        {
+          QString elementName = xml.name().toString();
+
+          if( elementName == "NAME" )
+            {
+              // That element contains the usable runway headings
+              QString name = xml.readElementText();
+            }
+          else if ( elementName == "DIRECTION" )
+            {
+              QXmlStreamAttributes attributes = xml.attributes();
+
+              if( attributes.hasAttribute("TC") )
+                {
+                  bool ok;
+                  ushort dir = attributes.value("TC").toString().toUShort( &ok );
+
+                  rwyNumber++;
+
+                  // Only two rwy are accepted.
+                  if( ok && rwyNumber <= 2 )
+                    {
+                      // round up direction
+                      ushort rest = (dir % 10) ? 1 : 0;
+                      dir = (dir / 10) + rest;
+
+                      if( rwyNumber == 1 )
+                        {
+                          runway.heading = (dir << 8) + dir;
+                        }
+                      else if( rwyNumber == 2 )
+                        {
+                          runway.heading = (runway.heading & 0xff00) + (dir & 0xff);
+                          runway.isBidirectional = true;
+                        }
+                    }
+                }
+            }
+          else if( elementName == "SFC" )
+            {
+              /*
+              <SFC>ASPH</SFC>
+              <SFC>CONC</SFC>
+              <SFC>GRAS</SFC>
+              <SFC>GRVL</SFC>
+              <SFC>SAND</SFC>
+              <SFC>UNKN</SFC>
+              */
+              QString sfc = xml.readElementText();
+
+              if( sfc == "ASPH" )
+                {
+                  runway.surface = Runway::Asphalt;
+                }
+              else if( sfc == "CONC" )
+                {
+                  runway.surface = Runway::Concrete;
+                }
+              else if( sfc == "GRAS" )
+                {
+                  runway.surface = Runway::Grass;
+                }
+              else if( sfc == "GRVL" || sfc == "SAND" )
                 {
                   runway.surface = Runway::Sand;
                 }

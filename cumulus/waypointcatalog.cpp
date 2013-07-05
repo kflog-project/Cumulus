@@ -739,11 +739,12 @@ int WaypointCatalog::readOpenAip( QString catalog,
   OpenAip openAip;
 
   // We have to look, which data is contained in the passed file to be read.
+  QString dataFormat;
   QString dataElement;
 
-  if( ! openAip.getRootElement( catalog, dataElement) )
+  if( ! openAip.getRootElement( catalog, dataFormat, dataElement) )
     {
-      errorInfo = QObject::tr("No OpenAip data format!");
+      errorInfo = QObject::tr("Invalid OpenAip data format!");
       return 0;
     }
 

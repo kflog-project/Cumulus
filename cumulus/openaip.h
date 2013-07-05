@@ -56,11 +56,13 @@ class OpenAip
    *
    * \param filename File containing OpenAip XML data definitions.
    *
+   * \param dataFormat The OpenAip DATAFORMAT attribute
+   *
    * \param dataItem The second root element of the file after the OPENAIP tag.
    *
    * \return true as success otherwise false
    */
-  bool getRootElement( QString fileName, QString& dataItem );
+  bool getRootElement( QString fileName, QString& dataFormat, QString& dataItem );
 
   /**
    * Reads in a navigation aid file provided as open aip xml format.
@@ -115,6 +117,14 @@ class OpenAip
 
  private:
 
+  /**
+   * Read version and format attribute from OPENAIP tag. Returns true in case
+   * of success otherwise false.
+   */
+  bool readVersionAndFormat( QXmlStreamReader& xml,
+                             QString& version,
+                             QString& format );
+
   bool readNavAidRecord( QXmlStreamReader& xml, RadioPoint& rp );
 
   bool readGeoLocation( QXmlStreamReader& xml, SinglePoint& sp );
@@ -127,7 +137,15 @@ class OpenAip
 
   bool readAirfieldRadio( QXmlStreamReader& xml, Airfield& af );
 
-  bool readAirfieldRunway( QXmlStreamReader& xml, Airfield& af );
+  /**
+   * Read runway data from data format 1.0.
+   */
+  bool readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af );
+
+  /**
+   * Read runway data from data format 1.1.
+   */
+  bool readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af );
 
   /**
    * Converts a string number with unit to an integer value.
@@ -148,6 +166,11 @@ class OpenAip
   void loadUserFilterValues();
 
   /**
+   * Containing all supported OpenAip data formats.
+   */
+  QSet<QString> m_supportedDataFormats;
+
+  /**
    * Country filter with countries as two letter code in upper case.
    */
   QSet<QString> m_countryFilterSet;
@@ -162,6 +185,15 @@ class OpenAip
    * filter is ignored.
    */
   double m_filterRadius;
+
+  /**
+   * Value of VERSION attribute from OPENAIP tag of the current read file.
+   */
+  QString m_oaipVersion;
+  /**
+   * Value of DATAFORMAT attribute from OPENAIP tag of the current read file.
+   */
+  QString m_oaipDataFormat;
 };
 
 #endif /* OpenAip_h */
