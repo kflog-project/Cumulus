@@ -1,3 +1,10 @@
+cumulus (5.5.2) stable; urgency=low
+
+  * Adaption of OpenAIP read routines to new data format 1.1. Data format check
+    added to prevent reading of unknown OpenAIP data formats.
+    
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 09 Jul 2013 21:23:26 +0200
+
 cumulus (5.5.1) stable; urgency=low
 
   * Bugfix: Value adaption in map info boxes modified. If a value was smaller
