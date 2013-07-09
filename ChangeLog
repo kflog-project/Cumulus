@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-07-09 AP: Maemo 4 release is build with Qt 4.8.5 now.
+
 [o] 2013-07-05 AP: Adaption of OpenAIP read routines to new data format 1.1.
                    Data format check added to prevent reading of unknown
                    OpenAIP data formats.
