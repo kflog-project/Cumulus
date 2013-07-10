@@ -1723,128 +1723,132 @@ Alle Downloads verworfen!</translation>
         <translation>Lade OpenAIP Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2529"/>
         <source>OpenAIP load failed</source>
-        <translation>Ladefehler OpenAIP</translation>
+        <translation type="obsolete">Ladefehler OpenAIP</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2540"/>
+        <location filename="mapcontents.cpp" line="2527"/>
+        <source>No OpenAIP loaded</source>
+        <translation>Kein OpenAIP geladen</translation>
+    </message>
+    <message>
+        <location filename="mapcontents.cpp" line="2531"/>
         <source>OpenAIP loaded</source>
         <translation>OpenAIP geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2563"/>
-        <location filename="mapcontents.cpp" line="2663"/>
+        <location filename="mapcontents.cpp" line="2561"/>
+        <location filename="mapcontents.cpp" line="2661"/>
         <source>loading Welt2000</source>
         <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2602"/>
+        <location filename="mapcontents.cpp" line="2600"/>
         <source>Welt2000 load failed</source>
         <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2623"/>
-        <location filename="mapcontents.cpp" line="2668"/>
+        <location filename="mapcontents.cpp" line="2621"/>
+        <location filename="mapcontents.cpp" line="2666"/>
         <source>Welt2000 loaded</source>
         <translation>Welt2000 geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2716"/>
+        <location filename="mapcontents.cpp" line="2714"/>
         <source>loading Airspaces</source>
         <translation>lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2724"/>
+        <location filename="mapcontents.cpp" line="2722"/>
         <source>Airspaces loaded</source>
         <translation>Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2757"/>
-        <location filename="mapcontents.cpp" line="2825"/>
+        <location filename="mapcontents.cpp" line="2755"/>
+        <location filename="mapcontents.cpp" line="2823"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2773"/>
-        <location filename="mapcontents.cpp" line="2837"/>
+        <location filename="mapcontents.cpp" line="2771"/>
+        <location filename="mapcontents.cpp" line="2835"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2789"/>
-        <location filename="mapcontents.cpp" line="2849"/>
+        <location filename="mapcontents.cpp" line="2787"/>
+        <location filename="mapcontents.cpp" line="2847"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2861"/>
+        <location filename="mapcontents.cpp" line="2859"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2869"/>
+        <location filename="mapcontents.cpp" line="2867"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2877"/>
+        <location filename="mapcontents.cpp" line="2875"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2885"/>
+        <location filename="mapcontents.cpp" line="2883"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2893"/>
+        <location filename="mapcontents.cpp" line="2891"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2907"/>
+        <location filename="mapcontents.cpp" line="2905"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2915"/>
+        <location filename="mapcontents.cpp" line="2913"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2923"/>
+        <location filename="mapcontents.cpp" line="2921"/>
         <source>Drawing motorways</source>
         <oldsource>Drawing highways</oldsource>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2931"/>
+        <location filename="mapcontents.cpp" line="2929"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2939"/>
+        <location filename="mapcontents.cpp" line="2937"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2947"/>
+        <location filename="mapcontents.cpp" line="2945"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2955"/>
+        <location filename="mapcontents.cpp" line="2953"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2963"/>
+        <location filename="mapcontents.cpp" line="2961"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3013"/>
+        <location filename="mapcontents.cpp" line="3011"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -3197,24 +3201,24 @@ Alle Downloads verworfen!</translation>
         <translation>Notlandefeld Nr:</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="141"/>
-        <location filename="waypointcatalog.cpp" line="1120"/>
-        <location filename="waypointcatalog.cpp" line="1489"/>
+        <location filename="waypointcatalog.cpp" line="142"/>
+        <location filename="waypointcatalog.cpp" line="1134"/>
+        <location filename="waypointcatalog.cpp" line="1503"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="729"/>
+        <location filename="waypointcatalog.cpp" line="743"/>
         <source>File does not exist!</source>
         <translation>Datei existiert nicht!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="735"/>
+        <location filename="waypointcatalog.cpp" line="749"/>
         <source>File is empty!</source>
         <translation>Datei ist leer!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="747"/>
+        <location filename="waypointcatalog.cpp" line="761"/>
         <source>Invalid OpenAip data format!</source>
         <translation>Ungültiges OpenAIP Datenformat!</translation>
     </message>
@@ -3223,7 +3227,7 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Kein OpenAip Datenformat!</translation>
     </message>
     <message>
-        <location filename="waypointcatalog.cpp" line="765"/>
+        <location filename="waypointcatalog.cpp" line="779"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
     </message>
@@ -3320,16 +3324,16 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="openaip.cpp" line="220"/>
-        <location filename="openaip.cpp" line="523"/>
-        <location filename="openaip.cpp" line="684"/>
+        <location filename="openaip.cpp" line="224"/>
+        <location filename="openaip.cpp" line="531"/>
+        <location filename="openaip.cpp" line="696"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
         <location filename="openaip.cpp" line="173"/>
-        <location filename="openaip.cpp" line="476"/>
-        <location filename="openaip.cpp" line="637"/>
+        <location filename="openaip.cpp" line="480"/>
+        <location filename="openaip.cpp" line="645"/>
         <source>Cannot open file</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
