@@ -240,7 +240,7 @@ dpkg_lang:
 .PHONY : copy2web
 
 copy2web:
-	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)_`date '+%F'`
+	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)
 	scp -C dpkg/n8x0/cumulus_$(VERSION)_armel.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/
 	scp -C dpkg/n8x0/cumulus_$(VERSION)_armel.deb \
