@@ -313,7 +313,7 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
               chkRwy1Enable->setCheckState( Qt::Checked );
 
               slot_rwy1HeadingEdited( QString::number( rwy.heading / 256 ) );
-              edtRwy1Length->setText( Altitude::getText((rwy.length), false, -1) );
+              edtRwy1Length->setText( Altitude::getText((rwy.length), false, 0) );
               setSurface( cmbRwy1Surface, rwy.surface );
               chkRwy1Usable->setChecked( rwy.isOpen );
 
@@ -331,7 +331,7 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
               chkRwy2Enable->setCheckState( Qt::Checked );
 
               slot_rwy2HeadingEdited( QString::number( rwy.heading / 256 ) );
-              edtRwy2Length->setText( Altitude::getText((rwy.length), false, -1) );
+              edtRwy2Length->setText( Altitude::getText((rwy.length), false, 0) );
               setSurface( cmbRwy2Surface, rwy.surface );
               chkRwy2Usable->setChecked( rwy.isOpen );
 

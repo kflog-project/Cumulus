@@ -42,6 +42,7 @@ extern MapMatrix* _globalMapMatrix;
 #define WP_FILE_FORMAT_ID_2 102 // runway direction handling modified
 #define WP_FILE_FORMAT_ID_3 103 // waypoint list size added
 #define WP_FILE_FORMAT_ID_4 104 // runway list added
+#define WP_FILE_FORMAT_ID_5 105 // runway length stored as float to avoid rounding issues between ft - m
 
 WaypointCatalog::WaypointCatalog() :
   _type(All),
@@ -254,8 +255,10 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
         {
           // The runway list has to be read
           quint8 listSize;
-          quint16 length;
-          quint16 width;
+          quint16 ilength;
+          float   flength;
+          quint16 iwidth;
+          float   fwidth;
           quint16 heading;
           quint8 surface;
           quint8 isOpen;
@@ -265,14 +268,25 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
           for( int i = 0; i < (int) listSize; i++ )
             {
-              in >> length;
-              in >> width;
+              if( fileFormat >= WP_FILE_FORMAT_ID_5 )
+                {
+                  in >> flength;
+                  in >> fwidth;
+                }
+              else
+                {
+                  in >> ilength;
+                  flength = static_cast<float>(ilength);
+                  in >> iwidth;
+                  fwidth = static_cast<float>(iwidth);
+                }
+
               in >> heading;
               in >> surface;
               in >> isOpen;
               in >> isBidirectional;
 
-              Runway rwy( length, heading, surface, isOpen, isBidirectional, width );
+              Runway rwy( flength, heading, surface, isOpen, isBidirectional, fwidth );
               rwyList.append(rwy);
             }
         }
@@ -406,7 +420,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
       // write file header
       out << quint32( KFLOG_FILE_MAGIC );
       out << qint8( FILE_TYPE_WAYPOINTS );
-      out << quint16( WP_FILE_FORMAT_ID_4 );
+      out << quint16( WP_FILE_FORMAT_ID_5 );
       out << qint32( wpList.size() );
 
       for (int i = 0; i < wpList.size(); i++)
@@ -442,8 +456,8 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
             {
               Runway rwy = wp.rwyList.at(i);
 
-              out << quint16( rwy.length );
-              out << quint16( rwy.width );
+              out << rwy.length;
+              out << rwy.width;
               out << quint16( rwy.heading );
               out << quint8( rwy.surface );
               out << quint8( rwy.isOpen );

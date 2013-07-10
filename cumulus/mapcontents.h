@@ -345,7 +345,8 @@ class MapContents : public QObject
      * This slot is called by the OpenAip load thread to signal, that the
      * requested airfield data have been loaded.
      */
-    void slotOpenAipAirfieldLoadFinished( bool ok, QList<Airfield>* airfieldListIn );
+    void slotOpenAipAirfieldLoadFinished( int noOfLists,
+                                          QList<Airfield>* airfieldListIn );
 
 #ifdef INTERNET
     /**

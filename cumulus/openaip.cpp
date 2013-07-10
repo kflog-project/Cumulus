@@ -192,9 +192,9 @@ bool OpenAip::readNavAids( QString fileName,
       /* If token is just StartDocument, we'll go to next.*/
       if( token == QXmlStreamReader::StartDocument )
         {
-          qDebug() << "File=" << fileName
-                   << "DocVersion=" << xml.documentVersion().toString()
-                   << "DocEncoding=" << xml.documentEncoding().toString();
+          // qDebug() << "File=" << fileName
+          //         << "DocVersion=" << xml.documentVersion().toString()
+          //         << "DocEncoding=" << xml.documentEncoding().toString();
           continue;
         }
 
@@ -211,6 +211,10 @@ bool OpenAip::readNavAids( QString fileName,
             {
               oaipFormatOk =
                   readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+
+              qDebug() << "File=" << fileName
+                       << "Version=" << m_oaipVersion
+                       << "DataFormat=" << m_oaipDataFormat;
             }
 
           if( (elementCounter == 1 && elementName != "OPENAIP") ||
@@ -495,9 +499,9 @@ bool OpenAip::readHotspots( QString fileName,
       /* If token is just StartDocument, we'll go to next.*/
       if( token == QXmlStreamReader::StartDocument )
         {
-          qDebug() << "File=" << fileName
-                   << "DocVersion=" << xml.documentVersion().toString()
-                   << "DocEncoding=" << xml.documentEncoding().toString();
+          // qDebug() << "File=" << fileName
+          //         << "DocVersion=" << xml.documentVersion().toString()
+          //         << "DocEncoding=" << xml.documentEncoding().toString();
           continue;
         }
 
@@ -514,6 +518,10 @@ bool OpenAip::readHotspots( QString fileName,
             {
               oaipFormatOk =
                   readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+
+              qDebug() << "File=" << fileName
+                       << "Version=" << m_oaipVersion
+                       << "DataFormat=" << m_oaipDataFormat;
             }
 
           if( (elementCounter == 1 && elementName != "OPENAIP") ||
@@ -656,9 +664,9 @@ bool OpenAip::readAirfields( QString fileName,
       /* If token is just StartDocument, we'll go to next.*/
       if( token == QXmlStreamReader::StartDocument )
         {
-          qDebug() << "File=" << fileName
-                   << "DocVersion=" << xml.documentVersion().toString()
-                   << "DocEncoding=" << xml.documentEncoding().toString();
+          // qDebug() << "File=" << fileName
+          //         << "DocVersion=" << xml.documentVersion().toString()
+          //         << "DocEncoding=" << xml.documentEncoding().toString();
           continue;
         }
 
@@ -675,6 +683,10 @@ bool OpenAip::readAirfields( QString fileName,
             {
               oaipFormatOk =
                   readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+
+              qDebug() << "File=" << fileName
+                       << "Version=" << m_oaipVersion
+                       << "DataFormat=" << m_oaipDataFormat;
             }
 
           if( (elementCounter == 1 && elementName != "OPENAIP") ||
@@ -1091,7 +1103,7 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
             }
           else if ( elementName == "LENGTH" )
             {
-              int length = 0;
+              float length = 0.0;
               QString unit;
 
               QXmlStreamAttributes attributes = xml.attributes();
@@ -1101,14 +1113,14 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
                   unit = attributes.value("UNIT").toString().toUpper();
                 }
 
-              if( getUnitValueAsInteger( xml.readElementText(), unit, length ) )
+              if( getUnitValueAsFloat( xml.readElementText(), unit, length ) )
                 {
-                  runway.length = static_cast <ushort>(length);
+                  runway.length = length;
                 }
             }
           else if ( elementName == "WIDTH" )
             {
-              int width = 0;
+              float width = 0;
               QString unit;
 
               QXmlStreamAttributes attributes = xml.attributes();
@@ -1118,9 +1130,9 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
                   unit = attributes.value("UNIT").toString().toUpper();
                 }
 
-              if( getUnitValueAsInteger( xml.readElementText(), unit, width ) )
+              if( getUnitValueAsFloat( xml.readElementText(), unit, width ) )
                 {
-                  runway.width = static_cast <ushort>(width);
+                  runway.width = width;
                 }
             }
         }
@@ -1248,7 +1260,7 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
             }
           else if ( elementName == "LENGTH" )
             {
-              int length = 0;
+              float length = 0.0;
               QString unit;
 
               QXmlStreamAttributes attributes = xml.attributes();
@@ -1258,14 +1270,14 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
                   unit = attributes.value("UNIT").toString().toUpper();
                 }
 
-              if( getUnitValueAsInteger( xml.readElementText(), unit, length ) )
+              if( getUnitValueAsFloat( xml.readElementText(), unit, length ) )
                 {
-                  runway.length = static_cast <ushort>(length);
+                  runway.length = length;
                 }
             }
           else if ( elementName == "WIDTH" )
             {
-              int width = 0;
+              float width = 0;
               QString unit;
 
               QXmlStreamAttributes attributes = xml.attributes();
@@ -1275,9 +1287,9 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
                   unit = attributes.value("UNIT").toString().toUpper();
                 }
 
-              if( getUnitValueAsInteger( xml.readElementText(), unit, width ) )
+              if( getUnitValueAsFloat( xml.readElementText(), unit, width ) )
                 {
-                  runway.width = static_cast <ushort>(width);
+                  runway.width = width;
                 }
             }
         }
@@ -1307,10 +1319,41 @@ bool OpenAip::getUnitValueAsInteger( const QString number,
     }
   else if( unit.toUpper() == "FT" )
     {
-      // NUmber has the unit feet. We must convert it to meter.
+      // Number has the unit feet. We must convert it to meter.
       Distance dist;
       dist.setFeet( dValue );
       result = static_cast<int>(rint( dist.getMeters() ));
+      return true;
+    }
+
+  return false;
+}
+
+bool OpenAip::getUnitValueAsFloat( const QString number,
+                                   const QString unit,
+                                   float& result )
+{
+  bool ok = false;
+
+  float fValue = number.toFloat( &ok );
+
+  if( !ok )
+    {
+      return false;
+    }
+
+  if( unit.toUpper() == "M" )
+    {
+      // Number can have decimals. Therefore we round it to integer.
+      result = fValue;
+      return true;
+    }
+  else if( unit.toUpper() == "FT" )
+    {
+      // Number has the unit feet. We must convert it to meter.
+      Distance dist;
+      dist.setFeet( fValue );
+      result = static_cast<float>(dist.getMeters());
       return true;
     }
 

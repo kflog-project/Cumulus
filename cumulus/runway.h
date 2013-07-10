@@ -56,12 +56,12 @@ public:
     {
     };
 
-  Runway( const unsigned short len,
+  Runway( const float rwLength,
           const unsigned short head,
           const unsigned short surf,
           const bool open=true,
           const bool bidirectional=true,
-          const unsigned short width=0 );
+          const float width=0.0 );
 
   virtual ~Runway() {};
 
@@ -88,7 +88,7 @@ public:
   /**
    * The length of the runway, given in meters.
    */
-  unsigned short length;
+  float length;
 
   /**
    * The heading of the runway, given in steps of 1/10 degree (0-36).
@@ -114,7 +114,7 @@ public:
   /**
    * The width of the runway, given in meters.
    */
-  unsigned short width;
+  float width;
 
   /**
    * Static pointer to surface translations
@@ -126,7 +126,6 @@ public:
    * Static method for loading of object translations
    */
   static void loadTranslations();
-
 };
 
 #endif

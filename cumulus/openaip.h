@@ -161,6 +161,19 @@ class OpenAip
   bool getUnitValueAsInteger( const QString number, const QString unit, int& result );
 
   /**
+   * Converts a string number with unit to an float value.
+   *
+   * \param number The number to be converted
+   *
+   * \param unit The unit of the number, can be "M" or "FT"
+   *
+   * \param result The calculated float value
+   *
+   * \return true in case of success otherwise false
+   */
+  bool getUnitValueAsFloat( const QString number, const QString unit, float& result );
+
+  /**
    * Loads the user's defined filter values from the configuration data.
    */
   void loadUserFilterValues();

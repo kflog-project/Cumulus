@@ -23,18 +23,18 @@
 QHash<int, QString> Runway::surfaceTranslations;
 QStringList Runway::sortedTranslations;
 
-Runway::Runway( const unsigned short len,
+Runway::Runway( const float rwLength,
                 const unsigned short head,
                 const unsigned short surf,
                 const bool open,
                 const bool bidirectional,
-                const unsigned short rwWidth )
- : length(len),
-   heading(head),
-   surface(surf),
-   isOpen(open),
-   isBidirectional(bidirectional),
-   width(rwWidth)
+                const float rwWidth ) :
+ length(rwLength),
+ heading(head),
+ surface(surf),
+ isOpen(open),
+ isBidirectional(bidirectional),
+ width(rwWidth)
 {
 }
 

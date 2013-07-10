@@ -47,7 +47,7 @@
 #define FILE_TYPE_AIRFIELD_C 0x63
 
 // version used for files created from welt2000 data
-#define FILE_VERSION_AIRFIELD_C 206
+#define FILE_VERSION_AIRFIELD_C 207
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
@@ -1261,15 +1261,15 @@ bool Welt2000::parse( QString& path,
       // upper part.
       rwDir = rwDir1*256 + rwDir2;
 
-      // runway length in meters, must be multiplied by 10
+      // runway length in deka-meters, must be multiplied by 10 to get meters
       buf = line.mid(29,3).trimmed();
 
       ok = false;
-      ushort rwLen = 0;
+      float rwLen = 0.0;
 
       if( ! buf.isEmpty() )
         {
-          rwLen = buf.toUInt(&ok);
+          rwLen = buf.toFloat(&ok);
         }
 
       if( ! ok )
@@ -1278,11 +1278,11 @@ bool Welt2000::parse( QString& path,
           qWarning( "W2000, Line %d: %s (%s) missing or wrong runway length, set value to 0!",
                     lineNo, afName.toLatin1().data(), country.toLatin1().data() );
 #endif
-          rwLen = 0;
+          rwLen = 0.0;
         }
       else
         {
-          rwLen *= 10;
+          rwLen *= 10.0;
         }
 
       // runway surface
@@ -1658,7 +1658,7 @@ bool Welt2000::readCompiledFile( QString &path,
       in >> rwLen;
       in >> rwSurface;
       // create an runway object
-      Runway rwy( rwLen ,rwDir, rwSurface, 1 );
+      Runway rwy( static_cast<float>(rwLen) ,rwDir, rwSurface, 1 );
 
       // read comment
       ShortLoad(in, utf8_temp);
@@ -1819,7 +1819,7 @@ bool Welt2000::setHeaderData( QString &path )
 
 #ifdef WELT2000_THREAD
 
-#include <signal.h>
+#include <csignal>
 
 Welt2000Thread::Welt2000Thread( QObject *parent ) : QThread( parent )
 {
@@ -1841,6 +1841,16 @@ void Welt2000Thread::run()
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
+  // Check is signal is connected to a slot.
+  if( receivers( SIGNAL( loadedLists( bool,
+                                      QList<Airfield>*,
+                                      QList<Airfield>*,
+                                      QList<Airfield>*  )) ) == 0 )
+    {
+      qWarning() << "Welt2000Thread: No Slot connection to Signal loadedLists";
+      return;
+    }
+
   QList<Airfield>* airfieldList    = new QList<Airfield>;
   QList<Airfield>* gliderfieldList = new QList<Airfield>;
   QList<Airfield>* outlandingList  = new QList<Airfield>;
@@ -1854,19 +1864,6 @@ void Welt2000Thread::run()
    * memory leak will occur.
    */
   emit loadedLists( ok, airfieldList, gliderfieldList, outlandingList );
-
-  // Check is signal is connected to a slot.
-  if( receivers( SIGNAL( loadedLists( bool,
-                                      QList<Airfield>*,
-                                      QList<Airfield>*,
-                                      QList<Airfield>*  )) ) == 0 )
-    {
-      qWarning() << "Welt2000Thread: No Slot connection to Signal loadedLists";
-
-      delete airfieldList;
-      delete gliderfieldList;
-      delete outlandingList;
-    }
 }
 
 #endif

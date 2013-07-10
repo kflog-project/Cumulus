@@ -168,11 +168,11 @@ class OpenAipThread : public QThread
   * This signal emits the results of the OpenAIP load. The receiver slot is
   * responsible to delete the dynamic allocated list in every case.
   *
-  * \param ok              The result of the load action.
+  * \param loadedLists     The number of loaded lists
   * \param airfieldList    The list with the airfield data
   *
   */
-  void loadedList( bool ok, QList<Airfield>* airfieldList );
+  void loadedList( int loadedLists, QList<Airfield>* airfieldList );
 
  private:
 

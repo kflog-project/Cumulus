@@ -28,7 +28,7 @@
 #define FILE_TYPE_AIRFIELD_C "OpenAIP-Airfields"
 
 // Version used for compiled airfield files created from openAIP airfield data
-#define FILE_VERSION_AIRFIELD_C 1
+#define FILE_VERSION_AIRFIELD_C 2
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
@@ -347,8 +347,8 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
        {
          Runway rwy = rwyList.at(i);
 
-         out << quint16( rwy.length );
-         out << quint16( rwy.width );
+         out << rwy.length;
+         out << rwy.width;
          out << quint16( rwy.heading );
          out << quint8( rwy.surface );
          out << quint8( rwy.isOpen );
@@ -506,8 +506,8 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
 
       for( short i = 0; i < (short) listSize; i++ )
         {
-          quint16 length;
-          quint16 width;
+          float length;
+          float width;
           quint16 heading;
           quint8 surface;
           quint8 isOpen;
@@ -613,7 +613,7 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 
 /*------------------------- OpenAipThread ------------------------------------*/
 
-#include <signal.h>
+#include <csignal>
 
 OpenAipThread::OpenAipThread( QObject *parent, bool readSource ) :
   QThread( parent ),
@@ -637,23 +637,22 @@ void OpenAipThread::run()
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
+  // Check is signal is connected to a slot.
+  if( receivers( SIGNAL( loadedList( int, QList<Airfield>* )) ) == 0 )
+    {
+      qWarning() << "OpenAipThread: No Slot connection to Signal loadedList!";
+      return;
+    }
+
   QList<Airfield>* airfieldList = new QList<Airfield>;
 
   OpenAipAirfieldLoader oaipl;
 
-  bool ok = oaipl.load( *airfieldList, m_readSource );
+  int ok = oaipl.load( *airfieldList, m_readSource );
 
   /* It is expected that a receiver slot is connected to this signal. The
    * receiver is responsible to delete the passed lists. Otherwise a big
    * memory leak will occur.
    */
   emit loadedList( ok, airfieldList );
-
-  // Check is signal is connected to a slot.
-  if( receivers( SIGNAL( loadedList( bool, QList<Airfield>* )) ) == 0 )
-    {
-      qWarning() << "OpenAipThread: No Slot connection to Signal loadedList!";
-
-      delete airfieldList;
-    }
 }

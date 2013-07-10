@@ -2505,9 +2505,9 @@ void MapContents::loadOpenAipAirfieldsViaThread()
   // Connect the receiver of the results. It is located in this
   // thread and not in the new opened thread.
   connect( oaipThread,
-           SIGNAL(loadedList( bool, QList<Airfield>* )),
+           SIGNAL(loadedList( int, QList<Airfield>* )),
            this,
-           SLOT(slotOpenAipAirfieldLoadFinished( bool, QList<Airfield>* )) );
+           SLOT(slotOpenAipAirfieldLoadFinished( int, QList<Airfield>* )) );
 
   oaipThread->start();
 }
@@ -2517,19 +2517,18 @@ void MapContents::loadOpenAipAirfieldsViaThread()
  * requested airfield data have been loaded. The passed lists must be
  * deleted in this method.
  */
-void MapContents::slotOpenAipAirfieldLoadFinished( bool ok,
+void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
                                                    QList<Airfield>* airfieldListIn )
 {
   QMutexLocker locker( &airfieldLoadMutex );
 
-  if( ok == false )
+  if( noOfLists == 0 )
     {
-      qWarning() << "OpenAIP load failed!";
-
-      _globalMapView->slot_info( tr("OpenAIP load failed") );
-
-      delete airfieldListIn;
-      return;
+      _globalMapView->slot_info( tr("No OpenAIP loaded") );
+    }
+  else
+    {
+      _globalMapView->slot_info( tr("OpenAIP loaded") );
     }
 
   // Take over the new loaded list. The passed lists must be deleted!
@@ -2537,7 +2536,6 @@ void MapContents::slotOpenAipAirfieldLoadFinished( bool ok,
   airfieldList = *airfieldListIn;
   delete airfieldListIn;
 
-  _globalMapView->slot_info( tr("OpenAIP loaded") );
   emit mapDataReloaded();
 }
 
