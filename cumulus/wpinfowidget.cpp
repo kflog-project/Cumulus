@@ -363,7 +363,7 @@ void WPInfoWidget::writeText()
                 }
               else
                 {
-                  tmp = QString("%1 m</b></td></tr>").arg(rwy.length);
+                  tmp = QString("%1 m</b></td></tr>").arg(rwy.length, 0, 'f', 0);
                   itxt += tmp;
                 }
             }
