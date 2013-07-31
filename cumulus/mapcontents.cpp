@@ -112,13 +112,16 @@ const short MapContents::isoLevels[] =
 
 MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     QObject(parent),
+    unloadDone(false),
+    memoryFull(false),
     isFirst(true),
     isReload(false)
 #ifdef INTERNET
 
     , downloadManger(0),
     shallDownloadData(false),
-    hasAskForDownload(false)
+    hasAskForDownload(false),
+    downloadOpenAipAirfieldsRequested(false)
 
 #endif
 {
@@ -1543,6 +1546,51 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
   downloadManger->downloadRequest( url, dest );
 }
 
+void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountryList )
+{
+  extern Calculator* calculator;
+
+  if( GpsNmea::gps->getConnected() && calculator->moving() )
+    {
+      // We have a GPS connection and are in move. That does not allow
+      // to make any downloads.
+      return;
+    }
+
+  if( openAipCountryList.isEmpty() )
+    {
+      return;
+    }
+
+  if( downloadManger == static_cast<DownloadManager *> (0) )
+    {
+      downloadManger = new DownloadManager(this);
+
+      connect( downloadManger, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinished( int, int )) );
+
+      connect( downloadManger, SIGNAL(networkError()),
+               this, SLOT(slotNetworkError()) );
+
+      connect( downloadManger, SIGNAL(status( const QString& )),
+               _globalMapView, SLOT(slot_info( const QString& )) );
+    }
+
+  downloadOpenAipAirfieldsRequested = true;
+
+  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
+  const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
+
+  for( int i = 0; i < openAipCountryList.size(); i++ )
+    {
+      // File name format: <country-code>_wpt.aip, example: de_wpt.aip
+      QString file = openAipCountryList.at(i).toLower() + "_wpt.aip";
+      QString url  = urlPrefix + file;
+      QString dest = destPrefix + file;
+      downloadManger->downloadRequest( url, dest );
+    }
+}
+
 /**
  * This slot is called to download an airspace file from the internet.
  * @param url The url of the web page where the file is to find.
@@ -1588,6 +1636,12 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
   // All has finished, free not more needed resources
   downloadManger->deleteLater();
   downloadManger = static_cast<DownloadManager *> (0);
+
+  if( downloadOpenAipAirfieldsRequested == true )
+    {
+      downloadOpenAipAirfieldsRequested = false;
+      loadOpenAipAirfieldsViaThread();
+    }
 
   // initiate a map redraw
   Map::instance->scheduleRedraw( Map::baseLayer );

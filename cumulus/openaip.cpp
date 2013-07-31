@@ -640,6 +640,13 @@ bool OpenAip::readAirfields( QString fileName,
 
   QFile file( fileName );
 
+  if( file.size() == 0 )
+    {
+      errorInfo = fileName + " " + QObject::tr("is empty");
+      qWarning() << "OpenAip::readAirfields: " << fileName << "is empty!";
+      return false;
+    }
+
   if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
       errorInfo = QObject::tr("Cannot open file") + " " + fileName;

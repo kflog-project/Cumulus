@@ -36,8 +36,9 @@
 #define GENERAL_CONFIG_H
 
 #include <QtGlobal>
-#include <QSettings>
+#include <QByteArray>
 #include <QPixmap>
+#include <QSettings>
 #include <QString>
 #include <QSize>
 #include <QStringList>
@@ -1423,6 +1424,23 @@ class GeneralConfig : protected QSettings
     _openAipAirfieldFileList = newValue;
   };
 
+  /** Gets the openAip airfield countries to be downloaded */
+  QString &getOpenAipAirfieldCountries()
+    {
+      return _openAipAirfieldCountries;
+    };
+
+  /** Sets the openAip airfield countries to be downloaded */
+  void setOpenAipAirfieldCountries( const QString newValue )
+  {
+    _openAipAirfieldCountries = newValue;
+  };
+
+  QString getOpenAipLink()
+  {
+    return QString(rot47(_openAipLink));
+  };
+
   /** gets the af/wp list page size */
   int getListDisplayPageSize() const
   {
@@ -2506,6 +2524,15 @@ class GeneralConfig : protected QSettings
     _returnerPositionFormat = newValue;
   };
 
+  /**
+   * Encode/decode a string using rot47 algorithm.
+   *
+   * \param input String to be executed
+   *
+   * \return Rotated String
+   */
+  static QByteArray rot47( const QByteArray& input );
+
  private:
 
   /** loads the terrain default colors */
@@ -2633,6 +2660,12 @@ class GeneralConfig : protected QSettings
 
   // OpenAIP airfield list to be loaded
   QStringList _openAipAirfieldFileList;
+
+  // openAIP airfield countries to be downloaded as ISO two letter code.
+  QString _openAipAirfieldCountries;
+
+  // openAIP link
+  QByteArray _openAipLink;
 
   // disclaimer version
   int _disclaimerVersion;

@@ -113,13 +113,44 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   connect( cmdHelp, SIGNAL(clicked()), this, SLOT(slot_openHelp()) );
 
+  //----------------------------------------------------------------------------
   m_oaipGroup = new QGroupBox( "www.openaip.net", this );
   topLayout->addWidget(m_oaipGroup);
 
   int grow = 0;
   QGridLayout *oaipLayout = new QGridLayout(m_oaipGroup);
+
+#ifdef INTERNET
+
+  m_downloadOpenAip = new QPushButton( tr("Download") );
+  oaipLayout->addWidget( m_downloadOpenAip, grow, 0 );
+
+  connect( m_downloadOpenAip, SIGNAL(clicked()), this, SLOT(slot_downloadOpenAip()));
+
+  QHBoxLayout* hbox = new QHBoxLayout;
+  hbox->setMargin(0);
+  oaipLayout->addLayout( hbox, grow, 1, 1, 3 );
+
+  lbl = new QLabel( tr("Countries:") );
+  hbox->addWidget(lbl);
+
+  Qt::InputMethodHints imh;
+
+  m_countriesOaip4Download = new QLineEdit(m_oaipGroup);
+  imh = (m_countriesOaip4Download->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_countriesOaip4Download->setInputMethodHints(imh);
+  hbox->addWidget( m_countriesOaip4Download, 5 );
+  grow++;
+
+#endif
+
+  QPushButton *cmdLoadFiles = new QPushButton( tr("Load") );
+  oaipLayout->addWidget( cmdLoadFiles, grow, 0 );
+
+  connect( cmdLoadFiles, SIGNAL(clicked()), this, SLOT(slot_openLoadDialog()) );
+
   lbl = new QLabel( tr("Home Radius:") );
-  oaipLayout->addWidget(lbl, grow, 0);
+  oaipLayout->addWidget(lbl, grow, 1);
 
   m_homeRadiusOaip = new NumberEditor( this );
   m_homeRadiusOaip->setDecimalVisible( false );
@@ -128,14 +159,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   m_homeRadiusOaip->setSuffix( " " + Distance::getUnitText() );
   m_homeRadiusOaip->setSpecialValueText(tr("Off"));
   m_homeRadiusOaip->setRange( 0, 9999 );
-  oaipLayout->addWidget(m_homeRadiusOaip, grow, 1);
+  oaipLayout->addWidget(m_homeRadiusOaip, grow, 2);
   grow++;
 
-  QPushButton *cmdLoadFiles = new QPushButton( tr("Load") );
-  oaipLayout->addWidget( cmdLoadFiles, grow, 0 );
-  oaipLayout->setColumnStretch( 2, 5 );
-
-  connect( cmdLoadFiles, SIGNAL(clicked()), this, SLOT(slot_openLoadDialog()) );
+  oaipLayout->setColumnStretch( 3, 5 );
 
   //----------------------------------------------------------------------------
   m_weltGroup = new QGroupBox("www.segelflug.de/vereine/welt2000", this);
@@ -147,13 +174,11 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   lbl = new QLabel(tr("Country Filter:"), (m_weltGroup));
   weltLayout->addWidget(lbl, grow, 0);
 
-  Qt::InputMethodHints imh;
+  m_countriesW2000 = new QLineEdit(m_weltGroup);
+  imh = (m_countriesW2000->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_countriesW2000->setInputMethodHints(imh);
 
-  m_countryFilter = new QLineEdit(m_weltGroup);
-  imh = (m_countryFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
-  m_countryFilter->setInputMethodHints(imh);
-
-  weltLayout->addWidget(m_countryFilter, grow, 1, 1, 3);
+  weltLayout->addWidget(m_countriesW2000, grow, 1, 1, 3);
   grow++;
 
   lbl = new QLabel(tr("Home Radius:"), m_weltGroup);
@@ -235,7 +260,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 #ifndef ANDROID
   // Android makes trouble, if word detection is enabled and the input is
   // changed by us.
-  connect( m_countryFilter, SIGNAL(textChanged(const QString&)),
+  connect( m_countriesW2000, SIGNAL(textChanged(const QString&)),
            this, SLOT(slot_filterChanged(const QString&)) );
 #endif
 
@@ -318,7 +343,7 @@ void SettingsPageAirfields::load()
   slot_sourceChanged( conf->getAirfieldSource() );
 
   m_homeRadiusOaip->setValue( conf->getAirfieldHomeRadius() );
-  m_countryFilter->setText( conf->getWelt2000CountryFilter() );
+  m_countriesW2000->setText( conf->getWelt2000CountryFilter() );
 
   // @AP: radius value is stored without considering unit.
   m_homeRadiusW2000->setValue( conf->getAirfieldHomeRadius() );
@@ -334,6 +359,7 @@ void SettingsPageAirfields::load()
 
 #ifdef INTERNET
 
+  m_countriesOaip4Download->setText( conf->getOpenAipAirfieldCountries() );
   m_welt2000FileName->setText( conf->getWelt2000FileName() );
 
 #endif
@@ -342,7 +368,7 @@ void SettingsPageAirfields::load()
   m_rpMargin->setValue(conf->getListDisplayRPMargin());
 
   // sets home radius enabled/disabled in dependency to filter string
-  slot_filterChanged(m_countryFilter->text());
+  slot_filterChanged(m_countriesW2000->text());
 }
 
 /**
@@ -370,35 +396,42 @@ bool SettingsPageAirfields::save()
       // We will check, if the country entries of Welt2000 are
       // correct. If not a warning message is displayed and the
       // modifications are discarded.
-      QStringList clist = m_countryFilter->text().split(QRegExp("[, ]"),
+      QStringList clist = m_countriesW2000->text().split(QRegExp("[, ]"),
                           QString::SkipEmptyParts);
 
-      for( int i = 0; i < clist.size(); i++ )
+      if( ! checkCountryList(clist) )
         {
-          const QString& s = clist.at(i);
-
-          if( ! (s.length() == 2 && s.contains(QRegExp("[A-Za-z][A-Za-z]")) == true) )
-            {
-              QMessageBox mb( QMessageBox::Warning,
-                              tr( "Please check entries" ),
-                              tr("Every Welt2000 county sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                              QMessageBox::Ok,
-                              this );
+          QMessageBox mb( QMessageBox::Warning,
+                          tr( "Please check entries" ),
+                          tr("Every Welt2000 country sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                          QMessageBox::Ok,
+                          this );
 
 #ifdef ANDROID
 
-              mb.show();
-              QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                               height()/2 - mb.height()/2 ));
-              mb.move( pos );
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
 
 #endif
-              mb.exec();
-              return false;
-            }
+          mb.exec();
+          return false;
         }
 
-      conf->setWelt2000CountryFilter(m_countryFilter->text().trimmed().toUpper());
+#ifdef INTERNET
+
+      QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
+      clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+
+      // Store only valid entries permanently.
+      if( checkCountryList(clist) )
+        {
+          conf->setOpenAipAirfieldCountries(openAipCountries);
+        }
+#endif
+
+      conf->setWelt2000CountryFilter(m_countriesW2000->text().trimmed().toUpper());
 
       if( m_loadOutlandings->checkState() == Qt::Checked )
         {
@@ -525,6 +558,72 @@ void SettingsPageAirfields::slot_installWelt2000()
   emit downloadWelt2000( wfn );
 }
 
+void SettingsPageAirfields::slot_downloadOpenAip()
+{
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
+
+  if( openAipCountries.isEmpty() )
+    {
+      conf->setOpenAipAirfieldCountries(openAipCountries);
+      return;
+    }
+
+  // We will check, if the country entries of openAIP are valid. If not a
+  // warning message is displayed and the action is aborted.
+  QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+
+  if( ! checkCountryList(clist) )
+    {
+      QMessageBox mb( QMessageBox::Warning,
+                      tr( "Please check entries" ),
+                      tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+      mb.exec();
+      return;
+    }
+
+  conf->setOpenAipAirfieldCountries(openAipCountries);
+
+  QMessageBox mb( QMessageBox::Question,
+                  tr( "Download openAIP files?"),
+                  tr( "Active Internet connection is needed!") +
+                  QString("<p>") + tr("Start download now?"),
+                  QMessageBox::Yes | QMessageBox::No,
+                  this );
+
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+
+  if( mb.exec() == QMessageBox::No )
+    {
+      return;
+    }
+
+  emit downloadOpenAipAirfields( clist );
+  return;
+}
+
 #endif
 
 bool SettingsPageAirfields::checkIsOpenAipChanged()
@@ -547,7 +646,7 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed |= (conf->getAirfieldSource() == 0 && m_sourceBox->currentIndex() == 1);
-  changed |= (conf->getWelt2000CountryFilter() != m_countryFilter->text());
+  changed |= (conf->getWelt2000CountryFilter() != m_countriesW2000->text());
   changed |= (conf->getAirfieldHomeRadius() != m_homeRadiusW2000->value());
 
   bool currentState = false;
@@ -576,4 +675,24 @@ bool SettingsPageAirfields::checkIsListDisplayChanged()
 
   // qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
   return changed;
+}
+
+bool SettingsPageAirfields::checkCountryList( QStringList& clist )
+{
+  if( clist.size() == 0 )
+    {
+      return false;
+    }
+
+  for( int i = 0; i < clist.size(); i++ )
+    {
+      const QString& s = clist.at(i);
+
+      if( ! (s.length() == 2 && s.contains(QRegExp("[A-Za-z][A-Za-z]")) == true) )
+        {
+          return false;
+        }
+    }
+
+  return true;
 }

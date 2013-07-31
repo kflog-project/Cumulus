@@ -281,6 +281,9 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( page, SIGNAL(downloadWelt2000( const QString& )),
                _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )) );
 
+      connect( page, SIGNAL(downloadOpenAipAirfields( const QStringList& )),
+               _globalMapContents, SLOT(slotDownloadOpenAipAirfields( const QStringList& )) );
+
       page->show();
       return;
     }

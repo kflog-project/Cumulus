@@ -360,9 +360,11 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Airfield Data");
-  _airfieldSource          = value("Source", 1).toInt();
-  _airfieldHomeRadius      = value("HomeRadius", 500).toInt(); // km is assumed
-  _openAipAirfieldFileList = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
+  _airfieldSource           = value("Source", 1).toInt();
+  _airfieldHomeRadius       = value("HomeRadius", 500).toInt(); // km is assumed
+  _openAipAirfieldFileList  = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
+  _openAipAirfieldCountries = value("OpenAipAirfieldCountries", "" ).toString();
+  _openAipLink              = value("OpenAipLink", "9EEAi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987").toByteArray();
   endGroup();
 
   beginGroup("List Display");
@@ -763,6 +765,8 @@ void GeneralConfig::save()
   setValue("Source", _airfieldSource);
   setValue("HomeRadius", _airfieldHomeRadius);
   setValue("OpenAipFileList", _openAipAirfieldFileList);
+  setValue("OpenAipAirfieldCountries", _openAipAirfieldCountries);
+  // setValue("OpenAipLink", _openAipLink);
   endGroup();
 
   beginGroup("List Display");
@@ -2006,4 +2010,35 @@ void GeneralConfig::setLanguage( const QString& newValue )
           qWarning() << "No Library translation file found in" << langDir;
         }
     }
+}
+
+QByteArray GeneralConfig::rot47( const QByteArray& input )
+{
+  // const char* a0 = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+  const char* rotA  = "PQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNO";
+
+  QByteArray out;
+
+  if( input.isEmpty() )
+    {
+      return out;
+    }
+
+  for( int i = 0; i < input.size(); i++ )
+    {
+      unsigned char c = input.at(i);
+
+      if( c < '!' || c > '~' )
+        {
+          // let it as it is
+          out.append(c);
+        }
+      else
+        {
+          // translate character
+          out.append( rotA[c - 0x21] );
+        }
+    }
+
+  return out;
 }

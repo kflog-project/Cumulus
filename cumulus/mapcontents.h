@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2012 by Axel Pauli
+ **                   2008-2013 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map-files as value lists.
  *
- * \date 2000-2012
+ * \date 2000-2013
  *
  * \version $Id$
  */
@@ -357,6 +357,13 @@ class MapContents : public QObject
     void slotDownloadWelt2000( const QString& welt2000FileName );
 
     /**
+     * This slot is called to download openAip airfield files from the internet.
+     *
+     * @param openAipCountryList The list of countries to be downloaded.
+     */
+    void slotDownloadOpenAipAirfields( const QStringList& openAipCountryList );
+
+    /**
      * Downloads all map tiles enclosed by the square with the center point. The
      * square edges are in parallel with the sky directions N, S, W, E. Inside
      * the square you can place a circle with radius length.
@@ -653,6 +660,9 @@ class MapContents : public QObject
 
     /** Store that user has asked once for download of missing data file. */
     bool hasAskForDownload;
+
+    /** Store download request for openAIP airfield data. */
+    bool downloadOpenAipAirfieldsRequested;
 
 #endif
 

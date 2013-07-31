@@ -23,6 +23,6 @@
 #ifndef target_h
 #define target_h
 
-#define CU_VERSION "5.5.2"
+#define CU_VERSION "5.6.0"
 
 #endif

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -339,7 +339,19 @@ void HttpClient::slotFinished()
 
   if( reply && tmpFile )
     {
-      qDebug( "Download %s finished with %d", _url.toLatin1().data(), reply->error() );
+      QString url;
+
+      if( _url.contains("www.openaip.net") )
+        {
+          QStringList sl = _url.split( "/");
+          url = sl.last();
+        }
+      else
+        {
+          url = _url;
+        }
+
+      qDebug( "Download %s finished with %d", url.toLatin1().data(), reply->error() );
 
       // read reply error status
       enum QNetworkReply::NetworkError error = reply->error();

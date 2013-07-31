@@ -122,14 +122,31 @@ class SettingsPageAirfields : public QWidget
    */
   void slot_installWelt2000();
 
+  /**
+   * Called, if download button of openAIP is clicked.
+   */
+  void slot_downloadOpenAip();
+
   signals:
 
   /**
    * This signal is emitted when a Welt2000 file shall be downloaded from
-   * the internet. The filename must be the name of the web page without
+   * the Internet. The filename must be the name of the web page without
    * any path prefixes.
+   *
+   * \param welt2000FileName The Welt2000 file name to be downloaded.
    */
   void downloadWelt2000( const QString& welt2000FileName );
+
+  /**
+   * This signal is emitted when openAIP airfield country files shall be
+   * downloaded from the Internet.
+   *
+   * \param openAipCountryList The list of countries to be downloaded.
+   */
+  void downloadOpenAipAirfields( const QStringList& openAipCountryList );
+
+#endif
 
   /**
    * This signal is emitted, if OpenAIP items have been changed to trigger
@@ -148,9 +165,16 @@ class SettingsPageAirfields : public QWidget
    */
   void settingsChanged();
 
-#endif
-
   private:
+
+  /**
+   * Checks if the list contains valid two letter country code entries.
+   * Allowed letters are a...z and A...Z. All other is rejected with false,
+   * also an empty list.
+   *
+   * \return true in case of success otherwise false
+   */
+  bool checkCountryList( QStringList& clist );
 
   /** Called to load the configuration file data. */
   void load();
@@ -170,8 +194,11 @@ class SettingsPageAirfields : public QWidget
   /** Welt2000 group box widget */
   QGroupBox* m_weltGroup;
 
-  /** Country filter for Welt2000 data file */
-  QLineEdit* m_countryFilter;
+  /** Country selector for Welt2000 data file */
+  QLineEdit* m_countriesW2000;
+
+  /** Country selector for openAIP downloads*/
+  QLineEdit* m_countriesOaip4Download;
 
   /** Radius around home position for Welt2000 data file */
 
@@ -205,6 +232,9 @@ class SettingsPageAirfields : public QWidget
   /** Line editor for Welt2000 filename input. The file name on the web page
    *  is extended by a date string. */
   QLineEdit* m_welt2000FileName;
+
+  /** Download and install openAIP country files. */
+  QPushButton* m_downloadOpenAip;
 
 #endif
 

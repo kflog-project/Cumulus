@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-07-31 AP: Download of openAIP airfield files by Cumulus made possible.
+                   Thanks to Stephan Besser from the openAIP project who gave
+                   Cumulus the access rights to do that.
+
+[*] 2013-07-11 AP: Cumulus 5.5.2 released
+
 [o] 2013-07-09 AP: Maemo 4 release is build with Qt 4.8.5 now.
 
 [o] 2013-07-05 AP: Adaption of OpenAIP read routines to new data format 1.1.
