@@ -388,6 +388,43 @@ bool SettingsPageAirfields::save()
   if( m_sourceBox->currentIndex() == 0 )
     {
       conf->setAirfieldHomeRadius(m_homeRadiusOaip->value());
+
+      QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
+
+      if( openAipCountries.isEmpty() )
+        {
+          conf->setOpenAipAirfieldCountries(openAipCountries);
+        }
+      else
+        {
+          // We will check, if the country entries of openAIP are valid. If not a
+          // warning message is displayed and the action is aborted.
+          QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+
+          if( ! checkCountryList(clist) )
+            {
+              QMessageBox mb( QMessageBox::Warning,
+                              tr( "Please check entries" ),
+                              tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                              QMessageBox::Ok,
+                              this );
+
+#ifdef ANDROID
+
+              mb.show();
+              QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                               height()/2 - mb.height()/2 ));
+              mb.move( pos );
+
+#endif
+              mb.exec();
+              return false;
+            }
+
+          qDebug() << "openAipCountries" << openAipCountries;
+
+          conf->setOpenAipAirfieldCountries(openAipCountries);
+        }
     }
   else
     {
@@ -632,6 +669,7 @@ bool SettingsPageAirfields::checkIsOpenAipChanged()
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed |= (conf->getAirfieldSource() == 1 && m_sourceBox->currentIndex() == 0);
+  changed |= (conf->getOpenAipAirfieldCountries() != m_countriesOaip4Download->text());
   changed |= (conf->getAirfieldHomeRadius() != m_homeRadiusOaip->value());
 
   return changed;
