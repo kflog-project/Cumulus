@@ -340,8 +340,9 @@ void HttpClient::slotFinished()
   if( reply && tmpFile )
     {
       QString url;
+      QString link = GeneralConfig::instance()->getOpenAipLink();
 
-      if( _url.contains("www.openaip.net") )
+      if( _url.contains(link) )
         {
           QStringList sl = _url.split( "/");
           url = sl.last();

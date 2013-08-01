@@ -35,9 +35,23 @@
 	  in one file. <i>openAIP</i> uses one file per country. The advantage of 
 	  <i>openAIP</i> is, that you can bring in directly your own contributions or
 	  corrections on their webpages at <a href="http://www.openaip.net">
-	  www.openaip.net</a>. The disadvantage is, you have to download all the needed
-	  airfield files by hand because you need an account to login there and
-	  you have to accept their license policy.</p>
+	  www.openaip.net</a>. A little disadvantage is, that you have to define
+	  in Cumulus the counties which you want to install. The rest is done
+	  automatically by Cumulus, if you require the download.
+	  </p>
+
+  <b>Terms of use for external data</b>
+  
+  <p>
+  Please read and accept the Terms and Conditions of
+  </p>
+  
+  <ul>
+   <li> <a href="http://www.segelflug.de/vereine/welt2000/content/en/legal/terms-of-use.php">Welt2000</a></li>
+   <li> <a href="http://www.openaip.net/legal">openAIP</a></li>
+  </ul>
+  
+  before you use these data.
 
   <hr>
   
@@ -61,11 +75,10 @@
 
 		<dd>Here you can define the countries to be read from the
 			Welt2000 file. Several countries can be entered as a list separated
-			by commas or spaces. The country identifiers have to be coded
-			according to ISO-3166. If you define countries here, you do not need
-			to do the same in the configuration file of welt2000.conf. The
-			definitions from this GUI page will override the FILTER rule in the
-			configuration file.</dd>
+			by commas or spaces. The country identifiers have to be encoded
+			according to ISO-3166 as two letter code. Allowed separators are
+			space or comma.
+	  </dd>
 
 		<a name="Welt2000Radius"></a>
 		<br>
@@ -78,7 +91,7 @@
 			radius around your home position. All airfields lying inside this
 			radius will be read from the Welt2000 data file. This option is only
 			available when no country filter value is given. If the radius is
-			zero, then a default radius of 500 kilometres is assumed.
+			zero, then a default radius of 500 kilometers is assumed.
 			<p>
 				<i><b>Please Note!</b> If the home position is too far away from
 					the area defined by the filter or radius values, no airfield data
@@ -121,6 +134,24 @@
 		
 		<hr>
 		
+		<a name="openAIP_Downoad"></a>
+    <dt>
+      <b>openAIP - Download</b>
+    </dt>
+
+    <dd>
+			Enter the countries beside the <i>Download</i> button, which you want
+			to download from openAIP. The country identifiers have to be encoded
+			according to ISO-3166 as two letter code. Allowed separators are
+			space or comma. Press the
+			<i>Download</i> button to get the desired files from openAIP. If
+			Cumulus is in move, no downloads are possible.
+			<br> Updates of the files are provided in short time intervals
+			without an extra announcement by openAIP. Therefore you should
+			download from time to time again the airfield files to be up to date.
+			<b>Note!</b> Cumulus will not do that automatically.
+		</dd>
+		
 		<a name="openAIP_Radius"></a>
     <br>
     <dt>
@@ -137,15 +168,22 @@
       </p>
     </dd>
     
-    <a name="openAIP_Load"></a>
+		<a name="openAIP_Load"></a>
     <dt>
       <b>openAIP - Load</b>
     </dt>
 
     <dd>
-			Pressing the <i>Load</i> button opens a table showing the loadable
-			openAIP airfield files. If
-			<i>Select all</i> is checked, all files are loaded by Cumulus. If you
+			Pressing the <i>Load</i> button opens a table showing all loadable
+			openAIP airfield files. The airfield files, dowloaded by Cumulus, have the
+			following naming format:
+      <br><br>
+      &lt;two-letter-country-code&gt;_wpt.aip
+      <br><br>
+      Those names differ from the self downloaded and installed airspace files.
+      To avoid conflicts you should remove all self installed airfield files
+      before starting a downlod by Cumulus.
+			<br>If <i>Select all</i> is checked, all files are loaded by Cumulus. If you
 			want not to load all, deselect as first the checkbox
 			<i>Select all</i>. Only then you can make single selections of
 			airfield files. If you select a whole table row, you can remove the

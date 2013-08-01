@@ -1646,79 +1646,79 @@
 <context>
     <name>MapContents</name>
     <message>
-        <location filename="mapcontents.cpp" line="234"/>
-        <location filename="mapcontents.cpp" line="251"/>
-        <location filename="mapcontents.cpp" line="259"/>
-        <location filename="mapcontents.cpp" line="696"/>
-        <location filename="mapcontents.cpp" line="713"/>
-        <location filename="mapcontents.cpp" line="721"/>
+        <location filename="mapcontents.cpp" line="237"/>
+        <location filename="mapcontents.cpp" line="254"/>
+        <location filename="mapcontents.cpp" line="262"/>
+        <location filename="mapcontents.cpp" line="699"/>
+        <location filename="mapcontents.cpp" line="716"/>
+        <location filename="mapcontents.cpp" line="724"/>
         <source>Out of memory! Map not loaded.</source>
         <translation>Speicher alle! Karte nicht geladen.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1595"/>
+        <location filename="mapcontents.cpp" line="1691"/>
         <source>%1 download(s) with %2 error(s) done.</source>
         <translation>%1 download(s) mit %2 Fehler(n) getan.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1598"/>
+        <location filename="mapcontents.cpp" line="1694"/>
         <source>Downloads finished</source>
         <translation>Downloads fertig</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1625"/>
+        <location filename="mapcontents.cpp" line="1721"/>
         <source>Network error occurred.
 All downloads are canceled!</source>
         <translation>Netzwerkfehler.
 Alle Downloads verworfen!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1628"/>
+        <location filename="mapcontents.cpp" line="1724"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1660"/>
+        <location filename="mapcontents.cpp" line="1756"/>
         <source>Download missing Data?</source>
         <translation>Fehlende Daten holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1661"/>
+        <location filename="mapcontents.cpp" line="1757"/>
         <source>Download missing Data from the Internet?</source>
         <translation>Fehlende Daten aus dem Internet holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1662"/>
+        <location filename="mapcontents.cpp" line="1758"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1744"/>
+        <location filename="mapcontents.cpp" line="1840"/>
         <source>Loading maps...</source>
         <translation>Lade Karten...</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1837"/>
+        <location filename="mapcontents.cpp" line="1933"/>
         <source>Reading OpenAir Files</source>
         <translation>Lese OpenAir Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1851"/>
+        <location filename="mapcontents.cpp" line="1947"/>
         <source>Reading OpenAIP airfield Files</source>
         <translation>Lese OpenAIP Flugplatz Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1871"/>
+        <location filename="mapcontents.cpp" line="1967"/>
         <source>Reading Welt2000 File</source>
         <translation>Lese Welt2000 Datei</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1906"/>
+        <location filename="mapcontents.cpp" line="2002"/>
         <source>Loading maps done</source>
         <translation>Karten geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2497"/>
+        <location filename="mapcontents.cpp" line="2593"/>
         <source>Loading OpenAIP data</source>
         <translation>Lade OpenAIP Dateien</translation>
     </message>
@@ -1727,128 +1727,128 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Ladefehler OpenAIP</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2527"/>
+        <location filename="mapcontents.cpp" line="2623"/>
         <source>No OpenAIP loaded</source>
         <translation>Kein OpenAIP geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2531"/>
+        <location filename="mapcontents.cpp" line="2627"/>
         <source>OpenAIP loaded</source>
         <translation>OpenAIP geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2561"/>
-        <location filename="mapcontents.cpp" line="2661"/>
+        <location filename="mapcontents.cpp" line="2657"/>
+        <location filename="mapcontents.cpp" line="2757"/>
         <source>loading Welt2000</source>
         <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2600"/>
+        <location filename="mapcontents.cpp" line="2696"/>
         <source>Welt2000 load failed</source>
         <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2621"/>
-        <location filename="mapcontents.cpp" line="2666"/>
+        <location filename="mapcontents.cpp" line="2717"/>
+        <location filename="mapcontents.cpp" line="2762"/>
         <source>Welt2000 loaded</source>
         <translation>Welt2000 geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2714"/>
+        <location filename="mapcontents.cpp" line="2810"/>
         <source>loading Airspaces</source>
         <translation>lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2722"/>
+        <location filename="mapcontents.cpp" line="2818"/>
         <source>Airspaces loaded</source>
         <translation>Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2755"/>
-        <location filename="mapcontents.cpp" line="2823"/>
+        <location filename="mapcontents.cpp" line="2851"/>
+        <location filename="mapcontents.cpp" line="2919"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2771"/>
-        <location filename="mapcontents.cpp" line="2835"/>
+        <location filename="mapcontents.cpp" line="2867"/>
+        <location filename="mapcontents.cpp" line="2931"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2787"/>
-        <location filename="mapcontents.cpp" line="2847"/>
+        <location filename="mapcontents.cpp" line="2883"/>
+        <location filename="mapcontents.cpp" line="2943"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2859"/>
+        <location filename="mapcontents.cpp" line="2955"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2867"/>
+        <location filename="mapcontents.cpp" line="2963"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2875"/>
+        <location filename="mapcontents.cpp" line="2971"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2883"/>
+        <location filename="mapcontents.cpp" line="2979"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2891"/>
+        <location filename="mapcontents.cpp" line="2987"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2905"/>
+        <location filename="mapcontents.cpp" line="3001"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2913"/>
+        <location filename="mapcontents.cpp" line="3009"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2921"/>
+        <location filename="mapcontents.cpp" line="3017"/>
         <source>Drawing motorways</source>
         <oldsource>Drawing highways</oldsource>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2929"/>
+        <location filename="mapcontents.cpp" line="3025"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2937"/>
+        <location filename="mapcontents.cpp" line="3033"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2945"/>
+        <location filename="mapcontents.cpp" line="3041"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2953"/>
+        <location filename="mapcontents.cpp" line="3049"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2961"/>
+        <location filename="mapcontents.cpp" line="3057"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3011"/>
+        <location filename="mapcontents.cpp" line="3107"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -3326,14 +3326,19 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="openaip.cpp" line="224"/>
         <location filename="openaip.cpp" line="531"/>
-        <location filename="openaip.cpp" line="696"/>
+        <location filename="openaip.cpp" line="703"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
+        <location filename="openaip.cpp" line="645"/>
+        <source>is empty</source>
+        <translation>ist leer</translation>
+    </message>
+    <message>
         <location filename="openaip.cpp" line="173"/>
         <location filename="openaip.cpp" line="480"/>
-        <location filename="openaip.cpp" line="645"/>
+        <location filename="openaip.cpp" line="652"/>
         <source>Cannot open file</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -3457,34 +3462,34 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirfields</name>
     <message>
-        <location filename="settingspageairfields.cpp" line="147"/>
+        <location filename="settingspageairfields.cpp" line="174"/>
         <source>Country Filter:</source>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="121"/>
-        <location filename="settingspageairfields.cpp" line="159"/>
+        <location filename="settingspageairfields.cpp" line="152"/>
+        <location filename="settingspageairfields.cpp" line="184"/>
         <source>Home Radius:</source>
         <translation>Heimat Radius:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="172"/>
+        <location filename="settingspageairfields.cpp" line="197"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="188"/>
+        <location filename="settingspageairfields.cpp" line="213"/>
         <source>Enter Welt2000 filename as to see on the web page</source>
         <translation>Welt2000 Dateiname wie er auf Webseite steht</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="198"/>
+        <location filename="settingspageairfields.cpp" line="223"/>
         <source>List Display</source>
         <translation>Listenanzeige</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="211"/>
-        <location filename="settingspageairfields.cpp" line="225"/>
+        <location filename="settingspageairfields.cpp" line="236"/>
+        <location filename="settingspageairfields.cpp" line="250"/>
         <source> Pixels</source>
         <translation> Pixel</translation>
     </message>
@@ -3504,67 +3509,94 @@ Alle Downloads verworfen!</translation>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="129"/>
+        <location filename="settingspageairfields.cpp" line="160"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="134"/>
+        <location filename="settingspageairfields.cpp" line="147"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="180"/>
+        <location filename="settingspageairfields.cpp" line="125"/>
+        <source>Download</source>
+        <translation>Download</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="134"/>
+        <source>Countries:</source>
+        <translation>Länder:</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="205"/>
         <source>Install</source>
         <translation>Installieren</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="181"/>
+        <location filename="settingspageairfields.cpp" line="206"/>
         <source>Install Welt2000 data</source>
         <translation>Installiere Welt2000 Daten</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="204"/>
+        <location filename="settingspageairfields.cpp" line="229"/>
         <source>More space in AF/WP/OL lists:</source>
         <translation>Mehr Raum in AF/WP/OL Listen:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="218"/>
+        <location filename="settingspageairfields.cpp" line="243"/>
         <source>More space in Emergency list:</source>
         <translation>Mehr Raum in Notfallliste:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="383"/>
+        <location filename="settingspageairfields.cpp" line="405"/>
+        <location filename="settingspageairfields.cpp" line="580"/>
         <source>Please check entries</source>
         <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="384"/>
-        <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
+        <location filename="settingspageairfields.cpp" line="406"/>
+        <source>Every Welt2000 country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
+        <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="483"/>
+        <location filename="settingspageairfields.cpp" line="581"/>
+        <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
+        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="600"/>
+        <source>Download openAIP files?</source>
+        <translation>Download openAIP Dateien?</translation>
+    </message>
+    <message>
+        <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
+        <translation type="obsolete">Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="516"/>
         <source>Welt2000 settings invalid!</source>
         <translation>Welt2000 Eingabe ungültig!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="484"/>
+        <location filename="settingspageairfields.cpp" line="517"/>
         <source>Please add a valid Welt2000 filename!</source>
         <translation>Bitte gültigen Welt2000 Dateinamen eintragen!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="502"/>
+        <location filename="settingspageairfields.cpp" line="535"/>
         <source>Download Welt2000?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="503"/>
+        <location filename="settingspageairfields.cpp" line="536"/>
+        <location filename="settingspageairfields.cpp" line="601"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="504"/>
+        <location filename="settingspageairfields.cpp" line="537"/>
+        <location filename="settingspageairfields.cpp" line="602"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>

@@ -1633,13 +1633,55 @@ void MapContents::slotDownloadAirspace( QString& url )
 /** Called, if all downloads are finished. */
 void MapContents::slotDownloadsFinished( int requests, int errors )
 {
-  // All has finished, free not more needed resources
+  // All downloads are finished, free not more needed resources.
   downloadManger->deleteLater();
   downloadManger = static_cast<DownloadManager *> (0);
 
   if( downloadOpenAipAirfieldsRequested == true )
     {
       downloadOpenAipAirfieldsRequested = false;
+
+      // Tidy up airfield directory after download of openAIP files.
+      const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
+
+      // Get the list of airfield files to be loaded.
+      QStringList& files2load = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+
+      // Check if option load all is set by the user
+      bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
+
+      QDir afDir(afDirName);
+      afDir.setFilter(QDir::Files);
+
+      QStringList filters;
+      filters << "*.aic" << "*.aip";
+      afDir.setNameFilters(filters);
+
+      QStringList filesFound = afDir.entryList();
+
+      for( int i = 0; i < filesFound.size(); i++ )
+        {
+          const QString& fn = filesFound.at(i);
+
+          if( fn.endsWith(".aic") )
+            {
+              // Remove compiled airfield file version in every case.
+              afDir.remove( fn );
+              continue;
+            }
+
+          if( loadAll && (fn.endsWith("_wpt.aip") == false || fn.size() != 10) )
+            {
+              // That file was installed by the user. We remove it to avoid
+              // problems with the new downloaded airfield files by Cumulus,
+              // if the load All option is activated.
+              // Example of file names:
+              // User installed file:    openaip_airports_germany_de.aip
+              // Cumulus installed file: de_wpt.aip
+              afDir.remove( fn );
+            }
+        }
+
       loadOpenAipAirfieldsViaThread();
     }
 
