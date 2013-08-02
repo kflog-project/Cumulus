@@ -28,7 +28,7 @@
 #define FILE_TYPE_AIRFIELD_C "OpenAIP-Airfields"
 
 // Version used for compiled airfield files created from openAIP airfield data
-#define FILE_VERSION_AIRFIELD_C 2
+#define FILE_VERSION_AIRFIELD_C 3
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
@@ -230,6 +230,16 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList, bool readSource 
               continue;
             }
 
+          float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
+
+          if( h_runwayLengthFilter != filterRunwayLength )
+            {
+              // Runway length filter has been changed. That requires a reparse
+              // of the source files.
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Runway length mismatch";
+              continue;
+            }
+
           // All checks passed, there is no need to read the source file and
           // we can remove it from the list.
           preselect.removeAt( 0 );
@@ -274,6 +284,8 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
 
   double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
+  float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
+
   qDebug() << "OAIP: creating file" << QFileInfo(fileName).fileName();
 
   out << quint32( KFLOG_FILE_MAGIC );
@@ -281,6 +293,7 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
   out << quint8( FILE_VERSION_AIRFIELD_C );
   out << QDateTime::currentDateTime();
   out << filterRadius;
+  out << filterRunwayLength;
   out << QPoint( _globalMapMatrix->getHomeCoord() );
 
 #ifdef BOUNDING_BOX
@@ -535,11 +548,12 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
  */
 bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 {
-  h_headerIsValid = false;
-  h_magic         = 0;
+  h_headerIsValid      = false;
+  h_magic              = 0;
   h_fileType.clear();
-  h_fileVersion   = 0;
-  h_homeRadius    = 0.0;
+  h_fileVersion        = 0;
+  h_homeRadius         = 0.0;
+  h_runwayLengthFilter = 0.0;
   h_homeCoord.setX(0);
   h_homeCoord.setY(0);
 
@@ -590,6 +604,7 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 
   in >> h_creationDateTime;
   in >> h_homeRadius;
+  in >> h_runwayLengthFilter;
   in >> h_homeCoord;
 
 #ifdef BOUNDING_BOX

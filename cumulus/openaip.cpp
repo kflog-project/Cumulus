@@ -748,6 +748,39 @@ bool OpenAip::readAirfields( QString fileName,
                           continue;
                         }
                     }
+
+                  if( m_filterRunwayLength > 0.0 )
+                    {
+                      QList<Runway>& rl = af.getRunwayList();
+
+                      if( rl.isEmpty() )
+                        {
+                          // No runways defined, ignore these data
+                          continue;
+                        }
+
+                      bool rwyLenOk = false;
+
+                      for( int i = 0; i < rl.size(); i++ )
+                        {
+                          if( rl.at(i).length < m_filterRunwayLength )
+                            {
+                              continue;
+                            }
+
+                          // One runway fulfils the length condition, break loop.
+                          rwyLenOk = true;
+                          break;
+                        }
+
+                      if( rwyLenOk == false )
+                        {
+                          qDebug() << "OpenAip::readAirfields:"
+                                   << af.getName() << af.getCountry()
+                                   << "runway to short!";
+                          continue;
+                        }
+                    }
                 }
 
               airfieldList.append( af );
@@ -1439,4 +1472,7 @@ void OpenAip::loadUserFilterValues()
 
   // Get filter radius around the home position in kilometers.
   m_filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius() / 1000.;
+
+  // Get runway length filter in meters.
+  m_filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
 }

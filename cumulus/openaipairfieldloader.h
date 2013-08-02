@@ -114,6 +114,7 @@ class OpenAipAirfieldLoader
   quint8          h_fileVersion;
   QDateTime       h_creationDateTime;
   double          h_homeRadius;
+  float           h_runwayLengthFilter;
   QPoint          h_homeCoord;
   QRect           h_boundingBox;
   ProjectionBase* h_projection;

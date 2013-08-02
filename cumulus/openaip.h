@@ -200,6 +200,11 @@ class OpenAip
   double m_filterRadius;
 
   /**
+   * Runway length filter in meters. If set to <= 0, filter is switched off.
+   */
+  float m_filterRunwayLength;
+
+  /**
    * Value of VERSION attribute from OPENAIP tag of the current read file.
    */
   QString m_oaipVersion;
