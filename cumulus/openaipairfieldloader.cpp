@@ -220,11 +220,7 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList, bool readSource 
               continue;
             }
 
-          int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
-
-          // We must look, which unit the user has chosen. This unit must
-          // be considered during load of data items.
-          double filterRadius = Distance::convertToMeters( iRadius );
+          double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
           if( h_homeRadius != filterRadius )
             {
@@ -276,11 +272,7 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
       return false;
     }
 
-  int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
-
-  // We must look, which unit the user has chosen. This unit must
-  // be considered during load of data items.
-  double filterRadius = Distance::convertToMeters( iRadius );
+  double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
   qDebug() << "OAIP: creating file" << QFileInfo(fileName).fileName();
 

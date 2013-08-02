@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                         :     2007-2010 by Axel Pauli
+                         :     2007-2013 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -258,4 +258,58 @@ double Distance::convertToMeters(double dist)
     }
 
   return res;
+}
+
+void Distance::setValueInCurrentUnit( const double value )
+{
+  switch( _distanceUnit )
+    {
+    case meters:
+      setMeters(value);
+      break;
+    case feet:
+      setFeet(value);
+      break;
+    case kilometers:
+      setKilometers(value);
+      break;
+    case miles:
+      setMiles(value);
+      break;
+    case nautmiles:
+      setNautMiles(value);
+      break;
+    default:
+      setMeters(value);
+      break;
+    }
+}
+
+double Distance::getValueOfCurrentUnit() const
+{
+  double dist = 0.0;
+
+  switch( _distanceUnit )
+    {
+    case meters:
+      dist = getMeters();
+      break;
+    case feet:
+      dist = getFeet();
+      break;
+    case kilometers:
+      dist = getKilometers();
+      break;
+    case miles:
+      dist = getMiles();
+      break;
+    case nautmiles:
+      dist = getNautMiles();
+      break;
+    default:
+      dist = getMeters();
+      break;
+    }
+
+   return dist;
 }

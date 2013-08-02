@@ -2,7 +2,7 @@
                           distance.h  -  general distance representation
                              -------------------
     begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2007 Axel Pauli
+    copyright            : (C) 2002 by André Somers, 2007-2013 Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -30,7 +30,7 @@
  * It also features a couple of static methods to convert from the set
  * unit to meters or to display a distance in the currently selected unit.
  *
- * \date 2002-2007
+ * \date 2002-2013
  */
 
 #ifndef DISTANCE_H
@@ -129,6 +129,16 @@ class Distance
   {
     return _dist;
   };
+
+  /**
+   * Sets the distance value in the current used distance unit.
+   */
+  void setValueInCurrentUnit( const double value );
+
+  /**
+   * Returns distance value of the current set distance unit.
+   */
+  double getValueOfCurrentUnit() const;
 
   /**
    * implements == operator for distance

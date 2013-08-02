@@ -1391,14 +1391,25 @@ class GeneralConfig : protected QSettings
     };
 
   /** gets the airfield home radius */
-  int getAirfieldHomeRadius() const
+  float getAirfieldHomeRadius() const
   {
     return _airfieldHomeRadius;
   };
   /** sets the airfield home radius */
-  void setAirfieldHomeRadius( const int newValue )
+  void setAirfieldHomeRadius( const float newValue )
   {
     _airfieldHomeRadius = newValue;
+  };
+
+  /** gets the airfield runway length filter radius */
+  float getAirfieldRunwayLengthFilter() const
+  {
+    return _airfieldRunwayLengthFilter;
+  };
+  /** sets the airfield runway length filter radius */
+  void setAirfieldRunwayLengthFilter( const float newValue )
+  {
+    _airfieldRunwayLengthFilter = newValue;
   };
 
   /** gets the welt2000 outlanding load flag */
@@ -2739,8 +2750,12 @@ class GeneralConfig : protected QSettings
 
   // Airfield source. 0 = OpenAip, 1 = Welt2000
   int _airfieldSource;
-  // airfield home radius
-  int _airfieldHomeRadius;
+
+  // airfield home radius in meters
+  float _airfieldHomeRadius;
+
+  // Airfield runway length filter. 0 means filter is off.
+  float _airfieldRunwayLengthFilter;
 
   // Welt2000 country filter
   QString _welt2000CountryFilter;

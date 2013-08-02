@@ -269,6 +269,7 @@ class Welt2000
   QStringList c_countryList;
   // radius around home position
   double c_homeRadius;
+  float c_runwayLengthFilter;
 
   // header data members of compiled file
   quint32 h_magic;
@@ -277,6 +278,7 @@ class Welt2000
   QDateTime h_creationDateTime;
   QStringList h_countryList;
   double h_homeRadius;
+  float h_runwayLengthFilter;
   QPoint h_homeCoord;
   QRect h_boundingBox;
   bool h_outlandings; // Flag to indicate outlandings contained or not

@@ -3195,8 +3195,8 @@ Alle Downloads verworfen!</translation>
         <translation>Landung</translation>
     </message>
     <message>
-        <location filename="welt2000.cpp" line="870"/>
-        <location filename="welt2000.cpp" line="1669"/>
+        <location filename="welt2000.cpp" line="851"/>
+        <location filename="welt2000.cpp" line="1650"/>
         <source>Emergency Field No: </source>
         <translation>Notlandefeld Nr:</translation>
     </message>
@@ -3462,110 +3462,131 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageAirfields</name>
     <message>
-        <location filename="settingspageairfields.cpp" line="174"/>
+        <location filename="settingspageairfields.cpp" line="182"/>
         <source>Country Filter:</source>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="152"/>
-        <location filename="settingspageairfields.cpp" line="184"/>
         <source>Home Radius:</source>
-        <translation>Heimat Radius:</translation>
+        <translation type="obsolete">Heimat Radius:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="197"/>
+        <location filename="settingspageairfields.cpp" line="198"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="213"/>
+        <location filename="settingspageairfields.cpp" line="224"/>
         <source>Enter Welt2000 filename as to see on the web page</source>
         <translation>Welt2000 Dateiname wie er auf Webseite steht</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="223"/>
+        <location filename="settingspageairfields.cpp" line="235"/>
         <source>List Display</source>
         <translation>Listenanzeige</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="236"/>
-        <location filename="settingspageairfields.cpp" line="250"/>
+        <location filename="settingspageairfields.cpp" line="248"/>
+        <location filename="settingspageairfields.cpp" line="261"/>
         <source> Pixels</source>
         <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="59"/>
+        <location filename="settingspageairfields.cpp" line="61"/>
         <source>Settings - Airfields</source>
         <translation>Einstellungen - Flugplätze</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="99"/>
+        <location filename="settingspageairfields.cpp" line="101"/>
         <source>Source:</source>
         <translation>Quelle:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="106"/>
+        <location filename="settingspageairfields.cpp" line="108"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="160"/>
+        <location filename="settingspageairfields.cpp" line="317"/>
+        <location filename="settingspageairfields.cpp" line="339"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="147"/>
+        <location filename="settingspageairfields.cpp" line="149"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="125"/>
+        <location filename="settingspageairfields.cpp" line="127"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="134"/>
+        <location filename="settingspageairfields.cpp" line="136"/>
         <source>Countries:</source>
         <translation>Länder:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="205"/>
+        <location filename="settingspageairfields.cpp" line="158"/>
+        <location filename="settingspageairfields.cpp" line="192"/>
+        <source>Radius:</source>
+        <translation>Radius:</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="165"/>
+        <location filename="settingspageairfields.cpp" line="202"/>
+        <source>Rwy Filter:</source>
+        <translation>SLB Filter:</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="213"/>
         <source>Install</source>
         <translation>Installieren</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="206"/>
+        <location filename="settingspageairfields.cpp" line="215"/>
         <source>Install Welt2000 data</source>
         <translation>Installiere Welt2000 Daten</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="229"/>
+        <location filename="settingspageairfields.cpp" line="241"/>
         <source>More space in AF/WP/OL lists:</source>
         <translation>Mehr Raum in AF/WP/OL Listen:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="243"/>
+        <location filename="settingspageairfields.cpp" line="254"/>
         <source>More space in Emergency list:</source>
         <translation>Mehr Raum in Notfallliste:</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="405"/>
-        <location filename="settingspageairfields.cpp" line="580"/>
+        <location filename="settingspageairfields.cpp" line="318"/>
+        <source>Home Radius</source>
+        <translation>Heimat Radius:</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="340"/>
+        <source>Minimum Runway length</source>
+        <translation>Minimale SLB Länge</translation>
+    </message>
+    <message>
+        <location filename="settingspageairfields.cpp" line="498"/>
+        <location filename="settingspageairfields.cpp" line="673"/>
         <source>Please check entries</source>
         <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="406"/>
+        <location filename="settingspageairfields.cpp" line="499"/>
         <source>Every Welt2000 country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
         <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="581"/>
+        <location filename="settingspageairfields.cpp" line="674"/>
         <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
         <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="600"/>
+        <location filename="settingspageairfields.cpp" line="693"/>
         <source>Download openAIP files?</source>
         <translation>Download openAIP Dateien?</translation>
     </message>
@@ -3574,29 +3595,29 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="516"/>
+        <location filename="settingspageairfields.cpp" line="609"/>
         <source>Welt2000 settings invalid!</source>
         <translation>Welt2000 Eingabe ungültig!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="517"/>
+        <location filename="settingspageairfields.cpp" line="610"/>
         <source>Please add a valid Welt2000 filename!</source>
         <translation>Bitte gültigen Welt2000 Dateinamen eintragen!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="535"/>
+        <location filename="settingspageairfields.cpp" line="628"/>
         <source>Download Welt2000?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="536"/>
-        <location filename="settingspageairfields.cpp" line="601"/>
+        <location filename="settingspageairfields.cpp" line="629"/>
+        <location filename="settingspageairfields.cpp" line="694"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="settingspageairfields.cpp" line="537"/>
-        <location filename="settingspageairfields.cpp" line="602"/>
+        <location filename="settingspageairfields.cpp" line="630"/>
+        <location filename="settingspageairfields.cpp" line="695"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>

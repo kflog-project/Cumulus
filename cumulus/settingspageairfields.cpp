@@ -50,7 +50,9 @@
 extern MapContents *_globalMapContents;
 
 SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
-  QWidget(parent)
+  QWidget(parent),
+  m_homeRadiusInitValue(0.0),
+  m_runwayFilterInitValue(0.0)
 {
   setObjectName("SettingsPageAirfields");
   setWindowFlags( Qt::Tool );
@@ -149,17 +151,23 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
   connect( cmdLoadFiles, SIGNAL(clicked()), this, SLOT(slot_openLoadDialog()) );
 
-  lbl = new QLabel( tr("Home Radius:") );
-  oaipLayout->addWidget(lbl, grow, 1);
+  hbox = new QHBoxLayout;
+  hbox->setMargin(0);
+  oaipLayout->addLayout( hbox, grow, 1, 1, 3);
 
-  m_homeRadiusOaip = new NumberEditor( this );
-  m_homeRadiusOaip->setDecimalVisible( false );
-  m_homeRadiusOaip->setPmVisible( false );
-  m_homeRadiusOaip->setMaxLength(4);
-  m_homeRadiusOaip->setSuffix( " " + Distance::getUnitText() );
-  m_homeRadiusOaip->setSpecialValueText(tr("Off"));
-  m_homeRadiusOaip->setRange( 0, 9999 );
-  oaipLayout->addWidget(m_homeRadiusOaip, grow, 2);
+  lbl = new QLabel( tr("Radius:") );
+  hbox->addWidget(lbl);
+
+  m_homeRadiusOaip = createHomeRadiusWidget( this );
+  hbox->addWidget(m_homeRadiusOaip);
+  hbox->addSpacing( 10 );
+
+  lbl = new QLabel( tr("Rwy Filter:") );
+  hbox->addWidget(lbl);
+
+  m_minRwyLengthOaip = createRwyLenthFilterWidget( this );
+  hbox->addWidget(m_minRwyLengthOaip);
+  hbox->addStretch(5);
   grow++;
 
   oaipLayout->setColumnStretch( 3, 5 );
@@ -181,21 +189,21 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->addWidget(m_countriesW2000, grow, 1, 1, 3);
   grow++;
 
-  lbl = new QLabel(tr("Home Radius:"), m_weltGroup);
+  lbl = new QLabel(tr("Radius:"), m_weltGroup);
   weltLayout->addWidget(lbl, grow, 0);
 
-  m_homeRadiusW2000 = new NumberEditor( this );
-  m_homeRadiusW2000->setDecimalVisible( false );
-  m_homeRadiusW2000->setPmVisible( false );
-  m_homeRadiusW2000->setMaxLength(4);
-  m_homeRadiusW2000->setSuffix( " " + Distance::getUnitText() );
-  m_homeRadiusW2000->setRange( 0, 9999 );
-  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
-  m_homeRadiusW2000->setValidator( eValidator );
+  m_homeRadiusW2000 = createHomeRadiusWidget( this );
   weltLayout->addWidget(m_homeRadiusW2000, grow, 1 );
 
   m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), m_weltGroup );
   weltLayout->addWidget(m_loadOutlandings, grow, 3, Qt::AlignRight );
+  grow++;
+
+  lbl = new QLabel(tr("Rwy Filter:"), m_weltGroup);
+  weltLayout->addWidget(lbl, grow, 0);
+
+  m_minRwyLengthW2000 = createRwyLenthFilterWidget( this );
+  weltLayout->addWidget(m_minRwyLengthW2000, grow, 1 );
   grow++;
 
 #ifdef INTERNET
@@ -203,14 +211,18 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->setRowMinimumHeight(grow++, 10);
 
   m_installWelt2000 = new QPushButton( tr("Install"), m_weltGroup );
+#ifndef ANDROID
   m_installWelt2000->setToolTip(tr("Install Welt2000 data"));
+#endif
   weltLayout->addWidget(m_installWelt2000, grow, 0 );
 
   connect( m_installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
 
   m_welt2000FileName = new QLineEdit(m_weltGroup);
   m_welt2000FileName->setInputMethodHints(imh);
+#ifndef ANDROID
   m_welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
+#endif
   weltLayout->addWidget(m_welt2000FileName, grow, 1, 1, 3);
 
 #endif
@@ -236,8 +248,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   m_afMargin->setSuffix( tr(" Pixels") );
   m_afMargin->setMaximum( 30 );
   m_afMargin->setTitle("0...30");
-  eValidator = new QRegExpValidator( QRegExp( "([0-9]|[1-2][0-9]|30)" ), this );
-  m_afMargin->setValidator( eValidator );
+  m_afMargin->setRange(0, 30);
   listLayout->addWidget(m_afMargin, grow, 1 );
   grow++;
   lbl = new QLabel(tr( "More space in Emergency list:"), listGroup);
@@ -250,8 +261,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   m_rpMargin->setSuffix( tr(" Pixels") );
   m_rpMargin->setMaximum( 30 );
   m_rpMargin->setTitle("0...30");
-  eValidator = new QRegExpValidator( QRegExp( "([0-9]|[1-2][0-9]|30)" ), this );
-  m_rpMargin->setValidator( eValidator );
+  m_rpMargin->setRange(0, 30);
   listLayout->addWidget(m_rpMargin, grow, 1 );
   grow++;
   listLayout->setRowStretch(grow, 10);
@@ -295,6 +305,41 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 
 SettingsPageAirfields::~SettingsPageAirfields()
 {
+}
+
+NumberEditor* SettingsPageAirfields::createHomeRadiusWidget( QWidget* parent )
+{
+  NumberEditor* ne = new NumberEditor( parent );
+  ne->setDecimalVisible( false );
+  ne->setPmVisible( false );
+  ne->setMaxLength(4);
+  ne->setSuffix( " " + Distance::getUnitText() );
+  ne->setSpecialValueText(tr("Off"));
+  ne->setTip(tr("Home Radius") + " (" + Distance::getUnitText() + ")" );
+  ne->setRange( 0, 9999 );
+  ne->setValue(0);
+  return ne;
+}
+
+NumberEditor* SettingsPageAirfields::createRwyLenthFilterWidget( QWidget* parent )
+{
+  QString lenUnit = "m";
+
+  if( Altitude::getUnit() != Altitude::meters )
+    {
+      lenUnit = "ft";
+    }
+
+  NumberEditor* ne = new NumberEditor( parent );
+  ne->setDecimalVisible( false );
+  ne->setPmVisible( false );
+  ne->setMaxLength(4);
+  ne->setSuffix( " " + lenUnit );
+  ne->setRange( 0, 9999 );
+  ne->setSpecialValueText(tr("Off"));
+  ne->setTip(tr("Minimum Runway length") + " (" + lenUnit + ")");
+  ne->setValue(0);
+  return ne;
 }
 
 void SettingsPageAirfields::slot_sourceChanged( int index )
@@ -342,11 +387,32 @@ void SettingsPageAirfields::load()
   m_sourceBox->setCurrentIndex( conf->getAirfieldSource() );
   slot_sourceChanged( conf->getAirfieldSource() );
 
-  m_homeRadiusOaip->setValue( conf->getAirfieldHomeRadius() );
   m_countriesW2000->setText( conf->getWelt2000CountryFilter() );
 
-  // @AP: radius value is stored without considering unit.
-  m_homeRadiusW2000->setValue( conf->getAirfieldHomeRadius() );
+  if( Distance::getUnit() == Distance::meters )
+    {
+      m_homeRadiusInitValue = conf->getAirfieldHomeRadius();
+    }
+  else
+    {
+      Distance dist(conf->getAirfieldHomeRadius());
+      m_homeRadiusInitValue = rint(dist.getValueOfCurrentUnit());
+    }
+
+  m_homeRadiusOaip->setValue( m_homeRadiusInitValue );
+  m_homeRadiusW2000->setValue( m_homeRadiusInitValue );
+
+  if( Altitude::getUnit() == Altitude::meters )
+    {
+      m_runwayFilterInitValue = conf->getAirfieldRunwayLengthFilter();
+    }
+  else
+    {
+      m_runwayFilterInitValue = rint(Altitude(conf->getAirfieldRunwayLengthFilter()).getFeet());
+    }
+
+  m_minRwyLengthOaip->setValue( m_runwayFilterInitValue );
+  m_minRwyLengthW2000->setValue( m_runwayFilterInitValue );
 
   if( conf->getWelt2000LoadOutlandings() )
     {
@@ -387,48 +453,38 @@ bool SettingsPageAirfields::save()
   // Look which source widget is active to decide what have to be saved.
   if( m_sourceBox->currentIndex() == 0 )
     {
-      conf->setAirfieldHomeRadius(m_homeRadiusOaip->value());
+      Distance dist(0);
+      dist.setValueInCurrentUnit( m_homeRadiusOaip->value() );
 
-      QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
+      conf->setAirfieldHomeRadius(dist.getMeters());
 
-      if( openAipCountries.isEmpty() )
+      if( Altitude::getUnit() == Altitude::meters )
         {
-          conf->setOpenAipAirfieldCountries(openAipCountries);
+          conf->setAirfieldRunwayLengthFilter(m_minRwyLengthOaip->value());
         }
       else
         {
-          // We will check, if the country entries of openAIP are valid. If not a
-          // warning message is displayed and the action is aborted.
-          QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
-
-          if( ! checkCountryList(clist) )
-            {
-              QMessageBox mb( QMessageBox::Warning,
-                              tr( "Please check entries" ),
-                              tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                              QMessageBox::Ok,
-                              this );
-
-#ifdef ANDROID
-
-              mb.show();
-              QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                               height()/2 - mb.height()/2 ));
-              mb.move( pos );
-
-#endif
-              mb.exec();
-              return false;
-            }
-
-          qDebug() << "openAipCountries" << openAipCountries;
-
-          conf->setOpenAipAirfieldCountries(openAipCountries);
+          Altitude alt(0);
+          alt.setFeet(m_minRwyLengthOaip->value());
+          conf->setAirfieldRunwayLengthFilter(alt.getMeters());
         }
     }
   else
     {
-      conf->setAirfieldHomeRadius(m_homeRadiusW2000->value());
+      Distance dist(0);
+      dist.setValueInCurrentUnit( m_homeRadiusW2000->value() );
+      conf->setAirfieldHomeRadius(dist.getMeters());
+
+      if( Altitude::getUnit() == Altitude::meters )
+        {
+          conf->setAirfieldRunwayLengthFilter(m_minRwyLengthW2000->value());
+        }
+      else
+        {
+          Altitude alt;
+          alt.setFeet(m_minRwyLengthW2000->value());
+          conf->setAirfieldRunwayLengthFilter(alt.getMeters());
+        }
 
       // We will check, if the country entries of Welt2000 are
       // correct. If not a warning message is displayed and the
@@ -669,8 +725,8 @@ bool SettingsPageAirfields::checkIsOpenAipChanged()
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed |= (conf->getAirfieldSource() == 1 && m_sourceBox->currentIndex() == 0);
-  changed |= (conf->getOpenAipAirfieldCountries() != m_countriesOaip4Download->text());
-  changed |= (conf->getAirfieldHomeRadius() != m_homeRadiusOaip->value());
+  changed |= (m_homeRadiusInitValue != m_homeRadiusOaip->value());
+  changed |= (m_runwayFilterInitValue != m_minRwyLengthOaip->value());
 
   return changed;
 }
@@ -685,7 +741,8 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
 
   changed |= (conf->getAirfieldSource() == 0 && m_sourceBox->currentIndex() == 1);
   changed |= (conf->getWelt2000CountryFilter() != m_countriesW2000->text());
-  changed |= (conf->getAirfieldHomeRadius() != m_homeRadiusW2000->value());
+  changed |= (m_homeRadiusInitValue != m_homeRadiusW2000->value());
+  changed |= (m_runwayFilterInitValue != m_minRwyLengthW2000->value());
 
   bool currentState = false;
 

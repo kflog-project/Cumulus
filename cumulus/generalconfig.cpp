@@ -360,11 +360,12 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Airfield Data");
-  _airfieldSource           = value("Source", 1).toInt();
-  _airfieldHomeRadius       = value("HomeRadius", 500).toInt(); // km is assumed
-  _openAipAirfieldFileList  = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
-  _openAipAirfieldCountries = value("OpenAipAirfieldCountries", "" ).toString();
-  _openAipLink              = value("OpenAipLink", "9EEAi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987").toByteArray();
+  _airfieldSource             = value("Source", 1).toInt();
+  _airfieldHomeRadius         = value("HomeRadius", 500000).toFloat(); // m is used
+  _airfieldRunwayLengthFilter = value("RunwayLengthFilter", 0).toFloat(); // m is used
+  _openAipAirfieldFileList    = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
+  _openAipAirfieldCountries   = value("OpenAipAirfieldCountries", "" ).toString();
+  _openAipLink                = value("OpenAipLink", "9EEAi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987").toByteArray();
   endGroup();
 
   beginGroup("List Display");
@@ -764,6 +765,7 @@ void GeneralConfig::save()
   beginGroup("Airfield Data");
   setValue("Source", _airfieldSource);
   setValue("HomeRadius", _airfieldHomeRadius);
+  setValue("RunwayLengthFilter", _airfieldRunwayLengthFilter);
   setValue("OpenAipFileList", _openAipAirfieldFileList);
   setValue("OpenAipAirfieldCountries", _openAipAirfieldCountries);
   // setValue("OpenAipLink", _openAipLink);

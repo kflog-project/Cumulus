@@ -1437,9 +1437,6 @@ void OpenAip::loadUserFilterValues()
       m_countryFilterSet.insert( clist.at(i) );
     }
 
-  int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
-
-  // We must look, what unit the user has chosen. This unit must
-  // be considered during load of data items.
-  m_filterRadius = Distance::convertToMeters( iRadius ) / 1000.;
+  // Get filter radius around the home position in kilometers.
+  m_filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius() / 1000.;
 }

@@ -47,7 +47,7 @@
 #define FILE_TYPE_AIRFIELD_C 0x63
 
 // version used for files created from welt2000 data
-#define FILE_VERSION_AIRFIELD_C 207
+#define FILE_VERSION_AIRFIELD_C 208
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
@@ -64,6 +64,7 @@ Welt2000::Welt2000() :
   h_fileType(0),
   h_fileVersion(0),
   h_homeRadius(0),
+  h_runwayLengthFilter(0.0),
   h_outlandings(false),
   h_projection(static_cast<ProjectionBase *> (0)),
   h_headerIsValid(false)
@@ -223,51 +224,47 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
         }
-      else
+
+      // Check, if home position has been changed in the meantime. In this
+      // case a new parsing of the source should be started.
+      QPoint curHome = _globalMapMatrix->getHomeCoord();
+
+      if( curHome != h_homeCoord )
         {
-          // No country definitions are contained in the compiled
-          // file. File was created by using home radius. Check, if
-          // home position has been changed in the meantime. In this
-          // case a new parsing of the source must be started.
-          QPoint curHome = _globalMapMatrix->getHomeCoord();
+          qDebug( "W2000: Home coordinates have been changed --> reparse welt2000.txt" );
+          // Home coordinates have been changed, make a reparsing of
+          // source file
+          unlink( w2PathTxc.toLatin1().data() );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
+        }
 
-          if( curHome != h_homeCoord )
-            {
-              qDebug( "W2000: Home coordinates have been changed --> reparse welt2000.txt" );
-              // Home coordinates have been changed, make a reparsing of
-              // source file
-              unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
-            }
+      // Check, if the home radius has been changed in the mean time.
+      // In this case a new parsing of the source must be started.
+      // Get home radius from the configuration data in kilometers.
+      // If set to zero, no radius is defined
+      double dRadius = GeneralConfig::instance()->getAirfieldHomeRadius() / 1000.;
 
-          // Furthermore we do check, if the home radius has been
-          // changed in the mean time. In this case a new parsing of
-          // the source must be started.
+      if( h_countryList.isEmpty() && dRadius == 0.0 )
+        {
+          // Define a default radius of 500Km, if no country filter is defined.
+          dRadius = 500.0;
+        }
 
-          // get home radius from configuration data
-          int iRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
-          double dRadius;
+      if( fabs( dRadius - h_homeRadius ) > 0.5 )
+        {
+          qDebug( "W2000: Home radius has been changed --> reparse welt2000.txt" );
+          // Home radius has been changed, make a reparsing of the source file
+          unlink( w2PathTxc.toLatin1().data() );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
+        }
 
-          if( iRadius == 0 )
-            {
-              // default is 500 kilometers around the home position
-              dRadius = 500.0;
-            }
-          else
-            {
-              // we must look, what unit the user has chosen. This unit must
-              // be considered during load of airfield data.
-              dRadius = Distance::convertToMeters( iRadius ) / 1000.;
-            }
-
-          if( fabs( dRadius - h_homeRadius ) > 0.5 )
-            {
-              qDebug( "W2000: Home radius has been changed --> reparse welt2000.txt" );
-              // Home radius has been changed, make a reparsing of
-              // source file
-              unlink( w2PathTxc.toLatin1().data() );
-              return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
-            }
+      // Check, if the runway length filter has been changed.
+      if( GeneralConfig::instance()->getAirfieldRunwayLengthFilter() != h_runwayLengthFilter )
+        {
+          qDebug( "W2000: Runway length filter has been changed --> reparse welt2000.txt" );
+          // Home radius has been changed, make a reparsing of the source file
+          unlink( w2PathTxc.toLatin1().data() );
+          return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
       // Check, if the projection has been changed in the meantime
@@ -678,25 +675,22 @@ bool Welt2000::parse( QString& path,
   // get outlanding load flag from configuration data
   bool outlandings = conf->getWelt2000LoadOutlandings();
 
-  // get home radius from configuration data
-  int radius = conf->getAirfieldHomeRadius();
+  // Get home radius from configuration data in kilometers
+  c_homeRadius = conf->getAirfieldHomeRadius() / 1000.;
 
-  if( radius == 0 )
+  if( cFilter.isEmpty() && c_homeRadius == 0.0 )
     {
-      // default is 500 kilometers
+      // If the country filter is empty and no home radius is defined,
+      // we set a default home radius of 500Km.
       c_homeRadius = 500.0;
     }
-  else
-    {
-      // we must look, what unit the user has chosen. This unit must
-      // be considered during load of airfield data.
-      c_homeRadius = Distance::convertToMeters( radius ) / 1000.;
-    }
 
+  float c_runwayLengthFilter = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
 
   qDebug() << "W2000: Country Filter:" << c_countryList;
   qDebug() << "W2000: Load Outlandings?" << outlandings;
   qDebug( "W2000: Home Radius: %.1f Km", c_homeRadius );
+  qDebug( "W2000: Runway length filter: %.0f m", c_runwayLengthFilter );
 
   // put all entries of country list into a dictionary for faster access
   QHash<QString, QString> countryDict;
@@ -1124,9 +1118,9 @@ bool Welt2000::parse( QString& path,
           lon = -lon;
         }
 
-      if( countryDict.isEmpty() )
+      if( c_homeRadius > 0.0 )
         {
-          // No countries are defined to be filtered out, we will
+          // Home radius filter is defined, we will
           // compute the distance between the home position and the
           // read point. Is the distance is over the user defined
           // value away we will ignore this point.
@@ -1283,6 +1277,13 @@ bool Welt2000::parse( QString& path,
       else
         {
           rwLen *= 10.0;
+        }
+
+      if( c_runwayLengthFilter > 0.0 && rwLen < c_runwayLengthFilter )
+        {
+          qDebug( "W2000, Line %d: RWY Filter, %s (%s) RWY %.0fm too short!",
+                  lineNo, afName.toLatin1().data(), country.toLatin1().data(), rwLen );
+          continue;
         }
 
       // runway surface
@@ -1446,6 +1447,7 @@ bool Welt2000::parse( QString& path,
           out << QDateTime::currentDateTime();
           out << c_countryList;
           out << c_homeRadius;
+          out << c_runwayLengthFilter;
           out << QPoint( _globalMapMatrix->getHomeCoord() ); // home position
           out << outlandings;
 
@@ -1514,6 +1516,7 @@ bool Welt2000::readCompiledFile( QString &path,
   QDateTime creationDateTime;
   QStringList countryList;
   double homeRadius;
+  float runwayLengthFilter;
   QPoint homeCoord;
   bool outlandings;
 
@@ -1577,6 +1580,7 @@ bool Welt2000::readCompiledFile( QString &path,
   in >> creationDateTime;
   in >> countryList;
   in >> homeRadius;
+  in >> runwayLengthFilter;
   in >> homeCoord;
   in >> outlandings;
 
@@ -1749,6 +1753,7 @@ bool Welt2000::setHeaderData( QString &path )
   h_fileVersion = 0;
   h_countryList.clear();
   h_homeRadius = 0.0;
+  h_runwayLengthFilter = 0.0;
   h_homeCoord.setX(0);
   h_homeCoord.setY(0);
   h_outlandings = false;
@@ -1800,6 +1805,7 @@ bool Welt2000::setHeaderData( QString &path )
   in >> h_creationDateTime;
   in >> h_countryList;
   in >> h_homeRadius;
+  in >> h_runwayLengthFilter;
   in >> h_homeCoord;
   in >> h_outlandings;
 

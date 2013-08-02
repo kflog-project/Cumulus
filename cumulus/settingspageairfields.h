@@ -168,6 +168,16 @@ class SettingsPageAirfields : public QWidget
   private:
 
   /**
+   * Creates a home radius widget.
+   */
+  NumberEditor* createHomeRadiusWidget( QWidget* parent=0 );
+
+  /**
+   * Creates a runway length filter widget.
+   */
+  NumberEditor* createRwyLenthFilterWidget( QWidget* parent=0 );
+
+  /**
    * Checks if the list contains valid two letter country code entries.
    * Allowed letters are a...z and A...Z. All other is rejected with false,
    * also an empty list.
@@ -208,6 +218,12 @@ class SettingsPageAirfields : public QWidget
   /** Home radius Welt2000. */
   NumberEditor* m_homeRadiusW2000;
 
+  /** Filter for minimum runway length. If set to zero, the filter is inactive.*/
+  NumberEditor* m_minRwyLengthW2000;
+
+  /** Filter for minimum runway length. If set to zero, the filter is inactive.*/
+  NumberEditor* m_minRwyLengthOaip;
+
   /** Pixels to add to the row height in airfield/waypoint lists
    *  (for easy finger selection)
    */
@@ -221,8 +237,11 @@ class SettingsPageAirfields : public QWidget
   /** Check box to load outlandings or not. */
   QCheckBox* m_loadOutlandings;
 
-  /** stores distance unit set during construction of object */
-  Distance::distanceUnit m_distUnit;
+  /** The home radius initial value in the selected distance unit. */
+  float m_homeRadiusInitValue;
+
+  /** The runway filter initial value in the selected altitude unit. */
+  float m_runwayFilterInitValue;
 
 #ifdef INTERNET
 
