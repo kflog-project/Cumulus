@@ -1,5 +1,7 @@
 cumulus (5.7.0) stable; urgency=low
 
+  * Bugfix: Terrain colors elevation offset did not work.
+
   * Welt2000 update user notification updated to new check date.
 
   * Runway length filter added on Settings/Airfield to filter out airfields and

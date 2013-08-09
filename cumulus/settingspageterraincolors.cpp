@@ -323,7 +323,8 @@ void SettingsPageTerrainColors::hideEvent( QHideEvent *)
 
 void SettingsPageTerrainColors::slotAccept()
 {
-  if( colorsChanged )
+  if( colorsChanged ||
+      GeneralConfig::instance()->getElevationColorOffset() != elevationOffset->value() )
     {
       save();
       emit settingsChanged();

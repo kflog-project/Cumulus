@@ -3195,8 +3195,8 @@ Alle Downloads verworfen!</translation>
         <translation>Landung</translation>
     </message>
     <message>
-        <location filename="welt2000.cpp" line="851"/>
-        <location filename="welt2000.cpp" line="1650"/>
+        <location filename="welt2000.cpp" line="865"/>
+        <location filename="welt2000.cpp" line="1674"/>
         <source>Emergency Field No: </source>
         <translation>Notlandefeld Nr:</translation>
     </message>
