@@ -1,3 +1,16 @@
+cumulus (5.7.0) stable; urgency=low
+
+  * Welt2000 update user notification updated to new check date.
+
+  * Runway length filter added on Settings/Airfield to filter out airfields and
+    outlandings, where the runway is too short for a safe landing.
+
+  * Download of openAIP airfield files by Cumulus made possible. Thanks to
+    Stephan Besser from the openAIP project who gave Cumulus the access rights
+    to do that.
+    
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Fri, 09 Aug 2013 14:34:48 +0200
+
 cumulus (5.5.2) stable; urgency=low
 
   * Adaption of OpenAIP read routines to new data format 1.1. Data format check
