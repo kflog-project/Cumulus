@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2013 by Axel Pauli, axel@kflog.org
+ **   Copyright (c):  2006-2013 by Axel Pauli, kflog.cumulus@gmail.com
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -59,11 +59,12 @@ extern MapMatrix*    _globalMapMatrix;
 QMutex Welt2000::mutex;
 
 Welt2000::Welt2000() :
-  c_homeRadius(0),
+  c_homeRadius(0.0),
+  c_runwayLengthFilter(0.0),
   h_magic(0),
   h_fileType(0),
   h_fileVersion(0),
-  h_homeRadius(0),
+  h_homeRadius(0.0),
   h_runwayLengthFilter(0.0),
   h_outlandings(false),
   h_projection(static_cast<ProjectionBase *> (0)),
@@ -303,7 +304,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
 bool Welt2000::check4update()
 {
   // Update check string for Welt2000, must be adapted after every Welt2000 update!
-  const char* w2000CheckString = "$ UPDATED AT: 03.FEB.2013";
+  const char* w2000CheckString = "$ UPDATED AT: 02.AUG.2013";
 
   // Line number in welt2000 file, on which the w2000CheckString is expected.
   // Note! Line counting starts with 1.

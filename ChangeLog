@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2013-08-09 AP: Welt2000 update user notification updated to new check date.
+
+[+] 2013-08-08 AP: Runway length filter added on Settings/Airfield to filter
+                   out airfields and outlandings, where the runway is too short
+                   for a safe landing.
+
+[*] 2013-08-01 AP: Cumulus 5.6.0 only for Android released
+
 [+] 2013-07-31 AP: Download of openAIP airfield files by Cumulus made possible.
                    Thanks to Stephan Besser from the openAIP project who gave
                    Cumulus the access rights to do that.
