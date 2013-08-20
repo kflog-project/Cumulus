@@ -564,9 +564,8 @@
     </message>
     <message>
         <location filename="flarmlogbook.cpp" line="227"/>
-        <source>Idx</source>
-        <oldsource>Ix</oldsource>
-        <translation></translation>
+        <source>Class</source>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="flarmlogbook.cpp" line="257"/>
@@ -1766,118 +1765,118 @@ Alle Downloads verworfen!</translation>
         <translation>OpenAIP geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2657"/>
-        <location filename="mapcontents.cpp" line="2757"/>
+        <location filename="mapcontents.cpp" line="2662"/>
+        <location filename="mapcontents.cpp" line="2762"/>
         <source>loading Welt2000</source>
         <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2696"/>
+        <location filename="mapcontents.cpp" line="2701"/>
         <source>Welt2000 load failed</source>
         <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2717"/>
-        <location filename="mapcontents.cpp" line="2762"/>
+        <location filename="mapcontents.cpp" line="2722"/>
+        <location filename="mapcontents.cpp" line="2767"/>
         <source>Welt2000 loaded</source>
         <translation>Welt2000 geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2810"/>
+        <location filename="mapcontents.cpp" line="2815"/>
         <source>loading Airspaces</source>
         <translation>lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2818"/>
+        <location filename="mapcontents.cpp" line="2823"/>
         <source>Airspaces loaded</source>
         <translation>Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2851"/>
-        <location filename="mapcontents.cpp" line="2919"/>
+        <location filename="mapcontents.cpp" line="2856"/>
+        <location filename="mapcontents.cpp" line="2924"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2867"/>
-        <location filename="mapcontents.cpp" line="2931"/>
+        <location filename="mapcontents.cpp" line="2872"/>
+        <location filename="mapcontents.cpp" line="2936"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2883"/>
-        <location filename="mapcontents.cpp" line="2943"/>
+        <location filename="mapcontents.cpp" line="2888"/>
+        <location filename="mapcontents.cpp" line="2948"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2955"/>
+        <location filename="mapcontents.cpp" line="2960"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2963"/>
+        <location filename="mapcontents.cpp" line="2968"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2971"/>
+        <location filename="mapcontents.cpp" line="2976"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2979"/>
+        <location filename="mapcontents.cpp" line="2984"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2987"/>
+        <location filename="mapcontents.cpp" line="2992"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3001"/>
+        <location filename="mapcontents.cpp" line="3006"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3009"/>
+        <location filename="mapcontents.cpp" line="3014"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3017"/>
+        <location filename="mapcontents.cpp" line="3022"/>
         <source>Drawing motorways</source>
         <oldsource>Drawing highways</oldsource>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3025"/>
+        <location filename="mapcontents.cpp" line="3030"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3033"/>
+        <location filename="mapcontents.cpp" line="3038"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3041"/>
+        <location filename="mapcontents.cpp" line="3046"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3049"/>
+        <location filename="mapcontents.cpp" line="3054"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3057"/>
+        <location filename="mapcontents.cpp" line="3062"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3107"/>
+        <location filename="mapcontents.cpp" line="3112"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -4612,7 +4611,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageterraincolors.cpp" line="173"/>
-        <location filename="settingspageterraincolors.cpp" line="354"/>
+        <location filename="settingspageterraincolors.cpp" line="355"/>
         <source>Terrain Level</source>
         <translation>Geländehöhe</translation>
     </message>
@@ -4623,7 +4622,7 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspageterraincolors.cpp" line="229"/>
-        <location filename="settingspageterraincolors.cpp" line="382"/>
+        <location filename="settingspageterraincolors.cpp" line="383"/>
         <source>Ground Color</source>
         <translation>Bodenfarbe</translation>
     </message>

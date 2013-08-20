@@ -2627,10 +2627,15 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
       _globalMapView->slot_info( tr("OpenAIP loaded") );
     }
 
-  // Take over the new loaded list. The passed lists must be deleted!
+  // Take over the new loaded airfield list. The passed list must be deleted!
   airfieldList = QList<Airfield>();
   airfieldList = *airfieldListIn;
   delete airfieldListIn;
+
+  // Glider and outlanding lists must be deleted too, they can be filled with
+  // Welt2000 data.
+  gliderfieldList = QList<Airfield>();
+  outLandingList  = QList<Airfield>();
 
   emit mapDataReloaded();
 }

@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-08-20 AP: Bugfix: Wrong table header item label fixed of Flarm
+                   flightlog page.
+
+[-] 2013-08-19 AP: Bugfix: Switch to openAIP airfields did not remove all old
+                   Welt2000 content.
+
+[*] 2013-08-09 AP: Cumulus 5.7.0 released for all supported platforms.
+
 [-] 2013-08-09 AP: Bugfix: Terrain colors elevation offset did not work.
 
 [o] 2013-08-09 AP: Welt2000 update user notification updated to new check date.
