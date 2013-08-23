@@ -50,7 +50,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   list = new QTableWidget( 0, 2, this );
   list->setSelectionBehavior( QAbstractItemView::SelectRows );
-  list->setSelectionMode( QAbstractItemView::SingleSelection );
+  // list->setSelectionMode( QAbstractItemView::SingleSelection );
   list->setAlternatingRowColors( true );
   list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -213,6 +213,8 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
 
   list->resizeColumnToContents( 0 );
   list->resizeRowsToContents();
+
+  deleteButton->setEnabled(true);
 }
 
 void FlarmAliasList::slot_DeleteRows()
