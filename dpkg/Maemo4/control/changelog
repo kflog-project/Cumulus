@@ -1,3 +1,14 @@
+cumulus (5.7.2) stable; urgency=low
+
+  * Flarm alias list delete handling modified. You can now delete several
+    entries and also just new added entries without content.
+
+  * Bugfix: Wrong table header item label fixed of Flarm flightlog page.
+
+  * Bugfix: Switch to openAIP airfields did not remove all old Welt2000 content.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Mon, 09 Sep 2013 21:28:25 +0200
+
 cumulus (5.7.0) stable; urgency=low
 
   * Bugfix: Terrain colors elevation offset did not work.
