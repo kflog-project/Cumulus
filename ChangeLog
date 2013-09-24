@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2013-09-24 AP: Cumulus 5.7.2 released for all supported platforms.
+
 [o] 2013-08-20 AP: Flarm alias list delete handling modified. You can now
                    delete several entries and also just new added entries
                    without content.
