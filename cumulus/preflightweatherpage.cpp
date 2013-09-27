@@ -1000,7 +1000,7 @@ void PreFlightWeatherPage::slotNetworkError()
 
 void PreFlightWeatherPage::slotDownloadsFinished( int /* requests */, int errors )
 {
-  QString msg = QString(tr("All update(s) with %1 error(s) done.")).arg(errors);
+  QString msg = QString(tr("All updates with %1 error(s) done.")).arg(errors);
 
   QMessageBox mb( QMessageBox::Information,
                   tr("All updates finished"),
