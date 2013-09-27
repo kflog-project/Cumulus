@@ -347,19 +347,22 @@ flarm {
 }
 
 internet {
-    QT += network
-
+		QT += network
+		
+		DEFINES += INTERNET
+		
     HEADERS += airspacedownloaddialog.h \
                downloadmanager.h \
                httpclient.h \
+               preflightweatherpage.h \
                proxydialog.h
-
-    SOURCES += airspacedownloaddialog.cpp \
-               downloadmanager.cpp \
-               httpclient.cpp \
-               proxydialog.cpp
-
-    DEFINES += INTERNET
+               
+                              
+		SOURCES += airspacedownloaddialog.cpp \
+		           downloadmanager.cpp \
+		           httpclient.cpp \
+               preflightweatherpage.cpp \
+		           proxydialog.cpp
 }
 
 welt2000thread {
