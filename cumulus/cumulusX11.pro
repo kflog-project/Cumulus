@@ -341,11 +341,14 @@ internet {
     HEADERS += airspacedownloaddialog.h \
                downloadmanager.h \
                httpclient.h \
+               preflightweatherpage.h \
                proxydialog.h
+               
                               
 		SOURCES += airspacedownloaddialog.cpp \
 		           downloadmanager.cpp \
 		           httpclient.cpp \
+               preflightweatherpage.cpp \
 		           proxydialog.cpp
 }
 

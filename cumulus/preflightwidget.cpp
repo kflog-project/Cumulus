@@ -33,13 +33,17 @@
 #include "preflightgliderpage.h"
 #include "preflightwidget.h"
 #include "preflightmiscpage.h"
+#include "preflighttaskpage.h"
+#include "preflightwaypointpage.h"
+
+#ifdef INTERNET
+#include "preflightweatherpage.h"
+#endif
 
 #ifdef ANDROID
 #include "preflightretrievepage.h"
 #endif
 
-#include "preflighttaskpage.h"
-#include "preflightwaypointpage.h"
 #include "rowdelegate.h"
 
 // Menu labels
@@ -49,6 +53,7 @@
 #define RETRIEVE  "Retrieve"
 #define TASK      "Task"
 #define WAYPOINTS "Waypoints"
+#define WEATHER   "METAR-TAF"
 
 PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   QWidget(parent)
@@ -129,6 +134,13 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 #endif
 
+#ifdef INTERNET
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(WEATHER) );
+  item->setData( 0, Qt::UserRole, WEATHER );
+  m_setupTree->addTopLevelItem( item );
+#endif
+
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
 
   contentLayout->addSpacing( 25 );
@@ -163,6 +175,9 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("Retrieve") )
 #endif
                  << ( tr ("Waypoints") )
+#ifdef INTERNET
+                 << ( tr ("METAR-TAF") )
+#endif
                  << ( tr ("Common") );
 
   m_setupTree->setMinimumWidth( Layout::maxTextWidth( m_headerLabels, font() ) + 100 );
@@ -257,6 +272,22 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       pfwp->show();
     }
+
+#ifdef INTERNET
+
+  else if( itemText == WEATHER )
+    {
+      PreFlightWeatherPage* pfwp = new PreFlightWeatherPage( this );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pfwp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pfwp->show();
+    }
+
+#endif
 
 #ifdef ANDROID
 

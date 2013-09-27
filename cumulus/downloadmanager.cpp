@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -47,11 +47,18 @@ DownloadManager::DownloadManager( QObject *parent ) :
            this, SLOT( slotFinished(QString &, QNetworkReply::NetworkError) ));
 }
 
+
+DownloadManager::~DownloadManager()
+{
+}
+
 /**
  * Requests to download the passed url and to store the result under the
  * passed file destination. Destination must consist of a full path.
  */
-bool DownloadManager::downloadRequest( QString &url, QString &destination )
+bool DownloadManager::downloadRequest( QString &url,
+                                       QString &destination,
+                                       bool movingCheck )
 {
   mutex.lock();
 
@@ -65,7 +72,7 @@ bool DownloadManager::downloadRequest( QString &url, QString &destination )
 
   extern Calculator* calculator;
 
-  if( GpsNmea::gps->getConnected() && calculator->moving() )
+  if( movingCheck == true && GpsNmea::gps->getConnected() && calculator->moving() )
     {
       // We have a GPS connection and are in move. That does not allow
       // to make any downloads.
@@ -162,6 +169,12 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
               // trigger for the reload of the airspace data file.
               emit airspaceDownloaded();
             }
+          else if( pair.second.contains( "/weather/") )
+            {
+              // Special check for a weather download. The signal is the
+              // trigger that a weather data file has been downloaded.
+              emit weatherDownloaded( pair.second );
+            }
         }
     }
 
@@ -174,10 +187,15 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       downloadRunning = false;
       emit status( tr("Downloads finished") );
       emit finished( requests, errors );
+      requests = 0;
+      errors   = 0;
       mutex.unlock();
       return;
     }
 
+#if 0
+
+  // @AP 24.09.2013: Restriction removed to continue all started downloads.
   extern Calculator* calculator;
 
   if( GpsNmea::gps->getConnected() && calculator->moving() )
@@ -191,9 +209,13 @@ void DownloadManager::slotFinished( QString &urlIn, QNetworkReply::NetworkError 
       urlSet.clear();
       downloadRunning = false;
       emit finished( requests, errors );
+      requests = 0;
+      errors   = 0;
       mutex.unlock();
       return;
     }
+
+#endif
 
   // Get next request from the queue
   QPair<QString, QString> pair = queue.head();
@@ -272,6 +294,7 @@ double DownloadManager::getFreeUserSpace( QString& path )
              << "MB";
 #endif
 
-    // free size available to non-superuser in megabytes
+    // Free size available to non-superuser in megabytes. We have to use doubles
+    // to avoid a number overflow.
     return ( double (buf.f_bavail) * double (buf.f_bsize) / double(1024 * 1024) );
 }

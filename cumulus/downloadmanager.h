@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  * This class handles the HTTP download requests in Cumulus. Downloads
  * of different map files can be requested.
  *
- * \date 2010-2012
+ * \date 2010-2013
  *
  * \version $Id$
  */
@@ -52,11 +52,22 @@ class DownloadManager : public QObject
    */
   DownloadManager( QObject *parent = 0 );
 
+  virtual ~DownloadManager();
+
   /**
    * Requests to download the passed url and to store the result under the
    * passed file destination. Destination must consist of a full path.
+   *
+   * \param url URL to be downloaded
+   *
+   * \param destination Download destination as filename with full path
+   *
+   * \param movingCheck Rejects downloads during move, if set to true.
+   *                    That is the default setting.
+   *
+   * \return True on success otherwise false
    */
-  bool downloadRequest( QString &url, QString &destination );
+  bool downloadRequest( QString &url, QString &destination, bool movingCheck=true );
 
   signals:
 
@@ -78,6 +89,11 @@ class DownloadManager : public QObject
     *  Sends a signal if an airspace file has been downloaded successfully.
     */
    void airspaceDownloaded();
+
+   /**
+    * Send a signal if a TAF/METAR file has been downloaded successfully.
+    */
+   void weatherDownloaded( QString& file );
 
  private:
 
