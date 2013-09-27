@@ -978,7 +978,7 @@ void PreFlightWeatherPage::slotRequestWeatherData()
 
 void PreFlightWeatherPage::slotNetworkError()
 {
-  QString msg = QString(tr("Network error occurred!\nIf the Internet connection is down?"));
+  QString msg = QString(tr("Network error occurred!\nIs the Internet connection down?"));
 
   QMessageBox mb( QMessageBox::Warning,
                   tr("Network Error"),
