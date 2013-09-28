@@ -94,6 +94,13 @@ class PreFlightWeatherPage : public QWidget
   /** Called, if all downloads are finished. */
   void slotDownloadsFinished( int requests, int errors );
 
+ signals:
+
+  /**
+   * Emitted, if the widget is closed.
+   */
+  void closingWidget();
+
  private:
 
   /** Loads the airport data into the list. */

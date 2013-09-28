@@ -174,32 +174,32 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QHBoxLayout *inputLayout = new QHBoxLayout;
   editorLayout->addLayout( inputLayout );
 
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "[a-zA-Z0-9]{4}" ), this );
+
   Qt::InputMethodHints imh;
   m_airportEditor = new QLineEdit;
   imh = (m_airportEditor->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_airportEditor->setInputMethodHints(imh);
-  m_airportEditor->setInputMask("NNNN");
-  inputLayout->addWidget( m_airportEditor );
+  m_airportEditor->setValidator( eValidator );
+  inputLayout->addWidget( m_airportEditor, 5 );
+
   inputLayout->addSpacing( 10 );
 
-  cmd = new QPushButton( "<-]" , this);
+  cmd = new QPushButton(tr("Cancel"), this);
   inputLayout->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), SLOT(slotClearAirportEditor()));
+  connect (cmd, SIGNAL(clicked()), SLOT(slotShowListWidget()));
 
-  editorLayout->addStretch( 10 );
-
-  hbbox = new QHBoxLayout;
-  editorLayout->addLayout( hbbox );
+  inputLayout->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Ok"), this);
-  hbbox->addWidget(cmd);
+  inputLayout->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotAddAirport()));
 
-  hbbox->addSpacing( 10 );
+//  cmd = new QPushButton( "<-]" , this);
+//  inputLayout->addWidget(cmd);
+//  connect (cmd, SIGNAL(clicked()), SLOT(slotClearAirportEditor()));
 
-  cmd = new QPushButton(tr("Cancel"), this);
-  hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), SLOT(slotShowListWidget()));
+  editorLayout->addStretch( 10 );
 
   //----------------------------------------------------------------------------
   loadAirportData( true );
@@ -338,17 +338,18 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
               if( line.startsWith( "Station name not available" ) )
                 {
                   reportItems.insert( "station", tr("Station name not available") );
+                  continue;
                 }
-              else
+
+              int idx = line.indexOf( "(" + station + ")" );
+
+              if( idx > 0 )
                 {
-                  int idx = line.indexOf( "(" + station + ")" );
-
-                  if( idx > 0 )
-                    {
-                      reportItems.insert( "station", line.left(idx - 1) );
-                    }
+                  reportItems.insert( "station", line.left(idx - 1) );
+                  continue;
                 }
 
+              reportItems.insert( "station", line );
               continue;
             }
 
@@ -366,17 +367,11 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                                      line.mid(idx + 3 + 13);
 
                       reportItems.insert( "date", date );
+                      continue;
                     }
-                  else
-                    {
-                      reportItems.insert( "date", line );
-                    }
-                }
-              else
-                {
-                  reportItems.insert( "date", line );
                 }
 
+              reportItems.insert( "date", line );
               continue;
             }
 
@@ -397,39 +392,35 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   bool ok;
                   double ws = line.mid(idx1 + 1, idx2 - idx1 -1).toDouble(&ok);
 
-                  if( ! ok )
+                  if( ok )
                     {
-                      reportItems.insert( "wind", line.mid(6) );
+                      Speed speed(0);
+                      speed.setKnot( ws );
+
+                      wind += speed.getWindText( true, 0 );
+
+                      if( ! line.endsWith( "KT):0"))
+                        {
+                          line.replace( ":0", "" );
+                          wind += line.mid( line.indexOf( " KT)" ) + 4 );
+                        }
+
+                      reportItems.insert( "wind", wind );
                       continue;
                     }
-
-                  Speed speed(0);
-                  speed.setKnot( ws );
-
-                  wind += speed.getWindText( true, 0 );
-
-                  if( ! line.endsWith( "KT):0"))
-                    {
-                      line.replace( ":0", "" );
-                      wind += line.mid( line.indexOf( " KT)" ) + 4 );
-                    }
-
-                  reportItems.insert( "wind", wind );
-                }
-              else
-                {
-                  reportItems.insert( "wind", line.mid(6) );
                 }
 
+              reportItems.insert( "wind", line.mid(6) );
               continue;
             }
 
           if( line.startsWith( "Visibility: ") )
             {
               // Visibility: greater than 7 mile(s):0
-              if( line.contains( " mile(s)") )
+              // Visibility: less than 1 mile:0
+              if( line.contains( " mile") )
                 {
-                  int idx2  = line.lastIndexOf( " mile(s)" );
+                  int idx2  = line.lastIndexOf( " mile" );
                   int idx1  = line.lastIndexOf( " ", idx2 - 1 );
 
                   if( idx1 > 0 && idx1 < idx2 )
@@ -445,19 +436,24 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                           QString visibility = line.mid( 12, idx1 - 11 );
                           visibility += distance.getText( true, 0 );
 
+                          if( ! line.endsWith( "mile(s):0") )
+                            {
+                              line.replace( ":0", "" );
+                              visibility += line.mid( line.indexOf( "mile(s)" ) + 7 );
+                            }
+                          else if( ! line.endsWith( "mile:0") )
+                            {
+                              line.replace( ":0", "" );
+                              visibility += line.mid( line.indexOf( "mile" ) + 4 );
+                            }
+
                           reportItems.insert( "visibility", visibility );
+                          continue;
                         }
                     }
-                  else
-                    {
-                      reportItems.insert( "visibility", line.mid(12) );
-                    }
-                }
-              else
-                {
-                  reportItems.insert( "visibility", line.mid(12) );
                 }
 
+              reportItems.insert( "visibility", line.mid(12) );
               continue;
             }
 
@@ -485,6 +481,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx > 0 )
                     {
                       reportItems.insert("temperature", line.mid(13, idx-13 ) + QChar(Qt::Key_degree) + "F");
+                      continue;
                     }
                 }
               else
@@ -496,9 +493,11 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx1 > 0 && idx1+1 < idx2 )
                     {
                       reportItems.insert("temperature", line.mid( idx1+1, idx2-idx1-1 ) + QChar(Qt::Key_degree) + "C");
+                      continue;
                     }
                 }
 
+              reportItems.insert("temperature", line.mid( 13 ) );
               continue;
             }
 
@@ -513,6 +512,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx > 0 )
                     {
                       reportItems.insert("dewPoint", line.mid(11, idx-11) + QChar(Qt::Key_degree) + "F");
+                      continue;
                     }
                 }
               else
@@ -524,9 +524,11 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx1 > 0 && idx1+1 < idx2 )
                     {
                       reportItems.insert("dewPoint", line.mid( idx1+1, idx2-idx1-1 ) + QChar(Qt::Key_degree) + "C");
+                      continue;
                     }
                 }
 
+              reportItems.insert("dewPoint", line.mid( 11 ) );
               continue;
             }
 
@@ -548,6 +550,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx > 22 )
                     {
                       reportItems.insert("qnh", line.mid(22, idx - 22 ));
+                      continue;
                     }
                 }
               else
@@ -559,9 +562,11 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx1 > 0 && idx1+2 < idx2 )
                     {
                       reportItems.insert("qnh", line.mid( idx1 + 1, idx2 - idx1 + 3 ));
+                      continue;
                     }
                 }
 
+              reportItems.insert("qnh", line.mid( 22 ));
               continue;
             }
 
@@ -635,8 +640,24 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 
   if( m_displayWidget->isVisible() )
     {
-      // The display widget is visible and must be updated too.
-      slotDetails();
+      if( m_list->topLevelItemCount() == 0 )
+        {
+          return;
+        }
+
+      IcaoItem *item = dynamic_cast<IcaoItem *>( m_list->currentItem() );
+
+      if( item == 0 )
+        {
+          return;
+        }
+
+      if( item->getIcao() == station )
+        {
+          // The display widget is visible and must be updated too, if new
+          // station data are available.
+          slotDetails();
+        }
     }
 }
 
@@ -1023,6 +1044,7 @@ void PreFlightWeatherPage::slotDownloadsFinished( int /* requests */, int errors
 void PreFlightWeatherPage::slotClose()
 {
   // Close the hole widget.
+  emit closingWidget();
   close();
 }
 
