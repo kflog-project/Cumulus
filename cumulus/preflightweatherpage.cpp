@@ -999,7 +999,12 @@ void PreFlightWeatherPage::slotRequestWeatherData()
 
 void PreFlightWeatherPage::slotNetworkError()
 {
-  QString msg = QString(tr("Network error occurred!\nIs the Internet connection down?"));
+  // A network error has occurred. We delete the download manager to get faster
+  // a new connection.
+  m_downloadManger->deleteLater();
+  m_downloadManger = static_cast<DownloadManager *> (0);
+
+  QString msg = QString(tr("<html>Network error occurred!<br>Is the Internet connection down?</html>"));
 
   QMessageBox mb( QMessageBox::Warning,
                   tr("Network Error"),
