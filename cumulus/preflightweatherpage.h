@@ -36,6 +36,7 @@
 #include <QLineEdit>
 #include <QHash>
 #include <QList>
+#include <QPushButton>
 #include <QString>
 #include <QTextEdit>
 #include <QTreeWidget>
@@ -66,9 +67,6 @@ class PreFlightWeatherPage : public QWidget
 
   /** Called to show the airport editor. */
   void slotShowAirportEditor();
-
-  /** Called to clear the airport editor. */
-  void slotClearAirportEditor();
 
   /** Called to add a new airport to the list. */
   void slotAddAirport();
@@ -115,6 +113,9 @@ class PreFlightWeatherPage : public QWidget
   /** Updates the ICAO list item with the METAR observation data. */
   void updateIcaoItem( QString& icao );
 
+  /** Enable/disable updates buttons */
+  void switchUpdateButtons( bool enable );
+
   /** Widget which shows/manages the METAR-TAF overview */
   QWidget* m_listWidget;
 
@@ -133,11 +134,20 @@ class PreFlightWeatherPage : public QWidget
   /** Airport editor */
   QLineEdit* m_airportEditor;
 
+  /** Push button to request list updates.*/
+  QPushButton* m_listUpdateButton;
+
+  /** Push button to request details update.*/
+  QPushButton* m_detailsUpdateButton;
+
   /** List which stores the airport icao identifiers */
   QList<QString> m_airportIcaoList;
 
   /** Manager to handle downloads of METAR-TAF data. */
   DownloadManager* m_downloadManger;
+
+  /** Flag to mark a running update action. */
+  bool m_updateIsRunning;
 
   /** Fixed string label for no METAR data available. */
   const QString NoMetar;

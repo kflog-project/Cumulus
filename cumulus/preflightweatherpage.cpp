@@ -30,9 +30,6 @@
 #include "preflightweatherpage.h"
 #include "speed.h"
 
-// Timeout in ms for waiting for response
-#define RESP_TO 30000
-
 QHash<QString, QHash<QString, QString> > PreFlightWeatherPage::m_metarReports;
 
 QHash<QString, QString> PreFlightWeatherPage::m_tafReports;
@@ -44,6 +41,7 @@ const QString PreFlightWeatherPage::TafUrl = "http://weather.noaa.gov/pub/data/f
 PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QWidget(parent),
   m_downloadManger(0),
+  m_updateIsRunning(false),
   NoMetar(tr("No METAR available")),
   NoTaf(tr("No TAF available"))
 {
@@ -111,9 +109,9 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
 
   hbbox1->addSpacing( 10 );
 
-  cmd = new QPushButton(tr("Update"), this);
-  hbbox1->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), SLOT(slotRequestWeatherData()));
+  m_listUpdateButton = new QPushButton(tr("Update"), this);
+  hbbox1->addWidget(m_listUpdateButton);
+  connect (m_listUpdateButton, SIGNAL(clicked()), SLOT(slotRequestWeatherData()));
 
   hbbox1->addSpacing( 10 );
 
@@ -154,9 +152,9 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QHBoxLayout* hbbox = new QHBoxLayout;
   displayLayout->addLayout( hbbox );
 
-  cmd = new QPushButton(tr("Update"), this);
-  hbbox->addWidget(cmd);
-  connect (cmd, SIGNAL(clicked()), SLOT(slotRequestWeatherData()));
+  m_detailsUpdateButton = new QPushButton(tr("Update"), this);
+  hbbox->addWidget(m_detailsUpdateButton);
+  connect (m_detailsUpdateButton, SIGNAL(clicked()), SLOT(slotRequestWeatherData()));
 
   hbbox->addSpacing( 10 );
 
@@ -195,10 +193,6 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   inputLayout->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotAddAirport()));
 
-//  cmd = new QPushButton( "<-]" , this);
-//  inputLayout->addWidget(cmd);
-//  connect (cmd, SIGNAL(clicked()), SLOT(slotClearAirportEditor()));
-
   editorLayout->addStretch( 10 );
 
   //----------------------------------------------------------------------------
@@ -208,6 +202,14 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
 
 PreFlightWeatherPage::~PreFlightWeatherPage()
 {
+  // TODO remove all downloaded METAR and TAF reports, if widget is destroyed.
+
+}
+
+void PreFlightWeatherPage::switchUpdateButtons( bool enable )
+{
+  m_listUpdateButton->setEnabled( enable );
+  m_detailsUpdateButton->setEnabled( enable );
 }
 
 void PreFlightWeatherPage::loadAirportData( bool readFile )
@@ -291,13 +293,9 @@ cycle: 1
 
 void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 {
-  qDebug() << "slotNewWeaterReport():" << file;
-
   QFile report(file);
 
   QString station = QFileInfo(file).baseName();
-
-  qDebug() << "station=" << station;
 
   if( file.contains("/weather/METAR/") )
     {
@@ -379,38 +377,51 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
             {
               // Wind: from the NW (310 degrees) at 5 MPH (4 KT):0
               // Wind: from the W (280 degrees) at 5 MPH (4 KT) (direction variable):0
+              // Wind: from the ESE (120 degrees) at 20 MPH (17 KT) gusting to 32 MPH (28 KT) (direction variable):0
               line.replace( " degrees", QChar(Qt::Key_degree) );
 
-              int idx2  = line.lastIndexOf( " KT)" );
-              int idx1  = line.lastIndexOf( "(", idx2 - 1 );
-              int idxAt = line.lastIndexOf( " at " );
-
-              if( idxAt > 0 && idx1 > 0 && idx1 < idx2 )
+              if( line.endsWith( ":0") )
                 {
-                  QString wind = line.mid(6, idxAt + 4 - 6 );
+                  line.chop(2);
+                }
 
-                  bool ok;
-                  double ws = line.mid(idx1 + 1, idx2 - idx1 -1).toDouble(&ok);
+              // Remove the line beginning.
+              line = line.mid(6);
+              int loop = 6;
 
-                  if( ok )
+              while( loop-- )
+                {
+                  QRegExp re = QRegExp("[0-9]+ MPH \\([0-9]+ KT\\)");
+
+                  int idx1 = line.indexOf(re, 0);
+
+                  if( idx1 == -1 )
                     {
-                      Speed speed(0);
-                      speed.setKnot( ws );
+                      // No speed value found.
+                      break;
+                    }
 
-                      wind += speed.getWindText( true, 0 );
+                  int idx2 = line.indexOf( "(", idx1 + 1 );
+                  int idx3 = line.indexOf( " KT)", idx1 + 1 );
 
-                      if( ! line.endsWith( "KT):0"))
+                  if( idx2 > 0 && idx2 < idx3 )
+                    {
+                      bool ok;
+                      double ws = line.mid(idx2 + 1, idx3 - idx2 -1).toDouble(&ok);
+
+                      if( ok )
                         {
-                          line.replace( ":0", "" );
-                          wind += line.mid( line.indexOf( " KT)" ) + 4 );
-                        }
+                          Speed speed(0);
+                          speed.setKnot( ws );
 
-                      reportItems.insert( "wind", wind );
-                      continue;
+                          QString wsText = speed.getWindText( true, 0 );
+
+                          line = line.left(idx1) + wsText + line.mid(idx3 + 4);
+                        }
                     }
                 }
 
-              reportItems.insert( "wind", line.mid(6) );
+              reportItems.insert( "wind", line );
               continue;
             }
 
@@ -436,15 +447,22 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                           QString visibility = line.mid( 12, idx1 - 11 );
                           visibility += distance.getText( true, 0 );
 
-                          if( ! line.endsWith( "mile(s):0") )
+                          if( line.contains("mile(s)") )
                             {
-                              line.replace( ":0", "" );
-                              visibility += line.mid( line.indexOf( "mile(s)" ) + 7 );
+                              // This must be tested as first to prevent wrong handling!
+                              if( ! line.endsWith( "mile(s):0") )
+                                {
+                                  line.replace( ":0", "" );
+                                  visibility += line.mid( line.indexOf( "mile(s)" ) + 7 );
+                                }
                             }
-                          else if( ! line.endsWith( "mile:0") )
+                          else if( line.contains("mile") && ! line.endsWith( "mile:0") )
                             {
-                              line.replace( ":0", "" );
-                              visibility += line.mid( line.indexOf( "mile" ) + 4 );
+                              if( ! line.endsWith( "mile:0") )
+                                {
+                                  line.replace( ":0", "" );
+                                  visibility += line.mid( line.indexOf( "mile" ) + 4 );
+                                }
                             }
 
                           reportItems.insert( "visibility", visibility );
@@ -581,7 +599,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 
       report.close();
 
-      qDebug() << "ReportItems:" << reportItems;
+      // qDebug() << "ReportItems:" << reportItems;
 
       m_metarReports.insert( station, reportItems );
       updateIcaoItem( station );
@@ -635,7 +653,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 
       m_tafReports.insert( station, tafReport );
 
-      qDebug() << "TAFs:" << m_tafReports;
+      // qDebug() << "TAFs:" << m_tafReports;
     }
 
   if( m_displayWidget->isVisible() )
@@ -735,12 +753,6 @@ void PreFlightWeatherPage::slotShowAirportEditor()
   m_airportEditor->setFocus();
 }
 
-void PreFlightWeatherPage::slotClearAirportEditor()
-{
-  m_airportEditor->clear();
-  m_airportEditor->setFocus();
-}
-
 void PreFlightWeatherPage::slotAddAirport()
 {
   QString icao = m_airportEditor->text().toUpper();
@@ -749,7 +761,7 @@ void PreFlightWeatherPage::slotAddAirport()
     {
       QMessageBox mb( QMessageBox::Critical,
                       tr( "Name?" ),
-                      tr( "Station name requires\n4 characters!" ),
+                      tr( "Station name requires 4 characters!" ),
                       QMessageBox::Ok,
                       this );
 
@@ -929,6 +941,12 @@ void PreFlightWeatherPage::slotDetails()
 
 void PreFlightWeatherPage::slotRequestWeatherData()
 {
+  if( m_updateIsRunning == true )
+    {
+      // Do not allow multiple calls, if download is already running.
+      return;
+    }
+
   // This slot can be called from the list and from the display details widget.
   // So we have to determine at first, who was the caller.
   QList<QString> stations;
@@ -936,6 +954,11 @@ void PreFlightWeatherPage::slotRequestWeatherData()
   if( m_listWidget->isVisible() )
     {
       stations = m_airportIcaoList;
+
+      // Clear all displayed data to show the download progress.
+      m_metarReports.clear();
+      m_tafReports.clear();
+      loadAirportData();
     }
   else if( m_displayWidget->isVisible() )
     {
@@ -952,12 +975,19 @@ void PreFlightWeatherPage::slotRequestWeatherData()
         }
 
       stations.append( item->getIcao() );
+      m_display->clear();
     }
 
   if( stations.size() == 0 )
     {
       return;
     }
+
+  // set update marker
+  m_updateIsRunning = true;
+
+  // Disable update buttons.
+  switchUpdateButtons( false );
 
   if( m_downloadManger == static_cast<DownloadManager *> (0) )
     {
@@ -988,12 +1018,12 @@ void PreFlightWeatherPage::slotRequestWeatherData()
       QString urlMetar = MetarUrl + fn;
       QString destMetar = dir.absolutePath() + "/weather/METAR/" + fn;
 
-      m_downloadManger->downloadRequest( urlMetar, destMetar );
+      m_downloadManger->downloadRequest( urlMetar, destMetar, false );
 
       QString urlTaf = TafUrl + fn;
       QString destTaf = dir.absolutePath() + "/weather/TAF/" + fn;
 
-      m_downloadManger->downloadRequest( urlTaf, destTaf );
+      m_downloadManger->downloadRequest( urlTaf, destTaf, false );
     }
 }
 
@@ -1022,6 +1052,9 @@ void PreFlightWeatherPage::slotNetworkError()
 #endif
 
   mb.exec();
+
+  m_updateIsRunning = false;
+  switchUpdateButtons( true );
 }
 
 void PreFlightWeatherPage::slotDownloadsFinished( int /* requests */, int errors )
@@ -1044,6 +1077,9 @@ void PreFlightWeatherPage::slotDownloadsFinished( int /* requests */, int errors
 #endif
 
   mb.exec();
+
+  m_updateIsRunning = false;
+  switchUpdateButtons( true );
 }
 
 void PreFlightWeatherPage::slotClose()
