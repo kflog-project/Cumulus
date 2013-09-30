@@ -68,6 +68,17 @@ HttpClient::~HttpClient()
     {
       delete _progressDialog;
     }
+
+  if( tmpFile )
+    {
+      if( tmpFile->isOpen() )
+        {
+          tmpFile->close();
+        }
+
+      tmpFile->remove();
+      delete tmpFile;
+    }
 }
 
 bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
