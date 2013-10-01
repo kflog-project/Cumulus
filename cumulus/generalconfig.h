@@ -1794,6 +1794,18 @@ class GeneralConfig : protected QSettings
   /** sets manual navigation mode altitude */
   void setManualNavModeAltitude(const int newValue);
 
+  /** gets the average time for the LD calculation */
+  int getLDCalculationTime() const
+  {
+    return _time4LDCalc;
+  };
+
+  /** sets the average time for the LD calculation */
+  void setLDCalculationTime(const int newValue)
+  {
+    _time4LDCalc = newValue;
+  }
+
   /** Gets the default binary waypoint file name with path. */
   QString &getBinaryWaypointFileName()
   {
@@ -2913,6 +2925,9 @@ class GeneralConfig : protected QSettings
   int _windTimeRange;
   // manual navigation mode altitude
   int _manualNavModeAltitude;
+
+  // time for average LD calculation
+  int _time4LDCalc;
 
   // Default binary waypoint file name
   QString _waypointBinaryFileName;

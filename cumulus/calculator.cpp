@@ -618,7 +618,7 @@ void Calculator::calcETA()
 }
 
 
-/** Calculates the required LD and the current LD about the last 60s,
+/** Calculates the required LD and the current LD about the last seconds,
     if required */
 void Calculator::calcLD()
 {
@@ -635,13 +635,18 @@ void Calculator::calcLD()
   double newRequiredLD = -1.0;
   bool notify = false;
 
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  // Get the configured calculation time span.
+  int ldCalcTime = conf->getLDCalculationTime();
+
   // first calculate current LD
   for ( int i = 1; i < samplelist.count(); i++ )
     {
 
       timeDiff = (samplelist.at(i).time).msecsTo(end->time);
 
-      if ( timeDiff >= 60*1000 )
+      if ( timeDiff >= ldCalcTime * 1000 )
         {
           break;
         }
@@ -661,7 +666,6 @@ void Calculator::calcLD()
     }
   else
     {
-
       // calculate altitude difference
       double altDiff = start->altitude.getMeters() - end->altitude.getMeters();
 
@@ -682,11 +686,7 @@ void Calculator::calcLD()
         }
     }
 
-  // calculate required LD, we consider elevation and security
-  // altitude
-
-  GeneralConfig *conf = GeneralConfig::instance();
-
+  // calculate required LD, we consider elevation and security altitude
   double altDiff = lastAltitude.getMeters() - selectedWp->elevation -
                    conf->getSafetyAltitude().getMeters();
 

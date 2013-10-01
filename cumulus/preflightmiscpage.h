@@ -66,11 +66,6 @@ class PreFlightMiscPage : public QWidget
  private slots:
 
   /**
-   * Called to open the flight logbook dialog.
-   */
-  void slotOpenLogbook();
-
-  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();
@@ -79,15 +74,6 @@ class PreFlightMiscPage : public QWidget
    * Called if the Cancel button is pressed.
    */
   void slotReject();
-
-#ifdef FLARM
-
-  /**
-   * Called to open the Flarm download flight dialog.
-   */
-  void slotOpenFlarmFlights();
-
-#endif
 
  signals:
 
@@ -110,6 +96,7 @@ class PreFlightMiscPage : public QWidget
   DoubleNumberEditor* m_logAutoStartSpeed;
   NumberEditor*       m_edtMinimalArrival;
   NumberEditor*       m_edtQNH;
+  NumberEditor*       m_edtLDTime;
 
   double m_loadedSpeed;
 

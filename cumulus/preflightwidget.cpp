@@ -31,10 +31,11 @@
 #include "mainwindow.h"
 #include "map.h"
 #include "preflightgliderpage.h"
-#include "preflightwidget.h"
+#include "preflightlogbookspage.h"
 #include "preflightmiscpage.h"
 #include "preflighttaskpage.h"
 #include "preflightwaypointpage.h"
+#include "preflightwidget.h"
 
 #ifdef INTERNET
 #include "preflightweatherpage.h"
@@ -50,6 +51,7 @@
 #define PREFLIGHT "Preflight Menu"
 #define COMMON    "Common"
 #define GLIDER    "Glider"
+#define LOGBOOKS  "Logbooks"
 #define RETRIEVE  "Retrieve"
 #define TASK      "Task"
 #define WAYPOINTS "Waypoints"
@@ -127,6 +129,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   item->setData( 0, Qt::UserRole, COMMON );
   m_setupTree->addTopLevelItem( item );
 
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(LOGBOOKS) );
+  item->setData( 0, Qt::UserRole, LOGBOOKS );
+  m_setupTree->addTopLevelItem( item );
+
 #ifdef ANDROID
   item = new QTreeWidgetItem;
   item->setText( 0, tr(RETRIEVE) );
@@ -175,6 +182,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("Retrieve") )
 #endif
                  << ( tr ("Waypoints") )
+                 << ( tr ("Logbooks") )
 #ifdef INTERNET
                  << ( tr ("METAR-TAF") )
 #endif
@@ -271,6 +279,17 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
         }
 
       pfwp->show();
+    }
+  else if( itemText == LOGBOOKS )
+    {
+      PreFlightLogBooksPage* pflp = new PreFlightLogBooksPage( this );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pflp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pflp->show();
     }
 
 #ifdef INTERNET

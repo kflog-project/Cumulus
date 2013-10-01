@@ -203,7 +203,6 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
 PreFlightWeatherPage::~PreFlightWeatherPage()
 {
   // TODO remove all downloaded METAR and TAF reports, if widget is destroyed.
-
 }
 
 void PreFlightWeatherPage::switchUpdateButtons( bool enable )

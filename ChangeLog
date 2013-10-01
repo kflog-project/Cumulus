@@ -15,6 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-10-01 AP: LD calculation time made configurable on pre-flight's
+                   common page. Default time changed from 60s to 30s.
+
+[o] 2013-10-01 AP: Flight logbooks extracted from the pre-flight common page
+                   and moved to a new pre-flight logbooks page.
+
+[-] 2013-09-30 AP: Bugfix: Memory leak fixed in HttpClient class.
+
 [+] 2013-09-27 AP: New preflight page added for METAR and TAF download and
                    display.
 

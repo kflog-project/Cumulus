@@ -31,17 +31,10 @@
 #include "calculator.h"
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
-#include "layout.h"
-#include "logbook.h"
 #include "igclogger.h"
+#include "layout.h"
 #include "numberEditor.h"
 #include "preflightmiscpage.h"
-
-#ifdef FLARM
-#include "flarm.h"
-#include "flarmlogbook.h"
-#include "gpsnmea.h"
-#endif
 
 PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   QWidget(parent)
@@ -143,6 +136,22 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   topLayout->addWidget(m_edtQNH, row, 1);
   row++;
 
+  lbl = new QLabel(tr("LD average time:"));
+  topLayout->addWidget(lbl, row, 0);
+
+  m_edtLDTime = new NumberEditor;
+  m_edtLDTime->setDecimalVisible( false );
+  m_edtLDTime->setPmVisible( false );
+  m_edtLDTime->setRange( 5, 600 );
+  m_edtLDTime->setMaxLength(3);
+  m_edtLDTime->setSuffix(" s");
+
+  eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3})" ), this );
+  m_edtLDTime->setValidator( eValidator );
+
+  topLayout->addWidget(m_edtLDTime, row, 1);
+  row++;
+
   topLayout->setRowMinimumHeight(row, 10);
   row++;
 
@@ -212,39 +221,6 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   topLayout->setRowMinimumHeight(row, 10);
   row++;
 
-  lbl = new QLabel(tr("My flight book:"));
-  topLayout->addWidget(lbl, row, 0);
-  QPushButton* button = new QPushButton( tr("Open") );
-  topLayout->addWidget(button, row, 1 );
-  row++;
-
-  connect(button, SIGNAL(pressed()), SLOT(slotOpenLogbook()));
-
-#ifdef FLARM
-  topLayout->setRowMinimumHeight(row, 10);
-  row++;
-
-  lbl = new QLabel(tr("Flarm flight book:"));
-  topLayout->addWidget(lbl, row, 0);
-
-  button = new QPushButton( tr("Open") );
-  topLayout->addWidget(button, row, 1 );
-  row++;
-
-  extern Calculator *calculator;
-
-  if( calculator->moving() )
-    {
-      // Disable Flarm flight downloads if we are moving.
-      button->setEnabled( false );
-    }
-  else
-    {
-      connect(button, SIGNAL(pressed()), SLOT(slotOpenFlarmFlights()));
-    }
-
-#endif
-
   topLayout->setRowStretch(row, 10);
 
   QPushButton *cancel = new QPushButton(this);
@@ -300,6 +276,7 @@ void PreFlightMiscPage::load()
   m_edtArrivalAltitude->setCurrentIndex( conf->getArrivalAltitudeDisplay() );
 
   m_edtQNH->setValue( conf->getQNH() );
+  m_edtLDTime->setValue( conf->getLDCalculationTime() );
   m_bRecordInterval->setValue( conf->getBRecordInterval() );
   m_kRecordInterval->setValue( conf->getKRecordInterval() );
   m_chkLogAutoStart->setChecked( conf->getLoggerAutostartMode() );
@@ -351,6 +328,7 @@ void PreFlightMiscPage::save()
 
   conf->setArrivalAltitudeDisplay( (GeneralConfig::ArrivalAltitudeDisplay) m_edtArrivalAltitude->itemData(m_edtArrivalAltitude->currentIndex()).toInt() );
   conf->setQNH(m_edtQNH->value());
+  conf->setLDCalculationTime(m_edtLDTime->value());
   conf->setBRecordInterval(m_bRecordInterval->value());
   conf->setKRecordInterval(m_kRecordInterval->value());
 
@@ -378,22 +356,3 @@ void PreFlightMiscPage::slotReject()
   emit closingWidget();
   QWidget::close();
 }
-
-void PreFlightMiscPage::slotOpenLogbook()
-{
-  Logbook* lbw = new Logbook( this );
-  lbw->setVisible( true );
-}
-
-#ifdef FLARM
-
-/**
- * Called to open the Flarm flight download dialog.
- */
-void PreFlightMiscPage::slotOpenFlarmFlights()
-{
-  FlarmLogbook* flb = new FlarmLogbook( this );
-  flb->setVisible( true );
-}
-
-#endif

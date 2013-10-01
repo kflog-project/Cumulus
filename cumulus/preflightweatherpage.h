@@ -140,7 +140,7 @@ class PreFlightWeatherPage : public QWidget
   /** Push button to request details update.*/
   QPushButton* m_detailsUpdateButton;
 
-  /** List which stores the airport icao identifiers */
+  /** List which stores the airport ICAO identifiers */
   QList<QString> m_airportIcaoList;
 
   /** Manager to handle downloads of METAR-TAF data. */
