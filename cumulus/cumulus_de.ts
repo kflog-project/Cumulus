@@ -2240,18 +2240,23 @@ Alle Downloads verworfen!</translation>
         <translation>Vorflug - Flugbücher</translation>
     </message>
     <message>
-        <location filename="preflightlogbookspage.cpp" line="58"/>
+        <location filename="preflightlogbookspage.cpp" line="55"/>
+        <source>&lt;b&gt;Logbooks&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Flugbücher&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <location filename="preflightlogbookspage.cpp" line="62"/>
         <source>My flight book:</source>
         <translation>Mein Flugbuch:</translation>
     </message>
     <message>
-        <location filename="preflightlogbookspage.cpp" line="60"/>
-        <location filename="preflightlogbookspage.cpp" line="73"/>
+        <location filename="preflightlogbookspage.cpp" line="64"/>
+        <location filename="preflightlogbookspage.cpp" line="77"/>
         <source>Open</source>
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="preflightlogbookspage.cpp" line="70"/>
+        <location filename="preflightlogbookspage.cpp" line="74"/>
         <source>Flarm flight book:</source>
         <translation>Flarm Flugbuch:</translation>
     </message>
@@ -2290,11 +2295,13 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="preflightmiscpage.cpp" line="139"/>
-        <source>LD average time:</source>
-        <translation>GZ Mittelwert Zeit:</translation>
+        <location filename="preflightmiscpage.cpp" line="148"/>
+        <source>LD average time</source>
+        <oldsource>LD average time:</oldsource>
+        <translation>GZ Mittelwert Zeit</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="158"/>
+        <location filename="preflightmiscpage.cpp" line="160"/>
         <source>Autostart IGC logger</source>
         <translation>Autostart IGC Logger</translation>
     </message>
@@ -2311,17 +2318,17 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Flarm Flugbuch:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="180"/>
+        <location filename="preflightmiscpage.cpp" line="182"/>
         <source>B-Record Interval:</source>
         <translation>B-Record Intervall:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="200"/>
+        <location filename="preflightmiscpage.cpp" line="202"/>
         <source>K-Record Interval:</source>
         <translation>K-Record Intervall:</translation>
     </message>
     <message>
-        <location filename="preflightmiscpage.cpp" line="210"/>
+        <location filename="preflightmiscpage.cpp" line="212"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>

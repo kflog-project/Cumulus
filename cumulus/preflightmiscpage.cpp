@@ -136,7 +136,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   topLayout->addWidget(m_edtQNH, row, 1);
   row++;
 
-  lbl = new QLabel(tr("LD average time:"));
+  lbl = new QLabel(tr("LD average time") + ":");
   topLayout->addWidget(lbl, row, 0);
 
   m_edtLDTime = new NumberEditor;
@@ -145,6 +145,8 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_edtLDTime->setRange( 5, 600 );
   m_edtLDTime->setMaxLength(3);
   m_edtLDTime->setSuffix(" s");
+  m_edtLDTime->setTitle( tr("LD average time") );
+  m_edtLDTime->setTip( "5 ... 600" );
 
   eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3})" ), this );
   m_edtLDTime->setValidator( eValidator );

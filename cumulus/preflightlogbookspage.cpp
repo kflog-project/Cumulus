@@ -52,10 +52,14 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
 
   int row = 0;
 
+  QLabel* lbl = new QLabel(tr("<b>Logbooks</b>"));
+  topLayout->addWidget( lbl, row, 0, 1, 2 );
+  row++;
+
   topLayout->setRowStretch(row, 10);
   row++;
 
-  QLabel* lbl = new QLabel(tr("My flight book:"));
+  lbl = new QLabel(tr("My flight book:"));
   topLayout->addWidget(lbl, row, 0);
   QPushButton* button = new QPushButton( tr("Open") );
   topLayout->addWidget(button, row, 1 );
@@ -64,7 +68,7 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
   connect(button, SIGNAL(pressed()), SLOT(slotOpenLogbook()));
 
 #ifdef FLARM
-  topLayout->setRowMinimumHeight(row, 10);
+  topLayout->setRowMinimumHeight(row, 30);
   row++;
 
   lbl = new QLabel(tr("Flarm flight book:"));

@@ -17,7 +17,7 @@
     <tr>
     <td align="left"><a href="cumulus-preflight-settings-waypoint.html">back</a></td>
     <td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
-    <td align="right"><a href="cumulus-display.html">next</a></td>
+    <td align="right"><a href="cumulus-preflight-settings-logbooks.html">next</a></td>
     </tr>
   </tbody>
 </table>
@@ -61,12 +61,23 @@
 
   </dd>
 
-  <br><dt><b>QNH</b></dt>
+  <dt><b>QNH</b></dt>
   
   <dd>
   The area QNH (as given by ATC) is entered in hPa (hectopascal). It is only
   used in calculation of the vertical warning distance to airspace
   boundaries expressed as flight levels. The default value is 1013 hPa.
+  </dd>
+
+  <br>
+  <dt>
+    <a name="LD_Time"></a><b>LD average time</b>
+  </dt>
+
+  <dd>
+  Here you can adjust the calculation time for the current LD. More about the
+  current LD is to find <a href="cumulus-display.html#ld">here</a> under the
+  headline LD-Display.
   </dd>
 
   <a name="autologger">
@@ -108,28 +119,6 @@
   Note that the activation of this option will increase the log file size and the
   processor load.
 	</dd>
-  
-  <br><dt><b>Logbook</b></dt>
-  
-  <dd> If Autostart logging is enabled, Cumulus records the basic data of your
-  flight into a logbook. Pressing the button <i>Logbook</i> opens a window,
-  where all flight logs are listed. If you want you can remove selected or all
-  entries. The Logbook is a pure ASCII data file in a CSV format. Semicolon
-  is used as separator.
-  </dd>
-  
-  <a name="Flarm">
-  <br><dt><b>Flarm Logbook</b></dt>
-
-  <dd>
-    Pressing the button <i>Flarm Logbook</i> opens a new window. If you press
-    the button <i>Read</i> a flight overview is downloaded from the Flarm
-    device and displayed in the list. Now you can select one or more flights.
-    If you press the button <i>Download</i> all selected flights are downloaded
-    to your device into your defined
-    <a href="cumulus-settings-personal.html#DataDirectory">data directory</a>.
-    All flight are stored there under the subdirectory <i>flarmIgc</i>.
-  </dd>
 
   </dl>
 
@@ -153,7 +142,7 @@ the IGC logger formats, see
     <tr>
     <td align="left"><a href="cumulus-preflight-settings-waypoint.html">back</a></td>
     <td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
-    <td align="right"><a href="cumulus-display.html">next</a></td>
+    <td align="right"><a href="cumulus-preflight-settings-logbooks.html">next</a></td>
     </tr>
   </tbody>
 </table>
