@@ -163,7 +163,7 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   connect (cmd, SIGNAL(clicked()), SLOT(slotShowListWidget()));
 
   //----------------------------------------------------------------------------
-  // Editor widget for station management.
+  // Editor widget for station adding.
   //----------------------------------------------------------------------------
   QVBoxLayout *editorLayout = new QVBoxLayout( m_editorWidget );
 
@@ -202,7 +202,6 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
 
 PreFlightWeatherPage::~PreFlightWeatherPage()
 {
-  // TODO remove all downloaded METAR and TAF reports, if widget is destroyed.
 }
 
 void PreFlightWeatherPage::switchUpdateButtons( bool enable )
@@ -289,7 +288,6 @@ Pressure (altimeter): 30.39 in. Hg (1029 hPa)
 ob: OPSD 190130Z CALM 09KM P/CLOUDY FEW015ST SCT035 Q1029/30.41 15/14C RH 95 PERCENT A/V OH CLEAR
 cycle: 1
 */
-
 void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 {
   QFile report(file);
@@ -319,7 +317,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
           line = stream.readLine();
           lineNo++;
 
-          qDebug() << "line=" << line;
+          // qDebug() << "line=" << line;
 
           if( line.trimmed().isEmpty() )
             {
@@ -428,6 +426,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
             {
               // Visibility: greater than 7 mile(s):0
               // Visibility: less than 1 mile:0
+              // Visibility: 3/4 mile(s):0
               if( line.contains( " mile") )
                 {
                   int idx2  = line.lastIndexOf( " mile" );
@@ -435,16 +434,50 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 
                   if( idx1 > 0 && idx1 < idx2 )
                     {
-                      bool ok;
-                      double visi = line.mid(idx1 + 1, idx2 - idx1 -1).toDouble(&ok);
+                      bool ok = false;
+                      double visiDouble;
+
+                      QString visiText = line.mid(idx1 + 1, idx2 - idx1 -1);
+
+                      if( visiText.contains("/") )
+                        {
+                          QStringList visiList = visiText.split("/");
+
+                          if( visiList.size() == 2 )
+                            {
+                              double arg1 = visiList.at(0).toDouble(&ok);
+
+                              if( ok )
+                                {
+                                  double arg2 = visiList.at(1).toDouble(&ok);
+
+                                  if( ok && arg2 > 0.0 )
+                                    {
+                                      visiDouble = arg1 / arg2;
+                                    }
+                                }
+                            }
+                        }
+                      else
+                        {
+                          visiDouble = visiText.toDouble( &ok );
+                        }
 
                       if( ok )
                         {
                           Distance distance(0);
-                          distance.setMiles( visi );
+                          distance.setMiles( visiDouble );
 
                           QString visibility = line.mid( 12, idx1 - 11 );
-                          visibility += distance.getText( true, 0 );
+
+                          if( distance.getKilometers() > 5 )
+                            {
+                              visibility += distance.getText( true, 0 );
+                            }
+                          else
+                            {
+                              visibility += distance.getText( true, 1 );
+                            }
 
                           if( line.contains("mile(s)") )
                             {
@@ -746,7 +779,6 @@ void PreFlightWeatherPage::slotShowAirportEditor()
 {
   m_listWidget->hide();
   m_displayWidget->hide();
-
   m_editorWidget->show();
   m_airportEditor->clear();
   m_airportEditor->setFocus();
@@ -828,6 +860,13 @@ void PreFlightWeatherPage::slotDeleteAirport()
   m_airportIcaoList.removeOne( item->getIcao() );
   storeAirportIcaoNames();
   loadAirportData( false );
+
+  // Remove downloaded reports of the airport station.
+  QString dataDir = GeneralConfig::instance()->getUserDataDirectory();
+  QString fn      = item->getIcao() + ".TXT";
+
+  QFile::remove( dataDir + "/weather/METAR/" + fn );
+  QFile::remove( dataDir + "/weather/TAF/" + fn );
 }
 
 void PreFlightWeatherPage::slotDetails()

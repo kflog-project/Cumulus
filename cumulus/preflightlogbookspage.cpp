@@ -68,7 +68,7 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
   connect(button, SIGNAL(pressed()), SLOT(slotOpenLogbook()));
 
 #ifdef FLARM
-  topLayout->setRowMinimumHeight(row, 30);
+  topLayout->setRowMinimumHeight(row, 50);
   row++;
 
   lbl = new QLabel(tr("Flarm flight book:"));

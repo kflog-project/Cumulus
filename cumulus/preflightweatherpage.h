@@ -22,7 +22,9 @@
  *
  * \brief A widget for download and display of TAF/METAR reports.
  *
- * A widget for download and display of TAF/METAR reports.
+ * A widget for download and display of TAF/METAR reports. Three different
+ * widgets (overview, adding and display details) are combined in this class
+ * to avoid popup windows.
  *
  * \date 2013
  *
