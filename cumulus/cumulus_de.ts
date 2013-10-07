@@ -2697,71 +2697,71 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightWeatherPage</name>
     <message>
-        <location filename="preflightweatherpage.cpp" line="45"/>
+        <location filename="preflightweatherpage.cpp" line="46"/>
         <source>No METAR available</source>
         <translation>Kein Metar verfügbar</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="46"/>
+        <location filename="preflightweatherpage.cpp" line="47"/>
         <source>No TAF available</source>
         <translation>Kein TAF verfügbar</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="49"/>
-        <location filename="preflightweatherpage.cpp" line="88"/>
-        <location filename="preflightweatherpage.cpp" line="861"/>
+        <location filename="preflightweatherpage.cpp" line="50"/>
+        <location filename="preflightweatherpage.cpp" line="89"/>
+        <location filename="preflightweatherpage.cpp" line="921"/>
         <source>METAR and TAF</source>
         <translation>METAR und TAF</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="106"/>
+        <location filename="preflightweatherpage.cpp" line="107"/>
         <source>Add</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="112"/>
-        <location filename="preflightweatherpage.cpp" line="155"/>
+        <location filename="preflightweatherpage.cpp" line="113"/>
+        <location filename="preflightweatherpage.cpp" line="156"/>
         <source>Update</source>
         <translation>Update</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="118"/>
+        <location filename="preflightweatherpage.cpp" line="119"/>
         <source>Details</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="125"/>
+        <location filename="preflightweatherpage.cpp" line="126"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="131"/>
-        <location filename="preflightweatherpage.cpp" line="161"/>
+        <location filename="preflightweatherpage.cpp" line="132"/>
+        <location filename="preflightweatherpage.cpp" line="162"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="170"/>
+        <location filename="preflightweatherpage.cpp" line="171"/>
         <source>Airport ICAO Code</source>
         <translation>Flughafen ICAO Kode</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="192"/>
+        <location filename="preflightweatherpage.cpp" line="193"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="186"/>
+        <location filename="preflightweatherpage.cpp" line="187"/>
         <source>Cancel</source>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="337"/>
+        <location filename="preflightweatherpage.cpp" line="350"/>
         <source>Station name not available</source>
         <translation>Stationsname unbekannt</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="762"/>
+        <location filename="preflightweatherpage.cpp" line="809"/>
         <source>Name?</source>
         <translation></translation>
     </message>
@@ -2771,67 +2771,67 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Stationsname erfordert\n4 Zeichen!</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="763"/>
+        <location filename="preflightweatherpage.cpp" line="810"/>
         <source>Station name requires 4 characters!</source>
         <translation>Stationsname erfordert 4 Zeichen!</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="808"/>
+        <location filename="preflightweatherpage.cpp" line="861"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="809"/>
+        <location filename="preflightweatherpage.cpp" line="862"/>
         <source>Confirm delete of station %1</source>
         <translation>Bestätige löschen von Station %1</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="877"/>
+        <location filename="preflightweatherpage.cpp" line="937"/>
         <source>Date: </source>
         <translation>Datum: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="882"/>
+        <location filename="preflightweatherpage.cpp" line="942"/>
         <source>Wind: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="887"/>
+        <location filename="preflightweatherpage.cpp" line="947"/>
         <source>Visibility: </source>
         <translation>Sicht: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="892"/>
+        <location filename="preflightweatherpage.cpp" line="952"/>
         <source>Sky: </source>
         <translation>Himmel: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="897"/>
+        <location filename="preflightweatherpage.cpp" line="957"/>
         <source>Weather: </source>
         <translation>Wetter: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="902"/>
+        <location filename="preflightweatherpage.cpp" line="962"/>
         <source>Temperature: </source>
         <translation>Temperatur: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="907"/>
+        <location filename="preflightweatherpage.cpp" line="967"/>
         <source>Dew Point: </source>
         <translation>Taupunkt: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="912"/>
+        <location filename="preflightweatherpage.cpp" line="972"/>
         <source>Relative Humidity: </source>
         <translation>Rel. Luftfeuchtigkeit: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="917"/>
+        <location filename="preflightweatherpage.cpp" line="977"/>
         <source>QNH: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1036"/>
+        <location filename="preflightweatherpage.cpp" line="1110"/>
         <source>&lt;html&gt;Network error occurred!&lt;br&gt;Is the Internet connection down?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Netzwerfehler!&lt;br&gt;Prüfe die Internetverbindung.&lt;/html&gt;</translation>
     </message>
@@ -2843,20 +2843,19 @@ If the Internet connection is down?</oldsource>
         <translation type="obsolete">Netzwerkfehler!\nBesteht Internetverbindung?</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1039"/>
+        <location filename="preflightweatherpage.cpp" line="1113"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1061"/>
+        <location filename="preflightweatherpage.cpp" line="1135"/>
         <source>All updates with %1 error(s) done.</source>
         <oldsource>All update(s) with %1 error(s) done.</oldsource>
         <translation>Alle Updates mit %1 Fehler(n) getan.</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1064"/>
         <source>All updates finished</source>
-        <translation>Alle Updates beendet</translation>
+        <translation type="obsolete">Alle Updates beendet</translation>
     </message>
 </context>
 <context>
