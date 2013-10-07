@@ -1234,11 +1234,11 @@ public class CumulusActivity extends QtActivity
     }
   
   String getLanguage()
-  	{
+    {
       Configuration config = getResources().getConfiguration();
-      // return config.locale.getDisplayLanguage();
-      return config.locale.getDefault();
-  	}
+      // returns language as e.g. "en_US" or de_DE
+      return config.locale.getDefault().toString();
+    }
 
   /**
    * Gets the display metrics from the Android system and return them as key value

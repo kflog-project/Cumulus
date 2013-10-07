@@ -450,7 +450,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
                   if( idx1 > 0 && idx1 < idx2 )
                     {
                       bool ok = false;
-                      double visiDouble;
+                      double visiDouble = 0.0;
 
                       QString visiText = line.mid(idx1 + 1, idx2 - idx1 -1);
 
@@ -1118,7 +1118,7 @@ void PreFlightWeatherPage::slotNetworkError()
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = QPoint( width()/2  - mb->width()/2, height()/2 - mb->height()/2 );
+  QPoint pos = QPoint( width()/2  - mb.width()/2, height()/2 - mb.height()/2 );
   mb.move( pos );
 
 #endif

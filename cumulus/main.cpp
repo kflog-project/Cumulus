@@ -267,9 +267,12 @@ int main(int argc, char *argv[])
   // Gets the default language from the Android device.
    QString language = jniGetLanguage();
 
+   // Put Android's default language into the program environment.
+   qputenv( "LANG",  language.toLatin1().data() );
+
    qDebug() << "Android sets language to" << language;
 
-   if( language == "Deutsch" )
+   if( language.startsWith( "de" ) )
      {
        // In case of German there is a translation available.
        conf->setLanguage( "de" );
