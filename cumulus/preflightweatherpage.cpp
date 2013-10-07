@@ -29,6 +29,7 @@
 #include "mainwindow.h"
 #include "preflightweatherpage.h"
 #include "speed.h"
+#include "whatsthat.h"
 
 QHash<QString, QHash<QString, QString> > PreFlightWeatherPage::m_metarReports;
 
@@ -210,7 +211,7 @@ void PreFlightWeatherPage::switchUpdateButtons( bool enable )
   m_detailsUpdateButton->setEnabled( enable );
 }
 
-void PreFlightWeatherPage::loadAirportData( bool readFile )
+void PreFlightWeatherPage::loadAirportData( bool readFile, QString selectIcao )
 {
   if( readFile == true )
     {
@@ -219,10 +220,18 @@ void PreFlightWeatherPage::loadAirportData( bool readFile )
 
   m_list->clear();
 
+  IcaoItem *item2select = 0;
+
   for( int i = 0; i < m_airportIcaoList.size(); i++ )
     {
       IcaoItem *item = new IcaoItem( m_airportIcaoList.at(i) );
       m_list->addTopLevelItem( item );
+
+      if( m_airportIcaoList.at(i) == selectIcao )
+        {
+          // Remember the item to be selected.
+          item2select = item;
+        }
 
       QString station     = "";
       QString observation = "";
@@ -259,6 +268,12 @@ void PreFlightWeatherPage::loadAirportData( bool readFile )
       // label->setAutoFillBackground( true );
 
       m_list->setItemWidget( item, 0, label );
+    }
+
+  if( item2select != 0 )
+    {
+      // Select the desired item in the list.
+      m_list->setCurrentItem( item2select );
     }
 
   slotShowListWidget();
@@ -809,7 +824,7 @@ void PreFlightWeatherPage::slotAddAirport()
       return;
     }
 
-  if( m_airportIcaoList.contains( m_airportEditor->text().toUpper()) )
+  if( m_airportIcaoList.contains( icao ) )
     {
       // The airport to be added was already added.
       slotShowListWidget();
@@ -819,7 +834,13 @@ void PreFlightWeatherPage::slotAddAirport()
   m_airportIcaoList.append( icao );
   qSort( m_airportIcaoList );
   storeAirportIcaoNames();
-  loadAirportData();
+  loadAirportData( false, icao );
+
+  // Download the weather for the new added station.
+  QList<QString> stations;
+  stations << icao;
+
+  downloadWeatherData( stations );
 }
 
 void PreFlightWeatherPage::slotDeleteAirport()
@@ -857,16 +878,16 @@ void PreFlightWeatherPage::slotDeleteAirport()
       return;
     }
 
-  m_airportIcaoList.removeOne( item->getIcao() );
-  storeAirportIcaoNames();
-  loadAirportData( false );
-
   // Remove downloaded reports of the airport station.
   QString dataDir = GeneralConfig::instance()->getUserDataDirectory();
   QString fn      = item->getIcao() + ".TXT";
 
   QFile::remove( dataDir + "/weather/METAR/" + fn );
   QFile::remove( dataDir + "/weather/TAF/" + fn );
+
+  m_airportIcaoList.removeOne( item->getIcao() );
+  storeAirportIcaoNames();
+  loadAirportData( false );
 }
 
 void PreFlightWeatherPage::slotDetails()
@@ -883,7 +904,7 @@ void PreFlightWeatherPage::slotDetails()
       return;
     }
 
-  QString &icao = item->getIcao();
+  QString& icao = item->getIcao();
 
   // Hide the list widget
   m_listWidget->hide();
@@ -1016,8 +1037,22 @@ void PreFlightWeatherPage::slotRequestWeatherData()
       m_display->clear();
     }
 
+  if( stations.size() )
+    {
+      downloadWeatherData( stations );
+    }
+}
+
+void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
+{
   if( stations.size() == 0 )
     {
+      return;
+    }
+
+  if( m_updateIsRunning == true )
+    {
+      // Do not allow multiple calls, if download is already running.
       return;
     }
 
@@ -1083,8 +1118,7 @@ void PreFlightWeatherPage::slotNetworkError()
 #ifdef ANDROID
 
   mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
+  QPoint pos = QPoint( width()/2  - mb->width()/2, height()/2 - mb->height()/2 );
   mb.move( pos );
 
 #endif
@@ -1097,24 +1131,17 @@ void PreFlightWeatherPage::slotNetworkError()
 
 void PreFlightWeatherPage::slotDownloadsFinished( int /* requests */, int errors )
 {
-  QString msg = QString(tr("All updates with %1 error(s) done.")).arg(errors);
+  QString msg = "<html><br><br>&nbsp;" +
+                 QString(tr("All updates with %1 error(s) done.")).arg(errors) +
+                 "&nbsp;<br><br></html>";
 
-  QMessageBox mb( QMessageBox::Information,
-                  tr("All updates finished"),
-                  msg,
-                  QMessageBox::Ok,
-                  this );
+  // Show result message for 3s
+  WhatsThat *mb = new WhatsThat( this, msg, 3000 );
+  mb->show();
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  // Move window into center of parent.
+  QPoint pos = QPoint( width()/2  - mb->width()/2, height()/2 - mb->height()/2 );
+  mb->move( pos );
 
   m_updateIsRunning = false;
   switchUpdateButtons( true );

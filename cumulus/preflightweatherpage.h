@@ -24,7 +24,8 @@
  *
  * A widget for download and display of TAF/METAR reports. Three different
  * widgets (overview, adding and display details) are combined in this class
- * to avoid popup windows.
+ * to avoid popup windows. The weather data are downloaded from the NOAA
+ * server in the USA.
  *
  * \date 2013
  *
@@ -103,14 +104,29 @@ class PreFlightWeatherPage : public QWidget
 
  private:
 
-  /** Loads the airport data into the list. */
-  void loadAirportData( bool readFile=false );
+  /** Loads the airport data into the list.
+   *
+   * \param readFile If set to true, the airport file with the stored ICAO
+   *        identifiers is read. Otherwise the data is taken only from the
+   *        m_airportIcaoList.
+   *
+   * \param select If the argument is not an empty string, the ICAO identifier
+   *        in the list is selected.
+   */
+  void loadAirportData( bool readFile=false, QString selectIcao="" );
 
   /** Reads the airport ICAO identifiers from the file. */
   bool readAirportIcaoNames();
 
   /** Stores the airport ICAO identifiers in a file. */
   bool storeAirportIcaoNames();
+
+  /**
+   * Download the weather data from the stations in the list.
+   *
+   * \param stations ICAO identifiers of airport stations to be requested
+   */
+  void downloadWeatherData( QList<QString>& stations );
 
   /** Updates the ICAO list item with the METAR observation data. */
   void updateIcaoItem( QString& icao );
@@ -131,7 +147,7 @@ class PreFlightWeatherPage : public QWidget
   QTreeWidget* m_list;
 
   /** METAR-TAF detail display */
-  QTextEdit*   m_display;
+  QTextEdit* m_display;
 
   /** Airport editor */
   QLineEdit* m_airportEditor;
@@ -157,8 +173,20 @@ class PreFlightWeatherPage : public QWidget
   /** Fixed string label for no TAF data available. */
   const QString NoTaf;
 
+  /**
+   * A hash table containing METAR reports. The key is the airport ICAO code,
+   * the value is a hash table with the report attributes. The following keys
+   * are in use:
+   *
+   * station, date, wind, visibility, sky, weather, temperature, dewPoint,
+   * humidity, qnh, observation
+   */
   static QHash<QString, QHash<QString, QString> > m_metarReports;
 
+  /**
+   * A hash table containing TAF reports. The key is the airport ICAO code,
+   * the value is the whole TAF report as string with new lines.
+   */
   static QHash<QString, QString> m_tafReports;
 
   /** URL for METAR request */
@@ -175,6 +203,8 @@ class PreFlightWeatherPage : public QWidget
    * \brief A user ICAO item element used by the QTreeWidget m_list
    *
    * \date 2013
+   *
+   * \version $Id$
    */
 
   class IcaoItem : public QTreeWidgetItem

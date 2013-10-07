@@ -1236,7 +1236,8 @@ public class CumulusActivity extends QtActivity
   String getLanguage()
   	{
       Configuration config = getResources().getConfiguration();
-      return config.locale.getDisplayLanguage();
+      // return config.locale.getDisplayLanguage();
+      return config.locale.getDefault();
   	}
 
   /**
