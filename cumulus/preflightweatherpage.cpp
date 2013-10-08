@@ -211,7 +211,7 @@ void PreFlightWeatherPage::switchUpdateButtons( bool enable )
   m_detailsUpdateButton->setEnabled( enable );
 }
 
-void PreFlightWeatherPage::loadAirportData( bool readFile, QString selectIcao )
+void PreFlightWeatherPage::loadAirportData( bool readFile, const QString& selectIcao )
 {
   if( readFile == true )
     {

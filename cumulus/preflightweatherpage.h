@@ -113,7 +113,7 @@ class PreFlightWeatherPage : public QWidget
    * \param select If the argument is not an empty string, the ICAO identifier
    *        in the list is selected.
    */
-  void loadAirportData( bool readFile=false, QString selectIcao="" );
+  void loadAirportData( bool readFile=false, const QString& selectIcao="" );
 
   /** Reads the airport ICAO identifiers from the file. */
   bool readAirportIcaoNames();

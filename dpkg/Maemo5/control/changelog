@@ -1,3 +1,17 @@
+cumulus (5.8.0) stable; urgency=low
+
+  * LD calculation time made configurable on pre-flight's common page.
+    Default time changed from 60s to 30s.
+
+  * Flight logbooks extracted from the pre-flight common page
+    and moved to the new pre-flight logbooks page.
+
+  * Bugfix: Memory leak fixed in HttpClient class.
+
+  * New pre-flight page added for METAR and TAF reports download and display.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 08 Oct 2013 21:30:23 +0200
+
 cumulus (5.7.2) stable; urgency=low
 
   * Flarm alias list delete handling modified. You can now delete several

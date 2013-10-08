@@ -114,6 +114,7 @@ HEADERS = \
     polardialog.h \
     polar.h \
     preflightgliderpage.h \
+    preflightlogbookspage.h \
     preflightmiscpage.h \
     preflightwaypointpage.h \
     preflightwidget.h \
@@ -235,6 +236,7 @@ SOURCES = \
     polar.cpp \
     polardialog.cpp \
     preflightgliderpage.cpp \
+    preflightlogbookspage.cpp \
     preflightmiscpage.cpp \
     preflightwaypointpage.cpp \
     preflightwidget.cpp \
@@ -321,19 +323,22 @@ flarm {
 }
 
 internet {
-    QT += network
-    
+		QT += network
+		
+		DEFINES += INTERNET
+		
     HEADERS += airspacedownloaddialog.h \
                downloadmanager.h \
                httpclient.h \
+               preflightweatherpage.h \
                proxydialog.h
-                              
-    SOURCES += airspacedownloaddialog.cpp \
-               downloadmanager.cpp \
-               httpclient.cpp \
-               proxydialog.cpp
                
-    DEFINES += INTERNET
+                              
+		SOURCES += airspacedownloaddialog.cpp \
+		           downloadmanager.cpp \
+		           httpclient.cpp \
+               preflightweatherpage.cpp \
+		           proxydialog.cpp
 }
 
 bluetooth {

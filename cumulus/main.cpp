@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
       usleep(250000);
     }
 
-  // Gets the internal data directory from our app
+  // Gets the internal data directory from our App
   QString appDir = jniGetAppDataDir();
 
   while (appDir.isEmpty())

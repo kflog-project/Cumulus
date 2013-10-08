@@ -27,7 +27,8 @@
 extern MapMatrix* _globalMapMatrix;
 
 OpenAip::OpenAip() :
-  m_filterRadius(0.0)
+  m_filterRadius(0.0),
+  m_filterRunwayLength(0.0)
 {
   m_supportedDataFormats << "1.0" << "1.1";
 }
@@ -760,15 +761,17 @@ bool OpenAip::readAirfields( QString fileName,
                         }
 
                       bool rwyLenOk = false;
+                      float rwy2short = 0.0;
 
                       for( int i = 0; i < rl.size(); i++ )
                         {
                           if( rl.at(i).length < m_filterRunwayLength )
                             {
+                              rwy2short = rl.at(i).length;
                               continue;
                             }
 
-                          // One runway fulfils the length condition, break loop.
+                          // One runway fulfills the length condition, break loop.
                           rwyLenOk = true;
                           break;
                         }
@@ -777,7 +780,7 @@ bool OpenAip::readAirfields( QString fileName,
                         {
                           qDebug() << "OpenAip::readAirfields:"
                                    << af.getName() << af.getCountry()
-                                   << "runway to short!";
+                                   << "runway length" << rwy2short << "to short!";
                           continue;
                         }
                     }

@@ -19,12 +19,12 @@ Cumulus changelog
                    common page. Default time changed from 60s to 30s.
 
 [o] 2013-10-01 AP: Flight logbooks extracted from the pre-flight common page
-                   and moved to a new pre-flight logbooks page.
+                   and moved to the new pre-flight logbooks page.
 
 [-] 2013-09-30 AP: Bugfix: Memory leak fixed in HttpClient class.
 
-[+] 2013-09-27 AP: New preflight page added for METAR and TAF download and
-                   display.
+[+] 2013-09-27 AP: New pre-flight page added for METAR and TAF reports download
+                   and display.
 
 [*] 2013-09-24 AP: Cumulus 5.7.2 released for all supported platforms.
 

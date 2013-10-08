@@ -44,6 +44,7 @@ OpenAipAirfieldLoader::OpenAipAirfieldLoader() :
   h_fileType(),
   h_fileVersion(0),
   h_homeRadius(0),
+  h_runwayLengthFilter(0.0),
   h_projection(static_cast<ProjectionBase *> (0)),
   h_headerIsValid(false)
 {
