@@ -287,7 +287,7 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
 {
   Q_UNUSED(urlIn)
 
-  qDebug() << "LiveTrack24::slotHttpResponse:" << m_httpResultBuffer;
+  qDebug() << "LiveTrack24::slotHttpResponse:" << m_httpResultBuffer << "ErrCode=" << codeIn;
 
   if( codeIn != QNetworkReply::NoError )
     {
@@ -307,8 +307,6 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
           // must be greater than zero.
           bool ok;
           m_userId = m_httpResultBuffer.toUInt( &ok );
-
-          qDebug() << "m_userId=" << m_userId;
 
           if( ! ok || m_userId == 0 )
             {

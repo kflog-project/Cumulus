@@ -41,6 +41,7 @@ void LiveTrack24Logger::slotNewFixEntry()
   // Check if LiveTracking is switched on
   if( conf->isLiveTrackOnOff() == false )
     {
+      m_isFlying = false;
       return;
     }
 
@@ -83,8 +84,6 @@ void LiveTrack24Logger::slotNewFixEntry()
 
 void LiveTrack24Logger::reportRoutePoint()
 {
-  qDebug() << "getlastAltitude()" << calculator->getlastAltitude().getMeters();
-
   m_lt24Gateway.routeTracking( calculator->getlastPosition(),
                                rint(calculator->getlastAltitude().getMeters()),
                                rint(calculator->getLastSpeed().getKph()),
