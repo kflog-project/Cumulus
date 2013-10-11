@@ -65,6 +65,10 @@
 #include "windanalyser.h"
 #include "wpeditdialog.h"
 
+#ifdef INTERNET
+#include "LiveTrack24Logger.h"
+#endif
+
 #ifdef ANDROID
 
 #include <QWindowSystemInterface>
@@ -624,6 +628,10 @@ void MainWindow::slotCreateApplicationWidgets()
   GpsNmea::gps->blockSignals( true );
   m_logger = IgcLogger::instance();
 
+#ifdef INTERNET
+  LiveTrack24Logger* liveTrackLogger = new LiveTrack24Logger( this );
+#endif
+
   createActions();
 
 #ifdef USE_MENUBAR
@@ -839,6 +847,11 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( ( QObject* ) calculator->getReachList(), SIGNAL( newReachList() ),
            this, SLOT( slotNewReachList() ) );
+
+#ifdef INTERNET
+  connect( calculator, SIGNAL( newSample() ),
+           liveTrackLogger, SLOT( slotNewFixEntry() ) );
+#endif
 
   connect( m_logger, SIGNAL( logging( bool ) ),
            viewMap, SLOT( slot_setLoggerStatus() ) );

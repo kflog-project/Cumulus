@@ -2526,25 +2526,25 @@ class GeneralConfig : protected QSettings
   /** Gets the returner's mobile number. */
   QString getReturnerMobileNumber()
   {
-    return _returnerMobileNumber;
+    return _retrieverMobileNumber;
   };
 
   /** Sets the returner's mobile number. */
   void setReturnerMobileNumber( const QString newValue )
   {
-    _returnerMobileNumber = newValue;
+    _retrieverMobileNumber = newValue;
   };
 
   /** Gets the returner's position format. */
   int getReturnerPositionFormat() const
   {
-    return _returnerPositionFormat;
+    return _retrieverPositionFormat;
   };
 
   /** Sets the returner's position format. */
   void setReturnerPositionFormat( const int newValue )
   {
-    _returnerPositionFormat = newValue;
+    _retrieverPositionFormat = newValue;
   };
 
   /**
@@ -2555,6 +2555,78 @@ class GeneralConfig : protected QSettings
    * \return Rotated String
    */
   static QByteArray rot47( const QByteArray& input );
+
+  /** Gets the Livetrack24 airplane type. */
+  int getLiveTrackAirplaneType() const
+  {
+    return _liveTrackAirplaneType;
+  };
+
+  /** Sets the Livetrack24 airplane type. */
+  void setLiveTrackAirplaneType(int liveTrackAirplaneType)
+  {
+    _liveTrackAirplaneType = liveTrackAirplaneType;
+  };
+
+  /** Gets the Livetrack24 tracking interval. */
+  int getLiveTrackInterval() const
+  {
+    return _liveTrackInterval;
+  };
+
+  /** Sets the Livetrack24 tracking interval. */
+  void setLiveTrackInterval(int liveTrackInterval)
+  {
+    _liveTrackInterval = liveTrackInterval;
+  };
+
+  /** Gets the Livetrack24 state. */
+  bool isLiveTrackOnOff() const
+  {
+    return _liveTrackOnOff;
+  };
+
+  /** Sets the Livetrack24 state. */
+  void setLiveTrackOnOff(bool liveTrackOnOff)
+  {
+    _liveTrackOnOff = liveTrackOnOff;
+  };
+
+  /** Gets the Livetrack24 password. */
+  QString getLiveTrackPassword() const
+  {
+    return QString(rot47(_liveTrackPassword.toLatin1().data()));
+  };
+
+  /** Sets the Livetrack24 password. */
+  void setLiveTrackPassword(const QString& liveTrackPassword)
+  {
+    _liveTrackPassword = rot47( liveTrackPassword.toLatin1().data());
+  };
+
+  /** Gets the Livetrack24 server. */
+  const QString& getLiveTrackServer() const
+  {
+    return _liveTrackServer;
+  };
+
+  /** Sets the Livetrack24 server. */
+  void setLiveTrackServer(const QString& liveTrackServer)
+  {
+    _liveTrackServer = liveTrackServer;
+  };
+
+  /** Gets the Livetrack24 user name. */
+  const QString& getLiveTrackUserName() const
+  {
+    return _liveTrackUserName;
+  };
+
+  /** Sets the Livetrack24 user name. */
+  void setLiveTrackUserName(const QString& liveTrackUserName)
+  {
+    _liveTrackUserName = liveTrackUserName;
+  };
 
  private:
 
@@ -3044,11 +3116,29 @@ class GeneralConfig : protected QSettings
   // variable to handle configuration resets
   int _resetConfiguration;
 
-  // Mobile number of returner
-  QString _returnerMobileNumber;
+  // Mobile number of retriever
+  QString _retrieverMobileNumber;
 
-  // Coordinate format used for returner position.
-  int _returnerPositionFormat;
+  // Coordinate format used for retriever position.
+  int _retrieverPositionFormat;
+
+  // LiveTrack on/off
+  bool _liveTrackOnOff;
+
+  // LiveTrack interval in seconds
+  int _liveTrackInterval;
+
+  // LiveTrack airplane type
+  int _liveTrackAirplaneType;
+
+  // LiveTrack server
+  QString _liveTrackServer;
+
+  // LiveTrack user name
+  QString _liveTrackUserName;
+
+  // LiveTrack password
+  QString _liveTrackPassword;
 };
 
 #endif

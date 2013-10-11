@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2013 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,12 +22,15 @@
  *
  * \brief This class is a simple HTTP download client.
  *
- * \date 2010
+ * \date 2010-2013
+ *
+ * \version $Id$
  */
 
 #ifndef HTTP_CLIENT_H
 #define HTTP_CLIENT_H
 
+#include <QByteArray>
 #include <QString>
 #include <QFile>
 #include <QTimer>
@@ -63,11 +66,20 @@ class HttpClient : public QObject
   bool downloadFile( QString &url, QString &destination );
 
   /**
+   * Get data from the passed URL and return it into a byte array.
+   *
+   * \param url URL for get request
+   *
+   * \param userByteArray Byte array for fetched data
+   */
+  bool getData( QString &url, QByteArray* userByteArray );
+
+  /**
    * Returns the network manager to be used by the HTTP client.
    */
   QNetworkAccessManager *networkManager() const
   {
-    return manager;
+    return m_manager;
   };
 
   /**
@@ -75,7 +87,7 @@ class HttpClient : public QObject
    */
   bool isDownloadRunning() const
   {
-    return downloadRunning;
+    return m_downloadRunning;
   };
 
   /**
@@ -116,18 +128,22 @@ class HttpClient : public QObject
 
  private:
 
+  /** Send URL request to the HTTP server. */
+  bool sendRequest2Server();
+
   /** Opens a user password dialog on server request. */
   void getUserPassword( QAuthenticator *authenticator );
 
-  QObject               *_parent;
-  QProgressDialog       *_progressDialog;
-  QNetworkAccessManager *manager;
-  QNetworkReply         *reply;
-  QFile                 *tmpFile;
-  QString               _url;
-  QString               _destination;
-  bool                  downloadRunning;
-  QTimer                *timer;
+  QObject               *m_parent;
+  QProgressDialog       *m_progressDialog;
+  QNetworkAccessManager *m_manager;
+  QNetworkReply         *m_reply;
+  QFile                 *m_tmpFile;
+  QByteArray            *m_userByteArray;
+  QString               m_url;
+  QString               m_destination;
+  bool                  m_downloadRunning;
+  QTimer                *m_timer;
 };
 
 #endif /* HTTP_CLIENT_H */

@@ -238,13 +238,22 @@ void GeneralConfig::load()
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
   endGroup();
 
-  beginGroup("Returner");
-  _returnerMobileNumber   = value( "MobileNumber", "").toString();
-  _returnerPositionFormat = value( "PositionFormat", 0 ).toInt();
+  beginGroup("Retriever");
+  _retrieverMobileNumber   = value( "MobileNumber", "").toString();
+  _retrieverPositionFormat = value( "PositionFormat", 0 ).toInt();
   endGroup();
 
   beginGroup("Preflight Window");
     _closePreFlightMenu = value( "CloseMenu", true ).toBool();
+  endGroup();
+
+  beginGroup("LiveTrack24");
+  _liveTrackOnOff        = value( "OnOff", false ).toBool();
+  _liveTrackInterval     = value( "Interval", 5 ).toInt();
+  _liveTrackAirplaneType = value( "AirplaneType", 8 ).toInt();
+  _liveTrackServer       = value( "Server", "www.livetrack24.com").toString();
+  _liveTrackUserName     = value( "UserName", "").toString();
+  _liveTrackPassword     = value( "Password", "").toString();
   endGroup();
 
   // Task scheme settings for circle-sector and nearest-touched
@@ -650,13 +659,22 @@ void GeneralConfig::save()
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
   endGroup();
 
-  beginGroup("Returner");
-  setValue( "MobileNumber", _returnerMobileNumber );
-  setValue( "PositionFormat", _returnerPositionFormat );
+  beginGroup("Retriever");
+  setValue( "MobileNumber", _retrieverMobileNumber );
+  setValue( "PositionFormat", _retrieverPositionFormat );
   endGroup();
 
   beginGroup("Preflight Window");
-    setValue( "CloseMenu", _closePreFlightMenu );
+  setValue( "CloseMenu", _closePreFlightMenu );
+  endGroup();
+
+  beginGroup("LiveTrack24");
+  setValue( "OnOff", _liveTrackOnOff );
+  setValue( "Interval", _liveTrackInterval );
+  setValue( "AirplaneType", _liveTrackAirplaneType );
+  setValue( "Server", _liveTrackServer );
+  setValue( "UserName", _liveTrackUserName );
+  setValue( "Password", _liveTrackPassword );
   endGroup();
 
   // Task scheme settings for circle-sector and nearest touched

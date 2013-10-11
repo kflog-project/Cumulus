@@ -424,6 +424,22 @@ public:
     return m_gainedAltitude;
   }
 
+  /**
+   * \return The last flight sample.
+   */
+  const FlightSample& getLastFlightSample() const
+  {
+    return lastSample;
+  };
+
+  /**
+   * \return The time when the last sample was taken.
+   */
+  const QTime& getLastSampleTime() const
+  {
+    return lastSample.time;
+  };
+
 public slots:
 
   /**

@@ -38,6 +38,7 @@
 #include "preflightwidget.h"
 
 #ifdef INTERNET
+#include "preflightlivetrack24page.h"
 #include "preflightweatherpage.h"
 #endif
 
@@ -48,14 +49,15 @@
 #include "rowdelegate.h"
 
 // Menu labels
-#define PREFLIGHT "Preflight Menu"
-#define COMMON    "Common"
-#define GLIDER    "Glider"
-#define LOGBOOKS  "Logbooks"
-#define RETRIEVE  "Retrieve"
-#define TASK      "Task"
-#define WAYPOINTS "Waypoints"
-#define WEATHER   "METAR-TAF"
+#define PREFLIGHT   "Preflight Menu"
+#define COMMON      "Common"
+#define GLIDER      "Glider"
+#define LIVETRACK24 "LiveTrack24"
+#define LOGBOOKS    "Logbooks"
+#define RETRIEVE    "Retrieve"
+#define TASK        "Task"
+#define WAYPOINTS   "Waypoints"
+#define WEATHER     "METAR-TAF"
 
 PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   QWidget(parent)
@@ -146,6 +148,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   item->setText( 0, tr(WEATHER) );
   item->setData( 0, Qt::UserRole, WEATHER );
   m_setupTree->addTopLevelItem( item );
+
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(LIVETRACK24) );
+  item->setData( 0, Qt::UserRole, LIVETRACK24 );
+  m_setupTree->addTopLevelItem( item );
 #endif
 
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
@@ -184,6 +191,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("Waypoints") )
                  << ( tr ("Logbooks") )
 #ifdef INTERNET
+                 << ( tr ("LiveTrack24") )
                  << ( tr ("METAR-TAF") )
 #endif
                  << ( tr ("Common") );
@@ -294,6 +302,17 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
 #ifdef INTERNET
 
+  else if( itemText == LIVETRACK24 )
+    {
+      PreFlightLiveTrack24Page* pflt24p = new PreFlightLiveTrack24Page( this );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pflt24p, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pflt24p->show();
+    }
   else if( itemText == WEATHER )
     {
       PreFlightWeatherPage* pfwp = new PreFlightWeatherPage( this );
