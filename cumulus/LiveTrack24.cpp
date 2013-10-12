@@ -28,12 +28,12 @@
 
 LiveTrack24::LiveTrack24( QObject *parent ) :
   QObject(parent),
-  m_parent(parent),
   m_httpClient(0),
   m_retryTimer(0),
   m_userId(0),
   m_sessionId(0),
-  m_packetId(0)
+  m_packetId(0),
+  m_sentPackages(0)
 {
   m_httpClient = new HttpClient( this, false );
 
@@ -64,6 +64,9 @@ bool LiveTrack24::startTracking()
       qDebug() << method << "LiveTracking is switched off!";
       return true;
     }
+
+  // Reset package counter
+  m_sentPackages = 0;
 
   // Check, if user name and password are defined by the user
   const QString& userName = conf->getLiveTrackUserName();
@@ -296,7 +299,9 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
       return;
     }
 
-  // Remove the last done request from the queue.
+  m_sentPackages++;
+
+  // Remove the last executed request from the queue.
   if( ! m_requestQueue.isEmpty() )
     {
       QPair<QString, QString> keyAndUrl = m_requestQueue.dequeue();

@@ -27,11 +27,13 @@
 
 #include "generalconfig.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "numberEditor.h"
 #include "preflightlivetrack24page.h"
 
 PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
-  QWidget(parent)
+  QWidget(parent),
+  m_updateTimer(0)
 {
   setObjectName("PreFlightLiveTrack24Page");
   setWindowFlags( Qt::Tool );
@@ -43,6 +45,12 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
     {
       resize( parent->size() );
     }
+
+  // HTTP Client for login test in LiveTrack24 server.
+  m_httpClient = new HttpClient( this, false );
+
+  connect( m_httpClient, SIGNAL( finished(QString &, QNetworkReply::NetworkError) ),
+           this, SLOT( slotHttpResponse(QString &, QNetworkReply::NetworkError) ));
 
   // Layout used by scroll area
   QHBoxLayout *sal = new QHBoxLayout;
@@ -161,7 +169,18 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   topLayout->addWidget(m_password, row, 1);
   row++;
 
-  topLayout->setRowStretch(row, 10);
+  m_loginTestButton = new QPushButton( tr("Login Test") );
+  topLayout->addWidget(m_loginTestButton, row, 0);
+  row++;
+
+  connect( m_loginTestButton, SIGNAL(pressed()), this, SLOT(slotLoginTest()));
+
+  topLayout->setRowMinimumHeight(row++, 20);
+  topLayout->setRowStretch(row++, 10);
+
+  m_sessionDisplay = new QLabel;
+  topLayout->addWidget(m_sessionDisplay, row, 0, 1, 2);
+  row++;
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
@@ -189,11 +208,32 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   buttonBox->addWidget(titlePix);
   contentLayout->addLayout(buttonBox);
   load();
+
+  // Start an update timer to update session data periodically.
+  m_updateTimer = new QTimer(this);
+  m_updateTimer->setSingleShot(false);
+  connect( m_updateTimer, SIGNAL(timeout()), SLOT(showSessionData()) );
+  m_updateTimer->start( 2500 );
 }
 
 PreFlightLiveTrack24Page::~PreFlightLiveTrack24Page()
 {
   // qDebug("PreFlightLiveTrack24Page::~PreFlightLiveTrack24Page()");
+}
+
+void PreFlightLiveTrack24Page::showSessionData()
+{
+  LiveTrack24Logger* ltl = MainWindow::mainWindow()->getLiveTrack24Logger();
+
+  QString session = ltl->getSessionStatus() ? tr("opened") : tr("closed");
+
+  uint cached, sent = 0;
+  ltl->getPackageStatistics( cached, sent );
+
+  QString txt = tr("Session: %1, Packages: cached: %2 sent: %3")
+                .arg(session).arg(cached).arg(sent);
+
+  m_sessionDisplay->setText( txt );
 }
 
 void PreFlightLiveTrack24Page::load()
@@ -211,6 +251,8 @@ void PreFlightLiveTrack24Page::load()
 
   QString server = conf->getLiveTrackServer();
   m_server->setCurrentIndex( m_server->findText( server ) );
+
+  showSessionData();
 }
 
 void PreFlightLiveTrack24Page::save()
@@ -275,4 +317,119 @@ void PreFlightLiveTrack24Page::slotReject()
 {
   emit closingWidget();
   QWidget::close();
+}
+
+void PreFlightLiveTrack24Page::slotLoginTest()
+{
+  if( m_username->text().trimmed().isEmpty() ||
+      m_password->text().trimmed().isEmpty() )
+    {
+      // User name and password are required for the login test
+      QString msg = QString(tr("User name or password are missing!"));
+
+      QMessageBox mb( QMessageBox::Warning,
+                      tr( "Login data missing" ),
+                      msg,
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
+      return;
+    }
+
+  QString loginUrl = QString("http://test.livetrack24.com"
+                             "/client.php?op=login&user=%1&pass=%2")
+                             .arg(m_username->text().trimmed())
+                             .arg(m_password->text().trimmed());
+
+  m_httpResultBuffer.clear();
+
+  bool ok = m_httpClient->getData( loginUrl, &m_httpResultBuffer );
+
+  if( ! ok )
+    {
+      QString msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+
+      QMessageBox mb( QMessageBox::Information,
+                      tr("Login Test failed"),
+                      msg,
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
+      return;
+    }
+
+  // Disable test button
+  m_loginTestButton->setEnabled( false );
+}
+
+void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
+                                                 QNetworkReply::NetworkError codeIn )
+{
+  Q_UNUSED(urlIn)
+
+  m_loginTestButton->setEnabled( true );
+
+  QString msg;
+
+  if( codeIn != QNetworkReply::NoError )
+    {
+      // There was a problem on the network.
+      msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+    }
+  else
+    {
+      // Check the returned user identifier. For a successful login it
+      // must be greater than zero.
+      bool ok;
+      uint userId = m_httpResultBuffer.toUInt( &ok );
+
+      qDebug() << "LiveTrack24 Login Test: UserId=" << m_httpResultBuffer;
+
+      if( ! ok || userId == 0 )
+        {
+          msg = QString(tr("<html>LiveTrack24 login failed!"
+                           "<br><br>Check user name and password.</html>"));
+        }
+      else
+        {
+          msg = QString(tr("<html>LiveTrack24 login succeeded!</html>"));
+        }
+    }
+
+  QMessageBox mb( QMessageBox::Information,
+                  tr("Login Test result"),
+                  msg,
+                  QMessageBox::Ok,
+                  this );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
 }

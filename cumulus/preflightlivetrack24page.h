@@ -35,12 +35,17 @@
 #ifndef PREFLIGHT_LIVE_TRACK24_H
 #define PREFLIGHT_LIVE_TRACK24_H
 
+#include <QByteArray>
 #include <QWidget>
 
 class QCheckBox;
 class QComboBox;
+class QLabel;
 class QLineEdit;
 class QPushButton;
+class QTimer;
+
+#include "httpclient.h"
 
 class NumberEditor;
 
@@ -58,6 +63,8 @@ class PreFlightLiveTrack24Page : public QWidget
 
   virtual ~PreFlightLiveTrack24Page();
 
+ private:
+
   void load();
 
   void save();
@@ -73,6 +80,19 @@ class PreFlightLiveTrack24Page : public QWidget
    * Called if the Cancel button is pressed.
    */
   void slotReject();
+
+  /**
+   * Called to show the live track session data.
+   */
+  void showSessionData();
+
+  /**
+   * Called to test the login data of the user.
+   */
+  void slotLoginTest();
+
+  /** Called, if the HTTP request is finished. */
+  void slotHttpResponse( QString &url, QNetworkReply::NetworkError code );
 
  signals:
 
@@ -95,6 +115,15 @@ class PreFlightLiveTrack24Page : public QWidget
   QComboBox*    m_server;
   QLineEdit*    m_username;
   QLineEdit*    m_password;
+  QPushButton*  m_loginTestButton;
+  QLabel*       m_sessionDisplay;
+  QTimer*       m_updateTimer;
+
+  // Http client for the login test. */
+  HttpClient* m_httpClient;
+
+  /** Result buffer for HTTP requests. */
+  QByteArray m_httpResultBuffer;
 };
 
 #endif

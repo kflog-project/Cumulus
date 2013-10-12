@@ -20,7 +20,7 @@
  *
  * \author Axel Pauli
  *
- * \brief API for the LiveTrack24.com server.
+ * \brief API for the LiveTrack24 server at www.livetrack24.com
  *
  * Procedure:
  *
@@ -124,6 +124,19 @@ class LiveTrack24 : public QObject
   /** Sends the "end of track" packet to the tracking server */
   bool endTracking();
 
+  /**
+   * Provides a package statistics about the current session.
+   *
+   * \param cachedPkgs Package number in cache waiting for sending
+   *
+   * \param sentPkgs Package number transfered to the server
+   */
+  void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
+  {
+    cachedPkgs = m_requestQueue.size();
+    sentPkgs   = m_sentPackages;
+  };
+
  private:
 
   /**
@@ -147,7 +160,7 @@ class LiveTrack24 : public QObject
   SessionId generateSessionId( const UserId userId );
 
   /**
-   * \return The set server address without http://
+   * \return The server address without http://
    */
   const QString& getServer()
   {
@@ -166,11 +179,16 @@ class LiveTrack24 : public QObject
 
  private:
 
-  QObject*    m_parent;
   HttpClient* m_httpClient;
   QTimer*     m_retryTimer;
 
+  /** User identifier returned during login to server. */
   UserId    m_userId;
+
+  /**
+   * Session identifier, generate with method generateSessionId.
+   * The user identifier is the base for the session identifier.
+   */
   SessionId m_sessionId;
 
   /** Packet identifier, starts with 1 at tracking start. */
@@ -181,6 +199,9 @@ class LiveTrack24 : public QObject
 
   /** HTTP request queue. */
   QQueue<QPair<QString, QString> > m_requestQueue;
+
+  /** counter for successfully package transfer to the server. */
+  uint m_sentPackages;
 };
 
 #endif

@@ -60,9 +60,27 @@ class LiveTrack24Logger : public QObject
   virtual ~LiveTrack24Logger();
 
   /**
-   * This method is called to finish a just running log session.
+   * This method is called to finish a just running logger session.
    */
   void finishLogging();
+
+  /**
+   * Get session status.
+   *
+   * \returns true, if session is running otherwise false
+   */
+  bool getSessionStatus() const
+  {
+    return m_isFlying;
+  };
+
+  /**
+   * Retrieve package statistics from gateway.
+   */
+  void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
+  {
+    return m_lt24Gateway.getPackageStatistics( cachedPkgs, sentPkgs );
+  };
 
  public slots:
 

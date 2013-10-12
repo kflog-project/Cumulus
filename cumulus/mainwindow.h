@@ -143,7 +143,7 @@ public:
    *
    * \return A LiveTrack24 logger instance
    */
-  const LiveTrack24Logger* getLiveTrack24Logger() const
+  LiveTrack24Logger* getLiveTrack24Logger() const
   {
     return m_liveTrackLogger;
   };
