@@ -410,8 +410,12 @@ public class CumulusActivity extends QtActivity
     Log.d(TAG, "HARDWARE="+ Build.HARDWARE);
     Log.d(TAG, "MODEL=" + Build.MODEL);
     Log.d(TAG, "DEVICE=" + Build.DEVICE);
+    Log.d(TAG, "DISPLAY=" + Build.DISPLAY);
     Log.d(TAG, "BOARD=" + Build.BOARD);
     Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
+    Log.d(TAG, "ID=" + Build.ID);
+    Log.d(TAG, "SERIAL=" + Build.SERIAL);
+    Log.d(TAG, "RADIO=" + Build.getRadioVersion());
     
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     Log.d(TAG, "DISPLAY_METRICS=" + displayMetrics.toString());
