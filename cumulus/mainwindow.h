@@ -57,6 +57,10 @@
 #include "waitscreen.h"
 #include "splash.h"
 
+#ifdef INTERNET
+#include "LiveTrack24Logger.h"
+#endif
+
 extern MainWindow  *_globalMainWindow;
 
 class MainWindow : public QMainWindow
@@ -131,6 +135,20 @@ public:
   {
     m_rootWindow = value;
   };
+
+#ifdef INTERNET
+
+  /**
+   * Returns the LiveTrack24 logger instance.
+   *
+   * \return A LiveTrack24 logger instance
+   */
+  const LiveTrack24Logger* getLiveTrack24Logger() const
+  {
+    return m_liveTrackLogger;
+  };
+
+#endif
 
 #ifdef ANDROID
   void forceFocus();
@@ -529,6 +547,11 @@ private:
   // menu display. Android popups only its menu if the main window is active and
   // not covered by another widget.
   static bool m_rootWindow;
+
+#ifdef INTERNET
+  /** LiveTrack24 logger object. */
+  LiveTrack24Logger* m_liveTrackLogger;
+#endif
 
 #if defined ANDROID || defined MAEMO
 

@@ -116,7 +116,7 @@ class LiveTrack24 : public QObject
    * @param ground_speed Speed over ground in km/h
    */
   bool routeTracking( const QPoint& position,
-                      const uint altitude,
+                      const int altitude,
                       const uint groundSpeed,
                       const uint course,
                       qint64 utcTimeStamp );

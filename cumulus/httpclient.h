@@ -83,11 +83,11 @@ class HttpClient : public QObject
   };
 
   /**
-   * Returns true, if a download is running otherwise false.
+   * Returns true, if a request is in work is running otherwise false.
    */
-  bool isDownloadRunning() const
+  bool isBusy() const
   {
-    return m_downloadRunning;
+    return m_isBusy;
   };
 
   /**
@@ -142,7 +142,7 @@ class HttpClient : public QObject
   QByteArray            *m_userByteArray;
   QString               m_url;
   QString               m_destination;
-  bool                  m_downloadRunning;
+  bool                  m_isBusy;
   QTimer                *m_timer;
 };
 

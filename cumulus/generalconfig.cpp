@@ -249,7 +249,7 @@ void GeneralConfig::load()
 
   beginGroup("LiveTrack24");
   _liveTrackOnOff        = value( "OnOff", false ).toBool();
-  _liveTrackInterval     = value( "Interval", 5 ).toInt();
+  _liveTrackInterval     = value( "Interval", 10 ).toInt();
   _liveTrackAirplaneType = value( "AirplaneType", 8 ).toInt();
   _liveTrackServer       = value( "Server", "www.livetrack24.com").toString();
   _liveTrackUserName     = value( "UserName", "").toString();

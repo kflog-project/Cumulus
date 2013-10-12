@@ -65,10 +65,6 @@
 #include "windanalyser.h"
 #include "wpeditdialog.h"
 
-#ifdef INTERNET
-#include "LiveTrack24Logger.h"
-#endif
-
 #ifdef ANDROID
 
 #include <QWindowSystemInterface>
@@ -138,7 +134,8 @@ static void resumeGpsConnection( int sig )
     }
 }
 
-MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
+MainWindow::MainWindow( Qt::WindowFlags flags ) :
+  QMainWindow( 0, flags )
 {
   _globalMainWindow = this;
   m_menuBarVisible = false;
@@ -156,6 +153,10 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) : QMainWindow( 0, flags )
   helpMenu = 0;
 
   m_logger = static_cast<IgcLogger *> (0);
+
+#ifdef INTERNET
+  m_liveTrackLogger = 0;
+#endif
 
 #if defined ANDROID || defined MAEMO
   m_displayTrigger = static_cast<QTimer *> (0);
@@ -623,13 +624,14 @@ void MainWindow::slotCreateApplicationWidgets()
   // waypoint info widget
   viewInfo = new WPInfoWidget( this );
 
-  // create GPS object
+  // create GPS instance
   GpsNmea::gps = new GpsNmea( this );
   GpsNmea::gps->blockSignals( true );
   m_logger = IgcLogger::instance();
 
 #ifdef INTERNET
-  LiveTrack24Logger* liveTrackLogger = new LiveTrack24Logger( this );
+  // create a live tracking instance
+  m_liveTrackLogger = new LiveTrack24Logger( this );
 #endif
 
   createActions();
@@ -850,7 +852,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #ifdef INTERNET
   connect( calculator, SIGNAL( newSample() ),
-           liveTrackLogger, SLOT( slotNewFixEntry() ) );
+           m_liveTrackLogger, SLOT( slotNewFixEntry() ) );
 #endif
 
   connect( m_logger, SIGNAL( logging( bool ) ),
@@ -1889,6 +1891,19 @@ void MainWindow::closeEvent( QCloseEvent* event )
     case QMessageBox::Yes:
       // save and exit
       event->accept();
+
+      // Stop GPS data forwarding to stop any other logging actions.
+      GpsNmea::gps->blockSignals( true );
+
+#ifdef INTERNET
+      // Stop live tracking.
+      m_liveTrackLogger->finishLogging();
+
+      // Wait a second to have time to send the live tracking end message
+      // before the application terminates.
+      sleep(1);
+#endif
+
 #ifdef ANDROID
       jniShutdown();
 #endif

@@ -35,7 +35,7 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
   m_userByteArray(0),
   m_url(""),
   m_destination(""),
-  m_downloadRunning(false),
+  m_isBusy(false),
   m_timer(0)
  {
    if( showProgressDialog )
@@ -57,7 +57,7 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
 
    // timer to supervise connection.
    m_timer = new QTimer( this );
-   m_timer->setInterval( 120000 ); // Timeout is 120s
+   m_timer->setInterval( 600000 ); // Timeout is 60s
 
    connect( m_timer, SIGNAL(timeout()), this, SLOT(slotCancelDownload()) );
 }
@@ -85,7 +85,7 @@ HttpClient::~HttpClient()
 
 bool HttpClient::getData( QString &urlIn, QByteArray* userByteArray )
 {
-  if( m_downloadRunning == true )
+  if( m_isBusy == true )
     {
       qWarning( "HttpClient(%d): download is running!", __LINE__ );
       return false;
@@ -107,7 +107,7 @@ bool HttpClient::getData( QString &urlIn, QByteArray* userByteArray )
 
 bool HttpClient::downloadFile( QString &urlIn, QString &destinationIn )
 {
-  if( m_downloadRunning == true )
+  if( m_isBusy == true )
     {
       qWarning( "HttpClient(%d): download is running!", __LINE__ );
       return false;
@@ -202,7 +202,7 @@ bool HttpClient::sendRequest2Server()
   connect( m_reply, SIGNAL(downloadProgress(qint64, qint64)),
            this, SLOT(slotDownloadProgress( qint64, qint64 )) );
 
-  m_downloadRunning = true;
+  m_isBusy = true;
   m_timer->start();
   return true;
 }
@@ -210,7 +210,7 @@ bool HttpClient::sendRequest2Server()
 /** User has canceled the download. */
 void HttpClient::slotCancelDownload()
 {
-  qDebug( "HttpClient(%d): Download canceled!", __LINE__ );
+  qDebug( "HttpClient(%d): Operation canceled!", __LINE__ );
 
   m_timer->stop();
 
@@ -445,7 +445,7 @@ void HttpClient::slotFinished()
 
       // Reset run flag before signal emit because signal finished can trigger
       // the next download.
-      m_downloadRunning = false;
+      m_isBusy = false;
 
       // Inform about the result.
       emit finished( m_url, error );

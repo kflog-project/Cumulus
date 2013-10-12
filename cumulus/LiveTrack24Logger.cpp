@@ -82,6 +82,21 @@ void LiveTrack24Logger::slotNewFixEntry()
     }
 }
 
+void LiveTrack24Logger::slotNewSwitchState( bool state )
+{
+  qDebug() << "LiveTrack24Logger::slotNewSwitchState" << state;
+
+  if( state == false )
+    {
+      // LiveTracking has been switched off
+      if( m_isFlying == true )
+        {
+          // We are flying, finish logging.
+          finishLogging();
+        }
+    }
+}
+
 void LiveTrack24Logger::reportRoutePoint()
 {
   m_lt24Gateway.routeTracking( calculator->getlastPosition(),
@@ -89,4 +104,20 @@ void LiveTrack24Logger::reportRoutePoint()
                                rint(calculator->getLastSpeed().getKph()),
                                calculator->getlastHeading(),
                                GpsNmea::gps->getLastUtc().currentMSecsSinceEpoch() / 1000 );
+}
+
+void LiveTrack24Logger::finishLogging()
+{
+  qDebug() << "LiveTrack24Logger::finishLogging()";
+
+  if( m_isFlying == false )
+    {
+      // We are not in fly mode therefore end tracking is not necessary.
+      return;
+    }
+
+  m_lt24Gateway.endTracking();
+  m_isFlying = false;
+  m_lastTrackReporting.start();
+  m_lastMoveTimePoint.start();
 }

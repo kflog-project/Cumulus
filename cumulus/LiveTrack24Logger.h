@@ -59,10 +59,18 @@ class LiveTrack24Logger : public QObject
 
   virtual ~LiveTrack24Logger();
 
+  /**
+   * This method is called to finish a just running log session.
+   */
+  void finishLogging();
+
  public slots:
 
   /** Called from calculator, if a new GPS fix is available. */
   void slotNewFixEntry();
+
+  /** Called, if the live tracking is switched on/off. */
+  void slotNewSwitchState( bool state );
 
  private:
 

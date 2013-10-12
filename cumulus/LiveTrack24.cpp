@@ -40,7 +40,6 @@ LiveTrack24::LiveTrack24( QObject *parent ) :
   connect( m_httpClient, SIGNAL( finished(QString &, QNetworkReply::NetworkError) ),
            this, SLOT( slotHttpResponse(QString &, QNetworkReply::NetworkError) ));
 
-
   m_retryTimer = new QTimer( this );
   m_retryTimer->setInterval( 60000 ); // Timeout is 60s
   m_retryTimer->setSingleShot( true );
@@ -72,14 +71,12 @@ bool LiveTrack24::startTracking()
 
   if( userName.isEmpty() )
     {
-      qDebug() << method << "LiveTracking user name is missing!";
-      return false;
+      qWarning() << method << "LiveTracking user name is missing!";
     }
 
   if( password.isEmpty() )
     {
-      qDebug() << method << "LiveTracking password is missing!";
-      return false;
+      qWarning() << method << "LiveTracking password is missing!";
     }
 
   // This starts a new tracking session. First it is checked, if we need a login.
@@ -126,7 +123,7 @@ bool LiveTrack24::startTracking()
 }
 
 bool LiveTrack24::routeTracking( const QPoint& position,
-                                 const uint altitude,
+                                 const int altitude,
                                  const uint groundSpeed,
                                  const uint course,
                                  qint64 utcTimeStamp )
@@ -173,6 +170,16 @@ bool LiveTrack24::endTracking()
 
 void LiveTrack24::slotRetry()
 {
+  // Data sending was not possible and the retry timer has expired.
+  // As next we check if LiveTracking is still switched on.
+  // If not, we stop here the data sending and clear the request queue.
+  if( GeneralConfig::instance()->isLiveTrackOnOff() == false )
+    {
+      qDebug() << "LiveTrack24::slotRetry: LiveTracking is switched off, clear data queue!";
+      m_requestQueue.clear();
+      return;
+    }
+
   // Take the next request from the queue and try to send it to the server.
   sendHttpRequest();
 }
@@ -187,20 +194,13 @@ bool LiveTrack24::sendHttpRequest()
 {
   GeneralConfig* conf = GeneralConfig::instance();
 
-  // Check if LiveTracking is switched on
-  if( conf->isLiveTrackOnOff() == false )
-    {
-      qDebug() << "LiveTrack24::sendHttpRequest: LiveTracking is switched off!";
-      return true;
-    }
-
   if( m_requestQueue.isEmpty() )
     {
       // Queue is empty.
       return true;
     }
 
-  if( m_httpClient->isDownloadRunning() )
+  if( m_httpClient->isBusy() )
     {
       // Another request is just in work, do nothing more.
       return true;
@@ -252,12 +252,12 @@ bool LiveTrack24::sendHttpRequest()
     }
   else
     {
-      // Complete url with session and package identifier
+      // Complete URL with session and package identifier
       url = keyAndUrl.second.arg(m_sessionId).arg(m_packetId);
       m_packetId++;
     }
 
-  qDebug() << "URL=" << url;
+  qDebug() << "<--URL=" << url;
 
   bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
 
