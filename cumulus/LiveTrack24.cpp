@@ -94,6 +94,10 @@ bool LiveTrack24::startTracking()
   // This starts a new tracking session. First it is checked, if we need a login.
   if( m_userId == 0 )
     {
+      // All previous cached data are cleared because there was no login to the
+      // server and in this case only the current session will be stored.
+      m_requestQueue.clear();
+
       // /client.php?op=login&user=username&pass=pass
       //
       // There is no user identifier defined, login is needed as first.
@@ -105,7 +109,6 @@ bool LiveTrack24::startTracking()
 
   // /track.php?leolive=2&sid=42664778&pid=1&client=YourProgramName&v=1&user=yourusername&pass=yourpass
   // &phone=Nokia 2600c&gps=BT GPS&trk1=4&vtype=16388&vname=vehicle name and model
-
   QString gliderType;
   QString gliderRegistration;
 
@@ -119,7 +122,7 @@ bool LiveTrack24::startTracking()
 
 #ifdef ANDROID
 
-  phoneModel = jniGetBuildData().value("MODEL");
+  phoneModel = jniGetBuildData().value("BRAND") + ", " + jniGetBuildData().value("MODEL");
 
 #else
 
