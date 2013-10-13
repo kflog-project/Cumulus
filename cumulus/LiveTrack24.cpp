@@ -119,7 +119,7 @@ bool LiveTrack24::startTracking()
 
 #ifdef ANDROID
 
-  phoneModel = jniGetBuildData.value("MODEL");
+  phoneModel = jniGetBuildData().value("MODEL");
 
 #else
 
