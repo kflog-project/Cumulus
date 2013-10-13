@@ -415,7 +415,7 @@ public class CumulusActivity extends QtActivity
     Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
     Log.d(TAG, "ID=" + Build.ID);
     Log.d(TAG, "SERIAL=" + Build.SERIAL);
-    Log.d(TAG, "RADIO=" + Build.getRadioVersion());
+    // Log.d(TAG, "RADIO=" + Build.getRadioVersion());
     
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     Log.d(TAG, "DISPLAY_METRICS=" + displayMetrics.toString());
@@ -1266,6 +1266,31 @@ public class CumulusActivity extends QtActivity
           
       return buffer.toString();
     }
+  
+  /**
+   * Gets the build data from the Android system as key value string devided by
+   * a pipe sign.
+   * 
+   * @return bild data as key value string
+   */
+  String getBildData()
+	{
+	  StringBuffer buffer = new StringBuffer();
+	  
+      buffer.append("CPU_ABI|").append(Build.CPU_ABI).append('|')
+		    .append("BRAND|").append(Build.BRAND).append('|')
+		    .append("PRODUCT|").append(Build.PRODUCT).append('|')
+		    .append("MANUFACTURER|").append(Build.MANUFACTURER).append('|')
+		    .append("HARDWARE|").append(Build.HARDWARE).append('|')
+		    .append("MODEL|").append(Build.MODEL).append('|')
+		    .append("DEVICE|").append(Build.DEVICE).append('|')
+		    .append("DISPLAY|").append(Build.DISPLAY).append('|')
+		    .append("FINGERPRINT|").append(Build.FINGERPRINT).append('|')
+		    .append("ID|").append(Build.ID).append('|')
+		    .append("SERIAL|").append(Build.SERIAL).append('|');
+    
+      return buffer.toString();
+	}
   
   /**
    * Called from the native side to signal a shutdown. In that case all connections
