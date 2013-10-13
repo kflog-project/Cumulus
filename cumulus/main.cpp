@@ -309,6 +309,18 @@ int main(int argc, char *argv[])
       qDebug() << i.key() << "=" << i.value();
     }
 
+  QHash <QString, QString> bdh = jniGetBuildData();
+
+  QHashIterator<QString, QString> j(bdh);
+
+  qDebug() << "Android build data as key value list";
+
+  while( j.hasNext() )
+    {
+      j.next();
+      qDebug() << j.key() << "=" << j.value();
+    }
+
 #endif
 
   // save done configuration settings

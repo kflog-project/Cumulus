@@ -85,21 +85,21 @@ bool jniAddDataInstalled();
 QString jniGetLanguage();
 
 /**
- * Gets the display metrics elements used by Android as hash in key value
+ * Gets the display metrics elements used by Android as a hash in key value
  * notation. The key is a string, the value a floating number.
- *
- *  density=<float>
- *  densityDpi=<float>
- *  heightPixels=<int>
- *  scaledDensity=<float>
- *  widthPixels=<int>
- *  xdpi=<float>
- *  ydpi=<float>
  *
  * @return The display metrics used by Android
  */
-
 QHash<QString, float> jniGetDisplayMetrics();
+
+
+/**
+ * Returns the Android build data as a hash in key value
+ * notation.
+ *
+ * @return The Android build data as hash.
+ */
+QHash<QString, QString> jniGetBuildData();
 
 /**
  * Tells the android activity to switch on/off the dimming of the screen.

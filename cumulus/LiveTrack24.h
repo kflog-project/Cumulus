@@ -160,11 +160,19 @@ class LiveTrack24 : public QObject
   SessionId generateSessionId( const UserId userId );
 
   /**
-   * \return The server address without http://
+   * \return The configured server address without http://
    */
   const QString& getServer()
   {
     return GeneralConfig::instance()->getLiveTrackServer();
+  };
+
+  /**
+   * \return The server address without http:// for the currently active session.
+   */
+  const QString& getSessionServer()
+  {
+    return m_sessionUrl;
   };
 
  signals:
@@ -190,6 +198,11 @@ class LiveTrack24 : public QObject
    * The user identifier is the base for the session identifier.
    */
   SessionId m_sessionId;
+
+  /**
+   * Url used for the current active session.
+   */
+  QString m_sessionUrl;
 
   /** Packet identifier, starts with 1 at tracking start. */
   uint m_packetId;

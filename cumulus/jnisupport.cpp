@@ -50,6 +50,7 @@ static jmethodID m_AddDataInstalledID = 0;
 static jmethodID m_AppDataDirID       = 0;
 static jmethodID m_languageID         = 0;
 static jmethodID m_DisplayMetricsID   = 0;
+static jmethodID m_BuildDataID        = 0;
 static jmethodID m_playSoundID        = 0;
 static jmethodID m_dimmScreenID       = 0;
 static jmethodID m_gpsCmdID           = 0;
@@ -408,10 +409,20 @@ bool initJni( JavaVM* vm, JNIEnv* env )
   m_DisplayMetricsID = m_jniEnv->GetMethodID( clazz,
                                               "getDisplayMetrics",
                                               "()Ljava/lang/String;");
-
   if (isJavaExceptionOccured())
     {
       qWarning() << "initJni: could not get ID of getDisplayMetrics";
+      return false;
+    }
+
+
+  m_BuildDataID = m_jniEnv->GetMethodID( clazz,
+                                         "getBuildData",
+                                         "()Ljava/lang/String;");
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning() << "initJni: could not get ID of getBuildData";
       return false;
     }
 
@@ -770,6 +781,52 @@ QHash<QString, float> jniGetDisplayMetrics()
     }
 
   return dmh;
+}
+
+QHash<QString, QString> jniGetBuildData()
+{
+  QString buildData;
+
+  bool ok = jniCallStringMethod( "getBuildData", m_BuildDataID, buildData );
+
+  Q_UNUSED(ok)
+
+  QHash<QString, QString> bdh;
+
+  if( buildData.size() == 0 )
+    {
+      // No data are returned
+      return bdh;
+    }
+
+  // The returned string is a key value string separated with pipe signs with
+  // the following keys:
+  // CPU_ABI
+  // BRAND
+  // PRODUCT
+  // MANUFACTURE
+  // HARDWARE
+  // MODEL
+  // DEVICE
+  // DISPLAY
+  // FINGERPRINT
+  // ID
+  // SERIAL
+
+  QStringList kvList = buildData.split("|", QString::SkipEmptyParts );
+
+  if( kvList.size() == 0 || kvList.size() % 2 )
+    {
+      // No or not enough build data are returned
+      return bdh;
+    }
+
+  for( int i = 0; i < kvList.size() - 1; i += 2 )
+    {
+      bdh.insert( kvList.at(i), kvList.at( i+1 ) );
+    }
+
+  return bdh;
 }
 
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult )

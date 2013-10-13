@@ -1271,7 +1271,7 @@ public class CumulusActivity extends QtActivity
    * Gets the build data from the Android system as key value string devided by
    * a pipe sign.
    * 
-   * @return bild data as key value string
+   * @return Bild data as key value string
    */
   String getBildData()
 	{

@@ -32,6 +32,7 @@ LiveTrack24::LiveTrack24( QObject *parent ) :
   m_retryTimer(0),
   m_userId(0),
   m_sessionId(0),
+  m_sessionUrl(getServer()),
   m_packetId(0),
   m_sentPackages(0)
 {
@@ -68,9 +69,12 @@ bool LiveTrack24::startTracking()
   // Reset package counter
   m_sentPackages = 0;
 
+  // Set the session server url to the configured item.
+  m_sessionUrl = getServer();
+
   // Check, if user name and password are defined by the user
   const QString& userName = conf->getLiveTrackUserName();
-  QString  password = conf->getLiveTrackPassword();
+  QString  password       = conf->getLiveTrackPassword();
 
   if( userName.isEmpty() )
     {
@@ -89,7 +93,7 @@ bool LiveTrack24::startTracking()
       //
       // There is no user identifier defined, login is needed as first.
       QString loginUrl = "http://" +
-                          conf->getLiveTrackServer() +
+                          getSessionServer() +
                          "/client.php?op=login&user=%1&pass=%2";
       queueRequest( qMakePair( QString("Login"), loginUrl) );
     }
@@ -107,7 +111,7 @@ bool LiveTrack24::startTracking()
     }
 
   QString startUrl = "http://" +
-                     conf->getLiveTrackServer() +
+                     getSessionServer() +
                      "/track.php?leolive=2&sid=%1&pid=%2&client=Cumulus&v=" +
                      QCoreApplication::applicationVersion() +
                      "&user=%3&pass=%4&phone=" + "Android" +
@@ -141,7 +145,7 @@ bool LiveTrack24::routeTracking( const QPoint& position,
     }
 
   QString routeUrl = "http://" +
-                     conf->getLiveTrackServer() +
+                     getSessionServer() +
                      "/track.php?leolive=4&sid=%1&pid=%2" +
                      "&lat=" + QString::number(float(position.x()) / 600000.0) +
                      "&lon=" + QString::number(float(position.y()) / 600000.0) +
@@ -165,7 +169,7 @@ bool LiveTrack24::endTracking()
     }
 
   QString endUrl = "http://" +
-                    conf->getLiveTrackServer() +
+                    getSessionServer() +
                    "/track.php?leolive=3&sid=%1&pid=%2&prid=0";
 
   return queueRequest( qMakePair( QString("End"), endUrl) );
