@@ -23,8 +23,13 @@
 
 #include "calculator.h"
 #include "generalconfig.h"
+#include "hwinfo.h"
 #include "LiveTrack24.h"
 #include "mainwindow.h"
+
+#ifdef ANDROID
+#include "jnisupport.h"
+#endif
 
 LiveTrack24::LiveTrack24( QObject *parent ) :
   QObject(parent),
@@ -110,12 +115,24 @@ bool LiveTrack24::startTracking()
       gliderRegistration = calculator->glider()->registration();
     }
 
+  QString phoneModel="unknown";
+
+#ifdef ANDROID
+
+  phoneModel = jniGetBuildData.value("MODEL");
+
+#else
+
+  phoneModel = HwInfo::instance()->getType() + " " +
+               HwInfo::instance()->getSubType();
+
+#endif
+
   QString startUrl = "http://" +
                      getSessionServer() +
                      "/track.php?leolive=2&sid=%1&pid=%2&client=Cumulus&v=" +
                      QCoreApplication::applicationVersion() +
-                     "&user=%3&pass=%4&phone=" + "Android" +
-                     // Get Phone
+                     "&user=%3&pass=%4&phone=" + phoneModel +
                      "&gps=" + "internal GPS" +
                      // Get GPS
                      "&trk1=%4&vtype=" + QString::number(conf->getLiveTrackAirplaneType()) +
