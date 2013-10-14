@@ -31,16 +31,28 @@
 #include "jnisupport.h"
 #endif
 
+// Define control keys for URL caching
+#define Login static_cast<uchar>('L')
+#define Start static_cast<uchar>('S')
+#define Route static_cast<uchar>('R')
+#define End   static_cast<uchar>('E')
+
+// Define a maximum queue length to limit the data amount. That limit is reached
+// after an hour, if all 5s an entry is made.
+#define MaxQueueLen 750
+
 LiveTrack24::LiveTrack24( QObject *parent ) :
   QObject(parent),
   m_httpClient(0),
   m_retryTimer(0),
   m_userId(0),
   m_sessionId(0),
-  m_sessionUrl(getServer()),
+  m_sessionUrl(""),
   m_packetId(0),
   m_sentPackages(0)
 {
+  setSessionServer();
+
   m_httpClient = new HttpClient( this, false );
 
   connect( m_httpClient, SIGNAL( finished(QString &, QNetworkReply::NetworkError) ),
@@ -74,8 +86,8 @@ bool LiveTrack24::startTracking()
   // Reset package counter
   m_sentPackages = 0;
 
-  // Set the session server url to the configured item.
-  m_sessionUrl = getServer();
+  // Set the session server URL to the configured item.
+  setSessionServer();
 
   // Check, if user name and password are defined by the user
   const QString& userName = conf->getLiveTrackUserName();
@@ -95,21 +107,21 @@ bool LiveTrack24::startTracking()
   if( m_userId == 0 )
     {
       // All previous cached data are cleared because there was no login to the
-      // server and in this case only the current session will be stored.
+      // server in the past and in this case only the current session data
+      // are stored.
       m_requestQueue.clear();
 
       // /client.php?op=login&user=username&pass=pass
       //
       // There is no user identifier defined, login is needed as first.
-      QString loginUrl = "http://" +
-                          getSessionServer() +
+      QString loginUrl = getSessionServer() +
                          "/client.php?op=login&user=%1&pass=%2";
-      queueRequest( qMakePair( QString("Login"), loginUrl) );
+      queueRequest( qMakePair( Login, loginUrl) );
     }
 
   // /track.php?leolive=2&sid=42664778&pid=1&client=YourProgramName&v=1&user=yourusername&pass=yourpass
   // &phone=Nokia 2600c&gps=BT GPS&trk1=4&vtype=16388&vname=vehicle name and model
-  QString gliderType;
+  QString gliderType = "unknown";
   QString gliderRegistration;
 
   if( calculator->glider() )
@@ -118,7 +130,7 @@ bool LiveTrack24::startTracking()
       gliderRegistration = calculator->glider()->registration();
     }
 
-  QString phoneModel="unknown";
+  QString phoneModel;
 
 #ifdef ANDROID
 
@@ -131,8 +143,12 @@ bool LiveTrack24::startTracking()
 
 #endif
 
-  QString startUrl = "http://" +
-                     getSessionServer() +
+  if( phoneModel.isEmpty() )
+    {
+      phoneModel="unknown";
+    }
+
+  QString startUrl = getSessionServer() +
                      "/track.php?leolive=2&sid=%1&pid=%2&client=Cumulus&v=" +
                      QCoreApplication::applicationVersion() +
                      "&user=%3&pass=%4&phone=" + phoneModel +
@@ -146,7 +162,7 @@ bool LiveTrack24::startTracking()
       startUrl += " " + gliderRegistration;
     }
 
-  return queueRequest( qMakePair( QString("Start"), startUrl) );
+  return queueRequest( qMakePair( Start, startUrl) );
 }
 
 bool LiveTrack24::routeTracking( const QPoint& position,
@@ -164,8 +180,7 @@ bool LiveTrack24::routeTracking( const QPoint& position,
       return true;
     }
 
-  QString routeUrl = "http://" +
-                     getSessionServer() +
+  QString routeUrl = getSessionServer() +
                      "/track.php?leolive=4&sid=%1&pid=%2" +
                      "&lat=" + QString::number(float(position.x()) / 600000.0) +
                      "&lon=" + QString::number(float(position.y()) / 600000.0) +
@@ -174,7 +189,7 @@ bool LiveTrack24::routeTracking( const QPoint& position,
                      "&cog=" + QString::number( course ) +
                      "&tm=" + QString::number( utcTimeStamp );
 
-  return queueRequest( qMakePair( QString("Route"), routeUrl) );
+  return queueRequest( qMakePair( Route, routeUrl) );
 }
 
 bool LiveTrack24::endTracking()
@@ -188,11 +203,10 @@ bool LiveTrack24::endTracking()
       return true;
     }
 
-  QString endUrl = "http://" +
-                    getSessionServer() +
+  QString endUrl = getSessionServer() +
                    "/track.php?leolive=3&sid=%1&pid=%2&prid=0";
 
-  return queueRequest( qMakePair( QString("End"), endUrl) );
+  return queueRequest( qMakePair( End, endUrl) );
 }
 
 void LiveTrack24::slotRetry()
@@ -211,10 +225,31 @@ void LiveTrack24::slotRetry()
   sendHttpRequest();
 }
 
-bool LiveTrack24::queueRequest( QPair<QString, QString> keyAndUrl )
+bool LiveTrack24::queueRequest( QPair<uchar, QString> keyAndUrl )
 {
+  checkQueueLimit();
   m_requestQueue.enqueue( keyAndUrl );
   return sendHttpRequest();
+}
+
+void LiveTrack24::checkQueueLimit()
+{
+  if( m_requestQueue.size() <= MaxQueueLen )
+    {
+      return;
+    }
+
+  // The maximum queue length is reached. In this case the oldest route point
+  // element is removed.
+  for( int i = 0; i < m_requestQueue.size(); i++ )
+    {
+      if( m_requestQueue.at(i).first == Route )
+        {
+          // hau wech
+          m_requestQueue.removeAt( i );
+          break;
+        }
+    }
 }
 
 bool LiveTrack24::sendHttpRequest()
@@ -238,12 +273,12 @@ bool LiveTrack24::sendHttpRequest()
   QString  password = conf->getLiveTrackPassword();
 
   // Get the next element to be sent from the queue
-  QPair<QString, QString>& keyAndUrl = m_requestQueue.head();
+  QPair<uchar, QString>& keyAndUrl = m_requestQueue.head();
 
   // Clear the HTTP result buffer
   m_httpResultBuffer.clear();
 
-  if( keyAndUrl.first == "Login" )
+  if( keyAndUrl.first == Login )
     {
       // A login has to be executed. The user identifier is returned or
       // zero in error case, if user name or password are wrong.
@@ -261,7 +296,7 @@ bool LiveTrack24::sendHttpRequest()
 
   QString url;
 
-  if( keyAndUrl.first == "Start" )
+  if( keyAndUrl.first == Start )
     {
       // A start package has to be sent to the server. That requires to
       // set the package identifier to one and to create a new session identifier.
@@ -284,7 +319,7 @@ bool LiveTrack24::sendHttpRequest()
       m_packetId++;
     }
 
-  qDebug() << "<--URL=" << url;
+  qDebug() << "<--URL=" << url.size() << url;
 
   bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
 
@@ -328,9 +363,9 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
   // Remove the last executed request from the queue.
   if( ! m_requestQueue.isEmpty() )
     {
-      QPair<QString, QString> keyAndUrl = m_requestQueue.dequeue();
+      QPair<uchar, QString> keyAndUrl = m_requestQueue.dequeue();
 
-      if( keyAndUrl.first == "Login" )
+      if( keyAndUrl.first == Login )
         {
           // Check the returned user identifier. For a successful login it
           // must be greater than zero.
