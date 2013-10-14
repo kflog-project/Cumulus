@@ -799,8 +799,8 @@ QHash<QString, QString> jniGetBuildData()
       return bdh;
     }
 
-  // The returned string is a key value string separated with pipe signs with
-  // the following keys:
+  // The returned string is a key value string separated with newline signs
+  // containing the following keys:
   // CPU_ABI
   // BRAND
   // PRODUCT
@@ -813,11 +813,11 @@ QHash<QString, QString> jniGetBuildData()
   // ID
   // SERIAL
 
-  QStringList kvList = buildData.split("|", QString::SkipEmptyParts );
+  QStringList kvList = buildData.split("\n", QString::SkipEmptyParts );
 
   if( kvList.size() == 0 || kvList.size() % 2 )
     {
-      // No or not enough build data are returned
+      // No or not enough build data are returned.
       return bdh;
     }
 

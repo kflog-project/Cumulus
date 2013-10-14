@@ -107,13 +107,23 @@ class LiveTrack24 : public QObject
   typedef quint32 UserId;
   typedef quint32 SessionId;
 
-  /** Sends the "start of track" packet to the tracking server */
+  /**
+   * Sends the "start of track" packet to the tracking server.
+   *
+   * \return True on success otherwise false.
+   */
   bool startTracking();
 
   /**
    * Sends a "GPS point" packet to the tracking server
    *
-   * @param ground_speed Speed over ground in km/h
+   * \param position coordinates as WGS84 in KFLog format
+   * \param altitude Altitude in meters MSL
+   * \param groundSpeed Speed over ground in km/h
+   * \param course Course over ground 0...360
+   * \param utcTimeStamp UTC seconds
+   *
+   * \return True on success otherwise false.
    */
   bool routeTracking( const QPoint& position,
                       const int altitude,
@@ -121,7 +131,11 @@ class LiveTrack24 : public QObject
                       const uint course,
                       qint64 utcTimeStamp );
 
-  /** Sends the "end of track" packet to the tracking server */
+  /**
+   * Sends the "end of track" packet to the tracking server.
+   *
+   * \return True on success otherwise false.
+   */
   bool endTracking();
 
   /**
@@ -144,7 +158,12 @@ class LiveTrack24 : public QObject
    *
    * \param keyAndUrl a pair consisting of a key and an URL
    */
-  bool queueRequest( QPair<QString, QString> keyAndUrl );
+  bool queueRequest( QPair<uchar, QString> keyAndUrl );
+
+  /**
+   * Check if the queue limit is observed to avoid a memory problem.
+   */
+  void checkQueueLimit();
 
   /**
    * Sends the next request from the request queue to the server.
@@ -160,15 +179,26 @@ class LiveTrack24 : public QObject
   SessionId generateSessionId( const UserId userId );
 
   /**
-   * \return The configured server address without http://
+   * Stores the session server with the right http prefix at the variable
+   * m_sessionUrl.
    */
-  const QString& getServer()
+  void setSessionServer()
   {
-    return GeneralConfig::instance()->getLiveTrackServer();
+    const QString& server = GeneralConfig::instance()->getLiveTrackServer();
+
+    if( server.contains("livetrack24") )
+      {
+        m_sessionUrl = "http://" + server;
+      }
+    else if( server.contains("skylines") )
+      {
+        m_sessionUrl = "https://" + server;
+      }
   };
 
   /**
-   * \return The server address without http:// for the currently active session.
+   * \return The session server address with the right http prefix for the
+   *         currently active session.
    */
   const QString& getSessionServer()
   {
@@ -210,8 +240,16 @@ class LiveTrack24 : public QObject
   /** Result buffer for HTTP requests. */
   QByteArray m_httpResultBuffer;
 
-  /** HTTP request queue. */
-  QQueue<QPair<QString, QString> > m_requestQueue;
+  /**
+   * HTTP request queue. Every entry consists of a QPair, containing a key
+   * and the related url. The following keys are defined:
+   *
+   * Login 'L'
+   * Start 'S'
+   * Route 'R'
+   * End   'E'
+   */
+  QQueue<QPair<uchar, QString> > m_requestQueue;
 
   /** counter for successfully package transfer to the server. */
   uint m_sentPackages;

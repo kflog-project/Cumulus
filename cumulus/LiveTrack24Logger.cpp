@@ -59,7 +59,7 @@ void LiveTrack24Logger::slotNewFixEntry()
 
   if( m_isFlying )
     {
-      int reportInterval = conf->getLiveTrackInterval() * 1000;
+      int reportInterval = conf->getLiveTrackInterval() * 1000; // ms
 
       if( m_lastTrackReporting.elapsed() >= reportInterval )
         {
@@ -68,9 +68,9 @@ void LiveTrack24Logger::slotNewFixEntry()
           reportRoutePoint();
         }
 
-      // No moving for 30 seconds and calculator reports a stand still,
+      // No moving for 60 seconds and calculator reports a stand still,
       // we assume a landing and stop tracking.
-      if( m_lastMoveTimePoint.elapsed() >= 30000 &&
+      if( m_lastMoveTimePoint.elapsed() >= 60000 &&
           calculator->currentFlightMode() == Calculator::standstill )
         {
           // We have to report an end of moving

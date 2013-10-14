@@ -1268,8 +1268,8 @@ public class CumulusActivity extends QtActivity
     }
   
   /**
-   * Gets the build data from the Android system as key value string devided by
-   * a pipe sign.
+   * Gets the build data from the Android system as key value string. The single
+   * elements are separated by a newline sign.
    * 
    * @return Build data as key value string
    */
@@ -1277,17 +1277,17 @@ public class CumulusActivity extends QtActivity
 	{
 	  StringBuffer buffer = new StringBuffer();
 	  
-      buffer.append("CPU_ABI|").append(Build.CPU_ABI).append('|')
-		    .append("BRAND|").append(Build.BRAND).append('|')
-		    .append("PRODUCT|").append(Build.PRODUCT).append('|')
-		    .append("MANUFACTURER|").append(Build.MANUFACTURER).append('|')
-		    .append("HARDWARE|").append(Build.HARDWARE).append('|')
-		    .append("MODEL|").append(Build.MODEL).append('|')
-		    .append("DEVICE|").append(Build.DEVICE).append('|')
-		    .append("DISPLAY|").append(Build.DISPLAY).append('|')
-		    .append("FINGERPRINT|").append(Build.FINGERPRINT).append('|')
-		    .append("ID|").append(Build.ID).append('|')
-		    .append("SERIAL|").append(Build.SERIAL).append('|');
+      buffer.append("CPU_ABI\n").append(Build.CPU_ABI).append('\n')
+		    .append("BRAND\n").append(Build.BRAND).append('\n')
+		    .append("PRODUCT\n").append(Build.PRODUCT).append('\n')
+		    .append("MANUFACTURER\n").append(Build.MANUFACTURER).append('\n')
+		    .append("HARDWARE\n").append(Build.HARDWARE).append('\n')
+		    .append("MODEL\n").append(Build.MODEL).append('\n')
+		    .append("DEVICE\n").append(Build.DEVICE).append('\n')
+		    .append("DISPLAY\n").append(Build.DISPLAY).append('\n')
+		    .append("FINGERPRINT\n").append(Build.FINGERPRINT).append('\n')
+		    .append("ID\n").append(Build.ID).append('\n')
+		    .append("SERIAL\n").append(Build.SERIAL).append('\n');
     
       return buffer.toString();
 	}

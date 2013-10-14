@@ -152,6 +152,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   m_server = new QComboBox;
   m_server->addItem( "www.livetrack24.com" );
   m_server->addItem( "test.livetrack24.com" );
+  m_server->addItem( "skylines-project.org" );
   topLayout->addWidget(m_server, row, 1);
   row++;
 
@@ -346,10 +347,21 @@ void PreFlightLiveTrack24Page::slotLoginTest()
       return;
     }
 
-  QString loginUrl = QString("http://test.livetrack24.com"
-                             "/client.php?op=login&user=%1&pass=%2")
-                             .arg(m_username->text().trimmed())
-                             .arg(m_password->text().trimmed());
+  QString server = m_server->itemText(m_server->currentIndex());
+
+  if( server.contains("livetrack24") )
+    {
+      server = "http://test.livetrack24.com";
+    }
+  else if( server.contains("skylines") )
+    {
+      server = "https://skylines-project.org";
+    }
+
+  QString loginUrl = server +
+                     QString( "/client.php?op=login&user=%1&pass=%2")
+                              .arg(m_username->text().trimmed())
+                              .arg(m_password->text().trimmed() );
 
   m_httpResultBuffer.clear();
 
