@@ -96,13 +96,19 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
       row++;
     }
 
+  Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
+
   itemsLayout->addWidget(new QLabel(tr("Glider Type:"), this), row, 0);
   edtGType = new QLineEdit(this);
+  imh |= edtGType->inputMethodHints();
+  edtGType->setInputMethodHints(imh);
+
   itemsLayout->addWidget(edtGType, row, 1, 1, 3);
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
   edtGReg = new QLineEdit(this);
+  edtGReg->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGReg, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
@@ -112,8 +118,9 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   connect( m_seats, SIGNAL(pressed()), SLOT(slot_changeSeats()) );
   row++;
 
-  itemsLayout->addWidget(new QLabel(tr("Callsign:"), this), row, 0);
+  itemsLayout->addWidget(new QLabel(tr("Call Sign:"), this), row, 0);
   edtGCall = new QLineEdit(this);
+  edtGCall->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGCall, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);
