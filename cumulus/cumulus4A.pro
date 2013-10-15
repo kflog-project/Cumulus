@@ -92,7 +92,6 @@ HEADERS = \
     flighttask.h \
     fontdialog.h \
     generalconfig.h \
-    glidereditor.h \
     gliderflightdialog.h \
     glider.h \
     gliderlistwidget.h \
@@ -219,7 +218,6 @@ SOURCES = \
     fontdialog.cpp \
     generalconfig.cpp \
     glider.cpp \
-    glidereditor.cpp \
     gliderflightdialog.cpp \
     gliderlistwidget.cpp \
     gpsconandroid.cpp \

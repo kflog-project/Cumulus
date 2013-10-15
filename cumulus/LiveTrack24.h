@@ -22,20 +22,22 @@
  *
  * \brief API for the LiveTrack24 server at www.livetrack24.com
  *
- * Procedure:
+ * This class implements the API used by the LiveTrack24 server at
+ * www.livetrack24.com. It can also be used for the LiveTracking of SkyLines
+ * project at www.skylines-project.org.
  *
- * - Generate a Session Id
- *   (including User Id if available)
+ * Implemented methods:
  *
- * - Send Start-of-Track packet
- *   (on flight start or application start in midair)
+ * - Generate a Session Identifier including the User's Identifier
  *
- * - Send GPS-Point packet(s)
+ * - Send Start-of-Track packet on flight start or application start in midair
  *
- * - Send End-of-Track packet
- *   (on landing or application close)
+ * - Send GPS Route Point packet(s)
  *
- * @see http://www.livetrack24.com/wiki/en/Leonardo%20Live%20Tracking%20API
+ * - Send End-of-Track packet on landing or application close
+ *
+ * \see http://www.livetrack24.com/wiki/LiveTracking%20API
+ * \see https://www.skylines-project.org/tracking/info
  *
  * \date 2013
  *
@@ -104,7 +106,10 @@ class LiveTrack24 : public QObject
     CAR_4X4 = 17101,
   };
 
+  /** User identifier data type. */
   typedef quint32 UserId;
+
+  /** Session identifier data type. */
   typedef quint32 SessionId;
 
   /**
@@ -115,13 +120,13 @@ class LiveTrack24 : public QObject
   bool startTracking();
 
   /**
-   * Sends a "GPS point" packet to the tracking server
+   * Sends a "GPS route point" packet to the tracking server
    *
-   * \param position coordinates as WGS84 in KFLog format
-   * \param altitude Altitude in meters MSL
+   * \param position Coordinates as WGS84 in KFLog format
+   * \param altitude Altitude in meters above MSL
    * \param groundSpeed Speed over ground in km/h
-   * \param course Course over ground 0...360
-   * \param utcTimeStamp UTC seconds
+   * \param course Course over ground 0...360 degrees
+   * \param utcTimeStamp UTC seconds since 1970
    *
    * \return True on success otherwise false.
    */
@@ -156,30 +161,41 @@ class LiveTrack24 : public QObject
   /**
    * Puts a HTTP request into the queue and activates the sending to the server.
    *
-   * \param keyAndUrl a pair consisting of a key and an URL
+   * \param keyAndUrl A pair consisting of a key identifier and an URL
    */
   bool queueRequest( QPair<uchar, QString> keyAndUrl );
 
   /**
-   * Check if the queue limit is observed to avoid a memory problem.
+   * Check if the queue limit is observed to avoid a memory problem. If the
+   * queue is full, the oldest GPS route point is removed from the queue.
    */
   void checkQueueLimit();
 
   /**
    * Sends the next request from the request queue to the server.
    *
-   * @return true in case of success otherwise false.
+   * \return True in case of success otherwise false.
    */
   bool sendHttpRequest();
 
-  /** Generates a random session id */
+  /**
+   * Generates a random session identifier.
+   *
+   * \return A random session identifier.
+   */
   SessionId generateSessionId();
 
-  /** Generates a random session id containing the given user identifier */
+  /**
+   * Generates a random session identifier containing the given user identifier
+   *
+   * \param UserId User identifier to be included in session identifier.
+   *
+   * \return Calculated random session identifier
+   */
   SessionId generateSessionId( const UserId userId );
 
   /**
-   * Stores the session server with the right http prefix at the variable
+   * Stores the session server with the right protocol prefix at the variable
    * m_sessionUrl.
    */
   void setSessionServer()
@@ -197,7 +213,7 @@ class LiveTrack24 : public QObject
   };
 
   /**
-   * \return The session server address with the right http prefix for the
+   * \return The session server address with the right protocol prefix for the
    *         currently active session.
    */
   const QString& getSessionServer()
@@ -209,7 +225,13 @@ class LiveTrack24 : public QObject
 
  private slots:
 
-   /** Called, if the HTTP request is finished. */
+   /**
+    * Called, if the last sent HTTP request is finished.
+    *
+    * \param url URL of the executed request
+    *
+    * \param code Result code
+    */
    void slotHttpResponse( QString &url, QNetworkReply::NetworkError code );
 
    /** Called, if retry timer expires to trigger a new sent request. */
@@ -221,28 +243,28 @@ class LiveTrack24 : public QObject
   QTimer*     m_retryTimer;
 
   /** User identifier returned during login to server. */
-  UserId    m_userId;
+  UserId m_userId;
 
   /**
-   * Session identifier, generate with method generateSessionId.
+   * Session identifier, generated with method generateSessionId.
    * The user identifier is the base for the session identifier.
    */
   SessionId m_sessionId;
 
   /**
-   * Url used for the current active session.
+   * URL used for the current active live tracking session.
    */
   QString m_sessionUrl;
 
-  /** Packet identifier, starts with 1 at tracking start. */
+  /** Packet identifier, starting with 1 at tracking start. */
   uint m_packetId;
 
-  /** Result buffer for HTTP requests. */
+  /** Result buffer for HTTP request. */
   QByteArray m_httpResultBuffer;
 
   /**
    * HTTP request queue. Every entry consists of a QPair, containing a key
-   * and the related url. The following keys are defined:
+   * and the related URL. The following keys are defined:
    *
    * Login 'L'
    * Start 'S'
@@ -250,6 +272,12 @@ class LiveTrack24 : public QObject
    * End   'E'
    */
   QQueue<QPair<uchar, QString> > m_requestQueue;
+
+  /** Key identifier for the queue m_requestQueue. */
+  static const uchar Login;
+  static const uchar Start;
+  static const uchar Route;
+  static const uchar End;
 
   /** counter for successfully package transfer to the server. */
   uint m_sentPackages;

@@ -84,8 +84,6 @@ void LiveTrack24Logger::slotNewFixEntry()
 
 void LiveTrack24Logger::slotNewSwitchState( bool state )
 {
-  qDebug() << "LiveTrack24Logger::slotNewSwitchState" << state;
-
   if( state == false )
     {
       // LiveTracking has been switched off
@@ -108,11 +106,9 @@ void LiveTrack24Logger::reportRoutePoint()
 
 void LiveTrack24Logger::finishLogging()
 {
-  qDebug() << "LiveTrack24Logger::finishLogging()";
-
   if( m_isFlying == false )
     {
-      // We are not in fly mode therefore end tracking is not necessary.
+      // We are not in fly mode therefore an end tracking is not necessary.
       return;
     }
 

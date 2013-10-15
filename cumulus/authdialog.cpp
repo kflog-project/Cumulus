@@ -44,8 +44,14 @@ AuthDialog::AuthDialog( QString &user, QString &password,
   setAttribute( Qt::WA_DeleteOnClose );
   setSizeGripEnabled( true );
 
-  userEdit     = new QLineEdit;
+  Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
+
+  userEdit = new QLineEdit;
+  imh |= userEdit->inputMethodHints();
+  userEdit->setInputMethodHints(imh);
+
   passwordEdit = new QLineEdit;
+  passwordEdit->setInputMethodHints(imh);
   passwordEdit->setEchoMode(QLineEdit::Password);
 
   QFormLayout *formLayout = new QFormLayout;

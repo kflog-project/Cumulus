@@ -15,6 +15,8 @@
 **
 ***********************************************************************/
 
+// See http://www.livetrack24.com/wiki/LiveTracking%20API for more details.
+
 #include <cstdlib>
 #include <ctime>
 
@@ -32,10 +34,10 @@
 #endif
 
 // Define control keys for URL caching
-#define Login static_cast<uchar>('L')
-#define Start static_cast<uchar>('S')
-#define Route static_cast<uchar>('R')
-#define End   static_cast<uchar>('E')
+const uchar LiveTrack24::Login = 'L';
+const uchar LiveTrack24::Start = 'S';
+const uchar LiveTrack24::Route = 'R';
+const uchar LiveTrack24::End   = 'E';
 
 // Define a maximum queue length to limit the data amount. That limit is reached
 // after an hour, if all 5s an entry is made.
@@ -79,7 +81,6 @@ bool LiveTrack24::startTracking()
   // Check if LiveTracking is switched on
   if( conf->isLiveTrackOnOff() == false )
     {
-      qDebug() << method << "LiveTracking is switched off!";
       return true;
     }
 
@@ -95,15 +96,15 @@ bool LiveTrack24::startTracking()
 
   if( userName.isEmpty() )
     {
-      qWarning() << method << "LiveTracking user name is missing!";
+      qWarning() << __LINE__ << method << "LiveTracking user name is missing!";
     }
 
   if( password.isEmpty() )
     {
-      qWarning() << method << "LiveTracking password is missing!";
+      qWarning() << __LINE__ << method << "LiveTracking password is missing!";
     }
 
-  // This starts a new tracking session. First it is checked, if we need a login.
+  // A new tracking session has to be opened. First is checked, if we need a login.
   if( m_userId == 0 )
     {
       // All previous cached data are cleared because there was no login to the
@@ -114,13 +115,13 @@ bool LiveTrack24::startTracking()
       // /client.php?op=login&user=username&pass=pass
       //
       // There is no user identifier defined, login is needed as first.
-      QString loginUrl = getSessionServer() +
-                         "/client.php?op=login&user=%1&pass=%2";
+      QString loginUrl = "%1/client.php?op=login&user=%2&pass=%3";
       queueRequest( qMakePair( Login, loginUrl) );
     }
 
-  // /track.php?leolive=2&sid=42664778&pid=1&client=YourProgramName&v=1&user=yourusername&pass=yourpass
-  // &phone=Nokia 2600c&gps=BT GPS&trk1=4&vtype=16388&vname=vehicle name and model
+  // /track.php?leolive=2&sid=42664778&pid=1&client=YourProgramName&v=1
+  // &user=yourusername&pass=yourpass&phone=Nokia 2600c&gps=BT GPS&trk1=4
+  // &vtype=16388&vname=vehicle name and model
   QString gliderType = "unknown";
   QString gliderRegistration;
 
@@ -148,13 +149,12 @@ bool LiveTrack24::startTracking()
       phoneModel="unknown";
     }
 
-  QString startUrl = getSessionServer() +
-                     "/track.php?leolive=2&sid=%1&pid=%2&client=Cumulus&v=" +
+  QString startUrl = "%1=2&sid=%2&pid=%3&client=Cumulus&v=" +
                      QCoreApplication::applicationVersion() +
-                     "&user=%3&pass=%4&phone=" + phoneModel +
-                     "&gps=" + "internal GPS" +
-                     // Get GPS
-                     "&trk1=%4&vtype=" + QString::number(conf->getLiveTrackAirplaneType()) +
+                     "&user=%4&pass=%5&phone=" + phoneModel +
+                     "&gps=" + "internal/external GPS" +
+                     "&trk1=" + QString::number(conf->getLiveTrackInterval()) +
+                     "&vtype=" + QString::number(conf->getLiveTrackAirplaneType()) +
                      "&vname=" + gliderType;
 
   if( gliderRegistration.isEmpty() == false )
@@ -176,12 +176,10 @@ bool LiveTrack24::routeTracking( const QPoint& position,
   // Check if LiveTracking is switched on
   if( conf->isLiveTrackOnOff() == false )
     {
-      qDebug() << "LiveTrack24::routeTracking(): LiveTracking is switched off!";
       return true;
     }
 
-  QString routeUrl = getSessionServer() +
-                     "/track.php?leolive=4&sid=%1&pid=%2" +
+  QString routeUrl = QString("%1=4&sid=%2&pid=%3") +
                      "&lat=" + QString::number(float(position.x()) / 600000.0) +
                      "&lon=" + QString::number(float(position.y()) / 600000.0) +
                      "&alt=" + QString::number( altitude ) +
@@ -199,12 +197,10 @@ bool LiveTrack24::endTracking()
   // Check if LiveTracking is switched on
   if( conf->isLiveTrackOnOff() == false )
     {
-      qDebug() << "LiveTrack24::endTracking(): LiveTracking is switched off!";
       return true;
     }
 
-  QString endUrl = getSessionServer() +
-                   "/track.php?leolive=3&sid=%1&pid=%2&prid=0";
+  QString endUrl = "%1=3&sid=%2&pid=%3&prid=0";
 
   return queueRequest( qMakePair( End, endUrl) );
 }
@@ -216,7 +212,6 @@ void LiveTrack24::slotRetry()
   // If not, we stop here the data sending and clear the request queue.
   if( GeneralConfig::instance()->isLiveTrackOnOff() == false )
     {
-      qDebug() << "LiveTrack24::slotRetry: LiveTracking is switched off, clear data queue!";
       m_requestQueue.clear();
       return;
     }
@@ -268,21 +263,23 @@ bool LiveTrack24::sendHttpRequest()
       return true;
     }
 
-  // Check, if user name and password are defined by the user
+  // Get user name and password.
   const QString& userName = conf->getLiveTrackUserName();
   QString  password = conf->getLiveTrackPassword();
 
-  // Get the next element to be sent from the queue
+  // Get the next element to be sent from the queue.
   QPair<uchar, QString>& keyAndUrl = m_requestQueue.head();
 
-  // Clear the HTTP result buffer
+  // Clear the HTTP result buffer.
   m_httpResultBuffer.clear();
 
   if( keyAndUrl.first == Login )
     {
       // A login has to be executed. The user identifier is returned or
       // zero in error case, if user name or password are wrong.
-      QString url = keyAndUrl.second.arg(userName).arg(password);
+      QString url = keyAndUrl.second.arg(getSessionServer()).arg(userName).arg(password);
+
+      qDebug() << "<--URL=" << url;
 
       bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
 
@@ -294,6 +291,7 @@ bool LiveTrack24::sendHttpRequest()
       return ok;
     }
 
+  QString urlBegin = getSessionServer() + "/track.php?leolive";
   QString url;
 
   if( keyAndUrl.first == Start )
@@ -305,21 +303,20 @@ bool LiveTrack24::sendHttpRequest()
 
       if( m_userId == 0 )
         {
-          // TODO Was tun in diesem Fall? Sollte nie passieren.
-          qWarning() << "LiveTrack24: User identifier is zero!";
+          qWarning() << __LINE__ << "LiveTrack24::sendHttpRequest(): User identifier is zero!";
         }
 
-      url = keyAndUrl.second.arg(m_sessionId).arg(m_packetId).arg(userName).arg(password);
+      url = keyAndUrl.second.arg(urlBegin).arg(m_sessionId).arg(m_packetId).arg(userName).arg(password);
       m_packetId++;
     }
   else
     {
-      // Complete URL with session and package identifier
-      url = keyAndUrl.second.arg(m_sessionId).arg(m_packetId);
+      // Complete URL with session and package identifier.
+      url = keyAndUrl.second.arg(urlBegin).arg(m_sessionId).arg(m_packetId);
       m_packetId++;
     }
 
-  qDebug() << "<--URL=" << url.size() << url;
+  qDebug() << "<--URL=" << url;
 
   bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
 
@@ -331,7 +328,6 @@ bool LiveTrack24::sendHttpRequest()
   return ok;
 }
 
-/** Generates a random session id */
 LiveTrack24::SessionId LiveTrack24::generateSessionId()
 {
   srand( time( 0 ) );
@@ -339,7 +335,6 @@ LiveTrack24::SessionId LiveTrack24::generateSessionId()
   return (rnd & 0x7F000000) | 0x80000000;
 }
 
-/** Generates a random session id containing the given user identifier */
 LiveTrack24::SessionId LiveTrack24::generateSessionId( const LiveTrack24::UserId userId )
 {
   return generateSessionId() | (userId & 0x00ffffff);

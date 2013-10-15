@@ -134,7 +134,6 @@ class HttpClient : public QObject
   /** Opens a user password dialog on server request. */
   void getUserPassword( QAuthenticator *authenticator );
 
-  QObject               *m_parent;
   QProgressDialog       *m_progressDialog;
   QNetworkAccessManager *m_manager;
   QNetworkReply         *m_reply;

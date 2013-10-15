@@ -39,7 +39,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("PreFlight - LiveTrack24") );
+  setWindowTitle( tr("PreFlight - LiveTracking") );
 
   if( parent )
     {
@@ -85,7 +85,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
 
   int row = 0;
 
-  m_liveTrackEnabled = new QCheckBox(tr("LiveTrack24 on"));
+  m_liveTrackEnabled = new QCheckBox(tr("LiveTrack on"));
   topLayout->addWidget(m_liveTrackEnabled, row, 0 );
   row++;
 
@@ -281,10 +281,12 @@ void PreFlightLiveTrack24Page::save()
 void PreFlightLiveTrack24Page::slotAccept()
 {
   if( m_liveTrackEnabled->isChecked() &&
-      ( m_username->text().trimmed().isEmpty() || m_password->text().trimmed().isEmpty() ))
+      ( m_username->text().trimmed().isEmpty() ||
+        ( m_server->itemText(m_server->currentIndex()).contains("livetrack24") &&
+          m_password->text().trimmed().isEmpty() )))
     {
       // User name and password are required, when service is switched on!
-      QString msg = QString(tr("<html>LiveTrack24 is switched on but "
+      QString msg = QString(tr("<html>LiveTracking is switched on but "
                                "user name or password are missing!"
                                "<br><br>Please switch off service or add "
                                "the missing items.</html>"));
@@ -323,7 +325,8 @@ void PreFlightLiveTrack24Page::slotReject()
 void PreFlightLiveTrack24Page::slotLoginTest()
 {
   if( m_username->text().trimmed().isEmpty() ||
-      m_password->text().trimmed().isEmpty() )
+      ( m_server->itemText(m_server->currentIndex()).contains("livetrack24") &&
+        m_password->text().trimmed().isEmpty() ))
     {
       // User name and password are required for the login test
       QString msg = QString(tr("User name or password are missing!"));
@@ -405,8 +408,16 @@ void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
 
   if( codeIn != QNetworkReply::NoError )
     {
-      // There was a problem on the network.
-      msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+      if( codeIn > 0 && codeIn < 100 )
+        {
+          // There was a problem on the network.
+          msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+        }
+      else
+        {
+          msg = QString(tr("<html>Server login failed!"
+                           "<br><br>Check user name and password.</html>"));
+        }
     }
   else
     {
@@ -415,16 +426,16 @@ void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
       bool ok;
       uint userId = m_httpResultBuffer.toUInt( &ok );
 
-      qDebug() << "LiveTrack24 Login Test: UserId=" << m_httpResultBuffer;
+      qDebug() << "LiveTrack Login Test: UserId=" << m_httpResultBuffer;
 
       if( ! ok || userId == 0 )
         {
-          msg = QString(tr("<html>LiveTrack24 login failed!"
+          msg = QString(tr("<html>Server login failed!"
                            "<br><br>Check user name and password.</html>"));
         }
       else
         {
-          msg = QString(tr("<html>LiveTrack24 login succeeded!</html>"));
+          msg = QString(tr("<html>Server login succeeded!</html>"));
         }
     }
 

@@ -52,7 +52,7 @@
 #define PREFLIGHT   "Preflight Menu"
 #define COMMON      "Common"
 #define GLIDER      "Glider"
-#define LIVETRACK24 "LiveTrack24"
+#define LIVETRACK   "LiveTrack"
 #define LOGBOOKS    "Logbooks"
 #define RETRIEVE    "Retrieve"
 #define TASK        "Task"
@@ -150,8 +150,8 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(LIVETRACK24) );
-  item->setData( 0, Qt::UserRole, LIVETRACK24 );
+  item->setText( 0, tr(LIVETRACK) );
+  item->setData( 0, Qt::UserRole, LIVETRACK );
   m_setupTree->addTopLevelItem( item );
 #endif
 
@@ -191,7 +191,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("Waypoints") )
                  << ( tr ("Logbooks") )
 #ifdef INTERNET
-                 << ( tr ("LiveTrack24") )
+                 << ( tr ("LiveTrack") )
                  << ( tr ("METAR-TAF") )
 #endif
                  << ( tr ("Common") );
@@ -302,7 +302,7 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
 #ifdef INTERNET
 
-  else if( itemText == LIVETRACK24 )
+  else if( itemText == LIVETRACK )
     {
       PreFlightLiveTrack24Page* pflt24p = new PreFlightLiveTrack24Page( this );
 

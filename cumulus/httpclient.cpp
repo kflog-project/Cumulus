@@ -27,7 +27,6 @@
 
 HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
   QObject(parent),
-  m_parent(parent),
   m_progressDialog(0),
   m_manager(0),
   m_reply(0),

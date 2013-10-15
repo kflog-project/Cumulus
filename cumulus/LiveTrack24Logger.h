@@ -16,16 +16,17 @@
 ***********************************************************************/
 
 /**
- * \class LiveTrackLogger24
+ * \class LiveTrack24Logger
  *
  * \author Axel Pauli
  *
- * \brief LiveTrack24 logger
+ * \brief A LiveTrack24 logger
  *
- * Logger which reports tracks to www.livetrack24.com. This class is triggered
- * by the slot slotNewFixEntry.
+ * Logger which reports track data to www.livetrack24.com or to
+ * www.skylines-project.org. This class is triggered by the slot slotNewFixEntry.
  *
- * @see http://www.livetrack24.com/wiki/en/Leonardo%20Live%20Tracking%20API
+ * \see http://www.livetrack24.com/wiki/en/Leonardo%20Live%20Tracking%20API
+ * \see https://www.skylines-project.org/tracking/info
  *
  * \date 2013
  *
@@ -75,7 +76,11 @@ class LiveTrack24Logger : public QObject
   };
 
   /**
-   * Retrieve package statistics from gateway.
+   * Retrieve the package statistics from the live tracking gateway.
+   *
+   * \param cachedPkgs Number of cached packages in the sending queue.
+   *
+   * \param sentPkgs Number of Sent packages to the server.
    */
   void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
   {
@@ -92,7 +97,7 @@ class LiveTrack24Logger : public QObject
 
  private:
 
-  /** Reports a new route point to LiveTrack24. */
+  /** Reports a new route point to LiveTrack server. */
   void reportRoutePoint();
 
   /** LiveTrack24 gateway */
