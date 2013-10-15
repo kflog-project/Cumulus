@@ -96,11 +96,11 @@ GliderEditor::GliderEditor(QWidget *parent, Glider *glider ) :
       row++;
     }
 
-  Qt::InputMethodHints imh;
+  Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
 
   itemsLayout->addWidget(new QLabel(tr("Glider Type:"), this), row, 0);
   edtGType = new QLineEdit(this);
-  imh = (edtGType->inputMethodHints() | Qt::ImhNoPredictiveText);
+  imh |= edtGType->inputMethodHints();
   edtGType->setInputMethodHints(imh);
   itemsLayout->addWidget(edtGType, row, 1, 1, 3);
   row++;
