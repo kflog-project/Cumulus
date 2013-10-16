@@ -221,6 +221,11 @@ class LiveTrack24 : public QObject
     return m_sessionUrl;
   };
 
+  /**
+   * Stops the live tracking and informs the user about that fact.
+   */
+  void stopLiveTracking();
+
  signals:
 
  private slots:

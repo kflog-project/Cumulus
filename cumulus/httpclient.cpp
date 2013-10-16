@@ -56,7 +56,7 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
 
    // timer to supervise connection.
    m_timer = new QTimer( this );
-   m_timer->setInterval( 600000 ); // Timeout is 60s
+   m_timer->setInterval( 60000 ); // Timeout is 60s
 
    connect( m_timer, SIGNAL(timeout()), this, SLOT(slotCancelDownload()) );
 }

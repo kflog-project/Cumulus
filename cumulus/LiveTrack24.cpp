@@ -285,6 +285,8 @@ bool LiveTrack24::sendHttpRequest()
 
       if( ! ok )
         {
+          qDebug() << "m_httpClient->getData failed";
+
           m_retryTimer->start();
         }
 
@@ -316,9 +318,10 @@ bool LiveTrack24::sendHttpRequest()
       m_packetId++;
     }
 
-  qDebug() << "<--URL=" << url;
-
   bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
+
+  qDebug() << "<--URL=" << url << "HTTP-Res=" << ok;
+
 
   if( ! ok )
     {
@@ -346,9 +349,28 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
 
   qDebug() << "LiveTrack24::slotHttpResponse:" << m_httpResultBuffer << "ErrCode=" << codeIn;
 
-  if( codeIn != QNetworkReply::NoError )
+  if( codeIn > 0 && codeIn < 100 )
     {
       // There was a problem on the network. We make a retry after a certain time.
+      m_retryTimer->start();
+      return;
+    }
+
+  if( codeIn != 0 )
+    {
+      // any other error
+      if( ! m_requestQueue.isEmpty() )
+        {
+          QPair<uchar, QString> keyAndUrl = m_requestQueue.head();
+
+          if( keyAndUrl.first == Login )
+            {
+              // It seems to be a login problem.
+              stopLiveTracking();
+              return;
+            }
+        }
+
       m_retryTimer->start();
       return;
     }
@@ -369,29 +391,7 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
 
           if( ! ok || m_userId == 0 )
             {
-              // Login failed. We disable further live tracking.
-              GeneralConfig::instance()->setLiveTrackOnOff( false );
-              m_retryTimer->stop();
-              m_requestQueue.clear();
-
-              // Inform the user about our decision.
-              QString msg = QString(tr("<html>LiveTrack24 login failed!<br><br>Switching off service.</html>"));
-
-              QMessageBox mb( QMessageBox::Critical,
-                              tr("Login Error"),
-                              msg,
-                              QMessageBox::Ok,
-                              MainWindow::mainWindow() );
-
-#ifdef ANDROID
-
-              mb.show();
-              QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                                         MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-              mb.move( pos );
-
-#endif
-              mb.exec();
+              stopLiveTracking();
               return;
             }
         }
@@ -399,4 +399,32 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
       // Send the next request from the queue.
       sendHttpRequest();
     }
+}
+
+void LiveTrack24::stopLiveTracking()
+{
+  // Login failed. We disable further live tracking.
+  GeneralConfig::instance()->setLiveTrackOnOff( false );
+  m_retryTimer->stop();
+  m_requestQueue.clear();
+
+  // Inform the user about our decision.
+  QString msg = QString(tr("<html>LiveTrack login failed!<br><br>Switching off service.</html>"));
+
+  QMessageBox mb( QMessageBox::Critical,
+                  tr("Login Error"),
+                  msg,
+                  QMessageBox::Ok,
+                  MainWindow::mainWindow() );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
+                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
 }
