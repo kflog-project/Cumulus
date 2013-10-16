@@ -332,16 +332,7 @@ void HttpClient::slotSslErrors( QNetworkReply *reply, const QList<QSslError> &er
       errorString += errors.at(i).errorString();
     }
 
-  m_timer->stop();
-
-  if( QMessageBox::warning( 0, QObject::tr( "HTTP SSL Error" ),
-      QObject::tr("One or more SSL errors has occurred: %1" ).arg( errorString ),
-      QMessageBox::Ignore | QMessageBox::Abort ) == QMessageBox::Ignore )
-    {
-      reply->ignoreSslErrors();
-    }
-
-  m_timer->start();
+  qWarning() << "HTTP SSL Error:" << errorString << "-> will be ignored!";
 }
 
 #endif
