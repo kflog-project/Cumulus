@@ -1,0 +1,180 @@
+<!-- $Id$ -->
+
+<html>
+<head>
+<title>Cumulus Preflight Settings</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+<body>
+
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">start</a></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td align="left"><a href="cumulus-preflight-settings-metar-taf.html">back</a></td>
+			<td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
+			<td align="right"><a href="cumulus-display.html">next</a></td>
+		</tr>
+	</table>
+
+	<h4 align="center">Preflight Settings - Live Tracking</h4>
+
+	<b>Live Tracking</b>
+
+	 <p>
+    At this page you define all the things for the <i>Live Tracking</i>.
+   </p>
+	
+	 <p>
+	  <i>Live Tracking</i> means using a GPS to determine your position and a
+		mobile network to send this position in real-time to a server, that other
+		people can see your exact position and track presented in a map just
+		in time. The tracking option needs the capability to connect to mobile
+		networking during flight with your used device.</p>
+		  	
+	<p>
+	If you switch on the Live Tracking at this page, the sending of position data
+	is started automatically, if a certain speed over ground is reached. The
+	start speed is adjustable on this page at the menu point
+	<a href="cumulus-preflight-settings-common.html#AutostartIgcLogger">
+	Autostart IGC logger</a>. If you stand still for ca. 60s, the Live Tracking
+	is finished and closed automatically. Per flight there exists only one active
+	session. If all data of the previous session could not be transmitted to the
+	server, they will be removed with the start of a new Live Tracking session.
+	</p>
+
+	<dl>
+
+		<dt>
+			<b>Live Tracking on/off</b>
+		</dt>
+
+		<dd>
+		Here you can switch on/off the Live Tracking. You can do that at any time
+		also during the flight in the air. The switch off closes immediately an
+		existing Internet connection.
+		</dd>
+
+		<br>
+		<dt>
+			<b>Tracking interval</b>
+		</dt>
+
+		<dd>
+		Here you can define the time interval for transmitting of position updates
+		to your selected server in the Internet.
+		</dd>
+
+    <br>
+		<dt>
+			<b>Airplane type</b>
+		</dt>
+
+		<dd>
+		Define your used airplane type here. Further data are taken from your
+		selected airplain.
+		</dd>
+
+    <br>
+    <dt>
+      <b>Server</b>
+    </dt>
+
+    <dd>
+    Please select the service, which you want to use for Live Tracking. Three
+    variants are possible:
+    <br><br>
+    <ul>
+	    <li><i>www.livetrack24.com</i></li>
+	    <li><i>test.livetrack24.com</i> f&uuml;r for test purposes with LiveTrack24</li>
+	    <li><i>www.skylines-project.org</i></li>
+    </ul><br>
+    
+    Before you can use one of these services, a registration is required
+    at the web page of the service provider. That can you do over the following
+    listed links.
+    <br><br>
+    <ul>
+      <li><a href="http://www.livetrack24.com">www.livetrack24.com</a></li>
+      <li><a href="https://www.skylines-project.org">www.skylines-project.org</a></li>
+    </ul>
+    
+    <br>
+    If your registration was successful you should have an user account with
+    a user name and a password.
+    </dd>
+    
+    <br>
+    <dt>
+      <b>User name</b>
+    </dt>
+
+    <dd>
+    Enter your user name here. That is dependent on the service which you want to
+    use. For <i>Livetrack24</i> you have to enter the <i>Livetrack24</i> user
+    name. <i>SkyLines</i> expects a so called <i>Live Tracking Key</i> which
+    can you find at their web page under the menu point <i>Live Tracking</i>,
+    if you have logged in there. Enter this key as your user name here.
+    </dd>
+    
+    <br>
+    <dt>
+      <b>Password</b>
+    </dt>
+
+    <dd>
+    Enter the password from your user account here. <i>SkyLines</i> expects
+    not really a password. Here you can leave the entry empty.
+    </dd>
+
+    <br>
+    <dt>
+      <b>Login Test</b>
+    </dt>
+
+    <dd>
+    If you press the button <i>Login Test</i> you can check if your entered
+    account data are accepted by your selected server. <b>It is advisable to do
+    this check after each entry or change to ensure that you have no trouble
+    during flight.</b>
+		</dd>
+
+    <br>
+    <dt>
+      <b>Session</b>
+    </dt>
+
+    <dd>
+    The last line shows you the current Live Tracking session state.
+		If the service is switch on and active you can see here the cached
+		and sent position packages to the server in the Internet. In case of
+		a high number of cached packages you should check the status of your
+		mobile data connection. On a stable connection there should be to see
+		only a small number of cached packages. If your mobile Internet
+		connection is down for a longer time (ca. 1h) the oldest route
+		package is removed from the cache during the entry of a new route
+		package to prevent a memory overflow.
+	  </dd>
+    
+  </dl>
+  
+  <p></p>
+
+	<table width="100%">
+		<tr>
+			<td></td>
+			<td align="center"><a href="cumulus.html">start</a></td>
+			<td></td>
+		</tr>
+		<tr>
+      <td align="left"><a href="cumulus-preflight-settings-metar-taf.html">back</a></td>
+      <td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
+      <td align="right"><a href="cumulus-display.html">next</a></td>
+		</tr>
+	</table>
+
+</body>
+</html>

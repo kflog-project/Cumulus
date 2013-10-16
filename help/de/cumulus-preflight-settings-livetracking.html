@@ -28,7 +28,22 @@
 	Sie k&ouml;nnen hier alle Einstellungen f&uuml;r die Flugverfolgung im
 	Internet vornehmen. Voraussetzung daf&uuml;r ist, dass Sie w&auml;hrend des
 	Fluges eine mobile Datenverbindung aufgebaut haben, damit Ihre Positionen
-	an einen entsprechenden Server &uuml;bertragen werden k&ouml;nnen.
+	an einen entsprechenden Server &uuml;bertragen und auf einer Karte
+	aktuell angezeigt werden k&ouml;nnen. So kam man <i>live</i> Ihren Flug mit
+	verfolgen.
+	</p>
+
+	<p>
+		Wenn Sie die Flugverfolgung auf dieser Seite einschalten, beginnt das
+		Senden der Positionsdaten automatisch, wenn eine bestimmte
+		Geschwindigkeit &uuml;ber Grund daf&uuml;r erreicht ist. Die
+		Startgeschwindigkeit stellen Sie auf dieser Seite unter dem Punkt <a
+			href="cumulus-preflight-settings-common.html#AutostartIgcLogger">
+			Autostart IGC Logger</a> ein. Verharren Sie ca. 60s im Stillstand, wird
+		die Flugverfolgung automatisch beendet und geschlossen. Es gibt immer
+		noch eine aktive Sitzung pro Flug. Konnten alle Daten der letzten
+		Sitzung nicht &uuml;bertragen werden, werden Sie mit Beginn einer
+		neuen Sitzung gel&ouml;scht.
 	</p>
 
 	<dl>
@@ -99,7 +114,7 @@
     <dd>
     Hier tragen Sie Ihren Benutzernamen ein. Dieser ist davon abh&auml;ngig,
     welchen Service Sie verwenden. Bei SkyLines finden Sie auf der Seite
-    <i>Live Tracking</i> Ihren <i>Live Tracking Key</i>. Diesen tragen Sie
+    <i>Live Tracking</i> Ihren <i>Live Tracking Key</i>. Tragen Sie diesen
     bitte hier als Ihren Benutzernamen ein.
     </dd>
     
@@ -119,27 +134,34 @@
     </dt>
 
     <dd>
-    Durch dr&uuml;cken des Knopfes <i>Login Test</i> k&ouml;nnen Sie pr&uuml;fen
-    ob Ihre Benutzerdaten korrekt eingegeben sind und vom ausgew&auml;hlten Server
-    akzeptiert werden. Diesen Test sollten Sie nach der &Auml;nderung Ihrer
-    Zugangsdaten in jedem Fall ausf&uuml;hren, um sicher zustellen, das alles
-    richtig eingegeben wurde.
-    </dd>
+			Durch dr&uuml;cken des Knopfes <i>Login
+		  Test</i> k&ouml;nnen Sie pr&uuml;fen ob Ihre Benutzerdaten korrekt
+			eingegeben sind und vom ausgew&auml;hlten Server akzeptiert werden.
+			Diesen Test sollten Sie nach der Eingabe bzw. &Auml;nderung Ihrer
+			Zugangsdaten in jedem Fall ausf&uuml;hren, um sicher zustellen, das
+			alles richtig eingegeben wurde.
+		</dd>
 
     <br>
     <dt>
       <b>Sitzung</b>
     </dt>
 
-    <dd>
-      Die unterste Zeile zeigt Ihnen Ihren aktuellen Sitzungsstatus
-			an, wenn Sie den Verfolgungsservice aktiviert haben und wie viele
-			Datenpakete zwischengespeichert bzw. an den Server gesendet wurden.
-			Kann &uuml;ber einen l&auml;ngeren Zeitraum (ca. 1h) keine Verbindung zum
-			Server im Internet aufgebaut werden, wird das &auml;lteste
-			Positionspaket mit jedem Neueintrag in den Zwischenspeicher gel&ouml;scht,
-			um einen Speicher&uuml;berlauf zu verhindern.</dd>
-  </dl>
+		<dd>
+		  Die unterste Zeile zeigt Ihnen ihren aktuellen Sitzungsstatus
+			an. Wenn Sie den Verfolgungsservice aktiviert haben sehen Sie hier auch,
+			wie viele Datenpakete zwischengespeichert bzw. an den Server gesendet
+			wurden. Ist die Anzahl der im Zwischenspeicher liegenden Pakete sehr
+			hoch, sollten Sie den Status Ihrer mobilen Internetverbindung
+			&uuml;berpr&uuml;fen. Bei einer stabilen Internet Verbindung sollten so
+			gut wie keine Pakete zwischen gespeichert sein. Kann &uuml;ber einen
+			l&auml;ngeren Zeitraum (ca. 1h) keine Verbindung zum Server im
+			Internet aufgebaut werden, wird das &auml;lteste Positionspaket mit
+			jedem Neueintrag in den Zwischenspeicher gel&ouml;scht, um einen
+			Speicher&uuml;berlauf zu verhindern.
+	  </dd>
+			
+	</dl>
   
   <p></p>
 
