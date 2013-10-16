@@ -333,6 +333,8 @@ void HttpClient::slotSslErrors( QNetworkReply *reply, const QList<QSslError> &er
     }
 
   qWarning() << "HTTP SSL Error:" << errorString << "-> will be ignored!";
+
+  reply->ignoreSslErrors();
 }
 
 #endif
