@@ -159,7 +159,10 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   lbl = new QLabel(tr("User name:"));
   topLayout->addWidget(lbl, row, 0);
 
+  Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
+
   m_username = new QLineEdit;
+  m_username->setInputMethodHints(imh | m_username->inputMethodHints() );
   topLayout->addWidget(m_username, row, 1);
   row++;
 
@@ -167,6 +170,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   topLayout->addWidget(lbl, row, 0);
 
   m_password = new QLineEdit;
+  m_password->setInputMethodHints(imh | m_password->inputMethodHints() );
   topLayout->addWidget(m_password, row, 1);
   row++;
 
