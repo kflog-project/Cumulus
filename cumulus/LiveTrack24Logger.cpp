@@ -100,7 +100,7 @@ void LiveTrack24Logger::reportRoutePoint()
   m_lt24Gateway.routeTracking( calculator->getlastPosition(),
                                rint(calculator->getlastAltitude().getMeters()),
                                rint(calculator->getLastSpeed().getKph()),
-                               calculator->getlastHeading(),
+                               calculator->getlastHeading() == -1 ? 0 : calculator->getlastHeading() % 360,
                                GpsNmea::gps->getLastUtc().currentMSecsSinceEpoch() / 1000 );
 }
 

@@ -202,13 +202,13 @@ class LiveTrack24 : public QObject
   {
     const QString& server = GeneralConfig::instance()->getLiveTrackServer();
 
-    if( server.contains("livetrack24") )
-      {
-        m_sessionUrl = "http://" + server;
-      }
-    else if( server.contains("skylines") )
+    if( server.contains("skylines-project.org") )
       {
         m_sessionUrl = "https://" + server;
+      }
+    else
+      {
+        m_sessionUrl = "http://" + server;
       }
   };
 

@@ -2277,7 +2277,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="144"/>
         <source>Glider</source>
-        <translation>Segler</translation>
+        <translation>Segelflugzeug</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="145"/>

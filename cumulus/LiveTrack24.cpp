@@ -369,6 +369,14 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
               stopLiveTracking();
               return;
             }
+
+          // UnknownContentError = 299
+          if( codeIn == 299 )
+            {
+              // It seems something wrong in the sent URL. WE remove that URL
+              // in this case to avoid a dead lock.
+              m_requestQueue.removeFirst();
+            }
         }
 
       m_retryTimer->start();

@@ -152,6 +152,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   m_server = new QComboBox;
   m_server->addItem( "www.livetrack24.com" );
   m_server->addItem( "test.livetrack24.com" );
+  m_server->addItem( "livexc.dhv1.de" );
   m_server->addItem( "skylines-project.org" );
   topLayout->addWidget(m_server, row, 1);
   row++;
@@ -359,6 +360,10 @@ void PreFlightLiveTrack24Page::slotLoginTest()
   if( server.contains("livetrack24") )
     {
       server = "http://test.livetrack24.com";
+    }
+  else if( server.contains("livexc.dhv1.de"))
+    {
+      server = "http://livexc.dhv1.de";
     }
   else if( server.contains("skylines") )
     {

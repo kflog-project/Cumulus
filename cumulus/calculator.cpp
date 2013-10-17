@@ -65,6 +65,11 @@ Calculator::Calculator(QObject* parent) :
   lastAHLAltitude  = manualAltitude;
   lastAGLAltitudeError.setMeters(0);
 
+  lastPosition.setX( conf->getCenterLat() );
+  lastPosition.setY( conf->getCenterLon() );
+
+  lastSpeed.setMps(0);
+
   lastETA=QTime(0,0);
   lastBearing=-1;
   lastHeading=-1;

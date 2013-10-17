@@ -209,7 +209,7 @@ void GpsNmea::resetDataObjects()
   _lastVariometer = Speed(0);
   _lastMc = Speed(0);
   _lastTas = Speed(0);
-  _lastUtc = QDateTime();
+  _lastUtc = QDateTime::currentDateTimeUtc();
 
   _ignoreConnectionLost = false;
   _gprmcSeen = false;

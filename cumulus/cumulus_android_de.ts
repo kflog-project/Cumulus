@@ -188,69 +188,69 @@
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="calculator.cpp" line="255"/>
+        <location filename="calculator.cpp" line="260"/>
         <source>Replace current task point?</source>
         <translation>Aufgabenpunkt ersetzen?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="256"/>
+        <location filename="calculator.cpp" line="261"/>
         <source>&lt;html&gt;A flight task is activated!&lt;br&gt;This selection will stop the automatic task point switch.To avoid that make a selection from task menu.&lt;br&gt;Do You really want to replace?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="501"/>
+        <location filename="calculator.cpp" line="506"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="507"/>
+        <location filename="calculator.cpp" line="512"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="332"/>
+        <location filename="calculator.cpp" line="337"/>
         <source>Task started</source>
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1831"/>
+        <location filename="calculator.cpp" line="1836"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="496"/>
+        <location filename="calculator.cpp" line="501"/>
         <source>Task ended</source>
         <translation>Aufgabe beendet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="429"/>
-        <location filename="calculator.cpp" line="449"/>
+        <location filename="calculator.cpp" line="434"/>
+        <location filename="calculator.cpp" line="454"/>
         <source>TP in sight</source>
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="542"/>
+        <location filename="calculator.cpp" line="547"/>
         <source>TP passed</source>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1646"/>
         <location filename="calculator.cpp" line="1651"/>
+        <location filename="calculator.cpp" line="1656"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1652"/>
+        <location filename="calculator.cpp" line="1657"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1710"/>
+        <location filename="calculator.cpp" line="1715"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1711"/>
+        <location filename="calculator.cpp" line="1716"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -785,7 +785,7 @@
     <message>
         <location filename="glidereditornumpad.cpp" line="121"/>
         <source>Call Sign:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rufzeichen:</translation>
     </message>
     <message>
         <location filename="glidereditornumpad.cpp" line="126"/>
@@ -1099,15 +1099,15 @@
 <context>
     <name>LiveTrack24</name>
     <message>
-        <location filename="LiveTrack24.cpp" line="412"/>
+        <location filename="LiveTrack24.cpp" line="420"/>
         <source>&lt;html&gt;LiveTrack login failed!&lt;br&gt;&lt;br&gt;Switching off service.&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;LiveTrack24 login failed!&lt;br&gt;&lt;br&gt;Switching off service.&lt;/html&gt;</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;LiveTrack Login erfolglos!&lt;br&gt;&lt;br&gt;Schalte Service aus.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="LiveTrack24.cpp" line="415"/>
+        <location filename="LiveTrack24.cpp" line="423"/>
         <source>Login Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Login Fehler</translation>
     </message>
 </context>
 <context>
@@ -2205,136 +2205,136 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="42"/>
         <source>PreFlight - LiveTracking</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorflug Verfolgung</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="88"/>
         <source>LiveTrack on</source>
-        <translation type="unfinished"></translation>
+        <translation>Verfolgung ein</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="92"/>
         <source>Tracking interval (mm:ss):</source>
-        <translation type="unfinished"></translation>
+        <translation>Verfolgungsintervall (mm:ss):</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="108"/>
         <location filename="preflightlivetrack24page.cpp" line="129"/>
         <source>Tracking interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Verfolgungsintervall</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="109"/>
         <source>0...120 minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>0...120 Minuten</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="130"/>
         <source>0...60 seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>0...60 Sekunden</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="140"/>
         <source>Airplane type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Flugzeug Typ:</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="143"/>
         <source>Paraglider</source>
-        <translation type="unfinished"></translation>
+        <translation>Paragleiter</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="144"/>
         <source>Glider</source>
-        <translation type="unfinished">Flugzeug</translation>
+        <translation>Segelflugzeug</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="145"/>
         <source>Powered flight</source>
-        <translation type="unfinished"></translation>
+        <translation>Motorflugzeug</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="146"/>
         <source>Hot Air Balloon</source>
-        <translation type="unfinished"></translation>
+        <translation>Heißluftballon</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="150"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="159"/>
+        <location filename="preflightlivetrack24page.cpp" line="160"/>
         <source>User name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzername:</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="166"/>
+        <location filename="preflightlivetrack24page.cpp" line="170"/>
         <source>Password:</source>
-        <translation type="unfinished">Passwort:</translation>
+        <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="173"/>
+        <location filename="preflightlivetrack24page.cpp" line="178"/>
         <source>Login Test</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="preflightlivetrack24page.cpp" line="229"/>
-        <source>opened</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="preflightlivetrack24page.cpp" line="229"/>
-        <source>closed</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="234"/>
+        <source>opened</source>
+        <translation>geöffnet</translation>
+    </message>
+    <message>
+        <location filename="preflightlivetrack24page.cpp" line="234"/>
+        <source>closed</source>
+        <translation>geschlossen</translation>
+    </message>
+    <message>
+        <location filename="preflightlivetrack24page.cpp" line="239"/>
         <source>Session: %1, Packages: cached: %2 sent: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Sitzung: %1, Pakete: gespeichert: %2 gesendet: %3</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="289"/>
+        <location filename="preflightlivetrack24page.cpp" line="294"/>
         <source>&lt;html&gt;LiveTracking is switched on but user name or password are missing!&lt;br&gt;&lt;br&gt;Please switch off service or add the missing items.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Verfolgung ist eingeschaltet aber Benutzename oder Passwort fehlen!&lt;br&gt;&lt;br&gt;Schalten Sie den Service aus oder tragen Sie die fehlenden Daten ein.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="295"/>
-        <location filename="preflightlivetrack24page.cpp" line="335"/>
+        <location filename="preflightlivetrack24page.cpp" line="300"/>
+        <location filename="preflightlivetrack24page.cpp" line="340"/>
         <source>Login data missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Logindaten fehlen</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="332"/>
+        <location filename="preflightlivetrack24page.cpp" line="337"/>
         <source>User name or password are missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzername oder Password fehlen!</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="375"/>
-        <location filename="preflightlivetrack24page.cpp" line="414"/>
+        <location filename="preflightlivetrack24page.cpp" line="384"/>
+        <location filename="preflightlivetrack24page.cpp" line="423"/>
         <source>&lt;html&gt;Network error!&lt;br&gt;&lt;br&gt;Does exist an Internet connection?&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Netzwerkfehler!&lt;br&gt;&lt;br&gt;Gibt es eine Internetverbingung?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="378"/>
+        <location filename="preflightlivetrack24page.cpp" line="387"/>
         <source>Login Test failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Login Test Fehler</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="418"/>
-        <location filename="preflightlivetrack24page.cpp" line="433"/>
+        <location filename="preflightlivetrack24page.cpp" line="427"/>
+        <location filename="preflightlivetrack24page.cpp" line="442"/>
         <source>&lt;html&gt;Server login failed!&lt;br&gt;&lt;br&gt;Check user name and password.&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Server Login Fehler!&lt;br&gt;&lt;br&gt;Prüfen Sie Benutzername und Password.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="438"/>
+        <location filename="preflightlivetrack24page.cpp" line="447"/>
         <source>&lt;html&gt;Server login succeeded!&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;Server Login erfolgreich!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="443"/>
+        <location filename="preflightlivetrack24page.cpp" line="452"/>
         <source>Login Test result</source>
-        <translation type="unfinished"></translation>
+        <translation>Login Testergebnis</translation>
     </message>
 </context>
 <context>
@@ -3063,7 +3063,7 @@ If the Internet connection is down?</oldsource>
     <message>
         <location filename="preflightwidget.cpp" line="194"/>
         <source>LiveTrack</source>
-        <translation type="unfinished"></translation>
+        <translation>Verfolgung</translation>
     </message>
     <message>
         <location filename="preflightwidget.cpp" line="195"/>
@@ -3433,16 +3433,6 @@ If the Internet connection is down?</oldsource>
         <location filename="httpclient.cpp" line="307"/>
         <source>%1 at %2</source>
         <translation>%1 auf %2</translation>
-    </message>
-    <message>
-        <location filename="httpclient.cpp" line="337"/>
-        <source>HTTP SSL Error</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="httpclient.cpp" line="338"/>
-        <source>One or more SSL errors has occurred: %1</source>
-        <translation></translation>
     </message>
     <message>
         <location filename="polar.cpp" line="528"/>
