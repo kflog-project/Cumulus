@@ -204,10 +204,6 @@ public slots:
    */
   void slotNavigate2Home();
   /**
-   * Exits the Cumulus main window, if File->Exit was called by the user.
-   */
-  void slotFileQuit();
-  /**
    * Exits Cumulus, if the disclaimer was rejected..
    */
   void slotDisclaimerQuit();

@@ -1492,7 +1492,7 @@ void MainWindow::createActions()
 #endif
   addAction( actionFileQuit );
   connect( actionFileQuit, SIGNAL( triggered() ),
-            this, SLOT( slotFileQuit() ) );
+            this, SLOT( close() ) );
 
 #ifdef FLARM
   actionViewFlarm = new QAction( tr( "Flarm Radar" ), this );
@@ -1843,11 +1843,6 @@ void MainWindow::slotToggleTrailDrawing( bool toggle )
   GeneralConfig::instance()->save();
 }
 
-void MainWindow::slotFileQuit()
-{
-  close();
-}
-
 /**
  * Make sure the user really wants to quit
  */
@@ -1856,8 +1851,6 @@ void MainWindow::closeEvent( QCloseEvent* event )
   // Flag to signal a deferred close. It is used by the LiveTrackLogger
   // to give it the possibility to send an end record.
   static bool deferredClose = false;
-
-  qDebug() << "MainWindow::closeEvent: deferred=" << deferredClose;
 
   if( _globalMapView == 0 || deferredClose == true )
     {
@@ -1907,10 +1900,11 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
           // Wait some seconds to have time to send the live tracking end message
           // before the whole application terminates.
-          QTimer::singleShot( 2500, this, SLOT(slotFileQuit()) );
+          QTimer::singleShot( 2500, this, SLOT(close()) );
 
           // Hide the main window
           setVisible( false );
+          event->ignore();
           return;
         }
 #endif
