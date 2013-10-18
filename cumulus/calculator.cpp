@@ -1749,7 +1749,7 @@ bool Calculator::moving()
 {
   // set speed limit in m/s
   const double SpeedLimit = GeneralConfig::instance()->getAutoLoggerStartSpeed() * 1000.0 / 3600.0;
-  const int TimeLimit = 5; // time limit in seconds
+  const double TimeLimit = 5; // time limit in seconds
 
   if( samplelist.count() <= TimeLimit )
     {
@@ -1765,7 +1765,7 @@ bool Calculator::moving()
       speed += samplelist[i].vector.getSpeed().getMps();
     }
 
-  if( (speed / ((double) TimeLimit)) >= SpeedLimit )
+  if( (speed / TimeLimit) > SpeedLimit )
     {
       return true;
     }

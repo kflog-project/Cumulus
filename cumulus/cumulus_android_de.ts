@@ -668,85 +668,6 @@
     </message>
 </context>
 <context>
-    <name>GliderEditor</name>
-    <message>
-        <source>New Glider</source>
-        <translation type="obsolete">Neues Flugzeug</translation>
-    </message>
-    <message>
-        <source>Edit Glider</source>
-        <translation type="obsolete">Editiere Flugzeug</translation>
-    </message>
-    <message>
-        <source>Seats:</source>
-        <translation type="obsolete">Sitze:</translation>
-    </message>
-    <message>
-        <source>Registration:</source>
-        <translation type="obsolete">Kennzeichen:</translation>
-    </message>
-    <message>
-        <source>Wing Area:</source>
-        <translation type="obsolete">Flügelfläche:</translation>
-    </message>
-    <message>
-        <source>Callsign:</source>
-        <translation type="obsolete">Rufzeichen:</translation>
-    </message>
-    <message>
-        <source>Empty weight:</source>
-        <translation type="obsolete">Leergewicht:</translation>
-    </message>
-    <message>
-        <source>Added load:</source>
-        <translation type="obsolete">Zuladung:</translation>
-    </message>
-    <message>
-        <source>Max. water:</source>
-        <translation type="obsolete">Max. Wasser:</translation>
-    </message>
-    <message>
-        <source>Increase number value</source>
-        <translation type="obsolete">Erhöhe Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Decrease number value</source>
-        <translation type="obsolete">Reduziere Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Show Polar</source>
-        <translation type="obsolete">Zeige Polare</translation>
-    </message>
-    <message>
-        <source>Missing polar file</source>
-        <translation type="obsolete">Vermisse Polarendatei</translation>
-    </message>
-    <message>
-        <source>Missing registration!</source>
-        <translation type="obsolete">Vermisse Kennzeichen!</translation>
-    </message>
-    <message>
-        <source>Please enter a valid registration.</source>
-        <translation type="obsolete">Geben Sie ein gültiges Kennzeichen ein..</translation>
-    </message>
-    <message>
-        <source>Missing glider type!</source>
-        <translation type="obsolete">Vermisse Flugzeugtyp!</translation>
-    </message>
-    <message>
-        <source>Glider Pool:</source>
-        <translation type="obsolete">Flugzeug Pool:</translation>
-    </message>
-    <message>
-        <source>Glider Type:</source>
-        <translation type="obsolete">Flugzeug Typ:</translation>
-    </message>
-    <message>
-        <source>Please enter a valid glider type.</source>
-        <translation type="obsolete">Geben Sie einen Flugzeugtyp ein.</translation>
-    </message>
-</context>
-<context>
     <name>GliderEditorNumPad</name>
     <message>
         <location filename="glidereditornumpad.cpp" line="61"/>
@@ -777,10 +698,6 @@
         <location filename="glidereditornumpad.cpp" line="114"/>
         <source>Seats:</source>
         <translation>Sitze:</translation>
-    </message>
-    <message>
-        <source>Callsign:</source>
-        <translation type="obsolete">Rufzeichen:</translation>
     </message>
     <message>
         <location filename="glidereditornumpad.cpp" line="121"/>
@@ -1722,10 +1639,6 @@ Alle Downloads verworfen!</translation>
         <translation>Lade OpenAIP Dateien</translation>
     </message>
     <message>
-        <source>OpenAIP load failed</source>
-        <translation type="obsolete">Ladefehler OpenAIP</translation>
-    </message>
-    <message>
         <location filename="mapcontents.cpp" line="2623"/>
         <source>No OpenAIP loaded</source>
         <translation>Kein OpenAIP geladen</translation>
@@ -2411,18 +2324,6 @@ Alle Downloads verworfen!</translation>
         <translation>Autostart IGC Logger</translation>
     </message>
     <message>
-        <source>My flight book:</source>
-        <translation type="obsolete">Mein Flugbuch:</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Öffnen</translation>
-    </message>
-    <message>
-        <source>Flarm flight book:</source>
-        <translation type="obsolete">Flarm Flugbuch:</translation>
-    </message>
-    <message>
         <location filename="preflightmiscpage.cpp" line="182"/>
         <source>B-Record Interval:</source>
         <translation>B-Record Intervall:</translation>
@@ -2867,7 +2768,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightweatherpage.cpp" line="50"/>
         <location filename="preflightweatherpage.cpp" line="89"/>
-        <location filename="preflightweatherpage.cpp" line="921"/>
+        <location filename="preflightweatherpage.cpp" line="924"/>
         <source>METAR and TAF</source>
         <translation>METAR und TAF</translation>
     </message>
@@ -2914,106 +2815,90 @@ Alle Downloads verworfen!</translation>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="350"/>
+        <location filename="preflightweatherpage.cpp" line="353"/>
         <source>Station name not available</source>
         <translation>Stationsname unbekannt</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="809"/>
+        <location filename="preflightweatherpage.cpp" line="812"/>
         <source>Name?</source>
         <translation></translation>
     </message>
     <message>
-        <source>Station name requires
-4 characters!</source>
-        <translation type="obsolete">Stationsname erfordert\n4 Zeichen!</translation>
-    </message>
-    <message>
-        <location filename="preflightweatherpage.cpp" line="810"/>
+        <location filename="preflightweatherpage.cpp" line="813"/>
         <source>Station name requires 4 characters!</source>
         <translation>Stationsname erfordert 4 Zeichen!</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="861"/>
+        <location filename="preflightweatherpage.cpp" line="864"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="862"/>
+        <location filename="preflightweatherpage.cpp" line="865"/>
         <source>Confirm delete of station %1</source>
         <translation>Bestätige löschen der Station %1</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="937"/>
+        <location filename="preflightweatherpage.cpp" line="940"/>
         <source>Date: </source>
         <translation>Datum: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="942"/>
+        <location filename="preflightweatherpage.cpp" line="945"/>
         <source>Wind: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="947"/>
+        <location filename="preflightweatherpage.cpp" line="950"/>
         <source>Visibility: </source>
         <translation>Sicht: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="952"/>
+        <location filename="preflightweatherpage.cpp" line="955"/>
         <source>Sky: </source>
         <translation>Himmel: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="957"/>
+        <location filename="preflightweatherpage.cpp" line="960"/>
         <source>Weather: </source>
         <translation>Wetter: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="962"/>
+        <location filename="preflightweatherpage.cpp" line="965"/>
         <source>Temperature: </source>
         <translation>Temperatur: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="967"/>
+        <location filename="preflightweatherpage.cpp" line="970"/>
         <source>Dew Point: </source>
         <translation>Taupunkt: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="972"/>
+        <location filename="preflightweatherpage.cpp" line="975"/>
         <source>Relative Humidity: </source>
         <translation>Rel. Luftfeuchtigkeit: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="977"/>
+        <location filename="preflightweatherpage.cpp" line="980"/>
         <source>QNH: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1110"/>
+        <location filename="preflightweatherpage.cpp" line="1113"/>
         <source>&lt;html&gt;Network error occurred!&lt;br&gt;Is the Internet connection down?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Netzwerkfehler!&lt;br&gt;Prüfe die Internetverbindung.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Network error occurred!
-Is the Internet connection down?</source>
-        <oldsource>Network error occurred!
-If the Internet connection is down?</oldsource>
-        <translation type="obsolete">Netzwerkfehler!\nKeine Internetverbindung aktiv?</translation>
-    </message>
-    <message>
-        <location filename="preflightweatherpage.cpp" line="1113"/>
+        <location filename="preflightweatherpage.cpp" line="1116"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1135"/>
+        <location filename="preflightweatherpage.cpp" line="1138"/>
         <source>All updates with %1 error(s) done.</source>
         <oldsource>All update(s) with %1 error(s) done.</oldsource>
         <translation>Alle Updates mit %1 Fehler(n) getan.</translation>
-    </message>
-    <message>
-        <source>All updates finished</source>
-        <translation type="obsolete">Alle Updates erledigt</translation>
     </message>
 </context>
 <context>
@@ -3560,10 +3445,6 @@ If the Internet connection is down?</oldsource>
         <translation>Ungültiges OpenAIP Datenformat!</translation>
     </message>
     <message>
-        <source>No OpenAip data format!</source>
-        <translation type="obsolete">Kein OpenAip Datenformat!</translation>
-    </message>
-    <message>
         <location filename="waypointcatalog.cpp" line="779"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
@@ -3805,10 +3686,6 @@ If the Internet connection is down?</oldsource>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <source>Home Radius:</source>
-        <translation type="obsolete">Heimat Radius:</translation>
-    </message>
-    <message>
         <location filename="settingspageairfields.cpp" line="198"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
@@ -3927,10 +3804,6 @@ If the Internet connection is down?</oldsource>
         <location filename="settingspageairfields.cpp" line="693"/>
         <source>Download openAIP files?</source>
         <translation>Download openAIP Dateien?</translation>
-    </message>
-    <message>
-        <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation type="obsolete">Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
     </message>
     <message>
         <location filename="settingspageairfields.cpp" line="609"/>
@@ -5053,6 +4926,36 @@ If the Internet connection is down?</oldsource>
         <location filename="settingspageunits.cpp" line="173"/>
         <source>Local</source>
         <translation>Lokal</translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="177"/>
+        <source>Temperature:</source>
+        <translation>Temperatur:</translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="183"/>
+        <source>Celsius</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="184"/>
+        <source>Fahrenheit</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="188"/>
+        <source>Air Pressure:</source>
+        <translation>Luftdruck:</translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="194"/>
+        <source>hPa</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="195"/>
+        <source>inHg</source>
+        <translation></translation>
     </message>
 </context>
 <context>

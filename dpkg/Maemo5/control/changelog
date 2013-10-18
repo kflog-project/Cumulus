@@ -1,3 +1,18 @@
+cumulus (5.9.0) stable; urgency=low
+
+  * Two new unit configuration boxes added for temperature and air pressure on
+    settings unit page. These new unit items are used in METAR report to display
+    the temperature and the air pressure in the desired units.
+    
+  * New pre-flight page added for LiveTracking. Three server
+    http://www.livetrack24.com, livexc.dhv1.de and www.skylines-project.org
+    can be used for this purpose.
+    
+  * Bugfix: Automatic text recognition was not disabled for keyboard in glider
+    editor. That destroid the entered text under Android. 
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 19 Oct 2013 21:30:23 +0200
+
 cumulus (5.8.0) stable; urgency=low
 
   * LD calculation time made configurable on pre-flight's common page.

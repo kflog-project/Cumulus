@@ -22,10 +22,13 @@
  *
  * \brief A LiveTrack24 logger
  *
- * Logger which reports track data to www.livetrack24.com or to
- * www.skylines-project.org. This class is triggered by the slot slotNewFixEntry.
+ * Logger which reports GPS track data to a LiveTrack server. It implements
+ * the Leonardo Live Tracking API.
+ *
+ * This class is triggered by the slot slotNewFixEntry.
  *
  * \see http://www.livetrack24.com/wiki/en/Leonardo%20Live%20Tracking%20API
+ * \see http://livexc.dhv1.dedoc/index.php
  * \see https://www.skylines-project.org/tracking/info
  *
  * \date 2013
@@ -70,7 +73,7 @@ class LiveTrack24Logger : public QObject
    *
    * \returns true, if session is running otherwise false
    */
-  bool getSessionStatus() const
+  bool sessionStatus() const
   {
     return m_isFlying;
   };

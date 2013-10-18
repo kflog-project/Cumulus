@@ -327,6 +327,9 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
 
       int lineNo = 0;
 
+      int tempUnit = GeneralConfig::instance()->getUnitTemperature();
+      int pressureUnit = GeneralConfig::instance()->getUnitAirPressure();
+
       while( !stream.atEnd() )
         {
           line = stream.readLine();
@@ -538,7 +541,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
           if( line.startsWith( "Temperature: ") )
             {
               // Temperature: 51 F (11 C)
-              if( qgetenv("LANG").startsWith("en_US") )
+              if( tempUnit == GeneralConfig::Fahrenheit )
                 {
                   // Temperature in F
                   int idx = line.indexOf( " F (" );
@@ -569,7 +572,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
           if( line.startsWith( "Dew Point: ") )
             {
               // Dew Point: 42 F (6 C)
-              if( qgetenv("LANG").startsWith("en_US") )
+              if( tempUnit == GeneralConfig::Fahrenheit )
                 {
                   // Dew point in F
                   int idx = line.indexOf( " F (" );
@@ -607,7 +610,7 @@ void PreFlightWeatherPage::slotNewWeaterReport( QString& file )
           if( line.startsWith( "Pressure (altimeter): ") )
             {
               // Pressure (altimeter): 30.00 in. Hg (1016 hPa)
-              if( qgetenv("LANG").startsWith("en_US") )
+              if( pressureUnit == GeneralConfig::inHg )
                 {
                   // QNH in inch Hg
                   int idx = line.lastIndexOf( " (" );

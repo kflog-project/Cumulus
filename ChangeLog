@@ -15,9 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2013-10-15 AP: New pre-flight page added for LiveTracking. Two server
-                   http://www.livetrack24.com and www.skylines-project.org
-                   can be used for this purpose.
+[+] 2013-10-18 AP: Two new unit configuration boxes added for temperature and
+                   air pressure on settings unit page. These new unit
+                   items are used in METAR report to display the temperature
+                   and the air pressure in the desired units.
+
+[+] 2013-10-15 AP: New pre-flight page added for LiveTracking. Three server
+                   http://www.livetrack24.com, livexc.dhv1.de and
+                   www.skylines-project.org can be used for this purpose.
 
 [-] 2013-10-15 AP: Bugfix: Automatic text recognition was not disabled for
                    keyboard in glider editor. That destroid the entered

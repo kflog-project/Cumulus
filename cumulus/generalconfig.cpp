@@ -491,13 +491,15 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Units");
-  _unitAlt   = value( "Altitude", Altitude::meters).toInt();
-  _unitDist  = value( "Distance", Distance::kilometers).toInt();
-  _unitSpeed = value( "Speed",    Speed::kilometersPerHour ).toInt();
-  _unitVario = value( "Vario",    Speed::metersPerSecond ).toInt();
-  _unitWind  = value( "Wind",     Speed::metersPerSecond ).toInt();
-  _unitPos   = value( "Position", WGSPoint::DMS ).toInt();
-  _unitTime  = value( "Time",     Time::utc ).toInt();
+  _unitAlt         = value( "Altitude", Altitude::meters).toInt();
+  _unitDist        = value( "Distance", Distance::kilometers).toInt();
+  _unitSpeed       = value( "Speed",    Speed::kilometersPerHour ).toInt();
+  _unitVario       = value( "Vario",    Speed::metersPerSecond ).toInt();
+  _unitWind        = value( "Wind",     Speed::metersPerSecond ).toInt();
+  _unitPos         = value( "Position", WGSPoint::DMS ).toInt();
+  _unitTime        = value( "Time",     Time::utc ).toInt();
+  _unitTemperature = value( "Temperature", Celsius ).toInt();
+  _unitAirPressure = value( "AirPressure", hPa ).toInt();
   endGroup();
 
   // configure static units
@@ -896,99 +898,12 @@ void GeneralConfig::save()
   setValue( "Wind", _unitWind );
   setValue( "Position", _unitPos );
   setValue( "Time", _unitTime );
+  setValue( "Temperature", _unitTemperature );
+  setValue( "AirPressure", _unitAirPressure );
   endGroup();
 
   // Save all to disk
   sync();
-}
-
-/** gets altimeter mode */
-int GeneralConfig::getAltimeterMode() const
-{
-  return _altimeterMode;
-}
-
-
-/** sets altimeter mode */
-void GeneralConfig::setAltimeterMode(const int newValue)
-{
-  _altimeterMode = newValue;
-}
-
-/** gets altimeter toggle mode */
-bool GeneralConfig::getAltimeterToggleMode() const
-{
-  return _altimeterToggleMode;
-}
-
-/** sets altimeter toggle mode */
-void GeneralConfig::setAltimeterToggleMode(const bool newValue)
-{
-  _altimeterToggleMode = newValue;
-}
-
-/**
- * @returns Struct with warning distances for airspace warnings
- */
-AirspaceWarningDistance GeneralConfig::getAirspaceWarningDistances()
-{
-  return _awd;
-}
-
-/**
- * Sets the warningdistances for airspaces
- */
-void GeneralConfig::setAirspaceWarningDistances(const AirspaceWarningDistance& awd)
-{
-  _awd = awd;
-}
-
-/** gets log to file mode */
-bool GeneralConfig::getLog2FileMode() const
-{
-  return _log2File;
-}
-
-/** sets log to file mode */
-void GeneralConfig::setLog2FileMode(const bool newValue)
-{
-  _log2File = newValue;
-}
-
-/** gets system log mode */
-bool GeneralConfig::getSystemLogMode() const
-{
-  return _useSysLog;
-}
-
-/** sets log to file mode */
-void GeneralConfig::setSystemLogMode(const bool newValue)
-{
-  _useSysLog = newValue;
-}
-
-/** gets nearest site calculator switch */
-bool GeneralConfig::getNearestSiteCalculatorSwitch() const
-{
-  return _nearestSiteCalculatorSwitch;
-}
-
-/** sets nearest site calculator switch */
-void GeneralConfig::setNearestSiteCalculatorSwitch(const bool newValue)
-{
-  _nearestSiteCalculatorSwitch = newValue;
-}
-
-/** gets max nearest site calculator sites */
-int GeneralConfig::getMaxNearestSiteCalculatorSites() const
-{
-  return _maxNearestSiteCalculatorSites;
-}
-
-/** sets max nearest site calculator sites */
-void GeneralConfig::setMaxNearestSiteCalculatorSites(const int newValue)
-{
-  _maxNearestSiteCalculatorSites = newValue;
 }
 
 /** gets AirfieldDisplayTime */

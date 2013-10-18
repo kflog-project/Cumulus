@@ -91,8 +91,10 @@ private:
   QComboBox *UnitWind;
   QComboBox *UnitPosition;
   QComboBox *UnitTime;
+  QComboBox *UnitTemperature;
+  QComboBox *UnitAirPressure;
 
-  // we use seven arrays to store mappings of item locations in the combo boxes
+  // we use arrays to store mappings of item locations in the combo boxes
   // to the enumeration values of the units they do represent
   int altitudes[2];
   int speeds[4];
@@ -101,6 +103,8 @@ private:
   int winds[5];
   int positions[3];
   int times[2];
+  int temperature[2];
+  int airPressure[2];
 };
 
 #endif

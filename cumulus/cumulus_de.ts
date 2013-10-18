@@ -188,72 +188,72 @@
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="calculator.cpp" line="255"/>
+        <location filename="calculator.cpp" line="260"/>
         <source>Replace current task point?</source>
         <translation>Aufgabenpunkt ersetzen?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="256"/>
+        <location filename="calculator.cpp" line="261"/>
         <source>&lt;html&gt;A flight task is activated!&lt;br&gt;This selection will stop the automatic task point switch.To avoid that make a selection from task menu.&lt;br&gt;Do You really want to replace?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="501"/>
+        <location filename="calculator.cpp" line="506"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="507"/>
+        <location filename="calculator.cpp" line="512"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="332"/>
+        <location filename="calculator.cpp" line="337"/>
         <source>Task started</source>
         <oldsource>Task start</oldsource>
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1831"/>
+        <location filename="calculator.cpp" line="1836"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="496"/>
+        <location filename="calculator.cpp" line="501"/>
         <source>Task ended</source>
         <oldsource>Task end</oldsource>
         <translation>Aufgabe beendet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="429"/>
-        <location filename="calculator.cpp" line="449"/>
+        <location filename="calculator.cpp" line="434"/>
+        <location filename="calculator.cpp" line="454"/>
         <source>TP in sight</source>
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="542"/>
+        <location filename="calculator.cpp" line="547"/>
         <source>TP passed</source>
         <oldsource>TP switch</oldsource>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1646"/>
         <location filename="calculator.cpp" line="1651"/>
+        <location filename="calculator.cpp" line="1656"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1652"/>
+        <location filename="calculator.cpp" line="1657"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1710"/>
+        <location filename="calculator.cpp" line="1715"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1711"/>
+        <location filename="calculator.cpp" line="1716"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -671,85 +671,6 @@
     </message>
 </context>
 <context>
-    <name>GliderEditor</name>
-    <message>
-        <source>New Glider</source>
-        <translation type="obsolete">Neues Flugzeug</translation>
-    </message>
-    <message>
-        <source>Edit Glider</source>
-        <translation type="obsolete">Editiere Flugzeug</translation>
-    </message>
-    <message>
-        <source>Seats:</source>
-        <translation type="obsolete">Sitze:</translation>
-    </message>
-    <message>
-        <source>Registration:</source>
-        <translation type="obsolete">Kennzeichen:</translation>
-    </message>
-    <message>
-        <source>Wing Area:</source>
-        <translation type="obsolete">Flügelfläche:</translation>
-    </message>
-    <message>
-        <source>Callsign:</source>
-        <translation type="obsolete">Rufzeichen:</translation>
-    </message>
-    <message>
-        <source>Empty weight:</source>
-        <translation type="obsolete">Leergewicht:</translation>
-    </message>
-    <message>
-        <source>Added load:</source>
-        <translation type="obsolete">Zuladung:</translation>
-    </message>
-    <message>
-        <source>Max. water:</source>
-        <translation type="obsolete">Max. Wasser:</translation>
-    </message>
-    <message>
-        <source>Increase number value</source>
-        <translation type="obsolete">Erhöhe Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Decrease number value</source>
-        <translation type="obsolete">Reduziere Zahlenwert</translation>
-    </message>
-    <message>
-        <source>Show Polar</source>
-        <translation type="obsolete">Zeige Polare</translation>
-    </message>
-    <message>
-        <source>Missing polar file</source>
-        <translation type="obsolete">Vermisse Polarendatei</translation>
-    </message>
-    <message>
-        <source>Missing registration!</source>
-        <translation type="obsolete">Vermisse Kennzeichen!</translation>
-    </message>
-    <message>
-        <source>Please enter a valid registration.</source>
-        <translation type="obsolete">Geben Sie ein gültiges Kennzeichen ein..</translation>
-    </message>
-    <message>
-        <source>Missing glider type!</source>
-        <translation type="obsolete">Vermisse Flugzeugtyp!</translation>
-    </message>
-    <message>
-        <source>Glider Pool:</source>
-        <translation type="obsolete">Flugzeug Pool:</translation>
-    </message>
-    <message>
-        <source>Glider Type:</source>
-        <translation type="obsolete">Flugzeug Typ:</translation>
-    </message>
-    <message>
-        <source>Please enter a valid glider type.</source>
-        <translation type="obsolete">Geben Sie einen Flugzeugtyp ein.</translation>
-    </message>
-</context>
-<context>
     <name>GliderEditorNumPad</name>
     <message>
         <location filename="glidereditornumpad.cpp" line="61"/>
@@ -780,10 +701,6 @@
         <location filename="glidereditornumpad.cpp" line="114"/>
         <source>Seats:</source>
         <translation>Sitze:</translation>
-    </message>
-    <message>
-        <source>Callsign:</source>
-        <translation type="obsolete">Rufzeichen:</translation>
     </message>
     <message>
         <location filename="glidereditornumpad.cpp" line="121"/>
@@ -1129,13 +1046,13 @@
 <context>
     <name>LiveTrack24</name>
     <message>
-        <location filename="LiveTrack24.cpp" line="412"/>
+        <location filename="LiveTrack24.cpp" line="420"/>
         <source>&lt;html&gt;LiveTrack login failed!&lt;br&gt;&lt;br&gt;Switching off service.&lt;/html&gt;</source>
         <oldsource>&lt;html&gt;LiveTrack24 login failed!&lt;br&gt;&lt;br&gt;Switching off service.&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt;LiveTrack Login erfolglos!&lt;br&gt;&lt;br&gt;Schalte Service aus.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="LiveTrack24.cpp" line="415"/>
+        <location filename="LiveTrack24.cpp" line="423"/>
         <source>Login Error</source>
         <translation>Login Fehler</translation>
     </message>
@@ -1750,10 +1667,6 @@ Alle Downloads verworfen!</translation>
         <translation>Lade OpenAir Dateien</translation>
     </message>
     <message>
-        <source>OpenAIP load failed</source>
-        <translation type="obsolete">OpenAIP Ladefehler</translation>
-    </message>
-    <message>
         <location filename="mapcontents.cpp" line="2623"/>
         <source>No OpenAIP loaded</source>
         <translation>Kein OpenAIP geladen</translation>
@@ -2295,75 +2208,75 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="159"/>
+        <location filename="preflightlivetrack24page.cpp" line="160"/>
         <source>User name:</source>
         <translation>Benutzername:</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="166"/>
+        <location filename="preflightlivetrack24page.cpp" line="170"/>
         <source>Password:</source>
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="173"/>
+        <location filename="preflightlivetrack24page.cpp" line="178"/>
         <source>Login Test</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="229"/>
+        <location filename="preflightlivetrack24page.cpp" line="234"/>
         <source>opened</source>
         <translation>geöffnet</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="229"/>
+        <location filename="preflightlivetrack24page.cpp" line="234"/>
         <source>closed</source>
         <translation>geschlossen</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="234"/>
+        <location filename="preflightlivetrack24page.cpp" line="239"/>
         <source>Session: %1, Packages: cached: %2 sent: %3</source>
         <translation>Sitzung: %1, Pakete: gespeichert: %2 gesendet: %3</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="289"/>
+        <location filename="preflightlivetrack24page.cpp" line="294"/>
         <source>&lt;html&gt;LiveTracking is switched on but user name or password are missing!&lt;br&gt;&lt;br&gt;Please switch off service or add the missing items.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Verfolgung ist eingeschaltet aber Benutzename oder Passwort fehlen!&lt;br&gt;&lt;br&gt;Schalten Sie den Service aus oder tragen Sie die fehlenden Daten ein.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="295"/>
-        <location filename="preflightlivetrack24page.cpp" line="335"/>
+        <location filename="preflightlivetrack24page.cpp" line="300"/>
+        <location filename="preflightlivetrack24page.cpp" line="340"/>
         <source>Login data missing</source>
         <translation>Logindaten fehlen</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="332"/>
+        <location filename="preflightlivetrack24page.cpp" line="337"/>
         <source>User name or password are missing!</source>
         <translation>Benutzername oder Password fehlen!</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="375"/>
-        <location filename="preflightlivetrack24page.cpp" line="414"/>
+        <location filename="preflightlivetrack24page.cpp" line="384"/>
+        <location filename="preflightlivetrack24page.cpp" line="423"/>
         <source>&lt;html&gt;Network error!&lt;br&gt;&lt;br&gt;Does exist an Internet connection?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Netzwerkfehler!&lt;br&gt;&lt;br&gt;Gibt es eine Internetverbingung?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="378"/>
+        <location filename="preflightlivetrack24page.cpp" line="387"/>
         <source>Login Test failed</source>
         <translation>Login Test Fehler</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="418"/>
-        <location filename="preflightlivetrack24page.cpp" line="433"/>
+        <location filename="preflightlivetrack24page.cpp" line="427"/>
+        <location filename="preflightlivetrack24page.cpp" line="442"/>
         <source>&lt;html&gt;Server login failed!&lt;br&gt;&lt;br&gt;Check user name and password.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Server Login Fehler!&lt;br&gt;&lt;br&gt;Prüfen Sie Benutzername und Password.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="438"/>
+        <location filename="preflightlivetrack24page.cpp" line="447"/>
         <source>&lt;html&gt;Server login succeeded!&lt;/html&gt;</source>
         <translation>&lt;html&gt;Server Login erfolgreich!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="443"/>
+        <location filename="preflightlivetrack24page.cpp" line="452"/>
         <source>Login Test result</source>
         <translation>Login Testergebnis</translation>
     </message>
@@ -2440,18 +2353,6 @@ Alle Downloads verworfen!</translation>
         <location filename="preflightmiscpage.cpp" line="160"/>
         <source>Autostart IGC logger</source>
         <translation>Autostart IGC Logger</translation>
-    </message>
-    <message>
-        <source>My flight book:</source>
-        <translation type="obsolete">Mein Flugbuch:</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Öffnen</translation>
-    </message>
-    <message>
-        <source>Flarm flight book:</source>
-        <translation type="obsolete">Flarm Flugbuch:</translation>
     </message>
     <message>
         <location filename="preflightmiscpage.cpp" line="182"/>
@@ -2845,7 +2746,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="preflightweatherpage.cpp" line="50"/>
         <location filename="preflightweatherpage.cpp" line="89"/>
-        <location filename="preflightweatherpage.cpp" line="921"/>
+        <location filename="preflightweatherpage.cpp" line="924"/>
         <source>METAR and TAF</source>
         <translation>METAR und TAF</translation>
     </message>
@@ -2892,106 +2793,90 @@ Alle Downloads verworfen!</translation>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="350"/>
+        <location filename="preflightweatherpage.cpp" line="353"/>
         <source>Station name not available</source>
         <translation>Stationsname unbekannt</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="809"/>
+        <location filename="preflightweatherpage.cpp" line="812"/>
         <source>Name?</source>
         <translation></translation>
     </message>
     <message>
-        <source>Station name requires
-4 characters!</source>
-        <translation type="obsolete">Stationsname erfordert\n4 Zeichen!</translation>
-    </message>
-    <message>
-        <location filename="preflightweatherpage.cpp" line="810"/>
+        <location filename="preflightweatherpage.cpp" line="813"/>
         <source>Station name requires 4 characters!</source>
         <translation>Stationsname erfordert 4 Zeichen!</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="861"/>
+        <location filename="preflightweatherpage.cpp" line="864"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="862"/>
+        <location filename="preflightweatherpage.cpp" line="865"/>
         <source>Confirm delete of station %1</source>
         <translation>Bestätige löschen von Station %1</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="937"/>
+        <location filename="preflightweatherpage.cpp" line="940"/>
         <source>Date: </source>
         <translation>Datum: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="942"/>
+        <location filename="preflightweatherpage.cpp" line="945"/>
         <source>Wind: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="947"/>
+        <location filename="preflightweatherpage.cpp" line="950"/>
         <source>Visibility: </source>
         <translation>Sicht: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="952"/>
+        <location filename="preflightweatherpage.cpp" line="955"/>
         <source>Sky: </source>
         <translation>Himmel: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="957"/>
+        <location filename="preflightweatherpage.cpp" line="960"/>
         <source>Weather: </source>
         <translation>Wetter: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="962"/>
+        <location filename="preflightweatherpage.cpp" line="965"/>
         <source>Temperature: </source>
         <translation>Temperatur: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="967"/>
+        <location filename="preflightweatherpage.cpp" line="970"/>
         <source>Dew Point: </source>
         <translation>Taupunkt: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="972"/>
+        <location filename="preflightweatherpage.cpp" line="975"/>
         <source>Relative Humidity: </source>
         <translation>Rel. Luftfeuchtigkeit: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="977"/>
+        <location filename="preflightweatherpage.cpp" line="980"/>
         <source>QNH: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1110"/>
+        <location filename="preflightweatherpage.cpp" line="1113"/>
         <source>&lt;html&gt;Network error occurred!&lt;br&gt;Is the Internet connection down?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Netzwerfehler!&lt;br&gt;Prüfe die Internetverbindung.&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>Network error occurred!
-Is the Internet connection down?</source>
-        <oldsource>Network error occurred!
-If the Internet connection is down?</oldsource>
-        <translation type="obsolete">Netzwerkfehler!\nBesteht Internetverbindung?</translation>
-    </message>
-    <message>
-        <location filename="preflightweatherpage.cpp" line="1113"/>
+        <location filename="preflightweatherpage.cpp" line="1116"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1135"/>
+        <location filename="preflightweatherpage.cpp" line="1138"/>
         <source>All updates with %1 error(s) done.</source>
         <oldsource>All update(s) with %1 error(s) done.</oldsource>
         <translation>Alle Updates mit %1 Fehler(n) getan.</translation>
-    </message>
-    <message>
-        <source>All updates finished</source>
-        <translation type="obsolete">Alle Updates beendet</translation>
     </message>
 </context>
 <context>
@@ -3412,16 +3297,6 @@ If the Internet connection is down?</oldsource>
         <translation>%1 auf %2</translation>
     </message>
     <message>
-        <location filename="httpclient.cpp" line="337"/>
-        <source>HTTP SSL Error</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="httpclient.cpp" line="338"/>
-        <source>One or more SSL errors has occurred: %1</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="polar.cpp" line="528"/>
         <location filename="polar.cpp" line="534"/>
         <source>Wind: </source>
@@ -3582,10 +3457,6 @@ If the Internet connection is down?</oldsource>
         <location filename="waypointcatalog.cpp" line="761"/>
         <source>Invalid OpenAip data format!</source>
         <translation>Ungültiges OpenAIP Datenformat!</translation>
-    </message>
-    <message>
-        <source>No OpenAip data format!</source>
-        <translation type="obsolete">Kein OpenAip Datenformat!</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="779"/>
@@ -3829,10 +3700,6 @@ If the Internet connection is down?</oldsource>
         <translation>Länderfilter:</translation>
     </message>
     <message>
-        <source>Home Radius:</source>
-        <translation type="obsolete">Heimat Radius:</translation>
-    </message>
-    <message>
         <location filename="settingspageairfields.cpp" line="198"/>
         <source>Load Outlandings</source>
         <translation>Lade Landefelder</translation>
@@ -3951,10 +3818,6 @@ If the Internet connection is down?</oldsource>
         <location filename="settingspageairfields.cpp" line="693"/>
         <source>Download openAIP files?</source>
         <translation>Download openAIP Dateien?</translation>
-    </message>
-    <message>
-        <source>Every Welt2000 county sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation type="obsolete">Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.&lt;br&gt;Ihre Änderungen werden nicht gespeichert!</translation>
     </message>
     <message>
         <location filename="settingspageairfields.cpp" line="609"/>
@@ -5092,6 +4955,36 @@ If the Internet connection is down?</oldsource>
         <location filename="settingspageunits.cpp" line="173"/>
         <source>Local</source>
         <translation>Lokal</translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="177"/>
+        <source>Temperature:</source>
+        <translation>Temperatur:</translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="183"/>
+        <source>Celsius</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="184"/>
+        <source>Fahrenheit</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="188"/>
+        <source>Air Pressure:</source>
+        <translation>Luftdruck:</translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="194"/>
+        <source>hPa</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingspageunits.cpp" line="195"/>
+        <source>inHg</source>
+        <translation></translation>
     </message>
 </context>
 <context>

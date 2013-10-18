@@ -174,6 +174,28 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   times[0] = Time::utc;
   times[1] = Time::local;
 
+  label = new QLabel(tr("Temperature:"), this);
+  topLayout->addWidget(label, row, 0);
+  UnitTemperature = new QComboBox(this);
+  UnitTemperature->setObjectName("UnitTemperature");
+  UnitTemperature->setEditable(false);
+  topLayout->addWidget(UnitTemperature,row++,1);
+  UnitTemperature->addItem(tr("Celsius"));
+  UnitTemperature->addItem(tr("Fahrenheit"));
+  temperature[0] = GeneralConfig::Celsius;
+  temperature[1] = GeneralConfig::Fahrenheit;
+
+  label = new QLabel(tr("Air Pressure:"), this);
+  topLayout->addWidget(label, row, 0);
+  UnitAirPressure = new QComboBox(this);
+  UnitAirPressure->setObjectName("UnitAirPressure");
+  UnitAirPressure->setEditable(false);
+  topLayout->addWidget(UnitAirPressure,row++,1);
+  UnitAirPressure->addItem(tr("hPa"));
+  UnitAirPressure->addItem(tr("inHg"));
+  airPressure[0] = GeneralConfig::hPa;
+  airPressure[1] = GeneralConfig::inHg;
+
   topLayout->setRowStretch(row++, 10);
   topLayout->setColumnStretch(2, 10);
 
@@ -237,6 +259,8 @@ void SettingsPageUnits::load()
   UnitWind->setCurrentIndex(searchItem(winds, conf->getUnitWind(), UnitWind->count()));
   UnitPosition->setCurrentIndex(searchItem(positions, conf->getUnitPos(), UnitPosition->count()));
   UnitTime->setCurrentIndex(searchItem(times, conf->getUnitTime(), UnitTime->count()));
+  UnitTemperature->setCurrentIndex(searchItem(temperature, conf->getUnitTemperature(), UnitTemperature->count()));
+  UnitAirPressure->setCurrentIndex(searchItem(airPressure, conf->getUnitAirPressure(), UnitAirPressure->count()));
 }
 
 /** called to initiate saving to the configuration file. */
@@ -251,6 +275,8 @@ void SettingsPageUnits::save()
   conf->setUnitWind( winds[UnitWind->currentIndex()] );
   conf->setUnitPos( positions[UnitPosition->currentIndex()] );
   conf->setUnitTime( times[UnitTime->currentIndex()] );
+  conf->setUnitTemperature( temperature[UnitTemperature->currentIndex()] );
+  conf->setUnitAirPressure( airPressure[UnitAirPressure->currentIndex()] );
 
   // Set the static units. A signal that these (may) have changed is emitted
   // by the container, ConfigWidget
@@ -285,13 +311,15 @@ bool SettingsPageUnits::checkChanges()
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
 
-  changed  = conf->getUnitAlt()   != altitudes[UnitAlt->currentIndex()];
-  changed |= conf->getUnitSpeed() != speeds[UnitSpeed->currentIndex()];
-  changed |= conf->getUnitDist()  != distances[UnitDistance->currentIndex()];
-  changed |= conf->getUnitVario() != varios[UnitVario->currentIndex()];
-  changed |= conf->getUnitWind()  != winds[UnitWind->currentIndex()];
-  changed |= conf->getUnitPos()   != positions[UnitPosition->currentIndex()];
-  changed |= conf->getUnitTime()  != times[UnitTime->currentIndex()];
+  changed  = conf->getUnitAlt()         != altitudes[UnitAlt->currentIndex()];
+  changed |= conf->getUnitSpeed()       != speeds[UnitSpeed->currentIndex()];
+  changed |= conf->getUnitDist()        != distances[UnitDistance->currentIndex()];
+  changed |= conf->getUnitVario()       != varios[UnitVario->currentIndex()];
+  changed |= conf->getUnitWind()        != winds[UnitWind->currentIndex()];
+  changed |= conf->getUnitPos()         != positions[UnitPosition->currentIndex()];
+  changed |= conf->getUnitTime()        != times[UnitTime->currentIndex()];
+  changed |= conf->getUnitTemperature() != temperature[UnitTemperature->currentIndex()];
+  changed |= conf->getUnitAirPressure() != airPressure[UnitAirPressure->currentIndex()];
 
   return changed;
 }

@@ -219,7 +219,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   m_updateTimer = new QTimer(this);
   m_updateTimer->setSingleShot(false);
   connect( m_updateTimer, SIGNAL(timeout()), SLOT(showSessionData()) );
-  m_updateTimer->start( 2500 );
+  m_updateTimer->start( 2400 );
 }
 
 PreFlightLiveTrack24Page::~PreFlightLiveTrack24Page()
@@ -231,7 +231,7 @@ void PreFlightLiveTrack24Page::showSessionData()
 {
   LiveTrack24Logger* ltl = MainWindow::mainWindow()->getLiveTrack24Logger();
 
-  QString session = ltl->getSessionStatus() ? tr("opened") : tr("closed");
+  QString session = ltl->sessionStatus() ? tr("opened") : tr("closed");
 
   uint cached, sent = 0;
   ltl->getPackageStatistics( cached, sent );

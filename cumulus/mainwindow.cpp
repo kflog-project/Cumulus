@@ -1853,7 +1853,13 @@ void MainWindow::slotFileQuit()
  */
 void MainWindow::closeEvent( QCloseEvent* event )
 {
-  if( _globalMapView == 0 )
+  // Flag to signal a deferred close. It is used by the LiveTrackLogger
+  // to give it the possibility to send an end record.
+  static bool deferredClose = false;
+
+  qDebug() << "MainWindow::closeEvent: deferred=" << deferredClose;
+
+  if( _globalMapView == 0 || deferredClose == true )
     {
       event->accept();
       return QMainWindow::closeEvent(event);
@@ -1889,31 +1895,39 @@ void MainWindow::closeEvent( QCloseEvent* event )
   switch ( mb.exec() )
     {
     case QMessageBox::Yes:
-      // save and exit
-      event->accept();
-
       // Stop GPS data forwarding to stop any other logging actions.
       GpsNmea::gps->blockSignals( true );
 
 #ifdef INTERNET
-      // Stop live tracking.
-      m_liveTrackLogger->finishLogging();
+      // Stop live tracking, if is is running
+      if( m_liveTrackLogger->sessionStatus() == true )
+        {
+          deferredClose = true;
+          m_liveTrackLogger->finishLogging();
 
-      // Wait a second to have time to send the live tracking end message
-      // before the application terminates.
-      sleep(1);
+          // Wait some seconds to have time to send the live tracking end message
+          // before the whole application terminates.
+          QTimer::singleShot( 2500, this, SLOT(slotFileQuit()) );
+
+          // Hide the main window
+          setVisible( false );
+          return;
+        }
 #endif
 
 #ifdef ANDROID
       jniShutdown();
 #endif
+
+      // accept close event and exit
+      event->accept();
       QMainWindow::closeEvent(event);
       break;
+
     case QMessageBox::No:
-      // exit without saving
-      event->ignore();
-      break;
     case QMessageBox::Cancel:
+    default:
+
       // don't save and don't exit
       event->ignore();
       break;

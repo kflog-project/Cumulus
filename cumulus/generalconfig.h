@@ -127,6 +127,20 @@ class GeneralConfig : protected QSettings
     landingTarget = 0, nextTarget = 1
   };
 
+  /** Temperature units. */
+  enum TemperatureUnit
+  {
+    Celsius = 0,
+    Fahrenheit = 1
+  };
+
+  /** Air pressure units */
+  enum AirPressureUnit
+  {
+    hPa = 0,
+    inHg = 1
+  };
+
  private:
 
   /**
@@ -602,12 +616,18 @@ class GeneralConfig : protected QSettings
   /**
    * @returns Structure with warning distances for airspace warnings
    */
-  AirspaceWarningDistance getAirspaceWarningDistances();
+  AirspaceWarningDistance getAirspaceWarningDistances()
+  {
+    return _awd;
+  };
 
   /**
    * Sets the warning distances for airspaces
    */
-  void setAirspaceWarningDistances(const AirspaceWarningDistance& awd);
+  void setAirspaceWarningDistances(const AirspaceWarningDistance& awd)
+  {
+    _awd = awd;
+  };
 
   /**
    * @return True if drawing is enabled for the given base map type.
@@ -1574,34 +1594,76 @@ class GeneralConfig : protected QSettings
   };
 
   /** gets altimeter mode */
-  int getAltimeterMode() const;
+  int getAltimeterMode() const
+  {
+    return _altimeterMode;
+  };
+
   /** sets altimeter mode */
-  void setAltimeterMode(const int newValue);
+  void setAltimeterMode(const int newValue)
+  {
+    _altimeterMode = newValue;
+  };
 
   /** gets altimeter toggle mode */
-  bool getAltimeterToggleMode() const;
+  bool getAltimeterToggleMode() const
+  {
+    return _altimeterToggleMode;
+  };
+
   /** sets altimeter toggle mode */
-  void setAltimeterToggleMode(const bool newValue);
+  void setAltimeterToggleMode(const bool newValue)
+  {
+    _altimeterToggleMode = newValue;
+  };
 
   /** gets log to file mode */
-  bool getLog2FileMode() const;
+  bool getLog2FileMode() const
+  {
+    return _log2File;
+  };
+
   /** sets log to file mode */
-  void setLog2FileMode(const bool newValue);
+  void setLog2FileMode(const bool newValue)
+  {
+    _log2File = newValue;
+  };
 
   /** gets sys log mode flag */
-  bool getSystemLogMode() const;
+  bool getSystemLogMode() const
+  {
+    return _useSysLog;
+  };
+
   /** sets sys log mode flag */
-  void setSystemLogMode(const bool newValue);
+  void setSystemLogMode(const bool newValue)
+  {
+    _useSysLog = newValue;
+  };
 
   /** gets nearest site calculator switch */
-  bool getNearestSiteCalculatorSwitch() const;
+  bool getNearestSiteCalculatorSwitch() const
+  {
+    return _nearestSiteCalculatorSwitch;
+  };
+
   /** sets nearest site calculator switch */
-  void setNearestSiteCalculatorSwitch(const bool newValue);
+  void setNearestSiteCalculatorSwitch(const bool newValue)
+  {
+    _nearestSiteCalculatorSwitch = newValue;
+  };
 
   /** gets max nearest site calculator sites */
-  int getMaxNearestSiteCalculatorSites() const;
+  int getMaxNearestSiteCalculatorSites() const
+  {
+    return _maxNearestSiteCalculatorSites;
+  };
+
   /** sets max nearest site calculator sites */
-  void setMaxNearestSiteCalculatorSites(const int newValue);
+  void setMaxNearestSiteCalculatorSites(const int newValue)
+  {
+    _maxNearestSiteCalculatorSites = newValue;
+  };
 
   /** Gets the user sound player */
   QString &getSoundPlayer()
@@ -1907,10 +1969,35 @@ class GeneralConfig : protected QSettings
   {
     return _unitTime;
   };
+
   /** Sets the unit for time */
   void setUnitTime(const int newValue)
   {
     _unitTime = newValue;
+  };
+
+  /** Gets the unit for the temperature */
+  int getUnitTemperature() const
+  {
+    return _unitTemperature;
+  };
+
+  /** Sets the unit for the temperature */
+  void setUnitTemperature(const int newValue)
+  {
+    _unitTemperature = newValue;
+  };
+
+  /** Gets the unit for the air pressure */
+  int getUnitAirPressure() const
+  {
+    return _unitAirPressure;
+  };
+
+  /** Sets the unit for the air pressure  */
+  void setUnitAirPressure(const int newValue)
+  {
+    _unitAirPressure = newValue;
   };
 
   /** Gets the airspace line width */
@@ -3042,6 +3129,10 @@ class GeneralConfig : protected QSettings
   int _unitPos;
   // unit time
   int _unitTime;
+  // unit temperature
+  int _unitTemperature;
+  // unit air pressure
+  int _unitAirPressure;
 
   // aktive task figure scheme
   enum ActiveTaskFigureScheme _taskActiveStartScheme;
