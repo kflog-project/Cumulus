@@ -25,7 +25,7 @@ Cumulus changelog
                    www.skylines-project.org can be used for this purpose.
 
 [-] 2013-10-15 AP: Bugfix: Automatic text recognition was not disabled for
-                   keyboard in glider editor. That destroid the entered
+                   keyboard in glider editor. That destroyed the entered
                    text under Android. 
 
 [*] 2013-10-12 AP: Cumulus 5.8.0 released for all supported platforms.
