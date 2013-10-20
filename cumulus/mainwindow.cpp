@@ -2662,7 +2662,7 @@ void MainWindow::slotRememberWaypoint()
     start of the program to read the initial configuration. */
 void MainWindow::slotReadconfig()
 {
-  qDebug() << "MainWindow::slotReadconfig()";
+  // qDebug() << "MainWindow::slotReadconfig()";
 
   // other configuration changes
   _globalMapMatrix->slotInitMatrix();
@@ -3058,8 +3058,8 @@ void MainWindow::slotLanded( QDateTime& dt )
  */
 void MainWindow::slotCheck4Updates()
 {
-  // Use last update date 12.09.2012 as ignore key
-  const int ignore = 12092012;
+  // Use last update date 02.08.2013 as ignore key
+  const int ignore = 2082013;
 
   if( GeneralConfig::instance()->getWelt2000UpdateMarker() == ignore )
     {

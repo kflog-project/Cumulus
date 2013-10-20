@@ -279,14 +279,10 @@ bool LiveTrack24::sendHttpRequest()
       // zero in error case, if user name or password are wrong.
       QString url = keyAndUrl.second.arg(getSessionServer()).arg(userName).arg(password);
 
-      qDebug() << "<--URL=" << url;
-
       bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
 
       if( ! ok )
         {
-          qDebug() << "m_httpClient->getData failed";
-
           m_retryTimer->start();
         }
 
@@ -320,8 +316,7 @@ bool LiveTrack24::sendHttpRequest()
 
   bool ok = m_httpClient->getData( url, &m_httpResultBuffer );
 
-  qDebug() << "<--URL=" << url << "HTTP-Res=" << ok;
-
+  // qDebug() << "<--URL=" << url << "HTTP-Res=" << ok;
 
   if( ! ok )
     {
@@ -347,7 +342,7 @@ void LiveTrack24::slotHttpResponse( QString &urlIn, QNetworkReply::NetworkError 
 {
   Q_UNUSED(urlIn)
 
-  qDebug() << "LiveTrack24::slotHttpResponse:" << m_httpResultBuffer << "ErrCode=" << codeIn;
+  // qDebug() << "LiveTrack24::slotHttpResponse:" << m_httpResultBuffer << "ErrCode=" << codeIn;
 
   if( codeIn > 0 && codeIn < 100 )
     {
