@@ -1301,48 +1301,48 @@
         <translation>Karte Info Boxen</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2513"/>
+        <location filename="mainwindow.cpp" line="2532"/>
         <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2013, The Cumulus-Team&lt;/html&gt;</source>
         <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2013, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2517"/>
+        <location filename="mainwindow.cpp" line="2536"/>
         <source>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus/qt4&quot;&gt;https://svn.kflog.org/svn/repos/cumulus/qt4&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;Cumulus %1, kompiliert am %2 mit QT %3&lt;br&gt;&lt;br&gt;Heimatseite: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Archiv: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus&quot;&gt;https://svn.kflog.org/svn/repos/cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Melden Sie Probleme an: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;googlemail.com&quot;&gt;kflog.cumulus&amp;#64;googlemail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Veröffentlicht unter der &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2530"/>
+        <location filename="mainwindow.cpp" line="2549"/>
         <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="3061"/>
+        <location filename="mainwindow.cpp" line="3080"/>
         <source>Welt2000</source>
         <translation>Welt2000</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="3063"/>
+        <location filename="mainwindow.cpp" line="3082"/>
         <source>&lt;html&gt;&lt;b&gt;Welt2000 update available!&lt;br&gt;&lt;br&gt;Install it?&lt;br&gt;&lt;br&gt;Requires Internet access.&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Welt2000 Update verfügbar!&lt;br&gt;&lt;br&gt;Installieren?&lt;br&gt;&lt;br&gt;Erfordert Internet Zugriff.&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2628"/>
+        <location filename="mainwindow.cpp" line="2647"/>
         <source>created by remember action at</source>
         <translation>Erzeugt durch Benutzer am</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="3027"/>
+        <location filename="mainwindow.cpp" line="3046"/>
         <source>takeoff</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="3034"/>
+        <location filename="mainwindow.cpp" line="3053"/>
         <source>landed</source>
         <translation>gelandet</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1522"/>
-        <location filename="mainwindow.cpp" line="2838"/>
+        <location filename="mainwindow.cpp" line="2857"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
@@ -1414,7 +1414,7 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1713"/>
-        <location filename="mainwindow.cpp" line="2510"/>
+        <location filename="mainwindow.cpp" line="2529"/>
         <source>About Cumulus</source>
         <translation>Über Cumulus</translation>
     </message>
@@ -1424,19 +1424,19 @@
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1873"/>
+        <location filename="mainwindow.cpp" line="1883"/>
         <source>Terminating?</source>
         <translation>Beenden?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="1874"/>
+        <location filename="mainwindow.cpp" line="1884"/>
         <source>Terminating Cumulus&lt;br&gt;&lt;b&gt;Are you sure?&lt;/b&gt;</source>
         <translation>Cumulus beenden&lt;br&gt;&lt;b&gt;Wirklich?&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="1514"/>
-        <location filename="mainwindow.cpp" line="2354"/>
-        <location filename="mainwindow.cpp" line="2697"/>
+        <location filename="mainwindow.cpp" line="2373"/>
+        <location filename="mainwindow.cpp" line="2716"/>
         <source>Reachable</source>
         <translation>Erreichbar</translation>
     </message>
@@ -1486,39 +1486,39 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2359"/>
+        <location filename="mainwindow.cpp" line="2378"/>
         <source>Nearest</source>
         <translation>Nächste</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2567"/>
+        <location filename="mainwindow.cpp" line="2586"/>
         <source>&lt;hml&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your primary source of navigation. As pilot in command you are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented by this application may be outdated or incorrect.&lt;p&gt;&lt;b&gt;Don&apos;t use this program if you cannot accept the disclaimer!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</source>
         <oldsource>&lt;hml&gt;This program comes with&lt;p&gt;&lt;b&gt;ABSOLUTELY NO WARRANTY!&lt;/b&gt;&lt;/p&gt;Do not rely on this software program as your primary source of navigation. You as user are responsible for using official aeronautical charts and proper methods for safe navigation. The information presented by this application may be outdated or incorrect.&lt;p&gt;&lt;b&gt;Don&apos;t use this program if you cannot accept the disclaimer!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</oldsource>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als verantwortlicher Pilot sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Durch Benutzung dieses Programms, akzeptieren Sie die zuvor genannten Einschränkungen!&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2600"/>
+        <location filename="mainwindow.cpp" line="2619"/>
         <source>W%1-%2</source>
         <oldsource>WP%1-%2</oldsource>
         <translation>W%1-%2</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2627"/>
+        <location filename="mainwindow.cpp" line="2646"/>
         <source>user created</source>
         <translation>Benutzer erzeugt</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2728"/>
+        <location filename="mainwindow.cpp" line="2747"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2803"/>
+        <location filename="mainwindow.cpp" line="2822"/>
         <source>Waypoint out of map range.</source>
         <translation>Wegpunkt außerhalb der Karte.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="2941"/>
+        <location filename="mainwindow.cpp" line="2960"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
@@ -2158,8 +2158,9 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="92"/>
-        <source>Tracking interval (mm:ss):</source>
-        <translation>Verfolgungsintervall (mm:ss):</translation>
+        <source>Track interval:</source>
+        <oldsource>Tracking interval (mm:ss):</oldsource>
+        <translation>Verfolgungsintervall:</translation>
     </message>
     <message>
         <location filename="preflightlivetrack24page.cpp" line="108"/>
@@ -2208,75 +2209,83 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="160"/>
+        <location filename="preflightlivetrack24page.cpp" line="163"/>
         <source>User name:</source>
         <translation>Benutzername:</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="170"/>
+        <location filename="preflightlivetrack24page.cpp" line="173"/>
         <source>Password:</source>
         <translation>Passwort:</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="178"/>
+        <location filename="preflightlivetrack24page.cpp" line="181"/>
         <source>Login Test</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="234"/>
+        <location filename="preflightlivetrack24page.cpp" line="237"/>
+        <source>on</source>
+        <translation>an</translation>
+    </message>
+    <message>
+        <location filename="preflightlivetrack24page.cpp" line="237"/>
+        <source>off</source>
+        <translation>aus</translation>
+    </message>
+    <message>
         <source>opened</source>
-        <translation>geöffnet</translation>
+        <translation type="obsolete">geöffnet</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="234"/>
         <source>closed</source>
-        <translation>geschlossen</translation>
+        <translation type="obsolete">geschlossen</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="239"/>
+        <location filename="preflightlivetrack24page.cpp" line="242"/>
         <source>Session: %1, Packages: cached: %2 sent: %3</source>
         <translation>Sitzung: %1, Pakete: gespeichert: %2 gesendet: %3</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="294"/>
+        <location filename="preflightlivetrack24page.cpp" line="307"/>
         <source>&lt;html&gt;LiveTracking is switched on but user name or password are missing!&lt;br&gt;&lt;br&gt;Please switch off service or add the missing items.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Verfolgung ist eingeschaltet aber Benutzename oder Passwort fehlen!&lt;br&gt;&lt;br&gt;Schalten Sie den Service aus oder tragen Sie die fehlenden Daten ein.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="300"/>
-        <location filename="preflightlivetrack24page.cpp" line="340"/>
+        <location filename="preflightlivetrack24page.cpp" line="313"/>
+        <location filename="preflightlivetrack24page.cpp" line="353"/>
         <source>Login data missing</source>
         <translation>Logindaten fehlen</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="337"/>
+        <location filename="preflightlivetrack24page.cpp" line="350"/>
         <source>User name or password are missing!</source>
         <translation>Benutzername oder Password fehlen!</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="384"/>
-        <location filename="preflightlivetrack24page.cpp" line="423"/>
+        <location filename="preflightlivetrack24page.cpp" line="397"/>
+        <location filename="preflightlivetrack24page.cpp" line="436"/>
         <source>&lt;html&gt;Network error!&lt;br&gt;&lt;br&gt;Does exist an Internet connection?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Netzwerkfehler!&lt;br&gt;&lt;br&gt;Gibt es eine Internetverbingung?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="387"/>
+        <location filename="preflightlivetrack24page.cpp" line="400"/>
         <source>Login Test failed</source>
         <translation>Login Test Fehler</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="427"/>
-        <location filename="preflightlivetrack24page.cpp" line="442"/>
+        <location filename="preflightlivetrack24page.cpp" line="440"/>
+        <location filename="preflightlivetrack24page.cpp" line="455"/>
         <source>&lt;html&gt;Server login failed!&lt;br&gt;&lt;br&gt;Check user name and password.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Server Login Fehler!&lt;br&gt;&lt;br&gt;Prüfen Sie Benutzername und Password.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="447"/>
+        <location filename="preflightlivetrack24page.cpp" line="460"/>
         <source>&lt;html&gt;Server login succeeded!&lt;/html&gt;</source>
         <translation>&lt;html&gt;Server Login erfolgreich!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightlivetrack24page.cpp" line="452"/>
+        <location filename="preflightlivetrack24page.cpp" line="465"/>
         <source>Login Test result</source>
         <translation>Login Testergebnis</translation>
     </message>
