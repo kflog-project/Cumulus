@@ -89,7 +89,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   topLayout->addWidget(m_liveTrackEnabled, row, 0 );
   row++;
 
-  QLabel *lbl = new QLabel(tr("Tracking interval (mm:ss):"));
+  QLabel *lbl = new QLabel(tr("Track interval:"));
   topLayout->addWidget(lbl, row, 0);
 
   QHBoxLayout* tiHbox = new QHBoxLayout;
@@ -156,6 +156,9 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   m_server->addItem( "skylines-project.org" );
   topLayout->addWidget(m_server, row, 1);
   row++;
+
+  connect( m_server, SIGNAL(currentIndexChanged(int)),
+           SLOT(slotCurrentIndexChanged(int)) );
 
   lbl = new QLabel(tr("User name:"));
   topLayout->addWidget(lbl, row, 0);
@@ -231,7 +234,7 @@ void PreFlightLiveTrack24Page::showSessionData()
 {
   LiveTrack24Logger* ltl = MainWindow::mainWindow()->getLiveTrack24Logger();
 
-  QString session = ltl->sessionStatus() ? tr("opened") : tr("closed");
+  QString session = ltl->sessionStatus() ? tr("on") : tr("off");
 
   uint cached, sent = 0;
   ltl->getPackageStatistics( cached, sent );
@@ -254,11 +257,19 @@ void PreFlightLiveTrack24Page::load()
 
   int apt = conf->getLiveTrackAirplaneType();
   m_airplaneType->setCurrentIndex( m_airplaneType->findData( apt ) );
-
-  QString server = conf->getLiveTrackServer();
-  m_server->setCurrentIndex( m_server->findText( server ) );
+  m_server->setCurrentIndex( conf->getLiveTrackIndex() );
 
   showSessionData();
+}
+
+void PreFlightLiveTrack24Page::slotCurrentIndexChanged( int index )
+{
+  QString data[3];
+
+  GeneralConfig::instance()->getLiveTrackAccountData( index, data );
+
+  m_username->setText( data[1] );
+  m_password->setText( data[2] );
 }
 
 void PreFlightLiveTrack24Page::save()
@@ -277,10 +288,12 @@ void PreFlightLiveTrack24Page::save()
   conf->setLiveTrackOnOff( newOnOffState );
   conf->setLiveTrackInterval(
       m_trackingIntervalMin->value() * 60 + m_trackingIntervalSec->value() );
-  conf->setLiveTrackUserName( m_username->text().trimmed() );
-  conf->setLiveTrackPassword( m_password->text().trimmed() );
   conf->setLiveTrackAirplaneType( m_airplaneType->itemData(m_airplaneType->currentIndex()).toInt() );
-  conf->setLiveTrackServer( m_server->itemText(m_server->currentIndex()));
+  conf->setLiveTrackIndex( m_server->currentIndex() );
+  conf->setLiveTrackAccountData( m_server->currentIndex(),
+                                 m_server->itemText(m_server->currentIndex()),
+                                 m_username->text().trimmed(),
+                                 m_password->text().trimmed() );
 }
 
 void PreFlightLiveTrack24Page::slotAccept()

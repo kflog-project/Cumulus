@@ -1852,8 +1852,19 @@ void MainWindow::closeEvent( QCloseEvent* event )
   // to give it the possibility to send an end record.
   static bool deferredClose = false;
 
-  if( _globalMapView == 0 || deferredClose == true )
+  if( _globalMapView == 0 )
     {
+      event->accept();
+      return QMainWindow::closeEvent(event);
+    }
+
+  if( deferredClose == true )
+    {
+
+#ifdef ANDROID
+      jniShutdown();
+#endif
+
       event->accept();
       return QMainWindow::closeEvent(event);
     }

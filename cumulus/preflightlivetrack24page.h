@@ -94,6 +94,9 @@ class PreFlightLiveTrack24Page : public QWidget
   /** Called, if the HTTP request is finished. */
   void slotHttpResponse( QString &url, QNetworkReply::NetworkError code );
 
+  /** Called, if the server ulr is changed. */
+  void slotCurrentIndexChanged( int index );
+
  signals:
 
   /**

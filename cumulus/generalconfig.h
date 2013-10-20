@@ -2643,76 +2643,89 @@ class GeneralConfig : protected QSettings
    */
   static QByteArray rot47( const QByteArray& input );
 
-  /** Gets the Livetrack24 airplane type. */
+  /** Gets the Livetrack airplane type. */
   int getLiveTrackAirplaneType() const
   {
     return _liveTrackAirplaneType;
   };
 
-  /** Sets the Livetrack24 airplane type. */
+  /** Sets the Livetrack airplane type. */
   void setLiveTrackAirplaneType(int liveTrackAirplaneType)
   {
     _liveTrackAirplaneType = liveTrackAirplaneType;
   };
 
-  /** Gets the Livetrack24 tracking interval. */
+  /** Gets the Livetrack tracking interval. */
   int getLiveTrackInterval() const
   {
     return _liveTrackInterval;
   };
 
-  /** Sets the Livetrack24 tracking interval. */
+  /** Sets the Livetrack tracking interval. */
   void setLiveTrackInterval(int liveTrackInterval)
   {
     _liveTrackInterval = liveTrackInterval;
   };
 
-  /** Gets the Livetrack24 state. */
+  /** Gets the Livetrack state. */
   bool isLiveTrackOnOff() const
   {
     return _liveTrackOnOff;
   };
 
-  /** Sets the Livetrack24 state. */
+  /** Sets the Livetrack state. */
   void setLiveTrackOnOff(bool liveTrackOnOff)
   {
     _liveTrackOnOff = liveTrackOnOff;
   };
 
-  /** Gets the Livetrack24 password. */
+  /** Gets the Livetrack password. */
   QString getLiveTrackPassword() const
   {
-    return QString(rot47(_liveTrackPassword.toLatin1().data()));
+    return _liveTrackAccounts[_liveTrackIndex][2];
   };
 
-  /** Sets the Livetrack24 password. */
-  void setLiveTrackPassword(const QString& liveTrackPassword)
-  {
-    _liveTrackPassword = rot47( liveTrackPassword.toLatin1().data());
-  };
-
-  /** Gets the Livetrack24 server. */
+  /** Gets the Livetrack server. */
   const QString& getLiveTrackServer() const
   {
-    return _liveTrackServer;
+    return _liveTrackAccounts[_liveTrackIndex][0];
   };
 
-  /** Sets the Livetrack24 server. */
-  void setLiveTrackServer(const QString& liveTrackServer)
-  {
-    _liveTrackServer = liveTrackServer;
-  };
-
-  /** Gets the Livetrack24 user name. */
+  /** Gets the Livetrack user name. */
   const QString& getLiveTrackUserName() const
   {
-    return _liveTrackUserName;
+    return _liveTrackAccounts[_liveTrackIndex][1];
   };
 
-  /** Sets the Livetrack24 user name. */
-  void setLiveTrackUserName(const QString& liveTrackUserName)
+  /** Gets the Livetrack selection index. */
+  int getLiveTrackIndex() const
   {
-    _liveTrackUserName = liveTrackUserName;
+    return _liveTrackIndex;
+  };
+
+  /** Sets the Livetrack selection index. */
+  void setLiveTrackIndex(int liveTrackindex)
+  {
+    _liveTrackIndex = liveTrackindex;
+  };
+
+  /** Gets the live track user account data. */
+  void getLiveTrackAccountData( int index, QString data[3] )
+  {
+    data[0] = _liveTrackAccounts[index][0];
+    data[1] = _liveTrackAccounts[index][1];
+    data[2] = _liveTrackAccounts[index][2];
+  };
+
+  /** Sets the live track user account data. */
+  void setLiveTrackAccountData( int index,
+                                const QString& url,
+                                const QString& user,
+                                const QString& password )
+  {
+    _liveTrackAccounts[index][0] = url;
+    _liveTrackAccounts[index][1] = user;
+    _liveTrackAccounts[index][2] = password;
   };
 
  private:
@@ -3222,14 +3235,11 @@ class GeneralConfig : protected QSettings
   // LiveTrack airplane type
   int _liveTrackAirplaneType;
 
-  // LiveTrack server
-  QString _liveTrackServer;
+  // LiveTrack selection index
+  int _liveTrackIndex;
 
-  // LiveTrack user name
-  QString _liveTrackUserName;
-
-  // LiveTrack password
-  QString _liveTrackPassword;
+  // LiveTrack account array
+  QString _liveTrackAccounts[4][3];
 };
 
 #endif

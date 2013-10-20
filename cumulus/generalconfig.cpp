@@ -251,9 +251,21 @@ void GeneralConfig::load()
   _liveTrackOnOff        = value( "OnOff", false ).toBool();
   _liveTrackInterval     = value( "Interval", 10 ).toInt();
   _liveTrackAirplaneType = value( "AirplaneType", 8 ).toInt();
-  _liveTrackServer       = value( "Server", "www.livetrack24.com").toString();
-  _liveTrackUserName     = value( "UserName", "").toString();
-  _liveTrackPassword     = value( "Password", "").toString();
+  _liveTrackIndex        = value( "Index", 0 ).toInt();
+
+  QStringList list;
+  list << rot47("www.livetrack24.com") << "" << ""
+       << rot47("test.livetrack24.com") << "" << ""
+       << rot47("livexc.dhv1.de") << "" << ""
+       << rot47("skylines-project.org") << "" << "";
+
+  list = value("Accounts", list).toStringList();
+
+  for( int i = 0; i < list.size(); i++ )
+    {
+      _liveTrackAccounts[i/3][i%3] = rot47(list.at(i).toLatin1());
+    }
+
   endGroup();
 
   // Task scheme settings for circle-sector and nearest-touched
@@ -674,9 +686,19 @@ void GeneralConfig::save()
   setValue( "OnOff", _liveTrackOnOff );
   setValue( "Interval", _liveTrackInterval );
   setValue( "AirplaneType", _liveTrackAirplaneType );
-  setValue( "Server", _liveTrackServer );
-  setValue( "UserName", _liveTrackUserName );
-  setValue( "Password", _liveTrackPassword );
+  setValue( "Index", _liveTrackIndex );
+
+  QStringList list;
+
+  for( int i = 0; i < 4; i++ )
+    {
+      for( int j = 0; j < 3; j++ )
+        {
+          list << rot47(_liveTrackAccounts[i][j].toLatin1());
+        }
+    }
+
+  setValue( "Accounts", list );
   endGroup();
 
   // Task scheme settings for circle-sector and nearest touched
