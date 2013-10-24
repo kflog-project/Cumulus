@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.Object;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,6 +52,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
@@ -74,7 +77,6 @@ import android.widget.Toast;
 import org.kde.necessitas.origo.QtActivity;
 
 import org.kflog.cumulus.BluetoothService;
-import org.kflog.cumulus.R;
 
 /**
  * @class CumulusActivity
@@ -168,6 +170,10 @@ public class CumulusActivity extends QtActivity
   private DisplayMetrics displayMetrics            = new DisplayMetrics();
   
   private NotificationManager notificationManager  = null;
+  
+  // Barometric sensor
+  static private SensorManager m_SensorManager     = null;
+  static private Sensor        m_BaroSensor        = null;
 
   // Used by the Bluetooth Service Handling
   private Set<BluetoothDevice>   m_pairedBtDevices = null;
@@ -240,6 +246,7 @@ public class CumulusActivity extends QtActivity
 	private final BroadcastReceiver bcReceiver =
 	  new BroadcastReceiver()
 			{
+				@Override
 				public void onReceive(Context context, Intent intent)
 					{
 						String action = intent.getAction();
@@ -347,7 +354,7 @@ public class CumulusActivity extends QtActivity
 		  			}
 		  	}
 		  
-		  // The SMS must be sent in the GUI activity thread. Therefore we post
+		  // The SMS must be sent in the GUI activity thread. Therefore we send
 		  // it to the SMS handler.
 		  final String fnumber = number;
 		  final String ftext   = text;
@@ -402,20 +409,44 @@ public class CumulusActivity extends QtActivity
   @Override
   public void onCreate( Bundle savedInstanceState )
   {
-    Log.d(TAG, "onCreate Entry" );
-    Log.d(TAG, "CPU_ABI=" + Build.CPU_ABI);
-    Log.d(TAG, "BRAND=" + Build.BRAND);
-    Log.d(TAG, "PRODUCT=" + Build.PRODUCT);
-    Log.d(TAG, "MANUFACTURER=" + Build.MANUFACTURER);
-    Log.d(TAG, "HARDWARE="+ Build.HARDWARE);
-    Log.d(TAG, "MODEL=" + Build.MODEL);
-    Log.d(TAG, "DEVICE=" + Build.DEVICE);
-    Log.d(TAG, "DISPLAY=" + Build.DISPLAY);
-    Log.d(TAG, "BOARD=" + Build.BOARD);
-    Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
-    Log.d(TAG, "ID=" + Build.ID);
-    Log.d(TAG, "SERIAL=" + Build.SERIAL);
-    // Log.d(TAG, "RADIO=" + Build.getRadioVersion());
+	try
+	  {
+	    Log.d(TAG, "onCreate Entry" );
+	    Log.d(TAG, "CPU_ABI=" + Build.CPU_ABI);
+	    Log.d(TAG, "BRAND=" + Build.BRAND);
+	    Log.d(TAG, "PRODUCT=" + Build.PRODUCT);
+	    Log.d(TAG, "MANUFACTURER=" + Build.MANUFACTURER);
+	    Log.d(TAG, "HARDWARE="+ Build.HARDWARE);
+	    Log.d(TAG, "MODEL=" + Build.MODEL);
+	    Log.d(TAG, "DEVICE=" + Build.DEVICE);
+	    Log.d(TAG, "DISPLAY=" + Build.DISPLAY);
+	    Log.d(TAG, "BOARD=" + Build.BOARD);
+	    Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
+	    Log.d(TAG, "ID=" + Build.ID);
+	    Log.d(TAG, "SERIAL=" + Build.SERIAL);
+	    // Log.d(TAG, "RADIO=" + Build.getRadioVersion());
+	  }
+	catch( java.lang.NoSuchFieldError e)
+	  {
+	    // Ignore this exception
+	  }
+	
+	m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+	m_BaroSensor = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+	
+	if( m_BaroSensor != null )
+	  {
+		Log.d(TAG, "BaroSensor: Name=" + m_BaroSensor.getName() + ", Vendor=" +
+	                m_BaroSensor.getVendor() + ", Resolution= " +
+				    m_BaroSensor.getResolution() + ", MaxRange=" +
+				    m_BaroSensor.getMaximumRange() + ", MinDelay=" +
+				    m_BaroSensor.getMinDelay() + ", Power=" + 
+				    m_BaroSensor.getPower() );
+	  }
+	else
+	  {
+		Log.d(TAG, "No Barometric sensor available!");
+	  }
     
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     Log.d(TAG, "DISPLAY_METRICS=" + displayMetrics.toString());
@@ -425,14 +456,14 @@ public class CumulusActivity extends QtActivity
         m_objectRef = this;
       }
     
-		// Get the internal data directory for our App.
-	  final String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
+    // Get the internal data directory for our App.
+	final String appDataDir = getDir("Cumulus", MODE_PRIVATE ).getAbsolutePath();
 
     // Check, if the internal data are already installed. To check that, a special
-	  // file name is used, which is created after data installation. The file name
+	// file name is used, which is created after data installation. The file name
     // includes the package version, to ensure that with every new version the data
     // are reinstalled.
-	  final String pvcFileName = "pvc_" + String.valueOf(getPackageVersionCode());
+	final String pvcFileName = "pvc_" + String.valueOf(getPackageVersionCode());
 	  
     File pvcAppFile = new File( appDataDir + File.separator + pvcFileName );
 
@@ -566,7 +597,8 @@ public class CumulusActivity extends QtActivity
     	{
         nl = new GpsStatus.NmeaListener()
           {
-            public void onNmeaReceived( long timestamp, String nmea )
+            @Override
+			public void onNmeaReceived( long timestamp, String nmea )
               {
                 nmeaIsReceived = true;
 
@@ -870,6 +902,7 @@ public class CumulusActivity extends QtActivity
     return ll;
   }
   
+	@Override
 	protected Dialog onCreateDialog(int id)
 	{
 		AlertDialog alert;
@@ -882,11 +915,13 @@ public class CumulusActivity extends QtActivity
 				builder.setMessage(getString(R.string.reallyClose))
 							 .setCancelable(false)
 							 .setPositiveButton( getString(android.R.string.yes), new DialogInterface.OnClickListener() {
+																		@Override
 																		public void onClick(DialogInterface dialog, int id) {
 																								CumulusActivity.this.finish();
 																		}
 																	})
 							 .setNegativeButton( getString(android.R.string.no), new DialogInterface.OnClickListener() {
+																		@Override
 																		public void onClick(DialogInterface dialog, int id) {
 																			dialog.cancel();
 																		}
@@ -904,7 +939,8 @@ public class CumulusActivity extends QtActivity
 				builder.setTitle(getString(R.string.mainMenu));
 				builder.setItems( m_items, new DialogInterface.OnClickListener()
 					{
-    					public void onClick(DialogInterface dialog, int item) 
+    					@Override
+						public void onClick(DialogInterface dialog, int item) 
     						{
         						switch(item)
         						{
@@ -935,7 +971,8 @@ public class CumulusActivity extends QtActivity
 				builder.setTitle(getString(R.string.setupMenu));
 				builder.setItems( s_items, new DialogInterface.OnClickListener()
 					{
-    					public void onClick(DialogInterface dialog, int item) 
+    					@Override
+						public void onClick(DialogInterface dialog, int item) 
     						{
         						switch(item)
         						{
@@ -966,7 +1003,8 @@ public class CumulusActivity extends QtActivity
 				builder.setTitle(getString(R.string.gpsMenu));
 				builder.setItems( g_items, new DialogInterface.OnClickListener()
 					{
-    					public void onClick(DialogInterface dialog, int item) 
+    					@Override
+						public void onClick(DialogInterface dialog, int item) 
     						{
         						switch(item)
         						{
@@ -999,7 +1037,8 @@ public class CumulusActivity extends QtActivity
 				builder.setTitle(getString(R.string.togglesMenu));
 				builder.setItems( t_items, new DialogInterface.OnClickListener()
 					{
-    					public void onClick(DialogInterface dialog, int item) 
+    					@Override
+						public void onClick(DialogInterface dialog, int item) 
     						{
         						switch(item)
         						{
@@ -1019,6 +1058,7 @@ public class CumulusActivity extends QtActivity
 			builder.setMessage( getString(R.string.sdcardNeeded) )
 					.setCancelable(false)
 					.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int id) {
 										 CumulusActivity.this.finish();
 				}
@@ -1030,6 +1070,7 @@ public class CumulusActivity extends QtActivity
 			builder.setMessage( getString(R.string.noDataFolder) )
 					.setCancelable(false)
 					.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int id) {
 										 CumulusActivity.this.finish();
 				}
@@ -1042,7 +1083,8 @@ public class CumulusActivity extends QtActivity
 						 .setCancelable(false)
 						 .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener()
 							 {
-								 public void onClick(DialogInterface dialog, int id)
+								 @Override
+								public void onClick(DialogInterface dialog, int id)
 									 {
 										 CumulusActivity.this.finish();
 									}
@@ -1056,6 +1098,7 @@ public class CumulusActivity extends QtActivity
 			builder.setTitle(getString(R.string.gpsMenu));
 			builder.setItems(l_gitems, new DialogInterface.OnClickListener()
 				{
+					@Override
 					public void onClick(DialogInterface dialog, int item)
 						{
 							switch(item)
@@ -1099,6 +1142,7 @@ public class CumulusActivity extends QtActivity
 
 			builder.setItems(l_bt_items, new DialogInterface.OnClickListener()
 				{
+					@Override
 					public void onClick(DialogInterface dialog, int item)
 						{
 							removeDialog(DIALOG_BT_ID);
@@ -1119,7 +1163,8 @@ public class CumulusActivity extends QtActivity
 						 .setPositiveButton( getString(android.R.string.ok),
 																 new DialogInterface.OnClickListener()
 																	 {
-												              public void onClick(DialogInterface dialog, int id)
+												              @Override
+															public void onClick(DialogInterface dialog, int id)
 												              	{
 																		      CumulusActivity.this.finish();
 												                }
@@ -1239,9 +1284,8 @@ public class CumulusActivity extends QtActivity
   
   String getLanguage()
     {
-      Configuration config = getResources().getConfiguration();
       // returns language as e.g. "en_US" or de_DE
-      return config.locale.getDefault().toString();
+      return Locale.getDefault().toString();
     }
 
   /**
@@ -1483,6 +1527,7 @@ public class CumulusActivity extends QtActivity
         }
     }
 
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 		{
 			Log.d( TAG, "onActivityResult ReqCode=" + requestCode + ", ResCode=" + resultCode );
@@ -1512,7 +1557,8 @@ public class CumulusActivity extends QtActivity
         .setPositiveButton( getString(R.string.gpsGoto),
                             new DialogInterface.OnClickListener()
                               {
-                                public void onClick( DialogInterface dialog, int id )
+                                @Override
+								public void onClick( DialogInterface dialog, int id )
                                   {
                                     Intent callGPSSettingIntent =	new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
                                     startActivity( callGPSSettingIntent );
@@ -1523,7 +1569,8 @@ public class CumulusActivity extends QtActivity
       alertDialogBuilder.setNegativeButton( getString(android.R.string.cancel),
                                             new DialogInterface.OnClickListener()
                                               {
-                                                public void onClick(DialogInterface dialog, int id)
+                                                @Override
+												public void onClick(DialogInterface dialog, int id)
                                                   {
                                                     dialog.cancel();
                                                   }
@@ -1634,6 +1681,7 @@ public class CumulusActivity extends QtActivity
   			m_Handler = new Handler();
   		}
 		
+		@Override
 		public void run()
 			{
 			  Log.i( TAG, "AppData are installed at: " + m_appDataDirName );
@@ -1744,7 +1792,8 @@ public class CumulusActivity extends QtActivity
 
         }
       
-      public void run()
+      @Override
+	public void run()
         {
           Log.i( TAG, "AddData are installed at: " + m_addDataDirName );
           
