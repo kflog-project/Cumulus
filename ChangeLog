@@ -15,6 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2013-10-24 AP: Cumulus 5.9.1 released for Android only.    
+
+[-] 2013-10-24 AP: Bugfix: App crash during startup fixed on older Android
+                   systems.
+                   
+[*] 2013-10-22 AP: Cumulus 5.9.0 released for all supported platforms.                   
+
 [+] 2013-10-18 AP: Two new unit configuration boxes added for temperature and
                    air pressure on settings unit page. These new unit
                    items are used in METAR report to display the temperature
