@@ -153,7 +153,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   m_server->addItem( "www.livetrack24.com" );
   m_server->addItem( "test.livetrack24.com" );
   m_server->addItem( "livexc.dhv1.de" );
-  m_server->addItem( "skylines-project.org" );
+  m_server->addItem( "www.skylines-project.org" );
   topLayout->addWidget(m_server, row, 1);
   row++;
 
@@ -376,11 +376,11 @@ void PreFlightLiveTrack24Page::slotLoginTest()
     }
   else if( server.contains("livexc.dhv1.de"))
     {
-      server = "http://livexc.dhv1.de";
+      server = "http://" + server;
     }
   else if( server.contains("skylines") )
     {
-      server = "https://skylines-project.org";
+      server = "https://" + server;
     }
 
   QString loginUrl = server +

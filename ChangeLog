@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-11-14 AP: Bugfix: URL to skylines-project.org server updated. The
+                   prefix www is needed now before the server name.
+
 [*] 2013-10-24 AP: Cumulus 5.9.1 released for Android only.    
 
 [-] 2013-10-24 AP: Bugfix: App crash during startup fixed on older Android
@@ -28,7 +31,7 @@ Cumulus changelog
                    and the air pressure in the desired units.
 
 [+] 2013-10-15 AP: New pre-flight page added for LiveTracking. Three server
-                   http://www.livetrack24.com, livexc.dhv1.de and
+                   www.livetrack24.com, livexc.dhv1.de and
                    www.skylines-project.org can be used for this purpose.
 
 [-] 2013-10-15 AP: Bugfix: Automatic text recognition was not disabled for

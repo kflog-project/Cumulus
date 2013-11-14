@@ -257,7 +257,7 @@ void GeneralConfig::load()
   list << rot47("www.livetrack24.com") << "" << ""
        << rot47("test.livetrack24.com") << "" << ""
        << rot47("livexc.dhv1.de") << "" << ""
-       << rot47("skylines-project.org") << "" << "";
+       << rot47("www.skylines-project.org") << "" << "";
 
   list = value("Accounts", list).toStringList();
 
