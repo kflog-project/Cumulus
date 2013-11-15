@@ -1,4 +1,4 @@
-cumulus (5.9.1) stable; urgency=low
+cumulus (5.9.2) stable; urgency=low
 
   * Bugfix: URL to skylines-project.org server updated. The prefix www is needed
     now before the server name.
