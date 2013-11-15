@@ -1,3 +1,10 @@
+cumulus (5.9.1) stable; urgency=low
+
+  * Bugfix: URL to skylines-project.org server updated. The prefix www is needed
+    now before the server name.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Fri, 15 Nov 2013 21:34:53 +0100
+
 cumulus (5.9.0) stable; urgency=low
 
   * Two new unit configuration boxes added for temperature and air pressure on
