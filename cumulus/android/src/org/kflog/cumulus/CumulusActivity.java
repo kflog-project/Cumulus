@@ -490,10 +490,9 @@ public class CumulusActivity extends QtActivity
         // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
         // http://www.deutscher-wetterdienst.de/lexikon/download.php?file=Barometrische_Hoehenformel.pdf
         final double k1 = 29.27 * 288.15;
-        final double k2 = 1.09513;
         final double log_p0_p1 = Math.log( 1013.25 / average );
 
-        double altitude = (k1 * log_p0_p1) / (k2 * log_p0_p1);
+        double altitude = (k1 * log_p0_p1) / (1 + (0.09513 * log_p0_p1));
         
         // Send altitude value to native application part.
         nativeBaroAltitude( altitude );

@@ -296,15 +296,14 @@ static void nativeByteFromGps(JNIEnv* /*env*/, jobject /*myobject*/, jbyte byte)
 }
 
 static void nativeBaroAltitude( JNIEnv* /*env*/,
-		                            jobject /*myobject*/,
-		                            jdouble altitude )
+                                jobject /*myobject*/,
+                                jdouble altitude )
 {
   if( ! shutdown )
-	  {
-      {
-        AltitudeEvent *ae = new GpsStatusEvent( altitude );
-        QCoreApplication::postEvent( GpsNmea::gps, ae );
-	  }
+    {
+      AltitudeEvent *ae = new AltitudeEvent( altitude );
+      QCoreApplication::postEvent( GpsNmea::gps, ae );
+    }
 }
 
 /* The array of native methods to register.
