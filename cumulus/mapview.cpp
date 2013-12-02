@@ -263,7 +263,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   VALayout->setSpacing(2);
 
   // add altitude widget
-  _altitude = new MapInfoBox( this, conf->getMapFrameColor().name(), true );
+  _altitude = new MapInfoBox( this, conf->getMapFrameColor().name(), true, true );
   _altitude->setPreText(AltimeterModeDialog::mode2String());
   _altitude->setPreUnit( Altitude::getUnitText() );
   _altitude->setValue("-");
