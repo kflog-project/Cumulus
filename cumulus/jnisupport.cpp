@@ -54,7 +54,7 @@ static jmethodID m_BuildDataID        = 0;
 static jmethodID m_playSoundID        = 0;
 static jmethodID m_dimmScreenID       = 0;
 static jmethodID m_gpsCmdID           = 0;
-static jmethodID m_callReturnerID     = 0;
+static jmethodID m_callRetrieverID    = 0;
 static jmethodID m_byte2Gps           = 0;
 static jmethodID m_nativeShutdownID   = 0;
 
@@ -154,7 +154,6 @@ static void nativeGpsFix( JNIEnv * /*jniEnvironment*/,
 /**
  * Called from the Java code on every status change by LocationListener ll
  */
-
 static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
                              jobject /*myproxyobject*/,
                              jint status )
@@ -296,6 +295,18 @@ static void nativeByteFromGps(JNIEnv* /*env*/, jobject /*myobject*/, jbyte byte)
     }
 }
 
+static void nativeBaroAltitude( JNIEnv* /*env*/,
+		                            jobject /*myobject*/,
+		                            jdouble altitude )
+{
+  if( ! shutdown )
+	  {
+      {
+        AltitudeEvent *ae = new GpsStatusEvent( altitude );
+        QCoreApplication::postEvent( GpsNmea::gps, ae );
+	  }
+}
+
 /* The array of native methods to register.
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
@@ -308,7 +319,8 @@ static JNINativeMethod methods[] = {
 	{"nativeNmeaString","(Ljava/lang/String;)V", (void *)nativeNmeaString},
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
-	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps}
+	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
+	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude}
 };
 
 /**
@@ -466,13 +478,13 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
-  m_callReturnerID = m_jniEnv->GetMethodID( clazz,
-                                            "callReturner",
+  m_callRetrieverID = m_jniEnv->GetMethodID( clazz,
+                                            "callRetriever",
                                             "(Ljava/lang/String;)V");
 
   if (isJavaExceptionOccured())
     {
-      qWarning() << "initJni: could not get ID of callReturner";
+      qWarning() << "initJni: could not get ID of callRetriever";
       return false;
     }
 
@@ -623,7 +635,7 @@ bool jniGpsCmd(QString& cmd)
   return result;
 }
 
-bool jniCallReturner( QString& smsText )
+bool jniCallRetriever( QString& smsText )
 {
   if (!jniEnv() || shutdown )
     {
@@ -631,15 +643,15 @@ bool jniCallReturner( QString& smsText )
     }
 
   jstring jsmsText = m_jniEnv->NewString((jchar*) smsText.constData(),
-                                        (jsize) smsText.length());
+                                         (jsize) smsText.length());
 
   m_jniEnv->CallVoidMethod( m_jniProxyObject,
-                            m_callReturnerID,
+                            m_callRetrieverID,
                             jsmsText );
 
   if (isJavaExceptionOccured())
     {
-      qWarning("jniGpsCmd: exception when calling Java method \"gpsCmd\"");
+      qWarning("jniGpsCmd: exception when calling Java method \"jniCallRetriever\"");
       return false;
     }
 

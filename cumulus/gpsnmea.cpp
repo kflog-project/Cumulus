@@ -2643,7 +2643,7 @@ void GpsNmea::slot_closeNmeaLogFile()
 
 /**
  * Handler for custom QEvents posted by the native JNI functions in
- * jnisupport.cpp. GPS data handling duplicated from other NMEA functions.
+ * jnisupport.cpp. GPS data handling partly duplicated from other NMEA functions.
  */
 bool GpsNmea::event(QEvent *event)
 {
@@ -2813,7 +2813,38 @@ bool GpsNmea::event(QEvent *event)
       return true;
     }
 
-  // call the default event processing
+  // Handles a barometer sensor event. A new altitude in meters is passed.
+  if( event->type() == QEvent::User + 6 )
+    {
+      AltitudeEvent *ae = dynamic_cast<AltitudeEvent *>(event);
+
+      if( ae )
+        {
+          _baroAltitudeSeen = true;
+
+          Altitude altitude( ae->altitude() );
+
+          if( _lastPressureAltitude != altitude || _reportAltitude == true )
+            {
+              _reportAltitude = false;
+              _lastPressureAltitude = altitude; // store the new pressure altitude
+
+              if( _deliveredAltitude == GpsNmea::PRESSURE )
+                {
+                  // set these altitudes too, when pressure is selected
+                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
+                  // calculate STD altitude
+                  calcStdAltitude( altitude );
+                }
+
+              emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+            }
+
+          return true;
+        }
+    }
+
+  // Calls the default event processing.
   return QObject::event(event);
 }
 

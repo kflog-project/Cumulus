@@ -109,8 +109,8 @@ QHash<QString, QString> jniGetBuildData();
 void jniDimmScreen( bool newState );
 
 /**
- * Calls the returner per SMS.
+ * Calls the retriever per SMS e.g. after an outlanding.
  *
  * \param smsText SMS text content.
  */
-bool jniCallReturner( QString& smsText );
+bool jniCallRetriever( QString& smsText );

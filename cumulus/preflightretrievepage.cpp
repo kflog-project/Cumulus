@@ -218,5 +218,5 @@ void PreFlightRetrievePage::slotCallReturner()
   smsText += "loc: " + QString("%1").arg( lat, 0, 'f', 5) + "," +
                        QString("%1").arg( lon, 0, 'f', 5);
 
-  jniCallReturner( smsText );
+  jniCallRetriever( smsText );
 }
