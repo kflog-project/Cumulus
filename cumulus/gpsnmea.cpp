@@ -819,9 +819,10 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 
                   // calculate STD altitude
                   calcStdAltitude( _lastMslAltitude );
-                }
 
-              emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+                  // report new pressure altitude
+                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+                }
             }
           }
 
@@ -1097,9 +1098,8 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
             _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
             // STD altitude is delivered by Cambrigde via $PCAID record
             // calcStdAltitude( res );
+            emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
           }
-
-        emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
       }
     }
 
@@ -1223,9 +1223,8 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
                   _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
                   // calculate STD altitude
                   calcStdAltitude( altitude );
+                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
                 }
-
-              emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
             }
         }
     }
@@ -1513,8 +1512,7 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
 }
 
 /**
- * Extracts the altitude from a NMEA GGA sentence or from a Garmin/Flarm
- * proprietary PGRMZ sentence.
+ * Extracts the altitude from a NMEA GGA sentence.
  */
 Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& unit )
 {
@@ -1549,8 +1547,9 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
       // set these altitudes only, when pressure is not selected
       _lastMslAltitude = res;
       calcStdAltitude( res );
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
     }
+
+  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
 
   return res;
 }
@@ -2835,10 +2834,10 @@ bool GpsNmea::event(QEvent *event)
                   _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
                   // calculate STD altitude
                   calcStdAltitude( altitude );
+                  // report new barometer altitude
+                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
                 }
-
-              emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-            }
+           }
 
           return true;
         }
