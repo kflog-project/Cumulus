@@ -51,8 +51,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
-import android.content.res.Configuration;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -75,7 +76,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.kde.necessitas.origo.QtActivity;
-
 import org.kflog.cumulus.BluetoothService;
 
 /**
@@ -110,6 +110,7 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_TOGGELS_ID     = 8;
   static final int               DIALOG_SETUP_ID       = 9;
   static final int               DIALOG_NO_PAIRED_BTD  = 10;
+  static final int               DIALOG_BARO_SENROR_ID = 11;
 
   static final int               REQUEST_ENABLE_BT = 99;
 
@@ -171,9 +172,10 @@ public class CumulusActivity extends QtActivity
   
   private NotificationManager notificationManager  = null;
   
-  // Barometric sensor
+  // Barometric sensor variables
   static private SensorManager m_SensorManager     = null;
   static private Sensor        m_BaroSensor        = null;
+  static private BaroSensorListener m_BaroSensorListener = null;
 
   // Used by the Bluetooth Service Handling
   private Set<BluetoothDevice>   m_pairedBtDevices = null;
@@ -285,6 +287,7 @@ public class CumulusActivity extends QtActivity
 
   public static native void nativeByteFromGps(byte newByte);
   public static native void nativeNmeaString(String nmea);
+  public static native void nativeBaroAltitude(double altitude);
   public static native void nativeGpsStatus(int status);
   public static native void nativeKeypress(char code);
   public static native boolean isRootWindow();
@@ -313,16 +316,16 @@ public class CumulusActivity extends QtActivity
     }
   
   /**
-   * Called from JNI to send a SMS to the returner. The SMS text consists of a
+   * Called from JNI to send a SMS to the retriever. The SMS text consists of a
    * mobile number, followed by a separator semicolon and the SMS text body.
    * The mobile number can be omitted.
    * 
    * [<mobile-number>];<sms-text>
    * 
-   * \param smsText Text to be sent as SMS to the returner.
+   * \param smsText Text to be sent as SMS to the retriever.
    * 
    */
-  void callReturner( String smsText )
+  void callRetriever( String smsText )
     {
 		  String number = "";
 		  String text   = "";
@@ -395,6 +398,105 @@ public class CumulusActivity extends QtActivity
     }
   
   /**
+   * Setup a barometer sensor listener, if a barometer sensor is build in.
+   * 
+   * @return true in case of success otherwise false
+   */
+  private boolean activateBarometerSensor()
+  {
+    if( m_BaroSensor == null )
+      {
+        return false;
+      }
+    
+    if( m_BaroSensorListener == null )
+      {
+        m_BaroSensorListener = new BaroSensorListener();
+      }
+    
+    m_SensorManager.registerListener( m_BaroSensorListener,
+                                      m_BaroSensor,
+                                      SensorManager.SENSOR_DELAY_NORMAL );
+    return true;
+  }
+  
+  /**
+   * Remove a barometer sensor listener, if it is active.
+   * 
+   * @return true in case of success otherwise false
+   */
+  private boolean deactivateBarometerSensor()
+  {
+    if( m_BaroSensor == null || m_BaroSensorListener == null )
+      {
+        return false;
+      }
+  
+    m_SensorManager.unregisterListener( m_BaroSensorListener );
+    m_BaroSensorListener = null;
+
+    return true;
+  }
+  
+  private class BaroSensorListener implements SensorEventListener
+  {
+    private int index = 0;
+    private float[] values = { 0f, 0f, 0f, 0f, 0f };
+    
+    public void reset()
+    {
+      index = 0;
+      
+      values[0] = 0;
+      values[1] = 0;
+      values[2] = 0;
+      values[3] = 0;
+      values[4] = 0;
+    }
+    
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+      {
+      }
+    
+    @Override
+    synchronized public void onSensorChanged(SensorEvent event)
+      {
+        // long timestamp = event.timestamp;
+        
+        // Atmospheric pressure in hPa
+        values[index] = event.values[0];
+        
+        index++;
+        
+        if( index < 5 )
+          {
+            return;
+          }
+        
+        // 5 values received, calculate average value
+        double average = 0.0;
+        
+        for( int i = 0; i < 5; i++ )
+        {
+          average += (double) values[i];
+        }
+        
+        average /= 5.0;
+
+        // Calculate altitude according to formula 9, see paragraph 1.1.4.
+        // The result is in meters.
+        // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
+        final double k1 = 29.27 * 288.15;
+        double altitude = k1 * Math.log( 1013.25 / average );
+        
+        // Send altitude value to native application part.
+        nativeBaroAltitude( altitude );
+        index = 0;
+      }
+  }
+  
+  /**
    * Called from the QtActivity.onCreate to get information if the App is startable
    * or not. If not, QtActivity.onCreate returns without starting the native part.
    * 
@@ -412,6 +514,7 @@ public class CumulusActivity extends QtActivity
 	try
 	  {
 	    Log.d(TAG, "onCreate Entry" );
+	    Log.d(TAG, "API Level=" + Build.VERSION.SDK_INT);
 	    Log.d(TAG, "CPU_ABI=" + Build.CPU_ABI);
 	    Log.d(TAG, "BRAND=" + Build.BRAND);
 	    Log.d(TAG, "PRODUCT=" + Build.PRODUCT);
@@ -423,8 +526,11 @@ public class CumulusActivity extends QtActivity
 	    Log.d(TAG, "BOARD=" + Build.BOARD);
 	    Log.d(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
 	    Log.d(TAG, "ID=" + Build.ID);
-	    Log.d(TAG, "SERIAL=" + Build.SERIAL);
-	    // Log.d(TAG, "RADIO=" + Build.getRadioVersion());
+	    
+  	  if( Build.VERSION.SDK_INT >= 9 )
+  	    {
+  	      // Log.d(TAG, "SERIAL=" + Build.SERIAL); // API 9 and higher
+  	    }
 	  }
 	catch( java.lang.NoSuchFieldError e)
 	  {
@@ -432,20 +538,21 @@ public class CumulusActivity extends QtActivity
 	  }
 	
 	m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-	m_BaroSensor = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+	m_BaroSensor    = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 	
 	if( m_BaroSensor != null )
 	  {
-		Log.d(TAG, "BaroSensor: Name=" + m_BaroSensor.getName() + ", Vendor=" +
-	                m_BaroSensor.getVendor() + ", Resolution= " +
-				    m_BaroSensor.getResolution() + ", MaxRange=" +
-				    m_BaroSensor.getMaximumRange() + ", MinDelay=" +
-				    m_BaroSensor.getMinDelay() + ", Power=" + 
-				    m_BaroSensor.getPower() );
+	    String text = "BaroSensor: Name=" + m_BaroSensor.getName() +
+	        ", Vendor=" + m_BaroSensor.getVendor() +
+	        ", Resolution= " + m_BaroSensor.getResolution() +
+	        ", MaxRange=" + m_BaroSensor.getMaximumRange() +
+	        ", Power=" + m_BaroSensor.getPower();
+
+  		Log.d( TAG,text );
 	  }
 	else
 	  {
-		Log.d(TAG, "No Barometric sensor available!");
+		  Log.d(TAG, "No Barometric sensor available!");
 	  }
     
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -598,7 +705,7 @@ public class CumulusActivity extends QtActivity
         nl = new GpsStatus.NmeaListener()
           {
             @Override
-			public void onNmeaReceived( long timestamp, String nmea )
+            public void onNmeaReceived( long timestamp, String nmea )
               {
                 nmeaIsReceived = true;
 
@@ -685,6 +792,15 @@ public class CumulusActivity extends QtActivity
           TimerTask dimmTask = new ScreenDimmerTimerTask();
           screenDimmTimer.scheduleAtFixedRate(dimmTask, 10000, 10000);
         }
+      
+      // Enable barometer sensor callbacks.
+      if( m_BaroSensorListener != null )
+        {
+          m_SensorManager.registerListener( m_BaroSensorListener,
+                                            m_BaroSensor,
+                                            SensorManager.SENSOR_DELAY_NORMAL );
+          m_BaroSensorListener.reset();
+        }
      }
 
   @Override
@@ -702,6 +818,13 @@ public class CumulusActivity extends QtActivity
     {
       Log.d(TAG, "onStop()" );
       super.onStop();
+      
+      // Stop barometer sensor callbacks.
+      if( m_BaroSensorListener != null )
+        {
+          m_SensorManager.unregisterListener( m_BaroSensorListener );
+          m_BaroSensorListener.reset();
+        }
     }
 
   @Override
@@ -931,35 +1054,81 @@ public class CumulusActivity extends QtActivity
         break;
 
 			case DIALOG_MENU_ID:
-				CharSequence[] m_items = { getString(R.string.setup),
-																	 getString(R.string.gps),
-																	 getString(R.string.toggles),
-																	 getString(R.string.quit) };
-
-				builder.setTitle(getString(R.string.mainMenu));
-				builder.setItems( m_items, new DialogInterface.OnClickListener()
-					{
-    					@Override
-						public void onClick(DialogInterface dialog, int item) 
-    						{
-        						switch(item)
-        						{
-          						case 0:
-          							showDialog( DIALOG_SETUP_ID );
-          							break;
-          						case 1:
-          							showDialog( DIALOG_GPS_MENU_ID );
-          							break;
-          						case 2:
-          							showDialog( DIALOG_TOGGELS_ID );
-          							break;
-          						case 3:
-          							// Qt main window will get a quit
-          							nativeKeypress((char)30);
-          							break;
-        						}
-        					}
-        		} );
+	      builder.setTitle(getString(R.string.mainMenu));
+			  
+				CharSequence[] m_items;
+				
+				if( m_BaroSensor == null )
+  				{
+  				  m_items = new CharSequence[4];
+  				  m_items[0] = getString(R.string.setup);
+  				  m_items[1] = getString(R.string.gps);
+  				  m_items[2] = getString(R.string.toggles);
+  				  m_items[3] = getString(R.string.quit);
+  				  
+  	        builder.setItems( m_items,
+                new DialogInterface.OnClickListener()
+                  {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) 
+                        {
+                            switch(item)
+                            {
+                              case 0:
+                                showDialog( DIALOG_SETUP_ID );
+                                break;
+                              case 1:
+                                showDialog( DIALOG_GPS_MENU_ID );
+                                break;
+                              case 2:
+                                showDialog( DIALOG_TOGGELS_ID );
+                                break;
+                              case 3:
+                                // Qt main window will get a quit
+                                nativeKeypress((char)30);
+                                break;
+                            }
+                          }
+                    } );
+  				}
+				else
+  				{
+            m_items = new CharSequence[5];
+            m_items[0] = getString(R.string.setup);
+            m_items[1] = getString(R.string.gps);
+            m_items[2] = getString(R.string.baroSensor);
+            m_items[3] = getString(R.string.toggles);
+            m_items[4] = getString(R.string.quit);
+            
+            builder.setItems( m_items,
+                new DialogInterface.OnClickListener()
+                  {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) 
+                        {
+                            switch(item)
+                            {
+                              case 0:
+                                showDialog( DIALOG_SETUP_ID );
+                                break;
+                              case 1:
+                                showDialog( DIALOG_GPS_MENU_ID );
+                                break;
+                              case 2:
+                                showDialog( DIALOG_BARO_SENROR_ID );
+                                break;
+                              case 3:
+                                showDialog( DIALOG_TOGGELS_ID );
+                                break;
+                              case 4:
+                                // Qt main window will get a quit
+                                nativeKeypress((char)30);
+                                break;
+                            }
+                          }
+                    } );
+  				}
+				
 				
 				alert = builder.create();
 				break;
@@ -1003,7 +1172,7 @@ public class CumulusActivity extends QtActivity
 				builder.setTitle(getString(R.string.gpsMenu));
 				builder.setItems( g_items, new DialogInterface.OnClickListener()
 					{
-    					@Override
+    			  @Override
 						public void onClick(DialogInterface dialog, int item) 
     						{
         						switch(item)
@@ -1054,6 +1223,47 @@ public class CumulusActivity extends QtActivity
 				alert = builder.create();
 				break;
 
+		case DIALOG_BARO_SENROR_ID:
+		  
+      CharSequence[] a_items = { "" };
+      
+      if( m_BaroSensorListener != null )
+        {
+          a_items[0] = getString(R.string.baroSensorOff);
+        }
+      else
+        {
+          a_items[0] = getString(R.string.baroSensorOn);
+        }
+      
+      builder.setTitle(getString(R.string.baroSensorMenu));
+      builder.setItems( a_items, new DialogInterface.OnClickListener()
+        {
+          @Override
+          public void onClick(DialogInterface dialog, int item) 
+              {
+                  switch(item)
+                  {
+                    case 0:
+                      
+                      if( m_BaroSensorListener != null )
+                        {
+                          deactivateBarometerSensor();
+                        }
+                      else
+                        {
+                          activateBarometerSensor();
+                        }
+                      
+                      removeDialog( DIALOG_BARO_SENROR_ID );
+                      break;
+                  }
+                }
+          } );
+      
+      alert = builder.create();
+      break;
+				
 		case DIALOG_NO_SDCARD:
 			builder.setMessage( getString(R.string.sdcardNeeded) )
 					.setCancelable(false)
@@ -1321,19 +1531,23 @@ public class CumulusActivity extends QtActivity
 	{
 	  StringBuffer buffer = new StringBuffer();
 	  
-      buffer.append("CPU_ABI\n").append(Build.CPU_ABI).append('\n')
-		    .append("BRAND\n").append(Build.BRAND).append('\n')
-		    .append("PRODUCT\n").append(Build.PRODUCT).append('\n')
-		    .append("MANUFACTURER\n").append(Build.MANUFACTURER).append('\n')
-		    .append("HARDWARE\n").append(Build.HARDWARE).append('\n')
-		    .append("MODEL\n").append(Build.MODEL).append('\n')
-		    .append("DEVICE\n").append(Build.DEVICE).append('\n')
-		    .append("DISPLAY\n").append(Build.DISPLAY).append('\n')
-		    .append("FINGERPRINT\n").append(Build.FINGERPRINT).append('\n')
-		    .append("ID\n").append(Build.ID).append('\n')
-		    .append("SERIAL\n").append(Build.SERIAL).append('\n');
-    
-      return buffer.toString();
+    buffer.append("CPU_ABI\n").append(Build.CPU_ABI).append('\n')
+		     .append("BRAND\n").append(Build.BRAND).append('\n')
+		     .append("PRODUCT\n").append(Build.PRODUCT).append('\n')
+		     .append("MANUFACTURER\n").append(Build.MANUFACTURER).append('\n')
+		     .append("HARDWARE\n").append(Build.HARDWARE).append('\n')
+		     .append("MODEL\n").append(Build.MODEL).append('\n')
+		     .append("DEVICE\n").append(Build.DEVICE).append('\n')
+		     .append("DISPLAY\n").append(Build.DISPLAY).append('\n')
+		     .append("FINGERPRINT\n").append(Build.FINGERPRINT).append('\n')
+		     .append("ID\n").append(Build.ID).append('\n');
+      
+    if( Build.VERSION.SDK_INT >= 9 )
+      {
+        // buffer.append("SERIAL\n").append(Build.SERIAL).append('\n');
+      }
+      
+    return buffer.toString();
 	}
   
   /**
@@ -1375,6 +1589,8 @@ public class CumulusActivity extends QtActivity
           m_btService.stop();
           m_btService = null;
         }
+      
+      deactivateBarometerSensor();
     }
 
 	private void toggleGps()

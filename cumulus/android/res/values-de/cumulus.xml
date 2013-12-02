@@ -2,44 +2,42 @@
 <!-- Cumulus common string definitions for German -->
 <!-- $Id$ -->
 <resources>
-	<string name="appDataFile">appData.zip</string>
+ 	<string name="appDataFile">appData.zip</string>
 	<string name="addDataFile">addData.zip</string>
+  <string name="baroSensor">Barosensor</string>  
+  <string name="baroSensorMenu">Menu Barosensor</string>  
+  <string name="baroSensorOn">Barosensor ein</string>
+  <string name="baroSensorOff">Barosensor aus</string>  
 	<string name="btError1">BT Gerät nicht erreichbar</string>
 	<string name="btError2">Verbindung zu BT Gerät verloren!</string>
 	<string name="connected2">verbunden mit </string>
-	<string name="description">Eine Navigationshilfe für Segelflieger und andere
-		Flugenthusiasten.</string>
-	<string name="errorUnzip">Cumulus kann seine Daten nicht auf der SD-Karte
-		ablegen!</string>
+	<string name="description">Eine Navigationshilfe für Segelflieger und andere Flugenthusiasten.</string>
+	<string name="errorUnzip">Cumulus kann seine Daten nicht auf der SD-Karte	ablegen!</string>
 	<string name="gps">GPS</string>
 	<string name="gpsDeviceNo">Kein GPS Empfänger verfügbar!</string>
-	<string name="gpsGoto">Zur Konfigurationsseite gehen, um den GPS Empfänger
-		zu aktivieren</string>
+	<string name="gpsGoto">Zur Konfigurationsseite gehen, um den GPS Empfänger zu aktivieren</string>
 	<string name="gpsBluetooth">Bluetooth GPS</string>
 	<string name="gpsInternal">Internes GPS</string>
 	<string name="gpsBtMenu">Menü GPS BT</string>
 	<string name="gpsMenu">Menü GPS</string>
 	<string name="gpsOff">GPS aus</string>
 	<string name="gpsOn">GPS ein</string>
-	<string name="gpsQueryEnable">Das GPS ist deaktiviert in deinem Gerät. Möchtest
-		du es aktivieren?</string>
+	<string name="gpsQueryEnable">Das GPS ist deaktiviert in deinem Gerät. Möchtest	du es aktivieren?</string>
 	<string name="gpsStatus">GPS Statusanzeige</string>
 	<string name="mainMenu">Hauptmenü</string>
-	<string name="noDataFolder">Kann kein Datenverzeichnis für Cumulus auf der SD
-		Karte anlegen!</string>
+  <string name="mapInfoBarShow">Zeige Infoboxen</string>
+  <string name="mapInfoBarHide">Verstecke Infoboxen</string>
+	<string name="noDataFolder">Kann kein Datenverzeichnis für Cumulus auf der SD Karte anlegen!</string>
 	<string name="quit">Beenden</string>
 	<string name="reallyClose">Willst du Cumulus wirklich beenden?</string>
 	<string name="running">Cumulus läuft</string>
-	<string name="sdcardNeeded">Cumulus benötigt eine SD-Karte zum Daten
-		speichern!\nBitte lege eine SD-Karte ein und mounte sie.</string>
+	<string name="sdcardNeeded">Cumulus benötigt eine SD-Karte zum Daten speichern!\nBitte lege eine SD-Karte ein und mounte sie.</string>
 	<string name="setup">Einstellungen</string>
 	<string name="setupMenu">Menü Einstellungen</string>
 	<string name="setupGeneral">Allgemein</string>
 	<string name="setupPreFlight">Vorflug</string>
 	<string name="toggles">Umschalter</string>
 	<string name="togglesMenu">Menü Umschalter</string>
-	<string name="mapInfoBarShow">Zeige Infoboxen</string>
-	<string name="mapInfoBarHide">Verstecke Infoboxen</string>
 	<string name="noPairedBtD">Keine gekoppelten Bluetooth Geräte verfügbar!</string>
 	<string name="noSmsService">SMS Service nicht verfügbar!</string>
 </resources>
