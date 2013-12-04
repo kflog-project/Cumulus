@@ -15,6 +15,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2013-12-04 AP: New variometer calculation added, which is based on Android's
+                   barometric sensor values. If the Android baro sensor is
+                   enabled, variometer calculation is started immediately.
+
+[-] 2013-12-04 AP: Bugfix: A TAS value, extracted in the GpsNmea class, was never
+                   forwarded to the calculator.
+
+[*] 2013-11-21 AP: Cumulus 5.9.2 released for all supported platforms.
+
 [-] 2013-11-14 AP: Bugfix: URL to skylines-project.org server updated. The
                    prefix www is needed now before the server name.
 

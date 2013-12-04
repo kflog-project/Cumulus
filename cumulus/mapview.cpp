@@ -884,6 +884,12 @@ void MapView::slot_Mc (const Speed& mc)
 /** This slot is called if a new variometer value has been set */
 void MapView::slot_Vario (const Speed& vario)
 {
+  if( ! vario.isValid() )
+    {
+      _vario->setValue("-");
+      return;
+    }
+
   QString varValue;
 
   // if altitude has more than 4 digits, vario is rounded to one

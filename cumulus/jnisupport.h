@@ -22,6 +22,7 @@
 
 #include <jni.h>
 
+#include <QHash>
 #include <QString>
 
 /**

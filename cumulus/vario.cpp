@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2010 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,39 +16,44 @@
 **
 ***********************************************************************/
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "vario.h"
 #include "altitude.h"
 #include "calculator.h"
 #include "generalconfig.h"
 
-Vario::Vario(QObject* parent) : QObject(parent)
+Vario::Vario(QObject* parent) :
+  QObject(parent),
+  m_intTime(3000),
+  m_TEKOn(false),
+  m_energyAlt(0.0),
+  m_TekAdjust(0.0),
+  m_sampleList( LimitedList<AltSample>( 61 ) )
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  _intTime = conf->getVarioIntegrationTime() * 1000;
-
-  _TEKOn = conf->getVarioTekCompensation();
-  _TekAdjust = (100.0 + conf->getVarioTekAdjust()) / 100.0;
+  m_intTime = conf->getVarioIntegrationTime() * 1000;
+  m_TEKOn = conf->getVarioTekCompensation();
+  m_TekAdjust = (100.0 + conf->getVarioTekAdjust()) / 100.0;
 
   // Timeout supervision of delivery of new altitude values
-  connect( &_timeOut, SIGNAL( timeout() ), this, SLOT( _slotTimeout() ) );
+  connect( &m_timeOut, SIGNAL( timeout() ), this, SLOT( slotTimeout() ) );
 }
 
 Vario::~Vario()
 {
-  _timeOut.stop();
+  m_timeOut.stop();
 }
 
 void Vario::newAltitude()
 {
   // Start or restart the timer to supervise the calling of this
   // method. If the timer expires the variometer is set to zero.
-  _timeOut.setSingleShot( true );
-  _timeOut.start( _intTime + 2500 );
+  m_timeOut.setSingleShot( true );
+  m_timeOut.start( m_intTime + 2500 );
 
-  if( calculator->samplelist.count() < 20 )
+  if( calculator->samplelist.count() < 10 )
     {
       // to less samples in the list
       return;
@@ -72,7 +77,7 @@ void Vario::newAltitude()
       const FlightSample *sample2 = &calculator->samplelist.at( i );
 
       // calculate energy altitude for both samples
-      if( _TEKOn )
+      if( m_TEKOn )
         {
           double speed1 = sample1->airspeed.getMps();
           double speed2 = sample2->airspeed.getMps();
@@ -98,15 +103,16 @@ void Vario::newAltitude()
 
       int timeDist = sample2->time.msecsTo( startTime );
 
-      if( timeDist > _intTime )
+      if( timeDist > m_intTime )
         {
           // time difference to big
           break;
         }
 
       i++;
-      double diff = (sample1->altitude.getMeters() + energyAlt1 * _TekAdjust) -
-                    (sample2->altitude.getMeters() + energyAlt2 * _TekAdjust);
+
+      double diff = (sample1->altitude.getMeters() + energyAlt1 * m_TekAdjust) -
+                    (sample2->altitude.getMeters() + energyAlt2 * m_TekAdjust);
 
       int elapsed = sample2->time.msecsTo( sample1->time );
 
@@ -118,7 +124,7 @@ void Vario::newAltitude()
       //	max, i, diff, elapsed, sum );
     }
 
-  Speed lift( 0 );
+  Speed lift;
 
   if( resultAvailable )
     {
@@ -129,32 +135,121 @@ void Vario::newAltitude()
   emit newVario( lift );
 }
 
+void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
+{
+  // Start or restart the timer to supervise the calling of this
+  // method. If the timer expires the variometer is set to zero.
+  m_timeOut.setSingleShot( true );
+  m_timeOut.start( m_intTime + 2500 );
+
+  AltSample sample;
+
+  sample.altitude  = altitude.getMeters();
+  sample.tas       = tas.getMps();
+  sample.timeStamp = QDateTime::currentMSecsSinceEpoch();
+
+  // Add the new sample to the list.
+  m_sampleList.add( sample );
+
+  if( m_sampleList.count() < 5 )
+    {
+      // To less samples in the list, do not more.
+      return;
+    }
+
+  int i = 1; // index for list access
+  int max = m_sampleList.count();
+  double lift = 0.0;
+
+  bool resultAvailable = false;
+
+  // Step through the list. Note, the list is inverse ordered, last sample at
+  // first position.
+  qint64 elapsedTime = 0;
+
+  while( i < max )
+    {
+      double energyAlt1 = 0.0;
+      double energyAlt2 = 0.0;
+
+      const AltSample& sample1 = m_sampleList.at( i - 1 );
+      const AltSample& sample2 = m_sampleList.at( i );
+
+      double tas1 = sample1.tas;
+      double tas2 = sample2.tas;
+
+      // if( i == 2 )
+      // qDebug("Airspeed %f, EnergyAltitude %f, TekAdj %f",sample1->airspeed.getKph(), energyAlt1, _TekAdjust );
+
+      qint64 timeDist = sample2.timeStamp - sample1.timeStamp;
+
+      elapsedTime += timeDist;
+
+      if( elapsedTime > m_intTime )
+        {
+          // Time period too big, leave loop.
+          break;
+        }
+
+      i++;
+
+      if( m_TEKOn && tas1 > 0.0 && tas2 > 0.0 )
+        {
+          energyAlt1  = (tas1 * tas1) / (2 * 9.81) * m_TekAdjust;
+          energyAlt2  = (tas2 * tas2) / (2 * 9.81) * m_TekAdjust;
+
+          lift += ((sample1.altitude + energyAlt1) -
+                   (sample2.altitude + energyAlt2)) / (double) timeDist;
+        }
+      else
+        {
+          lift += (sample1.altitude - sample2.altitude) / (double) timeDist;
+        }
+
+      resultAvailable = true;
+
+      // qDebug("Vario: max=%d, i=%d, diff=%f, elapsed=%dms, sum=%f",
+      //  max, i, diff, elapsed, sum );
+    }
+
+  Speed lifting;
+
+  if( resultAvailable )
+    {
+      lifting.setMps( lift / (double) (i - 1) );
+    }
+
+  // qDebug ("New vario=%s, samples=%d", lift.getTextVertical(true, 3).latin1(), i );
+  emit newVario( lifting );
+}
+
 /** This slot is called by the internal timer, to signal a
     timeout. It resets the vario to initial. */
-void Vario::_slotTimeout()
+void Vario::slotTimeout()
 {
-  // reset all to defaults, due to no new data have arrived over the
+  // Reset all to defaults, due to no new data have arrived over the
   // whole integration period and the measurement is senseless now.
-  Speed lift( 0 );
+  m_sampleList.clear();
+  Speed lift;
   emit newVario( lift );
 }
 
-/** This slot is called, if the integration time has been changed. Passes
-    value in seconds. */
+/** This slot is called, if the integration time has been changed.
+    The new value is passed in seconds. */
 void Vario::slotNewVarioTime( int newTime )
 {
   // qDebug("Vario::slotNewTime=%d", newTime );
-  _intTime = newTime * 1000;
+  m_intTime = newTime * 1000;
 }
 
 void Vario::slotNewTEKMode( bool newMode )
 {
   // qDebug("Vario::slotNewTEKMode=%d", newMode );
-  _TEKOn = newMode;
+  m_TEKOn = newMode;
 }
 
 void Vario::slotNewTEKAdjust(int adjust)
 {
   // qDebug("Vario::slotNewTEKAdjust");
-  _TekAdjust = (double)((100.0+adjust)/100.0);
+  m_TekAdjust = (double)((100.0 + adjust) / 100.0);
 }

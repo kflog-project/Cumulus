@@ -320,7 +320,7 @@ class GpsNmea : public QObject
      */
     void setDeliveredAltitude( const GpsNmea::DeliveredAltitude newAltRef )
     {
-      _deliveredAltitude = newAltRef;
+      _userExpectedAltitude = newAltRef;
     };
 
     /**
@@ -345,7 +345,7 @@ class GpsNmea : public QObject
      */
     GpsNmea::DeliveredAltitude getDeliveredAltitude() const
       {
-        return _deliveredAltitude;
+        return _userExpectedAltitude;
       };
 
     /**
@@ -488,6 +488,11 @@ class GpsNmea : public QObject
      * This signal is emitted if the altitude has been changed.
      */
     void newAltitude( Altitude& user, Altitude& std, Altitude& gnns );
+
+    /**
+     * This signal is emitted if a new Android altitude is available.
+     */
+    void newAndroidAltitude(const Altitude& altitude);
 
     /**
      * This signal is emitted if a new speed fix has been established.
@@ -738,8 +743,8 @@ class GpsNmea : public QObject
     QTimer* timeOutFix;
     /** Indicates the current GPS connection status */
     GpsStatus _status;
-    /** Indicates the altitude delivered by the GPS unit */
-    DeliveredAltitude _deliveredAltitude;
+    /** The altitude (GPS or Baro) expected by the user. */
+    DeliveredAltitude _userExpectedAltitude;
     /** The correction for the altitude when the altitude type is USER */
     Altitude _userAltitudeCorrection;
     /** Flag to ignore a lost connection, caused by a system clock update */

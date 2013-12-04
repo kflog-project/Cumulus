@@ -559,11 +559,14 @@ void AltimeterModeDialog::slotChangeSpinValue()
           GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
           GpsNmea::gps->baroAltitudeSeen() )
         {
-          // WE have pressure selected and got pressure altitude from Flarm.
+          // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
+          // WE have pressure selected and got a pressure altitude.
           // So we can try to calculate the QNH.
-          // The common approach is to expect a pressure difference of 1 hPa per
+          // The article of link above said, that 8.3m/hPa at MSL is the
+          // pressure difference.
+          // A common approach is to expect a pressure difference of 1 hPa per
           // 30ft until 18.000ft. 30ft are 9.1437m
-          int qnh = (int) rint( 1013.25 + newAlt.getFeet() / 30.0 );
+          int qnh = (int) rint( 1013.25 + newAlt.getMeters() / 8.3 );
           spinQnh->setValue( qnh );
         }
 

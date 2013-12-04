@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2010 by Axel Pauli
+**                   2008-2013 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  *
  * This class executes the variometer calculations.
  *
- *\date 2002-2010
+ *\date 2002-2013
  */
 
 #ifndef VARIO_H
@@ -34,10 +34,12 @@
 #include <QObject>
 #include <QTimer>
 
+#include "altitude.h"
+#include "limitedlist.h"
 #include "speed.h"
 
-/** Default integration time in s for variometer calculation. */
-#define INT_TIME 5
+/** Default integration time in seconds for variometer calculation. */
+#define INT_TIME 3
 
 class Vario: public QObject
 {
@@ -49,7 +51,7 @@ class Vario: public QObject
 
 public:
 
-  Vario(QObject*);
+  Vario( QObject* object );
 
   virtual ~Vario();
 
@@ -58,6 +60,12 @@ public:
    * variometer calculation.
    */
   void newAltitude();
+
+  /**
+   * Called to signal that a new pressure altitude value is available.
+   *  That triggers the variometer calculation.
+   */
+  void newPressureAltitude( const Altitude& altitude, const Speed& tas );
 
 public slots:
 
@@ -93,11 +101,29 @@ signals:
 
 private:
 
-  QTimer  _timeOut; // calling supervision timer
-  int     _intTime; // integration time
-  bool    _TEKOn;   // TEK compensated Mode
-  double  _energyAlt; // v*v/2g
-  double  _TekAdjust; // adjust TEK Compensation
+  QTimer  m_timeOut; // calling supervision timer
+  qint64  m_intTime; // integration time in ms
+  bool    m_TEKOn;   // TEK compensated Mode
+  double  m_energyAlt; // v*v/2g
+  double  m_TekAdjust; // adjust TEK Compensation
+
+  class AltSample
+  {
+   public:
+
+    AltSample() :
+      altitude(0.0),
+      tas(0.0),
+      timeStamp(0)
+    {};
+
+    double altitude;  // unit is meters
+    double tas;       // unit is meters per second
+    qint64 timeStamp; // unit is milliseconds since the epoch
+  };
+
+  // List of altitude samples
+  LimitedList<AltSample> m_sampleList;
 
 private slots:
 
@@ -105,7 +131,7 @@ private slots:
    * This slot is called by the internal timer to signal a
    * timeout. It resets the variometer to the initial settings.
    */
-  void _slotTimeout();
+  void slotTimeout();
 };
 
 #endif

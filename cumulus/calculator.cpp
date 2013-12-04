@@ -79,6 +79,7 @@ Calculator::Calculator(QObject* parent) :
   m_calculateLD = false;
   m_calculateETA = false;
   m_calculateVario = true;
+  m_androidPressureAltitude = false;
   m_calculateWind = true;
   selectedWp = static_cast<Waypoint *> (0);
   lastMc.setInvalid();
@@ -104,8 +105,14 @@ Calculator::Calculator(QObject* parent) :
   m_resetAutoZoomTimer = new QTimer( this );
   m_resetAutoZoomTimer->setSingleShot( true );
 
+  m_varioDataControl = new QTimer( this );
+  m_varioDataControl->setSingleShot( true );
+
   connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
            this, SLOT(slot_switchMapScaleBack()) );
+
+  connect( m_varioDataControl, SIGNAL(timeout()),
+           this, SLOT(slot_varioDataControl()) );
 
   // hook up the internal backend components
   connect( m_vario, SIGNAL(newVario(const Speed&)),
@@ -1073,8 +1080,26 @@ void Calculator::slot_Variometer(const Speed& lift)
 }
 
 /**
+ * This slot triggers a variometer calculation based on Android pressure
+ * altitude values.
+ */
+void Calculator::slot_AndroidAltitude(const Altitude& altitude)
+{
+  if( m_calculateVario == false )
+    {
+      // Variometer data from another external device are used.
+      // Abort calculation.
+      return;
+    }
+
+  m_androidPressureAltitude = true;
+  m_vario->newPressureAltitude( altitude, lastTas );
+  m_varioDataControl->start( 5000 );
+}
+
+/**
  * GPS variometer lift receiver. The internal variometer
- * calculation can be switched off, if we got values vis this slot.
+ * calculation can be switched off, if we got values via this slot.
  */
 void Calculator::slot_GpsVariometer(const Speed& lift)
 {
@@ -1088,8 +1113,9 @@ void Calculator::slot_GpsVariometer(const Speed& lift)
       lastVario = lift;
       emit newVario (lift);
     }
-}
 
+  m_varioDataControl->start( 5000 );
+}
 
 /** Sets the current position to point newPos. */
 void Calculator::setPosition(const QPoint& newPos)
@@ -1103,6 +1129,13 @@ void Calculator::setPosition(const QPoint& newPos)
   calcGlidePath();
 }
 
+void Calculator::slot_varioDataControl()
+{
+  // Variometer control timer expired. Reset variometer status variables
+  // to ensure normal calculation from GPS altitude.
+  m_calculateVario = true;
+  m_androidPressureAltitude = false;
+}
 
 /** Resets some internal items to the initial state */
 void Calculator::slot_settingsChanged ()
@@ -1118,6 +1151,8 @@ void Calculator::slot_settingsChanged ()
   // User could be changed the GPS device.
   m_calculateVario = true;
   m_calculateWind  = true;
+
+  m_androidPressureAltitude = false;
 
   slot_CheckHomeSiteSelection();
 }
@@ -1159,9 +1194,10 @@ void Calculator::slot_newFix( const QTime& newFixTime )
   samplelist.add(sample);
   lastSample = sample;
 
-  // Call variometer calculation, if required. Can be switched off,
-  // when GPS delivers variometer information.
-  if ( m_calculateVario == true )
+  // Call variometer calculation derived from GPS altitude. Can be switched off,
+  // when an external device delivers variometer information derived from a
+  // baro sensor.
+  if ( m_calculateVario == true && m_androidPressureAltitude == false )
     {
       m_vario->newAltitude();
     }

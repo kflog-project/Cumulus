@@ -440,7 +440,7 @@ public:
     return lastSample.time;
   };
 
-public slots:
+ public slots:
 
   /**
    * Checks, if the a selected waypoint to the home site exists
@@ -532,11 +532,21 @@ public slots:
    * Variometer lift receiver and distributor to map display.
    */
   void slot_Variometer(const Speed&);
+
+  /**
+   * A new altitude derived from the Android pressure sensor is delivered.
+   * We use this value for the variometer calculation. The default variometer
+   * calculation derived from the GPS altitude is switched off, if we got
+   * values via this slot.
+   */
+  void slot_AndroidAltitude(const Altitude& altitude);
+
   /**
    * GPS variometer lift receiver. The internal variometer
    * calculation can be switched off, if we got values via this slot.
    */
   void slot_GpsVariometer(const Speed&);
+
   /**
    * settings have been changed
    */
@@ -607,7 +617,14 @@ public slots:
    */
   void slot_switchMapScaleBack();
 
-signals: // Signals
+ private slots:
+
+ /**
+  * Called, if the timer m_varioDataControl expires.
+  */
+  void slot_varioDataControl();
+
+ signals:
 
   /**
    * Sent if a new waypoint has been selected.
@@ -856,6 +873,8 @@ private: // Private attributes
   Vario* m_vario;
   /** contains the current state of vario calculation */
   bool m_calculateVario;
+  /** Reminder, that pressure altitude data from an Android device have been received. */
+  bool m_androidPressureAltitude;
   /** Contains the last known flight mode */
   FlightMode lastFlightMode;
   /** Last marker value used */
@@ -897,6 +916,11 @@ private: // Private attributes
    * Timer to reset an auto map zoom after a taskpoint passage.
    */
   QTimer* m_resetAutoZoomTimer;
+
+  /**
+   * Timer to supervise external vaiometer data.
+   */
+  QTimer* m_varioDataControl;
 };
 
 extern Calculator* calculator;

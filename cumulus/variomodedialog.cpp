@@ -75,7 +75,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   gridLayout->addWidget(label, row, 0);
 
   spinTime = new QSpinBox(this);
-  spinTime->setRange(3, 150);
+  spinTime->setRange(2, 60);
   spinTime->setSuffix( " s" );
   spinTime->setButtonSymbols(QSpinBox::NoButtons);
   spinTime->setAlignment( Qt::AlignHCenter );
@@ -233,7 +233,7 @@ void VarioModeDialog::load()
 
   m_intTime = conf->getVarioIntegrationTime();
 
-  if( m_intTime < 3 ) // check configuration value
+  if( m_intTime < 2 ) // check configuration value
     {
       m_intTime = INT_TIME; // reset to default
       conf->setVarioIntegrationTime(m_intTime);

@@ -677,10 +677,14 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator->getWindAnalyser(), SLOT( slot_newConstellation(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( newSpeed(Speed&) ),
            calculator, SLOT( slot_Speed(Speed&) ) );
+  connect( GpsNmea::gps, SIGNAL( newTas(Speed&) ),
+           calculator, SLOT( slot_Tas(Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newPosition(QPoint&) ),
            calculator, SLOT( slot_Position(QPoint&) ) );
   connect( GpsNmea::gps, SIGNAL( newAltitude(Altitude&, Altitude&, Altitude&) ),
            calculator, SLOT( slot_Altitude(Altitude&, Altitude&, Altitude&) ) );
+  connect( GpsNmea::gps, SIGNAL( newAndroidAltitude(const Altitude&) ),
+           calculator, SLOT( slot_AndroidAltitude(const Altitude&) ) );
   connect( GpsNmea::gps, SIGNAL( newHeading(const double&) ),
            calculator, SLOT( slot_Heading(const double&) ) );
   connect( GpsNmea::gps, SIGNAL( newFix(const QTime&) ),
