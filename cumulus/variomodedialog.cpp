@@ -33,7 +33,7 @@ int VarioModeDialog::noOfInstances = 0;
 
 VarioModeDialog::VarioModeDialog(QWidget *parent) :
   QDialog( parent, Qt::WindowStaysOnTopHint ),
-  m_autoSip(true)
+  m_autoSip (qApp->autoSipEnabled() )
 {
   noOfInstances++;
   setObjectName("VarioModeDialog");
@@ -193,9 +193,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   load();
 
   // Switch off automatic software input panel popup
-  m_autoSip = qApp->autoSipEnabled();
-  qApp->setAutoSipEnabled( m_autoSip );
-
+  qApp->setAutoSipEnabled( false );
 }
 
 VarioModeDialog::~VarioModeDialog()
@@ -206,6 +204,7 @@ VarioModeDialog::~VarioModeDialog()
 
 void VarioModeDialog::showEvent(QShowEvent *)
 {
+  spinTime->setFocus();
 }
 
 void VarioModeDialog::slot_tekChanged( bool newState )

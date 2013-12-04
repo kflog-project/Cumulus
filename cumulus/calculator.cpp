@@ -1085,6 +1085,9 @@ void Calculator::slot_Variometer(const Speed& lift)
  */
 void Calculator::slot_AndroidAltitude(const Altitude& altitude)
 {
+  // qDebug() << "slot_AndroidAltitude: m_calculateVario="
+  //         << m_calculateVario << altitude.getMeters();
+
   if( m_calculateVario == false )
     {
       // Variometer data from another external device are used.

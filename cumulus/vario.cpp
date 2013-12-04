@@ -151,6 +151,8 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
   // Add the new sample to the list.
   m_sampleList.add( sample );
 
+  // qDebug() << "m_sampleList.count()=" << m_sampleList.count();
+
   if( m_sampleList.count() < 5 )
     {
       // To less samples in the list, do not more.
@@ -178,10 +180,7 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
       double tas1 = sample1.tas;
       double tas2 = sample2.tas;
 
-      // if( i == 2 )
-      // qDebug("Airspeed %f, EnergyAltitude %f, TekAdj %f",sample1->airspeed.getKph(), energyAlt1, _TekAdjust );
-
-      qint64 timeDist = sample2.timeStamp - sample1.timeStamp;
+      qint64 timeDist = sample1.timeStamp - sample2.timeStamp;
 
       elapsedTime += timeDist;
 
@@ -198,18 +197,18 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
           energyAlt1  = (tas1 * tas1) / (2 * 9.81) * m_TekAdjust;
           energyAlt2  = (tas2 * tas2) / (2 * 9.81) * m_TekAdjust;
 
-          lift += ((sample1.altitude + energyAlt1) -
-                   (sample2.altitude + energyAlt2)) / (double) timeDist;
+          lift += (((sample1.altitude + energyAlt1) -
+                    (sample2.altitude + energyAlt2)) / (double) timeDist) * 1000.0;
         }
       else
         {
-          lift += (sample1.altitude - sample2.altitude) / (double) timeDist;
+          lift += ((sample1.altitude - sample2.altitude) / (double) timeDist) * 1000.0;
         }
 
       resultAvailable = true;
 
-      // qDebug("Vario: max=%d, i=%d, diff=%f, elapsed=%dms, sum=%f",
-      //  max, i, diff, elapsed, sum );
+      // qDebug( "Vario: max=%d, i=%d, diff=%f, elapsed=%lldms, lift=%f",
+      //         max, i, (sample1.altitude - sample2.altitude), elapsedTime, lift );
     }
 
   Speed lifting;
@@ -219,7 +218,8 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
       lifting.setMps( lift / (double) (i - 1) );
     }
 
-  // qDebug ("New vario=%s, samples=%d", lift.getTextVertical(true, 3).latin1(), i );
+  // qDebug ("New vario=%f, samples=%d", lifting.getMps(), i );
+
   emit newVario( lifting );
 }
 
