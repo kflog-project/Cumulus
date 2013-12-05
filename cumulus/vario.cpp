@@ -142,6 +142,10 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
   m_timeOut.setSingleShot( true );
   m_timeOut.start( m_intTime + 2500 );
 
+  // That is the minimum altitude difference, which must be reached to
+  // say the difference is acceptable. The unit is m/s.
+  const double limit = 0.35;
+
   AltSample sample;
 
   sample.altitude  = altitude.getMeters();
@@ -186,23 +190,31 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
 
       if( elapsedTime > m_intTime )
         {
-          // Time period too big, leave loop.
+          // The defined time period is reached, leave loop.
           break;
         }
 
       i++;
+      double altDiff;
 
       if( m_TEKOn && tas1 > 0.0 && tas2 > 0.0 )
         {
           energyAlt1  = (tas1 * tas1) / (2 * 9.81) * m_TekAdjust;
           energyAlt2  = (tas2 * tas2) / (2 * 9.81) * m_TekAdjust;
 
-          lift += (((sample1.altitude + energyAlt1) -
-                    (sample2.altitude + energyAlt2)) / (double) timeDist) * 1000.0;
+          altDiff = (((sample1.altitude + energyAlt1) -
+                 (sample2.altitude + energyAlt2)) / (double) timeDist) * 1000.0;
         }
       else
         {
-          lift += ((sample1.altitude - sample2.altitude) / (double) timeDist) * 1000.0;
+          altDiff = ((sample1.altitude - sample2.altitude) / (double) timeDist) * 1000.0;
+        }
+
+      if( fabs( altDiff ) > limit )
+        {
+          // If the altitude difference to low, we ignore that value in the
+          // calculation. That is done to filter out noise values.
+          lift += altDiff;
         }
 
       resultAvailable = true;
@@ -219,7 +231,6 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
     }
 
   // qDebug ("New vario=%f, samples=%d", lifting.getMps(), i );
-
   emit newVario( lifting );
 }
 

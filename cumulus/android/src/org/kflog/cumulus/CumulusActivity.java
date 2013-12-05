@@ -440,18 +440,15 @@ public class CumulusActivity extends QtActivity
   
   private class BaroSensorListener implements SensorEventListener
   {
-    private int index = 0;
-    private float[] values = { 0f, 0f, 0f, 0f, 0f };
+    private int elements = 0;
+    private long start   = 0;
+    private float sum    = 0f;
     
     public void reset()
     {
-      index = 0;
-      
-      values[0] = 0;
-      values[1] = 0;
-      values[2] = 0;
-      values[3] = 0;
-      values[4] = 0;
+      elements = 0;
+      start    = 0;
+      sum      = 0f;
     }
     
     @Override
@@ -462,29 +459,25 @@ public class CumulusActivity extends QtActivity
     @Override
     synchronized public void onSensorChanged(SensorEvent event)
       {
-    	// ca. every 200ms a new value is reported.
-        // long timestamp = event.timestamp;
+        elements++;
         
-        // Atmospheric pressure in hPa
-        values[index] = event.values[0];
+        if( start == 0 )
+          {
+            start = event.timestamp;
+            sum   = event.values[0]; // Atmospheric pressure in hPa
+            return;
+          }
         
-        index++;
+        sum += event.values[0];
         
-        if( index < 5 )
+        if( event.timestamp - start < 995 )
           {
             return;
           }
         
-        // 5 values received, calculate average value
-        double average = 0.0;
+        // About every 1000 ms a new altitude value is calculated.
+        double average = sum / elements;
         
-        for( int i = 0; i < 5; i++ )
-        {
-          average += (double) values[i];
-        }
-        
-        average /= 5.0;
-
         // Calculate altitude according to formula 9, see paragraph 1.1.4.
         // The result is in meters.
         // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
@@ -496,7 +489,7 @@ public class CumulusActivity extends QtActivity
         
         // Send altitude value to native application part.
         nativeBaroAltitude( altitude );
-        index = 0;
+        reset();
       }
   }
   
