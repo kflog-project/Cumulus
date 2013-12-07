@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2013-12-07 AP: Bugfix: Format issues fixed in glider.pol file.
+
+[-] 2013-12-07 AP: Bugfix: Crash fixed in polar drawing. It was caused by a
+                   zero division.
+
 [+] 2013-12-04 AP: New variometer calculation added, which is based on Android's
                    barometric sensor values. If the Android baro sensor is
                    enabled, variometer calculation is started immediately.
