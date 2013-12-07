@@ -231,7 +231,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     p.translate (15, 30);
 
     QPen pen;
-    pen.setWidth(2);
+    pen.setWidth(3);
 
     // some initializations for the give units.
     // all drawing is done with meters/second units in both directions.
@@ -481,9 +481,15 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         if (spd > speed.getMps())
           {
             int dx = lastX - x;
+
+            if( dx == 0 )
+              {
+                break;
+              }
+
             int dy = lastY - y;
-            int x0 = (int)rint(speed * X);
-            int y0 = (int)rint((x0*dy - lastX*dy + lastY*dx) / dx);
+            int x0 = (int) (speed * X);
+            int y0 = (int) rint((x0*dy - lastX*dy + lastY*dx) / dx);
             p.drawLine (lastX, lastY, x0, y0);
             break;
         }
