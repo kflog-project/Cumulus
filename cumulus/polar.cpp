@@ -3,7 +3,7 @@
                              -------------------
     begin                : Okt 18 2002
     copyright            : (C) 2002      by Eggert Ehmke
-                               2008-2011 by Axel Pauli
+                               2008-2013 by Axel Pauli
 
     email                : eggert.ehmke@berlin.de, axel@kflog.org
 
@@ -441,7 +441,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         p.drawLine (1, (int)(sink.getMps()*Y), (int)(speed.getMps()*X), (int)(sink.getMps()*Y));
     }
 
-    // draw the actual polar;  this is the simplest part :-))
+    // draw the actual polar; this is the simplest part :-))
     pen.setColor(Qt::red);
     p.setPen (pen);
 
@@ -452,24 +452,30 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
     int lastX = (int)rint(start*X);
     int lastY = (int)rint(getSink (start)*Y);
 
+    bool sinkCorrected = false;
+
     for (int spd = start; spd <= stop; spd++)
       {
         Speed sinkSpd (getSink(spd));
         int x = (int)rint(spd*X);
         int y = (int)rint(sinkSpd*Y);
 
-        // qDebug("(x, y) = (%d, %d); V=%d, W=%f", x, y, spd, getSink(spd).getMps());
-
-        // stop drawing at the last horizontal grid line
-        if (sinkSpd.getMps() > sink.getMps())
+        // Do not draw under the last horizontal grid line
+        if ( sinkSpd.getMps() >= sink.getMps() )
           {
-            int dx = lastX - x;
-            int dy = lastY - y;
-            int y0 = (int)rint(sink * Y);
-            int x0 = (int)rint((y0*dx - lastY*dx + lastX*dy) / dy);
-            p.drawLine (lastX, lastY, x0, y0);
-            break;
-        }
+            sinkCorrected = true;
+            lastX = x;
+            lastY = y;
+            continue;
+          }
+
+        if( sinkCorrected == true )
+          {
+            sinkCorrected = false;
+            lastX = x;
+            lastY = y;
+            continue;
+          }
 
         // stop drawing at the last vertical grid line
         if (spd > speed.getMps())
