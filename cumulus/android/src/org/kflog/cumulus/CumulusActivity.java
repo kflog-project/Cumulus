@@ -471,7 +471,8 @@ public class CumulusActivity extends QtActivity
 
         sum += event.values[0];
         
-        if( event.timestamp - start < 995 )
+        // The timestamp uses as unit nano seconds.
+        if( event.timestamp - start < 995000 )
           {
             return;
           }
