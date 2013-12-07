@@ -458,16 +458,17 @@ public class CumulusActivity extends QtActivity
     
     @Override
     synchronized public void onSensorChanged(SensorEvent event)
-      {
-        elements++;
-        
+      {        
         if( start == 0 )
           {
+        	// Set start time for average building.
             start = event.timestamp;
-            sum   = event.values[0]; // Atmospheric pressure in hPa
+            sum   = 0f;
             return;
           }
         
+        elements++;
+
         sum += event.values[0];
         
         if( event.timestamp - start < 995 )
@@ -490,6 +491,9 @@ public class CumulusActivity extends QtActivity
         // Send altitude value to native application part.
         nativeBaroAltitude( altitude );
         reset();
+        
+        // Set new start time.
+        start = event.timestamp;
       }
   }
   
