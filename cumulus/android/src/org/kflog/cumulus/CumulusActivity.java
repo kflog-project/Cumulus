@@ -461,7 +461,7 @@ public class CumulusActivity extends QtActivity
       {        
         if( start == 0 )
           {
-        	// Set start time for average building.
+            // Set start time for average building.
             start = event.timestamp;
             sum   = 0f;
             return;
@@ -472,7 +472,7 @@ public class CumulusActivity extends QtActivity
         sum += event.values[0];
         
         // The timestamp uses as unit nano seconds.
-        if( event.timestamp - start < 995000 )
+        if( event.timestamp - start < 995000000 )
           {
             return;
           }
@@ -539,9 +539,10 @@ public class CumulusActivity extends QtActivity
 	    // Ignore this exception
 	  }
 	
-	m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-	m_BaroSensor    = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-	
+        m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        //m_BaroSensor    = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        m_BaroSensor    = null;
+
 	if( m_BaroSensor != null )
 	  {
 	    String text = "BaroSensor: Name=" + m_BaroSensor.getName() +

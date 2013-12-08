@@ -137,10 +137,14 @@ void Vario::newAltitude()
 
 void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
 {
+  // static QTime zeit = QTime::currentTime();
+
+  // qDebug() << "Alt=" << altitude.getMeters() << "ZeitSpanne=" << zeit.restart();
+
   // Start or restart the timer to supervise the calling of this
   // method. If the timer expires the variometer is set to zero.
   m_timeOut.setSingleShot( true );
-  m_timeOut.start( m_intTime + 2500 );
+  m_timeOut.start( 5000 );
 
   // That is the minimum altitude difference, which must be reached to
   // say the difference is acceptable. The unit is m/s.
@@ -159,7 +163,7 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
 
   if( m_sampleList.count() < 5 )
     {
-      // To less samples in the list, do not more.
+      // Too less samples in the list.
       return;
     }
 
@@ -203,11 +207,18 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
           energyAlt2  = (tas2 * tas2) / (2 * 9.81) * m_TekAdjust;
 
           altDiff = (((sample1.altitude + energyAlt1) -
-                 (sample2.altitude + energyAlt2)) / (double) timeDist) * 1000.0;
+                      (sample2.altitude + energyAlt2)) / (double) timeDist) * 1000.0;
         }
       else
         {
           altDiff = ((sample1.altitude - sample2.altitude) / (double) timeDist) * 1000.0;
+#if 0
+          qDebug() << "i=" << (i-2)
+                   << "timeDist" << timeDist << " ms"
+                   << "A1=" << sample1.altitude
+                   << "A2=" << sample2.altitude
+                   << "AltDiff=" << altDiff;
+#endif
         }
 
       if( fabs( altDiff ) > limit )
@@ -216,6 +227,8 @@ void Vario::newPressureAltitude( const Altitude& altitude, const Speed& tas )
           // calculation. That is done to filter out noise values.
           lift += altDiff;
         }
+
+      // qDebug() << "lastI=" << (i-1) << "lift=" << lift;
 
       resultAvailable = true;
 
