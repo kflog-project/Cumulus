@@ -540,8 +540,7 @@ public class CumulusActivity extends QtActivity
 	  }
 	
         m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        //m_BaroSensor    = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-        m_BaroSensor    = null;
+        m_BaroSensor    = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 
 	if( m_BaroSensor != null )
 	  {
