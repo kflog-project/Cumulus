@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Id$ -->
-<manifest package="org.kflog.cumulus" android:versionCode="42"
+<manifest package="org.kflog.cumulus" android:versionCode="43"
 	android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android"
-  android:versionName="5.9.3_AV7a_GB">
+  android:versionName="5.10.0_AV7a_GB">
 	<supports-screens android:largeScreens="true"
 		android:normalScreens="true" android:anyDensity="true"
 		android:smallScreens="false" />
