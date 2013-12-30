@@ -1,3 +1,12 @@
+cumulus (5.10.0) stable; urgency=low
+
+  * Bugfix: Crash fixed in polar drawing. It was caused by a zero division.
+
+  * Bugfix: A TAS value, extracted in the GpsNmea class, was never forwarded to
+    the calculator.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Mon, 30 Dec 2013 20:37:28 +0100
+
 cumulus (5.9.2) stable; urgency=low
 
   * Bugfix: URL to skylines-project.org server updated. The prefix www is needed
