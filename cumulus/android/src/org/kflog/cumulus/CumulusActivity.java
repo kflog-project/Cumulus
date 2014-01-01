@@ -1153,12 +1153,11 @@ public class CumulusActivity extends QtActivity
 				break;
 
 			case DIALOG_HW_ID:
-				CharSequence[] s_items = { getString(R.string.gps),
-									       getString(R.string.baroSensor),
-									       getString(R.string.togglesMenu) };
+        CharSequence[] hw_items = { getString(R.string.gps),
+                                    getString(R.string.baroSensor) };
         
-				builder.setTitle(getString(R.string.hardware));
-				builder.setItems( s_items, new DialogInterface.OnClickListener()
+        builder.setTitle(getString(R.string.hardwareMenu));
+        builder.setItems( hw_items, new DialogInterface.OnClickListener()
 					{
     					@Override
 						public void onClick(DialogInterface dialog, int item) 
@@ -1170,9 +1169,6 @@ public class CumulusActivity extends QtActivity
           							break;
           						case 1:
           							showDialog( DIALOG_BARO_SENROR_ID );
-          							break;
-          						case 2:
-          							showDialog( DIALOG_TOGGELS_ID );
           							break;
          						}
         					}
