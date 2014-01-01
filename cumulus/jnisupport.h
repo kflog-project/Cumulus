@@ -115,3 +115,8 @@ void jniDimmScreen( bool newState );
  * \param smsText SMS text content.
  */
 bool jniCallRetriever( QString& smsText );
+
+/**
+ * Opens the Android hardware menu.
+ */
+bool jniOpenHardwareMenu();

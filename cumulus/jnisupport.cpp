@@ -57,6 +57,7 @@ static jmethodID m_gpsCmdID           = 0;
 static jmethodID m_callRetrieverID    = 0;
 static jmethodID m_byte2Gps           = 0;
 static jmethodID m_nativeShutdownID   = 0;
+static jmethodID m_openHardwareMenu   = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -507,6 +508,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_openHardwareMenu = m_jniEnv->GetMethodID( clazz,
+                                              "openHardwareMenu",
+                                              "()V");
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning() << "initJni: could not get ID of openHardwareMenu";
+      return false;
+    }
+
   return true;
 }
 
@@ -744,6 +755,24 @@ QString jniGetLanguage()
 
   Q_UNUSED(ok)
   return lang;
+}
+
+bool jniOpenHardwareMenu()
+{
+  if (!jniEnv() || shutdown )
+    {
+      return false;
+    }
+
+  m_jniEnv->CallVoidMethod( m_jniProxyObject, m_openHardwareMenu );
+
+  if (isJavaExceptionOccured())
+    {
+      qWarning("jniOpenHardwareMenu: exception when calling Java method \"openHardwareMenu\"");
+      return false;
+    }
+
+  return true;
 }
 
 QHash<QString, float> jniGetDisplayMetrics()

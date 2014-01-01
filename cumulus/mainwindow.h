@@ -430,6 +430,13 @@ private slots:
    */
   void slotCheck4Updates();
 
+  /**
+   * Called to open the Android hardware menu.
+   */
+#ifdef ANDROID
+  void slotOpenHardwareMenu();
+#endif
+
 private:
 
   /**
@@ -457,6 +464,10 @@ private:
   QAction* actionMenuBarToggle;
   QAction* actionOpenContextMenu;
   QAction* actionFileQuit;
+
+#ifdef ANDROID
+  QAction* actionHardwareMenu;
+#endif
 
   QAction* actionViewInfo;
   QAction* actionViewWaypoints;

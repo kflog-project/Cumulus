@@ -5,7 +5,7 @@
 
  copyright            : (C) 2002 by André Somers
 
- ported to Qt4.x      : (C) 2007-2013 by Axel Pauli
+ ported to Qt4.x      : (C) 2007-2014 by Axel Pauli
 
  maintainer           : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -1225,6 +1225,12 @@ void MainWindow::createContextMenu()
   contextMenu->setVisible(false);
 
   fileMenu = contextMenu->addMenu(tr("File") + " ");
+
+#ifdef ANDROID
+  fileMenu->addAction( actionHardwareMenu );
+  fileMenu->addSeparator();
+#endif
+
   fileMenu->addAction( actionFileQuit );
 
   viewMenu = contextMenu->addMenu(tr("View") + " ");
@@ -1497,6 +1503,13 @@ void MainWindow::createActions()
   addAction( actionFileQuit );
   connect( actionFileQuit, SIGNAL( triggered() ),
             this, SLOT( close() ) );
+
+#ifdef ANDROID
+  actionHardwareMenu = QAction( tr( "Hardware" ), this );
+  addAction( actionHardwareMenu );
+  connect( actionHardwareMenu, SIGNAL( triggered() ),
+           this, SLOT( slotOpenHardwareMenu() ) );
+#endif
 
 #ifdef FLARM
   actionViewFlarm = new QAction( tr( "Flarm Radar" ), this );
@@ -2533,7 +2546,7 @@ void MainWindow::slotVersion()
   aw->setWindowTitle( tr( "About Cumulus") );
   aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
-  QString header( tr("<html>Cumulus %1, &copy; 2002-2013, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2014, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
 
   aw->setHeaderText( header );
 
@@ -3195,4 +3208,10 @@ void MainWindow::forceFocus()
                                            Qt::MouseButtons(Qt::LeftButton));
   //qDebug("send fake mouse release");
 }
+
+void MainWindow::slotOpenHardwareMenu()
+{
+  jniOpenHardwareMenu();
+}
+
 #endif

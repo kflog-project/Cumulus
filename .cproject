@@ -28,6 +28,7 @@
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtGui"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtXml"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-openjdk-i386/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1527866630" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="BLUEZ=1"/>
@@ -82,6 +83,7 @@
 								<option id="gnu.cpp.compiler.option.include.paths.1271719917" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-pc-linux-gnu/4.1.2/include/g++-v4"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-openjdk-i386/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1425063433" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="BLUEZ=1"/>

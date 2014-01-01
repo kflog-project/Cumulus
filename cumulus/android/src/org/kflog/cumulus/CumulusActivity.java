@@ -85,7 +85,7 @@ import org.kflog.cumulus.BluetoothService;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2013
+ * @date 2012-2014
  * 
  * @version $Id$
  * 
@@ -111,6 +111,7 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_SETUP_ID       = 9;
   static final int               DIALOG_NO_PAIRED_BTD  = 10;
   static final int               DIALOG_BARO_SENROR_ID = 11;
+  static final int               DIALOG_HW_ID          = 12;
 
   static final int               REQUEST_ENABLE_BT = 99;
 
@@ -314,6 +315,23 @@ public class CumulusActivity extends QtActivity
           return m_addDataInstalled;
         }
     }
+  
+  /**
+   * Called from JNI to open the hardware menu.
+   */
+  private void openHardwareMenu()
+    {
+	  runOnUiThread( new Runnable()
+	  	{
+          @Override
+          public void run()
+  	        {
+        	  
+  	        }
+	  	}
+       );
+
+     }
   
   /**
    * Called from JNI to send a SMS to the retriever. The SMS text consists of a
@@ -1130,14 +1148,42 @@ public class CumulusActivity extends QtActivity
                           }
                     } );
   				}
-				
+
+				alert = builder.create();
+				break;
+
+			case DIALOG_HW_ID:
+				CharSequence[] s_items = { getString(R.string.gps),
+									       getString(R.string.baroSensor),
+									       getString(R.string.togglesMenu) };
+        
+				builder.setTitle(getString(R.string.hardware));
+				builder.setItems( s_items, new DialogInterface.OnClickListener()
+					{
+    					@Override
+						public void onClick(DialogInterface dialog, int item) 
+    						{
+        						switch(item)
+        						{
+          						case 0:
+          							showDialog( DIALOG_GPS_MENU_ID );
+          							break;
+          						case 1:
+          							showDialog( DIALOG_BARO_SENROR_ID );
+          							break;
+          						case 2:
+          							showDialog( DIALOG_TOGGELS_ID );
+          							break;
+         						}
+        					}
+        		} );
 				
 				alert = builder.create();
 				break;
-       
+
 			case DIALOG_SETUP_ID:
 				CharSequence[] s_items = { getString(R.string.setupGeneral),
-																	 getString(R.string.setupPreFlight) };
+									       getString(R.string.setupPreFlight) };
         
 				builder.setTitle(getString(R.string.setupMenu));
 				builder.setItems( s_items, new DialogInterface.OnClickListener()
@@ -1164,7 +1210,7 @@ public class CumulusActivity extends QtActivity
 				
 			case DIALOG_GPS_MENU_ID:
 				CharSequence[] g_items = { getString(R.string.gpsOn),
-						                       getString(R.string.gpsStatus) };
+						                   getString(R.string.gpsStatus) };
         
 				if( gpsEnabled )
 					{
