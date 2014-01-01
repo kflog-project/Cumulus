@@ -15,7 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[*] 2013-08-12 AP: Cumulus 5.9.3 released for Android only.
+[*] 2013-12-31 AP: Cumulus 5.10.0 released for all platforms.
+
+[-] 2013-12-31 AP: Bugfix: Lost Android software menu key reenabled. It is
+                   necessary for Nexus devices.
+
+[*] 2013-12-08 AP: Cumulus 5.9.3 released for Android only.
 
 [-] 2013-12-07 AP: Bugfix: Format issues fixed in glider.pol file.
 
