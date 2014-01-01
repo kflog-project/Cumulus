@@ -326,7 +326,7 @@ public class CumulusActivity extends QtActivity
           @Override
           public void run()
   	        {
-        	  
+        	  showDialog( DIALOG_HW_ID );
   	        }
 	  	}
        );
