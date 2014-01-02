@@ -325,7 +325,7 @@ public class CumulusActivity extends QtActivity
     	runOnUiThread(new Runnable() {
     	    @Override
     	    public void run() {
-    		if (m_BaroSensorListener != null) {
+    		if (m_BaroSensor != null) {
     		    showDialog(DIALOG_HW_ID2);
     		} else {
     		    showDialog(DIALOG_HW_ID1);
