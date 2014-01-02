@@ -1505,7 +1505,7 @@ void MainWindow::createActions()
             this, SLOT( close() ) );
 
 #ifdef ANDROID
-  actionHardwareMenu = QAction( tr( "Hardware" ), this );
+  actionHardwareMenu = new QAction( tr( "Hardware" ), this );
   addAction( actionHardwareMenu );
   connect( actionHardwareMenu, SIGNAL( triggered() ),
            this, SLOT( slotOpenHardwareMenu() ) );
