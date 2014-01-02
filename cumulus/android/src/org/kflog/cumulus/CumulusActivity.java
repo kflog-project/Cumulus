@@ -111,7 +111,8 @@ public class CumulusActivity extends QtActivity
   static final int               DIALOG_SETUP_ID       = 9;
   static final int               DIALOG_NO_PAIRED_BTD  = 10;
   static final int               DIALOG_BARO_SENROR_ID = 11;
-  static final int               DIALOG_HW_ID          = 12;
+  static final int               DIALOG_HW_ID1         = 12;
+  static final int               DIALOG_HW_ID2         = 13;
 
   static final int               REQUEST_ENABLE_BT = 99;
 
@@ -320,19 +321,20 @@ public class CumulusActivity extends QtActivity
    * Called from JNI to open the hardware menu.
    */
   private void openHardwareMenu()
-    {
-	  runOnUiThread( new Runnable()
-	  	{
-          @Override
-          public void run()
-  	        {
-        	  showDialog( DIALOG_HW_ID );
-  	        }
-	  	}
-       );
-
-     }
-  
+     {
+    	runOnUiThread(new Runnable() {
+    	    @Override
+    	    public void run() {
+    		if (m_BaroSensorListener != null) {
+    		    showDialog(DIALOG_HW_ID2);
+    		} else {
+    		    showDialog(DIALOG_HW_ID1);
+    		}
+    	    }
+    	});
+    
+        }
+      
   /**
    * Called from JNI to send a SMS to the retriever. The SMS text consists of a
    * mobile number, followed by a separator semicolon and the SMS text body.
@@ -1152,34 +1154,51 @@ public class CumulusActivity extends QtActivity
 				alert = builder.create();
 				break;
 
-			case DIALOG_HW_ID:
-        CharSequence[] hw_items = { getString(R.string.gps),
-                                    getString(R.string.baroSensor) };
-        
-        builder.setTitle(getString(R.string.hardwareMenu));
-        builder.setItems( hw_items, new DialogInterface.OnClickListener()
-					{
-    					@Override
-						public void onClick(DialogInterface dialog, int item) 
-    						{
-        						switch(item)
-        						{
-          						case 0:
-          							showDialog( DIALOG_GPS_MENU_ID );
-          							break;
-          						case 1:
-          							showDialog( DIALOG_BARO_SENROR_ID );
-          							break;
-         						}
-        					}
-        		} );
+			case DIALOG_HW_ID1:
+                            CharSequence[] hw_items1 = { getString(R.string.gps) };
+                            
+                            builder.setTitle(getString(R.string.hardwareMenu));
+                            builder.setItems( hw_items1, new DialogInterface.OnClickListener()
+                                   {
+                            		@Override
+                            		public void onClick(DialogInterface dialog, int item) {
+                            		    switch (item) {
+                            		    case 0:
+                            			showDialog(DIALOG_GPS_MENU_ID);
+                            			break;
+                            		    }
+                            		}
+                            	    });
+				
+				alert = builder.create();
+				break;
+
+			case DIALOG_HW_ID2:
+                            CharSequence[] hw_items2 = { getString(R.string.gps),
+                                                         getString(R.string.baroSensor) };
+                            
+                            builder.setTitle(getString(R.string.hardwareMenu));
+                            builder.setItems( hw_items2, new DialogInterface.OnClickListener()
+                                   {
+                            		@Override
+                            		public void onClick(DialogInterface dialog, int item) {
+                            		    switch (item) {
+                            		    case 0:
+                            			showDialog(DIALOG_GPS_MENU_ID);
+                            			break;
+                            		    case 1:
+                            			showDialog(DIALOG_BARO_SENROR_ID);
+                            			break;
+                            		    }
+                            		}
+                            	    });
 				
 				alert = builder.create();
 				break;
 
 			case DIALOG_SETUP_ID:
 				CharSequence[] s_items = { getString(R.string.setupGeneral),
-									       getString(R.string.setupPreFlight) };
+					                   getString(R.string.setupPreFlight) };
         
 				builder.setTitle(getString(R.string.setupMenu));
 				builder.setItems( s_items, new DialogInterface.OnClickListener()
