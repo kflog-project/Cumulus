@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -39,7 +39,7 @@
  * \see http://www.livetrack24.com/wiki/LiveTracking%20API
  * \see https://www.skylines-project.org/tracking/info
  *
- * \date 2013
+ * \date 2013-2014
  *
  * \version $Id$
  */
@@ -195,21 +195,11 @@ class LiveTrack24 : public QObject
   SessionId generateSessionId( const UserId userId );
 
   /**
-   * Stores the session server with the right protocol prefix at the variable
-   * m_sessionUrl.
+   * Stores the current configured session server URL at the variable m_sessionUrl.
    */
   void setSessionServer()
   {
-    const QString& server = GeneralConfig::instance()->getLiveTrackServer();
-
-    if( server.contains("skylines-project.org") )
-      {
-        m_sessionUrl = "https://" + server;
-      }
-    else
-      {
-        m_sessionUrl = "http://" + server;
-      }
+    m_sessionUrl = GeneralConfig::instance()->getLiveTrackServer();
   };
 
   /**

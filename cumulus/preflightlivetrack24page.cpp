@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013 by Axel Pauli
+ **   Copyright (c):  2013-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -150,10 +150,25 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   lbl = new QLabel(tr("Server:"));
   topLayout->addWidget(lbl, row, 0);
   m_server = new QComboBox;
-  m_server->addItem( "www.livetrack24.com" );
-  m_server->addItem( "test.livetrack24.com" );
-  m_server->addItem( "livexc.dhv1.de" );
-  m_server->addItem( "www.skylines-project.org" );
+
+  const QStringList& srvList = GeneralConfig::getLiveTrackServerList();
+
+  for( int i = 0; i < srvList.size(); i++ )
+    {
+      int pos = 0;
+
+      if( srvList.at(i).startsWith("http://") )
+        {
+          pos = 7;
+        }
+      else
+        {
+          pos = 8;
+        }
+
+      m_server->addItem( srvList.at(i).mid(pos), srvList.at(i) );
+    }
+
   topLayout->addWidget(m_server, row, 1);
   row++;
 
@@ -286,12 +301,10 @@ void PreFlightLiveTrack24Page::save()
     }
 
   conf->setLiveTrackOnOff( newOnOffState );
-  conf->setLiveTrackInterval(
-      m_trackingIntervalMin->value() * 60 + m_trackingIntervalSec->value() );
+  conf->setLiveTrackInterval( m_trackingIntervalMin->value() * 60 + m_trackingIntervalSec->value() );
   conf->setLiveTrackAirplaneType( m_airplaneType->itemData(m_airplaneType->currentIndex()).toInt() );
   conf->setLiveTrackIndex( m_server->currentIndex() );
   conf->setLiveTrackAccountData( m_server->currentIndex(),
-                                 m_server->itemText(m_server->currentIndex()),
                                  m_username->text().trimmed(),
                                  m_password->text().trimmed() );
 }
@@ -300,7 +313,7 @@ void PreFlightLiveTrack24Page::slotAccept()
 {
   if( m_liveTrackEnabled->isChecked() &&
       ( m_username->text().trimmed().isEmpty() ||
-        ( m_server->itemText(m_server->currentIndex()).contains("livetrack24") &&
+        ( m_server->itemText(m_server->currentIndex()).contains("live") &&
           m_password->text().trimmed().isEmpty() )))
     {
       // User name and password are required, when service is switched on!
@@ -343,7 +356,7 @@ void PreFlightLiveTrack24Page::slotReject()
 void PreFlightLiveTrack24Page::slotLoginTest()
 {
   if( m_username->text().trimmed().isEmpty() ||
-      ( m_server->itemText(m_server->currentIndex()).contains("livetrack24") &&
+      ( m_server->itemText(m_server->currentIndex()).contains("live") &&
         m_password->text().trimmed().isEmpty() ))
     {
       // User name and password are required for the login test
@@ -368,20 +381,7 @@ void PreFlightLiveTrack24Page::slotLoginTest()
       return;
     }
 
-  QString server = m_server->itemText(m_server->currentIndex());
-
-  if( server.contains("livetrack24") )
-    {
-      server = "http://test.livetrack24.com";
-    }
-  else if( server.contains("livexc.dhv1.de"))
-    {
-      server = "http://" + server;
-    }
-  else if( server.contains("skylines") )
-    {
-      server = "https://" + server;
-    }
+  QString server = m_server->itemData(m_server->currentIndex()).toString();
 
   QString loginUrl = server +
                      QString( "/client.php?op=login&user=%1&pass=%2")

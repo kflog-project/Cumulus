@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.

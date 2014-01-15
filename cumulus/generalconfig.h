@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2013 by Axel Pauli
+**                   2007-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -2685,10 +2685,24 @@ class GeneralConfig : protected QSettings
     return _liveTrackAccounts[_liveTrackIndex][2];
   };
 
-  /** Gets the Livetrack server. */
+  /** Gets the Livetrack server url with http prefix. */
   const QString& getLiveTrackServer() const
   {
-    return _liveTrackAccounts[_liveTrackIndex][0];
+    if( _liveTrackIndex < _liveTrackServerList.size() )
+      {
+        return _liveTrackServerList.at(_liveTrackIndex);
+      }
+    else
+      {
+        static QString empty;
+        return empty;
+      }
+  };
+
+  /** Gets the LiveTrack server list as URLs with http prefix. */
+  static const QStringList& getLiveTrackServerList()
+  {
+    return _liveTrackServerList;
   };
 
   /** Gets the Livetrack user name. */
@@ -2709,7 +2723,10 @@ class GeneralConfig : protected QSettings
     _liveTrackIndex = liveTrackindex;
   };
 
-  /** Gets the live track user account data. */
+  /**
+   * Gets the live track user account data, server url with http prefix,
+   * user name and password.
+   */
   void getLiveTrackAccountData( int index, QString data[3] )
   {
     data[0] = _liveTrackAccounts[index][0];
@@ -2719,11 +2736,9 @@ class GeneralConfig : protected QSettings
 
   /** Sets the live track user account data. */
   void setLiveTrackAccountData( int index,
-                                const QString& url,
                                 const QString& user,
                                 const QString& password )
   {
-    _liveTrackAccounts[index][0] = url;
     _liveTrackAccounts[index][1] = user;
     _liveTrackAccounts[index][2] = password;
   };
@@ -3240,6 +3255,9 @@ class GeneralConfig : protected QSettings
 
   // LiveTrack account array
   QString _liveTrackAccounts[4][3];
+
+  // LiveTrack server list
+  static QStringList _liveTrackServerList;
 };
 
 #endif

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2013 by Axel Pauli
+ **                   2007-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -40,8 +40,15 @@
 #include "androidstyle.h"
 #endif
 
-// define NULL static instance
+// define static instance as null pointer
 GeneralConfig* GeneralConfig::_theInstance = 0;
+
+// define LiveTrack server list
+QStringList GeneralConfig::_liveTrackServerList =
+    QStringList() << "http://www.livetrack24.com"
+                  << "http://test.livetrack24.com"
+                  << "http://livexc.dhv.de"
+                  << "https://www.skylines-project.org";
 
 // @AP: We derive here from the QT settings as base class. The config
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
@@ -254,16 +261,25 @@ void GeneralConfig::load()
   _liveTrackIndex        = value( "Index", 0 ).toInt();
 
   QStringList list;
-  list << rot47("www.livetrack24.com") << "" << ""
-       << rot47("test.livetrack24.com") << "" << ""
-       << rot47("livexc.dhv1.de") << "" << ""
-       << rot47("www.skylines-project.org") << "" << "";
+  list << "" << "" << ""
+       << "" << "" << ""
+       << "" << "" << ""
+       << "" << "" << "";
 
   list = value("Accounts", list).toStringList();
 
   for( int i = 0; i < list.size(); i++ )
     {
-      _liveTrackAccounts[i/3][i%3] = rot47(list.at(i).toLatin1());
+      if( i % 3 == 0 )
+        {
+          // Take server url from the current value.
+          _liveTrackAccounts[i/3][0] = _liveTrackServerList.at(i/3);
+        }
+      else
+        {
+          // Take user name and password from the user configuration.
+          _liveTrackAccounts[i/3][i%3] = rot47(list.at(i).toLatin1());
+        }
     }
 
   endGroup();

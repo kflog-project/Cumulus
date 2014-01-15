@@ -15,9 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2014-01-01 AP: Android: New menu entry Hardware added under the File menu.
-                   That ensures, that GPS and Baro sensor can be switched on/off
-                   without using the Android menu key.
+[-] 2014-01-14 AP: Bugfix: LiveTrack server url of DHV has been changed to
+                   livexc.dhv.de.
+
+[+] 2014-01-01 AP: Android: New menu entry Hardware added under the File menu
+                   of Cumulus. That ensures, that GPS and Baro sensor can be
+                   switched on/off without using the Android menu key.
 
 [*] 2013-12-31 AP: Cumulus 5.10.0 released for all platforms.
 
