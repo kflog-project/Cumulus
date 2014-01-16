@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-01-16 AP: Bugfix: A running LiveTracking session was never closed,
+                   if GPS receiver was switched off.
+
 [-] 2014-01-14 AP: Bugfix: LiveTrack server url of DHV has been changed to
                    livexc.dhv.de.
 

@@ -1924,7 +1924,7 @@ void MainWindow::closeEvent( QCloseEvent* event )
       if( m_liveTrackLogger->sessionStatus() == true )
         {
           deferredClose = true;
-          m_liveTrackLogger->finishLogging();
+          m_liveTrackLogger->slotFinishLogging();
 
           // Wait some seconds to have time to send the live tracking end message
           // before the whole application terminates.

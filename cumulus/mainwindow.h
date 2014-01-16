@@ -3,7 +3,7 @@
                              -------------------
    begin                : Sun Jul 21 2002
    copyright            : (C) 2002      by André Somers
-   ported to Qt4.x/X11  : (C) 2007-2013 by Axel Pauli
+   ported to Qt4.x/X11  : (C) 2007-2014 by Axel Pauli
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
    This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */

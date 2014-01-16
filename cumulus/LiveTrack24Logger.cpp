@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,10 +28,18 @@ LiveTrack24Logger::LiveTrack24Logger( QObject *parent ) :
 {
   m_lastTrackReporting.start();
   m_lastMoveTimePoint.start();
+
+  // supervision timer for new fix arrival
+  m_closeSessionTimer = new QTimer( this );
+  m_closeSessionTimer->setSingleShot( true );
+  m_closeSessionTimer->setInterval( 30000 );
+
+  connect( m_closeSessionTimer, SIGNAL(timeout ()), SLOT(slotFinishLogging()));
 }
 
 LiveTrack24Logger::~LiveTrack24Logger()
 {
+  m_closeSessionTimer->stop();
 }
 
 void LiveTrack24Logger::slotNewFixEntry()
@@ -79,6 +87,9 @@ void LiveTrack24Logger::slotNewFixEntry()
           m_lt24Gateway.endTracking();
           m_isFlying = false;
         }
+
+      // start/restart close session supervision timer
+      m_closeSessionTimer->start();
     }
 }
 
@@ -90,7 +101,8 @@ void LiveTrack24Logger::slotNewSwitchState( bool state )
       if( m_isFlying == true )
         {
           // We are flying, finish logging.
-          finishLogging();
+          m_closeSessionTimer->stop();
+          slotFinishLogging();
         }
     }
 }
@@ -104,7 +116,7 @@ void LiveTrack24Logger::reportRoutePoint()
                                GpsNmea::gps->getLastUtc().currentMSecsSinceEpoch() / 1000 );
 }
 
-void LiveTrack24Logger::finishLogging()
+void LiveTrack24Logger::slotFinishLogging()
 {
   if( m_isFlying == false )
     {

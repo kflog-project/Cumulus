@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,7 +31,7 @@
  * \see http://livexc.dhv1.dedoc/index.php
  * \see https://www.skylines-project.org/tracking/info
  *
- * \date 2013
+ * \date 2013-2014
  *
  * \version $Id$
  */
@@ -44,6 +44,7 @@
 #include <QPair>
 #include <QQueue>
 #include <QString>
+#include <QTime>
 #include <QTimer>
 
 #include "generalconfig.h"
@@ -64,11 +65,6 @@ class LiveTrack24Logger : public QObject
   virtual ~LiveTrack24Logger();
 
   /**
-   * This method is called to finish a just running logger session.
-   */
-  void finishLogging();
-
-  /**
    * Get session status.
    *
    * \returns true, if session is running otherwise false
@@ -87,7 +83,8 @@ class LiveTrack24Logger : public QObject
    */
   void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
   {
-    return m_lt24Gateway.getPackageStatistics( cachedPkgs, sentPkgs );
+    m_lt24Gateway.getPackageStatistics( cachedPkgs, sentPkgs );
+    return;
   };
 
  public slots:
@@ -97,6 +94,11 @@ class LiveTrack24Logger : public QObject
 
   /** Called, if the live tracking is switched on/off. */
   void slotNewSwitchState( bool state );
+
+  /**
+  * This method is called to finish a just running logger session.
+  */
+  void slotFinishLogging();
 
  private:
 
@@ -114,6 +116,12 @@ class LiveTrack24Logger : public QObject
 
   /** Last time point of moving. */
   QTime m_lastMoveTimePoint;
+
+  /**
+   * Timer to close a running session, if no new fix is reported for a certain
+   * time.
+   */
+  QTimer* m_closeSessionTimer;
 };
 
 #endif

@@ -29,6 +29,7 @@
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/usr/include/qt4/QtXml"/>
 									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-openjdk-i386/include"/>
+									<listOptionValue builtIn="false" value="/usr/lib/jvm/java-7-openjdk-amd64/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1527866630" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="BLUEZ=1"/>
