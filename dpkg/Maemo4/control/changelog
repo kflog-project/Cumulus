@@ -1,3 +1,12 @@
+cumulus (5.10.2) stable; urgency=low
+
+  * Bugfix: A running LiveTracking session was never closed, if GPS receiver
+            was switched off.
+
+  *  Bugfix: LiveTrack server url of DHV has been changed to livexc.dhv.de.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Sun, 19 Jan 2014 19:47:33 +0100
+
 cumulus (5.10.0) stable; urgency=low
 
   * Bugfix: Crash fixed in polar drawing. It was caused by a zero division.
