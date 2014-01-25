@@ -181,11 +181,11 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     
     if ( uart0Enabled )
       {
-        if (D) Log.d(TAG, "Creating Uart_0");
+        if (D) Log.d(TAG, "Creating Uart_0, Speed=" + uart0Speed);
       
         try
           {
-            m_uart[0] = ioio_.openUart(4, 3, uart0Speed, Uart.Parity.NONE,
+            m_uart[0] = ioio_.openUart(4, 3, 57600, Uart.Parity.NONE,
                                        Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 0.
@@ -291,7 +291,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
                 m_uartThreads[i] = null;
               }
 
-            m_uart[i].close();
+            // m_uart[i].close();
             m_uart[i] = null;
           }
       }
