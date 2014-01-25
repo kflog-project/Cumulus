@@ -55,7 +55,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   /**
    * Array of possible Uarts.
    */
-  private Uart m_uart[] = new Uart[4];
+  private Uart m_uarts[] = new Uart[4];
 
   /**
    * Array of possible Uart threads.
@@ -101,7 +101,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
         case 1:
         case 2:
         case 3:
-          return m_uart[index];
+          return m_uarts[index];
         default:
           return null;
       }
@@ -185,17 +185,17 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
       
         try
           {
-            m_uart[0] = ioio_.openUart(4, 3, 57600, Uart.Parity.NONE,
+            m_uarts[0] = ioio_.openUart(4, 3, 57600, Uart.Parity.NONE,
                                        Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 0.
-            m_uartThreads[0] = new UartThread(m_uart[0], 0);
+            m_uartThreads[0] = new UartThread(m_uarts[0], 0);
             m_uartThreads[0].start();
             m_activeUart = 0;
           }
         catch (OutOfResourceException e)
           {
-            m_uart[0] = null;
+            m_uarts[0] = null;
             Log.e(TAG, "setup(): Uart_0, Tx=3, Rx=4 not existing!");
           }
       }
@@ -206,17 +206,17 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
         
         try
           {
-            m_uart[1] = ioio_.openUart(6, 5, uart1Speed, Uart.Parity.NONE,
+            m_uarts[1] = ioio_.openUart(6, 5, uart1Speed, Uart.Parity.NONE,
                                        Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 1.
-            m_uartThreads[1] = new UartThread(m_uart[1], 1);
+            m_uartThreads[1] = new UartThread(m_uarts[1], 1);
             m_uartThreads[1].start();
             m_activeUart = 1;
           }
         catch (OutOfResourceException e)
           {
-            m_uart[1] = null;
+            m_uarts[1] = null;
             Log.e(TAG, "setup(): Uart_1, Tx=5, Rx=6 not existing!");
           }
       }
@@ -227,17 +227,17 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
         try
           {
-            m_uart[2] = ioio_.openUart(11, 10, uart2Speed, Uart.Parity.NONE,
+            m_uarts[2] = ioio_.openUart(11, 10, uart2Speed, Uart.Parity.NONE,
                                        Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 2.
-            m_uartThreads[2] = new UartThread(m_uart[2], 2);
+            m_uartThreads[2] = new UartThread(m_uarts[2], 2);
             m_uartThreads[2].start();
             m_activeUart = 2;
           }
         catch (OutOfResourceException e)
           {
-            m_uart[2] = null;
+            m_uarts[2] = null;
             Log.e(TAG, "setup(): Uart_2, Tx=10, Rx=11 not existing!");
           }
       }
@@ -248,17 +248,17 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
         try
           {
-            m_uart[3] = ioio_.openUart(13, 12, uart3Speed, Uart.Parity.NONE,
+            m_uarts[3] = ioio_.openUart(13, 12, uart3Speed, Uart.Parity.NONE,
                                        Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 3.
-            m_uartThreads[3] = new UartThread(m_uart[3], 3);
+            m_uartThreads[3] = new UartThread(m_uarts[3], 3);
             m_uartThreads[3].start();
             m_activeUart = 3;
           }
         catch (OutOfResourceException e)
           {
-            m_uart[3] = null;
+            m_uarts[3] = null;
             Log.e(TAG, "setup(): Uart_3, Tx=12, Rx=13 not existing!");
           }
       }
@@ -283,16 +283,16 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     for (int i = 0; i < 4; i++)
       {
-        if (m_uart[i] != null)
+        if (m_uarts[i] != null)
           {
-            if (m_uartThreads[i] != null)
+            if (m_uartThreads[i] != null &&
+                m_uartThreads[i].getState() != Thread.State.TERMINATED)
               {
                 m_uartThreads[i].cancel();
                 m_uartThreads[i] = null;
               }
 
-            // m_uart[i].close();
-            m_uart[i] = null;
+            m_uarts[i] = null;
           }
       }
 
@@ -395,8 +395,6 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
                   Log.w(TAG, UTAG + ": read -1 (EOF)");
                   break;
                 }
-              
-              Log.d(TAG, "Read byte " + (character & 0xff));
 
               // Forward byte to CumulusActivity
               CumulusActivity.byteFromGps((byte) (character & 0xff));
@@ -408,20 +406,19 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
                 {
                   Log.e(TAG, UTAG + ": read failed, closing port!", e);
                 }
-
-              m_uart.close();
+              
               break;
             }
         }
-
+      
+      cancel();
       m_activeUart = -1;
     }
 
     /**
      * Write to the connected OutStream.
      * 
-     * @param buffer
-     *          The bytes to write
+     * @param buffer The bytes to write
      */
     public void write(byte[] buffer)
     {
@@ -477,6 +474,11 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
               m_uartStreamWriter.close();
               m_uartStreamWriter = null;
             }
+          
+          m_uart.close();
+          
+          m_uarts[m_uartIndex] = null;
+          m_uartThreads[m_uartIndex] = null;
         }
       catch (IOException e)
         {
