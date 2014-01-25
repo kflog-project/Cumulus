@@ -161,14 +161,12 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     int uart2Speed = settings.getInt(CumulusActivity.Uart2Speed, 57600);
     int uart3Speed = settings.getInt(CumulusActivity.Uart3Speed, 57600);
 
-    boolean uart0Enabled = settings.getBoolean(CumulusActivity.Uart0Enabled,
-        true);
-    boolean uart1Enabled = settings.getBoolean(CumulusActivity.Uart1Enabled,
-        false);
-    boolean uart2Enabled = settings.getBoolean(CumulusActivity.Uart2Enabled,
-        false);
-    boolean uart3Enabled = settings.getBoolean(CumulusActivity.Uart3Enabled,
-        false);
+    boolean uart0Enabled = settings.getBoolean(CumulusActivity.Uart0Enabled, true);
+    boolean uart1Enabled = settings.getBoolean(CumulusActivity.Uart1Enabled, false);
+    boolean uart2Enabled = settings.getBoolean(CumulusActivity.Uart2Enabled, false);
+    boolean uart3Enabled = settings.getBoolean(CumulusActivity.Uart3Enabled, false);
+    
+    Log.d(TAG, "uart0Enabled=" + uart0Enabled);
 
     // Check the existence of uarts. 4 uarts maybe on the IOIO board. According
     // to xcsoar they use the following pins:
@@ -179,12 +177,16 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     // TODO: Only one uart should be allowed to work. User must define which
     // one.
-    if (uart0Enabled)
+    uart0Enabled = true;
+    
+    if ( uart0Enabled )
       {
+        if (D) Log.d(TAG, "Creating Uart_0");
+      
         try
           {
             m_uart[0] = ioio_.openUart(4, 3, uart0Speed, Uart.Parity.NONE,
-                Uart.StopBits.ONE);
+                                       Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 0.
             m_uartThreads[0] = new UartThread(m_uart[0], 0);
@@ -200,13 +202,15 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     else if (uart1Enabled)
       {
+        if (D) Log.d(TAG, "Creating Uart_1");
+        
         try
           {
             m_uart[1] = ioio_.openUart(6, 5, uart1Speed, Uart.Parity.NONE,
-                Uart.StopBits.ONE);
+                                       Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 1.
-            m_uartThreads[1] = new UartThread(m_uart[1], 0);
+            m_uartThreads[1] = new UartThread(m_uart[1], 1);
             m_uartThreads[1].start();
             m_activeUart = 1;
           }
@@ -219,13 +223,15 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     else if (uart2Enabled)
       {
+        if (D) Log.d(TAG, "Creating Uart_2");
+
         try
           {
             m_uart[2] = ioio_.openUart(11, 10, uart2Speed, Uart.Parity.NONE,
-                Uart.StopBits.ONE);
+                                       Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 2.
-            m_uartThreads[2] = new UartThread(m_uart[2], 0);
+            m_uartThreads[2] = new UartThread(m_uart[2], 2);
             m_uartThreads[2].start();
             m_activeUart = 2;
           }
@@ -238,13 +244,15 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     else if (uart3Enabled)
       {
+       if (D) Log.d(TAG, "Creating Uart_2");
+
         try
           {
             m_uart[3] = ioio_.openUart(13, 12, uart3Speed, Uart.Parity.NONE,
-                Uart.StopBits.ONE);
+                                       Uart.StopBits.ONE);
 
             // Setup a reader loop in an extra thread for uart 3.
-            m_uartThreads[3] = new UartThread(m_uart[3], 0);
+            m_uartThreads[3] = new UartThread(m_uart[3], 3);
             m_uartThreads[3].start();
             m_activeUart = 3;
           }
@@ -337,7 +345,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
      */
     public UartThread(Uart uart, int index)
     {
-      UTAG = "UartThread_" + m_uartIndex;
+      UTAG = "UartThread_" + index;
 
       if (D)
         Log.d(TAG, "creating " + UTAG);
