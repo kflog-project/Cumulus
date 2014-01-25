@@ -572,7 +572,7 @@ public class CumulusActivity extends QtActivity
    */
   synchronized public static void byteFromGps(byte newByte)
   {
-    if (gpsEnabled || true)
+    if (gpsEnabled )
       {
         nativeByteFromGps(newByte);
       }
