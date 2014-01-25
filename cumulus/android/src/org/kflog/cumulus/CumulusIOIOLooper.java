@@ -395,6 +395,8 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
                   Log.w(TAG, UTAG + ": read -1 (EOF)");
                   break;
                 }
+              
+              Log.d(TAG, "Read byte " + (character & 0xff));
 
               // Forward byte to CumulusActivity
               CumulusActivity.byteFromGps((byte) (character & 0xff));
