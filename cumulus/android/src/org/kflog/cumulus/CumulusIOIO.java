@@ -64,11 +64,17 @@ public class CumulusIOIO implements IOIOLooperProvider
   private IOIOAndroidApplicationHelper m_helper = null;
 
   private boolean m_started = false;
-
+  
   /**
    * IOIO looper instance.
    */
   private CumulusIOIOLooper m_ioioLooper = null;
+  
+  /**
+   * Mutex for m_ioioLooper object.
+   */
+  private Object m_ioioLooperMutex = new Object();
+
 
   public CumulusIOIO(ContextWrapper wrapper)
   {
@@ -138,7 +144,7 @@ public class CumulusIOIO implements IOIOLooperProvider
    */
   protected IOIOLooper createIOIOLooper()
   {
-    synchronized (m_ioioLooper)
+    synchronized (m_ioioLooperMutex)
       {
         m_ioioLooper = new CumulusIOIOLooper(this);
         return m_ioioLooper;
@@ -159,7 +165,7 @@ public class CumulusIOIO implements IOIOLooperProvider
    */
   public CumulusIOIOLooper getIoioLooper()
   {
-    synchronized (m_ioioLooper)
+    synchronized (m_ioioLooperMutex)
       {
         return m_ioioLooper;
       }
@@ -174,7 +180,7 @@ public class CumulusIOIO implements IOIOLooperProvider
    */
   public void resetIoioLooper(CumulusIOIOLooper ioioLooper)
   {
-    synchronized (m_ioioLooper)
+    synchronized (m_ioioLooperMutex)
       {
         if (m_ioioLooper != null && m_ioioLooper == ioioLooper)
           {
