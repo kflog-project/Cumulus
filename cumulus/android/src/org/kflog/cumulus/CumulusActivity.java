@@ -903,14 +903,6 @@ public class CumulusActivity extends QtActivity
         TimerTask dimmTask = new ScreenDimmerTimerTask();
         screenDimmTimer.scheduleAtFixedRate(dimmTask, 10000, 10000);
       }
-
-    // Enable barometer sensor callbacks.
-    if (m_BaroSensorListener != null)
-      {
-        m_SensorManager.registerListener(m_BaroSensorListener, m_BaroSensor,
-            SensorManager.SENSOR_DELAY_NORMAL);
-        m_BaroSensorListener.reset();
-      }
   }
 
   @Override
@@ -928,16 +920,6 @@ public class CumulusActivity extends QtActivity
   {
     Log.d(TAG, "onStop()");
     super.onStop();
-
-    // Stop barometer sensor callbacks.
-    if (m_BaroSensorListener != null)
-      {
-        m_SensorManager.unregisterListener(m_BaroSensorListener);
-        m_BaroSensorListener.reset();
-      }
-
-    // Stop IOIO services
-    m_ioio.stop();
   }
 
   @Override
@@ -951,6 +933,13 @@ public class CumulusActivity extends QtActivity
       {
         notificationManager.cancelAll();
         Log.d(TAG, "onDestroy: Cancel all Notifs now");
+      }
+
+    // Stop barometer sensor callbacks.
+    if (m_BaroSensorListener != null)
+      {
+        m_SensorManager.unregisterListener(m_BaroSensorListener);
+        m_BaroSensorListener.reset();
       }
 
     if (lm != null && nl != null)
@@ -971,6 +960,9 @@ public class CumulusActivity extends QtActivity
 
     // unregister BT receiver.
     unregisterReceiver(bcReceiver);
+
+    // Stop IOIO services
+    m_ioio.stop();
 
     // destroy IOIO services
     m_ioio.destroy();
