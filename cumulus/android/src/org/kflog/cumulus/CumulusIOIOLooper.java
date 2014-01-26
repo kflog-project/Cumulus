@@ -205,8 +205,8 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     if (D)
     {
       Log.d( TAG, "Creating Uart_" + index +
-             ", TxPin=" + txRxPins[index][1] +
-             ", RxPin=" + txRxPins[index][0] +
+             ", TxPin=" + txRxPins[index][0] +
+             ", RxPin=" + txRxPins[index][1] +
              ", Speed=" + speed );
     }
     
@@ -369,6 +369,8 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
                   break;
                 }
 
+              Log.d(TAG, UTAG + ": Byte=" + character);
+              
               // Forward byte to CumulusActivity
               CumulusActivity.byteFromGps((byte) (character & 0xff));
             }
