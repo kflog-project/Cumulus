@@ -962,7 +962,7 @@ public class CumulusActivity extends QtActivity
     unregisterReceiver(bcReceiver);
 
     // Stop IOIO services
-    m_ioio.stop();
+    // m_ioio.stop();
 
     // destroy IOIO services
     m_ioio.destroy();
