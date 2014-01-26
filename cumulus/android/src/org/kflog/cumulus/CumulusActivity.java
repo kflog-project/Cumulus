@@ -27,12 +27,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.Object;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+
 
 //import android.R;
 import android.app.AlertDialog;
@@ -77,7 +81,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.kde.necessitas.origo.QtActivity;
-
 import org.kflog.cumulus.BluetoothService;
 import org.kflog.cumulus.CumulusIOIO;
 
@@ -94,9 +97,9 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
- *        This class handles the Cumulus activity live cycle. It communicates
- *        via JNI with the Qt application part. The Qt application part is a C++
- *        GUI based on the Qt SDK.
+ * This class handles the Cumulus activity live cycle. It communicates
+ * via JNI with the Qt application part. The Qt application part is a C++
+ * GUI based on the Qt SDK.
  * 
  */
 public class CumulusActivity extends QtActivity
@@ -166,6 +169,9 @@ public class CumulusActivity extends QtActivity
   // Flags used to handle screen dimming
   private boolean m_currentDimmState = false;
   private boolean m_requestedDimmState = false;
+  
+  // This list stores the GPS menu items
+  private List<String> gpsMenuItems = new ArrayList<String>();
 
   // System time of last user action in ms
   private long m_lastUserAction = 0;
@@ -1474,10 +1480,24 @@ public class CumulusActivity extends QtActivity
 
         case DIALOG_GPS_ID:
           
-          CharSequence[] l_gitems = {
-              getString(R.string.gpsInternal),
-              getString(R.string.gpsBluetooth),
-              getString(R.string.gpsIoio) };
+          gpsMenuItems.clear();
+          
+          if ( lm != null )
+            {
+              gpsMenuItems.add(getString(R.string.gpsInternal));
+            }
+          
+          if ( BluetoothAdapter.getDefaultAdapter() != null )
+            {
+              gpsMenuItems.add(getString(R.string.gpsBluetooth));
+            }
+          
+          if ( m_ioio.isStarted() == false )
+            {
+              gpsMenuItems.add(getString(R.string.gpsIoio));
+            }
+
+          CharSequence[] l_gitems = gpsMenuItems.toArray(new CharSequence[gpsMenuItems.size()]);
 
           builder.setTitle(getString(R.string.gpsMenu));
           builder.setItems(l_gitems, new DialogInterface.OnClickListener()
@@ -1485,18 +1505,20 @@ public class CumulusActivity extends QtActivity
             @Override
             public void onClick(DialogInterface dialog, int item)
             {
-              switch (item)
+              if( gpsMenuItems.get(item).equals(getString(R.string.gpsInternal)))
                 {
-                  case 0:
-                    enableInternalGps(true);
-                    break;
-                  case 1:
-                    enableBtGps(true);
-                    break;
-                  case 2:
-                    enableIoioGps(true);
-                    break;
+                  enableInternalGps(true);
+                }             
+              else if( gpsMenuItems.get(item).equals(getString(R.string.gpsBluetooth)))
+                {
+                  enableBtGps(true);
                 }
+              else if( gpsMenuItems.get(item).equals(getString(R.string.gpsIoio)))
+                {
+                  enableIoioGps(true);
+                }
+              
+              return;
             }
           });
           alert = builder.create();
