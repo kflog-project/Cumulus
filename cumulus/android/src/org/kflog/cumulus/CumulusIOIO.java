@@ -73,14 +73,24 @@ public class CumulusIOIO implements IOIOLooperProvider
   /**
    * Mutex for m_ioioLooper object.
    */
-  private Object m_ioioLooperMutex = new Object();
+  private final Object m_ioioLooperMutex = new Object();
 
 
   public CumulusIOIO(ContextWrapper wrapper)
   {
     m_helper = new IOIOAndroidApplicationHelper(wrapper, this);
   }
-
+  
+  /**
+   * Returns the current state of the IOIO.
+   * 
+   * @return true if IOIO is running otherwise false
+   */
+  public boolean isStarted()
+  {
+    return m_started;
+  }
+  
   /**
    * Subclasses should call this method from their own onCreate() if overloaded.
    * It takes care of connecting with the IOIO.
@@ -175,8 +185,7 @@ public class CumulusIOIO implements IOIOLooperProvider
    * Reset IOIO looper. This method is used by the CumulusIOIOLooper as
    * callback, if the IOIO was disconnected to reset its instance here.
    * 
-   * @param CumulusIOIOLooper
-   *          Instance to be reset
+   * @param CumulusIOIOLooper Instance to be reset
    */
   public void resetIoioLooper(CumulusIOIOLooper ioioLooper)
   {

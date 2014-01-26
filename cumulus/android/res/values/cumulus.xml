@@ -19,6 +19,7 @@
 	<string name="gpsGoto">Goto Settings Page to enable GPS receiver</string>
 	<string name="gpsBluetooth">Bluetooth GPS</string>
 	<string name="gpsInternal">Internal GPS</string>
+	<string name="gpsIoio">IOIO GPS</string>
 	<string name="gpsBtMenu">Menu GPS BT</string>
 	<string name="gpsMenu">Menu GPS</string>
 	<string name="gpsOff">GPS off</string>
@@ -40,6 +41,8 @@
 	<string name="setupPreFlight">Preflight</string>
 	<string name="toggles">Toggles</string>
 	<string name="togglesMenu">Menu Toggles</string>
+	<string name="noBtService">Bluetooth service unavailable!</string>
+	<string name="noGpsService">GPS service unavailable!</string>
   <string name="noPairedBtD">No paired Bluetooth devices available!</string>
   <string name="noSmsService">SMS service unavailable!</string>
 </resources>

@@ -5,7 +5,7 @@
   <string name="appDataFile">appData.zip</string>
   <string name="addDataFile">addData.zip</string>
   <string name="baroSensor">Baro Sensor</string>
-  <string name="baroSensorMenu">Menu Baro Sensor</string>
+  <string name="baroSensorMenu">Menü Baro Sensor</string>
   <string name="baroSensorOn">Baro Sensor ein</string>
   <string name="baroSensorOff">Baro Sensor aus</string>
   <string name="btError1">BT Gerät nicht erreichbar</string>
@@ -18,6 +18,7 @@
   <string name="gpsGoto">Zur Konfigurationsseite gehen, um den GPS Empfänger zu aktivieren</string>
   <string name="gpsBluetooth">Bluetooth GPS</string>
   <string name="gpsInternal">Internes GPS</string>
+  <string name="gpsIoio">IOIO GPS</string>
   <string name="gpsBtMenu">Menü GPS BT</string>
   <string name="gpsMenu">Menü GPS</string>
   <string name="gpsOff">GPS aus</string>
@@ -39,6 +40,8 @@
   <string name="setupPreFlight">Vorflug</string>
   <string name="toggles">Umschalter</string>
   <string name="togglesMenu">Menü Umschalter</string>
+  <string name="noBtService">Bluetooth Service nicht verfügbar!</string>
+  <string name="noGpsService">GPS Service nicht verfügbar!</string>
   <string name="noPairedBtD">Keine gekoppelten Bluetooth Geräte verfügbar!</string>
   <string name="noSmsService">SMS Service nicht verfügbar!</string>
 </resources>

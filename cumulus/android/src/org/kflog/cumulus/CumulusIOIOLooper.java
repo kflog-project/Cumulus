@@ -65,7 +65,20 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   /**
    * The index of the active uart. 0...3 or -1 if undefined.
    */
-  private short m_activeUart = -1;
+  private int m_activeUart = -1;
+  
+  /**
+   * Tx and Rx pins of IOIO uarts 0...3.
+   * 
+   * 4 uarts maybe on a IOIO board. According to xcsoar they use the
+   * following pins:
+   * 
+   * Uart 0: TX=3, RX=4
+   * Uart 1: TX=5, RX=6
+   * Uart 2: TX=10, RX=11
+   * Uart 3: TX=12, RX=13
+   */
+  static final private int txRxPins[][] = { {3,4}, {5,6}, {10,11}, {12,13} };
 
   /**
    * Default constructor
@@ -156,111 +169,68 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     SharedPreferences settings = CumulusActivity.cumulusSettings;
 
-    int uart0Speed = settings.getInt(CumulusActivity.Uart0Speed, 57600);
-    int uart1Speed = settings.getInt(CumulusActivity.Uart1Speed, 57600);
-    int uart2Speed = settings.getInt(CumulusActivity.Uart2Speed, 57600);
-    int uart3Speed = settings.getInt(CumulusActivity.Uart3Speed, 57600);
+    int uartSpeed[] = new int[4];
+    uartSpeed[0] = settings.getInt(CumulusActivity.Uart0Speed, 57600);
+    uartSpeed[1] = settings.getInt(CumulusActivity.Uart1Speed, 57600);
+    uartSpeed[2] = settings.getInt(CumulusActivity.Uart2Speed, 57600);
+    uartSpeed[3] = settings.getInt(CumulusActivity.Uart3Speed, 57600);
 
     boolean uart0Enabled = settings.getBoolean(CumulusActivity.Uart0Enabled, true);
     boolean uart1Enabled = settings.getBoolean(CumulusActivity.Uart1Enabled, false);
     boolean uart2Enabled = settings.getBoolean(CumulusActivity.Uart2Enabled, false);
     boolean uart3Enabled = settings.getBoolean(CumulusActivity.Uart3Enabled, false);
-    
-    Log.d(TAG, "uart0Enabled=" + uart0Enabled);
 
-    // Check the existence of uarts. 4 uarts maybe on the IOIO board. According
-    // to xcsoar they use the following pins:
-    // Uart 0: TX=3, RX=4
-    // Uart 1: TX=5, RX=6
-    // Uart 2: TX=10, RX=11
-    // Uart 3: TX=12, RX=13
-
-    // TODO: Only one uart should be allowed to work. User must define which
-    // one.
-    uart0Enabled = true;
-    
+    // Activate the uart, which has the user selected.
     if ( uart0Enabled )
       {
-        if (D) Log.d(TAG, "Creating Uart_0, Speed=" + uart0Speed);
-      
-        try
-          {
-            m_uarts[0] = ioio_.openUart(4, 3, 57600, Uart.Parity.NONE,
-                                       Uart.StopBits.ONE);
-
-            // Setup a reader loop in an extra thread for uart 0.
-            m_uartThreads[0] = new UartThread(m_uarts[0], 0);
-            m_uartThreads[0].start();
-            m_activeUart = 0;
-          }
-        catch (OutOfResourceException e)
-          {
-            m_uarts[0] = null;
-            Log.e(TAG, "setup(): Uart_0, Tx=3, Rx=4 not existing!");
-          }
+        createUart( 0, uartSpeed[0] );
       }
-
     else if (uart1Enabled)
       {
-        if (D) Log.d(TAG, "Creating Uart_1");
-        
-        try
-          {
-            m_uarts[1] = ioio_.openUart(6, 5, uart1Speed, Uart.Parity.NONE,
-                                       Uart.StopBits.ONE);
-
-            // Setup a reader loop in an extra thread for uart 1.
-            m_uartThreads[1] = new UartThread(m_uarts[1], 1);
-            m_uartThreads[1].start();
-            m_activeUart = 1;
-          }
-        catch (OutOfResourceException e)
-          {
-            m_uarts[1] = null;
-            Log.e(TAG, "setup(): Uart_1, Tx=5, Rx=6 not existing!");
-          }
+        createUart( 1, uartSpeed[1] );
       }
-
     else if (uart2Enabled)
       {
-        if (D) Log.d(TAG, "Creating Uart_2");
-
-        try
-          {
-            m_uarts[2] = ioio_.openUart(11, 10, uart2Speed, Uart.Parity.NONE,
-                                       Uart.StopBits.ONE);
-
-            // Setup a reader loop in an extra thread for uart 2.
-            m_uartThreads[2] = new UartThread(m_uarts[2], 2);
-            m_uartThreads[2].start();
-            m_activeUart = 2;
-          }
-        catch (OutOfResourceException e)
-          {
-            m_uarts[2] = null;
-            Log.e(TAG, "setup(): Uart_2, Tx=10, Rx=11 not existing!");
-          }
+        createUart( 2, uartSpeed[2] );
       }
-
     else if (uart3Enabled)
       {
-       if (D) Log.d(TAG, "Creating Uart_2");
+        createUart( 3, uartSpeed[3] );
+      }
+  }
+  
+  private void createUart( int index, int speed )
+    throws ConnectionLostException, InterruptedException
+  {
+    if (D)
+    {
+      Log.d( TAG, "Creating Uart_" + index +
+             ", TxPin=" + txRxPins[index][1] +
+             ", RxPin=" + txRxPins[index][0] +
+             ", Speed=" + speed );
+    }
+    
+    try
+      {
+        m_uarts[index] = ioio_.openUart( txRxPins[index][1],
+                                         txRxPins[index][0],
+                                         speed,
+                                         Uart.Parity.NONE,
+                                         Uart.StopBits.ONE );
 
-        try
-          {
-            m_uarts[3] = ioio_.openUart(13, 12, uart3Speed, Uart.Parity.NONE,
-                                       Uart.StopBits.ONE);
-
-            // Setup a reader loop in an extra thread for uart 3.
-            m_uartThreads[3] = new UartThread(m_uarts[3], 3);
-            m_uartThreads[3].start();
-            m_activeUart = 3;
-          }
-        catch (OutOfResourceException e)
-          {
-            m_uarts[3] = null;
-            Log.e(TAG, "setup(): Uart_3, Tx=12, Rx=13 not existing!");
-          }
+        // Setup a reader loop in an extra thread for uart 0.
+        m_uartThreads[index] = new UartThread(m_uarts[index], index);
+        m_uartThreads[index].start();
+        m_activeUart = index;
+      }
+    catch (OutOfResourceException e)
+      {
+        m_uarts[index] = null;
+        Log.e(TAG, "setup(): Uart_" + index +
+                   ", Tx=" + txRxPins[index][0] +
+                   ", Rx=" + txRxPins[index][1] +
+                   ", Speed=" + speed +
+                   " not existing!");
       }
   }
 
@@ -269,7 +239,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   {
     // In this loop different checks can be added to control the work of the
     // uarts.
-    Thread.sleep(10000);
+    Thread.sleep(60000);
   }
 
   @Override
@@ -281,22 +251,25 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     if (D)
       Log.d(TAG, "IOIO disconnected is called!");
 
-    for (int i = 0; i < 4; i++)
-      {
-        if (m_uarts[i] != null)
-          {
-            if (m_uartThreads[i] != null &&
-                m_uartThreads[i].getState() != Thread.State.TERMINATED)
-              {
-                m_uartThreads[i].cancel();
-                m_uartThreads[i] = null;
-              }
-
-            m_uarts[i] = null;
-          }
-      }
-
-    m_activeUart = -1;
+    synchronized( this )
+    {
+      for (int i = 0; i < 4; i++)
+        {
+          if (m_uarts[i] != null)
+            {
+              if (m_uartThreads[i] != null &&
+                  m_uartThreads[i].getState() != Thread.State.TERMINATED)
+                {
+                  m_uartThreads[i].setAbort(true);
+                  m_uartThreads[i] = null;
+                }
+  
+              m_uarts[i] = null;
+            }
+        }
+  
+      m_activeUart = -1;
+    }
 
     if (m_callback != null)
       {
@@ -412,7 +385,9 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
         }
       
       cancel();
-      m_activeUart = -1;
+      
+      if (D)
+        Log.i(TAG, "Run " + UTAG + " is finished");
     }
 
     /**
@@ -422,7 +397,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
      */
     public void write(byte[] buffer)
     {
-      if (m_uartStreamWriter == null)
+      if (m_uartStreamWriter == null || getAbort() == true )
         {
           return;
         }
@@ -454,10 +429,10 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
       return m_abort;
     }
 
-    public void cancel()
+    synchronized public void cancel()
     {
       if (D)
-        Log.d(TAG, UTAG + ": cancel " + this);
+        Log.d(TAG, UTAG + ": cancel is called by " + this);
 
       try
         {
@@ -475,10 +450,15 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
               m_uartStreamWriter = null;
             }
           
-          m_uart.close();
+          if( m_uart != null )
+            {
+              m_uart.close();
+              m_uart = null;
+            }
           
           m_uarts[m_uartIndex] = null;
           m_uartThreads[m_uartIndex] = null;
+          m_activeUart = -1;
         }
       catch (IOException e)
         {

@@ -142,6 +142,7 @@ public class CumulusActivity extends QtActivity
   static final int DIALOG_BARO_SENROR_ID = 11;
   static final int DIALOG_HW_ID1 = 12;
   static final int DIALOG_HW_ID2 = 13;
+  static final int DIALOG_IOIO_ID = 14;
 
   static final int REQUEST_ENABLE_BT = 99;
 
@@ -196,7 +197,7 @@ public class CumulusActivity extends QtActivity
   static private boolean m_addDataInstalled = false;
 
   static private Object m_objectRef = null;
-  static private Object m_ActivityMutex = new Object();
+  static final private Object m_ActivityMutex = new Object();
 
   // Information about the default display
   private DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -467,7 +468,7 @@ public class CumulusActivity extends QtActivity
       }
 
     m_SensorManager.registerListener(m_BaroSensorListener, m_BaroSensor,
-        SensorManager.SENSOR_DELAY_NORMAL);
+                                     SensorManager.SENSOR_DELAY_NORMAL);
     return true;
   }
 
@@ -869,8 +870,8 @@ public class CumulusActivity extends QtActivity
     Log.d(TAG, "onStart()");
     super.onStart();
 
-    // Start IOIO services
-    m_ioio.start();
+    // Start IOIO services will be done on user request only
+    // m_ioio.start();
   }
 
   @Override
@@ -1472,8 +1473,10 @@ public class CumulusActivity extends QtActivity
           break;
 
         case DIALOG_GPS_ID:
-          CharSequence[] l_gitems = { getString(R.string.gpsInternal),
-              getString(R.string.gpsBluetooth) };
+          CharSequence[] l_gitems = {
+              getString(R.string.gpsInternal),
+              getString(R.string.gpsBluetooth),
+              getString(R.string.gpsIoio) };
 
           builder.setTitle(getString(R.string.gpsMenu));
           builder.setItems(l_gitems, new DialogInterface.OnClickListener()
@@ -1488,6 +1491,9 @@ public class CumulusActivity extends QtActivity
                     break;
                   case 1:
                     enableBtGps(true);
+                    break;
+                  case 2:
+                    enableIoioGps(true);
                     break;
                 }
             }
@@ -1810,14 +1816,13 @@ public class CumulusActivity extends QtActivity
     BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
     // As next ask which GPS device shall be used. Possibilities are the
-    // internal GPS
-    // device or connected BT devices.
-    if (lm == null || mBtAdapter == null)
+    // internal GPS device or connected BT devices.
+    if (lm == null || mBtAdapter == null || ! m_ioio.isStarted() )
       {
-        // No location service available. Do nothing otherwise an exception is
+        // No location services available. Do nothing otherwise an exception is
         // raised.
         Toast.makeText(this, getString(R.string.gpsDeviceNo),
-            Toast.LENGTH_SHORT).show();
+                                       Toast.LENGTH_SHORT).show();
         gpsEnabled = false;
         return;
       }
@@ -1834,6 +1839,11 @@ public class CumulusActivity extends QtActivity
           {
             m_btService.stop();
             m_btService = null;
+          }
+        // Lock, if IOIO Service is used. It will be stopped then.
+        else if( m_ioio.isStarted() )
+          {
+            m_ioio.stop();
           }
       }
     else
@@ -1869,12 +1879,15 @@ public class CumulusActivity extends QtActivity
             try
               {
                 ll = createLocationListener();
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                    0, ll);
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, ll);
               }
             catch (IllegalArgumentException e)
               {
                 // It seems there is no GPS provider available on this device.
+                // No BT service available
+                Toast.makeText(getApplicationContext(),
+                               getString(R.string.noGpsService), Toast.LENGTH_LONG).show();
+
                 Log.e(TAG, "Device has no GPS provider: " + e.getMessage());
                 lm = null;
                 ll = null;
@@ -1894,11 +1907,33 @@ public class CumulusActivity extends QtActivity
       }
   }
 
+  private void enableIoioGps(boolean clearDialog)
+  {
+    if (clearDialog)
+      {
+        removeDialog(DIALOG_GPS_ID);
+      }
+    
+    // Starts the ioio service
+    m_ioio.start();
+    
+    reportGpsStatus(1);
+    gpsEnabled = true;
+  }
+
   private void enableBtGps(boolean clearDialog)
   {
     if (clearDialog)
       {
         removeDialog(DIALOG_GPS_ID);
+      }
+    
+    if( BluetoothAdapter.getDefaultAdapter() == null )
+      {
+        // No BT service available
+        Toast.makeText(getApplicationContext(),
+                       getString(R.string.noBtService), Toast.LENGTH_LONG).show();
+        return;
       }
 
     if (!BluetoothAdapter.getDefaultAdapter().isEnabled())
@@ -2042,8 +2077,7 @@ public class CumulusActivity extends QtActivity
    * Wrapper around native call nativeGpsStatus to prevent an exception, if
    * native C++ is not yet loaded.
    * 
-   * @param status
-   *          new status to be reported to native part.
+   * @param status new status to be reported to native part.
    */
   private void reportGpsStatus(int status)
   {
