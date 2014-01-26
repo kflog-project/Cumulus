@@ -1815,18 +1815,6 @@ public class CumulusActivity extends QtActivity
 
     BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    // As next ask which GPS device shall be used. Possibilities are the
-    // internal GPS device or connected BT devices.
-    if (lm == null || mBtAdapter == null || ! m_ioio.isStarted() )
-      {
-        // No location services available. Do nothing otherwise an exception is
-        // raised.
-        Toast.makeText(this, getString(R.string.gpsDeviceNo),
-                                       Toast.LENGTH_SHORT).show();
-        gpsEnabled = false;
-        return;
-      }
-
     if (gpsEnabled == true)
       {
         Log.i(TAG, "Disable GPS");
@@ -1835,13 +1823,14 @@ public class CumulusActivity extends QtActivity
         gpsEnabled = false;
 
         // Lock, if Bt Service is used. It will be terminated then.
-        if (m_btService != null)
+        if (mBtAdapter != null && m_btService != null)
           {
             m_btService.stop();
             m_btService = null;
           }
+        
         // Lock, if IOIO Service is used. It will be stopped then.
-        else if( m_ioio.isStarted() )
+        if( m_ioio.isStarted() )
           {
             m_ioio.stop();
           }
@@ -1850,7 +1839,7 @@ public class CumulusActivity extends QtActivity
       {
         Log.i(TAG, "Enable GPS");
 
-        if (lm != null && mBtAdapter != null)
+        if ((lm != null || mBtAdapter != null) && m_ioio.isStarted() == false)
           {
             showDialog(DIALOG_GPS_ID);
           }
@@ -1861,6 +1850,10 @@ public class CumulusActivity extends QtActivity
         else if (mBtAdapter != null)
           {
             enableBtGps(false);
+          }
+        else if ( m_ioio.isStarted() == false )
+          {
+            enableIoioGps(false);
           }
       }
   }
