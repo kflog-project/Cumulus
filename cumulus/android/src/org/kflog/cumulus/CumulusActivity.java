@@ -1473,6 +1473,7 @@ public class CumulusActivity extends QtActivity
           break;
 
         case DIALOG_GPS_ID:
+          
           CharSequence[] l_gitems = {
               getString(R.string.gpsInternal),
               getString(R.string.gpsBluetooth),
