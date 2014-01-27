@@ -111,7 +111,7 @@ public class CumulusIOIO implements IOIOLooperProvider
 
   /**
    * This is the old onStart() method. Override and/or call this method only if
-   * you're using Android API level lower than 5. Otherwise you shoud call the
+   * you're using Android API level lower than 5. Otherwise you should call the
    * onStartCommand() method.
    */
   public void start()
