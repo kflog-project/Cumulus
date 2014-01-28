@@ -18,6 +18,7 @@
 package org.kflog.cumulus;
 
 import android.content.ContextWrapper;
+import android.os.Handler;
 import android.util.Log;
 import ioio.lib.impl.SocketIOIOConnection;
 import ioio.lib.util.IOIOLooper;
@@ -62,6 +63,8 @@ public class CumulusIOIO implements IOIOLooperProvider
   private static final String TAG = "Java#CumulusIOIO";
 
   private IOIOAndroidApplicationHelper m_helper = null;
+  
+  private Handler m_msgHandler = null;
 
   private boolean m_started = false;
   
@@ -76,8 +79,9 @@ public class CumulusIOIO implements IOIOLooperProvider
   private final Object m_ioioLooperMutex = new Object();
 
 
-  public CumulusIOIO(ContextWrapper wrapper)
+  public CumulusIOIO(ContextWrapper wrapper, Handler msgHandler)
   {
+    m_msgHandler = msgHandler;
     m_helper = new IOIOAndroidApplicationHelper(wrapper, this);
   }
   
@@ -195,6 +199,18 @@ public class CumulusIOIO implements IOIOLooperProvider
           {
             m_ioioLooper = null;
           }
+      }
+  }
+  
+  /**
+   * This method is used by the CumulusIOIOLooper as callback. It reports that
+   * an incompatible IOIO firmware is detected to tell that the user.
+   */
+  public void reportIncompatible()
+  {
+    synchronized (m_ioioLooperMutex)
+      {
+        m_msgHandler.obtainMessage(R.id.msg_ioio_incompatible).sendToTarget();
       }
   }
 

@@ -36,8 +36,6 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-
-
 //import android.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -130,23 +128,7 @@ public class CumulusActivity extends QtActivity
   static boolean uart3Enabled = false;
 
   static public SharedPreferences cumulusSettings = null;
-
-  static final int DIALOG_CLOSE_ID = 0;
-  static final int DIALOG_MENU_ID = 1;
-  static final int DIALOG_NO_SDCARD = 2;
-  static final int DIALOG_ZIP_ERR = 3;
-  static final int DIALOG_GPS_MENU_ID = 4;
-  static final int DIALOG_GPS_ID = 5;
-  static final int DIALOG_BT_ID = 6;
-  static final int DIALOG_NO_DATA_FOLDER = 7;
-  static final int DIALOG_TOGGELS_ID = 8;
-  static final int DIALOG_SETUP_ID = 9;
-  static final int DIALOG_NO_PAIRED_BTD = 10;
-  static final int DIALOG_BARO_SENROR_ID = 11;
-  static final int DIALOG_HW_ID1 = 12;
-  static final int DIALOG_HW_ID2 = 13;
-  static final int DIALOG_IOIO_ID = 14;
-
+  
   static final int REQUEST_ENABLE_BT = 99;
 
   // After this time and no user activity or movement the screen is dimmed.
@@ -315,9 +297,35 @@ public class CumulusActivity extends QtActivity
     }
   };
 
+  /**
+   * A Handler that gets information back from other objects.
+   */
+  private final Handler m_msgHandler = new Handler()
+  {
+    @Override
+    public void handleMessage(Message msg)
+    {
+      switch (msg.what)
+        {
+          case R.id.msg_ioio_incompatible:
+            // Message from CumulusIOIO, the IOIO is incompatible.
+            showDialog(R.id.dialog_ioio_incompatible);
+            break;
+            
+          default:
+            break;
+        }
+    }
+  };
+
   // Native C++ functions
-  public static native void nativeGpsFix(double latitude, double longitude,
-      double altitude, float speed, float heading, float accu, long time);
+  public static native void nativeGpsFix( double latitude,
+                                          double longitude,
+                                          double altitude,
+                                          float speed,
+                                          float heading,
+                                          float accu,
+                                          long time );
 
   public static native void nativeByteFromGps(byte newByte);
 
@@ -366,11 +374,11 @@ public class CumulusActivity extends QtActivity
       {
         if (m_BaroSensor != null)
           {
-            showDialog(DIALOG_HW_ID2);
+            showDialog(R.id.dialog_hw_id2);
           }
         else
           {
-            showDialog(DIALOG_HW_ID1);
+            showDialog(R.id.dialog_hw_id1);
           }
       }
     });
@@ -579,7 +587,7 @@ public class CumulusActivity extends QtActivity
    */
   synchronized public static void byteFromGps(byte newByte)
   {
-    if (gpsEnabled )
+    if ( gpsEnabled )
       {
         nativeByteFromGps(newByte);
       }
@@ -642,7 +650,7 @@ public class CumulusActivity extends QtActivity
       }
 
     // Object to IOIO services
-    m_ioio = new CumulusIOIO(this);
+    m_ioio = new CumulusIOIO( this, m_msgHandler );
     m_ioio.create();
 
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -775,7 +783,7 @@ public class CumulusActivity extends QtActivity
     if (!m_sdCardOk)
       {
         Log.e(TAG, "Exiting, SdCard is not mounted or not writeable!");
-        showDialog(DIALOG_NO_SDCARD);
+        showDialog(R.id.dialog_no_sdcard);
         return;
       }
 
@@ -783,7 +791,7 @@ public class CumulusActivity extends QtActivity
     if (!m_cumulusFolderOk)
       {
         Log.e(TAG, "Cannot create folder Cumulus on the SD card!");
-        showDialog(DIALOG_NO_DATA_FOLDER);
+        showDialog(R.id.dialog_no_data_folder);
         return;
       }
 
@@ -1002,7 +1010,7 @@ public class CumulusActivity extends QtActivity
             if (isRootWindow())
               {
                 // Only the root window can show this dialog.
-                showDialog(DIALOG_MENU_ID);
+                showDialog(R.id.dialog_main_menu);
               }
 
             return true;
@@ -1142,7 +1150,7 @@ public class CumulusActivity extends QtActivity
 
     switch (id)
       {
-        case DIALOG_CLOSE_ID:
+        case R.id.dialog_close:
           builder
               .setMessage(getString(R.string.reallyClose))
               .setCancelable(false)
@@ -1168,7 +1176,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_MENU_ID:
+        case R.id.dialog_main_menu:
           builder.setTitle(getString(R.string.mainMenu));
 
           CharSequence[] m_items;
@@ -1189,13 +1197,13 @@ public class CumulusActivity extends QtActivity
                   switch (item)
                     {
                       case 0:
-                        showDialog(DIALOG_SETUP_ID);
+                        showDialog(R.id.dialog_setup);
                         break;
                       case 1:
-                        showDialog(DIALOG_GPS_MENU_ID);
+                        showDialog(R.id.dialog_gps_menu);
                         break;
                       case 2:
-                        showDialog(DIALOG_TOGGELS_ID);
+                        showDialog(R.id.dialog_toggles);
                         break;
                       case 3:
                         // Qt main window will get a quit
@@ -1222,16 +1230,16 @@ public class CumulusActivity extends QtActivity
                   switch (item)
                     {
                       case 0:
-                        showDialog(DIALOG_SETUP_ID);
+                        showDialog(R.id.dialog_setup);
                         break;
                       case 1:
-                        showDialog(DIALOG_GPS_MENU_ID);
+                        showDialog(R.id.dialog_gps_menu);
                         break;
                       case 2:
-                        showDialog(DIALOG_BARO_SENROR_ID);
+                        showDialog(R.id.dialog_baro_sensor);
                         break;
                       case 3:
-                        showDialog(DIALOG_TOGGELS_ID);
+                        showDialog(R.id.dialog_toggles);
                         break;
                       case 4:
                         // Qt main window will get a quit
@@ -1245,7 +1253,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_HW_ID1:
+        case R.id.dialog_hw_id1:
           CharSequence[] hw_items1 = { getString(R.string.gps) };
 
           builder.setTitle(getString(R.string.hardwareMenu));
@@ -1257,7 +1265,7 @@ public class CumulusActivity extends QtActivity
               switch (item)
                 {
                   case 0:
-                    showDialog(DIALOG_GPS_MENU_ID);
+                    showDialog(R.id.dialog_gps_menu);
                     break;
                 }
             }
@@ -1266,7 +1274,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_HW_ID2:
+        case R.id.dialog_hw_id2:
           CharSequence[] hw_items2 = { getString(R.string.gps),
               getString(R.string.baroSensor) };
 
@@ -1279,10 +1287,10 @@ public class CumulusActivity extends QtActivity
               switch (item)
                 {
                   case 0:
-                    showDialog(DIALOG_GPS_MENU_ID);
+                    showDialog(R.id.dialog_gps_menu);
                     break;
                   case 1:
-                    showDialog(DIALOG_BARO_SENROR_ID);
+                    showDialog(R.id.dialog_baro_sensor);
                     break;
                 }
             }
@@ -1291,7 +1299,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_SETUP_ID:
+        case R.id.dialog_setup:
           CharSequence[] s_items = { getString(R.string.setupGeneral),
               getString(R.string.setupPreFlight) };
 
@@ -1318,7 +1326,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_GPS_MENU_ID:
+        case R.id.dialog_gps_menu:
           CharSequence[] g_items = { getString(R.string.gpsOn),
               getString(R.string.gpsStatus) };
 
@@ -1337,7 +1345,7 @@ public class CumulusActivity extends QtActivity
                 {
                   case 0:
                     toggleGps();
-                    removeDialog(DIALOG_GPS_MENU_ID);
+                    removeDialog(R.id.dialog_gps_menu);
                     break;
                   case 1:
                     nativeKeypress((char) 27);
@@ -1349,7 +1357,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_TOGGELS_ID:
+        case R.id.dialog_toggles:
           CharSequence[] t_items = { "" };
 
           if (infoBoxesVisible)
@@ -1372,7 +1380,7 @@ public class CumulusActivity extends QtActivity
                   case 0:
                     nativeKeypress((char) 29);
                     infoBoxesVisible = !infoBoxesVisible;
-                    removeDialog(DIALOG_TOGGELS_ID);
+                    removeDialog(R.id.dialog_toggles);
                     break;
                 }
             }
@@ -1381,7 +1389,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_BARO_SENROR_ID:
+        case R.id.dialog_baro_sensor:
 
           CharSequence[] a_items = { "" };
 
@@ -1413,7 +1421,7 @@ public class CumulusActivity extends QtActivity
                         activateBarometerSensor();
                       }
 
-                    removeDialog(DIALOG_BARO_SENROR_ID);
+                    removeDialog(R.id.dialog_baro_sensor);
                     break;
                 }
             }
@@ -1422,7 +1430,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_NO_SDCARD:
+        case R.id.dialog_no_sdcard:
           builder
               .setMessage(getString(R.string.sdcardNeeded))
               .setCancelable(false)
@@ -1438,7 +1446,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_NO_DATA_FOLDER:
+        case R.id.dialog_no_data_folder:
           builder
               .setMessage(getString(R.string.noDataFolder))
               .setCancelable(false)
@@ -1454,7 +1462,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_ZIP_ERR:
+        case R.id.dialog_zip_error:
           builder
               .setMessage(getString(R.string.errorUnzip))
               .setCancelable(false)
@@ -1470,7 +1478,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_GPS_ID:
+        case R.id.dialog_gps:
           
           gpsMenuItems.clear();
           
@@ -1516,7 +1524,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_BT_ID:
+        case R.id.dialog_bt:
 
           if (m_pairedBtDevices == null || m_pairedBtDevices.size() == 0)
             {
@@ -1549,7 +1557,7 @@ public class CumulusActivity extends QtActivity
             @Override
             public void onClick(DialogInterface dialog, int item)
             {
-              removeDialog(DIALOG_BT_ID);
+              removeDialog(R.id.dialog_bt);
 
               // Fetch MAC address of clicked item
               if (m_btMacArray != null)
@@ -1561,7 +1569,7 @@ public class CumulusActivity extends QtActivity
           alert = builder.create();
           break;
 
-        case DIALOG_NO_PAIRED_BTD:
+        case R.id.dialog_no_paired_bt_devices:
           builder
               .setMessage(getString(R.string.noPairedBtD))
               .setCancelable(false)
@@ -1571,7 +1579,28 @@ public class CumulusActivity extends QtActivity
                     @Override
                     public void onClick(DialogInterface dialog, int id)
                     {
-                      CumulusActivity.this.finish();
+                      dialog.cancel();
+                      reportGpsStatus(0);
+                      gpsEnabled = false;
+                    }
+                  });
+          alert = builder.create();
+          break;
+          
+        case R.id.dialog_ioio_incompatible:
+          builder
+              .setMessage(getString(R.string.ioioIncompatible))
+              .setCancelable(false)
+              .setPositiveButton(getString(android.R.string.ok),
+                  new DialogInterface.OnClickListener()
+                  {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                      dialog.cancel();
+                      reportGpsStatus(0);
+                      gpsEnabled = false;
+                      m_ioio.stop();
                     }
                   });
           alert = builder.create();
@@ -1826,7 +1855,7 @@ public class CumulusActivity extends QtActivity
 
   private void toggleGps()
   {
-    removeDialog(DIALOG_MENU_ID);
+    removeDialog(R.id.dialog_main_menu);
 
     BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -1856,7 +1885,7 @@ public class CumulusActivity extends QtActivity
 
         if ((lm != null || mBtAdapter != null) && m_ioio.isStarted() == false)
           {
-            showDialog(DIALOG_GPS_ID);
+            showDialog(R.id.dialog_gps);
           }
         else if (lm != null)
           {
@@ -1877,7 +1906,7 @@ public class CumulusActivity extends QtActivity
   {
     if (clearDialog)
       {
-        removeDialog(DIALOG_GPS_ID);
+        removeDialog(R.id.dialog_gps);
       }
 
     if (lm != null)
@@ -1919,7 +1948,7 @@ public class CumulusActivity extends QtActivity
   {
     if (clearDialog)
       {
-        removeDialog(DIALOG_GPS_ID);
+        removeDialog(R.id.dialog_gps);
       }
     
     // Starts the ioio service
@@ -1933,7 +1962,7 @@ public class CumulusActivity extends QtActivity
   {
     if (clearDialog)
       {
-        removeDialog(DIALOG_GPS_ID);
+        removeDialog(R.id.dialog_gps);
       }
     
     if( BluetoothAdapter.getDefaultAdapter() == null )
@@ -1946,8 +1975,7 @@ public class CumulusActivity extends QtActivity
 
     if (!BluetoothAdapter.getDefaultAdapter().isEnabled())
       {
-        Intent enableBtIntent = new Intent(
-            BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         m_wait4BluetoothAdapterOn = true;
       }
@@ -1967,12 +1995,12 @@ public class CumulusActivity extends QtActivity
     // If there are paired devices?
     if (m_pairedBtDevices.size() > 0)
       {
-        showDialog(DIALOG_BT_ID);
+        showDialog(R.id.dialog_bt);
       }
     else
       {
         m_pairedBtDevices = null;
-        showDialog(DIALOG_NO_PAIRED_BTD);
+        showDialog(R.id.dialog_no_paired_bt_devices);
       }
   }
 
@@ -2177,7 +2205,7 @@ public class CumulusActivity extends QtActivity
             @Override
             public void run()
             {
-              showDialog(DIALOG_ZIP_ERR);
+              showDialog(R.id.dialog_zip_error);
             }
           });
 
@@ -2269,10 +2297,8 @@ public class CumulusActivity extends QtActivity
       m_pvcAddFileName = pvcAddFileName;
 
       // Creates a handler in the calling thread to pass later back results to
-      // it
-      // from the running thread.
+      // it from the running thread.
       m_Handler = new Handler();
-
     }
 
     @Override
@@ -2293,7 +2319,7 @@ public class CumulusActivity extends QtActivity
             @Override
             public void run()
             {
-              showDialog(DIALOG_ZIP_ERR);
+              showDialog(R.id.dialog_zip_error);
             }
           });
           return;

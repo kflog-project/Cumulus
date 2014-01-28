@@ -288,6 +288,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     if (m_callback != null)
       {
         m_callback.resetIoioLooper(this);
+        m_callback.reportIncompatible();
       }
   }
 

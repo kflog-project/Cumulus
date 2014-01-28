@@ -27,6 +27,7 @@
 	<string name="gpsQueryEnable">The GPS is disabled in your device. Would you like to enable it?</string>
 	<string name="gpsStatus">GPS Status Display</string>
 	<string name="hardwareMenu">Menu Hardware</string>
+	<string name="ioioIncompatible">IOIO does not support the required firmware!</string>
 	<string name="mainMenu">Main Menu</string>
   <string name="mapInfoBarShow">Show info boxes</string>
   <string name="mapInfoBarHide">Hide info boxes</string>

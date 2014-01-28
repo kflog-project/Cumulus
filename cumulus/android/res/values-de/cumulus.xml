@@ -26,6 +26,7 @@
   <string name="gpsQueryEnable">Das GPS ist deaktiviert in deinem Gerät. Möchtest du es aktivieren?</string>
   <string name="gpsStatus">GPS Statusanzeige</string>
   <string name="hardwareMenu">Menü Hardware</string>
+  <string name="ioioIncompatible">IOIO unterstützt nicht die geforderte Firmware!</string>
   <string name="mainMenu">Hauptmenü</string>
   <string name="mapInfoBarShow">Zeige Infoboxen</string>
   <string name="mapInfoBarHide">Verstecke Infoboxen</string>
