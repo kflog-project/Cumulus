@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+<resources>
+	<item type="id" name="dialog_baro_sensor" />
+	<item type="id" name="dialog_bt" />
+	<item type="id" name="dialog_close" />
+	<item type="id" name="dialog_gps" />
+	<item type="id" name="dialog_gps_menu" />
+	<item type="id" name="dialog_main_menu" />
+	<item type="id" name="dialog_no_data_folder" />
+	<item type="id" name="dialog_no_paired_bt_devices" />
+  <item type="id" name="dialog_no_sdcard" />
+  <item type="id" name="dialog_hw_id1" />
+  <item type="id" name="dialog_hw_id2" />
+  <item type="id" name="dialog_ioio_ids" />
+  <item type="id" name="dialog_ioio_incompatible" />
+  <item type="id" name="dialog_setup" />
+  <item type="id" name="dialog_toggles" />
+  <item type="id" name="dialog_zip_error" />
+  <item type="id" name="msg_ioio_incompatible" />
+</resources>
