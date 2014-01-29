@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- $Id$ -->
+
 <manifest package="org.kflog.cumulus" android:versionCode="44"
 	android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android"
   android:versionName="5.10.2_AV7a_GB">
@@ -56,17 +57,6 @@
 				android:resource="@array/bundled_libs" />
 			<meta-data android:name="android.app.lib_name"
 				android:value="Cumulus" />
-			<!-- Messages maps -->
-			<meta-data android:name="android.app.ministro_not_found_msg"
-				android:value="@string/ministro_not_found_msg" />
-			<meta-data android:name="android.app.ministro_needed_msg"
-				android:value="@string/ministro_needed_msg" />
-			<meta-data android:name="android.app.fatal_error_msg"
-				android:value="@string/fatal_error_msg" />
-			<!-- Messages maps -->
-			<!-- Splash screen -->
-			<!-- <meta-data android:name="android.app.splash_screen" android:resource="@layout/splash"/> -->
-			<!-- Splash screen -->
 		</activity>
 	</application>
 </manifest>
