@@ -26,7 +26,10 @@
  */
 
 /**
- * This file was patched by Cumulus, to load all Qt libraries from a fixed position.
+ * This file was patched by Cumulus, to load all needed Qt stuff from the app
+ * package and not from the Internet.
+ * 
+ * 2011-2014, Axel Pauli <kflog.cumulus@gmail.com>
  * 
  * $Id: QtActivity.java 5752 2013-01-16 12:37:26Z axel $
  */
@@ -41,17 +44,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.kde.necessitas.ministro.IMinistro;
-import org.kde.necessitas.ministro.IMinistroCallback;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -60,10 +58,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -86,23 +81,14 @@ import dalvik.system.DexClassLoader;
 
 public class QtActivity extends Activity
 {
-  private final static int MINISTRO_INSTALL_REQUEST_CODE = 0xf3ee; // request
-                                                                   // code used
-                                                                   // to know
-                                                                   // when
-                                                                   // Ministro
-                                                                   // instalation
-                                                                   // is
-                                                                   // finished
-  private static final int MINISTRO_API_LEVEL = 2; // Ministro api level (check
-                                                   // IMinistro.aidl file)
-  private static final int NECESSITAS_API_LEVEL = 2; // Necessitas api level
-                                                     // used by platform plugin
-  private static final String QT_PROVIDER = "necessitas";
-  private static final int QT_VERSION = 0x040801; // Qt version 4.8.00 check
-                                                  // http://qt-project.org/doc/qt-4.8/qtglobal.html#QT_VERSION
+  // request code used to know when Ministro instalation is finished
+  private final static int MINISTRO_INSTALL_REQUEST_CODE = 0xf3ee;
+
+  // Necessitas api level used by platform plugin
+  private static final int NECESSITAS_API_LEVEL = 2;
 
   private static final String ERROR_CODE_KEY = "error.code";
+  @SuppressWarnings("unused")
   private static final String ERROR_MESSAGE_KEY = "error.message";
   private static final String DEX_PATH_KEY = "dex.path";
   private static final String LIB_PATH_KEY = "lib.path";
@@ -114,12 +100,6 @@ public class QtActivity extends Activity
   private static final String MAIN_LIBRARY_KEY = "main.library";
   private static final String NECESSITAS_API_LEVEL_KEY = "necessitas.api.level";
 
-  // / Ministro server parameter keys
-  private static final String REQUIRED_MODULES_KEY = "required.modules";
-  private static final String APPLICATION_TITLE_KEY = "application.title";
-  private static final String QT_PROVIDER_KEY = "qt.provider";
-  private static final String MINIMUM_MINISTRO_API_KEY = "minimum.ministro.api";
-  private static final String MINIMUM_QT_VERSION_KEY = "minimum.qt.version";
   // private static final String REPOSITORIES="3rd.party.repositories"; // needs
   // MINISTRO_API_LEVEL >=2 !!!
   // Use this key to specify any 3rd party repositories urls
@@ -127,6 +107,7 @@ public class QtActivity extends Activity
   // own folders, check http://community.kde.org/Necessitas/Ministro
   // for more details.
 
+  @SuppressWarnings("unused")
   private static final String APPLICATION_PARAMETERS = null; // use this
                                                              // variable to pass
                                                              // any parameters
@@ -141,6 +122,7 @@ public class QtActivity extends Activity
                                                              // e.g
                                                              // "-param1\t-param2=value2\t-param3\tvalue3"
 
+  @SuppressWarnings("unused")
   private static final String ENVIRONMENT_VARIABLES = "QT_USE_ANDROID_NATIVE_STYLE=1\t";
   // use this variable to add any environment variables to your application.
   // the env vars must be separated with "\t"
@@ -149,94 +131,47 @@ public class QtActivity extends Activity
   // * QT_USE_ANDROID_NATIVE_STYLE - 0 if you don't want to use android style
   // plugin, it will save a few ms at startup.
 
-  private static final int INCOMPATIBLE_MINISTRO_VERSION = 1; // Incompatible
-                                                              // Ministro
-                                                              // version.
-                                                              // Ministro needs
-                                                              // to be upgraded.
-  private ActivityInfo m_activityInfo = null; // activity info object, used to
-                                              // access the libs and the strings
+  //activity info object, used to access the libs and the strings
+  private ActivityInfo m_activityInfo = null;
   private DexClassLoader m_classLoader = null; // loader object
-  private String[] m_qtLibs = null; // required qt libs
 
   // this function is used to load and start the loader
   private void loadApplication(Bundle loaderParams)
   {
     try
       {
-        final int errorCode = loaderParams.getInt(ERROR_CODE_KEY);
-        if (errorCode != 0)
-          {
-            if (errorCode == INCOMPATIBLE_MINISTRO_VERSION)
-              {
-                downloadUpgradeMinistro(loaderParams
-                    .getString(ERROR_MESSAGE_KEY));
-                return;
-              }
-
-            // fatal error, show the error and quit
-            AlertDialog errorDialog = new AlertDialog.Builder(QtActivity.this)
-                .create();
-            errorDialog.setMessage(loaderParams.getString(ERROR_MESSAGE_KEY));
-            errorDialog.setButton(
-                getResources().getString(android.R.string.ok),
-                new DialogInterface.OnClickListener()
-                {
-                  @Override
-                  public void onClick(DialogInterface dialog, int which)
-                  {
-                    finish();
-                  }
-                });
-            errorDialog.show();
-            return;
-          }
-
         // add all bundled Qt libs to loader params
         ArrayList<String> libs = new ArrayList<String>();
-        if (m_activityInfo.metaData
-            .containsKey("android.app.bundled_libs_resource_id"))
-          libs.addAll(Arrays.asList(getResources().getStringArray(
-              m_activityInfo.metaData
-                  .getInt("android.app.bundled_libs_resource_id"))));
+        
+        if (m_activityInfo.metaData.containsKey("android.app.bundled_libs_resource_id"))
+          libs.addAll(Arrays.asList(getResources()
+                      .getStringArray(m_activityInfo.metaData.getInt("android.app.bundled_libs_resource_id"))));
 
         String libName = null;
+        
         if (m_activityInfo.metaData.containsKey("android.app.lib_name"))
           {
             libName = m_activityInfo.metaData.getString("android.app.lib_name");
-            loaderParams.putString(MAIN_LIBRARY_KEY, libName); // main library
-                                                               // contains
-                                                               // main()
-                                                               // function
+            
+            // main library contains main() function
+            loaderParams.putString(MAIN_LIBRARY_KEY, libName);
           }
 
         loaderParams.putStringArrayList(BUNDLED_LIBRARIES_KEY, libs);
         loaderParams.putInt(NECESSITAS_API_LEVEL_KEY, NECESSITAS_API_LEVEL);
 
         // load and start QtLoader class
-        m_classLoader = new DexClassLoader(loaderParams.getString(DEX_PATH_KEY) // .jar/.apk
-                                                                                // files
-            , getDir("outdex", Context.MODE_PRIVATE).getAbsolutePath() // directory
-                                                                       // where
-                                                                       // optimized
-                                                                       // DEX
-                                                                       // files
-                                                                       // should
-                                                                       // be
-                                                                       // written.
-            ,
-            loaderParams.containsKey(LIB_PATH_KEY) ? loaderParams
-                .getString(LIB_PATH_KEY) : null // libs folder (if exists)
-            , getClassLoader()); // parent loader
+        m_classLoader = new DexClassLoader(loaderParams.getString(DEX_PATH_KEY), // .jar/.apk files
+                                           getDir("outdex", Context.MODE_PRIVATE).getAbsolutePath(), // directory where optimized DEX files should be written.
+                                           loaderParams.containsKey(LIB_PATH_KEY) ? loaderParams.getString(LIB_PATH_KEY) : null, // libs folder (if exists)
+                                           getClassLoader()); // parent loader
 
         @SuppressWarnings("rawtypes")
-        Class loaderClass = m_classLoader.loadClass(loaderParams
-            .getString(LOADER_CLASS_NAME_KEY)); // load QtLoader class
+        Class loaderClass = m_classLoader.loadClass(loaderParams.getString(LOADER_CLASS_NAME_KEY)); // load QtLoader class
         Object qtLoader = loaderClass.newInstance(); // create an instance
-        Method perpareAppMethod = qtLoader.getClass().getMethod(
-            "loadApplication", Activity.class, ClassLoader.class, Bundle.class);
-        if (!(Boolean) perpareAppMethod.invoke(qtLoader, this, m_classLoader,
-            loaderParams))
+        Method perpareAppMethod = qtLoader.getClass().getMethod("loadApplication", Activity.class, ClassLoader.class, Bundle.class);
+        
+        if (!(Boolean) perpareAppMethod.invoke(qtLoader, this, m_classLoader, loaderParams))
           throw new Exception("");
 
         QtApplication.setQtActivityDelegate(qtLoader);
@@ -246,8 +181,8 @@ public class QtActivity extends Activity
         if (libName != null)
           System.loadLibrary(libName);
 
-        Method startAppMethod = qtLoader.getClass().getMethod(
-            "startApplication");
+        Method startAppMethod = qtLoader.getClass().getMethod("startApplication");
+        
         if (!(Boolean) startAppMethod.invoke(qtLoader))
           throw new Exception("");
 
@@ -257,14 +192,11 @@ public class QtActivity extends Activity
         e.printStackTrace();
         AlertDialog errorDialog = new AlertDialog.Builder(QtActivity.this)
             .create();
-        if (m_activityInfo != null
-            && m_activityInfo.metaData
-                .containsKey("android.app.fatal_error_msg"))
-          errorDialog.setMessage(m_activityInfo.metaData
-              .getString("android.app.fatal_error_msg"));
+        if (m_activityInfo != null && m_activityInfo.metaData.containsKey("android.app.fatal_error_msg"))
+          errorDialog.setMessage(m_activityInfo.metaData.getString("android.app.fatal_error_msg"));
         else
-          errorDialog
-              .setMessage("Fatal error, your application can't be started.");
+          errorDialog.setMessage("Fatal error, your application can't be started.");
+        
         errorDialog.setButton(getResources().getString(android.R.string.ok),
             new DialogInterface.OnClickListener()
             {
@@ -278,132 +210,11 @@ public class QtActivity extends Activity
       }
   }
 
-  private ServiceConnection m_ministroConnection = new ServiceConnection()
-  {
-    private IMinistro m_service = null;
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service)
-    {
-      m_service = IMinistro.Stub.asInterface(service);
-      try
-        {
-          if (m_service != null)
-            {
-              Bundle parameters = new Bundle();
-              parameters.putStringArray(REQUIRED_MODULES_KEY, m_qtLibs);
-              parameters.putString(APPLICATION_TITLE_KEY,
-                  (String) QtActivity.this.getTitle());
-              parameters.putInt(MINIMUM_MINISTRO_API_KEY, MINISTRO_API_LEVEL);
-              parameters.putString(QT_PROVIDER_KEY, QT_PROVIDER);
-              parameters.putInt(MINIMUM_QT_VERSION_KEY, QT_VERSION);
-              parameters.putString(ENVIRONMENT_VARIABLES_KEY,
-                  ENVIRONMENT_VARIABLES);
-              if (null != APPLICATION_PARAMETERS)
-                parameters.putString(APPLICATION_PARAMETERS_KEY,
-                    APPLICATION_PARAMETERS);
-              // parameters.putStringArray(REPOSITORIES, null);
-              m_service.requestLoader(m_ministroCallback, parameters);
-            }
-        }
-      catch (RemoteException e)
-        {
-          e.printStackTrace();
-        }
-    }
-
-    private IMinistroCallback m_ministroCallback = new IMinistroCallback.Stub()
-    {
-      // this function is called back by Ministro.
-      @Override
-      public void loaderReady(final Bundle loaderParams) throws RemoteException
-      {
-        runOnUiThread(new Runnable()
-        {
-          @Override
-          public void run()
-          {
-            unbindService(m_ministroConnection);
-            loadApplication(loaderParams);
-          }
-        });
-      }
-    };
-
-    @Override
-    public void onServiceDisconnected(ComponentName name)
-    {
-      m_service = null;
-    }
-  };
-
-  private void downloadUpgradeMinistro(String msg)
-  {
-    AlertDialog.Builder downloadDialog = new AlertDialog.Builder(this);
-    downloadDialog.setMessage(msg);
-    downloadDialog.setPositiveButton(android.R.string.yes,
-        new DialogInterface.OnClickListener()
-        {
-          @Override
-          public void onClick(DialogInterface dialogInterface, int i)
-          {
-            try
-              {
-                Uri uri = Uri
-                    .parse("market://search?q=pname:org.kde.necessitas.ministro");
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivityForResult(intent, MINISTRO_INSTALL_REQUEST_CODE);
-              }
-            catch (Exception e)
-              {
-                e.printStackTrace();
-                ministroNotFound();
-              }
-          }
-        });
-
-    downloadDialog.setNegativeButton(android.R.string.no,
-        new DialogInterface.OnClickListener()
-        {
-          @Override
-          public void onClick(DialogInterface dialogInterface, int i)
-          {
-            QtActivity.this.finish();
-          }
-        });
-    downloadDialog.show();
-  }
-
-  private void ministroNotFound()
-  {
-    AlertDialog errorDialog = new AlertDialog.Builder(QtActivity.this).create();
-
-    if (m_activityInfo != null
-        && m_activityInfo.metaData
-            .containsKey("android.app.ministro_not_found_msg"))
-      errorDialog.setMessage(m_activityInfo.metaData
-          .getString("android.app.ministro_not_found_msg"));
-    else
-      errorDialog
-          .setMessage("Can't find Ministro service.\nThe application can't start.");
-
-    errorDialog.setButton(getResources().getString(android.R.string.ok),
-        new DialogInterface.OnClickListener()
-        {
-          @Override
-          public void onClick(DialogInterface dialog, int which)
-          {
-            finish();
-          }
-        });
-    errorDialog.show();
-  }
-
   /**
    * Call be overwritten in a derived class to make necessary precondition
    * checks.
    * 
-   * @return Trie if preconditions are ok otherwise false.
+   * @return Try if preconditions are ok otherwise false.
    */
   protected boolean checkPreconditions()
   {
@@ -464,8 +275,7 @@ public class QtActivity extends Activity
         if (!file.delete())
           {
             // Failed to delete file
-            Log.d(QtApplication.QtTAG, "removeDirContent: Failed to delete "
-                + file);
+            Log.d(QtApplication.QtTAG, "removeDirContent: Failed to delete " + file);
           }
       }
   }
@@ -478,34 +288,33 @@ public class QtActivity extends Activity
       {
         ArrayList<String> libraryList = new ArrayList<String>();
 
-        final String localPrefix = "/data/data/org.kflog.cumulus/";
+        // get directory /data/data/org.kflog.cumulus"
+        final String dataDir = getApplicationInfo().dataDir + File.separator;
         final String qtJar = "QtIndustrius-14.jar";
 
-        Log.d(QtApplication.QtTAG, "startApp, localPrefix=" + localPrefix);
+        Log.d(QtApplication.QtTAG, "startApp, dataDir=" + dataDir);
 
-        libraryList.add(localPrefix + "lib/libQtCore.so");
-        libraryList.add(localPrefix + "lib/libQtGui.so");
-        libraryList.add(localPrefix + "lib/libQtNetwork.so");
-        libraryList.add(localPrefix + "lib/libQtXml.so");
-        libraryList.add(localPrefix + "lib/libandroid-9.so");
+        libraryList.add(dataDir + "lib/libQtCore.so");
+        libraryList.add(dataDir + "lib/libQtGui.so");
+        libraryList.add(dataDir + "lib/libQtNetwork.so");
+        libraryList.add(dataDir + "lib/libQtXml.so");
+        libraryList.add(dataDir + "lib/libandroid-9.so");
 
-        String jarDir = getApplicationContext().getDir("jar",
-            Context.MODE_PRIVATE).getAbsolutePath();
+        String jarDir = getDir("jar", Context.MODE_PRIVATE).getAbsolutePath();
         String jarOut = jarDir + File.separator + qtJar;
 
-        Log.d(QtApplication.QtTAG, "startApp, jarDir=" + jarDir + ", jarOut="
-            + jarOut);
+        Log.d(QtApplication.QtTAG, "startApp, jarDir=" + jarDir + ", jarOut=" + jarOut);
 
         // Package version control install file name marker.
-        String pvcFileName = jarDir + File.separator + "pvc_"
-            + String.valueOf(getPackageVersionCode());
+        String pvcFileName = jarDir + File.separator + "pvc_" +
+                             String.valueOf(getPackageVersionCode());
 
         File pvcFile = new File(pvcFileName);
 
         if (!pvcFile.exists())
           {
-            Log.d(QtApplication.QtTAG, "startApp, Version control file "
-                + pvcFileName + " does not exists!");
+            Log.d(QtApplication.QtTAG, "startApp, Version control file " +
+                                        pvcFileName + " does not exists!");
 
             // It seems, that the application has just installed or the user has
             // removed all its data. In this case the Jar output directory must
@@ -516,11 +325,10 @@ public class QtActivity extends Activity
 
         File jarFile = new File(jarOut);
 
-        if (pvcFile.exists() == false || jarFile.exists() == false
-            || jarFile.isFile() == false || jarFile.length() == 0)
+        if (pvcFile.exists() == false || jarFile.exists() == false ||
+            jarFile.isFile() == false || jarFile.length() == 0)
           {
-            Log.d(QtApplication.QtTAG, "startApp, Jar file " + qtJar
-                + " must be installed!");
+            Log.d(QtApplication.QtTAG, "startApp, Jar file " + qtJar + " must be installed!");
 
             // The Qt Jar file must be copied.
             InputStream ips = getApplicationContext().getAssets().open(qtJar);
@@ -547,8 +355,7 @@ public class QtActivity extends Activity
               }
             catch (Exception e)
               {
-                Log.e(QtApplication.QtTAG,
-                    "PVC add file error: " + e.getMessage());
+                Log.e(QtApplication.QtTAG, "PVC add file error: " + e.getMessage());
               }
           }
 
@@ -560,13 +367,11 @@ public class QtActivity extends Activity
         loaderParams.putInt(ERROR_CODE_KEY, 0);
         loaderParams.putString(DEX_PATH_KEY, dexPaths);
         loaderParams.putString(LOADER_CLASS_NAME_KEY,
-            "org.kde.necessitas.industrius.QtActivityDelegate");
+                               "org.kde.necessitas.industrius.QtActivityDelegate");
         loaderParams.putStringArrayList(NATIVE_LIBRARIES_KEY, libraryList);
-        loaderParams
-            .putString(ENVIRONMENT_VARIABLES_KEY,
-                "QML_IMPORT_PATH=/data/local/qt/imports\tQT_PLUGIN_PATH=/data/local/qt/plugins");
-        loaderParams
-            .putString(APPLICATION_PARAMETERS_KEY, "-platform\tandroid");
+        loaderParams.putString(ENVIRONMENT_VARIABLES_KEY,
+                               "QML_IMPORT_PATH=/data/local/qt/imports\tQT_PLUGIN_PATH=/data/local/qt/plugins");
+        loaderParams.putString(APPLICATION_PARAMETERS_KEY, "-platform\tandroid");
         loadApplication(loaderParams);
       }
     catch (Exception e)
@@ -586,10 +391,8 @@ public class QtActivity extends Activity
   @Override
   public boolean dispatchKeyEvent(KeyEvent event)
   {
-    if (QtApplication.m_delegateObject != null
-        && QtApplication.dispatchKeyEvent != null)
-      return (Boolean) QtApplication.invokeDelegateMethod(
-          QtApplication.dispatchKeyEvent, event);
+    if (QtApplication.m_delegateObject != null && QtApplication.dispatchKeyEvent != null)
+      return (Boolean) QtApplication.invokeDelegateMethod(QtApplication.dispatchKeyEvent, event);
     else
       return super.dispatchKeyEvent(event);
   }
@@ -660,13 +463,13 @@ public class QtActivity extends Activity
   protected void onActivityResult(int requestCode, int resultCode, Intent data)
   {
 
-    if (QtApplication.m_delegateObject != null
-        && QtApplication.onActivityResult != null)
+    if (QtApplication.m_delegateObject != null && QtApplication.onActivityResult != null)
       {
         QtApplication.invokeDelegateMethod(QtApplication.onActivityResult,
-            requestCode, resultCode, data);
+                                           requestCode, resultCode, data);
         return;
       }
+    
     if (requestCode == MINISTRO_INSTALL_REQUEST_CODE)
       startApp(false);
     super.onActivityResult(requestCode, resultCode, data);
