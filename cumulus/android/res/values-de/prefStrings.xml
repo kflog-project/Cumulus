@@ -39,7 +39,7 @@
     <string name="pref_setup_parity">Konfiguriere Parität</string>
     <string name="pref_setup_parity_title">Uart Parität</string>
     <string name="pref_setup_parity_summary">Wähle die Uart Parität</string>
-    <string name="pref_setup_parity_default">none</string>
+    <string name="pref_setup_parity_default">0</string>
 
     <string name="pref_setup_uart_0_speed">pref_setup_uart_0_speed</string>
     <string name="pref_setup_uart_1_speed">pref_setup_uart_1_speed</string>

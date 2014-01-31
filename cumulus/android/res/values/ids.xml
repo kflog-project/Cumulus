@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Id$ -->
+
 <resources>
 	<item type="id" name="dialog_baro_sensor" />
 	<item type="id" name="dialog_bt" />
@@ -17,5 +18,9 @@
   <item type="id" name="dialog_setup" />
   <item type="id" name="dialog_toggles" />
   <item type="id" name="dialog_zip_error" />
+  
   <item type="id" name="msg_ioio_incompatible" />
+  
+  <item type="id" name="request_enable_bluetooth" />
+  <item type="id" name="request_ioio_preferences" />
 </resources>

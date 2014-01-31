@@ -36,7 +36,6 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-//import android.R;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -50,7 +49,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -79,6 +77,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.kde.necessitas.origo.QtActivity;
+
 import org.kflog.cumulus.BluetoothService;
 import org.kflog.cumulus.CumulusIOIO;
 
@@ -102,35 +101,8 @@ import org.kflog.cumulus.CumulusIOIO;
  */
 public class CumulusActivity extends QtActivity
 {
-  static final String TAG = "Java#CumulusActivity";
-
-  // Cumulus preference items
-  static final String CumulusPrefsFile = "CumulusPrefsFile";
-
-  static final String Uart0Speed = "Uart0Speed";
-  static final String Uart1Speed = "Uart1Speed";
-  static final String Uart2Speed = "Uart2Speed";
-  static final String Uart3Speed = "Uart3Speed";
-
-  static final String Uart0Enabled = "Uart0Enabled";
-  static final String Uart1Enabled = "Uart1Enabled";
-  static final String Uart2Enabled = "Uart2Enabled";
-  static final String Uart3Enabled = "Uart3Enabled";
-
-  static int uart0Speed = 57600;
-  static int uart1Speed = 57600;
-  static int uart2Speed = 57600;
-  static int uart3Speed = 57600;
-
-  static boolean uart0Enabled = true;
-  static boolean uart1Enabled = false;
-  static boolean uart2Enabled = false;
-  static boolean uart3Enabled = false;
-
-  static public SharedPreferences cumulusSettings = null;
+  static final String TAG = "CumActivity";
   
-  static final int REQUEST_ENABLE_BT = 99;
-
   // After this time and no user activity or movement the screen is dimmed.
   static final long DIMM1_SCREEN_TO = 120000;
   static final long DIMM2_SCREEN_TO = 300000;
@@ -627,9 +599,6 @@ public class CumulusActivity extends QtActivity
         // Set object reference
         m_objectRef = this;
       }
-
-    // Object to Cumulus settings.
-    cumulusSettings = getSharedPreferences(CumulusPrefsFile, MODE_PRIVATE);
 
     m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     m_BaroSensor = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -1300,7 +1269,9 @@ public class CumulusActivity extends QtActivity
           break;
 
         case R.id.dialog_setup:
-          CharSequence[] s_items = { getString(R.string.setupGeneral),
+          CharSequence[] s_items = {
+              getString(R.string.gpsIoio),
+              getString(R.string.setupGeneral),
               getString(R.string.setupPreFlight) };
 
           builder.setTitle(getString(R.string.setupMenu));
@@ -1312,10 +1283,14 @@ public class CumulusActivity extends QtActivity
               switch (item)
                 {
                   case 0:
+                    // start IOIO uart preference activity
+                    startPreferenceActivity();
+                    break;                  
+                  case 1:
                     // open setup general dialog
                     nativeKeypress((char) 25);
                     break;
-                  case 1:
+                  case 2:
                     // open setup preflight dialog
                     nativeKeypress((char) 26);
                     break;
@@ -1612,7 +1587,7 @@ public class CumulusActivity extends QtActivity
 
     return alert;
   }
-
+  
   void playSound(int stream, String soundName)
   {
     Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar
@@ -1976,7 +1951,7 @@ public class CumulusActivity extends QtActivity
     if (!BluetoothAdapter.getDefaultAdapter().isEnabled())
       {
         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        startActivityForResult(enableBtIntent, R.id.request_enable_bluetooth);
         m_wait4BluetoothAdapterOn = true;
       }
     else
@@ -2030,13 +2005,22 @@ public class CumulusActivity extends QtActivity
       }
   }
 
+  /**
+   * This starts the CumulusPreferenceActivity.
+   */
+  protected void startPreferenceActivity()
+  {
+    Intent i = new Intent(this, CumulusPreferenceActivity.class);
+    startActivityForResult(i, R.id.request_ioio_preferences);
+  }
+
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data)
   {
-    Log.d(TAG, "onActivityResult ReqCode=" + requestCode + ", ResCode="
-        + resultCode);
+    Log.d(TAG, "onActivityResult ReqCode=" + requestCode +
+               ", ResCode=" + resultCode );
 
-    if (requestCode == REQUEST_ENABLE_BT)
+    if( requestCode == R.id.request_enable_bluetooth )
       {
         // On single instance the result code is always NOK! Therefore we wait
         // until the adapter on state is broadcasted.
@@ -2045,6 +2029,22 @@ public class CumulusActivity extends QtActivity
             Log.d(TAG, "BluetoothAdapter is switched on by the user");
           }
 
+        return;
+      }
+    else if( requestCode == R.id.request_ioio_preferences )
+      {
+        // IOIO Uart preferences have been changed
+        if (resultCode == RESULT_OK)
+          {
+            // Restart IOIO
+            if( m_ioio.isStarted() )
+              {
+                Log.d(TAG, "IOIO Uart config has been changed, restarting IOIO board");
+                m_ioio.stop();
+                m_ioio.start();
+              }
+          }
+        
         return;
       }
 

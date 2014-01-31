@@ -42,15 +42,15 @@
 	</string-array>
 	
  	<string-array name="parityKeys">
-    <item >None</item>
-    <item >Even</item>
-    <item >Odd</item>
- 	</string-array>
-	
-  <string-array name="parityValues">
     <item >none</item>
     <item >even</item>
     <item >odd</item>
+ 	</string-array>
+	
+  <string-array name="parityValues">
+    <item >0</item>
+    <item >1</item>
+    <item >2</item>
   </string-array>
-
+  
 </resources>

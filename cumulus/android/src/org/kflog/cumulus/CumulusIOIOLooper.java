@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import ioio.lib.api.Uart;
 import ioio.lib.api.exception.ConnectionLostException;
@@ -40,13 +42,17 @@ import org.kflog.cumulus.CumulusIOIO;
  */
 public class CumulusIOIOLooper extends BaseIOIOLooper
 {
-  private static final String TAG = "Java#CumulusIOIOLooper";
+  private static final String TAG = "CumIOIOLooper";
 
   /**
    * Debug flag control
    */
   private static final boolean D = true;
-
+  
+  /**
+   * Context wrapper instance.
+   */
+  private ContextWrapper m_context = null;
   /**
    * Callback to the creator of this instance
    */
@@ -83,8 +89,9 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   /**
    * Default constructor
    */
-  public CumulusIOIOLooper()
+  public CumulusIOIOLooper( ContextWrapper contextWrapper )
   {
+    m_context = contextWrapper;
   }
 
   /**
@@ -93,8 +100,9 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
    * @param callback
    *          Object to creator of this class.
    */
-  public CumulusIOIOLooper(CumulusIOIO callback)
+  public CumulusIOIOLooper(ContextWrapper contextWrapper, CumulusIOIO callback)
   {
+    m_context = contextWrapper;
     m_callback = callback;
   }
 
@@ -153,6 +161,33 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   }
 
   /**
+   * Convert a parity string to an enumeration value.
+   * 
+   * @param parity A string as none, even, odd
+   * 
+   * @return Uart parity enumeration
+   */
+  private Uart.Parity getUartParity( String parity )
+  {
+    if( parity.equals("0"))
+      {
+        return Uart.Parity.NONE;
+      }
+    
+    if( parity.equals("1"))
+      {
+        return Uart.Parity.EVEN;
+      }
+    
+    if( parity.equals("2"))
+      {
+        return Uart.Parity.ODD;
+      }
+    
+    return Uart.Parity.NONE; 
+  }
+
+  /**
    * This method will be called as soon as connection to the IOIO has been
    * established. Typically, this will include opening pins and modules using
    * the openXXX() methods of the {@link #ioio_} field.
@@ -164,42 +199,73 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
    */
   protected void setup() throws ConnectionLostException, InterruptedException
   {
-    if (D)
-      Log.d(TAG, "IOIO setup is called!");
+    if (D) Log.d(TAG, "IOIO setup is called!");
 
-    SharedPreferences settings = CumulusActivity.cumulusSettings;
+    // Retrieves the IOIO Uarts settings
+    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(m_context);
 
-    int uartSpeed[] = new int[4];
-    uartSpeed[0] = settings.getInt(CumulusActivity.Uart0Speed, 57600);
-    uartSpeed[1] = settings.getInt(CumulusActivity.Uart1Speed, 57600);
-    uartSpeed[2] = settings.getInt(CumulusActivity.Uart2Speed, 57600);
-    uartSpeed[3] = settings.getInt(CumulusActivity.Uart3Speed, 57600);
-
-    boolean uart0Enabled = settings.getBoolean(CumulusActivity.Uart0Enabled, true);
-    boolean uart1Enabled = settings.getBoolean(CumulusActivity.Uart1Enabled, false);
-    boolean uart2Enabled = settings.getBoolean(CumulusActivity.Uart2Enabled, false);
-    boolean uart3Enabled = settings.getBoolean(CumulusActivity.Uart3Enabled, false);
-
-    // Activate the uart, which has the user selected.
-    if ( uart0Enabled )
+    int uartSpeed[] = { 4800, 4800, 4800, 4800 };
+    
+    try
+    {    
+      uartSpeed[0] = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_setup_uart_0_speed),
+                                                          m_context.getString(R.string.pref_setup_speed_default)));
+      uartSpeed[1] = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_setup_uart_1_speed),
+                                                          m_context.getString(R.string.pref_setup_speed_default)));
+      uartSpeed[2] = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_setup_uart_2_speed),
+                                                          m_context.getString(R.string.pref_setup_speed_default)));
+      uartSpeed[3] = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_setup_uart_3_speed),
+                                                          m_context.getString(R.string.pref_setup_speed_default)));
+    }
+    catch( NumberFormatException e )
+    {
+      Log.e(TAG, e.toString());
+    }
+    
+    String uartParity[] = new String[4];
+    
+    uartParity[0] = settings.getString(m_context.getString(R.string.pref_setup_uart_0_parity),
+                                       m_context.getString(R.string.pref_setup_parity_default));
+    uartParity[1] = settings.getString(m_context.getString(R.string.pref_setup_uart_1_parity),
+                                       m_context.getString(R.string.pref_setup_parity_default));
+    uartParity[2] = settings.getString(m_context.getString(R.string.pref_setup_uart_2_parity),
+                                       m_context.getString(R.string.pref_setup_parity_default));
+    uartParity[3] = settings.getString(m_context.getString(R.string.pref_setup_uart_3_parity),
+                                       m_context.getString(R.string.pref_setup_parity_default));  
+    
+    int uartActivated = 0;
+    
+    try
+    {
+      uartActivated = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_active_uart),
+                                                           m_context.getString(R.string.pref_active_uart_default)));
+    }
+    catch( NumberFormatException e )
+    {
+      Log.e(TAG, e.toString());
+      uartActivated = 0;
+    }
+        
+    // Activate the uart, which has the user has selected.
+    if ( uartActivated == 0 )
       {
-        createUart( 0, uartSpeed[0] );
+        createUart( 0, uartSpeed[0], getUartParity(uartParity[0]) );
       }
-    else if (uart1Enabled)
+    else if (uartActivated == 1 )
       {
-        createUart( 1, uartSpeed[1] );
+        createUart( 1, uartSpeed[1], getUartParity(uartParity[1]) );
       }
-    else if (uart2Enabled)
+    else if (uartActivated == 2 )
       {
-        createUart( 2, uartSpeed[2] );
+        createUart( 2, uartSpeed[2], getUartParity(uartParity[2]) );
       }
-    else if (uart3Enabled)
+    else if (uartActivated == 3 )
       {
-        createUart( 3, uartSpeed[3] );
+        createUart( 3, uartSpeed[3], getUartParity(uartParity[3]) );
       }
   }
   
-  private void createUart( int index, int speed )
+  private void createUart( int index, int speed, Uart.Parity parity )
     throws ConnectionLostException, InterruptedException
   {
     if (D)
@@ -215,7 +281,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
         m_uarts[index] = ioio_.openUart( txRxPins[index][1],
                                          txRxPins[index][0],
                                          speed,
-                                         Uart.Parity.NONE,
+                                         parity,
                                          Uart.StopBits.ONE );
 
         // Setup a reader loop in an extra thread for uart 0.

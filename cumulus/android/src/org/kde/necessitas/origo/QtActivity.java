@@ -583,14 +583,15 @@ public class QtActivity extends Activity
         return;
       }
 
-    if (QtApplication.m_delegateObject != null
-        && QtApplication.onCreate != null)
+    if (QtApplication.m_delegateObject != null && QtApplication.onCreate != null)
       {
         QtApplication.invokeDelegateMethod(QtApplication.onCreate,
-            savedInstanceState);
+                                           savedInstanceState);
         return;
       }
+    
     requestWindowFeature(Window.FEATURE_NO_TITLE);
+    
     try
       {
         m_activityInfo = getPackageManager().getActivityInfo(
@@ -602,12 +603,9 @@ public class QtActivity extends Activity
         finish();
         return;
       }
+    
     if (null == getLastNonConfigurationInstance())
       {
-        // if splash screen is defined, then show it
-        if (m_activityInfo.metaData.containsKey("android.app.splash_screen"))
-          setContentView(m_activityInfo.metaData
-              .getInt("android.app.splash_screen"));
         startApp(true);
       }
   }

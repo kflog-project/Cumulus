@@ -60,7 +60,12 @@ import ioio.lib.util.android.IOIOAndroidApplicationHelper;
  */
 public class CumulusIOIO implements IOIOLooperProvider
 {
-  private static final String TAG = "Java#CumulusIOIO";
+  private static final String TAG = "CumIOIO";
+
+  /**
+   * Context wrapper instance
+   */
+  private ContextWrapper m_wrapper = null;
 
   private IOIOAndroidApplicationHelper m_helper = null;
   
@@ -81,6 +86,7 @@ public class CumulusIOIO implements IOIOLooperProvider
 
   public CumulusIOIO(ContextWrapper wrapper, Handler msgHandler)
   {
+    m_wrapper = wrapper;
     m_msgHandler = msgHandler;
     m_helper = new IOIOAndroidApplicationHelper(wrapper, this);
   }
@@ -160,7 +166,7 @@ public class CumulusIOIO implements IOIOLooperProvider
   {
     synchronized (m_ioioLooperMutex)
       {
-        m_ioioLooper = new CumulusIOIOLooper(this);
+        m_ioioLooper = new CumulusIOIOLooper(m_wrapper, this);
         return m_ioioLooper;
       }
   }
