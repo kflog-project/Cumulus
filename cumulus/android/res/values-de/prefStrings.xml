@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+
+<resources>
+
+    <string name="pref_cat_title_active_uart">Aktiviere IOIO Uart</string>
+    <string name="pref_active_uart">pref_active_uart</string>
+    <string name="pref_active_uart_title">IOIO Uart</string>
+    <string name="pref_active_uart_summary">Aktivierter Uart: </string>
+    <string name="pref_active_uart_default">0</string>
+    
+    <string name="pref_none">keine</string>
+    
+    <string name="pref_cat_title_setup_uarts">Konfiguriere IOIO Uarts</string>
+    <string name="pref_setup_uarts_title">IOIO Uarts</string>
+    <string name="pref_setup_uarts_summary">Konfiguriere IOIO Uarts 0-3</string>
+    
+    <string name="pref_setup_uart_0">pref_setup_uart_0</string>
+    <string name="pref_setup_uart_0_title">Uart 0</string>
+    <string name="pref_setup_uart_0_summary">IOIO Board Uart: Pin-3=TX Pin-4=RX</string>
+    
+    <string name="pref_setup_uart_1">pref_setup_uart_1</string>
+    <string name="pref_setup_uart_1_title">Uart 1</string>
+    <string name="pref_setup_uart_1_summary">IOIO Board Uart: Pin-5=TX Pin-6=RX</string>
+    
+    <string name="pref_setup_uart_2">pref_setup_uart_2</string>
+    <string name="pref_setup_uart_2_title">Uart 2</string>
+    <string name="pref_setup_uart_2_summary">IOIO Board Uart: Pin-10=TX Pin-11=RX</string>
+    
+    <string name="pref_setup_uart_3">pref_setup_uart_3</string>
+    <string name="pref_setup_uart_3_title">Uart 3</string>
+    <string name="pref_setup_uart_3_summary">IOIO Board Uart: Pin-12=TX Pin-13=RX</string>
+        
+    <string name="pref_setup_speed">Konfiguriere Geschwindigkeit</string>
+    <string name="pref_setup_speed_title">Uart Geschwindigkeit</string>
+    <string name="pref_setup_speed_summary">Wähle die Uart Geschwindigkeit</string>
+    <string name="pref_setup_speed_default">4800</string>
+    
+    <string name="pref_setup_parity">Konfiguriere Parität</string>
+    <string name="pref_setup_parity_title">Uart Parität</string>
+    <string name="pref_setup_parity_summary">Wähle die Uart Parität</string>
+    <string name="pref_setup_parity_default">none</string>
+
+    <string name="pref_setup_uart_0_speed">pref_setup_uart_0_speed</string>
+    <string name="pref_setup_uart_1_speed">pref_setup_uart_1_speed</string>
+    <string name="pref_setup_uart_2_speed">pref_setup_uart_2_speed</string>
+    <string name="pref_setup_uart_3_speed">pref_setup_uart_3_speed</string>
+    
+    <string name="pref_setup_uart_0_parity">pref_setup_uart_0_parity</string>
+    <string name="pref_setup_uart_1_parity">pref_setup_uart_1_parity</string>
+    <string name="pref_setup_uart_2_parity">pref_setup_uart_2_parity</string>
+    <string name="pref_setup_uart_3_parity">pref_setup_uart_3_parity</string>
+    
+</resources>

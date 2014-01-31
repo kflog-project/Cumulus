@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+
+<resources>
+	
+  <string-array name="activateUartKeys">
+  	    <item>None</item>
+        <item>Uart 0</item>
+        <item>Uart 1</item>
+        <item>Uart 2</item>
+        <item>Uart 3</item>
+  </string-array>
+
+  <string-array name="activateUartValues">
+        <item>-1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+  </string-array>
+  		
+  <string-array name="speedKeys">
+        <item name="1200">1200</item>
+        <item name="2400">2400</item>
+        <item name="4800">4800</item>
+        <item name="9600">9600</item>
+        <item name="19200">19200</item>
+        <item name="38400">38400</item>
+        <item name="57600">57600</item>
+        <item name="115200">115200</item>   
+  </string-array>
+	
+ 	<string-array name="speedValues">
+        <item name="1200">1200</item>
+        <item name="2400">2400</item>
+        <item name="4800">4800</item>
+        <item name="9600">9600</item>
+        <item name="19200">19200</item>
+        <item name="38400">38400</item>
+        <item name="57600">57600</item>
+        <item name="115200">115200</item>		
+	</string-array>
+	
+ 	<string-array name="parityKeys">
+    <item >None</item>
+    <item >Even</item>
+    <item >Odd</item>
+ 	</string-array>
+	
+  <string-array name="parityValues">
+    <item >none</item>
+    <item >even</item>
+    <item >odd</item>
+  </string-array>
+
+</resources>
