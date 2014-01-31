@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<PreferenceCategory android:title="@string/pref_cat_title_active_uart" >
+	    <ListPreference
+	    android:key="@string/pref_active_uart"
+	    android:title="@string/pref_active_uart_title"
+	    android:summary="@string/pref_active_uart_summary" 
+	    android:entries="@array/activateUartKeys"
+	    android:entryValues="@array/activateUartValues"
+	    android:defaultValue="@string/pref_active_uart_default"
+	    />           	
+	</PreferenceCategory>
+	
+	<PreferenceCategory android:title="@string/pref_cat_title_setup_uarts" >
+	    
+	   <PreferenceScreen
+	   	  android:key="@string/pref_setup_uart_0"
+	       android:title="@string/pref_setup_uart_0_title"
+	       android:summary="@string/pref_setup_uart_0_summary"
+	       android:persistent="false" >
+	   	
+	   	<ListPreference
+	      android:key="@string/pref_setup_uart_0_speed"
+	      android:title="@string/pref_setup_speed_title"
+	      android:summary="@string/pref_setup_speed_summary" 
+	      android:entries="@array/speedKeys"
+	      android:entryValues="@array/speedValues"
+	      android:defaultValue="@string/pref_setup_speed_default"
+	      />
+	   	
+	     <ListPreference
+	       android:key="@string/pref_setup_uart_0_parity"
+	       android:title="@string/pref_setup_parity_title"
+	       android:summary="@string/pref_setup_parity_summary" 
+	       android:entries="@array/parityKeys"
+	       android:entryValues="@array/parityValues"
+	       android:defaultValue="@string/pref_setup_parity_default"
+	      />
+	    		
+	    </PreferenceScreen>
+	    
+	    <PreferenceScreen
+	        android:key="@string/pref_setup_uart_1"
+	        android:title="@string/pref_setup_uart_1_title"
+	        android:summary="@string/pref_setup_uart_1_summary"
+	        android:persistent="false" >
+	      
+	      <ListPreference
+	        android:key="@string/pref_setup_uart_1_speed"
+	        android:title="@string/pref_setup_speed_title"
+	        android:summary="@string/pref_setup_speed_summary" 
+	        android:entries="@array/speedKeys"
+	        android:entryValues="@array/speedValues"
+	        android:defaultValue="@string/pref_setup_speed_default"
+	       />
+	      
+	       <ListPreference
+	        android:key="@string/pref_setup_uart_1_parity"
+	        android:title="@string/pref_setup_parity_title"
+	        android:summary="@string/pref_setup_parity_summary" 
+	        android:entries="@array/parityKeys"
+	        android:entryValues="@array/parityValues"
+	        android:defaultValue="@string/pref_setup_parity_default"
+	       />
+	      
+	    </PreferenceScreen>
+	    
+	    <PreferenceScreen
+	        android:key="@string/pref_setup_uart_2"
+	        android:title="@string/pref_setup_uart_2_title"
+	        android:summary="@string/pref_setup_uart_2_summary"
+	        android:persistent="false" >
+	      
+	      <ListPreference
+	        android:key="@string/pref_setup_uart_2_speed"
+	        android:title="@string/pref_setup_speed_title"
+	        android:summary="@string/pref_setup_speed_summary" 
+	        android:entries="@array/speedKeys"
+	        android:entryValues="@array/speedValues"
+	        android:defaultValue="@string/pref_setup_speed_default"
+	       />
+	      
+	       <ListPreference
+	        android:key="@string/pref_setup_uart_2_parity"
+	        android:title="@string/pref_setup_parity_title"
+	        android:summary="@string/pref_setup_parity_summary" 
+	        android:entries="@array/parityKeys"
+	        android:entryValues="@array/parityValues"
+	        android:defaultValue="@string/pref_setup_parity_default"
+	       />
+	      
+	    </PreferenceScreen>
+	    
+	     <PreferenceScreen
+	        android:key="@string/pref_setup_uart_3"
+	        android:title="@string/pref_setup_uart_3_title"
+	        android:summary="@string/pref_setup_uart_3_summary"
+	        android:persistent="false" >
+	      
+	      <ListPreference
+	        android:key="@string/pref_setup_uart_3_speed"
+	        android:title="@string/pref_setup_speed_title"
+	        android:summary="@string/pref_setup_speed_summary" 
+	        android:entries="@array/speedKeys"
+	        android:entryValues="@array/speedValues"
+	        android:defaultValue="@string/pref_setup_speed_default"
+	       />
+	      
+	       <ListPreference
+	        android:key="@string/pref_setup_uart_3_parity"
+	        android:title="@string/pref_setup_parity_title"
+	        android:summary="@string/pref_setup_parity_summary" 
+	        android:entries="@array/parityKeys"
+	        android:entryValues="@array/parityValues"
+	        android:defaultValue="@string/pref_setup_parity_default"
+	       />
+	      
+	    </PreferenceScreen>
+	  </PreferenceCategory>        
+
+</PreferenceScreen>
