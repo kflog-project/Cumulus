@@ -77,7 +77,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.kde.necessitas.origo.QtActivity;
-
 import org.kflog.cumulus.BluetoothService;
 import org.kflog.cumulus.CumulusIOIO;
 
@@ -179,6 +178,9 @@ public class CumulusActivity extends QtActivity
 
   // Used to signal, that we waiting to the on state of the Bluetooth adapter
   private boolean m_wait4BluetoothAdapterOn = false;
+  
+  @SuppressWarnings("rawtypes")
+  protected static Class m_cumulusServiceClass = null;
 
   /**
    * The Handler that gets information back from the BluetoothService
@@ -599,6 +601,14 @@ public class CumulusActivity extends QtActivity
         // Set object reference
         m_objectRef = this;
       }
+    
+    if ( m_cumulusServiceClass == null )
+      {
+        m_cumulusServiceClass = CumulusService.class;
+      }
+
+    // Start a service, what shall prevent killing of our App instance.
+    startService( new Intent(this, CumulusService.class) );
 
     m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     m_BaroSensor = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -645,8 +655,7 @@ public class CumulusActivity extends QtActivity
       {
         // We do the data install in an extra thread to minimize the runtime in
         // our activity.
-        AppDataInstallThread adit = new AppDataInstallThread(appDataDir,
-            pvcFileName);
+        AppDataInstallThread adit = new AppDataInstallThread(appDataDir, pvcFileName);
         adit.start();
       }
     else
@@ -904,6 +913,12 @@ public class CumulusActivity extends QtActivity
   {
     Log.d(TAG, "onDestroy");
 
+    if(m_cumulusServiceClass != null )
+    {
+      stopService( new Intent(this, CumulusService.class) );
+      m_cumulusServiceClass = null;
+    }
+    
     notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
     if (notificationManager != null)
@@ -2183,8 +2198,7 @@ public class CumulusActivity extends QtActivity
       m_pvcAppFileName = pvcAppFileName;
 
       // Creates a handler in the calling thread to pass later back results to
-      // it
-      // from the running thread.
+      // it from the running thread.
       m_Handler = new Handler();
     }
 

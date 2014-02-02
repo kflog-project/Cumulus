@@ -8,9 +8,7 @@
     <string name="pref_active_uart_title">IOIO Uart</string>
     <string name="pref_active_uart_summary">Aktivierter Uart: </string>
     <string name="pref_active_uart_default">0</string>
-    
-    <string name="pref_none">keine</string>
-    
+        
     <string name="pref_cat_title_setup_uarts">Konfiguriere IOIO Uarts</string>
     <string name="pref_setup_uarts_title">IOIO Uarts</string>
     <string name="pref_setup_uarts_summary">Konfiguriere IOIO Uarts 0-3</string>

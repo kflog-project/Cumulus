@@ -216,8 +216,10 @@ public class CumulusPreferenceActivity
       
       if( value.equals("-1") )
         {
-          // If no IOIO uart is selected, the key -1 is returned.
-          value = getString(R.string.pref_none);
+          // If no IOIO uart is selected, the value -1 is returned. This value
+          // must be translated to a key string.
+          String[] uartActKey = getResources().getStringArray(R.array.activateUartKeys);
+          value = uartActKey[0];
         }
       
       pref.setSummary( getString(R.string.pref_active_uart_summary) + " " + value );

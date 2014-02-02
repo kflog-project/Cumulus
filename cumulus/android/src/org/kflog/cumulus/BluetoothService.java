@@ -73,8 +73,7 @@ public class BluetoothService
   private static final String SDP_NAME = "BT_Servive_Cumulus";
 
   // Unique UUID for this application, using common Serial Port Profile Id
-  private static final UUID SPP_UUID = UUID
-      .fromString("00001101-0000-1000-8000-00805F9B34FB");
+  private static final UUID SPP_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
   // Message types emitted by the BluetoothService Handler
   public static final int MESSAGE_STATE_CHANGE = 1;
@@ -373,8 +372,7 @@ public class BluetoothService
     // Send a failure message back to the Activity
     Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
     Bundle bundle = new Bundle();
-    bundle.putString(BluetoothService.TOAST,
-        mContext.getString(R.string.btError1));
+    bundle.putString(BluetoothService.TOAST, mContext.getString(R.string.btError1));
     msg.setData(bundle);
     mHandler.sendMessage(msg);
 

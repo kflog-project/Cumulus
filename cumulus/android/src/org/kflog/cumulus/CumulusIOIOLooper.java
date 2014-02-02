@@ -109,8 +109,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   /**
    * Returns the uart object according to the selection index.
    * 
-   * @param index
-   *          The uart object to be selected. 1...3
+   * @param index The uart object to be selected. 1...3
    * 
    * @return Selected uart object if it exists or null in error case.
    */
@@ -131,8 +130,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   /**
    * Write to the active Uart thread in an unsynchronized manner
    * 
-   * @param out
-   *          The bytes to write.
+   * @param out The bytes to write.
    * 
    * @return True in case of success otherwise false
    */
@@ -163,7 +161,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   /**
    * Convert a parity string to an enumeration value.
    * 
-   * @param parity A string as none, even, odd
+   * @param parity A string as 0 (none), 1 (even), 2 (odd)
    * 
    * @return Uart parity enumeration
    */
@@ -233,33 +231,33 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     uartParity[3] = settings.getString(m_context.getString(R.string.pref_setup_uart_3_parity),
                                        m_context.getString(R.string.pref_setup_parity_default));  
     
-    int uartActivated = 0;
+    int uart2Activated = 0;
     
     try
     {
-      uartActivated = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_active_uart),
+      uart2Activated = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_active_uart),
                                                            m_context.getString(R.string.pref_active_uart_default)));
     }
     catch( NumberFormatException e )
     {
       Log.e(TAG, e.toString());
-      uartActivated = 0;
+      uart2Activated = 0;
     }
         
-    // Activate the uart, which has the user has selected.
-    if ( uartActivated == 0 )
+    // Activate the uart, which the user has selected.
+    if ( uart2Activated == 0 )
       {
         createUart( 0, uartSpeed[0], getUartParity(uartParity[0]) );
       }
-    else if (uartActivated == 1 )
+    else if (uart2Activated == 1 )
       {
         createUart( 1, uartSpeed[1], getUartParity(uartParity[1]) );
       }
-    else if (uartActivated == 2 )
+    else if (uart2Activated == 2 )
       {
         createUart( 2, uartSpeed[2], getUartParity(uartParity[2]) );
       }
-    else if (uartActivated == 3 )
+    else if (uart2Activated == 3 )
       {
         createUart( 3, uartSpeed[3], getUartParity(uartParity[3]) );
       }
@@ -303,9 +301,9 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   @Override
   public void loop() throws ConnectionLostException, InterruptedException
   {
-    // In this loop different checks can be added to control the work of the
+    // In this loop different checks could be added to control the work of the
     // uarts.
-    Thread.sleep(60000);
+    Thread.sleep(600000);
   }
 
   @Override
@@ -314,8 +312,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
    */
   public void disconnected()
   {
-    if (D)
-      Log.d(TAG, "IOIO disconnected is called!");
+    if (D) Log.d(TAG, "IOIO disconnected is called!");
 
     synchronized( this )
     {
@@ -377,18 +374,15 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
      * reads single characters until abort is set. That must be done, because
      * Flarm can operate in binary mode.
      * 
-     * @param uart
-     *          Uart object
+     * @param uart Uart object
      * 
-     * @param index
-     *          index of uart
+     * @param index Uart index to be used as selector
      */
     public UartThread(Uart uart, int index)
     {
       UTAG = "UartThread_" + index;
 
-      if (D)
-        Log.d(TAG, "creating " + UTAG);
+      if (D) Log.d(TAG, "creating " + UTAG);
 
       m_uart = uart;
       m_uartIndex = index;
@@ -453,8 +447,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
       
       cancel();
       
-      if (D)
-        Log.i(TAG, "Run " + UTAG + " is finished");
+      if (D) Log.i(TAG, "Run " + UTAG + " is finished");
     }
 
     /**
@@ -498,8 +491,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     synchronized public void cancel()
     {
-      if (D)
-        Log.d(TAG, UTAG + ": cancel is called by " + this);
+      if (D) Log.d(TAG, UTAG + ": cancel is called by " + this);
 
       try
         {

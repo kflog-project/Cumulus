@@ -23,4 +23,8 @@
   
   <item type="id" name="request_enable_bluetooth" />
   <item type="id" name="request_ioio_preferences" />
+  <item type="id" name="request_install_add_data" />
+  
+  <item type="id" name="response_install_add_data_ok" />
+  <item type="id" name="response_install_add_data_nok" />
 </resources>
