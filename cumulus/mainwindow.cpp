@@ -1283,6 +1283,9 @@ void MainWindow::createContextMenu()
   statusMenu->addAction( actionStatusGPS );
 
   setupMenu = contextMenu->addMenu(tr("Setup") + " ");
+#ifdef ANDROID
+  fileMenu->addAction( actionHardwareMenu );
+#endif
   setupMenu->addAction( actionSetupConfig );
   setupMenu->addAction( actionPreFlight );
   setupMenu->addAction( actionSetupInFlight );
