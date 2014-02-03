@@ -23,9 +23,9 @@ body {
 	geschrieben f&uuml;r Segelflieger und andere Flugenthusiasten. Diese
 	App ist eine Portierung zu Android von der Qt C++ Applikation, wie sie
 	auf den Nokia Internet Tablets N8x0 und N900 l&auml;uft. Das Android
-	Lighthouse Projekt stellt einen SDK genannt
-	<i>Necessitas</i> bereit, mit dem man Qt C++ Applikationen in eine
-	Android Umgebung als native Bibliotheken integrieren kann.
+	Lighthouse Projekt stellt einen SDK genannt <i>Necessitas</i> bereit,
+  mit dem man Qt C++ Applikationen in eine Android Umgebung als native
+  Bibliotheken integrieren kann.
 
 	<h4>Vorbedingungen</h4>
 
@@ -44,13 +44,13 @@ body {
 			im Ger&auml;t eingebaut ist.
 		<li>Wenn kein interner GPS Empf&auml;nger vorhanden ist, sollte
 			eine Bluetooth Schnittstelle vorhanden sein, um externe BT GPS
-			Ger&auml;te benutzen zu k&ouml;nnen.
+			Ger&auml;te benutzen zu k&ouml;nnen. Alternativ ist auch der Anschluss
+      eines IOIO &uuml;ber USB m&ouml;glich.
 		<li>Optional sollte eine WLAN Schnittstelle vorhanden sein, um
-			Daten aus dem Internet runter laden zu k&ouml;nnen.
+			Karten und Flugplatzdaten aus dem Internet runter laden zu k&ouml;nnen.
 		<li>Bei l&auml;ngeren Fl&uuml;gen ben&ouml;tigt man eine externe
 			Stromversorgung.
-		<li>Eine gute Ger&auml;tehalterung ist beim Fliegen sehr
-			empfehlenswert.
+		<li>Eine gute Ger&auml;tehalterung ist beim Fliegen sehr empfehlenswert.
 	</ul>
 
 	<h4>App runter laden und installieren</h4>
@@ -58,8 +58,8 @@ body {
 	Das aktuelle Paket ist immer unter Google Play als
 
 	<a
-		href="https://play.google.com/store/search?q=cumulus+from+kflog.org&c=apps">Cumulus
-		von kflog.org</a>, Autor Axel Pauli, zu finden.
+		href="https://play.google.com/store/search?q=cumulus+from+kflog.org&c=apps">
+		Cumulus von kflog.org</a>, Autor Axel Pauli, zu finden.
 	<b>Achtung</b>, es gibt auch noch andere Cumulus Versionen dort! Diese
 	sind inkompatibel zu dieser App. Das App Paket von Google Play runter
 	laden und installieren.
@@ -78,10 +78,12 @@ body {
 
 	<h4>Erster Start von Cumulus nach der Installation</h4>
 
-	<p>Beim ersten Aufruf von Cumulus nach der Installation sollte eine Internet
+	<p>
+    Beim ersten Aufruf von Cumulus nach der Installation sollte eine Internet
 	  Verbindung existieren, damit die ben&ouml;tigten Landkarten und die
 	  Welt2000 Datei automatisch aus dem Internet runter geladen werden
-	  k&ouml;nnen, wenn Sie das erlauben.</p>
+	  k&ouml;nnen, wenn Sie das erlauben.
+  </p>
 
 	<p>
 		Um den nativen Teil von Cumulus besser bedienen zu k&ouml;nnen, passen
@@ -108,8 +110,8 @@ body {
 			dem Internet her.</li>
 		<li>Starten Sie Cumulus.</li>
 		<li>Dr&uuml;cken Sie die Android Men&uuml; Taste und w&auml;hlen
-			Sie das Men&uuml; <b>Einstellungen - Allgemein -
-				Pers&ouml;nliches</b> aus. Hier tragen Sie bitte mindestens Breite und
+			Sie das Men&uuml; <b>Einstellungen - Allgemein - Pers&ouml;nliches</b>
+      aus. Hier tragen Sie bitte mindestens Breite und
 			L&auml;nge Ihres Heimatplatzes ein. Verlassen Sie das Men&uuml; nun
 			&uuml;ber die gr&uuml;ne Ok Taste.
 		</li>
@@ -135,10 +137,11 @@ body {
 
 	<p>
 		Luftraum Dateien sind im Ordner <I>/sdcard/Cumulus/maps/airspaces</I>
-		abzulegen. Der erste Pfadteil <i>/sdcard</i> kann auch anders hei&szlig;en.
+		abzulegen. Der erste Pfadteil <i>/sdcard</i> kann mitunter auch anders
+    hei&szlig;en.
 		&Ouml;ffnen Sie den Men&uuml;punkt <b>Einstellungen - Allgemein -
 		Pers&ouml;nliches</b> und sehen sich den Eintrag Datenverzeichnis an,
-		falls Sie über <i>/sdcard</i> nicht weiter kommen. Die Luftraum Dateien
+		falls Sie &uuml;ber <i>/sdcard</i> nicht weiter kommen. Die Luftraum Dateien
 		k&ouml;nnen Sie auch mit Ihrem Internetbrowser vom Android Ger&auml;t
 		runter laden und gleich in dem genannten Verzeichnis als Ziel ablegen.
 		Auf der Luftraum Konfigurationsseite k&ouml;nnen Sie festlegen, welche
@@ -154,15 +157,17 @@ body {
 	<h4>GPS Aktivierung</h4>
 
 	<p>
-		Wenn Cumulus mit dem Starten fertig ist, befindet sich die App im <i>Nicht
-			GPS Mode</i>. Machen Sie Ihre Flugvorbereitung und Planung in diesem
-		Mode. Um den GPS Empf&auml;nger einzuschalten, dr&uuml;cken Sie die
+		Nach jedem Start von Cumulus sind zuvor eingeschaltet gewesene externe
+    Ger&auml;te, wie GPS oder Barometer Sensor, wieder ausgeschaltet.  
+    Machen Sie in diesem Mode Ihre Flugvorbereitung und Planung.
+		Um den GPS Empf&auml;nger einzuschalten, dr&uuml;cken Sie die
 		Android Men&uuml;taste. In dem sich &ouml;ffnenden Men&uuml;
 		w&auml;hlen Sie den Eintrag <i>GPS Ein</i> aus. Danach k&ouml;nnen Sie
-		zwischen dem internen GPS oder einen Bluetooth GPS w&auml;hlen. Ein
-		Bluetooth GPS muss vorher mit dem Android System gepaart worden sein,
-		um es in Cumulus benutzen zu k&ouml;nnen. Nur &uuml;ber Bluetooth Funk
-		kann Cumulus sich zu externen GPS Ger&auml;ten verbinden.
+		zwischen dem internen GPS, einen Bluetooth GPS oder einem USB IOIO GPS
+    w&auml;hlen. Ein Bluetooth GPS muss vorher mit dem Android System gepaart
+    worden sein, um es in Cumulus benutzen zu k&ouml;nnen. &uuml;ber Bluetooth
+    Funk bzw. &uuml;ber USB IOIO kann Cumulus sich zu externen GPS Ger&auml;ten
+    verbinden.
 	</p>
 
 	<h4>Men&uuml; Benutzung</h4>
@@ -189,10 +194,13 @@ body {
 		<li><b>Brg</b> Umschalter zwischen Kurs und Umkehrkurs.</li>
 		<li><b>Dis/Eta</b> Umschalter zwischen Entfernung und ETA.</li>
 		<li><b>Peil Ikone</b> Erzeugt einen neuen Wegpunkt an der
-			aktuellen Position (kleines schwarzes Quadrat).</li>
-		<li><b>Arr</b> &Ouml;ffnet die Listen&uuml;bersicht.</li>
-		<li><b>To</b> &Ouml;ffnet die Aufgabenliste oder die
-			Listen&uuml;bersicht.</li>
+			aktuellen Position (kleines schwarzes Quadrat), wenn man auf die
+      Ikone tippt.</li>
+		<li><b>Arr</b> &Ouml;ffnet die Listen&uuml;bersichten (Aufgaben, Wegpunkte,
+      erreichbare Ziele, Flugpl&auml;tze, Au&szlig;enlandefelder) und die Liste mit den
+      erreichbare Zielen wird angezeigt.</li>
+		<li><b>To</b> &Ouml;ffnet die Aufgabenliste als Standard Ansicht, wenn eine
+     Aufgabe aktiviert ist, sonst die Wegpunktliste.</li>
 	</ul>
 
 	</p>
@@ -210,6 +218,15 @@ body {
 		ist auch auf der Cumulus Webseite in den Sprachen Deutsch und Englisch
 		zu finden.
 	</p>
+  
+  <h4>Unterst&uuml;tzung</h4>
+  
+  <p>
+    Wenn Sie ein Problem mit Cumulus haben und Hilfe ben&ouml;tigen, so nehmen Sie
+    bitte mit dem Cumulus Team via Email
+    <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#107;&#102;&#108;&#111;&#103;&#46;&#99;&#117;&#109;&#117;&#108;&#117;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" rel="nofollow">&#107;&#102;&#108;&#111;&#103;&#46;&#99;&#117;&#109;&#117;&#108;&#117;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>
+    Kontakt auf. Wir helfen Ihnen gerne weiter, soweit uns das m&ouml;glich ist.
+  </p>
 
 	<h4>Bemerkungen zu Android</h4>
 
