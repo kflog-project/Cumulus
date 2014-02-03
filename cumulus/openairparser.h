@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2005      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -36,7 +36,7 @@
  * For a file named airspace.txt, the matching mapping file would be
  * named airspace_mappings.conf and must be placed in the same directory.
  *
- * \date 2005-2013
+ * \date 2005-2014
  *
  * \version $Id$
  */
@@ -120,25 +120,6 @@ private:  //member functions
   void initializeStringMapping(const QString& path);
   void initializeBaseMapping();
 
-  /**
-   * Read the content of a compiled file and put it into the passed
-   * list.
-   *
-   * @param path Full name with path of OpenAir binary file
-   * @param list All airspace objects have to be stored in this list
-   * @return true (success) or false (error occurred)
-   */
-  bool readCompiledFile( QString &path, QList<Airspace*>& list );
-
-  /**
-   * Get the header data of a compiled file and put it in the class
-   * variables.
-   *
-   * @param path Full name with path of OpenAir binary file
-   * @return true (success) or false (error occurred)
-   */
-  bool setHeaderData( QString &path );
-
 private:
 
   QList<Airspace*> _airlist;
@@ -172,10 +153,6 @@ private:
   bool _doCompile;
   // bounding box
   QRect *_boundingBox;
-  // temporary data buffer
-  QByteArray *_bufData;
-  QBuffer *_buffer;
-  QDataStream *_outbuf;
 
   // header data members of compiled file
   quint32 h_magic;

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2011 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,7 +30,7 @@
  *
  * \see BaseMapElement#objectType
  *
- * \date 2000-2011
+ * \date 2000-2014
  *
  * \version $Id$
  *
@@ -95,6 +95,14 @@ public:
     QRect getScreenBoundingBox()
     {
       return sbBox;
+    };
+
+    /**
+      * Returns the projected positions of the line element.
+      */
+    const QPolygon& getProjectedPolygon()
+    {
+      return projPolygon;
     };
 
 protected:

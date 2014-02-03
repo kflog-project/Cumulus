@@ -22,8 +22,8 @@
 
 #include <QtCore>
 
-#include "resource.h"
 #include "airspace.h"
+#include "AirspaceHelper.h"
 #include "openairparser.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
@@ -31,6 +31,7 @@
 #include "projectionbase.h"
 #include "filetools.h"
 #include "generalconfig.h"
+#include "resource.h"
 
 // All is prepared for additional calculation, storage and
 // reconstruction of a bounding box. Be free to switch on/off it via
@@ -39,21 +40,13 @@
 #undef BOUNDING_BOX
 // #define BOUNDING_BOX 1
 
-// type definition for compiled airspace files
-#define FILE_TYPE_AIRSPACE_C 0x61
-
-// version used for files created from OpenAir data
-#define FILE_VERSION_AIRSPACE_C 204
-
-extern MapMatrix*    _globalMapMatrix;
+extern MapMatrix* _globalMapMatrix;
 
 OpenAirParser::OpenAirParser()
 {
   _doCompile = false;
   _parseError = false;
   _boundingBox = (QRect *) 0;
-  _bufData = (QByteArray *) 0;
-  _outbuf = (QDataStream *) 0;
   h_projection = (ProjectionBase *) 0;
 
   initializeBaseMapping();
@@ -180,7 +173,7 @@ uint OpenAirParser::load( QList<Airspace*>& list )
           // decide which type of file will be read in.
 
           // Lets check, if we can read the header of the compiled file
-          if ( ! setHeaderData( txcName ) )
+          if ( ! AirspaceHelper::readHeaderData( txcName, h_creationDateTime, h_projection ) )
             {
               // Compiled file format is not the expected one, remove
               // wrong file and start a reparsing of source file.
@@ -265,9 +258,9 @@ uint OpenAirParser::load( QList<Airspace*>& list )
             }
         }
 
-      // we will read the compiled file, because a source file is not to
+      // We will read the compiled file, because a source file is not to
       // find after it or all checks were successfully passed
-      if( readCompiledFile( txcName, list ) )
+      if( AirspaceHelper::readCompiledFile( txcName, list ) )
         {
           loadCounter++;
         }
@@ -294,23 +287,6 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 
   resetState();
   initializeStringMapping( path );
-
-  if( _doCompile )
-    {
-      // we open a buffer for temporary storage of extracted airspace
-      // elements
-      _bufData = new QByteArray();
-      _buffer = new QBuffer();
-      _outbuf = new QDataStream();
-
-#ifdef BOUNDING_BOX
-      _boundingBox = new QRect();
-#endif
-
-      _buffer->setBuffer( _bufData );
-      _buffer->open(QIODevice::ReadWrite);
-      _outbuf->setDevice( _buffer );
-    }
 
   QTextStream in(&source);
   in.setCodec( "ISO 8859-15" );
@@ -355,54 +331,14 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
 
   source.close();
 
-  // handle creation of a compiled file version
-  if ( _doCompile )
+  // Handle creation of a compiled file version
+  if ( _doCompile && _objCounter && _parseError == false )
     {
-      // close opened buffer
-      _buffer->close();
+      // Build the compiled file name with the extension .txc from
+      // the source file name
+      QString cfn = fi.path() + "/" + fi.completeBaseName() + ".txc";
 
-      if ( _objCounter && _parseError == false )
-        {
-          // airspace objects were created during parsing, we will save
-          // them in a txc file, if no parsing error is marked.
-          QFile compFile;
-          QDataStream out;
-
-          // build the compiled file name with the extension .txc from
-          // the source file name
-          QString cfn = fi.path() + "/" + fi.completeBaseName() + ".txc";
-
-          compFile.setFileName( cfn );
-          out.setDevice( &compFile );
-          out.setVersion( QDataStream::Qt_4_7 );
-
-          if ( !compFile.open(QIODevice::WriteOnly) )
-            {
-              // Can't open output file, reset compile flag
-              qWarning("OAP: Cannot open file %s!", cfn.toLatin1().data());
-              _doCompile = false;
-            }
-          else
-            {
-
-              qDebug("OAP: writing file %s", cfn.toLatin1().data());
-
-              // create compiled binary version
-              out << quint32( KFLOG_FILE_MAGIC );
-              out << qint8( FILE_TYPE_AIRSPACE_C );
-              out << quint16( FILE_VERSION_AIRSPACE_C );
-              out << QDateTime::currentDateTime();
-              SaveProjection( out, _globalMapMatrix->getProjection() );
-
-#ifdef BOUNDING_BOX
-
-              out << *_boundingBox;
-#endif
-              // write data on airspaces from buffer
-              out << *_bufData;
-              compFile.close();
-            }
-        }
+      AirspaceHelper::createCompiledFile( cfn, list, list.size() );
 
       // delete all dynamically allocated objects
 
@@ -411,17 +347,10 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
       _boundingBox = 0;
 #endif
 
-      delete _outbuf;
-      _outbuf  = 0;
-      delete _buffer;
-      _buffer  = 0;
-      delete _bufData;
-      _bufData = 0;
     }
 
   return true;
 }
-
 
 void OpenAirParser::resetState()
 {
@@ -434,7 +363,6 @@ void OpenAirParser::resetState()
   _anRead = false;
   _parseError = false;
 }
-
 
 void OpenAirParser::parseLine(QString& line)
 {
@@ -673,28 +601,6 @@ void OpenAirParser::finishAirspace()
   _objCounter++;
 
   // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), asPA.count());
-
-  if ( _doCompile )
-    {
-      // we temporary save the airspace element in a memory buffer to
-      // store it persistently later on in a binary file.
-      ShortSave( *_outbuf, asName );
-      *_outbuf << quint8( asType );
-      *_outbuf << quint8( asLowerType );
-      *_outbuf << quint16( asLower );
-      *_outbuf << quint8( asUpperType );
-      *_outbuf << quint32( asUpper );
-      ShortSave( *_outbuf, astPA );
-
-#ifdef BOUNDING_BOX
-
-      if ( !asPA.isEmpty() )
-        {
-          *_boundingBox |= asPA.boundingRect();
-        }
-#endif
-
-    }
 }
 
 
@@ -1428,210 +1334,4 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
   y = (sin(angle2) * rY) + _center.y();
 
   asPA.append( QPoint( (int) rint(x), (int) rint(y)) );
-}
-
-/**
- * Read the content of a compiled file and put it into the passed
- * list.
- *
- * @param path Full name with path of OpenAir binary file
- * @param list All airspace objects have to be stored in this list
- * @returns true (success) or false (error occurred)
- */
-bool OpenAirParser::readCompiledFile( QString &path, QList<Airspace*>& list )
-{
-  QTime t;
-  t.start();
-
-  QFile inFile(path);
-
-  if ( !inFile.open(QIODevice::ReadOnly) )
-    {
-      qWarning("OAP: Cannot open airspace file %s!", path.toLatin1().data());
-      return false;
-    }
-
-  qDebug() << "OAP: Reading" << path;
-
-  QDataStream in(&inFile);
-  in.setVersion( QDataStream::Qt_4_7 );
-
-  // This was the order used by ealier cumulus
-  // implementations. Because OpenAir does not support these all a
-  // subset from the original implementation is only used to spare
-  // memory and to get a better performance.
-
-  quint32 magic;
-  qint8 fileType;
-  quint16 fileVersion;
-  QDateTime creationDateTime;
-
-#ifdef BOUNDING_BOX
-
-  QRect boundingBox;
-#endif
-
-  ProjectionBase *projectionFromFile;
-  qint32 buflen;
-
-  in >> magic;
-
-  if ( magic != KFLOG_FILE_MAGIC )
-    {
-      qWarning( "OAP: wrong magic key %x read! Aborting ...", h_magic );
-      inFile.close();
-      return false;
-    }
-
-  in >> fileType;
-
-  if ( fileType != FILE_TYPE_AIRSPACE_C )
-    {
-      qWarning( "OAP: wrong file type %x read! Aborting ...", h_fileType );
-      inFile.close();
-      return false;
-    }
-
-  in >> fileVersion;
-
-  if ( fileVersion != FILE_VERSION_AIRSPACE_C )
-    {
-      qWarning( "OAP: wrong file version %x read! Aborting ...", h_fileVersion );
-      inFile.close();
-      return false;
-    }
-
-  in >> creationDateTime;
-
-  projectionFromFile = LoadProjection(in);
-
-  // projectionFromFile is allocated dynamically, we don't need it
-  // here. Therefore it is immediately deleted to avoid memory leaks.
-  delete projectionFromFile;
-  projectionFromFile = 0;
-
-#ifdef BOUNDING_BOX
-
-  in >> boundingBox;
-#endif
-
-  // Because we're used a buffer during output, the buffer length will
-  // be written too. We have to read it and make a preallocation in the
-  // airspace list.
-  in >> buflen;
-
-  list.reserve( list.size() + buflen );
-
-  uint counter = 0;
-
-  QString name;
-  quint8 type;
-  quint8 lowerType;
-  quint16 lower;
-  quint8 upperType;
-  quint32 upper;
-  QPolygon pa;
-
-  while ( ! in.atEnd() )
-    {
-      counter++;
-      pa.resize(0);
-
-      ShortLoad(in, name);
-      in >> type;
-      in >> lowerType;
-      in >> lower;
-      in >> upperType;
-      in >> upper;
-      ShortLoad( in, pa );
-
-      Airspace *a = new Airspace( name,
-                                  (BaseMapElement::objectType) type,
-                                  pa,
-                                  upper, (BaseMapElement::elevationType) upperType,
-                                  lower, (BaseMapElement::elevationType) lowerType );
-      list.append(a);
-    }
-
-  inFile.close();
-
-  QFileInfo fi( path );
-
-  qDebug( "OAP: %d airspace objects read from file %s in %dms",
-          counter, fi.fileName().toLatin1().data(), t.elapsed() );
-
-  return true;
-}
-
-
-/**
- * Get the header data of a compiled file and put it in the class
- * variables.
- *
- * @param path Full name with path of OpenAir binary file
- * @returns true (success) or false (error occured)
- */
-bool OpenAirParser::setHeaderData( QString &path )
-{
-  h_headerIsValid = false; // save read result here too
-
-  h_magic = 0;
-  h_fileType = 0;
-  h_fileVersion = 0;
-
-  if ( h_projection )
-    {
-      // delete an older projection object
-      delete  h_projection;
-      h_projection = 0;
-    }
-
-  QFile inFile(path);
-  if ( !inFile.open( QIODevice::ReadOnly) )
-    {
-      qWarning("OAP: Cannot open airspace file %s!", path.toLatin1().data());
-      return false;
-    }
-
-  QDataStream in(&inFile);
-  in.setVersion( QDataStream::Qt_4_7 );
-
-  in >> h_magic;
-
-  if ( h_magic != KFLOG_FILE_MAGIC )
-    {
-      qWarning( "OAP: wrong magic key %x read! Aborting ...", h_magic );
-      inFile.close();
-      return false;
-    }
-
-  in >> h_fileType;
-
-  if ( h_fileType != FILE_TYPE_AIRSPACE_C )
-    {
-      qWarning( "OAP: wrong file type %x read! Aborting ...", h_fileType );
-      inFile.close();
-      return false;
-    }
-
-  in >> h_fileVersion;
-
-  if ( h_fileVersion != FILE_VERSION_AIRSPACE_C )
-    {
-      qWarning( "OAP: wrong file version %x read! Aborting ...", h_fileVersion );
-      inFile.close();
-      return false;
-    }
-
-  in >> h_creationDateTime;
-
-  h_projection = LoadProjection(in);
-
-#ifdef BOUNDING_BOX
-  in >> h_boundingBox;
-#endif
-
-  inFile.close();
-  h_headerIsValid = true; // save read result here too
-  return true;
 }

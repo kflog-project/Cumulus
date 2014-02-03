@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2013 Axel Pauli
+# Copyright (c): 2008-2014 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -76,6 +76,7 @@ HEADERS = \
     airfieldlistwidget.h \
     airregion.h \
     airspace.h \
+    AirspaceHelper.h \
     airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
@@ -200,6 +201,7 @@ SOURCES = \
     airfieldlistwidget.cpp \
     airregion.cpp \
     airspace.cpp \
+    AirspaceHelper.cpp \
     altimetermodedialog.cpp \
     altitude.cpp \
     authdialog.cpp \

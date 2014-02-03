@@ -37,7 +37,7 @@
 #ifndef AIRSPACE_H
 #define AIRSPACE_H
 
-#include <math.h>
+#include <cmath>
 
 #include <QDateTime>
 #include <QPolygon>
