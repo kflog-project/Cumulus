@@ -204,7 +204,7 @@ SOURCES = \
     airfieldlistwidget.cpp \
     airregion.cpp \
     airspace.cpp \
-    AirspaceHelper.h \
+    AirspaceHelper.cpp \
     altimetermodedialog.cpp \
     altitude.cpp \
     androidstyle.cpp \
