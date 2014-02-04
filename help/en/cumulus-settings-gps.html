@@ -32,8 +32,37 @@
 		and process data from other peripherals such as Cambridge,
 		Volkslogger, Flarm or LX Navigation.</p>
 
-	<p>Under Android this page is nearly empty. Please use the Android
-		menu key to switch on/off your desired GPS device.</p>
+		<h5>Android Hints</h5>
+
+     Under Android this page is nearly empty. Please use the Android menu key
+		 and the GPS menu to switch on/off your desired GPS device. There are exist
+     different possibilities according to the provided hardware of your Android
+     device.
+          
+     <ul>
+       <li>
+          Use of build-in GPS.
+       </li>
+       
+       <li>
+          Connection estalishment via Bluetooth to a GPS device. If the GPS
+          device does not support Bluetooth you will need an adapter to
+          connect the device.
+       </li>
+
+       <li>
+         Connection estalishment via an USB IOIO Uart board to a GPS device
+         with a serial interface. Cumulus supports that at the moment only
+         for IOIO boards with firmware 4.0 or higher and for only one Uart.
+         The IOIO uart to be used and its connection speed have to setup
+         via the Android menu key, Setup, IOIO GPS. If you use an <b>Android</b>
+         device
+         with <b>OS release &lt; 4.1</b> you have to <b>switch on USB debugging</b> in the
+         developer options. If the <b>OS release is &gt;= 4.1</b> <b>USB debugging
+         must be switched off</b>. Otherwise you will never get a connection running.
+       </li>
+     </ul>
+  </p>
 
 	<p>
 		Cumulus can provide you with some status information concerning your

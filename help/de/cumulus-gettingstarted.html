@@ -96,26 +96,100 @@
       Fehlanzeigen kommen kann!
     </dd>
 
-		<br>
+    <br>
+ 		<DT>
+			<B>M&ouml;glichkeiten zum verbinden zu externen GPS Ger&auml;ten</B>
+		</DT>
+
+    <dd>
+      Cumulus kann mit dem eingebauten oder einem externen GPS Ger&auml;t betrieben
+      werden. Ein GPS Ger&auml;t kann &uuml;ber Serial (RS232), USB oder Bluetooth
+      von Cumulus aus eingebunden werden. Die folgenden Varianten sind dabei m&ouml;glich:
+      
+      <ul>
+      <li>
+      <b>Linux PC</b>
+        <ul>
+          <li>Serial (RS232)</li>
+          <li>USB</li>
+          <li>Bluetooth</li>
+        </ul>
+      </li>
+      
+      <li>
+      <b>Nokia Internet Tablet N8x0</b>
+        <ul>
+          <li>Eingebautes GPS</li>
+          <li>USB</li>
+          <li>Bluetooth</li>
+        </ul>      
+      </li>
+      
+      <li>
+      <b>Nokia Internet Tablet N900</b>
+        <ul>
+          <li>Eingebautes GPS</li>
+          <li>Bluetooth</li>
+        </ul>      
+      </li>
+
+      <li>
+      <b>Android Ger&auml;te</b>
+        <ul>
+          <li>Eingebautes GPS</li>
+          <li>Bluetooth</li>
+          <li>USB-IOIO</li>
+        </ul>      
+      </li>
+      </ul>      
+    </dd>
+
+ 		<DT>
+			<B>GPS Hardware</B>
+		</DT>
+
+		<dd>
+      Viele Flugrecorder, sowie auch Flarm, bieten nur ein serielles Interface
+      (RS232) als Verbingungsm&ouml;glichkeit zu anderen Ger&auml;ten an. Um solche
+      Ger&auml;te nutzen zu k&ouml;nnen, ben&ouml;tigt man einen entsprechenden
+      Schnittstellen Adapter. Cumulus &uuml;nterst&uuml;tzt die folgenden Adapter:
+
+      <ul>
+        <li>Serial-USB Adapter (nicht f&uuml;r Android)</li>
+        <li>Serial-Bluetooth Adapter</li>
+        <li>USB IOIO Uart Board (nur f&uuml;r Android)</li>
+      </ul>      
+    
+      Beispiele f&uuml;r solche Adapter:
+      <br>
+      <ul>
+        <li>Serial-Bluetooth Adapter</li>
+        <ul>
+          <li><a href="http://www.k6-team.de">K6-Team</a></li>
+          <li><a href="http://www.soartronic.net/products">SoarTronic Bluetooth BT1</a></li>
+          <li><a href="http://www.glidertools.com/products/bluetooth-modul-pro-spojeni-loggeru-a-pda/">GliderTools</a></li>
+          <li>LM TECHNOLOGIES - LM048V2 Adapter</li>
+        </ul>      
+        
+        <li>USB IOIO Uart Board, Firmware 4.0 und h&ouml;her (nur f&uuml;r Android)</li>
+        <ul>
+          <li><a href="http://www.tvlnet.de/">DroidSoar</a></li>
+          <li><a href="http://www.glidertools.com/products/androport/">Glidertools Androport</a></li>
+          <li><a href="http://www.soartronic.net/products">SoarTronic's IOIO UART Interface Board</a></li>
+        </ul>
+      </ul>      
+    </dd>
+
 		<dt>
-			<b>GPS</b>
+			<b>GPS Aktivierung</b>
 		</dt>
 
 		<dd>
-			Sie k&ouml;nnen ein externes Ger&auml;t als GPS Empf&auml;nger
-			benutzen, wenn es sich mit dem PDA &uuml;ber ein Kabel oder &uuml;ber
-			Bluetooth verbinden l&auml;sst und Daten &uuml;ber diese
-			Verbindung im NMEA-Format &uuml;bertr&auml;gt. Solche Ger&auml;te
-			k&ouml;nnen z.b. Fluglogger oder auch ein FLARM sein.
-			<br> <br>Nat&uuml;rlich kann auch ein im PDA integrierter GPS
-			Empf&auml;nger verwendet werden. Cumulus kann auch ohne GPS betrieben
-			werden, ist dann jedoch bei weitem nicht so n&uuml;tzlich.
-			<p>
-				Sobald Sie Ihren GPS Empf&auml;nger aktiviert haben, w&auml;hlen Sie
-				die entsprechende Ger&auml;teschnittstelle und die dazugeh&ouml;rige
+				Sobald Sie Ihren GPS Empf&auml;nger ausgew&auml;hlt bzw. verbunden haben,
+        w&auml;hlen Sie die entsprechende Ger&auml;teschnittstelle und die dazugeh&ouml;rige
 				&Uuml;bertragungsrate unter <a href="cumulus-settings-gps.html">
-					Einstellungen/GPS</a> in Cumulus aus. Lesen Sie im Handbuch Ihres GPS
-				Empf&auml;ngers nach um die erforderlichen Daten zu erfahren. Viele
+				Einstellungen - GPS</a> in Cumulus aus. Lesen Sie im Handbuch Ihres GPS
+				Empf&auml;ngers nach, um die erforderlichen Daten zu erfahren. Viele
 				Ger&auml;te arbeiten mit folgenden Schnittstellen:
 			</p>
 
@@ -138,13 +212,17 @@
 			<p>
 				<b>Android:</b> Wenn Ihr Ger&auml;t bereits mit einem internen GPS
 				Empf&auml;nger ausger&uuml;stet ist, m&uuml;ssen Sie nichts weiter einstellen.
-				Externe GPS Empf&auml;nger sind nur &uuml;ber Bluetooth Funk
-				koppelbar. <b>Beachten Sie die folgende Ausnahme!</b> Nach jedem
+				Externe GPS Empf&auml;nger sind nur mittels Bluetooth Funk oder einem
+        USB IOIO Uart Board koppelbar. Ein USB IOIO Uart Board muss &uuml;ber das
+        Android Men&uuml; zuvor konfiguriert und aktiviert werden. Schauen Sie dazu
+        im Men&uuml; <A HREF="cumulus-settings-gps.html">Einstellungen - GPS</A> nach.
+        
+				<b>Beachten Sie die folgende Ausnahme!</b> Nach jedem
 				Cumulus Start unter Android m&uuml;ssen Sie den GPS Empfang <b>per
 			  Hand selber aktivieren</b>. Dr&uuml;cken Sie dazu die Android
 				Men&uuml;taste und w&auml;hlen Sie den Eintrag <b>GPS ein</b> aus.
 				Jetzt w&auml;hlen Sie das gew&uuml;nschte Ger&auml;t aus (internes
-				oder Bluetooth GPS). Beachten Sie, ein Bluetooth GPS m&uuml;ssen Sie
+				GPS, Bluetooth oder IOIO GPS). Beachten Sie, ein Bluetooth GPS m&uuml;ssen Sie
 				vor dem Cumulus Start mit Ihrem Android Ger&auml;t gekoppelt haben,
 				denn das wird nicht von Cumlus unterst&uuml;zt.
 			</p>

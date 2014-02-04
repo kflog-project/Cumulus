@@ -30,7 +30,7 @@
          resolution 800x400 and higher in landsacpe mode</li>
 		<li> The Nokia Internet Tablets N800/N810 with Maemo OS2008</li>
 		<li> The Nokia Internet Tablet N900 with Maemo OS2009</li>
-		<li> PC Linux desktop devices Debian and Ubuntu</li>
+		<li> PC Linux desktop running Debian or Ubuntu</li>
 		</ul>
 
 	<P>When you start Cumulus, it will create all the necessary data
@@ -94,22 +94,101 @@
 
     <br>
  		<DT>
-			<B>GPS</B>
+			<B>Possibilities to connect to external GPS devices</B>
+		</DT>
+    
+    <dd>
+      Cumulus can be operated with build-in or external GPS devices. A GPS
+      device can be connected via Serial (RS232), USB or Bluetooth from
+      Cumulus. The following variants are possible for connection to a GPS
+      receiver:
+      
+      <ul>
+      <li>
+      <b>Linux PC</b>
+        <ul>
+          <li>Serial (RS232)</li>
+          <li>USB</li>
+          <li>Bluetooth</li>
+        </ul>
+      </li>
+      
+      <li>
+      <b>Nokia Internet Tablet N8x0</b>
+        <ul>
+          <li>Build-in GPS</li>
+          <li>USB</li>
+          <li>Bluetooth</li>
+        </ul>      
+      </li>
+      
+      <li>
+      <b>Nokia Internet Tablet N900</b>
+        <ul>
+          <li>Build-in GPS</li>
+          <li>Bluetooth</li>
+        </ul>      
+      </li>
+
+      <li>
+      <b>Android device</b>
+        <ul>
+          <li>Build-in GPS</li>
+          <li>Bluetooth</li>
+          <li>USB-IOIO</li>
+        </ul>      
+      </li>
+      </ul>      
+    </dd>
+
+ 		<DT>
+			<B>GPS Hardware</B>
+		</DT>
+
+		<dd>
+      Many flight recorder and also Flarm provide only a serial interface as
+      link to other devices. To connect to such devices you need an adapter.
+      Cumulus supports the following adpters:
+
+      <ul>
+        <li>Serial-USB adapter (not for Android)</li>
+        <li>Serial-Bluetooth adapter</li>
+        <li>USB IOIO Uart board (only for Android)</li>
+      </ul>      
+    
+      Examples for such adapter:
+      <br>
+      <ul>
+        <li>Serial-Bluetooth adapter</li>
+        <ul>
+          <li><a href="http://www.k6-team.de">K6-Team</a></li>
+          <li><a href="http://www.soartronic.net/products">SoarTronic Bluetooth BT1</a></li>
+          <li><a href="http://www.glidertools.com/products/bluetooth-modul-pro-spojeni-loggeru-a-pda/">GliderTools</a></li>
+          <li>LM TECHNOLOGIES - LM048V2 adapter</li>
+        </ul>      
+        
+        <li>USB IOIO Uart board, firmware 4.0 and higher (only for Android)</li>
+        <ul>
+          <li><a href="http://www.tvlnet.de/">DroidSoar</a></li>
+          <li><a href="http://www.glidertools.com/products/androport/">Glidertools Androport</a></li>
+          <li><a href="http://www.soartronic.net/products">SoarTronic's IOIO UART interface board</a></li>
+        </ul>
+      </ul>      
+    </dd>
+
+ 		<DT>
+			<B>GPS Activation</B>
 		</DT>
 
 		<DD>
-			Any external GPS receiver, such as a Bluetooth GPS mouse or a flight
-			logger, provided that it outputs NMEA data records, can be connected
-			to your PDA, using either a serial, a USB or a Bluetooth connection.
-			Cumulus can be used without a GPS receiver, but is far more useful
-			with it.<BR>Once you manage to connect your GPS to Cumulus,
-			select the correct device and baud rate in the <A
-				HREF="cumulus-settings-gps.html">GPS Settings</A>. Refer to your GPS
+			Once you manage to connect your GPS to Cumulus,
+			select the correct device and baud rate in the 
+			<A HREF="cumulus-settings-gps.html">GPS Settings</A>. Refer to your GPS
 			manual for the correct settings. The most common devices are:
 
 			<p>
 			<UL>
-				<LI><I>/dev/ttyS0</I> - RS232 serial device</LI>
+				<LI><I>/dev/ttyS0</I> - Serial (RS232) device</LI>
 				<LI><I>/dev/rfcomm0</I> - Bluetooth device</LI>
 				<LI><I>/dev/ttyUSB0</I> - USB device</LI>
 			</UL>
@@ -120,14 +199,20 @@
 			not necessary to set up a special GPS device. Available devices will
 			be recognized automatically during Cumulus start-up, unless you want
 			to connect to a GPS device via USB. In this case you have to select
-			the USB device from the GPS configuration options. <BR>
-			<BR>If you have an <b>Android</b> device with a built in GPS nothing
+			the USB device from the GPS configuration options.
+      <BR>
+			<BR>
+      If you have an <b>Android</b> device with a built in GPS nothing
 			has to be setup. To external GPS devices is only a connection
-			possible via Bluetooth radio. <b>Note the following exception!</b>
+			possible via Bluetooth radio or an USB IOIO Uart board. A USB IOIO
+      Uart board must be configured and activated via the Android menu before
+      you can use it. See
+      <A HREF="cumulus-settings-gps.html">GPS Settings</A> for more information.
+      <br><b>Note the following exception!</b>
 			After every startup of Cumulus under Android the GPS receiving <b>must
 			be enabled by hand</b>. To do that, press the <b>Android Menu key</b>,
-			select the entry <i>GPS on</i> and choose the desired device (internal or
-			Bluetooth). Bluetooth devices must be paired before Cumulus is
+			select the entry <i>GPS on</i> and choose the desired device (internal,
+			Bluetooth or IOIO). Bluetooth devices must be paired before Cumulus is
 			started. Cumulus does not support BT pairing! <BR>
 			<BR>Once your GPS device is set up, press the key <I><B>G</B></I>
 			or click on the GPS status indicator in the status bar to check the

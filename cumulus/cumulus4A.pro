@@ -76,6 +76,7 @@ HEADERS = \
     airfieldlistwidget.h \
     airregion.h \
     airspace.h \
+    AirspaceHelper.h \
     airspacewarningdistance.h \
     altimetermodedialog.h \
     altitude.h \
@@ -203,6 +204,7 @@ SOURCES = \
     airfieldlistwidget.cpp \
     airregion.cpp \
     airspace.cpp \
+    AirspaceHelper.h \
     altimetermodedialog.cpp \
     altitude.cpp \
     androidstyle.cpp \

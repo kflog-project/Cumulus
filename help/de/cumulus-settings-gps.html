@@ -28,11 +28,39 @@
 		korrekte &Uuml;bertragungsrate aus. Schauen Sie in das Handbuch Ihres
 		GPS-Empf&auml;ngers um diese Daten zu erfahren.</p>
 
-  <h5>Android</h5>
+  <h5>Android Hinweise</h5>
   
 	<p>Unter Android ist diese Seite nahezu leer. Hier m&uuml;ssen Sie
-	   mittels der Android Men&uuml;taste &uuml;ber das GPS Men&uuml; den GPS
-		 Empfang ein- bzw. auszuschalten.</p>
+	   mittels der Android Men&uuml;taste &uuml;ber das Men&uuml; GPS den
+		 GPS Empfang ein- bzw. auszuschalten. Dazu gibt es je nach Ausstattungsgrad
+     ihres Android Ger&auml;tes verschiedene M&ouml;glichkeiten:
+     
+     <ul>
+       <li>
+          Eingebautes GPS verwenden.
+       </li>
+       
+       <li>
+          Verbindung &uuml;ber Bluetooth zu einem GPS Ger&auml;t herstellen.
+          Verf&uuml;gt das GPS Ger&auml;t &uuml;ber keine Bluetooth
+          Schnittstelle, muss man einen entsprechenden Adapter dazwischen schalten.
+       </li>
+
+       <li>
+         Verbindung &uuml;ber ein USB IOIO Uart Board zu einem GPS Ger&auml;t mit serieller
+         Schnittstelle aufbauen. Cumulus unterst&uuml;tzt das im Moment nur f&uuml;r
+         IOIO Boards ab Firewareversion 4.0 und nur f&uuml;r
+         einen Uart, den man in den IOIO Einstellungen
+        (Android Men&uuml; Taste->Einstellungen->IOIO GPS) unter
+         <i>Aktiviere IOIO Uart</i> festlegen kann. Weiterhin muss f&uuml;r den IOIO
+         Uart die richtige &Uuml;bertragungsgeschwindigkeit zum angeschlossenen GPS
+         Ger&auml;t eingestellt werden. Wenn man ein <b>Android Ger&auml;t &lt; Release 4.1</b> 
+         benutzt, so muss <b>USB Debugging</b> in den Android Entwickler Einstellungen
+         <b>aktiviert</b> werden. Ist das <b>Android Release &gt;= 4.1</b> muss <b>USB Debugging
+         deaktiviert</b> sein.          
+       </li>
+     </ul>
+  </p>
 
   <h5>Allgemeines</h5>
   
