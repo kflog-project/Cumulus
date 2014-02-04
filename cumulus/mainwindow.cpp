@@ -1284,7 +1284,7 @@ void MainWindow::createContextMenu()
 
   setupMenu = contextMenu->addMenu(tr("Setup") + " ");
 #ifdef ANDROID
-  fileMenu->addAction( actionHardwareMenu );
+  setupMenu->addAction( actionHardwareMenu );
 #endif
   setupMenu->addAction( actionSetupConfig );
   setupMenu->addAction( actionPreFlight );
