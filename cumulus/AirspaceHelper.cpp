@@ -230,7 +230,7 @@ extern MapMatrix* _globalMapMatrix;
  *
  * \param ProjectionBase stored projection type
  *
- * \returns true (success) or false (error occured)
+ * \returns true (success) or false (error occurred)
  */
 bool AirspaceHelper::readHeaderData( QString &path,
                                      QDateTime& creationDateTime,
