@@ -1238,7 +1238,8 @@ public class CumulusActivity extends QtActivity
           break;
 
         case R.id.dialog_hw_id1:
-          CharSequence[] hw_items1 = { getString(R.string.gps) };
+          CharSequence[] hw_items1 = { "IOIO",
+                                       getString(R.string.gps) };
 
           builder.setTitle(getString(R.string.hardwareMenu));
           builder.setItems(hw_items1, new DialogInterface.OnClickListener()
@@ -1248,9 +1249,13 @@ public class CumulusActivity extends QtActivity
             {
               switch (item)
                 {
-                  case 0:
-                    showDialog(R.id.dialog_gps_menu);
-                    break;
+                case 0:
+                  // start IOIO uart preference activity
+                  startPreferenceActivity();
+                  break;
+                case 1:
+                  showDialog(R.id.dialog_gps_menu);
+                  break;
                 }
             }
           });
@@ -1259,8 +1264,9 @@ public class CumulusActivity extends QtActivity
           break;
 
         case R.id.dialog_hw_id2:
-          CharSequence[] hw_items2 = { getString(R.string.gps),
-              getString(R.string.baroSensor) };
+          CharSequence[] hw_items2 = { "IOIO",
+                                       getString(R.string.gps),
+                                       getString(R.string.baroSensor) };
 
           builder.setTitle(getString(R.string.hardwareMenu));
           builder.setItems(hw_items2, new DialogInterface.OnClickListener()
@@ -1271,9 +1277,13 @@ public class CumulusActivity extends QtActivity
               switch (item)
                 {
                   case 0:
+                  // start IOIO uart preference activity
+                  startPreferenceActivity();
+                  break;
+                  case 1:
                     showDialog(R.id.dialog_gps_menu);
                     break;
-                  case 1:
+                  case 2:
                     showDialog(R.id.dialog_baro_sensor);
                     break;
                 }
