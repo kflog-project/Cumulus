@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,7 +29,7 @@
  * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
- * \date 2000-2013
+ * \date 2000-2014
  *
  * \version $Id$
  */
@@ -63,7 +63,8 @@ public:
     VorDme = VORDME, VorTac = VORTAC, Ndb = NDB, CompPoint = COMPPOINT,
     AirA = AIR_A, AirB = AIR_B, AirC = AIR_C, AirD = AIR_D, AirE = AIR_E, WaveWindow = WAVE_WINDOW,
     AirF = AIR_F, ControlC = CONTROL_C, ControlD = CONTROL_D, Danger = DANGER,
-    LowFlight = LOW_FLIGHT, Restricted = RESTRICTED, Prohibited = PROHIBITED, Tmz = TMZ, GliderSector = GLIDER_SECTOR, Obstacle = OBSTACLE,
+    LowFlight = LOW_FLIGHT, Restricted = RESTRICTED, Prohibited = PROHIBITED, Tmz = TMZ,
+    GliderSector = GLIDER_SECTOR, Obstacle = OBSTACLE,
     LightObstacle = LIGHT_OBSTACLE, ObstacleGroup = OBSTACLE_GROUP, LightObstacleGroup = LIGHT_OBSTACLE_GROUP,
     Spot = SPOT, Isohypse = ISOHYPSE, Glacier = GLACIER, PackIce = PACK_ICE, Border = BORDER, City = CITY,
     Village = VILLAGE, Landmark = LANDMARK, Motorway = MOTORWAY, Road = ROAD, Railway = RAILWAY,
@@ -92,10 +93,12 @@ public:
    * @param  name  The name of the element.
    * @param  typeID  The type id of the element.
    * @param  secID The number of the map segment.
+   * @param  country Country as two letter code, where the element is located
    */
   BaseMapElement( const QString& name,
                   const objectType typeID = NotSelected,
-                  const unsigned short secID=0 );
+                  const unsigned short secID=0,
+                  const QString& country="" );
 
   /**
    * Destructor
@@ -201,6 +204,24 @@ public:
     };
 
   /**
+   * @return the country of the element.
+   */
+  virtual QString getCountry() const
+    {
+      return country;
+    };
+
+  /**
+   * Sets the country code of the element.
+   *
+   * @param newValue New country code of the point.
+   */
+  virtual void setCountry( QString value )
+    {
+      country = value.toUpper().left(2);
+    };
+
+  /**
    * Compare two map elements by their names
    */
   bool operator < (const BaseMapElement& other) const
@@ -229,6 +250,11 @@ protected:
    * @see #objectType
    */
   objectType typeID;
+
+  /**
+   * Country as two letter code, where the element is located.
+   */
+  QString country;
 
   /**
    * Static pointer to object translation relations

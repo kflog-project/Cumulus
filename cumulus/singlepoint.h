@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -32,7 +32,7 @@
  * \see Gliderfield
  * \see RadioPoint
  *
- * \date 2000-2013
+ * \date 2000-2014
  *
  * \version $Id$
  */
@@ -214,24 +214,6 @@ class SinglePoint : public BaseMapElement
       comment = value;
     };
 
-  /**
-   * @return the country of the element.
-   */
-  virtual QString getCountry() const
-    {
-      return country;
-    };
-
-  /**
-   * Sets the country code of the element.
-   *
-   * @param newValue New country code of the point.
-   */
-  virtual void setCountry( QString value )
-    {
-      country = value.toUpper().left(2);
-    };
-
  protected:
   /**
    */
@@ -256,11 +238,6 @@ class SinglePoint : public BaseMapElement
    * The elevation.
    */
   float elevation;
-
-  /**
-   * Country as two letter code, where the single point is located.
-   */
-  QString country;
 
   /**
    * A comment related to the point.

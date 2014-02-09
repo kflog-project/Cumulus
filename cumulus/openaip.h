@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  *
  * See here for more info: http://www.openaip.net
  *
- * \date 2013
+ * \date 2013-2014
  *
  * \version $Id$
  */
@@ -36,11 +36,14 @@
 #define OpenAip_h
 
 #include <QList>
+#include <QMap>
 #include <QSet>
 #include <QString>
 #include <QXmlStreamReader>
 
 #include "airfield.h"
+#include "airspace.h"
+#include "altitude.h"
 #include "radiopoint.h"
 
 class OpenAip
@@ -76,16 +79,16 @@ class OpenAip
   /**
    * Reads in a hotspot file provided as open aip xml format.
    *
-   * \param filename File containing navigation aid definitions
+   * \param filename File containing hotspot definitions
    *
    * \return true as success otherwise false
    */
   bool readHotspots( QString fileName, QList<SinglePoint>& hotspotList, QString& errorInfo );
 
   /**
-   * Reads in a airfield file provided as open aip xml format.
+   * Reads in an airfield file provided as open aip xml format.
    *
-   * \param filename File containing navigation aid definitions
+   * \param filename File containing airfield definitions
    *
    * \param airfieldList List in which the read airfields are stored
    *
@@ -98,6 +101,23 @@ class OpenAip
   bool readAirfields( QString fileName, QList<Airfield>& airfieldList,
                       QString& errorInfo,
                       bool useFiltering=false );
+
+  /**
+   * Reads in an airspace file provided as open aip xml format.
+   *
+   * \param filename File containing airspace definitions
+   *
+   * \param airspaceList List in which the read airspaces are stored
+   *
+   * \param errorInfo Info about read errors
+   *
+   * \param doCompile If enabled, create a compiled file version
+   *
+   * \return true on success otherwise false
+   */
+  bool readAirspaces( QString fileName, QList<Airspace*>& airspaceList,
+                      QString& errorInfo,
+                      bool doCompile=true );
 
   /**
    * Upper and lower the words in the passed string.
@@ -146,6 +166,20 @@ class OpenAip
    * Read runway data from data format 1.1.
    */
   bool readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af );
+
+  /**
+   * Read a complete airspace record.
+   */
+  bool readAirspaceRecord( QXmlStreamReader& xml, Airspace& as );
+
+  bool readAirspaceLimitReference( QXmlStreamReader& xml,
+                                   BaseMapElement::elevationType& reference );
+
+  bool readAirspaceAltitude( QXmlStreamReader& xml,
+                             QString& unit,
+                             Altitude& altitude );
+
+  bool readAirspaceGeometrie( QXmlStreamReader& xml, Airspace& as );
 
   /**
    * Converts a string number with unit to an integer value.
@@ -212,6 +246,12 @@ class OpenAip
    * Value of DATAFORMAT attribute from OPENAIP tag of the current read file.
    */
   QString m_oaipDataFormat;
+
+  /**
+   * Contains an airspace type mapping between read item and related Cumulus
+   * airspace item.
+   */
+  QMap<QString, BaseMapElement::objectType> m_airspaceTypeMapper;
 };
 
 #endif /* OpenAip_h */

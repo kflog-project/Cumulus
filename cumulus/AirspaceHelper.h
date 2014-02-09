@@ -38,13 +38,16 @@
 #define FILE_TYPE_AIRSPACE_C 0x61
 
 // version used for files created from OpenAir data
-#define FILE_VERSION_AIRSPACE_C 205
+#define FILE_VERSION_AIRSPACE_C 206
 
 #include <QDateTime>
 #include <QList>
+#include <QMap>
+#include <QSet>
 #include <QString>
 
 #include "airspace.h"
+#include "basemapelement.h"
 
 class ProjectionBase;
 
@@ -61,6 +64,17 @@ class AirspaceHelper
    * Destructor
    */
   virtual ~AirspaceHelper();
+
+  /**
+   * Searches on default places for OpenAir and OpenAip airspace files.
+   * That can be source files or compiled versions of them.
+   *
+   * @returns The number of successfully loaded files
+   *
+   * @param list The list where the Airspace objects should be added from the
+   *        read files.
+   */
+  static int loadAirspaces( QList<Airspace*>& list );
 
   /**
    * Read the content of a compiled file and put it into the passed
@@ -102,7 +116,97 @@ class AirspaceHelper
    */
   static bool readHeaderData( QString &path,
                               QDateTime& creationDateTime,
-                              ProjectionBase* projection );
+                              ProjectionBase** projection );
+
+  /**
+   * Initialize a mapping from an airspace type string to the Cumulus integer type.
+   */
+  static QMap<QString, BaseMapElement::objectType>
+         initializeAirspaceTypeMapping(const QString& path);
+
+  /**
+   * Checks, if a Cumulus airspace type name is contained in the airspace
+   * type map.
+   *
+   * \return True in case of success otherwise false
+   */
+  static bool isAirspaceBaseTypeKnown( const QString& type )
+  {
+    if( m_airspaceTypeMap.isEmpty() )
+      {
+        loadAirspaceTypeMapping();
+      }
+
+    return m_airspaceTypeMap.contains( type );
+  }
+
+  /**
+   * Maps a Cumulus airspace type name to its integer code.
+   *
+   * \param type airspace base type name
+   *
+   * \return short airspace type name or empty string, if mapping fails
+   */
+  static BaseMapElement::objectType mapAirspaceBaseType( const QString& type )
+  {
+    if( m_airspaceTypeMap.isEmpty() )
+      {
+        loadAirspaceTypeMapping();
+      }
+
+    return m_airspaceTypeMap.value( type, BaseMapElement::AirUkn );
+  }
+
+  /**
+   * Reports, if a airspace object is already loaded or not.
+   *
+   * \param id airspace identifier
+   *
+   * \return true in case of contained otherwise false
+   */
+  static bool isAirspaceKnown( const int id )
+  {
+    return m_airspaceDictionary.contains( id );
+  };
+
+  /**
+   * Adds an airspace identifier to the airspace dictionary.
+   *
+   * \param id airspace identifier
+   *
+   * \return true in case of added otherwise false
+   */
+  static bool addAirspaceIdentifier( const int id )
+  {
+    if( m_airspaceDictionary.contains( id ) )
+      {
+        return false;
+      }
+
+    m_airspaceDictionary.insert(id);
+    return true;
+  }
+
+ private:
+
+  /**
+   * Creates a mapping from a string representation of the supported
+   * airspace types in Cumulus to their integer codes.
+   *
+   * \return Map of airspace items as key value pair
+   */
+  static void loadAirspaceTypeMapping();
+
+  /**
+   * A map containing Cumulus's supported airspace types as key value pair.
+   */
+  static QMap<QString, BaseMapElement::objectType> m_airspaceTypeMap;
+
+  /**
+   * Contains all read airspaces to avoid duplicates.
+   */
+  static QSet<int> m_airspaceDictionary;
+
 };
 
 #endif /* AIRSPACE_HELPER_H_ */

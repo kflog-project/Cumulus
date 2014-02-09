@@ -708,7 +708,6 @@ void Map::slotNewWind()
     }
 }
 
-
 void Map::p_drawAirspaces( bool reset )
 {
   QPainter cuAeroMapP;
@@ -772,7 +771,6 @@ void Map::p_drawAirspaces( bool reset )
           // Ignore airspaces which lays with its lower border to high.
           if( currentAirS->getLowerL() > asBorder )
             {
-              //qDebug() << "Ignoring AS:" << currentAirS->getName() << currentAirS->getLowerL() << "m";
               continue;
             }
         }

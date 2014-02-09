@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2013 by Axel Pauli
+ **                   2009-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,11 +26,8 @@
 #include "AirspaceHelper.h"
 #include "openairparser.h"
 #include "mapcalc.h"
-#include "mapmatrix.h"
 #include "mapcontents.h"
-#include "projectionbase.h"
 #include "filetools.h"
-#include "generalconfig.h"
 #include "resource.h"
 
 // All is prepared for additional calculation, storage and
@@ -40,242 +37,26 @@
 #undef BOUNDING_BOX
 // #define BOUNDING_BOX 1
 
-extern MapMatrix* _globalMapMatrix;
-
 OpenAirParser::OpenAirParser()
 {
-  _doCompile = false;
   _parseError = false;
   _boundingBox = (QRect *) 0;
-  h_projection = (ProjectionBase *) 0;
-
-  initializeBaseMapping();
-
   QLocale::setDefault(QLocale::C);
 }
 
 OpenAirParser::~OpenAirParser()
 {
-  if ( h_projection )
-    {
-      delete h_projection;
-    }
 }
 
-/**
- * Searches on default places for openair files. That can be source
- * files or compiled versions of them.
- *
- * @returns number of successfully loaded files
- * @param list the list of Airspace objects the objects in this
- *   file should be added to.
- */
-
-uint OpenAirParser::load( QList<Airspace*>& list )
-{
-  QTime t;
-  t.start();
-  uint loadCounter = 0; // number of successfully loaded files
-
-  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
-  QStringList preselect;
-
-  for( int i = 0; i < mapDirs.size(); ++i )
-    {
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", "*.txt" );
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", "*.TXT" );
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", "*.txc" );
-    }
-
-  if( preselect.count() == 0 )
-    {
-      qWarning( "OAP: No Open Air files found in the map directories!" );
-      return loadCounter;
-    }
-
-  // First check, if we have found a file name in upper letters. May
-  // be true, if a file was downloaded from the Internet. We will convert
-  // such a file name to lower cases and replace it in the file list.
-  for( int i = 0; i < preselect.size(); ++i )
-    {
-      if( preselect.at( i ).endsWith( ".TXT" ) )
-        {
-          QFileInfo fInfo = preselect.at( i );
-          QString path = fInfo.absolutePath();
-          QString fn = fInfo.fileName().toLower();
-          QString newFn = path + "/" + fn;
-          QFile::rename( preselect.at( i ), newFn );
-          preselect[i] = newFn;
-        }
-    }
-
-  // source files follows compiled files
-  preselect.sort();
-
-  // Check, which files shall be loaded.
-  QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
-
-  if( files.isEmpty() )
-    {
-      // No files shall be loaded
-      qWarning() << "OAP: No Open Air files defined for loading!";
-      return loadCounter;
-    }
-
-  if( files.first() != "All" )
-    {
-      for( int i = preselect.size() - 1; i >= 0; i-- )
-        {
-          QString file = QFileInfo(preselect.at(i)).completeBaseName() + ".txt";
-
-          if( files.contains( file ) == false )
-            {
-              preselect.removeAt(i);
-            }
-        }
-    }
-
-  while( !preselect.isEmpty() )
-    {
-      QString txtName, txcName;
-      _doCompile = false;
-
-      if( preselect.first().endsWith( QString( ".txt" ) ) )
-        {
-          // there can't be the same name txc after this txt
-          // parse found txt file
-          txtName = preselect.first();
-          _doCompile = true;
-
-          if( parse( txtName, list ) )
-            {
-              loadCounter++;
-            }
-
-          preselect.removeAt(0);
-          continue;
-        }
-
-      // At first we found a binary file with the extension txc.
-      txcName = preselect.first();
-
-      // Now we have to check if there's to find a source file with
-      // extension txt after the binary file
-      txcName = preselect.first();
-      preselect.removeAt( 0 );
-      txtName = txcName;
-      txtName.replace( txtName.length()-1, 1, QString("t") );
-
-      if ( ! preselect.isEmpty() && txtName == preselect.first() )
-        {
-          preselect.removeAt( 0 );
-          // We found the related source file and will do some checks to
-          // decide which type of file will be read in.
-
-          // Lets check, if we can read the header of the compiled file
-          if ( ! AirspaceHelper::readHeaderData( txcName, h_creationDateTime, h_projection ) )
-            {
-              // Compiled file format is not the expected one, remove
-              // wrong file and start a reparsing of source file.
-              unlink( txcName.toLatin1().data() );
-              _doCompile = true;
-
-              if( parse( txtName, list ) )
-                {
-                  loadCounter++;
-                }
-
-              preselect.removeAt( 0 );
-              continue;
-            }
-
-          // Do a date-time check. If the source file is younger in its
-          // modification time as the compiled file, a new compilation
-          // must be forced.
-
-          QFileInfo fi(txtName);
-          QDateTime lastModTxt = fi.lastModified();
-
-          if ( h_creationDateTime < lastModTxt )
-            {
-              // Modification date-time of source is younger as from
-              // compiled file. Therefore we do start a reparsing of the
-              // source file.
-              unlink( txcName.toLatin1().data() );
-              _doCompile = true;
-
-              if( parse( txtName, list ) )
-                {
-                  loadCounter++;
-                }
-
-              continue;
-            }
-
-          // Check date-time against the config file
-          QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
-          QFileInfo fiConf( confName );
-
-          if( fiConf.exists() && fi.isReadable() &&
-              h_creationDateTime < fiConf.lastModified() )
-            {
-              // Conf file was modified, make a new compilation. It is not
-              // deeper checked, what was modified due to the effort and
-              // in the assumption that a config file will not be changed
-              // every minute.
-              unlink( txcName.toLatin1().data() );
-              _doCompile = true;
-
-              if ( parse( txtName, list ) )
-                {
-                  loadCounter++;
-                }
-
-              continue;
-            }
-
-          // Check, if the projection has been changed in the meantime
-          ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
-
-          if ( ! MapContents::compareProjections( h_projection, currentProjection ) )
-            {
-              // Projection has changed in the meantime
-              if (  h_projection )
-                {
-                  delete h_projection;
-                  h_projection = 0;
-                }
-
-              unlink( txcName.toLatin1().data() );
-              _doCompile = true;
-
-              if( parse( txtName, list ) )
-                {
-                  loadCounter++;
-                }
-
-              continue;
-            }
-        }
-
-      // We will read the compiled file, because a source file is not to
-      // find after it or all checks were successfully passed
-      if( AirspaceHelper::readCompiledFile( txcName, list ) )
-        {
-          loadCounter++;
-        }
-
-    } // End of While
-
-  qDebug("OAP: %d OpenAir file(s) loaded in %dms", loadCounter, t.elapsed());
-  return loadCounter;
-}
-
-bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
+bool OpenAirParser::parse( const QString& path,
+                           QList<Airspace*>& list,
+                           bool doCompile )
 {
   QTime t;
   t.start();
   QFile source(path);
+
+  int listStartIdx = list.size();
 
   if (!source.open(QIODevice::ReadOnly))
     {
@@ -286,7 +67,13 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   qDebug() << "OAP: Reading" << path;
 
   resetState();
-  initializeStringMapping( path );
+
+  m_airspaceTypeMapper = AirspaceHelper::initializeAirspaceTypeMapping( path );
+
+  if( m_airspaceTypeMapper.isEmpty() )
+    {
+      return false;
+    }
 
   QTextStream in(&source);
   in.setCodec( "ISO 8859-15" );
@@ -332,17 +119,16 @@ bool OpenAirParser::parse(const QString& path, QList<Airspace*>& list)
   source.close();
 
   // Handle creation of a compiled file version
-  if ( _doCompile && _objCounter && _parseError == false )
+  if ( doCompile && _objCounter && _parseError == false )
     {
       // Build the compiled file name with the extension .txc from
       // the source file name
       QString cfn = fi.path() + "/" + fi.completeBaseName() + ".txc";
 
-      AirspaceHelper::createCompiledFile( cfn, list, list.size() );
-
-      // delete all dynamically allocated objects
+      AirspaceHelper::createCompiledFile( cfn, list, listStartIdx );
 
 #ifdef BOUNDING_BOX
+      // delete all dynamically allocated objects
       delete _boundingBox;
       _boundingBox = 0;
 #endif
@@ -537,7 +323,6 @@ void OpenAirParser::parseLine(QString& line)
           line.toLatin1().data());
 }
 
-
 void OpenAirParser::newAirspace()
 {
   asName = "(unnamed)";
@@ -553,12 +338,10 @@ void OpenAirParser::newAirspace()
   _direction = 1; // must be reset according to specifications
 }
 
-
 void OpenAirParser::newPA()
 {
   asPA.clear();
 }
-
 
 void OpenAirParser::finishAirspace()
 {
@@ -603,113 +386,13 @@ void OpenAirParser::finishAirspace()
   // qDebug("finalized airspace %s. %d points in airspace", asName.toLatin1().data(), asPA.count());
 }
 
-
-void OpenAirParser::initializeBaseMapping()
-{
-  // create a mapping from a string representation of the supported
-  // airspace types in Cumulus to their integer codes
-  m_baseTypeMap.clear();
-
-  m_baseTypeMap.insert("AirA", BaseMapElement::AirA);
-  m_baseTypeMap.insert("AirB", BaseMapElement::AirB);
-  m_baseTypeMap.insert("AirC", BaseMapElement::AirC);
-  m_baseTypeMap.insert("AirD", BaseMapElement::AirD);
-  m_baseTypeMap.insert("AirE", BaseMapElement::AirE);
-  //m_baseTypeMap.insert("AirG", BaseMapElement::AirG);
-  //m_baseTypeMap.insert("AirUkn", BaseMapElement::AirUkn);
-  m_baseTypeMap.insert("WaveWindow", BaseMapElement::WaveWindow);
-  m_baseTypeMap.insert("AirF", BaseMapElement::AirF);
-  m_baseTypeMap.insert("ControlC", BaseMapElement::ControlC);
-  m_baseTypeMap.insert("ControlD", BaseMapElement::ControlD);
-  m_baseTypeMap.insert("Danger", BaseMapElement::Danger);
-  m_baseTypeMap.insert("Restricted", BaseMapElement::Restricted);
-  m_baseTypeMap.insert("Prohibited", BaseMapElement::Prohibited);
-  m_baseTypeMap.insert("LowFlight", BaseMapElement::LowFlight);
-  m_baseTypeMap.insert("Tmz", BaseMapElement::Tmz);
-  m_baseTypeMap.insert("GliderSector", BaseMapElement::GliderSector);
-}
-
-void OpenAirParser::initializeStringMapping(const QString& mapFilePath)
-{
-  //fist, initialize the mapping QMap with the defaults
-  m_stringTypeMap.clear();
-
-  m_stringTypeMap.insert("A", "AirA");
-  m_stringTypeMap.insert("B", "AirB");
-  m_stringTypeMap.insert("C", "AirC");
-  m_stringTypeMap.insert("D", "AirD");
-  m_stringTypeMap.insert("E", "AirE");
-  m_stringTypeMap.insert("F", "AirF");
-  //m_stringTypeMap.insert("G", "AirG");
-  //m_stringTypeMap.insert("UKN", "AirUkn");
-  m_stringTypeMap.insert("GP", "Restricted");
-  m_stringTypeMap.insert("R", "Restricted");
-  m_stringTypeMap.insert("P", "Prohibited");
-  m_stringTypeMap.insert("TRA", "Restricted");
-  m_stringTypeMap.insert("Q", "Danger");
-  m_stringTypeMap.insert("CTR", "ControlD");
-  m_stringTypeMap.insert("TMZ", "Tmz");
-  m_stringTypeMap.insert("W", "WaveWindow");
-  m_stringTypeMap.insert("GSEC", "GliderSector");
-
-  //then, check to see if we need to update this mapping
-  //construct file name for mapping file
-  QFileInfo fi(mapFilePath);
-
-  QString path = fi.path() + "/" + fi.baseName() + "_mappings.conf";
-  fi.setFile(path);
-  if (fi.exists() && fi.isFile() && fi.isReadable())
-    {
-      QFile f(path);
-      if (!f.open(QIODevice::ReadOnly))
-        {
-          qWarning("OAP: Cannot open airspace mapping file %s!",
-                   path.toLatin1().data());
-          return;
-        }
-
-      QTextStream in(&f);
-      qDebug("Parsing mapping file '%s'.", path.toLatin1().data());
-
-      //start parsing
-      QString line = in.readLine();
-
-      while (!line.isNull())
-        {
-          line = line.simplified();
-          if (line.startsWith("*") || line.startsWith("#"))
-            {
-              //comment, ignore
-            }
-          else if (line.isEmpty())
-            {
-              //empty line, ignore
-            }
-          else
-            {
-              int pos = line.indexOf("=");
-              if (pos>0 && pos < int(line.length()))
-                {
-                  QString key = line.left(pos).simplified();
-                  QString value = line.mid(pos+1).simplified();
-                  qDebug("  added '%s' => '%s' to mappings", key.toLatin1().data(), value.toLatin1().data());
-                  m_stringTypeMap.remove(key);
-                  m_stringTypeMap.insert(key, value);
-                }
-            }
-          line=in.readLine();
-        }
-    }
-}
-
-
 void OpenAirParser::parseType(QString& line)
 {
-  line=line.mid(3);
+  line = line.mid(3);
 
-  if (!m_stringTypeMap.contains(line))
+  if( ! m_airspaceTypeMapper.contains(line) )
     {
-      // no mapping from the found type to a Cumulus basetype was found
+      // no mapping found to a Cumulus basetype
       qWarning("OAP: Line=%d AS Type, '%s' not mapped to a basetype. Object ignored.",
                _lineNumber, line.toLatin1().data());
       _isCurrentAirspace = false; //stop accepting other lines in this object
@@ -717,24 +400,9 @@ void OpenAirParser::parseType(QString& line)
     }
   else
     {
-      QString stringType = m_stringTypeMap[line];
-
-      if (!m_baseTypeMap.contains(stringType))
-        {
-          //the indicated basetype is not a valid Cumulus basetype.
-          qWarning( "OAP: Line=%d, Type '%s' is not a valid basetype. Object ignored.",
-                    _lineNumber, stringType.toLatin1().data());
-          _isCurrentAirspace = false; //stop accepting other lines in this object
-          return;
-        }
-      else
-        {
-          //all seems to be right with the world!
-          asType = m_baseTypeMap[stringType];
-        }
+      asType = m_airspaceTypeMapper.value(line, BaseMapElement::AirUkn);
     }
 }
-
 
 void OpenAirParser::parseAltitude(QString& line, BaseMapElement::elevationType& type, uint& alt)
 {
@@ -890,8 +558,8 @@ bool OpenAirParser::parseCoordinate(QString& line, int& lat, int& lon)
   if( pos == -1 )
     {
       qWarning() << "OAP::parseCoordinate: line"
-                  << _lineNumber
-                  << "missing sky directions!";
+                 << _lineNumber
+                 << "missing sky directions!";
 
       return false;
     }
@@ -1203,7 +871,6 @@ double OpenAirParser::bearing( QPoint& p1, QPoint& p2 )
 
   return angle;
 }
-
 
 /**
  * DB coordinate1, coordinate2

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -37,13 +37,12 @@ SinglePoint::SinglePoint( const QString& n,
                           const QString country,
                           const QString comment,
                           const unsigned short secID ) :
-  BaseMapElement(n, t, secID),
+  BaseMapElement(n, t, secID, country),
   wgsPosition(wgsP),
   position(pos),
   shortName(shortName),
   curPos(pos),
   elevation(elevation),
-  country(country.toUpper().left(2)),
   comment(comment)
 {
 }

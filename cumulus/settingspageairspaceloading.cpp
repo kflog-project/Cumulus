@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2011-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -160,8 +160,10 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
 
   for ( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.txt");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airspaces", "*.TXT");
+      // Setup a filter for the wanted file extensions.
+      QString filter = "*.txt *.TXT *.aip *.AIP";
+
+      MapContents::addDir( preselect, mapDirs.at(i) + "/airspaces", filter );
     }
 
   preselect.sort();

@@ -21,11 +21,19 @@
 
 #include "AirspaceHelper.h"
 #include "filetools.h"
+#include "generalconfig.h"
+#include "mapcontents.h"
 #include "mapmatrix.h"
+#include "openaip.h"
+#include "openairparser.h"
 #include "projectionbase.h"
 #include "resource.h"
 
 extern MapMatrix* _globalMapMatrix;
+
+QMap<QString, BaseMapElement::objectType> AirspaceHelper::m_airspaceTypeMap;
+
+QSet<int> AirspaceHelper::m_airspaceDictionary;
 
   /**
    * Constructor
@@ -39,6 +47,298 @@ extern MapMatrix* _globalMapMatrix;
    */
   AirspaceHelper::~AirspaceHelper()
   {
+  }
+
+  int AirspaceHelper::loadAirspaces( QList<Airspace*>& list )
+  {
+    QTime t; t.start();
+    uint loadCounter = 0; // number of successfully loaded files
+
+    m_airspaceDictionary.clear();
+
+    QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
+    QStringList preselect;
+
+    // Setup a filter for the wanted file extensions.
+    QString filter = "*.txt *.TXT *.txc *.aip *.AIP *.aic";
+
+    for( int i = 0; i < mapDirs.size(); ++i )
+      {
+        MapContents::addDir( preselect, mapDirs.at( i ) + "/airspaces", filter );
+      }
+
+    if( preselect.count() == 0 )
+      {
+        qWarning( "ASH: No Airspace files found in the map directories!" );
+        return loadCounter;
+      }
+
+    // First check, if we have found a file name in upper letters. May
+    // be true, if a file was downloaded from the Internet. We will convert
+    // such a file name to lower cases and replace it in the file list.
+    for( int i = 0; i < preselect.size(); ++i )
+      {
+        if( preselect.at( i ).endsWith( ".TXT" ) ||
+            preselect.at( i ).endsWith( ".AIP" ))
+          {
+            QFileInfo fInfo = preselect.at( i );
+            QString path = fInfo.absolutePath();
+            QString fn = fInfo.fileName().toLower();
+            QString newFn = path + "/" + fn;
+            QFile::rename( preselect.at( i ), newFn );
+            preselect[i] = newFn;
+          }
+      }
+
+    // source files follows compiled files
+    preselect.sort();
+
+    qDebug() << "PreselectedList=" << preselect;
+
+    // Check, which files shall be loaded.
+    QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
+
+    if( files.isEmpty() )
+      {
+        // No files shall be loaded
+        qWarning() << "ASH: No Airspace files defined for loading!";
+        return loadCounter;
+      }
+
+    if( files.first() != "All" )
+      {
+        for( int i = preselect.size() - 1; i >= 0; i-- )
+          {
+            QFileInfo fi(preselect.at(i));
+            QString file;
+
+            if( fi.suffix().left(2) == "tx" )
+              {
+                file = fi.completeBaseName() + ".txt";
+              }
+            else if( fi.suffix().left(2) == "ai" )
+              {
+                file = fi.completeBaseName() + ".aip";
+              }
+
+            if( files.contains( file ) == false )
+              {
+                preselect.removeAt(i);
+              }
+          }
+      }
+
+    qDebug() << "PreselectedList after ConfigCheck=" << preselect;
+
+    OpenAirParser oap;
+    OpenAip oaip;
+    QString errorInfo;
+
+    while( ! preselect.isEmpty() )
+      {
+        QString srcName;
+        QString binName;
+
+        if( preselect.first().endsWith(QString(".txt")) )
+          {
+            // there can't be the same name txc after this txt
+            // parse found txt file
+            srcName = preselect.first();
+
+            if( oap.parse(srcName, list, true) )
+              {
+                loadCounter++;
+              }
+
+            preselect.removeAt(0);
+            continue;
+          }
+
+        if( preselect.first().endsWith(QString(".aip")) )
+          {
+            // there can't be the same name aic after this aip
+            // parse found aip file
+            srcName = preselect.first();
+
+            if( oaip.readAirspaces(srcName, list, errorInfo, true) )
+              {
+                loadCounter++;
+              }
+
+            preselect.removeAt(0);
+            continue;
+          }
+
+        // At first we found a binary file with the extension aic or txc.
+        binName = preselect.first();
+
+        // Get file suffix, can be txc or aic
+        QString binSuffix = QFileInfo(binName).suffix();
+        QString srcSuffix;
+
+        QDateTime h_creationDateTime;
+        ProjectionBase* h_projection = 0;
+
+        if( binSuffix == "txc" )
+          {
+            srcSuffix = "txt";
+          }
+        else if( binSuffix == "aic" )
+          {
+            srcSuffix = "aip";
+          }
+
+        srcName = binName.left(binName.size()-3) + srcSuffix;
+
+        // Now we have to check if there's to find a source file with
+        // the related extension after the binary file
+        preselect.removeAt(0);
+        QFileInfo binFi(binName);
+
+        if( srcName == preselect.first() )
+          {
+            preselect.removeAt(0);
+            // We found the related source file and will do some checks to
+            // decide which type of file will be read in.
+
+            // Lets check, if we can read the header of the compiled file
+            if( ! AirspaceHelper::readHeaderData( binName,
+                                                  h_creationDateTime,
+                                                  &h_projection ) )
+              {
+                // Compiled file format is not the expected one, remove
+                // wrong file and start a reparsing of source file.
+                QFile::remove(binName);
+
+                if (srcSuffix == "txt")
+                  {
+                    if (oap.parse(srcName, list, true))
+                      {
+                        loadCounter++;
+                      }
+                  }
+                else if (srcSuffix == "aip")
+                  {
+                    if (oaip.readAirspaces(srcName, list, errorInfo, true))
+                      {
+                        loadCounter++;
+                      }
+                  }
+
+                continue;
+              }
+          }
+
+        // Do a date-time check. If the source file is younger in its
+        // modification time as the compiled file, a new compilation
+        // must be forced.
+        QFileInfo fi(srcName);
+        QDateTime lastModTxt = fi.lastModified();
+
+        if( h_creationDateTime < lastModTxt )
+          {
+            // Modification date-time of source is younger as from
+            // compiled file. Therefore we do start a reparsing of the
+            // source file.
+            QFile::remove(binName);
+
+            if (srcSuffix == "txt")
+              {
+                if (oap.parse(srcName, list, true))
+                  {
+                    loadCounter++;
+                  }
+              }
+            else if (srcSuffix == "aip")
+              {
+                if (oaip.readAirspaces(srcName, list, errorInfo, true))
+                  {
+                    loadCounter++;
+                  }
+              }
+
+            continue;
+          }
+
+        // Check date-time against the config file
+        QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
+        QFileInfo fiConf(confName);
+
+        if( fiConf.exists() && fi.isReadable()
+            && h_creationDateTime < fiConf.lastModified())
+          {
+            // Config file was modified, make a new compilation. It is not
+            // deeper checked, what was modified due to the effort and
+            // in the assumption that a config file will not be changed
+            // every minute.
+            QFile::remove(binName);
+
+            if (srcSuffix == "txt")
+              {
+                if (oap.parse(srcName, list, true))
+                  {
+                    loadCounter++;
+                  }
+              }
+            else if (srcSuffix == "aip")
+              {
+                if (oaip.readAirspaces(srcName, list, errorInfo, true))
+                  {
+                    loadCounter++;
+                  }
+              }
+
+            continue;
+          }
+
+        // Check, if the projection has been changed in the meantime
+        ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
+
+        if( ! MapContents::compareProjections(h_projection, currentProjection) )
+          {
+            // Projection has changed in the meantime
+            if( h_projection )
+              {
+                delete h_projection;
+                h_projection = 0;
+              }
+
+            QFile::remove(binName);
+
+            if (srcSuffix == "txt")
+              {
+                if (oap.parse(srcName, list, true))
+                  {
+                    loadCounter++;
+                  }
+              }
+            else if (srcSuffix == "aip")
+              {
+                if (oaip.readAirspaces(srcName, list, errorInfo, true))
+                  {
+                    loadCounter++;
+                  }
+              }
+
+            continue;
+          }
+
+        // We will read the compiled file, because a source file is not to
+        // find after it or all checks were successfully passed
+        if (AirspaceHelper::readCompiledFile( binName, list ) )
+          {
+            loadCounter++;
+          }
+      } // End of While
+
+    qDebug("ASH: %d Airspace file(s) loaded in %dms", loadCounter, t.elapsed());
+
+//    for(int i=0; i < list.size(); i++ )
+//      {
+//        list.at(i)->debug();
+//      }
+
+    return loadCounter;
   }
 
   bool AirspaceHelper::createCompiledFile( QString& fileName,
@@ -58,8 +358,8 @@ extern MapMatrix* _globalMapMatrix;
     if( file.open(QIODevice::WriteOnly) == false )
       {
         qWarning( "ASH: Can't open airspace file %s for writing!"
-                 " Aborting ...",
-                 fileName.toLatin1().data() );
+                  " Aborting ...",
+                  fileName.toLatin1().data() );
 
         return false;
       }
@@ -79,12 +379,35 @@ extern MapMatrix* _globalMapMatrix;
       {
         Airspace* as = airspaceList[i];
 
+        const char* country = "\0\0";
+
+        if( as->getCountry().left(2).size() == 2 )
+          {
+            country = as->getCountry().left(2).toLatin1().data();
+          }
+
+        // Normalize Flight Level altitudes to its original value before storing.
+        float uAlt = as->getUpperAltitude().getFeet();
+        float lAlt = as->getLowerAltitude().getFeet();
+
+        if( as->getUpperT() == Airspace::FL )
+          {
+            uAlt /= 100;
+          }
+
+        if( as->getLowerT() == Airspace::FL )
+          {
+            lAlt /= 100;
+          }
+
         ShortSave( out, as->getName().toUtf8() );
+        out.writeRawData( country, 2 );
+        out << quint32( as->getId() );
         out << quint8( as->getTypeID() );
         out << quint8( as->getLowerT() );
-        out << quint16( as->getLowerL() );
+        out << float( lAlt );
         out << quint8( as->getUpperT() );
-        out << quint32( as->getUpperL() );
+        out << float( uAlt );
         ShortSave( out, as->getProjectedPolygon() );
       }
 
@@ -180,21 +503,24 @@ extern MapMatrix* _globalMapMatrix;
     uint counter = 0;
 
     QString name;
+    qint32 id;
     quint8 type;
     quint8 lowerType;
-    quint16 lower;
+    float lower;
     quint8 upperType;
-    quint32 upper;
+    float upper;
     QPolygon pa;
     QByteArray utf8_temp;
+    char country[3] = { 0, 0, 0 };
 
     while ( ! in.atEnd() )
       {
-        counter++;
         pa.resize(0);
 
         ShortLoad(in, utf8_temp);
         name = QString::fromUtf8(utf8_temp);
+        in.readRawData( country, 2 );
+        in >> id;
         in >> type;
         in >> lowerType;
         in >> lower;
@@ -202,12 +528,22 @@ extern MapMatrix* _globalMapMatrix;
         in >> upper;
         ShortLoad( in, pa );
 
+        if( id >= 0 && addAirspaceIdentifier(id) == false )
+          {
+            // Airspace is already known. Ignore object.
+            qDebug() << "ASH::readCompiledFile: Airspace" << name << "ignored!";
+            continue;
+          }
+
         Airspace *a = new Airspace( name,
                                     (BaseMapElement::objectType) type,
                                     pa,
                                     upper, (BaseMapElement::elevationType) upperType,
-                                    lower, (BaseMapElement::elevationType) lowerType );
+                                    lower, (BaseMapElement::elevationType) lowerType,
+                                    id,
+                                    QString(country) );
         list.append(a);
+        counter++;
       }
 
     inFile.close();
@@ -234,7 +570,7 @@ extern MapMatrix* _globalMapMatrix;
  */
 bool AirspaceHelper::readHeaderData( QString &path,
                                      QDateTime& creationDateTime,
-                                     ProjectionBase* projection )
+                                     ProjectionBase** projection )
 {
   quint32 h_magic = 0;
   qint8 h_fileType = 0;
@@ -280,7 +616,7 @@ bool AirspaceHelper::readHeaderData( QString &path,
 
   in >> creationDateTime;
 
-  projection = LoadProjection(in);
+  *projection = LoadProjection(in);
 
 #ifdef BOUNDING_BOX
   in >> h_boundingBox;
@@ -288,4 +624,139 @@ bool AirspaceHelper::readHeaderData( QString &path,
 
   inFile.close();
   return true;
+}
+
+void AirspaceHelper::loadAirspaceTypeMapping()
+{
+  // Creates a mapping from a string representation of the supported
+  // airspace types in Cumulus to their integer codes
+  m_airspaceTypeMap.insert("AirA", BaseMapElement::AirA);
+  m_airspaceTypeMap.insert("AirB", BaseMapElement::AirB);
+  m_airspaceTypeMap.insert("AirC", BaseMapElement::AirC);
+  m_airspaceTypeMap.insert("AirD", BaseMapElement::AirD);
+  m_airspaceTypeMap.insert("AirE", BaseMapElement::AirE);
+  //m_airspaceTypeMap.insert("AirG", BaseMapElement::AirG);
+  m_airspaceTypeMap.insert("AirUkn", BaseMapElement::AirUkn);
+  m_airspaceTypeMap.insert("WaveWindow", BaseMapElement::WaveWindow);
+  m_airspaceTypeMap.insert("AirF", BaseMapElement::AirF);
+  m_airspaceTypeMap.insert("ControlC", BaseMapElement::ControlC);
+  m_airspaceTypeMap.insert("ControlD", BaseMapElement::ControlD);
+  m_airspaceTypeMap.insert("Danger", BaseMapElement::Danger);
+  m_airspaceTypeMap.insert("Restricted", BaseMapElement::Restricted);
+  m_airspaceTypeMap.insert("Prohibited", BaseMapElement::Prohibited);
+  m_airspaceTypeMap.insert("LowFlight", BaseMapElement::LowFlight);
+  m_airspaceTypeMap.insert("Tmz", BaseMapElement::Tmz);
+  m_airspaceTypeMap.insert("GliderSector", BaseMapElement::GliderSector);
+}
+
+QMap<QString, BaseMapElement::objectType>
+AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
+{
+  QMap<QString, BaseMapElement::objectType> typeMap;
+
+  QFileInfo fi(mapFilePath);
+
+  if( fi.suffix().toLower() == "txt" )
+    {
+      // OpenAir default airspace mapping
+      typeMap.insert("A", BaseMapElement::AirA);
+      typeMap.insert("B", BaseMapElement::AirB);
+      typeMap.insert("C", BaseMapElement::AirC);
+      typeMap.insert("D", BaseMapElement::AirD);
+      typeMap.insert("E", BaseMapElement::AirE);
+      typeMap.insert("F", BaseMapElement::AirF);
+      //typeMap.insert("G", BaseMapElement::AirG);
+      typeMap.insert("UKN", BaseMapElement::AirUkn);
+      typeMap.insert("GP", BaseMapElement::Restricted);
+      typeMap.insert("R", BaseMapElement::Restricted);
+      typeMap.insert("P", BaseMapElement::Prohibited);
+      typeMap.insert("TRA", BaseMapElement::Restricted);
+      typeMap.insert("Q", BaseMapElement::Danger);
+      typeMap.insert("CTR", BaseMapElement::ControlD);
+      typeMap.insert("TMZ", BaseMapElement::Tmz);
+      typeMap.insert("W", BaseMapElement::WaveWindow);
+      typeMap.insert("GSEC", BaseMapElement::GliderSector);
+    }
+  else if( fi.suffix().toLower() == "aip" )
+    {
+      // OpenAip default airspace mapping
+      typeMap.insert("A", BaseMapElement::AirA);
+      typeMap.insert("B", BaseMapElement::AirB);
+      typeMap.insert("C", BaseMapElement::AirC);
+      typeMap.insert("D", BaseMapElement::AirD);
+      typeMap.insert("E", BaseMapElement::AirE);
+      typeMap.insert("WAVE", BaseMapElement::WaveWindow);
+      typeMap.insert("F", BaseMapElement::AirF);
+      typeMap.insert("CTR", BaseMapElement::ControlD);
+      typeMap.insert("DANGER", BaseMapElement::Danger);
+      typeMap.insert("RESTRICTED", BaseMapElement::Restricted);
+      typeMap.insert("PROHIBITED", BaseMapElement::Prohibited);
+      typeMap.insert("TMA", BaseMapElement::ControlD);
+      typeMap.insert("TMZ", BaseMapElement::Tmz);
+      typeMap.insert("GLIDING", BaseMapElement::GliderSector);
+      typeMap.insert("OTH", BaseMapElement::AirUkn);
+    }
+  else
+    {
+      qWarning() << "ASH::initializeAirspaceTypeMapping failed, unknown file suffix"
+                 << fi.suffix();
+      return typeMap;
+    }
+
+  QString path = fi.path() + "/" + fi.baseName() + "_mappings.conf";
+
+  fi.setFile(path);
+
+  if (fi.exists() && fi.isFile() && fi.isReadable())
+    {
+      QFile f(path);
+
+      if (!f.open(QIODevice::ReadOnly))
+        {
+          qWarning() << "ASH: Cannot open airspace mapping file" << path << "!";
+          return typeMap;
+        }
+
+      QTextStream in(&f);
+      qDebug() << "Parsing mapping file" << path;
+
+      // start parsing
+      while( ! in.atEnd() )
+        {
+          QString line = in.readLine().simplified();
+
+          if (line.startsWith("*") || line.startsWith("#") || line.isEmpty() )
+            {
+              continue;
+            }
+
+          int pos = line.indexOf("=");
+
+          if( pos > 1 && pos < line.length() - 1 )
+            {
+              QString key = line.left(pos).simplified();
+              QString value = line.mid(pos + 1).simplified();
+
+              if( key.isEmpty() || value.isEmpty() )
+                {
+                  continue;
+                }
+
+              if( isAirspaceBaseTypeKnown( value ) == false )
+                {
+                  continue;
+                }
+
+              qDebug() << "ASH: Airspace type mapping changed by user:"
+                       << key << "-->" << value;
+
+              typeMap.remove(key);
+              typeMap.insert(key, mapAirspaceBaseType(value));
+            }
+        }
+
+      f.close();
+    }
+
+  return typeMap;
 }

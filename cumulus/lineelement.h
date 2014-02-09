@@ -38,7 +38,10 @@
 
 class LineElement : public BaseMapElement
 {
-public:
+ public:
+
+   LineElement();
+
     /**
      * Creates a new line map element.
      *
@@ -47,13 +50,14 @@ public:
      * @param  pP    The point array containing the positions
      * @param  isVal True, if the element is a "valley".
      * @param  secID The number of the map segment.
+     * @param  country The country of the element as two letter code
      */
     LineElement( const QString& name,
                  const BaseMapElement::objectType type,
                  const QPolygon& pP,
                  const bool isVal = false,
-                 const unsigned short secID=0 );
-
+                 const unsigned short secID=0,
+                 const QString& country="" );
     /**
      * Destructor.
      */
@@ -92,7 +96,7 @@ public:
     /**
      * Returns the bounding box of the line element on the screen.
      */
-    QRect getScreenBoundingBox()
+    QRect getScreenBoundingBox() const
     {
       return sbBox;
     };
@@ -100,9 +104,21 @@ public:
     /**
       * Returns the projected positions of the line element.
       */
-    const QPolygon& getProjectedPolygon()
+    const QPolygon& getProjectedPolygon() const
     {
       return projPolygon;
+    };
+
+    /**
+     * Sets the polygon of the line element containing the projected positions
+     * of the line element.
+     *
+     * \param newPolygon Polygon with projected coordinate points.
+     */
+    void setProjectedPolygon( const QPolygon& newPolygon )
+    {
+      projPolygon = newPolygon;
+      bBox = newPolygon.boundingRect();
     };
 
 protected:

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,7 +18,7 @@
 #include <QtCore>
 #include <QtXml>
 
-#include "distance.h"
+#include "AirspaceHelper.h"
 #include "generalconfig.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
@@ -61,7 +61,7 @@ bool OpenAip::getRootElement( QString fileName,
       /* If token is just StartDocument, we'll go to next.*/
       if( token == QXmlStreamReader::StartDocument )
         {
-          qDebug() << "File=" << fileName
+          qDebug() << "OAIP: File=" << fileName
                    << "DocVersion=" << xml.documentVersion().toString()
                    << "DocEncoding=" << xml.documentEncoding().toString();
           continue;
@@ -213,7 +213,7 @@ bool OpenAip::readNavAids( QString fileName,
               oaipFormatOk =
                   readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
 
-              qDebug() << "File=" << fileName
+              qDebug() << "OAIP: File=" << fileName
                        << "Version=" << m_oaipVersion
                        << "DataFormat=" << m_oaipDataFormat;
             }
@@ -520,7 +520,7 @@ bool OpenAip::readHotspots( QString fileName,
               oaipFormatOk =
                   readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
 
-              qDebug() << "File=" << fileName
+              qDebug() << "OAIP: File=" << fileName
                        << "Version=" << m_oaipVersion
                        << "DataFormat=" << m_oaipDataFormat;
             }
@@ -692,7 +692,7 @@ bool OpenAip::readAirfields( QString fileName,
               oaipFormatOk =
                   readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
 
-              qDebug() << "File=" << fileName
+              qDebug() << "OAIP: File=" << fileName
                        << "Version=" << m_oaipVersion
                        << "DataFormat=" << m_oaipDataFormat;
             }
@@ -1478,4 +1478,504 @@ void OpenAip::loadUserFilterValues()
 
   // Get runway length filter in meters.
   m_filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
+}
+
+bool OpenAip::readAirspaces( QString fileName,
+                             QList<Airspace*>& airspaceList,
+                             QString& errorInfo,
+                             bool doCompile )
+{
+  const char* method = "OpenAip::readAirspaces:";
+
+  QFileInfo fi(fileName);
+  int listStartIdx = airspaceList.size();
+
+  qDebug() << "OAIP FN" << fileName << "readAirspaces suffix" << fi.suffix().toLower();
+
+  if( fi.suffix().toLower() != "aip" )
+    {
+      errorInfo = fileName + " " + QObject::tr("has not suffix .aip!");
+      qWarning() << method << fileName << "has not suffix .aip!";
+      return false;
+    }
+
+  QFile file( fileName );
+
+  if( file.size() == 0 )
+    {
+      errorInfo = fileName + " " + QObject::tr("is empty");
+      qWarning() << method << fileName << "is empty!";
+      return false;
+    }
+
+  if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    {
+      errorInfo = QObject::tr("Cannot open file") + " " + fileName;
+      qWarning() << method << "cannot open file:" << fileName;
+      return false;
+    }
+
+  // Initialize airspace type mapper
+  m_airspaceTypeMapper = AirspaceHelper::initializeAirspaceTypeMapping(fileName);
+
+  if( m_airspaceTypeMapper.isEmpty() )
+    {
+      errorInfo = QObject::tr("Cannot load airspace type mapper for") + " " + fileName;
+      qWarning() << method << "Cannot load airspace type mapper for" << fileName;
+      return false;
+    }
+
+  QXmlStreamReader xml( &file );
+
+  int elementCounter   = 0;
+  bool oaipFormatOk = false;
+
+  // Reset version and data format variable
+  m_oaipVersion.clear();
+  m_oaipDataFormat.clear();
+
+  while( !xml.atEnd() && ! xml.hasError() )
+    {
+      /* Read the next element from the stream.*/
+      QXmlStreamReader::TokenType token = xml.readNext();
+
+      /* If token is just StartDocument, we'll go to next.*/
+      if( token == QXmlStreamReader::StartDocument )
+        {
+          // qDebug() << "File=" << fileName
+          //         << "DocVersion=" << xml.documentVersion().toString()
+          //         << "DocEncoding=" << xml.documentEncoding().toString();
+          continue;
+        }
+
+      /* If token is StartElement, we'll see if we can read it. */
+      if( token == QXmlStreamReader::StartElement )
+        {
+          elementCounter++;
+
+          QString elementName = xml.name().toString();
+
+          // qDebug() << "StartElement=" << elementName;
+
+          if( elementCounter == 1 && elementName == "OPENAIP" )
+            {
+              oaipFormatOk = readVersionAndFormat( xml, m_oaipVersion, m_oaipDataFormat );
+
+              qDebug() << "OAIP: File=" << fileName
+                       << "Version=" << m_oaipVersion
+                       << "DataFormat=" << m_oaipDataFormat;
+            }
+
+          if( (elementCounter == 1 && elementName != "OPENAIP") ||
+              (elementCounter == 2 && elementName != "AIRSPACES") ||
+              oaipFormatOk == false )
+            {
+              errorInfo = QObject::tr("Wrong XML data format");
+              qWarning() << method << errorInfo;
+              file.close();
+              return false;
+            }
+
+          if( elementCounter > 2 && elementName == "ASP" )
+            {
+              Airspace as;
+
+              // read airspace record
+              if( readAirspaceRecord( xml, as ) )
+                {
+                  if( AirspaceHelper::addAirspaceIdentifier(as.getId()) )
+                    {
+                      Airspace* elem = as.createAirspaceObject();
+                      airspaceList.append( elem );
+                    }
+                  else
+                    {
+                      // Airspace is already known. Ignore object.
+                      qDebug() << "QIAP::readAirspaces: Airspace"
+                               << as.getName()
+                               << "ignored!";
+                    }
+                }
+            }
+
+          continue;
+        }
+
+      if( token == QXmlStreamReader::EndElement )
+        {
+          // qDebug() << "EndElement=" << xml.name().toString();
+          continue;
+        }
+    }
+
+  if( xml.hasError() )
+    {
+      errorInfo = "XML-Error: " + xml.errorString() +
+                  " at line=" + xml.lineNumber() +
+                  " column=" + xml.columnNumber() +
+                  " offset=" + xml.characterOffset();
+
+      qWarning() << method << "XML-Error" << errorInfo;
+      file.close();
+      return false;
+    }
+
+  file.close();
+
+  if( doCompile )
+    {
+      // Build the compiled file name with the extension .aic from
+      // the source file name
+       QString cfn = fi.path() + "/" + fi.completeBaseName() + ".aic";
+
+       AirspaceHelper::createCompiledFile( cfn, airspaceList, listStartIdx );
+    }
+
+  return true;
+}
+
+bool OpenAip::readAirspaceRecord( QXmlStreamReader& xml, Airspace& as )
+{
+  const char* method ="OpenAip::readAirspaceRecord:";
+
+  ushort error = 0;
+
+  // Read airport type
+  QXmlStreamAttributes attributes = xml.attributes();
+
+  if( attributes.hasAttribute("CATEGORY") )
+    {
+      /* OpenAip airspace categories:
+      "A"
+      "B"
+      "C"
+      "CTR"
+      "D"
+      "DANGER"
+      "E"
+      "F"
+      "G"
+      "GLIDING"
+      "OTH"
+      "RESTRICTED"
+      "TMA"
+      "TMZ"
+      "WAVE"
+      */
+
+      QString category = attributes.value("CATEGORY").toString();
+
+      if( m_airspaceTypeMapper.contains(category) == false )
+        {
+          qWarning() << method
+                     << "Line:" << xml.lineNumber()
+                     << "Ignoring Airspace, unknown category:" << category;
+
+          xml.skipCurrentElement();
+          return true;
+        }
+
+      // Apply user mapping rules
+      as.setTypeID( m_airspaceTypeMapper.value(category, BaseMapElement::AirUkn) );
+    }
+
+  while( !xml.atEnd() && ! xml.hasError() )
+    {
+      /* Read the next element from the stream. */
+      QXmlStreamReader::TokenType token = xml.readNext();
+
+      if( token == QXmlStreamReader::EndElement )
+        {
+          if( xml.name() == "ASP" )
+            {
+              // All record data have been read.
+              return (error == 0 ? true : false);
+            }
+
+          continue;
+        }
+
+      BaseMapElement::elevationType altReference;
+      Altitude altitude;
+
+      /* If token is StartElement, we'll see if we can read it.*/
+      if( token == QXmlStreamReader::StartElement )
+        {
+          QString elementName = xml.name().toString();
+
+          // qDebug() << "Element=" << elementName;
+
+          if( elementName == "ID" )
+            {
+              // We store the id in the airspace object, to filter out
+              // duplicates.
+              bool ok;
+              int id = xml.readElementText().toInt(&ok);
+
+              if( ok )
+                {
+                  as.setId(id);
+                }
+            }
+          else if( elementName == "COUNTRY" )
+            {
+              as.setCountry( xml.readElementText().left(2).toUpper() );
+            }
+          else if ( elementName == "NAME" )
+            {
+              // Airspace name
+              as.setName( xml.readElementText() );
+            }
+          else if ( elementName == "ALTLIMIT_TOP" )
+            {
+              bool ok = readAirspaceLimitReference( xml, altReference );
+
+              if( ! ok )
+                {
+                  error++;
+                }
+              else
+                {
+                  as.setUpperT( altReference );
+
+                  QString unit;
+                  ok = readAirspaceAltitude( xml, unit, altitude );
+
+                  if( ! ok )
+                    {
+                      error++;
+                    }
+                  else
+                    {
+                      as.setUpperL( altitude );
+
+                      // Cumulus sets this combination to FL internally.
+                      if( altReference == BaseMapElement::STD && unit == "FL" )
+                        {
+                          as.setUpperT( BaseMapElement::FL );
+                        }
+                    }
+                }
+            }
+          else if ( elementName == "ALTLIMIT_BOTTOM" )
+            {
+              bool ok = readAirspaceLimitReference( xml, altReference );
+
+              if( ! ok )
+                {
+                  error++;
+                }
+              else
+               {
+                 as.setLowerT( altReference );
+
+                 QString unit;
+                 ok = readAirspaceAltitude( xml, unit, altitude );
+
+                 if( ! ok )
+                   {
+                     error++;
+                   }
+                 else
+                   {
+                     as.setLowerL( altitude );
+
+                     // Cumulus sets this combination to FL internally.
+                     if( altReference == BaseMapElement::STD && unit == "FL" )
+                       {
+                         as.setLowerT( BaseMapElement::FL );
+                       }
+                   }
+               }
+            }
+          else if ( elementName == "GEOMETRY" )
+            {
+              bool ok = readAirspaceGeometrie( xml, as );
+
+              if( ! ok )
+                {
+                  error++;
+                }
+            }
+        }
+    }
+
+  return (error == 0 ? true : false);
+}
+
+bool OpenAip::readAirspaceLimitReference( QXmlStreamReader& xml,
+                                          BaseMapElement::elevationType& reference )
+{
+  // Read airspace limit reference
+  QXmlStreamAttributes attributes = xml.attributes();
+
+  reference = BaseMapElement::NotSet;
+
+  if( ! attributes.hasAttribute("REFERENCE") )
+    {
+      xml.skipCurrentElement();
+      return false;
+    }
+
+  QString value = attributes.value("REFERENCE").toString();
+
+  if( value == "GND" )
+    {
+      reference = BaseMapElement::GND;
+    }
+  else if( value == "MSL" )
+    {
+      reference = BaseMapElement::MSL;
+    }
+  else if( value == "STD" )
+    {
+      reference = BaseMapElement::STD;
+    }
+  else
+    {
+      return false;
+    }
+
+  return true;
+}
+
+bool OpenAip::readAirspaceAltitude( QXmlStreamReader& xml,
+                                    QString& unit,
+                                    Altitude& altitude )
+{
+  xml.readNextStartElement();
+
+  if( xml.atEnd() || xml.hasError() || ! xml.isStartElement() || xml.name() != "ALT" )
+    {
+      xml.skipCurrentElement();
+      altitude = Altitude();
+      return false;
+    }
+
+  QXmlStreamAttributes attributes = xml.attributes();
+
+  if( ! attributes.hasAttribute("UNIT") )
+    {
+      xml.skipCurrentElement();
+      altitude = Altitude();
+      return false;
+    }
+
+  unit = attributes.value("UNIT").toString();
+  QString unitValue = xml.readElementText();
+
+  bool ok;
+  double alt = unitValue.toDouble(&ok);
+
+  if( ok == false )
+    {
+      qWarning() << "OpenAip::readAirspaceAltitude: wrong altitude value:"
+                 << unitValue;
+      xml.skipCurrentElement();
+      altitude = Altitude();
+      return false;
+    }
+
+  if( unit == "F" || unit == "FL" )
+    {
+      altitude.setFeet( alt );
+      return true;
+    }
+
+  qWarning() << "OpenAip::readAirspaceAltitude: Unknown altitude unit:" << unit;
+  xml.skipCurrentElement();
+  altitude = Altitude();
+  return false;
+}
+
+bool OpenAip::readAirspaceGeometrie( QXmlStreamReader& xml, Airspace& as )
+{
+  const char* method = "OpenAip::readAirspaceGeometrie:";
+
+  xml.readNextStartElement();
+
+  if( xml.atEnd() || xml.hasError() || ! xml.isStartElement() || xml.name() != "POLYGON" )
+    {
+      xml.skipCurrentElement();
+      return false;
+    }
+
+  QStringList polygonList = xml.readElementText().split(QRegExp(",?\\s+"), QString::SkipEmptyParts );
+
+  if( polygonList.isEmpty() )
+    {
+      qWarning() << method << "Polygon list is empty at line" << xml.lineNumber();
+      xml.skipCurrentElement();
+      return false;
+    }
+
+  // The list consists of pairs Longitude, Latitude
+  if( polygonList.size() % 2 )
+    {
+      qWarning() << method << "Polygon list is odd at line" << xml.lineNumber();
+      xml.skipCurrentElement();
+      return false;
+    }
+
+  QPolygon asPolygon( polygonList.size() / 2 );
+  extern MapMatrix* _globalMapMatrix;
+
+  for( int i = 0; i < polygonList.size(); i += 2 )
+    {
+      // The list consists of pairs Longitude, Latitude
+      // Convert coordinate to double and check range
+      float lon = 0.0, lat = 0.0;
+      bool okLon = false, okLat = false;
+      int error = 0;
+
+      lon = polygonList.at(i).toFloat(&okLon);
+      lat = polygonList.at(i+1).toFloat(&okLat);
+
+      if( okLon == false || lon < -180.0 || lon > 180.0 )
+        {
+          qWarning() << method << "Wrong longitude value"
+                     << polygonList.at(i)
+                     << "read at line" << xml.lineNumber();
+          error++;
+        }
+
+      if( okLat == false || lat < -90.0 || lat > 90.0 )
+        {
+          qWarning() << method << "Wrong latitude value"
+                     << polygonList.at(i+1)
+                     << "read at line" << xml.lineNumber();
+          error++;
+        }
+
+      if( error > 0 )
+        {
+          return false;
+        }
+
+      // Convert coordinates into KFLog format
+      int latInt = static_cast<int> (rint(600000.0 * lat));
+      int lonInt = static_cast<int> (rint(600000.0 * lon));
+
+      // Project coordinates to map datum and store them in a polygon
+      asPolygon.setPoint( i/2, _globalMapMatrix->wgsToMap( latInt, lonInt ) );
+    }
+
+  if( asPolygon.count() < 2 )
+    {
+      qWarning() << method << "Line" << xml.lineNumber()
+                 << "Airspace" << as.getName()
+                 << "contains to less coordinates! Ignoring it.";
+      return false;
+    }
+
+  // Airspaces are stored as polygons and should not contain the start point
+  // twice as done in OpenAip description.
+  if ( asPolygon.count() > 2 && asPolygon.first() == asPolygon.last() )
+    {
+      // remove the last point because it is identical to the first point
+      asPolygon.remove(asPolygon.count()-1);
+    }
+
+  as.setProjectedPolygon( asPolygon );
+  return true;
 }

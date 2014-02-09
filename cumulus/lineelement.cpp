@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2011 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,22 +16,33 @@
  **
  ***********************************************************************/
 
-#include <QColor>
+#include <QtCore>
 
 #include "lineelement.h"
 #include "generalconfig.h"
+
+LineElement::LineElement() :
+  BaseMapElement(),
+  valley(false),
+  closed(false)
+{
+}
 
 LineElement::LineElement( const QString& name,
                           const BaseMapElement::objectType t,
                           const QPolygon& pP,
                           const bool isV,
-                          const unsigned short secID )
-  : BaseMapElement(name, t, secID), projPolygon(pP),
-    bBox(pP.boundingRect()), valley(isV), closed(false)
+                          const unsigned short secID,
+                          const QString& country )
+  : BaseMapElement(name, t, secID, country),
+    projPolygon(pP),
+    bBox(pP.boundingRect()),
+    valley(isV),
+    closed(false)
 {
   if( typeID == BaseMapElement::Lake ||
       typeID == BaseMapElement::City ||
-      typeID == BaseMapElement::Forest)
+      typeID == BaseMapElement::Forest )
     {
       closed = true;
     }

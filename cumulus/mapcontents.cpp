@@ -25,6 +25,7 @@
 
 #include "airfield.h"
 #include "airspace.h"
+#include "AirspaceHelper.h"
 #include "basemapelement.h"
 #include "calculator.h"
 #include "datatypes.h"
@@ -40,7 +41,6 @@
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "mapview.h"
-#include "openairparser.h"
 #include "projectionbase.h"
 #include "radiopoint.h"
 #include "singlepoint.h"
@@ -49,6 +49,7 @@
 #include "wgspoint.h"
 
 #include "openaipairfieldloader.h"
+#include "openaip.h"
 
 extern MapView* _globalMapView;
 
@@ -1932,8 +1933,7 @@ void MapContents::proofeSection()
     {
       ws->slot_SetText2( tr( "Reading OpenAir Files" ) );
 
-      OpenAirParser oap;
-      oap.load( airspaceList );
+      AirspaceHelper::loadAirspaces( airspaceList );
 
       // finally, sort the airspaces
       airspaceList.sort();
@@ -2814,8 +2814,7 @@ void MapContents::slotReloadAirspaceData()
 
   _globalMapView->slot_info( tr("loading Airspaces") );
 
-  OpenAirParser oap;
-  oap.load( airspaceList );
+  AirspaceHelper::loadAirspaces( airspaceList );
 
   // finally, sort the airspaces
   airspaceList.sort();
@@ -3293,7 +3292,9 @@ void MapContents::addDir (QStringList& list, const QString& _path, const QString
 
   //JD was a bit annoyed by many notifications about nonexisting dirs
   if ( ! path.exists() )
-    return;
+    {
+      return;
+    }
 
   QStringList entries (path.entryList());
 
