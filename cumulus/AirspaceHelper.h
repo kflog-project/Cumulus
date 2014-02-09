@@ -24,20 +24,27 @@
  *
  * \brief Helper class for airspaces
  *
- * This class contains methods for airspace compilation, storage and reading.
+ * This class contains methods for airspace loading, compilation, storage and
+ * reading. Two kinds of airspace source files are supported.
+ *
+ * <ul>
+ * <li>OpenAir format, an ASCII text description of the airspaces</li>
+ * <li>OpenAIP format, a XML description of the airspaces</li>
+ * </ul>
  *
  * \date 2014
  *
  * \version $Id$
  */
 
-#ifndef AIRSPACE_HELPER_H_
-#define AIRSPACE_HELPER_H_
+#ifndef AIRSPACE_HELPER_H
+#define AIRSPACE_HELPER_H
 
-// type definition for compiled airspace files
+// Type definition for compiled airspace files
 #define FILE_TYPE_AIRSPACE_C 0x61
 
-// version used for files created from OpenAir data
+// Version definition for compiled airspace files. Increment this value,
+// if you change the compiled format.
 #define FILE_VERSION_AIRSPACE_C 206
 
 #include <QDateTime>
@@ -58,12 +65,16 @@ class AirspaceHelper
   /**
    * Constructor
    */
-  AirspaceHelper();
+  AirspaceHelper()
+  {
+  };
 
   /**
    * Destructor
    */
-  virtual ~AirspaceHelper();
+  virtual ~AirspaceHelper()
+  {
+  };
 
   /**
    * Searches on default places for OpenAir and OpenAip airspace files.
@@ -209,4 +220,4 @@ class AirspaceHelper
 
 };
 
-#endif /* AIRSPACE_HELPER_H_ */
+#endif /* AIRSPACE_HELPER_H */

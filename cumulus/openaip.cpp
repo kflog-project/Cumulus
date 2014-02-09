@@ -1490,8 +1490,6 @@ bool OpenAip::readAirspaces( QString fileName,
   QFileInfo fi(fileName);
   int listStartIdx = airspaceList.size();
 
-  qDebug() << "OAIP FN" << fileName << "readAirspaces suffix" << fi.suffix().toLower();
-
   if( fi.suffix().toLower() != "aip" )
     {
       errorInfo = fileName + " " + QObject::tr("has not suffix .aip!");
@@ -1591,7 +1589,7 @@ bool OpenAip::readAirspaces( QString fileName,
                   else
                     {
                       // Airspace is already known. Ignore object.
-                      qDebug() << "QIAP::readAirspaces: Airspace"
+                      qDebug() << "QIAP::readAirspaces: Known Airspace"
                                << as.getName()
                                << "ignored!";
                     }

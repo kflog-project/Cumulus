@@ -35,21 +35,7 @@ QMap<QString, BaseMapElement::objectType> AirspaceHelper::m_airspaceTypeMap;
 
 QSet<int> AirspaceHelper::m_airspaceDictionary;
 
-  /**
-   * Constructor
-   */
-  AirspaceHelper::AirspaceHelper()
-  {
-  }
-
-  /**
-   * Destructor
-   */
-  AirspaceHelper::~AirspaceHelper()
-  {
-  }
-
-  int AirspaceHelper::loadAirspaces( QList<Airspace*>& list )
+int AirspaceHelper::loadAirspaces( QList<Airspace*>& list )
   {
     QTime t; t.start();
     uint loadCounter = 0; // number of successfully loaded files
@@ -93,8 +79,6 @@ QSet<int> AirspaceHelper::m_airspaceDictionary;
     // source files follows compiled files
     preselect.sort();
 
-    qDebug() << "PreselectedList=" << preselect;
-
     // Check, which files shall be loaded.
     QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
 
@@ -127,8 +111,6 @@ QSet<int> AirspaceHelper::m_airspaceDictionary;
               }
           }
       }
-
-    qDebug() << "PreselectedList after ConfigCheck=" << preselect;
 
     OpenAirParser oap;
     OpenAip oaip;
@@ -260,16 +242,20 @@ QSet<int> AirspaceHelper::m_airspaceDictionary;
             continue;
           }
 
-        // Check date-time against the config file
-        QString confName = fi.path() + "/" + fi.baseName() + "_mappings.conf";
-        QFileInfo fiConf(confName);
+        // Check date-time against the configuration files
+        QString confName1 = fi.path() + "/airspace_mappings.conf";
+        QString confName2 = fi.path() + "/" + fi.baseName() + "_mappings.conf";
+        QFileInfo fiConf1(confName1);
+        QFileInfo fiConf2(confName2);
 
-        if( fiConf.exists() && fi.isReadable()
-            && h_creationDateTime < fiConf.lastModified())
+        if( (fiConf1.exists() && fi.isReadable() &&
+             h_creationDateTime < fiConf1.lastModified()) ||
+            (fiConf2.exists() && fi.isReadable() &&
+             h_creationDateTime < fiConf2.lastModified()) )
           {
-            // Config file was modified, make a new compilation. It is not
-            // deeper checked, what was modified due to the effort and
-            // in the assumption that a config file will not be changed
+            // Configuration file was modified, make a new compilation.
+            // It is not deeper checked, what was modified due to the effort and
+            // in the assumption that a configuration file will not be changed
             // every minute.
             QFile::remove(binName);
 
@@ -531,7 +517,7 @@ QSet<int> AirspaceHelper::m_airspaceDictionary;
         if( id >= 0 && addAirspaceIdentifier(id) == false )
           {
             // Airspace is already known. Ignore object.
-            qDebug() << "ASH::readCompiledFile: Airspace" << name << "ignored!";
+            qDebug() << "ASH::readCompiledFile: Known Airspace" << name << "ignored!";
             continue;
           }
 
@@ -636,7 +622,6 @@ void AirspaceHelper::loadAirspaceTypeMapping()
   m_airspaceTypeMap.insert("AirD", BaseMapElement::AirD);
   m_airspaceTypeMap.insert("AirE", BaseMapElement::AirE);
   //m_airspaceTypeMap.insert("AirG", BaseMapElement::AirG);
-  m_airspaceTypeMap.insert("AirUkn", BaseMapElement::AirUkn);
   m_airspaceTypeMap.insert("WaveWindow", BaseMapElement::WaveWindow);
   m_airspaceTypeMap.insert("AirF", BaseMapElement::AirF);
   m_airspaceTypeMap.insert("ControlC", BaseMapElement::ControlC);
@@ -647,6 +632,7 @@ void AirspaceHelper::loadAirspaceTypeMapping()
   m_airspaceTypeMap.insert("LowFlight", BaseMapElement::LowFlight);
   m_airspaceTypeMap.insert("Tmz", BaseMapElement::Tmz);
   m_airspaceTypeMap.insert("GliderSector", BaseMapElement::GliderSector);
+  m_airspaceTypeMap.insert("AirUkn", BaseMapElement::AirUkn);
 }
 
 QMap<QString, BaseMapElement::objectType>
@@ -665,7 +651,6 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("D", BaseMapElement::AirD);
       typeMap.insert("E", BaseMapElement::AirE);
       typeMap.insert("F", BaseMapElement::AirF);
-      //typeMap.insert("G", BaseMapElement::AirG);
       typeMap.insert("UKN", BaseMapElement::AirUkn);
       typeMap.insert("GP", BaseMapElement::Restricted);
       typeMap.insert("R", BaseMapElement::Restricted);
@@ -703,59 +688,70 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       return typeMap;
     }
 
-  QString path = fi.path() + "/" + fi.baseName() + "_mappings.conf";
+  QStringList fList;
 
-  fi.setFile(path);
+  // Default user airspace type mapping file
+  fList << fi.path() + "/airspace_mappings.conf";
 
-  if (fi.exists() && fi.isFile() && fi.isReadable())
+  // User airspace type mapping file only for the current airspace file
+  fList << fi.path() + "/" + fi.baseName() + "_mappings.conf";
+
+  for (int i = 0; i < fList.size(); i++)
     {
-      QFile f(path);
+      fi.setFile(fList.at(i));
 
-      if (!f.open(QIODevice::ReadOnly))
+      if (fi.exists() && fi.isFile() && fi.isReadable())
         {
-          qWarning() << "ASH: Cannot open airspace mapping file" << path << "!";
-          return typeMap;
-        }
+          QFile f(fList.at(i));
 
-      QTextStream in(&f);
-      qDebug() << "Parsing mapping file" << path;
-
-      // start parsing
-      while( ! in.atEnd() )
-        {
-          QString line = in.readLine().simplified();
-
-          if (line.startsWith("*") || line.startsWith("#") || line.isEmpty() )
+          if (!f.open(QIODevice::ReadOnly))
             {
-              continue;
+              qWarning() << "ASH: Cannot open airspace mapping file" << fList.at(i)
+                         << "!";
+              return typeMap;
             }
 
-          int pos = line.indexOf("=");
+          QTextStream in(&f);
+          qDebug() << "Parsing mapping file" << fList.at(i);
 
-          if( pos > 1 && pos < line.length() - 1 )
+          // start parsing
+          while (!in.atEnd())
             {
-              QString key = line.left(pos).simplified();
-              QString value = line.mid(pos + 1).simplified();
+              QString line = in.readLine().simplified();
 
-              if( key.isEmpty() || value.isEmpty() )
+              if (line.startsWith("*") || line.startsWith("#")
+                  || line.isEmpty())
                 {
                   continue;
                 }
 
-              if( isAirspaceBaseTypeKnown( value ) == false )
+              int pos = line.indexOf("=");
+
+              if (pos > 1 && pos < line.length() - 1)
                 {
-                  continue;
+                  QString key = line.left(pos).simplified();
+                  QString value = line.mid(pos + 1).simplified();
+
+                  if (key.isEmpty() || value.isEmpty())
+                    {
+                      continue;
+                    }
+
+                  if (isAirspaceBaseTypeKnown(value) == false)
+                    {
+                      continue;
+                    }
+
+                  qDebug() << "ASH: Airspace type mapping changed by user:"
+                           << key << "-->" << value;
+
+                  typeMap.remove(key);
+                  typeMap.insert(key, mapAirspaceBaseType(value));
                 }
-
-              qDebug() << "ASH: Airspace type mapping changed by user:"
-                       << key << "-->" << value;
-
-              typeMap.remove(key);
-              typeMap.insert(key, mapAirspaceBaseType(value));
             }
-        }
 
-      f.close();
+          f.close();
+        }
     }
 
   return typeMap;

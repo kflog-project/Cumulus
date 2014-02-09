@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2014-02-09 AP: New feature added that can parse, store and load OpenAIP
+                   airspace files. The airspaces are defined by using XML syntax.
+
 [+] 2014-02-02 AP: Android: IOIO service added. One IOIO uart can be configured
                    to read/write data to the connected device.
 
