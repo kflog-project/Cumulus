@@ -1571,8 +1571,9 @@ QStringList GeneralConfig::getMapDirectories()
   QString     mapDefault = getUserDefaultRootDir() + "/maps";
 
 #ifdef ANDROID
-  // Under Android only one map directory on sdcard exists
-  return mapDefault;
+  // Under Android only the default map directory on sdcard exists
+  mapDirs << mapDefault;
+  return mapDirs;
 #endif
 
   // First takes defined map directory
