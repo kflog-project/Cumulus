@@ -64,6 +64,8 @@ int main(int argc, char *argv[])
   // @AP: Reset the locale that is used for number formatting to "C" locale.
   setlocale(LC_NUMERIC, "C");
 
+  GeneralConfig *conf = GeneralConfig::instance();
+
 #ifdef ANDROID
 
   // Gets the additional data directory from our app. That is normally the
@@ -81,6 +83,11 @@ int main(int argc, char *argv[])
   // That must be done before the QApplication constructor is called.
   // Otherwise another HOME is used by QApplication.
   qputenv ( "HOME", addDir.toLatin1().data() );
+
+  // Set data directory after every startup because different Android APIs
+  // uses different locations. Otherwise that can cause problems during Andoid
+  // updates to a newer release.
+  conf->setUserDataDirectory( addDir );
 
 #endif
 
@@ -106,7 +113,6 @@ int main(int argc, char *argv[])
   // Note, that first $HOME must be overwritten under Android otherwise the
   // setting file is created/searched in the internal data area under:
   // /data/data/org.kflog.cumulus/files. That is the $HOME, set by Necessitas.
-  GeneralConfig *conf = GeneralConfig::instance();
 
 #ifdef ANDROID
 
