@@ -79,6 +79,9 @@ int main(int argc, char *argv[])
       addDir = jniGetAddDataDir();
     }
 
+  // Assign the original path name
+  addDir = QDir(addDir).canonicalPath();
+
   // Nice trick to overwrite the HOME directory under Android by us ;-)
   // That must be done before the QApplication constructor is called.
   // Otherwise another HOME is used by QApplication.
