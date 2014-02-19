@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008-2013 Axel Pauli
+**   Copyright (c):  2003 by André Somers, 2008-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief A widget for the pre-flight glider selection and settings.
  *
- * \date 2003-2013
+ * \date 2003-2014
  *
  * \version $Id$
  *
@@ -111,7 +111,12 @@ class PreFlightGliderPage : public QWidget
   /**
    * Updates the wingload label.
    */
-  void slotNumberEdited( const QString& number );
+  void slotLoadEdited( const QString& number );
+
+  /**
+   * Updates the wingload label.
+   */
+  void slotWaterEdited( const QString& number );
 
   /**
    * Called if the Ok button is pressed.

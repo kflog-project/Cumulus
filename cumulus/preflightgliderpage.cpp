@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -140,8 +140,8 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
 
   connect(deselect, SIGNAL(clicked()), this, SLOT(slotGliderDeselected()) );
   connect(m_gliderList, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()));
-  connect(m_edtLoad, SIGNAL(numberEdited(const QString&)), this, SLOT(slotNumberEdited(const QString&)));
-  connect(m_edtWater, SIGNAL(numberEdited(const QString&)), this, SLOT(slotNumberEdited(const QString&)));
+  connect(m_edtLoad, SIGNAL(numberEdited(const QString&)), this, SLOT(slotLoadEdited(const QString&)));
+  connect(m_edtWater, SIGNAL(numberEdited(const QString&)), this, SLOT(slotWaterEdited(const QString&)));
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
@@ -322,9 +322,27 @@ void PreFlightGliderPage::slotUpdateWingLoad( int value )
   m_wingLoad->setText(msg);
 }
 
-void PreFlightGliderPage::slotNumberEdited( const QString& number )
+void PreFlightGliderPage::slotLoadEdited( const QString& number )
 {
-  Q_UNUSED( number )
+  Glider* glider = m_gliderList->getSelectedGlider();
+
+  if( glider != 0 && glider->polar() != 0 )
+    {
+      glider->polar()->setGrossWeight(number.toInt() + glider->polar()->emptyWeight() );
+    }
+
+  // Updates the wing load, if load or water have been edited.
+  slotUpdateWingLoad( 0 );
+}
+
+void PreFlightGliderPage::slotWaterEdited( const QString& number )
+{
+  Glider* glider = m_gliderList->getSelectedGlider();
+
+  if( glider != 0 && glider->polar() != 0 )
+    {
+      glider->polar()->setWater( number.toInt(), 0);
+    }
 
   // Updates the wing load, if load or water have been edited.
   slotUpdateWingLoad( 0 );
