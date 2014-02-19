@@ -50,6 +50,7 @@
 #include <QDateTime>
 #include <QList>
 #include <QMap>
+#include <QMutex>
 #include <QSet>
 #include <QString>
 
@@ -84,8 +85,11 @@ class AirspaceHelper
    *
    * @param list The list where the Airspace objects should be added from the
    *        read files.
+   * @param readSource If true the source files have to be read instead of
+   *         compiled sources.
+   *
    */
-  static int loadAirspaces( QList<Airspace*>& list );
+  static int loadAirspaces( QList<Airspace*>& list, bool readSource=false );
 
   /**
    * Read the content of a compiled file and put it into the passed
@@ -218,6 +222,63 @@ class AirspaceHelper
    */
   static QSet<int> m_airspaceDictionary;
 
+  /** Mutex to ensure thread safety. */
+  static QMutex m_mutex;
 };
+
+/******************************************************************************/
+
+#include <QThread>
+
+/**
+* \class AirspaceHelperThread
+*
+* \author Axel Pauli
+*
+* \brief Class to read OpenAIP airspace data files in an extra thread.
+*
+* This class can read and parse openAIP airspace data files and store
+* their content in a binary format. All work is done in an extra thread.
+* The results are returned via the signal \ref loadedList.
+*
+* \date 2014
+*
+* \version $Id$
+*/
+
+class AirspaceHelperThread : public QThread
+{
+  Q_OBJECT
+
+ public:
+
+  AirspaceHelperThread( QObject *parent=0, bool readSource=false );
+
+  virtual ~AirspaceHelperThread();
+
+ protected:
+
+  /**
+   * That is the main method of the thread.
+   */
+  void run();
+
+ signals:
+
+  /**
+  * This signal emits the results of the OpenAIP load. The receiver slot is
+  * responsible to delete the dynamic allocated list in every case.
+  *
+  * \param loadedLists     The number of loaded lists
+  * \param airspaceList    The list with the airspace data
+  *
+  */
+  void loadedList( int loadedLists, QList<Airspace*>* airspaceList );
+
+ private:
+
+  bool m_readSource;
+};
+
 
 #endif /* AIRSPACE_HELPER_H */

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2013 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -2648,6 +2648,62 @@ void MapContents::slotReloadOpenAipAirfields()
       // Reload OpenAIP airfield data in an extra thread.
       loadOpenAipAirfieldsViaThread();
     }
+}
+
+void MapContents::loadAirspacesViaThread()
+{
+  QMutexLocker locker( &airspaceLoadMutex );
+
+  _globalMapView->slot_info( tr("Loading airspace data") );
+
+  AirspaceHelperThread *ashThread = new AirspaceHelperThread( this );
+
+  // Register a special data type for return results. That must be
+  // done to transfer the results between different threads.
+  qRegisterMetaType<AirspaceListPtr>("AirspaceListPtr");
+
+  // Connect the receiver of the results. It is located in this
+  // thread and not in the new opened thread.
+  connect( ashThread,
+           SIGNAL(loadedList( int, QList<Airspace*>* )),
+           this,
+           SLOT(slotAirspaceLoadFinished( int, QList<Airspace*>* )) );
+
+  ashThread->start();
+}
+
+void MapContents::slotAirspaceLoadFinished( int noOfLists,
+                                            QList<Airspace*>* airspaceListIn )
+{
+  QMutexLocker locker( &airspaceLoadMutex );
+
+  if( noOfLists == 0 )
+    {
+      _globalMapView->slot_info( tr("No Airspaces loaded") );
+    }
+  else
+    {
+      _globalMapView->slot_info( tr("Airspaces loaded") );
+    }
+
+  // Clear the airspace path list in map. They are outdated.
+  Map::getInstance()->clearAirspaceRegionList();
+
+  // Take over the new loaded airspace list. The passed list must be deleted!
+  qDeleteAll(airspaceList);
+  airspaceList.clear();
+
+  // free all internal allocated memory in QList
+  airspaceList = SortableAirspaceList();
+
+  // assign new airspace list
+  airspaceList = *airspaceListIn;
+
+  // finally, sort the airspaces
+  airspaceList.sort();
+  delete airspaceListIn;
+
+  emit mapDataReloaded();
 }
 
 #ifdef WELT2000_THREAD

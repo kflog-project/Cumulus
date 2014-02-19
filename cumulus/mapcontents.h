@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map-files as value lists.
  *
- * \date 2000-2013
+ * \date 2000-2014
  *
  * \version $Id$
  */
@@ -348,6 +348,13 @@ class MapContents : public QObject
     void slotOpenAipAirfieldLoadFinished( int noOfLists,
                                           QList<Airfield>* airfieldListIn );
 
+    /**
+     * This slot is called by the AirspaceHelper load thread to signal, that the
+     * requested airspace data have been loaded.
+     */
+    void slotAirspaceLoadFinished( int noOfLists,
+                                   QList<Airspace*>* airspaceListIn );
+
 #ifdef INTERNET
     /**
      * This slot is called to download the Welt2000 file from the internet.
@@ -452,6 +459,11 @@ class MapContents : public QObject
      * Starts a thread, which is loading the requested OpenAIP airfield data.
      */
     void loadOpenAipAirfieldsViaThread();
+
+    /**
+     * Starts a thread, which is loading the requested airspace data.
+     */
+    void loadAirspacesViaThread();
 
 #ifdef INTERNET
 
@@ -668,6 +680,9 @@ class MapContents : public QObject
 
     /** Mutex to protect airfield loading actions. */
     QMutex airfieldLoadMutex;
+
+    /** Mutex to protect airspace loading actions. */
+    QMutex airspaceLoadMutex;
   };
 
 #endif
