@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,12 +23,7 @@
 #include "mapcontents.h"
 #include "openaip.h"
 #include "openaipairfieldloader.h"
-
-// Type definition for openAIP compiled airfield files.
-#define FILE_TYPE_AIRFIELD_C "OpenAIP-Airfields"
-
-// Version used for compiled airfield files created from openAIP airfield data
-#define FILE_VERSION_AIRFIELD_C 3
+#include "resource.h"
 
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
@@ -290,7 +285,7 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
   qDebug() << "OAIP: creating file" << QFileInfo(fileName).fileName();
 
   out << quint32( KFLOG_FILE_MAGIC );
-  out << QByteArray( FILE_TYPE_AIRFIELD_C );
+  out << QByteArray( FILE_TYPE_AIRFIELD_OAIP_C );
   out << quint8( FILE_VERSION_AIRFIELD_C );
   out << QDateTime::currentDateTime();
   out << filterRadius;
@@ -418,7 +413,7 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
 
   in >> fileType;
 
-  if( fileType != QString(FILE_TYPE_AIRFIELD_C) )
+  if( fileType != QString(FILE_TYPE_AIRFIELD_OAIP_C) )
     {
       qWarning( "OAIP: wrong file type %s read! Aborting ...", fileType.data() );
       inFile.close();
@@ -587,7 +582,7 @@ bool OpenAipAirfieldLoader::setHeaderData( QString &path )
 
   in >> h_fileType;
 
-  if( h_fileType != QString(FILE_TYPE_AIRFIELD_C) )
+  if( h_fileType != QString(FILE_TYPE_AIRFIELD_OAIP_C) )
     {
       qWarning( "OAIP: wrong file type %s read! Aborting ...", h_fileType.data() );
       inFile.close();

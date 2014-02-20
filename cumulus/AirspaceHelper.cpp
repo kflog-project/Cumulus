@@ -464,7 +464,7 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   if ( fileType != FILE_TYPE_AIRSPACE_C )
     {
-      qWarning() <<  "ASH: wrong file type" <<  fileType << "read! Aborting ...";
+      qWarning() <<  "ASH: Wrong file type" <<  fileType << "read! Aborting ...";
       inFile.close();
       return false;
     }
@@ -473,7 +473,7 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   if ( fileVersion != FILE_VERSION_AIRSPACE_C )
     {
-      qWarning( "ASH: wrong file version %d read! Aborting ...", fileVersion );
+      qWarning( "ASH: Wrong file version %x read! Aborting ...", fileVersion );
       inFile.close();
       return false;
     }
@@ -787,6 +787,7 @@ AirspaceHelperThread::~AirspaceHelperThread()
 {
 }
 
+
 void AirspaceHelperThread::run()
 {
   sigset_t sigset;
@@ -796,13 +797,13 @@ void AirspaceHelperThread::run()
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   // Check is signal is connected to a slot.
-  if( receivers( SIGNAL( loadedList( int, QList<Airspace*>* )) ) == 0 )
+  if( receivers( SIGNAL( loadedList( int, SortableAirspaceList* )) ) == 0 )
     {
       qWarning() << "AirspaceHelperThread: No Slot connection to Signal loadedList!";
       return;
     }
 
-  QList<Airspace*>* airspaceList = new QList<Airspace*>;
+  SortableAirspaceList* airspaceList = new SortableAirspaceList;
 
   int ok = AirspaceHelper::loadAirspaces( *airspaceList, m_readSource );
 

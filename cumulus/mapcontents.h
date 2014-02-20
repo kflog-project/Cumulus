@@ -49,8 +49,9 @@
 #include "airspace.h"
 #include "distance.h"
 #include "flighttask.h"
-#include "waitscreen.h"
 #include "isolist.h"
+#include "map.h"
+#include "waitscreen.h"
 
 #ifdef INTERNET
 #include "downloadmanager.h"
@@ -353,7 +354,7 @@ class MapContents : public QObject
      * requested airspace data have been loaded.
      */
     void slotAirspaceLoadFinished( int noOfLists,
-                                   QList<Airspace*>* airspaceListIn );
+                                   SortableAirspaceList* airspaceListIn );
 
 #ifdef INTERNET
     /**
@@ -425,6 +426,11 @@ class MapContents : public QObject
      */
     void mapDataReloaded();
 
+    /**
+     * Emitted after reload of map data
+     */
+    void mapDataReloaded( Map::mapLayer layer );
+
   private:
 
     /**
@@ -436,7 +442,7 @@ class MapContents : public QObject
      *
      * @return "true", when the file has successfully been loaded
      */
-    bool __readBinaryFile(const int fileSecID, const char fileTypeID);
+    bool readBinaryFile(const int fileSecID, const char fileTypeID);
 
     /**
      * Reads a binary ground/terrain file.
@@ -447,8 +453,7 @@ class MapContents : public QObject
      *
      * @return "true", when the file has successfully been loaded
      */
-    bool __readTerrainFile( const int fileSecID,
-                            const int fileTypeID );
+    bool readTerrainFile( const int fileSecID, const int fileTypeID );
 
     /**
      * Starts a thread, which is loading the requested Welt2000 data.
@@ -474,14 +479,14 @@ class MapContents : public QObject
      * @param directory The destination directory.
      *
      */
-    bool __downloadMapFile( QString &file, QString &directory );
+    bool downloadMapFile( QString &file, QString &directory );
 
     /**
      * Ask the user once for download of missing map files. The answer
      * is stored permanently to have it for further request.
      * Returns true, if download is desired otherwise false.
      */
-    bool __askUserForDownload();
+    bool askUserForDownload();
 
 #endif
 
@@ -665,24 +670,24 @@ class MapContents : public QObject
 #ifdef INTERNET
 
     /** Manager to handle downloads of missing map file. */
-    DownloadManager *downloadManger;
+    DownloadManager *m_downloadManger;
 
     /** Store user decision to download missing data files. */
-    bool shallDownloadData;
+    bool m_shallDownloadData;
 
     /** Store that user has asked once for download of missing data file. */
-    bool hasAskForDownload;
+    bool m_hasAskForDownload;
 
     /** Store download request for openAIP airfield data. */
-    bool downloadOpenAipAirfieldsRequested;
+    bool m_downloadOpenAipAirfieldsRequested;
 
 #endif
 
     /** Mutex to protect airfield loading actions. */
-    QMutex airfieldLoadMutex;
+    QMutex m_airfieldLoadMutex;
 
     /** Mutex to protect airspace loading actions. */
-    QMutex airspaceLoadMutex;
+    QMutex m_airspaceLoadMutex;
   };
 
 #endif

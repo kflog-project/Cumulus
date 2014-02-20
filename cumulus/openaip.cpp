@@ -1581,6 +1581,20 @@ bool OpenAip::readAirspaces( QString fileName,
               // read airspace record
               if( readAirspaceRecord( xml, as ) )
                 {
+                  // Check lower and upper altitude
+                  if( as.getLowerAltitude() == as.getUpperAltitude() )
+                    {
+                      qWarning() << "QIAP::Airspace Error"
+                                 << "ID="
+                                 << as.getId()
+                                 << "Name="
+                                 << as.getName()
+                                 << "lower and upper altitude ("
+                                 << as.getLowerAltitude().getFeet()
+                                 << ") are the same!";
+                      continue;
+                    }
+
                   if( AirspaceHelper::addAirspaceIdentifier(as.getId()) )
                     {
                       Airspace* elem = as.createAirspaceObject();
@@ -1589,7 +1603,7 @@ bool OpenAip::readAirspaces( QString fileName,
                   else
                     {
                       // Airspace is already known. Ignore object.
-                      qDebug() << "QIAP::readAirspaces: Known Airspace"
+                      qDebug() << "QIAP:: Known Airspace"
                                << as.getName()
                                << "ignored!";
                     }

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2012 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,18 +53,55 @@
  *   >9       8byte     <>             Zeitstempel der Erzeugung
  */
 
+// number of last map tile, possible range goes 0...16200
+#define MAX_TILE_NUMBER 16200
+
+// general KFLOG file token: @KFL
 #define KFLOG_FILE_MAGIC   0x404b464c
 
-#define TYPE_GROUND     0x47
-#define TYPE_TERRAIN    0x54
-#define TYPE_MAP        0x4d
-#define TYPE_AERO       0x41
-#define FORMAT_VERSION  100
+//#define TYPE_TERRAIN    0x54
+//#define TYPE_MAP        0x4d
 
-/************************************************************************************
+// uncompiled map file types
+#define FILE_TYPE_GROUND      0x47
+#define FILE_TYPE_TERRAIN     0x54
+#define FILE_TYPE_MAP         0x4d
+
+// Uncompiled map file versions
+#define FILE_VERSION_GROUND   102
+#define FILE_VERSION_TERRAIN  102
+#define FILE_VERSION_MAP      101
+
+// Compiled map file types
+#define FILE_TYPE_GROUND_C    0x67
+#define FILE_TYPE_TERRAIN_C   0x74
+#define FILE_TYPE_MAP_C       0x6d
+
+// Type definition for compiled airspace files, used by Airspace parsers
+#define FILE_TYPE_AIRSPACE_C  0x61
+
+// Type definition for Welt2000 compiled airfield files.
+#define FILE_TYPE_AIRFIELD_C  0x63
+
+// Type definition for openAIP compiled airfield files.
+#define FILE_TYPE_AIRFIELD_OAIP_C "OpenAIP-Airfields"
+
+//=================================================================================
+// Compiled file versions. Increment this value, if you change the compiled format.
+//=================================================================================
+#define FILE_VERSION_GROUND_C   104
+#define FILE_VERSION_TERRAIN_C  104
+#define FILE_VERSION_MAP_C      103
+
+// Version definition for compiled airspace files.
+#define FILE_VERSION_AIRSPACE_C 0
+
+// Version definition for compiled airfield files.
+#define FILE_VERSION_AIRFIELD_C 0
+
+/******************************************************************************
  * Definition of map element types
- ************************************************************************************/
-
+ ******************************************************************************/
 #define NOT_SELECTED      0
 #define INT_AIRPORT       1
 #define AIRPORT           2

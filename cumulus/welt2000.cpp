@@ -43,12 +43,6 @@
 #undef BOUNDING_BOX
 // #define BOUNDING_BOX 1
 
-// type definition for compiled airfield files
-#define FILE_TYPE_AIRFIELD_C 0x63
-
-// version used for files created from welt2000 data
-#define FILE_VERSION_AIRFIELD_C 208
-
 #ifdef BOUNDING_BOX
 extern MapContents*  _globalMapContents;
 #endif

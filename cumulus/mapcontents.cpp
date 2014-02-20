@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -44,6 +44,7 @@
 #include "projectionbase.h"
 #include "radiopoint.h"
 #include "singlepoint.h"
+#include "resource.h"
 #include "waypointcatalog.h"
 #include "welt2000.h"
 #include "wgspoint.h"
@@ -53,36 +54,7 @@
 
 extern MapView* _globalMapView;
 
-// number of last map tile, possible range goes 0...16200
-#define MAX_TILE_NUMBER 16200
-
-// general KFLOG file token: @KFL
-#define KFLOG_FILE_MAGIC    0x404b464c
-
-// uncompiled map file types
-#define FILE_TYPE_AERO        0x41
-#define FILE_TYPE_GROUND      0x47
-#define FILE_TYPE_TERRAIN     0x54
-#define FILE_TYPE_MAP         0x4d
-
-// compiled map file types
-#define FILE_TYPE_GROUND_C    0x67
-#define FILE_TYPE_TERRAIN_C   0x74
-#define FILE_TYPE_MAP_C       0x6d
-#define FILE_TYPE_AIRSPACE_C  0x61 // used by OpenAir parser
-#define FILE_TYPE_AIRFIELD_C  0x63 // used by Welt2000 parser
-
-// versions
-#define FILE_FORMAT_ID        100 // used to handle a previous version
-#define FILE_VERSION_GROUND   102
-#define FILE_VERSION_TERRAIN  102
-#define FILE_VERSION_MAP      101
-
-// compiled version
-#define FILE_VERSION_GROUND_C   104
-#define FILE_VERSION_TERRAIN_C  104
-#define FILE_VERSION_MAP_C      103
-
+#define FILE_FORMAT_ID 100 // used to handle a previous version
 
 #define READ_POINT_LIST\
   if (compiling) {\
@@ -119,10 +91,10 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     isReload(false)
 #ifdef INTERNET
 
-    , downloadManger(0),
-    shallDownloadData(false),
-    hasAskForDownload(false),
-    downloadOpenAipAirfieldsRequested(false)
+    , m_downloadManger(0),
+    m_shallDownloadData(false),
+    m_hasAskForDownload(false),
+    m_downloadOpenAipAirfieldsRequested(false)
 
 #endif
 {
@@ -212,8 +184,7 @@ void MapContents::saveWaypointList()
  * Thanks to Josua Dietze for his contribution of precomputed map files.
  *
  */
-bool MapContents::__readTerrainFile( const int fileSecID,
-                                     const int fileTypeID )
+bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 {
   extern const MapMatrix* _globalMapMatrix;
   bool kflExists, kfcExists;
@@ -282,11 +253,11 @@ bool MapContents::__readTerrainFile( const int fileSecID,
 
 #ifdef INTERNET
 
-      res = __askUserForDownload();
+      res = askUserForDownload();
 
       if( res == true )
         {
-          res = __downloadMapFile( kflName, path );
+          res = downloadMapFile( kflName, path );
         }
 
 #endif
@@ -345,7 +316,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
           qDebug("Try to use file %s", kflPathName.toLatin1().data());
           // try to remove unopenable file, not sure if this works.
           unlink( pathName.toLatin1().data() );
-          return __readTerrainFile( fileSecID, fileTypeID );
+          return readTerrainFile( fileSecID, fileTypeID );
         }
 
       return false;
@@ -386,7 +357,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                    magic, kflPathName.toLatin1().data());
           mapfile.close();
           unlink( pathName.toLatin1().data() );
-          return __readTerrainFile( fileSecID, fileTypeID );
+          return readTerrainFile( fileSecID, fileTypeID );
         }
 
       qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
@@ -403,7 +374,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                    "Retry to compile %s",
                    loadTypeID, kflPathName.toLatin1().data() );
           unlink( pathName.toLatin1().data() );
-          return __readTerrainFile( fileSecID, fileTypeID );
+          return readTerrainFile( fileSecID, fileTypeID );
         }
 
       qWarning("Cumulus: %s wrong load type identifier %x read! Aborting ...",
@@ -462,7 +433,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                        formatID, expComFormatID, kflPathName.toLatin1().data() );
               mapfile.close();
               unlink( pathName.toLatin1().data() );
-              return __readTerrainFile( fileSecID, fileTypeID );
+              return readTerrainFile( fileSecID, fileTypeID );
             }
 
           qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
@@ -479,7 +450,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                         formatID, expComFormatID, kflPathName.toLatin1().data() );
               mapfile.close();
               unlink( pathName.toLatin1().data() );
-              return __readTerrainFile( fileSecID, fileTypeID );
+              return readTerrainFile( fileSecID, fileTypeID );
             }
 
           qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
@@ -497,7 +468,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                     pathName.toLatin1().data(), kflPathName.toLatin1().data() );
           mapfile.close();
           unlink( pathName.toLatin1().data() );
-          return __readTerrainFile( fileSecID, fileTypeID );
+          return readTerrainFile( fileSecID, fileTypeID );
         }
 
       qWarning("Cumulus: %s: wrong section, bogus file name! Arborting ...",
@@ -523,7 +494,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
                         pathName.toLatin1().data(), kflPathName.toLatin1().data() );
 
               unlink( pathName.toLatin1().data() );
-              return __readTerrainFile( fileSecID, fileTypeID );
+              return readTerrainFile( fileSecID, fileTypeID );
             }
 
           qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
@@ -681,8 +652,7 @@ bool MapContents::__readTerrainFile( const int fileSecID,
   return true;
 }
 
-bool MapContents::__readBinaryFile(const int fileSecID,
-                                   const char fileTypeID)
+bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 {
   extern const MapMatrix * _globalMapMatrix;
   bool kflExists, kfcExists;
@@ -744,11 +714,11 @@ bool MapContents::__readBinaryFile(const int fileSecID,
 
 #ifdef INTERNET
 
-      res = __askUserForDownload();
+      res = askUserForDownload();
 
       if( res == true )
         {
-          res = __downloadMapFile( kflName, path );
+          res = downloadMapFile( kflName, path );
         }
 
 #endif
@@ -807,7 +777,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                  pathName.toLatin1().data(), kflPathName.toLatin1().data());
           // try to remove unopenable file, not sure if this works.
           unlink( pathName.toLatin1().data() );
-          return __readBinaryFile( fileSecID, fileTypeID );
+          return readBinaryFile( fileSecID, fileTypeID );
         }
 
       qWarning("Cumulus: Can't open map file %s for reading! Aborting ...",
@@ -846,7 +816,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                    magic, kflPathName.toLatin1().data());
           mapfile.close();
           unlink( pathName.toLatin1().data() );
-          return __readBinaryFile( fileSecID, fileTypeID );
+          return readBinaryFile( fileSecID, fileTypeID );
         }
 
       qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
@@ -883,7 +853,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                        "Retry to compile %s",
                        loadTypeID, kflPathName.toLatin1().data() );
               unlink( pathName.toLatin1().data() );
-              return __readBinaryFile( fileSecID, fileTypeID );
+              return readBinaryFile( fileSecID, fileTypeID );
             }
 
           qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
@@ -936,7 +906,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                        "Retry to compile %s",
                        formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
               unlink( pathName.toLatin1().data() );
-              return __readBinaryFile( fileSecID, fileTypeID );
+              return readBinaryFile( fileSecID, fileTypeID );
             }
 
           qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
@@ -954,7 +924,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                         "Retry to compile %s",
                         formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
               unlink( pathName.toLatin1().data() );
-              return __readBinaryFile( fileSecID, fileTypeID );
+              return readBinaryFile( fileSecID, fileTypeID );
             }
 
           qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
@@ -975,7 +945,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                     "\n Retry to compile %s",
                     pathName.toLatin1().data(), kflPathName.toLatin1().data() );
           unlink( pathName.toLatin1().data() );
-          return __readBinaryFile( fileSecID, fileTypeID );
+          return readBinaryFile( fileSecID, fileTypeID );
         }
 
       qWarning("Cumulus: %s: wrong section, bogus file name! Aborting ...",
@@ -1001,7 +971,7 @@ bool MapContents::__readBinaryFile(const int fileSecID,
                         pathName.toLatin1().data(), kflPathName.toLatin1().data() );
 
               unlink( pathName.toLatin1().data() );
-              return __readBinaryFile( fileSecID, fileTypeID );
+              return readBinaryFile( fileSecID, fileTypeID );
             }
 
           qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
@@ -1460,7 +1430,7 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
 
               // File is missing, request it to download
               // qDebug() << "Download File:" << kflName;
-              __downloadMapFile( kflName, mapDir );
+              downloadMapFile( kflName, mapDir );
               needed++;
             }
         }
@@ -1476,7 +1446,7 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
  * @param directory The destination directory.
  *
  */
-bool MapContents::__downloadMapFile( QString &file, QString &directory )
+bool MapContents::downloadMapFile( QString &file, QString &directory )
 {
   extern Calculator* calculator;
 
@@ -1487,24 +1457,24 @@ bool MapContents::__downloadMapFile( QString &file, QString &directory )
       return false;
     }
 
-  if( downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadManger == static_cast<DownloadManager *> (0) )
     {
-      downloadManger = new DownloadManager(this);
+      m_downloadManger = new DownloadManager(this);
 
-      connect( downloadManger, SIGNAL(finished( int, int )),
+      connect( m_downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
 
-      connect( downloadManger, SIGNAL(networkError()),
+      connect( m_downloadManger, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadManger, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
   QString url = GeneralConfig::instance()->getMapServerUrl() + file;
   QString dest = directory + "/" + file;
 
-  downloadManger->downloadRequest( url, dest );
+  m_downloadManger->downloadRequest( url, dest );
   return true;
 }
 
@@ -1524,27 +1494,27 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
       return;
     }
 
-  if( downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadManger == static_cast<DownloadManager *> (0) )
     {
-      downloadManger = new DownloadManager(this);
+      m_downloadManger = new DownloadManager(this);
 
-      connect( downloadManger, SIGNAL(finished( int, int )),
+      connect( m_downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
 
-      connect( downloadManger, SIGNAL(networkError()),
+      connect( m_downloadManger, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadManger, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  connect( downloadManger, SIGNAL(welt2000Downloaded()),
+  connect( m_downloadManger, SIGNAL(welt2000Downloaded()),
            this, SLOT(slotReloadWelt2000Data()) );
 
   QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
   QString dest = GeneralConfig::instance()->getMapRootDir() + "/airfields/welt2000.txt";
 
-  downloadManger->downloadRequest( url, dest );
+  m_downloadManger->downloadRequest( url, dest );
 }
 
 void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountryList )
@@ -1563,21 +1533,21 @@ void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountr
       return;
     }
 
-  if( downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadManger == static_cast<DownloadManager *> (0) )
     {
-      downloadManger = new DownloadManager(this);
+      m_downloadManger = new DownloadManager(this);
 
-      connect( downloadManger, SIGNAL(finished( int, int )),
+      connect( m_downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
 
-      connect( downloadManger, SIGNAL(networkError()),
+      connect( m_downloadManger, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadManger, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  downloadOpenAipAirfieldsRequested = true;
+  m_downloadOpenAipAirfieldsRequested = true;
 
   const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
   const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
@@ -1588,7 +1558,7 @@ void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountr
       QString file = openAipCountryList.at(i).toLower() + "_wpt.aip";
       QString url  = urlPrefix + file;
       QString dest = destPrefix + file;
-      downloadManger->downloadRequest( url, dest );
+      m_downloadManger->downloadRequest( url, dest );
     }
 }
 
@@ -1607,40 +1577,40 @@ void MapContents::slotDownloadAirspace( QString& url )
       return;
     }
 
-  if( downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadManger == static_cast<DownloadManager *> (0) )
     {
-      downloadManger = new DownloadManager(this);
+      m_downloadManger = new DownloadManager(this);
 
-      connect( downloadManger, SIGNAL(finished( int, int )),
+      connect( m_downloadManger, SIGNAL(finished( int, int )),
                this, SLOT(slotDownloadsFinished( int, int )) );
 
-      connect( downloadManger, SIGNAL(networkError()),
+      connect( m_downloadManger, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadManger, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  connect( downloadManger, SIGNAL(airspaceDownloaded() ),
+  connect( m_downloadManger, SIGNAL(airspaceDownloaded() ),
            this, SLOT(slotReloadAirspaceData()) );
 
   QUrl airspaceUrl( url );
   QString file = QFileInfo( airspaceUrl.path() ).fileName();
   QString dest = GeneralConfig::instance()->getMapRootDir() + "/airspaces/" + file;
 
-  downloadManger->downloadRequest( url, dest );
+  m_downloadManger->downloadRequest( url, dest );
 }
 
 /** Called, if all downloads are finished. */
 void MapContents::slotDownloadsFinished( int requests, int errors )
 {
   // All downloads are finished, free not more needed resources.
-  downloadManger->deleteLater();
-  downloadManger = static_cast<DownloadManager *> (0);
+  m_downloadManger->deleteLater();
+  m_downloadManger = static_cast<DownloadManager *> (0);
 
-  if( downloadOpenAipAirfieldsRequested == true )
+  if( m_downloadOpenAipAirfieldsRequested == true )
     {
-      downloadOpenAipAirfieldsRequested = false;
+      m_downloadOpenAipAirfieldsRequested = false;
 
       // Tidy up airfield directory after download of openAIP files.
       const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
@@ -1713,11 +1683,11 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
 void MapContents::slotNetworkError()
 {
   // A network error has occurred. We do stop all further downloads.
-  downloadManger->deleteLater();
-  downloadManger = static_cast<DownloadManager *> (0);
+  m_downloadManger->deleteLater();
+  m_downloadManger = static_cast<DownloadManager *> (0);
 
   // Reset user decision flag
-  shallDownloadData = false;
+  m_shallDownloadData = false;
 
   QString msg = QString(tr("Network error occurred.\nAll downloads are canceled!"));
 
@@ -1744,14 +1714,14 @@ void MapContents::slotNetworkError()
  * is stored permanently to have it for further request.
  * Returns true, if download is desired otherwise false.
  */
-bool MapContents::__askUserForDownload()
+bool MapContents::askUserForDownload()
 {
-  if( hasAskForDownload == true )
+  if( m_hasAskForDownload == true )
     {
-      return shallDownloadData;
+      return m_shallDownloadData;
     }
 
-  hasAskForDownload = true;
+  m_hasAskForDownload = true;
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Download missing Data?" ),
@@ -1773,14 +1743,14 @@ bool MapContents::__askUserForDownload()
 
   if( mb.exec() == QMessageBox::Yes )
     {
-      shallDownloadData = true;
+      m_shallDownloadData = true;
     }
   else
     {
-      shallDownloadData = false;
+      m_shallDownloadData = false;
     }
 
-  return shallDownloadData;
+  return m_shallDownloadData;
 }
 
 #endif
@@ -1896,19 +1866,19 @@ void MapContents::proofeSection()
                   //try loading the currently unloaded files
                   if (!(hasstep & 1))
                     {
-                      if (__readTerrainFile(secID, FILE_TYPE_GROUND))
+                      if (readTerrainFile(secID, FILE_TYPE_GROUND))
                         step |= 1;
                     }
 
                   if (!(hasstep & 2))
                     {
-                      if (__readTerrainFile(secID, FILE_TYPE_TERRAIN))
+                      if (readTerrainFile(secID, FILE_TYPE_TERRAIN))
                         step |= 2;
                     }
 
                   if (!(hasstep & 4))
                     {
-                      if (__readBinaryFile(secID, FILE_TYPE_MAP))
+                      if (readBinaryFile(secID, FILE_TYPE_MAP))
                         step |= 4;
                     }
 
@@ -1931,7 +1901,7 @@ void MapContents::proofeSection()
 
   if( isFirst )
     {
-      ws->slot_SetText2( tr( "Reading OpenAir Files" ) );
+      ws->slot_SetText2( tr( "Reading Airspace Data" ) );
 
       AirspaceHelper::loadAirspaces( airspaceList );
 
@@ -1944,7 +1914,7 @@ void MapContents::proofeSection()
       if( airfieldSource == 0 )
         {
           // OpenAIP is defined as airfield source
-          ws->slot_SetText2( tr( "Reading OpenAIP airfield Files" ) );
+          ws->slot_SetText2( tr( "Reading Airfield Data" ) );
 
           if( isReload == false )
             {
@@ -1964,7 +1934,7 @@ void MapContents::proofeSection()
       else
         {
           // Welt2000 is defined as airfield source
-          ws->slot_SetText2( tr( "Reading Welt2000 File" ) );
+          ws->slot_SetText2( tr( "Reading Welt2000 Data" ) );
 
           if( isReload == false )
             {
@@ -1975,7 +1945,7 @@ void MapContents::proofeSection()
                 {
 
 #ifdef INTERNET
-                  if( __askUserForDownload() == true )
+                  if( askUserForDownload() == true )
                     {
                       // Welt2000 load failed, try to download a new Welt2000 File.
                       slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
@@ -2518,14 +2488,14 @@ void MapContents::slotReloadMapData()
   topoList.clear();
   villageList.clear();
 
-  airfieldLoadMutex.lock();
+  m_airfieldLoadMutex.lock();
 
   // free internal allocated memory in QList
   airfieldList    = QList<Airfield>();
   gliderfieldList = QList<Airfield>();
   outLandingList  = QList<Airfield>();
 
-  airfieldLoadMutex.unlock();
+  m_airfieldLoadMutex.unlock();
 
   // all isolines are cleared
   groundMap.clear();
@@ -2574,6 +2544,7 @@ void MapContents::slotReloadMapData()
     }
 
   // that signal will update all list views of the main window
+  emit mapDataReloaded( Map::baseLayer );
   emit mapDataReloaded();
 
   // enable gps data receiving
@@ -2583,12 +2554,22 @@ void MapContents::slotReloadMapData()
   mutex = false; // unlock mutex
 }
 
+void MapContents::slotReloadOpenAipAirfields()
+{
+  // Check, if OpenAIP is the airfield source.
+  if( GeneralConfig::instance()->getAirfieldSource() == 0 )
+    {
+      // Reload OpenAIP airfield data in an extra thread.
+      loadOpenAipAirfieldsViaThread();
+    }
+}
+
 /**
  * Starts a thread, which is loading the requested OpenAIP airfield data.
  */
 void MapContents::loadOpenAipAirfieldsViaThread()
 {
-  QMutexLocker locker( &airfieldLoadMutex );
+  QMutexLocker locker( &m_airfieldLoadMutex );
 
   _globalMapView->slot_info( tr("Loading OpenAIP data") );
 
@@ -2616,7 +2597,7 @@ void MapContents::loadOpenAipAirfieldsViaThread()
 void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
                                                    QList<Airfield>* airfieldListIn )
 {
-  QMutexLocker locker( &airfieldLoadMutex );
+  QMutexLocker locker( &m_airfieldLoadMutex );
 
   if( noOfLists == 0 )
     {
@@ -2637,24 +2618,24 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
   gliderfieldList = QList<Airfield>();
   outLandingList  = QList<Airfield>();
 
+  emit mapDataReloaded( Map::airfields );
   emit mapDataReloaded();
 }
 
-void MapContents::slotReloadOpenAipAirfields()
+/**
+ * Reloads the airspace data files. Can be called after a configuration change
+ * or a download. The reload action is done in an extra thread.
+ */
+void MapContents::slotReloadAirspaceData()
 {
-  // Check, if OpenAIP is the airfield source.
-  if( GeneralConfig::instance()->getAirfieldSource() == 0 )
-    {
-      // Reload OpenAIP airfield data in an extra thread.
-      loadOpenAipAirfieldsViaThread();
-    }
+  loadAirspacesViaThread();
 }
 
 void MapContents::loadAirspacesViaThread()
 {
-  QMutexLocker locker( &airspaceLoadMutex );
+  QMutexLocker locker( &m_airspaceLoadMutex );
 
-  _globalMapView->slot_info( tr("Loading airspace data") );
+  _globalMapView->slot_info( tr("Loading Airspaces") );
 
   AirspaceHelperThread *ashThread = new AirspaceHelperThread( this );
 
@@ -2665,17 +2646,17 @@ void MapContents::loadAirspacesViaThread()
   // Connect the receiver of the results. It is located in this
   // thread and not in the new opened thread.
   connect( ashThread,
-           SIGNAL(loadedList( int, QList<Airspace*>* )),
+           SIGNAL(loadedList( int, SortableAirspaceList* )),
            this,
-           SLOT(slotAirspaceLoadFinished( int, QList<Airspace*>* )) );
+           SLOT(slotAirspaceLoadFinished( int, SortableAirspaceList* )) );
 
   ashThread->start();
 }
 
 void MapContents::slotAirspaceLoadFinished( int noOfLists,
-                                            QList<Airspace*>* airspaceListIn )
+                                            SortableAirspaceList* airspaceListIn )
 {
-  QMutexLocker locker( &airspaceLoadMutex );
+  QMutexLocker locker( &m_airspaceLoadMutex );
 
   if( noOfLists == 0 )
     {
@@ -2703,7 +2684,7 @@ void MapContents::slotAirspaceLoadFinished( int noOfLists,
   airspaceList.sort();
   delete airspaceListIn;
 
-  emit mapDataReloaded();
+  emit mapDataReloaded( Map::airspaces );
 }
 
 #ifdef WELT2000_THREAD
@@ -2713,7 +2694,7 @@ void MapContents::slotAirspaceLoadFinished( int noOfLists,
  */
 void MapContents::loadWelt2000DataViaThread()
 {
-  QMutexLocker locker( &airfieldLoadMutex );
+  QMutexLocker locker( &m_airfieldLoadMutex );
 
   _globalMapView->slot_info( tr("loading Welt2000") );
 
@@ -2748,7 +2729,7 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
                                             QList<Airfield>* gliderfieldListIn,
                                             QList<Airfield>* outlandingListIn )
 {
-  QMutexLocker locker( &airfieldLoadMutex );
+  QMutexLocker locker( &m_airfieldLoadMutex );
 
   if( ok == false )
     {
@@ -2777,6 +2758,7 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
 
   _globalMapView->slot_info( tr("Welt2000 loaded") );
 
+  emit mapDataReloaded( Map::airfields );
   emit mapDataReloaded();
 }
 
@@ -2822,6 +2804,7 @@ void MapContents::slotReloadWelt2000Data()
 
   _globalMapView->slot_info( tr("Welt2000 loaded") );
 
+  emit mapDataReloaded( Map::airfields );
   emit mapDataReloaded();
 
   // enable GPS data receiving
@@ -2836,54 +2819,6 @@ void MapContents::slotReloadWelt2000Data()
   loadWelt2000DataViaThread();
 
 #endif
-}
-
-/**
- * Reloads the airspace data files. Can be called after a configuration change
- * or a download.
- */
-void MapContents::slotReloadAirspaceData()
-{
-  // @AP: defined a static mutex variable, to prevent the recursive
-  // calling of this method
-  static bool mutex = false;
-
-  if ( mutex )
-    {
-      return; // return immediately, if reentry in method is not possible
-    }
-
-  mutex = true;
-
-  // We must block all GPS signals during the reload time to avoid
-  // system crash due to outdated data.
-  GpsNmea::gps->enableReceiving( false );
-
-  // clear the airspace path list in map too
-  Map::getInstance()->clearAirspaceRegionList();
-
-  qDeleteAll(airspaceList);
-  airspaceList.clear();
-
-  // free all internal allocated memory in QList
-  airspaceList = SortableAirspaceList();
-
-  _globalMapView->slot_info( tr("loading Airspaces") );
-
-  AirspaceHelper::loadAirspaces( airspaceList );
-
-  // finally, sort the airspaces
-  airspaceList.sort();
-
-  _globalMapView->slot_info( tr("Airspaces loaded") );
-
-  emit mapDataReloaded();
-
-  // enable GPS data receiving
-  GpsNmea::gps->ignoreConnectionLost();
-  GpsNmea::gps->enableReceiving( true );
-
-  mutex = false; // unlock mutex
 }
 
 /** Special method to add the drawn objects to the return list,

@@ -40,13 +40,6 @@
 #ifndef AIRSPACE_HELPER_H
 #define AIRSPACE_HELPER_H
 
-// Type definition for compiled airspace files
-#define FILE_TYPE_AIRSPACE_C 0x61
-
-// Version definition for compiled airspace files. Increment this value,
-// if you change the compiled format.
-#define FILE_VERSION_AIRSPACE_C 206
-
 #include <QDateTime>
 #include <QList>
 #include <QMap>
@@ -273,7 +266,7 @@ class AirspaceHelperThread : public QThread
   * \param airspaceList    The list with the airspace data
   *
   */
-  void loadedList( int loadedLists, QList<Airspace*>* airspaceList );
+  void loadedList( int loadedLists, SortableAirspaceList* airspaceList );
 
  private:
 

@@ -648,8 +648,9 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( _globalMapMatrix, SIGNAL( projectionChanged() ),
            _globalMapContents, SLOT( slotReloadMapData() ) );
 
-  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
-           Map::instance, SLOT( slotRedraw() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded(Map::mapLayer) ),
+           Map::instance, SLOT( slotRedraw(Map::mapLayer) ) );
+
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewAF, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),

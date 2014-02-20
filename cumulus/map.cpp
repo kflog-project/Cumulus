@@ -2705,6 +2705,10 @@ void Map::slotRedraw()
   scheduleRedraw();
 }
 
+void Map::slotRedraw( mapLayer fromLayer )
+{
+  scheduleRedraw(fromLayer);
+}
 
 /** Used to zoom the map out. Will schedule a redraw. */
 void Map::slotZoomOut()

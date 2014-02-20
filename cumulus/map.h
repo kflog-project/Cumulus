@@ -215,6 +215,9 @@ public slots:
   /** Scheduled redraw of the map. */
   void slotRedraw();
 
+  /** Scheduled redraw of the map starting up passed layer. */
+  void slotRedraw( mapLayer fromLayer );
+
   /**
    * This slot is called to set a new position. The map object
    * determines if it is necessary to recenter the map or if
