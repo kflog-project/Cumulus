@@ -17,24 +17,22 @@
 		</tbody>
 	</table>
 
-	<h3 align="center">Maps - openAIP</h3>
+	<h3 align="center">openAIP - Navigation Data</h3>
 
 	<p>
-		For airfields Cumulus can use the
-		<a href="http://www.openaip.net">openAIP</a> data base as an
-		alternative to <i>Welt2000</i>. Such data are provided by the
-		<i>openAIP</i> project at their webpage
-		<a href="http://www.openaip.net">www.openaip.net</a> as
-		one file per country.
-	</p>
-
-	<p>
-	  <i>openAIP</i> has the goal to deliver free, current and precise
+	  <a href="http://www.openaip.net">openAIP</a> has the goal to deliver free,
+    current and precise
 		navigational data to anyone. <i>openAIP</i> is a web-based crowd-sourced
 		aeronautical information platform that allows registered users to add,
-		edit and download aeronautical data in many common formats used in
-		general aviation.
+		edit, download and comment aeronautical data in many common formats used in
+		General Aviation.
 	</p>
+
+  <p>
+    As first you should register youself by the
+    <a href="https://www.openaip.net/user/register">openAIP</a>
+    project, that you can use their provided data.
+  </p>
 	
 	<p>
 	 Please read and accept the
@@ -42,6 +40,17 @@
 	 from <a href="http://www.openaip.net">openAIP</a>, before you download
 	 and use their data with Cumulus.
 	</p>
+  
+  <p>
+    <b>Caution!</b>
+    Please note, that all openAIP files carry the extension <b>.api</b>.
+    You should never change that extension otherwise Cumulus cannot recognize
+    these files. 
+  </p>
+  
+  <hr>
+
+  <h4> openAIP Airfield Data</h4>
 
 	<p>
 		Cumulus can download automatically <i>openAIP</i> airfield files. Go to the
@@ -66,6 +75,34 @@
     </li>   
 	</ol>
 
+  <a name="Airspaces"></a>
+  <h4> openAIP Airspace Data</h4>
+  
+  <p>
+    Cumulus can load <a href="http://www.openaip.net">openAIP</a>
+    airspace data. You can find such data on the webpage of the 
+    <a href="http://www.openaip.net">openAIP</a> project, one file per country.
+    You have to download by hand your desired countries. The downloaded files
+    have to be installed in the directory
+    <a href="cumulus-maps.html">.../maps/airspaces</a> of Cumulus.
+    Further help you will get on page <a href="cumulus-maps-openAir.html">
+    Maps - Airspace</a>.
+  </p>
+
+  <h4> openAIP Point Data</h4>
+  
+  <p>
+    Cumulus can load navigational aid and thermal hotspot point data from
+    <a href="http://www.openaip.net">openAIP</a>.
+    You can find such data on the webpage of the 
+    <a href="http://www.openaip.net">openAIP</a> project, one file per country.
+    Cumulus can import these data via the menu 
+    <a href="cumulus-preflight-settings-waypoint.html">
+    Preflight Settings - Waypoint Import</a>.
+  </p>
+
+  <hr>
+  
 	<p>
 		<b>Please help to improve the <i>openAIP</i> data. If you found mistakes,
 			correct them. If you miss something, add it to the <i>openAIP</i> data base.</b>

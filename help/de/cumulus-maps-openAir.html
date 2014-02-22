@@ -17,50 +17,108 @@
 
 	<h3 align="center">Karten - Luftraum</h3>
 
-	Cumulus kann nur <i>OpenAir</i> Luftraumdateien lesen. Adressen
-  wo man solche Daten finden kann, sind:
+	<p>
+		Cumulus kann zwei verschiedene Quellformate:
+		
+		<ul>
+		  <li>OpenAir</li>
+      <li>openAIP</li>
+    </ul>
+  </p>
+  
+  <p>  
+		als Datenbasis f&uuml;r die Luftr&auml;ume benutzen.
+	</p>
+
+  <h4>OpenAir</h4>
+  
+	Adressen wo man <i>OpenAir</i> Luftraumdateien finden kann, sind:
 
       <ul>
-        <li><a href="http://soaringweb.org">Soaring Services - Airspace</a>
-            f&uuml;r die verschiedenen L&auml;der</li>
+        <li><a href="http://soaringweb.org/Airspace/HomePage.html">
+            Soaring Services - Airspace</a>
+            f&uuml;r die verschiedenen L&auml;nder</li>
         <li><a href="http://www.daec.de/aul/luftr_d.php">Luftraum
             Deutschland</a> ver&ouml;ffentlicht vom DAeC</li>
       </ul>
-    </li>
+    
+  <h4>openAIP</h4>
+  
+  <a href="http://www.openaip.net">openAIP</a> Luftraumdateien l&auml;dt man
+  sich von der Projektseite von openAIP runter.
+  Siehe <a href="cumulus-maps-openAIP.html#Airspaces">hier</a> f&uuml;r weitere
+  Hilfe.
 
-	Installieren sie diese Dateien im
-	Unterverzeichnis <b>.../maps/airspaces</b> und versehen sie diese mit der
-	<b>klein</b> geschrieben Endung	<i>.txt</i>.
-	Da sich bestimmte OpenAir Luftraum Elemente nicht
-	eindeutig in Cumulus zuordnen lassen, bietet Cumulus einen
-	zus&auml;tzlichen Mapping Service an. Dazu ist eine Beschreibungsdatei
-	zu erstellen und diese im gleichen Verzeichnis wie die zugeh&ouml;rige
-	OpenAir Luftraumdatei abzulegen. Diese Datei muss den selben Basisnamen
-	(ohne	<i>.txt</i> Endung) tragen wie die Originaldatei und ist dann mit der
-	Kennung	<i>_mappings.conf</i> zu erweitern.
+  <h4>Installationsverzeichnis</h4>
+  
+	Installieren sie diese Dateien im Unterverzeichnis <b>.../maps/airspaces</b>
+  und und achten Sie darauf, dass die Dateiendung f&uuml;r OpenAir <i>.txt</i> lauten
+  muss, w&auml;hrend openAIP die Dateiendung <i>.aip</i> verwendet. Gro&szlig;- oder
+  Kleinschreibung spielt dabei keine Rolle.
+  
+  <p>
+  Da man viele Luftraumdateien im Luftraumverzeichnis installiert haben kann
+  aber es nicht immer sinnvoll ist, alle zu laden, kann man unter
+  <a href="cumulus-settings-airspace.html#openAir_Load">Einstellungen - Luftr&auml;ume</a>
+  festlegen, welche zur Laufzeit geladen werden sollen. Wenn man auf
+  dieser Seite auf den <i>Lade</i> Knopf dr&uuml;ckt, &ouml;ffnet sich eine Tabelle,
+  in der man die zu ladenden Luftr&auml;ume ausw&auml;hlen kann.
+  </p>
+  
+  <h4>Mapping Services</h4>
+  
+	Da sich bestimmte OpenAir/openAIP Luftraum Elemente nicht immer eindeutig in
+  Cumulus zuordnen lassen, bietet Cumulus zus&auml;tzliche Mapping
+  Services an.
+  
+  <ul>
+      <li>Eine globale Mapping Datei</li>
+      <li>Individuelle Mapping Dateien</li>
+  </ul>
+  
+  Die Mapping Dateien sind stets im gleichen Verzeichnis abzulegen, in dem die
+  zugeh&ouml;rigen Luftraum Dateien liegen. Ihre Definitionen &uuml;berschreiben
+  die Standard Luftraumzuordnung von Cumulus. 
 
-	<p>
-    Beispiel: QuellDatei=<i>openair.txt</i>, MappingDatei=<i>openair_mappings.conf</i>
+  <h4>Globale Mapping Datei</h4>
+  
+  <p>
+  Die Globale Mapping Datei wird auf alle Luftraum Dateien immer zuerst angewendet
+  und tr&auml;gt den Namen <i>airspace_mappings.conf</i>.
+  </p>
+  
+  <h4>Individuelle Mapping Dateien</h4>
+  
+  <p>
+  Die individuelle Mapping Datei ist nur auf eine bestimmte Luftraum Datei
+  anwendbar und tr&auml;gt den Originalnamen dieser ohne die Endung <i>.txt</i>
+  oder <i>.aip</i>, erg&auml;nzt mit der Zeichenkette <i>_mappings.conf</i>
   </p>
 
-  F&uuml;r seine interne Zuordnung verwendet Cumulus die folgenden
-  Elemente:
+	<p>
+    <b>Beispiel:</b> QuellDatei=<i>openair.txt</i>, MappingDatei=<i>openair_mappings.conf</i>
+  </p>
+
+  <h4>F&uuml;r seine interne Zuordnung verwendet Cumulus die folgenden
+  Luftraum Elemente</h4>
 
   <ul>
-    <li>AirA
-    <li>AirB
-    <li>AirC
-    <li>AirD
-    <li>AirE
-    <li>AirF
-    <li>ControlC
-    <li>ControlD
-    <li>Danger
-    <li>Restricted
-    <li>LowFlight
-    <li>Tmz
-    <li>GliderSector
-    <li>WaveWindow
+    <li>AirA</li>
+    <li>AirB</li>
+    <li>AirC</li>
+    <li>AirD</li>
+    <li>AirE</li>
+    <li>AirF</li>
+    <li>AirUkn</li>
+    <li>ControlC</li>
+    <li>ControlD</li>
+    <li>Danger</li>
+    <li>Prohibited</li>
+    <li>Restricted</li>
+    <li>LowFlight</li>
+    <li>Tmz</li>
+    <li>GliderSector</li>
+    <li>WaveWindow</li>
   </ul>
 
   Die Syntax f&uuml;r eine Mapping Datei sieht folgenderma&szlig;en aus.
@@ -69,9 +127,10 @@
   <i>*</i> beginnen (Kommentarzeilen) werden ignoriert. Alle anderen
   Zeilen sollten die Form
   <i>Name = Wert</i> haben, immer nur ein Eintrag pro Zeile.
-  <i>Name</i> ist der Luftraumtyp aus der OpenAir Datei und
-  <i>Wert</i> die entsprechende Luftraumzuweisung f&uuml;r Cumulus. Die
-  Standardzuordnung ist folgenderma&szlig;en:
+  <i>Name</i> ist der Luftraumtyp aus der OpenAir/openAIP Datei und
+  <i>Wert</i> die entsprechende Luftraumzuweisung f&uuml;r Cumulus.
+  
+  <h4>Standardzuordnung f&uuml;r OpenAir</h4>
 
   <ul>
     <li>A = AirA
@@ -80,14 +139,36 @@
     <li>D = AirD
     <li>E = AirE
     <li>F = AirF
+    <li>UKN = AirUkn
     <li>GP = Restricted
+    <li>P = Prohibited
+    <li>Q = Danger
     <li>R = Restricted
     <li>TRA = Restricted
-    <li>Q = Danger
     <li>CTR = ControlD
     <li>TMZ = Tmz
     <li>GSEC = GliderSector
     <li>W = WaveWindow
+  </ul>
+
+  <h4>Standardzuordnung f&uuml;r openAIP</h4>
+
+  <ul>
+    <li>A = AirA
+    <li>B = AirB
+    <li>C = AirC
+    <li>D = AirD
+    <li>E = AirE
+    <li>F = AirF
+    <li>DANGER = Danger
+    <li>PROHIBITED = Prohibited
+    <li>RESTRICTED = Restricted
+    <li>CTR = ControlD
+    <li>TMA = ControlD
+    <li>TMZ = Tmz
+    <li>GLIDING = GliderSector
+    <li>OTH = AirUkn
+    <li>WAVE = WaveWindow
   </ul>
 
 	<p>Zum &auml;ndern m&uuml;ssen nur die Elemente neu definiert werden,
@@ -95,7 +176,7 @@
 		dann die Standardzuordnung.</p>
 
 	<p>
-    Beispiel: <i>CTR=ControlC</i>
+    <b>Beispiel:</b> <i>CTR=ControlC</i>
   </p>
 
   <p>
@@ -104,8 +185,8 @@
   </p>
 
   <p>
-    <b>Achtung!</b> Achten Sie auf die korrekte Schreibweise, alle
-    Zuordnungen sind davon abh&auml;gig.
+    <b>Achtung!</b> Achten Sie auf die korrekte Schreibweise aller
+    Zuordnungselemente, damit die Zuordnungen auch richtig ausgef&uuml;hrt werden.
   </p>
 
 	<p>

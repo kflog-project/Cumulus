@@ -20,103 +20,172 @@
 	<h3 align="center">Maps - Airspace</h3>
 
 	<p>
-	 	Cumulus supports only the commonly-available OpenAir SUA file format for
-		airspaces. Possible addresses where you can - maybe! - find information:
+		Cumulus supports two different source formats:
+		
+		<ul>
+		  <li>OpenAir</li>
+      <li>openAIP</li>
+    </ul>
   </p>
   
-	<ul>
-	  <li><a href="http://soaringweb.org">Soaring Services - Airspace</a>
-	  for the countries of the world</li>
-	  <li><a href="http://www.daec.de/aul/luftr_d.php">Airspace
-	      Data Germany (Deutschland)</a> published by the DAeC</li>
-	</ul>
-     
-	<p>			
-		Just put your airspace files in the directory <b>.../maps/airspaces</b>
-		and make sure they have the <i>.txt</i> extension written in <i>lower-case</i>
-		letters.
+  <p>  
+    as database for airspaces.
 	</p>
+	
+  <h4>OpenAir</h4>
+  
+	Addesses where you can find <i>OpenAir</i> airspace files are:
+
+  <ul>
+    <li><a href="http://soaringweb.org/Airspace/HomePage.html">
+        Soaring Services - Airspace</a>
+        for many countries of the world</li>
+    <li><a href="http://www.daec.de/aul/luftr_d.php">Airspace
+        Data Germany (Deutschland)</a> published by the DAeC</li>
+  </ul>
+    
+  <h4>openAIP</h4>
+
+  <a href="http://www.openaip.net">openAIP</a> airspace files can be downloaded
+  from the openAIP website, where this project is hosted.
+  See <a href="cumulus-maps-openAIP.html#Airspaces">here</a> for further help.
+
+  <h4>Installation Directory</h4>
+    		
+		Just put your airspace files in the directory <b>.../maps/airspaces</b>
+		and make sure, that OpenAir files have the <i>.txt</i> extension while
+    openAIP files uses the <i>.aip</i> extension. The extension spelling is not
+    case sensitive.
 
 	<p>
 		Because you can have a lot of airspace files in the airspace
 		directory, maybe one for every country, it is useful to define, which
 		files should be loaded only to save run-time memory. That can be done
 		in the configuration setup for
-		<a href="cumulus-settings-airspace.html#openAir_Load"> Airspaces</a>.
+		<a href="cumulus-settings-airspace.html#openAir_Load">Airspaces</a>.
 		Press the Load button on that page and select the airspace files in the
 		displayed list to be loaded.
 	</p>
 
-	<p>In addition to the OpenAir files themselves, you can add a file
-		to configure the mapping of airspace types from the OpenAir file to
-		the types Cumulus uses. Cumulus recognizes the following types:</p>
+  <h4>Mapping Services</h4>
+  
+  Certain OpenAir/openAIP airspace elements are not unique mapable
+  to Cumulus airspace elements. Therefore Cumulus provides additional mapping
+  services.  
+  
+  <ul>
+      <li>One global mapping file</li>
+      <li>Special mapping files, related to one airspace file</li>
+  </ul>
+  
+  The mapping files must be placed in the same directory as the airspace files
+  are installed. Their rules overwrite the default Cumulus mapping rules.
 
-	<ul>
-		<li>AirA
-		<li>AirB
-		<li>AirC
-		<li>AirD
-		<li>AirE
-		<li>AirF
-		<li>ControlC
-		<li>ControlD
-		<li>Danger
-		<li>Restricted
-		<li>LowFlight
-		<li>Tmz
-		<li>GliderSector
-		<li>WaveWindow
-	</ul>
+  <h4>Global Mapping File</h4>
 
-	In order to create a mapping file, create a file with the same basename
-	as the OpenAir file (without the
-	<i>.txt</i> extension) and append
-	<i>_mappings.conf</i> to the basename.
+  <p>
+  The global mapping file is applied first to all read airspace file. The name
+  of the file is <i>airspace_mappings.conf</i>.
+  </p>
+  
+  <h4>Special Mapping Files</h4>
+  
+  <p>
+    Special mapping files can be applied only once to a related airspace file.
+    Such a file consists of the basename of the airspace file without the extension
+    <i>.txt</i> or <i>.aip</i>, extended by the string <i>_mappings.conf</i>.
+  </p>
+
 	<p>
-		Example: Sourcefile=<i>openair.txt</i>, Mappingfile=<i>openair_mappings.conf</i>
-	</p>
+  <b>Example:</b> SourceFile=<i>openair.txt</i>, MappingFile=<i>openair_mappings.conf</i>
+  </p>
 
-	<p>
-		The mapping file must be placed in the same directory as the OpenAir
-		file. The syntax used in the file is simple. Lines starting with <i>#</i>
+	<h4>Cumulus knows the following airspace types:</h4>
+
+  <ul>
+    <li>AirA</li>
+    <li>AirB</li>
+    <li>AirC</li>
+    <li>AirD</li>
+    <li>AirE</li>
+    <li>AirF</li>
+    <li>AirUkn</li>
+    <li>ControlC</li>
+    <li>ControlD</li>
+    <li>Danger</li>
+    <li>Prohibited</li>
+    <li>Restricted</li>
+    <li>LowFlight</li>
+    <li>Tmz</li>
+    <li>GliderSector</li>
+    <li>WaveWindow</li>
+  </ul>
+
+		The syntax used in the mapping file is very simple. Lines starting with <i>#</i>
 		or <i>*</i> are ignored and can be used for comments. Empty lines are
 		also ignored. The rest of the lines should contain entries in the form
 		<i>key = value</i>, one entry per line. The key is the airspace type
-		in the OpenAir file you wish to map, and the value is the
-		corresponding Cumulus type you wish to assign. The default mappings
-		are:
-	</p>
+		in the OpenAir/openAIP file you wish to map, and the value is the
+		corresponding Cumulus type you wish to assign.
+    
+  <h4>Default mapping for OpenAir</h4>
 
-	<ul>
-		<li>A = AirA
-		<li>B = AirB
-		<li>C = AirC
-		<li>D = AirD
-		<li>E = AirE
-		<li>F = AirF
-		<li>GP = Restricted
-		<li>R = Restricted
-		<li>TRA = Restricted
-		<li>Q = Danger
-		<li>CTR = ControlD
-		<li>TMZ = Tmz
-		<li>GSEC = GliderSector
-		<li>W = WaveWindow
-	</ul>
+  <ul>
+    <li>A = AirA
+    <li>B = AirB
+    <li>C = AirC
+    <li>D = AirD
+    <li>E = AirE
+    <li>F = AirF
+    <li>UKN = AirUkn
+    <li>GP = Restricted
+    <li>P = Prohibited
+    <li>Q = Danger
+    <li>R = Restricted
+    <li>TRA = Restricted
+    <li>CTR = ControlD
+    <li>TMZ = Tmz
+    <li>GSEC = GliderSector
+    <li>W = WaveWindow
+  </ul>
 
-	<p>You only need to define the values you actually want to change
-		in the file. These instructions will overwrite the default mappings.</p>
+  <h4>Default mapping for openAIP</h4>
+
+  <ul>
+    <li>A = AirA
+    <li>B = AirB
+    <li>C = AirC
+    <li>D = AirD
+    <li>E = AirE
+    <li>F = AirF
+    <li>DANGER = Danger
+    <li>PROHIBITED = Prohibited
+    <li>RESTRICTED = Restricted
+    <li>CTR = ControlD
+    <li>TMA = ControlD
+    <li>TMZ = Tmz
+    <li>GLIDING = GliderSector
+    <li>OTH = AirUkn
+    <li>WAVE = WaveWindow
+  </ul>
 
 	<p>
-		Example: <i>CTR=ControlC</i>
+    <b>Note!</b> You only need to define the values you actually want to change
+  	in the read airspace file. These instructions will overwrite the default
+    mappings.
+  </p>
+
+	<p>
+		<b>Example:</b> <i>CTR=ControlC</i>
 	</p>
 
 	<p>
-		This statement changes the assignment <i>ControlD</i> to <i>ControlC</i>.
+		This statement changes the default assignment <i>ControlD</i> to <i>ControlC</i>.
 	</p>
 
 	<p>
-		<b>Remember that the mappings are case-sensitive!</b>
+		<b>Remember that the mapping definitions are case-sensitive! Otherwise the
+    mapping rules will fail.</b>
 	</p>
 
 	<p>
