@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -468,8 +468,9 @@ void NumberInputPad::slot_Ok()
       emit numberEdited( value );
     }
 
-  setVisible( false );
-  QWidget::close();
+  // Make a delay of 200 ms before the widget is closed to prevent undesired
+  // selections in an underlaying list. Problem occurred on Galaxy S3.
+  QTimer::singleShot(200, this, SLOT(slot_closeWidget()));
 }
 
 void NumberInputPad::slot_Close()
@@ -479,6 +480,13 @@ void NumberInputPad::slot_Close()
 
   // Nothing should be changed, return initial number.
   emit numberEdited( m_setNumber );
-  setVisible( false );
+
+  // Make a delay of 200 ms before the widget is closed to prevent undesired
+  // selections in an underlaying list. Problem occurred on Galaxy S3.
+  QTimer::singleShot(200, this, SLOT(slot_closeWidget()));
+}
+
+void NumberInputPad::slot_closeWidget()
+{
   QWidget::close();
 }

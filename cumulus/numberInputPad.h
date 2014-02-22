@@ -25,7 +25,7 @@
  * This widget can be used to enter a number or to modify it with an own
  * provided keypad.
  *
- * \date 2012-2013
+ * \date 2012-2014
  *
  * \version $Id$
  */
@@ -284,6 +284,11 @@ class NumberInputPad : public QFrame
    * Called if close button is pressed.
    */
   void slot_Close();
+
+  /**
+   * Called by the timer to close the widget
+   */
+  void slot_closeWidget();
 
  private:
 
