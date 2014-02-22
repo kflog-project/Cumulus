@@ -1508,7 +1508,7 @@ void GeneralConfig::setMapRootDir( QString newValue )
 
       if( mapDir.exists() == false )
         {
-          mapDir.mkpath( subDirs.at(getUserDefaultRootDiri) );
+          mapDir.mkpath( subDirs.at(i) );
         }
     }
 }
