@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,6 +15,8 @@
 **   $Id$
 **
 ***********************************************************************/
+
+#include <cmath>
 
 #ifndef QT_5
 #include <QtGui>
@@ -566,6 +568,8 @@ void AltimeterModeDialog::slotChangeSpinValue()
           // pressure difference.
           // A common approach is to expect a pressure difference of 1 hPa per
           // 30ft until 18.000ft. 30ft are 9.1437m
+          qDebug() << "NewAlt=" << newAlt.getMeters();
+
           int qnh = (int) rint( 1013.25 + newAlt.getMeters() / 8.3 );
           spinQnh->setValue( qnh );
         }
@@ -633,8 +637,10 @@ void AltimeterModeDialog::accept()
           // to calculate the QNH.
           // The common approach is to expect a pressure difference of 1 hPa per
           // 30ft until 18.000ft. 30ft are 9.1437m
-          Altitude newAlt = Altitude::convertToMeters( spinLeveling->value() );
-          qnh = (int) rint( 1013.25 + newAlt.getFeet() / 30.0 );
+          // ### Altitude newAlt = Altitude::convertToMeters( spinLeveling->value() );
+          // ### qnh = (int) rint( 1013.25 + newAlt.getFeet() / 30.0 );
+          Altitude newAlt = Altitude::convertToMeters( -spinLeveling->value() );
+          qnh = getQNH( newAlt );
         }
 
       conf->setQNH( qnh );
@@ -680,4 +686,17 @@ void AltimeterModeDialog::startTimer()
     {
       m_timeout->start( time * 1000 ); // milli seconds have to be passed
     }
+}
+
+int AltimeterModeDialog::getQNH( const Altitude& altitude )
+{
+  // Under this link I found the formula for QNH calculation.
+  // http://www.wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
+  const double potenz = -9.80665 / ( 287.05 * -0.0065);
+
+  const double k1 = -0.0065 / 288.15;
+
+  double p1 = 1013.25 * pow( 1 + (k1 * altitude.getMeters()), potenz );
+
+  return rint(p1);
 }

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -85,6 +85,15 @@ private:
 
   /** Check for configuration changes. */
   bool changesDone();
+
+  /**
+   * Calculate the QNH from the passed altitude.
+   *
+   * \param altitude Altitude in meters
+   *
+   * \return QNH in hPa
+   */
+  int getQNH( const Altitude& altitude );
 
   /** inactively timer control */
   QTimer* m_timeout;
