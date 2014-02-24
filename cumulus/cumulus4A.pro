@@ -78,7 +78,7 @@ HEADERS = \
     airspace.h \
     AirspaceHelper.h \
     airspacewarningdistance.h \
-    altimetermodedialog.h \
+    altimeterdialog.h \
     altitude.h \
     androidevents.h \
     androidstyle.h \
@@ -205,7 +205,7 @@ SOURCES = \
     airregion.cpp \
     airspace.cpp \
     AirspaceHelper.cpp \
-    altimetermodedialog.cpp \
+    altimeterdialog.cpp \
     altitude.cpp \
     androidstyle.cpp \
     authdialog.cpp \

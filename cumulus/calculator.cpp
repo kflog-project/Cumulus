@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2013 by Axel Pauli
+ **                  2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -28,7 +28,7 @@
 #include <QtWidgets>
 #endif
 
-#include "altimetermodedialog.h"
+#include "altimeterdialog.h"
 #include "calculator.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
@@ -153,7 +153,7 @@ Calculator::~Calculator()
 const Altitude& Calculator::getAltimeterAltitude()
 {
   // qDebug("Calculator::getAltimeterAltitude(): %d",  _altimeter_mode );
-  switch ( AltimeterModeDialog::mode() )
+  switch ( AltimeterDialog::mode() )
     {
     case 0:
       return lastAltitude; // MSL

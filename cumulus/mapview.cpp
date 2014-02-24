@@ -7,7 +7,7 @@
 
   copyright            : (C) 2002      by Andre Somers
                              2008      by Josua Dietze
-                             2008-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+                             2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 
   $Id$
 
@@ -28,7 +28,7 @@
 #include <QtWidgets>
 #endif
 
-#include "altimetermodedialog.h"
+#include "altimeterdialog.h"
 #include "filetools.h"
 #include "generalconfig.h"
 #include "gliderflightdialog.h"
@@ -264,7 +264,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // add altitude widget
   _altitude = new MapInfoBox( this, conf->getMapFrameColor().name(), true, true );
-  _altitude->setPreText(AltimeterModeDialog::mode2String());
+  _altitude->setPreText(AltimeterDialog::mode2String());
   _altitude->setPreUnit( Altitude::getUnitText() );
   _altitude->setValue("-");
   _altitude->setMapInfoBoxMaxHeight( textLabelBoxHeight );
@@ -1187,7 +1187,7 @@ void MapView::slot_toggleWindAndLD()
 /** Opens the Altimeter settings dialog. */
 void MapView::slot_AltimeterDialog()
 {
-  if( AltimeterModeDialog::getNrOfInstances() > 0 )
+  if( AltimeterDialog::getNrOfInstances() > 0 )
     {
       // Sometimes the mouse event is delayed under Maemo, which triggers this
       // method. In such a case multiple dialogs are opened. This check shall
@@ -1195,7 +1195,7 @@ void MapView::slot_AltimeterDialog()
       return;
     }
 
-  AltimeterModeDialog *amDlg = new AltimeterModeDialog( this );
+  AltimeterDialog *amDlg = new AltimeterDialog( this );
 
   amDlg->slotAltitudeChanged( calculator->getAltimeterAltitude() );
 
@@ -1230,7 +1230,7 @@ void MapView::slot_AltimeterDialog()
 /** Called, if altimeter mode has been changed. */
 void MapView::slot_newAltimeterMode()
 {
-  _altitude->setPreText( AltimeterModeDialog::mode2String() );
+  _altitude->setPreText( AltimeterDialog::mode2String() );
   _altitude->setPreUnit( Altitude::getUnitText() );
   _glidepath->setPreUnit( Altitude::getUnitText() );
 

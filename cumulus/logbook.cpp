@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -227,7 +227,7 @@ void Logbook::loadLogbookData()
         {
           QTableWidgetItem* item;
 
-          item = new QTableWidgetItem( line.at(col) );
+          item = new QTableWidgetItem( " " + line.at(col) + " " );
           item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
           if( col >= 0 && col <= 3 )

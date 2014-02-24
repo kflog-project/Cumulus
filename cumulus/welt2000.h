@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **   Copyright (c):  2006-2013 by Axel Pauli, kflog.cumulus@gmail.com
+ **   Copyright (c):  2006-2014 by Axel Pauli, kflog.cumulus@gmail.com
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -151,7 +151,7 @@
  * This class can read, parse and filter a Welt2000 file and store its content
  * in a binary format.
  *
- * \date 2006-2013
+ * \date 2006-2014
  *
  * version $Id$
  *

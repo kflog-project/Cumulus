@@ -78,7 +78,7 @@ HEADERS = \
     airspace.h \
     AirspaceHelper.h \
     airspacewarningdistance.h \
-    altimetermodedialog.h \
+    altimeterdialog.h \
     altitude.h \
     authdialog.h \
     basemapelement.h \
@@ -202,7 +202,7 @@ SOURCES = \
     airregion.cpp \
     airspace.cpp \
     AirspaceHelper.cpp \
-    altimetermodedialog.cpp \
+    altimeterdialog.cpp \
     altitude.cpp \
     authdialog.cpp \
     basemapelement.cpp \

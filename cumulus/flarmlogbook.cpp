@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -335,7 +335,7 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
     {
       QTableWidgetItem* item;
 
-      item = new QTableWidgetItem( line.at(col + 1) );
+      item = new QTableWidgetItem( " " + line.at(col + 1) + " " );
       item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
 
       if( col >= 0 && col <= 2 )
