@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 modified by Josua Dietze
- **                   2008-2013 modified by Axel Pauli
+ **                   2008-2014 modified by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -2705,7 +2705,7 @@ void Map::slotRedraw()
   scheduleRedraw();
 }
 
-void Map::slotRedraw( mapLayer fromLayer )
+void Map::slotRedraw( Map::mapLayer fromLayer )
 {
   scheduleRedraw(fromLayer);
 }

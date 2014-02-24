@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -216,7 +216,7 @@ public slots:
   void slotRedraw();
 
   /** Scheduled redraw of the map starting up passed layer. */
-  void slotRedraw( mapLayer fromLayer );
+  void slotRedraw( Map::mapLayer fromLayer );
 
   /**
    * This slot is called to set a new position. The map object
