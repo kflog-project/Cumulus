@@ -568,9 +568,8 @@ void AltimeterDialog::slotChangeSpinValue()
           // pressure difference.
           // A common approach is to expect a pressure difference of 1 hPa per
           // 30ft until 18.000ft. 30ft are 9.1437m
-          qDebug() << "NewAlt=" << newAlt.getMeters();
-
-          int qnh = (int) rint( 1013.25 + newAlt.getMeters() / 8.3 );
+          Altitude newAltQnh(Altitude::convertToMeters( -spinLeveling->value() ));
+          int qnh = getQNH( newAltQnh );
           spinQnh->setValue( qnh );
         }
 
