@@ -1,9 +1,28 @@
+cumulus (5.12.0) stable; urgency=low
+
+  * Welt2000 update check string adapted to last Welt2000 release.
+
+  * QNH calculation improved by using an official formula and not more a fixed
+    value in AltimeterDialog widget.
+    
+  * If the load or water value is changed in the pre-flight glider menu
+    successfully, the new value is stored in the glider list and saved,
+    if the user leave the menu via the OK button. If the user moves through
+    the gilder list, done load or water changes for a single list entry will not
+    more discared, if the selection is changed.
+    
+  * New feature added that can parse, store and load openAIP airspace files.
+    The airspaces are defined by using XML syntax. See http://www.openaip.net
+    for more info.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Mon, 24 Feb 2014 20:55:59 +0100
+
 cumulus (5.10.2) stable; urgency=low
 
   * Bugfix: A running LiveTracking session was never closed, if GPS receiver
             was switched off.
 
-  *  Bugfix: LiveTrack server url of DHV has been changed to livexc.dhv.de.
+  * Bugfix: LiveTrack server url of DHV has been changed to livexc.dhv.de.
 
  -- Axel Pauli <kflog.cumulus@gmail.com>  Sun, 19 Jan 2014 19:47:33 +0100
 

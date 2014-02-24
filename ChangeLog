@@ -18,7 +18,7 @@ Cumulus changelog
 [o] 2014-02-24 AP: Welt2000 update check string adapted to last Welt2000 release.
 
 [o] 2014-02-23 AP: QNH calculation improved by using an official formula and
-                   not a fixed value in AltimeterDialog widget.
+                   not more a fixed value in AltimeterDialog widget.
 
 [-] 2014-02-22 AP: Bugfix: Ok and Cancel button press of number editor delayed
                    to prevent undesired selections in underlaying lists. That
@@ -27,12 +27,13 @@ Cumulus changelog
 [+] 2014-02-18 AP: If the load or water value is changed in the pre-flight glider
                    menu successfully, the new value is stored in the glider list
                    and saved, if the user leave the menu via the OK button.
-                   If you move through the gilder list, done load or water changes
-                   for a single list entry will not more discared, if the
+                   If the user moves through the gilder list, done load or water
+                   changes for a single list entry will not more discared, if the
                    selection is changed.
 
 [+] 2014-02-09 AP: New feature added that can parse, store and load openAIP
                    airspace files. The airspaces are defined by using XML syntax.
+                   See http://www.openaip.net for more info.
 
 [+] 2014-02-02 AP: Android: IOIO service added. One IOIO uart can be configured
                    to read/write data to the connected device.
