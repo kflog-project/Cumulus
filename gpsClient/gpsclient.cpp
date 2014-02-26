@@ -1218,7 +1218,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
 
   // read out flights
   char buffer[MAXSIZE];
-  uint progress = 0;
+  int progress = 0;
 
   // Check, if the download directory exists. Here we take the directory element
   // from the list.
