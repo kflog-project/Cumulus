@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2013 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2004-2014 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -1270,7 +1270,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
               return;
             }
 
-          uint lastProgress = -1;
+          int lastProgress = -1;
           bool eof = false;
 
           while( fbc.getIGCData(buffer, &progress) )
