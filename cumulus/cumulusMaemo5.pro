@@ -61,6 +61,7 @@ HEADERS = \
     airfieldlistwidget.h \
     airregion.h \
     airspace.h \
+    AirspaceHelper.h \
     airspacewarningdistance.h \
     altimeterdialog.h \
     altitude.h \
@@ -186,6 +187,7 @@ SOURCES = \
     airfieldlistwidget.cpp \
     airregion.cpp \altimetermodedialog
     airspace.cpp \
+    AirspaceHelper.h \    
     altimeterdialog.cpp \
     altitude.cpp \
     authdialog.cpp \
