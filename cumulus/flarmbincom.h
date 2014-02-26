@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2012-2014 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ class FlarmBinCom
    *
    * \return true if data available in error case false.
    */
-  bool getIGCData(char* sData, unsigned int* progress);
+  bool getIGCData(char* sData, int* progress);
 
  protected:
 

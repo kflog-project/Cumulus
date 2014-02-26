@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 by Axel Pauli (axel@kflog.org)
+**   Copyright (c):  2012-2014 by Axel Pauli (axel@kflog.org)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ bool FlarmBinCom::getRecordInfo( char* sData )
   return true;
 }
 
-bool FlarmBinCom::getIGCData( char* sData, unsigned int* progress)
+bool FlarmBinCom::getIGCData( char* sData, int* progress)
 {
   Message m;
   m.hdr.type = FRAME_GETIGCDATA;
