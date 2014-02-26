@@ -185,7 +185,8 @@ SOURCES = \
     airfield.cpp \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
-    airregion.cpp \altimetermodedialog
+    airregion.cpp \
+    altimeterdialog \
     airspace.cpp \
     AirspaceHelper.cpp \    
     altimeterdialog.cpp \
