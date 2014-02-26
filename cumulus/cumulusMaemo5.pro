@@ -62,8 +62,8 @@ HEADERS = \
     airregion.h \
     airspace.h \
     AirspaceHelper.h \
-    airspacewarningdistance.h \
     altimeterdialog.h \
+    airspacewarningdistance.h \
     altitude.h \
     authdialog.h \
     basemapelement.h \
@@ -185,11 +185,10 @@ SOURCES = \
     airfield.cpp \
     airfieldlistview.cpp \
     airfieldlistwidget.cpp \
+    altimeterdialog.cpp \
     airregion.cpp \
-    altimeterdialog \
     airspace.cpp \
     AirspaceHelper.cpp \    
-    altimeterdialog.cpp \
     altitude.cpp \
     authdialog.cpp \
     basemapelement.cpp \
