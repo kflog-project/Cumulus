@@ -35,6 +35,8 @@ QT_JAR = QtIndustrius-8.jar QtIndustrius-14.jar
 
 CUMULUS = libCumulus.so
 
+CUMULUS_JAVA_LIB = $(HOME)/ws-kepler-java/CumulusActivity/libs/armeabi-v7a
+
 A_LIB_DIR = $(PROJECT_DIR)/android/libs/armeabi-v7a
 
 ASSET_DIR = $(PROJECT_DIR)/android/assets
@@ -68,6 +70,7 @@ $(addprefix $(ASSET_DIR)/, $(QT_JAR)):	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
 copy_cumulus:
 	$(STRIP) $(BUILD_DIR)/$(CUMULUS)
 	install --mode=755 $(BUILD_DIR)/$(CUMULUS) $(A_LIB_DIR)
+	install --mode=755 $(BUILD_DIR)/$(CUMULUS) $(CUMULUS_JAVA_LIB)
 	
 check:
 	@if [ -z "$(PROJECT_DIR)" ]; \
