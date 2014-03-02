@@ -44,8 +44,7 @@ ASSET_DIR = $(PROJECT_DIR)/android/assets
 usage:
 	@echo "call: $(MAKE) -f Android.make PROJECT_DIR=<project-dir> BUILD_DIR=<build-dir>"
 
-copy:
-	check copy_cumulus
+copy:	check copy_cumulus
 
 copy_all:	check copy_qt copy_plugin copy_jar copy_cumulus
 
