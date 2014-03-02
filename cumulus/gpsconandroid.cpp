@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012 by Axel Pauli (axel@kflog.org)
+ **   Copyright (c): 2012-2014 by Axel Pauli (axel@kflog.org)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -345,7 +345,7 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
 
   // read out flights
   char buffer[MAXSIZE];
-  uint progress = 0;
+  int progress = 0;
 
   // Check, if the download directory exists. Here we take the directory element
   // from the list.
@@ -397,7 +397,7 @@ void GpsConAndroid::getFlarmIgcFiles(QString& args)
               return;
             }
 
-          uint lastProgress = -1;
+          int lastProgress = -1;
           bool eof = false;
 
           while( fbc.getIGCData(buffer, &progress) )
