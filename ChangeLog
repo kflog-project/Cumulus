@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-03-02 AP: Bugfix: Cumulus for Android OS Froyo recovered. Has going
+                   lost due to a build error.
+
 [o] 2014-02-24 AP: Welt2000 update check string adapted to last Welt2000 release.
 
 [o] 2014-02-23 AP: QNH calculation improved by using an official formula and
