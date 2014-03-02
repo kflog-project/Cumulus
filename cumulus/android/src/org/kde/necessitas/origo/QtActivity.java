@@ -290,7 +290,30 @@ public class QtActivity extends Activity
 
         // get directory /data/data/org.kflog.cumulus"
         final String dataDir = getApplicationInfo().dataDir + File.separator;
-        final String qtJar = "QtIndustrius-14.jar";
+        String qtJar = "";
+        String androidLib = "";
+
+        // There exists dependencies in library loading to the running Android
+        // API. To solve them the API is checked. The dependencies are described
+        // in Necessita's rules.xml file.
+        // .../Android/Qt/482/armeabi-v7a/lib/rules.xml
+        
+        int apiVersion = android.os.Build.VERSION.SDK_INT;
+        
+        Log.d(QtApplication.QtTAG, "startApp, Android-API=" + apiVersion);
+        
+        if (apiVersion > android.os.Build.VERSION_CODES.FROYO)
+          {
+            // All versions above Froyo
+            qtJar = "QtIndustrius-14.jar";
+            androidLib = "libandroid-9.so";
+          }
+        else
+          {
+            // All versions before Gingerbread
+            qtJar = "QtIndustrius-8.jar";
+            androidLib = "libandroid-8.so";
+          }
 
         Log.d(QtApplication.QtTAG, "startApp, dataDir=" + dataDir);
 
@@ -298,7 +321,7 @@ public class QtActivity extends Activity
         libraryList.add(dataDir + "lib/libQtGui.so");
         libraryList.add(dataDir + "lib/libQtNetwork.so");
         libraryList.add(dataDir + "lib/libQtXml.so");
-        libraryList.add(dataDir + "lib/libandroid-9.so");
+        libraryList.add(dataDir + "lib/" + androidLib);
 
         String jarDir = getDir("jar", Context.MODE_PRIVATE).getAbsolutePath();
         String jarOut = jarDir + File.separator + qtJar;
