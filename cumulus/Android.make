@@ -29,13 +29,9 @@ STRIP = $(NDK_BIN_BIR)/strip
 
 QT_LIBS = libQtCore.so libQtGui.so libQtNetwork.so libQtXml.so
 
-# See neccessitas rule file for API mapping ./Android/Qt/482/armeabi-v7a/lib/rules.xml 
-# API 8
-QT_PLUGIN = libandroid-8.so
+QT_PLUGIN = libandroid-8.so libandroid-9.so
 
-# See neccessitas rule file for API mapping ./Android/Qt/482/armeabi-v7a/lib/rules.xml 
-# API 8
-QT_JAR = QtIndustrius-8.jar
+QT_JAR = QtIndustrius-8.jar QtIndustrius-14.jar
 
 CUMULUS = libCumulus.so
 
@@ -48,7 +44,10 @@ ASSET_DIR = $(PROJECT_DIR)/android/assets
 usage:
 	@echo "call: $(MAKE) -f Android.make PROJECT_DIR=<project-dir> BUILD_DIR=<build-dir>"
 
-copy:	check copy_qt copy_plugin copy_jar copy_cumulus
+copy:
+	check copy_cumulus
+
+copy_all:	check copy_qt copy_plugin copy_jar copy_cumulus
 
 copy_qt:	$(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
 
@@ -58,14 +57,14 @@ $(addprefix $(A_LIB_DIR)/, $(QT_LIBS)):	$(addprefix $(QT_LIB_DIR)/, $(QT_LIBS))
 
 copy_plugin:	$(addprefix $(A_LIB_DIR)/, $(QT_PLUGIN))
 
-$(A_LIB_DIR)/$(QT_PLUGIN): $(QT_PLUGIN_DIR)/$(QT_PLUGIN)
-	install --mode=755 $< $(A_LIB_DIR)
-	$(STRIP) $(A_LIB_DIR)/$(QT_PLUGIN)
+$(addprefix $(A_LIB_DIR)/, $(QT_PLUGIN)):	$(addprefix $(QT_PLUGIN_DIR)/, $(QT_PLUGIN))
+	install --mode=755 $? $(A_LIB_DIR)
+	$(STRIP) $(addprefix $(A_LIB_DIR)/, $(notdir $?))
 
 copy_jar:	$(ASSET_DIR)/$(QT_JAR)
-	
-$(ASSET_DIR)/$(QT_JAR):	$(QT_JAR_DIR)/$(QT_JAR)
-	install --mode=644 $< $(ASSET_DIR)
+
+$(addprefix $(ASSET_DIR)/, $(QT_JAR)):	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
+	install --mode=644 $? $(ASSET_DIR)
 
 copy_cumulus:
 	$(STRIP) $(BUILD_DIR)/$(CUMULUS)
@@ -85,7 +84,10 @@ check:
 	@test -d "$(A_LIB_DIR)" || mkdir -p $(A_LIB_DIR)
 
 clean:
+	rm -f $(addprefix $(A_LIB_DIR)/, $(CUMULUS))
+	
+clean_all:
 	rm -f $(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
 	rm -f $(addprefix $(A_LIB_DIR)/, gdbserver)
-	rm -f $(A_LIB_DIR)/$(QT_PLUGIN)
-	# rm -f $(ASSET_DIR)/$(QT_JAR)
+	rm -f $(addprefix $(A_LIB_DIR)/, $(QT_PLUGIN))
+	rm -f $(addprefix $(ASSET_DIR)/, $(QT_JAR))
