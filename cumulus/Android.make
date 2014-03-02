@@ -1,7 +1,7 @@
 ##################################################################
 # Cumulus Android Makefile file for deploy preparation
 #
-# Copyright (c): 2012-2013 by Axel Pauli
+# Copyright (c): 2012-2014 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -29,9 +29,13 @@ STRIP = $(NDK_BIN_BIR)/strip
 
 QT_LIBS = libQtCore.so libQtGui.so libQtNetwork.so libQtXml.so
 
-QT_PLUGIN = libandroid-9.so
+# See neccessitas rule file for API mapping ./Android/Qt/482/armeabi-v7a/lib/rules.xml 
+# API 8
+QT_PLUGIN = libandroid-8.so
 
-QT_JAR = QtIndustrius-14.jar
+# See neccessitas rule file for API mapping ./Android/Qt/482/armeabi-v7a/lib/rules.xml 
+# API 8
+QT_JAR = QtIndustrius-8.jar
 
 CUMULUS = libCumulus.so
 
@@ -84,4 +88,4 @@ clean:
 	rm -f $(addprefix $(A_LIB_DIR)/, $(QT_LIBS))
 	rm -f $(addprefix $(A_LIB_DIR)/, gdbserver)
 	rm -f $(A_LIB_DIR)/$(QT_PLUGIN)
-	rm -f $(ASSET_DIR)/$(QT_JAR)
+	# rm -f $(ASSET_DIR)/$(QT_JAR)
