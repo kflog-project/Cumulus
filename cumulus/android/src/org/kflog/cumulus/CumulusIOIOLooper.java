@@ -17,8 +17,8 @@
 
 package org.kflog.cumulus;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.content.ContextWrapper;
@@ -107,28 +107,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   }
 
   /**
-   * Returns the uart object according to the selection index.
-   * 
-   * @param index The uart object to be selected. 1...3
-   * 
-   * @return Selected uart object if it exists or null in error case.
-   */
-  public Uart getUart(int index)
-  {
-    switch (index)
-      {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-          return m_uarts[index];
-        default:
-          return null;
-      }
-  }
-
-  /**
-   * Write to the active Uart thread in an unsynchronized manner
+   * Write to the active Uart thread
    * 
    * @param out The bytes to write.
    * 
@@ -138,20 +117,13 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
   {
     if (m_activeUart >= 0 && m_activeUart <= 3)
       {
-        // Create temporary object
-        UartThread u;
-
-        // Synchronize a copy of the uart thread
         synchronized (this)
           {
-            u = m_uartThreads[m_activeUart];
-          }
-
-        if (u != null)
-          {
-            // Perform the write unsynchronized
-            u.write(buffer);
-            return true;
+            if( m_uartThreads[m_activeUart] != null )
+              {
+                m_uartThreads[m_activeUart].write(buffer);
+                return true;
+              }
           }
       }
 
@@ -236,7 +208,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     try
     {
       uart2Activated = Integer.parseInt( settings.getString(m_context.getString(R.string.pref_active_uart),
-                                                           m_context.getString(R.string.pref_active_uart_default)));
+                                                            m_context.getString(R.string.pref_active_uart_default)));
     }
     catch( NumberFormatException e )
     {
@@ -296,6 +268,14 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
                    ", Speed=" + speed +
                    " not existing!");
       }
+    
+    if (m_callback != null)
+      {
+        // Report to caller, that this instance is connected to to IOIO.
+        m_callback.activedIoioLooper(this);
+      }
+    
+    Log.d( TAG, "Created Uart_" + index + ", m_activeUart=" + m_activeUart + ", OBJ=" + this);
   }
 
   @Override
@@ -364,9 +344,8 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
     private String UTAG;
     private Uart m_uart = null;
     private int m_uartIndex = -1;
-    private InputStream m_uartStreamReader = null;
-    // private BufferedInputStream m_uartBufferReader = null;
-    private OutputStream m_uartStreamWriter = null;
+    private BufferedInputStream m_uartReader = null;
+    private OutputStream m_uartWriter = null;
     private boolean m_abort = false;
 
     /**
@@ -388,11 +367,10 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
       m_uartIndex = index;
 
       // Gets the Uart input stream
-      m_uartStreamReader = uart.getInputStream();
-      // m_uartReader = new BufferedInputStream((tmpIn));
+      m_uartReader = new BufferedInputStream( uart.getInputStream(), 8192 );
 
       // Gets the Uart output stream
-      m_uartStreamWriter = uart.getOutputStream();
+      m_uartWriter = uart.getOutputStream();
     }
 
     /**
@@ -401,8 +379,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
      */
     public void run()
     {
-      if (D)
-        Log.i(TAG, "Run " + UTAG + " is started");
+      if (D) Log.d(TAG, "Run " + UTAG + " is started");
 
       setName(UTAG);
 
@@ -422,7 +399,7 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
               // Read a character from the input stream and pass it via JNI
               // to the native C++ part.
-              int character = m_uartStreamReader.read();
+              int character = m_uartReader.read();
 
               if (character == -1)
                 {
@@ -457,14 +434,15 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
      */
     public void write(byte[] buffer)
     {
-      if (m_uartStreamWriter == null || getAbort() == true )
+      if (m_uartWriter == null || getAbort() == true )
         {
+          Log.e(TAG, UTAG + "write failed due to writer is null or abort is true");
           return;
         }
 
       try
         {
-          m_uartStreamWriter.write(buffer);
+          m_uartWriter.write(buffer);
         }
       catch (IOException e)
         {
@@ -497,16 +475,16 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
         {
           setAbort(true);
 
-          if (m_uartStreamReader != null)
+          if (m_uartReader != null)
             {
-              m_uartStreamReader.close();
-              m_uartStreamReader = null;
+              m_uartReader.close();
+              m_uartReader = null;
             }
 
-          if (m_uartStreamWriter != null)
+          if (m_uartWriter != null)
             {
-              m_uartStreamWriter.close();
-              m_uartStreamWriter = null;
+              m_uartWriter.close();
+              m_uartWriter = null;
             }
           
           if( m_uart != null )

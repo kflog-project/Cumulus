@@ -17,10 +17,12 @@
 
 package org.kflog.cumulus;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import android.content.ContextWrapper;
 import android.os.Handler;
 import android.util.Log;
-
 import ioio.lib.impl.SocketIOIOConnection;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.IOIOLooperProvider;
@@ -64,6 +66,11 @@ public class CumulusIOIO implements IOIOLooperProvider
   private static final String TAG = "CumIOIO";
 
   /**
+   * Debug flag control
+   */
+  private static final boolean D = true;
+
+  /**
    * Context wrapper instance
    */
   private ContextWrapper m_wrapper = null;
@@ -74,15 +81,17 @@ public class CumulusIOIO implements IOIOLooperProvider
 
   private boolean m_started = false;
   
-  /**
-   * IOIO looper instance.
-   */
-  private CumulusIOIOLooper m_ioioLooper = null;
+  final private Set<CumulusIOIOLooper> ioioLooperSet = new HashSet<CumulusIOIOLooper>();
   
   /**
-   * Mutex for m_ioioLooper object.
+   * Active IOIO looper instance.
    */
-  private final Object m_ioioLooperMutex = new Object();
+  private CumulusIOIOLooper m_activeIoioLooper = null;
+  
+  /**
+   * Mutex for m_activeIoioLooper object.
+   */
+  private final Object m_activeIoioLooperMutex = new Object();
 
 
   public CumulusIOIO(ContextWrapper wrapper, Handler msgHandler)
@@ -165,10 +174,15 @@ public class CumulusIOIO implements IOIOLooperProvider
    */
   protected IOIOLooper createIOIOLooper()
   {
-    synchronized (m_ioioLooperMutex)
+    synchronized (m_activeIoioLooperMutex)
       {
-        m_ioioLooper = new CumulusIOIOLooper(m_wrapper, this);
-        return m_ioioLooper;
+        CumulusIOIOLooper ioioLopper = new CumulusIOIOLooper( m_wrapper, this );
+        
+        ioioLooperSet.add( ioioLopper );
+        
+        if( D ) Log.d(TAG, "createIOIOLooper= " + ioioLopper);
+        
+        return ioioLopper;
       }
   }
 
@@ -178,18 +192,22 @@ public class CumulusIOIO implements IOIOLooperProvider
     Log.d(TAG, "createIOIOLooper for: " + connectionType);
     return createIOIOLooper();
   }
-
+  
   /**
+   * Write bytes to the activated Uart of the IOIO.
    * 
-   * @return Instance of CumulusIOIOLooper looper or null, if no IOIO is
-   *         running.
+   * @param buffer Bytes to write to the Uart of the IOIO
+   * 
+   * @return true in case of success other wise false
    */
-  public CumulusIOIOLooper getIoioLooper()
+  public boolean writeUart( byte[] buffer )
   {
-    synchronized (m_ioioLooperMutex)
+    if( m_activeIoioLooper != null && isStarted() )
       {
-        return m_ioioLooper;
+        return m_activeIoioLooper.writeUart( buffer );
       }
+    
+    return false;
   }
 
   /**
@@ -200,22 +218,39 @@ public class CumulusIOIO implements IOIOLooperProvider
    */
   public void resetIoioLooper(CumulusIOIOLooper ioioLooper)
   {
-    synchronized (m_ioioLooperMutex)
+    if( D ) Log.d(TAG, "resetIoioLooper= " + m_activeIoioLooper);
+    
+    synchronized (m_activeIoioLooperMutex)
       {
-        if (m_ioioLooper != null && m_ioioLooper == ioioLooper)
+        if (m_activeIoioLooper != null && m_activeIoioLooper == ioioLooper)
           {
-            m_ioioLooper = null;
+            m_activeIoioLooper = null;
           }
+        
+        ioioLooperSet.remove( ioioLooper );
       }
   }
   
+  /**
+   * Set active IOIO looper. This method is used by the CumulusIOIOLooper as
+   * callback, if the IOIO has connected successfully.
+   * 
+   * @param CumulusIOIOLooper Active instance of IOIO looper
+   */
+  public void activedIoioLooper( CumulusIOIOLooper ioioLooper )
+  {
+    if( D ) Log.d(TAG, "activedIoioLooper= " + ioioLooper);
+
+    m_activeIoioLooper = ioioLooper;
+  }
+
   /**
    * This method is used by the CumulusIOIOLooper as callback. It reports that
    * an incompatible IOIO firmware is detected to tell that the user.
    */
   public void reportIncompatible()
   {
-    synchronized (m_ioioLooperMutex)
+    synchronized (m_activeIoioLooperMutex)
       {
         m_msgHandler.obtainMessage(R.id.msg_ioio_incompatible).sendToTarget();
       }

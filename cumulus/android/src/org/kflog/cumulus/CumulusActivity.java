@@ -1541,10 +1541,8 @@ public class CumulusActivity extends QtActivity
           // Loop through paired devices
           for (BluetoothDevice device : m_pairedBtDevices)
             {
-              Log.d(
-                  TAG,
-                  "chooseBtGps(): " + device.getName() + "="
-                      + device.getAddress());
+              Log.d( TAG, "chooseBtGps(): " + device.getName() + "=" +
+                     device.getAddress());
 
               l_bt_items[idx] = device.getName() + " (" + device.getAddress()
                   + ")";
@@ -1631,11 +1629,11 @@ public class CumulusActivity extends QtActivity
   }
 
   /**
-   * Forward a GPS NMEA command to the BT connected GPS device.
+   * Forward a GPS NMEA command to the connected GPS device. Can be BT or USB IOIO.
    */
   synchronized boolean gpsCmd(String cmd)
   {
-    Log.v(TAG, "gpsCmd(): " + cmd);
+    Log.v(TAG, "gpsCmd(): gpsEnabled=" + gpsEnabled + ", cmd=" + cmd);
 
     if (!gpsEnabled)
       {
@@ -1649,19 +1647,19 @@ public class CumulusActivity extends QtActivity
         return true;
       }
 
-    CumulusIOIOLooper ioioLooper = m_ioio.getIoioLooper();
-
-    if (ioioLooper != null)
+    if( m_ioio != null && m_ioio.isStarted() )
       {
-        // IOIO service is activated
-        return ioioLooper.writeUart(cmd.getBytes());
+        Log.v(TAG, "gpsCmd(): ioioLooper=OK" );
+
+        // IOIO service is activated, write data to Uart.
+        return m_ioio.writeUart(cmd.getBytes());
       }
 
     return false;
   }
 
   /**
-   * Forward a byte to the BT connected GPS device.
+   * Forward a byte to the connected GPS device. Can be BT or USB IOIO.
    */
   synchronized boolean byte2Gps(byte newByte)
   {
@@ -1679,14 +1677,12 @@ public class CumulusActivity extends QtActivity
         return true;
       }
 
-    CumulusIOIOLooper ioioLooper = m_ioio.getIoioLooper();
-
-    if (ioioLooper != null)
+    if( m_ioio != null && m_ioio.isStarted() )
       {
-        // IOIO service is activated
+        // IOIO service is activated, write data to Uart.
         byte[] data = new byte[1];
         data[0] = newByte;
-        return ioioLooper.writeUart(data);
+        return m_ioio.writeUart( data );
       }
 
     return false;
