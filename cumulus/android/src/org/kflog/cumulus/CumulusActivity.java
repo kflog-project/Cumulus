@@ -1633,8 +1633,6 @@ public class CumulusActivity extends QtActivity
    */
   synchronized boolean gpsCmd(String cmd)
   {
-    Log.v(TAG, "gpsCmd(): gpsEnabled=" + gpsEnabled + ", cmd=" + cmd);
-
     if (!gpsEnabled)
       {
         return false;
@@ -1649,8 +1647,6 @@ public class CumulusActivity extends QtActivity
 
     if( m_ioio != null && m_ioio.isStarted() )
       {
-        Log.v(TAG, "gpsCmd(): ioioLooper=OK" );
-
         // IOIO service is activated, write data to Uart.
         return m_ioio.writeUart(cmd.getBytes());
       }
