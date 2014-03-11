@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2013 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -100,14 +100,9 @@ class SettingsPageAirspace : public QWidget
 #ifdef INTERNET
 
   /**
-   * Called to request the download of an airspace file.
+   * Called to request the download of openAIP airspace files.
    */
-  void slot_installAirspace();
-
-  /**
-   * Called to start a download of an airspace file.
-   */
-   void slot_startDownload( QString &url );
+  void slot_downloadAirspaces();
 
    /**
     * Called if the Ok button is pressed.
@@ -129,9 +124,9 @@ class SettingsPageAirspace : public QWidget
   void airspaceColorsUpdated();
 
   /**
-   * Emitted if an airspace shall be installed
+   * Emitted if openAIP airspaces shall be downloaded
    */
-  void downloadAirspace( QString& url );
+  void downloadAirspaces( const QStringList& );
 
  private:
 

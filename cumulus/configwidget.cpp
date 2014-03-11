@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2013 by Axel Pauli
+ **                   2007-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,7 +18,7 @@
 
 /**
  * This is the configuration widget of Cumulus. All general settings are
- * handled here. These are in general not related to the preflight
+ * handled here. These are in general not related to the pre-flight
  * preparation. For that exists a separate configuration widget.
  */
 
@@ -298,8 +298,8 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( page, SIGNAL(airspaceColorsUpdated()),
                _globalMapConfig, SLOT(slotReloadAirspaceColors()));
 
-      connect( page, SIGNAL(downloadAirspace( QString& )),
-              _globalMapContents, SLOT(slotDownloadAirspace( QString& )));
+      connect( page, SIGNAL(downloadAirspaces(const QStringList& )),
+              _globalMapContents, SLOT(slotDownloadAirspaces(const QStringList& )));
 
       page->show();
       return;

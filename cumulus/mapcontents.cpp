@@ -94,7 +94,8 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     , m_downloadManger(0),
     m_shallDownloadData(false),
     m_hasAskForDownload(false),
-    m_downloadOpenAipAirfieldsRequested(false)
+    m_downloadOpenAipAirfieldsRequested(false),
+    m_downloadOpenAipAirspacesRequested(false)
 
 #endif
 {
@@ -1562,11 +1563,7 @@ void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountr
     }
 }
 
-/**
- * This slot is called to download an airspace file from the internet.
- * @param url The url of the web page where the file is to find.
- */
-void MapContents::slotDownloadAirspace( QString& url )
+void MapContents::slotDownloadAirspaces( const QStringList& openAipCountryList )
 {
   extern Calculator* calculator;
 
@@ -1591,14 +1588,19 @@ void MapContents::slotDownloadAirspace( QString& url )
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  connect( m_downloadManger, SIGNAL(airspaceDownloaded() ),
-           this, SLOT(slotReloadAirspaceData()) );
+  m_downloadOpenAipAirspacesRequested = true;
 
-  QUrl airspaceUrl( url );
-  QString file = QFileInfo( airspaceUrl.path() ).fileName();
-  QString dest = GeneralConfig::instance()->getMapRootDir() + "/airspaces/" + file;
+  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
+  const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
 
-  m_downloadManger->downloadRequest( url, dest );
+  for( int i = 0; i < openAipCountryList.size(); i++ )
+    {
+      // File name format: <country-code>_asp.aip, example: de_asp.aip
+      QString file = openAipCountryList.at(i).toLower() + "_asp.aip";
+      QString url  = urlPrefix + file;
+      QString dest = destPrefix + file;
+      m_downloadManger->downloadRequest( url, dest );
+    }
 }
 
 /** Called, if all downloads are finished. */
@@ -1656,6 +1658,54 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
       loadOpenAipAirfieldsViaThread();
     }
 
+  if( m_downloadOpenAipAirspacesRequested == true )
+    {
+      m_downloadOpenAipAirspacesRequested = false;
+
+      // Tidy up airspace directory after download of openAIP files.
+      const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
+
+      // Get the list of airspace files to be loaded.
+      QStringList& files2load = GeneralConfig::instance()->getAirspaceFileList();
+
+      // Check if option load all is set by the user
+      bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
+
+      QDir afDir(afDirName);
+      afDir.setFilter(QDir::Files);
+
+      QStringList filters;
+      filters << "*.aic" << "*.aip";
+      afDir.setNameFilters(filters);
+
+      QStringList filesFound = afDir.entryList();
+
+      for( int i = 0; i < filesFound.size(); i++ )
+        {
+          const QString& fn = filesFound.at(i);
+
+          if( fn.endsWith(".aic") )
+            {
+              // Remove compiled airspace file version in every case.
+              afDir.remove( fn );
+              continue;
+            }
+
+          if( loadAll && fn.startsWith("openaip_airspace_") )
+            {
+              // That file was installed by the user. We remove it to avoid
+              // problems with the new downloaded airspace files by Cumulus,
+              // if the load All option is activated.
+              // Example of file names:
+              // User installed file:    openaip_airspace_germany_de.aip
+              // Cumulus installed file: de_asp.aip
+              afDir.remove( fn );
+            }
+        }
+
+      loadAirspacesViaThread();
+    }
+
   // initiate a map redraw
   Map::instance->scheduleRedraw( Map::baseLayer );
 
@@ -1710,7 +1760,7 @@ void MapContents::slotNetworkError()
 }
 
 /**
- * Ask the user once for download of missing Welt200 or map files. The answer
+ * Ask the user once for download of missing Welt2000 or map files. The answer
  * is stored permanently to have it for further request.
  * Returns true, if download is desired otherwise false.
  */

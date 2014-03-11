@@ -365,7 +365,7 @@ class MapContents : public QObject
     void slotDownloadWelt2000( const QString& welt2000FileName );
 
     /**
-     * This slot is called to download openAip airfield files from the internet.
+     * This slot is called to download openAip airfield files from the Internet.
      *
      * @param openAipCountryList The list of countries to be downloaded.
      */
@@ -382,10 +382,11 @@ class MapContents : public QObject
     void slotDownloadMapArea( const QPoint &center, const Distance& length );
 
     /**
-     * This slot is called to download an airspace file from the internet.
-     * @param url The url of the web page where the file is to find.
+     * This slot is called to download openAIP airspace files from the Internet.
+     *
+     * @param openAipCountryList The list of countries to be downloaded.
      */
-    void slotDownloadAirspace( QString& url );
+    void slotDownloadAirspaces( const QStringList& openAipCountryList );
 
   private slots:
 
@@ -680,6 +681,9 @@ class MapContents : public QObject
 
     /** Store download request for openAIP airfield data. */
     bool m_downloadOpenAipAirfieldsRequested;
+
+    /** Store download request for openAIP airspace data. */
+    bool m_downloadOpenAipAirspacesRequested;
 
 #endif
 

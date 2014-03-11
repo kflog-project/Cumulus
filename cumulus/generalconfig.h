@@ -734,15 +734,16 @@ class GeneralConfig : protected QSettings
     _asDrawingBorder = alt;
   };
 
-  /** Gets the last airspace url */
-  QString &getLastAirspaceUrl()
+  /** Gets the openAIP airspace countries */
+  QString &getOpenAIPAirspaceCountries()
     {
-      return _lastAirspaceUrl;
+      return _openAIPAirspaceCountries;
     };
-  /** Sets the surname */
-  void setLastAirspaceUrl( const QString newValue )
+
+  /** Sets the openAIP airspace countries */
+  void setOpenAIPAirspaceCountries( const QString newValue )
   {
-    _lastAirspaceUrl = newValue;
+    _openAIPAirspaceCountries = newValue;
   };
 
   /** gets disclaimer version */
@@ -2862,8 +2863,8 @@ class GeneralConfig : protected QSettings
   // airspace line width
   int _airspaceLineWidth;
 
-  // last used airspace url
-  QString _lastAirspaceUrl;
+  // openAIP airspace countries to be loaded
+  QString _openAIPAirspaceCountries;
 
   // Airspace files to be loaded
   QStringList _airspaceFileList;

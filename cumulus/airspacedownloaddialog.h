@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * \brief This dialog manages the download of an airspace file via HTTP.
  *
- * \date 2010-2012
+ * \date 2010-2014
  *
  * \version $Id$
  *
@@ -31,12 +31,12 @@
 #ifndef AIRSPACE_DOWNLOAD_DIALOG_H
 #define AIRSPACE_DOWNLOAD_DIALOG_H
 
-#include <QDialog>
-#include <QLabel>
+#include <QWidget>
 #include <QLineEdit>
 #include <QDialogButtonBox>
+#include <QStringList>
 
-class AirspaceDownloadDialog : public QDialog
+class AirspaceDownloadDialog : public QWidget
 {
   Q_OBJECT
 
@@ -50,28 +50,36 @@ class AirspaceDownloadDialog : public QDialog
 
   virtual ~AirspaceDownloadDialog();
 
- protected:
-
-  /** standard slots */
-  virtual void accept();
-  virtual void reject();
-
  private slots:
 
-  signals:
+  /**
+  * Called if the Ok button is pressed.
+  */
+  void accept();
 
-  void downloadAirspace( QString &url );
+  /**
+  * Called if the Cancel button is pressed.
+  */
+  void reject();
+
+ signals:
+
+  /**
+   * Called, to trigger a download of openAIP airspace files from the Internet.
+   *
+   * \param openAipCountryList he list of countries to be downloaded.
+   */
+  void downloadAirspaces( const QStringList& openAipCountryList );
 
  private:
 
-  /** Editor for airspace url input */
-  QLineEdit *editAirspaceUrl;
+  bool checkCountryList( QStringList& clist );
+
+  /** Editor for airspace countries */
+  QLineEdit *m_editCountries;
 
   /** The dialog button box */
-  QDialogButtonBox *buttonBox;
-
-  /** The state of the SIP */
-  bool m_autoSip;
+  QDialogButtonBox *m_buttonBox;
 };
 
 #endif /* AIRSPACE_DOWNLOAD_DIALOG_H */

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2009-2013 by Axel Pauli
+ **                   2009-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -172,15 +172,13 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   hbox = new QHBoxLayout;
 
 #ifdef INTERNET
-#ifndef ANDROID
 
   cmdInstall = new QPushButton(tr("Download"), this);
   hbox->addWidget(cmdInstall);
-  connect (cmdInstall, SIGNAL(clicked()), this, SLOT(slot_installAirspace()));
+  connect (cmdInstall, SIGNAL(clicked()), this, SLOT(slot_downloadAirspaces()));
 
   hbox->addSpacing( 10 );
 
-#endif
 #endif
 
   cmdLoading = new QPushButton(tr("Load"), this);
@@ -740,25 +738,14 @@ void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
 
 #ifdef INTERNET
 
-/**
- * Called to request the download an airspace file.
- */
-void SettingsPageAirspace::slot_installAirspace()
+void SettingsPageAirspace::slot_downloadAirspaces()
 {
   AirspaceDownloadDialog *dlg = new AirspaceDownloadDialog( this );
 
-  connect( dlg, SIGNAL(downloadAirspace( QString& )),
-           this, SLOT(slot_startDownload( QString& )));
+  connect( dlg, SIGNAL(downloadAirspaces(const QStringList& )),
+           this, SIGNAL(downloadAirspaces(const QStringList& )));
 
   dlg->setVisible( true );
-}
-
-/**
- * Called to start a download of an airspace file.
- */
-void SettingsPageAirspace::slot_startDownload( QString &url )
-{
-  emit downloadAirspace( url );
 }
 
 #endif

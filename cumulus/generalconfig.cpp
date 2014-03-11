@@ -118,22 +118,22 @@ void GeneralConfig::load()
 
   // Airspace warning distances
   beginGroup("Airspace");
-  _awd.horClose          = value("HorizontalWarningDistance", 2000.0).toDouble();
-  _awd.horVeryClose      = value("HorizontalWarningDistanceVC", 1000.0).toDouble();
-  _awd.verAboveClose     = value("VerticalWarningDistanceAbove", 200.0).toDouble();
-  _awd.verAboveVeryClose = value("VerticalWarningDistanceAboveVC", 100.0).toDouble();
-  _awd.verBelowClose     = value("VerticalWarningDistanceBelow", 200.0).toDouble() ;
-  _awd.verBelowVeryClose = value("VerticalWarningDistanceBelowVC", 100.0).toDouble();
+  _awd.horClose             = value("HorizontalWarningDistance", 2000.0).toDouble();
+  _awd.horVeryClose         = value("HorizontalWarningDistanceVC", 1000.0).toDouble();
+  _awd.verAboveClose        = value("VerticalWarningDistanceAbove", 200.0).toDouble();
+  _awd.verAboveVeryClose    = value("VerticalWarningDistanceAboveVC", 100.0).toDouble();
+  _awd.verBelowClose        = value("VerticalWarningDistanceBelow", 200.0).toDouble() ;
+  _awd.verBelowVeryClose    = value("VerticalWarningDistanceBelowVC", 100.0).toDouble();
 
-  _lastAirspaceUrl      = value("LastAirspaceUrl", "").toString();
-  _forceDrawing         = value("forceLowAirspaceDrawing", true ).toBool();
-  _forceDrawingDistance = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
-  _airspaceFileList     = value("FileList", QStringList(QString("All"))).toStringList();
+  _openAIPAirspaceCountries = value("OpenAIPCountries", "").toString();
+  _forceDrawing             = value("forceLowAirspaceDrawing", true ).toBool();
+  _forceDrawingDistance     = value("forceLowAirspaceDrawingDistance", 150.0).toDouble();
+  _airspaceFileList         = value("FileList", QStringList(QString("All"))).toStringList();
 
-  _asNoDrawing          = value("AirspaceNoDrawing", false ).toBool();;
-  _asDrawingBorder      = value("AirspaceNoDrawingBorder", 100).toInt();
+  _asNoDrawing              = value("AirspaceNoDrawing", false ).toBool();;
+  _asDrawingBorder          = value("AirspaceNoDrawingBorder", 100).toInt();
 
-  _airspaceLineWidth = value( "AirSpaceBorderLineWidth", AirSpaceBorderLineWidth ).toInt();
+  _airspaceLineWidth        = value( "AirSpaceBorderLineWidth", AirSpaceBorderLineWidth ).toInt();
 
   // Airspace drawing types, set all to true as default
   for( int i=0; i < BaseMapElement::objectTypeSize; i++ )
@@ -582,7 +582,7 @@ void GeneralConfig::save()
   setValue("VerticalWarningDistanceBelow", _awd.verBelowClose.getMeters());
   setValue("VerticalWarningDistanceBelowVC", _awd.verBelowVeryClose.getMeters());
 
-  setValue("LastAirspaceUrl", _lastAirspaceUrl);
+  setValue("OpenAIPCountries", _openAIPAirspaceCountries);
   setValue("forceLowAirspaceDrawing", _forceDrawing);
   setValue("forceLowAirspaceDrawingDistance", _forceDrawingDistance.getMeters());
   setValue("AirspaceNoDrawing", _asNoDrawing);

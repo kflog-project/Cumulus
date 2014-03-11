@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2014-03-12 AP: New setting page added for openAIP airspaces download under
+                   settings airspaces. Now the user can install openAIP
+                   airspaces in Cumulus via this new download feature.
+
 [-] 2014-03-02 AP: Bugfix: Cumulus for Android OS Froyo recovered. Has going
                    lost due to a build error.
 
