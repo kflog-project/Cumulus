@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-03-12 AP: SMS text for retriever modified. Outlanding position link
+                   changed to a Google map link. This link can be resolved
+                   from the SMS App. 
+
 [+] 2014-03-12 AP: New setting page added for openAIP airspaces download under
                    settings airspaces. Now the user can install openAIP
                    airspaces in Cumulus via this new download feature.
