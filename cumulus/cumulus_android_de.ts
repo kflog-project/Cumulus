@@ -101,7 +101,7 @@
         <location filename="airspacedownloaddialog.cpp" line="33"/>
         <location filename="airspacedownloaddialog.cpp" line="44"/>
         <source>Download openAIP Airspaces</source>
-        <translation>Download openAIP Lufträume?</translation>
+        <translation>Download openAIP Lufträume</translation>
     </message>
     <message>
         <location filename="airspacedownloaddialog.cpp" line="48"/>
@@ -121,7 +121,7 @@
     <message>
         <location filename="airspacedownloaddialog.cpp" line="101"/>
         <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
+        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma!</translation>
     </message>
     <message>
         <location filename="airspacedownloaddialog.cpp" line="121"/>
@@ -3677,7 +3677,7 @@ Alle Downloads verworfen!</translation>
         <location filename="openaip.cpp" line="653"/>
         <location filename="openaip.cpp" line="1511"/>
         <source>Cannot open file</source>
-        <translation>Datei nicht vorhanden!</translation>
+        <translation>Kann nicht öffnen Datei</translation>
     </message>
 </context>
 <context>
@@ -3895,7 +3895,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="settingspageairfields.cpp" line="318"/>
         <source>Home Radius</source>
-        <translation>Heimat Radius:</translation>
+        <translation>Heimat Radius</translation>
     </message>
     <message>
         <location filename="settingspageairfields.cpp" line="340"/>
@@ -3911,12 +3911,12 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="settingspageairfields.cpp" line="499"/>
         <source>Every Welt2000 country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
+        <translation>Jedes Welt2000 Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma!</translation>
     </message>
     <message>
         <location filename="settingspageairfields.cpp" line="674"/>
         <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
+        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma!</translation>
     </message>
     <message>
         <location filename="settingspageairfields.cpp" line="693"/>
@@ -4792,7 +4792,7 @@ Alle Downloads verworfen!</translation>
         <location filename="settingspagetask.cpp" line="201"/>
         <location filename="settingspagetask.cpp" line="276"/>
         <source>Line Length</source>
-        <translation>Linienlänge:</translation>
+        <translation>Linienlänge</translation>
     </message>
     <message>
         <location filename="settingspagetask.cpp" line="202"/>
