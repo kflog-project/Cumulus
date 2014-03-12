@@ -74,102 +74,172 @@
 <context>
     <name>AirspaceDownloadDialog</name>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="34"/>
         <source>Download Airspace</source>
-        <translation>Luftraum Download</translation>
+        <translation type="obsolete">Luftraum Download</translation>
+    </message>
+    <message>
+        <source>Airspace Url:</source>
+        <translation type="obsolete">Luftraum URL:</translation>
+    </message>
+    <message>
+        <source>Enter URL of airspace filename to be installed</source>
+        <translation type="obsolete">URL Eingabe von Luftraumdatei</translation>
+    </message>
+    <message>
+        <source>Install</source>
+        <translation type="obsolete">Installieren</translation>
+    </message>
+    <message>
+        <source>Settings invalid!</source>
+        <translation type="obsolete">Werte ungültig!</translation>
+    </message>
+    <message>
+        <source>Please correct your URL settings!</source>
+        <translation type="obsolete">Korregieren Sie die URL Eingabe!</translation>
+    </message>
+    <message>
+        <location filename="airspacedownloaddialog.cpp" line="33"/>
+        <location filename="airspacedownloaddialog.cpp" line="44"/>
+        <source>Download openAIP Airspaces</source>
+        <translation>Download openAIP Lufträume?</translation>
     </message>
     <message>
         <location filename="airspacedownloaddialog.cpp" line="48"/>
-        <source>Airspace Url:</source>
-        <translation>Luftraum URL:</translation>
+        <source>Countries:</source>
+        <translation>Länder:</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="52"/>
-        <source>Enter URL of airspace filename to be installed</source>
-        <translation>URL Eingabe von Luftraumdatei</translation>
+        <location filename="airspacedownloaddialog.cpp" line="63"/>
+        <source>Download</source>
+        <translation>Download</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="61"/>
-        <source>Install</source>
-        <translation>Installieren</translation>
+        <location filename="airspacedownloaddialog.cpp" line="100"/>
+        <source>Please check entries</source>
+        <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="107"/>
-        <source>Settings invalid!</source>
-        <translation>Werte ungültig!</translation>
+        <location filename="airspacedownloaddialog.cpp" line="101"/>
+        <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
+        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
     </message>
     <message>
-        <location filename="airspacedownloaddialog.cpp" line="108"/>
-        <source>Please correct your URL settings!</source>
-        <translation>Korregieren Sie die URL Eingabe!</translation>
+        <location filename="airspacedownloaddialog.cpp" line="121"/>
+        <source>Download openAIP files?</source>
+        <translation>Download openAIP Dateien?</translation>
+    </message>
+    <message>
+        <location filename="airspacedownloaddialog.cpp" line="122"/>
+        <source>Active Internet connection is needed!</source>
+        <translation>Aktive Internetverbindung ist erforderlich!</translation>
+    </message>
+    <message>
+        <location filename="airspacedownloaddialog.cpp" line="123"/>
+        <source>Start download now?</source>
+        <translation>Start Download?</translation>
+    </message>
+</context>
+<context>
+    <name>AltimeterDialog</name>
+    <message>
+        <location filename="altimeterdialog.cpp" line="49"/>
+        <source>Altimeter Settings</source>
+        <translation>Höhenmesser Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="76"/>
+        <source>MSL</source>
+        <translation>MSL</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="77"/>
+        <source>STD</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="78"/>
+        <source>AGL</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="79"/>
+        <source>AHL</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="111"/>
+        <source>Meters</source>
+        <translation>Meter</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="117"/>
+        <source>Feet</source>
+        <translation>Fuß</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="128"/>
+        <source>GPS</source>
+        <translation>GPS</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="134"/>
+        <source>Baro</source>
+        <translation>Baro</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="160"/>
+        <source>AltGain:</source>
+        <translation>H-Gewinn:</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="176"/>
+        <source>Leveling:</source>
+        <translation>Abgleich:</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="189"/>
+        <source>Altitude:</source>
+        <translation>Höhe:</translation>
+    </message>
+    <message>
+        <location filename="altimeterdialog.cpp" line="194"/>
+        <source>QNH:</source>
+        <translation>QNH:</translation>
     </message>
 </context>
 <context>
     <name>AltimeterModeDialog</name>
     <message>
-        <location filename="altimetermodedialog.cpp" line="47"/>
         <source>Altimeter Settings</source>
-        <translation>Höhenmesser Einstellungen</translation>
+        <translation type="obsolete">Höhenmesser Einstellungen</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="74"/>
-        <source>MSL</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="altimetermodedialog.cpp" line="75"/>
-        <source>STD</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="altimetermodedialog.cpp" line="76"/>
-        <source>AGL</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="altimetermodedialog.cpp" line="77"/>
-        <source>AHL</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="altimetermodedialog.cpp" line="109"/>
         <source>Meters</source>
-        <translation>Meter</translation>
+        <translation type="obsolete">Meter</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="115"/>
         <source>Feet</source>
-        <translation>Fuß</translation>
+        <translation type="obsolete">Fuß</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="126"/>
         <source>GPS</source>
-        <translation>GPS</translation>
+        <translation type="obsolete">GPS</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="132"/>
         <source>Baro</source>
-        <translation>Baro</translation>
+        <translation type="obsolete">Baro</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="158"/>
         <source>AltGain:</source>
-        <translation>H-Gewinn:</translation>
+        <translation type="obsolete">H-Gewinn:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="174"/>
         <source>Leveling:</source>
-        <translation>Abgleich:</translation>
+        <translation type="obsolete">Abgleich:</translation>
     </message>
     <message>
-        <location filename="altimetermodedialog.cpp" line="187"/>
         <source>Altitude:</source>
-        <translation>Höhe:</translation>
-    </message>
-    <message>
-        <location filename="altimetermodedialog.cpp" line="192"/>
-        <source>QNH:</source>
-        <translation></translation>
+        <translation type="obsolete">Höhe:</translation>
     </message>
 </context>
 <context>
@@ -1599,54 +1669,54 @@
 <context>
     <name>MapContents</name>
     <message>
-        <location filename="mapcontents.cpp" line="209"/>
-        <location filename="mapcontents.cpp" line="226"/>
-        <location filename="mapcontents.cpp" line="234"/>
-        <location filename="mapcontents.cpp" line="670"/>
-        <location filename="mapcontents.cpp" line="687"/>
-        <location filename="mapcontents.cpp" line="695"/>
+        <location filename="mapcontents.cpp" line="210"/>
+        <location filename="mapcontents.cpp" line="227"/>
+        <location filename="mapcontents.cpp" line="235"/>
+        <location filename="mapcontents.cpp" line="671"/>
+        <location filename="mapcontents.cpp" line="688"/>
+        <location filename="mapcontents.cpp" line="696"/>
         <source>Out of memory! Map not loaded.</source>
         <translation>Speicher alle! Karte nicht geladen.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1662"/>
+        <location filename="mapcontents.cpp" line="1712"/>
         <source>%1 download(s) with %2 error(s) done.</source>
         <translation>%1 download(s) mit %2 Fehler(n) getan.</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1665"/>
+        <location filename="mapcontents.cpp" line="1715"/>
         <source>Downloads finished</source>
         <translation>Downloads fertig</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1692"/>
+        <location filename="mapcontents.cpp" line="1742"/>
         <source>Network error occurred.
 All downloads are canceled!</source>
         <translation>Netzwerkfehler.
 Alle Downloads verworfen!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1695"/>
+        <location filename="mapcontents.cpp" line="1745"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1727"/>
+        <location filename="mapcontents.cpp" line="1777"/>
         <source>Download missing Data?</source>
         <translation>Fehlende Daten holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1728"/>
+        <location filename="mapcontents.cpp" line="1778"/>
         <source>Download missing Data from the Internet?</source>
         <translation>Fehlende Daten aus dem Internet holen?</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1729"/>
+        <location filename="mapcontents.cpp" line="1779"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1811"/>
+        <location filename="mapcontents.cpp" line="1861"/>
         <source>Loading maps...</source>
         <translation>Lade Karten...</translation>
     </message>
@@ -1663,39 +1733,39 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Lese Welt2000 Datei</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1972"/>
+        <location filename="mapcontents.cpp" line="2022"/>
         <source>Loading maps done</source>
         <translation>Karten geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2574"/>
+        <location filename="mapcontents.cpp" line="2624"/>
         <source>Loading OpenAIP data</source>
         <translation>Lade OpenAir Dateien</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2604"/>
+        <location filename="mapcontents.cpp" line="2654"/>
         <source>No OpenAIP loaded</source>
         <translation>Kein OpenAIP geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2608"/>
+        <location filename="mapcontents.cpp" line="2658"/>
         <source>OpenAIP loaded</source>
         <translation>OpenAIP geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2699"/>
-        <location filename="mapcontents.cpp" line="2800"/>
+        <location filename="mapcontents.cpp" line="2749"/>
+        <location filename="mapcontents.cpp" line="2850"/>
         <source>loading Welt2000</source>
         <translation>lade Welt2000</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2738"/>
+        <location filename="mapcontents.cpp" line="2788"/>
         <source>Welt2000 load failed</source>
         <translation>Welt2000 Ladefehler</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2759"/>
-        <location filename="mapcontents.cpp" line="2805"/>
+        <location filename="mapcontents.cpp" line="2809"/>
+        <location filename="mapcontents.cpp" line="2855"/>
         <source>Welt2000 loaded</source>
         <translation>Welt2000 geladen</translation>
     </message>
@@ -1704,121 +1774,121 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1904"/>
+        <location filename="mapcontents.cpp" line="1954"/>
         <source>Reading Airspace Data</source>
         <translation>Lese Luftraumdaten</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1917"/>
+        <location filename="mapcontents.cpp" line="1967"/>
         <source>Reading Airfield Data</source>
         <translation>Lese Flugplatzdaten</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="1937"/>
+        <location filename="mapcontents.cpp" line="1987"/>
         <source>Reading Welt2000 Data</source>
         <translation>Lese Welt2000 Daten</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2638"/>
+        <location filename="mapcontents.cpp" line="2688"/>
         <source>Loading Airspaces</source>
         <translation>Lade Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2663"/>
+        <location filename="mapcontents.cpp" line="2713"/>
         <source>No Airspaces loaded</source>
         <translation>Keine Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2667"/>
+        <location filename="mapcontents.cpp" line="2717"/>
         <source>Airspaces loaded</source>
         <translation>Lufträume geladen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2846"/>
-        <location filename="mapcontents.cpp" line="2914"/>
+        <location filename="mapcontents.cpp" line="2896"/>
+        <location filename="mapcontents.cpp" line="2964"/>
         <source>Drawing airports</source>
         <translation>Zeichne Flugplätze</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2862"/>
-        <location filename="mapcontents.cpp" line="2926"/>
+        <location filename="mapcontents.cpp" line="2912"/>
+        <location filename="mapcontents.cpp" line="2976"/>
         <source>Drawing glider sites</source>
         <translation>Zeichne Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2878"/>
-        <location filename="mapcontents.cpp" line="2938"/>
+        <location filename="mapcontents.cpp" line="2928"/>
+        <location filename="mapcontents.cpp" line="2988"/>
         <source>Drawing outlanding sites</source>
         <translation>Zeichne Landefelder</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2950"/>
+        <location filename="mapcontents.cpp" line="3000"/>
         <source>Drawing radio points</source>
         <translation>Zeichne Funkanlagen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2958"/>
+        <location filename="mapcontents.cpp" line="3008"/>
         <source>Drawing airspaces</source>
         <translation>Zeichne Lufträume</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2966"/>
+        <location filename="mapcontents.cpp" line="3016"/>
         <source>Drawing obstacles</source>
         <translation>Zeichne Hindernisse</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2974"/>
+        <location filename="mapcontents.cpp" line="3024"/>
         <source>Drawing reporting points</source>
         <translation>Zeichne Meldepunkte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2982"/>
+        <location filename="mapcontents.cpp" line="3032"/>
         <source>Drawing cities</source>
         <translation>Zeichne Städte</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="2996"/>
+        <location filename="mapcontents.cpp" line="3046"/>
         <source>Drawing villages</source>
         <translation>Zeichne Dörfer</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3004"/>
+        <location filename="mapcontents.cpp" line="3054"/>
         <source>Drawing landmarks</source>
         <translation>Zeichne Landmarken</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3012"/>
+        <location filename="mapcontents.cpp" line="3062"/>
         <source>Drawing motorways</source>
         <oldsource>Drawing highways</oldsource>
         <translation>Zeichne Autobahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3020"/>
+        <location filename="mapcontents.cpp" line="3070"/>
         <source>Drawing roads</source>
         <translation>Zeichne Straßen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3028"/>
+        <location filename="mapcontents.cpp" line="3078"/>
         <source>Drawing railroads</source>
         <translation>Zeichne Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3036"/>
+        <location filename="mapcontents.cpp" line="3086"/>
         <source>Drawing hydro</source>
         <translation>Zeichne Hydro</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3044"/>
+        <location filename="mapcontents.cpp" line="3094"/>
         <source>Drawing lakes</source>
         <translation>Zeichne Seen</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3052"/>
+        <location filename="mapcontents.cpp" line="3102"/>
         <source>Drawing topography</source>
         <translation>Zeichne Topographie</translation>
     </message>
     <message>
-        <location filename="mapcontents.cpp" line="3102"/>
+        <location filename="mapcontents.cpp" line="3152"/>
         <source>Drawing surface contours</source>
         <translation>Zeichne Oberfläche</translation>
     </message>
@@ -3935,22 +4005,22 @@ Alle Downloads verworfen!</translation>
         <translation>Standard Farben</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="177"/>
+        <location filename="settingspageairspace.cpp" line="176"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="186"/>
+        <location filename="settingspageairspace.cpp" line="184"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="192"/>
+        <location filename="settingspageairspace.cpp" line="190"/>
         <source>Warnings</source>
         <translation>Warnungen</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="198"/>
+        <location filename="settingspageairspace.cpp" line="196"/>
         <source>Filling</source>
         <translation>Füllung</translation>
     </message>
