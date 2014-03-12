@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
+ **   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -214,9 +214,10 @@ void PreFlightRetrievePage::slotCallReturner()
   double lat = static_cast<double>(position.x()) / 600000.0;
   double lon = static_cast<double>(position.y()) / 600000.0;
 
-  // Add location link for Google maps a.s.o
-  smsText += "loc: " + QString("%1").arg( lat, 0, 'f', 5) + "," +
-                       QString("%1").arg( lon, 0, 'f', 5);
+  // Add location link for Google maps
+  smsText += "https://maps.google.com/maps?q=" +
+              QString("%1").arg( lat, 0, 'f', 5) + "," +
+              QString("%1").arg( lon, 0, 'f', 5);
 
   jniCallRetriever( smsText );
 }
