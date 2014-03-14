@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -89,6 +89,9 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   QGridLayout *topLayout = new QGridLayout(sw);
 
+  QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->setMargin( 0 );
+
 #ifdef ANDROID
   QLabel* mapSelection = new QLabel( tr("Maps") + ":", this );
 #else
@@ -98,7 +101,7 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   connect(mapSelection, SIGNAL( clicked()), this, SLOT(slot_openFileDialog()) );
 #endif
 
-  topLayout->addWidget(mapSelection, row, 0 );
+  hbox->addWidget( mapSelection );
 
   Qt::InputMethodHints imh;
 
@@ -110,7 +113,8 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
   mapDirectory->setReadOnly(true);
 #endif
 
-  topLayout->addWidget(mapDirectory, row++, 1, 1, 2 );
+  hbox->addWidget( mapDirectory );
+  topLayout->addLayout(hbox, row++, 0, 1, 3 );
 
   topLayout->addWidget(new QLabel(tr("Projection:"), this), row, 0 );
   cmbProjection = new QComboBox(this);

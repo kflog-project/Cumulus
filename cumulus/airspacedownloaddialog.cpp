@@ -51,12 +51,14 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
   m_editCountries = new QLineEdit(this);
   imh = (m_editCountries->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_editCountries->setInputMethodHints(imh);
-  m_editCountries->setText( GeneralConfig::instance()->getOpenAIPAirspaceCountries() );
+  m_editCountries->setText( GeneralConfig::instance()->getOpenAipAirspaceCountries() );
   hbox->addWidget( m_editCountries, 10 );
   mainLayout->addLayout( hbox );
 
   m_buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
                                       QDialogButtonBox::Ok );
+
+  m_buttonBox->layout()->setSpacing(30);
 
   QPushButton *ok =  m_buttonBox->button( QDialogButtonBox::Ok );
   ok->setDefault( true );
@@ -86,7 +88,7 @@ void AirspaceDownloadDialog::accept()
 
   if( openAipCountries.isEmpty() )
     {
-      conf->setOpenAIPAirspaceCountries( openAipCountries );
+      conf->setOpenAipAirspaceCountries( openAipCountries );
       return;
     }
 
@@ -115,7 +117,7 @@ void AirspaceDownloadDialog::accept()
     }
 
   // Save the new airspace country settings
-  GeneralConfig::instance()->setOpenAIPAirspaceCountries( openAipCountries );
+  GeneralConfig::instance()->setOpenAipAirspaceCountries( openAipCountries );
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Download openAIP files?"),

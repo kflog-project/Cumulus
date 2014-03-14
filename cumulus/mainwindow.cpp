@@ -135,7 +135,8 @@ static void resumeGpsConnection( int sig )
 }
 
 MainWindow::MainWindow( Qt::WindowFlags flags ) :
-  QMainWindow( 0, flags )
+  QMainWindow( 0, flags ),
+  m_firstStartup( false )
 {
   _globalMainWindow = this;
   m_menuBarVisible = false;
@@ -449,6 +450,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
  */
 void MainWindow::slotCreateDisclaimer()
 {
+  m_firstStartup = true;
+
   setWindowTitle( tr("Disclaimer") );
 
   QString disclaimer =
@@ -934,7 +937,7 @@ void MainWindow::slotCreateApplicationWidgets()
   // set map view as the central widget
   setView( mapView );
 
-  // Make the status bar visible. Maemo do hide it per default.
+  // Make the status bar visible. Maemo hides it per default.
   slotViewStatusBar( true );
 }
 
@@ -946,8 +949,9 @@ void MainWindow::slotCreateApplicationWidgets()
 void MainWindow::slotFinishStartUp()
 {
   // qDebug() << "MainWindow::slotFinishStartUp()";
+  GeneralConfig *conf = GeneralConfig::instance();
 
-  if( GeneralConfig::instance()->getLoggerAutostartMode() == true )
+  if( conf->getLoggerAutostartMode() == true )
     {
       // set logger in standby mode
       m_logger->Standby();
@@ -969,6 +973,9 @@ void MainWindow::slotFinishStartUp()
   GpsNmea::gps->startGpsReceiver();
 #endif
 
+  // Get the language from the environment
+  QString language = qgetenv("LANG");
+
 #ifdef MAEMO
 
   if( ossoContext )
@@ -985,8 +992,9 @@ void MainWindow::slotFinishStartUp()
       // start timer with 10s
       m_displayTrigger->start( 10000 );
     }
+#endif
 
-#elif ANDROID
+#ifdef ANDROID
 
   // setup timer to prevent screen blank
   m_displayTrigger = new QTimer(this);
@@ -998,15 +1006,41 @@ void MainWindow::slotFinishStartUp()
   // start timer with 10s
   m_displayTrigger->start( 10000 );
 
-#endif
-
-#ifdef ANDROID
-
   // Enable JNI transfer now.
   jniShutdown( false );
 
+  language = jniGetLanguage();
+
   forceFocus();
 #endif
+
+  // On first startup we set some user defaults and download some default data
+  // from the Internet.
+  if( m_firstStartup == true )
+    {
+      qDebug() << "firstStartup: LanguageString=" << language;
+
+      // The letter 4 and 5 are the special country code of a land, if counting
+      // starts with one.
+      language = language.mid(3, 2).toUpper();
+
+      if( language.size() == 2 )
+        {
+          if( conf->getHomeCountryCode().isEmpty() )
+            {
+              conf->setHomeCountryCode( language );
+            }
+
+          conf->setOpenAipAirfieldCountries( language.toLower() );
+          conf->setOpenAipAirspaceCountries( language.toLower() );
+
+          if( _globalMapContents->askUserForDownload() == true )
+            {
+              _globalMapContents->slotDownloadOpenAipAirfields( QStringList(language.toLower()) );
+              _globalMapContents->slotDownloadAirspaces( QStringList(language.toLower()) );
+            }
+        }
+    }
 
   // Call update check
   QTimer::singleShot(3000, this, SLOT(slotCheck4Updates()));
@@ -3079,8 +3113,8 @@ void MainWindow::slotLanded( QDateTime& dt )
  */
 void MainWindow::slotCheck4Updates()
 {
-  // Use last update date 02.08.2013 as ignore key
-  const int ignore = 2082013;
+  // Use last update date 14.02.2014 as ignore key
+  const int ignore = 14022014;
 
   if( GeneralConfig::instance()->getWelt2000UpdateMarker() == ignore )
     {

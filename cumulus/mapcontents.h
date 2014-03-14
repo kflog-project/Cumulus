@@ -357,6 +357,14 @@ class MapContents : public QObject
                                    SortableAirspaceList* airspaceListIn );
 
 #ifdef INTERNET
+
+    /**
+     * Ask the user once for download of missing map files. The answer
+     * is stored permanently to have it for further request.
+     * Returns true, if download is desired otherwise false.
+     */
+    bool askUserForDownload();
+
     /**
      * This slot is called to download the Welt2000 file from the internet.
      * @param welt2000FileName The Welt2000 filename as written at the web page
@@ -481,13 +489,6 @@ class MapContents : public QObject
      *
      */
     bool downloadMapFile( QString &file, QString &directory );
-
-    /**
-     * Ask the user once for download of missing map files. The answer
-     * is stored permanently to have it for further request.
-     * Returns true, if download is desired otherwise false.
-     */
-    bool askUserForDownload();
 
 #endif
 

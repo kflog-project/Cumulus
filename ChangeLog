@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-03-14 AP: Download of openAIP airfield and airspace data on first
+                   startup after installation, if a country could be regognized.
+
 [o] 2014-03-12 AP: SMS text for retriever modified. Outlanding position link
                    changed to a Google map link. This link can be resolved
                    from the SMS App. 

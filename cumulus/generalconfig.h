@@ -735,13 +735,13 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets the openAIP airspace countries */
-  QString &getOpenAIPAirspaceCountries()
+  QString &getOpenAipAirspaceCountries()
     {
       return _openAIPAirspaceCountries;
     };
 
   /** Sets the openAIP airspace countries */
-  void setOpenAIPAirspaceCountries( const QString newValue )
+  void setOpenAipAirspaceCountries( const QString newValue )
   {
     _openAIPAirspaceCountries = newValue;
   };

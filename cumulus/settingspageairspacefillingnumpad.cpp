@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli
+**   Copyright (c):  2013-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -119,7 +119,7 @@ SettingsPageAirspaceFillingNumPad::SettingsPageAirspaceFillingNumPad(QWidget *pa
   m_defaults = new QPushButton(tr("Default"));
 
   QDialogButtonBox* buttonBox = new QDialogButtonBox( Qt::Horizontal );
-
+  buttonBox->layout()->setSpacing(30);
   buttonBox->addButton( m_reset, QDialogButtonBox::ActionRole );
   buttonBox->addButton( m_defaults, QDialogButtonBox::ActionRole );
   buttonBox->addButton( QDialogButtonBox::Ok );

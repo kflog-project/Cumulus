@@ -555,6 +555,9 @@ private:
   // not covered by another widget.
   static bool m_rootWindow;
 
+  /** A flag to indicate a first startup after the installation. */
+  bool m_firstStartup;
+
 #ifdef INTERNET
   /** LiveTrack24 logger object. */
   LiveTrack24Logger* m_liveTrackLogger;
