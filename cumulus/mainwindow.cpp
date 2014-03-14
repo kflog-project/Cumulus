@@ -1018,8 +1018,6 @@ void MainWindow::slotFinishStartUp()
   // from the Internet.
   if( m_firstStartup == true )
     {
-      qDebug() << "firstStartup: LanguageString=" << language;
-
       // The letter 4 and 5 are the special country code of a land, if counting
       // starts with one.
       language = language.mid(3, 2).toUpper();
