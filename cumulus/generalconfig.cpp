@@ -490,7 +490,7 @@ void GeneralConfig::load()
   _gpsBtDevice        = value( "BT-Device", "" ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
   _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::GPS ).toInt();
-  _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toInt());
+  _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toDouble());
   _gpsSoftStart       = value( "SoftStart", false ).toBool();
   _gpsHardStart       = value( "HardStart", false ).toBool();
   _gpsSyncSystemClock = value( "SyncSystemClock", false ).toBool();

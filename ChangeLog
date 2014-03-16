@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-03-16 AP: Bugfix: Altitude leveling value has going lost, if the altitude
+                   unit was changed during leveling. Furthermore was the
+                   correction value for unit feet never saved.
+
+[*] 2014-03-14 AP: Cumulus 5.13.0 released for Android.
+
 [o] 2014-03-14 AP: Download of openAIP airfield and airspace data on first
                    startup after installation, if a country could be regognized.
 

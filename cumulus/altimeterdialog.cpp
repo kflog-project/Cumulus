@@ -394,12 +394,12 @@ void AltimeterDialog::load()
     case Altitude::meters:
       m_meter->setChecked(true);
       m_unit = 0;
-      spinLeveling->setValue( (int) conf->getGpsUserAltitudeCorrection().getMeters() );
+      spinLeveling->setValue( (int) rint(conf->getGpsUserAltitudeCorrection().getMeters() ));
       break;
     case Altitude::feet:
       m_feet->setChecked(true);
       m_unit = 1;
-      spinLeveling->setValue( (int) conf->getGpsUserAltitudeCorrection().getFeet() );
+      spinLeveling->setValue( (int) rint(conf->getGpsUserAltitudeCorrection().getFeet() ));
       break;
     default:
       m_meter->setChecked(true);
@@ -446,8 +446,26 @@ void AltimeterDialog::slotUnitChanged( int unit )
 {
   m_unit = unit;
 
-  // The new unit is set temporary to see the correct value.
+  // Save old altitude unit
+  enum Altitude::altitudeUnit oldAltUnit = Altitude::getUnit();
+
+  // The new altitude unit is set and posted to the other classes.
   Altitude::setUnit( (enum Altitude::altitudeUnit) m_unit );
+
+  // The leveling value must be adapted to the new unit.
+  Altitude newAltLeveling(0);
+
+  if( oldAltUnit == Altitude::meters && m_unit == Altitude::feet )
+    {
+      newAltLeveling.setMeters(spinLeveling->value());
+      spinLeveling->setValue( (int) rint(newAltLeveling.getFeet()) );
+    }
+  else if( oldAltUnit == Altitude::feet && m_unit == Altitude::meters )
+    {
+      newAltLeveling.setFeet(spinLeveling->value());
+      spinLeveling->setValue( (int) rint(newAltLeveling.getMeters()) );
+    }
+
   emit newAltimeterMode(); // informs MapView
   m_timeout->stop();
 }
