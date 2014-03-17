@@ -16,14 +16,10 @@
 ***********************************************************************/
 
 #include <QtGui>
-#include <QApplication>
-#include <QGridLayout>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QMessageBox>
 
 #include "airspacedownloaddialog.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "proxydialog.h"
 
 AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
@@ -40,38 +36,52 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
       resize( parent->size() );
     }
 
-  QVBoxLayout *mainLayout = new QVBoxLayout(this);
-  mainLayout->addWidget( new QLabel( tr("Download openAIP Airspaces")), Qt::AlignLeft );
-  mainLayout->addSpacing( 30 );
+  QHBoxLayout *mainLayout = new QHBoxLayout(this);
+  QGridLayout *leftLayout = new QGridLayout;
+  mainLayout->addLayout(leftLayout);
 
-  QHBoxLayout *hbox = new QHBoxLayout;
-  hbox->addWidget( new QLabel( tr("Countries:")) );
+  int row = 0;
+  leftLayout->addWidget( new QLabel( tr("Download openAIP Airspaces")), row++, 0, 1, 2);
+  leftLayout->setRowMinimumHeight ( row++, 30 );
+
+  leftLayout->addWidget( new QLabel( tr("Countries:")), row, 0 );
 
   Qt::InputMethodHints imh;
   m_editCountries = new QLineEdit(this);
   imh = (m_editCountries->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_editCountries->setInputMethodHints(imh);
   m_editCountries->setText( GeneralConfig::instance()->getOpenAipAirspaceCountries() );
-  hbox->addWidget( m_editCountries, 10 );
-  mainLayout->addLayout( hbox );
+  leftLayout->addWidget( m_editCountries, row++, 1 );
+  leftLayout->setColumnStretch( 1, 10 );
+  leftLayout->setRowMinimumHeight ( row++, 30 );
 
-  m_buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel |
-                                      QDialogButtonBox::Ok );
+  QPushButton *downloadButton = new QPushButton( tr("Download") );
+  connect(downloadButton, SIGNAL(pressed()), this, SLOT(slotDownload()));
 
-  m_buttonBox->layout()->setSpacing(30);
+  leftLayout->addWidget( downloadButton, row++, 0 );
+  leftLayout->setRowStretch( row, 10 );
 
-  QPushButton *ok =  m_buttonBox->button( QDialogButtonBox::Ok );
-  ok->setDefault( true );
-  ok->setText( tr("Download") );
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QPushButton *cancel = m_buttonBox->button( QDialogButtonBox::Cancel );
-  cancel->setAutoDefault(false);
+  QPushButton *ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  mainLayout->addStretch( 10 );
-  mainLayout->addWidget( m_buttonBox );
+  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), this, SLOT(close()));
 
-  connect( m_buttonBox, SIGNAL(accepted()), this, SLOT(accept()) );
-  connect( m_buttonBox, SIGNAL(rejected()), this, SLOT(reject()) );
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  mainLayout->addLayout(buttonBox);
 }
 
 AirspaceDownloadDialog::~AirspaceDownloadDialog()
@@ -79,45 +89,15 @@ AirspaceDownloadDialog::~AirspaceDownloadDialog()
   // qDebug("AirspaceDownloadDialog::~AirspaceDownloadDialog()");
 }
 
-/** User has pressed Ok button */
-void AirspaceDownloadDialog::accept()
+void AirspaceDownloadDialog::slotDownload()
 {
-  GeneralConfig *conf = GeneralConfig::instance();
+  QStringList countrylist;
 
-  QString openAipCountries = m_editCountries->text().trimmed().toLower();
-
-  if( openAipCountries.isEmpty() )
+  if( checkCountryList( m_editCountries->text(), countrylist) == false ||
+      countrylist.size() == 0 )
     {
-      conf->setOpenAipAirspaceCountries( openAipCountries );
       return;
     }
-
-  // We will check, if the country entries of openAIP are valid. If not a
-  // warning message is displayed and the action is aborted.
-  QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
-
-  if( ! checkCountryList(clist) )
-    {
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Please check entries" ),
-                      tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
-      return;
-    }
-
-  // Save the new airspace country settings
-  GeneralConfig::instance()->setOpenAipAirspaceCountries( openAipCountries );
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Download openAIP files?"),
@@ -142,36 +122,66 @@ void AirspaceDownloadDialog::accept()
       return;
     }
 
-  emit downloadAirspaces( clist );
-  QWidget::close();
+  emit downloadAirspaces( countrylist );
 }
 
-/** User has pressed Cancel button */
-void AirspaceDownloadDialog::reject()
+void AirspaceDownloadDialog::slotAccept()
 {
-  QWidget::close();
-}
+  QStringList countrylist;
 
-bool AirspaceDownloadDialog::checkCountryList( QStringList& clist )
-{
-  if( clist.size() == 0 )
+  if( ! checkCountryList( m_editCountries->text(), countrylist) )
     {
-      return false;
+      return;
     }
 
-  for( int i = 0; i < clist.size(); i++ )
+  QWidget::close();
+}
+
+bool AirspaceDownloadDialog::checkCountryList( const QString& countries, QStringList& countrylist )
+{
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString openAipCountries = countries.trimmed().toLower();
+
+  countrylist.clear();
+
+  if( openAipCountries.isEmpty() )
     {
-      const QString& s = clist.at(i);
+      conf->setOpenAipAirspaceCountries( openAipCountries );
+      return true;
+    }
+
+  // We check, if the passed country string is correct.
+  countrylist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+
+  for( int i = 0; i < countrylist.size(); i++ )
+    {
+      const QString& s = countrylist.at(i);
 
       if( s.length() == 2 && s.contains(QRegExp("[A-Za-z][A-Za-z]")) == true )
         {
-          return true;
+          continue;
         }
-      else
-        {
-          return false;
-        }
+
+      QMessageBox mb( QMessageBox::Warning,
+                      tr( "Please check entries" ),
+                      tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+
+      mb.exec();
+      countrylist.clear();
+      return false;
     }
 
-  return false;
+  conf->setOpenAipAirspaceCountries( openAipCountries );
+  return true;
 }

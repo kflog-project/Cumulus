@@ -33,7 +33,6 @@
 
 #include <QWidget>
 #include <QLineEdit>
-#include <QDialogButtonBox>
 #include <QStringList>
 
 class AirspaceDownloadDialog : public QWidget
@@ -55,12 +54,12 @@ class AirspaceDownloadDialog : public QWidget
   /**
   * Called if the Ok button is pressed.
   */
-  void accept();
+  void slotAccept();
 
   /**
-  * Called if the Cancel button is pressed.
-  */
-  void reject();
+   * Called if download button is pressed.
+   */
+  void slotDownload();
 
  signals:
 
@@ -73,13 +72,19 @@ class AirspaceDownloadDialog : public QWidget
 
  private:
 
-  bool checkCountryList( QStringList& clist );
+  /**
+   * Checks the passed countries and returns a list of single countries.
+   *
+   * \param countries Countries to be checked
+   *
+   * \param countrylist List containing single countries calculated by this method
+   *
+   * \return true in case of success otherwise false
+   */
+  bool checkCountryList( const QString& countries, QStringList& countrylist );
 
   /** Editor for airspace countries */
   QLineEdit *m_editCountries;
-
-  /** The dialog button box */
-  QDialogButtonBox *m_buttonBox;
 };
 
 #endif /* AIRSPACE_DOWNLOAD_DIALOG_H */
