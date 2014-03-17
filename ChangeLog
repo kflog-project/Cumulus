@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-03-17 AP: Bugfix: Issues fixed in settings airfields page. The entered
+                   airfields were not saved in every case.
+                   
 [-] 2014-03-16 AP: Bugfix: Altitude leveling value has going lost, if the altitude
                    unit was changed during leveling. Furthermore was the
                    correction value for unit feet never saved.

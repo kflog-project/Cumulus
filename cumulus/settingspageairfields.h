@@ -26,7 +26,7 @@
  * Configuration settings for airfield data loading from Welt2000 and
  * OpenAIP.
  *
- * \date 2008-2013
+ * \date 2008-2014
  *
  * \version $Id$
  *

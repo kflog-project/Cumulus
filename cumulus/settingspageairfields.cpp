@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2013 Axel Pauli
+ **   Copyright (c): 2008-2014 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
  *
  * \brief Contains the airfield data settings.
  *
- * \date 2008-2013
+ * \date 2008-2014
  *
  * \version $Id$
  */
@@ -468,6 +468,19 @@ bool SettingsPageAirfields::save()
           alt.setFeet(m_minRwyLengthOaip->value());
           conf->setAirfieldRunwayLengthFilter(alt.getMeters());
         }
+
+#ifdef INTERNET
+
+      QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
+      QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+
+      // Store only valid entries permanently.
+      if( checkCountryList(clist) )
+        {
+          conf->setOpenAipAirfieldCountries(openAipCountries);
+        }
+#endif
+
     }
   else
     {
@@ -511,18 +524,6 @@ bool SettingsPageAirfields::save()
           mb.exec();
           return false;
         }
-
-#ifdef INTERNET
-
-      QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
-      clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
-
-      // Store only valid entries permanently.
-      if( checkCountryList(clist) )
-        {
-          conf->setOpenAipAirfieldCountries(openAipCountries);
-        }
-#endif
 
       conf->setWelt2000CountryFilter(m_countriesW2000->text().trimmed().toUpper());
 
@@ -725,6 +726,7 @@ bool SettingsPageAirfields::checkIsOpenAipChanged()
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed |= (conf->getAirfieldSource() == 1 && m_sourceBox->currentIndex() == 0);
+  changed |= (conf->getOpenAipAirfieldCountries() != m_countriesOaip4Download->text().trimmed().toLower());
   changed |= (m_homeRadiusInitValue != m_homeRadiusOaip->value());
   changed |= (m_runwayFilterInitValue != m_minRwyLengthOaip->value());
 
@@ -740,7 +742,7 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
   GeneralConfig *conf = GeneralConfig::instance();
 
   changed |= (conf->getAirfieldSource() == 0 && m_sourceBox->currentIndex() == 1);
-  changed |= (conf->getWelt2000CountryFilter() != m_countriesW2000->text());
+  changed |= (conf->getWelt2000CountryFilter() != m_countriesW2000->text().trimmed().toUpper());
   changed |= (m_homeRadiusInitValue != m_homeRadiusW2000->value());
   changed |= (m_runwayFilterInitValue != m_minRwyLengthW2000->value());
 
@@ -776,7 +778,7 @@ bool SettingsPageAirfields::checkCountryList( QStringList& clist )
 {
   if( clist.size() == 0 )
     {
-      return false;
+      return true;
     }
 
   for( int i = 0; i < clist.size(); i++ )
