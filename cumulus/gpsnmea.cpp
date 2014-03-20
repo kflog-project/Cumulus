@@ -3,9 +3,9 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2013 by Axel Pauli
+                               2008-2014 by Axel Pauli
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
     $Id$
 
@@ -814,11 +814,13 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 
               if( _userExpectedAltitude == GpsNmea::PRESSURE )
                 {
+                  // If we have pressure altitude, the barometer sensor is
+                  // normally calibrated to 1013.25hPa and that is the standard
+                  // pressure altitude.
+                  _lastStdAltitude = altitude.getMeters();
+
                   // Set these altitudes too, when pressure is selected.
                   _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-
-                  // calculate STD altitude
-                  calcStdAltitude( _lastMslAltitude );
 
                   // report new pressure altitude
                   emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
@@ -1216,14 +1218,20 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
               _reportAltitude = false;
-              _lastPressureAltitude = altitude; // store the new pressure altitude
+
+              // store the new pressure altitude
+              _lastPressureAltitude = altitude;
+
+              // If we have pressure altitude, the barometer sensor is
+              // normally calibrated to 1013.25hPa and that is the standard
+              // pressure altitude.
+              _lastStdAltitude = altitude;
 
               if( _userExpectedAltitude == GpsNmea::PRESSURE )
                 {
                   // set these altitudes too, when pressure is selected
                   _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-                  // calculate STD altitude
-                  calcStdAltitude( altitude );
+
                   emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
                 }
             }

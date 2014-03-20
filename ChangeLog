@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-03-20 AP: Bugfix: If the unit was changed in the altimeter dialog,
+                   the gained altitude display was not immediately updated.
+
 [-] 2014-03-17 AP: Bugfix: Issues fixed in settings airfields page. The entered
                    airfields were not saved in every case.
                    

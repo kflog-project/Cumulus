@@ -3,8 +3,9 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2012 by Axel Pauli
-    email                : axel@kflog.org
+                               2008-2014 by Axel Pauli
+
+    email                : kflog.cumulus@gmail.com
 
     $Id$
 
@@ -28,7 +29,7 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2012
+ * \date 2002-2014
  *
  * \version $Id$
  */

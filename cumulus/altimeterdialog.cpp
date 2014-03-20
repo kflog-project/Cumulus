@@ -466,6 +466,11 @@ void AltimeterDialog::slotUnitChanged( int unit )
       spinLeveling->setValue( (int) rint(newAltLeveling.getMeters()) );
     }
 
+  slotAltitudeChanged( calculator->getAltimeterAltitude() );
+
+  // The gained altitude display must be updated to the new altitude unit.
+  slotAltitudeGain( calculator->getGainedAltitude() );
+
   emit newAltimeterMode(); // informs MapView
   m_timeout->stop();
 }
@@ -709,7 +714,7 @@ int AltimeterDialog::getQNH( const Altitude& altitude )
 {
   // Under this link I found the formula for QNH calculation.
   // http://www.wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
-  const double power = -9.80665 / ( 287.05 * -0.0065);
+  const double power = -9.80665 / (287.05 * -0.0065);
 
   const double k1 = -0.0065 / 288.15;
 
