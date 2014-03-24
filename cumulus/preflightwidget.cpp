@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -36,6 +36,7 @@
 #include "preflighttaskpage.h"
 #include "preflightwaypointpage.h"
 #include "preflightwidget.h"
+#include "preflightwindpage.h"
 
 #ifdef INTERNET
 #include "preflightlivetrack24page.h"
@@ -58,6 +59,7 @@
 #define TASK        "Task"
 #define WAYPOINTS   "Waypoints"
 #define WEATHER     "METAR-TAF"
+#define WIND        "Wind"
 
 PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   QWidget(parent)
@@ -155,6 +157,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 #endif
 
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(WIND) );
+  item->setData( 0, Qt::UserRole, WIND );
+  m_setupTree->addTopLevelItem( item );
+
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
 
   contentLayout->addSpacing( 25 );
@@ -194,6 +201,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("LiveTrack") )
                  << ( tr ("METAR-TAF") )
 #endif
+                 << ( tr ("Wind") )
                  << ( tr ("Common") );
 
   m_setupTree->setMinimumWidth( Layout::maxTextWidth( m_headerLabels, font() ) + 100 );
@@ -298,6 +306,17 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
         }
 
       pflp->show();
+    }
+  else if( itemText == WIND )
+    {
+      PreFlightWindPage* pfwp = new PreFlightWindPage( this );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pfwp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pfwp->show();
     }
 
 #ifdef INTERNET

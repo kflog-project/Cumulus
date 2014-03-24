@@ -970,6 +970,42 @@ class GeneralConfig : protected QSettings
     _windDirection = newValue;
   };
 
+  /** gets manual wind speed */
+  int getManualWindSpeed() const
+  {
+    return _manualWindSpeed;
+  };
+
+  /** sets manual wind speed */
+  void setManualWindSpeed( const int newValue )
+  {
+    _manualWindSpeed = newValue;
+  };
+
+  /** gets manual wind direction */
+  int getManualWindDirection() const
+  {
+    return _manualWindDirection;
+  };
+
+  /** sets manual wind direction */
+  void setManualWindDirection( const int newValue )
+  {
+    _manualWindDirection = newValue;
+  };
+
+  /** gets the manual wind flag. */
+  bool isManualWindEnabled() const
+  {
+    return _manualWindIsEnabled;
+  };
+
+  /** sets the manual wind flag. */
+  void setManualWindEnabled( bool newValue )
+  {
+    _manualWindIsEnabled = newValue;
+  };
+
   /** gets current task */
   QString &getCurrentTask()
   {
@@ -2915,6 +2951,13 @@ class GeneralConfig : protected QSettings
   int _windSpeed;
   // The name of the current selected task
   QString _currentTask;
+
+  // manual wind speed
+  int _manualWindSpeed;
+  // manual wind direction
+  int _manualWindDirection;
+  // manual wind enable state
+  bool _manualWindIsEnabled;
 
   // Homesite country code
   QString _homeCountryCode;

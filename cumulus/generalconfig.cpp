@@ -245,6 +245,12 @@ void GeneralConfig::load()
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
   endGroup();
 
+  beginGroup("Manual Wind");
+  _manualWindSpeed     = value( "Speed", 0 ).toInt();
+  _manualWindDirection = value( "Direction", 0 ).toInt();
+  _manualWindIsEnabled = value( "Enabled", false ).toBool();
+  endGroup();
+
   beginGroup("Retriever");
   _retrieverMobileNumber   = value( "MobileNumber", "").toString();
   _retrieverPositionFormat = value( "PositionFormat", 0 ).toInt();
@@ -687,6 +693,12 @@ void GeneralConfig::save()
   setValue( "CurrentTask", _currentTask);
   setValue( "FlightLogbookFileName", _flightLogbookFileName );
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
+  endGroup();
+
+  beginGroup("Manual Wind");
+  setValue( "Speed", _manualWindSpeed );
+  setValue( "Direction", _manualWindDirection );
+  setValue( "Enabled", _manualWindIsEnabled );
   endGroup();
 
   beginGroup("Retriever");
