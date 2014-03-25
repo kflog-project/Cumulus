@@ -49,7 +49,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   QHBoxLayout *contentLayout = new QHBoxLayout;
   setLayout(contentLayout);
 
-  int msw = QFontMetrics(font()).width("999 Km/h") + 10;
+  int msw = QFontMetrics(font()).width("9999 Km/h") + 10;
   int mdw = QFontMetrics(font()).width("999" + QString(Qt::Key_degree)) + 10;
 
   QVBoxLayout* windLayout = new QVBoxLayout;
