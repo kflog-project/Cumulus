@@ -223,7 +223,7 @@ void PreFlightWindPage::slotAccept()
   if( newWindState == true || oldWindState != newWindState )
     {
       // Inform about a wind state or parameter change.
-      emit manualWindStateChange( newWindCbState );
+      emit manualWindStateChange( newWindState );
     }
 
   emit closingWidget();
