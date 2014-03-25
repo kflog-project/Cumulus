@@ -58,18 +58,21 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   windLayout->setSpacing(5);
   windLayout->setMargin(0);
 
-  QHBoxLayout* editrow = new QHBoxLayout;
-  editrow->setSpacing(5);
-  windLayout->addLayout( editrow );
+  QGroupBox *windBox = new QGroupBox( tr("Manual Wind"), this );
+  windLayout->addWidget( windBox );
+
+  QHBoxLayout* windRow = new QHBoxLayout;
+  windRow->setSpacing(5);
+  windBox->setLayout( windRow );
   windLayout->addSpacing( 10 );
 
-  m_windCheckBox = new QCheckBox( tr("Manual Wind") );
-  editrow->addWidget(m_windCheckBox);
+  m_windCheckBox = new QCheckBox( tr("On/Off") );
+  windRow->addWidget(m_windCheckBox);
   connect( m_windCheckBox, SIGNAL(stateChanged(int)),
            this, SLOT(slotWindCbStateChanged(int)));
 
   QLabel* label = new QLabel( tr("WD"), this );
-  editrow->addWidget(label);
+  windRow->addWidget(label);
 
   m_windDirection = new NumberEditor( this );
 #ifndef ANDROID
@@ -82,10 +85,10 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windDirection->setValue( GeneralConfig::instance()->getManualWindDirection() );
   m_windDirection->setSuffix( QString(Qt::Key_degree) );
   m_windDirection->setMinimumWidth( mdw );
-  editrow->addWidget(m_windDirection);
+  windRow->addWidget(m_windDirection);
 
   label = new QLabel( tr("WS"), this );
-  editrow->addWidget(label);
+  windRow->addWidget(label);
 
   m_windSpeed = new NumberEditor( this );
 #ifndef ANDROID
@@ -93,12 +96,15 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
 #endif
   m_windSpeed->setPmVisible(false);
   m_windSpeed->setRange( 0, 999 );
-  m_windSpeed->setMaxLength(3);
-  m_windSpeed->setValue( GeneralConfig::instance()->getManualWindSpeed() );
+  m_windSpeed->setMaxLength(4);
+
+  const Speed& wv = GeneralConfig::instance()->getManualWindSpeed();
+  m_windSpeed->setText( wv.getWindText( false, 1 ) );
+
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );
-  editrow->addWidget(m_windSpeed);
-  editrow->addStretch(10);
+  windRow->addWidget(m_windSpeed);
+  windRow->addStretch(10);
 
   //----------------------------------------------------------------------------
   windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
@@ -202,6 +208,24 @@ void PreFlightWindPage::slotWindCbStateChanged( int state )
 
 void PreFlightWindPage::slotAccept()
 {
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  bool oldWindState = conf->isManualWindEnabled();
+  bool newWindState = m_windCheckBox->isChecked();
+
+  conf->setManualWindEnabled( newWindState );
+  conf->setManualWindDirection( m_windDirection->value() );
+
+  Speed wv;
+  wv.setValueInUnit( m_windSpeed->text().toDouble(), Speed::getWindUnit() );
+  conf->setManualWindSpeed( wv );
+
+  if( newWindState == true || oldWindState != newWindState )
+    {
+      // Inform about a wind state or parameter change.
+      emit manualWindStateChange( newWindCbState );
+    }
+
   emit closingWidget();
   QWidget::close();
 }

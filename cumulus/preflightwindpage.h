@@ -64,6 +64,13 @@ class PreFlightWindPage : public QWidget
  signals:
 
    /**
+    * Emitted, if the enable state of the manual wind has been changed.
+    * If the enable state is true and wind parameters have been changed,
+    * the signal is emitted too.
+    */
+   void manualWindStateChange( bool newEnableState );
+
+   /**
     * Emitted, if the widget is closed.
     */
    void closingWidget();

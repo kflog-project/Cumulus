@@ -44,10 +44,11 @@
 #include <QStringList>
 
 #include "airspace.h"
-#include "basemapelement.h"
 #include "altitude.h"
-#include "waypoint.h"
+#include "basemapelement.h"
 #include "mapdefaults.h"
+#include "speed.h"
+#include "waypoint.h"
 
 // default window display times in seconds
 #define MIN_POPUP_DISPLAY_TIME 3
@@ -971,13 +972,13 @@ class GeneralConfig : protected QSettings
   };
 
   /** gets manual wind speed */
-  int getManualWindSpeed() const
+  const Speed& getManualWindSpeed() const
   {
     return _manualWindSpeed;
   };
 
   /** sets manual wind speed */
-  void setManualWindSpeed( const int newValue )
+  void setManualWindSpeed( const Speed& newValue )
   {
     _manualWindSpeed = newValue;
   };
@@ -2953,7 +2954,7 @@ class GeneralConfig : protected QSettings
   QString _currentTask;
 
   // manual wind speed
-  int _manualWindSpeed;
+  Speed _manualWindSpeed;
   // manual wind direction
   int _manualWindDirection;
   // manual wind enable state

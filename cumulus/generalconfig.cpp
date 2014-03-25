@@ -246,7 +246,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Manual Wind");
-  _manualWindSpeed     = value( "Speed", 0 ).toInt();
+  _manualWindSpeed     = Speed(value( "Speed", 0 ).toDouble());
   _manualWindDirection = value( "Direction", 0 ).toInt();
   _manualWindIsEnabled = value( "Enabled", false ).toBool();
   endGroup();
@@ -696,7 +696,7 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Manual Wind");
-  setValue( "Speed", _manualWindSpeed );
+  setValue( "Speed", _manualWindSpeed.getMps() );
   setValue( "Direction", _manualWindDirection );
   setValue( "Enabled", _manualWindIsEnabled );
   endGroup();
