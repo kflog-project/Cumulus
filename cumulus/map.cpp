@@ -687,11 +687,9 @@ void Map::paintEvent(QPaintEvent* event)
   // qDebug("Map.paintEvent(): return");
 }
 
-void Map::slotNewWind()
+void Map::slotNewWind( Vector& wind )
 {
-  Vector wind = calculator->getlastWind();
-
-  if( wind.getSpeed().getMps() != 0 )
+  if( wind.isValid() && wind.getSpeed().getMps() > 0.0 )
     {
       int angle = wind.getAngleDeg();
       angle = ((angle+5)/10)*10;  // Quantizes modulo 10
@@ -705,6 +703,11 @@ void Map::slotNewWind()
       resource.sprintf("windarrows/wind-arrow-80px-%03d.png", angle );
       // qDebug("Loading resource %s", (const char *) resource );
       windArrow = GeneralConfig::instance()->loadPixmap(resource);
+    }
+  else
+    {
+      // Reset wind arrow pixmap, if vector is invalid.
+      windArrow = QPixmap();
     }
 }
 

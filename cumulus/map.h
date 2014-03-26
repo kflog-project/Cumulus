@@ -23,7 +23,7 @@
  *
  * \brief This class provides the basic functions for the map display.
  *
- * \date 1999-2013
+ * \date 1999-2014
  *
  * \version $Id$
  *
@@ -48,10 +48,12 @@
 #include <QTime>
 #include <QWheelEvent>
 
-#include "waypoint.h"
 #include "airspace.h"
 #include "airregion.h"
 #include "flighttask.h"
+#include "speed.h"
+#include "vector.h"
+#include "waypoint.h"
 
 #ifdef FLARM
 #include "flarm.h"
@@ -205,7 +207,7 @@ public:
 public slots:
 
   /** This slot is called, if a new wind value is available. */
-  void slotNewWind();
+  void slotNewWind( Vector& wind );
 
   /**
    *  Unscheduled immediate redraw of the map.

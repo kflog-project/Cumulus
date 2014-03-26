@@ -26,6 +26,7 @@
 #include <QtScroller>
 #endif
 
+#include "calculator.h"
 #include "igclogger.h"
 #include "layout.h"
 #include "mainwindow.h"
@@ -310,6 +311,9 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
   else if( itemText == WIND )
     {
       PreFlightWindPage* pfwp = new PreFlightWindPage( this );
+
+      connect( pfwp, SIGNAL(manualWindStateChange(bool)),
+               calculator, SLOT(slot_ManualWindChanged(bool)) );
 
       if( m_menuCb->checkState() == Qt::Checked )
         {

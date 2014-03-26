@@ -43,6 +43,7 @@
 #include "mapinfobox.h"
 #include "mapmatrix.h"
 #include "mapview.h"
+#include "preflightwindpage.h"
 #include "speed.h"
 #include "variomodedialog.h"
 #include "waypointcatalog.h"
@@ -125,8 +126,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _waypoint->setValue("-");
   _waypoint->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   wayLayout->addWidget( _waypoint, 1 );
-  connect(_waypoint, SIGNAL(mousePress()),
-          MainWindow::mainWindow(), SLOT(slotSwitchToWPListViewExt()));
+  connect( _waypoint, SIGNAL(mousePress()),
+           MainWindow::mainWindow(), SLOT(slotSwitchToWPListViewExt()));
 
   //layout for Glide Path and Relative Bearing
   QHBoxLayout *GRLayout = new QHBoxLayout;
@@ -142,8 +143,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _glidepath->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   GRLayout->addWidget( _glidepath );
 
-  connect(_glidepath, SIGNAL(mousePress()),
-          MainWindow::mainWindow(), SLOT(slotSwitchToReachListView()));
+  connect( _glidepath, SIGNAL(mousePress()),
+           MainWindow::mainWindow(), SLOT(slotSwitchToReachListView()));
 
   // add Relative Bearing widget
   QPixmap arrow = _arrows.copy( 24*60+3, 3, 54, 54 );
@@ -247,6 +248,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _wind->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget(_wind );
   connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
+  connect(_wind, SIGNAL(mouseDoublePress()), this, SLOT(slot_openManualWind()));
 
   //add LD widget
   _ld = new MapInfoBox( this, conf->getMapFrameColor().name() );
@@ -909,13 +911,18 @@ void MapView::slot_Vario (const Speed& vario)
 
 
 /** This slot is called if a new wind value has been set */
-void MapView::slot_Wind(Vector& wind)
+void MapView::slot_Wind( Vector& wind )
 {
-  QString w;
+  QString ws = "-";
 
-  w = QString("%1/" + wind.getSpeed().getWindText(false, 0) ).arg( wind.getAngleDeg() );
-  _wind->setValue (w);
-  _theMap->slotNewWind();
+  if( wind.isValid() && wind.getSpeed().getMps() > 0.0 )
+    {
+      ws = QString("%1/" + wind.getSpeed().getWindText(false, 0) ).arg( wind.getAngleDeg() );
+    }
+
+  _wind->setValue( ws );
+
+  _theMap->slotNewWind( wind );
 }
 
 /** This slot is called if a new current LD value has been set */
@@ -1349,6 +1356,16 @@ void MapView::slot_gliderFlightDialog()
 void MapView::slot_showInfoBoxes( bool show )
 {
   _sidebarWidget->setVisible( show );
+}
+
+void MapView::slot_openManualWind()
+{
+  PreFlightWindPage* pfwp = new PreFlightWindPage( this );
+
+  connect( pfwp, SIGNAL(manualWindStateChange(bool)),
+           calculator, SLOT(slot_ManualWindChanged(bool)) );
+
+  pfwp->show();
 }
 
 /**

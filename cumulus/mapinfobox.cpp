@@ -379,6 +379,12 @@ void MapInfoBox::mousePressEvent( QMouseEvent* event )
   event->accept();
 }
 
+void MapInfoBox::mouseDoubleClickEvent( QMouseEvent * event )
+{
+  emit mouseDoubleClick();
+  event->accept();
+}
+
 void MapInfoBox::resizeEvent( QResizeEvent* event )
 {
   // Call base class

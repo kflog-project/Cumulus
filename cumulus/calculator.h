@@ -584,10 +584,17 @@ public:
   /** Called if a new wind measurement is available
    * by the GPS/Logger device */
   void slot_GpsWind(const Speed& speed, const short direction);
+
   /**
    * Called if the Cumulus wind analyzer has a new measurement.
    */
   void slot_Wind(Vector&);
+
+  /**
+   * Called, if the user has activated manual wind and has changed the
+   * wind values.
+   */
+  void slot_ManualWindChanged( bool enabled );
 
   /**
    * Called to select the start point of a loaded task.

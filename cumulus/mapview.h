@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2012 by Axel Pauli
+                               2008-2014 by Axel Pauli
     email                : axel@kflog.org
 
     $Id$
@@ -57,7 +57,7 @@
  * This is the main view of the application, providing the map and
  * other useful in flight information.
  *
- * \date 2002-2012
+ * \date 2002-2014
  *
  * \version: $Id$
  *
@@ -288,6 +288,9 @@ class MapView : public QWidget
 
     /** Show/hide the map info boxes. */
     void slot_showInfoBoxes( bool show );
+
+    /** Open the manual wind widget. */
+    void slot_openManualWind();
 
 #ifdef FLARM
 

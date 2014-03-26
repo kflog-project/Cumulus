@@ -1141,14 +1141,14 @@ void Calculator::slot_varioDataControl()
 }
 
 /** Resets some internal items to the initial state */
-void Calculator::slot_settingsChanged ()
+void Calculator::slot_settingsChanged()
 {
-  // Send last known wind to mapview for update of speed. User maybe
-  // changed the speed unit.
-  if ( lastWind.getSpeed().getMps() != 0 )
-    {
-      emit( newWind(lastWind) );
-    }
+  qDebug() << "Calculator::slot_settingsChanged()";
+  // Send last known wind to MapView for update of speed. User maybe
+  // changed the speed unit or has assigned its own wind.
+  GeneralConfig* conf = GeneralConfig::instance();
+
+  slot_ManualWindChanged( conf->isManualWindEnabled() );
 
   // Switch on the internal variometer lift and wind calculation.
   // User could be changed the GPS device.
@@ -1547,6 +1547,12 @@ void Calculator::newFlightMode(Calculator::FlightMode fm)
 /** Called if a new wind measurement is delivered by the GPS/Logger device */
 void Calculator::slot_GpsWind( const Speed& speed, const short direction )
 {
+  if( GeneralConfig::instance()->isManualWindEnabled() )
+    {
+      // User has manual wind preselected.
+      return;
+    }
+
   // Hey we got a wind value directly from the GPS.
   // Therefore internal calculation is not needed and can be
   // switched off.
@@ -1556,15 +1562,37 @@ void Calculator::slot_GpsWind( const Speed& speed, const short direction )
   v.setAngle( direction );
   v.setSpeed( speed );
 
-  lastWind = v;
-  emit newWind(v); // forwards wind info to map
+  // Add new wind with the best quality 5 to the windStore.
+  m_windStore->slot_Measurement( v, 5 );
 }
 
 /** Called if the wind measurement changes */
 void Calculator::slot_Wind(Vector& v)
 {
+  if( GeneralConfig::instance()->isManualWindEnabled() )
+    {
+      // User has manual wind preselected.
+      return;
+    }
+
   lastWind = v;
   emit newWind(v); // forwards wind info to map
+}
+
+void Calculator::slot_ManualWindChanged( bool enabled )
+{
+  GeneralConfig* conf = GeneralConfig::instance();
+
+  Vector v( 0.0, 0.0 );
+
+  if( enabled == true )
+    {
+      v.setAngle( conf->getManualWindDirection() );
+      v.setSpeed( conf->getManualWindSpeed() );
+    }
+
+  lastWind = v;
+  emit newWind(v); // forwards the wind info to MapView
 }
 
 void Calculator::slot_userMapZoom()

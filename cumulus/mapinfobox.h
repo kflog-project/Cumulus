@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2013 by Axel Pauli
+                               2008-2014 by Axel Pauli
 
     email                : axel@kflog.org
 
@@ -40,7 +40,7 @@
  *
  * This is a slight modification of a QLabel. It adds a mousePress event.
  *
- * \date 2002-2011
+ * \date 2002-2014
  *
  */
 class CuLabel : public QLabel
@@ -59,12 +59,12 @@ public:
 
 signals:
 
-     /** Emitted when the mouse is pressed over the label */
-    void mousePress();
+   /** Emitted when the mouse is pressed over the label */
+  void mousePress();
 
 protected:
 
-    void mousePressEvent ( QMouseEvent *event );
+  void mousePressEvent( QMouseEvent *event );
 };
 
 /**
@@ -221,12 +221,22 @@ signals:
    */
   void mousePress();
 
+  /**
+   * The mouse is double clicked over the widget
+   */
+  void mouseDoubleClick();
+
 protected:
 
   /**
    * Reimplemented from QWidget
    */
   void mousePressEvent( QMouseEvent* event );
+
+  /**
+   * Reimplemented from QWidget
+   */
+  void mouseDoubleClickEvent( QMouseEvent *event );
 
   /**
    * Reimplemented from QWidget
