@@ -61,6 +61,11 @@ class PreFlightWindPage : public QWidget
 
  private:
 
+  /**
+   * This method fills the wind statistics list.
+   */
+  void loadWindStatistics();
+
  signals:
 
    /**

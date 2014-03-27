@@ -709,6 +709,8 @@ void Map::slotNewWind( Vector& wind )
       // Reset wind arrow pixmap, if vector is invalid.
       windArrow = QPixmap();
     }
+
+  slotRedraw( Map::wind );
 }
 
 void Map::p_drawAirspaces( bool reset )

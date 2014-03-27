@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-03-27 AP: New pre-flight page added for manual wind configuration. If
+                   you tip longer on the wind label at the map view, the wind
+                   configuration page is opened too.
+
 [-] 2014-03-20 AP: Bugfix: If the unit was changed in the altimeter dialog,
                    the gained altitude display was not immediately updated.
 

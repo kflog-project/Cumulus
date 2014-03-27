@@ -440,6 +440,14 @@ public:
     return lastSample.time;
   };
 
+  /**
+   * \return The wind store
+   */
+  WindStore* getWindStore()
+  {
+    return m_windStore;
+  };
+
  public slots:
 
   /**

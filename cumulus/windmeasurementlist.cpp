@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2010 by Axel Pauli
+**                   2007-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
 
 // Maximum number of wind measurements in the list.
 // No idea what a sensible value would be...
-#define MAX_MEASUREMENTS 250
+#define MAX_MEASUREMENTS 3600
 
 WindMeasurementList::WindMeasurementList() :
   LimitedList<WindMeasurement>( MAX_MEASUREMENTS )
@@ -144,7 +144,7 @@ Vector WindMeasurementList::getWind( const Altitude& alt, const int timeWindow )
           result.getAngleDeg(), result.getSpeed().getKph() );
   */
 
-  if( ! result.isValid() && entry == 1 )
+  if( ! result.isValid() && entry == 1 && timeWindow != 3600 )
     {
       // If there is no younger wind available make a second round with a time
       // window of one hour.

@@ -276,6 +276,9 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( pftp, SIGNAL( newWaypoint( Waypoint*, bool ) ),
                calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
 
+      connect( pftp, SIGNAL(manualWindStateChange(bool)),
+               calculator, SLOT(slot_ManualWindChanged(bool)) );
+
       if( m_menuCb->checkState() == Qt::Checked )
         {
           connect( pftp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );

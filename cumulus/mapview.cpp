@@ -126,7 +126,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _waypoint->setValue("-");
   _waypoint->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   wayLayout->addWidget( _waypoint, 1 );
-  connect( _waypoint, SIGNAL(mousePress()),
+  connect( _waypoint, SIGNAL(mouseShortPress()),
            MainWindow::mainWindow(), SLOT(slotSwitchToWPListViewExt()));
 
   //layout for Glide Path and Relative Bearing
@@ -143,7 +143,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _glidepath->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   GRLayout->addWidget( _glidepath );
 
-  connect( _glidepath, SIGNAL(mousePress()),
+  connect( _glidepath, SIGNAL(mouseShortPress()),
            MainWindow::mainWindow(), SLOT(slotSwitchToReachListView()));
 
   // add Relative Bearing widget
@@ -153,7 +153,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _rel_bearing->setToolTip( tr("Click here to save current position as waypoint") );
   GRLayout->addWidget(_rel_bearing);
 
-  connect(_rel_bearing, SIGNAL(mousePress()),
+  connect(_rel_bearing, SIGNAL(mouseShortPress()),
           MainWindow::mainWindow(), SLOT(slotRememberWaypoint()) );
 
   //layout for Distance/ETA and Bearing
@@ -169,7 +169,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _distance->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   _distance->setUpdateInterval( 750 );
   DEBLayout->addWidget( _distance );
-  connect(_distance, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
+  connect(_distance, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
   _eta = new MapInfoBox( this, conf->getMapFrameColor().name() );
@@ -179,7 +179,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _eta->setUpdateInterval( 750 );
   _eta->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _eta );
-  connect(_eta, SIGNAL(mousePress()), this, SLOT(slot_toggleDistanceEta()));
+  connect(_eta, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add Bearing widget
   _bearingMode = 1; // normal bearing display is default
@@ -194,7 +194,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _bearing->setUpdateInterval( 750 );
   _bearing->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _bearing);
-  connect(_bearing, SIGNAL(mousePress()), this, SLOT(slot_toggleBearing()));
+  connect(_bearing, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleBearing()));
 
   sideLayout->addWidget( wayBar, 3 );
 
@@ -234,7 +234,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   SHLayout->addWidget( _heading);
 
 #ifdef FLARM
-  connect(_heading, SIGNAL(mousePress()), this, SLOT(slot_OpenFlarmWidget()));
+  connect(_heading, SIGNAL(mouseShortPress()), this, SLOT(slot_OpenFlarmWidget()));
 #endif
 
   //layout for Wind/LD
@@ -247,8 +247,8 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _wind->setValue("-");
   _wind->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget(_wind );
-  connect(_wind, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
-  connect(_wind, SIGNAL(mouseDoublePress()), this, SLOT(slot_openManualWind()));
+  connect(_wind, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleWindAndLD()));
+  connect(_wind, SIGNAL(mouseLongPress()), this, SLOT(slot_openManualWind()));
 
   //add LD widget
   _ld = new MapInfoBox( this, conf->getMapFrameColor().name() );
@@ -257,7 +257,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _ld->setValue("-/-");
   _ld->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget( _ld );
-  connect(_ld, SIGNAL(mousePress()), this, SLOT(slot_toggleWindAndLD()));
+  connect(_ld, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleWindAndLD()));
 
   //layout for Vario and Altitude
   QBoxLayout *VALayout = new QHBoxLayout;
@@ -271,7 +271,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _altitude->setValue("-");
   _altitude->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   VALayout->addWidget( _altitude, 3 );
-  connect(_altitude, SIGNAL(mousePress()), this, SLOT(slot_AltimeterDialog()));
+  connect(_altitude, SIGNAL(mouseShortPress()), this, SLOT(slot_AltimeterDialog()));
 
   // add Vario widget
   _vario = new MapInfoBox( this, conf->getMapFrameColor().name(), false, true );
@@ -280,7 +280,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _vario->setUpdateInterval( 750 );
   _vario->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   VALayout->addWidget(_vario, 2 );
-  connect(_vario, SIGNAL(mousePress()), this, SLOT(slot_VarioDialog()));
+  connect(_vario, SIGNAL(mouseShortPress()), this, SLOT(slot_VarioDialog()));
 
   sideLayout->addWidget( commonBar, 3 );
 
@@ -303,7 +303,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _mc->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   calculator->glider() ? _mc->setValue("0.0") : _mc->setValue("-");
   MSLayout->addWidget( _mc );
-  connect(_mc, SIGNAL(mousePress()), this, SLOT(slot_gliderFlightDialog()));
+  connect(_mc, SIGNAL(mouseShortPress()), this, SLOT(slot_gliderFlightDialog()));
 
   //add Best Speed widget
   _speed2fly = new MapInfoBox( this, "#a6a6a6", true );
@@ -313,7 +313,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly->setVisible( false );
   _speed2fly->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   MSLayout->addWidget( _speed2fly );
-  connect(_speed2fly, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
+  connect(_speed2fly, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleMenu()));
 
    //add menu toggle widget
   _menuToggle = new MapInfoBox( this, QColor(Qt::gray).name(), false, false, 30 );
@@ -322,7 +322,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _menuToggle->setValue(tr("Menu"));
   _menuToggle->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   MSLayout->addWidget( _menuToggle );
-  connect(_menuToggle, SIGNAL(mousePress()), this, SLOT(slot_toggleMenu()));
+  connect(_menuToggle, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleMenu()));
 
   sideLayout->addWidget( mcBar, 1 );
 
@@ -396,7 +396,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
   _statusbar->addWidget(_statusGps);
-  connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
+  connect(_statusGps, SIGNAL(mouseShortPress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
   _statusFlightstatus->setFont(font);

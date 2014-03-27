@@ -36,7 +36,7 @@ WindStore::~WindStore()
  */
 void WindStore::slot_Measurement( const Vector& windVector, int quality )
 {
-  windlist.addMeasurement( windVector, calculator->getlastAltitude(), quality );
+  m_windlist.addMeasurement( windVector, calculator->getlastAltitude(), quality );
 
   // we may have a new wind value, so make sure it's emitted if needed!
   recalculateWind();
@@ -50,14 +50,14 @@ void WindStore::slot_Altitude( const Altitude& altitude )
 {
   if( calculator->currentFlightMode() != Calculator::circlingL &&
       calculator->currentFlightMode() != Calculator::circlingR &&
-      fabs( (altitude - _lastAltitude).getMeters() ) >= 25.0 )
+      fabs( (altitude - m_lastAltitude).getMeters() ) >= 25.0 )
     {
       // Only recalculate wind, if we are not circling and there is a
       // significant altitude change. During circling newer wind is always
       // calculated and distributed.
       recalculateWind();
 
-      _lastAltitude = calculator->getlastAltitude();
+      m_lastAltitude = calculator->getlastAltitude();
     }
 }
 
@@ -67,13 +67,13 @@ void WindStore::slot_Altitude( const Altitude& altitude )
  */
 void WindStore::recalculateWind()
 {
-  Vector wind = windlist.getWind( calculator->getlastAltitude() );
+  Vector wind = m_windlist.getWind( calculator->getlastAltitude() );
 
-  if( wind.isValid() && wind != _lastWind )
+  if( wind.isValid() && wind != m_lastWind )
     {
-      _lastWind = wind;
+      m_lastWind = wind;
       //qDebug("emit newWind: %d/%f",_lastWind.getAngleDeg(),_lastWind.getSpeed().getKph() );
-      emit newWind( _lastWind );
+      emit newWind( m_lastWind );
     }
 }
 

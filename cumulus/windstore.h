@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2009-2010 by Axel Pauli
+ **                   2009-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  * single measurements to provide a mean value, differentiated for altitude,
  * quality and time range.
  *
- * \date 2002-2010
+ * \date 2002-2014
  */
 
 #ifndef WIND_STORE_H
@@ -51,6 +51,16 @@ class WindStore : public QObject
   WindStore(QObject* parent);
 
   virtual ~WindStore();
+
+  /**
+   * Gets the wind measure list.
+   *
+   * \return The wind measurement list.
+   */
+  WindMeasurementList& getWindMeasurementList()
+  {
+    return m_windlist;
+  };
 
   public slots:
 
@@ -83,9 +93,9 @@ class WindStore : public QObject
    */
   void recalculateWind();
 
-  Vector _lastWind;
-  Altitude _lastAltitude;
-  WindMeasurementList windlist;
+  Vector m_lastWind;
+  Altitude m_lastAltitude;
+  WindMeasurementList m_windlist;
 };
 
 #endif

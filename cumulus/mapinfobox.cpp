@@ -65,6 +65,11 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   m_minUpdateInterval( 0 ),
   m_lastUpdateTime(0, 0, 0)
 {
+  m_mousePressTimer = new QTimer(this);
+  m_mousePressTimer->setSingleShot(true);
+  m_mousePressTimer->setInterval(250);
+  connect( m_mousePressTimer, SIGNAL(timeout()), SIGNAL(mouseLongPress()));
+
   // Maximum pretext width in pixels. That value is a hard coded limit now!
   const int ptw = 35;
 
@@ -375,13 +380,18 @@ void MapInfoBox::showEvent(QShowEvent *event)
 
 void MapInfoBox::mousePressEvent( QMouseEvent* event )
 {
-  emit mousePress();
+  m_mousePressTimer->start();
   event->accept();
 }
 
-void MapInfoBox::mouseDoubleClickEvent( QMouseEvent * event )
+void MapInfoBox::mouseReleaseEvent( QMouseEvent* event )
 {
-  emit mouseDoubleClick();
+  if( m_mousePressTimer->isActive() == true )
+    {
+      m_mousePressTimer->stop();
+      emit mouseShortPress();
+    }
+
   event->accept();
 }
 

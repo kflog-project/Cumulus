@@ -1143,7 +1143,6 @@ void Calculator::slot_varioDataControl()
 /** Resets some internal items to the initial state */
 void Calculator::slot_settingsChanged()
 {
-  qDebug() << "Calculator::slot_settingsChanged()";
   // Send last known wind to MapView for update of speed. User maybe
   // changed the speed unit or has assigned its own wind.
   GeneralConfig* conf = GeneralConfig::instance();
@@ -1554,8 +1553,7 @@ void Calculator::slot_GpsWind( const Speed& speed, const short direction )
     }
 
   // Hey we got a wind value directly from the GPS.
-  // Therefore internal calculation is not needed and can be
-  // switched off.
+  // Therefore internal calculation is not needed and can be switched off.
   m_calculateWind = false;
 
   Vector v;

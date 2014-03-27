@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2013 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -105,7 +105,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windDirection->setRange( 0, 360 );
   m_windDirection->setTip("0...360");
   m_windDirection->setMaxLength(3);
-  m_windDirection->setValue( GeneralConfig::instance()->getWindDirection() );
+  m_windDirection->setValue( GeneralConfig::instance()->getManualWindDirection() );
   m_windDirection->setSuffix( QString(Qt::Key_degree) );
   m_windDirection->setMinimumWidth( mdw );
   editrow->addWidget(m_windDirection);
@@ -119,8 +119,11 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 #endif
   m_windSpeed->setPmVisible(false);
   m_windSpeed->setRange( 0, 999 );
-  m_windSpeed->setMaxLength(3);
-  m_windSpeed->setValue( GeneralConfig::instance()->getWindSpeed() );
+  m_windSpeed->setMaxLength(4);
+
+  const Speed& wv = GeneralConfig::instance()->getManualWindSpeed();
+  m_windSpeed->setText( wv.getWindText( false, 1 ) );
+
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );
   editrow->addWidget(m_windSpeed);
@@ -886,7 +889,7 @@ void PreFlightTaskPage::slotAccept()
 
   // @AP: Open problem with waypoint selection, if user has modified
   // task content. We ignore that atm.
-  if ( newTask == static_cast<FlightTask *> (0) )
+  if( newTask == static_cast<FlightTask *> (0) )
     {
       // No new task has been passed. Check, if a selected waypoint
       // exists and this waypoint belongs to a task. In this case we
@@ -917,6 +920,19 @@ void PreFlightTaskPage::slotAccept()
 
       // Inform others about the new task
       emit newTaskSelected();
+    }
+
+  GeneralConfig *conf = GeneralConfig::instance();
+  conf->setManualWindDirection( m_windDirection->value() );
+
+  Speed wv;
+  wv.setValueInUnit( m_windSpeed->text().toDouble(), Speed::getWindUnit() );
+  conf->setManualWindSpeed( wv );
+
+  if( conf->isManualWindEnabled() == true )
+    {
+      // Inform about a wind parameter change, if manual wind is enabled.
+      emit manualWindStateChange( true );
     }
 
   emit closingWidget();

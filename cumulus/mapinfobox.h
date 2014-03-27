@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QString>
 #include <QTime>
+#include <QTimer>
 #include <QWidget>
 
 /**
@@ -80,7 +81,7 @@ protected:
  * pre-text or a pixmap. Optionally it can be clicked and connected to
  * a slot. Used on the \ref MapView.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  *
@@ -214,19 +215,19 @@ public:
     return m_minUpdateInterval;
   };
 
-signals:
+ signals:
 
   /**
-   * The mouse is pressed over the widget
+   * The mouse is short time pressed over the widget.
    */
-  void mousePress();
+  void mouseShortPress();
 
   /**
-   * The mouse is double clicked over the widget
+   * TThe mouse is long time pressed over the widget.
    */
-  void mouseDoubleClick();
+  void mouseLongPress();
 
-protected:
+ protected:
 
   /**
    * Reimplemented from QWidget
@@ -236,7 +237,7 @@ protected:
   /**
    * Reimplemented from QWidget
    */
-  void mouseDoubleClickEvent( QMouseEvent *event );
+  void mouseReleaseEvent( QMouseEvent * event );
 
   /**
    * Reimplemented from QWidget
@@ -291,14 +292,18 @@ private:
   QString m_fontUnit;
   /** The maximum text label font height. */
   int m_maxTextLabelFontHeight;
+
   /**
    * Minimum update interval of display label in milli seconds. The variable
    * is undefined, if set to zero.
    */
   int m_minUpdateInterval;
 
-  /* Last time of label update. */
+  /** Last time of label update. */
   QTime m_lastUpdateTime;
+
+  /** Timer to generate long mouse press signals. */
+  QTimer* m_mousePressTimer;
 };
 
 #endif
