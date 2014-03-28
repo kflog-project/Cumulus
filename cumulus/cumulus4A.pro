@@ -135,6 +135,7 @@ HEADERS = \
     preflightretrievepage.h \
     preflightwaypointpage.h \
     preflightwidget.h \
+    preflightwindpage.h \
     projectionbase.h \
     projectioncylindric.h \
     projectionlambert.h \
@@ -258,6 +259,7 @@ SOURCES = \
     preflightretrievepage.cpp \
     preflightwaypointpage.cpp \
     preflightwidget.cpp \
+    preflightwindpage.cpp \
     projectionbase.cpp \
     projectioncylindric.cpp \
     projectionlambert.cpp \
