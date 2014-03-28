@@ -115,16 +115,16 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
 
   m_windListStatistics = new QTreeWidget;
-
   m_windListStatistics->setRootIsDecorated(false);
   m_windListStatistics->setItemsExpandable(false);
   m_windListStatistics->setUniformRowHeights(true);
   m_windListStatistics->setAlternatingRowColors(true);
   m_windListStatistics->setSortingEnabled(false);
-  m_windListStatistics->setColumnCount(3);
+  m_windListStatistics->setColumnCount(4);
   m_windListStatistics->setFocus();
   m_windListStatistics->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_windListStatistics->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+  //m_windListStatistics->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
 #ifdef QSCROLLER
   QScroller::grabGesture(m_windListStatistics->viewport(), QScroller::LeftMouseButtonGesture);
@@ -138,11 +138,12 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
   m_windListStatistics->setItemDelegate( new RowDelegate( m_windListStatistics, afMargin ) );
 
+  QString h0 = tr("Altitude");
+  QString h1 = tr("Direction");
+  QString h2 = tr("Speed");
   QStringList sl;
-  sl << tr("Altitude")
-     << tr("Direction")
-     << tr("Speed");
 
+  sl << h0 << h1 << h2 << "";
   m_windListStatistics->setHeaderLabels(sl);
 
   QTreeWidgetItem* headerItem = m_windListStatistics->headerItem();
@@ -150,7 +151,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   headerItem->setTextAlignment( 1, Qt::AlignCenter );
   headerItem->setTextAlignment( 2, Qt::AlignCenter );
 
-  windLayout->addWidget( m_windListStatistics, 10 );
+  windLayout->addWidget( m_windListStatistics, 5 );
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
@@ -181,12 +182,18 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windCheckBox->setCheckState( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
   slotWindCbStateChanged( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
 
-  loadWindStatistics();
+  slotLoadWindStatistics();
+
+  // Activate reload timer for wind statistics.
+  m_reloadTimer = new QTimer( this );
+  m_reloadTimer->setInterval( 30000 );
+  connect(m_reloadTimer, SIGNAL(timeout()), SLOT(slotLoadWindStatistics()));
+  m_reloadTimer->start();
 }
 
 PreFlightWindPage::~PreFlightWindPage()
 {
-  // qDebug("PreFlightWindPage::~PreFlightWindPage()");
+  m_reloadTimer->stop();
 }
 
 void PreFlightWindPage::showEvent(QShowEvent *)
@@ -196,7 +203,7 @@ void PreFlightWindPage::showEvent(QShowEvent *)
   m_windListStatistics->resizeColumnToContents(2);
 }
 
-void PreFlightWindPage::loadWindStatistics()
+void PreFlightWindPage::slotLoadWindStatistics()
 {
   m_windListStatistics->clear();
 
@@ -205,55 +212,71 @@ void PreFlightWindPage::loadWindStatistics()
   int iconSize = QFontMetrics(font()).height() - 4;
   m_windListStatistics->setIconSize( QSize(iconSize, iconSize) );
 
+  int start, end;
+
   if( Altitude::getUnit() == Altitude::meters )
     {
-      for( int i = 0; i <= 4000; i += 250 )
-        {
-          Altitude alt(i);
-
-          Vector v = wml.getWind( alt, 3600 );
-
-          qDebug() << "i=" << i << "valid?" << v.isValid()
-                   << v.getAngleDeg()
-                   << v.getSpeed().getWindText( true, 0 );
-
-          if( v.isValid() )
-            {
-              // Add wind at altitude to the list
-              QStringList sl;
-              sl << QString::number(i)
-                 << QString::number(v.getAngleDeg(), 'f', 0)
-                 << v.getSpeed().getWindText( true, 0 );
-
-              QPixmap pixmap;
-
-              MapConfig::createTriangle( pixmap,
-                                         iconSize,
-                                         QColor(Qt::black),
-                                         v.getAngleDeg(),
-                                         1.0,
-                                         QColor(Qt::cyan) );
-
-              QTreeWidgetItem* item = new QTreeWidgetItem( sl );
-
-              QIcon qi;
-              qi.addPixmap( pixmap );
-              item->setIcon( 1, qi );
-
-              m_windListStatistics->addTopLevelItem( item );
-            }
-        }
-
+      start = 250;
+      end   = 6000;
+    }
+  else if( Altitude::getUnit() == Altitude::feet )
+    {
+      start = 1000;
+      end   = 20000;
+    }
+  else
+    {
       return;
     }
 
-  if( Altitude::getUnit() == Altitude::feet )
+  for( int i = start; i <= end; i += start )
     {
-      for( int i = 1000; i < 13000; i += 1000 )
-        {
+      Altitude alt;
 
+      if( Altitude::getUnit() == Altitude::meters )
+        {
+          alt.setMeters(i);
+        }
+      else if( Altitude::getUnit() == Altitude::feet )
+        {
+          alt.setFeet(i);
+        }
+
+      Vector v = wml.getWind( alt, 3600, 250 );
+
+      if( v.isValid() )
+        {
+          // Add wind of altitude to the list
+          QStringList sl;
+          sl << QString::number(i) + " " + Altitude::getUnitText()
+             << QString("%1%2").arg( v.getAngleDeg() ).arg( QString(Qt::Key_degree) )
+             << v.getSpeed().getWindText( true, 0 );
+
+          QPixmap pixmap;
+
+          MapConfig::createTriangle( pixmap,
+                                     iconSize,
+                                     QColor(Qt::black),
+                                     v.getAngleDeg(),
+                                     1.0,
+                                     QColor(Qt::cyan) );
+
+          QTreeWidgetItem* item = new QTreeWidgetItem( sl );
+          item->setTextAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
+          item->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
+          item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+
+          QIcon qi;
+          qi.addPixmap( pixmap );
+          item->setIcon( 1, qi );
+
+          m_windListStatistics->addTopLevelItem( item );
         }
     }
+
+  m_windListStatistics->resizeColumnToContents(0);
+  m_windListStatistics->resizeColumnToContents(1);
+  m_windListStatistics->resizeColumnToContents(2);
 }
 
 void PreFlightWindPage::slotWindCbStateChanged( int state )

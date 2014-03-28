@@ -27,7 +27,7 @@
 
 // Maximum number of wind measurements in the list.
 // No idea what a sensible value would be...
-#define MAX_MEASUREMENTS 3600
+#define MAX_MEASUREMENTS 3000
 
 WindMeasurementList::WindMeasurementList() :
   LimitedList<WindMeasurement>( MAX_MEASUREMENTS )
@@ -43,7 +43,9 @@ WindMeasurementList::~WindMeasurementList()
  * if no valid vector could be calculated (for instance: too little or
  * too low quality data).
  */
-Vector WindMeasurementList::getWind( const Altitude& alt, const int timeWindow )
+Vector WindMeasurementList::getWind( const Altitude& alt,
+                                     const int timeWindow,
+                                     const int altRange )
 {
 // relative weight for each factor in percent
 #define REL_FACTOR_QUALITY 100
@@ -64,7 +66,18 @@ Vector WindMeasurementList::getWind( const Altitude& alt, const int timeWindow )
   entry++;
 
   GeneralConfig *conf = GeneralConfig::instance();
-  int altRange  = conf->getWindAltitudeRange() / 2;  // 1000m
+
+  double usedAltRange = 0;
+
+  if( altRange == 0 )
+    {
+      // Take the default altitude range from the configuration
+      usedAltRange  = static_cast<double>(conf->getWindAltitudeRange()) / 2.0;  // 1000m
+    }
+  else
+    {
+      usedAltRange = altRange / 2.0;
+    }
 
   int timeRange = timeWindow;
 
@@ -86,7 +99,7 @@ Vector WindMeasurementList::getWind( const Altitude& alt, const int timeWindow )
     {
       const WindMeasurement& wm = at( i );
 
-      altDiff = (alt - wm.altitude).getMeters() / (double) altRange;
+      altDiff = (alt - wm.altitude).getMeters() / usedAltRange;
       timeDiff = fabs( (double) wm.time.secsTo(now) / (double) timeRange );
 
       if( (fabs(altDiff) < 1.0) && (timeDiff < 1.0) )

@@ -61,11 +61,6 @@ class PreFlightWindPage : public QWidget
 
  private:
 
-  /**
-   * This method fills the wind statistics list.
-   */
-  void loadWindStatistics();
-
  signals:
 
    /**
@@ -81,6 +76,11 @@ class PreFlightWindPage : public QWidget
    void closingWidget();
 
  private slots:
+
+ /**
+  * This method fills the wind statistics list.
+  */
+ void slotLoadWindStatistics();
 
   /**
   * Called, if the state of the m_windCheckBox is changed.
@@ -110,6 +110,9 @@ class PreFlightWindPage : public QWidget
 
   /** widget with wind statistics */
   QTreeWidget* m_windListStatistics;
+
+  /** Timer for reload wind statistics. */
+  QTimer* m_reloadTimer;
 };
 
 #endif

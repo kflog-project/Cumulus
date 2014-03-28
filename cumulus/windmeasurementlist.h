@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2010 by Axel Pauli
+**                   2007-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -65,7 +65,7 @@ public:
  * The WindMeasurementList is a list that contains and
  * processes wind measurements.
  *
- * \date 2002-2010
+ * \date 2002-2014
  */
 class WindMeasurementList : public LimitedList<WindMeasurement>
 {
@@ -85,10 +85,12 @@ public:
    *
    * \param timeWindow Time window in seconds for wind search
    *
+   * \param altRange Altitude range to be considered
+   *
    * \return Vector containing found wind. Is set to invalid, if no wind was
    *         found.
    */
-  Vector getWind( const Altitude& alt, const int timeWindow=0 );
+  Vector getWind( const Altitude& alt, const int timeWindow=0, const int altRange=0 );
 
   /** Adds the wind vector vector with quality quality to the list. */
   void addMeasurement( const Vector& vector, const Altitude& alt, int quality );
