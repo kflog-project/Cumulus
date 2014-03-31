@@ -27,7 +27,7 @@
 
 // Maximum number of wind measurements in the list.
 // No idea what a sensible value would be...
-#define MAX_MEASUREMENTS 3000
+#define MAX_MEASUREMENTS 1800
 
 WindMeasurementList::WindMeasurementList() :
   LimitedList<WindMeasurement>( MAX_MEASUREMENTS )
