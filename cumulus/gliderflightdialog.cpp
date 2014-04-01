@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,13 +31,18 @@
 #include "layout.h"
 
 // set static member variable
-int GliderFlightDialog::noOfInstances = 0;
+int GliderFlightDialog::m_noOfInstances = 0;
 
 GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint),
-  m_autoSip(true)
+  m_mcSmallStep(0.5),
+  m_mcBigStep(1.0),
+  m_autoSip(true),
+  m_mcConfig(0.0),
+  m_waterConfig(0),
+  m_bugsConfig(0)
 {
-  noOfInstances++;
+  m_noOfInstances++;
   setObjectName("GliderFlightDialog");
   setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
@@ -59,10 +64,6 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
       p.setColor(QPalette::Text, Qt::white);
       setPalette(p);
     }
-
-  // Mc step widths
-  mcSmallStep = 0.5;
-  mcBigStep   = 1.0;
 
   // set font size to a reasonable and usable value
   QFont cf = font();
@@ -243,7 +244,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
 GliderFlightDialog::~GliderFlightDialog()
 {
-  noOfInstances--;
+  m_noOfInstances--;
   qApp->setAutoSipEnabled( m_autoSip );
 }
 
@@ -259,28 +260,28 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
     {
     case Speed::knots:
       mcMax = 40.0;
-      mcSmallStep = 0.5;
-      mcBigStep = 1.0;
+      m_mcSmallStep = 0.5;
+      m_mcBigStep = 1.0;
       break;
     case Speed::feetPerMinute:
       mcMax = 4000.0;
-      mcSmallStep = 50.0;
-      mcBigStep = 100.0;
+      m_mcSmallStep = 50.0;
+      m_mcBigStep = 100.0;
       break;
     case Speed::metersPerSecond:
       mcMax = 20.0;
-      mcSmallStep = 0.5;
-      mcBigStep = 1.0;
+      m_mcSmallStep = 0.5;
+      m_mcBigStep = 1.0;
       break;
     default:
       mcMax = 20.0;
-      mcSmallStep = 0.5;
-      mcBigStep = 1.0;
+      m_mcSmallStep = 0.5;
+      m_mcBigStep = 1.0;
       break;
     }
 
   spinMcCready->setMaximum(mcMax);
-  spinMcCready->setSingleStep(mcSmallStep);
+  spinMcCready->setSingleStep(m_mcSmallStep);
 
   spinMcCready->setFocus();
   startTimer();
@@ -330,6 +331,11 @@ void GliderFlightDialog::load()
       spinMcCready->setValue(calculator->getlastMc().getVerticalValue());
       spinWater->setValue(glider->polar()->water());
       spinBugs->setValue(glider->polar()->bugs());
+
+      // Save the configuration values as fall backs, if the user cancel the dialog.
+      m_mcConfig = spinMcCready->value();
+      m_waterConfig = spinWater->value();
+      m_bugsConfig = spinBugs->value();
     }
   else
     {
@@ -347,12 +353,20 @@ void GliderFlightDialog::load()
 void GliderFlightDialog::save()
 {
   if( spinMcCready->isEnabled() && spinBugs->isEnabled() )
-  {
-    emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
+    {
+      if( spinWater->value() != m_waterConfig ||
+          spinBugs->value() != m_bugsConfig )
+        {
+          emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
+        }
 
-    Speed mc; mc.setVerticalValue( spinMcCready->value() );
-    emit newMc( mc );
-  }
+      if( spinMcCready->value() != m_mcConfig )
+        {
+          Speed mc;
+          mc.setVerticalValue( spinMcCready->value() );
+          emit newMc( mc );
+        }
+    }
 }
 
 void GliderFlightDialog::slotMcPlus()
@@ -360,6 +374,7 @@ void GliderFlightDialog::slotMcPlus()
   if( plus->isDown() || pplus->isDown() )
     {
       spinMcCready->stepUp();
+      save();
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotMcPlus()));
@@ -371,6 +386,7 @@ void GliderFlightDialog::slotMcMinus()
   if( minus->isDown() || mminus->isDown() )
     {
       spinMcCready->stepDown();
+      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotMcMinus()));
@@ -382,6 +398,7 @@ void GliderFlightDialog::slotWaterPlus()
   if( plus->isDown() || pplus->isDown() )
     {
       spinWater->stepUp();
+      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotWaterPlus()));
@@ -393,6 +410,7 @@ void GliderFlightDialog::slotWaterMinus()
   if( minus->isDown() || mminus->isDown() )
     {
       spinWater->stepDown();
+      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotWaterMinus()));
@@ -404,6 +422,7 @@ void GliderFlightDialog::slotBugsPlus()
   if( plus->isDown() || pplus->isDown() )
     {
       spinBugs->stepUp();
+      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotBugsPlus()));
@@ -415,6 +434,7 @@ void GliderFlightDialog::slotBugsMinus()
   if( minus->isDown() || mminus->isDown() )
     {
       spinBugs->stepDown();
+      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotBugsMinus()));
@@ -435,30 +455,29 @@ void GliderFlightDialog::slotChange( int newStep )
       switch(newStep)
         {
         case 0: // ++ was pressed
-          spinMcCready->setSingleStep( mcBigStep );
+          spinMcCready->setSingleStep( m_mcBigStep );
           slotMcPlus();
           break;
         case 1: // + was pressed
-          spinMcCready->setSingleStep( mcSmallStep );
+          spinMcCready->setSingleStep( m_mcSmallStep );
           slotMcPlus();
           break;
         case 2: // - was pressed
-          spinMcCready->setSingleStep( mcSmallStep );
+          spinMcCready->setSingleStep( m_mcSmallStep );
           slotMcMinus();
           break;
         case 3: // -- was pressed
-          spinMcCready->setSingleStep( mcBigStep );
+          spinMcCready->setSingleStep( m_mcBigStep );
           slotMcMinus();
           break;
         case 4: // Reset was pressed
           spinMcCready->setValue( 0 );
+          Speed mc(0.0);
+          emit newMc( mc );
           break;
         }
-
-      return;
     }
-
-  if( QApplication::focusWidget() == spinWater )
+  else if( QApplication::focusWidget() == spinWater )
     {
       // qDebug() << "spinWater has focus";
       switch(newStep)
@@ -479,12 +498,12 @@ void GliderFlightDialog::slotChange( int newStep )
           spinWater->setSingleStep( 10 );
           slotWaterMinus();
           break;
+        case 4: // Reset was pressed
+          spinWater->setValue( 0 );
+          emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
         }
-
-      return;
     }
-
-  if( QApplication::focusWidget() == spinBugs )
+  else if( QApplication::focusWidget() == spinBugs )
     {
       // qDebug() << "spinBugs has focus";
       switch(newStep)
@@ -507,9 +526,8 @@ void GliderFlightDialog::slotChange( int newStep )
           break;
         case 4: // Reset was pressed
           spinBugs->setValue( 0 );
+          emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
         }
-
-      return;
     }
 }
 
@@ -524,6 +542,7 @@ void GliderFlightDialog::slotSpinValueChanged( const QString& text )
 void GliderFlightDialog::slotDump()
 {
   spinWater->setValue(0);
+  emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
   spinWater->setFocus();
 }
 
@@ -564,6 +583,19 @@ void GliderFlightDialog::slotAccept()
 
 void GliderFlightDialog::slotReject()
 {
+  // Reset done value changes to their original ones, if the dialog is canceled.
+  if( spinWater->value() != m_waterConfig || spinBugs->value() != m_bugsConfig )
+    {
+      emit newWaterAndBugs( m_waterConfig, m_bugsConfig );
+    }
+
+  if( spinMcCready->value() != m_mcConfig )
+    {
+      Speed mc;
+      mc.setVerticalValue( m_mcConfig );
+      emit newMc( mc );
+    }
+
   emit closingWidget();
   QDialog::reject();
 }

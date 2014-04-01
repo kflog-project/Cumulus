@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,7 +26,7 @@
  * This dialog handles the Mc, load balance and bug settings. It shall
  * enable a simple change also during flight.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -63,7 +63,7 @@ class GliderFlightDialog : public QDialog
    */
   static int getNrOfInstances()
   {
-    return noOfInstances;
+    return m_noOfInstances;
   };
 
  protected:
@@ -155,8 +155,8 @@ class GliderFlightDialog : public QDialog
   void startTimer();
 
   QDoubleSpinBox* spinMcCready;
-  double mcSmallStep;
-  double mcBigStep;
+  double m_mcSmallStep;
+  double m_mcBigStep;
   QSpinBox* spinWater;
   QSpinBox* spinBugs;
   QPushButton* buttonDump;
@@ -165,6 +165,15 @@ class GliderFlightDialog : public QDialog
 
   /** Auto sip flag storage. */
   bool m_autoSip;
+
+  /** MC configuration value */
+  double m_mcConfig;
+
+  /** Water configuration value */
+  int m_waterConfig;
+
+  /** Bugs configuration value */
+  int m_bugsConfig;
 
   // Flight time display
   QLabel* ftLabel;
@@ -180,7 +189,7 @@ class GliderFlightDialog : public QDialog
   QPushButton *cancel;
 
   /** contains the current number of class instances */
-  static int noOfInstances;
+  static int m_noOfInstances;
 };
 
 #endif

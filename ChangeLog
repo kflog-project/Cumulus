@@ -15,10 +15,20 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[-] 2014-03-31 AP: New pre-flight page added for manual wind configuration. If
+[o] 2014-04-01 AP: Changes in the flight glider dialog done for Mc, bug or water
+                   values are reported immediately to the calculator and the map
+                   to see their effects to the current glide path. If the dialog
+                   is left via cancel all changes are reverted.
+
+[-] 2014-04-01 AP: Bugfix: The generated PDF documentation was incomplete for
+                   a longer time. Newer help pages were not included. I
+                   changed the pdf generation script from a fixed file list
+                   to a dynamic generated one.
+
+[+] 2014-03-31 AP: New pre-flight page added for manual wind configuration. If
                    you tip longer on the wind label at the map view, the wind
                    configuration page is opened too. Futhermore this page
-                   displays a wind statistics.
+                   displays a wind statistics over the last flight hour.
 
 [-] 2014-03-20 AP: Bugfix: If the unit was changed in the altimeter dialog,
                    the gained altitude display was not immediately updated.
@@ -27,8 +37,8 @@ Cumulus changelog
                    airfields were not saved in every case.
                    
 [-] 2014-03-16 AP: Bugfix: Altitude leveling value has going lost, if the altitude
-                   unit was changed during leveling. Furthermore was the
-                   correction value for unit feet never saved.
+                   unit was changed during leveling. Furthermore the
+                   correction value was never saved for the unit feet.
 
 [*] 2014-03-14 AP: Cumulus 5.13.0 released for Android.
 
@@ -43,7 +53,7 @@ Cumulus changelog
                    settings airspaces. Now the user can install openAIP
                    airspaces in Cumulus via this new download feature.
 
-[-] 2014-03-02 AP: Bugfix: Cumulus for Android OS Froyo recovered. Has going
+[-] 2014-03-02 AP: Bugfix: Cumulus for Android OS Froyo recovered. Has gone
                    lost due to a build error.
 
 [o] 2014-02-24 AP: Welt2000 update check string adapted to last Welt2000 release.

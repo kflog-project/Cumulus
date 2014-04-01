@@ -4,35 +4,29 @@
 #
 # Script to generate a pdf file from the single German html help pages
 
-Files="
-cumulus.html \
-cumulus-gettingstarted.html \
-cumulus-maps.html \
-cumulus-settings.html \
-cumulus-settings-personal.html \
-cumulus-settings-gps.html \
-cumulus-settings-glider.html \
-cumulus-settings-map-settings.html \
-cumulus-settings-map-objects.html \
-cumulus-settings-terrain.html \
-cumulus-settings-task.html \
-cumulus-settings-airfields.html \
-cumulus-settings-airspace.html \
-cumulus-settings-units.html \
-cumulus-settings-information.html \
-cumulus-settings-look-feel.html \
-cumulus-preflight-settings.html \
-cumulus-preflight-settings-glider.html \
-cumulus-preflight-settings-task.html \
-cumulus-preflight-settings-common.html \
-cumulus-display.html \
-cumulus-usage.html \
-cumulus-manual.html \
-cumulus-waypoints.html \
-cumulus-tasks.html \
-cumulus-flarm.html \
-cumulus-file-locations.html \
-cumulus-about.html"
+# As first generate the files list
+
+start="cumulus.html"
+
+Files="$start"
+
+while true
+do
+  next=$(awk -F'"' '/>weiter</ { print $4; exit 0; }' ${start})
+
+  test -z "$next" && break;
+
+  Files="$Files $next"
+  start=$next
+
+done
+
+#for x in $Files
+#do
+#  echo $x
+#done > html.list
+
+echo "$(echo $Files| wc -w) linked HTML pages found. Sum of HTML pages is $(ls *.html| wc -w)."
 
 Pictures=../../icons/cumulus.png
 
@@ -59,4 +53,3 @@ cp Cumulus.pdf $SaveDir
 cd $SaveDir
 
 rm -rf $GenDir
-

@@ -1,3 +1,39 @@
+cumulus (5.14.0) stable; urgency=low
+
+  * Changes in the flight glider dialog done for Mc, bug or water
+    values are reported immediately to the calculator and the map
+    to see their effects to the current glide path. If the dialog
+    is left via cancel all changes are reverted.
+
+  * Bugfix: The generated PDF documentation was incomplete for
+    a longer time. Newer help pages were not included. I
+    changed the pdf generation script from a fixed file list
+    to a dynamic generated one.
+
+  * New pre-flight page added for manual wind configuration. If
+    you tip longer on the wind label at the map view, the wind
+    configuration page is opened too. Futhermore this page
+    displays a wind statistics over the last flight hour.
+
+  * Bugfix: If the unit was changed in the altimeter dialog,
+    the gained altitude display was not immediately updated.
+
+  * Bugfix: Issues fixed in settings airfields page. The entered
+    airfields were not saved in every case.
+
+  * Bugfix: Altitude leveling value has going lost, if the altitude
+    unit was changed during leveling. Furthermore the correction value was never
+    saved for the unit feet.
+
+  * Download of openAIP airfield and airspace data on first startup after
+    installation, if a country could be regognized.
+
+  * New setting page added for openAIP airspaces download under settings
+    airspaces. Now the user can install openAIP airspaces in Cumulus via
+    this new download feature.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Tue, 01 Apr 2014 20:44:07 +0200
+
 cumulus (5.12.0) stable; urgency=low
 
   * Welt2000 update check string adapted to last Welt2000 release.
