@@ -254,10 +254,16 @@ void PreFlightWindPage::slotLoadWindStatistics()
 
           QPixmap pixmap;
 
+          int windAngle = rint(v.getAngleDeg());
+
+          // Wind angle must be turned by 180 degrees to get the right triangle
+          // direction.
+          windAngle >= 180 ? windAngle -= 180 : windAngle += 180;
+
           MapConfig::createTriangle( pixmap,
                                      iconSize,
                                      QColor(Qt::black),
-                                     v.getAngleDeg(),
+                                     windAngle,
                                      1.0,
                                      QColor(Qt::cyan) );
 

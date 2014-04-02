@@ -1588,9 +1588,21 @@ void Calculator::slot_ManualWindChanged( bool enabled )
       v.setAngle( conf->getManualWindDirection() );
       v.setSpeed( conf->getManualWindSpeed() );
     }
+  else
+    {
+      // Try to get a wind info from the wind store.
+      WindMeasurementList& wml = getWindStore()->getWindMeasurementList();
+
+      v = wml.getWind( lastAltitude, 1800 );
+
+      if( v.isValid() == false )
+        {
+          v = Vector( 0.0, 0.0 );
+        }
+    }
 
   lastWind = v;
-  emit newWind(v); // forwards the wind info to MapView
+  emit newWind(v); // forwards the wind info to the MapView
 }
 
 void Calculator::slot_userMapZoom()
