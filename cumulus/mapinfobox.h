@@ -252,6 +252,11 @@ public:
 private:
 
   /**
+   * Initializes the mouse press timer.
+   */
+  void initMousePressTimer();
+
+  /**
    * Determines the maximum usable font height in the text label box.
    */
   void determineMaxFontHeight();

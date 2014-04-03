@@ -65,10 +65,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   m_minUpdateInterval( 0 ),
   m_lastUpdateTime(0, 0, 0)
 {
-  m_mousePressTimer = new QTimer(this);
-  m_mousePressTimer->setSingleShot(true);
-  m_mousePressTimer->setInterval(250);
-  connect( m_mousePressTimer, SIGNAL(timeout()), SIGNAL(mouseLongPress()));
+  initMousePressTimer();
 
   // Maximum pretext width in pixels. That value is a hard coded limit now!
   const int ptw = 35;
@@ -198,12 +195,21 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 MapInfoBox::MapInfoBox( QWidget *parent, const QString& borderColor, const QPixmap& pixmap ) :
   QFrame( parent )
 {
+  initMousePressTimer();
   basics( borderColor );
   QHBoxLayout* topLayout = (QHBoxLayout*) this->layout();
   m_text = new QLabel(this);
   m_text->setPixmap(pixmap);
   m_text->setScaledContents(true);
   topLayout->addWidget( m_text );
+}
+
+void MapInfoBox::initMousePressTimer()
+{
+  m_mousePressTimer = new QTimer(this);
+  m_mousePressTimer->setSingleShot(true);
+  m_mousePressTimer->setInterval(250);
+  connect( m_mousePressTimer, SIGNAL(timeout()), SIGNAL(mouseLongPress()));
 }
 
 void MapInfoBox::basics( const QString& borderColor )
