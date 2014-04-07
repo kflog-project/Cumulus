@@ -396,7 +396,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
   _statusbar->addWidget(_statusGps);
-  connect(_statusGps, SIGNAL(mouseShortPress()), this, SLOT(slot_gpsStatusDialog()));
+  connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
   _statusFlightstatus->setFont(font);
