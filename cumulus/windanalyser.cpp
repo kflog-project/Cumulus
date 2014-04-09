@@ -189,7 +189,7 @@ void WindAnalyser::_calcWind()
 {
   // int degreePerStep = circleDegrees / circleSectors;
 
-  int aDiff = angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() );
+  int aDiff = rint(angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() ));
 
   /*
     Determine quality.

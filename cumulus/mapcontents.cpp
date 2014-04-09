@@ -3188,7 +3188,7 @@ void MapContents::drawIsoList(QPainter* targetP)
 
           const QList<Isohypse> &isoList = it.value();
 
-         for (int j = 0; j < isoList.size(); j++)
+          for (int j = 0; j < isoList.size(); j++)
             {
               Isohypse isoLine = isoList.at(j);
 
@@ -3199,20 +3199,22 @@ void MapContents::drawIsoList(QPainter* targetP)
                   // normally with an offset of one.
                   int colorIdx = isoLine.getElevationIndex();
 
-                  // We can move the color index by a user configuration option
+                  // We can move the color index by an user configuration option
                   // to get a better color schema.
-                  if( elevationIndexOffest != 0 && i == 1 )
+                  if( colorIdx > 0 && elevationIndexOffest != 0 && i == 1 )
                     {
                       int newIndex = colorIdx + elevationIndexOffest;
 
-                      if( newIndex >= 0 && newIndex <= SIZEOF_TERRAIN_COLORS )
+                      if( newIndex > 0 && newIndex <= SIZEOF_TERRAIN_COLORS )
                         {
                           // Move color index to the new position
                           colorIdx = newIndex;
                         }
-                      else if( newIndex < 0 )
+                      else if( newIndex <= 0 )
                         {
-                          colorIdx = 0;
+                          // Index 0 is blue ground and that is not true for
+                          // elevations above MSL.
+                          colorIdx = 1;
                         }
                       else if( newIndex >=  SIZEOF_TERRAIN_COLORS )
                         {
@@ -3221,7 +3223,7 @@ void MapContents::drawIsoList(QPainter* targetP)
                     }
 
                   targetP->setBrush( QBrush(conf->getTerrainColor(colorIdx),
-                                      Qt::SolidPattern));
+                                     Qt::SolidPattern));
                 }
               else
                 {

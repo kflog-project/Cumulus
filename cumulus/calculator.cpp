@@ -1546,12 +1546,6 @@ void Calculator::newFlightMode(Calculator::FlightMode fm)
 /** Called if a new wind measurement is delivered by the GPS/Logger device */
 void Calculator::slot_GpsWind( const Speed& speed, const short direction )
 {
-  if( GeneralConfig::instance()->isManualWindEnabled() )
-    {
-      // User has manual wind preselected.
-      return;
-    }
-
   // Hey we got a wind value directly from the GPS.
   // Therefore internal calculation is not needed and can be switched off.
   m_calculateWind = false;
@@ -1574,7 +1568,7 @@ void Calculator::slot_Wind(Vector& v)
     }
 
   lastWind = v;
-  emit newWind(v); // forwards wind info to map
+  emit newWind(v); // forwards the wind info to the MapView
 }
 
 void Calculator::slot_ManualWindChanged( bool enabled )

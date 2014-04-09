@@ -53,14 +53,15 @@ void Vario::newAltitude()
   m_timeOut.setSingleShot( true );
   m_timeOut.start( m_intTime + 2500 );
 
-  if( calculator->samplelist.count() < 10 )
+  int max = calculator->samplelist.count();
+
+  if( max < 10 )
     {
       // to less samples in the list
       return;
     }
 
   int i = 1; // index for list access
-  int max = calculator->samplelist.count();
   double sum = 0.0;
 
   bool resultAvailable = false;
