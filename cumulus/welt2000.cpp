@@ -110,7 +110,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
     {
       QString pLower = mapDirs.at(i) + sd + wl;
       QString pUpper = mapDirs.at(i) + sd + wu;
-      rename( pUpper.toLatin1().data(), pLower.toLatin1().data() );
+      QFile::rename( pUpper, pLower );
     }
 
   QString w2PathTxt;
@@ -136,7 +136,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           qDebug( "W2000: Format of welt2000.txc has been changed --> reparse welt2000.txt" );
           // Compiled file format is not the expected one, remove
           // wrong file and start a reparsing of source file.
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -155,7 +155,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               // Modification date-time of source is younger as from
               // compiled file. Therefore we do start a reparsing of source
               // file.
-              unlink( w2PathTxc.toLatin1().data() );
+              QFile::remove( w2PathTxc );
               return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
         }
@@ -173,7 +173,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           // deeper checked, what was modified due to the effort and
           // in the assumption that a configuration file will not be changed
           // every minute.
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -188,7 +188,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           qDebug( "W2000: Country list has been changed --> reparse welt2000.txt" );
           // There is a difference in the country lists. Therefore we
           // start a reparsing of the source file.
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -215,7 +215,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               qDebug( "W2000: Country list has been changed --> reparse welt2000.txt" );
               // The configured country list is not identical to the
               // compiled country list. Therefore we start a reparsing.
-              unlink( w2PathTxc.toLatin1().data() );
+              QFile::remove( w2PathTxc );
               return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
             }
         }
@@ -229,7 +229,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
           qDebug( "W2000: Home coordinates have been changed --> reparse welt2000.txt" );
           // Home coordinates have been changed, make a reparsing of
           // source file
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -249,7 +249,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
         {
           qDebug( "W2000: Home radius has been changed --> reparse welt2000.txt" );
           // Home radius has been changed, make a reparsing of the source file
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -258,7 +258,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
         {
           qDebug( "W2000: Runway length filter has been changed --> reparse welt2000.txt" );
           // Home radius has been changed, make a reparsing of the source file
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -275,7 +275,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
               h_projection = 0;
             }
 
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -283,7 +283,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
       if( ! readCompiledFile( w2PathTxc, airfieldList, gliderfieldList, outlandingList ) )
         {
           // reading of compiled file failed, let's parse the source
-          unlink( w2PathTxc.toLatin1().data() );
+          QFile::remove( w2PathTxc );
           return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
         }
 
@@ -465,12 +465,12 @@ bool Welt2000::filter( QString& path )
   if( outLines > 2 )
     {
       // overwrite old file with new extracted file
-      rename( fout.toLatin1().data(), path.toLatin1().data() );
+      QFile::rename( fout, path );
     }
   else
     {
       // remove unneeded file, if nothing could be extracted
-      unlink( fout.toLatin1().data() );
+      QFile::remove( fout );
     }
 
   return true;
@@ -1469,7 +1469,7 @@ bool Welt2000::parse( QString& path,
         {
           // no entries are contained in buffer, remove output file
           compFile.close();
-          unlink( compileFile.toLatin1().data() );
+          QFile::remove( compileFile );
         }
     }
 

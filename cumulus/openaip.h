@@ -127,13 +127,21 @@ class OpenAip
   void upperLowerName( QString& name );
 
   /**
-   * Create a short name by removing undesired characters.
+   * Create an unique short name by removing undesired characters.
    *
    * \param name The name to be shorten.
    *
    * \return new short name 8 characters long
    */
-  QString shortName( QString& name );
+  QString shortName( const QString& name );
+
+  /**
+   * \return A reference to the short name set.
+   */
+  QSet<QString>& getShortNameSet()
+    {
+      return m_shortNameSet;
+    };
 
  private:
 
@@ -252,6 +260,9 @@ class OpenAip
    * airspace item.
    */
   QMap<QString, BaseMapElement::objectType> m_airspaceTypeMapper;
+
+  /** Contains all short names of parsed files. */
+  static QSet<QString> m_shortNameSet;
 };
 
 #endif /* OpenAip_h */

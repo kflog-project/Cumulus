@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  *
  * See here for more info: http://www.openaip.net
  *
- * \date 2013
+ * \date 2013-2014
  *
  * \version $Id$
  */
@@ -40,6 +40,7 @@
 #include <QList>
 #include <QMutex>
 #include <QPoint>
+#include <QSet>
 #include <QString>
 #include <QRect>
 

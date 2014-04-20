@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-04-19 AP: Short airfield names of openAIP data are now unique per land.
+
 [o] 2014-04-09 AP: If the elevation offset of the terrain color is moved down
                    under zero, the last assigned color is green and not more blue
                    because blue is the color of the sea and not of land.

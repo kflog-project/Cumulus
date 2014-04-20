@@ -26,6 +26,9 @@
 
 extern MapMatrix* _globalMapMatrix;
 
+// set static member variable
+QSet<QString> OpenAip::m_shortNameSet;
+
 OpenAip::OpenAip() :
   m_filterRadius(0.0),
   m_filterRunwayLength(0.0)
@@ -655,6 +658,8 @@ bool OpenAip::readAirfields( QString fileName,
       return false;
     }
 
+  m_shortNameSet.clear();
+
   QXmlStreamReader xml( &file );
 
   int elementCounter   = 0;
@@ -785,6 +790,10 @@ bool OpenAip::readAirfields( QString fileName,
                         }
                     }
                 }
+
+
+              // Short name is only 8 characters long and must be unique
+              af.setWPName( shortName(af.getName()) );
 
               airfieldList.append( af );
             }
@@ -925,9 +934,7 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
               af.setName( name );
 
               // Short name is only 8 characters long
-              QString sn = shortName(name);
-
-              af.setWPName( shortName(sn) );
+              af.setWPName( name.left(8) );
             }
           else if ( elementName == "ICAO" )
             {
@@ -1428,13 +1435,13 @@ void OpenAip::upperLowerName( QString& name )
 }
 
 /**
- * Create a short name by removing undesired characters.
+ * Create an unique short name by removing undesired characters.
  *
  * \param name The name to be shorten.
  *
  * \return new short name 8 characters long
  */
-QString OpenAip::shortName( QString& name )
+QString OpenAip::shortName( const QString& name )
 {
   QString shortName;
 
@@ -1451,6 +1458,27 @@ QString OpenAip::shortName( QString& name )
         {
           // Limit short name to 8 characters.
           break;
+        }
+    }
+
+  // Check, if short name is already in use. In this case create another one.
+  if( ! m_shortNameSet.contains( shortName) )
+    {
+      m_shortNameSet.insert( shortName );
+    }
+  else
+    {
+      // Try to generate an unique short name. The assumption is that we never have
+      // more than 9 equal names.
+      for( int i=1; i < 10; i++ )
+        {
+          shortName.replace( shortName.length()-1, 1, QString::number(i) );
+
+          if( ! m_shortNameSet.contains( shortName) )
+            {
+              m_shortNameSet.insert( shortName );
+              break;
+            }
         }
     }
 
