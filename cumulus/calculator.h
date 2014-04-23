@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -55,7 +55,7 @@ class WindAnalyser;
  *
  * This class represents a single sample of flight data obtained.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -116,7 +116,7 @@ public:
  *
  * This is a Singleton class.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -285,11 +285,17 @@ public:
   };
 
   /**
-   * Read property of last Wind.
+   * Gets the last Wind.
    */
-  Vector& getlastWind()
+  Vector& getLastWind();
+
+  /**
+   * Sets the last Wind.
+   */
+  void setLastWind( Vector& v )
   {
-    return lastWind;
+    m_lastWind.wind = v;
+    m_lastWind.altitude = lastAltitude;
   };
 
   /**
@@ -874,8 +880,14 @@ private: // Private attributes
   QPoint lastPosition, lastGPSPosition;
   /** contains the last known heading */
   int lastHeading;
+
   /** contains the last known wind */
-  Vector lastWind;
+  struct
+  {
+    Vector wind;
+    Altitude altitude;
+  } m_lastWind;
+
   /** contains the last required LD to target */
   double lastRequiredLD;
   /** contains the last current LD */

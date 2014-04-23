@@ -26,9 +26,6 @@
 
 extern MapMatrix* _globalMapMatrix;
 
-// set static member variable
-QSet<QString> OpenAip::m_shortNameSet;
-
 OpenAip::OpenAip() :
   m_filterRadius(0.0),
   m_filterRunwayLength(0.0)

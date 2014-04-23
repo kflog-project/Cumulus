@@ -81,6 +81,8 @@ Calculator::Calculator(QObject* parent) :
   m_calculateVario = true;
   m_androidPressureAltitude = false;
   m_calculateWind = true;
+  m_lastWind.wind = Vector(0.0, 0.0);
+  m_lastWind.altitude = lastAltitude;
   selectedWp = static_cast<Waypoint *> (0);
   lastMc.setInvalid();
   lastBestSpeed.setInvalid();
@@ -759,7 +761,7 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
   //qDebug ("groundspeed: %d/%f", groundspeed.getAngleDeg(), groundspeed.getSpeed().getKph());
 
   // we add wind because of the negative direction
-  Vector airspeed = groundspeed + lastWind;
+  Vector airspeed = groundspeed + getLastWind();
   //qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
 
   // this is the first iteration of the Bob Hansen method
@@ -1147,6 +1149,10 @@ void Calculator::slot_settingsChanged()
   // changed the speed unit or has assigned its own wind.
   GeneralConfig* conf = GeneralConfig::instance();
 
+  // Reset last wind information
+  m_lastWind.wind = Vector(0.0, 0.0);
+  m_lastWind.altitude = lastAltitude;
+
   slot_ManualWindChanged( conf->isManualWindEnabled() );
 
   // Switch on the internal variometer lift and wind calculation.
@@ -1185,6 +1191,8 @@ void Calculator::slot_newFix( const QTime& newFixTime )
   Vector groundspeed (lastHeading, lastSpeed);
   // qDebug ("groundspeed: %d/%f", groundspeed.getAngleDeg(), groundspeed.getSpeed().getKph());
   // qDebug ("wind: %d/%f", lastWind.getAngleDeg(), lastWind.getSpeed().getKph());
+
+  Vector& lastWind = getLastWind();
   Vector airspeed = groundspeed + lastWind;
   // qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
   if ( lastWind.getSpeed().getKph() != 0 )
@@ -1567,7 +1575,7 @@ void Calculator::slot_Wind(Vector& v)
       return;
     }
 
-  lastWind = v;
+  setLastWind(v);
   emit newWind(v); // forwards the wind info to the MapView
 }
 
@@ -1595,7 +1603,7 @@ void Calculator::slot_ManualWindChanged( bool enabled )
         }
     }
 
-  lastWind = v;
+  setLastWind(v);
   emit newWind(v); // forwards the wind info to the MapView
 }
 
@@ -1907,4 +1915,40 @@ void Calculator::autoZoomInMap()
           emit taskInfo( tr("TP zoom"), true );
         }
     }
+}
+
+/**
+ * Gets the last Wind.
+ */
+Vector& Calculator::getLastWind()
+{
+  if( GeneralConfig::instance()->isManualWindEnabled() )
+    {
+      // User has manual wind preselected.
+      return m_lastWind.wind;
+    }
+
+  if( fabs(m_lastWind.altitude.getMeters() - lastAltitude.getMeters()) < 200.0 )
+    {
+      // In a 200m band we assume that the wind changes are moderate only.
+      return m_lastWind.wind;
+    }
+
+  // Try to get a wind info from the wind store.
+  WindMeasurementList& wml = getWindStore()->getWindMeasurementList();
+
+  Vector v = wml.getWind( lastAltitude, 1800, 400 );
+
+  if( v.isValid() )
+    {
+      // Update last wind
+      setLastWind(v);
+      emit newWind(v); // forwards the wind info to the MapView
+    }
+  else
+    {
+      m_lastWind.altitude = lastAltitude;
+    }
+
+  return m_lastWind.wind;
 }

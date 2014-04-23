@@ -307,8 +307,8 @@ void IgcLogger::writeKRecord( const QTime& timeFix )
   QString kRecord( "K" + formatTime(timeFix) +
                    QString("%1").arg( (int) rint(GpsNmea::gps->getLastHeading()), 3, 10, QChar('0')) +
                    QString("%1").arg( (int) rint(GpsNmea::gps->getLastTas().getKph()), 3, 10, QChar('0')) + "kph" +
-                   QString("%1").arg( calculator->getlastWind().getAngleDeg(), 3, 10, QChar('0')) +
-                   QString("%1").arg( (int) rint(calculator->getlastWind().getSpeed().getKph()), 3, 10, QChar('0')) +
+                   QString("%1").arg( calculator->getLastWind().getAngleDeg(), 3, 10, QChar('0')) +
+                   QString("%1").arg( (int) rint(calculator->getLastWind().getSpeed().getKph()), 3, 10, QChar('0')) +
                    formatVario(calculator->getlastVario()) );
 
   _stream << kRecord << "\r\n";

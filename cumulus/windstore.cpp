@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2010 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -57,7 +57,7 @@ void WindStore::slot_Altitude( const Altitude& altitude )
       // calculated and distributed.
       recalculateWind();
 
-      m_lastAltitude = calculator->getlastAltitude();
+      m_lastAltitude = altitude;
     }
 }
 
@@ -76,4 +76,3 @@ void WindStore::recalculateWind()
       emit newWind( m_lastWind );
     }
 }
-

@@ -15,7 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2014-04-19 AP: Short airfield names of openAIP data are now unique per land.
+[o] 2014-04-23 AP: Tried to improve provided wind information more related to
+                   the current altitude.
+
+[o] 2014-04-19 AP: Short names of openAIP airfield data are unique now per
+                   country.
 
 [o] 2014-04-09 AP: If the elevation offset of the terrain color is moved down
                    under zero, the last assigned color is green and not more blue

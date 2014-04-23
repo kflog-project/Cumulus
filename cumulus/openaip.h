@@ -20,9 +20,9 @@
  *
  * \author Axel Pauli
  *
- * \brief A class for reading data from OpenAip XML files.
+ * \brief A class for reading data from openAip XML files.
  *
- * A class for reading data from OpenAip XML files provided by Butterfly
+ * A class for reading data from openAip XML files provided by Butterfly
  * Avionics GmbH. The data are licensed under the CC BY-NC-SA license.
  *
  * See here for more info: http://www.openaip.net
@@ -261,8 +261,8 @@ class OpenAip
    */
   QMap<QString, BaseMapElement::objectType> m_airspaceTypeMapper;
 
-  /** Contains all short names of parsed files. */
-  static QSet<QString> m_shortNameSet;
+  /** Contains all short names of parsed file. */
+  QSet<QString> m_shortNameSet;
 };
 
 #endif /* OpenAip_h */

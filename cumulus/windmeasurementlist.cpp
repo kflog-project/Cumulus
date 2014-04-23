@@ -157,11 +157,18 @@ Vector WindMeasurementList::getWind( const Altitude& alt,
           result.getAngleDeg(), result.getSpeed().getKph() );
   */
 
-  if( ! result.isValid() && entry == 1 && timeWindow != 3600 )
+  if( ! result.isValid() && entry == 1 && timeWindow < 3600 )
     {
       // If there is no younger wind available make a second round with a time
       // window of one hour.
       result = getWind( alt, 3600 );
+
+      if( ! result.isValid() )
+        {
+          // If there is no younger wind available make a second round with a time
+          // window of two hour.
+          result = getWind( alt, 7200 );
+        }
     }
 
   entry--;
