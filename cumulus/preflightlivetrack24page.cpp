@@ -142,8 +142,11 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   m_airplaneType = new QComboBox;
   m_airplaneType->addItem( tr("Paraglider"), 1 );
   m_airplaneType->addItem( tr("Glider"), 8 );
+  m_airplaneType->addItem( tr("Paramotor"), 16 );
+  m_airplaneType->addItem( tr("Trike"), 32 );
   m_airplaneType->addItem( tr("Powered flight"), 64 );
   m_airplaneType->addItem( tr("Hot Air Balloon"), 128 );
+  m_airplaneType->addItem( tr("Car"), 17100 );
   topLayout->addWidget(m_airplaneType, row, 1);
   row++;
 
