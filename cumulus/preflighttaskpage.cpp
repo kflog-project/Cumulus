@@ -402,13 +402,18 @@ void PreFlightTaskPage::updateWayTime()
       FlightTask *task = m_flightTaskList.at( id );
 
       // update TAS, can be changed in the meantime by the user
-      task->setSpeed( m_tas->value() );
+      Speed tas;
+      tas.setHorizontalValue( m_tas->doubleValue() );
+      task->setSpeed( tas );
 
       // update wind parameters, can be changed in the meantime by the user
       task->setWindDirection( m_windDirection->value() % 360 );
-      task->setWindSpeed( m_windSpeed->value() );
 
-      if( task->getSpeed() == 0 )
+      Speed ws;
+      ws.setWindValue( m_windSpeed->doubleValue() );
+      task->setWindSpeed( ws );
+
+      if( task->getSpeed().getMps() == 0.0 )
         {
           // TAS is zero, show nothing
           item->setText(4, "");
