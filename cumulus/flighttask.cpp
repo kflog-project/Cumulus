@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2013 by Axel Pauli
+**                   2007-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -34,7 +34,7 @@ extern MapMatrix  *_globalMapMatrix;
 FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
                         bool faiRules,
                         QString taskName,
-                        int tas ) :
+                        Speed tas ) :
   BaseMapElement("FlightTask", BaseMapElement::Task ),
   tpList(tpListIn),
   faiRules(faiRules),
@@ -430,13 +430,7 @@ void FlightTask::setTaskPointData()
   duration_total = 0;
 
   // Initialize TAS and wind speed instances by using user defined units.
-  Speed tas(0);
-  Speed wind(0);
-
-  tas.setHorizontalValue( cruisingSpeed );
-  wind.setWindValue( windSpeed );
-
-  if( windSpeed <= 0 )
+  if( windSpeed.getMps() == 0.0 )
     {
       // No wind triangle calculation possible
       wtCalculation = false;
@@ -476,9 +470,9 @@ void FlightTask::setTaskPointData()
               {
                 tpList->at(n)->wtResult =
                     windTriangle( tpList->at(n)->bearing * 180/M_PI,
-                                  tas.getMps(),
+                                  cruisingSpeed.getMps(),
                                   windDirection,
-                                  wind.getMps(),
+                                  windSpeed.getMps(),
                                   tpList->at(n)->groundSpeed,
                                   tpList->at(n)->wca,
                                   tpList->at(n)->trueHeading );
@@ -494,7 +488,7 @@ void FlightTask::setTaskPointData()
 
       tpList->at(n)->setTaskPointType(TaskPointTypes::FreeP);
 
-      double cs = tas.getMps();
+      double cs = cruisingSpeed.getMps();
 
       // Calculate all without wind because wind can be too strong at
       // one of the next legs.
@@ -517,7 +511,7 @@ void FlightTask::setTaskPointData()
 #ifdef CUMULUS_DEBUG
       qDebug("Without Wind: WP=%s, TAS=%f, dist=%f, duration=%d, tc=%f, th=%f",
              tpList->at(n)->name.toLatin1().data(),
-             tas.getKph(),
+             cruisingSpeed.getKph(),
              tpList->at(n)->distance,
              tpList->at(n)->distTime,
              tpList->at(n)->bearing,
@@ -1347,7 +1341,7 @@ QString FlightTask::getSpeedString() const
 
   QString v;
 
-  v = QString("%1%2").arg(cruisingSpeed).arg(Speed::getHorizontalUnitText());
+  v = QString("%1%2").arg(cruisingSpeed.getHorizontalValue()).arg(Speed::getHorizontalUnitText());
 
   return v;
 }
@@ -1355,7 +1349,7 @@ QString FlightTask::getSpeedString() const
 /** Returns wind direction and speed in string format "Degree/Speed". */
 QString FlightTask::getWindString() const
 {
-  if( windSpeed == 0 )
+  if( windSpeed.getMps() == 0 )
     {
       return QObject::tr("none");
     }
@@ -1370,7 +1364,7 @@ QString FlightTask::getWindString() const
   w = QString( "%1%2/%3%4")
          .arg( windDirection, 3, 10, QChar('0') )
          .arg( QString(Qt::Key_degree) )
-         .arg( windSpeed )
+         .arg( windSpeed.getWindValue() )
          .arg( Speed::getWindUnitText() );
 
   return w;

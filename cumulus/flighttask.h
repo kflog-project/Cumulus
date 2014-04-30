@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2013 by Axel Pauli
+**                   2007-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  * for flight tasks and contains the data of the flight task.
  *
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -83,7 +83,7 @@ class FlightTask : public BaseMapElement
    *
    */
   FlightTask( QList<TaskPoint*> *tpList=0, bool fai=true,
-              QString taskName=QObject::tr("unknown"), int tas=0 );
+              QString taskName=QObject::tr("unknown"), Speed tas=Speed(0.0) );
 
   /**
    * Copy constructor
@@ -231,20 +231,20 @@ class FlightTask : public BaseMapElement
   };
 
   /** returns the planned cruising speed */
-  int getSpeed() const { return cruisingSpeed; };
+  const Speed& getSpeed() const { return cruisingSpeed; };
 
   /** sets the planned cruising speed */
-  void setSpeed( const int newSpeed )
+  void setSpeed( const Speed newSpeed )
   {
     cruisingSpeed = newSpeed;
     updateTask();
   };
 
   /** returns the wind speed */
-  int getWindSpeed() const { return windSpeed; };
+  const Speed& getWindSpeed() const { return windSpeed; };
 
   /** sets the wind speed */
-  void setWindSpeed( const int newSpeed )
+  void setWindSpeed( const Speed newSpeed )
   {
     windSpeed = newSpeed;
     updateTask();
@@ -434,13 +434,13 @@ class FlightTask : public BaseMapElement
   bool faiRules;
 
   /** planned cruising speed */
-  int cruisingSpeed;
+  Speed cruisingSpeed;
 
   /** planned wind direction in degree */
   int windDirection;
 
   /** planned wind speed */
-  int windSpeed;
+  Speed windSpeed;
 
   /** result of wind calculation via wind triangle */
   bool wtCalculation;

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -28,7 +28,7 @@
  * Class for one entry in the \ref ReachableList class. It covers all belonging
  * to a reachable point element.
  *
- * \date 2004-2013
+ * \date 2004-2014
  *
  * \version $Id$
  */
@@ -157,6 +157,11 @@ class ReachablePoint
   WGSPoint& getWgsPos()
   {
     return _wp.wgsPoint;
+  };
+
+  float getFrequency() const
+  {
+    return _wp.frequency;
   };
 
   const Waypoint *getWaypoint() const

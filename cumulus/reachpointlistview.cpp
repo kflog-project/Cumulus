@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -60,8 +60,8 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->setAlternatingRowColors(true);
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
-  list->setColumnCount(7);
-  list->hideColumn(6);
+  list->setColumnCount(8);
+  list->hideColumn(7);
   list->setFocusPolicy(Qt::StrongFocus);
 
   list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -78,6 +78,7 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   QStringList sl;
 
   sl << tr(" Name")
+     << tr("MHz")
      << tr("Dist.")
      << tr("Course")
      << tr("Arrvial")
@@ -87,7 +88,7 @@ ReachpointListView::ReachpointListView( MainWindow* parent ) :
   list->setHeaderLabels(sl);
 
   list->setColumnWidth( 0, 160 );
-  list->setColumnWidth( 1, 74 );
+  list->setColumnWidth( 2, 74 );
 
   fillRpList();
 
@@ -283,14 +284,26 @@ void ReachpointListView::fillRpList()
           rLen = QString("%1").arg( rp.getRunwayLength(), 0, 'f', 0 ) + " m";
         }
 
+      QString frequency;
+
+      if( rp.getFrequency() > 0.0 )
+        {
+          frequency = QString("%1").arg( rp.getFrequency(), 0, 'f', 3 );
+        }
+      else
+        {
+          frequency = "   ";
+        }
+
       QStringList sl;
       sl << rp.getName()
-      << rp.getDistance().getText(false,1)
-      << bearing
-      << arrival
-      << rLen
-      <<  " " + ss + " " + tz
-      << key;
+         << frequency
+         << rp.getDistance().getText(false,1)
+         << bearing
+         << arrival
+         << rLen
+         <<  " " + ss + " " + tz
+         << key;
 
       QTreeWidgetItem* li = new QTreeWidgetItem( sl );
 
@@ -298,6 +311,8 @@ void ReachpointListView::fillRpList()
       li->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 6, Qt::AlignLeft|Qt::AlignVCenter );
 
       list->addTopLevelItem( li );
 
@@ -344,7 +359,7 @@ void ReachpointListView::fillRpList()
                                  Qt::transparent,
                                  pen );
 
-      li->setIcon( 2, directionPm );
+      li->setIcon( 3, directionPm );
 
       // store name of last selected to avoid jump to first element on each fill
       if ( rp.getName() == sname )
@@ -376,13 +391,14 @@ void ReachpointListView::fillRpList()
     }
 
   // sort list
-  list->sortItems( 6, Qt::DescendingOrder );
+  list->sortItems( 7, Qt::DescendingOrder );
   list->resizeColumnToContents(0);
   list->resizeColumnToContents(1);
   list->resizeColumnToContents(2);
   list->resizeColumnToContents(3);
   list->resizeColumnToContents(4);
   list->resizeColumnToContents(5);
+  list->resizeColumnToContents(6);
 
 #if 0
   if ( selectedItem == 0 )

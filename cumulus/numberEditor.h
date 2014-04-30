@@ -130,6 +130,16 @@ class NumberEditor : public QLabel
   };
 
   /**
+   * Returns the displayed value as double.
+   *
+   * \return displayed value as double or zero in error case.
+   */
+  double doubleValue() const
+  {
+    return m_number.toDouble();
+  };
+
+  /**
    * The prefix is prepended to the start of the displayed value. Typical use
    * is to display a unit of measurement or a currency symbol.
    *

@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-04-30 AP: BUGFIX: The wind triangle calculation did not work on task
+                   display, if wind speed or direction were modified.
+
+[o] 2014-04-30 AP: Added airfield frequency to reachable list overview.
+
 [o] 2014-04-23 AP: Tried to improve provided wind information more related to
                    the current altitude.
 

@@ -359,11 +359,16 @@ void PreFlightTaskPage::slotTaskDetails()
   FlightTask *task = m_flightTaskList.at( id );
 
   // update TAS, can be changed in the meantime by the user
-  task->setSpeed( m_tas->value() );
+  Speed tas;
+  tas.setHorizontalValue( m_tas->doubleValue() );
+  task->setSpeed( tas );
 
   // update wind parameters, can be changed in the meantime by the user
   task->setWindDirection( m_windDirection->value() % 360 );
-  task->setWindSpeed( m_windSpeed->value() );
+
+  Speed ws;
+  ws.setWindValue( m_windSpeed->doubleValue() );
+  task->setWindSpeed( ws );
 
   m_taskContent->slot_setTask( task );
 }
@@ -411,7 +416,7 @@ void PreFlightTaskPage::updateWayTime()
       else
         {
           // TAS is not zero, show time total
-          item->setText( 4, task->getTotalDistanceTimeString() + "h" );
+          item->setText( 4, task->getTotalDistanceTimeString() + "h " );
         }
     }
 
