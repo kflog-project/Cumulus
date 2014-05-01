@@ -28,7 +28,7 @@
  *
  * A class which handles the task file load and storage.
  *
- * \date 2013
+ * \date 2013-2014
  *
  * \version $Id: taskfilemanager.h 5755 2013-01-17 10:27:28Z axel $
  */
@@ -40,6 +40,7 @@
 #include <QString>
 
 #include "flighttask.h"
+#include "speed.h"
 
 class TaskFileManager
 {
@@ -110,7 +111,7 @@ class TaskFileManager
    *
    * @param tas New tas to be used.
    */
-  void setTas( const int tas )
+  void setTas( const Speed& tas )
   {
     m_tas = tas;
   };
@@ -120,7 +121,7 @@ class TaskFileManager
    *
    * @return Current set TAS.
    */
-  int tas() const
+  const Speed& tas() const
   {
     return m_tas;
   };
@@ -131,7 +132,7 @@ class TaskFileManager
   QString m_taskFileName;
 
   /** True airspeed */
-  int m_tas;
+  Speed m_tas;
 };
 
 #endif /* TASK_FILE_MANAGER_H_ */

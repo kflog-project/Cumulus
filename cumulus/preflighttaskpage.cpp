@@ -92,7 +92,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_tas->setMaxLength(3);
 
   const Speed& tas = GeneralConfig::instance()->getTas();
-  m_tas->setText( tas.getVerticalText( false, 0 ) );
+  m_tas->setText( tas.getHorizontalText( false, 0 ) );
   m_tas->setSuffix( " " + Speed::getHorizontalUnitText() );
   m_tas->setMinimumWidth( msw );
   editrow->addWidget(m_tas);
@@ -445,6 +445,7 @@ FlightTask* PreFlightTaskPage::takeSelectedTask()
   // save last used TAS, and wind parameters
   Speed tas;
   tas.setValueInUnit( m_tas->doubleValue(), Speed::getHorizontalUnit() );
+
   GeneralConfig::instance()->setTas( tas );
   GeneralConfig::instance()->setManualWindDirection( m_windDirection->value() );
 
@@ -496,7 +497,9 @@ bool PreFlightTaskPage::loadTaskList()
   m_taskNames.clear();
 
   TaskFileManager tfm;
-  tfm.setTas( m_tas->value() );
+  Speed tas;
+  tas.setValueInUnit( m_tas->doubleValue(), Speed::getHorizontalUnit() );
+  tfm.setTas( tas );
 
   if( tfm.loadTaskList( m_flightTaskList ) == false )
     {
