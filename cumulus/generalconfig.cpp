@@ -237,9 +237,7 @@ void GeneralConfig::load()
   _bRecordInterval        = value( "B-RecordLoggerInterval", 3 ).toInt();
   _kRecordInterval        = value( "K-RecordLoggerInterval", 0 ).toInt();
   _loggerAutostartMode    = value( "LoggerAutostartMode", true ).toBool();
-  _tas                    = value( "TAS", 100 ).toInt();
-  _windDirection          = value( "WindDirection", 0 ).toInt();
-  _windSpeed              = value( "WindSpeed", 0 ).toInt();
+  _tas                    = Speed(value( "TAS", 100.0 ).toDouble());
   _currentTask            = value( "CurrentTask", "").toString();
   _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
@@ -687,9 +685,7 @@ void GeneralConfig::save()
   setValue( "B-RecordLoggerInterval", _bRecordInterval );
   setValue( "K-RecordLoggerInterval", _kRecordInterval );
   setValue( "LoggerAutostartMode", _loggerAutostartMode );
-  setValue( "TAS", _tas );
-  setValue( "WindDirection", _windDirection );
-  setValue( "WindSpeed", _windSpeed );
+  setValue( "TAS", _tas.getMps() );
   setValue( "CurrentTask", _currentTask);
   setValue( "FlightLogbookFileName", _flightLogbookFileName );
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );

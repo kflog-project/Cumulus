@@ -87,9 +87,12 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_tas->setToolTip( tr("True Air Speed") );
 #endif
   m_tas->setPmVisible(false);
+  m_tas->setDecimalVisible(false);
   m_tas->setRange( 0, 999);
   m_tas->setMaxLength(3);
-  m_tas->setValue( GeneralConfig::instance()->getTas() );
+
+  const Speed& tas = GeneralConfig::instance()->getTas();
+  m_tas->setText( tas.getVerticalText( false, 0 ) );
   m_tas->setSuffix( " " + Speed::getHorizontalUnitText() );
   m_tas->setMinimumWidth( msw );
   editrow->addWidget(m_tas);
@@ -102,6 +105,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windDirection->setToolTip( tr("Wind Direction") );
 #endif
   m_windDirection->setPmVisible(false);
+  m_windDirection->setDecimalVisible(false);
   m_windDirection->setRange( 0, 360 );
   m_windDirection->setTip("0...360");
   m_windDirection->setMaxLength(3);
@@ -118,11 +122,12 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windSpeed->setToolTip( tr("Wind Speed") );
 #endif
   m_windSpeed->setPmVisible(false);
+  m_windSpeed->setDecimalVisible(false);
   m_windSpeed->setRange( 0, 999 );
-  m_windSpeed->setMaxLength(4);
+  m_windSpeed->setMaxLength(3);
 
   const Speed& wv = GeneralConfig::instance()->getManualWindSpeed();
-  m_windSpeed->setText( wv.getWindText( false, 1 ) );
+  m_windSpeed->setText( wv.getWindText( false, 0 ) );
 
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );
@@ -431,16 +436,21 @@ void PreFlightTaskPage::updateWayTime()
 
 // This method is called from PreFlightWidget::accept(), to take out
 // the selected task from the task list. The ownership of the taken
-// FlightTask object goes over the the caller. He has to delete the
+// FlightTask object goes over to the caller. He has to delete the
 // object!!!
 FlightTask* PreFlightTaskPage::takeSelectedTask()
 {
   // qDebug("PreFlightTaskPage::selectedTask()");
 
   // save last used TAS, and wind parameters
-  GeneralConfig::instance()->setTas( m_tas->value() );
-  GeneralConfig::instance()->setWindDirection( m_windDirection->value() );
-  GeneralConfig::instance()->setWindSpeed( m_windSpeed->value() );
+  Speed tas;
+  tas.setValueInUnit( m_tas->doubleValue(), Speed::getHorizontalUnit() );
+  GeneralConfig::instance()->setTas( tas );
+  GeneralConfig::instance()->setManualWindDirection( m_windDirection->value() );
+
+  Speed wv;
+  wv.setValueInUnit( m_windSpeed->text().toDouble(), Speed::getWindUnit() );
+  GeneralConfig::instance()->setManualWindSpeed( wv );
 
   QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
 

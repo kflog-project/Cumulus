@@ -937,38 +937,15 @@ class GeneralConfig : protected QSettings
   };
 
   /** gets TAS */
-  int getTas() const
+  const Speed&  getTas() const
   {
     return _tas;
   };
+
   /** sets TAS */
-  void setTas( const int newValue )
+  void setTas( const Speed& newValue )
   {
     _tas = newValue;
-  };
-
-  /** gets wind speed */
-  int getWindSpeed() const
-  {
-    return _windSpeed;
-  };
-
-  /** sets wind speed */
-  void setWindSpeed( const int newValue )
-  {
-    _windSpeed = newValue;
-  };
-
-  /** gets wind direction */
-  int getWindDirection() const
-  {
-    return _windDirection;
-  };
-
-  /** sets wind direction */
-  void setWindDirection( const int newValue )
-  {
-    _windDirection = newValue;
   };
 
   /** gets manual wind speed */
@@ -2945,11 +2922,7 @@ class GeneralConfig : protected QSettings
   // Auto logger start speed
   double _autoLoggerStartSpeed;
   // true air speed
-  int _tas;
-  // wind direction
-  int _windDirection;
-  // wind speed
-  int _windSpeed;
+  Speed _tas;
   // The name of the current selected task
   QString _currentTask;
 

@@ -84,6 +84,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windDirection->setToolTip( tr("Wind Direction") );
 #endif
   m_windDirection->setPmVisible(false);
+  m_windDirection->setDecimalVisible(false);
   m_windDirection->setRange( 0, 360 );
   m_windDirection->setTip("0...360");
   m_windDirection->setMaxLength(3);
@@ -100,11 +101,12 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windSpeed->setToolTip( tr("Wind Speed") );
 #endif
   m_windSpeed->setPmVisible(false);
+  m_windSpeed->setDecimalVisible(false);
   m_windSpeed->setRange( 0, 999 );
-  m_windSpeed->setMaxLength(4);
+  m_windSpeed->setMaxLength(3);
 
   const Speed& wv = GeneralConfig::instance()->getManualWindSpeed();
-  m_windSpeed->setText( wv.getWindText( false, 1 ) );
+  m_windSpeed->setText( wv.getWindText( false, 0 ) );
 
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );

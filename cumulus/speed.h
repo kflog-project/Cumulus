@@ -251,7 +251,7 @@ public:
     QString getVerticalText(bool withUnit=true, uint prec=1) const;
 
     /**
-     * Returns a formatted string for the default horizontal speed units.
+     * Returns a formatted string for the default horizontal speed unit.
      * The string includes the value and optionally the unit.
      * @param withUnit set to true (default) to have the returned string
      *    include the unit, false otherwise
@@ -261,7 +261,7 @@ public:
     QString getHorizontalText(bool withUnit=true, uint prec=1) const;
 
     /**
-     * Returns a formatted string for the default wind speed units.
+     * Returns a formatted string for the default wind speed unit.
      * The string includes the value and optionally the unit.
      * @param withUnit set to true (default) to have the returned string
      *    include the unit, false otherwise
