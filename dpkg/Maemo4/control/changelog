@@ -1,4 +1,4 @@
-cumulus (5.14.0) stable; urgency=low
+cumulus (5.14.2) stable; urgency=low
 
   * BUGFIX: The wind triangle calculation did not work on task
     display, if wind speed or direction were modified.
