@@ -1,5 +1,23 @@
 cumulus (5.14.0) stable; urgency=low
 
+  * BUGFIX: The wind triangle calculation did not work on task
+    display, if wind speed or direction were modified.
+    
+  * Airfield frequency added to reachable list overview.
+    
+  * Tried to improve provided wind information more related to
+    the current altitude.
+    
+  * Short names of openAIP airfield data are unique now per country.
+    
+  * If the elevation offset of the terrain color is moved down
+    under zero, the last assigned color is green and not more blue
+    because blue is the color of the sea and not of land.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Fri, 02 May 2014 19:14:14 +0200
+
+cumulus (5.14.0) stable; urgency=low
+
   * Changes in the flight glider dialog done for Mc, bug or water
     values are reported immediately to the calculator and the map
     to see their effects to the current glide path. If the dialog
