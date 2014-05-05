@@ -50,7 +50,7 @@ void WindStore::slot_Altitude( const Altitude& altitude )
 {
   if( calculator->currentFlightMode() != Calculator::circlingL &&
       calculator->currentFlightMode() != Calculator::circlingR &&
-      fabs( (altitude - m_lastAltitude).getMeters() ) >= 25.0 )
+      fabs( (altitude - m_lastAltitude).getMeters() ) >= 200.0 )
     {
       // Only recalculate wind, if we are not circling and there is a
       // significant altitude change. During circling newer wind is always

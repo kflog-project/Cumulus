@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1077,6 +1077,291 @@ int WaypointCatalog::readOpenAipAirfields( QString catalog,
     }
 
   QApplication::restoreOverrideCursor();
+  return wpCount;
+}
+
+
+int WaypointCatalog::readBgaDos( QString catalog,
+                                 QList<Waypoint>* wpList,
+                                 QString& errorInfo )
+{
+  // Found a file format description here:
+  // http://www.gregorie.org/gliding/pna/cai_format.html
+  qDebug() << "WaypointCatalog::readBgaDos" << catalog;
+
+  QFile file(catalog);
+
+  if( !file.exists() )
+    {
+      errorInfo = QObject::tr("File does not exist!");
+      return 0;
+    }
+
+  if( file.size() == 0 )
+    {
+      errorInfo = QObject::tr("File is empty!");
+      return 0;
+    }
+
+  if (! file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+      errorInfo = QObject::tr("Cannot open File!");
+      return -1;
+    }
+
+  QSet<QString> namesInUse;
+  int lineNo = 0;
+  int wpCount = 0;
+
+  WaitScreen *ws = static_cast<WaitScreen *>(0);
+
+  if( _showProgress )
+    {
+      ws = new WaitScreen( MainWindow::mainWindow() );
+
+#ifdef ANDROID
+      // The waitscreen is not centered over the parent and not limited in
+      // its size under Android. Therefore this must be done by our self.
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+                        MainWindow::mainWindow()->height() / 2 - 75,
+                        500, 150 );
+#endif
+
+      ws->slot_SetText1( QObject::tr("Reading file") );
+      ws->slot_SetText2( QFileInfo(catalog).fileName() );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+    }
+
+  QTextStream in(&file);
+  in.setCodec( "ISO 8859-15" );
+
+  /**
+    The DOS format is as follows.
+
+     0. Full Name
+     1. TriGraph
+     2. Category for findability (A-D) and airspace # and ##
+     3. Exact point
+     4. Description & Remarks
+     5. Dist from main feature, NMl
+     6. Direction from main feature
+     7. Main feature (one of several large towns and cities used as locators)
+     8. Grid ref km East and N of OS Datum
+     9. Lat/Long to WGS84 Geodetic Datum
+    10. Altitude (in Feet, accuracy not Guaranteed)
+    11. TriGraph
+
+     0. Aboyne Bridge
+     1. AB1
+     2. A
+     3. Road Br over R Dee
+     4. S side of village bet A93 and B976, 2NMl E of airfield, under CTA base 3000
+     5. 22
+     6. W
+     7. Aberdeen
+     8. 352.36 797.96
+     9. 57 04.213N 002 47.239W
+    10. 450
+    11. AB1
+  */
+
+  while( true )
+    {
+      QStringList record;
+      int readLines;
+      int start = lineNo + 1;
+
+      for( readLines = 0; readLines < 13; readLines++ )
+        {
+          record << in.readLine().trimmed();
+          lineNo++;
+
+          if( in.atEnd() )
+            {
+              break;
+            }
+        }
+
+      if( record.size() < 12 )
+        {
+          // EOF is reached
+          break;
+        }
+
+      if( _showProgress && (wpCount % 50) == 0 )
+        {
+          ws->slot_Progress( 2 );
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                           QEventLoop::ExcludeSocketNotifiers );
+        }
+
+      if( record[1] != record[11] )
+        {
+          // Filter out corrupted lines
+          qWarning("DOS Read (%d): Short code unequal final code", start );
+          continue;
+        }
+
+      if( record[0].isEmpty() ||
+          record[1].isEmpty() ||
+          record[2].isEmpty() ||
+          record[9].isEmpty() ||
+          record[10].isEmpty() ||
+          record[11].isEmpty() )
+        {
+          qWarning( "DOS Read (%d): Record contains too less elements! Ignoring it.",
+                    start );
+          continue;
+        }
+
+      Waypoint wp;
+
+      wp.type = BaseMapElement::Landmark;
+      wp.priority = Waypoint::Low;
+      wp.country = GeneralConfig::instance()->getHomeCountryCode();
+
+      // Name is composed from TriGraph "-" and Category for findability (A-D)
+      // and airspace # and ##
+      wp.name = record[1] + "-" + record[2];
+
+      // Short name of a waypoint has only 8 characters and upper cases in Cumulus.
+      wp.name = wp.name.left(8).toUpper().trimmed();
+      wp.description = record[0];
+
+      // latitude and longitude as 57 04.213N 002 47.239W
+      QStringList latlon = record[9].split(" ");
+
+      if( latlon.size() != 4 )
+        {
+          qWarning("DOS Read (%d): Format error WGS84 geodetic datum", start);
+          continue;
+        }
+
+      bool ok;
+
+      // Extract latitude
+      double degree = latlon[0].toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DOS Read (%d): Format error degree WGS84 latitude", start);
+          continue;
+        }
+
+      double minutes = latlon[1].left(latlon[1].size() - 1 ).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DOS Read (%d): Format error minutes WGS84 latitude", start);
+          continue;
+        }
+
+      double latTmp = (degree * 600000.) + (10000. * minutes);
+
+      if( latlon[1].right(1).toUpper() == "S" )
+        {
+          latTmp = -latTmp;
+        }
+
+      // Extract longitude
+      degree = latlon[2].toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DOS Read (%d): Format error degree WGS84 longitude", start);
+          continue;
+        }
+
+      minutes = latlon[3].left(latlon[3].size() - 1 ).toDouble(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DOS Read (%d): Format error minutes WGS84 longitude", start);
+          continue;
+        }
+
+      double lonTmp = (degree * 600000.) + (10000. * minutes);
+
+      if( latlon[3].right(1).toUpper() == "W" )
+        {
+          lonTmp = -lonTmp;
+        }
+
+      wp.wgsPoint.setLat((int) rint(latTmp));
+      wp.wgsPoint.setLon((int) rint(lonTmp));
+
+      // Check radius filter
+      if( ! takePoint( wp.wgsPoint ) )
+        {
+          // Distance is greater than the defined radius around the center point.
+          continue;
+        }
+
+      // Sets the projected coordinates
+      wp.projPoint = _globalMapMatrix->wgsToMap( wp.wgsPoint );
+
+      // Altitude (in Feet, accuracy not Guaranteed)
+      float tmpElev = record[10].toFloat(&ok);
+
+      if( ! ok )
+        {
+          qWarning("DOS Read (%d): Error reading elevation value '%s'.",
+                    start, record[10].toLatin1().data());
+          continue;
+        }
+
+      // Convert feet to meters
+      wp.elevation = tmpElev * 0.3048;
+
+      // Check filter, if type should be taken
+      if( ! takeType( (enum BaseMapElement::objectType) wp.type ) )
+        {
+          continue;
+        }
+
+      wp.comment = record[3] + "\n\n" + record[4];
+
+      // We do check, if the waypoint name is already in use because DAT
+      // short names are not always unique.
+      if( wpList && namesInUse.contains( wp.name ) )
+        {
+          for( int i = 0; i < 100; i++ )
+            {
+              // Hope that not more as 100 same names will be exist.
+              QString number = QString::number(i);
+               wp.name = wp.name.left(wp.name.size() - number.size()) + number;
+
+              if( namesInUse.contains( wp.name ) == false )
+                {
+                  break;
+                }
+            }
+        }
+
+      if( wpList )
+        {
+          // Add waypoint to list
+          wp.wpListMember = true;
+          wpList->append( wp );
+        }
+
+      wpCount++;
+
+      // Store used waypoint name in set.
+      namesInUse.insert( wp.name );
+    }
+
+  file.close();
+
+  if( _showProgress )
+    {
+      ws->setVisible( false );
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+                                       QEventLoop::ExcludeSocketNotifiers );
+      delete ws;
+    }
+
   return wpCount;
 }
 

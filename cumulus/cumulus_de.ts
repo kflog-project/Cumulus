@@ -2425,118 +2425,118 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="97"/>
+        <location filename="preflighttaskpage.cpp" line="100"/>
         <source>WD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="102"/>
+        <location filename="preflighttaskpage.cpp" line="105"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="113"/>
+        <location filename="preflighttaskpage.cpp" line="117"/>
         <source>WS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="118"/>
+        <location filename="preflighttaskpage.cpp" line="122"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="138"/>
+        <location filename="preflighttaskpage.cpp" line="143"/>
         <source>Define a new task</source>
         <translation>Neue Aufgabe definieren</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="147"/>
+        <location filename="preflighttaskpage.cpp" line="152"/>
         <source>Edit selected task</source>
         <translation>Editiere ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="156"/>
+        <location filename="preflighttaskpage.cpp" line="161"/>
         <source>Remove selected task</source>
         <translation>Lösche ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="169"/>
+        <location filename="preflighttaskpage.cpp" line="174"/>
         <source>Select a flight task</source>
         <translation>Flugaufgabe auswählen</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="196"/>
+        <location filename="preflighttaskpage.cpp" line="201"/>
         <source>No.</source>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="197"/>
+        <location filename="preflighttaskpage.cpp" line="202"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="198"/>
+        <location filename="preflighttaskpage.cpp" line="203"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="199"/>
+        <location filename="preflighttaskpage.cpp" line="204"/>
         <source>Distance</source>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="200"/>
+        <location filename="preflighttaskpage.cpp" line="205"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="213"/>
+        <location filename="preflighttaskpage.cpp" line="218"/>
         <source>Show</source>
         <translation>Zeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="218"/>
+        <location filename="preflighttaskpage.cpp" line="223"/>
         <source>Flarm</source>
         <translation>Flarm</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="238"/>
+        <location filename="preflighttaskpage.cpp" line="243"/>
         <source>Task display</source>
         <translation>Aufgabenanzeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="243"/>
+        <location filename="preflighttaskpage.cpp" line="248"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="484"/>
-        <location filename="preflighttaskpage.cpp" line="527"/>
+        <location filename="preflighttaskpage.cpp" line="507"/>
+        <location filename="preflighttaskpage.cpp" line="550"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="534"/>
+        <location filename="preflighttaskpage.cpp" line="557"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="661"/>
+        <location filename="preflighttaskpage.cpp" line="684"/>
         <source>Delete Task?</source>
         <translation>Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="662"/>
+        <location filename="preflighttaskpage.cpp" line="685"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="857"/>
+        <location filename="preflighttaskpage.cpp" line="880"/>
         <source>Replace current task?</source>
         <translation>Akt. Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="858"/>
+        <location filename="preflighttaskpage.cpp" line="881"/>
         <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
     </message>
@@ -2692,28 +2692,33 @@ Alle Downloads verworfen!</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="417"/>
+        <location filename="preflightwaypointpage.cpp" line="415"/>
+        <source>DOS</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="preflightwaypointpage.cpp" line="418"/>
         <source>Open waypoint catalog</source>
         <translation>Öffne Wegpunkt Katalog</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="500"/>
+        <location filename="preflightwaypointpage.cpp" line="505"/>
         <source>No entries read</source>
         <translation>Keine Einträge gelesen</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="501"/>
+        <location filename="preflightwaypointpage.cpp" line="506"/>
         <source>No waypoints read from file!</source>
         <translation>Datei enthielt keine Wegpunkte!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="503"/>
+        <location filename="preflightwaypointpage.cpp" line="508"/>
         <source>Maybe you should change the filter values?</source>
         <translation>Vielleicht sollten Sie das Filter ändern?</translation>
     </message>
     <message>
         <location filename="preflightwaypointpage.cpp" line="327"/>
-        <location filename="preflightwaypointpage.cpp" line="542"/>
+        <location filename="preflightwaypointpage.cpp" line="547"/>
         <source>Continue?</source>
         <translation>Fortfahren?</translation>
     </message>
@@ -2728,42 +2733,42 @@ Alle Downloads verworfen!</translation>
         <translation>CAI</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="522"/>
+        <location filename="preflightwaypointpage.cpp" line="527"/>
         <source>Error in file </source>
         <translation>Fehler in Datei</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="544"/>
+        <location filename="preflightwaypointpage.cpp" line="549"/>
         <source>%1 waypoints would be read.</source>
         <translation>%1 Wegpunkte würden gelesen.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="546"/>
+        <location filename="preflightwaypointpage.cpp" line="551"/>
         <source>Continue loading?</source>
         <translation>Laden fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="595"/>
+        <location filename="preflightwaypointpage.cpp" line="604"/>
         <source>Low on memory!</source>
         <translation>Speicher Problem!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="597"/>
+        <location filename="preflightwaypointpage.cpp" line="606"/>
         <source>Waypoint import failed due to low on memory!</source>
         <translation>Wegpunkt Import fehlgeschlagen wegen zu wenig freien Speicher!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="668"/>
+        <location filename="preflightwaypointpage.cpp" line="677"/>
         <source>%1 waypoints added.</source>
         <translation>%1 Wegpunkte zugefügt.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="672"/>
+        <location filename="preflightwaypointpage.cpp" line="681"/>
         <source>%1 waypoints ignored.</source>
         <translation>%1 Wegpunkte ignoriert.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="678"/>
+        <location filename="preflightwaypointpage.cpp" line="687"/>
         <source>Import Results</source>
         <translation>Import Resultate</translation>
     </message>
@@ -3008,32 +3013,32 @@ Alle Downloads verworfen!</translation>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="preflightwindpage.cpp" line="95"/>
+        <location filename="preflightwindpage.cpp" line="96"/>
         <source>WS</source>
         <translation>WS</translation>
     </message>
     <message>
-        <location filename="preflightwindpage.cpp" line="100"/>
+        <location filename="preflightwindpage.cpp" line="101"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="preflightwindpage.cpp" line="115"/>
+        <location filename="preflightwindpage.cpp" line="117"/>
         <source>Wind Statistics</source>
         <translation>Wind Statistik</translation>
     </message>
     <message>
-        <location filename="preflightwindpage.cpp" line="141"/>
+        <location filename="preflightwindpage.cpp" line="143"/>
         <source>Altitude</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="preflightwindpage.cpp" line="142"/>
+        <location filename="preflightwindpage.cpp" line="144"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="preflightwindpage.cpp" line="143"/>
+        <location filename="preflightwindpage.cpp" line="145"/>
         <source>Speed</source>
         <translation>Geschwindigkeit</translation>
     </message>
@@ -3325,59 +3330,59 @@ Alle Downloads verworfen!</translation>
         <translation>Leerpunkt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="593"/>
+        <location filename="flighttask.cpp" line="587"/>
         <source>not set</source>
         <translation>nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="595"/>
+        <location filename="flighttask.cpp" line="589"/>
         <source>Free Distance</source>
         <translation>Freie Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="597"/>
+        <location filename="flighttask.cpp" line="591"/>
         <source>Free Out and Return</source>
         <translation>ZR-Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="599"/>
+        <location filename="flighttask.cpp" line="593"/>
         <source>FAI Triangle</source>
         <translation>FAI Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="601"/>
+        <location filename="flighttask.cpp" line="595"/>
         <source>Triangle</source>
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="603"/>
+        <location filename="flighttask.cpp" line="597"/>
         <source>FAI Triangle Start on leg</source>
         <translation>FAI Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="605"/>
+        <location filename="flighttask.cpp" line="599"/>
         <source>Triangle Start on leg</source>
         <translation>Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="607"/>
+        <location filename="flighttask.cpp" line="601"/>
         <source>Broken off</source>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="610"/>
+        <location filename="flighttask.cpp" line="604"/>
         <location filename="runway.cpp" line="81"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1345"/>
-        <location filename="flighttask.cpp" line="1360"/>
+        <location filename="flighttask.cpp" line="1339"/>
+        <location filename="flighttask.cpp" line="1354"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1365"/>
+        <location filename="flighttask.cpp" line="1359"/>
         <source>too strong!</source>
         <translation>zu stark!</translation>
     </message>
@@ -3538,18 +3543,21 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="142"/>
-        <location filename="waypointcatalog.cpp" line="1134"/>
-        <location filename="waypointcatalog.cpp" line="1503"/>
+        <location filename="waypointcatalog.cpp" line="1130"/>
+        <location filename="waypointcatalog.cpp" line="1419"/>
+        <location filename="waypointcatalog.cpp" line="1788"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="743"/>
+        <location filename="waypointcatalog.cpp" line="1096"/>
         <source>File does not exist!</source>
         <translation>Datei existiert nicht!</translation>
     </message>
     <message>
         <location filename="waypointcatalog.cpp" line="749"/>
+        <location filename="waypointcatalog.cpp" line="1102"/>
         <source>File is empty!</source>
         <translation>Datei ist leer!</translation>
     </message>
@@ -3562,6 +3570,11 @@ Alle Downloads verworfen!</translation>
         <location filename="waypointcatalog.cpp" line="779"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
+    </message>
+    <message>
+        <location filename="waypointcatalog.cpp" line="1108"/>
+        <source>Cannot open File!</source>
+        <translation>Datei nicht lesbar!</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="458"/>
@@ -3698,81 +3711,86 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="reachpointlistview.cpp" line="81"/>
+        <source>MHz</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="reachpointlistview.cpp" line="82"/>
         <source>Dist.</source>
         <translation>Entf.</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="82"/>
+        <location filename="reachpointlistview.cpp" line="83"/>
         <source>Course</source>
         <translation>Kurs</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="83"/>
+        <location filename="reachpointlistview.cpp" line="84"/>
         <source>Arrvial</source>
         <translation>Ankunft</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="84"/>
+        <location filename="reachpointlistview.cpp" line="85"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="85"/>
+        <location filename="reachpointlistview.cpp" line="86"/>
         <source> SS</source>
         <translation>SU</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="96"/>
+        <location filename="reachpointlistview.cpp" line="97"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="99"/>
+        <location filename="reachpointlistview.cpp" line="100"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="102"/>
+        <location filename="reachpointlistview.cpp" line="103"/>
         <source>Hide Outland</source>
         <translation>Keine Felder</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="105"/>
+        <location filename="reachpointlistview.cpp" line="106"/>
         <source>Show Outland</source>
         <translation>Zeige Felder</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="108"/>
+        <location filename="reachpointlistview.cpp" line="109"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="111"/>
+        <location filename="reachpointlistview.cpp" line="112"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="118"/>
+        <location filename="reachpointlistview.cpp" line="119"/>
         <source>move page up</source>
         <translation>Seite hoch</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="124"/>
+        <location filename="reachpointlistview.cpp" line="125"/>
         <source>move page down</source>
         <translation>Seite runter</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="600"/>
+        <location filename="reachpointlistview.cpp" line="616"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="601"/>
+        <location filename="reachpointlistview.cpp" line="617"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
     <message>
-        <location filename="reachpointlistview.cpp" line="602"/>
+        <location filename="reachpointlistview.cpp" line="618"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden dauern.</translation>
     </message>
@@ -4725,22 +4743,22 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="settingspagepersonal.cpp" line="294"/>
-        <location filename="settingspagepersonal.cpp" line="503"/>
+        <location filename="settingspagepersonal.cpp" line="499"/>
         <source>No proxy defined</source>
         <translation>Kein Proxy Eintrag</translation>
     </message>
     <message>
-        <location filename="settingspagepersonal.cpp" line="321"/>
+        <location filename="settingspagepersonal.cpp" line="316"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="settingspagepersonal.cpp" line="372"/>
+        <location filename="settingspagepersonal.cpp" line="367"/>
         <source>&lt;html&gt;&lt;b&gt;Home position was changed!&lt;/b&gt;&lt;p&gt;System update can take a few seconds and more!&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Die Heimal Position wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="settingspagepersonal.cpp" line="463"/>
+        <location filename="settingspagepersonal.cpp" line="459"/>
         <source>Please select your data directory</source>
         <translation>Wählen Sie ein Datenverzeichnis aus</translation>
     </message>
@@ -5578,7 +5596,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="wpinfowidget.cpp" line="108"/>
         <location filename="wpinfowidget.cpp" line="266"/>
-        <location filename="wpinfowidget.cpp" line="471"/>
+        <location filename="wpinfowidget.cpp" line="475"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -5631,17 +5649,17 @@ Alle Downloads verworfen!</translation>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="521"/>
+        <location filename="wpinfowidget.cpp" line="525"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds and more.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden und mehr dauern.</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="647"/>
+        <location filename="wpinfowidget.cpp" line="651"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="648"/>
+        <location filename="wpinfowidget.cpp" line="652"/>
         <source>Delete waypoint</source>
         <translation>Lösche Wegpunkt</translation>
     </message>
@@ -5677,17 +5695,17 @@ Alle Downloads verworfen!</translation>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="438"/>
+        <location filename="wpinfowidget.cpp" line="442"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="519"/>
+        <location filename="wpinfowidget.cpp" line="523"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="wpinfowidget.cpp" line="520"/>
+        <location filename="wpinfowidget.cpp" line="524"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>

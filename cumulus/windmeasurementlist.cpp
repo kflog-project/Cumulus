@@ -65,6 +65,9 @@ Vector WindMeasurementList::getWind( const Altitude& alt,
 
   entry++;
 
+  QTime dauer;
+  dauer.start();
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   double usedAltRange = 0;

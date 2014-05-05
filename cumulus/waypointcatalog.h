@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001 by Harald Maier
 **          modified 2002 by Andre Somers
-**          modified 2008-2013 by Axel Pauli
+**          modified 2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,7 @@
  * This class reads or writes the waypoint catalog data into a file. Filters can
  * be set to reduce the data mount to be read.
  *
- * \date 2002-2013
+ * \date 2002-2014
  */
 
 #ifndef WAYPOINT_CATALOG_H
@@ -99,6 +99,22 @@ class WaypointCatalog
    * \return Number of read waypoints. In error case -1.
    */
   int readOpenAip( QString catalog, QList<Waypoint>* wpList, QString& errorInfo );
+
+  /**
+   * Reads the content of an BGA DOS file. the format is described at
+   *
+   * http://www.spsys.demon.co.uk/turningpoints.htm
+   *
+   * \param catalog Catalog file name with directory path.
+   *
+   * \param wpList Waypoint list where the read waypoints are stored. If the
+   *               wpList is NULL, waypoints are counted only.
+   *
+   * \param errorInfo Additional text describing error situation more in detail.
+   *
+   * \return Number of read waypoints. In error case -1.
+   */
+  int readBgaDos( QString catalog, QList<Waypoint>* wpList, QString& errorInfo );
 
   /**
    * Sets a filter used during read.

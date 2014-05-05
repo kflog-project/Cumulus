@@ -406,12 +406,13 @@ void PreFlightWaypointPage::slotImportFile()
   QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
 
   QString filter;
-  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT *.aip *.AIP);;");
+  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT *.aip *.AIP *.dos *.DOS);;");
   filter.append(tr("XML") + " (*.kflogwp *.KFLOGWP);;");
   filter.append(tr("Binary") + " (*.kwp *.KWP);;");
   filter.append(tr("SeeYou") + " (*.cup *.CUP);;");
   filter.append(tr("CAI") + " (*.dat *.DAT);;");
-  filter.append(tr("AIP") + " (*.aip *.AIP)");
+  filter.append(tr("AIP") + " (*.aip *.AIP);;");
+  filter.append(tr("DOS") + " (*.dos *.DOS)");
 
   QString fName = QFileDialog::getOpenFileName( this,
                                                 tr("Open waypoint catalog"),
@@ -473,17 +474,21 @@ void PreFlightWaypointPage::slotImportFile()
     {
       wpCount = catalog.readXml( fName, 0, errorInfo );
     }
-  else if( fSuffix == "cup")
+  else if( fSuffix == "cup" )
     {
       wpCount = catalog.readCup( fName, 0 );
     }
-  else if( fSuffix == "dat")
+  else if( fSuffix == "dat" )
     {
       wpCount = catalog.readDat( fName, 0 );
     }
-  else if( fSuffix == "aip")
+  else if( fSuffix == "aip" )
     {
       wpCount = catalog.readOpenAip( fName, 0, errorInfo );
+    }
+  else if( fSuffix == "dos" )
+    {
+      wpCount = catalog.readBgaDos( fName, 0, errorInfo );
     }
 
   if( wpCount == -1 )
@@ -584,6 +589,10 @@ void PreFlightWaypointPage::slotImportFile()
   else if( fSuffix == "aip")
     {
       wpCount = catalog.readOpenAip( fName, &wpList, errorInfo );
+    }
+  else if( fSuffix == "dos" )
+    {
+      wpCount = catalog.readBgaDos( fName, &wpList, errorInfo );
     }
 
   //check free memory

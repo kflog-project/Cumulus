@@ -15,6 +15,15 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2014-05-05 AP: New turnpoint importer added in preflight waypoints for
+                   the turnpoint file of the British Gliding Association in
+                   DOS format.
+
+[-] 2014-05-05 AP: BUGFIX: A country change done in in menu settings
+                   personal was never saved.
+
+[*] 2014-05-02 AP: Cumulus 5.14.2 released for all supported platforms.
+
 [-] 2014-04-30 AP: BUGFIX: The wind triangle calculation did not work on task
                    display, if wind speed or direction were modified.
 
