@@ -304,11 +304,6 @@ void SettingsPagePersonal::load()
 
 void SettingsPagePersonal::save()
 {
-  if( checkChanges() == false )
-    {
-      return;
-    }
-
   bool homeChanged = checkIsHomePositionChanged();
 
   GeneralConfig *conf = GeneralConfig::instance();
@@ -447,6 +442,7 @@ bool SettingsPagePersonal::checkChanges()
 
   changed  = (edtName->text() != conf->getSurname());
   changed |= (langBox->currentText() != conf->getLanguage());
+  changed |= (edtHomeCountry->text() != conf->getHomeCountryCode());
   changed |= (edtHomeName->text() != conf->getHomeName());
   changed |= checkIsHomePositionChanged();
   changed |= m_initalHomeElevationValue != edtHomeElevation->value();
