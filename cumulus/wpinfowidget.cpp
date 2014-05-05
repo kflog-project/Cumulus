@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -435,8 +435,12 @@ void WPInfoWidget::writeText()
 
       if( m_wp.comment.isEmpty() == false )
         {
+          QString comment = m_wp.comment;
+
+          comment.replace( "\n", "<br>");
+
           itxt += "<tr><td>" + tr("Comment") + ":</td>"
-                  "<td colspan=3>" + m_wp.comment + "</td></tr>";
+                  "<td colspan=3>" + comment + "</td></tr>";
         }
 
       itxt+="</table></html>";
