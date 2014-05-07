@@ -1136,6 +1136,12 @@ int WaypointCatalog::readBgaDos( QString catalog,
   QTextStream in(&file);
   in.setCodec( "ISO 8859-15" );
 
+  // Only 25 animations should be done because the animation is a performance
+  // blocker.
+  int wsMove = file.size() / 25;
+  int nextWsMove = wsMove;
+  int curPos = 0;
+
   /**
     The DOS format is as follows.
 
@@ -1174,7 +1180,9 @@ int WaypointCatalog::readBgaDos( QString catalog,
 
       for( readLines = 0; readLines < 13; readLines++ )
         {
-          record << in.readLine().trimmed();
+          QString line = in.readLine();
+          curPos += line.size() + 2;
+          record << line.trimmed();
           lineNo++;
 
           if( in.atEnd() )
@@ -1189,10 +1197,11 @@ int WaypointCatalog::readBgaDos( QString catalog,
           break;
         }
 
-      if( _showProgress && (wpCount % 50) == 0 )
+      if( _showProgress && curPos >= nextWsMove )
         {
+          nextWsMove += wsMove;
           ws->slot_Progress( 2 );
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                            QEventLoop::ExcludeSocketNotifiers );
         }
 

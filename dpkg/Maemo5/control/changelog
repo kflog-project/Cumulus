@@ -1,3 +1,12 @@
+cumulus (5.15.0) stable; urgency=low
+
+  * New turnpoint importer added in preflight waypoints for the waypoint file of
+    the British Gliding Association in DOS format.
+
+  * BUGFIX: A country change done in in menu settings personal was never saved.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Wed, 07 May 2014 20:33:16 +0200
+
 cumulus (5.14.2) stable; urgency=low
 
   * BUGFIX: The wind triangle calculation did not work on task
