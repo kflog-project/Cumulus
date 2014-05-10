@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-05-10 AP: BUGFIX: Text recognition deactivated in FLARM alias list.
+
+[*] 2014-05-09 AP: Cumulus 5.15.0 released for all supported platforms.
+
 [+] 2014-05-05 AP: New turnpoint importer added in preflight waypoints for
                    the turnpoint file of the British Gliding Association in
                    DOS format.
