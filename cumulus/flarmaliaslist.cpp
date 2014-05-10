@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2013 Axel Pauli
+**   Copyright (c): 2010-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -409,8 +409,10 @@ void FlarmAliasList::slot_CellClicked( int row, int column )
                                         label,
                                         QLineEdit::Normal,
                                         item->text(),
-                                        &ok );
-  if( ok  )
+                                        &ok,
+                                        0,
+                                        Qt::ImhNoPredictiveText );
+  if( ok )
     {
       item->setText( text );
     }
