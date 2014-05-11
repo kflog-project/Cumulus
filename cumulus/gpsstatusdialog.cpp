@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2013 by Axel Pauli
+**                  2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -238,8 +238,12 @@ void GpsStatusDialog::slot_SaveNmeaData()
   bool ok;
 
   QString fileName = QInputDialog::getText( this, tr("Append to?"),
-                                            tr("File name:"), QLineEdit::Normal,
-                                            "nmea-stream.log", &ok);
+                                            tr("File name:"),
+                                            QLineEdit::Normal,
+                                            "nmea-stream.log",
+                                            &ok,
+                                            0,
+                                            Qt::ImhNoPredictiveText );
   if( ok && ! fileName.isEmpty() )
     {
       if( ! fileName.startsWith( "/") )

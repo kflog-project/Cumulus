@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2013 Axel Pauli
+**   Copyright (c): 2010-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -254,7 +254,9 @@ void FlarmRadarView::slotAddFlarmId()
                                  tr("Alias name (15) for ") + selectedObject + ":",
                                  QLineEdit::Normal,
                                  alias,
-                                 &ok );
+                                 &ok,
+                                 0,
+                                 Qt::ImhNoPredictiveText );
 
   if( !ok || alias.isEmpty() )
     {
