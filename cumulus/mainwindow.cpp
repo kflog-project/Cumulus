@@ -3157,6 +3157,21 @@ void MainWindow::slotCheck4Updates()
     }
 }
 
+void MainWindow::slotCloseSip()
+{
+  QWidget *widget = focusWidget();
+
+  if( ! widget )
+    {
+      // No widget has the focus.
+      return;
+    }
+
+  // Request the SIP closing from the focused widget
+  QEvent event( QEvent::CloseSoftwareInputPanel );
+  QApplication::sendEvent( widget, &event );
+}
+
 // resize the list view tabs, if requested
 void MainWindow::resizeEvent(QResizeEvent* event)
 {

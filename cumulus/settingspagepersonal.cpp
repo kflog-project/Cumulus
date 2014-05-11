@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,6 +28,7 @@
 
 #include "generalconfig.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "numberEditor.h"
 #include "settingspagepersonal.h"
 
@@ -98,6 +99,9 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   imh = (edtName->inputMethodHints() | Qt::ImhNoPredictiveText);
   edtName->setInputMethodHints(imh);
 
+  connect( edtName, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(edtName, row, 1, 1, 2);
   row++;
 
@@ -115,6 +119,9 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   QRegExp rx("[A-Za-z]{2}");
   edtHomeCountry->setValidator( new QRegExpValidator(rx, this) );
 
+  connect( edtHomeCountry, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
 #ifndef ANDROID
   connect( edtHomeCountry, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedCountry( const QString& )) );
@@ -131,6 +138,9 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   edtHomeName->setMaxLength(8);
   topLayout->addWidget(edtHomeName, row, 1);
   row++;
+
+  connect( edtHomeName, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
@@ -181,6 +191,9 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   topLayout->addWidget(userDataDir, row, 1, 1, 2);
   row++;
+
+  connect( userDataDir, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
 #ifdef INTERNET
 

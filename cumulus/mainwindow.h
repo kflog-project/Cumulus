@@ -263,6 +263,10 @@ public slots:
    * Called if logger recognized landing.
    */
   void slotLanded( QDateTime& dt );
+  /**
+   * Called to request the close of the Software Input Panel (SIP).
+   */
+  void slotCloseSip();
 
 protected:
 
