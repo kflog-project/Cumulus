@@ -38,6 +38,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
 #include "settingspageairfields.h"
@@ -141,6 +142,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   m_countriesOaip4Download = new QLineEdit(m_oaipGroup);
   imh = (m_countriesOaip4Download->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_countriesOaip4Download->setInputMethodHints(imh);
+
+  connect( m_countriesOaip4Download, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   hbox->addWidget( m_countriesOaip4Download, 5 );
   grow++;
 
@@ -186,6 +191,9 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   imh = (m_countriesW2000->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_countriesW2000->setInputMethodHints(imh);
 
+  connect( m_countriesW2000, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   weltLayout->addWidget(m_countriesW2000, grow, 1, 1, 3);
   grow++;
 
@@ -223,6 +231,10 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
 #ifndef ANDROID
   m_welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
 #endif
+
+  connect( m_welt2000FileName, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   weltLayout->addWidget(m_welt2000FileName, grow, 1, 1, 3);
 
 #endif

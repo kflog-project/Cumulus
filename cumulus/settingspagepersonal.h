@@ -90,6 +90,9 @@ private slots:
   /** Called, if proxy button was pressed. */
   void slot_editProxy();
 
+  /** Called, if proxy data have been modified. */
+  void slot_setProxyDisplay();
+
 #endif
 
 signals:

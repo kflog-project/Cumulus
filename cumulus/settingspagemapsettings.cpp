@@ -29,6 +29,7 @@
 #include "distance.h"
 #include "generalconfig.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
 #include "settingspagemapsettings.h"
@@ -112,6 +113,9 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 #ifdef ANDROID
   mapDirectory->setReadOnly(true);
 #endif
+
+  connect( mapDirectory, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   hbox->addWidget( mapDirectory );
   topLayout->addLayout(hbox, row++, 0, 1, 3 );

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,12 +30,13 @@
 #include "generalconfig.h"
 
 ProxyDialog::ProxyDialog( QWidget *parent ) :
-  QDialog(parent)
+  QWidget(parent)
 {
   setObjectName( "ProxyDialog" );
   setWindowTitle( tr("Proxy Configuration") );
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
-  setSizeGripEnabled( true );
 
   Qt::InputMethodHints imh;
 
@@ -50,6 +51,12 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
   iv->setRange(0, 65535);
   portEdit->setValidator( iv );
 
+  connect( hostEdit, SIGNAL(returnPressed()),
+           this, SLOT(slotCloseSip()) );
+
+  connect( portEdit, SIGNAL(returnPressed()),
+           this, SLOT(slotCloseSip()) );
+
   QFormLayout *formLayout = new QFormLayout;
   formLayout->addRow( new QLabel(tr("Host:")), hostEdit );
   formLayout->addRow( new QLabel(tr("Port:")), portEdit );
@@ -59,12 +66,15 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
                                     QDialogButtonBox::Ok );
   buttonBox->setCenterButtons( true );
   QPushButton *ok =  buttonBox->button( QDialogButtonBox::Ok );
-  ok->setDefault( true );
+  ok->setDefault( false );
+  ok->setAutoDefault( false );
 
   QPushButton *cancel = buttonBox->button( QDialogButtonBox::Cancel );
+  cancel->setDefault(false);
   cancel->setAutoDefault(false);
 
   QPushButton *reset = buttonBox->button( QDialogButtonBox::Reset );
+  reset->setDefault(false);
   reset->setAutoDefault(false);
 
   QVBoxLayout *vBox = new QVBoxLayout;
@@ -146,15 +156,17 @@ void ProxyDialog::accept()
       GeneralConfig::instance()->setProxy( proxyString );
     }
 
+  emit proxyDataChanged();
+
   // close and destroy dialog
-  QDialog::done(QDialog::Accepted);
+  QWidget::close();
 }
 
 /** User has pressed Cancel button */
 void ProxyDialog::reject()
 {
   // close and destroy dialog
-  QDialog::done(QDialog::Rejected);
+  QWidget::close();
 }
 
 /** User has clicked a button. */
@@ -166,4 +178,20 @@ void ProxyDialog::clicked( QAbstractButton *button )
       hostEdit->clear();
       portEdit->clear();
     }
+}
+
+void ProxyDialog::slotCloseSip()
+{
+  // Get the widget which has the keyboard focus assigned.
+  QWidget *widget = QApplication::focusWidget();
+
+  if( ! widget )
+    {
+      // No widget has the focus.
+      return;
+    }
+
+  // Request the SIP closing from the focused widget.
+  QEvent event( QEvent::CloseSoftwareInputPanel );
+  QApplication::sendEvent( widget, &event );
 }

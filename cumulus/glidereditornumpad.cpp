@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -103,12 +103,19 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   imh |= edtGType->inputMethodHints();
   edtGType->setInputMethodHints(imh);
 
+  connect( edtGType, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   itemsLayout->addWidget(edtGType, row, 1, 1, 3);
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
   edtGReg = new QLineEdit(this);
   edtGReg->setInputMethodHints(imh);
+
+  connect( edtGReg, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   itemsLayout->addWidget(edtGReg, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
@@ -121,6 +128,10 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   itemsLayout->addWidget(new QLabel(tr("Call Sign:"), this), row, 0);
   edtGCall = new QLineEdit(this);
   edtGCall->setInputMethodHints(imh);
+
+  connect( edtGCall, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   itemsLayout->addWidget(edtGCall, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);

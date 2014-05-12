@@ -29,6 +29,7 @@
 
 #include "generalconfig.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "mapdefaults.h"
 #include "numberEditor.h"
 #include "settingspageinformation.h"
@@ -99,6 +100,9 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   soundTool = new QLineEdit( this );
   imh = (soundTool->inputMethodHints() | Qt::ImhNoPredictiveText);
   soundTool->setInputMethodHints(imh);
+
+  connect( soundTool, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   hBox->addWidget(soundTool);
   topLayout->addLayout( hBox, row++, 0, 1, 3 );

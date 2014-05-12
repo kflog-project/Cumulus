@@ -302,14 +302,7 @@ void SettingsPagePersonal::load()
 
 #ifdef INTERNET
 
-  if( conf->getProxy().isEmpty() )
-    {
-      proxyDisplay->setText( tr("No proxy defined") );
-    }
-  else
-    {
-      proxyDisplay->setText( conf->getProxy() );
-    }
+  slot_setProxyDisplay();
 
 #endif
 
@@ -494,27 +487,28 @@ void SettingsPagePersonal::slot_textEditedCountry( const QString& text )
 void SettingsPagePersonal::slot_editProxy()
 {
   ProxyDialog *dialog = new ProxyDialog( this );
+  connect( dialog, SIGNAL(proxyDataChanged()), SLOT(slot_setProxyDisplay()) );
+  dialog->show();
 
 #ifdef ANDROID
 
-  dialog->show();
   QPoint pos = mapToGlobal(QPoint( width()/2  - dialog->width()/2,
                                    height()/2 - dialog->height()/2 ));
   //dialog->move( pos );
 
 #endif
+}
 
-  if( dialog->exec() == QDialog::Accepted )
+void SettingsPagePersonal::slot_setProxyDisplay()
+{
+  // update proxy display
+  if( GeneralConfig::instance()->getProxy().isEmpty() )
     {
-      // update proxy display
-      if( GeneralConfig::instance()->getProxy().isEmpty() )
-        {
-          proxyDisplay->setText( tr("No proxy defined") );
-        }
-      else
-        {
-          proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
-        }
+      proxyDisplay->setText( tr("No proxy defined") );
+    }
+  else
+    {
+      proxyDisplay->setText( GeneralConfig::instance()->getProxy() );
     }
 }
 

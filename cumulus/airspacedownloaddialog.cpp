@@ -20,6 +20,7 @@
 #include "airspacedownloaddialog.h"
 #include "generalconfig.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "proxydialog.h"
 
 AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
@@ -54,6 +55,9 @@ AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
   leftLayout->addWidget( m_editCountries, row++, 1 );
   leftLayout->setColumnStretch( 1, 10 );
   leftLayout->setRowMinimumHeight ( row++, 30 );
+
+  connect( m_editCountries, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   QPushButton *downloadButton = new QPushButton( tr("Download") );
   connect(downloadButton, SIGNAL(pressed()), this, SLOT(slotDownload()));
