@@ -3159,6 +3159,8 @@ void MainWindow::slotCheck4Updates()
 
 void MainWindow::slotCloseSip()
 {
+  qDebug() << "MainWindow::slotCloseSip()" << QApplication::focusWidget();
+
   // Get the widget which has the keyboard focus assigned
   QWidget *widget = QApplication::focusWidget();
 

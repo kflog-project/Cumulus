@@ -185,6 +185,10 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
 
   m_username = new QLineEdit;
   m_username->setInputMethodHints(imh | m_username->inputMethodHints() );
+
+  connect( m_username, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(m_username, row, 1);
   row++;
 
@@ -193,6 +197,10 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
 
   m_password = new QLineEdit;
   m_password->setInputMethodHints(imh | m_password->inputMethodHints() );
+
+  connect( m_password, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(m_password, row, 1);
   row++;
 

@@ -33,11 +33,11 @@
 #ifndef PROXY_DIALOG_H
 
 #include <QDialogButtonBox>
-#include <QDialog>
+#include <QFrame>
 #include <QLineEdit>
 #include <QString>
 
-class ProxyDialog : public QWidget
+class ProxyDialog : public QFrame
 {
   Q_OBJECT
 

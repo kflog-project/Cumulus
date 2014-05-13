@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -90,6 +90,9 @@ TaskEditor::TaskEditor( QWidget* parent,
   int maxInputLength = fm.width("MMMMMMMMMM");
   taskName->setMinimumWidth( maxInputLength );
   taskName->setMaximumWidth( maxInputLength );
+
+  connect( taskName, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   taskList = new QTreeWidget( this );
   taskList->setObjectName("taskList");

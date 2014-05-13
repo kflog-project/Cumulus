@@ -173,15 +173,18 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QHBoxLayout *inputLayout = new QHBoxLayout;
   editorLayout->addLayout( inputLayout );
 
-  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "[a-zA-Z0-9]{4}" ), this );
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "[a-zA-Z0-9]{4}|^$" ), this );
 
   Qt::InputMethodHints imh;
   m_airportEditor = new QLineEdit;
   imh = (m_airportEditor->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_airportEditor->setInputMethodHints(imh);
   m_airportEditor->setValidator( eValidator );
-  inputLayout->addWidget( m_airportEditor, 5 );
 
+  connect( m_airportEditor, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  inputLayout->addWidget( m_airportEditor, 5 );
   inputLayout->addSpacing( 10 );
 
   cmd = new QPushButton(tr("Cancel"), this);

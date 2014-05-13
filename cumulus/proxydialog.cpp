@@ -30,13 +30,21 @@
 #include "generalconfig.h"
 
 ProxyDialog::ProxyDialog( QWidget *parent ) :
-  QWidget(parent)
+  QFrame(parent)
 {
   setObjectName( "ProxyDialog" );
   setWindowTitle( tr("Proxy Configuration") );
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
+
+#ifdef ANDROID
+  // Activate box drawing to make the widget better visible under Android.
+  setFrameStyle( QFrame::Box );
+  setLineWidth( 3 );
+  QString style = "QWidget { background: lightgray }";
+  setStyleSheet( style );
+#endif
 
   Qt::InputMethodHints imh;
 
@@ -45,7 +53,7 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
 
   imh = (hostEdit->inputMethodHints() | Qt::ImhNoPredictiveText);
   hostEdit->setInputMethodHints(imh);
-  portEdit->setInputMethodHints(imh);
+  portEdit->setInputMethodHints( Qt::ImhNoPredictiveText | Qt::ImhDigitsOnly );
 
   QIntValidator* iv = new QIntValidator(this);
   iv->setRange(0, 65535);

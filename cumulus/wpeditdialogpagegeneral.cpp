@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**                   2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #include "altitude.h"
 #include "basemapelement.h"
 #include "generalconfig.h"
+#include "mainwindow.h"
 #include "numberEditor.h"
 #include "wgspoint.h"
 #include "wpeditdialogpagegeneral.h"
@@ -61,7 +62,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   topLayout->addWidget(lblName, row, 0);
   m_edtName = new QLineEdit(this);
   imh = (m_edtName->inputMethodHints() | Qt::ImhNoPredictiveText);
-  m_edtName->setInputMethodHints(imh);
+  m_edtName->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText);
   m_edtName->setMaxLength(8); // limit name to 8 characters
 #ifndef ANDROID
   m_edtName->setMinimumWidth( 27*charWidth );
@@ -70,6 +71,10 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_edtName->setMinimumWidth( 22*charWidth );
   m_edtName->setMaximumWidth( 22*charWidth );
 #endif
+
+  connect( m_edtName, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(m_edtName, row++, 1, 1, 3);
 
 #ifndef ANDROID
@@ -95,19 +100,25 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_edtDescription->setMinimumWidth( 22*charWidth );
   m_edtDescription->setMaximumWidth( 22*charWidth );
 #endif
+
+  connect( m_edtDescription, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(m_edtDescription, row++, 1, 1, 3);
 
   QLabel * lblCountry = new QLabel(tr("Country(2):"), this);
   topLayout->addWidget(lblCountry, row, 0);
   m_edtCountry = new QLineEdit(this);
-  imh = (m_edtCountry->inputMethodHints() | Qt::ImhNoPredictiveText);
-  m_edtCountry->setInputMethodHints(imh);
+  m_edtCountry->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText);
   m_edtCountry->setMaxLength(2); // limit name to 2 characters
   m_edtCountry->setMinimumWidth( 3*charWidth );
   m_edtCountry->setMaximumWidth( 3*charWidth );
   m_edtCountry->setText( conf->getHomeCountryCode() );
   QRegExp rx("[A-Za-z]{2}");
   m_edtCountry->setValidator( new QRegExpValidator(rx, this) );
+
+  connect( m_edtCountry, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
 #ifndef ANDROID
   connect( m_edtCountry, SIGNAL(textEdited( const QString& )),

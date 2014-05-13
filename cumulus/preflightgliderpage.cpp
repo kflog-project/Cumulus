@@ -30,6 +30,7 @@
 #include "generalconfig.h"
 #include "glider.h"
 #include "layout.h"
+#include "mainwindow.h";
 #include "numberEditor.h"
 #include "preflightgliderpage.h"
 
@@ -66,6 +67,10 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   imh = (m_edtPilot->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_edtPilot->setInputMethodHints(imh);
   m_edtPilot->setText( GeneralConfig::instance()->getSurname() );
+
+  connect( m_edtPilot, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(m_edtPilot, row, 1);
 
   QLabel* lblLoad = new QLabel(tr("Added load:"), this);
@@ -85,6 +90,10 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   topLayout->addWidget(lblCoPilot, row, 0);
   m_edtCoPilot = new QLineEdit(this);
   m_edtCoPilot->setInputMethodHints(imh);
+
+  connect( m_edtCoPilot, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(m_edtCoPilot, row, 1);
 
   QLabel* lblWater = new QLabel(tr("Water ballast:"), this);

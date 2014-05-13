@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #include "altitude.h"
 #include "airfield.h"
 #include "doubleNumberEditor.h"
+#include "mainwindow.h"
 #include "numberEditor.h"
 #include "wpeditdialogpageaero.h"
 
@@ -64,9 +65,12 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   qgl->addLayout(qfl, 0, 0);
 
   edtICAO = new QLineEdit;
-  imh = (edtICAO->inputMethodHints() | Qt::ImhNoPredictiveText);
+  imh = Qt::ImhUppercaseOnly | Qt::ImhDigitsOnly | Qt::ImhNoPredictiveText;
   edtICAO->setInputMethodHints(imh);
   edtICAO->setMaxLength(4); // limit name to 4 characters
+
+  connect( edtICAO, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   qfl = new QFormLayout;
   qfl->addRow(tr("ICAO:"), edtICAO);

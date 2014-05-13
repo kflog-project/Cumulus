@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2013 by Axel Pauli
+ **   Copyright (c): 2012-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -171,14 +171,21 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   gridLayout->addWidget( new QLabel(tr("Pilot:")), row, 0);
   pilot = new QLineEdit;
-  imh = (pilot->inputMethodHints() | Qt::ImhNoPredictiveText);
+  imh = Qt::ImhNoPredictiveText;
   pilot->setInputMethodHints(imh);
+
+  connect( pilot, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   gridLayout->addWidget( pilot, row, 1 );
 
   gridLayout->addWidget( new QLabel(tr("Co-Pilot:")), row, 2);
   copil = new QLineEdit;
   copil->setInputMethodHints(imh);
+
+  connect( copil, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   gridLayout->addWidget( copil, row, 3 );
   row++;
 
@@ -187,11 +194,19 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   gridLayout->addWidget( new QLabel(tr("Glider Id:")), row, 0);
   gliderId = new QLineEdit;
   gliderId->setInputMethodHints(imh);
+
+  connect( gliderId, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   gridLayout->addWidget( gliderId, row, 1 );
 
   gridLayout->addWidget( new QLabel(tr("Glider Type:")), row, 2);
   gliderType = new QLineEdit;
   gliderType->setInputMethodHints(imh);
+
+  connect( gliderType, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   gridLayout->addWidget( gliderType, row, 3 );
   row++;
 
@@ -200,11 +215,19 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   gridLayout->addWidget( new QLabel(tr("Comp Id:")), row, 0 );
   compId = new QLineEdit;
   compId->setInputMethodHints(imh);
+
+  connect( compId, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   gridLayout->addWidget( compId, row, 1 );
 
   gridLayout->addWidget( new QLabel(tr("Comp Class:")), row, 2);
   compClass = new QLineEdit;
   compClass->setInputMethodHints(imh);
+
+  connect( compClass, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   gridLayout->addWidget( compClass, row, 3 );
   row++;
 
@@ -214,6 +237,10 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   task = new QLineEdit;
   task->setInputMethodHints(imh);
   task->setReadOnly( true );
+
+  connect( task, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   gridLayout->addWidget( task, row, 1 );
 
   if( m_ftask )
