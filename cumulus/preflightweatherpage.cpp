@@ -177,8 +177,7 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
 
   Qt::InputMethodHints imh;
   m_airportEditor = new QLineEdit;
-  imh = (m_airportEditor->inputMethodHints() | Qt::ImhNoPredictiveText);
-  m_airportEditor->setInputMethodHints(imh);
+  m_airportEditor->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhDigitsOnly | Qt::ImhNoPredictiveText);
   m_airportEditor->setValidator( eValidator );
 
   connect( m_airportEditor, SIGNAL(returnPressed()),

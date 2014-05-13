@@ -114,7 +114,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   lbl = new QLabel(tr("Home site country:"), this);
   topLayout->addWidget(lbl, row, 0);
   edtHomeCountry = new QLineEdit(this);
-  edtHomeCountry->setInputMethodHints(imh);
+  edtHomeCountry->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText);
   edtHomeCountry->setMaxLength(2);
   QRegExp rx("[A-Za-z]{2}");
   edtHomeCountry->setValidator( new QRegExpValidator(rx, this) );

@@ -61,7 +61,6 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QLabel * lblName = new QLabel(tr("Name(8):"), this);
   topLayout->addWidget(lblName, row, 0);
   m_edtName = new QLineEdit(this);
-  imh = (m_edtName->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_edtName->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText);
   m_edtName->setMaxLength(8); // limit name to 8 characters
 #ifndef ANDROID
