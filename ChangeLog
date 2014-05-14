@@ -15,8 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2014-05-14 AP: Cumulus 5.15.2 released for Android.
+
 [-] 2014-05-14 AP: Bugfix: URL to SkyLines Live Tracking server updated. Has
                    been changed in the meantime.
+                   
+[-] 2014-05-14 AP: Bugfix: The virtual keyboard on Android can be closed now
+                   by pressing the OK button on it, if only a line entry was
+                   required.
 
 [*] 2014-05-11 AP: Cumulus 5.15.1 released for Android.
 
