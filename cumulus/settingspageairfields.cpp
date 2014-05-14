@@ -140,7 +140,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   Qt::InputMethodHints imh;
 
   m_countriesOaip4Download = new QLineEdit(m_oaipGroup);
-  imh = (m_countriesOaip4Download->inputMethodHints() | Qt::ImhNoPredictiveText);
+  imh = Qt::ImhLowercaseOnly | Qt::ImhNoPredictiveText;
   m_countriesOaip4Download->setInputMethodHints(imh);
 
   connect( m_countriesOaip4Download, SIGNAL(returnPressed()),
@@ -188,7 +188,7 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   weltLayout->addWidget(lbl, grow, 0);
 
   m_countriesW2000 = new QLineEdit(m_weltGroup);
-  imh = (m_countriesW2000->inputMethodHints() | Qt::ImhNoPredictiveText);
+  imh = Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText;
   m_countriesW2000->setInputMethodHints(imh);
 
   connect( m_countriesW2000, SIGNAL(returnPressed()),

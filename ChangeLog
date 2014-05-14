@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-05-14 AP: Bugfix: URL to SkyLines Live Tracking server updated. Has
+                   been changed in the meantime.
+
 [*] 2014-05-11 AP: Cumulus 5.15.1 released for Android.
 
 [-] 2014-05-10 AP: BUGFIX: Text recognition deactivated in FLARM alias list.

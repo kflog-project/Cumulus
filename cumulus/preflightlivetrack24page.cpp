@@ -401,6 +401,8 @@ void PreFlightLiveTrack24Page::slotLoginTest()
 
   m_httpResultBuffer.clear();
 
+  qDebug() << "loginUrl=" << loginUrl;
+
   bool ok = m_httpClient->getData( loginUrl, &m_httpResultBuffer );
 
   if( ! ok )
