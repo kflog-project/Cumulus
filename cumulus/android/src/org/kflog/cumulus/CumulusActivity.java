@@ -1019,7 +1019,15 @@ public class CumulusActivity extends QtActivity
         return true;
       }
 
-    return super.onKeyUp(keyCode, event);
+    try
+      {
+    	return super.onKeyUp(keyCode, event);
+      }
+    catch (UnsatisfiedLinkError e)
+      {
+        // ignore exception and consume event.
+        return true;    	
+      }
   }
 
   @Override
