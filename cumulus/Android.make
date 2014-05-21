@@ -1,4 +1,4 @@
-##################################################################
+################################################################################
 # Cumulus Android Makefile file for deploy preparation
 #
 # Copyright (c): 2012-2014 by Axel Pauli
@@ -8,10 +8,9 @@
 #
 # $Id$
 #
-# Note, that the SDK Necessitas is using this file for the
-# deploy process.
+# Note, that the SDK Necessitas is using this file for the deploy process.
 #
-##################################################################
+################################################################################
 
 NECESSITAS_ROOT = /opt/necessitas4A
 
@@ -35,7 +34,8 @@ QT_JAR = QtIndustrius-8.jar QtIndustrius-14.jar
 
 CUMULUS = libCumulus.so
 
-CUMULUS_JAVA_LIB = $(HOME)/ws-kepler-java/CumulusActivity/libs/armeabi-v7a
+#CUMULUS_JAVA_LIB = $(HOME)/ws-kepler-java/CumulusActivity/libs/armeabi-v7a
+CUMULUS_JAVA_LIB = $(HOME)/git/kflog-project/Cumulus/cumulus/android/libs/armeabi-v7a
 
 A_LIB_DIR = $(PROJECT_DIR)/android/libs/armeabi-v7a
 
