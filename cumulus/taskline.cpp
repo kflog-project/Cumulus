@@ -15,7 +15,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: taskline.cpp 5859 2013-02-11 19:39:57Z axel $
+**   $Id$
 **
 ***********************************************************************/
 

@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: taskpointeditor.h 6033 2013-03-22 22:27:47Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -24,7 +24,7 @@
  *
  * \date 2013
  *
- * \version $Id: taskpointeditor.h 6033 2013-03-22 22:27:47Z axel $
+ * \version $Id$
  *
  */
 

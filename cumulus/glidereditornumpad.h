@@ -12,7 +12,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**  $Id: glidereditor.h 4836 2012-01-18 21:51:04Z axel $
+**  $Id$
 **
 ***********************************************************************/
 
@@ -25,7 +25,7 @@
  *
  * \date 2002-2013
  *
- * \version $Id: glidereditor.h 4836 2012-01-18 21:51:04Z axel $
+ * \version $Id$
  */
 
 #ifndef GLIDER_EDITOR_NUMPAD_H

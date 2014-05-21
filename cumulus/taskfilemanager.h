@@ -15,7 +15,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: taskfilemanager.h 5755 2013-01-17 10:27:28Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -30,7 +30,7 @@
  *
  * \date 2013-2014
  *
- * \version $Id: taskfilemanager.h 5755 2013-01-17 10:27:28Z axel $
+ * \version $Id$
  */
 
 #ifndef TASK_FILE_MANAGER_H_

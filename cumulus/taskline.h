@@ -15,7 +15,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: taskline.h 5840 2013-02-01 21:00:50Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -31,7 +31,7 @@
  *
  * \date 2013
  *
- * \version $Id: taskline.h 5840 2013-02-01 21:00:50Z axel $
+ * \version $Id$
  */
 
 #ifndef TASK_LINE_H_

@@ -14,7 +14,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: taskfilemanager.cpp 6055 2013-03-25 21:11:12Z axel $
+**   $Id$
 **
 ***********************************************************************/
 

@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: taskpointeditor.cpp 6047 2013-03-24 11:30:45Z axel $
+**   $Id$
 **
 ***********************************************************************/
 

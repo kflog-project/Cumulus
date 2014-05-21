@@ -11,7 +11,7 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id: settingspagelines.cpp 5966 2013-02-26 22:45:57Z axel $
+ **   $Id$
  **
  ***********************************************************************/
 

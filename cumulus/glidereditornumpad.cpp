@@ -12,7 +12,7 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id: glidereditor.cpp 5471 2012-08-07 10:58:09Z axel $
+ **   $Id$
  **
  ***********************************************************************/
 

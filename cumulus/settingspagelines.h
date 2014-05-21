@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: settingspagelines.h 5844 2013-02-02 20:39:31Z axel $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -36,7 +36,7 @@ class NumberEditor;
  *
  * \date 2013
  *
- * \version $Id: settingspagelines.h 5844 2013-02-02 20:39:31Z axel $
+ * \version $Id$
  *
  */
 class SettingsPageLines : public QWidget
