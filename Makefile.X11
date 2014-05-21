@@ -184,11 +184,11 @@ dpkg_prepare:
 	@rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	@mkdir -p $(CUMULUS_DEB)
 	@echo "Get Cumulus master branch from GitHub as zip file"
-	@cd /tmp; rm -rf CumulusMaster; mkdir CumulusMaster; cd CumulusMaster; \
+	@cd $(CUMULUS_DEB); \
 	  wget -nv https://github.com/kflog-project/Cumulus/archive/master.zip; \
-	  unzip -qq master.zip;
-	@cp -rp /tmp/CumulusMaster/Cumulus-master/. $(CUMULUS_DEB)
-	@rm -rf /tmp/CumulusMaster
+	  unzip -qq master.zip; \
+	  cp -rp Cumulus-master/. .; \
+	  rm -rf Cumulus-master master.zip
 
 # This target creates the debian package files. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
