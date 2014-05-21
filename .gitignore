@@ -5,7 +5,7 @@
 *.obj
 
 # Compiled Dynamic libraries
-*.so
+#*.so
 *.dylib
 *.dll
 
@@ -19,6 +19,8 @@
 *.exe
 *.out
 *.app
+gpsClient/gpsClient
+cumulus/cumulus
 
 # Directories
 .obj/*
