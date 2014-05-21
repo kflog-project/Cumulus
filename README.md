@@ -9,7 +9,7 @@ Cumulus provides a moving map display with all the information you need to make 
 
 Cumulus features a full color moving map with information on terrain, airfields, airspace, (rail-) roads, water, cities and many other details. It handles waypoints, IGC logging and tasks in cooperation with KFLog, wind determination, reachable sites, final glide, sunrise and sunset calculations, airport weather stations query (METAR and TAF), flight logbook, live flight tracking via Internet and as well as automatic task point switching is also supported.
 
-Cumulus can also process and display Flarm data, if the target device was connected with the Flarm device via a Serial-Bluetooth adapter or an USB IOIO Uart board. The IOIO bord can also supply the device with power. Furthermore Cumulus is able to upload configuration data and task definitions to the Flarm device and to download your flights from the Flarm device.
+Cumulus can also process and display Flarm data, if the target device was connected with the Flarm device via a Serial-Bluetooth adapter or an USB IOIO Uart board (IOIO is only supported by Android). The IOIO bord can also supply the device with power. Furthermore Cumulus is able to upload configuration data and task definitions to the Flarm device and to download your flights from the Flarm device.
 
 If an used Android device has built-in a barometric sensor, you can activate it in Cumulus and use its data as a barometric pressure altitude.
 
