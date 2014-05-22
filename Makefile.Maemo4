@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Maemo4
 #
-# Copyright (c): 2008-2013 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2008-2014 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -159,9 +159,14 @@ dpkg:
 # This target prepares the Debian build. A fresh copy of Cumulus is cheched out
 # from subversion. Therefore you need subversion access!
 dpkg_prepare:
-	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
-	mkdir -p $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+	@rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
+	@mkdir -p $(CUMULUS_DEB)
+	@echo "Get Cumulus master branch from GitHub as zip file"
+	@cd $(CUMULUS_DEB); \
+	  wget -nv https://github.com/kflog-project/Cumulus/archive/master.zip; \
+	  unzip -qq master.zip; \
+	  cp -rp Cumulus-master/. .; \
+	  rm -rf Cumulus-master master.zip
 
 # This target will build the debian packge. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation makrk
@@ -169,7 +174,7 @@ dpkg_prepare:
 
 dpkg_make:
 	cd $(CUMULUS_DEB); \
-	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL -s --native
 	cd $(CUMULUS_DEB)/dpkg/Maemo4/control; \

@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Maemo5
 #
-# Copyright (c): 2010-2013 by Axel Pauli (axel@kflog.org)
+# Copyright (c): 2010-2014 by Axel Pauli (axel@kflog.org)
 # 
 # $Id$
 #
@@ -168,9 +168,14 @@ dpkg_src:
 dpkg_make:
 	rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	mkdir -p $(CUMULUS_DEB)
-	svn export --quiet --force https://svn.kflog.org/svn/repos/cumulus/qt4/trunk $(CUMULUS_DEB)
+	@echo "Get Cumulus master branch from GitHub as zip file"
+	@cd $(CUMULUS_DEB); \
+	  wget -nv https://github.com/kflog-project/Cumulus/archive/master.zip; \
+	  unzip -qq master.zip; \
+	  cp -rp Cumulus-master/. .; \
+	  rm -rf Cumulus-master master.zip
 	cd $(CUMULUS_DEB); \
-	export DEBEMAIL='kflog.cumulus@googlemail.com'; \
+	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
 	cd $(CUMULUS_DEB)/dpkg/Maemo5/control; \
