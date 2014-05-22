@@ -1,3 +1,10 @@
+cumulus (5.15.3) stable; urgency=low
+
+  * Bugfix: URL to SkyLines Live Tracking server updated. Has been changed in
+    the past.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Thu, 22 May 2014 21:02:02 +0200
+
 cumulus (5.15.0) stable; urgency=low
 
   * New turnpoint importer added in preflight waypoints for the waypoint file of
