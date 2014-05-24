@@ -404,6 +404,8 @@ void FlarmAliasList::slot_CellClicked( int row, int column )
     }
 
   bool ok;
+
+#ifndef MAEMO5
   QString text = QInputDialog::getText( this,
                                         title,
                                         label,
@@ -412,6 +414,16 @@ void FlarmAliasList::slot_CellClicked( int row, int column )
                                         &ok,
                                         0,
                                         Qt::ImhNoPredictiveText );
+#else
+  QString text = QInputDialog::getText( this,
+                                        title,
+                                        label,
+                                        QLineEdit::Normal,
+                                        item->text(),
+                                        &ok,
+                                        0 );
+#endif
+
   if( ok )
     {
       item->setText( text );

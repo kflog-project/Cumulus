@@ -237,6 +237,7 @@ void GpsStatusDialog::slot_SaveNmeaData()
 
   bool ok;
 
+#ifndef MAEMO5
   QString fileName = QInputDialog::getText( this, tr("Append to?"),
                                             tr("File name:"),
                                             QLineEdit::Normal,
@@ -244,6 +245,16 @@ void GpsStatusDialog::slot_SaveNmeaData()
                                             &ok,
                                             0,
                                             Qt::ImhNoPredictiveText );
+#else
+  QString fileName = QInputDialog::getText( this, tr("Append to?"),
+                                            tr("File name:"),
+                                            QLineEdit::Normal,
+                                            "nmea-stream.log",
+                                            &ok,
+                                            0 );
+
+#endif
+
   if( ok && ! fileName.isEmpty() )
     {
       if( ! fileName.startsWith( "/") )
