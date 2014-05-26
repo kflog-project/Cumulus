@@ -5,7 +5,7 @@
     copyright            : (C) 2002      by Eggert Ehmke
                                2008-2013 by Axel Pauli
 
-    email                : eggert.ehmke@berlin.de, axel@kflog.org
+    email                : eggert.ehmke@berlin.de, kflog.cumulus@gmail.com
 
     $Id$
 

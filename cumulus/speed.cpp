@@ -5,7 +5,7 @@
     copyright            : 2002      by Andre Somers
                          : 2007-2012 by Axel Pauli
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
     This file is part of Cumulus
 

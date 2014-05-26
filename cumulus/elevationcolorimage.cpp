@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2012 Axel Pauli, axel@kflog.org
+**   Copyright (c):  2009-2012 Axel Pauli, kflog.cumulus@gmail.com
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.

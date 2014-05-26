@@ -12,7 +12,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: af0d205c20fb421a9ffc91f252872bf660ea4c6b $
+**   $Id$
 **
 ***********************************************************************/
 

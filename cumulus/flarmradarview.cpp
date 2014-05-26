@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id: 55fd8b552d660daa5c215ff207b2a31257474ad6 $
+**   $Id$
 **
 ***********************************************************************/
 

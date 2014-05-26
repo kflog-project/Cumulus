@@ -6,7 +6,7 @@
                                2008      by Josua Dietze
                                2008-2014 by Axel Pauli
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
     $Id$
 
