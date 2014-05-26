@@ -1,7 +1,7 @@
 ################################################################################
 # NMEA Simulator project file of Cumulus for qmake
 #
-# (c) 2008-2012 Axel Pauli
+# (c) 2008-2014 Axel Pauli
 #
 # This template generates a makefile for the NMEA Simulator binary.
 #
@@ -11,6 +11,10 @@
 
 TEMPLATE    = app
 CONFIG      = qt warn_on release
+
+# Put all generated objects into an extra directory
+OBJECTS_DIR = .obj
+MOC_DIR     = .obj
 
 QT -= gui # Only the core module is used.
 
