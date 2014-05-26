@@ -25,3 +25,4 @@ cumulus/cumulus
 # Directories
 .obj/*
 /gpsClient
+/bin
