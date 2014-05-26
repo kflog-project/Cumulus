@@ -5,9 +5,9 @@
 
     copyright            : (C) 2012-2013 by Axel Pauli
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: 98bcf5b12cd64eceb6bfff3c68233c1c5e988b99 $
+    $Id$
 
  ***************************************************************************/
 
@@ -65,7 +65,7 @@ int Play::startPlaying( const int skip, const int pause )
 
       line += "\r\n";
 
-      write( m_fifo, line.toLatin1().data(), line.length() );
+      ssize_t written = write( m_fifo, line.toLatin1().data(), line.length() );
 
       std::cout << line.toLatin1().data();
 

@@ -3,9 +3,9 @@
                              -------------------
     begin                : 17.08.2010
     copyright            : (C) 2010-2013 by Axel Pauli
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: 443c6b2abddc8c55ef6c5de5629faf29052428e0 $
+    $Id$
 
  ***************************************************************************/
 
@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 #include "sentence.h"

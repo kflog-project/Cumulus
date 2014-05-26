@@ -3,9 +3,9 @@
                              -------------------
     begin                : 23.12.2003
     copyright            : (C) 2003 by Eckhard Völlm
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: 13ac2b288882d792f58420cdc176de3af8927e1e $
+    $Id$
 
  ***************************************************************************/
 

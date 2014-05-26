@@ -5,9 +5,9 @@
 
     copyright            : (C) 2012 by Axel Pauli
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: cfe4d0073f3fea3d84d1ee92b41c4251680b1070 $
+    $Id$
 
  ***************************************************************************/
 

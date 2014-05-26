@@ -11,9 +11,9 @@
 **   polished for nmea application by Eckhard Völlm
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
-**   $Id: 51b55c13edeb39def0e2b057226d699d164715f9 $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -23,11 +23,13 @@
 
 using namespace std;
 
-Vector::Vector(){
-  _angle=0;
-  _speed=0;
+Vector::Vector()
+{
+  _angle=0.0;
+  _speed=0.0;
   _x=0;
   _y=0;
+  _isValid=false;
   dirtyXY=false;
   dirtyDR=false;
 }

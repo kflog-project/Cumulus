@@ -3,9 +3,9 @@
                              -------------------
     begin                : 23.12.2003
     copyright            : (C) 2003 by Eckhard Völlm, by 2009-2013 Axel Pauli
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: 8f70a21b5dfed3c871f50de765aa3f8c41d62f5e $
+    $Id$
 
  ***************************************************************************/
 
@@ -20,9 +20,9 @@
 
 #include "gprmc.h"
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
-#include <math.h>
+#include <cmath>
 
 #include <QDateTime>
 

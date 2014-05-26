@@ -13,9 +13,9 @@
                                2012 Axel Pauli Play option added
                                2013 Axel Pauli ttySx enabled as additional device
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: e6ab65218fa4d27f3b838205cdf41f78dcee9f98 $
+    $Id$
 
     NMEA simulator for Cumulus.
 

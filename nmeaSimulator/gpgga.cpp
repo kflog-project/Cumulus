@@ -3,9 +3,9 @@
                              -------------------
     begin                : 23.12.2003
     copyright            : (C) 2003 by Eckhard Völlm, 2009-2013 by Axel Pauli
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: 7d987e32b23f6e871633179d10f7266606a8e0f3 $
+    $Id$
 
  ***************************************************************************/
 
@@ -20,7 +20,7 @@
 
 #include "gpgga.h"
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 #include <QDateTime>
 

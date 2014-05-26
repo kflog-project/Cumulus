@@ -3,9 +3,9 @@
                              -------------------
     begin                : 24.10.2009
     copyright            : (C) 2009 by Axel Pauli
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: ac433c4da7457b72fbab8ef52c542bfed5a94145 $
+    $Id$
 
  ***************************************************************************/
 

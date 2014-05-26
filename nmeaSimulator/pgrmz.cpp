@@ -3,9 +3,9 @@
                              -------------------
     begin                : 02.08.2010
     copyright            : (C) 2010-2013 by Axel Pauli
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: 6f586ae6afc482e3df74a0b30cd85b505d4b44fc $
+    $Id$
 
  ***************************************************************************/
 
@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <unistd.h>
 
 #include "pgrmz.h"

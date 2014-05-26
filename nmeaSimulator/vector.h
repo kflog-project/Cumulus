@@ -11,9 +11,9 @@
 **   polished for nmea application by Eckhard Völlm
 **
 **   This file is distributed under the terms of the General Public
-**   Licence. See the file COPYING for more information.
+**   License. See the file COPYING for more information.
 **
-**   $Id: 2193acb1f7e1b9577aeedd69946d054356032ba8 $
+**   $Id$
 **
 ***********************************************************************/
 
@@ -39,8 +39,9 @@
   * @author André Somers
   */
 
-class Vector : public Speed  {
-public:
+class Vector : public Speed
+{
+  public:
     Vector();
     Vector(double x, double y);
     Vector(Speed x, Speed y);
@@ -136,7 +137,7 @@ public:
      */
     Vector Clone();
 
-protected: // Protected attributes
+  protected: // Protected attributes
     /**
      * Contains the angle of the speed. 0 is north, pi/2 east, pi south, etc.
      */
@@ -158,7 +159,7 @@ protected: // Protected attributes
      */
     double _y;
 
-private:
+  private:
     /**
      * re-implemented from Speed
      */

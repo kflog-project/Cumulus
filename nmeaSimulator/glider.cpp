@@ -3,11 +3,11 @@
                              -------------------
     begin                : 23.12.2003
     copyright            : (C) 2003      by Eckhard Völlm
-                               2009-2010 by Axel Pauli
+                               2009-2014 by Axel Pauli
 
-    email                : axel@kflog.org
+    email                : kflog.cumulus@gmail.com
 
-    $Id: b560ffa90f5b1a3a68ff0071c6ff69319578b7dc $
+    $Id$
 
  ***************************************************************************/
 
@@ -21,7 +21,7 @@
  ***************************************************************************/
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cmath>
 
 #include "glider.h"
