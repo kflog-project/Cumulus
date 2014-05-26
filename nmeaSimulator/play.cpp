@@ -65,7 +65,7 @@ int Play::startPlaying( const int skip, const int pause )
 
       line += "\r\n";
 
-      int size = write( m_fifo, line.toLatin1().data(), line.length() );
+      write( m_fifo, line.toLatin1().data(), line.length() );
 
       std::cout << line.toLatin1().data();
 
