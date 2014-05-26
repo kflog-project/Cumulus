@@ -5,7 +5,7 @@
     copyright            : (C) 2003 by Eckhard Völlm
     email                : axel@kflog.org
 
-    $Id$
+    $Id: 82911d086732b40adcbcdcb517362dd1c0eaf130 $
 
  ***************************************************************************/
 

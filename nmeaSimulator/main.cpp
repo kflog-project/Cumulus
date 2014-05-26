@@ -15,7 +15,7 @@
 
     email                : axel@kflog.org
 
-    $Id$
+    $Id: e6ab65218fa4d27f3b838205cdf41f78dcee9f98 $
 
     NMEA simulator for Cumulus.
 

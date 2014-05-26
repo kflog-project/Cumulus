@@ -5,7 +5,7 @@
     copyright            : (C) 2009 by Axel Pauli
     email                : axel@kflog.org
 
-    $Id$
+    $Id: ac433c4da7457b72fbab8ef52c542bfed5a94145 $
 
  ***************************************************************************/
 

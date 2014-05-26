@@ -5,7 +5,7 @@
     copyright            : (C) 2003 by Eckhard Völlm, by 2009-2013 Axel Pauli
     email                : axel@kflog.org
 
-    $Id$
+    $Id: 8f70a21b5dfed3c871f50de765aa3f8c41d62f5e $
 
  ***************************************************************************/
 
