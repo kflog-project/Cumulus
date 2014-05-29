@@ -1,9 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.8.x for Linux/Unix
 
-Last update: 2012-01-11 by Axel Pauli
-
-SVN info: $Id$
+Last update: 2014-05-29 by Axel Pauli
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
@@ -24,9 +22,9 @@ following components are mandatory:
 At least a Qt Release 4.8.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For XUbuntu 11.10 you have to execute the following command to get them:
+that. For XUbuntu 14.04 you have to execute the following command to get them:
 
-  sudo apt-get install g++ subversion
+  sudo apt-get install g++ git
   sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
                        libqt4-dev libqt4-network libqt4-xml
   sudo apt-get install libbluetooth-dev bluez-utils bluez
@@ -117,53 +115,34 @@ Qt bin directory at the first position (see above).
 
 Step 3)
 
-Download the Cumulus sources from the subversion archive or as snapshot tar ball.
+Download the Cumulus sources from the git repository or as snapshot zip ball.
 
-a) Get it from subversion:
+a) Get a git clone:
 
-To checkout the source tree from the subversion archive you need an installed
-subversion client on your Linux desktop. If the command 'svn --version' fails you
-have not installed subversion. Alternatively you can download a snapshot tar ball.
+To clone the Cumulus git repository you need an installed git client on your Linux
+desktop. If the command 'git --version' fails you have not installed git.
+Alternatively you can download a snapshot zip file.
 See below how to do this.
 
-Checkout a Cumulus snapshot file tree in a local directory of your Linux desktop
-from the subversion archive with:
+Clone a Cumulus git repository to your local computer with:
 
-  1) svn co https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
-  2) svn export https://svn.kflog.org/svn/repos/cumulus/qt4/trunk
+  git clone https://github.com/kflog-project/Cumulus.git
 
-Variant 2) is free from any svn overhead like .svn directories.
+Download a Cumulus git zip master snapshot with:
 
-To checkout a certain release you have to use a url which starts with:
+  wget https://github.com/kflog-project/Cumulus/archive/master.zip
 
-  https://svn.kflog.org/svn/repos/cumulus/qt4/tags/
-  
-followed by a release tag e.g. Release_2.12.0. You can browse through the
-Cumulus subversion archive with your Internet browser to see the release tags.
-Type in the following url:
+To checkout a certain release you have to go the GitHub web page and select it
+for download. The link to the GitHub web page of Cumulus is:
 
-  https://svn.kflog.org/svn/repos/cumulus
-  
-Maybe your browser will aks you to enable an exception rule for the KFLog
-certificate, it is not officially signed. You have to commit the question to
-get access to the archive. Under the path qt4/trunk you can see the latest
-checked in sources. Releases are to find under the path qt4/tag.
+  https://github.com/kflog-project/Cumulus
 
-b) Get it as snapshot tar ball:
-
-You can also download a snapshot tar ball by using this link:
-
-  http://www.kflog.org/fileadmin/user_upload/cumulus_snapshots/CumulusQt4-snapshot.tbz
-  
-Copy the tar ball in a local directory of your Linux desktop and extract it with:
-  
-  tar jxf CumulusQt4-snapshot.tbz
+A downloaded zip file can be extracted by using the tool 'unzip <zip-file>'
 
 Step 4)
 
-Go into the trunk directory of your subversion copy or in the root directory of
-the extracted tar ball. To build the Cumulus application issue the following
-command:
+Go into the root directory of your downloaded copy of Cumulus. To build the
+Cumulus application issue the following command:
 
   make -f Makefile.X11
 	
@@ -217,9 +196,9 @@ under the following directory structure:
 $HOME/Cumulus/maps/+-/airspaces/ (Only OpenAir file format is supported)
                    +-/landscape/ (Use map data from KFLog's map room)
 
-Note, that Cumulus can handle airspace data only in openair format.
-Airfield and outlanding data are taken from the Welt2000 data file.
-The former support of KFLog airspace and airfield files has been removed.
+Note, that Cumulus can handle airspace data only in openair or openAIP format.
+Airfield and outlanding data can be taken from the Welt2000 data dase or from
+openAIP.
 
 See in Cumulus online help under
 
@@ -231,7 +210,7 @@ The landscape files are to find in the KFLog Map room.
 
 http://www.kflog.org/maproom/ground-and-terrain-data
 
-Welt2000 and landscape data files are downloaded automatically by Cumulus
+Welt2000, openAIP and landscape files are downloaded automatically by Cumulus
 after the startup, if you permit that.
 
 Step 7)
