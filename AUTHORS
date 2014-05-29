@@ -22,10 +22,11 @@ Current Maintainer is:
 
   Axel Pauli <kflog.cumulus(at)gmail.com>
 
-Cumulus can be found at http://www.kflog.org/cumulus/
+Information about Cumulus can be found at http://www.kflog.org/cumulus/
 
-Cumulus is a fork of KFLog, the K-Flightlog analyzer.
-See http://www.kflog.org
+The Cumulus code is hosted at GitHub: https://github.com/kflog-project/Cumulus
+
+Cumulus is a fork of KFLog, the K-Flightlog analyzer. See http://www.kflog.org
 
 The following KFLog developers wrote the template for Cumulus:
 
