@@ -18,13 +18,14 @@ following components are mandatory:
   c) The Qt libraries libQtCore, libQtGui, libQtNetwork, libQtXml
   d) The Qt header files
   e) The Bluetooth header files and the libbluetooth library
+  f) A git client and the tool unzip
   
 At least a Qt Release 4.8.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
 that. For XUbuntu 14.04 you have to execute the following command to get them:
 
-  sudo apt-get install g++ git
+  sudo apt-get install g++ git unzip
   sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
                        libqt4-dev libqt4-network libqt4-xml
   sudo apt-get install libbluetooth-dev bluez-utils bluez
@@ -122,13 +123,12 @@ a) Get a git clone:
 To clone the Cumulus git repository you need an installed git client on your Linux
 desktop. If the command 'git --version' fails you have not installed git.
 Alternatively you can download a snapshot zip file.
-See below how to do this.
 
 Clone a Cumulus git repository to your local computer with:
 
   git clone https://github.com/kflog-project/Cumulus.git
 
-Download a Cumulus git zip master snapshot with:
+Download a Cumulus git zip master snapshot file with:
 
   wget https://github.com/kflog-project/Cumulus/archive/master.zip
 
