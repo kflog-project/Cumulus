@@ -74,7 +74,7 @@ LS-1c,                    90,   .70,     125,    1.31,     150,    2.09,      90
 LS-1f,                    95,   .71,     140,    1.37,     170,    2.18,      95,        35.5,          9.8,     240,            0,       1
 LS-3,                    115,   .86,     174,    1.761,    213,    3.432,      0,           0,         10.5,     269,            0,       1
 LS-4,                    100,   .68,     140,    1.26,     170,    2.08,     100,        33.0,         10.5,     245,            0,       1
-LS-6a,                   100,   .67,     155,    1.48,     212,    3.00,       0,           0,          0,       350,          150,       1
+LS-6a,                   100,   .67,     155,    1.48,     212,    3.00,       0,           0,         10.5,     350,          150,       1
 LS-7 winglets,           104,   .73,     156,    1.47,     180,    2.66,       0,           0,          9.8,     350,          150,       1
 LS-8/15,                 100,   .67,     155,    1.45,     185,    2.5,        0,           0,         10.5,     360,          180,       1
 LS-8/18,                  80,   .51,      94,     .56,     173,    2.00,       0,           0,         11.4,     325,          185,       1
@@ -124,4 +124,4 @@ Zugvogel IIIb,            93,   .68,     130,    1.21,     165,    2.38,      89
 #############################################################################################################################################                                                                  
 # Glider name             v1     w1       v2        w2      v3      w3     V Best L/D  WingLoad(kg/qm) Area(qm) EmptyMass(Kg) Water(l)  Seats
 #
-# Much data is taken from www.winpilot.com/polar.asp and http://git.xcsoar.org/cgit/master/xcsoar.git/tree/src/Polar/PolarStore.cpp
+# Much data was taken from www.winpilot.com/polar.asp and http://git.xcsoar.org/cgit/master/xcsoar.git/tree/src/Polar/PolarStore.cpp
