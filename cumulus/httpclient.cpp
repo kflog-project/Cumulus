@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2013 Axel Pauli
+**   Copyright (c): 2010-2014 Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -173,10 +173,20 @@ bool HttpClient::sendRequest2Server()
         }
     }
 
-  QNetworkRequest request;
-  QString appl = QCoreApplication::applicationName() + "/" +
-                 QCoreApplication::applicationVersion() + " (Qt/X11)";
+  QString hw = " (Qt/Linux)";
 
+#ifdef ANDROID
+  hw = " (Qt/Android)";
+#elif MAEMO4
+  hw = " (Qt/Maemo4)";
+#elif MAEMO5
+  hw = " (Qt/Maemo5)";
+#endif
+
+  QString appl = QCoreApplication::applicationName() + "/" +
+                 QCoreApplication::applicationVersion() + hw;
+
+  QNetworkRequest request;
   request.setUrl( QUrl( m_url, QUrl::TolerantMode ));
   request.setRawHeader( "User-Agent", appl.toLatin1() );
 
