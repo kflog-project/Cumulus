@@ -50,11 +50,13 @@ Polar::Polar() :
 {
 }
 
-Polar::Polar(const QString& name,const Speed& v1, const Speed& w1,
+Polar::Polar(const QString& name,
+		     const Speed& v1, const Speed& w1,
              const Speed& v2, const Speed& w2,
              const Speed& v3, const Speed& w3,
-             double /*wingLoad*/, double wingArea,
-             double emptyWeight, double grossWeight) :
+             double wingArea,
+             double emptyWeight,
+             double grossWeight) :
     _name(name),
     _v1(v1),
     _w1(w1),

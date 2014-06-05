@@ -3,9 +3,9 @@
                              -------------------
     begin                : Okt 18 2002
     copyright            : (C) 2002      by Eggert Ehmke
-                               2008-2011 by Axel Pauli
+                               2008-2014 by Axel Pauli
 
-    email                : eggert.ehmke@berlin.de, kflog.cumulus@gmail.com
+    email                : kflog.cumulus@gmail.com
 
     $Id$
 
@@ -27,7 +27,7 @@
  *
  * \brief Class for glider polar calculations and drawing.
  *
- * \date 2002-2011
+ * \date 2002-2014
  *
  * \version $Id$
  *
@@ -51,8 +51,9 @@ public:
           const Speed& v1, const Speed& w1,
           const Speed& v2, const Speed& w2,
           const Speed& v3, const Speed& w3,
-          double wingload, double wingarea,
-          double emptyWeight, double grossWeight);
+          double wingarea,
+          double emptyWeight,
+          double grossWeight);
 
     Polar(const Polar&);
 
