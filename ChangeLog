@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-06-05 AP: Gilder polar dictionary file glider.pol enhanced with new
+                   glider polars.
+
 [*] 2014-05-14 AP: Cumulus 5.15.2 released for Android.
 
 [-] 2014-05-14 AP: Bugfix: URL to SkyLines Live Tracking server updated. Has
