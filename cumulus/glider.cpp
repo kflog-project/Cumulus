@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -71,8 +71,9 @@ bool Glider::load(QSettings *config, int id)
       _polar = Polar( _type, V1, W1, // v/w pair 1
                       V2, W2, // v/w pair 2
                       V3, W3, // v/w pair 3
-                      data[11].toDouble(), data[12].toDouble(), // wingload, wingarea
-                      data[13].toDouble(), data[14].toDouble() ); // empty weight, gross weight
+                      data[12].toDouble(), // wingarea
+                      data[13].toDouble(), // empty weight
+                      data[14].toDouble() ); // gross weight
 
       _lastSafeID = id;
 

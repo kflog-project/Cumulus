@@ -482,11 +482,8 @@ void GliderEditorNumPad::save()
   Speed::setHorizontalUnit( hSpeedUnit );
   Speed::setVerticalUnit( vSpeedUnit );
 
-  // qDebug("m_polar->emptyWeight() %f  m_polar->grossWeight() %f",
-  //         (float)m_glider->polar()->emptyWeight(),  (float)m_glider->polar()->grossWeight() );
   Polar polar( m_glider->type(),
                V1, W1, V2, W2, V3, W3,
-               0.0,
                m_dneWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );
@@ -552,7 +549,7 @@ void GliderEditorNumPad::readPolarData()
 
           QStringList list = line.split(",", QString::KeepEmptyParts);
 
-          if( list.size() < 13 )
+          if( list.size() < 11 )
             {
               // Too less elements
               qWarning() << "File glider.pol: Format error at line" << lineNo;
@@ -569,18 +566,17 @@ void GliderEditorNumPad::readPolarData()
           w2.setMps(-list[4].toDouble());
           v3.setKph(list[5].toDouble());
           w3.setMps(-list[6].toDouble());
-          // double bestLD = list[7].toDouble(); // not used
-          double wingload = list[8].toDouble();
-          double wingarea = list[9].toDouble();
-          double emptyMass = list[10].toDouble();
+
+          double wingarea = list[7].toDouble();
+          double emptyMass = list[8].toDouble();
 
           Polar polar = Polar( glidertype,
                                v1, w1, v2, w2, v3, w3,
-                               wingload, wingarea,
+                               wingarea,
                                emptyMass, emptyMass );
 
-          polar.setMaxWater(list[11].toInt());
-          polar.setSeats(list[12].toInt());
+          polar.setMaxWater(list[9].toInt());
+          polar.setSeats(list[10].toInt());
 
           m_polars.append( polar );
         }
@@ -713,7 +709,7 @@ void GliderEditorNumPad::slotButtonShow()
   W3.setVerticalValue(m_dneW3->value());
 
   Polar polar( edtGType->text(),
-               V1, W1, V2, W2, V3, W3, 0.0,
+               V1, W1, V2, W2, V3, W3,
                m_dneWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );

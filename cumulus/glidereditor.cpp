@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -505,7 +505,6 @@ void GliderEditor::save()
   //         (float)_glider->polar()->emptyWeight(),  (float)_glider->polar()->grossWeight() );
   Polar polar( _glider->type(),
                V1, W1, V2, W2, V3, W3,
-               0.0,
                spinWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );
@@ -571,7 +570,7 @@ void GliderEditor::readPolarData()
 
           QStringList list = line.split(",", QString::KeepEmptyParts);
 
-          if( list.size() < 13 )
+          if( list.size() < 11 )
             {
               // Too less elements
               qWarning() << "File glider.pol: Format error at line" << lineNo;
@@ -589,17 +588,17 @@ void GliderEditor::readPolarData()
           v3.setKph(list[5].toDouble());
           w3.setMps(-list[6].toDouble());
           // double bestLD = list[7].toDouble(); // not used
-          double wingload = list[8].toDouble();
-          double wingarea = list[9].toDouble();
-          double emptyMass = list[10].toDouble();
+          // double wingload = list[8].toDouble();
+          double wingarea = list[7].toDouble();
+          double emptyMass = list[8].toDouble();
 
           Polar polar = Polar( glidertype,
                                v1, w1, v2, w2, v3, w3,
-                               wingload, wingarea,
+                               0.0, wingarea,
                                emptyMass, emptyMass );
 
-          polar.setMaxWater(list[11].toInt());
-          polar.setSeats(list[12].toInt());
+          polar.setMaxWater(list[9].toInt());
+          polar.setSeats(list[10].toInt());
 
           _polars.append( polar );
         }
@@ -732,7 +731,7 @@ void GliderEditor::slotButtonShow()
   W3.setVerticalValue(spinW3->value());
 
   Polar polar( edtGType->text(),
-               V1, W1, V2, W2, V3, W3, 0.0,
+               V1, W1, V2, W2, V3, W3,
                spinWingArea->value(),
                emptyWeight->value(),
                emptyWeight->value() + addedLoad->value() );
