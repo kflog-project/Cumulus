@@ -26,6 +26,8 @@ Information about Cumulus can be found at http://www.kflog.org/cumulus/
 
 The Cumulus code is hosted at GitHub: https://github.com/kflog-project/Cumulus
 
+Please post issues to https://github.com/kflog-project/Cumulus/issues
+
 Cumulus is a fork of KFLog, the K-Flightlog analyzer. See http://www.kflog.org
 
 The following KFLog developers wrote the template for Cumulus:
