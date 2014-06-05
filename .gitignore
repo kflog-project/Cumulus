@@ -26,3 +26,4 @@ cumulus/cumulus
 .obj/*
 /gpsClient
 /bin
+/.Android
