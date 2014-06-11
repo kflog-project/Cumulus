@@ -516,6 +516,17 @@ void GeneralConfig::load()
   beginGroup ("Calculator");
   _manualNavModeAltitude = value( "ManualNavModeAltitude", 1000 ).toInt();
   _time4LDCalc           = value( "Time4LDCalculation", 30 ).toInt();
+
+  double mc = value( "McCready", -1.0 ).toDouble();
+
+  if( mc != -1.0 )
+    {
+	  _mcCready = Speed( mc );
+    }
+  else
+    {
+	  _mcCready.setInvalid();
+    }
   endGroup();
 
   beginGroup ("Flarm");
@@ -932,8 +943,18 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Calculator");
-  setValue("ManualNavModeAltitude", _manualNavModeAltitude );
+  setValue( "ManualNavModeAltitude", _manualNavModeAltitude );
   setValue( "Time4LDCalculation", _time4LDCalc );
+
+  if( _mcCready.isValid() )
+    {
+	  setValue( "McCready", _mcCready.getMps() );
+    }
+  else
+    {
+	  setValue( "McCready", -1.0 );
+    }
+
   endGroup();
 
   beginGroup("Units");

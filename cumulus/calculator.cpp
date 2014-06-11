@@ -84,7 +84,7 @@ Calculator::Calculator(QObject* parent) :
   m_lastWind.wind = Vector(0.0, 0.0);
   m_lastWind.altitude = lastAltitude;
   selectedWp = static_cast<Waypoint *> (0);
-  lastMc.setInvalid();
+  lastMc = GeneralConfig::instance()->getMcCready();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
   m_polar = 0;
@@ -1020,6 +1020,7 @@ void Calculator::slot_McUp()
   if( m_glider && lastMc.getMps() <= MAX_MCCREADY - 0.5 )
     {
       lastMc.setMps( lastMc.getMps() + 0.5 );
+      GeneralConfig::instance()->setMcCready(lastMc);
       calcGlidePath();
       emit newMc( lastMc );
     }
@@ -1031,6 +1032,7 @@ void Calculator::slot_Mc(const Speed& mc)
   if( m_glider && lastMc.getMps() != mc.getMps() )
     {
       lastMc = mc;
+      GeneralConfig::instance()->setMcCready(lastMc);
       calcGlidePath();
       emit newMc( mc );
     }
@@ -1042,6 +1044,7 @@ void Calculator::slot_McDown()
   if( m_glider && lastMc.getMps() >= 0.5 )
     {
       lastMc.setMps( lastMc.getMps() - 0.5 );
+      GeneralConfig::instance()->setMcCready(lastMc);
       calcGlidePath();
       emit newMc( lastMc );
     }
@@ -1641,7 +1644,6 @@ void Calculator::setGlider(Glider* glider)
     {
       m_glider = glider;
       m_polar = m_glider->polar();
-      lastMc.setKph(0);
       calcETA();
       calcGlidePath();
       emit newGlider( m_glider->type() );
@@ -1649,6 +1651,7 @@ void Calculator::setGlider(Glider* glider)
   else
     {
       lastMc.setInvalid();
+      GeneralConfig::instance()->setMcCready( lastMc );
       lastBestSpeed.setInvalid();
       emit bestSpeed( lastBestSpeed );
       emit newGlider( "" );

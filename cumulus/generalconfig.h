@@ -984,6 +984,18 @@ class GeneralConfig : protected QSettings
     _manualWindIsEnabled = newValue;
   };
 
+  /** gets the McCready value */
+  const Speed& getMcCready() const
+  {
+    return _mcCready;
+  };
+
+  /** sets the McCready value */
+  void setMcCready( const Speed& newValue )
+  {
+	_mcCready = newValue;
+  };
+
   /** gets current task */
   QString &getCurrentTask()
   {
@@ -2925,6 +2937,9 @@ class GeneralConfig : protected QSettings
   Speed _tas;
   // The name of the current selected task
   QString _currentTask;
+
+  // The current used McCready value
+  Speed _mcCready;
 
   // manual wind speed
   Speed _manualWindSpeed;
