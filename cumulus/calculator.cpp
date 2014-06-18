@@ -1059,7 +1059,7 @@ void Calculator::slot_WaterAndBugs( const int water, const int bugs )
       (m_glider->polar()->water() != water ||
        m_glider->polar()->bugs() != bugs) )
     {
-      m_glider->polar()->setWater( water, bugs );
+      m_glider->polar()->setLoad( 0, water, bugs );
       calcGlidePath();
     }
 }

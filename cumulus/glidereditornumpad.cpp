@@ -40,8 +40,8 @@
 extern MapView *_globalMapView;
 
 GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
-  QWidget(parent),
-  m_gliderCreated(false)
+		      QWidget(parent),
+		      m_gliderCreated(false)
 {
   setWindowFlags(Qt::Tool);
   setWindowModality( Qt::WindowModal );
@@ -178,15 +178,15 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(m_dneW1, srow, 3);
 
-  spinboxLayout->addWidget(new QLabel(tr("Empty weight:"), this), srow, 4);
+  spinboxLayout->addWidget(new QLabel(tr("Gross wt:"), this), srow, 4);
 
-  emptyWeight = new NumberEditor( this );
-  emptyWeight->setDecimalVisible( false );
-  emptyWeight->setPmVisible( false );
-  emptyWeight->setMaxLength(4);
-  emptyWeight->setSuffix(" kg");
-  emptyWeight->setRange( 0, 9999 );
-  spinboxLayout->addWidget(emptyWeight, srow, 5);
+  grossWeight = new NumberEditor( this );
+  grossWeight->setDecimalVisible( false );
+  grossWeight->setPmVisible( false );
+  grossWeight->setMaxLength(4);
+  grossWeight->setSuffix(" kg");
+  grossWeight->setRange( 0, 9999 );
+  spinboxLayout->addWidget(grossWeight, srow, 5);
   srow++;
 
   spinboxLayout->addWidget(new QLabel("v2", this), srow, 0);
@@ -218,10 +218,10 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   addedLoad = new NumberEditor( this );
   addedLoad->setDecimalVisible( false );
-  addedLoad->setPmVisible( false );
+  addedLoad->setPmVisible( true );
   addedLoad->setMaxLength(4);
   addedLoad->setSuffix(" kg");
-  addedLoad->setRange( 0, 9999 );
+  addedLoad->setRange( -999, 999 );
   spinboxLayout->addWidget(addedLoad, srow, 5);
   srow++;
 
@@ -309,9 +309,9 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   topLayout->addLayout(itemsLayout);
   topLayout->addLayout(buttonBox);
 
-  if (m_isNew)
+  if( m_isNew )
     {
-      readPolarData();
+      readLK8000PolarData();
     }
   else
     {
@@ -356,13 +356,13 @@ void GliderEditorNumPad::load()
       addedWater->setValue(m_glider->maxWater());
 
       if (m_glider->seats() == Glider::doubleSeater)
-        {
-          m_seats->setText("2");
-        }
+	{
+	  m_seats->setText("2");
+	}
       else
-        {
-          m_seats->setText("1");
-        }
+	{
+	  m_seats->setText("1");
+	}
 
       m_dneV1->setValue( m_glider->polar()->v1().getHorizontalValue() );
       m_dneV2->setValue( m_glider->polar()->v2().getHorizontalValue() );
@@ -372,11 +372,8 @@ void GliderEditorNumPad::load()
       m_dneW2->setValue( m_glider->polar()->w2().getVerticalValue() );
       m_dneW3->setValue( m_glider->polar()->w3().getVerticalValue() );
 
-      emptyWeight->setValue((int) m_glider->polar()->emptyWeight());
-      double load = m_glider->polar()->grossWeight() -
-                    m_glider->polar()->emptyWeight();
-
-      addedLoad->setValue((int) load);
+      grossWeight->setValue((int) m_glider->polar()->grossWeight());
+      addedLoad->setValue((int) m_glider->polar()->addLoad() );
 
       // Save load values to avoid rounding errors during save
       m_currV1 = m_dneV1->value();
@@ -435,7 +432,7 @@ void GliderEditorNumPad::save()
 
   if( m_dneV2->value() != m_currV2 )
     {
-       V2.setHorizontalValue(m_dneV2->value());
+      V2.setHorizontalValue(m_dneV2->value());
     }
   else
     {
@@ -443,36 +440,36 @@ void GliderEditorNumPad::save()
     }
 
   if( m_dneV3->value() != m_currV3 )
-     {
-        V3.setHorizontalValue(m_dneV3->value());
-     }
+    {
+      V3.setHorizontalValue(m_dneV3->value());
+    }
   else
     {
       V3.setHorizontalValue( m_glider->polar()->v3().getHorizontalValue() );
     }
 
   if( m_dneW1->value() != m_currW1 )
-     {
-        W1.setVerticalValue(m_dneW1->value());
-     }
+    {
+      W1.setVerticalValue(m_dneW1->value());
+    }
   else
     {
       W1.setVerticalValue( m_glider->polar()->w1().getVerticalValue() );
     }
 
   if( m_dneW2->value() != m_currW2 )
-     {
-        W2.setVerticalValue(m_dneW2->value());
-     }
+    {
+      W2.setVerticalValue(m_dneW2->value());
+    }
   else
     {
       W2.setVerticalValue( m_glider->polar()->w2().getVerticalValue() );
     }
 
   if( m_dneW3->value() != m_currW3 )
-     {
-        W3.setVerticalValue(m_dneW3->value());
-     }
+    {
+      W3.setVerticalValue(m_dneW3->value());
+    }
   else
     {
       W3.setVerticalValue( m_glider->polar()->w3().getVerticalValue() );
@@ -485,8 +482,9 @@ void GliderEditorNumPad::save()
   Polar polar( m_glider->type(),
                V1, W1, V2, W2, V3, W3,
                m_dneWingArea->value(),
-               emptyWeight->value(),
-               emptyWeight->value() + addedLoad->value() );
+               0.0,
+               grossWeight->value(),
+               addedLoad->value() );
 
   m_glider->setPolar( polar );
 
@@ -505,6 +503,7 @@ void GliderEditorNumPad::save()
   m_gliderCreated = false;
 }
 
+#if 0
 void GliderEditorNumPad::readPolarData()
 {
   // qDebug ("GliderEditorNumPad::readPolarData ");
@@ -514,8 +513,8 @@ void GliderEditorNumPad::readPolarData()
   QStringList dirs;
 
   dirs << GeneralConfig::instance()->getAppRoot() + "/etc/glider.pol"
-       << GeneralConfig::instance()->getDataRoot() + "/etc/glider.pol"
-       << GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol";
+      << GeneralConfig::instance()->getDataRoot() + "/etc/glider.pol"
+      << GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol";
 
   QFile file;
 
@@ -524,9 +523,9 @@ void GliderEditorNumPad::readPolarData()
       file.setFileName(dirs.at(i));
 
       if (file.exists())
-        {
-          break;
-        }
+	{
+	  break;
+	}
     }
 
   QTextStream stream(&file);
@@ -536,63 +535,63 @@ void GliderEditorNumPad::readPolarData()
   if (file.open(QIODevice::ReadOnly))
     {
       while (!stream.atEnd())
-        {
-          QString line = stream.readLine().trimmed();
+	{
+	  QString line = stream.readLine().trimmed();
 
-          lineNo++;
+	  lineNo++;
 
-          // ignore comments and empty lines
-          if(line[0] == '#' || line[0] == '*' || line.size() == 0 )
-            {
-              continue;
-            }
+	  // ignore comments and empty lines
+	  if(line[0] == '#' || line[0] == '*' || line.size() == 0 )
+	    {
+	      continue;
+	    }
 
-          QStringList list = line.split(",", QString::KeepEmptyParts);
+	  QStringList list = line.split(",", QString::KeepEmptyParts);
 
-          if( list.size() < 11 )
-            {
-              // Too less elements
-              qWarning() << "File glider.pol: Format error at line" << lineNo;
-              continue;
-            }
+	  if( list.size() < 11 )
+	    {
+	      // Too less elements
+	      qWarning() << "File glider.pol: Format error at line" << lineNo;
+	      continue;
+	    }
 
-          QString glidertype = list[0];
+	  QString glidertype = list[0];
 
-          // the sink values are positive in this file; we need them negative
-          Speed v1, w1, v2, w2, v3, w3;
-          v1.setKph(list[1].toDouble());
-          w1.setMps(-list[2].toDouble());
-          v2.setKph(list[3].toDouble());
-          w2.setMps(-list[4].toDouble());
-          v3.setKph(list[5].toDouble());
-          w3.setMps(-list[6].toDouble());
+	  // the sink values are positive in this file; we need them negative
+	  Speed v1, w1, v2, w2, v3, w3;
+	  v1.setKph(list[1].toDouble());
+	  w1.setMps(-list[2].toDouble());
+	  v2.setKph(list[3].toDouble());
+	  w2.setMps(-list[4].toDouble());
+	  v3.setKph(list[5].toDouble());
+	  w3.setMps(-list[6].toDouble());
 
-          double wingarea = list[7].toDouble();
-          double emptyMass = list[8].toDouble();
+	  double wingarea = list[7].toDouble();
+	  double emptyMass = list[8].toDouble();
 
-          Polar polar = Polar( glidertype,
-                               v1, w1, v2, w2, v3, w3,
-                               wingarea,
-                               emptyMass, emptyMass );
+	  Polar polar = Polar( glidertype,
+	                       v1, w1, v2, w2, v3, w3,
+	                       wingarea,
+	                       emptyMass, emptyMass );
 
-          polar.setMaxWater(list[9].toInt());
-          polar.setSeats(list[10].toInt());
+	  polar.setMaxWater(list[9].toInt());
+	  polar.setSeats(list[10].toInt());
 
-          m_polars.append( polar );
-        }
+	  m_polars.append( polar );
+	}
 
       file.close();
 
       if( m_polars.size() )
-        {
-          // sort polar data list according to their names
-          qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
+	{
+	  // sort polar data list according to their names
+	  qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
 
-          for( int i = 0; i < m_polars.size(); i++ )
-            {
-              comboType->addItem( m_polars[i].name() );
-            }
-        }
+	  for( int i = 0; i < m_polars.size(); i++ )
+	    {
+	      comboType->addItem( m_polars[i].name() );
+	    }
+	}
 
       QString firstGlider = comboType->itemText(0);
       slotActivated(firstGlider);
@@ -620,37 +619,255 @@ void GliderEditorNumPad::readPolarData()
       QFile file (path);
       QTextStream stream(&file);
       if (file.open(IO_ReadOnly))
-        {
-          QString glidertype = QFileInfo(file).baseName();
-          while (!stream.eof())
-            {
-              QString line = stream.readLine();
-              // ignore comments
-              if (line[0] == '*')
-              continue;
-              QStringList list = QStringList::split(',',line,TRUE);
-              comboType->addItem (glidertype);
+	{
+	  QString glidertype = QFileInfo(file).baseName();
+	  while (!stream.eof())
+	    {
+	      QString line = stream.readLine();
+	      // ignore comments
+	      if (line[0] == '*')
+		continue;
+	      QStringList list = QStringList::split(',',line,TRUE);
+	      comboType->addItem (glidertype);
 
-              // vertical speeds are already negative in these files !
-              Speed v1,w1,v2,w2,v3,w3;
-              double maxgross = list [0].toDouble();
-              int maxwater = list [1].toInt();
-              v1.setKph(list[2].toDouble());
-              w1.setMps(list[3].toDouble());
-              v2.setKph(list[4].toDouble());
-              w2.setMps(list[5].toDouble());
-              v3.setKph(list[6].toDouble());
-              w3.setMps(list[7].toDouble());
-              pol=new Polar(this, glidertype,v1,w1,v2,w2,v3,w3,0.0,0.0,0.0,maxgross);
-              pol->setMaxWater(maxwater);
-              m_polars.append(pol);
-              break;
-            }
-        }
+	      // vertical speeds are already negative in these files !
+	      Speed v1,w1,v2,w2,v3,w3;
+	      double maxgross = list [0].toDouble();
+	      int maxwater = list [1].toInt();
+	      v1.setKph(list[2].toDouble());
+	      w1.setMps(list[3].toDouble());
+	      v2.setKph(list[4].toDouble());
+	      w2.setMps(list[5].toDouble());
+	      v3.setKph(list[6].toDouble());
+	      w3.setMps(list[7].toDouble());
+	      pol=new Polar(this, glidertype,v1,w1,v2,w2,v3,w3,0.0,0.0,0.0,maxgross);
+	      pol->setMaxWater(maxwater);
+	      m_polars.append(pol);
+	      break;
+	    }
+	}
     }
 
 #endif
 
+}
+#endif
+
+void GliderEditorNumPad::readLK8000PolarData()
+{
+  QStringList dirs;
+
+  dirs << GeneralConfig::instance()->getAppRoot() + "/etc"
+      << GeneralConfig::instance()->getDataRoot() + "/etc"
+      << GeneralConfig::instance()->getUserDataDirectory();
+
+  QStringList filters;
+  filters << "*.plr";
+
+  for( int i = 0; i < dirs.size(); ++i )
+    {
+      QDir dir( dirs.at(i) );
+
+      if( dir.exists() )
+	{
+	  // Look, if polar files are to find in that directory
+	  QStringList plrList = dir.entryList( filters, QDir::Files, QDir::Name );
+
+	  if( plrList.isEmpty() )
+	    {
+	      continue;
+	    }
+
+	  for( int j = 0; j < plrList.size(); j++ )
+	    {
+	      // Read in all found polar data files.
+	      Polar polar;
+	      bool ok = readLK8000PolarFile( dir.absolutePath() + "/" + plrList.at(j), polar );
+
+	      if( ok )
+		{
+		  m_polars.append( polar );
+		}
+	    }
+
+	  if( m_polars.size() )
+	    {
+	      // sort polar data list according to their names
+	      // qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
+
+	      for( int i = 0; i < m_polars.size(); i++ )
+		{
+		  comboType->addItem( m_polars[i].name() );
+		}
+
+	      QString firstGlider = comboType->itemText(0);
+	      slotActivated(firstGlider);
+	    }
+
+	  // We read only data from the the first place.
+	  return;
+	}
+    }
+
+  _globalMapView->slot_info(tr("Missing polar files"));
+
+  qWarning( "readLK8000PolarData(): Missing polar files" );
+}
+
+/*
+ * https://github.com/LK8000/LK8000/tree/master/Common/Distribution/LK8000/_Polars
+ *
+ * Format explanation: all lines starting with a * are comments and you can also have empty lines
+ *
+ * Field 1: Gross weight of the glider, excluded ballast, when the values were measured
+ * Field 2: Max ballast you can load (water). It will add wing loading, separately
+ * Field 3-4, 5-6, 7-8  are couples of  speed,sink rate  in km/h and m/s .
+ * 	these values are used to create an interpolated curve of sink rates
+ * Field 9: NEW! Normally winpilot does not have this value. Put here at all cost the glider
+ *          surface area in squared meters (m2). If the polar curve you are using does not have
+ *          this value, go on wikipedia to find the wing area for that glider and add it after a comma.
+ *
+ * Here is the REAL polar used internally, that you have to create or change, for a glider
+ * that during test flight was weighting 330kg including pilots and everything, that can load
+ * extra 90 liters of water ballast, that at 75km/h has a sink rate of 0.7 m/s , at 93 km/h of 0,74
+ * at 185 km/h sinks at 3.1 m/s and finally that has a wing surface of 10.6 m2.
+ * Thus, the polar was calculated with a default wing loading of 31.1 kg/m2
+
+ * So this is an example
+ *
+ * 330,	90,	75.0,	-0.7,	93.0,	-0.74,	185.00,	-3.1, 10.6
+ *
+ * Speed Astir.plr file content
+ *
+ * LK8000 polar for: Speed Astir
+ * MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
+ * 351,  90,  90, -0.63, 105, -0.72, 157, -2.00, 11.5   // BestLD40@105
+ *
+ */
+bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& polar )
+{
+  QFile polarFile( fileName );
+
+  if( polarFile.exists() == false )
+    {
+      qWarning() << "readLK8000PolarFile:" << fileName << "does not exists!";
+      return false;
+    }
+
+  if( polarFile.open(QIODevice::ReadOnly) == false )
+    {
+      qWarning() << "readLK8000PolarFile:" << fileName << "is not readable!";
+      return false;
+    }
+
+  // We take the polar file name as gilder type. The internal type description
+  // is sometimes missing.
+  polar.setName( QFileInfo(fileName).baseName() );
+
+  QTextStream stream( &polarFile );
+
+  int lineNo = 0;
+
+  while( !stream.atEnd() )
+    {
+      QString line = stream.readLine().trimmed();
+      lineNo++;
+
+      if( line.isEmpty() || line.startsWith("*") || line.startsWith("//") )
+	{
+	  continue;
+	}
+
+      // lines can contain at their right end C++ comments
+      QStringList items = line.split( "//" );
+      items = items.at(0).split( ",", QString::SkipEmptyParts );
+
+      if( items.size() < 9 )
+	{
+	  qWarning() << "Polar file"
+	      << QFileInfo(fileName).fileName()
+	      << "line"
+	      << lineNo
+	      << "contains to less items:"
+	      << line;
+
+	  polarFile.close();
+	  return false;
+	}
+
+      // Extract data
+      // MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
+      // 351,  90,  90, -0.63, 105, -0.72, 157, -2.00, 11.5   // BestLD40@105
+      for( int i = 0; i < 9; i++ )
+	{
+	  bool ok;
+	  double dv = items.at(i).trimmed().toDouble(&ok);
+
+	  Speed speed;
+
+	  if( ! ok )
+	    {
+	      polarFile.close();
+	      return false;
+	    }
+
+	  switch(i)
+	  {
+	    case 0:
+	      polar.setGrossWeight( dv );
+	      break;
+
+	    case 1:
+	      polar.setMaxWater( rint(dv) );
+	      break;
+
+	    case 2:
+	      speed.setKph( dv );
+	      polar.setV1( speed );
+	      break;
+
+	    case 3:
+	      speed.setMps( dv );
+	      polar.setW1( speed );
+	      break;
+
+	    case 4:
+	      speed.setKph( dv );
+	      polar.setV2( speed );
+	      break;
+
+	    case 5:
+	      speed.setMps( dv );
+	      polar.setW2( speed );
+	      break;
+
+	    case 6:
+	      speed.setKph( dv );
+	      polar.setV3( speed );
+	      break;
+
+	    case 7:
+	      speed.setMps( dv );
+	      polar.setW3( speed );
+	      break;
+
+	    case 8:
+	      polar.setWingArea( dv );
+	      break;
+
+	    default:
+	      break;
+	  }
+	}
+
+      polar.recalculatePolarData();
+      polarFile.close();
+      return true;
+    }
+
+  polarFile.close();
+  qWarning() << "readLK8000PolarFile:" << fileName << "contains no polar data!";
+  return false;
 }
 
 /** called when a glider type has been selected */
@@ -679,20 +896,19 @@ void GliderEditorNumPad::slotActivated(const QString& type)
       m_dneV3->setValue( m_polar->v3().getHorizontalValue() );
       m_dneW3->setValue( m_polar->w3().getVerticalValue() );
 
-      emptyWeight->setValue( (int) m_polar->emptyWeight() );
-      double load = m_polar->grossWeight() - m_polar->emptyWeight();
-      addedLoad->setValue( (int) load );
+      grossWeight->setValue( (int) m_polar->grossWeight() );
+      addedLoad->setValue( (int) m_polar->addLoad() );
 
       addedWater->setValue( m_polar->maxWater() );
 
       if( m_polar->seats() == 2 )
-        {
-          m_seats->setText( "2" );
-        }
+	{
+	  m_seats->setText( "2" );
+	}
       else
-        {
-          m_seats->setText( "1" );
-        }
+	{
+	  m_seats->setText( "1" );
+	}
     }
 }
 
@@ -711,10 +927,11 @@ void GliderEditorNumPad::slotButtonShow()
   Polar polar( edtGType->text(),
                V1, W1, V2, W2, V3, W3,
                m_dneWingArea->value(),
-               emptyWeight->value(),
-               emptyWeight->value() + addedLoad->value() );
+               0.0,
+               grossWeight->value(),
+               addedLoad->value() );
 
-  polar.setWater(addedWater->value(), 0);
+  polar.setWater( addedWater->value() );
   PolarDialog* dlg = new PolarDialog( polar, this );
   dlg->setVisible(true);
 }

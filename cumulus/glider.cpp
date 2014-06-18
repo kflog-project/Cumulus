@@ -22,7 +22,7 @@
 
 Glider::Glider() :
   _seats(singleSeater),
-  _maxWater(9),
+  _maxWater(0),
   _lastSafeID(-1)
 {
 }
@@ -38,7 +38,7 @@ bool Glider::load(QSettings *config, int id)
 
       // qDebug("Glider::load(): No of fetched glider items is %d", data.count());
 
-      // check to see if we have enough data members
+      // check to see if we have enough data members available
       if( data.count() < 15 )
         {
           return false;
@@ -68,20 +68,26 @@ bool Glider::load(QSettings *config, int id)
       W2.setMps( data[8].toDouble() );
       W3.setMps( data[10].toDouble() );
 
-      _polar = Polar( _type, V1, W1, // v/w pair 1
+      _polar = Polar( _type,
+                      V1, W1, // v/w pair 1
                       V2, W2, // v/w pair 2
                       V3, W3, // v/w pair 3
-                      data[12].toDouble(), // wingarea
+                      data[12].toDouble(), // wing area
                       data[13].toDouble(), // empty weight
                       data[14].toDouble() ); // gross weight
 
       _lastSafeID = id;
 
-      if( data.count() == 17 )
+      if( data.count() >= 17 )
         {
-          _polar.setWater( data[15].toInt(), 0 );
+	  _polar.setWater( data[15].toInt() );
           _coPilot = data[16];
         }
+
+      if( data.count() >= 18 )
+	{
+          _polar.setAddLoad( data[17].toDouble() );
+	}
 
       return true;
     }
@@ -122,6 +128,7 @@ void Glider::safe(QSettings *config, int id)
   data.append( QString::number( _polar.grossWeight() ) );
   data.append( QString::number( _polar.water() ) );
   data.append( _coPilot );
+  data.append( QString::number( _polar.addLoad() ) );
 
   QString keyname = "Glider%1";
   config->setValue( keyname.arg( id ), data.join( ";" ) );

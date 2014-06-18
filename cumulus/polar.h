@@ -47,22 +47,30 @@ public:
 
     Polar();
 
-    Polar(const QString& name,
-          const Speed& v1, const Speed& w1,
-          const Speed& v2, const Speed& w2,
-          const Speed& v3, const Speed& w3,
-          double wingarea,
-          double emptyWeight,
-          double grossWeight);
+    Polar( const QString& name,
+           const Speed& v1, const Speed& w1,
+           const Speed& v2, const Speed& w2,
+           const Speed& v3, const Speed& w3,
+           double wingArea,
+           double emptyWeight,
+           double grossWeight,
+           double addLoad=0.0 );
 
     Polar(const Polar&);
 
     virtual ~Polar();
 
     /**
+     * recalculates the polar data
+     */
+    void recalculatePolarData();
+
+    /**
+     * set additional load as Kg
+     * set additional water as liters or Kg
      * set bug factor as percentage
      */
-    void setWater (int water, int bugs);
+    void setLoad (int addLoad, int water, int bugs);
 
     Speed getSink (const Speed& speed) const;
 
@@ -82,47 +90,82 @@ public:
     void drawPolar (QWidget* view, const Speed& wind,
                     const Speed& lift, const Speed& mc) const;
 
-    QString name()const
+    QString name() const
     {
         return _name;
     };
+
+    void setName( const QString& name )
+    {
+      _name = name;
+    }
 
     Speed v1()const
     {
         return _v1;
     };
 
+    void setV1( const Speed& speed )
+    {
+      _v1 = speed;
+    }
+
     Speed w1()const
     {
         return _w1;
     };
+
+    void setW1( const Speed& speed )
+    {
+      _w1 = speed;
+    }
 
     Speed v2()const
     {
         return _v2;
     };
 
+    void setV2( const Speed& speed )
+    {
+      _v2 = speed;
+    }
+
     Speed w2()const
     {
         return _w2;
     };
+
+    void setW2( const Speed& speed )
+    {
+      _w2 = speed;
+    }
 
     Speed v3()const
     {
         return _v3;
     };
 
+    void setV3( const Speed& speed )
+    {
+      _v3 = speed;
+    }
+
     Speed w3()const
     {
         return _w3;
     };
 
-    double emptyWeight()const
+    void setW3( const Speed& speed )
+    {
+      _w3 = speed;
+    }
+
+    double emptyWeight() const
     {
         return _emptyWeight;
     };
 
-    double grossWeight()const
+    double grossWeight() const
     {
         return _grossWeight;
     };
@@ -132,7 +175,7 @@ public:
         _grossWeight = newValue;
     };
 
-    double wingArea()const
+    double wingArea() const
     {
         return _wingArea;
     };
@@ -142,17 +185,38 @@ public:
         _wingArea = newValue;
     };
 
-    int water()const
+    double addLoad() const
+    {
+        return _addLoad;
+    };
+
+    void setAddLoad(double newValue)
+    {
+      _addLoad = newValue;
+    };
+
+
+    int water() const
     {
         return _water;
     };
 
-    int bugs()const
+    void setWater( int water )
+    {
+      setLoad( _addLoad, water, _bugs );
+    };
+
+    int bugs() const
     {
         return _bugs;
     };
 
-    int seats()const
+    void setBugs( int bugs )
+    {
+      setLoad( _addLoad, _water, bugs );
+    };
+
+    int seats() const
     {
         return _seats;
     };
@@ -162,7 +226,7 @@ public:
         _seats=qMax(1, qMin(2, seats));
     };
 
-    int maxWater()const
+    int maxWater() const
     {
         return _maxWater;
     };
@@ -200,6 +264,7 @@ private:
     int    _bugs;
     double _emptyWeight;
     double _grossWeight;
+    double _addLoad;
     double _wingArea;
     int    _seats;
     int    _maxWater;

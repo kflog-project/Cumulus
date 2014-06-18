@@ -30,7 +30,7 @@
 #include "generalconfig.h"
 #include "glider.h"
 #include "layout.h"
-#include "mainwindow.h";
+#include "mainwindow.h"
 #include "numberEditor.h"
 #include "preflightgliderpage.h"
 
@@ -283,7 +283,7 @@ void PreFlightGliderPage::save()
         }
 
       glider->polar()->setGrossWeight(m_edtLoad->value() + glider->polar()->emptyWeight() );
-      glider->polar()->setWater(m_edtWater->value(), 0);
+      glider->polar()->setLoad(0, m_edtWater->value(), 0);
       // @AP: save changed added load permanently
       m_gliderList->save();
       glider = new Glider(*m_gliderList->getSelectedGlider(false));
@@ -350,7 +350,7 @@ void PreFlightGliderPage::slotWaterEdited( const QString& number )
 
   if( glider != 0 && glider->polar() != 0 )
     {
-      glider->polar()->setWater( number.toInt(), 0);
+      glider->polar()->setLoad( 0, number.toInt(), 0);
     }
 
   // Updates the wing load, if load or water have been edited.

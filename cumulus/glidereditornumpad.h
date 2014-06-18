@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * \brief This widget provides a glider editor dialog.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -69,10 +69,28 @@ private:
 
  private:
 
+#if 0
   /**
    * Reads in the data from the Cumulus polar file.
    */
   void readPolarData ();
+#endif
+
+  /**
+   * Reads in the LK8000 polar data files.
+   */
+  void readLK8000PolarData();
+
+  /**
+   * Reads the data from a single LK8000 polar file.
+   *
+   * \param fileName Name of the polar file
+   *
+   * \param polar Polar instance to be filled
+   *
+   * \return true in case of success otherwise false
+   */
+  bool readLK8000PolarFile( const QString& fileName, Polar& polar );
 
   /**
     * Called to initiate saving to the configuration file.
@@ -136,7 +154,7 @@ private:
   QLineEdit* edtGCall;
 
   QPushButton*  buttonShow;
-  NumberEditor* emptyWeight;
+  NumberEditor* grossWeight;
   NumberEditor* addedLoad;
   NumberEditor* addedWater;
   QPushButton*  m_seats;
