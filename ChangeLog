@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-06-18 AP: Polar data files taken over from LK8000. Adaptions to source
+                   of Cumulus have been done. The own glider.pol file is not
+                   used in the future due to high effort to maintain it.
+
 [o] 2014-06-12 AP: The user's set McCready value is saved permanently now.
 
 [*] 2014-06-06 AP: Cumulus 5.15.3 released for Android.
