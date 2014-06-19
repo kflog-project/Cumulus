@@ -33,6 +33,7 @@
 #define MAP_H
 
 #include <QMap>
+#include <QMutableMapIterator>
 #include <QPoint>
 #include <QWidget>
 #include <QBitmap>
@@ -520,6 +521,16 @@ private:
    */
   void p_drawRelBearingInfo();
 
+  /**
+   * Clears all entries from the map, where the suppress time has expired.
+   *
+   * \param it Mutable iterator of the map to be cleared
+   *
+   * \param suppressTime Elapsed suppress time for removing of map element.
+   */
+  void clearAirspaceMap( QMutableMapIterator<QString, QTime>& it,
+                         int suppressTime );
+
 #ifdef FLARM
 
   /**
@@ -684,6 +695,11 @@ protected:
   QMap<QString, int> _insideAsMap;   // AS Text and AS type
   QMap<QString, int> _veryNearAsMap; // AS Text and AS type
   QMap<QString, int> _nearAsMap;     // AS Text and AS type
+
+  /* Airspace conflicts touch times */
+  QMap<QString, QTime> _insideAsMapTouchTime;   // AS Text and touch time
+  QMap<QString, QTime> _veryNearAsMapTouchTime; // AS Text and touch time
+  QMap<QString, QTime> _nearAsMapTouchTime;     // AS Text and touch time
 
   /** last emitted airspace warning strings */
   QString _lastInsideAsInfo;

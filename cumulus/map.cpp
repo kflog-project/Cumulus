@@ -3005,6 +3005,19 @@ void Map::checkAirspace(const QPoint& pos)
   // fetch warning suppress time from configuration and compute it as milli seconds
   int warSupMS = GeneralConfig::instance()->getWarningSuppressTime() * 60 * 1000;
 
+  if( warSupMS > 0 )
+    {
+      // Tidy up suppress maps with stored conflicts, if warning suppression time
+      // is set.
+      QMutableMapIterator<QString, QTime> it(_insideAsMapTouchTime);
+      QMutableMapIterator<QString, QTime> vt(_veryNearAsMapTouchTime);
+      QMutableMapIterator<QString, QTime> nt(_nearAsMapTouchTime);
+
+      clearAirspaceMap( it, warSupMS );
+      clearAirspaceMap( vt, warSupMS );
+      clearAirspaceMap( nt, warSupMS );
+    }
+
   // fetch warning show time and compute it as milli seconds
   int showTime = GeneralConfig::instance()->getWarningDisplayTime() * 1000;
 
@@ -3076,6 +3089,19 @@ void Map::checkAirspace(const QPoint& pos)
           // collect all conflicting airspaces
           allInsideAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
 
+          // Check, if airspace is to suppress
+          if( warSupMS > 0 )
+            {
+              if( _insideAsMapTouchTime.contains(pSpace->getInfoString()) )
+        	{
+        	  // Yes suppress airspace
+        	  continue;
+        	}
+
+              // Add airspace to suppression control map
+              _insideAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
+            }
+
           // Check, if airspace is already known as conflict
           if( ! _insideAsMap.contains( pSpace->getInfoString() ) )
             {
@@ -3090,6 +3116,19 @@ void Map::checkAirspace(const QPoint& pos)
 
           // collect all conflicting airspaces
           allVeryNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
+
+          // Check, if airspace is to suppress
+          if( warSupMS > 0 )
+            {
+              if( _veryNearAsMapTouchTime.contains(pSpace->getInfoString()) )
+        	{
+        	  // Yes suppress airspace
+        	  continue;
+        	}
+
+              // Add airspace to suppression control map
+              _veryNearAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
+            }
 
           // Check, if airspace is already known as conflict. A warning is setup
           // only, if the previous state was not inside to avoid senseless alarms.
@@ -3107,6 +3146,19 @@ void Map::checkAirspace(const QPoint& pos)
 
           // collect all conflicting airspaces
           allNearAsMap.insert( pSpace->getInfoString(), pSpace->getTypeID() );
+
+          // Check, if airspace is to suppress
+          if( warSupMS > 0 )
+            {
+              if( _nearAsMapTouchTime.contains(pSpace->getInfoString()) )
+        	{
+        	  // Yes suppress airspace
+        	  continue;
+        	}
+
+              // Add airspace to suppression control map
+              _nearAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
+            }
 
           // Check, if airspace is already known as conflict. A warning is setup
           // only, if the previous state was not inside or very near to avoid
@@ -3186,13 +3238,6 @@ void Map::checkAirspace(const QPoint& pos)
           msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
         }
 
-      if ( _lastAsType != msg )
-      {
-          // show warning in status bar with alarm
-        _lastAsType = msg;
-        // emit alarm( msg, true );
-      }
-
       QMapIterator<QString, int> j(newInsideAsMap);
 
       while ( j.hasNext()  )
@@ -3205,20 +3250,6 @@ void Map::checkAirspace(const QPoint& pos)
                 + j.key()
                 + "</td></tr>";
           }
-
-      if( _lastInsideAsInfo == text )
-        {
-          if( _lastInsideTime.elapsed() <= warSupMS )
-            {
-              // suppression time is not expired, reset warning flag
-              warn = false;
-            }
-        }
-      else
-        {
-          _lastInsideTime.start(); // set last reporting time
-          _lastInsideAsInfo = text;  // save last warning info text
-        }
     }
   else if( ! newVeryNearAsMap.isEmpty() )
     {
@@ -3229,27 +3260,20 @@ void Map::checkAirspace(const QPoint& pos)
       bool first = true;
 
       while ( i.hasNext()  )
-      {
-        i.next();
+	{
+	  i.next();
 
-        if( ! first )
-          {
-            msg += ", ";
-          }
-        else
-          {
-            first = false;
-          }
+	  if( ! first )
+	    {
+	      msg += ", ";
+	    }
+	  else
+	    {
+	      first = false;
+	    }
 
-        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
-      }
-
-      if ( _lastAsType != msg )
-        {
-            // show warning in status bar
-          _lastAsType = msg;
-          // emit alarm( msg, true );
-        }
+	  msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+	}
 
       QMapIterator<QString, int> j(newVeryNearAsMap);
 
@@ -3263,20 +3287,6 @@ void Map::checkAirspace(const QPoint& pos)
                 + j.key()
                 + "</td></tr>";
           }
-
-      if( _lastVeryNearAsInfo == text )
-        {
-          if( _lastVeryNearTime.elapsed() < warSupMS )
-            {
-              // suppression time is not expired, reset warning flag
-              warn = false;
-            }
-        }
-      else
-        {
-          _lastVeryNearTime.start(); // set last reporting time
-          _lastVeryNearAsInfo = text;  // save last warning info text
-        }
      }
   else if ( ! newNearAsMap.isEmpty() )
     {
@@ -3286,27 +3296,20 @@ void Map::checkAirspace(const QPoint& pos)
       bool first = true;
 
       while ( i.hasNext()  )
-      {
-        i.next();
+	{
+	  i.next();
 
-        if( ! first )
-          {
-            msg += ", ";
-          }
-        else
-          {
-            first = false;
-          }
+	  if( ! first )
+	    {
+	      msg += ", ";
+	    }
+	  else
+	    {
+	      first = false;
+	    }
 
-        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
-     }
-
-      if ( _lastAsType != msg )
-        {
-          // show warning in status bar
-          _lastAsType = msg;
-          // emit alarm( msg, true );
-        }
+	  msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+       }
 
       QMapIterator<QString, int> j(newNearAsMap);
 
@@ -3320,158 +3323,7 @@ void Map::checkAirspace(const QPoint& pos)
                 + j.key()
                 + "</td></tr>";
           }
-
-      if( _lastNearAsInfo == text )
-        {
-          if( _lastNearTime.elapsed() < warSupMS )
-            {
-              // suppression time is not expired, reset warning flag
-              warn = false;
-            }
-        }
-      else
-        {
-          _lastNearTime.start(); // set last reporting time
-          _lastNearAsInfo = text;  // save last warning info text
-        }
     }
-
-#if 0
-
-  /** Statusbar display deactivated. It can cause a resize of the statusbar widget
-   * if the text is too long.
-   */
-
-  else if ( ! allInsideAsMap.isEmpty() &&
-            _lastNearTime.elapsed() > showTime &&
-            _lastVeryNearTime.elapsed() > showTime &&
-            _lastInsideTime.elapsed() > showTime )
-    {
-      // If no new warning is active we show the current inside airspace type
-      // in the status bar, if show time of warning has expired.
-      msg += tr("Inside") + " ";
-      QMapIterator<QString, int> i(allInsideAsMap);
-      bool first = true;
-
-      while ( i.hasNext()  )
-        {
-          i.next();
-
-          if( ! first )
-            {
-              msg += ", ";
-            }
-          else
-            {
-              first = false;
-            }
-
-          msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
-        }
-
-      if ( _lastAsType != msg )
-        {
-            // show warning in status bar without alarm
-          _lastAsType = msg;
-          // emit alarm( msg, false );
-        }
-
-      return;
-    }
-  else if ( ! allVeryNearAsMap.isEmpty() &&
-            _lastNearTime.elapsed() > showTime &&
-            _lastVeryNearTime.elapsed() > showTime &&
-            _lastInsideTime.elapsed() > showTime )
-    {
-      // If no new warning is active we show the current very near airspace type
-      // in the status bar, if show time of warning has expired.
-      msg += tr("Very Near") + " ";
-      QMapIterator<QString, int> i(allVeryNearAsMap);
-      bool first = true;
-
-      while ( i.hasNext()  )
-      {
-        i.next();
-
-        if( ! first )
-        {
-          msg += ", ";
-        }
-        else
-        {
-          first = false;
-        }
-
-        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
-      }
-
-      if ( _lastAsType != msg )
-      {
-         // show warning in status bar without alarm
-        _lastAsType = msg;
-        // emit alarm( msg, false );
-      }
-
-      return;
-    }
-  else if ( ! allNearAsMap.isEmpty() &&
-      _lastNearTime.elapsed() > showTime &&
-      _lastVeryNearTime.elapsed() > showTime &&
-      _lastInsideTime.elapsed() > showTime )
-    {
-      // If no new warning is active we show the current near airspace type
-      // in the status bar, if show time of warning has expired.
-      msg += tr("Near") + " ";
-      QMapIterator<QString, int> i(allNearAsMap);
-      bool first = true;
-
-      while ( i.hasNext()  )
-      {
-        i.next();
-
-        if( ! first )
-        {
-          msg += ", ";
-        }
-        else
-        {
-          first = false;
-        }
-
-        msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
-      }
-
-      if ( _lastAsType != msg )
-      {
-         // show warning in status bar without alarm
-        _lastAsType = msg;
-        // emit alarm( msg, false );
-      }
-
-      return;
-    }
-  else
-    {
-      // check, if no warning is active and the show time has expired
-      if( newInsideAsMap.isEmpty() && newVeryNearAsMap.isEmpty() && newNearAsMap.isEmpty() &&
-          allInsideAsMap.isEmpty() && allVeryNearAsMap.isEmpty() && allNearAsMap.isEmpty() &&
-          _lastNearTime.elapsed() > showTime &&
-          _lastVeryNearTime.elapsed() > showTime &&
-          _lastInsideTime.elapsed() > showTime )
-        {
-          if ( _lastAsType != "" )
-          {
-              // Reset warning in status bar without alarm, if no warning is active.
-            _lastAsType = "";
-            // Last message in status bar should not be cleared.
-            // emit alarm( " ", false );
-          }
-        }
-
-      return;
-    }
-
-#endif
 
   // Pop up a warning window with all data to touched airspace
   if ( warn == true )
@@ -3485,6 +3337,20 @@ void Map::checkAirspace(const QPoint& pos)
           box->show();
           return;
         }
+    }
+}
+
+void Map::clearAirspaceMap( QMutableMapIterator<QString, QTime>& it,
+                            int suppressTime )
+{
+  while( it.hasNext () )
+    {
+      it.next();
+
+      if( it.value().elapsed() > suppressTime )
+	{
+	  it.remove();
+	}
     }
 }
 
