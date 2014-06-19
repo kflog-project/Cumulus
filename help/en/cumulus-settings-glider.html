@@ -46,9 +46,9 @@
 		pairs of speed (in km/h) and rate of sink (in m/s). For optimal
 		results, take the values at the speed for best L/D as the first point,
 		V<sub>Ne</sub> as the third, and a point halfway between these as the
-		second point. Note that the boxes for <i>Added load</i> and <i>Max.
-			water</i> are only intended for use in checking what the polar would look
-		like at the all-up weight given by Empty weight + Added load + Max
+		second point. Note that the boxes for <i>Add. load</i> and <i>Max.
+		water</i> are only intended for use in checking what the polar would look
+		like at the all-up weight given by reference weight + Additional load + Max
 		water. They do not affect the in-flight speed-to-fly or gliding angle
 		calculations. However, if your glider can carry water, leave the full
 		amount entered here, as this value will limit the actual amount you
@@ -73,9 +73,11 @@
 	</p>
 
 	<p>
-		To add your own types to the selection list, please edit the file <i>glider.pol</i>
-		located at /opt/cumulus/etc. But better would be to send your polar
-		data to the Cumulus team for insertion into that file.
+		To add your own types to the selection list, please create your own polar
+		file in the polar directory located at /opt/cumulus/etc. Take an existing
+		file in that directory, make a copy of it and edit its content.
+		But better would be to send your polar data to the Cumulus team for insertion
+	  into the polar directory.
 	</p>
 
 	<p>The values for registration and call sign are used in the IGC

@@ -225,7 +225,7 @@
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1915"/>
+        <location filename="calculator.cpp" line="1927"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
@@ -248,23 +248,23 @@
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1730"/>
-        <location filename="calculator.cpp" line="1735"/>
+        <location filename="calculator.cpp" line="1742"/>
+        <location filename="calculator.cpp" line="1747"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1736"/>
+        <location filename="calculator.cpp" line="1748"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1794"/>
+        <location filename="calculator.cpp" line="1806"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1795"/>
+        <location filename="calculator.cpp" line="1807"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -727,13 +727,15 @@
     </message>
     <message>
         <location filename="glidereditornumpad.cpp" line="181"/>
-        <source>Empty weight:</source>
-        <translation>Leergewicht:</translation>
+        <source>Ref. weight:</source>
+        <oldsource>Empty weight:</oldsource>
+        <translation>Ref. Gewicht:</translation>
     </message>
     <message>
         <location filename="glidereditornumpad.cpp" line="217"/>
-        <source>Added load:</source>
-        <translation>Zuladung:</translation>
+        <source>Load corr.:</source>
+        <oldsource>Added load:</oldsource>
+        <translation>Zul. Korrektur:</translation>
     </message>
     <message>
         <location filename="glidereditornumpad.cpp" line="253"/>
@@ -746,27 +748,32 @@
         <translation>Zeige Polare</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="602"/>
+        <location filename="glidereditornumpad.cpp" line="601"/>
         <source>Missing polar file</source>
         <translation>Vermisse Polarendatei</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="744"/>
+        <location filename="glidereditornumpad.cpp" line="716"/>
+        <source>Missing polar files</source>
+        <translation>Vermisse Polar Dateien</translation>
+    </message>
+    <message>
+        <location filename="glidereditornumpad.cpp" line="973"/>
         <source>Missing glider type!</source>
         <translation>Vermisse Flugzeugtyp!</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="745"/>
+        <location filename="glidereditornumpad.cpp" line="974"/>
         <source>Please enter a valid glider type.</source>
         <translation>Geben Sie einen Flugzeugtyp ein.</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="749"/>
+        <location filename="glidereditornumpad.cpp" line="978"/>
         <source>Missing registration!</source>
         <translation>Vermisse Kennzeichen!</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="750"/>
+        <location filename="glidereditornumpad.cpp" line="979"/>
         <source>Please enter a valid registration.</source>
         <translation>Geben Sie ein gültiges Kennzeichen ein..</translation>
     </message>
@@ -1324,7 +1331,7 @@
         <location filename="mainwindow.cpp" line="2589"/>
         <source>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://github.com/kflog-project/Cumulus&quot;&gt;github.com/kflog-project/Cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt; or to &lt;a href=&quot;https://github.com/kflog-project/Cumulus/issues&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</source>
         <oldsource>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://svn.kflog.org/svn/repos/cumulus/qt4&quot;&gt;https://svn.kflog.org/svn/repos/cumulus/qt4&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</oldsource>
-        <translation type="unfinished">&lt;hml&gt;Cumulus %1, kompiliert am %2 mit QT %3&lt;br&gt;&lt;br&gt;Heimatseite: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Archiv: &lt;a href=&quot;https://github.com/kflog-project/Cumulus&quot;&gt;github.com/kflog-project/Cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Melden Sie Probleme an: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt; oder zu &lt;a href=&quot;https://github.com/kflog-project/Cumulus/issues&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;&lt;br&gt;Veröffentlicht unter der &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</translation>
+        <translation>&lt;hml&gt;Cumulus %1, kompiliert am %2 mit QT %3&lt;br&gt;&lt;br&gt;Heimatseite: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Archiv: &lt;a href=&quot;https://github.com/kflog-project/Cumulus&quot;&gt;github.com/kflog-project/Cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;Melden Sie Probleme an: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt; oder zu &lt;a href=&quot;https://github.com/kflog-project/Cumulus/issues&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;&lt;br&gt;Veröffentlicht unter der &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="2602"/>
@@ -1558,52 +1565,49 @@
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3149"/>
+        <location filename="map.cpp" line="3201"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3153"/>
+        <location filename="map.cpp" line="3205"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3158"/>
-        <location filename="map.cpp" line="3513"/>
+        <location filename="map.cpp" line="3210"/>
+        <location filename="map.cpp" line="3379"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3169"/>
-        <location filename="map.cpp" line="3203"/>
-        <location filename="map.cpp" line="3352"/>
-        <location filename="map.cpp" line="3535"/>
+        <location filename="map.cpp" line="3221"/>
+        <location filename="map.cpp" line="3248"/>
+        <location filename="map.cpp" line="3401"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3226"/>
-        <location filename="map.cpp" line="3261"/>
-        <location filename="map.cpp" line="3388"/>
-        <location filename="map.cpp" line="3549"/>
+        <location filename="map.cpp" line="3257"/>
+        <location filename="map.cpp" line="3285"/>
+        <location filename="map.cpp" line="3415"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3284"/>
-        <location filename="map.cpp" line="3318"/>
-        <location filename="map.cpp" line="3424"/>
-        <location filename="map.cpp" line="3563"/>
+        <location filename="map.cpp" line="3294"/>
+        <location filename="map.cpp" line="3321"/>
+        <location filename="map.cpp" line="3429"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3513"/>
+        <location filename="map.cpp" line="3379"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="map.cpp" line="3523"/>
+        <location filename="map.cpp" line="3389"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
@@ -2136,8 +2140,9 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="preflightgliderpage.cpp" line="76"/>
-        <source>Added load:</source>
-        <translation>Zuladung:</translation>
+        <source>Load corr:</source>
+        <oldsource>Added load:</oldsource>
+        <translation>Zul. Korrektur:</translation>
     </message>
     <message>
         <location filename="preflightgliderpage.cpp" line="89"/>
@@ -3407,59 +3412,63 @@ Alle Downloads verworfen!</translation>
         <translation>%1 auf %2</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="542"/>
-        <location filename="polar.cpp" line="548"/>
+        <location filename="polar.cpp" line="581"/>
+        <location filename="polar.cpp" line="587"/>
         <source>Wind: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="543"/>
-        <location filename="polar.cpp" line="553"/>
+        <location filename="polar.cpp" line="582"/>
+        <location filename="polar.cpp" line="592"/>
         <source>Lift: </source>
         <translation>Steigen:</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="561"/>
         <source>Added load: %1 Kg</source>
-        <translation>Zuladung: %1 Kg</translation>
+        <translation type="obsolete">Zuladung: %1 Kg</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="571"/>
+        <location filename="polar.cpp" line="596"/>
+        <source>Dry weight: %1 Kg</source>
+        <translation>Trockengew.: %1 Kg</translation>
+    </message>
+    <message>
+        <location filename="polar.cpp" line="605"/>
         <source>Water ballast: %1 l</source>
         <translation>Wasserballast: %1 l</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="581"/>
+        <location filename="polar.cpp" line="615"/>
         <source>Bugs: %1 %</source>
         <translation>Mücken: %1 %</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="587"/>
+        <location filename="polar.cpp" line="621"/>
         <source>Best speed: %1, Sinking: %2</source>
         <translation>Beste Geschw.: %1, Sinken: %2</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="593"/>
+        <location filename="polar.cpp" line="627"/>
         <source>Best L/D: %1</source>
         <translation>Gleiten: %1</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="610"/>
+        <location filename="polar.cpp" line="635"/>
         <source>Wing load:</source>
         <translation>Flächenlast:</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="623"/>
+        <location filename="polar.cpp" line="648"/>
         <source>Use cursor right/left to simulate wind</source>
         <translation>Pfeil rechts/links simuliert Wind</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="625"/>
+        <location filename="polar.cpp" line="650"/>
         <source>Use cursor up/down to set lift</source>
         <translation>Pfeil Hoch/runter für steigen</translation>
     </message>
     <message>
-        <location filename="polar.cpp" line="627"/>
+        <location filename="polar.cpp" line="652"/>
         <source>Use &lt;Shift&gt; up/down to adjust sinking</source>
         <translation>&lt;Shift&gt; hoch/runter für sinken</translation>
     </message>
