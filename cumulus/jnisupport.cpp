@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2013 by Axel Pauli
+ **                   2012-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -101,23 +101,25 @@ void jniShutdown( bool option )
   // the GUI part. Otherwise the App can crash in the shutdown phase.
   shutdown = option;
 
+  bool ok = jniEnv();
+
+  if( ok )
+    {
+      // Tells the Java side, the state of the native part. Is option is true,
+      // the native side is going down. The java side removes then all handlers,
+      // which can call the native side to avoid unexpected behavior.
+      m_jniEnv->CallVoidMethod( m_jniProxyObject,
+				m_nativeShutdownID,
+				(jboolean) option );
+
+      if (isJavaExceptionOccured())
+	{
+	  qWarning("jniShutdown: exception when calling Java method \"nativeShutdown\"");
+	}
+    }
+
   if( shutdown == true )
     {
-      bool ok = jniEnv();
-
-      if( ok )
-        {
-          // Tells the Java side, that the native part is going down. The java side
-          // removes all handlers, which can call the native side to avoid
-          // unexpected behavior.
-          m_jniEnv->CallVoidMethod( m_jniProxyObject, m_nativeShutdownID );
-
-          if (isJavaExceptionOccured())
-            {
-              qWarning("jniShutdown: exception when calling Java method \"nativeShutdown\"");
-            }
-        }
-
       jniDetachCurrentThread();
     }
 }
@@ -450,7 +452,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   m_nativeShutdownID = m_jniEnv->GetMethodID( clazz,
                                               "nativeShutdown",
-                                              "()V");
+                                              "(Z)V");
 
   if (isJavaExceptionOccured())
   {

@@ -123,6 +123,9 @@ public class CumulusActivity extends QtActivity
   private boolean m_currentDimmState = false;
   private boolean m_requestedDimmState = false;
   
+  // Flag to store state of native side.
+  private boolean m_nativeIsUp = false;
+  
   // This list stores the GPS menu items
   private List<String> gpsMenuItems = new ArrayList<String>();
 
@@ -974,6 +977,12 @@ public class CumulusActivity extends QtActivity
   public boolean onKeyDown(int keyCode, KeyEvent event)
   {
     Log.d(TAG, "onKeyDown, key pressed: " + event.toString());
+    
+    if( ! m_nativeIsUp )
+      {
+	// ignore key events, if native is not up
+        return true;
+      }
 
     // There was a problem report on Google Developer, that a native function
     // was not found. Maybe it was not yet loaded.
@@ -1013,6 +1022,12 @@ public class CumulusActivity extends QtActivity
   public boolean onKeyUp(int keyCode, KeyEvent event)
   {
     Log.d(TAG, "onKeyUp, key pressed: " + event.toString());
+
+    if( ! m_nativeIsUp )
+      {
+	// ignore key events, if native is not up
+        return true;
+      }
 
     if (keyCode == KeyEvent.KEYCODE_BACK)
       {
@@ -1808,13 +1823,21 @@ public class CumulusActivity extends QtActivity
   }
 
   /**
-   * Called from the native side to signal a shutdown. In that case all
-   * connections at java side should be closed to avoid a calling of the native
-   * side.
+   * Called from the native side to signal a complete startup or that a shutdown
+   * is requested. In shutdown case all connections at java side will be closed
+   * to avoid a calling of the native side.
    */
-  synchronized void nativeShutdown()
+  synchronized void nativeShutdown( boolean state)
   {
-    Log.d(TAG, "nativeShutdown");
+    Log.d( TAG, "nativeShutdown=" + state );
+    
+    m_nativeIsUp = state;
+    
+    if( state == true )
+      {
+        // Store only the true state.
+        return;
+      }
 
     gpsEnabled = false;
 
