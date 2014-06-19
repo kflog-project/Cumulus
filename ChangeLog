@@ -15,9 +15,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-06-19 AP: Bugfix: Airspace warning suppression did not work properly.
+
+[-] 2014-06-19 AP: Bugfix: Update glide path was missing when a new wind value
+                   was available.
+
 [o] 2014-06-18 AP: Polar data files taken over from LK8000. Adaptions to source
-                   of Cumulus have been done. The own glider.pol file is not
-                   used in the future due to high effort to maintain it.
+                   code of Cumulus have been done. The own glider.pol file is not
+                   more used in the future due to high effort to maintain it.
 
 [o] 2014-06-12 AP: The user's set McCready value is saved permanently now.
 

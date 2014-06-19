@@ -1055,11 +1055,18 @@ void Calculator::slot_McDown()
  */
 void Calculator::slot_WaterAndBugs( const int water, const int bugs )
 {
-  if( m_glider &&
-      (m_glider->polar()->water() != water ||
-       m_glider->polar()->bugs() != bugs) )
+  if( m_glider )
     {
-      m_glider->polar()->setLoad( 0, water, bugs );
+      if(m_glider->polar()->water() != water )
+	{
+	  m_glider->polar()->setWater( water );
+	}
+
+      if( m_glider->polar()->bugs() != bugs )
+	{
+	  m_glider->polar()->setBugs( bugs );
+	}
+
       calcGlidePath();
     }
 }
@@ -1580,6 +1587,7 @@ void Calculator::slot_Wind(Vector& v)
 
   setLastWind(v);
   emit newWind(v); // forwards the wind info to the MapView
+  calcGlidePath();
 }
 
 void Calculator::slot_ManualWindChanged( bool enabled )
@@ -1608,6 +1616,7 @@ void Calculator::slot_ManualWindChanged( bool enabled )
 
   setLastWind(v);
   emit newWind(v); // forwards the wind info to the MapView
+  calcGlidePath();
 }
 
 void Calculator::slot_userMapZoom()

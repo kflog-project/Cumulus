@@ -78,45 +78,45 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   if( m_isNew )
     {
       itemsLayout->addWidget(new QLabel(tr("Glider Pool:"), this), row, 0);
-      comboType = new QComboBox(this);
-      comboType->setEditable(false);
-      comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+      m_comboType = new QComboBox(this);
+      m_comboType->setEditable(false);
+      m_comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
 #ifdef QSCROLLER
-      comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-      QScroller::grabGesture( comboType->view()->viewport(), QScroller::LeftMouseButtonGesture );
+      m_comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+      QScroller::grabGesture( m_comboType->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-      comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-      QtScroller::grabGesture( comboType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+      m_comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+      QtScroller::grabGesture( m_comboType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
-      itemsLayout->addWidget(comboType, row, 1, 1, 3);
+      itemsLayout->addWidget(m_comboType, row, 1, 1, 3);
       row++;
     }
 
   Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
 
   itemsLayout->addWidget(new QLabel(tr("Glider Type:"), this), row, 0);
-  edtGType = new QLineEdit(this);
-  imh |= edtGType->inputMethodHints();
-  edtGType->setInputMethodHints(imh);
+  m_edtGType = new QLineEdit(this);
+  imh |= m_edtGType->inputMethodHints();
+  m_edtGType->setInputMethodHints(imh);
 
-  connect( edtGType, SIGNAL(returnPressed()),
+  connect( m_edtGType, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
-  itemsLayout->addWidget(edtGType, row, 1, 1, 3);
+  itemsLayout->addWidget(m_edtGType, row, 1, 1, 3);
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Registration:"), this), row, 0);
-  edtGReg = new QLineEdit(this);
-  edtGReg->setInputMethodHints(imh);
+  m_edtGReg = new QLineEdit(this);
+  m_edtGReg->setInputMethodHints(imh);
 
-  connect( edtGReg, SIGNAL(returnPressed()),
+  connect( m_edtGReg, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
-  itemsLayout->addWidget(edtGReg, row, 1);
+  itemsLayout->addWidget(m_edtGReg, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Seats:"), this), row, 2);
   m_seats = new QPushButton( this );
@@ -126,13 +126,13 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Call Sign:"), this), row, 0);
-  edtGCall = new QLineEdit(this);
-  edtGCall->setInputMethodHints(imh);
+  m_edtGCall = new QLineEdit(this);
+  m_edtGCall->setInputMethodHints(imh);
 
-  connect( edtGCall, SIGNAL(returnPressed()),
+  connect( m_edtGCall, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
-  itemsLayout->addWidget(edtGCall, row, 1);
+  itemsLayout->addWidget(m_edtGCall, row, 1);
 
   itemsLayout->addWidget(new QLabel(tr("Wing Area:"), this), row, 2);
 
@@ -178,15 +178,15 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(m_dneW1, srow, 3);
 
-  spinboxLayout->addWidget(new QLabel(tr("Gross wt:"), this), srow, 4);
+  spinboxLayout->addWidget(new QLabel(tr("Ref. weight:"), this), srow, 4);
 
-  grossWeight = new NumberEditor( this );
-  grossWeight->setDecimalVisible( false );
-  grossWeight->setPmVisible( false );
-  grossWeight->setMaxLength(4);
-  grossWeight->setSuffix(" kg");
-  grossWeight->setRange( 0, 9999 );
-  spinboxLayout->addWidget(grossWeight, srow, 5);
+  m_grossWeight = new NumberEditor( this );
+  m_grossWeight->setDecimalVisible( false );
+  m_grossWeight->setPmVisible( false );
+  m_grossWeight->setMaxLength(4);
+  m_grossWeight->setSuffix(" kg");
+  m_grossWeight->setRange( 0, 9999 );
+  spinboxLayout->addWidget(m_grossWeight, srow, 5);
   srow++;
 
   spinboxLayout->addWidget(new QLabel("v2", this), srow, 0);
@@ -214,15 +214,15 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(m_dneW2, srow, 3);
 
-  spinboxLayout->addWidget(new QLabel(tr("Added load:"), this), srow, 4);
+  spinboxLayout->addWidget(new QLabel(tr("Load corr.:"), this), srow, 4);
 
-  addedLoad = new NumberEditor( this );
-  addedLoad->setDecimalVisible( false );
-  addedLoad->setPmVisible( true );
-  addedLoad->setMaxLength(4);
-  addedLoad->setSuffix(" kg");
-  addedLoad->setRange( -999, 999 );
-  spinboxLayout->addWidget(addedLoad, srow, 5);
+  m_addedLoad = new NumberEditor( this );
+  m_addedLoad->setDecimalVisible( false );
+  m_addedLoad->setPmVisible( true );
+  m_addedLoad->setMaxLength(4);
+  m_addedLoad->setSuffix(" kg");
+  m_addedLoad->setRange( -999, 999 );
+  spinboxLayout->addWidget(m_addedLoad, srow, 5);
   srow++;
 
   spinboxLayout->addWidget(new QLabel("v3:", this), srow, 0);
@@ -252,22 +252,22 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   spinboxLayout->addWidget(new QLabel(tr("Max. water:"), this), srow, 4);
 
-  addedWater = new NumberEditor( this );
-  addedWater->setDecimalVisible( false );
-  addedWater->setPmVisible( false );
-  addedWater->setMaxLength(4);
-  addedWater->setSuffix(" l");
-  addedWater->setRange( 0, 9999 );
-  spinboxLayout->addWidget(addedWater, srow++, 5);
+  m_addedWater = new NumberEditor( this );
+  m_addedWater->setDecimalVisible( false );
+  m_addedWater->setPmVisible( false );
+  m_addedWater->setMaxLength(4);
+  m_addedWater->setSuffix(" l");
+  m_addedWater->setRange( 0, 9999 );
+  spinboxLayout->addWidget(m_addedWater, srow++, 5);
   spinboxLayout->setColumnStretch(6, 10);
   spinboxLayout->setRowMinimumHeight(srow++, 20);
 
-  buttonShow = new QPushButton(tr("Show Polar"));
+  m_buttonShow = new QPushButton(tr("Show Polar"));
 
   QHBoxLayout* buttonRow = new QHBoxLayout;
   buttonRow->setSpacing(0);
   buttonRow->addStretch( 10 );
-  buttonRow->addWidget( buttonShow );
+  buttonRow->addWidget( m_buttonShow );
 
   spinboxLayout->addLayout(buttonRow, srow++, 0, 1, 6);
   spinboxLayout->setRowStretch( srow++, 10 );
@@ -278,11 +278,11 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   if( m_isNew )
     {
-      connect (comboType, SIGNAL(activated(const QString&)),
+      connect (m_comboType, SIGNAL(activated(const QString&)),
                this, SLOT(slotActivated(const QString&)));
     }
 
-  connect(buttonShow, SIGNAL(pressed()), this, SLOT(slotButtonShow()));
+  connect(m_buttonShow, SIGNAL(pressed()), this, SLOT(slotButtonShow()));
 
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton(this);
@@ -332,7 +332,7 @@ void GliderEditorNumPad::showEvent( QShowEvent *event )
 
 Polar* GliderEditorNumPad::getPolar()
 {
-  int pos = comboType->currentIndex();
+  int pos = m_comboType->currentIndex();
 
   if ((pos >= 0) && (pos < m_polars.count()))
     {
@@ -349,11 +349,11 @@ void GliderEditorNumPad::load()
 {
   if (m_glider)
     {
-      edtGType->setText(m_glider->type());
-      edtGReg->setText(m_glider->registration());
-      edtGCall->setText(m_glider->callSign());
+      m_edtGType->setText(m_glider->type());
+      m_edtGReg->setText(m_glider->registration());
+      m_edtGCall->setText(m_glider->callSign());
       m_dneWingArea->setValue( m_glider->polar()->wingArea() );
-      addedWater->setValue(m_glider->maxWater());
+      m_addedWater->setValue(m_glider->maxWater());
 
       if (m_glider->seats() == Glider::doubleSeater)
 	{
@@ -372,8 +372,8 @@ void GliderEditorNumPad::load()
       m_dneW2->setValue( m_glider->polar()->w2().getVerticalValue() );
       m_dneW3->setValue( m_glider->polar()->w3().getVerticalValue() );
 
-      grossWeight->setValue((int) m_glider->polar()->grossWeight());
-      addedLoad->setValue((int) m_glider->polar()->addLoad() );
+      m_grossWeight->setValue((int) m_glider->polar()->grossWeight());
+      m_addedLoad->setValue((int) m_glider->polar()->addLoad() );
 
       // Save load values to avoid rounding errors during save
       m_currV1 = m_dneV1->value();
@@ -396,10 +396,10 @@ void GliderEditorNumPad::save()
 
   // Note: If the following strings contains a semicolon it must be replaced
   // by another character. Otherwise storing will fail.
-  m_glider->setType(edtGType->text().trimmed().replace(";", ","));
-  m_glider->setRegistration(edtGReg->text().trimmed().replace(";", ","));
-  m_glider->setCallSign(edtGCall->text().trimmed().replace(";", ","));
-  m_glider->setMaxWater(addedWater->value());
+  m_glider->setType(m_edtGType->text().trimmed().replace(";", ","));
+  m_glider->setRegistration(m_edtGReg->text().trimmed().replace(";", ","));
+  m_glider->setCallSign(m_edtGCall->text().trimmed().replace(";", ","));
+  m_glider->setMaxWater(m_addedWater->value());
 
   if (m_seats->text() == "2" )
     {
@@ -483,8 +483,8 @@ void GliderEditorNumPad::save()
                V1, W1, V2, W2, V3, W3,
                m_dneWingArea->value(),
                0.0,
-               grossWeight->value(),
-               addedLoad->value() );
+               m_grossWeight->value(),
+               m_addedLoad->value() );
 
   m_glider->setPolar( polar );
 
@@ -589,11 +589,11 @@ void GliderEditorNumPad::readPolarData()
 
 	  for( int i = 0; i < m_polars.size(); i++ )
 	    {
-	      comboType->addItem( m_polars[i].name() );
+	      m_comboType->addItem( m_polars[i].name() );
 	    }
 	}
 
-      QString firstGlider = comboType->itemText(0);
+      QString firstGlider = m_comboType->itemText(0);
       slotActivated(firstGlider);
     }
   else
@@ -628,7 +628,7 @@ void GliderEditorNumPad::readPolarData()
 	      if (line[0] == '*')
 		continue;
 	      QStringList list = QStringList::split(',',line,TRUE);
-	      comboType->addItem (glidertype);
+	      m_comboType->addItem (glidertype);
 
 	      // vertical speeds are already negative in these files !
 	      Speed v1,w1,v2,w2,v3,w3;
@@ -657,11 +657,15 @@ void GliderEditorNumPad::readLK8000PolarData()
 {
   QStringList dirs;
 
+  // Directories where we expect polar data files. The first directory, which
+  // contains polar files is taken. The rest is ignored then.
   dirs << GeneralConfig::instance()->getAppRoot() + "/etc"
-      << GeneralConfig::instance()->getDataRoot() + "/etc"
-      << GeneralConfig::instance()->getUserDataDirectory();
+       << GeneralConfig::instance()->getDataRoot() + "/etc"
+       << GeneralConfig::instance()->getUserDataDirectory();
 
   QStringList filters;
+
+  // File extension of LK8000 polar files
   filters << "*.plr";
 
   for( int i = 0; i < dirs.size(); ++i )
@@ -670,7 +674,7 @@ void GliderEditorNumPad::readLK8000PolarData()
 
       if( dir.exists() )
 	{
-	  // Look, if polar files are to find in that directory
+	  // Look, if polar files are to find in this directory
 	  QStringList plrList = dir.entryList( filters, QDir::Files, QDir::Name );
 
 	  if( plrList.isEmpty() )
@@ -697,14 +701,14 @@ void GliderEditorNumPad::readLK8000PolarData()
 
 	      for( int i = 0; i < m_polars.size(); i++ )
 		{
-		  comboType->addItem( m_polars[i].name() );
+		  m_comboType->addItem( m_polars[i].name() );
 		}
 
-	      QString firstGlider = comboType->itemText(0);
-	      slotActivated(firstGlider);
+	      // Activate first glider entry in the combo box.
+	      slotActivated( m_comboType->itemText(0) );
 	    }
 
-	  // We read only data from the the first place.
+	  // We read only data from the first directory with polar files.
 	  return;
 	}
     }
@@ -760,9 +764,16 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
       return false;
     }
 
-  // We take the polar file name as gilder type. The internal type description
-  // is sometimes missing.
-  polar.setName( QFileInfo(fileName).baseName() );
+  // We take the polar file name as gilder type name. The type description
+  // is sometimes missing in the file.
+  QString name = QFileInfo(fileName).baseName();
+  polar.setName( name );
+
+  if( name.contains( "(PAS)") )
+    {
+      // Polar of a double seater was selected
+      polar.setSeats( 2 );
+    }
 
   QTextStream stream( &polarFile );
 
@@ -778,24 +789,25 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
 	  continue;
 	}
 
-      // lines can contain at their right end C++ comments
+      // Lines can contain at their right end C++ comments. This part must be
+      // removed first.
       QStringList items = line.split( "//" );
       items = items.at(0).split( ",", QString::SkipEmptyParts );
 
       if( items.size() < 9 )
 	{
 	  qWarning() << "Polar file"
-	      << QFileInfo(fileName).fileName()
-	      << "line"
-	      << lineNo
-	      << "contains to less items:"
-	      << line;
+	             << QFileInfo(fileName).fileName()
+	             << "line"
+	             << lineNo
+	             << "contains to less items:"
+	             << line;
 
 	  polarFile.close();
 	  return false;
 	}
 
-      // Extract data
+      // Extract data, Example is from Spped Astir.
       // MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
       // 351,  90,  90, -0.63, 105, -0.72, 157, -2.00, 11.5   // BestLD40@105
       for( int i = 0; i < 9; i++ )
@@ -879,7 +891,7 @@ void GliderEditorNumPad::slotActivated(const QString& type)
       m_gliderCreated = true;
     }
 
-  edtGType->setText( type );
+  m_edtGType->setText( type );
   m_glider->setType( type );
 
   m_polar = getPolar();
@@ -896,10 +908,10 @@ void GliderEditorNumPad::slotActivated(const QString& type)
       m_dneV3->setValue( m_polar->v3().getHorizontalValue() );
       m_dneW3->setValue( m_polar->w3().getVerticalValue() );
 
-      grossWeight->setValue( (int) m_polar->grossWeight() );
-      addedLoad->setValue( (int) m_polar->addLoad() );
+      m_grossWeight->setValue( (int) m_polar->grossWeight() );
+      m_addedLoad->setValue( (int) m_polar->addLoad() );
 
-      addedWater->setValue( m_polar->maxWater() );
+      m_addedWater->setValue( m_polar->maxWater() );
 
       if( m_polar->seats() == 2 )
 	{
@@ -924,14 +936,14 @@ void GliderEditorNumPad::slotButtonShow()
   W2.setVerticalValue(m_dneW2->value());
   W3.setVerticalValue(m_dneW3->value());
 
-  Polar polar( edtGType->text(),
+  Polar polar( m_edtGType->text(),
                V1, W1, V2, W2, V3, W3,
                m_dneWingArea->value(),
                0.0,
-               grossWeight->value(),
-               addedLoad->value() );
+               m_grossWeight->value(),
+               m_addedLoad->value() );
 
-  polar.setWater( addedWater->value() );
+  polar.setWater( m_addedWater->value() );
   PolarDialog* dlg = new PolarDialog( polar, this );
   dlg->setVisible(true);
 }
@@ -950,18 +962,18 @@ void GliderEditorNumPad::slot_changeSeats()
 
 void GliderEditorNumPad::accept()
 {
-  edtGType->setText(edtGType->text().trimmed()); //remove spaces
-  edtGReg->setText(edtGReg->text().trimmed()); //remove spaces
+  m_edtGType->setText(m_edtGType->text().trimmed()); //remove spaces
+  m_edtGReg->setText(m_edtGReg->text().trimmed()); //remove spaces
 
   QString title;
   QString text;
 
-  if (edtGType->text().isEmpty() )
+  if (m_edtGType->text().isEmpty() )
     {
       title = tr("Missing glider type!");
       text  = tr("Please enter a valid glider type.");
     }
-  else if (edtGReg->text().isEmpty())
+  else if (m_edtGReg->text().isEmpty())
     {
       title = tr( "Missing registration!" );
       text  = tr( "Please enter a valid registration." );

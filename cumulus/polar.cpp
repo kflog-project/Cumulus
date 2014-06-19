@@ -5,7 +5,7 @@
     copyright            : (C) 2002      by Eggert Ehmke
                                2008-2014 by Axel Pauli
 
-    email                : eggert.ehmke@berlin.de, kflog.cumulus@gmail.com
+    email                : kflog.cumulus@gmail.com
 
     $Id$
 
@@ -44,7 +44,7 @@ Polar::Polar() :
   _bugs(0),
   _emptyWeight(0),
   _grossWeight(0),
-  _addLoad(0.0),
+  _addLoad(0),
   _wingArea(0),
   _seats(0),
   _maxWater(0)
@@ -56,9 +56,9 @@ Polar::Polar( const QString& name,
               const Speed& v2, const Speed& w2,
               const Speed& v3, const Speed& w3,
               double wingArea,
-              double emptyWeight,
-              double grossWeight,
-              double addLoad ) :
+              int emptyWeight,
+              int grossWeight,
+              int addLoad ) :
     _name(name),
     _v1(v1),
     _w1(w1),
@@ -90,21 +90,21 @@ Polar::Polar( const QString& name,
     }
   else
     {
-      _a = _aa = ((V2-V3)*(W1-W3)+(V3-V1)*(W2-W3))/d;
+      _a = _aa = ((V2-V3)*(W1-W3)+(V3-V1)*(W2-W3)) / d;
     }
 
   d = V2-V3;
 
   if (d == 0.0)
     {
-      _b = _bb=0.0;
+      _b = _bb =0.0;
     }
   else
     {
-      _b =_bb = (W2-W3-_aa*(V2*V2-V3*V3))/d;
+      _b =_bb = (W2-W3-_aa*(V2*V2-V3*V3)) / d;
     }
 
-  _c = _cc = W3 - _aa*V3*V3 - _bb*V3;
+  _c = _cc = W3 - (_aa*V3*V3) - (_bb*V3);
 
   if( _addLoad > 0 )
     {
@@ -187,16 +187,16 @@ void Polar::setLoad( int addLoad, int water, int bugs )
   double A = 1.0;
 
   // qDebug( "Polar::setWater: water=%d, bugs=%d, addedLoad=%f", water, bugs, addedLoad );
-  if( _grossWeight > 0.0 && ( addLoad > 0 || _water > 0 ) )
+  if( _grossWeight > 0 && ( _addLoad > 0 || _water > 0 ) )
     {
-      A = sqrt( (_grossWeight + addLoad + _water) / _grossWeight );
+      A = sqrt( double(_grossWeight + _addLoad + _water) / double(_grossWeight) );
     }
 
   double B = 1.0;
 
   if( _bugs > 0 )
     {
-      B = sqrt(1.0 + _bugs/100.0);
+      B = sqrt(1.0 + double(_bugs)/100.0);
     }
 
   // qDebug ("a:%f, b:%f, c:%f", _aa, _bb, _cc);
@@ -263,8 +263,10 @@ double Polar::bestLD (const Speed& airspeed,
 /** draw a graphical polar on the given widget;
   * draw glide path according to lift, wind and McCready value
   */
-void Polar::drawPolar (QWidget* view, const Speed& wind,
-                       const Speed& lift, const Speed& mc) const
+void Polar::drawPolar( QWidget* view,
+                       const Speed& wind,
+                       const Speed& lift,
+                       const Speed& mc ) const
 {
     QPainter p(view);
     p.translate (15, 30);
@@ -593,7 +595,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
 
     msg = QString( QObject::tr("Dry weight: %1 Kg") ).arg((int)(_grossWeight + _addLoad));
 
-    if ( _water != 0 )
+    if ( _water > 0 )
       {
         if( msg.size() > 0 )
           {
@@ -603,7 +605,7 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
         msg += QString( QObject::tr("Water ballast: %1 l").arg(_water) );
       }
 
-    if ( _bugs != 0 )
+    if ( _bugs > 0 )
       {
         if( msg.size() > 0 )
           {
@@ -624,9 +626,9 @@ void Polar::drawPolar (QWidget* view, const Speed& wind,
 
     msg = QString(QObject::tr("Best L/D: %1")).arg( bestld, 0, 'f', 1 );
 
-    if( _wingArea )
+    if( _wingArea > 0.0 )
       {
-        double wload = (_grossWeight + _addLoad + _water) / _wingArea;
+        double wload = double(_grossWeight + _addLoad + _water) / _wingArea;
 
         if( wload > 0.0 )
           {

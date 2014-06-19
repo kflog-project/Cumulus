@@ -73,15 +73,15 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
 
   topLayout->addWidget(m_edtPilot, row, 1);
 
-  QLabel* lblLoad = new QLabel(tr("Added load:"), this);
+  QLabel* lblLoad = new QLabel(tr("Load corr:"), this);
   topLayout->addWidget(lblLoad, row, 2);
 
   m_edtLoad = new NumberEditor;
   m_edtLoad->setDecimalVisible( false );
-  m_edtLoad->setPmVisible( false );
+  m_edtLoad->setPmVisible( true );
   m_edtLoad->setMaxLength(4);
   m_edtLoad->setSuffix(" kg");
-  m_edtLoad->setRange( 0, 9999 );
+  m_edtLoad->setRange( -999, 999 );
   m_edtLoad->setValue( 0 );
   topLayout->addWidget(m_edtLoad, row, 3);
   row++;
@@ -207,7 +207,7 @@ void PreFlightGliderPage::slotGliderChanged()
       m_edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
       m_edtCoPilot->setText(glider->coPilot());
 
-      m_edtLoad->setValue( (int) rint(glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
+      m_edtLoad->setValue( glider->polar()->addLoad() );
       m_edtWater->setMaximum(glider->maxWater() );
       m_edtWater->setValue(glider->polar()->water() );
 
@@ -282,10 +282,10 @@ void PreFlightGliderPage::save()
           glider->setCoPilot("");
         }
 
-      glider->polar()->setGrossWeight(m_edtLoad->value() + glider->polar()->emptyWeight() );
-      glider->polar()->setLoad(0, m_edtWater->value(), 0);
-      // @AP: save changed added load permanently
+      glider->polar()->setAddLoad( m_edtLoad->value() );
+      glider->polar()->setWater( m_edtWater->value() );
       m_gliderList->save();
+
       glider = new Glider(*m_gliderList->getSelectedGlider(false));
       calculator->setGlider(glider);
       m_gliderList->setStoredSelection(glider);
@@ -315,9 +315,9 @@ void PreFlightGliderPage::slotUpdateWingLoad( int value )
 
   double wload = 0.0;
 
-  if( polar->emptyWeight() )
+  if( polar->grossWeight() )
     {
-      wload = (polar->emptyWeight() + m_edtLoad->value() + m_edtWater->value()) / polar->wingArea();
+      wload = (polar->grossWeight() + m_edtLoad->value() + m_edtWater->value()) / polar->wingArea();
     }
 
   QString msg = "";
@@ -337,7 +337,7 @@ void PreFlightGliderPage::slotLoadEdited( const QString& number )
 
   if( glider != 0 && glider->polar() != 0 )
     {
-      glider->polar()->setGrossWeight(number.toInt() + glider->polar()->emptyWeight() );
+      glider->polar()->setAddLoad( number.toInt() );
     }
 
   // Updates the wing load, if load or water have been edited.
@@ -350,7 +350,7 @@ void PreFlightGliderPage::slotWaterEdited( const QString& number )
 
   if( glider != 0 && glider->polar() != 0 )
     {
-      glider->polar()->setLoad( 0, number.toInt(), 0);
+      glider->polar()->setWater( number.toInt() );
     }
 
   // Updates the wing load, if load or water have been edited.

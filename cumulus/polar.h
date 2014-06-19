@@ -52,9 +52,9 @@ public:
            const Speed& v2, const Speed& w2,
            const Speed& v3, const Speed& w3,
            double wingArea,
-           double emptyWeight,
-           double grossWeight,
-           double addLoad=0.0 );
+           int emptyWeight,
+           int grossWeight,
+           int addLoad=0 );
 
     Polar(const Polar&);
 
@@ -100,7 +100,7 @@ public:
       _name = name;
     }
 
-    Speed v1()const
+    Speed v1() const
     {
         return _v1;
     };
@@ -110,7 +110,7 @@ public:
       _v1 = speed;
     }
 
-    Speed w1()const
+    Speed w1() const
     {
         return _w1;
     };
@@ -120,7 +120,7 @@ public:
       _w1 = speed;
     }
 
-    Speed v2()const
+    Speed v2() const
     {
         return _v2;
     };
@@ -130,7 +130,7 @@ public:
       _v2 = speed;
     }
 
-    Speed w2()const
+    Speed w2() const
     {
         return _w2;
     };
@@ -140,7 +140,7 @@ public:
       _w2 = speed;
     }
 
-    Speed v3()const
+    Speed v3() const
     {
         return _v3;
     };
@@ -150,7 +150,7 @@ public:
       _v3 = speed;
     }
 
-    Speed w3()const
+    Speed w3() const
     {
         return _w3;
     };
@@ -160,17 +160,17 @@ public:
       _w3 = speed;
     }
 
-    double emptyWeight() const
+    int emptyWeight() const
     {
         return _emptyWeight;
     };
 
-    double grossWeight() const
+    int grossWeight() const
     {
         return _grossWeight;
     };
 
-    void setGrossWeight(double newValue)
+    void setGrossWeight(int newValue)
     {
         _grossWeight = newValue;
     };
@@ -185,14 +185,14 @@ public:
         _wingArea = newValue;
     };
 
-    double addLoad() const
+    int addLoad() const
     {
         return _addLoad;
     };
 
-    void setAddLoad(double newValue)
+    void setAddLoad( int addLoad )
     {
-      _addLoad = newValue;
+      setLoad( addLoad, _water, _bugs );
     };
 
 
@@ -262,9 +262,9 @@ private:
 
     int    _water;
     int    _bugs;
-    double _emptyWeight;
-    double _grossWeight;
-    double _addLoad;
+    int    _emptyWeight;
+    int    _grossWeight;
+    int    _addLoad;
     double _wingArea;
     int    _seats;
     int    _maxWater;

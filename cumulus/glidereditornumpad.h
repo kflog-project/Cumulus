@@ -77,14 +77,14 @@ private:
 #endif
 
   /**
-   * Reads in the LK8000 polar data files.
+   * Reads in the LK8000 polar data files from predefined directories.
    */
   void readLK8000PolarData();
 
   /**
-   * Reads the data from a single LK8000 polar file.
+   * Reads the data from a single LK8000 glider polar file.
    *
-   * \param fileName Name of the polar file
+   * \param fileName Name of the glider polar file
    *
    * \param polar Polar instance to be filled
    *
@@ -139,7 +139,7 @@ private:
 
  private:
 
-  QComboBox* comboType;
+  QComboBox* m_comboType;
 
   DoubleNumberEditor* m_dneV1;
   DoubleNumberEditor* m_dneW1;
@@ -149,14 +149,14 @@ private:
   DoubleNumberEditor* m_dneW3;
   DoubleNumberEditor* m_dneWingArea;
 
-  QLineEdit* edtGType;
-  QLineEdit* edtGReg;
-  QLineEdit* edtGCall;
+  QLineEdit* m_edtGType;
+  QLineEdit* m_edtGReg;
+  QLineEdit* m_edtGCall;
 
-  QPushButton*  buttonShow;
-  NumberEditor* grossWeight;
-  NumberEditor* addedLoad;
-  NumberEditor* addedWater;
+  QPushButton*  m_buttonShow;
+  NumberEditor* m_grossWeight;
+  NumberEditor* m_addedLoad;
+  NumberEditor* m_addedWater;
   QPushButton*  m_seats;
 
   QList<Polar> m_polars;
