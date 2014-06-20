@@ -766,7 +766,7 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
 
   // We take the polar file name as gilder type name. The type description
   // is sometimes missing in the file.
-  QString name = QFileInfo(fileName).baseName();
+  QString name = QFileInfo(fileName).completeBaseName();
   polar.setName( name );
 
   if( name.contains( "PAS") )
