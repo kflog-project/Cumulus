@@ -167,9 +167,6 @@ public:
   WPInfoWidget *viewInfo;     // POI info
   QTabWidget *listViewTabs;
 
-  /** empty view for config "dialog" */
-  QWidget *viewCF;
-
 public slots:
 
   /** Switches to the WaypointList View */
@@ -559,13 +556,13 @@ private:
   // not covered by another widget.
   static bool m_rootWindow;
 
-  /** A flag to indicate a first startup after the installation. */
-  bool m_firstStartup;
-
 #ifdef INTERNET
   /** LiveTrack24 logger object. */
   LiveTrack24Logger* m_liveTrackLogger;
 #endif
+
+  /** A flag to indicate a first startup after the installation. */
+  bool m_firstStartup;
 
 #if defined ANDROID || defined MAEMO
 

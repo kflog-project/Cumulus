@@ -136,28 +136,91 @@ static void resumeGpsConnection( int sig )
 
 MainWindow::MainWindow( Qt::WindowFlags flags ) :
   QMainWindow( 0, flags ),
+  viewMap(0),
+  viewWP(0),
+  viewAF(0),
+  viewOL(0),
+  viewRP(0),
+  viewTP(0),
+  viewInfo(0),
+  listViewTabs(0),
+  view(mapView),
+  actionToggleGps(0),
+  actionManualNavUp(0),
+  actionManualNavRight(0),
+  actionManualNavDown(0),
+  actionManualNavLeft(0),
+  actionManualNavMove2Home(0),
+  actionManualNavMove2WP(0),
+  actionManualNavWPList(0),
+  actionGpsNavUp(0),
+  actionGpsNavDown(0),
+  actionNav2Home(0),
+  actionGpsNavWPList(0),
+  actionGpsNavZoomIn(0),
+  actionGpsNavZoomOut(0),
+  actionMenuBarToggle(0),
+  actionOpenContextMenu(0),
+  actionFileQuit(0),
+#ifdef ANDROID
+  actionHardwareMenu(0),
+#endif
+  actionViewInfo(0),
+  actionViewWaypoints(0),
+  actionViewAirfields(0),
+  actionViewReachpoints(0),
+  actionViewTaskpoints(0),
+#ifdef FLARM
+  actionViewFlarm(0),
+#endif
+  actionStatusGPS(0),
+  actionStatusAirspace(0),
+  actionZoomInZ(0),
+  actionZoomOutZ(0),
+  actionToggleStatusbar(0),
+  actionToggleMapSidebar(0),
+  actionToggleWindowSize(0),
+  actionToggleAfLabels(0),
+  actionToggleOlLabels(0),
+  actionToggleTpLabels(0),
+  actionToggleWpLabels(0),
+  actionToggleLabelsInfo(0),
+  actionToggleLogging(0),
+  actionToggleTrailDrawing(0),
+  actionEnsureVisible(0),
+  actionSelectTask(0),
+  actionPreFlight(0),
+  actionSetupConfig(0),
+  actionSetupInFlight(0),
+  actionHelpCumulus(0),
+  actionHelpAboutApp(0),
+  actionHelpAboutQt(0),
+  actionStartFlightTask(0),
+  scToggleMapSidebar(0),
+  scExit(0),
+  contextMenu(0),
+  fileMenu(0),
+  viewMenu(0),
+  mapMenu(0),
+  statusMenu(0),
+  labelMenu(0),
+  labelSubMenu(0),
+  setupMenu(0),
+  helpMenu(0),
+  ws(0),
+  splash(0),
+  configView(0),
+  m_menuBarVisible(false),
+  m_logger(static_cast<IgcLogger *> (0)),
+  m_taskListVisible(false),
+  m_reachpointListVisible(false),
+  m_outlandingListVisible(false),
+#ifdef INTERNET
+  m_liveTrackLogger(0),
+#endif
   m_firstStartup( false )
 {
   _globalMainWindow = this;
-  m_menuBarVisible = false;
-  listViewTabs = 0;
-  configView = 0;
-
-  contextMenu = 0;
-  fileMenu = 0;
-  viewMenu = 0;
-  mapMenu = 0;
-  labelMenu = 0;
-  labelSubMenu = 0;
-  statusMenu = 0;
-  setupMenu = 0;
-  helpMenu = 0;
-
-  m_logger = static_cast<IgcLogger *> (0);
-
-#ifdef INTERNET
-  m_liveTrackLogger = 0;
-#endif
 
 #if defined ANDROID || defined MAEMO
   m_displayTrigger = static_cast<QTimer *> (0);
@@ -612,7 +675,6 @@ void MainWindow::slotCreateApplicationWidgets()
   viewOL = new AirfieldListView( itemList, this ); // outlandings
   viewRP = new ReachpointListView( this );
   viewTP = new TaskListView( this );
-  viewCF = new QWidget( this );
 
   // set visibility of lists to false
   m_taskListVisible       = false;
