@@ -1,0 +1,4 @@
+* polar for: SF34
+* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
+430, 0, 100, -0.85, 120, -1.12, 150, -1.80, 14.8
+
