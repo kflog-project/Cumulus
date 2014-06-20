@@ -1,3 +1,16 @@
+cumulus (5.16.0) stable; urgency=low
+
+  * Bugfix: Airspace warning suppression did not work properly.
+    
+  * Bugfix: Update glide path was missing when a new wind value was available.
+    
+  * Polar data files taken over from LK8000. The own glider.pol file is not
+    more used in the future due to high effort to maintain it.
+    
+  * The user's set McCready value is saved permanently now.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Fri, 20 Jun 2014 20:35:17 +0200
+
 cumulus (5.15.3) stable; urgency=low
 
   * Bugfix: URL to SkyLines Live Tracking server updated. Has been changed in
@@ -10,13 +23,13 @@ cumulus (5.15.0) stable; urgency=low
   * New turnpoint importer added in preflight waypoints for the waypoint file of
     the British Gliding Association in DOS format.
 
-  * BUGFIX: A country change done in in menu settings personal was never saved.
+  * Bugfix: A country change done in in menu settings personal was never saved.
 
  -- Axel Pauli <kflog.cumulus@gmail.com>  Wed, 07 May 2014 20:33:16 +0200
 
 cumulus (5.14.2) stable; urgency=low
 
-  * BUGFIX: The wind triangle calculation did not work on task
+  * Bugfix: The wind triangle calculation did not work on task
     display, if wind speed or direction were modified.
     
   * Airfield frequency added to reachable list overview.
