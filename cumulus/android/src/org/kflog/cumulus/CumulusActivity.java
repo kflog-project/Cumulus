@@ -980,7 +980,7 @@ public class CumulusActivity extends QtActivity
     
     if( ! m_nativeIsUp )
       {
-	// ignore key events, if native is not up
+    	// ignore key events, if native is not up
         return true;
       }
 
@@ -1025,7 +1025,7 @@ public class CumulusActivity extends QtActivity
 
     if( ! m_nativeIsUp )
       {
-	// ignore key events, if native is not up
+        // ignore key events, if native is not up
         return true;
       }
 
@@ -1826,16 +1826,19 @@ public class CumulusActivity extends QtActivity
    * Called from the native side to signal a complete startup or that a shutdown
    * is requested. In shutdown case all connections at java side will be closed
    * to avoid a calling of the native side.
+   * 
+   * @param state false means the native part is up after startup,
+   *              true means the native part is going to shutdown
    */
   synchronized void nativeShutdown( boolean state)
   {
     Log.d( TAG, "nativeShutdown=" + state );
     
-    m_nativeIsUp = state;
+    m_nativeIsUp = ! state;
     
-    if( state == true )
+    if( state == false )
       {
-        // Store only the true state.
+        // If state is reported as false means, that the native part is up after startup.
         return;
       }
 
