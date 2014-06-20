@@ -769,7 +769,7 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
   QString name = QFileInfo(fileName).baseName();
   polar.setName( name );
 
-  if( name.contains( "(PAS)") )
+  if( name.contains( "PAS") )
     {
       // Polar of a double seater was selected
       polar.setSeats( 2 );

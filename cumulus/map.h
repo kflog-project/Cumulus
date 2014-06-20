@@ -200,9 +200,9 @@ public:
   /** clear airspace region list */
   void clearAirspaceRegionList()
     {
-      qDeleteAll(airspaceRegionList);
-      airspaceRegionList.clear();
-      airspaceRegionList = QList<AirRegion *>();
+      qDeleteAll(m_airspaceRegionList);
+      m_airspaceRegionList.clear();
+      m_airspaceRegionList = QList<AirRegion *>();
     };
 
 public slots:
@@ -561,38 +561,38 @@ private: //members
   /**
    * Mutex to avoid reentrance
    */
-  bool _mutex;
+  bool m_mutex;
 
   /**
    * Map drawing can be switched off during startup
    */
-  bool _isEnable;
+  bool m_isEnable;
 
   /**
    * Flag is set, if a redraw event has to be queued because map
    * drawing is already running.
    */
-  bool _isRedrawEvent;
+  bool m_isRedrawEvent;
 
   /**
    * queued resize event is available
    */
-  bool _isResizeEvent;
+  bool m_isResizeEvent;
 
   /**
    * set is mouse move is active.
    */
-  bool _mouseMoveIsActive;
+  bool m_mouseMoveIsActive;
 
   /**
    * Begin point of map move.
    */
-  QPoint _beginMapMove;
+  QPoint m_beginMapMove;
 
   /**
    * queued size of resize event
    */
-  QSize resizeEventSize;
+  QSize m_resizeEventSize;
 
   /**
    * These pixmaps are used to store different layers of the currently
@@ -623,38 +623,38 @@ private: //members
   QPixmap m_pixRelBearingDisplay;
 
   //contains a strip with wind arrows in different directions
-  QPixmap windArrow;
+  QPixmap m_windArrow;
 
-  int mapRot;
-  int curMapRot;
+  int m_mapRot;
+  int m_curMapRot;
 
   // currently selected waypoint
-  Waypoint wp;
+  Waypoint m_wp;
 
   /**
    * Contains the regions of all visible airspaces. The list is needed to
    * find the airspace data when the user selects an airspace in the map.
    */
-  QList<AirRegion*> airspaceRegionList;
+  QList<AirRegion*> m_airspaceRegionList;
 
   //contains the layer the next redraw should start from
   mapLayer m_scheduledFromLayer;
 
   /** Contains the currently proposed zoom factor. The actual factor
       used is stored in the map matrix */
-  double zoomFactor;
+  double m_zoomFactor;
 
   /** reference to the short interval redraw timer */
-  QTimer *redrawTimerShort;
+  QTimer *m_redrawTimerShort;
   /** reference to the long interval redraw timer */
-  QTimer *redrawTimerLong;
+  QTimer *m_redrawTimerLong;
   /** Determines weather to draw the glider symbol. */
-  bool ShowGlider;
+  bool m_ShowGlider;
 
-  unsigned int zoomProgressive;
-  float zoomProgressiveVal[8];
+  unsigned int m_zoomProgressive;
+  float m_zoomProgressiveVal[8];
 
-  QRect relBearingTextBox;
+  QRect m_relBearingTextBox;
 
 protected:
   /**
@@ -662,19 +662,19 @@ protected:
    * headUp map mode or rotating the glider symbol in northUp and
    * trackUp modes. In degrees clockwise.
    */
-  int heading;
+  int m_heading;
 
   /**
    * Contains the current bearing. Used for rotating the map and
    * glider symbol in trackUp mode. In degrees clockwise
    * (0=due north, 90 east, etc.)
    */
-  int bearing;
+  int m_bearing;
 
   /**
    * Contains the last calculated relative bearing.
    */
-  int lastRelBearing;
+  int m_lastRelBearing;
 
   /**
    * Contains the map mode.
@@ -682,37 +682,24 @@ protected:
    * headUp: the top of the map is the current flight direction
    * trackUp: the top of the map is the current bearing to the selected waypoint
    */
-  mapMode mode;
+  mapMode m_mode;
 
   /** Holds the current position. */
-  QPoint curGPSPos, curMANPos;
+  QPoint m_curGPSPos, m_curMANPos;
 
   /** these pixmaps are preloaded to improve runtime drawing */
-  QPixmap _cross;
-  QPixmap _glider;
+  QPixmap m_cross;
+  QPixmap m_glider;
 
   /** Airspace conflicts */
-  QMap<QString, int> _insideAsMap;   // AS Text and AS type
-  QMap<QString, int> _veryNearAsMap; // AS Text and AS type
-  QMap<QString, int> _nearAsMap;     // AS Text and AS type
+  QMap<QString, int> m_insideAsMap;   // AS Text and AS type
+  QMap<QString, int> m_veryNearAsMap; // AS Text and AS type
+  QMap<QString, int> m_nearAsMap;     // AS Text and AS type
 
   /* Airspace conflicts touch times */
-  QMap<QString, QTime> _insideAsMapTouchTime;   // AS Text and touch time
-  QMap<QString, QTime> _veryNearAsMapTouchTime; // AS Text and touch time
-  QMap<QString, QTime> _nearAsMapTouchTime;     // AS Text and touch time
-
-  /** last emitted airspace warning strings */
-  QString _lastInsideAsInfo;
-  QString _lastVeryNearAsInfo;
-  QString _lastNearAsInfo;
-
-  /** last emitted airspace type string */
-  QString _lastAsType;
-
-  /** save time of last touch of airspace */
-  QTime _lastNearTime;
-  QTime _lastVeryNearTime;
-  QTime _lastInsideTime;
+  QMap<QString, QTime> m_insideAsMapTouchTime;   // AS Text and touch time
+  QMap<QString, QTime> m_veryNearAsMapTouchTime; // AS Text and touch time
+  QMap<QString, QTime> m_nearAsMapTouchTime;     // AS Text and touch time
 
   /** List of drawn cities. */
   QList<BaseMapElement *> m_drawnCityList;
