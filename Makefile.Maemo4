@@ -214,7 +214,7 @@ dpkg_install:
 	install --mode=755 gpsMaemoClient/gpsMaemoClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 dpkg/Maemo4/maemo/aplay $(DESTDIR)/$(INSTALL_ROOT)/bin
-	install --mode=644 etc/glider.pol $(DESTDIR)/$(INSTALL_ROOT)/etc
+	install --mode=644 etc/*.plr $(DESTDIR)/$(INSTALL_ROOT)/etc
 	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
