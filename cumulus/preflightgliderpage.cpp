@@ -86,8 +86,8 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   topLayout->addWidget(m_edtLoad, row, 3);
   row++;
 
-  QLabel* lblCoPilot = new QLabel(tr("Copilot:"), this);
-  topLayout->addWidget(lblCoPilot, row, 0);
+  m_edtCoPilotLabel = new QLabel(tr("Copilot:"), this);
+  topLayout->addWidget(m_edtCoPilotLabel, row, 0);
   m_edtCoPilot = new QLineEdit(this);
   m_edtCoPilot->setInputMethodHints(imh);
 
@@ -108,6 +108,11 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   m_edtWater->setValue( 0 );
   topLayout->addWidget(m_edtWater, row, 3);
   row++;
+
+  topLayout->addWidget( new QLabel(tr("Ref. weight:"), this), row, 0);
+  m_refWeight = new QLabel;
+  m_refWeight->setFocusPolicy(Qt::NoFocus);
+  topLayout->addWidget(m_refWeight, row, 1);
 
   QLabel* lblWLoad = new QLabel(tr("Wing load:"), this);
   topLayout->addWidget(lblWLoad, row, 2);
@@ -190,10 +195,12 @@ void PreFlightGliderPage::slotGliderChanged()
     {
       if (m_lastGlider->seats() == Glider::doubleSeater)
         {
+	  m_edtCoPilotLabel->setEnabled( true );
           m_lastGlider->setCoPilot(m_edtCoPilot->text());
         }
       else
         {
+	  m_edtCoPilotLabel->setEnabled( false );
           m_lastGlider->setCoPilot("");
         }
     }
@@ -204,14 +211,17 @@ void PreFlightGliderPage::slotGliderChanged()
 
   if( glider )
     {
+      m_edtCoPilotLabel->setEnabled(glider->seats()==Glider::doubleSeater);
       m_edtCoPilot->setEnabled(glider->seats()==Glider::doubleSeater);
       m_edtCoPilot->setText(glider->coPilot());
 
+      m_refWeight->setText( QString("%1 Kg").arg(glider->polar()->grossWeight()));
+
       m_edtLoad->setValue( glider->polar()->addLoad() );
+      m_edtLoad->setEnabled(true);
+
       m_edtWater->setMaximum(glider->maxWater() );
       m_edtWater->setValue(glider->polar()->water() );
-
-      m_edtLoad->setEnabled(true);
       m_edtWater->setEnabled(glider->maxWater() != 0 );
     }
 
@@ -226,6 +236,11 @@ void PreFlightGliderPage::slotGliderDeselected()
   // clear list selection
   m_gliderList->clearSelection();
 
+  // clear copilot values
+  m_edtCoPilotLabel->setEnabled(false);
+  m_edtCoPilot->setEnabled(false);
+  m_edtCoPilot->clear();
+
   // clear values
   m_edtLoad->setValue(0);
   m_edtWater->setValue(0);
@@ -233,8 +248,11 @@ void PreFlightGliderPage::slotGliderDeselected()
   m_edtLoad->setEnabled(false);
   m_edtWater->setEnabled(false);
 
-// clear wing load label
-  m_wingLoad->setText("");
+  // clear ref. weight label
+  m_refWeight->clear();
+
+  // clear wing load label
+  m_wingLoad->clear();
 }
 
 void PreFlightGliderPage::getCurrent()
@@ -250,15 +268,18 @@ void PreFlightGliderPage::getCurrent()
 
   m_gliderList->selectItemFromReg( glider->registration() );
 
+  m_edtCoPilotLabel->setEnabled(glider->seats()==Glider::doubleSeater);
   m_edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
   m_edtCoPilot->setText(glider->coPilot());
 
-  m_edtLoad->setValue( (int) (glider->polar()->grossWeight() - glider->polar()->emptyWeight()) );
-
+  m_edtLoad->setValue( glider->polar()->addLoad() );
   m_edtLoad->setEnabled(true);
+
   m_edtWater->setEnabled(glider->maxWater() != 0);
   m_edtWater->setMaximum(glider->maxWater());
   m_edtWater->setValue(glider->polar()->water());
+
+  m_refWeight->setText( QString("%1 Kg").arg(glider->polar()->grossWeight()));
 
   m_lastGlider = m_gliderList->getSelectedGlider();
 }

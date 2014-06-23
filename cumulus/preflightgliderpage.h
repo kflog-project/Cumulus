@@ -72,9 +72,11 @@ class PreFlightGliderPage : public QWidget
 
   GliderListWidget *m_gliderList;
   QLineEdit        *m_edtPilot;
+  QLabel           *m_edtCoPilotLabel;
   QLineEdit        *m_edtCoPilot;
   Glider           *m_lastGlider;
   QLabel           *m_wingLoad;
+  QLabel           *m_refWeight;
 
   NumberEditor     *m_edtLoad;
   NumberEditor     *m_edtWater;
