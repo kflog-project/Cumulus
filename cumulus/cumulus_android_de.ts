@@ -1924,9 +1924,13 @@ Alle Downloads verworfen!</translation>
         <translation>Vorflug - Checkliste</translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="127"/>
+        <location filename="preflightchecklistpage.cpp" line="128"/>
+        <source>File: </source>
+        <translation>Datei: </translation>
+    </message>
+    <message>
         <source>Path: </source>
-        <translation>Pfad: </translation>
+        <translation type="obsolete">Pfad: </translation>
     </message>
 </context>
 <context>

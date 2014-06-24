@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c): 2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -44,16 +44,17 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
       resize( parent->size() );
     }
 
-  QHBoxLayout *contentLayout = new QHBoxLayout;
+  QVBoxLayout *contentLayout = new QVBoxLayout;
   setLayout(contentLayout);
 
-  QVBoxLayout *vbox = new QVBoxLayout;
-  vbox->setMargin( 0 );
-  contentLayout->addLayout( vbox );
-
   m_fileDisplay = new QLabel;
+  m_fileDisplay->setWordWrap( true );
   m_fileDisplay->hide();
-  vbox->addWidget( m_fileDisplay );
+  contentLayout->addWidget( m_fileDisplay );
+
+  QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->setMargin( 0 );
+  contentLayout->addLayout( hbox );
 
   m_editor = new QTextEdit(this);
   m_editor->setReadOnly( true );
@@ -66,7 +67,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   QtScroller::grabGesture(m_editor->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
-  vbox->addWidget( m_editor );
+  hbox->addWidget( m_editor );
 
   QPushButton* toggleButton  = new QPushButton(this);
   toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
@@ -108,7 +109,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
-  contentLayout->addLayout(buttonBox);
+  hbox->addLayout(buttonBox);
 }
 
 PreFlightCheckListPage::~PreFlightCheckListPage()
@@ -124,7 +125,7 @@ void PreFlightCheckListPage::showEvent(QShowEvent *)
   loadCheckList( checklist );
   m_editor->setPlainText( checklist );
 
-  QString path = tr("Path: ") +
+  QString path = tr("File: ") +
                  GeneralConfig::instance()->getUserDataDirectory() + "/" +
                  CheckListFileName;
   m_fileDisplay->setText( path );
