@@ -58,6 +58,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   m_editor = new QTextEdit(this);
   m_editor->setReadOnly( true );
+  m_editor->setInputMethodHints(Qt::ImhNoPredictiveText);
 
 #ifdef QSCROLLER
   QScroller::grabGesture(m_editor->viewport(), QScroller::LeftMouseButtonGesture);
