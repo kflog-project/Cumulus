@@ -31,6 +31,7 @@
 #include "layout.h"
 #include "mainwindow.h"
 #include "map.h"
+#include "preflightchecklistpage.h"
 #include "preflightgliderpage.h"
 #include "preflightlogbookspage.h"
 #include "preflightmiscpage.h"
@@ -52,6 +53,7 @@
 
 // Menu labels
 #define PREFLIGHT   "Preflight Menu"
+#define CHECKLIST   "Checklist"
 #define COMMON      "Common"
 #define GLIDER      "Glider"
 #define LIVETRACK   "LiveTrack"
@@ -130,6 +132,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
+  item->setText( 0, tr(CHECKLIST) );
+  item->setData( 0, Qt::UserRole, CHECKLIST );
+  m_setupTree->addTopLevelItem( item );
+
+  item = new QTreeWidgetItem;
   item->setText( 0, tr(COMMON) );
   item->setData( 0, Qt::UserRole, COMMON );
   m_setupTree->addTopLevelItem( item );
@@ -203,7 +210,8 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("METAR-TAF") )
 #endif
                  << ( tr ("Wind") )
-                 << ( tr ("Common") );
+                 << ( tr ("Common") )
+                 << ( tr ("Checklist") );
 
   m_setupTree->setMinimumWidth( Layout::maxTextWidth( m_headerLabels, font() ) + 100 );
   setVisible( true );
@@ -251,6 +259,17 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
         }
 
       pfmp->show();
+    }
+  else if( itemText == CHECKLIST )
+    {
+      PreFlightCheckListPage* pfclp = new PreFlightCheckListPage( this );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pfclp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pfclp->show();
     }
   else if( itemText == GLIDER )
     {

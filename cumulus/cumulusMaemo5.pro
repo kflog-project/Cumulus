@@ -113,6 +113,7 @@ HEADERS = \
     openairparser.h \
     polardialog.h \
     polar.h \
+    preflightchecklistpage.h \
     preflightgliderpage.h \
     preflightlogbookspage.h \
     preflightmiscpage.h \
@@ -236,6 +237,7 @@ SOURCES = \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \
+    preflightchecklistpage.cpp \
     preflightgliderpage.cpp \
     preflightlogbookspage.cpp \
     preflightmiscpage.cpp \

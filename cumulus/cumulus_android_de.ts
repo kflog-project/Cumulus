@@ -1917,6 +1917,19 @@ Alle Downloads verworfen!</translation>
     </message>
 </context>
 <context>
+    <name>PreFlightCheckListPage</name>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="40"/>
+        <source>PreFlight - Checklist</source>
+        <translation>Vorflug - Checkliste</translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="127"/>
+        <source>Path: </source>
+        <translation>Pfad: </translation>
+    </message>
+</context>
+<context>
     <name>PreFlightFlarmPage</name>
     <message>
         <location filename="preflightflarmpage.cpp" line="43"/>
@@ -2959,66 +2972,71 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightWidget</name>
     <message>
-        <location filename="preflightwidget.cpp" line="69"/>
+        <location filename="preflightwidget.cpp" line="71"/>
         <source>Preflight Settings</source>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="92"/>
-        <location filename="preflightwidget.cpp" line="193"/>
+        <location filename="preflightwidget.cpp" line="94"/>
+        <location filename="preflightwidget.cpp" line="200"/>
         <source>Preflight Menu</source>
         <translation>Vorflug Menü</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="169"/>
+        <location filename="preflightwidget.cpp" line="176"/>
         <source>close menu</source>
         <translation>Schließe Menü</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="194"/>
+        <location filename="preflightwidget.cpp" line="201"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="195"/>
+        <location filename="preflightwidget.cpp" line="202"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="197"/>
+        <location filename="preflightwidget.cpp" line="204"/>
         <source>Retrieve</source>
         <oldsource>Returner</oldsource>
         <translation>Rückholer</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="199"/>
+        <location filename="preflightwidget.cpp" line="206"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="200"/>
+        <location filename="preflightwidget.cpp" line="207"/>
         <source>Logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="202"/>
+        <location filename="preflightwidget.cpp" line="209"/>
         <source>LiveTrack</source>
         <translation>Verfolgung</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="203"/>
+        <location filename="preflightwidget.cpp" line="210"/>
         <source>METAR-TAF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="205"/>
+        <location filename="preflightwidget.cpp" line="212"/>
         <source>Wind</source>
         <translation>Wind</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="206"/>
+        <location filename="preflightwidget.cpp" line="213"/>
         <source>Common</source>
         <translation>Allgemein</translation>
+    </message>
+    <message>
+        <location filename="preflightwidget.cpp" line="214"/>
+        <source>Checklist</source>
+        <translation>Checkliste</translation>
     </message>
 </context>
 <context>
