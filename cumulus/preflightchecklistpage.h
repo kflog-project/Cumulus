@@ -31,10 +31,12 @@
 #ifndef PRE_FLIGHT_CHECK_LIST_PAGE_H
 #define PRE_FLIGHT_CHECK_LIST_PAGE_H
 
-#include <QLabel>
-#include <QTextEdit>
 #include <QWidget>
-#include <QPushButton>
+
+class QLabel;
+class QPushButton;
+class QTableWidget;
+class RowDelegate;
 
 class PreFlightCheckListPage : public QWidget
 {
@@ -98,6 +100,12 @@ class PreFlightCheckListPage : public QWidget
   */
  void slotToogleFilenameDisplay();
 
+ /** Adds a new row with two columns to the table. */
+ void slot_AddRow( QString col0="", QString col1="" );
+
+ /** Removes all selected rows from the table. */
+ void slot_DeleteRows();
+
  /**
   * Called, if the edit button is pressed.
   */
@@ -118,14 +126,21 @@ class PreFlightCheckListPage : public QWidget
   /** Display for checklist filename. */
   QLabel* m_fileDisplay;
 
-  /** Editor widget to display and edit the check list. */
-  QTextEdit* m_editor;
+  /** Table widget with one column for check entries. */
+  QTableWidget* m_list;
+
+  /** Adds additional space in the list. */
+  RowDelegate* rowDelegate;
 
   /** Ok button. */
   QPushButton* m_ok;
 
-  /** Button to activate the editor function. */
+  /** Edit button. */
   QPushButton* m_editButton;
+
+  /** Delete button. */
+  QPushButton *m_deleteButton;
+
 };
 
 #endif

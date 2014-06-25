@@ -28,6 +28,7 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "preflightchecklistpage.h"
+#include "rowdelegate.h"
 
 PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   QWidget( parent ),
@@ -56,29 +57,58 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   hbox->setMargin( 0 );
   contentLayout->addLayout( hbox );
 
-  m_editor = new QTextEdit(this);
-  m_editor->setReadOnly( true );
-  m_editor->setInputMethodHints(Qt::ImhNoPredictiveText);
+  m_list = new QTableWidget( 0, 1, this );
+  m_list->setSelectionBehavior( QAbstractItemView::SelectRows );
+  // m_list->setSelectionMode( QAbstractItemView::SingleSelection );
+  m_list->setAlternatingRowColors( true );
+  m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+  hbox->addWidget( m_list );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture(m_editor->viewport(), QScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture(m_editor->viewport(), QtScroller::LeftMouseButtonGesture);
+  QtScroller::grabGesture(m_list->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
-  hbox->addWidget( m_editor );
+  QString style = "QTableView QTableCornerButton::section { background: gray }";
+  m_list->setStyleSheet( style );
+  QHeaderView *vHeader = m_list->verticalHeader();
+  style = "QHeaderView::section { width: 2em }";
+  vHeader->setStyleSheet( style );
+
+  // set new row height from configuration
+  int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+  rowDelegate = new RowDelegate( m_list, afMargin );
+  m_list->setItemDelegate( rowDelegate );
+
+  QHeaderView* hHeader = m_list->horizontalHeader();
+  hHeader->setStretchLastSection( true );
+
+  QTableWidgetItem *item = new QTableWidgetItem( tr(" Ckeck Point ") );
+  m_list->setHorizontalHeaderItem( 0, item );
 
   QPushButton* toggleButton  = new QPushButton(this);
   toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
   toggleButton->setIconSize( QSize(IconSize, IconSize) );
   toggleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
+  QPushButton *addButton  = new QPushButton;
+  addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
+  addButton->setIconSize(QSize(IconSize, IconSize));
+  addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   m_editButton = new QPushButton(this);
   m_editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   m_editButton->setIconSize( QSize(IconSize, IconSize) );
   m_editButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  m_deleteButton  = new QPushButton;
+  m_deleteButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
+  m_deleteButton->setIconSize( QSize(IconSize, IconSize) );
+  m_deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
