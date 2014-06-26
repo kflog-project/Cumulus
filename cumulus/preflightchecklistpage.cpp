@@ -138,11 +138,11 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
   buttonBox->addWidget(toggleButton, 1);
-  buttonBox->addSpacing(10);
+  buttonBox->addSpacing(20);
   buttonBox->addWidget(addButton, 1);
-  buttonBox->addSpacing(10);
+  buttonBox->addSpacing(20);
   buttonBox->addWidget(m_editButton, 1);
-  buttonBox->addSpacing(10);
+  buttonBox->addSpacing(20);
   buttonBox->addWidget(m_deleteButton, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
