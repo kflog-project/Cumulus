@@ -69,22 +69,18 @@ class PreFlightCheckListPage : public QWidget
   /**
    * Reads the user's checklist file checklist.txt.
    *
-   * \param checklist Checklist content to be returned.
-   *
    * \return true in case of success otherwise false
    *
    */
-  bool loadCheckList( QString& checklist );
+  bool loadCheckList();
 
   /**
    * Writes the user's checklist file checklist.txt.
    *
-   * \param checklist Checklist content to be saved.
-   *
    * \return true in case of success otherwise false
    *
    */
-  bool saveCheckList( QString& checklist );
+  bool saveCheckList();
 
  signals:
 
@@ -101,10 +97,10 @@ class PreFlightCheckListPage : public QWidget
  void slotToogleFilenameDisplay();
 
  /** Adds a new row with two columns to the table. */
- void slot_AddRow( QString col0="", QString col1="" );
+ void slotAddRow( QString text="" );
 
  /** Removes all selected rows from the table. */
- void slot_DeleteRows();
+ void slotDeleteRows();
 
  /**
   * Called, if the edit button is pressed.
