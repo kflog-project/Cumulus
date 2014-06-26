@@ -169,6 +169,7 @@ void PreFlightCheckListPage::showEvent(QShowEvent *)
     {
       m_editButton->setEnabled( true );
       m_deleteButton->setEnabled( true );
+      m_list->setCurrentItem( m_list->item( 0, 0 ) );
     }
   else
     {
