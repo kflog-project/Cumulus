@@ -36,6 +36,7 @@
 class QLabel;
 class QPushButton;
 class QTableWidget;
+class QTableWidgetItem;
 class RowDelegate;
 
 class PreFlightCheckListPage : public QWidget
@@ -101,6 +102,16 @@ class PreFlightCheckListPage : public QWidget
 
  /** Removes all selected rows from the table. */
  void slotDeleteRows();
+
+ /** Called, if the item selection is changed. */
+ void slotItemSelectionChanged();
+
+ /**
+  * The passed item can be modified in a editor widget.
+  *
+  * \param item Item to be modified.
+  */
+ void slotEditItem( QTableWidgetItem* item );
 
  /**
   * Called, if the edit button is pressed.

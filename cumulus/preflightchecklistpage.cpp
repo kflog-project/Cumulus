@@ -65,6 +65,9 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   m_list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   hbox->addWidget( m_list );
 
+  connect( m_list, SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
+           SLOT(slotEditItem(QTableWidgetItem*)) );
+
 #ifdef QSCROLLER
   QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
@@ -86,8 +89,9 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   QHeaderView* hHeader = m_list->horizontalHeader();
   hHeader->setStretchLastSection( true );
+  hHeader->hide();
 
-  QTableWidgetItem *item = new QTableWidgetItem( tr(" Ckeck Point ") );
+  QTableWidgetItem *item = new QTableWidgetItem( tr(" Check Point ") );
   m_list->setHorizontalHeaderItem( 0, item );
 
   QPushButton* toggleButton = new QPushButton(this);
@@ -160,6 +164,18 @@ void PreFlightCheckListPage::showEvent(QShowEvent *)
                  CheckListFileName;
   m_fileDisplay->setText( path );
   loadCheckList();
+
+  if( m_list->rowCount() > 0 )
+    {
+      m_editButton->setEnabled( true );
+      m_deleteButton->setEnabled( true );
+    }
+  else
+    {
+      m_editButton->setEnabled( false );
+      m_deleteButton->setEnabled( false );
+    }
+
   m_ok->hide();
 }
 
@@ -168,21 +184,11 @@ void PreFlightCheckListPage::slotToogleFilenameDisplay()
   m_fileDisplay->setVisible( ! m_fileDisplay->isVisible() );
 }
 
-void PreFlightCheckListPage::slotEdit()
+void PreFlightCheckListPage::slotEditItem( QTableWidgetItem* item )
 {
-  QTableWidgetItem* item = m_list->currentItem();
-
   if( item == static_cast<QTableWidgetItem *>(0) )
     {
       // Item can be a Null pointer!
-      return;
-    }
-
-  QList<QTableWidgetItem *> items = m_list->selectedItems();
-
-  if( items.size() != 1 )
-    {
-      // Only one item must be selected.
       return;
     }
 
@@ -209,12 +215,43 @@ void PreFlightCheckListPage::slotEdit()
   if( result == QDialog::Accepted )
     {
       item->setText( qid.textValue() );
-      m_ok->setEnabled( true );
       m_ok->show();
     }
 
   m_editButton->setEnabled( true );
-  m_ok->show();
+}
+
+void PreFlightCheckListPage::slotEdit()
+{
+  QTableWidgetItem* item = m_list->currentItem();
+
+  if( item == static_cast<QTableWidgetItem *>(0) )
+    {
+      // Item can be a Null pointer!
+      return;
+    }
+
+  QList<QTableWidgetItem *> items = m_list->selectedItems();
+
+  if( items.size() != 1 )
+    {
+      // Only one item must be selected.
+      return;
+    }
+
+  slotEditItem( item );
+}
+
+void PreFlightCheckListPage::slotItemSelectionChanged()
+{
+  if( m_list->selectedItems().size() != 1 )
+    {
+      m_editButton->setEnabled( false );
+    }
+  else
+    {
+      m_editButton->setEnabled( true );
+    }
 }
 
 /** Adds a new row with two columns to the table. */
@@ -300,7 +337,15 @@ void PreFlightCheckListPage::slotDeleteRows()
     }
 
   m_list->resizeColumnToContents( 0 );
+
   m_ok->show();
+
+  if( m_list->rowCount() == 0 )
+    {
+      m_editButton->setEnabled( false );
+      m_deleteButton->setEnabled( false );
+    }
+
 }
 
 void PreFlightCheckListPage::slotAccept()
