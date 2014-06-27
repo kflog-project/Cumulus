@@ -1919,14 +1919,39 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightCheckListPage</name>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="40"/>
+        <location filename="preflightchecklistpage.cpp" line="41"/>
         <source>PreFlight - Checklist</source>
         <translation>Vorflug - Checkliste</translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="128"/>
+        <location filename="preflightchecklistpage.cpp" line="94"/>
+        <source> Check Point </source>
+        <translation>Checkpunkt</translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="162"/>
         <source>File: </source>
         <translation>Datei: </translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="198"/>
+        <source>Edit Checkpoint</source>
+        <translation>Editiere Checkpunkt</translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="199"/>
+        <source>Text:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="294"/>
+        <source>Delete?</source>
+        <translation>Löschen?</translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="295"/>
+        <source>Delete selected entries?</source>
+        <translation>Auswahl löschen?</translation>
     </message>
     <message>
         <source>Path: </source>
