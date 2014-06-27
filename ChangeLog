@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2014-06-27 AP: New page checklist added to the pre-flight menus.
+
+[*] 2014-06-22 AP: Cumulus 5.16.0 released for all supported platforms.
+
 [-] 2014-06-19 AP: Bugfix: Airspace warning suppression did not work properly.
 
 [-] 2014-06-19 AP: Bugfix: Update glide path was missing when a new wind value
