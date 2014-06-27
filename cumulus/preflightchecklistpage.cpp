@@ -255,18 +255,30 @@ void PreFlightCheckListPage::slotItemSelectionChanged()
     }
 }
 
-/** Adds a new row with two columns to the table. */
 void PreFlightCheckListPage::slotAddRow( QString text )
 {
   m_list->setRowCount( m_list->rowCount() + 1 );
 
-  int row = m_list->rowCount() - 1;
+  int lastRow   = m_list->rowCount() - 1;
+  int appendRow = lastRow;
+
+  if( lastRow > 0 && m_list->currentRow() >= 0 &&
+      m_list->currentRow() < lastRow )
+    {
+      appendRow = m_list->currentRow() + 1;
+
+      for( int i = lastRow - 1; i >= appendRow; i-- )
+	{
+	  QTableWidgetItem* item = m_list->takeItem( i, 0 );
+	  m_list->setItem( i + 1, 0, item );
+	}
+    }
 
   QTableWidgetItem* item;
 
   item = new QTableWidgetItem( text );
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-  m_list->setItem( row, 0, item );
+  m_list->setItem( appendRow, 0, item );
   m_list->setCurrentItem( item );
   m_list->resizeColumnToContents( 0 );
   m_list->resizeRowsToContents();
@@ -274,7 +286,6 @@ void PreFlightCheckListPage::slotAddRow( QString text )
   m_deleteButton->setEnabled(true);
 }
 
-/** Removes all selected rows from the table. */
 void PreFlightCheckListPage::slotDeleteRows()
 {
   if( m_list->rowCount() == 0 || m_list->columnCount() != 1 )

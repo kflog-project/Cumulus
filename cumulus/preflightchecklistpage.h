@@ -20,7 +20,7 @@
  *
  * \author Axel Pauli
  *
- * \brief A widget for a pre-flight check list display and editor.
+ * \brief A widget for a pre-flight checklist display and editor.
  *
  * \date 2014
  *
@@ -97,7 +97,10 @@ class PreFlightCheckListPage : public QWidget
   */
  void slotToogleFilenameDisplay();
 
- /** Adds a new row with two columns to the table. */
+ /**
+  * Adds a new row with one column to the table. The new column is placed
+  * after the last selected list entry resp. at the end of the list.
+  */
  void slotAddRow( QString text="" );
 
  /** Removes all selected rows from the table. */
@@ -147,7 +150,6 @@ class PreFlightCheckListPage : public QWidget
 
   /** Delete button. */
   QPushButton *m_deleteButton;
-
 };
 
 #endif
