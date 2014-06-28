@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2013 by Axel Pauli
+**   Copyright (c):  2012-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -325,3 +325,60 @@ int Layout::font2defaultSize( const int size )
 
   return sizeArray[0];
 }
+
+QString Layout::getCbSbStyle()
+{
+  // See: http://qt-project.org/forums/viewthread/30208 and
+  //      http://qt-project.org/doc/qt-4.8/stylesheet-examples.html#customizing-qscrollbar
+
+  const QString ss =
+    /* Sets up scrollbar size, border, color */
+    "QScrollBar:vertical {"
+	"border: 1px solid grey;"
+	"width: 1em;"
+        /* margin sets up how far the handle can travel. Here over the whole line.*/
+	"margin: 0px 0px 0px 0px;"
+    "}"
+
+    /* Sets up the color and height of the handle */
+    "QScrollBar::handle:vertical {"
+        "border-radius: 5px;"
+	"background: lightgray;"
+	"min-height: 40px;"
+	"border: 1px solid grey;"
+    "}"
+
+    /* This removes the bottom button by setting the height to 0px */
+    "QScrollBar::add-line:vertical {"
+	"height: 0px;"
+	"subcontrol-position: bottom;"
+	"subcontrol-origin: margin;"
+    "}"
+
+    /* This removes the top button by setting the height to 0px */
+    "QScrollBar::sub-line:vertical {"
+	"height: 0px;"
+	"subcontrol-position: top;"
+	"subcontrol-origin: margin;"
+    "}"
+
+    /* Definition not needed due to no buttons are defined.
+    "QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {"
+	"border: 2px solid grey;"
+	"width: 5px;"
+	"height: 5px;"
+	"background: white;"
+    "}"
+    */
+
+    /* Need this to get rid of cross hatching on scrollbar background.
+       Not necessary for Cumulus. */
+    /*
+    "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {"
+	"background: none;"
+    "}" */
+     ;
+
+  return ss;
+}
+

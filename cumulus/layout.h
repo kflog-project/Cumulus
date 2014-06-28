@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010-2013 by Axel Pauli
+**   Copyright (c):  2010-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2013
+ * \date 2010-2014
  *
  * \version $Id$
  *
@@ -239,6 +239,14 @@ class Layout
    * \return The adapted font size.
    */
   static int font2defaultSize( const int size );
+
+  /**
+   * Returns a style sheet for usage in a combobox, to make the scrollbar
+   * wider.
+   *
+   * \return Style sheet for scrollbar of combobox.
+   */
+  static QString getCbSbStyle();
 
 #ifdef ANDROID
 

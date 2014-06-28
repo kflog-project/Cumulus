@@ -26,6 +26,7 @@
 #include <QtScroller>
 #endif
 
+#include "androidstyle.h"
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "glidereditornumpad.h"
@@ -40,8 +41,8 @@
 extern MapView *_globalMapView;
 
 GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
-		      QWidget(parent),
-		      m_gliderCreated(false)
+  QWidget(parent),
+  m_gliderCreated(false)
 {
   setWindowFlags(Qt::Tool);
   setWindowModality( Qt::WindowModal );
@@ -81,6 +82,12 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
       m_comboType = new QComboBox(this);
       m_comboType->setEditable(false);
       m_comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+
+#ifdef ANDROID
+      QAbstractItemView* listView = m_comboType->view();
+      QScrollBar* lvsb = listView->verticalScrollBar();
+      lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
       m_comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
