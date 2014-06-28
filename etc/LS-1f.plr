@@ -1,0 +1,4 @@
+* LK8000 polar for: LS-1f
+* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
+  345, 80, 100, -0.75, 120, -0.98, 150, -1.6, 9.74
+
