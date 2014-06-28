@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2013 by Axel Pauli
+**   Copyright (c):  2011-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -153,6 +153,12 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
 
   m_homeLabel   = new QLabel;
   m_airfieldBox = new QComboBox;
+
+#ifdef ANDROID
+      QAbstractItemView* listView = m_airfieldBox->view();
+      QScrollBar* lvsb = listView->verticalScrollBar();
+      lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
   m_airfieldBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_airfieldBox->view()->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
