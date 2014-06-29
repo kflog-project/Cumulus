@@ -70,10 +70,12 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   sa->setWidget( sw );
 
 #ifdef QSCROLLER
+  sa->viewport()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
+  sa->viewport()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
@@ -164,10 +166,12 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   m_airfieldBox->view()->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
 #ifdef QSCROLLER
+  m_airfieldBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QScroller::grabGesture( m_airfieldBox->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
+  m_airfieldBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QtScroller::grabGesture( m_airfieldBox->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
