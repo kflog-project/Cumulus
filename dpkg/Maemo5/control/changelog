@@ -1,3 +1,11 @@
+cumulus (5.17.0) stable; urgency=low
+
+  * Polar data file names modified and new polar files added.
+
+  * New page checklist added to the pre-flight menus.
+
+ -- Axel Pauli <kflog.cumulus@gmail.com>  Sun, 29 Jun 2014 09:55:29 +0200
+
 cumulus (5.16.0) stable; urgency=low
 
   * Bugfix: Airspace warning suppression did not work properly.

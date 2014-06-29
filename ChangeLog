@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-06-29 AP: Scrollbar handle of comboboxes enlared on the preflight
+                   waypoint page and in the gilder editor for Android.
+
+[o] 2014-06-29 AP: Polar data file names modified and new polar files added.
+
 [+] 2014-06-27 AP: New page checklist added to the pre-flight menus.
 
 [*] 2014-06-22 AP: Cumulus 5.16.0 released for all supported platforms.
