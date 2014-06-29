@@ -124,7 +124,7 @@ install: check_dir deinstall install_lang
 	install --mode=755 gpsMaemoClient/gpsMaemoClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
 	install --mode=644 etc/*.plr $(INSTALL_ROOT)/etc
-	install --mode=644 etc/Example.plr.Readme $(INSTALL_ROOT)/etc
+	install --mode=644 etc/Example.plr.Readme $(INSTALL_ROOT)/etc/Example.plr.Readme
 	install --mode=644 icons/*.xpm $(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
@@ -212,7 +212,7 @@ dpkg_install:
 	install --mode=755 gpsMaemoClient/gpsMaemoClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/*.plr $(DESTDIR)/$(INSTALL_ROOT)/etc
-	install --mode=644 etc/Example.plr.Readme $(INSTALL_ROOT)/etc
+	install --mode=644 etc/Example.plr.Readme $(DESTDIR)/$(INSTALL_ROOT)/etc/Example.plr.Readme
 	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small

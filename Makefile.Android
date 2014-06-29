@@ -54,7 +54,7 @@ appData:
 	@install -d $(APP_DATA_ROOT)/icons/small
 	@install -d $(APP_DATA_ROOT)/icons/windarrows
 	@install --mode=644 etc/*.plr $(APP_DATA_ROOT)/etc
-	@install --mode=644 etc/Example.plr.Readme $(INSTALL_ROOT)/etc
+	@install --mode=644 etc/Example.plr.Readme $(APP_DATA_ROOT)/etc/Example.plr.Readme
 	@install --mode=644 icons/*.xpm $(APP_DATA_ROOT)/icons
 	@install --mode=644 icons/*.png $(APP_DATA_ROOT)/icons
 	@install --mode=644 icons/small/* $(APP_DATA_ROOT)/icons/small
