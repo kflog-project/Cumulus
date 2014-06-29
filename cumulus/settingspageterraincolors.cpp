@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2013 by Axel Pauli
+**   Copyright (c):  2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -179,6 +179,22 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   QString unit;
 
   elevationBox = new QComboBox( this );
+
+#ifdef ANDROID
+  QAbstractItemView* listView = elevationBox->view();
+  QScrollBar* lvsb = listView->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
+#ifdef QSCROLLER
+  elevationBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  QScroller::grabGesture( elevationBox->view()->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  elevationBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  QtScroller::grabGesture( elevationBox->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
 
   if( Altitude::getUnit() == Altitude::meters )
     {

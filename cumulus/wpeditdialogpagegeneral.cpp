@@ -31,6 +31,7 @@
 #include "altitude.h"
 #include "basemapelement.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "numberEditor.h"
 #include "wgspoint.h"
@@ -169,11 +170,19 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_cmbType->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   m_cmbType->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
+#ifdef ANDROID
+  QAbstractItemView* listView = m_cmbType->view();
+  QScrollBar* lvsb = listView->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
+  m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
+  m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
