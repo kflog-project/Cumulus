@@ -136,7 +136,11 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   connect( cancel, SIGNAL(pressed()), SLOT(slotReject()) );
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
+  hbox->addLayout(buttonBox);
+
   buttonBox->setSpacing(0);
+
+#ifndef MAEMO
   buttonBox->addWidget(toggleButton, 1);
   buttonBox->addSpacing(20);
   buttonBox->addWidget(addButton, 1);
@@ -150,7 +154,22 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
-  hbox->addLayout(buttonBox);
+#else
+  // Under Maemo the space is limited at the right side of the window
+  buttonBox->addWidget(toggleButton, 1);
+  buttonBox->addSpacing(10);
+  buttonBox->addWidget(addButton, 1);
+  buttonBox->addSpacing(10);
+  buttonBox->addWidget(m_editButton, 1);
+  buttonBox->addSpacing(10);
+  buttonBox->addWidget(m_deleteButton, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(15);
+  buttonBox->addWidget(m_ok, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+#endif
 }
 
 PreFlightCheckListPage::~PreFlightCheckListPage()
