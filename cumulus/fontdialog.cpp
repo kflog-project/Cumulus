@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 by Axel Pauli
+**   Copyright (c): 2012-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -82,6 +82,15 @@ FontDialog::FontDialog (QWidget *parent) :
 
   // set new row height from configuration for all lists
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
+
+#ifdef ANDROID
+  // Make the vertical scrollbar bigger for Android
+  QScrollBar* lvsb = fontList->view()->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+
+  lvsb = sizeList->view()->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
   fontList->setItemDelegate( new RowDelegate( fontList, afMargin ) );
   styleList->setItemDelegate( new RowDelegate( styleList, afMargin ) );
