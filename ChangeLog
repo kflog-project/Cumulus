@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2014-06-29 AP: Cumulus 5.17.0 released for all supported platforms.
+
 [o] 2014-06-29 AP: Android: Scrollbar handle of comboboxes enlarged on the
                    preflight waypoint page and in the gilder editor.
 
