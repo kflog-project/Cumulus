@@ -413,7 +413,7 @@ bool PreFlightCheckListPage::loadCheckList()
     {
       line = stream.readLine().trimmed();
 
-      if( line.isEmpty() )
+      if( line.isEmpty() || line.startsWith( "# Cumulus") )
 	{
 	  continue;
 	}
@@ -438,6 +438,15 @@ bool PreFlightCheckListPage::saveCheckList()
     }
 
   QTextStream stream( &f );
+
+  // writing file-header
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
+
+  stream << "# Cumulus checklist file created at "
+         << dtStr
+         << " by Cumulus "
+         << QCoreApplication::applicationVersion() << endl;
 
   for( int i = 0; i < m_list->rowCount(); i++ )
     {
