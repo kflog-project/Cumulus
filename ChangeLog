@@ -15,6 +15,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2014-06-30 AP: Cumulus 5.17.1 released only for Android.
+
+[-] 2014-06-30 AP: Bugfix Android: German translation strings made shorter in
+                   ColorDialog to get visible the ok and cancel button.
+
+[o] 2014-06-30 AP: Android: Scrollbars in font dialog long lists enlarged.
+
 [*] 2014-06-29 AP: Cumulus 5.17.0 released for all supported platforms.
 
 [o] 2014-06-29 AP: Android: Scrollbar handle of comboboxes enlarged on the

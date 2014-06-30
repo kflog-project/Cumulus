@@ -85,10 +85,10 @@ FontDialog::FontDialog (QWidget *parent) :
 
 #ifdef ANDROID
   // Make the vertical scrollbar bigger for Android
-  QScrollBar* lvsb = fontList->view()->verticalScrollBar();
+  QScrollBar* lvsb = fontList->verticalScrollBar();
   lvsb->setStyleSheet( Layout::getCbSbStyle() );
 
-  lvsb = sizeList->view()->verticalScrollBar();
+  lvsb = sizeList->verticalScrollBar();
   lvsb->setStyleSheet( Layout::getCbSbStyle() );
 #endif
 
