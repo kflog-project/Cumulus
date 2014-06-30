@@ -443,7 +443,7 @@ bool PreFlightCheckListPage::saveCheckList()
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
-  stream << "# Cumulus checklist file created at "
+  stream << "# Cumulus checklist, created at "
          << dtStr
          << " by Cumulus "
          << QCoreApplication::applicationVersion() << endl;
