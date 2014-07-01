@@ -35,22 +35,25 @@
 #define COLOR_DIALOG_H
 
 #include <QColor>
+#include <QObject>
 #include <QString>
 
 class QWidget;
 
-class ColorDialog
+class ColorDialog : public QObject
 {
+  Q_OBJECT
+
  private:
 
-  ColorDialog();
+  ColorDialog( QObject* object=0 );
 
   Q_DISABLE_COPY( ColorDialog );
 
  public:
 
   /**
-   * That popup a QColorDialog, which will not be closed, if the return key
+   * That will popup a QColorDialog, which will not be closed, if the return key
    * is pressed.
    *
    * \param initial The initial color setup by the dialog

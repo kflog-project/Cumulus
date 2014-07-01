@@ -18,6 +18,7 @@
 #include <QtGui>
 
 #include "colordialog.h"
+#include "mainwindow.h"
 
 QColor ColorDialog::getColor( const QColor& initial,
                               QWidget* parent,
@@ -39,16 +40,27 @@ QColor ColorDialog::getColor( const QColor& initial,
       pb->setAutoDefault( false );
     }
 
-  // Adapt the size of the dialog to the parent window, if necessary.
+  // For each spinbox in the ColorDialog we must catch the editingFinished signal
+  // to close the SIP. Otherwise it is not close, when the Ok or End button is pressed.
+  QList<QAbstractSpinBox *> spinboxList = cd.findChildren<QAbstractSpinBox *>();
+
+  foreach( QAbstractSpinBox *sb, spinboxList )
+    {
+      connect( sb, SIGNAL(editingFinished()),
+               MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+    }
+
+  // Adapt the size of the dialog to the parent window, if necessary. On a Dell
+  // Streak 5 the color dialog is a little bit to big in its size.
   if( parent != 0 &&
-     (cd.minimumSizeHint().height() > (parent->height() - 15) ||
-      cd.minimumSizeHint().width() > (parent->width() -15)) )
+     (cd.minimumSizeHint().height() > (parent->height() - 20) ||
+      cd.minimumSizeHint().width() > (parent->width() - 20)) )
     {
       QFont cdFont = cd.font();
       int fs = cd.font().pointSize();
 
-      while( (cd.minimumSizeHint().height() > (parent->size().height() - 15) ||
-	      cd.minimumSizeHint().width() > (parent->width() -15)) && fs > 7 )
+      while( (cd.minimumSizeHint().height() > (parent->size().height() - 20) ||
+	      cd.minimumSizeHint().width() > (parent->width() - 20)) && fs >= 7 )
 	{
 	  fs--;
 	  cdFont.setPointSize( fs );
