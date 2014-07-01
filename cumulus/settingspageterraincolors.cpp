@@ -30,6 +30,7 @@
 #include "elevationcolorimage.h"
 #include "generalconfig.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "settingspageterraincolors.h"
 #include "varspinbox.h"
 
@@ -285,6 +286,10 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   elevationOffset = new QSpinBox;
   elevationOffset->setSingleStep(1);
   elevationOffset->setRange(-50, 50);
+
+  connect( elevationOffset, SIGNAL(editingFinished()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   VarSpinBox* hspin = new VarSpinBox( elevationOffset );
   spinboxLayout->addWidget(hspin);
   setOffsetBox->setLayout(spinboxLayout);
