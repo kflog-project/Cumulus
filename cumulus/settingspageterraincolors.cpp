@@ -26,6 +26,7 @@
 #endif
 
 #include "altitude.h"
+#include "colordialog.h"
 #include "elevationcolorimage.h"
 #include "generalconfig.h"
 #include "layout.h"
@@ -369,7 +370,7 @@ void SettingsPageTerrainColors::slot_editColor()
 
   // Open color chooser dialog to edit selected color
   QString title = tr("Terrain Level") + " " + elevationBox->currentText();
-  QColor newColor = QColorDialog::getColor( color, this, title );
+  QColor newColor = ColorDialog::getColor( color, this, title );
 
   if( newColor.isValid() && color != newColor )
     {
@@ -397,7 +398,7 @@ void SettingsPageTerrainColors::slot_editGroundColor()
 
   // Open color chooser dialog to edit ground color
   QString title = tr("Ground Color");
-  QColor newColor = QColorDialog::getColor( groundColor, this, title );
+  QColor newColor = ColorDialog::getColor( groundColor, this, title );
 
   if( newColor.isValid() && groundColor != newColor )
     {

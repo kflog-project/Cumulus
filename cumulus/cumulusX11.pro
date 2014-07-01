@@ -83,6 +83,7 @@ HEADERS = \
     authdialog.h \
     basemapelement.h \
     calculator.h \
+    colordialog.h \
     configwidget.h \
     datatypes.h \
     distance.h \
@@ -210,6 +211,7 @@ SOURCES = \
     basemapelement.cpp \
     builddate.cpp \
     calculator.cpp \
+    colordialog.cpp \
     configwidget.cpp \
     distance.cpp \
     elevationcolorimage.cpp \

@@ -30,6 +30,7 @@
 
 #include "airspace.h"
 #include "basemapelement.h"
+#include "colordialog.h"
 #include "distance.h"
 #include "generalconfig.h"
 #include "layout.h"
@@ -721,7 +722,7 @@ void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
       QColor color = palette.color(QPalette::Window);
 
       // Open color chooser dialog
-      QColor newColor = QColorDialog::getColor( color, this, title );
+      QColor newColor = ColorDialog::getColor( color, this, title );
 
       if( newColor.isValid() && color != newColor )
         {

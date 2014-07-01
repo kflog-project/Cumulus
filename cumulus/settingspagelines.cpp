@@ -27,6 +27,7 @@
 #include <QtScroller>
 #endif
 
+#include "colordialog.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "map.h"
@@ -400,7 +401,7 @@ void SettingsPageLines::slot_toggleCheckBox( int row, int column )
       QColor color = palette.color(QPalette::Window);
 
       // Open color chooser dialog
-      QColor newColor = QColorDialog::getColor( color, this, m_drawOptions->item( row, 0 )->text() );
+      QColor newColor = ColorDialog::getColor( color, this, m_drawOptions->item( row, 0 )->text() );
 
       if( newColor.isValid() && color != newColor )
         {

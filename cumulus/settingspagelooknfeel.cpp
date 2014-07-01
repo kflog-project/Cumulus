@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2009-2013 Axel Pauli
+**   Copyright (c): 2009-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,6 +29,7 @@
 #include <QtScroller>
 #endif
 
+#include "colordialog.h"
 #include "doubleNumberEditor.h"
 #include "fontdialog.h"
 #include "generalconfig.h"
@@ -374,7 +375,7 @@ void SettingsPageLookNFeel::slot_openColorDialog()
   // Open color chooser dialog to edit selected color
   QString title = tr("Map sidebar color");
 
-  QColor newColor = QColorDialog::getColor( color, this, title );
+  QColor newColor = ColorDialog::getColor( color, this, title );
 
   if( newColor.isValid() && color != newColor )
     {
