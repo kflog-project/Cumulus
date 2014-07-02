@@ -125,7 +125,7 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   connect(m_menuFontDialog, SIGNAL(clicked()), this, SLOT(slot_openMenuFontDialog()));
   row++;
 
-  lbl = new QLabel(tr("Map sidebar color:"), this);
+  lbl = new QLabel(tr("Infobox frame color:"), this);
   topLayout->addWidget(lbl, row, 0);
   m_editMapFrameColor = new QPushButton(tr("Select Color"));
   topLayout->addWidget( m_editMapFrameColor, row, 1 );
