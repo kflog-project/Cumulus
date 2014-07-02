@@ -56,10 +56,22 @@ public:
    */
   enum objectType {
     NotSelected = NOT_SELECTED,
-    IntAirport = INT_AIRPORT, Airport = AIRPORT, MilAirport = MIL_AIRPORT, CivMilAirport = CIVMIL_AIRPORT,
-    Airfield = AIRFIELD, ClosedAirfield = CLOSED_AIRFIELD, CivHeliport = CIV_HELIPORT,
-    MilHeliport = MIL_HELIPORT, AmbHeliport = AMB_HELIPORT, Gliderfield = GLIDERFIELD, UltraLight = ULTRALIGHT,
-    HangGlider = HANGGLIDER, Parachute = PARACHUTE, Balloon = BALLOON, Outlanding = OUTLANDING, Vor = VOR,
+    IntAirport = INT_AIRPORT,
+    Airport = AIRPORT,
+    MilAirport = MIL_AIRPORT,
+    CivMilAirport = CIVMIL_AIRPORT,
+    Airfield = AIRFIELD,
+    ClosedAirfield = CLOSED_AIRFIELD,
+    CivHeliport = CIV_HELIPORT,
+    MilHeliport = MIL_HELIPORT,
+    AmbHeliport = AMB_HELIPORT,
+    Gliderfield = GLIDERFIELD,
+    UltraLight = ULTRALIGHT,
+    HangGlider = HANGGLIDER,
+    Parachute = PARACHUTE,
+    Balloon = BALLOON,
+    Outlanding = OUTLANDING,
+    Vor = VOR,
     VorDme = VORDME, VorTac = VORTAC, Ndb = NDB, CompPoint = COMPPOINT,
     AirA = AIR_A, AirB = AIR_B, AirC = AIR_C, AirD = AIR_D, AirE = AIR_E, WaveWindow = WAVE_WINDOW,
     AirF = AIR_F, ControlC = CONTROL_C, ControlD = CONTROL_D, Danger = DANGER,
@@ -72,8 +84,9 @@ public:
     Trail = TRAIL, Railway_D = RAILWAY_D, Aerial_Cable = AERIAL_CABLE, River_T = RIVER_T, Lake_T = LAKE_T,
     Forest = FOREST, Turnpoint = TURNPOINT, Thermal = THERMAL,
     FlightGroup = FLIGHT_GROUP, FAIAreaLow500 = FAI_AREA_LOW, FAIAreaHigh500 = FAI_AREA_HIGH,
-    EmptyPoint = EMPTY_POINT,  // new type for nothing to draw
+    EmptyPoint = EMPTY_POINT,
     AirG = AIR_G,
+    AirFir = AIR_FIR,
     AirUkn = AIR_UKN,
     objectTypeSize=LAST_ENTRY /* leave this at the end */};
 

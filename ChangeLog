@@ -15,6 +15,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-07-02 AP: openAIP has provided a new airspace type FIR. I made that
+                   available in the airspace configuration and drawing. It is
+                   only the border of the FIR airspace drawn. The area inside
+                   is not filled with any pattern or color.
+
 [o] 2014-07-01 AP: New class ColorDialog written to prevent the dialog close,
                    if the return key is pressed. That happens on Android,
                    if the Ok key is pressed on the virtual keyboard, to close

@@ -682,8 +682,8 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("C", BaseMapElement::AirC);
       typeMap.insert("D", BaseMapElement::AirD);
       typeMap.insert("E", BaseMapElement::AirE);
-      typeMap.insert("WAVE", BaseMapElement::WaveWindow);
       typeMap.insert("F", BaseMapElement::AirF);
+      typeMap.insert("FIR", BaseMapElement::AirFir);
       typeMap.insert("CTR", BaseMapElement::ControlD);
       typeMap.insert("DANGER", BaseMapElement::Danger);
       typeMap.insert("RESTRICTED", BaseMapElement::Restricted);
@@ -691,6 +691,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("TMA", BaseMapElement::ControlD);
       typeMap.insert("TMZ", BaseMapElement::Tmz);
       typeMap.insert("GLIDING", BaseMapElement::GliderSector);
+      typeMap.insert("WAVE", BaseMapElement::WaveWindow);
       typeMap.insert("OTH", BaseMapElement::AirUkn);
     }
   else

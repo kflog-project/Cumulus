@@ -150,6 +150,7 @@ void GeneralConfig::load()
   _mapDrawingEnabled[BaseMapElement::AirE]         = value("checkAirspaceE", false).toBool();
   _mapDrawingEnabled[BaseMapElement::WaveWindow]   = value("checkWaveWindow", false).toBool();
   _mapDrawingEnabled[BaseMapElement::AirF]         = value("checkAirspaceF", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::AirFir]       = value("checkAirspaceFir", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Restricted]   = value("checkRestricted", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Danger]       = value("checkDanger", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Prohibited]   = value("checkProhibited", true).toBool();
@@ -164,6 +165,7 @@ void GeneralConfig::load()
   _borderColorAirspaceD    = QColor( value("borderColorAirspaceD", AIRD_COLOR).toString() );
   _borderColorAirspaceE    = QColor( value("borderColorAirspaceE", AIRE_COLOR).toString() );
   _borderColorAirspaceF    = QColor( value("borderColorAirspaceF", AIRF_COLOR).toString() );
+  _borderColorAirspaceFir  = QColor( value("borderColorAirspaceFir", AIRFIR_COLOR).toString() );
   _borderColorWaveWindow   = QColor( value("borderColorWaveWindow", WAVE_WINDOW_COLOR).toString() );
   _borderColorControlC     = QColor( value("borderColorControlC", CTRC_COLOR).toString() );
   _borderColorControlD     = QColor( value("borderColorControlD", CTRD_COLOR).toString() );
@@ -181,6 +183,7 @@ void GeneralConfig::load()
   _fillColorAirspaceD    = QColor( value("fillColorAirspaceD", AIRD_BRUSH_COLOR).toString() );
   _fillColorAirspaceE    = QColor( value("fillColorAirspaceE", AIRE_BRUSH_COLOR).toString() );
   _fillColorAirspaceF    = QColor( value("fillColorAirspaceF", AIRF_BRUSH_COLOR).toString() );
+  _fillColorAirspaceFir  = QColor( value("fillColorAirspaceFir", AIRFIR_BRUSH_COLOR).toString() );
   _fillColorWaveWindow   = QColor( value("fillColorWaveWindow", WAVE_WINDOW_BRUSH_COLOR).toString() );
   _fillColorControlC     = QColor( value("fillColorControlC", CTRC_BRUSH_COLOR).toString() );
   _fillColorControlD     = QColor( value("fillColorControlD", CTRD_BRUSH_COLOR).toString() );
@@ -616,6 +619,7 @@ void GeneralConfig::save()
   setValue("checkAirspaceE", _mapDrawingEnabled[BaseMapElement::AirE]);
   setValue("checkWaveWindow", _mapDrawingEnabled[BaseMapElement::WaveWindow]);
   setValue("checkAirspaceF", _mapDrawingEnabled[BaseMapElement::AirF]);
+  setValue("checkAirspaceFir", _mapDrawingEnabled[BaseMapElement::AirFir]);
   setValue("checkRestricted", _mapDrawingEnabled[BaseMapElement::Restricted]);
   setValue("checkDanger", _mapDrawingEnabled[BaseMapElement::Danger]);
   setValue("checkProhibited", _mapDrawingEnabled[BaseMapElement::Prohibited]);
@@ -630,6 +634,7 @@ void GeneralConfig::save()
   setValue("borderColorAirspaceD",    _borderColorAirspaceD.name());
   setValue("borderColorAirspaceE",    _borderColorAirspaceE.name());
   setValue("borderColorAirspaceF",    _borderColorAirspaceF.name());
+  setValue("borderColorAirspaceFir",  _borderColorAirspaceFir.name());
   setValue("borderColorWaveWindow",   _borderColorWaveWindow.name());
   setValue("borderColorControlC",     _borderColorControlC.name());
   setValue("borderColorControlD",     _borderColorControlD.name());
@@ -646,7 +651,7 @@ void GeneralConfig::save()
   setValue("fillColorAirspaceC",    _fillColorAirspaceC.name());
   setValue("fillColorAirspaceD",    _fillColorAirspaceD.name());
   setValue("fillColorAirspaceE",    _fillColorAirspaceE.name());
-  setValue("fillColorAirspaceF",    _fillColorAirspaceF.name());
+  setValue("fillColorAirspaceFir",  _fillColorAirspaceFir.name());
   setValue("fillColorWaveWindow",   _fillColorWaveWindow.name());
   setValue("fillColorControlC",     _fillColorControlC.name());
   setValue("fillColorControlD",     _fillColorControlD.name());

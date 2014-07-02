@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001      by Heiner Lamprecht,
 **                   2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -299,6 +299,8 @@ private:
     QBrush waveWindowBrushList[4];
     QPen airFPenList[4];
     QBrush airFBrushList[4];
+    QPen airFirPenList[4];
+    QBrush airFirBrushList[4];
     QPen ctrCPenList[4];
     QBrush ctrCBrushList[4];
     QPen ctrDPenList[4];
@@ -350,6 +352,7 @@ private:
     bool airEBorder[4];
     bool waveWindowBorder[4];
     bool airFBorder[4];
+    bool airFirBorder[4];
     bool ctrCBorder[4];
     bool ctrDBorder[4];
     bool dangerBorder[4];

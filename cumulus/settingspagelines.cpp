@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013 by Axel Pauli
+ **   Copyright (c): 2013-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -143,7 +143,7 @@ SettingsPageLines::SettingsPageLines(QWidget *parent) :
   m_pathLineColor->setBackgroundRole(QPalette::Window);
   m_drawOptions->setCellWidget( row++, col, m_pathLineColor );
 
-  QTableWidgetItem* liDummy = new QTableWidgetItem("none");
+  QTableWidgetItem* liDummy = new QTableWidgetItem(tr("none"));
   liDummy->setFlags( Qt::NoItemFlags );
   liDummy->setTextAlignment(Qt::AlignCenter);
   m_drawOptions->setItem( row++, col, liDummy );
@@ -158,7 +158,7 @@ SettingsPageLines::SettingsPageLines(QWidget *parent) :
   m_taskFiguresColor->setBackgroundRole(QPalette::Window);
   m_drawOptions->setCellWidget( row++, col, m_taskFiguresColor );
 
-  liDummy = new QTableWidgetItem("none");
+  liDummy = new QTableWidgetItem(tr("none"));
   liDummy->setFlags( Qt::NoItemFlags );
   liDummy->setTextAlignment(Qt::AlignCenter);
   m_drawOptions->setItem( row++, col, liDummy );

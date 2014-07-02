@@ -207,6 +207,8 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity/100.0 );
       targetP->drawPolygon(mP);
+
+      // Reset opacity, that a solid line is drawn as next
       targetP->setBrush(Qt::NoBrush);
       targetP->setOpacity( 1.0 );
     }
@@ -256,6 +258,8 @@ QString Airspace::getTypeName (objectType type)
       return QObject::tr("Wave Window");
     case BaseMapElement::AirF:
       return QObject::tr("AS-F");
+    case BaseMapElement::AirFir:
+      return QObject::tr("FIR");
     case BaseMapElement::Restricted:
       return QObject::tr("Restricted");
     case BaseMapElement::Danger:

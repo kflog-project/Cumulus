@@ -1677,7 +1677,7 @@ bool OpenAip::readAirspaceRecord( QXmlStreamReader& xml, Airspace& as )
 
   ushort error = 0;
 
-  // Read airport type
+  // Read airspace category
   QXmlStreamAttributes attributes = xml.attributes();
 
   if( attributes.hasAttribute("CATEGORY") )
@@ -1691,6 +1691,7 @@ bool OpenAip::readAirspaceRecord( QXmlStreamReader& xml, Airspace& as )
       "DANGER"
       "E"
       "F"
+      "FIR"
       "G"
       "GLIDING"
       "OTH"
@@ -1709,7 +1710,7 @@ bool OpenAip::readAirspaceRecord( QXmlStreamReader& xml, Airspace& as )
                      << "Ignoring Airspace, unknown category:" << category;
 
           xml.skipCurrentElement();
-          return true;
+          return false;
         }
 
       // Apply user mapping rules

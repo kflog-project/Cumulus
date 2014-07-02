@@ -532,10 +532,10 @@
 #define AIRE_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Airspace F]
-#define AIRF_PEN_WIDTH_1 3
-#define AIRF_PEN_WIDTH_2 2
-#define AIRF_PEN_WIDTH_3 1
-#define AIRF_PEN_WIDTH_4 1
+#define AIRF_PEN_WIDTH_1 4
+#define AIRF_PEN_WIDTH_2 3
+#define AIRF_PEN_WIDTH_3 3
+#define AIRF_PEN_WIDTH_4 2
 
 #define AIRF_PEN_STYLE_1 Qt::SolidLine
 #define AIRF_PEN_STYLE_2 Qt::SolidLine
@@ -558,6 +558,34 @@
 #define AIRF_BRUSH_STYLE_2 Qt::Dense6Pattern
 #define AIRF_BRUSH_STYLE_3 Qt::Dense6Pattern
 #define AIRF_BRUSH_STYLE_4 Qt::Dense6Pattern
+
+// [Airspace FIR]
+#define AIRFIR_PEN_WIDTH_1 4
+#define AIRFIR_PEN_WIDTH_2 3
+#define AIRFIR_PEN_WIDTH_3 3
+#define AIRFIR_PEN_WIDTH_4 2
+
+#define AIRFIR_PEN_STYLE_1 Qt::DotLine
+#define AIRFIR_PEN_STYLE_2 Qt::DotLine
+#define AIRFIR_PEN_STYLE_3 Qt::DotLine
+#define AIRFIR_PEN_STYLE_4 Qt::DotLine
+
+#define AIRFIR_COLOR   QColor(50,205,50).name()
+#define AIRFIR_COLOR_1 QColor(50,205,50)
+#define AIRFIR_COLOR_2 QColor(50,205,50)
+#define AIRFIR_COLOR_3 QColor(50,205,50)
+#define AIRFIR_COLOR_4 QColor(50,205,50)
+
+#define AIRFIR_BRUSH_COLOR   QColor(50,205,50).name()
+#define AIRFIR_BRUSH_COLOR_1 QColor(50,205,50)
+#define AIRFIR_BRUSH_COLOR_2 QColor(50,205,50)
+#define AIRFIR_BRUSH_COLOR_3 QColor(50,205,50)
+#define AIRFIR_BRUSH_COLOR_4 QColor(50,205,50)
+
+#define AIRFIR_BRUSH_STYLE_1 Qt::NoBrush
+#define AIRFIR_BRUSH_STYLE_2 Qt::NoBrush
+#define AIRFIR_BRUSH_STYLE_3 Qt::NoBrush
+#define AIRFIR_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Control C]
 #define CTRC_PEN_WIDTH_1 4

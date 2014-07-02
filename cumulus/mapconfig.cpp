@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Heiner Lamprecht,
  **                   2002      by André Somers
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -72,20 +72,19 @@ MapConfig::MapConfig(QObject* parent) :
   // in airfield list; speeds up list display
 
   unsigned int airfieldType[13] = { BaseMapElement::IntAirport,
-                                      BaseMapElement::Airport,
-                                      BaseMapElement::MilAirport,
-                                      BaseMapElement::CivMilAirport,
-                                      BaseMapElement::Airfield,
-                                      BaseMapElement::ClosedAirfield,
-                                      BaseMapElement::CivHeliport,
-                                      BaseMapElement::MilHeliport,
-                                      BaseMapElement::AmbHeliport,
-                                      BaseMapElement::Gliderfield,
-                                      BaseMapElement::UltraLight,
-                                      BaseMapElement::HangGlider,
-                                      BaseMapElement::Outlanding
-                                    };
-
+				    BaseMapElement::Airport,
+				    BaseMapElement::MilAirport,
+				    BaseMapElement::CivMilAirport,
+				    BaseMapElement::Airfield,
+				    BaseMapElement::ClosedAirfield,
+				    BaseMapElement::CivHeliport,
+				    BaseMapElement::MilHeliport,
+				    BaseMapElement::AmbHeliport,
+				    BaseMapElement::Gliderfield,
+				    BaseMapElement::UltraLight,
+				    BaseMapElement::HangGlider,
+				    BaseMapElement::Outlanding
+				  };
   QPixmap selectPixmap;
   QIcon afIcon;
   QPainter pnt;
@@ -286,6 +285,16 @@ void MapConfig::slotReloadAirspaceColors()
                  AIRF_BRUSH_STYLE_1, AIRF_BRUSH_STYLE_2,
                  AIRF_BRUSH_STYLE_3, AIRF_BRUSH_STYLE_4)
 
+  READ_PEN_BRUSH("Airspace FIR", airFirPenList, airFirBorder, airFirBrushList,
+		conf->getBorderColorAirspaceFir(), conf->getBorderColorAirspaceFir(),
+		conf->getBorderColorAirspaceFir(), conf->getBorderColorAirspaceFir(),
+		AIRFIR_PEN_WIDTH_1, AIRFIR_PEN_WIDTH_2, AIRFIR_PEN_WIDTH_3, AIRFIR_PEN_WIDTH_4,
+		AIRFIR_PEN_STYLE_1, AIRFIR_PEN_STYLE_2, AIRFIR_PEN_STYLE_3, AIRFIR_PEN_STYLE_4,
+		conf->getFillColorAirspaceFir(), conf->getFillColorAirspaceFir(),
+		conf->getFillColorAirspaceFir(), conf->getFillColorAirspaceFir(),
+		AIRFIR_BRUSH_STYLE_1, AIRFIR_BRUSH_STYLE_2,
+		AIRFIR_BRUSH_STYLE_3, AIRFIR_BRUSH_STYLE_4)
+
   READ_PEN_BRUSH("Wave Window", waveWindowPenList, waveWindowBorder, waveWindowBrushList,
                  conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
                  conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
@@ -430,6 +439,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return waveWindowPenList[sIndex];
     case BaseMapElement::AirF:
       return airFPenList[sIndex];
+    case BaseMapElement::AirFir:
+      return airFirPenList[sIndex];
     case BaseMapElement::ControlC:
       return ctrCPenList[sIndex];
     case BaseMapElement::ControlD:
@@ -498,6 +509,8 @@ bool MapConfig::isBorder(unsigned int typeID)
       return waveWindowBorder[scaleIndex];
     case BaseMapElement::AirF:
       return airFBorder[scaleIndex];
+    case BaseMapElement::AirFir:
+      return airFirBorder[scaleIndex];
     case BaseMapElement::ControlC:
       return ctrCBorder[scaleIndex];
     case BaseMapElement::ControlD:
@@ -558,6 +571,8 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
       return waveWindowBrushList[sIndex];
     case BaseMapElement::AirF:
       return airFBrushList[sIndex];
+    case BaseMapElement::AirFir:
+      return airFirBrushList[sIndex];
     case BaseMapElement::ControlC:
       return ctrCBrushList[sIndex];
     case BaseMapElement::ControlD:

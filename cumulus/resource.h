@@ -171,7 +171,8 @@
 #define EMPTY_POINT      67 // used for empty points
 #define PROHIBITED       68 // used for prohibited airspace
 #define AIR_G            69
-#define AIR_UKN          70
-#define LAST_ENTRY       71 // This must be always the last entry!!!
+#define AIR_FIR          70 // Flight Information Region
+#define AIR_UKN          71
+#define LAST_ENTRY       72 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

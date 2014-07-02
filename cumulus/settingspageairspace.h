@@ -42,7 +42,7 @@ class NumberEditor;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  *
@@ -165,6 +165,7 @@ class SettingsPageAirspace : public QWidget
   QTableWidgetItem* drawTMZ;
   QTableWidgetItem* drawWaveWindow;
   QTableWidgetItem* drawGliderSector;
+  QTableWidgetItem* drawAirspaceFir;
 
   // border colors of airspaces
   QWidget* borderColorAirspaceA;
@@ -175,6 +176,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* borderColorControlD;
   QWidget* borderColorAirspaceE;
   QWidget* borderColorAirspaceF;
+  QWidget* borderColorAirspaceFir;
   QWidget* borderColorRestricted;
   QWidget* borderColorDanger;
   QWidget* borderColorProhibited;
@@ -199,6 +201,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* fillColorTMZ;
   QWidget* fillColorWaveWindow;
   QWidget* fillColorGliderSector;
+  QTableWidgetItem* fillColorAirspaceFir;
 
   QSpinBox*  m_spinAsLineWidth;
   QCheckBox* m_enableBorderDrawing;

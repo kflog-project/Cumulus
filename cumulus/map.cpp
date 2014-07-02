@@ -722,9 +722,6 @@ void Map::p_drawAirspaces( bool reset )
   QTime t;
   t.start();
 
-  Airspace* currentAirS = 0;
-  AirRegion* region = 0;
-
   if( reset )
     {
       qDeleteAll(m_airspaceRegionList);
@@ -760,12 +757,13 @@ void Map::p_drawAirspaces( bool reset )
   uint asBorder = (uint) rint(settings->getAirspaceDrawingBorder() * 100.0 * Distance::mFromFeet );
 
   for( uint loop = 0;
-       loop < _globalMapContents->getListLength( MapContents::AirspaceList);
+       loop < _globalMapContents->getListLength( MapContents::AirspaceList );
        loop++ )
     {
-      currentAirS = (Airspace*) _globalMapContents->getElement(MapContents::AirspaceList, loop);
+      AirRegion* region = 0;
+      Airspace* currentAirS = dynamic_cast<Airspace *> (_globalMapContents->getElement(MapContents::AirspaceList, loop));
 
-      if( ! currentAirS->isDrawable() )
+      if( currentAirS == 0 || currentAirS->isDrawable() == false )
         {
           // Not of interest, step away
           continue;
@@ -780,20 +778,26 @@ void Map::p_drawAirspaces( bool reset )
             }
         }
 
-      if( reset == true )
-        {
-          // We have to create a new region for that airspace and put
-          // it in the airspace region list.
-          region = new AirRegion( currentAirS->createRegion(), currentAirS );
-          m_airspaceRegionList.append( region );
-        }
-      else
-        {
-          // try to reuse an existing region
-          region = currentAirS->getAirRegion();
-        }
+      if( currentAirS->getTypeID() == BaseMapElement::AirFir )
+	{
+	  // FIRs are always full transparent.
+	  airspaceOpacity = 0.0;
+	}
 
-      if( region )
+      if( reset == true )
+	{
+	  // We have to create a new region for that airspace and put
+	  // it in the airspace region list.
+	  region = new AirRegion( currentAirS->createRegion(), currentAirS );
+	  m_airspaceRegionList.append( region );
+	}
+      else
+	{
+	  // try to reuse an existing region
+	  region = currentAirS->getAirRegion();
+	}
+
+      if( region && currentAirS->getTypeID() != BaseMapElement::AirFir)
         {
           // determine lateral conflict
           Airspace::ConflictType lConflict = region->conflicts( pos, awd );
@@ -825,7 +829,6 @@ void Map::p_drawAirspaces( bool reset )
   cuAeroMapP.end();
   // qDebug("Airspace, drawTime=%d ms", t.elapsed());
 }
-
 
 void Map::p_drawGrid()
 {
@@ -3042,6 +3045,12 @@ void Map::checkAirspace(const QPoint& pos)
   for( int loop = 0; loop < m_airspaceRegionList.count(); loop++ )
     {
       Airspace* pSpace = m_airspaceRegionList.at(loop)->airspace;
+
+      if( pSpace->getTypeID() == BaseMapElement::AirFir )
+	{
+	  // FIRs are not included in the conflict checks.
+	  continue;
+	}
 
       lastVConflict = pSpace->lastVConflict();
       lastHConflict = m_airspaceRegionList.at(loop)->currentConflict();
