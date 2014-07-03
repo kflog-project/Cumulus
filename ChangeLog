@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-07-03 AP: At page look&feel a default button added for resetting of
+                   mapbox frame color after a change.
+
 [o] 2014-07-02 AP: openAIP has provided a new airspace type FIR. I made that
                    available in the airspace configuration and drawing. It is
                    only the border of the FIR airspace drawn. The area inside
