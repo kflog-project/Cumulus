@@ -22,13 +22,13 @@
 #include <QtWidgets>
 #endif
 
-#include "gliderflightdialog.h"
 #include "calculator.h"
+#include "generalconfig.h"
+#include "gliderflightdialog.h"
 #include "glider.h"
 #include "igclogger.h"
-#include "mapconfig.h"
-#include "generalconfig.h"
 #include "layout.h"
+#include "mapconfig.h"
 
 // set static member variable
 int GliderFlightDialog::m_noOfInstances = 0;
@@ -184,7 +184,6 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   gridLayout->addLayout(pmLayout, row, 0, 1, 3);
 
   //---------------------------------------------------------------------
-
   // Align ok and cancel button at the upper and lower position of the right
   // side of the widget to have enough space between them. That shall avoid wrong
   // button pressing in turbulent air.
@@ -354,18 +353,13 @@ void GliderFlightDialog::save()
 {
   if( spinMcCready->isEnabled() && spinBugs->isEnabled() )
     {
-      if( spinWater->value() != m_waterConfig ||
-          spinBugs->value() != m_bugsConfig )
-        {
-          emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
-        }
+      // To see the changed results immediately at the map displays, don't
+      // make further checks.
+      emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
+      Speed mc;
 
-      if( spinMcCready->value() != m_mcConfig )
-        {
-          Speed mc;
-          mc.setVerticalValue( spinMcCready->value() );
-          emit newMc( mc );
-        }
+      mc.setVerticalValue( spinMcCready->value() );
+      emit newMc( mc );
     }
 }
 

@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-07-03 AP: Bugfix: Not all changes in the flight dialog were reported
+                   immediately to the calculator.
+
 [o] 2014-07-03 AP: At page look&feel a default button added for resetting of
                    mapbox frame color after a change.
 
