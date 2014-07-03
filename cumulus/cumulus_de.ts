@@ -4471,28 +4471,28 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>SettingsPageLookNFeel</name>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="50"/>
+        <location filename="settingspagelooknfeel.cpp" line="51"/>
         <source>Settings - Look&amp;Feel</source>
         <translation>Einstellungen - Look&amp;Feel</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="95"/>
+        <location filename="settingspagelooknfeel.cpp" line="100"/>
         <source>GUI Style:</source>
         <translation>GUI Stil:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="110"/>
+        <location filename="settingspagelooknfeel.cpp" line="115"/>
         <source>GUI Font:</source>
         <translation>GUI Schrift:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="112"/>
-        <location filename="settingspagelooknfeel.cpp" line="121"/>
+        <location filename="settingspagelooknfeel.cpp" line="117"/>
+        <location filename="settingspagelooknfeel.cpp" line="126"/>
         <source>Select Font</source>
         <translation>Wähle Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="119"/>
+        <location filename="settingspagelooknfeel.cpp" line="124"/>
         <source>GUI Menu Font:</source>
         <translation>GUI Menü Schrift:</translation>
     </message>
@@ -4501,37 +4501,42 @@ Alle Downloads verworfen!</translation>
         <translation type="obsolete">Karte Randleistenfarbe:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="128"/>
+        <location filename="settingspagelooknfeel.cpp" line="133"/>
         <source>Infobox frame color:</source>
         <translation>Infobox Rahmenfarbe:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="130"/>
+        <location filename="settingspagelooknfeel.cpp" line="136"/>
         <source>Select Color</source>
         <translation>Wähle Farbe</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="135"/>
+        <location filename="settingspagelooknfeel.cpp" line="140"/>
+        <source>Default</source>
+        <translation>Standard</translation>
+    </message>
+    <message>
+        <location filename="settingspagelooknfeel.cpp" line="147"/>
         <source>Screensaver on:</source>
         <translation>Screensaver ein:</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="143"/>
+        <location filename="settingspagelooknfeel.cpp" line="155"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="312"/>
+        <location filename="settingspagelooknfeel.cpp" line="329"/>
         <source>GUI Font</source>
         <translation>GUI Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="351"/>
+        <location filename="settingspagelooknfeel.cpp" line="368"/>
         <source>GUI Menu Font</source>
         <translation>GUI Menü Schrift</translation>
     </message>
     <message>
-        <location filename="settingspagelooknfeel.cpp" line="376"/>
+        <location filename="settingspagelooknfeel.cpp" line="393"/>
         <source>Map sidebar color</source>
         <translation>Karte Randleistenfarbe</translation>
     </message>

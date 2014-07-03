@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2012 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -19,9 +19,14 @@
 #ifndef MAP_DEFAULTS_H
 #define MAP_DEFAULTS_H
 
+#include <QColor>
+
 // Default-Home (Berlin, Brandenburger Tor)
 #define HOME_DEFAULT_LAT 31509700
 #define HOME_DEFAULT_LON 8026500
+
+// Map infobox frame default color
+#define INFOBOX_FRAME_COLOR "#687ec6"
 
 // the scale-borders
 #define VAL_BORDER_L                       5

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2013 Axel Pauli
+**   Copyright (c):  2008-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -36,6 +36,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QSize>
 
 #include "speed.h"
 
@@ -72,6 +73,9 @@ private slots:
 
   /** Called to open the color dialog */
   void slot_openColorDialog();
+
+  /** Called to set the default color. */
+  void slot_defaultColor();
 
   /**
    * Called if the Ok button is pressed.
@@ -112,6 +116,9 @@ private:
 
   /** loaded speed for change control */
   double m_loadedSpeed;
+
+  // size of the color pixmap used in icons
+  QSize m_pixmapSize;
 };
 
 #endif

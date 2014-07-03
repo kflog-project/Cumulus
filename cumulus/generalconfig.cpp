@@ -97,7 +97,7 @@ void GeneralConfig::load()
   _windowSize            = value("Geometry", QSize(800, 480)).toSize();
 #endif
 
-  _mapSideFrameColor     = QColor( value("MapSideFrameColor", "#687ec6").toString() );
+  _mapSideFrameColor     = QColor( value("MapSideFrameColor", INFOBOX_FRAME_COLOR).toString() );
 
 #ifdef MAEMO
   _guiStyle              = value("Style", "Plastique").toString();

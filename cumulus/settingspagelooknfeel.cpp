@@ -35,6 +35,7 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "mapdefaults.h"
 #include "settingspagelooknfeel.h"
 
 SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
@@ -53,6 +54,10 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
     {
       resize( parent->size() );
     }
+
+  // Determine pixmap size to be used for icons in dependency of the used font
+  int size = QFontMetrics(font()).boundingRect("XM").height() - 2;
+  m_pixmapSize = QSize( size, size );
 
   // Layout used by scroll area
   QHBoxLayout *sal = new QHBoxLayout;
@@ -122,14 +127,21 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   m_menuFontDialog->setObjectName("menuFontDialog");
   topLayout->addWidget( m_menuFontDialog, row, 1 );
 
-  connect(m_menuFontDialog, SIGNAL(clicked()), this, SLOT(slot_openMenuFontDialog()));
+  connect(m_menuFontDialog, SIGNAL(clicked()), SLOT(slot_openMenuFontDialog()));
   row++;
 
   lbl = new QLabel(tr("Infobox frame color:"), this);
   topLayout->addWidget(lbl, row, 0);
+
   m_editMapFrameColor = new QPushButton(tr("Select Color"));
   topLayout->addWidget( m_editMapFrameColor, row, 1 );
-  connect(m_editMapFrameColor, SIGNAL(clicked()), this, SLOT(slot_openColorDialog()));
+  connect(m_editMapFrameColor, SIGNAL(clicked()), SLOT(slot_openColorDialog()));
+
+  QPushButton* defaultButton = new QPushButton(tr("Default"));
+  topLayout->addWidget( defaultButton, row, 2 );
+  connect(defaultButton, SIGNAL(clicked()), SLOT(slot_defaultColor()));
+
+  topLayout->setColumnStretch ( 3, 20 );
   row++;
 
   lbl = new QLabel(tr("Screensaver on:"), this);
@@ -166,8 +178,8 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   QLabel *titlePix = new QLabel(this);
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
-  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
-  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+  connect(ok, SIGNAL(pressed()), SLOT(slotAccept()));
+  connect(cancel, SIGNAL(pressed()), SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
@@ -213,6 +225,11 @@ void SettingsPageLookNFeel::load()
     }
 
   m_currentMapFrameColor = conf->getMapFrameColor();
+
+  // Set color icon at the push button
+  QPixmap pixmap( m_pixmapSize );
+  pixmap.fill(m_currentMapFrameColor);
+  m_editMapFrameColor->setIcon( QIcon(pixmap) );
 
   Speed speed;
   // speed is stored in Km/h
@@ -381,7 +398,23 @@ void SettingsPageLookNFeel::slot_openColorDialog()
     {
       // save color into temporary buffer
       m_currentMapFrameColor = newColor;
+
+      // Set the pixmap icon at the push button
+      QPixmap pixmap( m_pixmapSize );
+      pixmap.fill(m_currentMapFrameColor);
+      m_editMapFrameColor->setIcon( QIcon(pixmap) );
     }
 
   qApp->setAutoSipEnabled( ase );
+}
+
+void SettingsPageLookNFeel::slot_defaultColor()
+{
+  // save color into temporary buffer
+  m_currentMapFrameColor = QColor( INFOBOX_FRAME_COLOR );
+
+  // Set the pixmap icon at the push button
+  QPixmap pixmap( m_pixmapSize );
+  pixmap.fill(m_currentMapFrameColor);
+  m_editMapFrameColor->setIcon( QIcon(pixmap) );
 }
