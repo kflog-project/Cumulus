@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2012 by Axel Pauli
+                               2008-2014 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -38,6 +38,9 @@
 #include "flighttask.h"
 #include "taskpoint.h"
 
+#ifdef ANDROID
+#include jnisupport.h
+#endif
 
 // Define a timeout after landing in seconds. If the timeout is reached
 // an open log file is automatically closed.
@@ -481,19 +484,44 @@ void IgcLogger::writeHeader()
       _stream << "HFCM2CREW2: " << coPilot << "\r\n";
     }
 
+  QString os;
+
+#ifdef MAEMO4
+  os = "Maemo 4";
+#elif MAEMO5
+  os = "Maemo 5";
+#elif ANDROID
+  os = "Android";
+#else
+  os = "Linux";
+#endif
+
+  QString hwv;
+
+#ifndef ANDROID
+  hwv = HwInfo::instance()->getTypeString();
+#else
+  QHash<QString, QString> hwh = jniGetBuildData();
+
+  hwv = hwh.value("MANUFACTURE", "Unknown") + ", "
+        hwh.value("HARDWARE", "Unknown") + ", "
+        hwh.value("MODEL", "Unknown");
+#endif
+
   _stream << "HFGTYGLIDERTYPE: " << gliderType << "\r\n";
   _stream << "HFGIDGLIDERID: " << gliderRegistration << "\r\n";
   _stream << "HFDTM100GPSDATUM: WSG-1984\r\n";
   _stream << "HFRFWFIRMWAREVERION: " << QCoreApplication::applicationVersion() << "\r\n";
-  _stream << "HFRHWHARDWAREVERSION: " << HwInfo::instance()->getTypeString() << "\r\n" ;
-  _stream << "HFFTYFRTYPE: Cumulus Version: " << QCoreApplication::applicationVersion()
-          << ", Qt Version: " << qVersion() << "\r\n";
-  _stream << "HFGPS: UNKNOWN\r\n";
-  _stream << "HFPRSPRESSALTSENSOR: UNKNOWN\r\n";
+  _stream << "HFRHWHARDWAREVERSION: " << hwv << "\r\n" ;
+  _stream << "HFFTYFRTYPE: Cumulus: " << QCoreApplication::applicationVersion()
+          << ", Qt: " << qVersion()
+          << ", OS: " << os
+          << "\r\n";
+  _stream << "HFGPS: Unknown\r\n";
+  _stream << "HFPRSPRESSALTSENSOR: Unknown\r\n";
   _stream << "HSCIDCOMPETITIONID: " << gliderCallSign << "\r\n";
 
   // GSP info lines committed for now
-  // additional data (competition ID and class name) committed for now
   _stream << "I023638FXA3940SIU\r\n"; // Fix accuracy and sat count as add ons
 
   // Write J Record definitions, if extended logging is activated by the user.
