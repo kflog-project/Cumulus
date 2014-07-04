@@ -39,7 +39,7 @@
 #include "taskpoint.h"
 
 #ifdef ANDROID
-#include jnisupport.h
+#include "jnisupport.h"
 #endif
 
 // Define a timeout after landing in seconds. If the timeout is reached
@@ -503,8 +503,8 @@ void IgcLogger::writeHeader()
 #else
   QHash<QString, QString> hwh = jniGetBuildData();
 
-  hwv = hwh.value("MANUFACTURE", "Unknown") + ", "
-        hwh.value("HARDWARE", "Unknown") + ", "
+  hwv = hwh.value("MANUFACTURE", "Unknown") + ", " +
+        hwh.value("HARDWARE", "Unknown") + ", " +
         hwh.value("MODEL", "Unknown");
 #endif
 
