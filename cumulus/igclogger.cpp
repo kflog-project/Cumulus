@@ -503,7 +503,7 @@ void IgcLogger::writeHeader()
 #else
   QHash<QString, QString> hwh = jniGetBuildData();
 
-  hwv = hwh.value("MANUFACTURE", "Unknown") + ", " +
+  hwv = hwh.value("MANUFACTURER", "Unknown") + ", " +
         hwh.value("HARDWARE", "Unknown") + ", " +
         hwh.value("MODEL", "Unknown");
 #endif
