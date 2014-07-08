@@ -3232,6 +3232,16 @@ void MainWindow::slotCloseSip()
       return;
     }
 
+#ifdef ANDROID
+
+  if( jniShutdownFlag() == true )
+    {
+      // We are in shutdown
+      return;
+    }
+
+#endif
+
   // Request the SIP closing from the focused widget
   QEvent event( QEvent::CloseSoftwareInputPanel );
   QApplication::sendEvent( widget, &event );

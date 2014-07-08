@@ -120,3 +120,8 @@ bool jniCallRetriever( QString& smsText );
  * Opens the Android hardware menu.
  */
 bool jniOpenHardwareMenu();
+
+/**
+ * \return JNI shutdown flag state
+ */
+bool jniShutdownFlag();

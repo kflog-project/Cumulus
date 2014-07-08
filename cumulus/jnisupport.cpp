@@ -68,6 +68,11 @@ bool jniEnv();
 bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
 
+bool jniShutdownFlag()
+{
+  return shutdown;
+}
+
 // Necessitas has moved the JNI interface to another file in SDK alpha 4.
 // Therefore we can provide an own JNI_ONLOAD function.
 // http://developer.android.com/guide/practices/jni.html
