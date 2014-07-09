@@ -23,15 +23,14 @@
 
 using namespace std;
 
-Vector::Vector()
+Vector::Vector() :
+  Speed(0),
+  _angle(0.0),
+  dirtyXY(false),
+  dirtyDR(false),
+  _x(0),
+  _y(0)
 {
-  _angle=0.0;
-  _speed=0.0;
-  _x=0;
-  _y=0;
-  _isValid=false;
-  dirtyXY=false;
-  dirtyDR=false;
 }
 
 double Vector::normalize(double angle) {

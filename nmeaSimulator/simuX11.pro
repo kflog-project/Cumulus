@@ -16,7 +16,7 @@ CONFIG      = qt warn_on release
 OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 
-QT -= gui # Only the core module is used.
+QT -= gui
 
 HEADERS     = \
     glider.h \
@@ -24,8 +24,11 @@ HEADERS     = \
     gprmc.h \
     gpgsa.h \
     pgrmz.h \
-    play.h \
+    IgcPlay.h \
+    NmeaPlay.h \
     sentence.h \
+    ../cumulus/distance.h \
+    ../cumulus/altitude.h \
     ../cumulus/speed.h \
     vector.h
 
@@ -35,9 +38,12 @@ SOURCES     = \
     gprmc.cpp \
     gpgsa.cpp \
     pgrmz.cpp \
-    play.cpp \
+    IgcPlay.cpp \
+    NmeaPlay.cpp \
     sentence.cpp \
     main.cpp \
+    ../cumulus/distance.cpp \
+    ../cumulus/altitude.cpp \
     ../cumulus/speed.cpp \
     vector.cpp \
 

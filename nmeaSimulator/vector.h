@@ -21,6 +21,7 @@
 #define VECTOR_H
 
 #include <cmath>
+
 #include "speed.h"
 
 #define PI M_PI

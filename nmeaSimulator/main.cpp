@@ -15,8 +15,6 @@
 
     email                : kflog.cumulus@gmail.com
 
-    $Id$
-
     NMEA simulator for Cumulus.
 
     The simulator is part of the cumulus package and can be used for
@@ -61,7 +59,8 @@
 #include "vector.h"
 #include "glider.h"
 #include "gpgsa.h"
-#include "play.h"
+#include "IgcPlay.h"
+#include "NmeaPlay.h"
 #include "sentence.h"
 
 using namespace std;
@@ -80,7 +79,9 @@ static    int    Time=3600;       // lets fly one hour per default
 static    int    Pause=1000;      // default pause is 1000ms
 static    bool   gotAltitude = false;
 static    QString playFile;   // file to be played
+static    int    playFactor = 1; // default play factor
 static    int    skip=0;      // lines to be skipped in the file
+static    QString igcStartTime; // time position in file where to start the IGC playing
 static    QString confFile;   // configuration file name
 
 static    QString sentences[10];
@@ -221,7 +222,10 @@ int init_io( void )
 
       devFd = open(device.toLatin1(), O_WRONLY);
 
-      if( devFd < 0 ) perror("open pipe");
+      if( devFd < 0 )
+	{
+	  perror("Could not open pipe!");
+	}
     }
 
   return ( devFd );
@@ -356,6 +360,22 @@ void scanConfig( QString cfg )
           skip = 0;
         }
     }
+  else if( cfg.startsWith("factor=") )
+    {
+      bool ok;
+      playFactor = cfg.mid(7).toInt(&ok);
+
+      if( ! ok )
+        {
+	  playFactor = 1;
+        }
+    }
+  else if( cfg.startsWith("start=") )
+    {
+      igcStartTime = cfg.mid(6);
+
+      qDebug() << "Read CFG IGC-StartTime=" << igcStartTime;
+    }
   else
     {
       cerr << "Unknown parameter: '"
@@ -382,7 +402,11 @@ void safeConfig()
   fprintf(file,"device=%s\n", device.toLatin1().data() );
   fprintf(file,"pause=%d\n", (int)Pause );
   fprintf(file,"file=%s\n", playFile.toLatin1().data() );
+  fprintf(file,"start=%s\n", igcStartTime.toLatin1().data() );
   fprintf(file,"skip=%d\n", skip );
+  fprintf(file,"factor=%d\n", playFactor );
+
+  qDebug() << "Written CFG IGC-StartTime=" << igcStartTime;
 
   for( int i = 0; i < 10; i++ )
     {
@@ -412,9 +436,9 @@ void readConfig()
       while( fgets(line, sizeof(line), file) )
         {
           cout << line ;
-          QString l=line;
+          QString l(line);
 
-          l.trimmed();
+          l = l.trimmed();
 
           if( ! l.isEmpty())
             {
@@ -433,9 +457,18 @@ void readConfig()
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-  QString mode;
+//  QString fn = "Hallo";
+//
+//  IgcPlay igc(fn, 1);
+//
+//  igc.getBearingWgs( 0,0,1,4 );
+//  igc.getBearingWgs( 0,0,1,-4 );
+//  igc.getBearingWgs( 0,0,-1,-4 );
+//  igc.getBearingWgs( 0,0,-1,4 );
+//
+//  exit(0);
 
-  // The wind-vector must be reversed as given *from* where the wind comes
+  QString mode;
   QStringList Argv;
 
   for (int i = 1; i <= argc; i++)
@@ -447,13 +480,14 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.5.0 for Cumulus, 2003-2008 E. Voellm, 2009-2013 A. Pauli (GPL)" << endl << endl
-           << "Usage: " << prog << " str|cir|pos|gpos [params]" << endl << endl
+      cout << "NMEA GPS Simulator 1.5.0 for Cumulus, 2003-2008 E. Voellm, 2009-2014 A. Pauli (GPL)" << endl << endl
+           << "Usage: " << prog << " str|cir|pos|gpos|nplay|iplay [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
            << "            pos:  Fixed Position e.g. standstill in a wave (climb works)"<< endl
            << "            gpos: Fixed Position on ground "<< endl
-           << "            play: Plays a recorded NMEA file. GPRMC is required to be contained!" << endl
+           << "            nplay: Plays a recorded NMEA file. GPRMC is required to be contained!" << endl
+           << "            iplay: Plays a recorded IGC file." << endl
            << "            params:"<< endl
            << "              lat=dd:mm:ss[N|S]  or lat=dd.mmmm  Initial Latitude" << endl
            << "              lon=ddd:mm:ss[E|W] or lon=dd.mmmm  Initial Longitude" << endl
@@ -470,6 +504,8 @@ int main(int argc, char **argv)
            << "              device=[ttySx,<speed>]: write to device ttySx with the given speed" << endl
            << "              file=[path to file]: to be played" << endl
            << "              skip=[number]: lines to be skipped in the play file" << endl
+           << "              start=[HHMMSS]: goto start time in the IGC play file" << endl
+           << "              factor=[number]: time factor used by IGC file play" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
            << "Example: " << prog << " str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
            << "NMEA output is written into named pipe '" << device.toLatin1().data() << "'." << endl
@@ -479,6 +515,8 @@ int main(int argc, char **argv)
     }
 
   mode = Argv[0];
+
+  qDebug() << "mode=" << mode;
 
   // @AP: Reset the locale that is used for number formatting to "C" locale.
   setlocale( LC_ALL, "" );
@@ -542,19 +580,36 @@ int main(int argc, char **argv)
       return -1; // device error
     }
 
-  if( mode == "play" )
+  if( mode == "nplay" )
     {
-      cout << "Mode:      Play a recorded file" << endl;
+      cout << "Mode:      Play a recorded NMEA file" << endl;
       cout << "File:      " << playFile.toLatin1().data() << endl;
       cout << "Skip:      " << skip << endl;
       cout << "Pause:     " << Pause << " ms" << endl;
       cout << "Device:    " << device.toLatin1().data() << endl;
 
-      Play play( playFile, fifo );
+      NmeaPlay play( playFile, fifo );
 
       play.startPlaying(skip, Pause);
 
       close( fifo );
+
+      // safe current parameters to file
+      safeConfig();
+      return 0;
+    }
+  else if( mode == "iplay" )
+    {
+      cout << "Mode:      Play a recorded IGC file" << endl;
+      cout << "File:      " << playFile.toLatin1().data() << endl;
+      cout << "Skip:      " << skip << endl;
+      cout << "Start:     " << igcStartTime.toLatin1().data() << endl;
+      cout << "Factor:    " << playFactor << endl;
+      cout << "Device:    " << device.toLatin1().data() << endl;
+
+      IgcPlay play( playFile, fifo );
+
+      play.startPlaying( igcStartTime, skip, playFactor );
 
       // safe current parameters to file
       safeConfig();

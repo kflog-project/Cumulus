@@ -1,5 +1,5 @@
 /***************************************************************************
-                          play.h - description
+                          NmeaPlay.h - description
                              -------------------
     begin                : 11.01.2012
 
@@ -20,30 +20,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef PLAY_H_
-#define PLAY_H_
+#ifndef NMEA_PLAY_H_
+#define NMEA_PLAY_H_
 
 #include <QFile>
 #include <QString>
 
 /**
- * \class Play
+ * \class NmeaPlay
  *
  * \author Axel Pauli
  *
- * \brief A class to play GPS data from a file.
+ * \brief A class to play NMEA GPS data from a file.
  *
- * This class reads GPS sentence data from a file and writes it into
+ * This class reads NMEA GPS sentence data from a file and writes it into
  * a fifo. After every written $GPRMC sentence a pause is made. The read
  * data file must contain such $GPRMC sentences!
  *
  * \date 2012
  *
- * \version $Id: cfe4d0073f3fea3d84d1ee92b41c4251680b1070 $
+ * \version $Id$
  *
 */
 
-class Play
+class NmeaPlay
 {
   public:
 
@@ -54,7 +54,7 @@ class Play
      *
      * \fifo Fifo file descriptor, used to write the GPS data out.
      */
-    Play( QString& fileName, int fifo ) :
+    NmeaPlay( QString& fileName, int fifo ) :
       m_pause(0),
       m_fifo(fifo),
       m_fileName(fileName)
@@ -89,4 +89,4 @@ class Play
     QString m_fileName; // path to NMEA file
 };
 
-#endif /* PLAY_H_ */
+#endif

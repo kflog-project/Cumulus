@@ -1,13 +1,11 @@
 /***************************************************************************
-                          play.cpp - description
+                          NmeaPlay.cpp - description
                              -------------------
     begin                : 11.01.2012
 
-    copyright            : (C) 2012-2013 by Axel Pauli
+    copyright            : (C) 2012-2014 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
-
-    $Id$
 
  ***************************************************************************/
 
@@ -25,9 +23,9 @@
 
 #include <QtCore>
 
-#include "play.h"
+#include "NmeaPlay.h"
 
-int Play::startPlaying( const int skip, const int pause )
+int NmeaPlay::startPlaying( const int skip, const int pause )
 {
   int m_skip = skip;
   m_pause = pause;
