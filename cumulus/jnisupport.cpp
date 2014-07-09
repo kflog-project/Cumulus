@@ -273,7 +273,7 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
   QCoreApplication::postEvent( receiver, kpe, Qt::NormalEventPriority );
 
   // Make a short break to simulate a key press
-  usleep( 100 * 1000 );
+  usleep( 10 * 1000 );
 
   QKeyEvent *kre = new QKeyEvent( QEvent::KeyRelease, qtCode, Qt::NoModifier );
   QCoreApplication::postEvent( receiver, kre, Qt::NormalEventPriority );
