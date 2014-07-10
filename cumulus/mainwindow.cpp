@@ -741,6 +741,8 @@ void MainWindow::slotCreateApplicationWidgets()
            m_logger, SLOT( slotConstellation(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation(SatInfo&) ),
            calculator->getWindAnalyser(), SLOT( slot_newConstellation(SatInfo&) ) );
+  connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
+           calculator->getWindAnalyser(), SLOT( slot_gpsStatusChange( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSpeed(Speed&) ),
            calculator, SLOT( slot_Speed(Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newTas(const Speed&) ),
@@ -753,8 +755,8 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_AndroidAltitude(const Altitude&) ) );
   connect( GpsNmea::gps, SIGNAL( newHeading(const double&) ),
            calculator, SLOT( slot_Heading(const double&) ) );
-  connect( GpsNmea::gps, SIGNAL( newFix(const QTime&) ),
-           calculator, SLOT( slot_newFix(const QTime&) ) );
+  connect( GpsNmea::gps, SIGNAL( newFix(const QDateTime&) ),
+           calculator, SLOT( slot_newFix(const QDateTime&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            calculator, SLOT( slot_GpsStatus( GpsNmea::GpsStatus ) ) );
 

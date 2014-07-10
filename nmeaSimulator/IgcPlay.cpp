@@ -39,9 +39,6 @@ int IgcPlay::startPlaying( const QString& startPoint,
                            const int skip,
                            const int playFactor )
 {
-  qDebug() << "igcPlay::startPlaying(): startPoint=" << startPoint
-           << "Skip=" << skip << "Factor=" << playFactor;
-
   int i_skip = skip;
   m_factor = playFactor;
 
@@ -88,8 +85,12 @@ int IgcPlay::startPlaying( const QString& startPoint,
   bool firstBRecord = true;
   bool startPositionFound = false;
 
+  uint lineNo = 0;
+
   while( ! inStream.atEnd() )
     {
+      lineNo++;
+
       QString line = inStream.readLine().trimmed();
 
       if( line.isEmpty() )
@@ -132,7 +133,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
 	  continue;
 	}
 
-      qDebug() << "B:" << line;
+      // qDebug() << "B:" << line;
 
       // Only B-Records are taken into account
       //
@@ -200,7 +201,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
 
       int timeDiff = qtime0.secsTo( qtime1 );
 
-      qDebug() << "timeDiff" << timeDiff;
+      qDebug() << "Line=" << lineNo << "TimeDiff=" << timeDiff;
 
       // Check time difference, if negative, make it positive
       if( timeDiff < 0 )
@@ -407,8 +408,6 @@ double IgcPlay::getBearingWgs( double lat1, double lon1, double lat2, double lon
   // See here: http://www.naviuser.at/forum/showthread.php?t=1949
   const double pi_180 = M_PI / 180.0;
 
-  // qDebug( "x1=%d y1=%d, x2=%d y2=%d",  p1.x(), p1.y(), p2.x(), p2.y() );
-
   double dlat = lat2 - lat1; // latitude
   double dlon = lon2 - lon1; // longitude
 
@@ -445,25 +444,19 @@ double IgcPlay::getBearingWgs( double lat1, double lon1, double lat2, double lon
   // compute angle
   double angle = atan( cos(latAv * pi_180) * dlon / dlat );
 
-  //  qDebug() << "Heading=" << angle * 180 / M_PI
-  //           << "dlat=" << dlat
-  //           << "dlon=" << dlon;
+  //    qDebug() << "Heading=" << angle * 180 / M_PI
+  //             << "dlat=" << dlat
+  //             << "dlon=" << dlon;
 
   // assign computed angle to the right quadrant
-
-  if (dlat >= 0 && dlon < 0)
+  if (dlat > 0 && dlon < 0)
     {
-      angle = (M_PI * 2) + angle;
+      angle = (2 * M_PI) + angle;
     }
-  else if (dlat <= 0 && dlon <= 0)
+  else if (dlat < 0 )
     {
       angle = M_PI + angle;
     }
-  else if (dlat < 0 && dlon >= 0)
-    {
-      angle = M_PI / 2 - angle;
-    }
 
-  // qDebug() << "Heading=" << angle * 180 / M_PI;
   return angle * 180 / M_PI;
 }

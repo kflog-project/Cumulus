@@ -1081,7 +1081,7 @@ void Map::p_calculateTrailPoints()
       return;
     }
 
-  QTime minTime = QDateTime::currentDateTimeUtc().time().addSecs(- TrailListLength );
+  QDateTime minTime = calculator->getLastSampleTime().addSecs(- TrailListLength );
 
   int loop = 0;
   int sampleCnt = calculator->samplelist.count();

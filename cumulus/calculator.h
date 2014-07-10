@@ -69,9 +69,15 @@ public:
   QPoint position;
 
   /**
-   * Pressure altitude of point
+   * User altitude of point. May be adapted by the user.
    */
   Altitude altitude;
+
+  /**
+   * Pressure Altitude of point, if available. Otherwise it is derived from
+   * the GNSSAltitude.
+   */
+  Altitude STDAltitude;
 
   /**
    * GPS altitude of point
@@ -84,9 +90,9 @@ public:
   Vector vector;
 
   /**
-   * Time the sample was taken.
+   * UTC date and time the sample was taken.
    */
-  QTime time;
+  QDateTime time;
 
   /**
    * Current airspeed
@@ -441,7 +447,7 @@ public:
   /**
    * \return The time when the last sample was taken.
    */
-  const QTime& getLastSampleTime() const
+  const QDateTime& getLastSampleTime() const
   {
     return lastSample.time;
   };
@@ -568,7 +574,7 @@ public:
   /**
    * This slot is called by the NMEA interpreter if a new fix has been received.
    */
-  void slot_newFix( const QTime& newFixTime );
+  void slot_newFix( const QDateTime& newFixTime );
   /**
    * Called if the status of the GPS changes.
    */

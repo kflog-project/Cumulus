@@ -645,16 +645,16 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
               updateClock = false;
               setSystemClock( utc );
             }
-        }
 
-      if( _lastTime != _lastRmcTime )
-        {
-          /**
-           * The fix time has been changed and that is reported now.
-           * We do check the fix time only here in the $GPRMC sentence.
-           */
-          _lastRmcTime = _lastTime;
-          emit newFix( _lastRmcTime );
+          if( _lastRmcUtc != utc )
+            {
+              /**
+               * The fix date and time has been changed and that is reported now.
+               * We do check the fix time only here in the $GPRMC sentence.
+               */
+              _lastRmcUtc = utc;
+              emit newFix( _lastRmcUtc );
+            }
         }
     }
   else
@@ -810,16 +810,16 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
               _reportAltitude = false;
-              _lastPressureAltitude = altitude; // store the new pressure altitude
+
+              // If we have pressure altitude, the barometer sensor is
+              // normally calibrated to 1013.25hPa and that is the standard
+              // pressure altitude.
+              _lastPressureAltitude = altitude;
+              _lastStdAltitude = altitude;
 
               if( _userExpectedAltitude == GpsNmea::PRESSURE )
                 {
-                  // If we have pressure altitude, the barometer sensor is
-                  // normally calibrated to 1013.25hPa and that is the standard
-                  // pressure altitude.
-                  _lastStdAltitude = altitude.getMeters();
-
-                  // Set these altitudes too, when pressure is selected.
+                  // Set these altitude too, when pressure is selected.
                   _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
 
                   // report new pressure altitude
@@ -867,6 +867,7 @@ void GpsNmea::__ExtractPcaid( const QStringList& slst )
       // Store this altitude as STD, if the user has pressure selected.
       // In the other case the STD is derived from the GPS altitude.
       _lastStdAltitude = res;
+      _lastPressureAltitude = res;
       // This altitude must not be notified as new value because
       // the Cambridge device delivers also MSL in its !w sentence.
     }
@@ -917,15 +918,17 @@ void GpsNmea::__ExtractPgcs( const QStringList& slst )
       _userExpectedAltitude == GpsNmea::PRESSURE )
     {
       _reportAltitude = false;
+
       // Store this altitude as STD, if the user has pressure selected.
       // In the other case the STD is derived from the GPS altitude.
       _lastStdAltitude = res;
+
+      // Store this value as pressure altitude.
+      _lastPressureAltitude = res;
+
       // We only get a STD altitude from the Volkslogger, so we calculate
       // the MSL altitude using the QNH provided by the user
       calcMslAltitude( res );
-      // Since in GpsNmea::PRESSURE mode _lastPressureAltitude is returned,
-      // we set it, too.
-      _lastPressureAltitude = _lastMslAltitude;
 
       emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
     }
@@ -1094,13 +1097,13 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
       {
         _reportAltitude = false;
         _lastPressureAltitude = res; // store the new pressure altitude
+        _lastStdAltitude = res;
 
         if ( _userExpectedAltitude == GpsNmea::PRESSURE )
           {
             // set these altitudes too, when pressure is selected
             _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
             // STD altitude is delivered by Cambrigde via $PCAID record
-            // calcStdAltitude( res );
             emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
           }
       }
@@ -1536,6 +1539,9 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
       return res;
     }
 
+  // The GNNS altitude is not modified.
+  _lastGNSSAltitude = res;
+
   // Check for other unit as meters, meters is the default.
   // Consider user's altitude correction
   if ( unit.toLower() == "f" )
@@ -1546,8 +1552,6 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
     {
       res.setMeters( alt + _userAltitudeCorrection.getMeters() );
     }
-
-  _lastGNSSAltitude = res;
 
   if( ( _lastMslAltitude != res || _reportAltitude == true ) &&
       _userExpectedAltitude != GpsNmea::PRESSURE )
@@ -1839,14 +1843,14 @@ void GpsNmea::__ExtractMaemo0(const QStringList& slist)
 
   // Do report a new fix, if the time has been changed. That must be the last
   // action after the end of extraction.
-  if( _lastTime != _lastRmcTime )
+  if( _lastUtc != _lastRmcUtc )
     {
       /**
        * The fix time has been changed and that is reported now.
        * We do check the fix time only once in the $GPRMC sentence.
        */
-      _lastRmcTime = _lastTime;
-      emit newFix( _lastRmcTime );
+      _lastRmcUtc = _lastUtc;
+      emit newFix( _lastRmcUtc );
     }
 }
 
@@ -2571,9 +2575,9 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 
 /** Extract Satellites In View (SIV) info from a NMEA sentence. */
 void GpsNmea::__ExtractSatsInView( const QString& id,
-                                       const QString& elev,
-                                       const QString& azimuth,
-                                       const QString& snr)
+				   const QString& elev,
+				   const QString& azimuth,
+				   const QString& snr)
 {
   if( id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
     {
@@ -2695,10 +2699,10 @@ bool GpsNmea::event(QEvent *event)
       Altitude newAlt(0);
       double alt = gpsFixEvent->altitude();
 
+      _lastGNSSAltitude = Altitude( alt );
+
       // Consider user's altitude correction
       newAlt.setMeters( alt + _userAltitudeCorrection.getMeters() );
-
-      _lastGNSSAltitude = newAlt;
 
       if ( _lastMslAltitude != newAlt )
         {
@@ -2754,10 +2758,10 @@ bool GpsNmea::event(QEvent *event)
 
       fix_utc = fix_utc.toUTC();
 
-      if( fix_utc.time() != _lastRmcTime )
+      if( fix_utc != _lastRmcUtc )
         {
-          _lastRmcTime = fix_utc.time();
-          emit newFix( _lastRmcTime );
+          _lastRmcUtc = fix_utc;
+          emit newFix( _lastRmcUtc );
         }
 
       msg += "," + fix_utc.toString(Qt::ISODate);
@@ -2840,14 +2844,13 @@ bool GpsNmea::event(QEvent *event)
             {
               _reportAltitude = false;
               _lastPressureAltitude = altitude; // store the new pressure altitude
+              _lastStdAltitude = altitude;
 
               if( _userExpectedAltitude == GpsNmea::PRESSURE )
                 {
                   // set these altitudes too, when pressure is selected
                   _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-                  // calculate STD altitude
-                  calcStdAltitude( altitude );
-                  // report new barometer altitude
+                   // report new barometer altitude
                   emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
                 }
            }

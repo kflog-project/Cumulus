@@ -555,7 +555,7 @@ class GpsNmea : public QObject
      * This signal is send to indicate that there is a new fix.
      * Data send after this fix belongs to the new fix!
      */
-    void newFix( const QTime& newFixTime );
+    void newFix( const QDateTime& newFixTime );
 
     /**
      * This signal is send to indicate that new satellite in view
@@ -690,8 +690,8 @@ class GpsNmea : public QObject
 
   private: // Private attributes
 
-    /** contains the time of the last RMC fix */
-    QTime _lastRmcTime;
+    /** contains the utc date and time of the last RMC fix */
+    QDateTime _lastRmcUtc;
     /** contains the time of the last fix */
     QTime _lastTime;
     /** contains the date of the last fix. */

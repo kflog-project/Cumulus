@@ -457,17 +457,6 @@ void readConfig()
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-//  QString fn = "Hallo";
-//
-//  IgcPlay igc(fn, 1);
-//
-//  igc.getBearingWgs( 0,0,1,4 );
-//  igc.getBearingWgs( 0,0,1,-4 );
-//  igc.getBearingWgs( 0,0,-1,-4 );
-//  igc.getBearingWgs( 0,0,-1,4 );
-//
-//  exit(0);
-
   QString mode;
   QStringList Argv;
 

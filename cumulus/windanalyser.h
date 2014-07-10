@@ -36,6 +36,7 @@
 
 #include "vector.h"
 #include "calculator.h"
+#include "gpsnmea.h"
 
 class WindAnalyser : public QObject
 {
@@ -75,6 +76,11 @@ public slots:
    */
   void slot_newConstellation( SatInfo& newConstellation );
 
+  /**
+   * Called, if the GPS status has changed.
+   */
+  void slot_gpsStatusChange( GpsNmea::GpsStatus newStatus );
+
 private:
 
   void _calcWind();
@@ -89,6 +95,7 @@ private:
   int satCnt;
   int minSatCnt;
   bool ciclingMode;
+  GpsNmea::GpsStatus gpsStatus;
   Vector minVector;
   Vector maxVector;
 };

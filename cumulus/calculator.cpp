@@ -1176,7 +1176,7 @@ void Calculator::slot_settingsChanged()
 }
 
 /** This slot is called by the NMEA interpreter if a new fix has been received.  */
-void Calculator::slot_newFix( const QTime& newFixTime )
+void Calculator::slot_newFix( const QDateTime& newFixTime )
 {
   // before we start making samples, let's be sure we have all the
   // data we need for that. So, we wait for the second Fix.
@@ -1192,6 +1192,7 @@ void Calculator::slot_newFix( const QTime& newFixTime )
   // fill it with the relevant data
   sample.time = newFixTime;
   sample.altitude.setMeters(lastAltitude.getMeters());
+  sample.STDAltitude.setMeters(lastSTDAltitude.getMeters());
   sample.GNSSAltitude.setMeters(lastGNSSAltitude.getMeters());
   sample.position=lastPosition;
   sample.vector.setAngleAndSpeed(lastHeading, lastSpeed);
@@ -1380,7 +1381,7 @@ void Calculator::determineFlightStatus()
       // qDebug() << "Flight mode unknown --> Start Analysis";
 
       // we need some real analysis
-      QTime refTime = samplelist[0].time.addSecs(-TIMEFRAME);
+      QDateTime refTime = samplelist[0].time.addSecs(-TIMEFRAME);
       int samples = 1;
 
       while ((samplelist[samples].time > refTime) && ( samples < samplelist.count() - 1) )

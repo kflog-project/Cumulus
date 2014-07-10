@@ -22,7 +22,6 @@
 
 #include "windanalyser.h"
 #include "mapcalc.h"
-#include "gpsnmea.h"
 #include "generalconfig.h"
 
 /*
@@ -64,7 +63,8 @@ WindAnalyser::WindAnalyser(QObject* parent) :
   lastHeading(-1),
   satCnt(0),
   minSatCnt(4),
-  ciclingMode(false)
+  ciclingMode(false),
+  gpsStatus(GpsNmea::notConnected)
 {
   // Initialization
   minSatCnt = GeneralConfig::instance()->getWindMinSatCount();
@@ -181,6 +181,12 @@ void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
       return;
     }
 
+  if( gpsStatus != GpsNmea::validFix )
+    {
+      // We have not a valid fix.
+      return;
+    }
+
   // We are active now.
   active = true;
 }
@@ -249,7 +255,7 @@ void WindAnalyser::_calcWind()
 
 void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
 {
-  satCnt = newConstellation.satsInUse;
+  satCnt = newConstellation.satsInView;
 
   if( active && (satCnt < minSatCnt) )
     {
@@ -261,6 +267,29 @@ void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
   if( !active && ciclingMode && satCnt >= minSatCnt )
     {
       // we are not active because we had low satellite count but that has been
+      // changed now. So we become active.
+      // Initialize analyzer-parameters
+      circleCount   = 0;
+      circleDegrees = 0;
+      circleSectors = 0;
+      lastHeading   = -1;
+    }
+}
+
+void WindAnalyser::slot_gpsStatusChange( GpsNmea::GpsStatus newStatus )
+{
+  gpsStatus = newStatus;
+
+  if( active && newStatus != GpsNmea::validFix )
+    {
+      // we are active, but the GPS fix is lost
+      active = false;
+      return;
+    }
+
+  if( !active && ciclingMode )
+    {
+      // we are not active because we had no GPS fix but that has been
       // changed now. So we become active.
       // Initialize analyzer-parameters
       circleCount   = 0;

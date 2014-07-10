@@ -168,17 +168,17 @@ void IgcLogger::slotMakeFixEntry()
 
   // check if we have to log a new B-Record
   if ( ! lastLoggedBRecord->isNull() &&
-         lastLoggedBRecord->addSecs( _bRecordInterval ) > lastfix.time )
+         lastLoggedBRecord->addSecs( _bRecordInterval ) > lastfix.time.time() )
     {
       // write K-Record, if needed
-      writeKRecord( lastfix.time );
+      writeKRecord( lastfix.time.time() );
       return;
     }
 
-  *lastLoggedBRecord = lastfix.time;
+  *lastLoggedBRecord = lastfix.time.time();
 
-  QString bRecord( "B" + formatTime(lastfix.time) + formatPosition(lastfix.position) + "A" +
-                   formatAltitude(lastfix.altitude) + formatAltitude(lastfix.GNSSAltitude) +
+  QString bRecord( "B" + formatTime(lastfix.time.time()) + formatPosition(lastfix.position) + "A" +
+                   formatAltitude(lastfix.STDAltitude) + formatAltitude(lastfix.GNSSAltitude) +
                    QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
                    QString("%1").arg(GpsNmea::gps->getLastSatInfo().satsInUse, 2, 10, QChar('0')) );
 
@@ -189,7 +189,7 @@ void IgcLogger::slotMakeFixEntry()
     {
       // save B and F record and time in backtrack, if we are not in move
       QString fRecord = "F" +
-                         formatTime( lastfix.time ) +
+                         formatTime( lastfix.time.time() ) +
                          GpsNmea::gps->getLastSatInfo().constellation;
       QStringList list;
       list << bRecord << fRecord << QTime::currentTime ().toString("hhmmss");
@@ -242,7 +242,7 @@ void IgcLogger::slotMakeFixEntry()
           else
             {
               // If backtrack contains no entries we must write out a F record at first
-              makeSatConstEntry( lastfix.time );
+              makeSatConstEntry( lastfix.time.time() );
             }
         }
 
@@ -257,13 +257,13 @@ void IgcLogger::slotMakeFixEntry()
         {
           // According to the IGC specification after 5 minutes a F record has
           // to be logged. So we will do now.
-          makeSatConstEntry( lastfix.time );
+          makeSatConstEntry( lastfix.time.time() );
         }
 
       _stream << bRecord << "\r\n";
 
       // write K-Record
-      writeKRecord( lastfix.time );
+      writeKRecord( lastfix.time.time() );
 
       emit madeEntry();
     }
