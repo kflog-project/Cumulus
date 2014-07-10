@@ -735,6 +735,8 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_GPSStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatCount(SatInfo&) ),
            viewMap, SLOT( slot_SatCount(SatInfo&) ) );
+  connect( GpsNmea::gps, SIGNAL( newSatCount(SatInfo&) ),
+           calculator->getWindAnalyser(), SLOT( slot_newConstellation(SatInfo&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            this, SLOT( slotGpsStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatConstellation(SatInfo&) ),

@@ -1028,7 +1028,7 @@ void MapView::slot_settingsChange()
 void MapView::slot_SatCount( SatInfo& satInfo )
 {
   // Display the number of satellites in use.
-  QString msg = QString ("G-%1").arg(satInfo.satsInUse);
+  QString msg = QString ("G-%1").arg(satInfo.satsInView);
   _statusGps->setText (msg);
 }
 

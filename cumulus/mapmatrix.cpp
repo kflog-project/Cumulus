@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -180,11 +180,11 @@ bool MapMatrix::isVisible( const QRect& itemBorder, int typeID) const
   // Grenze: Nahe 15Bit
   // Vereinfachung kann zu Fehlern fuehren ...
   // qDebug("MapMatrix::isVisible(): w=%d h=%d", itemBorder.width(), itemBorder.height() );
-  // ! check for < 15000 is a workaround for a bug other where
+  // ! check for > 20000 is a workaround for a bug other where
   //   that came out after fixing the scale criteria that was always true
   //   before
 
-  if( itemBorder.width() >= 15000 || itemBorder.height() >= 15000 )
+  if( itemBorder.width() >= 20000 || itemBorder.height() >= 20000 )
     {
       qCritical() << "MapMatrix::isVisible(): itemBorder to large" << itemBorder;
     }
