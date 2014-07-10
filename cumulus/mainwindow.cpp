@@ -2038,7 +2038,21 @@ void MainWindow::closeEvent( QCloseEvent* event )
 #endif
 
 #ifdef ANDROID
-      jniShutdown();
+
+      deferredClose = true;
+
+      // Wait 500ms before termination of application to give the main loop
+      // time to process delayed keypad events.
+      QTimer::singleShot( 500, this, SLOT(close()) );
+
+      // Hide the main window
+      setVisible( false );
+      event->ignore();
+      return;
+
+      // Code before
+      // jniShutdown();
+
 #endif
 
       // accept close event and exit
