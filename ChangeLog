@@ -15,6 +15,19 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2014-07-11 AP: New option iplay added to the NMEA simulator. That option
+                   allows to generate NMEA sentences from IGC B-Records. So
+                   it can be played IGC files as input for Cumulus for
+                   testing purposes.
+
+[*] 2014-07-04 AP: Cumulus 5.18.0 released only for Android.
+
+[+] 2014-07-04 AP: OpenAIP FIR airspace type added to airspace configuration.
+                   It shows only the border of the FIR region at the map without
+                   filling the region content. If the user tips at the map on a
+                   FIR region, its name and frequency is displayed in an
+                   additional popup window.
+
 [-] 2014-07-03 AP: Bugfix: Not all changes in the flight dialog were reported
                    immediately to the calculator.
 

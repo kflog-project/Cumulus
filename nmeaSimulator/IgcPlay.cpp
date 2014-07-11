@@ -20,7 +20,6 @@
 
 #include <cmath>
 #include <unistd.h>
-#include <iostream>
 
 #include <QtCore>
 
@@ -29,12 +28,6 @@
 #include "sentence.h"
 #include "speed.h"
 
-/**
- * The earth's radius used for calculation, given in Meters
- * NOTE: We use the earth as a sphere, not as a spheroid!
- */
-#define RADIUS 6371000 // FAI Radius
-
 int IgcPlay::startPlaying( const QString& startPoint,
                            const int skip,
                            const int playFactor )
@@ -42,8 +35,10 @@ int IgcPlay::startPlaying( const QString& startPoint,
   int i_skip = skip;
   m_factor = playFactor;
 
+  // Date from IGC file
   QString date;
 
+  // Data from first B-Record
   QString time0;
   QString status0;
   QString latDeg0;
@@ -55,6 +50,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
   QString fixAcc0;
   QString satsInUse0;
 
+  // Data from second B-Record
   QString time1;
   QString status1;
   QString latDeg1;
@@ -86,6 +82,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
   bool startPositionFound = false;
 
   uint lineNo = 0;
+  uint bRecord = 0;
 
   while( ! inStream.atEnd() )
     {
@@ -107,8 +104,11 @@ int IgcPlay::startPlaying( const QString& startPoint,
 
       if( line.startsWith("B") == false )
 	{
+	  // Ignore other records
 	  continue;
 	}
+
+      bRecord++;
 
       if( i_skip > 0 )
         {
@@ -118,7 +118,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
 
       if( startPoint.isEmpty() == false && startPositionFound == false )
 	{
-	  if( line.left(1).startsWith(startPoint) == false )
+	  if( line.mid(1, 6).startsWith(startPoint) == false )
 	    {
 	      // start point not yet reached
 	      continue;
@@ -129,7 +129,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
 
       if( line.size() < 40 )
 	{
-	  qWarning() << "B-Record to short: " << line;
+	  qWarning() << "Line:" << line << "B-Record to short!";
 	  continue;
 	}
 
@@ -151,17 +151,22 @@ int IgcPlay::startPlaying( const QString& startPoint,
       latDeg1 = line.mid(7, 4) + "." + line.mid(11, 3);
       lonDeg1 = line.mid(15, 5) + "." + line.mid(20, 3);
 
+      // Extract GPS fix status
       status1 = line.mid( 24, 1 );
 
+      // Extract baro and GPS altitude
       baroAlt1 = line.mid( 25, 5 );
       gssnAlt1 = line.mid( 30, 5 );
 
+      // Extract fix accuracy
       fixAcc1 = line.mid( 35, 3 );
+
+      // Extract sats in use
       satsInUse1 = line.mid( 38, 2 );
 
       if( firstBRecord == true )
 	{
-	  // Store first extracted B-Record data and continue;
+	  // Store first extracted B-Record data and read the next one
 	  firstBRecord = false;
 
 	  time0 = time1;
@@ -177,7 +182,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
 	  continue;
 	}
 
-      // Calculate distance between coordinate points
+      // Calculate distance between coordinate points of B-Records
       double lat0, lon0, lat1, lon1;
 
       lat0 = latDeg0.left(2).toDouble() + latDeg0.mid(2).toDouble() / 60.;
@@ -195,13 +200,22 @@ int IgcPlay::startPlaying( const QString& startPoint,
       // Distance in meters
       double distBetweenPoints = distC1( lat0, lon0, lat1, lon1);
 
-      // Calculate time difference in seconds
+      // Calculate time difference in seconds between B-Records
       QTime qtime0 = QTime::fromString( time0, "HHmmss");
       QTime qtime1 = QTime::fromString( time1, "HHmmss");
 
+      if( ! qtime0.isValid() || ! qtime1.isValid() )
+	{
+	  qWarning() << "Line:" << line << "B-Record time is wrong!";
+	  continue;
+	}
+
       int timeDiff = qtime0.secsTo( qtime1 );
 
-      qDebug() << "Line=" << lineNo << "TimeDiff=" << timeDiff;
+      qDebug() << "--Line=" << lineNo
+	       << "B-Record=" << bRecord
+	       << "Time=" << qtime1.toString(("HH:mm:ss"))
+	       << "TimeDiff=" << timeDiff;
 
       // Check time difference, if negative, make it positive
       if( timeDiff < 0 )
@@ -210,7 +224,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
 	  timeDiff = -timeDiff;
 	}
 
-      // Take over new values
+      // Take over the new values as base for the next round.
       time0 = time1;
       status0 = status1;
       latDeg0 = latDeg1;
@@ -231,7 +245,7 @@ int IgcPlay::startPlaying( const QString& startPoint,
       // Calculate speed in m/s
       Speed speed( distBetweenPoints / (double) timeDiff );
 
-      // Calculate heading
+      // Calculate heading in degrees 0...360, if distance is > 0.5m
       double bearing = 0.0;
 
       if( distBetweenPoints > 0.5 )
@@ -298,13 +312,16 @@ int IgcPlay::startPlaying( const QString& startPoint,
           $GPGLL,4916.45,N,12311.12,W,225444,A
       */
 
+#if 0
+      // Not necessary to send this.
       QString ggl = "$GPGLL," +
 	            latDeg1 + "," + latHem1 + "," +
 	  	    lonDeg1 + "," + lonHem1 + "," +
 	  	    time1 + "," +
 	  	    status1;
 
-      //sentence.send( ggl, m_fifo );
+      sentence.send( ggl, m_fifo );
+#endif
 
       /**
         GGA - Global Positioning System Fix Data, Time, Position and fix related data for a GPS receiver.
@@ -377,6 +394,12 @@ int IgcPlay::startPlaying( const QString& startPoint,
  */
 double IgcPlay::distC1( double lat1, double lon1, double lat2, double lon2 )
 {
+  /**
+   * The earth's radius used for calculation, given in Meters
+   * NOTE: We use the earth as a sphere, not as a spheroid!
+   */
+  const double RADIUS = 6371000; // FAI Radius in meters
+
   const double rad = M_PI / 180.0;
 
   // See here for formula: http://williams.best.vwh.net/avform.htm#Dist
@@ -400,8 +423,7 @@ double IgcPlay::distC1( double lat1, double lon1, double lat2, double lon2 )
 }
 
 /**
-   Calculate the bearing from point p1 to point p2 from WGS84
-   coordinates to avoid distortions caused by projection to the map.
+   Calculate the bearing from point p1 to point p2 with WGS84 coordinates.
 */
 double IgcPlay::getBearingWgs( double lat1, double lon1, double lat2, double lon2 )
 {
@@ -436,6 +458,7 @@ double IgcPlay::getBearingWgs( double lat1, double lon1, double lat2, double lon
 
   if( dlat == 0 && dlon == 0 )
     {
+      // result is normally undefined.
       return 0;
     }
 

@@ -86,16 +86,18 @@ class IgcPlay
     double distC1( double lat1, double lon1, double lat2, double lon2 );
 
     /**
-     * Calculates the bearing to the next point with wgs84 coordinates
+     * Calculates the bearing to the next point with WGS84 coordinates.
+     *
+     * \return Bearing in degrees 0...360
      */
     double getBearingWgs( double lat1, double lon1, double lat2, double lon2 );
 
   private:
 
     int m_factor; // play factor which is applied to playing time. Normally 1.
-    int m_fifo;  // fifo descriptor
+    int m_fifo;   // fifo descriptor
 
-    QString m_fileName; // path to IGC file
+    QString m_fileName; // path to the IGC file
 };
 
 #endif

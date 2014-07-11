@@ -10,8 +10,9 @@
                                2010 Axel Pauli Reset language environment
                                                variables to prevent wrong floating
                                                point formatting.
-                               2012 Axel Pauli Play option added
+                               2012 Axel Pauli NMEA Play option added
                                2013 Axel Pauli ttySx enabled as additional device
+                               2014 Axel Pauli IGC Play option added
 
     email                : kflog.cumulus@gmail.com
 
@@ -29,6 +30,9 @@
     in cumulus and select the appropriate device. Note, that the
     devices must be the same on both sides. Now cumulus is ready to
     receive the data from the NMEA simulator.
+
+    The NMEA simulator can generate NMEA sentences from the passed options.
+    Furthermore it is able to play the content of recorded NMEA or IGC files.
 
 ***************************************************************************/
 
@@ -289,7 +293,6 @@ void scanConfig( QString cfg )
           sscanf(cfg.toLatin1().data()+4,"%f", &flon );
           lon = (double)flon;
         }
-
     }
   else if( cfg.left(4) == "alt=" )
     {
@@ -328,11 +331,11 @@ void scanConfig( QString cfg )
     {
       sscanf(cfg.toLatin1().data()+8,"%f", &winddir );
     }
-  else if( cfg.left(7) == "device=" )
+  else if( cfg.startsWith("device=") )
     {
       device = cfg.mid(7).trimmed();
     }
-  else if( cfg.left(6) == "pause=" )
+  else if( cfg.startsWith("pause=") )
     {
       sscanf(cfg.toLatin1().data()+6,"%d", &Pause );
     }
@@ -346,11 +349,11 @@ void scanConfig( QString cfg )
           sentences[i] = cfg.mid(10).trimmed();
         }
     }
-  else if( cfg.left(5) == "file=" )
+  else if( cfg.startsWith("file=") )
     {
       playFile = cfg.mid(5);
     }
-  else if( cfg.left(5) == "skip=" )
+  else if( cfg.startsWith("skip=") )
     {
       bool ok;
       skip = cfg.mid(5).toInt(&ok);
@@ -373,8 +376,6 @@ void scanConfig( QString cfg )
   else if( cfg.startsWith("start=") )
     {
       igcStartTime = cfg.mid(6);
-
-      qDebug() << "Read CFG IGC-StartTime=" << igcStartTime;
     }
   else
     {
@@ -406,8 +407,6 @@ void safeConfig()
   fprintf(file,"skip=%d\n", skip );
   fprintf(file,"factor=%d\n", playFactor );
 
-  qDebug() << "Written CFG IGC-StartTime=" << igcStartTime;
-
   for( int i = 0; i < 10; i++ )
     {
       QString key = QString("sentence%1=").arg(i);
@@ -424,32 +423,29 @@ void safeConfig()
 
 void readConfig()
 {
-  cout << "Configuration from persistent File: "
+  cout << "--Reading configuration from persistent file: "
        << confFile.toLatin1().data() << endl;
 
-  FILE* file;
-  char line[256];
-  file = fopen(confFile.toLatin1().data(), "r");
+  QFile file( confFile );
 
-  if (file )
+  if( file.open(QIODevice::ReadOnly) )
     {
-      while( fgets(line, sizeof(line), file) )
+      QTextStream inStream(&file);
+
+      while( ! inStream.atEnd() )
         {
-          cout << line ;
-          QString l(line);
+	  QString line = inStream.readLine().trimmed();
+          qDebug() << line;
 
-          l = l.trimmed();
-
-          if( ! l.isEmpty())
+          if( ! line.isEmpty())
             {
-              scanConfig(l);
+              scanConfig(line);
             }
         }
 
-      fclose(file);
+      file.close();
+      cout << "--Configuration has been read--" << endl;
     }
-
-  cout << "Configuration file read" << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -469,7 +465,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.5.0 for Cumulus, 2003-2008 E. Voellm, 2009-2014 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.6.0 for Cumulus, 2003-2008 E. Voellm, 2009-2014 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos|nplay|iplay [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -493,8 +489,8 @@ int main(int argc, char **argv)
            << "              device=[ttySx,<speed>]: write to device ttySx with the given speed" << endl
            << "              file=[path to file]: to be played" << endl
            << "              skip=[number]: lines to be skipped in the play file" << endl
-           << "              start=[HHMMSS]: goto start time in the IGC play file" << endl
-           << "              factor=[number]: time factor used by IGC file play" << endl
+           << "              start=[HHMMSS]: goto B-Record start time in the IGC play file" << endl
+           << "              factor=[number]: time factor used by IGC file play, default is 1" << endl
            << "            Note: all values can also be specified as float, like 110.5 " << endl << endl
            << "Example: " << prog << " str lat=48:31:48N lon=009:24:00E speed=125 winddir=270" << endl << endl
            << "NMEA output is written into named pipe '" << device.toLatin1().data() << "'." << endl
@@ -553,6 +549,7 @@ int main(int argc, char **argv)
   if( mode == "gpos" )
     {
       cout << "Mode:      Fixed Ground Position  " << endl;
+
       if( !gotAltitude)
         altitude = 100.0;  // lower default Altitude
     }
