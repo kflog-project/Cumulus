@@ -53,12 +53,12 @@ public:
     /**
      * Read property of int angle.
      */
-    int getAngleDeg() ;
+    int getAngleDeg();
 
     /**
      * Get angle in radian
      */
-    double getAngleRad() ;
+    double getAngleRad();
 
     /**
      * set the angle in degrees
@@ -94,25 +94,25 @@ public:
      * @return The speed in Y (longitude) direction
      * (east is positive, west is negative)
      */
-    Speed getY() ;
+    Speed getY();
 
     /**
      * @return The speed in X (latitude) direction
      * (north is positive, south is negative)
      */
-    Speed getX() ;
+    Speed getX();
 
     /**
      * @returns The speed in Y (longitude) direction
      * (east is positive, west is negative) in meters per second
      */
-    double getYMps() ;
+    double getYMps();
 
     /**
      * @return The speed in X (latitude) direction
      * (north is positive, south is negative) in meters per second
      */
-    double getXMps() ;
+    double getXMps();
 
     /**
      * Sets the X (latitudinal) speed in meters per second.
@@ -163,17 +163,17 @@ public:
     /**
      * != operator for Vector
      */
-    bool operator != ( Vector& x) ;
+    bool operator != ( Vector& x);
 
     /**
       * == operator for Vector
       */
-    bool operator == ( Vector& x) ;
+    bool operator == ( Vector& x);
 
     /**
      * minus prefix operator for Vector
      */
-    Vector operator - () ;
+    Vector operator - ();
 
     /**
      * * prefix operator for Vector
@@ -255,12 +255,12 @@ private:
     /**
      * Recalculates the X and Y values from the known angle and speed.
      */
-    void recalcXY() ;
+    void recalcXY();
 
     /**
      * Recalculates the the angle and the distance from the known x and y values.
      */
-    void recalcDR() ;
+    void recalcDR();
 };
 
 /** operators for vector. */

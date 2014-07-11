@@ -1539,19 +1539,22 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
       return res;
     }
 
-  // The GNNS altitude is not modified.
-  _lastGNSSAltitude = res;
-
   // Check for other unit as meters, meters is the default.
   // Consider user's altitude correction
   if ( unit.toLower() == "f" )
     {
-      res.setFeet( alt + _userAltitudeCorrection.getFeet() );
+      res.setFeet( alt );
     }
   else
     {
-      res.setMeters( alt + _userAltitudeCorrection.getMeters() );
+      res.setMeters( alt );
     }
+
+  // The GNNS altitude is never modified.
+  _lastGNSSAltitude = res;
+
+  // Apply the user's set altitude correction
+  res = res + _userAltitudeCorrection;
 
   if( ( _lastMslAltitude != res || _reportAltitude == true ) &&
       _userExpectedAltitude != GpsNmea::PRESSURE )
