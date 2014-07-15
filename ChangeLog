@@ -15,6 +15,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2014-07-15 AP: Cumulus 5.18.1 released only for Android.
+
 [+] 2014-07-11 AP: New option iplay added to the NMEA simulator. That option
                    allows to generate NMEA sentences from IGC B-Records. So
                    it can be played IGC files as input for Cumulus for
