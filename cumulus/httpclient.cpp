@@ -18,7 +18,12 @@
 /**
  * This class is a simple HTTP download client.
  */
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
 #include <QtNetwork>
 
 #include "httpclient.h"

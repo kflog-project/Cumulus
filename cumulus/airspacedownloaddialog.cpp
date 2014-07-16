@@ -15,7 +15,11 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "airspacedownloaddialog.h"
 #include "generalconfig.h"

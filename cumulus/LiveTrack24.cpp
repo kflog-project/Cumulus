@@ -20,7 +20,12 @@
 #include <cstdlib>
 #include <ctime>
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
 #include <QtNetwork>
 
 #include "calculator.h"
