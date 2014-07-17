@@ -548,7 +548,6 @@ public class CumulusActivity extends QtActivity
    * 
    * @return The result of the pre-checks. True if all is ok otherwise false
    */
-  @Override
   protected boolean checkPreconditions()
   {
     return (m_sdCardOk && m_cumulusFolderOk);

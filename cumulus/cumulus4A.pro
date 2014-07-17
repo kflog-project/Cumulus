@@ -15,8 +15,11 @@
 
 QT += core gui xml
 
-# Qt5 needs the QtWidgets library
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# Qt5 needs the QtWidgets library and a extra define, to handle that.
+greaterThan(QT_MAJOR_VERSION, 4) {
+  QT += widgets
+  DEFINES += QT_5
+}
 
 TARGET = Cumulus
 
@@ -54,11 +57,15 @@ CONFIG += welt2000thread
 # Enable classical menu bar, if define is set. Otherwise a context menu is used.
 # DEFINES += USE_MENUBAR
 
-# Activate this define, if Qt class QScroller is available.
-# DEFINES += QSCROLLER
-
-# Activate this, if Qt class QScroller is not available.
-CONFIG += qtscroller
+# Activate QScroller in dependency of the Qt release
+lessThan(QT_MAJOR_VERSION, 5) {
+  # Activate this, if Qt class QScroller is not available. QT < 5
+  CONFIG += qtscroller
+}
+else {
+  # Activate this define, if Qt class QScroller is available. QT > 4
+  DEFINES += QSCROLLER
+}
 
 # Must be always enabled now otherwise you will get compile errors.
 CONFIG += numberpad

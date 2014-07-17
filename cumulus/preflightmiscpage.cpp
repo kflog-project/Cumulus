@@ -63,7 +63,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   sa->setWidget( sw );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( sa>viewport(), QScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER

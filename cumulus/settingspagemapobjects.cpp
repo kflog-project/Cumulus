@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -149,11 +149,11 @@ SettingsPageMapObjects::SettingsPageMapObjects(QWidget *parent) :
   loadOptions->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( loadOptions->viewport(), QScroller::QtScroller::LeftMouseButtonGesture);
+  QScroller::grabGesture( loadOptions->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( loadOptions->viewport(), QtScroller::QtScroller::LeftMouseButtonGesture);
+  QtScroller::grabGesture( loadOptions->viewport(), QtScroller::LeftMouseButtonGesture);
 #endif
 
   loadOptions->setShowGrid( true );
