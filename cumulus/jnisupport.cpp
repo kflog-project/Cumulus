@@ -25,7 +25,7 @@
 #include <unistd.h>
 
 #include <QtGui>
-#include <QWindowSystemInterface>
+//#include <QWindowSystemInterface>
 
 #include "jnisupport.h"
 #include "androidevents.h"
@@ -246,6 +246,11 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
   // Therefore I decided to forward the close key only once to the main window.
   // All other widgets have a close button, which should be used instead.
   QObject *receiver = MainWindow::mainWindow();
+
+  if( ! receiver )
+    {
+      return;
+    }
 
 #if 0
   if( QApplication::activeModalWidget() )

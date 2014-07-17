@@ -150,10 +150,6 @@ public:
 
 #endif
 
-#ifdef ANDROID
-  void forceFocus();
-#endif
-
 public:
   /**
    * Reference to the Map pages

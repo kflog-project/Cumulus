@@ -67,8 +67,6 @@
 
 #ifdef ANDROID
 
-#include <QWindowSystemInterface>
-
 #include "androidevents.h"
 #include "jnisupport.h"
 
@@ -488,10 +486,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 
   setFocusPolicy( Qt::StrongFocus );
   setFocus();
-
-#ifdef ANDROID
-  forceFocusPoint = QPoint( size().width()-2, size().height()-2 );
-#endif
 
   setWindowIcon( QIcon(GeneralConfig::instance()->loadPixmap("cumulus-desktop26x26.png")) );
 
@@ -1077,7 +1071,6 @@ void MainWindow::slotFinishStartUp()
 
   language = jniGetLanguage();
 
-  forceFocus();
 #endif
 
   // On first startup we set some user defaults and download some default data
@@ -1151,6 +1144,7 @@ MainWindow::~MainWindow()
 
 #endif
 
+  _globalMainWindow = static_cast<MainWindow *> (0);
 }
 
 void MainWindow::playSound( const char *name )
@@ -2282,11 +2276,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewWP );
       listViewTabs->setVisible( true );
-
-#ifdef ANDROID
-      forceFocus();
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2309,11 +2298,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
         listViewTabs->setCurrentWidget( viewRP );
         listViewTabs->setVisible( true );
-
-#ifdef ANDROID
-      forceFocus();
-#endif
-
         toggleManualNavActions( false );
         toggleGpsNavActions( false );
         actionMenuBarToggle->setEnabled( false );
@@ -2335,11 +2319,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->setVisible( true );
-
-      #ifdef ANDROID
-      forceFocus();
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2359,11 +2338,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewOL );
       listViewTabs->setVisible( true );
-
-#ifdef ANDROID
-      forceFocus();
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2389,11 +2363,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewTP );
       listViewTabs->setVisible( true );
-
-#ifdef ANDROID
-      forceFocus();
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2417,11 +2386,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
       viewInfo->showWP( view, *wp );
-
-#ifdef ANDROID
-      forceFocus();
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2439,11 +2403,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
-
-#ifdef ANDROID
-      forceFocus();
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -3337,20 +3296,6 @@ void MainWindow::slotDisplayTrigger()
   // Restart the timer because we use a single shot timer to avoid
   // multiple triggering in case of delays. Next trigger is in 10s.
   m_displayTrigger->start( 10000 );
-}
-
-void MainWindow::forceFocus()
-{
-  QWindowSystemInterface::handleMouseEvent(0, QEvent::MouseButtonPress,
-                                           forceFocusPoint,
-                                           forceFocusPoint,
-                                           Qt::MouseButtons(Qt::LeftButton));
-  //qDebug("send fake mouse press");
-  QWindowSystemInterface::handleMouseEvent(0, QEvent::MouseButtonRelease,
-                                           forceFocusPoint,
-                                           forceFocusPoint,
-                                           Qt::MouseButtons(Qt::LeftButton));
-  //qDebug("send fake mouse release");
 }
 
 void MainWindow::slotOpenHardwareMenu()
