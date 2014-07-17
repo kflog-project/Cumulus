@@ -140,7 +140,7 @@ void GpsConAndroid::forwardNmea( QString& qnmea )
       init = true;
     }
 
-  if( verifyCheckSum( qnmea.toAscii().data() ) == false )
+  if( verifyCheckSum( qnmea.toLatin1().data() ) == false )
     {
       return;
     }
