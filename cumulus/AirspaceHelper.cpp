@@ -372,7 +372,7 @@ bool AirspaceHelper::createCompiledFile( QString& fileName,
   out << QDateTime::currentDateTime();
   SaveProjection( out, _globalMapMatrix->getProjection() );
 
-  // write number of airfield records to be stored
+  // write number of airspace records to be stored
   out << quint32( airspaceList.size() - airspaceListStart );
 
   // Storing starts at the given index.
@@ -403,7 +403,7 @@ bool AirspaceHelper::createCompiledFile( QString& fileName,
 
       ShortSave( out, as->getName().toUtf8() );
       out.writeRawData( country, 2 );
-      out << quint32( as->getId() );
+      out << qint32( as->getId() );
       out << quint8( as->getTypeID() );
       out << quint8( as->getLowerT() );
       out << float( lAlt );
@@ -452,7 +452,7 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 #endif
 
   ProjectionBase *projectionFromFile;
-  qint32 buflen;
+  quint32 noOfAirspaces;
 
   in >> magic;
 
@@ -497,9 +497,9 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   // Read at first the number of airspaces contained in the compiled file.
   // We have to read it and make a preallocation in the airspace list.
-  in >> buflen;
+  in >> noOfAirspaces;
 
-  list.reserve( list.size() + buflen );
+  list.reserve( list.size() + noOfAirspaces );
 
   uint counter = 0;
 

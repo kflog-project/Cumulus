@@ -94,10 +94,10 @@
 #define FILE_VERSION_MAP_C      103
 
 // Version definition for compiled airspace files.
-#define FILE_VERSION_AIRSPACE_C 0
+#define FILE_VERSION_AIRSPACE_C 1
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 0
+#define FILE_VERSION_AIRFIELD_C 1
 
 /******************************************************************************
  * Definition of map element types

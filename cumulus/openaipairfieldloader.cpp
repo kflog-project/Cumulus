@@ -283,7 +283,8 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
 
   float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
 
-  qDebug() << "OAIP: creating file" << QFileInfo(fileName).fileName();
+  qDebug() << "OAIP: creating airfield file" << QFileInfo(fileName).fileName()
+           << "with" << (airfieldList.size() - airfieldListStart) << "elements";
 
   out << quint32( KFLOG_FILE_MAGIC );
   out << QByteArray( FILE_TYPE_AIRFIELD_OAIP_C );
@@ -385,6 +386,7 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
   QDateTime creationDateTime;
   QStringList countryList;
   double homeRadius;
+  float runwayLengthFilter;
   QPoint homeCoord;
 
 #ifdef BOUNDING_BOX
@@ -432,6 +434,7 @@ bool OpenAipAirfieldLoader::readCompiledFile( QString &fileName,
 
   in >> creationDateTime;
   in >> homeRadius;
+  in >> runwayLengthFilter;
   in >> homeCoord;
 
 #ifdef BOUNDING_BOX

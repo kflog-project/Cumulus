@@ -15,6 +15,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-08-07 AP: Bugfix: Write and read methods of compiled openAIP airfield
+                   and airspace files used not in all cases the same data types
+                   for the single elements.
+
 [-] 2014-08-07 AP: Bugfix: Existing old files must be removed, if QFile::rename
                    is used otherwise the QFile::rename method fails.
 
