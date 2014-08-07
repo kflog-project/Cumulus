@@ -747,6 +747,7 @@ bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
   QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/cumulus-flarm.tsk";
 
   // Save one backup copy.
+  QFile::remove( fn + ".bak" );
   QFile::rename( fn, fn + ".bak" );
 
   QFile f(fn);

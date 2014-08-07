@@ -1063,7 +1063,9 @@ bool IgcLogger::writeLogbook( QStringList& logbook )
 
   mutex.lock();
 
-  // Save one backup copy.
+  // Save one backup copy. An old backup must be remove before rename otherwise
+  // rename fails.
+  QFile::remove( fn + ".bak" );
   QFile::rename( fn, fn + ".bak" );
 
   QFile f( fn );

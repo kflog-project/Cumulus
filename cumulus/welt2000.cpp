@@ -110,6 +110,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
     {
       QString pLower = mapDirs.at(i) + sd + wl;
       QString pUpper = mapDirs.at(i) + sd + wu;
+      QFile::remove( pLower );
       QFile::rename( pUpper, pLower );
     }
 
@@ -465,6 +466,7 @@ bool Welt2000::filter( QString& path )
   if( outLines > 2 )
     {
       // overwrite old file with new extracted file
+      QFile::remove( path );
       QFile::rename( fout, path );
     }
   else

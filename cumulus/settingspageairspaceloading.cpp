@@ -186,6 +186,7 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
           QString path    = fInfo.absolutePath();
           QString fn      = fInfo.fileName().toLower();
           QString newFn   = path + "/" + fn;
+          QFile::remove( newFn );
           QFile::rename( preselect.at(i), newFn );
           preselect[i] = newFn;
         }

@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-08-07 AP: Bugfix: Existing old files must be removed, if QFile::rename
+                   is used otherwise the QFile::rename method fails.
+
 [*] 2014-07-15 AP: Cumulus 5.18.1 released only for Android.
 
 [+] 2014-07-11 AP: New option iplay added to the NMEA simulator. That option

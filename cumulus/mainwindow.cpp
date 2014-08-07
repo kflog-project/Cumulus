@@ -319,13 +319,18 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 #ifdef ANDROID
 
       // Android knows normally only two fonts:
-      // a) Drois Sans
+      // a) Droid Sans
       // b) Roboto
       //
       // If a wrong font is set umlauts maybe not correct displayed!
       int weight = fdb.weight("Roboto", "Normal");
 
-      qDebug() << "Roboto weight=" << weight;
+      if( weight == -1 )
+	{
+	  weight = fdb.weight("Roboto", "Regular");
+	}
+
+      // qDebug() << "Roboto weight=" << weight;
 
       if( weight != -1 )
         {
@@ -421,6 +426,14 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 
   QSize dSize = QApplication::desktop()->availableGeometry().size();
 
+  if( dSize == QSize(0, 0) )
+    {
+      // Qt5 for Android sets the available geometry sometimes to 0x0
+      // Found out that the available geometry is still set after the widget
+      // becomes visible.
+      dSize = QApplication::desktop()->screenGeometry().size();
+    }
+
   // Limit maximum size for Maemo and Android
   setMaximumSize( dSize );
 
@@ -439,17 +452,23 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 #endif
 
   qDebug() << "Cumulus Release:"
-            << QCoreApplication::applicationVersion()
-            << "Build date:"
-            << GeneralConfig::instance()->getBuiltDate()
-            << "based on Qt Version"
-            << QT_VERSION_STR;
+           << QCoreApplication::applicationVersion()
+           << "Build date:"
+           << GeneralConfig::instance()->getBuiltDate()
+           << "based on Qt Version"
+           << QT_VERSION_STR;
 
-  qDebug( "Desktop size is %dx%d, width=%d, height=%d",
+  qDebug( "ScreenGeometry is %dx%d, width=%d, height=%d",
            QApplication::desktop()->screenGeometry().width(),
            QApplication::desktop()->screenGeometry().height(),
            QApplication::desktop()->screenGeometry().width(),
            QApplication::desktop()->screenGeometry().height() );
+
+  qDebug( "AvailableGeometry is %dx%d, width=%d, height=%d",
+           QApplication::desktop()->availableGeometry().width(),
+           QApplication::desktop()->availableGeometry().height(),
+           QApplication::desktop()->availableGeometry().width(),
+           QApplication::desktop()->availableGeometry().height() );
 
   qDebug( "Main window size is %dx%d, width=%d, height=%d",
            size().width(),
