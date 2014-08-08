@@ -2515,11 +2515,11 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
 }
 
 /**
-  GSV - Satellites in view
+  GPGSV - Satellites in view
 
           1 2 3 4 5 6 7     n
           | | | | | | |     |
-   $--GSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+   $GPGSV,x,x,x,x,x,x,x,...*hh<CR><LF>
 
    Field Number:
     1) total number of messages
