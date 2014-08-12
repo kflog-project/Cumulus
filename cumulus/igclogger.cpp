@@ -1065,8 +1065,11 @@ bool IgcLogger::writeLogbook( QStringList& logbook )
 
   // Save one backup copy. An old backup must be remove before rename otherwise
   // rename fails.
-  QFile::remove( fn + ".bak" );
-  QFile::rename( fn, fn + ".bak" );
+  if( QFileInfo(fn).exists() )
+    {
+      QFile::remove( fn + ".bak" );
+      QFile::rename( fn, fn + ".bak" );
+    }
 
   QFile f( fn );
 
