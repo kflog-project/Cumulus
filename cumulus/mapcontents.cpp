@@ -1480,7 +1480,8 @@ bool MapContents::downloadMapFile( QString &file, QString &directory )
 }
 
 /**
- * This slot is called to download the Welt2000 file from the internet.
+ * This slot is called to download the Welt2000 file from the Internet.
+ *
  * @param welt2000FileName The Welt2000 filename as written at the web page
  * without any path prefixes.
  */
@@ -2865,8 +2866,18 @@ void MapContents::slotReloadWelt2000Data()
 
 #else
 
-  // Reload Welt2000 data in an extra thread.
-  loadWelt2000DataViaThread();
+  Welt2000 w2000;
+
+  if( w2000.check4File() == true )
+    {
+      // Reload Welt2000 data in an extra thread.
+      loadWelt2000DataViaThread();
+    }
+  else
+    {
+      // Download missing file from the Internet
+      slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
+    }
 
 #endif
 }

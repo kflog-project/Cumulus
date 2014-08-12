@@ -193,6 +193,13 @@ class Welt2000
    */
   bool check4update();
 
+  /**
+   * Checks, if a Welt2000 file is to find in the airfield directories.
+   *
+   * \return true, if a file is found otherwise false
+   */
+  bool check4File();
+
  private:
 
   /**

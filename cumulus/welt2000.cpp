@@ -99,6 +99,8 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &mutex );
 
+  qDebug() << "Welt2000::load";
+
   // Rename WELT2000.TXT -> welt2000.txt.
   QString wl = "welt2000.txt";
   QString wu = "WELT2000.TXT";
@@ -112,10 +114,14 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
       QString pUpper = mapDirs.at(i) + sd + wu;
 
       if( QFileInfo(pUpper).exists() )
-	{
-	  QFile::remove( pLower );
-	  QFile::rename( pUpper, pLower );
-	}
+        {
+          // On a FAT32 SDCard upper and lower case filenames are not
+	  // divided. If one of that filenames exist, QFileInfo returns always
+	  // true. The linux system call rename seems to handle that but
+	  // QFile::rename requires a QFile::remove of the new destination file
+	  // name before and that removes the wrong one.
+          rename( pUpper.toLatin1().data(), pLower.toLatin1().data() );
+        }
     }
 
   QString w2PathTxt;
@@ -299,6 +305,22 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
   return parse( w2PathTxt, airfieldList, gliderfieldList, outlandingList, true );
 }
 
+bool Welt2000::check4File()
+{
+  QString path2File;
+
+  // Search for Welt2000 source file.
+  bool exits = MapContents::locateFile( "airfields/welt2000.txt", path2File );
+
+  if( ! exits )
+    {
+      // No welt2000 exists and we return false in this case because we cannot
+      // check the update state.
+      return false;
+    }
+
+  return true;
+}
 
 bool Welt2000::check4update()
 {
