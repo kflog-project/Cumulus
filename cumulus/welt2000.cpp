@@ -110,8 +110,12 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
     {
       QString pLower = mapDirs.at(i) + sd + wl;
       QString pUpper = mapDirs.at(i) + sd + wu;
-      QFile::remove( pLower );
-      QFile::rename( pUpper, pLower );
+
+      if( QFileInfo(pUpper).exists() )
+	{
+	  QFile::remove( pLower );
+	  QFile::rename( pUpper, pLower );
+	}
     }
 
   QString w2PathTxt;

@@ -15,6 +15,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-08-12 AP: Bugfix: Welt2000 file renaming has always removed the
+                   destination file. That has only to be done, if a destination
+                   file exists.
+
+[*] 2014-08-08 AP: Cumulus 5.18.2 released only for Android.
+
 [-] 2014-08-07 AP: Bugfix: Write and read methods of compiled openAIP airfield
                    and airspace files used not in all cases the same data types
                    for the single elements.
