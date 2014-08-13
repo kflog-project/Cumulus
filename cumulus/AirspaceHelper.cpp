@@ -77,7 +77,7 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
           QString newFn = path + "/" + fn;
 
           // Do not use QFile::remove and QFile::rename, that will result in a
-          // remove of the source and destination file.
+          // remove of the source and destination file on FAT32 file systems.
           rename( preselect.at(i).toLatin1().data(), newFn.toLatin1().data() );
           preselect[i] = newFn;
         }
