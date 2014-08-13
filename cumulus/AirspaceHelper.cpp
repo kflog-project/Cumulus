@@ -76,9 +76,9 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
           QString fn = fInfo.fileName().toLower();
           QString newFn = path + "/" + fn;
 
-          // The destination file may not exist otherwise rename will fail.
-          QFile::remove( newFn );
-          QFile::rename( preselect.at( i ), newFn );
+          // Do not use QFile::remove and QFile::rename, that will result in a
+          // remove of the source and destination file.
+          rename( preselect.at(i).toLatin1().data(), newFn.toLatin1().data() );
           preselect[i] = newFn;
         }
     }
