@@ -92,7 +92,7 @@ public:
   /**
    * Destructor
    */
-  ~Airspace();
+  virtual ~Airspace();
 
   /**
    * Creates a new airspace object using the current set airspace data.
@@ -131,7 +131,7 @@ public:
   };
 
   /**
-   * Returns the upper limit of the airspace.
+   * Returns the upper limit of the airspace in meters.
    */
   unsigned int getUpperL() const
   {
@@ -155,7 +155,7 @@ public:
   };
 
   /**
-   * Returns the lower limit of the airspace.
+   * Returns the lower limit of the airspace in meters.
    */
   unsigned int getLowerL() const
   {
