@@ -543,7 +543,7 @@ void GliderFlightDialog::slotDump()
 /** Shows the flight time. */
 void GliderFlightDialog::slotShowFlightTime()
 {
-  QDateTime takeoff = IgcLogger::instance()->loggerStart();
+  QDateTime& takeoff = IgcLogger::instance()->loggerStart();
 
   if( takeoff.isValid() )
     {
@@ -552,7 +552,7 @@ void GliderFlightDialog::slotShowFlightTime()
 
       int seconds = takeoff.secsTo( QDateTime::currentDateTime() );
 
-      QTime time;
+      QTime time(0, 0, 0, 0);
       time = time.addSecs( seconds );
 
       ftText->setText( time.toString("hh:mm:ss") );
