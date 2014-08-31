@@ -15,6 +15,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2014-08-31 AP: Bugfix: Flight time duration was displayed wrong sometimes
+                   in Mc dialog window.
+
 [-] 2014-08-12 AP: Bugfix: Welt2000 file renaming has always removed the
                    destination file. That has only to be done, if a destination
                    file exists.
