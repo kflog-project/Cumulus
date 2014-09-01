@@ -327,7 +327,7 @@ void WPInfoWidget::writeText()
             {
               Runway rwy = m_wp.rwyList[i];
 
-              if( ! rwy.isOpen )
+              if( ! rwy.m_isOpen )
                 {
                   continue;
                 }
@@ -335,8 +335,8 @@ void WPInfoWidget::writeText()
               QString tmp2 = tr("Unknown");
 
               // @AP: show runway in both directions
-              uint rwh1 = rwy.heading / 256;
-              uint rwh2 = rwy.heading % 256;
+              uint rwh1 = rwy.m_heading / 256;
+              uint rwh2 = rwy.m_heading % 256;
 
               // qDebug("wp.rw=%d rwh1=%d rwh2=%d", rwy.runway, rwh1, rwh2);
 
@@ -354,16 +354,16 @@ void WPInfoWidget::writeText()
                  }
 
               itxt += "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-                      Runway::item2Text(rwy.surface, tr("Unknown")) + ")</td>" +
+                      Runway::item2Text(rwy.m_surface, tr("Unknown")) + ")</td>" +
                       "<td>" + tr("Length: ") + "</td><td><b>";
 
-              if( rwy.length <= 0 )
+              if( rwy.m_length <= 0 )
                 {
                   itxt += tr("Unknown") + "</b></td></tr>";
                 }
               else
                 {
-                  tmp = QString("%1 m</b></td></tr>").arg(rwy.length, 0, 'f', 0);
+                  tmp = QString("%1 m</b></td></tr>").arg(rwy.m_length, 0, 'f', 0);
                   itxt += tmp;
                 }
             }

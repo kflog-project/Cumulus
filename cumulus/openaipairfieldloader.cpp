@@ -350,12 +350,12 @@ bool OpenAipAirfieldLoader::createCompiledFile( QString& fileName,
        {
          Runway rwy = rwyList.at(i);
 
-         out << rwy.length;
-         out << rwy.width;
-         out << quint16( rwy.heading );
-         out << quint8( rwy.surface );
-         out << quint8( rwy.isOpen );
-         out << quint8( rwy.isBidirectional );
+         out << rwy.m_length;
+         out << rwy.m_width;
+         out << quint16( rwy.m_heading );
+         out << quint8( rwy.m_surface );
+         out << quint8( rwy.m_isOpen );
+         out << quint8( rwy.m_isBidirectional );
        }
     }
 

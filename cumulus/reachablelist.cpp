@@ -159,7 +159,7 @@ void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
 
           if( wpList.at(i).rwyList.size() > 0 )
             {
-              isLandable = wpList.at(i).rwyList.at(0).isOpen;
+              isLandable = wpList.at(i).rwyList.at(0).m_isOpen;
             }
 
 

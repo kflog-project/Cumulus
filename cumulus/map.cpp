@@ -1455,7 +1455,7 @@ void Map::p_drawNavigationLayer()
 
       if( drawnWp[i]->rwyList.size() > 0 )
         {
-          isLandable = drawnWp[i]->rwyList.at(0).isOpen;
+          isLandable = drawnWp[i]->rwyList.at(0).m_isOpen;
         }
 
       p_drawLabel( &navP,
@@ -1715,7 +1715,7 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
         if( wp.rwyList.size() > 0 )
           {
-            rwyHeading = wp.rwyList.first().heading;
+            rwyHeading = wp.rwyList.first().m_heading;
           }
 
         int shift = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;

@@ -134,7 +134,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -456,12 +456,12 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
             {
               Runway rwy = wp.rwyList.at(i);
 
-              out << rwy.length;
-              out << rwy.width;
-              out << quint16( rwy.heading );
-              out << quint8( rwy.surface );
-              out << quint8( rwy.isOpen );
-              out << quint8( rwy.isBidirectional );
+              out << rwy.m_length;
+              out << rwy.m_width;
+              out << quint16( rwy.m_heading );
+              out << quint8( rwy.m_surface );
+              out << quint8( rwy.m_isOpen );
+              out << quint8( rwy.m_isBidirectional );
             }
         }
 
@@ -688,9 +688,9 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
         {
           Runway rwy = w.rwyList.first();
 
-          child.setAttribute( "Runway", rwy.heading/256 );
-          child.setAttribute( "Length", rwy.length );
-          child.setAttribute( "Surface", rwy.surface );
+          child.setAttribute( "Runway", rwy.m_heading/256 );
+          child.setAttribute( "Length", rwy.m_length );
+          child.setAttribute( "Surface", rwy.m_surface );
         }
       else
         {
@@ -1122,7 +1122,7 @@ int WaypointCatalog::readBgaDos( QString catalog,
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -1420,7 +1420,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -1789,7 +1789,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -1882,7 +1882,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       wp.name = list[1].replace( QRegExp("\""), "" ).left(8).toUpper();
       wp.country = list[2].left(2).toUpper();
       wp.icao = "";
-      rwy.surface = Runway::Unknown;
+      rwy.m_surface = Runway::Unknown;
 
       // waypoint type
       uint wpType = list[6].toUInt(&ok);
@@ -1901,7 +1901,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         case 2:
           wp.type = BaseMapElement::Airfield;
-          rwy.surface = Runway::Grass;
+          rwy.m_surface = Runway::Grass;
           wp.priority = Waypoint::Normal;
           break;
         case 3:
@@ -1914,7 +1914,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         case 5:
           wp.type = BaseMapElement::Airfield;
-          rwy.surface = Runway::Concrete;
+          rwy.m_surface = Runway::Concrete;
           wp.priority = Waypoint::Normal;
           break;
         case 9:
@@ -2019,7 +2019,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                   length *= 1609.34;
                 }
 
-              rwy.length = length;
+              rwy.m_length = length;
             }
         }
 
@@ -2091,7 +2091,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
               int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
 
               // put both directions into one variable, each in a byte
-              rwy.heading = (rwh1/10) * 256 + (rwh2/10);
+              rwy.m_heading = (rwh1/10) * 256 + (rwh2/10);
             }
         }
 
@@ -2126,9 +2126,9 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                       length *= 0.3048;
                     }
 
-                  rwy.length = length;
-                  rwy.isOpen = true;
-                  rwy.isBidirectional = true;
+                  rwy.m_length = length;
+                  rwy.m_isOpen = true;
+                  rwy.m_isBidirectional = true;
 
                   // Store runway in the runway list.
                   wp.rwyList.append( rwy );

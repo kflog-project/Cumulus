@@ -133,7 +133,7 @@ class ReachablePoint
   {
     if( _wp.rwyList.size() > 0 )
       {
-        return _wp.rwyList.first().length;
+        return _wp.rwyList.first().m_length;
       }
 
     return 0.0;

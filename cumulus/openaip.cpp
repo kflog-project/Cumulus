@@ -767,9 +767,9 @@ bool OpenAip::readAirfields( QString fileName,
 
                       for( int i = 0; i < rl.size(); i++ )
                         {
-                          if( rl.at(i).length < m_filterRunwayLength )
+                          if( rl.at(i).m_length < m_filterRunwayLength )
                             {
-                              rwy2short = rl.at(i).length;
+                              rwy2short = rl.at(i).m_length;
                               continue;
                             }
 
@@ -1055,7 +1055,7 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
         {
           if( xml.name() == "RWY" )
             {
-              runway.isOpen = true;
+              runway.m_isOpen = true;
 
               // All record data have been read inclusive the end element.
               af.addRunway( runway );
@@ -1076,7 +1076,7 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
               if( name.size() == 2 )
                 {
                   // We have only one runway heading 06
-                  runway.heading = (name.toUShort() * 256) + name.toUShort();
+                  runway.m_heading = (name.toUShort() * 256) + name.toUShort();
                 }
               else if( name.size() == 5 )
                 {
@@ -1084,7 +1084,7 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
                   ushort dir1 = name.left(2).toUShort() * 256;
                   ushort dir2 = name.mid(3, 2).toUShort();
 
-                  runway.heading = dir1 + dir2;
+                  runway.m_heading = dir1 + dir2;
                 }
               else if( name.size() == 7 )
                 {
@@ -1092,18 +1092,18 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
                   ushort dir1 = name.left(2).toUShort() * 256;
                   ushort dir2 = name.mid(4, 2).toUShort();
 
-                  runway.heading = dir1 + dir2;
+                  runway.m_heading = dir1 + dir2;
                 }
             }
           else if ( elementName == "BIDIRECTIONAL" )
             {
               if( xml.readElementText() == "TRUE" )
                 {
-                  runway.isBidirectional = true;
+                  runway.m_isBidirectional = true;
                 }
               else if( xml.readElementText() == "FALSE" )
                 {
-                  runway.isBidirectional = false;
+                  runway.m_isBidirectional = false;
                 }
             }
           else if( elementName == "SFC" )
@@ -1119,27 +1119,27 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
 
               if( sfc == "ASPH" )
                 {
-                  runway.surface = Runway::Asphalt;
+                  runway.m_surface = Runway::Asphalt;
                 }
               else if( sfc == "CONC" )
                 {
-                  runway.surface = Runway::Concrete;
+                  runway.m_surface = Runway::Concrete;
                 }
               else if( sfc == "GRAS" )
                 {
-                  runway.surface = Runway::Grass;
+                  runway.m_surface = Runway::Grass;
                 }
               else if( sfc == "GRVL" )
                 {
-                  runway.surface = Runway::Sand;
+                  runway.m_surface = Runway::Sand;
                 }
               else if( sfc == "UNKN" )
                 {
-                  runway.surface = Runway::Unknown;
+                  runway.m_surface = Runway::Unknown;
                 }
               else
                 {
-                  runway.surface = Runway::Unknown;
+                  runway.m_surface = Runway::Unknown;
 
                   if( sfc.size() > 0 )
                     {
@@ -1162,7 +1162,7 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
 
               if( getUnitValueAsFloat( xml.readElementText(), unit, length ) )
                 {
-                  runway.length = length;
+                  runway.m_length = length;
                 }
             }
           else if ( elementName == "WIDTH" )
@@ -1179,7 +1179,7 @@ bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
 
               if( getUnitValueAsFloat( xml.readElementText(), unit, width ) )
                 {
-                  runway.width = width;
+                  runway.m_width = width;
                 }
             }
         }
@@ -1201,7 +1201,7 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
 
       if( operations == "ACTIVE" )
         {
-          runway.isOpen = true;
+          runway.m_isOpen = true;
         }
     }
 
@@ -1252,12 +1252,12 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
 
                       if( rwyNumber == 1 )
                         {
-                          runway.heading = (dir << 8) + dir;
+                          runway.m_heading = (dir << 8) + dir;
                         }
                       else if( rwyNumber == 2 )
                         {
-                          runway.heading = (runway.heading & 0xff00) + (dir & 0xff);
-                          runway.isBidirectional = true;
+                          runway.m_heading = (runway.m_heading & 0xff00) + (dir & 0xff);
+                          runway.m_isBidirectional = true;
                         }
                     }
                 }
@@ -1276,27 +1276,27 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
 
               if( sfc == "ASPH" )
                 {
-                  runway.surface = Runway::Asphalt;
+                  runway.m_surface = Runway::Asphalt;
                 }
               else if( sfc == "CONC" )
                 {
-                  runway.surface = Runway::Concrete;
+                  runway.m_surface = Runway::Concrete;
                 }
               else if( sfc == "GRAS" )
                 {
-                  runway.surface = Runway::Grass;
+                  runway.m_surface = Runway::Grass;
                 }
               else if( sfc == "GRVL" || sfc == "SAND" )
                 {
-                  runway.surface = Runway::Sand;
+                  runway.m_surface = Runway::Sand;
                 }
               else if( sfc == "UNKN" )
                 {
-                  runway.surface = Runway::Unknown;
+                  runway.m_surface = Runway::Unknown;
                 }
               else
                 {
-                  runway.surface = Runway::Unknown;
+                  runway.m_surface = Runway::Unknown;
 
                   if( sfc.size() > 0 )
                     {
@@ -1319,7 +1319,7 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
 
               if( getUnitValueAsFloat( xml.readElementText(), unit, length ) )
                 {
-                  runway.length = length;
+                  runway.m_length = length;
                 }
             }
           else if ( elementName == "WIDTH" )
@@ -1336,7 +1336,7 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
 
               if( getUnitValueAsFloat( xml.readElementText(), unit, width ) )
                 {
-                  runway.width = width;
+                  runway.m_width = width;
                 }
             }
         }

@@ -316,12 +316,12 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
             {
               chkRwy1Enable->setCheckState( Qt::Checked );
 
-              slot_rwy1HeadingEdited( QString::number( rwy.heading / 256 ) );
-              edtRwy1Length->setText( Altitude::getText((rwy.length), false, 0) );
-              setSurface( cmbRwy1Surface, rwy.surface );
-              chkRwy1Usable->setChecked( rwy.isOpen );
+              slot_rwy1HeadingEdited( QString::number( rwy.m_heading / 256 ) );
+              edtRwy1Length->setText( Altitude::getText((rwy.m_length), false, 0) );
+              setSurface( cmbRwy1Surface, rwy.m_surface );
+              chkRwy1Usable->setChecked( rwy.m_isOpen );
 
-              if( rwy.isBidirectional || ( rwy.heading / 256 != rwy.heading % 256) )
+              if( rwy.m_isBidirectional || ( rwy.m_heading / 256 != rwy.m_heading % 256) )
                 {
                   chkRwy1Both->setChecked( true );
                 }
@@ -334,12 +334,12 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
             {
               chkRwy2Enable->setCheckState( Qt::Checked );
 
-              slot_rwy2HeadingEdited( QString::number( rwy.heading / 256 ) );
-              edtRwy2Length->setText( Altitude::getText((rwy.length), false, 0) );
-              setSurface( cmbRwy2Surface, rwy.surface );
-              chkRwy2Usable->setChecked( rwy.isOpen );
+              slot_rwy2HeadingEdited( QString::number( rwy.m_heading / 256 ) );
+              edtRwy2Length->setText( Altitude::getText((rwy.m_length), false, 0) );
+              setSurface( cmbRwy2Surface, rwy.m_surface );
+              chkRwy2Usable->setChecked( rwy.m_isOpen );
 
-              if( rwy.isBidirectional || ( rwy.heading / 256 != rwy.heading % 256) )
+              if( rwy.m_isBidirectional || ( rwy.m_heading / 256 != rwy.m_heading % 256) )
                 {
                   chkRwy2Both->setChecked( true );
                 }
@@ -376,21 +376,21 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
     {
       Runway rwy;
 
-      rwy.length = static_cast<float> (Altitude::convertToMeters(edtRwy1Length->text().toDouble()));
-      rwy.surface = getSurface( cmbRwy1Surface );
-      rwy.isOpen = chkRwy1Usable->isChecked();
-      rwy.isBidirectional = chkRwy1Both->isChecked();
+      rwy.m_length = static_cast<float> (Altitude::convertToMeters(edtRwy1Length->text().toDouble()));
+      rwy.m_surface = getSurface( cmbRwy1Surface );
+      rwy.m_isOpen = chkRwy1Usable->isChecked();
+      rwy.m_isBidirectional = chkRwy1Both->isChecked();
 
       int hdg1 = edtRwy1Heading->value();
       int hdg2 = hdg1 > 18 ? hdg1 - 18 : hdg1 + 18;
 
-      if( rwy.isBidirectional )
+      if( rwy.m_isBidirectional )
         {
-          rwy.heading = (hdg1 * 256) + hdg2;
+          rwy.m_heading = (hdg1 * 256) + hdg2;
         }
       else
         {
-          rwy.heading = (hdg1 * 256) + hdg1;
+          rwy.m_heading = (hdg1 * 256) + hdg1;
         }
 
       wp->rwyList.append( rwy );
@@ -401,21 +401,21 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
     {
       Runway rwy;
 
-      rwy.length = static_cast<float> (Altitude::convertToMeters(edtRwy2Length->text().toDouble()));
-      rwy.surface = getSurface( cmbRwy2Surface );
-      rwy.isOpen = chkRwy2Usable->isChecked();
-      rwy.isBidirectional = chkRwy2Both->isChecked();
+      rwy.m_length = static_cast<float> (Altitude::convertToMeters(edtRwy2Length->text().toDouble()));
+      rwy.m_surface = getSurface( cmbRwy2Surface );
+      rwy.m_isOpen = chkRwy2Usable->isChecked();
+      rwy.m_isBidirectional = chkRwy2Both->isChecked();
 
       int hdg1 = edtRwy2Heading->value();
       int hdg2 = hdg1 > 18 ? hdg1 - 18 : hdg1 + 18;
 
-      if( rwy.isBidirectional )
+      if( rwy.m_isBidirectional )
         {
-          rwy.heading = (hdg1 * 256) + hdg2;
+          rwy.m_heading = (hdg1 * 256) + hdg2;
         }
       else
         {
-          rwy.heading = (hdg1 * 256) + hdg1;
+          rwy.m_heading = (hdg1 * 256) + hdg1;
         }
 
       wp->rwyList.append( rwy );
