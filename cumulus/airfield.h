@@ -74,11 +74,12 @@ class Airfield : public SinglePoint
    * @param  rwList A list with runway objects
    * @param  elevation  The elevation
    * @param  frequency  The frequency
-   * @param  comment An additional comment related to the airfield
    * @param  country The country of the airfield as two letter code
+   * @param  comment An additional comment related to the airfield
    * @param  winch  "true", if winch launch is available
    * @param  towing "true", if aero towing is available
    * @param  landable "true", if airfield is landable
+   * @param  atis ATIS
    */
   Airfield( const QString& name,
             const QString& icao,
@@ -253,9 +254,9 @@ class Airfield : public SinglePoint
         Runway rw = m_rwList.first();
 
         // calculate the real runway shift in 1/10 degrees.
-        if ( rw.heading/256 <= 36 )
+        if ( rw.m_heading/256 <= 36 )
           {
-            m_rwShift = (rw.heading/256 >= 18 ? (rw.heading/256)-18 : rw.heading/256);
+            m_rwShift = (rw.m_heading/256 >= 18 ? (rw.m_heading/256)-18 : rw.m_heading/256);
           }
       }
   };
