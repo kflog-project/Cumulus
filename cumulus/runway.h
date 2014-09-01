@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2013 Axel Pauli
+**   Copyright (c): 2008-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  * This class is used for defining a runway together with its surface and the
  * translation types.
  *
- * \date 2008-2013
+ * \date 2008-2014
  *
  */
 
@@ -47,12 +47,12 @@ public:
   enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3, Sand = 4};
 
   Runway() :
-    length(0),
-    heading(0),
-    surface(Unknown),
-    isOpen(false),
-    isBidirectional(true),
-    width(0)
+    m_length(0),
+    m_heading(0),
+    m_surface(Unknown),
+    m_isOpen(false),
+    m_isBidirectional(true),
+    m_width(0)
     {
     };
 
@@ -88,33 +88,33 @@ public:
   /**
    * The length of the runway, given in meters.
    */
-  float length;
+  float m_length;
 
   /**
    * The heading of the runway, given in steps of 1/10 degree (0-36).
    * Two headings are stored in every byte. (dir1*256 + dir2).
    */
-  unsigned short heading;
+  unsigned short m_heading;
 
   /**
    * The surface of the runway, one of SurfaceType, see above.
    */
-  unsigned short surface;
+  unsigned short m_surface;
 
   /**
    * Flag to indicate if the runway is open or closed.
    */
-  bool isOpen;
+  bool m_isOpen;
 
   /**
    * Flag to indicate if the runway is bidirectional or not.
    */
-  bool isBidirectional;
+  bool m_isBidirectional;
 
   /**
    * The width of the runway, given in meters.
    */
-  float width;
+  float m_width;
 
   /**
    * Static pointer to surface translations

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2013 Axel Pauli
+**   Copyright (c): 2008-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,23 +29,23 @@ Runway::Runway( const float rwLength,
                 const bool open,
                 const bool bidirectional,
                 const float rwWidth ) :
- length(rwLength),
- heading(head),
- surface(surf),
- isOpen(open),
- isBidirectional(bidirectional),
- width(rwWidth)
+ m_length(rwLength),
+ m_heading(head),
+ m_surface(surf),
+ m_isOpen(open),
+ m_isBidirectional(bidirectional),
+ m_width(rwWidth)
 {
 }
 
 void Runway::printData()
 {
-  qDebug() << "RWY-Heading=" << (heading / 256) << "/"<< (heading & 255)
-           << "Length=" << length
-           << "Width=" << width
-           << "Sfc=" << surface
-           << "Open=" << isOpen
-           << "BiDir=" << isBidirectional;
+  qDebug() << "RWY-Heading=" << (m_heading / 256) << "/"<< (m_heading & 255)
+           << "Length=" << m_length
+           << "Width=" << m_width
+           << "Sfc=" << m_surface
+           << "Open=" << m_isOpen
+           << "BiDir=" << m_isBidirectional;
 }
 
 /**
