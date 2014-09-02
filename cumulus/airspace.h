@@ -78,6 +78,7 @@ public:
    * \param upperType The upper altitude reference
    * \param lower The lower altitude limit of the airspace in feet
    * \param lowerType The lower altitude reference
+   * \param identifier openAIP record identifier
    * \param country The country as two letter code, where the airspace is located
  */
   Airspace( QString name,

@@ -58,7 +58,6 @@
 #include "basemapelement.h"
 
 class Airspace;
-class QString;
 
 class OpenAirParser
 {
