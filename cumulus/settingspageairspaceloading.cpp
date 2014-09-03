@@ -57,7 +57,7 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   topLayout->setSpacing(10);
 
   m_fileTable = new QTableWidget( 0, 1, this );
-  m_fileTable->setToolTip( tr("Use check boxes to activate or deactivate file loading.") );
+  m_fileTable->setToolTip( tr("Uncheck All to enable loading of single files.") );
   m_fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_fileTable->setAlternatingRowColors( true );
   m_fileTable->setShowGrid( true );
@@ -171,7 +171,7 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   int row = 0;
   m_fileTable->setRowCount( row + 1 );
 
-  item = new QTableWidgetItem( tr("Select all"), 0 );
+  item = new QTableWidgetItem( tr("Check or Uncheck all"), 0 );
   item->setFlags( Qt::ItemIsEnabled );
   item->setCheckState( Qt::Unchecked );
   m_fileTable->setItem( row, 0, item );
@@ -261,15 +261,14 @@ void SettingsPageAirspaceLoading::slot_toggleCheckBox( int row, int column )
 
   if( row == 0 && column == 0 )
     {
-      // First entry was clicked. Change related check items.
-      if( item->checkState() == Qt::Checked )
-        {
-          // All other items are checked too
-          for( int i = m_fileTable->rowCount() - 1; i > 0; i-- )
-            {
-              m_fileTable->item( i, 0 )->setCheckState( Qt::Checked );
-            }
-        }
+      // First item was clicked. Change all other check items too.
+      Qt::CheckState newState = item->checkState();
+
+      // All other items are toggled too
+      for( int i = m_fileTable->rowCount() - 1; i > 0; i-- )
+	{
+	  m_fileTable->item( i, 0 )->setCheckState( newState );
+	}
     }
 }
 
