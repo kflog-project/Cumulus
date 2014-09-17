@@ -179,7 +179,7 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
 
   QBrush drawB( glConfig->getDrawBrush(typeID) );
 
-  if( opacity < 100.0 )
+  if( opacity <= 100.0 )
     {
       // use solid filled air regions
       drawB.setStyle( Qt::SolidPattern );
@@ -202,7 +202,7 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
   targetP->setPen(drawP);
   targetP->setBrush(drawB);
 
-  if( opacity < 100.0 && opacity > 0.0 )
+  if( opacity <= 100.0 && opacity > 0.0 )
     {
       // Draw airspace filled with opacity factor
       targetP->setOpacity( opacity/100.0 );
