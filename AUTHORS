@@ -1,4 +1,3 @@
-$Id$
 
 Cumulus was created in 2002 by:
 
@@ -26,7 +25,11 @@ Information about Cumulus can be found at http://www.kflog.org/cumulus/
 
 The Cumulus code is hosted at GitHub: https://github.com/kflog-project/Cumulus
 
-Please post issues to https://github.com/kflog-project/Cumulus/issues
+Please post issues to
+
+  https://github.com/kflog-project/Cumulus/issues
+  
+To do that, you need a GitHub account.
 
 Cumulus is a fork of KFLog, the K-Flightlog analyzer. See http://www.kflog.org
 
