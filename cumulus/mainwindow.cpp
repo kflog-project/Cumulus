@@ -2649,6 +2649,7 @@ void MainWindow::slotVersion()
           "Cumulus %1, compiled at %2 with QT %3<br><br>"
           "Homepage: <a href=\"http://www.kflog.org/cumulus/\">www.kflog.org/cumulus/</a><br><br>"
           "Software Repository: <a href=\"https://github.com/kflog-project/Cumulus\">github.com/kflog-project/Cumulus</a><br><br>"
+          "ChangeLog <a href=\"https://github.com/kflog-project/Cumulus/blob/%1/ChangeLog\">%1</a><br><br>"
           "Report bugs to: <a href=\"mailto:kflog.cumulus&#64;gmail.com\">kflog.cumulus&#64;gmail.com</a> or to <a href=\"https://github.com/kflog-project/Cumulus/issues\">GitHub</a><br><br>"
           "Published under the <a href=\"http://www.gnu.org/licenses/licenses.html#GPL\">GPL</a>"
           "</html>" ).arg( QCoreApplication::applicationVersion() )
