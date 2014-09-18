@@ -56,7 +56,7 @@ SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
   topLayout->setSpacing(10);
 
   m_fileTable = new QTableWidget( 0, 1, this );
-  m_fileTable->setToolTip( tr("Uncheck All to enable loading of single files..") );
+  m_fileTable->setToolTip( tr("Uncheck All to enable loading of single files.") );
   m_fileTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_fileTable->setAlternatingRowColors( true );
   m_fileTable->setShowGrid( true );
@@ -154,7 +154,6 @@ SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
   for ( int i = 0; i < mapDirs.size(); ++i )
     {
       MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*.aip");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*.AIP");
     }
 
   preselect.sort();
@@ -170,18 +169,6 @@ SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
 
   for( int i = 0; i < preselect.size(); i++ )
     {
-      if ( preselect.at(i).endsWith( ".AIP" ) )
-        {
-          // Upper case file names are converted to lower case and renamed.
-          QFileInfo fInfo = preselect.at(i);
-          QString path    = fInfo.absolutePath();
-          QString fn      = fInfo.fileName().toLower();
-          QString newFn   = path + "/" + fn;
-          QFile::remove( newFn );
-          QFile::rename( preselect.at(i), newFn );
-          preselect[i] = newFn;
-        }
-
       m_fileTable->setRowCount( row + 1 );
 
       QString file = QFileInfo( preselect.at(i) ).fileName();

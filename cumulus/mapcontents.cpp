@@ -92,9 +92,9 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
 #ifdef INTERNET
 
     , m_downloadManger(0),
+    m_downloadMangerOpenAipPois(0),
     m_shallDownloadData(false),
     m_hasAskForDownload(false),
-    m_downloadOpenAipAirfieldsRequested(false),
     m_downloadOpenAipAirspacesRequested(false)
 
 #endif
@@ -1519,7 +1519,7 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
   m_downloadManger->downloadRequest( url, dest );
 }
 
-void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountryList )
+void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList )
 {
   extern Calculator* calculator;
 
@@ -1535,32 +1535,40 @@ void MapContents::slotDownloadOpenAipAirfields( const QStringList& openAipCountr
       return;
     }
 
-  if( m_downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadMangerOpenAipPois == static_cast<DownloadManager *> (0) )
     {
-      m_downloadManger = new DownloadManager(this);
+      m_downloadMangerOpenAipPois = new DownloadManager(this);
 
-      connect( m_downloadManger, SIGNAL(finished( int, int )),
-               this, SLOT(slotDownloadsFinished( int, int )) );
+      connect( m_downloadMangerOpenAipPois, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinishedOpenAipPois( int, int )) );
 
-      connect( m_downloadManger, SIGNAL(networkError()),
-               this, SLOT(slotNetworkError()) );
+      connect( m_downloadMangerOpenAipPois, SIGNAL(networkError()),
+               this, SLOT(slotNetworkErrorOpenAipPois()) );
 
-      connect( m_downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadMangerOpenAipPois, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
-
-  m_downloadOpenAipAirfieldsRequested = true;
 
   const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
   const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
 
   for( int i = 0; i < openAipCountryList.size(); i++ )
     {
-      // File name format: <country-code>_wpt.aip, example: de_wpt.aip
+      // Airfield file name format: <country-code>_wpt.aip, example: de_wpt.aip
       QString file = openAipCountryList.at(i).toLower() + "_wpt.aip";
       QString url  = urlPrefix + file;
       QString dest = destPrefix + file;
-      m_downloadManger->downloadRequest( url, dest );
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+
+      qDebug() << "URL" << url << "Dest" << dest;
+
+      // Nav aids file name format: <country-code>_nav.aip, example: de_nav.aip
+      file = openAipCountryList.at(i).toLower() + "_nav.aip";
+      url  = urlPrefix + file;
+      dest = destPrefix + file;
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+
+      qDebug() << "URL" << url << "Dest" << dest;
     }
 }
 
@@ -1610,54 +1618,6 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
   // All downloads are finished, free not more needed resources.
   m_downloadManger->deleteLater();
   m_downloadManger = static_cast<DownloadManager *> (0);
-
-  if( m_downloadOpenAipAirfieldsRequested == true )
-    {
-      m_downloadOpenAipAirfieldsRequested = false;
-
-      // Tidy up airfield directory after download of openAIP files.
-      const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
-
-      // Get the list of airfield files to be loaded.
-      QStringList& files2load = GeneralConfig::instance()->getOpenAipAirfieldFileList();
-
-      // Check if option load all is set by the user
-      bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
-
-      QDir afDir(afDirName);
-      afDir.setFilter(QDir::Files);
-
-      QStringList filters;
-      filters << "*.aic" << "*.aip";
-      afDir.setNameFilters(filters);
-
-      QStringList filesFound = afDir.entryList();
-
-      for( int i = 0; i < filesFound.size(); i++ )
-        {
-          const QString& fn = filesFound.at(i);
-
-          if( fn.endsWith(".aic") )
-            {
-              // Remove compiled airfield file version in every case.
-              afDir.remove( fn );
-              continue;
-            }
-
-          if( loadAll && (fn.endsWith("_wpt.aip") == false || fn.size() != 10) )
-            {
-              // That file was installed by the user. We remove it to avoid
-              // problems with the new downloaded airfield files by Cumulus,
-              // if the load All option is activated.
-              // Example of file names:
-              // User installed file:    openaip_airports_germany_de.aip
-              // Cumulus installed file: de_wpt.aip
-              afDir.remove( fn );
-            }
-        }
-
-      loadOpenAipAirfieldsViaThread();
-    }
 
   if( m_downloadOpenAipAirspacesRequested == true )
     {
@@ -1730,6 +1690,78 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
   mb.exec();
 }
 
+void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
+{
+  // All downloads are finished, free not more needed resources.
+  m_downloadMangerOpenAipPois->deleteLater();
+  m_downloadMangerOpenAipPois = static_cast<DownloadManager *> (0);
+
+  // Tidy up airfield directory after download of openAIP files.
+  const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
+
+  // Get the list of airfield files to be loaded.
+  QStringList& files2load = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+
+  // Check if option load all is set by the user
+  bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
+
+  QDir afDir(afDirName);
+  afDir.setFilter(QDir::Files);
+
+  QStringList filters;
+  filters << "*_wpt.aic" << "*_wpt.aip";
+  afDir.setNameFilters(filters);
+
+  QStringList filesFound = afDir.entryList();
+
+  for( int i = 0; i < filesFound.size(); i++ )
+    {
+      const QString& fn = filesFound.at(i);
+
+      if( fn.endsWith(".aic") )
+	{
+	  // Remove compiled airfield file version in every case.
+	  afDir.remove( fn );
+	  continue;
+	}
+
+      if( loadAll && (fn.startsWith("openaip_airports") == true ) )
+	{
+	  // That file was installed by the user. We remove it to avoid
+	  // problems with the new downloaded airfield files by Cumulus,
+	  // if the load All option is activated.
+	  // Example of file names:
+	  // User installed file:    openaip_airports_germany_de.aip
+	  // Cumulus installed file: de_wpt.aip
+	  afDir.remove( fn );
+	}
+    }
+
+  loadOpenAipAirfieldsViaThread();
+
+  // initiate a map redraw
+  Map::instance->scheduleRedraw( Map::baseLayer );
+
+  QString msg = QString(tr("%1 openAIP POI download(s) with %2 error(s) done.")).arg(requests).arg(errors);
+
+  QMessageBox mb( QMessageBox::Information,
+                  tr("Downloads finished"),
+                  msg,
+                  QMessageBox::Ok,
+                  MainWindow::mainWindow() );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
+                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
+}
+
 /** Called, if a network error occurred during the downloads. */
 void MapContents::slotNetworkError()
 {
@@ -1739,7 +1771,23 @@ void MapContents::slotNetworkError()
 
   // Reset user decision flag
   m_shallDownloadData = false;
+  reportNetworkError();
+}
 
+/** Called, if a network error occurred during the downloads. */
+void MapContents::slotNetworkErrorOpenAipPois()
+{
+  // A network error has occurred. We do stop all further downloads.
+  m_downloadMangerOpenAipPois->deleteLater();
+  m_downloadMangerOpenAipPois = static_cast<DownloadManager *> (0);
+
+  // Reset user decision flag
+  m_shallDownloadData = false;
+  reportNetworkError();
+}
+
+void MapContents::reportNetworkError()
+{
   QString msg = QString(tr("Network error occurred.\nAll downloads are canceled!"));
 
   QMessageBox mb( QMessageBox::Warning,

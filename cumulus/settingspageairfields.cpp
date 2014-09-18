@@ -726,7 +726,7 @@ void SettingsPageAirfields::slot_downloadOpenAip()
       return;
     }
 
-  emit downloadOpenAipAirfields( clist );
+  emit downloadOpenAipPois( clist );
   return;
 }
 

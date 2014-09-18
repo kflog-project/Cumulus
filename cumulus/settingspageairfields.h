@@ -139,12 +139,12 @@ class SettingsPageAirfields : public QWidget
   void downloadWelt2000( const QString& welt2000FileName );
 
   /**
-   * This signal is emitted when openAIP airfield country files shall be
-   * downloaded from the Internet.
+   * This signal is emitted when openAIP airfield and nav aids country files
+   * shall be downloaded from the Internet.
    *
    * \param openAipCountryList The list of countries to be downloaded.
    */
-  void downloadOpenAipAirfields( const QStringList& openAipCountryList );
+  void downloadOpenAipPois( const QStringList& openAipCountryList );
 
 #endif
 

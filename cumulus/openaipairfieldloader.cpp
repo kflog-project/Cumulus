@@ -67,12 +67,11 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList, bool readSource 
 
   for( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.aip" );
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.AIP" );
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*_wpt.aip" );
 
       if( readSource == false )
         {
-          MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*.aic" );
+          MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*_wpt.aic" );
         }
     }
 
@@ -80,23 +79,6 @@ int OpenAipAirfieldLoader::load( QList<Airfield>& airfieldList, bool readSource 
     {
       qWarning( "OAIP: No airfield files found in the map directories!" );
       return loadCounter;
-    }
-
-  // First check, if we have found a file name in upper letters. That may
-  // be true, if a file was downloaded from the Internet. We will convert
-  // such a file name to lower cases and replace it in the file list.
-  for( int i = 0; i < preselect.size(); i++ )
-    {
-      if( preselect.at( i ).endsWith( ".AIP" ) )
-        {
-          QFileInfo fInfo = preselect.at( i );
-          QString path = fInfo.absolutePath();
-          QString fn = fInfo.fileName().toLower();
-          QString newFn = path + "/" + fn;
-          QFile::remove( newFn );
-          QFile::rename( preselect.at( i ), newFn );
-          preselect[i] = newFn;
-        }
     }
 
   // source files follows compiled files

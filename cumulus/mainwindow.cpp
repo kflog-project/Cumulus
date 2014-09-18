@@ -1112,7 +1112,7 @@ void MainWindow::slotFinishStartUp()
 
           if( _globalMapContents->askUserForDownload() == true )
             {
-              _globalMapContents->slotDownloadOpenAipAirfields( QStringList(language.toLower()) );
+              _globalMapContents->slotDownloadOpenAipPois( QStringList(language.toLower()) );
               _globalMapContents->slotDownloadAirspaces( QStringList(language.toLower()) );
             }
         }

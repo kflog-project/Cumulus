@@ -373,11 +373,11 @@ class MapContents : public QObject
     void slotDownloadWelt2000( const QString& welt2000FileName );
 
     /**
-     * This slot is called to download openAip airfield files from the Internet.
+     * This slot is called to download openAip POI files from the Internet.
      *
      * @param openAipCountryList The list of countries to be downloaded.
      */
-    void slotDownloadOpenAipAirfields( const QStringList& openAipCountryList );
+    void slotDownloadOpenAipPois( const QStringList& openAipCountryList );
 
     /**
      * Downloads all map tiles enclosed by the square with the center point. The
@@ -403,6 +403,12 @@ class MapContents : public QObject
 
     /** Called, if a network error occurred during the downloads. */
     void slotNetworkError();
+
+    /** Called, if all openAIP POI downloads are finished. */
+    void slotDownloadsFinishedOpenAipPois( int requests, int errors );
+
+    /** Called, if a network error occurred during the openAIP POI downloads. */
+    void slotNetworkErrorOpenAipPois();
 
 #endif
 
@@ -490,6 +496,11 @@ class MapContents : public QObject
      */
     bool downloadMapFile( QString &file, QString &directory );
 
+    /**
+     * Reports an Internet network error to the user.
+     */
+    void reportNetworkError();
+
 #endif
 
     /**
@@ -498,7 +509,7 @@ class MapContents : public QObject
     void showProgress2WaitScreen( QString message );
 
     /**
-     * airfieldList contains airfields, airfields, ultralight sites
+     * airfieldList contains airports, airfields, ultralight sites
      */
     QList<Airfield> airfieldList;
 
@@ -506,14 +517,6 @@ class MapContents : public QObject
      * gliderfieldList contains all glider sites.
      */
     QList<Airfield> gliderfieldList;
-
-    /**
-     * addSitesList contains all, ultralight sites,
-     * hang glider sites, free balloon sites, parachute jumping sites.
-     *
-     * NOT used atm
-     */
-    // QList<SinglePoint> addSitesList;
 
     /**
      * outLandingList contains all outlanding fields.
@@ -674,14 +677,14 @@ class MapContents : public QObject
     /** Manager to handle downloads of missing map file. */
     DownloadManager *m_downloadManger;
 
+    /** Manager to handle downloads of openAIP point data. */
+    DownloadManager *m_downloadMangerOpenAipPois;
+
     /** Store user decision to download missing data files. */
     bool m_shallDownloadData;
 
     /** Store that user has asked once for download of missing data file. */
     bool m_hasAskForDownload;
-
-    /** Store download request for openAIP airfield data. */
-    bool m_downloadOpenAipAirfieldsRequested;
 
     /** Store download request for openAIP airspace data. */
     bool m_downloadOpenAipAirspacesRequested;
