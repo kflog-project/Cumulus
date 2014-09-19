@@ -125,6 +125,7 @@ HEADERS = \
     multilayout.h \
     openaip.h \
     openaipairfieldloader.h \
+    openAipLoaderThread.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -249,6 +250,7 @@ SOURCES = \
     messagewidget.cpp \
     openaip.cpp \
     openaipairfieldloader.cpp \
+    openAipLoaderThread.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \

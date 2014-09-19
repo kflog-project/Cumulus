@@ -49,8 +49,9 @@
 #include "welt2000.h"
 #include "wgspoint.h"
 
-#include "openaipairfieldloader.h"
 #include "openaip.h"
+#include "openaipairfieldloader.h"
+#include "openAipLoaderThread.h"
 
 extern MapView* _globalMapView;
 
@@ -2672,7 +2673,8 @@ void MapContents::loadOpenAipAirfieldsViaThread()
 
   _globalMapView->slot_info( tr("Loading OpenAIP data") );
 
-  OpenAipThread *oaipThread = new OpenAipThread( this );
+  OpenAipLoaderThread *oaipThread = new OpenAipLoaderThread( this,
+                                                             OpenAipLoaderThread::Airfields );
 
   // Register a special data type for return results. That must be
   // done to transfer the results between different threads.
@@ -2681,7 +2683,7 @@ void MapContents::loadOpenAipAirfieldsViaThread()
   // Connect the receiver of the results. It is located in this
   // thread and not in the new opened thread.
   connect( oaipThread,
-           SIGNAL(loadedList( int, QList<Airfield>* )),
+           SIGNAL(loadedAfList( int, QList<Airfield>* )),
            this,
            SLOT(slotOpenAipAirfieldLoadFinished( int, QList<Airfield>* )) );
 
@@ -2718,7 +2720,6 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
   outLandingList  = QList<Airfield>();
 
   emit mapDataReloaded( Map::airfields );
-  emit mapDataReloaded();
 }
 
 /**
