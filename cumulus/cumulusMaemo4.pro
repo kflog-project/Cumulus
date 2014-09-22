@@ -6,8 +6,6 @@
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
 #
-# $Id$
-#
 ##################################################################
 
 TEMPLATE = app
@@ -111,7 +109,7 @@ HEADERS = \
     multilayout.h \
     openaip.h \
     openAipLoaderThread.h \
-    openaipairfieldloader.h \
+    openAipPoiLoader.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -237,7 +235,7 @@ SOURCES = \
     messagewidget.cpp \
     openaip.cpp \
     openAipLoaderThread.cpp \
-    openaipairfieldloader.cpp \
+    openAipPoiLoader.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \

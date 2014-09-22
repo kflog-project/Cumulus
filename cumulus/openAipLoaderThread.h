@@ -23,8 +23,8 @@
 #include <QString>
 #include <QThread>
 
-#include "singlepoint.h"
 #include "airfield.h"
+#include "singlepoint.h"
 #include "radiopoint.h"
 
 /**

@@ -7,8 +7,6 @@
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
 #
-# $Id$
-#
 # Note, that the SDK Necessitas is used for the build!
 #
 ##################################################################
@@ -134,7 +132,7 @@ HEADERS = \
     multilayout.h \
     openaip.h \
     openAipLoaderThread.h \
-    openaipairfieldloader.h \
+    openAipPoiLoader.h \
     openairparser.h \
     polardialog.h \
     polar.h \
@@ -261,7 +259,7 @@ SOURCES = \
     messagewidget.cpp \
     openaip.cpp \
     openAipLoaderThread.cpp \
-    openaipairfieldloader.cpp \
+    openAipPoiLoader.cpp \
     openairparser.cpp \
     polar.cpp \
     polardialog.cpp \

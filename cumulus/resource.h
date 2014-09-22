@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef RESSOURCE_H
@@ -86,6 +84,9 @@
 // Type definition for openAIP compiled airfield files.
 #define FILE_TYPE_AIRFIELD_OAIP_C "OpenAIP-Airfields"
 
+// Type definition for openAIP compiled navigation aids files.
+#define FILE_TYPE_NAV_AIDS_OAIP_C "OpenAIP-NavAids"
+
 //=================================================================================
 // Compiled file versions. Increment this value, if you change the compiled format.
 //=================================================================================
@@ -98,6 +99,9 @@
 
 // Version definition for compiled airfield files.
 #define FILE_VERSION_AIRFIELD_C 1
+
+// Version definition for compiled navigation aids files.
+#define FILE_VERSION_NAV_AIDS_C 1
 
 /******************************************************************************
  * Definition of map element types

@@ -20,7 +20,7 @@
 #include <QtCore>
 
 #include "airfield.h"
-#include "openaipairfieldloader.h"
+#include "openAipPoiLoader.h"
 #include "openAipLoaderThread.h"
 #include "radiopoint.h"
 
@@ -73,7 +73,7 @@ void OpenAipLoaderThread::run()
   if( m_poiSource == Airfields )
     {
       QList<Airfield>* poiList = new QList<Airfield>;
-      OpenAipAirfieldLoader oaipl;
+      OpenAipPoiLoader oaipl;
 
       ok = oaipl.load( *poiList, m_readSource );
 

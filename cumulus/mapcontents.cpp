@@ -50,7 +50,7 @@
 #include "wgspoint.h"
 
 #include "openaip.h"
-#include "openaipairfieldloader.h"
+#include "openAipPoiLoader.h"
 #include "openAipLoaderThread.h"
 
 extern MapView* _globalMapView;
@@ -2019,7 +2019,7 @@ void MapContents::proofeSection()
           if( isReload == false )
             {
               // Load airfield data not in an extra thread
-              OpenAipAirfieldLoader afl;
+              OpenAipPoiLoader afl;
               afl.load( airfieldList );
             }
           else
