@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,6 +18,8 @@
 
 #ifndef RADIO_POINT_H
 #define RADIO_POINT_H
+
+#include <climits>
 
 #include <QPoint>
 #include <QString>
@@ -37,19 +39,22 @@
  *
  * @see BaseMapElement#objectType
  *
- * \date 2000-2013
+ * \date 2000-2014
  */
 
 class RadioPoint : public SinglePoint
 {
- public:
+  public:
 
   /**
    * Default constructor
    */
   RadioPoint() :
     SinglePoint(),
-    m_frequency(0.0)
+    m_frequency(0.0),
+    m_range(0.0),
+    m_declination(SHRT_MIN),
+    m_aligned2TrueNorth(false)
    {
    };
 
@@ -66,6 +71,9 @@ class RadioPoint : public SinglePoint
    * @param  channel The channel.
    * @param  elevation The elevation.
    * @param  country The country location.
+   * @param  range The service range in meters.
+   * @param  declination The declination
+   * @param  aligned2TrueNorth Alignment to true north
    */
   RadioPoint( const QString& name,
               const QString& icao,
@@ -76,7 +84,10 @@ class RadioPoint : public SinglePoint
               const float frequency,
               const QString channel = "",
               float elevation = 0.0,
-              const QString country = "" );
+              const QString country = "",
+              const float range = 0.0,
+              const short declination = SHRT_MIN,
+              const bool aligned2TrueNorth = false );
 
   /**
    * Destructor
@@ -125,7 +136,37 @@ class RadioPoint : public SinglePoint
   virtual void setICAO( const QString& value )
     {
       m_icao = value;
-    };
+    }
+
+  bool isAligned2TrueNorth () const
+    {
+      return m_aligned2TrueNorth;
+    }
+
+  void setAligned2TrueNorth (bool aligned2TrueNorth)
+    {
+      m_aligned2TrueNorth = aligned2TrueNorth;
+    }
+
+  short getDeclination () const
+    {
+      return m_declination;
+    }
+
+  void setDeclination (short declination)
+    {
+      m_declination = declination;
+    }
+
+  float getRange () const
+    {
+      return m_range;
+    }
+
+  void setRange (float range)
+    {
+      m_range = range;
+    }
 
  protected:
   /**
@@ -137,10 +178,26 @@ class RadioPoint : public SinglePoint
    * The channel.
    */
   QString m_channel;
+
   /**
    * The icao name
    */
   QString m_icao;
+
+  /**
+   * Range of service in meters. 0 means unknown.
+   */
+  float m_range;
+
+  /**
+   * Declination, SHRT_MIN means undefined.
+   */
+  short m_declination;
+
+  /**
+   * Aligned to true north.
+   */
+  bool m_aligned2TrueNorth;
 };
 
 #endif

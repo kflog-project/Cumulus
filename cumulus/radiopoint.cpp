@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -27,11 +25,17 @@ RadioPoint::RadioPoint(const QString& name,
                        const float frequency,
                        const QString channel,
                        float elevation,
-                       const QString country )
-  : SinglePoint( name, shortName, type, wgsP, pos, elevation, country ),
-    m_frequency(frequency),
-    m_channel(channel),
-    m_icao(icao)
+                       const QString country,
+                       const float range,
+                       const short declination,
+                       const bool aligned2TrueNorth ) :
+  SinglePoint( name, shortName, type, wgsP, pos, elevation, country ),
+  m_frequency(frequency),
+  m_channel(channel),
+  m_icao(icao),
+  m_range(range),
+  m_declination(declination),
+  m_aligned2TrueNorth(aligned2TrueNorth)
 {
 }
 
