@@ -13,8 +13,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <unistd.h>
@@ -24,7 +22,7 @@
 
 #include "distance.h"
 #include "generalconfig.h"
-#include "openaip.h"
+#include "OpenAip.h"
 #include "mainwindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"

@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -49,9 +47,9 @@
 #include "welt2000.h"
 #include "wgspoint.h"
 
-#include "openaip.h"
-#include "openAipPoiLoader.h"
-#include "openAipLoaderThread.h"
+#include "OpenAip.h"
+#include "OpenAipPoiLoader.h"
+#include "OpenAipLoaderThread.h"
 
 extern MapView* _globalMapView;
 
@@ -1625,7 +1623,7 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
       m_downloadOpenAipAirspacesRequested = false;
 
       // Tidy up airspace directory after download of openAIP files.
-      const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
+      const QString asDirName = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
 
       // Get the list of airspace files to be loaded.
       QStringList& files2load = GeneralConfig::instance()->getAirspaceFileList();
@@ -1633,7 +1631,7 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
       // Check if option load all is set by the user
       bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
 
-      QDir afDir(afDirName);
+      QDir afDir(asDirName);
       afDir.setFilter(QDir::Files);
 
       QStringList filters;
@@ -1693,12 +1691,14 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
 
 void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
 {
+  qDebug() << "MapContents::slotDownloadsFinishedOpenAipPois" << requests << errors;
+
   // All downloads are finished, free not more needed resources.
   m_downloadMangerOpenAipPois->deleteLater();
   m_downloadMangerOpenAipPois = static_cast<DownloadManager *> (0);
 
-  // Tidy up airfield directory after download of openAIP files.
-  const QString afDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
+  // Tidy up POI directory after download of openAIP files.
+  const QString poiDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
 
   // Get the list of airfield files to be loaded.
   QStringList& files2load = GeneralConfig::instance()->getOpenAipAirfieldFileList();
@@ -1706,14 +1706,19 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
   // Check if option load all is set by the user
   bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
 
-  QDir afDir(afDirName);
-  afDir.setFilter(QDir::Files);
+  QDir poiDir(poiDirName);
+  poiDir.setFilter(QDir::Files);
 
   QStringList filters;
-  filters << "*_wpt.aic" << "*_wpt.aip";
-  afDir.setNameFilters(filters);
 
-  QStringList filesFound = afDir.entryList();
+  // Airfield file name format: <country-code>_wpt.aip, example: de_wpt.aip
+  // Nav aids file name format: <country-code>_nav.aip, example: de_nav.aip
+  filters << "*_wpt.aic" << "*_wpt.aip" << "*_nav.aic" << "*_nav.aip";
+  poiDir.setNameFilters(filters);
+
+  QStringList filesFound = poiDir.entryList();
+
+  qDebug() << "fiteredFilesFound" << filesFound;
 
   for( int i = 0; i < filesFound.size(); i++ )
     {
@@ -1721,8 +1726,8 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
 
       if( fn.endsWith(".aic") )
 	{
-	  // Remove compiled airfield file version in every case.
-	  afDir.remove( fn );
+	  // Remove compiled POI files in every case.
+	  poiDir.remove( fn );
 	  continue;
 	}
 
@@ -1734,11 +1739,12 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
 	  // Example of file names:
 	  // User installed file:    openaip_airports_germany_de.aip
 	  // Cumulus installed file: de_wpt.aip
-	  afDir.remove( fn );
+	  poiDir.remove( fn );
 	}
     }
 
   loadOpenAipAirfieldsViaThread();
+  loadOpenAipNavAidsViaThread();
 
   // initiate a map redraw
   Map::instance->scheduleRedraw( Map::baseLayer );
@@ -2018,17 +2024,24 @@ void MapContents::proofeSection()
 
           if( isReload == false )
             {
-              // Load airfield data not in an extra thread
-              OpenAipPoiLoader afl;
-              afl.load( airfieldList );
+              // Load openAIP poi data not in an extra thread
+              OpenAipPoiLoader poiLoader;
+              m_airfieldLoadMutex.lock();
+              poiLoader.load( airfieldList );
+              m_airfieldLoadMutex.unlock();
+
+              m_radioPointLoadMutex.lock();
+              poiLoader.load( radioList );
+              m_radioPointLoadMutex.unlock();
             }
           else
             {
-              // In case of an reload we assume, that OpenAIP airfield files
-              // are available. Therefore whole the reload is done in an extra
+              // In case of an reload we assume, that OpenAIP data files
+              // are available. Therefore the reload is done in an extra
               // thread because it can take a while and the GUI shall not be
               // blocked by this action.
               loadOpenAipAirfieldsViaThread();
+              loadOpenAipNavAidsViaThread();
             }
         }
       else
@@ -2459,26 +2472,6 @@ unsigned int MapContents::getListLength( const int listIndex ) const
     }
 }
 
-Airspace* MapContents::getAirspace(unsigned int index)
-{
-  return static_cast<Airspace *> (airspaceList[index]);
-}
-
-Airfield* MapContents::getAirfield(unsigned int index)
-{
-  return &airfieldList[index];
-}
-
-Airfield* MapContents::getGliderfield(unsigned int index)
-{
-  return &gliderfieldList[index];
-}
-
-Airfield* MapContents::getOutlanding(unsigned int index)
-{
-  return &outLandingList[index];
-}
-
 BaseMapElement* MapContents::getElement(int listType, unsigned int index)
 {
   switch (listType)
@@ -2579,7 +2572,6 @@ void MapContents::slotReloadMapData()
   hydroList.clear();
   lakeList.clear();
   landmarkList.clear();
-  radioList.clear();
   obstacleList.clear();
   railList.clear();
   reportList.clear();
@@ -2596,6 +2588,13 @@ void MapContents::slotReloadMapData()
   outLandingList  = QList<Airfield>();
 
   m_airfieldLoadMutex.unlock();
+
+  m_radioPointLoadMutex.lock();
+
+  // free internal allocated memory in QList
+  radioList = QList<RadioPoint>();
+
+  m_radioPointLoadMutex.unlock();
 
   // all isolines are cleared
   groundMap.clear();
@@ -2720,6 +2719,59 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
   outLandingList  = QList<Airfield>();
 
   emit mapDataReloaded( Map::airfields );
+}
+
+/**
+ * Starts a thread, which is loading the requested OpenAIP navAids data.
+ */
+void MapContents::loadOpenAipNavAidsViaThread()
+{
+  QMutexLocker locker( &m_radioPointLoadMutex );
+
+  _globalMapView->slot_info( tr("Loading OpenAIP data") );
+
+  OpenAipLoaderThread *oaipThread = new OpenAipLoaderThread( this,
+                                                             OpenAipLoaderThread::NavAids );
+
+  // Register a special data type for return results. That must be
+  // done to transfer the results between different threads.
+  qRegisterMetaType<RadioListPtr>("RadioListPtr");
+
+  // Connect the receiver of the results. It is located in this
+  // thread and not in the new opened thread.
+  connect( oaipThread,
+           SIGNAL(loadedNavAidsList( int, QList<RadioPoint>* )),
+           this,
+           SLOT(slotOpenAipNavAidsLoadFinished( int, QList<RadioPoint>* )) );
+
+  oaipThread->start();
+}
+
+/**
+ * This slot is called by the OpenAipThread loader thread to signal, that the
+ * requested airfield data have been loaded. The passed lists must be
+ * deleted in this method.
+ */
+void MapContents::slotOpenAipNavAidsLoadFinished( int noOfLists,
+                                                  QList<RadioPoint>* radioListIn )
+{
+  QMutexLocker locker( &m_radioPointLoadMutex );
+
+  if( noOfLists == 0 )
+    {
+      _globalMapView->slot_info( tr("No OpenAIP loaded") );
+    }
+  else
+    {
+      _globalMapView->slot_info( tr("OpenAIP loaded") );
+    }
+
+  // Take over the new loaded airfield list. The passed list must be deleted!
+  radioList = QList<RadioPoint>();
+  radioList = *radioListIn;
+  delete radioListIn;
+
+  emit mapDataReloaded( Map::radioPoints );
 }
 
 /**
@@ -2938,9 +2990,6 @@ void MapContents::drawList( QPainter* targetP,
                             unsigned int listID,
                             QList<Airfield*> &drawnAfList )
 {
-  //const char *list="";
-  //uint len = 0;
-
   //QTime t;
   //t.start();
 

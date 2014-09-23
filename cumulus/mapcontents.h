@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 /**
@@ -51,6 +49,7 @@
 #include "flighttask.h"
 #include "isolist.h"
 #include "map.h"
+#include "radiopoint.h"
 #include "waitscreen.h"
 
 #ifdef INTERNET
@@ -59,7 +58,6 @@
 
 class Isohypse;
 class LineElement;
-class RadioPoint;
 class SinglePoint;
 
 // number of isoline levels
@@ -131,28 +129,50 @@ class MapContents : public QObject
      *
      * @param  index  the list-index of the airspace
      */
-    Airspace* getAirspace(unsigned int index);
+    Airspace* getAirspace(unsigned int index)
+      {
+	return static_cast<Airspace *> (airspaceList[index]);
+      };
 
     /**
      * @return a pointer to the given glider site
      *
      * @param  index  the list-index of the glider site
      */
-    Airfield* getGliderfield(unsigned int index);
+    Airfield* getGliderfield(unsigned int index)
+      {
+	return &gliderfieldList[index];
+      };
 
     /**
      * @return a pointer to the given airfield
      *
      * @param  index  the list-index of the airfield
      */
-    Airfield* getAirfield(unsigned int index);
+    Airfield* getAirfield(unsigned int index)
+      {
+	return &airfieldList[index];
+      };
 
     /**
      * @return a pointer to the given outlanding
      *
      * @param  index  the list-index of the outlanding
      */
-    Airfield* getOutlanding(unsigned int index);
+    Airfield* getOutlanding(unsigned int index)
+      {
+	return &outLandingList[index];
+      };
+
+    /**
+     * @return a pointer to the given RadioPoint
+     *
+     * @param  index  the list-index of the radio point
+     */
+    RadioPoint* getRadioPoint(unsigned int index)
+      {
+	return &radioList[index];
+      };
 
     /**
      * @return a pointer to the SinglePoint of the given map element
@@ -350,6 +370,13 @@ class MapContents : public QObject
                                           QList<Airfield>* airfieldListIn );
 
     /**
+     * This slot is called by the OpenAip load thread to signal, that the
+     * requested navAids data have been loaded.
+     */
+    void slotOpenAipNavAidsLoadFinished( int noOfLists,
+                                         QList<RadioPoint>* radioListIn );
+
+    /**
      * This slot is called by the AirspaceHelper load thread to signal, that the
      * requested airspace data have been loaded.
      */
@@ -479,6 +506,11 @@ class MapContents : public QObject
      * Starts a thread, which is loading the requested OpenAIP airfield data.
      */
     void loadOpenAipAirfieldsViaThread();
+
+    /**
+     * Starts a thread, which is loading the requested OpenAIP navAids data.
+     */
+    void loadOpenAipNavAidsViaThread();
 
     /**
      * Starts a thread, which is loading the requested airspace data.
@@ -693,6 +725,9 @@ class MapContents : public QObject
 
     /** Mutex to protect airfield loading actions. */
     QMutex m_airfieldLoadMutex;
+
+    /** Mutex to protect radio point loading actions. */
+    QMutex m_radioPointLoadMutex;
 
     /** Mutex to protect airspace loading actions. */
     QMutex m_airspaceLoadMutex;

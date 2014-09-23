@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   openAipLoaderThread.cpp
+**   OpenAipLoaderThread.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -11,8 +11,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #include <csignal>
@@ -20,8 +18,8 @@
 #include <QtCore>
 
 #include "airfield.h"
-#include "openAipPoiLoader.h"
-#include "openAipLoaderThread.h"
+#include "OpenAipPoiLoader.h"
+#include "OpenAipLoaderThread.h"
 #include "radiopoint.h"
 
 OpenAipLoaderThread::OpenAipLoaderThread( QObject *parent,
@@ -68,12 +66,12 @@ void OpenAipLoaderThread::run()
 	}
     }
 
+  OpenAipPoiLoader oaipl;
   int ok = false;
 
   if( m_poiSource == Airfields )
     {
       QList<Airfield>* poiList = new QList<Airfield>;
-      OpenAipPoiLoader oaipl;
 
       ok = oaipl.load( *poiList, m_readSource );
 
@@ -87,7 +85,7 @@ void OpenAipLoaderThread::run()
     {
       QList<RadioPoint>* poiList = new QList<RadioPoint>;
 
-      // TODO call loading of NavAid list
+      ok = oaipl.load( *poiList, m_readSource );
 
       /* It is expected that a receiver slot is connected to this signal. The
        * receiver is responsible to delete the passed lists. Otherwise a big

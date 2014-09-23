@@ -19,8 +19,8 @@
 #include "filetools.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
-#include "openaip.h"
-#include "openAipPoiLoader.h"
+#include "OpenAip.h"
+#include "OpenAipPoiLoader.h"
 #include "resource.h"
 
 #ifdef BOUNDING_BOX
@@ -382,16 +382,6 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
               continue;
             }
 
-          float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
-
-          if( m_hd.h_runwayLengthFilter != filterRunwayLength )
-            {
-              // Runway length filter has been changed. That requires a reparse
-              // of the source files.
-              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Runway length mismatch";
-              continue;
-            }
-
           // All checks passed, there is no need to read the source file and
           // we can remove it from the list.
           preselect.removeAt( 0 );
@@ -608,7 +598,7 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       // Service range as float
       out << rp.getRange();
       // Declination
-      out << qint16( rp.getDeclination() );
+      out << rp.getDeclination();
       // Aligned2TrueNorth
       out << quint8( rp.isAligned2TrueNorth() );
     }
@@ -782,7 +772,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
   qint16 elevation;
   quint16 inFrequency;
   float range;
-  quint16 declination;
+  float declination;
   quint8 isAligned2TrueNorth;
 
   uint counter = 0;

@@ -13,8 +13,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <ctype.h>
@@ -259,7 +257,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
     {
       MapContents::AirfieldList,
       MapContents::GliderfieldList,
-      MapContents::OutLandingList
+      MapContents::OutLandingList,
+      MapContents::RadioList
     };
 
   Waypoint *w = static_cast<Waypoint *> (0);
@@ -321,21 +320,19 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
     }
 
   // @AP: On map scale higher as 1024 we don't evaluate anything
-  for( int l = 0; l < 3 && cs < 1024.0; l++ )
+  for( int l = 0; l < 4 && cs < 1024.0; l++ )
     {
       for(unsigned int loop = 0;
           loop < _globalMapContents->getListLength(searchList[l]); loop++)
         {
           // Get specific site data from current list. We have to
-          // distinguish between AirfieldList, GilderSiteList and
-          // OutlandingList
-          Airfield* site;
+          // distinguish between AirfieldList, GilderfieldList, OutlandingList
+	  // and RadioList
+          SinglePoint* poi;
 
           QString siteName;
-          QString siteIcao;
           QString siteDescription;
           short siteType;
-          float siteFrequency;
           WGSPoint siteWgsPosition;
           QPoint sitePosition;
           float siteElevation;
@@ -345,18 +342,23 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
           if( searchList[l] == MapContents::AirfieldList )
             {
-              // Fetch data from airport list
-              site = _globalMapContents->getAirfield(loop);
+              // Fetch data from the airfield list
+              poi = _globalMapContents->getAirfield(loop);
             }
           else if( searchList[l] == MapContents::GliderfieldList )
             {
-              // fetch data from glider site list
-              site = _globalMapContents->getGliderfield(loop);
+              // fetch data from the gliderfield list
+              poi = _globalMapContents->getGliderfield(loop);
             }
           else if( searchList[l] == MapContents::OutLandingList )
             {
-              // fetch data from outlanding site list
-              site = _globalMapContents->getOutlanding(loop);
+              // fetch data from the outlanding list
+              poi = _globalMapContents->getOutlanding(loop);
+            }
+          else if( searchList[l] == MapContents::RadioList )
+            {
+              // fetch data from the radio point list
+              poi = _globalMapContents->getRadioPoint(loop);
             }
           else
             {
@@ -365,7 +367,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               break;
             }
 
-          curPos = site->getMapPosition();
+          curPos = poi->getMapPosition();
 
           if( ! snapRect.contains(curPos) )
             {
@@ -389,32 +391,85 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
                   continue;
                 }
 
-              // qDebug ("Airfield: %s", hitElement->getName().toLatin1().data() );
+	      siteName = poi->getWPName();
+	      siteDescription = poi->getName();
+	      siteType = poi->getTypeID();
+	      siteWgsPosition = poi->getWGSPosition();
+	      sitePosition = poi->getPosition();
+	      siteElevation = poi->getElevation();
+	      siteComment = poi->getComment();
+	      siteCountry = poi->getCountry();
 
-              siteName = site->getWPName();
-              siteIcao = site->getICAO();
-              siteDescription = site->getName();
-              siteType = site->getTypeID();
-              siteFrequency = site->getFrequency();
-              siteWgsPosition = site->getWGSPosition();
-              sitePosition = site->getPosition();
-              siteElevation = site->getElevation();
-              siteComment = site->getComment();
-              siteCountry = site->getCountry();
+	      w = &m_wp;
+	      w->name = siteName;
+	      w->description = siteDescription;
+	      w->type = siteType;
+	      w->wgsPoint = siteWgsPosition;
+	      w->projPoint = sitePosition;
+	      w->elevation = siteElevation;
+	      w->comment = siteComment;
+	      w->country = siteCountry;
+	      w->wpListMember = false;
 
-              w = &m_wp;
-              w->name = siteName;
-              w->description = siteDescription;
-              w->type = siteType;
-              w->wgsPoint = siteWgsPosition;
-              w->projPoint = sitePosition;
-              w->elevation = siteElevation;
-              w->icao = siteIcao;
-              w->frequency = siteFrequency;
-              w->comment = siteComment;
-              w->country = siteCountry;
-              w->wpListMember = false;
-              w->rwyList = site->getRunwayList();
+              Airfield*   af = dynamic_cast<Airfield *>(poi);
+              RadioPoint* rp = dynamic_cast<RadioPoint *>(poi);
+
+              if( af != static_cast<Airfield *>(0) )
+        	{
+        	  // This is an airfield object
+        	  w->icao = af->getICAO();
+        	  w->frequency = af->getFrequency();
+        	  w->rwyList = af->getRunwayList();
+        	}
+              else if( rp != static_cast<RadioPoint *>(0) )
+        	{
+        	  // This is a RadioPoint
+        	  w->icao = rp->getICAO();
+        	  w->frequency = rp->getFrequency();
+
+        	  // Workaround for declination a.s.o. These data are passed
+        	  // as comment.
+        	  QString& comment = m_wp.comment;
+
+        	  if( rp->getChannel().isEmpty() == false )
+        	    {
+        	      comment += tr("Channel ") + rp->getChannel();
+        	    }
+
+        	  if( rp->getRange() > 0.0 )
+        	    {
+        	      if( ! comment.isEmpty() )
+        		{
+        		  comment += ", ";
+        		}
+
+        	      comment += tr("Range ") +
+        		         Distance::getText(rp->getRange(), true, 0);
+        	    }
+
+        	  if( rp->getDeclination() != SHRT_MIN )
+        	    {
+        	      if( ! comment.isEmpty() )
+        		{
+        		  comment += ", ";
+        		}
+
+        	      comment += tr("Declination %1")
+        		         .arg( rp->getDeclination(), 0, 'f', 1 );
+        	    }
+
+		  if( ! comment.isEmpty() )
+		    {
+		      comment += ", ";
+		    }
+
+		  if( rp->isAligned2TrueNorth() )
+		    {
+		      comment += tr("Not ");
+		    }
+
+		  comment += tr("True N aligned");
+        	}
 
               found = true;
               lastDist = dX+dY;
@@ -1335,7 +1390,6 @@ void Map::p_drawBaseLayer()
 
   // draw the motorways
   _globalMapContents->drawList(&baseMapP, MapContents::MotorwayList, drawnElements);
-  _globalMapContents->drawList(&baseMapP, MapContents::RadioList, drawnElements);
 
   // end the painter
   baseMapP.end();
@@ -1384,6 +1438,7 @@ void Map::p_drawNavigationLayer()
 
   // Collect all drawn airfield and waypoint objects as reference
   // for later label drawing:
+  QList<BaseMapElement*> drawnRp;
   QList<Airfield*> drawnAf;
   QList<Waypoint*> drawnWp;
   QList<TaskPoint*> drawnTp;
@@ -1392,6 +1447,7 @@ void Map::p_drawNavigationLayer()
 
   navP.begin(&m_pixNavigationMap);
 
+  _globalMapContents->drawList(&navP, MapContents::RadioList, drawnRp);
   _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);

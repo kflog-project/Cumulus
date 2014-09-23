@@ -11,8 +11,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
@@ -55,6 +53,7 @@ Q_DECLARE_METATYPE(BtDeviceMap)
 
 #include "airfield.h"
 #include "airspace.h"
+#include "radiopoint.h"
 
 /**
  * Special data type to return the loaded airfield data list to the GUI thread.
@@ -66,6 +65,10 @@ Q_DECLARE_METATYPE(AirfieldList)
 typedef QList<Airfield>* AirfieldListPtr;
 
 Q_DECLARE_METATYPE(AirfieldListPtr)
+
+typedef QList<RadioPoint>* RadioListPtr;
+
+Q_DECLARE_METATYPE(RadioListPtr)
 
 /**
  * Special data type to return the loaded airspace data list to the GUI thread.

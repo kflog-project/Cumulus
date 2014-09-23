@@ -13,8 +13,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #include <QtCore>
@@ -24,7 +22,7 @@
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
-#include "openaip.h"
+#include "OpenAip.h"
 #include "openairparser.h"
 #include "projectionbase.h"
 #include "resource.h"
@@ -50,7 +48,7 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
   QStringList preselect;
 
   // Setup a filter for the wanted file extensions.
-  QString filter = "*.txt *.TXT *.txc *.aip *.AIP *.aic";
+  QString filter = "*.txt *.TXT *.txc *.aip *.aic";
 
   for( int i = 0; i < mapDirs.size(); ++i )
     {
@@ -68,8 +66,7 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
   // such a file name to lower cases and replace it in the file list.
   for( int i = 0; i < preselect.size(); ++i )
     {
-      if( preselect.at( i ).endsWith( ".TXT" ) ||
-          preselect.at( i ).endsWith( ".AIP" ))
+      if( preselect.at( i ).endsWith( ".TXT" ) )
         {
           QFileInfo fInfo = preselect.at( i );
           QString path = fInfo.absolutePath();

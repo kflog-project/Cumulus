@@ -83,10 +83,10 @@ class RadioPoint : public SinglePoint
               const QPoint& pos,
               const float frequency,
               const QString channel = "",
-              float elevation = 0.0,
+              const float elevation = 0.0,
               const QString country = "",
               const float range = 0.0,
-              const short declination = SHRT_MIN,
+              const float declination = SHRT_MIN,
               const bool aligned2TrueNorth = false );
 
   /**
@@ -102,22 +102,22 @@ class RadioPoint : public SinglePoint
       return (m_frequency > 0) ? QString("%1").arg(m_frequency, 0, 'f', 3) : QString("");
     };
 
-  virtual float getFrequency() const
+  float getFrequency() const
     {
       return m_frequency;
     };
 
-  virtual void setFrequency( const float value)
+  void setFrequency( const float value)
     {
       m_frequency = value;
     };
 
-  virtual QString getChannel() const
+  QString getChannel() const
     {
       return m_channel;
     };
 
-  virtual void setChannel( const QString& value )
+  void setChannel( const QString& value )
     {
       m_channel = value;
     };
@@ -125,7 +125,7 @@ class RadioPoint : public SinglePoint
   /**
    * @return ICAO name
    */
-  virtual QString getICAO() const
+  QString getICAO() const
     {
       return m_icao;
     };
@@ -133,7 +133,7 @@ class RadioPoint : public SinglePoint
   /**
    * @param value ICAO name
    */
-  virtual void setICAO( const QString& value )
+  void setICAO( const QString& value )
     {
       m_icao = value;
     }
@@ -148,12 +148,12 @@ class RadioPoint : public SinglePoint
       m_aligned2TrueNorth = aligned2TrueNorth;
     }
 
-  short getDeclination () const
+  float getDeclination () const
     {
       return m_declination;
     }
 
-  void setDeclination (short declination)
+  void setDeclination (float declination)
     {
       m_declination = declination;
     }
@@ -192,7 +192,7 @@ class RadioPoint : public SinglePoint
   /**
    * Declination, SHRT_MIN means undefined.
    */
-  short m_declination;
+  float m_declination;
 
   /**
    * Aligned to true north.

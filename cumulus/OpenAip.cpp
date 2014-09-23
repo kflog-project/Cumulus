@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   openaip.cpp
+**   OpenAip.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -11,8 +11,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #include <QtCore>
@@ -22,7 +20,7 @@
 #include "generalconfig.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
-#include "openaip.h"
+#include "OpenAip.h"
 
 extern MapMatrix* _globalMapMatrix;
 
@@ -282,7 +280,8 @@ bool OpenAip::readNavAidRecord( QXmlStreamReader& xml, RadioPoint& rp )
         {
           rp.setTypeID( BaseMapElement::Vor );
         }
-      else if( type == "DVOR-DME" || type == "VOR-DME" )
+      else if( type == "DVOR-DME" || type == "VOR-DME" ||
+	       type == "TACAN" || type == "DME" )
         {
           rp.setTypeID( BaseMapElement::VorDme );
         }
@@ -343,6 +342,10 @@ bool OpenAip::readNavAidRecord( QXmlStreamReader& xml, RadioPoint& rp )
           else if ( elementName == "RADIO" )
             {
               readRadio( xml, rp );
+            }
+          else if ( elementName == "PARAMS" )
+            {
+              readParams( xml, rp );
             }
         }
     }
@@ -461,6 +464,87 @@ bool OpenAip::readRadio( QXmlStreamReader& xml, RadioPoint& rp )
           else if ( elementName == "CHANNEL" )
             {
               rp.setChannel( xml.readElementText() );
+            }
+        }
+    }
+
+  return true;
+}
+
+bool OpenAip::readParams( QXmlStreamReader& xml, RadioPoint& rp )
+{
+  while( !xml.atEnd() && ! xml.hasError() )
+    {
+      /* Read the next element from the stream.*/
+      QXmlStreamReader::TokenType token = xml.readNext();
+
+      if( token == QXmlStreamReader::EndElement )
+        {
+          if( xml.name() == "PARAMS" )
+            {
+              // All record data have been read.
+              return true;
+            }
+        }
+
+      /* If token is StartElement, we'll see if we can read it.*/
+      if( token == QXmlStreamReader::StartElement )
+        {
+          QString elementName = xml.name().toString();
+
+          if( elementName == "DECLINATION" )
+            {
+              bool ok = false;
+              float value = xml.readElementText().toFloat( &ok );
+
+              if( ok) rp.setDeclination( value );
+             }
+          else if ( elementName == "ALIGNEDTOTRUENORTH" )
+            {
+              if( xml.readElementText() == "TRUE" )
+                {
+                  rp.setAligned2TrueNorth( true );
+                }
+              else if( xml.readElementText() == "FALSE" )
+                {
+        	  rp.setAligned2TrueNorth( false );
+                }
+            }
+          else if ( elementName == "RANGE" )
+            {
+              QXmlStreamAttributes attributes = xml.attributes();
+
+              if( ! attributes.hasAttribute("UNIT") )
+                {
+                  xml.skipCurrentElement();
+                  return false;
+                }
+
+              QString unit = attributes.value("UNIT").toString();
+              QString unitValue = xml.readElementText();
+
+              bool ok;
+              double range = unitValue.toDouble(&ok);
+
+              if( ok == false )
+                {
+                  qWarning() << "OpenAip::readParams: wrong range value:"
+                             << unitValue;
+                  xml.skipCurrentElement();
+                  return false;
+                }
+
+              if( unit == "NM" )
+                {
+                  Distance sr;
+                  sr.setNautMiles( range );
+                  rp.setRange( sr.getMeters() );
+                  return true;
+                }
+
+              qWarning() << "OpenAip::readParams: Unknown range unit:" << unit;
+              xml.skipCurrentElement();
+              return false;
             }
         }
     }

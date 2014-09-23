@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   openaip.h
+**   OpenAip.h
 **
 **   This file is part of Cumulus.
 **
@@ -10,8 +10,6 @@
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -158,6 +156,8 @@ class OpenAip
   bool readGeoLocation( QXmlStreamReader& xml, SinglePoint& sp );
 
   bool readRadio( QXmlStreamReader& xml, RadioPoint& rp );
+
+  bool readParams( QXmlStreamReader& xml, RadioPoint& rp );
 
   bool readHotspotRecord( QXmlStreamReader& xml, SinglePoint& sp );
 
