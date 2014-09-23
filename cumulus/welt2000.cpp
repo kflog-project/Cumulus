@@ -1384,11 +1384,11 @@ bool Welt2000::parse( QString& path,
         {
           // We have two runways
           int inverseDir = rwDir1 > 18 ? rwDir1-18 : rwDir1 + 18;
-          rwy.heading = rwDir1*256 + inverseDir;
+          rwy.m_heading = rwDir1*256 + inverseDir;
           rwyList.append( rwy );
 
           inverseDir = rwDir2 > 18 ? rwDir2-18 : rwDir2 + 18;
-          rwy.heading = rwDir2*256 + inverseDir;
+          rwy.m_heading = rwDir2*256 + inverseDir;
           rwyList.append( rwy );
         }
 
@@ -1727,11 +1727,11 @@ bool Welt2000::readCompiledFile( QString &path,
         {
           // We have two runways
           int inverseDir = rwDir1 > 18 ? rwDir1-18 : rwDir1 + 18;
-          rwy.heading = rwDir1*256 + inverseDir;
+          rwy.m_heading = rwDir1*256 + inverseDir;
           rwyList.append( rwy );
 
           inverseDir = rwDir2 > 18 ? rwDir2-18 : rwDir2 + 18;
-          rwy.heading = rwDir2*256 + inverseDir;
+          rwy.m_heading = rwDir2*256 + inverseDir;
           rwyList.append( rwy );
         }
 
