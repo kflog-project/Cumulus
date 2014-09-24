@@ -11,8 +11,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef QT_5
@@ -148,12 +146,13 @@ SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
   topLayout->addLayout( buttonBox );
 
   //---------------------------------------------------------------------------
-  // Load table with airfield files
+  // Load table with POI files
   QStringList preselect;
 
   for ( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*.aip");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*_wpt.aip");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*_nav.aip");
     }
 
   preselect.sort();
@@ -180,7 +179,7 @@ SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
       row++;
     }
 
-  QStringList& files = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+  QStringList& files = GeneralConfig::instance()->getOpenAipPoiFileList();
 
   if( files.isEmpty() )
     {
@@ -274,10 +273,10 @@ void SettingsPageAirfieldLoading::slot_save()
         }
     }
 
-  QStringList oldFiles = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+  QStringList oldFiles = GeneralConfig::instance()->getOpenAipPoiFileList();
 
   // save the new file list
-  GeneralConfig::instance()->setOpenAipAirfieldFileList( files );
+  GeneralConfig::instance()->setOpenAipPoiFileList( files );
 
   // Check, if file list has been modified
   if( oldFiles.size() != files.size() )

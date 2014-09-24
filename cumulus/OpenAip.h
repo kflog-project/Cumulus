@@ -18,9 +18,9 @@
  *
  * \author Axel Pauli
  *
- * \brief A class for reading data from openAip XML files.
+ * \brief A class for reading data from openAIP XML files.
  *
- * A class for reading data from openAip XML files provided by Butterfly
+ * A class for reading data from openAIP XML files provided by Butterfly
  * Avionics GmbH. The data are licensed under the CC BY-NC-SA license.
  *
  * See here for more info: http://www.openaip.net
@@ -70,25 +70,40 @@ class OpenAip
    *
    * \param filename File containing navigation aid definitions
    *
+   * \param navAidList List in which the read data are stored
+   *
+   * \param errorInfo Info about read errors
+   *
+   * \param useFiltering If enabled, different filter rules will apply
+   *
    * \return true as success otherwise false
    */
-  bool readNavAids( QString fileName, QList<RadioPoint>& navAidList, QString& errorInfo );
+  bool readNavAids( QString fileName,
+                    QList<RadioPoint>& navAidList,
+                    QString& errorInfo,
+                    bool useFiltering=false );
 
   /**
    * Reads in a hotspot file provided as open aip xml format.
    *
    * \param filename File containing hotspot definitions
    *
+   * \param hotspotList List in which the read data are stored
+   *
+   * \param errorInfo Info about read errors
+   *
    * \return true as success otherwise false
    */
-  bool readHotspots( QString fileName, QList<SinglePoint>& hotspotList, QString& errorInfo );
+  bool readHotspots( QString fileName,
+                     QList<SinglePoint>& hotspotList,
+                     QString& errorInfo );
 
   /**
    * Reads in an airfield file provided as open aip xml format.
    *
    * \param filename File containing airfield definitions
    *
-   * \param airfieldList List in which the read airfields are stored
+   * \param airfieldList List in which the read data are stored
    *
    * \param errorInfo Info about read errors
    *
@@ -226,23 +241,18 @@ class OpenAip
   QSet<QString> m_supportedDataFormats;
 
   /**
-   * Country filter with countries as two letter code in upper case.
-   */
-  QSet<QString> m_countryFilterSet;
-
-  /**
    * Home position, used as center point for radius filter.
    */
   QPoint m_homePosition;
 
   /**
-   * Radius in Km to be used for filtering. If set to <= 0, radius
-   * filter is ignored.
+   * Radius in Km to be used for filtering around the home position.
+   *  If set to <= 0, the radius filter is ignored.
    */
   double m_filterRadius;
 
   /**
-   * Runway length filter in meters. If set to <= 0, filter is switched off.
+   * Runway length filter in meters. If set to <= 0, the filter is switched off.
    */
   float m_filterRunwayLength;
 

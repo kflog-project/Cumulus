@@ -357,10 +357,10 @@ class MapContents : public QObject
     void slotReloadAirspaceData();
 
     /**
-     * Reloads the OpenAIP airfield data files. Can be called after a
+     * Reloads the OpenAIP POI data files. Can be called after a
      * configuration change.
      */
-    void slotReloadOpenAipAirfields();
+    void slotReloadOpenAipPoi();
 
     /**
      * This slot is called by the OpenAip load thread to signal, that the

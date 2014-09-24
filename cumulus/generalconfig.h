@@ -1494,16 +1494,16 @@ class GeneralConfig : protected QSettings
     _welt2000LoadOutlandings = newValue;
   };
 
-  /** Gets the openAIP airfield file list to be loaded. */
-  QStringList& getOpenAipAirfieldFileList()
+  /** Gets the openAIP POI file list to be loaded. */
+  QStringList& getOpenAipPoiFileList()
   {
-    return _openAipAirfieldFileList;
+    return _openAipPoiFileList;
   };
 
-  /** Sets the openAIP airfield file list to be loaded. */
-  void setOpenAipAirfieldFileList( const QStringList& newValue )
+  /** Sets the openAIP POI file list to be loaded. */
+  void setOpenAipPoiFileList( const QStringList& newValue )
   {
-    _openAipAirfieldFileList = newValue;
+    _openAipPoiFileList = newValue;
   };
 
   /** Gets the openAip airfield countries to be downloaded */
@@ -2921,8 +2921,8 @@ class GeneralConfig : protected QSettings
   // Airspace files to be loaded
   QStringList _airspaceFileList;
 
-  // OpenAIP airfield list to be loaded
-  QStringList _openAipAirfieldFileList;
+  // OpenAIP POI list to be loaded
+  QStringList _openAipPoiFileList;
 
   // openAIP airfield countries to be downloaded as ISO two letter code.
   QString _openAipAirfieldCountries;

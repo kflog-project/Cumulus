@@ -577,7 +577,7 @@ void SettingsPageAirfields::slot_openLoadDialog()
   SettingsPageAirfieldLoading* dlg = new SettingsPageAirfieldLoading(this);
 
   connect( dlg, SIGNAL(fileListChanged()),
-           _globalMapContents, SLOT(slotReloadOpenAipAirfields()) );
+           _globalMapContents, SLOT(slotReloadOpenAipPoi()) );
 
   dlg->setVisible( true );
 }

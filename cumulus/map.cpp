@@ -454,8 +454,9 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
         		  comment += ", ";
         		}
 
-        	      comment += tr("Declination %1")
-        		         .arg( rp->getDeclination(), 0, 'f', 1 );
+        	      comment += tr("Declination %1%2")
+        		         .arg( rp->getDeclination(), 0, 'f', 0 )
+        		         .arg( QChar(Qt::Key_degree) );
         	    }
 
 		  if( ! comment.isEmpty() )

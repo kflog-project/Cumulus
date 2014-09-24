@@ -75,7 +75,7 @@ int OpenAipPoiLoader::load( QList<Airfield>& airfieldList, bool readSource )
   preselect.sort();
 
   // Check, which files shall be loaded.
-  QStringList& files = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+  QStringList& files = GeneralConfig::instance()->getOpenAipPoiFileList();
 
   if( files.isEmpty() )
     {
@@ -260,7 +260,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
   preselect.sort();
 
   // Check, which files shall be loaded.
-  QStringList& files = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+  QStringList& files = GeneralConfig::instance()->getOpenAipPoiFileList();
 
   if( files.isEmpty() )
     {
@@ -301,7 +301,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
 
           listBegin = navAidsList.size();
 
-          bool ok = openAip.readNavAids( aipName, navAidsList, errorInfo );
+          bool ok = openAip.readNavAids( aipName, navAidsList, errorInfo, true );
 
           if( ok )
             {

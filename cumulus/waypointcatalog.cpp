@@ -788,7 +788,7 @@ int WaypointCatalog::readOpenAipNavAids( QString catalog,
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  if( ! openAip.readNavAids( catalog, navAidList, errorInfo ) )
+  if( ! openAip.readNavAids( catalog, navAidList, errorInfo, false ) )
     {
       QApplication::restoreOverrideCursor();
       return 0;

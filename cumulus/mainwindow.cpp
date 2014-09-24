@@ -653,7 +653,7 @@ void MainWindow::slotCreateApplicationWidgets()
            _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
 
   connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
-           _globalMapContents, SLOT( slotReloadOpenAipAirfields() ) );
+           _globalMapContents, SLOT( slotReloadOpenAipPoi() ) );
 
   connect( _globalMapMatrix, SIGNAL( homePositionChanged() ),
            calculator, SLOT( slot_CheckHomeSiteSelection() ) );

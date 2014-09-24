@@ -35,6 +35,19 @@ OpenAip::~OpenAip()
 {
 }
 
+void OpenAip::loadUserFilterValues()
+{
+  m_filterRadius = 0.0;
+
+  m_homePosition = _globalMapMatrix->getHomeCoord();
+
+  // Get filter radius around the home position in kilometers.
+  m_filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius() / 1000.;
+
+  // Get runway length filter in meters.
+  m_filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
+}
+
 bool OpenAip::getRootElement( QString fileName,
                               QString& dataFormat,
                               QString& dataItem )
@@ -163,8 +176,15 @@ bool OpenAip::readVersionAndFormat( QXmlStreamReader& xml,
 
 bool OpenAip::readNavAids( QString fileName,
                            QList<RadioPoint>& navAidList,
-                           QString& errorInfo )
+                           QString& errorInfo,
+                           bool useFiltering )
 {
+  if( useFiltering )
+    {
+      // Load the user's defined filter data.
+      loadUserFilterValues();
+    }
+
   QFile file( fileName );
 
   if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
@@ -230,10 +250,24 @@ bool OpenAip::readNavAids( QString fileName,
             {
               RadioPoint rp;
 
-              // read navaid record
+              // read navAid record
               if( ! readNavAidRecord( xml, rp ) )
                 {
                   break;
+                }
+
+              if( useFiltering == true )
+                {
+                  if( m_filterRadius > 0.0 )
+                    {
+                      double d = dist( &m_homePosition, rp.getWGSPositionPtr() );
+
+                      if( d > m_filterRadius )
+                        {
+                          // The radius filter said no. To far away from home.
+                          continue;
+                        }
+                    }
                 }
 
               navAidList.append( rp );
@@ -812,19 +846,6 @@ bool OpenAip::readAirfields( QString fileName,
                       continue;
                     }
 
-#if 0
-                  // There is no need for country filtering because every country
-                  // is stored in an extra file.
-                  if( m_countryFilterSet.isEmpty() == false )
-                    {
-                      if( m_countryFilterSet.contains(af.getCountry()) == false )
-                        {
-                          // The country filter said no
-                          continue;
-                        }
-                    }
-#endif
-
                   if( m_filterRadius > 0.0 )
                     {
                       double d = dist( &m_homePosition, af.getWGSPositionPtr() );
@@ -842,7 +863,7 @@ bool OpenAip::readAirfields( QString fileName,
 
                       if( rl.isEmpty() )
                         {
-                          // No runways defined, ignore these data
+                          // No runways are defined, ignore these data
                           continue;
                         }
 
@@ -1564,29 +1585,6 @@ QString OpenAip::shortName( const QString& name )
     }
 
   return shortName;
-}
-
-void OpenAip::loadUserFilterValues()
-{
-  m_countryFilterSet.clear();
-  m_filterRadius = 0.0;
-
-  m_homePosition = _globalMapMatrix->getHomeCoord();
-
-  QString cFilter = GeneralConfig::instance()->getWelt2000CountryFilter().toUpper();
-
-  QStringList clist = cFilter.split( QRegExp("[, ]"), QString::SkipEmptyParts );
-
-  for( int i = 0; i < clist.size(); i++ )
-    {
-      m_countryFilterSet.insert( clist.at(i) );
-    }
-
-  // Get filter radius around the home position in kilometers.
-  m_filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius() / 1000.;
-
-  // Get runway length filter in meters.
-  m_filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
 }
 
 bool OpenAip::readAirspaces( QString fileName,

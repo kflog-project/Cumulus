@@ -1701,7 +1701,7 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
   const QString poiDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
 
   // Get the list of airfield files to be loaded.
-  QStringList& files2load = GeneralConfig::instance()->getOpenAipAirfieldFileList();
+  QStringList& files2load = GeneralConfig::instance()->getOpenAipPoiFileList();
 
   // Check if option load all is set by the user
   bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
@@ -2653,13 +2653,14 @@ void MapContents::slotReloadMapData()
   mutex = false; // unlock mutex
 }
 
-void MapContents::slotReloadOpenAipAirfields()
+void MapContents::slotReloadOpenAipPoi()
 {
   // Check, if OpenAIP is the airfield source.
   if( GeneralConfig::instance()->getAirfieldSource() == 0 )
     {
-      // Reload OpenAIP airfield data in an extra thread.
+      // Reload OpenAIP POI data in an extra thread.
       loadOpenAipAirfieldsViaThread();
+      loadOpenAipNavAidsViaThread();
     }
 }
 
@@ -3438,9 +3439,9 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
 }
 
 
-void MapContents::addDir (QStringList& list, const QString& _path, const QString& filter)
+void MapContents::addDir (QStringList& list, const QString& path2Check, const QString& filter)
 {
-  QDir path (_path, filter);
+  QDir path (path2Check, filter);
 
   //JD was a bit annoyed by many notifications about nonexisting dirs
   if ( ! path.exists() )
