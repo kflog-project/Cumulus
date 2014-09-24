@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -27,7 +25,7 @@
  * This widget shows the details of a waypoint together with some
  * command buttons for executing different actions.
  *
- * \date 2002-2012
+ * \date 2002-2014
  *
  * $Id$
  */
@@ -40,7 +38,6 @@
 #include <QTextEdit>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QMainWindow>
 #include <QShortcut>
 
 #include "waypoint.h"
@@ -58,7 +55,7 @@ private:
 
 public:
 
-  WPInfoWidget( MainWindow *parent=0 );
+  WPInfoWidget( QWidget *parent=0 );
 
   virtual ~WPInfoWidget();
 
@@ -113,6 +110,12 @@ signals:
    * Emitted if a waypoint was edited.
    */
   void waypointEdited(Waypoint& wp);
+
+  /**
+   * This signal is emitted before the window is closed. It transmits the
+   * view to be returned in the MainWindow.
+   */
+  void closingWindow( int return2View );
 
 protected:
 
@@ -224,9 +227,6 @@ private: // Private attributes
 
   /** contains the ID of the last view (the view that called this one) */
   int m_returnView;
-
-  /** contains a reference to the parent, the application */
-  MainWindow* m_mainWindow;
 
   /** that shall store a home position change */
   bool m_homeChanged;

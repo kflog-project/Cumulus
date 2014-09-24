@@ -862,19 +862,6 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotShowContextMenu() ) );
 #endif
 
-  connect( viewInfo, SIGNAL( addWaypoint( Waypoint& ) ),
-            viewWP, SLOT( slot_addWp( Waypoint& ) ) );
-  connect( viewInfo, SIGNAL( deleteWaypoint( Waypoint& ) ),
-            viewWP, SLOT( slot_deleteWp( Waypoint& ) ) );
-  connect( viewInfo, SIGNAL( waypointEdited( Waypoint& ) ),
-            viewWP, SLOT( slot_wpEdited( Waypoint& ) ) );
-  connect( viewInfo, SIGNAL( selectWaypoint( Waypoint*, bool ) ),
-           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
-  connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),
-           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
-  connect( viewInfo, SIGNAL( gotoHomePosition() ),
-           calculator, SLOT( slot_changePositionHome() ) );
-
   connect( listViewTabs, SIGNAL( currentChanged( int ) ),
            this, SLOT( slotTabChanged( int ) ) );
 
@@ -2590,10 +2577,33 @@ void MainWindow::slotSwitchToInfoView()
 /** This slot is called to switch to the info view and to show the waypoint data. */
 void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 {
-  if( wp )
+  if( ! wp )
     {
-      setView( infoView, wp );
+      return;
     }
+
+  slotSubWidgetOpened();
+
+  WPInfoWidget* viewInfo = new WPInfoWidget( this );
+
+  connect( viewInfo, SIGNAL( closingWindow( int ) ),
+           this, SLOT( slotSubWidgetClosed( int ) ) );
+
+  connect( viewInfo, SIGNAL( addWaypoint( Waypoint& ) ),
+           viewWP, SLOT( slot_addWp( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( deleteWaypoint( Waypoint& ) ),
+           viewWP, SLOT( slot_deleteWp( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( waypointEdited( Waypoint& ) ),
+           viewWP, SLOT( slot_wpEdited( Waypoint& ) ) );
+  connect( viewInfo, SIGNAL( selectWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
+  connect( viewInfo, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewInfo, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
+
+  viewInfo->showWP( view, *wp );
+  viewInfo->show();
 }
 
 /** Opens the configuration widget */
@@ -2603,8 +2613,6 @@ void MainWindow::slotOpenConfig()
 
   ConfigWidget *cDlg = new ConfigWidget( this );
   configView = static_cast<QWidget *> (cDlg);
-
-  setView( cfView );
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
@@ -2941,7 +2949,6 @@ void MainWindow::slotOpenPreFlightConfig()
   PreFlightWidget* cDlg = new PreFlightWidget( this );
   configView = static_cast<QWidget *> (cDlg);
 
-  setView( cfView );
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
   cDlg->setVisible( true );
@@ -3146,6 +3153,16 @@ void MainWindow::slotSubWidgetClosed()
 {
   // Set the root window flag
   m_rootWindow = true;
+}
+
+void MainWindow::slotSubWidgetClosed( int return2View )
+{
+  qDebug() << "slotSubWidgetClosed:" << return2View;
+
+  if( return2View == MainWindow::mapView )
+    {
+      slotSubWidgetClosed();
+    }
 }
 
 /**

@@ -249,6 +249,11 @@ public slots:
    */
   void slotSubWidgetClosed();
   /**
+   * Called if an opened subwidget is closed.
+   */
+  void slotSubWidgetClosed( int return2View );
+
+  /**
    * Called if logger recognized takeoff.
    */
   void slotTakeoff( QDateTime& dt );
@@ -303,7 +308,6 @@ protected:
    * for confirmation
    */
   virtual void closeEvent (QCloseEvent*);
-
 
 protected:
 

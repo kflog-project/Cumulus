@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -49,12 +47,19 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
   QWidget(parent)
 {
   setObjectName("WPInfoWidget");
-  m_mainWindow = parent;
+  setWindowTitle( tr("Point Info") );
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+
   m_returnView = MainWindow::mapView;
   m_homeChanged = false;
   m_editedWpIsTarget = false;
 
-  resize( parent->size() );
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
   QFont bfont = font();
   bfont.setBold(true);
@@ -160,7 +165,7 @@ void WPInfoWidget::slot_timeout()
  * which there must be returned and the waypoint to view. */
 bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
 {
-  // qDebug() << "WPInfoWidget::showWP(): returnView=" << returnView << "WP=" << wp.name;
+  qDebug() << "WPInfoWidget::showWP(): returnView=" << returnView << "WP=" << wp.name;
 
   // save return view
   m_returnView = returnView;
@@ -276,8 +281,6 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
  */
 void WPInfoWidget::showEvent(QShowEvent *)
 {
-  // Resize to size of parent, could be changed in the meantime as the widget was hidden.
-  resize(m_mainWindow->size());
 }
 
 /** This method actually fills the widget with the info to be displayed. */
@@ -457,7 +460,7 @@ void WPInfoWidget::slot_SwitchBack()
   setVisible( false );
 
   // Return to the calling view
-  m_mainWindow->setView( (MainWindow::appView) m_returnView );
+  emit closingWindow( m_returnView );
 
   // Check, if we have no GPS fix. In this case we do move the map
   // to the new home position.
