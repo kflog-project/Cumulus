@@ -16,13 +16,11 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id$
- *                                                                         *
 ***************************************************************************/
 
 #ifndef target_h
 #define target_h
 
-#define CU_VERSION "5.18.4"
+#define CU_VERSION "5.19.0"
 
 #endif
