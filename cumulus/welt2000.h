@@ -298,8 +298,6 @@ class Welt2000
 
 /******************************************************************************/
 
-#ifdef WELT2000_THREAD
-
 #include <QThread>
 
 /**
@@ -353,7 +351,5 @@ class Welt2000Thread : public QThread
                     QList<Airfield>* outlandingList );
 
 };
-
-#endif // WELT2000_THREAD
 
 #endif // _welt2000_h

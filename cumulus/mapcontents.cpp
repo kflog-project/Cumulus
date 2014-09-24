@@ -2068,17 +2068,10 @@ void MapContents::proofeSection()
             }
           else
             {
-#ifdef WELT2000_THREAD
               // In case of an reload we assume, a Welt2000 file is available.
               // Therefore the reload is done in an extra thread because it can
               // take a while and the GUI shall not be blocked by this action.
               loadWelt2000DataViaThread();
-#else
-              // Old solution. Should be used, if not enough RAM is available
-              // because thread loading needs temporary more memory for parallel load.
-              Welt2000 welt2000;
-              welt2000.load( airfieldList, gliderfieldList, outLandingList );
-#endif
             }
         }
 
@@ -2840,8 +2833,6 @@ void MapContents::slotAirspaceLoadFinished( int noOfLists,
   emit mapDataReloaded( Map::airspaces );
 }
 
-#ifdef WELT2000_THREAD
-
 /**
  * Starts a thread, which is loading the requested Welt2000 data.
  */
@@ -2909,13 +2900,13 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
   outLandingList = *outlandingListIn;
   delete outlandingListIn;
 
+  // Remove content of radio list. It can contain openAIP data.
+  radioList = QList<RadioPoint>();
+
   _globalMapView->slot_info( tr("Welt2000 loaded") );
 
   emit mapDataReloaded( Map::airfields );
-  emit mapDataReloaded();
 }
-
-#endif
 
 /**
  * Reload the Welt2000 data file. Can be called after a configuration change or
@@ -2929,45 +2920,6 @@ void MapContents::slotReloadWelt2000Data()
       return;
     }
 
-#ifndef WELT2000_THREAD
-
-  // @AP: defined a static mutex variable, to prevent the recursive
-  // calling of this method
-  static bool mutex = false;
-
-  if ( mutex )
-    {
-      return; // return immediately, if reentry in method is not possible
-    }
-
-  mutex = true;
-
-  // We must block all GPS signals during the reload time to avoid
-  // system crash due to outdated data.
-  GpsNmea::gps->enableReceiving( false );
-
-  airfieldList.clear();
-  gliderfieldList.clear();
-  outLandingList.clear();
-
-  _globalMapView->slot_info( tr("loading Welt2000") );
-
-  Welt2000 welt2000;
-  welt2000.load( airfieldList, gliderfieldList, outLandingList );
-
-  _globalMapView->slot_info( tr("Welt2000 loaded") );
-
-  emit mapDataReloaded( Map::airfields );
-  emit mapDataReloaded();
-
-  // enable GPS data receiving
-  GpsNmea::gps->ignoreConnectionLost();
-  GpsNmea::gps->enableReceiving( true );
-
-  mutex = false; // unlock mutex
-
-#else
-
   Welt2000 w2000;
 
   if( w2000.check4File() == true )
@@ -2980,8 +2932,6 @@ void MapContents::slotReloadWelt2000Data()
       // Download missing file from the Internet
       slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
     }
-
-#endif
 }
 
 /** Special method to add the drawn objects to the return list,

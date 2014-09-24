@@ -2851,7 +2851,7 @@ void MainWindow::slotReadconfig()
     }
 
   // Check, if outlanding list is to show or not
-  if( conf->getWelt2000LoadOutlandings() )
+  if( conf->getAirfieldSource() == 1 && conf->getWelt2000LoadOutlandings() )
     {
       if( ! m_outlandingListVisible )
         {

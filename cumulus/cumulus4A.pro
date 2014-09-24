@@ -48,10 +48,6 @@ CONFIG += flarm
 # Enable Internet features, if not wanted comment out the next line with a hash
 CONFIG += internet
 
-# Enable Welt2000 reloading via an extra thread, if not wanted comment out the
-# next line with a hash
-CONFIG += welt2000thread
-
 # Enable classical menu bar, if define is set. Otherwise a context menu is used.
 # DEFINES += USE_MENUBAR
 
@@ -383,10 +379,6 @@ internet {
 		           preflightlivetrack24page.cpp \
                preflightweatherpage.cpp \
 		           proxydialog.cpp
-}
-
-welt2000thread {
-    DEFINES += WELT2000_THREAD
 }
 
 numberpad {

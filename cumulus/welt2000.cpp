@@ -1846,8 +1846,6 @@ bool Welt2000::setHeaderData( QString &path )
 
 /*-------------------------Welt2000Thread-------------------------------------*/
 
-#ifdef WELT2000_THREAD
-
 #include <csignal>
 
 Welt2000Thread::Welt2000Thread( QObject *parent ) : QThread( parent )
@@ -1894,5 +1892,3 @@ void Welt2000Thread::run()
    */
   emit loadedLists( ok, airfieldList, gliderfieldList, outlandingList );
 }
-
-#endif
