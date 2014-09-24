@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspageairfieldloading.cpp
+**   SettingsPagePointDataLoading.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -26,19 +26,19 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "mainwindow.h"
-#include "settingspageairfieldloading.h"
+#include "SettingsPagePointDataLoading.h"
 
 /*
  * Because Maemo 5 is using a special dialog design this window is declared
  * as a tool window.
  */
-SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
+SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
   QWidget( parent )
 {
-  setObjectName("SettingsPageAirfieldLoading");
+  setObjectName("SettingsPagePointDataLoading");
   setAttribute( Qt::WA_DeleteOnClose );
   setWindowFlags( Qt::Tool );
-  setWindowTitle(tr("Airfield loading settings"));
+  setWindowTitle(tr("Point data loading settings"));
   setWindowModality( Qt::WindowModal );
 
   if( _globalMainWindow )
@@ -219,12 +219,12 @@ SettingsPageAirfieldLoading::SettingsPageAirfieldLoading( QWidget *parent ) :
   m_fileTable->resizeRowsToContents();
 }
 
-SettingsPageAirfieldLoading::~SettingsPageAirfieldLoading()
+SettingsPagePointDataLoading::~SettingsPagePointDataLoading()
 {
 }
 
 /* Called to toggle the check box of the clicked table cell. */
-void SettingsPageAirfieldLoading::slot_toggleCheckBox( int row, int column )
+void SettingsPagePointDataLoading::slot_toggleCheckBox( int row, int column )
 {
   QTableWidgetItem* item = m_fileTable->item( row, column );
 
@@ -250,7 +250,7 @@ void SettingsPageAirfieldLoading::slot_toggleCheckBox( int row, int column )
 }
 
 /* Called to save data to the configuration file. */
-void SettingsPageAirfieldLoading::slot_save()
+void SettingsPagePointDataLoading::slot_save()
 {
   QStringList files;
 
@@ -302,7 +302,7 @@ void SettingsPageAirfieldLoading::slot_save()
   close();
 }
 
-void SettingsPageAirfieldLoading::slot_DeleteRows()
+void SettingsPagePointDataLoading::slot_DeleteRows()
 {
   if( m_fileTable->rowCount() == 0 || m_fileTable->columnCount() != 1 )
     {
@@ -362,7 +362,7 @@ void SettingsPageAirfieldLoading::slot_DeleteRows()
   m_fileTable->resizeRowsToContents();
 }
 
-void SettingsPageAirfieldLoading::slot_itemSelectionChanged()
+void SettingsPagePointDataLoading::slot_itemSelectionChanged()
 {
   if( m_fileTable->QTableWidget::selectedItems().size() > 0 )
     {

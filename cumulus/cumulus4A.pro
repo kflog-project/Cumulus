@@ -151,8 +151,6 @@ HEADERS = \
     resource.h \
     rowdelegate.h \
     runway.h \
-    settingspageairfields.h \
-    settingspageairfieldloading.h \
     settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
@@ -163,6 +161,8 @@ HEADERS = \
     settingspagemapobjects.h \
     settingspagemapsettings.h \
     settingspagepersonal.h \
+    SettingsPagePointData.h \
+    SettingsPagePointDataLoading.h \
     settingspagetask.h \
     settingspageterraincolors.h \
     settingspageunits.h \
@@ -276,8 +276,6 @@ SOURCES = \
     reachpointlistview.cpp \
     rowdelegate.cpp \
     runway.cpp \
-    settingspageairfields.cpp \
-    settingspageairfieldloading.cpp \
     settingspageairspace.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \
@@ -288,6 +286,8 @@ SOURCES = \
     settingspagemapobjects.cpp \
     settingspagemapsettings.cpp \
     settingspagepersonal.cpp \
+    SettingsPagePointData.cpp \
+    SettingsPagePointDataLoading.cpp \
     settingspagetask.cpp \
     settingspageterraincolors.cpp \
     settingspageunits.cpp \

@@ -41,7 +41,6 @@
 #include "mapcontents.h"
 #include "rowdelegate.h"
 
-#include "settingspageairfields.h"
 #include "settingspageairspace.h"
 #include "settingspageglider.h"
 #include "settingspageinformation.h"
@@ -50,6 +49,7 @@
 #include "settingspagemapobjects.h"
 #include "settingspagemapsettings.h"
 #include "settingspagepersonal.h"
+#include "SettingsPagePointData.h"
 #include "settingspageunits.h"
 #include "settingspagetask.h"
 #include "settingspageterraincolors.h"
@@ -61,7 +61,7 @@
 #endif
 
 // Menu labels
-#define AIRFIELDS       "Airfields"
+#define POINT_DATA      "Point Data"
 #define AIRSPACES       "Airspaces"
 #define GLIDERS         "Gliders"
 #define GPS             "GPS"
@@ -89,7 +89,7 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
       resize( parent->size() );
     }
 
-  m_headerLabels  << tr("Airfields")
+  m_headerLabels  << tr("Point Data")
                   << tr("Airspaces")
                   << tr("Gliders")
                   << tr("GPS")
@@ -180,8 +180,8 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(AIRFIELDS) );
-  item->setData( 0, Qt::UserRole, AIRFIELDS );
+  item->setText( 0, tr(POINT_DATA) );
+  item->setData( 0, Qt::UserRole, POINT_DATA );
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
@@ -263,11 +263,11 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
   QString itemText = item->data( 0, Qt::UserRole ).toString();
 
-  if( itemText == AIRFIELDS )
+  if( itemText == POINT_DATA )
     {
       extern MapContents* _globalMapContents;
 
-      SettingsPageAirfields* page = new SettingsPageAirfields( this );
+      SettingsPagePointData* page = new SettingsPagePointData( this );
 
       connect( page, SIGNAL( settingsChanged() ),
                MainWindow::mainWindow(), SLOT( slotReadconfig() ) );

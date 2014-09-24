@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   settingspageairfields.cpp
+ **   SettingsPagePointData.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -12,16 +12,6 @@
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
-
-/**
- * \author Axel Pauli
- *
- * \brief Contains the airfield data settings.
- *
- * \date 2008-2014
- *
- * \version $Id$
- */
 
 #ifndef QT_5
 #include <QtGui>
@@ -39,8 +29,8 @@
 #include "mainwindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
-#include "settingspageairfields.h"
-#include "settingspageairfieldloading.h"
+#include "SettingsPagePointData.h"
+#include "SettingsPagePointDataLoading.h"
 
 #ifdef INTERNET
 #include "httpclient.h"
@@ -48,16 +38,16 @@
 
 extern MapContents *_globalMapContents;
 
-SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
+SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   QWidget(parent),
   m_homeRadiusInitValue(0.0),
   m_runwayFilterInitValue(0.0)
 {
-  setObjectName("SettingsPageAirfields");
+  setObjectName("SettingsPagePointData");
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("Settings - Airfields") );
+  setWindowTitle( tr("Settings - Point Data") );
 
   if( parent )
     {
@@ -313,11 +303,11 @@ SettingsPageAirfields::SettingsPageAirfields(QWidget *parent) :
   load();
 }
 
-SettingsPageAirfields::~SettingsPageAirfields()
+SettingsPagePointData::~SettingsPagePointData()
 {
 }
 
-NumberEditor* SettingsPageAirfields::createHomeRadiusWidget( QWidget* parent )
+NumberEditor* SettingsPagePointData::createHomeRadiusWidget( QWidget* parent )
 {
   NumberEditor* ne = new NumberEditor( parent );
   ne->setDecimalVisible( false );
@@ -331,7 +321,7 @@ NumberEditor* SettingsPageAirfields::createHomeRadiusWidget( QWidget* parent )
   return ne;
 }
 
-NumberEditor* SettingsPageAirfields::createRwyLenthFilterWidget( QWidget* parent )
+NumberEditor* SettingsPagePointData::createRwyLenthFilterWidget( QWidget* parent )
 {
   QString lenUnit = "m";
 
@@ -352,7 +342,7 @@ NumberEditor* SettingsPageAirfields::createRwyLenthFilterWidget( QWidget* parent
   return ne;
 }
 
-void SettingsPageAirfields::slot_sourceChanged( int index )
+void SettingsPagePointData::slot_sourceChanged( int index )
 {
   // Toggle source visibility
   if( index == 0 )
@@ -367,7 +357,7 @@ void SettingsPageAirfields::slot_sourceChanged( int index )
     }
 }
 
-void SettingsPageAirfields::slotAccept()
+void SettingsPagePointData::slotAccept()
 {
   if( checkChanges() )
     {
@@ -382,7 +372,7 @@ void SettingsPageAirfields::slotAccept()
   QWidget::close();
 }
 
-void SettingsPageAirfields::slotReject()
+void SettingsPagePointData::slotReject()
 {
   QWidget::close();
 }
@@ -390,7 +380,7 @@ void SettingsPageAirfields::slotReject()
 /**
  * Called to initiate loading of the configuration file
  */
-void SettingsPageAirfields::load()
+void SettingsPagePointData::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -450,7 +440,7 @@ void SettingsPageAirfields::load()
 /**
  * Called to initiate saving to the configuration file.
  */
-bool SettingsPageAirfields::save()
+bool SettingsPagePointData::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -567,14 +557,14 @@ bool SettingsPageAirfields::save()
 /**
  * Called if the text of the filter has been changed
  */
-void SettingsPageAirfields::slot_filterChanged(const QString& text)
+void SettingsPagePointData::slot_filterChanged(const QString& text)
 {
   Q_UNUSED( text )
 }
 
-void SettingsPageAirfields::slot_openLoadDialog()
+void SettingsPagePointData::slot_openLoadDialog()
 {
-  SettingsPageAirfieldLoading* dlg = new SettingsPageAirfieldLoading(this);
+  SettingsPagePointDataLoading* dlg = new SettingsPagePointDataLoading(this);
 
   connect( dlg, SIGNAL(fileListChanged()),
            _globalMapContents, SLOT(slotReloadOpenAipPoi()) );
@@ -582,7 +572,7 @@ void SettingsPageAirfields::slot_openLoadDialog()
   dlg->setVisible( true );
 }
 
-void SettingsPageAirfields::slot_openHelp()
+void SettingsPagePointData::slot_openHelp()
 {
   // Check, which help is requested.
   QString file = (m_sourceBox->currentIndex() == 0 ? "cumulus-maps-openAIP.html" : "cumulus-maps-welt2000.html");
@@ -593,7 +583,7 @@ void SettingsPageAirfields::slot_openHelp()
   hb->setVisible( true );
 }
 
-bool SettingsPageAirfields::checkChanges()
+bool SettingsPagePointData::checkChanges()
 {
   bool changed =
       (GeneralConfig::instance()->getAirfieldSource() != m_sourceBox->currentIndex());
@@ -610,7 +600,7 @@ bool SettingsPageAirfields::checkChanges()
 /**
  * Called, if install button of Welt2000 is clicked.
  */
-void SettingsPageAirfields::slot_installWelt2000()
+void SettingsPagePointData::slot_installWelt2000()
 {
   QString wfn = m_welt2000FileName->text().trimmed();
 
@@ -662,7 +652,7 @@ void SettingsPageAirfields::slot_installWelt2000()
   emit downloadWelt2000( wfn );
 }
 
-void SettingsPageAirfields::slot_downloadOpenAip()
+void SettingsPagePointData::slot_downloadOpenAip()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -730,7 +720,7 @@ void SettingsPageAirfields::slot_downloadOpenAip()
 
 #endif
 
-bool SettingsPageAirfields::checkIsOpenAipChanged()
+bool SettingsPagePointData::checkIsOpenAipChanged()
 {
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -746,7 +736,7 @@ bool SettingsPageAirfields::checkIsOpenAipChanged()
 /**
  * Checks, if the configuration of the Welt2000 has been changed
  */
-bool SettingsPageAirfields::checkIsWelt2000Changed()
+bool SettingsPagePointData::checkIsWelt2000Changed()
 {
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -765,14 +755,14 @@ bool SettingsPageAirfields::checkIsWelt2000Changed()
 
   changed |= (conf->getWelt2000LoadOutlandings() != currentState);
 
-  // qDebug( "SettingsPageAirfields::checkIsWelt2000Changed(): %d", changed );
+  // qDebug( "SettingsPagePointData::checkIsWelt2000Changed(): %d", changed );
   return changed;
 }
 
 /**
  * Checks if the configuration of list display has been changed
  */
-bool SettingsPageAirfields::checkIsListDisplayChanged()
+bool SettingsPagePointData::checkIsListDisplayChanged()
 {
   bool changed = false;
   GeneralConfig *conf = GeneralConfig::instance();
@@ -780,11 +770,11 @@ bool SettingsPageAirfields::checkIsListDisplayChanged()
   changed |= (conf->getListDisplayAFMargin() != m_afMargin->value());
   changed |= (conf->getListDisplayRPMargin() != m_rpMargin->value());
 
-  // qDebug( "SettingsPageAirfields::checkIsListDisplayChanged(): %d", changed );
+  // qDebug( "SettingsPagePointData::checkIsListDisplayChanged(): %d", changed );
   return changed;
 }
 
-bool SettingsPageAirfields::checkCountryList( QStringList& clist )
+bool SettingsPagePointData::checkCountryList( QStringList& clist )
 {
   if( clist.size() == 0 )
     {

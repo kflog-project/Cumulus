@@ -1,15 +1,13 @@
 /***************************************************************************
- mainwindow.cpp  -  main application class
- -----------------------------------------
+ mainwindow.cpp  -  main application window
+ ---------------------------------------------------------------------------
  begin                : Sun Jul 21 2002
 
- copyright            : (C) 2002 by André Somers
+ copyright            : (C) 2002-2007 by André Somers
 
- ported to Qt4.x      : (C) 2007-2014 by Axel Pauli
+                      : (C) 2007-2014 by Axel Pauli
 
  maintainer           : Axel Pauli <kflog.cumulus@gmail.com>
-
- $Id$
 
 ****************************************************************************/
 

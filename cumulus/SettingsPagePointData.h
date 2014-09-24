@@ -1,29 +1,27 @@
 /***********************************************************************
 **
-**   settingspageairfields.h
+**   SettingsPagePointData.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2013 Axel Pauli
+**   Copyright (c):  2008-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
- * \class SettingsPageAirfields
+ * \class SettingsPagePointData
  *
  * \author Axel Pauli
  *
- * \brief Configuration settings for airfield data loading from Welt2000 and
+ * \brief Configuration settings for point data loading from Welt2000 and
  * OpenAIP.
  *
- * Configuration settings for airfield data loading from Welt2000 and
+ * Configuration settings for point data loading from Welt2000 and
  * OpenAIP.
  *
  * \date 2008-2014
@@ -32,8 +30,8 @@
  *
  */
 
-#ifndef SETTINGS_PAGE_AIRFIELDS_H
-#define SETTINGS_PAGE_AIRFIELDS_H
+#ifndef SETTINGS_PAGE_POINT_DATA_H
+#define SETTINGS_PAGE_POINT_DATA_H
 
 #include <QWidget>
 #include <QComboBox>
@@ -48,25 +46,25 @@
 
 class NumberEditor;
 
-class SettingsPageAirfields : public QWidget
+class SettingsPagePointData : public QWidget
 {
   Q_OBJECT
 
   private:
 
-  Q_DISABLE_COPY ( SettingsPageAirfields )
+  Q_DISABLE_COPY ( SettingsPagePointData )
 
   public:
 
   /**
    * Constructor
    */
-  SettingsPageAirfields(QWidget *parent=0);
+  SettingsPagePointData(QWidget *parent=0);
 
   /**
    * Destructor
    */
-  virtual ~SettingsPageAirfields();
+  virtual ~SettingsPagePointData();
 
   /**
    * Checks if the configuration of the OpenAIP has been changed

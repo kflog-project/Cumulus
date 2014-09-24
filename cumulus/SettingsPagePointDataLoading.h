@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   settingspageairfieldloading.h
+**   SettingsPagePointDataLoading.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,41 +15,41 @@
 **
 ***********************************************************************/
 
-#ifndef SettingsPageAirfieldLoading_h
-#define SettingsPageAirfieldLoading_h
+#ifndef SettingsPagePointDataLoading_h
+#define SettingsPagePointDataLoading_h
 
 #include <QPushButton>
 #include <QWidget>
 #include <QTableWidget>
 
 /**
- * \class SettingsPageAirfieldLoading
+ * \class SettingsPagePointDataLoading
  *
  * \author Axel Pauli
  *
- * \brief Configuration settings for OpenAIP airfield loading.
+ * \brief Configuration settings for OpenAIP point data loading.
  *
- * This widget provides an airfield file selection table, where the user can
- * choose, which available airfield files shall be loaded or not loaded.
+ * This widget provides a file selection table, where the user can
+ * choose, which available point data files shall be loaded or not loaded.
  *
- * \date 2013
+ * \date 2013-2014
  *
  * \version $Id$
  *
  */
-class SettingsPageAirfieldLoading : public QWidget
+class SettingsPagePointDataLoading : public QWidget
 {
   Q_OBJECT
 
 private:
 
-  Q_DISABLE_COPY ( SettingsPageAirfieldLoading )
+  Q_DISABLE_COPY ( SettingsPagePointDataLoading )
 
 public:
 
-  SettingsPageAirfieldLoading( QWidget *parent=0 );
+  SettingsPagePointDataLoading( QWidget *parent=0 );
 
-  virtual ~SettingsPageAirfieldLoading();
+  virtual ~SettingsPagePointDataLoading();
 
 signals:
 
@@ -84,4 +84,4 @@ private:
   QPushButton *m_delButton;
 };
 
-#endif /* SettingsPageAirfiledLoading_h */
+#endif /* SettingsPagePointDataLoading_h */
