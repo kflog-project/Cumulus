@@ -2,16 +2,16 @@
                           mainwindow.h  -  main application object
                              -------------------
    begin                : Sun Jul 21 2002
+
    copyright            : (C) 2002      by André Somers
-   ported to Qt4.x/X11  : (C) 2007-2014 by Axel Pauli
+                        : (C) 2007-2014 by Axel Pauli
+
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2 of the License, or
    (at your option) any later version.
-
-   $Id$
 
  ***************************************************************************/
 
@@ -160,7 +160,6 @@ public:
   AirfieldListView *viewOL;   // outlandings
   ReachpointListView *viewRP; // reachable points
   TaskListView *viewTP;       // task points
-  WPInfoWidget *viewInfo;     // POI info
   QTabWidget *listViewTabs;
 
 public slots:

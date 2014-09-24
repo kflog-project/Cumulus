@@ -131,7 +131,6 @@ private:
    */
   void writeText();
 
-
 private slots:
 
   /**

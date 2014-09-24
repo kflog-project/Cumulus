@@ -138,7 +138,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   viewOL(0),
   viewRP(0),
   viewTP(0),
-  viewInfo(0),
   listViewTabs(0),
   view(mapView),
   actionToggleGps(0),
@@ -696,9 +695,6 @@ void MainWindow::slotCreateApplicationWidgets()
   listViewTabs->addTab( viewAF, tr( "Airfields" ) );
   // listViewTabs->addTab( viewRP, tr( "Reachable" ) ); --> added in slotReadconfig
   // listViewTabs->addTab( viewOL, tr( "Outlandings" ) ); --> added in slotReadconfig
-
-  // waypoint info widget
-  viewInfo = new WPInfoWidget( this );
 
   // create GPS instance
   GpsNmea::gps = new GpsNmea( this );
@@ -2215,7 +2211,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
   switch ( newVal )
     {
-
     case mapView:
 
       m_rootWindow = true;
@@ -2245,7 +2240,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
       helpMenu->setEnabled( true );
 
       listViewTabs->setVisible( false );
-      viewInfo->setVisible( false );
       viewMap->setVisible( true );
 
       toggleManualNavActions( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix ||
@@ -2277,7 +2271,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 #endif
 
       viewMap->setVisible( false );
-      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewWP );
       listViewTabs->setVisible( true );
       toggleManualNavActions( false );
@@ -2296,7 +2289,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 #endif
 
         viewMap->setVisible( false );
-        viewInfo->setVisible( false );
 
         setNearestOrReachableHeaders();
 
@@ -2320,7 +2312,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 #endif
 
       viewMap->setVisible( false );
-      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewAF );
       listViewTabs->setVisible( true );
       toggleManualNavActions( false );
@@ -2339,7 +2330,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 #endif
 
       viewMap->setVisible( false );
-      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewOL );
       listViewTabs->setVisible( true );
       toggleManualNavActions( false );
@@ -2364,32 +2354,8 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 #endif
 
       viewMap->setVisible( false );
-      viewInfo->setVisible( false );
       listViewTabs->setCurrentWidget( viewTP );
       listViewTabs->setVisible( true );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
-      break;
-
-    case infoView:
-
-      if ( ! wp )
-        {
-          return;
-        }
-
-      m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-      viewMap->setVisible( false );
-      listViewTabs->setVisible( false );
-      viewInfo->showWP( view, *wp );
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2407,24 +2373,6 @@ void MainWindow::setView( const appView& newVal, const Waypoint* wp )
 
       viewMap->setVisible( false );
       listViewTabs->setVisible( false );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
-      break;
-
-    case cfView:
-      // called if configuration or preflight widget was created
-      m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-      viewMap->setVisible( false );
-      listViewTabs->setVisible( false );
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
       actionMenuBarToggle->setEnabled( false );
@@ -2519,7 +2467,6 @@ void MainWindow::slotSwitchToWPListViewExt()
     }
 }
 
-
 /** Switches to the AirfieldList View */
 void MainWindow::slotSwitchToAFListView()
 {
@@ -2577,6 +2524,8 @@ void MainWindow::slotSwitchToInfoView()
 /** This slot is called to switch to the info view and to show the waypoint data. */
 void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 {
+  qDebug() << "MainWindow::slotSwitchToInfoView:" << wp;
+
   if( ! wp )
     {
       return;
@@ -2625,7 +2574,7 @@ void MainWindow::slotOpenConfig()
 /** Closes the configuration or pre-flight widget */
 void MainWindow::slotCloseConfig()
 {
-  setView( mapView );
+  m_rootWindow = true;
 
   if ( !calculator->gliderType().isEmpty() )
     {

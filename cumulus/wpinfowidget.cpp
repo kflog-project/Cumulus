@@ -43,7 +43,7 @@
 extern Calculator *calculator;
 extern MapContents* _globalMapContents;
 
-WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
+WPInfoWidget::WPInfoWidget( QWidget *parent ) :
   QWidget(parent)
 {
   setObjectName("WPInfoWidget");
@@ -144,6 +144,7 @@ WPInfoWidget::WPInfoWidget( MainWindow *parent ) :
 
 WPInfoWidget::~WPInfoWidget()
 {
+  qDebug() << "~WPInfoWidget()";
 }
 
 /** This slot get called on the timer timeout. */
@@ -457,10 +458,7 @@ void WPInfoWidget::slot_SwitchBack()
 {
   m_timer->stop();
   text->clearFocus();
-  setVisible( false );
-
-  // Return to the calling view
-  emit closingWindow( m_returnView );
+  hide();
 
   // Check, if we have no GPS fix. In this case we do move the map
   // to the new home position.
@@ -469,6 +467,11 @@ void WPInfoWidget::slot_SwitchBack()
       emit gotoHomePosition();
       m_homeChanged = false;
     }
+
+  // Return to the calling view
+  emit closingWindow( m_returnView );
+
+  QWidget::close();
 }
 
 /** This slot is called by the KeepOpen button to... yes... keep the dialog open. :-) */
