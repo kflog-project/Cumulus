@@ -28,17 +28,13 @@
 #ifndef ListViewTabs_h
 #define ListViewTabs_h
 
-#include <QString>
 #include <QTabWidget>
-#include <QString>
 #include <QWidget>
 
 #include "airfieldlistview.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "waypointlistview.h"
-
-#include "generalconfig.h"
 
 class ListViewTabs : public QWidget
 {
@@ -74,4 +70,3 @@ class ListViewTabs : public QWidget
 };
 
 #endif
-

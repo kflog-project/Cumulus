@@ -49,6 +49,7 @@
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
+#include "ListViewTabs.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "wpinfowidget.h"
@@ -158,7 +159,8 @@ public:
   AirfieldListView *viewOL;   // outlandings
   ReachpointListView *viewRP; // reachable points
   TaskListView *viewTP;       // task points
-  QTabWidget *listViewTabs;
+
+  ListViewTabs *listViewTabs; // Overview about all list
 
 public slots:
 
@@ -394,12 +396,6 @@ private slots:
    * Called if new prefight data were set
    */
   void slotPreFlightDataChanged();
-
-  /**
-   * Called if the user clicks on a tab to select a different
-   * list-type view
-   */
-  void slotTabChanged( int index );
 
   /** shows version and copyright. */
   void slotVersion();

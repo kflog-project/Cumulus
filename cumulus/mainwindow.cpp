@@ -671,31 +671,13 @@ void MainWindow::slotCreateApplicationWidgets()
   _globalMapView = viewMap;
   view = mapView;
 
-  listViewTabs = new QTabWidget( this );
-  listViewTabs->setObjectName("listViewTabs");
-  listViewTabs->resize( this->size() );
+  listViewTabs = new ListViewTabs( this );
 
-  viewWP = new WaypointListView( this );
-
-  QVector<enum MapContents::MapContentsListID> itemList;
-  itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
-  viewAF = new AirfieldListView( itemList, this ); // airfields
-
-  itemList.clear();
-  itemList << MapContents::OutLandingList;
-  viewOL = new AirfieldListView( itemList, this ); // outlandings
-  viewRP = new ReachpointListView( this );
-  viewTP = new TaskListView( this );
-
-  // set visibility of lists to false
-  m_taskListVisible       = false;
-  m_reachpointListVisible = false;
-  m_outlandingListVisible = false;
-
-  listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
-  listViewTabs->addTab( viewAF, tr( "Airfields" ) );
-  // listViewTabs->addTab( viewRP, tr( "Reachable" ) ); --> added in slotReadconfig
-  // listViewTabs->addTab( viewOL, tr( "Outlandings" ) ); --> added in slotReadconfig
+  viewWP = listViewTabs->viewWP;
+  viewAF = listViewTabs->viewAF;
+  viewOL = listViewTabs->viewOL;
+  viewRP = listViewTabs->viewRP;
+  viewTP = listViewTabs->viewTP;
 
   // create GPS instance
   GpsNmea::gps = new GpsNmea( this );
@@ -858,9 +840,6 @@ void MainWindow::slotCreateApplicationWidgets()
 #else
   connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotShowContextMenu() ) );
 #endif
-
-  connect( listViewTabs, SIGNAL( currentChanged( int ) ),
-           this, SLOT( slotTabChanged( int ) ) );
 
   connect( calculator, SIGNAL( newWaypoint( const Waypoint* ) ),
            viewMap, SLOT( slot_Waypoint( const Waypoint* ) ) );
@@ -2173,38 +2152,6 @@ void MainWindow::slotLogging ( bool logging )
   actionToggleLogging->blockSignals( false );
 }
 
-/** Called if the user clicks on a tabulator of the list view */
-void MainWindow::slotTabChanged( int index )
-{
-  // qDebug("MainWindow::slotTabChanged(): NewIndex=%d", index );
-
-  //switch to the correct view
-  if ( index == listViewTabs->indexOf(viewWP) )
-    {
-      setView( wpView );
-    }
-  else if ( index == listViewTabs->indexOf(viewTP) )
-    {
-      setView( tpView );
-    }
-  else if ( index == listViewTabs->indexOf(viewRP) )
-    {
-      setView( rpView );
-    }
-  else if ( index == listViewTabs->indexOf(viewAF) )
-    {
-      setView( afView );
-    }
-  else if ( index == listViewTabs->indexOf(viewOL) )
-    {
-      setView( olView );
-    }
-  else
-    {
-      qWarning("MainWindow::slot_tabChanged(): Cannot switch to index %d", index );
-    }
-}
-
 /** Write property of internal view. */
 void MainWindow::setView( const appView newVal )
 {
@@ -2277,17 +2224,6 @@ void MainWindow::setView( const appView newVal )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
-
-      {
-	//ListViewTabs* lvt = new ListViewTabs( this );
-
-
-	//lvt->show();
-	//lvt->viewTP->hide();
-
-      }
-
-
 
       break;
 

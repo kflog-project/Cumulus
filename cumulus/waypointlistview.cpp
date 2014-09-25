@@ -118,7 +118,7 @@ WaypointListView::~WaypointListView()
 {
 }
 
-void WaypointListView::showEvent(QShowEvent *)
+void WaypointListView::showEvent( QShowEvent* event )
 {
   // Show the home button only if we are not to fast in move to avoid
   // wrong usage. The redefinition of the home position can trigger
@@ -134,6 +134,8 @@ void WaypointListView::showEvent(QShowEvent *)
 
   // Reset home changed
   m_homeChanged = false;
+
+  QWidget::showEvent( event );
 }
 
 

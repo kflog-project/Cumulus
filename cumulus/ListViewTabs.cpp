@@ -29,30 +29,30 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("Lists Overview") );
+  setWindowTitle( tr("Point Lists") );
 
   if( parent )
     {
       resize( parent->size() );
     }
 
-  QHBoxLayout *hbox = new QHBoxLayout( this );
+  QVBoxLayout *layout = new QVBoxLayout( this );
 
   m_listViewTabs = new QTabWidget( this );
   m_listViewTabs->setObjectName("listViewTabs");
-  hbox->addWidget( m_listViewTabs );
+  layout->addWidget( m_listViewTabs );
 
   QVector<enum MapContents::MapContentsListID> itemList;
   itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
-  viewAF = new AirfieldListView( itemList, this );
+  viewAF = new AirfieldListView( itemList, 0 );
 
   itemList.clear();
   itemList << MapContents::OutLandingList;
-  viewOL = new AirfieldListView( itemList, this );
+  viewOL = new AirfieldListView( itemList, 0 );
 
-  viewRP = new ReachpointListView( this );
-  viewTP = new TaskListView( this );
-  viewWP = new WaypointListView( this );
+  viewRP = new ReachpointListView( 0 );
+  viewTP = new TaskListView( 0 );
+  viewWP = new WaypointListView( 0 );
 }
 
 ListViewTabs::~ListViewTabs()
@@ -71,8 +71,14 @@ void ListViewTabs::showEvent( QShowEvent *event )
       m_listViewTabs->addTab( viewTP, tr( "Task" ) );
     }
 
-  m_listViewTabs->addTab( viewAF, tr( "Airfields" ) );
+  m_listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
+
   m_listViewTabs->addTab( viewRP, tr( "Reachable" ) );
+
+  if( viewAF->topLevelItemCount() )
+    {
+      m_listViewTabs->addTab( viewAF, tr( "Airfields" ) );
+    }
 
   if( viewOL->topLevelItemCount() )
     {
