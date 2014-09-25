@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #include <cmath>
@@ -322,7 +320,9 @@ void GpsStatusDialog::keyReleaseEvent(QKeyEvent *event)
 #define MARGIN 10
 
 GpsElevationAzimuthDisplay::GpsElevationAzimuthDisplay(QWidget *parent) :
-  QFrame(parent)
+  QFrame(parent),
+  width(0),
+  height(0)
 {
   setFrameStyle(StyledPanel | QFrame::Plain);
   setLineWidth(2);
@@ -461,7 +461,12 @@ void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
 
 /*************************************************************************************/
 
-GpsSnrDisplay::GpsSnrDisplay(QWidget *parent) : QFrame(parent)
+GpsSnrDisplay::GpsSnrDisplay(QWidget *parent) :
+  QFrame(parent),
+  width(0),
+  height(0),
+  xoff(0),
+  yoff(0)
 {
   setFrameStyle(StyledPanel | QFrame::Plain);
   setLineWidth(2);

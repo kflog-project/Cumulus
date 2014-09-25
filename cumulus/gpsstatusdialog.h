@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c): 2003 by André Somers
-**                  2008-2012 Axel Pauli
+**                  2008-2014 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -27,7 +25,7 @@
   * satellites tracked, elevation, azimuth, signal strengths and the NMEA
   * data stream. NMEA data stream can be save into a file on user request.
   *
-  * \date 2003-2012
+  * \date 2003-2014
   *
   * \version $Id$
   */
