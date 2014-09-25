@@ -138,7 +138,7 @@ WPInfoWidget::WPInfoWidget( QWidget *parent ) :
   buttonrow1->addWidget(cmdSelectWaypoint);
   connect(cmdSelectWaypoint, SIGNAL(clicked()), SLOT(slot_selectWaypoint()));
 
-  m_timer=new QTimer(this);
+  m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), SLOT(slot_timeout()));
 }
 
@@ -456,6 +456,8 @@ void WPInfoWidget::writeText()
 /** Hide widget and return to the calling view in MainWindow */
 void WPInfoWidget::slot_SwitchBack()
 {
+  qDebug() << "WPInfoWidget::slot_SwitchBack()";
+
   m_timer->stop();
   text->clearFocus();
   hide();
@@ -468,9 +470,8 @@ void WPInfoWidget::slot_SwitchBack()
       m_homeChanged = false;
     }
 
-  // Return to the calling view
+  // emit the return view
   emit closingWindow( m_returnView );
-
   QWidget::close();
 }
 

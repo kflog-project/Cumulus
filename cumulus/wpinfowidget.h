@@ -127,7 +127,7 @@ protected:
 private:
 
   /**
-   * This method actually fills the widget with the info.
+   * This method fills the widget with the info to be displayed.
    */
   void writeText();
 
