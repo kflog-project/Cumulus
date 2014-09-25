@@ -28,13 +28,12 @@
 #include "gpsnmea.h"
 
 AirfieldListView::AirfieldListView( QVector<enum MapContents::MapContentsListID> &itemList,
-                                    QMainWindow *parent ) :
+                                    QWidget *parent ) :
                                     QWidget(parent),
                                     homeChanged( false )
 {
   setObjectName("AirfieldListView");
 
-  par=parent;
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
   listw = new AirfieldListWidget( itemList, this );

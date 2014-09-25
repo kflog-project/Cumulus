@@ -53,7 +53,7 @@ private:
 public:
 
   AirfieldListView( QVector<enum MapContents::MapContentsListID> &itemList,
-                    QMainWindow *parent=0);
+                    QWidget *parent=0);
 
   virtual ~AirfieldListView();
 
@@ -72,10 +72,17 @@ public:
       return listw->getCurrentWaypoint();
     };
 
+  /**
+   * \return The top level item count of the tree list.
+   */
+  int topLevelItemCount()
+  {
+    return listw->topLevelItemCount();
+  };
+
 private:
 
   AirfieldListWidget* listw;
-  QMainWindow *par;
   QBoxLayout *buttonrow;
   QPushButton *cmdSelect;
   QPushButton *cmdHome;

@@ -96,6 +96,14 @@ class ListWidgetParent : public QWidget
     };
 
     /**
+     * \return The top level item count of the tree list.
+     */
+    int topLevelItemCount()
+    {
+      return list->topLevelItemCount();
+    };
+
+    /**
      * aligns the columns to their contents
      */
     virtual void resizeListColumns()

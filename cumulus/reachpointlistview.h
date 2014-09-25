@@ -55,7 +55,7 @@ class ReachpointListView : public QWidget
 
 public:
 
-  ReachpointListView( MainWindow* parent=0 );
+  ReachpointListView( QWidget* parent=0 );
   virtual ~ReachpointListView();
 
   /** Returns a pointer to the currently highlighted waypoint. */
@@ -164,7 +164,6 @@ signals:
 private:
 
   QTreeWidget* list;
-  MainWindow * par;
 
   /** that stores a home position change */
   bool _homeChanged;

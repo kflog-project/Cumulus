@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2013 Axel Pauli, kflog.cumulus@gmail.com
+**   Copyright (c):  2007-2014 Axel Pauli, kflog.cumulus@gmail.com
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ************************************************************************/
 
@@ -48,6 +46,8 @@ TPInfoWidget::TPInfoWidget( QWidget *parent ) :
   m_parent(parent)
 {
   setObjectName("TPInfoWidget");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
 
   if( parent )

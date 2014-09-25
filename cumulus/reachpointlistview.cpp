@@ -41,9 +41,8 @@
 extern Calculator* calculator;
 extern MapConfig* _globalMapConfig;
 
-ReachpointListView::ReachpointListView( MainWindow* parent ) :
+ReachpointListView::ReachpointListView( QWidget* parent ) :
   QWidget(parent),
-  par(parent),
   _homeChanged( false ),
   _newList(true),
   _outlandShow(true),

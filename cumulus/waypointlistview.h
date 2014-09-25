@@ -57,6 +57,14 @@ public:
     return listw;
   };
 
+  /**
+   * \return The top level item count of the tree list.
+   */
+  int topLevelItemCount()
+  {
+    return listw->topLevelItemCount();
+  };
+
   Waypoint* getSelectedWaypoint()
   {
     return listw->getCurrentWaypoint();

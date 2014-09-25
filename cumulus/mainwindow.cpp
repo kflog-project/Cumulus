@@ -48,6 +48,7 @@
 #include "gliderlistwidget.h"
 #include "helpbrowser.h"
 #include "layout.h"
+#include "ListViewTabs.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
@@ -2276,6 +2277,18 @@ void MainWindow::setView( const appView newVal )
       actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
+
+      {
+	//ListViewTabs* lvt = new ListViewTabs( this );
+
+
+	//lvt->show();
+	//lvt->viewTP->hide();
+
+      }
+
+
+
       break;
 
     case rpView:
@@ -2863,7 +2876,6 @@ void MainWindow::slotCenterToWaypoint()
     {
       _globalMapMatrix->centerToLatLon( calculator->getselectedWp()->wgsPoint );
       Map::instance->scheduleRedraw();
-
     }
 }
 

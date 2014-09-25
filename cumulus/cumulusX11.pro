@@ -104,6 +104,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    ListViewTabs.h \
     listwidgetparent.h \
     logbook.h \
     mainwindow.h \
@@ -230,6 +231,7 @@ SOURCES = \
     layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    ListViewTabs.cpp \
     listwidgetparent.cpp \
     logbook.cpp \
     main.cpp \
