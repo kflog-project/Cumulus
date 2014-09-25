@@ -2205,10 +2205,8 @@ void MainWindow::slotTabChanged( int index )
 }
 
 /** Write property of internal view. */
-void MainWindow::setView( const appView& newVal, const Waypoint* wp )
+void MainWindow::setView( const appView newVal )
 {
-  // qDebug() << "MainWindow::setView(): view=" << newVal << "WP=" << (wp ? wp->name : "Null");
-
   switch ( newVal )
     {
     case mapView:
@@ -2494,38 +2492,36 @@ void MainWindow::slotSwitchToTaskListView()
 /** This slot is called to switch to the info view. */
 void MainWindow::slotSwitchToInfoView()
 {
-//  qDebug("MainWindow::slotSwitchToInfoView()");
   if ( view == wpView )
     {
-      setView( infoView, viewWP->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewWP->getSelectedWaypoint() );
     }
   if ( view == rpView )
     {
-      setView( infoView, viewRP->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewRP->getSelectedWaypoint() );
     }
   if ( view == afView )
     {
-      setView( infoView, viewAF->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewAF->getSelectedWaypoint() );
     }
   if ( view == olView )
     {
-      setView( infoView, viewOL->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewOL->getSelectedWaypoint() );
     }
   if ( view == tpView )
     {
-      setView( infoView, viewTP->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewTP->getSelectedWaypoint() );
     }
   else
     {
-      setView( infoView, calculator->getselectedWp() );
+      // That is a bad solution with that cast but a fast workaround.
+      slotSwitchToInfoView( const_cast<Waypoint *>(calculator->getselectedWp()) );
     }
 }
 
 /** This slot is called to switch to the info view and to show the waypoint data. */
 void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 {
-  qDebug() << "MainWindow::slotSwitchToInfoView:" << wp;
-
   if( ! wp )
     {
       return;
@@ -3106,8 +3102,6 @@ void MainWindow::slotSubWidgetClosed()
 
 void MainWindow::slotSubWidgetClosed( int return2View )
 {
-  qDebug() << "slotSubWidgetClosed:" << return2View;
-
   if( return2View == MainWindow::mapView )
     {
       slotSubWidgetClosed();

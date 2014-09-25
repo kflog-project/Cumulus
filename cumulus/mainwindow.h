@@ -73,16 +73,14 @@ private:
 
 public: // application view types
 
-  enum appView { mapView=0,       // map
-                 wpView=1,        // waypoint
-                 infoView=2,      // info
-                 rpView=3,        // reachable
-                 afView=4,        // airfield
-                 olView=5,        // outlanding
-                 tpView=6,        // taskpoint
-                 tpSwitchView=7,  // taskpoint switch
-                 cfView=8,        // configuration
-                 flarmView=9 };   // flarm view
+  enum appView { mapView=0,     // map
+                 wpView,        // waypoint
+                 rpView,        // reachable
+                 afView,        // airfield
+                 olView,        // outlanding
+                 tpView,        // taskpoint
+                 tpSwitchView,  // taskpoint switch
+                 flarmView };   // flarm view
 
 public:
   /**
@@ -98,7 +96,7 @@ public:
   /**
    * Sets the view type
    */
-  void setView(const appView& _newVal, const Waypoint* wp = 0);
+  void setView( const appView _newVal );
 
   /**
    * @returns the view type
@@ -203,10 +201,15 @@ public slots:
    * Switches to the mapview.
    */
   void slotSwitchToMapView();
+
   /** This slot is called to switch to the info view. */
   void slotSwitchToInfoView();
-  /** This slot is called to switch to the info view and to show the waypoint data. */
-  void slotSwitchToInfoView(Waypoint* wp);
+
+  /**
+   * This slot is called to pop up the info view and show the waypoint
+   * details.
+   */
+  void slotSwitchToInfoView( Waypoint* wp );
 
   /** Opens the general configuration dialog. */
   void slotOpenConfig();

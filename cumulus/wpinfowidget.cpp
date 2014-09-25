@@ -144,7 +144,6 @@ WPInfoWidget::WPInfoWidget( QWidget *parent ) :
 
 WPInfoWidget::~WPInfoWidget()
 {
-  qDebug() << "~WPInfoWidget()";
 }
 
 /** This slot get called on the timer timeout. */
@@ -166,8 +165,6 @@ void WPInfoWidget::slot_timeout()
  * which there must be returned and the waypoint to view. */
 bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
 {
-  qDebug() << "WPInfoWidget::showWP(): returnView=" << returnView << "WP=" << wp.name;
-
   // save return view
   m_returnView = returnView;
 
@@ -275,13 +272,6 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
 
   setVisible( true );
   return true;
-}
-
-/**
- * Called, if the widget will be shown.
- */
-void WPInfoWidget::showEvent(QShowEvent *)
-{
 }
 
 /** This method actually fills the widget with the info to be displayed. */
@@ -456,8 +446,6 @@ void WPInfoWidget::writeText()
 /** Hide widget and return to the calling view in MainWindow */
 void WPInfoWidget::slot_SwitchBack()
 {
-  qDebug() << "WPInfoWidget::slot_SwitchBack()";
-
   m_timer->stop();
   text->clearFocus();
   hide();
@@ -619,7 +607,7 @@ void WPInfoWidget::slot_edit()
   WpEditDialog *dlg = new WpEditDialog( this, wplelem );
 
   connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
-            SLOT(slot_edited(Waypoint &)) );
+           SLOT(slot_edited(Waypoint &)) );
 
   dlg->setVisible( true );
 }
@@ -637,7 +625,7 @@ void WPInfoWidget::slot_edited( Waypoint& wp )
       emit selectWaypoint(&wp, true);
     }
 
-  if( m_returnView == MainWindow::mapView || m_returnView == MainWindow::infoView )
+  if( m_returnView == MainWindow::mapView )
     {
       // The map has called the info view so we must store only the global
       // waypoint list now after the edit.

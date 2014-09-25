@@ -117,13 +117,6 @@ signals:
    */
   void closingWindow( int return2View );
 
-protected:
-
-  /**
-   * Called, if the widget will be shown.
-   */
-  void showEvent(QShowEvent *);
-
 private:
 
   /**
