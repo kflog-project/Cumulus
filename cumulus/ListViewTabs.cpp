@@ -19,6 +19,7 @@
 #include <QtWidgets>
 #endif
 
+#include "generalconfig.h"
 #include "ListViewTabs.h"
 #include "mapcontents.h"
 
@@ -28,8 +29,10 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
   setObjectName("ListViewTabs");
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
-  setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle( tr("Point Lists") );
+
+  // Don't set this flag!
+  // setAttribute(Qt::WA_DeleteOnClose);
 
   if( parent )
     {
@@ -44,15 +47,27 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
 
   QVector<enum MapContents::MapContentsListID> itemList;
   itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
-  viewAF = new AirfieldListView( itemList, 0 );
+  viewAF = new AirfieldListView( itemList );
 
   itemList.clear();
   itemList << MapContents::OutLandingList;
-  viewOL = new AirfieldListView( itemList, 0 );
+  viewOL = new AirfieldListView( itemList );
 
-  viewRP = new ReachpointListView( 0 );
-  viewTP = new TaskListView( 0 );
-  viewWP = new WaypointListView( 0 );
+  viewRP = new ReachpointListView();
+  viewTP = new TaskListView();
+  viewWP = new WaypointListView();
+
+  m_textAF = tr( "Airfields" );
+  m_textOL = tr( "Fields" );
+  m_textRP = tr( "Reachables" );
+  m_textTP = tr( "Task" );
+  m_textWP = tr( "Waypoints" );
+
+  connect( viewAF, SIGNAL(done()), SLOT(slotDone()) );
+  connect( viewOL, SIGNAL(done()), SLOT(slotDone()) );
+  connect( viewRP, SIGNAL(done()), SLOT(slotDone()) );
+  connect( viewTP, SIGNAL(done()), SLOT(slotDone()) );
+  connect( viewWP, SIGNAL(done()), SLOT(slotDone()) );
 }
 
 ListViewTabs::~ListViewTabs()
@@ -66,24 +81,84 @@ void ListViewTabs::showEvent( QShowEvent *event )
 
   m_listViewTabs->clear();
 
-  if( viewTP->topLevelItemCount() )
+  GeneralConfig* conf = GeneralConfig::instance();
+
+  // Check, if a flight task is activated.
+  if( _globalMapContents->getCurrentTask() == static_cast<FlightTask *> (0) )
     {
-      m_listViewTabs->addTab( viewTP, tr( "Task" ) );
+      if( viewTP->topLevelItemCount() )
+	{
+	  m_listViewTabs->addTab( viewTP, m_textTP );
+	}
     }
 
-  m_listViewTabs->addTab( viewWP, tr( "Waypoints" ) );
+  // The waypoint view is always added to have the waypoint editor available.
+  m_listViewTabs->addTab( viewWP, m_textWP );
 
-  m_listViewTabs->addTab( viewRP, tr( "Reachable" ) );
+  // Check, if the nearest site calculation is activated.
+  if( conf->getNearestSiteCalculatorSwitch() )
+    {
+      // Can be disabled by the user.
+      m_listViewTabs->addTab( viewRP, m_textRP );
+    }
 
   if( viewAF->topLevelItemCount() )
     {
-      m_listViewTabs->addTab( viewAF, tr( "Airfields" ) );
+      m_listViewTabs->addTab( viewAF, m_textAF );
     }
 
   if( viewOL->topLevelItemCount() )
     {
-      m_listViewTabs->addTab( viewOL, tr( "Outlandings" ) );
+      m_listViewTabs->addTab( viewOL, m_textOL );
     }
 
   QWidget::showEvent( event );
+}
+
+void ListViewTabs::setView( const MainWindow::AppView view )
+{
+  int idx = -1;
+
+  // Look, if the desired widget is contained as page in the tab widget.
+  switch( view )
+    {
+      case MainWindow::afView:
+	idx = m_listViewTabs->indexOf( viewAF );
+	break;
+
+      case MainWindow::olView:
+	idx = m_listViewTabs->indexOf( viewOL );
+	break;
+
+      case MainWindow::rpView:
+	idx = m_listViewTabs->indexOf( viewRP );
+	break;
+
+      case MainWindow::tpView:
+	idx = m_listViewTabs->indexOf( viewTP );
+	break;
+
+      case MainWindow::wpView:
+	idx = m_listViewTabs->indexOf( viewWP );
+	break;
+
+      default:
+	break;
+    }
+
+  if( idx != -1 )
+    {
+      m_listViewTabs->setCurrentIndex( idx );
+    }
+}
+
+void ListViewTabs::slotDone()
+{
+  // We remove all list and filter content after closing widget to spare memory.
+  viewAF->listWidget()->slot_Done();
+  viewOL->listWidget()->slot_Done();
+  viewWP->listWidget()->slot_Done();
+
+  emit closed();
+  hide();
 }

@@ -74,7 +74,7 @@ private:
 
 public: // application view types
 
-  enum appView { mapView=0,     // map
+  enum AppView { mapView=0,     // map
                  wpView,        // waypoint
                  rpView,        // reachable
                  afView,        // airfield
@@ -97,12 +97,12 @@ public:
   /**
    * Sets the view type
    */
-  void setView( const appView _newVal );
+  void setView( const AppView _newVal );
 
   /**
    * @returns the view type
    */
-  appView getView() const
+  AppView getView() const
   {
     return view;
   }
@@ -150,17 +150,11 @@ public:
 #endif
 
 public:
-  /**
-   * Reference to the Map pages
-   */
-  MapView *viewMap;
-  WaypointListView *viewWP;   // waypoints
-  AirfieldListView *viewAF;   // airfields
-  AirfieldListView *viewOL;   // outlandings
-  ReachpointListView *viewRP; // reachable points
-  TaskListView *viewTP;       // task points
 
-  ListViewTabs *listViewTabs; // Overview about all list
+  /**
+   * Reference to the Map page
+   */
+  MapView* viewMap;
 
 public slots:
 
@@ -199,10 +193,6 @@ public slots:
    * Exits Cumulus, if the disclaimer was rejected..
    */
   void slotDisclaimerQuit();
-  /**
-   * Switches to the mapview.
-   */
-  void slotSwitchToMapView();
 
   /** This slot is called to switch to the info view. */
   void slotSwitchToInfoView();
@@ -244,27 +234,27 @@ public slots:
   void slotCloseConfig();
   /** sets the menu fonts to a reasonable and usable value */
   void slotSetMenuFontSize();
+
   /**
    * Called if a subwidget is opened.
    */
   void slotSubWidgetOpened();
+
   /**
    * Called if an opened subwidget is closed.
    */
   void slotSubWidgetClosed();
-  /**
-   * Called if an opened subwidget is closed.
-   */
-  void slotSubWidgetClosed( int return2View );
 
   /**
    * Called if logger recognized takeoff.
    */
   void slotTakeoff( QDateTime& dt );
+
   /**
    * Called if logger recognized landing.
    */
   void slotLanded( QDateTime& dt );
+
   /**
    * Called to request the close of the Software Input Panel (SIP).
    */
@@ -316,7 +306,7 @@ protected:
 protected:
 
   /** contains the currently selected view mode */
-  appView view;
+  AppView view;
 
 private slots:
   /**
@@ -443,7 +433,19 @@ private:
    */
   void setNearestOrReachableHeaders();
 
-private:
+  /**
+   * References to the Map pages
+   */
+  WaypointListView* viewWP;   // waypoints
+  AirfieldListView* viewAF;   // airfields
+  AirfieldListView* viewOL;   // outlandings
+  ReachpointListView* viewRP; // reachable points
+  TaskListView* viewTP;       // task points
+
+  /**
+   * Overview about all list
+   */
+  ListViewTabs* m_listViewTabs;
 
   /** use manual navigation even if GPS signal is received */
   QAction* actionToggleGps;
@@ -545,7 +547,6 @@ private:
   IgcLogger* m_logger;
 
   // Store here, if the lists are visible or not.
-  bool m_taskListVisible;
   bool m_reachpointListVisible;
   bool m_outlandingListVisible;
 

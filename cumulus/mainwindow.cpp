@@ -139,7 +139,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   viewOL(0),
   viewRP(0),
   viewTP(0),
-  listViewTabs(0),
+  m_listViewTabs(0),
   view(mapView),
   actionToggleGps(0),
   actionManualNavUp(0),
@@ -208,7 +208,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   configView(0),
   m_menuBarVisible(false),
   m_logger(static_cast<IgcLogger *> (0)),
-  m_taskListVisible(false),
   m_reachpointListVisible(false),
   m_outlandingListVisible(false),
 #ifdef INTERNET
@@ -671,13 +670,13 @@ void MainWindow::slotCreateApplicationWidgets()
   _globalMapView = viewMap;
   view = mapView;
 
-  listViewTabs = new ListViewTabs( this );
+  m_listViewTabs = new ListViewTabs( this );
 
-  viewWP = listViewTabs->viewWP;
-  viewAF = listViewTabs->viewAF;
-  viewOL = listViewTabs->viewOL;
-  viewRP = listViewTabs->viewRP;
-  viewTP = listViewTabs->viewTP;
+  viewWP = m_listViewTabs->viewWP;
+  viewAF = m_listViewTabs->viewAF;
+  viewOL = m_listViewTabs->viewOL;
+  viewRP = m_listViewTabs->viewRP;
+  viewTP = m_listViewTabs->viewTP;
 
   // create GPS instance
   GpsNmea::gps = new GpsNmea( this );
@@ -761,8 +760,6 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
   connect( viewWP, SIGNAL( deleteWaypoint( Waypoint* ) ),
            calculator, SLOT( slot_WaypointDelete( Waypoint* ) ) );
-  connect( viewWP, SIGNAL( done() ),
-           this, SLOT( slotSwitchToMapView() ) );
   connect( viewWP, SIGNAL( info( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewWP, SIGNAL( newHomePosition( const QPoint& ) ),
@@ -772,8 +769,6 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( viewAF, SIGNAL( newWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
-  connect( viewAF, SIGNAL( done() ),
-           this, SLOT( slotSwitchToMapView() ) );
   connect( viewAF, SIGNAL( info( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewAF, SIGNAL( newHomePosition( const QPoint& ) ),
@@ -783,8 +778,6 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( viewOL, SIGNAL( newWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
-  connect( viewOL, SIGNAL( done() ),
-           this, SLOT( slotSwitchToMapView() ) );
   connect( viewOL, SIGNAL( info( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewOL, SIGNAL( newHomePosition( const QPoint& ) ),
@@ -794,8 +787,6 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( viewRP, SIGNAL( newWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
-  connect( viewRP, SIGNAL( done() ),
-           this, SLOT( slotSwitchToMapView() ) );
   connect( viewRP, SIGNAL( info( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
   connect( viewRP, SIGNAL( newHomePosition( const QPoint& ) ),
@@ -805,8 +796,6 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( viewTP, SIGNAL( newWaypoint( Waypoint*, bool ) ),
            calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
-  connect( viewTP, SIGNAL( done() ),
-           this, SLOT( slotSwitchToMapView() ) );
   connect( viewTP, SIGNAL( info( Waypoint* ) ),
            this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
 
@@ -2153,13 +2142,16 @@ void MainWindow::slotLogging ( bool logging )
 }
 
 /** Write property of internal view. */
-void MainWindow::setView( const appView newVal )
+void MainWindow::setView( const AppView newView )
 {
-  switch ( newVal )
+  switch ( newView )
     {
     case mapView:
 
       m_rootWindow = true;
+
+      // save new view value
+      view = newView;
 
       // @AP: set focus to MainWindow widget, otherwise F-Key events will
       // not routed to it
@@ -2185,7 +2177,6 @@ void MainWindow::setView( const appView newVal )
       setupMenu->setEnabled( true );
       helpMenu->setEnabled( true );
 
-      listViewTabs->setVisible( false );
       viewMap->setVisible( true );
 
       toggleManualNavActions( GpsNmea::gps->getGpsStatus() != GpsNmea::validFix ||
@@ -2208,128 +2199,41 @@ void MainWindow::setView( const appView newVal )
       Map::instance->scheduleRedraw( Map::aeroLayer );
       break;
 
-    case wpView:
-
-      m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-      viewMap->setVisible( false );
-      listViewTabs->setCurrentWidget( viewWP );
-      listViewTabs->setVisible( true );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
-
-      break;
-
-    case rpView:
-      {
-        m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-        viewMap->setVisible( false );
-
-        setNearestOrReachableHeaders();
-
-        listViewTabs->setCurrentWidget( viewRP );
-        listViewTabs->setVisible( true );
-        toggleManualNavActions( false );
-        toggleGpsNavActions( false );
-        actionMenuBarToggle->setEnabled( false );
-        actionOpenContextMenu->setEnabled( false );
-        toggleActions( false );
-      }
-
-      break;
-
-    case afView:
-
-      m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-      viewMap->setVisible( false );
-      listViewTabs->setCurrentWidget( viewAF );
-      listViewTabs->setVisible( true );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
-      break;
-
-    case olView:
-
-      m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-      viewMap->setVisible( false );
-      listViewTabs->setCurrentWidget( viewOL );
-      listViewTabs->setVisible( true );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
-      break;
-
     case tpView:
 
       // only allow switching to this view if there is anything to see
       if ( _globalMapContents->getCurrentTask() == 0 )
         {
-          return;
+          break;
         }
 
+    case afView:
+    case olView:
+    case rpView:
+    case wpView:
+
       m_rootWindow = false;
+      m_listViewTabs->show();
+      m_listViewTabs->setView( newView );
 
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
+      if( newView == rpView )
+	{
+	  setNearestOrReachableHeaders();
+	}
 
-      viewMap->setVisible( false );
-      listViewTabs->setCurrentWidget( viewTP );
-      listViewTabs->setVisible( true );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
       break;
 
     case tpSwitchView:
 
       m_rootWindow = false;
-
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
-      viewMap->setVisible( false );
-      listViewTabs->setVisible( false );
-      toggleManualNavActions( false );
-      toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
-      actionOpenContextMenu->setEnabled( false );
-      toggleActions( false );
       break;
 
     case flarmView:
       // called if Flarm view is created
       m_rootWindow = false;
+
+      // save new view value
+      view = newView;
 
 #ifdef USE_MENUBAR
       menuBar()->setVisible( false );
@@ -2345,12 +2249,9 @@ void MainWindow::setView( const appView newVal )
     default:
       // @AP: Should normally not happen but Vorsicht ist die Mutter
       // der Porzellankiste ;-)
-      qWarning( "MainWindow::setView(): unknown view %d to be set", newVal );
+      qWarning( "MainWindow::setView(): unknown view %d to be set", newView );
       return;
     }
-
-  // save new view value
-  view = newVal;
 }
 
 /**
@@ -2361,11 +2262,11 @@ void MainWindow::setNearestOrReachableHeaders()
   // Set the tabulator header according to calculation result.
   // If a glider is known, reachables by L/D are shown
   // otherwise the nearest points in 75 km radius are shown.
-  QString header = QString(tr( "Reachable" ));
+  QString header = QString(tr( "Reachables" ));
 
   if( calculator->getReachList()->getCalcMode() == ReachableList::distance )
     {
-      // nearest site are calculated
+      // nearest sites are calculated
       header = QString(tr( "Nearest" ));
     }
 
@@ -2373,24 +2274,8 @@ void MainWindow::setNearestOrReachableHeaders()
   actionViewReachpoints->setText( header );
 
   // update list view tabulator header
-  listViewTabs->setTabText( m_taskListVisible ? 2 : 1, header );
+  m_listViewTabs->setTextRp( header );
 }
-
-/** Switches to mapview. */
-void MainWindow::slotSwitchToMapView()
-{
-  if( view == afView || view == olView || view == wpView )
-    {
-      // If one of these views was active, we do remove all list and
-      // filter content after closing widget to spare memory.
-      viewAF->listWidget()->slot_Done();
-      viewOL->listWidget()->slot_Done();
-      viewWP->listWidget()->slot_Done();
-    }
-
-  setView( mapView );
-}
-
 
 /** Switches to the WaypointList View */
 void MainWindow::slotSwitchToWPListView()
@@ -2398,9 +2283,8 @@ void MainWindow::slotSwitchToWPListView()
   setView( wpView );
 }
 
-
-/** Switches to the WaypointList View if there is
- * no task, and to the task list if there is .
+/**
+ * Called from the mapView, if the waypoint label is clicked.
  */
 void MainWindow::slotSwitchToWPListViewExt()
 {
@@ -2432,7 +2316,7 @@ void MainWindow::slotSwitchToReachListView()
   setView( rpView );
 }
 
-/** Switches to the WaypointList View */
+/** Switches to the Task List View */
 void MainWindow::slotSwitchToTaskListView()
 {
   setView( tpView );
@@ -2476,12 +2360,8 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
       return;
     }
 
-  slotSubWidgetOpened();
 
   WPInfoWidget* viewInfo = new WPInfoWidget( this );
-
-  connect( viewInfo, SIGNAL( closingWindow( int ) ),
-           this, SLOT( slotSubWidgetClosed( int ) ) );
 
   connect( viewInfo, SIGNAL( addWaypoint( Waypoint& ) ),
            viewWP, SLOT( slot_addWp( Waypoint& ) ) );
@@ -2496,6 +2376,14 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
   connect( viewInfo, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
+  if( m_rootWindow == true )
+    {
+      // The root window is active, so we must block exit actions.
+      slotSubWidgetOpened();
+      connect( viewInfo, SIGNAL( closingWindow() ),
+               this, SLOT( slotSubWidgetClosed() ) );
+    }
+
   viewInfo->showWP( view, *wp );
   viewInfo->show();
 }
@@ -2503,15 +2391,19 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 /** Opens the configuration widget */
 void MainWindow::slotOpenConfig()
 {
-  m_rootWindow = false;
-
   ConfigWidget *cDlg = new ConfigWidget( this );
   configView = static_cast<QWidget *> (cDlg);
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
-  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
+
+  if( m_rootWindow == true )
+    {
+      // The root window is active, so we must block exit actions.
+      slotSubWidgetOpened();
+      connect( cDlg, SIGNAL( closeConfig() ), SLOT( slotSubWidgetClosed() ) );
+    }
 
   cDlg->setVisible( true );
 }
@@ -2725,7 +2617,6 @@ void MainWindow::slotReadconfig()
       if( ! m_reachpointListVisible )
         {
           // list was not visible before
-          listViewTabs->insertTab( m_taskListVisible ? 2 : 1, viewRP, tr( "Reachable" ) );
           calculator->newSites();
           m_reachpointListVisible = true;
         }
@@ -2734,15 +2625,6 @@ void MainWindow::slotReadconfig()
     {
       if( m_reachpointListVisible )
         {
-          // changes in listViewTabs trigger  (if viewRP was last active),
-          // this slot calls setView and tries to set the view to viewRP
-          // but since this doesn't exist (removeWidget), sets the view to the next one
-          // which is viewAF; that's the reason we have to a) call setView(mapView);
-          // or b) disconnect before removeWidget and connect again behind
-          listViewTabs->blockSignals( true );
-          listViewTabs->removeTab( listViewTabs->indexOf(viewRP) );
-          listViewTabs->blockSignals( false );
-
           calculator->clearReachable();
           viewRP->clearList(); // this clears the reachable list in the view
           Map::instance->scheduleRedraw(Map::waypoints);
@@ -2755,8 +2637,6 @@ void MainWindow::slotReadconfig()
     {
       if( ! m_outlandingListVisible )
         {
-          // list was not visible before, add it to the end of the tabs
-          listViewTabs->addTab( viewOL, tr( "Outlandings" ) );
           m_outlandingListVisible = true;
         }
     }
@@ -2764,9 +2644,6 @@ void MainWindow::slotReadconfig()
     {
       if( m_outlandingListVisible )
         {
-          listViewTabs->blockSignals( true );
-          listViewTabs->removeTab( listViewTabs->indexOf(viewOL) );
-          listViewTabs->blockSignals( false );
           viewRP->clearList();  // this clears the outlanding list in the view
           Map::instance->scheduleRedraw(Map::outlandings);
           m_outlandingListVisible = false;
@@ -2837,38 +2714,23 @@ void MainWindow::slotEnsureVisible()
 
 void MainWindow::slotOpenPreFlightConfig()
 {
-  m_rootWindow = false;
-
   PreFlightWidget* cDlg = new PreFlightWidget( this );
   configView = static_cast<QWidget *> (cDlg);
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
-  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
+
+  if( m_rootWindow == true )
+    {
+      // The root window is active, so we must block exit actions.
+      slotSubWidgetOpened();
+      connect( cDlg, SIGNAL( closeConfig() ), SLOT( slotSubWidgetClosed() ) );
+    }
+
   cDlg->setVisible( true );
 }
 
 void MainWindow::slotPreFlightDataChanged()
 {
-  if ( _globalMapContents->getCurrentTask() == static_cast<FlightTask *> (0) )
-    {
-      if ( m_taskListVisible )
-        {
-          // see comment for removeTab( viewRP )
-          listViewTabs->blockSignals( true );
-          listViewTabs->removeTab( listViewTabs->indexOf(viewTP) );
-          listViewTabs->blockSignals( false );
-          m_taskListVisible = false;
-        }
-    }
-  else
-    {
-      if ( !m_taskListVisible )
-        {
-          listViewTabs->insertTab( 0, viewTP, tr( "Task" ) );
-          m_taskListVisible = true;
-        }
-    }
-
   // set the task list view at the current task
   viewTP->slot_setTask( _globalMapContents->getCurrentTask() );
   Map::instance->scheduleRedraw(Map::task);
@@ -2878,8 +2740,7 @@ void MainWindow::slotPreFlightDataChanged()
 void MainWindow::slotNewReachList()
 {
   // qDebug( "MainWindow::slotNewReachList() is called" );
-
-  viewRP->slot_newList(); //let the view know we have a new list
+  viewRP->slot_newList();
   Map::instance->scheduleRedraw(Map::waypoints);
 }
 
@@ -3048,14 +2909,6 @@ void MainWindow::slotSubWidgetClosed()
   m_rootWindow = true;
 }
 
-void MainWindow::slotSubWidgetClosed( int return2View )
-{
-  if( return2View == MainWindow::mapView )
-    {
-      slotSubWidgetClosed();
-    }
-}
-
 /**
  * Called if logger recognized takeoff.
  */
@@ -3155,9 +3008,9 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
   qDebug("MainWindow::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );
   // resize list view tabs, if current widget was modified
-  if( listViewTabs )
+  if( m_listViewTabs )
     {
-      listViewTabs->resize( event->size() );
+      m_listViewTabs->resize( event->size() );
     }
 
   if( configView )
