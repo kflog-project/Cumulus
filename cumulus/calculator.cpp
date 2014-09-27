@@ -562,13 +562,6 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
                   tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
                                              dist2Next.getKilometers() );
-
-                  // switch back to map view on close of tp info widget
-                  connect( tpInfo, SIGNAL( closed() ),
-                           _globalMainWindow, SLOT( slotSwitchToMapView() ) );
-
-                  // switch off all set accelerators
-                  _globalMainWindow->setView( MainWindow::tpSwitchView );
                   tpInfo->showTP();
                 }
             }

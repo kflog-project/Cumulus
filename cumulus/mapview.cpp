@@ -1213,9 +1213,6 @@ void MapView::slot_AltimeterDialog()
   connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
            amDlg, SLOT( slotAltitudeChanged( const Altitude& ) ) );
 
-  connect( amDlg, SIGNAL( closingWidget() ),
-           MainWindow::mainWindow(), SLOT( slotSubWidgetClosed() ) );
-
   amDlg->setVisible(true);
 
 #ifdef ANDROID
@@ -1230,8 +1227,6 @@ void MapView::slot_AltimeterDialog()
                        ms.width(), ms.height() );
 
 #endif
-
-  MainWindow::setRootWindow( false );
 }
 
 /** Called, if altimeter mode has been changed. */
@@ -1272,9 +1267,6 @@ void MapView::slot_VarioDialog()
   connect( vmDlg, SIGNAL( newTEKAdjust( int ) ),
            calculator->getVario(), SLOT( slotNewTEKAdjust( int ) ) );
 
-  connect( vmDlg, SIGNAL( closingWidget() ),
-           MainWindow::mainWindow(), SLOT( slotSubWidgetClosed() ) );
-
   vmDlg->setVisible(true);
 
 #ifdef ANDROID
@@ -1289,8 +1281,6 @@ void MapView::slot_VarioDialog()
                        ms.width(), ms.height() );
 
 #endif
-
-  MainWindow::setRootWindow( false );
 }
 
 /** Opens the GPS status dialog */
@@ -1303,13 +1293,7 @@ void MapView::slot_gpsStatusDialog()
     }
 
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
-
-  connect( gpsDlg, SIGNAL( closingWidget() ),
-           MainWindow::mainWindow(), SLOT( slotSubWidgetClosed() ) );
-
   gpsDlg->setVisible(true);
-
-  MainWindow::setRootWindow( false );
 }
 
 /** Opens the inflight glider settings dialog. */
@@ -1332,9 +1316,6 @@ void MapView::slot_gliderFlightDialog()
   connect( gfDlg, SIGNAL(newWaterAndBugs(const int, const int)),
            calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
 
-  connect( gfDlg, SIGNAL( closingWidget() ),
-           MainWindow::mainWindow(), SLOT( slotSubWidgetClosed() ) );
-
   gfDlg->setVisible(true);
 
 #ifdef ANDROID
@@ -1349,8 +1330,6 @@ void MapView::slot_gliderFlightDialog()
                        ms.width(), ms.height() );
 
 #endif
-
-  MainWindow::setRootWindow( false );
 }
 
 void MapView::slot_showInfoBoxes( bool show )

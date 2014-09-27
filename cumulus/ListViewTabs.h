@@ -32,7 +32,6 @@
 #include <QWidget>
 
 #include "airfieldlistview.h"
-#include "mainwindow.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "waypointlistview.h"
@@ -55,7 +54,7 @@ class ListViewTabs : public QWidget
    * Sets the tabulator with the related view as active page. If the
    * requested view is not part of the tab widget, nothing happens.
    */
-  void setView( const enum AppView view );
+  void setView( const int view );
 
   const QTabWidget*  getListViewTabs () const
   {
@@ -152,7 +151,7 @@ class ListViewTabs : public QWidget
     return viewAF;
   }
 
-  void setViewAf (const AirfieldListView*& viewAf)
+  void setViewAf( AirfieldListView* viewAf)
   {
     viewAF = viewAf;
   }
@@ -162,7 +161,7 @@ class ListViewTabs : public QWidget
     return viewOL;
   }
 
-  void setViewOl (const AirfieldListView*& viewOl)
+  void setViewOl (AirfieldListView* viewOl)
   {
     viewOL = viewOl;
   }
@@ -172,7 +171,7 @@ class ListViewTabs : public QWidget
     return viewRP;
   }
 
-  void setViewRp (const ReachpointListView*& viewRp)
+  void setViewRp (ReachpointListView* viewRp)
   {
     viewRP = viewRp;
   }
@@ -182,7 +181,7 @@ class ListViewTabs : public QWidget
     return viewTP;
   }
 
-  void setViewTp (const TaskListView*& viewTp)
+  void setViewTp (TaskListView* viewTp)
   {
     viewTP = viewTp;
   }
@@ -192,7 +191,7 @@ class ListViewTabs : public QWidget
     return viewWP;
   }
 
-  void setViewWp (const WaypointListView*& viewWp)
+  void setViewWp (WaypointListView* viewWp)
   {
     viewWP = viewWp;
   }
@@ -213,7 +212,7 @@ class ListViewTabs : public QWidget
  private slots:
 
   /**
-   * Called, if the widget shall be closed. Emmits signal closed.
+   * Called, if the widget shall be closed. Emits signal closed.
    */
   void slotDone();
 

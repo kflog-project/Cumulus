@@ -21,7 +21,10 @@
 
 #include "generalconfig.h"
 #include "ListViewTabs.h"
+#include "mainwindow.h"
 #include "mapcontents.h"
+
+extern MapContents *_globalMapContents;
 
 ListViewTabs::ListViewTabs( QWidget* parent ) :
   QWidget( parent )
@@ -72,7 +75,7 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
 
 ListViewTabs::~ListViewTabs()
 {
-  qDebug() << "~ListViewTabs()";
+  // qDebug() << "~ListViewTabs()";
 }
 
 void ListViewTabs::showEvent( QShowEvent *event )
@@ -84,7 +87,7 @@ void ListViewTabs::showEvent( QShowEvent *event )
   GeneralConfig* conf = GeneralConfig::instance();
 
   // Check, if a flight task is activated.
-  if( _globalMapContents->getCurrentTask() == static_cast<FlightTask *> (0) )
+  if( _globalMapContents->getCurrentTask() != static_cast<FlightTask *> (0) )
     {
       if( viewTP->topLevelItemCount() )
 	{
@@ -102,12 +105,17 @@ void ListViewTabs::showEvent( QShowEvent *event )
       m_listViewTabs->addTab( viewRP, m_textRP );
     }
 
-  if( viewAF->topLevelItemCount() )
+  // If the lists are not empty, we should add the list tabulator.
+  // Note, that the list view can be empty. It is filled during the show event.
+  if( _globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
+      _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 )
     {
       m_listViewTabs->addTab( viewAF, m_textAF );
     }
 
-  if( viewOL->topLevelItemCount() )
+  // If the list is not empty, we should add the list tabulator.
+  // Note, that the list view can be empty. It is filled during the show event.
+  if( _globalMapContents->getListLength( MapContents::OutLandingList ) > 0 )
     {
       m_listViewTabs->addTab( viewOL, m_textOL );
     }
@@ -115,7 +123,7 @@ void ListViewTabs::showEvent( QShowEvent *event )
   QWidget::showEvent( event );
 }
 
-void ListViewTabs::setView( const MainWindow::AppView view )
+void ListViewTabs::setView( const int view )
 {
   int idx = -1;
 
@@ -154,7 +162,7 @@ void ListViewTabs::setView( const MainWindow::AppView view )
 
 void ListViewTabs::slotDone()
 {
-  // We remove all list and filter content after closing widget to spare memory.
+  // We remove all list and filter content before closing widget to spare memory.
   viewAF->listWidget()->slot_Done();
   viewOL->listWidget()->slot_Done();
   viewWP->listWidget()->slot_Done();

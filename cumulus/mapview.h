@@ -154,7 +154,10 @@ class MapView : public QWidget
     /**
      * pointer to the map widget
      */
-    Map* _theMap;
+    Map* getMap()
+    {
+      return _theMap;
+    }
 
   public slots:
     /**
@@ -327,6 +330,10 @@ class MapView : public QWidget
 
   private:
 
+    /**
+     * pointer to the map widget
+     */
+    Map* _theMap;
     /** Widget for info boxes at the left side of the map.*/
     QWidget* _sidebarWidget;
     /** reference to the heading label */

@@ -116,8 +116,6 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
  */
 MapView *_globalMapView = static_cast<MapView *> (0);
 
-bool MainWindow::m_rootWindow = true;
-
 // A signal SIGCONT has been catched. It is send out
 // when the cumulus process was stopped and then reactivated.
 // We have to renew the connection to our GPS Receiver.
@@ -2148,8 +2146,6 @@ void MainWindow::setView( const AppView newView )
     {
     case mapView:
 
-      m_rootWindow = true;
-
       // save new view value
       view = newView;
 
@@ -2212,7 +2208,6 @@ void MainWindow::setView( const AppView newView )
     case rpView:
     case wpView:
 
-      m_rootWindow = false;
       m_listViewTabs->show();
       m_listViewTabs->setView( newView );
 
@@ -2223,14 +2218,8 @@ void MainWindow::setView( const AppView newView )
 
       break;
 
-    case tpSwitchView:
-
-      m_rootWindow = false;
-      break;
-
     case flarmView:
       // called if Flarm view is created
-      m_rootWindow = false;
 
       // save new view value
       view = newView;
@@ -2360,7 +2349,6 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
       return;
     }
 
-
   WPInfoWidget* viewInfo = new WPInfoWidget( this );
 
   connect( viewInfo, SIGNAL( addWaypoint( Waypoint& ) ),
@@ -2376,14 +2364,6 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
   connect( viewInfo, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  if( m_rootWindow == true )
-    {
-      // The root window is active, so we must block exit actions.
-      slotSubWidgetOpened();
-      connect( viewInfo, SIGNAL( closingWindow() ),
-               this, SLOT( slotSubWidgetClosed() ) );
-    }
-
   viewInfo->showWP( view, *wp );
   viewInfo->show();
 }
@@ -2398,21 +2378,12 @@ void MainWindow::slotOpenConfig()
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
-  if( m_rootWindow == true )
-    {
-      // The root window is active, so we must block exit actions.
-      slotSubWidgetOpened();
-      connect( cDlg, SIGNAL( closeConfig() ), SLOT( slotSubWidgetClosed() ) );
-    }
-
   cDlg->setVisible( true );
 }
 
 /** Closes the configuration or pre-flight widget */
 void MainWindow::slotCloseConfig()
 {
-  m_rootWindow = true;
-
   if ( !calculator->gliderType().isEmpty() )
     {
       setWindowTitle ( "Cumulus - " + calculator->gliderType() );
@@ -2421,6 +2392,8 @@ void MainWindow::slotCloseConfig()
     {
       setWindowTitle( "Cumulus" );
     }
+
+  setNearestOrReachableHeaders();
 }
 
 /** Shows version, copyright, license and team information */
@@ -2719,13 +2692,6 @@ void MainWindow::slotOpenPreFlightConfig()
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
 
-  if( m_rootWindow == true )
-    {
-      // The root window is active, so we must block exit actions.
-      slotSubWidgetOpened();
-      connect( cDlg, SIGNAL( closeConfig() ), SLOT( slotSubWidgetClosed() ) );
-    }
-
   cDlg->setVisible( true );
 }
 
@@ -2892,24 +2858,6 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
 }
 
 /**
- * Called if a subwidget is opened.
- */
-void MainWindow::slotSubWidgetOpened()
-{
-  // Set the root window flag
-  m_rootWindow = false;
-}
-
-/**
- * Called if an opened subwidget is closed.
- */
-void MainWindow::slotSubWidgetClosed()
-{
-  // Set the root window flag
-  m_rootWindow = true;
-}
-
-/**
  * Called if logger recognized takeoff.
  */
 void MainWindow::slotTakeoff( QDateTime& dt )
@@ -3001,6 +2949,18 @@ void MainWindow::slotCloseSip()
   // Request the SIP closing from the focused widget
   QEvent event( QEvent::CloseSoftwareInputPanel );
   QApplication::sendEvent( widget, &event );
+}
+
+bool MainWindow::isRootWindow()
+{
+  if( hasFocus() && viewMap->getMap()->isVisible() )
+    {
+      return true;
+    }
+  else
+    {
+      return false;
+    }
 }
 
 // resize the list view tabs, if requested

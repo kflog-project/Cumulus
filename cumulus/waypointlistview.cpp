@@ -318,7 +318,7 @@ void WaypointListView::slot_deleteWp(Waypoint& wp)
   // Second delete the waypoint
   listw->deleteWaypoint( wp );
 
-  MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+  MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
 }
 
 /** Called when the selected waypoints should be deleted from the catalog */
@@ -371,7 +371,7 @@ void WaypointListView::slot_deleteWPs()
       // Second delete all selected waypoints
       listw->deleteSelectedWaypoints();
 
-      MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+      MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
    }
 }
 
@@ -425,7 +425,7 @@ void WaypointListView::slot_deleteAllWPs()
       // Second delete all waypoints
       listw->deleteAllWaypoints();
 
-      MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+      MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
     }
 }
 
@@ -441,7 +441,7 @@ void WaypointListView::slot_wpEdited( Waypoint& wp )
   listw->updateCurrentWaypoint( wp );
   listw->fillItemList();
 
-  MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+  MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
 }
 
 /** Called if a waypoint should be added. */
@@ -449,7 +449,7 @@ void WaypointListView::slot_addWp( Waypoint& wp )
 {
   listw->addWaypoint( wp );
 
-  MainWindow::mainWindow()->viewMap->_theMap->scheduleRedraw( Map::waypoints );
+  MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
 }
 
 /** Called to set a new home position */

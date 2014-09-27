@@ -49,7 +49,6 @@
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
-#include "ListViewTabs.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "wpinfowidget.h"
@@ -63,6 +62,8 @@
 #endif
 
 extern MainWindow  *_globalMainWindow;
+
+class ListViewTabs;
 
 class MainWindow : public QMainWindow
 {
@@ -80,7 +81,6 @@ public: // application view types
                  afView,        // airfield
                  olView,        // outlanding
                  tpView,        // taskpoint
-                 tpSwitchView,  // taskpoint switch
                  flarmView };   // flarm view
 
 public:
@@ -123,17 +123,9 @@ public:
   };
 
   /**
-   * \return The state of the root window flag.
+   * \return True, if main window is active otherwise false.
    */
-  static bool isRootWindow()
-  {
-    return m_rootWindow;
-  };
-
-  static void setRootWindow( bool value)
-  {
-    m_rootWindow = value;
-  };
+  bool isRootWindow();
 
 #ifdef INTERNET
 
@@ -236,16 +228,6 @@ public slots:
   void slotSetMenuFontSize();
 
   /**
-   * Called if a subwidget is opened.
-   */
-  void slotSubWidgetOpened();
-
-  /**
-   * Called if an opened subwidget is closed.
-   */
-  void slotSubWidgetClosed();
-
-  /**
    * Called if logger recognized takeoff.
    */
   void slotTakeoff( QDateTime& dt );
@@ -302,11 +284,6 @@ protected:
    * for confirmation
    */
   virtual void closeEvent (QCloseEvent*);
-
-protected:
-
-  /** contains the currently selected view mode */
-  AppView view;
 
 private slots:
   /**
@@ -446,6 +423,9 @@ private:
    * Overview about all list
    */
   ListViewTabs* m_listViewTabs;
+
+  /** contains the currently selected view mode */
+  AppView view;
 
   /** use manual navigation even if GPS signal is received */
   QAction* actionToggleGps;
