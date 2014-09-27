@@ -505,7 +505,12 @@ void TaskListView::slot_updateTask()
 /** Returns a pointer to the currently highlighted task point. */
 Waypoint *TaskListView::getSelectedWaypoint()
 {
-  return _selectedTp->getWaypointObject();
+  if( _selectedTp )
+    {
+      return _selectedTp->getWaypointObject();
+    }
+
+  return static_cast<Waypoint *>(0);
 }
 
 /** Resizes the columns of the task list to their contents. */
