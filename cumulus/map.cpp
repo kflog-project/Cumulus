@@ -429,47 +429,12 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
         	  // Workaround for declination a.s.o. These data are passed
         	  // as comment.
-        	  QString& comment = m_wp.comment;
-
-        	  if( rp->getChannel().isEmpty() == false )
+        	  if( m_wp.comment.isEmpty() == false )
         	    {
-        	      comment += tr("Channel ") + rp->getChannel();
+        	      m_wp.comment += ", ";
         	    }
 
-        	  if( rp->getRange() > 0.0 )
-        	    {
-        	      if( ! comment.isEmpty() )
-        		{
-        		  comment += ", ";
-        		}
-
-        	      comment += tr("Range ") +
-        		         Distance::getText(rp->getRange(), true, 0);
-        	    }
-
-        	  if( rp->getDeclination() != SHRT_MIN )
-        	    {
-        	      if( ! comment.isEmpty() )
-        		{
-        		  comment += ", ";
-        		}
-
-        	      comment += tr("Declination %1%2")
-        		         .arg( rp->getDeclination(), 0, 'f', 0 )
-        		         .arg( QChar(Qt::Key_degree) );
-        	    }
-
-		  if( ! comment.isEmpty() )
-		    {
-		      comment += ", ";
-		    }
-
-		  if( rp->isAligned2TrueNorth() )
-		    {
-		      comment += tr("Not ");
-		    }
-
-		  comment += tr("True N aligned");
+        	  m_wp.comment += rp->getAdditionalText();
         	}
 
               found = true;

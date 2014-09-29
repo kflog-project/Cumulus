@@ -168,6 +168,13 @@ class RadioPoint : public SinglePoint
       m_range = range;
     }
 
+  /**
+   * Combines channel, range, declination and north alignment as text string.
+   *
+   * \return additional items of radio point as text.
+   */
+  QString getAdditionalText() const;
+
  protected:
   /**
    * The frequency
