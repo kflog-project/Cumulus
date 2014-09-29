@@ -49,6 +49,7 @@
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
+#include "RadioPointListView.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "wpinfowidget.h"
@@ -80,6 +81,7 @@ public: // application view types
                  rpView,        // reachable
                  afView,        // airfield
                  olView,        // outlanding
+                 navAidsView,   // radio points
                  tpView,        // taskpoint
                  flarmView };   // flarm view
 
@@ -416,6 +418,7 @@ private:
   WaypointListView* viewWP;   // waypoints
   AirfieldListView* viewAF;   // airfields
   AirfieldListView* viewOL;   // outlandings
+  RadioPointListView* viewNA; // navigation aids (radio points)
   ReachpointListView* viewRP; // reachable points
   TaskListView* viewTP;       // task points
 

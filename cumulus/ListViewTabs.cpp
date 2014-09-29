@@ -56,18 +56,21 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
   itemList << MapContents::OutLandingList;
   viewOL = new AirfieldListView( itemList );
 
+  viewNA = new RadioPointListView();
   viewRP = new ReachpointListView();
   viewTP = new TaskListView();
   viewWP = new WaypointListView();
 
   m_textAF = tr( "Airfields" );
   m_textOL = tr( "Fields" );
+  m_textNA = tr( "NavAids" );
   m_textRP = tr( "Reachables" );
   m_textTP = tr( "Task" );
   m_textWP = tr( "Waypoints" );
 
   connect( viewAF, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewOL, SIGNAL(done()), SLOT(slotDone()) );
+  connect( viewNA, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewRP, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewTP, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewWP, SIGNAL(done()), SLOT(slotDone()) );
@@ -165,6 +168,7 @@ void ListViewTabs::slotDone()
   // We remove all list and filter content before closing widget to spare memory.
   viewAF->listWidget()->slot_Done();
   viewOL->listWidget()->slot_Done();
+  viewNA->listWidget()->slot_Done();
   viewWP->listWidget()->slot_Done();
 
   emit closed();

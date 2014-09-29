@@ -135,6 +135,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   viewWP(0),
   viewAF(0),
   viewOL(0),
+  viewNA(0),
   viewRP(0),
   viewTP(0),
   m_listViewTabs(0),
@@ -673,6 +674,7 @@ void MainWindow::slotCreateApplicationWidgets()
   viewWP = m_listViewTabs->viewWP;
   viewAF = m_listViewTabs->viewAF;
   viewOL = m_listViewTabs->viewOL;
+  viewNA = m_listViewTabs->viewNA;
   viewRP = m_listViewTabs->viewRP;
   viewTP = m_listViewTabs->viewTP;
 

@@ -32,6 +32,7 @@
 #include <QWidget>
 
 #include "airfieldlistview.h"
+#include "RadioPointListView.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "waypointlistview.h"
@@ -201,6 +202,7 @@ class ListViewTabs : public QWidget
    */
   AirfieldListView*   viewAF;
   AirfieldListView*   viewOL;
+  RadioPointListView* viewNA;
   ReachpointListView* viewRP;
   TaskListView*       viewTP;
   WaypointListView*   viewWP;
@@ -229,6 +231,7 @@ class ListViewTabs : public QWidget
    */
   QString m_textAF;
   QString m_textOL;
+  QString m_textNA;
   QString m_textRP;
   QString m_textTP;
   QString m_textWP;
