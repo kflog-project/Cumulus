@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -100,7 +100,6 @@ void AirfieldListWidget::fillItemList()
 /** Returns a pointer to the currently highlighted airfield. */
 Waypoint* AirfieldListWidget::getCurrentWaypoint()
 {
-  // qDebug("AirfieldListWidget::getCurrentWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
 
   if ( li == 0 )
@@ -108,10 +107,9 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
       return 0;
     }
 
-  // Now we're left with the real airfields
-  _AirfieldItem* afItem = static_cast<_AirfieldItem *> (li);
+  _AirfieldItem* afItem = dynamic_cast<_AirfieldItem *> (li);
 
-  // @ee may be null if the cast failed.
+  // May be null if the cast failed.
   if ( afItem == static_cast<_AirfieldItem *> (0) )
     {
       return static_cast<Waypoint *> (0);

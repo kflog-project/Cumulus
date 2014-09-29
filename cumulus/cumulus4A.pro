@@ -145,6 +145,7 @@ HEADERS = \
     projectionlambert.h \
     protocol.h \
     radiopoint.h \
+    RadioPointListWidget.h \
     reachablelist.h \
     reachablepoint.h \
     reachpointlistview.h \
@@ -271,6 +272,7 @@ SOURCES = \
     projectioncylindric.cpp \
     projectionlambert.cpp \
     radiopoint.cpp \
+    RadioPointListWidget.cpp \
     reachablelist.cpp \
     reachablepoint.cpp \
     reachpointlistview.cpp \

@@ -39,6 +39,9 @@ RadioPointListWidget::RadioPointListWidget( QWidget *parent,
   setObjectName("RadioPointListWidget");
   list->setObjectName("RpTreeWidget");
 
+  QTreeWidgetItem *headerItem = list->headerItem();
+  headerItem->setText( 3, tr("Comment") );
+
 #ifdef QSCROLLER
   QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
@@ -67,7 +70,13 @@ void RadioPointListWidget::fillItemList()
 
   for( int item = 0; item < rpListSize; item++ )
     {
-      RadioPoint* site = _globalMapContents->getElement( MapContents::RadioList, item );
+      RadioPoint* site = dynamic_cast<RadioPoint *> (_globalMapContents->getElement( MapContents::RadioList, item ));
+
+      if( site == 0 )
+	{
+	  continue;
+        }
+
       filter->addListItem( new _RadioPointItem(site) );
     }
 
@@ -117,9 +126,7 @@ Waypoint* RadioPointListWidget::getCurrentWaypoint()
 RadioPointListWidget::_RadioPointItem::_RadioPointItem(RadioPoint* site) :
   QTreeWidgetItem(), radioPoint(site)
 {
-  QString name = site->getWPName();
-  // Limitation for name is set in Welt2000 to 8 characters
-  setText(0, name);
+  setText(0, site->getWPName());
   setText(1, site->getName());
   setText(2, site->getCountry());
   setTextAlignment(2, Qt::AlignCenter);
