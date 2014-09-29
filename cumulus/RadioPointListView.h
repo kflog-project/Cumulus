@@ -53,17 +53,12 @@ public:
 
   virtual ~RadioPointListView();
 
-  /**
-   * @return a pointer to the currently selected list entry
-   */
-  Waypoint *getSelectedEntry(QTreeWidget *list=0);
-
   RadioPointListWidget* listWidget()
     {
       return listw;
     };
 
-  Waypoint* getSelectedEntry()
+  Waypoint* getCurrentEntry()
     {
       return listw->getCurrentWaypoint();
     };

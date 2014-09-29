@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef QT_5
@@ -484,11 +482,11 @@ void ReachpointListView::slot_HideOl()
 /** This slot is called to indicate that a selection has been made. */
 void ReachpointListView::slot_Select()
 {
-  Waypoint* wp = getSelectedWaypoint();
+  Waypoint* wp = getCurrentEntry();
 
   if( wp )
     {
-      emit newWaypoint(getSelectedWaypoint(), true);
+      emit newWaypoint(getCurrentEntry(), true);
       emit done();
     }
 }
@@ -496,7 +494,7 @@ void ReachpointListView::slot_Select()
 /** This slot is called if the info button has been pressed */
 void ReachpointListView::slot_Info()
 {
-  Waypoint* airfieldInfo = getSelectedWaypoint();
+  Waypoint* airfieldInfo = getCurrentEntry();
 
   if ( airfieldInfo )
     {
@@ -524,7 +522,7 @@ void ReachpointListView::slot_Selected()
 
   // @AP: this slot is also called, if the list is cleared and a selection
   // does exist. In such a case the returned waypoint is a Null pointer!
-  Waypoint* wp = getSelectedWaypoint();
+  Waypoint* wp = getCurrentEntry();
 
   if( wp == static_cast<Waypoint *>(0) )
     {
@@ -541,7 +539,7 @@ void ReachpointListView::slot_Selected()
       cmdHome->setEnabled(true);
     }
 
-  if( ReachpointListView::getSelectedWaypoint()->equals(calculator->getselectedWp()) )
+  if( ReachpointListView::getCurrentEntry()->equals(calculator->getselectedWp()) )
     {
       cmdSelect->setEnabled(false);
     }
@@ -552,7 +550,7 @@ void ReachpointListView::slot_Selected()
 }
 
 /** Returns a pointer to the currently selected reachpoint. */
-Waypoint* ReachpointListView::getSelectedWaypoint()
+Waypoint* ReachpointListView::getCurrentEntry()
 {
   int n =  calculator->getReachList()->getNumberSites();
   QTreeWidgetItem* li = list->currentItem();
@@ -596,7 +594,7 @@ void ReachpointListView::slot_newList()
  */
 void ReachpointListView::slot_Home()
 {
-  Waypoint* _wp = getSelectedWaypoint();
+  Waypoint* _wp = getCurrentEntry();
 
   if( _wp == static_cast<Waypoint *> ( 0 ) )
     {

@@ -710,6 +710,8 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewOL, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
+           viewNA, SLOT( slot_reloadList() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewWP, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewTP, SLOT( slot_updateTask() ) );
@@ -783,6 +785,15 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewOL, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewOL, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
+
+  connect( viewNA, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
+  connect( viewNA, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
+  connect( viewNA, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewNA, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
   connect( viewRP, SIGNAL( newWaypoint( Waypoint*, bool ) ),
@@ -2206,6 +2217,7 @@ void MainWindow::setView( const AppView newView )
         }
 
     case afView:
+    case naView:
     case olView:
     case rpView:
     case wpView:
@@ -2318,23 +2330,27 @@ void MainWindow::slotSwitchToInfoView()
 {
   if ( view == wpView )
     {
-      slotSwitchToInfoView( viewWP->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewWP->getCurrentEntry() );
     }
-  if ( view == rpView )
+  else if ( view == rpView )
     {
-      slotSwitchToInfoView( viewRP->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewRP->getCurrentEntry() );
     }
-  if ( view == afView )
+  else if ( view == afView )
     {
-      slotSwitchToInfoView( viewAF->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewAF->getCurrentEntry() );
     }
-  if ( view == olView )
+  else if ( view == olView )
     {
-      slotSwitchToInfoView( viewOL->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewOL->getCurrentEntry() );
     }
-  if ( view == tpView )
+  else if ( view == tpView )
     {
-      slotSwitchToInfoView( viewTP->getSelectedWaypoint() );
+      slotSwitchToInfoView( viewTP->getCurrentEntry() );
+    }
+  else if ( view == naView )
+    {
+      slotSwitchToInfoView( viewNA->getCurrentEntry() );
     }
   else
     {
@@ -2557,6 +2573,7 @@ void MainWindow::slotReadconfig()
 
   viewRP->fillRpList();
   viewAF->listWidget()->configRowHeight();
+  viewNA->listWidget()->configRowHeight();
   viewOL->listWidget()->configRowHeight();
   viewWP->listWidget()->configRowHeight();
 

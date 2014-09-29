@@ -59,7 +59,7 @@ public:
   virtual ~ReachpointListView();
 
   /** Returns a pointer to the currently highlighted waypoint. */
-  Waypoint* getSelectedWaypoint();
+  Waypoint* getCurrentEntry();
 
   /**
    * Retrieves the waypoints from the map and fills the list.

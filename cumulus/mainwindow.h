@@ -81,7 +81,7 @@ public: // application view types
                  rpView,        // reachable
                  afView,        // airfield
                  olView,        // outlanding
-                 navAidsView,   // radio points
+                 naView,        // nav aids (radio) points
                  tpView,        // taskpoint
                  flarmView };   // flarm view
 

@@ -32,6 +32,7 @@ RadioPointListView::RadioPointListView( QWidget *parent ) :
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
+  listw = new RadioPointListWidget;
   topLayout->addWidget(listw, 10);
 
   QBoxLayout *buttonrow=new QHBoxLayout;

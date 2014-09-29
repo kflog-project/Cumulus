@@ -32,12 +32,11 @@
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
-RadioPointListWidget::RadioPointListWidget( QWidget *parent,
-                                           bool showMovePage ) :
+RadioPointListWidget::RadioPointListWidget( QWidget *parent, bool showMovePage ) :
   ListWidgetParent( parent, showMovePage )
 {
   setObjectName("RadioPointListWidget");
-  list->setObjectName("RpTreeWidget");
+  list->setObjectName("RadioPointTreeWidget");
 
   QTreeWidgetItem *headerItem = list->headerItem();
   headerItem->setText( 3, tr("Comment") );
@@ -130,10 +129,9 @@ RadioPointListWidget::_RadioPointItem::_RadioPointItem(RadioPoint* site) :
   setText(1, site->getName());
   setText(2, site->getCountry());
   setTextAlignment(2, Qt::AlignCenter);
-  setText(3, site->getComment());
+  setText(3, site->getAdditionalText());
 
   // set landing site type icon
   QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false, false);
-
   setIcon( 0, QIcon( pm) );
 }

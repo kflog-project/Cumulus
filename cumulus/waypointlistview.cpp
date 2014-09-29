@@ -268,7 +268,7 @@ void WaypointListView::slot_editWP()
       return;
     }
 
-  Waypoint *wp = getSelectedWaypoint();
+  Waypoint *wp = getCurrentEntry();
 
   if( wp )
     {

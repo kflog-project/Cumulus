@@ -123,6 +123,13 @@ void ListViewTabs::showEvent( QShowEvent *event )
       m_listViewTabs->addTab( viewOL, m_textOL );
     }
 
+  // If the list is not empty, we should add the list tabulator.
+  // Note, that the list view can be empty. It is filled during the show event.
+  if( _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
+    {
+      m_listViewTabs->addTab( viewNA, m_textNA );
+    }
+
   QWidget::showEvent( event );
 }
 
@@ -137,9 +144,13 @@ void ListViewTabs::setView( const int view )
 	idx = m_listViewTabs->indexOf( viewAF );
 	break;
 
+      case MainWindow::naView:
+        idx = m_listViewTabs->indexOf( viewNA );
+        break;
+
       case MainWindow::olView:
-	idx = m_listViewTabs->indexOf( viewOL );
-	break;
+        idx = m_listViewTabs->indexOf( viewOL );
+        break;
 
       case MainWindow::rpView:
 	idx = m_listViewTabs->indexOf( viewRP );

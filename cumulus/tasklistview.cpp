@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 **   Displays all points of a task as list with different buttons for
 **   actions. Can be used in two modes, as display only, buttons for
 **   actions are not visible or with command buttons.
@@ -339,7 +337,7 @@ void TaskListView::slot_Select()
   else
     {
       _currSelectedTp = _newSelectedTp; // save last selection
-      emit newWaypoint(getSelectedWaypoint(), true);
+      emit newWaypoint(getCurrentEntry(), true);
       emit done();
     }
 }
@@ -347,9 +345,9 @@ void TaskListView::slot_Select()
 /** This slot is called if the info button has been clicked */
 void TaskListView::slot_Info()
 {
-  if (getSelectedWaypoint())
+  if (getCurrentEntry())
     {
-      emit info(getSelectedWaypoint());
+      emit info(getCurrentEntry());
     }
 }
 
@@ -503,7 +501,7 @@ void TaskListView::slot_updateTask()
 }
 
 /** Returns a pointer to the currently highlighted task point. */
-Waypoint *TaskListView::getSelectedWaypoint()
+Waypoint *TaskListView::getCurrentEntry()
 {
   if( _selectedTp )
     {

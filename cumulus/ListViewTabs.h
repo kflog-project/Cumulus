@@ -96,6 +96,23 @@ class ListViewTabs : public QWidget
       }
   }
 
+  const QString& getTextNa() const
+  {
+    return m_textNA;
+  }
+
+  void setTextNa(const QString& text)
+  {
+    m_textNA = text;
+
+    int idx = m_listViewTabs->indexOf( viewNA );
+
+    if( idx != -1 )
+      {
+        m_listViewTabs->setTabText( idx, text );
+      }
+  }
+
   const QString& getTextRp () const
   {
     return m_textRP;

@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c): 2002      by André Somers
-**                  2007-2012 by Axel Pauli
+**                  2007-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -23,7 +21,7 @@
  *
  * \brief This widget provides a list of waypoints and a means to select one.
  *
- * \date 2002-2012
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -65,7 +63,7 @@ public:
     return listw->topLevelItemCount();
   };
 
-  Waypoint* getSelectedWaypoint()
+  Waypoint* getCurrentEntry()
   {
     return listw->getCurrentWaypoint();
   };

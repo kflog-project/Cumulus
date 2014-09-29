@@ -63,7 +63,7 @@ public:
   /**
    * @return A pointer to the currently high lighted waypoint.
    */
-  Waypoint *getSelectedWaypoint();
+  Waypoint *getCurrentEntry();
 
   /** clears all data of the list */
   void clear();
