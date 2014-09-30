@@ -163,6 +163,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionViewInfo(0),
   actionViewWaypoints(0),
   actionViewAirfields(0),
+  actionViewNavAids(0),
   actionViewReachpoints(0),
   actionViewTaskpoints(0),
 #ifdef FLARM
@@ -1230,6 +1231,7 @@ void MainWindow::createMenuBar()
 
   viewMenu->addAction( actionViewReachpoints );
   viewMenu->addAction( actionViewAirfields );
+  viewMenu->addAction( actionViewNavAids );
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
   viewMenu->addAction( actionViewTaskpoints );
@@ -1315,6 +1317,7 @@ void MainWindow::createContextMenu()
 
   viewMenu->addAction( actionViewReachpoints );
   viewMenu->addAction( actionViewAirfields );
+  viewMenu->addAction( actionViewNavAids );
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
   viewMenu->addAction( actionViewTaskpoints );
@@ -1604,6 +1607,11 @@ void MainWindow::createActions()
   connect( actionViewAirfields, SIGNAL( triggered() ),
             this, SLOT( slotSwitchToAFListView() ) );
 
+  actionViewNavAids = new QAction ( tr( "Navaids" ), this );
+  addAction( actionViewNavAids );
+  connect( actionViewNavAids, SIGNAL( triggered() ),
+            this, SLOT( slotSwitchToNavAidsListView() ) );
+
   actionViewReachpoints = new QAction ( tr( "Reachable" ), this );
 #ifndef ANDROID
   actionViewReachpoints->setShortcut(Qt::Key_R);
@@ -1851,7 +1859,28 @@ void  MainWindow::toggleActions( const bool toggle )
 #endif
 
   actionViewWaypoints->setEnabled( toggle );
-  actionViewAirfields->setEnabled( toggle );
+
+  if( toggle == true &&
+      (_globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
+       _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0) )
+    {
+      actionViewAirfields->setEnabled( true );
+    }
+  else
+    {
+      actionViewAirfields->setEnabled( false );
+    }
+
+  if( toggle == true &&
+      _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
+    {
+      actionViewNavAids->setEnabled( true );
+    }
+  else
+    {
+      actionViewNavAids->setEnabled( false );
+    }
+
   actionStatusAirspace->setEnabled( toggle );
   actionStatusGPS->setEnabled( toggle );
   actionZoomInZ->setEnabled( toggle );
@@ -2199,7 +2228,9 @@ void MainWindow::setView( const AppView newView )
 
       // Switch on all action shortcuts in this view
       toggleActions( true );
-      viewMap->statusBar()->clearMessage(); // remove temporary status bar messages
+
+      // remove temporary status bar messages
+      viewMap->statusBar()->clearMessage();
 
       // If we returned to the map view, we should schedule a redraw of the
       // air spaces and the navigation layer. Map is not drawn, when invisible
@@ -2313,6 +2344,12 @@ void MainWindow::slotSwitchToOLListView()
   setView( olView );
 }
 
+/** Switches to the list with all the nav aids. */
+void MainWindow::slotSwitchToNavAidsListView()
+{
+  setView( naView );
+}
+
 /** Switches to the ReachablePointList View */
 void MainWindow::slotSwitchToReachListView()
 {
@@ -2412,6 +2449,7 @@ void MainWindow::slotCloseConfig()
     }
 
   setNearestOrReachableHeaders();
+  setView( mapView );
 }
 
 /** Shows version, copyright, license and team information */

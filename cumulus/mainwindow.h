@@ -81,7 +81,7 @@ public: // application view types
                  rpView,        // reachable
                  afView,        // airfield
                  olView,        // outlanding
-                 naView,        // nav aids (radio) points
+                 naView,        // navaids (radio) points
                  tpView,        // taskpoint
                  flarmView };   // flarm view
 
@@ -160,13 +160,17 @@ public slots:
    */
   void slotSwitchToWPListViewExt();
   /**
-   * Switches to the list with all loaded airfields
+   * Switches to the list with all the  airfields
    */
   void slotSwitchToAFListView();
   /**
-   * Switches to the list with all loaded outlandings
+   * Switches to the list with all the outlandings
    */
   void slotSwitchToOLListView();
+  /**
+   * Switches to the list with all the nav aids.
+   */
+  void slotSwitchToNavAidsListView();
   /**
    * Switches to the list with all the reachable fields
    */
@@ -456,6 +460,7 @@ private:
   QAction* actionViewInfo;
   QAction* actionViewWaypoints;
   QAction* actionViewAirfields;
+  QAction* actionViewNavAids;
   QAction* actionViewReachpoints;
   QAction* actionViewTaskpoints;
 

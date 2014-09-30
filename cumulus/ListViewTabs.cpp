@@ -83,8 +83,6 @@ ListViewTabs::~ListViewTabs()
 
 void ListViewTabs::showEvent( QShowEvent *event )
 {
-  qDebug() << "ListViewTabs::showEvent()";
-
   m_listViewTabs->clear();
 
   GeneralConfig* conf = GeneralConfig::instance();
