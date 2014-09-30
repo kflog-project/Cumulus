@@ -582,17 +582,8 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       out << rp.getPosition();
       // elevation in meters
       out << qint16( rp.getElevation());
-
-      // frequency is written as e.g. 126.575, is reduced to 16 bits
-      if( rp.getFrequency() == 0.0 )
-        {
-          out << quint16(0);
-        }
-      else
-        {
-          out << quint16( rint((rp.getFrequency() - 100.0) * 1000.0 ));
-        }
-
+      // frequency is save in MHz
+      out << rp.getFrequency();
       // Channel info
       ShortSave(out, rp.getChannel().toUtf8());
       // Service range as float
@@ -770,7 +761,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
   WGSPoint wgsPos;
   QPoint position;
   qint16 elevation;
-  quint16 inFrequency;
+  float inFrequency;
   float range;
   float declination;
   quint8 isAligned2TrueNorth;
@@ -811,16 +802,8 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
       in >> elevation; rp.setElevation(elevation);
 
-      in >> inFrequency;
-
-      if( inFrequency == 0 )
-        {
-          rp.setFrequency( 0.0 );
-        }
-      else
-        {
-          rp.setFrequency((((float) inFrequency) / 1000.0) + 100.);
-        }
+      // Frequency in MHz
+      in >> inFrequency; rp.setFrequency( inFrequency );
 
       // Channel info
       ShortLoad(in, utf8_temp);
