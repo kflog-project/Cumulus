@@ -48,9 +48,6 @@ CONFIG += flarm
 # Enable Internet features, if not wanted comment out the next line with a hash
 CONFIG += internet
 
-# Enable classical menu bar, if define is set. Otherwise a context menu is used.
-# DEFINES += USE_MENUBAR
-
 # Activate QScroller in dependency of the Qt release
 lessThan(QT_MAJOR_VERSION, 5) {
   # Activate this, if Qt class QScroller is not available. QT < 5

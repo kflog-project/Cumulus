@@ -192,6 +192,16 @@ class MapContents : public QObject
     void drawList( QPainter* targetP,
                    unsigned int listID,
                    QList<Airfield*> &drawnAfList );
+
+    /**
+     * Draws all elements of a list into the painter.
+     *
+     * @param  targetP  The painter to draw the elements into
+     * @param  drawnNaList Add all drawn objects to this list
+     */
+    void drawList( QPainter* targetP,
+                   QList<RadioPoint*> &drawnNaList );
+
     /**
      * Draws all elements of a list into the painter.
      *

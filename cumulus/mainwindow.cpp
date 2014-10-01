@@ -25,9 +25,6 @@
  *  and to initiate the load of the map and all other data.
  */
 
-// The define USE_MENUBAR can be used to get a classical menu bar. But enable
-// it in the related qmake project file only!
-
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
@@ -154,7 +151,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionGpsNavWPList(0),
   actionGpsNavZoomIn(0),
   actionGpsNavZoomOut(0),
-  actionMenuBarToggle(0),
   actionOpenContextMenu(0),
   actionFileQuit(0),
 #ifdef ANDROID
@@ -164,6 +160,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionViewWaypoints(0),
   actionViewAirfields(0),
   actionViewNavAids(0),
+  actionViewOutlandings(0),
   actionViewReachpoints(0),
   actionViewTaskpoints(0),
 #ifdef FLARM
@@ -178,6 +175,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionToggleWindowSize(0),
   actionToggleAfLabels(0),
   actionToggleOlLabels(0),
+  actionToggleNaLabels(0),
   actionToggleTpLabels(0),
   actionToggleWpLabels(0),
   actionToggleLabelsInfo(0),
@@ -690,12 +688,7 @@ void MainWindow::slotCreateApplicationWidgets()
 #endif
 
   createActions();
-
-#ifdef USE_MENUBAR
-  createMenuBar();
-#else
   createContextMenu();
-#endif
 
   ws->slot_SetText1( tr( "Setting up connections..." ) );
 
@@ -836,11 +829,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
 
-#ifdef USE_MENUBAR
-  connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotToggleMenu() ) );
-#else
   connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotShowContextMenu() ) );
-#endif
 
   connect( calculator, SIGNAL( newWaypoint( const Waypoint* ) ),
            viewMap, SLOT( slot_Waypoint( const Waypoint* ) ) );
@@ -1215,87 +1204,8 @@ void MainWindow::slotNotification( const QString& msg, const bool sound )
     }
 }
 
-void MainWindow::createMenuBar()
-{
-#ifdef USE_MENUBAR
-
-  fileMenu = menuBar()->addMenu(tr("File"));
-  fileMenu->addAction( actionFileQuit );
-
-  viewMenu = menuBar()->addMenu(tr("View"));
-
-#ifdef FLARM
-  viewMenu->addAction( actionViewFlarm );
-  viewMenu->addSeparator();
-#endif
-
-  viewMenu->addAction( actionViewReachpoints );
-  viewMenu->addAction( actionViewAirfields );
-  viewMenu->addAction( actionViewNavAids );
-  viewMenu->addAction( actionViewInfo );
-  actionViewInfo->setEnabled( false );
-  viewMenu->addAction( actionViewTaskpoints );
-  actionViewTaskpoints->setEnabled( false );
-  viewMenu->addAction( actionViewWaypoints );
-
-  labelMenu = menuBar()->addMenu( tr("Toggles"));
-  labelSubMenu = labelMenu->addMenu( tr("Labels"));
-  labelSubMenu->addAction( actionToggleAfLabels );
-  labelSubMenu->addAction( actionToggleOlLabels );
-  labelSubMenu->addAction( actionToggleTpLabels );
-  labelSubMenu->addAction( actionToggleWpLabels );
-  labelSubMenu->addAction( actionToggleLabelsInfo );
-  labelMenu->addSeparator();
-
-#ifndef ANDROID
-  labelMenu->addAction( actionToggleGps );
-#endif
-
-  labelMenu->addAction( actionToggleLogging );
-  labelMenu->addAction( actionToggleTrailDrawing );
-  labelMenu->addSeparator();
-
-#ifndef ANDROID
-  labelMenu->addAction( actionToggleWindowSize );
-#endif
-
-  labelMenu->addAction( actionToggleMapSidebar );
-  labelMenu->addAction( actionToggleStatusbar );
-
-  mapMenu = menuBar()->addMenu(tr("Map"));
-  mapMenu->addAction( actionSelectTask );
-  mapMenu->addAction( actionManualNavMove2Home );
-  mapMenu->addAction( actionNav2Home );
-  mapMenu->addAction( actionEnsureVisible );
-
-  statusMenu = contextMenu->addMenu(tr("Status") + " ");
-  statusMenu->addAction( actionStatusAirspace );
-  statusMenu->addAction( actionStatusGPS );
-
-  setupMenu = menuBar()->addMenu(tr("Setup"));
-  setupMenu->addAction( actionSetupConfig );
-  setupMenu->addAction( actionPreFlight );
-  setupMenu->addAction( actionSetupInFlight );
-
-  helpMenu = menuBar()->addMenu(tr("Help"));
-  helpMenu->addAction( actionHelpCumulus );
-  helpMenu->addAction( actionHelpAboutApp );
-
-#if ! defined ANDROID && ! defined MAEMO
-  helpMenu->addAction( actionHelpAboutQt );
-#endif
-
-  menuBar()->setVisible( false );
-
-  slotSetMenuFontSize();
-
-#endif
-}
-
 void MainWindow::createContextMenu()
 {
-#ifndef USE_MENUBAR
-
   contextMenu = new QMenu(this);
   contextMenu->setVisible(false);
 
@@ -1317,6 +1227,7 @@ void MainWindow::createContextMenu()
 
   viewMenu->addAction( actionViewReachpoints );
   viewMenu->addAction( actionViewAirfields );
+  viewMenu->addAction( actionViewOutlandings );
   viewMenu->addAction( actionViewNavAids );
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
@@ -1328,6 +1239,7 @@ void MainWindow::createContextMenu()
   labelSubMenu = labelMenu->addMenu( tr("Labels") + " ");
   labelSubMenu->addAction( actionToggleAfLabels );
   labelSubMenu->addAction( actionToggleOlLabels );
+  labelSubMenu->addAction( actionToggleNaLabels );
   labelSubMenu->addAction( actionToggleTpLabels );
   labelSubMenu->addAction( actionToggleWpLabels );
   labelSubMenu->addAction( actionToggleLabelsInfo );
@@ -1372,8 +1284,6 @@ void MainWindow::createContextMenu()
 
 #if ! defined ANDROID && ! defined MAEMO
   helpMenu->addAction( actionHelpAboutQt );
-#endif
-
 #endif
 }
 
@@ -1425,10 +1335,6 @@ void MainWindow::slotSetMenuFontSize()
 void MainWindow::createActions()
 {
   ws->slot_SetText1( tr( "Setting up key shortcuts ..." ) );
-
-  // most shortcuts are now QActions these could also go as
-  // QAction, even when not in a menu
-  // @JD done. Uff!
 
   // Note: The ampersand in the QAction item's text "&File" sets Alt+F as a
   //       shortcut for this menu. You can use "&&" to get a real ampersand
@@ -1536,28 +1442,16 @@ void MainWindow::createActions()
   connect( actionGpsNavZoomOut, SIGNAL( triggered() ),
             Map::instance, SLOT( slotZoomOut() ) );
 
-  // Toggle menu bar
-  actionMenuBarToggle = new QAction( tr( "Toggle menu" ), this );
-
   // Show context menu
   actionOpenContextMenu = new QAction( tr( "Open menu" ), this );
 
   QList<QKeySequence> mBTSCList;
   mBTSCList << Qt::Key_M << Qt::Key_F4;
 
-#ifdef USE_MENUBAR
-
-  actionMenuBarToggle->setShortcuts( mBTSCList );
-  addAction( actionMenuBarToggle );
-  connect( actionMenuBarToggle, SIGNAL( triggered() ),
-           this, SLOT( slotToggleMenu() ) );
-#else
-
   actionOpenContextMenu->setShortcuts( mBTSCList );
   addAction( actionOpenContextMenu );
   connect( actionOpenContextMenu, SIGNAL( triggered() ),
            this, SLOT( slotShowContextMenu() ) );
-#endif
 
   // Toggle window size
   actionToggleWindowSize = new QAction( tr( "Window" ), this );
@@ -1606,6 +1500,11 @@ void MainWindow::createActions()
   addAction( actionViewAirfields );
   connect( actionViewAirfields, SIGNAL( triggered() ),
             this, SLOT( slotSwitchToAFListView() ) );
+
+  actionViewOutlandings = new QAction ( tr( "Fields" ), this );
+  addAction( actionViewOutlandings );
+  connect( actionViewOutlandings, SIGNAL( triggered() ),
+            this, SLOT( slotSwitchToOLListView() ) );
 
   actionViewNavAids = new QAction ( tr( "Navaids" ), this );
   addAction( actionViewNavAids );
@@ -1687,6 +1586,16 @@ void MainWindow::createActions()
   connect( actionToggleAfLabels, SIGNAL( toggled( bool ) ),
             this, SLOT( slotToggleAfLabels( bool ) ) );
 
+  actionToggleNaLabels = new QAction ( tr( "NavAids" ), this);
+#ifndef ANDROID
+  actionToggleNaLabels->setShortcut(Qt::Key_N);
+#endif
+  actionToggleNaLabels->setCheckable(true);
+  actionToggleNaLabels->setChecked( GeneralConfig::instance()->getMapShowNavAidsLabels() );
+  addAction( actionToggleNaLabels );
+  connect( actionToggleNaLabels, SIGNAL( toggled( bool ) ),
+            this, SLOT( slotToggleNaLabels( bool ) ) );
+
   actionToggleOlLabels = new QAction ( tr( "Outlanding" ), this);
 #ifndef ANDROID
   actionToggleOlLabels->setShortcut(Qt::Key_O);
@@ -1696,6 +1605,7 @@ void MainWindow::createActions()
   addAction( actionToggleOlLabels );
   connect( actionToggleOlLabels, SIGNAL( toggled( bool ) ),
             this, SLOT( slotToggleOlLabels( bool ) ) );
+
 
   actionToggleTpLabels = new QAction ( tr( "Taskpoint" ), this);
 #ifndef ANDROID
@@ -1920,7 +1830,7 @@ void  MainWindow::toggleActions( const bool toggle )
           actionViewInfo->setEnabled( toggle );
         }
 
-      if ( _globalMapContents->getCurrentTask() )
+      if( _globalMapContents->getCurrentTask() )
         {
           // allow action only if a task is defined
           actionViewTaskpoints->setEnabled( toggle );
@@ -2075,34 +1985,70 @@ void MainWindow::closeEvent( QCloseEvent* event )
     }
 }
 
-void MainWindow::slotToggleMenu()
+void MainWindow::slotShowContextMenu()
 {
-#ifdef USE_MENUBAR
-
-  if ( !menuBar()->isVisible() )
+  // We switch off the visibility all actions, which should not be to seen
+  // by the user.
+  if (_globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
+      _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 )
     {
-
-#ifndef ANDROID
-
-      actionToggleGps->setEnabled( ! calculator->moving() );
-      actionToggleGps->setVisible( ! calculator->moving() );
-
-#endif
-
-      m_menuBarVisible = true;
-      menuBar()->setVisible( true );
+      actionViewAirfields->setVisible( true );
+      actionToggleAfLabels->setVisible( true );
     }
   else
     {
-      m_menuBarVisible = false;
-      menuBar()->setVisible( false );
+      actionViewAirfields->setVisible( false );
+      actionToggleAfLabels->setVisible( false );
     }
 
-#endif
-}
+  if( _globalMapContents->getListLength( MapContents::OutLandingList ) > 0 )
+    {
+      actionViewOutlandings->setVisible( true );
+      actionToggleOlLabels->setVisible( true );
+    }
+  else
+    {
+      actionViewOutlandings->setVisible( false );
+      actionToggleOlLabels->setVisible( false );
+    }
 
-void MainWindow::slotShowContextMenu()
-{
+  if( _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
+    {
+      actionViewNavAids->setVisible( true );
+      actionToggleNaLabels->setVisible( true );
+    }
+  else
+    {
+      actionViewNavAids->setVisible( false );
+      actionToggleNaLabels->setVisible( false );
+    }
+
+  GeneralConfig * conf = GeneralConfig::instance();
+  actionViewReachpoints->setVisible( conf->getNearestSiteCalculatorSwitch() );
+
+  if( calculator->getselectedWp() )
+    {
+      // show action only if a waypoint is selected
+      actionViewInfo->setVisible( true );
+      actionEnsureVisible->setVisible( true );
+    }
+  else
+    {
+      actionViewInfo->setVisible( false );
+      actionEnsureVisible->setVisible( false );
+    }
+
+  if( _globalMapContents->getCurrentTask() )
+    {
+      // show action only if a task is defined
+      actionViewTaskpoints->setVisible( true );
+      actionToggleTpLabels->setVisible( true );
+    }
+  else
+    {
+      actionViewTaskpoints->setVisible( false );
+      actionToggleTpLabels->setVisible( false );
+    }
 
 #ifndef ANDROID
 
@@ -2125,6 +2071,14 @@ void MainWindow::slotToggleAfLabels( bool toggle )
   GeneralConfig::instance()->setMapShowAirfieldLabels( toggle );
   GeneralConfig::instance()->save();
   Map::instance->scheduleRedraw(Map::airfields);
+}
+
+void MainWindow::slotToggleNaLabels( bool toggle )
+{
+  // save configuration change
+  GeneralConfig::instance()->setMapShowNavAidsLabels( toggle );
+  GeneralConfig::instance()->save();
+  Map::instance->scheduleRedraw(Map::radioPoints);
 }
 
 void MainWindow::slotToggleOlLabels( bool toggle )
@@ -2195,20 +2149,6 @@ void MainWindow::setView( const AppView newView )
       // not routed to it
       setFocus();
 
-#ifdef USE_MENUBAR
-      // @AP: We display the menu bar only in the map view widget,
-      // if it is visible. In all other views we hide it to save
-      // space for the other widgets.
-      if( m_menuBarVisible )
-        {
-          menuBar()->setVisible( true );
-        }
-      else
-        {
-          menuBar()->setVisible( false );
-        }
-#endif
-
       fileMenu->setEnabled( true );
       mapMenu->setEnabled( true );
       viewMenu->setEnabled( true );
@@ -2223,7 +2163,6 @@ void MainWindow::setView( const AppView newView )
       toggleGpsNavActions( GpsNmea::gps->getGpsStatus() == GpsNmea::validFix &&
                            !calculator->isManualInFlight() );
 
-      actionMenuBarToggle->setEnabled( true );
       actionOpenContextMenu->setEnabled( true );
 
       // Switch on all action shortcuts in this view
@@ -2269,13 +2208,8 @@ void MainWindow::setView( const AppView newView )
       // save new view value
       view = newView;
 
-#ifdef USE_MENUBAR
-      menuBar()->setVisible( false );
-#endif
-
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
-      actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
       toggleActions( false );
       break;
@@ -2889,7 +2823,6 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
      {
       // Disable menu shortcut during drawing to avoid
       // event avalanche, if the user holds the key down longer.
-      actionMenuBarToggle->setEnabled( false );
       actionOpenContextMenu->setEnabled( false );
 
       if( view == mapView )
@@ -2900,7 +2833,6 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
      }
    else
      {
-       actionMenuBarToggle->setEnabled( true );
        actionOpenContextMenu->setEnabled( true );
 
        if( view == mapView )

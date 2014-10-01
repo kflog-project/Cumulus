@@ -276,11 +276,6 @@ protected:
   void toggleGpsNavActions( const bool toggle );
 
   /**
-   * Creates the menu bar
-   */
-  void createMenuBar();
-
-  /**
    * Creates the context menu
    */
   void createContextMenu();
@@ -304,11 +299,6 @@ private slots:
    * as good as possible.
    */
   void slotEnsureVisible();
-
-  /**
-   * Called to toggle the menu bar.
-   */
-  void slotToggleMenu();
 
   /**
    * Called to show the context menu.
@@ -339,6 +329,11 @@ private slots:
    * Called if the label displaying is actually toggled
    */
   void slotToggleAfLabels (bool toggle);
+
+  /**
+   * Called if the label displaying is actually toggled
+   */
+  void slotToggleNaLabels (bool toggle);
 
   /**
    * Called if the label displaying is actually toggled
@@ -449,7 +444,6 @@ private:
   QAction* actionGpsNavWPList;
   QAction* actionGpsNavZoomIn;
   QAction* actionGpsNavZoomOut;
-  QAction* actionMenuBarToggle;
   QAction* actionOpenContextMenu;
   QAction* actionFileQuit;
 
@@ -461,6 +455,7 @@ private:
   QAction* actionViewWaypoints;
   QAction* actionViewAirfields;
   QAction* actionViewNavAids;
+  QAction* actionViewOutlandings;
   QAction* actionViewReachpoints;
   QAction* actionViewTaskpoints;
 
@@ -479,6 +474,7 @@ private:
   QAction* actionToggleWindowSize;
   QAction* actionToggleAfLabels;
   QAction* actionToggleOlLabels;
+  QAction* actionToggleNaLabels;
   QAction* actionToggleTpLabels;
   QAction* actionToggleWpLabels;
   QAction* actionToggleLabelsInfo;

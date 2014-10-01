@@ -3007,6 +3007,22 @@ void MapContents::drawList( QPainter* targetP,
 }
 
 void MapContents::drawList( QPainter* targetP,
+                            QList<RadioPoint*> &drawnNaList )
+{
+  const bool showNaLabels  = GeneralConfig::instance()->getMapShowNavAidsLabels();
+
+  showProgress2WaitScreen( tr("Drawing navaids") );
+
+  for (int i = 0; i < radioList.size(); i++)
+    {
+      if( radioList[i].drawMapElement( targetP ) && showNaLabels )
+	{
+	  drawnNaList.append( &radioList[i] );
+	}
+    }
+}
+
+void MapContents::drawList( QPainter* targetP,
                             unsigned int listID,
                             QList<BaseMapElement *>& drawnElements )
 {
@@ -3057,7 +3073,7 @@ void MapContents::drawList( QPainter* targetP,
     case RadioList:
       //list="RadioList";
       //len=radioList.count();
-      showProgress2WaitScreen( tr("Drawing radio points") );
+      showProgress2WaitScreen( tr("Drawing navaids") );
       for (int i = 0; i < radioList.size(); i++)
         radioList[i].drawMapElement(targetP);
       break;

@@ -36,9 +36,6 @@ CONFIG +=internet
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += bluetooth
 
-# Enable classical menu bar, if define is set. Otherwise a context menu is used.
-# DEFINES += USE_MENUBAR
-
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
 

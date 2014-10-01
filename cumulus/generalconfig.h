@@ -1273,6 +1273,17 @@ class GeneralConfig : protected QSettings
     _mapShowAirfieldLabels = newValue;
   };
 
+  /** gets Map ShowNavAidsLabels */
+  bool getMapShowNavAidsLabels() const
+  {
+    return _mapShowNavAidsLabels;
+  };
+  /** sets Map ShowAirfieldLabels */
+  void setMapShowNavAidsLabels(const bool newValue)
+  {
+    _mapShowNavAidsLabels = newValue;
+  };
+
   /** gets Map ShowTaskPointLabels */
   bool getMapShowTaskPointLabels() const
   {
@@ -3040,6 +3051,8 @@ class GeneralConfig : protected QSettings
   bool _mapShowLabelsExtraInfo;
   // Map ShowAirfieldLabels
   bool _mapShowAirfieldLabels;
+  // Map ShowNavAidsLabels
+  bool _mapShowNavAidsLabels;
   // Map ShowTaskPointLabels
   bool _mapShowTaskPointLabels;
   // Map ShowOutLandingLabels

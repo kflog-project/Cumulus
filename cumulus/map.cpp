@@ -1387,7 +1387,7 @@ void Map::p_drawAeroLayer(bool reset)
 
 /**
  * Draws the navigation layer of the map.
- * The navigation layer consists of the airfields, glidersites,
+ * The navigation layer consists of the navaids, airfields, glidersites,
  * outlanding sites and waypoints.
  * It is drawn on top of the aero layer.
  */
@@ -1402,9 +1402,8 @@ void Map::p_drawNavigationLayer()
       return;
     }
 
-  // Collect all drawn airfield and waypoint objects as reference
-  // for later label drawing:
-  QList<BaseMapElement*> drawnRp;
+  // Collect all drawn objects as reference for later label drawing:
+  QList<RadioPoint*> drawnRp;
   QList<Airfield*> drawnAf;
   QList<Waypoint*> drawnWp;
   QList<TaskPoint*> drawnTp;
@@ -1413,7 +1412,7 @@ void Map::p_drawNavigationLayer()
 
   navP.begin(&m_pixNavigationMap);
 
-  _globalMapContents->drawList(&navP, MapContents::RadioList, drawnRp);
+  _globalMapContents->drawList(&navP, drawnRp);
   _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
@@ -1435,7 +1434,30 @@ void Map::p_drawNavigationLayer()
 
   // qDebug("Af=%d, WP=%d", drawnAf.size(), drawnWp.size() );
 
-  // First draw all airfield, ... collected labels
+  // 1. draw all navaids, ... collected labels
+  for( int i = 0; i < drawnRp.size(); i++ )
+    {
+      QString corrString = WGSPoint::coordinateString( drawnRp[i]->getWGSPosition() );
+
+      if( labelSet.contains( corrString ) )
+        {
+          // A label with the same coordinates was already drawn.
+          // We do ignore the repeated drawing.
+          continue;
+        }
+
+      // store label to be drawn
+      labelSet.insert( corrString );
+
+      p_drawLabel( &navP,
+                   iconSize / 2 + 3,
+                   drawnRp[i]->getWPName(),
+                   drawnRp[i]->getMapPosition(),
+                   drawnRp[i]->getWGSPosition(),
+                   true );
+    }
+
+  // 2. draw all airfield, ... collected labels
   for( int i = 0; i < drawnAf.size(); i++ )
     {
       QString corrString = WGSPoint::coordinateString( drawnAf[i]->getWGSPosition() );
@@ -1458,7 +1480,7 @@ void Map::p_drawNavigationLayer()
                    true );
     }
 
-  // Second draw all collected waypoint point labels
+  // 3. draw all collected waypoint point labels
   for( int i = 0; i < drawnWp.size(); i++ )
     {
       QString corrString = WGSPoint::coordinateString( drawnWp[i]->wgsPoint );

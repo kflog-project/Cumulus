@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cstdlib>
@@ -364,6 +362,7 @@ void GeneralConfig::load()
   _mapTrailLineColor              = value( "TrailLineColor", TrailLineColor).toString();
   _mapTrailLineWidth              = value( "TrailLineWidth", TrailLineWidth ).toInt();
   _mapShowAirfieldLabels          = value( "ShowAirfieldLabels", false ).toBool();
+  _mapShowNavAidsLabels           = value( "ShowNavAidsLabels", false ).toBool();
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
   _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
@@ -812,6 +811,7 @@ void GeneralConfig::save()
   setValue( "TrailLineWidth", _mapTrailLineWidth);
 
   setValue( "ShowAirfieldLabels", _mapShowAirfieldLabels );
+  setValue( "ShowNavAidsLabels", _mapShowNavAidsLabels );
   setValue( "ShowTaskPointLabels", _mapShowTaskPointLabels );
   setValue( "ShowOutLandingLabels", _mapShowOutLandingLabels );
   setValue( "WpScaleBorderLow", _wayPointScaleBorders[Waypoint::Low] );
