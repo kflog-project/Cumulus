@@ -238,7 +238,7 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
 
   QGridLayout* listLayout = new QGridLayout(listGroup);
 
-  lbl = new QLabel(tr( "More space in AF/WP/OL lists:"), listGroup);
+  lbl = new QLabel(tr( "More space in points lists:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
 
   m_afMargin = new NumberEditor( this );
@@ -251,7 +251,7 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   m_afMargin->setRange(0, 30);
   listLayout->addWidget(m_afMargin, grow, 1 );
   grow++;
-  lbl = new QLabel(tr( "More space in Emergency list:"), listGroup);
+  lbl = new QLabel(tr( "More space in reachable list:"), listGroup);
   listLayout->addWidget(lbl, grow, 0);
 
   m_rpMargin = new NumberEditor( this );

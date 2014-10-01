@@ -63,7 +63,7 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
 
   m_textAF = tr( "Airfields" );
   m_textOL = tr( "Fields" );
-  m_textNA = tr( "NavAids" );
+  m_textNA = tr( "Navaids" );
   m_textRP = tr( "Reachables" );
   m_textTP = tr( "Task" );
   m_textWP = tr( "Waypoints" );

@@ -1763,7 +1763,6 @@ void MainWindow::createActions()
 
 void  MainWindow::toggleActions( const bool toggle )
 {
-
 #ifdef FLARM
   actionViewFlarm->setEnabled( toggle );
 #endif
@@ -1782,6 +1781,16 @@ void  MainWindow::toggleActions( const bool toggle )
     }
 
   if( toggle == true &&
+      _globalMapContents->getListLength( MapContents::OutLandingList ) > 0 )
+    {
+      actionViewOutlandings->setEnabled( true );
+    }
+  else
+    {
+      actionViewOutlandings->setEnabled( false );
+    }
+
+  if( toggle == true &&
       _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
     {
       actionViewNavAids->setEnabled( true );
@@ -1797,6 +1806,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionZoomOutZ->setEnabled( toggle );
   actionToggleAfLabels->setEnabled( toggle );
   actionToggleOlLabels->setEnabled( toggle );
+  actionToggleNaLabels->setEnabled( toggle );
   actionToggleTpLabels->setEnabled( toggle );
   actionToggleWpLabels->setEnabled( toggle );
   actionToggleLabelsInfo->setEnabled( toggle );
@@ -2196,9 +2206,9 @@ void MainWindow::setView( const AppView newView )
       m_listViewTabs->setView( newView );
 
       if( newView == rpView )
-	{
-	  setNearestOrReachableHeaders();
-	}
+        {
+          setNearestOrReachableHeaders();
+        }
 
       break;
 
@@ -2215,8 +2225,6 @@ void MainWindow::setView( const AppView newView )
       break;
 
     default:
-      // @AP: Should normally not happen but Vorsicht ist die Mutter
-      // der Porzellankiste ;-)
       qWarning( "MainWindow::setView(): unknown view %d to be set", newView );
       return;
     }
