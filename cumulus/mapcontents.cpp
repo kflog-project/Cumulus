@@ -1512,7 +1512,7 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
            this, SLOT(slotReloadWelt2000Data()) );
 
   QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
-  QString dest = GeneralConfig::instance()->getMapRootDir() + "/airfields/welt2000.txt";
+  QString dest = GeneralConfig::instance()->getMapRootDir() + "/points/welt2000.txt";
 
   m_downloadManger->downloadRequest( url, dest );
 }
@@ -1548,7 +1548,7 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
     }
 
   const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
-  const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
+  const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/points/";
 
   for( int i = 0; i < openAipCountryList.size(); i++ )
     {
@@ -1693,7 +1693,7 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
   m_downloadMangerOpenAipPois = static_cast<DownloadManager *> (0);
 
   // Tidy up POI directory after download of openAIP files.
-  const QString poiDirName = GeneralConfig::instance()->getMapRootDir() + "/airfields/";
+  const QString poiDirName = GeneralConfig::instance()->getMapRootDir() + "/points/";
 
   // Get the list of airfield files to be loaded.
   QStringList& files2load = GeneralConfig::instance()->getOpenAipPoiFileList();

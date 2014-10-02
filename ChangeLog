@@ -14,6 +14,21 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-10-02 AP: Issue #17 fixed. Make openAIP navaid data available in
+                   Cumulus as normal input and not only as waypoint data.
+
+[o] 2014-10-02 AP: Issue #22 fixed. Renaming of the map/airfields directory to
+                   map/points.
+                   
+[o] 2014-10-02 AP: Issue #21 fixed. OpenAIP NDB frequencies are coded in KHz and
+                   not in MHz.
+                   
+[o] 2014-10-02 AP: Issue #20 fixed. TaskListView crashes, if the Info button is
+                   clicked and no list entry is selected.
+                   
+[o] 2014-10-02 AP: Issue #19 fixed. TPInfoWidget must be declared as modal
+                   window.
+
 [o] 2014-09-03 AP: Issue #18 fixed. Define WELT2000_THREAD removed from the
                    source code. Only Welt2000 reloading in an extra thread is
                    supported up to now to avoid a longer blocking of the GUI.

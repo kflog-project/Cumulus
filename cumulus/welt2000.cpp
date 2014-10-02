@@ -104,7 +104,7 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
   // Rename WELT2000.TXT -> welt2000.txt.
   QString wl = "welt2000.txt";
   QString wu = "WELT2000.TXT";
-  QString sd = "/airfields/";
+  QString sd = "/points/";
 
   QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
 

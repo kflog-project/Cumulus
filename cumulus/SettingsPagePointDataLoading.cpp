@@ -99,7 +99,7 @@ SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
           loadDirs.append("\n");
         }
 
-      loadDirs += mapDirs.at(i) + "/airfields";
+      loadDirs += mapDirs.at(i) + "/points";
     }
 
   QTableWidgetItem *item = new QTableWidgetItem( loadDirs );
@@ -151,8 +151,8 @@ SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
 
   for ( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*_wpt.aip");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/airfields", "*_nav.aip");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_wpt.aip");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_nav.aip");
     }
 
   preselect.sort();

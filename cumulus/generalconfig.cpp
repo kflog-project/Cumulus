@@ -1532,7 +1532,7 @@ void GeneralConfig::setMapRootDir( QString newValue )
 
   // Check existence of subdirectories and create all missing one.
   QStringList subDirs;
-  subDirs << _mapRootDir + "/airfields"
+  subDirs << _mapRootDir + "/points"
           << _mapRootDir + "/airspaces"
           << _mapRootDir + "/landscape";
 

@@ -57,11 +57,11 @@ int OpenAipPoiLoader::load( QList<Airfield>& airfieldList, bool readSource )
 
   for( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*_wpt.aip" );
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/points", "*_wpt.aip" );
 
       if( readSource == false )
         {
-          MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*_wpt.aic" );
+          MapContents::addDir( preselect, mapDirs.at( i ) + "/points", "*_wpt.aic" );
         }
     }
 
@@ -242,11 +242,11 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
 
   for( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*_nav.aip" );
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/points", "*_nav.aip" );
 
       if( readSource == false )
         {
-          MapContents::addDir( preselect, mapDirs.at( i ) + "/airfields", "*_nav.aic" );
+          MapContents::addDir( preselect, mapDirs.at( i ) + "/points", "*_nav.aic" );
         }
     }
 

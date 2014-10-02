@@ -230,6 +230,29 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
       GeneralConfig::instance()->setMapLowerLimit(5);
     }
 
+  // Rename the map/airfields directory to map/points. This check is always
+  // as first executed.
+  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
+
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      QString dirNameOld = mapDirs.at( i ) + "/airfields";
+
+      QDir dir( dirNameOld );
+
+      if( dir.exists() )
+	{
+	  QString dirNameNew = mapDirs.at( i ) + "/points";
+
+	  int ok = rename( dirNameOld.toLatin1().data(), dirNameNew.toLatin1().data() );
+
+	  if( ok == 0 )
+	    {
+	      qDebug() << "Renaming" << dirNameOld << "-->" << dirNameNew;
+	    }
+	}
+    }
+
 #ifdef ANDROID
 
   // Check Android Gui fonts for existence to force a recalculation if needed.
