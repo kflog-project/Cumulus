@@ -651,10 +651,9 @@ void MapMatrix::slotSetNewHome(const QPoint& newHome)
       // update projection
       slotInitMatrix();
     }
-  else if( conf->getWelt2000CountryFilter() ==  "" )
+  else
     {
-      // Welt2000 uses radius option around home position.
-      // Emit an update trigger.
+      // Emit an update trigger for home position change.
       emit homePositionChanged();
     }
 

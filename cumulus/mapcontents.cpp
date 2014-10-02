@@ -1424,7 +1424,6 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
               if( locateFile( "landscape/" + kflName, kflPathName ) == true )
                 {
                   // File already exists
-                  // qDebug() << "Existing File:" << kflName;
                   continue;
                 }
 
@@ -1559,15 +1558,11 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
-      qDebug() << "URL" << url << "Dest" << dest;
-
-      // Nav aids file name format: <country-code>_nav.aip, example: de_nav.aip
+      // Navaids file name format: <country-code>_nav.aip, example: de_nav.aip
       file = openAipCountryList.at(i).toLower() + "_nav.aip";
       url  = urlPrefix + file;
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
-
-      qDebug() << "URL" << url << "Dest" << dest;
     }
 }
 
@@ -2211,13 +2206,6 @@ void MapContents::unloadMaps(unsigned int distance)
   qDebug("Unload landmarkList(%d), elapsed=%d", landmarkList.count(), t.restart());
 #endif
 
-  unloadMapObjects( radioList );
-
-#ifdef DEBUG_UNLOAD
-  sum += t.elapsed();
-  qDebug("Unload radioList(%d), elapsed=%d", radioList.count(), t.restart());
-#endif
-
   unloadMapObjects( obstacleList );
 
 #ifdef DEBUG_UNLOAD
@@ -2230,13 +2218,6 @@ void MapContents::unloadMaps(unsigned int distance)
 #ifdef DEBUG_UNLOAD
   sum += t.elapsed();
   qDebug("Unload railList(%d), elapsed=%d", railList.count(), t.restart());
-#endif
-
-  unloadMapObjects( reportList );
-
-#ifdef DEBUG_UNLOAD
-  sum += t.elapsed();
-  qDebug("Unload reportList(%d), elapsed=%d", reportList.count(), t.restart());
 #endif
 
   unloadMapObjects( motorwayList );
@@ -2635,8 +2616,9 @@ void MapContents::slotReloadMapData()
       task->updateProjection();
     }
 
-  // that signal will update all list views of the main window
   emit mapDataReloaded( Map::baseLayer );
+
+  // that signal will update all list views of the main window
   emit mapDataReloaded();
 
   // enable gps data receiving
@@ -2713,6 +2695,7 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
   outLandingList  = QList<Airfield>();
 
   emit mapDataReloaded( Map::airfields );
+  emit mapDataReloaded();
 }
 
 /**
@@ -2765,7 +2748,8 @@ void MapContents::slotOpenAipNavAidsLoadFinished( int noOfLists,
   radioList = *radioListIn;
   delete radioListIn;
 
-  emit mapDataReloaded( Map::radioPoints );
+  emit mapDataReloaded( Map::navaids );
+  emit mapDataReloaded();
 }
 
 /**
@@ -2877,7 +2861,7 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
 
   if( ok == false )
     {
-      qDebug() << "slotWelt2000LoadFinished: Welt2000 loading failed!";
+      qWarning() << "slotWelt2000LoadFinished: Welt2000 loading failed!";
 
       _globalMapView->slot_info( tr("Welt2000 load failed") );
 
@@ -2906,6 +2890,7 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
   _globalMapView->slot_info( tr("Welt2000 loaded") );
 
   emit mapDataReloaded( Map::airfields );
+  emit mapDataReloaded();
 }
 
 /**
@@ -3009,7 +2994,7 @@ void MapContents::drawList( QPainter* targetP,
 void MapContents::drawList( QPainter* targetP,
                             QList<RadioPoint*> &drawnNaList )
 {
-  const bool showNaLabels  = GeneralConfig::instance()->getMapShowNavAidsLabels();
+  const bool showNaLabels = GeneralConfig::instance()->getMapShowNavAidsLabels();
 
   showProgress2WaitScreen( tr("Drawing navaids") );
 

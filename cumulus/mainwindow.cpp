@@ -2088,7 +2088,7 @@ void MainWindow::slotToggleNaLabels( bool toggle )
   // save configuration change
   GeneralConfig::instance()->setMapShowNavAidsLabels( toggle );
   GeneralConfig::instance()->save();
-  Map::instance->scheduleRedraw(Map::radioPoints);
+  Map::instance->scheduleRedraw(Map::navaids);
 }
 
 void MainWindow::slotToggleOlLabels( bool toggle )

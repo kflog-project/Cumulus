@@ -99,7 +99,7 @@ public:
                  airspaces,
                  grid,
                  navigationLayer,
-                 radioPoints,
+                 navaids,
                  airfields,
                  outlandings,
                  gliderfields,

@@ -145,14 +145,15 @@ void ListWidgetParent::fillItemList()
 }
 
 /**
- * Clears and refills the item list, if items are loaded. Called
- * if the map projection has been changed to ensure an update of the
- * projected coordinates.
+ * Clears and refills the item list, if the widget is visible.
  */
 void ListWidgetParent::refillItemList()
 {
-  if ( list->topLevelItemCount() > 0 )
+  slot_Done();
+
+  if ( isVisible() )
     {
+      // The list is filled only, if the widget is visible.
       fillItemList();
     }
 }

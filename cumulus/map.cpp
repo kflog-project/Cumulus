@@ -1133,8 +1133,9 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  // Q_UNUSED( event )
-  qDebug() << "Map::resizeEvent: old=" << event->oldSize() << "new=" << event->size();
+  Q_UNUSED( event )
+
+  // qDebug() << "Map::resizeEvent: old=" << event->oldSize() << "new=" << event->size();
 
   // set resize flag
   m_isResizeEvent = true;
@@ -1148,9 +1149,6 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
   static bool first = true; // mark first calling of method
 
   static QSize lastSize; // Save the last used window size
-
-//  qDebug( "Map::p_redrawMap from layer=%d, first=%d, isVisible=%d, isEnable=%d, mutex=%d",
-//          fromLayer, first, isVisible(), _isEnable, mutex());
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
