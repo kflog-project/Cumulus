@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ************************************************************************/
 
 #ifndef QT_5
@@ -298,6 +296,7 @@ void SettingsPageMapObjects::load()
   liWaterways->setCheckState( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked );
   liForests->setCheckState( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked );
   liAfLabels->setCheckState( conf->getMapShowAirfieldLabels() ? Qt::Checked : Qt::Unchecked );
+  liNaLabels->setCheckState( conf->getMapShowNavAidsLabels() ? Qt::Checked : Qt::Unchecked );
   liTpLabels->setCheckState( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked );
   liOlLabels->setCheckState( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked );
   liRelBearingInfo->setCheckState( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked );
@@ -331,8 +330,9 @@ void SettingsPageMapObjects::save()
   conf->setMapLoadWaterways(liWaterways->checkState() == Qt::Checked ? true : false);
   conf->setMapLoadForests(liForests->checkState() == Qt::Checked ? true : false);
   conf->setMapShowAirfieldLabels(liAfLabels->checkState() == Qt::Checked ? true : false);
-  conf->setMapShowTaskPointLabels(liTpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowOutLandingLabels(liOlLabels->checkState() == Qt::Checked ? true : false);
+  conf->setMapShowNavAidsLabels(liNaLabels->checkState() == Qt::Checked ? true : false);
+  conf->setMapShowTaskPointLabels(liTpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowWaypointLabels(liWpLabels->checkState() == Qt::Checked ? true : false);
   conf->setMapShowLabelsExtraInfo(liLabelsInfo->checkState() == Qt::Checked ? true : false);
   conf->setMapShowRelBearingInfo(liRelBearingInfo->checkState() == Qt::Checked ? true : false);
@@ -391,13 +391,17 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liAfLabels->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liAfLabels );
 
-  liTpLabels = new QTableWidgetItem( tr("Taskpoint labels") );
-  liTpLabels->setFlags( Qt::ItemIsEnabled );
-  loadOptions->setItem( row++, col, liTpLabels );
-
   liOlLabels = new QTableWidgetItem( tr("Outlanding labels") );
   liOlLabels->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liOlLabels );
+
+  liNaLabels = new QTableWidgetItem( tr("Navaid labels") );
+  liNaLabels->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liNaLabels );
+
+  liTpLabels = new QTableWidgetItem( tr("Taskpoint labels") );
+  liTpLabels->setFlags( Qt::ItemIsEnabled );
+  loadOptions->setItem( row++, col, liTpLabels );
 
   liWpLabels = new QTableWidgetItem( tr("Waypoint labels") );
   liWpLabels->setFlags( Qt::ItemIsEnabled );
@@ -415,10 +419,12 @@ void SettingsPageMapObjects::fillLoadOptionList()
   liFlightTrail->setFlags( Qt::ItemIsEnabled );
   loadOptions->setItem( row++, col, liFlightTrail );
 
+#if 0
   // Set a dummy into the unused cells
   QTableWidgetItem *liDummy = new QTableWidgetItem;
   liDummy->setFlags( Qt::NoItemFlags );
   loadOptions->setItem( row++, col, liDummy );
+#endif
 }
 
 void SettingsPageMapObjects::showEvent( QShowEvent *event )
@@ -461,6 +467,7 @@ bool SettingsPageMapObjects::checkChanges()
   changed |= ( conf->getMapLoadWaterways() ? Qt::Checked : Qt::Unchecked ) != liWaterways->checkState();
   changed |= ( conf->getMapLoadForests() ? Qt::Checked : Qt::Unchecked ) != liForests->checkState();
   changed |= ( conf->getMapShowAirfieldLabels() ? Qt::Checked : Qt::Unchecked ) != liAfLabels->checkState();
+  changed |= ( conf->getMapShowNavAidsLabels() ? Qt::Checked : Qt::Unchecked ) != liNaLabels->checkState();
   changed |= ( conf->getMapShowTaskPointLabels() ? Qt::Checked : Qt::Unchecked ) != liTpLabels->checkState();
   changed |= ( conf->getMapShowOutLandingLabels() ? Qt::Checked : Qt::Unchecked ) != liOlLabels->checkState();
   changed |= ( conf->getMapShowRelBearingInfo() ? Qt::Checked : Qt::Unchecked ) != liRelBearingInfo->checkState();

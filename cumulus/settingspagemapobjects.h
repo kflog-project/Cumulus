@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2013 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 *************************************************************************/
 
@@ -23,7 +21,7 @@
  *
  * \brief Configuration settings for map loading and drawing..
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  *
@@ -118,7 +116,7 @@ private:
 
   QTableWidget *loadOptions;
 
-  // list items in listview
+  // List items in table widget
   QTableWidgetItem *liIsolines;
   QTableWidgetItem *liIsolineBorders;
   QTableWidgetItem *liRoads;
@@ -129,6 +127,7 @@ private:
   QTableWidgetItem *liForests;
   QTableWidgetItem *liWpLabels;
   QTableWidgetItem *liAfLabels;
+  QTableWidgetItem *liNaLabels;
   QTableWidgetItem *liTpLabels;
   QTableWidgetItem *liOlLabels;
   QTableWidgetItem *liLabelsInfo;
