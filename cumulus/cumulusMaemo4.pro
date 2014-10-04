@@ -85,6 +85,7 @@ HEADERS = \
     limitedlist.h \
     lineelement.h \
     listviewfilter.h \
+    ListViewTabs.h \
     listwidgetparent.h \
     logbook.h \
     maemostyle.h \
@@ -214,6 +215,7 @@ SOURCES = \
     layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
+    ListViewTabs.cpp \
     listwidgetparent.cpp \
     logbook.cpp \
     maemostyle.cpp \
