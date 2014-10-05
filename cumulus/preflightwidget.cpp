@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #ifndef QT_5
@@ -59,7 +57,7 @@
 #define LIVETRACK   "LiveTrack"
 #define LOGBOOKS    "Logbooks"
 #define RETRIEVE    "Retrieve"
-#define TASK        "Task"
+#define TASKS       "Tasks"
 #define WAYPOINTS   "Waypoints"
 #define WEATHER     "METAR-TAF"
 #define WIND        "Wind"
@@ -122,8 +120,8 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(TASK) );
-  item->setData( 0, Qt::UserRole, TASK );
+  item->setText( 0, tr(TASKS) );
+  item->setData( 0, Qt::UserRole, TASKS );
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
@@ -282,7 +280,7 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       pfgp->show();
     }
-  else if( itemText == TASK )
+  else if( itemText == TASKS )
     {
       PreFlightTaskPage* pftp = new PreFlightTaskPage( this );
 
