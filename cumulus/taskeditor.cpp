@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef QT_5
@@ -35,6 +33,8 @@
 #include "listwidgetparent.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
+#include "radiopoint.h"
+#include "RadioPointListWidget.h"
 #include "rowdelegate.h"
 #include "taskeditor.h"
 #include "taskpoint.h"
@@ -237,38 +237,60 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 1, 1 );
 
-  // descriptions of combo box selection elements
-  listSelectText[0] = tr("Waypoints");
-  listSelectText[1] = tr("Airfields");
-  listSelectText[2] = tr("Outlandings");
+  // Waypoint list is always shown
+  listSelectText.append( tr("Waypoints") );
+  pointDataList.append( new WaypointListWidget( this, false ) );
 
-  // create the actual lists
-  waypointList[0] = new WaypointListWidget( this, false );
-
+  // The other list are only shown, if they are not empty.
   // Airfield list
-  QVector<enum MapContents::MapContentsListID> itemList;
-  itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
-  waypointList[1] = new AirfieldListWidget( itemList, this, false );
-
-  // outlanding list
-  itemList.clear();
-  itemList << MapContents::OutLandingList;
-  waypointList[2] = new AirfieldListWidget( itemList, this, false );
-
-  for( int i = 0; i < NUM_LISTS; i++ )
+  if( _globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
+      _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 )
     {
-      listSelectCB->addItem(listSelectText[i], i);
-      totalLayout->addWidget( waypointList[i], 1, 2 );
+      listSelectText.append( tr("Airfields") );
+      QVector<enum MapContents::MapContentsListID> itemList;
+      itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
+      pointDataList.append( new AirfieldListWidget( itemList, this, false ) );
     }
 
-  // first selection is WPList if wp's are defined
-  // set index in combo box to selected list
+  // Outlanding list
+  if( _globalMapContents->getListLength( MapContents::OutLandingList ) > 0 )
+    {
+      listSelectText.append( tr("Fields") );
+      QVector<enum MapContents::MapContentsListID> itemList;
+      itemList << MapContents::OutLandingList;
+      pointDataList.append( new AirfieldListWidget( itemList, this, false ) );
+    }
+
+  // Navaids
+  if( _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
+    {
+      listSelectText.append( tr("Navaids") );
+      pointDataList.append( new RadioPointListWidget( this, false ) );
+    }
+
+  for( int i = 0; i < pointDataList.size(); i++ )
+    {
+      listSelectCB->addItem(listSelectText[i], i);
+      totalLayout->addWidget( pointDataList[i], 1, 2 );
+    }
+
   QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
-  listSelectCB->setCurrentIndex( wpList.count() ? 0 : 1 );
-
-  // switch to list to be visible, hide the other one
-  slotToggleList( wpList.count() ? 0 : 1 );
+  if ( wpList.count() == 0 &&
+       ( _globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
+         _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 ) )
+    {
+      // If waypoint list is zero and airfields are available,
+      // select the airfield list:
+      listSelectCB->setCurrentIndex( 1 );
+      slotToggleList( 1 );
+    }
+  else
+    {
+      // If airfield list is zero, select the waypoint list as default.
+      listSelectCB->setCurrentIndex( 0 );
+      slotToggleList( 0 );
+    }
 
   if ( editState == TaskEditor::edit )
     {
@@ -430,7 +452,7 @@ void TaskEditor::resizeTaskListColumns()
 
 void TaskEditor::slotAddWaypoint()
 {
-  Waypoint* wp = waypointList[listSelectCB->currentIndex()]->getCurrentWaypoint();
+  Waypoint* wp = pointDataList[listSelectCB->currentIndex()]->getCurrentWaypoint();
 
   if( wp == 0 )
     {
@@ -693,18 +715,18 @@ void TaskEditor::slotMoveWaypointDown()
   showTask();
 }
 
-/** Toggle between WP/AF/... list on user request */
+/** Toggle between the point data lists on user request */
 void TaskEditor::slotToggleList(int index)
 {
-  for( int i = 0; i < NUM_LISTS; i++ )
+  for( int i = 0; i < pointDataList.size(); i++ )
     {
       if( i != index )
         {
-          waypointList[i]->hide();
+          pointDataList[i]->hide();
         }
       else
         {
-          waypointList[i]->show();
+          pointDataList[i]->show();
         }
     }
 }

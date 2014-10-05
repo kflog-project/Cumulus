@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,7 +24,7 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  * \version $Id$
  */
@@ -161,11 +159,8 @@ signals:
   /** list with all defined task names */
   QStringList& taskNamesInUse;
 
-  /** number of lists, at the moment waypoint, airfield and outlanding list */
-#define NUM_LISTS 3
-
-  /** selection lists with waypoints */
-  ListWidgetParent* waypointList[NUM_LISTS];
+  /** selection lists with point data */
+  QList<ListWidgetParent *> pointDataList;
 
   /** name of current task */
   QLineEdit* taskName;
@@ -174,7 +169,7 @@ signals:
   QString editedTaskName;
 
   /** */
-  ListViewFilter* filter[NUM_LISTS];
+  QList<ListViewFilter *> filter;
 
   /** Task point list of flight task */
   QList<TaskPoint *> tpList;
@@ -192,7 +187,7 @@ signals:
   QComboBox* listSelectCB;
 
   /** The text for the combo box */
-  QString listSelectText[NUM_LISTS];
+  QStringList listSelectText;
 
   /** Editor command buttons. */
   QPushButton* upButton;
