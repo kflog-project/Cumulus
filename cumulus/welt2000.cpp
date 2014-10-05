@@ -11,8 +11,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -128,8 +126,8 @@ bool Welt2000::load( QList<Airfield>& airfieldList,
   QString w2PathTxc;
 
   // Search for Welt2000 source resp. compiled files.
-  bool resTxt = MapContents::locateFile( "airfields/welt2000.txt", w2PathTxt );
-  bool resTxc = MapContents::locateFile( "airfields/welt2000.txc", w2PathTxc );
+  bool resTxt = MapContents::locateFile( "points/welt2000.txt", w2PathTxt );
+  bool resTxc = MapContents::locateFile( "points/welt2000.txc", w2PathTxc );
 
   if( ! resTxt && ! resTxc )
     {
@@ -310,7 +308,7 @@ bool Welt2000::check4File()
   QString path2File;
 
   // Search for Welt2000 source file.
-  bool exits = MapContents::locateFile( "airfields/welt2000.txt", path2File );
+  bool exits = MapContents::locateFile( "points/welt2000.txt", path2File );
 
   if( ! exits )
     {
@@ -334,7 +332,7 @@ bool Welt2000::check4update()
   QString path2File;
 
   // Search for Welt2000 source file.
-  bool exits = MapContents::locateFile( "airfields/welt2000.txt", path2File );
+  bool exits = MapContents::locateFile( "points/welt2000.txt", path2File );
 
   if( ! exits )
     {
