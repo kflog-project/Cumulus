@@ -197,7 +197,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
   m_headerLabels << ( tr ("Preflight Menu") )
                  << ( tr ("Glider") )
-                 << ( tr ("Task") )
+                 << ( tr ("Tasks") )
 #ifdef ANDROID
                  << ( tr ("Retrieve") )
 #endif

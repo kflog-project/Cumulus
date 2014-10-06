@@ -1762,6 +1762,12 @@ Alle Downloads verworfen!</translation>
         <translation>Welt2000 geladen</translation>
     </message>
     <message>
+        <location filename="mapcontents.cpp" line="2999"/>
+        <location filename="mapcontents.cpp" line="3061"/>
+        <source>Drawing navaids</source>
+        <translation>Zeichne Nav Hilfen</translation>
+    </message>
+    <message>
         <location filename="mapcontents.cpp" line="2005"/>
         <source>Reading Airspace Data</source>
         <translation>Lese Luftraumdaten</translation>
@@ -3038,68 +3044,69 @@ Alle Downloads verworfen!</translation>
 <context>
     <name>PreFlightWidget</name>
     <message>
-        <location filename="preflightwidget.cpp" line="201"/>
+        <location filename="preflightwidget.cpp" line="199"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="202"/>
-        <source>Task</source>
-        <translation>Aufgabe</translation>
+        <location filename="preflightwidget.cpp" line="200"/>
+        <source>Tasks</source>
+        <oldsource>Task</oldsource>
+        <translation>Aufgaben</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="204"/>
+        <location filename="preflightwidget.cpp" line="202"/>
         <source>Retrieve</source>
         <translation>Rückholer</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="206"/>
+        <location filename="preflightwidget.cpp" line="204"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="207"/>
+        <location filename="preflightwidget.cpp" line="205"/>
         <source>Logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="209"/>
+        <location filename="preflightwidget.cpp" line="207"/>
         <source>LiveTrack</source>
         <translation>Verfolgung</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="210"/>
+        <location filename="preflightwidget.cpp" line="208"/>
         <source>METAR-TAF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="212"/>
+        <location filename="preflightwidget.cpp" line="210"/>
         <source>Wind</source>
         <translation>Wind</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="213"/>
+        <location filename="preflightwidget.cpp" line="211"/>
         <source>Common</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="214"/>
+        <location filename="preflightwidget.cpp" line="212"/>
         <source>Checklist</source>
         <translation>Checkliste</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="71"/>
+        <location filename="preflightwidget.cpp" line="69"/>
         <source>Preflight Settings</source>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="94"/>
-        <location filename="preflightwidget.cpp" line="200"/>
+        <location filename="preflightwidget.cpp" line="92"/>
+        <location filename="preflightwidget.cpp" line="198"/>
         <source>Preflight Menu</source>
         <translation>Vorflug-Menü</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="176"/>
+        <location filename="preflightwidget.cpp" line="174"/>
         <source>close menu</source>
         <translation>Schließe Menü</translation>
     </message>
@@ -3627,8 +3634,8 @@ Alle Downloads verworfen!</translation>
         <translation>Landung</translation>
     </message>
     <message>
-        <location filename="welt2000.cpp" line="887"/>
-        <location filename="welt2000.cpp" line="1696"/>
+        <location filename="welt2000.cpp" line="885"/>
+        <location filename="welt2000.cpp" line="1694"/>
         <source>Emergency Field No: </source>
         <translation>Notlandefeld Nr:</translation>
     </message>
@@ -4722,6 +4729,11 @@ Alle Downloads verworfen!</translation>
         <translation>Flugplatz Marken</translation>
     </message>
     <message>
+        <location filename="settingspagemapobjects.cpp" line="398"/>
+        <source>Navaid labels</source>
+        <translation>Nav Hilfen Marken</translation>
+    </message>
+    <message>
         <location filename="settingspagemapobjects.cpp" line="402"/>
         <source>Taskpoint labels</source>
         <translation>Aufgabenpunkt Marken</translation>
@@ -5695,57 +5707,66 @@ Alle Downloads verworfen!</translation>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="242"/>
+        <location filename="taskeditor.cpp" line="249"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="243"/>
-        <source>Outlandings</source>
-        <translation>Landefelder</translation>
+        <location filename="taskeditor.cpp" line="258"/>
+        <source>Fields</source>
+        <translation>Felder</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="403"/>
+        <location filename="taskeditor.cpp" line="267"/>
+        <source>Navaids</source>
+        <translation>Nav Hilfen</translation>
+    </message>
+    <message>
+        <source>Outlandings</source>
+        <translation type="obsolete">Landefelder</translation>
+    </message>
+    <message>
+        <location filename="taskeditor.cpp" line="425"/>
         <source>Total</source>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="555"/>
+        <location filename="taskeditor.cpp" line="577"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="556"/>
+        <location filename="taskeditor.cpp" line="578"/>
         <source>Task needs at least four waypoints</source>
         <translation>Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="579"/>
+        <location filename="taskeditor.cpp" line="601"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="580"/>
+        <location filename="taskeditor.cpp" line="602"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="604"/>
+        <location filename="taskeditor.cpp" line="626"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="605"/>
+        <location filename="taskeditor.cpp" line="627"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="886"/>
+        <location filename="taskeditor.cpp" line="908"/>
         <source>Defaults?</source>
         <translation>Standards?</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="887"/>
+        <location filename="taskeditor.cpp" line="909"/>
         <source>Reset all TP schemas to default configuration values?</source>
         <translation>Alle TP Schemas auf Konfugurationsstandard rücksetzen?</translation>
     </message>
