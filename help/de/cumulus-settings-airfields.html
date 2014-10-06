@@ -20,9 +20,9 @@
 		</tr>
 	</table>
 
-	<h4 align="center">Einstellungen - Flugpl&auml;tze</h4>
+	<h4 align="center">Einstellungen - Punkt Daten</h4>
 
-	<b>Flugpl&auml;tze</b>
+	<b>Punkt Daten</b>
 
 	<p>
 		Cumulus kann zwei verschiedene Quellen:
@@ -34,7 +34,7 @@
   </p>
   
   <p>  
-		als Datenbasis f&uuml;r die Flugpl&auml;tze benutzen.
+		als Datenbasis f&uuml;r die Punkt Daten benutzen.
 		Der Standard ist <i>Welt2000</i>. Cumulus l&auml;d die <i>Welt2000</i> Datei
 		automatisch herunter, wenn sie nicht vorhanden ist oder wenn sie aktualisiert
 		wurde. Eine <i>Welt2000</i> Datei beinhaltet die Daten von der ganzen Welt,
@@ -42,8 +42,8 @@
 	</p>
 
 	<p>
-		Das <a href="http://www.openaip.net">openAIP</a> Projekt stellt
-		pro Land eine Flugplatzdatei bereit. Der Vorteil von <i>openAIP</i> ist, dass
+		Das <a href="http://www.openaip.net">openAIP</a> Projekt stellt pro Land 
+		verschiedene Punkt Daten bereit. Der Vorteil von <i>openAIP</i> ist, dass
 		jeder daran selber mitarbeiten kann, wenn er sich beim Projekt registriert
 		hat. Ein kleiner Nachteil ist, dass Sie erst in Cumulus die L&auml;nder
 		definieren m&uuml;ssen, die Sie installieren wollen. Der Rest wird
@@ -107,7 +107,7 @@
 		<dd>
 			Als weitere M&ouml;glichkeit k&ouml;nnen Sie hier einen
 			Radius um Ihre Heimatposition herum definieren. Alle nur innerhalb des
-			Radius liegenden Flugpl&auml;tze werden dann aus der Welt2000 Datei
+			Radius liegenden Punkt Daten werden dann aus der Welt2000 Datei
 			eingelesen. Wird der Radius auf Null gesetzt, wird intern ein Radius
 			von 500 Km angenommen, falls das L&auml;nder Filter nicht definiert ist.
 			<b>Achtung!</b> Ist Ihre gegenw&auml;rtige Position au&szlig;erhalb
@@ -184,7 +184,7 @@
 			L&auml;nder k&ouml;nnen hintereinander durch Kommas oder Leerzeichen
 			getrennt angegeben werden. Die L&auml;nderkennungen (zwei
 			Buchstabenkode) sind nach ISO-3166 kodiert. Wenn Sie den
-			<i>Download</i> Knopf dr&uuml;cken, werden die Flugpl&auml;tzdateien
+			<i>Download</i> Knopf dr&uuml;cken, werden die Punkt Dateien
 			der gew&uuml;nschten L&auml;nder von openAIP runter geladen und in Cumulus
 		  installiert.
 		  <br><br>
@@ -192,7 +192,7 @@
 			<br><br>
 			Aktualisierungen werden von openAIP ohne extra Ank&uuml;digung in
 			sehr kurzen Zeitr&auml;umen bereit gestellt. Deswegen ist es
-			sinnvoll, ab und zu die Flugplatzdateien erneut runter zu laden, um
+			sinnvoll, ab und zu die Punkt Dateien erneut runter zu laden, um
 			aktuell zu bleiben.
 			<br><br>
 			<b>Achtung!</b> Das macht Cumulus nicht von alleine.
@@ -205,7 +205,7 @@
 
     <dd>
 			Alle innerhalb des Radius um die Heimatposition liegenden
-			Flugpl&auml;tze werden aus den installierten und ausgew&auml;hlten
+			Punkt Dateien werden aus den installierten und ausgew&auml;hlten
 			openAIP Dateien eingelesen.
 			<b>Achtung!</b> Ist Ihre gegenw&auml;rtige Position au&szlig;erhalb
 			des vorgegebenen Radius, werden keine Flug- und Landepl&auml;tze
@@ -221,7 +221,7 @@
 
     <dd>
       Hier k&ouml;nnen Sie eine Mindestl&auml;nge f&uuml;r die SLB
-      des ein zu lesenden Flugplatzes oder Au&szlig;enlandefeldes vorgeben,
+      des ein zu lesenden Punktes vorgeben,
       um Objekte mit zu kurzen Landebahnen weg zu filtern. Wird die
       L&auml;nge des Filters auf Null gesetzt, ist es nicht aktiv.
     </dd>
@@ -233,17 +233,14 @@
 
     <dd>
       Wenn Sie den <i>Laden</i> Knopf dr&uuml;cken, wird eine Tabelle ge&ouml;ffnet
-      in der Sie alle ladbaren <i>openAIP</i> Flugplatzdateien sehen. Die von
-      Cumulus runter geladene Flugplatzdatei hat folgendes Namensformat:
+      in der Sie alle ladbaren <i>openAIP</i> Punkt Dateien sehen. Die von
+      Cumulus runter geladenen Punkt Dateien haben folgendes Namensformat:
       <br><br>
-      &lt;L&auml;nderkenner&gt;_wpt.aip
+      &lt;L&auml;nderkenner&gt;_wpt.aip f&uuml;r Flugpl&auml;tze<br>
+      &lt;L&auml;nderkenner&gt;_nav.aip f&uuml;r Nav Hilfen<br>
       <br><br>
-      Diese Namen unterscheiden sich von den selber runter geladenen und
-      installierten Flugplatzdateien. Um Konflikte zu vermeiden, sollten Sie
-      vor dem Cumulus Download alle selber installierten openAIP Flugplatzdateien
-      l&ouml;schen.
-      <br>Im Kopf der Tabelle sehen Sie das Datenverzeichnis, in dem die angezeigten
-      Dateien zu finden sind.
+      <br>Im Kopf der Tabelle sehen Sie das Datenverzeichnis, in dem die
+       angezeigten Dateien zu finden sind.
       In jeder Tabellenzeile gibt es links eine Checkbox, die man aktiviert,
       wenn die entsprechende Datei geladen werden soll. Ist die Checkbox
       deaktiviert, erfolgt kein laden. Wenn Sie alle Dateien laden wollen,
@@ -252,7 +249,7 @@
       Wenn Sie eine Einzelauswahl vornehmen m&ouml;chten, muss die <i>W&auml;hle
       alle</i> Checkbox <b>deaktiviert</b> sein.
       <BR> Wenn Sie das Fenster mit <i>Ok</i>
-      verlassen, wird sofort ein Neuladen der Flugplatzdaten
+      verlassen, wird sofort ein Neuladen der Punkt Daten
       angesto&szlig;en, falls Sie etwas ver&auml;ndert haben.
       <br>
       Wenn Sie einzelne Tabellenreihen selektieren, k&ouml;nnen Sie die darin

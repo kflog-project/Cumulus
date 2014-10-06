@@ -22,9 +22,9 @@
 		</tbody>
 	</table>
 
-	<h3 align="center">Settings - Airfields</h3>
+	<h3 align="center">Settings - Point Data</h3>
 
-	<b>Airfields</b>
+	<b>Point Data</b>
 
 	<p>
 	  Cumulus can use two different sources
@@ -88,7 +88,7 @@
 
 		<dd>
 			As an alternative to using the country filter, you can define a
-			radius around your home position. All airfields lying inside this
+			radius around your home position. All airfields laying inside this
 			radius will be read from the Welt2000 data file. If the radius is
 			zero and no country filter is defined, then a default radius of 500
 			kilometers is applied.
@@ -172,7 +172,7 @@
     </dt>
 
     <dd>
-      All airfields lying inside your home position radius will be read
+      All point data lying inside your home position radius will be read
       from the openAIP data files, which are selected on the load page.
       <p>
         <i><b>Please Note!</b> If the home position is too far away from
@@ -188,8 +188,8 @@
     </a>
 
     <dd>
-      Here you can define a minimum runway length for the airfields or
-      outlandings to be read in to filter out objects with too short runways.
+      Here you can define a minimum runway length for the point data to be read
+      in to filter out objects with too short runways.
       To switch off the filter set its value to zero.
     </dd>
     
@@ -201,10 +201,11 @@
 
     <dd>
 			Pressing the <i>Load</i> button opens a table showing all loadable
-			openAIP airfield files. The airfield files, dowloaded by Cumulus, have the
-			following naming format:
+			openAIP point data files. The point data files, dowloaded by Cumulus, have
+      the following naming format:
       <br><br>
-      &lt;two-letter-country-code&gt;_wpt.aip
+      &lt;two-letter-country-code&gt;_wpt.aip for airfields<br>
+      &lt;two-letter-country-code&gt;_nav.aip for navaids<br>
       <br><br>
       Those names differ from the self downloaded and installed airspace files.
       To avoid conflicts you should remove all self installed airfield files
