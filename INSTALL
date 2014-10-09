@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.8.x for Linux/Unix
 
-Last update: 2014-05-29 by Axel Pauli
+Last update: 2014-10-10 by Axel Pauli
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
@@ -35,10 +35,10 @@ familiar with that.
 
 If all Qt stuff is already available you can continue with step 2)
 
-To build your own Qt from scratch download a X11/Qt release from
-ftp.qt.nokia.com/qt/source. I recommend the release:
+To build your own Qt from scratch download a X11/Qt release from the
+Qt Project web page. I recommend that release:
 
-ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.8.0.tar.gz
+http://download.qt-project.org/official_releases/qt/4.8/4.8.6/qt-everywhere-opensource-src-4.8.6.tar.gz
 
 I did the development with this release. For Cumulus you need the standard
 Qt4 libraries libQtCore, libQtGui, libQtNetwork and libQtXml. If you want to
@@ -48,12 +48,12 @@ during run of the configure script.
 Copy the Qt tar ball in a local directory of your Linux desktop and extract it
 with:
   
-  tar zxf qt-everywhere-opensource-src-4.8.0.tar.gz
+  tar zxf qt-everywhere-opensource-src-4.8.6.tar.gz
 
 Call the configure script in the root directory of your Qt source tree with the
 following options:
               
-  ./configure -prefix /opt/qt4.8.0 -opensource -no-largefile -no-qt3support\
+  ./configure -prefix /opt/qt4.8.6 -opensource -no-largefile -no-qt3support\
               -no-multimedia -no-audio-backend -no-phonon\
               -no-phonon-backend -no-webkit -no-javascript-jit -no-script\
               -no-scripttools -no-declarative -no-declarative-debug\
@@ -84,10 +84,10 @@ To use your own Qt version, you have to add the
 
 e.g. BASH example
 
-  PATH=/opt/qt4.8.0/bin:$PATH
+  PATH=/opt/qt4.8.6/bin:$PATH
   export PATH
 	
-  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.8.0'.
+  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.8.6'.
 
 The PATH variable can be displayed by calling 'echo $PATH' on a shell
 command line.
@@ -97,18 +97,18 @@ Step 2)
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  g++ (Ubuntu/Linaro 4.6.1-9ubuntu3) 4.6.1
+  g++ (Ubuntu 4.8.2-19ubuntu1) 4.8.2
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
   QMake version 2.01a
-  Using Qt version 4.8.0 in /opt/qt4.8.0/lib
+  Using Qt version 4.8.6 in /usr/lib/x86_64-linux-gnu
    
 Check if you can call 'moc -v' from a shell command line. You should
 see some output like this:
 
-  Qt Meta Object Compiler version 63 (Qt 4.8.0)
+  Qt Meta Object Compiler version 63 (Qt 4.8.6)
    
 If both checks are successfully Qt is right installed. If a call fails or you
 see a version less than 4.7.0 check the PATH variable for containing the right
@@ -154,14 +154,13 @@ Cumulus application issue the following command:
   install  Installs Cumulus under $(INSTALL_ROOT), normally /opt/cumulus
   
 If you want to build a smaller release you can switch off the features
-Flarm, Internet download, Bluetooth or Welt2000 thread in the related qmake
-project file. Go into the subdirectory cumulus and edit the file cumulusX11.pro.
+Flarm, Internet download or Bluetooth in the related qmake project file.
+Go into the subdirectory cumulus and edit the file cumulusX11.pro.
 Comment out one or more of the lines:
 
 CONFIG += flarm
 CONFIG += internet
 CONFIG += bluetooth
-CONFIG += welt2000thread
 
 with a hash mark. That disables the related feature. The bluetooth feature must
 be disabled too in the project file gpsClient/gpsClientX11.pro.
@@ -189,16 +188,16 @@ directory during call of 'make install' in the following way:
 
 Step 6)
 
-The needed map data (airfields, airspaces and landscape) have to be installed
+The needed map data (points, airspaces and landscape) have to be installed
 under the following directory structure:
 
-                   +-/airfields/ (Only Welt2000 data file is supported)
-$HOME/Cumulus/maps/+-/airspaces/ (Only OpenAir file format is supported)
-                   +-/landscape/ (Use map data from KFLog's map room)
+                   +-/points/ (Welt2000 or openAIP point data are supported)
+$HOME/Cumulus/maps/+-/airspaces/ (OpenAir or openAIP data are supported)
+                   +-/landscape/ (Map files from KFLog's map room)
 
-Note, that Cumulus can handle airspace data only in openair or openAIP format.
-Airfield and outlanding data can be taken from the Welt2000 data dase or from
-openAIP.
+Note, that Cumulus can handle airspace data only in OpenAir or openAIP format.
+Point data like airfields a.s.o. can be taken from the Welt2000 or from the
+openAIP project.
 
 See in Cumulus online help under
 
