@@ -181,7 +181,8 @@ dpkg_make:
 	echo '\n' | dh_make --packagename $(CUMULUS_REL) -c GPL $(DH_MAKE_OPT)
 	cd $(CUMULUS_DEB)/dpkg/Maemo5/control; \
 	cp changelog control rules postinst prerm postrm ../../../debian/; \
-	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright;
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
+	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
 	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
 
