@@ -434,7 +434,7 @@ void WPInfoWidget::writeText()
           comment.replace( "\n", "<br>");
 
           itxt += "<tr><td>" + tr("Comment") + ":</td>"
-                  "<td colspan=3>" + comment + "</td></tr>";
+                  "<td colspan=3><b>" + comment + "</b></td></tr>";
         }
 
       itxt+="</table></html>";
