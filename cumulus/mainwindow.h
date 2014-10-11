@@ -534,11 +534,6 @@ private:
   bool m_reachpointListVisible;
   bool m_outlandingListVisible;
 
-  // Flag to store if the root window is visible or not. Used by Android for the
-  // menu display. Android popups only its menu if the main window is active and
-  // not covered by another widget.
-  static bool m_rootWindow;
-
 #ifdef INTERNET
   /** LiveTrack24 logger object. */
   LiveTrack24Logger* m_liveTrackLogger;

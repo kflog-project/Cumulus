@@ -132,7 +132,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -1120,7 +1120,7 @@ int WaypointCatalog::readBgaDos( QString catalog,
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -1418,7 +1418,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif
@@ -1787,7 +1787,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 #ifdef ANDROID
       // The waitscreen is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
-      ws->setGeometry ( MainWindow::mainWindow()->m_width() / 2 - 250,
+      ws->setGeometry ( MainWindow::mainWindow()->width() / 2 - 250,
                         MainWindow::mainWindow()->height() / 2 - 75,
                         500, 150 );
 #endif

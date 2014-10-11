@@ -2742,7 +2742,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_F11 )
     {
       // Open setup from Android menu
-      if ( m_rootWindow )
+      if ( isRootWindow() )
         {
           slotOpenConfig();
         }
@@ -2753,7 +2753,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_F12 )
     {
       // Open pre-flight setup from Android menu
-      if ( m_rootWindow )
+      if ( isRootWindow() )
         {
           slotOpenPreFlightConfig();
         }
@@ -2764,7 +2764,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_F13 )
     {
       // Open GPS status window from Android menu
-      if ( m_rootWindow )
+      if ( isRootWindow() )
         {
           actionStatusGPS->activate(QAction::Trigger);
         }
@@ -2775,7 +2775,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_D )
     {
       // toggle left map sidebar
-      if ( m_rootWindow )
+      if ( isRootWindow() )
         {
           slotToggleMapSidebar();
         }
@@ -2798,7 +2798,7 @@ void MainWindow::keyReleaseEvent( QKeyEvent* event )
   if( event->key() == Qt::Key_Close )
     {
       // Quit application is requested from Android menu to ensure a safe shutdown.
-      if ( m_rootWindow )
+      if ( isRootWindow() )
         {
           close();
           return;
