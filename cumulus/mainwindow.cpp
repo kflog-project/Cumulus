@@ -2973,7 +2973,12 @@ void MainWindow::slotCloseSip()
 
 bool MainWindow::isRootWindow()
 {
-  if( hasFocus() && viewMap->getMap()->isVisible() )
+  if( mainWindow() == 0 || _globalMapView == 0 )
+    {
+      return false;
+    }
+
+  if( mainWindow()->hasFocus() && _globalMapView->getMap()->isVisible() )
     {
       return true;
     }

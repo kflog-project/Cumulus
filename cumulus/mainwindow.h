@@ -127,7 +127,7 @@ public:
   /**
    * \return True, if main window is active otherwise false.
    */
-  bool isRootWindow();
+  static bool isRootWindow();
 
 #ifdef INTERNET
 
