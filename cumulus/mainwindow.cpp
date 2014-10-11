@@ -2978,7 +2978,7 @@ bool MainWindow::isRootWindow()
       return false;
     }
 
-  if( mainWindow()->hasFocus() && _globalMapView->getMap()->isVisible() )
+  if( _globalMapView->getMap()->isVisible() )
     {
       return true;
     }
