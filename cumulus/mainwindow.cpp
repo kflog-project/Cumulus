@@ -113,6 +113,11 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
  */
 MapView *_globalMapView = static_cast<MapView *> (0);
 
+/**
+ * Contains the root window flag.
+ */
+bool MainWindow::m_rootWindow = true;
+
 // A signal SIGCONT has been catched. It is send out
 // when the cumulus process was stopped and then reactivated.
 // We have to renew the connection to our GPS Receiver.
@@ -2398,6 +2403,7 @@ void MainWindow::slotOpenConfig()
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
+  setRootWindow( false );
   cDlg->setVisible( true );
 }
 
@@ -2414,6 +2420,7 @@ void MainWindow::slotCloseConfig()
     }
 
   setNearestOrReachableHeaders();
+  setRootWindow( true );
   setView( mapView );
 }
 
@@ -2878,6 +2885,24 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
 }
 
 /**
+ * Called if a subwidget is opened.
+ */
+void MainWindow::slotSubWidgetOpened()
+{
+  // Set the root window flag
+  m_rootWindow = false;
+}
+
+/**
+ * Called if an opened subwidget is closed.
+ */
+void MainWindow::slotSubWidgetClosed()
+{
+  // Set the root window flag
+  m_rootWindow = true;
+}
+
+/**
  * Called if logger recognized takeoff.
  */
 void MainWindow::slotTakeoff( QDateTime& dt )
@@ -2978,7 +3003,7 @@ bool MainWindow::isRootWindow()
       return false;
     }
 
-  if( _globalMapView->getMap()->isVisible() )
+  if( _globalMapView->getMap()->isVisible() && m_rootWindow == true )
     {
       return true;
     }

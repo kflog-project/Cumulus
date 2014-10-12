@@ -124,6 +124,11 @@ public:
     return _globalMainWindow;
   };
 
+  static void setRootWindow( bool value)
+  {
+    m_rootWindow = value;
+  };
+
   /**
    * \return True, if main window is active otherwise false.
    */
@@ -232,6 +237,15 @@ public slots:
   void slotCloseConfig();
   /** sets the menu fonts to a reasonable and usable value */
   void slotSetMenuFontSize();
+
+  /**
+   * Called if a subwidget is opened.
+   */
+  void slotSubWidgetOpened();
+  /**
+   * Called if an opened subwidget is closed.
+   */
+  void slotSubWidgetClosed();
 
   /**
    * Called if logger recognized takeoff.
@@ -533,6 +547,11 @@ private:
   // Store here, if the lists are visible or not.
   bool m_reachpointListVisible;
   bool m_outlandingListVisible;
+
+  // Flag to store if the root window is visible or not. Used by Android for the
+  // menu display. Android popups only its menu if the main window is active and
+  // not covered by another widget.
+  static bool m_rootWindow;
 
 #ifdef INTERNET
   /** LiveTrack24 logger object. */
