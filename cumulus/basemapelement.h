@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
@@ -72,11 +70,27 @@ public:
     Balloon = BALLOON,
     Outlanding = OUTLANDING,
     Vor = VOR,
-    VorDme = VORDME, VorTac = VORTAC, Ndb = NDB, CompPoint = COMPPOINT,
-    AirA = AIR_A, AirB = AIR_B, AirC = AIR_C, AirD = AIR_D, AirE = AIR_E, WaveWindow = WAVE_WINDOW,
-    AirF = AIR_F, ControlC = CONTROL_C, ControlD = CONTROL_D, Danger = DANGER,
-    LowFlight = LOW_FLIGHT, Restricted = RESTRICTED, Prohibited = PROHIBITED, Tmz = TMZ,
-    GliderSector = GLIDER_SECTOR, Obstacle = OBSTACLE,
+    VorDme = VORDME,
+    VorTac = VORTAC,
+    Tacan = TACAN,
+    Ndb = NDB,
+    CompPoint = COMPPOINT,
+    AirA = AIR_A,
+    AirB = AIR_B,
+    AirC = AIR_C,
+    AirD = AIR_D,
+    AirE = AIR_E,
+    WaveWindow = WAVE_WINDOW,
+    AirF = AIR_F,
+    ControlC = CONTROL_C,
+    ControlD = CONTROL_D,
+    Danger = DANGER,
+    LowFlight = LOW_FLIGHT,
+    Restricted = RESTRICTED,
+    Prohibited = PROHIBITED,
+    Tmz = TMZ,
+    GliderSector = GLIDER_SECTOR,
+    Obstacle = OBSTACLE,
     LightObstacle = LIGHT_OBSTACLE, ObstacleGroup = OBSTACLE_GROUP, LightObstacleGroup = LIGHT_OBSTACLE_GROUP,
     Spot = SPOT, Isohypse = ISOHYPSE, Glacier = GLACIER, PackIce = PACK_ICE, Border = BORDER, City = CITY,
     Village = VILLAGE, Landmark = LANDMARK, Motorway = MOTORWAY, Road = ROAD, Railway = RAILWAY,

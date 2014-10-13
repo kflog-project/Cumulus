@@ -177,6 +177,7 @@
 #define AIR_G            69
 #define AIR_FIR          70 // Flight Information Region
 #define AIR_UKN          71
-#define LAST_ENTRY       72 // This must be always the last entry!!!
+#define TACAN            72 // Tactical Air Navigation (TACAN)
+#define LAST_ENTRY       73 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

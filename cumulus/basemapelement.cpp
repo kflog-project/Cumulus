@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #include <QObject>
@@ -120,6 +118,7 @@ void BaseMapElement::loadTranslations()
   objectTranslations.insert( BaseMapElement::Vor, QObject::tr( "VOR" ) );
   objectTranslations.insert( BaseMapElement::VorDme, QObject::tr( "VOR/DME" ) );
   objectTranslations.insert( BaseMapElement::VorTac, QObject::tr( "VORTAC" ) );
+  objectTranslations.insert( BaseMapElement::Tacan, QObject::tr( "TACAN" ) );
   objectTranslations.insert( BaseMapElement::Ndb, QObject::tr( "NDB" ) );
   objectTranslations.insert( BaseMapElement::EmptyPoint, QObject::tr( "Empty Point" ) );
 

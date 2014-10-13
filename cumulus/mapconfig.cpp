@@ -747,6 +747,10 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatab
     case BaseMapElement::VorTac:
       iconName = "vortac";
       break;
+    case BaseMapElement::Tacan:
+      // TODO provide an icon for TACAN
+      iconName = "vortac";
+      break;
     case BaseMapElement::Ndb:
       iconName = "ndb";
       break;
