@@ -9,8 +9,6 @@
                              2008      by Josua Dietze
                              2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
 
-  $Id$
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -1206,13 +1204,14 @@ void MapView::slot_AltimeterDialog()
 
   amDlg->slotAltitudeChanged( calculator->getAltimeterAltitude() );
 
-  connect( amDlg, SIGNAL( newAltimeterMode() ),
-           this, SLOT( slot_newAltimeterMode() ) );
+  connect( amDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
+  connect( amDlg, SIGNAL( newAltimeterMode() ), SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( newAltimeterSettings() ),
            GpsNmea::gps, SLOT( slot_reset() ) );
   connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
            amDlg, SLOT( slotAltitudeChanged( const Altitude& ) ) );
 
+  emit openingSubWidget();
   amDlg->setVisible(true);
 
 #ifdef ANDROID
@@ -1260,6 +1259,7 @@ void MapView::slot_VarioDialog()
 
   VarioModeDialog *vmDlg = new VarioModeDialog( this );
 
+  connect( vmDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
   connect( vmDlg, SIGNAL( newVarioTime( int ) ),
            calculator->getVario(), SLOT( slotNewVarioTime( int ) ) );
   connect( vmDlg, SIGNAL( newTEKMode( bool ) ),
@@ -1267,6 +1267,7 @@ void MapView::slot_VarioDialog()
   connect( vmDlg, SIGNAL( newTEKAdjust( int ) ),
            calculator->getVario(), SLOT( slotNewTEKAdjust( int ) ) );
 
+  emit openingSubWidget();
   vmDlg->setVisible(true);
 
 #ifdef ANDROID
@@ -1293,6 +1294,9 @@ void MapView::slot_gpsStatusDialog()
     }
 
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
+  connect( gpsDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
+
+  emit openingSubWidget();
   gpsDlg->setVisible(true);
 }
 
@@ -1310,12 +1314,15 @@ void MapView::slot_gliderFlightDialog()
 
   GliderFlightDialog *gfDlg = new GliderFlightDialog( this );
 
+  connect( gfDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
+
   connect( gfDlg, SIGNAL(newMc(const Speed&)),
            calculator, SLOT(slot_Mc(const Speed&)) );
 
   connect( gfDlg, SIGNAL(newWaterAndBugs(const int, const int)),
            calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
 
+  emit openingSubWidget();
   gfDlg->setVisible(true);
 
 #ifdef ANDROID
@@ -1341,9 +1348,12 @@ void MapView::slot_openManualWind()
 {
   PreFlightWindPage* pfwp = new PreFlightWindPage( this );
 
+  connect( pfwp, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
+
   connect( pfwp, SIGNAL(manualWindStateChange(bool)),
            calculator, SLOT(slot_ManualWindChanged(bool)) );
 
+  emit openingSubWidget();
   pfwp->show();
 }
 

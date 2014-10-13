@@ -226,7 +226,9 @@ class ListViewTabs : public QWidget
 
  protected:
 
-  void showEvent( QShowEvent *event );
+  void showEvent( QShowEvent* event );
+
+  void hideEvent( QHideEvent* event );
 
  private slots:
 
@@ -237,7 +239,10 @@ class ListViewTabs : public QWidget
 
  signals:
 
-  void closed();
+  /**
+   * Emitted, if the widget is hidden.
+   */
+  void hidingWidget();
 
  private:
 

@@ -693,6 +693,9 @@ void MainWindow::slotCreateApplicationWidgets()
   viewMap = new MapView( this );
   viewMap->setVisible( false );
 
+  connect( viewMap, SIGNAL(openingSubWidget()), SLOT(slotSubWidgetOpened()) );
+  connect( viewMap, SIGNAL(closingSubWidget()), SLOT(slotSubWidgetClosed()) );
+
   _globalMapView = viewMap;
   view = mapView;
 
@@ -704,6 +707,8 @@ void MainWindow::slotCreateApplicationWidgets()
   viewNA = m_listViewTabs->viewNA;
   viewRP = m_listViewTabs->viewRP;
   viewTP = m_listViewTabs->viewTP;
+
+  connect( m_listViewTabs, SIGNAL(hidingWidget()), SLOT(slotSubWidgetClosed()) );
 
   // create GPS instance
   GpsNmea::gps = new GpsNmea( this );
@@ -2173,7 +2178,6 @@ void MainWindow::slotLogging ( bool logging )
   actionToggleLogging->blockSignals( false );
 }
 
-/** Write property of internal view. */
 void MainWindow::setView( const AppView newView )
 {
   switch ( newView )
@@ -2182,6 +2186,8 @@ void MainWindow::setView( const AppView newView )
 
       // save new view value
       view = newView;
+
+      setRootWindow( true );
 
       // @AP: set focus to MainWindow widget, otherwise F-Key events will
       // not routed to it
@@ -2210,7 +2216,7 @@ void MainWindow::setView( const AppView newView )
       viewMap->statusBar()->clearMessage();
 
       // If we returned to the map view, we should schedule a redraw of the
-      // air spaces and the navigation layer. Map is not drawn, when invisible
+      // airspaces and the navigation layer. Map is not drawn, when invisible
       // and airspace filling, edited waypoints or tasks can be outdated in the
       // meantime.
       Map::instance->scheduleRedraw( Map::aeroLayer );
@@ -2230,6 +2236,7 @@ void MainWindow::setView( const AppView newView )
     case rpView:
     case wpView:
 
+      setRootWindow( false );
       m_listViewTabs->show();
       m_listViewTabs->setView( newView );
 
@@ -2245,6 +2252,8 @@ void MainWindow::setView( const AppView newView )
 
       // save new view value
       view = newView;
+
+      setRootWindow( false );
 
       toggleManualNavActions( false );
       toggleGpsNavActions( false );
@@ -2389,6 +2398,14 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
   connect( viewInfo, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
+  // Note, this widget can be opened from different dialog widgets.
+  if( isRootWindow() )
+    {
+      setRootWindow( false );
+      connect( viewInfo, SIGNAL( closingWidget() ),
+               SLOT( slotSubWidgetClosed() ) );
+    }
+
   viewInfo->showWP( view, *wp );
   viewInfo->show();
 }
@@ -2400,6 +2417,7 @@ void MainWindow::slotOpenConfig()
   configView = static_cast<QWidget *> (cDlg);
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
   connect( cDlg, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
@@ -2420,7 +2438,6 @@ void MainWindow::slotCloseConfig()
     }
 
   setNearestOrReachableHeaders();
-  setRootWindow( true );
   setView( mapView );
 }
 
@@ -2720,7 +2737,9 @@ void MainWindow::slotOpenPreFlightConfig()
   configView = static_cast<QWidget *> (cDlg);
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );
+  connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotSubWidgetClosed() ) );
 
+  setRootWindow( false );
   cDlg->setVisible( true );
 }
 
@@ -2734,7 +2753,6 @@ void MainWindow::slotPreFlightDataChanged()
 /** Dynamically updates view for reachable list */
 void MainWindow::slotNewReachList()
 {
-  // qDebug( "MainWindow::slotNewReachList() is called" );
   viewRP->slot_newList();
   Map::instance->scheduleRedraw(Map::waypoints);
 }
@@ -2889,7 +2907,7 @@ void MainWindow::slotMapDrawEvent( bool drawEvent )
  */
 void MainWindow::slotSubWidgetOpened()
 {
-  // Set the root window flag
+  // Reset the root window flag
   m_rootWindow = false;
 }
 

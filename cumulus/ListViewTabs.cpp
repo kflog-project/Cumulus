@@ -131,6 +131,13 @@ void ListViewTabs::showEvent( QShowEvent *event )
   QWidget::showEvent( event );
 }
 
+void ListViewTabs::hideEvent( QHideEvent* event )
+{
+  emit hidingWidget();
+  QWidget::hideEvent( event );
+}
+
+
 void ListViewTabs::setView( const int view )
 {
   int idx = -1;
@@ -179,7 +186,5 @@ void ListViewTabs::slotDone()
   viewOL->listWidget()->slot_Done();
   viewNA->listWidget()->slot_Done();
   viewWP->listWidget()->slot_Done();
-
-  emit closed();
   hide();
 }

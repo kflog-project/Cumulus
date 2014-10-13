@@ -53,6 +53,7 @@ WPInfoWidget::WPInfoWidget( QWidget *parent ) :
   setAttribute(Qt::WA_DeleteOnClose);
 
   m_returnView = MainWindow::mapView;
+
   m_homeChanged = false;
   m_editedWpIsTarget = false;
 
@@ -458,8 +459,7 @@ void WPInfoWidget::slot_SwitchBack()
       m_homeChanged = false;
     }
 
-  // emit the return view
-  emit closingWindow( m_returnView );
+  emit closingWidget();
   QWidget::close();
 }
 

@@ -575,10 +575,6 @@ private slots:
 
 #endif
 
-#ifdef ANDROID
-private:
-  QPoint forceFocusPoint;
-#endif
 };
 
 #endif

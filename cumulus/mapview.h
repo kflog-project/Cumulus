@@ -6,8 +6,6 @@
                                2008-2014 by Axel Pauli
     email                : kflog.cumulus@gmail.com
 
-    $Id$
-
 ***************************************************************************/
 
 /***************************************************************************
@@ -313,6 +311,7 @@ class MapView : public QWidget
      * toggle LD calculation on/off
      */
     void toggleLDCalculation( const bool );
+
     /**
      * toggle ETA calculation on/off
      */
@@ -327,6 +326,16 @@ class MapView : public QWidget
      * toggle menu in main window.
      */
     void toggleMenu();
+
+    /**
+     * Emitted, if a subwidget is opened
+     */
+    void openingSubWidget();
+
+    /**
+     * Emitted, if a subwidget is closed
+     */
+    void closingSubWidget();
 
   private:
 

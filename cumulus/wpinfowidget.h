@@ -112,10 +112,9 @@ signals:
   void waypointEdited(Waypoint& wp);
 
   /**
-   * This signal is emitted before the window is closed. It transmits the
-   * view to be returned in the MainWindow.
+   * This signal is emitted before the window is closed.
    */
-  void closingWindow( int return2View );
+  void closingWidget();
 
 private:
 
