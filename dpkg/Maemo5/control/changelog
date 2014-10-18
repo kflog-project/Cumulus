@@ -1,6 +1,6 @@
 cumulus (__VERSION__) stable; urgency=low
 
   * Cumulus Maemo5 Release. For changelog see here:
-    https://github.com/kflog-project/Cumulus/blob/___VERSION__/ChangeLog
+    https://github.com/kflog-project/Cumulus/blob/__VERSION__/ChangeLog
 
  -- Axel Pauli <kflog.cumulus@gmail.com>  __DATE__
