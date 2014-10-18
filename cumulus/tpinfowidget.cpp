@@ -233,7 +233,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   no1.sprintf( "%02d", currentTpIndex );
   no2.sprintf( "%02d", currentTpIndex + 1 );
 
-  display += "<html><center><big><b>" +
+  display += "<html><center><b>" +
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
     "</b></center>";
 
@@ -489,7 +489,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       }
   }
 
-  display += "</table></big><html>";
+  display += "</table><html>";
   m_text->setHtml( display );
 }
 
@@ -528,7 +528,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   // Prepare output data
   QString display;
 
-  display += "<html><big><center><b>" +
+  display += "<html><center><b>" +
     tr("Arrival Info") +
     "</b></center><p>";
 
@@ -537,7 +537,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
     "<tr><td colspan=\"2\">&nbsp;&nbsp;" + wp->name + " (" + wp->description + ")" +
     "</td></tr>";
 
-  // to avoid wraping in the table we have to code spaces as forced spaces in html
+  // to avoid wrapping in the table we have to code spaces as forced spaces in html
   QString distance = Distance::getText(distance2Target.getMeters(), true, 1);
   distance.replace(  QRegExp(" "), "&nbsp;" );
 
@@ -761,7 +761,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
                     ss + " " + tz + "</b></td></tr>";
        }
 
-    display += "</table></big></html>";
+    display += "</table></html>";
     m_text->setHtml( display );
 }
 
