@@ -133,6 +133,8 @@ void ListViewTabs::showEvent( QShowEvent *event )
 
 void ListViewTabs::hideEvent( QHideEvent* event )
 {
+  // Clear list view tabs, that takes some time.
+  m_listViewTabs->clear();
   emit hidingWidget();
   QWidget::hideEvent( event );
 }
