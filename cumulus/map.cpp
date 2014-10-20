@@ -1140,8 +1140,8 @@ void Map::resizeEvent(QResizeEvent* event)
   // set resize flag
   m_isResizeEvent = true;
 
-  // start redrawing of map
-  slotDraw();
+  // Finish resize event here and start a redrawing of map via a timer event.
+  QTimer::singleShot(0, this, SLOT(slotDraw()));
 }
 
 void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
