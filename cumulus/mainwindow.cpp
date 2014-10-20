@@ -2617,11 +2617,13 @@ void MainWindow::slotReadconfig()
   // configure reconnect of GPS receiver in case of process stop
   QString device = conf->getGpsDevice();
 
+#ifndef ANDROID
   if( device.startsWith("/dev/" ) )
     {
       // @ee install signal handler
       signal( SIGCONT, resumeGpsConnection );
     }
+#endif
 
   GpsNmea::gps->slot_reset();
 

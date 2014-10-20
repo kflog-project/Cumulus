@@ -29,6 +29,7 @@
 #define ListViewTabs_h
 
 #include <QTabWidget>
+#include <QTimer>
 #include <QWidget>
 
 #include "airfieldlistview.h"
@@ -237,6 +238,11 @@ class ListViewTabs : public QWidget
    */
   void slotDone();
 
+  /**
+   * Called to clear the loaded tabulators.
+   */
+  void slotClearTabs();
+
  signals:
 
   /**
@@ -248,6 +254,7 @@ class ListViewTabs : public QWidget
 
   QTabWidget* m_listViewTabs;
 
+  QTimer* m_clearTimer;
   /**
    * Tabulator labels
    */
@@ -257,7 +264,6 @@ class ListViewTabs : public QWidget
   QString m_textRP;
   QString m_textTP;
   QString m_textWP;
-
 };
 
 #endif

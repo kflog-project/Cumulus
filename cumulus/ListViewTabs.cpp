@@ -42,6 +42,11 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
       resize( parent->size() );
     }
 
+  m_clearTimer = new QTimer( this );
+  m_clearTimer->setSingleShot( true );
+  m_clearTimer->setInterval( 750 );
+  connect( m_clearTimer, SIGNAL(timeout()), SLOT(slotClearTabs()) );
+
   QVBoxLayout *layout = new QVBoxLayout( this );
 
   m_listViewTabs = new QTabWidget( this );
@@ -83,6 +88,7 @@ ListViewTabs::~ListViewTabs()
 
 void ListViewTabs::showEvent( QShowEvent *event )
 {
+  m_clearTimer->stop();
   m_listViewTabs->clear();
 
   GeneralConfig* conf = GeneralConfig::instance();
@@ -133,12 +139,16 @@ void ListViewTabs::showEvent( QShowEvent *event )
 
 void ListViewTabs::hideEvent( QHideEvent* event )
 {
-  // Clear list view tabs, that takes some time.
-  m_listViewTabs->clear();
+  m_clearTimer->start();
   emit hidingWidget();
   QWidget::hideEvent( event );
 }
 
+void ListViewTabs::slotClearTabs()
+{
+  // Clear list view tabs, that takes some time.
+  m_listViewTabs->clear();
+}
 
 void ListViewTabs::setView( const int view )
 {
