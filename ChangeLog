@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2014-10-21 AP: Cumulus 5.19.0 released for Android, Ubuntu, Debian and Maemo4/5
+
 [o] 2014-10-02 AP: Issue #17 fixed. Make openAIP navaid data available in
                    Cumulus as normal input and not only as waypoint data.
 
