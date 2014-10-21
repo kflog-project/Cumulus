@@ -1,6 +1,6 @@
 This work was packaged for Debian by:
 
-    Axel Pauli <kflog.cumulus@googlemail.com> on __DATE__
+    Axel Pauli <kflog.cumulus@gmail.com> on __DATE__
 
 It was downloaded from:
 
@@ -8,7 +8,7 @@ It was downloaded from:
 
 Upstream Author(s):
 
-    Axel Pauli <kflog.cumulus@googlemail.com>
+    Axel Pauli <kflog.cumulus@gmail.com>
 
 Copyright:
 
@@ -34,6 +34,6 @@ Public License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
 The Debian packaging is:
 
-    Copyright (C) __DATE__ Axel <kflog.cumulus@googlemail.com>
+    Copyright (C) __DATE__ Axel <kflog.cumulus@gmail.com>
 
 and is licensed under the GPL version 3, see above.
