@@ -1,7 +1,7 @@
 Source: cumuluslanguagede
 Section: user/navigation
 Priority: optional
-Maintainer: Axel Pauli <kflog.cumulus@googlemail.com>
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
 Build-Depends: debhelper (>= 5)
 Standards-Version: 3.7.2
 Homepage: http://www.kflog.org/cumulus/
@@ -16,7 +16,7 @@ XB-Description-de_DE: Cumulus ist ein Flugcomputer fuer Segelflieger.
  Dieses Paket enthaelt alle Deutschen Sprachuebersetzungen fuer Cumulus.
 XB-Maemo-Upgrade-Description: Translation package for German.
 XB-Maemo-Upgrade-Description-de_DE: Uebersetzungspaket fuer Deutsch.
-XSBC-Bugtracker: mailto:kflog.cumulus@googlemail.com
+XSBC-Bugtracker: mailto:kflog.cumulus@gmail.com
 XB-Maemo-Icon-26:
  iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c
  6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAlgAAAJYABbFUIBwAAAAd0
