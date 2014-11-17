@@ -30,7 +30,7 @@
  *
  * http://qt-project.org/
  *
- * Cumulus can be built with the Qt release 4.8.x. and 5.0.x
+ * Cumulus can be built with the Qt release 4.8.x. and 5.x
  *
  */
 
@@ -158,18 +158,15 @@ int main(int argc, char *argv[])
   // @AP: make install root of Cumulus available for other modules via
   // GeneralConfig. The assumption is that Cumulus is installed at
   // <root>/bin/cumulus. The <root> path will be passed to GeneralConfig.
-  char *callPath = dirname(argv[0]);
-  char *startDir = getcwd(0,0);
-  chdir( callPath );
-  char *callDir = getcwd(0,0);
-  QString root = QString(dirname(callDir));
-  conf->setAppRoot( root );
-  conf->setDataRoot( root );
+  QDir rootDir( QFileInfo(argv[0]).canonicalPath() );
 
-  // change back to start directory
-  chdir( startDir );
-  free( callDir );
-  free( startDir );
+  if( rootDir.cdUp() == false )
+    {
+      qWarning() << "main: Cumulus App has no parent directory! InstallDir is" << rootDir;
+    }
+
+  QString rootPath = rootDir.canonicalPath();
+  conf->setAppRoot( rootPath );
 #endif
 
 #ifdef MAEMO
