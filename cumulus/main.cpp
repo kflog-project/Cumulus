@@ -2,9 +2,7 @@
  **
  **   main.cpp
  **
- **   This file is part of Cumulus. It contains the start procedure of
- **   the GUI. Currently we use the release QT/X11 4.7.x for the build
- **   process.
+ **   This file is part of Cumulus.
  **
  ************************************************************************
  **
@@ -14,8 +12,6 @@
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -30,7 +26,7 @@
  *
  * http://qt-project.org/
  *
- * Cumulus can be built with the Qt release 4.8.x. and 5.x
+ * Cumulus can be built with the Qt releases 4.8.x. and 5.x.
  *
  */
 
