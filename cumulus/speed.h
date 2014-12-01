@@ -3,13 +3,11 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : 2002      by Andre Somers
-                         : 2007-2012 by Axel Pauli
+                         : 2007-2014 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
     This file is part of Cumulus
-
-    $Id$
 
  ***************************************************************************/
 
@@ -27,13 +25,6 @@
 
 #include <QString>
 
-//the following constants define the factor by which to multiply meters per
-//second to get the indicated unit
-const double toKph=3.6;
-const double toMph=2.2369;
-const double toKnot=1.9438;
-const double toFpm=196.8504;
-
 /**
  * \class Speed
  *
@@ -48,7 +39,7 @@ const double toFpm=196.8504;
  * etc. There are convenience functions to access the value using both
  * appropriate units.
  *
- * \date 2002-2010
+ * \date 2002-2014
  */
 class Speed
 {
@@ -65,6 +56,15 @@ public:
       milesPerHour=3,      /** statute miles per hour */
       feetPerMinute=4      /** feet per minute */
     };
+
+    /**
+     * The following constants define the factor by which to multiply meters per
+     * second to get the indicated unit.
+     */
+    static const double toKph  = 3.6;
+    static const double toMph  = 2.2369;
+    static const double toKnot = 1.9438;
+    static const double toFpm  = 196.8504;
 
     /**
      * Constructor
