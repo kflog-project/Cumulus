@@ -411,6 +411,18 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets the airspace border color */
+  QColor &getBorderColorRMZ()
+    {
+      return _borderColorRMZ;
+    };
+
+  /** Sets the airspace border color */
+  void setBorderColorRMZ( const QColor& newValue )
+  {
+    _borderColorRMZ = newValue;
+  };
+
+  /** Gets the airspace border color */
   QColor &getBorderColorTMZ()
     {
       return _borderColorTMZ;
@@ -600,6 +612,18 @@ class GeneralConfig : protected QSettings
   void setFillColorProhibited( const QColor& newValue )
   {
     _fillColorProhibited = newValue;
+  };
+
+  /** Gets the airspace fill color */
+  QColor &getFillColorRMZ()
+    {
+      return _fillColorRMZ;
+    };
+
+  /** Sets the airspace fill color */
+  void setFillColorRMZ( const QColor& newValue )
+  {
+    _fillColorRMZ = newValue;
   };
 
   /** Gets the airspace fill color */
@@ -2854,7 +2878,7 @@ class GeneralConfig : protected QSettings
   // terrain default colors
   QString _terrainDefaultColors[SIZEOF_TERRAIN_COLORS];
 
-  // terrain ground color, used when the iso line drawing is disabled
+  // terrain ground color, used when the ISO line drawing is disabled
   QColor _groundColor;
 
   // Offset value to be added or subtracted to current elevation
@@ -2881,6 +2905,7 @@ class GeneralConfig : protected QSettings
   QColor _borderColorRestricted;
   QColor _borderColorDanger;
   QColor _borderColorProhibited;
+  QColor _borderColorRMZ;
   QColor _borderColorTMZ;
   QColor _borderColorLowFlight;
   QColor _borderColorGliderSector;
@@ -2899,6 +2924,7 @@ class GeneralConfig : protected QSettings
   QColor _fillColorRestricted;
   QColor _fillColorDanger;
   QColor _fillColorProhibited;
+  QColor _fillColorRMZ;
   QColor _fillColorTMZ;
   QColor _fillColorLowFlight;
   QColor _fillColorGliderSector;

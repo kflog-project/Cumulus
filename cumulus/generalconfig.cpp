@@ -48,7 +48,7 @@ QStringList GeneralConfig::_liveTrackServerList =
                   << "http://livexc.dhv.de"
                   << "https://www.skylines.aero";
 
-// @AP: We derive here from the QT settings as base class. The config
+// @AP: We derive here from QSettings as base class. The config
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
 GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
 {
@@ -152,6 +152,7 @@ void GeneralConfig::load()
   _mapDrawingEnabled[BaseMapElement::Restricted]   = value("checkRestricted", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Danger]       = value("checkDanger", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Prohibited]   = value("checkProhibited", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Rmz]          = value("checkRMZ", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Tmz]          = value("checkTMZ", true).toBool();
   _mapDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
   _mapDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
@@ -170,6 +171,7 @@ void GeneralConfig::load()
   _borderColorRestricted   = QColor( value("borderColorRestricted", RESTRICTED_COLOR).toString() );
   _borderColorDanger       = QColor( value("borderColorDanger", DANGER_COLOR).toString() );
   _borderColorProhibited   = QColor( value("borderColorProhibited", PROHIBITED_COLOR).toString() );
+  _borderColorRMZ          = QColor( value("borderColorRMZ", RMZ_COLOR).toString() );
   _borderColorTMZ          = QColor( value("borderColorTMZ", TMZ_COLOR).toString() );
   _borderColorLowFlight    = QColor( value("borderColorLowFlight", LOWF_COLOR).toString() );
   _borderColorGliderSector = QColor( value("borderColorGliderSector", GLIDER_SECTOR_COLOR).toString() );
@@ -188,6 +190,7 @@ void GeneralConfig::load()
   _fillColorRestricted   = QColor( value("fillColorRestricted", RESTRICTED_BRUSH_COLOR).toString() );
   _fillColorDanger       = QColor( value("fillColorDanger", DANGER_BRUSH_COLOR).toString() );
   _fillColorProhibited   = QColor( value("fillColorProhibited", PROHIBITED_BRUSH_COLOR).toString() );
+  _fillColorRMZ          = QColor( value("fillColorRMZ", RMZ_BRUSH_COLOR).toString() );
   _fillColorTMZ          = QColor( value("fillColorTMZ", TMZ_BRUSH_COLOR).toString() );
   _fillColorLowFlight    = QColor( value("fillColorLowFlight", LOWF_BRUSH_COLOR).toString() );
   _fillColorGliderSector = QColor( value("fillColorGliderSector", GLIDER_SECTOR_BRUSH_COLOR).toString() );
@@ -622,6 +625,7 @@ void GeneralConfig::save()
   setValue("checkRestricted", _mapDrawingEnabled[BaseMapElement::Restricted]);
   setValue("checkDanger", _mapDrawingEnabled[BaseMapElement::Danger]);
   setValue("checkProhibited", _mapDrawingEnabled[BaseMapElement::Prohibited]);
+  setValue("checkRMZ", _mapDrawingEnabled[BaseMapElement::Rmz]);
   setValue("checkTMZ", _mapDrawingEnabled[BaseMapElement::Tmz]);
   setValue("checkLowFlight", _mapDrawingEnabled[BaseMapElement::LowFlight]);
   setValue("checkGliderSector", _mapDrawingEnabled[BaseMapElement::GliderSector]);
@@ -640,6 +644,7 @@ void GeneralConfig::save()
   setValue("borderColorRestricted",   _borderColorRestricted.name());
   setValue("borderColorDanger",       _borderColorDanger.name());
   setValue("borderColorProhibited",   _borderColorProhibited.name());
+  setValue("borderColorRMZ",          _borderColorRMZ.name());
   setValue("borderColorTMZ",          _borderColorTMZ.name());
   setValue("borderColorLowFlight",    _borderColorLowFlight.name());
   setValue("borderColorGliderSector", _borderColorGliderSector.name());
@@ -657,6 +662,7 @@ void GeneralConfig::save()
   setValue("fillColorRestricted",   _fillColorRestricted.name());
   setValue("fillColorDanger",       _fillColorDanger.name());
   setValue("fillColorProhibited",   _fillColorProhibited.name());
+  setValue("fillColorRMZ",          _fillColorRMZ.name());
   setValue("fillColorTMZ",          _fillColorTMZ.name());
   setValue("fillColorLowFlight",    _fillColorLowFlight.name());
   setValue("fillColorGliderSector", _fillColorGliderSector.name());

@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
@@ -38,7 +36,7 @@
  *
  * \date 2005-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef _openair_parser_h

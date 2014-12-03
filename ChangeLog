@@ -14,6 +14,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-12-03 AP: Issue #23 fixed. Airspace RMZ replaces Airspace Foxtrott in
+                   Germany at 2014-12-11. Airspace parser and airspace
+                   configuration extended to handle that.
+
 [*] 2014-10-21 AP: Cumulus 5.19.0 released for Android, Ubuntu, Debian and Maemo4/5
 
 [o] 2014-10-02 AP: Issue #17 fixed. Make openAIP navaid data available in

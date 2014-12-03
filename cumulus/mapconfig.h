@@ -13,8 +13,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef MAP_CONFIG_H
@@ -313,6 +311,8 @@ private:
     QBrush prohibitedBrushList[4];
     QPen restrPenList[4];
     QBrush restrBrushList[4];
+    QPen rmzPenList[4];
+    QBrush rmzBrushList[4];
     QPen tmzPenList[4];
     QBrush tmzBrushList[4];
     QPen gliderSectorPenList[4];
@@ -359,6 +359,7 @@ private:
     bool prohibitedBorder[4];
     bool lowFBorder[4];
     bool restrBorder[4];
+    bool rmzBorder[4];
     bool tmzBorder[4];
     bool gliderSectorBorder[4];
     bool trailBorder[4];

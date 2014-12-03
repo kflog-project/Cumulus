@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -36,8 +34,8 @@
 #include "layout.h"
 #include "mainwindow.h"
 #include "map.h"
-#include "mapdefaults.h"
 #include "mapcontents.h"
+#include "mapdefaults.h"
 #include "numberEditor.h"
 
 #include "settingspageairspace.h"
@@ -98,7 +96,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   int row=0;
 
-  drawOptions = new QTableWidget(8, 6, this);
+  drawOptions = new QTableWidget(9, 6, this);
   // drawOptions->setShowGrid( false );
 
   drawOptions->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -227,6 +225,10 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawAirspaceF->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawAirspaceF );
 
+  drawRMZ = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::Rmz) );
+  drawRMZ->setFlags( Qt::ItemIsEnabled );
+  drawOptions->setItem( row++, col, drawRMZ );
+
   drawWaveWindow = new QTableWidgetItem( Airspace::getTypeName(BaseMapElement::WaveWindow) );
   drawWaveWindow->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawWaveWindow );
@@ -268,6 +270,11 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   borderColorAirspaceF->setAutoFillBackground(true);
   borderColorAirspaceF->setBackgroundRole(QPalette::Window);
   drawOptions->setCellWidget( row++, col, borderColorAirspaceF );
+
+  borderColorRMZ = new QWidget();
+  borderColorRMZ->setAutoFillBackground(true);
+  borderColorRMZ->setBackgroundRole(QPalette::Window);
+  drawOptions->setCellWidget( row++, col, borderColorRMZ );
 
   borderColorWaveWindow = new QWidget();
   borderColorWaveWindow->setAutoFillBackground(true);
@@ -312,6 +319,11 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   fillColorAirspaceF->setAutoFillBackground(true);
   fillColorAirspaceF->setBackgroundRole(QPalette::Window);
   drawOptions->setCellWidget( row++, col, fillColorAirspaceF );
+
+  fillColorRMZ = new QWidget();
+  fillColorRMZ->setAutoFillBackground(true);
+  fillColorRMZ->setBackgroundRole(QPalette::Window);
+  drawOptions->setCellWidget( row++, col, fillColorRMZ );
 
   fillColorWaveWindow = new QWidget();
   fillColorWaveWindow->setAutoFillBackground(true);
@@ -359,6 +371,11 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawAirspaceFir->setFlags( Qt::ItemIsEnabled );
   drawOptions->setItem( row++, col, drawAirspaceFir );
 
+  // Add a dummy item for this empty cell.
+  QTableWidgetItem* dummy = new QTableWidgetItem( 9999 );
+  dummy->setFlags( Qt::NoItemFlags );
+  drawOptions->setItem( row++, col, dummy );
+
   // next column is four
   row = 0;
   col = 4;
@@ -403,6 +420,11 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   borderColorAirspaceFir->setBackgroundRole(QPalette::Window);
   drawOptions->setCellWidget( row++, col, borderColorAirspaceFir );
 
+  // Add a dummy item for this empty cell.
+  dummy = new QTableWidgetItem( 9999 );
+  dummy->setFlags( Qt::NoItemFlags );
+  drawOptions->setItem( row++, col, dummy );
+
   // next column is five
   row = 0;
   col = 5;
@@ -442,10 +464,15 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   fillColorLowFlight->setBackgroundRole(QPalette::Window);
   drawOptions->setCellWidget( row++, col, fillColorLowFlight );
 
-  fillColorAirspaceFir = new QTableWidgetItem(tr("none"));
+  fillColorAirspaceFir = new QTableWidgetItem(tr("none"), 9999);
   fillColorAirspaceFir->setFlags( Qt::NoItemFlags );
   fillColorAirspaceFir->setTextAlignment(Qt::AlignCenter);
   drawOptions->setItem( row++, col, fillColorAirspaceFir );
+
+  // Add a dummy item for this empty cell.
+  dummy = new QTableWidgetItem( 9999 );
+  dummy->setFlags( Qt::NoItemFlags );
+  drawOptions->setItem( row++, col, dummy );
 
   drawOptions->resizeColumnsToContents();
 
@@ -523,6 +550,7 @@ void SettingsPageAirspace::load()
   drawRestricted->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::Restricted) ? Qt::Checked : Qt::Unchecked );
   drawDanger->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::Danger) ? Qt::Checked : Qt::Unchecked );
   drawProhibited->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::Prohibited) ? Qt::Checked : Qt::Unchecked );
+  drawRMZ->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::Rmz) ? Qt::Checked : Qt::Unchecked );
   drawTMZ->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::Tmz) ? Qt::Checked : Qt::Unchecked );
   drawLowFlight->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::LowFlight) ? Qt::Checked : Qt::Unchecked );
   drawWaveWindow->setCheckState (conf->getItemDrawingEnabled(BaseMapElement::WaveWindow) ? Qt::Checked : Qt::Unchecked );
@@ -542,6 +570,7 @@ void SettingsPageAirspace::load()
   borderColorRestricted->setPalette( QPalette(conf->getBorderColorRestricted()));
   borderColorDanger->setPalette( QPalette(conf->getBorderColorDanger()));
   borderColorProhibited->setPalette( QPalette(conf->getBorderColorProhibited()));
+  borderColorRMZ->setPalette( QPalette(conf->getBorderColorRMZ()));
   borderColorTMZ->setPalette( QPalette(conf->getBorderColorTMZ()));
   borderColorLowFlight->setPalette( QPalette(conf->getBorderColorLowFlight()));
   borderColorGliderSector->setPalette( QPalette(conf->getBorderColorGliderSector()));
@@ -559,6 +588,7 @@ void SettingsPageAirspace::load()
   fillColorRestricted->setPalette( QPalette(conf->getFillColorRestricted()));
   fillColorDanger->setPalette( QPalette(conf->getFillColorDanger()));
   fillColorProhibited->setPalette( QPalette(conf->getFillColorProhibited()));
+  fillColorRMZ->setPalette( QPalette(conf->getFillColorRMZ()));
   fillColorTMZ->setPalette( QPalette(conf->getFillColorTMZ()));
   fillColorLowFlight->setPalette( QPalette(conf->getFillColorLowFlight()));
   fillColorGliderSector->setPalette( QPalette(conf->getFillColorGliderSector()));
@@ -576,22 +606,23 @@ void SettingsPageAirspace::save()
   conf->setAirspaceDrawingBorder(m_borderDrawingValue->value());
   conf->setAirspaceDrawBorderEnabled(m_enableBorderDrawing->checkState() == Qt::Checked ? true : false);
 
-  conf->setItemDrawingEnabled(BaseMapElement::AirA,drawAirspaceA->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::AirB,drawAirspaceB->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::AirC,drawAirspaceC->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::ControlC,drawControlC->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::AirD,drawAirspaceD->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::ControlD,drawControlD->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::AirE,drawAirspaceE->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::AirF,drawAirspaceF->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::AirFir,drawAirspaceFir->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::Restricted,drawRestricted->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::Danger,drawDanger->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::Prohibited,drawProhibited->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::Tmz,drawTMZ->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::LowFlight,drawLowFlight->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::WaveWindow,drawWaveWindow->checkState() == Qt::Checked ? true : false);
-  conf->setItemDrawingEnabled(BaseMapElement::GliderSector,drawGliderSector->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirA, drawAirspaceA->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirB, drawAirspaceB->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirC, drawAirspaceC->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::ControlC, drawControlC->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirD, drawAirspaceD->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::ControlD, drawControlD->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirE, drawAirspaceE->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirF, drawAirspaceF->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::AirFir, drawAirspaceFir->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::Restricted, drawRestricted->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::Danger, drawDanger->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::Prohibited, drawProhibited->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::Rmz, drawRMZ->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::Tmz, drawTMZ->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::LowFlight, drawLowFlight->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::WaveWindow, drawWaveWindow->checkState() == Qt::Checked ? true : false);
+  conf->setItemDrawingEnabled(BaseMapElement::GliderSector, drawGliderSector->checkState() == Qt::Checked ? true : false);
 
   // save border colors
   conf->setBorderColorAirspaceA(borderColorAirspaceA->palette().color(QPalette::Window));
@@ -607,6 +638,7 @@ void SettingsPageAirspace::save()
   conf->setBorderColorRestricted(borderColorRestricted->palette().color(QPalette::Window));
   conf->setBorderColorDanger(borderColorDanger->palette().color(QPalette::Window));
   conf->setBorderColorProhibited(borderColorProhibited->palette().color(QPalette::Window));
+  conf->setBorderColorRMZ(borderColorRMZ->palette().color(QPalette::Window));
   conf->setBorderColorTMZ(borderColorTMZ->palette().color(QPalette::Window));
   conf->setBorderColorLowFlight(borderColorLowFlight->palette().color(QPalette::Window));
   conf->setBorderColorGliderSector(borderColorGliderSector->palette().color(QPalette::Window));
@@ -624,6 +656,7 @@ void SettingsPageAirspace::save()
   conf->setFillColorRestricted(fillColorRestricted->palette().color(QPalette::Window));
   conf->setFillColorDanger(fillColorDanger->palette().color(QPalette::Window));
   conf->setFillColorProhibited(fillColorProhibited->palette().color(QPalette::Window));
+  conf->setFillColorRMZ(fillColorRMZ->palette().color(QPalette::Window));
   conf->setFillColorTMZ(fillColorTMZ->palette().color(QPalette::Window));
   conf->setFillColorLowFlight(fillColorLowFlight->palette().color(QPalette::Window));
   conf->setFillColorGliderSector(fillColorGliderSector->palette().color(QPalette::Window));
@@ -655,6 +688,7 @@ void SettingsPageAirspace::slot_setColorDefaults()
   borderColorRestricted->setPalette( QPalette(QColor(RESTRICTED_COLOR)) );
   borderColorDanger->setPalette( QPalette(QColor(DANGER_COLOR)) );
   borderColorProhibited->setPalette( QPalette(QColor(DANGER_COLOR)) );
+  borderColorRMZ->setPalette( QPalette(QColor(RMZ_COLOR)) );
   borderColorTMZ->setPalette( QPalette(QColor(TMZ_COLOR)) );
   borderColorLowFlight->setPalette( QPalette(QColor(LOWF_COLOR)) );
   borderColorGliderSector->setPalette( QPalette(QColor(GLIDER_SECTOR_COLOR)) );
@@ -671,6 +705,7 @@ void SettingsPageAirspace::slot_setColorDefaults()
   fillColorRestricted->setPalette( QPalette(QColor(RESTRICTED_BRUSH_COLOR)) );
   fillColorDanger->setPalette( QPalette(QColor(DANGER_BRUSH_COLOR)) );
   fillColorProhibited->setPalette( QPalette(QColor(DANGER_BRUSH_COLOR)) );
+  fillColorRMZ->setPalette( QPalette(QColor(RMZ_BRUSH_COLOR)) );
   fillColorTMZ->setPalette( QPalette(QColor(TMZ_BRUSH_COLOR)) );
   fillColorLowFlight->setPalette( QPalette(QColor(LOWF_BRUSH_COLOR)) );
   fillColorGliderSector->setPalette( QPalette(QColor(GLIDER_SECTOR_BRUSH_COLOR)) );
@@ -683,7 +718,9 @@ void SettingsPageAirspace::slot_toggleCheckBox( int row, int column )
 {
   // qDebug("row=%d, column=%d", row, column);
 
-  if( row == 7 && column >= 5 )
+  QTableWidgetItem* it = drawOptions->item( row, column );
+
+  if( it != 0 && it->type() == 9999 )
     {
       // Ignore dummy cells
       return;
@@ -800,6 +837,7 @@ bool SettingsPageAirspace::checkChanges()
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Restricted) != (drawRestricted->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Danger) != (drawDanger->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Prohibited) != (drawProhibited->checkState() == Qt::Checked ? true : false);
+  changed |= conf->getItemDrawingEnabled(BaseMapElement::Rmz) != (drawRMZ->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::Tmz) != (drawTMZ->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::LowFlight) != (drawLowFlight->checkState() == Qt::Checked ? true : false);
   changed |= conf->getItemDrawingEnabled(BaseMapElement::WaveWindow) != (drawWaveWindow->checkState() == Qt::Checked ? true : false);
@@ -818,6 +856,7 @@ bool SettingsPageAirspace::checkChanges()
   changed |= conf->getBorderColorRestricted() != borderColorRestricted->palette().color(QPalette::Window);
   changed |= conf->getBorderColorDanger() != borderColorDanger->palette().color(QPalette::Window);
   changed |= conf->getBorderColorProhibited() != borderColorProhibited->palette().color(QPalette::Window);
+  changed |= conf->getBorderColorRMZ() != borderColorRMZ->palette().color(QPalette::Window);
   changed |= conf->getBorderColorTMZ() != borderColorTMZ->palette().color(QPalette::Window);
   changed |= conf->getBorderColorLowFlight() != borderColorLowFlight->palette().color(QPalette::Window);
   changed |= conf->getBorderColorGliderSector() != borderColorGliderSector->palette().color(QPalette::Window);
@@ -834,6 +873,7 @@ bool SettingsPageAirspace::checkChanges()
   changed |= conf->getFillColorRestricted() != fillColorRestricted->palette().color(QPalette::Window);
   changed |= conf->getFillColorDanger() != fillColorDanger->palette().color(QPalette::Window);
   changed |= conf->getFillColorProhibited() != fillColorProhibited->palette().color(QPalette::Window);
+  changed |= conf->getFillColorRMZ() != fillColorRMZ->palette().color(QPalette::Window);
   changed |= conf->getFillColorTMZ() != fillColorTMZ->palette().color(QPalette::Window);
   changed |= conf->getFillColorLowFlight() != fillColorLowFlight->palette().color(QPalette::Window);
   changed |= conf->getFillColorGliderSector() != fillColorGliderSector->palette().color(QPalette::Window);

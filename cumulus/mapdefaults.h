@@ -788,6 +788,34 @@
 #define RES_BRUSH_STYLE_3 Qt::BDiagPattern
 #define RES_BRUSH_STYLE_4 Qt::BDiagPattern
 
+// [Radio Mandatory Zone]
+#define RMZ_PEN_WIDTH_1 4
+#define RMZ_PEN_WIDTH_2 3
+#define RMZ_PEN_WIDTH_3 3
+#define RMZ_PEN_WIDTH_4 2
+
+#define RMZ_PEN_STYLE_1 Qt::DotLine
+#define RMZ_PEN_STYLE_2 Qt::DotLine
+#define RMZ_PEN_STYLE_3 Qt::DotLine
+#define RMZ_PEN_STYLE_4 Qt::DotLine
+
+#define RMZ_COLOR QColor(0,0,128).name()
+#define RMZ_COLOR_1 QColor(0,0,128)
+#define RMZ_COLOR_2 QColor(0,0,128)
+#define RMZ_COLOR_3 QColor(0,0,128)
+#define RMZ_COLOR_4 QColor(0,0,128)
+
+#define RMZ_BRUSH_COLOR QColor(203,217,246).name()
+#define RMZ_BRUSH_COLOR_1 QColor(203,217,246)
+#define RMZ_BRUSH_COLOR_2 QColor(203,217,246)
+#define RMZ_BRUSH_COLOR_3 QColor(203,217,246)
+#define RMZ_BRUSH_COLOR_4 QColor(203,217,246)
+
+#define RMZ_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define RMZ_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define RMZ_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define RMZ_BRUSH_STYLE_4 Qt::Dense7Pattern
+
 // [Transponder Mandatory Zone]
 #define TMZ_PEN_WIDTH_1 4
 #define TMZ_PEN_WIDTH_2 3

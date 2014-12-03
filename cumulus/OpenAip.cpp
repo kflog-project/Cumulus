@@ -1790,6 +1790,7 @@ bool OpenAip::readAirspaceRecord( QXmlStreamReader& xml, Airspace& as )
       "OTH"
       "RESTRICTED"
       "TMA"
+      "RMZ"  // maybe defined in the future
       "TMZ"
       "WAVE"
       */

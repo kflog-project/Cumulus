@@ -13,8 +13,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -365,6 +363,16 @@ void MapConfig::slotReloadAirspaceColors()
                  RES_BRUSH_STYLE_1, RES_BRUSH_STYLE_2,
                  RES_BRUSH_STYLE_3, RES_BRUSH_STYLE_4)
 
+  READ_PEN_BRUSH("RMZ", rmzPenList, rmzBorder, rmzBrushList,
+		 conf->getBorderColorRMZ(), conf->getBorderColorRMZ(),
+		 conf->getBorderColorRMZ(), conf->getBorderColorRMZ(),
+		 RMZ_PEN_WIDTH_1, RMZ_PEN_WIDTH_2, RMZ_PEN_WIDTH_3, RMZ_PEN_WIDTH_4,
+		 RMZ_PEN_STYLE_1, RMZ_PEN_STYLE_2, RMZ_PEN_STYLE_3, RMZ_PEN_STYLE_4,
+		 conf->getFillColorRMZ(), conf->getFillColorRMZ(),
+		 conf->getFillColorRMZ(), conf->getFillColorRMZ(),
+		 RMZ_BRUSH_STYLE_1, RMZ_BRUSH_STYLE_2,
+		 RMZ_BRUSH_STYLE_3, RMZ_BRUSH_STYLE_4)
+
   READ_PEN_BRUSH("TMZ", tmzPenList, tmzBorder, tmzBrushList,
                  conf->getBorderColorTMZ(), conf->getBorderColorTMZ(),
                  conf->getBorderColorTMZ(), conf->getBorderColorTMZ(),
@@ -453,6 +461,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return lowFPenList[sIndex];
     case BaseMapElement::Restricted:
       return restrPenList[sIndex];
+    case BaseMapElement::Rmz:
+      return rmzPenList[sIndex];
     case BaseMapElement::Tmz:
       return tmzPenList[sIndex];
     case BaseMapElement::Forest:
@@ -523,6 +533,8 @@ bool MapConfig::isBorder(unsigned int typeID)
       return lowFBorder[scaleIndex];
     case BaseMapElement::Restricted:
       return restrBorder[scaleIndex];
+    case BaseMapElement::Rmz:
+      return rmzBorder[scaleIndex];
     case BaseMapElement::Tmz:
       return tmzBorder[scaleIndex];
     case BaseMapElement::Forest:
@@ -585,6 +597,8 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
       return lowFBrushList[sIndex];
     case BaseMapElement::Restricted:
       return restrBrushList[sIndex];
+    case BaseMapElement::Rmz:
+      return rmzBrushList[sIndex];
     case BaseMapElement::Tmz:
       return tmzBrushList[sIndex];
     case BaseMapElement::Forest:

@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef SettingsPageAirSpace_H
@@ -44,7 +42,7 @@ class NumberEditor;
  *
  * \date 2002-2014
  *
- * \version $Id$
+ * \version 1.0
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -166,6 +164,7 @@ class SettingsPageAirspace : public QWidget
   QTableWidgetItem* drawWaveWindow;
   QTableWidgetItem* drawGliderSector;
   QTableWidgetItem* drawAirspaceFir;
+  QTableWidgetItem* drawRMZ;
 
   // border colors of airspaces
   QWidget* borderColorAirspaceA;
@@ -184,6 +183,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* borderColorTMZ;
   QWidget* borderColorWaveWindow;
   QWidget* borderColorGliderSector;
+  QWidget* borderColorRMZ;
 
   // fill (brush) colors of airspaces
   QWidget* fillColorAirspaceA;
@@ -201,6 +201,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* fillColorTMZ;
   QWidget* fillColorWaveWindow;
   QWidget* fillColorGliderSector;
+  QWidget* fillColorRMZ;
   QTableWidgetItem* fillColorAirspaceFir;
 
   QSpinBox*  m_spinAsLineWidth;

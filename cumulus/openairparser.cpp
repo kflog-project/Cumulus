@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -37,10 +35,22 @@
 #undef BOUNDING_BOX
 // #define BOUNDING_BOX 1
 
-OpenAirParser::OpenAirParser()
+OpenAirParser::OpenAirParser() :
+  _lineNumber(0),
+  _objCounter(0),
+  _isCurrentAirspace(false),
+  _parseError(false),
+  _acRead(false),
+  _anRead(false),
+  asType(BaseMapElement::NotSelected),
+  asUpper(0),
+  asUpperType(BaseMapElement::NotSet),
+  asLower(0),
+  asLowerType(BaseMapElement::NotSet),
+  _awy_width(0.0),
+  _direction(1),
+  _boundingBox(0)
 {
-  _parseError = false;
-  _boundingBox = (QRect *) 0;
   QLocale::setDefault(QLocale::C);
 }
 
@@ -186,7 +196,22 @@ void OpenAirParser::parseLine(QString& line)
           _isCurrentAirspace = false;
           _acRead = true;
           _anRead = true;
+          return;
         }
+
+#warning "Remove airspace mapping workaround for RMZ if it is not more necessary!"
+
+      if( asName.startsWith("RMZ ") )
+	{
+	  // The OpenAir file of the DAeC uses a workaroud for RMZ airspaces.
+	  // Such airspaces are declared as airspace D and they have an remark
+	  // in its name.
+	  // Example: AN RMZ Barth
+	  // We do remap this airspace from D to RMZ
+	  asName = asName.mid(4); // remove prefix RMZ
+	  asType = BaseMapElement::Rmz;
+	  return;
+	}
 
       return;
     }
