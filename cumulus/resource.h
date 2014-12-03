@@ -87,6 +87,9 @@
 // Type definition for openAIP compiled navigation aids files.
 #define FILE_TYPE_NAV_AIDS_OAIP_C "OpenAIP-NavAids"
 
+// Type definition for openAIP compiled navigation aids files.
+#define FILE_TYPE_HOTSPOTS_OAIP_C "OpenAIP-Hotspots"
+
 //=================================================================================
 // Compiled file versions. Increment this value, if you change the compiled format.
 //=================================================================================
@@ -95,13 +98,16 @@
 #define FILE_VERSION_MAP_C      103
 
 // Version definition for compiled airspace files.
-#define FILE_VERSION_AIRSPACE_C 1
+#define FILE_VERSION_AIRSPACE_C 2
 
 // Version definition for compiled airfield files.
 #define FILE_VERSION_AIRFIELD_C 1
 
-// Version definition for compiled navigation aids files.
+// Version definition for compiled navigation aid files.
 #define FILE_VERSION_NAV_AIDS_C 1
+
+// Version definition for compiled hotspot files.
+#define FILE_VERSION_HOTSPOT_C 1
 
 /******************************************************************************
  * Definition of map element types
@@ -178,6 +184,7 @@
 #define AIR_FIR          70 // Flight Information Region
 #define AIR_UKN          71
 #define TACAN            72 // Tactical Air Navigation (TACAN)
-#define LAST_ENTRY       73 // This must be always the last entry!!!
+#define RMZ              73 // Radio Mandatory Zone
+#define LAST_ENTRY       74 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

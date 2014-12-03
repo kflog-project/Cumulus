@@ -29,7 +29,7 @@
  *
  * \date 2000-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef BASE_MAP_ELEMENT_H
@@ -47,12 +47,14 @@
 
 class BaseMapElement
 {
+
 public:
   /**
-   * List of all accessible element-types:
+   * List of all accessible map element types.
    * @see #typeID
    */
-  enum objectType {
+  enum objectType
+  {
     NotSelected = NOT_SELECTED,
     IntAirport = INT_AIRPORT,
     Airport = AIRPORT,
@@ -80,34 +82,60 @@ public:
     AirC = AIR_C,
     AirD = AIR_D,
     AirE = AIR_E,
-    WaveWindow = WAVE_WINDOW,
     AirF = AIR_F,
+    AirFir = AIR_FIR,
+    AirG = AIR_G,
+    AirUkn = AIR_UKN,
     ControlC = CONTROL_C,
     ControlD = CONTROL_D,
     Danger = DANGER,
+    GliderSector = GLIDER_SECTOR,
     LowFlight = LOW_FLIGHT,
     Restricted = RESTRICTED,
     Prohibited = PROHIBITED,
+    Rmz = RMZ,
     Tmz = TMZ,
-    GliderSector = GLIDER_SECTOR,
+    WaveWindow = WAVE_WINDOW,
     Obstacle = OBSTACLE,
-    LightObstacle = LIGHT_OBSTACLE, ObstacleGroup = OBSTACLE_GROUP, LightObstacleGroup = LIGHT_OBSTACLE_GROUP,
-    Spot = SPOT, Isohypse = ISOHYPSE, Glacier = GLACIER, PackIce = PACK_ICE, Border = BORDER, City = CITY,
-    Village = VILLAGE, Landmark = LANDMARK, Motorway = MOTORWAY, Road = ROAD, Railway = RAILWAY,
-    AerialRailway = AERIAL_CABLE, Lake = LAKE, River = RIVER, Canal = CANAL, Flight = FLIGHT, Task = FLIGHT_TASK,
-    Trail = TRAIL, Railway_D = RAILWAY_D, Aerial_Cable = AERIAL_CABLE, River_T = RIVER_T, Lake_T = LAKE_T,
-    Forest = FOREST, Turnpoint = TURNPOINT, Thermal = THERMAL,
-    FlightGroup = FLIGHT_GROUP, FAIAreaLow500 = FAI_AREA_LOW, FAIAreaHigh500 = FAI_AREA_HIGH,
+    LightObstacle = LIGHT_OBSTACLE,
+    ObstacleGroup = OBSTACLE_GROUP,
+    LightObstacleGroup = LIGHT_OBSTACLE_GROUP,
+    Spot = SPOT,
+    Isohypse = ISOHYPSE,
+    Glacier = GLACIER,
+    PackIce = PACK_ICE,
+    Border = BORDER,
+    City = CITY,
+    Village = VILLAGE,
+    Landmark = LANDMARK,
+    Motorway = MOTORWAY,
+    Road = ROAD,
+    Railway = RAILWAY,
+    AerialRailway = AERIAL_CABLE,
+    Lake = LAKE,
+    River = RIVER,
+    Canal = CANAL,
+    Flight = FLIGHT,
+    Task = FLIGHT_TASK,
+    Trail = TRAIL,
+    Railway_D = RAILWAY_D,
+    Aerial_Cable = AERIAL_CABLE,
+    River_T = RIVER_T,
+    Lake_T = LAKE_T,
+    Forest = FOREST,
+    Turnpoint = TURNPOINT,
+    Thermal = THERMAL,
+    FlightGroup = FLIGHT_GROUP,
+    FAIAreaLow500 = FAI_AREA_LOW,
+    FAIAreaHigh500 = FAI_AREA_HIGH,
     EmptyPoint = EMPTY_POINT,
-    AirG = AIR_G,
-    AirFir = AIR_FIR,
-    AirUkn = AIR_UKN,
-    objectTypeSize=LAST_ENTRY /* leave this at the end */};
+    objectTypeSize=LAST_ENTRY /* leave this at the end */
+    };
 
   /**
    * The five types of elevation-data used in the maps.
    */
-  enum elevationType {NotSet, MSL, GND, FL, STD, UNLTD};
+  enum elevationType { NotSet, MSL, GND, FL, STD, UNLTD };
 
   /**
    * Default constructor
