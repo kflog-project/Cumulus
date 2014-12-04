@@ -27,7 +27,7 @@
  *
  * \date 2013-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef OpenAip_h
@@ -66,7 +66,7 @@ class OpenAip
   bool getRootElement( QString fileName, QString& dataFormat, QString& dataItem );
 
   /**
-   * Reads in a navigation aid file provided as open aip xml format.
+   * Reads in a navigation aid file provided as openAIP xml format.
    *
    * \param filename File containing navigation aid definitions
    *
@@ -84,7 +84,7 @@ class OpenAip
                     bool useFiltering=false );
 
   /**
-   * Reads in a hotspot file provided as open aip xml format.
+   * Reads in a hotspot file provided as openAIP xml format.
    *
    * \param filename File containing hotspot definitions
    *
@@ -92,14 +92,17 @@ class OpenAip
    *
    * \param errorInfo Info about read errors
    *
+   * \param useFiltering If enabled, different filter rules will apply
+   *
    * \return true as success otherwise false
    */
   bool readHotspots( QString fileName,
                      QList<SinglePoint>& hotspotList,
-                     QString& errorInfo );
+                     QString& errorInfo,
+	             bool useFiltering=false );
 
   /**
-   * Reads in an airfield file provided as open aip xml format.
+   * Reads in an airfield file provided as openAIP xml format.
    *
    * \param filename File containing airfield definitions
    *
@@ -116,7 +119,7 @@ class OpenAip
                       bool useFiltering=false );
 
   /**
-   * Reads in an airspace file provided as open aip xml format.
+   * Reads in an airspace file provided as openAIP xml format.
    *
    * \param filename File containing airspace definitions
    *

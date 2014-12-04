@@ -27,7 +27,7 @@
  *
  * \date 2013-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef OpenAip_Poi_Loader_h_
@@ -46,6 +46,7 @@
 #include "airfield.h"
 #include "projectionbase.h"
 #include "radiopoint.h"
+#include "singlepoint.h"
 
 class OpenAipPoiLoader
 {
@@ -70,18 +71,32 @@ class OpenAipPoiLoader
   int load( QList<Airfield>& airfieldList, bool readSource=false );
 
   /**
-   * Searches on default places openAIP navAids files and load them. A source
+   * Searches on default places openAIP navAid files and load them. A source
    * can be an original XML file or a compiled version of it. The
    * results are appended to the passed list.
    *
-   * \param navAidsList All read airfields have to be appended to this list.
+   * \param navAidList All read navAids have to be appended to this list.
    *
    * \param readSource If true the source files have to be read instead of
    * compiled sources.
    *
-   * \return number of loaded navAids files
+   * \return number of loaded navAid files
    */
-  int load( QList<RadioPoint>& navAidsList, bool readSource=false );
+  int load( QList<RadioPoint>& navAidList, bool readSource=false );
+
+  /**
+   * Searches on default places openAIP hotspot files and load them. A source
+   * can be an original XML file or a compiled version of it. The
+   * results are appended to the passed list.
+   *
+   * \param hotspotList All read hotspots have to be appended to this list.
+   *
+   * \param readSource If true the source files have to be read instead of
+   * compiled sources.
+   *
+   * \return number of loaded hotspot files
+   */
+  int load( QList<SinglePoint>& hotspotList, bool readSource=false );
 
   /**
    * Creates a compiled file from the passed airfield list beginning at the
@@ -101,19 +116,35 @@ class OpenAipPoiLoader
 
 
   /**
-   * Creates a compiled file from the passed airfield list beginning at the
+   * Creates a compiled file from the passed navaid list beginning at the
    * given start position and ending at the end of the list.
    *
    * \param fileName Name of the compiled file
    *
-   * \param navAidsList List with navAid records
+   * \param navAidList List with navAid records
    *
    * \param listBegin Begin index in passed list
    *
    * \return true in case of success otherwise false
    */
   bool createCompiledFile( QString& fileName,
-                           QList<RadioPoint>& navAidsList,
+                           QList<RadioPoint>& navAidList,
+                           int listBegin );
+
+  /**
+   * Creates a compiled file from the passed single point list beginning at the
+   * given start position and ending at the end of the list.
+   *
+   * \param fileName Name of the compiled file
+   *
+   * \param spList List with single point records
+   *
+   * \param listBegin Begin index in passed list
+   *
+   * \return true in case of success otherwise false
+   */
+  bool createCompiledFile( QString& fileName,
+                           QList<SinglePoint>& spList,
                            int listBegin );
 
   /**
@@ -133,12 +164,24 @@ class OpenAipPoiLoader
    *
    * \param path Full name with path of the openAIP binary file
    *
-   * \param navAidsList All read airfields have to be appended to this list.
+   * \param navAidList All read navaids have to be appended to this list.
    *
    * \return true (success) or false (error occurred)
    */
   bool readCompiledFile( QString &fileName,
-                         QList<RadioPoint>& navAidsList );
+                         QList<RadioPoint>& navAidList );
+
+  /**
+   * Read the content of a compiled file and append it to the passed list.
+   *
+   * \param path Full name with path of the openAIP binary file
+   *
+   * \param spList All read single points have to be appended to this list.
+   *
+   * \return true (success) or false (error occurred)
+   */
+  bool readCompiledFile( QString &fileName,
+                         QList<SinglePoint>& spList );
 
   /**
    * Reads the header data of a compiled file and put them in the class
@@ -200,7 +243,7 @@ class OpenAipPoiLoader
       QByteArray      h_fileType;
       quint8          h_fileVersion;
       QDateTime       h_creationDateTime;
-      double          h_homeRadius;
+      float           h_homeRadius;
       float           h_runwayLengthFilter;
       QPoint          h_homeCoord;
       QRect           h_boundingBox;

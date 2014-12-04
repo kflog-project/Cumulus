@@ -258,7 +258,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
       MapContents::AirfieldList,
       MapContents::GliderfieldList,
       MapContents::OutLandingList,
-      MapContents::RadioList
+      MapContents::RadioList,
+      MapContents::HotspotList
     };
 
   Waypoint *w = static_cast<Waypoint *> (0);
@@ -320,14 +321,14 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
     }
 
   // @AP: On map scale higher as 1024 we don't evaluate anything
-  for( int l = 0; l < 4 && cs < 1024.0; l++ )
+  for( int l = 0; l < 5 && cs < 1024.0; l++ )
     {
       for(unsigned int loop = 0;
           loop < _globalMapContents->getListLength(searchList[l]); loop++)
         {
           // Get specific site data from current list. We have to
           // distinguish between AirfieldList, GilderfieldList, OutlandingList
-          // and RadioList
+          // RadioList and HotspotList.
           SinglePoint* poi;
 
           QString siteName;
@@ -359,6 +360,11 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
             {
               // fetch data from the radio point list
               poi = _globalMapContents->getRadioPoint(loop);
+            }
+          else if( searchList[l] == MapContents::HotspotList )
+            {
+              // fetch data from the hotspot list
+              poi = _globalMapContents->getHotspot(loop);
             }
           else
             {
@@ -1402,7 +1408,7 @@ void Map::p_drawNavigationLayer()
   QList<Airfield*> drawnAf;
   QList<Waypoint*> drawnWp;
   QList<TaskPoint*> drawnTp;
-
+  QList<BaseMapElement*> drawnSp;
   QPainter navP;
 
   navP.begin(&m_pixNavigationMap);
@@ -1411,6 +1417,8 @@ void Map::p_drawNavigationLayer()
   _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
   _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
+  _globalMapContents->drawList(&navP, MapContents::HotspotList, drawnSp );
+
   p_drawWaypoints(&navP, drawnWp);
   p_drawPlannedTask(&navP, drawnTp);
 

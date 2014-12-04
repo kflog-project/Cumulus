@@ -17,10 +17,8 @@
 
 #include <QtCore>
 
-#include "airfield.h"
 #include "OpenAipPoiLoader.h"
 #include "OpenAipLoaderThread.h"
-#include "radiopoint.h"
 
 OpenAipLoaderThread::OpenAipLoaderThread( QObject *parent,
                                           enum Poi poiSource,
@@ -56,12 +54,21 @@ void OpenAipLoaderThread::run()
 	  return;
 	}
     }
+  else if( m_poiSource == Hotspots )
+    {
+      // Check if signal is connected to a slot.
+      if( receivers( SIGNAL( loadedHotspotList( int, QList<SinglePoint>* )) ) == 0 )
+	{
+	  qWarning() << "OpenAipLoaderThread: No Slot connection to Signal loadedHotspotList!";
+	  return;
+	}
+    }
   else if( m_poiSource == NavAids )
     {
       // Check if signal is connected to a slot.
-      if( receivers( SIGNAL( loadedNavAidsList( int, QList<RadioPoint>* )) ) == 0 )
+      if( receivers( SIGNAL( loadedNavAidList( int, QList<RadioPoint>* )) ) == 0 )
 	{
-	  qWarning() << "OpenAipLoaderThread: No Slot connection to Signal loadedNavAidsList!";
+	  qWarning() << "OpenAipLoaderThread: No Slot connection to Signal loadedNavAidList!";
 	  return;
 	}
     }
@@ -76,10 +83,22 @@ void OpenAipLoaderThread::run()
       ok = oaipl.load( *poiList, m_readSource );
 
       /* It is expected that a receiver slot is connected to this signal. The
-       * receiver is responsible to delete the passed lists. Otherwise a big
+       * receiver is responsible to delete the passed list. Otherwise a big
        * memory leak will occur.
        */
       emit loadedAfList( ok, poiList );
+    }
+  else if( m_poiSource == Hotspots )
+    {
+      QList<SinglePoint>* poiList = new QList<SinglePoint>;
+
+      ok = oaipl.load( *poiList, m_readSource );
+
+      /* It is expected that a receiver slot is connected to this signal. The
+       * receiver is responsible to delete the passed list. Otherwise a big
+       * memory leak will occur.
+       */
+      emit loadedHotspotList( ok, poiList );
     }
   else if( m_poiSource == NavAids )
     {
@@ -88,9 +107,9 @@ void OpenAipLoaderThread::run()
       ok = oaipl.load( *poiList, m_readSource );
 
       /* It is expected that a receiver slot is connected to this signal. The
-       * receiver is responsible to delete the passed lists. Otherwise a big
+       * receiver is responsible to delete the passed list. Otherwise a big
        * memory leak will occur.
        */
-      emit loadedNavAidsList( ok, poiList );
+      emit loadedNavAidList( ok, poiList );
     }
 }

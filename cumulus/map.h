@@ -99,6 +99,7 @@ public:
                  airspaces,
                  grid,
                  navigationLayer,
+		 hotspots,
                  navaids,
                  airfields,
                  outlandings,

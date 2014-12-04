@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 /**
@@ -34,7 +32,7 @@
  *
  * \date 2000-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef SINGLE_POINT_H

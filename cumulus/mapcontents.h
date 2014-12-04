@@ -26,7 +26,7 @@
  *
  * \date 2000-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef MAP_CONTENTS_H
@@ -50,6 +50,7 @@
 #include "isolist.h"
 #include "map.h"
 #include "radiopoint.h"
+#include "singlepoint.h"
 #include "waitscreen.h"
 
 #ifdef INTERNET
@@ -76,13 +77,28 @@ class MapContents : public QObject
     /**
      * The identifiers for the map element types.
      */
-    enum MapContentsListID {NotSet = 0, AirfieldList, GliderfieldList,
-                            AddSitesList, OutLandingList, RadioList, AirspaceList,
-                            ObstacleList, ReportList, CityList, VillageList,
-                            LandmarkList, MotorwayList,
-                            RoadList, RailList, HydroList,
-                            LakeList, TopoList, IsohypseList,
-                            WaypointList, FlightList
+    enum MapContentsListID { NotSet = 0,
+                             AirfieldList,
+			     GliderfieldList,
+                             AddSitesList,
+			     OutLandingList,
+			     RadioList,
+			     AirspaceList,
+                             ObstacleList,
+			     ReportList,
+			     CityList,
+			     VillageList,
+                             LandmarkList,
+			     MotorwayList,
+                             RoadList,
+			     RailList,
+			     HotspotList,
+			     HydroList,
+                             LakeList,
+			     TopoList,
+			     IsohypseList,
+                             WaypointList,
+			     FlightList
                            };
 
     /**
@@ -147,7 +163,7 @@ class MapContents : public QObject
     /**
      * @return a pointer to the given airfield
      *
-     * @param  index  the list-index of the airfield
+     * @param  index The list index of the airfield
      */
     Airfield* getAirfield(unsigned int index)
       {
@@ -157,7 +173,7 @@ class MapContents : public QObject
     /**
      * @return a pointer to the given outlanding
      *
-     * @param  index  the list-index of the outlanding
+     * @param  index The list index of the outlanding
      */
     Airfield* getOutlanding(unsigned int index)
       {
@@ -167,11 +183,21 @@ class MapContents : public QObject
     /**
      * @return a pointer to the given RadioPoint
      *
-     * @param  index  the list-index of the radio point
+     * @param  index The list index of the radio point
      */
     RadioPoint* getRadioPoint(unsigned int index)
       {
 	return &radioList[index];
+      };
+
+    /**
+     * @return a pointer to the given hotspot point.
+     *
+     * @param  index  The list index of the hotspot point
+     */
+    SinglePoint* getHotspot(unsigned int index)
+      {
+	return &hotspotList[index];
       };
 
     /**
@@ -383,8 +409,15 @@ class MapContents : public QObject
      * This slot is called by the OpenAip load thread to signal, that the
      * requested navAids data have been loaded.
      */
-    void slotOpenAipNavAidsLoadFinished( int noOfLists,
-                                         QList<RadioPoint>* radioListIn );
+    void slotOpenAipNavAidLoadFinished( int noOfLists,
+                                        QList<RadioPoint>* radioListIn );
+
+    /**
+     * This slot is called by the OpenAip load thread to signal, that the
+     * requested hotspot data have been loaded.
+     */
+    void slotOpenAipHotspotLoadFinished( int noOfLists,
+                                         QList<SinglePoint>* hotspotListIn );
 
     /**
      * This slot is called by the AirspaceHelper load thread to signal, that the
@@ -519,6 +552,11 @@ class MapContents : public QObject
     void loadOpenAipNavAidsViaThread();
 
     /**
+     * Starts a thread, which is loading the requested OpenAIP hotspot data.
+     */
+    void loadOpenAipHotspotsViaThread();
+
+    /**
      * Starts a thread, which is loading the requested airspace data.
      */
     void loadAirspacesViaThread();
@@ -565,6 +603,11 @@ class MapContents : public QObject
      * radioList contains all radio navigation facilities.
      */
     QList<RadioPoint> radioList;
+
+    /**
+     * hotspotList contains all thermal hotspots.
+     */
+    QList<SinglePoint> hotspotList;
 
     /**
      * airspaceList contains all airspaces. The sort function on this
@@ -734,6 +777,9 @@ class MapContents : public QObject
 
     /** Mutex to protect radio point loading actions. */
     QMutex m_radioPointLoadMutex;
+
+    /** Mutex to protect hotspot loading actions. */
+    QMutex m_hotspotLoadMutex;
 
     /** Mutex to protect airspace loading actions. */
     QMutex m_airspaceLoadMutex;

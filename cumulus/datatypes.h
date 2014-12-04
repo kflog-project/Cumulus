@@ -23,7 +23,7 @@
  *
  *  \date 2010-2014
  *
- *  \version $Id$
+ *  \version 1.0
  */
 
 #ifndef DATA_TYPES_H
@@ -54,6 +54,7 @@ Q_DECLARE_METATYPE(BtDeviceMap)
 #include "airfield.h"
 #include "airspace.h"
 #include "radiopoint.h"
+#include "singlepoint.h"
 
 /**
  * Special data type to return the loaded airfield data list to the GUI thread.
@@ -69,6 +70,10 @@ Q_DECLARE_METATYPE(AirfieldListPtr)
 typedef QList<RadioPoint>* RadioListPtr;
 
 Q_DECLARE_METATYPE(RadioListPtr)
+
+typedef QList<SinglePoint>* SingleListPtr;
+
+Q_DECLARE_METATYPE(SingleListPtr)
 
 /**
  * Special data type to return the loaded airspace data list to the GUI thread.

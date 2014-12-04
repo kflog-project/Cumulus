@@ -40,8 +40,6 @@
 #include "mapmatrix.h"
 #include "mapview.h"
 #include "projectionbase.h"
-#include "radiopoint.h"
-#include "singlepoint.h"
 #include "resource.h"
 #include "waypointcatalog.h"
 #include "welt2000.h"
@@ -1558,8 +1556,14 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
-      // Navaids file name format: <country-code>_nav.aip, example: de_nav.aip
+      // Navaid file name format: <country-code>_nav.aip, example: de_nav.aip
       file = openAipCountryList.at(i).toLower() + "_nav.aip";
+      url  = urlPrefix + file;
+      dest = destPrefix + file;
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+
+      // Hotspot file name format: <country-code>_hot.aip, example: de_hot.aip
+      file = openAipCountryList.at(i).toLower() + "_hot.aip";
       url  = urlPrefix + file;
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
@@ -1661,9 +1665,6 @@ void MapContents::slotDownloadsFinished( int requests, int errors )
       loadAirspacesViaThread();
     }
 
-  // initiate a map redraw
-  Map::instance->scheduleRedraw( Map::baseLayer );
-
   QString msg = QString(tr("%1 download(s) with %2 error(s) done.")).arg(requests).arg(errors);
 
   QMessageBox mb( QMessageBox::Information,
@@ -1707,8 +1708,12 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
   QStringList filters;
 
   // Airfield file name format: <country-code>_wpt.aip, example: de_wpt.aip
-  // Nav aids file name format: <country-code>_nav.aip, example: de_nav.aip
-  filters << "*_wpt.aic" << "*_wpt.aip" << "*_nav.aic" << "*_nav.aip";
+  // Hotspot file name format: <country-code>_hot.aip, example: de_hot.aip
+  // Navaid file name format: <country-code>_nav.aip, example: de_nav.aip
+  filters << "*_wpt.aic" << "*_wpt.aip"
+          << "*_nav.aic" << "*_nav.aip"
+	  << "*_hot.aic" << "*_hot.aip";
+
   poiDir.setNameFilters(filters);
 
   QStringList filesFound = poiDir.entryList();
@@ -1726,13 +1731,13 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
 	  continue;
 	}
 
-      if( loadAll && (fn.startsWith("openaip_airports") == true ) )
+      if( loadAll && (fn.startsWith("openaip_") == true ) )
 	{
 	  // That file was installed by the user. We remove it to avoid
-	  // problems with the new downloaded airfield files by Cumulus,
+	  // problems with the new downloaded files by Cumulus,
 	  // if the load All option is activated.
 	  // Example of file names:
-	  // User installed file:    openaip_airports_germany_de.aip
+	  // User installed file:    openaip_..._germany_de.aip
 	  // Cumulus installed file: de_wpt.aip
 	  poiDir.remove( fn );
 	}
@@ -1740,9 +1745,7 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
 
   loadOpenAipAirfieldsViaThread();
   loadOpenAipNavAidsViaThread();
-
-  // initiate a map redraw
-  Map::instance->scheduleRedraw( Map::baseLayer );
+  loadOpenAipHotspotsViaThread();
 
   QString msg = QString(tr("%1 openAIP POI download(s) with %2 error(s) done.")).arg(requests).arg(errors);
 
@@ -2015,7 +2018,7 @@ void MapContents::proofeSection()
       if( airfieldSource == 0 )
         {
           // OpenAIP is defined as airfield source
-          ws->slot_SetText2( tr( "Reading Airfield Data" ) );
+          ws->slot_SetText2( tr( "Reading Point Data" ) );
 
           if( isReload == false )
             {
@@ -2028,6 +2031,10 @@ void MapContents::proofeSection()
               m_radioPointLoadMutex.lock();
               poiLoader.load( radioList );
               m_radioPointLoadMutex.unlock();
+
+              m_hotspotLoadMutex.lock();
+              poiLoader.load( hotspotList );
+              m_hotspotLoadMutex.unlock();
             }
           else
             {
@@ -2037,6 +2044,7 @@ void MapContents::proofeSection()
               // blocked by this action.
               loadOpenAipAirfieldsViaThread();
               loadOpenAipNavAidsViaThread();
+              loadOpenAipHotspotsViaThread();
             }
         }
       else
@@ -2359,6 +2367,9 @@ void MapContents::clearList(const int listIndex)
     case OutLandingList:
       outLandingList.clear();
       break;
+    case HotspotList:
+      hotspotList.clear();
+      break;
     case RadioList:
       radioList.clear();
       break;
@@ -2415,6 +2426,8 @@ unsigned int MapContents::getListLength( const int listIndex ) const
       return gliderfieldList.count();
     case OutLandingList:
       return outLandingList.count();
+    case HotspotList:
+      return hotspotList.count();
     case RadioList:
       return radioList.count();
     case AirspaceList:
@@ -2456,6 +2469,8 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
       return &gliderfieldList[index];
     case OutLandingList:
       return &outLandingList[index];
+    case HotspotList:
+      return &hotspotList[index];
     case RadioList:
       return &radioList[index];
     case AirspaceList:
@@ -2501,6 +2516,8 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
       return static_cast<SinglePoint *> (&outLandingList[index]);
     case RadioList:
       return static_cast<SinglePoint *> (&radioList[index]);
+    case HotspotList:
+      return &hotspotList[index];
     case ObstacleList:
       return &obstacleList[index];
     case ReportList:
@@ -2515,7 +2532,6 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
       return static_cast<SinglePoint *> (0);
     }
 }
-
 
 /** This slot is called to do a first load of all map data or to do a
  *  reload of certain map data after a position move or projection change. */
@@ -2541,7 +2557,8 @@ void MapContents::slotReloadMapData()
   Map::getInstance()->clearAirspaceRegionList();
 
   qDeleteAll(airspaceList);
-  airspaceList.clear();
+  airspaceList = SortableAirspaceList();
+
   cityList.clear();
   hydroList.clear();
   lakeList.clear();
@@ -2554,21 +2571,22 @@ void MapContents::slotReloadMapData()
   topoList.clear();
   villageList.clear();
 
-  m_airfieldLoadMutex.lock();
-
   // free internal allocated memory in QList
+  m_airfieldLoadMutex.lock();
   airfieldList    = QList<Airfield>();
   gliderfieldList = QList<Airfield>();
   outLandingList  = QList<Airfield>();
-
   m_airfieldLoadMutex.unlock();
 
+  // free internal allocated memory in QList
   m_radioPointLoadMutex.lock();
+  radioList = QList<RadioPoint>();
+  m_radioPointLoadMutex.unlock();
 
   // free internal allocated memory in QList
-  radioList = QList<RadioPoint>();
-
-  m_radioPointLoadMutex.unlock();
+  m_hotspotLoadMutex.lock();
+  hotspotList = QList<SinglePoint>();
+  m_hotspotLoadMutex.unlock();
 
   // all isolines are cleared
   groundMap.clear();
@@ -2630,12 +2648,13 @@ void MapContents::slotReloadMapData()
 
 void MapContents::slotReloadOpenAipPoi()
 {
-  // Check, if OpenAIP is the airfield source.
+  // Check, if OpenAIP is the point source.
   if( GeneralConfig::instance()->getAirfieldSource() == 0 )
     {
       // Reload OpenAIP POI data in an extra thread.
       loadOpenAipAirfieldsViaThread();
       loadOpenAipNavAidsViaThread();
+      loadOpenAipHotspotsViaThread();
     }
 }
 
@@ -2667,7 +2686,7 @@ void MapContents::loadOpenAipAirfieldsViaThread()
 
 /**
  * This slot is called by the OpenAipThread loader thread to signal, that the
- * requested airfield data have been loaded. The passed lists must be
+ * requested airfield data have been loaded. The passed list must be
  * deleted in this method.
  */
 void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
@@ -2717,20 +2736,20 @@ void MapContents::loadOpenAipNavAidsViaThread()
   // Connect the receiver of the results. It is located in this
   // thread and not in the new opened thread.
   connect( oaipThread,
-           SIGNAL(loadedNavAidsList( int, QList<RadioPoint>* )),
+           SIGNAL(loadedNavAidList( int, QList<RadioPoint>* )),
            this,
-           SLOT(slotOpenAipNavAidsLoadFinished( int, QList<RadioPoint>* )) );
+           SLOT(slotOpenAipNavAidLoadFinished( int, QList<RadioPoint>* )) );
 
   oaipThread->start();
 }
 
 /**
  * This slot is called by the OpenAipThread loader thread to signal, that the
- * requested airfield data have been loaded. The passed lists must be
+ * requested navaid data have been loaded. The passed list must be
  * deleted in this method.
  */
-void MapContents::slotOpenAipNavAidsLoadFinished( int noOfLists,
-                                                  QList<RadioPoint>* radioListIn )
+void MapContents::slotOpenAipNavAidLoadFinished( int noOfLists,
+                                                 QList<RadioPoint>* radioListIn )
 {
   QMutexLocker locker( &m_radioPointLoadMutex );
 
@@ -2749,6 +2768,60 @@ void MapContents::slotOpenAipNavAidsLoadFinished( int noOfLists,
   delete radioListIn;
 
   emit mapDataReloaded( Map::navaids );
+  emit mapDataReloaded();
+}
+
+/**
+ * Starts a thread, which is loading the requested OpenAIP hotspot data.
+ */
+void MapContents::loadOpenAipHotspotsViaThread()
+{
+  QMutexLocker locker( &m_hotspotLoadMutex );
+
+  _globalMapView->slot_info( tr("Loading OpenAIP data") );
+
+  OpenAipLoaderThread *oaipThread = new OpenAipLoaderThread( this,
+                                                             OpenAipLoaderThread::Hotspots );
+
+  // Register a special data type for return results. That must be
+  // done to transfer the results between different threads.
+  qRegisterMetaType<SingleListPtr>("SingleListPtr");
+
+  // Connect the receiver of the results. It is located in this
+  // thread and not in the new opened thread.
+  connect( oaipThread,
+           SIGNAL(loadedHotspotList( int, QList<SinglePoint>* )),
+           this,
+           SLOT(slotOpenAipHotspotLoadFinished( int, QList<SinglePoint>* )) );
+
+  oaipThread->start();
+}
+
+/**
+ * This slot is called by the OpenAipThread loader thread to signal, that the
+ * requested hotspot data have been loaded. The passed lists must be
+ * deleted in this method.
+ */
+void MapContents::slotOpenAipHotspotLoadFinished( int noOfLists,
+                                                  QList<SinglePoint>* hotspotListIn )
+{
+  QMutexLocker locker( &m_hotspotLoadMutex );
+
+  if( noOfLists == 0 )
+    {
+      _globalMapView->slot_info( tr("No OpenAIP loaded") );
+    }
+  else
+    {
+      _globalMapView->slot_info( tr("OpenAIP loaded") );
+    }
+
+  // Take over the new loaded airfield list. The passed list must be deleted!
+  hotspotList = QList<SinglePoint>();
+  hotspotList = *hotspotListIn;
+  delete hotspotListIn;
+
+  emit mapDataReloaded( Map::hotspots );
   emit mapDataReloaded();
 }
 
@@ -2886,6 +2959,9 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
 
   // Remove content of radio list. It can contain openAIP data.
   radioList = QList<RadioPoint>();
+
+  // Remove content of hotspot list. It can contain openAIP data.
+  hotspotList = QList<SinglePoint>();
 
   _globalMapView->slot_info( tr("Welt2000 loaded") );
 
@@ -3061,6 +3137,14 @@ void MapContents::drawList( QPainter* targetP,
       showProgress2WaitScreen( tr("Drawing navaids") );
       for (int i = 0; i < radioList.size(); i++)
         radioList[i].drawMapElement(targetP);
+      break;
+
+    case HotspotList:
+      //list="HotspotList";
+      //len=hotspotList.count();
+      showProgress2WaitScreen( tr("Drawing hotspots") );
+      for (int i = 0; i < hotspotList.size(); i++)
+        hotspotList[i].drawMapElement(targetP);
       break;
 
     case AirspaceList:

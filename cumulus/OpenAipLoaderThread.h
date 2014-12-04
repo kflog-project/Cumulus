@@ -50,7 +50,7 @@ class OpenAipLoaderThread : public QThread
   /**
    * POI Source definitions
    */
-  enum Poi { Airfields, NavAids };
+  enum Poi { Airfields, Hotspots, NavAids };
 
   OpenAipLoaderThread( QObject *parent,
                        enum Poi poiSource,
@@ -85,7 +85,17 @@ class OpenAipLoaderThread : public QThread
   * \param navAidList   The list with the POI data
   *
   */
-  void loadedNavAidsList( int loadedLists, QList<RadioPoint>* navAidList );
+  void loadedNavAidList( int loadedLists, QList<RadioPoint>* navAidList );
+
+  /**
+  * This signal emits the results of the OpenAIP load. The receiver slot is
+  * responsible to delete the dynamic allocated list in every case.
+  *
+  * \param loadedLists  The number of loaded lists
+  * \param hotspotList  The list with the POI data
+  *
+  */
+  void loadedHotspotList( int loadedLists, QList<SinglePoint>* hotspotList );
 
  private:
 

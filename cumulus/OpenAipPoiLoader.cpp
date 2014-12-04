@@ -189,7 +189,7 @@ int OpenAipPoiLoader::load( QList<Airfield>& airfieldList, bool readSource )
               continue;
             }
 
-          double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+          float filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
           if( m_hd.h_homeRadius != filterRadius )
             {
@@ -228,7 +228,7 @@ int OpenAipPoiLoader::load( QList<Airfield>& airfieldList, bool readSource )
   return loadCounter;
 }
 
-int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
+int OpenAipPoiLoader::load( QList<RadioPoint>& navAidList, bool readSource )
 {
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
@@ -252,7 +252,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
 
   if( preselect.count() == 0 )
     {
-      qWarning( "OAIP: No navAids files found in the map directories!" );
+      qWarning( "OAIP: No navAid files found in the map directories!" );
       return loadCounter;
     }
 
@@ -265,7 +265,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
   if( files.isEmpty() )
     {
       // No files shall be loaded
-      qWarning() << "OAIP: No navAids files defined for loading by the user!";
+      qWarning() << "OAIP: No navAid files defined for loading by the user!";
       return loadCounter;
     }
 
@@ -299,14 +299,14 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
           // Remove source file to be read from the list.
           preselect.removeAt(0);
 
-          listBegin = navAidsList.size();
+          listBegin = navAidList.size();
 
-          bool ok = openAip.readNavAids( aipName, navAidsList, errorInfo, true );
+          bool ok = openAip.readNavAids( aipName, navAidList, errorInfo, true );
 
           if( ok )
             {
               QString aicName = aipName.replace( aipName.size() - 1, 1 , QChar('c') );
-              createCompiledFile( aicName, navAidsList, listBegin );
+              createCompiledFile( aicName, navAidList, listBegin );
               loadCounter++;
             }
 
@@ -372,7 +372,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
               continue;
             }
 
-          double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+          float filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
           if( m_hd.h_homeRadius != filterRadius )
             {
@@ -389,14 +389,187 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidsList, bool readSource )
 
       // We will read the compiled file, because a source file is not to
       // find after it or all checks were successfully passed.
-      if( readCompiledFile( aicName, navAidsList ) )
+      if( readCompiledFile( aicName, navAidList ) )
         {
           loadCounter++;
         }
     } // End of While
 
-  qDebug( "OAIP: %d navAids file(s) with %d items loaded in %dms",
-          loadCounter, navAidsList.size(), t.elapsed() );
+  qDebug( "OAIP: %d navAid file(s) with %d items loaded in %dms",
+          loadCounter, navAidList.size(), t.elapsed() );
+
+  return loadCounter;
+}
+
+int OpenAipPoiLoader::load( QList<SinglePoint>& spList, bool readSource )
+{
+  // Set a global lock during execution to avoid calls in parallel.
+  QMutexLocker locker( &m_mutex );
+
+  QTime t;
+  t.start();
+  int loadCounter = 0; // number of successfully loaded files
+
+  QStringList mapDirs = GeneralConfig::instance()->getMapDirectories();
+  QStringList preselect;
+
+  for( int i = 0; i < mapDirs.size(); ++i )
+    {
+      MapContents::addDir( preselect, mapDirs.at( i ) + "/points", "*_hot.aip" );
+
+      if( readSource == false )
+        {
+          MapContents::addDir( preselect, mapDirs.at( i ) + "/points", "*_hot.aic" );
+        }
+    }
+
+  if( preselect.count() == 0 )
+    {
+      qWarning( "OAIP: No single point files found in the map directories!" );
+      return loadCounter;
+    }
+
+  // source files follows compiled files
+  preselect.sort();
+
+  // Check, which files shall be loaded.
+  QStringList& files = GeneralConfig::instance()->getOpenAipPoiFileList();
+
+  if( files.isEmpty() )
+    {
+      // No files shall be loaded
+      qWarning() << "OAIP: No single point files defined for loading by the user!";
+      return loadCounter;
+    }
+
+  if( files.first() != "All" )
+    {
+      // Tidy up the preselection list, if not all found files shall be loaded.
+      for( int i = preselect.size() - 1; i >= 0; i-- )
+        {
+          QString file = QFileInfo(preselect.at(i)).completeBaseName() + ".aip";
+
+          if( files.contains( file ) == false )
+            {
+              preselect.removeAt(i);
+            }
+        }
+    }
+
+  while( !preselect.isEmpty() )
+    {
+      QString aipName;
+      QString aicName;
+      OpenAip openAip;
+      QString errorInfo;
+      int listBegin;
+
+      if( preselect.first().endsWith( QString( ".aip" ) ) )
+        {
+          // There can't be the same name .aic after this .aip. Parse aip file.
+          aipName = preselect.first();
+
+          // Remove source file to be read from the list.
+          preselect.removeAt(0);
+
+          listBegin = spList.size();
+
+          bool ok = openAip.readHotspots( aipName, spList, errorInfo, true );
+
+          if( ok )
+            {
+              QString aicName = aipName.replace( aipName.size() - 1, 1 , QChar('c') );
+              createCompiledFile( aicName, spList, listBegin );
+              loadCounter++;
+            }
+
+          continue;
+        }
+
+      // At first we found a binary file with the extension aic.
+      aicName = preselect.first();
+      preselect.removeAt( 0 );
+      aipName = aicName;
+      aipName.replace( aipName.size() - 1, 1, QChar('p')  );
+
+      if( ! preselect.isEmpty() && aipName == preselect.first() )
+        {
+          // We found the related source file and will do some checks to
+          // decide which type of file will be read in.
+
+          // Lets check, if we can read the header of the compiled file
+          if( ! getHeaderData( aicName, FILE_TYPE_HOTSPOTS_OAIP_C, FILE_VERSION_HOTSPOT_C ) )
+            {
+              // Compiled file format is not the expected one, remove
+              // wrong file and require a reparsing of source files.
+              continue;
+            }
+
+          // Do a date-time check. If the source file is younger in its
+          // modification time as the compiled file, a new compilation
+          // must be forced.
+          QFileInfo fi(aipName);
+          QDateTime lastModTxt = fi.lastModified();
+
+          if ( m_hd.h_creationDateTime < lastModTxt )
+            {
+              // Modification date-time of source is younger as from
+              // compiled file. Therefore we require a reparsing of the
+              // source files.
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Time mismatch";
+              continue;
+            }
+
+          // Check, if the projection has been changed in the meantime
+          ProjectionBase *currentProjection = _globalMapMatrix->getProjection();
+
+          if( ! MapContents::compareProjections( m_hd.h_projection, currentProjection ) )
+            {
+              // Projection has changed in the meantime. That requires a reparse
+              // of the source files.
+              if( m_hd.h_projection )
+                {
+                  delete m_hd.h_projection;
+                  m_hd.h_projection = 0;
+                }
+
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Projection mismatch";
+              continue;
+            }
+
+          if( m_hd.h_homeCoord != _globalMapMatrix->getHomeCoord() )
+            {
+              // Home position has been changed. That requires a reparse
+              // of the source files.
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Home mismatch";
+              continue;
+            }
+
+          float filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+
+          if( m_hd.h_homeRadius != filterRadius )
+            {
+              // Home radius has been changed. That requires a reparse
+              // of the source files.
+              qDebug() << "OAIP:" << QFileInfo(aicName).fileName() << "Radius mismatch";
+              continue;
+            }
+
+          // All checks passed, there is no need to read the source file and
+          // we can remove it from the list.
+          preselect.removeAt( 0 );
+        }
+
+      // We will read the compiled file, because a source file is not to
+      // find after it or all checks were successfully passed.
+      if( readCompiledFile( aicName, spList ) )
+        {
+          loadCounter++;
+        }
+    } // End of While
+
+  qDebug( "OAIP: %d navAid file(s) with %d items loaded in %dms",
+          loadCounter, spList.size(), t.elapsed() );
 
   return loadCounter;
 }
@@ -417,14 +590,14 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
 
   if( file.open(QIODevice::WriteOnly) == false )
     {
-      qWarning( "OAIP: Can't open airfield file %s for writing!"
+      qWarning( "OAIP: Can't open file %s for writing!"
                " Aborting ...",
                fileName.toLatin1().data() );
 
       return false;
     }
 
-  double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+  float filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
   float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
 
@@ -448,7 +621,7 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
 
   SaveProjection( out, _globalMapMatrix->getProjection() );
 
-  // write number of airfield records to be stored
+  // write number of records to be stored
   out << quint32( airfieldList.size() - listBegin );
 
   // Storing starts at the given index.
@@ -473,7 +646,7 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       // projected WGS84 coordinates
       out << af.getPosition();
       // elevation in meters
-      out << qint16( af.getElevation());
+      out << af.getElevation();
 
       // frequency is written as e.g. 126.575, is reduced to 16 bits
       if( af.getFrequency() == 0.0 )
@@ -509,10 +682,10 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
 }
 
 bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
-                                           QList<RadioPoint>& navAidsList,
+                                           QList<RadioPoint>& navAidList,
                                            int listBegin )
 {
-  if( navAidsList.size() == 0 || navAidsList.size() < listBegin )
+  if( navAidList.size() == 0 || navAidList.size() < listBegin )
     {
       return false;
     }
@@ -524,20 +697,20 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
 
   if( file.open(QIODevice::WriteOnly) == false )
     {
-      qWarning( "OAIP: Can't open airfield file %s for writing!"
+      qWarning( "OAIP: Can't open file %s for writing!"
                " Aborting ...",
                fileName.toLatin1().data() );
 
       return false;
     }
 
-  double filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+  float filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
 
-  // NavAids uses not this filter but to have a unique header, it is considered.
+  // Navaid uses not this filter but to have a unique header, it is considered.
   float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
 
-  qDebug() << "OAIP: creating navAids file" << QFileInfo(fileName).fileName()
-           << "with" << (navAidsList.size() - listBegin) << "elements";
+  qDebug() << "OAIP: creating navAid file" << QFileInfo(fileName).fileName()
+           << "with" << (navAidList.size() - listBegin) << "elements";
 
   out << quint32( KFLOG_FILE_MAGIC );
   out << QByteArray( FILE_TYPE_NAV_AIDS_OAIP_C );
@@ -556,13 +729,13 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
 
   SaveProjection( out, _globalMapMatrix->getProjection() );
 
-  // write number of airfield records to be stored
-  out << quint32( navAidsList.size() - listBegin );
+  // write number of records to be stored
+  out << quint32( navAidList.size() - listBegin );
 
   // Storing starts at the given index.
-  for( int i = listBegin; i < navAidsList.size(); i++ )
+  for( int i = listBegin; i < navAidList.size(); i++ )
     {
-      RadioPoint& rp = navAidsList[i];
+      RadioPoint& rp = navAidList[i];
 
       // element type
       out << quint8( rp.getTypeID() );
@@ -581,7 +754,7 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       // projected WGS84 coordinates
       out << rp.getPosition();
       // elevation in meters
-      out << qint16( rp.getElevation());
+      out << rp.getElevation();
       // frequency is save in MHz
       out << rp.getFrequency();
       // Channel info
@@ -592,6 +765,84 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       out << rp.getDeclination();
       // Aligned2TrueNorth
       out << quint8( rp.isAligned2TrueNorth() );
+    }
+
+  file.close();
+  return true;
+}
+
+bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
+                                           QList<SinglePoint>& spList,
+                                           int listBegin )
+{
+  if( spList.size() == 0 || spList.size() < listBegin )
+    {
+      return false;
+    }
+
+  QFile file( fileName );
+  QDataStream out( &file );
+
+  out.setVersion( Q_DATA_STREAM );
+
+  if( file.open(QIODevice::WriteOnly) == false )
+    {
+      qWarning( "OAIP: Can't open file %s for writing!"
+               " Aborting ...",
+               fileName.toLatin1().data() );
+
+      return false;
+    }
+
+  float filterRadius = GeneralConfig::instance()->getAirfieldHomeRadius();
+
+  // Hotspot uses not this filter but to have a unique header, it is considered.
+  float filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
+
+  qDebug() << "OAIP: creating single point file" << QFileInfo(fileName).fileName()
+           << "with" << (spList.size() - listBegin) << "elements";
+
+  out << quint32( KFLOG_FILE_MAGIC );
+  out << QByteArray( FILE_TYPE_HOTSPOTS_OAIP_C );
+  out << quint8( FILE_VERSION_HOTSPOT_C );
+  out << QDateTime::currentDateTime();
+  out << filterRadius;
+  out << filterRunwayLength;
+  out << QPoint( _globalMapMatrix->getHomeCoord() );
+
+#ifdef BOUNDING_BOX
+  // boundingbox is never used during read in, we don't need to write out it
+  // qDebug("Bounding box is: (%d, %d),(%d, %d)",
+  // boundingBox.left(), boundingBox.top(), boundingBox.right(), boundingBox.bottom());
+  out << boundingBox;
+#endif
+
+  SaveProjection( out, _globalMapMatrix->getProjection() );
+
+  // write number of records to be stored
+  out << quint32( spList.size() - listBegin );
+
+  // Storing starts at the given index.
+  for( int i = listBegin; i < spList.size(); i++ )
+    {
+      SinglePoint& sp = spList[i];
+
+      // element type
+      out << quint8( sp.getTypeID() );
+      // element name
+      ShortSave(out, sp.getName().toUtf8());
+      // element short name
+      ShortSave(out, sp.getWPName().toUtf8());
+      // country
+      ShortSave(out, sp.getCountry().toUtf8());
+      // comment
+      ShortSave(out, sp.getComment().toUtf8());
+      // WGS84 coordinates
+      out << sp.getWGSPosition();
+      // projected WGS84 coordinates
+      out << sp.getPosition();
+      // elevation in meters
+      out << sp.getElevation();
     }
 
   file.close();
@@ -636,7 +887,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
   QByteArray utf8_temp;
   WGSPoint wgsPos;
   QPoint position;
-  qint16 elevation;
+  float elevation;
   quint16 inFrequency;
 
   uint counter = 0;
@@ -723,7 +974,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 }
 
 bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
-                                         QList<RadioPoint>& navAidsList )
+                                         QList<RadioPoint>& navAidList )
 {
   QTime t;
   t.start();
@@ -753,14 +1004,14 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
   // Preallocate list memory for new elements to be added.
   if( lrn )
     {
-      navAidsList.reserve( navAidsList.size() + lrn );
+      navAidList.reserve( navAidList.size() + lrn );
     }
 
   quint8 type;
   QByteArray utf8_temp;
   WGSPoint wgsPos;
   QPoint position;
-  qint16 elevation;
+  float elevation;
   float inFrequency;
   float range;
   float declination;
@@ -819,12 +1070,94 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
       in >> isAligned2TrueNorth; rp.setAligned2TrueNorth(isAligned2TrueNorth);
 
       // Add the radio point element to the list.
-      navAidsList.append( rp );
+      navAidList.append( rp );
     }
 
   inFile.close();
 
   qDebug( "OAIP: %d navAids read from %s in %dms",
+          counter, fileName.toLatin1().data(), t.elapsed() );
+
+  return true;
+}
+
+bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
+                                         QList<SinglePoint>& spList )
+{
+  QTime t;
+  t.start();
+
+  QFile inFile( fileName );
+
+  if( !inFile.open(QIODevice::ReadOnly) )
+    {
+      qWarning("OAIP: Cannot open single point file %s!", fileName.toLatin1().data());
+      return false;
+    }
+
+  QDataStream in( &inFile );
+  in.setVersion( Q_DATA_STREAM );
+
+  bool ok = readHeaderData( in, FILE_TYPE_HOTSPOTS_OAIP_C, FILE_VERSION_HOTSPOT_C );
+
+  if( ok == false )
+    {
+      inFile.close();
+      return false;
+    }
+
+  // read number of records in the file
+  quint32 lrn; in >> lrn;
+
+  // Preallocate list memory for new elements to be added.
+  if( lrn )
+    {
+      spList.reserve( spList.size() + lrn );
+    }
+
+  quint8 type;
+  QByteArray utf8_temp;
+  WGSPoint wgsPos;
+  QPoint position;
+  float elevation;
+
+  uint counter = 0;
+
+  while( ! in.atEnd() )
+    {
+      counter++;
+
+      SinglePoint sp;
+
+      in >> type; sp.setTypeID( static_cast<BaseMapElement::objectType>(type) );
+
+      // read long name
+      ShortLoad(in, utf8_temp);
+      sp.setName(QString::fromUtf8(utf8_temp));
+
+      // read short name
+      ShortLoad(in, utf8_temp);
+      sp.setWPName(QString::fromUtf8(utf8_temp));
+
+      // read the 2 letter country code
+      ShortLoad(in, utf8_temp);
+      sp.setCountry(QString::fromUtf8(utf8_temp));
+
+      // read comment
+      ShortLoad(in, utf8_temp);
+      sp.setComment(QString::fromUtf8(utf8_temp));
+
+      in >> wgsPos;    sp.setWGSPosition(wgsPos);
+      in >> position;  sp.setPosition(position);
+      in >> elevation; sp.setElevation(elevation);
+
+      // Add the single point element to the list.
+      spList.append( sp );
+    }
+
+  inFile.close();
+
+  qDebug( "OAIP: %d single points read from %s in %dms",
           counter, fileName.toLatin1().data(), t.elapsed() );
 
   return true;

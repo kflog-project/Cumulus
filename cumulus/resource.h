@@ -2,7 +2,7 @@
 **
 **   resource.h
 **
-**   This file is part of cumulus
+**   This file is part of Cumulus
 **
 ************************************************************************
 **
@@ -87,7 +87,7 @@
 // Type definition for openAIP compiled navigation aids files.
 #define FILE_TYPE_NAV_AIDS_OAIP_C "OpenAIP-NavAids"
 
-// Type definition for openAIP compiled navigation aids files.
+// Type definition for openAIP compiled hotspot files.
 #define FILE_TYPE_HOTSPOTS_OAIP_C "OpenAIP-Hotspots"
 
 //=================================================================================
@@ -101,13 +101,13 @@
 #define FILE_VERSION_AIRSPACE_C 2
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 1
+#define FILE_VERSION_AIRFIELD_C 2
 
 // Version definition for compiled navigation aid files.
-#define FILE_VERSION_NAV_AIDS_C 1
+#define FILE_VERSION_NAV_AIDS_C 2
 
 // Version definition for compiled hotspot files.
-#define FILE_VERSION_HOTSPOT_C 1
+#define FILE_VERSION_HOTSPOT_C 2
 
 /******************************************************************************
  * Definition of map element types

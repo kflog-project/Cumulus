@@ -153,6 +153,7 @@ SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
     {
       MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_wpt.aip");
       MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_nav.aip");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_hot.aip");
     }
 
   preselect.sort();
