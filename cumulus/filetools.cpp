@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers,
- **                   2007-2010 by Axel Pauli
+ **                   2007-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -29,7 +27,7 @@ void ShortSave (QDataStream &s, const QByteArray &str )
       qWarning( "ShortSave will truncate QByteArray to 255 characters!" );
     }
 
-  qint8 len;
+  quint8 len;
   len = qMin(str.size(), 255);
   s << len;
   s.writeRawData( str.data(), len );
@@ -49,7 +47,7 @@ void ShortSave (QDataStream &s, const QString  &str )
 void ShortLoad (QDataStream &s, QByteArray &str)
 {
   str.detach();
-  qint8 len;
+  quint8 len;
   s >> len;			    // read size of string
 
   if ( len == 0 || s.atEnd() ) {  // end of file reached
