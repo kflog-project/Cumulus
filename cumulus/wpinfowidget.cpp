@@ -297,19 +297,15 @@ void WPInfoWidget::writeText()
   else
     {
       // display info from waypoint
-
       QString image = GeneralConfig::instance()->getAppRoot() +
-	              "/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
+	                    "/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
 
-      qDebug() << "Image=" << image;
-
-      QString imageSrc = "<img src=\"" + image + "\" align=\"top\">";
+      QString imageSrc = "<img src=\"" + image + "\">";
       QString itxt;
       QString tmp;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt += "<html><center><b>" + imageSrc + "&nbsp;&nbsp;" +
-	       m_wp.description + " (" + m_wp.name;
+      itxt += "<html><center><b>" + m_wp.description + " (" + m_wp.name;
 
       if( !m_wp.icao.isEmpty() )
         {
@@ -321,8 +317,13 @@ void WPInfoWidget::writeText()
           itxt += ",&nbsp;" + m_wp.country;
         }
 
-      itxt += ")<p>" + BaseMapElement::item2Text(m_wp.type, tr("(unknown)")) +
-              "</b></center>" +
+      itxt += ")</b></center>"
+              "<p><center>"
+              "<table cellpadding=\"5\"><tr valign=\"middle\"><td>" +
+              imageSrc + "</td><td><b>" +
+              BaseMapElement::item2Text(m_wp.type, tr("(unknown)")) +
+              "</b></td></tr>"
+              "</table></center></p>" +
               table;
 
       if( m_wp.rwyList.size() > 0 )
@@ -405,7 +406,7 @@ void WPInfoWidget::writeText()
          }
        else
          {
-           itxt+="<td>&nbsp;</td><td>&nbsp;</td>";
+           itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
          }
 
       QString sr, ss, tz;
