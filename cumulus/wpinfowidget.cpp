@@ -28,11 +28,11 @@
 #endif
 
 #include "altitude.h"
-#include "basemapelement.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "calculator.h"
 #include "mainwindow.h"
+#include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapcalc.h"
 #include "sonne.h"
@@ -40,8 +40,9 @@
 #include "wpeditdialog.h"
 #include "wpinfowidget.h"
 
-extern Calculator *calculator;
+extern Calculator*  calculator;
 extern MapContents* _globalMapContents;
+extern MapConfig *  _globalMapConfig;
 
 WPInfoWidget::WPInfoWidget( QWidget *parent ) :
   QWidget(parent)
@@ -296,11 +297,19 @@ void WPInfoWidget::writeText()
   else
     {
       // display info from waypoint
+
+      QString image = GeneralConfig::instance()->getAppRoot() +
+	              "/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
+
+      qDebug() << "Image=" << image;
+
+      QString imageSrc = "<img src=\"" + image + "\" align=\"top\">";
       QString itxt;
       QString tmp;
       QString table = "<p><table cellpadding=5 width=100%>";
 
-      itxt += "<html><center><b>" + m_wp.description + " (" + m_wp.name;
+      itxt += "<html><center><b>" + imageSrc + "&nbsp;&nbsp;" +
+	       m_wp.description + " (" + m_wp.name;
 
       if( !m_wp.icao.isEmpty() )
         {

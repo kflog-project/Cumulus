@@ -29,7 +29,7 @@
  *
  * \date 2004-2013
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef GENERAL_CONFIG_H
