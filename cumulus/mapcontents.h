@@ -22,11 +22,11 @@
  * \brief Map content management class.
  *
  * This class provides methods for accessing the contents of the map.
- * It takes control over loading all needed map-files as value lists.
+ * It takes control over loading all needed map files as value lists.
  *
  * \date 2000-2014
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef MAP_CONTENTS_H
@@ -104,7 +104,7 @@ class MapContents : public QObject
     /**
      * Creates a new MapContents-object.
      */
-    MapContents(QObject*, WaitScreen * waitscreen);
+    MapContents(QObject*, WaitScreen *waitscreen);
 
     /**
      * Destructor, deletes all lists.
@@ -135,15 +135,15 @@ class MapContents : public QObject
      * @return a pointer to the BaseMapElement of the given map element in
      * the list.
      *
-     * @param  listType the type of the list containing the element
-     * @param  index  the index of the element in the list
+     * @param  listType The type of the list containing the element.
+     * @param  index The index of the element in the list.
      */
     BaseMapElement* getElement(int listType, unsigned int index);
 
     /**
      * @return a pointer to the given airspace
      *
-     * @param  index  the list-index of the airspace
+     * @param index The list index of the  airspace.
      */
     Airspace* getAirspace(unsigned int index)
       {
@@ -153,7 +153,7 @@ class MapContents : public QObject
     /**
      * @return a pointer to the given glider site
      *
-     * @param  index  the list-index of the glider site
+     * @param index The list index of the gliderfield.
      */
     Airfield* getGliderfield(unsigned int index)
       {
@@ -163,7 +163,7 @@ class MapContents : public QObject
     /**
      * @return a pointer to the given airfield
      *
-     * @param  index The list index of the airfield
+     * @param index The list index of the airfield.
      */
     Airfield* getAirfield(unsigned int index)
       {
@@ -265,9 +265,14 @@ class MapContents : public QObject
     void setCurrentTask( FlightTask * _newVal);
 
     /**
-     * Return the current flight task.
+     * Returns the current flight task.
+     *
+     * \return The current flight task.
      */
-    FlightTask *getCurrentTask();
+    FlightTask *getCurrentTask()
+    {
+      return currentTask;
+    };
 
     /**
      * @return true if the coordinates of the waypoint in the argument

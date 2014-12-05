@@ -3012,8 +3012,9 @@ void MapContents::drawList( QPainter* targetP,
   switch (listID)
     {
     case AirfieldList:
-      //list="AirfieldList";
-      //len=airfieldList.count();
+
+      if( airfieldList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing airports") );
 
       for (int i = 0; i < airfieldList.size(); i++)
@@ -3028,8 +3029,9 @@ void MapContents::drawList( QPainter* targetP,
       break;
 
     case GliderfieldList:
-      //list="GliderList";
-      //len=gliderfieldList.count();
+
+      if( gliderfieldList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing glider sites") );
 
       for (int i = 0; i < gliderfieldList.size(); i++)
@@ -3044,8 +3046,9 @@ void MapContents::drawList( QPainter* targetP,
       break;
 
     case OutLandingList:
-      //list="outLandingList";
-      //len=outLandingList.count();
+
+      if( outLandingList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing outlanding sites") );
 
       for (int i = 0; i < outLandingList.size(); i++)
@@ -3061,7 +3064,7 @@ void MapContents::drawList( QPainter* targetP,
 
     default:
       qWarning("MapContents::drawList(): unknown listID %d", listID);
-      return;
+      break;
     }
 
   // qDebug( "List=%s, Length=%d, drawTime=%dms", list, len, t.elapsed() );
@@ -3070,6 +3073,8 @@ void MapContents::drawList( QPainter* targetP,
 void MapContents::drawList( QPainter* targetP,
                             QList<RadioPoint*> &drawnNaList )
 {
+  if( radioList.isEmpty() ) return;
+
   const bool showNaLabels = GeneralConfig::instance()->getMapShowNavAidsLabels();
 
   showProgress2WaitScreen( tr("Drawing navaids") );
@@ -3096,8 +3101,9 @@ void MapContents::drawList( QPainter* targetP,
   switch (listID)
     {
     case AirfieldList:
-      //list="AirfieldList";
-      //len=airfieldList.count();
+
+      if( airfieldList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing airports") );
 
       for (int i = 0; i < airfieldList.size(); i++)
@@ -3108,8 +3114,9 @@ void MapContents::drawList( QPainter* targetP,
       break;
 
     case GliderfieldList:
-      //list="GliderList";
-      //len=gliderfieldList.count();
+
+      if( gliderfieldList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing glider sites") );
 
       for (int i = 0; i < gliderfieldList.size(); i++)
@@ -3120,8 +3127,9 @@ void MapContents::drawList( QPainter* targetP,
       break;
 
     case OutLandingList:
-      //list="outLandingList";
-      //len=outLandingList.count();
+
+      if( outLandingList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing outlanding sites") );
 
       for (int i = 0; i < outLandingList.size(); i++)
@@ -3132,49 +3140,70 @@ void MapContents::drawList( QPainter* targetP,
       break;
 
     case RadioList:
-      //list="RadioList";
-      //len=radioList.count();
+
+      if( radioList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing navaids") );
+
       for (int i = 0; i < radioList.size(); i++)
-        radioList[i].drawMapElement(targetP);
+	{
+	  radioList[i].drawMapElement(targetP);
+	}
+
       break;
 
     case HotspotList:
-      //list="HotspotList";
-      //len=hotspotList.count();
+
+      if( hotspotList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing hotspots") );
+
       for (int i = 0; i < hotspotList.size(); i++)
-        hotspotList[i].drawMapElement(targetP);
+	{
+	  hotspotList[i].drawMapElement(targetP);
+	}
+
       break;
 
     case AirspaceList:
-      //list="AirspaceList";
-      //len=airspaceList.count();
+
+      if( airspaceList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing airspaces") );
+
       for (int i = 0; i < airspaceList.size(); i++)
-        airspaceList.at(i)->drawMapElement(targetP);
+	{
+	  airspaceList.at(i)->drawMapElement(targetP);
+	}
+
       break;
 
     case ObstacleList:
-      //list="ObstacleList";
-      //len=obstacleList.count();
+
+      if( obstacleList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing obstacles") );
+
       for (int i = 0; i < obstacleList.size(); i++)
         obstacleList[i].drawMapElement(targetP);
       break;
 
     case ReportList:
-      //list="ReportList";
-      //len=reportList.count();
+
+      if( reportList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing reporting points") );
+
       for (int i = 0; i < reportList.size(); i++)
         reportList[i].drawMapElement(targetP);
       break;
 
     case CityList:
-      //list="CityList";
-      //len=cityList.count();
+
+      if( cityList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing cities") );
+
       for (int i = 0; i < cityList.size(); i++)
         {
           if( cityList[i].drawMapElement(targetP) )
@@ -3186,72 +3215,88 @@ void MapContents::drawList( QPainter* targetP,
       break;
 
     case VillageList:
-      //list="VillageList";
-      //len=villageList.count();
+
+      if( villageList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing villages") );
+
       for (int i = 0; i < villageList.size(); i++)
         villageList[i].drawMapElement(targetP);
       break;
 
     case LandmarkList:
-      //list="LandmarkList";
-      //len=landmarkList.count();
+
+      if( landmarkList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing landmarks") );
+
       for (int i = 0; i < landmarkList.size(); i++)
         landmarkList[i].drawMapElement(targetP);
       break;
 
     case MotorwayList:
-      //list="MotorwayList";
-      //len=MotorwayList.count();
+
+      if( motorwayList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing motorways") );
+
       for (int i = 0; i < motorwayList.size(); i++)
         motorwayList[i].drawMapElement(targetP);
       break;
 
     case RoadList:
-      //list="RoadList";
-      //len=roadList.count();
+
+      if( roadList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing roads") );
+
       for (int i = 0; i < roadList.size(); i++)
         roadList[i].drawMapElement(targetP);
       break;
 
     case RailList:
-      //list="RailList";
-      //len=railList.count();
+
+      if( railList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing railroads") );
+
       for (int i = 0; i < railList.size(); i++)
         railList[i].drawMapElement(targetP);
       break;
 
     case HydroList:
-      //list="HydroList";
-      //len=hydroList.count();
+
+      if( hydroList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing hydro") );
+
       for (int i = 0; i < hydroList.size(); i++)
         hydroList[i].drawMapElement(targetP);
       break;
 
     case LakeList:
-      //list="LakeList";
-      //len=lakeList.count();
+
+      if( lakeList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing lakes") );
+
       for (int i = 0; i < lakeList.size(); i++)
         lakeList[i].drawMapElement(targetP);
       break;
 
     case TopoList:
-      //list="TopoList";
-      //len=topoList.count();
+
+      if( topoList.isEmpty() ) break;
+
       showProgress2WaitScreen( tr("Drawing topography") );
+
       for (int i = 0; i < topoList.size(); i++)
         topoList[i].drawMapElement(targetP);
       break;
 
     default:
       qWarning("MapContents::drawList(): unknown listID %d", listID);
-      return;
+      break;
     }
 
   // qDebug( "List=%s, Length=%d, drawTime=%dms", list, len, t.elapsed() );
@@ -3474,11 +3519,12 @@ bool MapContents::locateFile(const QString& fileName, QString& pathName)
 }
 
 
-void MapContents::addDir (QStringList& list, const QString& path2Check, const QString& filter)
+void MapContents::addDir (QStringList& list,
+			  const QString& path2Check,
+			  const QString& filter)
 {
   QDir path (path2Check, filter);
 
-  //JD was a bit annoyed by many notifications about nonexisting dirs
   if ( ! path.exists() )
     {
       return;
@@ -3504,13 +3550,6 @@ void MapContents::addDir (QStringList& list, const QString& path2Check, const QS
 }
 
 
-/** Read property of FlightTask * currentTask. */
-FlightTask* MapContents::getCurrentTask()
-{
-  return currentTask;
-}
-
-
 /** Take over a new FlightTask as current task. Note, that passed
  *  task can be null, if it is reset. */
 void MapContents::setCurrentTask( FlightTask* _newVal)
@@ -3530,7 +3569,6 @@ void MapContents::setCurrentTask( FlightTask* _newVal)
       currentTask->setDeclarationDateTime();
     }
 }
-
 
 /** Returns true if the coordinates of the waypoint in the argument
  * matches one of the waypoints in the list. */
@@ -3610,11 +3648,11 @@ unsigned short MapContents::countNameInWaypointList( const QString& name )
 
 }
 
-
 QDateTime MapContents::getDateFromMapFile( const QString& path )
 {
   QDateTime createDateTime;
   QFile mapFile( path );
+
   if (!mapFile.open(QIODevice::ReadOnly))
     {
       qWarning("Cumulus: can't open map file %s for reading date", path.toLatin1().data() );
@@ -3628,7 +3666,7 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
   mapFile.seek( 9 );
   in >> createDateTime;
   mapFile.close();
-  //qDebug("Map file %s created %s", path.toLatin1().data(), createDateTime.toString().toLatin1().data() );
+
   return createDateTime;
 }
 
