@@ -728,17 +728,20 @@ bool OpenAip::readHotspots( QString fileName,
       return false;
     }
 
-  // Create a short name for the hotspot. The name is build from:
-  // H = Hotspot
-  // Two letter country code
-  // consecutive number
-  int digits = QString("%1").arg(hotspotList.size()).size();
-
-  for( int i = startIdx; i < hotspotList.size(); i++ )
+  if( startIdx < hotspotList.size() )
     {
-      SinglePoint& sp = hotspotList[i];
-      int idx = sp.getWPName().toInt();
-      sp.setWPName( "H" + sp.getCountry() + QString("%1").arg(idx, digits, 10, QChar('0')));
+      // Create a short name for the hotspot. The name is build from:
+      // H = Hotspot
+      // Two letter country code
+      // consecutive number
+      int fill = QString("%1").arg(hotspotList.size() - startIdx ).size();
+
+      for( int i = startIdx; i < hotspotList.size(); i++ )
+        {
+          SinglePoint& sp = hotspotList[i];
+          int idx = sp.getWPName().toInt();
+          sp.setWPName( "H" + sp.getCountry() + QString("%1").arg(idx, fill, 10, QChar('0')));
+        }
     }
 
   file.close();

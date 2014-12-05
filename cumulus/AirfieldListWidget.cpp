@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   airfieldlistwidget.cpp
+**   AirfieldListWidget.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -14,7 +14,7 @@
 **
 ***********************************************************************/
 
-#include "airfieldlistwidget.h"
+#include "AirfieldListWidget.h"
 
 #ifndef QT_5
 #include <QtGui>

@@ -70,8 +70,7 @@ CONFIG += numberpad
 HEADERS = \
     aboutwidget.h \
     airfield.h \
-    airfieldlistview.h \
-    airfieldlistwidget.h \
+    AirfieldListWidget.h \
     airregion.h \
     airspace.h \
     AirspaceHelper.h \
@@ -143,7 +142,6 @@ HEADERS = \
     projectionlambert.h \
     protocol.h \
     radiopoint.h \
-    RadioPointListView.h \
     RadioPointListWidget.h \
     reachablelist.h \
     reachablepoint.h \
@@ -205,8 +203,7 @@ HEADERS = \
 SOURCES = \
     aboutwidget.cpp \
     airfield.cpp \
-    airfieldlistview.cpp \
-    airfieldlistwidget.cpp \
+    AirfieldListWidget.cpp \
     airregion.cpp \
     airspace.cpp \
     AirspaceHelper.cpp \
@@ -272,7 +269,6 @@ SOURCES = \
     projectioncylindric.cpp \
     projectionlambert.cpp \
     radiopoint.cpp \
-    RadioPointListView.cpp \
     RadioPointListWidget.cpp \
     reachablelist.cpp \
     reachablepoint.cpp \

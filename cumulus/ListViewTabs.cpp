@@ -19,10 +19,12 @@
 #include <QtWidgets>
 #endif
 
+#include "AirfieldListWidget.h"
 #include "generalconfig.h"
 #include "ListViewTabs.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
+#include "RadioPointListWidget.h"
 #include "SinglePointListWidget.h"
 
 extern MapContents *_globalMapContents;

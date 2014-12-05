@@ -25,7 +25,7 @@
 #endif
 
 #include "airfield.h"
-#include "airfieldlistwidget.h"
+#include "AirfieldListWidget.h"
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"

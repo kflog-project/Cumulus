@@ -64,7 +64,7 @@ CONFIG += numberpad
 HEADERS = \
     aboutwidget.h \
     airfield.h \
-    airfieldlistwidget.h \
+    AirfieldListWidget.h \
     airregion.h \
     airspace.h \
     AirspaceHelper.h \
@@ -196,7 +196,7 @@ HEADERS = \
 SOURCES = \
     aboutwidget.cpp \
     airfield.cpp \
-    airfieldlistwidget.cpp \
+    AirfieldListWidget.cpp \
     airregion.cpp \
     airspace.cpp \
     AirspaceHelper.cpp \

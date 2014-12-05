@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   airfieldlistwidget.h
+**   AirfieldListWidget.h
 **
 **   This file is part of Cumulus.
 **
