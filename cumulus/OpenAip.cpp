@@ -618,6 +618,9 @@ bool OpenAip::readHotspots( QString fileName,
   int elementCounter   = 0;
   bool oaipFormatOk = false;
 
+  // Number counter for short name building.
+  uint hsno = 0;
+
   // Reset version and data format variable
   m_oaipVersion.clear();
   m_oaipDataFormat.clear();
@@ -678,6 +681,9 @@ bool OpenAip::readHotspots( QString fileName,
                   break;
                 }
 
+              // Increment name counter for the hotspot.
+              hsno++;
+
               if( useFiltering == true )
                 {
                   if( m_filterRadius > 0.0 )
@@ -692,6 +698,11 @@ bool OpenAip::readHotspots( QString fileName,
                     }
                 }
 
+              // Create a short name for the hotspot. The name is build from
+              // H = Hotspot
+              // Two letter country code
+              // consecutive number
+              sp.setWPName( "H" + sp.getCountry() + QString("%1").arg(hsno));
               hotspotList.append( sp );
             }
 
