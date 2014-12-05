@@ -22,7 +22,7 @@
  *
  * \date 2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef ListViewTabs_h
@@ -32,8 +32,7 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "airfieldlistview.h"
-#include "RadioPointListView.h"
+#include "PointListView.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
 #include "waypointlistview.h"
@@ -73,6 +72,23 @@ class ListViewTabs : public QWidget
     m_textAF = text;
 
     int idx = m_listViewTabs->indexOf( viewAF );
+
+    if( idx != -1 )
+      {
+	m_listViewTabs->setTabText( idx, text );
+      }
+  }
+
+  const QString& getTextHs () const
+  {
+    return m_textHS;
+  }
+
+  void setTextHs (const QString& text)
+  {
+    m_textHS = text;
+
+    int idx = m_listViewTabs->indexOf( viewHS );
 
     if( idx != -1 )
       {
@@ -165,24 +181,44 @@ class ListViewTabs : public QWidget
       }
   }
 
-  const AirfieldListView* getViewAf () const
+  const PointListView* getViewAf () const
   {
     return viewAF;
   }
 
-  void setViewAf( AirfieldListView* viewAf)
+  void setViewAf( PointListView* view)
   {
-    viewAF = viewAf;
+    viewAF = view;
   }
 
-  const AirfieldListView* getViewOl () const
+  const PointListView* getViewHs () const
+  {
+    return viewHS;
+  }
+
+  void setViewHs( PointListView* view)
+  {
+    viewHS = view;
+  }
+
+  const PointListView* getViewOl () const
   {
     return viewOL;
   }
 
-  void setViewOl (AirfieldListView* viewOl)
+  void setViewOl (PointListView* view)
   {
-    viewOL = viewOl;
+    viewOL = view;
+  }
+
+  const PointListView* getViewNa () const
+  {
+    return viewNA;
+  }
+
+  void setViewNa( PointListView* view)
+  {
+    viewNA = view;
   }
 
   const ReachpointListView* getViewRp () const
@@ -190,9 +226,9 @@ class ListViewTabs : public QWidget
     return viewRP;
   }
 
-  void setViewRp (ReachpointListView* viewRp)
+  void setViewRp (ReachpointListView* view)
   {
-    viewRP = viewRp;
+    viewRP = view;
   }
 
   const TaskListView* getViewTp () const
@@ -200,9 +236,9 @@ class ListViewTabs : public QWidget
     return viewTP;
   }
 
-  void setViewTp (TaskListView* viewTp)
+  void setViewTp (TaskListView* view)
   {
-    viewTP = viewTp;
+    viewTP = view;
   }
 
   const WaypointListView* getViewWp () const
@@ -210,17 +246,18 @@ class ListViewTabs : public QWidget
     return viewWP;
   }
 
-  void setViewWp (WaypointListView* viewWp)
+  void setViewWp (WaypointListView* view)
   {
-    viewWP = viewWp;
+    viewWP = view;
   }
 
   /**
    * Lists managed by the tab widget.
    */
-  AirfieldListView*   viewAF;
-  AirfieldListView*   viewOL;
-  RadioPointListView* viewNA;
+  PointListView*      viewAF;
+  PointListView*      viewHS;
+  PointListView*      viewOL;
+  PointListView*      viewNA;
   ReachpointListView* viewRP;
   TaskListView*       viewTP;
   WaypointListView*   viewWP;
@@ -259,6 +296,7 @@ class ListViewTabs : public QWidget
    * Tabulator labels
    */
   QString m_textAF;
+  QString m_textHS;
   QString m_textOL;
   QString m_textNA;
   QString m_textRP;

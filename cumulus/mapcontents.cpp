@@ -2416,9 +2416,9 @@ void MapContents::clearList(const int listIndex)
 }
 
 
-unsigned int MapContents::getListLength( const int listIndex ) const
+unsigned int MapContents::getListLength( const int listSelector ) const
 {
-  switch (listIndex)
+  switch (listSelector)
     {
     case AirfieldList:
       return airfieldList.count();

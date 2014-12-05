@@ -64,7 +64,6 @@ CONFIG += numberpad
 HEADERS = \
     aboutwidget.h \
     airfield.h \
-    airfieldlistview.h \
     airfieldlistwidget.h \
     airregion.h \
     airspace.h \
@@ -120,6 +119,7 @@ HEADERS = \
     OpenAipPoiLoader.h \
     OpenAipLoaderThread.h \
     openairparser.h \
+    PointListView.h \
     polardialog.h \
     polar.h \
     preflightchecklistpage.h \
@@ -134,7 +134,6 @@ HEADERS = \
     projectionlambert.h \
     protocol.h \
     radiopoint.h \
-    RadioPointListView.h \
     RadioPointListWidget.h \
     reachablelist.h \
     reachablepoint.h \
@@ -142,6 +141,7 @@ HEADERS = \
     resource.h \
     rowdelegate.h \
     runway.h \
+    SinglePointListWidget.h \
     settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
@@ -196,7 +196,6 @@ HEADERS = \
 SOURCES = \
     aboutwidget.cpp \
     airfield.cpp \
-    airfieldlistview.cpp \
     airfieldlistwidget.cpp \
     airregion.cpp \
     airspace.cpp \
@@ -248,6 +247,7 @@ SOURCES = \
     OpenAipPoiLoader.cpp \
     OpenAipLoaderThread.cpp \
     openairparser.cpp \
+    PointListView.cpp \
     polar.cpp \
     polardialog.cpp \
     preflightchecklistpage.cpp \
@@ -261,13 +261,13 @@ SOURCES = \
     projectioncylindric.cpp \
     projectionlambert.cpp \
     radiopoint.cpp \
-    RadioPointListView.cpp \
     RadioPointListWidget.cpp \
     reachablelist.cpp \
     reachablepoint.cpp \
     reachpointlistview.cpp \
     rowdelegate.cpp \
     runway.cpp \
+    SinglePointListWidget.cpp \
     settingspageairspace.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \

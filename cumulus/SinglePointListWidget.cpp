@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   RadioPointListWidget.cpp
+**   SinglePointListWidget.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -13,7 +13,7 @@
 **
 ***********************************************************************/
 
-#include "RadioPointListWidget.h"
+#include "SinglePointListWidget.h"
 
 #ifndef QT_5
 #include <QtGui>
@@ -32,14 +32,14 @@
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
-RadioPointListWidget::RadioPointListWidget( QVector<enum MapContents::ListID> &itemList,
-					    QWidget *parent,
-					    bool showMovePage ) :
+SinglePointListWidget::SinglePointListWidget( QVector<enum MapContents::ListID> &itemList,
+					      QWidget *parent,
+					      bool showMovePage ) :
   ListWidgetParent( parent, showMovePage ),
   m_itemList(itemList)
 {
-  setObjectName("RadioPointListWidget");
-  list->setObjectName("RadioPointTreeWidget");
+  setObjectName("SinglePointListWidget");
+  list->setObjectName("SinglePointTreeWidget");
 
   QTreeWidgetItem *headerItem = list->headerItem();
   headerItem->setText( 3, tr("Comment") );
@@ -53,12 +53,12 @@ RadioPointListWidget::RadioPointListWidget( QVector<enum MapContents::ListID> &i
 #endif
 }
 
-RadioPointListWidget::~RadioPointListWidget()
+SinglePointListWidget::~SinglePointListWidget()
 {
 }
 
-/** Clears and refills the airfield item list. */
-void RadioPointListWidget::fillItemList()
+/** Clears and refills the single point item list. */
+void SinglePointListWidget::fillItemList()
 {
   // call base class
   ListWidgetParent::fillItemList();
@@ -74,14 +74,14 @@ void RadioPointListWidget::fillItemList()
 
       for (int i = 0; i < nr; i++ )
         {
-	  RadioPoint* site = dynamic_cast<RadioPoint *> (_globalMapContents->getElement( m_itemList.at(item), i ));
+          SinglePoint* site = dynamic_cast<SinglePoint *> (_globalMapContents->getElement( m_itemList.at(item), i ));
 
-	  if( site == 0 )
-	    {
-	      continue;
-	    }
+          if( site == 0 )
+            {
+              continue;
+            }
 
-          filter->addListItem( new RadioPointItem(site) );
+          filter->addListItem( new SinglePointItem(site) );
         }
     }
 
@@ -93,9 +93,9 @@ void RadioPointListWidget::fillItemList()
 }
 
 /** Returns a pointer to the currently highlighted airfield. */
-Waypoint* RadioPointListWidget::getCurrentWaypoint()
+Waypoint* SinglePointListWidget::getCurrentWaypoint()
 {
-  // qDebug("RadioPointListWidget::getCurrentWaypoint()");
+  // qDebug("SinglePointListWidget::getCurrentWaypoint()");
   QTreeWidgetItem* li = list->currentItem();
 
   if( li == 0 )
@@ -103,15 +103,15 @@ Waypoint* RadioPointListWidget::getCurrentWaypoint()
       return 0;
     }
 
-  RadioPointItem* rpItem = dynamic_cast<RadioPointItem *> (li);
+  SinglePointItem* item = dynamic_cast<SinglePointItem *> (li);
 
   // May be null if the cast failed.
-  if ( rpItem == static_cast<RadioPointItem *> (0) )
+  if( item == static_cast<SinglePointItem *> (0) )
     {
       return static_cast<Waypoint *> (0);
     }
 
-  RadioPoint* site = rpItem->m_radioPoint;
+  SinglePoint* site = item->m_singlePoint;
 
   m_wp.name = site->getWPName();
   m_wp.wgsPoint = site->getWGSPosition();
@@ -120,22 +120,20 @@ Waypoint* RadioPointListWidget::getCurrentWaypoint()
   m_wp.description = site->getName();
   m_wp.type = site->getTypeID();
   m_wp.elevation = site->getElevation();
-  m_wp.icao = site->getICAO();
-  m_wp.frequency = site->getFrequency();
-  m_wp.comment = site->getAdditionalText();
+  m_wp.comment = site->getComment();
   m_wp.country = site->getCountry();
 
   return &m_wp;
 }
 
-RadioPointListWidget::RadioPointItem::RadioPointItem(RadioPoint* site) :
-  QTreeWidgetItem(), m_radioPoint(site)
+SinglePointListWidget::SinglePointItem::SinglePointItem(SinglePoint* site) :
+  QTreeWidgetItem(), m_singlePoint(site)
 {
   setText(0, site->getWPName());
   setText(1, site->getName());
   setText(2, site->getCountry());
   setTextAlignment(2, Qt::AlignCenter);
-  setText(3, site->getAdditionalText());
+  setText(3, site->getComment());
 
   // set type icon
   QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false, false);

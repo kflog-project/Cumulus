@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -23,7 +21,7 @@
  *
  * \brief This widget provides a list of airfields and a means to select one.
  *
- * \date 2002-2013
+ * \date 2002-2014
  *
  */
 
@@ -49,7 +47,7 @@ private:
 
 public:
 
-    AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
+    AirfieldListWidget( QVector<enum MapContents::ListID> &itemList,
                         QWidget *parent=0, bool showMovePage=true );
 
     virtual ~AirfieldListWidget();
@@ -66,14 +64,17 @@ public:
 
 private:
 
-    Waypoint m_wp;
-    QVector<enum MapContents::MapContentsListID> m_itemList;
+    /** Identifiers for list access. */
+    QVector<enum MapContents::ListID> m_itemList;
 
-class _AirfieldItem : public QTreeWidgetItem
+    /** Waypoint temporary storage. */
+    Waypoint m_wp;
+
+class AirfieldItem : public QTreeWidgetItem
   {
     public:
 
-      _AirfieldItem(Airfield*);
+      AirfieldItem(Airfield* item);
       Airfield* airfield;
   };
 };

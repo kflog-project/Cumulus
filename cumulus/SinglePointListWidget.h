@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   RadioPointListWidget.h
+**   SinglePointListWidget.h
 **
 **   This file is part of Cumulus.
 **
@@ -14,29 +14,29 @@
 ***********************************************************************/
 
 /**
- * \class RadioPointListWidget
+ * \class SinglePointListWidget
  *
  * \author Axel Pauli
  *
- * \brief This widget provides a list of navigation aids and a means to select
+ * \brief This widget provides a list of single points and a means to select
  *  one.
  *
  * \date 2014
  *
  */
 
-#ifndef RadioPointListWidget_h
-#define RadioPointListWidget_h
+#ifndef SinglePointListWidget_h
+#define SinglePointListWidget_h
 
 #include <QWidget>
 #include <QVector>
 
-#include "radiopoint.h"
+#include "singlepoint.h"
 #include "waypoint.h"
 #include "listwidgetparent.h"
 #include "mapcontents.h"
 
-class RadioPointListWidget : public ListWidgetParent
+class SinglePointListWidget : public ListWidgetParent
 {
   Q_OBJECT
 
@@ -44,7 +44,7 @@ private:
   /**
    * That macro forbids the copy constructor and the assignment operator.
    */
-  Q_DISABLE_COPY( RadioPointListWidget )
+  Q_DISABLE_COPY( SinglePointListWidget )
 
 public:
 
@@ -57,11 +57,11 @@ public:
    *
    * \param showMovePage Shows the move button, if set to true.
    */
-  RadioPointListWidget( QVector<enum MapContents::ListID> &itemList,
-			QWidget *parent=0,
-                        bool showMovePage=true );
+  SinglePointListWidget( QVector<enum MapContents::ListID> &itemList,
+			 QWidget *parent=0,
+			 bool showMovePage=true );
 
-  virtual ~RadioPointListWidget();
+  virtual ~SinglePointListWidget();
 
   /**
    * @returns a pointer to the currently selected entry.
@@ -69,7 +69,7 @@ public:
   Waypoint *getCurrentWaypoint();
 
   /**
-   * Clears and fills the RadioPoint item list.
+   * Clears and fills the SinglePoint item list.
    */
   void fillItemList();
 
@@ -81,12 +81,13 @@ private:
   /** Waypoint temporary storage. */
   Waypoint m_wp;
 
-  class RadioPointItem : public QTreeWidgetItem
+  class SinglePointItem : public QTreeWidgetItem
     {
       public:
 
-      RadioPointItem(RadioPoint *);
-      RadioPoint* m_radioPoint;
+      SinglePointItem( SinglePoint *sp );
+
+      SinglePoint* m_singlePoint;
     };
 };
 

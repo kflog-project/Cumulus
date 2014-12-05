@@ -568,7 +568,7 @@ int OpenAipPoiLoader::load( QList<SinglePoint>& spList, bool readSource )
         }
     } // End of While
 
-  qDebug( "OAIP: %d navAid file(s) with %d items loaded in %dms",
+  qDebug( "OAIP: %d single point file(s) with %d items loaded in %dms",
           loadCounter, spList.size(), t.elapsed() );
 
   return loadCounter;

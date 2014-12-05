@@ -77,29 +77,29 @@ class MapContents : public QObject
     /**
      * The identifiers for the map element types.
      */
-    enum MapContentsListID { NotSet = 0,
-                             AirfieldList,
-			     GliderfieldList,
-                             AddSitesList,
-			     OutLandingList,
-			     RadioList,
-			     AirspaceList,
-                             ObstacleList,
-			     ReportList,
-			     CityList,
-			     VillageList,
-                             LandmarkList,
-			     MotorwayList,
-                             RoadList,
-			     RailList,
-			     HotspotList,
-			     HydroList,
-                             LakeList,
-			     TopoList,
-			     IsohypseList,
-                             WaypointList,
-			     FlightList
-                           };
+    enum ListID { NotSet = 0,
+                  AirfieldList,
+                  GliderfieldList,
+                  AddSitesList,
+                  OutLandingList,
+                  RadioList,
+                  AirspaceList,
+                  ObstacleList,
+                  ReportList,
+                  CityList,
+                  VillageList,
+                  LandmarkList,
+                  MotorwayList,
+                  RoadList,
+                  RailList,
+                  HotspotList,
+                  HydroList,
+                  LakeList,
+                  TopoList,
+                  IsohypseList,
+                  WaypointList,
+                  FlightList
+                };
 
     /**
      * Creates a new MapContents-object.
@@ -114,9 +114,9 @@ class MapContents : public QObject
     /**
      * @return the current length of the given list.
      *
-     * @param  listIndex  the index of the list.
+     * @param  listSelector A selector for list addressing.
      */
-    unsigned int getListLength( const int listIndex ) const;
+    unsigned int getListLength( const int listSelector ) const;
 
     /**
      * clears the content of the given list.

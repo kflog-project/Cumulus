@@ -211,7 +211,7 @@ class ReachableList : public QObject, QList<ReachablePoint>
   /**
    * adds glider, airport or waypoint site (if not out of reach) to the list
    */
-  void addItemsToList(enum MapContents::MapContentsListID item);
+  void addItemsToList(enum MapContents::ListID item);
 
   /**
    * print list via qDebug interface

@@ -23,6 +23,7 @@
 #include "ListViewTabs.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
+#include "SinglePointListWidget.h"
 
 extern MapContents *_globalMapContents;
 
@@ -53,20 +54,28 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
   m_listViewTabs->setObjectName("listViewTabs");
   layout->addWidget( m_listViewTabs );
 
-  QVector<enum MapContents::MapContentsListID> itemList;
+  QVector<enum MapContents::ListID> itemList;
   itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
-  viewAF = new AirfieldListView( itemList );
+  viewAF = new PointListView( new AirfieldListWidget(itemList) );
 
   itemList.clear();
   itemList << MapContents::OutLandingList;
-  viewOL = new AirfieldListView( itemList );
+  viewOL = new PointListView( new AirfieldListWidget(itemList) );
 
-  viewNA = new RadioPointListView();
+  itemList.clear();
+  itemList << MapContents::HotspotList;
+  viewHS = new PointListView( new SinglePointListWidget(itemList) );
+
+  itemList.clear();
+  itemList << MapContents::RadioList;
+  viewNA = new PointListView( new RadioPointListWidget(itemList) );
+
   viewRP = new ReachpointListView();
   viewTP = new TaskListView();
   viewWP = new WaypointListView();
 
   m_textAF = tr( "Airfields" );
+  m_textHS = tr( "Hotspots" );
   m_textOL = tr( "Fields" );
   m_textNA = tr( "Navaids" );
   m_textRP = tr( "Reachables" );
@@ -74,6 +83,7 @@ ListViewTabs::ListViewTabs( QWidget* parent ) :
   m_textWP = tr( "Waypoints" );
 
   connect( viewAF, SIGNAL(done()), SLOT(slotDone()) );
+  connect( viewHS, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewOL, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewNA, SIGNAL(done()), SLOT(slotDone()) );
   connect( viewRP, SIGNAL(done()), SLOT(slotDone()) );
@@ -134,6 +144,13 @@ void ListViewTabs::showEvent( QShowEvent *event )
       m_listViewTabs->addTab( viewNA, m_textNA );
     }
 
+  // If the list is not empty, we should add the list tabulator.
+  // Note, that the list view can be empty. It is filled during the show event.
+  if( _globalMapContents->getListLength( MapContents::HotspotList ) > 0 )
+    {
+      m_listViewTabs->addTab( viewHS, m_textHS );
+    }
+
   QWidget::showEvent( event );
 }
 
@@ -160,6 +177,10 @@ void ListViewTabs::setView( const int view )
       case MainWindow::afView:
 	idx = m_listViewTabs->indexOf( viewAF );
 	break;
+
+      case MainWindow::hsView:
+        idx = m_listViewTabs->indexOf( viewHS );
+        break;
 
       case MainWindow::naView:
         idx = m_listViewTabs->indexOf( viewNA );
@@ -195,6 +216,7 @@ void ListViewTabs::slotDone()
 {
   // We remove all list and filter content before closing widget to spare memory.
   viewAF->listWidget()->slot_Done();
+  viewHS->listWidget()->slot_Done();
   viewOL->listWidget()->slot_Done();
   viewNA->listWidget()->slot_Done();
   viewWP->listWidget()->slot_Done();

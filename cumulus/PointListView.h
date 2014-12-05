@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   RadioPointListView.h
+**   PointListView.h
 **
 **   This file is part of Cumulus.
 **
@@ -14,30 +14,26 @@
 ***********************************************************************/
 
 /**
- * \class RadioPointListView
+ * \class PointListView
  *
  * \author Axel Pauli
  *
- * \brief This widget provides a list of radio points and a means to select one.
+ * \brief This widget provides a list of single points and a means to select one.
  *
  * \date 2014
  *
  */
+#ifndef PointListView_h
+#define PointListView_h
 
-#ifndef RadioPointListView_h
-#define RadioPointListView_h
-
-#include <QMetaObject>
 #include <QPushButton>
 #include <QBoxLayout>
-#include <QMainWindow>
-#include <QVector>
 
-#include "RadioPointListWidget.h"
+#include "listwidgetparent.h"
 #include "waypoint.h"
 #include "mapcontents.h"
 
-class RadioPointListView : public QWidget
+class PointListView : public QWidget
 {
   Q_OBJECT
 
@@ -45,22 +41,22 @@ private:
   /**
    * That macro forbids the copy constructor and the assignment operator.
    */
-  Q_DISABLE_COPY( RadioPointListView )
+  Q_DISABLE_COPY( PointListView )
 
 public:
 
-  RadioPointListView( QWidget *parent=0 );
+  PointListView( ListWidgetParent* lwParent, QWidget *parent=0 );
 
-  virtual ~RadioPointListView();
+  virtual ~PointListView();
 
-  RadioPointListWidget* listWidget()
+  ListWidgetParent* listWidget()
     {
-      return listw;
+      return m_listw;
     };
 
   Waypoint* getCurrentEntry()
     {
-      return listw->getCurrentWaypoint();
+      return m_listw->getCurrentWaypoint();
     };
 
   /**
@@ -68,15 +64,8 @@ public:
    */
   int topLevelItemCount()
   {
-    return listw->topLevelItemCount();
+    return m_listw->topLevelItemCount();
   };
-
-private:
-
-  RadioPointListWidget* listw;
-  QBoxLayout *buttonrow;
-  QPushButton *cmdSelect;
-  QPushButton *cmdHome;
 
 protected:
 
@@ -108,7 +97,7 @@ public slots:
    */
   void slot_reloadList()
   {
-    listw->refillItemList();
+    m_listw->refillItemList();
   };
 
 signals:
@@ -139,8 +128,13 @@ signals:
 
 private:
 
+  ListWidgetParent* m_listw;
+  QBoxLayout*       m_buttonrow;
+  QPushButton*      m_cmdSelect;
+  QPushButton*      m_cmdHome;
+
   /** that shall store a home position change */
-  bool homeChanged;
+  bool m_homeChanged;
 };
 
 #endif

@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #include "airfieldlistwidget.h"
@@ -36,10 +34,11 @@
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
 
-AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsListID> &itemList,
+AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::ListID> &itemList,
                                         QWidget *parent,
                                         bool showMovePage ) :
-                                        ListWidgetParent( parent, showMovePage )
+  ListWidgetParent( parent, showMovePage ),
+  m_itemList(itemList)
 {
   setObjectName("AirfieldListWidget");
   list->setObjectName("AfTreeWidget");
@@ -51,8 +50,6 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::MapContentsLis
 #ifdef QTSCROLLER
   QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
-
-  this->m_itemList = itemList;
 
   // For outlandings we do display the comment instead of ICAO in the list view
   if( itemList.at(0) == MapContents::OutLandingList )
@@ -79,14 +76,18 @@ void AirfieldListWidget::fillItemList()
 
   for ( int item = 0; item < m_itemList.size(); item++ )
     {
-      int nr = _globalMapContents->getListLength(m_itemList.at(item));
+      int nr = _globalMapContents->getListLength( m_itemList.at(item) );
 
-      // qDebug("fillItemList N: %d, items %d", item, nr );
-
-      for (int i=0; i<nr; i++ )
+      for ( int i = 0; i < nr; i++ )
         {
-          Airfield* site = static_cast<Airfield *> (_globalMapContents->getElement( m_itemList.at(item), i ));
-          filter->addListItem( new _AirfieldItem(site) );
+          Airfield* site = dynamic_cast<Airfield *> (_globalMapContents->getElement( m_itemList.at(item), i ));
+
+	  if( site == 0 )
+	    {
+	      continue;
+	    }
+
+          filter->addListItem( new AirfieldItem(site) );
         }
     }
 
@@ -107,10 +108,10 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
       return 0;
     }
 
-  _AirfieldItem* afItem = dynamic_cast<_AirfieldItem *> (li);
+  AirfieldItem* afItem = dynamic_cast<AirfieldItem *> (li);
 
   // May be null if the cast failed.
-  if ( afItem == static_cast<_AirfieldItem *> (0) )
+  if ( afItem == static_cast<AirfieldItem *> (0) )
     {
       return static_cast<Waypoint *> (0);
     }
@@ -133,7 +134,7 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
   return &m_wp;
 }
 
-AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site) :
+AirfieldListWidget::AirfieldItem::AirfieldItem(Airfield* site) :
   QTreeWidgetItem(), airfield(site)
 {
   QString name = site->getWPName();
@@ -152,7 +153,7 @@ AirfieldListWidget::_AirfieldItem::_AirfieldItem(Airfield* site) :
       setText(3, site->getComment());
     }
 
-  // set landing site type icon
+  // set type icon
   QPixmap afPm = _globalMapConfig->getPixmap(site->getTypeID(), false, false);
 
   setIcon( 0, QIcon( afPm) );

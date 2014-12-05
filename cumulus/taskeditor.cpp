@@ -34,6 +34,7 @@
 #include "mainwindow.h"
 #include "mapcontents.h"
 #include "radiopoint.h"
+#include "SinglePointListWidget.h"
 #include "RadioPointListWidget.h"
 #include "rowdelegate.h"
 #include "taskeditor.h"
@@ -247,7 +248,7 @@ TaskEditor::TaskEditor( QWidget* parent,
       _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 )
     {
       listSelectText.append( tr("Airfields") );
-      QVector<enum MapContents::MapContentsListID> itemList;
+      QVector<enum MapContents::ListID> itemList;
       itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
       pointDataList.append( new AirfieldListWidget( itemList, this, false ) );
     }
@@ -256,7 +257,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   if( _globalMapContents->getListLength( MapContents::OutLandingList ) > 0 )
     {
       listSelectText.append( tr("Fields") );
-      QVector<enum MapContents::MapContentsListID> itemList;
+      QVector<enum MapContents::ListID> itemList;
       itemList << MapContents::OutLandingList;
       pointDataList.append( new AirfieldListWidget( itemList, this, false ) );
     }
@@ -265,7 +266,18 @@ TaskEditor::TaskEditor( QWidget* parent,
   if( _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
     {
       listSelectText.append( tr("Navaids") );
-      pointDataList.append( new RadioPointListWidget( this, false ) );
+      QVector<enum MapContents::ListID> itemList;
+      itemList << MapContents::RadioList;
+      pointDataList.append( new RadioPointListWidget( itemList, this, false ) );
+    }
+
+  // Hotspots
+  if( _globalMapContents->getListLength( MapContents::HotspotList ) > 0 )
+    {
+      listSelectText.append( tr("Hotspots") );
+      QVector<enum MapContents::ListID> itemList;
+      itemList << MapContents::HotspotList;
+      pointDataList.append( new SinglePointListWidget( itemList, this, false ) );
     }
 
   for( int i = 0; i < pointDataList.size(); i++ )

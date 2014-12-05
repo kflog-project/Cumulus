@@ -124,7 +124,7 @@ void ReachableList::calculate(bool always)
     }
 }
 
-void ReachableList::addItemsToList(enum MapContents::MapContentsListID item)
+void ReachableList::addItemsToList(enum MapContents::ListID item)
 {
   Distance distance;
   QRect bbox = areaBox(lastPosition, _maxReach);

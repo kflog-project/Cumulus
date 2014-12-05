@@ -136,6 +136,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   viewMap(0),
   viewWP(0),
   viewAF(0),
+  viewHS(0),
   viewOL(0),
   viewNA(0),
   viewRP(0),
@@ -164,6 +165,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionViewInfo(0),
   actionViewWaypoints(0),
   actionViewAirfields(0),
+  actionViewHotspots(0),
   actionViewNavAids(0),
   actionViewOutlandings(0),
   actionViewReachpoints(0),
@@ -701,11 +703,12 @@ void MainWindow::slotCreateApplicationWidgets()
 
   m_listViewTabs = new ListViewTabs( this );
 
-  viewWP = m_listViewTabs->viewWP;
   viewAF = m_listViewTabs->viewAF;
+  viewHS = m_listViewTabs->viewHS;
   viewOL = m_listViewTabs->viewOL;
   viewNA = m_listViewTabs->viewNA;
   viewRP = m_listViewTabs->viewRP;
+  viewWP = m_listViewTabs->viewWP;
   viewTP = m_listViewTabs->viewTP;
 
   connect( m_listViewTabs, SIGNAL(hidingWidget()), SLOT(slotSubWidgetClosed()) );
@@ -734,6 +737,8 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewAF, SLOT( slot_reloadList() ) );
+  connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
+           viewHS, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewOL, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
@@ -803,6 +808,15 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewAF, SIGNAL( newHomePosition( const QPoint& ) ),
            _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
   connect( viewAF, SIGNAL( gotoHomePosition() ),
+           calculator, SLOT( slot_changePositionHome() ) );
+
+  connect( viewHS, SIGNAL( newWaypoint( Waypoint*, bool ) ),
+           calculator, SLOT( slot_WaypointChange( Waypoint*, bool ) ) );
+  connect( viewHS, SIGNAL( info( Waypoint* ) ),
+           this, SLOT( slotSwitchToInfoView( Waypoint* ) ) );
+  connect( viewHS, SIGNAL( newHomePosition( const QPoint& ) ),
+           _globalMapMatrix, SLOT( slotSetNewHome( const QPoint& ) ) );
+  connect( viewHS, SIGNAL( gotoHomePosition() ),
            calculator, SLOT( slot_changePositionHome() ) );
 
   connect( viewOL, SIGNAL( newWaypoint( Waypoint*, bool ) ),
@@ -1262,6 +1276,7 @@ void MainWindow::createContextMenu()
   viewMenu->addAction( actionViewAirfields );
   viewMenu->addAction( actionViewOutlandings );
   viewMenu->addAction( actionViewNavAids );
+  viewMenu->addAction( actionViewHotspots );
   viewMenu->addAction( actionViewInfo );
   actionViewInfo->setEnabled( false );
   viewMenu->addAction( actionViewTaskpoints );
@@ -1533,6 +1548,11 @@ void MainWindow::createActions()
   addAction( actionViewAirfields );
   connect( actionViewAirfields, SIGNAL( triggered() ),
             this, SLOT( slotSwitchToAFListView() ) );
+
+  actionViewHotspots = new QAction ( tr( "Hotspots" ), this );
+  addAction( actionViewHotspots );
+  connect( actionViewHotspots, SIGNAL( triggered() ),
+            this, SLOT( slotSwitchToHSListView() ) );
 
   actionViewOutlandings = new QAction ( tr( "Fields" ), this );
   addAction( actionViewOutlandings );
@@ -2229,8 +2249,10 @@ void MainWindow::setView( const AppView newView )
         {
           break;
         }
+      /* no break */
 
     case afView:
+    case hsView:
     case naView:
     case olView:
     case rpView:
@@ -2317,6 +2339,12 @@ void MainWindow::slotSwitchToAFListView()
   setView( afView );
 }
 
+/** Switches to the HotspotList View */
+void MainWindow::slotSwitchToHSListView()
+{
+  setView( hsView );
+}
+
 /** Switches to the OutlandingList View */
 void MainWindow::slotSwitchToOLListView()
 {
@@ -2367,6 +2395,10 @@ void MainWindow::slotSwitchToInfoView()
   else if ( view == naView )
     {
       slotSwitchToInfoView( viewNA->getCurrentEntry() );
+    }
+  else if ( view == hsView )
+    {
+      slotSwitchToInfoView( viewHS->getCurrentEntry() );
     }
   else
     {
@@ -2600,6 +2632,7 @@ void MainWindow::slotReadconfig()
 
   viewRP->fillRpList();
   viewAF->listWidget()->configRowHeight();
+  viewHS->listWidget()->configRowHeight();
   viewNA->listWidget()->configRowHeight();
   viewOL->listWidget()->configRowHeight();
   viewWP->listWidget()->configRowHeight();

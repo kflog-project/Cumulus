@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2013 by Axel Pauli
+**                   2009-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -21,18 +19,20 @@
  *
  * \author Josua Dietze, Axel Pauli
  *
- * \brief Base class for airfield, waypoint and outlanding widget.
+ * \brief Base class to display a point list together with different command
+ *        buttons.
  *
  * This widget provides a new widget base class to remove double code in
- * the airfield and waypoint list view and the task editor.
- * Contains standard airfield list and attached filters (filter button row on
+ * the point list views and the task editor.
+ * Contains standard point list and attached filters (filter button row on
  * demand).
  *
- * Subclassed by \ref AirfieldListWidget and \ref WaypointListWidget.
+ * Subclassed by \ref AirfieldListWidget, \ref WaypointListWidget
+ *               \ref SinglePointListWidget
  *
- * \date 2002-2012
+ * \date 2002-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef LISTWIDGET_PARENT_H

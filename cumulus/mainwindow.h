@@ -49,6 +49,7 @@
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "airfieldlistview.h"
+#include "PointListView.h"
 #include "RadioPointListView.h"
 #include "reachpointlistview.h"
 #include "tasklistview.h"
@@ -82,6 +83,7 @@ public: // application view types
                  afView,        // airfield
                  olView,        // outlanding
                  naView,        // navaids (radio) points
+		 hsView,        // hotspot
                  tpView,        // taskpoint
                  flarmView };   // flarm view
 
@@ -165,23 +167,27 @@ public slots:
    */
   void slotSwitchToWPListViewExt();
   /**
-   * Switches to the list with all the  airfields
+   * Switches to the list with all the  airfields.
    */
   void slotSwitchToAFListView();
   /**
-   * Switches to the list with all the outlandings
+   * Switches to the list with all the  hotspots.
+   */
+  void slotSwitchToHSListView();
+  /**
+   * Switches to the list with all the outlandings.
    */
   void slotSwitchToOLListView();
   /**
-   * Switches to the list with all the nav aids.
+   * Switches to the list with all the navaids.
    */
   void slotSwitchToNavAidsListView();
   /**
-   * Switches to the list with all the reachable fields
+   * Switches to the list with all the reachable fields.
    */
   void slotSwitchToReachListView();
   /**
-   * Switches to the list with waypoints in this task
+   * Switches to the list with waypoints in this task.
    */
   void slotSwitchToTaskListView();
   /**
@@ -428,12 +434,13 @@ private:
   /**
    * References to the Map pages
    */
-  WaypointListView* viewWP;   // waypoints
-  AirfieldListView* viewAF;   // airfields
-  AirfieldListView* viewOL;   // outlandings
-  RadioPointListView* viewNA; // navigation aids (radio points)
+  WaypointListView*   viewWP; // waypoints
+  PointListView*      viewAF; // airfields
+  PointListView*      viewHS; // hotspots
+  PointListView*      viewOL; // outlandings
+  PointListView*      viewNA; // navigation aids (radio points)
   ReachpointListView* viewRP; // reachable points
-  TaskListView* viewTP;       // task points
+  TaskListView*       viewTP; // task points
 
   /**
    * Overview about all list
@@ -468,6 +475,7 @@ private:
   QAction* actionViewInfo;
   QAction* actionViewWaypoints;
   QAction* actionViewAirfields;
+  QAction* actionViewHotspots;
   QAction* actionViewNavAids;
   QAction* actionViewOutlandings;
   QAction* actionViewReachpoints;
