@@ -602,7 +602,7 @@ bool OpenAip::readParams( QXmlStreamReader& xml, RadioPoint& rp )
 bool OpenAip::readHotspots( QString fileName,
                             QList<SinglePoint>& hotspotList,
                             QString& errorInfo,
-			    bool useFiltering )
+                            bool useFiltering )
 {
   QFile file( fileName );
 
@@ -617,6 +617,9 @@ bool OpenAip::readHotspots( QString fileName,
 
   int elementCounter   = 0;
   bool oaipFormatOk = false;
+
+  // Start index in hotspotList
+  int startIdx = hotspotList.size();
 
   // Number counter for short name building.
   uint hsno = 0;
@@ -698,11 +701,8 @@ bool OpenAip::readHotspots( QString fileName,
                     }
                 }
 
-              // Create a short name for the hotspot. The name is build from
-              // H = Hotspot
-              // Two letter country code
-              // consecutive number
-              sp.setWPName( "H" + sp.getCountry() + QString("%1").arg(hsno));
+              // Set record number as WP name
+              sp.setWPName( QString("%1").arg(hsno) );
               hotspotList.append( sp );
             }
 
@@ -726,6 +726,19 @@ bool OpenAip::readHotspots( QString fileName,
       qWarning() << "OpenAip::readHotspots: XML-Error" << errorInfo;
       file.close();
       return false;
+    }
+
+  // Create a short name for the hotspot. The name is build from:
+  // H = Hotspot
+  // Two letter country code
+  // consecutive number
+  int digits = QString("%1").arg(hotspotList.size()).size();
+
+  for( int i = startIdx; i < hotspotList.size(); i++ )
+    {
+      SinglePoint& sp = hotspotList[i];
+      int idx = sp.getWPName().toInt();
+      sp.setWPName( "H" + sp.getCountry() + QString("%1").arg(idx, digits, 10, QChar('0')));
     }
 
   file.close();
