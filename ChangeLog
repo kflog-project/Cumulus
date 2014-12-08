@@ -14,6 +14,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2014-12-04 AP: Issue #24 fixed. Provide openAIP hotspot data automatically.
+
 [o] 2014-12-03 AP: Issue #23 fixed. Airspace RMZ replaces Airspace Foxtrott in
                    Germany at 2014-12-11. Airspace parser and airspace
                    configuration extended to handle that.
