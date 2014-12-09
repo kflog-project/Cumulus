@@ -351,6 +351,18 @@ class GeneralConfig : protected QSettings
   };
 
   /** Gets the airspace border color */
+  QColor &getBorderColorControl()
+    {
+      return _borderColorControl;
+    };
+
+  /** Sets the airspace border color */
+  void setBorderColorControl( const QColor& newValue )
+  {
+    _borderColorControl = newValue;
+  };
+
+  /** Gets the airspace border color */
   QColor &getBorderColorControlC()
     {
       return _borderColorControlC;
@@ -552,6 +564,18 @@ class GeneralConfig : protected QSettings
   void setFillColorWaveWindow( const QColor& newValue )
   {
     _fillColorWaveWindow = newValue;
+  };
+
+  /** Gets the airspace fill color */
+  QColor &getFillColorControl()
+    {
+      return _fillColorControl;
+    };
+
+  /** Sets the airspace fill color */
+  void setFillColorControl( const QColor& newValue )
+  {
+    _fillColorControl = newValue;
   };
 
   /** Gets the airspace fill color */
@@ -2900,6 +2924,7 @@ class GeneralConfig : protected QSettings
   QColor _borderColorAirspaceF;
   QColor _borderColorAirspaceFir;
   QColor _borderColorWaveWindow;
+  QColor _borderColorControl;
   QColor _borderColorControlC;
   QColor _borderColorControlD;
   QColor _borderColorRestricted;
@@ -2919,6 +2944,7 @@ class GeneralConfig : protected QSettings
   QColor _fillColorAirspaceF;
   QColor _fillColorAirspaceFir;
   QColor _fillColorWaveWindow;
+  QColor _fillColorControl;
   QColor _fillColorControlC;
   QColor _fillColorControlD;
   QColor _fillColorRestricted;

@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef MAP_DEFAULTS_H
@@ -591,6 +589,34 @@
 #define AIRFIR_BRUSH_STYLE_2 Qt::NoBrush
 #define AIRFIR_BRUSH_STYLE_3 Qt::NoBrush
 #define AIRFIR_BRUSH_STYLE_4 Qt::NoBrush
+
+// [Control Zone]
+#define CTR_PEN_WIDTH_1 4
+#define CTR_PEN_WIDTH_2 3
+#define CTR_PEN_WIDTH_3 3
+#define CTR_PEN_WIDTH_4 2
+
+#define CTR_PEN_STYLE_1 Qt::DotLine
+#define CTR_PEN_STYLE_2 Qt::DotLine
+#define CTR_PEN_STYLE_3 Qt::DotLine
+#define CTR_PEN_STYLE_4 Qt::DotLine
+
+#define CTR_COLOR QColor(0,0,128).name()
+#define CTR_COLOR_1 QColor(0,0,128)
+#define CTR_COLOR_2 QColor(0,0,128)
+#define CTR_COLOR_3 QColor(0,0,128)
+#define CTR_COLOR_4 QColor(0,0,128)
+
+#define CTR_BRUSH_COLOR QColor(255,160,162).name()
+#define CTR_BRUSH_COLOR_1 QColor(255,160,162)
+#define CTR_BRUSH_COLOR_2 QColor(255,160,162)
+#define CTR_BRUSH_COLOR_3 QColor(255,160,162)
+#define CTR_BRUSH_COLOR_4 QColor(255,160,162)
+
+#define CTR_BRUSH_STYLE_1 Qt::Dense4Pattern
+#define CTR_BRUSH_STYLE_2 Qt::Dense4Pattern
+#define CTR_BRUSH_STYLE_3 Qt::Dense4Pattern
+#define CTR_BRUSH_STYLE_4 Qt::Dense4Pattern
 
 // [Control C]
 #define CTRC_PEN_WIDTH_1 4

@@ -303,6 +303,16 @@ void MapConfig::slotReloadAirspaceColors()
                  WAVE_WINDOW_BRUSH_STYLE_1, WAVE_WINDOW_BRUSH_STYLE_2,
                  WAVE_WINDOW_BRUSH_STYLE_3, WAVE_WINDOW_BRUSH_STYLE_4)
 
+  READ_PEN_BRUSH("Control", ctrPenList, ctrBorder,ctrBrushList,
+		 conf->getBorderColorControl(), conf->getBorderColorControl(),
+		 conf->getBorderColorControl(), conf->getBorderColorControl(),
+		 CTR_PEN_WIDTH_1, CTR_PEN_WIDTH_2, CTR_PEN_WIDTH_3, CTR_PEN_WIDTH_4,
+		 CTR_PEN_STYLE_1, CTR_PEN_STYLE_2, CTR_PEN_STYLE_3, CTR_PEN_STYLE_4,
+		 conf->getFillColorControl(), conf->getFillColorControl(),
+		 conf->getFillColorControl(), conf->getFillColorControl(),
+		 CTR_BRUSH_STYLE_1, CTR_BRUSH_STYLE_2,
+		 CTR_BRUSH_STYLE_3, CTR_BRUSH_STYLE_4)
+
   READ_PEN_BRUSH("Control C", ctrCPenList, ctrCBorder,ctrCBrushList,
                  conf->getBorderColorControlC(), conf->getBorderColorControlC(),
                  conf->getBorderColorControlC(), conf->getBorderColorControlC(),
@@ -449,6 +459,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return airFPenList[sIndex];
     case BaseMapElement::AirFir:
       return airFirPenList[sIndex];
+    case BaseMapElement::Ctr:
+      return ctrPenList[sIndex];
     case BaseMapElement::ControlC:
       return ctrCPenList[sIndex];
     case BaseMapElement::ControlD:
@@ -521,6 +533,8 @@ bool MapConfig::isBorder(unsigned int typeID)
       return airFBorder[scaleIndex];
     case BaseMapElement::AirFir:
       return airFirBorder[scaleIndex];
+    case BaseMapElement::Ctr:
+      return ctrBorder[scaleIndex];
     case BaseMapElement::ControlC:
       return ctrCBorder[scaleIndex];
     case BaseMapElement::ControlD:
@@ -585,6 +599,8 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
       return airFBrushList[sIndex];
     case BaseMapElement::AirFir:
       return airFirBrushList[sIndex];
+    case BaseMapElement::Ctr:
+      return ctrBrushList[sIndex];
     case BaseMapElement::ControlC:
       return ctrCBrushList[sIndex];
     case BaseMapElement::ControlD:

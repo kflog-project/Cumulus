@@ -268,6 +268,8 @@ QString Airspace::getTypeName (objectType type)
       return QObject::tr("CTR-C");
     case BaseMapElement::ControlD:
       return QObject::tr("CTR-D");
+    case BaseMapElement::Ctr:
+      return QObject::tr("CTR");
     case BaseMapElement::LowFlight:
       return QObject::tr("Low Flight");
     case BaseMapElement::Rmz:

@@ -122,7 +122,7 @@
 #define CIV_HELIPORT      7
 #define MIL_HELIPORT      8
 #define AMB_HELIPORT      9
-#define GLIDERFIELD       10
+#define GLIDERFIELD      10
 #define ULTRALIGHT       11
 #define HANGGLIDER       12
 #define PARACHUTE        13
@@ -185,6 +185,7 @@
 #define AIR_UKN          71
 #define TACAN            72 // Tactical Air Navigation (TACAN)
 #define RMZ              73 // Radio Mandatory Zone
-#define LAST_ENTRY       74 // This must be always the last entry!!!
+#define CTR              74 // Control Zone
+#define LAST_ENTRY       75 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

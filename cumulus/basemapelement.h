@@ -88,6 +88,7 @@ public:
     AirUkn = AIR_UKN,
     ControlC = CONTROL_C,
     ControlD = CONTROL_D,
+    Ctr = CTR,
     Danger = DANGER,
     GliderSector = GLIDER_SECTOR,
     LowFlight = LOW_FLIGHT,

@@ -299,6 +299,8 @@ private:
     QBrush airFBrushList[4];
     QPen airFirPenList[4];
     QBrush airFirBrushList[4];
+    QPen ctrPenList[4];
+    QBrush ctrBrushList[4];
     QPen ctrCPenList[4];
     QBrush ctrCBrushList[4];
     QPen ctrDPenList[4];
@@ -353,6 +355,7 @@ private:
     bool waveWindowBorder[4];
     bool airFBorder[4];
     bool airFirBorder[4];
+    bool ctrBorder[4];
     bool ctrCBorder[4];
     bool ctrDBorder[4];
     bool dangerBorder[4];

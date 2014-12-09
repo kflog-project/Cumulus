@@ -638,6 +638,7 @@ void AirspaceHelper::loadAirspaceTypeMapping()
   m_airspaceTypeMap.insert("AirF", BaseMapElement::AirF);
   m_airspaceTypeMap.insert("ControlC", BaseMapElement::ControlC);
   m_airspaceTypeMap.insert("ControlD", BaseMapElement::ControlD);
+  m_airspaceTypeMap.insert("Ctr", BaseMapElement::Ctr);
   m_airspaceTypeMap.insert("Danger", BaseMapElement::Danger);
   m_airspaceTypeMap.insert("Restricted", BaseMapElement::Restricted);
   m_airspaceTypeMap.insert("Prohibited", BaseMapElement::Prohibited);
@@ -670,7 +671,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("P", BaseMapElement::Prohibited);
       typeMap.insert("TRA", BaseMapElement::Restricted);
       typeMap.insert("Q", BaseMapElement::Danger);
-      typeMap.insert("CTR", BaseMapElement::ControlD);
+      typeMap.insert("CTR", BaseMapElement::Ctr);
       typeMap.insert("RMZ", BaseMapElement::Rmz);
       typeMap.insert("TMZ", BaseMapElement::Tmz);
       typeMap.insert("W", BaseMapElement::WaveWindow);
@@ -686,11 +687,11 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("E", BaseMapElement::AirE);
       typeMap.insert("F", BaseMapElement::AirF);
       typeMap.insert("FIR", BaseMapElement::AirFir);
-      typeMap.insert("CTR", BaseMapElement::ControlD);
+      typeMap.insert("CTR", BaseMapElement::Ctr);
       typeMap.insert("DANGER", BaseMapElement::Danger);
       typeMap.insert("RESTRICTED", BaseMapElement::Restricted);
       typeMap.insert("PROHIBITED", BaseMapElement::Prohibited);
-      typeMap.insert("TMA", BaseMapElement::ControlD);
+      typeMap.insert("TMA", BaseMapElement::Ctr);
       typeMap.insert("RMZ", BaseMapElement::Rmz);
       typeMap.insert("TMZ", BaseMapElement::Tmz);
       typeMap.insert("GLIDING", BaseMapElement::GliderSector);
