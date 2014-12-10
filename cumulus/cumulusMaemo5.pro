@@ -104,6 +104,7 @@ HEADERS = \
     OpenAipLoaderThread.h \
     OpenAipPoiLoader.h \
     openairparser.h \
+    PointListView.h \
     polardialog.h \
     polar.h \
     preflightchecklistpage.h \
@@ -125,6 +126,7 @@ HEADERS = \
     resource.h \
     rowdelegate.h \
     runway.h \
+    SinglePointListWidget.h \
     settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
@@ -231,6 +233,7 @@ SOURCES = \
     OpenAipLoaderThread.cpp \
     OpenAipPoiLoader.cpp \
     openairparser.cpp \
+    PointListView.cpp \
     polar.cpp \
     polardialog.cpp \
     preflightchecklistpage.cpp \
@@ -250,6 +253,7 @@ SOURCES = \
     reachpointlistview.cpp \
     rowdelegate.cpp \
     runway.cpp \
+    SinglePointListWidget.cpp \
     settingspageairspace.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \
