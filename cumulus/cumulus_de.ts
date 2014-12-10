@@ -25,38 +25,6 @@
     </message>
 </context>
 <context>
-    <name>AirfieldListView</name>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Schließen</translation>
-    </message>
-    <message>
-        <source>Info</source>
-        <translation type="obsolete">Info</translation>
-    </message>
-    <message>
-        <source>Home</source>
-        <translation type="obsolete">Heimat</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation type="obsolete">Wählen</translation>
-    </message>
-    <message>
-        <source>Set home site</source>
-        <translation type="obsolete">Neue Heimat</translation>
-    </message>
-    <message>
-        <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
-        <translation type="obsolete">Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds and more.</source>
-        <oldsource>&lt;br&gt;Change can take&lt;br&gt;a few seconds.</oldsource>
-        <translation type="obsolete">&lt;br&gt;Wechsel kann einige Sekunden und mehr dauern.</translation>
-    </message>
-</context>
-<context>
     <name>AirfieldListWidget</name>
     <message>
         <location filename="AirfieldListWidget.cpp" line="58"/>
@@ -70,7 +38,7 @@
         <location filename="airspacedownloaddialog.cpp" line="34"/>
         <location filename="airspacedownloaddialog.cpp" line="49"/>
         <source>Download openAIP Airspaces</source>
-        <translation>Download openAIP Lufträume?</translation>
+        <translation>Download openAIP Lufträume</translation>
     </message>
     <message>
         <location filename="airspacedownloaddialog.cpp" line="52"/>
@@ -90,7 +58,7 @@
     <message>
         <location filename="airspacedownloaddialog.cpp" line="176"/>
         <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
+        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma!</translation>
     </message>
     <message>
         <location filename="airspacedownloaddialog.cpp" line="111"/>
@@ -1040,7 +1008,7 @@
     <message>
         <location filename="ListViewTabs.cpp" line="80"/>
         <source>Hotspots</source>
-        <translation>T-Punkt</translation>
+        <translation>Thermik</translation>
     </message>
     <message>
         <location filename="ListViewTabs.cpp" line="81"/>
@@ -1765,10 +1733,6 @@ Alle Downloads verworfen!</translation>
         <location filename="mapcontents.cpp" line="2008"/>
         <source>Reading Airspace Data</source>
         <translation>Lese Luftraumdaten</translation>
-    </message>
-    <message>
-        <source>Reading Airfield Data</source>
-        <translation type="obsolete">Lese Flugplatzdaten</translation>
     </message>
     <message>
         <location filename="mapcontents.cpp" line="2053"/>
@@ -3294,26 +3258,31 @@ Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="airspace.cpp" line="272"/>
+        <source>CTR</source>
+        <translation>CTR</translation>
+    </message>
+    <message>
+        <location filename="airspace.cpp" line="274"/>
         <source>Low Flight</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="274"/>
+        <location filename="airspace.cpp" line="276"/>
         <source>RMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="276"/>
+        <location filename="airspace.cpp" line="278"/>
         <source>TMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="278"/>
+        <location filename="airspace.cpp" line="280"/>
         <source>Glider Sector</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="280"/>
+        <location filename="airspace.cpp" line="282"/>
         <location filename="flighttask.cpp" line="61"/>
         <location filename="flighttask.h" line="86"/>
         <location filename="taskpoint.cpp" line="421"/>
@@ -3321,9 +3290,9 @@ Alle Downloads verworfen!</translation>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="airspace.cpp" line="308"/>
-        <location filename="airspace.cpp" line="317"/>
-        <location filename="airspace.cpp" line="331"/>
+        <location filename="airspace.cpp" line="310"/>
+        <location filename="airspace.cpp" line="319"/>
+        <location filename="airspace.cpp" line="333"/>
         <source>Unlimited</source>
         <translation>Unbegrenzt</translation>
     </message>
@@ -3897,37 +3866,6 @@ Alle Downloads verworfen!</translation>
     </message>
 </context>
 <context>
-    <name>RadioPointListView</name>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Schließen</translation>
-    </message>
-    <message>
-        <source>Info</source>
-        <translation type="obsolete">Info</translation>
-    </message>
-    <message>
-        <source>Home</source>
-        <translation type="obsolete">Heimat</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation type="obsolete">Wählen</translation>
-    </message>
-    <message>
-        <source>Set home site</source>
-        <translation type="obsolete">Setze Heimat</translation>
-    </message>
-    <message>
-        <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
-        <translation type="obsolete">Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds and more.</source>
-        <translation type="obsolete">&lt;br&gt;Wechsel kann einige Sekunden und mehr dauern.</translation>
-    </message>
-</context>
-<context>
     <name>RadioPointListWidget</name>
     <message>
         <location filename="RadioPointListWidget.cpp" line="45"/>
@@ -4084,7 +4022,7 @@ Alle Downloads verworfen!</translation>
         <translation>Füllung</translation>
     </message>
     <message>
-        <location filename="settingspageairspace.cpp" line="467"/>
+        <location filename="settingspageairspace.cpp" line="319"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
@@ -4981,7 +4919,7 @@ Alle Downloads verworfen!</translation>
     <message>
         <location filename="SettingsPagePointData.cpp" line="675"/>
         <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
-        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma.</translation>
+        <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma!</translation>
     </message>
     <message>
         <location filename="SettingsPagePointData.cpp" line="694"/>
@@ -6177,7 +6115,7 @@ Namen für den neuen Wegpunkt</translation>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="76"/>
         <source>ICAO:</source>
-        <translation>ICAO</translation>
+        <translation>ICAO:</translation>
     </message>
     <message>
         <location filename="wpeditdialogpageaero.cpp" line="64"/>
