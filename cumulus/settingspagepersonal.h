@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
@@ -27,7 +25,7 @@
  *
  * \date 2002-2014
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef SETTINGS_PAGE_PERSONAL_H
@@ -86,6 +84,7 @@ private slots:
   void slot_textEditedCountry( const QString& input );
 
 #ifdef INTERNET
+#ifndef ANDROID
 
   /** Called, if proxy button was pressed. */
   void slot_editProxy();
@@ -93,6 +92,7 @@ private slots:
   /** Called, if proxy data have been modified. */
   void slot_setProxyDisplay();
 
+#endif
 #endif
 
 signals:
@@ -129,7 +129,9 @@ private:
   LongEditNumPad  *edtHomeLong;
 
 #ifdef INTERNET
+#ifndef ANDROID
   QLabel* proxyDisplay;
+#endif
 #endif
 
   /**

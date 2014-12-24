@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 #ifndef QT_5
@@ -33,7 +31,9 @@
 #include "settingspagepersonal.h"
 
 #ifdef INTERNET
+#ifndef ANDROID
 #include "proxydialog.h"
+#endif
 #endif
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
@@ -196,6 +196,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
 #ifdef INTERNET
+#ifndef ANDROID
 
   QPushButton* editProxy = new QPushButton( tr("Set Proxy") );
   editProxy->setToolTip(tr("Enter Proxy data if needed"));
@@ -207,6 +208,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   topLayout->addWidget(proxyDisplay, row, 1, 1, 2);
   row++;
 
+#endif
 #endif
 
   topLayout->setRowStretch(row, 10);
@@ -301,11 +303,12 @@ void SettingsPagePersonal::load()
     }
 
 #ifdef INTERNET
+#ifndef ANDROID
 
   slot_setProxyDisplay();
 
 #endif
-
+#endif
 }
 
 void SettingsPagePersonal::save()
@@ -480,6 +483,7 @@ void SettingsPagePersonal::slot_textEditedCountry( const QString& text )
 }
 
 #ifdef INTERNET
+#ifndef ANDROID
 
 /**
  * Opens proxy dialog on user request.
@@ -493,7 +497,6 @@ void SettingsPagePersonal::slot_editProxy()
 #ifdef ANDROID
 
   QPoint pos = mapToGlobal(QPoint( width()/2  - dialog->width()/2, 25));
-                                   //height()/2 - dialog->height()/2 ) );
   dialog->move( pos );
 
 #endif
@@ -512,4 +515,5 @@ void SettingsPagePersonal::slot_setProxyDisplay()
     }
 }
 
+#endif
 #endif
