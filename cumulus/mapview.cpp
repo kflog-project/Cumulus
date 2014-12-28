@@ -43,6 +43,7 @@
 #include "mapview.h"
 #include "preflightwindpage.h"
 #include "speed.h"
+#include "time_cu.h"
 #include "variomodedialog.h"
 #include "waypointcatalog.h"
 #include "waypoint.h"
@@ -170,10 +171,11 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_distance, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleDistanceEta()));
 
   //add ETA widget
-  _eta = new MapInfoBox( this, conf->getMapFrameColor().name() );
+  _eta = new MapInfoBox( this, conf->getMapFrameColor().name(), true );
   _eta->setVisible(false);
   _eta->setPreText( "Eta" );
   _eta->setValue("-");
+  _eta->setPreUnit( "td" );
   _eta->setUpdateInterval( 750 );
   _eta->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _eta );
@@ -700,23 +702,38 @@ void MapView::slot_Distance(const Distance& distance)
 }
 
 
-/**
- * This slot is called by the calculator if a new ETA (Estimated Time to Arrival
- * or the time that is approximately needed to arrive at the waypoint) has been
- * calculated.
- */
 void MapView::slot_ETA(const QTime& eta)
 {
-  if( eta.isNull() )
+  if( eta.isValid() == false )
     {
       _eta->setValue("-");
+      return;
     }
-  else
+
+  if( _eta->getPreUnit() == "at" )
     {
-      QString txt = QString("%1:%2").arg( eta.hour() )
-                                    .arg( eta.minute(), 2, 10, QChar('0') );
-      _eta->setValue(txt);
+      // Arrival time at target has to be displayed.
+      QDateTime dt;
+
+      if( Time::getTimeUnit() == Time::utc )
+        {
+          dt = dt.currentDateTimeUtc();
+        }
+      else
+        {
+          dt = dt.currentDateTime();
+        }
+
+      dt = dt.addSecs( QTime(0,0,0,0).secsTo( eta ) );
+
+      _eta->setValue( dt.toString("hh:mm"));
+      return;
     }
+
+  // Default display is time duration to target as hh:mm
+  QString txt = QString("%1:%2").arg( eta.hour() )
+                                .arg( eta.minute(), 2, 10, QChar('0') );
+  _eta->setValue(txt);
 }
 
 
@@ -1152,19 +1169,36 @@ void MapView::slot_setLoggerStatus()
 /** toggle between distance and eta widget on mouse signal */
 void MapView::slot_toggleDistanceEta()
 {
-  if( _distance->isVisible() )
+  static short toggle = 0;
+
+  toggle++;
+  toggle = toggle % 3;
+
+  if( toggle == 0 )
     {
-      _distance->setVisible(false);
-      _eta->setVisible(true);
-      _eta->setValue( _eta->getValue() );
-      emit toggleETACalculation( true );
-    }
-  else
-    {
+      // show distance
       _eta->setVisible(false);
       _distance->setVisible(true);
       _distance->setValue( _distance->getValue() );
       emit toggleETACalculation( false );
+    }
+  else if( toggle == 1 )
+    {
+      // Flight time (duration) to target is displayed.
+      _distance->setVisible(false);
+      _eta->setVisible(true);
+      _eta->setPreUnit( "td" );
+      _eta->setValue( _eta->getValue() );
+      emit toggleETACalculation( true );
+    }
+  else if( toggle == 2 )
+    {
+      // Flight arrival time to target is displayed.
+      _distance->setVisible(false);
+      _eta->setVisible(true);
+      _eta->setPreUnit( "at" );
+      _eta->setValue( _eta->getValue() );
+      emit toggleETACalculation( true );
     }
 }
 

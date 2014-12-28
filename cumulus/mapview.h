@@ -4,6 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
                                2008-2014 by Axel Pauli
+
     email                : kflog.cumulus@gmail.com
 
 ***************************************************************************/
@@ -57,7 +58,7 @@
  *
  * \date 2002-2014
  *
- * \version: $Id$
+ * \version: 1.0
  *
  */
 
@@ -174,9 +175,12 @@ class MapView : public QWidget
     void slot_Waypoint(const Waypoint *wp);
 
     /**
-     * This slot is called by calculator if a new ETA
+     * This slot is called by the calculator if a new ETA
      * (Estimated Time to Arrival, or the time that is approximately
-     * needed to arrive at the waypoint) has been calculated.
+     * needed to arrive at the waypoint) has been calculated. The display
+     * has two possibilities for the value presentation in dependency of the
+     * set pretext. at means arrival time at target, td means time time duration
+     * to target.
      */
     void slot_ETA(const QTime& eta);
 
