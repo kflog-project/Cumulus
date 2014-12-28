@@ -8,8 +8,6 @@
 
     email                : kflog.cumulus@gmail.com
 
-    $Id$
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -83,7 +81,7 @@ protected:
  *
  * \date 2002-2014
  *
- * \version $Id$
+ * \version 1.0
  *
  */
 
@@ -135,6 +133,14 @@ public:
    * Write property of QString m_preUnit.
    */
   void setPreUnit( const QString& _newVal);
+
+  /**
+   * Read property of QString m_preUnit.
+   */
+  const QString& getPreUnit()
+  {
+    return m_preUnit;
+  };
 
   /**
    * Read property of QString m_preText.
