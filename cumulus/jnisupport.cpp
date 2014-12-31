@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 /*
@@ -42,9 +40,8 @@
 #define CumulusActivityClassName "org/kflog/cumulus/CumulusActivity"
 
 static JavaVM*   m_jvm                = 0;
-static JNIEnv*   m_jniEnv             = 0;
 static jclass    m_CumActClass        = 0;
-static jobject   m_jniProxyObject     = 0; // Java instance of CumulusActivity
+static jobject   m_cumActObject       = 0; // Java instance of CumulusActivity
 static jmethodID m_AddDataDirID       = 0;
 static jmethodID m_AddDataInstalledID = 0;
 static jmethodID m_AppDataDirID       = 0;
@@ -58,14 +55,13 @@ static jmethodID m_callRetrieverID    = 0;
 static jmethodID m_byte2Gps           = 0;
 static jmethodID m_nativeShutdownID   = 0;
 static jmethodID m_openHardwareMenu   = 0;
+static jmethodID m_downloadFile       = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
 static bool shutdown = true;
 
 // Function declarations
-bool jniEnv();
-bool isJavaExceptionOccured();
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult );
 
 bool jniShutdownFlag()
@@ -85,8 +81,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
       return -1;
     }
 
-  // Get jclass with env->FindClass.
-  // Register methods with env->RegisterNatives.
+  m_jvm    = vm;
 
   bool ok = initJni( vm, env );
 
@@ -106,27 +101,26 @@ void jniShutdown( bool option )
   // the GUI part. Otherwise the App can crash in the shutdown phase.
   shutdown = option;
 
-  bool ok = jniEnv();
+  JNIEnv* env = 0;
+
+  bool ok = jniEnv( &env );
 
   if( ok )
     {
       // Tells the Java side, the state of the native part. Is option is true,
       // the native side is going down. The java side removes then all handlers,
       // which can call the native side to avoid unexpected behavior.
-      m_jniEnv->CallVoidMethod( m_jniProxyObject,
-				m_nativeShutdownID,
-				(jboolean) option );
+      env->CallVoidMethod( m_cumActObject,
+                           m_nativeShutdownID,
+                           (jboolean) option );
 
-      if (isJavaExceptionOccured())
+      if ( isJavaExceptionOccured(env) )
 	{
 	  qWarning("jniShutdown: exception when calling Java method \"nativeShutdown\"");
 	}
     }
 
-  if( shutdown == true )
-    {
-      jniDetachCurrentThread();
-    }
+  jniDetachCurrentThread();
 }
 
 // ---- The native methods ---
@@ -177,7 +171,7 @@ static void nativeNmeaString(JNIEnv* env, jobject /*myobject*/, jstring jnmea)
 {
   if( ! shutdown )
     {
-      const char * nativeString = env->GetStringUTFChars(jnmea, 0);
+      const char* nativeString = env->GetStringUTFChars(jnmea, 0);
       QString qnmea(nativeString);
       env->ReleaseStringUTFChars(jnmea, nativeString);
 
@@ -266,7 +260,6 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
       // Forward key event to the current active window.
       receiver = QApplication::activeWindow();
     }
-
   qDebug() << "KeyReceiver:" << receiver
             << "ActiveWindow:" << QApplication::activeWindow()
             << "MainWindow:" << MainWindow::mainWindow()
@@ -342,9 +335,6 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 {
   qDebug() << "initJni() is called: vm=" << vm << "env=" << env;
 
-  m_jvm    = vm;
-  m_jniEnv = env;
-
   // @AP: Note! The call FindClass do work only in this
   // method, which is called by the JNI_OnLoad method from:
   // necessitas/Android/Qt/480/armeabi/src/android/cpp/qtmain_android.cpp
@@ -352,7 +342,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
   // knowlegde about the java classes. See here for more info:
   // http://developer.android.com/guide/practices/design/jni.html
   // under FAQ: Why didn't FindClass find my class?
-  jclass clazz = m_jniEnv->FindClass(CumulusActivityClassName);
+  jclass clazz = env->FindClass(CumulusActivityClassName);
 
   if( clazz == 0 )
     {
@@ -360,9 +350,9 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
-  if( m_jniEnv->RegisterNatives( clazz,
-                                 methods,
-                                 sizeof(methods) / sizeof(methods[0])) < 0 )
+  if( env->RegisterNatives( clazz,
+                            methods,
+                            sizeof(methods) / sizeof(methods[0])) < 0 )
     {
       qWarning( "initJni: Registering of Java custom natives failed!" );
       return false;
@@ -370,163 +360,173 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   qDebug("initJni: Native methods registered successfully");
 
-  jmethodID jId = m_jniEnv->GetStaticMethodID( clazz,
-                                               "getObjectRef",
-                                               "()Ljava/lang/Object;");
+  jmethodID jId = env->GetStaticMethodID( clazz,
+                                          "getObjectRef",
+                                          "()Ljava/lang/Object;");
 
-  if (isJavaExceptionOccured())
+  if ( isJavaExceptionOccured(env) )
     {
       return false;
     }
 
-  jobject result = (jobject) m_jniEnv->CallStaticObjectMethod( clazz, jId );
+  jobject object = (jobject) env->CallStaticObjectMethod( clazz, jId );
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: Exception when calling CallStaticObjectMethod";
       return false;
     }
 
-  if( ! result )
+  if( ! object )
     {
       qWarning() << "initJni: Null activity object returned";
       return false;
     }
 
-  // Save result as global reference. Otherwise it becomes invalid after return.
+  // Save object as global reference. Otherwise it becomes invalid after return.
   // http://developer.android.com/guide/practices/design/jni.html
 
   // TODO: free this reference at the end of main
-  m_CumActClass = (jclass) m_jniEnv->NewGlobalRef(clazz);
+  m_CumActClass = reinterpret_cast<jclass>(env->NewGlobalRef(clazz));
 
   // TODO: free this reference at the end of main
-  m_jniProxyObject = m_jniEnv->NewGlobalRef(result);
+  m_cumActObject = env->NewGlobalRef(object);
 
-  m_AddDataDirID = m_jniEnv->GetMethodID( clazz,
-                                          "getAddDataDir",
-                                          "()Ljava/lang/String;");
-  if (isJavaExceptionOccured())
+  m_AddDataDirID = env->GetMethodID( clazz,
+                                     "getAddDataDir",
+                                     "()Ljava/lang/String;");
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of getAddDataDir";
       return false;
     }
 
-  m_AppDataDirID = m_jniEnv->GetMethodID( clazz,
-                                          "getAppDataDir",
-                                          "()Ljava/lang/String;");
-  if (isJavaExceptionOccured())
+  m_AppDataDirID = env->GetMethodID( clazz,
+                                     "getAppDataDir",
+                                      "()Ljava/lang/String;");
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of getAppDataDir";
       return false;
     }
 
-  m_languageID = m_jniEnv->GetMethodID( clazz,
-                                        "getLanguage",
-                                        "()Ljava/lang/String;");
+  m_languageID = env->GetMethodID( clazz,
+                                   "getLanguage",
+                                   "()Ljava/lang/String;");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of getLanguage";
       return false;
     }
 
-  m_DisplayMetricsID = m_jniEnv->GetMethodID( clazz,
-                                              "getDisplayMetrics",
-                                              "()Ljava/lang/String;");
-  if (isJavaExceptionOccured())
+  m_DisplayMetricsID = env->GetMethodID( clazz,
+                                         "getDisplayMetrics",
+                                         "()Ljava/lang/String;");
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of getDisplayMetrics";
       return false;
     }
 
 
-  m_BuildDataID = m_jniEnv->GetMethodID( clazz,
-                                         "getBuildData",
-                                         "()Ljava/lang/String;");
+  m_BuildDataID = env->GetMethodID( clazz,
+                                    "getBuildData",
+                                    "()Ljava/lang/String;");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of getBuildData";
       return false;
     }
 
-  m_playSoundID = m_jniEnv->GetMethodID( clazz,
-                                         "playSound",
-                                         "(ILjava/lang/String;)V");
+  m_playSoundID = env->GetMethodID( clazz,
+                                    "playSound",
+                                    "(ILjava/lang/String;)V");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of playSound";
       return false;
     }
 
-  m_nativeShutdownID = m_jniEnv->GetMethodID( clazz,
-                                              "nativeShutdown",
-                                              "(Z)V");
+  m_nativeShutdownID = env->GetMethodID( clazz,
+                                         "nativeShutdown",
+                                         "(Z)V");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
   {
     qWarning() << "initJni: could not get ID of nativeShutdown";
     return false;
   }
 
-  m_dimmScreenID = m_jniEnv->GetMethodID( clazz,
-                                          "dimmScreen",
-                                          "(Z)V");
+  m_dimmScreenID = env->GetMethodID( clazz,
+                                     "dimmScreen",
+                                     "(Z)V");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of playSound";
       return false;
     }
 
-  m_gpsCmdID = m_jniEnv->GetMethodID( clazz,
-                                      "gpsCmd",
-                                      "(Ljava/lang/String;)Z");
+  m_gpsCmdID = env->GetMethodID( clazz,
+                                 "gpsCmd",
+                                 "(Ljava/lang/String;)Z");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of gpsCmd";
       return false;
     }
 
-  m_callRetrieverID = m_jniEnv->GetMethodID( clazz,
-                                            "callRetriever",
-                                            "(Ljava/lang/String;)V");
+  m_callRetrieverID = env->GetMethodID( clazz,
+                                        "callRetriever",
+                                        "(Ljava/lang/String;)V");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of callRetriever";
       return false;
     }
 
-  m_byte2Gps= m_jniEnv->GetMethodID( clazz,
-                                     "byte2Gps",
-                                     "(B)Z");
+  m_byte2Gps= env->GetMethodID( clazz,
+                                "byte2Gps",
+                                "(B)Z");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of byte2Gps";
       return false;
     }
 
-  m_AddDataInstalledID = m_jniEnv->GetStaticMethodID( clazz,
-                                                      "addDataInstalled",
-                                                      "()Z");
+  m_AddDataInstalledID = env->GetStaticMethodID( clazz,
+                                                 "addDataInstalled",
+                                                 "()Z");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of addDataInstalled";
       return false;
     }
 
-  m_openHardwareMenu = m_jniEnv->GetMethodID( clazz,
-                                              "openHardwareMenu",
-                                              "()V");
+  m_openHardwareMenu = env->GetMethodID( clazz,
+                                         "openHardwareMenu",
+                                         "()V");
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of openHardwareMenu";
+      return false;
+    }
+
+  m_downloadFile = env->GetMethodID( clazz,
+                                     "downloadFile",
+                                     "(Ljava/lang/String;Ljava/lang/String;)I");
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning() << "initJni: could not get ID of downloadFile";
       return false;
     }
 
@@ -538,31 +538,26 @@ bool initJni( JavaVM* vm, JNIEnv* env )
  * http://groups.google.com/group/android-qt/browse_thread/thread/ ..
  * .. d60d28796f61177d/4bf2e434c9cddf77#4bf2e434c9cddf77
  */
-
-// Exception checking
-bool isJavaExceptionOccured()
+bool isJavaExceptionOccured( JNIEnv* env )
 {
-  if (!m_jniEnv)
+  if ( env == 0 )
     {
       return false;
     }
 
-  if (m_jniEnv->ExceptionOccurred())
+  if (env->ExceptionOccurred())
     {
-      m_jniEnv->ExceptionDescribe();
-      m_jniEnv->ExceptionClear();
+      env->ExceptionDescribe();
+      env->ExceptionClear();
       return true;
     }
 
   return false;
 }
 
-// JNI initialization
-bool jniEnv()
+bool jniEnv( JNIEnv** env )
 {
-  // qDebug("C++ jniEnv: started");
-
-  m_jniEnv = 0;
+  *env = 0;
 
   if (m_jvm == 0)
     {
@@ -575,15 +570,9 @@ bool jniEnv()
   args.group = 0;
   args.version = JNI_VERSION_1_6;
 
-  m_jvm->AttachCurrentThread(&m_jniEnv, &args);
+  m_jvm->AttachCurrentThread(env, &args);
 
-  if (isJavaExceptionOccured())
-    {
-      qWarning("jniEnv: exception during AttachCurrentThread");
-      return false;
-    }
-
-  if (!m_jniEnv)
+  if (! *env)
     {
       qWarning("jniEnv: could not get Java environment");
       return false;
@@ -613,116 +602,130 @@ bool jniDetachCurrentThread()
 
 bool jniPlaySound(int stream, QString soundName)
 {
-  if (!jniEnv() || shutdown )
+  JNIEnv* env = 0;
+
+  if (!jniEnv(&env) || shutdown )
     {
       return false;
     }
 
-  jstring jSoundName = m_jniEnv->NewString((jchar*) soundName.constData(),
-                                           (jsize) soundName.length());
+  jstring jSoundName = env->NewStringUTF(soundName.toUtf8());
 
-  m_jniEnv->CallVoidMethod( m_jniProxyObject,
-                            m_playSoundID,
-                            (jint) stream,
-                            jSoundName );
+  env->CallVoidMethod( m_cumActObject,
+                       m_playSoundID,
+                       (jint) stream,
+                       jSoundName );
 
-  if (isJavaExceptionOccured())
+  bool result = true;
+
+  if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniPlaySound: exception when calling Java method \"playSound\"");
-      return false;
+      result = false;
     }
 
-  return true;
+  jniDetachCurrentThread();
+  return result;
 }
 
 bool jniGpsCmd(QString& cmd)
 {
-  if (!jniEnv() || shutdown )
+  JNIEnv* env = 0;
+
+  if ( !jniEnv( &env ) || shutdown )
     {
       return false;
     }
 
-  jstring jgpsCmd = m_jniEnv->NewString((jchar*) cmd.constData(),
-                                        (jsize) cmd.length());
+  jstring jgpsCmd = env->NewStringUTF(cmd.toUtf8());
 
-  jboolean result = (jboolean) m_jniEnv->CallBooleanMethod( m_jniProxyObject,
-                                                            m_gpsCmdID,
-                                                            jgpsCmd );
-  if (isJavaExceptionOccured())
+  jboolean result = (jboolean) env->CallBooleanMethod( m_cumActObject,
+                                                       m_gpsCmdID,
+                                                       jgpsCmd );
+  if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniGpsCmd: exception when calling Java method \"gpsCmd\"");
-      return false;
+      result = false;
     }
 
+  jniDetachCurrentThread();
   return result;
 }
 
 bool jniCallRetriever( QString& smsText )
 {
-  if (!jniEnv() || shutdown )
+  JNIEnv* env = 0;
+
+  if (!jniEnv( &env ) || shutdown )
     {
       return false;
     }
 
-  jstring jsmsText = m_jniEnv->NewString((jchar*) smsText.constData(),
-                                         (jsize) smsText.length());
+  jstring jsmsText = env->NewStringUTF(smsText.toUtf8());
 
-  m_jniEnv->CallVoidMethod( m_jniProxyObject,
-                            m_callRetrieverID,
-                            jsmsText );
+  env->CallVoidMethod( m_cumActObject,
+                       m_callRetrieverID,
+                       jsmsText );
 
-  if (isJavaExceptionOccured())
+  bool result = true;
+
+  if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniGpsCmd: exception when calling Java method \"jniCallRetriever\"");
-      return false;
+      result = false;
     }
 
-  return true;
+  jniDetachCurrentThread();
+  return result;
 }
 
 bool jniByte2Gps(const char byte)
 {
-  if (!jniEnv() || shutdown )
+  JNIEnv* env = 0;
+
+  if (!jniEnv( &env ) || shutdown )
     {
       return false;
     }
 
-  jboolean result = (jboolean) m_jniEnv->CallBooleanMethod( m_jniProxyObject,
-                                                            m_byte2Gps,
-                                                            static_cast<jbyte> (byte) );
-  if (isJavaExceptionOccured())
+  jboolean result = (jboolean) env->CallBooleanMethod( m_cumActObject,
+                                                       m_byte2Gps,
+                                                       static_cast<jbyte> (byte) );
+  if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniByte2Gps: exception when calling Java method \"byte2Gps\"");
-      return false;
+      result = false;
     }
 
+  jniDetachCurrentThread();
   return result;
 }
 
-
 void jniDimmScreen( bool newState )
 {
-  if (!jniEnv() || shutdown )
+  JNIEnv* env = 0;
+
+  if ( !jniEnv( &env ) || shutdown )
     {
       return;
     }
 
-  m_jniEnv->CallVoidMethod( m_jniProxyObject,
-                            m_dimmScreenID,
-                            (jboolean) newState );
+  env->CallVoidMethod( m_cumActObject,
+                       m_dimmScreenID,
+                       (jboolean) newState );
 
-  if (isJavaExceptionOccured())
+  if( isJavaExceptionOccured(env) )
     {
       qWarning("jniDimmScreen: exception when calling Java method \"dimmScreen\"");
-      return;
     }
 
+  jniDetachCurrentThread();
   return;
 }
 
 QString jniGetAppDataDir()
 {
-  QString dir ="";
+  QString dir;
 
   bool ok = jniCallStringMethod( "getAppDataDir", m_AppDataDirID, dir );
 
@@ -732,7 +735,7 @@ QString jniGetAppDataDir()
 
 QString jniGetAddDataDir()
 {
-  QString dir ="";
+  QString dir;
 
   bool ok = jniCallStringMethod( "getAddDataDir", m_AddDataDirID, dir );
 
@@ -742,26 +745,29 @@ QString jniGetAddDataDir()
 
 bool jniAddDataInstalled()
 {
-  if( !jniEnv() )
+  JNIEnv* env = 0;
+
+  if( !jniEnv( &env ) )
     {
       return false;
     }
 
-  jboolean result = (jboolean) m_jniEnv->CallStaticBooleanMethod( m_CumActClass,
-                                                                  m_AddDataInstalledID );
+  jboolean result = (jboolean) env->CallStaticBooleanMethod( m_CumActClass,
+                                                             m_AddDataInstalledID );
 
-  if (isJavaExceptionOccured())
+  if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniAddDataInstalled: exception when calling Java method \"addDataInstalled\"");
-      return false;
+      result = false;
     }
 
+  jniDetachCurrentThread();
   return result;
 }
 
 QString jniGetLanguage()
 {
-  QString lang ="";
+  QString lang;
 
   bool ok = jniCallStringMethod( "getLanguage", m_languageID, lang );
 
@@ -771,33 +777,35 @@ QString jniGetLanguage()
 
 bool jniOpenHardwareMenu()
 {
-  if (!jniEnv() || shutdown )
+  JNIEnv* env = 0;
+
+  if (!jniEnv( &env ) || shutdown )
     {
       return false;
     }
 
-  m_jniEnv->CallVoidMethod( m_jniProxyObject, m_openHardwareMenu );
+  env->CallVoidMethod( m_cumActObject, m_openHardwareMenu );
 
-  if (isJavaExceptionOccured())
+  bool result = true;
+
+  if ( isJavaExceptionOccured( env ) )
     {
       qWarning("jniOpenHardwareMenu: exception when calling Java method \"openHardwareMenu\"");
-      return false;
+      result = false;
     }
 
-  return true;
+  jniDetachCurrentThread();
+  return result;
 }
 
 QHash<QString, float> jniGetDisplayMetrics()
 {
   QString displayMetrics;
+  QHash<QString, float> dmh;
 
   bool ok = jniCallStringMethod( "getDisplayMetrics", m_DisplayMetricsID, displayMetrics );
 
-  Q_UNUSED(ok)
-
-  QHash<QString, float> dmh;
-
-  if( displayMetrics.size() == 0 )
+  if( ok == false || displayMetrics.size() == 0 )
     {
       // No metrics are returned
       return dmh;
@@ -838,12 +846,14 @@ QHash<QString, float> jniGetDisplayMetrics()
 QHash<QString, QString> jniGetBuildData()
 {
   QString buildData;
+  QHash<QString, QString> bdh;
 
   bool ok = jniCallStringMethod( "getBuildData", m_BuildDataID, buildData );
 
-  Q_UNUSED(ok)
-
-  QHash<QString, QString> bdh;
+  if( ok == false )
+    {
+      return bdh;
+    }
 
   if( buildData.size() == 0 )
     {
@@ -883,37 +893,60 @@ QHash<QString, QString> jniGetBuildData()
 
 bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult )
 {
-  strResult = "";
+  JNIEnv* env = 0;
+  strResult.clear();
 
-  if (!jniEnv())
+  if ( ! jniEnv(&env) )
     {
       qWarning() << "jniCallStringMethod: jniEnv failed, can't call Java method" << method;
       return false;
     }
 
-  jstring result = (jstring) m_jniEnv->CallObjectMethod( m_jniProxyObject, mId);
+  jstring result = (jstring) env->CallObjectMethod( m_cumActObject, mId);
 
-  if (isJavaExceptionOccured())
+  if (isJavaExceptionOccured( env ))
     {
       qWarning() << "jniCallStringMethod: Exception when calling Java method" << method;
+      jniDetachCurrentThread();
       return false;
     }
 
-  const char *resultChars = m_jniEnv->GetStringUTFChars(result, 0);
+  const char *resultChars = env->GetStringUTFChars(result, 0);
 
-  if (isJavaExceptionOccured())
+  if( resultChars != 0 )
     {
-      return false;
+      strResult = QString(resultChars);
     }
 
-  strResult = QString(resultChars);
-
-  m_jniEnv->ReleaseStringUTFChars(result, resultChars);
-
-  if (isJavaExceptionOccured())
-    {
-      return false;
-    }
-
+  env->ReleaseStringUTFChars(result, resultChars);
+  jniDetachCurrentThread();
   return true;
+}
+
+int jniDownloadFile( QString& url, QString& destination )
+{
+  JNIEnv* env = 0;
+
+  if( !jniEnv( &env ) || shutdown )
+    {
+      return OperationCanceledError;
+    }
+
+  jstring jurl = env->NewStringUTF( url.toUtf8() );
+
+  jstring jdest = env->NewStringUTF( destination.toUtf8() );
+
+  jint result = env->CallIntMethod( m_cumActObject,
+                                    m_downloadFile,
+                                    jurl,
+                                    jdest );
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning("jniGpsCmd: exception when calling Java method \"downloadFile\"");
+      result = OperationCanceledError;
+    }
+
+  jniDetachCurrentThread();
+  return result;
 }

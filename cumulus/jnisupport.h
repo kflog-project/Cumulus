@@ -7,17 +7,15 @@
 ************************************************************************
 **
 **   Copyright (c):  2010 by Josua Dietze
-**                   2012-2013 by Axel Pauli
+**                   2012-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
- * Android interface between Java part and Qt C++ part.
+ * Android Java native interface between Java part and C++ part.
  */
 
 #include <jni.h>
@@ -25,11 +23,65 @@
 #include <QHash>
 #include <QString>
 
+
+enum NetworkError {
+    NoError = 0,
+
+    // network layer errors [relating to the destination server] (1-99):
+    ConnectionRefusedError = 1,
+    RemoteHostClosedError,
+    HostNotFoundError,
+    TimeoutError,
+    OperationCanceledError,
+    SslHandshakeFailedError,
+    TemporaryNetworkFailureError,
+    UnknownNetworkError = 99,
+
+    // proxy errors (101-199):
+    ProxyConnectionRefusedError = 101,
+    ProxyConnectionClosedError,
+    ProxyNotFoundError,
+    ProxyTimeoutError,
+    ProxyAuthenticationRequiredError,
+    UnknownProxyError = 199,
+
+    // content errors (201-299):
+    ContentAccessDenied = 201,
+    ContentOperationNotPermittedError,
+    ContentNotFoundError,
+    AuthenticationRequiredError,
+    ContentReSendError,
+    UnknownContentError = 299,
+
+    // protocol errors
+    ProtocolUnknownError = 301,
+    ProtocolInvalidOperationError,
+    ProtocolFailure = 399
+};
+
 /**
  * Returns true if the java native methods could be registered successfully
  * otherwise false.
  */
 bool initJni(JavaVM* vm, JNIEnv* env);
+
+/**
+ * Called to setup a jni environment for a local thread to be attached to the vm.
+ *
+ * \param[out] JNIEnv** The jni environment of the attaching thread
+ *
+ * \return True means success otherwise false is returned.
+ */
+bool jniEnv( JNIEnv** env);
+
+/**
+ * Called to check, if a java exception has occurred.
+ *
+ * \param[in] JNIEnv* The jni environment
+ *
+ * \return True means all is ok.
+ */
+bool isJavaExceptionOccured( JNIEnv* env );
 
 /**
  * Called to detach the current thread from the VM.
@@ -125,3 +177,14 @@ bool jniOpenHardwareMenu();
  * \return JNI shutdown flag state
  */
 bool jniShutdownFlag();
+
+/**
+ * Sent a file download request to the Android activity.
+ *
+ * \param url The file url to be downloaded.
+ *
+ * \param destination The storage destination of the file.
+ *
+ * \return Result of download. 0 means all is ok.
+ */
+int jniDownloadFile( QString& url, QString& destination );
