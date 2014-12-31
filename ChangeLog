@@ -7,12 +7,33 @@ Cumulus changelog
 [*] Remark, comment
 
 #===============================================================================#
+# The GitHub issue list of Cumulus is to find under this link:                  #
+#                                                                               #
+# https://github.com/kflog-project/Cumulus/issues                               #
+#                                                                               #
+#-------------------------------------------------------------------------------#
+#                                                                               #
 # Please add your changes always on top according to the following format rule: #
 #                                                                               #
 # [<what>] <Date as YYY-MM-DD> <Short name sign>: <description of modification> #
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[o] 2014-12-31 AP: OpenSSL of necessitas tool kit QtNetwork library updated to
+                   openssl 1.0.j. Google required that for Android.
+                   
+[o] 2014-12-31 AP: Issue #29 fixed. Wrong JNI environment handling in Android.
+
+[o] 2014-12-31 AP: Issue #28 fixed. Enhance display label ETA.
+
+[o] 2014-12-31 AP: Issue #27 fixed. Remove content of map files with wrong magic
+                   key.
+                   
+[o] 2014-12-31 AP: Issue #26 fixed. Remove proxy configuration for Android.
+
+[o] 2014-12-31 AP: Issue #25 fixed. Introduce airspace type CTR in Cumulus for
+                   mapping and configuration.               
 
 [o] 2014-12-04 AP: Issue #24 fixed. Provide openAIP hotspot data automatically.
 
