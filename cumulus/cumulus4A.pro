@@ -366,22 +366,20 @@ internet {
 		DEFINES += INTERNET
 		
     HEADERS += airspacedownloaddialog.h \
-               downloadmanager.h \
+               DownloadManager.h \
                httpclient.h \
 		           LiveTrack24.h \
 		           LiveTrack24Logger.h \
                preflightlivetrack24page.h \
-               preflightweatherpage.h \
-               proxydialog.h
+               preflightweatherpage.h
                               
 		SOURCES += airspacedownloaddialog.cpp \
-		           downloadmanager.cpp \
+		           DownloadManager.cpp \
 		           httpclient.cpp \
 		           LiveTrack24.cpp \
 		           LiveTrack24Logger.cpp \
 		           preflightlivetrack24page.cpp \
-               preflightweatherpage.cpp \
-		           proxydialog.cpp
+               preflightweatherpage.cpp
 }
 
 numberpad {

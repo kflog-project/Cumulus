@@ -13,8 +13,6 @@
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <signal.h>
@@ -528,9 +526,6 @@ void FlarmFlightListThread::run()
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   GpsConAndroid::instance()->getFlarmFlightList();
-
-  // Detach the thread from the VM before return otherwise the Dalvik VM is sauer!
-  jniDetachCurrentThread();
 }
 
 //#############################################################################
@@ -561,9 +556,6 @@ void FlarmIgcFilesThread::run()
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
   GpsConAndroid::instance()->getFlarmIgcFiles( m_flightData );
-
-  // Detach the thread from the VM before return otherwise the Dalvik VM is sauer!
-  jniDetachCurrentThread();
 }
 
 #endif

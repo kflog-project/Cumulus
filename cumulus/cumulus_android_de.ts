@@ -1703,10 +1703,11 @@
     </message>
     <message>
         <location filename="mapcontents.cpp" line="1811"/>
-        <source>No connection to the Internet.
+        <source>No connection to the Internet.&lt;br&gt;&lt;br&gt;All downloads are canceled!</source>
+        <oldsource>No connection to the Internet.
 
-All downloads are canceled!</source>
-        <translation>Keine Verbindung zum Internet.\n\nAlle Downloads verworfen!</translation>
+All downloads are canceled!</oldsource>
+        <translation>Keine Verbindung zum Internet.&lt;br&gt;&lt;br&gt;Alle Downloads verworfen!</translation>
     </message>
     <message>
         <location filename="mapcontents.cpp" line="2068"/>
@@ -1828,19 +1829,19 @@ All downloads are canceled!</source>
     <message>
         <location filename="mapview.cpp" line="311"/>
         <location filename="mapview.cpp" line="322"/>
-        <location filename="mapview.cpp" line="882"/>
+        <location filename="mapview.cpp" line="886"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
         <location filename="mapview.cpp" line="393"/>
-        <location filename="mapview.cpp" line="816"/>
+        <location filename="mapview.cpp" line="820"/>
         <source>Man</source>
         <translation></translation>
     </message>
     <message>
         <location filename="mapview.cpp" line="401"/>
-        <location filename="mapview.cpp" line="1106"/>
+        <location filename="mapview.cpp" line="1135"/>
         <source>?</source>
         <comment>Unknown</comment>
         <translation></translation>
@@ -1851,62 +1852,62 @@ All downloads are canceled!</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="557"/>
+        <location filename="mapview.cpp" line="561"/>
         <source>TP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="792"/>
+        <location filename="mapview.cpp" line="796"/>
         <source>GPS OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="796"/>
+        <location filename="mapview.cpp" line="800"/>
         <source>GPS no fix</source>
         <translation>GPS kein Fix</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="800"/>
+        <location filename="mapview.cpp" line="804"/>
         <source>GPS ?</source>
         <translation>GPS ?</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="807"/>
+        <location filename="mapview.cpp" line="811"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1109"/>
+        <location filename="mapview.cpp" line="1138"/>
         <source>S</source>
         <comment>Standstill</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1112"/>
+        <location filename="mapview.cpp" line="1141"/>
         <source>C</source>
         <comment>Cruising</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1115"/>
+        <location filename="mapview.cpp" line="1144"/>
         <source>L</source>
         <comment>Circling Left</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1118"/>
+        <location filename="mapview.cpp" line="1147"/>
         <source>R</source>
         <comment>Circling Right</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1146"/>
+        <location filename="mapview.cpp" line="1175"/>
         <source>L</source>
         <comment>Logging</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="mapview.cpp" line="1156"/>
+        <location filename="mapview.cpp" line="1185"/>
         <source>Ls</source>
         <comment>LoggingStandby</comment>
         <translation></translation>

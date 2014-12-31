@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 by Axel Pauli
+**   Copyright (c):  2013-2014 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -27,9 +25,9 @@
  * to avoid popup windows. The weather data are downloaded from the NOAA
  * server in the USA.
  *
- * \date 2013
+ * \date 2013-2014
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef PREFLIGHT_WEATHER_PAGE_H_
@@ -45,7 +43,8 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
-#include "downloadmanager.h"
+#include "DownloadManager.h"
+
 
 class PreFlightWeatherPage : public QWidget
 {

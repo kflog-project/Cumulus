@@ -156,6 +156,17 @@ class LiveTrack24 : public QObject
     sentPkgs   = m_sentPackages;
   };
 
+  /**
+   * Informs about the livetrack working state.
+   *
+   * \return false, if no HTTP request is in work and the request queue is empty.
+   *         Otherwise true is returned.
+   */
+  bool livetrackWorkingState()
+  {
+    return ( m_httpClient->isBusy() || m_requestQueue.isEmpty() == false );
+  };
+
  private:
 
   /**

@@ -88,11 +88,12 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     isReload(false)
 #ifdef INTERNET
 
-    , m_downloadManger(0),
+    , m_downloadMangerMaps(0),
+    m_downloadMangerWelt2000(0),
     m_downloadMangerOpenAipPois(0),
+    m_downloadMangerOpenAipAs(0),
     m_shallDownloadData(false),
-    m_hasAskForDownload(false),
-    m_downloadOpenAipAirspacesRequested(false)
+    m_hasAskForDownload(false)
 
 #endif
 {
@@ -262,7 +263,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 
       if( res == false  )
         {
-          qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
+          qWarning( "no map files (%s or %s) found! Please install %s.",
                     kflName.toLatin1().data(), kfcName.toLatin1().data(),
                     kflName.toLatin1().data() );
         }
@@ -305,15 +306,28 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 
   QFile mapfile(pathName);
 
+  if( mapfile.size() == 0 )
+    {
+      // qWarning() << "Map file" << pathName << "is empty!";
+
+      if( ! compiling )
+	{
+	  // Remove corrupted compiled file
+	  mapfile.remove();
+	}
+
+      return false;
+    }
+
   if ( !mapfile.open(QIODevice::ReadOnly) )
     {
-      qWarning("Cumulus: Can't open map file %s for reading", pathName.toLatin1().data() );
+      qWarning("Can't open map file %s for reading", pathName.toLatin1().data() );
 
       if ( ! compiling && kflExists )
         {
           qDebug("Try to use file %s", kflPathName.toLatin1().data());
           // try to remove unopenable file, not sure if this works.
-          unlink( pathName.toLatin1().data() );
+          mapfile.remove();
           return readTerrainFile( fileSecID, fileTypeID );
         }
 
@@ -347,18 +361,40 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
   in >> loadSecID;
   in >> createDateTime;
 
+  if( in.status() != QDataStream::Ok )
+    {
+      qWarning() << "Data stream status of" << pathName
+	         << "is NOK! Status=" << in.status();
+      mapfile.close();
+
+      if( ! compiling )
+	{
+	  // Remove corrupted compiled file
+	  unlink( pathName.toLatin1().data() );
+	}
+
+      return false;
+    }
+
   if ( magic != KFLOG_FILE_MAGIC )
     {
+      mapfile.close();
+
       if ( ! compiling && kflExists )
         {
-          qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
+          qWarning("Wrong magic key %x read!\n Retry to compile %s.",
                    magic, kflPathName.toLatin1().data());
-          mapfile.close();
-          unlink( pathName.toLatin1().data() );
+          mapfile.remove();
           return readTerrainFile( fileSecID, fileTypeID );
         }
 
-      qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
+      qWarning( "Wrong magic key %x read from %s! Removing content.",
+                 magic, pathName.toLatin1().data() );
+      // Some map file does not exists on the server. But if they have
+      // been downloaded, the map server has sent some http page content.
+      // That content makes no sense, therefore the map file content is cleared.
+      mapfile.open( QIODevice::WriteOnly|QIODevice::Truncate );
+      mapfile.close();
       return false;
     }
 
@@ -368,15 +404,16 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 
       if ( ! compiling && kflExists )
         {
-          qWarning("Cumulus: wrong load type identifier %x read! "
+          qWarning("Wrong load type identifier %x read! "
                    "Retry to compile %s",
                    loadTypeID, kflPathName.toLatin1().data() );
-          unlink( pathName.toLatin1().data() );
+          mapfile.remove();
           return readTerrainFile( fileSecID, fileTypeID );
         }
 
-      qWarning("Cumulus: %s wrong load type identifier %x read! Aborting ...",
+      qWarning("%s wrong load type identifier %x read! ",
                 pathName.toLatin1().data(), loadTypeID );
+
       return false;
     }
 
@@ -406,14 +443,14 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
       if ( formatID < expFormatID )
         {
           // too old ...
-          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+          qWarning("File format too old! (version %d, expecting: %d) "
                    "Aborting ...", formatID, expFormatID );
           return false;
         }
       else if (formatID > expFormatID )
         {
           // too new ...
-          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+          qWarning("File format too new! (version %d, expecting: %d) "
                    "Aborting ...", formatID,expFormatID );
           return false;
         }
@@ -426,7 +463,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
           // too old ...
           if ( kflExists )
             {
-              qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+              qWarning("File format too old! (version %d, expecting: %d) "
                        "Retry to compile %s",
                        formatID, expComFormatID, kflPathName.toLatin1().data() );
               mapfile.close();
@@ -434,7 +471,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
               return readTerrainFile( fileSecID, fileTypeID );
             }
 
-          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+          qWarning("File format too old! (version %d, expecting: %d) "
                    "Aborting ...", formatID, expFormatID );
           return false;
         }
@@ -443,7 +480,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
           // too new ...
           if ( kflExists )
             {
-              qWarning( "Cumulus: File format too new! (version %d, expecting: %d) "
+              qWarning( "File format too new! (version %d, expecting: %d) "
                         "Retry to compile %s",
                         formatID, expComFormatID, kflPathName.toLatin1().data() );
               mapfile.close();
@@ -451,7 +488,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
               return readTerrainFile( fileSecID, fileTypeID );
             }
 
-          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+          qWarning("File format too new! (version %d, expecting: %d) "
                    "Aborting ...", formatID, expFormatID );
           return false;
         }
@@ -461,7 +498,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
     {
       if ( ! compiling && kflExists )
         {
-          qWarning( "Cumulus: %s: wrong section, bogus file name!"
+          qWarning( "%s: wrong section, bogus file name!"
                     "\n Retry to compile %s",
                     pathName.toLatin1().data(), kflPathName.toLatin1().data() );
           mapfile.close();
@@ -469,7 +506,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
           return readTerrainFile( fileSecID, fileTypeID );
         }
 
-      qWarning("Cumulus: %s: wrong section, bogus file name! Arborting ...",
+      qWarning("%s: wrong section, bogus file name! Arborting ...",
                pathName.toLatin1().data() );
       return false;
     }
@@ -487,7 +524,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 
           if ( kflExists )
             {
-              qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+              qWarning( "%s, can't use file, compiled for another projection!"
                         "\n Retry to compile %s",
                         pathName.toLatin1().data(), kflPathName.toLatin1().data() );
 
@@ -495,7 +532,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
               return readTerrainFile( fileSecID, fileTypeID );
             }
 
-          qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+          qWarning( "%s, can't use file, compiled for another projection!"
                     " Please install %s file and restart.",
                     pathName.toLatin1().data(), kflPathName.toLatin1().data() );
           return false;
@@ -519,13 +556,13 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
       if (!ausgabe.open(QIODevice::WriteOnly))
         {
           mapfile.close();
-          qWarning("Cumulus: Can't open compiled map file %s for writing!"
+          qWarning("Can't open compiled map file %s for writing!"
                    " Arborting...",
                    kfcPathName.toLatin1().data() );
           return false;
         }
 
-      qDebug("writing file %s", kfcPathName.toLatin1().data());
+      qDebug("Writing file %s", kfcPathName.toLatin1().data());
 
       out << magic;
       out << loadTypeID;
@@ -723,7 +760,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
       if( res == false  )
         {
-          qWarning( "Cumulus: no map files (%s or %s) found! Please install %s.",
+          qWarning( "no map files (%s or %s) found! Please install %s.",
                     kflName.toLatin1().data(), kfcName.toLatin1().data(),
                     kflName.toLatin1().data() );
         }
@@ -766,19 +803,32 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
   QFile mapfile(pathName);
 
+  if( mapfile.size() == 0 )
+    {
+      // qWarning() << "Map file" << pathName << "is empty!";
+
+      if( ! compiling )
+	{
+	  // Remove corrupted compiled file
+	  mapfile.remove();
+	}
+
+      return false;
+    }
+
   if (!mapfile.open(QIODevice::ReadOnly))
     {
       if ( ! compiling && kflExists )
         {
-          qDebug("Cumulus: Can't open map file %s for reading!"
+          qDebug("Can't open map file %s for reading!"
                  " Try to use file %s",
                  pathName.toLatin1().data(), kflPathName.toLatin1().data());
           // try to remove unopenable file, not sure if this works.
-          unlink( pathName.toLatin1().data() );
+          mapfile.remove();
           return readBinaryFile( fileSecID, fileTypeID );
         }
 
-      qWarning("Cumulus: Can't open map file %s for reading! Aborting ...",
+      qWarning("Can't open map file %s for reading! Aborting ...",
                pathName.toLatin1().data() );
       return false;
     }
@@ -808,16 +858,23 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
   if ( magic != KFLOG_FILE_MAGIC )
     {
+      mapfile.close();
+
       if ( ! compiling && kflExists )
         {
-          qWarning("Cumulus: wrong magic key %x read!\n Retry to compile %s.",
+          qWarning("Wrong magic key %x read!\n Retry to compile %s.",
                    magic, kflPathName.toLatin1().data());
-          mapfile.close();
-          unlink( pathName.toLatin1().data() );
+
+          mapfile.remove();
           return readBinaryFile( fileSecID, fileTypeID );
         }
 
-      qWarning("Cumulus: wrong magic key %x read! Aborting ...", magic);
+      qWarning( "Wrong magic key %x read from %s! Removing content.",
+                 magic, pathName.toLatin1().data() );
+      // Some map file does not exists on the server. But if they have
+      // been downloaded, the map server has sent some http page content.
+      // That content makes no sense, therefore the map file content is cleared.
+      mapfile.open( QIODevice::WriteOnly|QIODevice::Truncate );
       mapfile.close();
       return false;
     }
@@ -833,7 +890,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
       // maps
       if (loadTypeID != FILE_TYPE_MAP)
         {
-          qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
+          qWarning("Wrong load type identifier %x read! Aborting ...",
                    loadTypeID );
           mapfile.close();
           return false;
@@ -847,15 +904,15 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
           if ( kflExists )
             {
-              qWarning("Cumulus: wrong load type identifier %x read! "
+              qWarning("Wrong load type identifier %x read! "
                        "Retry to compile %s",
                        loadTypeID, kflPathName.toLatin1().data() );
-              unlink( pathName.toLatin1().data() );
+              mapfile.remove();
               return readBinaryFile( fileSecID, fileTypeID );
             }
 
-          qWarning("Cumulus: wrong load type identifier %x read! Aborting ...",
-                   loadTypeID );
+          qWarning("%s wrong load type identifier %x read!",
+                   pathName.toLatin1().data(), loadTypeID );
           return false;
         }
     }
@@ -865,6 +922,21 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
   in >> formatID;
   in >> loadSecID;
   in >> createDateTime;
+
+  if( in.status() != QDataStream::Ok )
+    {
+      qWarning() << "Data stream status of" << pathName
+	         << "is NOK! Status=" << in.status();
+      mapfile.close();
+
+      if( ! compiling )
+	{
+	  // Remove corrupted compiled file
+	  unlink( pathName.toLatin1().data() );
+	}
+
+      return false;
+    }
 
   QFileInfo fi( pathName );
 
@@ -877,7 +949,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
       if ( formatID < FILE_VERSION_MAP)
         {
           // to old ...
-          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+          qWarning("File format too old! (version %d, expecting: %d) "
                    "Aborting ...", formatID, FILE_VERSION_MAP );
           mapfile.close();
           return false;
@@ -885,7 +957,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
       else if (formatID > FILE_VERSION_MAP)
         {
           // to new ...
-          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+          qWarning("File format too new! (version %d, expecting: %d) "
                    "Aborting ...", formatID, FILE_VERSION_MAP );
           mapfile.close();
           return false;
@@ -900,14 +972,14 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
           if ( kflExists )
             {
-              qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+              qWarning("File format too old! (version %d, expecting: %d) "
                        "Retry to compile %s",
                        formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
               unlink( pathName.toLatin1().data() );
               return readBinaryFile( fileSecID, fileTypeID );
             }
 
-          qWarning("Cumulus: File format too old! (version %d, expecting: %d) "
+          qWarning("File format too old! (version %d, expecting: %d) "
                    "Aborting ...", formatID, FILE_VERSION_MAP_C );
           return false;
         }
@@ -918,14 +990,14 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
           if ( kflExists )
             {
-              qWarning( "Cumulus: File format too new! (version %d, expecting: %d) "
+              qWarning( "File format too new! (version %d, expecting: %d) "
                         "Retry to compile %s",
                         formatID, FILE_VERSION_MAP_C, kflPathName.toLatin1().data() );
               unlink( pathName.toLatin1().data() );
               return readBinaryFile( fileSecID, fileTypeID );
             }
 
-          qWarning("Cumulus: File format too new! (version %d, expecting: %d) "
+          qWarning("File format too new! (version %d, expecting: %d) "
                    "Aborting ...", formatID, FILE_VERSION_MAP_C );
 
           return false;
@@ -939,14 +1011,14 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
       if ( ! compiling && kflExists )
         {
-          qWarning( "Cumulus: %s: wrong section, bogus file name!"
+          qWarning( "%s: wrong section, bogus file name!"
                     "\n Retry to compile %s",
                     pathName.toLatin1().data(), kflPathName.toLatin1().data() );
           unlink( pathName.toLatin1().data() );
           return readBinaryFile( fileSecID, fileTypeID );
         }
 
-      qWarning("Cumulus: %s: wrong section, bogus file name! Aborting ...",
+      qWarning("%s: wrong section, bogus file name! Aborting ...",
                pathName.toLatin1().data() );
       return false;
     }
@@ -964,7 +1036,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
           if ( kflExists )
             {
-              qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+              qWarning( "%s, can't use file, compiled for another projection!"
                         "\n Retry to compile %s",
                         pathName.toLatin1().data(), kflPathName.toLatin1().data() );
 
@@ -972,7 +1044,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
               return readBinaryFile( fileSecID, fileTypeID );
             }
 
-          qWarning( "Cumulus: %s, can't use file, compiled for another projection!"
+          qWarning( "%s, can't use file, compiled for another projection!"
                     " Please install %s file and restart.",
                     pathName.toLatin1().data(), kflPathName.toLatin1().data() );
           return false;
@@ -994,14 +1066,14 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
       if (!ausgabe.open(QIODevice::WriteOnly))
         {
-          qWarning("Cumulus: Can't open compiled map file %s for writing!"
+          qWarning("Can't open compiled map file %s for writing!"
                    " Aborting ...",
                    kfcPathName.toLatin1().data() );
           mapfile.close();
           return false;
         }
 
-      qDebug("writing file %s", kfcPathName.toLatin1().data());
+      qDebug("Writing file %s", kfcPathName.toLatin1().data());
 
       out << magic;
       loadTypeID = FILE_TYPE_MAP_C;
@@ -1436,13 +1508,6 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
   qDebug( "MapAreaDownload: %d Maps required by download", needed );
 }
 
-/**
- * Try to download a missing ground/terrain/map file.
- *
- * @param file The name of the file without any path prefixes.
- * @param directory The destination directory.
- *
- */
 bool MapContents::downloadMapFile( QString &file, QString &directory )
 {
   extern Calculator* calculator;
@@ -1454,33 +1519,27 @@ bool MapContents::downloadMapFile( QString &file, QString &directory )
       return false;
     }
 
-  if( m_downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadMangerMaps == 0 )
     {
-      m_downloadManger = new DownloadManager(this);
+      m_downloadMangerMaps = new DownloadManager(this);
 
-      connect( m_downloadManger, SIGNAL(finished( int, int )),
-               this, SLOT(slotDownloadsFinished( int, int )) );
+      connect( m_downloadMangerMaps, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadMapsFinished( int, int )) );
 
-      connect( m_downloadManger, SIGNAL(networkError()),
+      connect( m_downloadMangerMaps, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( m_downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadMangerMaps, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
   QString url = GeneralConfig::instance()->getMapServerUrl() + file;
   QString dest = directory + "/" + file;
 
-  m_downloadManger->downloadRequest( url, dest );
+  m_downloadMangerMaps->downloadRequest( url, dest );
   return true;
 }
 
-/**
- * This slot is called to download the Welt2000 file from the Internet.
- *
- * @param welt2000FileName The Welt2000 filename as written at the web page
- * without any path prefixes.
- */
 void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
 {
   extern Calculator* calculator;
@@ -1492,27 +1551,24 @@ void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
       return;
     }
 
-  if( m_downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadMangerWelt2000 == 0 )
     {
-      m_downloadManger = new DownloadManager(this);
+      m_downloadMangerWelt2000 = new DownloadManager(this);
 
-      connect( m_downloadManger, SIGNAL(finished( int, int )),
-               this, SLOT(slotDownloadsFinished( int, int )) );
+      connect( m_downloadMangerWelt2000, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadWelt2000Finished( int, int )) );
 
-      connect( m_downloadManger, SIGNAL(networkError()),
+      connect( m_downloadMangerWelt2000, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( m_downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadMangerWelt2000, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
-
-  connect( m_downloadManger, SIGNAL(welt2000Downloaded()),
-           this, SLOT(slotReloadWelt2000Data()) );
 
   QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
   QString dest = GeneralConfig::instance()->getMapRootDir() + "/points/welt2000.txt";
 
-  m_downloadManger->downloadRequest( url, dest );
+  m_downloadMangerWelt2000->downloadRequest( url, dest );
 }
 
 void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList )
@@ -1531,15 +1587,15 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
       return;
     }
 
-  if( m_downloadMangerOpenAipPois == static_cast<DownloadManager *> (0) )
+  if( m_downloadMangerOpenAipPois == 0 )
     {
       m_downloadMangerOpenAipPois = new DownloadManager(this);
 
       connect( m_downloadMangerOpenAipPois, SIGNAL(finished( int, int )),
-               this, SLOT(slotDownloadsFinishedOpenAipPois( int, int )) );
+               this, SLOT(slotDownloadOpenAipPoisFinished( int, int )) );
 
       connect( m_downloadMangerOpenAipPois, SIGNAL(networkError()),
-               this, SLOT(slotNetworkErrorOpenAipPois()) );
+               this, SLOT(slotNetworkError()) );
 
       connect( m_downloadMangerOpenAipPois, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
@@ -1581,21 +1637,19 @@ void MapContents::slotDownloadAirspaces( const QStringList& openAipCountryList )
       return;
     }
 
-  if( m_downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadMangerOpenAipAs == 0 )
     {
-      m_downloadManger = new DownloadManager(this);
+      m_downloadMangerOpenAipAs = new DownloadManager(this);
 
-      connect( m_downloadManger, SIGNAL(finished( int, int )),
-               this, SLOT(slotDownloadsFinished( int, int )) );
+      connect( m_downloadMangerOpenAipAs, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadOpenAipAsFinished( int, int )) );
 
-      connect( m_downloadManger, SIGNAL(networkError()),
+      connect( m_downloadMangerOpenAipAs, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( m_downloadManger, SIGNAL(status( const QString& )),
+      connect( m_downloadMangerOpenAipAs, SIGNAL(status( const QString& )),
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
-
-  m_downloadOpenAipAirspacesRequested = true;
 
   const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
   const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
@@ -1606,92 +1660,34 @@ void MapContents::slotDownloadAirspaces( const QStringList& openAipCountryList )
       QString file = openAipCountryList.at(i).toLower() + "_asp.aip";
       QString url  = urlPrefix + file;
       QString dest = destPrefix + file;
-      m_downloadManger->downloadRequest( url, dest );
+      m_downloadMangerOpenAipAs->downloadRequest( url, dest );
     }
 }
 
-/** Called, if all downloads are finished. */
-void MapContents::slotDownloadsFinished( int requests, int errors )
+void MapContents::slotDownloadMapsFinished( int requests, int errors )
 {
-  // All downloads are finished, free not more needed resources.
-  m_downloadManger->deleteLater();
-  m_downloadManger = static_cast<DownloadManager *> (0);
+  Q_UNUSED(requests)
+  Q_UNUSED(errors)
 
-  if( m_downloadOpenAipAirspacesRequested == true )
-    {
-      m_downloadOpenAipAirspacesRequested = false;
-
-      // Tidy up airspace directory after download of openAIP files.
-      const QString asDirName = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
-
-      // Get the list of airspace files to be loaded.
-      QStringList& files2load = GeneralConfig::instance()->getAirspaceFileList();
-
-      // Check if option load all is set by the user
-      bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
-
-      QDir afDir(asDirName);
-      afDir.setFilter(QDir::Files);
-
-      QStringList filters;
-      filters << "*.aic" << "*.aip";
-      afDir.setNameFilters(filters);
-
-      QStringList filesFound = afDir.entryList();
-
-      for( int i = 0; i < filesFound.size(); i++ )
-        {
-          const QString& fn = filesFound.at(i);
-
-          if( fn.endsWith(".aic") )
-            {
-              // Remove compiled airspace file version in every case.
-              afDir.remove( fn );
-              continue;
-            }
-
-          if( loadAll && fn.startsWith("openaip_airspace_") )
-            {
-              // That file was installed by the user. We remove it to avoid
-              // problems with the new downloaded airspace files by Cumulus,
-              // if the load All option is activated.
-              // Example of file names:
-              // User installed file:    openaip_airspace_germany_de.aip
-              // Cumulus installed file: de_asp.aip
-              afDir.remove( fn );
-            }
-        }
-
-      loadAirspacesViaThread();
-    }
-
-  QString msg = QString(tr("%1 download(s) with %2 error(s) done.")).arg(requests).arg(errors);
-
-  QMessageBox mb( QMessageBox::Information,
-                  tr("Downloads finished"),
-                  msg,
-                  QMessageBox::Ok,
-                  MainWindow::mainWindow() );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  // All downloads are finished, trigger a reload of map data.
+  _globalMapView->slot_info( tr("Maps downloaded") );
+  emit mapDataReloaded( Map::baseLayer );
 }
 
-void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
+void MapContents::slotDownloadWelt2000Finished( int requests, int errors )
 {
-  qDebug() << "MapContents::slotDownloadsFinishedOpenAipPois" << requests << errors;
+  Q_UNUSED(requests)
+  Q_UNUSED(errors)
 
-  // All downloads are finished, free not more needed resources.
-  m_downloadMangerOpenAipPois->deleteLater();
-  m_downloadMangerOpenAipPois = static_cast<DownloadManager *> (0);
+  // Welt2000 download  is finished. Trigger reload of welt2000 data.
+  _globalMapView->slot_info( tr("Welt2000 downloaded") );
+  slotReloadWelt2000Data();
+}
+
+void MapContents::slotDownloadOpenAipPoisFinished( int requests, int errors )
+{
+  Q_UNUSED(requests)
+  Q_UNUSED(errors)
 
   // Tidy up POI directory after download of openAIP files.
   const QString poiDirName = GeneralConfig::instance()->getMapRootDir() + "/points/";
@@ -1743,57 +1739,76 @@ void MapContents::slotDownloadsFinishedOpenAipPois( int requests, int errors )
 	}
     }
 
+  _globalMapView->slot_info( tr("openAIP points downloaded") );
   loadOpenAipAirfieldsViaThread();
   loadOpenAipNavAidsViaThread();
   loadOpenAipHotspotsViaThread();
-
-  QString msg = QString(tr("%1 openAIP POI download(s) with %2 error(s) done.")).arg(requests).arg(errors);
-
-  QMessageBox mb( QMessageBox::Information,
-                  tr("Downloads finished"),
-                  msg,
-                  QMessageBox::Ok,
-                  MainWindow::mainWindow() );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
 }
 
-/** Called, if a network error occurred during the downloads. */
+void MapContents::slotDownloadOpenAipAsFinished( int requests, int errors )
+{
+  Q_UNUSED(requests)
+  Q_UNUSED(errors)
+
+  // Tidy up airspace directory after download of openAIP files.
+  const QString asDirName = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
+
+  // Get the list of airspace files to be loaded.
+  QStringList& files2load = GeneralConfig::instance()->getAirspaceFileList();
+
+  // Check if option load all is set by the user
+  bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
+
+  QDir afDir(asDirName);
+  afDir.setFilter(QDir::Files);
+
+  QStringList filters;
+  filters << "*.aic" << "*.aip";
+  afDir.setNameFilters(filters);
+
+  QStringList filesFound = afDir.entryList();
+
+  for( int i = 0; i < filesFound.size(); i++ )
+    {
+      const QString& fn = filesFound.at(i);
+
+      if( fn.endsWith(".aic") )
+	{
+	  // Remove compiled airspace file version in every case.
+	  afDir.remove( fn );
+	  continue;
+	}
+
+      if( loadAll && fn.startsWith("openaip_airspace_") )
+	{
+	  // That file was installed by the user. We remove it to avoid
+	  // problems with the new downloaded airspace files by Cumulus,
+	  // if the load All option is activated.
+	  // Example of file names:
+	  // User installed file:    openaip_airspace_germany_de.aip
+	  // Cumulus installed file: de_asp.aip
+	  afDir.remove( fn );
+	}
+    }
+
+  _globalMapView->slot_info( tr("openAIP airspaces downloaded") );
+  loadAirspacesViaThread();
+}
+
 void MapContents::slotNetworkError()
 {
-  // A network error has occurred. We do stop all further downloads.
-  m_downloadManger->deleteLater();
-  m_downloadManger = static_cast<DownloadManager *> (0);
+  static QTime time;
 
-  // Reset user decision flag
-  m_shallDownloadData = false;
-  reportNetworkError();
-}
+  if( time.isValid() && time.elapsed() < 10000 )
+    {
+      // Do not report several errors in that time period
+      return;
+    }
 
-/** Called, if a network error occurred during the downloads. */
-void MapContents::slotNetworkErrorOpenAipPois()
-{
-  // A network error has occurred. We do stop all further downloads.
-  m_downloadMangerOpenAipPois->deleteLater();
-  m_downloadMangerOpenAipPois = static_cast<DownloadManager *> (0);
+  time = QTime::currentTime();
 
-  // Reset user decision flag
-  m_shallDownloadData = false;
-  reportNetworkError();
-}
-
-void MapContents::reportNetworkError()
-{
-  QString msg = QString(tr("Network error occurred.\nAll downloads are canceled!"));
+  // A network error has occurred. We do report that to the user.
+  QString msg = QString(tr("No connection to the Internet.<br><br>All downloads are canceled!"));
 
   QMessageBox mb( QMessageBox::Warning,
                   tr("Network Error"),
@@ -2499,7 +2514,7 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
       return &topoList[index];
     default:
       // Should never happen!
-      qCritical("Cumulus: trying to access unknown map element list");
+      qCritical("trying to access unknown map element list");
       return static_cast<BaseMapElement *> (0);
     }
 }
@@ -2528,7 +2543,7 @@ SinglePoint* MapContents::getSinglePoint(int listIndex, unsigned int index)
       return &landmarkList[index];
     default:
       // Should never happen!
-      qCritical("Cumulus: trying to access unknown map element list");
+      qCritical("trying to access unknown map element list");
       return static_cast<SinglePoint *> (0);
     }
 }
@@ -2636,7 +2651,7 @@ void MapContents::slotReloadMapData()
 
   emit mapDataReloaded( Map::baseLayer );
 
-  // that signal will update all list views of the main window
+  // This signal will update all list views of the main window
   emit mapDataReloaded();
 
   // enable gps data receiving
@@ -2714,6 +2729,8 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
   outLandingList  = QList<Airfield>();
 
   emit mapDataReloaded( Map::airfields );
+
+  // This signal will update all list views of the main window.
   emit mapDataReloaded();
 }
 
@@ -2768,6 +2785,8 @@ void MapContents::slotOpenAipNavAidLoadFinished( int noOfLists,
   delete radioListIn;
 
   emit mapDataReloaded( Map::navaids );
+
+  // This signal will update all list views of the main window.
   emit mapDataReloaded();
 }
 
@@ -2822,6 +2841,8 @@ void MapContents::slotOpenAipHotspotLoadFinished( int noOfLists,
   delete hotspotListIn;
 
   emit mapDataReloaded( Map::hotspots );
+
+  // This signal will update all list views of the main window.
   emit mapDataReloaded();
 }
 
@@ -2966,6 +2987,8 @@ void MapContents::slotWelt2000LoadFinished( bool ok,
   _globalMapView->slot_info( tr("Welt2000 loaded") );
 
   emit mapDataReloaded( Map::airfields );
+
+  // This signal will update all list views of the main window.
   emit mapDataReloaded();
 }
 
@@ -3655,7 +3678,7 @@ QDateTime MapContents::getDateFromMapFile( const QString& path )
 
   if (!mapFile.open(QIODevice::ReadOnly))
     {
-      qWarning("Cumulus: can't open map file %s for reading date", path.toLatin1().data() );
+      qWarning("can't open map file %s for reading date", path.toLatin1().data() );
       createDateTime.setDate( QDate(1900,1,1) );
       return createDateTime;
     }

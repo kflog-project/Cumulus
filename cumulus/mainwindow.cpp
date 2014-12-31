@@ -61,6 +61,10 @@
 #include "windanalyser.h"
 #include "wpeditdialog.h"
 
+#ifdef INTERNET
+#include "DownloadManager.h"
+#endif
+
 #ifdef ANDROID
 
 #include "androidevents.h"
@@ -1944,8 +1948,12 @@ void MainWindow::slotToggleTrailDrawing( bool toggle )
 void MainWindow::closeEvent( QCloseEvent* event )
 {
   // Flag to signal a deferred close. It is used by the LiveTrackLogger
-  // to give it the possibility to send an end record.
+  // to give it the possibility to send an end record and to cancel and
+  // finishing running downloads.
   static bool deferredClose = false;
+
+  // Counter to wait for termination of background threads.
+  static int deferredCounter = 10;
 
   if( _globalMapView == 0 )
     {
@@ -1955,6 +1963,20 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
   if( deferredClose == true )
     {
+      deferredCounter--;
+
+//      qDebug() << "Close deferred: deferredCounter=" << deferredCounter
+//	         << "runningDownloads=" << DownloadManager::runningDownloads()
+//               << "livetrackWorkingState=" << m_liveTrackLogger->livetrackWorkingState();
+
+      if( deferredCounter > 0 && DownloadManager::runningDownloads() > 0 &&
+	  m_liveTrackLogger->livetrackWorkingState() )
+	{
+          // Trigger a recall of this slot to check again background processes.
+          QTimer::singleShot( 250, this, SLOT(close()) );
+	  event->ignore();
+	  return;
+	}
 
 #ifdef ANDROID
       jniShutdown();
@@ -1998,38 +2020,53 @@ void MainWindow::closeEvent( QCloseEvent* event )
       GpsNmea::gps->blockSignals( true );
 
 #ifdef INTERNET
+
+      {
+	// Stop all downloads.
+	// Qt::HANDLE tid = QThread::currentThreadId();
+	// qDebug() << "Closing Thread=" << tid;
+
+	DownloadManager::setStopFlag( true );
+
+	if( DownloadManager::runningDownloads() > 0 )
+	  {
+	    deferredClose = true;
+	  }
+      }
+
       // Stop live tracking, if is is running
       if( m_liveTrackLogger->sessionStatus() == true )
         {
           deferredClose = true;
           m_liveTrackLogger->slotFinishLogging();
+        }
 
-          // Wait some seconds to have time to send the live tracking end message
-          // before the whole application terminates.
-          QTimer::singleShot( 2500, this, SLOT(close()) );
+      if( deferredClose == true)
+	{
+          // Trigger a recall of this slot to check again for running
+	  // background processes.
+          QTimer::singleShot( 250, this, SLOT(close()) );
 
           // Hide the main window
           setVisible( false );
           event->ignore();
           return;
-        }
+	}
+
 #endif
 
 #ifdef ANDROID
 
       deferredClose = true;
 
-      // Wait 500ms before termination of application to give the main loop
+      // Wait 250ms before termination of application to give the main loop
       // time to process delayed keypad events.
-      QTimer::singleShot( 500, this, SLOT(close()) );
+      QTimer::singleShot( 250, this, SLOT(close()) );
 
       // Hide the main window
       setVisible( false );
       event->ignore();
       return;
-
-      // Code before
-      // jniShutdown();
 
 #endif
 

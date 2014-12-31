@@ -438,6 +438,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusInfo->setMargin(0);
   _statusbar->addWidget(_statusInfo, 1);
 
+  m_infoTimer = new QTimer(this);
+  m_infoTimer->setSingleShot( true );
+  connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_infoTimer()));
+
   QFrame* filler = new QFrame(_statusbar);
   filler->setFont(font);
   filler->setLineWidth(0);
@@ -1015,9 +1019,34 @@ void MapView::slot_glider( const QString& glider )
  */
 void MapView::slot_info( const QString& info )
 {
-  _statusInfo->setText( info );
+  static QTime lastDisplay = QTime::currentTime();
+  static QString lastInfo;
+
+  if( info != "__ShowLastInfo__")
+    {
+      lastInfo = info;
+    }
+
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < 1000 )
+    {
+      // Ensure retriggering of last info.
+      m_infoTimer->start(1000);
+      return;
+    }
+
+  lastDisplay = QTime::currentTime();
+  m_infoTimer->stop();
+  _statusInfo->setText( lastInfo );
 }
 
+void MapView::slot_infoTimer()
+{
+  const QString txt = "__ShowLastInfo__";
+
+  slot_info( txt );
+}
 
 /** This slot is called if the settings have been changed.
  * It refreshes all displayed data because units might have been changed.

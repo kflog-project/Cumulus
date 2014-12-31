@@ -422,6 +422,8 @@ class MapView : public QWidget
     QPixmap _arrows;
     /** can be CuCalc::GPS or CuCalc::MAN */
     int lastPositionChangeSource;
+    /** Timer to display last status info. */
+    QTimer* m_infoTimer;
 
   private slots:
 
@@ -456,6 +458,9 @@ class MapView : public QWidget
 
     /** Called to toggle the menu of the main window. */
     void slot_toggleMenu();
+
+    /** Called to show the last status info again. */
+    void slot_infoTimer();
 
 #ifdef QSCROLLER1
     /** Process status changes during map drag and release. */

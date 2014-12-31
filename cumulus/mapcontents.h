@@ -26,7 +26,7 @@
  *
  * \date 2000-2014
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef MAP_CONTENTS_H
@@ -54,7 +54,7 @@
 #include "waitscreen.h"
 
 #ifdef INTERNET
-#include "downloadmanager.h"
+#include "DownloadManager.h"
 #endif
 
 class Isohypse;
@@ -436,12 +436,14 @@ class MapContents : public QObject
     /**
      * Ask the user once for download of missing map files. The answer
      * is stored permanently to have it for further request.
-     * Returns true, if download is desired otherwise false.
+     *
+     * \return True, if download is desired otherwise false.
      */
     bool askUserForDownload();
 
     /**
      * This slot is called to download the Welt2000 file from the internet.
+     *
      * @param welt2000FileName The Welt2000 filename as written at the web page
      * without any path prefixes.
      */
@@ -473,23 +475,26 @@ class MapContents : public QObject
 
   private slots:
 
-    /** Called, if all downloads are finished. */
-    void slotDownloadsFinished( int requests, int errors );
+    /** Called, if all map downloads are finished. */
+    void slotDownloadMapsFinished( int requests, int errors );
 
-    /** Called, if a network error occurred during the downloads. */
+    /** Called, if a welt2000 download is finished. */
+    void slotDownloadWelt2000Finished( int requests, int errors );
+
+    /** Called, if all openAIP point downloads are finished. */
+    void slotDownloadOpenAipPoisFinished( int requests, int errors );
+
+    /** Called, if all openAIP airspace downloads are finished. */
+    void slotDownloadOpenAipAsFinished( int requests, int errors );
+
+    /** Called, if a network error occurred during the download. */
     void slotNetworkError();
-
-    /** Called, if all openAIP POI downloads are finished. */
-    void slotDownloadsFinishedOpenAipPois( int requests, int errors );
-
-    /** Called, if a network error occurred during the openAIP POI downloads. */
-    void slotNetworkErrorOpenAipPois();
 
 #endif
 
     /**
      * This slot is called by the Welt2000 load thread to signal, that the
-     * requested airfield data have been loaded.
+     * requested point data have been loaded.
      */
     void slotWelt2000LoadFinished( bool ok,
                                    QList<Airfield>* airfieldListIn,
@@ -508,12 +513,15 @@ class MapContents : public QObject
     void progress(int);
 
     /**
-     * Emitted after reload of map data
+     * Emitted after a reload of point data. That is the trigger for the update
+     * of the point list views.
      */
     void mapDataReloaded();
 
     /**
-     * Emitted after reload of map data
+     * Emitted after a reload of map data.
+     *
+     * \param layer The map layer to be reloaded.
      */
     void mapDataReloaded( Map::mapLayer layer );
 
@@ -569,18 +577,13 @@ class MapContents : public QObject
 #ifdef INTERNET
 
     /**
-     * Try to download a missing ground/terrain file.
+     * Try to download a missing ground/terrain/map file.
      *
      * @param file The name of the file without any path prefixes.
      * @param directory The destination directory.
      *
      */
     bool downloadMapFile( QString &file, QString &directory );
-
-    /**
-     * Reports an Internet network error to the user.
-     */
-    void reportNetworkError();
 
 #endif
 
@@ -761,19 +764,22 @@ class MapContents : public QObject
 #ifdef INTERNET
 
     /** Manager to handle downloads of missing map file. */
-    DownloadManager *m_downloadManger;
+    DownloadManager *m_downloadMangerMaps;
+
+    /** Manager to handle downloads of missing welt2000.txt file. */
+    DownloadManager *m_downloadMangerWelt2000;
 
     /** Manager to handle downloads of openAIP point data. */
     DownloadManager *m_downloadMangerOpenAipPois;
+
+    /** Manager to handle downloads of missing openAIP airspace file. */
+    DownloadManager *m_downloadMangerOpenAipAs;
 
     /** Store user decision to download missing data files. */
     bool m_shallDownloadData;
 
     /** Store that user has asked once for download of missing data file. */
     bool m_hasAskForDownload;
-
-    /** Store download request for openAIP airspace data. */
-    bool m_downloadOpenAipAirspacesRequested;
 
 #endif
 

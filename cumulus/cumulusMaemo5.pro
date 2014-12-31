@@ -334,7 +334,7 @@ internet {
 		DEFINES += INTERNET
 		
     HEADERS += airspacedownloaddialog.h \
-               downloadmanager.h \
+               DownloadManager.h \
                httpclient.h \
 		           LiveTrack24.h \
 		           LiveTrack24Logger.h \
@@ -343,7 +343,7 @@ internet {
                proxydialog.h
                               
 		SOURCES += airspacedownloaddialog.cpp \
-		           downloadmanager.cpp \
+		           DownloadManager.cpp \
 		           httpclient.cpp \
 		           LiveTrack24.cpp \
 		           LiveTrack24Logger.cpp \

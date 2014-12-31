@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013 by Axel Pauli
+ **   Copyright (c): 2013-2014 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -1067,7 +1065,7 @@ void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
   // Disable update buttons.
   switchUpdateButtons( false );
 
-  if( m_downloadManger == static_cast<DownloadManager *> (0) )
+  if( m_downloadManger == 0 )
     {
       m_downloadManger = new DownloadManager(this);
 
@@ -1077,7 +1075,7 @@ void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
       connect( m_downloadManger, SIGNAL(networkError()),
                this, SLOT(slotNetworkError()) );
 
-      connect( m_downloadManger, SIGNAL(weatherDownloaded(QString&)),
+      connect( m_downloadManger, SIGNAL(fileDownloaded(QString&)),
                this, SLOT(slotNewWeaterReport(QString&)) );
 
       // connect( m_downloadManger, SIGNAL(status( const QString& )),
@@ -1110,7 +1108,7 @@ void PreFlightWeatherPage::slotNetworkError()
   // A network error has occurred. We delete the download manager to get faster
   // a new connection.
   m_downloadManger->deleteLater();
-  m_downloadManger = static_cast<DownloadManager *> (0);
+  m_downloadManger = 0;
 
   QString msg = QString(tr("<html>Network error occurred!<br>Is the Internet connection down?</html>"));
 
@@ -1140,8 +1138,8 @@ void PreFlightWeatherPage::slotDownloadsFinished( int /* requests */, int errors
                  QString(tr("All updates with %1 error(s) done.")).arg(errors) +
                  "&nbsp;<br><br></html>";
 
-  // Show result message for 3s
-  WhatsThat *mb = new WhatsThat( this, msg, 3000 );
+  // Show result message for 1s
+  WhatsThat *mb = new WhatsThat( this, msg, 1000 );
   mb->show();
 
   // Move window into center of parent.

@@ -75,6 +75,17 @@ class LiveTrack24Logger : public QObject
   };
 
   /**
+   * Gets the working state.
+   *
+   * \return false, if no HTTP request is in work and the request queue is empty.
+   *         Otherwise true is returned.
+   */
+  bool livetrackWorkingState()
+  {
+    return m_lt24Gateway.livetrackWorkingState();
+  }
+
+  /**
    * Retrieve the package statistics from the live tracking gateway.
    *
    * \param cachedPkgs Number of cached packages in the sending queue.

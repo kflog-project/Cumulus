@@ -7,14 +7,12 @@
  ************************************************************************
  **
  **   Copyright (c):  2010 by Josua Dietze (digidietze@draisberghof.de)
- **                   2012-2013 by Axel Pauli
+ **                   2012-2014 by Axel Pauli
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -22,12 +20,12 @@
  *
  * \author Josua Dietze, Axel Pauli
  *
- * \brief Custom events for using Android Location service
- *        and getting soft keyboard state via JNI native methods.
+ * \brief Android custom events, used by the JNI to report results from the
+ * Java part.
  *
- * \date 2012-2013
+ * \date 2012-2014
  *
- * \version $Id$
+ * \version 1.0
  *
  */
 
@@ -220,21 +218,21 @@ class AltitudeEvent : public QEvent
 {
   public:
 
-	AltitudeEvent( const double altitude ) :
-      QEvent( (QEvent::Type) (QEvent::User + 6) ),
-      m_altitude(altitude)
-    {};
+  AltitudeEvent( const double altitude ) :
+    QEvent( (QEvent::Type) (QEvent::User + 6) ),
+    m_altitude(altitude)
+  {};
 
-    virtual ~AltitudeEvent() {};
+  virtual ~AltitudeEvent() {};
 
-    double altitude() const
-    {
-      return m_altitude;
-    };
+  double altitude() const
+  {
+    return m_altitude;
+  };
 
   private:
 
-    double m_altitude;
+  double m_altitude;
 };
 
 #endif
