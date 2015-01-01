@@ -6,14 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2013 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2008-2015 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 **   This class is used for displaying the help usage of Cumulus.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -37,9 +35,9 @@
  * language. The user can navigate through the text, zoom in and out,
  * maximize/normalize the window display size.
  *
- * \date 2008-2013
+ * \date 2008-2015
  *
- * \version $Id$
+ * \version 1.0
  */
 
 class HelpBrowser : public QWidget
