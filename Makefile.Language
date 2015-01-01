@@ -1,9 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus Language release for Maemo
 #
-# Copyright (c): 2010-2014 by Axel Pauli (kflog.cumulus@gmail.com)
-# 
-# $Id$
+# Copyright (c): 2010-2015 by Axel Pauli (kflog.cumulus@gmail.com)
 #
 # This file is distributed under the terms of the General Public License.
 # See the file COPYING for more information.
@@ -23,7 +21,7 @@ SRC_PACK=-sa -S
 BIN_PACK=-b
 
 # current Qt version
-QT_VERSION=4.8.5
+QT_VERSION=4.8.6
 
 # my installation directory of Qt translations
 MY_QT_TRANSLATIONS=/opt/qt$(QT_VERSION)/translations
@@ -94,7 +92,7 @@ check_file:
 ################################################################################
 
 # call dpkg target to build a debian Maemo language package
-.PHONY : dpkg_src_de dpkg_make
+.PHONY : dpkg_src_de dpkg_package dpkg_prepare dpkg_make
 
 dpkg_de:  check_file
 	@echo "===== Building Maemo German Language binary-only package for Cumulus $(VERSION) ====="
@@ -106,11 +104,12 @@ dpkg_src_de:
 	$(MAKE) -f Makefile.Language VERSION=$(VERSION) LANGUAGE=de \
 	        DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" PACK=src dpkg_make
 
-# This target will build the debian package. It is called via another makefile
-# due to the VERSION macro. The special letters apostroph and quotation mark
-# cause problems in ohter shell commands, if they not expanded before.
+dpkg_package:  check_file
+	@echo "===== Building Maemo German Language binary-only package for Cumulus $(VERSION) ====="
+	$(MAKE) -f Makefile.Language VERSION=$(VERSION) LANGUAGE=de \
+	        DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" PACK=bin dpkg_make
 
-dpkg_make:
+dpkg_prepare:
 	@rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	@mkdir -p $(CUMULUS_DEB)
 	@echo "Get Cumulus master branch from GitHub as zip file"
@@ -119,6 +118,11 @@ dpkg_make:
 	  unzip -qq master.zip; \
 	  cp -rp Cumulus-master/. .; \
 	  rm -rf Cumulus-master master.zip
+
+# This target will build the debian package. It is called via another makefile
+# due to the VERSION macro. The special letters apostroph and quotation mark
+# cause problems in ohter shell commands, if they not expanded before.
+dpkg_make:
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \

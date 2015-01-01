@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2014 by Axel Pauli
+ **                   2007-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1989,7 +1989,12 @@ void GeneralConfig::setLanguage( const QString& newValue )
   if( ! _language.isEmpty() )
     {
       QString langFile = "cumulus_" + _language + ".qm";
+
+#ifdef ANDROID
       QString langDir = _dataRoot + "/locale/" + _language;
+#else
+      QString langDir = _appRoot + "/locale/" + _language;
+#endif
 
       // Load GUI translation file
       if( ! cumulusTranslator )
@@ -2007,7 +2012,8 @@ void GeneralConfig::setLanguage( const QString& newValue )
         }
       else
         {
-          qWarning() << "No GUI translation file found in" << langDir;
+          qWarning() << "No GUI translation file" << langFile
+                     << "found in" << langDir;
         }
 
       // Load Qt library translation file, e.g. qt_de.qm
@@ -2034,7 +2040,8 @@ void GeneralConfig::setLanguage( const QString& newValue )
         }
       else
         {
-          qWarning() << "No Library translation file found in" << langDir;
+          qWarning() << "No Library translation file" << langFile
+                     << "found in" << langDir;
         }
     }
 }

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2014 by Axel Pauli
+ **   Copyright (c):  2008-2015 by Axel Pauli
  **
  **   Email of maintainer: <kflog.cumulus@gmail.com>
  **
@@ -162,6 +162,7 @@ int main(int argc, char *argv[])
     }
 
   QString rootPath = rootDir.canonicalPath();
+
   conf->setAppRoot( rootPath );
 #endif
 

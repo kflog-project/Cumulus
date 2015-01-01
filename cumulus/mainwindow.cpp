@@ -5,7 +5,7 @@
 
  copyright            : (C) 2002-2007 by André Somers
 
-                      : (C) 2007-2014 by Axel Pauli
+                      : (C) 2007-2015 by Axel Pauli
 
  maintainer           : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -2519,7 +2519,7 @@ void MainWindow::slotVersion()
   aw->setWindowTitle( tr( "About Cumulus") );
   aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
-  QString header( tr("<html>Cumulus %1, &copy; 2002-2014, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2015, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
 
   aw->setHeaderText( header );
 

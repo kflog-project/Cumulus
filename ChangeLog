@@ -20,24 +20,27 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2014-12-31 AP: OpenSSL of necessitas tool kit QtNetwork library updated to
+[o] 2015-01-01 AP: Issue #29 fixed. Translation files are not found under X11
+                   and Maemo.
+
+[-] 2014-12-31 AP: OpenSSL of necessitas tool kit QtNetwork library updated to
                    openssl 1.0.j. Google required that for Android.
                    
-[o] 2014-12-31 AP: Issue #29 fixed. Wrong JNI environment handling in Android.
+[-] 2014-12-31 AP: Issue #29 fixed. Wrong JNI environment handling in Android.
 
-[o] 2014-12-31 AP: Issue #28 fixed. Enhance display label ETA.
+[+] 2014-12-31 AP: Issue #28 fixed. Enhance display label ETA.
 
-[o] 2014-12-31 AP: Issue #27 fixed. Remove content of map files with wrong magic
+[-] 2014-12-31 AP: Issue #27 fixed. Remove content of map files with wrong magic
                    key.
                    
-[o] 2014-12-31 AP: Issue #26 fixed. Remove proxy configuration for Android.
+[-] 2014-12-31 AP: Issue #26 fixed. Remove proxy configuration for Android.
 
-[o] 2014-12-31 AP: Issue #25 fixed. Introduce airspace type CTR in Cumulus for
+[+] 2014-12-31 AP: Issue #25 fixed. Introduce airspace type CTR in Cumulus for
                    mapping and configuration.               
 
-[o] 2014-12-04 AP: Issue #24 fixed. Provide openAIP hotspot data automatically.
+[+] 2014-12-04 AP: Issue #24 fixed. Provide openAIP hotspot data automatically.
 
-[o] 2014-12-03 AP: Issue #23 fixed. Airspace RMZ replaces Airspace Foxtrott in
+[+] 2014-12-03 AP: Issue #23 fixed. Airspace RMZ replaces Airspace Foxtrott in
                    Germany at 2014-12-11. Airspace parser and airspace
                    configuration extended to handle that.
 
