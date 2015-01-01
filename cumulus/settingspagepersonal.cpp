@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -282,7 +282,11 @@ void SettingsPagePersonal::load()
   userDataDir->setText( conf->getUserDataDirectory() );
 
   // Determine user's wanted language
+#ifdef ANDROID
   QString langPath = conf->getDataRoot() + "/locale";
+#else
+  QString langPath = conf->getAppRoot() + "/locale";
+#endif
 
   // Check for installed languages
   QDir dir( langPath );
