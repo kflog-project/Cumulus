@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012 by Axel Pauli
+ **   Copyright (c): 2012-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id: BluetoothService.java 5712 2013-01-10 20:55:52Z axel $
  **
  ***********************************************************************/
 
@@ -407,10 +405,16 @@ public class BluetoothService
 
   /**
    * Setup a timer for an outgoing connection retry to a remote device after
-   * error.
+   * an error.
    */
   synchronized void connectionRetry()
   {
+	if( mState == STATE_NONE )
+	{
+	  // The connection has reset in the meantime, do nothing in that case.
+	  return;
+	}
+	
     Log.d(TAG,
         "Connection retry scheduled to " + mConnectedRemoteDevice.getAddress());
 

@@ -736,12 +736,21 @@ public class CumulusActivity extends QtActivity
       }
   }
 
+  public static String bundle2String(Bundle bundle) {
+		String string = "Bundle{";
+		for (String key : bundle.keySet()) {
+			string += " " + key + " => " + bundle.get(key) + ";";
+		}
+		string += " }Bundle";
+		return string;
+	}
+  
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
 	if( savedInstanceState != null )
 	  {
-		Log.d(TAG, "onCreate Bundle: " + savedInstanceState.toString());
+		Log.d(TAG, "onCreate: " + bundle2String(savedInstanceState));
 	  }
 	
     try
