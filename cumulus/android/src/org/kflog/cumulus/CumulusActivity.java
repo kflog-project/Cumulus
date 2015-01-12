@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2012-2015 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -91,9 +91,9 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2014
+ * @date 2012-2015
  * 
- * @version 1.0
+ * @version 1.1
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -726,8 +726,7 @@ public class CumulusActivity extends QtActivity
    * enabled. If a shutdown is requested from the native part, the GPS enable
    * status will be reset.
    * 
-   * @param newByte
-   *          Byte of GPS data stream
+   * @param newByte Byte of GPS data stream
    */
   synchronized public static void byteFromGps(byte newByte)
   {
@@ -740,6 +739,11 @@ public class CumulusActivity extends QtActivity
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
+	if( savedInstanceState != null )
+	  {
+		Log.d(TAG, "onCreate Bundle: " + savedInstanceState.toString());
+	  }
+	
     try
       {
         Log.d(TAG, "onCreate Entry");
@@ -1015,13 +1019,17 @@ public class CumulusActivity extends QtActivity
         notificationManager.notify(1, notification);
       }
 
-    // Register a BroadcastReceiver for BT intents
-    IntentFilter filter = new IntentFilter(
-        BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-    filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-
-    // Don't forget to unregister during onDestroy
-    registerReceiver(bcReceiver, filter);
+    // Register a BroadcastReceiver for BT intents, if Bluetooth is supported by
+    // this device.
+    if( BluetoothAdapter.getDefaultAdapter() != null )
+    {
+	  IntentFilter filter = new IntentFilter(
+	                              BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+	  filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+	
+	  // Don't forget to unregister during onDestroy
+	  registerReceiver(bcReceiver, filter);
+    }
 
     Log.d(TAG, "onCreate exit");
   }
@@ -1120,8 +1128,11 @@ public class CumulusActivity extends QtActivity
         m_btService.stop();
       }
 
-    // unregister BT receiver.
-    unregisterReceiver(bcReceiver);
+    if( BluetoothAdapter.getDefaultAdapter() != null )
+    {
+      // The device supports Bluetooth, unregister BT receiver.
+      unregisterReceiver(bcReceiver);
+    }
 
     // Stop IOIO services
     m_ioio.stop();
@@ -1135,7 +1146,7 @@ public class CumulusActivity extends QtActivity
     if (isFinishing() == false)
       {
         // Terminate the App, if the OS has called the onDestroy method
-        Log.d(TAG, "onDestroy: isFinishing() is false, calling exit!");
+        Log.i(TAG, "onDestroy: isFinishing() is false, calling exit!");
         System.exit(0);
       }
   }
