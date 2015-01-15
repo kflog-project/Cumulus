@@ -146,7 +146,6 @@ public class CumulusActivity extends QtActivity
   private GpsStatus.NmeaListener nl = null;
   static private boolean gpsEnabled = false;
   private boolean nmeaIsReceived = false;
-  private boolean locationUpdated = false;
   private int lastGpsStatus = -1;
   private boolean infoBoxesVisible = true;
 
@@ -182,12 +181,18 @@ public class CumulusActivity extends QtActivity
   private Set<BluetoothDevice> m_pairedBtDevices = null;
   private String m_btMacArray[] = null;
   private BluetoothService m_btService = null;
+  private String m_btMacAddress = null;
 
   // Used to signal, that we waiting to the on state of the Bluetooth adapter
   private boolean m_wait4BluetoothAdapterOn = false;
   
   @SuppressWarnings("rawtypes")
   protected static Class m_cumulusServiceClass = null;
+  
+  static final byte GPS_DEVICE_NONE = 1;
+  static final byte GPS_DEVICE_INTERNAL = 2;
+  static final byte GPS_DEVICE_BT = 3;
+  static final byte GPS_DEVICE_IOIO = 4;
 
   /**
    * The Handler that gets information back from the BluetoothService
@@ -751,6 +756,13 @@ public class CumulusActivity extends QtActivity
 	if( savedInstanceState != null )
 	  {
 		Log.d(TAG, "onCreate: " + bundle2String(savedInstanceState));
+		
+		// @AP: That is a workaround to prevent the black screen on Qt side
+		// after a kill of the running Cumulus instance because of low memory.
+		// That can happen, if another app is opened in the foreground and the
+		// Dalvid VM decided to kill the Cumulus process. The Qt part saved
+		// some information for reinstall but that is a bug.
+		savedInstanceState.putBoolean("Started", false);
 	  }
 	
     try
@@ -1114,7 +1126,7 @@ public class CumulusActivity extends QtActivity
         Log.d(TAG, "onDestroy: Cancel all Notifs now");
       }
 
-    // Stop barometer sensor callbacks.
+    // Stop barometer sensor callback.
     if (m_BaroSensorListener != null)
       {
         m_SensorManager.unregisterListener(m_BaroSensorListener);
@@ -1155,9 +1167,76 @@ public class CumulusActivity extends QtActivity
     if (isFinishing() == false)
       {
         // Terminate the App, if the OS has called the onDestroy method
-        Log.i(TAG, "onDestroy: isFinishing() is false, calling exit!");
-        System.exit(0);
+        Log.i(TAG, "onDestroy: isFinishing() is called by the OS!");
+        // System.exit(0);
       }
+  }
+
+  protected void onSaveInstanceState(Bundle outState)
+  {
+	if( m_BaroSensorListener != null )
+	{
+	  outState.putBoolean("BaroSensorActivated", true );
+	}
+	else
+	{
+	  outState.putBoolean("BaroSensorActivated", false );
+	}
+	
+	if( lm != null && ll != null )
+	{
+	  // Internal GPS is activated
+	  outState.putByte("GpsDevice", GPS_DEVICE_INTERNAL );
+	}
+    else if (m_btService != null)
+    {
+  	  // BT GPS is activated
+  	  outState.putByte("GpsDevice", GPS_DEVICE_BT );
+  	  outState.putString("BtMacAddress", m_btMacAddress );
+    }
+    else if ( m_ioio.isStarted() == true )
+    {
+  	  // IOIO GPS is activated
+  	  outState.putByte("GpsDevice", GPS_DEVICE_IOIO);
+    }
+	else
+	{
+	  // No GPS is activated
+	  outState.putByte("GpsDevice", GPS_DEVICE_NONE );
+	}
+	
+	Log.d(TAG, "onSaveInstanceState: " + bundle2String(outState));
+    super.onSaveInstanceState(outState);
+  }
+  
+  protected void onRestoreInstanceState(Bundle savedInstanceState)
+  {
+	Log.d(TAG, "onRestoreInstanceState: " + bundle2String(savedInstanceState));
+	
+	if( savedInstanceState.getBoolean("BaroSensorActivated") == true )
+	{
+	  activateBarometerSensor();
+	}
+
+	if( savedInstanceState.getByte("GpsDevice") == GPS_DEVICE_INTERNAL )
+	{
+	  enableInternalGps(false);
+	}
+	else if( savedInstanceState.getByte("GpsDevice") == GPS_DEVICE_BT )
+	{
+	  String mac = savedInstanceState.getString("BtMacAddress");
+	  
+	  if( mac != null && mac.isEmpty() == false )
+	  {
+	    connect2BtDevice( mac );
+	  }
+	}
+	else if( savedInstanceState.getByte("GpsDevice") == GPS_DEVICE_IOIO )
+	{
+	  enableIoioGps( false );
+	}
+	
+    super.onRestoreInstanceState(savedInstanceState);
   }
 
   @Override
@@ -2169,6 +2248,13 @@ public class CumulusActivity extends QtActivity
     
     reportGpsStatus(1);
     gpsEnabled = true;
+    
+    if (lm != null && ll != null)
+    {
+      // We switch off the data delivery from the internal GPS.
+      lm.removeUpdates(ll);
+      ll = null;
+    }
   }
 
   private void enableBtGps(boolean clearDialog)
@@ -2220,6 +2306,8 @@ public class CumulusActivity extends QtActivity
   private void connect2BtDevice(String macAddress)
   {
     Log.i(TAG, "connectBtDevice " + macAddress);
+    
+    m_btMacAddress = macAddress;
 
     if (m_btService == null)
       {

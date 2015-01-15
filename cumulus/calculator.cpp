@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2014 by Axel Pauli
+ **                  2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -580,7 +580,7 @@ void Calculator::calcETA()
 
   // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
 
-  if ( ! m_calculateETA || ! selectedWp ||
+  if ( selectedWp == 0 ||
        lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() )
     {
       if ( ! lastETA.isNull() )

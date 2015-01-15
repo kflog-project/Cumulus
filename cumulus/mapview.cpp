@@ -7,7 +7,7 @@
 
   copyright            : (C) 2002      by Andre Somers
                              2008      by Josua Dietze
-                             2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+                             2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
 
  ***************************************************************************/
 

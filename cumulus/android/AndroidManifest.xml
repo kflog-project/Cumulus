@@ -24,9 +24,9 @@
   
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="10" />
 
-	<!-- android:debuggable="true" -->
 	
 	<application
+    android:debuggable="true"
 	  android:name="org.kde.necessitas.origo.QtApplication"
 	  android:allowBackup="true"
     android:persistent="true"
