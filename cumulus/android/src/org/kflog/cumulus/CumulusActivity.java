@@ -93,7 +93,7 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @date 2012-2015
  * 
- * @version 1.1
+ * @version 1.2
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -189,11 +189,20 @@ public class CumulusActivity extends QtActivity
   @SuppressWarnings("rawtypes")
   protected static Class m_cumulusServiceClass = null;
   
+  /**
+   * GPS states used for reconnection after recreation.
+   */
   static final byte GPS_DEVICE_NONE = 1;
   static final byte GPS_DEVICE_INTERNAL = 2;
   static final byte GPS_DEVICE_BT = 3;
   static final byte GPS_DEVICE_IOIO = 4;
 
+  /**
+   * That bundle contains a restored instance state or is null, if nothing
+   * is restored.
+   */
+  private Bundle m_restoreInstanceState = null;
+  
   /**
    * The Handler that gets information back from the BluetoothService
    */
@@ -286,7 +295,8 @@ public class CumulusActivity extends QtActivity
   /**
    * A Handler that gets information back from other objects.
    */
-  private final Handler m_msgHandler = new Handler()
+  @SuppressLint("HandlerLeak")
+private final Handler m_commHandler = new Handler()
   {
     @Override
     public void handleMessage(Message msg)
@@ -824,7 +834,7 @@ public class CumulusActivity extends QtActivity
       }
 
     // Object to IOIO services
-    m_ioio = new CumulusIOIO( this, m_msgHandler );
+    m_ioio = new CumulusIOIO( this, m_commHandler );
     m_ioio.create();
 
     getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -1166,7 +1176,6 @@ public class CumulusActivity extends QtActivity
 
     if (isFinishing() == false)
       {
-        // Terminate the App, if the OS has called the onDestroy method
         Log.i(TAG, "onDestroy: isFinishing() is called by the OS!");
         // System.exit(0);
       }
@@ -1213,30 +1222,56 @@ public class CumulusActivity extends QtActivity
   {
 	Log.d(TAG, "onRestoreInstanceState: " + bundle2String(savedInstanceState));
 	
-	if( savedInstanceState.getBoolean("BaroSensorActivated") == true )
+	// Save instance state for later restore.
+	m_restoreInstanceState = savedInstanceState;
+	
+    super.onRestoreInstanceState(savedInstanceState);
+  }
+  
+  /**
+   * Called to restore a previous saved instance state, when the native part
+   * has startup finished reported in method nativeShutdown(false).
+   */
+  private void restoreInstanceState()
+  {	
+	Log.d(TAG, "restoreInstanceState: " + bundle2String(m_restoreInstanceState));
+
+	if( m_restoreInstanceState == null )
+	{
+	  return;
+	}
+	
+	if( m_restoreInstanceState.getBoolean("BaroSensorActivated") == true )
 	{
 	  activateBarometerSensor();
 	}
 
-	if( savedInstanceState.getByte("GpsDevice") == GPS_DEVICE_INTERNAL )
+	if( m_restoreInstanceState.getByte("GpsDevice") == GPS_DEVICE_INTERNAL )
 	{
 	  enableInternalGps(false);
 	}
-	else if( savedInstanceState.getByte("GpsDevice") == GPS_DEVICE_BT )
+	else if( m_restoreInstanceState.getByte("GpsDevice") == GPS_DEVICE_BT )
 	{
-	  String mac = savedInstanceState.getString("BtMacAddress");
+	  String mac = m_restoreInstanceState.getString("BtMacAddress");
 	  
-	  if( mac != null && mac.isEmpty() == false )
+	  if( mac != null && mac.length() != 0 )
 	  {
 	    connect2BtDevice( mac );
 	  }
 	}
-	else if( savedInstanceState.getByte("GpsDevice") == GPS_DEVICE_IOIO )
+	else if( m_restoreInstanceState.getByte("GpsDevice") == GPS_DEVICE_IOIO )
 	{
-	  enableIoioGps( false );
+	  // We have to wait a while, to ensure that the IOIO service is running
+	  //  before we can restart the ioio connection. It's now done after 5s.
+	  m_commHandler.postDelayed( new Runnable() {
+	                             public void run() {
+	    	                        enableIoioGps( false );
+	                             }
+                               }, 5000 );
 	}
 	
-    super.onRestoreInstanceState(savedInstanceState);
+	// All is done, reset saved instance state.
+	m_restoreInstanceState = null;
   }
 
   @Override
@@ -2104,7 +2139,20 @@ public class CumulusActivity extends QtActivity
     
     if( state == false )
       {
-        // If state is reported as false means, that the native part is up after startup.
+        // If state is reported as false the native part is up and operational
+    	// after startup.
+    	if( m_restoreInstanceState != null )
+    	{
+    	    runOnUiThread(new Runnable()
+    	    {
+    	      @Override
+    	      public void run()
+    	      {
+    	    	restoreInstanceState();
+    	      }
+    	    });
+       	}
+    	
         return;
       }
 
@@ -2154,6 +2202,13 @@ public class CumulusActivity extends QtActivity
     if (gpsEnabled == true)
       {
         Log.i(TAG, "Disable GPS");
+        
+        if (lm != null && ll != null)
+        {
+          // We switch off the data delivery from the internal GPS.
+          lm.removeUpdates(ll);
+          ll = null;
+        }
 
         reportGpsStatus(0);
         gpsEnabled = false;
@@ -2243,18 +2298,18 @@ public class CumulusActivity extends QtActivity
         removeDialog(R.id.dialog_gps);
       }
     
-    // Starts the ioio service
-    m_ioio.start();
-    
-    reportGpsStatus(1);
-    gpsEnabled = true;
-    
     if (lm != null && ll != null)
     {
       // We switch off the data delivery from the internal GPS.
       lm.removeUpdates(ll);
       ll = null;
     }
+    
+    // Starts the ioio service
+    m_ioio.start();
+
+    reportGpsStatus(1);
+    gpsEnabled = true;
   }
 
   private void enableBtGps(boolean clearDialog)
