@@ -20,6 +20,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-01-18 AP: Issue #35 fixed. Save data of connected services on Android.
+
+[-] 2015-01-18 AP: Issue #34 fixed. Save last position and map scale.
+
+[-] 2015-01-18 AP: Issue #33 fixed. Black screen if Cumulus is restarted on
+                   Android after a dalvik kill.
+
 [-] 2015-01-12 AP: Issue #32 fixed. Arrival time to target or time duration to
                    target is displayed delayed.
 

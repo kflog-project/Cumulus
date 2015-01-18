@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2014 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -103,11 +101,29 @@ MapMatrix::MapMatrix( QObject* parent ) :
       currentProjection = new ProjectionCylindric( conf->getCylinderParallel() );
     }
 
+  // Restore last saved settings
+  cScale = conf->getMapScale();
+
+  mapCenterLat = conf->getCenterLat();
+  mapCenterLon = conf->getCenterLon();
+
+  if( cScale <= 0 )
+    {
+      cScale = 200;
+    }
+
+  if( mapCenterLat <= 0 )
+    {
+      mapCenterLat = conf->getHomeLat();
+    }
+
+  if( mapCenterLon <= 0 )
+    {
+      mapCenterLon = conf->getHomeLon();
+    }
+
   homeLat = conf->getHomeLat();
   homeLon = conf->getHomeLon();
-  __moveMap(Home);
-
-//  qDebug("Map matrix initialized ...");
 }
 
 MapMatrix::~MapMatrix()
@@ -119,7 +135,6 @@ MapMatrix::~MapMatrix()
 void MapMatrix::writeMatrixOptions()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-
   conf->setCenterLat( mapCenterLat );
   conf->setCenterLon( mapCenterLon );
   conf->setMapScale( cScale );
@@ -267,6 +282,7 @@ void MapMatrix::centerToPoint(const QPoint& center)
   QPoint projCenter = __mapToWgs( invertMatrix.map( center ) );
   mapCenterLat = projCenter.y();
   mapCenterLon = projCenter.x();
+  writeMatrixOptions();
 }
 
 void MapMatrix::centerToLatLon(const QPoint& center)
@@ -283,6 +299,7 @@ void MapMatrix::centerToLatLon(int latitude, int longitude)
 {
   mapCenterLat = latitude;
   mapCenterLon = longitude;
+  writeMatrixOptions();
 }
 
 double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
@@ -314,6 +331,7 @@ double MapMatrix::centerToRect(const QRect& center, const QSize& pS)
   if((tempScale / cScale) > 1.05 || (tempScale / cScale) < 0.95)
     {
       cScale = tempScale;
+      GeneralConfig::instance()->setMapScale( cScale );
     }
 
   centerToPoint(QPoint(centerX, centerY));
@@ -362,6 +380,8 @@ void MapMatrix::__moveMap(int dir)
     mapCenterLon = homeLon;
     break;
   }
+
+  writeMatrixOptions();
 }
 
 void MapMatrix::createMatrix(const QSize& newSize)
@@ -447,10 +467,15 @@ void MapMatrix::createMatrix(const QSize& newSize)
 void MapMatrix::slotSetScale(const double& nScale)
 {
   if (nScale <= 0)
-    return;
+    {
+      return;
+    }
 
   cScale = qMax( (int) nScale, scaleBorders[LowerLimit]);
   cScale = qMin( (int) cScale, scaleBorders[UpperLimit]);
+
+  GeneralConfig::instance()->setMapScale( cScale );
+  GeneralConfig::instance()->save();
 
   _MaxScaleToCScaleRatio=int((MIN_SCALE/cScale)*(MAX_SCALE));
   // qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
@@ -458,13 +483,11 @@ void MapMatrix::slotSetScale(const double& nScale)
 
 void MapMatrix::slotInitMatrix()
 {
-  // qDebug("MapMatrix::slotInitMatrix() is called");
   GeneralConfig *conf = GeneralConfig::instance();
 
   // The scale is set to 0 in the constructor. Here we read the scale and
   // the map center only the first time. Otherwise the values would change
   // after configuring Cumulus.
-
   if (cScale <= 0)
     {
       // @ee we want to center to the last position !
@@ -474,7 +497,7 @@ void MapMatrix::slotInitMatrix()
       if ((mapCenterLat == 0) && (mapCenterLon == 0))
         {
           // ok, that point is not valid
-          qWarning("Center Latitude not valid");
+          qWarning("Center coordinates not valid");
           mapCenterLat = conf->getHomeLat();
           mapCenterLon = conf->getHomeLon();
         }
@@ -582,6 +605,7 @@ double MapMatrix::ensureVisible(const QPoint& point2Show, QPoint center )
       // maximum zoom is the minimum scale border
       newScale = qMax(newScale, static_cast<double>(VAL_BORDER_L));
       cScale = newScale;
+      GeneralConfig::instance()->setMapScale( cScale );
       return cScale;
     }
   else

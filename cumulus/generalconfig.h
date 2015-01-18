@@ -7,13 +7,12 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2014 by Axel Pauli
+**                   2007-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
+
 ***********************************************************************/
 
 /**
@@ -27,9 +26,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2013
+ * \date 2004-2015
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef GENERAL_CONFIG_H
