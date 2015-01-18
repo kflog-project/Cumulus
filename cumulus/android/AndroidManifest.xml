@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<manifest package="org.kflog.cumulus" android:versionCode="71"
+<manifest package="org.kflog.cumulus" android:versionCode="72"
 	android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android"
-  android:versionName="5.20.1_AV7a_GB">
+  android:versionName="5.20.2_AV7a_GB">
 	<supports-screens android:largeScreens="true"
 		android:normalScreens="true" android:anyDensity="true"
 		android:smallScreens="false" />
@@ -24,9 +24,9 @@
   
 	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="10" />
 
+	<!-- android:debuggable="true" -->
 	
 	<application
-    android:debuggable="true"
 	  android:name="org.kde.necessitas.origo.QtApplication"
 	  android:allowBackup="true"
     android:persistent="true"
