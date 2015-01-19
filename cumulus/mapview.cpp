@@ -705,12 +705,18 @@ void MapView::slot_Distance(const Distance& distance)
     }
 }
 
-
 void MapView::slot_ETA(const QTime& eta)
 {
+  show_ETA( eta, false );
+}
+
+void MapView::show_ETA(const QTime& eta, bool immediately )
+{
+  m_lastEta = eta;
+
   if( eta.isValid() == false )
     {
-      _eta->setValue("-");
+      _eta->setValue( "-", immediately );
       return;
     }
 
@@ -730,14 +736,14 @@ void MapView::slot_ETA(const QTime& eta)
 
       dt = dt.addSecs( QTime(0,0,0,0).secsTo( eta ) );
 
-      _eta->setValue( dt.toString("hh:mm"));
+      _eta->setValue( dt.toString("hh:mm"), immediately );
       return;
     }
 
   // Default display is time duration to target as hh:mm
   QString txt = QString("%1:%2").arg( eta.hour() )
                                 .arg( eta.minute(), 2, 10, QChar('0') );
-  _eta->setValue(txt);
+  _eta->setValue( txt, immediately );
 }
 
 
@@ -1208,7 +1214,7 @@ void MapView::slot_toggleDistanceEta()
       // show distance
       _eta->setVisible(false);
       _distance->setVisible(true);
-      _distance->setValue( _distance->getValue() );
+      _distance->setValue( _distance->getValue(), true );
       emit toggleETACalculation( false );
     }
   else if( toggle == 1 )
@@ -1217,7 +1223,7 @@ void MapView::slot_toggleDistanceEta()
       _distance->setVisible(false);
       _eta->setVisible(true);
       _eta->setPreUnit( "td" );
-      _eta->setValue( _eta->getValue() );
+      show_ETA( m_lastEta, true );
       emit toggleETACalculation( true );
     }
   else if( toggle == 2 )
@@ -1226,7 +1232,7 @@ void MapView::slot_toggleDistanceEta()
       _distance->setVisible(false);
       _eta->setVisible(true);
       _eta->setPreUnit( "at" );
-      _eta->setValue( _eta->getValue() );
+      show_ETA( m_lastEta, true );
       emit toggleETACalculation( true );
     }
 }
@@ -1238,7 +1244,7 @@ void MapView::slot_toggleWindAndLD()
     {
       _wind->setVisible(false);
       _ld->setVisible(true);
-      _ld->setValue( _ld->getValue() );
+      _ld->setValue( _ld->getValue(), true );
       // switch on LD calculation in calculator
       emit toggleLDCalculation( true );
     }
@@ -1246,7 +1252,7 @@ void MapView::slot_toggleWindAndLD()
     {
       _ld->setVisible(false);
       _wind->setVisible(true);
-      _wind->setValue( _wind->getValue() );
+      _wind->setValue( _wind->getValue(), true );
       // switch off LD calculation in calculator
       emit toggleLDCalculation( false );
     }

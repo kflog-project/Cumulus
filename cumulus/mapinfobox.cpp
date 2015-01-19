@@ -311,7 +311,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
         }
     }
 
-  if( m_value.isEmpty() )
+  if( m_value.isEmpty() && showEvent == false )
     {
       // We return on empty text.
       return;

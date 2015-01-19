@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2014 by Axel Pauli
+                               2008-2015 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -310,38 +310,89 @@ class MapView : public QWidget
 
 #endif
 
-  signals:
-    /**
-     * toggle LD calculation on/off
-     */
-    void toggleLDCalculation( const bool );
+  private slots:
 
     /**
-     * toggle ETA calculation on/off
+     * toggle between distance and ETA widget on mouse signal
      */
-    void toggleETACalculation( const bool );
+    void slot_toggleDistanceEta();
 
     /**
-     * toggle variometer calculation on/off
+     * toggle between wind and LD widget on mouse signal
      */
-    void toggleVarioCalculation( const bool );
+    void slot_toggleWindAndLD();
 
     /**
-     * toggle menu in main window.
+     * toggle between QUJ and QTE
      */
-    void toggleMenu();
+    void slot_toggleBearing();
 
     /**
-     * Emitted, if a subwidget is opened
+     * Reset inverse bearing after a timeout
      */
-    void openingSubWidget();
+    void slot_resetInversBearing();
 
-    /**
-     * Emitted, if a subwidget is closed
-     */
-    void closingSubWidget();
+    /** Opens the variometer settings dialog. */
+    void slot_VarioDialog();
+
+    /** Opens the altimeter settings dialog. */
+    void slot_AltimeterDialog();
+
+    /** Called, if altimeter mode has been changed */
+    void slot_newAltimeterMode();
+
+    /** Called to toggle the menu of the main window. */
+    void slot_toggleMenu();
+
+    /** Called to show the last status info again. */
+    void slot_infoTimer();
+
+#ifdef QSCROLLER1
+    /** Process status changes during map drag and release. */
+    void slot_scrollerStateChanged(QScroller::State new_s);
+#endif
+
+signals:
+  /**
+   * toggle LD calculation on/off
+   */
+  void toggleLDCalculation( const bool );
+
+  /**
+   * toggle ETA calculation on/off
+   */
+  void toggleETACalculation( const bool );
+
+  /**
+   * toggle variometer calculation on/off
+   */
+  void toggleVarioCalculation( const bool );
+
+  /**
+   * toggle menu in main window.
+   */
+  void toggleMenu();
+
+  /**
+   * Emitted, if a subwidget is opened
+   */
+  void openingSubWidget();
+
+  /**
+   * Emitted, if a subwidget is closed
+   */
+  void closingSubWidget();
 
   private:
+
+    /**
+     * Sets the text in the ETA display.
+     *
+     * \param eta ETA.
+     *
+     * \param immediately If true the display works without any delay.
+     */
+    void show_ETA(const QTime& eta, bool immediately=false );
 
     /**
      * pointer to the map widget
@@ -424,49 +475,8 @@ class MapView : public QWidget
     int lastPositionChangeSource;
     /** Timer to display last status info. */
     QTimer* m_infoTimer;
-
-  private slots:
-
-    /**
-     * toggle between distance and ETA widget on mouse signal
-     */
-    void slot_toggleDistanceEta();
-
-    /**
-     * toggle between wind and LD widget on mouse signal
-     */
-    void slot_toggleWindAndLD();
-
-    /**
-     * toggle between QUJ and QTE
-     */
-    void slot_toggleBearing();
-
-    /**
-     * Reset inverse bearing after a timeout
-     */
-    void slot_resetInversBearing();
-
-    /** Opens the variometer settings dialog. */
-    void slot_VarioDialog();
-
-    /** Opens the altimeter settings dialog. */
-    void slot_AltimeterDialog();
-
-    /** Called, if altimeter mode has been changed */
-    void slot_newAltimeterMode();
-
-    /** Called to toggle the menu of the main window. */
-    void slot_toggleMenu();
-
-    /** Called to show the last status info again. */
-    void slot_infoTimer();
-
-#ifdef QSCROLLER1
-    /** Process status changes during map drag and release. */
-    void slot_scrollerStateChanged(QScroller::State new_s);
-#endif
-
+    /** Last reported ETA value. */
+    QTime m_lastEta;
 };
 
 #endif
