@@ -112,9 +112,9 @@ dpkg_package:  check_file
 dpkg_prepare:
 	@rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
 	@mkdir -p $(CUMULUS_DEB)
-	@echo "Get Cumulus master branch from GitHub as zip file"
+	@echo "Extract Cumulus master branch from GitHub as zip file"
+	@cp master.zip $(CUMULUS_DEB)
 	@cd $(CUMULUS_DEB); \
-	  wget -nv -O master.zip https://github.com/kflog-project/Cumulus/archive/master.zip; \
 	  unzip -qq master.zip; \
 	  cp -rp Cumulus-master/. .; \
 	  rm -rf Cumulus-master master.zip
