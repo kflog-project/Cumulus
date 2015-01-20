@@ -1,9 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Qt4.8.x/X11
 #
-# Copyright (c): 2008-2014 by Axel Pauli (kflog.cumulus@gmail.com)
-# 
-# $Id$
+# Copyright (c): 2008-2015 by Axel Pauli (kflog.cumulus@gmail.com)
 #
 # This file is distributed under the terms of the General Public License.
 # See the file COPYING for more information.
