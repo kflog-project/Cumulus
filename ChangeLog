@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-01-20 AP: Android IOIO software updated to release 5. IOIO interface
+                   check commented out to ensure backward compability.
+
 [-] 2015-01-18 AP: Issue #35 fixed. Save data of connected services on Android.
 
 [-] 2015-01-18 AP: Issue #34 fixed. Save last position and map scale.
