@@ -97,17 +97,17 @@ check_file:
 dpkg_de:  check_file
 	@echo "===== Building Maemo German Language binary-only package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Language VERSION=$(VERSION) LANGUAGE=de \
-	        DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" PACK=bin dpkg_make
+	        DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" PACK=bin dpkg_prepare dpkg_make
 
 dpkg_src_de:
 	@echo "===== Building Maemo German Language source-only package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Language VERSION=$(VERSION) LANGUAGE=de \
-	        DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" PACK=src dpkg_make
+	        DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" PACK=src dpkg_prepare dpkg_make
 
 dpkg_package:  check_file
 	@echo "===== Building Maemo German Language binary-only package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.Language VERSION=$(VERSION) LANGUAGE=de \
-	        DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" PACK=bin dpkg_make
+	        DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" PACK=bin dpkg_prepare dpkg_make
 
 dpkg_prepare:
 	@rm -fr $(CUMULUS_DEB_ROOT)/*$(VERSION)*
