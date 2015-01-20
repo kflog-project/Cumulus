@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2010 by Josua Dietze
-**                   2012-2014 by Axel Pauli
+**                   2012-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
