@@ -86,8 +86,8 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 	private static final String TAG = "IOIOImpl";
 	private boolean disconnect_ = false;
 
-  private static final byte[] REQUIRED_INTERFACE_ID = new byte[]
-    { 'I', 'O', 'I', 'O', '0', '0', '0', '4' };
+	private static final byte[] REQUIRED_INTERFACE_ID = new byte[] { 'I', 'O',
+			'I', 'O', '0', '0', '0', '5' };
 
 	IOIOProtocol protocol_;
 	ResourceManager resourceManager_;
@@ -202,12 +202,15 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 		} catch (IOException e) {
 			throw new ConnectionLostException(e);
 		}
+		
+		// AP: Patched the check to enable working with older revisions.
 		if (!incomingState_.waitForInterfaceSupport()) {
-			state_ = State.INCOMPATIBLE;
-			Log.e(TAG, "Required interface ID is not supported");
-			throw new IncompatibilityException(
-					"IOIO firmware does not support required firmware: "
-							+ new String(REQUIRED_INTERFACE_ID));
+			// state_ = State.INCOMPATIBLE;
+			Log.w(TAG, "Required interface ID " + new String(REQUIRED_INTERFACE_ID) +
+			      " of library is not fitting the IOIO firmware!");
+			// throw new IncompatibilityException(
+			//		"IOIO firmware does not support required firmware: "
+			//				+ new String(REQUIRED_INTERFACE_ID));
 		}
 	}
 
@@ -249,7 +252,7 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 	}
 
 	@Override
-	public String getImplVersion(VersionType v) throws ConnectionLostException {
+	public String getImplVersion(VersionType v) {
 		if (state_ == State.INIT) {
 			throw new IllegalStateException(
 					"Connection has not yet been established");
@@ -262,7 +265,7 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 		case APP_FIRMWARE_VER:
 			return incomingState_.firmwareId_;
 		case IOIOLIB_VER:
-			return "IOIO0400";
+			return "IOIO0504";
 		}
 		return null;
 	}
@@ -668,17 +671,25 @@ public class IOIOImpl implements IOIO, DisconnectListener {
 
 	@Override
 	public void sync() throws ConnectionLostException, InterruptedException {
+		boolean added = false;
 		SyncListener listener = new SyncListener();
-		synchronized (this) {
-			checkState();
-			incomingState_.addSyncListener(listener);
-			incomingState_.addDisconnectListener(listener);
-			try {
-				protocol_.sync();
-			} catch (IOException e) {
-				throw new ConnectionLostException(e);
+		try {
+			synchronized (this) {
+				checkState();
+				incomingState_.addSyncListener(listener);
+				addDisconnectListener(listener);
+				added = true;
+				try {
+					protocol_.sync();
+				} catch (IOException e) {
+					throw new ConnectionLostException(e);
+				}
+			}
+			listener.waitSync();
+		} finally {
+			if (added) {
+				removeDisconnectListener(listener);
 			}
 		}
-		listener.waitSync();
 	}
 }

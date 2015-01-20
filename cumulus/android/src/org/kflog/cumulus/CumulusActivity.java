@@ -305,7 +305,7 @@ private final Handler m_commHandler = new Handler()
         {
           case R.id.msg_ioio_incompatible:
             // Message from CumulusIOIO, the IOIO is incompatible.
-            showDialog(R.id.dialog_ioio_incompatible);
+            showDialog(R.id.dialog_ioio_incompatible, msg.getData());
             break;
             
           default:
@@ -1908,10 +1908,30 @@ private final Handler m_commHandler = new Handler()
                   });
           alert = builder.create();
           break;
-          
-        case R.id.dialog_ioio_incompatible:
+
+        default:
+          return super.onCreateDialog(id);
+      }
+
+    return alert;
+  }
+  
+  @Override
+  protected Dialog onCreateDialog(int id, Bundle args)
+  {
+    AlertDialog alert;
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+    switch (id)
+      {
+      case R.id.dialog_ioio_incompatible:
+    	  // Retrieve additional data from the Bundle.
+    	  String msg = getString(R.string.ioioIncompatible) + "\n\n" +
+    	               "IOIO LibVersion " + args.getString("LIBV") +
+    	               " != IOIO FirmwareVersion " + args.getString("FWV");
           builder
-              .setMessage(getString(R.string.ioioIncompatible))
+              .setMessage(msg)
               .setCancelable(false)
               .setPositiveButton(getString(android.R.string.ok),
                   new DialogInterface.OnClickListener()
@@ -1929,9 +1949,9 @@ private final Handler m_commHandler = new Handler()
           break;
 
         default:
-          return super.onCreateDialog(id);
+          return super.onCreateDialog(id, args);
       }
-
+    
     return alert;
   }
   
@@ -1951,7 +1971,7 @@ private final Handler m_commHandler = new Handler()
         apl.play(this.getApplicationContext(), sf, false, stream);
       }
   }
-
+  
   /**
    * Forward a GPS NMEA command to the connected GPS device. Can be BT or USB IOIO.
    */

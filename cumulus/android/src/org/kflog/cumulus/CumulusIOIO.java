@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2014 by Axel Pauli <kflog.cumulus@gmail.com>
+ **   Copyright (c):  2014-2015 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -21,8 +19,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.content.ContextWrapper;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import ioio.lib.api.IOIO;
+import ioio.lib.api.IOIO.VersionType;
 import ioio.lib.impl.SocketIOIOConnection;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.IOIOLooperProvider;
@@ -246,13 +248,22 @@ public class CumulusIOIO implements IOIOLooperProvider
 
   /**
    * This method is used by the CumulusIOIOLooper as callback. It reports that
-   * an incompatible IOIO firmware is detected to tell that the user.
+   * an incompatible IOIO firmware is detected to tell that the user. Note! The
+   * argument ioio can only be queried for version strings!
    */
-  public void reportIncompatible()
+  public void reportIncompatible(IOIO ioio)
   {
     synchronized (m_activeIoioLooperMutex)
       {
-        m_msgHandler.obtainMessage(R.id.msg_ioio_incompatible).sendToTarget();
+    	Bundle data = new Bundle();
+    	data.putString("HWV", ioio.getImplVersion(VersionType.HARDWARE_VER));
+    	data.putString("BLV", ioio.getImplVersion(VersionType.BOOTLOADER_VER));
+    	data.putString("FWV", ioio.getImplVersion(VersionType.APP_FIRMWARE_VER));
+    	data.putString("LIBV", ioio.getImplVersion(VersionType.IOIOLIB_VER));
+    	
+    	Message msg = m_msgHandler.obtainMessage(R.id.msg_ioio_incompatible);
+    	msg.setData(data);
+    	msg.sendToTarget();
       }
   }
 

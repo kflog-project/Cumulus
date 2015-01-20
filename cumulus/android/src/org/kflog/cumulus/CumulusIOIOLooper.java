@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2014 by Axel Pauli <kflog.cumulus@gmail.com>
+ **   Copyright (c):  2014-2015 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -330,8 +328,8 @@ public class CumulusIOIOLooper extends BaseIOIOLooper
 
     if (m_callback != null)
       {
+        m_callback.reportIncompatible(ioio_);
         m_callback.resetIoioLooper(this);
-        m_callback.reportIncompatible();
       }
   }
 
