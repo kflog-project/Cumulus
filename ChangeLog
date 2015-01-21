@@ -20,8 +20,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2015-01-20 AP: Android IOIO software updated to release 5. IOIO interface
-                   check commented out to ensure backward compability.
+[-] 2015-01-21 AP: Issue #36 fixed. The ETA display on the map is not reset,
+                   if the GPS connection is going lost.
+
+[o] 2015-01-20 AP: Issue #35 fixed. Android IOIO software updated to release 5.
+                   IOIO interface check commented out to ensure the backward
+                   compability.
 
 [-] 2015-01-18 AP: Issue #35 fixed. Save data of connected services on Android.
 

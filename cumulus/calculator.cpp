@@ -12,8 +12,6 @@
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
- **   $Id$
- **
  **   This class provides different calculator functionalities
  **
  ***********************************************************************/
@@ -70,7 +68,7 @@ Calculator::Calculator(QObject* parent) :
 
   lastSpeed.setMps(0);
 
-  lastETA=QTime(0,0);
+  lastETA=QTime();
   lastBearing=-1;
   lastHeading=-1;
   lastDistance=-1;
@@ -576,17 +574,14 @@ void Calculator::calcDistance( bool autoWpSwitch )
     waypoint and emits a signal newETA if the value has changed. */
 void Calculator::calcETA()
 {
-  QTime etaNew(0, 0);
-
-  // qDebug("lastSpeed=%f m/s", lastSpeed.getMps());
-
   if ( selectedWp == 0 ||
        lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() )
     {
-      if ( ! lastETA.isNull() )
+      if( lastETA.isValid() )
         {
-          emit newETA(etaNew);
-          lastETA = etaNew;
+	  // Set ETA to invalid
+          emit newETA(QTime());
+          lastETA = QTime();
         }
 
       return;
@@ -594,6 +589,7 @@ void Calculator::calcETA()
 
   int eta = (int) rint(lastDistance.getMeters() / lastSpeed.getMps());
 
+  QTime etaNew(0, 0);
   etaNew = etaNew.addSecs(eta);
 
   if ( lastETA.hour() == etaNew.hour() &&
@@ -612,8 +608,8 @@ void Calculator::calcETA()
           // Don't emit times greater as 99 hours. ETA will be set to
           // undefined in such a case to avoid a problem in the map
           // display with to large values.
-          QTime zero(0, 0);
-          emit newETA(zero);
+          QTime invalid;
+          emit newETA(invalid);
         }
       else
         {
@@ -1539,6 +1535,12 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
       emit newLD( -1.0, -1.0 );
       // reset first fix passed
       m_pastFirstFix = false;
+    }
+
+  if( newState == GpsNmea::notConnected )
+    {
+      // Reset ETA in calculator and on map display.
+      calcETA();
     }
 }
 
