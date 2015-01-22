@@ -55,7 +55,7 @@ class WindAnalyser;
  *
  * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  */
 class FlightSample
 {
@@ -457,6 +457,11 @@ public:
   {
     return m_windStore;
   };
+
+  protected:
+
+  /** Add an event receiver, used by Android only. */
+  bool event(QEvent *event);
 
  public slots:
 

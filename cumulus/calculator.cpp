@@ -1702,6 +1702,11 @@ void Calculator::setSelectedWp( Waypoint* newWp )
       selectedWp = 0;
     }
 
+  // Save new target waypoint permanently into a file.
+  QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/target.wpt";
+
+  newWp->write( newWp, fn );
+
   // make a deep copy of the new waypoint to be set
   if ( newWp != 0 )
     {
@@ -1959,4 +1964,28 @@ Vector& Calculator::getLastWind()
     }
 
   return m_lastWind.wind;
+}
+
+bool Calculator::event( QEvent *event )
+{
+ // Handles events addressed to the calculator
+  if( event->type() != QEvent::User + 7 )
+    {
+      // Calls the default event processing.
+      return QObject::event(event);
+    }
+
+  // The Android OS has restarted the App after a kill. In this case we try
+  // to restore the last set target.
+  Waypoint wp;
+
+  // Filename of saved last waypoint target.
+  QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/target.wpt";
+
+  if( wp.read( &wp, fn ) )
+    {
+      setSelectedWp( &wp );
+    }
+
+  return true;
 }

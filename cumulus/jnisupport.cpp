@@ -312,6 +312,23 @@ static void nativeBaroAltitude( JNIEnv* /*env*/,
     }
 }
 
+/**
+ * Called from the Java side, if the app if recreated after a kill to restore
+ * the last target in the calculator.
+ */
+static void nativeRestoreTarget( JNIEnv* /*env*/, jobject /*myobject*/ )
+{
+  if( shutdown == true )
+    {
+      return;
+    }
+
+  extern Calculator* calculator;
+
+  CalculatorRestoreTargetEvent *crte = new CalculatorRestoreTargetEvent();
+  QCoreApplication::postEvent( calculator, crte );
+}
+
 /* The array of native methods to register.
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
@@ -325,7 +342,8 @@ static JNINativeMethod methods[] = {
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
-	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude}
+	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude},
+	{"nativeRestoreTarget", "()V", (void *)nativeRestoreTarget}
 };
 
 /**
@@ -570,7 +588,7 @@ bool jniEnv( JNIEnv** env )
   args.group = 0;
   args.version = JNI_VERSION_1_6;
 
-  m_jvm->AttachCurrentThread(env, &args);
+  m_jvm->AttachCurrentThread((void **) env, &args);
 
   if (! *env)
     {

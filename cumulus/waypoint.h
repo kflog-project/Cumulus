@@ -8,12 +8,10 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2013 by Axel Pauli
+ **                         2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -34,9 +32,9 @@
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2013
+ * \date 1999-2015
  *
- * \version $Id$
+ * \version 1.0
  */
 
 class Waypoint
@@ -56,6 +54,29 @@ class Waypoint
   /** Compare current instance with another */
   bool equals( const Waypoint *second ) const;
   bool operator==( const Waypoint& second ) const;
+
+  /**
+   * Write passed waypoint into a file. If the waypoint is null, we try to
+   * remove the passed filename.
+   *
+   * \param [in] *wp Pointer to waypoint object.
+   *
+   * \param [in] fileName File name as full path used for writing.
+   *
+   * \return True on success otherwise false.
+   */
+  bool write( const Waypoint* wp, const QString& fileName );
+
+  /**
+   * Read a waypoint from a file.
+   *
+   * \param [in] *wp Pointer to waypoint object to be filled
+   *
+   * \param [in] fileName File name as full path used for reading.
+   *
+   * \return True on success otherwise false.
+   */
+  bool read( Waypoint* wp, const QString& fileName );
 
   /** The short name of the waypoint limited to 8 characters and upper cases. */
   QString name;

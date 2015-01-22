@@ -150,6 +150,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   if (fileMagic != KFLOG_FILE_MAGIC)
     {
       qWarning("Waypoint file not recognized as KFLog file type.");
+      file.close();
       return -1;
     }
 
@@ -158,6 +159,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   if (fileType != FILE_TYPE_WAYPOINTS)
     {
       qWarning("Waypoint file is a KFLog file, but not for waypoints!");
+      file.close();
       return -1;
     }
 
@@ -169,6 +171,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
                  << fileFormat
                  << ". Expecting" << WP_FILE_FORMAT_ID_3 << ".";
 
+      file.close();
       return -1;
     }
 

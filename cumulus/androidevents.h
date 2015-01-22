@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010 by Josua Dietze (digidietze@draisberghof.de)
- **                   2012-2014 by Axel Pauli
+ **                   2012-2015 by Axel Pauli
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
  * \brief Android custom events, used by the JNI to report results from the
  * Java part.
  *
- * \date 2012-2014
+ * \date 2012-2015
  *
- * \version 1.0
+ * \version 1.1
  *
  */
 
@@ -128,7 +128,7 @@ class GpsNmeaEvent : public QEvent
   public:
 
     GpsNmeaEvent( const QString& nmeaSentence ) :
-      QEvent( (QEvent::Type)(QEvent::User+2) ),
+      QEvent( (QEvent::Type)(QEvent::User + 2) ),
       m_nmeaSentence(nmeaSentence)
     {};
 
@@ -149,7 +149,7 @@ class FlarmFlightListEvent : public QEvent
   public:
 
   FlarmFlightListEvent( const QString& list ) :
-    QEvent( (QEvent::Type) (QEvent::User+3) ),
+    QEvent( (QEvent::Type) (QEvent::User +3 ) ),
     m_list(list)
   {};
 
@@ -170,7 +170,7 @@ class FlarmFlightDownloadInfoEvent : public QEvent
   public:
 
   FlarmFlightDownloadInfoEvent( const QString& info ) :
-    QEvent( (QEvent::Type) (QEvent::User+4) ),
+    QEvent( (QEvent::Type) (QEvent::User + 4) ),
     m_info(info)
   {};
 
@@ -191,7 +191,7 @@ class FlarmFlightDownloadProgressEvent : public QEvent
   public:
 
   FlarmFlightDownloadProgressEvent( const int idx, const int progress ) :
-    QEvent( (QEvent::Type) (QEvent::User+5) ),
+    QEvent( (QEvent::Type) (QEvent::User + 5) ),
     m_idx(idx),
     m_progress(progress)
   {};
@@ -233,6 +233,19 @@ class AltitudeEvent : public QEvent
   private:
 
   double m_altitude;
+};
+
+/* Posted by the native method "nativeRestoreTarget" which is called
+ * from Java side after a recreation of app to restore the last target.
+ */
+class CalculatorRestoreTargetEvent : public QEvent
+{
+  public:
+
+  CalculatorRestoreTargetEvent() : QEvent( (QEvent::Type) (QEvent::User + 7) )
+  {};
+
+  virtual ~CalculatorRestoreTargetEvent() {};
 };
 
 #endif
