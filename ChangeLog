@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-01-23 AP: Issue #39 fixed. Add a new menu point, that a selected target
+                   can be removed.
+
 [-] 2015-01-21 AP: Issue #36 fixed. The ETA display on the map is not reset,
                    if the GPS connection is going lost.
 

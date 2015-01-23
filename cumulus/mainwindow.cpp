@@ -193,6 +193,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionToggleLogging(0),
   actionToggleTrailDrawing(0),
   actionEnsureVisible(0),
+  actionRemoveTarget(0),
   actionSelectTask(0),
   actionPreFlight(0),
   actionSetupConfig(0),
@@ -1261,12 +1262,6 @@ void MainWindow::createContextMenu()
   contextMenu->setVisible(false);
 
   fileMenu = contextMenu->addMenu(tr("File") + " ");
-
-#ifdef ANDROID
-  fileMenu->addAction( actionHardwareMenu );
-  fileMenu->addSeparator();
-#endif
-
   fileMenu->addAction( actionFileQuit );
 
   viewMenu = contextMenu->addMenu(tr("View") + " ");
@@ -1317,6 +1312,7 @@ void MainWindow::createContextMenu()
   mapMenu->addAction( actionManualNavMove2Home );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
+  mapMenu->addAction( actionRemoveTarget );
 
   statusMenu = contextMenu->addMenu(tr("Status") + " ");
   statusMenu->addAction( actionStatusAirspace );
@@ -1710,13 +1706,22 @@ void MainWindow::createActions()
   connect ( actionToggleTrailDrawing, SIGNAL( toggled( bool ) ),
              this, SLOT( slotToggleTrailDrawing(bool) ) );
 
-  actionEnsureVisible = new QAction ( tr( "Visualize waypoint" ), this );
+  actionEnsureVisible = new QAction ( tr( "Visualize target" ), this );
 #ifndef ANDROID
   actionEnsureVisible->setShortcut(Qt::Key_V);
 #endif
   addAction( actionEnsureVisible );
   connect ( actionEnsureVisible, SIGNAL( triggered() ),
              this, SLOT( slotEnsureVisible() ) );
+
+  actionRemoveTarget = new QAction ( tr( "Remove target" ), this );
+#ifndef ANDROID
+  actionRemoveTarget->setShortcut(Qt::Key_R + Qt::SHIFT);
+#endif
+  addAction( actionRemoveTarget );
+  connect ( actionRemoveTarget, SIGNAL( triggered() ),
+             this, SLOT( slotRemoveTarget() ) );
+
 
   actionSelectTask = new QAction( tr( "Select task" ), this );
 #ifndef ANDROID
@@ -1869,6 +1874,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionToggleLabelsInfo->setEnabled( toggle );
   actionToggleWindowSize->setEnabled( toggle );
   actionEnsureVisible->setEnabled( toggle );
+  actionRemoveTarget->setEnabled( toggle );
   actionSelectTask->setEnabled( toggle );
   actionStartFlightTask->setEnabled( toggle );
   actionPreFlight->setEnabled( toggle );
@@ -1891,7 +1897,7 @@ void  MainWindow::toggleActions( const bool toggle )
       GeneralConfig * conf = GeneralConfig::instance();
       actionViewReachpoints->setEnabled( conf->getNearestSiteCalculatorSwitch() );
 
-      if( calculator->getselectedWp() )
+      if( calculator->getTargetWp() )
         {
           // allow action only if a waypoint is selected
           actionViewInfo->setEnabled( toggle );
@@ -2126,16 +2132,18 @@ void MainWindow::slotShowContextMenu()
   GeneralConfig * conf = GeneralConfig::instance();
   actionViewReachpoints->setVisible( conf->getNearestSiteCalculatorSwitch() );
 
-  if( calculator->getselectedWp() )
+  if( calculator->getTargetWp() )
     {
       // show action only if a waypoint is selected
       actionViewInfo->setVisible( true );
       actionEnsureVisible->setVisible( true );
+      actionRemoveTarget->setVisible( true );
     }
   else
     {
       actionViewInfo->setVisible( false );
       actionEnsureVisible->setVisible( false );
+      actionRemoveTarget->setVisible( false );
     }
 
   if( _globalMapContents->getCurrentTask() )
@@ -2440,7 +2448,7 @@ void MainWindow::slotSwitchToInfoView()
   else
     {
       // That is a bad solution with that cast but a fast workaround.
-      slotSwitchToInfoView( const_cast<Waypoint *>(calculator->getselectedWp()) );
+      slotSwitchToInfoView( const_cast<Waypoint *>(calculator->getTargetWp()) );
     }
 }
 
@@ -2744,7 +2752,6 @@ void MainWindow::slotReadconfig()
   Map::instance->scheduleRedraw();
 }
 
-/** Called if the status of the GPS changes, and controls the availability of manual navigation. */
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
 {
   static bool onePlay = false;
@@ -2771,26 +2778,21 @@ void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
     }
 }
 
-/** This slot is called if the user presses C in manual navigation mode. It centers
-  * the map on the current waypoint. */
-void MainWindow::slotCenterToWaypoint()
+void MainWindow::slotCenterToTarget()
 {
 
-  if ( calculator->getselectedWp() )
+  if ( calculator->getTargetWp() )
     {
-      _globalMapMatrix->centerToLatLon( calculator->getselectedWp()->wgsPoint );
+      _globalMapMatrix->centerToLatLon( calculator->getTargetWp()->wgsPoint );
       Map::instance->scheduleRedraw();
     }
 }
 
-/** Called if the user pressed V in mapview.
-  * Adjusts the zoom factor so that the currently selected waypoint
-  * is displayed as good as possible. */
 void MainWindow::slotEnsureVisible()
 {
-  if ( calculator->getselectedWp() )
+  if ( calculator->getTargetWp() )
     {
-      double newScale = _globalMapMatrix->ensureVisible( calculator->getselectedWp()->wgsPoint );
+      double newScale = _globalMapMatrix->ensureVisible( calculator->getTargetWp()->wgsPoint );
 
       if ( newScale > 0 )
         {
@@ -2801,6 +2803,11 @@ void MainWindow::slotEnsureVisible()
           viewMap->message( tr( "Waypoint out of map range." ) );
         }
     }
+}
+
+void MainWindow::slotRemoveTarget()
+{
+  calculator->setTargetWp( 0 );
 }
 
 void MainWindow::slotOpenPreFlightConfig()

@@ -81,7 +81,7 @@ Calculator::Calculator(QObject* parent) :
   m_calculateWind = true;
   m_lastWind.wind = Vector(0.0, 0.0);
   m_lastWind.altitude = lastAltitude;
-  selectedWp = static_cast<Waypoint *> (0);
+  targetWp = static_cast<Waypoint *> (0);
   lastMc = GeneralConfig::instance()->getMcCready();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
@@ -139,9 +139,9 @@ Calculator::~Calculator()
       delete m_glider;
     }
 
-  if ( selectedWp )
+  if ( targetWp )
     {
-      delete selectedWp;
+      delete targetWp;
     }
 
   GeneralConfig *conf = GeneralConfig::instance();
@@ -264,8 +264,8 @@ void Calculator::slot_Position( QPoint& newPositionValue )
     true, change was done by an user interaction.*/
 void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 {
-  if ( selectedWp && newWp &&
-       selectedWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 )
+  if ( targetWp && newWp &&
+       targetWp->taskPointIndex != -1 && newWp->taskPointIndex == -1 )
     {
       // A user action will overwrite a task point. That will stop the
       // automatic task point switch. We will notice the user about that fact.
@@ -305,8 +305,8 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
       newWp->projPoint = _globalMapMatrix->wgsToMap( newWp->wgsPoint );
     }
 
-  // save new selected waypoint
-  setSelectedWp( newWp );
+  // save new target waypoint
+  setTargetWp( newWp );
 
   if ( newWp == 0 )
     {
@@ -322,7 +322,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
       return;
     }
 
-  if ( selectedWp && userAction && selectedWp->taskPointIndex != -1 )
+  if ( targetWp && userAction && targetWp->taskPointIndex != -1 )
     {
       // this was not an automatic switch, it was made manually by the
       // user in the tasklistview or initiated by pressing accept in the
@@ -339,8 +339,8 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
           // Tasks with less 4 entries are incomplete!
           for ( int i=0; i < tpList.count() && tpList.count() > 3; i++ )
             {
-              if ( selectedWp->wgsPoint == tpList.at(i)->getWGSPosition() &&
-                   selectedWp->taskPointIndex == tpList.at(i)->getFlightTaskListIndex() )
+              if ( targetWp->wgsPoint == tpList.at(i)->getWGSPosition() &&
+                   targetWp->taskPointIndex == tpList.at(i)->getFlightTaskListIndex() )
                 {
                   m_selectedWpInList = i;
                   break;
@@ -367,12 +367,12 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
  */
 void Calculator::slot_WaypointDelete(Waypoint* newWp)
 {
-  // @AP: check, if waypoint to be deleted is selected. In this case a
+  // @AP: check, if waypoint to be deleted is the set target. In this case a
   // deselection must be done
-  if ( newWp && selectedWp && *selectedWp == *newWp )
+  if ( newWp && targetWp && *targetWp == *newWp )
     {
       m_taskEndReached = false;
-      setSelectedWp(0);
+      setTargetWp(0);
       calcBearing();
       calcETA();
       lastBestSpeed.setInvalid();
@@ -388,7 +388,7 @@ void Calculator::slot_WaypointDelete(Waypoint* newWp)
 */
 void Calculator::calcDistance( bool autoWpSwitch )
 {
-  if ( ! selectedWp )
+  if ( ! targetWp )
     {
       // There is no waypoint selected.
       return;
@@ -397,7 +397,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
   Distance curDistance;
 
   curDistance.setKilometers( dist(double(lastPosition.x()), double(lastPosition.y()),
-                             selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon()) );
+                             targetWp->wgsPoint.lat(), targetWp->wgsPoint.lon()) );
 
   if ( curDistance == lastDistance )
     {
@@ -408,7 +408,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
   // get active task
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if ( ! task || selectedWp->taskPointIndex == -1 || autoWpSwitch == false )
+  if ( ! task || targetWp->taskPointIndex == -1 || autoWpSwitch == false )
     {
       // no task active,
       // no selected waypoint from a task
@@ -429,7 +429,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
   enum TaskPoint::PassageState passageState = TaskPoint::Outside;
 
-  TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
+  TaskPoint* tp = tpList.at( targetWp->taskPointIndex );
 
   passageState = tp->checkPassage( curDistance, lastPosition );
 
@@ -488,10 +488,10 @@ void Calculator::calcDistance( bool autoWpSwitch )
       // a) we touched/passed the target radius
       // b) the landing task point is selected
       // c) the end and landing task point are identically
-      TaskPoint* tp = tpList.at( selectedWp->taskPointIndex );
+      TaskPoint* tp = tpList.at( targetWp->taskPointIndex );
 
       bool tpEndEqLanding = false;
-      int sidx            = selectedWp->taskPointIndex;
+      int sidx            = targetWp->taskPointIndex;
 
       if( sidx > 1 && sidx < tpList.size() - 1 )
         {
@@ -519,7 +519,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
                          tr("Task Target") +
                          "</th></tr>" +
                          "<tr><td>" +
-                         selectedWp->name + " (" + selectedWp->description + ")" +
+                         targetWp->name + " (" + targetWp->description + ")" +
                          "</td></tr>" +
                          "<tr><td align=center>" +
                          tr("reached") +
@@ -535,7 +535,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
           // Reset the task point index of the selected waypoint. That stops
           // the further automatic task point switch.
-          selectedWp->taskPointIndex = -1;
+          targetWp->taskPointIndex = -1;
         }
       else if( m_taskEndReached == false )
         {
@@ -580,7 +580,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
     waypoint and emits a signal newETA if the value has changed. */
 void Calculator::calcETA()
 {
-  if ( selectedWp == 0 ||
+  if ( targetWp == 0 ||
        lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() )
     {
       if( lastETA.isValid() )
@@ -631,7 +631,7 @@ void Calculator::calcETA()
     if required */
 void Calculator::calcLD()
 {
-  if ( ! selectedWp || m_calculateLD == false || samplelist.count() < 2 )
+  if ( ! targetWp || m_calculateLD == false || samplelist.count() < 2 )
     {
       return;
     }
@@ -696,7 +696,7 @@ void Calculator::calcLD()
     }
 
   // calculate required LD, we consider elevation and security altitude
-  double altDiff = lastAltitude.getMeters() - selectedWp->elevation -
+  double altDiff = lastAltitude.getMeters() - targetWp->elevation -
                    conf->getSafetyAltitude().getMeters();
 
   if ( altDiff <= 10.0 )
@@ -788,13 +788,13 @@ void Calculator::calcGlidePath()
   Altitude arrivalAlt;
 
   // Calculate new glide path, if a waypoint is selected and a glider is defined.
-  if ( ! selectedWp || ! m_glider )
+  if ( ! targetWp || ! m_glider )
     {
       lastRequiredLD = -1;
       return;
     }
 
-  int tpIdx = selectedWp->taskPointIndex;
+  int tpIdx = targetWp->taskPointIndex;
   FlightTask *task = _globalMapContents->getCurrentTask();
 
   if( tpIdx != -1 && // selected waypoint is a task point
@@ -807,7 +807,7 @@ void Calculator::calcGlidePath()
   else
     {
       // Calculates arrival altitude above selected target.
-      glidePath( lastBearing, lastDistance, selectedWp->elevation, arrivalAlt, speed );
+      glidePath( lastBearing, lastDistance, targetWp->elevation, arrivalAlt, speed );
     }
 
   if( speed != lastBestSpeed )
@@ -837,7 +837,7 @@ void Calculator::calcBearing()
       lH = 0;
     }
 
-  if( selectedWp == 0 )
+  if( targetWp == 0 )
     {
       if (iresult != lastBearing)
         {
@@ -851,7 +851,7 @@ void Calculator::calcBearing()
     }
   else
     {
-      double result = getBearing( lastPosition, selectedWp->wgsPoint );
+      double result = getBearing( lastPosition, targetWp->wgsPoint );
 
       iresult = int (rint(result * 180./M_PI) );
 
@@ -894,9 +894,9 @@ void Calculator::slot_changePosition(int direction)
       lastPosition = QPoint(_globalMapMatrix->getHomeCoord());
       break;
     case MapMatrix::Waypoint:
-      if (selectedWp)
+      if (targetWp)
         {
-          lastPosition = selectedWp->wgsPoint;
+          lastPosition = targetWp->wgsPoint;
         }
       break;
     case MapMatrix::Position:
@@ -1695,35 +1695,31 @@ bool Calculator::matchesFlightMode(GeneralConfig::UseInMode mode)
   }
 }
 
-/**
- * Sets a new selected waypoint. The old waypoint instance is
- * deleted and a new one allocated.
- */
-void Calculator::setSelectedWp( Waypoint* newWp )
+void Calculator::setTargetWp( Waypoint* newTarget )
 {
   // delete old waypoint selection
-  if ( selectedWp != 0 )
+  if ( targetWp != 0 )
     {
-      delete selectedWp;
-      selectedWp = 0;
+      delete targetWp;
+      targetWp = 0;
     }
 
   // Save new target waypoint permanently into a file.
   QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/target.wpt";
 
-  newWp->write( newWp, fn );
+  Waypoint::write( newTarget, fn );
 
   // make a deep copy of the new waypoint to be set
-  if ( newWp != 0 )
+  if ( newTarget != 0 )
     {
-      selectedWp = new Waypoint( *newWp );
+      targetWp = new Waypoint( *newTarget );
     }
 
   // Reset task point passage state
   m_lastTpPassageState = TaskPoint::Outside;
 
   // inform mapView about the change
-  emit newWaypoint(newWp);
+  emit newWaypoint(newTarget);
 }
 
 void Calculator::setManualInFlight(bool switchOn)
@@ -1746,8 +1742,8 @@ void Calculator::slot_CheckHomeSiteSelection()
   // renewed.
   GeneralConfig *conf = GeneralConfig::instance();
 
-  if( selectedWp && selectedWp->name == tr("Home") &&
-      selectedWp->wgsPoint != conf->getHomeCoord() )
+  if( targetWp && targetWp->name == tr("Home") &&
+      targetWp->wgsPoint != conf->getHomeCoord() )
     {
       Waypoint wp;
 
@@ -1802,12 +1798,12 @@ void Calculator::slot_startTask()
       tp2Taken = tpList.at(1);
     }
 
-  if( selectedWp )
+  if( targetWp )
     {
       // Check, if another task point is already selected. In this case ask the
       // user if the first point shall be really selected.
-      if( selectedWp->taskPointIndex != -1 &&
-          selectedWp->taskPointIndex != tp2Taken->getFlightTaskListIndex() )
+      if( targetWp->taskPointIndex != -1 &&
+          targetWp->taskPointIndex != tp2Taken->getFlightTaskListIndex() )
         {
           QMessageBox mb( QMessageBox::Question,
                           tr( "Restart current task?" ),
@@ -1913,12 +1909,12 @@ void Calculator::autoZoomInMap()
   m_resetAutoZoomTimer->stop();
 
   if( GeneralConfig::instance()->getTaskPointAutoZoom() == true &&
-      selectedWp != 0 &&
+      targetWp != 0 &&
       m_lastZoomFactor == -1 )
     {
       m_lastZoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
-      QPoint tpWgs(selectedWp->wgsPoint.lat(), selectedWp->wgsPoint.lon() );
+      QPoint tpWgs(targetWp->wgsPoint.lat(), targetWp->wgsPoint.lon() );
 
       double newZoomFactor = _globalMapMatrix->ensureVisible( tpWgs, lastPosition );
 
@@ -1990,7 +1986,7 @@ bool Calculator::event( QEvent *event )
 
   if( wp.read( &wp, fn ) )
     {
-      setSelectedWp( &wp );
+      setTargetWp( &wp );
     }
 
   return true;

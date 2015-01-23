@@ -633,9 +633,9 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
   // Load the currently selected task point.
   const TaskPoint* selectedTp = 0;
 
-  if( calculator->getselectedWp() )
+  if( calculator->getTargetWp() )
     {
-      int tpIdx = calculator->getselectedWp()->taskPointIndex;
+      int tpIdx = calculator->getTargetWp()->taskPointIndex;
 
       if( tpIdx > 0 &&  tpIdx < tpList->count() )
         {

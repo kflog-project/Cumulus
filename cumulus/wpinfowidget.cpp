@@ -225,7 +225,7 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
     }
 
   // Check if Waypoint is not selected, so make sure we can select it.
-  const Waypoint *calcWp = calculator->getselectedWp();
+  const Waypoint *calcWp = calculator->getTargetWp();
 
   if( calcWp )
     {
@@ -603,7 +603,7 @@ void WPInfoWidget::slot_edit()
 
   // Check, if waypoint is set in calculator as target. Then we must
   // update the selection after the editing is finished.
-  const Waypoint* calcWp = calculator->getselectedWp();
+  const Waypoint* calcWp = calculator->getTargetWp();
 
   if( calcWp != 0 && m_wp == *calcWp )
     {

@@ -1067,7 +1067,7 @@ void MapView::slot_settingsChange()
   slot_GlidePath(calculator->getlastGlidePath());
   slot_bestSpeed(calculator->getlastBestSpeed());
   slot_Mc(calculator->getlastMc());
-  slot_Waypoint(calculator->getselectedWp());
+  slot_Waypoint(calculator->getTargetWp());
 
   _glidepath->setPreUnit( Altitude::getUnitText() );
   _distance->setPreUnit( Distance::getUnitText() );

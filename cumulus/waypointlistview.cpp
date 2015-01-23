@@ -226,7 +226,7 @@ void WaypointListView::slot_selectionChanged()
 
   if( w )
     {
-      if( w->equals( calculator->getselectedWp() ) )
+      if( w->equals( calculator->getTargetWp() ) )
         {
           cmdSelect->setEnabled( false );
           return;
@@ -274,7 +274,7 @@ void WaypointListView::slot_editWP()
     {
       // Check, if waypoint is set in calculator as target. Then we must
       // update the selection after the editing is finished.
-      const Waypoint* calcWp = calculator->getselectedWp();
+      const Waypoint* calcWp = calculator->getTargetWp();
 
       if( calcWp != 0 && *wp == *calcWp )
         {
@@ -308,7 +308,7 @@ void WaypointListView::slot_deleteWp(Waypoint& wp)
 
   // The calculator can own a selected waypoint. Important! First
   // announce deletion of waypoint for cancel to have a valid instance.
-  const Waypoint* wpc = calculator->getselectedWp();
+  const Waypoint* wpc = calculator->getTargetWp();
 
   if( wpc && *wpc == wp )
     {
@@ -352,7 +352,7 @@ void WaypointListView::slot_deleteWPs()
     {
       // The calculator can own a selected waypoint. Important! First
       // announce deletion of waypoint for cancel to have a valid instance.
-      const Waypoint* wpc = calculator->getselectedWp();
+      const Waypoint* wpc = calculator->getTargetWp();
 
       if( wpc )
         {
@@ -406,7 +406,7 @@ void WaypointListView::slot_deleteAllWPs()
     {
       // The calculator can own a waypoint. Important! First
       // announce deletion of waypoint for cancel to have a valid instance.
-      const Waypoint* wpc = calculator->getselectedWp();
+      const Waypoint* wpc = calculator->getTargetWp();
 
       if( wpc )
         {

@@ -136,7 +136,7 @@ void PointListView::slot_Selected()
 
   if (_wp)
     {
-      if(_wp->equals(calculator->getselectedWp()))
+      if(_wp->equals(calculator->getTargetWp()))
         {
           m_cmdSelect->setEnabled(false);
         }

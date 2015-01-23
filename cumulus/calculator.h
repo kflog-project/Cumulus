@@ -120,9 +120,9 @@ public:
  *
  * This is a Singleton class.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 class Calculator : public QObject
 {
@@ -172,9 +172,9 @@ public:
   const Distance& getlastDistance() const { return lastDistance; };
 
   /**
-   * Return the selected waypoint object.
+   * \return The selected target waypoint object.
    */
-  const Waypoint* getselectedWp() const { return selectedWp; };
+  const Waypoint* getTargetWp() const { return targetWp; };
 
   /**
    * Read property of Altitude lastAltitude.
@@ -182,7 +182,7 @@ public:
   const Altitude& getlastAltitude()const { return lastAltitude; };
 
   /**
-   * @returns the last known altitude AGL (Above ground Level)
+   * \return the last known altitude AGL (Above ground Level)
    */
   const Altitude& getlastAGLAltitude()
     {
@@ -191,7 +191,7 @@ public:
     };
 
   /**
-   * @returns the last known altitude AHL (Above home level)
+   * \return the last known altitude AHL (Above home level)
    */
   const Altitude& getlastAHLAltitude()
     {
@@ -238,7 +238,7 @@ public:
    */
   double getLastRequiredLD()
   {
-    if ( selectedWp )
+    if ( targetWp )
       {
         return lastRequiredLD;
       }
@@ -350,13 +350,13 @@ public:
   };
 
   /**
-   * @returns the arrival Altitude regarding wind and last altitude
+   * \return the arrival Altitude regarding wind and last altitude
    */
   bool glidePath(int aLastBearing, Distance aDistance,
                  Altitude aElevation, Altitude &arrival, Speed &BestSpeed );
 
   /**
-   * @returns the Glider Polar
+   * \return the Glider Polar
    */
   Polar* getPolar()
   {
@@ -364,7 +364,7 @@ public:
   };
 
   /**
-   * @returns the Reachable List
+   * \return the Reachable List
    */
   ReachableList* getReachList()
   {
@@ -377,7 +377,7 @@ public:
   };
 
   /**
-   * @returns the variometer object
+   * \return the variometer object
    */
   const Vario* getVario()
   {
@@ -393,7 +393,7 @@ public:
     };
 
   /**
-   * @returns the wind analyzer
+   * \return the wind analyzer
    */
   const WindAnalyser* getWindAnalyser()
   {
@@ -401,8 +401,7 @@ public:
   };
 
   /**
-   * @returns true if the current flight mode matches the
-   * given pseudo-mode
+   * \return true if the current flight mode matches the given pseudo-mode
    */
   bool matchesFlightMode(GeneralConfig::UseInMode);
 
@@ -414,7 +413,7 @@ public:
     };
 
   /**
-   * @returns true if we are faster in move as or equal 35km/h.
+   * @return True if we are in move otherwise fale.
    */
   bool moving();
 
@@ -457,6 +456,14 @@ public:
   {
     return m_windStore;
   };
+
+  /**
+   * Sets a new waypoint as target. The old waypoint instance is
+   * deleted and a new one allocated.
+   *
+   * \param newTarget The new target waypoint
+   */
+  void setTargetWp( Waypoint* newTarget );
 
   protected:
 
@@ -781,12 +788,7 @@ public:
    */
   void switchMapScale(const double& newScale);
 
-private: // Private methods
-  /**
-   * Sets a new selected waypoint. The old waypoint instance is
-   * deleted and a new one allocated.
-   */
-  void setSelectedWp( Waypoint* newWp );
+private:
 
   /**
    * Calculates the distance to the currently selected waypoint and
@@ -847,8 +849,8 @@ private: // Private attributes
   int lastBearing;
   /** Contains the last calculated distance to the waypoint */
   Distance lastDistance;
-  /** The currently selected waypoint */
-  Waypoint* selectedWp;
+  /** The selected target waypoint */
+  Waypoint* targetWp;
   /** Contains the last calculated ETA */
   QTime lastETA;
   /** contains the current state of ETA calculation */

@@ -922,7 +922,7 @@ void PreFlightTaskPage::slotAccept()
       // exists and this waypoint belongs to a task. In this case we
       // will reset the selection.
       extern Calculator* calculator;
-      const Waypoint *calcWp = calculator->getselectedWp();
+      const Waypoint *calcWp = calculator->getTargetWp();
 
       if( calcWp && calcWp->taskPointIndex != -1 )
         {
@@ -936,7 +936,7 @@ void PreFlightTaskPage::slotAccept()
 
       // If a waypoint selection exists, we do overwrite it with the begin
       // point of the new flight task.
-      if( calculator->getselectedWp() )
+      if( calculator->getTargetWp() )
         {
           // Reset taskpoint selection in calculator to prevent user query.
           emit newWaypoint(static_cast<Waypoint *> (0), true);

@@ -2623,7 +2623,7 @@ void MapContents::slotReloadMapData()
   extern MapMatrix   *_globalMapMatrix;
 
   // Update the global selected waypoint
-  Waypoint *wp = (Waypoint *) calculator->getselectedWp();
+  Waypoint *wp = (Waypoint *) calculator->getTargetWp();
 
   if ( wp )
     {

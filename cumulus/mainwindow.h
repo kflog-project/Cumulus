@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2014 by Axel Pauli
+                        : (C) 2007-2015 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,9 +25,9 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef _MainWindow_h
@@ -305,11 +305,12 @@ protected:
   virtual void closeEvent (QCloseEvent*);
 
 private slots:
+
   /**
    * This slot is called if the user presses C in manual
-   * navigation mode. It centers the map on the current waypoint.
+   * navigation mode. It centers the map on the current target waypoint.
    */
-  void slotCenterToWaypoint();
+  void slotCenterToTarget();
 
   /**
    * Called if the user pressed V in map view. Adjusts the
@@ -317,6 +318,12 @@ private slots:
    * as good as possible.
    */
   void slotEnsureVisible();
+
+  /**
+   * Called if the user pressed SHIFT+R in map view. It will removed the
+   * target selection.
+   */
+  void slotRemoveTarget();
 
   /**
    * Called to show the context menu.
@@ -502,6 +509,7 @@ private:
   QAction* actionToggleTrailDrawing;
 
   QAction* actionEnsureVisible;
+  QAction* actionRemoveTarget;
   QAction* actionSelectTask;
   QAction* actionPreFlight;
   QAction* actionSetupConfig;

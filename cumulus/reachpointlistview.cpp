@@ -539,7 +539,7 @@ void ReachpointListView::slot_Selected()
       cmdHome->setEnabled(true);
     }
 
-  if( ReachpointListView::getCurrentEntry()->equals(calculator->getselectedWp()) )
+  if( ReachpointListView::getCurrentEntry()->equals(calculator->getTargetWp()) )
     {
       cmdSelect->setEnabled(false);
     }

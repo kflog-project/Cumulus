@@ -1659,9 +1659,9 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
       // isSelected is used for the currently selected target point
       bool isSelected = false;
 
-      if( calculator && calculator->getselectedWp() )
+      if( calculator && calculator->getTargetWp() )
         {
-          if( *calculator->getselectedWp() == wp )
+          if( *calculator->getTargetWp() == wp )
             {
               isSelected = true;
             }
@@ -1851,10 +1851,10 @@ void Map::p_drawLabel( QPainter* painter,
   // Check, if our point has a selection. In this case inverse drawing is used.
   bool isSelected = false;
 
-  if( calculator && calculator->getselectedWp() )
+  if( calculator && calculator->getTargetWp() )
     {
-      if( calculator->getselectedWp()->name == name &&
-          calculator->getselectedWp()->wgsPoint == origP )
+      if( calculator->getTargetWp()->name == name &&
+          calculator->getTargetWp()->wgsPoint == origP )
         {
           isSelected = true;
         }
@@ -2882,9 +2882,9 @@ void Map::p_drawDirectionLine(const QPoint& from)
       return;
     }
 
-  if (calculator && calculator->getselectedWp())
+  if (calculator && calculator->getTargetWp())
     {
-      QPoint to  = _globalMapMatrix->map(calculator->getselectedWp()->projPoint);
+      QPoint to  = _globalMapMatrix->map(calculator->getTargetWp()->projPoint);
 
       if( from == to )
         {
@@ -2892,7 +2892,7 @@ void Map::p_drawDirectionLine(const QPoint& from)
           return;
         }
 
-      QColor col = ReachableList::getReachColor(calculator->getselectedWp()->wgsPoint);
+      QColor col = ReachableList::getReachColor(calculator->getTargetWp()->wgsPoint);
 
       // we do take the task course line width
       qreal penWidth = GeneralConfig::instance()->getTargetLineWidth();
@@ -2913,7 +2913,7 @@ void Map::p_drawDirectionLine(const QPoint& from)
 void Map::p_drawHeadingLine(const QPoint& from)
 {
   if( ! GeneralConfig::instance()->getHeadingLineDrawState() ||
-      ! calculator || ! calculator->getselectedWp() )
+      ! calculator || ! calculator->getTargetWp() )
     {
       return;
     }
@@ -2956,7 +2956,7 @@ void Map::p_drawHeadingLine(const QPoint& from)
 void Map::p_drawRelBearingInfo()
 {
   if( ! GeneralConfig::instance()->getMapShowRelBearingInfo() ||
-      ! calculator || ! calculator->getselectedWp() ||
+      ! calculator || ! calculator->getTargetWp() ||
         calculator->currentFlightMode() != Calculator::cruising )
     {
       return;
