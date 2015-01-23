@@ -588,7 +588,7 @@ bool jniEnv( JNIEnv** env )
   args.group = 0;
   args.version = JNI_VERSION_1_6;
 
-  m_jvm->AttachCurrentThread((void **) env, &args);
+  m_jvm->AttachCurrentThread(env, &args);
 
   if (! *env)
     {
