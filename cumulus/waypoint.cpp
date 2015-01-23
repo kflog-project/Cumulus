@@ -13,7 +13,9 @@
 **
 ***********************************************************************/
 
+#ifndef KFLOG_FILE_MAGIC
 #define KFLOG_FILE_MAGIC 0x404b464c
+#endif
 
 #include <QtCore>
 

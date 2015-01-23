@@ -65,7 +65,7 @@ class Waypoint
    *
    * \return True on success otherwise false.
    */
-  bool write( const Waypoint* wp, const QString& fileName );
+  static bool write( const Waypoint* wp, const QString& fileName );
 
   /**
    * Read a waypoint from a file.
