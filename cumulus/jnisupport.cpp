@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2014 by Axel Pauli
+ **                   2012-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -313,10 +313,10 @@ static void nativeBaroAltitude( JNIEnv* /*env*/,
 }
 
 /**
- * Called from the Java side, if the app if recreated after a kill to restore
- * the last target in the calculator.
+ * Called from the Java side, if the App is recreated after a kill to restore
+ * the last saved states.
  */
-static void nativeRestoreTarget( JNIEnv* /*env*/, jobject /*myobject*/ )
+static void nativeRestore( JNIEnv* /*env*/, jobject /*myobject*/ )
 {
   if( shutdown == true )
     {
@@ -325,8 +325,11 @@ static void nativeRestoreTarget( JNIEnv* /*env*/, jobject /*myobject*/ )
 
   extern Calculator* calculator;
 
-  CalculatorRestoreTargetEvent *crte = new CalculatorRestoreTargetEvent();
-  QCoreApplication::postEvent( calculator, crte );
+  RestoreEvent *re = new RestoreEvent();
+  QCoreApplication::postEvent( calculator, re );
+
+  re = new RestoreEvent();
+  QCoreApplication::postEvent( MainWindow::mainWindow(), re );
 }
 
 /* The array of native methods to register.
@@ -343,7 +346,7 @@ static JNINativeMethod methods[] = {
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
 	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude},
-	{"nativeRestoreTarget", "()V", (void *)nativeRestoreTarget}
+	{"nativeRestore", "()V", (void *)nativeRestore}
 };
 
 /**

@@ -25,7 +25,7 @@
  *
  * \date 2012-2015
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -235,17 +235,17 @@ class AltitudeEvent : public QEvent
   double m_altitude;
 };
 
-/* Posted by the native method "nativeRestoreTarget" which is called
- * from Java side after a recreation of app to restore the last target.
+/* Posted by the native method "nativeRestore" which is called
+ * from Java side after a recreation of App to restore the last states.
  */
-class CalculatorRestoreTargetEvent : public QEvent
+class RestoreEvent : public QEvent
 {
   public:
 
-  CalculatorRestoreTargetEvent() : QEvent( (QEvent::Type) (QEvent::User + 7) )
+  RestoreEvent() : QEvent( (QEvent::Type) (QEvent::User + 7) )
   {};
 
-  virtual ~CalculatorRestoreTargetEvent() {};
+  virtual ~RestoreEvent() {};
 };
 
 #endif

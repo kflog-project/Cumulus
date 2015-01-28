@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2015 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
@@ -14,8 +14,6 @@
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -28,9 +26,9 @@
  *
  * A class which handles the task file load and storage.
  *
- * \date 2013-2014
+ * \date 2013-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef TASK_FILE_MANAGER_H_
@@ -77,9 +75,22 @@ class TaskFileManager
 
   bool loadTaskListNew( QList<FlightTask*>& flightTaskList, QString fileName="" );
 
+  /**
+   * Loads a single flight task, selected by its name from a file.
+   *
+   * \param[in] taskName Name of flight task to be loaded.
+   *
+   * \param[in] fileName Name of task file to be used.
+   *
+   * \return FlightTask object in case of success otherwise NULL. Note, the
+   *         returned object is created on the heap and the memory management
+   *         is in responsible by the caller.
+   */
+  FlightTask* loadTask( QString taskName, QString fileName="" );
+
   /** Saves all tasks contained in the list in the task file.
    *
-   * \param flightTaskList List with the flight tasks to be stored
+   * \param flightTaskList List with the flight tasks to be stored.
    *
    * \param fileNameFile name of task, if empty a default is used.
    *

@@ -27,7 +27,7 @@
  *
  * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef _MainWindow_h
@@ -303,6 +303,9 @@ protected:
    * for confirmation
    */
   virtual void closeEvent (QCloseEvent*);
+
+  /** Add an event receiver, used by Android only. */
+  bool event(QEvent *event);
 
 private slots:
 

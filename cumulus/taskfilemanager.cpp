@@ -6,15 +6,14 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2015 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
 **   Author: Axel Pauli <kflog.cumulus@gmail.com>
+**
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -408,6 +407,35 @@ bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
            << fn;
 
   return true;
+}
+
+FlightTask* TaskFileManager::loadTask( QString taskName, QString fileName )
+{
+  QList<FlightTask*> ftl;
+
+  if( loadTaskList( ftl, fileName ) == false )
+    {
+      return 0;
+    }
+
+  FlightTask* ft = 0;
+
+  // Search desired task by name in list.
+  for( int i = 0; i < ftl.size(); i++ )
+    {
+      FlightTask* ft = ftl.at(i);
+
+      if( ft->getTaskName() == taskName )
+	{
+	  // Take found element from the list.
+	  ft = ftl.takeAt(i);
+	  break;
+	}
+    }
+
+  // Remove all allocated list members
+  qDeleteAll(ftl);
+  return ft;
 }
 
 bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,

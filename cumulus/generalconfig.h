@@ -1073,6 +1073,18 @@ class GeneralConfig : protected QSettings
     return _currentTask;
   };
 
+  /** sets current map task  */
+  void setMapCurrentTask( const QString newValue )
+  {
+    _mapCurrentTask = newValue;
+  };
+
+  /** gets current map task */
+  QString &getMapCurrentTask()
+  {
+    return _mapCurrentTask;
+  };
+
   /** sets current task  */
   void setCurrentTask( const QString newValue )
   {
@@ -3023,8 +3035,11 @@ class GeneralConfig : protected QSettings
   double _autoLoggerStartSpeed;
   // true air speed
   Speed _tas;
-  // The name of the current selected task
+  // The name of the selected task in the preflight task list.
   QString _currentTask;
+
+  // The name of the current task at the map.
+  QString _mapCurrentTask;
 
   // The current used McCready value
   Speed _mcCready;

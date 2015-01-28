@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map files as value lists.
  *
- * \date 2000-2014
+ * \date 2000-2015
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef MAP_CONTENTS_H
@@ -260,9 +260,9 @@ class MapContents : public QObject
     void saveWaypointList();
 
     /**
-     * Write property of FlightTask * currentTask.
+     * Sets the current flight task.
      */
-    void setCurrentTask( FlightTask * _newVal);
+    void setCurrentTask( FlightTask* newTask );
 
     /**
      * Returns the current flight task.
@@ -273,6 +273,13 @@ class MapContents : public QObject
     {
       return currentTask;
     };
+
+    /**
+     * Restores the last set flight task. Can be used after a reboot.
+     *
+     * \return True in case of success otherwise false.
+     */
+    bool restoreFlightTask();
 
     /**
      * @return true if the coordinates of the waypoint in the argument

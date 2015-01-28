@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -41,6 +41,7 @@
 #include "mapview.h"
 #include "projectionbase.h"
 #include "resource.h"
+#include "taskfilemanager.h"
 #include "waypointcatalog.h"
 #include "welt2000.h"
 #include "wgspoint.h"
@@ -152,6 +153,10 @@ MapContents::~MapContents()
     }
 
   qDeleteAll(airspaceList);
+
+  // Reset last set task.
+  GeneralConfig::instance()->setMapCurrentTask( "" );
+  GeneralConfig::instance()->save();
 }
 
 // save the current waypoint list
@@ -3575,22 +3580,53 @@ void MapContents::addDir (QStringList& list,
 
 /** Take over a new FlightTask as current task. Note, that passed
  *  task can be null, if it is reset. */
-void MapContents::setCurrentTask( FlightTask* _newVal)
+void MapContents::setCurrentTask( FlightTask* newTask)
 {
   // an old task instance must be deleted
   if ( currentTask != 0 )
     {
       delete currentTask;
+      GeneralConfig::instance()->setMapCurrentTask( newTask->getTaskName() );
+    }
+  else
+    {
+      GeneralConfig::instance()->setMapCurrentTask( "" );
     }
 
-  currentTask = _newVal;
+  GeneralConfig::instance()->save();
+
+  currentTask = newTask;
 
   // Set declaration date-time in flight task. Is used by the IGC logger in the
   // C record as declaration date-time.
-  if( _newVal )
+  if( newTask )
     {
       currentTask->setDeclarationDateTime();
     }
+}
+
+bool MapContents::restoreFlightTask()
+{
+  QString lastTaskName = GeneralConfig::instance()->getMapCurrentTask();
+
+  if( lastTaskName.isEmpty() )
+    {
+      // No task name is stored.
+      return false;
+    }
+
+  TaskFileManager tfm;
+
+  FlightTask* ft = tfm.loadTask( lastTaskName );
+
+  if( ft == 0 )
+    {
+      // Task name was not found in the flight task list.
+      return false;
+    }
+
+  setCurrentTask( ft );
+  return true;
 }
 
 /** Returns true if the coordinates of the waypoint in the argument

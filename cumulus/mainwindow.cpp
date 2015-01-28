@@ -3110,7 +3110,26 @@ bool MainWindow::isRootWindow()
     }
 }
 
-// resize the list view tabs, if requested
+bool MainWindow::event( QEvent *event )
+{
+ // Handles events addressed to the calculator
+  if( event->type() == QEvent::User + 7 )
+    {
+      // The Android OS has restarted the App after a kill. In this case we try
+      // to restore the last set task.
+      if( _globalMapContents->restoreFlightTask() == false )
+	{
+	  return true;
+	}
+
+      slotPreFlightDataChanged();
+      return true;
+    }
+
+  // Calls the default event processing.
+  return QObject::event(event);
+}
+
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
   qDebug("MainWindow::resizeEvent(): w=%d, h=%d", event->size().width(), event->size().height() );

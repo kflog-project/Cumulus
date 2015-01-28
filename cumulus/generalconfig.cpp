@@ -374,6 +374,7 @@ void GeneralConfig::load()
   _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
   _mapShowLabelsExtraInfo         = value( "ShowLabelsExtraInfo", false ).toBool();
   _mapShowRelBearingInfo          = value( "ShowRelBearingInfo", true ).toBool();
+  _mapCurrentTask                 = value( "CurrentTask", "" ).toString();
 
   _wayPointScaleBorders[Waypoint::Low]    = value( "WpScaleBorderLow", 125 ).toInt();
   _wayPointScaleBorders[Waypoint::Normal] = value( "WpScaleBorderNormal", 250 ).toInt();
@@ -810,6 +811,7 @@ void GeneralConfig::save()
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
   setValue( "ShowLabelsExtraInfo", _mapShowLabelsExtraInfo );
   setValue( "ShowRelBearingInfo", _mapShowRelBearingInfo );
+  setValue( "CurrentTask", _mapCurrentTask );
 
   setValue( "LoadRoads", _mapLoadRoads );
   setValue( "LoadMotorways", _mapLoadMotorways );
