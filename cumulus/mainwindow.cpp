@@ -643,7 +643,7 @@ void MainWindow::slotCreateSplash()
  */
 void MainWindow::slotCreateApplicationWidgets()
 {
-  // qDebug( "MainWindow::slotCreateApplicationWidgets()" );
+  qDebug() << "MainWindow::slotCreateApplicationWidgets()";
 
 #ifdef MAEMO
 
@@ -1016,7 +1016,7 @@ void MainWindow::slotCreateApplicationWidgets()
   // set viewMap as central widget
   setCentralWidget( viewMap );
 
-  // set map view as the central widget
+  // set the map view as the default widget
   setView( mapView );
 
   // Make the status bar visible. Maemo hides it per default.
@@ -1030,7 +1030,8 @@ void MainWindow::slotCreateApplicationWidgets()
  */
 void MainWindow::slotFinishStartUp()
 {
-  // qDebug() << "MainWindow::slotFinishStartUp()";
+  qDebug() << "MainWindow::slotFinishStartUp()";
+
   GeneralConfig *conf = GeneralConfig::instance();
 
   if( conf->getLoggerAutostartMode() == true )
@@ -1088,10 +1089,22 @@ void MainWindow::slotFinishStartUp()
   // start timer with 10s
   m_displayTrigger->start( 10000 );
 
-  // Enable JNI transfer now.
-  jniShutdown( false );
+  // Check, if the Android App was restarted after a OS kill. In this case
+  // we have to restore some things.
+  if( jniIsRestarted() )
+    {
+      calculator->restoreSavedWaypoint();
+
+      if( _globalMapContents->restoreFlightTask() == true )
+	{
+	  slotPreFlightDataChanged();
+        }
+    }
 
   language = jniGetLanguage();
+
+  // Enable JNI transfer now.
+  jniShutdown( false );
 
 #endif
 
@@ -3112,20 +3125,6 @@ bool MainWindow::isRootWindow()
 
 bool MainWindow::event( QEvent *event )
 {
- // Handles events addressed to the calculator
-  if( event->type() == QEvent::User + 7 )
-    {
-      // The Android OS has restarted the App after a kill. In this case we try
-      // to restore the last set task.
-      if( _globalMapContents->restoreFlightTask() == false )
-	{
-	  return true;
-	}
-
-      slotPreFlightDataChanged();
-      return true;
-    }
-
   // Calls the default event processing.
   return QObject::event(event);
 }

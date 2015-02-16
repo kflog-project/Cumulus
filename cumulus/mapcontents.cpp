@@ -3582,6 +3582,8 @@ void MapContents::addDir (QStringList& list,
  *  task can be null, if it is reset. */
 void MapContents::setCurrentTask( FlightTask* newTask)
 {
+  qDebug() << "MapContents::setCurrentTask()" << newTask;
+
   // an old task instance must be deleted
   if ( currentTask != 0 )
     {
@@ -3607,6 +3609,8 @@ void MapContents::setCurrentTask( FlightTask* newTask)
 
 bool MapContents::restoreFlightTask()
 {
+  qDebug() << "MapContents::restoreFlightTask()";
+
   QString lastTaskName = GeneralConfig::instance()->getMapCurrentTask();
 
   if( lastTaskName.isEmpty() )

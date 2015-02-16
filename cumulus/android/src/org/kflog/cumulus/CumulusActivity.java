@@ -93,7 +93,7 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @date 2012-2015
  * 
- * @version 1.2
+ * @version 1.3
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -105,6 +105,9 @@ import org.kflog.cumulus.CumulusIOIO;
 public class CumulusActivity extends QtActivity
 {
   static final String TAG = "CumActivity";
+  
+  // Flag to store a restart of the App after a kill by the OS due to low on memory.
+  private boolean m_isRestarted = false;
   
   // After this time and no user activity or movement the screen is dimmed.
   static final long DIMM1_SCREEN_TO = 120000;
@@ -760,6 +763,26 @@ private final Handler m_commHandler = new Handler()
 		return string;
 	}
   
+  /**
+   * Returns the restarted flag.
+   * 
+   * @return True if system was restarted otherwise false.
+   */
+  synchronized public boolean isRestarted()
+  {
+	return m_isRestarted;
+  }
+  
+  /**
+   * Sets the restart flag to the passed value.
+   * 
+   * @param flag New value for the restart flag.
+   */
+  synchronized public void setRestarted(boolean flag)
+  {
+	m_isRestarted = flag;
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
@@ -773,6 +796,9 @@ private final Handler m_commHandler = new Handler()
 		// Dalvid VM decided to kill the Cumulus process. The Qt part saved
 		// some information for reinstall but that is a bug.
 		savedInstanceState.putBoolean("Started", false);
+		
+		// Set restart flag to true, to restore some settings in the native part.
+		setRestarted( true );
 	  }
 	
     try
@@ -2170,7 +2196,7 @@ private final Handler m_commHandler = new Handler()
     	      {
     	    	restoreInstanceState();
     	      }
-    	    });
+    	     });
        	}
     	
         return;

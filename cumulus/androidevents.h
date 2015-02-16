@@ -235,17 +235,4 @@ class AltitudeEvent : public QEvent
   double m_altitude;
 };
 
-/* Posted by the native method "nativeRestore" which is called
- * from Java side after a recreation of App to restore the last states.
- */
-class RestoreEvent : public QEvent
-{
-  public:
-
-  RestoreEvent() : QEvent( (QEvent::Type) (QEvent::User + 7) )
-  {};
-
-  virtual ~RestoreEvent() {};
-};
-
 #endif
