@@ -122,7 +122,7 @@ public:
  *
  * \date 2002-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 class Calculator : public QObject
 {
@@ -465,10 +465,12 @@ public:
    */
   void setTargetWp( Waypoint* newTarget );
 
-  protected:
-
-  /** Add an event receiver, used by Android only. */
-  bool event(QEvent *event);
+  /**
+   * Restores a saved waypoint instance, if available.
+   *
+   * \return True, if waypoint instance could be restored otherwise false.
+   */
+  bool restoreSavedWaypoint();
 
  public slots:
 

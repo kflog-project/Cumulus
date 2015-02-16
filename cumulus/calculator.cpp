@@ -1968,26 +1968,20 @@ Vector& Calculator::getLastWind()
   return m_lastWind.wind;
 }
 
-bool Calculator::event( QEvent *event )
+bool Calculator::restoreSavedWaypoint()
 {
- // Handles events addressed to the calculator
-  if( event->type() == QEvent::User + 7 )
+  qDebug() << "Calculator::restoreSavedWaypoint()";
+
+  Waypoint wp;
+
+  // Filename of last saved target waypoint.
+  QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/target.wpt";
+
+  if( wp.read( &wp, fn ) )
     {
-      // The Android OS has restarted the App after a kill. In this case we try
-      // to restore the last set target.
-      Waypoint wp;
-
-      // Filename of saved last waypoint target.
-      QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/target.wpt";
-
-      if( wp.read( &wp, fn ) )
-	{
-	  setTargetWp( &wp );
-	}
-
+      setTargetWp( &wp );
       return true;
     }
 
-  // Calls the default event processing.
-  return QObject::event(event);
+  return false;
 }
