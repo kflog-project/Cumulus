@@ -145,7 +145,6 @@ QString jniGetLanguage();
  */
 QHash<QString, float> jniGetDisplayMetrics();
 
-
 /**
  * Returns the Android build data as a hash in key value
  * notation.
@@ -188,3 +187,10 @@ bool jniShutdownFlag();
  * \return Result of download. 0 means all is ok.
  */
 int jniDownloadFile( QString& url, QString& destination );
+
+/**
+ * Gets the restart flag from the Android activity.
+ *
+ * \return True if system was restarted otherwise false.
+ */
+bool jniIsRestarted();

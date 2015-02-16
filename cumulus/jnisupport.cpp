@@ -56,6 +56,7 @@ static jmethodID m_byte2Gps           = 0;
 static jmethodID m_nativeShutdownID   = 0;
 static jmethodID m_openHardwareMenu   = 0;
 static jmethodID m_downloadFile       = 0;
+static jmethodID m_isRestarted        = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -312,26 +313,6 @@ static void nativeBaroAltitude( JNIEnv* /*env*/,
     }
 }
 
-/**
- * Called from the Java side, if the App is recreated after a kill to restore
- * the last saved states.
- */
-static void nativeRestore( JNIEnv* /*env*/, jobject /*myobject*/ )
-{
-  if( shutdown == true )
-    {
-      return;
-    }
-
-  extern Calculator* calculator;
-
-  RestoreEvent *re = new RestoreEvent();
-  QCoreApplication::postEvent( calculator, re );
-
-  re = new RestoreEvent();
-  QCoreApplication::postEvent( MainWindow::mainWindow(), re );
-}
-
 /* The array of native methods to register.
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
@@ -345,8 +326,7 @@ static JNINativeMethod methods[] = {
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
-	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude},
-	{"nativeRestore", "()V", (void *)nativeRestore}
+	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude}
 };
 
 /**
@@ -548,6 +528,17 @@ bool initJni( JavaVM* vm, JNIEnv* env )
   if ( isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of downloadFile";
+      return false;
+    }
+
+
+  m_isRestarted = env->GetMethodID( clazz,
+                                    "isRestarted",
+                                    "()Z");
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning() << "initJni: could not get ID of isRestarted";
       return false;
     }
 
@@ -966,6 +957,28 @@ int jniDownloadFile( QString& url, QString& destination )
     {
       qWarning("jniGpsCmd: exception when calling Java method \"downloadFile\"");
       result = OperationCanceledError;
+    }
+
+  jniDetachCurrentThread();
+  return result;
+}
+
+bool jniIsRestarted()
+{
+  JNIEnv* env = 0;
+
+  if( !jniEnv( &env ) )
+    {
+      return false;
+    }
+
+  jboolean result = (jboolean) env->CallBooleanMethod( m_cumActObject,
+                                                       m_isRestarted );
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning("jniIsRestarted: exception when calling Java method \"isRestarted\"");
+      result = false;
     }
 
   jniDetachCurrentThread();
