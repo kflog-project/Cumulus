@@ -304,9 +304,6 @@ protected:
    */
   virtual void closeEvent (QCloseEvent*);
 
-  /** Add an event receiver, used by Android only. */
-  bool event(QEvent *event);
-
 private slots:
 
   /**

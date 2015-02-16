@@ -643,7 +643,7 @@ void MainWindow::slotCreateSplash()
  */
 void MainWindow::slotCreateApplicationWidgets()
 {
-  qDebug() << "MainWindow::slotCreateApplicationWidgets()";
+  // qDebug() << "MainWindow::slotCreateApplicationWidgets()";
 
 #ifdef MAEMO
 
@@ -1030,7 +1030,7 @@ void MainWindow::slotCreateApplicationWidgets()
  */
 void MainWindow::slotFinishStartUp()
 {
-  qDebug() << "MainWindow::slotFinishStartUp()";
+  // qDebug() << "MainWindow::slotFinishStartUp()";
 
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -3121,12 +3121,6 @@ bool MainWindow::isRootWindow()
     {
       return false;
     }
-}
-
-bool MainWindow::event( QEvent *event )
-{
-  // Calls the default event processing.
-  return QObject::event(event);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
