@@ -184,7 +184,7 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   if (fileMagic != KFLOG_FILE_MAGIC)
     {
       file.close();
-      return -1;
+      return false;
     }
 
   wp->rwyList.clear();
@@ -222,6 +222,8 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
       in >> quint8v;  rwy.m_isOpen = quint8v;
       in >> quint8v;  rwy.m_isBidirectional = quint8v;
     }
+
+  file.close();
 
   // Map the WGS84 coordinates to the current projection.
   wp->projPoint = _globalMapMatrix->wgsToMap(wp->wgsPoint);
