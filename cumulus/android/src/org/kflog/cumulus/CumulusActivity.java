@@ -1444,8 +1444,7 @@ private final Handler m_commHandler = new Handler()
       {
         // If the number of satellites changes, this method is always called.
         // Therefore we report only right status changes.
-        Log.d(TAG, "onStatusChanged: Provider=" + provider + ", Status="
-            + status);
+        // Log.d(TAG, "onStatusChanged: Provider=" + provider + ", Status=" + status);
 
         if (provider.equals(LocationManager.GPS_PROVIDER) && gpsEnabled)
           {
