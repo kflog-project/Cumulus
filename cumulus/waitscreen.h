@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -36,7 +34,7 @@
  * This class represents a widget to indicate what is happening
  * to the program. It is used while loading maps for instance.
  *
- * \date 2002-2012
+ * \date 2002-2015
  */
 class WaitScreen : public QDialog
 {

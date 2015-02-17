@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -33,12 +31,13 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   //setModal(true);
 
   QGridLayout * topLayout  = new QGridLayout;
-  topLayout->setMargin(15);
+  topLayout->setMargin(5);
+  topLayout->setSpacing( 10 );
   topLayout->setColumnMinimumWidth(0, 45);
 
   QGridLayout * backLayout = new QGridLayout(this);
   backLayout->setMargin(0);
-  backLayout->addLayout(topLayout, 1, Qt::AlignLeft);
+  backLayout->addLayout(topLayout, 1, 1);
   backLayout->setRowMinimumHeight(0, 3);
   backLayout->setRowMinimumHeight(2, 3);
   backLayout->setColumnMinimumWidth(0, 3);
@@ -50,19 +49,16 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   backLayout->addWidget(frm, 0, 0, 3, 3);
 
   Glider = new QLabel(this);
-  topLayout->addWidget(Glider, 0, 0, 3, 0);
+  topLayout->addWidget(Glider, 0, 0, 3, 1);
 
   QLabel* txt = new QLabel(tr("Cumulus is working, please wait!"), this);
-  txt->setMinimumHeight(22);
-  topLayout->addWidget(txt, 0, Qt::AlignLeft);
+  topLayout->addWidget(txt, 0, 1, Qt::AlignLeft);
 
   Text1 = new QLabel(this);
-  Text1->setMinimumHeight(22);
-  topLayout->addWidget(Text1, 1, Qt::AlignLeft);
+  topLayout->addWidget(Text1, 1, 1, Qt::AlignLeft);
 
   Text2 = new QLabel(this);
-  Text2->setMinimumHeight(22);
-  topLayout->addWidget(Text2, 2, Qt::AlignLeft);
+  topLayout->addWidget(Text2, 2, 1, Qt::AlignLeft);
 
   _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
   _glider = QPixmap(40,40);
