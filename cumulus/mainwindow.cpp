@@ -353,33 +353,33 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
       // b) Roboto
       //
       // If a wrong font is set umlauts maybe not correct displayed!
-      int weight = fdb.weight("Roboto", "Normal");
 
-      if( weight == -1 )
+      // LG Nexus 5
+      if( fdb.weight("Roboto Condensed", "Normal") != -1 )
 	{
-	  weight = fdb.weight("Roboto", "Regular");
+	  appFont.setFamily( "Roboto Condensed" );
 	}
-
-      // qDebug() << "Roboto weight=" << weight;
-
-      if( weight != -1 )
-        {
-          appFont.setFamily( "Roboto" );
-          qDebug() << "Android: set font family Roboto";
+      else if( fdb.weight("Roboto-Regular", "Normal") != -1 )
+	{
+	  // Samsung Galaxy S3
+	  appFont.setFamily( "Roboto-Regular" );
+	}
+      else if( fdb.weight("Roboto", "Normal") != -1 )
+	{
+	  // Samsung Galaxy Tab 2, Dell Streak 5
+	  appFont.setFamily( "Roboto" );
+	}
+      else if( fdb.weight("Droid Serif-Regular", "Normal") != -1 )
+	{
+          appFont.setFamily( "Droid Serif-Regular" );
+        }
+      else if( fdb.weight("Droid Serif", "Normal") != -1 )
+	{
+          appFont.setFamily( "Droid Serif" );
         }
       else
         {
-          weight = fdb.weight("Droid Sans", "Normal");
-
-          if( weight != -1 )
-            {
-              appFont.setFamily( "Droid Sans" );
-              qDebug() << "Android: set font family Droid Sans";
-            }
-          else
-            {
-              qDebug() << "Android: using default font: " << appFt.family();
-            }
+           qDebug() << "Android: using default font: " << appFt.family();
         }
 
 #else
