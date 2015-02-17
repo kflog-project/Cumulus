@@ -20,13 +20,25 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-02-17 AP: Issue #41 fixed. Adapt map screen layout to higher resolution
+                   screens on Android.
+
+[o] 2015-02-17 AP: Issue #40 fixed. Restore a running task, if app is recreated
+                   after an Android OS kill due to low on memory. That can
+                   happen, if the app is moved in the background by the user.
+
+[o] 2015-02-17 AP: Issue #38 fixed. Restore the selected target, if app is
+                   recreated after an Android OS kill due to low on memory.
+                   That can happen, if the app is moved in the background by
+                   the user.
+
 [o] 2015-01-23 AP: Issue #39 fixed. Add a new menu point, that a selected target
                    can be removed.
 
-[-] 2015-01-21 AP: Issue #36 fixed. The ETA display on the map is not reset,
+[-] 2015-01-21 AP: Issue #37 fixed. The ETA display on the map is not reset,
                    if the GPS connection is going lost.
 
-[o] 2015-01-20 AP: Issue #35 fixed. Android IOIO software updated to release 5.
+[o] 2015-01-20 AP: Issue #36 fixed. Android IOIO software updated to release 5.
                    IOIO interface check commented out to ensure the backward
                    compability.
 
