@@ -643,7 +643,7 @@ void MainWindow::slotCreateSplash()
  */
 void MainWindow::slotCreateApplicationWidgets()
 {
-  // qDebug() << "MainWindow::slotCreateApplicationWidgets()";
+  qDebug() << "MainWindow::slotCreateApplicationWidgets()";
 
 #ifdef MAEMO
 
@@ -1030,7 +1030,7 @@ void MainWindow::slotCreateApplicationWidgets()
  */
 void MainWindow::slotFinishStartUp()
 {
-  // qDebug() << "MainWindow::slotFinishStartUp()";
+  qDebug() << "MainWindow::slotFinishStartUp()";
 
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -1093,12 +1093,22 @@ void MainWindow::slotFinishStartUp()
   // we have to restore some things.
   if( jniIsRestarted() )
     {
-      calculator->restoreSavedWaypoint();
-
       if( _globalMapContents->restoreFlightTask() == true )
 	{
 	  slotPreFlightDataChanged();
         }
+
+      calculator->restoreWaypoint();
+    }
+  else
+    {
+       // Remove a previous saved target waypoint.
+      QString fn = conf->getUserDataDirectory() + "/target.wpt";
+      Waypoint::write( static_cast<Waypoint *>(0), fn );
+
+      // Reset a previous saved task.
+      conf->setMapCurrentTask( "" );
+      conf->save();
     }
 
   language = jniGetLanguage();
