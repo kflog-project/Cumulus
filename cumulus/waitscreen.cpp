@@ -33,7 +33,7 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   //setModal(true);
 
   QGridLayout * topLayout  = new QGridLayout;
-  topLayout->setMargin(5);
+  topLayout->setMargin(15);
   topLayout->setColumnMinimumWidth(0, 45);
 
   QGridLayout * backLayout = new QGridLayout(this);
