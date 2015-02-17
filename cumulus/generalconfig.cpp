@@ -410,7 +410,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Airfield Data");
-  _airfieldSource             = value("Source", 1).toInt();
+  _airfieldSource             = value("Source", 0).toInt(); // openAIP is used
   _airfieldHomeRadius         = value("HomeRadius", 500000).toFloat(); // m is used
   _airfieldRunwayLengthFilter = value("RunwayLengthFilter", 0).toFloat(); // m is used
   _openAipPoiFileList         = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
