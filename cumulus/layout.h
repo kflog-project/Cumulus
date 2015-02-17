@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010-2014 by Axel Pauli
+**   Copyright (c):  2010-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2014
+ * \date 2010-2015
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -231,6 +229,8 @@ class Layout
 
   static int getButtonSize();
 
+  static int getButtonSize( const int points );
+
   /**
    * Adapts a font point size to a default point size.
    *
@@ -239,6 +239,13 @@ class Layout
    * \return The adapted font size.
    */
   static int font2defaultSize( const int size );
+
+  /**
+   * Prints the array of font point size together with its related pixel size.
+   *
+   * \param font The font to be used for printing.
+   */
+  static void fontPoints2Pixel( QFont font );
 
   /**
    * Returns a style sheet for usage in a combobox, to make the scrollbar

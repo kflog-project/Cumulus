@@ -177,10 +177,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
+  titlePix->setScaledContents( true );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
 
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
@@ -190,7 +191,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix);
+  buttonBox->addWidget(titlePix, 0, Qt::AlignCenter);
 
   contentLayout->addStretch( 10 );
   contentLayout->addLayout(buttonBox);

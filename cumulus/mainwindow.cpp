@@ -414,6 +414,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
            appFt.weight(),
            QFontMetrics(appFt).height() );
 
+  Layout::fontPoints2Pixel( appFt );
+
   // For Maemo it's really better to adapt the size of some common widget
   // elements. That is done with the help of the class MaemoStyle.
   qDebug() << "GuiStyles:" << QStyleFactory::keys();

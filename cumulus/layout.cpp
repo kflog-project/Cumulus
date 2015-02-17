@@ -310,6 +310,22 @@ int Layout::getButtonSize()
   return size;
 }
 
+int Layout::getButtonSize( const int points )
+{
+#ifndef ANDROID
+  Q_UNUSED(points)
+  return IconSize;
+
+#else
+
+  QFont font = MainWindow::mainWindow()->font();
+  font.setPointSize( points );
+
+  return QFontMetrics(font).height();
+
+#endif
+}
+
 int Layout::font2defaultSize( const int size )
 {
   // Font: "Roboto" "Normal" "6 7 8 9 10 11 12 14 16 18 20 22 24 26 28 36 48 72"
@@ -325,6 +341,22 @@ int Layout::font2defaultSize( const int size )
 
   return sizeArray[0];
 }
+
+/**
+ * Prints the array of font point size together with its related pixel size.
+ */
+void Layout::fontPoints2Pixel( QFont font )
+{
+  // Font: "Roboto" "Normal" "6 7 8 9 10 11 12 14 16 18 20 22 24 26 28 36 48 72"
+  int sizeArray[18] = { 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
+
+  for( int i = 0; i <  18; i++ )
+    {
+      font.setPointSize( sizeArray[i] );
+      qDebug() << "Font Points =" << font.pointSize() << "- Pixels =" << QFontMetrics(font).height();
+    }
+}
+
 
 QString Layout::getCbSbStyle()
 {
