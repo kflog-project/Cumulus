@@ -470,7 +470,7 @@ public:
    *
    * \return True, if waypoint instance could be restored otherwise false.
    */
-  bool restoreSavedWaypoint();
+  bool restoreWaypoint();
 
  public slots:
 

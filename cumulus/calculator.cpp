@@ -149,10 +149,6 @@ Calculator::~Calculator()
   // save last position as new center position of the map
   conf->setCenterLat(lastPosition.x());
   conf->setCenterLon(lastPosition.y());
-
-  // Remove a saved target waypoint.
-  QString fn = conf->getUserDataDirectory() + "/target.wpt";
-  Waypoint::write( static_cast<Waypoint *>(0), fn );
 }
 
 /** Read property of Altitude for Altimeter display */
@@ -1968,7 +1964,7 @@ Vector& Calculator::getLastWind()
   return m_lastWind.wind;
 }
 
-bool Calculator::restoreSavedWaypoint()
+bool Calculator::restoreWaypoint()
 {
   qDebug() << "Calculator::restoreSavedWaypoint()";
 
