@@ -153,10 +153,6 @@ MapContents::~MapContents()
     }
 
   qDeleteAll(airspaceList);
-
-  // Reset last set task.
-  GeneralConfig::instance()->setMapCurrentTask( "" );
-  GeneralConfig::instance()->save();
 }
 
 // save the current waypoint list
@@ -3582,35 +3578,32 @@ void MapContents::addDir (QStringList& list,
  *  task can be null, if it is reset. */
 void MapContents::setCurrentTask( FlightTask* newTask)
 {
-  qDebug() << "MapContents::setCurrentTask()" << newTask;
-
-  // an old task instance must be deleted
-  if ( currentTask != 0 )
+  // An existing old task instance must be deleted!
+  if( currentTask != 0 )
     {
       delete currentTask;
-      GeneralConfig::instance()->setMapCurrentTask( newTask->getTaskName() );
     }
-  else
-    {
-      GeneralConfig::instance()->setMapCurrentTask( "" );
-    }
-
-  GeneralConfig::instance()->save();
 
   currentTask = newTask;
 
-  // Set declaration date-time in flight task. Is used by the IGC logger in the
-  // C record as declaration date-time.
-  if( newTask )
+  QString taskName;
+
+  if( newTask != 0 )
     {
+      taskName = newTask->getTaskName();
+
+      // Set declaration date-time in flight task. Is used by the IGC logger
+      // in the C record as declaration date-time.
       currentTask->setDeclarationDateTime();
     }
+
+  // Save the last set flight task. Can be used in a restore case on Android.
+  GeneralConfig::instance()->setMapCurrentTask( taskName );
+  GeneralConfig::instance()->save();
 }
 
 bool MapContents::restoreFlightTask()
 {
-  qDebug() << "MapContents::restoreFlightTask()";
-
   QString lastTaskName = GeneralConfig::instance()->getMapCurrentTask();
 
   if( lastTaskName.isEmpty() )
