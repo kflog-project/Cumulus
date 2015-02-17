@@ -77,6 +77,7 @@ Calculator::Calculator(QObject* parent) :
   m_calculateLD = false;
   m_calculateETA = false;
   m_calculateVario = true;
+  m_calculateTas = true;
   m_androidPressureAltitude = false;
   m_calculateWind = true;
   m_lastWind.wind = Vector(0.0, 0.0);
@@ -251,6 +252,7 @@ void Calculator::slot_Position( QPoint& newPositionValue )
   calcDistance();
   calcBearing();
   calcETA();
+  calcTas();
   calcGlidePath();
   // Calculate List of reachable items
   m_reachablelist->calculate(false);
@@ -622,6 +624,52 @@ void Calculator::calcETA()
   // qDebug("New ETA=%s", etaNew.toString().toLatin1().data());
 }
 
+void Calculator::calcTas()
+{
+  // \param [in] tk Track, course over ground in degrees
+  // \param [in] gs Ground speed
+  // \param [in] wd Wind direction in degrees
+  // \param [in] ws Wind speed
+  // \param [out] etas Estimated true air speed.
+  // \param [out] eth Estimated true heading
+
+  if( m_calculateTas == false )
+    {
+      return;
+    }
+
+  if( ! lastSpeed.isValid() || lastSpeed.getMps() <= 0.0 )
+    {
+      return;
+    }
+
+  Vector& wind = Calculator::getLastWind();
+
+  if( ! wind.getSpeed().isValid() )
+    {
+      return;
+    }
+
+  double etas = -1;
+  int    eth  = -1;
+
+  calcETAS( lastHeading,
+	    lastSpeed.getMps(),
+	    wind.getAngleDeg(),
+	    wind.getSpeed().getMps(),
+	    etas,
+	    eth );
+
+  qDebug() << "GS" << lastSpeed.getKph()
+           << "Heading" << lastHeading
+           << "WS" << wind.getSpeed().getKph()
+           << "WD" << wind.getAngleDeg()
+           << "etas" << etas
+           << "km/h" << "eth" << eth;
+
+  lastTas.setMps( etas );
+  emit lastTas();
+}
 
 /** Calculates the required LD and the current LD about the last seconds,
     if required */
@@ -1062,12 +1110,12 @@ void Calculator::slot_WaterAndBugs( const int water, const int bugs )
     }
 }
 
-/**
- * set TAS value
- */
-void Calculator::slot_Tas(const Speed& spd)
+void Calculator::slot_GpsTas(const Speed& tas)
 {
-  lastTas.setMps(spd.getMps());
+  // We get the TAS from another source. Therefore it must not be calculated by us.
+  m_calculateTas = false;
+  lastTas.setMps( tas.getMps() );
+  emit lastTas();
 }
 
 /**
@@ -1126,7 +1174,7 @@ void Calculator::slot_GpsVariometer(const Speed& lift)
 /** Sets the current position to point newPos. */
 void Calculator::setPosition(const QPoint& newPos)
 {
-  lastPosition=newPos;
+  lastPosition = newPos;
   emit newPosition(lastPosition, Calculator::MAN);
 
   calcDistance();
@@ -1160,6 +1208,7 @@ void Calculator::slot_settingsChanged()
   // User could be changed the GPS device.
   m_calculateVario = true;
   m_calculateWind  = true;
+  m_calculateTas   = true;
 
   m_androidPressureAltitude = false;
 

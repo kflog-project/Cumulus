@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2013  by Axel Pauli
+**                   2008-2015  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -153,5 +151,26 @@ bool windTriangle( const double trueCourse,
                    double &groundSpeed,
                    double &wca,
                    double &trueHeading );
+
+/**
+ * This function was provided by Christof Baeuerle <baeuerle@gmx.org>
+ *
+ * Calculates the estimated true air speed and the true heading. Ground speed
+ * and wind speed must used the same units! The ETAS is calculated in these
+ * units.
+ *
+ * \param [in] tk Track, course over ground in degrees
+ * \param [in] gs Ground speed
+ * \param [in] wd Wind direction in degrees
+ * \param [in] ws Wind speed
+ * \param [out] etas Estimated true air speed.
+ * \param [out] eth Estimated true heading
+ */
+bool calcETAS( const int tk,
+               const double gs,
+               const int wd,
+               const double ws,
+               double& etas,
+               int& eth );
 
 #endif

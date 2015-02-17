@@ -540,26 +540,33 @@ public:
    * Change position to the new coordinate point. Called by move map with mouse.
    */
   void slot_changePosition(QPoint& newPosition);
+
   /**
    * set McCready value
    */
   void slot_Mc(const Speed&);
+
   /**
    * set water and bug values used by glider polare.
    */
   void slot_WaterAndBugs( const int water, const int bugs );
+
   /**
-   * set TAS value
+   * Set the TAS value, delivered by the GPS. It is received by an external
+   * logger device.
    */
-  void slot_Tas(const Speed&);
+  void slot_GpsTas(const Speed& tas);
+
   /**
    * increment McCready value
    */
   void slot_McUp();
+
   /**
    * decrement McCready value; don't get negative
    */
   void slot_McDown();
+
   /**
    * Variometer lift receiver and distributor to map display.
    */
@@ -707,9 +714,9 @@ public:
   void newSpeed(const Speed&);
 
   /**
-  * Sent if a new airspeed has been obtained
+  * Sent if a new true airspeed has been obtained
   */
-  void newAirspeed(const Speed&);
+  void newTas(const Speed&);
 
   /**
    * Sent if a new heading has been obtained
@@ -813,6 +820,11 @@ private:
   void calcETA();
 
   /**
+   * Calculates the TAS (True Air Speed) from the last provided heading and wind.
+   */
+  void calcTas();
+
+  /**
    * Calculates the glide path to the current waypoint and the needed height
    */
   void calcGlidePath();
@@ -865,6 +877,8 @@ private: // Private attributes
   Speed lastMc;
   /** Contains the last TAS value */
   Speed lastTas;
+  /** contains the current state of TAS calculation */
+  bool m_calculateTas;
   /** Contains the last variometer value */
   Speed lastVario;
   /** Contains the last known glide path information */

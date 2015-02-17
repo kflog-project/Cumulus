@@ -778,7 +778,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( GpsNmea::gps, SIGNAL( newSpeed(Speed&) ),
            calculator, SLOT( slot_Speed(Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newTas(const Speed&) ),
-           calculator, SLOT( slot_Tas(const Speed&) ) );
+           calculator, SLOT( slot_GpsTas(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newPosition(QPoint&) ),
            calculator, SLOT( slot_Position(QPoint&) ) );
   connect( GpsNmea::gps, SIGNAL( newAltitude(Altitude&, Altitude&, Altitude&) ),

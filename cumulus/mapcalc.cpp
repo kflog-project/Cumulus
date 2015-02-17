@@ -7,17 +7,16 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2013  by Axel Pauli
+**                   2008-2015  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
 #include <cstdlib>
 #include <cmath>
+#include <complex>
 
 #include <QtGlobal>
 #include <QtCore>
@@ -515,6 +514,27 @@ bool windTriangle( const double trueCourse,
     {
       return false; // wind too strong
     }
+
+  return true;
+}
+
+bool calcETAS( const int tk,
+               const double gs,
+               const int wd,
+               const double ws,
+               double& etas,
+               int& eth )
+{
+  //construction of std::complex values
+  std::complex<double> cplGS = std::polar (gs, ( (tk/360) * 2 * M_PI));
+  std::complex<double> cplWI = std::polar (ws, ( (wd/360) * 2 * M_PI));
+
+  //calculation of the std::complex result
+  std::complex<double> cplETAS = cplGS + cplWI;
+
+  //calculation of the scalar results
+  etas = abs(cplETAS);
+  eth  = ( arg(cplETAS) / (2 * M_PI) ) * 360;
 
   return true;
 }
