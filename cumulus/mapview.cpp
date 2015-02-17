@@ -86,26 +86,61 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // background color and fixed width (to avoid frequent resizing)
 
   // This fixed size is based on a screen resolution of 800x480. Android devices
-  // like the Galaxy III have a screen resolution of 1280x720. To handle that
-  // in a better way, a second fixed size limit is introduced.
+  // like the Galaxy III have a higher screen resolution e.g. 1280x720. To handle
+  //  that in a better way, a second fixed size limit is calculated.
   int leftFixedWidth = 220;
 
-  if( parent->size().width() > 1000 )
+  QFont ft22; ft22.setPointSize( 22 );
+  QFontMetrics qfm22(ft22);
+
+  if( parent->size().width() > 820 )
     {
-      // For higher resolution screens
-      leftFixedWidth = 280;
+      // If the screen width is greater than 820, we try to calculate an adequate
+      // one for higher resolution screens.
+      int maxWidth = qfm22.width("MMMMM");
+
+      // Calculate width as ratio to the default screen 800px width. The preferred
+      // left fixed width is 220px.
+      int preferredWidth = static_cast<int>(float(parent->size().width()) * 220.0 / 800.0);
+
+      if( preferredWidth < maxWidth )
+	{
+	  leftFixedWidth = preferredWidth;
+	}
+      else
+	{
+	  leftFixedWidth = maxWidth;
+	}
+
+      if( leftFixedWidth < 220 )
+	{
+	  // Fallback in error case
+	  leftFixedWidth = 220;
+	}
     }
 
-  // If we have screens with a larger resolution, the heught of the info boxes
-  // are increased. The default height is 60 pixels. For higher resolution we
-  // should use 70 pixels.
+  // If we have screens with a larger resolution, the height of the info boxes
+  // are increased. The default height is 60 pixels. For higher resolutions we
+  // try to calculate an adequate one.
+  QFont ft20; ft20.setPointSize( 20 );
+  QFontMetrics qfm20(ft20);
+
   int textLabelBoxHeight = 60;
 
-  if( parent->size().height() > 600 )
+  if( parent->size().height() > 500 )
     {
       // For higher resolution screens
-      textLabelBoxHeight = 70;
+      textLabelBoxHeight = qfm20.height();
+
+      if( textLabelBoxHeight < 60 )
+	{
+	  // Fallback to default, if to low.
+	  textLabelBoxHeight = 60;
+	}
     }
+
+  qDebug() << "MapView: Left fixed width =" << leftFixedWidth
+           << "- Textbox height =" << textLabelBoxHeight;
 
   // widget to group waypoint functions
   QWidget *wayBar = new QWidget( this );
