@@ -423,7 +423,7 @@ FlightTask* TaskFileManager::loadTask( QString taskName, QString fileName )
   // Search desired task by name in list.
   for( int i = 0; i < ftl.size(); i++ )
     {
-      FlightTask* ft = ftl.at(i);
+      ft = ftl.at(i);
 
       if( ft->getTaskName() == taskName )
 	{
