@@ -255,17 +255,12 @@ class Layout
    */
   static QString getCbSbStyle();
 
-#ifdef ANDROID
-
   /**
    * Gets the scaled density of the screen resolution by Android.
    *
    * @return The scaled density of the screen resolution.
    */
   static float getScaledDensity();
-
-#endif
-
 };
 
 #endif /* LAYOUT_H_ */

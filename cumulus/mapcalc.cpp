@@ -523,18 +523,18 @@ bool calcETAS( const int tk,
                const int wd,
                const double ws,
                double& etas,
-               int& eth )
+               double& eth )
 {
   //construction of std::complex values
-  std::complex<double> cplGS = std::polar (gs, ( (tk/360) * 2 * M_PI));
-  std::complex<double> cplWI = std::polar (ws, ( (wd/360) * 2 * M_PI));
+  std::complex<double> cplGS = std::polar (gs, ( (tk/180) * M_PI));
+  std::complex<double> cplWI = std::polar (ws, ( (wd/180) * M_PI));
 
   //calculation of the std::complex result
   std::complex<double> cplETAS = cplGS + cplWI;
 
   //calculation of the scalar results
-  etas = abs(cplETAS);
-  eth  = ( arg(cplETAS) / (2 * M_PI) ) * 360;
+  etas = std::abs(cplETAS);
+  eth  = ( std::arg(cplETAS) / (2 * M_PI) ) * 360;
 
   return true;
 }

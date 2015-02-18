@@ -259,6 +259,17 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed->setUpdateInterval( 750 );
   _speed->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _speed);
+  connect(_speed, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsTas()));
+
+  // add Tas widget
+  _tas = new MapInfoBox( this, "#c0c0c0" );
+  _tas->setVisible( false );
+  _tas->setPreText("Tas");
+  _tas->setValue("-");
+  _tas->setUpdateInterval( 750 );
+  _tas->setMapInfoBoxMaxHeight( textLabelBoxHeight );
+  SHLayout->addWidget( _tas);
+  connect(_tas, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsTas()));
 
   //add Heading widget
   _heading = new MapInfoBox( this, "#c0c0c0" );
@@ -496,11 +507,12 @@ void MapView::showEvent( QShowEvent* event )
   Q_UNUSED( event )
 
   // Used map info box widgets
-  MapInfoBox *boxWidgets[14] = { _heading,
+  MapInfoBox *boxWidgets[15] = { _heading,
                                  _bearing,
                                  _rel_bearing,
                                  _distance,
                                  _speed,
+                                 _tas,
                                  _speed2fly,
                                  _mc,
                                  _vario,
@@ -514,7 +526,7 @@ void MapView::showEvent( QShowEvent* event )
   int gtWidth = 0;
 
   // Adapt the pretext display width to the text size.
-  for( int i = 0; i < 14; i++ )
+  for( int i = 0; i < 15; i++ )
     {
       MapInfoBox *ptr = boxWidgets[i];
 
@@ -571,16 +583,28 @@ void MapView::slot_Heading(int head)
 /** Called if speed has changed */
 void MapView::slot_Speed(const Speed& speed)
 {
-  if (speed.getMph() < 0 )
+  if( ! speed.isValid() || speed.getMph() < 0 )
     {
       _speed->setValue("-");
     }
   else
     {
-      _speed->setValue(speed.getHorizontalText(false,0));
+      _speed->setValue(speed.getHorizontalText(false, 0));
     }
 }
 
+/** Called if TAS has changed */
+void MapView::slot_Tas( const Speed& tas )
+{
+  if( ! tas.isValid() || tas.getMph() < 0 )
+    {
+      _tas->setValue("-");
+    }
+  else
+    {
+      _tas->setValue(tas.getHorizontalText(false, 0));
+    }
+}
 
 /** called if the waypoint is changed in the calculator */
 void MapView::slot_Waypoint(const Waypoint *wp)
@@ -1269,6 +1293,23 @@ void MapView::slot_toggleDistanceEta()
       _eta->setPreUnit( "at" );
       show_ETA( m_lastEta, true );
       emit toggleETACalculation( true );
+    }
+}
+
+// toggle between ground speed and TAS widget on mouse signal
+void MapView::slot_toggleGsTas()
+{
+  if( _speed->isVisible() )
+    {
+      _speed->setVisible(false);
+      _tas->setVisible(true);
+      _tas->setValue( _tas->getValue(), true );
+    }
+  else
+    {
+      _tas->setVisible(false);
+      _speed->setVisible(true);
+      _speed->setValue( _speed->getValue(), true );
     }
 }
 

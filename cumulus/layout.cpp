@@ -98,16 +98,29 @@ int Layout::maxTextWidth( const QStringList& list, const QFont& font )
   return width;
 }
 
-#ifdef ANDROID
-
 float Layout::getScaledDensity()
 {
-  QHash<QString, float> dmh = jniGetDisplayMetrics();
+#ifdef ANDROID
 
-  return dmh.value( "scaledDensity", 0.0 );
-}
+  // We will cache the result because the density is a static value.
+  static float density = -1.0;
+
+  if( density == -1.0 )
+    {
+      QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+      density = dmh.value( "scaledDensity", 1.0 );
+    }
+
+  return density;
+
+#else
+
+  // That is the default for none Android.
+  return 1.0;
 
 #endif
+}
 
 int Layout::mouseSnapRadius()
 {
@@ -124,7 +137,7 @@ int Layout::mouseSnapRadius()
   // calculate radius in dependency of the scale factor
   QHash<QString, float> dmh = jniGetDisplayMetrics();
 
-  float sd = dmh.value( "scaledDensity", 0.0 );
+  float sd = dmh.value( "scaledDensity", 1.0 );
 
   if( sd > 1.0 )
     {

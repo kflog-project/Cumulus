@@ -56,9 +56,9 @@
  * This is the main view of the application, providing the map and
  * other useful in flight information.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version: 1.0
+ * \version: 1.1
  *
  */
 
@@ -259,6 +259,11 @@ class MapView : public QWidget
     void slot_LD( const double& rLD, const double& cLD );
 
     /**
+     * This slot is called, if the current TAS value has been modified
+     */
+    void slot_Tas( const Speed& tas );
+
+    /**
      * This slot is called if the glider selection has been modified
      */
     void slot_glider( const QString& glider );
@@ -316,6 +321,11 @@ class MapView : public QWidget
      * toggle between distance and ETA widget on mouse signal
      */
     void slot_toggleDistanceEta();
+
+    /**
+     * toggle between ground speed and TAS widget on mouse signal
+     */
+    void slot_toggleGsTas();
 
     /**
      * toggle between wind and LD widget on mouse signal
@@ -410,6 +420,8 @@ signals:
     MapInfoBox* _distance;
     /** reference to the speed label */
     MapInfoBox* _speed;
+    /** reference to the tas label */
+    MapInfoBox* _tas;
     /** reference to the best speed label */
     MapInfoBox* _speed2fly;
     /** reference to the McCready label */

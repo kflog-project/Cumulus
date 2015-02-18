@@ -643,7 +643,7 @@ void Calculator::calcTas()
       return;
     }
 
-  Vector& wind = Calculator::getLastWind();
+  Vector& wind = getLastWind();
 
   if( ! wind.getSpeed().isValid() )
     {
@@ -651,7 +651,7 @@ void Calculator::calcTas()
     }
 
   double etas = -1;
-  int    eth  = -1;
+  double eth  = -1;
 
   calcETAS( lastHeading,
 	    lastSpeed.getMps(),
@@ -664,11 +664,11 @@ void Calculator::calcTas()
            << "Heading" << lastHeading
            << "WS" << wind.getSpeed().getKph()
            << "WD" << wind.getAngleDeg()
-           << "etas" << etas
+           << "etas" << (etas * 3.6)
            << "km/h" << "eth" << eth;
 
   lastTas.setMps( etas );
-  emit lastTas();
+  emit newTas( lastTas );
 }
 
 /** Calculates the required LD and the current LD about the last seconds,
@@ -1115,7 +1115,7 @@ void Calculator::slot_GpsTas(const Speed& tas)
   // We get the TAS from another source. Therefore it must not be calculated by us.
   m_calculateTas = false;
   lastTas.setMps( tas.getMps() );
-  emit lastTas();
+  emit newTas( lastTas );
 }
 
 /**

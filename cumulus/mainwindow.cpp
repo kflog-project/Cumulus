@@ -882,8 +882,11 @@ void MainWindow::slotCreateApplicationWidgets()
 
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
-
   connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotShowContextMenu() ) );
+  connect( viewMap, SIGNAL( toggleVarioCalculation( const bool ) ),
+           calculator, SLOT( slot_toggleVarioCalculation(const bool) ) );
+  connect( viewMap, SIGNAL( toggleETACalculation( const bool ) ),
+           calculator, SLOT( slot_toggleETACalculation(const bool) ) );
 
   connect( calculator, SIGNAL( newWaypoint( const Waypoint* ) ),
            viewMap, SLOT( slot_Waypoint( const Waypoint* ) ) );
@@ -895,12 +898,12 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_Distance( const Distance& ) ) );
   connect( calculator, SIGNAL( newETA( const QTime& ) ),
            viewMap, SLOT( slot_ETA( const QTime& ) ) );
-  connect( viewMap, SIGNAL( toggleETACalculation( const bool ) ),
-           calculator, SLOT( slot_toggleETACalculation(const bool) ) );
   connect( calculator, SIGNAL( newHeading( int ) ),
            viewMap, SLOT( slot_Heading( int ) ) );
   connect( calculator, SIGNAL( newSpeed( const Speed& ) ),
            viewMap, SLOT( slot_Speed( const Speed& ) ) );
+  connect( calculator, SIGNAL( newTas( const Speed& ) ),
+           viewMap, SLOT( slot_Tas( const Speed& ) ) );
   connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
            viewMap, SLOT( slot_Altitude( const Altitude& ) ) );
   connect( calculator, SIGNAL( newPosition( const QPoint&, const int ) ),
@@ -919,8 +922,6 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_Mc( const Speed& ) ) );
   connect( calculator, SIGNAL( newVario( const Speed& ) ),
            viewMap, SLOT( slot_Vario( const Speed& ) ) );
-  connect( viewMap, SIGNAL( toggleVarioCalculation( const bool ) ),
-           calculator, SLOT( slot_toggleVarioCalculation(const bool) ) );
   connect( calculator, SIGNAL( newWind( Vector& ) ),
            viewMap, SLOT( slot_Wind( Vector& ) ) );
   connect( calculator, SIGNAL( newLD( const double&, const double&) ),
@@ -929,7 +930,6 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_glider( const QString&) ) );
   connect( calculator, SIGNAL( flightModeChanged(Calculator::FlightMode) ),
            viewMap, SLOT( slot_setFlightStatus(Calculator::FlightMode) ) );
-
   connect( calculator, SIGNAL( taskpointSectorTouched() ),
            m_logger, SLOT( slotTaskSectorTouched() ) );
   connect( calculator, SIGNAL( taskInfo( const QString&, const bool ) ),

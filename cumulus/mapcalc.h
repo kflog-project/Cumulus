@@ -171,6 +171,6 @@ bool calcETAS( const int tk,
                const int wd,
                const double ws,
                double& etas,
-               int& eth );
+               double& eth );
 
 #endif
