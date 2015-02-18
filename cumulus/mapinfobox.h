@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2014 by Axel Pauli
+                               2008-2015 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -79,9 +79,9 @@ protected:
  * pre-text or a pixmap. Optionally it can be clicked and connected to
  * a slot. Used on the \ref MapView.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  *
  */
 

@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2014 by Axel Pauli
+                               2008-2015 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
