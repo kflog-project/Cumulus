@@ -65,7 +65,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 {
   initMousePressTimer();
 
-  // Maximum pretext width in pixels. That value is a hard coded limit now!
+  // Maximum pretext width in pixels for X11 and Maemo.
   const int ptw = 35;
 
   // start font size
@@ -109,6 +109,11 @@ MapInfoBox::MapInfoBox( QWidget *parent,
     }
 
   // Set the calculated font.
+#ifdef ANDROID
+  // Android uses a predefined point size
+  f.setPointSize( 9 );
+#endif
+
   setFont(f);
 
   basics( borderColor );
