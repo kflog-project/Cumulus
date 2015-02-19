@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2014 by Axel Pauli
+**                   2007-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -133,7 +131,7 @@ void FlightTask::determineTaskType()
   distance_task = distance_total - tpList->at(1)->distance
                 - tpList->at(tpList->count() - 1)->distance;
 
-  if( dist(tpList->at(1)->getWGSPositionPtr(), tpList->at(tpList->count()-2)->getWGSPositionPtr()) < 1.0 )
+  if( MapCalc::dist(tpList->at(1)->getWGSPositionPtr(), tpList->at(tpList->count()-2)->getWGSPositionPtr()) < 1.0 )
     {
       // Distance between Takeoff and End point is lower as one km. We
       // check the FAI rules
@@ -168,10 +166,10 @@ void FlightTask::determineTaskType()
           // würde
           distance_task_d = distance_task - tpList->at(2)->distance -
                             tpList->at(5)->distance +
-                            dist(tpList->at(2)->getWGSPositionPtr(),
-                                 tpList->at(4)->getWGSPositionPtr());
+                            MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
+                                          tpList->at(4)->getWGSPositionPtr());
 
-          if(isFAI(distance_task_d, dist(tpList->at(2)->getWGSPositionPtr(),
+          if(isFAI(distance_task_d, MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
                                     tpList->at(4)->getWGSPositionPtr() ),
                    tpList->at(3)->distance, tpList->at(4)->distance))
             {
@@ -211,15 +209,15 @@ void FlightTask::determineTaskType()
           flightType = FlightTask::Unknown;
           distance_task_d = distance_task - tpList->at(2)->distance
                             - tpList->at(5)->distance
-                            + dist(tpList->at(2)->getWGSPositionPtr(),
+                            + MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
                                    tpList->at(4)->getWGSPositionPtr()) * 2;
 
           if( (distance_task_d / 2 <= 100) &&
               (tpList->at(2) == tpList->at(5)) &&
               (tpList->at(3) == tpList->at(6)) &&
               (tpList->at(4) == tpList->at(7)) &&
-              isFAI(distance_task, dist(tpList->at(2)->getWGSPositionPtr(),
-                                        tpList->at(4)->getWGSPositionPtr()),
+              isFAI(distance_task, MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
+                                                 tpList->at(4)->getWGSPositionPtr()),
                     tpList->at(3)->distance, tpList->at(4)->distance))
             {
               flightType = FlightTask::FAI_S2;
@@ -246,8 +244,8 @@ void FlightTask::determineTaskType()
           // 3x FAI Dreieck Start auf Schenkel
           distance_task_d = distance_task - tpList->at(2)->distance
                             - tpList->at(5)->distance
-                            + dist(tpList->at(2)->getWGSPositionPtr(),
-                                   tpList->at(4)->getWGSPositionPtr()) * 3;
+                            + MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
+                                            tpList->at(4)->getWGSPositionPtr()) * 3;
 
           flightType = Unknown;
           if( (distance_task_d / 3 <= 100) &&
@@ -257,8 +255,8 @@ void FlightTask::determineTaskType()
               (tpList->at(2) == tpList->at(8)) &&
               (tpList->at(3) == tpList->at(9)) &&
               (tpList->at(4) == tpList->at(10)) &&
-              isFAI(distance_task, dist(tpList->at(2)->getWGSPositionPtr(),
-                                   tpList->at(4)->getWGSPositionPtr()),
+              isFAI(distance_task, MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
+                                                 tpList->at(4)->getWGSPositionPtr()),
                     tpList->at(3)->distance, tpList->at(4)->distance))
             {
               flightType = FlightTask::FAI_S3;
@@ -315,8 +313,8 @@ double FlightTask::calculateSectorAngles( int loop )
       // directions to the next point
       if(tpList->count() >= loop + 1)
         {
-          bisectorAngle = getBearing(tpList->at(loop)->getWGSPosition(),
-                                     tpList->at(loop+1)->getWGSPosition());
+          bisectorAngle = MapCalc::getBearing(tpList->at(loop)->getWGSPosition(),
+                                              tpList->at(loop+1)->getWGSPosition());
         }
       break;
 
@@ -330,9 +328,9 @@ double FlightTask::calculateSectorAngles( int loop )
       if( loop >= 1 && tpList->count() >= loop + 1 )
         {
           // vector pointing to the outside of the two points
-          bisectorAngle = outsideVector(tpList->at(loop)->getWGSPosition(),
-                                        tpList->at(loop-1)->getWGSPosition(),
-                                        tpList->at(loop+1)->getWGSPosition());
+          bisectorAngle = MapCalc::outsideVector(tpList->at(loop)->getWGSPosition(),
+                                                 tpList->at(loop-1)->getWGSPosition(),
+                                                 tpList->at(loop+1)->getWGSPosition());
         }
       break;
 
@@ -345,7 +343,8 @@ double FlightTask::calculateSectorAngles( int loop )
       if(loop >= 1 && loop < tpList->count())
         {
           // direction to the previous point:
-          bisectorAngle = getBearing( tpList->at(loop)->getWGSPosition(), tpList->at(loop-1)->getWGSPosition() );
+          bisectorAngle = MapCalc::getBearing( tpList->at(loop)->getWGSPosition(),
+                                               tpList->at(loop-1)->getWGSPosition() );
         }
       break;
 
@@ -354,7 +353,7 @@ double FlightTask::calculateSectorAngles( int loop )
     }
 
   // set bisector angle of task point
-  bisectorAngle = normalize( bisectorAngle );
+  bisectorAngle = MapCalc::normalize( bisectorAngle );
   tpList->at(loop)->angle = bisectorAngle;
 
   // Update line settings, if required.
@@ -383,8 +382,8 @@ double FlightTask::calculateSectorAngles( int loop )
   invertAngle >= M_PI ? invertAngle -= M_PI : invertAngle += M_PI;
 
   // calculate min and max bisector angles
-  minAngle = normalize( invertAngle - (sectorAngle/2.) );
-  maxAngle = normalize( invertAngle + (sectorAngle/2.) );
+  minAngle = MapCalc::normalize( invertAngle - (sectorAngle/2.) );
+  maxAngle = MapCalc::normalize( invertAngle + (sectorAngle/2.) );
 
   // save min and max bisector angles
   tpList->at(loop)->minAngle = minAngle;
@@ -457,25 +456,25 @@ void FlightTask::setTaskPointData()
         {
           // Points are not identical, do calculate navigation parameters.
           // calculate bearing
-          tpList->at(n)->bearing = getBearing( tpList->at(n-1)->getWGSPosition(),
-                                               tpList->at(n)->getWGSPosition() );
+          tpList->at(n)->bearing = MapCalc::getBearing( tpList->at(n-1)->getWGSPosition(),
+                                                        tpList->at(n)->getWGSPosition() );
 
           // calculate distance
           tpList->at(n)->distance =
-              dist(tpList->at(n-1)->getWGSPositionPtr(), tpList->at(n)->getWGSPositionPtr());
+              MapCalc::dist(tpList->at(n-1)->getWGSPositionPtr(), tpList->at(n)->getWGSPositionPtr());
 
           // calculate wind parameters, if wind speed is defined. Ground
           // speed unit is meter per second.
           if( wtCalculation )
               {
                 tpList->at(n)->wtResult =
-                    windTriangle( tpList->at(n)->bearing * 180/M_PI,
-                                  cruisingSpeed.getMps(),
-                                  windDirection,
-                                  windSpeed.getMps(),
-                                  tpList->at(n)->groundSpeed,
-                                  tpList->at(n)->wca,
-                                  tpList->at(n)->trueHeading );
+                    MapCalc::windTriangle( tpList->at(n)->bearing * 180/M_PI,
+				           cruisingSpeed.getMps(),
+				 	   windDirection,
+					   windSpeed.getMps(),
+					   tpList->at(n)->groundSpeed,
+					   tpList->at(n)->wca,
+					   tpList->at(n)->trueHeading );
 
                 if( tpList->at(n)->wtResult == false )
                   {
@@ -1197,14 +1196,14 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   // calculate bearing from current position to the next task point from
   // task in radian
-  int bearing = int ( rint( getBearingWgs( calculator->getlastPosition(),
-                                           tpList->at( taskPointIndex )->getWGSPosition() ) ));
+  int bearing = int ( rint( MapCalc::getBearingWgs( calculator->getlastPosition(),
+                                                    tpList->at( taskPointIndex )->getWGSPosition() ) ));
 
   // calculate distance from current position to the next task point from
   // task in km
   QPoint p1 = calculator->getlastPosition();
   QPoint p2 = tpList->at( taskPointIndex )->getWGSPosition();
-  double distance = dist( &p1, &p2 );
+  double distance = MapCalc::dist( &p1, &p2 );
 
   bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
                                     tpList->at( taskPointIndex )->getElevation(),

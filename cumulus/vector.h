@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2009-2010 Axel Pauli
+**                   2009-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -36,7 +34,7 @@
  * You can also access the components of the speed in the X and Y directions.
  * Note that X counts latitudinal, Y count longitudinal.
  *
- * \date 2002-2010
+ * \date 2002-2015
  */
 class Vector
 {
@@ -51,12 +49,12 @@ public:
     ~Vector();
 
     /**
-     * Read property of int angle.
+     * Get angle in degrees.
      */
     int getAngleDeg();
 
     /**
-     * Get angle in radian
+     * Get angle in radian.
      */
     double getAngleRad();
 

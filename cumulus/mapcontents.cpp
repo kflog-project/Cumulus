@@ -1479,7 +1479,7 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
     {
       for( int j = north; j > south; j-=2 )
         {
-          int tile = mapTileNumber( j, i );
+          int tile = MapCalc::mapTileNumber( j, i );
           // qDebug("Lat=%d, Lon=%d, Tile=%d", j, i, tile );
 
           const char fileType[3] = { FILE_TYPE_GROUND,
@@ -3394,7 +3394,7 @@ void MapContents::drawIsoList(QPainter* targetP)
           // completely.
           QRect mapBorder = _globalMapMatrix->getViewBorder();
 
-          if( getTileBox( it.key() ).intersects(mapBorder) == false )
+          if( MapCalc::getTileBox( it.key() ).intersects(mapBorder) == false )
             {
               // qDebug("Tile=%d do not intersect", it.key() );
               continue;

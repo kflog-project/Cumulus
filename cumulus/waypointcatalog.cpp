@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2014 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -2326,7 +2326,7 @@ bool WaypointCatalog::takePoint( WGSPoint& point )
     {
       double radiusInKm = Distance::convertToMeters( _radius ) / 1000.;
 
-      double d = dist( &centerPoint, &point );
+      double d = MapCalc::dist( &centerPoint, &point );
 
       if( d > radiusInKm )
         {

@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2013 by Axel Pauli
+ **   Copyright (c): 2010-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -330,7 +328,7 @@ enum TaskPoint::PassageState
 
   // Here we are inside of outer radius, therefore we have to check the sector angle.
   // Calculate bearing from TP to current position
-  const double bearing = getBearingWgs( getWGSPosition(), position );
+  const double bearing = MapCalc::getBearingWgs( getWGSPosition(), position );
 
 #ifdef CUMULUS_DEBUG
   qDebug( "TP::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",

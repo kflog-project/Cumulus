@@ -394,8 +394,10 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
   Distance curDistance;
 
-  curDistance.setKilometers( dist(double(lastPosition.x()), double(lastPosition.y()),
-                             targetWp->wgsPoint.lat(), targetWp->wgsPoint.lon()) );
+  curDistance.setKilometers( MapCalc::dist(double(lastPosition.x()),
+                                           double(lastPosition.y()),
+                             targetWp->wgsPoint.lat(),
+                             targetWp->wgsPoint.lon()) );
 
   if ( curDistance == lastDistance )
     {
@@ -545,10 +547,10 @@ void Calculator::calcDistance( bool autoWpSwitch )
               TaskPoint *nextWp = tpList.at(m_selectedWpInList);
 
               // calculate the distance to the next waypoint
-              Distance dist2Next( dist( double(lastPosition.x()),
-                                        double(lastPosition.y()),
-                                        nextWp->getWGSPosition().lat(),
-                                        nextWp->getWGSPosition().lon() ) * 1000);
+              Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
+                                                 double(lastPosition.y()),
+                                                 nextWp->getWGSPosition().lat(),
+                                                 nextWp->getWGSPosition().lon() ) * 1000);
               curDistance = dist2Next;
 
               // announce task point change as none user interaction
@@ -650,24 +652,15 @@ void Calculator::calcTas()
       return;
     }
 
-  double etas = -1;
-  double eth  = -1;
+  int eth = -1;
 
-  calcETAS( lastHeading,
-	    lastSpeed.getMps(),
-	    wind.getAngleDeg(),
-	    wind.getSpeed().getMps(),
-	    etas,
-	    eth );
+  MapCalc::calcETAS( lastHeading,
+		     lastSpeed,
+		     wind.getAngleDeg(),
+		     wind.getSpeed(),
+		     lastTas,
+		     eth );
 
-  qDebug() << "GS" << lastSpeed.getKph()
-           << "Heading" << lastHeading
-           << "WS" << wind.getSpeed().getKph()
-           << "WD" << wind.getAngleDeg()
-           << "etas" << (etas * 3.6)
-           << "km/h" << "eth" << eth;
-
-  lastTas.setMps( etas );
   emit newTas( lastTas );
 }
 
@@ -895,7 +888,7 @@ void Calculator::calcBearing()
     }
   else
     {
-      double result = getBearing( lastPosition, targetWp->wgsPoint );
+      double result = MapCalc::getBearing( lastPosition, targetWp->wgsPoint );
 
       iresult = int (rint(result * 180./M_PI) );
 
@@ -919,19 +912,19 @@ void Calculator::slot_changePosition(int direction)
   switch (direction)
     {
     case MapMatrix::North:
-      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
+      kmPerDeg = MapCalc::dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
       lastPosition = QPoint((int) (lastPosition.x()+(distance/kmPerDeg) * 600), lastPosition.y());
       break;
     case MapMatrix::West:
-      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
+      kmPerDeg = MapCalc::dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
       lastPosition = QPoint(lastPosition.x(), (int) (lastPosition.y()-(distance/kmPerDeg) * 600));
       break;
     case MapMatrix::East:
-      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
+      kmPerDeg = MapCalc::dist(lastPosition.x(), lastPosition.y(), lastPosition.x(), lastPosition.y()+600000);
       lastPosition = QPoint(lastPosition.x(), (int) (lastPosition.y()+(distance/kmPerDeg) * 600));
       break;
     case MapMatrix::South:
-      kmPerDeg = dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
+      kmPerDeg = MapCalc::dist(lastPosition.x(), lastPosition.y(), lastPosition.x()+600000, lastPosition.y());
       lastPosition = QPoint((int) (lastPosition.x()-(distance/kmPerDeg) * 600), lastPosition.y());
       break;
     case MapMatrix::Home:
@@ -1362,7 +1355,7 @@ void Calculator::determineFlightStatus()
     case standstill: // we are not moving at all!
 
       if ( (samplelist[0].position == samplelist[1].position ||
-          ( dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005) &&
+          ( MapCalc::dist(&samplelist[0].position, &samplelist[1].position) / double(timediff) ) < 0.005) &&
            lastSpeed.getMps() <= 0.5 )
         {
           // may be too ridged, GPS errors could cause problems here
@@ -1375,7 +1368,7 @@ void Calculator::determineFlightStatus()
       break;
 
     case cruising: // we are flying from point A to point B
-      if (abs(angleDiff(lastHead, m_cruiseDirection)) <=  MAXCRUISEANGDIFF &&
+      if (abs(MapCalc::angleDiff(lastHead, m_cruiseDirection)) <=  MAXCRUISEANGDIFF &&
           samplelist[0].vector.getSpeed().getMps() > 0.5 )
         {
           return;
@@ -1389,7 +1382,7 @@ void Calculator::determineFlightStatus()
 
     case circlingR:
       //turning left means: the heading is decreasing
-      if (angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff))
+      if (MapCalc::angleDiff(prevHead, lastHead) > (-MINTURNANGDIFF * timediff))
         {
           flightMode = unknown;
           break;
@@ -1401,7 +1394,7 @@ void Calculator::determineFlightStatus()
 
     case circlingL:
       //turning right means: the heading is increasing
-      if (angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff))
+      if (MapCalc::angleDiff(prevHead, lastHead) < (MINTURNANGDIFF * timediff))
         {
           flightMode = unknown;
           break;
@@ -1455,7 +1448,7 @@ void Calculator::determineFlightStatus()
           if( i < (samples - 1) )
             {
               // angDiff can be positive or negative according to the turn direction
-              angDiff = (int) rint(angleDiff( samplelist[i].vector.getAngleDeg(), samplelist[i+1].vector.getAngleDeg() ));
+              angDiff = (int) rint(MapCalc::angleDiff( samplelist[i].vector.getAngleDeg(), samplelist[i+1].vector.getAngleDeg() ));
 
               altChange = int( samplelist[i].altitude.getMeters() - samplelist[i+1].altitude.getMeters() );
               //qDebug("analysis: position=(%d, %d)", samplelist->at(i)->position.x(),samplelist->at(i)->position.y() );
@@ -1647,7 +1640,7 @@ void Calculator::slot_ManualWindChanged( bool enabled )
     {
       v.setAngle( conf->getManualWindDirection() );
       v.setSpeed( conf->getManualWindSpeed() );
-    }
+   }
   else
     {
       // Try to get a wind info from the wind store.

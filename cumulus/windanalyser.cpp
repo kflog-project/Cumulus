@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Andre Somers
- **                   2009-2010 by Axel Pauli
+ **                   2009-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -195,7 +193,7 @@ void WindAnalyser::_calcWind()
 {
   // int degreePerStep = circleDegrees / circleSectors;
 
-  int aDiff = rint(angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() ));
+  int aDiff = rint(MapCalc::angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() ));
 
   /*
     Determine quality.
@@ -229,7 +227,7 @@ void WindAnalyser::_calcWind()
   quality = qMin( quality, 5 );
 
   // Invert maxVector angle
-  maxVector.setAngle( normalize( maxVector.getAngleDeg() + 180 ) );
+  maxVector.setAngle( MapCalc::normalize( maxVector.getAngleDeg() + 180 ) );
 
   // take both directions for min and max vector into account
   /*

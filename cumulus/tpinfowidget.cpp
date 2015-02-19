@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2014 Axel Pauli, kflog.cumulus@gmail.com
+**   Copyright (c):  2007-2015 Axel Pauli, kflog.cumulus@gmail.com
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -259,8 +259,8 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   ReachablePoint::reachable reach = ReachablePoint::no;
 
   // calculate Bearing
-  int bearing= int( rint(getBearingWgs( calculator->getlastPosition(),
-                                        nextTP->getWGSPosition() ) * 180/M_PI) );
+  int bearing= int( rint(MapCalc::getBearingWgs( calculator->getlastPosition(),
+                                                 nextTP->getWGSPosition() ) * 180/M_PI) );
   // glide path
   calculator->glidePath( bearing, dist2Next,
                          nextTP->getElevation(),
@@ -522,8 +522,8 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   Altitude minAlt( GeneralConfig::instance()->getSafetyAltitude().getMeters() );
 
   // calculate distance to passed waypoint
-  distance2Target.setKilometers(dist(double(lastPosition.x()), double(lastPosition.y()),
-				     wp->wgsPoint.lat(), wp->wgsPoint.lon()));
+  distance2Target.setKilometers(MapCalc::dist(double(lastPosition.x()), double(lastPosition.y()),
+                                              wp->wgsPoint.lat(), wp->wgsPoint.lon()));
 
   // Prepare output data
   QString display;
@@ -549,7 +549,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   ReachablePoint::reachable reach = ReachablePoint::no;
 
   // calculate Bearing
-  int bearing= int( rint(getBearingWgs( lastPosition, wp->wgsPoint ) * 180/M_PI) );
+  int bearing= int( rint(MapCalc::getBearingWgs( lastPosition, wp->wgsPoint ) * 180/M_PI) );
 
   // glide path
   calculator->glidePath( bearing, distance2Target,

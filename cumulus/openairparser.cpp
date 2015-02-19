@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2014 by Axel Pauli
+ **                   2009-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -836,8 +836,8 @@ bool OpenAirParser::makeAngleArc(QString line)
   int lon = _center.y();
 
   // grenzen 180 oder 90 beachten!
-  double distLat = dist( lat, lon, lat + 10000, lon );
-  double distLon = dist( lat, lon, lat, lon + 10000 );
+  double distLat = MapCalc::dist( lat, lon, lat + 10000, lon );
+  double distLon = MapCalc::dist( lat, lon, lat, lon + 10000 );
 
   double kmr = radius * MILE_kfl / 1000.;
   //qDebug( "distLat=%f, distLon=%f, radius=%fkm", distLat, distLon, kmr );
@@ -918,7 +918,7 @@ bool OpenAirParser::makeCoordinateArc(QString line)
     return false;
 
   //calculate the radius by taking the average of the two distances (in km)
-  radius = (dist(&_center, &coord1) + dist(&_center, &coord2)) / 2.0;
+  radius = (MapCalc::dist(&_center, &coord1) + MapCalc::dist(&_center, &coord2)) / 2.0;
 
   //qDebug( "Radius=%fKm, Dist1=%f, Dist2=%f",
   //radius, dist(&_center, &coord1), dist(&_center, &coord2) );
@@ -927,8 +927,8 @@ bool OpenAirParser::makeCoordinateArc(QString line)
   int lon = _center.y();
 
   // grenzen 180 oder 90 beachten!
-  double distLat = dist( lat, lon, lat + 10000, lon );
-  double distLon = dist( lat, lon, lat, lon + 10000 );
+  double distLat = MapCalc::dist( lat, lon, lat + 10000, lon );
+  double distLon = MapCalc::dist( lat, lon, lat, lon + 10000 );
 
   //qDebug( "distLat=%f, distLon=%f, radius=%fkm", distLat, distLon, radius );
 
@@ -966,8 +966,8 @@ void OpenAirParser::addCircle(const double& radius)
   int lon = _center.y();
 
   // Check limits 180 or 90 degrees?
-  double distLat = dist( lat, lon, lat + 10000, lon );
-  double distLon = dist( lat, lon, lat, lon + 10000 );
+  double distLat = MapCalc::dist( lat, lon, lat + 10000, lon );
+  double distLon = MapCalc::dist( lat, lon, lat, lon + 10000 );
 
   double kmr = radius * MILE_kfl / 1000.;
 

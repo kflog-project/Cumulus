@@ -584,8 +584,8 @@ double MapMatrix::ensureVisible(const QPoint& point2Show, QPoint center )
     }
 
   // get distances in both x and y directions in km and add some extra space
-  double xDist = dist(point2Show.x(), center.y(), center.x(), center.y()) * 1.3;
-  double yDist = dist(center.x(), point2Show.y(), center.x(), center.y()) * 1.3;
+  double xDist = MapCalc::dist(point2Show.x(), center.y(), center.x(), center.y()) * 1.3;
+  double yDist = MapCalc::dist(center.x(), point2Show.y(), center.x(), center.y()) * 1.3;
 
   // qDebug() << "MapMatrix::ensureVisible xdist=" << xDist << "ydist=" << yDist;
 

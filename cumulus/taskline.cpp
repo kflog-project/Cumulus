@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 Axel Pauli
+**   Copyright (c): 2013-2015 Axel Pauli
 **
 **   Created on: 28.01.2013
 **
@@ -14,8 +14,6 @@
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -67,24 +65,24 @@ void TaskLine::calculateElements()
   double llh = m_lineLength / 2.;
 
   // Calculate middle line begin right hand from center position
-  m_lineBegin = getPosition( m_lineCenter, llh , (m_direction + 90) );
+  m_lineBegin = MapCalc::getPosition( m_lineCenter, llh , (m_direction + 90) );
 
   // Calculate middle line end left hand from center position
-  m_lineEnd = getPosition( m_lineCenter, llh, (m_direction - 90) );
+  m_lineEnd = MapCalc::getPosition( m_lineCenter, llh, (m_direction - 90) );
 
   // Calculate outbound line points. They lay 500m in outbound direction from the
   // middle line.
-  m_outboundLineBegin = getPosition( m_lineBegin, 500., (m_direction) );
-  m_outboundLineEnd   = getPosition( m_lineEnd, 500., (m_direction) );
+  m_outboundLineBegin = MapCalc::getPosition( m_lineBegin, 500., (m_direction) );
+  m_outboundLineEnd   = MapCalc::getPosition( m_lineEnd, 500., (m_direction) );
 
   // Calculate line1 inbound points. They are cover the middle line and are 250m
   // longer at every side of the middle line.
-  m_inboundLine1Begin = getPosition( m_lineCenter, llh + 250., (m_direction + 90) );
-  m_inboundLine1End   = getPosition( m_lineCenter, llh + 250., (m_direction - 90) );
+  m_inboundLine1Begin = MapCalc::getPosition( m_lineCenter, llh + 250., (m_direction + 90) );
+  m_inboundLine1End   = MapCalc::getPosition( m_lineCenter, llh + 250., (m_direction - 90) );
 
   // Calculate line2 inbound points. They lay 500m before line 1 inbound.
-  m_inboundLine2Begin = getPosition( m_inboundLine1Begin, 500., (m_direction + 180) );
-  m_inboundLine2End   = getPosition( m_inboundLine1End,   500., (m_direction + 180) );
+  m_inboundLine2Begin = MapCalc::getPosition( m_inboundLine1Begin, 500., (m_direction + 180) );
+  m_inboundLine2End   = MapCalc::getPosition( m_inboundLine1End,   500., (m_direction + 180) );
 
   // Setup inbound and outbound regions. The regions are squares with the edge
   // length of the line.

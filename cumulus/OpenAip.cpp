@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2015 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -260,7 +260,7 @@ bool OpenAip::readNavAids( QString fileName,
                 {
                   if( m_filterRadius > 0.0 )
                     {
-                      double d = dist( &m_homePosition, rp.getWGSPositionPtr() );
+                      double d = MapCalc::dist( &m_homePosition, rp.getWGSPositionPtr() );
 
                       if( d > m_filterRadius )
                         {
@@ -691,7 +691,7 @@ bool OpenAip::readHotspots( QString fileName,
                 {
                   if( m_filterRadius > 0.0 )
                     {
-                      double d = dist( &m_homePosition, sp.getWGSPositionPtr() );
+                      double d = MapCalc::dist( &m_homePosition, sp.getWGSPositionPtr() );
 
                       if( d > m_filterRadius )
                         {
@@ -901,7 +901,7 @@ bool OpenAip::readAirfields( QString fileName,
 
                   if( m_filterRadius > 0.0 )
                     {
-                      double d = dist( &m_homePosition, af.getWGSPositionPtr() );
+                      double d = MapCalc::dist( &m_homePosition, af.getWGSPositionPtr() );
 
                       if( d > m_filterRadius )
                         {

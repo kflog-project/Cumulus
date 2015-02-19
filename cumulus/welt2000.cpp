@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2006-2014 by Axel Pauli, kflog.cumulus@gmail.com
+ **   Copyright (c):  2006-2015 by Axel Pauli, kflog.cumulus@gmail.com
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1149,7 +1149,7 @@ bool Welt2000::parse( QString& path,
           QPoint home = _globalMapMatrix->getHomeCoord();
           QPoint af( lat, lon );
 
-          double d = dist( &home, &af );
+          double d = MapCalc::dist( &home, &af );
 
           if( d > c_homeRadius )
             {

@@ -7,8 +7,8 @@
  ************************************************************************
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008 modified by Josua Dietze
- **                   2008-2015 modified by Axel Pauli
+ **                   2008 by Josua Dietze
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -2422,7 +2422,7 @@ void Map::p_drawMostRelevantObject( const Flarm::FlarmStatus& status )
     }
 
   // calculate true heading to the other object
-  int th = normalize( static_cast<int> ( GpsNmea::gps->getLastHeading()) + relBearing );
+  int th = MapCalc::normalize( static_cast<int> ( GpsNmea::gps->getLastHeading()) + relBearing );
 
   // calculate coordinates of other object
   QPoint other;
@@ -2929,7 +2929,7 @@ void Map::p_drawHeadingLine(const QPoint& from)
   // Note, that the Cartesian coordinate system must be mirrored at the
   // the X-axis to get the painter's coordinate system. That means all
   // angles must be multiplied by -1.
-  double angle = -rad * normalize(heading);
+  double angle = -rad * MapCalc::normalize(heading);
 
   // Calculate the second point by using polar coordinates.
   int toX = static_cast<int> (rint(cos(angle) * radius)) + from.x();

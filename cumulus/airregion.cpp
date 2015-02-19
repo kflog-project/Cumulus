@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c): 2004      by André Somers
-**                  2008-2010 by Axel pauli
+**                  2008-2015 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -242,7 +240,7 @@ bool AirRegion::parametersChanged(const QPoint& pos,
 
     // 30 meters is a small position change
     QPoint* p = &(const_cast<QPoint&>(pos));
-    ms_smallPositionChange = (dist(p, &ms_lastPos) < 0.03);
+    ms_smallPositionChange = (MapCalc::dist(p, &ms_lastPos) < 0.03);
     ms_lastPos = pos;
     ms_lastAwd = awd;
     ms_lastScale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);

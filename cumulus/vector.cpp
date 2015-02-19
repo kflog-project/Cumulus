@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2010 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -117,7 +115,7 @@ void Vector::setAngle(const int angle)
       recalcDR();
     }
 
-  _angle = (double( normalize( angle ) ) / 180.0) * M_PI;
+  _angle = (double( MapCalc::normalize( angle ) ) / 180.0) * M_PI;
   dirtyXY = true;
   _isValid = true;
 }
@@ -147,7 +145,7 @@ void Vector::setAngleRad(const double& angle)
       recalcDR();
     }
 
-  _angle = normalize( angle );
+  _angle = MapCalc::normalize( angle );
   dirtyXY = true;
   dirtyDR = false;
   _isValid = true;
@@ -197,7 +195,7 @@ Speed Vector::getSpeed()
 /** Recalculates the the angle and the speed from the known x and y values. */
 void Vector::recalcDR()
 {
-  _angle = normalize( polar( _y, _x ) );
+  _angle = MapCalc::normalize( MapCalc::polar( _y, _x ) );
   _speed = hypot( _y, _x );
   dirtyDR = false;
 }

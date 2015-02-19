@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Heiner Lamprecht,
  **                   2002      by André Somers
- **                   2008-2014 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -973,9 +973,9 @@ void MapConfig::createTriangle( QPixmap& pixmap, int size,
   // Note, that the Cartesian coordinate system must be mirrored at the
   // the X-axis to get the painter's coordinate system. That means all
   // angles must be multiplied by -1.
-  double angle1 = -rad * normalize(90  - rotate);
-  double angle2 = -rad * normalize(230 - rotate);
-  double angle3 = -rad * normalize(310 - rotate);
+  double angle1 = -rad * MapCalc::normalize(90  - rotate);
+  double angle2 = -rad * MapCalc::normalize(230 - rotate);
+  double angle3 = -rad * MapCalc::normalize(310 - rotate);
 
   int radius = size/2;
 
