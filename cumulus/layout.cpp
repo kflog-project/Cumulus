@@ -110,6 +110,42 @@ float Layout::getScaledDensity()
       QHash<QString, float> dmh = jniGetDisplayMetrics();
 
       density = dmh.value( "scaledDensity", 1.0 );
+
+      if( density != 1.0 )
+	{
+	  float xdpi = dmh.value( "xdpi", 160.0 );
+
+	  density = xdpi / 160.0;
+
+	  if( density < 1.0 )
+	    {
+	      density = 1.0;
+	    }
+	}
+    }
+
+  return density;
+
+#else
+
+  // That is the default for none Android.
+  return 1.0;
+
+#endif
+}
+
+int Layout::getIntScaledDensity()
+{
+#ifdef ANDROID
+
+  // We will cache the result because the density is a static value.
+  static float density = -1.0;
+
+  if( density == -1.0 )
+    {
+      QHash<QString, float> dmh = jniGetDisplayMetrics();
+
+      density = dmh.value( "scaledDensity", 1.0 );
     }
 
   return density;

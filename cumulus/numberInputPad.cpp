@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2014 Axel Pauli
+**   Copyright (c): 2012-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -41,7 +39,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_pressedButton( 0 )
 {
   setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
-  setLineWidth ( 3 );
+  setLineWidth ( 5 * Layout::getIntScaledDensity() );
 
   setObjectName("NumberInputPad");
   setWindowFlags(Qt::Tool);
@@ -56,16 +54,14 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   int row = 0;
   QGridLayout* gl = new QGridLayout (this);
-  gl->setMargin(5);
+  gl->setMargin( 5 * Layout::getIntScaledDensity() );
+  gl->setSpacing( 10 * Layout::getIntScaledDensity() );
 
   m_tipLabel = new QLabel (this);
   m_tipLabel->setAlignment(Qt::AlignCenter);
   gl->addWidget( m_tipLabel, row, 0, 1, 5 );
 
-#ifdef MAEMO5
-  gl->setRowStretch(row, 5);
-#endif
-
+  gl->setRowStretch(row, 5 * Layout::getIntScaledDensity() );
   row++;
 
   m_editor = new QLineEdit (this);
@@ -85,23 +81,23 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   gl->addWidget( m_cancel, row, 6 );
   row++;
 
-  gl->setRowMinimumHeight( row, 5 );
-  gl->setColumnMinimumWidth( 5, 5 );
+  gl->setRowMinimumHeight( row, 5 * Layout::getIntScaledDensity() );
+  gl->setColumnMinimumWidth( 5, 5 * Layout::getIntScaledDensity());
   row++;
 
-  m_num1 = new QPushButton( "1", this );
+  m_num1 = new QPushButton( " 1 ", this );
   gl->addWidget( m_num1, row, 0 );
 
-  m_num2 = new QPushButton( "2", this );
+  m_num2 = new QPushButton( " 2 ", this );
   gl->addWidget( m_num2, row, 1 );
 
-  m_num3 = new QPushButton( "3", this );
+  m_num3 = new QPushButton( " 3 ", this );
   gl->addWidget( m_num3, row, 2 );
 
-  m_num4 = new QPushButton( "4", this );
+  m_num4 = new QPushButton( " 4 ", this );
   gl->addWidget( m_num4, row, 3 );
 
-  m_num5 = new QPushButton( "5", this );
+  m_num5 = new QPushButton( " 5 ", this );
   gl->addWidget( m_num5, row, 4 );
 
   m_home = new QPushButton( " ", this );
@@ -110,27 +106,27 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   gl->addWidget( m_home, row, 6 );
   row++;
 
-  m_num6 = new QPushButton( "6", this );
+  m_num6 = new QPushButton( " 6 ", this );
   gl->addWidget( m_num6, row, 0 );
 
-  m_num7 = new QPushButton( "7", this );
+  m_num7 = new QPushButton( " 7 ", this );
   gl->addWidget( m_num7, row, 1 );
 
-  m_num8 = new QPushButton( "8", this );
+  m_num8 = new QPushButton( " 8 ", this );
   gl->addWidget( m_num8, row, 2 );
 
-  m_num9 = new QPushButton( "9", this );
+  m_num9 = new QPushButton( " 9 ", this );
   gl->addWidget( m_num9, row, 3 );
 
-  m_num0 = new QPushButton( "0", this );
+  m_num0 = new QPushButton( " 0 ", this );
   gl->addWidget( m_num0, row, 4 );
 
-  m_pm = new QPushButton( "+-", this );
+  m_pm = new QPushButton( "+ -", this );
   gl->addWidget( m_pm, row, 6 );
 
   row++;
 
-  m_decimal = new QPushButton( ".", this );
+  m_decimal = new QPushButton( " . ", this );
   gl->addWidget( m_decimal, row, 0 );
 
   QStyle* style = QApplication::style();

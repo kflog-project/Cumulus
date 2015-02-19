@@ -261,6 +261,14 @@ class Layout
    * @return The scaled density of the screen resolution.
    */
   static float getScaledDensity();
+
+  /**
+   * Gets the scaled density of the screen resolution by Android.
+   *
+   * @return The scaled density of the screen resolution.
+   */
+  static int getIntScaledDensity();
+
 };
 
 #endif /* LAYOUT_H_ */

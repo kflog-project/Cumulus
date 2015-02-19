@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -25,9 +23,9 @@
  * This widget can be used to enter a number or to modify it with an own
  * provided keypad.
  *
- * \date 2012-2014
+ * \date 2012-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef NumberInputPad_h
