@@ -39,7 +39,8 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_pressedButton( 0 )
 {
   setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
-  setLineWidth ( 5 * Layout::getIntScaledDensity() );
+  setLineWidth( 5 * Layout::getIntScaledDensity() );
+  setLineWidth( 5 );
 
   setObjectName("NumberInputPad");
   setWindowFlags(Qt::Tool);
@@ -272,7 +273,8 @@ void NumberInputPad::slot_DigitPressed( QWidget* widget )
       return;
     }
 
-  QString text = button->text();
+  // Remove leading and trailing spaces from the number.
+  QString text = button->text().trimmed();
 
   // 0...9 was pressed
   m_editor->setSelection(m_editor->cursorPosition(), 1);
