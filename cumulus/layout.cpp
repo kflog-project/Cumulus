@@ -148,12 +148,12 @@ int Layout::getIntScaledDensity()
       density = dmh.value( "scaledDensity", 1.0 );
     }
 
-  return density;
+  return static_cast<int>(density);
 
 #else
 
   // That is the default for none Android.
-  return 1.0;
+  return 1;
 
 #endif
 }

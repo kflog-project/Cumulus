@@ -7,8 +7,6 @@
 
     email                : kflog.cumulus@gmail.com
 
-    $Id$
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,6 +22,7 @@
 
 #include <QtGui>
 
+#include "layout.h"
 #include "polar.h"
 
 Polar::Polar() :
@@ -272,7 +271,7 @@ void Polar::drawPolar( QWidget* view,
     p.translate (15, 30);
 
     QPen pen;
-    pen.setWidth(3);
+    pen.setWidth( 3 * Layout::getIntScaledDensity());
 
     // some initializations for the give units.
     // all drawing is done with meters/second units in both directions.
@@ -426,7 +425,8 @@ void Polar::drawPolar( QWidget* view,
     double Y = double(view->height() - 30 - 80) / double(sink.getMps());
 
     QFont font = p.font();
-    font.setPixelSize(14);
+    // font.setPixelSize(14);
+    font.setPointSize(9);
     p.setFont (font);
     // draw speed values and vertical grid lines
     pen.setColor(Qt::black);
@@ -543,7 +543,8 @@ void Polar::drawPolar( QWidget* view,
     Speed bestspeed = bestSpeed (wind, lift, mc);
     double bestld = bestLD (bestspeed, bestspeed+wind, lift);
 
-    font.setPixelSize(16);
+    // font.setPixelSize(16);
+    font.setPointSize(10);
     p.setFont(font);
     pen.setColor(Qt::blue);
     p.setPen (pen);
@@ -569,27 +570,29 @@ void Polar::drawPolar( QWidget* view,
     int y = (int)(sink*Y)+5;
     QString msg;
 
+    int space = 2 * Layout::getIntScaledDensity();
+
 #if 0
     if (Speed::getVerticalUnit() != Speed::metersPerSecond) {
         msg = QString(" = %1 m/s").arg( sink.getMps(), 0, 'f', 1 );
-        p.drawText(0, y+=font.pixelSize()+2, sink.getVerticalText() + msg);
+        p.drawText(0, y+=font.pixelSize() + space, sink.getVerticalText() + msg);
     }
 #endif
 
     if( fabs( wind.getMps() ) > 0.01 && fabs( lift.getMps() ) > 0.01 )
       {
-        p.drawText( 0, y += font.pixelSize() + 2, QObject::tr( "Wind: " )
+        p.drawText( 0, y += font.pointSize()+ space, QObject::tr( "Wind: " )
             + wind.getHorizontalText() + ", " + QObject::tr( "Lift: " )
             + lift.getVerticalText() );
       }
     else if( fabs( wind.getMps() ) > 0.01 )
       {
-        p.drawText( 0, y += font.pixelSize() + 2, QObject::tr( "Wind: " )
+        p.drawText( 0, y += font.pointSize()+ space, QObject::tr( "Wind: " )
             + wind.getHorizontalText() );
       }
     else if( fabs( lift.getMps() ) > 0.01 )
       {
-        p.drawText( 0, y += font.pixelSize() + 2, QObject::tr( "Lift: " )
+        p.drawText( 0, y += font.pointSize()+ space, QObject::tr( "Lift: " )
             + lift.getVerticalText() );
       }
 
@@ -616,13 +619,13 @@ void Polar::drawPolar( QWidget* view,
 
       }
 
-    p.drawText (0, y+=font.pixelSize()+2, msg );
+    p.drawText (0, y += font.pointSize() + space, msg );
 
     msg = QString( QObject::tr("Best speed: %1, Sinking: %2") )
                   .arg( bestspeed.getHorizontalText() )
                   .arg( getSink(bestspeed).getVerticalText(true, 2) );
 
-    p.drawText(0, y+=font.pixelSize()+2, msg);
+    p.drawText(0, y += font.pointSize() + space, msg);
 
     msg = QString(QObject::tr("Best L/D: %1")).arg( bestld, 0, 'f', 1 );
 
@@ -638,17 +641,21 @@ void Polar::drawPolar( QWidget* view,
           }
       }
 
-    p.drawText(0, y+=font.pixelSize()+2, msg);
+    p.drawText(0, y += font.pointSize() + space, msg);
 
     y = (int)(sink*Y)+5;
     int x = view->width()/2;
 
+#ifndef ANDROID
+
     pen.setColor(Qt::black);
     p.setPen (pen);
     msg = QObject::tr("Use cursor right/left to simulate wind");
-    p.drawText(x, y+=font.pixelSize()+2, msg);
+    p.drawText(x, y+=font.pointSize() + space, msg);
     msg = QObject::tr("Use cursor up/down to set lift");
-    p.drawText(x, y+=font.pixelSize()+2, msg);
+    p.drawText(x, y+=font.pointSize() + space, msg);
     msg = QObject::tr("Use <Shift> up/down to adjust sinking");
-    p.drawText(x, y+=font.pixelSize()+2, msg);
+    p.drawText(x, y+=font.pointSize() + space, msg);
+
+#endif
 }

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2009-2014 by Axel Pauli
+ **                   2009-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -454,15 +454,16 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
+  titlePix->setScaledContents( true );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
@@ -475,7 +476,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   buttonBox->addSpacing(30);
   buttonBox->addWidget(ok, 1);
   buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix);
+  buttonBox->addWidget(titlePix, 0, Qt::AlignCenter);
   contentLayout->addLayout(buttonBox);
 
   load();

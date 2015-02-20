@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2014 by Axel Pauli
+ **                   2007-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
