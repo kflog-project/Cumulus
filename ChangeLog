@@ -20,14 +20,21 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2015-02-17 AP: Issue #41 fixed. Adapt map screen layout to higher resolution
+[o] 2015-02-22 AP: Issue #43 fixed. Calculate the TAS from the wind and ground
+                   speed and show it in box GS. The display of box GS should be
+                   toggled between GS and TAS on user touch.
+
+[-] 2015-02-22 AP: Issue #42 fixed. Adapt the polar drawing on Android to higher
+                   resolution screens.
+
+[-] 2015-02-17 AP: Issue #41 fixed. Adapt map screen layout to higher resolution
                    screens on Android.
 
-[o] 2015-02-17 AP: Issue #40 fixed. Restore a running task, if app is recreated
+[-] 2015-02-17 AP: Issue #40 fixed. Restore a running task, if app is recreated
                    after an Android OS kill due to low on memory. That can
                    happen, if the app is moved in the background by the user.
 
-[o] 2015-02-17 AP: Issue #38 fixed. Restore the selected target, if app is
+[-] 2015-02-17 AP: Issue #38 fixed. Restore the selected target, if app is
                    recreated after an Android OS kill due to low on memory.
                    That can happen, if the app is moved in the background by
                    the user.

@@ -407,7 +407,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 
   appFt = QApplication::font();
 
-  qDebug( "Used QAppFont: Family %s, ptSize=%d, pxSize=%d, weight=%d, height=%dpx",
+  qDebug( "Used QAppFont: Family %s, ptSize=%d, pxSize=%d, weight=%d, fmHeight=%dpx",
            appFt.family().toLatin1().data(),
            appFt.pointSize(),
            appFt.pixelSize(),

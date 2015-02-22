@@ -267,395 +267,415 @@ void Polar::drawPolar( QWidget* view,
                        const Speed& lift,
                        const Speed& mc ) const
 {
-    QPainter p(view);
-    p.translate (15, 30);
-
-    QPen pen;
-    pen.setWidth( 3 * Layout::getIntScaledDensity());
-
-    // some initializations for the give units.
-    // all drawing is done with meters/second units in both directions.
-    // we use the Speed class to do the conversions.
-    int minspeed, maxspeed, stepspeed;
-
-    switch (Speed::getHorizontalUnit())
-    {
-      case Speed::metersPerSecond:
-
-        if( (_v3.getKph() + 10) < 50 )
-          {
-            minspeed = 3;
-            maxspeed = 21;
-            stepspeed = 3;
-            break;
-          }
-
-        if( (_v3.getKph() + 10)  < 100 )
-          {
-            minspeed = 5;
-            maxspeed = 40;
-            stepspeed = 5;
-            break;
-          }
-
-          minspeed = 10;
-          maxspeed = 70;
-          stepspeed = 10;
-          break;
-
-
-      case Speed::kilometersPerHour:
-
-        if( (_v3.getKph() + 10) < 50 )
-          {
-            minspeed = 10;
-            maxspeed = 70;
-            stepspeed = 10;
-            break;
-          }
-
-        if( (_v3.getKph() + 10)  < 100 )
-          {
-            minspeed = 20;
-            maxspeed = 140;
-            stepspeed = 20;
-            break;
-          }
-
-          minspeed = 20;
-          maxspeed = 230;
-          stepspeed = 30;
-          break;
-
-      case Speed::knots:
-
-        if( (_v3.getKph() + 10) < 50 )
-          {
-            minspeed = 5;
-            maxspeed = 35;
-            stepspeed = 5;
-            break;
-          }
-
-        if( (_v3.getKph() + 10)  < 100 )
-          {
-            minspeed = 10;
-            maxspeed = 70;
-            stepspeed = 10;
-            break;
-          }
-
-          minspeed = 10;
-          maxspeed = 130;
-          stepspeed = 20;
-          break;
-
-      case Speed::milesPerHour:
-
-        if( (_v3.getKph() + 10) < 50 )
-          {
-            minspeed = 5;
-            maxspeed = 35;
-            stepspeed = 5;
-            break;
-          }
-
-        if( (_v3.getKph() + 10)  < 100 )
-          {
-            minspeed = 10;
-            maxspeed = 70;
-            stepspeed = 10;
-            break;
-          }
-
-          minspeed = 10;
-          maxspeed = 130;
-          stepspeed = 20;
-          break;
-
-      default:
-
-          minspeed = 0;
-          maxspeed = 0;
-          stepspeed = 0;
-          break;
-    }
-
-    Speed sink;
-    int minsink, maxsink, stepsink;
-
-    switch (Speed::getVerticalUnit())
-    {
-      case Speed::metersPerSecond:
-          minsink = 1;
-          maxsink = 5;
-          stepsink = 1;
-          sink.setMps(maxsink);
-          break;
-      case Speed::kilometersPerHour:
-          minsink = 5;
-          maxsink = 20;
-          stepsink = 5;
-          sink.setKph(maxsink);
-          break;
-      case Speed::knots:
-          minsink = 2;
-          maxsink = 10;
-          stepsink = 2;
-          sink.setKnot(maxsink);
-          break;
-      case Speed::feetPerMinute:
-          minsink = 200;
-          maxsink = 1000;
-          stepsink = 200;
-          sink.setFpm(maxsink);
-          break;
-      default:
-          minsink = 0;
-          maxsink = 0;
-          stepsink = 0;
-          qWarning ("invalid vertical speed: %d", Speed::getVerticalUnit());
-          break;
-    }
-
-    Speed speed;
-    speed.setHorizontalValue (maxspeed);
-
-    double X = double(view->width() - 30) / double(speed.getMps());
-    double Y = double(view->height() - 30 - 80) / double(sink.getMps());
-
-    QFont font = p.font();
-    // font.setPixelSize(14);
-    font.setPointSize(9);
-    p.setFont (font);
-    // draw speed values and vertical grid lines
-    pen.setColor(Qt::black);
-    p.setPen( pen );
-    p.drawLine (0, -30, 0, (int)(sink.getMps()*Y)); // Y axis
-
-    for (int spd = minspeed; spd <= maxspeed; spd += stepspeed)
-    {
-      speed.setHorizontalValue (spd);
-
-      pen.setColor(Qt::black);
-      p.setPen (pen);
-      p.drawLine ((int)(speed.getMps()*X), -5, (int)(speed.getMps()*X), 0);
-
-      QString txt;
-
-          if( (spd + stepspeed) <= maxspeed )
-            {
-              txt.sprintf("%3d %s", spd, Speed::getHorizontalUnitText().toLatin1().data() );
-            }
-          else
-            {
-              txt.sprintf("%3d", spd );
-            }
-
-      pen.setColor(Qt::blue);
-      p.setPen (pen);
-      p.drawText ((int)(speed.getMps()*X)-25, -7, txt);
-      pen.setColor(Qt::darkGray);
-      p.setPen (pen);
-      p.drawLine ((int)(speed.getMps()*X), 1, (int)(speed.getMps()*X), (int)(sink.getMps()*Y));
-    }
-
-    // draw sink values and horizontal grid lines
-    pen.setColor(Qt::black);
-    p.setPen (pen);
-    p.drawLine (-15, 0, (int)(speed.getMps()*X), 0);
-
-    for (int snk = minsink; snk <= maxsink; snk += stepsink)
-      {
-        sink.setVerticalValue (snk);
-
-        QString txt;
-        txt.sprintf("%d %s", snk, Speed::getVerticalUnitText().toLatin1().data() );
-        pen.setColor(Qt::black);
-        p.setPen (pen);
-        p.drawText ( 7, (int)(sink.getMps()*Y)-2, txt);
-        pen.setColor(Qt::black);
-        p.setPen (pen);
-        p.drawLine (-5, (int)(sink.getMps()*Y), 0, (int)(sink.getMps()*Y));
-        pen.setColor(Qt::darkGray);
-        p.setPen (pen);
-        p.drawLine (1, (int)(sink.getMps()*Y), (int)(speed.getMps()*X), (int)(sink.getMps()*Y));
-    }
-
-    // draw the actual polar; this is the simplest part :-))
-    pen.setColor(Qt::red);
-    p.setPen (pen);
-
-    // Start and stop airspeed in m/s for polar drawing
-    double start = 3.0;
-    double stop  = 70.0;
-
-    int lastX = (int)rint(start*X);
-    int lastY = (int)rint(getSink (start)*Y);
-
-    bool sinkCorrected = false;
-
-    for (int spd = start; spd <= stop; spd++)
-      {
-        Speed sinkSpd (getSink(spd));
-        int x = (int)rint(spd*X);
-        int y = (int)rint(sinkSpd*Y);
-
-        // Do not draw under the last horizontal grid line
-        if ( sinkSpd.getMps() >= sink.getMps() )
-          {
-            sinkCorrected = true;
-            lastX = x;
-            lastY = y;
-            continue;
-          }
-
-        if( sinkCorrected == true )
-          {
-            sinkCorrected = false;
-            lastX = x;
-            lastY = y;
-            continue;
-          }
-
-        // stop drawing at the last vertical grid line
-        if (spd > speed.getMps())
-          {
-            int dx = lastX - x;
-
-            if( dx == 0 )
-              {
-                break;
-              }
-
-            int dy = lastY - y;
-            int x0 = (int) (speed * X);
-            int y0 = (int) rint((x0*dy - lastX*dy + lastY*dx) / dx);
-            p.drawLine (lastX, lastY, x0, y0);
-            break;
-        }
-
-        p.drawLine (lastX, lastY, x, y);
-        lastX = x;
-        lastY = y;
-    }
-
-    Speed bestspeed = bestSpeed (wind, lift, mc);
-    double bestld = bestLD (bestspeed, bestspeed+wind, lift);
-
-    // font.setPixelSize(16);
-    font.setPointSize(10);
-    p.setFont(font);
-    pen.setColor(Qt::blue);
-    p.setPen (pen);
-    // head wind counts negative;
-
-    // draw cross at wind/lift origin
-    p.drawLine ((int)(-wind*X)-3, (int)((lift-mc)*Y), (int)(-wind*X)+3, (int)((lift-mc)*Y));
-    p.drawLine ((int)(-wind*X), (int)((lift-mc)*Y)-3, (int)(-wind*X), (int)((lift-mc)*Y)+3);
-    // draw tangent of polar; this includes the mc value
-    p.drawLine ((int)(-wind*X), (int)((lift-mc)*Y), (int)(bestspeed*X), (int)(getSink(bestspeed)*Y));
-    // draw line of best l/d over ground; this does not include mc value !
-    pen.setColor(Qt::green);
-    p.setPen (pen);
-    p.drawLine ((int)(-wind*X)-3, (int)(lift*Y), (int)(-wind*X)+3, (int)(lift*Y));
-    p.drawLine ((int)(-wind*X), (int)(lift*Y)-3, (int)(-wind*X), (int)(lift*Y)+3);
-    p.drawLine ((int)(-wind*X), (int)(lift*Y), (int)(bestspeed*X), (int)(getSink(bestspeed)*Y));
-    // draw little circle at best speed point
-    p.setBrush (Qt::red);
-    pen.setColor(Qt::blue);
-    p.setPen (pen);
-    p.drawEllipse ((int)(bestspeed*X)-2, (int)(getSink(bestspeed)*Y)-2, 5, 5);
-
-    int y = (int)(sink*Y)+5;
-    QString msg;
-
-    int space = 2 * Layout::getIntScaledDensity();
-
-#if 0
-    if (Speed::getVerticalUnit() != Speed::metersPerSecond) {
-        msg = QString(" = %1 m/s").arg( sink.getMps(), 0, 'f', 1 );
-        p.drawText(0, y+=font.pixelSize() + space, sink.getVerticalText() + msg);
-    }
-#endif
-
-    if( fabs( wind.getMps() ) > 0.01 && fabs( lift.getMps() ) > 0.01 )
-      {
-        p.drawText( 0, y += font.pointSize()+ space, QObject::tr( "Wind: " )
-            + wind.getHorizontalText() + ", " + QObject::tr( "Lift: " )
-            + lift.getVerticalText() );
-      }
-    else if( fabs( wind.getMps() ) > 0.01 )
-      {
-        p.drawText( 0, y += font.pointSize()+ space, QObject::tr( "Wind: " )
-            + wind.getHorizontalText() );
-      }
-    else if( fabs( lift.getMps() ) > 0.01 )
-      {
-        p.drawText( 0, y += font.pointSize()+ space, QObject::tr( "Lift: " )
-            + lift.getVerticalText() );
-      }
-
-    msg = QString( QObject::tr("Dry weight: %1 Kg") ).arg((int)(_grossWeight + _addLoad));
-
-    if ( _water > 0 )
-      {
-        if( msg.size() > 0 )
-          {
-            msg += ", ";
-          }
-
-        msg += QString( QObject::tr("Water ballast: %1 l").arg(_water) );
-      }
-
-    if ( _bugs > 0 )
-      {
-        if( msg.size() > 0 )
-          {
-            msg += ", ";
-          }
-
-      msg += QString( QObject::tr("Bugs: %1 %").arg(_bugs) );
-
-      }
-
-    p.drawText (0, y += font.pointSize() + space, msg );
-
-    msg = QString( QObject::tr("Best speed: %1, Sinking: %2") )
-                  .arg( bestspeed.getHorizontalText() )
-                  .arg( getSink(bestspeed).getVerticalText(true, 2) );
-
-    p.drawText(0, y += font.pointSize() + space, msg);
-
-    msg = QString(QObject::tr("Best L/D: %1")).arg( bestld, 0, 'f', 1 );
-
-    if( _wingArea > 0.0 )
-      {
-        double wload = double(_grossWeight + _addLoad + _water) / _wingArea;
-
-        if( wload > 0.0 )
-          {
-            msg += ", " + QString(QObject::tr("Wing load:")) +
-                   QString(" %1 Kg/m").arg( wload, 0, 'f', 1 ) +
-                   QChar(Qt::Key_twosuperior);
-          }
-      }
-
-    p.drawText(0, y += font.pointSize() + space, msg);
-
-    y = (int)(sink*Y)+5;
-    int x = view->width()/2;
+  // some initializations for the give units.
+  // all drawing is done with meters/second units in both directions.
+  // we use the Speed class to do the conversions.
+  int minspeed, maxspeed, stepspeed;
+
+  switch (Speed::getHorizontalUnit())
+  {
+    case Speed::metersPerSecond:
+
+      if( (_v3.getKph() + 10) < 50 )
+	{
+	  minspeed = 3;
+	  maxspeed = 21;
+	  stepspeed = 3;
+	  break;
+	}
+
+      if( (_v3.getKph() + 10)  < 100 )
+	{
+	  minspeed = 5;
+	  maxspeed = 40;
+	  stepspeed = 5;
+	  break;
+	}
+
+	minspeed = 10;
+	maxspeed = 70;
+	stepspeed = 10;
+	break;
+
+
+    case Speed::kilometersPerHour:
+
+      if( (_v3.getKph() + 10) < 50 )
+	{
+	  minspeed = 10;
+	  maxspeed = 70;
+	  stepspeed = 10;
+	  break;
+	}
+
+      if( (_v3.getKph() + 10)  < 100 )
+	{
+	  minspeed = 20;
+	  maxspeed = 140;
+	  stepspeed = 20;
+	  break;
+	}
+
+	minspeed = 20;
+	maxspeed = 230;
+	stepspeed = 30;
+	break;
+
+    case Speed::knots:
+
+      if( (_v3.getKph() + 10) < 50 )
+	{
+	  minspeed = 5;
+	  maxspeed = 35;
+	  stepspeed = 5;
+	  break;
+	}
+
+      if( (_v3.getKph() + 10)  < 100 )
+	{
+	  minspeed = 10;
+	  maxspeed = 70;
+	  stepspeed = 10;
+	  break;
+	}
+
+	minspeed = 10;
+	maxspeed = 130;
+	stepspeed = 20;
+	break;
+
+    case Speed::milesPerHour:
+
+      if( (_v3.getKph() + 10) < 50 )
+	{
+	  minspeed = 5;
+	  maxspeed = 35;
+	  stepspeed = 5;
+	  break;
+	}
+
+      if( (_v3.getKph() + 10)  < 100 )
+	{
+	  minspeed = 10;
+	  maxspeed = 70;
+	  stepspeed = 10;
+	  break;
+	}
+
+	minspeed = 10;
+	maxspeed = 130;
+	stepspeed = 20;
+	break;
+
+    default:
+
+	minspeed = 0;
+	maxspeed = 0;
+	stepspeed = 0;
+	break;
+  }
+
+  Speed sink;
+  int minsink, maxsink, stepsink;
+
+  switch (Speed::getVerticalUnit())
+  {
+    case Speed::metersPerSecond:
+	minsink = 1;
+	maxsink = 5;
+	stepsink = 1;
+	sink.setMps(maxsink);
+	break;
+    case Speed::kilometersPerHour:
+	minsink = 5;
+	maxsink = 20;
+	stepsink = 5;
+	sink.setKph(maxsink);
+	break;
+    case Speed::knots:
+	minsink = 2;
+	maxsink = 10;
+	stepsink = 2;
+	sink.setKnot(maxsink);
+	break;
+    case Speed::feetPerMinute:
+	minsink = 200;
+	maxsink = 1000;
+	stepsink = 200;
+	sink.setFpm(maxsink);
+	break;
+    default:
+	minsink = 0;
+	maxsink = 0;
+	stepsink = 0;
+	qWarning ("invalid vertical speed: %d", Speed::getVerticalUnit());
+	break;
+  }
+
+  Speed speed;
+  speed.setHorizontalValue (maxspeed);
+
+  // Scale to be used for adaptions
+  int scale = Layout::getIntScaledDensity();
+
+  QPainter p(view);
+
+  QPen pen;
+  pen.setWidth( 3 * scale );
+
+  QFont font = p.font();
 
 #ifndef ANDROID
+  font.setPixelSize(14);
+#else
+  font.setPointSize(7);
+#endif
+
+  p.setFont(font);
+
+  int fh = QFontMetrics(font).height();
+
+  // Define zero point in dependency from font height
+  int X0 = fh / 2;
+  int Y0 = (fh + fh/2);
+
+  // Space for 3 text lines under the polar graphic
+  int space4Text = 10 * scale + ((fh + 2) * 4);
+
+  // Draw window
+  double X = double(view->width() - Y0) / double(speed.getMps());
+  double Y = double(view->height() - Y0 - space4Text) / double(sink.getMps());
+
+  // Move zero position in draw coordinate system
+  p.translate( X0, Y0 );
+
+  // draw speed values and vertical grid lines
+  pen.setColor(Qt::black);
+  p.setPen( pen );
+  p.drawLine (0, -Y0, 0, (int)(sink.getMps()*Y)); // Y axis
+
+  for (int spd = minspeed; spd <= maxspeed; spd += stepspeed)
+  {
+    speed.setHorizontalValue (spd);
 
     pen.setColor(Qt::black);
     p.setPen (pen);
-    msg = QObject::tr("Use cursor right/left to simulate wind");
-    p.drawText(x, y+=font.pointSize() + space, msg);
-    msg = QObject::tr("Use cursor up/down to set lift");
-    p.drawText(x, y+=font.pointSize() + space, msg);
-    msg = QObject::tr("Use <Shift> up/down to adjust sinking");
-    p.drawText(x, y+=font.pointSize() + space, msg);
+    p.drawLine ((int)(speed.getMps()*X), -5 * scale, (int)(speed.getMps()*X), 0);
+
+    QString txt;
+
+	if( (spd + stepspeed) <= maxspeed )
+	  {
+	    txt.sprintf("%3d %s", spd, Speed::getHorizontalUnitText().toLatin1().data() );
+	  }
+	else
+	  {
+	    txt.sprintf("%3d", spd );
+	  }
+
+    pen.setColor(Qt::blue);
+    p.setPen (pen);
+    p.drawText ((int)(speed.getMps()*X)-25*scale, -7*scale, txt);
+    pen.setColor(Qt::darkGray);
+    p.setPen (pen);
+    p.drawLine ((int)(speed.getMps()*X), 1*scale, (int)(speed.getMps()*X), (int)(sink.getMps()*Y));
+  }
+
+  // draw sink values and horizontal grid lines
+  pen.setColor(Qt::black);
+  p.setPen (pen);
+  p.drawLine (-15*scale, 0, (int)(speed.getMps()*X), 0);
+
+  for (int snk = minsink; snk <= maxsink; snk += stepsink)
+    {
+      sink.setVerticalValue (snk);
+
+      QString txt;
+      txt.sprintf("%d %s", snk, Speed::getVerticalUnitText().toLatin1().data() );
+      pen.setColor(Qt::black);
+      p.setPen (pen);
+      p.drawText ( 7*scale, (int)(sink.getMps()*Y)-3*scale, txt);
+      pen.setColor(Qt::black);
+      p.setPen (pen);
+      p.drawLine (-5*scale, (int)(sink.getMps()*Y), 0, (int)(sink.getMps()*Y));
+      pen.setColor(Qt::darkGray);
+      p.setPen (pen);
+      p.drawLine (1*scale, (int)(sink.getMps()*Y), (int)(speed.getMps()*X), (int)(sink.getMps()*Y));
+  }
+
+  // draw the actual polar; this is the simplest part :-))
+  pen.setColor(Qt::red);
+  p.setPen (pen);
+
+  // Start and stop airspeed in m/s for polar drawing
+  double start = 3.0;
+  double stop  = 70.0;
+
+  int lastX = (int)rint(start*X);
+  int lastY = (int)rint(getSink (start)*Y);
+
+  bool sinkCorrected = false;
+
+  for (int spd = start; spd <= stop; spd++)
+    {
+      Speed sinkSpd (getSink(spd));
+      int x = (int)rint(spd*X);
+      int y = (int)rint(sinkSpd*Y);
+
+      // Do not draw under the last horizontal grid line
+      if ( sinkSpd.getMps() >= sink.getMps() )
+	{
+	  sinkCorrected = true;
+	  lastX = x;
+	  lastY = y;
+	  continue;
+	}
+
+      if( sinkCorrected == true )
+	{
+	  sinkCorrected = false;
+	  lastX = x;
+	  lastY = y;
+	  continue;
+	}
+
+      // stop drawing at the last vertical grid line
+      if (spd > speed.getMps())
+	{
+	  int dx = lastX - x;
+
+	  if( dx == 0 )
+	    {
+	      break;
+	    }
+
+	  int dy = lastY - y;
+	  int x0 = (int) (speed * X);
+	  int y0 = (int) rint((x0*dy - lastX*dy + lastY*dx) / dx);
+	  p.drawLine (lastX, lastY, x0, y0);
+	  break;
+      }
+
+      p.drawLine (lastX, lastY, x, y);
+      lastX = x;
+      lastY = y;
+  }
+
+  Speed bestspeed = bestSpeed (wind, lift, mc);
+  double bestld = bestLD (bestspeed, bestspeed+wind, lift);
+
+  pen.setColor(Qt::blue);
+  p.setPen (pen);
+  // head wind counts negative;
+
+  // draw cross at wind/lift origin
+  p.drawLine ((int)(-wind*X)-3*scale, (int)((lift-mc)*Y), (int)(-wind*X)+3*scale, (int)((lift-mc)*Y));
+  p.drawLine ((int)(-wind*X), (int)((lift-mc)*Y)-3*scale, (int)(-wind*X), (int)((lift-mc)*Y)+3*scale);
+
+  // draw tangent of polar; this includes the mc value
+  p.drawLine ((int)(-wind*X), (int)((lift-mc)*Y), (int)(bestspeed*X), (int)(getSink(bestspeed)*Y));
+
+  // draw line of best l/d over ground; this does not include mc value !
+  pen.setColor(Qt::green);
+  p.setPen (pen);
+  p.drawLine ((int)(-wind*X)-3*scale, (int)(lift*Y), (int)(-wind*X)+3*scale, (int)(lift*Y));
+  p.drawLine ((int)(-wind*X), (int)(lift*Y)-3*scale, (int)(-wind*X), (int)(lift*Y)+3*scale);
+  p.drawLine ((int)(-wind*X), (int)(lift*Y), (int)(bestspeed*X), (int)(getSink(bestspeed)*Y));
+
+  // draw little circle at best speed point
+  p.setBrush (Qt::red);
+  pen.setColor(Qt::blue);
+  p.setPen (pen);
+  p.drawEllipse ((int)(bestspeed*X)-2*scale, (int)(getSink(bestspeed)*Y)-2*scale, 5*scale, 5*scale);
+
+  int y = (int)(sink*Y) + 5 * scale;
+  QString msg;
+
+  int space = QFontMetrics(font).height() + 2 * scale;
+
+  #if 0
+  if (Speed::getVerticalUnit() != Speed::metersPerSecond) {
+      msg = QString(" = %1 m/s").arg( sink.getMps(), 0, 'f', 1 );
+      p.drawText(0, y+=font.pixelSize() + space, sink.getVerticalText() + msg);
+  }
+  #endif
+
+  if( fabs( wind.getMps() ) > 0.01 && fabs( lift.getMps() ) > 0.01 )
+    {
+      p.drawText( 0, y += space, QObject::tr( "Wind: " )
+	  + wind.getHorizontalText() + ", " + QObject::tr( "Lift: " )
+	  + lift.getVerticalText() );
+    }
+  else if( fabs( wind.getMps() ) > 0.01 )
+    {
+      p.drawText( 0, y += space, QObject::tr( "Wind: " )
+	  + wind.getHorizontalText() );
+    }
+  else if( fabs( lift.getMps() ) > 0.01 )
+    {
+      p.drawText( 0, y += space, QObject::tr( "Lift: " )
+	  + lift.getVerticalText() );
+    }
+
+  msg = QString( QObject::tr("Dry weight: %1 Kg") ).arg((int)(_grossWeight + _addLoad));
+
+  if ( _water > 0 )
+    {
+      if( msg.size() > 0 )
+	{
+	  msg += ", ";
+	}
+
+      msg += QString( QObject::tr("Water ballast: %1 l").arg(_water) );
+    }
+
+  if ( _bugs > 0 )
+    {
+      if( msg.size() > 0 )
+	{
+	  msg += ", ";
+	}
+
+      msg += QString( QObject::tr("Bugs: %1 %").arg(_bugs) );
+    }
+
+  p.drawText (0, y += space, msg );
+
+  msg = QString( QObject::tr("Best speed: %1, Sinking: %2") )
+		.arg( bestspeed.getHorizontalText() )
+		.arg( getSink(bestspeed).getVerticalText(true, 2) );
+
+  p.drawText(0, y += space, msg);
+
+  msg = QString(QObject::tr("Best L/D: %1")).arg( bestld, 0, 'f', 1 );
+
+  if( _wingArea > 0.0 )
+    {
+      double wload = double(_grossWeight + _addLoad + _water) / _wingArea;
+
+      if( wload > 0.0 )
+	{
+	  msg += ", " + QString(QObject::tr("Wing load:")) +
+		        QString(" %1 Kg/m").arg( wload, 0, 'f', 1 ) +
+		        QChar(Qt::Key_twosuperior);
+	}
+    }
+
+  p.drawText(0, y += space, msg);
+
+  #ifndef ANDROID
+
+  y = (int)(sink*Y) + 5 * scale;
+  int x = view->width()/2;
+
+  pen.setColor(Qt::black);
+  p.setPen (pen);
+  msg = QObject::tr("Use cursor right/left to simulate wind");
+  p.drawText(x, y += space, msg);
+  msg = QObject::tr("Use cursor up/down to set lift");
+  p.drawText(x, y += space, msg);
+  msg = QObject::tr("Use <Shift> up/down to adjust sinking");
+  p.drawText(x, y += space, msg);
 
 #endif
 }
