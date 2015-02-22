@@ -398,7 +398,9 @@ void PreFlightWidget::slotAccept()
   setVisible( false );
   GeneralConfig::instance()->setClosePreFlightMenu( m_menuCb->checkState() == Qt::Checked ? true : false );
   emit closeConfig();
-  QWidget::close();
+  // Make a delay of 200 ms before the widget is closed to prevent undesired
+  // selections in an underlaying list. Problem occurred on Galaxy S3.
+  QTimer::singleShot(200, this, SLOT(close()));
 }
 
 void PreFlightWidget::slotReject()
@@ -406,5 +408,7 @@ void PreFlightWidget::slotReject()
   setVisible( false );
   GeneralConfig::instance()->setClosePreFlightMenu( m_menuCb->checkState() == Qt::Checked ? true : false );
   emit closeConfig();
-  QWidget::close();
+  // Make a delay of 200 ms before the widget is closed to prevent undesired
+  // selections in an underlaying list. Problem occurred on Galaxy S3.
+  QTimer::singleShot(200, this, SLOT(close()));
 }

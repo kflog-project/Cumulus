@@ -76,9 +76,12 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   int iconSize = Layout::iconSize( font() );
   QSize qis( iconSize, iconSize );
 
+  int minBW = QFontMetrics(font()).width("MMM");
+
   m_cancel = new QPushButton( " ", this );
   m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );
   m_cancel->setIconSize( qis );
+  m_cancel->setMinimumWidth( minBW );
   gl->addWidget( m_cancel, row, 6 );
   row++;
 
@@ -87,72 +90,90 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   row++;
 
   m_num1 = new QPushButton( " 1 ", this );
+  m_num1->setMinimumWidth( minBW );
   gl->addWidget( m_num1, row, 0 );
 
   m_num2 = new QPushButton( " 2 ", this );
+  m_num2->setMinimumWidth( minBW );
   gl->addWidget( m_num2, row, 1 );
 
   m_num3 = new QPushButton( " 3 ", this );
+  m_num3->setMinimumWidth( minBW );
   gl->addWidget( m_num3, row, 2 );
 
   m_num4 = new QPushButton( " 4 ", this );
+  m_num4->setMinimumWidth( minBW );
   gl->addWidget( m_num4, row, 3 );
 
   m_num5 = new QPushButton( " 5 ", this );
+  m_num5->setMinimumWidth( minBW );
   gl->addWidget( m_num5, row, 4 );
 
   m_home = new QPushButton( " ", this );
+  m_home->setMinimumWidth( minBW );
   m_home->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("home_new.png")) );
   m_home->setIconSize( qis );
   gl->addWidget( m_home, row, 6 );
   row++;
 
   m_num6 = new QPushButton( " 6 ", this );
+  m_num6->setMinimumWidth( minBW );
   gl->addWidget( m_num6, row, 0 );
 
   m_num7 = new QPushButton( " 7 ", this );
+  m_num7->setMinimumWidth( minBW );
   gl->addWidget( m_num7, row, 1 );
 
   m_num8 = new QPushButton( " 8 ", this );
+  m_num8->setMinimumWidth( minBW );
   gl->addWidget( m_num8, row, 2 );
 
   m_num9 = new QPushButton( " 9 ", this );
+  m_num9->setMinimumWidth( minBW );
   gl->addWidget( m_num9, row, 3 );
 
   m_num0 = new QPushButton( " 0 ", this );
+  m_num0->setMinimumWidth( minBW );
   gl->addWidget( m_num0, row, 4 );
 
   m_pm = new QPushButton( "+ -", this );
+  m_pm->setMinimumWidth( minBW );
   gl->addWidget( m_pm, row, 6 );
 
   row++;
 
   m_decimal = new QPushButton( " . ", this );
+  m_decimal->setMinimumWidth( minBW );
   gl->addWidget( m_decimal, row, 0 );
 
   QStyle* style = QApplication::style();
 
   m_left = new QPushButton( " ", this);
+  m_left->setMinimumWidth( minBW );
   m_left->setIcon(style->standardIcon(QStyle::SP_ArrowLeft));
   m_left->setIconSize( qis );
   gl->addWidget( m_left, row, 1 );
 
   m_right = new QPushButton( " ", this );
+  m_right->setMinimumWidth( minBW );
   m_right->setIcon(style->standardIcon(QStyle::SP_ArrowRight));
   m_right->setIconSize( qis );
   gl->addWidget( m_right, row, 2 );
 
   m_delLeft = new QPushButton( " ", this );
+  m_delLeft->setMinimumWidth( minBW );
   m_delLeft->setIcon(style->standardIcon(QStyle::SP_MediaSkipBackward));
   m_delLeft->setIconSize( qis );
   gl->addWidget( m_delLeft, row, 3 );
 
   m_delRight = new QPushButton( " ", this );
+  m_delRight->setMinimumWidth( minBW );
   m_delRight->setIcon (style->standardIcon(QStyle::SP_MediaSkipForward));
   m_delRight->setIconSize( qis );
   gl->addWidget( m_delRight, row, 4 );
 
   m_ok = new QPushButton( " ", this );
+  m_ok->setMinimumWidth( minBW );
   m_ok->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("ok.png")) );
   m_ok->setIconSize( qis );
   gl->addWidget( m_ok, row, 6 );

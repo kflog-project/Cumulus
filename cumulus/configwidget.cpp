@@ -458,14 +458,16 @@ void ConfigWidget::slotNewHomePosition()
 
 void ConfigWidget::slotAccept()
 {
-  setVisible( false );
   emit closeConfig();
-  QWidget::close();
+  // Make a delay of 200 ms before the widget is closed to prevent undesired
+  // selections in an underlaying list. Problem occurred on Galaxy S3.
+  QTimer::singleShot(200, this, SLOT(close()));
 }
 
 void ConfigWidget::slotReject()
 {
-  setVisible( false );
   emit closeConfig();
-  QWidget::close();
+  // Make a delay of 200 ms before the widget is closed to prevent undesired
+  // selections in an underlaying list. Problem occurred on Galaxy S3.
+  QTimer::singleShot(200, this, SLOT(close()));
 }
