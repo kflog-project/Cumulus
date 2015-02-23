@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2014 by Axel Pauli
+ **   Copyright (c): 2013-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -206,15 +204,16 @@ SettingsPageLines::SettingsPageLines(QWidget *parent) :
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(IconSize, IconSize));
+  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
+  titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));

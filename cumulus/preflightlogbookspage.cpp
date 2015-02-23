@@ -101,6 +101,7 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
+  titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
 
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));

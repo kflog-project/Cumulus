@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2014 by Axel Pauli
+**                  2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,6 +28,7 @@
 
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
+#include "layout.h"
 #include "mainwindow.h"
 
 // initialize static member variable
@@ -70,8 +71,10 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   QFont f = font();
 
-#if defined MAEMO || defined ANDROID
+#if defined MAEMO
   f.setPixelSize(16);
+#elif ANDROID
+  f.setPointSize(6);
 #else
   f.setPixelSize(14);
 #endif
@@ -345,8 +348,8 @@ void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
       width = height;
     }
 
-  width  -= ( MARGIN * 2 ); //keep a 10 pixel margin
-  height -= ( MARGIN * 2 );
+  width  -= ( MARGIN * 2 * Layout::getIntScaledDensity() );
+  height -= ( MARGIN * 2 * Layout::getIntScaledDensity() );
   center  = QPoint(contentsRect().width()/2, contentsRect().height()/2);
 
   background = QPixmap( contentsRect().width(), contentsRect().height() );
@@ -355,7 +358,7 @@ void GpsElevationAzimuthDisplay::resizeEvent( QResizeEvent *event )
 
   QPainter p( &background );
 
-  p.setPen( QPen( Qt::black, 2, Qt::SolidLine ) );
+  p.setPen( QPen( Qt::black, 2 * Layout::getIntScaledDensity(), Qt::SolidLine ) );
   //outer circle
   p.drawEllipse(center.x() - ( width / 2 ), center.y() - ( width / 2 ), width, width);
   //inner circle. This is the 45 degrees. The diameter is cos(angle)
@@ -373,7 +376,13 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
 
   QPainter p(this);
   QFont f = font();
+
+#ifdef ANDROID
+  f.setPointSize(6);
+#else
   f.setPixelSize(12);
+#endif
+
   p.setFont(f);
 
   // copy background to widget
@@ -451,12 +460,23 @@ void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
     }
 
   QFont f = font();
+
+#ifdef ANDROID
+  f.setPointSize(6);
+#else
   f.setPixelSize(12);
+#endif
+
   p->setFont(f);
 
+  int margin = 2 * Layout::getIntScaledDensity();
+  int w = QFontMetrics(f).width("MM") + 2 * margin;
+  int h = QFontMetrics(f).height() + 2 * margin;
+
   p->setBrush(QColor(R,G,0));
-  p->drawRect(x - 9, y - 7, 18 , 14 );
-  p->drawText(x - 9, y - 5, 18 , 14 , Qt::AlignCenter, QString::number(sivi.id) );
+
+  p->drawRect(x - w/2, y - h/2, w , h );
+  p->drawText(x - w/2, y - h/2, w, h, Qt::AlignCenter, QString::number(sivi.id) );
 }
 
 /*************************************************************************************/
@@ -536,7 +556,13 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
   else
     {
       QFont f = font();
-      f.setPixelSize(12);
+
+#ifdef ANDROID
+  f.setPointSize(6);
+#else
+  f.setPixelSize(12);
+#endif
+
       pw.setFont(f);
       pw.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
 
@@ -582,10 +608,25 @@ void GpsSnrDisplay::drawSat( QPainter *p, int i, int cnt, const SIVInfo& sivi )
     }
 
   QFont f = font();
-  f.setPixelSize( 12 );
+
+#ifdef ANDROID
+  f.setPointSize(6);
+#else
+  f.setPixelSize(12);
+#endif
+
   p->setFont( f );
   p->setPen( Qt::black );
   p->setBrush( Qt::NoBrush );
   p->drawRect( left, height, bwidth - 2, -bheight );
-  p->drawText(left+1, height-13, bwidth-4, 12, Qt::AlignCenter, QString::number(sivi.id));
+
+  int margin = 2 * Layout::getIntScaledDensity();
+  int h = QFontMetrics(f).height() + 2 * margin;
+
+  p->drawText( left + Layout::getIntScaledDensity(),
+               height-h,
+               bwidth-4,
+               h,
+               Qt::AlignCenter,
+               QString::number(sivi.id));
 }

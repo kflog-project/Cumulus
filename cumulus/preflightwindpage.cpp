@@ -166,6 +166,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
+  titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
 
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));

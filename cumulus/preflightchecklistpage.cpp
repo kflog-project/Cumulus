@@ -126,6 +126,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   m_ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
+  titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
 
   connect( addButton, SIGNAL(pressed()), SLOT(slotAddRow()) );
