@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2014 by Axel Pauli
+**   Copyright (c): 2014-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -94,36 +92,51 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   QTableWidgetItem *item = new QTableWidgetItem( tr(" Check Point ") );
   m_list->setHorizontalHeaderItem( 0, item );
 
+  int buttonSize = Layout::getButtonSize();
+  int iconSize   = buttonSize - 5;
+
   QPushButton* toggleButton = new QPushButton(this);
   toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
-  toggleButton->setIconSize( QSize(IconSize, IconSize) );
+  toggleButton->setIconSize( QSize(iconSize, iconSize) );
   toggleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  toggleButton->setMinimumSize(buttonSize, buttonSize);
+  toggleButton->setMaximumSize(buttonSize, buttonSize);
 
   QPushButton *addButton = new QPushButton;
   addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
-  addButton->setIconSize(QSize(IconSize, IconSize));
+  addButton->setIconSize(QSize(iconSize, iconSize));
   addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  addButton->setMinimumSize(buttonSize, buttonSize);
+  addButton->setMaximumSize(buttonSize, buttonSize);
 
   m_editButton = new QPushButton(this);
   m_editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  m_editButton->setIconSize( QSize(IconSize, IconSize) );
+  m_editButton->setIconSize( QSize(iconSize, iconSize) );
   m_editButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_editButton->setMinimumSize(buttonSize, buttonSize);
+  m_editButton->setMaximumSize(buttonSize, buttonSize);
 
   m_deleteButton = new QPushButton;
   m_deleteButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
-  m_deleteButton->setIconSize( QSize(IconSize, IconSize) );
+  m_deleteButton->setIconSize( QSize(iconSize, iconSize) );
   m_deleteButton->setEnabled(false);
   m_deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_deleteButton->setMinimumSize(buttonSize, buttonSize);
+  m_deleteButton->setMaximumSize(buttonSize, buttonSize);
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(IconSize, IconSize));
+  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  cancel->setMinimumSize(buttonSize, buttonSize);
+  cancel->setMaximumSize(buttonSize, buttonSize);
 
   m_ok = new QPushButton(this);
   m_ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  m_ok->setIconSize(QSize(IconSize, IconSize));
+  m_ok->setIconSize(QSize(iconSize, iconSize));
   m_ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_ok->setMinimumSize(buttonSize, buttonSize);
+  m_ok->setMaximumSize(buttonSize, buttonSize);
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setAlignment( Qt::AlignCenter );

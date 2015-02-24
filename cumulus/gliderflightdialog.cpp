@@ -189,7 +189,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(iconSize, iconSize));
+  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setMinimumSize(buttonSize, buttonSize);
   cancel->setMaximumSize(buttonSize, buttonSize);
 
@@ -197,7 +197,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(iconSize, iconSize));
+  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   ok->setMinimumSize(buttonSize, buttonSize);
   ok->setMaximumSize(buttonSize, buttonSize);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
