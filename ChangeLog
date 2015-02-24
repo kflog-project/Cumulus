@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-02-22 AP: Issue #44 fixed. Adapt the GPS status dialog on Android to
+                   higher resolution screens.
+
 [o] 2015-02-22 AP: Issue #43 fixed. Calculate the TAS from the wind and ground
                    speed and show it in box GS. The display of box GS should be
                    toggled between GS and TAS on user touch.
