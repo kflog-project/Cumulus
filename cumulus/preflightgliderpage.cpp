@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -109,16 +107,19 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   topLayout->addWidget(m_edtWater, row, 3);
   row++;
 
-  topLayout->addWidget( new QLabel(tr("Ref. weight:"), this), row, 0);
+  QHBoxLayout* hbox = new QHBoxLayout;
+  hbox->addWidget( new QLabel(tr("Ref. weight:"), this) );
   m_refWeight = new QLabel;
   m_refWeight->setFocusPolicy(Qt::NoFocus);
-  topLayout->addWidget(m_refWeight, row, 1);
+  hbox->addWidget( m_refWeight, 10 );
+  topLayout->addLayout( hbox, row, 0, 1, 2 );
 
-  QLabel* lblWLoad = new QLabel(tr("Wing load:"), this);
-  topLayout->addWidget(lblWLoad, row, 2);
+  hbox = new QHBoxLayout;
+  hbox->addWidget( new QLabel(tr("Wing load:"), this) );
   m_wingLoad = new QLabel;
   m_wingLoad->setFocusPolicy(Qt::NoFocus);
-  topLayout->addWidget(m_wingLoad, row, 3);
+  hbox->addWidget( m_wingLoad, 10 );
+  topLayout->addLayout( hbox, row, 2, 1, 2 );
   row++;
 
   topLayout->setRowMinimumHeight ( row, 10 );
