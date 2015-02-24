@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -113,7 +111,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
            this, SLOT(slotSpinValueChanged(const QString&)));
 
   gridLayout->addWidget(spinWater, row, 1);
-
+  setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   int buttonSize = Layout::getButtonSize();
   int iconSize   = buttonSize - 5;
 
@@ -189,7 +187,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   // button pressing in turbulent air.
   cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  cancel->setIconSize( QSize( iconSize, iconSize ) );
   cancel->setMinimumSize(buttonSize, buttonSize);
   cancel->setMaximumSize(buttonSize, buttonSize);
 
@@ -197,7 +195,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
 
   ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  ok->setIconSize( QSize( iconSize, iconSize ) );
   ok->setMinimumSize(buttonSize, buttonSize);
   ok->setMaximumSize(buttonSize, buttonSize);
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
