@@ -111,7 +111,7 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
            this, SLOT(slotSpinValueChanged(const QString&)));
 
   gridLayout->addWidget(spinWater, row, 1);
-  setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+
   int buttonSize = Layout::getButtonSize();
   int iconSize   = buttonSize - 5;
 
