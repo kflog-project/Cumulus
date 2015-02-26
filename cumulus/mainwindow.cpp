@@ -1286,10 +1286,10 @@ void MainWindow::createContextMenu()
   contextMenu = new QMenu(this);
   contextMenu->setVisible(false);
 
-  fileMenu = contextMenu->addMenu(tr("File") + " ");
+  fileMenu = contextMenu->addMenu(tr("File") + "  ");
   fileMenu->addAction( actionFileQuit );
 
-  viewMenu = contextMenu->addMenu(tr("View") + " ");
+  viewMenu = contextMenu->addMenu(tr("View") + "  ");
 
 #ifdef FLARM
   viewMenu->addAction( actionViewFlarm );
@@ -1307,8 +1307,8 @@ void MainWindow::createContextMenu()
   actionViewTaskpoints->setEnabled( false );
   viewMenu->addAction( actionViewWaypoints );
 
-  labelMenu = contextMenu->addMenu( tr("Toggles") + " ");
-  labelSubMenu = labelMenu->addMenu( tr("Labels") + " ");
+  labelMenu = contextMenu->addMenu( tr("Toggles") + "  ");
+  labelSubMenu = labelMenu->addMenu( tr("Labels") + "  ");
   labelSubMenu->addAction( actionToggleAfLabels );
   labelSubMenu->addAction( actionToggleOlLabels );
   labelSubMenu->addAction( actionToggleNaLabels );
@@ -1332,18 +1332,18 @@ void MainWindow::createContextMenu()
   labelMenu->addAction( actionToggleMapSidebar );
   labelMenu->addAction( actionToggleStatusbar );
 
-  mapMenu = contextMenu->addMenu(tr("Map") + " ");
+  mapMenu = contextMenu->addMenu(tr("Map") + "  ");
   mapMenu->addAction( actionSelectTask );
   mapMenu->addAction( actionManualNavMove2Home );
   mapMenu->addAction( actionNav2Home );
   mapMenu->addAction( actionEnsureVisible );
   mapMenu->addAction( actionRemoveTarget );
 
-  statusMenu = contextMenu->addMenu(tr("Status") + " ");
+  statusMenu = contextMenu->addMenu(tr("Status") + "  ");
   statusMenu->addAction( actionStatusAirspace );
   statusMenu->addAction( actionStatusGPS );
 
-  setupMenu = contextMenu->addMenu(tr("Setup") + " ");
+  setupMenu = contextMenu->addMenu(tr("Setup") + "  ");
 #ifdef ANDROID
   setupMenu->addAction( actionHardwareMenu );
 #endif
@@ -1351,7 +1351,7 @@ void MainWindow::createContextMenu()
   setupMenu->addAction( actionPreFlight );
   setupMenu->addAction( actionSetupInFlight );
 
-  helpMenu = contextMenu->addMenu(tr("Help") + " ");
+  helpMenu = contextMenu->addMenu(tr("Help") + "  ");
   helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
 
