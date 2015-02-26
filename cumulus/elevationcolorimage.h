@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2010 Axel Pauli, kflog.cumulus@gmail.com
+**   Copyright (c):  2009-2015 Axel Pauli, kflog.cumulus@gmail.com
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -33,7 +31,7 @@
  * The right side of the bar is labeled with elevation numbers according
  * to the current altitude unit (meters or feed).
  *
- * \date 2009-2010
+ * \date 2009-2015
  */
 
 class ElevationColorImage : public QWidget
@@ -51,6 +49,7 @@ class ElevationColorImage : public QWidget
    *  colors in the array before a new paintEvent is fired.
    */
   ElevationColorImage( QColor colors[], QWidget *parent = 0);
+
   ~ElevationColorImage();
 
   QSize minimumSizeHint() const;
@@ -66,7 +65,17 @@ class ElevationColorImage : public QWidget
   /** Reference to terrainColors to be used for drawing. The array contains
    * 51 colors, starting with the lowest level at index 0. Index 50 contains
    * the highest elevation level. */
-  QColor *terrainColors;
+  const QColor *m_terrainColors;
+
+  /**
+   * Pixel size to be used for drawing.
+   */
+  const int m_pixelSize;
+
+  /**
+   * Scale to be used for drawing.
+   */
+  const int m_scale;
 };
 
 #endif
