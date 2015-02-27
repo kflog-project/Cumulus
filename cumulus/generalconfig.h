@@ -28,7 +28,7 @@
  *
  * \date 2004-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -45,6 +45,7 @@
 #include "airspace.h"
 #include "altitude.h"
 #include "basemapelement.h"
+#include "layout.h"
 #include "mapdefaults.h"
 #include "speed.h"
 #include "waypoint.h"
@@ -70,12 +71,12 @@
 #define AS_FILL_INSIDE    20
 
 // default line width options
-#define AirSpaceBorderLineWidth 5
-#define TaskLineWidth 5
-#define TargetLineWidth 5
-#define TaskFiguresLineWidth 5
-#define HeadingLineWidth 5
-#define TrailLineWidth 4
+#define AirSpaceBorderLineWidth 5 * Layout::getIntScaledDensity()
+#define TaskLineWidth 5 * Layout::getIntScaledDensity()
+#define TargetLineWidth 5 * Layout::getIntScaledDensity()
+#define TaskFiguresLineWidth 5 * Layout::getIntScaledDensity()
+#define HeadingLineWidth 5 * Layout::getIntScaledDensity()
+#define TrailLineWidth 4 * Layout::getIntScaledDensity()
 
 // default line color options
 #define TaskLineColor QColor(Qt::darkMagenta).name()

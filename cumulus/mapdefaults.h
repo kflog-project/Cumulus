@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 #define MAP_DEFAULTS_H
 
 #include <QColor>
+#include "layout.h"
 
 // Default-Home (Berlin, Brandenburger Tor)
 #define HOME_DEFAULT_LAT 31509700
@@ -27,12 +28,12 @@
 #define INFOBOX_FRAME_COLOR "#687ec6"
 
 // the scale-borders
-#define VAL_BORDER_L                       5
-#define VAL_BORDER_U                    1200
-#define VAL_BORDER_1                     100
-#define VAL_BORDER_2                     500
-#define VAL_BORDER_3                    1000
-#define VAL_BORDER_S                     250
+#define VAL_BORDER_L    5
+#define VAL_BORDER_U 1200
+#define VAL_BORDER_1  100
+#define VAL_BORDER_2  500
+#define VAL_BORDER_3 1000
+#define VAL_BORDER_S  250
 
 /*
  * Definierte Farbwerte bei (dazwischen wurde frueher linear geaendert):
@@ -116,10 +117,10 @@
 #define TRAIL_COLOR_3  QColor(255,100,100)
 #define TRAIL_COLOR_4  QColor(255,100,100)
 
-#define TRAIL_PEN_WIDTH_1 2
-#define TRAIL_PEN_WIDTH_2 2
-#define TRAIL_PEN_WIDTH_3 1
-#define TRAIL_PEN_WIDTH_4 1
+#define TRAIL_PEN_WIDTH_1 2 * Layout::getIntScaledDensity()
+#define TRAIL_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define TRAIL_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define TRAIL_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define TRAIL_PEN_STYLE_1 Qt::SolidLine
 #define TRAIL_PEN_STYLE_2 Qt::SolidLine
@@ -132,10 +133,10 @@
 #define ROAD_COLOR_3  QColor(255,000,000)
 #define ROAD_COLOR_4  QColor(255,000,000)
 
-#define ROAD_PEN_WIDTH_1 3
-#define ROAD_PEN_WIDTH_2 2
-#define ROAD_PEN_WIDTH_3 1
-#define ROAD_PEN_WIDTH_4 1
+#define ROAD_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define ROAD_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define ROAD_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define ROAD_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define ROAD_PEN_STYLE_1 Qt::SolidLine
 #define ROAD_PEN_STYLE_2 Qt::SolidLine
@@ -148,10 +149,10 @@
 #define MOTORWAY_COLOR_3  QColor(255,000,000)
 #define MOTORWAY_COLOR_4  QColor(255,000,000)
 
-#define MOTORWAY_PEN_WIDTH_1 6
-#define MOTORWAY_PEN_WIDTH_2 5
-#define MOTORWAY_PEN_WIDTH_3 4
-#define MOTORWAY_PEN_WIDTH_4 3
+#define MOTORWAY_PEN_WIDTH_1 5 * Layout::getIntScaledDensity()
+#define MOTORWAY_PEN_WIDTH_2 4 * Layout::getIntScaledDensity()
+#define MOTORWAY_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define MOTORWAY_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define MOTORWAY_PEN_STYLE_1 Qt::SolidLine
 #define MOTORWAY_PEN_STYLE_2 Qt::SolidLine
@@ -164,10 +165,10 @@
 #define RAIL_COLOR_3  QColor(000,000,000)
 #define RAIL_COLOR_4  QColor(000,000,000)
 
-#define RAIL_PEN_WIDTH_1 3
-#define RAIL_PEN_WIDTH_2 2
-#define RAIL_PEN_WIDTH_3 1
-#define RAIL_PEN_WIDTH_4 1
+#define RAIL_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define RAIL_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define RAIL_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define RAIL_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define RAIL_PEN_STYLE_1 Qt::DashLine
 #define RAIL_PEN_STYLE_2 Qt::DashLine
@@ -180,10 +181,10 @@
 #define RAIL_D_COLOR_3  QColor(000,000,000)
 #define RAIL_D_COLOR_4  QColor(000,000,000)
 
-#define RAIL_D_PEN_WIDTH_1 3
-#define RAIL_D_PEN_WIDTH_2 3
-#define RAIL_D_PEN_WIDTH_3 2
-#define RAIL_D_PEN_WIDTH_4 2
+#define RAIL_D_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define RAIL_D_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define RAIL_D_PEN_WIDTH_3 2 * Layout::getIntScaledDensity()
+#define RAIL_D_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define RAIL_D_PEN_STYLE_1 Qt::DashLine
 #define RAIL_D_PEN_STYLE_2 Qt::DashLine
@@ -196,10 +197,10 @@
 #define AERIAL_CABLE_COLOR_3  QColor(000,000,000)
 #define AERIAL_CABLE_COLOR_4  QColor(000,000,000)
 
-#define AERIAL_CABLE_PEN_WIDTH_1 3
-#define AERIAL_CABLE_PEN_WIDTH_2 3
-#define AERIAL_CABLE_PEN_WIDTH_3 2
-#define AERIAL_CABLE_PEN_WIDTH_4 2
+#define AERIAL_CABLE_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define AERIAL_CABLE_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define AERIAL_CABLE_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define AERIAL_CABLE_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define AERIAL_CABLE_PEN_STYLE_1 Qt::DashLine
 #define AERIAL_CABLE_PEN_STYLE_2 Qt::DashLine
@@ -212,10 +213,10 @@
 #define RIVER_COLOR_3 QColor(70,70,195)
 #define RIVER_COLOR_4 QColor(70,70,195)
 
-#define RIVER_PEN_WIDTH_1 3
-#define RIVER_PEN_WIDTH_2 2
-#define RIVER_PEN_WIDTH_3 1
-#define RIVER_PEN_WIDTH_4 1
+#define RIVER_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define RIVER_PEN_WIDTH_2 1 * Layout::getIntScaledDensity()
+#define RIVER_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define RIVER_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define RIVER_PEN_STYLE_1 Qt::SolidLine
 #define RIVER_PEN_STYLE_2 Qt::SolidLine
@@ -254,10 +255,10 @@
 #define CANAL_COLOR_3 QColor(70,70,195)
 #define CANAL_COLOR_4 QColor(70,70,195)
 
-#define CANAL_PEN_WIDTH_1 3
-#define CANAL_PEN_WIDTH_2 2
-#define CANAL_PEN_WIDTH_3 1
-#define CANAL_PEN_WIDTH_4 1
+#define CANAL_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define CANAL_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define CANAL_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define CANAL_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define CANAL_PEN_STYLE_1 Qt::SolidLine
 #define CANAL_PEN_STYLE_2 Qt::SolidLine
@@ -270,10 +271,10 @@
 #define CITY_COLOR_3 QColor(0,0,0)
 #define CITY_COLOR_4 QColor(0,0,0)
 
-#define CITY_PEN_WIDTH_1 2
-#define CITY_PEN_WIDTH_2 1
-#define CITY_PEN_WIDTH_3 1
-#define CITY_PEN_WIDTH_4 1
+#define CITY_PEN_WIDTH_1 2 * Layout::getIntScaledDensity()
+#define CITY_PEN_WIDTH_2 1 * Layout::getIntScaledDensity()
+#define CITY_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define CITY_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define CITY_PEN_STYLE_1 Qt::SolidLine
 #define CITY_PEN_STYLE_2 Qt::SolidLine
@@ -296,10 +297,10 @@
 #define FRST_COLOR_3 QColor(155,255,127)
 #define FRST_COLOR_4 QColor(155,255,127)
 
-#define FRST_PEN_WIDTH_1 3
-#define FRST_PEN_WIDTH_2 2
-#define FRST_PEN_WIDTH_3 1
-#define FRST_PEN_WIDTH_4 1
+#define FRST_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define FRST_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define FRST_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define FRST_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define FRST_PEN_STYLE_1 Qt::SolidLine
 #define FRST_PEN_STYLE_2 Qt::SolidLine
@@ -322,10 +323,10 @@
 #define GLACIER_COLOR_3 QColor(255,255,255)
 #define GLACIER_COLOR_4 QColor(255,255,255)
 
-#define GLACIER_PEN_WIDTH_1 2
-#define GLACIER_PEN_WIDTH_2 2
-#define GLACIER_PEN_WIDTH_3 2
-#define GLACIER_PEN_WIDTH_4 2
+#define GLACIER_PEN_WIDTH_1 2 * Layout::getIntScaledDensity()
+#define GLACIER_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define GLACIER_PEN_WIDTH_3 2 * Layout::getIntScaledDensity()
+#define GLACIER_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define GLACIER_PEN_STYLE_1 Qt::SolidLine
 #define GLACIER_PEN_STYLE_2 Qt::SolidLine
@@ -348,10 +349,10 @@
 #define PACK_ICE_COLOR_3 QColor(255,250,100)
 #define PACK_ICE_COLOR_4 QColor(255,250,100)
 
-#define PACK_ICE_PEN_WIDTH_1 2
-#define PACK_ICE_PEN_WIDTH_2 2
-#define PACK_ICE_PEN_WIDTH_3 2
-#define PACK_ICE_PEN_WIDTH_4 2
+#define PACK_ICE_PEN_WIDTH_1 2 * Layout::getIntScaledDensity()
+#define PACK_ICE_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define PACK_ICE_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define PACK_ICE_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define PACK_ICE_PEN_STYLE_1 Qt::SolidLine
 #define PACK_ICE_PEN_STYLE_2 Qt::SolidLine
@@ -374,10 +375,10 @@
 #define RIVER_T_COLOR_3 QColor(255,250,100)
 #define RIVER_T_COLOR_4 QColor(255,250,100)
 
-#define RIVER_T_PEN_WIDTH_1 3
-#define RIVER_T_PEN_WIDTH_2 2
-#define RIVER_T_PEN_WIDTH_3 2
-#define RIVER_T_PEN_WIDTH_4 2
+#define RIVER_T_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
+#define RIVER_T_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define RIVER_T_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define RIVER_T_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define RIVER_T_PEN_STYLE_1 Qt::SolidLine
 #define RIVER_T_PEN_STYLE_2 Qt::SolidLine
@@ -395,10 +396,10 @@
 #define RIVER_T_BRUSH_STYLE_4 Qt::SolidPattern
 
 // [Airspace A]
-#define AIRA_PEN_WIDTH_1 4
-#define AIRA_PEN_WIDTH_2 3
-#define AIRA_PEN_WIDTH_3 3
-#define AIRA_PEN_WIDTH_4 2
+#define AIRA_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRA_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRA_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRA_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRA_PEN_STYLE_1 Qt::SolidLine
 #define AIRA_PEN_STYLE_2 Qt::SolidLine
@@ -423,10 +424,10 @@
 #define AIRA_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace B]
-#define AIRB_PEN_WIDTH_1 4
-#define AIRB_PEN_WIDTH_2 3
-#define AIRB_PEN_WIDTH_3 3
-#define AIRB_PEN_WIDTH_4 2
+#define AIRB_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRB_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRB_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRB_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRB_PEN_STYLE_1 Qt::SolidLine
 #define AIRB_PEN_STYLE_2 Qt::SolidLine
@@ -451,10 +452,10 @@
 #define AIRB_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace C]
-#define AIRC_PEN_WIDTH_1 4
-#define AIRC_PEN_WIDTH_2 3
-#define AIRC_PEN_WIDTH_3 3
-#define AIRC_PEN_WIDTH_4 2
+#define AIRC_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRC_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRC_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRC_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRC_PEN_STYLE_1 Qt::SolidLine
 #define AIRC_PEN_STYLE_2 Qt::SolidLine
@@ -479,10 +480,10 @@
 #define AIRC_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace D]
-#define AIRD_PEN_WIDTH_1 4
-#define AIRD_PEN_WIDTH_2 3
-#define AIRD_PEN_WIDTH_3 3
-#define AIRD_PEN_WIDTH_4 2
+#define AIRD_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRD_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRD_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRD_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRD_PEN_STYLE_1 Qt::SolidLine
 #define AIRD_PEN_STYLE_2 Qt::SolidLine
@@ -507,10 +508,10 @@
 #define AIRD_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Airspace E]
-#define AIRE_PEN_WIDTH_1 4
-#define AIRE_PEN_WIDTH_2 3
-#define AIRE_PEN_WIDTH_3 3
-#define AIRE_PEN_WIDTH_4 2
+#define AIRE_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRE_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRE_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRE_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRE_PEN_STYLE_1 Qt::SolidLine
 #define AIRE_PEN_STYLE_2 Qt::SolidLine
@@ -535,10 +536,10 @@
 #define AIRE_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Airspace F]
-#define AIRF_PEN_WIDTH_1 4
-#define AIRF_PEN_WIDTH_2 3
-#define AIRF_PEN_WIDTH_3 3
-#define AIRF_PEN_WIDTH_4 2
+#define AIRF_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRF_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRF_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRF_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRF_PEN_STYLE_1 Qt::SolidLine
 #define AIRF_PEN_STYLE_2 Qt::SolidLine
@@ -563,10 +564,10 @@
 #define AIRF_BRUSH_STYLE_4 Qt::Dense6Pattern
 
 // [Airspace FIR]
-#define AIRFIR_PEN_WIDTH_1 4
-#define AIRFIR_PEN_WIDTH_2 3
-#define AIRFIR_PEN_WIDTH_3 3
-#define AIRFIR_PEN_WIDTH_4 2
+#define AIRFIR_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRFIR_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRFIR_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRFIR_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define AIRFIR_PEN_STYLE_1 Qt::DotLine
 #define AIRFIR_PEN_STYLE_2 Qt::DotLine
@@ -591,10 +592,10 @@
 #define AIRFIR_BRUSH_STYLE_4 Qt::NoBrush
 
 // [Control Zone]
-#define CTR_PEN_WIDTH_1 4
-#define CTR_PEN_WIDTH_2 3
-#define CTR_PEN_WIDTH_3 3
-#define CTR_PEN_WIDTH_4 2
+#define CTR_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define CTR_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define CTR_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define CTR_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define CTR_PEN_STYLE_1 Qt::DotLine
 #define CTR_PEN_STYLE_2 Qt::DotLine
@@ -619,10 +620,10 @@
 #define CTR_BRUSH_STYLE_4 Qt::Dense4Pattern
 
 // [Control C]
-#define CTRC_PEN_WIDTH_1 4
-#define CTRC_PEN_WIDTH_2 3
-#define CTRC_PEN_WIDTH_3 3
-#define CTRC_PEN_WIDTH_4 2
+#define CTRC_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define CTRC_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define CTRC_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define CTRC_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define CTRC_PEN_STYLE_1 Qt::DotLine
 #define CTRC_PEN_STYLE_2 Qt::DotLine
@@ -647,10 +648,10 @@
 #define CTRC_BRUSH_STYLE_4 Qt::Dense4Pattern
 
 // [Control D]
-#define CTRD_PEN_WIDTH_1 4
-#define CTRD_PEN_WIDTH_2 3
-#define CTRD_PEN_WIDTH_3 2
-#define CTRD_PEN_WIDTH_4 1
+#define CTRD_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define CTRD_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define CTRD_PEN_WIDTH_3 2 * Layout::getIntScaledDensity()
+#define CTRD_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define CTRD_PEN_STYLE_1 Qt::DotLine
 #define CTRD_PEN_STYLE_2 Qt::DotLine
@@ -675,10 +676,10 @@
 #define CTRD_BRUSH_STYLE_4 Qt::Dense4Pattern
 
 // [Wave Window]
-#define WAVE_WINDOW_PEN_WIDTH_1 4
-#define WAVE_WINDOW_PEN_WIDTH_2 3
-#define WAVE_WINDOW_PEN_WIDTH_3 3
-#define WAVE_WINDOW_PEN_WIDTH_4 2
+#define WAVE_WINDOW_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define WAVE_WINDOW_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define WAVE_WINDOW_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define WAVE_WINDOW_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define WAVE_WINDOW_PEN_STYLE_1 Qt::SolidLine
 #define WAVE_WINDOW_PEN_STYLE_2 Qt::SolidLine
@@ -703,10 +704,10 @@
 #define WAVE_WINDOW_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Low flight area]
-#define LOWF_PEN_WIDTH_1 4
-#define LOWF_PEN_WIDTH_2 3
-#define LOWF_PEN_WIDTH_3 3
-#define LOWF_PEN_WIDTH_4 2
+#define LOWF_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define LOWF_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define LOWF_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define LOWF_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define LOWF_PEN_STYLE_1 Qt::DotLine
 #define LOWF_PEN_STYLE_2 Qt::DotLine
@@ -731,10 +732,10 @@
 #define LOWF_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Danger]
-#define DNG_PEN_WIDTH_1 4
-#define DNG_PEN_WIDTH_2 3
-#define DNG_PEN_WIDTH_3 3
-#define DNG_PEN_WIDTH_4 2
+#define DNG_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define DNG_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define DNG_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define DNG_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define DNG_PEN_STYLE_1 Qt::SolidLine
 #define DNG_PEN_STYLE_2 Qt::SolidLine
@@ -759,10 +760,10 @@
 #define DNG_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Prohibited]
-#define PRO_PEN_WIDTH_1 4
-#define PRO_PEN_WIDTH_2 3
-#define PRO_PEN_WIDTH_3 3
-#define PRO_PEN_WIDTH_4 2
+#define PRO_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define PRO_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define PRO_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define PRO_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define PRO_PEN_STYLE_1 Qt::SolidLine
 #define PRO_PEN_STYLE_2 Qt::SolidLine
@@ -787,10 +788,10 @@
 #define PRO_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Restricted]
-#define RES_PEN_WIDTH_1 4
-#define RES_PEN_WIDTH_2 3
-#define RES_PEN_WIDTH_3 2
-#define RES_PEN_WIDTH_4 1
+#define RES_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define RES_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define RES_PEN_WIDTH_3 2 * Layout::getIntScaledDensity()
+#define RES_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define RES_PEN_STYLE_1 Qt::SolidLine
 #define RES_PEN_STYLE_2 Qt::SolidLine
@@ -815,10 +816,10 @@
 #define RES_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Radio Mandatory Zone]
-#define RMZ_PEN_WIDTH_1 4
-#define RMZ_PEN_WIDTH_2 3
-#define RMZ_PEN_WIDTH_3 3
-#define RMZ_PEN_WIDTH_4 2
+#define RMZ_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define RMZ_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define RMZ_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define RMZ_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define RMZ_PEN_STYLE_1 Qt::DotLine
 #define RMZ_PEN_STYLE_2 Qt::DotLine
@@ -843,10 +844,10 @@
 #define RMZ_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Transponder Mandatory Zone]
-#define TMZ_PEN_WIDTH_1 4
-#define TMZ_PEN_WIDTH_2 3
-#define TMZ_PEN_WIDTH_3 3
-#define TMZ_PEN_WIDTH_4 2
+#define TMZ_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define TMZ_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define TMZ_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define TMZ_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define TMZ_PEN_STYLE_1 Qt::DashDotLine
 #define TMZ_PEN_STYLE_2 Qt::DashDotLine
@@ -871,10 +872,10 @@
 #define TMZ_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Glider Sector]
-#define GLIDER_SECTOR_PEN_WIDTH_1 4
-#define GLIDER_SECTOR_PEN_WIDTH_2 3
-#define GLIDER_SECTOR_PEN_WIDTH_3 3
-#define GLIDER_SECTOR_PEN_WIDTH_4 2
+#define GLIDER_SECTOR_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define GLIDER_SECTOR_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define GLIDER_SECTOR_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define GLIDER_SECTOR_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
 #define GLIDER_SECTOR_PEN_STYLE_1 Qt::SolidLine
 #define GLIDER_SECTOR_PEN_STYLE_2 Qt::SolidLine

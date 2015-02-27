@@ -21,9 +21,9 @@
  *
  * \brief This class provides the basic functions for the map display.
  *
- * \date 1999-2014
+ * \date 1999-2015
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
