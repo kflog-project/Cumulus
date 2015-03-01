@@ -1476,6 +1476,12 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
 
   if( pm.load( path ) )
     {
+      if( Layout::getIntScaledDensity() > 1 )
+	{
+	  int scale = Layout::getIntScaledDensity();
+	  //pm = pm.scaled( pm.width() * scale, pm.height() * scale );
+	}
+
       QPixmapCache::insert( path, pm );
       return pm;
     }

@@ -1016,14 +1016,14 @@ QPixmap& MapConfig::getPlusButton()
       first = false;
       int size = Layout::getMapZoomButtonSize();
 
-      plusButton = QPixmap( size+6, size+6 );
+      plusButton = QPixmap( size + 8, size + 8 );
       plusButton.fill(Qt::transparent);
       QPainter painter(&plusButton);
       QPen pen(Qt::darkGray);
-      pen.setWidth(4);
+      pen.setWidth(4 + Layout::getIntScaledDensity() );
       painter.setPen( pen );
       painter.setBrush(Qt::NoBrush);
-      painter.translate( 3 , 3 );
+      painter.translate( 4, 4 );
       painter.drawRoundedRect( 0, 0, size, size, 10, 10 );
       painter.drawLine( 10, size/2, size-10, size/2 );
       painter.drawLine( size/2, 10, size/2, size-10 );
@@ -1045,17 +1045,55 @@ QPixmap& MapConfig::getMinusButton()
       first = false;
       int size = Layout::getMapZoomButtonSize();
 
-      minusButton = QPixmap( size+6, size+6 );
+      minusButton = QPixmap( size + 8, size + 8 );
       minusButton.fill(Qt::transparent);
       QPainter painter(&minusButton);
       QPen pen(Qt::darkGray);
-      pen.setWidth(4);
+      pen.setWidth(4 + Layout::getIntScaledDensity());
       painter.setPen( pen );
       painter.setBrush(Qt::NoBrush);
-      painter.translate( 3 , 3 );
+      painter.translate( 4, 4 );
       painter.drawRoundedRect( 0, 0, size, size, 10, 10 );
       painter.drawLine( 10, size/2, size-10, size/2 );
     }
 
   return minusButton;
+}
+
+QPixmap& MapConfig::getCross()
+{
+  static QPixmap pm;
+
+  if( pm.isNull() )
+    {
+      int scale = Layout::getIntScaledDensity();
+      int offset = 5 * scale;
+      int w = 40 * scale;
+      int h = 40 * scale;
+      int cw = 4 * scale;
+
+      int points[24] = { cw, 0, w/2, h/2-cw, w-cw, 0, w, cw, w/2+cw, h/2, w, h-cw,
+			 w-cw, h, w/2, h/2+cw, cw, h, 0, h-cw, w/2-cw, h/2, 0, cw };
+
+      QPolygon pn;
+
+      pn.setPoints( 12, points );
+
+      pm = QPixmap( w + offset, h + offset );
+      pm.fill(Qt::transparent);
+
+      QPainter painter;
+      painter.begin(&pm);
+      QPen pen(Qt::black);
+      pen.setWidth(1 + Layout::getIntScaledDensity());
+      painter.setPen( pen );
+      painter.setBrush(Qt::white);
+      painter.translate( offset, offset );
+      painter.drawPolygon(pn);
+      painter.setBrush(Qt::black);
+      painter.drawEllipse( QPoint(w/2, h/2), cw, cw );
+      painter.end();
+    }
+
+  return pm;
 }

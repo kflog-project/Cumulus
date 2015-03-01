@@ -45,9 +45,9 @@
  * calling overhead. Furthermore all pointer classes have been replaced
  * by value classes.
  *
- * \date 2001-2012
+ * \date 2001-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 class MapConfig : public QObject
@@ -196,6 +196,14 @@ class MapConfig : public QObject
       * corners and is transparent.
       */
     QPixmap& getMinusButton();
+
+    /**
+      * Returns a pixmap containing a cross. That pixmap is used, if no GPS
+      * connection is availavle.
+      *
+      * \return A pixmap with a cross scaled with the current set scale.
+      */
+    QPixmap& getCross();
 
     /**
       * Returns a pixmap containing a circle in the wanted size

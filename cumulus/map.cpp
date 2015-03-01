@@ -129,10 +129,8 @@ Map::Map(QWidget* parent) : QWidget(parent),
   m_zoomFactor = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
   m_curMANPos  = _globalMapMatrix->getMapCenter();
   m_curGPSPos  = _globalMapMatrix->getMapCenter();
-
-  /** @ee load icons */
-  m_cross  = GeneralConfig::instance()->loadPixmap("cross.png");
-  m_glider = GeneralConfig::instance()->loadPixmap("gliders80pix-15.png");
+  m_cross      = _globalMapConfig->getCross();
+  m_glider     = GeneralConfig::instance()->loadPixmap("gliders80pix-15.png");
 }
 
 Map::~Map()
@@ -2702,7 +2700,7 @@ void Map::p_drawX()
 
   // @ee draw preloaded pixmap
   QPainter p(&m_pixInformationMap);
-  p.drawPixmap(  Rx-20, Ry-20, m_cross );
+  p.drawPixmap(  Rx-m_cross.width() / 2, Ry-m_cross.height() / 2, m_cross );
 }
 
 /** Used to zoom into the map. Will schedule a redraw. */

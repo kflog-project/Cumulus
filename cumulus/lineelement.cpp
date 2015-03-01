@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2014 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -162,7 +160,7 @@ bool LineElement::drawMapElement(QPainter* targetP)
   if(typeID == BaseMapElement::Motorway && drawP.width() > 4)
     {
       // draw the white line in the middle
-      targetP->setPen(QPen(Qt::white, 1));
+      targetP->setPen( QPen(Qt::white, Layout::getIntScaledDensity()) );
       targetP->drawPolyline(mP);
     }
 

@@ -182,9 +182,9 @@
 #define RAIL_D_COLOR_4  QColor(000,000,000)
 
 #define RAIL_D_PEN_WIDTH_1 3 * Layout::getIntScaledDensity()
-#define RAIL_D_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
-#define RAIL_D_PEN_WIDTH_3 2 * Layout::getIntScaledDensity()
-#define RAIL_D_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
+#define RAIL_D_PEN_WIDTH_2 2 * Layout::getIntScaledDensity()
+#define RAIL_D_PEN_WIDTH_3 1 * Layout::getIntScaledDensity()
+#define RAIL_D_PEN_WIDTH_4 1 * Layout::getIntScaledDensity()
 
 #define RAIL_D_PEN_STYLE_1 Qt::DashLine
 #define RAIL_D_PEN_STYLE_2 Qt::DashLine

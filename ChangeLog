@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-03-01 AP: Cross drawing at the map is scaled now to the screen
+                   resolution.
+
 [-] 2015-02-26 AP: Issue #45 fixed. Adapt the color elevation image on Android
                    to higher resolution screens.
 
