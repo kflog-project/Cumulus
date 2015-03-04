@@ -199,11 +199,21 @@ class MapConfig : public QObject
 
     /**
       * Returns a pixmap containing a cross. That pixmap is used, if no GPS
-      * connection is availavle.
+      * connection is available.
       *
       * \return A pixmap with a cross scaled with the current set scale.
       */
     QPixmap& getCross();
+
+    /**
+      * Returns a pixmap containing a glider. That pixmap is used, if a GPS
+      * connection is available to show the movement direction.
+      *
+      * \param heading Heading direction of glider.
+      *
+      * \return A pixmap with a glider scaled with the current set scale.
+      */
+    QPixmap getGlider( const int heading );
 
     /**
       * Returns a pixmap containing a circle in the wanted size

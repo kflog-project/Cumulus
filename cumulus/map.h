@@ -689,7 +689,8 @@ protected:
 
   /** these pixmaps are preloaded to improve runtime drawing */
   QPixmap m_cross;
-  QPixmap m_glider;
+
+  QPixmap m_glider[36];
 
   /** Airspace conflicts */
   QMap<QString, int> m_insideAsMap;   // AS Text and AS type

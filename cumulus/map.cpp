@@ -130,7 +130,11 @@ Map::Map(QWidget* parent) : QWidget(parent),
   m_curMANPos  = _globalMapMatrix->getMapCenter();
   m_curGPSPos  = _globalMapMatrix->getMapCenter();
   m_cross      = _globalMapConfig->getCross();
-  m_glider     = GeneralConfig::instance()->loadPixmap("gliders80pix-15.png");
+
+  for( int i = 0; i < 360/10; i++ )
+    {
+      m_glider[i] = _globalMapConfig->getGlider( i*10 );
+    }
 }
 
 Map::~Map()
@@ -1084,6 +1088,7 @@ void Map::p_drawTrail()
       p.begin( &m_pixInformationMap );
       QPen pen( color, penWidth );
       p.setPen(pen);
+      p.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
       p.drawPath(m_tpp);
       p.end();
     }
@@ -2632,6 +2637,7 @@ void Map::p_drawGlider()
 {
   // get the projected coordinates of the current position
   QPoint projPos = _globalMapMatrix->wgsToMap(m_curGPSPos);
+
   // map them to a coordinate on the pixmap
   QPoint mapPos = _globalMapMatrix->map(projPos);
 
@@ -2657,8 +2663,10 @@ void Map::p_drawGlider()
         }
     }
 
-  int rot=calcGliderRotation();
-  rot=((rot+7)/15) % 24;  //we only want to rotate in steps of 15 degrees. Finer is not usefull.
+  int rot = calcGliderRotation();
+
+  //we only want to rotate in steps of 10 degrees. Finer is not useful.
+  rot = ((rot+5)/10) % 36;
 
   // now, draw the line from the glider symbol to the waypoint
   p_drawDirectionLine(QPoint(Rx,Ry));
@@ -2668,9 +2676,10 @@ void Map::p_drawGlider()
 
   p_drawRelBearingInfo();
 
-  // @ee the glider pixmap contains all rotated glider symbols.
   QPainter p(&m_pixInformationMap);
-  p.drawPixmap( Rx-40, Ry-40, m_glider, rot*80, 0, 80, 80 );
+
+  QPixmap& gl = m_glider[rot];
+  p.drawPixmap( Rx - gl.width()/2, Ry - gl.height()/2, gl );
 }
 
 /** Draws the X symbol on the pixmap */
@@ -2678,6 +2687,7 @@ void Map::p_drawX()
 {
   // get the projected coordinates of the current position
   QPoint projPos=_globalMapMatrix->wgsToMap(m_curMANPos);
+
   // map them to a coordinate on the pixmap
   QPoint mapPos = _globalMapMatrix->map(projPos);
 

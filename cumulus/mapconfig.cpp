@@ -1074,7 +1074,6 @@ QPixmap& MapConfig::getCross()
 
       int points[24] = { cw, 0, w/2, h/2-cw, w-cw, 0, w, cw, w/2+cw, h/2, w, h-cw,
 			 w-cw, h, w/2, h/2+cw, cw, h, 0, h-cw, w/2-cw, h/2, 0, cw };
-
       QPolygon pn;
 
       pn.setPoints( 12, points );
@@ -1088,12 +1087,64 @@ QPixmap& MapConfig::getCross()
       pen.setWidth(1 + Layout::getIntScaledDensity());
       painter.setPen( pen );
       painter.setBrush(Qt::white);
-      painter.translate( offset, offset );
+      painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+      painter.translate( offset / 2, offset / 2 );
       painter.drawPolygon(pn);
       painter.setBrush(Qt::black);
       painter.drawEllipse( QPoint(w/2, h/2), cw, cw );
       painter.end();
     }
+
+  return pm;
+}
+
+QPixmap MapConfig::getGlider( const int heading )
+{
+  float s = 3.5 * Layout::getIntScaledDensity();
+  float offset = 5 * s;
+  float w = 20 * s;
+  float h = 20 * s;
+
+  QPolygonF pn;
+
+  pn << QPointF( w/2 + 0.5*s, h/2 - 4*s )
+     << QPointF( w/2 + 0.5*s, h/2 - 1*s )
+     << QPointF( w, h/2 - 1*s )
+     << QPointF( w, h/2 )
+     << QPointF( w/2 + 0.5*s, h/2 )
+     << QPointF( w/2 + 0.5*s, h - 3*s )
+     << QPointF( w/2 + 3*s, h - 3*s )
+     << QPointF( w/2 + 3*s, h - 2*s )
+     << QPointF( w/2 - 3*s, h - 2*s )
+     << QPointF( w/2 - 3*s, h - 3*s )
+     << QPointF( w/2 - 0.5*s, h - 3*s )
+     << QPointF( w/2 - 0.5*s, h/2 )
+     << QPointF( 0, h/2 )
+     << QPointF( 0, h/2 - 1*s )
+     << QPointF( w/2 - 0.5*s, h/2 - 1*s )
+     << QPointF( w/2 - 0.5*s, h/2 - 4*s );
+
+  QPixmap pm = QPixmap( w + offset, h + offset);
+  pm.fill(Qt::transparent);
+
+  QPainter painter;
+  painter.begin(&pm);
+  QPen pen(Qt::black);
+  pen.setWidth(1 + Layout::getIntScaledDensity());
+  painter.setPen( pen );
+  painter.setBrush(Qt::white);
+  painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+
+  if( heading % 360 )
+    {
+      painter.translate( pm.width() / 2 , pm.height() / 2 );
+      painter.rotate( heading % 360 );
+      painter.translate( -pm.width() / 2 , -pm.height() / 2 );
+    }
+
+  painter.translate( offset / 2, offset / 2 );
+  painter.drawPolygon( pn, Qt::WindingFill );
+  painter.end();
 
   return pm;
 }
