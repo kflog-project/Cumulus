@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -31,7 +29,7 @@
  *
  * This class is derived from \ref SinglePoint
  *
- * \date 2000-2013
+ * \date 2000-2015
  *
  */
 
@@ -39,6 +37,7 @@
 #define AIRFIELD_H
 
 #include <QList>
+#include <QPixmap>
 #include <QString>
 
 #include "runway.h"
@@ -51,16 +50,7 @@ class Airfield : public SinglePoint
   /**
    * Airfield default constructor
    */
-  Airfield() :
-    SinglePoint(),
-    m_frequency(0.0),
-    m_atis(0.0),
-    m_winch(false),
-    m_towing(false),
-    m_rwShift(0),
-    m_landable(true)
-   {
-   };
+  Airfield();
 
   /**
    * Creates a new Airfield-object.
@@ -238,6 +228,13 @@ class Airfield : public SinglePoint
   // Draws the element into the given painter.
   virtual bool drawMapElement( QPainter* targetP );
 
+ private:
+
+  /**
+   * Creates the static airfield icons.
+   */
+  void createStaticIcons();
+
  protected:
 
   /**
@@ -292,7 +289,7 @@ class Airfield : public SinglePoint
   bool m_towing;
 
   /**
-   * Contains the shift of the runway during drawing.
+   * Contains the shift of the runway during drawing in 1/10 degrees.
    */
   unsigned short m_rwShift;
 
@@ -300,6 +297,21 @@ class Airfield : public SinglePoint
    * Flag to indicate the landability of the airfield.
    */
   bool m_landable;
+
+  /**
+   * Pixmaps with big airfields.
+   */
+  static QPixmap* m_bigAirfields;
+
+  /**
+   * Pixmaps with small airfields.
+   */
+  static QPixmap* m_smallAirfields;
+
+  /**
+   * Instance counter of class.
+   */
+  static int instances;
 };
 
 #endif

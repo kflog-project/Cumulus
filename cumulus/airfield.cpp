@@ -7,19 +7,39 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2013 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
 #include <QtCore>
 
 #include "airfield.h"
+#include "layout.h"
+#include "mapconfig.h"
 #include "reachablelist.h"
+
+extern MapConfig* _globalMapConfig;
+
+int Airfield::instances = 0;
+
+QPixmap* Airfield::m_bigAirfields = 0;
+QPixmap* Airfield::m_smallAirfields = 0;
+
+Airfield::Airfield() :
+  SinglePoint(),
+  m_frequency(0.0),
+  m_atis(0.0),
+  m_winch(false),
+  m_towing(false),
+  m_rwShift(0),
+  m_landable(true)
+ {
+  instances++;
+  createStaticIcons();
+ }
 
 Airfield::Airfield( const QString& name,
                     const QString& icao,
@@ -46,11 +66,39 @@ Airfield::Airfield( const QString& name,
   m_rwShift(0),
   m_landable(landable)
 {
+  instances++;
+  createStaticIcons();
   calculateRunwayShift();
+}
+
+void Airfield::createStaticIcons()
+{
+  if( m_bigAirfields == 0 )
+    {
+      qDebug() << "Airfield::createStaticIconsBig()";
+
+      m_bigAirfields = new QPixmap[36];
+
+      for( int i = 0; i < 360/10; i++ )
+        {
+	  m_bigAirfields[i] = _globalMapConfig->getAirfield( i*10, 32, false );
+        }
+    }
+
+  if( m_smallAirfields == 0 )
+    {
+      m_smallAirfields = new QPixmap[36];
+
+      for( int i = 0; i < 360/10; i++ )
+        {
+	  m_smallAirfields[i] = _globalMapConfig->getAirfield( i*10, 16, true );
+        }
+    }
 }
 
 Airfield::~Airfield()
 {
+  instances--;
 }
 
 QString Airfield::getInfoString() const
@@ -98,11 +146,11 @@ bool Airfield::drawMapElement( QPainter* targetP )
   targetP->setPen(QPen(col, 2));
 
   // Size of circle for reachability.
-  int iconSize = 32;
+  int iconSize = 32 * Layout::getIntScaledDensity();
 
   if( glConfig->useSmallIcons() )
     {
-      iconSize = 16;
+      iconSize /= 2;
     }
 
   if (col == Qt::green)
@@ -118,14 +166,11 @@ bool Airfield::drawMapElement( QPainter* targetP )
 
   if( glConfig->isRotatable( typeID ) )
     {
-      QPixmap image( glConfig->getPixmapRotatable(typeID, m_winch) );
+      QPixmap pm = glConfig->useSmallIcons() ? m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
 
-      // All icons are squares. So we can only take the height as size parameter.
-      int size = image.height();
-
-      targetP->drawPixmap( curPos.x() - size/2,
-                           curPos.y() - size/2,
-                           image, m_rwShift*iconSize, 0, size, size );
+      targetP->drawPixmap( curPos.x() - pm.width() / 2,
+                           curPos.y() - pm.height() / 2,
+                           pm );
     }
   else
     {

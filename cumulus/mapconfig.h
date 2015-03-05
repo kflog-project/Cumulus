@@ -216,6 +216,20 @@ class MapConfig : public QObject
     QPixmap getGlider( const int heading );
 
     /**
+      * Returns a pixmap containing an airfiled with an runway. That pixmap
+      * is used as a map icon. The pixmap is scaled with the current set scale.
+      *
+      * \param heading Heading direction of runway.
+      *
+      * \param size Base size of icon.
+      *
+      * \param small Provide a small icon.
+      *
+      * \return A pixmap with an airfield scaled with the current set scale.
+      */
+    QPixmap getAirfield( const int heading, float size, bool small  );
+
+    /**
       * Returns a pixmap containing a circle in the wanted size
       * and filled with wanted color. The circle has no border and
       * is semi-transparent.
