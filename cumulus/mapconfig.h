@@ -213,7 +213,7 @@ class MapConfig : public QObject
       *
       * \return A pixmap with a glider scaled with the current set scale.
       */
-    QPixmap getGlider( const int heading );
+    QPixmap createGlider( const int heading );
 
     /**
       * Returns a pixmap containing an airfiled with an runway. That pixmap
@@ -227,7 +227,21 @@ class MapConfig : public QObject
       *
       * \return A pixmap with an airfield scaled with the current set scale.
       */
-    QPixmap getAirfield( const int heading, float size, bool small  );
+    QPixmap createAirfield( const int heading, float size, bool small  );
+
+    /**
+      * Returns a pixmap containing a landing field with an runway. That pixmap
+      * is used as a map icon. The pixmap is scaled with the current set scale.
+      *
+      * \param heading Heading direction of runway.
+      *
+      * \param size Base size of icon.
+      *
+      * \param small Provide a small icon.
+      *
+      * \return A pixmap with a landing field scaled with the current set scale.
+      */
+    QPixmap createLandingField( const int heading, float size, bool small  );
 
     /**
       * Returns a pixmap containing a circle in the wanted size
@@ -238,7 +252,6 @@ class MapConfig : public QObject
                               QColor color, double opacity=0.5,
                               QColor bg=Qt::transparent,
                               QPen pen=Qt::NoPen );
-
     /**
       * Returns a pixmap containing a square in the wanted size
       * and filled with wanted color. The square has no border and

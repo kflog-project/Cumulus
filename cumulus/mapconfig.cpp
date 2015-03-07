@@ -699,11 +699,12 @@ bool MapConfig::isRotatable( unsigned int typeID ) const
   {
     switch (typeID)
       {
-      case BaseMapElement::Airport:
-      case BaseMapElement::IntAirport:
-      case BaseMapElement::CivMilAirport:
       case BaseMapElement::Airfield:
+      case BaseMapElement::Airport:
+      case BaseMapElement::CivMilAirport:
+      case BaseMapElement::IntAirport:
       case BaseMapElement::Gliderfield:
+      case BaseMapElement::MilAirport:
         return true;
       default:
         return false;
@@ -1098,7 +1099,7 @@ QPixmap& MapConfig::getCross()
   return pm;
 }
 
-QPixmap MapConfig::getGlider( const int heading )
+QPixmap MapConfig::createGlider( const int heading )
 {
   float s = 3.5 * Layout::getIntScaledDensity();
   float offset = 5 * s;
@@ -1149,7 +1150,7 @@ QPixmap MapConfig::getGlider( const int heading )
   return pm;
 }
 
-QPixmap MapConfig::getAirfield( const int heading, float size, bool small )
+QPixmap MapConfig::createAirfield( const int heading, float size, bool small )
 {
   if( int(size) % 2 )
     {
@@ -1165,7 +1166,7 @@ QPixmap MapConfig::getAirfield( const int heading, float size, bool small )
   QPixmap pm = QPixmap( size, size );
   pm.fill(Qt::transparent);
 
-  QRectF rect = QRectF( size/2 - 2*s, 2*s, 4*s, size - 4*s );
+  QRectF runway = QRectF( size/2 - 2*s, 2*s, 4*s, size - 4*s );
 
   float r = size * 0.6 / 2;
 
@@ -1175,7 +1176,7 @@ QPixmap MapConfig::getAirfield( const int heading, float size, bool small )
   painter.begin(&pm);
   painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
   QPen pen(Qt::darkBlue);
-  pen.setWidth( penWidth * Layout::getIntScaledDensity() );
+  pen.setWidth( penWidth );
   painter.setPen( pen );
 
   if( small )
@@ -1201,7 +1202,68 @@ QPixmap MapConfig::getAirfield( const int heading, float size, bool small )
     }
 
   painter.translate( 0, 0 );
-  painter.drawRect( rect );
+  painter.drawRect( runway );
+  painter.end();
+
+  return pm;
+}
+
+QPixmap MapConfig::createLandingField( const int heading, float size, bool small )
+{
+  if( int(size) % 2 )
+    {
+      // increase size, if unsymmetrically
+      size++;
+    }
+
+  float s = Layout::getIntScaledDensity();
+
+  // scale the given size
+  size = size * s;
+
+  QPixmap pm = QPixmap( size, size );
+  pm.fill(Qt::transparent);
+
+  QRectF runway = QRectF( size/2 - 2*s, 2*s, 4*s, size - 4*s );
+
+  float r = size * 0.6 / 2;
+
+  int penWidth = size / 10;
+
+  QPainter painter;
+  painter.begin(&pm);
+  painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+  QPen pen(Qt::darkBlue);
+  pen.setWidth( penWidth );
+  painter.setPen( pen );
+
+  if( small )
+    {
+      painter.setBrush(Qt::darkBlue);
+    }
+  else
+    {
+      painter.setBrush(Qt::NoBrush);
+    }
+
+  if( heading % 360 )
+    {
+      painter.translate( pm.width() / 2 , pm.height() / 2 );
+      painter.rotate( heading % 360 );
+      painter.translate( -pm.width() / 2 , -pm.height() / 2 );
+    }
+
+  painter.translate( 0, 0 );
+
+  // Draw outer rectangle
+  painter.drawRect( QRectF( size/2 - r, size/2 - r , 2*r, 2*r ) );
+
+  // draw runway rectangle
+  painter.setBrush(Qt::white);
+  pen.setWidth( 1 * Layout::getIntScaledDensity() );
+  painter.setPen( pen );
+  painter.drawRect( runway );
+
   painter.end();
 
   return pm;

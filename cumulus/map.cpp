@@ -133,7 +133,7 @@ Map::Map(QWidget* parent) : QWidget(parent),
 
   for( int i = 0; i < 360/10; i++ )
     {
-      m_glider[i] = _globalMapConfig->getGlider( i*10 );
+      m_glider[i] = _globalMapConfig->createGlider( i*10 );
     }
 }
 
@@ -722,12 +722,7 @@ void Map::slotNewWind( Vector& wind )
   if( wind.isValid() && wind.getSpeed().getMps() > 0.0 )
     {
       int angle = wind.getAngleDeg();
-      angle = ((angle+5)/10)*10;  // Quantizes modulo 10
-
-      while( angle >= 360 )
-        {
-          angle -= 360;
-        }
+      angle = (((angle+5)/10) * 10) % 360;  // Quantizes modulo 10
 
       QString resource;
       resource.sprintf("windarrows/wind-arrow-80px-%03d.png", angle );

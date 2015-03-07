@@ -37,6 +37,7 @@
 #define AIRFIELD_H
 
 #include <QList>
+#include <QMutex>
 #include <QPixmap>
 #include <QString>
 
@@ -309,9 +310,19 @@ class Airfield : public SinglePoint
   static QPixmap* m_smallAirfields;
 
   /**
-   * Instance counter of class.
+   * Pixmaps with big fields.
    */
-  static int instances;
+  static QPixmap* m_bigFields;
+
+  /**
+   * Pixmaps with small fields.
+   */
+  static QPixmap* m_smallFields;
+
+  /**
+   * Mutex to protect pixmap creation.
+   */
+  static QMutex mutex;
 };
 
 #endif

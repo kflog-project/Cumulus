@@ -23,10 +23,13 @@
 
 extern MapConfig* _globalMapConfig;
 
-int Airfield::instances = 0;
+QMutex Airfield::mutex;
 
-QPixmap* Airfield::m_bigAirfields = 0;
+QPixmap* Airfield::m_bigAirfields   = 0;
 QPixmap* Airfield::m_smallAirfields = 0;
+
+QPixmap* Airfield::m_bigFields   = 0;
+QPixmap* Airfield::m_smallFields = 0;
 
 Airfield::Airfield() :
   SinglePoint(),
@@ -37,7 +40,6 @@ Airfield::Airfield() :
   m_rwShift(0),
   m_landable(true)
  {
-  instances++;
   createStaticIcons();
  }
 
@@ -66,22 +68,21 @@ Airfield::Airfield( const QString& name,
   m_rwShift(0),
   m_landable(landable)
 {
-  instances++;
   createStaticIcons();
   calculateRunwayShift();
 }
 
 void Airfield::createStaticIcons()
 {
+  QMutexLocker locker(&mutex);
+
   if( m_bigAirfields == 0 )
     {
-      qDebug() << "Airfield::createStaticIconsBig()";
-
       m_bigAirfields = new QPixmap[36];
 
       for( int i = 0; i < 360/10; i++ )
         {
-	  m_bigAirfields[i] = _globalMapConfig->getAirfield( i*10, 32, false );
+	  m_bigAirfields[i] = _globalMapConfig->createAirfield( i*10, 32, false );
         }
     }
 
@@ -91,14 +92,33 @@ void Airfield::createStaticIcons()
 
       for( int i = 0; i < 360/10; i++ )
         {
-	  m_smallAirfields[i] = _globalMapConfig->getAirfield( i*10, 16, true );
+	  m_smallAirfields[i] = _globalMapConfig->createAirfield( i*10, 16, true );
+        }
+    }
+
+  if( m_bigFields == 0 )
+    {
+      m_bigFields = new QPixmap[36];
+
+      for( int i = 0; i < 360/10; i++ )
+        {
+	  m_bigFields[i] = _globalMapConfig->createLandingField( i*10, 32, false );
+        }
+    }
+
+  if( m_smallFields == 0 )
+    {
+      m_smallFields = new QPixmap[36];
+
+      for( int i = 0; i < 360/10; i++ )
+        {
+	  m_smallFields[i] = _globalMapConfig->createLandingField( i*10, 16, true );
         }
     }
 }
 
 Airfield::~Airfield()
 {
-  instances--;
 }
 
 QString Airfield::getInfoString() const
@@ -166,7 +186,16 @@ bool Airfield::drawMapElement( QPainter* targetP )
 
   if( glConfig->isRotatable( typeID ) )
     {
-      QPixmap pm = glConfig->useSmallIcons() ? m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
+      QPixmap& pm = glConfig->useSmallIcons() ? m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
+
+      targetP->drawPixmap( curPos.x() - pm.width() / 2,
+                           curPos.y() - pm.height() / 2,
+                           pm );
+    }
+  else if( typeID == BaseMapElement::UltraLight ||
+           typeID == BaseMapElement::Outlanding )
+    {
+      QPixmap& pm = glConfig->useSmallIcons() ? m_smallFields[m_rwShift] : m_bigFields[m_rwShift];
 
       targetP->drawPixmap( curPos.x() - pm.width() / 2,
                            curPos.y() - pm.height() / 2,

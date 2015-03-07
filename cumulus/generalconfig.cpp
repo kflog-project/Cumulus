@@ -427,10 +427,10 @@ void GeneralConfig::load()
   beginGroup("Scale");
   _mapLowerLimit  = value("Lower Limit", VAL_BORDER_L).toInt();
   _mapUpperLimit  = value("Upper Limit", VAL_BORDER_U).toInt();
-  _mapBorder1     = value("Border 1", VAL_BORDER_1).toInt();
-  _mapBorder2     = value("Border 2", VAL_BORDER_2).toInt();
-  _mapBorder3     = value("Border 3", VAL_BORDER_3).toInt();
-  _mapSwitchScale = value("Switch Scale", VAL_BORDER_S).toInt();
+  _mapBorder1     = VAL_BORDER_1; // value("Border 1", VAL_BORDER_1).toInt();
+  _mapBorder2     = VAL_BORDER_2; // value("Border 2", VAL_BORDER_2).toInt();
+  _mapBorder3     = VAL_BORDER_3; // value("Border 3", VAL_BORDER_3).toInt();
+  _mapSwitchScale = VAL_BORDER_S; // value("Switch Scale", VAL_BORDER_S).toInt();
   endGroup();
 
   beginGroup("Lambert Projection");

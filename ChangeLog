@@ -20,7 +20,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2015-03-01 AP: Cross drawing at the map is scaled now to the screen
+[o] 2015-03-07 AP: Issue #46 ul and oullanding symbol drawing at the map is
+                   scaled now to the screen resolution.
+
+[o] 2015-03-05 AP: Issue #46 airfield symbol drawing at the map is scaled now
+                   to the screen resolution.
+
+[o] 2015-03-04 AP: Issue #46 Glider symbol drawing at the map is scaled now
+                   to the screen resolution.
+
+[o] 2015-03-01 AP: Issue #46 Cross drawing at the map is scaled now to the screen
                    resolution.
 
 [-] 2015-02-26 AP: Issue #45 fixed. Adapt the color elevation image on Android

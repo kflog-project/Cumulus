@@ -30,10 +30,10 @@
 // the scale-borders
 #define VAL_BORDER_L    5
 #define VAL_BORDER_U 1200
-#define VAL_BORDER_1  100
-#define VAL_BORDER_2  500
-#define VAL_BORDER_3 1000
-#define VAL_BORDER_S  250
+#define VAL_BORDER_1 ( static_cast<int>(100.0 / Layout::getScaledDensity()) )
+#define VAL_BORDER_2 ( static_cast<int>(500.0 / Layout::getScaledDensity()) )
+#define VAL_BORDER_3 ( static_cast<int>(1000.0 / Layout::getScaledDensity()) )
+#define VAL_BORDER_S ( static_cast<int>(250.0 / Layout::getScaledDensity()) )
 
 /*
  * Definierte Farbwerte bei (dazwischen wurde frueher linear geaendert):
