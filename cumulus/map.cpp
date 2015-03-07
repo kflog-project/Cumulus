@@ -1406,11 +1406,18 @@ void Map::p_drawNavigationLayer()
 
   navP.begin(&m_pixNavigationMap);
 
-  _globalMapContents->drawList(&navP, drawnRp);
-  _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
-  _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
-  _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
-  _globalMapContents->drawList(&navP, MapContents::HotspotList, drawnSp );
+  if( _globalMapMatrix->isBorder2() )
+    {
+      _globalMapContents->drawList(&navP, drawnRp);
+      _globalMapContents->drawList(&navP, MapContents::OutLandingList, drawnAf);
+      _globalMapContents->drawList(&navP, MapContents::GliderfieldList, drawnAf);
+      _globalMapContents->drawList(&navP, MapContents::AirfieldList, drawnAf);
+    }
+
+  if( _globalMapMatrix->isSwitchScale() )
+    {
+      _globalMapContents->drawList(&navP, MapContents::HotspotList, drawnSp );
+    }
 
   p_drawWaypoints(&navP, drawnWp);
   p_drawPlannedTask(&navP, drawnTp);

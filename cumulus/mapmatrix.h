@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c): 2001      by Heiner Lamprecht, Florian Ehinger
- **                  2008-2011 by Axel Pauli
+ **                  2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -44,7 +42,7 @@ typedef int32_t fp8p24_t;
  * and the projection-type. To avoid problems, there should be only
  * one element per application.
  *
- * \date 2001-2010
+ * \date 2001-2015
  */
 
 class MapMatrix : public QObject
@@ -251,14 +249,36 @@ public:
   int getScaleRange() const;
 
   /**
-   * @return "true", if the current scale is smaller than the switch-scale.
+   * @return "true", if the current scale is smaller than the border1.
    */
-  bool isSwitchScale() const;
+  bool isBorder1() const
+  {
+   return(cScale <= scaleBorders[Border1]);
+  };
 
   /**
-   * @return "true", if the current scale is smaller than the second switch-scale.
+   * @return "true", if the current scale is smaller than the border2.
    */
-  bool isSwitchScale2() const;
+  bool isBorder2() const
+  {
+   return(cScale <= scaleBorders[Border2]);
+  };
+
+  /**
+   * @return "true", if the current scale is smaller than the border3.
+   */
+  bool isBorder3() const
+  {
+   return(cScale <= scaleBorders[Border3]);
+  };
+
+  /**
+   * @return "true", if the current scale is smaller than the switch-scale.
+   */
+  bool isSwitchScale() const
+  {
+    return cScale <= scaleBorders[SwitchScale];
+  }
 
   /**
    * @return the lat/lon-position of the map center.

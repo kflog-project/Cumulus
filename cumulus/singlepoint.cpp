@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2014 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -72,7 +70,7 @@ bool SinglePoint::drawMapElement( QPainter* targetP )
       return true;
     }
 
-  if( !glMapMatrix->isSwitchScale2() )
+  if( !glMapMatrix->isBorder2() )
     {
       targetP->drawEllipse(curPos.x() - scale/2, curPos.y() - scale/2, scale, scale );
     }

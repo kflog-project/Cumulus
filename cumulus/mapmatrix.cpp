@@ -250,16 +250,6 @@ int MapMatrix::getScaleRange()  const
     return Border3;
 }
 
-bool MapMatrix::isSwitchScale() const
-{
-  return cScale <= scaleBorders[SwitchScale];
-}
-
-bool MapMatrix::isSwitchScale2() const
-{
-  return cScale <= scaleBorders[SwitchScale]*4;
-}
-
 QPoint MapMatrix::getMapCenter(bool) const
 {
   return QPoint(mapCenterLat, mapCenterLon);
