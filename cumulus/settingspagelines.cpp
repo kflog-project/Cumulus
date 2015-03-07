@@ -259,8 +259,8 @@ NumberEditor* SettingsPageLines::createNumberEditor( QWidget* parent )
   ne->setPmVisible( false );
   ne->setMaxLength(2);
   ne->setSuffix( tr(" px") );
-  ne->setRange( 1, 10 );
-  ne->setTitle("1...10 Pixel");
+  ne->setRange( 1, 25 );
+  ne->setTip("1...25 Pixel");
   ne->setValue(4);
   ne->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   ne->setFixHeight( false );
