@@ -28,7 +28,7 @@
  *
  * \date 2004-2015
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -244,10 +244,16 @@ class GeneralConfig : protected QSettings
   void setOurGuiStyle();
 
   /**
+   * Load a required pixmap. The loaded pixmap is put into a cache for faster
+   * loading on next request.
+   *
    * @param pixmapName The pixmap to be loaded.
+   *
+   * @param doScale Do scale the pixmap with the current set scale.
+   *
    * @return The requested pixmap.
    */
-  QPixmap loadPixmap( const QString& pixmapName );
+  QPixmap loadPixmap( const QString& pixmapName, const bool doScale=false );
 
   /**
    * @param pixmapName Removes the pixmap from the global cache.

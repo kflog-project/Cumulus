@@ -476,7 +476,7 @@ void MapInfoBox::adaptText2LabelBox()
   int value = m_maxTextLabelFontHeight;
 
   // We have to consider the set style padding and the frame line width
-  int margin = m_text->margin() +
+  int margin = m_text->margin() * Layout::getIntScaledDensity() +
                m_text->lineWidth() * 2 +
                2 * Layout::getIntScaledDensity();
 

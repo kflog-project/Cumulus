@@ -1450,8 +1450,7 @@ void GeneralConfig::setAirspaceFillingLateral(Airspace::ConflictType nearness, i
   _lateralAirspaceFillings[nearness] = qMax(0, qMin(100, filling));
 }
 
-/* Load a pixmap from the cache. If not contained there, insert it. */
-QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
+QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale )
 {
   static bool firstCall = true;
   static QPixmap smallEmptyPixmap( 16, 16 );
@@ -1476,10 +1475,10 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName )
 
   if( pm.load( path ) )
     {
-      if( Layout::getIntScaledDensity() > 1 )
+      if( doScale == true && Layout::getIntScaledDensity() > 1 )
 	{
 	  int scale = Layout::getIntScaledDensity();
-	  //pm = pm.scaled( pm.width() * scale, pm.height() * scale );
+	  pm = pm.scaled( pm.width() * scale, pm.height() * scale );
 	}
 
       QPixmapCache::insert( path, pm );

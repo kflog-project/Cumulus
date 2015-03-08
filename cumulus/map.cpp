@@ -722,12 +722,11 @@ void Map::slotNewWind( Vector& wind )
   if( wind.isValid() && wind.getSpeed().getMps() > 0.0 )
     {
       int angle = wind.getAngleDeg();
-      angle = (((angle+5)/10) * 10) % 360;  // Quantizes modulo 10
+      angle = (((angle + 5) / 10) * 10) % 360;  // Quantizes modulo 10
 
       QString resource;
       resource.sprintf("windarrows/wind-arrow-80px-%03d.png", angle );
-      // qDebug("Loading resource %s", (const char *) resource );
-      m_windArrow = GeneralConfig::instance()->loadPixmap(resource);
+      m_windArrow = GeneralConfig::instance()->loadPixmap( resource, true );
     }
   else
     {
@@ -1428,11 +1427,12 @@ void Map::p_drawNavigationLayer()
 
   // determine icon size
   const bool useSmallIcons = _globalMapConfig->useSmallIcons();
-  int iconSize = 32;
+
+  int iconSize = 32 * Layout::getIntScaledDensity();
 
   if( useSmallIcons )
     {
-      iconSize = 16;
+      iconSize = 16 * Layout::getIntScaledDensity();
     }
 
   // qDebug("Af=%d, WP=%d", drawnAf.size(), drawnWp.size() );
@@ -1576,7 +1576,7 @@ void Map::p_drawInformationLayer()
   if( ! m_windArrow.isNull() )
     {
       QPainter p(&m_pixInformationMap);
-      p.drawPixmap( 8, 8, m_windArrow );
+      p.drawPixmap( 10, 10, m_windArrow );
     }
 
   // Draw the zoom buttons at the map
@@ -1860,11 +1860,7 @@ void Map::p_drawLabel( QPainter* painter,
         }
     }
 
-  int pw = 2;
-
-#if defined ANDROID || defined MAEMO
-    pw = 3;
-#endif
+  int pw = 2 * Layout::getIntScaledDensity();;
 
   if( ! isSelected )
     {
