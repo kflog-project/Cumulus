@@ -1084,33 +1084,19 @@ void MapView::slot_glider( const QString& glider )
  */
 void MapView::slot_info( const QString& info )
 {
-  static QTime lastDisplay = QTime::currentTime();
-  static QString lastInfo;
+  _statusInfo->setText( info );
 
-  if( info != "__ShowLastInfo__")
+  if( info.isEmpty() == false )
     {
-      lastInfo = info;
+      // clear display after 30s.
+      m_infoTimer->start(30000);
     }
-
-  // The display is updated every 1 seconds only.
-  // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < 1000 )
-    {
-      // Ensure retriggering of last info.
-      m_infoTimer->start(1000);
-      return;
-    }
-
-  lastDisplay = QTime::currentTime();
-  m_infoTimer->stop();
-  _statusInfo->setText( lastInfo );
 }
 
 void MapView::slot_infoTimer()
 {
-  const QString txt = "__ShowLastInfo__";
-
-  slot_info( txt );
+  // Clear message display.
+  slot_info( "" );
 }
 
 /** This slot is called if the settings have been changed.
