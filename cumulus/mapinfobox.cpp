@@ -188,7 +188,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
                                   "text-align: left;" )
                                   .arg(m_textBGColor) );
 
-  m_text->setIndent( 5 );
+  m_text->setIndent( 5 * Layout::getIntScaledDensity() );
 
   setValue("-");
   setPreText("");
@@ -299,12 +299,17 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
   // Note a minus sign is also used, if no value is available!
   if( m_value.startsWith( QChar('-') ) && m_value.size() > 1 )
     {
-      m_text->setText( m_value.mid(1) );
-
       if( m_pminus )
         {
+	  // The minus sign is displayed in an separate place
           m_pminus->setVisible( true );
+          m_text->setText( m_value.mid(1) );
         }
+      else
+	{
+	  // Display the whole text.
+	  m_text->setText( m_value );
+	}
     }
   else
     {
