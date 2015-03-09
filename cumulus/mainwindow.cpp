@@ -1490,7 +1490,7 @@ void MainWindow::createActions()
             this, SLOT( slotSwitchToWPListView() ) );
 
   // Set home site as target
-  actionNav2Home = new QAction( tr( "Set home site" ), this );
+  actionNav2Home = new QAction( tr( "Home site as target" ), this );
 
 #ifndef ANDROID
   actionNav2Home->setShortcut( QKeySequence(Qt::Key_H) );

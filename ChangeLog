@@ -20,10 +20,16 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2015-03-07 AP: Issue #46 ul and oullanding symbol drawing at the map is
+[o] 2015-03-09 AP: Issue #50 fixed. Remove displayed message in status bar after
+                   30s automatically.
+
+[-] 2015-03-09 AP: Issue #48 fixed. Sometimes the minus sign is missing in the
+                   displayed arrival altitude.
+
+[o] 2015-03-07 AP: Issue #46 Ul and oullanding symbol drawing at the map is
                    scaled now to the screen resolution.
 
-[o] 2015-03-05 AP: Issue #46 airfield symbol drawing at the map is scaled now
+[o] 2015-03-05 AP: Issue #46 Airfield symbol drawing at the map is scaled now
                    to the screen resolution.
 
 [o] 2015-03-04 AP: Issue #46 Glider symbol drawing at the map is scaled now
