@@ -47,7 +47,7 @@
  *
  * \date 2001-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 
 class MapConfig : public QObject
@@ -99,19 +99,12 @@ class MapConfig : public QObject
 
     /**
      * @param  iconName  The name of the icon to load
-     * @returns the icon-pixmap of the element.
-     */
-    QPixmap getPixmap(QString iconName);
-
-    /**
-     * @param  typeID   The type identifier of the element.
-     * @param  isWinch  Used only for glider sites to determine, if the
-     *                  icon should indicate that only winch launch is
-     *                  available.
+     *
+     * @param doScale Do scale the pixmap with the current set scale.
      *
      * @returns the icon-pixmap of the element.
      */
-    QPixmap getPixmapRotatable(unsigned int typeID, bool isWinch);
+    QPixmap getPixmap( QString iconName, const bool doScale );
 
     /**
      * @param  typeID  The type identifier of the element.
@@ -146,17 +139,14 @@ class MapConfig : public QObject
 
     /**
      * @param  type  The type identifier of the element.
+     *
      * @param  isWinch  Used only for glider sites to determine, if the
      *                  icon should indicate that only winch launch is
      *                  available.
-     * @param rotatable The rotation flag.
-     *
-     *
      *
      * @return the name of the pixmap of the element.
      */
-    QString getPixmapName(unsigned int type, bool isWinch = true,
-                          bool rotatable = false);
+    QString getPixmapName( unsigned int type, bool isWinch = true );
 
     /**
      * @return True if small icons are used, else returns false.

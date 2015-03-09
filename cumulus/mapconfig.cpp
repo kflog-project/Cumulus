@@ -633,22 +633,6 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
   return defaultBrush;
 }
 
-QPixmap MapConfig::getPixmapRotatable(unsigned int typeID, bool isWinch)
-{
-  QString iconName( getPixmapName( typeID, isWinch, true ) );
-
-  // qDebug("PixmapNameRot: %d %s",typeID, iconName.latin1() );
-
-  if( isSwitch )
-    {
-      return GeneralConfig::instance()->loadPixmap( iconName );
-    }
-  else
-    {
-      return GeneralConfig::instance()->loadPixmap( "small/" + iconName );
-    }
-}
-
 QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, bool smallIcon)
 {
   QString iconName( getPixmapName( typeID, isWinch ) );
@@ -667,9 +651,7 @@ QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch, bool smallIcon)
 
 QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch)
 {
-  QString iconName( getPixmapName( typeID, isWinch, false ) );
-
-  // qDebug("getPixmapName,Winch,Color: %d %s",typeID, iconName.latin1() );
+  QString iconName( getPixmapName( typeID, isWinch ) );
 
   if( isSwitch )
     {
@@ -681,13 +663,13 @@ QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch)
     }
 }
 
-QPixmap MapConfig::getPixmap(QString iconName)
+QPixmap MapConfig::getPixmap( QString iconName, const bool doScale )
 {
   // qDebug("getPixmapName: %s", iconName.latin1() );
 
   if( isSwitch )
     {
-      return GeneralConfig::instance()->loadPixmap( iconName );
+      return GeneralConfig::instance()->loadPixmap( iconName, doScale );
     }
   else
     {
@@ -711,7 +693,7 @@ bool MapConfig::isRotatable( unsigned int typeID ) const
       }
   }
 
-QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatable )
+QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch )
 {
   QString iconName;
 
@@ -826,14 +808,7 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch, bool rotatab
       break;
     }
 
-  if ( rotatable )
-    {
-      iconName += "-18.png";  // airfield icons can be rotated 10 degree wise
-    }
-  else
-    {
-      iconName += ".xpm";
-    }
+  iconName += ".xpm";
 
   return iconName;
 }

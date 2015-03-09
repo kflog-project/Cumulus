@@ -256,6 +256,18 @@ class GeneralConfig : protected QSettings
   QPixmap loadPixmap( const QString& pixmapName, const bool doScale=false );
 
   /**
+   * Load a required pixmap. The loaded pixmap is put into a cache for faster
+   * loading on next request.
+   *
+   * @param pixmapName The pixmap to be loaded.
+   *
+   * @param size The size of the pixmap to be scaled to.
+   *
+   * @return The requested pixmap.
+   */
+  QPixmap loadPixmap( const QString& pixmapName, int size );
+
+  /**
    * @param pixmapName Removes the pixmap from the global cache.
    */
   void removePixmap( const QString& pixmapName );

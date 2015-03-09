@@ -1497,6 +1497,44 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale
   return emptyPixmap;
 }
 
+QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
+{
+  // determine absolute path to pixmap directory
+  QString path( _appRoot + "/icons/" + pixmapName );
+  QString cacheKey( path + QString::number(size) );
+
+  QPixmap pm;
+
+  if( QPixmapCache::find( cacheKey, pm ) )
+    {
+      return pm;
+    }
+
+  if( pm.load( path ) )
+    {
+      if( pm.width() != size || pm.height() != size )
+	{
+	  int scale = Layout::getIntScaledDensity();
+	  pm = pm.scaled( size * scale, size * scale );
+	}
+
+      QPixmapCache::insert( cacheKey, pm );
+      return pm;
+    }
+
+  qWarning( "Could not load Pixmap file '%s'. Maybe it was not installed?",
+             path.toLatin1().data() );
+
+  if( pm.load( "Empty" + QString::number(size) ) == false )
+    {
+      pm = QPixmap( size, size );
+      pm.fill( Qt::transparent );
+      QPixmapCache::insert( "Empty" + QString::number(size), pm );
+    }
+
+  return pm;
+}
+
 /**
  * @removes a pixmap from the global cache
  */

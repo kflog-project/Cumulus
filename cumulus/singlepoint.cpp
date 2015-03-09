@@ -16,9 +16,8 @@
 
 #include <QtGui>
 
+#include "generalconfig.h"
 #include "singlepoint.h"
-
-extern MapMatrix* _globalMapMatrix;
 
 SinglePoint::SinglePoint() :
   BaseMapElement(),
@@ -59,38 +58,25 @@ bool SinglePoint::drawMapElement( QPainter* targetP )
 
   curPos = glMapMatrix->map( position );
 
-  int scale = _globalMapMatrix->getScaleRatio() / 50;
-  // qDebug("scale: %d %d",scale,_globalMapMatrix->getScaleRatio()  );
   targetP->setPen( QPen( Qt::black, 2 ) );
 
-  if( typeID == BaseMapElement::Village )
-    {
-      targetP->setBrush( Qt::NoBrush );
-      targetP->drawEllipse( curPos.x() - 5, curPos.y() - 5, 10, 10 );
-      return true;
-    }
+  int size = glConfig->useSmallIcons() ? 16 : 32;
 
-  if( !glMapMatrix->isBorder2() )
-    {
-      targetP->drawEllipse(curPos.x() - scale/2, curPos.y() - scale/2, scale, scale );
-    }
-  else
-    {
-       QPixmap pixmap = glConfig->getPixmap(typeID);
+  QString pmName = glConfig->getPixmapName( typeID, false );
+  QPixmap pixmap = GeneralConfig::instance()->loadPixmap( pmName, size );
 
-       int xoff = pixmap.size().width() / 2;
-       int yoff = pixmap.size().height() / 2;
+  int xoff = pixmap.size().width() / 2;
+  int yoff = pixmap.size().height() / 2;
 
-       if( typeID == BaseMapElement::Thermal || typeID == BaseMapElement::Turnpoint )
-         {
-           // The lower end of the flag shall directly point to the point at the map.
-           yoff = pixmap.size().height();
-         }
+  if( typeID == BaseMapElement::Thermal || typeID == BaseMapElement::Turnpoint )
+   {
+     // The lower end of the flag shall directly point to the point at the map.
+     yoff = pixmap.size().height();
+   }
 
-       targetP->drawPixmap( curPos.x() - xoff,
-                            curPos.y() - yoff,
-                            pixmap );
-    }
+  targetP->drawPixmap( curPos.x() - xoff,
+		       curPos.y() - yoff,
+		       pixmap );
 
   return true;
 }

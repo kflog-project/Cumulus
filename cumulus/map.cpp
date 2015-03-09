@@ -1695,7 +1695,8 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
         if( _globalMapConfig->isRotatable(wp.type) )
           {
-            pm = _globalMapConfig->getPixmapRotatable( wp.type, false );
+            // TODO Handle airfieled and outlandings
+            pm = _globalMapConfig->getPixmap( wp.type, false);
           }
         else
           {
