@@ -1514,8 +1514,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
     {
       if( pm.width() != size || pm.height() != size )
 	{
-	  int scale = Layout::getIntScaledDensity();
-	  pm = pm.scaled( size * scale, size * scale );
+	  pm = pm.scaled( size, size );
 	}
 
       QPixmapCache::insert( cacheKey, pm );

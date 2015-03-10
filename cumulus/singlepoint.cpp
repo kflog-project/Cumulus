@@ -62,13 +62,17 @@ bool SinglePoint::drawMapElement( QPainter* targetP )
 
   int size = glConfig->useSmallIcons() ? 16 : 32;
 
+  size *= Layout::getIntScaledDensity();
+
   QString pmName = glConfig->getPixmapName( typeID, false );
   QPixmap pixmap = GeneralConfig::instance()->loadPixmap( pmName, size );
 
   int xoff = pixmap.size().width() / 2;
   int yoff = pixmap.size().height() / 2;
 
-  if( typeID == BaseMapElement::Thermal || typeID == BaseMapElement::Turnpoint )
+  if( typeID == BaseMapElement::City ||
+      typeID == BaseMapElement::Thermal ||
+      typeID == BaseMapElement::Turnpoint )
    {
      // The lower end of the flag shall directly point to the point at the map.
      yoff = pixmap.size().height();

@@ -1637,7 +1637,7 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
   int w = size().width();
   int h = size().height();
 
-  QRect testRect(-10, -10, w + 20, h + 20);
+  QRect testRect(-15, -15, w + 30, h + 30);
   QString labelText;
   Altitude alt;
   Distance dist;
@@ -1647,7 +1647,6 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
   // load all configuration items once
   const bool showWpLabels   = GeneralConfig::instance()->getMapShowWaypointLabels();
   const bool useSmallIcons  = _globalMapConfig->useSmallIcons();
-  const double currentScale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
 
   // now step trough the waypoint list
   for( int i=0; i < wpList.count(); i++ )
@@ -1667,9 +1666,9 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
             }
         }
 
-      if( currentScale > 1000.0 && ! isSelected )
+      if( ! _globalMapMatrix->isBorder3() && ! isSelected )
         {
-          // Don't draw any waypoints at this high scale
+          // Don't draw any waypoints over border3 limit
           continue;
         }
 
@@ -1680,112 +1679,106 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
           continue;
         }
 
-        // Project map point onto screen display.
-        QPoint dispP = _globalMapMatrix->map(wp.projPoint);
+      // Project map point onto screen display.
+      QPoint dispP = _globalMapMatrix->map(wp.projPoint);
 
-        // Check, if point lays in the visible screen area
-        if( ! testRect.contains(dispP) )
-          {
-            // qDebug("Not in Rec wp=%s", wp.name.toLatin1().data());
-            continue;
-          }
+      // Check, if point lays in the visible screen area
+      if( ! testRect.contains(dispP) )
+	{
+	  continue;
+	}
 
-        // load and draw the actual icons
-        QPixmap pm;
+    // load and draw the actual icons
+    QPixmap pm;
 
-        if( _globalMapConfig->isRotatable(wp.type) )
-          {
-            // TODO Handle airfieled and outlandings
-            pm = _globalMapConfig->getPixmap( wp.type, false);
-          }
-        else
-          {
-            pm = _globalMapConfig->getPixmap( wp.type, false);
-          }
+    if( _globalMapConfig->isRotatable(wp.type) )
+      {
+	int rwyHeading = 0;
 
-        int iconSize = 32;
-        int xOffset  = 16;
-        int yOffset  = 16;
-        int cxOffset = 16;
-        int cyOffset = 16;
+	if( wp.rwyList.size() > 0 )
+	  {
+	    rwyHeading = wp.rwyList.first().m_heading;
+	  }
 
-        if( wp.type == BaseMapElement::Turnpoint ||
-            wp.type == BaseMapElement::Thermal ||
-            wp.type == BaseMapElement::Outlanding )
-           {
-            // The lower end of the flag/beacon shall directly point to the
-            // point at the map.
-            xOffset  = 16;
-            yOffset  = 32;
-            cxOffset = 16;
-            cyOffset = 16;
-          }
+	int heading = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
 
-        if( useSmallIcons )
-          {
-            iconSize = 16;
-            xOffset  = 8;
-            yOffset  = 8;
-            cxOffset = 8;
-            cyOffset = 8;
+	pm = _globalMapConfig->getPixmap( wp.type, false);
 
-            if( wp.type == BaseMapElement::Turnpoint ||
-                wp.type == BaseMapElement::Thermal  ||
-                wp.type == BaseMapElement::Outlanding )
-              {
-                // The lower end of the flag/beacon shall directly point to the
-                // point at the map.
-                xOffset  = 8;
-                yOffset  = 16;
-                cxOffset = 8;
-                cyOffset = 8;
-              }
-          }
+	if( useSmallIcons )
+	  {
+	    if( wp.type == BaseMapElement::UltraLight ||
+		wp.type == BaseMapElement::Outlanding )
+	      {
+		pm = Airfield::getSmallField( heading );
+	      }
+	    else
+	      {
+		pm = Airfield::getSmallAirfield( heading );
+	      }
+	  }
+	else
+	  {
+	    if( wp.type == BaseMapElement::UltraLight ||
+		wp.type == BaseMapElement::Outlanding )
+	      {
+		pm = Airfield::getBigField( heading );
+	      }
+	    else
+	      {
+		pm = Airfield::getBigAirfield( heading );
+	      }
+	  }
+      }
+    else
+      {
+	pm = _globalMapConfig->getPixmap( wp.type, false );
+      }
 
-        // Consider reachability during drawing. The circles must be drawn at first.
-        enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.wgsPoint);
+    int iconSize     = pm.width();
+    int iconSizeHalf = iconSize / 2;
+    int xOffset      = iconSizeHalf;
+    int yOffset      = iconSizeHalf;
+    int cxOffset     = iconSizeHalf;
+    int cyOffset     = iconSizeHalf;
 
-        if (reachable == ReachablePoint::yes)
-          {
-            // draw green circle, when safety
-            painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
-                                 _globalMapConfig->getGreenCircle(iconSize) );
+    if( wp.type == BaseMapElement::City ||
+	wp.type == BaseMapElement::Turnpoint ||
+	wp.type == BaseMapElement::Thermal ||
+	wp.type == BaseMapElement::Outlanding )
+      {
+	// The lower end of the flag/beacon shall directly point to the
+	// point at the map.
+	xOffset  = iconSizeHalf;
+	yOffset  = iconSize;
+	cxOffset = iconSizeHalf;
+	cyOffset = iconSizeHalf;
+      }
 
-          }
-        else if (reachable == ReachablePoint::belowSafety)
-          {
-            // draw magenta circle
-            painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
-                                 _globalMapConfig->getMagentaCircle(iconSize));
-          }
+    // Consider reachability during drawing. The circles must be drawn at first.
+    enum ReachablePoint::reachable reachable = ReachableList::getReachable(wp.wgsPoint);
 
-        int rwyHeading = 0;
+    if( reachable == ReachablePoint::yes )
+      {
+	// draw green circle, when safety
+	painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
+			     _globalMapConfig->getGreenCircle(iconSize) );
 
-        if( wp.rwyList.size() > 0 )
-          {
-            rwyHeading = wp.rwyList.first().m_heading;
-          }
+      }
+    else if( reachable == ReachablePoint::belowSafety )
+      {
+	// draw magenta circle
+	painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
+			     _globalMapConfig->getMagentaCircle(iconSize));
+      }
 
-        int shift = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
+    painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm );
 
-        if( _globalMapConfig->isRotatable(wp.type) )
-          {
-            painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm,
-                                 shift*iconSize, 0, iconSize, iconSize );
-          }
-        else
-          {
-            painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm );
-          }
-
-        // qDebug("Icon drawn wp=%s", wp.name.toLatin1().data());
-
-        // Add the draw waypoint name to the list, if required by the user.
-        if( showWpLabels )
-          {
-            drawnWp.append( &wpList[i] );
-          }
-    } // END of for loop
+    // Add the draw waypoint name to the list, if required by the user.
+    if( showWpLabels )
+      {
+	drawnWp.append( &wpList[i] );
+      }
+   }
 }
 
 /** Draws a label beside the map icon. It is assumed, that the icon is to see
@@ -2328,7 +2321,7 @@ void Map::p_drawOtherAircraft()
 {
 
 #ifndef MAEMO
-  const int diameter = 22;
+  const int diameter = 22 * Layout::getIntScaledDensity();
 #else
   const int diameter = 30;
 #endif

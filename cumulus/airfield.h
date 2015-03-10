@@ -226,15 +226,53 @@ class Airfield : public SinglePoint
    */
   virtual QString getInfoString() const;
 
-  // Draws the element into the given painter.
+  /**
+   * Draws the element into the given painter.
+   */
   virtual bool drawMapElement( QPainter* targetP );
+
+  /**
+   * Get a big airfield pixmap with the desired runway direction.
+   *
+   * \param runway Heading of runway in 1/10 degree.
+   *
+   * \return A big airfield pixmap.
+   */
+  static QPixmap& getBigAirfield( int runway=9 );
+
+  /**
+   * Get a small airfield pixmap with the desired runway direction.
+   *
+   * \param runway Heading of runway in 1/10 degree.
+   *
+   * \return A small airfield pixmap.
+   */
+  static QPixmap& getSmallAirfield( int runway=9 );
+
+  /**
+   * Get a big field pixmap with the desired runway direction.
+   *
+   * \param runway Heading of runway in 1/10 degree.
+   *
+   * \return A big field pixmap.
+   */
+  static QPixmap& getBigField( int runway=9 );
+
+  /**
+   * Get a small field pixmap with the desired runway direction.
+   *
+   * \param runway Heading of runway in 1/10 degree.
+   *
+   * \return A small field pixmap.
+   */
+  static QPixmap& getSmallField( int runway=9 );
 
  private:
 
   /**
-   * Creates the static airfield icons.
+   * Creates the static airfield and field icons.
    */
-  void createStaticIcons();
+  static void createStaticIcons();
 
  protected:
 

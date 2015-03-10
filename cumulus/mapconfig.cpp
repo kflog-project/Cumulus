@@ -687,6 +687,8 @@ bool MapConfig::isRotatable( unsigned int typeID ) const
       case BaseMapElement::IntAirport:
       case BaseMapElement::Gliderfield:
       case BaseMapElement::MilAirport:
+      case BaseMapElement::UltraLight:
+      case BaseMapElement::Outlanding:
         return true;
       default:
         return false;

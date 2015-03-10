@@ -72,6 +72,10 @@ Airfield::Airfield( const QString& name,
   calculateRunwayShift();
 }
 
+Airfield::~Airfield()
+{
+}
+
 void Airfield::createStaticIcons()
 {
   QMutexLocker locker(&mutex);
@@ -117,8 +121,44 @@ void Airfield::createStaticIcons()
     }
 }
 
-Airfield::~Airfield()
+QPixmap& Airfield::getBigAirfield( int runway )
 {
+  if( m_bigAirfields == 0 )
+    {
+      createStaticIcons();
+    }
+
+  return m_bigAirfields[ runway % 36 ];
+}
+
+QPixmap& Airfield::getSmallAirfield( int runway )
+{
+  if( m_smallAirfields == 0 )
+    {
+      createStaticIcons();
+    }
+
+  return m_smallAirfields[ runway % 36 ];
+}
+
+QPixmap& Airfield::getBigField( int runway )
+{
+  if( m_bigFields == 0 )
+    {
+      createStaticIcons();
+    }
+
+  return m_bigFields[ runway % 36 ];
+}
+
+QPixmap& Airfield::getSmallField( int runway )
+{
+  if( m_smallFields == 0 )
+    {
+      createStaticIcons();
+    }
+
+  return m_smallFields[ runway % 36 ];
 }
 
 QString Airfield::getInfoString() const
