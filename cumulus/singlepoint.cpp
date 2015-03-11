@@ -60,12 +60,7 @@ bool SinglePoint::drawMapElement( QPainter* targetP )
 
   targetP->setPen( QPen( Qt::black, 2 ) );
 
-  int size = glConfig->useSmallIcons() ? 16 : 32;
-
-  size *= Layout::getIntScaledDensity();
-
-  QString pmName = glConfig->getPixmapName( typeID, false );
-  QPixmap pixmap = GeneralConfig::instance()->loadPixmap( pmName, size );
+  QPixmap pixmap = glConfig->getPixmap( typeID, false );
 
   int xoff = pixmap.size().width() / 2;
   int yoff = pixmap.size().height() / 2;

@@ -653,14 +653,7 @@ QPixmap MapConfig::getPixmap(unsigned int typeID, bool isWinch)
 {
   QString iconName( getPixmapName( typeID, isWinch ) );
 
-  if( isSwitch )
-    {
-      return GeneralConfig::instance()->loadPixmap( iconName );
-    }
-  else
-    {
-      return GeneralConfig::instance()->loadPixmap( "small/" + iconName );
-    }
+  return GeneralConfig::instance()->loadPixmapAutoScaled( iconName );
 }
 
 QPixmap MapConfig::getPixmap( QString iconName, const bool doScale )

@@ -26,6 +26,7 @@
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "hwinfo.h"
+#include "mapconfig.h"
 #include "preflightwaypointpage.h"
 #include "speed.h"
 #include "time_cu.h"
@@ -37,6 +38,8 @@
 #ifdef ANDROID
 #include "androidstyle.h"
 #endif
+
+extern MapConfig* _globalMapConfig;
 
 // define static instance as null pointer
 GeneralConfig* GeneralConfig::_theInstance = 0;
@@ -1497,6 +1500,57 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale
   return emptyPixmap;
 }
 
+QPixmap GeneralConfig::loadPixmapAutoScaled( const QString& pixmapName )
+{
+  static bool firstCall = true;
+  static QPixmap emptyPixmap( 32, 32 );
+
+  if( firstCall )
+    {
+      firstCall = false;
+      emptyPixmap.fill( Qt::transparent );
+    }
+
+  float scale = Layout::getScaledDensity();
+
+  if( _globalMapConfig->useSmallIcons() == true )
+    {
+      scale /= 2.0;
+    }
+
+  // determine absolute path to pixmap directory
+  QString path( _appRoot + "/icons/" + pixmapName );
+
+  // create key for cache access
+  QString key( path + QString::number(scale) );
+
+  QPixmap pm;
+
+  if( QPixmapCache::find( key, pm ) )
+    {
+      return pm;
+    }
+
+  if( pm.load( path ) )
+    {
+      if( scale != 1.0 )
+	{
+	  pm = pm.scaled( pm.width() * scale, pm.height() * scale,
+	                  Qt::KeepAspectRatio,
+	                  Qt::SmoothTransformation );
+	}
+
+      QPixmapCache::insert( key, pm );
+      return pm;
+    }
+
+  qWarning( "Could not load Pixmap file '%s'. Maybe it was not installed?",
+             path.toLatin1().data() );
+
+  // Return an empty transparent pixmap as default
+  return emptyPixmap;
+}
+
 QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
 {
   // determine absolute path to pixmap directory
@@ -1514,7 +1568,9 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
     {
       if( pm.width() != size || pm.height() != size )
 	{
-	  pm = pm.scaled( size, size );
+	  pm = pm.scaled( size, size,
+	                  Qt::KeepAspectRatio,
+	                  Qt::SmoothTransformation );
 	}
 
       QPixmapCache::insert( cacheKey, pm );

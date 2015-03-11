@@ -1702,8 +1702,6 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
 	int heading = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
 
-	pm = _globalMapConfig->getPixmap( wp.type, false);
-
 	if( useSmallIcons )
 	  {
 	    if( wp.type == BaseMapElement::UltraLight ||

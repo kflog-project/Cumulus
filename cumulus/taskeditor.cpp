@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -222,18 +222,20 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   totalLayout->addWidget( taskList, 1, 0 );
 
+  int scale = Layout::getIntScaledDensity();
+
   // contains the task editor buttons
   QVBoxLayout* buttonLayout = new QVBoxLayout;
   buttonLayout->setMargin(0);
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
-  buttonLayout->addSpacing(10);
+  buttonLayout->addSpacing(10 * scale);
   buttonLayout->addWidget( upButton );
-  buttonLayout->addSpacing(10);
+  buttonLayout->addSpacing(10 * scale);
   buttonLayout->addWidget( downButton );
-  buttonLayout->addSpacing(30);
+  buttonLayout->addSpacing(30 * scale);
   buttonLayout->addWidget( addButton  );
-  buttonLayout->addSpacing(10);
+  buttonLayout->addSpacing(10 * scale);
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 1, 1 );

@@ -226,20 +226,23 @@ bool Airfield::drawMapElement( QPainter* targetP )
 
   if( glConfig->isRotatable( typeID ) )
     {
-      QPixmap& pm = glConfig->useSmallIcons() ? m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
+      if( typeID == BaseMapElement::UltraLight ||
+	  typeID == BaseMapElement::Outlanding )
+	{
+	  QPixmap& pm = glConfig->useSmallIcons() ? m_smallFields[m_rwShift] : m_bigFields[m_rwShift];
 
-      targetP->drawPixmap( curPos.x() - pm.width() / 2,
-                           curPos.y() - pm.height() / 2,
-                           pm );
-    }
-  else if( typeID == BaseMapElement::UltraLight ||
-           typeID == BaseMapElement::Outlanding )
-    {
-      QPixmap& pm = glConfig->useSmallIcons() ? m_smallFields[m_rwShift] : m_bigFields[m_rwShift];
+	  targetP->drawPixmap( curPos.x() - pm.width() / 2,
+			       curPos.y() - pm.height() / 2,
+			       pm );
+	}
+      else
+	{
+	  QPixmap& pm = glConfig->useSmallIcons() ? m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
 
-      targetP->drawPixmap( curPos.x() - pm.width() / 2,
-                           curPos.y() - pm.height() / 2,
-                           pm );
+	  targetP->drawPixmap( curPos.x() - pm.width() / 2,
+			       curPos.y() - pm.height() / 2,
+			       pm );
+	}
     }
   else
     {
