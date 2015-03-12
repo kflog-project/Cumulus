@@ -71,13 +71,13 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   up = new QPushButton( this );
   up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
-  up->setIconSize( QSize(IconSize, IconSize) );
+  up->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   up->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   up->setToolTip( tr("move page up") );
 
   down = new QPushButton( this );
   down->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
-  down->setIconSize( QSize(IconSize, IconSize) );
+  down->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   down->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   down->setToolTip( tr("move page down") );
 

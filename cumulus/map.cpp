@@ -1741,8 +1741,7 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
     if( wp.type == BaseMapElement::City ||
 	wp.type == BaseMapElement::Turnpoint ||
-	wp.type == BaseMapElement::Thermal ||
-	wp.type == BaseMapElement::Outlanding )
+	wp.type == BaseMapElement::Thermal )
       {
 	// The lower end of the flag/beacon shall directly point to the
 	// point at the map.
