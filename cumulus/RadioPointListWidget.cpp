@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -138,6 +138,6 @@ RadioPointListWidget::RadioPointItem::RadioPointItem(RadioPoint* site) :
   setText(3, site->getAdditionalText());
 
   // set type icon
-  QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false, false);
+  QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false);
   setIcon( 0, QIcon( pm) );
 }

@@ -624,4 +624,3 @@ void ReachableList::removeDoubles()
       removeAt( removeList.at(i) );
     }
 }
-

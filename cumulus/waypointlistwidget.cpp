@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -339,7 +339,7 @@ WaypointListWidget::WaypointItem::WaypointItem( Waypoint& waypoint ) :
   setTextAlignment(2, Qt::AlignCenter);
   setText(3, wp.icao);
 
-  QPixmap wpPm = _globalMapConfig->getPixmap(wp.type, false, false);
+  QPixmap wpPm = _globalMapConfig->getPixmap(wp.type, false);
 
   QIcon icon( wpPm );
   setIcon( 0, icon );

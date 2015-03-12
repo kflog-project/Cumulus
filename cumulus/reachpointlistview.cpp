@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -329,7 +329,7 @@ void ReachpointListView::fillRpList()
         }
 
       // create landing site type icon
-      QPixmap sitePm = _globalMapConfig->getPixmap(rp.getType(), false, false);
+      QPixmap sitePm = _globalMapConfig->getPixmap(rp.getType(), false);
       QPixmap icon( sitePm.size() + QSize(1, 1) );
       icon.fill( iconColor );
 

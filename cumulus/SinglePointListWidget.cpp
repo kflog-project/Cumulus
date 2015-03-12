@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -136,6 +136,6 @@ SinglePointListWidget::SinglePointItem::SinglePointItem(SinglePoint* site) :
   setText(3, site->getComment());
 
   // set type icon
-  QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false, false);
+  QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false);
   setIcon( 0, QIcon( pm) );
 }
