@@ -417,7 +417,11 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
             w->elevation = siteElevation;
             w->comment = siteComment;
             w->country = siteCountry;
+            w->icao.clear();
+            w->frequency = 0.0;
+            w->taskPointIndex = -1;
             w->wpListMember = false;
+            w->rwyList.clear();
 
             Airfield*   af = dynamic_cast<Airfield *>(poi);
             RadioPoint* rp = dynamic_cast<RadioPoint *>(poi);
@@ -434,7 +438,6 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
                 // This is a RadioPoint
                 w->icao = rp->getICAO();
                 w->frequency = rp->getFrequency();
-                w->rwyList.clear();
 
                 // Workaround for declination a.s.o. These data are passed
                 // as comment.
