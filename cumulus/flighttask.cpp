@@ -20,6 +20,7 @@
 #include "calculator.h"
 #include "flighttask.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "map.h"
 #include "mapcalc.h"
 #include "speed.h"
@@ -662,6 +663,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
   // Save the current painter state.
   painter->save();
+  painter->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
 
   for( int loop=0; loop < tpList->count(); loop++ )
     {
@@ -729,9 +731,11 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
       if( mPointIsContained )
         {
+	  int size = static_cast<int>(10.0 * Layout::getScaledDensity());
+
           painter->setPen(QPen(Qt::black));
           painter->setBrush( QBrush( Qt::black, Qt::SolidPattern ) );
-          painter->drawRect( mPoint.x()-5, mPoint.y()-5, 10, 10 );
+          painter->drawRect( mPoint.x() - size/2, mPoint.y() - size/2, size,size );
         }
 
       if( flightType == Unknown )
@@ -1046,13 +1050,13 @@ void FlightTask::drawCircle( QPainter* painter,
  */
 
 void FlightTask::drawSector( QPainter* painter,
-           QPoint& centerCoordinate,
-           const int innerRadius,
-           const int outerRadius,
-           const int biangle,
-           const int spanningAngle,
-           QColor& fillColor,
-           const bool drawShape )
+			     QPoint& centerCoordinate,
+			     const int innerRadius,
+			     const int outerRadius,
+			     const int biangle,
+			     const int spanningAngle,
+			     QColor& fillColor,
+			     const bool drawShape )
 {
   // fetch current scale, scale uses unit meter/pixel
   const double cs = glMapMatrix->getScale(MapMatrix::CurrentScale);

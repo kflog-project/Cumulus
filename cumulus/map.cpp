@@ -873,7 +873,7 @@ void Map::p_drawGrid()
   // Step between two degree-lines (in 1/60 degree)
   int step = 60;
   int gridStep = 1;
-  int lineWidth = 1;
+  int lineWidth = 1 * Layout::getIntScaledDensity();
 
   switch(_globalMapMatrix->getScaleRange())
     {

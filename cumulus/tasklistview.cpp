@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -622,5 +622,5 @@ TaskListView::_TaskPointItem::_TaskPointItem( QTreeWidget *tpList,
   setText(8, " " + ss + " " + tz);
   setText(9, " " + tp->getName());
 
-  setIcon(2, QIcon(_globalMapConfig->getPixmap(tp->getTypeID(), false, false)) );
+  setIcon(2, QIcon(_globalMapConfig->getPixmap(tp->getTypeID(), false)) );
 }
