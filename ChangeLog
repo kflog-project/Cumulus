@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-03-14 AP: Issue #51 fixed. The thermal point info shows sometimes
+                   senseless things like runways and frequency.
+
 [o] 2015-03-09 AP: Issue #50 fixed. Remove displayed message in status bar after
                    30s automatically.
 
