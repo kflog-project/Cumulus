@@ -118,7 +118,12 @@ bool Waypoint::write( const Waypoint* wp, const QString& fileName )
     }
 
   QDataStream out( &file );
+
+#ifdef MAEMO5
+  out.setVersion( QDataStream::Qt_4_7 );
+#else
   out.setVersion( QDataStream::Qt_4_8 );
+#endif
 
   out << quint32( KFLOG_FILE_MAGIC );
   out << wp->name;
@@ -174,7 +179,12 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
     }
 
   QDataStream in( &file );
+
+#ifdef MAEMO5
+  in.setVersion( QDataStream::Qt_4_7 );
+#else
   in.setVersion( QDataStream::Qt_4_8 );
+#endif
 
   quint32 fileMagic;
 

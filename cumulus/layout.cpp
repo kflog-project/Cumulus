@@ -340,9 +340,9 @@ int Layout::getButtonSize()
 #ifdef MAEMO
 
   // Maemo needs some tweaking
-  if( size < 60 )
+  if( size < 50 )
     {
-      size = 60;
+      size = 50;
     }
 
 #else

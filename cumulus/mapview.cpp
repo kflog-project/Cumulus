@@ -523,31 +523,21 @@ void MapView::showEvent( QShowEvent* event )
                                  _altitude,
                                  _glidepath };
 
-  int gtWidth = 0;
-
   // Adapt the pretext display width to the text size.
   for( int i = 0; i < 15; i++ )
     {
       MapInfoBox *ptr = boxWidgets[i];
 
-      if( ptr->isVisible() )
-        {
-          QFontMetrics fm( ptr->font() );
+      QFontMetrics fm( ptr->font() );
 
-          int w = fm.width( ptr->getPreText() );
+      int w = fm.width( ptr->getPreText() );
 
-          // qDebug() << "Text=" << ptr->getPreText() << "Width=" << w;
+      // qDebug() << "Text=" << ptr->getPreText() << "Width=" << w;
 
-          if( ! ptr->getPreText().isEmpty() )
-            {
-              ptr->getPreTextLabelWidget()->setFixedWidth( w );
-            }
-
-          if( w > gtWidth )
-            {
-              gtWidth = w;
-            }
-        }
+      if( ! ptr->getPreText().isEmpty() )
+	{
+	  ptr->getPreTextLabelWidget()->setFixedWidth( w );
+	}
     }
 
 #if defined ANDROID || defined MAEMO
