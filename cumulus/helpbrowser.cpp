@@ -30,11 +30,14 @@
 #include "layout.h"
 
 HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile ) :
-  QWidget(parent, Qt::Tool),
+  QWidget(parent),
   firstCall(true),
   m_helpFile(helpFile)
 {
+  setObjectName("HelpBrowser");
   setWindowTitle(tr("Cumulus Help"));
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
   setAttribute(Qt::WA_DeleteOnClose);
 
