@@ -18,8 +18,9 @@
 #include <QtGui>
 #include <QGridLayout>
 
-#include "waitscreen.h"
 #include "generalconfig.h"
+#include "layout.h"
+#include "waitscreen.h"
 
 WaitScreen::WaitScreen(QWidget *parent ) :
   QDialog( parent, Qt::FramelessWindowHint ),
@@ -28,40 +29,41 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   _screenUsage( true )
 {
   setObjectName("WaitScreen");
-  //setModal(true);
+
+  int scale = Layout::getIntScaledDensity();
 
   QGridLayout * topLayout  = new QGridLayout;
-  topLayout->setMargin(5);
+  topLayout->setMargin(5 * scale);
   topLayout->setSpacing( 10 );
   topLayout->setColumnMinimumWidth(0, 45);
 
   QGridLayout * backLayout = new QGridLayout(this);
   backLayout->setMargin(0);
   backLayout->addLayout(topLayout, 1, 1);
-  backLayout->setRowMinimumHeight(0, 3);
-  backLayout->setRowMinimumHeight(2, 3);
-  backLayout->setColumnMinimumWidth(0, 3);
-  backLayout->setColumnMinimumWidth(2, 3);
+  backLayout->setRowMinimumHeight(0, 3 * scale);
+  backLayout->setRowMinimumHeight(2, 3 * scale);
+  backLayout->setColumnMinimumWidth(0, 3 * scale);
+  backLayout->setColumnMinimumWidth(2, 3 * scale);
 
   QFrame* frm = new QFrame(this);
   frm->setFrameStyle(QFrame::Box | QFrame::Plain);
-  frm->setLineWidth(3);
+  frm->setLineWidth(3 * scale);
   backLayout->addWidget(frm, 0, 0, 3, 3);
 
-  Glider = new QLabel(this);
+  Glider = new QLabel;
   topLayout->addWidget(Glider, 0, 0, 3, 1);
 
   QLabel* txt = new QLabel(tr("Cumulus is working, please wait!"), this);
-  topLayout->addWidget(txt, 0, 1, Qt::AlignLeft);
+  topLayout->addWidget(txt, 0, 1);
 
-  Text1 = new QLabel(this);
-  topLayout->addWidget(Text1, 1, 1, Qt::AlignLeft);
+  Text1 = new QLabel;
+  topLayout->addWidget(Text1, 1, 1);
 
-  Text2 = new QLabel(this);
-  topLayout->addWidget(Text2, 2, 1, Qt::AlignLeft);
+  Text2 = new QLabel;
+  topLayout->addWidget(Text2, 2, 1);
 
   _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
-  _glider = QPixmap(40,40);
+  _glider = QPixmap(40, 40);
   _glider.fill( palette().color(backgroundRole()) );
 
   QPainter p(&_glider);

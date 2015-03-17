@@ -38,9 +38,13 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_doubleMinimum(false, 0.0),
   m_pressedButton( 0 )
 {
+#ifdef ANDROID
+  setFrameStyle(QFrame::Box | QFrame::Plain);
+#else
   setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
-  setLineWidth( 5 * Layout::getIntScaledDensity() );
-  setLineWidth( 5 );
+#endif
+
+  setLineWidth( 3 * Layout::getIntScaledDensity() );
 
   setObjectName("NumberInputPad");
   setWindowFlags(Qt::Tool);
