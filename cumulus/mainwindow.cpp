@@ -2630,8 +2630,7 @@ void MainWindow::slotVersion()
 void MainWindow::slotHelp()
 {
   HelpBrowser *hb = new HelpBrowser(this);
-  hb->resize( this->size() );
-  hb->setWindowState( windowState() );
+  hb->resize( size() );
   hb->setVisible( true );
 }
 
