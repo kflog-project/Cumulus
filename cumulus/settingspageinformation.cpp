@@ -139,10 +139,11 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinSuppress->setDecimalVisible( false );
   spinSuppress->setPmVisible( false );
   spinSuppress->setMaxLength(3);
-  spinSuppress->setRange(0, 900);
+  spinSuppress->setRange(0, 60);
   spinSuppress->setSpecialValueText(tr("Off"));
   spinSuppress->setSuffix( " min" );
-  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3})" ), this );
+  spinSuppress->setTip("0...60 min");
+  QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
   spinSuppress->setValidator( eValidator );
 
   // Sets a minimum width for the widget
@@ -236,7 +237,7 @@ NumberEditor* SettingsPageInformation::createNumEd( QWidget* parent )
   numEd->setPmVisible( false );
   numEd->setMaxLength(2);
   numEd->setRange(0, 60);
-  numEd->setTip("0...60");
+  numEd->setTip("0...60 s");
   numEd->setSpecialValueText(tr("Off"));
   numEd->setSuffix( " s" );
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );

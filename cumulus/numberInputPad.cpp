@@ -21,6 +21,8 @@
 #include <QtWidgets>
 #endif
 
+#include <QPalette>
+
 #include "generalconfig.h"
 #include "layout.h"
 #include "numberInputPad.h"
@@ -45,6 +47,10 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 #endif
 
   setLineWidth( 3 * Layout::getIntScaledDensity() );
+
+  QPalette palette;
+  palette.setColor(QPalette::WindowText, Qt::darkBlue);
+  setPalette(palette);
 
   setObjectName("NumberInputPad");
   setWindowFlags(Qt::Tool);
