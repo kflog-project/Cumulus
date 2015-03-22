@@ -22,6 +22,10 @@ Cumulus changelog
 
 [-] 2015-03-22 AP: Issue #52 fixed. Help link do not work on the airspace
                    loading page.
+                   
+[-] 2015-03-22 AP: Issue #49 fixed. Add a Home button in the split list view
+                   at the last split level to make the whole list visible with
+                   one button press.                  
 
 [*] 2015-03-19 AP: Cumulus 5.21.0 released for Android, Ubuntu, Debian and Maemo4/5
 

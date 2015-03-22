@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,6 +22,8 @@
 #include "generalconfig.h"
 
 // Initialize static members
+// Button[0] can be the one level up button
+// Button[1] can be the home button
 const int ListViewFilter::buttonCount = 5;
 
 ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(parent)
@@ -39,6 +39,7 @@ ListViewFilter::ListViewFilter(QTreeWidget *tw, QWidget *parent) : QWidget(paren
   _rootFilter=0;
   _activeFilter=0;
   _filterIndex=0;
+  m_isTopButtonContained=false;
 
   for( int i = 0; i != buttonCount; i++)
     {
@@ -150,6 +151,8 @@ void ListViewFilter::clear()
 {
   // qDebug() << "ListViewFilter::clear()";
   _filterIndex = 0;
+  setTopButtonContained( false );
+  _buttonList.at( 1 )->setIcon( QIcon( QPixmap() ) );
 
   for( int i = 0; i < _filterList.size(); i++ )
     {
@@ -175,6 +178,17 @@ void ListViewFilter::clear()
 void ListViewFilter::slot_CmdPush( int id )
 {
   // qDebug() << "slot_CmdPush" << "ID=" << id << "_filterIndex" << _filterIndex;
+
+  // Reset document icon
+  _buttonList.at( 1 )->setIcon( QIcon( QPixmap() ) );
+
+  if( id == 1 && _rootFilter != _activeFilter && isTopButtonContained() )
+    {
+      // Top button is pressed
+      setTopButtonContained( false );
+      reset();
+      return;
+    }
 
   if( id == 0 && _rootFilter != _activeFilter )
     {
@@ -291,9 +305,14 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
       filter->divide( newPartCount, subFilters );
 
       _buttonList.at( 0 )->show();
-      _buttonList.at( 0 )->setText( "" ); // first button switches to the filter above this one
-      _buttonList.at( 0 )->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "up.png" ) ) ); // icon is more clear than text.
-      _buttonList.at( 0 )->setIconSize( QSize( IconSize, IconSize ) );
+
+      // first button switches to the filter above this one
+      _buttonList.at( 0 )->setText( "" );
+
+      // An icon is more clear than text.
+      QPixmap upPm = GeneralConfig::instance()->loadPixmap( "up.png", true );
+      _buttonList.at( 0 )->setIcon( QIcon( upPm ) );
+      _buttonList.at( 0 )->setIconSize( QSize( upPm.width(), upPm.height() ) );
       _buttonList.at( 0 )->setMinimumSize( 1, _buttonList.at( 1 )->height() );
     }
   else
@@ -333,7 +352,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
         {
           if( shrink >= 2 )
             {
-              _buttonList.at( j )->setText( (subFilters.at( i )->from).toLower() );
+              _buttonList.at( j )->setText( (subFilters.at( i )->from).toUpper() );
             }
           else
             {
@@ -345,7 +364,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
           if( shrink >= 2 )
             {
               _buttonList.at( j )->setText( (subFilters.at( i )->from + "-" +
-                                             subFilters.at( i )->to).toLower() );
+                                             subFilters.at( i )->to).toUpper() );
             }
           else
             {
@@ -390,6 +409,24 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
         }
     }
 
+  // Check, if the last split layer in reached. in this case only the one level
+  // up button is contained. We add a second button to the list, a home button
+  // to go back to the beginning of the displayed list.
+  if( subFilters.count() == 0 && _activeFilter != _rootFilter)
+    {
+      _buttonList.at( 1 )->show();
+
+      // first button switches to the filter above this one
+      _buttonList.at( 1 )->setText( tr("") );
+
+      // An icon is more clear than text.
+      QPixmap upPm = GeneralConfig::instance()->loadPixmap( "dokument26.png", true );
+      _buttonList.at( 1 )->setIcon( QIcon( upPm ) );
+      _buttonList.at( 1 )->setIconSize( QSize( upPm.width(), upPm.height() ) );
+      _buttonList.at( 1 )->setMinimumSize( 1, _buttonList.at( 2 )->height() );
+      setTopButtonContained( true );
+    }
+
   // save new subfilter set
   _filterIndex++;
   _filterList.append( subFilters );
@@ -425,6 +462,7 @@ void ListViewFilter::off()
 
   // Root filter has no back icon.
   _buttonList.at( 0 )->setIcon( QIcon( QPixmap() ) );
+  _buttonList.at( 1 )->setIcon( QIcon( QPixmap() ) );
 
   // Show all buttons
   for( int i = 0; i < _buttonList.count(); i++ )

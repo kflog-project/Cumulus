@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -37,7 +35,7 @@
  * Creates a filter item as subset of a bigger list. This class is used by the
  * \ref ListViewFilter class.
  *
- * \date 2004-2010
+ * \date 2004-2015
  */
 
 class ListViewFilterItem : QObject
@@ -122,7 +120,7 @@ private:
  *
  * Creates a filter bar for a QTreeWidget in order to quickly filter the list view.
  *
- * \date 2004-2010
+ * \date 2004-2015
  */
 class ListViewFilter : public QWidget
 {
@@ -191,6 +189,24 @@ private:
    */
   void activateFilter( ListViewFilterItem* filter, int shrink=0 );
 
+  /**
+   * \return The current state of the flag.
+   */
+  bool isTopButtonContained() const
+  {
+    return m_isTopButtonContained;
+  };
+
+  /**
+   * Sets the top button contained flag.
+   *
+   * \param flag New value to be set.
+   */
+  void setTopButtonContained( bool flag )
+  {
+    m_isTopButtonContained = flag;
+  };
+
   /** Pointer to display table view */
   QTreeWidget* _tw;
 
@@ -208,6 +224,9 @@ private:
 
   /** root filter of the tree */
   ListViewFilterItem* _rootFilter;
+
+  /** Set to true, if top button is contained in the button list. */
+  bool m_isTopButtonContained;
 
 private slots:
 
