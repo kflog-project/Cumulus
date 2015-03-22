@@ -187,7 +187,7 @@ void HelpBrowser::showEvent( QShowEvent * )
 #endif
 
       mb.exec();
-      QWidget::close();
+      close();
       return;
     }
 

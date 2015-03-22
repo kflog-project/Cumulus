@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -137,7 +135,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   const int iconSize = Layout::iconSize( font() );
 
   QPushButton * cmdNew = new QPushButton;
-  cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png")) );
+  cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png", true)) );
   cmdNew->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cmdNew->setToolTip(tr("Define a new task"));
@@ -146,7 +144,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   editrow->addSpacing(20);
   QPushButton * cmdEdit = new QPushButton;
-  cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
+  cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png", true)) );
   cmdEdit->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cmdEdit->setToolTip(tr("Edit selected task"));
@@ -155,7 +153,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   editrow->addSpacing(20);
   QPushButton * cmdDel = new QPushButton;
-  cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png")) );
+  cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png", true)) );
   cmdDel->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cmdDel->setToolTip(tr("Remove selected task"));
@@ -271,19 +269,18 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
            this, SLOT( slotShowTaskListWidget() ) );
 
   QPushButton *cancel = new QPushButton(this);
-  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QPushButton *ok = new QPushButton(this);
-  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png", true)));
   ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setAlignment( Qt::AlignCenter );
-  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
-
+  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 

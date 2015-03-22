@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2013 by Axel Pauli
+**                   2007-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -47,7 +45,7 @@ WaypointListView::WaypointListView( QWidget *parent ) :
 
   // create a vertical command button row and put it at the right widget side
   QVBoxLayout *editRow = new QVBoxLayout;
-  editRow->setSpacing( 20 );
+  editRow->setSpacing( 20 * Layout::getIntScaledDensity() );
   editRow->addStretch( 10 );
 
   const int iconSize = Layout::iconSize( font() );

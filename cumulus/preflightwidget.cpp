@@ -28,6 +28,7 @@
 #include "igclogger.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "mapconfig.h"
 #include "map.h"
 #include "preflightchecklistpage.h"
 #include "preflightgliderpage.h"
@@ -35,7 +36,7 @@
 #include "preflightmiscpage.h"
 #include "preflighttaskpage.h"
 #include "preflightwaypointpage.h"
-#include "preflightwidget.h"
+#include "preflightwidget.h"extern MapConfig* _globalMapConfig;
 #include "preflightwindpage.h"
 
 #ifdef INTERNET
@@ -176,13 +177,15 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   contentLayout->addWidget( m_menuCb, 0, Qt::AlignVCenter|Qt::AlignBottom );
 
   QPushButton *cancel = new QPushButton(this);
-  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setAlignment( Qt::AlignCenter );
-  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+  //titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png", true));
+
+  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 

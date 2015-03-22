@@ -139,43 +139,43 @@ TaskEditor::TaskEditor( QWidget* parent,
 #endif
 
   upButton = new QPushButton( this );
-  upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
+  upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png", true )) );
   upButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   upButton->setToolTip( tr("move selected waypoint up") );
 #endif
   downButton = new QPushButton( this );
-  downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
+  downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png", true )) );
   downButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   downButton->setToolTip( tr("move selected waypoint down") );
 #endif
   invertButton = new QPushButton( this );
-  invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png")) );
+  invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png", true )) );
   invertButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   invertButton->setToolTip( tr("reverse waypoint order") );
 #endif
   addButton = new QPushButton( this );
-  addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png")) );
+  addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png", true )) );
   addButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   addButton->setToolTip( tr("add waypoint") );
 #endif
   delButton = new QPushButton( this );
-  delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png")) );
+  delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png", true )) );
   delButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   delButton->setToolTip( tr("remove waypoint") );
 #endif
   QPushButton* okButton = new QPushButton( this );
-  okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png")) );
+  okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png", true )) );
   okButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   okButton->setToolTip( tr("save task") );
 #endif
   QPushButton* cancelButton = new QPushButton( this );
-  cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png")) );
+  cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png", true )) );
   cancelButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   cancelButton->setToolTip( tr("cancel task") );
@@ -198,9 +198,10 @@ TaskEditor::TaskEditor( QWidget* parent,
   headlineLayout->addWidget( listSelectCB );
   //headlineLayout->addSpacing(25);
 
-  QStyle* style = QApplication::style();
+  // QStyle* style = QApplication::style();
   defaultButton = new QPushButton;
-  defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
+  // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
+  defaultButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("clear-32.png")) );
   defaultButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   defaultButton->setToolTip(tr("Set task figure default schemas"));

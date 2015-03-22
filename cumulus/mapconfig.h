@@ -201,9 +201,11 @@ class MapConfig : public QObject
       *
       * \param heading Heading direction of glider.
       *
+      * \param scale Scale factor for pixmap to be returned
+      *
       * \return A pixmap with a glider scaled with the current set scale.
       */
-    QPixmap createGlider( const int heading );
+    QPixmap createGlider( const int heading, float scale=3.5 );
 
     /**
       * Returns a pixmap containing an airfiled with an runway. That pixmap
@@ -441,5 +443,7 @@ private:
     // number of created class instances
     static short instances;
 };
+
+extern MapConfig* _globalMapConfig;
 
 #endif

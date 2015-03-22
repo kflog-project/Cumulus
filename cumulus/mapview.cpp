@@ -63,7 +63,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _altimeterMode = conf->getAltimeterMode();
 
   // load pixmap of arrows for relative bearing
-  _arrows = GeneralConfig::instance()->loadPixmap( "arrows60pix-15.png" );
+  _arrows = GeneralConfig::instance()->loadPixmap( "arrows60pix-15.png", false );
   //make the main box layout
   QBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing(0);

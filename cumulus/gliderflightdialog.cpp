@@ -70,8 +70,8 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   setFont(cf);
 
   QGridLayout* gridLayout = new QGridLayout(this);
-  gridLayout->setMargin(10);
-  gridLayout->setSpacing(15);
+  gridLayout->setMargin(10 * Layout::getIntScaledDensity());
+  gridLayout->setSpacing(15 * Layout::getIntScaledDensity());
   int row = 0;
 
   ftLabel = new QLabel(tr("Flight time:"), this);
@@ -168,14 +168,14 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   reset->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *pmLayout = new QHBoxLayout;
-  pmLayout->setSpacing(5);
+  pmLayout->setSpacing(5 * Layout::getIntScaledDensity());
   pmLayout->addWidget(pplus, Qt::AlignLeft);
   pmLayout->addWidget(plus, Qt::AlignLeft);
-  pmLayout->addSpacing(20);
+  pmLayout->addSpacing(20 * Layout::getIntScaledDensity());
   pmLayout->addStretch(10);
   pmLayout->addWidget(reset);
   pmLayout->addStretch(10);
-  pmLayout->addSpacing(20);
+  pmLayout->addSpacing(20 * Layout::getIntScaledDensity());
   pmLayout->addWidget(minus, Qt::AlignRight);
   pmLayout->addWidget(mminus, Qt::AlignRight);
 

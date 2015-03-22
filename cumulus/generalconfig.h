@@ -253,7 +253,7 @@ class GeneralConfig : protected QSettings
    *
    * @return The requested pixmap.
    */
-  QPixmap loadPixmap( const QString& pixmapName, const bool doScale=false );
+  QPixmap loadPixmap( const QString& pixmapName, const bool doScale=true );
 
   /**
    * Load a required pixmap and scale it to the needed size. The loaded pixmap

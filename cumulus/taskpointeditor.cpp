@@ -213,9 +213,11 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   topLayout->setColumnStretch( 3, 10 );
   topLayout->setRowStretch( row++, 10 );
 
-  QStyle* style = QApplication::style();
+  // QStyle* style = QApplication::style();
   QPushButton *defaults = new QPushButton(tr("Defaults"));
-  defaults->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
+  // defaults->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
+  defaults->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("clear-32.png")) );
+
   const int iconSize = Layout::iconSize( font() );
   defaults->setIconSize(QSize(iconSize, iconSize));
   topLayout->addWidget( defaults, row, 0 );
@@ -242,7 +244,7 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setAlignment( Qt::AlignCenter );
-  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));

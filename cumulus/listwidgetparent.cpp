@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -70,13 +70,13 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 #endif
 
   up = new QPushButton( this );
-  up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
+  up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png", true )));
   up->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   up->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   up->setToolTip( tr("move page up") );
 
   down = new QPushButton( this );
-  down->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
+  down->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png", true )));
   down->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   down->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   down->setToolTip( tr("move page down") );

@@ -127,7 +127,7 @@ PreFlightRetrievePage::PreFlightRetrievePage(QWidget *parent) :
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setAlignment( Qt::AlignCenter );
-  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
   connect(callReturner, SIGNAL(pressed()), this, SLOT(slotCallReturner()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));

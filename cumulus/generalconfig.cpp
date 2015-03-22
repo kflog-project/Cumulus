@@ -1466,25 +1466,42 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale
       emptyPixmap.fill( Qt::transparent );
     }
 
+  float scale = Layout::getScaledDensity();
+
   // determine absolute path to pixmap directory
   QString path( _appRoot + "/icons/" + pixmapName );
 
+  // create key for cache access
+  QString key(path);
+
+  if( doScale == true )
+    {
+      key += QString::number(scale, 'f', 3);
+    }
+
+  qDebug() << "loadPixmap:" << pixmapName << "doScale" << doScale
+	   << "scale=" << scale << "key=" << key;
+
   QPixmap pm;
 
-  if( QPixmapCache::find( path, pm ) )
+  if( QPixmapCache::find( key, pm ) )
     {
       return pm;
     }
 
   if( pm.load( path ) )
     {
-      if( doScale == true && Layout::getIntScaledDensity() > 1 )
+      if( doScale == true && scale > 1.0 )
 	{
-	  int scale = Layout::getIntScaledDensity();
-	  pm = pm.scaled( pm.width() * scale, pm.height() * scale );
+	  pm = pm.scaled( pm.width() * scale, pm.height() * scale,
+	                  Qt::KeepAspectRatio,
+	                  Qt::SmoothTransformation );
 	}
 
-      QPixmapCache::insert( path, pm );
+      QPixmapCache::insert( key, pm );
+
+      qDebug() << "loadPixmap:" << pixmapName << "w=" << pm.width() << "h=" << pm.height();
+
       return pm;
     }
 
@@ -1522,7 +1539,7 @@ QPixmap GeneralConfig::loadPixmapAutoScaled( const QString& pixmapName )
   QString path( _appRoot + "/icons/" + pixmapName );
 
   // create key for cache access
-  QString key( path + QString::number(scale) );
+  QString key( path + QString::number(scale, 'f', 3) );
 
   QPixmap pm;
 
@@ -1555,7 +1572,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
 {
   // determine absolute path to pixmap directory
   QString path( _appRoot + "/icons/" + pixmapName );
-  QString cacheKey( path + QString::number(size) );
+  QString cacheKey( path + QString::number(size, 'f', 3) );
 
   QPixmap pm;
 

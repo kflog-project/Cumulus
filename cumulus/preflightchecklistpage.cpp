@@ -25,6 +25,7 @@
 
 #include "generalconfig.h"
 #include "layout.h"
+#include "mapconfig.h"
 #include "preflightchecklistpage.h"
 #include "rowdelegate.h"
 
@@ -96,7 +97,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   int iconSize   = buttonSize - 5;
 
   QPushButton* toggleButton = new QPushButton(this);
-  toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("list32.png")));
+  toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("file-32.png")));
   toggleButton->setIconSize( QSize(iconSize, iconSize) );
   toggleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   toggleButton->setMinimumSize(buttonSize, buttonSize);
@@ -140,7 +141,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   QLabel *titlePix = new QLabel(this);
   titlePix->setAlignment( Qt::AlignCenter );
-  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("preflight.png"));
+  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
   connect( addButton, SIGNAL(pressed()), SLOT(slotAddRow()) );
   connect( toggleButton, SIGNAL(pressed()), SLOT(slotToogleFilenameDisplay()) );
@@ -156,15 +157,15 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
 #ifndef MAEMO
   buttonBox->addWidget(toggleButton, 1);
-  buttonBox->addSpacing(20);
+  buttonBox->addSpacing(20 * Layout::getIntScaledDensity());
   buttonBox->addWidget(addButton, 1);
-  buttonBox->addSpacing(20);
+  buttonBox->addSpacing(20 * Layout::getIntScaledDensity());
   buttonBox->addWidget(m_editButton, 1);
-  buttonBox->addSpacing(20);
+  buttonBox->addSpacing(20 * Layout::getIntScaledDensity());
   buttonBox->addWidget(m_deleteButton, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(30);
+  buttonBox->addSpacing(30 * Layout::getIntScaledDensity());
   buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);

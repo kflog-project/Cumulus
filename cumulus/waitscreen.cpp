@@ -62,7 +62,7 @@ WaitScreen::WaitScreen(QWidget *parent ) :
   Text2 = new QLabel;
   topLayout->addWidget(Text2, 2, 1);
 
-  _gliders = GeneralConfig::instance()->loadPixmap("gliders.png");
+  _gliders = GeneralConfig::instance()->loadPixmap("gliders.png", false);
   _glider = QPixmap(40, 40);
   _glider.fill( palette().color(backgroundRole()) );
 

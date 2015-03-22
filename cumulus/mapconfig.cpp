@@ -1069,9 +1069,9 @@ QPixmap& MapConfig::getCross()
   return pm;
 }
 
-QPixmap MapConfig::createGlider( const int heading )
+QPixmap MapConfig::createGlider( const int heading, float scale )
 {
-  float s = 3.5 * Layout::getIntScaledDensity();
+  float s = scale * Layout::getIntScaledDensity();
   float offset = 5 * s;
   float w = 20 * s;
   float h = 20 * s;

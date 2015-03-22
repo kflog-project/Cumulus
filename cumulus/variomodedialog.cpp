@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2013 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -65,8 +63,8 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   setFont(cf);
 
   QGridLayout* gridLayout = new QGridLayout(this);
-  gridLayout->setMargin(10);
-  gridLayout->setSpacing(15);
+  gridLayout->setMargin(10 * Layout::getIntScaledDensity());
+  gridLayout->setSpacing(15 * Layout::getIntScaledDensity());
   int row = 0;
 
   //---------------------------------------------------------------------
@@ -128,10 +126,10 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   mminus->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *pmLayout = new QHBoxLayout;
-  pmLayout->setSpacing(5);
+  pmLayout->setSpacing(5 * Layout::getIntScaledDensity());
   pmLayout->addWidget(pplus, Qt::AlignLeft);
   pmLayout->addWidget(plus, Qt::AlignLeft);
-  pmLayout->addSpacing(20);
+  pmLayout->addSpacing(20 * Layout::getIntScaledDensity());
   pmLayout->addStretch(100);
   pmLayout->addWidget(minus, Qt::AlignRight);
   pmLayout->addWidget(mminus, Qt::AlignRight);

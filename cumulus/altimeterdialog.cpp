@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -153,8 +151,8 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
 
   QGroupBox* altitudeBox = new QGroupBox( this );
   QGridLayout* altitudeLayout = new QGridLayout;
-  altitudeLayout->setMargin( 5 );
-  altitudeLayout->setSpacing( 15 );
+  altitudeLayout->setMargin( 5 * Layout::getIntScaledDensity());
+  altitudeLayout->setSpacing( 15 * Layout::getIntScaledDensity());
   int row = 0;
 
   QLabel* lbl = new QLabel( tr( "AltGain:" ), this );
@@ -241,17 +239,16 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   reset->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *pmLayout = new QHBoxLayout;
-  pmLayout->setSpacing( 5 );
+  pmLayout->setSpacing( 5 * Layout::getIntScaledDensity());
   pmLayout->addWidget( pplus, Qt::AlignLeft );
   pmLayout->addWidget( plus, Qt::AlignLeft );
-  pmLayout->addSpacing(20);
+  pmLayout->addSpacing( 20 * Layout::getIntScaledDensity());
   pmLayout->addStretch( 10 );
   pmLayout->addWidget(reset);
   pmLayout->addStretch(10);
-  pmLayout->addSpacing(20);
+  pmLayout->addSpacing( 20 * Layout::getIntScaledDensity());
   pmLayout->addWidget( minus, Qt::AlignRight );
   pmLayout->addWidget( mminus, Qt::AlignRight );
-  pmLayout->setSpacing( 5 );
 
   controlLayout->addLayout( pmLayout );
 
@@ -280,7 +277,7 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   buttonLayout->addSpacing( size + 5 );
 
   mainLayout->addLayout( controlLayout );
-  mainLayout->addSpacing( 25 );
+  mainLayout->addSpacing( 25 * Layout::getIntScaledDensity() );
   mainLayout->addLayout( buttonLayout );
 
   m_timeout = new QTimer( this );

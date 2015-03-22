@@ -111,13 +111,13 @@ ReachpointListView::ReachpointListView( QWidget* parent ) :
 
   cmdPageUp = new QPushButton( this );
   cmdPageUp->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png")) );
-  cmdPageUp->setIconSize( QSize(IconSize, IconSize) );
+  cmdPageUp->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   cmdPageUp->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   cmdPageUp->setToolTip( tr("move page up") );
 
   cmdPageDown = new QPushButton( this );
   cmdPageDown->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
-  cmdPageDown->setIconSize( QSize(IconSize, IconSize) );
+  cmdPageDown->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   cmdPageDown->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   cmdPageDown->setToolTip( tr("move page down") );
 

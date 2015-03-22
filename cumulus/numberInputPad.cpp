@@ -160,25 +160,29 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   m_left = new QPushButton( " ", this);
   m_left->setMinimumWidth( minBW );
-  m_left->setIcon(style->standardIcon(QStyle::SP_ArrowLeft));
+  //m_left->setIcon(style->standardIcon(QStyle::SP_ArrowLeft));
+  m_left->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("left-32.png")) );
   m_left->setIconSize( qis );
   gl->addWidget( m_left, row, 1 );
 
   m_right = new QPushButton( " ", this );
   m_right->setMinimumWidth( minBW );
-  m_right->setIcon(style->standardIcon(QStyle::SP_ArrowRight));
+  //m_right->setIcon(style->standardIcon(QStyle::SP_ArrowRight));
+  m_right->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("right-32.png")) );
   m_right->setIconSize( qis );
   gl->addWidget( m_right, row, 2 );
 
   m_delLeft = new QPushButton( " ", this );
   m_delLeft->setMinimumWidth( minBW );
-  m_delLeft->setIcon(style->standardIcon(QStyle::SP_MediaSkipBackward));
+  //m_delLeft->setIcon(style->standardIcon(QStyle::SP_MediaSkipBackward));
+  m_delLeft->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("media-skip-backward-32.png")) );
   m_delLeft->setIconSize( qis );
   gl->addWidget( m_delLeft, row, 3 );
 
   m_delRight = new QPushButton( " ", this );
   m_delRight->setMinimumWidth( minBW );
-  m_delRight->setIcon (style->standardIcon(QStyle::SP_MediaSkipForward));
+  //m_delRight->setIcon (style->standardIcon(QStyle::SP_MediaSkipForward));
+  m_delRight->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("media-skip-forward-32.png")) );
   m_delRight->setIconSize( qis );
   gl->addWidget( m_delRight, row, 4 );
 
