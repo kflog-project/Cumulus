@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2011-2015 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -403,7 +403,7 @@ void SettingsPageAirspaceLoading::slot_itemSelectionChanged()
 
 void SettingsPageAirspaceLoading::slot_openHelp()
 {
-  HelpBrowser *hb = new HelpBrowser( this, "cumulus-maps-openAir.html" );
+  HelpBrowser *hb = new HelpBrowser( this, "cumulus-maps-openAIP.html" );
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
   hb->setVisible( true );

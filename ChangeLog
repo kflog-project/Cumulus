@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-03-22 AP: Issue #52 fixed. Help link do not work on the airspace
+                   loading page.
+
+[*] 2015-03-19 AP: Cumulus 5.21.0 released for Android, Ubuntu, Debian and Maemo4/5
+
 [-] 2015-03-14 AP: Issue #51 fixed. The thermal point info shows sometimes
                    senseless things like runways and frequency.
 

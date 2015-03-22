@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2011-2015 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -32,9 +30,9 @@
  * This widget provides an airspace file selection table, where the user can
  * choose, which available airspace files shall be loaded or not loaded.
  *
- * \date 2011-2013
+ * \date 2011-2015
  *
- * \version $Id$
+ * \version 1.0
  *
  */
 class SettingsPageAirspaceLoading : public QWidget
