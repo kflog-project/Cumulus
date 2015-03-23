@@ -85,6 +85,12 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaScrollArea->setWidgetResizable( true );
   nmeaScrollArea->setWidget(nmeaBox);
 
+#ifdef ANDROID
+  // Make the vertical scrollbar bigger for Android
+  QScrollBar* vsb = nmeaScrollArea->verticalScrollBar();
+  vsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture( nmeaScrollArea->viewport(), QScroller::LeftMouseButtonGesture );
 #endif

@@ -88,6 +88,7 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
 
   // The parent of the layout is the scroll widget
   QGridLayout* topLayout = new QGridLayout(sw);
+  topLayout->setSpacing( topLayout->spacing() * Layout::getIntScaledDensity() );
 
   // get current used horizontal speed m_unit. This m_unit must be considered
   // during storage.

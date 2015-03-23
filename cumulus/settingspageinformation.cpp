@@ -78,8 +78,8 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   // The parent of the layout is the scroll widget
   QGridLayout *topLayout = new QGridLayout(sw);
 
-  topLayout->setHorizontalSpacing(20);
-  topLayout->setVerticalSpacing(10);
+  topLayout->setHorizontalSpacing(20 * Layout::getIntScaledDensity() );
+  topLayout->setVerticalSpacing(10 * Layout::getIntScaledDensity() );
 
   int row=0;
 

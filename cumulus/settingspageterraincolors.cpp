@@ -169,6 +169,7 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
 
   // put all edit widgets (combo box and buttons) in a separate VBox layout
   QVBoxLayout *editLayout = new QVBoxLayout;
+  editLayout->setSpacing( editLayout->spacing() * Layout::getIntScaledDensity() );
 
   QLabel *label = new QLabel( tr("Terrain Level") );
   editLayout->addWidget( label );
@@ -250,9 +251,9 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   // on click the color chooser dialog will be opened
   connect( groundColorButton, SIGNAL(clicked()), this, SLOT(slot_editGroundColor()) );
 
-  editLayout->addSpacing( 10 );
+  editLayout->addSpacing( 10 * Layout::getIntScaledDensity() );
   editLayout->addWidget( groundColorButton );
-  editLayout->addSpacing( 20 );
+  editLayout->addSpacing( 20 * Layout::getIntScaledDensity() );
 
   //--------------------------------------------------------------------------
   // add button for assigning of default colors

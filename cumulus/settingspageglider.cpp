@@ -61,13 +61,13 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   cmdNew->setIconSize( QSize(iconSize, iconSize) );
   editrow->addWidget(cmdNew,1);
 
-  editrow->addSpacing(20);
+  editrow->addSpacing( 20 * Layout::getIntScaledDensity() );
   QPushButton * cmdEdit = new QPushButton(this);
   cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   cmdEdit->setIconSize( QSize(iconSize, iconSize) );
   editrow->addWidget(cmdEdit,1);
 
-  editrow->addSpacing(20);
+  editrow->addSpacing(20 * Layout::getIntScaledDensity() );
   QPushButton * cmdDel = new QPushButton(this);
   cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "delete.png" )) );
   cmdDel->setIconSize( QSize(iconSize, iconSize) );

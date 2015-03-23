@@ -80,6 +80,7 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
 
   // The parent of the layout is the scroll widget
   QGridLayout* topLayout = new QGridLayout(sw);
+  topLayout->setSpacing( topLayout->spacing() * Layout::getIntScaledDensity() );
 
   // save current altitude unit. This unit must be considered during
   // storage. The internal storage is always in meters.
