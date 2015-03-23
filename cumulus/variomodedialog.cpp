@@ -126,7 +126,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   mminus->setFocusPolicy(Qt::NoFocus);
 
   QHBoxLayout *pmLayout = new QHBoxLayout;
-  pmLayout->setSpacing(5 * Layout::getIntScaledDensity());
+  pmLayout->setSpacing(10 * Layout::getIntScaledDensity());
   pmLayout->addWidget(pplus, Qt::AlignLeft);
   pmLayout->addWidget(plus, Qt::AlignLeft);
   pmLayout->addSpacing(20 * Layout::getIntScaledDensity());

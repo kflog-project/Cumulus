@@ -190,6 +190,9 @@ void ListViewFilter::slot_CmdPush( int id )
       return;
     }
 
+  // Reset TopButtonContained flag in every case.
+  setTopButtonContained( false );
+
   if( id == 0 && _rootFilter != _activeFilter )
     {
       // Go one level back
