@@ -87,7 +87,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // This fixed size is based on a screen resolution of 800x480. Android devices
   // like the Galaxy III have a higher screen resolution e.g. 1280x720. To handle
-  //  that in a better way, a second fixed size limit is calculated.
+  // that in a better way, a second fixed size limit is calculated.
   int leftFixedWidth = 220;
 
   QFont ft22; ft22.setPointSize( 22 );
@@ -119,23 +119,36 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 	}
     }
 
+  // Calculate the statusbar font.
+  QFont fontSB = font();
+  fontSB.setBold(true);
+  Layout::fitStatusbarFont( fontSB );
+
   // If we have screens with a larger resolution, the height of the info boxes
   // are increased. The default height is 60 pixels. For higher resolutions we
   // try to calculate an adequate one.
-  QFont ft20; ft20.setPointSize( 20 );
-  QFontMetrics qfm20(ft20);
-
   int textLabelBoxHeight = 60;
 
   if( parent->size().height() > 500 )
     {
-      // For higher resolution screens
-      textLabelBoxHeight = qfm20.height();
+      QFont ft20 = font(); ft20.setPointSize( 20 );
+      QFontMetrics qfm20(ft20);
+
+      // This is the default height for higher resolution screens.
+      int tlbhDefault = qfm20.height();
+
+      // Calculate single box height minus statusbar height
+      textLabelBoxHeight = (parent->size().height() - (7 * 5) - QFontMetrics(fontSB).height() - 6) / 7;
 
       if( textLabelBoxHeight < 60 )
 	{
 	  // Fallback to default, if to low.
 	  textLabelBoxHeight = 60;
+	}
+      else if( textLabelBoxHeight > tlbhDefault )
+	{
+	  // Fallback to default, if to big.
+	  textLabelBoxHeight = tlbhDefault;
 	}
     }
 
@@ -427,17 +440,14 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->setObjectName("status");
   _statusbar->setSizeGripEnabled(false);
 
-  QFont font = _statusbar->font();
-  font.setBold(true);
-  Layout::fitStatusbarFont( font );
-  _statusbar->setFont(font);
+  _statusbar->setFont(fontSB);
 
   // Fixing the height caused some times problems on larger screens
   // QFontMetrics fm(font);
   // _statusbar->setFixedHeight(fm.boundingRect("WE°'?\"").height() + 6 );
 
   _statusGps = new CuLabel(tr("Man"), _statusbar);
-  _statusGps->setFont(font);
+  _statusGps->setFont(fontSB);
   _statusGps->setLineWidth(0);
   _statusGps->setAlignment(Qt::AlignCenter);
   _statusGps->setMargin(0);
@@ -445,7 +455,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
-  _statusFlightstatus->setFont(font);
+  _statusFlightstatus->setFont(fontSB);
   _statusFlightstatus->setLineWidth(0);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
   _statusFlightstatus->setMargin(0);
@@ -455,7 +465,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #ifdef FLARM
 
   _statusFlarm = new CuLabel( tr( "F" ), _statusbar );
-  _statusFlarm->setFont(font);
+  _statusFlarm->setFont(fontSB);
   _statusFlarm->setLineWidth( 0 );
   _statusFlarm->setAlignment( Qt::AlignCenter );
   _statusFlarm->setMargin( 0 );
@@ -465,21 +475,21 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #endif
 
   _statusPosition = new QLabel(_statusbar);
-  _statusPosition->setFont(font);
+  _statusPosition->setFont(fontSB);
   _statusPosition->setLineWidth(0);
   _statusPosition->setAlignment(Qt::AlignCenter);
   _statusPosition->setMargin(0);
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
-  _statusGlider->setFont(font);
+  _statusGlider->setFont(fontSB);
   _statusGlider->setLineWidth(0);
   _statusGlider->setAlignment(Qt::AlignCenter);
   _statusGlider->setMargin(0);
   _statusbar->addWidget(_statusGlider);
 
   _statusInfo = new QLabel(_statusbar);
-  _statusInfo->setFont(font);
+  _statusInfo->setFont(fontSB);
   _statusInfo->setAlignment(Qt::AlignCenter);
   _statusInfo->setMargin(0);
   _statusbar->addWidget(_statusInfo, 1);
@@ -489,7 +499,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_infoTimer()));
 
   QFrame* filler = new QFrame(_statusbar);
-  filler->setFont(font);
+  filler->setFont(fontSB);
   filler->setLineWidth(0);
   _statusbar->addWidget(filler);
   topLayout->addWidget(_statusbar);

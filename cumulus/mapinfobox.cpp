@@ -111,7 +111,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   // Set the calculated font.
 #ifdef ANDROID
   // Android uses a predefined point size
-  f.setPointSize( 9 );
+  f.setPointSize( 8 );
 #endif
 
   setFont(f);
