@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2014 by Axel Pauli
+ **   Copyright (c): 2012-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -30,6 +28,7 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "preflightflarmpage.h"
+#include "preflighttaskpage.h"
 #include "varspinbox.h"
 
 // Timeout in ms for waiting for response
@@ -111,7 +110,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   //----------------------------------------------------------------------------
 
-  gridLayout->addWidget( new QLabel(tr("Db:")), 1, 0);
+  gridLayout->addWidget( new QLabel(tr("ODB:")), 1, 0);
   obstVersion = new QLabel("???");
   gridLayout->addWidget( obstVersion, 1, 1 );
   gridLayout->setColumnMinimumWidth( 2, 20 );
@@ -684,6 +683,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       nextFlarmCommand();
       return;
     }
+
+  // Write Flarm task file in Cumulus's data directory for control
+  PreFlightTaskPage::createFlarmTaskList( m_ftask );
 
   // Flarm limits tasks in its length to 192 characters. We do check and
   // adapt that here.

@@ -36,7 +36,7 @@
 #include "preflightmiscpage.h"
 #include "preflighttaskpage.h"
 #include "preflightwaypointpage.h"
-#include "preflightwidget.h"extern MapConfig* _globalMapConfig;
+#include "preflightwidget.h"
 #include "preflightwindpage.h"
 
 #ifdef INTERNET

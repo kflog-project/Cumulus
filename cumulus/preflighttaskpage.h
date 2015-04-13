@@ -23,7 +23,7 @@
  *
  * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  *
  */
 
@@ -62,6 +62,9 @@ class PreFlightTaskPage : public QWidget
   /** Takes out the selected task from the task list. */
   FlightTask* takeSelectedTask();
 
+  /** Creates a task definition file in Flarm format. */
+  static bool createFlarmTaskList( FlightTask* flightTask );
+
  protected:
 
   void showEvent(QShowEvent *);
@@ -76,9 +79,6 @@ class PreFlightTaskPage : public QWidget
 
   /** load tasks from the file */
   bool loadTaskList();
-
-  /** Creates a task definition file in Flarm format. */
-  bool createFlarmTaskList( FlightTask* flightTask );
 
   /**
    * This method is called to update the the way time in the task overview list,
