@@ -93,7 +93,12 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   QTableWidgetItem *item = new QTableWidgetItem( tr(" Check Point ") );
   m_list->setHorizontalHeaderItem( 0, item );
 
+#ifndef ANDROID
   int buttonSize = Layout::getButtonSize();
+#else
+  int buttonSize = Layout::getButtonSize(14);
+#endif
+
   int iconSize   = buttonSize - 5;
 
   QPushButton* toggleButton = new QPushButton(this);
@@ -127,7 +132,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  cancel->setIconSize(QSize(iconSize, iconSize));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   cancel->setMinimumSize(buttonSize, buttonSize);
   cancel->setMaximumSize(buttonSize, buttonSize);
@@ -154,37 +159,19 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   hbox->addLayout(buttonBox);
 
   buttonBox->setSpacing(0);
-
-#ifndef MAEMO
-  buttonBox->addWidget(toggleButton, 1);
-  buttonBox->addSpacing(20 * Layout::getIntScaledDensity());
-  buttonBox->addWidget(addButton, 1);
-  buttonBox->addSpacing(20 * Layout::getIntScaledDensity());
-  buttonBox->addWidget(m_editButton, 1);
-  buttonBox->addSpacing(20 * Layout::getIntScaledDensity());
-  buttonBox->addWidget(m_deleteButton, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(30 * Layout::getIntScaledDensity());
-  buttonBox->addWidget(m_ok, 1);
+  buttonBox->addWidget(toggleButton);
+  buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
+  buttonBox->addWidget(addButton);
+  buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
+  buttonBox->addWidget(m_editButton);
+  buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
+  buttonBox->addWidget(m_deleteButton);
+  buttonBox->addSpacing(15 * Layout::getIntScaledDensity());
+  buttonBox->addWidget(cancel);
+  buttonBox->addSpacing(15 * Layout::getIntScaledDensity());
+  buttonBox->addWidget(m_ok);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
-#else
-  // Under Maemo the space is limited at the right side of the window
-  buttonBox->addWidget(toggleButton, 1);
-  buttonBox->addSpacing(10);
-  buttonBox->addWidget(addButton, 1);
-  buttonBox->addSpacing(10);
-  buttonBox->addWidget(m_editButton, 1);
-  buttonBox->addSpacing(10);
-  buttonBox->addWidget(m_deleteButton, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(15);
-  buttonBox->addWidget(m_ok, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix);
-#endif
 }
 
 PreFlightCheckListPage::~PreFlightCheckListPage()

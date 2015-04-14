@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2015-04-14 AP: Issue #55 fixed. Extend the preflight Flarm page by the
+                   notrack option.
+
+[-] 2015-04-14 AP: Issue #54 fixed. The preflight checklist is cut on a Galaxy 3.
+
 [-] 2015-03-24 AP: Missing map icon for navaid Tacan added.
 
 [-] 2015-03-22 AP: Issue #52 fixed. Help link do not work on the airspace

@@ -3,11 +3,9 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2014 by Axel Pauli
+                               2008-2015 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
-
-    $Id$
 
  ***************************************************************************
  *                                                                         *
