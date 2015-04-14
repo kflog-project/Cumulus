@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2013 by Axel Pauli
+**   Copyright (c):  2012-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,9 +22,9 @@
  *
  * A widget for pre-flight Flarm IGC settings.
  *
- * \date 2012-2013
+ * \date 2012-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef PREFLIGHT_FLARM_PAGE_H_
@@ -89,8 +87,11 @@ class PreFlightFlarmPage : public QWidget
   /** Called if the widget is closed. */
   void slotClose();
 
-  /** Called if the priv buttopn is pressed. */
+  /** Called if the priv button is pressed. */
   void slotChangePrivMode();
+
+  /** Called if the notrack button is pressed. */
+  void slotChangeNotrackMode();
 
  private:
 
@@ -119,6 +120,7 @@ class PreFlightFlarmPage : public QWidget
   QLabel*      errCode;
   QSpinBox*    logInt;
   QPushButton* priv;
+  QPushButton* notrack;
   QLineEdit*   pilot;
   QLineEdit*   copil;
   QLineEdit*   gliderId;

@@ -158,6 +158,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   connect( priv, SIGNAL(pressed()), SLOT(slotChangePrivMode()) );
 
+  lineLayout->addWidget( new QLabel(tr("NoTrk:")));
+  notrack = new QPushButton("?");
+  lineLayout->addWidget( notrack );
+
+  connect( notrack, SIGNAL(pressed()), SLOT(slotChangeNotrackMode()) );
+
   lineLayout->addStretch( 10 );
 
   allLayout->addLayout(lineLayout );
@@ -387,6 +393,7 @@ void PreFlightFlarmPage::clearUserInputFields()
 {
   logInt->setValue( 0 );
   priv->setText( "?" );
+  notrack->setText( "?" );
   pilot->clear();
   copil->clear();
   gliderId->clear();
@@ -424,6 +431,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
             << "$PFLAC,R,SER"
             << "$PFLAC,R,LOGINT"
             << "$PFLAC,R,PRIV"
+	    << "$PFLAC,R,NOTRACK"
             << "$PFLAC,R,PILOT"
             << "$PFLAC,R,COPIL"
             << "$PFLAC,R,GLIDERID"
@@ -555,6 +563,13 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
+  if( info[2] == "NOTRACK" )
+    {
+      notrack->setText( info[3] );
+      nextFlarmCommand();
+      return;
+    }
+
   if( info[2] == "PILOT" )
     {
       pilot->setText( info[3] );
@@ -659,6 +674,11 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   if( priv->text() != "?" )
     {
       m_cmdList << "$PFLAC,S,PRIV," + priv->text();
+    }
+
+  if( notrack->text() != "?" )
+    {
+      m_cmdList << "$PFLAC,S,NOTRACK," + notrack->text();
     }
 
   m_cmdList << "$PFLAC,S,PILOT," + pilot->text().trimmed()
@@ -806,7 +826,7 @@ void PreFlightFlarmPage::slotChangePrivMode()
       return;
     }
 
-  // Toggle buuton text
+  // Toggle button text
   if( priv->text() == "0" )
     {
       priv->setText( "1" );
@@ -814,6 +834,25 @@ void PreFlightFlarmPage::slotChangePrivMode()
   else
     {
       priv->setText( "0" );
+    }
+}
+
+void PreFlightFlarmPage::slotChangeNotrackMode()
+{
+  if( notrack->text() == "?" )
+    {
+      // Notrack mode was not set to a real value, ignore call.
+      return;
+    }
+
+  // Toggle button text
+  if( notrack->text() == "0" )
+    {
+      notrack->setText( "1" );
+    }
+  else
+    {
+      notrack->setText( "0" );
     }
 }
 
