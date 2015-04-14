@@ -96,7 +96,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 #ifndef ANDROID
   int buttonSize = Layout::getButtonSize();
 #else
-  int buttonSize = Layout::getButtonSize(14);
+  int buttonSize = Layout::getButtonSize(16);
 #endif
 
   int iconSize   = buttonSize - 5;
@@ -166,9 +166,9 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   buttonBox->addWidget(m_editButton);
   buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
   buttonBox->addWidget(m_deleteButton);
-  buttonBox->addSpacing(15 * Layout::getIntScaledDensity());
+  buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
   buttonBox->addWidget(cancel);
-  buttonBox->addSpacing(15 * Layout::getIntScaledDensity());
+  buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
   buttonBox->addWidget(m_ok);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
