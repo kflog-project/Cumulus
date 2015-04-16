@@ -101,7 +101,7 @@ void BaseMapElement::loadTranslations()
   objectTranslations.insert( BaseMapElement::Gliderfield, QObject::tr( "Gliderfield" ) );
   objectTranslations.insert( BaseMapElement::HangGlider, QObject::tr( "Hang glider" ) );
   objectTranslations.insert( BaseMapElement::Landmark, QObject::tr( "Landmark" ) );
-  objectTranslations.insert( BaseMapElement::UserPoint, QObject::tr( "Benutzerpunkt" ) );
+  objectTranslations.insert( BaseMapElement::UserPoint, QObject::tr( "User point" ) );
   objectTranslations.insert( BaseMapElement::MilHeliport, QObject::tr( "Mil. Heliport" ) );
   objectTranslations.insert( BaseMapElement::UltraLight, QObject::tr( "Ultralight" ) );
   objectTranslations.insert( BaseMapElement::Parachute, QObject::tr( "Parachute" ) );
