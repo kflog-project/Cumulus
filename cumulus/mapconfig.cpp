@@ -743,6 +743,9 @@ QString MapConfig::getPixmapName(unsigned int typeID, bool isWinch )
     case BaseMapElement::Landmark:
       iconName = "landmark";
       break;
+    case BaseMapElement::UserPoint:
+      iconName = "userpoint";
+      break;
     case BaseMapElement::Outlanding:
       iconName = "outlanding";
       break;
