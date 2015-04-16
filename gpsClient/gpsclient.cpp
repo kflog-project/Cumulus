@@ -6,14 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2014 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
 **   the Free Software Foundation; either version 2 of the License, or
 **   (at your option) any later version.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -49,6 +47,8 @@
 #ifdef DEBUG
 #undef DEBUG
 #endif
+
+// #define DEBUG_NMEA 1
 
 // Switch this on for permanent error logging. That will display
 // all open and reconnect failures. Because open and reconnect
@@ -288,6 +288,10 @@ int GpsClient::writeGpsData( const char *sentence )
   QString check;
   check.sprintf ("*%02X\r\n", csum);
   QString cmd (sentence + check);
+
+#ifdef DEBUG_NMEA
+  qDebug() << "GpsClient::write():" << cmd;
+#endif
 
   // write sentence to gps device
   int result = write (fd, cmd.toLatin1().data(), cmd.length());
@@ -529,8 +533,8 @@ void GpsClient::readSentenceFromBuffer()
             }
         }
 
-#ifdef DEBUG
-      qDebug() << "GpsClient(): Extracted NMEA Record:" << record;
+#ifdef DEBUG_NMEA
+      qDebug() << "GpsClient::read():" << record;
 #endif
 
       free(record);
