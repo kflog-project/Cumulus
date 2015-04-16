@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -101,6 +101,7 @@ void BaseMapElement::loadTranslations()
   objectTranslations.insert( BaseMapElement::Gliderfield, QObject::tr( "Gliderfield" ) );
   objectTranslations.insert( BaseMapElement::HangGlider, QObject::tr( "Hang glider" ) );
   objectTranslations.insert( BaseMapElement::Landmark, QObject::tr( "Landmark" ) );
+  objectTranslations.insert( BaseMapElement::UserPoint, QObject::tr( "Benutzerpunkt" ) );
   objectTranslations.insert( BaseMapElement::MilHeliport, QObject::tr( "Mil. Heliport" ) );
   objectTranslations.insert( BaseMapElement::UltraLight, QObject::tr( "Ultralight" ) );
   objectTranslations.insert( BaseMapElement::Parachute, QObject::tr( "Parachute" ) );

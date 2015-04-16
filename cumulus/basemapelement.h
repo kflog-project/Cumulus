@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -130,6 +130,7 @@ public:
     FAIAreaLow500 = FAI_AREA_LOW,
     FAIAreaHigh500 = FAI_AREA_HIGH,
     EmptyPoint = EMPTY_POINT,
+    UserPoint = USER_POINT,
     objectTypeSize=LAST_ENTRY /* leave this at the end */
     };
 

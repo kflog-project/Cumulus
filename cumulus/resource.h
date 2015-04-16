@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -186,6 +186,7 @@
 #define TACAN            72 // Tactical Air Navigation (TACAN)
 #define RMZ              73 // Radio Mandatory Zone
 #define CTR              74 // Control Zone
-#define LAST_ENTRY       75 // This must be always the last entry!!!
+#define USER_POINT       75 // A point set by the user
+#define LAST_ENTRY       76 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

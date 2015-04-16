@@ -2673,7 +2673,7 @@ void MainWindow::slotRememberWaypoint()
   wp.frequency = 0.0;
   AltitudeCollection alt = calculator->getAltitudeCollection();
   wp.elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
-  wp.type = BaseMapElement::Landmark;
+  wp.type = BaseMapElement::UserPoint;
   wp.country = GeneralConfig::instance()->getHomeCountryCode();
 
   viewWP->slot_addWp( wp );
