@@ -2,7 +2,7 @@
 
 <manifest package="org.kflog.cumulus" android:versionCode="78"
 	android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android"
-  android:versionName="5.21.4_AV7a_GB">
+  android:versionName="5.22.0_AV7a_GB">
 	<supports-screens android:largeScreens="true"
 		android:normalScreens="true" android:anyDensity="true"
 		android:smallScreens="false" />
