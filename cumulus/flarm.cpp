@@ -338,7 +338,9 @@ bool Flarm::extractPflac(QStringList& stringList)
 {
   /**
    * PFLAC,<QueryType>,<Key>,<Value>
-   * Attention, response can be "$PFLAC,A,ERROR*"
+   *
+   * Attention, response can be "$PFLAC,A,ERROR*", That means the stringList
+   * has only 3 elements!
    */
   if ( stringList[0] != "$PFLAC" || stringList.size() < 3 )
       {
@@ -347,6 +349,21 @@ bool Flarm::extractPflac(QStringList& stringList)
       }
 
   emit flarmConfigurationInfo( stringList );
+  return true;
+}
+
+bool Flarm::extractError(QStringList& stringList)
+{
+  /**
+   * $ERROR,CKSUM*37
+   */
+  if ( stringList[0] != "$ERROR" || stringList.size() < 2 )
+      {
+        qWarning("$ERROR contains too less parameters!");
+        return false;
+      }
+
+  emit flarmError( stringList );
   return true;
 }
 

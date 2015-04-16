@@ -318,6 +318,9 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   connect( Flarm::instance(), SIGNAL(flarmConfigurationInfo( QStringList&)),
             this, SLOT(slotUpdateConfiguration( QStringList&)) );
 
+  connect( Flarm::instance(), SIGNAL(flarmError( QStringList&)),
+            this, SLOT(slotReportError( QStringList&)) );
+
   // Timer for command time supervision
   m_timer = new QTimer( this );
   m_timer->setSingleShot( true );
@@ -463,6 +466,30 @@ void PreFlightFlarmPage::nextFlarmCommand()
       QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
+    }
+}
+
+void PreFlightFlarmPage::slotReportError( QStringList& info )
+{
+  if( info[0] != "ERROR" && info.size() < 2 )
+    {
+      return;
+    }
+
+  if( info[1].trimmed().isEmpty() == false )
+    {
+      QApplication::restoreOverrideCursor();
+      enableButtons( true );
+      m_timer->stop();
+
+      // Clear the queued commands in the command list
+      m_cmdList.clear();
+
+      QString text0 = tr("Flarm Problem");
+      QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
+      messageBox( QMessageBox::Warning, text1, text0 );
+      qWarning() << "FLARM Error:" << info.join(",");
+      return;
     }
 }
 
@@ -690,10 +717,16 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   QString tpName;
 
-  if( ! task->text().isEmpty() &&
+  if( ! task->text().trimmed().isEmpty() &&
       m_ftask != 0 && m_ftask->getTpList().isEmpty() == false )
     {
+      // Task entry field is not empty and a flight task is defined.
       tpName = m_ftask->getTaskName();
+    }
+  else
+    {
+      nextFlarmCommand();
+      return;
     }
 
   m_cmdList << "$PFLAC,S,NEWTASK," + tpName;
@@ -783,7 +816,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       QString cmd = "$PFLAC,S,ADDWP,"
                     + lat
                     + "," + lon + ","
-                    + tp->getWPName().left(left);
+                    + tp->getWPName().left(left).trimmed();
 
       m_cmdList <<  cmd;
     }
@@ -795,6 +828,9 @@ void PreFlightFlarmPage::slotTimeout()
 {
   QApplication::restoreOverrideCursor();
   enableButtons( true );
+
+  // Clear the queued commands in the command list
+  m_cmdList.clear();
 
   // Note, this method is also called in case on no timeout to enable the
   // buttons and to restore the cursor. Therefore a running timer must be

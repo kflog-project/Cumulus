@@ -78,6 +78,9 @@ class PreFlightFlarmPage : public QWidget
   /** Called to update error info. */
   void slotUpdateErrors( const Flarm::FlarmError& info );
 
+  /** Called to receive and report an error info. */
+  void slotReportError( QStringList& info );
+
   /** Called to update configuration info. */
   void slotUpdateConfiguration( QStringList& info );
 

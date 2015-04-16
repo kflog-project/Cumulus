@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2015-04-16 AP: Issue #56 fixed. Flarm FW 6.x provides a new NMEA sentence
+                   $ERROR. This sentence should be also considered by Cumulus.
+
 [+] 2015-04-14 AP: Issue #55 fixed. Extend the preflight Flarm page by the
                    notrack option.
 
