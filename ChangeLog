@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-04-20 AP: Retry to send a Flarm command after a reported checksum error.
+
 [+] 2015-04-16 AP: Issue #53 fixed. Add a new icon and type for waypoints set
                    by the user.
 
