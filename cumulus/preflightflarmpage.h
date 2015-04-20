@@ -24,7 +24,7 @@
  *
  * \date 2012-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef PREFLIGHT_FLARM_PAGE_H_
@@ -146,6 +146,9 @@ class PreFlightFlarmPage : public QWidget
 
   // List index pointing to the next command to be sent.
   int m_cmdIdx;
+
+  // Error report counter
+  int m_errorReportCounter;
 };
 
 #endif

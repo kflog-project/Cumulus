@@ -36,7 +36,9 @@
 
 PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QWidget(parent),
-  m_ftask(ftask)
+  m_ftask(ftask),
+  m_cmdIdx(0),
+  m_errorReportCounter(0)
 {
   setObjectName("PreFlightFlarmPage");
   setWindowTitle(tr("Flarm IGC Setup"));
@@ -422,6 +424,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   clearUserInputFields();
   m_cmdIdx = 0;
   m_cmdList.clear();
+  m_errorReportCounter = 0;
 
   // Here we set NMEA output and a range of 25500m. All other set items are
   // untouched.
@@ -457,6 +460,7 @@ void PreFlightFlarmPage::nextFlarmCommand()
    // qDebug() << "Next" << m_cmdList.at(m_cmdIdx);
 
    bool res = GpsNmea::gps->sendSentence( m_cmdList.at(m_cmdIdx) );
+
    m_cmdIdx++;
    m_timer->start();
 
@@ -469,6 +473,11 @@ void PreFlightFlarmPage::nextFlarmCommand()
     }
 }
 
+/**
+ * The Flarm firmware update 6.x generates this new error. It seems, that the
+ * Classic Flarm device has problems with the UART receiver performance, so that
+ * UART checksum errors occur.
+ */
 void PreFlightFlarmPage::slotReportError( QStringList& info )
 {
   if( info[0] != "ERROR" && info.size() < 2 )
@@ -478,12 +487,24 @@ void PreFlightFlarmPage::slotReportError( QStringList& info )
 
   if( info[1].trimmed().isEmpty() == false )
     {
+      m_errorReportCounter++;
+
+      if( m_errorReportCounter <= 3 && m_cmdIdx > 0 )
+	{
+	  // Retry to send the last command after error three times.
+	  m_cmdIdx--;
+	  nextFlarmCommand();
+	  return;
+	}
+
       QApplication::restoreOverrideCursor();
       enableButtons( true );
       m_timer->stop();
 
       // Clear the queued commands in the command list
       m_cmdList.clear();
+      m_cmdIdx = 0;
+      m_errorReportCounter = 0;
 
       QString text0 = tr("Flarm Problem");
       QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
@@ -692,6 +713,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   enableButtons( false );
   m_cmdIdx = 0;
   m_cmdList.clear();
+  m_errorReportCounter = 0;
 
   if( logInt->value() > 0 )
     {
@@ -831,6 +853,8 @@ void PreFlightFlarmPage::slotTimeout()
 
   // Clear the queued commands in the command list
   m_cmdList.clear();
+  m_cmdIdx = 0;
+  m_errorReportCounter = 0;
 
   // Note, this method is also called in case on no timeout to enable the
   // buttons and to restore the cursor. Therefore a running timer must be
