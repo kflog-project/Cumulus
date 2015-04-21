@@ -490,12 +490,12 @@ void PreFlightFlarmPage::slotReportError( QStringList& info )
       m_errorReportCounter++;
 
       if( m_errorReportCounter <= 3 && m_cmdIdx > 0 )
-	{
-	  // Retry to send the last command after error three times.
-	  m_cmdIdx--;
-	  nextFlarmCommand();
-	  return;
-	}
+        {
+          // Retry to send the last command after error three times.
+          m_cmdIdx--;
+          nextFlarmCommand();
+          return;
+        }
 
       QApplication::restoreOverrideCursor();
       enableButtons( true );
