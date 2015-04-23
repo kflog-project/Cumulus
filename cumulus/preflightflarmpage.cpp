@@ -570,6 +570,9 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
+  // Reset error report counter after a positive answer.
+  m_errorReportCounter = 0;
+
   if( info[2] == "NMEAOUT" || info[2] == "RANGE" )
     {
       nextFlarmCommand();
