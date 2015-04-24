@@ -485,6 +485,8 @@ void PreFlightFlarmPage::slotReportError( QStringList& info )
       return;
     }
 
+  qWarning() << "Flarm $ERROR: " << info.join(",");
+
   if( info[1].trimmed().isEmpty() == false )
     {
       m_errorReportCounter++;
