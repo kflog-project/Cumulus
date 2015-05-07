@@ -24,7 +24,7 @@
  *
  * \date 2012-2015
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef PREFLIGHT_FLARM_PAGE_H_
@@ -60,19 +60,19 @@ class PreFlightFlarmPage : public QWidget
 
  private slots:
 
- /** Requests the Flarm data from the device.*/
- void slotRequestFlarmData();
+  /** Requests the Flarm data from the device.*/
+  void slotRequestFlarmData();
 
- /** Sends all IGC data to the Flarm. */
- void slotWriteFlarmData();
+  /** Sends all IGC data to the Flarm. */
+  void slotWriteFlarmData();
 
- /** Sets all IGC data as defined in Cumulus. */
- void slotSetIgcData();
+  /** Sets all IGC data as defined in Cumulus. */
+  void slotSetIgcData();
 
- /** Clears all IGC data in the editable widgets. */
- void slotClearIgcData();
+  /** Clears all IGC data in the editable widgets. */
+  void slotClearIgcData();
 
- /** Called to update version info. */
+  /** Called to update version info. */
   void slotUpdateVersions( const Flarm::FlarmVersion& info );
 
   /** Called to update error info. */
@@ -100,6 +100,9 @@ class PreFlightFlarmPage : public QWidget
 
   /** Loads the available Flarm data into the label displays. */
   void loadFlarmData();
+
+  /** Called, to close a running Flarm data transfer. */
+  void closeFlarmDataTransfer();
 
   /** Toggles operation of buttons. */
   void enableButtons( const bool toggle );

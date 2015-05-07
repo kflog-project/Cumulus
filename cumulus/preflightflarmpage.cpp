@@ -34,6 +34,9 @@
 // Timeout in ms for waiting for response
 #define RESP_TO 30000
 
+// Define a retry value for command sending after error or timeout
+#define RETRY_AFTER_ERROR 3
+
 PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   QWidget(parent),
   m_ftask(ftask),
@@ -453,11 +456,11 @@ void PreFlightFlarmPage::nextFlarmCommand()
    if( m_cmdIdx >= m_cmdList.size() )
      {
        // nothing more to send
-       slotTimeout();
+       closeFlarmDataTransfer();
        return;
      }
 
-   // qDebug() << "Next" << m_cmdList.at(m_cmdIdx);
+   qDebug() << "Flarm $Command:" << m_cmdList.at(m_cmdIdx);
 
    bool res = GpsNmea::gps->sendSentence( m_cmdList.at(m_cmdIdx) );
 
@@ -466,7 +469,7 @@ void PreFlightFlarmPage::nextFlarmCommand()
 
   if( res == false )
     {
-      slotTimeout();
+      closeFlarmDataTransfer();
       QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
@@ -491,7 +494,7 @@ void PreFlightFlarmPage::slotReportError( QStringList& info )
     {
       m_errorReportCounter++;
 
-      if( m_errorReportCounter <= 3 && m_cmdIdx > 0 )
+      if( m_errorReportCounter <= RETRY_AFTER_ERROR && m_cmdIdx > 0 )
         {
           // Retry to send the last command after error three times.
           m_cmdIdx--;
@@ -533,7 +536,7 @@ void PreFlightFlarmPage::slotUpdateErrors( const Flarm::FlarmError& info )
 
 void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 {
-  // qDebug() << "Ret" << info;
+  qDebug() << "Flarm $Response:" << info;
 
   /**
    * The complete received $PFLAC sentence is the input here.
@@ -557,7 +560,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 
   if( info[2].startsWith( "ERROR" ) || info[2].startsWith( "WARNING" ))
     {
-      slotTimeout();
+      closeFlarmDataTransfer();
       QString text0 = tr("Flarm Problem");
       QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
       messageBox( QMessageBox::Warning, text1, text0 );
@@ -568,7 +571,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
   if( info.size() < 4 )
     {
       qWarning() << "$PFLAC too less parameters!" << info.join(",");
-      slotTimeout();
+      closeFlarmDataTransfer();
       return;
     }
 
@@ -853,13 +856,29 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
 void PreFlightFlarmPage::slotTimeout()
 {
+  qDebug() << "PreFlightFlarmPage::slotTimeout()";
+
+  m_errorReportCounter++;
+
+  if( m_errorReportCounter <= RETRY_AFTER_ERROR && m_cmdIdx > 0 )
+    {
+      // Retry to send the last command after timeout three times.
+      m_cmdIdx--;
+      nextFlarmCommand();
+      return;
+    }
+
+  closeFlarmDataTransfer();
+
+  QString text0 = tr("Flarm device not reachable!");
+  QString text1 = tr("Error");
+  messageBox( QMessageBox::Warning, text0, text1 );
+}
+
+void PreFlightFlarmPage::closeFlarmDataTransfer()
+{
   QApplication::restoreOverrideCursor();
   enableButtons( true );
-
-  // Clear the queued commands in the command list
-  m_cmdList.clear();
-  m_cmdIdx = 0;
-  m_errorReportCounter = 0;
 
   // Note, this method is also called in case on no timeout to enable the
   // buttons and to restore the cursor. Therefore a running timer must be
@@ -868,12 +887,11 @@ void PreFlightFlarmPage::slotTimeout()
     {
       m_timer->stop();
     }
-  else
-    {
-      QString text0 = tr("Flarm device not reachable!");
-      QString text1 = tr("Error");
-      messageBox( QMessageBox::Warning, text0, text1 );
-    }
+
+  // Clear the queued commands in the command list
+  m_cmdList.clear();
+  m_cmdIdx = 0;
+  m_errorReportCounter = 0;
 }
 
 void PreFlightFlarmPage::slotClose()
