@@ -32,7 +32,7 @@
 #include "varspinbox.h"
 
 // Timeout in ms for waiting for response
-#define RESP_TO 30000
+#define RESP_TO 10000
 
 // Define a retry value for command sending after error or timeout
 #define RETRY_AFTER_ERROR 3
@@ -418,6 +418,19 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   // It seems there are some new Flarm commands available, which are not listed
   // in the current DataPortSpec paper 6.00.
   // http://www.flarm.com/support/manual/developer/dataport_spec_6.00_addendum.txt
+  //
+  // Check, if Flarm is connected. In this case there should be available
+  // some Flarm status data.
+  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+  if( status.valid != true )
+    {
+      QString text0 = tr("Flarm device not reachable!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+      return;
+    }
+
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
   // Disable button pressing.
@@ -494,7 +507,7 @@ void PreFlightFlarmPage::slotReportError( QStringList& info )
     {
       m_errorReportCounter++;
 
-      if( m_errorReportCounter <= RETRY_AFTER_ERROR && m_cmdIdx > 0 )
+      if( m_errorReportCounter < RETRY_AFTER_ERROR && m_cmdIdx > 0 )
         {
           // Retry to send the last command after error three times.
           m_cmdIdx--;
@@ -856,11 +869,13 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
 void PreFlightFlarmPage::slotTimeout()
 {
-  qDebug() << "PreFlightFlarmPage::slotTimeout()";
+  qDebug() << "PreFlightFlarmPage::slotTimeout(): m_errorReportCounter="
+           << m_errorReportCounter
+           << "m_cmdIdx=" << m_cmdIdx;
 
   m_errorReportCounter++;
 
-  if( m_errorReportCounter <= RETRY_AFTER_ERROR && m_cmdIdx > 0 )
+  if( m_errorReportCounter < RETRY_AFTER_ERROR && m_cmdIdx > 0 )
     {
       // Retry to send the last command after timeout three times.
       m_cmdIdx--;
