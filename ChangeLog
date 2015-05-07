@@ -20,6 +20,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-04-14 AP: Issue #57 fixed. Repeat Flarm command after timeout or error.
+
+[*] 2015-04-30 AP: Cumulus 5.22.0 released for Android, Ubuntu, Debian and Maemo4/5
+
 [o] 2015-04-20 AP: Retry to send a Flarm command after a reported checksum error.
 
 [+] 2015-04-16 AP: Issue #53 fixed. Add a new icon and type for waypoints set
