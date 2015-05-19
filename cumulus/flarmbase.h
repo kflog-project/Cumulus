@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,9 +22,9 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2012
+ * \date 2010-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef FLARM_BASE_H
@@ -82,7 +80,7 @@ class FlarmBase
   /**
    * \struct FlarmStatus
    *
-   * \author Axel Pauli
+   * \author Axel PauliQString replaceUmlauts( QString& string );
    *
    * \brief FLARM status structure.
    *
@@ -271,6 +269,15 @@ class FlarmBase
     QMutexLocker ml(&m_mutex);
     m_protocolMode = pm;
   };
+
+  /**
+   * Replace all German umlauts in a string.
+   *
+   * @param string String to be processed.
+   *
+   * @return String with replaced umlauts.
+   */
+  static QByteArray replaceUmlauts( QByteArray string );
 
  protected:
 

@@ -24,6 +24,7 @@
 #endif
 
 #include "calculator.h"
+#include "flarmbase.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
@@ -475,7 +476,7 @@ void PreFlightFlarmPage::nextFlarmCommand()
 
    qDebug() << "Flarm $Command:" << m_cmdList.at(m_cmdIdx);
 
-   bool res = GpsNmea::gps->sendSentence( m_cmdList.at(m_cmdIdx) );
+   bool res = GpsNmea::gps->sendSentence(FlarmBase::replaceUmlauts(m_cmdList.at(m_cmdIdx).toLatin1()));
 
    m_cmdIdx++;
    m_timer->start();

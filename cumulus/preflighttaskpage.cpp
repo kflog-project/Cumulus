@@ -28,6 +28,7 @@
 
 #include "calculator.h"
 #include "distance.h"
+#include "flarmbase.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "mapcontents.h"
@@ -771,7 +772,9 @@ bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
          << " by Cumulus "
          << QCoreApplication::applicationVersion() << endl;
 
-  stream << "$PFLAC,S,NEWTASK," << flightTask->getTaskName() << endl;
+  stream << "$PFLAC,S,NEWTASK,"
+         << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
+         << endl;
 
   for( int i = 0; i < tpList.count(); i++ )
     {
@@ -803,7 +806,7 @@ bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
       stream << "$PFLAC,S,ADDWP,"
              << lat
              << "," << lon << ","
-             << tp->getWPName()
+             << FlarmBase::replaceUmlauts( tp->getWPName().toLatin1() )
              << endl;
     }
 
