@@ -271,9 +271,9 @@ class FlarmBase
   };
 
   /**
-   * Replace all German umlauts in a string.
+   * Replace all German umlauts in a string by two ASCIII characters.
    *
-   * @param string String to be processed.
+   * @param string String to be processed as latin-1 encoding.
    *
    * @return String with replaced umlauts.
    */

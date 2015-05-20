@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-05-20 AP: Issue #59 fixed. A Flarm task declaration should not contain
+                   German umlauts.
+
+[*] 2015-05-07 AP: Cumulus 5.22.1 released for Android.
+
 [-] 2015-04-14 AP: Issue #57 fixed. Repeat Flarm command after timeout or error.
 
 [*] 2015-04-30 AP: Cumulus 5.22.0 released for Android, Ubuntu, Debian and Maemo4/5

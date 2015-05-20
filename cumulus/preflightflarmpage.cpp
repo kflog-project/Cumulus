@@ -474,9 +474,11 @@ void PreFlightFlarmPage::nextFlarmCommand()
        return;
      }
 
-   qDebug() << "Flarm $Command:" << m_cmdList.at(m_cmdIdx);
+   QByteArray ba = FlarmBase::replaceUmlauts(m_cmdList.at(m_cmdIdx).toLatin1());
 
-   bool res = GpsNmea::gps->sendSentence(FlarmBase::replaceUmlauts(m_cmdList.at(m_cmdIdx).toLatin1()));
+   qDebug() << "Flarm $Command:" << ba;
+
+   bool res = GpsNmea::gps->sendSentence( ba );
 
    m_cmdIdx++;
    m_timer->start();
