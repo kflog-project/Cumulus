@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-05-25 AP: Issue #60 fixed. The livetracking url
+                   https://www.skylines.aero/ did not work anymore.
+
+[*] 2015-05-22 AP: Cumulus 5.22.2 released for Android.
+
 [-] 2015-05-20 AP: Issue #59 fixed. A Flarm task declaration should not contain
                    German umlauts.
 

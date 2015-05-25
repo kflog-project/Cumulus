@@ -49,7 +49,7 @@ QStringList GeneralConfig::_liveTrackServerList =
     QStringList() << "http://www.livetrack24.com"
                   << "http://test.livetrack24.com"
                   << "http://livexc.dhv.de"
-                  << "https://www.skylines.aero";
+                  << "https://skylines.aero";
 
 // @AP: We derive here from QSettings as base class. The config
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
