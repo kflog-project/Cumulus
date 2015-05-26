@@ -334,12 +334,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
 
   connect( m_timer, SIGNAL(timeout()), SLOT(slotTimeout()));
 
-  // Load available Flarm data
+  // Load available Flarm data.
   loadFlarmData();
 
-  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
-
-  if( status.valid == true )
+  // Check, if a Gps is connected, we try to consider it as a Flarm device.
+  // But that must not be true!
+  if( GpsNmea::gps->getConnected() == true )
     {
       // Request Flarm data, if Flarm device was recognized.
       slotRequestFlarmData();
@@ -420,11 +420,9 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   // in the current DataPortSpec paper 6.00.
   // http://www.flarm.com/support/manual/developer/dataport_spec_6.00_addendum.txt
   //
-  // Check, if Flarm is connected. In this case there should be available
-  // some Flarm status data.
-  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
-
-  if( status.valid != true )
+  // Check, if a Gps is connected, we try to consider it as a Flarm device.
+  // But that must not be true!
+  if( GpsNmea::gps->getConnected() != true )
     {
       QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");
@@ -721,11 +719,9 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 /** Sends all IGC data to the Flarm. */
 void PreFlightFlarmPage::slotWriteFlarmData()
 {
-  // Check, if Flarm is connected. In this case there should be available
-  // some Flarm status data.
-  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
-
-  if( status.valid != true )
+  // Check, if a Gps is connected, we try to consider it as a Flarm device.
+  // But that must not be true!
+  if( GpsNmea::gps->getConnected() != true )
     {
       QString text0 = tr("Flarm device not reachable!");
       QString text1 = tr("Error");

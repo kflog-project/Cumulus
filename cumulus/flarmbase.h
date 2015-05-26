@@ -80,7 +80,7 @@ class FlarmBase
   /**
    * \struct FlarmStatus
    *
-   * \author Axel PauliQString replaceUmlauts( QString& string );
+   * \author Axel Pauli
    *
    * \brief FLARM status structure.
    *
