@@ -28,7 +28,6 @@
 
 #include "calculator.h"
 #include "distance.h"
-#include "flarmbase.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "mapcontents.h"
@@ -215,18 +214,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   tlLayout->addWidget( m_taskList, 10 );
 
   QPushButton *tlShowButton = new QPushButton( tr("Show") );
-
-#ifndef FLARM
   tlLayout->addWidget( tlShowButton, 0, Qt::AlignRight );
-#else
-  QPushButton *tlFlarmButton = new QPushButton( tr("Flarm") );
-  QHBoxLayout* hbl = new QHBoxLayout;
-  hbl->addWidget( tlFlarmButton, 0, Qt::AlignLeft );
-  hbl->addWidget( tlShowButton, 0, Qt::AlignRight );
-  tlLayout->addLayout( hbl );
-
-  connect( tlFlarmButton, SIGNAL(pressed()), SLOT(slotShowFlarmWidget()) );
-#endif
 
   taskLayout->addWidget( m_taskListWidget );
 
@@ -477,8 +465,10 @@ FlightTask* PreFlightTaskPage::takeSelectedTask()
 
   FlightTask* task = m_flightTaskList.takeAt( index );
 
+#ifdef FLARM
   // Save the task declaration in Flarm format as file.
-  createFlarmTaskList( task );
+  PreFlightFlarmPage::createFlarmTaskList( task );
+#endif
 
   return task;
 }
@@ -728,93 +718,6 @@ bool PreFlightTaskPage::saveTaskList()
   return tfm.saveTaskList( m_flightTaskList );
 }
 
-/** Creates a task definition file in Flarm format. */
-bool PreFlightTaskPage::createFlarmTaskList( FlightTask* flightTask )
-{
-  if( ! flightTask )
-    {
-      return false;
-    }
-
-  QList<TaskPoint *>& tpList = flightTask->getTpList();
-
-  if( tpList.isEmpty() )
-    {
-      return false;
-    }
-
-  QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/cumulus-flarm.tsk";
-
-  // Save one backup copy.
-  if( QFileInfo(fn).exists() )
-    {
-      QFile::remove( fn + ".bak" );
-      QFile::rename( fn, fn + ".bak" );
-    }
-
-  QFile f(fn);
-
-  if( !f.open( QIODevice::WriteOnly ) )
-    {
-      qWarning( "Could not write to task-file %s", f.fileName().toLatin1().data() );
-      return false;
-    }
-
-  QTextStream stream( &f );
-  stream.setCodec( "ISO 8859-15" );
-
-  // writing file-header
-  QDateTime dt = QDateTime::currentDateTime();
-  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
-
-  stream << "// Flarm task declaration created at "
-         << dtStr
-         << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
-
-  stream << "$PFLAC,S,NEWTASK,"
-         << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
-         << endl;
-
-  for( int i = 0; i < tpList.count(); i++ )
-    {
-      // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
-      TaskPoint* tp = tpList.at(i);
-
-      int degree, intMin;
-      double min;
-
-      WGSPoint::calcPos( tp->getWGSPosition().x(), degree, min );
-
-      // Minute is expected as 1/1000
-      intMin = static_cast<int> (rint(min * 1000));
-
-      QString lat = QString("%1%2%3").
-                    arg( (degree < 0) ? -degree : degree, 2, 10, QChar('0') ).
-                    arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
-                    arg( (degree < 0) ? QString("S") : QString("N") );
-
-      WGSPoint::calcPos( tp->getWGSPosition().y(), degree, min );
-
-      intMin = static_cast<int> (rint(min * 1000));
-
-      QString lon = QString("%1%2%3").
-                    arg( (degree < 0) ? -degree : degree, 3, 10, QChar('0') ).
-                    arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
-                    arg( (degree < 0) ? QString("W") : QString("E") );
-
-      stream << "$PFLAC,S,ADDWP,"
-             << lat
-             << "," << lon << ","
-             << FlarmBase::replaceUmlauts( tp->getWPName().toLatin1() )
-             << endl;
-    }
-
-  stream << endl;
-  f.close();
-
-  return true;
-}
 
 /** Select the last stored task */
 void PreFlightTaskPage::selectLastTask()
@@ -838,28 +741,6 @@ void PreFlightTaskPage::selectLastTask()
 
   // select first entry in the list, if last selection could not be found
   m_taskList->setCurrentItem( m_taskList->topLevelItem(0) );
-}
-
-void PreFlightTaskPage::slotShowFlarmWidget()
-{
-  FlightTask *task = 0;
-
-  QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
-
-  if( selectList.size() > 0 )
-    {
-      QTreeWidgetItem* selected = m_taskList->selectedItems().at(0);
-
-      if ( selected->text( 0 ) != " " )
-        {
-          int id = selected->text( 0 ).toInt() - 1;
-
-          task = m_flightTaskList.at( id );
-        }
-    }
-
-  PreFlightFlarmPage* pffp = new PreFlightFlarmPage( task, this );
-  pffp->setVisible( true );
 }
 
 void PreFlightTaskPage::slotAccept()

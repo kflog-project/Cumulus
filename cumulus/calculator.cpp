@@ -1879,7 +1879,7 @@ void Calculator::slot_startTask()
  */
 bool Calculator::moving()
 {
-  // set speed limit in m/s
+  // The speed limit is in m/s
   const double SpeedLimit = GeneralConfig::instance()->getAutoLoggerStartSpeed() * 1000.0 / 3600.0;
   const double TimeLimit = 5; // time limit in seconds
 
@@ -1891,9 +1891,8 @@ bool Calculator::moving()
 
   double speed = 0.0;
 
-  for( int i = 0; i < TimeLimit; i++ )
+  for( int i = samplelist.count() - TimeLimit; i < samplelist.count(); i++ )
     {
-      // average speed about TimeLimit seconds
       speed += samplelist[i].vector.getSpeed().getMps();
     }
 

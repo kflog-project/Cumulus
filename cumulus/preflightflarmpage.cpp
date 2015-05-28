@@ -25,12 +25,18 @@
 
 #include "calculator.h"
 #include "flarmbase.h"
+#include "flighttask.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
+#include "mapcontents.h"
 #include "preflightflarmpage.h"
 #include "preflighttaskpage.h"
+#include "taskfilemanager.h"
 #include "varspinbox.h"
+
+extern MapContents* _globalMapContents;
+extern Calculator*  calculator;
 
 // Timeout in ms for waiting for response
 #define RESP_TO 10000
@@ -38,9 +44,8 @@
 // Define a retry value for command sending after error or timeout
 #define RETRY_AFTER_ERROR 3
 
-PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
+PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   QWidget(parent),
-  m_ftask(ftask),
   m_cmdIdx(0),
   m_errorReportCounter(0)
 {
@@ -245,19 +250,21 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   //----------------------------------------------------------------------------
 
   gridLayout->addWidget( new QLabel(tr("Task:")), row, 0);
-  task = new QLineEdit;
-  task->setInputMethodHints(imh);
-  task->setReadOnly( true );
+  flarmTask = new QLabel;
 
-  connect( task, SIGNAL(returnPressed()),
-           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+  gridLayout->addWidget( flarmTask, row, 1 );
 
-  gridLayout->addWidget( task, row, 1 );
+  taskBox = new QComboBox;
+  taskBox->setEditable(false);
+  taskBox->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
 
-  if( m_ftask )
-    {
-      task->setText( m_ftask->getTaskName() );
-    }
+#ifdef ANDROID
+  QAbstractItemView* iv = taskBox->view();
+  QScrollBar* ivsb = iv->verticalScrollBar();
+  ivsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
+  gridLayout->addWidget( taskBox, row, 2, 1, 2 );
 
   allLayout->addLayout(gridLayout );
   allLayout->addStretch( 10 );
@@ -337,7 +344,31 @@ PreFlightFlarmPage::PreFlightFlarmPage(FlightTask* ftask, QWidget *parent) :
   // Load available Flarm data.
   loadFlarmData();
 
-  // Check, if a Gps is connected, we try to consider it as a Flarm device.
+  // Load task selection box with available tasks
+  TaskFileManager tfm;
+  QStringList sl = tfm.getTaskListNames();
+
+  if( sl.isEmpty() )
+    {
+      // Don't show a box, if no data are available.
+      taskBox->hide();
+    }
+  else
+    {
+      taskBox->addItems( sl );
+
+      // Select the last saved task.
+      QString lastTask = GeneralConfig::instance()->getCurrentTask();
+
+      int index = taskBox->findText(lastTask );
+
+      if( index != -1 )
+	{
+	  taskBox->setCurrentIndex( index );
+	}
+    }
+
+  // Check, if a Gps is connected. We try to consider that as a Flarm device.
   // But that must not be true!
   if( GpsNmea::gps->getConnected() == true )
     {
@@ -372,8 +403,6 @@ void PreFlightFlarmPage::slotSetIgcData()
 
   pilot->setText( conf->getSurname() );
 
-  extern Calculator* calculator;
-
   Glider* glider = calculator->glider();
 
   if( glider == static_cast<Glider *> (0) )
@@ -385,17 +414,12 @@ void PreFlightFlarmPage::slotSetIgcData()
   gliderId->setText( glider->registration() );
   gliderType->setText( glider->type() );
   compId->setText( glider->callSign() );
-
-  if( m_ftask )
-    {
-      task->setText( m_ftask->getTaskName() );
-    }
 }
 
 void PreFlightFlarmPage::slotClearIgcData()
 {
   clearUserInputFields();
-  task->clear();
+  flarmTask->clear();
 }
 
 void PreFlightFlarmPage::clearUserInputFields()
@@ -458,7 +482,8 @@ void PreFlightFlarmPage::slotRequestFlarmData()
             << "$PFLAC,R,GLIDERID"
             << "$PFLAC,R,GLIDERTYPE"
             << "$PFLAC,R,COMPID"
-            << "$PFLAC,R,COMPCLASS";
+            << "$PFLAC,R,COMPCLASS"
+            << "$PFLAC,R,NEWTASK,";
 
   nextFlarmCommand();
 }
@@ -705,8 +730,16 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "NEWTASK" || info[2] ==  "ADDWP" )
+  if( info[2] == "NEWTASK" )
     {
+      flarmTask->setText( info[3] );
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] ==  "ADDWP" )
+    {
+
       nextFlarmCommand();
       return;
     }
@@ -759,37 +792,45 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   QString tpName;
 
-  if( ! task->text().trimmed().isEmpty() &&
-      m_ftask != 0 && m_ftask->getTpList().isEmpty() == false )
-    {
-      // Task entry field is not empty and a flight task is defined.
-      tpName = m_ftask->getTaskName();
-    }
-  else
+  if( taskBox->count() == 0 || taskBox->isVisible() == false )
     {
       nextFlarmCommand();
       return;
+    }
+
+  // A flight task is selected in the task box.
+  tpName = taskBox->currentText();
+
+  // Load the flight task
+  TaskFileManager tfm;
+  FlightTask* ft = tfm.loadTask( tpName );
+
+  if( ft == static_cast<FlightTask *>(0) )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( GeneralConfig::instance()->getCurrentTask() != tpName )
+    {
+      GeneralConfig::instance()->setCurrentTask( tpName );
+      _globalMapContents->setCurrentTask( ft );
+      emit newTaskSelected();
     }
 
   m_cmdList << "$PFLAC,S,NEWTASK," + tpName;
 
-  if( m_ftask == 0 || m_ftask->getTpList().isEmpty() )
-    {
-      nextFlarmCommand();
-      return;
-    }
-
-  // Write Flarm task file in Cumulus's data directory for control
-  PreFlightTaskPage::createFlarmTaskList( m_ftask );
+  // Write Flarm flarmTask file in Cumulus's data directory for control
+  createFlarmTaskList( ft );
 
   // Flarm limits tasks in its length to 192 characters. We do check and
   // adapt that here.
-  QList<TaskPoint *>& tpList = m_ftask->getTpList();
+  QList<TaskPoint *>& tpList = ft->getTpList();
   int left = -1;
 
   while( true )
     {
-      int sizeDescr = m_ftask->getTaskName().size();
+      int sizeDescr = ft->getTaskName().size();
 
       for( int i = 0; i < tpList.count(); i++ )
         {
@@ -819,9 +860,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
               QString text0 = tr("Task Error");
               QString text1 = "<html>" + tr("Task") + " " +
-                               m_ftask->getTaskName() + " " + tr("is too long!") + "</html>";
+                               ft->getTaskName() + " " + tr("is too long!") + "</html>";
               messageBox( QMessageBox::Warning, text1, text0 );
-              qWarning() << "Task" << m_ftask->getTaskName()
+              qWarning() << "Task" << ft->getTaskName()
                           << "is longer as 192 characters";
               return;
             }
@@ -912,6 +953,7 @@ void PreFlightFlarmPage::slotClose()
 {
   QApplication::restoreOverrideCursor();
   m_timer->stop();
+  emit closingWidget();
   close();
 }
 
@@ -982,4 +1024,92 @@ void PreFlightFlarmPage::messageBox(  QMessageBox::Icon icon,
 #endif
 
   mb.exec();
+}
+
+/** Creates a flarmTask definition file in Flarm format. */
+bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
+{
+  if( ! flightTask )
+    {
+      return false;
+    }
+
+  QList<TaskPoint *>& tpList = flightTask->getTpList();
+
+  if( tpList.isEmpty() )
+    {
+      return false;
+    }
+
+  QString fn = GeneralConfig::instance()->getUserDataDirectory() + "/cumulus-flarm.tsk";
+
+  // Save one backup copy.
+  if( QFileInfo(fn).exists() )
+    {
+      QFile::remove( fn + ".bak" );
+      QFile::rename( fn, fn + ".bak" );
+    }
+
+  QFile f(fn);
+
+  if( !f.open( QIODevice::WriteOnly ) )
+    {
+      qWarning( "Could not write to flarmTask-file %s", f.fileName().toLatin1().data() );
+      return false;
+    }
+
+  QTextStream stream( &f );
+  stream.setCodec( "ISO 8859-15" );
+
+  // writing file-header
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
+
+  stream << "// Flarm task declaration created at "
+         << dtStr
+         << " by Cumulus "
+         << QCoreApplication::applicationVersion() << endl;
+
+  stream << "$PFLAC,S,NEWTASK,"
+         << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
+         << endl;
+
+  for( int i = 0; i < tpList.count(); i++ )
+    {
+      // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
+      TaskPoint* tp = tpList.at(i);
+
+      int degree, intMin;
+      double min;
+
+      WGSPoint::calcPos( tp->getWGSPosition().x(), degree, min );
+
+      // Minute is expected as 1/1000
+      intMin = static_cast<int> (rint(min * 1000));
+
+      QString lat = QString("%1%2%3").
+                    arg( (degree < 0) ? -degree : degree, 2, 10, QChar('0') ).
+                    arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
+                    arg( (degree < 0) ? QString("S") : QString("N") );
+
+      WGSPoint::calcPos( tp->getWGSPosition().y(), degree, min );
+
+      intMin = static_cast<int> (rint(min * 1000));
+
+      QString lon = QString("%1%2%3").
+                    arg( (degree < 0) ? -degree : degree, 3, 10, QChar('0') ).
+                    arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
+                    arg( (degree < 0) ? QString("W") : QString("E") );
+
+      stream << "$PFLAC,S,ADDWP,"
+             << lat
+             << "," << lon << ","
+             << FlarmBase::replaceUmlauts( tp->getWPName().toLatin1() )
+             << endl;
+    }
+
+  stream << endl;
+  f.close();
+
+  return true;
 }

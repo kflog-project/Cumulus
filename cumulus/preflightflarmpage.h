@@ -35,6 +35,7 @@
 
 #include "flarm.h"
 
+class QComboBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -54,9 +55,12 @@ class PreFlightFlarmPage : public QWidget
 
  public:
 
-  PreFlightFlarmPage(FlightTask* ftask=0, QWidget *parent=0);
+  PreFlightFlarmPage( QWidget *parent=0 );
 
   virtual ~PreFlightFlarmPage();
+
+  /** Creates a task definition file in Flarm format. */
+  static bool createFlarmTaskList( FlightTask* flightTask );
 
  private slots:
 
@@ -96,6 +100,18 @@ class PreFlightFlarmPage : public QWidget
   /** Called if the notrack button is pressed. */
   void slotChangeNotrackMode();
 
+  signals:
+
+  /**
+   * Emitted, if the task selection has been changed.
+   */
+  void newTaskSelected();
+
+  /**
+   * Emitted, if the widget is closed.
+   */
+  void closingWidget();
+
  private:
 
   /** Loads the available Flarm data into the label displays. */
@@ -133,7 +149,8 @@ class PreFlightFlarmPage : public QWidget
   QLineEdit*   gliderType;
   QLineEdit*   compId;
   QLineEdit*   compClass;
-  QLineEdit*   task;
+  QLabel*      flarmTask;
+  QComboBox*   taskBox;
 
   QPushButton* readButton;
   QPushButton* writeButton;
@@ -141,8 +158,6 @@ class PreFlightFlarmPage : public QWidget
   QPushButton* clearButton;
 
   QTimer* m_timer;
-
-  FlightTask* m_ftask;
 
   // List with commands to be sent to Flarm step by step.
   QStringList m_cmdList;

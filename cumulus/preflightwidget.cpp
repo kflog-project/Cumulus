@@ -39,6 +39,10 @@
 #include "preflightwidget.h"
 #include "preflightwindpage.h"
 
+#ifdef FLARM
+#include "preflightflarmpage.h"
+#endif
+
 #ifdef INTERNET
 #include "preflightlivetrack24page.h"
 #include "preflightweatherpage.h"
@@ -54,6 +58,7 @@
 #define PREFLIGHT   "Preflight Menu"
 #define CHECKLIST   "Checklist"
 #define COMMON      "Common"
+#define FLARMENTRY  "Flarm"
 #define GLIDER      "Glider"
 #define LIVETRACK   "LiveTrack"
 #define LOGBOOKS    "Logbooks"
@@ -145,6 +150,17 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   item->setData( 0, Qt::UserRole, LOGBOOKS );
   m_setupTree->addTopLevelItem( item );
 
+#ifdef FLARM
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(FLARMENTRY) );
+  item->setData( 0, Qt::UserRole, FLARMENTRY );
+
+  if( calculator->moving() == false )
+    {
+      m_setupTree->addTopLevelItem( item );
+    }
+#endif
+
 #ifdef ANDROID
   item = new QTreeWidgetItem;
   item->setText( 0, tr(RETRIEVE) );
@@ -211,9 +227,19 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
                  << ( tr ("LiveTrack") )
                  << ( tr ("METAR-TAF") )
 #endif
+
                  << ( tr ("Wind") )
                  << ( tr ("Common") )
                  << ( tr ("Checklist") );
+
+#ifdef FLARM
+
+  if( calculator->moving() == false )
+    {
+      m_headerLabels << ( tr ("FLARM" ) );
+    }
+
+#endif
 
   m_setupTree->setMinimumWidth( Layout::maxTextWidth( m_headerLabels, font() ) + 100 );
   setVisible( true );
@@ -346,6 +372,28 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       pfwp->show();
     }
+
+#ifdef FLARM
+
+  else if( itemText == FLARMENTRY )
+    {
+      PreFlightFlarmPage* pffp = new PreFlightFlarmPage( this );
+
+      connect( pffp, SIGNAL( newTaskSelected() ),
+               IgcLogger::instance(), SLOT( slotNewTaskSelected() ) );
+
+      connect( pffp, SIGNAL( newTaskSelected() ),
+               MainWindow::mainWindow(), SLOT( slotPreFlightDataChanged() ) );
+
+      if( m_menuCb->checkState() == Qt::Checked )
+        {
+          connect( pffp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );
+        }
+
+      pffp->show();
+    }
+
+#endif
 
 #ifdef INTERNET
 

@@ -23,7 +23,7 @@
  *
  * \date 2002-2015
  *
- * \version 1.1
+ * \version 1.3
  *
  */
 
@@ -61,9 +61,6 @@ class PreFlightTaskPage : public QWidget
 
   /** Takes out the selected task from the task list. */
   FlightTask* takeSelectedTask();
-
-  /** Creates a task definition file in Flarm format. */
-  static bool createFlarmTaskList( FlightTask* flightTask );
 
  protected:
 
@@ -142,11 +139,6 @@ class PreFlightTaskPage : public QWidget
    * Makes the task view widget visible.
    */
   void slotShowTaskViewWidget();
-
-  /**
-   * Makes the Flarm widget visible.
-   */
-  void slotShowFlarmWidget();
 
   /**
    * Called if the Ok button is pressed.
