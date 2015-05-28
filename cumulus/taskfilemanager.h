@@ -28,7 +28,7 @@
  *
  * \date 2013-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef TASK_FILE_MANAGER_H_
@@ -36,6 +36,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 #include "flighttask.h"
 #include "speed.h"
@@ -74,6 +75,16 @@ class TaskFileManager
   bool loadTaskListOld( QList<FlightTask*>& flightTaskList, QString fileName="" );
 
   bool loadTaskListNew( QList<FlightTask*>& flightTaskList, QString fileName="" );
+
+  /**
+   * Returns all task names of a flight task list.
+   *
+   * \param fileName File name of task, if empty a default is used.
+   *
+   * \return A string list with all found task names. The list can be empty,
+   *         if no task file exist or in error case.
+   */
+  QStringList getTaskListNames( QString fileName="" );
 
   /**
    * Loads a single flight task, selected by its name from a file.

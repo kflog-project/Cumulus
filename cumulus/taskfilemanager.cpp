@@ -409,6 +409,76 @@ bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
   return true;
 }
 
+QStringList TaskFileManager::getTaskListNames( QString fileName )
+{
+  QStringList sl;
+  QString fn;
+
+  if( fileName.isEmpty() )
+    {
+      // Use task default file name
+      fn = m_taskFileName;
+    }
+
+  QFile f( fn );
+
+  if ( ! f.open( QIODevice::ReadOnly ) )
+    {
+      qWarning() << __FUNCTION__ << "Could not open task-file:" << fn;
+      return sl;
+    }
+
+  QTextStream stream( &f );
+
+  /**
+    A task consists of the TS key, several TW keys and a TE key.
+
+    Example:
+
+    TS,<TaskName>,<No of task points>
+    TW,<Latitude>,<Longitude>,<Elevation>,<WpName>,<LongName>,<Waypoint-type>,
+       <ActiveTaskPointFigureScheme>,<TaskLineLength>,
+       <TaskCircleRadius>,<TaskSectorInnerRadius>,<TaskSectorOuterRadius>,
+       <TaskSectorAngle>
+    ...
+    TE
+   */
+
+  while ( !stream.atEnd() )
+    {
+      QString line = stream.readLine().trimmed();
+
+      if ( line.isEmpty() || line.mid( 0, 1 ) == "#" )
+        {
+          // Ignore empty and comment lines
+          continue;
+        }
+
+      if ( line.mid( 0, 2 ) == "TS" )
+        {
+          // A new task starts here
+          QStringList tmpList = line.split( ",", QString::KeepEmptyParts );
+
+          if( tmpList.size() >= 2 )
+            {
+              QString taskName = tmpList.at(1).trimmed();
+
+              if( taskName.isEmpty() )
+        	{
+        	  continue;
+        	}
+
+              sl.append( taskName );
+            }
+        }
+    }
+
+  f.close();
+  sl.sort();
+
+  return sl;
+}
+
 FlightTask* TaskFileManager::loadTask( QString taskName, QString fileName )
 {
   QList<FlightTask*> ftl;
