@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-05-30 AP: Preflight Flarm page moved from the task page to the
+                   preflight list.
+
+[*] 2015-05-26 AP: Cumulus 5.22.3 released for Android.
+
 [-] 2015-05-25 AP: Issue #60 fixed. The livetracking url
                    https://www.skylines.aero/ did not work anymore.
 
