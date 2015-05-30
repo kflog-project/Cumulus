@@ -506,8 +506,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
             << "$PFLAC,R,GLIDERID"
             << "$PFLAC,R,GLIDERTYPE"
             << "$PFLAC,R,COMPID"
-            << "$PFLAC,R,COMPCLASS"
-            << "$PFLAC,R,NEWTASK,";
+            << "$PFLAC,R,COMPCLASS";
 
   nextFlarmCommand();
 }
@@ -814,16 +813,15 @@ void PreFlightFlarmPage::slotWriteFlarmData()
             << "$PFLAC,S,COMPID," + compId->text().trimmed()
             << "$PFLAC,S,COMPCLASS," + compClass->text().trimmed();
 
-  QString tpName;
-
-  if( taskBox->count() == 0 || taskBox->isVisible() == false )
+  if( taskBox->count() <= 1 || taskBox->isVisible() == false )
     {
+      m_cmdList << "$PFLAC,S,NEWTASK, ";
       nextFlarmCommand();
       return;
     }
 
   // A flight task is selected in the task box.
-  tpName = taskBox->currentText();
+  QString tpName = taskBox->currentText().left(50);
 
   // Load the flight task
   TaskFileManager tfm;
