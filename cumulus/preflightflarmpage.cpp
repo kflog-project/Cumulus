@@ -355,6 +355,8 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
     }
   else
     {
+      // Add an empty field at the beginning of the list.
+      sl.prepend("");
       taskBox->addItems( sl );
 
       // Select the last saved task.
@@ -414,12 +416,34 @@ void PreFlightFlarmPage::slotSetIgcData()
   gliderId->setText( glider->registration() );
   gliderType->setText( glider->type() );
   compId->setText( glider->callSign() );
+
+  // Select the last saved task.
+  QString lastTask = conf->getCurrentTask();
+
+  int index = taskBox->findText( lastTask );
+
+  if( index != -1 )
+    {
+      taskBox->setCurrentIndex( index );
+    }
+  else
+    {
+      if( taskBox->count() > 0 )
+	{
+	  taskBox->setCurrentIndex( 0 );
+	}
+    }
 }
 
 void PreFlightFlarmPage::slotClearIgcData()
 {
   clearUserInputFields();
   flarmTask->clear();
+
+  if( taskBox->count() > 0 )
+    {
+      taskBox->setCurrentIndex( 0 );
+    }
 }
 
 void PreFlightFlarmPage::clearUserInputFields()
