@@ -817,12 +817,12 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       m_cmdList << "$PFLAC,S,NOTRACK," + notrack->text();
     }
 
-  m_cmdList << "$PFLAC,S,PILOT," << FlarmBase::replaceUmlauts( pilot->text().trimmed().toLatin1() )
-            << "$PFLAC,S,COPIL," << FlarmBase::replaceUmlauts( copil->text().trimmed().toLatin1() )
-            << "$PFLAC,S,GLIDERID," << FlarmBase::replaceUmlauts( gliderId->text().trimmed().toLatin1() )
-            << "$PFLAC,S,GLIDERTYPE," << FlarmBase::replaceUmlauts( gliderType->text().trimmed().toLatin1() )
-            << "$PFLAC,S,COMPID," << FlarmBase::replaceUmlauts( compId->text().trimmed().toLatin1() )
-            << "$PFLAC,S,COMPCLASS," << FlarmBase::replaceUmlauts( compClass->text().trimmed().toLatin1() );
+  m_cmdList << "$PFLAC,S,PILOT," + FlarmBase::replaceUmlauts( pilot->text().trimmed().toLatin1() )
+            << "$PFLAC,S,COPIL," + FlarmBase::replaceUmlauts( copil->text().trimmed().toLatin1() )
+            << "$PFLAC,S,GLIDERID," + FlarmBase::replaceUmlauts( gliderId->text().trimmed().toLatin1() )
+            << "$PFLAC,S,GLIDERTYPE," + FlarmBase::replaceUmlauts( gliderType->text().trimmed().toLatin1() )
+            << "$PFLAC,S,COMPID," + FlarmBase::replaceUmlauts( compId->text().trimmed().toLatin1() )
+            << "$PFLAC,S,COMPCLASS," + FlarmBase::replaceUmlauts( compClass->text().trimmed().toLatin1() );
 
   if( taskBox->count() <= 1 || taskBox->isVisible() == false )
     {
