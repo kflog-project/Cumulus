@@ -483,7 +483,7 @@ FlightTask* TaskFileManager::loadTask( QString taskName, QString fileName )
 {
   QList<FlightTask*> ftl;
 
-  if( loadTaskList( ftl, fileName ) == false )
+  if( taskName.trimmed().isEmpty() || loadTaskList( ftl, fileName ) == false )
     {
       return 0;
     }

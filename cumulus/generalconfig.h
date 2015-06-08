@@ -1096,12 +1096,6 @@ class GeneralConfig : protected QSettings
 	_mcCready = newValue;
   };
 
-  /** gets current task */
-  QString &getCurrentTask()
-  {
-    return _currentTask;
-  };
-
   /** sets current map task  */
   void setMapCurrentTask( const QString newValue )
   {
@@ -1114,10 +1108,16 @@ class GeneralConfig : protected QSettings
     return _mapCurrentTask;
   };
 
-  /** sets current task  */
-  void setCurrentTask( const QString newValue )
+  /** gets the current task name */
+  QString &getCurrentTaskName()
   {
-    _currentTask = newValue;
+    return _currentTaskName;
+  };
+
+  /** sets the current task name */
+  void setCurrentTaskName( const QString newValue )
+  {
+    _currentTaskName = newValue;
   };
 
   /** Gets the homesite country code */
@@ -3064,8 +3064,9 @@ class GeneralConfig : protected QSettings
   double _autoLoggerStartSpeed;
   // true air speed
   Speed _tas;
-  // The name of the selected task in the preflight task list.
-  QString _currentTask;
+
+  // The name of the currently selected task in the preflight task list.
+  QString _currentTaskName;
 
   // The name of the current task at the map.
   QString _mapCurrentTask;

@@ -6,14 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
 **   the Free Software Foundation; either version 2 of the License, or
 **   (at your option) any later version.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -90,7 +88,7 @@ int FlarmBinComLinux::readChar(unsigned char* b)
   FD_SET( m_Socket, &readFds );
 
   struct timeval timerInterval;
-  timerInterval.tv_sec  =  3; // 3s timeout
+  timerInterval.tv_sec  =  30; // 30s timeout
   timerInterval.tv_usec =  0;
 
   done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );

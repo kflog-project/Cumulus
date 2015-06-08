@@ -452,12 +452,12 @@ FlightTask* PreFlightTaskPage::takeSelectedTask()
   // Special handling for entries with no number, they are system specific.
   if( id == " " )
     {
-      GeneralConfig::instance()->setCurrentTask( "" );
+      GeneralConfig::instance()->setCurrentTaskName( "" );
       return static_cast<FlightTask *> (0);
     }
 
   // qDebug("selected Item=%s",id.toLatin1().data());
-  GeneralConfig::instance()->setCurrentTask( m_taskList->selectedItems().at(0)->text(1) );
+  GeneralConfig::instance()->setCurrentTaskName( m_taskList->selectedItems().at(0)->text(1) );
 
   // Nice trick, take selected element from list to prevent deletion of it, if
   // destruction of list is called.
@@ -499,7 +499,7 @@ bool PreFlightTaskPage::loadTaskList()
       m_taskList->sortItems( 0, Qt::AscendingOrder );
 
       // reset current task
-      GeneralConfig::instance()->setCurrentTask( "" );
+      GeneralConfig::instance()->setCurrentTaskName( "" );
 
       m_taskList->resizeColumnToContents(0);
       m_taskList->resizeColumnToContents(1);
@@ -539,7 +539,7 @@ bool PreFlightTaskPage::loadTaskList()
       rowList << " " << tr("(No tasks defined)");
 
       // reset current task
-      GeneralConfig::instance()->setCurrentTask( "" );
+      GeneralConfig::instance()->setCurrentTaskName( "" );
     }
   else
     {
@@ -697,7 +697,7 @@ void PreFlightTaskPage::slotDeleteTask()
   m_taskList->setCurrentItem( m_taskList->topLevelItem(0) );
 
   // reset last stored selected task
-  GeneralConfig::instance()->setCurrentTask( "" );
+  GeneralConfig::instance()->setCurrentTaskName( "" );
 
   // reset task
   extern MapContents* _globalMapContents;
@@ -722,7 +722,7 @@ bool PreFlightTaskPage::saveTaskList()
 /** Select the last stored task */
 void PreFlightTaskPage::selectLastTask()
 {
-  QString lastTask = GeneralConfig::instance()->getCurrentTask();
+  QString lastTask = GeneralConfig::instance()->getCurrentTaskName();
 
   int rows = m_taskList->topLevelItemCount();
 
