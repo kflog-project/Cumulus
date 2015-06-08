@@ -47,7 +47,8 @@ extern Calculator*  calculator;
 PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   QWidget(parent),
   m_cmdIdx(0),
-  m_errorReportCounter(0)
+  m_errorReportCounter(0),
+  m_taskUploadRunning(false)
 {
   setObjectName("PreFlightFlarmPage");
   setWindowTitle(tr("Flarm IGC Setup"));
@@ -516,6 +517,15 @@ void PreFlightFlarmPage::nextFlarmCommand()
    if( m_cmdIdx >= m_cmdList.size() )
      {
        // nothing more to send
+      if( m_taskUploadRunning == true )
+	{
+	  m_taskUploadRunning = false;
+
+	  QString text0 = tr( "To activate the new task, the Flarm must be power-cycled!" );
+	  QString text1 = tr( "Information" );
+	  messageBox (QMessageBox::Information, text0, text1);
+	}
+
        closeFlarmDataTransfer();
        return;
      }
@@ -790,6 +800,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   m_cmdIdx = 0;
   m_cmdList.clear();
   m_errorReportCounter = 0;
+  m_taskUploadRunning = true;
 
   if( logInt->value() > 0 )
     {
@@ -806,16 +817,16 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       m_cmdList << "$PFLAC,S,NOTRACK," + notrack->text();
     }
 
-  m_cmdList << "$PFLAC,S,PILOT," + pilot->text().trimmed()
-            << "$PFLAC,S,COPIL," + copil->text().trimmed()
-            << "$PFLAC,S,GLIDERID," + gliderId->text().trimmed()
-            << "$PFLAC,S,GLIDERTYPE," + gliderType->text().trimmed()
-            << "$PFLAC,S,COMPID," + compId->text().trimmed()
-            << "$PFLAC,S,COMPCLASS," + compClass->text().trimmed();
+  m_cmdList << "$PFLAC,S,PILOT," << FlarmBase::replaceUmlauts( pilot->text().trimmed().toLatin1() )
+            << "$PFLAC,S,COPIL," << FlarmBase::replaceUmlauts( copil->text().trimmed().toLatin1() )
+            << "$PFLAC,S,GLIDERID," << FlarmBase::replaceUmlauts( gliderId->text().trimmed().toLatin1() )
+            << "$PFLAC,S,GLIDERTYPE," << FlarmBase::replaceUmlauts( gliderType->text().trimmed().toLatin1() )
+            << "$PFLAC,S,COMPID," << FlarmBase::replaceUmlauts( compId->text().trimmed().toLatin1() )
+            << "$PFLAC,S,COMPCLASS," << FlarmBase::replaceUmlauts( compClass->text().trimmed().toLatin1() );
 
   if( taskBox->count() <= 1 || taskBox->isVisible() == false )
     {
-      m_cmdList << "$PFLAC,S,NEWTASK, ";
+      m_cmdList << "$PFLAC,S,NEWTASK,";
       nextFlarmCommand();
       return;
     }
@@ -969,6 +980,7 @@ void PreFlightFlarmPage::closeFlarmDataTransfer()
   m_cmdList.clear();
   m_cmdIdx = 0;
   m_errorReportCounter = 0;
+  m_taskUploadRunning = false;
 }
 
 void PreFlightFlarmPage::slotClose()
@@ -1027,8 +1039,8 @@ void PreFlightFlarmPage::enableButtons( const bool toggle )
 
 /** Shows a popup message box to the user. */
 void PreFlightFlarmPage::messageBox(  QMessageBox::Icon icon,
-                                           QString message,
-                                           QString title )
+                                      QString message,
+                                      QString title )
 {
   QMessageBox mb( icon,
                   title,

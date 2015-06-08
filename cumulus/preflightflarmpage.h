@@ -24,7 +24,7 @@
  *
  * \date 2012-2015
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef PREFLIGHT_FLARM_PAGE_H_
@@ -167,6 +167,9 @@ class PreFlightFlarmPage : public QWidget
 
   // Error report counter
   int m_errorReportCounter;
+
+  // Flag to store a started Flarm task upload
+  bool m_taskUploadRunning;
 };
 
 #endif
