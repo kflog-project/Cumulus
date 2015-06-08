@@ -361,7 +361,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
       taskBox->addItems( sl );
 
       // Select the last saved task.
-      QString lastTask = GeneralConfig::instance()->getCurrentTask();
+      QString lastTask = GeneralConfig::instance()->getCurrentTaskName();
 
       int index = taskBox->findText(lastTask );
 
@@ -419,7 +419,7 @@ void PreFlightFlarmPage::slotSetIgcData()
   compId->setText( glider->callSign() );
 
   // Select the last saved task.
-  QString lastTask = conf->getCurrentTask();
+  QString lastTask = conf->getCurrentTaskName();
 
   int index = taskBox->findText( lastTask );
 
@@ -838,20 +838,20 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   TaskFileManager tfm;
   FlightTask* ft = tfm.loadTask( tpName );
 
-  if( ft == static_cast<FlightTask *>(0) )
+  if( GeneralConfig::instance()->getCurrentTaskName() != tpName )
     {
-      nextFlarmCommand();
-      return;
-    }
-
-  if( GeneralConfig::instance()->getCurrentTask() != tpName )
-    {
-      GeneralConfig::instance()->setCurrentTask( tpName );
+      GeneralConfig::instance()->setCurrentTaskName( tpName );
       _globalMapContents->setCurrentTask( ft );
       emit newTaskSelected();
     }
 
   m_cmdList << "$PFLAC,S,NEWTASK," + tpName;
+
+  if( ft == static_cast<FlightTask *>(0) )
+    {
+      nextFlarmCommand();
+      return;
+    }
 
   // Write Flarm flarmTask file in Cumulus's data directory for control
   createFlarmTaskList( ft );
