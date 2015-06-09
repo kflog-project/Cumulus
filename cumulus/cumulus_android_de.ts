@@ -185,7 +185,7 @@
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1968"/>
+        <location filename="calculator.cpp" line="1967"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
@@ -2038,182 +2038,194 @@ All downloads are canceled!</oldsource>
 <context>
     <name>PreFlightFlarmPage</name>
     <message>
-        <location filename="preflightflarmpage.cpp" line="42"/>
+        <location filename="preflightflarmpage.cpp" line="54"/>
         <source>Flarm IGC Setup</source>
         <translation>Flarm IGC Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="92"/>
+        <location filename="preflightflarmpage.cpp" line="104"/>
         <source>SN:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="97"/>
+        <location filename="preflightflarmpage.cpp" line="109"/>
         <source>RId:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="102"/>
+        <location filename="preflightflarmpage.cpp" line="114"/>
         <source>St:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="107"/>
+        <location filename="preflightflarmpage.cpp" line="119"/>
         <source>Err:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="113"/>
+        <location filename="preflightflarmpage.cpp" line="125"/>
         <source>ODB:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="118"/>
+        <location filename="preflightflarmpage.cpp" line="130"/>
         <source>Hw:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="123"/>
+        <location filename="preflightflarmpage.cpp" line="135"/>
         <source>Sw:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="128"/>
+        <location filename="preflightflarmpage.cpp" line="140"/>
         <source>Igc:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="134"/>
+        <location filename="preflightflarmpage.cpp" line="146"/>
         <source>Flarm Data</source>
         <translation>Flarm Daten</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="145"/>
+        <location filename="preflightflarmpage.cpp" line="157"/>
         <source>LogInt:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="155"/>
+        <location filename="preflightflarmpage.cpp" line="167"/>
         <source>Priv:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="161"/>
+        <location filename="preflightflarmpage.cpp" line="173"/>
         <source>NoTrk:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="177"/>
+        <location filename="preflightflarmpage.cpp" line="189"/>
         <source>Pilot:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="187"/>
+        <location filename="preflightflarmpage.cpp" line="199"/>
         <source>Co-Pilot:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="199"/>
+        <location filename="preflightflarmpage.cpp" line="211"/>
         <source>Glider Id:</source>
         <translation>Segler Kz:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="208"/>
+        <location filename="preflightflarmpage.cpp" line="220"/>
         <source>Glider Type:</source>
         <translation>Segler Typ:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="220"/>
+        <location filename="preflightflarmpage.cpp" line="232"/>
         <source>Comp Id:</source>
         <translation>Wett Kz:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="229"/>
+        <location filename="preflightflarmpage.cpp" line="241"/>
         <source>Comp Class:</source>
         <translation>Wett Klasse:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="241"/>
+        <location filename="preflightflarmpage.cpp" line="253"/>
         <source>Task:</source>
         <translation>Aufgabe:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="264"/>
+        <location filename="preflightflarmpage.cpp" line="278"/>
         <source>Read</source>
         <translation>Lesen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="266"/>
+        <location filename="preflightflarmpage.cpp" line="280"/>
         <source>Read data from Flarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="274"/>
+        <location filename="preflightflarmpage.cpp" line="288"/>
         <source>Set</source>
         <translation>Setzen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="276"/>
+        <location filename="preflightflarmpage.cpp" line="290"/>
         <source>Set Cumulus data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="284"/>
+        <location filename="preflightflarmpage.cpp" line="298"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="286"/>
+        <location filename="preflightflarmpage.cpp" line="300"/>
         <source>Clear input fields</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="293"/>
+        <location filename="preflightflarmpage.cpp" line="307"/>
         <source>Write</source>
         <translation>Schreiben</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="295"/>
+        <location filename="preflightflarmpage.cpp" line="309"/>
         <source>Write data to Flarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="303"/>
+        <location filename="preflightflarmpage.cpp" line="317"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="466"/>
-        <location filename="preflightflarmpage.cpp" line="685"/>
-        <location filename="preflightflarmpage.cpp" line="844"/>
+        <location filename="preflightflarmpage.cpp" line="476"/>
+        <location filename="preflightflarmpage.cpp" line="545"/>
+        <location filename="preflightflarmpage.cpp" line="792"/>
+        <location filename="preflightflarmpage.cpp" line="961"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="467"/>
-        <location filename="preflightflarmpage.cpp" line="686"/>
-        <location filename="preflightflarmpage.cpp" line="845"/>
+        <location filename="preflightflarmpage.cpp" line="477"/>
+        <location filename="preflightflarmpage.cpp" line="546"/>
+        <location filename="preflightflarmpage.cpp" line="793"/>
+        <location filename="preflightflarmpage.cpp" line="962"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="488"/>
-        <location filename="preflightflarmpage.cpp" line="538"/>
+        <location filename="preflightflarmpage.cpp" line="524"/>
+        <source>To activate the new task, the Flarm must be power-cycled!</source>
+        <translation>Um die neue Aufgabe zu aktivieren, muss das Flarm aus- und eingeschaltet werden!</translation>
+    </message>
+    <message>
+        <location filename="preflightflarmpage.cpp" line="525"/>
+        <source>Information</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="preflightflarmpage.cpp" line="586"/>
+        <location filename="preflightflarmpage.cpp" line="636"/>
         <source>Flarm Problem</source>
         <translation>Flarm Problem</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="778"/>
+        <location filename="preflightflarmpage.cpp" line="894"/>
         <source>Task Error</source>
         <translation>Aufgabenfehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="779"/>
+        <location filename="preflightflarmpage.cpp" line="895"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="780"/>
+        <location filename="preflightflarmpage.cpp" line="896"/>
         <source>is too long!</source>
         <translation>ist zu lang!</translation>
     </message>
@@ -2655,48 +2667,47 @@ All downloads are canceled!</oldsource>
         <translation>Zeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="221"/>
         <source>Flarm</source>
-        <translation>Flarm</translation>
+        <translation type="obsolete">Flarm</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="241"/>
+        <location filename="preflighttaskpage.cpp" line="230"/>
         <source>Task display</source>
         <translation>Aufgabenanzeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="246"/>
+        <location filename="preflighttaskpage.cpp" line="235"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="505"/>
-        <location filename="preflighttaskpage.cpp" line="548"/>
+        <location filename="preflighttaskpage.cpp" line="496"/>
+        <location filename="preflighttaskpage.cpp" line="539"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="555"/>
+        <location filename="preflighttaskpage.cpp" line="546"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="882"/>
+        <location filename="preflighttaskpage.cpp" line="766"/>
         <source>Replace current task?</source>
         <translation>Akt. Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="883"/>
+        <location filename="preflighttaskpage.cpp" line="767"/>
         <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="682"/>
+        <location filename="preflighttaskpage.cpp" line="673"/>
         <source>Delete Task?</source>
         <translation>Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="683"/>
+        <location filename="preflighttaskpage.cpp" line="674"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
@@ -3084,72 +3095,77 @@ All downloads are canceled!</oldsource>
 <context>
     <name>PreFlightWidget</name>
     <message>
-        <location filename="preflightwidget.cpp" line="70"/>
+        <location filename="preflightwidget.cpp" line="75"/>
         <source>Preflight Settings</source>
         <translation>Vorflug Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="93"/>
-        <location filename="preflightwidget.cpp" line="202"/>
+        <location filename="preflightwidget.cpp" line="98"/>
+        <location filename="preflightwidget.cpp" line="218"/>
         <source>Preflight Menu</source>
         <translation>Vorflug Menü</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="175"/>
+        <location filename="preflightwidget.cpp" line="191"/>
         <source>close menu</source>
         <translation>Schließe Menü</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="203"/>
+        <location filename="preflightwidget.cpp" line="219"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="204"/>
+        <location filename="preflightwidget.cpp" line="220"/>
         <source>Tasks</source>
         <oldsource>Task</oldsource>
         <translation>Aufgaben</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="206"/>
+        <location filename="preflightwidget.cpp" line="222"/>
         <source>Retrieve</source>
         <oldsource>Returner</oldsource>
         <translation>Rückholer</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="208"/>
+        <location filename="preflightwidget.cpp" line="224"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="209"/>
+        <location filename="preflightwidget.cpp" line="225"/>
         <source>Logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="211"/>
+        <location filename="preflightwidget.cpp" line="227"/>
         <source>LiveTrack</source>
         <translation>Verfolgung</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="212"/>
+        <location filename="preflightwidget.cpp" line="228"/>
         <source>METAR-TAF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="214"/>
+        <location filename="preflightwidget.cpp" line="231"/>
         <source>Wind</source>
         <translation>Wind</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="215"/>
+        <location filename="preflightwidget.cpp" line="232"/>
         <source>Common</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="preflightwidget.cpp" line="216"/>
+        <location filename="preflightwidget.cpp" line="233"/>
         <source>Checklist</source>
         <translation>Checkliste</translation>
+    </message>
+    <message>
+        <location filename="preflightwidget.cpp" line="239"/>
+        <source>FLARM</source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5659,70 +5675,70 @@ All downloads are canceled!</oldsource>
 <context>
     <name>TaskPointEditor</name>
     <message>
-        <location filename="taskpointeditor.cpp" line="78"/>
+        <location filename="taskpointeditor.cpp" line="77"/>
         <source>TP Scheme</source>
         <translation>WP-Schema</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="81"/>
-        <location filename="taskpointeditor.cpp" line="106"/>
+        <location filename="taskpointeditor.cpp" line="80"/>
+        <location filename="taskpointeditor.cpp" line="105"/>
         <source>Circle</source>
         <translation>Kreis</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="82"/>
-        <location filename="taskpointeditor.cpp" line="129"/>
+        <location filename="taskpointeditor.cpp" line="81"/>
+        <location filename="taskpointeditor.cpp" line="128"/>
         <source>Sector</source>
         <translation>Sektor</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="83"/>
-        <location filename="taskpointeditor.cpp" line="180"/>
+        <location filename="taskpointeditor.cpp" line="82"/>
+        <location filename="taskpointeditor.cpp" line="179"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="111"/>
+        <location filename="taskpointeditor.cpp" line="110"/>
         <source>Radius:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="138"/>
+        <location filename="taskpointeditor.cpp" line="137"/>
         <source>Radius 1:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="150"/>
+        <location filename="taskpointeditor.cpp" line="149"/>
         <source>Radius 2:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="162"/>
+        <location filename="taskpointeditor.cpp" line="161"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="189"/>
+        <location filename="taskpointeditor.cpp" line="188"/>
         <source>Length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="202"/>
+        <location filename="taskpointeditor.cpp" line="201"/>
         <source>Zoom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="208"/>
+        <location filename="taskpointeditor.cpp" line="207"/>
         <source>Auto</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="217"/>
+        <location filename="taskpointeditor.cpp" line="216"/>
         <source>Defaults</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="346"/>
+        <location filename="taskpointeditor.cpp" line="345"/>
         <source>Turnpoint No %1 (%2): %3</source>
         <translation>Wendepunkt Nr %1 (%2): %3</translation>
     </message>
