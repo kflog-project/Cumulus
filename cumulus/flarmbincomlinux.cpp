@@ -88,7 +88,7 @@ int FlarmBinComLinux::readChar(unsigned char* b)
   FD_SET( m_Socket, &readFds );
 
   struct timeval timerInterval;
-  timerInterval.tv_sec  =  30; // 30s timeout
+  timerInterval.tv_sec  =  10; // 10s timeout
   timerInterval.tv_usec =  0;
 
   done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );
