@@ -54,7 +54,7 @@ int FlarmBinComLinux::writeChar(const unsigned char c)
               continue; // Ignore interrupts
             }
 
-          qDebug() << "writeCharErr" << errno << strerror(errno);
+          qDebug() << "FlarmBinComLinux::writeCharErr" << errno << strerror(errno);
         }
 
       break;
@@ -76,7 +76,7 @@ int FlarmBinComLinux::readChar(unsigned char* b)
 
   if( done == 0 || (done == -1 && errno != EWOULDBLOCK) )
     {
-      qDebug() << "readCharErr" << errno << strerror(errno);
+      qDebug() << "FlarmBinComLinux::readCharErr" << errno << strerror(errno);
       return false;
     }
 
@@ -88,21 +88,21 @@ int FlarmBinComLinux::readChar(unsigned char* b)
   FD_SET( m_Socket, &readFds );
 
   struct timeval timerInterval;
-  timerInterval.tv_sec  =  10; // 10s timeout
+  timerInterval.tv_sec  = 10; // 10s timeout
   timerInterval.tv_usec =  0;
 
   done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );
 
   if( done == 0 )
     {
-      qDebug() << "select() Timeout";
+      qDebug() << "FlarmBinComLinux::readChar: select() Timeout" << "10 s";
       // done = 0  -> Timeout
       return done;
     }
 
   if( done < 0 )
     {
-      qWarning() << "select() Err" << errno << strerror(errno);
+      qWarning() << "FlarmBinComLinux::readChar: select() Err" << errno << strerror(errno);
       // done = -1 -> Error
       return done;
     }

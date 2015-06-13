@@ -515,20 +515,21 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 void PreFlightFlarmPage::nextFlarmCommand()
 {
    if( m_cmdIdx >= m_cmdList.size() )
-     {
-       // nothing more to send
+    {
+      // nothing more to send
       if( m_taskUploadRunning == true )
 	{
+	  QApplication::restoreOverrideCursor();
 	  m_taskUploadRunning = false;
 
 	  QString text0 = tr( "To activate the new task, the Flarm must be power-cycled!" );
-	  QString text1 = tr( "Information" );
+	  QString text1 = tr("Information");
 	  messageBox (QMessageBox::Information, text0, text1);
 	}
 
-       closeFlarmDataTransfer();
-       return;
-     }
+      closeFlarmDataTransfer ();
+      return;
+    }
 
    QByteArray ba = FlarmBase::replaceUmlauts(m_cmdList.at(m_cmdIdx).toLatin1());
 

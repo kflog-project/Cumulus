@@ -232,6 +232,8 @@ void FlarmLogbook::setTableHeader()
 
 void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 {
+  qDebug() << "FlarmLogbook::slot_UpdateConfiguration():" << info;
+
   if( info.size() >= 4 &&
       info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" )
     {
@@ -263,6 +265,8 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
 
 void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 {
+  qDebug() << "FlarmLogbook::slot_FlarmLogbookData():" << data;
+
   // A new flight header is delivered or a status message.
   if( data.size() == 0 )
     {
@@ -352,6 +356,8 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 
 void FlarmLogbook::slot_ReadFlights()
 {
+  qDebug() << "FlarmLogbook::slot_ReadFlights(): m_resetFlarm=" << m_resetFlarm;
+
   // Read button was pressed to get the flight list from the Flarm device.
 
   m_logbook.clear(); // remove old content
@@ -392,6 +398,8 @@ void FlarmLogbook::slot_ReadFlights()
       QString text1 = tr("Error");
       messageBox( QMessageBox::Warning, text0, text1 );
     }
+
+  qDebug() << "FlarmLogbook::slot_ReadFlights(): normal return";
 
   // The Flarm answer is delivered via the slot slot_UpdateConfiguration.
 }
@@ -509,7 +517,7 @@ void FlarmLogbook::slot_FlarmFlightDownloadInfo( const QString& info )
     }
 
   qWarning() << "FlarmLogbook::slot_FlarmFlightDownloadInfo(): unknown info"
-              << info;
+             << info;
 }
 
 /**
