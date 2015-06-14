@@ -1055,7 +1055,7 @@ uint GpsClient::getBaudrate(int rate)
 bool GpsClient::flarmBinMode()
 {
   // Binary switch command for Flarm interface
-  const char* pflax = "$PFLAX\n";
+  const char* pflax = "$PFLAX\r\n";
 
   FlarmBinComLinux fbc( fd );
 
