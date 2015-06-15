@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2014 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -212,7 +212,7 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
 bool GpsConAndroid::flarmBinMode()
 {
   // Binary switch command for Flarm interface
-  QByteArray pflax("$PFLAX\n");
+  QByteArray pflax("$PFLAX\r\n");
 
   FlarmBinComAndroid fbc;
 

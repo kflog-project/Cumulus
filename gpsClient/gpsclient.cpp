@@ -139,7 +139,7 @@ fd_set *GpsClient::getReadFdMask()
 }
 
 // Processes incoming read events. They can come from the server or
-// from the GGS device.
+// from the GPS device.
 void GpsClient::processEvent( fd_set *fdMask )
 {
   if( ipcPort )
@@ -625,19 +625,12 @@ bool GpsClient::verifyCheckSum( const char *sentence )
 {
   // Filter out wrong data messages read in from the GPS port. Known messages
   // do start with a dollar sign or an exclamation mark.
+  // Note: Flarm sends several debug text messages after a restart not starting
+  // with a dollar sign or an exclamation mark.
   if( sentence[0] != '$' && sentence[0] != '!' )
     {
       qWarning() << "GpsClient::CheckSumError:" << sentence;
-
       badSentences++;
-
-      if( badSentences >= 3 )
-        {
-          // Close the receiver after 3 bad sentences back-to-back.
-          closeGps();
-          last.start(); // activate restart control
-        }
-
       return false;
     }
 
@@ -712,11 +705,12 @@ void GpsClient::toController()
 
   if( activateTimeout )
     {
-      if( last.elapsed() >= 60000  )
+      if( last.elapsed() >= 120000  )
         {
-          // Activate timeout again after a Flarm reset. Flarm needs ca. 35s
+          // Activate timeout again after a Flarm reset. Flarm needs ca. 130s
           // to come up again.
           last.start();
+          activateTimeout = false;
         }
 
       return;
@@ -1093,6 +1087,10 @@ bool GpsClient::flarmBinMode()
       // Switch to binary mode failed
       qWarning() << "GpsClient::flarmBinMode(): Switch failed!";
     }
+  else
+    {
+      qDebug() << "GpsClient::flarmBinMode(): Switch Ok!";
+    }
 
   return pingOk;
 }
@@ -1341,6 +1339,8 @@ void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
 
 bool GpsClient::flarmReset()
 {
+  qDebug() << "GpsClient::flarmReset()";
+
   // Switch off timeout control
   last = QTime();
 
@@ -1352,6 +1352,10 @@ bool GpsClient::flarmReset()
 
   FlarmBinComLinux fbc( fd );
   bool res = fbc.exit();
+
+  // Switch Flarm back to text mode.
+  FlarmBase::setProtocolMode( FlarmBase::text );
+
   activateTimeout = true;
   last.start();
   return res;
