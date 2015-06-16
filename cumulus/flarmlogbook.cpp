@@ -356,10 +356,9 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 
 void FlarmLogbook::slot_ReadFlights()
 {
-  qDebug() << "FlarmLogbook::slot_ReadFlights(): m_resetFlarm=" << m_resetFlarm;
+  // qDebug() << "FlarmLogbook::slot_ReadFlights(): m_resetFlarm=" << m_resetFlarm;
 
   // Read button was pressed to get the flight list from the Flarm device.
-
   m_logbook.clear(); // remove old content
 
   // Clear table content.

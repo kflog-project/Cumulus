@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2014 Axel Pauli
+# Copyright (c): 2008-2015 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -76,6 +76,7 @@ HEADERS = \
     calculator.h \
     colordialog.h \
     configwidget.h \
+    CuLabel.h \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
@@ -208,6 +209,7 @@ SOURCES = \
     calculator.cpp \
     colordialog.cpp \
     configwidget.cpp \
+    CuLabel.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \

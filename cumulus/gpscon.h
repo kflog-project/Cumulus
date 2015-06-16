@@ -6,14 +6,12 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2013 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c):  2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -31,7 +29,7 @@
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as Cumulus.
  *
- * \date 2004-2013
+ * \date 2004-2015
  */
 
 #ifndef GPS_CON_H

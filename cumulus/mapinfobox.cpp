@@ -31,23 +31,6 @@
 #include "layout.h"
 #include "mapinfobox.h"
 
-CuLabel::CuLabel( QWidget * parent, Qt::WindowFlags flags ) :
-  QLabel( parent, flags )
-{}
-
-CuLabel::CuLabel( const QString& text, QWidget* parent, Qt::WindowFlags flags ) :
-  QLabel( text, parent, flags )
-{}
-
-void CuLabel::mousePressEvent ( QMouseEvent* event )
-{
-  Q_UNUSED(event)
-
-  emit mousePress();
-}
-
-//------------------------------------------------------------------------------
-
 // The maximum default height of the infobox in pixels
 #define MAXIMUM_INFO_BOX_HEIGHT 60
 

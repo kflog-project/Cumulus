@@ -60,6 +60,7 @@ HEADERS = \
     calculator.h \
     colordialog.h \
     configwidget.h \
+    CuLabel.h \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
@@ -193,6 +194,7 @@ SOURCES = \
     calculator.cpp \
     colordialog.cpp \
     configwidget.cpp \
+    CuLabel.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \

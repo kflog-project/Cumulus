@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -292,7 +290,7 @@ bool Flarm::extractPflav(const QStringList& stringList)
 bool Flarm::extractPflae(const QStringList& stringList)
 {
   /**
-   * PFLAE,<QueryType>,<Severity>,<ErrorCode>
+   * PFLAE,<QueryType>,<Severity>,<ErrorCode>(,<Message>)
    *
    * <QueryType>
       R = request FLARM to send status, disregard other fields then
@@ -306,7 +304,8 @@ bool Flarm::extractPflae(const QStringList& stringList)
 
      <ErrorCode>
       Two digit hex value
-      11 = Firmware timeout (requires valid GPS information, i.e. will not be available in the first minute after power-on)
+      11 = Firmware timeout (requires valid GPS information, i.e. will not be
+           available in the first minute after power-on)
       21 = Power (e.g. voltage < 8V, might occur during operations)
       31 = GPS communication
       32 = Configuration of GPS module
@@ -317,6 +316,10 @@ bool Flarm::extractPflae(const QStringList& stringList)
       81 = Obstacle database
       91 = Flight recorder A1 = Transponder receiver
       F1 = Other
+
+    <Message>
+      Textual description of error on Flarm version 7 onwards. Maybe omitted
+      or empty.
 
      $PFLAE,A,2,81*
    */
@@ -329,6 +332,15 @@ bool Flarm::extractPflae(const QStringList& stringList)
 
   m_flarmError.severity  = stringList[2];
   m_flarmError.errorCode = stringList[3];
+
+  if( stringList.size() >= 5 )
+    {
+      m_flarmError.errorText = stringList[4];
+    }
+  else
+    {
+      m_flarmError.errorText.clear();
+    }
 
   emit flarmErrorInfo( m_flarmError );
   return true;

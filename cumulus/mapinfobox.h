@@ -30,41 +30,7 @@
 #include <QTimer>
 #include <QWidget>
 
-/**
- * \class CuLabel
- *
- * \author André Somers, Axel Pauli
- *
- * \brief Slight modification of a QLabel.
- *
- * This is a slight modification of a QLabel. It adds a mousePress event.
- *
- * \date 2002-2014
- *
- */
-class CuLabel : public QLabel
-{
-  Q_OBJECT
-
-private:
-
-  Q_DISABLE_COPY ( CuLabel )
-
-public:
-
-  CuLabel ( QWidget *parent, Qt::WindowFlags flags=0 );
-
-  CuLabel ( const QString &text, QWidget *parent, Qt::WindowFlags flags=0 );
-
-signals:
-
-   /** Emitted when the mouse is pressed over the label */
-  void mousePress();
-
-protected:
-
-  void mousePressEvent( QMouseEvent *event );
-};
+#include "CuLabel.h"
 
 /**
  * \class MapInfoBox

@@ -65,7 +65,14 @@ extern MapView *_globalMapView;
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as the Cumulus binary.
  */
-GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
+GpsCon::GpsCon(QObject* parent, const char *pathIn) :
+  QObject(parent),
+  startClient(false),
+  pid(-1),
+  listenNotifier(static_cast<QSocketNotifier *>(0)),
+  clientNotifier(static_cast<QSocketNotifier *>(0)),
+  timer(0),
+  ioSpeed(0)
 {
   setObjectName( "GpsCon" );
 
@@ -92,9 +99,6 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) : QObject(parent)
 
   timer = new QTimer(this);
   timer->connect( timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()) );
-
-  listenNotifier = static_cast<QSocketNotifier *>(0);
-  clientNotifier = static_cast<QSocketNotifier *>(0);
 
   initSignalHandler();
 
@@ -806,9 +810,9 @@ void GpsCon::getDataFromClient()
       if( ioctl( server.getClientSock( 1 ), FIONREAD, &bytes) == -1 )
         {
           qWarning() << "GpsCon::getDataFromClient():"
-                      << "ioctl() returns with ERROR: errno="
-                      << errno
-                      << "," << strerror(errno);
+                     << "ioctl() returns with ERROR: errno="
+                     << errno
+                     << "," << strerror(errno);
           break;
         }
 

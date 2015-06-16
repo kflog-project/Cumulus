@@ -3,7 +3,7 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2014 by Axel Pauli
+                               2008-2015 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -29,9 +29,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef GPS_NMEA_H
@@ -782,6 +782,9 @@ class GpsNmea : public QObject
 
     /** Flag to indicate the receive of GPRMZ. */
     bool _baroAltitudeSeen;
+
+    /** Flarm NMEAOUT initialization flag. */
+    bool flarmNmeaOutInitDone;
 
 #ifdef FLARM
 

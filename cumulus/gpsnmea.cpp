@@ -75,7 +75,13 @@ QHash<QString, short> GpsNmea::gpsHash;
 // Mutex for thread synchronization
 QMutex GpsNmea::mutex;
 
-GpsNmea::GpsNmea(QObject* parent) : QObject(parent)
+// Flarm NMEAOUT initialization command for protocol version 7.
+#define FLARM_NMEAOUT_INIT_CMD "$PFLAC,S,NMEAOUT,71"
+
+
+GpsNmea::GpsNmea(QObject* parent) :
+  QObject(parent),
+  flarmNmeaOutInitDone(false)
 {
   if( instances > 0 )
     {
@@ -338,6 +344,17 @@ void GpsNmea::startGpsReceiver()
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
   // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
+  if( flarmNmeaOutInitDone == false )
+    {
+      flarmNmeaOutInitDone = true;
+
+      // Send out the Flarm NMEAOUT initialization command, that
+      // a connected Flarm device is working in the expected mode.
+      // Note, it is not checked before, if the connected device
+      // is a Flarm. That maybe cause trouble.
+      sendSentence( FLARM_NMEAOUT_INIT_CMD );
+    }
+
   if( nmeaLogFile && nmeaLogFile->isOpen() )
     {
       // Write sentence into log file
@@ -2077,6 +2094,7 @@ void GpsNmea::slot_reset()
   _userExpectedAltitude = static_cast<GpsNmea::DeliveredAltitude> (conf->getGpsAltitude());
   _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
   _reportAltitude = true;
+  flarmNmeaOutInitDone = false;
 
 #ifndef ANDROID
 

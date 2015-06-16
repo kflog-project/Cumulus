@@ -24,6 +24,7 @@
 #endif
 
 #include "calculator.h"
+#include "CuLabel.h"
 #include "flarmbase.h"
 #include "flighttask.h"
 #include "gpsnmea.h"
@@ -112,9 +113,14 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
   gridLayout->addWidget( new QLabel(tr("St:")), 0, 6);
-  errSeverity = new QLabel("???");
+  errSeverity = new CuLabel("???", this);
+  errSeverity->setFrameStyle(QFrame::Box | QFrame::Panel);
+  errSeverity->setLineWidth(3);
+
   gridLayout->addWidget( errSeverity, 0, 7 );
   gridLayout->setColumnMinimumWidth( 8, 20 );
+
+  connect( errSeverity, SIGNAL(mousePress()), SLOT(slotShowErrorSeverity()) );
 
   gridLayout->addWidget( new QLabel(tr("Err:")), 0, 9);
   errCode = new QLabel("???");
@@ -492,10 +498,10 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 
   // Here we set NMEA output and a range of 25500m. All other set items are
   // untouched.
-  m_cmdList << "$PFLAE,R"
+  m_cmdList << "$PFLAC,S,NMEAOUT,71"
+	    << "$PFLAC,S,RANGE,25500"
+	    << "$PFLAE,R"
             << "$PFLAV,R"
-            << "$PFLAC,S,NMEAOUT,1"
-            << "$PFLAC,S,RANGE,25500"
             << "$PFLAC,R,RADIOID"
             << "$PFLAC,R,IGCSER"
             << "$PFLAC,R,SER"
@@ -1028,6 +1034,18 @@ void PreFlightFlarmPage::slotChangeNotrackMode()
     {
       notrack->setText( "0" );
     }
+}
+
+void PreFlightFlarmPage::slotShowErrorSeverity()
+{
+  const Flarm::FlarmError& error = Flarm::instance()->getFlarmError();
+
+  if( error.errorText.isEmpty() )
+    {
+      return;
+    }
+
+  messageBox( QMessageBox::Information, error.errorText, tr("Error") );
 }
 
 void PreFlightFlarmPage::enableButtons( const bool toggle )

@@ -43,6 +43,7 @@ class QSpinBox;
 class QStringList;
 class QTimer;
 
+class CuLabel;
 class FlightTask;
 
 class PreFlightFlarmPage : public QWidget
@@ -100,6 +101,12 @@ class PreFlightFlarmPage : public QWidget
   /** Called if the notrack button is pressed. */
   void slotChangeNotrackMode();
 
+  /**
+   * Called to show the Flarm error severity as text, when the related label
+   * is pressed.
+   */
+  void slotShowErrorSeverity();
+
   signals:
 
   /**
@@ -138,7 +145,7 @@ class PreFlightFlarmPage : public QWidget
   QLabel*      igcVersion;
   QLabel*      serial;
   QLabel*      radioId;
-  QLabel*      errSeverity;
+  CuLabel*     errSeverity;
   QLabel*      errCode;
   QSpinBox*    logInt;
   QPushButton* priv;
