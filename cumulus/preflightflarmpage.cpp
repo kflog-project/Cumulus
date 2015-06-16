@@ -112,19 +112,18 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   gridLayout->addWidget( radioId, 0, 4 );
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("St:")), 0, 6);
-  errSeverity = new CuLabel("???", this);
-  errSeverity->setFrameStyle(QFrame::Box | QFrame::Panel);
-  errSeverity->setLineWidth(3);
-
+  gridLayout->addWidget( new QLabel(tr("Sv:")), 0, 6);
+  errSeverity = new QLabel("???", this);
   gridLayout->addWidget( errSeverity, 0, 7 );
   gridLayout->setColumnMinimumWidth( 8, 20 );
 
-  connect( errSeverity, SIGNAL(mousePress()), SLOT(slotShowErrorSeverity()) );
-
   gridLayout->addWidget( new QLabel(tr("Err:")), 0, 9);
-  errCode = new QLabel("???");
+  errCode = new CuLabel("???", this);
+  errCode->setFrameStyle(QFrame::Box | QFrame::Panel);
+  errCode->setLineWidth(3);
   gridLayout->addWidget( errCode, 0, 10 );
+
+  connect( errCode, SIGNAL(mousePress()), SLOT(slotShowErrorText()) );
 
   //----------------------------------------------------------------------------
 
@@ -1036,7 +1035,7 @@ void PreFlightFlarmPage::slotChangeNotrackMode()
     }
 }
 
-void PreFlightFlarmPage::slotShowErrorSeverity()
+void PreFlightFlarmPage::slotShowErrorText()
 {
   const Flarm::FlarmError& error = Flarm::instance()->getFlarmError();
 
@@ -1045,7 +1044,11 @@ void PreFlightFlarmPage::slotShowErrorSeverity()
       return;
     }
 
-  messageBox( QMessageBox::Information, error.errorText, tr("Error") );
+  QString title = QString(tr("Text for code %1")).arg(error.errorCode);
+
+  QString text = "<html>" + title + ":<br><br>" + error.errorText + "</html>";
+
+  messageBox( QMessageBox::Information, text, title );
 }
 
 void PreFlightFlarmPage::enableButtons( const bool toggle )

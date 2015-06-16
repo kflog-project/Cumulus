@@ -323,52 +323,52 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="flarm.cpp" line="526"/>
+        <location filename="flarm.cpp" line="538"/>
         <source>Traffic</source>
         <translation>Verkehr</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="526"/>
+        <location filename="flarm.cpp" line="538"/>
         <source>Obstacle</source>
         <translation>Hindernis</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="532"/>
+        <location filename="flarm.cpp" line="544"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="535"/>
+        <location filename="flarm.cpp" line="547"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="538"/>
+        <location filename="flarm.cpp" line="550"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="554"/>
+        <location filename="flarm.cpp" line="566"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="556"/>
+        <location filename="flarm.cpp" line="568"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="557"/>
+        <location filename="flarm.cpp" line="569"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="559"/>
+        <location filename="flarm.cpp" line="571"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="567"/>
+        <location filename="flarm.cpp" line="579"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
@@ -537,61 +537,61 @@
         <translation>Klasse</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="257"/>
-        <location filename="flarmlogbook.cpp" line="391"/>
-        <location filename="flarmlogbook.cpp" line="473"/>
-        <location filename="flarmlogbook.cpp" line="546"/>
+        <location filename="flarmlogbook.cpp" line="259"/>
+        <location filename="flarmlogbook.cpp" line="396"/>
+        <location filename="flarmlogbook.cpp" line="480"/>
+        <location filename="flarmlogbook.cpp" line="553"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="258"/>
-        <location filename="flarmlogbook.cpp" line="278"/>
-        <location filename="flarmlogbook.cpp" line="392"/>
-        <location filename="flarmlogbook.cpp" line="452"/>
-        <location filename="flarmlogbook.cpp" line="474"/>
-        <location filename="flarmlogbook.cpp" line="497"/>
-        <location filename="flarmlogbook.cpp" line="547"/>
+        <location filename="flarmlogbook.cpp" line="260"/>
+        <location filename="flarmlogbook.cpp" line="282"/>
+        <location filename="flarmlogbook.cpp" line="397"/>
+        <location filename="flarmlogbook.cpp" line="459"/>
+        <location filename="flarmlogbook.cpp" line="481"/>
+        <location filename="flarmlogbook.cpp" line="504"/>
+        <location filename="flarmlogbook.cpp" line="554"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="277"/>
+        <location filename="flarmlogbook.cpp" line="281"/>
         <source>Flarm flight list read error!</source>
         <translation>Flarm Fluglisten Lesefehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="287"/>
+        <location filename="flarmlogbook.cpp" line="291"/>
         <source>Flarm flight list is empty!</source>
         <translation>Flarm Flugliste ist leer!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="288"/>
+        <location filename="flarmlogbook.cpp" line="292"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="445"/>
+        <location filename="flarmlogbook.cpp" line="452"/>
         <source>Too less free space on:</source>
         <translation>Zu wenig Platz auf:</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="449"/>
+        <location filename="flarmlogbook.cpp" line="456"/>
         <source>Download not possible!</source>
         <translation>Download nicht möglich!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="496"/>
+        <location filename="flarmlogbook.cpp" line="503"/>
         <source>Flarm download error!</source>
         <translation>Flarm Download Fehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="505"/>
+        <location filename="flarmlogbook.cpp" line="512"/>
         <source>Flights downloaded!</source>
         <translation>Flüge runter geladen!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="506"/>
+        <location filename="flarmlogbook.cpp" line="513"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
@@ -798,7 +798,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="gpsnmea.cpp" line="2514"/>
+        <location filename="gpsnmea.cpp" line="2532"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -2038,196 +2038,201 @@ All downloads are canceled!</oldsource>
 <context>
     <name>PreFlightFlarmPage</name>
     <message>
-        <location filename="preflightflarmpage.cpp" line="54"/>
+        <location filename="preflightflarmpage.cpp" line="55"/>
         <source>Flarm IGC Setup</source>
         <translation>Flarm IGC Einstellungen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="104"/>
+        <location filename="preflightflarmpage.cpp" line="105"/>
         <source>SN:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="109"/>
+        <location filename="preflightflarmpage.cpp" line="110"/>
         <source>RId:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="114"/>
-        <source>St:</source>
+        <location filename="preflightflarmpage.cpp" line="115"/>
+        <source>Sv:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="119"/>
+        <location filename="preflightflarmpage.cpp" line="120"/>
         <source>Err:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="125"/>
+        <location filename="preflightflarmpage.cpp" line="130"/>
         <source>ODB:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="130"/>
+        <location filename="preflightflarmpage.cpp" line="135"/>
         <source>Hw:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="135"/>
+        <location filename="preflightflarmpage.cpp" line="140"/>
         <source>Sw:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="140"/>
+        <location filename="preflightflarmpage.cpp" line="145"/>
         <source>Igc:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="146"/>
+        <location filename="preflightflarmpage.cpp" line="151"/>
         <source>Flarm Data</source>
         <translation>Flarm Daten</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="157"/>
+        <location filename="preflightflarmpage.cpp" line="162"/>
         <source>LogInt:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="167"/>
+        <location filename="preflightflarmpage.cpp" line="172"/>
         <source>Priv:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="173"/>
+        <location filename="preflightflarmpage.cpp" line="178"/>
         <source>NoTrk:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="189"/>
+        <location filename="preflightflarmpage.cpp" line="194"/>
         <source>Pilot:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="199"/>
+        <location filename="preflightflarmpage.cpp" line="204"/>
         <source>Co-Pilot:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="211"/>
+        <location filename="preflightflarmpage.cpp" line="216"/>
         <source>Glider Id:</source>
         <translation>Segler Kz:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="220"/>
+        <location filename="preflightflarmpage.cpp" line="225"/>
         <source>Glider Type:</source>
         <translation>Segler Typ:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="232"/>
+        <location filename="preflightflarmpage.cpp" line="237"/>
         <source>Comp Id:</source>
         <translation>Wett Kz:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="241"/>
+        <location filename="preflightflarmpage.cpp" line="246"/>
         <source>Comp Class:</source>
         <translation>Wett Klasse:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="253"/>
+        <location filename="preflightflarmpage.cpp" line="258"/>
         <source>Task:</source>
         <translation>Aufgabe:</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="278"/>
+        <location filename="preflightflarmpage.cpp" line="283"/>
         <source>Read</source>
         <translation>Lesen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="280"/>
+        <location filename="preflightflarmpage.cpp" line="285"/>
         <source>Read data from Flarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="288"/>
+        <location filename="preflightflarmpage.cpp" line="293"/>
         <source>Set</source>
         <translation>Setzen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="290"/>
+        <location filename="preflightflarmpage.cpp" line="295"/>
         <source>Set Cumulus data</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="298"/>
+        <location filename="preflightflarmpage.cpp" line="303"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="300"/>
+        <location filename="preflightflarmpage.cpp" line="305"/>
         <source>Clear input fields</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="307"/>
+        <location filename="preflightflarmpage.cpp" line="312"/>
         <source>Write</source>
         <translation>Schreiben</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="309"/>
+        <location filename="preflightflarmpage.cpp" line="314"/>
         <source>Write data to Flarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="317"/>
+        <location filename="preflightflarmpage.cpp" line="322"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="476"/>
-        <location filename="preflightflarmpage.cpp" line="545"/>
-        <location filename="preflightflarmpage.cpp" line="792"/>
-        <location filename="preflightflarmpage.cpp" line="961"/>
+        <location filename="preflightflarmpage.cpp" line="481"/>
+        <location filename="preflightflarmpage.cpp" line="551"/>
+        <location filename="preflightflarmpage.cpp" line="798"/>
+        <location filename="preflightflarmpage.cpp" line="967"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="477"/>
-        <location filename="preflightflarmpage.cpp" line="546"/>
-        <location filename="preflightflarmpage.cpp" line="793"/>
-        <location filename="preflightflarmpage.cpp" line="962"/>
+        <location filename="preflightflarmpage.cpp" line="482"/>
+        <location filename="preflightflarmpage.cpp" line="552"/>
+        <location filename="preflightflarmpage.cpp" line="799"/>
+        <location filename="preflightflarmpage.cpp" line="968"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="524"/>
+        <location filename="preflightflarmpage.cpp" line="530"/>
         <source>To activate the new task, the Flarm must be power-cycled!</source>
         <translation>Um die neue Aufgabe zu aktivieren, muss das Flarm aus- und eingeschaltet werden!</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="525"/>
+        <location filename="preflightflarmpage.cpp" line="531"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="586"/>
-        <location filename="preflightflarmpage.cpp" line="636"/>
+        <location filename="preflightflarmpage.cpp" line="592"/>
+        <location filename="preflightflarmpage.cpp" line="642"/>
         <source>Flarm Problem</source>
         <translation>Flarm Problem</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="894"/>
+        <location filename="preflightflarmpage.cpp" line="900"/>
         <source>Task Error</source>
         <translation>Aufgabenfehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="895"/>
+        <location filename="preflightflarmpage.cpp" line="901"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="896"/>
+        <location filename="preflightflarmpage.cpp" line="902"/>
         <source>is too long!</source>
         <translation>ist zu lang!</translation>
+    </message>
+    <message>
+        <location filename="preflightflarmpage.cpp" line="1047"/>
+        <source>Text for code %1</source>
+        <translation>Text für Kode %1</translation>
     </message>
 </context>
 <context>

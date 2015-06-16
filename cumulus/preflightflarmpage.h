@@ -24,7 +24,7 @@
  *
  * \date 2012-2015
  *
- * \version 1.4
+ * \version 1.5
  */
 
 #ifndef PREFLIGHT_FLARM_PAGE_H_
@@ -102,10 +102,9 @@ class PreFlightFlarmPage : public QWidget
   void slotChangeNotrackMode();
 
   /**
-   * Called to show the Flarm error severity as text, when the related label
-   * is pressed.
+   * Called to show the Flarm error as text, when the related label is pressed.
    */
-  void slotShowErrorSeverity();
+  void slotShowErrorText();
 
   signals:
 
@@ -145,8 +144,8 @@ class PreFlightFlarmPage : public QWidget
   QLabel*      igcVersion;
   QLabel*      serial;
   QLabel*      radioId;
-  CuLabel*     errSeverity;
-  QLabel*      errCode;
+  QLabel*      errSeverity;
+  CuLabel*     errCode;
   QSpinBox*    logInt;
   QPushButton* priv;
   QPushButton* notrack;
