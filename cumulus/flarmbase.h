@@ -24,7 +24,7 @@
  *
  * \date 2010-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef FLARM_BASE_H
@@ -141,19 +141,21 @@ class FlarmBase
    *
    * \brief FLARM error structure.
    *
-   * FLARM error structure. It contains the error status reported by the Flarm.
+   * FLARM error structure. It contains the last reported error status by the Flarm.
    *
-   * \date 2012
+   * \date 2012-2015
    */
   struct FlarmError
   {
     QString severity;
     QString errorCode;
+    QString errorText;
 
     void reset()
     {
       severity.clear();
       errorCode.clear();
+      errorText.clear();
     };
    };
 
