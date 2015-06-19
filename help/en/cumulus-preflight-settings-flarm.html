@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>Cumulus Preflight Settings</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a	href="cumulus-preflight-settings-task.html">back</a></td>
+				<td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-preflight-settings-waypoint.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 align="center">Preflight Settings - Flarm</h4>
+
+	<b>Flarm</b>
+
+	<p>
+		Here you have the possibility to readout and set Flarm data. On this
+		page you can upload a selected task together with other related task data
+		to the Flarm device.
+	</p>
+
+	<h5>Window description</h5>
+
+	In the upper window part are displayed in the <i>Flarm Data</i> panel different
+	read only items from the Flarm device. If the fields are filled with <i>???</i>
+	no data could be read from the Flarm device. In this case seems to be no active
+	connection available. If Flarm reports an error code in the frame behind
+	the <i>Err:</i> label, you can click on that error code and will get an textual
+	description of it. 
+  
+  <dl>
+  
+  <dt><b>LogInt</b></dt>
+  
+  <dd>Here you can define the log interval of the Flarm IGC logger.
+  The possible setting range is 1...8 seconds. Flarm default are two seconds.</dd>
+         
+  <br><dt><b>Priv</b></dt>
+  
+  <dd>Here you can set/unset the so called <i>Stealth mode</i> of the
+  Flarm device. 0 means off and 1 means on.
+  <b>If you don't know, what it is, let it switched off (0)! That is better
+  for your personal safety.</b>
+  </dd>
+  
+  <br><dt><b>NoTrk</b></dt>
+  
+  <dd>
+  Flarm <i>opt-out</i> option for ground tracking (“no track”). If set,
+  receiving ground stations do not process or store position data of your glider.
+  0 means off and 1 means on.
+  </dd>
+  
+  <br><dt><b>Read</b></dt>
+  
+  <dd>Pressing this button will read out the set IGC data in the Flarm
+  device and enter them in the input fields of the window.</dd>
+  
+  <br><dt><b>Set</b></dt>
+  
+  <dd>Pressing this button sets the Cumulus data in the input fields.</dd>
+  
+  <br><dt><b>Clear</b></dt>
+  
+  <dd>Pressing this button will clear all input fields.</dd>
+  
+  <br><dt><b>Write</b></dt>
+  
+  <dd>Pressing this button will download all input field data
+  to the Flarm device inclusive a selected or empty task.</dd>
+  
+  <br><dt><b>Close</b></dt>
+  
+  <dd>Pressing this button will close the window.</dd>
+  
+  </dl>
+  
+  <p>Please note, task support works only for <i>IGC approved Flarm</i>
+     devices!</p>
+  
+  <p>The task to be downloaded to the Flarm device has to be selected on the
+     task page. If the task definition is empty, an empty task is transfered
+     to the Flarm device. <b>Note! To get running a transfered task, you have to
+     cycle the power switch of the Flarm device.</b></p>
+
+	<p></p>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+        <td align="left"><a href="cumulus-preflight-settings-task.html">back</a></td>
+				<td align="center"><a href="cumulus-preflight-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-preflight-settings-waypoint.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
