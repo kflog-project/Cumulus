@@ -28,7 +28,7 @@
 
 	<p>
 		Here you have the possibility to readout and set Flarm data. On this
-		page you can upload a selected task together with other related task data
+		page you can upload a selected flight task together with its related data
 		to the Flarm device.
 	</p>
 
@@ -36,8 +36,8 @@
 
 	In the upper window part are displayed in the <i>Flarm Data</i> panel different
 	read only items from the Flarm device. If the fields are filled with <i>???</i>
-	no data could be read from the Flarm device. In this case seems to be no active
-	connection available. If Flarm reports an error code in the frame behind
+	no data could be read from the Flarm device. In this case there seems to be no
+	active connection available. If Flarm reports an error code in the frame beside
 	the <i>Err:</i> label, you can click on that error code and will get an textual
 	description of it. 
   
@@ -46,7 +46,8 @@
   <dt><b>LogInt</b></dt>
   
   <dd>Here you can define the log interval of the Flarm IGC logger.
-  The possible setting range is 1...8 seconds. Flarm default are two seconds.</dd>
+  The possible setting range is 1...8 seconds.
+  The default is set to two seconds.</dd>
          
   <br><dt><b>Priv</b></dt>
   
@@ -60,18 +61,29 @@
   
   <dd>
   Flarm <i>opt-out</i> option for ground tracking (“no track”). If set,
-  receiving ground stations do not process or store position data of your glider.
-  0 means off and 1 means on.
+  the receiving ground stations should not process or store position data of
+  your glider. 0 means off and 1 means on.
+  </dd>
+  
+  <br><dt><b>Task</b></dt>
+  <dd>
+  In the displayed combo box at the right side of the window you can select a
+  task to be flown. Preselected is the task from the task window. But you can
+  change here the task selection, if you want. If you do that, if new task will
+  be the task to be used up to now for flying.
   </dd>
   
   <br><dt><b>Read</b></dt>
   
   <dd>Pressing this button will read out the set IGC data in the Flarm
-  device and enter them in the input fields of the window.</dd>
+  device and put them in the input fields of the window.
+  Note, that a set ICG Task cannot be read out. That is not supported by
+  Flarm.</dd>
   
   <br><dt><b>Set</b></dt>
   
-  <dd>Pressing this button sets the Cumulus data in the input fields.</dd>
+  <dd>Pressing this button sets the Cumulus data in the input fields of the
+  window.</dd>
   
   <br><dt><b>Clear</b></dt>
   
@@ -79,7 +91,7 @@
   
   <br><dt><b>Write</b></dt>
   
-  <dd>Pressing this button will download all input field data
+  <dd>Pressing this button will upload all input field data
   to the Flarm device inclusive a selected or empty task.</dd>
   
   <br><dt><b>Close</b></dt>
@@ -88,13 +100,13 @@
   
   </dl>
   
-  <p>Please note, task support works only for <i>IGC approved Flarm</i>
-     devices!</p>
+  <p>Please note the following:</p>
   
-  <p>The task to be downloaded to the Flarm device has to be selected on the
-     task page. If the task definition is empty, an empty task is transfered
-     to the Flarm device. <b>Note! To get running a transfered task, you have to
-     cycle the power switch of the Flarm device.</b></p>
+    <ul>
+    <li>Task support works only for the <i>IGC</i> approved Flarm devices!</li>
+    <li>To get running an uploaded task, you have to cycle the power switch of
+         the Flarm device.<li>
+    </ul>
 
 	<p></p>
 

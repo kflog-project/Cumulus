@@ -535,7 +535,53 @@ void Flarm::createTrafficMessage()
       return;
     }
 
-  QString almType = ( m_flarmStatus.AlarmType != 3 ) ? tr("Traffic") : tr("Obstacle");
+  QString almType;
+
+  switch( m_flarmStatus.AlarmType )
+  {
+    case 0:
+    case 1:
+    case 2:
+      almType = tr("Traffic");
+      break;
+    case 3:
+      almType = tr("Obstacle");
+      break;
+    case 0x41:
+      almType = tr("Skydiver drop zone");
+      break;
+    case 0x42:
+      almType = tr("Aerodrome traffic zone");
+      break;
+    case 0x43:
+      almType = tr("Military firing zone");
+      break;
+    case 0x44:
+      almType = tr("Kite flying zone");
+      break;
+    case 0x45:
+      almType = tr("Winch lauching area");
+      break;
+    case 0x46:
+      almType = tr("RC flying zone");
+      break;
+    case 0x47:
+      almType = tr("UAS flying zone");
+      break;
+    case 0x48:
+      almType = tr("Acrobatic zone");
+      break;
+    case 0x7e:
+      almType = tr("Generic danger area");
+      break;
+    case 0x7f:
+      almType = tr("Generic prohibited area");
+      break;
+    default:
+      almType = tr("Other alert zone");
+      break;
+  }
+
   QString almlevel;
 
   switch( m_flarmStatus.Alarm )

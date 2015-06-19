@@ -1044,7 +1044,7 @@ void PreFlightFlarmPage::slotShowErrorText()
       return;
     }
 
-  QString title = QString(tr("Text for code %1")).arg(error.errorCode);
+  QString title = QString(tr("Code %1 means")).arg(error.errorCode);
 
   QString text = "<html>" + title + ":<br><br>" + error.errorText + "</html>";
 
