@@ -25,11 +25,11 @@
  *
  * \author Flarm Technology GmbH, Axel Pauli
  *
- * \date 2012
+ * \date 2012-2015
  *
  * \brief Flarm binary communication interface.
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -42,10 +42,10 @@
 #define PAGESIZE 528
 #endif
 
-// maximale frame size
+// Maximale frame size
 #define MAXSIZE     600
 
-// spezialzeichen
+// Spezialzeichen
 #define STARTFRAME   's'
 #define ESCAPE       'x'
 #define ESC_ESC      'U'
@@ -66,7 +66,7 @@
 #define FRAME_ACK           0xA0
 #define FRAME_NACK          0xB7
 
-// speed keys for baud rate
+// Speed keys for baud rate
 #define SPEED_4800          0x00
 #define SPEED_9600          0x01
 #define SPEED_19200         0x02
@@ -147,7 +147,7 @@ class FlarmBinCom
   virtual int writeChar(const unsigned char c) = 0;
 
   /** Low level read character port method. Must be implemented by the user. */
-  virtual int readChar(unsigned char* b) = 0;
+  virtual int readChar(unsigned char* b, const int timeout) = 0;
 
  private:
 
@@ -155,13 +155,13 @@ class FlarmBinCom
   bool sendMsg(Message* mMsg);
 
   /** Receives a message from the Flarm. */
-  bool rcvMsg(Message* mMsg);
+  bool rcvMsg(Message* mMsg, const int timeout);
 
   /** Sends a character in escape mode.*/
   void send(const unsigned char c);
 
   /** Gets a character in escape mode.*/
-  bool rcv(unsigned char* b);
+  bool rcv(unsigned char* b, const int timeout);
 
   /** Calculates the CRC checksum according too the XMODEM algorithm. */
   unsigned short computeCRC(Message* mMsg);
@@ -171,6 +171,16 @@ class FlarmBinCom
 
   /** Message sequence number. */
   static unsigned short m_Seq;
+
+  /** Default timeout in ms for reading from serial port. */
+  static const int TimeoutNormal = 10000;
+
+  /** Default timeout in ms for reading from serial port. */
+  static const int TimeoutExit = 3000;
+
+  /** Default timeout in ms for reading from serial port. */
+  static const int TimeoutPing = 2000;
+
 };
 
 #endif /* FLARM_BIN_COM_H_ */

@@ -63,7 +63,7 @@ int FlarmBinComLinux::writeChar(const unsigned char c)
   return done;
 }
 
-int FlarmBinComLinux::readChar(unsigned char* b)
+int FlarmBinComLinux::readChar(unsigned char* b, const int timeout)
 {
   // Note, non blocking IO is set on our file descriptor.
   int done = read( m_Socket, b, sizeof(unsigned char) );
@@ -88,14 +88,14 @@ int FlarmBinComLinux::readChar(unsigned char* b)
   FD_SET( m_Socket, &readFds );
 
   struct timeval timerInterval;
-  timerInterval.tv_sec  = 10; // 10s timeout
-  timerInterval.tv_usec =  0;
+  timerInterval.tv_sec  = timeout / 1000;
+  timerInterval.tv_usec = (timeout % 1000) * 1000;
 
   done = select( maxFds, &readFds, (fd_set *) 0, (fd_set *) 0, &timerInterval );
 
   if( done == 0 )
     {
-      qDebug() << "FlarmBinComLinux::readChar: select() Timeout" << "10 s";
+      qDebug() << "FlarmBinComLinux::readChar: select() Timeout" << timeout/1000 << "s";
       // done = 0  -> Timeout
       return done;
     }

@@ -6,14 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2014 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
 **   the Free Software Foundation; either version 2 of the License, or
 **   (at your option) any later version.
-**
-**   $Id$
 **
 **   Thanks to Flarm Technology GmbH, who supported us.
 **
@@ -52,7 +50,7 @@ bool FlarmBinCom::ping()
   m.hdr.version = 0x01;
   sendMsg(&m);
 
-  if(rcvMsg(&m) == false)
+  if(rcvMsg(&m, TimeoutPing) == false)
     {
       return false;
     }
@@ -79,7 +77,7 @@ bool FlarmBinCom::exit()
   m.hdr.version = 0x01;
   sendMsg(&m);
 
-  if (rcvMsg(&m) == false)
+  if (rcvMsg(&m, TimeoutExit) == false)
     {
       return false;
     }
@@ -101,7 +99,7 @@ bool FlarmBinCom::setBaudRate( const int nSpeedKey )
   m.data[0] = nSpeedKey;
   sendMsg(&m);
 
-  if (rcvMsg(&m) == false)
+  if (rcvMsg(&m, TimeoutNormal) == false)
     {
       return false;
     }
@@ -123,7 +121,7 @@ bool FlarmBinCom::selectRecord( const int nRecord )
   m.data[0] = nRecord;
   sendMsg(&m);
 
-  if (rcvMsg(&m) == false)
+  if (rcvMsg(&m, TimeoutNormal) == false)
     {
       return false;
     }
@@ -144,7 +142,7 @@ bool FlarmBinCom::getRecordInfo( char* sData )
   m.hdr.version = 0x01;
   sendMsg(&m);
 
-  if (rcvMsg(&m) == false)
+  if (rcvMsg(&m, TimeoutNormal) == false)
     {
       return false;
     }
@@ -169,7 +167,7 @@ bool FlarmBinCom::getIGCData( char* sData, int* progress)
   m.hdr.version = 0x01;
   sendMsg(&m);
 
-  if (rcvMsg(&m) == false)
+  if (rcvMsg(&m, TimeoutNormal) == false)
     {
       return false;
     }
@@ -255,7 +253,7 @@ bool FlarmBinCom::sendMsg( Message* mMsg)
   return false;
 }
 
-bool FlarmBinCom::rcvMsg( Message* mMsg)
+bool FlarmBinCom::rcvMsg( Message* mMsg, const int timeout )
 {
   // wait for start frame
   unsigned char ch = 0;
@@ -263,7 +261,7 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
   do
     {
       // printf( "Waiting for start frame\n");
-      if( readChar(&ch) <= 0 )
+      if( readChar(&ch, timeout) <= 0 )
         {
           // printf( "No start frame\n");
           return false;
@@ -277,7 +275,7 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
   // receive header
   for (int i = 0; i < HDR_LENGTH; i++)
     {
-      if (rcv(&hdr[i]) == false)
+      if (rcv(&hdr[i], timeout) == false)
         {
           return false;
         }
@@ -298,7 +296,7 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
   // receive payload
   for (int i = 0; i < mMsg->hdr.length - HDR_LENGTH; i++)
     {
-      if (rcv(&mMsg->data[i]) == false)
+      if (rcv(&mMsg->data[i], timeout) == false)
         {
           // printf( "Receiving payload failed\n");
           return false;
@@ -331,18 +329,18 @@ bool FlarmBinCom::rcvMsg( Message* mMsg)
   return true;
 }
 
-bool FlarmBinCom::rcv( unsigned char* b)
+bool FlarmBinCom::rcv( unsigned char* b, const int timeout )
 {
   *b = 0xff;
 
-  if( readChar(b) <= 0 )
+  if( readChar(b, timeout) <= 0 )
     {
       return false;
     }
 
   if (*b == ESCAPE)
     {
-      if( readChar(b) <= 0 )
+      if( readChar(b, timeout) <= 0 )
         {
           return false;
         }

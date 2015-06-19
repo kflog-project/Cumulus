@@ -99,11 +99,17 @@ void GpsConAndroid::rcvByte( const char byte )
   return;
 }
 
-bool GpsConAndroid::getByte( unsigned char* b )
+bool GpsConAndroid::getByte( unsigned char* b, const int timeout )
 {
   // Called to read out a byte from the byte buffer. Sometimes the Flarm needs
-  // a longer time to provide the data. Therefore a timeout of 10s is necessary.
-  int loop = 10000 / 10; // Timeout is 10s
+  // a longer time to provide the data. Therefore a timeout of 10s can be necessary.
+  int loop = timeout / 10;
+
+  if( loop == 0 )
+    {
+      // Set default timeout to 10 seconds.
+      loop = 10000 / 10;
+    }
 
   while( loop-- )
     {
@@ -121,7 +127,7 @@ bool GpsConAndroid::getByte( unsigned char* b )
       usleep( 10 * 1000 ); // Wait 10ms
     }
 
-  qWarning() << "GpsConAndroid::getByte(): Timeout!";
+  qWarning() << "GpsConAndroid::getByte(): Timeout after" << timeout << "ms!";
   return false;
 }
 

@@ -6,14 +6,12 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2012 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c):  2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -27,9 +25,9 @@
  *
  * This class manages the GPS data transfer to and from the Android Java part.
  *
- * \date 2012
+ * \date 2012-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef GPS_CON_ANDROID_H
@@ -75,7 +73,16 @@ class GpsConAndroid : public QObject
 
   static bool sndBytes( QByteArray& bytes );
 
-  static bool getByte( unsigned char* b );
+  /**
+   * Low level read character port method.
+   *
+   * \param[out] b Character to be returned,
+   *
+   * \param[in] timeout Time to be wait for a character in milli seconds.
+   *
+   * \return 0 means timeout, -1 means error, 1 means ok
+   */
+  static bool getByte( unsigned char* b, const int timeout );
 
   static bool verifyCheckSum( const char *sentence );
 
@@ -161,7 +168,7 @@ class GpsConAndroid : public QObject
 *
 * \date 2012
 *
-* \version $Id$
+* \version 1.0
 */
 
 #include <QThread>
@@ -196,7 +203,7 @@ class FlarmFlightListThread : public QThread
 *
 * \date 2012
 *
-* \version $Id$
+* \version 1.0
 */
 
 #include <QThread>
