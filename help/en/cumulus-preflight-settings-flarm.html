@@ -27,7 +27,7 @@
 	<b>Flarm</b>
 
 	<p>
-		Here you have the possibility to readout and set Flarm data. On this
+		Here you have the possibility to readout and set several Flarm data. On this
 		page you can upload a selected flight task together with its related data
 		to the Flarm device.
 	</p>
@@ -37,9 +37,22 @@
 	In the upper window part are displayed in the <i>Flarm Data</i> panel different
 	read only items from the Flarm device. If the fields are filled with <i>???</i>
 	no data could be read from the Flarm device. In this case there seems to be no
-	active connection available. If Flarm reports an error code in the frame beside
-	the <i>Err:</i> label, you can click on that error code and will get an textual
-	description of it. 
+	active connection available. The abbreviated labels have the following meaning:
+	
+	<ul>
+	<li><b>SN:</b> Serial number</li>
+  <li><b>RId:</b> Radio Identifier</li>
+  <li><b>Sv:</b> Severity of issue</li>
+  <li><b>Err:</b> Error code</li>
+  <li><b>ODB:</b> Obstacle data base version. Empty, if no data base is installed.</li>
+  <li><b>HW:</b> Hardware version</li>
+  <li><b>Sw:</b> Software version</li>
+  <li><b>Igc:</b> IGC version. Empty on none approved IGC Flarms.</li>
+	</ul>
+
+	<b>Note!</b> If Flarm reports an error code in the framed box
+	beside the <i>Err:</i> label, you can click on that error code and will get
+	a textual	description of the error code.
   
   <dl>
   
@@ -51,7 +64,8 @@
          
   <br><dt><b>Priv</b></dt>
   
-  <dd>Here you can set/unset the so called <i>Stealth mode</i> of the
+  <dd>
+  Here you can set/unset the so called <i>Stealth mode</i> of the
   Flarm device. 0 means off and 1 means on.
   <b>If you don't know, what it is, let it switched off (0)! That is better
   for your personal safety.</b>
@@ -67,18 +81,22 @@
   
   <br><dt><b>Task</b></dt>
   <dd>
-  In the displayed combo box at the right side of the window you can select a
-  task to be flown. Preselected is the task from the task window. But you can
-  change here the task selection, if you want. If you do that, if new task will
-  be the task to be used up to now for flying.
+  In the displayed combo box at the right side of the task label you can select a
+  task to be flown. Preselected is the currently activated task. But you can
+  change here the current task selection, if you want to do that. The new
+  selected task will be considered as the task to be used for flying. A task
+  can also be selected at the
+  <a  href="cumulus-preflight-settings-task.html">preflight task page</a>.
   </dd>
   
   <br><dt><b>Read</b></dt>
   
-  <dd>Pressing this button will read out the set IGC data in the Flarm
+  <dd>
+  Pressing this button will read out the set IGC data in the Flarm
   device and put them in the input fields of the window.
-  Note, that a set ICG Task cannot be read out. That is not supported by
-  Flarm.</dd>
+  Note, that a set IGC Task cannot be read out. That is not supported by
+  Flarm.
+  </dd>
   
   <br><dt><b>Set</b></dt>
   
@@ -104,8 +122,8 @@
   
     <ul>
     <li>Task support works only for the <i>IGC</i> approved Flarm devices!</li>
-    <li>To get running an uploaded task, you have to cycle the power switch of
-         the Flarm device.<li>
+    <li>To get activated an uploaded task, you have to cycle the power switch of
+         the Flarm device.</li>
     </ul>
 
 	<p></p>

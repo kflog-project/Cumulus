@@ -547,6 +547,9 @@ void Flarm::createTrafficMessage()
     case 3:
       almType = tr("Obstacle");
       break;
+    case 4:
+      almType = tr("Info Alert");
+      break;
     case 0x41:
       almType = tr("Skydiver drop zone");
       break;
@@ -586,17 +589,20 @@ void Flarm::createTrafficMessage()
 
   switch( m_flarmStatus.Alarm )
   {
-  case 1:
-    almlevel = tr("Info");
-    break;
-  case 2:
-    almlevel = tr("Warning");
-    break;
-  case 3:
-    almlevel = tr("Alarm");
-    break;
-  default:
-    break;
+    case 0:
+      almlevel = tr("Info");
+      break;
+    case 1:
+      almlevel = tr("Caution");
+      break;
+    case 2:
+      almlevel = tr("Warning");
+      break;
+    case 3:
+      almlevel = tr("Alarm");
+      break;
+    default:
+      break;
   }
 
   // Load an arrow pixmap to show the traffic direction more in detail.

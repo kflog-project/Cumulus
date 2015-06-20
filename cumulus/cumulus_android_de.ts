@@ -334,96 +334,107 @@
     </message>
     <message>
         <location filename="flarm.cpp" line="551"/>
+        <source>Info Alert</source>
+        <oldsource>Info Alerts</oldsource>
+        <translation>Info Hinweis</translation>
+    </message>
+    <message>
+        <location filename="flarm.cpp" line="554"/>
         <source>Skydiver drop zone</source>
         <translation>Fallschirmsprung Zone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="554"/>
+        <location filename="flarm.cpp" line="557"/>
         <source>Aerodrome traffic zone</source>
-        <translation>Flughafen Konntrollzone</translation>
+        <translation>Flughafen Verkehrszone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="557"/>
+        <location filename="flarm.cpp" line="560"/>
         <source>Military firing zone</source>
         <translation>Militärzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="560"/>
+        <location filename="flarm.cpp" line="563"/>
         <source>Kite flying zone</source>
         <translation>Drachenflugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="563"/>
+        <location filename="flarm.cpp" line="566"/>
         <source>Winch lauching area</source>
         <translation>Windenstartzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="566"/>
+        <location filename="flarm.cpp" line="569"/>
         <source>RC flying zone</source>
         <translation>RC Flugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="569"/>
+        <location filename="flarm.cpp" line="572"/>
         <source>UAS flying zone</source>
         <translation>Drohnen Flugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="572"/>
+        <location filename="flarm.cpp" line="575"/>
         <source>Acrobatic zone</source>
         <translation>Kunstflugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="575"/>
+        <location filename="flarm.cpp" line="578"/>
         <source>Generic danger area</source>
         <translation>Allgemeine Gefahrenzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="578"/>
+        <location filename="flarm.cpp" line="581"/>
         <source>Generic prohibited area</source>
         <translation>Allgemeine Verbotszone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="581"/>
+        <location filename="flarm.cpp" line="584"/>
         <source>Other alert zone</source>
         <translation>Unbekannte Alarm Zone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="590"/>
+        <location filename="flarm.cpp" line="593"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="593"/>
+        <location filename="flarm.cpp" line="596"/>
+        <source>Caution</source>
+        <translation>Vorsicht</translation>
+    </message>
+    <message>
+        <location filename="flarm.cpp" line="599"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="596"/>
+        <location filename="flarm.cpp" line="602"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="612"/>
+        <location filename="flarm.cpp" line="618"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="614"/>
+        <location filename="flarm.cpp" line="620"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="615"/>
+        <location filename="flarm.cpp" line="621"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="617"/>
+        <location filename="flarm.cpp" line="623"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="625"/>
+        <location filename="flarm.cpp" line="631"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>

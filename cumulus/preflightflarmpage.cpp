@@ -475,7 +475,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   // http://www.flarm.com/support/manual/developer/dataport_spec_6.00_addendum.txt
   //
   // Check, if a Gps is connected, we try to consider it as a Flarm device.
-  // But that must not be true!
+  // But that must not be always true!
   if( GpsNmea::gps->getConnected() != true )
     {
       QString text0 = tr("Flarm device not reachable!");
@@ -521,8 +521,12 @@ void PreFlightFlarmPage::nextFlarmCommand()
 {
    if( m_cmdIdx >= m_cmdList.size() )
     {
+       bool noticeUser = m_taskUploadRunning;
+
+       closeFlarmDataTransfer();
+
       // nothing more to send
-      if( m_taskUploadRunning == true )
+      if( noticeUser == true )
 	{
 	  QApplication::restoreOverrideCursor();
 	  m_taskUploadRunning = false;
@@ -532,7 +536,6 @@ void PreFlightFlarmPage::nextFlarmCommand()
 	  messageBox (QMessageBox::Information, text0, text1);
 	}
 
-      closeFlarmDataTransfer ();
       return;
     }
 
