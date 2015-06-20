@@ -2300,17 +2300,17 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="preflightflarmpage.cpp" line="1090"/>
         <source>Reboot Flarm?</source>
-        <translation></translation>
+        <translation>Neustart Flarm?</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="1091"/>
         <source>To activate the new task, the Flarm must be rebooted!</source>
-        <translation>Um die neue Aufgabe zu aktivieren, muss das Flarm rebootet werden!</translation>
+        <translation>Zwecks Aufgabenaktivierung muss das Flarm neu gestartet werden!</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="1092"/>
         <source>Execute reboot now?</source>
-        <translation>Reboot jetzt ausführen?</translation>
+        <translation>Neustart jetzt ausführen?</translation>
     </message>
     <message>
         <source>To activate the new task, the Flarm must be power-cycled!</source>

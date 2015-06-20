@@ -1109,9 +1109,10 @@ void PreFlightFlarmPage::ask4RebootFlarm()
       return;
     }
 
+  // Flarm reset command
   QByteArray ba("$PFLAR,0");
 
-  bool res = GpsNmea::gps->sendSentence( ba );
+  GpsNmea::gps->sendSentence( ba );
 }
 
 /** Creates a flarmTask definition file in Flarm format. */

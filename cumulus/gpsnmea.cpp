@@ -165,7 +165,8 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$PFLAV", 22);
   gpsKeys.insert( "$PFLAE", 23);
   gpsKeys.insert( "$PFLAC", 24);
-  gpsKeys.insert( "$ERROR", 25);
+  gpsKeys.insert( "$PFLAR", 25);
+  gpsKeys.insert( "$ERROR", 26);
 #endif
 
 #ifdef MAEMO5
@@ -568,7 +569,11 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       Flarm::instance()->extractPflac( slst );
       return;
 
-    case 25: // $ERROR
+    case 25: // $PFLAR
+      Flarm::instance()->extractPflar( slst );
+      return;
+
+    case 26: // $ERROR
       Flarm::instance()->extractError( slst );
       return;
 

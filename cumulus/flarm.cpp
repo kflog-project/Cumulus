@@ -364,6 +364,25 @@ bool Flarm::extractPflac(QStringList& stringList)
   return true;
 }
 
+bool Flarm::extractPflar(QStringList& stringList)
+{
+  /**
+   * PFLAR,<QueryType>
+   *
+   * $PFLAR,A*24
+   *
+   * Answer send by Flarm after a reset command.
+   */
+  if ( stringList[0] != "$PFLAR" || stringList.size() < 2 )
+      {
+        qWarning("$PFLAR contains too less parameters!");
+        return false;
+      }
+
+  emit flarmResetResponse( stringList );
+  return true;
+}
+
 bool Flarm::extractError(QStringList& stringList)
 {
   /**

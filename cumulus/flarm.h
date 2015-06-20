@@ -129,6 +129,13 @@ class Flarm : public QObject, public FlarmBase
   bool extractPflac(QStringList& stringList);
 
   /**
+   * Extracts all items from the $PFLAR sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAR as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflar(QStringList& stringList);
+
+  /**
    * Extracts all items from the $ERROR sentence sent by the Flarm device.
    * @param stringList Flarm sentence $PFLAV as string list
    * @return true if a valid value exists otherwise false
@@ -180,6 +187,11 @@ class Flarm : public QObject, public FlarmBase
    * This signal is emitted if a new Flarm version info is available.
    */
   void flarmVersionInfo( const Flarm::FlarmVersion& info );
+
+  /**
+   * This signal is emitted if a Flarm reset command is received..
+   */
+  void flarmResetResponse( QStringList& info );
 
   /**
    * This signal is emitted if a new Flarm configuration info is available.

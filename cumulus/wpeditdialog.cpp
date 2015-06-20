@@ -105,6 +105,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   pcArea->setFrameStyle( QFrame::NoFrame );
   m_comment = new QTextEdit(this);
   m_comment->setWordWrapMode(QTextOption::WordWrap);
+  Qt::InputMethodHints imh = (m_comment->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_comment->setInputMethodHints(imh);
+
   pcArea->setWidget( m_comment );
   tabWidget->addTab( pcArea, tr("Comment") );
 
