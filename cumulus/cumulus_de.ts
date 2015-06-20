@@ -2283,53 +2283,62 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="481"/>
-        <location filename="preflightflarmpage.cpp" line="551"/>
-        <location filename="preflightflarmpage.cpp" line="798"/>
-        <location filename="preflightflarmpage.cpp" line="967"/>
+        <location filename="preflightflarmpage.cpp" line="553"/>
+        <location filename="preflightflarmpage.cpp" line="800"/>
+        <location filename="preflightflarmpage.cpp" line="969"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="482"/>
-        <location filename="preflightflarmpage.cpp" line="552"/>
-        <location filename="preflightflarmpage.cpp" line="799"/>
-        <location filename="preflightflarmpage.cpp" line="968"/>
+        <location filename="preflightflarmpage.cpp" line="554"/>
+        <location filename="preflightflarmpage.cpp" line="801"/>
+        <location filename="preflightflarmpage.cpp" line="970"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="530"/>
-        <source>To activate the new task, the Flarm must be power-cycled!</source>
-        <translation>Um die neue Aufgabe zu aktivieren, muss das Flarm aus- und eingeschaltet werden!</translation>
-    </message>
-    <message>
-        <location filename="preflightflarmpage.cpp" line="531"/>
-        <source>Information</source>
+        <location filename="preflightflarmpage.cpp" line="1090"/>
+        <source>Reboot Flarm?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="592"/>
-        <location filename="preflightflarmpage.cpp" line="642"/>
+        <location filename="preflightflarmpage.cpp" line="1091"/>
+        <source>To activate the new task, the Flarm must be rebooted!</source>
+        <translation>Um die neue Aufgabe zu aktivieren, muss das Flarm rebootet werden!</translation>
+    </message>
+    <message>
+        <location filename="preflightflarmpage.cpp" line="1092"/>
+        <source>Execute reboot now?</source>
+        <translation>Reboot jetzt ausführen?</translation>
+    </message>
+    <message>
+        <source>To activate the new task, the Flarm must be power-cycled!</source>
+        <translation type="obsolete">Um die neue Aufgabe zu aktivieren, muss das Flarm aus- und eingeschaltet werden!</translation>
+    </message>
+    <message>
+        <location filename="preflightflarmpage.cpp" line="594"/>
+        <location filename="preflightflarmpage.cpp" line="644"/>
         <source>Flarm Problem</source>
         <translation>Flarm Problem</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="900"/>
+        <location filename="preflightflarmpage.cpp" line="902"/>
         <source>Task Error</source>
         <translation>Aufgabenfehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="901"/>
+        <location filename="preflightflarmpage.cpp" line="903"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="902"/>
+        <location filename="preflightflarmpage.cpp" line="904"/>
         <source>is too long!</source>
         <translation>ist zu lang!</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="1047"/>
+        <location filename="preflightflarmpage.cpp" line="1049"/>
         <source>Code %1 means</source>
         <oldsource>Text for code %1</oldsource>
         <translation>Kode %1 bedeutet</translation>

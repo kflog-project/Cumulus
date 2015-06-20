@@ -135,6 +135,12 @@ class PreFlightFlarmPage : public QWidget
   /** Shows a popup message box to the user. */
   void messageBox( QMessageBox::Icon icon, QString message, QString title="" );
 
+  /**
+   * Ask the user via a message box, if the Flarm shall be rebooted.
+   * If he answers yes the boot is initiated.
+   */
+  void ask4RebootFlarm();
+
   /** Send next command to Flarm from the command list. */
   void nextFlarmCommand();
 

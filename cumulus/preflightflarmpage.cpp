@@ -531,9 +531,8 @@ void PreFlightFlarmPage::nextFlarmCommand()
 	  QApplication::restoreOverrideCursor();
 	  m_taskUploadRunning = false;
 
-	  QString text0 = tr( "To activate the new task, the Flarm must be power-cycled!" );
-	  QString text1 = tr("Information");
-	  messageBox (QMessageBox::Information, text0, text1);
+	  // Ask the user for reboot.
+	  ask4RebootFlarm();
 	}
 
       return;
@@ -1083,6 +1082,36 @@ void PreFlightFlarmPage::messageBox(  QMessageBox::Icon icon,
 #endif
 
   mb.exec();
+}
+
+void PreFlightFlarmPage::ask4RebootFlarm()
+{
+  QMessageBox mb( QMessageBox::Question,
+		  tr( "Reboot Flarm?"),
+		  tr( "To activate the new task, the Flarm must be rebooted!") +
+		  QString("<p>") + tr("Execute reboot now?") + "</p>",
+		  QMessageBox::Yes | QMessageBox::No,
+		  this );
+
+  mb.setDefaultButton( QMessageBox::No );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  if( mb.exec() == QMessageBox::No )
+    {
+      return;
+    }
+
+  QByteArray ba("$PFLAR,0");
+
+  bool res = GpsNmea::gps->sendSentence( ba );
 }
 
 /** Creates a flarmTask definition file in Flarm format. */
