@@ -20,8 +20,19 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-06-22 AP: Issue #64 fixed. Move Flarm page from preflight task page one
+                   level up.
+
+[o] 2015-06-22 AP: Issue #63 fixed. Show an user hint after a task is uploded
+                   to the Flarm device.
+
+[o] 2015-06-22 AP: Issue #62 fixed. Flarm read timeout is too short on RS232.
+
 [o] 2015-05-30 AP: Preflight Flarm page moved from the task page to the
                    preflight list.
+
+[o] 2015-06-22 AP: Issue #61 fixed. New Flarm interface provides error text for
+                   error codes.
 
 [*] 2015-05-26 AP: Cumulus 5.22.3 released for Android.
 
