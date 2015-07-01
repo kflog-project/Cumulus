@@ -202,6 +202,8 @@ dpkg_make:
 	cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
+	# Define the package format as native
+	echo '3.0 (native)' > $(CUMULUS_DEB)/debian/source/format
 	
 # This target builds the debian package, if all is prepared before.
 dpkg_build:
@@ -274,9 +276,8 @@ endif
 copysrc2web:
 	ssh web31_axel@kflog.org 'mkdir -p /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL); chmod 755 /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL)'
 	cd $(CUMULUS_DEB_ROOT); \
-	scp -C cumulus_$(VERSION).debian.tar.* \
+	scp -C cumulus_$(VERSION)*.tar.* \
 	       cumulus_$(VERSION).dsc \
-	       cumulus_$(VERSION).orig.tar.* \
 	       cumulus_$(VERSION)_source.changes \
 	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL)
 	ssh web31_axel@kflog.org 'chmod 644 /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL)/*'
