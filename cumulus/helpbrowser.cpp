@@ -43,6 +43,12 @@ HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile ) :
 
   m_browser = new QTextBrowser(this);
 
+#ifdef ANDROID
+  // Make the vertical scrollbar bigger for Android
+  QScrollBar* vsb = m_browser->verticalScrollBar();
+  vsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture(m_browser->viewport(), QScroller::LeftMouseButtonGesture);
 #endif

@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-07-01 AP: Issue #67 fixed. Make the vertical scrollbar of the help
+                   browser bigger for Android otherwise it is unusable.
+
 [*] 2015-04-30 AP: Cumulus 5.23.0 released for Android, Ubuntu, Debian and Maemo4/5.
 
 [o] 2015-06-22 AP: Issue #64 fixed. Move Flarm page from preflight task page one
