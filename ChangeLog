@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2015-04-30 AP: Cumulus 5.23.0 released for Android, Ubuntu, Debian and Maemo4/5.
+
 [o] 2015-06-22 AP: Issue #64 fixed. Move Flarm page from preflight task page one
                    level up.
 
@@ -27,9 +29,6 @@ Cumulus changelog
                    to the Flarm device.
 
 [o] 2015-06-22 AP: Issue #62 fixed. Flarm read timeout is too short on RS232.
-
-[o] 2015-05-30 AP: Preflight Flarm page moved from the task page to the
-                   preflight list.
 
 [o] 2015-06-22 AP: Issue #61 fixed. New Flarm interface provides error text for
                    error codes.
@@ -48,7 +47,7 @@ Cumulus changelog
 
 [-] 2015-04-14 AP: Issue #57 fixed. Repeat Flarm command after timeout or error.
 
-[*] 2015-04-30 AP: Cumulus 5.22.0 released for Android, Ubuntu, Debian and Maemo4/5
+[*] 2015-04-30 AP: Cumulus 5.22.0 released for Android, Ubuntu, Debian and Maemo4/5.
 
 [o] 2015-04-20 AP: Retry to send a Flarm command after a reported checksum error.
 
