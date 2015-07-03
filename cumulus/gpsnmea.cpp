@@ -166,12 +166,13 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$PFLAE", 23);
   gpsKeys.insert( "$PFLAC", 24);
   gpsKeys.insert( "$PFLAR", 25);
-  gpsKeys.insert( "$ERROR", 26);
+  gpsKeys.insert( "$PFLAI", 26);
+  gpsKeys.insert( "$ERROR", 29);
 #endif
 
 #ifdef MAEMO5
-  gpsKeys.insert( "$MAEMO0", 30);
-  gpsKeys.insert( "$MAEMO1", 31);
+  gpsKeys.insert( "$MAEMO0", 40);
+  gpsKeys.insert( "$MAEMO1", 41);
 #endif
 
   gpsKeys.squeeze();
@@ -553,6 +554,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
         Flarm::instance()->extractPflaa( slst, aircraft );
         return;
       }
+
     case 21: // $PFLAU
       __ExtractPflau( slst );
       return;
@@ -573,7 +575,11 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       Flarm::instance()->extractPflar( slst );
       return;
 
-    case 26: // $ERROR
+    case 26: // $PFLAI
+      Flarm::instance()->extractPflai( slst );
+      return;
+
+    case 29: // $ERROR
       Flarm::instance()->extractError( slst );
       return;
 
@@ -581,13 +587,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
 #ifdef MAEMO5
 
-    case 30:
+    case 40:
       // Handle sentences created by GPS Maemo Client process. These sentenceIns
       // contain no checksum items.
       __ExtractMaemo0( slst );
       return;
 
-    case 31:
+    case 41:
       // Handle sentences created by GPS Maemo Client process. These sentenceIns
       // contain no checksum items.
       __ExtractMaemo1( slst );

@@ -383,6 +383,30 @@ bool Flarm::extractPflar(QStringList& stringList)
   return true;
 }
 
+bool Flarm::extractPflai(QStringList& stringList)
+{
+  /**
+   * PFLAI,<IGC Command>
+   *
+   * $PFLAI,IGCREADOUT
+   *   $PFLAI,IGCREADOUT,ERROR,<ERROR>
+   *   $PFLAI,IGCREADOUT,OK
+   *
+   * $PFLAI,PILOTEVENT
+   *   $PFLAI,PILOTEVENT,OK
+   *
+   * Answer send by Flarm after an IGC command.
+   */
+  if ( stringList[0] != "$PFLAI" || stringList.size() < 2 )
+      {
+        qWarning("$PFLAI contains too less parameters!");
+        return false;
+      }
+
+  emit flarmIgcResponse( stringList );
+  return true;
+}
+
 bool Flarm::extractError(QStringList& stringList)
 {
   /**

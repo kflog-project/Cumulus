@@ -28,6 +28,7 @@
 
 #include "altimeterdialog.h"
 #include "calculator.h"
+#include "flarmbase.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "mainwindow.h"
@@ -469,6 +470,15 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
           // Send a signal to the IGC logger to increase logging interval
           emit taskpointSectorTouched();
+
+          // Send a pilot event to the Flarm, if Flarm is recognized.
+          // That increases the IGC logger interval to 1s for 30s.
+          if( FlarmBase::getFlarmStatus().valid == true )
+            {
+	      const QString pilotEvent = "$PFLAI,PILOTEVENT";
+	      GpsNmea::gps->sendSentence( pilotEvent );
+	      qDebug() << "Calculator is sending" << pilotEvent;
+            }
         }
 
       m_lastTpPassageState = passageState;

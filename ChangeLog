@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2015-07-01 AP: Issue #68 fixed. Use new Flarm Pilot Event command to increase
+                   IGC logger interval in certain situations.
+
 [o] 2015-07-01 AP: Issue #67 fixed. Make the vertical scrollbar of the help
                    browser bigger for Android otherwise it is unusable.
 
