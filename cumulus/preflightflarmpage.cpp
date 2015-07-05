@@ -222,7 +222,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 
   gridLayout->addWidget( gliderId, row, 1 );
 
-  gridLayout->addWidget( new QLabel(tr("Glider Type:")), row, 2);
+  gridLayout->addWidget( new QLabel(tr("Glider Ty:")), row, 2);
   gliderType = new QLineEdit;
   gliderType->setInputMethodHints(imh);
 
@@ -243,7 +243,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 
   gridLayout->addWidget( compId, row, 1 );
 
-  gridLayout->addWidget( new QLabel(tr("Comp Class:")), row, 2);
+  gridLayout->addWidget( new QLabel(tr("Comp Cl:")), row, 2);
   compClass = new QLineEdit;
   compClass->setInputMethodHints(imh);
 
