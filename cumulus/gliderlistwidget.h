@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,11 +24,11 @@
  * This widget manages a list of gliders and provides some additional editor
  * functions.
  *
- * \date 2002-2012
+ * \date 2002-2015
  *
  */
 
-#ifndef GLIDER_LIST_WIDGET_H
+#ifndef GLIDER_LIST_WIDGET_Hm_glider
 #define GLIDER_LIST_WIDGET_H
 
 #include <QWidget>
@@ -44,18 +42,27 @@ class GliderListWidget : public QTreeWidget
 {
   Q_OBJECT
 
-private:
+ private:
 
   Q_DISABLE_COPY ( GliderListWidget )
 
-public:
+ public:
 
-  GliderListWidget( QWidget *parent=0 );
+  /**
+   * Class constructor
+   *
+   * \param[in] parent The parent widget
+   *
+   * \param[in] considerSelectionChanges Set it to true, if selection changes
+   *            in the list should be considered.
+   *
+   */
+  GliderListWidget( QWidget *parent, bool considerSelectionChanges=false );
 
   ~GliderListWidget();
 
   /**
-   * @returns The identifier of the currently highlighted glider.
+   * @returns The selected glider object from the glider list.
    */
   Glider *getSelectedGlider(bool take=false);
 
@@ -74,7 +81,7 @@ public:
    */
   bool hasChanged()
   {
-    return _changed;
+    return m_changed;
   };
 
   /**
@@ -94,25 +101,35 @@ public:
    * @returns a @ref Glider object representing the stored glider,
    * or 0 if an error occurred or there was no stored selection.
    */
-  static Glider *getStoredSelection();
-
-  /**
-   * Stores a reference in the configuration file that this glider was
-   * the last selected glider. This is used to restore the selection
-   * after a restart of Cumulus.
-   */
-  static void setStoredSelection( const Glider* glider );
+  static Glider *getUserSelectedGlider();
 
   /**
    * Sets the selection to the item with this registration string.
    */
   void selectItemFromReg(const QString& registration);
 
-protected:
+  /**
+   * Selects the item in the QTreeWidget, which is marked in the glider list.
+   */
+  void selectItemFromList();
+
+  /**
+   * Clears the user selection flag of all gliders in the glider list.
+   */
+  void clearSelectionInGliderList();
+
+ private:
+
+  /**
+   * Called to migrate a glider list to the new format.
+   */
+  void migrateGliderList();
+
+ protected:
 
   void showEvent( QShowEvent* event );
 
-public slots:
+ public slots:
 
   /**
    * Called if a glider has been edited.
@@ -129,13 +146,42 @@ public slots:
    */
   void slot_Deleted(Glider *glider);
 
-private:
+  /**
+   * This slot is called when the current item changes. The current item is
+   * specified by current, and this replaces the previous current item.
+   */
+  void currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 
-  int  _added;
-  bool _changed;
+ private:
+
+  int  m_added;
+  bool m_changed;
 
   /** List of gliders. */
-  QList<Glider*> Gliders;
+  QList<Glider*> m_gliders;
+
+  /**
+   * Extension of class QTreeWidgetItem with a glider object.
+   */
+  class GliderItem : public QTreeWidgetItem
+    {
+      public:
+
+      GliderItem( Glider* glider, const QStringList& strings, int type=0 ) :
+	QTreeWidgetItem(strings, type),
+	m_glider(glider)
+	{
+	};
+
+      Glider* getGlider() const
+	{
+	  return m_glider;
+	}
+
+      private:
+
+      Glider* m_glider;
+    };
 };
 
 #endif

@@ -66,7 +66,7 @@ class PreFlightGliderPage : public QWidget
   /**
    * Selects the current activated glider, if a selection exists.
    */
-  void getCurrent();
+  void setCurrentGlider();
 
   GliderListWidget *m_gliderList;
   QLineEdit        *m_edtPilot;

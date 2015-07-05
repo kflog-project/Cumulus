@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2012 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -27,9 +25,9 @@
  * on a glider, it's type, it's registration, call sign, polar,
  * single or double seater, maximum water capacity, etc.
  *
- * \date 2003-2012
+ * \date 2003-2015
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -55,7 +53,7 @@ public:
      */
     QString type()const
     {
-        return _type;
+        return m_type;
     };
 
     /**
@@ -63,7 +61,7 @@ public:
      */
     void setType(QString newValue)
     {
-      _type = newValue;
+      m_type = newValue;
     };
 
     /**
@@ -71,7 +69,7 @@ public:
      */
     QString registration() const
     {
-        return _registration;
+        return m_registration;
     };
 
     /**
@@ -79,7 +77,7 @@ public:
      */
     void setRegistration(QString newValue)
     {
-        _registration = newValue;
+        m_registration = newValue;
     };
 
     /**
@@ -87,7 +85,7 @@ public:
      */
     QString callSign() const
     {
-        return _callSign;
+        return m_callSign;
     };
 
     /**
@@ -95,7 +93,7 @@ public:
      */
     void setCallSign(QString newValue)
     {
-        _callSign = newValue;
+        m_callSign = newValue;
     };
 
     /**
@@ -103,7 +101,7 @@ public:
      */
     Glider::seat seats() const
     {
-        return _seats;
+        return m_seats;
     };
 
     /**
@@ -111,7 +109,7 @@ public:
      */
     void setSeats(Glider::seat newValue)
     {
-        _seats = newValue;
+        m_seats = newValue;
     };
 
     /**
@@ -119,7 +117,7 @@ public:
      */
     int maxWater()const
     {
-        return _maxWater;
+        return m_maxWater;
     };
 
     /**
@@ -127,7 +125,7 @@ public:
      */
     void setMaxWater(int newValue)
     {
-      _maxWater = newValue;
+      m_maxWater = newValue;
     };
 
     /**
@@ -135,7 +133,7 @@ public:
      */
     Polar *polar()
     {
-      return &_polar;
+      return &m_polar;
     };
 
     /**
@@ -143,19 +141,20 @@ public:
      */
     void setPolar(Polar& newPolar)
     {
-      _polar = newPolar;
+      m_polar = newPolar;
     };
 
     /**
      * This function loads the glider data from the configuration object.
      * The configuration object needs to be initialized to the correct
-     * section beforehand! It tries to load the glider with id id,
+     * section beforehand! It tries to load the glider with id
      * and returns true if it succeeds, otherwise false.
      */
     bool load(QSettings *config, int id);
 
     /**
-     * Stores the glider info contained in configuration object config under id.
+     * Stores the glider data permanently in the configuration object config
+     * under id.
      */
     void safe(QSettings *config, int id);
 
@@ -164,7 +163,7 @@ public:
      */
      int lastSafeID()const
     {
-        return _lastSafeID;
+        return m_lastSafeID;
     };
 
     /**
@@ -172,7 +171,7 @@ public:
      */
      void setID(int newID)
     {
-        _lastSafeID = newID;
+        m_lastSafeID = newID;
     };
 
     /**
@@ -180,30 +179,52 @@ public:
      */
     QString coPilot() const
     {
-      return _coPilot;
+      return m_coPilot;
     };
 
     /**
      * Sets the name of the co-pilot.
      */
-     void setCoPilot(QString newValue)
+    void setCoPilot(QString newValue)
     {
-        _coPilot = newValue;
+        m_coPilot = newValue;
     };
 
+    /**
+     * Sets the user selection flag.
+     */
+    void setSelectionFlag( const bool flag )
+      {
+	m_isSelected = flag;
+      };
+
+    /**
+     * @returns the user selection flag.
+     */
+    bool getSelectionFlag() const
+      {
+	return m_isSelected;
+      };
+
 private:
+
     /**
      * Contains the type of glider, for instance Ka-8 or ASH 25
      */
-    QString _type;
-    QString _registration;
-    QString _callSign;
-    seat _seats;
-    Polar _polar;
-    int _maxWater;
-    int _lastSafeID;
+    QString m_type;
+    QString m_registration;
+    QString m_callSign;
+    QString m_coPilot;
 
-    QString _coPilot;
+    seat m_seats;
+    Polar m_polar;
+    int m_maxWater;
+    int m_lastSafeID;
+
+    /**
+     * Selection flag. Set to true if glider is selected by the user.
+     */
+    bool m_isSelected;
 };
 
 #endif

@@ -122,10 +122,11 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   topLayout->addLayout( hbox, row, 2, 1, 2 );
   row++;
 
-  topLayout->setRowMinimumHeight ( row, 10 );
+  topLayout->setRowMinimumHeight( row, 10 );
   row++;
 
-  m_gliderList = new GliderListWidget(this);
+  m_gliderList = new GliderListWidget( this, true );
+
 #ifndef ANDROID
   m_gliderList->setToolTip(tr("Select a glider to be used"));
 #endif
@@ -151,7 +152,7 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   //---------------------------------------------------------------------
   m_gliderList->fillList();
   m_gliderList->clearSelection();
-  getCurrent();
+  m_gliderList->selectItemFromList();
 
   connect(deselect, SIGNAL(clicked()), this, SLOT(slotGliderDeselected()) );
   connect(m_gliderList, SIGNAL(itemSelectionChanged()), this, SLOT(slotGliderChanged()));
@@ -257,7 +258,7 @@ void PreFlightGliderPage::slotGliderDeselected()
   m_wingLoad->clear();
 }
 
-void PreFlightGliderPage::getCurrent()
+void PreFlightGliderPage::setCurrentGlider()
 {
   extern Calculator* calculator;
 
@@ -268,7 +269,7 @@ void PreFlightGliderPage::getCurrent()
       return;
     }
 
-  m_gliderList->selectItemFromReg( glider->registration() );
+  m_gliderList->selectItemFromList();
 
   m_edtCoPilotLabel->setEnabled(glider->seats()==Glider::doubleSeater);
   m_edtCoPilot->setEnabled(glider->seats() == Glider::doubleSeater);
@@ -294,8 +295,10 @@ void PreFlightGliderPage::save()
 
   Glider* glider = m_gliderList->getSelectedGlider(false);
 
-  if(glider)
+  if( glider )
     {
+      glider->setSelectionFlag( true );
+
       if (glider->seats() == Glider::doubleSeater)
         {
           glider->setCoPilot(m_edtCoPilot->text().trimmed());
@@ -307,18 +310,18 @@ void PreFlightGliderPage::save()
 
       glider->polar()->setAddLoad( m_edtLoad->value() );
       glider->polar()->setWater( m_edtWater->value() );
-      m_gliderList->save();
 
       glider = new Glider(*m_gliderList->getSelectedGlider(false));
       calculator->setGlider(glider);
-      m_gliderList->setStoredSelection(glider);
     }
   else
     {
-      // no selected glider, reset of stored selection
+      // No selected glider, reset all selection flags in the glider list.
       calculator->setGlider( static_cast<Glider *> (0) );
-      m_gliderList->setStoredSelection( static_cast<Glider *> (0) );
+      m_gliderList->clearSelectionInGliderList();
     }
+
+  m_gliderList->save();
 }
 
 void PreFlightGliderPage::slotUpdateWingLoad( int value )

@@ -963,7 +963,7 @@ void MainWindow::slotCreateApplicationWidgets()
   slotReadconfig();
 
   // set the default glider to be the last one selected.
-  calculator->setGlider( GliderListWidget::getStoredSelection() );
+  calculator->setGlider( GliderListWidget::getUserSelectedGlider() );
   QString gt = calculator->gliderType();
 
   if ( !gt.isEmpty() )

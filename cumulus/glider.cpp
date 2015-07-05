@@ -19,9 +19,10 @@
 #include <QtCore>
 
 Glider::Glider() :
-  _seats(singleSeater),
-  _maxWater(0),
-  _lastSafeID(-1)
+  m_seats(singleSeater),
+  m_maxWater(0),
+  m_lastSafeID(-1),
+  m_isSelected(false)
 {
 }
 
@@ -42,20 +43,20 @@ bool Glider::load(QSettings *config, int id)
           return false;
         }
 
-      _type = data[0];
-      _registration = data[1];
-      _callSign = data[2];
+      m_type = data[0];
+      m_registration = data[1];
+      m_callSign = data[2];
 
       if( data[3].toInt() == 1 )
         {
-          _seats = singleSeater;
+          m_seats = singleSeater;
         }
       else
         {
-          _seats = doubleSeater;
+          m_seats = doubleSeater;
         }
 
-      _maxWater = data[4].toInt();
+      m_maxWater = data[4].toInt();
 
       Speed V1, V2, V3, W1, W2, W3;
       V1.setKph( data[5].toDouble() );
@@ -66,7 +67,7 @@ bool Glider::load(QSettings *config, int id)
       W2.setMps( data[8].toDouble() );
       W3.setMps( data[10].toDouble() );
 
-      _polar = Polar( _type,
+      m_polar = Polar( m_type,
                       V1, W1, // v/w pair 1
                       V2, W2, // v/w pair 2
                       V3, W3, // v/w pair 3
@@ -74,17 +75,22 @@ bool Glider::load(QSettings *config, int id)
                       data[13].toDouble(), // empty weight
                       data[14].toDouble() ); // gross weight
 
-      _lastSafeID = id;
+      m_lastSafeID = id;
 
       if( data.count() >= 17 )
         {
-	  _polar.setWater( data[15].toInt() );
-          _coPilot = data[16];
+	  m_polar.setWater( data[15].toInt() );
+          m_coPilot = data[16];
         }
 
       if( data.count() >= 18 )
 	{
-          _polar.setAddLoad( data[17].toDouble() );
+          m_polar.setAddLoad( data[17].toDouble() );
+	}
+
+      if( data.count() >= 19 )
+	{
+	  m_isSelected = data[18].toInt();
 	}
 
       return true;
@@ -93,18 +99,15 @@ bool Glider::load(QSettings *config, int id)
   return false;
 }
 
-/**
- * Stores the glider information contained in the configuration file
- */
 void Glider::safe(QSettings *config, int id)
 {
   QStringList data;
 
-  data.append( _type );
-  data.append( _registration );
-  data.append( _callSign );
+  data.append( m_type );
+  data.append( m_registration );
+  data.append( m_callSign );
 
-  if( _seats == singleSeater )
+  if( m_seats == singleSeater )
     {
       data.append( "1" );
     }
@@ -113,22 +116,23 @@ void Glider::safe(QSettings *config, int id)
       data.append( "2" );
     }
 
-  data.append( QString::number( _maxWater ) );
-  data.append( QString::number( _polar.v1().getKph() ) );
-  data.append( QString::number( _polar.w1().getMps() ) );
-  data.append( QString::number( _polar.v2().getKph() ) );
-  data.append( QString::number( _polar.w2().getMps() ) );
-  data.append( QString::number( _polar.v3().getKph() ) );
-  data.append( QString::number( _polar.w3().getMps() ) );
+  data.append( QString::number( m_maxWater ) );
+  data.append( QString::number( m_polar.v1().getKph() ) );
+  data.append( QString::number( m_polar.w1().getMps() ) );
+  data.append( QString::number( m_polar.v2().getKph() ) );
+  data.append( QString::number( m_polar.w2().getMps() ) );
+  data.append( QString::number( m_polar.v3().getKph() ) );
+  data.append( QString::number( m_polar.w3().getMps() ) );
   data.append( QString::number( 0.0 ) ); // wing load not used
-  data.append( QString::number( _polar.wingArea() ) );
-  data.append( QString::number( _polar.emptyWeight() ) );
-  data.append( QString::number( _polar.grossWeight() ) );
-  data.append( QString::number( _polar.water() ) );
-  data.append( _coPilot );
-  data.append( QString::number( _polar.addLoad() ) );
+  data.append( QString::number( m_polar.wingArea() ) );
+  data.append( QString::number( m_polar.emptyWeight() ) );
+  data.append( QString::number( m_polar.grossWeight() ) );
+  data.append( QString::number( m_polar.water() ) );
+  data.append( m_coPilot );
+  data.append( QString::number( m_polar.addLoad() ) );
+  data.append( QString::number( m_isSelected ) );
 
   QString keyname = "Glider%1";
   config->setValue( keyname.arg( id ), data.join( ";" ) );
-  _lastSafeID = id;
+  m_lastSafeID = id;
 }

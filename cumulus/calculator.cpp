@@ -30,6 +30,7 @@
 #include "calculator.h"
 #include "flarmbase.h"
 #include "generalconfig.h"
+#include "gliderlistwidget.h"
 #include "gpsnmea.h"
 #include "mainwindow.h"
 #include "mapcalc.h"
@@ -1216,6 +1217,9 @@ void Calculator::slot_settingsChanged()
   m_androidPressureAltitude = false;
 
   slot_CheckHomeSiteSelection();
+
+  // Update the glider selected by the user.
+  setGlider( GliderListWidget::getUserSelectedGlider() );
 }
 
 /** This slot is called by the NMEA interpreter if a new fix has been received.  */
