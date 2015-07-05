@@ -160,72 +160,72 @@
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="calculator.cpp" line="271"/>
+        <location filename="calculator.cpp" line="273"/>
         <source>Replace current task point?</source>
         <translation>Aufgabenpunkt ersetzen?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="272"/>
+        <location filename="calculator.cpp" line="274"/>
         <source>&lt;html&gt;A flight task is activated!&lt;br&gt;This selection will stop the automatic task point switch.To avoid that make a selection from task menu.&lt;br&gt;Do You really want to replace?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="519"/>
+        <location filename="calculator.cpp" line="530"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="525"/>
+        <location filename="calculator.cpp" line="536"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="348"/>
+        <location filename="calculator.cpp" line="350"/>
         <source>Task started</source>
         <oldsource>Task start</oldsource>
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1967"/>
+        <location filename="calculator.cpp" line="1981"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="514"/>
+        <location filename="calculator.cpp" line="525"/>
         <source>Task ended</source>
         <oldsource>Task end</oldsource>
         <translation>Aufgabe beendet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="447"/>
-        <location filename="calculator.cpp" line="467"/>
+        <location filename="calculator.cpp" line="449"/>
+        <location filename="calculator.cpp" line="469"/>
         <source>TP in sight</source>
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="560"/>
+        <location filename="calculator.cpp" line="571"/>
         <source>TP passed</source>
         <oldsource>TP switch</oldsource>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1783"/>
-        <location filename="calculator.cpp" line="1788"/>
+        <location filename="calculator.cpp" line="1797"/>
+        <location filename="calculator.cpp" line="1802"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1789"/>
+        <location filename="calculator.cpp" line="1803"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1847"/>
+        <location filename="calculator.cpp" line="1861"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1848"/>
+        <location filename="calculator.cpp" line="1862"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -326,118 +326,118 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="flarm.cpp" line="545"/>
+        <location filename="flarm.cpp" line="588"/>
         <source>Traffic</source>
         <translation>Verkehr</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="548"/>
+        <location filename="flarm.cpp" line="591"/>
         <source>Obstacle</source>
         <translation>Hindernis</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="551"/>
+        <location filename="flarm.cpp" line="594"/>
         <source>Info Alert</source>
         <oldsource>Info Alerts</oldsource>
         <translation>Info Hinweis</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="554"/>
+        <location filename="flarm.cpp" line="597"/>
         <source>Skydiver drop zone</source>
         <translation>Fallschirmsprung Zone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="557"/>
+        <location filename="flarm.cpp" line="600"/>
         <source>Aerodrome traffic zone</source>
         <translation>Flughafen Verkehrszone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="560"/>
+        <location filename="flarm.cpp" line="603"/>
         <source>Military firing zone</source>
         <translation>Militärzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="563"/>
+        <location filename="flarm.cpp" line="606"/>
         <source>Kite flying zone</source>
         <translation>Drachenflugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="566"/>
+        <location filename="flarm.cpp" line="609"/>
         <source>Winch lauching area</source>
         <translation>Windenstartzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="569"/>
+        <location filename="flarm.cpp" line="612"/>
         <source>RC flying zone</source>
         <translation>RC Flugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="572"/>
+        <location filename="flarm.cpp" line="615"/>
         <source>UAS flying zone</source>
         <translation>Drohnen Flugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="575"/>
+        <location filename="flarm.cpp" line="618"/>
         <source>Acrobatic zone</source>
         <translation>Kunstflugzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="578"/>
+        <location filename="flarm.cpp" line="621"/>
         <source>Generic danger area</source>
         <translation>Allgemeine Gefahrenzone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="581"/>
+        <location filename="flarm.cpp" line="624"/>
         <source>Generic prohibited area</source>
         <translation>Allgemeine Verbotszone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="584"/>
+        <location filename="flarm.cpp" line="627"/>
         <source>Other alert zone</source>
         <translation>Unbekannte Alarm Zone</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="593"/>
+        <location filename="flarm.cpp" line="636"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="596"/>
+        <location filename="flarm.cpp" line="639"/>
         <source>Caution</source>
         <translation>Vorsicht</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="599"/>
+        <location filename="flarm.cpp" line="642"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="602"/>
+        <location filename="flarm.cpp" line="645"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="618"/>
+        <location filename="flarm.cpp" line="661"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="620"/>
+        <location filename="flarm.cpp" line="663"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="621"/>
+        <location filename="flarm.cpp" line="664"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="623"/>
+        <location filename="flarm.cpp" line="666"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="flarm.cpp" line="631"/>
+        <location filename="flarm.cpp" line="674"/>
         <source>Alias</source>
         <translation></translation>
     </message>
@@ -841,17 +841,17 @@
 <context>
     <name>GliderListWidget</name>
     <message>
-        <location filename="gliderlistwidget.cpp" line="47"/>
+        <location filename="gliderlistwidget.cpp" line="46"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="gliderlistwidget.cpp" line="47"/>
+        <location filename="gliderlistwidget.cpp" line="46"/>
         <source>Registration</source>
         <translation>Kennzeichen</translation>
     </message>
     <message>
-        <location filename="gliderlistwidget.cpp" line="47"/>
+        <location filename="gliderlistwidget.cpp" line="46"/>
         <source>Callsign</source>
         <translation>Rufzeichen</translation>
     </message>
@@ -894,7 +894,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="gpsnmea.cpp" line="2532"/>
+        <location filename="gpsnmea.cpp" line="2543"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -966,44 +966,44 @@
         <translation>Cumulus Hilfe</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="73"/>
+        <location filename="helpbrowser.cpp" line="79"/>
         <source>Begin</source>
         <translation>Beginn</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="80"/>
+        <location filename="helpbrowser.cpp" line="86"/>
         <source>Backward</source>
         <oldsource>Go backward</oldsource>
         <translation>Zurück</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="87"/>
+        <location filename="helpbrowser.cpp" line="93"/>
         <source>Forward</source>
         <oldsource>Go forward</oldsource>
         <translation>Vorwärts</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="94"/>
+        <location filename="helpbrowser.cpp" line="100"/>
         <source>Zoom in</source>
         <translation>Vergrößern</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="101"/>
+        <location filename="helpbrowser.cpp" line="107"/>
         <source>Zoom out</source>
         <translation>Verkleinern</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="106"/>
+        <location filename="helpbrowser.cpp" line="112"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="175"/>
+        <location filename="helpbrowser.cpp" line="181"/>
         <source>Missing help file</source>
         <translation>Keine Hilfedaten</translation>
     </message>
     <message>
-        <location filename="helpbrowser.cpp" line="176"/>
+        <location filename="helpbrowser.cpp" line="182"/>
         <source>&lt;html&gt;&lt;b&gt;The help file was not found.&lt;br&gt;Maybe it is not installed?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Hilfedatei nicht gefunden.&lt;br&gt;Ist sie installiert?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
@@ -2218,8 +2218,9 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="225"/>
-        <source>Glider Type:</source>
-        <translation>Segler Typ:</translation>
+        <source>Glider Ty:</source>
+        <oldsource>Glider Type:</oldsource>
+        <translation>Segler Ty:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="237"/>
@@ -2228,8 +2229,9 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="246"/>
-        <source>Comp Class:</source>
-        <translation>Wett Klasse:</translation>
+        <source>Comp Cl:</source>
+        <oldsource>Comp Class:</oldsource>
+        <translation>Wett Kl:</translation>
     </message>
     <message>
         <location filename="preflightflarmpage.cpp" line="258"/>
@@ -2383,17 +2385,17 @@ All downloads are canceled!</oldsource>
         <translation>Flächenlast:</translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="130"/>
+        <location filename="preflightgliderpage.cpp" line="131"/>
         <source>Select a glider to be used</source>
         <translation>Wähle zu benutzendes Flugzeug aus</translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="145"/>
+        <location filename="preflightgliderpage.cpp" line="146"/>
         <source>Deselect</source>
         <translation>Abwählen</translation>
     </message>
     <message>
-        <location filename="preflightgliderpage.cpp" line="147"/>
+        <location filename="preflightgliderpage.cpp" line="148"/>
         <source>Clear glider selection</source>
         <translation>Lösche Flugzeug Auswahl</translation>
     </message>
@@ -6186,17 +6188,17 @@ All downloads are canceled!</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="109"/>
+        <location filename="wpeditdialog.cpp" line="112"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="241"/>
+        <location filename="wpeditdialog.cpp" line="244"/>
         <source>Name?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="242"/>
+        <location filename="wpeditdialog.cpp" line="245"/>
         <source>Please add
 a waypoint
 name</source>
@@ -6204,12 +6206,12 @@ name</source>
 Wegpunktnamen an</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="262"/>
+        <location filename="wpeditdialog.cpp" line="265"/>
         <source>Description?</source>
         <translation>Beschreibung?</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="263"/>
+        <location filename="wpeditdialog.cpp" line="266"/>
         <source>Please add
 a waypoint
 description</source>
@@ -6217,23 +6219,23 @@ description</source>
 Wegpunktbeschreibung an</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="283"/>
+        <location filename="wpeditdialog.cpp" line="286"/>
         <source>Coordinates?</source>
         <translation>Koordinaten?</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="284"/>
+        <location filename="wpeditdialog.cpp" line="287"/>
         <source>Waypoint coordinates not set, continue?</source>
         <translation>Wegpunkt Koordinaten sind
 nicht gesetzt, fortfahren?</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="325"/>
+        <location filename="wpeditdialog.cpp" line="328"/>
         <source>Name Conflict</source>
         <translation>Namenskonflikt</translation>
     </message>
     <message>
-        <location filename="wpeditdialog.cpp" line="326"/>
+        <location filename="wpeditdialog.cpp" line="329"/>
         <source>Please use another name
 for your new waypoint</source>
         <translation>Benutzen Sie einen anderen
@@ -6329,62 +6331,62 @@ Namen für den neuen Wegpunkt</translation>
 <context>
     <name>WpEditDialogPageGeneral</name>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="62"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="60"/>
         <source>Name(8):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="90"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="88"/>
         <source>Description:</source>
         <translation>Beschreibung:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="109"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="107"/>
         <source>Country(2):</source>
         <translation>Land(2):</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="137"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="135"/>
         <source>Latitude:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="143"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="141"/>
         <source>Longitude:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="149"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="147"/>
         <source>Elevation:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="165"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="163"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="202"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="200"/>
         <source>Importance:</source>
         <translation>Wertigkeit:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="208"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="206"/>
         <source>low</source>
         <translation>gering</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="209"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="207"/>
         <source>normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="210"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="208"/>
         <source>high</source>
         <translation>hoch</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="211"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="209"/>
         <source>top</source>
         <translation>höchste</translation>
     </message>
