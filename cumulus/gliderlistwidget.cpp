@@ -20,8 +20,16 @@
 #include "gliderlistwidget.h"
 #include "rowdelegate.h"
 
+GliderListWidget::GliderListWidget() :
+  QTreeWidget(0),
+  m_added(0),
+  m_changed(false)
+{
+  migrateGliderList();
+}
+
 GliderListWidget::GliderListWidget( QWidget *parent,
-				    bool considerSelectionChanges) :
+				    bool considerSelectionChanges ) :
   QTreeWidget(parent),
   m_added(0),
   m_changed(false)
@@ -96,6 +104,16 @@ void GliderListWidget::migrateGliderList()
 	  if( glider->registration() == stored )
 	    {
 	      glider->setSelectionFlag( true );
+	    }
+
+	  // Remove appended marker like (...)
+	  QString reg = glider->registration();
+
+	  int index = reg.lastIndexOf('(');
+
+	  if( index != -1 )
+	    {
+	      glider->setRegistration( reg.left( index ) );
 	    }
 
 	  m_gliders.append( glider );

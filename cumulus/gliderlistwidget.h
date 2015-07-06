@@ -59,6 +59,11 @@ class GliderListWidget : public QTreeWidget
    */
   GliderListWidget( QWidget *parent, bool considerSelectionChanges=false );
 
+  /**
+   * Default constructor used for glider list migration.
+   */
+  GliderListWidget();
+
   ~GliderListWidget();
 
   /**

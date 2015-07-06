@@ -231,15 +231,16 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   m_displayTrigger = static_cast<QTimer *> (0);
 #endif
 
-  // This is used to make it possible to reset some user configuration items once.
+  // This is used to make it possible to reset some user configuration items once
+  // or to execute a necessary migration.
   int rc = GeneralConfig::instance()->getResetConfiguration();
 
-  if( rc != 2 )
+  if( rc != 3 )
     {
-      GeneralConfig::instance()->setResetConfiguration(2);
+      GeneralConfig::instance()->setResetConfiguration(3);
 
-      // Overwrite old default.
-      GeneralConfig::instance()->setMapLowerLimit(5);
+      // Migrate glider list by using this constructor
+      GliderListWidget glw;
     }
 
   // Rename the map/airfields directory to map/points. This check is always
