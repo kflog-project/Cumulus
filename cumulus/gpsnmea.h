@@ -7,8 +7,6 @@
 
     email                : kflog.cumulus@gmail.com
 
-    $Id$
-
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,13 +23,13 @@
  *
  * \brief NMEA parser, decoder and GPS connection handler.
  *
- * This class parses and decodes the NMEA sentences and provides access
+ * This class parses and decodes NMEA sentences and provides access
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
  * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef GPS_NMEA_H
@@ -73,6 +71,13 @@ struct SIVInfo
     int db;        // signal to noise ratio (0-99), or negative for not tracking
     int azimuth;   // 0-359
     int elevation; // 0-90
+
+    SIVInfo() :
+      id(-1),
+      db(-1),
+      azimuth(-1),
+      elevation(-1)
+    {};
   };
 
 struct GPSInfo
