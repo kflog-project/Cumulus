@@ -2568,9 +2568,15 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
 */
 void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 {
-  //the GPGSV sentence can be split between multiple sentences.
-  //qDebug("expecting: %d, found: %s",cntSIVSentence,sentence[2].toLatin1().data());
-  //check if we were expecting this part of the info
+  if( sentence.size() < 8 )
+    {
+      qWarning( "$GPGSV contains too less parameters!" );
+      return;
+    }
+
+  // The GPGSV sentence can be split into multiple sentences.
+  // qDebug("expecting: %d, found: %s",cntSIVSentence,sentence[2].toLatin1().data());
+  // Check if we were expecting this part of the info.
   if( cntSIVSentence != sentence[2].toUInt() )
     {
       return;
@@ -2588,10 +2594,12 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
     {
       __ExtractSatsInView( sentence[8], sentence[9], sentence[10], sentence[11] );
     }
+
   if( sentence.count() > 15 )
     {
       __ExtractSatsInView( sentence[12], sentence[13], sentence[14], sentence[15] );
     }
+
   if( sentence.count() > 19 )
     {
       __ExtractSatsInView( sentence[16], sentence[17], sentence[18], sentence[19] );
