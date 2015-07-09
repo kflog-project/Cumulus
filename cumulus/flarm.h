@@ -143,6 +143,13 @@ class Flarm : public QObject, public FlarmBase
   bool extractPflai(QStringList& stringList);
 
   /**
+   * Extracts all items from the $PFLAO sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAR as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflao(QStringList& stringList);
+
+  /**
    * Extracts all items from the $ERROR sentence sent by the Flarm device.
    * @param stringList Flarm sentence $PFLAV as string list
    * @return true if a valid value exists otherwise false

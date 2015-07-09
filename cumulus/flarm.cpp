@@ -407,6 +407,117 @@ bool Flarm::extractPflai(QStringList& stringList)
   return true;
 }
 
+bool Flarm::extractPflao(QStringList& stringList)
+{
+  /**
+   * 00: PFLAO,
+   * 01: <AlarmLevel>,
+   * 02: <Inside>,
+   * 03: <Latitude>,
+   * 04: <Longitude>,
+   * 05: <Radius>,
+   * 06: <Bottom>,
+   * 07: <Top>,
+   * 08: <ActivityLimit>,
+   * 09: <ID>,
+   * 10: <ID-Type>,
+   * 11: <ZoneType>
+   *
+   * Alert Zone warnings.
+   */
+  if( stringList[0] != "$PFLAO" || stringList.size() < 12 )
+    {
+      qWarning("$PFLAI contains too less parameters!");
+      return false;
+    }
+
+  bool ok;
+  ushort error = 0;
+
+  FlarmAlertZone faz;
+
+  // 1: Alarm Level
+  faz.Alarmlevel = static_cast<enum AlarmLevel> (stringList[1].toInt( &ok ));
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  // 2. Inside
+  faz.Inside = (stringList[2] == "0" ) ? false : true;
+
+  // 3. Latitude
+  double dval = stringList[3].toDouble( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  dval = rint((dval / 10000000) * 600000);
+  faz.Latitude = static_cast<int>(dval);
+
+  // 4. Longitude
+  double dval = stringList[4].toDouble( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  dval = rint((dval / 10000000) * 600000);
+  faz.Longitude = static_cast<int>(dval);
+
+  // 5. Radius
+  faz.Radius = stringList[5].toInt( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  // 6. Bottom
+  faz.Bottom = stringList[6].toInt( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  // 7. Top
+  faz.Top = stringList[7].toInt( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  // 8. ActivityLimit
+  faz.ActivityLimit = stringList[8].toULong( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  // 9. ID
+  faz.ID = stringList[9];
+
+  // 10. ID-Type
+  faz.IDType = stringList[10];
+
+  // 11. ZoneType
+  faz.ZoneType = stringList[11].toShort( &ok, 16 );
+
+  if( ! ok )
+    {
+      return false;
+    }
+
+  return true;
+}
+
 bool Flarm::extractError(QStringList& stringList)
 {
   /**

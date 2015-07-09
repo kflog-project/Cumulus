@@ -25,7 +25,9 @@ FlarmBase::FlarmVersion FlarmBase::m_flarmVersion;
 FlarmBase::FlarmError   FlarmBase::m_flarmError;
 FlarmBase::ProtocolMode FlarmBase::m_protocolMode = text;
 
-QHash<QString, FlarmBase::FlarmAcft> FlarmBase::m_pflaaHash;
+QHash<QString, FlarmBase::FlarmAcft>      FlarmBase::m_pflaaHash;
+QHash<QString, FlarmBase::FlarmAlertZone> FlarmBase::m_pflaoHash;
+
 QMutex FlarmBase::m_mutex;
 
 FlarmBase::FlarmBase()

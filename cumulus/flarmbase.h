@@ -24,7 +24,7 @@
  *
  * \date 2010-2015
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef FLARM_BASE_H
@@ -187,6 +187,46 @@ class FlarmBase
   };
 
   /**
+   * \struct FlarmAlertZone
+   *
+   * \author Axel Pauli
+   *
+   * \brief FLARM alert zone data structure.
+   *
+   * FLARM alert zone data structure. It contains the data of a PFLAO sentence.
+   *
+   * \date 2015
+   */
+  struct FlarmAlertZone
+  {
+    QTime   TimeStamp;     // Creation time of this structure
+    enum AlarmLevel Alarmlevel;
+    bool    Inside;        // 1=active and inside, 0=otherwise
+    long    Latitude;      // in KFLog degree format
+    long    Longitude;     // in KFLog degree format
+    int     Radius;        // 0...2000m
+    int     Bottom;        // -1000...6000m
+    int     Top;           // 0...6000m
+    ulong   ActivityLimit; // 0...4294967295
+    short   ZoneType;      // 0x10 ... 0xFF
+    QString ID;            // Flarm Identifier
+    QString IDType;        // ID-Type
+
+    FlarmAlertZone() :
+      TimeStamp(0, 0, 0),
+      Alarmlevel(No),
+      Inside(0),
+      Latitude(0),
+      Longitude(0),
+      Radius(0),
+      Bottom(0),
+      Top(0),
+      ActivityLimit(0),
+      ZoneType(0)
+      {};
+  };
+
+  /**
    * @param flag true or false to switch on/off PFLAA data collection.
    */
   static void setCollectPflaa( bool flag )
@@ -250,11 +290,20 @@ class FlarmBase
   };
 
   /**
+   * @return the m_pflaoHash to the caller.
+   */
+  static const QHash<QString, FlarmAlertZone>& getPflaoHash()
+  {
+    return m_pflaoHash;
+  };
+
+  /**
    * Resets the internal stored Flarm data.
    */
   static void reset()
   {
     m_pflaaHash.clear();
+    m_pflaoHash.clear();
     m_flarmStatus.valid = false;
     m_flarmVersion.reset();
     m_flarmError.reset();
@@ -307,6 +356,12 @@ class FlarmBase
    * the Flarm tags 'ID-Type' and 'ID'.
    */
   static QHash<QString, FlarmAcft> m_pflaaHash;
+
+  /**
+   * Hash map with collected PFLAO records. The key is a concatenation of
+   * the Flarm tags 'ID-Type' and 'ID'.
+   */
+  static QHash<QString, FlarmAlertZone> m_pflaoHash;
 
   /** Flarm protocol mode.  */
   static enum ProtocolMode m_protocolMode;
