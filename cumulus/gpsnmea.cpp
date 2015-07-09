@@ -2637,15 +2637,7 @@ void GpsNmea::__ExtractSatsInView( const QString& id,
   sivi.id = id.toInt();
   sivi.elevation = elev.toInt();
   sivi.azimuth = azimuth.toInt();
-
-  if( snr.isEmpty() )
-    {
-      sivi.db = -1;
-    }
-  else
-    {
-      sivi.db = snr.toInt();
-    }
+  sivi.db = snr.toInt();
 
   sivInfoInternal.append( sivi );
   //qDebug("new sivi info (snr: %d", sivi->db);
