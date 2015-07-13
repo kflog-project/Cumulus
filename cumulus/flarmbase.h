@@ -177,7 +177,7 @@ class FlarmBase
     int     RelativeNorth;
     int     RelativeEast;
     int     RelativeVertical;
-    int     IdType;
+    short   IdType;
     QString ID;
     int     Track;       // 0-359 or INT_MIN in stealth mode
     double  TurnRate;    // degrees per second or INT_MIN in stealth mode
@@ -210,7 +210,8 @@ class FlarmBase
     ulong   ActivityLimit; // 0...4294967295
     short   ZoneType;      // 0x10 ... 0xFF
     QString ID;            // Flarm Identifier
-    QString IDType;        // ID-Type
+    short   IdType;        // ID-Type
+    QString Key;           // A key built from IF and IDType
 
     FlarmAlertZone() :
       TimeStamp(0, 0, 0),
@@ -222,7 +223,8 @@ class FlarmBase
       Bottom(0),
       Top(0),
       ActivityLimit(0),
-      ZoneType(0)
+      ZoneType(0),
+      IdType(-1)
       {};
   };
 

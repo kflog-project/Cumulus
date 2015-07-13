@@ -196,7 +196,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
       aircraft.RelativeVertical = INT_MIN;
     }
 
-  aircraft.IdType = stringList[5].toInt( &ok );
+  aircraft.IdType = stringList[5].toShort( &ok );
 
   if( ! ok )
     {
@@ -431,8 +431,7 @@ bool Flarm::extractPflao(QStringList& stringList)
       return false;
     }
 
-  bool ok;
-  ushort error = 0;
+  bool ok = false;
 
   FlarmAlertZone faz;
 
@@ -459,7 +458,7 @@ bool Flarm::extractPflao(QStringList& stringList)
   faz.Latitude = static_cast<int>(dval);
 
   // 4. Longitude
-  double dval = stringList[4].toDouble( &ok );
+  dval = stringList[4].toDouble( &ok );
 
   if( ! ok )
     {
@@ -505,7 +504,12 @@ bool Flarm::extractPflao(QStringList& stringList)
   faz.ID = stringList[9];
 
   // 10. ID-Type
-  faz.IDType = stringList[10];
+  faz.IdType = stringList[10].toShort( &ok );
+
+  if( ! ok )
+    {
+      return false;
+    }
 
   // 11. ZoneType
   faz.ZoneType = stringList[11].toShort( &ok, 16 );
@@ -515,6 +519,10 @@ bool Flarm::extractPflao(QStringList& stringList)
       return false;
     }
 
+  faz.Key = FlarmBase::createHashKey( faz.IdType, faz.ID );
+  faz.TimeStamp = QTime::currentTime();
+
+  emit flarmAlertZomeInfo( faz );
   return true;
 }
 

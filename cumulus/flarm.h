@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,9 +22,9 @@
  *
  * This class parses Flarm sentences and provides the results to the caller.
  *
- * \date 2010-2012
+ * \date 2010-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef FLARM_H
@@ -216,6 +214,11 @@ class Flarm : public QObject, public FlarmBase
    * This signal is emitted if a new Flarm configuration info is available.
    */
   void flarmConfigurationInfo( QStringList& info );
+
+  /**
+   * This signal is emitted, if a new/updated alert zone is available.
+   */
+  void flarmAlertZomeInfo( FlarmAlertZone& info );
 
  private slots:
 
