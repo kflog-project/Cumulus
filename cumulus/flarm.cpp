@@ -22,6 +22,7 @@
 #include "flarmdisplay.h"
 #include "flarmaliaslist.h"
 #include "generalconfig.h"
+#include "layout.h"
 
 Flarm::Flarm(QObject* parent) : QObject(parent), FlarmBase()
 {
@@ -674,6 +675,7 @@ void Flarm::createTrafficMessage()
   bool ok;
   int dir = m_flarmStatus.RelativeBearing.toInt(&ok);
   int ta;
+  const int SD = Layout::getIntScaledDensity();
 
   if( ! ok )
     {
@@ -784,16 +786,18 @@ void Flarm::createTrafficMessage()
 
   // Load an arrow pixmap to show the traffic direction more in detail.
   QString arrow;
-  arrow.sprintf("%s/icons/windarrows/wind-arrow-80px-%03d.png",
+  arrow.sprintf( "%s/icons/windarrows/wind-arrow-80px-%03d.png\" width=\"%d\" height=\"%d\"",
                  GeneralConfig::instance()->getAppRoot().toLatin1().data(),
-                 ta );
+                 ta,
+                 80 * SD,
+                 80 * SD );
 
   QString text = "<html><table border=1 cellpadding=\"5\"><tr><th align=center colspan=\"2\">" +
                   almlevel + "&nbsp;" + almType +
                  "</th></tr>";
 
   text += "<tr><td align=left valign=middle>" + tr("Direction") + "</td>" +
-          "<td align=right valign=middle>" + "<img src=\"" + arrow + "\">" +
+          "<td align=right valign=middle>" + "<img src=\"" + arrow + ">" +
           QString::number(dir) + " " + tr("o'clock") + "</td></tr>" +
           "<tr><td align=left>" + tr("Vertical") + "</td>" +
           "<td align=right>" + rverts + Altitude::getText( rvert, true, 0 ) + "</td></tr>" +

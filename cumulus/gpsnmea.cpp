@@ -418,18 +418,23 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if( slst[0] == "$GPRMC" )
     {
+      static int i = 0;
+
       QString pflau ="$PFLAU,9,1,2,1,3,20,2,-139,2073,DD8452*";
 
-      uint sum = calcCheckSum( pflau.size(), pflau );
+      uint sum = calcCheckSum( pflau.toLatin1().data() );
 
       QString sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
-      slot_sentence( pflau + sumStr );
+      if( (++i % 30) == 0 )
+	{
+	  slot_sentence( pflau + sumStr );
+	}
 
       //-------------------------------------------------------------
       QString pflaa = "$PFLAA,3,-242,40,-139,2,DD8452,270,,21,0.9,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16, QChar('0') );
 
@@ -438,7 +443,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       //---------------------------------------------------------------
       pflaa = "$PFLAA,2,-700,-700,100,2,222222,0,,30,-0.2,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -447,7 +452,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       //-------------------------------------------------------------
       pflaa = "$PFLAA,0,-2000,2000,100,2,333333,90,,30,-0.3,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -456,7 +461,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       //---------------------------------------------------------------
       pflaa = "$PFLAA,0,-1547,69,444,2,444444,180,,30,1.4,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -464,7 +469,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       pflaa = "$PFLAA,1,347,-1669,1555,2,555555,270,,30,1.5,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -472,7 +477,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       pflaa = "$PFLAA,2,347,-69,2666,2,666666,66,,30,-1.6,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -480,7 +485,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       pflaa = "$PFLAA,0,-2747,3669,-77,2,777777,359,,30,1.7,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -488,7 +493,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       pflaa = "$PFLAA,0,-3,-5000,400,2,888888,199,,30,-1.8,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
@@ -496,7 +501,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       pflaa = "$PFLAA,0,4747,-2,999,2,999999,245,,30,2.9,1*";
 
-      sum = calcCheckSum( pflaa.size(), pflaa );
+      sum = calcCheckSum( pflaa.toLatin1().data() );
 
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
