@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2013 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -53,8 +51,11 @@ FlarmDisplay::~FlarmDisplay()
 /** Creates the background picture with the radar screen. */
 void FlarmDisplay::createBackground()
 {
-  // define a margin
-  const int MARGIN = 20;
+  // Get the scaled density
+  const int SD = Layout::getIntScaledDensity();
+
+  // Define a margin
+  const int MARGIN = 20 * SD;
 
   width  = size().width();
   height = size().height();
@@ -68,7 +69,8 @@ void FlarmDisplay::createBackground()
       height = width;
     }
 
-  width  -= ( MARGIN * 2 ); // keep a margin around
+  // keep a margin around
+  width  -= ( MARGIN * 2 );
   height -= ( MARGIN * 2 );
 
   centerX  = size().width() / 2;
@@ -99,12 +101,12 @@ void FlarmDisplay::createBackground()
   QPainter painter( &background );
 
   QPen pen(Qt::black);
-  pen.setWidth(3);
+  pen.setWidth(3 * SD);
   painter.setPen( pen );
   painter.setBrush(Qt::black);
 
   // inner black filled circle
-  painter.drawEllipse( centerX-3, centerY-3, 6, 6 );
+  painter.drawEllipse( centerX - (3 * SD), centerY - (3 * SD), 6 * SD, 6 *SD );
 
   // scale pixels to maximum distance
   scale = (double) (height/2) / (double) radius;
@@ -130,24 +132,24 @@ void FlarmDisplay::createBackground()
   QString unitText = QString("%1 Km").arg(distance.getKilometers(), 0, 'f', 1);
   QFontMetrics fm = QFontMetrics( font() );
 
-  painter.drawText( 5, fm.boundingRect(unitText).height() + 5, unitText );
+  painter.drawText( 5 * SD, fm.boundingRect(unitText).height() + (5 * SD), unitText );
   pen.setWidth(0);
   painter.setPen( pen );
 
   // Draw vertical cross line
-  painter.drawLine( centerX, centerY - height/2 -10,
-                    centerX, centerY + height/2 + 10 );
+  painter.drawLine( centerX, centerY - height/2 - (10 * SD),
+                    centerX, centerY + height/2 + (10 * SD) );
 
   // Draw horizontal cross line
-  painter.drawLine( centerX - width/2 - 10, centerY,
-                    centerX + width/2 + 10, centerY );
+  painter.drawLine( centerX - width/2 - (10 * SD), centerY,
+                    centerX + width/2 + (10 * SD), centerY );
 
   // Draw the selected Flarm object identifier, if an selection is active.
   if( selectedObject.isEmpty() == false )
     {
       // If object is selected, we use another color
       QPen pen(Qt::magenta);
-      pen.setWidth(3);
+      pen.setWidth(3 * SD);
       painter.setPen( pen );
 
       const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
@@ -156,7 +158,7 @@ void FlarmDisplay::createBackground()
       QString actfId = aliasHash.value(selectedObject, selectedObject );
 
       // Draw the Flarm Id of the selected object.
-      painter.drawText( 5, size().height() - 5, actfId );
+      painter.drawText( 5 * SD, size().height() - (5 * SD), actfId );
     }
 }
 

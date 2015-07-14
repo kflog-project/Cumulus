@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-07-14 AP: Issue #72 fixed. The Flarm Radar Display drawing routines
+                   should consider the scaled density of an Android device.
+
+[*] 2015-07-06 AP: Cumulus 5.23.2 released for Android.
+
 [-] 2015-07-06 AP: Issue #70 fixed. Crash reported on GooglePlay by an Android
                    user. Method GpsNmea::__ExtractSatsInView(QStringList const&)
                    has been fixed.
