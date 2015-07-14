@@ -427,7 +427,7 @@ bool Flarm::extractPflao(QStringList& stringList)
    */
   if( stringList[0] != "$PFLAO" || stringList.size() < 12 )
     {
-      qWarning("$PFLAI contains too less parameters!");
+      qWarning("$PFLAO contains too less parameters!");
       return false;
     }
 
@@ -522,6 +522,21 @@ bool Flarm::extractPflao(QStringList& stringList)
   faz.Key = FlarmBase::createHashKey( faz.IdType, faz.ID );
   faz.TimeStamp = QTime::currentTime();
 
+  // Store alert zone in a hash
+  // First check, if record is already contained in the hash.
+  if( m_pflaoHash.contains( faz.Key ) == true )
+    {
+      // update entry
+      FlarmAlertZone& alertZoneEntry = m_pflaoHash[faz.Key];
+      alertZoneEntry = faz;
+    }
+  else
+    {
+      // Insert new entry into hash.
+      m_pflaoHash.insert( faz.Key, faz );
+    }
+
+  // Post new/updated alert zone.
   emit flarmAlertZomeInfo( faz );
   return true;
 }
