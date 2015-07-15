@@ -152,7 +152,8 @@ MapContents::~MapContents()
       delete currentTask;
     }
 
-  qDeleteAll(airspaceList);
+  qDeleteAll( airspaceList );
+  qDeleteAll( flarmAlertZoneList );
 }
 
 // save the current waypoint list
@@ -2392,6 +2393,9 @@ void MapContents::clearList(const int listIndex)
     case AirspaceList:
       airspaceList.clear();
       break;
+    case FlarmAlertZoneList:
+      flarmAlertZoneList.clear();
+      break;
     case ObstacleList:
       obstacleList.clear();
       break;
@@ -2448,6 +2452,8 @@ unsigned int MapContents::getListLength( const int listSelector ) const
       return radioList.count();
     case AirspaceList:
       return airspaceList.count();
+    case FlarmAlertZoneList:
+      return flarmAlertZoneList.count();
     case ObstacleList:
       return obstacleList.count();
     case ReportList:
@@ -2491,6 +2497,8 @@ BaseMapElement* MapContents::getElement(int listType, unsigned int index)
       return &radioList[index];
     case AirspaceList:
       return airspaceList.at(index);
+    case FlarmAlertZoneList:
+      return flarmAlertZoneList.at(index);
     case ObstacleList:
       return &obstacleList[index];
     case ReportList:
@@ -2574,6 +2582,9 @@ void MapContents::slotReloadMapData()
 
   qDeleteAll(airspaceList);
   airspaceList = SortableAirspaceList();
+
+  qDeleteAll(flarmAlertZoneList);
+  flarmAlertZoneList = SortableAirspaceList();
 
   cityList.clear();
   hydroList.clear();
@@ -3017,6 +3028,11 @@ void MapContents::slotReloadWelt2000Data()
       // Download missing file from the Internet
       slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
     }
+}
+
+void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )
+{
+
 }
 
 /** Special method to add the drawn objects to the return list,

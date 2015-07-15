@@ -26,7 +26,7 @@
  *
  * \date 2000-2015
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef MAP_CONTENTS_H
@@ -46,6 +46,7 @@
 #include "airfield.h"
 #include "airspace.h"
 #include "distance.h"
+#include "flarmbase.h"
 #include "flighttask.h"
 #include "isolist.h"
 #include "map.h"
@@ -84,6 +85,7 @@ class MapContents : public QObject
                   OutLandingList,
                   RadioList,
                   AirspaceList,
+		  FlarmAlertZoneList,
                   ObstacleList,
                   ReportList,
                   CityList,
@@ -207,6 +209,14 @@ class MapContents : public QObject
      * @param  index  the index of the element in the list
      */
     SinglePoint* getSinglePoint(int listIndex, unsigned int index);
+
+    /**
+     * @return The Flarm alert zone list.
+     */
+    SortableAirspaceList& getFlarmAlertZoneList()
+      {
+	return flarmAlertZoneList;
+      };
 
     /**
      * Draws all elements of a list into the painter.
@@ -438,6 +448,13 @@ class MapContents : public QObject
     void slotAirspaceLoadFinished( int noOfLists,
                                    SortableAirspaceList* airspaceListIn );
 
+    /**
+     * This slot is called, if a new or updated Flarm Alert Zone is available.
+     *
+     * \param[in] faz The new Flarm Alert Zone data.
+     */
+    void slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz );
+
 #ifdef INTERNET
 
     /**
@@ -632,6 +649,13 @@ class MapContents : public QObject
     SortableAirspaceList airspaceList;
     //  there are different airspaces with same name ! Don't use MapElementList,
     //  it would sort them out.
+
+    /**
+     * The flarmAlertZoneList contains all Flarm airspaces. The sort function on
+     * this list will sort the airspaces from top to bottom. This list must be
+     * stay a pointer list because the cross reference to the airspace region.
+     */
+    SortableAirspaceList flarmAlertZoneList;
 
     /**
      * obstacleList contains all obstacles and groups, as well

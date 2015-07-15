@@ -418,18 +418,39 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   if( slst[0] == "$GPRMC" )
     {
-      static int i = 0;
-
-      QString pflau ="$PFLAU,9,1,2,1,3,20,2,-139,2073,DD8452*";
+      /**
+       *   1     2    3    4      5         6            7                8
+        $PFLAU,<RX>,<TX>,<GPS>,<Power>,<AlarmLevel>,<RelativeBearing>,<AlarmType>,
+           9                     10            11
+        <RelativeVertical>,<RelativeDistance>,<ID>
+      */
+      //                  1   2 3 4 5 6 7  8   9   10    11
+      QString pflau = "$PFLAU,9,1,2,1,2,20,4,-139,2073,DD8452*";
 
       uint sum = calcCheckSum( pflau.toLatin1().data() );
 
       QString sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
-      if( (++i % 30) == 0 )
+      static int i = 0;
+
+      if( (++i % 5) == 0 )
 	{
 	  slot_sentence( pflau + sumStr );
 	}
+
+      //-------------------------------------------------------------
+      QString pflao = "$PFLAO,1,1,471122335,85577812,2000,100,4550,1432832400,DF4738,2,41*";
+
+      sum = calcCheckSum( pflao.toLatin1().data() );
+
+      sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
+
+      static int j = 0;
+
+      if( (++j % 30) == 0 )
+	{
+      	  slot_sentence( pflao + sumStr );
+      	}
 
       //-------------------------------------------------------------
       QString pflaa = "$PFLAA,3,-242,40,-139,2,DD8452,270,,21,0.9,1*";
