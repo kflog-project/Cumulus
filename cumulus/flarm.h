@@ -218,7 +218,7 @@ class Flarm : public QObject, public FlarmBase
   /**
    * This signal is emitted, if a new/updated alert zone is available.
    */
-  void flarmAlertZomeInfo( FlarmAlertZone& info );
+  void flarmAlertZoneInfo( FlarmAlertZone& info );
 
  private slots:
 

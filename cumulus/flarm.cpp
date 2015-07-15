@@ -538,7 +538,7 @@ bool Flarm::extractPflao(QStringList& stringList)
     }
 
   // Post new/updated alert zone.
-  emit flarmAlertZomeInfo( faz );
+  emit flarmAlertZoneInfo( faz );
   return true;
 }
 

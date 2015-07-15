@@ -133,7 +133,7 @@ void FlarmDisplay::createBackground()
   QFontMetrics fm = QFontMetrics( font() );
 
   painter.drawText( 5 * SD, fm.boundingRect(unitText).height() + (5 * SD), unitText );
-  pen.setWidth(0);
+  pen.setWidth(1 * SD);
   painter.setPen( pen );
 
   // Draw vertical cross line
