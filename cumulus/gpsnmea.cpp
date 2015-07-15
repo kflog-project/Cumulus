@@ -433,7 +433,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
       static int i = 0;
 
-      if( (++i % 5) == 0 )
+      if( (++i % 15) == 0 )
 	{
 	  slot_sentence( pflau + sumStr );
 	}
