@@ -58,7 +58,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   m_list = new QTableWidget( 0, 1, this );
   m_list->setSelectionBehavior( QAbstractItemView::SelectRows );
-  // m_list->setSelectionMode( QAbstractItemView::SingleSelection );
+  m_list->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   m_list->setAlternatingRowColors( true );
   m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
