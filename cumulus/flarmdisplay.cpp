@@ -132,7 +132,7 @@ void FlarmDisplay::createBackground()
   QString unitText = QString("%1 Km").arg(distance.getKilometers(), 0, 'f', 1);
   QFontMetrics fm = QFontMetrics( font() );
 
-  painter.drawText( 5 * SD, fm.boundingRect(unitText).height() + (5 * SD), unitText );
+  painter.drawText( 5, fm.boundingRect(unitText).height() + 5, unitText );
   pen.setWidth(1 * SD);
   painter.setPen( pen );
 
@@ -158,7 +158,7 @@ void FlarmDisplay::createBackground()
       QString actfId = aliasHash.value(selectedObject, selectedObject );
 
       // Draw the Flarm Id of the selected object.
-      painter.drawText( 5 * SD, size().height() - (5 * SD), actfId );
+      painter.drawText( 5, size().height() - 5, actfId );
     }
 }
 
