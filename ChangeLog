@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2015-07-16 AP: Displayed Flarm contact at the map is colored now according
+                   to its current lift.
+
+[*] 2015-07-15 AP: Cumulus 5.23.3 released for Android.
+
 [-] 2015-07-14 AP: Issue #72 fixed. The Flarm Radar Display drawing routines
                    should consider the scaled density of an Android device.
 

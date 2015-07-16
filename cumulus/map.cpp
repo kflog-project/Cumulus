@@ -2568,9 +2568,11 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
       // Additional Information are available. We draw a triangle.
       QPixmap object;
 
-      QPen pen(Qt::black);
-      pen.setWidth(3);
-      MapConfig::createTriangle( object, triangle, Qt::magenta,
+      QPen pen(Qt::magenta);
+      pen.setWidth( 3 * Layout::getIntScaledDensity() );
+      QColor liftColor = FlarmDisplay::getLiftColor( flarmAcft.ClimbRate );
+
+      MapConfig::createTriangle( object, triangle, liftColor,
                                  flarmAcft.Track, 1.0, Qt::transparent, pen );
 
       painter.drawPixmap(  Rx-triangle/2, Ry-triangle/2, object );

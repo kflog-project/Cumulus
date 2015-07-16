@@ -422,7 +422,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
         }
 
       QPen pen(Qt::black);
-      pen.setWidth(3);
+      pen.setWidth( 3 * Layout::getIntScaledDensity() );
       painter.setPen( pen );
 
       if( acft.TurnRate != INT_MIN )
@@ -469,7 +469,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           painter.setFont(f);
 
           QPen pen(color);
-          pen.setWidth(3);
+          pen.setWidth( 3 * Layout::getIntScaledDensity() );
           painter.setPen( pen );
 
           // Draw the distance to the selected object
@@ -593,7 +593,7 @@ QColor FlarmDisplay::getLiftColor( double lift )
       return QColor("#FF8C00");
     }
 
-  if( sl < 50 )
+  if( sl >= 40 )
     {
       return QColor("#FF7F50");
     }

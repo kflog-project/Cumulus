@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,9 +22,9 @@
  *
  * This widget shows the Flarm display view.
  *
- * \date 2010-2012
+ * \date 2010-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef FLARM_DISPLAY_H
@@ -125,7 +123,7 @@ public:
   void createBackground();
 
   /** Returns a color related to the current lift. */
-  QColor getLiftColor( double lift );
+  static QColor getLiftColor( double lift );
 
 private:
 
