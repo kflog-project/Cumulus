@@ -42,13 +42,15 @@ Airspace::Airspace( QString name,
                     const float lower,
                     const BaseMapElement::elevationType lType,
                     const int identifier,
-                    QString country ) :
+                    QString country,
+		    QString flarmKey ) :
   LineElement(name, oType, pP, false, 0, country),
   m_lLimitType(lType),
   m_uLimitType(uType),
   m_lastVConflict(none),
   m_airRegion(0),
-  m_id(identifier)
+  m_id(identifier),
+  m_flarmId(flarmKey)
 {
   // All Airspaces are closed regions ...
   closed = true;
@@ -118,7 +120,8 @@ Airspace* Airspace::createAirspaceObject()
                                m_lLimit.getFeet(),
                                m_lLimitType,
                                m_id,
-                               getCountry() );
+                               getCountry(),
+			       m_flarmId );
 
   return as;
 }

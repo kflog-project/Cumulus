@@ -877,8 +877,13 @@ void MainWindow::slotCreateApplicationWidgets()
            actionToggleMapSidebar, SLOT( setChecked(bool) ) );
 
 #ifdef FLARM
+
   connect( Flarm::instance(), SIGNAL( flarmTrafficInfo( QString& ) ),
-            Map::instance, SLOT( slotShowFlarmTrafficInfo( QString& )) );
+           Map::instance, SLOT( slotShowFlarmTrafficInfo( QString& )) );
+
+  connect( Flarm::instance(), SIGNAL( flarmAlertZoneInfo( FlarmAlertZone& ) ),
+	   _globalMapContents, SLOT( slotNewFlarmAlertZoneData( FlarmAlertZone& )) );
+
 #endif
 
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),

@@ -3032,7 +3032,31 @@ void MapContents::slotReloadWelt2000Data()
 
 void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )
 {
+  qDebug() << "MapContents::slotNewFlarmAlertZoneData";
 
+  bool found = false;
+
+  // Search into the list, if Flarm alert zone is already known.
+  for( int i = 0; i < flarmAlertZoneList.size(); i++ )
+    {
+      Airspace* as = flarmAlertZoneList.at(i);
+
+      if( as->getFlarmId() != faz.Key )
+	{
+	  continue;
+	}
+
+      // Check found Flarm alert zone, if something has been changed inside.
+
+
+      found = true;
+      break;
+    }
+
+  if( found == false )
+    {
+      // Add this new Flarm alert zone to the list.
+    }
 }
 
 /** Special method to add the drawn objects to the return list,

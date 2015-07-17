@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -23,14 +21,12 @@
  *
  * \brief Class to handle airspaces.
  *
- * This class is used for the several airspaces. The object can be
- * one of: AirC, AirCtemp, AirD, AirDtemp, ControlD, AirElow, WaveWindow,
- * AirF, Restricted, Danger, LowFlight.
+ * This class is used to handle different airspace categories.
  *
  * Due to the cross pointer reference to the air region this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2000-2014
+ * \date 2000-2015
  *
  */
 
@@ -80,6 +76,7 @@ public:
    * \param lowerType The lower altitude reference
    * \param identifier openAIP record identifier
    * \param country The country as two letter code, where the airspace is located
+   * \param flarmKey The Flarm identifier of an alert zone
  */
   Airspace( QString name,
             BaseMapElement::objectType oType, QPolygon pP,
@@ -88,7 +85,8 @@ public:
             const float lower,
             const BaseMapElement::elevationType lowerType,
             const int identifier=-1,
-            QString country="" );
+            QString country="",
+	    QString flarmKey="" );
 
   /**
    * Destructor
@@ -311,6 +309,26 @@ public:
   };
 
   /**
+   * Get Flarm identifier.
+   *
+   * \return Flarm identifier
+   */
+  QString& getFlarmId()
+  {
+    return m_flarmId;
+  };
+
+  /**
+   * Set Flarm identifier
+   *
+   * \param id airspace identifier
+   */
+  void setFlarmId( const QString& fid)
+  {
+    m_flarmId = fid;
+  };
+
+  /**
    * Prints out all relevant airspace data.
    */
   void debug();
@@ -353,6 +371,11 @@ private:
    * Unique identifier used by openAip.
    */
   int m_id;
+
+  /**
+   * Flarm key of alert zone, normally the Flarm ID, a 6 digit hex string.
+   */
+  QString m_flarmId;
 };
 
 /**
