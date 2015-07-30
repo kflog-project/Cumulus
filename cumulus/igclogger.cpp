@@ -157,7 +157,6 @@ void IgcLogger::slotResetLoggingTime()
  */
 void IgcLogger::slotMakeFixEntry()
 {
-  // qDebug("IgcLogger::slotMakeFixEntry()");
   if ( _logMode == off || calculator->samplelist.count() == 0 )
     {
       // make sure logger is not off and and entries are in the sample list
