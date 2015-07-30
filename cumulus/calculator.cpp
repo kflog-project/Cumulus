@@ -1244,7 +1244,6 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
   sample.position=lastPosition;
   sample.vector.setAngleAndSpeed(lastHeading, lastSpeed);
 
-  //qDebug("Speed in sample: %d kph", int(lastSpeed.getKph()));
   //qDebug("Direction in sample: %d degrees", int(lastHeading));
   Vector groundspeed (lastHeading, lastSpeed);
   // qDebug ("groundspeed: %d/%f", groundspeed.getAngleDeg(), groundspeed.getSpeed().getKph());
@@ -1260,6 +1259,7 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
 
   // add to the samplelist
   samplelist.add(sample);
+
   lastSample = sample;
 
   // Call variometer calculation derived from GPS altitude. Can be switched off,
@@ -1287,7 +1287,6 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
   // let the world know we have added a new sample to our sample list
   emit newSample();
 }
-
 
 /** Determines the status of the flight: unknown, standstill, cruising, circlingL, circlingR */
 void Calculator::determineFlightStatus()
@@ -1895,9 +1894,9 @@ bool Calculator::moving()
 {
   // The speed limit is in m/s
   const double SpeedLimit = GeneralConfig::instance()->getAutoLoggerStartSpeed() * 1000.0 / 3600.0;
-  const double TimeLimit = 5; // time limit in seconds
+  const int TimeLimit     = 5; // time limit in seconds
 
-  if( samplelist.count() <= TimeLimit )
+  if( samplelist.size() <= TimeLimit )
     {
       // We need to have some samples in order to be able to analyze speed.
       return false;
@@ -1905,12 +1904,14 @@ bool Calculator::moving()
 
   double speed = 0.0;
 
-  for( int i = samplelist.count() - TimeLimit; i < samplelist.count(); i++ )
+  // Note, that the newest samples are inserted at the list beginning.
+  for( int i = 0; i < TimeLimit && samplelist.size(); i++ )
     {
       speed += samplelist[i].vector.getSpeed().getMps();
     }
 
-  if( (speed / TimeLimit) > SpeedLimit )
+
+  if( (speed / double(TimeLimit)) > SpeedLimit )
     {
       return true;
     }

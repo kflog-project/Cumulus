@@ -123,7 +123,6 @@ IgcLogger* IgcLogger::instance()
  */
 void IgcLogger::slotReadConfig()
 {
-  // qDebug( "IgcLogger::slotReadConfig()" );
   if( _logMode != on )
     {
       // Don't change mode, if logger is switch on
@@ -193,7 +192,8 @@ void IgcLogger::slotMakeFixEntry()
       QStringList list;
       list << bRecord << fRecord << QTime::currentTime ().toString("hhmmss");
       _backtrack.add( list );
-      // qDebug( "_backtrack.size=%d", _backtrack.size() );
+
+      // qDebug( "Backtrack add: backtrack.size=%d", _backtrack.size() );
 
       // Set last F recording time from the oldest log entry. Looks a little bit
       // tricky but should work so. ;-)
