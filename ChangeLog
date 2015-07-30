@@ -20,6 +20,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-07-30 AP: Issue #73 fixed. The moving detection did not work in a right
+                   way. There was a wrong change in the moving method of the
+                   Calculator class.
+
 [o] 2015-07-16 AP: Displayed Flarm contact at the map is colored now according
                    to its current lift.
 
