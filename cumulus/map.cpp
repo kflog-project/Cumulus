@@ -2106,7 +2106,7 @@ void Map::p_drawScale(QPainter& scaleP)
         len=3;
       if (scale<20)
         len=1;
-      barLen.setKilometers(len);
+      barLen.setKilometers(len * isd);
       break;
 
     case Distance::miles:
@@ -2123,7 +2123,7 @@ void Map::p_drawScale(QPainter& scaleP)
         len=2;
       if (scale<30)
         len=1;
-      barLen.setMiles(len);
+      barLen.setMiles(len * isd);
       break;
 
     case Distance::nautmiles:
@@ -2138,7 +2138,7 @@ void Map::p_drawScale(QPainter& scaleP)
         len=3;
       if (scale<55)
         len=1;
-      barLen.setNautMiles(len);
+      barLen.setNautMiles(len * isd);
       break;
 
     default: //should not happen, other units are not used for horizontal distances.
@@ -2155,7 +2155,7 @@ void Map::p_drawScale(QPainter& scaleP)
         len=3;
       if (scale<20)
         len=1;
-      barLen.setKilometers(len);
+      barLen.setKilometers(len * isd);
       break;
     };
 
