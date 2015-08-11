@@ -250,7 +250,7 @@ bool TaskFileManager::loadTaskListOld( QList<FlightTask*>& flightTaskList,
                     {
                       // An old task format has been read. Convert it to the
                       // new format.
-                      TaskEditor::setTaskPointFigureSchemas( *tpList );
+                      TaskEditor::setTaskPointFigureSchemas( *tpList, false );
                     }
 
                   FlightTask* task = new FlightTask( tpList, true, taskName, m_tas );

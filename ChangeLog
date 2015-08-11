@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2015-08-11 AP: Issue #74 fixed. Don't reset flight task point schema
+                   attributes during task edition.
+                   
+[*] 2015-08-10 AP: Cumulus 5.23.4 released for all platforms.                   
+
 [-] 2015-07-30 AP: Issue #73 fixed. The moving detection did not work in a right
                    way. There was a wrong change in the moving method of the
                    Calculator class.

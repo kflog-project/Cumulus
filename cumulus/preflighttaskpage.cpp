@@ -572,7 +572,7 @@ void PreFlightTaskPage::slotNewTask()
 }
 
 /**
- * taking over a new flight task from editor
+ * Taking over a new flight task from the editor
  */
 void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
 {
@@ -581,6 +581,7 @@ void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
+  m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
 }
 
 /**
@@ -600,7 +601,7 @@ void PreFlightTaskPage::slotEditTask()
 
   QString id( m_taskList->selectedItems().at(0)->text(0) );
 
-  if ( id == " ")
+  if( id == " ")
     {
       return;
     }
@@ -625,8 +626,6 @@ void PreFlightTaskPage::slotEditTask()
  */
 void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
 {
-  // qDebug("PreFlightTaskPage::slotEditTaskList()");
-
   // search task item being edited
   int index = m_flightTaskList.indexOf( m_editTask );
 
@@ -647,6 +646,15 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
+
+  if ( index != -1 )
+    {
+      m_taskList->setCurrentItem( m_taskList->topLevelItem(index + 1) );
+    }
+  else
+    {
+      m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
+    }
 }
 
 /**

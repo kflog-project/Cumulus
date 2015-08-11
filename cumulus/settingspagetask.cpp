@@ -219,7 +219,8 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   formLayout->addRow(tr("Radius 2:"), m_startSectorOuterRadius);
 
   m_startSectorAngle = createNE( this );
-  m_startSectorAngle->setTip(tr("Angle"));
+  m_startSectorAngle->setTip(tr("Angle 1...360"));
+
   formLayout->addRow(tr("Angle:"), m_startSectorAngle);
 
   //--------------------------------------------------------------
@@ -294,7 +295,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   formLayout->addRow(tr("Radius 2:"), m_finishSectorOuterRadius);
 
   m_finishSectorAngle = createNE( this );
-  m_finishSectorAngle->setTip(tr("Angle"));
+  m_finishSectorAngle->setTip(tr("Angle 1...360"));
   formLayout->addRow(tr("Angle:"), m_finishSectorAngle);
 
   //--------------------------------------------------------------
@@ -365,7 +366,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   formLayout->addRow(tr("Radius 2:"), m_obsSectorOuterRadius);
 
   m_obsSectorAngle = createNE( this );
-  m_obsSectorAngle->setTip(tr("Sector Angle"));
+  m_obsSectorAngle->setTip(tr("Angle 1...360"));
   formLayout->addRow(tr("Angle:"), m_obsSectorAngle);
 
   //--------------------------------------------------------------
@@ -479,7 +480,6 @@ NumberEditor* SettingsPageTask::createNE( QWidget* parent )
   ne->setMaxLength(3);
   ne->setSuffix( QString(Qt::Key_degree) );
   ne->setRange( 1, 360 );
-  ne->setTip("1...360");
   ne->setValue( 90 );
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "[1-9][0-9]{0,2}" ), this );
   ne->setValidator( eValidator );

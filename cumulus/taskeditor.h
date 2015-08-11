@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2014 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef TaskEditor_H
@@ -69,8 +69,12 @@ public:
    * insert, move and remove action on the task point list.
    *
    * @param tpList A list containing the task points.
+   *
+   * @param setDefaultFigure Assign the default figure to the task point
+   *                         if set to true.
    */
-  static void setTaskPointFigureSchemas( QList<TaskPoint *>& tpList );
+  static void setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
+					 const bool setDefaultFigure );
 
 signals:
 

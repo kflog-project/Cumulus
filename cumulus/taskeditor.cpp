@@ -500,7 +500,7 @@ void TaskEditor::slotAddWaypoint()
       lastSelectedItem = id;
     }
 
-  setTaskPointFigureSchemas( tpList );
+  setTaskPointFigureSchemas( tpList, false );
   showTask();
 }
 
@@ -528,7 +528,7 @@ void TaskEditor::slotRemoveWaypoint()
       lastSelectedItem = id;
     }
 
-  setTaskPointFigureSchemas( tpList );
+  setTaskPointFigureSchemas( tpList, false );
   showTask();
 }
 
@@ -700,7 +700,7 @@ void TaskEditor::slotMoveWaypointUp()
 
   tpList.move( id, id - 1 );
 
-  setTaskPointFigureSchemas( tpList );
+  setTaskPointFigureSchemas( tpList, false );
   showTask();
 }
 
@@ -726,7 +726,7 @@ void TaskEditor::slotMoveWaypointDown()
 
   tpList.move(id,  id + 1);
 
-  setTaskPointFigureSchemas( tpList );
+  setTaskPointFigureSchemas( tpList, false );
   showTask();
 }
 
@@ -886,7 +886,8 @@ void TaskEditor::swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 )
   tp2->setUserEditFlag( e1 );
 }
 
-void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList )
+void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
+					    const bool setDefaultFigure )
 {
   // As first set the right task point type
   for( int i = 0; i < tpList.size(); i++ )
@@ -912,8 +913,12 @@ void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList )
           tpList.at(i)->setTaskPointType(TaskPointTypes::RouteP);
         }
 
-      // Set task point figure schema to default.
-      tpList.at(i)->setConfigurationDefaults();
+      // Set task point figure schema to default, if the user has not edited the
+      // task point.
+      if( setDefaultFigure == true || tpList.at(i)->getUserEditFlag() == false )
+	{
+	  tpList.at(i)->setConfigurationDefaults();
+	}
     }
 }
 
@@ -938,7 +943,7 @@ void TaskEditor::slotSetTaskPointsDefaultSchema()
 
   if( mb.exec() == QMessageBox::Yes )
     {
-      setTaskPointFigureSchemas( tpList );
+      setTaskPointFigureSchemas( tpList, true );
       showTask();
     }
 }
