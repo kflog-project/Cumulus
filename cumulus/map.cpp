@@ -2066,11 +2066,13 @@ void Map::setShowGlider( const bool& _newVal)
 /** Draws a scale indicator on the pixmap. */
 void Map::p_drawScale(QPainter& scaleP)
 {
+  const int isd = Layout::getIntScaledDensity();
+
   QPen pen;
   QBrush brush(Qt::white);
 
   pen.setColor(Qt::black);
-  pen.setWidth(3);
+  pen.setWidth(3 * isd);
   pen.setCapStyle(Qt::RoundCap);
   scaleP.setPen(pen);
 
@@ -2161,16 +2163,16 @@ void Map::p_drawScale(QPainter& scaleP)
   int drawLength = (int)rint(barLen.getMeters()/scale);
 
   //...and where to start drawing. Now at the left lower side ...
-  scaleP.translate( QPoint( -this->width() + drawLength + 10, 0) );
+  scaleP.translate( QPoint( -width() + drawLength + 10*isd, 0) );
 
-  int leftXPos=this->width()-drawLength-5;
+  int leftXPos = width()-drawLength-5*isd;
 
   // Now, draw the bar
-  scaleP.drawLine(leftXPos, this->height()-5, this->width()-5, this->height()-5); //main bar
-  pen.setWidth(3);
+  scaleP.drawLine(leftXPos, height()-5*isd, width()-5*isd, height()-5*isd); // main bar
+  pen.setWidth(3*isd);
   scaleP.setPen(pen);
-  scaleP.drawLine(leftXPos, this->height()-9,leftXPos,this->height()-1);              //left endbar
-  scaleP.drawLine(this->width()-5,this->height()-9,this->width()-5,this->height()-1);//right endbar
+  scaleP.drawLine(leftXPos, height()-9*isd,leftXPos,height()-1*isd); // left endbar
+  scaleP.drawLine(width()-5*isd, height()-9*isd, width()-5*isd, height()-1*isd); // right endbar
 
   // get the string to draw
   QString scaleText = barLen.getText(true, 0);
@@ -2179,7 +2181,7 @@ void Map::p_drawScale(QPainter& scaleP)
   QRect txtRect = scaleP.fontMetrics().boundingRect(scaleText);
 
   // Adapt the text length to the bar length
-  if( (txtRect.width() + 4) > drawLength )
+  if( (txtRect.width() + 4*isd) > drawLength )
     {
       QFont pf = scaleP.font();
 
@@ -2190,7 +2192,7 @@ void Map::p_drawScale(QPainter& scaleP)
           scaleP.setFont( pf );
           txtRect = scaleP.fontMetrics().boundingRect(scaleText);
 
-          if( (txtRect.width() + 4) > drawLength )
+          if( (txtRect.width() + 4*isd) > drawLength )
             {
               continue;
             }
@@ -2199,19 +2201,18 @@ void Map::p_drawScale(QPainter& scaleP)
         }
     }
 
-  int leftTPos = this->width()+int((drawLength-txtRect.width())/2)-drawLength-5;
+  int leftTPos = width()+int((drawLength-txtRect.width())/2)-drawLength-5*isd;
 
-  //draw white box to draw text on
+  // draw white box to draw text in it
   scaleP.setBrush(brush);
   scaleP.setPen(Qt::NoPen);
-  scaleP.drawRect( leftTPos, this->height()-txtRect.height()-8,
-                   txtRect.width()+4, txtRect.height() );
+  scaleP.drawRect( leftTPos, height()-txtRect.height()-8*isd,
+                   txtRect.width()+4*isd, txtRect.height() );
 
-  //draw text itself
+  // draw text itself
   scaleP.setPen(pen);
-  // scaleP.drawText( leftTPos, this->height()-10+txtRect.height()/2, scaleText );
-  scaleP.drawText( leftTPos, this->height()-txtRect.height()-8,
-                   txtRect.width()+4, txtRect.height(), Qt::AlignCenter,
+  scaleP.drawText( leftTPos, height()-txtRect.height()-8*isd,
+                   txtRect.width()+4*isd, txtRect.height(), Qt::AlignCenter,
                    scaleText );
 }
 
