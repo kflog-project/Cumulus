@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,9 +30,9 @@
  * Subclassed by \ref AirfieldListWidget, \ref WaypointListWidget
  *               \ref SinglePointListWidget
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef LISTWIDGET_PARENT_H
@@ -46,6 +46,8 @@
 #include "waypoint.h"
 #include "listviewfilter.h"
 #include "rowdelegate.h"
+
+class QCheckBox;
 
 class ListWidgetParent : public QWidget
 {
@@ -139,6 +141,8 @@ class ListWidgetParent : public QWidget
     QPushButton* up;
     QPushButton* down;
 
+    QCheckBox* m_enableScroller;
+
     /** Flag to indicate that a first load of the list items has been done. */
     bool firstLoadDone;
 
@@ -152,6 +156,11 @@ class ListWidgetParent : public QWidget
      * Called from tree widget when an entry is tapped on.
      */
     void slot_listItemClicked(QTreeWidgetItem*, int);
+
+    /**
+     * Called is the checkbox is toggled.
+     */
+    void slot_scrollerBoxToggled( int state );
 
     /**
      * Move page up.

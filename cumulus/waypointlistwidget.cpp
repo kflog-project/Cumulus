@@ -22,10 +22,6 @@
 #include <QtWidgets>
 #endif
 
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
-
 #include "waypointlistwidget.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
@@ -41,14 +37,6 @@ WaypointListWidget::WaypointListWidget( QWidget *parent, bool showMovePage ) :
 {
   setObjectName("WaypointListWidget");
   list->setObjectName("WpTreeWidget");
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 }
 
 WaypointListWidget::~WaypointListWidget()
