@@ -76,16 +76,16 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   up->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   up->setToolTip( tr("move page up") );
 
-//#if defined(QSCROLLER) || defined(QTSCROLLER)
+#if defined(QSCROLLER) || defined(QTSCROLLER)
 
   m_enableScroller = new QCheckBox( tr("]["));
   m_enableScroller->setCheckState( Qt::Checked );
   m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
 
   connect( m_enableScroller, SIGNAL(stateChanged(int)),
-	   this, SLOT(slot_checkboxToggled(int)) );
+	   this, SLOT(slot_scrollerBoxToggled(int)) );
 
-//#endif
+#endif
 
   down = new QPushButton( this );
   down->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png", true )));
@@ -97,13 +97,13 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   movePageBox->setSpacing( 0 );
   movePageBox->addWidget( up, 10 );
 
-//#if defined(QSCROLLER) || defined(QTSCROLLER)
+#if defined(QSCROLLER) || defined(QTSCROLLER)
 
   movePageBox->addSpacing( 15 * Layout::getIntScaledDensity() );
   movePageBox->addWidget( m_enableScroller, 0, Qt::AlignCenter );
   movePageBox->addSpacing( 15 * Layout::getIntScaledDensity() );
 
-//#endif
+#endif
 
   movePageBox->addWidget( down, 10 );
 
@@ -289,8 +289,6 @@ void ListWidgetParent::slot_PageDown()
 
 void ListWidgetParent::slot_scrollerBoxToggled( int state )
 {
-  qDebug() << "ListWidgetParent::slot_scrollerBoxToggled" << state;
-
   if( m_enableScroller == 0 )
     {
       return;
@@ -309,16 +307,28 @@ void ListWidgetParent::slot_scrollerBoxToggled( int state )
       QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
+#ifdef ANDROID
+       // Reset scrollbar style sheet to default.
+       QScrollBar* lvsb = list->verticalScrollBar();
+       lvsb->setStyleSheet( "" );
+#endif
+
     }
-  else if( Qt::Unchecked)
+  else if( state == Qt::Unchecked)
     {
 
 #ifdef QSCROLLER
       QScroller::ungrabGesture( list->viewport() );
-#endif
+ #endif
 
 #ifdef QTSCROLLER
        QtScroller::ungrabGesture( list->viewport() );
+#endif
+
+#ifdef ANDROID
+       // Make the vertical scrollbar bigger for Android
+       QScrollBar* lvsb = list->verticalScrollBar();
+       lvsb->setStyleSheet( Layout::getCbSbStyle() );
 #endif
 
     }

@@ -21,10 +21,6 @@
 #include <QtWidgets>
 #endif
 
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
-
 #include "generalconfig.h"
 #include "mapconfig.h"
 #include "calculator.h"
@@ -43,14 +39,6 @@ RadioPointListWidget::RadioPointListWidget( QVector<enum MapContents::ListID> &i
 
   QTreeWidgetItem *headerItem = list->headerItem();
   headerItem->setText( 3, tr("Comment") );
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 }
 
 RadioPointListWidget::~RadioPointListWidget()

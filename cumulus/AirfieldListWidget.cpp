@@ -22,10 +22,6 @@
 #include <QtWidgets>
 #endif
 
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
-
 #include "generalconfig.h"
 #include "mapconfig.h"
 #include "calculator.h"
@@ -42,14 +38,6 @@ AirfieldListWidget::AirfieldListWidget( QVector<enum MapContents::ListID> &itemL
 {
   setObjectName("AirfieldListWidget");
   list->setObjectName("AfTreeWidget");
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   // For outlandings we do display the comment instead of ICAO in the list view
   if( itemList.at(0) == MapContents::OutLandingList )
