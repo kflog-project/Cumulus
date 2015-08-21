@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2012 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,9 +24,9 @@
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2010-2012
+ * \date 2010-2015
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef FLARM_ALIAS_LIST_H
@@ -37,6 +35,7 @@
 #include <QWidget>
 #include <QHash>
 
+class QCheckBox;
 class QMutex;
 class QPushButton;
 class QString;
@@ -113,6 +112,11 @@ private slots:
   /** Called, if the item selection is changed. */
   void slot_ItemSelectionChanged();
 
+  /**
+   * Called is the checkbox is toggled.
+   */
+  void slot_scrollerBoxToggled( int state );
+
 signals:
 
   /**
@@ -133,6 +137,9 @@ private:
 
   /** Delete button. */
   QPushButton *deleteButton;
+
+  /** A checkbox to toggle scroller against a big scrollbar. */
+  QCheckBox* m_enableScroller;
 
   /**
    * Flarm alias hash dictionary. The key is the Flarm Id and the value the

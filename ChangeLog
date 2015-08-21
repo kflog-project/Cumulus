@@ -20,6 +20,14 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2015-08-21 AP: Cumulus 5.24.0 released for Android.
+
+[o] 2015-08-21 AP: Some lists extended by a checkbox to toggle scroller feature
+                   against a big scrollbar. That is only provided for Android
+                   for a better list view management.
+
+[*] 2015-08-11 AP: Cumulus 5.23.5 released for Android.
+
 [-] 2015-08-11 AP: Issue #74 fixed. Don't reset flight task point schema
                    attributes during task edition.
                    

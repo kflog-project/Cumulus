@@ -10,7 +10,7 @@
 **                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
-**   License. See the file COPYING for more information.
+**   License. See the file COPYING for more information.ListWidgetParent
 **
 ***********************************************************************/
 
@@ -44,7 +44,8 @@ ReachpointListView::ReachpointListView( QWidget* parent ) :
   _homeChanged( false ),
   _newList(true),
   _outlandShow(true),
-  rowDelegate(0)
+  rowDelegate(0),
+  m_enableScroller(0)
 {
   setObjectName("ReachpointListView");
 
@@ -115,6 +116,17 @@ ReachpointListView::ReachpointListView( QWidget* parent ) :
   cmdPageUp->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred );
   cmdPageUp->setToolTip( tr("move page up") );
 
+#if defined(QSCROLLER) || defined(QTSCROLLER)
+
+  m_enableScroller = new QCheckBox( tr("]["));
+  m_enableScroller->setCheckState( Qt::Checked );
+  m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
+
+  connect( m_enableScroller, SIGNAL(stateChanged(int)),
+	   this, SLOT(slot_ScrollerBoxToggled(int)) );
+
+#endif
+
   cmdPageDown = new QPushButton( this );
   cmdPageDown->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png")) );
   cmdPageDown->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
@@ -124,7 +136,15 @@ ReachpointListView::ReachpointListView( QWidget* parent ) :
   QVBoxLayout* movePageBox = new QVBoxLayout;
   movePageBox->setSpacing( 0 );
   movePageBox->addWidget( cmdPageUp, 10 );
-  movePageBox->addSpacing( 10 );
+
+#if defined(QSCROLLER) || defined(QTSCROLLER)
+
+  movePageBox->addSpacing( 15 * Layout::getIntScaledDensity() );
+  movePageBox->addWidget( m_enableScroller, 0, Qt::AlignCenter );
+  movePageBox->addSpacing( 15 * Layout::getIntScaledDensity() );
+
+#endif
+
   movePageBox->addWidget( cmdPageDown, 10 );
 
   QHBoxLayout *listBox = new QHBoxLayout;
@@ -152,13 +172,6 @@ ReachpointListView::ReachpointListView( QWidget* parent ) :
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
-
-#ifdef ANDROID
-  // Activate keyboard shortcut close
-  QShortcut* scClose = new QShortcut( this );
-  scClose->setKey( Qt::Key_Close );
-  connect( scClose, SIGNAL(activated()), this, SLOT( slot_Close() ));
-#endif
 }
 
 ReachpointListView::~ReachpointListView()
@@ -707,5 +720,52 @@ void ReachpointListView::slot_PageDown()
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slot_PageDown()));
+    }
+}
+
+void ReachpointListView::slot_ScrollerBoxToggled( int state )
+{
+  if( m_enableScroller == 0 )
+    {
+      return;
+    }
+
+  if( state == Qt::Checked )
+    {
+
+#ifdef QSCROLLER
+      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+      QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+      QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef ANDROID
+       // Reset scrollbar style sheet to default.
+       QScrollBar* lvsb = list->verticalScrollBar();
+       lvsb->setStyleSheet( "" );
+#endif
+
+    }
+  else if( state == Qt::Unchecked)
+    {
+
+#ifdef QSCROLLER
+      QScroller::ungrabGesture( list->viewport() );
+ #endif
+
+#ifdef QTSCROLLER
+       QtScroller::ungrabGesture( list->viewport() );
+#endif
+
+#ifdef ANDROID
+       // Make the vertical scrollbar bigger for Android
+       QScrollBar* lvsb = list->verticalScrollBar();
+       lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
     }
 }

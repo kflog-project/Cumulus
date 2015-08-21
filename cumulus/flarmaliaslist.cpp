@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli
+**   Copyright (c): 2010-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -41,7 +39,8 @@ QMutex FlarmAliasList::mutex;
  */
 FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   QWidget( parent ),
-  list(0)
+  list(0),
+  m_enableScroller(0)
 {
   setAttribute( Qt::WA_DeleteOnClose );
 
@@ -126,6 +125,17 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   deleteButton->setMaximumSize(buttonSize, buttonSize);
   deleteButton->setEnabled(false);
 
+#if defined(QSCROLLER) || defined(QTSCROLLER)
+
+  m_enableScroller = new QCheckBox( tr("]["));
+  m_enableScroller->setCheckState( Qt::Checked );
+  m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
+
+  connect( m_enableScroller, SIGNAL(stateChanged(int)),
+	   this, SLOT(slot_scrollerBoxToggled(int)) );
+
+#endif
+
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
   okButton->setIconSize(QSize(iconSize, iconSize));
@@ -153,6 +163,14 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   vbox->addSpacing(32);
   vbox->addWidget( deleteButton );
   vbox->addStretch(2);
+
+#if defined(QSCROLLER) || defined(QTSCROLLER)
+
+  vbox->addWidget( m_enableScroller, 0, Qt::AlignCenter );
+  vbox->addStretch(2);
+
+#endif
+
   vbox->addWidget( okButton );
   vbox->addSpacing(32);
   vbox->addWidget( closeButton );
@@ -573,4 +591,51 @@ bool FlarmAliasList::saveAliasData()
 
   mutex.unlock();
   return true;
+}
+
+void FlarmAliasList::slot_scrollerBoxToggled( int state )
+{
+  if( m_enableScroller == 0 )
+    {
+      return;
+    }
+
+  if( state == Qt::Checked )
+    {
+
+#ifdef QSCROLLER
+      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+      QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+      QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef ANDROID
+       // Reset scrollbar style sheet to default.
+       QScrollBar* lvsb = list->verticalScrollBar();
+       lvsb->setStyleSheet( "" );
+#endif
+
+    }
+  else if( state == Qt::Unchecked)
+    {
+
+#ifdef QSCROLLER
+      QScroller::ungrabGesture( list->viewport() );
+ #endif
+
+#ifdef QTSCROLLER
+       QtScroller::ungrabGesture( list->viewport() );
+#endif
+
+#ifdef ANDROID
+       // Make the vertical scrollbar bigger for Android
+       QScrollBar* lvsb = list->verticalScrollBar();
+       lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
+    }
 }

@@ -141,6 +141,7 @@ class ListWidgetParent : public QWidget
     QPushButton* up;
     QPushButton* down;
 
+    /** A checkbox to toggle scroller against a big scrollbar. */
     QCheckBox* m_enableScroller;
 
     /** Flag to indicate that a first load of the list items has been done. */

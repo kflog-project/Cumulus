@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers, Eckhard Völlm,
-**                   2008-2013 by Axel Pauli
+**                   2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -25,9 +23,9 @@
  *
  * This widget provides a list of reachable points and a means to select one.
  *
- * \date 2004-2011
+ * \date 2004-2015
  *
- * \$Id$
+ * \version 1.1
  */
 
 #ifndef REACH_POINT_LISTVIEW_H
@@ -44,6 +42,7 @@
 #include "rowdelegate.h"
 
 class MainWindow;
+class QCheckBox;
 
 class ReachpointListView : public QWidget
 {
@@ -133,6 +132,11 @@ private slots:
    */
   void slot_PageDown();
 
+  /**
+   * Called is the checkbox is toggled.
+   */
+  void slot_ScrollerBoxToggled( int state );
+
 signals:
 
   /**
@@ -182,6 +186,8 @@ private:
   /** Up and down buttons for page moving */
   QPushButton* cmdPageUp;
   QPushButton* cmdPageDown;
+
+  QCheckBox* m_enableScroller;
 };
 
 #endif
