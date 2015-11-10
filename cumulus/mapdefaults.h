@@ -563,6 +563,34 @@
 #define AIRF_BRUSH_STYLE_3 Qt::Dense6Pattern
 #define AIRF_BRUSH_STYLE_4 Qt::Dense6Pattern
 
+// [Airspace FLARM]
+#define AIRFLARM_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRFLARM_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRFLARM_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRFLARM_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
+
+#define AIRFLARM_PEN_STYLE_1 Qt::SolidLine
+#define AIRFLARM_PEN_STYLE_2 Qt::SolidLine
+#define AIRFLARM_PEN_STYLE_3 Qt::SolidLine
+#define AIRFLARM_PEN_STYLE_4 Qt::SolidLine
+
+#define AIRFLARM_COLOR   QColor(255,0,255).name()
+#define AIRFLARM_COLOR_1 QColor(255,0,255)
+#define AIRFLARM_COLOR_2 QColor(255,0,255)
+#define AIRFLARM_COLOR_3 QColor(255,0,255)
+#define AIRFLARM_COLOR_4 QColor(255,0,255)
+
+#define AIRFLARM_BRUSH_COLOR   QColor(255,0,255).name()
+#define AIRFLARM_BRUSH_COLOR_1 QColor(255,0,255)
+#define AIRFLARM_BRUSH_COLOR_2 QColor(255,0,255)
+#define AIRFLARM_BRUSH_COLOR_3 QColor(255,0,255)
+#define AIRFLARM_BRUSH_COLOR_4 QColor(255,0,255)
+
+#define AIRFLARM_BRUSH_STYLE_1 Qt::BDiagPattern
+#define AIRFLARM_BRUSH_STYLE_2 Qt::BDiagPattern
+#define AIRFLARM_BRUSH_STYLE_3 Qt::BDiagPattern
+#define AIRFLARM_BRUSH_STYLE_4 Qt::BDiagPattern
+
 // [Airspace FIR]
 #define AIRFIR_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
 #define AIRFIR_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()

@@ -24,7 +24,7 @@
  *
  * \date 2010-2015
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef FLARM_H
@@ -218,7 +218,7 @@ class Flarm : public QObject, public FlarmBase
   /**
    * This signal is emitted, if a new/updated alert zone is available.
    */
-  void flarmAlertZoneInfo( FlarmAlertZone& info );
+  void flarmAlertZoneInfo( FlarmBase::FlarmAlertZone& info );
 
  private slots:
 

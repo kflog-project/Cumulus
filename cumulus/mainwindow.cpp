@@ -881,8 +881,8 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( Flarm::instance(), SIGNAL( flarmTrafficInfo( QString& ) ),
            Map::instance, SLOT( slotShowFlarmTrafficInfo( QString& )) );
 
-  connect( Flarm::instance(), SIGNAL( flarmAlertZoneInfo( FlarmAlertZone& ) ),
-	   _globalMapContents, SLOT( slotNewFlarmAlertZoneData( FlarmAlertZone& )) );
+  connect( Flarm::instance(), SIGNAL( flarmAlertZoneInfo( FlarmBase::FlarmAlertZone& ) ),
+           _globalMapContents, SLOT( slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& )) );
 
 #endif
 

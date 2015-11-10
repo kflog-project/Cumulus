@@ -199,6 +199,7 @@ class FlarmBase
    */
   struct FlarmAlertZone
   {
+    bool    valid;         // valid flag of structure
     QTime   TimeStamp;     // Creation time of this structure
     enum AlarmLevel Alarmlevel;
     bool    Inside;        // 1=active and inside, 0=otherwise
@@ -211,9 +212,10 @@ class FlarmBase
     short   ZoneType;      // 0x10 ... 0xFF
     QString ID;            // Flarm Identifier
     short   IdType;        // ID-Type
-    QString Key;           // A key built from IF and IDType
+    QString Key;           // A key built from ID and IDType
 
     FlarmAlertZone() :
+      valid(false),
       TimeStamp(0, 0, 0),
       Alarmlevel(No),
       Inside(0),
@@ -226,6 +228,11 @@ class FlarmBase
       ZoneType(0),
       IdType(-1)
       {};
+
+    bool isValid() const
+    {
+      return valid;
+    }
   };
 
   /**

@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2014 by Axel Pauli
+ **                   2008-2015 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -42,15 +42,13 @@ Airspace::Airspace( QString name,
                     const float lower,
                     const BaseMapElement::elevationType lType,
                     const int identifier,
-                    QString country,
-		    QString flarmKey ) :
+                    QString country ) :
   LineElement(name, oType, pP, false, 0, country),
   m_lLimitType(lType),
   m_uLimitType(uType),
   m_lastVConflict(none),
   m_airRegion(0),
-  m_id(identifier),
-  m_flarmId(flarmKey)
+  m_id(identifier)
 {
   // All Airspaces are closed regions ...
   closed = true;
@@ -120,9 +118,9 @@ Airspace* Airspace::createAirspaceObject()
                                m_lLimit.getFeet(),
                                m_lLimitType,
                                m_id,
-                               getCountry(),
-			       m_flarmId );
+                               getCountry() );
 
+  as->setFlarmAlertZone( m_flarmAlertZone );
   return as;
 }
 
@@ -160,14 +158,21 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
       return;
     }
 
-  QPolygon mP = glMapMatrix->map(projPolygon);
+  if( m_flarmAlertZone.isValid() )
+    {
+      // A Flarm Alert zone has to be drawn.
+      drawFlarmAlertZone( targetP, opacity );
+      return;
+    }
 
-  QPainterPath pp;
+  QPolygon mP = glMapMatrix->map(projPolygon);
 
   if( mP.size() < 3 )
     {
       return;
     }
+
+  QPainterPath pp;
 
   pp.moveTo( mP.at(0) );
 
@@ -224,6 +229,77 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
   targetP->drawPath(pp);
 }
 
+void Airspace::drawFlarmAlertZone( QPainter* targetP, qreal opacity )
+{
+  // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
+  //         typeID, opacity, getInfoString().toLatin1().data() );
+
+  if( !GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
+      ! glConfig->isBorder(typeID) || ! isVisible())
+    {
+      return;
+    }
+
+  if( m_flarmAlertZone.isValid() == false )
+    {
+      return;
+    }
+
+  // Map radius to map scale
+  int scaledRadius = (int) rint( double(m_flarmAlertZone.Radius) / glMapMatrix->getScale() );
+
+  // project center point to map
+  QPoint pcp = glMapMatrix->wgsToMap( m_flarmAlertZone.Latitude, m_flarmAlertZone.Longitude );
+
+  // map projected center point to map display
+  QPoint mcp = glMapMatrix->map( pcp );
+
+  QBrush drawB( glConfig->getDrawBrush(typeID) );
+
+  if( opacity <= 100.0 )
+    {
+      // use solid filled air regions
+      drawB.setStyle( Qt::SolidPattern );
+    }
+
+  QPen drawP = glConfig->getDrawPen(typeID);
+  drawP.setJoinStyle(Qt::RoundJoin);
+
+  int lw = GeneralConfig::instance()->getAirspaceLineWidth();
+
+  if( lw > 1 && glConfig->useSmallIcons() )
+    {
+      lw = (lw + 1) / 2;
+    }
+
+  drawP.setWidth(lw);
+
+  targetP->setPen(drawP);
+  targetP->setBrush(drawB);
+
+  if( opacity <= 100.0 && opacity > 0.0 )
+    {
+      // Draw airspace filled with opacity factor
+      targetP->setOpacity( opacity/100.0 );
+      targetP->drawEllipse( mcp.x() - scaledRadius, mcp.y() - scaledRadius,
+                            scaledRadius * 2, scaledRadius * 2 );
+
+      // Reset opacity, that a solid line is drawn as next
+      targetP->setBrush(Qt::NoBrush);
+      targetP->setOpacity( 1.0 );
+    }
+  else if( opacity == 0.0 )
+    {
+      // Draw only the alert zone borders without any filling inside
+      targetP->setBrush(Qt::NoBrush);
+      targetP->setOpacity( 1.0 );
+    }
+
+  // Draw the outline of the alert zone with the selected brush
+  targetP->drawEllipse( mcp.x() - scaledRadius, mcp.y() - scaledRadius,
+                        scaledRadius * 2, scaledRadius * 2 );
+}
+
 /**
  * Return a pointer to the mapped airspace region data. The caller takes
  * the ownership about the returned object.
@@ -259,6 +335,8 @@ QString Airspace::getTypeName (objectType type)
       return QObject::tr("Wave Window");
     case BaseMapElement::AirF:
       return QObject::tr("AS-F");
+    case BaseMapElement::AirFlarm:
+      return QObject::tr("Flarm Alert Zone");
     case BaseMapElement::AirFir:
       return QObject::tr("FIR");
     case BaseMapElement::Restricted:
@@ -285,7 +363,6 @@ QString Airspace::getTypeName (objectType type)
       return "<B><EM>" + QObject::tr("unknown") + "</EM></B>";
   }
 }
-
 
 QString Airspace::getInfoString() const
 {

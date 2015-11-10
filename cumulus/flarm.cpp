@@ -410,6 +410,7 @@ bool Flarm::extractPflai(QStringList& stringList)
 
 bool Flarm::extractPflao(QStringList& stringList)
 {
+  qDebug() << "Flarm::extractPflao:" << stringList;
   /**
    * 00: PFLAO,
    * 01: <AlarmLevel>,
@@ -435,6 +436,9 @@ bool Flarm::extractPflao(QStringList& stringList)
   bool ok = false;
 
   FlarmAlertZone faz;
+
+  // Set structure to true
+  faz.valid = true;
 
   // 1: Alarm Level
   faz.Alarmlevel = static_cast<enum AlarmLevel> (stringList[1].toInt( &ok ));

@@ -731,7 +731,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
       if( mPointIsContained )
         {
-	  int size = static_cast<int>(10.0 * Layout::getScaledDensity());
+          int size = static_cast<int>(10.0 * Layout::getScaledDensity());
 
           painter->setPen(QPen(Qt::black));
           painter->setBrush( QBrush( Qt::black, Qt::SolidPattern ) );

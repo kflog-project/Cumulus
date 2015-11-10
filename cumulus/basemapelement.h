@@ -27,9 +27,9 @@
  * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
- * \date 2000-2014
+ * \date 2000-2015
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef BASE_MAP_ELEMENT_H
@@ -84,6 +84,7 @@ public:
     AirE = AIR_E,
     AirF = AIR_F,
     AirFir = AIR_FIR,
+    AirFlarm = AIR_FLARM,
     AirG = AIR_G,
     AirUkn = AIR_UKN,
     ControlC = CONTROL_C,

@@ -783,74 +783,82 @@ void Map::p_drawAirspaces( bool reset )
   // The border is stored as FL
   uint asBorder = (uint) rint(settings->getAirspaceDrawingBorder() * 100.0 * Distance::mFromFeet );
 
-  for( uint loop = 0;
-       loop < _globalMapContents->getListLength( MapContents::AirspaceList );
-       loop++ )
+  // Two airspace lists have to be processed.
+  SortableAirspaceList* asl[2];
+
+  asl[0] = _globalMapContents->getAirspaceList();
+  asl[1] = _globalMapContents->getFlarmAlertZoneList();
+
+  for( int i = 0; i < 2; i++ )
     {
-      AirRegion* region = 0;
-      Airspace* currentAirS = dynamic_cast<Airspace *> (_globalMapContents->getElement(MapContents::AirspaceList, loop));
-
-      if( currentAirS == 0 || currentAirS->isDrawable() == false )
+      for( int loop = 0; loop < asl[i]->size(); loop++ )
         {
-          // Not of interest, step away
-          continue;
-        }
+          AirRegion* region = 0;
+          SortableAirspaceList* asList = asl[i];
+          Airspace* currentAirS = dynamic_cast<Airspace *> (asList->value(loop));
 
-      if( drawingBorder == true )
-        {
-          // Ignore airspaces which lays with its lower border to high.
-          if( currentAirS->getLowerL() > asBorder )
+          if( currentAirS == 0 || currentAirS->isDrawable() == false )
             {
+              // Not of interest, step away
               continue;
             }
-        }
 
-      if( currentAirS->getTypeID() == BaseMapElement::AirFir )
-	{
-	  // FIRs are always full transparent.
-	  airspaceOpacity = 0.0;
-	}
-
-      if( reset == true )
-	{
-	  // We have to create a new region for that airspace and put
-	  // it in the airspace region list.
-	  region = new AirRegion( currentAirS->createRegion(), currentAirS );
-	  m_airspaceRegionList.append( region );
-	}
-      else
-	{
-	  // try to reuse an existing region
-	  region = currentAirS->getAirRegion();
-	}
-
-      if( region && currentAirS->getTypeID() != BaseMapElement::AirFir)
-        {
-          // determine lateral conflict
-          Airspace::ConflictType lConflict = region->conflicts( pos, awd );
-
-          // determine vertical conflict
-          Airspace::ConflictType vConflict = currentAirS->conflicts( alt, awd );
-
-          if( fillAirspace == true )
+          if( drawingBorder == true )
             {
-              // load user settings for opacity
-              if( lConflict == Airspace::inside )
+              // Ignore airspaces which lays with its lower border to high.
+              if( currentAirS->getLowerL() > asBorder )
                 {
-                  // We are inside from the lateral position out,
-                  // vertical conflict has priority.
-                  airspaceOpacity = (qreal) settings->getAirspaceFillingVertical( vConflict );
-                }
-              else
-                {
-                  // We are not inside from the lateral position out,
-                  // lateral conflict has priority.
-                  airspaceOpacity = (qreal) settings->getAirspaceFillingLateral( lConflict );
+                  continue;
                 }
             }
-        }
 
-      currentAirS->drawRegion( &cuAeroMapP, airspaceOpacity );
+          if( currentAirS->getTypeID() == BaseMapElement::AirFir )
+            {
+              // FIRs are always full transparent.
+              airspaceOpacity = 0.0;
+            }
+
+          if( reset == true || currentAirS->getAirRegion() == 0 )
+            {
+              // We have to create a new region for that airspace and put
+              // it in the airspace region list.
+              region = new AirRegion( currentAirS->createRegion(), currentAirS );
+              m_airspaceRegionList.append( region );
+            }
+          else
+            {
+              // try to reuse an existing region
+              region = currentAirS->getAirRegion();
+            }
+
+          if( region && currentAirS->getTypeID() != BaseMapElement::AirFir)
+            {
+              // determine lateral conflict
+              Airspace::ConflictType lConflict = region->conflicts( pos, awd );
+
+              // determine vertical conflict
+              Airspace::ConflictType vConflict = currentAirS->conflicts( alt, awd );
+
+              if( fillAirspace == true )
+                {
+                  // load user settings for opacity
+                  if( lConflict == Airspace::inside )
+                    {
+                      // We are inside from the lateral position out,
+                      // vertical conflict has priority.
+                      airspaceOpacity = (qreal) settings->getAirspaceFillingVertical( vConflict );
+                    }
+                  else
+                    {
+                      // We are not inside from the lateral position out,
+                      // lateral conflict has priority.
+                      airspaceOpacity = (qreal) settings->getAirspaceFillingLateral( lConflict );
+                    }
+                }
+            }
+
+          currentAirS->drawRegion( &cuAeroMapP, airspaceOpacity );
+        }
     }
 
   cuAeroMapP.end();
@@ -3092,10 +3100,10 @@ void Map::checkAirspace(const QPoint& pos)
       Airspace* pSpace = m_airspaceRegionList.at(loop)->airspace;
 
       if( pSpace->getTypeID() == BaseMapElement::AirFir )
-	{
-	  // FIRs are not included in the conflict checks.
-	  continue;
-	}
+        {
+          // FIRs are not included in the conflict checks.
+          continue;
+        }
 
       lastVConflict = pSpace->lastVConflict();
       lastHConflict = m_airspaceRegionList.at(loop)->currentConflict();
@@ -3147,10 +3155,10 @@ void Map::checkAirspace(const QPoint& pos)
           if( warSupMS > 0 )
             {
               if( m_insideAsMapTouchTime.contains(pSpace->getInfoString()) )
-        	{
-        	  // Yes suppress airspace
-        	  continue;
-        	}
+                {
+                  // Yes suppress airspace
+                  continue;
+                }
 
               // Add airspace to suppression control map
               m_insideAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
@@ -3175,10 +3183,10 @@ void Map::checkAirspace(const QPoint& pos)
           if( warSupMS > 0 )
             {
               if( m_veryNearAsMapTouchTime.contains(pSpace->getInfoString()) )
-        	{
-        	  // Yes suppress airspace
-        	  continue;
-        	}
+                {
+                  // Yes suppress airspace
+                  continue;
+                }
 
               // Add airspace to suppression control map
               m_veryNearAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
@@ -3205,10 +3213,10 @@ void Map::checkAirspace(const QPoint& pos)
           if( warSupMS > 0 )
             {
               if( m_nearAsMapTouchTime.contains(pSpace->getInfoString()) )
-        	{
-        	  // Yes suppress airspace
-        	  continue;
-        	}
+                {
+                  // Yes suppress airspace
+                  continue;
+                }
 
               // Add airspace to suppression control map
               m_nearAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );

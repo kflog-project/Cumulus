@@ -26,7 +26,7 @@
  *
  * \date 2000-2015
  *
- * \version 1.4
+ * \version 1.5
  */
 
 #ifndef MAP_CONTENTS_H
@@ -85,7 +85,7 @@ class MapContents : public QObject
                   OutLandingList,
                   RadioList,
                   AirspaceList,
-		  FlarmAlertZoneList,
+                  FlarmAlertZoneList,
                   ObstacleList,
                   ReportList,
                   CityList,
@@ -143,13 +143,21 @@ class MapContents : public QObject
     BaseMapElement* getElement(int listType, unsigned int index);
 
     /**
+     * @return a reference to the given airspace list
+     */
+    SortableAirspaceList* getAirspaceList()
+      {
+        return &airspaceList;
+      }
+
+    /**
      * @return a pointer to the given airspace
      *
      * @param index The list index of the  airspace.
      */
     Airspace* getAirspace(unsigned int index)
       {
-	return static_cast<Airspace *> (airspaceList[index]);
+        return static_cast<Airspace *> (airspaceList[index]);
       };
 
     /**
@@ -159,7 +167,7 @@ class MapContents : public QObject
      */
     Airfield* getGliderfield(unsigned int index)
       {
-	return &gliderfieldList[index];
+        return &gliderfieldList[index];
       };
 
     /**
@@ -169,7 +177,7 @@ class MapContents : public QObject
      */
     Airfield* getAirfield(unsigned int index)
       {
-	return &airfieldList[index];
+        return &airfieldList[index];
       };
 
     /**
@@ -179,7 +187,7 @@ class MapContents : public QObject
      */
     Airfield* getOutlanding(unsigned int index)
       {
-	return &outLandingList[index];
+        return &outLandingList[index];
       };
 
     /**
@@ -189,7 +197,7 @@ class MapContents : public QObject
      */
     RadioPoint* getRadioPoint(unsigned int index)
       {
-	return &radioList[index];
+        return &radioList[index];
       };
 
     /**
@@ -199,7 +207,7 @@ class MapContents : public QObject
      */
     SinglePoint* getHotspot(unsigned int index)
       {
-	return &hotspotList[index];
+        return &hotspotList[index];
       };
 
     /**
@@ -213,9 +221,9 @@ class MapContents : public QObject
     /**
      * @return The Flarm alert zone list.
      */
-    SortableAirspaceList& getFlarmAlertZoneList()
+    SortableAirspaceList* getFlarmAlertZoneList()
       {
-	return flarmAlertZoneList;
+        return &flarmAlertZoneList;
       };
 
     /**

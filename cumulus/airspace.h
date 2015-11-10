@@ -28,6 +28,8 @@
  *
  * \date 2000-2015
  *
+ * \version 1.1
+ *
  */
 
 #ifndef AIRSPACE_H
@@ -44,6 +46,7 @@
 #include "altitude.h"
 #include "lineelement.h"
 #include "airspacewarningdistance.h"
+#include "flarmbase.h"
 
 class AirRegion;
 
@@ -76,8 +79,7 @@ public:
    * \param lowerType The lower altitude reference
    * \param identifier openAIP record identifier
    * \param country The country as two letter code, where the airspace is located
-   * \param flarmKey The Flarm identifier of an alert zone
- */
+  */
   Airspace( QString name,
             BaseMapElement::objectType oType, QPolygon pP,
             const float upper,
@@ -85,8 +87,7 @@ public:
             const float lower,
             const BaseMapElement::elevationType lowerType,
             const int identifier=-1,
-            QString country="",
-	    QString flarmKey="" );
+            QString country="" );
 
   /**
    * Destructor
@@ -100,7 +101,6 @@ public:
 
   /**
    * Draws the airspace into the given painter.
-   * Return a pointer to the drawn region or 0.
    *
    * @param targetP The painter to draw the element into.
    *
@@ -109,6 +109,17 @@ public:
    * transparent and 100.0 is fully opaque.
    */
   void drawRegion( QPainter* targetP, qreal opacity = 0.0 );
+
+  /**
+   * Draws the Flarm alert zone into the given painter.
+   *
+   * @param targetP The painter to draw the element into.
+   *
+   * @param opacity Sets the opacity of the painter to opacity. The
+   * value should be in the range 0.0 to 100.0, where 0.0 is fully
+   * transparent and 100.0 is fully opaque.
+   */
+  void drawFlarmAlertZone( QPainter* targetP, qreal opacity );
 
   /**
    * Tells the caller, if the airspace is drawable or not
@@ -309,23 +320,23 @@ public:
   };
 
   /**
-   * Get Flarm identifier.
+   * Get Flarm Alert Zone.
    *
-   * \return Flarm identifier
+   * \return Flarm Alert Zone.
    */
-  QString& getFlarmId()
+  FlarmBase::FlarmAlertZone& getFlarmAlertZone()
   {
-    return m_flarmId;
+    return m_flarmAlertZone;
   };
 
   /**
-   * Set Flarm identifier
+   * Set Flarm Alert Zone.
    *
-   * \param id airspace identifier
+   * \param Flarm Alert Zone.
    */
-  void setFlarmId( const QString& fid)
+  void setFlarmAlertZone( const FlarmBase::FlarmAlertZone& faz)
   {
-    m_flarmId = fid;
+    m_flarmAlertZone = faz;
   };
 
   /**
@@ -373,9 +384,9 @@ private:
   int m_id;
 
   /**
-   * Flarm key of alert zone, normally the Flarm ID, a 6 digit hex string.
+   * Flarm Alert Zone object.
    */
-  QString m_flarmId;
+  FlarmBase::FlarmAlertZone m_flarmAlertZone;
 };
 
 /**

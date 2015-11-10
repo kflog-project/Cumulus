@@ -187,6 +187,7 @@
 #define RMZ              73 // Radio Mandatory Zone
 #define CTR              74 // Control Zone
 #define USER_POINT       75 // A point set by the user
-#define LAST_ENTRY       76 // This must be always the last entry!!!
+#define AIR_FLARM        76 // Flarm alert zone
+#define LAST_ENTRY       77 // This must be always the last entry!!!
 
 #endif // RESOURCE_H

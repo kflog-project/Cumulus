@@ -283,15 +283,29 @@ void MapConfig::slotReloadAirspaceColors()
                  AIRF_BRUSH_STYLE_1, AIRF_BRUSH_STYLE_2,
                  AIRF_BRUSH_STYLE_3, AIRF_BRUSH_STYLE_4)
 
+  READ_PEN_BRUSH("Airspace FLARM", airFlarmPenList, airFlarmBorder, airFlarmBrushList,
+                 conf->getBorderColorAirspaceFlarm(), conf->getBorderColorAirspaceFlarm(),
+                 conf->getBorderColorAirspaceFlarm(), conf->getBorderColorAirspaceFlarm(),
+                 AIRFLARM_PEN_WIDTH_1, AIRFLARM_PEN_WIDTH_2,
+                 AIRFLARM_PEN_WIDTH_3, AIRFLARM_PEN_WIDTH_4,
+                 AIRFLARM_PEN_STYLE_1, AIRFLARM_PEN_STYLE_2,
+                 AIRFLARM_PEN_STYLE_3, AIRFLARM_PEN_STYLE_4,
+                 conf->getFillColorAirspaceFlarm(), conf->getFillColorAirspaceFlarm(),
+                 conf->getFillColorAirspaceFlarm(), conf->getFillColorAirspaceFlarm(),
+                 AIRFLARM_BRUSH_STYLE_1, AIRFLARM_BRUSH_STYLE_2,
+                 AIRFLARM_BRUSH_STYLE_3, AIRFLARM_BRUSH_STYLE_4)
+
   READ_PEN_BRUSH("Airspace FIR", airFirPenList, airFirBorder, airFirBrushList,
-		conf->getBorderColorAirspaceFir(), conf->getBorderColorAirspaceFir(),
-		conf->getBorderColorAirspaceFir(), conf->getBorderColorAirspaceFir(),
-		AIRFIR_PEN_WIDTH_1, AIRFIR_PEN_WIDTH_2, AIRFIR_PEN_WIDTH_3, AIRFIR_PEN_WIDTH_4,
-		AIRFIR_PEN_STYLE_1, AIRFIR_PEN_STYLE_2, AIRFIR_PEN_STYLE_3, AIRFIR_PEN_STYLE_4,
-		conf->getFillColorAirspaceFir(), conf->getFillColorAirspaceFir(),
-		conf->getFillColorAirspaceFir(), conf->getFillColorAirspaceFir(),
-		AIRFIR_BRUSH_STYLE_1, AIRFIR_BRUSH_STYLE_2,
-		AIRFIR_BRUSH_STYLE_3, AIRFIR_BRUSH_STYLE_4)
+                  conf->getBorderColorAirspaceFir(), conf->getBorderColorAirspaceFir(),
+                  conf->getBorderColorAirspaceFir(), conf->getBorderColorAirspaceFir(),
+                  AIRFIR_PEN_WIDTH_1, AIRFIR_PEN_WIDTH_2,
+                  AIRFIR_PEN_WIDTH_3, AIRFIR_PEN_WIDTH_4,
+                  AIRFIR_PEN_STYLE_1, AIRFIR_PEN_STYLE_2,
+                  AIRFIR_PEN_STYLE_3, AIRFIR_PEN_STYLE_4,
+                  conf->getFillColorAirspaceFir(), conf->getFillColorAirspaceFir(),
+                  conf->getFillColorAirspaceFir(), conf->getFillColorAirspaceFir(),
+                  AIRFIR_BRUSH_STYLE_1, AIRFIR_BRUSH_STYLE_2,
+                  AIRFIR_BRUSH_STYLE_3, AIRFIR_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Wave Window", waveWindowPenList, waveWindowBorder, waveWindowBrushList,
                  conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
@@ -457,6 +471,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return waveWindowPenList[sIndex];
     case BaseMapElement::AirF:
       return airFPenList[sIndex];
+    case BaseMapElement::AirFlarm:
+      return airFlarmPenList[sIndex];
     case BaseMapElement::AirFir:
       return airFirPenList[sIndex];
     case BaseMapElement::Ctr:
@@ -531,6 +547,8 @@ bool MapConfig::isBorder(unsigned int typeID)
       return waveWindowBorder[scaleIndex];
     case BaseMapElement::AirF:
       return airFBorder[scaleIndex];
+    case BaseMapElement::AirFlarm:
+      return airFlarmBorder[scaleIndex];
     case BaseMapElement::AirFir:
       return airFirBorder[scaleIndex];
     case BaseMapElement::Ctr:
@@ -597,6 +615,8 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
       return waveWindowBrushList[sIndex];
     case BaseMapElement::AirF:
       return airFBrushList[sIndex];
+    case BaseMapElement::AirFlarm:
+      return airFlarmBrushList[sIndex];
     case BaseMapElement::AirFir:
       return airFirBrushList[sIndex];
     case BaseMapElement::Ctr:

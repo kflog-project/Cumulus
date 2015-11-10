@@ -50,7 +50,8 @@
 #include "OpenAipPoiLoader.h"
 #include "OpenAipLoaderThread.h"
 
-extern MapView* _globalMapView;
+extern MapMatrix* _globalMapMatrix;
+extern MapView*   _globalMapView;
 
 #define FILE_FORMAT_ID 100 // used to handle a previous version
 
@@ -187,7 +188,6 @@ void MapContents::saveWaypointList()
  */
 bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 {
-  extern const MapMatrix* _globalMapMatrix;
   bool kflExists, kfcExists;
   bool compiling = false;
 
@@ -691,7 +691,6 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 
 bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 {
-  extern const MapMatrix * _globalMapMatrix;
   bool kflExists, kfcExists;
   bool compiling = false;
 
@@ -1775,22 +1774,22 @@ void MapContents::slotDownloadOpenAipAsFinished( int requests, int errors )
       const QString& fn = filesFound.at(i);
 
       if( fn.endsWith(".aic") )
-	{
-	  // Remove compiled airspace file version in every case.
-	  afDir.remove( fn );
-	  continue;
-	}
+        {
+          // Remove compiled airspace file version in every case.
+          afDir.remove( fn );
+          continue;
+        }
 
       if( loadAll && fn.startsWith("openaip_airspace_") )
-	{
-	  // That file was installed by the user. We remove it to avoid
-	  // problems with the new downloaded airspace files by Cumulus,
-	  // if the load All option is activated.
-	  // Example of file names:
-	  // User installed file:    openaip_airspace_germany_de.aip
-	  // Cumulus installed file: de_asp.aip
-	  afDir.remove( fn );
-	}
+        {
+          // That file was installed by the user. We remove it to avoid
+          // problems with the new downloaded airspace files by Cumulus,
+          // if the load All option is activated.
+          // Example of file names:
+          // User installed file:    openaip_airspace_germany_de.aip
+          // Cumulus installed file: de_asp.aip
+          afDir.remove( fn );
+        }
     }
 
   _globalMapView->slot_info( tr("openAIP airspaces downloaded") );
@@ -3032,22 +3031,21 @@ void MapContents::slotReloadWelt2000Data()
 
 void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )
 {
-  qDebug() << "MapContents::slotNewFlarmAlertZoneData";
-
   bool found = false;
+
+  Airspace* as = static_cast<Airspace*>(0);
 
   // Search into the list, if Flarm alert zone is already known.
   for( int i = 0; i < flarmAlertZoneList.size(); i++ )
     {
-      Airspace* as = flarmAlertZoneList.at(i);
+      as = flarmAlertZoneList.at(i);
 
-      if( as->getFlarmId() != faz.Key )
-	{
-	  continue;
-	}
+      FlarmBase::FlarmAlertZone& asFaz = as->getFlarmAlertZone();
 
-      // Check found Flarm alert zone, if something has been changed inside.
-
+      if( asFaz.isValid() == false || asFaz.Key != faz.Key )
+        {
+          continue;
+        }
 
       found = true;
       break;
@@ -3055,8 +3053,72 @@ void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )
 
   if( found == false )
     {
-      // Add this new Flarm alert zone to the list.
+      as = new Airspace();
+      as->setTypeID( BaseMapElement::AirFlarm );
     }
+
+  FlarmBase::FlarmAlertZone& asFaz = as->getFlarmAlertZone();
+
+  // Check, if update is necessary
+  if( asFaz.isValid() == false ||
+      asFaz.Radius != faz.Radius ||
+      asFaz.Latitude != faz.Latitude ||
+      asFaz.Longitude != faz.Longitude )
+    {
+      // Flarm airspace object type is circle
+      QPolygon aspg;
+
+      // Distance of one arc minute along latitude and longitude
+      double distLat = MapCalc::distC1( faz.Latitude, faz.Longitude, faz.Latitude + 10000, faz.Longitude );
+      double distLon = MapCalc::distC1( faz.Latitude, faz.Longitude, faz.Latitude, faz.Longitude + 10000 );
+
+      double kmr = double(faz.Radius) / 1000.;
+
+      // Distance as radius in kilometer/minute
+      double latRadius = kmr / (distLat / 10000.);
+      double lonRadius = kmr / (distLon / 10000.);
+
+      for( int i = 0; i < 360; i += 1 )
+        {
+          double phi = double(i) / 180.0 * M_PI;
+          double x = cos(phi) * latRadius;
+          double y = sin(phi) * lonRadius;
+
+          x += double(faz.Latitude);
+          y += double(faz.Longitude);
+
+          x = rint(x);
+          y = rint(y);
+
+          aspg.append( _globalMapMatrix->wgsToMap( x, y ) );
+        }
+
+      as->setProjectedPolygon( aspg );
+    }
+
+  // Flarm Alert Zone
+  as->setFlarmAlertZone(faz);
+
+  // Name
+  as->setName( faz.ID );
+
+  // Botton
+  Altitude botton( faz.Bottom );
+  as->setLowerL( botton );
+  as->setLowerT( BaseMapElement::MSL );
+
+  // Top
+  Altitude top( faz.Top );
+  as->setUpperL( top );
+  as->setUpperT( BaseMapElement::MSL );
+
+  if( found == false )
+    {
+      flarmAlertZoneList.append( as );
+      flarmAlertZoneList.sort();
+    }
+
+  emit mapDataReloaded( Map::airspaces );
 }
 
 /** Special method to add the drawn objects to the return list,
