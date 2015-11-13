@@ -410,7 +410,6 @@ bool Flarm::extractPflai(QStringList& stringList)
 
 bool Flarm::extractPflao(QStringList& stringList)
 {
-  qDebug() << "Flarm::extractPflao:" << stringList;
   /**
    * 00: PFLAO,
    * 01: <AlarmLevel>,
