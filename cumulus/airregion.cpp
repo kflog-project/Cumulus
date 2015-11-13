@@ -7,14 +7,16 @@
 ************************************************************************
 **
 **   Copyright (c): 2004      by André Somers
-**                  2008-2015 by Axel pauli
+**                  2008-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#include <math.h>
+#include <cmath>
+
+#include <QtCore>
 
 #include "airregion.h"
 #include "mapmatrix.h"
@@ -28,52 +30,36 @@ AirspaceWarningDistance AirRegion::ms_lastAwd;
 QPainterPath AirRegion::ms_regNear = QPainterPath();
 QPainterPath AirRegion::ms_regVeryNear = QPainterPath();
 QPoint  AirRegion::ms_lastProjPos = QPoint();
+QPoint  AirRegion::ms_lastMapCenter = QPoint();
 
-
-/**
- * @short Container for @ref Airspace objects with a QPainterPath
- * @author André Somers
- *
- * Contains the projected region of an airspace onto the map.
- * The Map class maintains a list to find the airspace data when
- * the users selects an airspace in the map or to check the nearness
- * to an airspace during the drawing and after a position change.
- *
- * This class overtakes the ownership of the region, but not of
- * the airspace!
- *
- * Due to the cross pointer reference to the airspace this class do not
- * allow copies and assignments of an existing instance.
- *
- */
-
-AirRegion::AirRegion( QPainterPath* reg, Airspace* air )
+AirRegion::AirRegion( QPainterPath* region, Airspace* airspace ) :
+  m_lastResult(Airspace::none),
+  m_region(region),
+  m_airspace(airspace),
+  m_isNew(true),
+  m_lastProjPos(QPoint(0,0))
 {
-  region   = reg;
-  airspace = air;
-  m_isNew = true;
-  m_lastResult = Airspace::none;
-  m_lastProjPos = QPoint(0,0);
-
   // set a reference to the related airspace instance
-  airspace->setAirRegion(this);
+  if( m_airspace )
+    {
+      m_airspace->setAirRegion(this);
+    }
 }
 
 AirRegion::~AirRegion()
 {
-  if ( region )
+  if( m_region )
     {
-      delete region;
+      delete m_region;
     }
 
   // @AP: Remove the class pointer in related AirSpace object. We
   // have a cross reference here. First deleted object will reset
   // its pointer in the other object. Check is necessary to avoid
   // usage of null pointer.
-
-  if ( airspace )
+  if( m_airspace )
     {
-      airspace->setAirRegion( static_cast<AirRegion*> (0) );
+      m_airspace->setAirRegion( static_cast<AirRegion*> (0) );
     }
 }
 
@@ -84,191 +70,191 @@ AirRegion::~AirRegion()
 Airspace::ConflictType AirRegion::conflicts( const QPoint& pos,
                                              const AirspaceWarningDistance& awd,
                                              bool* changed )
-  {
-    //if the object is new, the last position is invalid, so we need a
-    //full check
-    bool fullCheck = m_isNew;
+{
+  // If the object is new, the last position is invalid, so we need a full check.
+  bool fullCheck = m_isNew;
 
-    if ( parametersChanged(pos, awd) )
-      {
-        //the parameters changed, so we need to re-create the regions.
-        createRegions();
-      }
+  if ( parametersChanged(pos, awd) )
+    {
+      // the parameters are changed, so we need to re-create the regions.
+      createRegions();
+    }
 
-    if ( ! m_isNew && ms_lastProjPos == m_lastProjPos )
-      {
-        //The parameters have not changed, so we can use what we have.
-        //The last result must still be valid!
-        if (changed)
-          {
-            *changed = false;
-          }
+  if ( ! m_isNew && ! m_lastProjPos.isNull() && ms_lastProjPos == m_lastProjPos )
+    {
+      // The parameters have not been changed, so we can use what we have.
+      // The last result must still be valid!
+      if (changed)
+	{
+	  *changed = false;
+	}
 
-        return m_lastResult;
-      }
+      return m_lastResult;
+    }
 
-    //We need a full check if the position change is large.
-    fullCheck |= !ms_smallPositionChange;
+  // We need a full check if the position change is large.
+  fullCheck |= !ms_smallPositionChange;
 
-    // dont know why this happens, but it does.
-    if ( ms_lastProjPos.x() > 10000 || ms_lastProjPos.x() < -10000 )
-      {
-        m_lastResult = Airspace::none;
+  // don't know why this happens, but it does.
+  if ( ms_lastProjPos.x() > 20000 || ms_lastProjPos.x() < -20000 )
+    {
+      qWarning() << "AirRegion::conflicts(): ms_lastProjPos" << ms_lastProjPos << "is out of range!";
 
-        if (changed)
-          {
-            *changed = true;
-          }
-        //qDebug("returning no conflict because of invalid position");
-        return Airspace::none;
-      }
+      m_lastResult = Airspace::none;
 
-    Airspace::ConflictType hConflict = Airspace::none;
-    m_lastProjPos = ms_lastProjPos;
+      if (changed)
+	{
+	  *changed = true;
+	}
+      // returning no conflict because of invalid position";
+      return Airspace::none;
+    }
 
-    // check for horizontal conflicts
-    if (fullCheck)
-      {
-        //we need to do a full check
-        if ( region->contains(ms_lastProjPos) )
-          {
-            hConflict=Airspace::inside;
-          }
-        else if ( region->intersects(ms_regVeryNear) )
-          {
-            hConflict=Airspace::veryNear;
-          }
-        else if ( region->intersects(ms_regNear) )
-          {
-            hConflict=Airspace::near;
-          }
-        else
-          {
-            hConflict=Airspace::none;
-          }
-      }
-    else
-      {
-        // we only need to check around the last result. This is a potentially
-        // significant save, as intersecting regions is quite expensive.
-        switch (m_lastResult)
-          {
-          case Airspace::inside:
+  Airspace::ConflictType hConflict = Airspace::none;
+  m_lastProjPos = ms_lastProjPos;
 
-            if (region->contains(ms_lastProjPos))
-              {
-                hConflict=Airspace::inside;
-              }
-            else if ( region->intersects(ms_regVeryNear) )
-              {
-                hConflict=Airspace::veryNear;
-              };
-            break;
+  // check for horizontal conflicts
+  if (fullCheck)
+    {
+      // we need to do a full check
+      if ( m_region->contains(ms_lastProjPos) )
+	{
+	  hConflict=Airspace::inside;
+	}
+      else if ( m_region->intersects(ms_regVeryNear) )
+	{
+	  hConflict=Airspace::veryNear;
+	}
+      else if ( m_region->intersects(ms_regNear) )
+	{
+	  hConflict=Airspace::near;
+	}
+      else
+	{
+	  hConflict=Airspace::none;
+	}
+    }
+  else
+    {
+      // we only need to check around the last result. This is a potentially
+      // significant save, as intersecting regions is quite expensive.
+      switch (m_lastResult)
+	{
+	case Airspace::inside:
 
-          case Airspace::veryNear:
+	  if (m_region->contains(ms_lastProjPos))
+	    {
+	      hConflict=Airspace::inside;
+	    }
+	  else if ( m_region->intersects(ms_regVeryNear) )
+	    {
+	      hConflict=Airspace::veryNear;
+	    };
+	  break;
 
-            if (region->contains(ms_lastProjPos))
-              {
-                hConflict=Airspace::inside;
-              }
-            else if ( region->intersects(ms_regVeryNear) )
-              {
-                hConflict=Airspace::veryNear;
-              }
-            else if ( region->intersects(ms_regNear) )
-              {
-                hConflict=Airspace::near;
-              }
-            break;
+	case Airspace::veryNear:
 
-          case Airspace::near:
+	  if (m_region->contains(ms_lastProjPos))
+	    {
+	      hConflict=Airspace::inside;
+	    }
+	  else if ( m_region->intersects(ms_regVeryNear) )
+	    {
+	      hConflict=Airspace::veryNear;
+	    }
+	  else if ( m_region->intersects(ms_regNear) )
+	    {
+	      hConflict=Airspace::near;
+	    }
+	  break;
 
-            if ( region->intersects(ms_regVeryNear) )
-              {
-                hConflict=Airspace::veryNear;
-              }
-            else if ( region->intersects(ms_regNear) )
-              {
-                hConflict=Airspace::near;
-              }
-            else
-              {
-                hConflict=Airspace::none;
-              }
-            break;
+	case Airspace::near:
 
-          case Airspace::none:
+	  if ( m_region->intersects(ms_regVeryNear) )
+	    {
+	      hConflict=Airspace::veryNear;
+	    }
+	  else if ( m_region->intersects(ms_regNear) )
+	    {
+	      hConflict=Airspace::near;
+	    }
+	  else
+	    {
+	      hConflict=Airspace::none;
+	    }
+	  break;
 
-            if ( region->intersects(ms_regNear) )
-              {
-                hConflict=Airspace::near;
-              }
-            else
-              {
-                hConflict=Airspace::none;
-              }
-            break;
+	case Airspace::none:
 
-          default:
-            break;
-          }
-      }
+	  if ( m_region->intersects(ms_regNear) )
+	    {
+	      hConflict=Airspace::near;
+	    }
+	  else
+	    {
+	      hConflict=Airspace::none;
+	    }
+	  break;
 
-    if (changed)
-      {
-        *changed = (m_lastResult == hConflict);
-      }
+	default:
+	  break;
+	}
+    }
 
-    m_lastResult = hConflict;
-    m_isNew = false;
-    // qDebug("horizontal conflict: %d, airspace: %s", hConflict, airspace->getName().latin1());
-    return hConflict;
-  }
+  if (changed)
+    {
+      *changed = (m_lastResult == hConflict);
+    }
 
+  m_lastResult = hConflict;
+  m_isNew = false;
+
+  return hConflict;
+}
 
 bool AirRegion::parametersChanged(const QPoint& pos,
                                   const AirspaceWarningDistance& awd)
-  {
-    extern MapMatrix* _globalMapMatrix;
+{
+  extern MapMatrix* _globalMapMatrix;
 
-    if (pos == ms_lastPos &&
-        ms_lastAwd == awd &&
-        ms_lastScale == _globalMapMatrix->getScale(MapMatrix::CurrentScale))
-      {
-        return false;
-      }
+  if (pos == ms_lastPos &&
+      ms_lastAwd == awd &&
+      ms_lastScale == _globalMapMatrix->getScale(MapMatrix::CurrentScale) &&
+      ms_lastMapCenter == _globalMapMatrix->getMapCenter() )
+    {
+      return false;
+    }
 
-    // 30 meters is a small position change
-    QPoint* p = &(const_cast<QPoint&>(pos));
-    ms_smallPositionChange = (MapCalc::dist(p, &ms_lastPos) < 0.03);
-    ms_lastPos = pos;
-    ms_lastAwd = awd;
-    ms_lastScale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+  // 30 meters is a small position change
+  QPoint* p = &(const_cast<QPoint&>(pos));
+  ms_smallPositionChange = (MapCalc::dist(p, &ms_lastPos) < 0.03);
+  ms_lastPos = pos;
+  ms_lastAwd = awd;
+  ms_lastScale = _globalMapMatrix->getScale(MapMatrix::CurrentScale);
+  ms_lastMapCenter = _globalMapMatrix->getMapCenter();
 
-    //qDebug("parametersChanged, smallPositionChange: %d", ms_smallPositionChange);
-    return true;
-  }
-
+  return true;
+}
 
 void AirRegion::createRegions()
-  {
-    extern MapMatrix* _globalMapMatrix;
+{
+  extern MapMatrix* _globalMapMatrix;
 
-    ms_lastProjPos = _globalMapMatrix->map( _globalMapMatrix->wgsToMap(ms_lastPos) );
+  ms_lastProjPos = _globalMapMatrix->map( _globalMapMatrix->wgsToMap(ms_lastPos) );
 
-    Distance dist = ms_lastAwd.horClose * 2;
-    int projDist = (int) rint(dist.getMeters()/ms_lastScale);
+  Distance dist = ms_lastAwd.horClose * 2;
+  int projDist = (int) rint(dist.getMeters()/ms_lastScale);
 
-    ms_regNear = QPainterPath();
-    ms_regNear.addEllipse( ms_lastProjPos.x()-projDist/2,
-                           ms_lastProjPos.y()-projDist/2,
-                           projDist, projDist );
+  ms_regNear = QPainterPath();
+  ms_regNear.addEllipse( ms_lastProjPos.x()-projDist/2,
+			 ms_lastProjPos.y()-projDist/2,
+			 projDist, projDist );
 
-    dist = ms_lastAwd.horVeryClose * 2;
-    projDist = (int) rint(dist.getMeters()/ms_lastScale);
+  dist = ms_lastAwd.horVeryClose * 2;
+  projDist = (int) rint(dist.getMeters()/ms_lastScale);
 
-    ms_regVeryNear = QPainterPath();
-    ms_regVeryNear.addEllipse( ms_lastProjPos.x()-projDist/2,
-                               ms_lastProjPos.y()-projDist/2,
-                               projDist, projDist );
-  }
+  ms_regVeryNear = QPainterPath();
+  ms_regVeryNear.addEllipse( ms_lastProjPos.x()-projDist/2,
+			     ms_lastProjPos.y()-projDist/2,
+			     projDist, projDist );
+}

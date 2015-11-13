@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2010 by Axel pauli
+**                   2008-2015 by Axel pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -36,7 +34,7 @@
  * Due to the cross pointer reference to the airspace this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2004-2010
+ * \date 2004-2015
  *
  */
 
@@ -60,9 +58,6 @@ private:
   AirRegion& operator=(const AirRegion& ) {return *this;};
 
 public:
-
-    QPainterPath* region;
-    Airspace* airspace;
 
     AirRegion( QPainterPath* reg, Airspace* air );
     virtual ~AirRegion();
@@ -90,9 +85,10 @@ public:
 
 private:
     /**
-     * Create new regions around the current position to check for collisions
+     * Creates new regions around the current position to check for collisions.
      */
     void createRegions();
+
     /**
      * @returns true if the position, the airspace warning distances or the
      * scale has changed. If so, the static parameters that contain these
@@ -101,8 +97,17 @@ private:
      */
     bool parametersChanged( const QPoint& pos, const AirspaceWarningDistance& awd );
 
-    /** the result returned last time */
+    /** The result returned the last time */
     Airspace::ConflictType m_lastResult;
+
+public:
+
+    QPainterPath* m_region;
+
+    /** The related airspace object to which the region object belonging. */
+    Airspace* m_airspace;
+
+private:
 
     /** true if this is the first time this region is used */
     bool m_isNew;
@@ -115,8 +120,6 @@ private:
      */
     QPoint m_lastProjPos;
 
-private:
-    // given values
     /** contains the last known position */
     static QPoint ms_lastPos;
     /** contains the last known scale */
@@ -131,9 +134,10 @@ private:
     static QPainterPath ms_regVeryNear;
     /** contains the last position projected */
     static QPoint ms_lastProjPos;
+    /** contains the last known map center point. */
+    static QPoint ms_lastMapCenter;
     /** true if the last position change was a small change */
     static bool ms_smallPositionChange;
-
 };
 
 #endif
