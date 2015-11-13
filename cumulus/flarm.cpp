@@ -437,7 +437,7 @@ bool Flarm::extractPflao(QStringList& stringList)
 
   FlarmAlertZone faz;
 
-  // Set structure to true
+  // Set structure as valid
   faz.valid = true;
 
   // 1: Alarm Level
@@ -505,6 +505,13 @@ bool Flarm::extractPflao(QStringList& stringList)
       return false;
     }
 
+  if( faz.isActive() == false )
+    {
+      qWarning() << "Flarm Alert Zone" << stringList[9]
+                 << "activity limit has expired! Ignoring $PFLAO.";
+      return false;
+    }
+
   // 9. ID
   faz.ID = stringList[9];
 
@@ -526,20 +533,6 @@ bool Flarm::extractPflao(QStringList& stringList)
 
   faz.Key = FlarmBase::createHashKey( faz.IdType, faz.ID );
   faz.TimeStamp = QTime::currentTime();
-
-  // Store alert zone in a hash
-  // First check, if record is already contained in the hash.
-  if( m_pflaoHash.contains( faz.Key ) == true )
-    {
-      // update entry
-      FlarmAlertZone& alertZoneEntry = m_pflaoHash[faz.Key];
-      alertZoneEntry = faz;
-    }
-  else
-    {
-      // Insert new entry into hash.
-      m_pflaoHash.insert( faz.Key, faz );
-    }
 
   // Post new/updated alert zone.
   emit flarmAlertZoneInfo( faz );
