@@ -22,6 +22,7 @@
 #include "calculator.h"
 #include "generalconfig.h"
 #include "mapconfig.h"
+#include "time_cu.h"
 
 Airspace::Airspace() :
   m_lLimitType(BaseMapElement::NotSet),
@@ -133,7 +134,7 @@ Airspace::~Airspace()
 
   if( m_airRegion )
     {
-      m_airRegion->airspace = 0;
+      m_airRegion->m_airspace = 0;
     }
 }
 
@@ -231,16 +232,13 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
 
 void Airspace::drawFlarmAlertZone( QPainter* targetP, qreal opacity )
 {
-  // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
-  //         typeID, opacity, getInfoString().toLatin1().data() );
-
   if( !GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
-      ! glConfig->isBorder(typeID) || ! isVisible())
+      ! glConfig->isBorder(typeID) || ! isVisible() )
     {
       return;
     }
 
-  if( m_flarmAlertZone.isValid() == false )
+  if( m_flarmAlertZone.isValid() == false || m_flarmAlertZone.isActive() == false )
     {
       return;
     }
@@ -336,7 +334,7 @@ QString Airspace::getTypeName (objectType type)
     case BaseMapElement::AirF:
       return QObject::tr("AS-F");
     case BaseMapElement::AirFlarm:
-      return QObject::tr("Flarm Alert Zone");
+      return QObject::tr("Flarm");
     case BaseMapElement::AirFir:
       return QObject::tr("FIR");
     case BaseMapElement::Restricted:
@@ -418,8 +416,44 @@ QString Airspace::getInfoString() const
 
   text = getTypeName(typeID);
 
-  text += " " + name + "<BR>" +
-    "<FONT SIZE=-1>" + tempL + " / " + tempU + "</FONT>";
+  if( m_flarmAlertZone.isValid() )
+    {
+      text += " " + FlarmBase::translateAlarmType( m_flarmAlertZone.ZoneType );
+    }
+  else
+    {
+      text += " " + name;
+    }
+
+  text += QString("<BR>") + "<FONT SIZE=-1>" + tempL + " / " + tempU;
+
+  if( m_flarmAlertZone.isValid() )
+    {
+      if( m_flarmAlertZone.ActivityLimit == 0 )
+	{
+	  text += QObject::tr(", Active unlimited");
+	}
+      else
+	{
+	  QDateTime dt;
+	  dt.setMSecsSinceEpoch( qint64(m_flarmAlertZone.ActivityLimit) * 1000 );
+
+	  QString dtString;
+
+	  if( Time::getTimeUnit() == Time::local )
+	    {
+	      dtString = dt.toLocalTime().toString("yyyy-MM-dd hh:mm:ss");
+	    }
+	  else
+	    {
+	      dtString = dt.toTimeSpec(Qt::UTC).toString("yyyy-MM-dd hh:mm:ss") + " UTC";
+	    }
+
+	  text += QObject::tr(", Active until ") + dtString;
+	}
+    }
+
+  text += "</FONT>";
 
   return text;
 }

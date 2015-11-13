@@ -167,14 +167,32 @@ void Map::p_displayAirspaceInfo(const QPoint& current)
 
   for( int loop = 0; loop < m_airspaceRegionList.count(); loop++ )
     {
-      if(m_airspaceRegionList.at(loop)->region->contains(current))
+      if(m_airspaceRegionList.at(loop)->m_region->contains(current))
         {
-          Airspace* pSpace = m_airspaceRegionList.at(loop)->airspace;
-                // qDebug ("name: %s", pSpace->getName().toLatin1().data());
-                // qDebug ("lower limit: %d", pSpace->getLowerL());
-                // qDebug ("upper limit: %d", pSpace->getUpperL());
-                // qDebug ("lower limit type: %d", pSpace->getLowerT());
-                // qDebug ("upper limit type: %d", pSpace->getUpperT());
+          Airspace* pSpace = m_airspaceRegionList.at(loop)->m_airspace;
+
+	  // qDebug ("name: %s", pSpace->getName().toLatin1().data());
+	  // qDebug ("lower limit: %d", pSpace->getLowerL());
+	  // qDebug ("upper limit: %d", pSpace->getUpperL());
+	  // qDebug ("lower limit type: %d", pSpace->getLowerT());
+	  // qDebug ("upper limit type: %d", pSpace->getUpperT());
+
+          if( pSpace == 0 )
+            {
+              // Check, if a valid airspace is assigned.
+              continue;
+            }
+
+          if( pSpace->getTypeID() == BaseMapElement::AirFlarm )
+            {
+	      // Filter out invalid and inactive Flarm alert zones
+	      if( pSpace->getFlarmAlertZone().isValid() == false ||
+		  pSpace->getFlarmAlertZone().isActive() == false )
+		{
+		  continue;
+		}
+            }
+
           //work around the phenomenon that airspaces tend to appear in the list twice -> this should be dealt with properly!
           if ( text.indexOf(pSpace->getInfoString()) == -1 )
             {
@@ -816,6 +834,16 @@ void Map::p_drawAirspaces( bool reset )
             {
               // FIRs are always full transparent.
               airspaceOpacity = 0.0;
+            }
+
+          if( currentAirS->getTypeID() == BaseMapElement::AirFlarm )
+            {
+	      // Filter out invalid and inactive Flarm alert zones
+	      if( currentAirS->getFlarmAlertZone().isValid() == false ||
+		  currentAirS->getFlarmAlertZone().isActive() == false )
+		{
+		  continue;
+		}
             }
 
           if( reset == true || currentAirS->getAirRegion() == 0 )
@@ -2278,7 +2306,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
           else
             {
               // if we are in manual mode, the real center is the cross, not the glider
-              p_redrawMap( informationLayer );
+              p_redrawMap( aeroLayer );
             }
         }
     }
@@ -2295,7 +2323,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
             }
           else
             {
-              p_redrawMap( informationLayer );
+              p_redrawMap( aeroLayer );
             }
         }
     }
@@ -3050,7 +3078,6 @@ void Map::checkAirspace(const QPoint& pos)
 {
   if ( mutex() )
     {
-      // qDebug("Map::checkAirspace: Map drawing in progress: return");
       return;
     }
 
@@ -3097,12 +3124,22 @@ void Map::checkAirspace(const QPoint& pos)
   // check if there are overlaps between the region around our current position and airspaces
   for( int loop = 0; loop < m_airspaceRegionList.count(); loop++ )
     {
-      Airspace* pSpace = m_airspaceRegionList.at(loop)->airspace;
+      Airspace* pSpace = m_airspaceRegionList.at(loop)->m_airspace;
 
       if( pSpace->getTypeID() == BaseMapElement::AirFir )
         {
           // FIRs are not included in the conflict checks.
           continue;
+        }
+
+      if( pSpace->getTypeID() == BaseMapElement::AirFlarm )
+        {
+	  // Filter out invalid and inactive Flarm alert zones
+          if( pSpace->getFlarmAlertZone().isValid() == false ||
+              pSpace->getFlarmAlertZone().isActive() == false )
+            {
+              continue;
+            }
         }
 
       lastVConflict = pSpace->lastVConflict();

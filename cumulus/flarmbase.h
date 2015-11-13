@@ -256,8 +256,6 @@ class FlarmBase
 
       return true;
     }
-
-    static QString translateAlertZoneType( const short hexType );
   };
 
   /**
@@ -354,6 +352,15 @@ class FlarmBase
    * @return String with replaced umlauts.
    */
   static QByteArray replaceUmlauts( QByteArray string );
+
+  /**
+   * Translates a hexadecimal alarm type into a readable string.
+   *
+   * \param hexType alarm type as hex byte
+   *
+   * \return Alarm type as string
+   */
+  static QString translateAlarmType( const short hexType );
 
  protected:
 

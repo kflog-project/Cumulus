@@ -3035,7 +3035,7 @@ void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )
 
   Airspace* as = static_cast<Airspace*>(0);
 
-  // Search into the list, if Flarm alert zone is already known.
+  // Search in the list, if Flarm alert zone is already known.
   for( int i = 0; i < flarmAlertZoneList.size(); i++ )
     {
       as = flarmAlertZoneList.at(i);
@@ -3065,7 +3065,7 @@ void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )
       asFaz.Latitude != faz.Latitude ||
       asFaz.Longitude != faz.Longitude )
     {
-      // Flarm airspace object type is circle
+      // The Flarm airspace object type is a circle
       QPolygon aspg;
 
       // Distance of one arc minute along latitude and longitude

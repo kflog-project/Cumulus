@@ -669,8 +669,14 @@ void Flarm::slotTimeout()
 void Flarm::createTrafficMessage()
 {
   bool ok;
+
+  if( m_flarmStatus.AlarmType >= 0x10 && m_flarmStatus.AlarmType <= 0xff )
+    {
+      // Alert Zone Alarm. Handled as airspace.
+      return;
+    }
+
   int dir = m_flarmStatus.RelativeBearing.toInt(&ok);
-  int ta;
   const int SD = Layout::getIntScaledDensity();
 
   if( ! ok )
@@ -692,7 +698,7 @@ void Flarm::createTrafficMessage()
     }
 
   // Traffic angle for arrow picture
-  ta = (dir == 12) ? 0 : dir * 30;
+  int ta = (dir == 12) ? 0 : dir * 30;
 
   int rvert = m_flarmStatus.RelativeVertical.toInt(&ok);
 
@@ -710,55 +716,7 @@ void Flarm::createTrafficMessage()
       return;
     }
 
-  QString almType;
-
-  switch( m_flarmStatus.AlarmType )
-  {
-    case 0:
-    case 1:
-    case 2:
-      almType = tr("Traffic");
-      break;
-    case 3:
-      almType = tr("Obstacle");
-      break;
-    case 4:
-      almType = tr("Info Alert");
-      break;
-    case 0x41:
-      almType = tr("Skydiver drop zone");
-      break;
-    case 0x42:
-      almType = tr("Aerodrome traffic zone");
-      break;
-    case 0x43:
-      almType = tr("Military firing zone");
-      break;
-    case 0x44:
-      almType = tr("Kite flying zone");
-      break;
-    case 0x45:
-      almType = tr("Winch lauching area");
-      break;
-    case 0x46:
-      almType = tr("RC flying zone");
-      break;
-    case 0x47:
-      almType = tr("UAS flying zone");
-      break;
-    case 0x48:
-      almType = tr("Acrobatic zone");
-      break;
-    case 0x7e:
-      almType = tr("Generic danger area");
-      break;
-    case 0x7f:
-      almType = tr("Generic prohibited area");
-      break;
-    default:
-      almType = tr("Other alert zone");
-      break;
-  }
+  QString almType = FlarmBase::translateAlarmType( m_flarmStatus.AlarmType );
 
   QString almlevel;
 
