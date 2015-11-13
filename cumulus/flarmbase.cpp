@@ -26,7 +26,6 @@ FlarmBase::FlarmError   FlarmBase::m_flarmError;
 FlarmBase::ProtocolMode FlarmBase::m_protocolMode = text;
 
 QHash<QString, FlarmBase::FlarmAcft>      FlarmBase::m_pflaaHash;
-QHash<QString, FlarmBase::FlarmAlertZone> FlarmBase::m_pflaoHash;
 
 QMutex FlarmBase::m_mutex;
 
@@ -53,3 +52,47 @@ QByteArray FlarmBase::replaceUmlauts( QByteArray string )
 
   return array;
 }
+
+QString FlarmBase::FlarmAlertZone::translateAlertZoneType( const short hexType )
+{
+  QString azt;
+
+  switch( hexType )
+  {
+    case 0x41:
+      azt = QObject::tr("Skydiver drop zone");
+      break;
+    case 0x42:
+      azt = QObject::tr("Aerodrom traffic zone");
+      break;
+    case 0x43:
+      azt = QObject::tr("Military firing area");
+      break;
+    case 0x44:
+      azt = QObject::tr("Kite flying zone");
+      break;
+    case 0x45:
+      azt = QObject::tr("Winch launching area");
+      break;
+    case 0x46:
+      azt = QObject::tr("RC flying area");
+      break;
+    case 0x47:
+      azt = QObject::tr("UAS flying area");
+      break;
+    case 0x48:
+      azt = QObject::tr("Acrobatic box");
+      break;
+    case 0x7e:
+      azt = QObject::tr("Generic danger area");
+      break;
+    case 0x7f:
+      azt = QObject::tr("Generic prohibited area");
+      break;
+    default:
+      azt = QObject::tr("Other alert zone");
+  }
+
+  return azt;
+}
+

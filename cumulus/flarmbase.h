@@ -24,16 +24,17 @@
  *
  * \date 2010-2015
  *
- * \version 1.3
+ * \version 1.5
  */
 
 #ifndef FLARM_BASE_H
 #define FLARM_BASE_H
 
-#include <QString>
+#include <QDateTime>
 #include <QHash>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QString>
 
 class QPoint;
 class QStringList;
@@ -229,10 +230,34 @@ class FlarmBase
       IdType(-1)
       {};
 
+    /**
+     * This flag handles the validity of the structure data.
+     *
+     * \return state of valid flag. Can be true or false.
+     */
     bool isValid() const
     {
       return valid;
     }
+
+    /**
+     * Check activity limit, if it has expired.
+     *
+     * \return true when active otherwise false
+     */
+    bool isActive()
+    {
+      qint64 secondsUtc = QDateTime::currentMSecsSinceEpoch() / 1000;
+
+      if( ActivityLimit > 0 && ActivityLimit < secondsUtc )
+        {
+          return false;
+        }
+
+      return true;
+    }
+
+    static QString translateAlertZoneType( const short hexType );
   };
 
   /**
@@ -299,20 +324,11 @@ class FlarmBase
   };
 
   /**
-   * @return the m_pflaoHash to the caller.
-   */
-  static const QHash<QString, FlarmAlertZone>& getPflaoHash()
-  {
-    return m_pflaoHash;
-  };
-
-  /**
    * Resets the internal stored Flarm data.
    */
   static void reset()
   {
     m_pflaaHash.clear();
-    m_pflaoHash.clear();
     m_flarmStatus.valid = false;
     m_flarmVersion.reset();
     m_flarmError.reset();
@@ -365,12 +381,6 @@ class FlarmBase
    * the Flarm tags 'ID-Type' and 'ID'.
    */
   static QHash<QString, FlarmAcft> m_pflaaHash;
-
-  /**
-   * Hash map with collected PFLAO records. The key is a concatenation of
-   * the Flarm tags 'ID-Type' and 'ID'.
-   */
-  static QHash<QString, FlarmAlertZone> m_pflaoHash;
 
   /** Flarm protocol mode.  */
   static enum ProtocolMode m_protocolMode;
