@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2014 by Axel Pauli
+**                   2009-2015 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -40,9 +40,9 @@ class NumberEditor;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2014
+ * \date 2002-2015
  *
- * \version 1.0
+ * \version 1.1
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -154,6 +154,8 @@ class SettingsPageAirspace : public QWidget
   QTableWidgetItem* drawAirspaceD;
   QTableWidgetItem* drawAirspaceE;
   QTableWidgetItem* drawAirspaceF;
+  QTableWidgetItem* drawAirspaceFir;
+  QTableWidgetItem* drawAirspaceFlarm;
   QTableWidgetItem* drawControl;
   QTableWidgetItem* drawRestricted;
   QTableWidgetItem* drawDanger;
@@ -162,7 +164,6 @@ class SettingsPageAirspace : public QWidget
   QTableWidgetItem* drawTMZ;
   QTableWidgetItem* drawWaveWindow;
   QTableWidgetItem* drawGliderSector;
-  QTableWidgetItem* drawAirspaceFir;
   QTableWidgetItem* drawRMZ;
 
   // border colors of airspaces
@@ -173,6 +174,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* borderColorAirspaceE;
   QWidget* borderColorAirspaceF;
   QWidget* borderColorAirspaceFir;
+  QWidget* borderColorAirspaceFlarm;
   QWidget* borderColorControl;
   QWidget* borderColorRestricted;
   QWidget* borderColorDanger;
@@ -190,6 +192,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* fillColorAirspaceD;
   QWidget* fillColorAirspaceE;
   QWidget* fillColorAirspaceF;
+  QWidget* fillColorAirspaceFlarm;
   QWidget* fillColorControl;
   QWidget* fillColorRestricted;
   QWidget* fillColorDanger;
