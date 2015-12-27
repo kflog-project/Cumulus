@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2015-12-27 AP: Issue #71 realized. Consider Flarm Alert Zone feature.
+
 [-] 2015-11-13 AP: Issue #80 fixed. The Airspace violation check must consider
                    map center changes too to work properly.
 
