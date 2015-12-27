@@ -38,6 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -52,6 +53,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
@@ -80,6 +83,7 @@ import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
 import org.kde.necessitas.origo.QtActivity;
 import org.kflog.cumulus.BluetoothService;
 import org.kflog.cumulus.CumulusIOIO;
@@ -93,7 +97,7 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @date 2012-2015
  * 
- * @version 1.3
+ * @version 1.4
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -853,6 +857,16 @@ private final Handler m_commHandler = new Handler()
             + m_BaroSensor.getPower();
 
         Log.d(TAG, text);
+        
+        // Switch on again the baro sensor, if it was before on.
+        SharedPreferences sp = getPreferences( MODE_PRIVATE) ;
+        
+        boolean baroState = sp.getBoolean( "BaroSensorState", false );
+        
+        if( baroState == true )
+          {
+             activateBarometerSensor();
+          }
       }
     else
       {
@@ -1208,16 +1222,7 @@ private final Handler m_commHandler = new Handler()
   }
 
   protected void onSaveInstanceState(Bundle outState)
-  {
-	if( m_BaroSensorListener != null )
-	{
-	  outState.putBoolean("BaroSensorActivated", true );
-	}
-	else
-	{
-	  outState.putBoolean("BaroSensorActivated", false );
-	}
-	
+  {	
 	if( lm != null && ll != null )
 	{
 	  // Internal GPS is activated
@@ -1265,11 +1270,6 @@ private final Handler m_commHandler = new Handler()
 	if( m_restoreInstanceState == null )
 	{
 	  return;
-	}
-	
-	if( m_restoreInstanceState.getBoolean("BaroSensorActivated") == true )
-	{
-	  activateBarometerSensor();
 	}
 
 	if( m_restoreInstanceState.getByte("GpsDevice") == GPS_DEVICE_INTERNAL )
@@ -1764,10 +1764,18 @@ private final Handler m_commHandler = new Handler()
                     if (m_BaroSensorListener != null)
                       {
                         deactivateBarometerSensor();
+                        
+                        Editor e = getPreferences( MODE_PRIVATE ).edit();
+                        e.putBoolean( "BaroSensorState", false );
+                        e.commit();
                       }
                     else
                       {
                         activateBarometerSensor();
+                        
+                        Editor e = getPreferences( MODE_PRIVATE ).edit();
+                        e.putBoolean( "BaroSensorState", true );
+                        e.commit();
                       }
 
                     removeDialog(R.id.dialog_baro_sensor);
