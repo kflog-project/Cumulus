@@ -192,9 +192,9 @@ class FlarmBase
    *
    * \author Axel Pauli
    *
-   * \brief FLARM alert zone data structure.
+   * \brief FLARM alert zone data object.
    *
-   * FLARM alert zone data structure. It contains the data of a PFLAO sentence.
+   * FLARM alert zone data object. It contains the data of a PFLAO sentence.
    *
    * \date 2015
    */

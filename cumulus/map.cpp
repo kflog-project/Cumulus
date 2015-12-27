@@ -859,7 +859,7 @@ void Map::p_drawAirspaces( bool reset )
               region = currentAirS->getAirRegion();
             }
 
-          if( region && currentAirS->getTypeID() != BaseMapElement::AirFir)
+          if( region && currentAirS->getTypeID() != BaseMapElement::AirFir )
             {
               // determine lateral conflict
               Airspace::ConflictType lConflict = region->conflicts( pos, awd );

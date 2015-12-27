@@ -153,7 +153,7 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
   // qDebug("Airspace::drawRegion(): TypeId=%d, opacity=%f, Name=%s",
   //         typeID, opacity, getInfoString().toLatin1().data() );
 
-  if( !GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
+  if( ! GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
       ! glConfig->isBorder(typeID) || ! isVisible())
     {
       return;
@@ -232,7 +232,7 @@ void Airspace::drawRegion( QPainter* targetP, qreal opacity )
 
 void Airspace::drawFlarmAlertZone( QPainter* targetP, qreal opacity )
 {
-  if( !GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
+  if( ! GeneralConfig::instance()->getItemDrawingEnabled(typeID) ||
       ! glConfig->isBorder(typeID) || ! isVisible() )
     {
       return;
