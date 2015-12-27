@@ -429,9 +429,11 @@ QString Airspace::getInfoString() const
 
   if( m_flarmAlertZone.isValid() )
     {
+      text += ", ";
+
       if( m_flarmAlertZone.ActivityLimit == 0 )
 	{
-	  text += QObject::tr(", Active unlimited");
+	  text += QObject::tr("always active");
 	}
       else
 	{
@@ -449,7 +451,7 @@ QString Airspace::getInfoString() const
 	      dtString = dt.toTimeSpec(Qt::UTC).toString("yyyy-MM-dd hh:mm:ss") + " UTC";
 	    }
 
-	  text += QObject::tr(", Active until ") + dtString;
+	  text += QObject::tr("active until ") + dtString;
 	}
     }
 
