@@ -722,8 +722,16 @@ private final Handler m_commHandler = new Handler()
 
       double altitude = (k1 * log_p0_p1) / (1 + (0.09513 * log_p0_p1));
 
-      // Send altitude value to native application part.
-      nativeBaroAltitude(altitude);
+      try
+      {
+        // Send altitude value to native application part.
+        nativeBaroAltitude(altitude);
+      }
+      catch( UnsatisfiedLinkError e )
+      {
+        // Ignore exception, if native part is not yet loaded.
+      }
+
       reset();
 
       // Set new start time.
@@ -774,7 +782,7 @@ private final Handler m_commHandler = new Handler()
    */
   synchronized public boolean isRestarted()
   {
-	return m_isRestarted;
+      return m_isRestarted;
   }
   
   /**
@@ -784,26 +792,26 @@ private final Handler m_commHandler = new Handler()
    */
   synchronized public void setRestarted(boolean flag)
   {
-	m_isRestarted = flag;
+      m_isRestarted = flag;
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
-	if( savedInstanceState != null )
-	  {
-		Log.d(TAG, "onCreate: " + bundle2String(savedInstanceState));
-		
-		// @AP: That is a workaround to prevent the black screen on Qt side
-		// after a kill of the running Cumulus instance because of low memory.
-		// That can happen, if another app is opened in the foreground and the
-		// Dalvid VM decided to kill the Cumulus process. The Qt part saved
-		// some information for reinstall but that is a bug.
-		savedInstanceState.putBoolean("Started", false);
-		
-		// Set restart flag to true, to restore some settings in the native part.
-		setRestarted( true );
-	  }
+    if( savedInstanceState != null )
+      {
+        Log.d(TAG, "onCreate: " + bundle2String(savedInstanceState));
+    
+        // @AP: That is a workaround to prevent the black screen on Qt side
+        // after a kill of the running Cumulus instance because of low memory.
+        // That can happen, if another app is opened in the foreground and the
+        // Dalvid VM decided to kill the Cumulus process. The Qt part saved
+        // some information for reinstall but that is a bug.
+        savedInstanceState.putBoolean( "Started", false );
+    
+        // Set restart flag to true, to restore some settings in the native part.
+        setRestarted( true );
+      }
 	
     try
       {
@@ -837,7 +845,7 @@ private final Handler m_commHandler = new Handler()
         m_objectRef = this;
       }
     
-    if ( m_cumulusServiceClass == null )
+    if( m_cumulusServiceClass == null )
       {
         m_cumulusServiceClass = CumulusService.class;
       }
@@ -848,7 +856,7 @@ private final Handler m_commHandler = new Handler()
     m_SensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     m_BaroSensor = m_SensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 
-    if (m_BaroSensor != null)
+    if( m_BaroSensor != null )
       {
         String text = "BaroSensor: Name=" + m_BaroSensor.getName()
             + ", Vendor=" + m_BaroSensor.getVendor() + ", Resolution= "
@@ -857,16 +865,6 @@ private final Handler m_commHandler = new Handler()
             + m_BaroSensor.getPower();
 
         Log.d(TAG, text);
-        
-        // Switch on again the baro sensor, if it was before on.
-        SharedPreferences sp = getPreferences( MODE_PRIVATE) ;
-        
-        boolean baroState = sp.getBoolean( "BaroSensorState", false );
-        
-        if( baroState == true )
-          {
-             activateBarometerSensor();
-          }
       }
     else
       {
@@ -884,12 +882,9 @@ private final Handler m_commHandler = new Handler()
     final String appDataDir = getDir("Cumulus", MODE_PRIVATE).getAbsolutePath();
 
     // Check, if the internal data are already installed. To check that, a
-    // special
-    // file name is used, which is created after data installation. The file
-    // name
-    // includes the package version, to ensure that with every new version the
-    // data
-    // are reinstalled.
+    // special file name is used, which is created after data installation.
+    // The file name includes the package version, to ensure that with every
+    // new version the data are reinstalled.
     final String pvcFileName = "pvc_" + String.valueOf(getPackageVersionCode());
 
     File pvcAppFile = new File(appDataDir + File.separator + pvcFileName);
@@ -1101,6 +1096,19 @@ private final Handler m_commHandler = new Handler()
 	  // Don't forget to unregister during onDestroy
 	  registerReceiver(bcReceiver, filter);
     }
+    
+    if( m_BaroSensor != null )
+    {
+      // Switch on again the baro sensor, if it was on at the last run.
+      SharedPreferences sp = getPreferences( MODE_PRIVATE );
+      
+      boolean baroState = sp.getBoolean( "BaroSensorState", false );
+      
+      if( baroState == true )
+        {
+           activateBarometerSensor();
+        }
+    }
 
     Log.d(TAG, "onCreate exit");
   }
@@ -1223,40 +1231,40 @@ private final Handler m_commHandler = new Handler()
 
   protected void onSaveInstanceState(Bundle outState)
   {	
-	if( lm != null && ll != null )
-	{
-	  // Internal GPS is activated
-	  outState.putByte("GpsDevice", GPS_DEVICE_INTERNAL );
-	}
+    if( lm != null && ll != null )
+    {
+       // Internal GPS is activated
+       outState.putByte("GpsDevice", GPS_DEVICE_INTERNAL );
+    }
     else if (m_btService != null)
     {
-  	  // BT GPS is activated
-  	  outState.putByte("GpsDevice", GPS_DEVICE_BT );
-  	  outState.putString("BtMacAddress", m_btMacAddress );
+      // BT GPS is activated
+      outState.putByte("GpsDevice", GPS_DEVICE_BT );
+      outState.putString("BtMacAddress", m_btMacAddress );
     }
     else if ( m_ioio.isStarted() == true )
     {
-  	  // IOIO GPS is activated
-  	  outState.putByte("GpsDevice", GPS_DEVICE_IOIO);
+       // IOIO GPS is activated
+       outState.putByte("GpsDevice", GPS_DEVICE_IOIO);
     }
-	else
-	{
-	  // No GPS is activated
-	  outState.putByte("GpsDevice", GPS_DEVICE_NONE );
-	}
-	
-	Log.d(TAG, "onSaveInstanceState: " + bundle2String(outState));
+    else
+    {
+       // No GPS is activated
+       outState.putByte("GpsDevice", GPS_DEVICE_NONE );
+    }
+
+    Log.d(TAG, "onSaveInstanceState: " + bundle2String(outState));
     super.onSaveInstanceState(outState);
   }
   
   protected void onRestoreInstanceState(Bundle savedInstanceState)
   {
-	Log.d(TAG, "onRestoreInstanceState: " + bundle2String(savedInstanceState));
-	
-	// Save instance state for later restore.
-	m_restoreInstanceState = savedInstanceState;
-	
-    super.onRestoreInstanceState(savedInstanceState);
+      Log.d(TAG, "onRestoreInstanceState: " + bundle2String(savedInstanceState));
+
+      // Save instance state for later restore.
+      m_restoreInstanceState = savedInstanceState;
+
+      super.onRestoreInstanceState(savedInstanceState);
   }
   
   /**
