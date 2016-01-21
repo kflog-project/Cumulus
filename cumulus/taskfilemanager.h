@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2015 Axel Pauli
+**   Copyright (c): 2013-2016 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
@@ -26,9 +26,9 @@
  *
  * A class which handles the task file load and storage.
  *
- * \date 2013-2015
+ * \date 2013-2016
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef TASK_FILE_MANAGER_H_
@@ -72,8 +72,9 @@ class TaskFileManager
    */
   bool loadTaskList( QList<FlightTask*>& flightTaskList, QString fileName="" );
 
-  bool loadTaskListOld( QList<FlightTask*>& flightTaskList, QString fileName="" );
-
+  /**
+   * Do the same as method loadTaskList().
+   */
   bool loadTaskListNew( QList<FlightTask*>& flightTaskList, QString fileName="" );
 
   /**

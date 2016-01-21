@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2015 Axel Pauli
+**   Copyright (c): 2013-2016 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
@@ -112,169 +112,50 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
   QTextStream stream( &f );
 
   // Read the first line to decide, which format version should be read.
-  QString line = stream.readLine().trimmed();
+  QString head = stream.readLine().trimmed();
 
   f.close();
 
-  if( line.startsWith( "# KFLog/Cumulus-Task-File V2.0") ||
-      line.startsWith( "# KFLog/Cumulus-Task-File created") ||
-      line.startsWith( "TS," ) ||
-      line.isEmpty() )
+  bool readOldFormat = false;
+
+  if( head.startsWith( "# KFLog/Cumulus-Task-File V3.0") )
     {
-      // Old format has to be read
-      return loadTaskListOld( flightTaskList, fileName );
+      // Note! Old format contains takeoff and landing points. These points
+      // must be remove after the read in.
+      readOldFormat = true;
     }
 
-  // New format has to be read
-  return loadTaskListNew( flightTaskList, fileName );
-}
+  loadTaskListNew( flightTaskList, fileName );
 
-bool TaskFileManager::loadTaskListOld( QList<FlightTask*>& flightTaskList,
-                                       QString fileName )
-{
-  while( ! flightTaskList.isEmpty() )
+  if( readOldFormat == true )
     {
-      // Clears the list as first.
-      delete flightTaskList.takeFirst();
+      // First and last point of the task have to be removed.
+      for( int i = 0; i < flightTaskList.size(); i++ )
+	{
+	  QList<TaskPoint *>&taskList = flightTaskList.at(i)->getTpList();
+
+	  if( taskList.size() >= 4 )
+	    {
+	      // First and last point of the list have to be removed.
+	      TaskPoint *item = taskList.takeFirst();
+
+	      if( item != 0 )
+		{
+		  delete item;
+		}
+
+	      item = taskList.takeLast();
+
+	      if( item != 0 )
+		{
+		  delete item;
+		}
+	    }
+	}
+
+      // Save migrated task list
+      saveTaskList( flightTaskList );
     }
-
-  QString fn;
-
-  if( fileName.isEmpty() )
-    {
-      // Use task default file name
-      fn = m_taskFileName;
-    }
-
-  QFile f( fn );
-
-  if ( ! f.open( QIODevice::ReadOnly ) )
-    {
-      qWarning() << __FUNCTION__ << "Could not open task-file:" << fn;
-      return false;
-    }
-
-  QTextStream stream( &f );
-
-  bool isTask    = false;
-  bool isOldTask = false;
-  QString taskName;
-  QStringList tmpList;
-  QList<TaskPoint *> *tpList = 0;
-
-  while ( !stream.atEnd() )
-    {
-      QString line = stream.readLine().trimmed();
-
-      if ( line.isEmpty() || line.mid( 0, 1 ) == "#" )
-        {
-          // Ignore empty and comment lines
-          continue;
-        }
-
-      if ( line.mid( 0, 2 ) == "TS" )
-        {
-          // new task ...
-          isTask    = true;
-          isOldTask = false;
-
-          if ( tpList != 0 )
-            {
-              // remove all elements from previous incomplete step
-              qDeleteAll(*tpList);
-              tpList->clear();
-            }
-          else
-            {
-              tpList = new QList<TaskPoint *>;
-            }
-
-          tmpList = line.split( ",", QString::KeepEmptyParts );
-          taskName = tmpList.at(1);
-        }
-      else
-        {
-          if ( line.mid( 0, 2 ) == "TW" && isTask )
-            {
-              // new task point
-              TaskPoint* tp = new TaskPoint;
-              tpList->append( tp );
-
-              tmpList = line.split( ",", QString::KeepEmptyParts );
-
-              WGSPoint wgsp( tmpList.at( 1 ).toInt(), tmpList.at( 2 ) .toInt() );
-
-              tp->setWGSPosition( wgsp );
-              tp->setPosition( _globalMapMatrix->wgsToMap( wgsp ) );
-              tp->setElevation( tmpList.at( 3 ).toInt() );
-              tp->setWPName( tmpList.at( 4 ) );
-              // tp->icao = tmpList.at( 5 );
-              tp->setName( tmpList.at( 6 ) );
-              // tp->frequency = tmpList.at( 7 ).toDouble();
-              tp->setComment( "" );
-              // tp->isLandable = tmpList.at( 9 ).toInt();
-              // tp->runway = tmpList.at( 10 ).toInt();
-              // tp->length = tmpList.at( 11 ).toInt();
-              // tp->surface = tmpList.at( 12 ).toInt();
-              // tp->type = tmpList.at( 13 ).toInt();
-              tp->setTypeID( BaseMapElement::Turnpoint ) ;
-
-              if( tmpList.size() == 22 )
-                {
-                  // New task file version has been read
-                  tp->setActiveTaskPointFigureScheme( static_cast<enum GeneralConfig::ActiveTaskFigureScheme> (tmpList.at( 14 ).toInt()) );
-                  tp->setTaskLineLength( tmpList.at( 15 ).toDouble() );
-                  tp->setTaskCircleRadius( tmpList.at( 16 ).toDouble() );
-                  tp->setTaskSectorInnerRadius( tmpList.at( 17 ).toDouble() );
-                  tp->setTaskSectorOuterRadius( tmpList.at( 18 ).toDouble() );
-                  tp->setTaskSectorAngle( tmpList.at( 19 ).toInt() );
-                  tp->setAutoZoom( tmpList.at( 20 ).toInt() > 0 ? true : false );
-                  tp->setUserEditFlag( tmpList.at( 21 ).toInt() > 0 ? true : false );
-                }
-              else
-                {
-                  // Port old task file version. Missing values are set to
-                  // configuration defaults.
-                  tp->setConfigurationDefaults();
-                  isOldTask = true;
-                }
-            }
-          else
-            {
-              if ( line.mid( 0, 2 ) == "TE" && isTask )
-                {
-                  // task complete
-                  isTask = false;
-
-                  if( isOldTask )
-                    {
-                      // An old task format has been read. Convert it to the
-                      // new format.
-                      TaskEditor::setTaskPointFigureSchemas( *tpList, false );
-                    }
-
-                  FlightTask* task = new FlightTask( tpList, true, taskName, m_tas );
-                  flightTaskList.append( task );
-
-                  // ownership about the list was taken over by FlighTask
-                  tpList = 0;
-                }
-            }
-        }
-    }
-
-  if ( tpList != 0 )
-    {
-      // remove all elements from a previous incomplete step
-      qDeleteAll(*tpList);
-      delete tpList;
-    }
-
-  f.close();
-
-  qDebug() << "TFM:" << flightTaskList.size()
-           << "task objects read from file"
-           << fn;
 
   return true;
 }
@@ -533,7 +414,7 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
-  stream << "# KFLog/Cumulus-Task-File V3.0, created at "
+  stream << "# Cumulus-Task-File V4.0, created at "
          << dtStr << " by Cumulus "
          << QCoreApplication::applicationVersion() << endl << endl;
 
