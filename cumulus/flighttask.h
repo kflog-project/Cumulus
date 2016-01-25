@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2014 by Axel Pauli
+**                   2007-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -27,9 +25,9 @@
  * for flight tasks and contains the data of the flight task.
  *
  *
- * \date 2002-2014
+ * \date 2002-2016
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef FLIGHT_TASK_H
@@ -194,11 +192,8 @@ class FlightTask : public BaseMapElement
       return false;
     };
 
-  /** */
-  QString getTotalDistanceString( bool unit=true ) const;
-
-  /** Total distance without unit */
-  QString getTotalDistance() const;
+  /** Total task distance without unit */
+  QString getTaskDistance() const;
 
   /** */
   QString getTaskDistanceString( bool unit=true ) const;
@@ -447,9 +442,6 @@ class FlightTask : public BaseMapElement
 
   /** Type of flight task */
   unsigned int flightType;
-
-  /** Total length */
-  double distance_total;
 
   /** Task length */
   double distance_task;

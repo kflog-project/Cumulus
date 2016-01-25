@@ -62,23 +62,19 @@ TW,<Latitude>,<Longitude>,<Elevation>,<WpName>,<LongName>,<Waypoint-type>,
 TE
 
 --------------------------------------------------------------------------------
-# KFLog/Cumulus-Task-File V3.0, created at 2013-05-03 14:39:49 by Cumulus 5.2.0
+# Cumulus-Task-File V4.0, created at 2016-01-25 20:50:15 by Cumulus 5.26.0
 
-TS,500 Diamant,6
-TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
+TS,500 Diamant,4
 TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
 TW,31201333,7291667,80,Zerbst,Zerbst,61,1,1000,500,0,3000,90,1,0
 TW,30695333,8970167,238,Goerlitz,Goerlitz,61,1,1000,500,0,3000,90,1,0
 TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
-TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
 TE
-TS,ul robin,6
-TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,0,0,500,0,0,0,1,0
+TS,ul robin,4
 TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,2,2000,500,0,3000,90,1,1
 TW,31140500,7917667,102,Reinsdor,Reinsdorf,61,1,0,500,0,3000,90,1,0
 TW,31139833,7831833,85,Oehna Ze,Oehna Zellendorf,61,1,0,500,500,3000,90,1,1
 TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,2,1000,3000,0,3000,90,1,0
-TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,0,0,500,0,0,0,1,0
 TE
 --------------------------------------------------------------------------------
 
@@ -121,7 +117,7 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
   if( head.startsWith( "# KFLog/Cumulus-Task-File V3.0") )
     {
       // Note! Old format contains takeoff and landing points. These points
-      // must be remove after the read in.
+      // must be remove after the read in, if they are identically.
       readOldFormat = true;
     }
 
@@ -129,26 +125,31 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
 
   if( readOldFormat == true )
     {
-      // First and last point of the task have to be removed.
+      // First and last point of the task have to be removed, if they are identically.
       for( int i = 0; i < flightTaskList.size(); i++ )
 	{
 	  QList<TaskPoint *>&taskList = flightTaskList.at(i)->getTpList();
 
 	  if( taskList.size() >= 4 )
 	    {
-	      // First and last point of the list have to be removed.
-	      TaskPoint *item = taskList.takeFirst();
-
-	      if( item != 0 )
+	      if( taskList.at(0)->getWGSPosition() == taskList.at(1)->getWGSPosition() )
 		{
-		  delete item;
+		  TaskPoint *item = taskList.takeFirst();
+
+		  if( item != 0 )
+		    {
+		      delete item;
+		    }
 		}
 
-	      item = taskList.takeLast();
-
-	      if( item != 0 )
+	      if( taskList.at(taskList.size() - 2)->getWGSPosition() == taskList.at(taskList.size() - 1)->getWGSPosition() )
 		{
-		  delete item;
+		  TaskPoint *item = taskList.takeLast();
+
+		  if( item != 0 )
+		    {
+		      delete item;
+		    }
 		}
 	    }
 	}

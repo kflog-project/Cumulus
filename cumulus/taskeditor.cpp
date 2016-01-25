@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2015 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -397,19 +397,7 @@ void TaskEditor::showTask()
 
       QTreeWidgetItem* item = new QTreeWidgetItem(rowList, 0);
 
-      bool showIcon = true;
-
-      if( tmpList.size() >= 2 &&
-          ((loop == 0 && tmpList.at(0)->getWGSPosition() == tmpList.at(1)->getWGSPosition() ) ||
-           (loop == tmpList.size()-1 &&
-            tmpList.at(tmpList.size()-1)->getWGSPosition() == tmpList.at(tmpList.size()-2)->getWGSPosition() )) )
-        {
-          // If start and begin point or end and landing point are identical
-          // no task figure icon is shown in the list entry.
-          showIcon = false;
-        }
-
-      if( tmpList.size() > 1 && showIcon )
+      if( tmpList.size() > 1 )
         {
           item->setIcon ( 1, tp->getIcon( iconSize ) );
         }
@@ -586,11 +574,11 @@ void TaskEditor::slotAccept()
 {
   // Check, if a valid task has been defined. Tasks with less than
   // four task points are incomplete
-  if ( tpList.count() < 4 )
+  if ( tpList.count() < 2 )
     {
       QMessageBox mb( QMessageBox::Critical,
                       tr( "Task Incomplete" ),
-                      tr( "Task needs at least four waypoints" ),
+                      tr( "Task needs at least a start and a finish point!" ),
                       QMessageBox::Ok,
                       this );
 
@@ -773,7 +761,7 @@ void TaskEditor::enableCommandButtons()
       invertButton->setEnabled( false );
       addButton->setEnabled( true );
       delButton->setEnabled( true );
-      editButton->setEnabled (false);
+      editButton->setEnabled (true);
       defaultButton->setEnabled (false);
     }
   else
@@ -781,6 +769,8 @@ void TaskEditor::enableCommandButtons()
       invertButton->setEnabled( true );
       addButton->setEnabled( true );
       delButton->setEnabled( true );
+      editButton->setEnabled( true );
+      defaultButton->setEnabled( true );
 
       if( taskList->topLevelItemCount() && taskList->currentItem() == 0 )
         {
@@ -790,8 +780,6 @@ void TaskEditor::enableCommandButtons()
 
       int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
 
-      bool isNotFirstOrLast = true;
-
       if( id > 0 )
         {
           upButton->setEnabled( true );
@@ -800,9 +788,7 @@ void TaskEditor::enableCommandButtons()
         {
           // At the first position, no up allowed
           upButton->setEnabled( false );
-          isNotFirstOrLast = false;
         }
-
 
       if( id == -1 || id == taskList->topLevelItemCount() - 1 ||
           ( id == taskList->topLevelItemCount() - 2 &&
@@ -810,23 +796,10 @@ void TaskEditor::enableCommandButtons()
         {
           // At the last allowed down position. No further down allowed.
           downButton->setEnabled( false );
-          isNotFirstOrLast = false;
         }
       else
         {
           downButton->setEnabled( true );
-        }
-
-      if( tpList.size() >= 4 )
-        {
-          editButton->setEnabled( isNotFirstOrLast );
-          defaultButton->setEnabled( true );
-        }
-      else
-        {
-          // Task has not enough points, disable task point editing.
-          editButton->setEnabled( false );
-          defaultButton->setEnabled( false );
         }
     }
 }
@@ -894,23 +867,15 @@ void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
     {
       if( i == 0 )
         {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::TakeOff);
+          tpList.at(i)->setTaskPointType(TaskPointTypes::Start);
         }
-      else if( i == 1 )
+      else if( tpList.size() >= 2 && i == tpList.size() - 1 )
         {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::Begin);
-        }
-      else if( tpList.size() >= 4 && i == tpList.size() - 2 )
-        {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::End);
-        }
-      else if( tpList.size() >= 4 && i == tpList.size() - 1 )
-        {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::Landing);
+          tpList.at(i)->setTaskPointType(TaskPointTypes::Finish);
         }
       else
         {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::RouteP);
+          tpList.at(i)->setTaskPointType(TaskPointTypes::Turn);
         }
 
       // Set task point figure schema to default, if the user has not edited the

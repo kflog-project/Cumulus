@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2015 by Axel Pauli
+ **   Copyright (c): 2012-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -861,7 +861,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       return;
     }
 
-  // Write Flarm flarmTask file in Cumulus's data directory for control
+  // Write Flarm Task file in Cumulus's data directory for control
   createFlarmTaskList( ft );
 
   // Flarm limits tasks in its length to 192 characters. We do check and
@@ -910,6 +910,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
         }
     }
 
+  // Takeoff point as dummy point
+  m_cmdList << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff";
+
   for( int i = 0; i < tpList.count(); i++ )
     {
       // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
@@ -944,6 +947,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
       m_cmdList <<  cmd;
     }
+
+  // Landing point as dummy point
+  m_cmdList << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing";
 
   nextFlarmCommand();
 }
@@ -1125,7 +1131,7 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
 
   QList<TaskPoint *>& tpList = flightTask->getTpList();
 
-  if( tpList.isEmpty() )
+  if( tpList.isEmpty() || tpList.size() < 2 )
     {
       return false;
     }
@@ -1163,6 +1169,9 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
          << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
          << endl;
 
+  // Takeoff point as dummy point
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << endl;
+
   for( int i = 0; i < tpList.count(); i++ )
     {
       // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
@@ -1196,6 +1205,9 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
              << FlarmBase::replaceUmlauts( tp->getWPName().toLatin1() )
              << endl;
     }
+
+  // Landing point as dummy point
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << endl;
 
   stream << endl;
   f.close();

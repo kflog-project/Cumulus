@@ -3,13 +3,11 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2014 by Axel Pauli
+                               2008-2016 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
     This file is part of Cumulus
-
-    $Id$
 
  ***************************************************************************/
 
@@ -547,7 +545,7 @@ void IgcLogger::writeHeader()
 
   QList<TaskPoint *> tpList = task->getTpList();
 
-  if ( tpList.count() < 4 )
+  if ( tpList.count() < 2 )
     {
       return; // too less task points
     }
@@ -569,7 +567,10 @@ void IgcLogger::writeHeader()
           << taskId
           << "\r\n";
 
-  for ( int i=0; i < tpList.count(); i++ )
+  // Takeoff point as dummy entry
+  _stream << "C0000000N00000000E\r\n";
+
+  for( int i=0; i < tpList.count(); i++ )
     {
       TaskPoint *tp = tpList.at(i);
 
@@ -577,6 +578,9 @@ void IgcLogger::writeHeader()
               << formatPosition( tp->getWGSPosition() )
               << tp->getWPName() << "\r\n";
     }
+
+  // Landing point as dummy entry
+  _stream << "C0000000N00000000E\r\n";
 }
 
 /** This function formats a date in the correct IGC format DDMMYY */

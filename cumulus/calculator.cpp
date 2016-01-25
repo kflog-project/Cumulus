@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2015 by Axel Pauli
+ **                  2008-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -336,8 +336,8 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
         {
           QList<TaskPoint *> tpList = task->getTpList();
 
-          // Tasks with less 4 entries are incomplete!
-          for ( int i=0; i < tpList.count() && tpList.count() > 3; i++ )
+          // Tasks with less 2 entries are incomplete!
+          for ( int i=0; i < tpList.count() && tpList.count() >= 2; i++ )
             {
               if ( targetWp->wgsPoint == tpList.at(i)->getWGSPosition() &&
                    targetWp->taskPointIndex == tpList.at(i)->getFlightTaskListIndex() )
@@ -398,8 +398,8 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
   curDistance.setKilometers( MapCalc::dist(double(lastPosition.x()),
                                            double(lastPosition.y()),
-                             targetWp->wgsPoint.lat(),
-                             targetWp->wgsPoint.lon()) );
+                                           targetWp->wgsPoint.lat(),
+                                           targetWp->wgsPoint.lon()) );
 
   if ( curDistance == lastDistance )
     {
@@ -497,29 +497,10 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
       // Display a task end message under the following conditions:
       // a) we touched/passed the target radius
-      // b) the landing task point is selected
-      // c) the end and landing task point are identically
+      // b) the finish task point is selected
       TaskPoint* tp = tpList.at( targetWp->taskPointIndex );
 
-      bool tpEndEqLanding = false;
-      int sidx            = targetWp->taskPointIndex;
-
-      if( sidx > 1 && sidx < tpList.size() - 1 )
-        {
-          TaskPoint* tpNext = tpList.at( sidx + 1 );
-
-          if( tp->getTaskPointType() == TaskPointTypes::End &&
-              tpNext->getTaskPointType() == TaskPointTypes::Landing &&
-              tp->getWGSPosition() == tpNext->getWGSPosition() )
-            {
-              // End and landing point are identically
-              tpEndEqLanding = true;
-            }
-        }
-
-      if ( m_taskEndReached == false &&
-           ( tpEndEqLanding == true ||
-             tp->getTaskPointType() == TaskPointTypes::Landing ) )
+      if( tp->getTaskPointType() == TaskPointTypes::Finish )
         {
           m_taskEndReached = true;
           emit taskInfo( tr("Task ended"), true );
@@ -548,39 +529,39 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // the further automatic task point switch.
           targetWp->taskPointIndex = -1;
         }
-      else if( m_taskEndReached == false )
-        {
-          if ( tpList.count() > m_selectedWpInList + 1 )
-            {
-              // this loop excludes the last WP
-              TaskPoint *lastWp = tpList.at(m_selectedWpInList);
-              m_selectedWpInList++;
-              TaskPoint *nextWp = tpList.at(m_selectedWpInList);
+      else
+	{
+	  if( tpList.count() > m_selectedWpInList + 1 )
+	    {
+	      // this loop excludes the last WP
+	      TaskPoint *lastWp = tpList.at(m_selectedWpInList);
+	      m_selectedWpInList++;
+	      TaskPoint *nextWp = tpList.at(m_selectedWpInList);
 
-              // calculate the distance to the next waypoint
-              Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
-                                                 double(lastPosition.y()),
-                                                 nextWp->getWGSPosition().lat(),
-                                                 nextWp->getWGSPosition().lon() ) * 1000);
-              curDistance = dist2Next;
+	      // calculate the distance to the next waypoint
+	      Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
+						 double(lastPosition.y()),
+						 nextWp->getWGSPosition().lat(),
+						 nextWp->getWGSPosition().lon() ) * 1000);
+	      curDistance = dist2Next;
 
-              // announce task point change as none user interaction
-              slot_WaypointChange( nextWp->getWaypointObject(), false );
+	      // announce task point change as none user interaction
+	      slot_WaypointChange( nextWp->getWaypointObject(), false );
 
-              // Here we send a notice to the user about the task point switch.
-              emit taskInfo( tr("TP passed"), true );
+	      // Here we send a notice to the user about the task point switch.
+	      emit taskInfo( tr("TP passed"), true );
 
-              if( GeneralConfig::instance()->getReportTpSwitch() == true )
-                {
-                  // Show a detailed switch info, if the user has configured that.
-                  TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
+	      if( GeneralConfig::instance()->getReportTpSwitch() == true )
+		{
+		  // Show a detailed switch info, if the user has configured that.
+		  TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
 
-                  tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
-                                             dist2Next.getKilometers() );
-                  tpInfo->showTP();
-                }
-            }
-        }
+		  tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
+					     dist2Next.getKilometers() );
+		  tpInfo->showTP();
+		}
+	    }
+	}
     }
 
   lastDistance = curDistance;
@@ -1822,32 +1803,14 @@ void Calculator::slot_startTask()
 
   QList<TaskPoint *> tpList = task->getTpList();
 
-  // Tasks with less 4 entries are incomplete! The selection
-  // of the start point is also senseless, request is ignored.
-  if( tpList.count() < 4 )
+  // Tasks with less 2 points are incomplete, request is ignored.
+  if( tpList.count() < 2 )
     {
       return;
     }
 
-  TaskPoint *tp2Taken;
-
-  // The start point of a task depends of the type. If first and
-  // second point are identical, we take always the second one
-  // otherwise the first.
-  if( tpList.at(0)->getWGSPosition() != tpList.at(1)->getWGSPosition() )
-    {
-      // take first task point
-      // tp2Taken = tpList.at(0);
-
-      // 01.02.2013 AP: Always the begin point is selected as first point.
-      // The former start point has only a comment function.
-      tp2Taken = tpList.at(1);
-    }
-  else
-    {
-      // take second task point
-      tp2Taken = tpList.at(1);
-    }
+  // Take the start point of the task.
+  TaskPoint *tp2Taken = tpList.at(0);
 
   if( targetWp )
     {
@@ -1873,7 +1836,7 @@ void Calculator::slot_startTask()
 
           mb.show();
           QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
-                                                                          QApplication::desktop()->height()/2 - mb.height()/2 ) );
+                                                                     QApplication::desktop()->height()/2 - mb.height()/2 ) );
           mb.move( pos );
 
 #endif
@@ -2022,8 +1985,6 @@ Vector& Calculator::getLastWind()
 
 bool Calculator::restoreWaypoint()
 {
-  qDebug() << "Calculator::restoreSavedWaypoint()";
-
   Waypoint wp;
 
   // Filename of last saved target waypoint.

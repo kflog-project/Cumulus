@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2015 by Axel Pauli
+**                   2007-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -42,8 +42,7 @@ FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
   windSpeed(0),
   wtCalculation(false),
   flightType(FlightTask::NotSet),
-  distance_total(0),
-  distance_task(0),
+  distance_task(0.0),
   duration_total(0),
   _planningType(RouteBased),
   _taskName(taskName)
@@ -85,7 +84,6 @@ FlightTask::FlightTask( const FlightTask& inst )
   tpList = copyTpList( inst.tpList );
 
   flightType = inst.flightType;
-  distance_total = inst.distance_total;
   distance_task = inst.distance_task;
   duration_total = inst.duration_total;
   _planningType = inst._planningType;
@@ -108,178 +106,60 @@ FlightTask::~FlightTask()
  **/
 void FlightTask::determineTaskType()
 {
-  distance_task = 0;
-  distance_total = 0;
-  double distance_task_d = 0;
+  distance_task = 0.0;
 
-  if( tpList->count() > 0 )
+  if( tpList->size() > 0 )
     {
-      for(int loop = 1; loop <= tpList->count() - 1; loop++)
+      for( int loop = 0; loop < tpList->size(); loop++)
         {
           // qDebug("distance: %f", tpList->at(loop)->distance);
-          distance_total += tpList->at(loop)->distance;
+	  distance_task += tpList->at(loop)->distance;
         }
       // qDebug("Total Distance: %f", distance_total);
     }
 
-  if(tpList->count() < 4)
+  if( tpList->size() < 2 )
     {
       flightType = FlightTask::NotSet;
       return;
     }
 
-
-  distance_task = distance_total - tpList->at(1)->distance
-                - tpList->at(tpList->count() - 1)->distance;
-
-  if( MapCalc::dist(tpList->at(1)->getWGSPositionPtr(), tpList->at(tpList->count()-2)->getWGSPositionPtr()) < 1.0 )
+  if( MapCalc::dist(tpList->at(0)->getWGSPositionPtr(), tpList->at(tpList->count()-1)->getWGSPositionPtr()) < 1.0 )
     {
-      // Distance between Takeoff and End point is lower as one km. We
+      // Distance between start and finish point is lower as one km. We
       // check the FAI rules
-      switch(tpList->count() - 4)
+      switch( tpList->count() )
         {
-        case 0:
-          // Fehler
-          flightType = FlightTask::NotSet;
-          break;
-
-        case 1:
+        case 3:
           // Zielrückkehr
           flightType = FlightTask::ZielR;
           break;
 
-        case 2:
+        case 4:
           // FAI Dreieck
-          if(isFAI(distance_task,tpList->at(2)->distance,
-                   tpList->at(3)->distance, tpList->at(4)->distance))
+          if(isFAI( distance_task, tpList->at(1)->distance,
+                    tpList->at(2)->distance, tpList->at(3)->distance))
             flightType = FlightTask::FAI;
           else
             // Dreieck
             flightType = FlightTask::Dreieck;
           break;
 
-        case 3:
-          // Start auf Schenkel oder Vieleck
-          // Vieleck Ja/Nein kann endgültig erst bei der Analyse des Fluges
-          // bestimmt werden!
-          //
-          // Erste Abfrage je nachdem ob Vieleck oder Dreieck mehr Punkte geben
-          // würde
-          distance_task_d = distance_task - tpList->at(2)->distance -
-                            tpList->at(5)->distance +
-                            MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
-                                          tpList->at(4)->getWGSPositionPtr());
-
-          if(isFAI(distance_task_d, MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
-                                    tpList->at(4)->getWGSPositionPtr() ),
-                   tpList->at(3)->distance, tpList->at(4)->distance))
-            {
-              if(distance_task > distance_task_d * (1.0 + 1.0/3.0))
-                flightType = FlightTask::Vieleck;
-              else
-                {
-                  flightType = FlightTask::FAI_S;
-                  distance_task = distance_task_d;
-                }
-            }
-          else
-            {
-              if(distance_task > distance_task_d * (1.0 + 1.0/6.0))
-                flightType = FlightTask::Vieleck;
-              else
-                {
-                  flightType = FlightTask::Dreieck_S;
-                  distance_task = distance_task_d;
-                }
-            }
-          break;
-
-        case 5:
-          // 2x Dreieck nur als FAI gültig
-          flightType = Unknown;
-          if( (distance_task / 2 <= 100) && (tpList->at(1) == tpList->at(4)) &&
-              (tpList->at(2) == tpList->at(5)) &&
-              (tpList->at(3) == tpList->at(6)) &&
-              isFAI(distance_task / 2, tpList->at(2)->distance,
-                    tpList->at(3)->distance, tpList->at(4)->distance))
-            flightType = FlightTask::FAI_2;
-          break;
-
-        case 6:
-          // 2x Dreieck auf Schenkel FAI
-          flightType = FlightTask::Unknown;
-          distance_task_d = distance_task - tpList->at(2)->distance
-                            - tpList->at(5)->distance
-                            + MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
-                                   tpList->at(4)->getWGSPositionPtr()) * 2;
-
-          if( (distance_task_d / 2 <= 100) &&
-              (tpList->at(2) == tpList->at(5)) &&
-              (tpList->at(3) == tpList->at(6)) &&
-              (tpList->at(4) == tpList->at(7)) &&
-              isFAI(distance_task, MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
-                                                 tpList->at(4)->getWGSPositionPtr()),
-                    tpList->at(3)->distance, tpList->at(4)->distance))
-            {
-              flightType = FlightTask::FAI_S2;
-              distance_task = distance_task_d;
-            }
-          break;
-
-        case 8:
-          // 3x FAI Dreieck
-          flightType = Unknown;
-          if( (distance_task / 3 <= 100) &&
-              (tpList->at(1) == tpList->at(4)) &&
-              (tpList->at(2) == tpList->at(5)) &&
-              (tpList->at(3) == tpList->at(6)) &&
-              (tpList->at(1) == tpList->at(7)) &&
-              (tpList->at(2) == tpList->at(8)) &&
-              (tpList->at(3) == tpList->at(9)) &&
-              isFAI(distance_task / 3, tpList->at(2)->distance,
-                    tpList->at(3)->distance, tpList->at(4)->distance))
-            flightType = FlightTask::FAI_3;
-          break;
-
-        case 9:
-          // 3x FAI Dreieck Start auf Schenkel
-          distance_task_d = distance_task - tpList->at(2)->distance
-                            - tpList->at(5)->distance
-                            + MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
-                                            tpList->at(4)->getWGSPositionPtr()) * 3;
-
-          flightType = Unknown;
-          if( (distance_task_d / 3 <= 100) &&
-              (tpList->at(2) == tpList->at(5)) &&
-              (tpList->at(3) == tpList->at(6)) &&
-              (tpList->at(4) == tpList->at(7)) &&
-              (tpList->at(2) == tpList->at(8)) &&
-              (tpList->at(3) == tpList->at(9)) &&
-              (tpList->at(4) == tpList->at(10)) &&
-              isFAI(distance_task, MapCalc::dist(tpList->at(2)->getWGSPositionPtr(),
-                                                 tpList->at(4)->getWGSPositionPtr()),
-                    tpList->at(3)->distance, tpList->at(4)->distance))
-            {
-              flightType = FlightTask::FAI_S3;
-              distance_task = distance_task_d;
-            }
-          break;
-
         default:
-          flightType = FlightTask::Unknown;
+          // Vieleck
+          flightType = FlightTask::Vieleck;
           break;
         }
     }
   else
     {
-      if( tpList->count() <= 5 )
+      if( tpList->count() == 2 )
         // Zielstrecke
         flightType = FlightTask::ZielS;
       else
         flightType = FlightTask::Unknown;
     }
 }
-
 
 /**
  * Calculates the task point sector angles in radian. The sector angle
@@ -305,7 +185,7 @@ double FlightTask::calculateSectorAngles( int loop )
 
   switch( taskPointType )
     {
-    case TaskPointTypes::Begin:
+    case TaskPointTypes::Start:
 
 #ifdef CUMULUS_DEBUG
       part = "WP-Begin (" + tpList->at(loop)->name + "-" + tpList->at(loop+1)->name + ")";
@@ -319,7 +199,7 @@ double FlightTask::calculateSectorAngles( int loop )
         }
       break;
 
-    case TaskPointTypes::RouteP:
+    case TaskPointTypes::Turn:
 
 #ifdef CUMULUS_DEBUG
       part = "WP-RouteP ( " + tpList->at(loop-1)->name + "-" +
@@ -335,7 +215,7 @@ double FlightTask::calculateSectorAngles( int loop )
         }
       break;
 
-    case TaskPointTypes::End:
+    case TaskPointTypes::Finish:
 
 #ifdef CUMULUS_DEBUG
       part = "WP-End (" + tpList->at(loop)->name +"-" + tpList->at(loop-1)->name + ")";
@@ -361,7 +241,7 @@ double FlightTask::calculateSectorAngles( int loop )
   if( tpList->at(loop)->getActiveTaskPointFigureScheme() == GeneralConfig::Line )
     {
       // set bisector angle for the task line as course direction
-      if( taskPointType != TaskPointTypes::End )
+      if( taskPointType != TaskPointTypes::Finish )
         {
           tpList->at(loop)->getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) );
         }
@@ -408,14 +288,14 @@ double FlightTask::calculateSectorAngles( int loop )
  */
 void FlightTask::setTaskPointData()
 {
-  int cnt = tpList->count();
+  int cnt = tpList->size();
 
   if (cnt == 0)
     {
       return;
     }
 
-  tpList->at(0)->setTaskPointType(TaskPointTypes::FreeP);
+  tpList->at(0)->setTaskPointType(TaskPointTypes::Unknown);
 
   //  First task point is always set to these values
   tpList->at(0)->distTime = 0;
@@ -486,7 +366,7 @@ void FlightTask::setTaskPointData()
               }
         }
 
-      tpList->at(n)->setTaskPointType(TaskPointTypes::FreeP);
+      tpList->at(n)->setTaskPointType(TaskPointTypes::Unknown);
 
       double cs = cruisingSpeed.getMps();
 
@@ -563,19 +443,17 @@ void FlightTask::setTaskPointData()
     }
 
   // to less task points
-  if (cnt < 4)
+  if (cnt < 2)
     {
       return;
     }
 
-  tpList->at(0)->setTaskPointType(TaskPointTypes::TakeOff);
-  tpList->at(1)->setTaskPointType(TaskPointTypes::Begin);
-  tpList->at(cnt - 2)->setTaskPointType(TaskPointTypes::End);
-  tpList->at(cnt - 1)->setTaskPointType(TaskPointTypes::Landing);
+  tpList->at(0)->setTaskPointType(TaskPointTypes::Start);
+  tpList->at(cnt - 1)->setTaskPointType(TaskPointTypes::Finish);
 
-  for(int n = 2; n + 2 < cnt; n++)
+  for(int n = 1; n + 1 < cnt; n++)
     {
-      tpList->at(n)->setTaskPointType(TaskPointTypes::RouteP);
+      tpList->at(n)->setTaskPointType(TaskPointTypes::Turn);
     }
 }
 
@@ -637,7 +515,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
     {
       int tpIdx = calculator->getTargetWp()->taskPointIndex;
 
-      if( tpIdx > 0 &&  tpIdx < tpList->count() )
+      if( tpIdx >= 0 && tpIdx < tpList->count() )
         {
           // Get selected taskpoint from the list.
           selectedTp = tpList->at(tpIdx);
@@ -667,9 +545,6 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
   for( int loop=0; loop < tpList->count(); loop++ )
     {
-      // qDebug() << "draw taskpoint:" << tpList->at(loop)->name
-      //          << tpList->at(loop)->getTaskPointFigureString();
-
       // Load the sector data
       const int SectorAngle = tpList->at(loop)->getTaskSectorAngle();
       const double Sor      = tpList->at(loop)->getTaskSectorOuterRadius().getMeters();
@@ -754,10 +629,10 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
       switch( tpList->at(loop)->getTaskPointType() )
       {
-      case TaskPointTypes::RouteP:
+      case TaskPointTypes::Turn:
 
         if( mPointIsContained )
-        {
+          {
             QColor color;
 
             if( fillShape )
@@ -788,7 +663,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
                     qWarning() << "FlightTask::drawTask:" << "Unknown task figure type" << figure;
                     continue;
             }
-        }
+          }
 
         if( loop )
           {
@@ -799,17 +674,17 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
         break;
 
-      case TaskPointTypes::Begin:
+      case TaskPointTypes::Start:
 
         if( mPointIsContained )
           {
             if( selectedTp != 0 && selectedTp->getFlightTaskListIndex() != -1 &&
-                // Task end point is selected
-                selectedTp->getFlightTaskListIndex() == tpList->at( tpList->size() - 2 )->getFlightTaskListIndex() &&
-                // Check, if task start and end point are identically
-                tpList->at(1)->getWGSPosition() == tpList->at( tpList->size() - 2 )->getWGSPosition() )
+                // Task start point is not selected
+                selectedTp->getFlightTaskListIndex() != tpList->at(0)->getFlightTaskListIndex() &&
+                // Check, if task start and finish point are identically
+                tpList->at(0)->getWGSPosition() == tpList->at( tpList->size() - 1 )->getWGSPosition() )
               {
-                // The selected TP is the end point and start and end point are
+                // The selected TP is not the point and start and finish point are
                 // identically. In this case the start task figure
                 // is not drawn to get more clearness about the task end figure.
                 break;
@@ -848,29 +723,19 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
             }
           }
 
-        // Draw line from take off to begin, if both not identical
-        if( loop &&
-            tpList->at(loop - 1)->getWGSPosition() != tpList->at(loop)->getWGSPosition() )
-          {
-            painter->setPen(QPen(courseLineColor, courseLineWidth));
-            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->getPosition()),
-                               glMapMatrix->map(tpList->at(loop)->getPosition()) );
-          }
-
         break;
 
-      case TaskPointTypes::End:
+      case TaskPointTypes::Finish:
 
         if( selectedTp != 0 && selectedTp->getFlightTaskListIndex() != -1 &&
-            // Check, if task start and end point are identically
-            tpList->at(1)->getWGSPosition() == tpList->at( tpList->size() - 2 )->getWGSPosition() &&
-            // Check if task start point or first route point is selected
-            ( selectedTp->getFlightTaskListIndex() == tpList->at(1)->getFlightTaskListIndex() ||
-              selectedTp->getFlightTaskListIndex() == tpList->at(2)->getFlightTaskListIndex() ) )
+            // Task start point is selected
+            selectedTp->getFlightTaskListIndex() == tpList->at(0)->getFlightTaskListIndex() &&
+            // Check, if task start and finish point are identically
+            tpList->at(0)->getWGSPosition() == tpList->at( tpList->size() - 1 )->getWGSPosition() )
           {
-            // The selected TP is the start point or the first route point
-            // and start and end point are identically.
-            // In this case the end task figure is not drawn to get more
+            // The selected TP is the start point
+            // and start and finish point are identically.
+            // In this case the finish task figure is not drawn to get more
             // clearness about the task start figure.
             mPointIsContained = false;
           }
@@ -916,69 +781,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
         break;
 
       default:
-
-       // Can be take off or landing point
-       if( loop == 0 && mPointIsContained &&
-           tpList->size() >= 2 &&
-           // take off point != begin point
-           tpList->at(0)->getWGSPosition() != tpList->at(1)->getWGSPosition() &&
-           // no taskpoint is selected
-           ( selectedTp == 0 ||
-           // a taskpoint selection is active
-           ( selectedTp != 0 && selectedTp->getFlightTaskListIndex() != -1 &&
-           // task end point is not selected
-           selectedTp->getFlightTaskListIndex() != tpList->at( tpList->size() - 2 )->getFlightTaskListIndex() &&
-           // task landing point is not selected
-           selectedTp->getFlightTaskListIndex() != tpList->at( tpList->size() - 1 )->getFlightTaskListIndex() ) ))
-          {
-           // Draw a circle around the start point, if start and begin point
-           // are not the same and task end point and task landing point
-           // are not selected.
-            QColor color;
-
-            if( fillShape )
-              {
-                color = QColor(Qt::green);
-              }
-
-            drawCircle( painter, mPoint, crScaled, color, drawShape );
-          }
-        else if( loop == tpList->size()-1 && mPointIsContained &&
-                 tpList->size() >= 2 &&
-                 // landing point != end point
-                 tpList->at(loop)->getWGSPosition() != tpList->at(loop-1)->getWGSPosition() &&
-                 // no taskpoint is selected
-                 ( selectedTp == 0 ||
-                 // a taskpoint selection is active
-                 ( selectedTp != 0 && selectedTp->getFlightTaskListIndex() != -1 &&
-                 // task take off point is not selected
-                 selectedTp->getFlightTaskListIndex() != tpList->at(0)->getFlightTaskListIndex() &&
-                 // task begin point is not selected
-                 selectedTp->getFlightTaskListIndex() != tpList->at(1)->getFlightTaskListIndex() )))
-          {
-            // Draw a circle around the landing point, if end and landing point
-            // are not the same and task take off point and task begin point
-            // are not selected.
-            QColor color;
-
-            if( fillShape )
-              {
-                color = QColor(Qt::cyan);
-              }
-
-            drawCircle( painter, mPoint, crScaled, color, drawShape );
-          }
-
-        // Draw a line from the End to the Landing point, if both are not identical
-        if( loop && tpList->size() >= 2 &&
-            tpList->at(loop - 1)->getWGSPosition() != tpList->at(loop)->getWGSPosition() )
-          {
-            painter->setPen(QPen(courseLineColor, courseLineWidth));
-            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->getPosition()),
-                               glMapMatrix->map(tpList->at(loop)->getPosition() ) );
-          }
-
-        break;
+	break;
       }
     }
 
@@ -1173,8 +976,8 @@ void FlightTask::calculateSector( QPainterPath& pp,
 
 ReachablePoint::reachable
 FlightTask::calculateFinalGlidePath( const int taskPointIndex,
-                                          Altitude &arrivalAlt,
-                                          Speed &bestSpeed )
+                                     Altitude &arrivalAlt,
+                                     Speed &bestSpeed )
 {
   int wpCount = tpList->count();
 
@@ -1273,26 +1076,15 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   return ReachablePoint::no;
 }
 
-QString FlightTask::getTotalDistanceString( bool unit ) const
-  {
-    if(flightType == FlightTask::NotSet)
-      {
-        return "--";
-      }
-
-    return Distance::getText(distance_total*1000, unit, 1);
-  }
-
-
 QString FlightTask::getTaskDistanceString( bool unit ) const
-  {
-    if(flightType == FlightTask::NotSet)
-      {
-        return "--";
-      }
+{
+  if( flightType == FlightTask::NotSet )
+    {
+      return "--";
+    }
 
-    return Distance::getText( distance_task*1000, unit, 1 );
-  }
+  return Distance::getText(distance_task * 1000, unit, 1);
+}
 
 /**
  * @returns a string representing the total distance time of task as

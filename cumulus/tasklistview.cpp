@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2009-2015 by Axel Pauli
+**                   2009-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -411,20 +411,8 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
 
   for( int loop = 0; loop < tmpList.size(); loop++ )
     {
-      bool showTpIcon = true;
-
-      if( tmpList.size() >= 2 &&
-          ((loop == 0 && tmpList.at(0)->getWGSPosition() == tmpList.at(1)->getWGSPosition() ) ||
-           (loop == tmpList.size()-1 &&
-            tmpList.at(tmpList.size()-1)->getWGSPosition() == tmpList.at(tmpList.size()-2)->getWGSPosition() )) )
-        {
-          // If start and begin point or end and landing point are identical
-          // no task figure icon is shown in the list entry.
-          showTpIcon = false;
-        }
-
       TaskPoint* tp = tmpList.at( loop );
-      _TaskPointItem* _tpi = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), showTpIcon );
+      _TaskPointItem* _tpi = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), true );
 
       if( tmpList.size() < 10 )
         {
@@ -449,7 +437,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
       QTreeWidgetItem *item = new QTreeWidgetItem( list );
 
       item->setText( 2, tr("Total") );
-      item->setText( 3, _task->getTotalDistanceString( false ) );
+      item->setText( 3, _task->getTaskDistanceString( false ) );
       item->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
 
       if( _task->getSpeed() != 0 )
@@ -467,7 +455,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // wind direction and speed
   wind->setText( "W=" + _task->getWindString() );
 
-  distTotal->setText( "S=" + _task->getTotalDistanceString().remove(QChar(' ')) );
+  distTotal->setText( "S=" + _task->getTaskDistanceString().remove(QChar(' ')) );
 
   if( _task->getSpeed() == 0 )
     {

@@ -51,13 +51,13 @@ class TaskPoint : public SinglePoint
   /**
    * Default constructor.
    */
-  TaskPoint( enum TaskPointTypes::TaskPointType type=TaskPointTypes::NotSet );
+  TaskPoint( enum TaskPointTypes::TaskPointType type=TaskPointTypes::Unknown );
 
   /**
    * Constructs a taskpoint object from a waypoint object.
    */
   TaskPoint( const Waypoint& wp,
-             enum TaskPointTypes::TaskPointType type=TaskPointTypes::NotSet );
+             enum TaskPointTypes::TaskPointType type=TaskPointTypes::Unknown );
 
   virtual ~TaskPoint();
 

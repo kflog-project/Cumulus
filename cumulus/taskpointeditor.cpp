@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2015 Eggert Ehmke, Axel Pauli
+**   Copyright (c):  2013-2016 Eggert Ehmke, Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -155,7 +155,14 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   m_outerSectorRadius->setMaxLength(10);
   m_outerSectorRadius->setSuffix( unitText );
   m_outerSectorRadius->setDecimals( 3 );
-  sectorLayout->addWidget( m_outerSectorRadius, row1, 1 );
+  sectorLayout->addWidget( m_outerSectorRadius, row1, 1 );  // Check task point type. If it is not type begin or end, the m_line
+  // m_line selection must be invisible.
+  if( m_workTp.getTaskPointType() != TaskPointTypes::Start &&
+      m_workTp.getTaskPointType() != TaskPointTypes::Finish )
+    {
+      m_line->hide();
+    }
+
   row1++;
 
   lbl = new QLabel( tr("Angle:"), m_sectorGroup );
@@ -346,14 +353,6 @@ void TaskPointEditor::load()
                            .arg(m_workTp.getFlightTaskListIndex() + 1)
                            .arg(m_workTp.getTaskPointTypeString(true))
                            .arg(m_workTp.getWPName() ) );
-
-  // Check task point type. If it is not type begin or end, the m_line
-  // m_line selection must be invisible.
-  if( m_workTp.getTaskPointType() != TaskPointTypes::Begin &&
-      m_workTp.getTaskPointType() != TaskPointTypes::End )
-    {
-      m_line->hide();
-    }
 
   // set active button as selected
   m_selectedCSLScheme = (int) m_workTp.getActiveTaskPointFigureScheme();

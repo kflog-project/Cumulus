@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2015 by Axel Pauli
+ **   Copyright (c): 2010-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -371,37 +371,27 @@ QString TaskPoint::getTaskPointTypeString( bool detailed ) const
 {
   switch( m_taskPointType )
     {
-    case TaskPointTypes::TakeOff:
-      if( detailed ) return QObject::tr( "Takeoff" );
-      else return QObject::tr( "TO" );
-    case TaskPointTypes::Begin:
-      if( detailed ) return QObject::tr( "Begin" );
-      else return QObject::tr( "B" );
-    case TaskPointTypes::RouteP:
-      if( detailed ) return QObject::tr( "Route" );
-      else return QObject::tr( "R" );
-    case TaskPointTypes::End:
-      if( detailed ) return QObject::tr( "End" );
-      else return QObject::tr( "E" );
-    case TaskPointTypes::FreeP:
-      if( detailed ) return QObject::tr( "Free Point" );
-      else return QObject::tr( "F" );
-    case TaskPointTypes::Landing:
-      if( detailed ) return QObject::tr( "Landing" );
-      else return QObject::tr( "LG" );
-    case TaskPointTypes::NotSet:
+    case TaskPointTypes::Start:
+      if( detailed )
+	return QObject::tr( "Start" );
+      else
+	return QObject::tr( "S" );
+    case TaskPointTypes::Turn:
+      if( detailed )
+	return QObject::tr( "Turn" );
+      else
+	return QObject::tr( "T" );
+    case TaskPointTypes::Finish:
+      if( detailed )
+	return QObject::tr( "Finish" );
+      else
+	return QObject::tr( "F" );
+    case TaskPointTypes::Unknown:
     default:
-      if( detailed ) return QObject::tr( "Not set" );
-      else return QObject::tr( "NS" );
-    }
-
-  if( detailed )
-    {
-      return QObject::tr("Not set");
-    }
-  else
-    {
-      return QObject::tr("NS");
+      if( detailed )
+	return QObject::tr( "Unknown" );
+      else
+	return QObject::tr( "U" );
     }
 }
 
@@ -451,7 +441,7 @@ void TaskPoint::setConfigurationDefaults()
 
   switch( m_taskPointType )
     {
-      case TaskPointTypes::Begin:
+      case TaskPointTypes::Start:
         setTaskCircleRadius( conf->getTaskStartRingRadius() );
         setTaskSectorInnerRadius( conf->getTaskStartSectorIRadius() );
         setTaskSectorOuterRadius( conf->getTaskStartSectorORadius() );
@@ -460,24 +450,13 @@ void TaskPoint::setConfigurationDefaults()
         setActiveTaskPointFigureScheme( conf->getActiveTaskStartScheme() );
         break;
 
-      case TaskPointTypes::End:
+      case TaskPointTypes::Finish:
         setTaskCircleRadius( conf->getTaskFinishRingRadius() );
         setTaskSectorInnerRadius( conf->getTaskFinishSectorIRadius() );
         setTaskSectorOuterRadius( conf->getTaskFinishSectorORadius() );
         getTaskLine().setLineLength( conf->getTaskFinishLineLength().getMeters() );
         setTaskSectorAngle( conf->getTaskFinishSectorAngel() );
         setActiveTaskPointFigureScheme( conf->getActiveTaskFinishScheme() );
-        break;
-
-      // These points are not editable and always from type cylinder, radius 500m.
-      case TaskPointTypes::TakeOff:
-      case TaskPointTypes::Landing:
-        setTaskCircleRadius( Distance(500) );
-        setTaskSectorInnerRadius( Distance(0) );
-        setTaskSectorOuterRadius( Distance(0) );
-        getTaskLine().setLineLength( 0.0 );
-        setTaskSectorAngle( 0 );
-        setActiveTaskPointFigureScheme( GeneralConfig::Circle );
         break;
 
       default:

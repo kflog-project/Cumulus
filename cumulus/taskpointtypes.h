@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013 by Axel Pauli
+ **   Copyright (c): 2013-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -27,18 +25,17 @@
  *
  * Definitions of possible task point types.
  *
- * \date 1999-2013
+ * \date 1999-2016
  *
- * \version $Id$
+ * \version 1.0
  */
 class TaskPointTypes
 {
   public:
   /**
-   * The possible task point types.
+   * The possible task point types according IGC declaration.
    */
-  enum TaskPointType { NotSet = 0, TakeOff = 1, Begin = 2, RouteP = 4,
-                       End = 8, FreeP = 16, Landing = 32 };
+  enum TaskPointType { Unknown = 0, Start = 2, Turn = 4, Finish = 8 };
 };
 
 #endif /* TASK_POINT_TYPES_H */
