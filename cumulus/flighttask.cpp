@@ -88,6 +88,7 @@ FlightTask::FlightTask( const FlightTask& inst )
   duration_total = inst.duration_total;
   _planningType = inst._planningType;
   _taskName = inst._taskName;
+  _declarationDateTime = inst._declarationDateTime;
 }
 
 FlightTask::~FlightTask()

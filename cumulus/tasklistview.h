@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2014 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * actions. Can be used in two modes, as display only, buttons for
  * actions are not visible or with command buttons.
  *
- * \date 2004-2014
+ * \date 2004-2016
  *
- * \version $Id$
+ * \version 1.2
  */
 
 #ifndef TASK_LIST_VIEW_H
@@ -137,11 +137,11 @@ public slots:
   void slot_updateTask();
 
 private slots:
+
   /**
-   * This slot is called if the user changes the selection in the
-   * task list.
+   * This slot is called if the user clicks on an item in the task list.
    */
-  void slot_Selected();
+  void slot_itemClicked(QTreeWidgetItem* item, int column);
 
 signals:
 
@@ -186,7 +186,6 @@ private:
   QLabel          *timeTotal;
   QPixmap         _arrows;
   FlightTask      *_task;
-  TaskPoint       *_selectedTp;
   QTreeWidgetItem * _currSelectedTp;
   QTreeWidgetItem * _newSelectedTp;
   QString         _selectText;

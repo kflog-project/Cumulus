@@ -170,12 +170,12 @@
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="530"/>
+        <location filename="calculator.cpp" line="511"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="536"/>
+        <location filename="calculator.cpp" line="517"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
@@ -186,12 +186,12 @@
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1982"/>
+        <location filename="calculator.cpp" line="1945"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="525"/>
+        <location filename="calculator.cpp" line="506"/>
         <source>Task ended</source>
         <oldsource>Task end</oldsource>
         <translation>Aufgabe beendet</translation>
@@ -203,29 +203,29 @@
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="571"/>
+        <location filename="calculator.cpp" line="552"/>
         <source>TP passed</source>
         <oldsource>TP switch</oldsource>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1796"/>
-        <location filename="calculator.cpp" line="1801"/>
+        <location filename="calculator.cpp" line="1777"/>
+        <location filename="calculator.cpp" line="1782"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1802"/>
+        <location filename="calculator.cpp" line="1783"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1860"/>
+        <location filename="calculator.cpp" line="1823"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="calculator.cpp" line="1861"/>
+        <location filename="calculator.cpp" line="1824"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -1015,37 +1015,37 @@
 <context>
     <name>IgcLogger</name>
     <message>
-        <location filename="igclogger.cpp" line="480"/>
+        <location filename="igclogger.cpp" line="478"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="597"/>
+        <location filename="igclogger.cpp" line="601"/>
         <source>Stop Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="598"/>
+        <location filename="igclogger.cpp" line="602"/>
         <source>&lt;html&gt;Are you sure you want&lt;br&gt;stop logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Wollen Sie wirklich&lt;br&gt;den Logger stoppen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="627"/>
+        <location filename="igclogger.cpp" line="631"/>
         <source>Start Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="628"/>
+        <location filename="igclogger.cpp" line="632"/>
         <source>&lt;html&gt;You should select a glider&lt;br&gt;before start logging.&lt;br&gt;Continue start logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Vor Loggerstart&lt;br&gt;ein Flugzeug auswählen.&lt;br&gt;Logger wirklich starten?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="668"/>
+        <location filename="igclogger.cpp" line="672"/>
         <source>Restart Logging?</source>
         <translation>Neustart Logging?</translation>
     </message>
     <message>
-        <location filename="igclogger.cpp" line="669"/>
+        <location filename="igclogger.cpp" line="673"/>
         <source>&lt;html&gt;A new flight task was selected.&lt;br&gt;Restart logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine neue Flugaufgabe wurde ausgewählt.&lt;br&gt;Logging neu starten?&lt;/html&gt;</translation>
     </message>
@@ -1400,8 +1400,9 @@
     </message>
     <message>
         <location filename="mainwindow.cpp" line="2561"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2015, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2015, Das Cumulus-Team&lt;/html&gt;</translation>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2016, The Cumulus-Team&lt;/html&gt;</source>
+        <oldsource>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2015, The Cumulus-Team&lt;/html&gt;</oldsource>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2016, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="2579"/>
@@ -2283,7 +2284,7 @@ All downloads are canceled!</oldsource>
         <location filename="preflightflarmpage.cpp" line="481"/>
         <location filename="preflightflarmpage.cpp" line="553"/>
         <location filename="preflightflarmpage.cpp" line="800"/>
-        <location filename="preflightflarmpage.cpp" line="969"/>
+        <location filename="preflightflarmpage.cpp" line="975"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
@@ -2291,22 +2292,22 @@ All downloads are canceled!</oldsource>
         <location filename="preflightflarmpage.cpp" line="482"/>
         <location filename="preflightflarmpage.cpp" line="554"/>
         <location filename="preflightflarmpage.cpp" line="801"/>
-        <location filename="preflightflarmpage.cpp" line="970"/>
+        <location filename="preflightflarmpage.cpp" line="976"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="1090"/>
+        <location filename="preflightflarmpage.cpp" line="1096"/>
         <source>Reboot Flarm?</source>
         <translation>Neustart Flarm?</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="1091"/>
+        <location filename="preflightflarmpage.cpp" line="1097"/>
         <source>To activate the new task, the Flarm must be rebooted!</source>
         <translation>Zwecks Aufgabenaktivierung muss das Flarm neu gestartet werden!</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="1092"/>
+        <location filename="preflightflarmpage.cpp" line="1098"/>
         <source>Execute reboot now?</source>
         <translation>Neustart jetzt ausführen?</translation>
     </message>
@@ -2336,7 +2337,7 @@ All downloads are canceled!</oldsource>
         <translation>ist zu lang!</translation>
     </message>
     <message>
-        <location filename="preflightflarmpage.cpp" line="1049"/>
+        <location filename="preflightflarmpage.cpp" line="1055"/>
         <source>Code %1 means</source>
         <oldsource>Text for code %1</oldsource>
         <translation>Kode %1 bedeutet</translation>
@@ -3411,9 +3412,9 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="airspace.cpp" line="361"/>
-        <location filename="flighttask.cpp" line="60"/>
-        <location filename="flighttask.h" line="86"/>
-        <location filename="taskpoint.cpp" line="419"/>
+        <location filename="flighttask.cpp" line="59"/>
+        <location filename="flighttask.h" line="84"/>
+        <location filename="taskpoint.cpp" line="409"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -3612,59 +3613,60 @@ All downloads are canceled!</oldsource>
         <translation>Leerpunkt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="587"/>
+        <location filename="flighttask.cpp" line="466"/>
         <source>not set</source>
         <translation>nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="589"/>
+        <location filename="flighttask.cpp" line="468"/>
         <source>Free Distance</source>
         <translation>Freie Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="591"/>
+        <location filename="flighttask.cpp" line="470"/>
         <source>Free Out and Return</source>
         <translation>ZR-Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="593"/>
+        <location filename="flighttask.cpp" line="472"/>
         <source>FAI Triangle</source>
         <translation>FAI Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="595"/>
+        <location filename="flighttask.cpp" line="474"/>
         <source>Triangle</source>
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="597"/>
+        <location filename="flighttask.cpp" line="476"/>
         <source>FAI Triangle Start on leg</source>
         <translation>FAI Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="599"/>
+        <location filename="flighttask.cpp" line="478"/>
         <source>Triangle Start on leg</source>
         <translation>Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="601"/>
+        <location filename="flighttask.cpp" line="480"/>
         <source>Broken off</source>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="604"/>
+        <location filename="flighttask.cpp" line="483"/>
         <location filename="runway.cpp" line="81"/>
+        <location filename="taskpoint.cpp" line="392"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1342"/>
-        <location filename="flighttask.cpp" line="1357"/>
+        <location filename="flighttask.cpp" line="1135"/>
+        <location filename="flighttask.cpp" line="1150"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1362"/>
+        <location filename="flighttask.cpp" line="1155"/>
         <source>too strong!</source>
         <translation>zu stark!</translation>
     </message>
@@ -3761,24 +3763,20 @@ All downloads are canceled!</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="375"/>
         <source>Takeoff</source>
-        <translation>Start</translation>
+        <translation type="obsolete">Start</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="378"/>
         <source>Begin</source>
-        <translation>Beginn</translation>
+        <translation type="obsolete">Beginn</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="384"/>
         <source>End</source>
-        <translation>Ende</translation>
+        <translation type="obsolete">Ende</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="390"/>
         <source>Landing</source>
-        <translation>Landung</translation>
+        <translation type="obsolete">Landung</translation>
     </message>
     <message>
         <location filename="welt2000.cpp" line="885"/>
@@ -3865,34 +3863,12 @@ All downloads are canceled!</oldsource>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als verantwortlicher Pilot sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Akzeptieren Sie die zuvor genannten Einschränkungen?&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="376"/>
-        <source>TO</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="taskpoint.cpp" line="379"/>
-        <source>B</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="taskpoint.cpp" line="381"/>
         <source>Route</source>
-        <translation>Route</translation>
+        <translation type="obsolete">Route</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="382"/>
-        <source>R</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="taskpoint.cpp" line="385"/>
-        <source>E</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="taskpoint.cpp" line="387"/>
         <source>Free Point</source>
-        <translation>Freier Punkt</translation>
+        <translation type="obsolete">Freier Punkt</translation>
     </message>
     <message>
         <location filename="taskpoint.cpp" line="388"/>
@@ -3900,54 +3876,63 @@ All downloads are canceled!</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="391"/>
-        <source>LG</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="taskpoint.cpp" line="394"/>
-        <location filename="taskpoint.cpp" line="400"/>
         <source>Not set</source>
-        <translation>Unbekannt</translation>
+        <translation type="obsolete">Unbekannt</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="395"/>
-        <location filename="taskpoint.cpp" line="404"/>
-        <source>NS</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="taskpoint.cpp" line="413"/>
+        <location filename="taskpoint.cpp" line="403"/>
         <source>Circle radius: %1</source>
         <translation>Kreis Radius: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="415"/>
+        <location filename="taskpoint.cpp" line="405"/>
         <source>Sector radius: %1</source>
         <translation>Sektor Radius: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="417"/>
+        <location filename="taskpoint.cpp" line="407"/>
         <source>Line: %1</source>
         <translation>Linie: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="432"/>
+        <location filename="taskpoint.cpp" line="422"/>
         <source>C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="435"/>
+        <location filename="taskpoint.cpp" line="378"/>
+        <location filename="taskpoint.cpp" line="425"/>
         <source>S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="438"/>
+        <location filename="taskpoint.cpp" line="376"/>
+        <source>Start</source>
+        <translation>Start</translation>
+    </message>
+    <message>
+        <location filename="taskpoint.cpp" line="381"/>
+        <source>Turn</source>
+        <translation>Wende</translation>
+    </message>
+    <message>
+        <location filename="taskpoint.cpp" line="383"/>
+        <source>T</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="taskpoint.cpp" line="386"/>
+        <source>Finish</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="taskpoint.cpp" line="428"/>
         <source>L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="441"/>
+        <location filename="taskpoint.cpp" line="394"/>
+        <location filename="taskpoint.cpp" line="431"/>
         <source>U</source>
         <translation></translation>
     </message>
@@ -5541,7 +5526,7 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="tpinfowidget.cpp" line="99"/>
         <location filename="tpinfowidget.cpp" line="172"/>
-        <location filename="tpinfowidget.cpp" line="772"/>
+        <location filename="tpinfowidget.cpp" line="766"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -5573,9 +5558,9 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="tpinfowidget.cpp" line="254"/>
-        <location filename="tpinfowidget.cpp" line="401"/>
-        <location filename="tpinfowidget.cpp" line="544"/>
-        <location filename="tpinfowidget.cpp" line="695"/>
+        <location filename="tpinfowidget.cpp" line="397"/>
+        <location filename="tpinfowidget.cpp" line="540"/>
+        <location filename="tpinfowidget.cpp" line="689"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
@@ -5584,16 +5569,16 @@ All downloads are canceled!</oldsource>
         <location filename="tpinfowidget.cpp" line="281"/>
         <location filename="tpinfowidget.cpp" line="286"/>
         <location filename="tpinfowidget.cpp" line="292"/>
+        <location filename="tpinfowidget.cpp" line="408"/>
         <location filename="tpinfowidget.cpp" line="412"/>
         <location filename="tpinfowidget.cpp" line="416"/>
-        <location filename="tpinfowidget.cpp" line="420"/>
-        <location filename="tpinfowidget.cpp" line="427"/>
-        <location filename="tpinfowidget.cpp" line="563"/>
-        <location filename="tpinfowidget.cpp" line="568"/>
-        <location filename="tpinfowidget.cpp" line="573"/>
-        <location filename="tpinfowidget.cpp" line="706"/>
-        <location filename="tpinfowidget.cpp" line="710"/>
-        <location filename="tpinfowidget.cpp" line="714"/>
+        <location filename="tpinfowidget.cpp" line="423"/>
+        <location filename="tpinfowidget.cpp" line="559"/>
+        <location filename="tpinfowidget.cpp" line="564"/>
+        <location filename="tpinfowidget.cpp" line="569"/>
+        <location filename="tpinfowidget.cpp" line="700"/>
+        <location filename="tpinfowidget.cpp" line="704"/>
+        <location filename="tpinfowidget.cpp" line="708"/>
         <source>Arrival Alt</source>
         <translation>Ankunftshöhe</translation>
     </message>
@@ -5602,64 +5587,68 @@ All downloads are canceled!</oldsource>
         <location filename="tpinfowidget.cpp" line="342"/>
         <location filename="tpinfowidget.cpp" line="345"/>
         <location filename="tpinfowidget.cpp" line="364"/>
-        <location filename="tpinfowidget.cpp" line="428"/>
-        <location filename="tpinfowidget.cpp" line="466"/>
-        <location filename="tpinfowidget.cpp" line="469"/>
-        <location filename="tpinfowidget.cpp" line="488"/>
+        <location filename="tpinfowidget.cpp" line="424"/>
+        <location filename="tpinfowidget.cpp" line="462"/>
+        <location filename="tpinfowidget.cpp" line="465"/>
+        <location filename="tpinfowidget.cpp" line="484"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
         <location filename="tpinfowidget.cpp" line="307"/>
-        <location filename="tpinfowidget.cpp" line="431"/>
-        <location filename="tpinfowidget.cpp" line="589"/>
-        <location filename="tpinfowidget.cpp" line="720"/>
+        <location filename="tpinfowidget.cpp" line="427"/>
+        <location filename="tpinfowidget.cpp" line="585"/>
+        <location filename="tpinfowidget.cpp" line="714"/>
         <source>Vg</source>
         <translation></translation>
     </message>
     <message>
         <location filename="tpinfowidget.cpp" line="318"/>
         <location filename="tpinfowidget.cpp" line="341"/>
-        <location filename="tpinfowidget.cpp" line="442"/>
-        <location filename="tpinfowidget.cpp" line="465"/>
-        <location filename="tpinfowidget.cpp" line="602"/>
-        <location filename="tpinfowidget.cpp" line="731"/>
+        <location filename="tpinfowidget.cpp" line="438"/>
+        <location filename="tpinfowidget.cpp" line="461"/>
+        <location filename="tpinfowidget.cpp" line="598"/>
+        <location filename="tpinfowidget.cpp" line="725"/>
         <source>Duration</source>
         <translation>Dauer</translation>
     </message>
     <message>
         <location filename="tpinfowidget.cpp" line="336"/>
         <location filename="tpinfowidget.cpp" line="344"/>
-        <location filename="tpinfowidget.cpp" line="460"/>
-        <location filename="tpinfowidget.cpp" line="468"/>
-        <location filename="tpinfowidget.cpp" line="620"/>
-        <location filename="tpinfowidget.cpp" line="749"/>
+        <location filename="tpinfowidget.cpp" line="456"/>
+        <location filename="tpinfowidget.cpp" line="464"/>
+        <location filename="tpinfowidget.cpp" line="616"/>
+        <location filename="tpinfowidget.cpp" line="743"/>
         <source>ETA</source>
         <translation></translation>
     </message>
     <message>
         <location filename="tpinfowidget.cpp" line="358"/>
         <location filename="tpinfowidget.cpp" line="363"/>
-        <location filename="tpinfowidget.cpp" line="482"/>
-        <location filename="tpinfowidget.cpp" line="487"/>
-        <location filename="tpinfowidget.cpp" line="634"/>
-        <location filename="tpinfowidget.cpp" line="760"/>
+        <location filename="tpinfowidget.cpp" line="478"/>
+        <location filename="tpinfowidget.cpp" line="483"/>
+        <location filename="tpinfowidget.cpp" line="630"/>
+        <location filename="tpinfowidget.cpp" line="754"/>
         <source>Sunset</source>
         <translation>SU</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="383"/>
-        <location filename="tpinfowidget.cpp" line="677"/>
-        <source>Landing target</source>
-        <translation>Landeziel</translation>
+        <location filename="tpinfowidget.cpp" line="379"/>
+        <location filename="tpinfowidget.cpp" line="671"/>
+        <source>Finish target</source>
+        <translation>Finish Ziel</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="532"/>
+        <source>Landing target</source>
+        <translation type="obsolete">Landeziel</translation>
+    </message>
+    <message>
+        <location filename="tpinfowidget.cpp" line="528"/>
         <source>Arrival Info</source>
         <translation>Ankunftsinfo</translation>
     </message>
     <message>
-        <location filename="tpinfowidget.cpp" line="536"/>
+        <location filename="tpinfowidget.cpp" line="532"/>
         <source>Selected target</source>
         <translation>Gewähltes Ziel</translation>
     </message>
@@ -5767,47 +5756,51 @@ All downloads are canceled!</oldsource>
         <translation>T-Punkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="440"/>
+        <location filename="taskeditor.cpp" line="428"/>
         <source>Total</source>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="592"/>
+        <location filename="taskeditor.cpp" line="580"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="593"/>
-        <source>Task needs at least four waypoints</source>
-        <translation>Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
+        <location filename="taskeditor.cpp" line="581"/>
+        <source>Task needs at least a start and a finish point!</source>
+        <translation>Eine Aufgabe benötigt einen Start und einen Ziel Punkt!</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="616"/>
+        <source>Task needs at least four waypoints</source>
+        <translation type="obsolete">Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
+    </message>
+    <message>
+        <location filename="taskeditor.cpp" line="604"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="617"/>
+        <location filename="taskeditor.cpp" line="605"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="641"/>
+        <location filename="taskeditor.cpp" line="629"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="642"/>
+        <location filename="taskeditor.cpp" line="630"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="928"/>
+        <location filename="taskeditor.cpp" line="893"/>
         <source>Defaults?</source>
         <translation>Standards?</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="929"/>
+        <location filename="taskeditor.cpp" line="894"/>
         <source>Reset all TP schemas to default configuration values?</source>
         <translation>Alle TP Schemas auf Konfugurationsstandard rücksetzen?</translation>
     </message>
@@ -5815,87 +5808,87 @@ All downloads are canceled!</oldsource>
 <context>
     <name>TaskListView</name>
     <message>
-        <location filename="tasklistview.cpp" line="53"/>
+        <location filename="tasklistview.cpp" line="52"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="54"/>
+        <location filename="tasklistview.cpp" line="53"/>
         <source>Unselect</source>
         <translation>Abwählen</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="122"/>
+        <location filename="tasklistview.cpp" line="121"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="125"/>
+        <location filename="tasklistview.cpp" line="124"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="131"/>
+        <location filename="tasklistview.cpp" line="130"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="169"/>
+        <location filename="tasklistview.cpp" line="167"/>
         <source>TH</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="175"/>
+        <location filename="tasklistview.cpp" line="173"/>
         <source>TC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="181"/>
+        <location filename="tasklistview.cpp" line="179"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="182"/>
+        <location filename="tasklistview.cpp" line="180"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="183"/>
+        <location filename="tasklistview.cpp" line="181"/>
         <source>Way</source>
         <translation>Weg</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="184"/>
+        <location filename="tasklistview.cpp" line="182"/>
         <source>GS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="185"/>
+        <location filename="tasklistview.cpp" line="183"/>
         <source>WCA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="187"/>
+        <location filename="tasklistview.cpp" line="185"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="188"/>
+        <location filename="tasklistview.cpp" line="186"/>
         <source>SS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="189"/>
+        <location filename="tasklistview.cpp" line="187"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="451"/>
+        <location filename="tasklistview.cpp" line="398"/>
         <source>Total</source>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="475"/>
+        <location filename="tasklistview.cpp" line="422"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
@@ -5921,7 +5914,7 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="taskpointeditor.cpp" line="82"/>
-        <location filename="taskpointeditor.cpp" line="179"/>
+        <location filename="taskpointeditor.cpp" line="186"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
@@ -5941,32 +5934,32 @@ All downloads are canceled!</oldsource>
         <translation>Radius 2:</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="161"/>
+        <location filename="taskpointeditor.cpp" line="168"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="188"/>
+        <location filename="taskpointeditor.cpp" line="195"/>
         <source>Length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="201"/>
+        <location filename="taskpointeditor.cpp" line="208"/>
         <source>Zoom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="207"/>
+        <location filename="taskpointeditor.cpp" line="214"/>
         <source>Auto</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="216"/>
+        <location filename="taskpointeditor.cpp" line="223"/>
         <source>Defaults</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="taskpointeditor.cpp" line="345"/>
+        <location filename="taskpointeditor.cpp" line="352"/>
         <source>Turnpoint No %1 (%2): %3</source>
         <translation>Wendepunkt No %1 (%2): %3</translation>
     </message>

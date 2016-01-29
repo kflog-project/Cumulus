@@ -47,7 +47,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   setObjectName("TaskListView");
 
   _task = 0;
-  _selectedTp = 0;
   _currSelectedTp = 0;
   _newSelectedTp = 0;
   _selectText = tr("Select");
@@ -137,8 +136,8 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
                this, SLOT(slot_Info()));
       connect( cmdClose, SIGNAL(clicked() ),
                this, SLOT(slot_Close()) );
-      connect( list, SIGNAL(itemSelectionChanged() ),
-               this, SLOT(slot_Selected()) );
+      connect( list, SIGNAL(itemClicked(QTreeWidgetItem*, int)),
+               this, SLOT(slot_itemClicked(QTreeWidgetItem*, int)));
       connect( cmdStart, SIGNAL(clicked() ),
                this, SLOT(slot_Start()) );
 
@@ -151,7 +150,6 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
 
 TaskListView::~TaskListView()
 {
-  // qDebug("TaskListView::~TaskListView()");
   if ( _task )
     {
       delete _task;
@@ -210,50 +208,19 @@ void TaskListView::slot_Start()
   emit done();
 }
 
-void TaskListView::slot_Selected()
+void TaskListView::slot_itemClicked(QTreeWidgetItem* item, int column )
 {
-  // Selected item has been changed in the task list by the user.
-  _newSelectedTp = list->currentItem();
-
-  if ( _newSelectedTp == static_cast<QTreeWidgetItem *> (0) )
+  if( item == static_cast<QTreeWidgetItem *> (0) )
     {
       return;
     }
 
-  _TaskPointItem *tpi = dynamic_cast<_TaskPointItem *> (_newSelectedTp);
+  _TaskPointItem *tpi = dynamic_cast<_TaskPointItem *> (item);
 
   if( ! tpi )
     {
       // dynamic cast has failed
       return;
-    }
-
-  _selectedTp = tpi->getTaskPoint();
-
-  if ( _selectedTp->getFlightTaskListIndex() == 0 )
-    {
-      QTreeWidgetItem* tpBelow = list->itemBelow( _newSelectedTp );
-      _TaskPointItem *tpiBelow = 0;
-      TaskPoint *below = 0;
-
-      if( tpBelow )
-        {
-          tpiBelow = dynamic_cast<_TaskPointItem *> (tpBelow);
-
-          if( tpiBelow )
-            {
-              below = tpiBelow->getTaskPoint();
-            }
-        }
-
-      if( ! (below && below->getFlightTaskListIndex() == 1 &&
-             below->getWGSPosition() != _selectedTp->getWGSPosition()) )
-        {
-          // Take-off point should not be selectable in taskview, if it is
-          // identical to the start point.
-          cmdSelect->setEnabled(false);
-          return;
-        }
     }
 
   cmdSelect->setEnabled(true);
@@ -266,9 +233,6 @@ void TaskListView::slot_Selected()
     {
       cmdSelect->setText(_selectText);
     }
-
-  // qDebug( "New Selected Task point name: %s, Index=%d",
-  //         _selectedTp->name.toLatin1().data(), _selectedTp->taskPointIndex );
 }
 
 void TaskListView::showEvent(QShowEvent *)
@@ -298,7 +262,6 @@ void TaskListView::showEvent(QShowEvent *)
           list->setCurrentItem( list->topLevelItem(i), 0 );
           _currSelectedTp = _tp;
           _newSelectedTp = _tp;
-          _selectedTp = tp;
           cmdSelect->setText(_unselectText);
           foundWp = true;
           break;
@@ -309,7 +272,6 @@ void TaskListView::showEvent(QShowEvent *)
     {
       // if no calculator waypoint selected, clear selection on listview
       list->clearSelection();
-      _selectedTp = 0;
       _currSelectedTp = 0;
       _newSelectedTp = 0;
     }
@@ -320,17 +282,13 @@ void TaskListView::showEvent(QShowEvent *)
 /** This slot is called if the select button has been clicked */
 void TaskListView::slot_Select()
 {
-  //  qDebug() << "TaskListView::slot_Select(): Selected WP=" << _selectedTp->name
-  //            << "Index=" << _selectedTp->taskPointIndex;
-
-  if (_newSelectedTp == _currSelectedTp)
+  if( _newSelectedTp == _currSelectedTp )
     {
       // this was an unselect
       //calculator->slot_WaypointChange(0, true);
       emit newWaypoint(0, true);
       list->clearSelection();
       cmdSelect->setText(_selectText);
-      _selectedTp = 0;
       _currSelectedTp = 0;
       _newSelectedTp = 0;
     }
@@ -367,14 +325,18 @@ void TaskListView::slot_Close ()
  */
 void TaskListView::slot_setTask(const FlightTask *tsk)
 {
-  // delete old task
+  // Note! At first clear the list and then delete the task. Otherwise you will
+  // get a core dump!
+  list->clear();
+  _currSelectedTp = 0;
+  _newSelectedTp = 0;
+
+  // delete an existing old task
   if ( _task )
     {
       delete _task;
       _task = static_cast<FlightTask *> (0);
     }
-
-  list->clear();
 
   if (tsk == static_cast<FlightTask *> (0) )
     {
@@ -387,8 +349,6 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // set row height at each list fill - has probably changed.
   // Note: rpMargin is a manifold of 2 to ensure symmetry
   int rpMargin = GeneralConfig::instance()->getListDisplayRPMargin();
-
-  // qDebug( "rpMargin=%d", rpMargin );
 
   if ( rowDelegate )
     {
@@ -428,7 +388,6 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
         {
           list->setCurrentItem( _tpi, 0 );
           _currSelectedTp = _tpi;
-          _selectedTp = tp;
         }
     }
 
@@ -477,8 +436,6 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
  */
 void TaskListView::slot_updateTask()
 {
-  // qDebug("TaskListView::slot_updateTask()");
-
   if( _task )
     {
       _task->updateTask();
@@ -491,12 +448,22 @@ void TaskListView::slot_updateTask()
 /** Returns a pointer to the currently highlighted task point. */
 Waypoint *TaskListView::getCurrentEntry()
 {
-  if( _selectedTp )
+  QTreeWidgetItem *ci = list->currentItem();
+
+  if( ci == static_cast<QTreeWidgetItem *> (0) )
     {
-      return _selectedTp->getWaypointObject();
+      return static_cast<Waypoint *>(0);
     }
 
-  return static_cast<Waypoint *>(0);
+  _TaskPointItem *tpi = dynamic_cast<_TaskPointItem *> (ci);
+
+  if( ! ci )
+    {
+      // dynamic cast has failed
+      return static_cast<Waypoint *>(0);
+    }
+
+  return tpi->getTaskPoint()->getWaypointObject();
 }
 
 /** Resizes the columns of the task list to their contents. */
@@ -517,6 +484,9 @@ void TaskListView::resizeTaskList()
 void TaskListView::clear()
 {
   list->clear();
+  _currSelectedTp = 0;
+  _newSelectedTp = 0;
+
   wind->setText("");
   distTotal->setText("");
   speedTotal->setText("");
