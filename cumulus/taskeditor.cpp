@@ -595,6 +595,32 @@ void TaskEditor::slotAccept()
       return;
     }
 
+  // Check, if in the task are not two waypoints with the same coordinates
+  // in order.
+  for( int i = 0; i < tpList.count() - 1; i++ )
+    {
+      if( tpList.at(i)->getWGSPositionRef() == tpList.at(i+1)->getWGSPositionRef() )
+	{
+	  QMessageBox mb( QMessageBox::Critical,
+			  tr("Double points in order"),
+			  QString(tr("Points %1 and %2 have the same coordinates.\nPlease remove one of them!")).arg(i+1).arg(i+2),
+			  QMessageBox::Ok,
+			  this );
+
+#ifdef ANDROID
+
+	  mb.show();
+	  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+					   height()/2 - mb.height()/2 ));
+	  mb.move( pos );
+
+#endif
+
+	  mb.exec();
+	  return;
+	}
+    }
+
   QString txt = taskName->text();
 
   // Check if the user has entered a task name

@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-01-30 AP: Issue #84 fixed. Check task before accepting.
+
 [-] 2016-01-30 AP: Issue #83 fixed. Add a Help button to task window.
 
 [-] 2016-01-29 AP: Issue #82 fixed. Crash of cumulus, if a activated flight task
