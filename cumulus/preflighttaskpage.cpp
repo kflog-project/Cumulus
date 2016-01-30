@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2015 by Axel Pauli
+**                   2009-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,6 +29,7 @@
 #include "calculator.h"
 #include "distance.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
@@ -53,7 +54,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("PreFlight - Task") );
+  setWindowTitle( tr("PreFlight - Task/Route") );
 
   if( parent )
     {
@@ -213,8 +214,15 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   tlLayout->addWidget( m_taskList, 10 );
 
+  QHBoxLayout *tlButtonLayout = new QHBoxLayout;
+  tlButtonLayout->setMargin( 0 );
+  tlLayout->addLayout( tlButtonLayout );
+
+  QPushButton *tlHelpButton = new QPushButton( tr("Help") );
+  tlButtonLayout->addWidget( tlHelpButton, 0, Qt::AlignLeft );
+  tlButtonLayout->addStretch( 5 );
   QPushButton *tlShowButton = new QPushButton( tr("Show") );
-  tlLayout->addWidget( tlShowButton, 0, Qt::AlignRight );
+  tlButtonLayout->addWidget( tlShowButton, 0, Qt::AlignRight );
 
   taskLayout->addWidget( m_taskListWidget );
 
@@ -250,6 +258,9 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   connect( m_taskList, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
+
+  connect( tlHelpButton, SIGNAL(pressed()),
+           this, SLOT( slotOpenHelp() ) );
 
   connect( tlShowButton, SIGNAL(pressed()),
            this, SLOT( slotShowTaskViewWidget() ) );
@@ -860,4 +871,14 @@ void PreFlightTaskPage::slotReject()
 {
   emit closingWidget();
   QWidget::close();
+}
+
+void PreFlightTaskPage::slotOpenHelp()
+{
+  QString file = "cumulus-tasks.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }

@@ -154,11 +154,9 @@ void FlightTask::determineTaskType()
     }
   else
     {
-      if( tpList->count() == 2 )
+      if( tpList->count() >= 2 )
         // Zielstrecke
         flightType = FlightTask::ZielS;
-      else
-        flightType = FlightTask::Unknown;
     }
 }
 

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2015 by Axel Pauli
+ **                   2008-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -63,7 +63,7 @@
 #define LIVETRACK   "LiveTrack"
 #define LOGBOOKS    "Logbooks"
 #define RETRIEVE    "Retrieve"
-#define TASKS       "Tasks"
+#define TASKS       "Tasks/Routes"
 #define WAYPOINTS   "Waypoints"
 #define WEATHER     "METAR-TAF"
 #define WIND        "Wind"
@@ -217,7 +217,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
   m_headerLabels << ( tr ("Preflight Menu") )
                  << ( tr ("Glider") )
-                 << ( tr ("Tasks") )
+                 << ( tr ("Tasks/Routes") )
 #ifdef ANDROID
                  << ( tr ("Retrieve") )
 #endif

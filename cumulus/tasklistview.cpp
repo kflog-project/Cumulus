@@ -54,7 +54,7 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
 
   QVBoxLayout *topLayout = new QVBoxLayout( this );
 
-  if ( ! showButtons )
+  if( ! showButtons )
     {
       topLayout->setMargin(0);
     }
@@ -208,24 +208,23 @@ void TaskListView::slot_Start()
   emit done();
 }
 
-void TaskListView::slot_itemClicked(QTreeWidgetItem* item, int column )
+/**
+ *  Called, if the user clicks into a cell in the listview.
+ */
+void TaskListView::slot_itemClicked( QTreeWidgetItem* item, int column )
 {
+  Q_UNUSED(column)
+
   if( item == static_cast<QTreeWidgetItem *> (0) )
     {
       return;
     }
 
-  _TaskPointItem *tpi = dynamic_cast<_TaskPointItem *> (item);
-
-  if( ! tpi )
-    {
-      // dynamic cast has failed
-      return;
-    }
-
   cmdSelect->setEnabled(true);
 
-  if (_newSelectedTp == _currSelectedTp)
+  _newSelectedTp = item;
+
+  if( _newSelectedTp == _currSelectedTp )
     {
       cmdSelect->setText(_unselectText);
     }
@@ -250,8 +249,8 @@ void TaskListView::showEvent(QShowEvent *)
 
   for( int i = 0; i < list->topLevelItemCount(); i++ )
     {
-      _TaskPointItem* _tp = static_cast<_TaskPointItem *> (list->topLevelItem(i));
-      TaskPoint*       tp = _tp->getTaskPoint();
+      _TaskPointItem* tpi = static_cast<_TaskPointItem *> (list->topLevelItem(i));
+      TaskPoint*       tp = tpi->getTaskPoint();
 
       // Waypoints can be selected from different windows. We will
       // consider only waypoints for a selection, which are member of a
@@ -260,17 +259,17 @@ void TaskListView::showEvent(QShowEvent *)
            calcWp->taskPointIndex == tp->getFlightTaskListIndex() )
         {
           list->setCurrentItem( list->topLevelItem(i), 0 );
-          _currSelectedTp = _tp;
-          _newSelectedTp = _tp;
+          _currSelectedTp = tpi;
+          _newSelectedTp = tpi;
           cmdSelect->setText(_unselectText);
           foundWp = true;
           break;
         }
     }
 
-  if ( foundWp == false )
+  if( foundWp == false )
     {
-      // if no calculator waypoint selected, clear selection on listview
+      // if no calculator waypoint is selected, clear the selection on the listview
       list->clearSelection();
       _currSelectedTp = 0;
       _newSelectedTp = 0;
@@ -294,7 +293,7 @@ void TaskListView::slot_Select()
     }
   else
     {
-      _currSelectedTp = _newSelectedTp; // save last selection
+      _currSelectedTp = _newSelectedTp; // save last done selection
       emit newWaypoint(getCurrentEntry(), true);
       emit done();
     }
@@ -303,9 +302,11 @@ void TaskListView::slot_Select()
 /** This slot is called if the info button has been clicked */
 void TaskListView::slot_Info()
 {
-  if (getCurrentEntry())
+  Waypoint* wp = getCurrentEntry();
+
+  if( wp != 0 )
     {
-      emit info(getCurrentEntry());
+      emit info( wp );
     }
 }
 

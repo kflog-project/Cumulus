@@ -55,10 +55,10 @@ class FlightTask : public BaseMapElement
   /**
    * The flight task types.
    */
-  enum TaskType {NotSet=0, ZielS = 1, ZielR = 2, FAI = 3, Dreieck = 4,
-                 FAI_S = 5, Dreieck_S = 6, Abgebrochen = 7, Unknown = 8,
-                 FAI_2 = 9, FAI_S2 = 10, FAI_3 = 11, FAI_S3 = 12,
-                 Vieleck = 13, OLC2003 = 14};
+  enum TaskType { NotSet=0, ZielS = 1, ZielR = 2, FAI = 3, Dreieck = 4,
+                  FAI_S = 5, Dreieck_S = 6, Abgebrochen = 7, Unknown = 8,
+                  FAI_2 = 9, FAI_S2 = 10, FAI_3 = 11, FAI_S3 = 12,
+                  Vieleck = 13, OLC2003 = 14 };
 
   /**
    * The planning-types
@@ -68,7 +68,7 @@ class FlightTask : public BaseMapElement
  public:
 
   /**
-   * Creates a task with the given points.
+   * Creates a task with the given turnpoints.
    *
    * @param tpList The list of task points. Object ownership will be
    *        taken over by this class.

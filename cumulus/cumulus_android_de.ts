@@ -2662,87 +2662,91 @@ All downloads are canceled!</oldsource>
 <context>
     <name>PreFlightTaskPage</name>
     <message>
-        <location filename="preflighttaskpage.cpp" line="56"/>
         <source>PreFlight - Task</source>
-        <translation>Vorflug - Aufgabe</translation>
+        <translation type="obsolete">Vorflug - Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="80"/>
+        <location filename="preflighttaskpage.cpp" line="81"/>
         <source>TAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="85"/>
+        <location filename="preflighttaskpage.cpp" line="86"/>
         <source>True Air Speed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="98"/>
+        <location filename="preflighttaskpage.cpp" line="99"/>
         <source>WD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="103"/>
+        <location filename="preflighttaskpage.cpp" line="104"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="115"/>
+        <location filename="preflighttaskpage.cpp" line="116"/>
         <source>WS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="120"/>
+        <location filename="preflighttaskpage.cpp" line="121"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="141"/>
+        <location filename="preflighttaskpage.cpp" line="142"/>
         <source>Define a new task</source>
         <translation>Neue Aufgabe definieren</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="150"/>
+        <location filename="preflighttaskpage.cpp" line="151"/>
         <source>Edit selected task</source>
         <translation>Editiere ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="159"/>
+        <location filename="preflighttaskpage.cpp" line="160"/>
         <source>Remove selected task</source>
         <translation>Lösche ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="172"/>
+        <location filename="preflighttaskpage.cpp" line="173"/>
         <source>Select a flight task</source>
         <translation>Flugaufgabe auswählen</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="199"/>
+        <location filename="preflighttaskpage.cpp" line="200"/>
         <source>No.</source>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="200"/>
+        <location filename="preflighttaskpage.cpp" line="201"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="201"/>
+        <location filename="preflighttaskpage.cpp" line="202"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="202"/>
+        <location filename="preflighttaskpage.cpp" line="203"/>
         <source>Distance</source>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="203"/>
+        <location filename="preflighttaskpage.cpp" line="204"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="216"/>
+        <location filename="preflighttaskpage.cpp" line="221"/>
+        <source>Help</source>
+        <translation>Hilfe</translation>
+    </message>
+    <message>
+        <location filename="preflighttaskpage.cpp" line="224"/>
         <source>Show</source>
         <translation>Zeige</translation>
     </message>
@@ -2751,43 +2755,48 @@ All downloads are canceled!</oldsource>
         <translation type="obsolete">Flarm</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="230"/>
+        <location filename="preflighttaskpage.cpp" line="238"/>
         <source>Task display</source>
         <translation>Aufgabenanzeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="235"/>
+        <location filename="preflighttaskpage.cpp" line="243"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="496"/>
-        <location filename="preflighttaskpage.cpp" line="539"/>
+        <location filename="preflighttaskpage.cpp" line="507"/>
+        <location filename="preflighttaskpage.cpp" line="550"/>
         <source>(No tasks defined)</source>
         <translation>(Keine Aufgaben definiert)</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="546"/>
+        <location filename="preflighttaskpage.cpp" line="557"/>
         <source>(Reset selection)</source>
         <translation>(Reset Auswahl)</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="774"/>
+        <location filename="preflighttaskpage.cpp" line="785"/>
         <source>Replace current task?</source>
         <translation>Akt. Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="775"/>
+        <location filename="preflighttaskpage.cpp" line="786"/>
         <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="681"/>
+        <location filename="preflighttaskpage.cpp" line="692"/>
         <source>Delete Task?</source>
         <translation>Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="682"/>
+        <location filename="preflighttaskpage.cpp" line="57"/>
+        <source>PreFlight - Task/Route</source>
+        <translation>Vorflug Aufgabe/Route</translation>
+    </message>
+    <message>
+        <location filename="preflighttaskpage.cpp" line="693"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
@@ -3197,9 +3206,9 @@ All downloads are canceled!</oldsource>
     </message>
     <message>
         <location filename="preflightwidget.cpp" line="220"/>
-        <source>Tasks</source>
-        <oldsource>Task</oldsource>
-        <translation>Aufgaben</translation>
+        <source>Tasks/Routes</source>
+        <oldsource>Tasks</oldsource>
+        <translation>Aufgaben/Routen</translation>
     </message>
     <message>
         <location filename="preflightwidget.cpp" line="222"/>
@@ -3606,60 +3615,60 @@ All downloads are canceled!</oldsource>
         <translation>Leerpunkt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="466"/>
+        <location filename="flighttask.cpp" line="464"/>
         <source>not set</source>
         <translation>nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="468"/>
+        <location filename="flighttask.cpp" line="466"/>
         <source>Free Distance</source>
         <translation>Freie Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="470"/>
+        <location filename="flighttask.cpp" line="468"/>
         <source>Free Out and Return</source>
         <translation>ZR Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="472"/>
+        <location filename="flighttask.cpp" line="470"/>
         <source>FAI Triangle</source>
         <translation>FAI Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="474"/>
+        <location filename="flighttask.cpp" line="472"/>
         <source>Triangle</source>
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="476"/>
+        <location filename="flighttask.cpp" line="474"/>
         <source>FAI Triangle Start on leg</source>
         <translation>FAI Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="478"/>
+        <location filename="flighttask.cpp" line="476"/>
         <source>Triangle Start on leg</source>
         <translation>Dreieck Start auf Schenkel</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="480"/>
+        <location filename="flighttask.cpp" line="478"/>
         <source>Broken off</source>
         <translation>Abgebrochen</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="483"/>
+        <location filename="flighttask.cpp" line="481"/>
         <location filename="runway.cpp" line="81"/>
         <location filename="taskpoint.cpp" line="392"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1135"/>
-        <location filename="flighttask.cpp" line="1150"/>
+        <location filename="flighttask.cpp" line="1133"/>
+        <location filename="flighttask.cpp" line="1148"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1155"/>
+        <location filename="flighttask.cpp" line="1153"/>
         <source>too strong!</source>
         <translation>zu stark!</translation>
     </message>
@@ -3874,7 +3883,7 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="taskpoint.cpp" line="383"/>
         <source>T</source>
-        <translation></translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="taskpoint.cpp" line="386"/>
@@ -5824,12 +5833,12 @@ All downloads are canceled!</oldsource>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="398"/>
+        <location filename="tasklistview.cpp" line="399"/>
         <source>Total</source>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="tasklistview.cpp" line="422"/>
+        <location filename="tasklistview.cpp" line="423"/>
         <source>none</source>
         <translation>keine</translation>
     </message>

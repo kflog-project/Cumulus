@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- $Id$ -->
 <html>
 <head>
-<title>Cumulus Tasks</title>
+<title>Cumulus Tasks/Routes</title>
 <link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
@@ -18,21 +17,26 @@
 		</tbody>
 	</table>
 
-	<h3 align="center">Tasks</h3>
+	<h3 align="center">Tasks/Routes</h3>
 
 	<p>
-		Tasks are routes between waypoints which are handled as turnpoints
-		here. They can be created and modified in the <a
+		Tasks are routes between waypoints which are handled as turnpoints here.
+		They can be created and modified in the <a
 		href="cumulus-preflight-settings-task.html"> Preflight
-	  Settings-Task</a> menu. The task is drawn on the map using a dark magenta
+	  Settings-Task</a> menu. The task/route is drawn on the map using a dark magenta
 		line with clearly marked turnpoint figures. The turnpoint figures can
-		be configured under <a href="cumulus-settings-task.html"> Settings-Task</a>. Currently three taskpoint figures, line, circle and sector with  
+		be configured under <a href="cumulus-settings-task.html"> Settings-Task</a>.
+		Currently three taskpoint figures, line, circle and sector with  
     symmetrical angels are supported.
 	</p>
 
-	<p>A task comprises at least four waypoints. That is also the
-		minimum if you will fly a direct route. The used points have the
-		following names in the display:
+	<p>
+	  A task comprises at least two points according to FAI IGC, a Start and a
+	  Finish point. Takeoff and Landing airfield are not more a mandatory part
+	  of an IGC task. Therefore these points are not considered by Cumulus.
+	  
+	  Two Points are the minimum in Cumulus if you will fly a direct route.
+	  The used points have the following names in the display:
 		
 	<p><table border="1">
 	
@@ -41,49 +45,30 @@
 	    <th>Short Form</th>
 	    <th>Description</th>
 	  </tr>
-	  
-		<tr>
-		<td>Takeoff</td>
-		<td>TO</td>
-		<td>Take off place</td>
-	  </tr>
 	
 	  <tr>
-	  <td>Begin</td>
-	  <td>B</td>
+	  <td>Start</td>
+	  <td>S</td>
 	  <td>Here starts the task</td>
 	  </tr>
 	  
 	  <tr>
-	  <td>Route</td>
-	  <td>R</td>
-	  <td>One or more route points, can be omitted for a direct route</td>
+	  <td>Turn</td>
+	  <td>T</td>
+	  <td>One or more turnpoints, can be omitted for a direct route</td>
 	  </tr>
 	
 	  <tr>
-	  <td>End</td>
-	  <td>E</td>
+	  <td>Finish</td>
+	  <td>F</td>
 	  <td>Here ends the task</td>
 	  </tr>
-	
-	  <tr>
-	  <td>Landing</td>
-	  <td>LG</td>
-	  <td>Landing place</td>
-	  </tr>
-	
+		
 	</table></p>
  
-	<b>Note:</b> Takeoff and Begin also End and Landing can be the same
-	points. If you will fly a direct route no route points have to be
-	defined.
-	</p>
-
 	<p>
-		Tasks can be edited too with KFLog on the Linux desktop, where you can
-		more easily maintain the list. ATM Cumulus supports only one task
-		file. This file is installed under your selected 
-		<a href="cumulus-settings-personal.html#DataDirectory"> Data
+		ATM Cumulus supports only one task file. This file is installed under your
+		selected <a href="cumulus-settings-personal.html#DataDirectory"> Data
 		Directory</a>. As task file name must be used <i>tasks.tsk</i>. This is a
 		hard coded name. Please make only task file transfer between your
 		desktop and your PDA when Cumulus is not running. Otherwise the

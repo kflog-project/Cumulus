@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2015 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *
  * \brief A widget for pre-flight task settings.
  *
- * \date 2002-2015
+ * \date 2002-2016
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
@@ -139,6 +139,11 @@ class PreFlightTaskPage : public QWidget
    * Makes the task view widget visible.
    */
   void slotShowTaskViewWidget();
+
+  /**
+   * Called, if the help button is pressed.
+   */
+  void slotOpenHelp();
 
   /**
    * Called if the Ok button is pressed.
