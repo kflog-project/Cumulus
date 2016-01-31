@@ -20,7 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2016-01-30 AP: Issue #84 fixed. Check task before accepting.
+[o] 2016-01-30 AP: Issue #84 fixed. Check task before accepting for double
+                   waypoints in order.
 
 [-] 2016-01-30 AP: Issue #83 fixed. Add a Help button to task window.
 

@@ -5780,36 +5780,48 @@ All downloads are canceled!</oldsource>
         <translation>Eine Aufgabe benötigt einen Start und einen Ziel Punkt!</translation>
     </message>
     <message>
+        <location filename="taskeditor.cpp" line="605"/>
+        <source>Double points in order</source>
+        <translation>Doppelte Punkte in Folge</translation>
+    </message>
+    <message>
+        <location filename="taskeditor.cpp" line="606"/>
+        <source>Points %1 and %2 have the same coordinates.
+Please remove one of them!</source>
+        <translation>Punkte %1 und %2 haben die selben Koordinaten.
+Bitte einen Punkt löschen!</translation>
+    </message>
+    <message>
         <source>Task needs at least four waypoints</source>
         <translation type="obsolete">Eine Aufgabe hat mindestens 4 Wegpunkte</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="604"/>
+        <location filename="taskeditor.cpp" line="630"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="605"/>
+        <location filename="taskeditor.cpp" line="631"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="629"/>
+        <location filename="taskeditor.cpp" line="655"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="630"/>
+        <location filename="taskeditor.cpp" line="656"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="893"/>
+        <location filename="taskeditor.cpp" line="919"/>
         <source>Defaults?</source>
         <translation>Standards?</translation>
     </message>
     <message>
-        <location filename="taskeditor.cpp" line="894"/>
+        <location filename="taskeditor.cpp" line="920"/>
         <source>Reset all TP schemas to default configuration values?</source>
         <translation>Alle TP Schemas auf Konfugurationsstandard rücksetzen?</translation>
     </message>
