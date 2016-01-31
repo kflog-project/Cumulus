@@ -1873,7 +1873,6 @@ bool Calculator::moving()
       speed += samplelist[i].vector.getSpeed().getMps();
     }
 
-
   if( (speed / double(TimeLimit)) > SpeedLimit )
     {
       return true;

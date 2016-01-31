@@ -2401,12 +2401,21 @@ void MainWindow::slotSwitchToWPListViewExt()
 {
   if ( _globalMapContents->getCurrentTask() )
     {
+      // Switch to the task view, if a task is set.
       setView( tpView );
+      return;
     }
-  else
+
+  if( calculator->moving() &&
+      GeneralConfig::instance()->getNearestSiteCalculatorSwitch() )
     {
-      setView( wpView );
+      // Cumulus is moving and site calculator switch is enabled.
+      // We are switching to the reachable list view.
+      setView( rpView );
+      return;
     }
+
+  setView( wpView );
 }
 
 /** Switches to the AirfieldList View */

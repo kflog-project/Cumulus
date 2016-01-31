@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2014 Axel Pauli
+**   Copyright (c): 2014-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -114,15 +114,15 @@ void ListViewTabs::showEvent( QShowEvent *event )
 	}
     }
 
-  // The waypoint view is always added to have the waypoint editor available.
-  m_listViewTabs->addTab( viewWP, m_textWP );
-
   // Check, if the nearest site calculation is activated.
   if( conf->getNearestSiteCalculatorSwitch() )
     {
       // Can be disabled by the user.
       m_listViewTabs->addTab( viewRP, m_textRP );
     }
+
+  // The waypoint view is always added to have the waypoint editor available.
+  m_listViewTabs->addTab( viewWP, m_textWP );
 
   // If the lists are not empty, we should add the list tabulator.
   // Note, that the list view can be empty. It is filled during the show event.

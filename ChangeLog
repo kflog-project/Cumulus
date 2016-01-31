@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-01-31 AP: Issue #85 fixed. Select and open listviews according to a
+                   given order.
+
 [o] 2016-01-30 AP: Issue #84 fixed. Check task before accepting for double
                    waypoints in order.
 
