@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,9 +24,9 @@
  * The WpEditDialog widget allows the creation of a new waypoint or the
  * modification of an existing waypoint. It is a modal window.
  *
- * \date 2002-2013
+ * \date 2002-2016
  *
- * \version $Id$
+ * \version 1.0
  */
 
 #ifndef WP_EDIT_DIALOG_H
@@ -105,10 +103,9 @@ signals:
     void load(Waypoint *);
 
     /**
-     * This signal is emitted after a edited waypoint has been saved.
-     * It is used to re-fill the waypoint list.
+     * This signal is emitted after an edited waypoint has been saved.
      */
-    void wpListChanged(Waypoint &);
+    void wpEdited(Waypoint &);
 
 private:
 

@@ -41,6 +41,7 @@
 #include "taskpoint.h"
 #include "taskpointeditor.h"
 #include "waypointlistwidget.h"
+#include "wpeditdialog.h"
 
 extern MapContents *_globalMapContents;
 
@@ -345,8 +346,12 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   connect( listSelectCB, SIGNAL(activated(int)),
            this, SLOT(slotToggleList(int)));
-  connect( taskList, SIGNAL (currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+
+  connect( taskList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
            this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );
+
+  connect( taskList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
+           this, SLOT(slotItemDoubleClicked(QTreeWidgetItem*, int)) );
 }
 
 TaskEditor::~TaskEditor()
@@ -522,14 +527,14 @@ void TaskEditor::slotRemoveWaypoint()
 
 void TaskEditor::slotInvertWaypoints()
 {
-  if ( tpList.count() < 4 )
+  if ( tpList.count() < 2 )
     {
-      // not possible to invert order, if elements are less 4
+      // not possible to invert order, if elements are less than 2
       return;
     }
 
   // invert list order
-  for ( int i= tpList.count()-2; i >= 0; i-- )
+  for ( int i = tpList.count() - 2; i >= 0; i-- )
     {
       TaskPoint* tp = tpList.at(i);
       tpList.removeAt(i);
@@ -538,9 +543,6 @@ void TaskEditor::slotInvertWaypoints()
 
   // After an invert the first task item is selected.
   lastSelectedItem = 0;
-
-  // Swap schema data between begin and and point.
-  swapTaskPointSchemas( tpList[1], tpList[ tpList.count() - 2 ] );
   showTask();
 }
 
@@ -832,6 +834,11 @@ void TaskEditor::enableCommandButtons()
 
 void TaskEditor::swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 )
 {
+  qDebug() << "TaskEditor::swapTaskPointSchemas";
+
+  qDebug() << "tp1=" << tp1->getName() << tp1->getActiveTaskPointFigureScheme();
+  qDebug() << "tp2=" << tp2->getName() << tp2->getActiveTaskPointFigureScheme();
+
   Distance d1, d2;
 
   d1 = tp1->getTaskCircleRadius();
@@ -937,4 +944,70 @@ void TaskEditor::slotSetTaskPointsDefaultSchema()
       setTaskPointFigureSchemas( tpList, true );
       showTask();
     }
+}
+
+void TaskEditor::slotItemDoubleClicked( QTreeWidgetItem* item, int /* column */ )
+{
+  if( item == 0 )
+    {
+      return;
+    }
+
+  int idx = taskList->indexOfTopLevelItem( item );
+
+  if( idx == -1 )
+    {
+      return;
+    }
+
+  if( idx >= tpList.size() )
+    {
+      return;
+    }
+
+  TaskPoint* tp = tpList.at( idx );
+
+  if( tp == 0 )
+    {
+      return;
+    }
+
+  WpEditDialog* wpe = new WpEditDialog( this, tp->getWaypointObject() );
+  connect( wpe, SIGNAL( wpEdited(Waypoint &)), this, SLOT(slotWpEdited( Waypoint &)) );
+  wpe->show();
+}
+
+void TaskEditor::slotWpEdited( Waypoint &editedWp )
+{
+  QTreeWidgetItem *item = taskList->currentItem();
+
+  if( item == 0 )
+    {
+      return;
+    }
+
+  int idx = taskList->indexOfTopLevelItem( item );
+
+  if( idx == -1 )
+    {
+      return;
+    }
+
+  if( idx >= tpList.size() )
+    {
+      return;
+    }
+
+  // Take old point from the list
+  TaskPoint* tp = tpList.takeAt( idx );
+  delete tp;
+
+  tp = new TaskPoint( editedWp );
+  tpList.insert( idx, tp );
+
+  // Remember last position.
+  lastSelectedItem = idx;
+
+  setTaskPointFigureSchemas( tpList, false );
+  showTask();
 }

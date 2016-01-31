@@ -207,7 +207,7 @@ void WpEditDialog::accept()
         }
 
       // The new waypoint is posted to the subscribers
-      emit wpListChanged( newWp );
+      emit wpEdited( newWp );
     }
   else
     {
@@ -226,7 +226,7 @@ void WpEditDialog::accept()
       *m_wp = newWp;
 
       // The modified waypoint is posted to the subscribers
-      emit wpListChanged( *m_wp );
+      emit wpEdited( *m_wp );
     }
 
   QWidget::close();

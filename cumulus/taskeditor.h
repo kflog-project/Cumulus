@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2015 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2015
+ * \date 2002-2016
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef TaskEditor_H
@@ -118,6 +118,17 @@ signals:
    * is reset to the previous row.
    */
   void slotCurrentItemChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous);
+
+  /**
+   * Called, if a list item is double clicked in the task list. In this case
+   * the waypoint editor is opened.
+   */
+  void slotItemDoubleClicked( QTreeWidgetItem* item, int column );
+
+  /**
+   * Called, if an edited waypoint is saved.
+   */
+  void slotWpEdited( Waypoint &editedWp );
 
   /** Handles button press ok. */
   void slotAccept();
