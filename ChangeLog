@@ -20,6 +20,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-02-02 AP: Issue #86 fixed. Consider filter of waypoint list during
+                   remove of waypoints. That means remove only the currently
+                   listed waypoints of the waypoint listview.
+
 [o] 2016-01-31 AP: Issue #85 fixed. Select and open listviews according to a
                    given order.
 
