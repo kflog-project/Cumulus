@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2015
+ * \date 2010-2016
  *
- * \version 1.5
+ * \version 1.6
  */
 
 #ifndef FLARM_BASE_H
@@ -247,7 +247,7 @@ class FlarmBase
      */
     bool isActive()
     {
-      qint64 secondsUtc = QDateTime::currentMSecsSinceEpoch() / 1000;
+      quint64 secondsUtc = static_cast<quint64> (QDateTime::currentMSecsSinceEpoch() / 1000);
 
       if( ActivityLimit > 0 && ActivityLimit < secondsUtc )
         {
