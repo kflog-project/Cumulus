@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2015 by Axel Pauli
+**                   2007-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -373,7 +373,10 @@ void WaypointListView::slot_deleteWPs()
    }
 }
 
-/** Called to remove all waypoints of the catalog. */
+/**
+ * Called to remove all listed waypoints in the listview.
+ * Note! The listview can show waypoints separated by priority.
+ */
 void WaypointListView::slot_deleteAllWPs()
 {
   QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
@@ -385,7 +388,7 @@ void WaypointListView::slot_deleteAllWPs()
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Delete All?" ),
-                  tr( "Delete all waypoints?" ),
+                  tr( "Delete all listed waypoints?" ),
                   QMessageBox::Yes | QMessageBox::No,
                   this );
 
@@ -420,8 +423,11 @@ void WaypointListView::slot_deleteAllWPs()
             }
         }
 
-      // Second delete all waypoints
-      listw->deleteAllWaypoints();
+      // First select all items in the list
+      listw->listWidget()->selectAll();
+
+      // Second delete all selected waypoints
+      listw->deleteSelectedWaypoints();
 
       MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
     }
