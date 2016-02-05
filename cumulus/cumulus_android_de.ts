@@ -3888,7 +3888,7 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="taskpoint.cpp" line="386"/>
         <source>Finish</source>
-        <translation>Ziel</translation>
+        <translation>Finish</translation>
     </message>
     <message>
         <location filename="taskpoint.cpp" line="428"/>

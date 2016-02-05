@@ -11,13 +11,16 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**
 ***********************************************************************/
 
 #ifndef QT_5
 #include <QtGui>
 #else
 #include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
 #endif
 
 #include "doubleNumberEditor.h"
@@ -44,6 +47,7 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
+  setWindowTitle( tr("Taskpoint Editor") );
 
   if( tp )
     {
@@ -64,15 +68,119 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
 
   GeneralConfig *conf = GeneralConfig::instance();
 
+  // Layout used by scroll area
+  QHBoxLayout *sal = new QHBoxLayout;
+
+  // new widget used as container for the dialog layout.
+  QWidget* sw = new QWidget;
+
+  // Scroll area
+  QScrollArea* sa = new QScrollArea;
+  sa->setWidgetResizable( true );
+  sa->setFrameStyle( QFrame::NoFrame );
+  sa->setWidget( sw );
+
+#ifdef QSCROLLER
+  QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  // Add scroll area to its own layout
+  sal->addWidget( sa );
+
+  QHBoxLayout *contentLayout = new QHBoxLayout(this);
+
+  // Pass scroll area layout to the content layout.
+  contentLayout->addLayout( sal, 10 );
+
+  QGridLayout *topLayout = new QGridLayout(sw);
+  topLayout->setMargin(5);
+  topLayout->setSpacing( topLayout->spacing() * Layout::getIntScaledDensity() );
+
+  // The input size of a QLineEditor is calculated a one M.
+  QFontMetrics fm( font() );
+  int charWidth = fm.width(QChar('M'));
+
+  Qt::InputMethodHints imh;
+
   int row = 0;
 
-  QGridLayout *topLayout = new QGridLayout;
-  topLayout->setMargin(5);
-  topLayout->setSpacing(10);
+  QHBoxLayout* hbl = new QHBoxLayout;
+  hbl->setMargin(0);
+  hbl->setSpacing( topLayout->spacing() * Layout::getIntScaledDensity() );
 
-  m_pointNameLabel = new QLabel;
-  topLayout->addWidget( m_pointNameLabel, row++, 0, 1, 3 );
-  topLayout->setRowMinimumHeight( row++, 20 );
+  m_pointShortLabel = new QLabel;
+  hbl->addWidget( m_pointShortLabel );
+
+  m_pointShortNameEditor = new QLineEdit;
+  m_pointShortNameEditor->setInputMethodHints( Qt::ImhNoPredictiveText );
+  m_pointShortNameEditor->setMaxLength(8); // limit name to 8 characters
+#ifndef ANDROID
+  m_pointShortNameEditor->setMinimumWidth( 12*charWidth );
+  m_pointShortNameEditor->setMaximumWidth( 12*charWidth );
+#else
+  m_pointShortNameEditor->setMinimumWidth( 12*charWidth );
+  m_pointShortNameEditor->setMaximumWidth( 12*charWidth );
+#endif
+
+  hbl->addWidget( m_pointShortNameEditor );
+  hbl->addStretch( 10 );
+
+  connect( m_pointShortNameEditor, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  topLayout->addLayout( hbl, row++, 0, 1, 3 );
+
+  QLabel * lblDescription = new QLabel(tr("Description:"), this);
+  topLayout->addWidget(lblDescription, row, 0);
+
+  m_pointLongNameEditor = new QLineEdit;
+  imh = (m_pointLongNameEditor->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_pointLongNameEditor->setInputMethodHints(imh);
+  m_pointLongNameEditor->setMaxLength(25); // limit name to 25 characters
+#ifndef ANDROID
+  m_pointLongNameEditor->setMinimumWidth( 27*charWidth );
+  m_pointLongNameEditor->setMaximumWidth( 27*charWidth );
+#else
+  m_pointLongNameEditor->setMinimumWidth( 22*charWidth );
+  m_pointLongNameEditor->setMaximumWidth( 22*charWidth );
+#endif
+
+  connect( m_pointLongNameEditor, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  topLayout->addWidget(m_pointLongNameEditor, row++, 1, 1, 2);
+
+  QLabel* lblLat = new QLabel(tr("Latitude:"), this);
+  topLayout->addWidget(lblLat, row, 0);
+
+  m_latEditor = new LatEditNumPad(this, conf->getHomeLat());
+  topLayout->addWidget(m_latEditor, row++, 1, 1, 2);
+
+  QLabel* lblLon = new QLabel(tr("Longitude:"), this);
+  topLayout->addWidget(lblLon, row, 0);
+
+  m_lonEditor = new LongEditNumPad(this, conf->getHomeLon());
+  topLayout->addWidget(m_lonEditor, row++, 1, 1, 2);
+
+  QLabel* lblElev = new QLabel(tr("Elevation:"), this);
+  topLayout->addWidget(lblElev, row, 0);
+  QBoxLayout * elevLayout = new QHBoxLayout();
+  topLayout->addLayout(elevLayout, row++, 1);
+
+  m_elevetionEditor = new NumberEditor;
+  m_elevetionEditor->setDecimalVisible( false );
+  m_elevetionEditor->setSuffix( " " + Altitude::getUnitText() );
+  m_elevetionEditor->setMaxLength(6);
+  m_elevetionEditor->setAlignment( Qt::AlignLeft );
+  m_elevetionEditor->setRange(-1000, 999999);
+  m_elevetionEditor->setText("0");
+  elevLayout->addWidget(m_elevetionEditor);
+
+  topLayout->setRowMinimumHeight( row++, 20 * Layout::getIntScaledDensity() );
 
   QGroupBox *tpsBox = new QGroupBox( tr("TP Scheme"), this );
   topLayout->addWidget( tpsBox, row, 0 );
@@ -263,17 +371,11 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   buttonBox->addWidget(ok, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
-
-  QHBoxLayout* winLayout = new QHBoxLayout( this );
-  winLayout->setSpacing(0);
-  winLayout->addLayout(topLayout);
-  winLayout->addStretch(2);
-  winLayout->addLayout(buttonBox);
+  contentLayout->addLayout(buttonBox);
 
   load();
 }
 
-// Destructor of class
 TaskPointEditor::~TaskPointEditor()
 {
 }
@@ -349,10 +451,19 @@ void TaskPointEditor::slot_buttonPressedCSL( int newScheme )
 
 void TaskPointEditor::load()
 {
-  m_pointNameLabel->setText( tr("Turnpoint No %1 (%2): %3")
-                           .arg(m_workTp.getFlightTaskListIndex() + 1)
-                           .arg(m_workTp.getTaskPointTypeString(true))
-                           .arg(m_workTp.getWPName() ) );
+  m_pointShortLabel->setText( tr("Waypoint No %1 (%2):")
+			      .arg(m_workTp.getFlightTaskListIndex() + 1)
+			      .arg(m_workTp.getTaskPointTypeString(true)) );
+
+  m_pointShortNameEditor->setText( m_workTp.getWPName() );
+
+  m_pointLongNameEditor->setText( m_workTp.getName() );
+
+  m_latEditor->setKFLogDegree(m_workTp.getWGSPositionPtr()->lat() );
+
+  m_lonEditor->setKFLogDegree(m_workTp.getWGSPositionPtr()->lon() );
+
+  m_elevetionEditor->setText( Altitude::getText( m_workTp.getElevation(), false, -1 ) );
 
   // set active button as selected
   m_selectedCSLScheme = (int) m_workTp.getActiveTaskPointFigureScheme();
@@ -410,6 +521,23 @@ void TaskPointEditor::load()
 void TaskPointEditor::save()
 {
   bool edited = false;
+
+  if( m_pointShortNameEditor->isModified() )
+    {
+      m_workTp.setWPName( m_pointShortNameEditor->text().trimmed() );
+    }
+
+  if( m_pointLongNameEditor->isModified() )
+    {
+      m_workTp.setName( m_pointLongNameEditor->text().trimmed() );
+    }
+
+  if( m_latEditor->isInputChanged() || m_lonEditor->isInputChanged() )
+    {
+      m_workTp.setWGSPosition( WGSPoint(m_latEditor->KFLogDegree(), m_lonEditor->KFLogDegree()));
+    }
+
+  m_workTp.setElevation( static_cast<float> (Altitude::convertToMeters(m_elevetionEditor->text().toDouble())) );
 
   if( m_loadedCSLScheme != m_selectedCSLScheme )
     {

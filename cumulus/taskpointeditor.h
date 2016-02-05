@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2015 by Eggert Ehmke, Axel Pauli
+**   Copyright (c):  2013-2016 by Eggert Ehmke, Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,11 +18,11 @@
  *
  * \author Eggert Ehmke, Axel Pauli
  *
- * \brief Configuration settings for task points.
+ * \brief Editor for configuration settings of task points.
  *
- * \date 2013-2015
+ * \date 2013-2016
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -32,11 +32,13 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QLabel>
+#include <QLineEdit>
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QPushButton>
 #include <QRadioButton>
 
+#include "coordeditnumpad.h"
 #include "taskpoint.h"
 
 class DoubleNumberEditor;
@@ -103,7 +105,12 @@ private:
 
   void save();
 
-  QLabel* m_pointNameLabel;
+  QLabel*         m_pointShortLabel;
+  QLineEdit*      m_pointShortNameEditor;
+  QLineEdit*      m_pointLongNameEditor;
+  LatEditNumPad*  m_latEditor;
+  LongEditNumPad* m_lonEditor;
+  NumberEditor*   m_elevetionEditor;
 
   // active scheme
   QButtonGroup* m_cslScheme; // m_circle-m_sector-m_line scheme
