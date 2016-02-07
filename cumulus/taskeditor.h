@@ -120,12 +120,6 @@ signals:
   void slotCurrentItemChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous);
 
   /**
-   * Called, if a list item is double clicked in the task list. In this case
-   * the waypoint editor is opened.
-   */
-  void slotItemDoubleClicked( QTreeWidgetItem* item, int column );
-
-  /**
    * Called, if an edited waypoint is saved.
    */
   void slotWpEdited( Waypoint &editedWp );

@@ -349,9 +349,6 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   connect( taskList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
            this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );
-
-  connect( taskList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
-           this, SLOT(slotItemDoubleClicked(QTreeWidgetItem*, int)) );
 }
 
 TaskEditor::~TaskEditor()
@@ -944,37 +941,6 @@ void TaskEditor::slotSetTaskPointsDefaultSchema()
       setTaskPointFigureSchemas( tpList, true );
       showTask();
     }
-}
-
-void TaskEditor::slotItemDoubleClicked( QTreeWidgetItem* item, int /* column */ )
-{
-  if( item == 0 )
-    {
-      return;
-    }
-
-  int idx = taskList->indexOfTopLevelItem( item );
-
-  if( idx == -1 )
-    {
-      return;
-    }
-
-  if( idx >= tpList.size() )
-    {
-      return;
-    }
-
-  TaskPoint* tp = tpList.at( idx );
-
-  if( tp == 0 )
-    {
-      return;
-    }
-
-  WpEditDialog* wpe = new WpEditDialog( this, tp->getWaypointObject() );
-  connect( wpe, SIGNAL( wpEdited(Waypoint &)), this, SLOT(slotWpEdited( Waypoint &)) );
-  wpe->show();
 }
 
 void TaskEditor::slotWpEdited( Waypoint &editedWp )
