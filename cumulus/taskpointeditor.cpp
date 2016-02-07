@@ -118,13 +118,8 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   m_pointShortNameEditor = new QLineEdit;
   m_pointShortNameEditor->setInputMethodHints( Qt::ImhNoPredictiveText );
   m_pointShortNameEditor->setMaxLength(8); // limit name to 8 characters
-#ifndef ANDROID
-  m_pointShortNameEditor->setMinimumWidth( 12*charWidth );
-  m_pointShortNameEditor->setMaximumWidth( 12*charWidth );
-#else
-  m_pointShortNameEditor->setMinimumWidth( 12*charWidth );
-  m_pointShortNameEditor->setMaximumWidth( 12*charWidth );
-#endif
+  m_pointShortNameEditor->setMinimumWidth( 10 * charWidth );
+  m_pointShortNameEditor->setMaximumWidth( 10 * charWidth );
 
   hbl->addWidget( m_pointShortNameEditor );
   hbl->addStretch( 10 );
@@ -142,11 +137,11 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   m_pointLongNameEditor->setInputMethodHints(imh);
   m_pointLongNameEditor->setMaxLength(25); // limit name to 25 characters
 #ifndef ANDROID
-  m_pointLongNameEditor->setMinimumWidth( 27*charWidth );
-  m_pointLongNameEditor->setMaximumWidth( 27*charWidth );
+  m_pointLongNameEditor->setMinimumWidth( 18*charWidth );
+  m_pointLongNameEditor->setMaximumWidth( 18*charWidth );
 #else
-  m_pointLongNameEditor->setMinimumWidth( 22*charWidth );
-  m_pointLongNameEditor->setMaximumWidth( 22*charWidth );
+  m_pointLongNameEditor->setMinimumWidth( 18*charWidth );
+  m_pointLongNameEditor->setMaximumWidth( 18*charWidth );
 #endif
 
   connect( m_pointLongNameEditor, SIGNAL(returnPressed()),
@@ -158,18 +153,16 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   topLayout->addWidget(lblLat, row, 0);
 
   m_latEditor = new LatEditNumPad(this, conf->getHomeLat());
-  topLayout->addWidget(m_latEditor, row++, 1, 1, 2);
+  topLayout->addWidget(m_latEditor, row++, 1, 1, 1);
 
   QLabel* lblLon = new QLabel(tr("Longitude:"), this);
   topLayout->addWidget(lblLon, row, 0);
 
   m_lonEditor = new LongEditNumPad(this, conf->getHomeLon());
-  topLayout->addWidget(m_lonEditor, row++, 1, 1, 2);
+  topLayout->addWidget(m_lonEditor, row++, 1, 1, 1);
 
   QLabel* lblElev = new QLabel(tr("Elevation:"), this);
   topLayout->addWidget(lblElev, row, 0);
-  QBoxLayout * elevLayout = new QHBoxLayout();
-  topLayout->addLayout(elevLayout, row++, 1);
 
   m_elevetionEditor = new NumberEditor;
   m_elevetionEditor->setDecimalVisible( false );
@@ -178,9 +171,12 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   m_elevetionEditor->setAlignment( Qt::AlignLeft );
   m_elevetionEditor->setRange(-1000, 999999);
   m_elevetionEditor->setText("0");
-  elevLayout->addWidget(m_elevetionEditor);
+  m_elevetionEditor->setMinimumWidth( 10 * charWidth );
+  m_elevetionEditor->setMaximumWidth( 10 * charWidth );
 
-  topLayout->setRowMinimumHeight( row++, 20 * Layout::getIntScaledDensity() );
+  topLayout->addWidget(m_elevetionEditor, row++, 1);
+
+  topLayout->setRowMinimumHeight( row++, 10 * Layout::getIntScaledDensity() );
 
   QGroupBox *tpsBox = new QGroupBox( tr("TP Scheme"), this );
   topLayout->addWidget( tpsBox, row, 0 );
@@ -263,7 +259,8 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   m_outerSectorRadius->setMaxLength(10);
   m_outerSectorRadius->setSuffix( unitText );
   m_outerSectorRadius->setDecimals( 3 );
-  sectorLayout->addWidget( m_outerSectorRadius, row1, 1 );  // Check task point type. If it is not type begin or end, the m_line
+  sectorLayout->addWidget( m_outerSectorRadius, row1, 1 );
+
   // m_line selection must be invisible.
   if( m_workTp.getTaskPointType() != TaskPointTypes::Start &&
       m_workTp.getTaskPointType() != TaskPointTypes::Finish )

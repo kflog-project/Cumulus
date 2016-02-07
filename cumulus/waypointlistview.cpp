@@ -285,8 +285,8 @@ void WaypointListView::slot_editWP()
 
       WpEditDialog *dlg = new WpEditDialog( this, wp );
 
-      connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
-                SLOT(slot_wpEdited(Waypoint &)) );
+      connect( dlg, SIGNAL(wpEdited(Waypoint &)),
+               this, SLOT(slot_wpEdited(Waypoint &)) );
 
       dlg->setVisible( true );
     }
