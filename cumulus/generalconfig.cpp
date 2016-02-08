@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2015 by Axel Pauli
+ **                   2007-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -305,7 +305,7 @@ void GeneralConfig::load()
   _taskActiveStartScheme = (enum ActiveTaskFigureScheme) value( "ActiveStartScheme",
                                                          GeneralConfig::Line ).toInt();
   _taskActiveFinishScheme = (enum ActiveTaskFigureScheme) value( "ActiveFinishScheme",
-                                                         GeneralConfig::Circle ).toInt();
+                                                         GeneralConfig::Line ).toInt();
   _taskActiveObsScheme = (enum ActiveTaskFigureScheme) value( "ActiveObserverScheme",
                                                          GeneralConfig::Sector ).toInt();
   _taskActiveSwitchScheme = (enum ActiveTaskSwitchScheme) value( "ActiveSwitchScheme",
