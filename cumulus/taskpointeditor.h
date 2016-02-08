@@ -22,7 +22,7 @@
  *
  * \date 2013-2016
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
@@ -94,14 +94,16 @@ private slots:
   void slot_outerSectorRadiusChanged( const QString& value );
 
   /**
-   * Called, if the default button is pressed. Resets all values of the widget
-   * to the default values.
+   * Called, if the default button is pressed. Resets all schema values of
+   * the widget to the default values.
    */
-  void slot_configurationDefaults();
+  void slot_schemaConfigurationDefaults();
 
 private:
 
   void load();
+
+  void loadSchema();
 
   void save();
 

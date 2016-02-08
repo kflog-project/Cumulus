@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2013 by Axel Pauli
+ **   Copyright (c): 2010-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -35,9 +33,9 @@
  * This class is an extension of the single point class. It handles all data
  * items concerning a flight task.
  *
- * \date 2010-2013
+ * \date 2010-2016
  *
- * \version $Id$
+ * \version 1.1
  */
 class TaskPoint : public SinglePoint
 {

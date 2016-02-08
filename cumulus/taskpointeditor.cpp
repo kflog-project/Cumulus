@@ -182,8 +182,8 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   topLayout->addWidget( tpsBox, row, 0 );
 
   m_circle = new QRadioButton( tr("Circle"), this );
-  m_sector   = new QRadioButton( tr("Sector"), this );
-  m_line     = new QRadioButton( tr("Line"), this);
+  m_sector = new QRadioButton( tr("Sector"), this );
+  m_line   = new QRadioButton( tr("Line"), this);
 
   m_cslScheme = new QButtonGroup(this);
   m_cslScheme->addButton( m_circle, 0 );
@@ -333,7 +333,7 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   defaults->setIconSize(QSize(iconSize, iconSize));
   topLayout->addWidget( defaults, row, 0 );
 
-  connect( defaults, SIGNAL(pressed()), SLOT(slot_configurationDefaults()) );
+  connect( defaults, SIGNAL(pressed()), SLOT(slot_schemaConfigurationDefaults()) );
 
   //--------------------------------------------------------------
   connect( m_cslScheme, SIGNAL(buttonClicked(int)),
@@ -462,6 +462,11 @@ void TaskPointEditor::load()
 
   m_elevetionEditor->setText( Altitude::getText( m_workTp.getElevation(), false, -1 ) );
 
+  loadSchema();
+}
+
+void TaskPointEditor::loadSchema()
+{
   // set active button as selected
   m_selectedCSLScheme = (int) m_workTp.getActiveTaskPointFigureScheme();
 
@@ -662,8 +667,8 @@ void TaskPointEditor::save()
    }
 }
 
-void TaskPointEditor::slot_configurationDefaults()
+void TaskPointEditor::slot_schemaConfigurationDefaults()
 {
   m_workTp.setConfigurationDefaults();
-  load();
+  loadSchema();
 }
