@@ -472,12 +472,6 @@ QString FlightTask::getTaskTypeString() const
       return QObject::tr("Triangle");
     case FlightTask::Vieleck:
       return QObject::tr("Polygon");
-    case FlightTask::FAI_S:
-      return QObject::tr("FAI Triangle Start on leg");
-    case FlightTask::Dreieck_S:
-      return QObject::tr("Triangle Start on leg");
-    case FlightTask::Abgebrochen:
-      return QObject::tr("Broken off");
     }
 
   return QObject::tr("Unknown");

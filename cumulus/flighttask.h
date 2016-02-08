@@ -27,7 +27,7 @@
  *
  * \date 2002-2016
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef FLIGHT_TASK_H
@@ -56,9 +56,7 @@ class FlightTask : public BaseMapElement
    * The flight task types.
    */
   enum TaskType { NotSet=0, ZielS = 1, ZielR = 2, FAI = 3, Dreieck = 4,
-                  FAI_S = 5, Dreieck_S = 6, Abgebrochen = 7, Unknown = 8,
-                  FAI_2 = 9, FAI_S2 = 10, FAI_3 = 11, FAI_S3 = 12,
-                  Vieleck = 13, OLC2003 = 14 };
+                  Unknown = 8, Vieleck = 13, OLC2003 = 14 };
 
   /**
    * The planning-types
