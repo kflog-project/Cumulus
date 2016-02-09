@@ -20,7 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2016-02-05 AP: Issue #87 fixed. Enhance Taskpoint Editor features.
+[o] 2016-02-05 AP: Issue #87 fixed. Enhance Taskpoint Editor possibilities.
+                   The common data of a taskpoint like name, description,
+                   elevation and coordinates are editable now.
 
 [o] 2016-02-02 AP: Issue #86 fixed. Consider filter of waypoint list during
                    remove of waypoints. That means remove only the currently
