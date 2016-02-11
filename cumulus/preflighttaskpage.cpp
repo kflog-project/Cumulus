@@ -169,8 +169,11 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   m_taskList = new QTreeWidget;
 
+  connect( m_taskList, SIGNAL(itemClicked(QTreeWidgetItem*, int)),
+           this, SLOT(slotItemClicked(QTreeWidgetItem*, int)) );
+
 #ifndef ANDROID
-  m_taskList->setToolTip( tr("Select a flight task") );
+  m_taskList->setToolTip( tr("Choose a flight task to be flown") );
 #endif
   m_taskList->setRootIsDecorated(false);
   m_taskList->setItemsExpandable(false);
@@ -218,11 +221,22 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   tlButtonLayout->setMargin( 0 );
   tlLayout->addLayout( tlButtonLayout );
 
-  QPushButton *tlHelpButton = new QPushButton( tr("Help") );
-  tlButtonLayout->addWidget( tlHelpButton, 0, Qt::AlignLeft );
+  m_helpButton = new QPushButton( tr("Help") );
+  tlButtonLayout->addWidget( m_helpButton, 0, Qt::AlignLeft );
   tlButtonLayout->addStretch( 5 );
-  QPushButton *tlShowButton = new QPushButton( tr("Show") );
-  tlButtonLayout->addWidget( tlShowButton, 0, Qt::AlignRight );
+
+  m_deactivateButton = new QPushButton( tr("Deactivate Task") );
+#ifndef ANDROID
+  m_deactivateButton->setToolTip(tr("Deactivate the currently activated task"));
+#endif
+  tlButtonLayout->addWidget( m_deactivateButton );
+  tlButtonLayout->addStretch( 5 );
+
+  m_showButton = new QPushButton( tr("Show") );
+#ifndef ANDROID
+  m_showButton->setToolTip(tr("Show details of selected task"));
+#endif
+  tlButtonLayout->addWidget( m_showButton, 0, Qt::AlignRight );
 
   taskLayout->addWidget( m_taskListWidget );
 
@@ -259,10 +273,13 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   connect( m_taskList, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
 
-  connect( tlHelpButton, SIGNAL(pressed()),
+  connect( m_helpButton, SIGNAL(pressed()),
            this, SLOT( slotOpenHelp() ) );
 
-  connect( tlShowButton, SIGNAL(pressed()),
+  connect( m_deactivateButton, SIGNAL(pressed()),
+           this, SLOT( slotDeactivateTask() ) );
+
+  connect( m_showButton, SIGNAL(pressed()),
            this, SLOT( slotShowTaskViewWidget() ) );
 
   connect( tvCloseButton, SIGNAL(pressed()),
@@ -299,7 +316,6 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
 PreFlightTaskPage::~PreFlightTaskPage()
 {
-  // qDebug("PreFlightTaskPage::~PreFlightTaskPage()");
   qDeleteAll(m_flightTaskList);
 }
 
@@ -310,6 +326,24 @@ void PreFlightTaskPage::showEvent(QShowEvent *)
   m_taskList->resizeColumnToContents(2);
   m_taskList->resizeColumnToContents(3);
   m_taskList->resizeColumnToContents(4);
+
+  enableButtons();
+}
+
+void PreFlightTaskPage::enableButtons()
+{
+  QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
+
+  if( m_taskList->topLevelItemCount() == 0 || selectList.size() == 0 )
+    {
+      m_deactivateButton->setEnabled( false );
+      m_showButton->setEnabled( false );
+    }
+  else
+    {
+      m_deactivateButton->setEnabled( true );
+      m_showButton->setEnabled( true );
+    }
 }
 
 void PreFlightTaskPage::slotShowTaskListWidget()
@@ -328,14 +362,6 @@ void PreFlightTaskPage::slotShowTaskViewWidget()
       return;
     }
 
-  QTreeWidgetItem* selected = m_taskList->selectedItems().at(0);
-
-  if ( selected->text( 0 ) == " " )
-    {
-      // Help text is selected
-      return;
-    }
-
   m_taskViewWidget->setVisible( true );
   m_taskListWidget->setVisible( false );
 }
@@ -344,20 +370,14 @@ void PreFlightTaskPage::slotTaskDetails()
 {
   QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
 
-  if ( selectList.size() == 0 )
+  if( selectList.size() == 0 )
     {
       return;
     }
 
   QTreeWidgetItem* selected = m_taskList->selectedItems().at(0);
 
-  if ( selected->text( 0 ) == " " )
-    {
-      m_taskContent->clear();
-      return;
-    }
-
-  int id = selected->text( 0 ).toInt() - 1;
+  int id = selected->text(0).toInt() - 1;
 
   FlightTask *task = m_flightTaskList.at( id );
 
@@ -385,7 +405,7 @@ void PreFlightTaskPage::slotNumberEdited( const QString& number )
 
 void PreFlightTaskPage::updateWayTime()
 {
-  if( m_taskList->topLevelItemCount() < 2 )
+  if( m_taskList->topLevelItemCount() == 0 )
     {
       // There are no tasks defined.
       return;
@@ -395,13 +415,12 @@ void PreFlightTaskPage::updateWayTime()
     {
       QTreeWidgetItem* item = m_taskList->topLevelItem( i );
 
-      if( item == 0 || item->text( 0 ) == " " )
+      if( item == 0 )
         {
           continue;
         }
 
-      int id = item->text( 0 ).toInt() - 1;
-
+      int id = item->text(0).toInt() - 1;
       FlightTask *task = m_flightTaskList.at( id );
 
       // update TAS, can be changed in the meantime by the user
@@ -438,8 +457,6 @@ void PreFlightTaskPage::updateWayTime()
 // object!!!
 FlightTask* PreFlightTaskPage::takeSelectedTask()
 {
-  // qDebug("PreFlightTaskPage::selectedTask()");
-
   // save last used TAS, and wind parameters
   Speed tas;
   tas.setValueInUnit( m_tas->doubleValue(), Speed::getHorizontalUnit() );
@@ -455,19 +472,12 @@ FlightTask* PreFlightTaskPage::takeSelectedTask()
 
   if ( selectList.size() == 0 )
     {
+      GeneralConfig::instance()->setCurrentTaskName( "" );
       return static_cast<FlightTask *> (0);
     }
 
   QString id( m_taskList->selectedItems().at(0)->text(0) );
 
-  // Special handling for entries with no number, they are system specific.
-  if( id == " " )
-    {
-      GeneralConfig::instance()->setCurrentTaskName( "" );
-      return static_cast<FlightTask *> (0);
-    }
-
-  // qDebug("selected Item=%s",id.toLatin1().data());
   GeneralConfig::instance()->setCurrentTaskName( m_taskList->selectedItems().at(0)->text(1) );
 
   // Nice trick, take selected element from list to prevent deletion of it, if
@@ -501,15 +511,9 @@ bool PreFlightTaskPage::loadTaskList()
   tas.setValueInUnit( m_tas->doubleValue(), Speed::getHorizontalUnit() );
   tfm.setTas( tas );
 
-  if( tfm.loadTaskList( m_flightTaskList ) == false )
+  if( tfm.loadTaskList( m_flightTaskList ) == false || m_flightTaskList.size() == 0 )
     {
-      // could not read file
-      rowList << " " << tr("(No tasks defined)");
-      m_taskList->addTopLevelItem( new QTreeWidgetItem(m_taskList, rowList, 0) );
-      m_taskList->setCurrentItem( m_taskList->itemAt(0,m_taskList->topLevelItemCount()-1) );
-      m_taskList->sortItems( 0, Qt::AscendingOrder );
-
-      // reset current task
+      // no task has been read, reset current task
       GeneralConfig::instance()->setCurrentTaskName( "" );
 
       m_taskList->resizeColumnToContents(0);
@@ -517,7 +521,6 @@ bool PreFlightTaskPage::loadTaskList()
       m_taskList->resizeColumnToContents(2);
       m_taskList->resizeColumnToContents(3);
       m_taskList->resizeColumnToContents(4);
-
       return false;
     }
 
@@ -545,21 +548,6 @@ bool PreFlightTaskPage::loadTaskList()
       m_taskNames << task->getTaskName();
     }
 
-  if ( m_flightTaskList.count() == 0 )
-    {
-      rowList << " " << tr("(No tasks defined)");
-
-      // reset current task
-      GeneralConfig::instance()->setCurrentTaskName( "" );
-    }
-  else
-    {
-      rowList << " " << tr("(Reset selection)");
-    }
-
-  m_taskList->addTopLevelItem( new QTreeWidgetItem(m_taskList, rowList, 0) );
-  m_taskList->sortByColumn(0, Qt::AscendingOrder);
-
   updateWayTime();
   selectLastTask();
 
@@ -570,6 +558,11 @@ bool PreFlightTaskPage::loadTaskList()
   m_taskList->resizeColumnToContents(4);
 
   return true;
+}
+
+void PreFlightTaskPage::slotItemClicked(QTreeWidgetItem*, int)
+{
+  enableButtons();
 }
 
 void PreFlightTaskPage::slotNewTask()
@@ -593,6 +586,7 @@ void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
   m_taskList->clear();
   loadTaskList();
   m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
+  enableButtons();
 }
 
 /**
@@ -600,8 +594,6 @@ void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
  */
 void PreFlightTaskPage::slotEditTask()
 {
-  // qDebug() << "PreFlightTaskPage::slotEditTask()";
-
   // fetch selected task item
   QList<QTreeWidgetItem*> selectList = m_taskList->selectedItems();
 
@@ -611,11 +603,6 @@ void PreFlightTaskPage::slotEditTask()
     }
 
   QString id( m_taskList->selectedItems().at(0)->text(0) );
-
-  if( id == " ")
-    {
-      return;
-    }
 
   m_editTask = m_flightTaskList.at(id.toInt() - 1);
 
@@ -666,6 +653,8 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
     {
       m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
     }
+
+  enableButtons();
 }
 
 /**
@@ -681,12 +670,6 @@ void PreFlightTaskPage::slotDeleteTask()
     }
 
   QString id( selected->text(0) );
-
-  if ( id == " " )
-    {
-      // Entries with no number are system specific and not deleteable
-      return;
-    }
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Delete Task?" ),
@@ -728,6 +711,7 @@ void PreFlightTaskPage::slotDeleteTask()
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
+  enableButtons();
 }
 
 bool PreFlightTaskPage::saveTaskList()
@@ -748,7 +732,6 @@ void PreFlightTaskPage::selectLastTask()
   for( int i = 0; i < rows; i++ )
     {
       QString taskName = m_taskList->topLevelItem(i)->text(1);
-      // qDebug( "taskName(%d)=%s", i, taskName.toLatin1().data() );
 
       if( taskName == lastTask )
         {
@@ -757,9 +740,6 @@ void PreFlightTaskPage::selectLastTask()
           return;
         }
     }
-
-  // select first entry in the list, if last selection could not be found
-  m_taskList->setCurrentItem( m_taskList->topLevelItem(0) );
 }
 
 void PreFlightTaskPage::slotAccept()
@@ -881,4 +861,10 @@ void PreFlightTaskPage::slotOpenHelp()
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
   hb->setVisible( true );
+}
+
+void PreFlightTaskPage::slotDeactivateTask()
+{
+  m_taskList->clearSelection();
+  enableButtons();
 }

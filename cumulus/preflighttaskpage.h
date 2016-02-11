@@ -23,7 +23,7 @@
  *
  * \date 2002-2016
  *
- * \version 1.4
+ * \version 1.5
  *
  */
 
@@ -82,6 +82,11 @@ class PreFlightTaskPage : public QWidget
    * if wind or tas have been changed by the user.
    */
   void updateWayTime();
+
+  /**
+   * Enables the widgets buttons according to list content.
+   */
+  void enableButtons();
 
  signals:
 
@@ -146,6 +151,16 @@ class PreFlightTaskPage : public QWidget
   void slotOpenHelp();
 
   /**
+   * Called, to deactivate the current selected task.
+   */
+  void slotDeactivateTask();
+
+  /**
+   * Called, if a item is clicked in the task list.
+   */
+  void slotItemClicked(QTreeWidgetItem * item, int column);
+
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();
@@ -161,6 +176,10 @@ class PreFlightTaskPage : public QWidget
   QWidget *m_taskListWidget;
   /** task view widget */
   QWidget *m_taskViewWidget;
+
+  QPushButton* m_helpButton;
+  QPushButton* m_deactivateButton;
+  QPushButton* m_showButton;
 
   /** editor box for TAS entry */
   NumberEditor* m_tas;
