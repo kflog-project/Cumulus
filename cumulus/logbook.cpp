@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2014 Axel Pauli
+**   Copyright (c): 2012-2015 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -54,6 +54,11 @@ Logbook::Logbook( QWidget *parent ) :
 
   m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = m_table->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );

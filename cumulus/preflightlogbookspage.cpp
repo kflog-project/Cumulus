@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013 by Axel Pauli
+ **   Copyright (c):  2013-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 

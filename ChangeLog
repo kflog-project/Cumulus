@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-02-14 AP: Issue #88 fixed. Enlarge the scrollbar in flightlogbook
+                   under Android.
+
 [o] 2016-02-05 AP: Issue #87 fixed. Enhance Taskpoint Editor possibilities.
                    The common data of a taskpoint like name, description,
                    elevation and coordinates are editable now.
