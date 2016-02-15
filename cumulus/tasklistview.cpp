@@ -175,7 +175,7 @@ void TaskListView::setHeader()
       list->hideColumn( 5 );
     }
 
-  sl << tr("")
+  sl << tr("No")
      << tr("Type")
      << tr("Name")
      << tr("Way")
@@ -377,11 +377,11 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
 
       if( tmpList.size() < 10 )
         {
-          _tpi->setText( 0, QString::number(loop) );
+          _tpi->setText( 0, QString::number(loop + 1) );
         }
       else
         {
-          QString no = QString("%1").arg(loop, 2, 10, QChar('0') );
+          QString no = QString("%1").arg(loop + 1, 2, 10, QChar('0') );
           _tpi->setText( 0, no );
         }
 

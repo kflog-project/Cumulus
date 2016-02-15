@@ -539,116 +539,116 @@
 <context>
     <name>FlarmLogbook</name>
     <message>
-        <location filename="flarmlogbook.cpp" line="49"/>
+        <location filename="flarmlogbook.cpp" line="47"/>
         <source>Flarm Logbook</source>
         <translation>Flarm Flugbuch</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="80"/>
+        <location filename="flarmlogbook.cpp" line="83"/>
         <source>Read</source>
         <translation>Lesen</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="81"/>
+        <location filename="flarmlogbook.cpp" line="84"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="82"/>
+        <location filename="flarmlogbook.cpp" line="85"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="106"/>
+        <location filename="flarmlogbook.cpp" line="109"/>
         <source>Flight:</source>
         <translation>Flug:</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="212"/>
+        <location filename="flarmlogbook.cpp" line="215"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="215"/>
+        <location filename="flarmlogbook.cpp" line="218"/>
         <source>To</source>
         <translation>St</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="218"/>
+        <location filename="flarmlogbook.cpp" line="221"/>
         <source>Ft</source>
         <translation>Fz</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="221"/>
+        <location filename="flarmlogbook.cpp" line="224"/>
         <source>Pilot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="224"/>
+        <location filename="flarmlogbook.cpp" line="227"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="227"/>
+        <location filename="flarmlogbook.cpp" line="230"/>
         <source>Class</source>
         <translation>Klasse</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="259"/>
-        <location filename="flarmlogbook.cpp" line="396"/>
-        <location filename="flarmlogbook.cpp" line="480"/>
-        <location filename="flarmlogbook.cpp" line="553"/>
+        <location filename="flarmlogbook.cpp" line="262"/>
+        <location filename="flarmlogbook.cpp" line="399"/>
+        <location filename="flarmlogbook.cpp" line="483"/>
+        <location filename="flarmlogbook.cpp" line="556"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="260"/>
-        <location filename="flarmlogbook.cpp" line="282"/>
-        <location filename="flarmlogbook.cpp" line="397"/>
-        <location filename="flarmlogbook.cpp" line="459"/>
-        <location filename="flarmlogbook.cpp" line="481"/>
-        <location filename="flarmlogbook.cpp" line="504"/>
-        <location filename="flarmlogbook.cpp" line="554"/>
+        <location filename="flarmlogbook.cpp" line="263"/>
+        <location filename="flarmlogbook.cpp" line="285"/>
+        <location filename="flarmlogbook.cpp" line="400"/>
+        <location filename="flarmlogbook.cpp" line="462"/>
+        <location filename="flarmlogbook.cpp" line="484"/>
+        <location filename="flarmlogbook.cpp" line="507"/>
+        <location filename="flarmlogbook.cpp" line="557"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="281"/>
+        <location filename="flarmlogbook.cpp" line="284"/>
         <source>Flarm flight list read error!</source>
         <translation>Flarm Fluglisten Lesefehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="291"/>
+        <location filename="flarmlogbook.cpp" line="294"/>
         <source>Flarm flight list is empty!</source>
         <translation>Flarm Flugliste ist leer!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="292"/>
+        <location filename="flarmlogbook.cpp" line="295"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="452"/>
+        <location filename="flarmlogbook.cpp" line="455"/>
         <source>Too less free space on:</source>
         <translation>Zu wenig Platz auf:</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="456"/>
+        <location filename="flarmlogbook.cpp" line="459"/>
         <source>Download not possible!</source>
         <translation>Download nicht möglich!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="503"/>
+        <location filename="flarmlogbook.cpp" line="506"/>
         <source>Flarm download error!</source>
         <translation>Flarm Download Fehler!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="512"/>
+        <location filename="flarmlogbook.cpp" line="515"/>
         <source>Flights downloaded!</source>
         <translation>Flüge runter geladen!</translation>
     </message>
     <message>
-        <location filename="flarmlogbook.cpp" line="513"/>
+        <location filename="flarmlogbook.cpp" line="516"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
@@ -5821,6 +5821,11 @@ Bitte einen Punkt löschen!</translation>
         <location filename="tasklistview.cpp" line="173"/>
         <source>TC</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="tasklistview.cpp" line="178"/>
+        <source>No</source>
+        <translation>Nr</translation>
     </message>
     <message>
         <location filename="tasklistview.cpp" line="179"/>
