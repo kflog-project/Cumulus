@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2015 by Axel Pauli
+**                   2007-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,9 +26,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2015
+ * \date 2004-2016
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -107,7 +107,7 @@ class GeneralConfig : protected QSettings
   // Task figure scheme
   enum ActiveTaskFigureScheme
   {
-    Undefined = -1, Circle = 0, Sector = 1, Line = 2
+    Undefined = -1, Circle = 0, Sector = 1, Line = 2, KeyHole = 3
   };
 
   // Task switch scheme

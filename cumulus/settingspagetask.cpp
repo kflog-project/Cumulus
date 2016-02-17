@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2015 Axel Pauli
+**   Copyright (c):  2007-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -230,23 +230,28 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   formLayout = new QFormLayout;
   startGroup3->setLayout(formLayout);
 
-  QRadioButton* circle = new QRadioButton( tr("Circle"), this );
-  QRadioButton* sector = new QRadioButton( tr("Sector"), this );
-  QRadioButton* line   = new QRadioButton( tr("Line"), this );
+  QRadioButton* circle  = new QRadioButton( tr("Circle"), this );
+  QRadioButton* sector  = new QRadioButton( tr("Sector"), this );
+  QRadioButton* keyhole = new QRadioButton( tr("Keyhole"), this );
+  QRadioButton* line    = new QRadioButton( tr("Line"), this );
 
   startScheme = new QButtonGroup(this);
   startScheme->addButton( circle, 0 );
   startScheme->addButton( sector, 1 );
-  startScheme->addButton( line, 2 );
+  startScheme->addButton( keyhole, 2 );
+  startScheme->addButton( line, 3 );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );
+  formLayout->addWidget( keyhole );
   formLayout->addWidget( line );
 
   circle->setEnabled(true);
   circle->setChecked(false);
   sector->setEnabled(true);
   sector->setChecked(false);
+  keyhole->setEnabled(true);
+  keyhole->setChecked(false);
   line->setEnabled(true);
   line->setChecked(false);
 
@@ -305,23 +310,28 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   formLayout = new QFormLayout;
   finishGroup3->setLayout(formLayout);
 
-  circle = new QRadioButton( tr("Circle"), this );
-  sector = new QRadioButton( tr("Sector"), this );
-  line   = new QRadioButton( tr("Line"), this );
+  circle  = new QRadioButton( tr("Circle"), this );
+  sector  = new QRadioButton( tr("Sector"), this );
+  keyhole = new QRadioButton( tr("Keyhole"), this );
+  line    = new QRadioButton( tr("Line"), this );
 
   finishScheme = new QButtonGroup(this);
   finishScheme->addButton( circle, 0 );
   finishScheme->addButton( sector, 1 );
-  finishScheme->addButton( line, 2 );
+  finishScheme->addButton( keyhole, 2 );
+  finishScheme->addButton( line, 3 );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );
+  formLayout->addWidget( keyhole );
   formLayout->addWidget( line );
 
   circle->setEnabled(true);
   circle->setChecked(false);
   sector->setEnabled(true);
   sector->setChecked(false);
+  keyhole->setEnabled(true);
+  keyhole->setChecked(false);
   line->setEnabled(true);
   line->setChecked(false);
 
@@ -376,21 +386,26 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   formLayout = new QFormLayout;
   obZoneGroup3->setLayout(formLayout);
 
-  circle = new QRadioButton( tr("Circle"), this );
-  sector = new QRadioButton( tr("Sector"), this );
+  circle  = new QRadioButton( tr("Circle"), this );
+  sector  = new QRadioButton( tr("Sector"), this );
+  keyhole = new QRadioButton( tr("Keyhole"), this );
   // no line for observer area
 
   obsScheme = new QButtonGroup(this);
   obsScheme->addButton( circle, 0 );
   obsScheme->addButton( sector, 1 );
+  obsScheme->addButton( keyhole, 2 );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );
+  formLayout->addWidget( keyhole );
 
   circle->setEnabled(true);
   circle->setChecked(false);
   sector->setEnabled(true);
   sector->setChecked(false);
+  keyhole->setEnabled(true);
+  keyhole->setChecked(false);
 
   // set active button as selected
   m_selectedObsScheme = (int) conf->getActiveTaskObsScheme();
@@ -632,9 +647,9 @@ void SettingsPageTask::load()
     }
 
   m_obsCircleRadiusValue      = conf->getTaskObsCircleRadius();
-  m_obsSectorInnerRadiusValue   = conf->getTaskObsSectorInnerRadius();
-  m_obsSectorOuterRadiusValue   = conf->getTaskObsSectorOuterRadius();
-  m_obsSectorAngleValue         = conf->getTaskObsSectorAngle();
+  m_obsSectorInnerRadiusValue = conf->getTaskObsSectorInnerRadius();
+  m_obsSectorOuterRadiusValue = conf->getTaskObsSectorOuterRadius();
+  m_obsSectorAngleValue       = conf->getTaskObsSectorAngle();
 
   if( m_distUnit == Distance::kilometers ) // user gets meters
     {
