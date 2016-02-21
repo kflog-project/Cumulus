@@ -22,7 +22,7 @@
  *
  * \date 2013-2016
  *
- * \version 1.4
+ * \version 1.5
  *
  */
 
@@ -84,8 +84,8 @@ private slots:
 
   void slotReject ();
 
-  // radio button of csl scheme was pressed
-  void slot_buttonPressedCSL( int newScheme );
+  // radio button of cksl scheme was pressed
+  void slot_buttonPressedCKSL( int newScheme );
 
   // value of outer m_sector radius changed
   void slot_outerSectorRadiusChanged( double value );

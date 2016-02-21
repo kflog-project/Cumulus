@@ -342,7 +342,7 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
 
   //--------------------------------------------------------------
   connect( m_cslScheme, SIGNAL(buttonClicked(int)),
-           this, SLOT(slot_buttonPressedCSL(int)) );
+           this, SLOT(slot_buttonPressedCKSL(int)) );
 
   connect( m_outerSectorRadius, SIGNAL(numberEdited(const QString& )),
            this, SLOT(slot_outerSectorRadiusChanged(const QString& )) );
@@ -418,7 +418,7 @@ void TaskPointEditor::slot_outerSectorRadiusChanged( const QString& /* value */ 
 }
 
 // Set the passed scheme widget as active and the other one to inactive
-void TaskPointEditor::slot_buttonPressedCSL( int newScheme )
+void TaskPointEditor::slot_buttonPressedCKSL( int newScheme )
 {
   m_selectedCSKLScheme = newScheme;
 
@@ -462,6 +462,10 @@ void TaskPointEditor::slot_buttonPressedCSL( int newScheme )
       m_circleGroup->setVisible(false);
       m_lineGroup->setVisible(true);
       break;
+    default:
+      qWarning() << "TaskPointEditor::slot_buttonPressedCKSL(): unknown scheme"
+                 << newScheme;
+      break;
   }
 }
 
@@ -489,7 +493,7 @@ void TaskPointEditor::loadSchema()
   // set active button as selected
   m_selectedCSKLScheme = (int) m_workTp.getActiveTaskPointFigureScheme();
 
-  slot_buttonPressedCSL( (int) m_workTp.getActiveTaskPointFigureScheme() );
+  slot_buttonPressedCKSL( m_selectedCSKLScheme );
 
   m_loadedCSKLScheme = m_selectedCSKLScheme;
 

@@ -326,6 +326,7 @@ void PreFlightTaskPage::showEvent(QShowEvent *)
   m_taskList->resizeColumnToContents(2);
   m_taskList->resizeColumnToContents(3);
   m_taskList->resizeColumnToContents(4);
+  m_taskList->sortByColumn(0, Qt::AscendingOrder);
 
   enableButtons();
 }
@@ -647,7 +648,7 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
 
   if ( index != -1 )
     {
-      m_taskList->setCurrentItem( m_taskList->topLevelItem(index + 1) );
+      m_taskList->setCurrentItem( m_taskList->topLevelItem(index) );
     }
   else
     {
