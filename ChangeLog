@@ -20,6 +20,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-02-21 AP: Issue #89 fixed. Set the list pointer back to the edited item
+                   after a taskpoint edition.
+
+[+] 2016-02-21 AP: Issue #75 fixed. Provide keyhole sectors as additional
+                   feature for turn points 
+
 [o] 2016-02-14 AP: Issue #88 fixed. Enlarge the scrollbar in flightlogbook
                    under Android.
 
@@ -37,7 +43,7 @@ Cumulus changelog
 [o] 2016-01-30 AP: Issue #84 fixed. Check task before accepting for double
                    waypoints in order.
 
-[-] 2016-01-30 AP: Issue #83 fixed. Add a Help button to task window.
+[+] 2016-01-30 AP: Issue #83 fixed. Add a Help button to the task window.
 
 [-] 2016-01-29 AP: Issue #82 fixed. Crash of cumulus, if a activated flight task
                    is replaced by a new one.

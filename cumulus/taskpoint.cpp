@@ -19,7 +19,7 @@
 #include "mapcalc.h"
 #include "taskpoint.h"
 
-// Near check distance state as meters for circle and sector figure
+// Near check distance state as meters for circle keyhole and sector figure
 #define NEAR_DISTANCE 1000.0
 
 // Near check distance state as meters for a line figure
@@ -125,15 +125,22 @@ enum TaskPoint::PassageState TaskPoint::checkPassage( const Distance& dist2Tp,
 
   if( scheme == GeneralConfig::Circle )
     {
-      // Circle scheme is active
       return determineCirclePassageState( dist2Tp.getMeters(),
                                           m_taskCircleRadius.getMeters() );
+    }
+
+  if( scheme == GeneralConfig::Keyhole )
+    {
+      return determineKeyholePassageState( dist2Tp.getMeters(), position );
     }
 
   if( scheme == GeneralConfig::Sector )
     {
       return determineSectorPassageState( dist2Tp.getMeters(), position );
     }
+
+  qWarning() << "TaskPoint::checkPassage(): ActiveTaskFigureScheme"
+             << scheme << "is unknown!";
 
   // That should normally not happen
   m_lastDistance = -1.0;
@@ -250,6 +257,119 @@ enum TaskPoint::PassageState
   m_lastPassageState = TaskPoint::Outside;
   m_lastDistance = -1.0;
   return TaskPoint::Outside;
+}
+
+enum TaskPoint::PassageState
+  TaskPoint::determineKeyholePassageState( const double dist2Tp,
+                                           const QPoint& position )
+{
+  enum GeneralConfig::ActiveTaskSwitchScheme tsSchema =
+    GeneralConfig::instance()->getActiveTaskSwitchScheme();
+
+  // get sector radii
+  const double innerRadius = getTaskSectorInnerRadius().getMeters();
+  const double outerRadius = getTaskSectorOuterRadius().getMeters();
+
+  if( m_lastPassageState == Touched )
+    {
+      if( tsSchema == GeneralConfig::Touched )
+        {
+          // Report passed because we had one touch.
+          m_lastDistance = -1.0;
+          m_lastPassageState = Outside;
+          return Passed;
+        }
+
+      if( tsSchema == GeneralConfig::Nearst )
+        {
+          if( innerRadius > 0 && dist2Tp <= innerRadius && dist2Tp < m_lastDistance )
+            {
+              // We are moving in the circle of the keyhole in direction to the
+              // taskpoint.
+              m_lastDistance = dist2Tp;
+              m_lastPassageState = Touched;
+              return Touched;
+            }
+
+          if( dist2Tp > m_lastDistance )
+            {
+              // Report passed because we are moving away from the touched taskpoint.
+              m_lastDistance = -1.0;
+              m_lastPassageState = Outside;
+              return Passed;
+            }
+        }
+    }
+
+  if( m_lastPassageState != Touched )
+    {
+      if( dist2Tp > outerRadius + NEAR_DISTANCE )
+        {
+          // we are outside of outer radius, sector angle has not to be
+          // considered
+          m_lastDistance = -1.0;
+          m_lastPassageState = Outside;
+          return Outside;
+        }
+
+      if( dist2Tp > outerRadius )
+        {
+          // we are outside of outer radius, sector angle has not to be
+          // considered
+          m_lastDistance = dist2Tp;
+          m_lastPassageState = Near;
+          return Near;
+        }
+
+      // The inner radius is considered as minimum. If we are inside the
+      // inner radius, we are inside of the keyhole circle.
+      if( innerRadius > 0.0 && dist2Tp < innerRadius )
+        {
+          m_lastDistance = dist2Tp;
+          m_lastPassageState = Touched;
+          return Touched;
+        }
+    }
+
+  // Here we are inside of outer radius, therefore we have to check the sector angle.
+  // Calculate bearing from TP to current position
+  const double bearing = MapCalc::getBearingWgs( getWGSPosition(), position );
+
+#ifdef CUMULUS_DEBUG
+  qDebug( "TP::checkSector(): minAngle=%f, maxAngel=%f, bearing=%f",
+          minAngle*180./M_PI,
+          maxAngle*180./M_PI,
+          bearing*180./M_PI );
+#endif
+
+  if( minAngle > maxAngle &&
+      ( bearing > minAngle || bearing < maxAngle ) )
+    {
+      // We are inside of sector and sector includes north direction
+      m_lastDistance = dist2Tp;
+      m_lastPassageState = Touched;
+      return Touched;
+    }
+
+  if( bearing > minAngle && bearing < maxAngle )
+    {
+      // We are inside of sector between 0...360
+      m_lastDistance = dist2Tp;
+      m_lastPassageState = Touched;
+      return Touched;
+    }
+
+  if( m_lastPassageState == Touched )
+    {
+      // The sector is left in nearest schema. We report the passing now.
+      m_lastDistance = -1.0;
+      m_lastPassageState = Outside;
+      return Passed;
+    }
+
+  m_lastDistance = -1.0;
+  m_lastPassageState = Outside;
+  return Outside;
 }
 
 enum TaskPoint::PassageState
@@ -421,6 +541,9 @@ QString TaskPoint::getTaskPointTypeFigureString() const
       case GeneralConfig::Circle:
         result += QObject::tr("C");
         break;
+      case GeneralConfig::Keyhole:
+        result += QObject::tr("K");
+        break;
       case GeneralConfig::Sector:
         result += QObject::tr("S");
         break;
@@ -486,6 +609,9 @@ QPixmap& TaskPoint::getIcon( const int iconSize )
   {
     case GeneralConfig::Circle:
       return createCircleIcon( iconSize );
+
+    case GeneralConfig::Keyhole:
+      return createKeyholeIcon( iconSize );
 
     case GeneralConfig::Sector:
       return createSectorIcon( iconSize );
@@ -563,6 +689,48 @@ QPixmap& TaskPoint::createSectorIcon( const int iconSize )
   painter.end();
 
   return sectorIcon;
+}
+
+/**
+ * Create a keyhole icon.
+ */
+QPixmap& TaskPoint::createKeyholeIcon( const int iconSize )
+{
+  static QPixmap keyholeIcon;
+
+  if( ! keyholeIcon.isNull() && keyholeIcon.height() == iconSize )
+    {
+      // It is already created
+      return keyholeIcon;
+    }
+
+  QPixmap pm( iconSize*2, iconSize*2 );
+  pm.fill( Qt::transparent );
+
+  QPainter painter;
+  painter.begin( &pm );
+  QPen pen(Qt::red);
+  painter.setPen( pen );
+  painter.setBrush( QBrush( Qt::red, Qt::SolidPattern ) );
+  painter.drawPie( 3, 3, (iconSize*2)-2*3, (iconSize*2)-2*3, -118*16, 56*16 );
+  painter.drawEllipse( (iconSize)-6, (iconSize), 12, 12 );
+  painter.end();
+
+  // Does not work under Maemo4
+  //  keyholeIcon = pm.copy( (pm.width() / 4),  pm.height() / 2,
+  //                        pm.width() / 2,  pm.height() / 2 );
+
+  keyholeIcon = QPixmap( iconSize, iconSize );
+  keyholeIcon.fill( Qt::transparent );
+
+  painter.begin( &keyholeIcon );
+  painter.drawPixmap( 0, 0,
+                      pm,
+                      pm.width() / 4,  pm.height() / 2,
+                      pm.width() / 2,  pm.height() / 2 );
+  painter.end();
+
+  return keyholeIcon;
 }
 
 QPixmap& TaskPoint::createLineIcon( const int iconSize )

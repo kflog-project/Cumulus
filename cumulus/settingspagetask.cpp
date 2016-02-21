@@ -236,10 +236,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   QRadioButton* line    = new QRadioButton( tr("Line"), this );
 
   startScheme = new QButtonGroup(this);
-  startScheme->addButton( circle, 0 );
-  startScheme->addButton( sector, 1 );
-  startScheme->addButton( keyhole, 2 );
-  startScheme->addButton( line, 3 );
+  startScheme->addButton( circle, GeneralConfig::Circle );
+  startScheme->addButton( sector, GeneralConfig::Sector );
+  startScheme->addButton( keyhole, GeneralConfig::Keyhole );
+  startScheme->addButton( line, GeneralConfig::Line );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );
@@ -316,10 +316,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   line    = new QRadioButton( tr("Line"), this );
 
   finishScheme = new QButtonGroup(this);
-  finishScheme->addButton( circle, 0 );
-  finishScheme->addButton( sector, 1 );
-  finishScheme->addButton( keyhole, 2 );
-  finishScheme->addButton( line, 3 );
+  finishScheme->addButton( circle, GeneralConfig::Circle );
+  finishScheme->addButton( sector, GeneralConfig::Sector );
+  finishScheme->addButton( keyhole, GeneralConfig::Keyhole );
+  finishScheme->addButton( line, GeneralConfig::Line );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );
@@ -392,9 +392,10 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   // no line for observer area
 
   obsScheme = new QButtonGroup(this);
-  obsScheme->addButton( circle, 0 );
-  obsScheme->addButton( sector, 1 );
-  obsScheme->addButton( keyhole, 2 );
+  obsScheme->addButton( circle, GeneralConfig::Circle );
+  obsScheme->addButton( sector, GeneralConfig::Sector );
+  obsScheme->addButton( keyhole, GeneralConfig::Keyhole );
+  obsScheme->addButton( line, GeneralConfig::Line );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );

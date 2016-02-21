@@ -164,34 +164,37 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   QLabel* lblElev = new QLabel(tr("Elevation:"), this);
   topLayout->addWidget(lblElev, row, 0);
 
-  m_elevetionEditor = new NumberEditor;
-  m_elevetionEditor->setDecimalVisible( false );
-  m_elevetionEditor->setSuffix( " " + Altitude::getUnitText() );
-  m_elevetionEditor->setMaxLength(6);
-  m_elevetionEditor->setAlignment( Qt::AlignLeft );
-  m_elevetionEditor->setRange(-1000, 999999);
-  m_elevetionEditor->setText("0");
-  m_elevetionEditor->setMinimumWidth( 10 * charWidth );
-  m_elevetionEditor->setMaximumWidth( 10 * charWidth );
+  m_elevationEditor = new NumberEditor;
+  m_elevationEditor->setDecimalVisible( false );
+  m_elevationEditor->setSuffix( " " + Altitude::getUnitText() );
+  m_elevationEditor->setMaxLength(6);
+  m_elevationEditor->setAlignment( Qt::AlignLeft );
+  m_elevationEditor->setRange(-1000, 999999);
+  m_elevationEditor->setText("0");
+  m_elevationEditor->setMinimumWidth( 10 * charWidth );
+  m_elevationEditor->setMaximumWidth( 10 * charWidth );
 
-  topLayout->addWidget(m_elevetionEditor, row++, 1);
+  topLayout->addWidget(m_elevationEditor, row++, 1);
 
   topLayout->setRowMinimumHeight( row++, 10 * Layout::getIntScaledDensity() );
 
   QGroupBox *tpsBox = new QGroupBox( tr("TP Scheme"), this );
   topLayout->addWidget( tpsBox, row, 0 );
 
-  m_circle = new QRadioButton( tr("Circle"), this );
-  m_sector = new QRadioButton( tr("Sector"), this );
-  m_line   = new QRadioButton( tr("Line"), this);
+  m_circle  = new QRadioButton( tr("Circle"), this );
+  m_keyhole = new QRadioButton( tr("Keyhole"), this );
+  m_sector  = new QRadioButton( tr("Sector"), this );
+  m_line    = new QRadioButton( tr("Line"), this);
 
   m_cslScheme = new QButtonGroup(this);
-  m_cslScheme->addButton( m_circle, 0 );
-  m_cslScheme->addButton( m_sector, 1 );
-  m_cslScheme->addButton( m_line, 2);
+  m_cslScheme->addButton( m_circle, GeneralConfig::Circle );
+  m_cslScheme->addButton( m_keyhole, GeneralConfig::Keyhole );
+  m_cslScheme->addButton( m_sector, GeneralConfig::Sector );
+  m_cslScheme->addButton( m_line, GeneralConfig::Line);
 
   QVBoxLayout *vbox = new QVBoxLayout;
   vbox->addWidget( m_circle );
+  vbox->addWidget( m_keyhole );
   vbox->addWidget( m_sector );
   vbox->addWidget( m_line);
   vbox->addStretch(1);
@@ -199,6 +202,8 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
 
   m_circle->setEnabled(true);
   m_circle->setChecked(false);
+  m_keyhole->setEnabled(true);
+  m_keyhole->setChecked(false);
   m_sector->setEnabled(true);
   m_sector->setChecked(false);
   m_line->setEnabled(true);
@@ -415,20 +420,33 @@ void TaskPointEditor::slot_outerSectorRadiusChanged( const QString& /* value */ 
 // Set the passed scheme widget as active and the other one to inactive
 void TaskPointEditor::slot_buttonPressedCSL( int newScheme )
 {
-  m_selectedCSLScheme = newScheme;
+  m_selectedCSKLScheme = newScheme;
 
   switch (newScheme)
   {
     case GeneralConfig::Sector:
       m_circle->setChecked(false);
+      m_keyhole->setChecked(false);
       m_sector->setChecked(true);
       m_line->setChecked(false);
       m_sectorGroup->setVisible(true);
+      m_sectorGroup->setTitle( tr("Sector") );
+      m_circleGroup->setVisible(false);
+      m_lineGroup->setVisible(false);
+      break;
+    case GeneralConfig::Keyhole:
+      m_circle->setChecked(false);
+      m_keyhole->setChecked(true);
+      m_sector->setChecked(false);
+      m_line->setChecked(false);
+      m_sectorGroup->setVisible(true);
+      m_sectorGroup->setTitle( tr("Keyhole") );
       m_circleGroup->setVisible(false);
       m_lineGroup->setVisible(false);
       break;
     case GeneralConfig::Circle:
       m_circle->setChecked(true);
+      m_keyhole->setChecked(false);
       m_sector->setChecked(false);
       m_line->setChecked(false);
       m_sectorGroup->setVisible(false);
@@ -437,6 +455,7 @@ void TaskPointEditor::slot_buttonPressedCSL( int newScheme )
       break;
     case GeneralConfig::Line:
       m_circle->setChecked(false);
+      m_keyhole->setChecked(false);
       m_sector->setChecked(false);
       m_line->setChecked(true);
       m_sectorGroup->setVisible(false);
@@ -460,7 +479,7 @@ void TaskPointEditor::load()
 
   m_lonEditor->setKFLogDegree(m_workTp.getWGSPositionPtr()->lon() );
 
-  m_elevetionEditor->setText( Altitude::getText( m_workTp.getElevation(), false, -1 ) );
+  m_elevationEditor->setText( Altitude::getText( m_workTp.getElevation(), false, -1 ) );
 
   loadSchema();
 }
@@ -468,16 +487,16 @@ void TaskPointEditor::load()
 void TaskPointEditor::loadSchema()
 {
   // set active button as selected
-  m_selectedCSLScheme = (int) m_workTp.getActiveTaskPointFigureScheme();
+  m_selectedCSKLScheme = (int) m_workTp.getActiveTaskPointFigureScheme();
 
   slot_buttonPressedCSL( (int) m_workTp.getActiveTaskPointFigureScheme() );
 
-  m_loadedCSLScheme = m_selectedCSLScheme;
+  m_loadedCSKLScheme = m_selectedCSKLScheme;
 
   // @AP: radius is always fetched in meters.
   Distance cRadius = m_workTp.getTaskCircleRadius();
-  Distance iRadius = m_workTp.getTaskSectorInnerRadius();
-  Distance oRadius = m_workTp.getTaskSectorOuterRadius();
+  Distance isRadius = m_workTp.getTaskSectorInnerRadius();
+  Distance osRadius = m_workTp.getTaskSectorOuterRadius();
   Distance lLength = m_workTp.getTaskLineLength();
 
   Distance::distanceUnit distUnit = Distance::getUnit();
@@ -485,29 +504,29 @@ void TaskPointEditor::loadSchema()
   if( distUnit == Distance::kilometers ) // user gets meters
     {
       m_circleRadius->setValue( cRadius.getKilometers() );
-      m_innerSectorRadius->setValue( iRadius.getKilometers() );
-      m_outerSectorRadius->setValue( oRadius.getKilometers() );
+      m_innerSectorRadius->setValue( isRadius.getKilometers() );
+      m_outerSectorRadius->setValue( osRadius.getKilometers() );
       m_lineLength->setValue(lLength.getKilometers());
     }
   else if( distUnit == Distance::miles ) // user gets miles
     {
       m_circleRadius->setValue( cRadius.getMiles() );
-      m_innerSectorRadius->setValue( iRadius.getMiles() );
-      m_outerSectorRadius->setValue( oRadius.getMiles() );
+      m_innerSectorRadius->setValue( isRadius.getMiles() );
+      m_outerSectorRadius->setValue( osRadius.getMiles() );
       m_lineLength->setValue(lLength.getMiles());
     }
   else // ( distUnit == Distance::nautmiles )
     {
       m_circleRadius->setValue( cRadius.getNautMiles() );
-      m_innerSectorRadius->setValue( iRadius.getNautMiles() );
-      m_outerSectorRadius->setValue( oRadius.getNautMiles() );
+      m_innerSectorRadius->setValue( isRadius.getNautMiles() );
+      m_outerSectorRadius->setValue( osRadius.getNautMiles() );
       m_lineLength->setValue(lLength.getNautMiles());
     }
 
   m_sectorAngle->setValue( m_workTp.getTaskSectorAngle() );
 
   // Save the loaded values from the configuration
-  m_loadedCircleRadius    = m_circleRadius->value();
+  m_loadedCircleRadius      = m_circleRadius->value();
   m_loadedInnerSectorRadius = m_innerSectorRadius->value();
   m_loadedOuterSectorRadius = m_outerSectorRadius->value();
   m_loadedLineLength        = m_lineLength->value();
@@ -539,12 +558,12 @@ void TaskPointEditor::save()
       m_workTp.setWGSPosition( WGSPoint(m_latEditor->KFLogDegree(), m_lonEditor->KFLogDegree()));
     }
 
-  m_workTp.setElevation( static_cast<float> (Altitude::convertToMeters(m_elevetionEditor->text().toDouble())) );
+  m_workTp.setElevation( static_cast<float> (Altitude::convertToMeters(m_elevationEditor->text().toDouble())) );
 
-  if( m_loadedCSLScheme != m_selectedCSLScheme )
+  if( m_loadedCSKLScheme != m_selectedCSKLScheme )
     {
       edited = true;
-      m_workTp.setActiveTaskPointFigureScheme( (GeneralConfig::ActiveTaskFigureScheme) m_selectedCSLScheme );
+      m_workTp.setActiveTaskPointFigureScheme( (GeneralConfig::ActiveTaskFigureScheme) m_selectedCSKLScheme );
     }
 
   // @AP: radius is always saved in meters. Save is done only after a

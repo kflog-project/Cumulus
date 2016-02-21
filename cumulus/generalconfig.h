@@ -107,7 +107,7 @@ class GeneralConfig : protected QSettings
   // Task figure scheme
   enum ActiveTaskFigureScheme
   {
-    Undefined = -1, Circle = 0, Sector = 1, Line = 2, KeyHole = 3
+    Undefined = -1, Circle = 0, Sector = 1, Line = 2, Keyhole = 3
   };
 
   // Task switch scheme

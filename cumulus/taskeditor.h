@@ -26,7 +26,7 @@
  *
  * \date 2002-2016
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef TaskEditor_H
@@ -206,6 +206,9 @@ signals:
   QPushButton* delButton;
   QPushButton* editButton;
   QPushButton* defaultButton;
+
+  /** The list index of the last edited taskpoint. */
+  int m_lastEditedTP;
 };
 
 #endif // TaskEditor_H

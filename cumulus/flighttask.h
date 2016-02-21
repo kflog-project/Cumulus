@@ -27,7 +27,7 @@
  *
  * \date 2002-2016
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef FLIGHT_TASK_H
@@ -367,7 +367,7 @@ class FlightTask : public BaseMapElement
    *
    * Draws a circle around the given position.
    *
-   * @param painter Painter Painter to be used
+   * @param painter Painter to be used
    * @param centerCoordinate coordinate of center point as projected position
    * @param radius The scaled radius in meters
    * @param fillColor The fillColor. Do not fill, if it is set to false
@@ -381,9 +381,30 @@ class FlightTask : public BaseMapElement
 		   const bool drawShape=true );
 
   /**
+   * Draws a keyhole around the given position.
+   *
+   * @param painter Painter to be used
+   * @param centerCoordinate coordinate of center point as projected position
+   * @param innerRadius scaled inner radius as meters
+   * @param outerRadius scaled outer radius as meters
+   * @param biangle bisector angle in degrees
+   * @param spanning angle in degrees
+   * @param fillColor, do not fill, if set to invalid
+   * @param drawShape, if set to true, draw outer circle with black color
+   */
+
+  void drawKeyhole( QPainter* painter,
+		    QPoint& centerCoordinate,
+		    const int innerRadius,
+		    const int outerRadius,
+		    const int biangle,
+		    const int spanningAngle,
+		    QColor& fillColor, const bool drawShape=true );
+
+  /**
    * Draws a sector around the given position.
    *
-   * @param painter Painter Painter to be used
+   * @param painter Painter to be used
    * @param centerCoordinate coordinate of center point as projected position
    * @param innerRadius scaled inner radius as meters
    * @param outerRadius scaled outer radius as meters

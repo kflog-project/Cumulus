@@ -35,7 +35,7 @@
  *
  * \date 2010-2016
  *
- * \version 1.1
+ * \version 1.4
  */
 class TaskPoint : public SinglePoint
 {
@@ -119,7 +119,17 @@ class TaskPoint : public SinglePoint
    */
   enum PassageState determineCirclePassageState( const double dist2Tp,
                                                  const double insideRadius );
-
+  /**
+   * Determines the task point passage for a keyhole figure.
+   *
+   * @param dist2Tp Distance to taskpoint in meters
+   *
+   * @param position current WGS position as KFLOG WGS84 datum
+   *
+   * @return State of passage.
+   */
+  enum PassageState determineKeyholePassageState( const double dist2Tp,
+                                                  const QPoint& position );
   /**
    * Determines the task point passage for a sector figure.
    *
@@ -390,6 +400,11 @@ class TaskPoint : public SinglePoint
    * Create a sector icon.
    */
   QPixmap& createSectorIcon( const int iconSize );
+
+  /**
+   * Create a keyhole icon.
+   */
+  QPixmap& createKeyholeIcon( const int iconSize );
 
   /**
    * Create a line icon.

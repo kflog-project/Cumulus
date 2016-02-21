@@ -574,6 +574,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
           crScaled = (int) rint(circleRadius / glMapMatrix->getScale());
           viewport.setRect( -10-crScaled, -10-crScaled, w+2*crScaled, h+2*crScaled );
           break;
+        case GeneralConfig::Keyhole:
         case GeneralConfig::Sector:
           // scale radius to map
           sorScaled = (int) rint(Sor / glMapMatrix->getScale());
@@ -644,6 +645,16 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
                     // Draw circle around given position
                     drawCircle( painter, mPoint, crScaled, color, drawShape );
                     break;
+                case GeneralConfig::Keyhole:
+                    drawKeyhole( painter,
+                                 mPoint,
+                                 sirScaled,
+                                 sorScaled,
+                                 biangle,
+                                 SectorAngle,
+                                 color,
+                                 drawShape );
+                    break;
                 case GeneralConfig::Sector:
                     drawSector( painter,
                                 mPoint,
@@ -702,6 +713,16 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
             case GeneralConfig::Circle:
                 drawCircle( painter, mPoint, crScaled, color, drawShape );
                 break;
+            case GeneralConfig::Keyhole:
+                drawKeyhole( painter,
+                             mPoint,
+                             sirScaled,
+                             sorScaled,
+                             biangle,
+                             SectorAngle,
+                             color,
+                             drawShape );
+                break;
             case GeneralConfig::Sector:
                 drawSector( painter,
                             mPoint,
@@ -753,6 +774,16 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
                     break;
                 case GeneralConfig::Circle:
                     drawCircle( painter, mPoint, crScaled, color, drawShape );
+                    break;
+                case GeneralConfig::Keyhole:
+                    drawKeyhole( painter,
+                                 mPoint,
+                                 sirScaled,
+                                 sorScaled,
+                                 biangle,
+                                 SectorAngle,
+                                 color,
+                                 drawShape );
                     break;
                 case GeneralConfig::Sector:
                     drawSector( painter,
@@ -831,6 +862,84 @@ void FlightTask::drawCircle( QPainter* painter,
       painter->setPen(QPen(color, lineWidth));
       painter->drawEllipse( centerCoordinate.x()-radius, centerCoordinate.y()-radius,
                             radius*2, radius*2 );
+    }
+}
+
+/**
+ * Draws a keyhole around the given position.
+ *
+ * Painter as painter device
+ * coordinate as projected position of the point
+ * scaled inner radius as meters
+ * scaled outer radius as meters
+ * bisector angle in degrees
+ * spanning angle in degrees
+ * fillColor, do not fill, if set to invalid
+ * drawShape, if set to true, draw outer circle with black color
+ */
+
+void FlightTask::drawKeyhole( QPainter* painter,
+			      QPoint& centerCoordinate,
+			      const int innerRadius,
+			      const int outerRadius,
+			      const int biangle,
+			      const int spanningAngle,
+			      QColor& fillColor,
+			      const bool drawShape )
+{
+  // fetch current scale, scale uses unit meter/pixel
+  const double cs = glMapMatrix->getScale(MapMatrix::CurrentScale);
+
+  if(  cs > 350.0 || outerRadius == 0 ||
+       (fillColor.isValid() == false && drawShape == false) )
+    {
+      // Don't make sense to draw task points at this scale. They are
+      // not really visible resp. drawing is disabled by user
+      return;
+    }
+
+  QPainterPath pp;
+
+  // calculate sector array
+  calculateSector( pp,
+                   centerCoordinate.x()-outerRadius,
+                   centerCoordinate.y()-outerRadius,
+                   centerCoordinate.x()-innerRadius,
+                   centerCoordinate.y()-innerRadius,
+                   outerRadius,
+                   innerRadius,
+                   biangle,
+                   spanningAngle );
+
+  if( fillColor.isValid() )
+    {
+      const qreal ALPHA = GeneralConfig::instance()->getTaskShapeAlpha();
+
+      // A valid color has passed, we have to fill the shape
+      painter->setBrush( fillColor );
+      painter->setOpacity( ALPHA/100.0 );
+      painter->setPen( Qt::NoPen );
+      painter->drawPath( pp );
+      painter->drawEllipse( centerCoordinate.x()-innerRadius,
+                            centerCoordinate.y()-innerRadius,
+                            innerRadius*2,
+                            innerRadius*2 );
+      painter->setOpacity( 1.0 );
+    }
+
+  if( drawShape )
+    {
+      // We draw the shape after the filling because filling would
+      // overwrite our shape
+      qreal lineWidth  = GeneralConfig::instance()->getTaskFiguresLineWidth();
+      QColor& color = GeneralConfig::instance()->getTaskFiguresColor();
+      painter->setBrush(Qt::NoBrush);
+      painter->setPen(QPen(color, lineWidth));
+      painter->drawPath( pp );
+      painter->drawEllipse( centerCoordinate.x()-innerRadius,
+                            centerCoordinate.y()-innerRadius,
+                            innerRadius*2,
+                            innerRadius*2 );
     }
 }
 

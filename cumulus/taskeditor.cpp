@@ -50,7 +50,8 @@ TaskEditor::TaskEditor( QWidget* parent,
                         FlightTask* task ) :
   QWidget( parent ),
   taskNamesInUse( taskNamesInUse ),
-  lastSelectedItem(0)
+  lastSelectedItem(0),
+  m_lastEditedTP(-1)
 {
   setObjectName("TaskEditor");
   setWindowFlags( Qt::Tool );
@@ -552,6 +553,8 @@ void TaskEditor::slotEditTaskPoint ()
     return;
   }
 
+  m_lastEditedTP = id;
+
   TaskPoint* modPoint = tpList.at(id);
   TaskPointEditor *tpe = new TaskPointEditor(this, modPoint );
 
@@ -567,6 +570,17 @@ void TaskEditor::slotTaskPointEdited( TaskPoint* editedTaskPoint )
 
   // That updates the task point list in the flight task.
   showTask();
+
+  if( m_lastEditedTP >= 0 )
+    {
+      // Set selection back to the state before editing
+      QTreeWidgetItem* item = taskList->topLevelItem( m_lastEditedTP );
+
+      if( item != 0 )
+	{
+	  taskList->setCurrentItem( item );
+	}
+    }
 }
 
 void TaskEditor::slotAccept()

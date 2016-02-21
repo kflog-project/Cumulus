@@ -22,7 +22,7 @@
  *
  * \date 2013-2016
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
@@ -112,12 +112,13 @@ private:
   QLineEdit*      m_pointLongNameEditor;
   LatEditNumPad*  m_latEditor;
   LongEditNumPad* m_lonEditor;
-  NumberEditor*   m_elevetionEditor;
+  NumberEditor*   m_elevationEditor;
 
   // active scheme
   QButtonGroup* m_cslScheme; // m_circle-m_sector-m_line scheme
 
   QRadioButton* m_circle;
+  QRadioButton* m_keyhole;
   QRadioButton* m_sector;
   QRadioButton* m_line;
 
@@ -127,12 +128,13 @@ private:
   /** Radius of m_circle task point in meter or feet. */
   DoubleNumberEditor* m_circleRadius;
 
-  // Sector widgets
+  // Sector/Keyhole widgets
   QGroupBox*  m_sectorGroup;
 
   DoubleNumberEditor* m_innerSectorRadius; // inner m_sector radius of task point in meter or feet
   DoubleNumberEditor* m_outerSectorRadius; // outer m_sector radius of task point in meter or feet
   NumberEditor*       m_sectorAngle;       // 1-360 degrees
+
   DoubleNumberEditor* m_lineLength;
 
   // Line widgets
@@ -140,17 +142,19 @@ private:
 
   QCheckBox* m_autoZoom;
 
-  // store selected csl scheme button
-  int m_selectedCSLScheme;
+  // store selected cskl scheme button
+  int m_selectedCSKLScheme;
 
-  // store loaded csl scheme
-  int m_loadedCSLScheme;
+  // store loaded cskl scheme
+  int m_loadedCSKLScheme;
   // store m_circle radius after load
   double m_loadedCircleRadius;
   // store inner m_sector radius after load
   double m_loadedInnerSectorRadius;
+  double m_loadedInnerKeyholeRadius;
   // store outer m_sector radius after load
   double m_loadedOuterSectorRadius;
+  double m_loadedOuterKeyholeRadius;
   // store m_line length after load
   double m_loadedLineLength;
   // store m_sector angle after load
