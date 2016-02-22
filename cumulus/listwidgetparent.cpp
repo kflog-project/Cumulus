@@ -78,7 +78,7 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
 #if defined(QSCROLLER) || defined(QTSCROLLER)
 
-  m_enableScroller = new QCheckBox( tr("]["));
+  m_enableScroller = new QCheckBox("][");
   m_enableScroller->setCheckState( Qt::Checked );
   m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
 
