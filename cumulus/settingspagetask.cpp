@@ -395,7 +395,6 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   obsScheme->addButton( circle, GeneralConfig::Circle );
   obsScheme->addButton( sector, GeneralConfig::Sector );
   obsScheme->addButton( keyhole, GeneralConfig::Keyhole );
-  obsScheme->addButton( line, GeneralConfig::Line );
 
   formLayout->addWidget( circle );
   formLayout->addWidget( sector );
