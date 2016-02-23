@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2014 by Axel Pauli
+ **   Copyright (c): 2013-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -89,6 +89,11 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   m_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
 
+#ifdef ANDROID
+  QScrollBar* lvsb = m_table->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
@@ -137,6 +142,11 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QVBoxLayout *displayLayout = new QVBoxLayout( m_displayWidget );
   m_display = new QTextEdit;
   m_display->setReadOnly( true );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = m_display->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture(m_display->viewport(), QScroller::LeftMouseButtonGesture);
