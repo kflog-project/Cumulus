@@ -16,6 +16,7 @@
 #include <QtCore>
 
 #include "generalconfig.h"
+#include "layout.h"
 #include "mapcalc.h"
 #include "taskpoint.h"
 
@@ -707,13 +708,16 @@ QPixmap& TaskPoint::createKeyholeIcon( const int iconSize )
   QPixmap pm( iconSize*2, iconSize*2 );
   pm.fill( Qt::transparent );
 
+  // circle radius for keyhole
+  int cr = 6 * Layout::getIntScaledDensity();
+
   QPainter painter;
   painter.begin( &pm );
   QPen pen(Qt::red);
   painter.setPen( pen );
   painter.setBrush( QBrush( Qt::red, Qt::SolidPattern ) );
   painter.drawPie( 3, 3, (iconSize*2)-2*3, (iconSize*2)-2*3, -118*16, 56*16 );
-  painter.drawEllipse( (iconSize)-6, (iconSize), 12, 12 );
+  painter.drawEllipse( (iconSize)-cr, (iconSize), cr*2, cr*2 );
   painter.end();
 
   // Does not work under Maemo4
