@@ -2940,134 +2940,134 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="preflightweatherpage.cpp" line="48"/>
         <location filename="preflightweatherpage.cpp" line="87"/>
-        <location filename="preflightweatherpage.cpp" line="924"/>
+        <location filename="preflightweatherpage.cpp" line="934"/>
         <source>METAR and TAF</source>
         <translation>METAR und TAF</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="105"/>
+        <location filename="preflightweatherpage.cpp" line="110"/>
         <source>Add</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="111"/>
-        <location filename="preflightweatherpage.cpp" line="154"/>
+        <location filename="preflightweatherpage.cpp" line="116"/>
+        <location filename="preflightweatherpage.cpp" line="164"/>
         <source>Update</source>
         <translation>Update</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="117"/>
+        <location filename="preflightweatherpage.cpp" line="122"/>
         <source>Details</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="124"/>
+        <location filename="preflightweatherpage.cpp" line="129"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="130"/>
-        <location filename="preflightweatherpage.cpp" line="160"/>
+        <location filename="preflightweatherpage.cpp" line="135"/>
+        <location filename="preflightweatherpage.cpp" line="170"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="169"/>
+        <location filename="preflightweatherpage.cpp" line="179"/>
         <source>Airport ICAO Code</source>
         <translation>Flughafen ICAO Kode</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="193"/>
+        <location filename="preflightweatherpage.cpp" line="203"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="187"/>
+        <location filename="preflightweatherpage.cpp" line="197"/>
         <source>Cancel</source>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="353"/>
+        <location filename="preflightweatherpage.cpp" line="363"/>
         <source>Station name not available</source>
         <translation>Stationsname unbekannt</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="812"/>
+        <location filename="preflightweatherpage.cpp" line="822"/>
         <source>Name?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="813"/>
+        <location filename="preflightweatherpage.cpp" line="823"/>
         <source>Station name requires 4 characters!</source>
         <translation>Stationsname erfordert 4 Zeichen!</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="864"/>
+        <location filename="preflightweatherpage.cpp" line="874"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="865"/>
+        <location filename="preflightweatherpage.cpp" line="875"/>
         <source>Confirm delete of station %1</source>
         <translation>Bestätige löschen von Station %1</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="940"/>
+        <location filename="preflightweatherpage.cpp" line="950"/>
         <source>Date: </source>
         <translation>Datum: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="945"/>
+        <location filename="preflightweatherpage.cpp" line="955"/>
         <source>Wind: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="950"/>
+        <location filename="preflightweatherpage.cpp" line="960"/>
         <source>Visibility: </source>
         <translation>Sicht: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="955"/>
+        <location filename="preflightweatherpage.cpp" line="965"/>
         <source>Sky: </source>
         <translation>Himmel: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="960"/>
+        <location filename="preflightweatherpage.cpp" line="970"/>
         <source>Weather: </source>
         <translation>Wetter: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="965"/>
+        <location filename="preflightweatherpage.cpp" line="975"/>
         <source>Temperature: </source>
         <translation>Temperatur: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="970"/>
+        <location filename="preflightweatherpage.cpp" line="980"/>
         <source>Dew Point: </source>
         <translation>Taupunkt: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="975"/>
+        <location filename="preflightweatherpage.cpp" line="985"/>
         <source>Relative Humidity: </source>
         <translation>Rel. Luftfeuchtigkeit: </translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="980"/>
+        <location filename="preflightweatherpage.cpp" line="990"/>
         <source>QNH: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1113"/>
+        <location filename="preflightweatherpage.cpp" line="1123"/>
         <source>&lt;html&gt;Network error occurred!&lt;br&gt;Is the Internet connection down?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Netzwerfehler!&lt;br&gt;Prüfe die Internetverbindung.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1116"/>
+        <location filename="preflightweatherpage.cpp" line="1126"/>
         <source>Network Error</source>
         <translation>Netzwerk Fehler</translation>
     </message>
     <message>
-        <location filename="preflightweatherpage.cpp" line="1138"/>
+        <location filename="preflightweatherpage.cpp" line="1148"/>
         <source>All updates with %1 error(s) done.</source>
         <oldsource>All update(s) with %1 error(s) done.</oldsource>
         <translation>Alle Updates mit %1 Fehler(n) getan.</translation>
@@ -3335,7 +3335,7 @@ All downloads are canceled!</oldsource>
         <location filename="airspace.cpp" line="361"/>
         <location filename="flighttask.cpp" line="59"/>
         <location filename="flighttask.h" line="82"/>
-        <location filename="taskpoint.cpp" line="529"/>
+        <location filename="taskpoint.cpp" line="530"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -3566,7 +3566,7 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="flighttask.cpp" line="477"/>
         <location filename="runway.cpp" line="81"/>
-        <location filename="taskpoint.cpp" line="512"/>
+        <location filename="taskpoint.cpp" line="513"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
@@ -3758,69 +3758,69 @@ All downloads are canceled!</oldsource>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als verantwortlicher Pilot sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Akzeptieren Sie die zuvor genannten Einschränkungen?&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="508"/>
+        <location filename="taskpoint.cpp" line="509"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="523"/>
+        <location filename="taskpoint.cpp" line="524"/>
         <source>Circle radius: %1</source>
         <translation>Kreis Radius: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="525"/>
+        <location filename="taskpoint.cpp" line="526"/>
         <source>Sector radius: %1</source>
         <translation>Sektor Radius: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="527"/>
+        <location filename="taskpoint.cpp" line="528"/>
         <source>Line: %1</source>
         <translation>Linie: %1</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="542"/>
+        <location filename="taskpoint.cpp" line="543"/>
         <source>C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="498"/>
-        <location filename="taskpoint.cpp" line="548"/>
+        <location filename="taskpoint.cpp" line="499"/>
+        <location filename="taskpoint.cpp" line="549"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="496"/>
+        <location filename="taskpoint.cpp" line="497"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="501"/>
+        <location filename="taskpoint.cpp" line="502"/>
         <source>Turn</source>
         <translation>Wende</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="503"/>
+        <location filename="taskpoint.cpp" line="504"/>
         <source>T</source>
         <translation>W</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="506"/>
+        <location filename="taskpoint.cpp" line="507"/>
         <source>Finish</source>
         <translation>Finish</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="545"/>
+        <location filename="taskpoint.cpp" line="546"/>
         <source>K</source>
         <translation>K</translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="551"/>
+        <location filename="taskpoint.cpp" line="552"/>
         <source>L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="taskpoint.cpp" line="514"/>
-        <location filename="taskpoint.cpp" line="554"/>
+        <location filename="taskpoint.cpp" line="515"/>
+        <location filename="taskpoint.cpp" line="555"/>
         <source>U</source>
         <translation></translation>
     </message>
@@ -5040,11 +5040,8 @@ All downloads are canceled!</oldsource>
 <context>
     <name>SettingsPageTask</name>
     <message>
-        <location filename="settingspagetask.cpp" line="208"/>
         <location filename="settingspagetask.cpp" line="234"/>
-        <location filename="settingspagetask.cpp" line="289"/>
         <location filename="settingspagetask.cpp" line="314"/>
-        <location filename="settingspagetask.cpp" line="365"/>
         <location filename="settingspagetask.cpp" line="390"/>
         <source>Sector</source>
         <translation>Sektor</translation>
@@ -5128,6 +5125,13 @@ All downloads are canceled!</oldsource>
         <location filename="settingspagetask.cpp" line="361"/>
         <source>Circle:</source>
         <translation>Kreis:</translation>
+    </message>
+    <message>
+        <location filename="settingspagetask.cpp" line="208"/>
+        <location filename="settingspagetask.cpp" line="289"/>
+        <location filename="settingspagetask.cpp" line="365"/>
+        <source>Sectors</source>
+        <translation>Sektoren</translation>
     </message>
     <message>
         <location filename="settingspagetask.cpp" line="214"/>

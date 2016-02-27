@@ -205,7 +205,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   //--------------------------------------------------------------
   // as next inner sector group is added
-  QGroupBox* startGroup2 = new QGroupBox( tr("Sector"), this );
+  QGroupBox* startGroup2 = new QGroupBox( tr("Sectors"), this );
   topLayout->addWidget( startGroup2, row, 1 );
   formLayout = new QFormLayout;
   startGroup2->setLayout(formLayout);
@@ -286,7 +286,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   //--------------------------------------------------------------
   // as next inner sector group is added
-  QGroupBox* finishGroup2 = new QGroupBox( tr("Sector"), this );
+  QGroupBox* finishGroup2 = new QGroupBox( tr("Sectors"), this );
   topLayout->addWidget( finishGroup2, row, 1 );
   formLayout = new QFormLayout;
   finishGroup2->setLayout(formLayout);
@@ -362,7 +362,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
 
   //--------------------------------------------------------------
   // as next inner sector group is added
-  QGroupBox* obZoneGroup2 = new QGroupBox( tr("Sector"), this );
+  QGroupBox* obZoneGroup2 = new QGroupBox( tr("Sectors"), this );
   topLayout->addWidget( obZoneGroup2, row, 1 );
   formLayout = new QFormLayout;
   obZoneGroup2->setLayout(formLayout);
