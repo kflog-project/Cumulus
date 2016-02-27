@@ -90,7 +90,7 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
 
 #ifdef ANDROID
-  QScrollBar* lvsb = m_table->verticalScrollBar();
+  QScrollBar* lvsb = m_list->verticalScrollBar();
   lvsb->setStyleSheet( Layout::getCbSbStyle() );
 #endif
 
@@ -144,7 +144,7 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   m_display->setReadOnly( true );
 
 #ifdef ANDROID
-  QScrollBar* lvsb = m_display->verticalScrollBar();
+  lvsb = m_display->verticalScrollBar();
   lvsb->setStyleSheet( Layout::getCbSbStyle() );
 #endif
 
