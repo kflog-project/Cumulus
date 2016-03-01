@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-03-01 AP: Issue #90 fixed. Show track information in manually mode too.
+
 [-] 2016-02-21 AP: Issue #89 fixed. Set the list pointer back to the edited item
                    after a taskpoint edition.
 

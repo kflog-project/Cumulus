@@ -893,6 +893,21 @@ void Calculator::calcBearing()
     }
 }
 
+void Calculator::calcHeading( const QPoint& previousPosition, const QPoint& newPosition )
+{
+  // Calculate the heading from the previous to the current position.
+  if( previousPosition == newPosition )
+    {
+      return;
+    }
+
+  double heading = MapCalc::getBearingWgs( previousPosition, newPosition );
+
+  int iHeading = static_cast<int> (rint(heading * 180.0 / M_PI));
+
+  emit newHeading( iHeading );
+}
+
 /** Called if the position is changed manually. */
 void Calculator::slot_changePosition(int direction)
 {
@@ -900,6 +915,9 @@ void Calculator::slot_changePosition(int direction)
 
   double distance=_globalMapMatrix->getScale(MapMatrix::CurrentScale)*10;
   double kmPerDeg;
+
+  // Store previous position for heading calculation.
+  QPoint previousPosition = lastPosition;
 
   switch (direction)
     {
@@ -971,7 +989,6 @@ void Calculator::slot_changePosition(int direction)
       int delta = (int) rint( qnhDiff * 9.1437 );
 
       // qDebug("Calculator::slot_changePosition(): QNH=%d, Delta=%d", conf->getQNH(), delta);
-
       lastSTDAltitude.setMeters(manualAltitude.getMeters() + delta );
     }
 
@@ -980,6 +997,7 @@ void Calculator::slot_changePosition(int direction)
 
   calcDistance();
   calcBearing();
+  calcHeading( previousPosition, lastPosition );
   calcGlidePath();
 
   // calculate always when moving manually (big delta !)
@@ -987,13 +1005,11 @@ void Calculator::slot_changePosition(int direction)
   //qDebug("Elevation: %d m",_globalMapContents->findElevation(lastPosition) );
 }
 
-
 /** No descriptions */
 void Calculator::slot_changePositionN()
 {
   slot_changePosition(MapMatrix::North);
 }
-
 
 /** No descriptions */
 void Calculator::slot_changePositionS()
@@ -1001,13 +1017,11 @@ void Calculator::slot_changePositionS()
   slot_changePosition(MapMatrix::South);
 }
 
-
 /** No descriptions */
 void Calculator::slot_changePositionE()
 {
   slot_changePosition(MapMatrix::East);
 }
-
 
 /** No descriptions */
 void Calculator::slot_changePositionW()
@@ -1015,13 +1029,11 @@ void Calculator::slot_changePositionW()
   slot_changePosition(MapMatrix::West);
 }
 
-
 /** No descriptions */
 void Calculator::slot_changePositionHome()
 {
   slot_changePosition(MapMatrix::Home);
 }
-
 
 /** No descriptions */
 void Calculator::slot_changePositionWp()
@@ -1029,14 +1041,13 @@ void Calculator::slot_changePositionWp()
   slot_changePosition(MapMatrix::Waypoint);
 }
 
-
 /** Called if position was moved by using mouse. */
 void Calculator::slot_changePosition(QPoint& newPosition)
 {
+  calcHeading( lastPosition, newPosition );
   lastPosition = newPosition;
   slot_changePosition(MapMatrix::Position);
 }
-
 
 /** increment McCready value */
 void Calculator::slot_McUp()

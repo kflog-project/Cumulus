@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,9 +53,9 @@ class WindAnalyser;
  *
  * This class represents a single sample of flight data obtained.
  *
- * \date 2002-2015
+ * \date 2002-2016
  *
- * \version 1.1
+ * \version 1.2
  */
 class FlightSample
 {
@@ -812,6 +812,16 @@ private:
    * emits signal newBearing if the bearing has changed.
    */
   void calcBearing();
+
+  /**
+   * Calculates the direction of heading and emits the signal
+   * newHeading. This method is only called in the manually mode.
+   *
+   * \param previousPosition previous position
+   *
+   * \param newPosition new position
+   */
+  void calcHeading( const QPoint& previousPosition, const QPoint& newPosition );
 
   /**
    * Calculates the ETA (Estimated Time to Arrival) to the current

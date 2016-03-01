@@ -161,13 +161,13 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QHBoxLayout* hbbox = new QHBoxLayout;
   displayLayout->addLayout( hbbox );
 
-  m_detailsUpdateButton = new QPushButton(tr("Update"), this);
+  m_detailsUpdateButton = new QPushButton(tr("Update"));
   hbbox->addWidget(m_detailsUpdateButton);
   connect (m_detailsUpdateButton, SIGNAL(clicked()), SLOT(slotRequestWeatherData()));
 
   hbbox->addSpacing( 10 );
 
-  cmd = new QPushButton(tr("Close"), this);
+  cmd = new QPushButton(tr("Close"));
   hbbox->addWidget(cmd);
   connect (cmd, SIGNAL(clicked()), SLOT(slotShowListWidget()));
 
@@ -1009,6 +1009,12 @@ void PreFlightWeatherPage::slotDetails()
   text += "</html>\n";
 
   m_display->setHtml( text );
+
+  if( MainWindow::mainWindow() )
+    {
+      // Under Android it seems to be necessary to do a resize here again.
+      resize( MainWindow::mainWindow()->size() );
+    }
 }
 
 void PreFlightWeatherPage::slotRequestWeatherData()
