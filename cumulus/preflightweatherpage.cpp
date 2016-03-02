@@ -55,6 +55,12 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
       // Resize the window to the same size as the main window has. That will
       // completely hide the parent window.
       resize( MainWindow::mainWindow()->size() );
+
+#ifdef ANDROID
+      // On Galaxy S3 there are size problems observed
+      setMinimumSize( MainWindow::mainWindow()->size() );
+      setMaximumSize( MainWindow::mainWindow()->size() );
+#endif
     }
 
   QVBoxLayout *mainLayout  = new QVBoxLayout( this );
@@ -1009,12 +1015,6 @@ void PreFlightWeatherPage::slotDetails()
   text += "</html>\n";
 
   m_display->setHtml( text );
-
-  if( MainWindow::mainWindow() )
-    {
-      // Under Android it seems to be necessary to do a resize here again.
-      resize( MainWindow::mainWindow()->size() );
-    }
 }
 
 void PreFlightWeatherPage::slotRequestWeatherData()
