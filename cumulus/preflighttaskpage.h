@@ -23,7 +23,7 @@
  *
  * \date 2002-2016
  *
- * \version 1.5
+ * \version 1.6
  *
  */
 
@@ -64,7 +64,7 @@ class PreFlightTaskPage : public QWidget
 
  protected:
 
-  void showEvent(QShowEvent *);
+  void showEvent(QShowEvent *event);
 
  private:
 

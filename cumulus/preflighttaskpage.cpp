@@ -321,12 +321,20 @@ PreFlightTaskPage::~PreFlightTaskPage()
 
 void PreFlightTaskPage::showEvent(QShowEvent *)
 {
+  qDebug() << "PreFlightTaskPage::showEvent";
+
   m_taskList->resizeColumnToContents(0);
   m_taskList->resizeColumnToContents(1);
   m_taskList->resizeColumnToContents(2);
   m_taskList->resizeColumnToContents(3);
   m_taskList->resizeColumnToContents(4);
   m_taskList->sortByColumn(0, Qt::AscendingOrder);
+
+  if( m_taskList->topLevelItemCount() > 0 && m_taskList->currentItem() != 0 )
+    {
+      m_taskList->scrollToItem( m_taskList->currentItem(),
+				QAbstractItemView::PositionAtCenter );
+    }
 
   enableButtons();
 }
@@ -363,6 +371,10 @@ void PreFlightTaskPage::slotShowTaskViewWidget()
       return;
     }
 
+  // Ensure visibility of selected item after return to list.
+  m_taskList->scrollToItem( m_taskList->selectedItems().at(0),
+			    QAbstractItemView::PositionAtCenter );
+
   m_taskViewWidget->setVisible( true );
   m_taskListWidget->setVisible( false );
 }
@@ -376,9 +388,12 @@ void PreFlightTaskPage::slotTaskDetails()
       return;
     }
 
-  QTreeWidgetItem* selected = m_taskList->selectedItems().at(0);
+  QTreeWidgetItem* selectedItem = m_taskList->selectedItems().at(0);
 
-  int id = selected->text(0).toInt() - 1;
+  // Ensure visibility of selected item after return to list.
+  m_taskList->scrollToItem( selectedItem, QAbstractItemView::PositionAtCenter );
+
+  int id = selectedItem->text(0).toInt() - 1;
 
   FlightTask *task = m_flightTaskList.at( id );
 
@@ -568,6 +583,13 @@ void PreFlightTaskPage::slotItemClicked(QTreeWidgetItem*, int)
 
 void PreFlightTaskPage::slotNewTask()
 {
+  // Ensure visibility of selected item after return to list.
+  if( m_taskList->topLevelItemCount() > 0 && m_taskList->currentItem() != 0 )
+    {
+      m_taskList->scrollToItem( m_taskList->currentItem(),
+                                QAbstractItemView::PositionAtCenter );
+    }
+
   TaskEditor *te = new TaskEditor(this, m_taskNames);
 
   connect( te, SIGNAL(newTask( FlightTask * )), this,
@@ -587,6 +609,8 @@ void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
   m_taskList->clear();
   loadTaskList();
   m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
+  m_taskList->scrollToItem( m_taskList->currentItem(),
+			    QAbstractItemView::PositionAtCenter );
   enableButtons();
 }
 
@@ -602,6 +626,10 @@ void PreFlightTaskPage::slotEditTask()
     {
       return;
     }
+
+  // Ensure visibility of selected item after list update.
+  m_taskList->scrollToItem( m_taskList->currentItem(),
+			    QAbstractItemView::PositionAtCenter );
 
   QString id( m_taskList->selectedItems().at(0)->text(0) );
 
@@ -654,6 +682,10 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
     {
       m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
     }
+
+  // Ensure visibility of selected item after list update.
+  m_taskList->scrollToItem( m_taskList->currentItem(),
+			    QAbstractItemView::PositionAtCenter );
 
   enableButtons();
 }
@@ -862,6 +894,12 @@ void PreFlightTaskPage::slotOpenHelp()
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
   hb->setVisible( true );
+
+  if( m_taskList->topLevelItemCount() > 0 && m_taskList->currentItem() != 0 )
+    {
+      m_taskList->scrollToItem( m_taskList->currentItem(),
+				QAbstractItemView::PositionAtCenter );
+    }
 }
 
 void PreFlightTaskPage::slotDeactivateTask()
