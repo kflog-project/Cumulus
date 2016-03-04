@@ -128,6 +128,11 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windListStatistics->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   //m_windListStatistics->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
+#ifdef ANDROID
+  QScrollBar* lvsb = m_windListStatistics->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture(m_windListStatistics->viewport(), QScroller::LeftMouseButtonGesture);
 #endif

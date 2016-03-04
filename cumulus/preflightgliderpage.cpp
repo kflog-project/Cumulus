@@ -131,6 +131,11 @@ PreFlightGliderPage::PreFlightGliderPage(QWidget *parent) :
   m_gliderList->setToolTip(tr("Select a glider to be used"));
 #endif
 
+#ifdef ANDROID
+  QScrollBar* lvsb = m_gliderList->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture(m_gliderList->viewport(), QScroller::LeftMouseButtonGesture);
 #endif
