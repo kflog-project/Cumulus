@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2016 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -65,6 +65,11 @@ SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
 
   m_fileTable->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_fileTable->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = m_fileTable->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture( m_fileTable->viewport(), QScroller::LeftMouseButtonGesture );

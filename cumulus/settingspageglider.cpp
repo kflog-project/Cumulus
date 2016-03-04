@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -74,6 +74,11 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   editrow->addWidget(cmdDel,1);
 
   m_list = new GliderListWidget(this);
+
+#ifdef ANDROID
+  QScrollBar* lvsb = m_list->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);

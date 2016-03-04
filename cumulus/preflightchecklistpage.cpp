@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2014-2015 by Axel Pauli
+**   Copyright (c): 2014-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -66,6 +66,11 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   connect( m_list, SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
            SLOT(slotEditItem(QTableWidgetItem*)) );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = m_list->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);

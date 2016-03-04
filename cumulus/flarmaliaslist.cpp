@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,6 +53,11 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   list->setAlternatingRowColors( true );
   list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = list->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );

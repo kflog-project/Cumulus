@@ -107,6 +107,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_setupTree->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
+#ifdef ANDROID
+  QScrollBar* lvsb = m_setupTree->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture(m_setupTree->viewport(), QScroller::LeftMouseButtonGesture);
 #endif

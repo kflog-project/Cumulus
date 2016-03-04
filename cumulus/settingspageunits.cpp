@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2015 by Axel Pauli
+ **                   2008-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -58,6 +58,11 @@ SettingsPageUnits::SettingsPageUnits(QWidget *parent) : QWidget(parent)
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = sa->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );

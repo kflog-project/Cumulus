@@ -71,6 +71,11 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
 
+#ifdef ANDROID
+  QScrollBar* lvsb = sa->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
 #ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
 #endif

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2015 by Axel Pauli
+ **                   2007-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -127,6 +127,11 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
 
   m_setupTree->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_setupTree->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = m_setupTree->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
 #ifdef QSCROLLER
   QScroller::grabGesture(m_setupTree->viewport(), QScroller::LeftMouseButtonGesture);
