@@ -27,7 +27,7 @@
  *
  * \date 2002-2016
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef FLIGHT_TASK_H
@@ -56,7 +56,7 @@ class FlightTask : public BaseMapElement
    * The flight task types.
    */
   enum TaskType { NotSet=0, ZielS = 1, ZielR = 2, FAI = 3, Dreieck = 4,
-                  Unknown = 8, Vieleck = 13, OLC2003 = 14 };
+                  DMStViereck = 5, Unknown = 8, Vieleck = 13, OLC2003 = 14 };
 
   /**
    * The planning-types
@@ -116,6 +116,21 @@ class FlightTask : public BaseMapElement
    * \return True or false depending on the check result.
    */
   static bool isFAI(double d_wp, double d1, double d2, double d3);
+
+  /**
+   * Returns true, if a the rules for a DMSt Viereck are fulfilled.
+   *
+   * \param p1 Point 1
+   *
+   * \param p2 Point 2
+   *3
+   *4\param p1 Point 3
+   *
+   * \param p1 Point 4
+   *
+   * \return True or false depending on the check result.
+   */
+  static bool isDMStViereck( QPoint* p1, QPoint* p2, QPoint* p3, QPoint* p4 );
 
   /**
    * Returns the task point list by reference

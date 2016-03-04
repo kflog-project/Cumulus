@@ -146,6 +146,17 @@ void FlightTask::determineTaskType()
             flightType = FlightTask::Dreieck;
           break;
 
+        case 5:
+          // Check the DMSt Viereck rules
+          if( isDMStViereck( tpList->at(0)->getWGSPositionPtr(),
+			     tpList->at(1)->getWGSPositionPtr(),
+			     tpList->at(2)->getWGSPositionPtr(),
+			     tpList->at(3)->getWGSPositionPtr() ) )
+	    {
+              flightType = FlightTask::DMStViereck;
+	    }
+          break;
+
         default:
           // Vieleck
           flightType = FlightTask::Vieleck;
@@ -470,6 +481,8 @@ QString FlightTask::getTaskTypeString() const
       return QObject::tr("FAI Triangle");
     case FlightTask::Dreieck:
       return QObject::tr("Triangle");
+    case FlightTask::DMStViereck:
+      return QObject::tr("DMSt 4");
     case FlightTask::Vieleck:
       return QObject::tr("Polygon");
     }
@@ -488,6 +501,26 @@ bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
            ( d1 <= 0.45 * d_wp && d2 <= 0.45 * d_wp && d3 <= 0.45 * d_wp ) )
     // large FAI
     return true;
+
+  return false;
+}
+
+bool FlightTask::isDMStViereck( QPoint* p1, QPoint* p2, QPoint* p3, QPoint* p4 )
+{
+  double d12 = MapCalc::dist( p1, p2 );
+  double d23 = MapCalc::dist( p2, p3 );
+  double d34 = MapCalc::dist( p3, p4 );
+  double d41 = MapCalc::dist( p4, p1 );
+  double d13 = MapCalc::dist( p1, p3 );
+
+  double distTotal1 = d12 + d23 + d13;
+  double distTotal2 = d13 + d34 + d41;
+
+  if( isFAI( distTotal1, d12, d23, d13) == true &&
+      isFAI( distTotal2, d13, d34, d41) == true )
+    {
+      return true;
+    }
 
   return false;
 }
