@@ -24,7 +24,17 @@
 
 	<b>Task</b>
 
-	<p>Here you can define general task related turn point attributes and figures.</p>
+	<p>Here you can define general task related turn point attributes and figures.
+	   Supported taskpoint figures are:
+	   
+	   <uL>
+       <li>Line</li>
+       <li>Circle or Cylinder</li>
+       <li>Photo sector</li>
+       <li>Sector segment</li>
+       <li>Keyhole sector</li>
+	   </uL>
+	</p>
 
 	<dl>
 		<dt>
@@ -47,7 +57,7 @@
 			arrival cases, the IGC logger interval is automatically set to one
 			second for a duration of 30s to ensure the recording of the turn point
 			passage. If the checkbox <i>Report</i> is activated a detailed information
-      is display in the switch moment.
+      is displayed in the switch moment.
 		</dd>
 
 		<br>
@@ -83,9 +93,9 @@
 
 		<dd>
 			Three different task point figures are supported for the start, finish
-			and observation (route) point. Task point figures can be a line, a sector or a
-			circle together with its provide values. A circle expect always a radius
-			value in its input box. If a sector is selected as task point figure,
+			and observation (route) point. Task point figures can be a line, a sector,
+			a sector segment, a keyhole sector or a circle. A circle expect always a
+			radius value in its input box. If a sector is selected as task point figure,
 			you can define a sector centered on the turnpoint. Three
 			parameters can be used for the sector configuration. Radius 1 the
 			<i>Inner radius</i> defines a circle around the task point, whose
