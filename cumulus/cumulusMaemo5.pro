@@ -1,7 +1,7 @@
 ##################################################################
 # Cumulus Maemo 5.x project file for qmake
 #
-# Copyright (c): 2010-2014 Axel Pauli
+# Copyright (c): 2010-2016 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -49,6 +49,7 @@ HEADERS = \
     aboutwidget.h \
     airfield.h \
     AirfieldListWidget.h \
+    AirfieldSelectionList.h \
     airregion.h \
     airspace.h \
     AirspaceHelper.h \
@@ -183,6 +184,7 @@ SOURCES = \
     aboutwidget.cpp \
     airfield.cpp \
     AirfieldListWidget.cpp \
+    AirfieldSelectionList.cpp \
     altimeterdialog.cpp \
     airregion.cpp \
     airspace.cpp \
