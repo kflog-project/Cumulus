@@ -39,6 +39,7 @@
 #endif
 
 #include "aboutwidget.h"
+#include "airfield.h"
 #include "calculator.h"
 #include "configwidget.h"
 #include "generalconfig.h"
@@ -676,6 +677,8 @@ void MainWindow::slotCreateApplicationWidgets()
   _globalMapConfig = new MapConfig( this );
 
   BaseMapElement::initMapElement( _globalMapMatrix, _globalMapConfig );
+
+  Airfield::createStaticIcons();
 
   calculator = new Calculator( this );
 

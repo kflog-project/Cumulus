@@ -20,6 +20,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-03-11 AP: Issue #93 fixed. Airfield icons are not drawn at the map
+                   after an airfields download.
+
+[+] 2016-03-11 AP: Issue #92 fixed. Provide a home airfield selection dialog at
+                   the personal menu page for an easier change to a new home site.
+
 [-] 2016-03-01 AP: Issue #90 fixed. Show track information in manually mode too.
 
 [-] 2016-02-21 AP: Issue #89 fixed. Set the list pointer back to the edited item

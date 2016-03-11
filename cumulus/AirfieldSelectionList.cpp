@@ -14,13 +14,20 @@
 ***********************************************************************/
 
 #ifdef QT_5
-    #include <QtWidgets>
+#include <QtWidgets>
 #else
-    #include <QtGui>
+#include <QtGui>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
 #endif
 
 #include "AirfieldSelectionList.h"
+#include "layout.h"
+#include "mainwindow.h"
 #include "mapcontents.h"
+#include "rowdelegate.h"
 
 extern MapContents *_globalMapContents;
 
@@ -38,44 +45,102 @@ AirfieldSelectionList::AirfieldSelectionList( QWidget *parent ) :
       resize( parent->size() );
     }
 
+  QHBoxLayout* mainLayout = new QHBoxLayout( this );
 
-  m_searchEntry  = new QLineEdit;
-  m_searchEntry->setToolTip( tr("Enter a search string, to navigate to a certain list entry.") );
+  m_airfieldTreeWidget = new QTreeWidget( this );
 
-  connect( m_searchEntry, SIGNAL(returnPressed ()), SLOT(slotReturnPressed()) );
-  connect( m_searchEntry, SIGNAL(textEdited(const QString&)),
-           this, SLOT(slotTextEdited(const QString&)) );
+  mainLayout->addWidget( m_airfieldTreeWidget );
 
-  m_selectionList = new QComboBox;
+  m_airfieldTreeWidget->setRootIsDecorated( false );
+  m_airfieldTreeWidget->setItemsExpandable( false );
+  m_airfieldTreeWidget->setSortingEnabled( true );
+  m_airfieldTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
+  m_airfieldTreeWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
+  m_airfieldTreeWidget->setAlternatingRowColors(true);
+  m_airfieldTreeWidget->setColumnCount( 1 );
+  m_airfieldTreeWidget->setFocusPolicy( Qt::StrongFocus );
+  m_airfieldTreeWidget->setUniformRowHeights(true);
+  m_airfieldTreeWidget->setHeaderLabel( tr( "Airfields" ) );
 
-  QPushButton* clearButton = new QPushButton(tr("Clear"));
-  clearButton->setToolTip( tr("Click Clear to remove the search string.") );
+  // Set additional space per row
+  RowDelegate* rowDelegate = new RowDelegate( m_airfieldTreeWidget, 10 );
+  m_airfieldTreeWidget->setItemDelegate( rowDelegate );
 
-  connect( clearButton, SIGNAL(clicked()),
-           SLOT(slotClearSearchEntry()));
+  QTreeWidgetItem* headerItem = m_airfieldTreeWidget->headerItem();
+  headerItem->setTextAlignment( 0, Qt::AlignCenter );
 
-  QPushButton* setButton = new QPushButton(tr("Set"));
-  setButton->setToolTip( tr("Click Set to take over the selected list entry.") );
+  m_airfieldTreeWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_airfieldTreeWidget->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-  connect( setButton, SIGNAL(clicked()),
-           SLOT(slotSetSelectedEntry()));
+#ifdef ANDROID
+  QScrollBar* lvsb = m_airfieldTreeWidget->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
 
-  QGridLayout* groupLayout = new QGridLayout;
+#ifdef QSCROLLER
+  QScroller::grabGesture(m_airfieldTreeWidget->viewport(), QScroller::LeftMouseButtonGesture);
+#endif
 
-  m_groupBox = new QGroupBox;
+#ifdef QTSCROLLER
+  QtScroller::grabGesture(m_airfieldTreeWidget->viewport(), QtScroller::LeftMouseButtonGesture);
+#endif
+
+  QVBoxLayout* groupLayout = new QVBoxLayout;
+
+  m_groupBox = new QGroupBox( tr("Search Airfield"));
   m_groupBox->setLayout( groupLayout );
+  mainLayout->addWidget( m_groupBox );
 
-  int row = 0;
-  groupLayout->addWidget( m_searchEntry, row, 0 );
-  groupLayout->addWidget( clearButton, row, 1 );
-  row++;
-  groupLayout->addWidget( m_selectionList, row, 0 );
-  groupLayout->addWidget( setButton, row, 1 );
-  groupLayout->setColumnStretch( 0, 5 );
+  m_searchInput = new QLineEdit;
+  groupLayout->addWidget( m_searchInput );
 
-  QHBoxLayout* hbox = new QHBoxLayout( this );
-  hbox->setSpacing(0);
-  hbox->addWidget( m_groupBox );
+#ifndef ANDROID
+  m_searchInput->setToolTip( tr("Enter a search string, to navigate to a certain list entry.") );
+#endif
+
+  connect( m_searchInput, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  connect( m_searchInput, SIGNAL(textEdited(const QString&)),
+           SLOT(slotTextEdited(const QString&)) );
+
+  QHBoxLayout* clearLayout = new QHBoxLayout;
+  clearLayout->setSpacing(0);
+  clearLayout->addStretch(5);
+  QPushButton* clearButton = new QPushButton(tr("Clear"));
+
+#ifndef ANDROID
+  clearButton->setToolTip( tr("Click Clear to remove the search string.") );
+#endif
+
+  clearLayout->addWidget( clearButton );
+  groupLayout->addLayout( clearLayout );
+  groupLayout->addStretch(5);
+
+  connect( clearButton, SIGNAL(clicked()), SLOT(slotClearSearchEntry()));
+
+  QPushButton *cancel = new QPushButton(this);
+  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  connect( cancel, SIGNAL(clicked()), SLOT(slotReject()) );
+
+  QPushButton* ok = new QPushButton(this);
+  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
+  connect( ok, SIGNAL(clicked()), SLOT(slotAccept()) );
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancel, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addStretch(2);
+  mainLayout->addLayout(buttonBox);
 }
 
 AirfieldSelectionList::~AirfieldSelectionList()
@@ -84,7 +149,7 @@ AirfieldSelectionList::~AirfieldSelectionList()
 
 void AirfieldSelectionList::showEvent( QShowEvent *event )
 {
-  fillSelectionListBox();
+  fillSelectionList();
   QWidget::showEvent( event );
 }
 
@@ -92,80 +157,97 @@ void AirfieldSelectionList::fillSelectionList()
 {
   int searchList[] = { MapContents::GliderfieldList, MapContents::AirfieldList };
 
-  QString selectedItemText = m_selectionBox->currentText();
-
-  m_airfieldDict.clear();
-  m_searchEntry->clear();
-  m_selectionList->clear();
-
-  QStringList airfieldList;
+  m_searchInput->clear();
+  m_airfieldTreeWidget->clear();
 
   for( int l = 0; l < 2; l++ )
     {
-      for( int loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
+      for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
       {
         SinglePoint *hitElement = (SinglePoint *) _globalMapContents->getElement(searchList[l], loop );
-        airfieldList.append( hitElement->getName() );
-        m_airfieldDict.insert( hitElement->getName(), hitElement );
+
+        PointItem* item = new PointItem( hitElement );
+        m_airfieldTreeWidget->addTopLevelItem( item );
       }
-  }
-
-  airfieldList.sort();
-  m_selectionBox->addItems( airfieldList );
-
-  // try to find the last selection in the new content.
-  int newIndex = m_selectionBox->findText( selectedItemText );
-
-  if( newIndex != -1 )
-    {
-      // Try to find the last selection.
-      m_selectionBox->setCurrentIndex( newIndex );
     }
-  else
-    {
-      m_selectionBox->setCurrentIndex( 0 );
-    }
+
+  m_airfieldTreeWidget->sortItems( 0, Qt::AscendingOrder );
+}
+
+AirfieldSelectionList::PointItem::PointItem( SinglePoint* sp ) :
+  QTreeWidgetItem(),
+  point(sp)
+{
+  setText( 0, sp->getName() );
 }
 
 void AirfieldSelectionList::slotClearSearchEntry()
 {
-  m_searchEntry->clear();
-  m_selectionBox->setCurrentIndex( 0 );
-}
+  m_searchInput->clear();
 
-void AirfieldSelectionList::slotSetSelectedEntry()
-{
-  QString itemText = m_selectionBox->currentText();
-
-  if( itemText.isEmpty() )
+  if( m_airfieldTreeWidget->topLevelItemCount() > 0 )
     {
-      return;
+      m_airfieldTreeWidget->setCurrentItem( m_airfieldTreeWidget->topLevelItem( 0 ) );
+      m_airfieldTreeWidget->clearSelection();
     }
-
-  const SinglePoint *sp = 0;
-
-  if( m_airfieldDict.contains(itemText) )
-    {
-      sp = m_airfieldDict.value(itemText);
-
-      if( sp != 0 )
-	{
-	  emit takeThisPoint( sp );
-	}
-    }
-}
-
-void AirfieldSelectionList::slotReturnPressed()
-{
-  slotSetSelectedEntry();
 }
 
 void AirfieldSelectionList::slotTextEdited( const QString& text )
 {
-  int idx = m_selectionBox->findText( text, Qt::MatchStartsWith );
+  if( text.size() == 0 )
+    {
+      m_airfieldTreeWidget->setCurrentItem( m_airfieldTreeWidget->topLevelItem( 0 ) );
+      m_airfieldTreeWidget->clearSelection();
+      m_airfieldTreeWidget->scrollToItem( m_airfieldTreeWidget->topLevelItem( 0 ),
+					  QAbstractItemView::PositionAtTop);
+      return;
+    }
 
-   if( idx != -1 )
-      {
-	m_selectionBox->setCurrentIndex( idx );
-      }
+  QList<QTreeWidgetItem *> items = m_airfieldTreeWidget->findItems( text, Qt::MatchStartsWith );
+
+  if( items.size () > 0 )
+    {
+      m_airfieldTreeWidget->setCurrentItem( items.at(0) );
+      m_airfieldTreeWidget->scrollToItem( items.at (0),
+					  QAbstractItemView::PositionAtTop);
+    }
+}
+
+void AirfieldSelectionList::slotAccept()
+{
+  QList<QTreeWidgetItem *> selList = m_airfieldTreeWidget->selectedItems();
+
+  if( selList.size() == 0 )
+    {
+      QWidget::close();
+      return;
+    }
+
+  QTreeWidgetItem* li = selList.at(0);
+
+  if( li == static_cast<QTreeWidgetItem *> (0) )
+    {
+      QWidget::close();
+      return;
+    }
+
+  PointItem* pi = dynamic_cast<PointItem *> ( li );
+
+  if( pi == 0 )
+    {
+      QWidget::close();
+      return;
+    }
+
+  if( pi->getPoint() != 0 )
+    {
+      emit takeThisPoint( pi->getPoint() );
+    }
+
+  QWidget::close();
+}
+
+void AirfieldSelectionList::slotReject()
+{
+  QWidget::close();
 }

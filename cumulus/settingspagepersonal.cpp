@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,11 +24,15 @@
 #include <QtScroller>
 #endif
 
+#include "AirfieldSelectionList.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "mapcontents.h"
 #include "numberEditor.h"
 #include "settingspagepersonal.h"
+
+extern MapContents *_globalMapContents;
 
 #ifdef INTERNET
 #ifndef ANDROID
@@ -37,7 +41,9 @@
 #endif
 
 SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
-  QWidget(parent)
+  QWidget(parent),
+  m_initalHomeElevationValue(0),
+  m_newHomeSelectedFromList(false)
 {
   setObjectName("SettingsPagePersonal");
   setWindowFlags( Qt::Tool );
@@ -138,10 +144,20 @@ SettingsPagePersonal::SettingsPagePersonal(QWidget *parent) :
   edtHomeName->setInputMethodHints(imh);
   edtHomeName->setMaxLength(8);
   topLayout->addWidget(edtHomeName, row, 1);
-  row++;
 
   connect( edtHomeName, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  QHBoxLayout* hbl = new QHBoxLayout;
+  hbl->setSpacing( 0 );
+
+  newHome = new QPushButton( tr("New Home") );
+  hbl->addWidget(newHome);
+  hbl->addStretch( 10 );
+  topLayout->addLayout( hbl, row, 2 );
+  row++;
+
+  connect( newHome, SIGNAL(clicked()), SLOT(slot_openAirfieldDialog()) );
 
   lbl = new QLabel(tr("Home site elevation:"), this);
   topLayout->addWidget(lbl, row, 0);
@@ -269,6 +285,13 @@ void SettingsPagePersonal::load()
   edtHomeLat->setKFLogDegree(conf->getHomeLat());
   edtHomeLong->setKFLogDegree(conf->getHomeLon());
 
+  if( _globalMapContents->getListLength(MapContents::GliderfieldList) == 0 &&
+      _globalMapContents->getListLength(MapContents::AirfieldList) == 0 )
+    {
+      // Hide the button, if no airfields are available.
+      newHome->hide();
+    }
+
   if( m_altUnit == Altitude::meters )
     { // user wants meters
       edtHomeElevation->setValue((int) rint(conf->getHomeElevation().getMeters()));
@@ -319,7 +342,7 @@ void SettingsPagePersonal::load()
 
 void SettingsPagePersonal::save()
 {
-  bool homeChanged = checkIsHomePositionChanged();
+  bool homeChanged = checkIsHomePositionChanged() | m_newHomeSelectedFromList;
 
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -332,12 +355,12 @@ void SettingsPagePersonal::save()
     }
   else
     {
-      conf->setHomeName( edtHomeName->text().trimmed() );
+      conf->setHomeName( edtHomeName->text().trimmed().toUpper() );
     }
 
   conf->setLanguage( langBox->currentText() );
 
-  Distance homeElevation;
+  Altitude homeElevation;
 
   if( m_altUnit == Altitude::meters )
     {
@@ -355,12 +378,12 @@ void SettingsPagePersonal::save()
   // Check, if string input values have been changed. If not, no
   // storage is done to avoid rounding errors. They can appear if the
   // position formats will be changed between DMS <-> DDM vice versa.
-  if( edtHomeLat->isInputChanged() )
+  if( edtHomeLat->isInputChanged() || m_newHomeSelectedFromList == true )
     {
       conf->setHomeLat( edtHomeLat->KFLogDegree() );
     }
 
-  if( edtHomeLong->isInputChanged() )
+  if( edtHomeLong->isInputChanged()  || m_newHomeSelectedFromList == true )
     {
       conf->setHomeLon( edtHomeLong->KFLogDegree() );
     }
@@ -460,6 +483,7 @@ bool SettingsPagePersonal::checkChanges()
   changed |= (edtHomeCountry->text() != conf->getHomeCountryCode());
   changed |= (edtHomeName->text() != conf->getHomeName());
   changed |= checkIsHomePositionChanged();
+  changed |= m_newHomeSelectedFromList;
   changed |= m_initalHomeElevationValue != edtHomeElevation->value();
   changed |= (userDataDir->text() != conf->getUserDataDirectory());
 
@@ -471,9 +495,9 @@ void SettingsPagePersonal::slot_openDirectoryDialog()
 {
   QString dataDir =
       QFileDialog::getExistingDirectory( this,
-                                            tr("Please select your data directory"),
-                                            userDataDir->text(),
-                                            QFileDialog::ShowDirsOnly );
+                                         tr("Please select your data directory"),
+                                         userDataDir->text(),
+                                          QFileDialog::ShowDirsOnly );
   if( dataDir.isEmpty() )
     {
       return; // nothing was selected by the user
@@ -482,10 +506,48 @@ void SettingsPagePersonal::slot_openDirectoryDialog()
   userDataDir->setText( dataDir );
 }
 
+/** Called to open the airfield selection dialog */
+void SettingsPagePersonal::slot_openAirfieldDialog()
+{
+  AirfieldSelectionList* asl = new AirfieldSelectionList( this );
+
+  connect( asl, SIGNAL(takeThisPoint(const SinglePoint*)),
+           SLOT(slot_newHome(const SinglePoint*)) );
+
+  asl->show();
+}
+
 void SettingsPagePersonal::slot_textEditedCountry( const QString& text )
 {
   // Change edited text to upper cases
   edtHomeCountry->setText( text.toUpper() );
+}
+
+/** Called, if a new home shall be set. */
+void SettingsPagePersonal::slot_newHome( const SinglePoint* singlePoint )
+{
+  if( singlePoint == 0 )
+    {
+      return;
+    }
+
+  m_newHomeSelectedFromList = true;
+
+  edtHomeCountry->setText( singlePoint->getCountry() );
+  edtHomeName->setText( singlePoint->getWPName() );
+  edtHomeLat->setKFLogDegree( singlePoint->getWGSPosition().lat() );
+  edtHomeLong->setKFLogDegree( singlePoint->getWGSPosition().lon() );
+
+  Altitude elevation( singlePoint->getElevation() );
+
+  if( m_altUnit == Altitude::meters )
+    { // user wants meters
+      edtHomeElevation->setValue((int) rint(elevation.getMeters()));
+    }
+  else
+    { // user gets feet
+      edtHomeElevation->setValue((int) rint(elevation.getFeet()));
+    }
 }
 
 #ifdef INTERNET

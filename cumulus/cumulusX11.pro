@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2015 Axel Pauli
+# Copyright (c): 2008-2016 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -65,6 +65,7 @@ HEADERS = \
     aboutwidget.h \
     airfield.h \
     AirfieldListWidget.h \
+    AirfieldSelectionList.h \
     airregion.h \
     airspace.h \
     AirspaceHelper.h \
@@ -198,6 +199,7 @@ SOURCES = \
     aboutwidget.cpp \
     airfield.cpp \
     AirfieldListWidget.cpp \
+    AirfieldSelectionList.cpp \
     airregion.cpp \
     airspace.cpp \
     AirspaceHelper.cpp \

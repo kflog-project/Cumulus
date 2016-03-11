@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2014 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,9 +23,9 @@
  *
  * Configuration settings for personal settings.
  *
- * \date 2002-2014
+ * \date 2002-2016
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef SETTINGS_PAGE_PERSONAL_H
@@ -35,10 +35,12 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QPushButton>
 #include <QStringList>
 
 #include "altitude.h"
 #include "coordeditnumpad.h"
+#include "singlepoint.h"
 
 class NumberEditor;
 
@@ -80,6 +82,12 @@ private slots:
   /** Called to open the directory selection dialog */
   void slot_openDirectoryDialog();
 
+  /** Called to open the airfield selection dialog */
+  void slot_openAirfieldDialog();
+
+  /** Called, if a new home shall be set. */
+  void slot_newHome( const SinglePoint* singlePoint );
+
   /** Called, if something has entered in edtHomeCountry. */
   void slot_textEditedCountry( const QString& input );
 
@@ -118,15 +126,16 @@ private:
   /** Called to check, if something has been changed by the user. */
   bool checkChanges();
 
-  QLineEdit *edtName;
-  QComboBox *langBox;
-  QLineEdit *edtHomeCountry;
-  QLineEdit *edtHomeName;
-  QLineEdit *userDataDir;
+  QLineEdit   *edtName;
+  QComboBox   *langBox;
+  QLineEdit   *edtHomeCountry;
+  QLineEdit   *edtHomeName;
+  QLineEdit   *userDataDir;
+  QPushButton *newHome;
 
-  NumberEditor    *edtHomeElevation;
-  LatEditNumPad   *edtHomeLat;
-  LongEditNumPad  *edtHomeLong;
+  NumberEditor   *edtHomeElevation;
+  LatEditNumPad  *edtHomeLat;
+  LongEditNumPad *edtHomeLong;
 
 #ifdef INTERNET
 #ifndef ANDROID
@@ -135,14 +144,17 @@ private:
 #endif
 
   /**
+   * saves current altitude unit during construction of object
+   */
+  Altitude::altitudeUnit m_altUnit;
+
+  /**
    * Initial elevation value after load from configuration.
    */
   int m_initalHomeElevationValue;
 
-  /**
-   * saves current altitude unit during construction of object
-   */
-  Altitude::altitudeUnit m_altUnit;
+  /** User has selected a new home airfield. */
+  bool m_newHomeSelectedFromList;
 };
 
 #endif

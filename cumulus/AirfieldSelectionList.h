@@ -2,11 +2,11 @@
 **
 **   AirfieldSelectionList.h
 **
-**   This file is part of KFLog.
+**   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  * A widget with a list and a search function for a single airfield.
  * With the help of the search function you can navigate to a certain entry in
  * the list. The currently selected entry in the list is emitted as signal,
- * if the set button is clicked.
+ * if the ok button is clicked.
  *
  * \date 2016
  *
@@ -33,11 +33,10 @@
 #ifndef AirfieldSelectionList_h
 #define AirfieldSelectionList_h
 
-#include <QComboBox>
 #include <QGroupBox>
-#include <QHash>
 #include <QLineEdit>
 #include <QString>
+#include <QTreeWidget>
 #include <QWidget>
 
 #include "singlepoint.h"
@@ -83,27 +82,26 @@ class AirfieldSelectionList : public QWidget
  signals:
 
   /**
-   * Emitted, if the set button is pressed to broadcast the selected point.
+   * Emitted, if the OK button is pressed to broadcast the selected point.
    */
   void takeThisPoint( const SinglePoint* singePoint );
 
  private slots:
 
  /**
+  * Called if the Ok button is pressed.
+  */
+ void slotAccept();
+
+ /**
+  * Called if the Cancel button is pressed.
+  */
+ void slotReject();
+
+ /**
   * Called, if the clear button is clicked.
   */
   void slotClearSearchEntry();
-
-  /**
-   * Called, if the set button is clicked to take over the selected entry from
-   * the combo box.
-   */
-  void slotSetSelectedEntry();
-
-  /**
-   * Called if the return key is pressed.
-   */
-  void slotReturnPressed();
 
   /**
    * Called if the text in the search box is modified.
@@ -112,11 +110,35 @@ class AirfieldSelectionList : public QWidget
 
  private:
 
-  QGroupBox* m_groupBox;
-  QLineEdit* m_searchEntry;
+  QGroupBox*   m_groupBox;
+  QLineEdit*   m_searchInput;
   QTreeWidget* m_airfieldTreeWidget;
 
-  QHash<QString, SinglePoint*> m_airfieldDict;
+  /**
+   * \class PointItem
+   *
+   * \author Axel Pauli
+   *
+   * \brief A user point item element.
+   *
+   * \date 2016
+   */
+
+  class PointItem : public QTreeWidgetItem
+    {
+      public:
+
+        PointItem(SinglePoint* point);
+
+        SinglePoint* getPoint() const
+	  {
+	    return point;
+	  };
+
+      private:
+
+        SinglePoint* point;
+    };
 };
 
 #endif /* AirfieldSelectionList_h */

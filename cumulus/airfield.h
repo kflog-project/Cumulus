@@ -267,8 +267,6 @@ class Airfield : public SinglePoint
    */
   static QPixmap& getSmallField( int runway=9 );
 
- private:
-
   /**
    * Creates the static airfield and field icons.
    */
