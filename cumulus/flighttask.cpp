@@ -155,6 +155,12 @@ void FlightTask::determineTaskType()
 	    {
               flightType = FlightTask::DMStViereck;
 	    }
+          else
+            {
+              // Vieleck
+              flightType = FlightTask::Vieleck;
+            }
+
           break;
 
         default:
