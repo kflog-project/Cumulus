@@ -151,7 +151,8 @@ void FlightTask::determineTaskType()
           if( isDMStViereck( tpList->at(0)->getWGSPositionPtr(),
 			     tpList->at(1)->getWGSPositionPtr(),
 			     tpList->at(2)->getWGSPositionPtr(),
-			     tpList->at(3)->getWGSPositionPtr() ) )
+			     tpList->at(3)->getWGSPositionPtr(),
+			     tpList->at(4)->getWGSPositionPtr()) )
 	    {
               flightType = FlightTask::DMStViereck;
 	    }
@@ -511,8 +512,13 @@ bool FlightTask::isFAI(double d_wp, double d1, double d2, double d3)
   return false;
 }
 
-bool FlightTask::isDMStViereck( QPoint* p1, QPoint* p2, QPoint* p3, QPoint* p4 )
+bool FlightTask::isDMStViereck( QPoint* p1,
+                                QPoint* p2,
+                                QPoint* p3,
+                                QPoint* p4,
+                                QPoint* p5 )
 {
+  double d15 = MapCalc::dist( p1, p5 );
   double d12 = MapCalc::dist( p1, p2 );
   double d23 = MapCalc::dist( p2, p3 );
   double d34 = MapCalc::dist( p3, p4 );
@@ -521,6 +527,18 @@ bool FlightTask::isDMStViereck( QPoint* p1, QPoint* p2, QPoint* p3, QPoint* p4 )
 
   double distTotal1 = d12 + d23 + d13;
   double distTotal2 = d13 + d34 + d41;
+
+  if( d15 > 1.0 )
+    {
+      // Distance between start and finish must be less equal 1Km
+      return false;
+    }
+
+  if( p2 == p3 || p2 == p4 || p3 == p4 )
+    {
+      // P2 and P4 must be different in every case
+      return false;
+    }
 
   if( isFAI( distTotal1, d12, d23, d13) == true &&
       isFAI( distTotal2, d13, d34, d41) == true )

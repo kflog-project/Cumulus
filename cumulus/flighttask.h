@@ -123,14 +123,20 @@ class FlightTask : public BaseMapElement
    * \param p1 Point 1
    *
    * \param p2 Point 2
-   *3
-   *4\param p1 Point 3
    *
-   * \param p1 Point 4
+   * \param p3 Point 3
+   *
+   * \param p4 Point 4
+   *
+   * \param p5 Point 5
    *
    * \return True or false depending on the check result.
    */
-  static bool isDMStViereck( QPoint* p1, QPoint* p2, QPoint* p3, QPoint* p4 );
+  static bool isDMStViereck( QPoint* p1,
+                             QPoint* p2,
+                             QPoint* p3,
+                             QPoint* p4,
+                             QPoint* p5 );
 
   /**
    * Returns the task point list by reference
