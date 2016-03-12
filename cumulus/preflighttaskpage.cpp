@@ -321,8 +321,6 @@ PreFlightTaskPage::~PreFlightTaskPage()
 
 void PreFlightTaskPage::showEvent(QShowEvent *)
 {
-  qDebug() << "PreFlightTaskPage::showEvent";
-
   m_taskList->resizeColumnToContents(0);
   m_taskList->resizeColumnToContents(1);
   m_taskList->resizeColumnToContents(2);
