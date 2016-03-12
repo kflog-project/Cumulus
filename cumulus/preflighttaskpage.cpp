@@ -408,9 +408,6 @@ void PreFlightTaskPage::slotTaskDetails()
 
   QTreeWidgetItem* selectedItem = m_taskList->selectedItems().at(0);
 
-  // Ensure visibility of selected item after return to list.
-  m_taskList->scrollToItem( selectedItem, QAbstractItemView::PositionAtCenter );
-
   int id = selectedItem->text(0).toInt() - 1;
 
   FlightTask *task = m_flightTaskList.at( id );
@@ -751,8 +748,11 @@ void PreFlightTaskPage::slotDeleteTask()
 
   delete m_taskList->takeTopLevelItem( m_taskList->currentIndex().row() );
 
-  m_taskList->sortItems( 0, Qt::AscendingOrder );
-  m_taskList->setCurrentItem( m_taskList->topLevelItem(0) );
+  if( m_taskList->topLevelItemCount() > 0 )
+    {
+      m_taskList->sortItems( 0, Qt::AscendingOrder );
+      m_taskList->setCurrentItem( m_taskList->topLevelItem(0) );
+    }
 
   // reset last stored selected task
   GeneralConfig::instance()->setCurrentTaskName( "" );
