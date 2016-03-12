@@ -23,13 +23,14 @@
  *
  * \date 2002-2016
  *
- * \version 1.6
+ * \version 1.7
  *
  */
 
 #ifndef PRE_FLIGHT_TASK_PAGE_H
 #define PRE_FLIGHT_TASK_PAGE_H
 
+#include <QLabel>
 #include <QList>
 #include <QTreeWidget>
 #include <QWidget>
@@ -161,6 +162,11 @@ class PreFlightTaskPage : public QWidget
   void slotItemClicked(QTreeWidgetItem * item, int column);
 
   /**
+   * Called, if the item selection is changed in the task list.
+   */
+  void slotItemSelectionChanged();
+
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();
@@ -180,6 +186,13 @@ class PreFlightTaskPage : public QWidget
   QPushButton* m_helpButton;
   QPushButton* m_deactivateButton;
   QPushButton* m_showButton;
+  QPushButton* m_cmdNew;
+  QPushButton* m_cmdEdit;
+  QPushButton* m_cmdDel;
+  QPushButton* m_cancel;
+  QPushButton* m_ok;
+
+  QLabel* m_titlePix;
 
   /** editor box for TAS entry */
   NumberEditor* m_tas;

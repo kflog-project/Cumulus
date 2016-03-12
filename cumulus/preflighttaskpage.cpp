@@ -67,6 +67,9 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   int msw = QFontMetrics(font()).width("999 Km/h") + 10;
   int mdw = QFontMetrics(font()).width("999" + QString(Qt::Key_degree)) + 10;
 
+  const int iconSize = Layout::iconSize( font() );
+  const int Scaling = Layout::getIntScaledDensity();
+
   QVBoxLayout* taskLayout = new QVBoxLayout;
   contentLayout->addLayout( taskLayout, 5 );
 
@@ -74,7 +77,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   taskLayout->setMargin(0);
 
   QHBoxLayout* editrow = new QHBoxLayout;
-  editrow->setSpacing(5);
+  editrow->setSpacing(5 * Scaling);
   taskLayout->addLayout( editrow );
   taskLayout->addSpacing( 10 );
 
@@ -133,33 +136,31 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   editrow->addWidget(m_windSpeed);
   editrow->addStretch(10);
 
-  const int iconSize = Layout::iconSize( font() );
-
-  QPushButton * cmdNew = new QPushButton;
-  cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png", true)) );
-  cmdNew->setIconSize(QSize(iconSize, iconSize));
+  m_cmdNew = new QPushButton;
+  m_cmdNew->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("add.png", true)) );
+  m_cmdNew->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
-  cmdNew->setToolTip(tr("Define a new task"));
+  m_cmdNew->setToolTip(tr("Define a new task"));
 #endif
-  editrow->addWidget(cmdNew);
+  editrow->addWidget(m_cmdNew);
 
-  editrow->addSpacing(20);
-  QPushButton * cmdEdit = new QPushButton;
-  cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png", true)) );
-  cmdEdit->setIconSize(QSize(iconSize, iconSize));
+  editrow->addSpacing(20 * Scaling);
+  m_cmdEdit = new QPushButton;
+  m_cmdEdit->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png", true)) );
+  m_cmdEdit->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
-  cmdEdit->setToolTip(tr("Edit selected task"));
+  m_cmdEdit->setToolTip(tr("Edit selected task"));
 #endif
-  editrow->addWidget(cmdEdit);
+  editrow->addWidget(m_cmdEdit);
 
-  editrow->addSpacing(20);
-  QPushButton * cmdDel = new QPushButton;
-  cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png", true)) );
-  cmdDel->setIconSize(QSize(iconSize, iconSize));
+  editrow->addSpacing(20 * Scaling);
+  m_cmdDel = new QPushButton;
+  m_cmdDel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("delete.png", true)) );
+  m_cmdDel->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
-  cmdDel->setToolTip(tr("Remove selected task"));
+  m_cmdDel->setToolTip(tr("Remove selected task"));
 #endif
-  editrow->addWidget(cmdDel);
+  editrow->addWidget(m_cmdDel);
 
   //----------------------------------------------------------------------------
 
@@ -170,7 +171,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_taskList = new QTreeWidget;
 
   connect( m_taskList, SIGNAL(itemClicked(QTreeWidgetItem*, int)),
-           this, SLOT(slotItemClicked(QTreeWidgetItem*, int)) );
+           SLOT(slotItemClicked(QTreeWidgetItem*, int)) );
+
+  connect( m_taskList, SIGNAL(itemSelectionChanged()),
+           SLOT(slotItemSelectionChanged()) );
 
 #ifndef ANDROID
   m_taskList->setToolTip( tr("Choose a flight task to be flown") );
@@ -266,9 +270,9 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   connect( m_windSpeed, SIGNAL(numberEdited(const QString&)),
            this, SLOT(slotNumberEdited(const QString&)) );
 
-  connect(cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
-  connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
-  connect(cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
+  connect(m_cmdNew, SIGNAL(clicked()), this, SLOT(slotNewTask()));
+  connect(m_cmdEdit, SIGNAL(clicked()), this, SLOT(slotEditTask()));
+  connect(m_cmdDel, SIGNAL(clicked()), this, SLOT(slotDeleteTask()));
 
   connect( m_taskList, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
@@ -285,30 +289,30 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   connect( tvCloseButton, SIGNAL(pressed()),
            this, SLOT( slotShowTaskListWidget() ) );
 
-  QPushButton *cancel = new QPushButton(this);
-  cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));
-  cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
-  cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_cancel = new QPushButton(this);
+  m_cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));
+  m_cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  m_cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QPushButton *ok = new QPushButton(this);
-  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png", true)));
-  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
-  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_ok = new QPushButton(this);
+  m_ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png", true)));
+  m_ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  m_ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QLabel *titlePix = new QLabel(this);
-  titlePix->setAlignment( Qt::AlignCenter );
-  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
-  connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
-  connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
+  m_titlePix = new QLabel(this);
+  m_titlePix->setAlignment( Qt::AlignCenter );
+  m_titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
+  connect(m_ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
+  connect(m_cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
   buttonBox->addStretch(2);
-  buttonBox->addWidget(cancel, 1);
+  buttonBox->addWidget(m_cancel, 1);
   buttonBox->addSpacing(30);
-  buttonBox->addWidget(ok, 1);
+  buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix);
+  buttonBox->addWidget(m_titlePix);
   contentLayout->addLayout(buttonBox);
 
   loadTaskList();
@@ -355,6 +359,14 @@ void PreFlightTaskPage::enableButtons()
 
 void PreFlightTaskPage::slotShowTaskListWidget()
 {
+  // Show all buttons in this view.
+  m_cmdNew->setVisible( true );
+  m_cmdEdit->setVisible( true );
+  m_cmdDel->setVisible( true );
+  m_cancel->setVisible( true );
+  m_ok->setVisible( true );
+  m_titlePix->setVisible( true );
+
   m_taskViewWidget->setVisible( false );
   m_taskListWidget->setVisible( true );
 }
@@ -372,6 +384,14 @@ void PreFlightTaskPage::slotShowTaskViewWidget()
   // Ensure visibility of selected item after return to list.
   m_taskList->scrollToItem( m_taskList->selectedItems().at(0),
 			    QAbstractItemView::PositionAtCenter );
+
+  // Hide buttons which shall not usable.
+  m_cmdNew->hide();
+  m_cmdEdit->hide();
+  m_cmdDel->hide();
+  m_cancel->hide();
+  m_ok->hide();
+  m_titlePix->hide();
 
   m_taskViewWidget->setVisible( true );
   m_taskListWidget->setVisible( false );
@@ -575,6 +595,11 @@ bool PreFlightTaskPage::loadTaskList()
 }
 
 void PreFlightTaskPage::slotItemClicked(QTreeWidgetItem*, int)
+{
+  enableButtons();
+}
+
+void PreFlightTaskPage::slotItemSelectionChanged()
 {
   enableButtons();
 }

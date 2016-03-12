@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-03-11 AP: Issue #94 fixed. Hide all not necessary buttons in the task
+                   list view to prevent unwanted actions. 
+
 [-] 2016-03-11 AP: Issue #93 fixed. Airfield icons are not drawn at the map
                    after an airfields download.
 
