@@ -62,6 +62,9 @@ AirfieldSelectionList::AirfieldSelectionList( QWidget *parent ) :
   m_airfieldTreeWidget->setUniformRowHeights(true);
   m_airfieldTreeWidget->setHeaderLabel( tr( "Airfields" ) );
 
+  connect( m_airfieldTreeWidget, SIGNAL(itemSelectionChanged()),
+           SLOT(slotItemSelectionChanged()) );
+
   // Set additional space per row
   RowDelegate* rowDelegate = new RowDelegate( m_airfieldTreeWidget, 10 );
   m_airfieldTreeWidget->setItemDelegate( rowDelegate );
@@ -93,6 +96,9 @@ AirfieldSelectionList::AirfieldSelectionList( QWidget *parent ) :
 
   m_searchInput = new QLineEdit;
   groupLayout->addWidget( m_searchInput );
+
+  Qt::InputMethodHints imh = (m_searchInput->inputMethodHints() | Qt::ImhNoPredictiveText);
+  m_searchInput->setInputMethodHints(imh);
 
 #ifndef ANDROID
   m_searchInput->setToolTip( tr("Enter a search string, to navigate to a certain list entry.") );
@@ -126,19 +132,20 @@ AirfieldSelectionList::AirfieldSelectionList( QWidget *parent ) :
 
   connect( cancel, SIGNAL(clicked()), SLOT(slotReject()) );
 
-  QPushButton* ok = new QPushButton(this);
-  ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
-  ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_ok = new QPushButton(this);
+  m_ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  m_ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  m_ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  m_ok->setEnabled( false );
 
-  connect( ok, SIGNAL(clicked()), SLOT(slotAccept()) );
+  connect( m_ok, SIGNAL(clicked()), SLOT(slotAccept()) );
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
-  buttonBox->addWidget(ok, 1);
+  buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
   mainLayout->addLayout(buttonBox);
 }
@@ -210,6 +217,22 @@ void AirfieldSelectionList::slotTextEdited( const QString& text )
       m_airfieldTreeWidget->setCurrentItem( items.at(0) );
       m_airfieldTreeWidget->scrollToItem( items.at (0),
 					  QAbstractItemView::PositionAtTop);
+    }
+}
+
+void AirfieldSelectionList::slotItemSelectionChanged()
+{
+  QList<QTreeWidgetItem *> selList = m_airfieldTreeWidget->selectedItems();
+
+  if( selList.size() == 0 )
+    {
+      // No items selected, disable ok button
+      m_ok->setEnabled( false );
+    }
+  else
+    {
+      // Items selected, enable ok button
+      m_ok->setEnabled( true );
     }
 }
 

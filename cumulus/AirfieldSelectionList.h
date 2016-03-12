@@ -23,7 +23,7 @@
  * A widget with a list and a search function for a single airfield.
  * With the help of the search function you can navigate to a certain entry in
  * the list. The currently selected entry in the list is emitted as signal,
- * if the ok button is clicked.
+ * if the OK button is clicked.
  *
  * \date 2016
  *
@@ -35,6 +35,7 @@
 
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QPushButton>
 #include <QString>
 #include <QTreeWidget>
 #include <QWidget>
@@ -108,10 +109,16 @@ class AirfieldSelectionList : public QWidget
    */
   void slotTextEdited( const QString& text );
 
+  /**
+   * Called, if the selection in the m_airfieldTreeWidget is changed.
+   */
+  void slotItemSelectionChanged();
+
  private:
 
   QGroupBox*   m_groupBox;
   QLineEdit*   m_searchInput;
+  QPushButton* m_ok;
   QTreeWidget* m_airfieldTreeWidget;
 
   /**
