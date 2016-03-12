@@ -114,9 +114,9 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
 
   bool readOldFormat = false;
 
-  if( head.startsWith( "# KFLog/Cumulus-Task-File V3.0") )
+  if( head.startsWith( "# Cumulus-Task-File V4") == false )
     {
-      // Note! Old format contains takeoff and landing points. These points
+      // Note! Old formats before V4.0 contains takeoff and landing points. These points
       // must be remove after the read in, if they are identically.
       readOldFormat = true;
     }
