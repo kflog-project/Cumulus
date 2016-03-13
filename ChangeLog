@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2016-03-13 AP: Cumulus 5.26.0 released for all platforms.
+
 [o] 2016-03-11 AP: Issue #94 fixed. Hide all not necessary buttons in the task
                    list view to prevent unwanted actions. 
 
