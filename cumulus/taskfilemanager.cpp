@@ -112,48 +112,44 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
 
   f.close();
 
-  bool readOldFormat = false;
-
-  if( head.startsWith( "# Cumulus-Task-File V4") == false )
-    {
-      // Note! Old formats before V4.0 contains takeoff and landing points. These points
-      // must be remove after the read in, if they are identically.
-      readOldFormat = true;
-    }
-
   loadTaskListNew( flightTaskList, fileName );
 
-  if( readOldFormat == true )
+  bool save = false;
+
+  // First and last point of the task have to be removed, if they are identically
+  // to its successor or predecessor
+  for( int i = 0; i < flightTaskList.size(); i++ )
     {
-      // First and last point of the task have to be removed, if they are identically.
-      for( int i = 0; i < flightTaskList.size(); i++ )
+      QList<TaskPoint *>&taskList = flightTaskList.at(i)->getTpList();
+
+      if( taskList.size() >= 4 )
 	{
-	  QList<TaskPoint *>&taskList = flightTaskList.at(i)->getTpList();
-
-	  if( taskList.size() >= 4 )
+	  if( taskList.at(0)->getWGSPosition() == taskList.at(1)->getWGSPosition() )
 	    {
-	      if( taskList.at(0)->getWGSPosition() == taskList.at(1)->getWGSPosition() )
-		{
-		  TaskPoint *item = taskList.takeFirst();
+	      save = true;
+	      TaskPoint *item = taskList.takeFirst();
 
-		  if( item != 0 )
-		    {
-		      delete item;
-		    }
+	      if( item != 0 )
+		{
+		  delete item;
 		}
+	    }
 
-	      if( taskList.at(taskList.size() - 2)->getWGSPosition() == taskList.at(taskList.size() - 1)->getWGSPosition() )
+	  if( taskList.at(taskList.size() - 2)->getWGSPosition() == taskList.at(taskList.size() - 1)->getWGSPosition() )
+	    {
+	      save = true;
+	      TaskPoint *item = taskList.takeLast();
+
+	      if( item != 0 )
 		{
-		  TaskPoint *item = taskList.takeLast();
-
-		  if( item != 0 )
-		    {
-		      delete item;
-		    }
+		  delete item;
 		}
 	    }
 	}
+    }
 
+  if( save == true )
+    {
       // Save migrated task list
       saveTaskList( flightTaskList );
     }
@@ -257,6 +253,19 @@ bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
               tp->setTaskSectorAngle( tmpList.at( i++ ).toInt() );
               tp->setAutoZoom( tmpList.at( i++ ).toInt() > 0 ? true : false );
               tp->setUserEditFlag( tmpList.at( i++ ).toInt() > 0 ? true : false );
+
+              // Check active task figure schema
+              switch( tp->getActiveTaskPointFigureScheme() )
+              {
+        	case GeneralConfig::Circle:
+        	case GeneralConfig::Sector:
+        	case GeneralConfig::Line:
+        	case GeneralConfig::Keyhole:
+        	  break;
+        	default:
+        	  tp->setActiveTaskPointFigureScheme( GeneralConfig::Circle );
+        	  break;
+              }
             }
           else
             {
