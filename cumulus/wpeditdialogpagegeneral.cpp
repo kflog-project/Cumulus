@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+**                   2008-2016 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,9 +31,12 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "mapconfig.h"
 #include "numberEditor.h"
 #include "wgspoint.h"
 #include "wpeditdialogpagegeneral.h"
+
+extern MapConfig* _globalMapConfig;
 
 WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QWidget(parent)
@@ -191,7 +194,17 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   for( int i=0; i < tlist.size(); i++ )
     {
-      m_cmbType->addItem( tlist.at(i) );
+      int type   = BaseMapElement::text2Item( tlist.at(i) );
+      QPixmap pm = _globalMapConfig->getPixmap( type, false );
+
+      if( pm.isNull() == true )
+	{
+	  m_cmbType->addItem( tlist.at(i) );
+	}
+      else
+	{
+	  m_cmbType->addItem( pm, tlist.at(i) );
+	}
     }
 
   // The default waypoint type is landmark.

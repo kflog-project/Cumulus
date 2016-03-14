@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-03-14 AP: Issue #95 fixed. Add the related icons to the waypoint kind
+                   selection combobox list in the waypoint editor.
+
 [*] 2016-03-13 AP: Cumulus 5.26.0 released for all platforms.
 
 [o] 2016-03-11 AP: Issue #94 fixed. Hide all not necessary buttons in the task

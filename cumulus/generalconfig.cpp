@@ -1532,6 +1532,11 @@ QPixmap GeneralConfig::loadPixmapAutoScaled( const QString& pixmapName )
       emptyPixmap.fill( Qt::transparent );
     }
 
+  if( pixmapName == "empty.xpm" )
+    {
+      return emptyPixmap;
+    }
+
   float scale = Layout::getScaledDensity();
 
   if( _globalMapConfig->useSmallIcons() == true )
