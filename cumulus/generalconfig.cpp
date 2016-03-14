@@ -1483,8 +1483,8 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale
       key += QString::number(scale, 'f', 3);
     }
 
-  // qDebug() << "loadPixmap:" << pixmapName << "doScale" << doScale
-  //          << "scale=" << scale << "key=" << key;
+  //  qDebug() << "loadPixmap:" << pixmapName << "doScale" << doScale
+  //           << "scale=" << scale << "key=" << key;
 
   QPixmap pm;
 

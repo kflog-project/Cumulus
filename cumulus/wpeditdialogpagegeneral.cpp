@@ -208,7 +208,9 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 	    break;
 	}
 
-      QPixmap pm = _globalMapConfig->getPixmap( type, false );
+      QString pmName = _globalMapConfig->getPixmapName( type, false );
+
+      QPixmap pm = GeneralConfig::instance()->loadPixmap( pmName, true );
 
       if( pm.isNull() == true )
 	{
@@ -216,7 +218,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 	}
       else
 	{
-	  m_cmbType->addItem( pm, tlist.at(i), type );
+	  m_cmbType->setIconSize( pm.size() );
+	  m_cmbType->addItem( QIcon(pm), tlist.at(i), type );
 	}
     }
 
