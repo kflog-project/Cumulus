@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2016 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -54,7 +54,7 @@ bool OpenAip::getRootElement( QString fileName,
 {
   QFile file( fileName );
 
-  if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
+  if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) || file.size() == 0 )
     {
       qWarning() << "OpenAip::getRootElement: cannot open file:" << fileName;
       return false;
@@ -186,6 +186,13 @@ bool OpenAip::readNavAids( QString fileName,
     }
 
   QFile file( fileName );
+
+  if( file.exists() && file.size() == 0 )
+    {
+      errorInfo = QObject::tr("File %1 is empty").arg(fileName);
+      qWarning() << "OpenAip::readNavAids: File" << fileName << "is empty!";
+      return false;
+    }
 
   if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
@@ -606,6 +613,13 @@ bool OpenAip::readHotspots( QString fileName,
 {
   QFile file( fileName );
 
+  if( file.exists() && file.size() == 0 )
+    {
+      errorInfo = QObject::tr("File %1 is empty").arg(fileName);
+      qWarning() << "OpenAip::readHotspots: File" << fileName << "is empty!";
+      return false;
+    }
+
   if( ! file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
       errorInfo = QObject::tr("Cannot open file") + " " + fileName;
@@ -812,10 +826,10 @@ bool OpenAip::readAirfields( QString fileName,
 
   QFile file( fileName );
 
-  if( file.size() == 0 )
+  if( file.exists() && file.size() == 0 )
     {
-      errorInfo = fileName + " " + QObject::tr("is empty");
-      qWarning() << "OpenAip::readAirfields: " << fileName << "is empty!";
+      errorInfo = QObject::tr("File %1 is empty").arg(fileName);
+      qWarning() << "OpenAip::readAirfields: File" << fileName << "is empty!";
       return false;
     }
 
@@ -1658,10 +1672,10 @@ bool OpenAip::readAirspaces( QString fileName,
 
   QFile file( fileName );
 
-  if( file.size() == 0 )
+  if( file.exists() && file.size() == 0 )
     {
-      errorInfo = fileName + " " + QObject::tr("is empty");
-      qWarning() << method << fileName << "is empty!";
+      errorInfo = QObject::tr("File %1 is empty").arg(fileName);
+      qWarning() << "OpenAip::readAirspaces: File" << fileName << "is empty!";
       return false;
     }
 

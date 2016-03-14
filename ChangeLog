@@ -20,6 +20,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-03-14 AP: Issue #96 fixed. If OpenAip provides no data, an empty file
+                   is created during download. Such files must be handled in a
+                   proper way.
+
 [o] 2016-03-14 AP: Issue #95 fixed. Add the related icons to the waypoint kind
                    selection combobox list in the waypoint editor.
 
