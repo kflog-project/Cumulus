@@ -194,16 +194,29 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 
   for( int i=0; i < tlist.size(); i++ )
     {
-      int type   = BaseMapElement::text2Item( tlist.at(i) );
+      int type = BaseMapElement::text2Item( tlist.at(i) );
+
+      switch( type )
+	{
+	  // These types have to be ignored
+	  case BaseMapElement::AerialRailway:
+	  case BaseMapElement::Railway:
+	  case BaseMapElement::Road:
+	  case BaseMapElement::EmptyPoint:
+	    continue;
+	  default:
+	    break;
+	}
+
       QPixmap pm = _globalMapConfig->getPixmap( type, false );
 
       if( pm.isNull() == true )
 	{
-	  m_cmbType->addItem( tlist.at(i) );
+	  m_cmbType->addItem( tlist.at(i), type );
 	}
       else
 	{
-	  m_cmbType->addItem( pm, tlist.at(i) );
+	  m_cmbType->addItem( pm, tlist.at(i), type );
 	}
     }
 
@@ -316,32 +329,21 @@ void WpEditDialogPageGeneral::slot_textEditedCountryFinished()
 /** return internal type of waypoint */
 int WpEditDialogPageGeneral::getWaypointType()
 {
-  int type = m_cmbType->currentIndex();
-
-  if (type != -1)
-    {
-      const QString &text = BaseMapElement::getSortedTranslationList().at(type);
-      type = BaseMapElement::text2Item( text );
-    }
+  int type = m_cmbType->itemData(m_cmbType->currentIndex()).toInt();
 
   return type;
 }
 
-
 /** set waypoint type in combo box translate internal id to index */
 void WpEditDialogPageGeneral::setWaypointType(int type)
 {
-  int index = -1;
+  int index = m_cmbType->findData( type );
 
-  if (type != -1)
+  if (index == -1)
     {
-      index = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(type));
-    }
-  else
-    {
-      index = BaseMapElement::getSortedTranslationList().indexOf(BaseMapElement::item2Text(0));
+      // That is the default, if the search has failed
+      index = m_cmbType->findData( BaseMapElement::Landmark );
     }
 
   m_cmbType->setCurrentIndex(index);
 }
-
