@@ -35,32 +35,32 @@
 <context>
     <name>AirfieldSelectionList</name>
     <message>
-        <location filename="AirfieldSelectionList.cpp" line="34"/>
+        <location filename="AirfieldSelectionList.cpp" line="38"/>
         <source>Airfield Selection</source>
         <translation>Flugplatz Auswahl</translation>
     </message>
     <message>
-        <location filename="AirfieldSelectionList.cpp" line="59"/>
+        <location filename="AirfieldSelectionList.cpp" line="63"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="AirfieldSelectionList.cpp" line="86"/>
+        <location filename="AirfieldSelectionList.cpp" line="93"/>
         <source>Search Airfield</source>
         <translation>Suche Flugplatz</translation>
     </message>
     <message>
-        <location filename="AirfieldSelectionList.cpp" line="94"/>
+        <location filename="AirfieldSelectionList.cpp" line="104"/>
         <source>Enter a search string, to navigate to a certain list entry.</source>
         <translation>Gebe einen Suchbegriff ein zum Navigieren zu einem Listeneintrag.</translation>
     </message>
     <message>
-        <location filename="AirfieldSelectionList.cpp" line="106"/>
+        <location filename="AirfieldSelectionList.cpp" line="116"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="AirfieldSelectionList.cpp" line="109"/>
+        <location filename="AirfieldSelectionList.cpp" line="119"/>
         <source>Click Clear to remove the search string.</source>
         <translation>Klicke Löschen zum Löschen des Sucheintrages.</translation>
     </message>
@@ -2596,132 +2596,132 @@ All downloads are canceled!</oldsource>
         <translation>Vorflug Aufgabe/Route</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="81"/>
+        <location filename="preflighttaskpage.cpp" line="84"/>
         <source>TAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="86"/>
+        <location filename="preflighttaskpage.cpp" line="89"/>
         <source>True Air Speed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="99"/>
+        <location filename="preflighttaskpage.cpp" line="102"/>
         <source>WD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="104"/>
+        <location filename="preflighttaskpage.cpp" line="107"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="116"/>
+        <location filename="preflighttaskpage.cpp" line="119"/>
         <source>WS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="121"/>
+        <location filename="preflighttaskpage.cpp" line="124"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="142"/>
+        <location filename="preflighttaskpage.cpp" line="143"/>
         <source>Define a new task</source>
         <translation>Neue Aufgabe definieren</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="151"/>
+        <location filename="preflighttaskpage.cpp" line="152"/>
         <source>Edit selected task</source>
         <translation>Editiere ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="160"/>
+        <location filename="preflighttaskpage.cpp" line="161"/>
         <source>Remove selected task</source>
         <translation>Lösche ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="176"/>
+        <location filename="preflighttaskpage.cpp" line="180"/>
         <source>Choose a flight task to be flown</source>
         <translation>Wähle eine zu fliegende Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="237"/>
+        <location filename="preflighttaskpage.cpp" line="241"/>
         <source>Show details of selected task</source>
         <translation>Zeige Details der selektierten Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="203"/>
+        <location filename="preflighttaskpage.cpp" line="207"/>
         <source>No.</source>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="204"/>
+        <location filename="preflighttaskpage.cpp" line="208"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="205"/>
+        <location filename="preflighttaskpage.cpp" line="209"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="206"/>
+        <location filename="preflighttaskpage.cpp" line="210"/>
         <source>Distance</source>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="207"/>
+        <location filename="preflighttaskpage.cpp" line="211"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="224"/>
+        <location filename="preflighttaskpage.cpp" line="228"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="228"/>
+        <location filename="preflighttaskpage.cpp" line="232"/>
         <source>Deactivate Task</source>
         <translation>Deaktiviere  Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="230"/>
+        <location filename="preflighttaskpage.cpp" line="234"/>
         <source>Deactivate the currently activated task</source>
         <translation>Deaktiviere die aktuelle Aufgabe</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="235"/>
+        <location filename="preflighttaskpage.cpp" line="239"/>
         <source>Show</source>
         <translation>Zeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="252"/>
+        <location filename="preflighttaskpage.cpp" line="256"/>
         <source>Task display</source>
         <translation>Aufgabenanzeige</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="257"/>
+        <location filename="preflighttaskpage.cpp" line="261"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="708"/>
+        <location filename="preflighttaskpage.cpp" line="728"/>
         <source>Delete Task?</source>
         <translation>Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="709"/>
+        <location filename="preflighttaskpage.cpp" line="729"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="798"/>
+        <location filename="preflighttaskpage.cpp" line="821"/>
         <source>Replace current task?</source>
         <translation>Akt. Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="preflighttaskpage.cpp" line="799"/>
+        <location filename="preflighttaskpage.cpp" line="822"/>
         <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
     </message>
@@ -3567,55 +3567,55 @@ All downloads are canceled!</oldsource>
         <translation>Leerpunkt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="475"/>
+        <location filename="flighttask.cpp" line="482"/>
         <source>not set</source>
         <translation>nicht gesetzt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="477"/>
+        <location filename="flighttask.cpp" line="484"/>
         <source>Free Distance</source>
         <translation>Freie Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="479"/>
+        <location filename="flighttask.cpp" line="486"/>
         <source>Free Out and Return</source>
         <translation>ZR-Strecke</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="481"/>
+        <location filename="flighttask.cpp" line="488"/>
         <source>FAI Triangle</source>
         <translation>FAI Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="483"/>
+        <location filename="flighttask.cpp" line="490"/>
         <source>Triangle</source>
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="485"/>
+        <location filename="flighttask.cpp" line="492"/>
         <source>DMSt 4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="487"/>
+        <location filename="flighttask.cpp" line="494"/>
         <source>Polygon</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="490"/>
+        <location filename="flighttask.cpp" line="497"/>
         <location filename="runway.cpp" line="81"/>
         <location filename="taskpoint.cpp" line="513"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1271"/>
-        <location filename="flighttask.cpp" line="1286"/>
+        <location filename="flighttask.cpp" line="1295"/>
+        <location filename="flighttask.cpp" line="1310"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="flighttask.cpp" line="1291"/>
+        <location filename="flighttask.cpp" line="1315"/>
         <source>too strong!</source>
         <translation>zu stark!</translation>
     </message>
@@ -3863,34 +3863,36 @@ All downloads are canceled!</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="OpenAip.cpp" line="243"/>
-        <location filename="OpenAip.cpp" line="668"/>
-        <location filename="OpenAip.cpp" line="877"/>
-        <location filename="OpenAip.cpp" line="1730"/>
+        <location filename="OpenAip.cpp" line="250"/>
+        <location filename="OpenAip.cpp" line="682"/>
+        <location filename="OpenAip.cpp" line="891"/>
+        <location filename="OpenAip.cpp" line="1744"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
-        <location filename="OpenAip.cpp" line="817"/>
-        <location filename="OpenAip.cpp" line="1663"/>
-        <source>is empty</source>
-        <translation>ist leer</translation>
+        <location filename="OpenAip.cpp" line="192"/>
+        <location filename="OpenAip.cpp" line="618"/>
+        <location filename="OpenAip.cpp" line="831"/>
+        <location filename="OpenAip.cpp" line="1677"/>
+        <source>File %1 is empty</source>
+        <translation>Datei %1 ist leer</translation>
     </message>
     <message>
-        <location filename="OpenAip.cpp" line="1654"/>
+        <location filename="OpenAip.cpp" line="1668"/>
         <source>has not suffix .aip!</source>
         <translation>hat nicht Suffix aip!</translation>
     </message>
     <message>
-        <location filename="OpenAip.cpp" line="1680"/>
+        <location filename="OpenAip.cpp" line="1694"/>
         <source>Cannot load airspace type mapper for</source>
         <translation>Kann Luftraumtype Mapper nicht laden</translation>
     </message>
     <message>
-        <location filename="OpenAip.cpp" line="192"/>
-        <location filename="OpenAip.cpp" line="611"/>
-        <location filename="OpenAip.cpp" line="824"/>
-        <location filename="OpenAip.cpp" line="1670"/>
+        <location filename="OpenAip.cpp" line="199"/>
+        <location filename="OpenAip.cpp" line="625"/>
+        <location filename="OpenAip.cpp" line="838"/>
+        <location filename="OpenAip.cpp" line="1684"/>
         <source>Cannot open file</source>
         <translation>Datei nicht lesbar</translation>
     </message>
@@ -6380,62 +6382,62 @@ Namen für den neuen Wegpunkt</translation>
 <context>
     <name>WpEditDialogPageGeneral</name>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="60"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="63"/>
         <source>Name(8):</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="88"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="91"/>
         <source>Description:</source>
         <translation>Beschreibung:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="107"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="110"/>
         <source>Country(2):</source>
         <translation>Land(2):</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="135"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="138"/>
         <source>Latitude:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="141"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="144"/>
         <source>Longitude:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="147"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="150"/>
         <source>Elevation:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="163"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="166"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="200"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="226"/>
         <source>Importance:</source>
         <translation>Wertigkeit:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="206"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="232"/>
         <source>low</source>
         <translation>gering</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="207"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="233"/>
         <source>normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="208"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="234"/>
         <source>high</source>
         <translation>hoch</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="209"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="235"/>
         <source>top</source>
         <translation>höchste</translation>
     </message>
