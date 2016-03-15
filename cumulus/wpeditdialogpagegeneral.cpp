@@ -45,7 +45,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_loadedLat = 0;
   m_loadedLon = 0;
 
-  QGridLayout * topLayout = new QGridLayout(this);
+  QGridLayout* topLayout = new QGridLayout(this);
   topLayout->setMargin(5);
 
   // The description maximum length is 25 characters. We calculate
@@ -192,6 +192,9 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   // init combo boxes
   QStringList &tlist = BaseMapElement::getSortedTranslationList();
 
+  // Set icon scaling according to scaled density.
+  m_cmbType->setIconSize( (m_cmbType->iconSize() * Layout::getIntScaledDensity()) );
+
   for( int i=0; i < tlist.size(); i++ )
     {
       int type = BaseMapElement::text2Item( tlist.at(i) );
@@ -218,7 +221,6 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
 	}
       else
 	{
-	  m_cmbType->setIconSize( pm.size() );
 	  m_cmbType->addItem( QIcon(pm), tlist.at(i), type );
 	}
     }
