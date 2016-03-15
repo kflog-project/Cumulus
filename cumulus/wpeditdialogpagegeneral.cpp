@@ -193,7 +193,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   QStringList &tlist = BaseMapElement::getSortedTranslationList();
 
   // Set icon scaling according to scaled density.
-  m_cmbType->setIconSize( (m_cmbType->iconSize() * Layout::getIntScaledDensity()) );
+  int size = Layout::iconSize(font());
+  m_cmbType->setIconSize( QSize(size, size) );
 
   for( int i=0; i < tlist.size(); i++ )
     {
