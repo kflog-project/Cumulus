@@ -6417,27 +6417,27 @@ Namen für den neuen Wegpunkt</translation>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="226"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="232"/>
         <source>Importance:</source>
         <translation>Wertigkeit:</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="232"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="238"/>
         <source>low</source>
         <translation>gering</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="233"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="239"/>
         <source>normal</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="234"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="240"/>
         <source>high</source>
         <translation>hoch</translation>
     </message>
     <message>
-        <location filename="wpeditdialogpagegeneral.cpp" line="235"/>
+        <location filename="wpeditdialogpagegeneral.cpp" line="241"/>
         <source>top</source>
         <translation>höchste</translation>
     </message>
