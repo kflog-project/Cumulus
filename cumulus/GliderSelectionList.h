@@ -72,6 +72,11 @@ class GliderSelectionList : public QWidget
    */
   void fillSelectionList( QList<Polar>& polarList );
 
+  /**
+   * Called to select a certain glider entry in the list.
+   */
+  void selectGlider( QString gliderName );
+
   void setGroupBoxTitle( QString title )
   {
     m_groupBox->setTitle( title );

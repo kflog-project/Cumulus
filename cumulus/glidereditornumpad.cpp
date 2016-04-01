@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2015 by Axel Pauli
+ **                   2008-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -28,6 +28,7 @@
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "glidereditornumpad.h"
+#include "GliderSelectionList.h"
 #include "layout.h"
 #include "mapview.h"
 #include "mainwindow.h"
@@ -77,27 +78,11 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   if( m_isNew )
     {
       itemsLayout->addWidget(new QLabel(tr("Glider Pool:"), this), row, 0);
-      m_comboType = new QComboBox(this);
-      m_comboType->setEditable(false);
-      m_comboType->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+      m_openGliderList = new QPushButton( tr("Empty") );
+      itemsLayout->addWidget(m_openGliderList, row, 1, 1, 3);
 
-#ifdef ANDROID
-      QAbstractItemView* listView = m_comboType->view();
-      QScrollBar* lvsb = listView->verticalScrollBar();
-      lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
-      m_comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-      QScroller::grabGesture( m_comboType->view()->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-      m_comboType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-      QtScroller::grabGesture( m_comboType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
-      itemsLayout->addWidget(m_comboType, row, 1, 1, 3);
+      connect( m_openGliderList, SIGNAL(clicked()),
+	       SLOT(slot_openGliderSelectionList()) );
       row++;
     }
 
@@ -127,7 +112,7 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   m_seats = new QPushButton( this );
   itemsLayout->addWidget(m_seats, row, 3);
 
-  connect( m_seats, SIGNAL(pressed()), SLOT(slot_changeSeats()) );
+  connect( m_seats, SIGNAL(clicked()), SLOT(slot_changeSeats()) );
   row++;
 
   itemsLayout->addWidget(new QLabel(tr("Call Sign:"), this), row, 0);
@@ -281,12 +266,6 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   itemsLayout->setColumnStretch( 1, 10 );
   itemsLayout->setColumnStretch( 4, 20 );
 
-  if( m_isNew )
-    {
-      connect (m_comboType, SIGNAL(activated(const QString&)),
-               this, SLOT(slotActivated(const QString&)));
-    }
-
   connect(m_buttonShow, SIGNAL(pressed()), this, SLOT(slotButtonShow()));
 
   QPushButton *cancel = new QPushButton(this);
@@ -334,24 +313,10 @@ void GliderEditorNumPad::showEvent( QShowEvent *event )
   Q_UNUSED(event)
 }
 
-Polar* GliderEditorNumPad::getPolar()
-{
-  int pos = m_comboType->currentIndex();
-
-  if ((pos >= 0) && (pos < m_polars.count()))
-    {
-      return &(m_polars[pos]);
-    }
-  else
-    {
-      return static_cast<Polar *> (0);
-    }
-}
-
 /** Called to initiate loading of the configuration file. */
 void GliderEditorNumPad::load()
 {
-  if (m_glider)
+  if( m_glider )
     {
       m_edtGType->setText(m_glider->type());
       m_edtGReg->setText(m_glider->registration());
@@ -393,7 +358,7 @@ void GliderEditorNumPad::load()
 /** called to initiate saving to the configuration file */
 void GliderEditorNumPad::save()
 {
-  if( !m_glider )
+  if( m_glider == 0 )
     {
       m_glider = new Glider;
     }
@@ -593,11 +558,11 @@ void GliderEditorNumPad::readPolarData()
 
 	  for( int i = 0; i < m_polars.size(); i++ )
 	    {
-	      m_comboType->addItem( m_polars[i].name() );
+	      m_openGliderList->addItem( m_polars[i].name() );
 	    }
 	}
 
-      QString firstGlider = m_comboType->itemText(0);
+      QString firstGlider = m_openGliderList->itemText(0);
       slotActivated(firstGlider);
     }
   else
@@ -632,7 +597,7 @@ void GliderEditorNumPad::readPolarData()
 	      if (line[0] == '*')
 		continue;
 	      QStringList list = QStringList::split(',',line,TRUE);
-	      m_comboType->addItem (glidertype);
+	      m_openGliderList->addItem (glidertype);
 
 	      // vertical speeds are already negative in these files !
 	      Speed v1,w1,v2,w2,v3,w3;
@@ -703,13 +668,9 @@ void GliderEditorNumPad::readLK8000PolarData()
 	      // sort polar data list according to their names
 	      // qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
 
-	      for( int i = 0; i < m_polars.size(); i++ )
-		{
-		  m_comboType->addItem( m_polars[i].name() );
-		}
-
-	      // Activate first glider entry in the combo box.
-	      slotActivated( m_comboType->itemText(0) );
+	      // Activate the first glider entry.
+	      slot_activatePolar( &m_polars[0] );
+	      m_openGliderList->setText( tr("Open") );
 	    }
 
 	  // We read only data from the first directory with polar files.
@@ -886,22 +847,24 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
   return false;
 }
 
-/** called when a glider type has been selected */
-void GliderEditorNumPad::slotActivated(const QString& type)
+/** called when a new glider has been selected */
+void GliderEditorNumPad::slot_activatePolar( Polar* polar )
 {
-  if( !m_glider )
+  if( m_glider == 0 )
     {
       m_glider = new Glider();
       m_gliderCreated = true;
     }
 
-  m_edtGType->setText( type );
-  m_glider->setType( type );
-
-  m_polar = getPolar();
+  m_edtGType->setText( "" );
+  m_glider->setType( "" );
+  m_polar = polar;
 
   if( m_polar )
     {
+      // Set button text to the current glider entry
+      m_edtGType->setText( m_polar->name() );
+      m_glider->setType( m_polar->name() );
       m_glider->setPolar( *m_polar );
 
       m_dneWingArea->setValue( m_polar->wingArea() );
@@ -950,6 +913,14 @@ void GliderEditorNumPad::slotButtonShow()
   polar.setWater( m_addedWater->value() );
   PolarDialog* dlg = new PolarDialog( polar, this );
   dlg->setVisible(true);
+}
+
+void GliderEditorNumPad::slot_openGliderSelectionList()
+{
+  GliderSelectionList* gsl = new GliderSelectionList( this );
+  gsl->fillSelectionList( m_polars );
+  connect( gsl, SIGNAL(takeThis(Polar*)), SLOT(slot_activatePolar(Polar*)) );
+  gsl->show();
 }
 
 void GliderEditorNumPad::slot_changeSeats()

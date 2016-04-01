@@ -32,7 +32,7 @@ GliderSelectionList::GliderSelectionList( QWidget *parent ) :
  QWidget(parent)
 {
   setObjectName( "GliderSelectionList" );
-  setWindowTitle(tr("Airfield Selection"));
+  setWindowTitle(tr("Glider Selection"));
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
@@ -57,7 +57,7 @@ GliderSelectionList::GliderSelectionList( QWidget *parent ) :
   m_ListTreeWidget->setColumnCount( 1 );
   m_ListTreeWidget->setFocusPolicy( Qt::StrongFocus );
   m_ListTreeWidget->setUniformRowHeights(true);
-  m_ListTreeWidget->setHeaderLabel( tr( "Airfields" ) );
+  m_ListTreeWidget->setHeaderLabel( tr( "Gliders" ) );
 
   connect( m_ListTreeWidget, SIGNAL(itemSelectionChanged()),
            SLOT(slotItemSelectionChanged()) );
@@ -168,6 +168,24 @@ void GliderSelectionList::fillSelectionList( QList<Polar>& polarList )
     }
 }
 
+/**
+ * Called to select a certain glider entry in the list.
+ */
+void GliderSelectionList::selectGlider( QString gliderName )
+{
+  for( int i = 0; m_ListTreeWidget->topLevelItemCount(); i++ )
+    {
+      QTreeWidgetItem* item = m_ListTreeWidget->topLevelItem(i);
+
+      if( item != 0 && item->text(0) == gliderName )
+	{
+	  //m_ListTreeWidget->setCurrentItem( item );
+	  m_searchInput->setText( gliderName );
+	  break;
+	}
+    }
+}
+
 GliderSelectionList::PolarItem::PolarItem( Polar* polar ) :
   QTreeWidgetItem(),
   m_polar(polar)
@@ -193,7 +211,7 @@ void GliderSelectionList::slotTextEdited( const QString& text )
       m_ListTreeWidget->setCurrentItem( m_ListTreeWidget->topLevelItem( 0 ) );
       m_ListTreeWidget->clearSelection();
       m_ListTreeWidget->scrollToItem( m_ListTreeWidget->topLevelItem( 0 ),
-					  QAbstractItemView::PositionAtTop);
+				      QAbstractItemView::PositionAtTop);
       return;
     }
 
@@ -203,7 +221,7 @@ void GliderSelectionList::slotTextEdited( const QString& text )
     {
       m_ListTreeWidget->setCurrentItem( items.at(0) );
       m_ListTreeWidget->scrollToItem( items.at (0),
-					  QAbstractItemView::PositionAtTop);
+				      QAbstractItemView::PositionAtTop);
     }
 }
 

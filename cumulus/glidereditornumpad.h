@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2014 by Axel Pauli
+**                   2008-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**  $Id$
 **
 ***********************************************************************/
 
@@ -23,9 +21,9 @@
  *
  * \brief This widget provides a glider editor dialog.
  *
- * \date 2002-2014
+ * \date 2002-2016
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef GLIDER_EDITOR_NUMPAD_H
@@ -34,7 +32,6 @@
 #include <QWidget>
 
 #include <QLineEdit>
-#include <QComboBox>
 #include <QPushButton>
 #include <QList>
 
@@ -57,11 +54,6 @@ private:
   GliderEditorNumPad(QWidget* parent=0, Glider* glider=0);
 
   virtual ~GliderEditorNumPad();
-
-  /**
-   * @return The currently selected polar is returned.
-   */
-  Polar* getPolar();
 
  protected:
 
@@ -102,22 +94,23 @@ private:
     */
   void load();
 
- public slots:
+ private slots:
 
   /**
-    * Called when a glider type has been selected in the combo box.
-    */
-  void slotActivated(const QString&);
-
-  /**
-    * Called when the show button was pressed to draw the polar.
-    */
+   * Called when the show button was pressed to draw the polar.
+   */
   void slotButtonShow();
 
- private slots:
+  /** Called, to open the glider selection list view. */
+  void slot_openGliderSelectionList();
 
   /** Called, when the seat button is pressed. */
   void slot_changeSeats();
+
+  /**
+   * Called when a new glider has been selected.
+   */
+  void slot_activatePolar(Polar* polar);
 
   /** Called when Ok button is pressed */
   void accept();
@@ -139,7 +132,7 @@ private:
 
  private:
 
-  QComboBox* m_comboType;
+  QPushButton* m_openGliderList;
 
   DoubleNumberEditor* m_dneV1;
   DoubleNumberEditor* m_dneW1;
