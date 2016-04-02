@@ -675,94 +675,99 @@
 <context>
     <name>GliderEditorNumPad</name>
     <message>
-        <location filename="glidereditornumpad.cpp" line="60"/>
+        <location filename="glidereditornumpad.cpp" line="61"/>
         <source>New Glider</source>
         <translation>Neues Flugzeug</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="65"/>
+        <location filename="glidereditornumpad.cpp" line="66"/>
         <source>Edit Glider</source>
         <translation>Editiere Flugzeug</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="79"/>
+        <location filename="glidereditornumpad.cpp" line="80"/>
         <source>Glider Pool:</source>
         <translation>Flugzeug Pool:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="106"/>
+        <location filename="glidereditornumpad.cpp" line="81"/>
+        <source>Open</source>
+        <translation>Öffnen</translation>
+    </message>
+    <message>
+        <location filename="glidereditornumpad.cpp" line="91"/>
         <source>Glider Type:</source>
         <translation>Flugzeug Typ:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="117"/>
+        <location filename="glidereditornumpad.cpp" line="102"/>
         <source>Registration:</source>
         <translation>Kennzeichen:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="126"/>
+        <location filename="glidereditornumpad.cpp" line="111"/>
         <source>Seats:</source>
         <translation>Sitze:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="133"/>
+        <location filename="glidereditornumpad.cpp" line="118"/>
         <source>Call Sign:</source>
         <translation>Rufzeichen:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="142"/>
+        <location filename="glidereditornumpad.cpp" line="127"/>
         <source>Wing Area:</source>
         <translation>Flügelfläche:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="186"/>
+        <location filename="glidereditornumpad.cpp" line="171"/>
         <source>Ref. weight:</source>
         <oldsource>Empty weight:</oldsource>
         <translation>Ref. Gewicht:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="222"/>
+        <location filename="glidereditornumpad.cpp" line="207"/>
         <source>Load corr.:</source>
         <oldsource>Added load:</oldsource>
         <translation>Zul. Korrektur:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="258"/>
+        <location filename="glidereditornumpad.cpp" line="243"/>
         <source>Max. water:</source>
         <translation>Max. Wasser:</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="270"/>
+        <location filename="glidereditornumpad.cpp" line="255"/>
         <source>Show Polar</source>
         <translation>Zeige Polare</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="605"/>
-        <source>Missing polar file</source>
-        <translation>Vermisse Polarendatei</translation>
+        <location filename="glidereditornumpad.cpp" line="578"/>
+        <source>Empty</source>
+        <translation>Leer</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="720"/>
+        <location filename="glidereditornumpad.cpp" line="579"/>
         <source>Missing polar files</source>
         <translation>Vermisse Polar Dateien</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="977"/>
+        <location filename="glidereditornumpad.cpp" line="846"/>
         <source>Missing glider type!</source>
         <translation>Vermisse Flugzeugtyp!</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="978"/>
+        <location filename="glidereditornumpad.cpp" line="847"/>
         <source>Please enter a valid glider type.</source>
         <translation>Geben Sie einen Flugzeugtyp ein.</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="982"/>
+        <location filename="glidereditornumpad.cpp" line="851"/>
         <source>Missing registration!</source>
         <translation>Vermisse Kennzeichen!</translation>
     </message>
     <message>
-        <location filename="glidereditornumpad.cpp" line="983"/>
+        <location filename="glidereditornumpad.cpp" line="852"/>
         <source>Please enter a valid registration.</source>
         <translation>Geben Sie ein gültiges Kennzeichen ein..</translation>
     </message>
@@ -816,6 +821,39 @@
         <location filename="gliderlistwidget.cpp" line="54"/>
         <source>Callsign</source>
         <translation>Rufzeichen</translation>
+    </message>
+</context>
+<context>
+    <name>GliderSelectionList</name>
+    <message>
+        <location filename="GliderSelectionList.cpp" line="35"/>
+        <source>Glider Selection</source>
+        <translation>Flieger Auswahl</translation>
+    </message>
+    <message>
+        <location filename="GliderSelectionList.cpp" line="60"/>
+        <source>Gliders</source>
+        <translation>Flugzeuge</translation>
+    </message>
+    <message>
+        <location filename="GliderSelectionList.cpp" line="90"/>
+        <source>Search Glider</source>
+        <translation>Suche Flieger</translation>
+    </message>
+    <message>
+        <location filename="GliderSelectionList.cpp" line="101"/>
+        <source>Enter a search string, to navigate to a certain list entry.</source>
+        <translation>Gebe einen Suchbegriff ein zum Navigieren zu einem Listeneintrag.</translation>
+    </message>
+    <message>
+        <location filename="GliderSelectionList.cpp" line="113"/>
+        <source>Clear</source>
+        <translation>Löschen</translation>
+    </message>
+    <message>
+        <location filename="GliderSelectionList.cpp" line="116"/>
+        <source>Click Clear to remove the search string.</source>
+        <translation>Klicke Löschen zum Löschen des Sucheintrages.</translation>
     </message>
 </context>
 <context>

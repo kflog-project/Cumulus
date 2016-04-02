@@ -96,6 +96,7 @@ HEADERS = \
     gliderflightdialog.h \
     glider.h \
     gliderlistwidget.h \
+    GliderSelectionList.h \
     gpsconandroid.h \
     gpsnmea.h \
     gpsstatusdialog.h \
@@ -231,6 +232,7 @@ SOURCES = \
     glider.cpp \
     gliderflightdialog.cpp \
     gliderlistwidget.cpp \
+    GliderSelectionList.cpp \
     gpsconandroid.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \

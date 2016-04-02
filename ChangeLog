@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-04-02 AP: Issue #97 fixed. Improve glider selection in setting menu to
+                   make it more handy under Android.
+
+[*] 2016-03-18 AP: Cumulus 5.26.1 released for Android.
+
 [-] 2016-03-14 AP: Issue #96 fixed. If OpenAip provides no data, an empty file
                    is created during download. Such files must be handled in a
                    proper way.

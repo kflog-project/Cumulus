@@ -78,7 +78,7 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
   if( m_isNew )
     {
       itemsLayout->addWidget(new QLabel(tr("Glider Pool:"), this), row, 0);
-      m_openGliderList = new QPushButton( tr("Empty") );
+      m_openGliderList = new QPushButton( tr("Open") );
       itemsLayout->addWidget(m_openGliderList, row, 1, 1, 3);
 
       connect( m_openGliderList, SIGNAL(clicked()),
@@ -479,101 +479,6 @@ void GliderEditorNumPad::readPolarData()
 
 #warning "location of glider.pol file is CUMULUS_ROOT/etc"
 
-  QStringList dirs;
-
-  dirs << GeneralConfig::instance()->getAppRoot() + "/etc/glider.pol"
-      << GeneralConfig::instance()->getDataRoot() + "/etc/glider.pol"
-      << GeneralConfig::instance()->getUserDataDirectory() + "/glider.pol";
-
-  QFile file;
-
-  for (int i = 0; i < dirs.size(); ++i)
-    {
-      file.setFileName(dirs.at(i));
-
-      if (file.exists())
-	{
-	  break;
-	}
-    }
-
-  QTextStream stream(&file);
-
-  int lineNo = 0;
-
-  if (file.open(QIODevice::ReadOnly))
-    {
-      while (!stream.atEnd())
-	{
-	  QString line = stream.readLine().trimmed();
-
-	  lineNo++;
-
-	  // ignore comments and empty lines
-	  if(line[0] == '#' || line[0] == '*' || line.size() == 0 )
-	    {
-	      continue;
-	    }
-
-	  QStringList list = line.split(",", QString::KeepEmptyParts);
-
-	  if( list.size() < 11 )
-	    {
-	      // Too less elements
-	      qWarning() << "File glider.pol: Format error at line" << lineNo;
-	      continue;
-	    }
-
-	  QString glidertype = list[0];
-
-	  // the sink values are positive in this file; we need them negative
-	  Speed v1, w1, v2, w2, v3, w3;
-	  v1.setKph(list[1].toDouble());
-	  w1.setMps(-list[2].toDouble());
-	  v2.setKph(list[3].toDouble());
-	  w2.setMps(-list[4].toDouble());
-	  v3.setKph(list[5].toDouble());
-	  w3.setMps(-list[6].toDouble());
-
-	  double wingarea = list[7].toDouble();
-	  double emptyMass = list[8].toDouble();
-
-	  Polar polar = Polar( glidertype,
-	                       v1, w1, v2, w2, v3, w3,
-	                       wingarea,
-	                       emptyMass, emptyMass );
-
-	  polar.setMaxWater(list[9].toInt());
-	  polar.setSeats(list[10].toInt());
-
-	  m_polars.append( polar );
-	}
-
-      file.close();
-
-      if( m_polars.size() )
-	{
-	  // sort polar data list according to their names
-	  qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
-
-	  for( int i = 0; i < m_polars.size(); i++ )
-	    {
-	      m_openGliderList->addItem( m_polars[i].name() );
-	    }
-	}
-
-      QString firstGlider = m_openGliderList->itemText(0);
-      slotActivated(firstGlider);
-    }
-  else
-    {
-      _globalMapView->slot_info(tr("Missing polar file"));
-      qWarning( "Could not open polar file: %s",
-                file.fileName().toLatin1().data() );
-    }
-
-#if 0
-
   // try to read more polars from document folder
   // these files are in winpilot format: one file per polar
   DocLnkSet docs;
@@ -616,9 +521,6 @@ void GliderEditorNumPad::readPolarData()
 	    }
 	}
     }
-
-#endif
-
 }
 #endif
 
@@ -665,19 +567,15 @@ void GliderEditorNumPad::readLK8000PolarData()
 
 	  if( m_polars.size() )
 	    {
-	      // sort polar data list according to their names
-	      // qSort( m_polars.begin(), m_polars.end(), Polar::lessThan );
-
-	      // Activate the first glider entry.
+	      // Activate the first glider entry, that all fields are filled with data.
 	      slot_activatePolar( &m_polars[0] );
-	      m_openGliderList->setText( tr("Open") );
 	    }
 
-	  // We read only data from the first directory with polar files.
 	  return;
 	}
     }
 
+  m_openGliderList = new QPushButton( tr("Empty") );
   _globalMapView->slot_info(tr("Missing polar files"));
 
   qWarning( "readLK8000PolarData(): Missing polar files" );

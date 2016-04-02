@@ -61,13 +61,6 @@ private:
 
  private:
 
-#if 0
-  /**
-   * Reads in the data from the Cumulus polar file.
-   */
-  void readPolarData ();
-#endif
-
   /**
    * Reads in the LK8000 polar data files from predefined directories.
    */
