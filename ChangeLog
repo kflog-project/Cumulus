@@ -20,6 +20,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-03-14 AP: Issue #98 fixed. Google requires an OpenSSL update.
+
+[*] 2016-04-02 AP: Cumulus 5.27.0 released for Android.
+
 [o] 2016-04-02 AP: Issue #97 fixed. Improve glider selection in setting menu to
                    make it more handy under Android.
 
