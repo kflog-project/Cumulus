@@ -1167,7 +1167,7 @@ nach
     </message>
     <message>
         <source>&amp;Add to Custom Colors</source>
-        <translation>Zu eigenen Farben &amp;hinzutun</translation>
+        <translation type="unfinished">&amp;hinzufügen</translation>
     </message>
 </context>
 <context>
