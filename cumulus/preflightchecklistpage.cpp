@@ -62,6 +62,15 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   m_list->setAlternatingRowColors( true );
   m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+
+#if 0
+  m_list->setSelectionMode(QAbstractItemView::SingleSelection);
+  m_list->setDragEnabled(true);
+  m_list->viewport()->setAcceptDrops(true);
+  m_list->setDropIndicatorShown(true);
+  m_list->setDragDropMode(QAbstractItemView::DragDrop);
+#endif
+
   hbox->addWidget( m_list );
 
   connect( m_list, SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
@@ -303,7 +312,19 @@ void PreFlightCheckListPage::slotAddRow( QString text )
   QTableWidgetItem* item;
 
   item = new QTableWidgetItem( text );
-  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled |
+                  Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+                  // Qt::ItemIsUserCheckable );
+
+#if 0
+  item->setCheckState( Qt::Unchecked );
+
+  int is = 32 * Layout::getIntScaledDensity();
+  QPixmap ep( is, is );
+  ep.fill( Qt::transparent );
+  item->setIcon( ep );
+#endif
+
   m_list->setItem( appendRow, 0, item );
   m_list->setCurrentItem( item );
   m_list->resizeColumnToContents( 0 );
