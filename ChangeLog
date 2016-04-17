@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-03-17 AP: Issue #99 fixed. The checkbox is not changeable for flight
+                   trail option in settings map objects.
+
 [*] 2016-04-17 AP: Cumulus 5.27.1 released for Android.
 
 [-] 2016-03-14 AP: Issue #98 fixed. Google requires an OpenSSL update.
