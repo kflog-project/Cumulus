@@ -249,7 +249,7 @@ void WaypointListView::slot_newWP()
 {
   WpEditDialog *dlg = new WpEditDialog( this, 0 );
 
-  connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
+  connect( dlg, SIGNAL(wpEdited(Waypoint &)), this,
            SLOT(slot_addWp(Waypoint &)) );
 
   dlg->setVisible( true );

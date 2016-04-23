@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2016-04-23 AP: Issue #101 fixed. A new created waypoint is not stored in the
+                   waypoint list.
+
 [+] 2016-04-20 AP: Issue #100 fixed. Pre-flight checklist enhanced with markers
                    for done checks.
 
