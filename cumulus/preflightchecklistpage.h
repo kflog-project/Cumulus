@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * \brief A widget for a pre-flight checklist display and editor.
  *
- * \date 2014
+ * \date 2014-2016
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -110,11 +108,22 @@ class PreFlightCheckListPage : public QWidget
  void slotItemSelectionChanged();
 
  /**
-  * The passed item can be modified in a editor widget.
+  * The passed cell can be modified in a editor widget.
   *
-  * \param item Item to be modified.
+  * \param row row of table cell
+  *
+  * \param column column of table cell
   */
- void slotEditItem( QTableWidgetItem* item );
+ void slotEditCell( int row, int column );
+
+ /**
+  * Called, if a cell is clicked in the table.
+  *
+  * \param row row of table cell
+  *
+  * \param column column of table cell
+  */
+ void slotCellClicked( int row, int column );
 
  /**
   * Called, if the edit button is pressed.

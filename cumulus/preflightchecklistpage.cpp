@@ -56,25 +56,27 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   hbox->setMargin( 0 );
   contentLayout->addLayout( hbox );
 
-  m_list = new QTableWidget( 0, 1, this );
-  m_list->setSelectionBehavior( QAbstractItemView::SelectRows );
+  m_list = new QTableWidget( 0, 2, this );
+  m_list->setSelectionBehavior( QAbstractItemView::SelectItems );
   m_list->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
   m_list->setAlternatingRowColors( true );
   m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#if 0
-  m_list->setSelectionMode(QAbstractItemView::SingleSelection);
-  m_list->setDragEnabled(true);
-  m_list->viewport()->setAcceptDrops(true);
-  m_list->setDropIndicatorShown(true);
-  m_list->setDragDropMode(QAbstractItemView::DragDrop);
-#endif
+  // calculates the needed icon size
+  QFontMetrics qfm( font() );
+  int iconSize = qfm.height();
+
+  // Sets the icon size of a list entry
+  m_list->setIconSize( QSize(iconSize, iconSize) );
 
   hbox->addWidget( m_list );
 
-  connect( m_list, SIGNAL(itemDoubleClicked(QTableWidgetItem *)),
-           SLOT(slotEditItem(QTableWidgetItem*)) );
+  connect( m_list, SIGNAL(cellDoubleClicked(int, int)),
+           SLOT(slotEditCell(int, int)) );
+
+  connect( m_list, SIGNAL(cellClicked(int, int)),
+           SLOT(slotCellClicked(int, int)) );
 
 #ifdef ANDROID
   QScrollBar* lvsb = m_list->verticalScrollBar();
@@ -113,7 +115,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   int buttonSize = Layout::getButtonSize(16);
 #endif
 
-  int iconSize   = buttonSize - 5;
+  iconSize   = buttonSize - 5;
 
   QPushButton* toggleButton = new QPushButton(this);
   toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("file-32.png")));
@@ -220,11 +222,18 @@ void PreFlightCheckListPage::slotToogleFilenameDisplay()
   m_fileDisplay->setVisible( ! m_fileDisplay->isVisible() );
 }
 
-void PreFlightCheckListPage::slotEditItem( QTableWidgetItem* item )
+void PreFlightCheckListPage::slotEditCell( int row, int column )
 {
-  if( item == static_cast<QTableWidgetItem *>(0) )
+  if( column == 0 )
     {
-      // Item can be a Null pointer!
+      // Cell of column 0 can only change the icon.
+      return;
+    }
+
+  QTableWidgetItem *item = m_list->item( row, column );
+
+  if( item == 0 )
+    {
       return;
     }
 
@@ -257,6 +266,25 @@ void PreFlightCheckListPage::slotEditItem( QTableWidgetItem* item )
   m_editButton->setEnabled( true );
 }
 
+void PreFlightCheckListPage::slotCellClicked(int row, int column)
+{
+  if( column == 1 )
+    {
+      // Cell of column 1 can only change the text.
+      return;
+    }
+
+  QTableWidgetItem *item = m_list->item( row, column );
+
+  if( item == 0 )
+    {
+      return;
+    }
+
+  // Change the icon to ok
+  item->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "ok.png" ) ) );
+}
+
 void PreFlightCheckListPage::slotEdit()
 {
   QTableWidgetItem* item = m_list->currentItem();
@@ -267,15 +295,26 @@ void PreFlightCheckListPage::slotEdit()
       return;
     }
 
-  QList<QTableWidgetItem *> items = m_list->selectedItems();
+  QList<QTableWidgetSelectionRange> selRangeList = m_list->selectedRanges();
 
-  if( items.size() != 1 )
+  if( selRangeList.size() == 0 )
     {
-      // Only one item must be selected.
+      // Nothing seems to be selected
       return;
     }
 
-  slotEditItem( item );
+  QTableWidgetSelectionRange sr = selRangeList.at(0);
+
+  if( sr.rowCount() > 1 )
+    {
+      // More than one row are selected
+      return;
+    }
+
+  if( sr.rightColumn() == 1 )
+    {
+	  slotEditCell( m_list->currentRow(), 1 );
+    }
 }
 
 void PreFlightCheckListPage::slotItemSelectionChanged()
@@ -306,28 +345,26 @@ void PreFlightCheckListPage::slotAddRow( QString text )
 	{
 	  QTableWidgetItem* item = m_list->takeItem( i, 0 );
 	  m_list->setItem( i + 1, 0, item );
+
+	  item = m_list->takeItem( i, 1 );
+	  m_list->setItem( i + 1, 1, item );
 	}
     }
 
   QTableWidgetItem* item;
 
-  item = new QTableWidgetItem( text );
-  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled |
-                  Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-                  // Qt::ItemIsUserCheckable );
-
-#if 0
-  item->setCheckState( Qt::Unchecked );
-
-  int is = 32 * Layout::getIntScaledDensity();
-  QPixmap ep( is, is );
-  ep.fill( Qt::transparent );
-  item->setIcon( ep );
-#endif
-
+  item = new QTableWidgetItem( "" );
+  item->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "help32.png" ) ) );
+  item->setToolTip( tr("Click icon to mark line as checked.") );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   m_list->setItem( appendRow, 0, item );
+
+  item = new QTableWidgetItem( text );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+  m_list->setItem( appendRow, 1, item );
   m_list->setCurrentItem( item );
   m_list->resizeColumnToContents( 0 );
+  m_list->resizeColumnToContents( 1 );
   m_list->resizeRowsToContents();
   m_editButton->setEnabled( true );
   m_deleteButton->setEnabled(true);
@@ -335,7 +372,7 @@ void PreFlightCheckListPage::slotAddRow( QString text )
 
 void PreFlightCheckListPage::slotDeleteRows()
 {
-  if( m_list->rowCount() == 0 || m_list->columnCount() != 1 )
+  if( m_list->rowCount() == 0 || m_list->columnCount() != 2 )
     {
       return;
     }
@@ -345,6 +382,21 @@ void PreFlightCheckListPage::slotDeleteRows()
   if( items.size() == 0 )
     {
       // no selection is active
+      return;
+    }
+
+  QList<QTableWidgetSelectionRange> selRangeList = m_list->selectedRanges();
+
+  if( selRangeList.size() == 0 )
+    {
+      // Nothing seems to be selected
+      return;
+    }
+
+  QTableWidgetSelectionRange sr = selRangeList.at(0);
+
+  if( sr.rightColumn() != 1 )
+    {
       return;
     }
 
@@ -404,7 +456,6 @@ void PreFlightCheckListPage::slotDeleteRows()
       m_editButton->setEnabled( false );
       m_deleteButton->setEnabled( false );
     }
-
 }
 
 void PreFlightCheckListPage::slotAccept()
@@ -478,14 +529,14 @@ bool PreFlightCheckListPage::saveCheckList()
 
   for( int i = 0; i < m_list->rowCount(); i++ )
     {
-      QTableWidgetItem *item = m_list->item( i, 0 );
+      QTableWidgetItem *item = m_list->item( i, 1 );
 
       if( ! item || item->text().trimmed().isEmpty() )
 	{
 	  continue;
 	}
 
-      stream << m_list->item( i, 0 )->text().trimmed() << endl;
+      stream << m_list->item( i, 1 )->text().trimmed() << endl;
     }
 
   f.close();

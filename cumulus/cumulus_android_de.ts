@@ -2060,32 +2060,37 @@ All downloads are canceled!</oldsource>
         <translation>Vorflug - Checkliste</translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="98"/>
+        <location filename="preflightchecklistpage.cpp" line="109"/>
         <source> Check Point </source>
         <translation>Checkpunkt</translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="188"/>
+        <location filename="preflightchecklistpage.cpp" line="199"/>
         <source>File: </source>
         <translation>Datei: </translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="224"/>
+        <location filename="preflightchecklistpage.cpp" line="242"/>
         <source>Edit Checkpoint</source>
         <translation>Editiere Checkpunkt</translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="225"/>
+        <location filename="preflightchecklistpage.cpp" line="243"/>
         <source>Text:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="331"/>
+        <location filename="preflightchecklistpage.cpp" line="358"/>
+        <source>Click icon to mark line as checked.</source>
+        <translation>Klicke auf Fragezeichen um auf OK zu wechseln.</translation>
+    </message>
+    <message>
+        <location filename="preflightchecklistpage.cpp" line="404"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="preflightchecklistpage.cpp" line="332"/>
+        <location filename="preflightchecklistpage.cpp" line="405"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
