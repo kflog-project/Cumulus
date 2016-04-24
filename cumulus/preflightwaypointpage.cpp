@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2014 by Axel Pauli
+**   Copyright (c):  2011-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -27,6 +25,7 @@
 #include <QtScroller>
 #endif
 
+#include "AirfieldSelectionList.h"
 #include "generalconfig.h"
 #include "hwinfo.h"
 #include "layout.h"
@@ -151,25 +150,11 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   latLonGrid->addWidget( m_centerLon, 1, 1 );
   latLonGrid->setColumnStretch( 2, 5 );
 
-  m_homeLabel   = new QLabel;
-  m_airfieldBox = new QComboBox;
+  m_homeLabel         = new QLabel;
+  m_airfieldSelection = new QPushButton;
 
-#ifdef ANDROID
-      QAbstractItemView* listView = m_airfieldBox->view();
-      QScrollBar* lvsb = listView->verticalScrollBar();
-      lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-  m_airfieldBox->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-  m_airfieldBox->view()->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( m_airfieldBox->view()->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_airfieldBox->view()->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
+  connect( m_airfieldSelection, SIGNAL(clicked()),
+           SLOT(slotOpenAirfieldDialog()) );
 
   QGridLayout* centerPointGrid = new QGridLayout;
   centerPointGrid->setSpacing( 5 );
@@ -182,7 +167,7 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   centerPointVBox->setMargin( 0 );
   centerPointVBox->addLayout( latLonGrid );
   centerPointVBox->addWidget( m_homeLabel );
-  centerPointVBox->addWidget( m_airfieldBox );
+  centerPointVBox->addWidget( m_airfieldSelection );
 
   centerPointGrid->addLayout( centerPointVBox, 0, 2, 3, 1 );
   centerPointGrid->setColumnMinimumWidth( 1, 20 );
@@ -304,16 +289,20 @@ void PreFlightWaypointPage::load()
 
   slotSelectCenterReference( conf->getWaypointCenterReference() );
 
-  loadAirfieldComboBox();
+  m_airfieldSelection->setText( conf->getWaypointAirfieldReference() );
 
-  int idx = m_airfieldBox->findText( conf->getWaypointAirfieldReference() );
+  int searchList[] = { MapContents::GliderfieldList, MapContents::AirfieldList };
 
-  if( idx == -1 )
+  m_airfieldDict.clear();
+
+  for( int l = 0; l < 2; l++ )
     {
-      idx = 1;
+      for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
+      {
+        SinglePoint *hitElement = (SinglePoint *) _globalMapContents->getElement(searchList[l], loop );
+        m_airfieldDict.insert( hitElement->getName(), hitElement );
+      }
     }
-
-  m_airfieldBox->setCurrentIndex( idx );
 }
 
 void PreFlightWaypointPage::save()
@@ -323,7 +312,7 @@ void PreFlightWaypointPage::save()
   conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) m_wpFileFormatBox->itemData(m_wpFileFormatBox->currentIndex()).toInt() );
   conf->setWaypointPriority( m_wpPriorityBox->currentIndex() );
   conf->setWaypointCenterReference( m_centerRef );
-  conf->setWaypointAirfieldReference( m_airfieldBox->currentText() );
+  conf->setWaypointAirfieldReference( m_airfieldSelection->text() );
 
   if( m_waypointFileFormat != m_wpFileFormatBox->currentIndex() &&
       _globalMapContents->getWaypointList().size() > 0 )
@@ -373,7 +362,7 @@ void PreFlightWaypointPage::slotSelectCenterReference( int reference )
       m_centerLon->setVisible(false);
       m_centerLatLabel->setVisible(false);
       m_centerLonLabel->setVisible(false);
-      m_airfieldBox->setVisible(false);
+      m_airfieldSelection->setVisible(false);
       m_homeLabel->setVisible(true);
       break;
     case PreFlightWaypointPage::Airfield:
@@ -382,7 +371,7 @@ void PreFlightWaypointPage::slotSelectCenterReference( int reference )
       m_centerLon->setVisible(false);
       m_centerLatLabel->setVisible(false);
       m_centerLonLabel->setVisible(false);
-      m_airfieldBox->setVisible(true);
+      m_airfieldSelection->setVisible(true);
       m_homeLabel->setVisible(false);
       break;
     case PreFlightWaypointPage::Position:
@@ -393,7 +382,7 @@ void PreFlightWaypointPage::slotSelectCenterReference( int reference )
       m_centerLon->setVisible(true);
       m_centerLatLabel->setVisible(true);
       m_centerLonLabel->setVisible(true);
-      m_airfieldBox->setVisible(false);
+      m_airfieldSelection->setVisible(false);
       m_homeLabel->setVisible(false);
       break;
     }
@@ -458,7 +447,7 @@ void PreFlightWaypointPage::slotImportFile()
         }
       else if( m_airfieldRB->isChecked() )
         {
-          QString s = m_airfieldBox->currentText();
+          QString s = m_airfieldSelection->text();
 
           if( m_airfieldDict.contains(s) )
             {
@@ -708,28 +697,24 @@ void PreFlightWaypointPage::slotImportFile()
   mb1.exec();
 }
 
-void PreFlightWaypointPage::loadAirfieldComboBox()
+void PreFlightWaypointPage::slotOpenAirfieldDialog()
 {
-  int searchList[] = { MapContents::GliderfieldList, MapContents::AirfieldList };
+  AirfieldSelectionList* asl = new AirfieldSelectionList( this );
 
-  m_airfieldDict.clear();
-  m_airfieldBox->clear();
+  connect( asl, SIGNAL(takeThisPoint(const SinglePoint*)),
+           SLOT(slotNewHome(const SinglePoint*)) );
 
-  QStringList airfieldList;
+  asl->show();
+}
 
-  for( int l = 0; l < 2; l++ )
+void PreFlightWaypointPage::slotNewHome( const SinglePoint* singlePoint )
+{
+  if( singlePoint == 0 )
     {
-      for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
-      {
-        SinglePoint *hitElement = (SinglePoint *) _globalMapContents->getElement(searchList[l], loop );
-        airfieldList.append( hitElement->getName() );
-        m_airfieldDict.insert( hitElement->getName(), hitElement );
-      }
-  }
+      return;
+    }
 
-  airfieldList.sort();
-  m_airfieldBox->addItems( airfieldList );
-  m_airfieldBox->setCurrentIndex( 0 );
+  m_airfieldSelection->setText( singlePoint->getName() );
 }
 
 void PreFlightWaypointPage::slotAccept()

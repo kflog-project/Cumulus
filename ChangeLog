@@ -20,6 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-04-24 AP: Issue #102 fixed. Use airfield selection list instead of
+                   combobox selection on waypoint import page
+                   
+[*] 2016-04-23 AP: Cumulus 5.28.0 released for Android.                   
+
 [-] 2016-04-23 AP: Issue #101 fixed. A new created waypoint is not stored in the
                    waypoint list.
 

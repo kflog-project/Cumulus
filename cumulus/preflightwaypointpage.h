@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2013 by Axel Pauli
+**   Copyright (c):  2011-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,9 +24,9 @@
  * The supported waypoint formats are the Seeyou cup format and the KFLog
  * XML waypoint format.
  *
- * \date 2011-2013
+ * \date 2011-2016
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -38,6 +36,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
+#include <QPushButton>
 #include <QHash>
 #include <QLabel>
 #include <QWidget>
@@ -75,6 +74,16 @@ private slots:
   void slotSelectCenterReference( int reference );
 
   /**
+   * Called to open the airfield selection dialog.
+   */
+  void slotOpenAirfieldDialog();
+
+  /**
+   * Called, if a new home shall be set.
+   */
+  void slotNewHome( const SinglePoint* singlePoint )  ;
+
+  /**
    * Called to toggle the filter.
    */
   void slotToggleFilter( int toggle );
@@ -106,13 +115,6 @@ signals:
    */
   void closingWidget();
 
-private:
-
-  /**
-   * Loads the available airfields into the airfield combo box.
-   */
-  void loadAirfieldComboBox();
-
 public:
 
   /**
@@ -130,10 +132,10 @@ private:
   LongEditNumPad  *m_centerLon;
   NumberEditor    *m_wpRadiusBox;
 
-  QComboBox* m_wpTypesBox;
-  QComboBox* m_airfieldBox;
-  QComboBox* m_wpPriorityBox;
-  QComboBox* m_wpFileFormatBox;
+  QComboBox*   m_wpTypesBox;
+  QPushButton* m_airfieldSelection;
+  QComboBox*   m_wpPriorityBox;
+  QComboBox*   m_wpFileFormatBox;
 
   QRadioButton* m_positionRB;
   QRadioButton* m_homeRB;
