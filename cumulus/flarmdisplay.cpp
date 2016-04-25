@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -415,14 +415,15 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           color = Qt::red;
         }
 
+      QPen pen( Qt::black );
+
       if( it.key() == selectedObject )
         {
-          // If a Flarm object is selected, we use another color
-          color = Qt::magenta;
+          // If a Flarm object is selected, we use another border color
+          pen.setColor( Qt::magenta );
         }
 
-      QPen pen(Qt::black);
-      pen.setWidth( 3 * Layout::getIntScaledDensity() );
+      pen.setWidth( 4 * Layout::getIntScaledDensity() );
       painter.setPen( pen );
 
       if( acft.TurnRate != INT_MIN )
@@ -468,8 +469,8 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
           painter.setFont(f);
 
-          QPen pen(color);
-          pen.setWidth( 3 * Layout::getIntScaledDensity() );
+          QPen pen( Qt::magenta );
+          pen.setWidth( 4 * Layout::getIntScaledDensity() );
           painter.setPen( pen );
 
           // Draw the distance to the selected object
