@@ -22,6 +22,7 @@
 #include "calculator.h"
 #include "layout.h"
 #include "logbook.h"
+#include "helpbrowser.h"
 #include "preflightlogbookspage.h"
 
 #ifdef FLARM
@@ -93,6 +94,11 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
   topLayout->setRowStretch(row, 10);
   topLayout->setColumnStretch(2, 10);
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -102,10 +108,12 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addStretch(2);
@@ -116,6 +124,16 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
 PreFlightLogBooksPage::~PreFlightLogBooksPage()
 {
   // qDebug("PreFlightLogBooksPage::~PreFlightLogBooksPage()");
+}
+
+void PreFlightLogBooksPage::slotHelp()
+{
+  QString file = "cumulus-preflight-settings-logbooks.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void PreFlightLogBooksPage::slotAccept()

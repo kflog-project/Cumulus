@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 Axel Pauli
+**   Copyright (c):  2013-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * \brief A widget for pre-flight logbooks management.
  *
- * \date 2013
+ * \date 2013-2016
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -50,6 +48,11 @@ class PreFlightLogBooksPage : public QWidget
   virtual ~PreFlightLogBooksPage();
 
  private slots:
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
   /**
    * Called to open the flight logbook dialog.

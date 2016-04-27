@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2004 by André Somers
-**                   2008-2013 Axel Pauli
+**                   2008-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -23,9 +21,9 @@
  *
  * \brief A widget for pre-flight miscellaneous settings.
  *
- * \date 2004-2013
+ * \date 2004-2016
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -64,6 +62,11 @@ class PreFlightMiscPage : public QWidget
   void save();
 
  private slots:
+
+  /**
+  * Called, if the help button is clicked.
+  */
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.
