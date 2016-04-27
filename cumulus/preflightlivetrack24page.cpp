@@ -6,12 +6,10 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013-2014 by Axel Pauli
+ **   Copyright (c):  2013-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -27,6 +25,7 @@
 
 #include "generalconfig.h"
 #include "layout.h"
+#include "helpbrowser.h"
 #include "mainwindow.h"
 #include "numberEditor.h"
 #include "preflightlivetrack24page.h"
@@ -217,6 +216,11 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   topLayout->addWidget(m_sessionDisplay, row, 0, 1, 2);
   row++;
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -231,11 +235,13 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
@@ -319,6 +325,16 @@ void PreFlightLiveTrack24Page::save()
   conf->setLiveTrackAccountData( m_server->currentIndex(),
                                  m_username->text().trimmed(),
                                  m_password->text().trimmed() );
+}
+
+void PreFlightLiveTrack24Page::slotHelp()
+{
+  QString file = "cumulus-preflight-settings-livetracking.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void PreFlightLiveTrack24Page::slotAccept()

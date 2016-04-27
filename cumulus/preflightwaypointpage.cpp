@@ -27,6 +27,7 @@
 
 #include "AirfieldSelectionList.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "hwinfo.h"
 #include "layout.h"
 #include "mapcontents.h"
@@ -237,6 +238,11 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   widgetLayout->addLayout( buttomLayout );
   widgetLayout->addStretch( 10 );
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -251,11 +257,13 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
@@ -715,6 +723,16 @@ void PreFlightWaypointPage::slotNewHome( const SinglePoint* singlePoint )
     }
 
   m_airfieldSelection->setText( singlePoint->getName() );
+}
+
+void PreFlightWaypointPage::slotHelp()
+{
+  QString file = "cumulus-preflight-settings-waypoint.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void PreFlightWaypointPage::slotAccept()

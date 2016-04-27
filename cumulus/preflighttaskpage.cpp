@@ -225,15 +225,11 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   tlButtonLayout->setMargin( 0 );
   tlLayout->addLayout( tlButtonLayout );
 
-  m_helpButton = new QPushButton( tr("Help") );
-  tlButtonLayout->addWidget( m_helpButton, 0, Qt::AlignLeft );
-  tlButtonLayout->addStretch( 5 );
-
   m_deactivateButton = new QPushButton( tr("Deactivate Task") );
 #ifndef ANDROID
   m_deactivateButton->setToolTip(tr("Deactivate the currently activated task"));
 #endif
-  tlButtonLayout->addWidget( m_deactivateButton );
+  tlButtonLayout->addWidget( m_deactivateButton, 0, Qt::AlignLeft );
   tlButtonLayout->addStretch( 5 );
 
   m_showButton = new QPushButton( tr("Show") );
@@ -277,9 +273,6 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   connect( m_taskList, SIGNAL( itemSelectionChanged() ),
            this, SLOT( slotTaskDetails() ) );
 
-  connect( m_helpButton, SIGNAL(pressed()),
-           this, SLOT( slotOpenHelp() ) );
-
   connect( m_deactivateButton, SIGNAL(pressed()),
            this, SLOT( slotDeactivateTask() ) );
 
@@ -288,6 +281,11 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   connect( tvCloseButton, SIGNAL(pressed()),
            this, SLOT( slotShowTaskListWidget() ) );
+
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   m_cancel = new QPushButton(this);
   m_cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));
@@ -302,11 +300,14 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_titlePix = new QLabel(this);
   m_titlePix->setAlignment( Qt::AlignCenter );
   m_titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
+
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(m_ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(m_cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(m_cancel, 1);
   buttonBox->addSpacing(30);
@@ -909,7 +910,7 @@ void PreFlightTaskPage::slotReject()
   QWidget::close();
 }
 
-void PreFlightTaskPage::slotOpenHelp()
+void PreFlightTaskPage::slotHelp()
 {
   QString file = "cumulus-tasks.html";
 

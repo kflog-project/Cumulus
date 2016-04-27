@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003 by André Somers, 2008-2015 Axel Pauli
+**   Copyright (c):  2003 by André Somers, 2008-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,9 @@
  *
  * \brief A widget for the pre-flight glider selection and settings.
  *
- * \date 2003-2015
+ * \date 2003-2016
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -92,6 +92,11 @@ class PreFlightGliderPage : public QWidget
    void closingWidget();
 
  private slots:
+
+ /**
+  * Called, if the help button is clicked.
+  */
+ void slotHelp();
 
   /**
    * Called, if the glider selection was changed.

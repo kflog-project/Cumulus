@@ -630,16 +630,26 @@
 <context>
     <name>FlarmRadarView</name>
     <message>
-        <location filename="flarmradarview.cpp" line="255"/>
-        <location filename="flarmradarview.cpp" line="264"/>
+        <location filename="flarmradarview.cpp" line="276"/>
+        <location filename="flarmradarview.cpp" line="285"/>
         <source>Add alias name</source>
         <translation>Alias Namen setzen</translation>
     </message>
     <message>
-        <location filename="flarmradarview.cpp" line="256"/>
-        <location filename="flarmradarview.cpp" line="265"/>
+        <location filename="flarmradarview.cpp" line="277"/>
+        <location filename="flarmradarview.cpp" line="286"/>
         <source>Alias name (15) for </source>
         <translation>Alias Name (15) für </translation>
+    </message>
+    <message>
+        <location filename="flarmradarview.cpp" line="318"/>
+        <source>Press button to switch off wind arrow drawing.</source>
+        <translation>Drücke Knopf, um Windpfeil zeichnen auszuschalten.</translation>
+    </message>
+    <message>
+        <location filename="flarmradarview.cpp" line="323"/>
+        <source>Press button to switch on wind arrow drawing.</source>
+        <translation>Drücke Knopf, um Windpfeil zeichnen einzuschalten.</translation>
     </message>
 </context>
 <context>
@@ -2772,231 +2782,231 @@ All downloads are canceled!</oldsource>
 <context>
     <name>PreFlightWaypointPage</name>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="89"/>
-        <location filename="preflightwaypointpage.cpp" line="416"/>
+        <location filename="preflightwaypointpage.cpp" line="88"/>
+        <location filename="preflightwaypointpage.cpp" line="405"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="90"/>
+        <location filename="preflightwaypointpage.cpp" line="89"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="91"/>
+        <location filename="preflightwaypointpage.cpp" line="90"/>
         <source>Gliderfields</source>
         <translation>Segelfluggelände</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="92"/>
+        <location filename="preflightwaypointpage.cpp" line="91"/>
         <source>Outlandings</source>
         <translation>Landefelder</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="93"/>
+        <location filename="preflightwaypointpage.cpp" line="92"/>
         <source>Other Points</source>
         <translation>Andere Punkte</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="110"/>
+        <location filename="preflightwaypointpage.cpp" line="109"/>
         <source>Type:</source>
         <translation>Typ:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="114"/>
+        <location filename="preflightwaypointpage.cpp" line="113"/>
         <source>Radius</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="121"/>
+        <location filename="preflightwaypointpage.cpp" line="120"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="125"/>
+        <location filename="preflightwaypointpage.cpp" line="124"/>
         <source>Position</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="126"/>
+        <location filename="preflightwaypointpage.cpp" line="125"/>
         <source>Homesite</source>
         <translation>Heimatplatz</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="127"/>
+        <location filename="preflightwaypointpage.cpp" line="126"/>
         <source>Airfield</source>
         <translation>Flugplatz</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="143"/>
+        <location filename="preflightwaypointpage.cpp" line="142"/>
         <source>Latitude:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="144"/>
+        <location filename="preflightwaypointpage.cpp" line="143"/>
         <source>Longitude:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="191"/>
+        <location filename="preflightwaypointpage.cpp" line="176"/>
         <source>Center Point</source>
         <translation>Mittelpunkt</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="195"/>
+        <location filename="preflightwaypointpage.cpp" line="180"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="200"/>
+        <location filename="preflightwaypointpage.cpp" line="185"/>
         <source>Filter</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="221"/>
+        <location filename="preflightwaypointpage.cpp" line="206"/>
         <source>Waypoint Import</source>
         <translation>Wegpunkt Import</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="225"/>
-        <location filename="preflightwaypointpage.cpp" line="418"/>
+        <location filename="preflightwaypointpage.cpp" line="210"/>
+        <location filename="preflightwaypointpage.cpp" line="407"/>
         <source>Binary</source>
         <translation>Binär</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="226"/>
-        <location filename="preflightwaypointpage.cpp" line="417"/>
+        <location filename="preflightwaypointpage.cpp" line="211"/>
+        <location filename="preflightwaypointpage.cpp" line="406"/>
         <source>XML</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="229"/>
+        <location filename="preflightwaypointpage.cpp" line="214"/>
         <source>Source</source>
         <translation>Quelle</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="230"/>
+        <location filename="preflightwaypointpage.cpp" line="215"/>
         <source>Low</source>
         <translation>Klein</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="231"/>
+        <location filename="preflightwaypointpage.cpp" line="216"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="232"/>
+        <location filename="preflightwaypointpage.cpp" line="217"/>
         <source>High</source>
         <translation>Hoch</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="235"/>
+        <location filename="preflightwaypointpage.cpp" line="220"/>
         <source>Storage Format:</source>
         <translation>Speicherformat:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="238"/>
+        <location filename="preflightwaypointpage.cpp" line="223"/>
         <source>Priority:</source>
         <translation>Priorität:</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="335"/>
+        <location filename="preflightwaypointpage.cpp" line="324"/>
         <source>The waypoint storage format was changed. Storing data in new format can overwrite existing data!</source>
         <translation>Das Wegpunkt Speicherformat wurde geändert. Speichern im neuen Format kann alte Daten überschreiben!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="338"/>
+        <location filename="preflightwaypointpage.cpp" line="327"/>
         <source>Continue storing?</source>
         <translation>Speichern fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="419"/>
+        <location filename="preflightwaypointpage.cpp" line="408"/>
         <source>SeeYou</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="421"/>
+        <location filename="preflightwaypointpage.cpp" line="410"/>
         <source>AIP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="422"/>
+        <location filename="preflightwaypointpage.cpp" line="411"/>
         <source>DOS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="425"/>
+        <location filename="preflightwaypointpage.cpp" line="414"/>
         <source>Open waypoint catalog</source>
         <translation>Öffne Wegpunkt Katalog</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="512"/>
+        <location filename="preflightwaypointpage.cpp" line="501"/>
         <source>No entries read</source>
         <translation>Keine Einträge gelesen</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="513"/>
+        <location filename="preflightwaypointpage.cpp" line="502"/>
         <source>No waypoints read from file!</source>
         <translation>Datei enthielt keine Wegpunkte!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="515"/>
+        <location filename="preflightwaypointpage.cpp" line="504"/>
         <source>Maybe you should change the filter values?</source>
         <translation>Vielleicht sollten Sie das Filter ändern?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="334"/>
-        <location filename="preflightwaypointpage.cpp" line="554"/>
+        <location filename="preflightwaypointpage.cpp" line="323"/>
+        <location filename="preflightwaypointpage.cpp" line="543"/>
         <source>Continue?</source>
         <translation>Fortfahren?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="53"/>
+        <location filename="preflightwaypointpage.cpp" line="52"/>
         <source>PreFlight - Waypoints</source>
         <translation>Vorflug - Wegpunkte</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="420"/>
+        <location filename="preflightwaypointpage.cpp" line="409"/>
         <source>CAI</source>
         <translation>CAI</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="534"/>
+        <location filename="preflightwaypointpage.cpp" line="523"/>
         <source>Error in file </source>
         <translation>Fehler in Datei</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="556"/>
+        <location filename="preflightwaypointpage.cpp" line="545"/>
         <source>%1 waypoints would be read.</source>
         <translation>%1 Wegpunkte würden gelesen.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="558"/>
+        <location filename="preflightwaypointpage.cpp" line="547"/>
         <source>Continue loading?</source>
         <translation>Laden fortsetzen?</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="611"/>
+        <location filename="preflightwaypointpage.cpp" line="600"/>
         <source>Low on memory!</source>
         <translation>Speicher Problem!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="613"/>
+        <location filename="preflightwaypointpage.cpp" line="602"/>
         <source>Waypoint import failed due to low on memory!</source>
         <translation>Wegpunkt Import fehlgeschlagen wegen zu wenig freien Speicher!</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="684"/>
+        <location filename="preflightwaypointpage.cpp" line="673"/>
         <source>%1 waypoints added.</source>
         <translation>%1 Wegpunkte zugefügt.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="688"/>
+        <location filename="preflightwaypointpage.cpp" line="677"/>
         <source>%1 waypoints ignored.</source>
         <translation>%1 Wegpunkte ignoriert.</translation>
     </message>
     <message>
-        <location filename="preflightwaypointpage.cpp" line="694"/>
+        <location filename="preflightwaypointpage.cpp" line="683"/>
         <source>Import Results</source>
         <translation>Import Resultate</translation>
     </message>

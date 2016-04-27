@@ -26,7 +26,7 @@
  *
  * \date 2011-2016
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -67,6 +67,11 @@ public:
   void save();
 
 private slots:
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
   /**
    * Sets the center reference to be used for waypoint data import.

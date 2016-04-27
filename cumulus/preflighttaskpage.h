@@ -149,7 +149,7 @@ class PreFlightTaskPage : public QWidget
   /**
    * Called, if the help button is pressed.
    */
-  void slotOpenHelp();
+  void slotHelp();
 
   /**
    * Called, to deactivate the current selected task.
@@ -183,7 +183,6 @@ class PreFlightTaskPage : public QWidget
   /** task view widget */
   QWidget *m_taskViewWidget;
 
-  QPushButton* m_helpButton;
   QPushButton* m_deactivateButton;
   QPushButton* m_showButton;
   QPushButton* m_cmdNew;

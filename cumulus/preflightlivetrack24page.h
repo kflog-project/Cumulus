@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013 Axel Pauli
+**   Copyright (c):  2013-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,9 +24,9 @@
  * submitted to the LiveTracking24 server during flight via an active Internet
  * connection, if the user has enabled that.
  *
- * \date 2013
+ * \date 2013-2016
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -71,7 +69,12 @@ class PreFlightLiveTrack24Page : public QWidget
 
  private slots:
 
-  /**
+ /**
+  * Called, if the help button is clicked.
+  */
+ void slotHelp();
+
+ /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();
