@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * \brief A widget for pre-flight wind settings.
  *
- * \date 2014
+ * \date 2014-2016
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -76,6 +74,11 @@ class PreFlightWindPage : public QWidget
    void closingWidget();
 
  private slots:
+
+ /**
+ * Called, if the help button is clicked.
+ */
+ void slotHelp();
 
  /**
   * This method fills the wind statistics list.
