@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,9 +22,9 @@
  *
  * This widget shows the Flarm radar view with the operation buttons.
  *
- * \date 2010-2011
+ * \date 2010-2016
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef FLARM_RADAR_VIEW_H
@@ -71,6 +69,13 @@ public:
       return display;
     };
 
+  /**
+   * Sets the icon of the wind button.
+   *
+   * \param onOff True sets the on icon and False sets the off icon.
+   */
+  void setWindButtonIcon( bool onOff );
+
 protected:
 
   void showEvent( QShowEvent *event );
@@ -100,6 +105,9 @@ private slots:
   /** Called to add an object to the Flarm alias list. */
   void slotAddFlarmId();
 
+  /** Called, if the wind button is pressed, to toggle wind display. */
+  void slotToggleWindDisplay();
+
 signals:
 
   /** Emitted if the list view shall be opened with all Flarm objects. */
@@ -119,6 +127,7 @@ private:
   QPushButton* zoomButton;
   QPushButton* listButton;
   QPushButton* aliasButton;
+  QPushButton* windButton;
   QPushButton* closeButton;
 
   /** Update interval button. */
@@ -126,6 +135,10 @@ private:
 
   /** Add Flarm Id button. */
   QPushButton *addButton;
+
+  /** Pixmaps for wind button. */
+  QPixmap pmWindOn;
+  QPixmap pmWindOff;
 };
 
 #endif /* FLARM_RADAR_VIEW_H */

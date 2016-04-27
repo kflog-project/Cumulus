@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This widget shows the Flarm display view.
  *
- * \date 2010-2015
+ * \date 2010-2016
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef FLARM_DISPLAY_H
@@ -38,6 +38,8 @@
 #include <QMouseEvent>
 #include <QHash>
 #include <QPoint>
+
+#include "generalconfig.h"
 
 class FlarmDisplay : public QWidget
 {
@@ -86,6 +88,17 @@ public:
     return selectedObject;
   };
 
+  static void setDrawWindArrow( const bool drawFlag )
+  {
+    s_drawWindArrow = drawFlag;
+    GeneralConfig::instance()->setFlarmRadarDrawWindArrow( drawFlag );
+  };
+
+  static bool getDrawWindArrow()
+  {
+    return s_drawWindArrow;
+  };
+
 protected:
 
   void resizeEvent( QResizeEvent *event );
@@ -132,6 +145,9 @@ private:
 
   /** current zoom level */
   static enum Zoom zoomLevel;
+
+  /** Wind arrow draw flag */
+  static bool s_drawWindArrow;
 
   /** Hash key of the selected object */
   static QString selectedObject;

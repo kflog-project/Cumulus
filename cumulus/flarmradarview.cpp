@@ -1,17 +1,15 @@
 /***********************************************************************
 **
-**   flarmview.cpp
+**   flarmradarview.cpp
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli
+**   Copyright (c): 2010-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -37,6 +35,22 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
 {
   setAttribute( Qt::WA_DeleteOnClose );
   setContentsMargins(-4,-8,-4,-8);
+
+  pmWindOn = GeneralConfig::instance()->loadPixmap("windsack.png");
+  pmWindOff = pmWindOn;
+
+  const int lineWidth = static_cast<int>(rintf( 3.0 * Layout::getScaledDensity() ));
+
+  QPainter painter;
+  painter.begin(&pmWindOff);
+  painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+  QPen pen(Qt::red);
+  pen.setWidth( lineWidth );
+  painter.setPen( pen );
+  painter.setBrush(Qt::NoBrush);
+  painter.drawLine( 0, 0, pmWindOff.width(), pmWindOff.height());
+  painter.drawLine( pmWindOff.width(), 0, 0, pmWindOff.height());
+  painter.end();
 
   QHBoxLayout *topLayout = new QHBoxLayout( this );
   topLayout->setSpacing(5);
@@ -65,6 +79,9 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   aliasButton = new QPushButton;
   aliasButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("monkey32.png")));
 
+  windButton = new QPushButton;
+  setWindButtonIcon( ! FlarmDisplay::getDrawWindArrow() );
+
   closeButton = new QPushButton;
   closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
 
@@ -81,6 +98,7 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   connect( listButton, SIGNAL(clicked() ), this, SLOT(slotOpenListView()) );
   connect( updateButton, SIGNAL(clicked() ), this, SLOT(slotUpdateInterval()) );
   connect( aliasButton, SIGNAL(clicked() ), this, SLOT(slotOpenAliasList()) );
+  connect( windButton, SIGNAL(clicked() ), this, SLOT(slotToggleWindDisplay()) );
   connect( closeButton, SIGNAL(clicked() ), this, SLOT(slotClose()) );
   connect( addButton, SIGNAL(clicked() ), this, SLOT(slotAddFlarmId()) );
 
@@ -93,6 +111,8 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   vbox->addWidget( listButton );
   vbox->addSpacing(20);
   vbox->addWidget( updateButton );
+  vbox->addSpacing(20);
+  vbox->addWidget( windButton );
   vbox->addSpacing(20);
   vbox->addWidget( aliasButton );
   vbox->addSpacing(20);
@@ -120,21 +140,22 @@ void FlarmRadarView::showEvent( QShowEvent* )
 
   int wh = height();
 
-  if( wh < ( (buttonSize * 6) + space ) )
+  if( wh < ( (buttonSize * 7) + space ) )
     {
       // Not enough space in the window height. Recalculate button size.
-      buttonSize = (wh - space -5) / 6;
+      buttonSize = (wh - space -5) / 7;
       iconSize   = buttonSize - 5;
     }
 
-  QPushButton* pba[6] = { zoomButton,
+  QPushButton* pba[7] = { zoomButton,
                           listButton,
                           updateButton,
                           aliasButton,
                           addButton,
+			  windButton,
                           closeButton };
 
-  for( int i = 0; i < 6; i++ )
+  for( int i = 0; i < 7; i++ )
     {
       QPushButton* pb = pba[i];
       pb->setIconSize(QSize(iconSize, iconSize));
@@ -279,4 +300,26 @@ void FlarmRadarView::slotAddFlarmId()
   FlarmAliasList::saveAliasData();
   display->createBackground();
   display->update();
+}
+
+void FlarmRadarView::slotToggleWindDisplay()
+{
+  bool state = FlarmDisplay::getDrawWindArrow();
+
+  FlarmDisplay::setDrawWindArrow( ! state );
+  setWindButtonIcon( state );
+}
+
+void FlarmRadarView::setWindButtonIcon( bool onOff )
+{
+  if( onOff == false )
+    {
+      windButton->setIcon( pmWindOff );
+      windButton->setToolTip( tr("Press button to switch off wind arrow drawing.") );
+    }
+  else
+    {
+      windButton->setIcon( pmWindOn );
+      windButton->setToolTip( tr("Press button to switch on wind arrow drawing.") );
+    }
 }

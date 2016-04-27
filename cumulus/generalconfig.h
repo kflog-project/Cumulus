@@ -12,7 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-
 ***********************************************************************/
 
 /**
@@ -28,7 +27,7 @@
  *
  * \date 2004-2016
  *
- * \version 1.4
+ * \version 1.5
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -2917,6 +2916,16 @@ class GeneralConfig : protected QSettings
     _liveTrackAccounts[index][2] = password;
   };
 
+  bool getFlarmRadarDrawWindArrow() const
+  {
+    return _flarmRadarDrawWindArrow;
+  };
+
+  void setFlarmRadarDrawWindArrow( bool flarmRadarDrawWindArrow )
+  {
+    _flarmRadarDrawWindArrow = flarmRadarDrawWindArrow;
+  };
+
  private:
 
   /** loads the terrain default colors */
@@ -3330,6 +3339,9 @@ class GeneralConfig : protected QSettings
 
   /** Flarm alias file name. */
   QString _flarmAliasFileName;
+
+  /** Flarm Radar wind arrow drawing. */
+  bool _flarmRadarDrawWindArrow;
 
   /** Flight logbook file name */
   QString _flightLogbookFileName;

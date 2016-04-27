@@ -26,9 +26,12 @@
 #include "layout.h"
 #include "mapconfig.h"
 #include "speed.h"
+#include "vector.h"
 
 // Initialize static variables
 enum FlarmDisplay::Zoom FlarmDisplay::zoomLevel = FlarmDisplay::Low;
+
+bool FlarmDisplay::s_drawWindArrow = GeneralConfig::instance()->getFlarmRadarDrawWindArrow();
 
 QString FlarmDisplay::selectedObject = "";
 
@@ -294,6 +297,49 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       // qDebug() << "FlarmDisplay::paintEvent: empty hash";
       // hash is empty
       return;
+    }
+
+  // Draw wind arrow, if Flarm objects are available.
+  Vector& wind = calculator->getLastStoredWind();
+
+  if( s_drawWindArrow == true && wind.isValid() && wind.getSpeed().getMps() > 0.0 )
+    {
+      int myTrack = calculator->getlastHeading();
+
+      if( myTrack > 180 )
+        {
+          myTrack -= 360;
+        }
+
+      int wa = wind.getAngleDeg();
+
+      if( wa > 180 )
+        {
+          wa -= 360;
+        }
+
+      // Turn coordinate system by 90 degrees to North
+      int wTrack = wa - myTrack - 90;
+
+      const int arrowLen = 25 * Layout::getIntScaledDensity();
+
+      int x = static_cast<int> (rint(cos(wTrack * M_PI / 180.) * width / 2));
+      int y = static_cast<int> (rint(sin(wTrack * M_PI / 180.) * height / 2));
+
+      int xr = static_cast<int> (rint(cos((wTrack + 15) * M_PI / 180.) * arrowLen));
+      int yr = static_cast<int> (rint(sin((wTrack + 15) * M_PI / 180.) * arrowLen));
+
+      int xl = static_cast<int> (rint(cos((wTrack - 15) * M_PI / 180.) * arrowLen));
+      int yl = static_cast<int> (rint(sin((wTrack - 15) * M_PI / 180.) * arrowLen));
+
+      QPen pen( Qt::blue );
+      pen.setWidth( 3 * Layout::getIntScaledDensity() );
+      painter.setPen( pen );
+
+      // Draw the wind arrow into the radar view
+      painter.drawLine( centerX, centerY, centerX + x, centerY + y );
+      painter.drawLine( centerX, centerY, centerX + xr, centerY + yr );
+      painter.drawLine( centerX, centerY, centerX + xl, centerY + yl );
     }
 
   QFont font = this->font();

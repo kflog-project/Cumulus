@@ -20,8 +20,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-04-27 AP: Issue #103 fixed. Wind arrow added to flarm Radar view.
+                   The display can be switched on/off with a button.
+
 [o] 2016-04-24 AP: Issue #102 fixed. Use airfield selection list instead of
-                   combobox selection on waypoint import page
+                   combobox selection on waypoint import page.
                    
 [*] 2016-04-23 AP: Cumulus 5.28.0 released for Android.                   
 

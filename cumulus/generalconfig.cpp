@@ -543,8 +543,9 @@ void GeneralConfig::load()
     }
   endGroup();
 
-  beginGroup ("Flarm");
-  _flarmAliasFileName = value("FlarmAliasFileName", "cumulus-flarm.txt").toString();
+  beginGroup("Flarm");
+  _flarmAliasFileName      = value("AliasFileName", "cumulus-flarm.txt").toString();
+  _flarmRadarDrawWindArrow = value("RadarDrawWindArrow", true).toBool();
   endGroup();
 
   beginGroup("Units");
@@ -974,13 +975,17 @@ void GeneralConfig::save()
 
   if( _mcCready.isValid() )
     {
-	  setValue( "McCready", _mcCready.getMps() );
+      setValue( "McCready", _mcCready.getMps() );
     }
   else
     {
-	  setValue( "McCready", -1.0 );
+      setValue( "McCready", -1.0 );
     }
 
+  endGroup();
+
+  beginGroup ("Flarm");
+  setValue( "RadarDrawWindArrow", _flarmRadarDrawWindArrow );
   endGroup();
 
   beginGroup("Units");

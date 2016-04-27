@@ -289,7 +289,15 @@ public:
   };
 
   /**
-   * Gets the last Wind.
+   * Returns the last stored wind value.
+   */
+  Vector& getLastStoredWind()
+  {
+    return m_lastWind.wind;
+  };
+
+  /**
+   * Gets the last known Wind from the wind store.
    */
   Vector& getLastWind();
 
