@@ -31,8 +31,6 @@
 // Initialize static variables
 enum FlarmDisplay::Zoom FlarmDisplay::zoomLevel = FlarmDisplay::Low;
 
-bool FlarmDisplay::s_drawWindArrow = GeneralConfig::instance()->getFlarmRadarDrawWindArrow();
-
 QString FlarmDisplay::selectedObject = "";
 
 FlarmDisplay::FlarmDisplay( QWidget *parent ) :
@@ -302,7 +300,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
   // Draw wind arrow, if Flarm objects are available.
   Vector& wind = calculator->getLastStoredWind();
 
-  if( s_drawWindArrow == true && wind.isValid() && wind.getSpeed().getMps() > 0.0 )
+  if( getDrawWindArrow() == true && wind.isValid() && wind.getSpeed().getMps() > 0.0 )
     {
       int myTrack = calculator->getlastHeading();
 

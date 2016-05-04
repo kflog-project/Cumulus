@@ -24,7 +24,7 @@
  *
  * \date 2010-2016
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef FLARM_DISPLAY_H
@@ -90,13 +90,12 @@ public:
 
   static void setDrawWindArrow( const bool drawFlag )
   {
-    s_drawWindArrow = drawFlag;
     GeneralConfig::instance()->setFlarmRadarDrawWindArrow( drawFlag );
   };
 
   static bool getDrawWindArrow()
   {
-    return s_drawWindArrow;
+    return GeneralConfig::instance()->getFlarmRadarDrawWindArrow();
   };
 
 protected:
@@ -145,9 +144,6 @@ private:
 
   /** current zoom level */
   static enum Zoom zoomLevel;
-
-  /** Wind arrow draw flag */
-  static bool s_drawWindArrow;
 
   /** Hash key of the selected object */
   static QString selectedObject;
