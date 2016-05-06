@@ -20,6 +20,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2016-05-06 AP: Cumulus 5.29.0 released for Android.  
+
 [o] 2016-04-27 AP: Issue #103 fixed. Wind arrow added to flarm Radar view.
                    The display can be switched on/off with a button.
 
