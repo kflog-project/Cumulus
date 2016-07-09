@@ -420,7 +420,7 @@ void GeneralConfig::load()
   _airfieldRunwayLengthFilter = value("RunwayLengthFilter", 0).toFloat(); // m is used
   _openAipPoiFileList         = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
   _openAipAirfieldCountries   = value("OpenAipAirfieldCountries", "" ).toString();
-  _openAipLink                = value("OpenAipLink", "9EEAi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987").toByteArray();
+  _openAipLink                = value("OpenAipLink", "9EEADi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987").toByteArray();
   endGroup();
 
   beginGroup("List Display");
