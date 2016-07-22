@@ -57,6 +57,7 @@ static jmethodID m_nativeShutdownID   = 0;
 static jmethodID m_openHardwareMenu   = 0;
 static jmethodID m_downloadFile       = 0;
 static jmethodID m_isRestarted        = 0;
+static jmethodID m_apiLevel           = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -542,6 +543,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_apiLevel = env->GetMethodID( clazz,
+                                 "getApiLevel",
+                                 "()I");
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning() << "initJni: could not get ID of getApiLevel";
+      return false;
+    }
+
   return true;
 }
 
@@ -978,6 +989,28 @@ bool jniIsRestarted()
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniIsRestarted: exception when calling Java method \"isRestarted\"");
+      result = false;
+    }
+
+  jniDetachCurrentThread();
+  return result;
+}
+
+int jniGetApiLevel()
+{
+  JNIEnv* env = 0;
+
+  if( !jniEnv( &env ) )
+    {
+      return false;
+    }
+
+  jint result = (jint) env->CallIntMethod( m_cumActObject,
+                                           m_apiLevel );
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning("jniGetApiLevel: exception when calling Java method \"getApiLevel\"");
       result = false;
     }
 

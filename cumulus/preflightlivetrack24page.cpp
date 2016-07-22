@@ -23,6 +23,10 @@
 #include <QtScroller>
 #endif
 
+#ifdef ANDROID
+#include "jnisupport.h"
+#endif
+
 #include "generalconfig.h"
 #include "layout.h"
 #include "helpbrowser.h"
@@ -168,6 +172,16 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
           pos = 8;
         }
 
+#ifdef ANDROID
+
+      if( srvList.at(i).startsWith("https://") && jniGetApiLevel() >= 23 )
+	{
+	  // Note, API Level 23, Android 6, Marshmallow does not more support
+	  // old Qt4 Network Lib and openssl.
+	  continue;
+	}
+
+#endif
       m_server->addItem( srvList.at(i).mid(pos), srvList.at(i) );
     }
 

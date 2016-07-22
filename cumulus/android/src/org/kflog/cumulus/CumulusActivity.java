@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2012-2016 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -95,9 +95,9 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2015
+ * @date 2012-2016
  * 
- * @version 1.4
+ * @version 1.5
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -793,6 +793,16 @@ private final Handler m_commHandler = new Handler()
   synchronized public void setRestarted(boolean flag)
   {
       m_isRestarted = flag;
+  }
+  
+  /**
+   * Returns the current Android API level
+   * 
+   * @return flag New value for the restart flag.
+   */
+  synchronized public int getApiLevel()
+  {
+      return android.os.Build.VERSION.SDK_INT;
   }
 
   @Override

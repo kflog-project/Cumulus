@@ -20,6 +20,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2016-07-22 AP: Cumulus 5.29.2 released for all platforms.  
+
+[o] 2016-07-22 AP: Issue #105 fixed. HTTPS calls under Android 6 caused a crash
+                   of the Cumulus app. Such call are filtered out now. openAip
+                   has changed back to http. Thanks to Stephan Besser from openAip.
+
 [o] 2016-07-09 AP: Issue #104 fixed. openAip has changed to web protocol from
                    http to https.
 
