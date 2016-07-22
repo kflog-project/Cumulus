@@ -798,7 +798,7 @@ private final Handler m_commHandler = new Handler()
   /**
    * Returns the current Android API level
    * 
-   * @return flag New value for the restart flag.
+   * @return The current Android API level as integer
    */
   synchronized public int getApiLevel()
   {
