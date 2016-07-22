@@ -296,6 +296,24 @@ void PreFlightLiveTrack24Page::load()
 {
   GeneralConfig* conf = GeneralConfig::instance();
 
+#ifdef ANDROID
+
+  if( jniGetApiLevel() >= 23 )
+    {
+      // Prevent calls to https://skylines.aero, they will crash on Android 6
+      int index = conf->getLiveTrackIndex();
+
+      if( index == 3 )
+	{
+	  // https://skylines.aero
+	  conf->setLiveTrackOnOff( false );
+	  conf->setLiveTrackIndex( 0 );
+	}
+    }
+
+#endif
+
+
   m_liveTrackEnabled->setChecked( conf->isLiveTrackOnOff() );
   m_trackingIntervalMin->setValue( conf->getLiveTrackInterval() / 60 );
   m_trackingIntervalSec->setValue( conf->getLiveTrackInterval() % 60 );
