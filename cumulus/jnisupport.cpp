@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2015 by Axel Pauli
+ **                   2012-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -58,6 +58,7 @@ static jmethodID m_openHardwareMenu   = 0;
 static jmethodID m_downloadFile       = 0;
 static jmethodID m_isRestarted        = 0;
 static jmethodID m_apiLevel           = 0;
+static jmethodID m_httpsRequest       = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -314,6 +315,19 @@ static void nativeBaroAltitude( JNIEnv* /*env*/,
     }
 }
 
+static void nativeHttpsResponse( JNIEnv* env,
+                                 jobject /*myobject*/,
+                                 jint errorCode,
+                                 jstring response )
+{
+  const char* nativeString = env->GetStringUTFChars(response, 0);
+  QString qResponse(nativeString);
+  env->ReleaseStringUTFChars(response, nativeString);
+
+  HttpsResponseEvent *hrs = new HttpsResponseEvent( errorCode, qResponse );
+  QCoreApplication::postEvent( MainWindow::mainWindow(), hrs );
+}
+
 /* The array of native methods to register.
  * The name string must match the "native" declaration in Java.
  * The parameter string must match the types in the "native" declaration
@@ -327,7 +341,8 @@ static JNINativeMethod methods[] = {
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
-	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude}
+	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude},
+	{"nativeHttpsResponse", "(ILjava/lang/String;)V", (void *)nativeHttpsResponse}
 };
 
 /**
@@ -532,7 +547,6 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
-
   m_isRestarted = env->GetMethodID( clazz,
                                     "isRestarted",
                                     "()Z");
@@ -550,6 +564,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
   if ( isJavaExceptionOccured(env) )
     {
       qWarning() << "initJni: could not get ID of getApiLevel";
+      return false;
+    }
+
+  m_httpsRequest = env->GetMethodID( clazz,
+                                     "sendHttpsRequest",
+                                     "(Ljava/lang/String;Ljava/lang/String;)V");
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning() << "initJni: could not get ID of sendHttpsRequest";
       return false;
     }
 
@@ -966,7 +990,7 @@ int jniDownloadFile( QString& url, QString& destination )
 
   if ( isJavaExceptionOccured(env) )
     {
-      qWarning("jniGpsCmd: exception when calling Java method \"downloadFile\"");
+      qWarning("jniDownloadFile: exception when calling Java method \"downloadFile\"");
       result = OperationCanceledError;
     }
 
@@ -1016,4 +1040,32 @@ int jniGetApiLevel()
 
   jniDetachCurrentThread();
   return result;
+}
+
+int jniSendHttpsRequest( QString& url, QString& urlParams )
+{
+  JNIEnv* env = 0;
+
+  if( !jniEnv( &env ) || shutdown )
+    {
+      return OperationCanceledError;
+    }
+
+  jstring jurl = env->NewStringUTF( url.toUtf8() );
+
+  jstring jparams = env->NewStringUTF( urlParams.toUtf8() );
+
+  jint result = env->CallIntMethod( m_cumActObject,
+                                    m_httpsRequest,
+                                    jurl,
+                                    jparams );
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning("jniSendHttpsRequest: exception when calling Java method \"sendHttpsRequest\"");
+      result = OperationCanceledError;
+    }
+
+  jniDetachCurrentThread();
+  return NoError;
 }
