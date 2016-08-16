@@ -54,9 +54,8 @@ import android.util.Log;
  */
 public class WebCommService
 {
-  // Debugging
+  // Logger tag
   private static final String TAG = "WebCommService";
-  private static final boolean D = false;
 
   /**
    * Definition of Qt Network errors.
@@ -283,8 +282,18 @@ public class WebCommService
     return NoError;
   }
   
+  /*
+   * Sends a https post request to the passed url and its parameters. The
+   * response from the web server is returned.
+   * 
+   * @param urlIn Url pointing to the server to be called.
+   * 
+   * @param urlParamsIn URL parameters for the post call.
+   * 
+   * @return Result code and response text from the web server.
+   */
   @SuppressLint("TrulyRandom")
-  public WebCommResult sendHttpRequest( String urlIn, String urlParamsIn )
+  public WebCommResult sendHttpsRequest( String urlIn, String urlParamsIn )
   {
     WebCommResult result = new WebCommResult();
     URL url = null;

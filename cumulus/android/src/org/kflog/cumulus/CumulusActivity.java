@@ -24,13 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.Object;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -38,6 +32,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.kde.necessitas.origo.QtActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -69,8 +65,6 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -84,10 +78,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import org.kde.necessitas.origo.QtActivity;
-import org.kflog.cumulus.BluetoothService;
-import org.kflog.cumulus.CumulusIOIO;
-
 /**
  * @class CumulusActivity
  * 
@@ -97,7 +87,7 @@ import org.kflog.cumulus.CumulusIOIO;
  * 
  * @date 2012-2016
  * 
- * @version 1.5
+ * @version 1.6
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -303,23 +293,23 @@ public class CumulusActivity extends QtActivity
    * A Handler that gets information back from other objects.
    */
   @SuppressLint("HandlerLeak")
-private final Handler m_commHandler = new Handler()
-  {
-    @Override
-    public void handleMessage(Message msg)
+  private final Handler m_commHandler = new Handler()
     {
-      switch (msg.what)
-        {
-          case R.id.msg_ioio_incompatible:
-            // Message from CumulusIOIO, the IOIO is incompatible.
-            showDialog(R.id.dialog_ioio_incompatible, msg.getData());
-            break;
-            
-          default:
-            break;
-        }
-    }
-  };
+      @Override
+      public void handleMessage(Message msg)
+      {
+        switch (msg.what)
+          {
+            case R.id.msg_ioio_incompatible:
+              // Message from CumulusIOIO, the IOIO is incompatible.
+              showDialog(R.id.dialog_ioio_incompatible, msg.getData());
+              break;
+              
+            default:
+              break;
+          }
+      }
+    };
 
   // Native C++ functions
   public static native void nativeGpsFix( double latitude,
@@ -341,6 +331,8 @@ private final Handler m_commHandler = new Handler()
   public static native void nativeKeypress(char code);
 
   public static native boolean isRootWindow();
+  
+  public static native void nativeHttpsResponse(int errorCode, String response);
 
   /**
    * Called from JNI to get the class instance.
@@ -466,35 +458,7 @@ private final Handler m_commHandler = new Handler()
       }
     });
   }
-  
-  /**
-   * Definition of Qt Network errors.
-   */
-  static final int NoError = 0;
-  	
-  // network layer errors [relating to the destination server] (1-99):
-  static final int ConnectionRefusedError = 1;
-  static final int RemoteHostClosedError = 2;
-  static final int HostNotFoundError = 3;
-  static final int TimeoutError = 4;
-  static final int OperationCanceledError = 5;
-  static final int SslHandshakeFailedError = 6;
-  static final int TemporaryNetworkFailureError = 7;
-  static final int UnknownNetworkError = 99;
-  	
-  // content errors (201-299):
-  static final int ContentAccessDenied = 201;
-  static final int ContentOperationNotPermittedError = 202;
-  static final int ContentNotFoundError = 203;
-  static final int AuthenticationRequiredError = 204;
-  static final int ContentReSendError = 205;
-  static final int UnknownContentError = 299;
-  	
-  // protocol errors
-  static final int ProtocolUnknownError = 301;
-  static final int ProtocolInvalidOperationError = 302;
-  static final int ProtocolFailure = 399;
-
+ 
   /**
    * Called from JNI to request a HTTP file download from the native side.
    * 
@@ -505,132 +469,44 @@ private final Handler m_commHandler = new Handler()
    * @return Result code of download action.
    * 
    */
-  @SuppressLint("SimpleDateFormat")
   int downloadFile( String urlIn, String destinationIn )
   {
-	Log.i("DownloadFile", "Entry URL: " + urlIn + ", Dest: " + destinationIn);
-	  
-	if( isNetworkAvailable() == false )
-	{
-		Log.e("DownloadFile", "No network available!");
-		return TemporaryNetworkFailureError;
-	}
-	
-    String strDate = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-    // Create a temporary filename by appending a date-time string
-	String outputFileName = destinationIn + "_" + strDate;
-	
-	BufferedOutputStream outBuffer = null;
-	
-	try
-	{
-		outBuffer = new BufferedOutputStream(new FileOutputStream(outputFileName));
-	} 
-	catch (FileNotFoundException e)
-	{
-		Log.e("DownloadFile", "Cannot open output file: " + e.getMessage());
-		return UnknownNetworkError;
-	}
-	
-	URL url = null;
-	
-	try
-	{
-		url = new URL(urlIn);
-	}
-	catch( MalformedURLException e)
-	{
-		Log.e("DownloadFile", "Malformed URL:" + e.getMessage());
-		try { outBuffer.close();
-		} catch (IOException e1) {}
-		new File(outputFileName).delete();
-		return UnknownNetworkError;
-	}
-	
-	URLConnection urlConnection = null;
-	
-	try
-	{
-		urlConnection = url.openConnection();
-	} catch (IOException e) {
-		Log.e("DownloadFile", "Open URL error:" + e.getMessage());
-		try { outBuffer.close();
-		} catch (IOException e1) {}
-		new File(outputFileName).delete();
-		return UnknownNetworkError;
-	}
-	
-	urlConnection.setReadTimeout(10000);
-	urlConnection.setConnectTimeout(15000);
-	
-	try
-	{
-		urlConnection.setRequestProperty("User-Agent", "Cumulus/5.X (Qt/Android)");
-	}
-	catch (Exception e)
-	{
-		Log.e("DownloadFile", "setRequestProperty error" + e.getMessage());
-		try { outBuffer.close();
-		} catch (IOException e1) {}
-		new File(outputFileName).delete();
-		return UnknownNetworkError;		
-	}
-
-    long total = 0;
-    InputStream input = null;
+    Log.i( TAG, "DownloadFile: Entry URL: " + urlIn + ", Dest: " + destinationIn);
     
-	try
-	{
-		// open URL connection
-		urlConnection.connect();
-		
-	    // this will be useful so that you can show a typical 0-100% progress bar
-	    // int fileLength = urlConnection.getContentLength();
-	
-	    // download the file
-	    input = new BufferedInputStream(urlConnection.getInputStream());
-	
-	    byte data[] = new byte[8192];
-	    int count;
-	    
-	    while ((count = input.read(data)) != -1)
-	    {
-	        total += count;
-	        outBuffer.write(data, 0, count);
-	    }
-	
-	    outBuffer.flush();
-	    outBuffer.close();
-	    input.close();
-	}
-	catch (IOException e)
-	{
-		Log.e("DownloadFile", "Read input stream failed:" + e.getMessage());
-		try
-		{
-			input.close();
-			outBuffer.close();
-		}
-		catch (IOException e1) {}
-		
-		new File(outputFileName).delete();
-		return UnknownNetworkError;		
-	}
-
-	// Rename temporary download file
-	new File(outputFileName).renameTo(new File(destinationIn));
-	
-	if( total == 0 )
-	{
-		return ContentNotFoundError;
-	}
-	  
-	Log.i("DownloadFile", "OK: Entry URL: " + urlIn + ", Dest: " + destinationIn);
-
-	return NoError;
+    Context context = getApplicationContext();
+    
+    WebCommService wcs = new WebCommService( context );
+    
+    return wcs.downloadFile( urlIn, destinationIn );
   }
-
+  
+  void sendHttpsRequest( String urlIn, String urlParamsIn )
+  {
+    Log.d(TAG, "sendHttpsRequest: Entry URL: " + urlIn + ", urlParamsIn: " + urlParamsIn);
+    
+    // The HTTPS request is setup as runnable, to avoid a blocking of the calling thread.
+    new Runnable() 
+    {
+        String rUrl;
+        String rParams;
+      
+        @Override
+        public void run() 
+        {
+          WebCommService wcs = new WebCommService( getApplicationContext() );
+          WebCommService.WebCommResult result = wcs.sendHttpsRequest( rUrl,  rParams );
+          nativeHttpsResponse( result.errorCode, result.response );
+        }
+        
+        public Runnable init(String url, String params)
+        {
+          this.rUrl = url;
+          this.rParams = params;
+          return(this);
+        }
+    }.init(urlIn, urlParamsIn);
+  }
+	  
   /**
    * Setup a barometer sensor listener, if a barometer sensor is build in.
    * 
@@ -2906,28 +2782,6 @@ private final Handler m_commHandler = new Handler()
       }
 
     return true;
-  }
-
-  /**
-   * Checks, if a network connectivity is available.
-   * 
-   * @return true in case of success otherwise false
-   */
-  public boolean isNetworkAvailable()
-  {
-  	ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-  	
-  	NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-  	
-  	// if no network is available networkInfo will be null
-  	// otherwise check if we are connected
-  	if (networkInfo != null &&  networkInfo.isConnected() )
-  	{
-  	  Log.i(TAG, "Network available and connected.");
-  	  return true;
-  	}
-  
-  	return true;
   }
   
   private void switchOffScreenDimming()
