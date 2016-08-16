@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010 by Josua Dietze (digidietze@draisberghof.de)
- **                   2012-2015 by Axel Pauli
+ **                   2012-2016 by Axel Pauli
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
  * \brief Android custom events, used by the JNI to report results from the
  * Java part.
  *
- * \date 2012-2015
+ * \date 2012-2016
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
@@ -233,6 +233,31 @@ class AltitudeEvent : public QEvent
   private:
 
   double m_altitude;
+};
+
+class HttpsResponseEvent : public QEvent
+{
+  public:
+
+  HttpsResponseEvent( const int errorCode, QString resonse ) :
+    QEvent( (QEvent::Type) (QEvent::User + 7) ),
+    m_errorCode(errorCode),
+    m_response(resonse)
+  {};
+
+  virtual ~HttpsResponseEvent() {};
+
+  void responseInfo( int& errorCode, QString& response )
+    {
+      errorCode = m_errorCode;
+      response = m_response;
+      return;
+    };
+
+ private:
+
+  int m_errorCode;
+  QString m_response;
 };
 
 #endif
