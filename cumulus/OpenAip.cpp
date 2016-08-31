@@ -504,14 +504,21 @@ bool OpenAip::readRadio( QXmlStreamReader& xml, RadioPoint& rp )
               float fre = xml.readElementText().toFloat( &ok );
 
               if( rp.getTypeID() == BaseMapElement::Ndb )
-        	{
-        	  // TODO Workaround to handle openAIP NDB frequencies.
-        	  // The frequency value is given in KHz and not in MHz.
-        	  // That is a bug in openAIP version 1.x
-        	  fre /= 1000.0;
-        	}
+				{
+				  // TODO Workaround to handle openAIP NDB frequencies.
+				  // The frequency value is given in KHz and not in MHz.
+				  // That is a bug in openAIP version 1.x
+				  fre /= 1000.0;
+				}
 
-              if( ok) rp.setFrequency( fre );
+              if( ok)
+            	{
+            	  rp.setFrequency( fre );
+            	}
+              else
+			    {
+				  qWarning() << "Radio frequency" << fre << "is not a floating type!";
+			    }
              }
           else if ( elementName == "CHANNEL" )
             {
@@ -1177,14 +1184,14 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
               // All record data have been read inclusive the end element.
               if( ok )
                 {
-                  if ( type == "INFO" || type == "TOWER" || type == "OTHER" )
-                    {
-                      af.setFrequency( frequency );
-                    }
-                  else if( type == "ATIS" )
+                  if( type == "ATIS" )
                     {
                       af.setAtis( frequency );
                     }
+                  else
+				    {
+                	  af.setFrequency( frequency );
+				    }
                 }
 
               return true;
@@ -1198,7 +1205,14 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
 
           if( elementName == "FREQUENCY" )
             {
-              frequency = xml.readElementText().toFloat(&ok);
+              QString freqStr = xml.readElementText();
+
+              frequency = freqStr.toFloat(&ok);
+
+              if( ok == false )
+                {
+                  qWarning() << "Radio frequency" << freqStr << "is not a floating type!";
+                }
             }
           else if ( elementName == "TYPE" )
             {
