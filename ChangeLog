@@ -20,6 +20,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2016-07-09 AP: Issue #109 fixed. Sometimes airfield frequencies are not
+                   displayed in the info view.
+
 [*] 2016-07-22 AP: Cumulus 5.29.2 released for all platforms.  
 
 [o] 2016-07-22 AP: Issue #105 fixed. HTTPS calls under Android 6 caused a crash
