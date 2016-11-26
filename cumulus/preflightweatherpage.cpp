@@ -33,9 +33,9 @@ QHash<QString, QHash<QString, QString> > PreFlightWeatherPage::m_metarReports;
 
 QHash<QString, QString> PreFlightWeatherPage::m_tafReports;
 
-const QString PreFlightWeatherPage::MetarUrl = "http://weather.noaa.gov/pub/data/observations/metar/decoded/";
+const QString PreFlightWeatherPage::MetarUrl = "http://tgftp.nws.noaa.gov/data/observations/metar/decoded/";
 
-const QString PreFlightWeatherPage::TafUrl = "http://weather.noaa.gov/pub/data/forecasts/taf/stations/";
+const QString PreFlightWeatherPage::TafUrl = "http://tgftp.nws.noaa.gov/data/forecasts/taf/stations/";
 
 PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QWidget(parent),
