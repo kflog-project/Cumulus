@@ -20,7 +20,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[o] 2016-07-09 AP: Issue #111 fixed. Metar and TAF links have been changed.
+[o] 2016-12-27 AP: Issue #112 fixed. GLONASS and GN... NEMEA sentences are not
+                   processed
+
+[*] 2016-11-26 AP: Cumulus 5.29.3 released for Android.
+
+[o] 2016-11-26 AP: Issue #111 fixed. Metar and TAF links have been changed.
 
 [o] 2016-07-09 AP: Issue #109 fixed. Sometimes airfield frequencies are not
                    displayed in the info view.
