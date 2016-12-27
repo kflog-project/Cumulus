@@ -3,7 +3,7 @@
                              -------------------
     begin                : 11.01.2012
 
-    copyright            : (C) 2012-2014 by Axel Pauli
+    copyright            : (C) 2012-2016 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -67,7 +67,7 @@ int NmeaPlay::startPlaying( const int skip, const int pause )
 
       std::cout << line.toLatin1().data();
 
-      if( line.startsWith("$GPRMC") )
+      if( line.startsWith("$GPRMC") || line.startsWith("$GNRMC") )
         {
           // make a break after this sentence
           usleep( m_pause * 1000 );
