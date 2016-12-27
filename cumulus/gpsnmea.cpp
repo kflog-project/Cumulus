@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2015 by Axel Pauli
+                               2008-2016 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -145,12 +145,31 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   mutex.lock();
   gpsKeys.clear();
 
-  // Load all desired GPS sentence identifier into the hash table
+  // Load all desired GPS sentence identifiers into the hash table
+  // NMEA Talkers
+  // GP = GPS
+  // GL = GLONASS
+  // GN = GPS/GLONASS
   gpsKeys.insert( "$GPRMC", 0);
+  gpsKeys.insert( "$GLRMC", 0);
+  gpsKeys.insert( "$GNRMC", 0);
+
   gpsKeys.insert( "$GPGLL", 1);
+  gpsKeys.insert( "$GLGLL", 1);
+  gpsKeys.insert( "$GNGLL", 1);
+
   gpsKeys.insert( "$GPGGA", 2);
+  gpsKeys.insert( "$GLGGA", 2);
+  gpsKeys.insert( "$GNGGA", 2);
+
   gpsKeys.insert( "$GPGSA", 3);
+  gpsKeys.insert( "$GLGSA", 3);
+  gpsKeys.insert( "$GNGSA", 3);
+
   gpsKeys.insert( "$GPGSV", 4);
+  gpsKeys.insert( "$GLGSV", 4);
+  gpsKeys.insert( "$GNGSV", 4);
+
   gpsKeys.insert( "$PGRMZ", 5);
   gpsKeys.insert( "$PCAID", 6);
   gpsKeys.insert( "!w",     7);
@@ -548,7 +567,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
     case 3: // GPGSA
       __ExtractConstellation( slst );
       return;
-    case 4: // GPGSV
+    case 4: // GPGSV or GLGSV
       __ExtractSatsInView( slst );
       return;
     case 5: // PGRMZ
@@ -643,7 +662,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 
   See http://www.nmea.de/nmea0183datensaetze.html
 
-  RMC - Recommended Minimum Navigation Information
+  [GP|GN]RMC - Recommended Minimum Navigation Information
 
                                                                12
           1         2 3       4 5        6 7   8   9     10  11 | 13
@@ -671,7 +690,7 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
 {
   if( slst.size() < 10 )
     {
-      qWarning( "$GPRMC contains too less parameters!" );
+      qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
 
@@ -740,7 +759,7 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
 }
 
 /**
-  GLL - Geographic Position - Latitude/Longitude
+  [GP|GN]GLL - Geographic Position - Latitude/Longitude
 
          1       2 3        4 5         6 7
          |       | |        | |         | |
@@ -757,9 +776,9 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpgll( const QStringList& slst )
 {
-  if ( slst.size() < 7 )
+  if( slst.size() < 7 )
     {
-      qWarning("$GPGLL contains too less parameters!");
+      qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
 
@@ -810,7 +829,7 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
 {
   if ( slst.size() < 15 )
     {
-      qWarning("$GPGGA contains too less parameters!");
+      qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
 
@@ -1633,7 +1652,7 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
 }
 
 /**
-  GSA - GPS DOP and active satellites
+  [GP|GN]GSA - GPS DOP and active satellites
 
           1 2 3                    14 15  16  17  18
           | | |                    |  |   |   |   |
@@ -1657,7 +1676,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 {
   if ( sentence.size() < 18 )
     {
-      qWarning("$GPGSA contains too less parameters!");
+      qWarning() << sentence[0] << "contains too less parameters!";
       return "";
     }
 
@@ -2578,11 +2597,13 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
 }
 
 /**
-  GPGSV - Satellites in view
+  GPGSV - GPS Satellites in view
+  GLGSV - GLONASS Satellites in view
 
           1 2 3 4 5 6 7     n
           | | | | | | |     |
    $GPGSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+   $GLGSV,x,x,x,x,x,x,x,...*hh<CR><LF>
 
    Field Number:
     1) total number of messages
