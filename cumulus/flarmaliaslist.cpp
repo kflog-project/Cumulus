@@ -13,6 +13,8 @@
 **
 ***********************************************************************/
 
+#include <algorithm>
+
 #ifndef QT_5
 #include <QtGui>
 #else
@@ -295,7 +297,7 @@ void FlarmAliasList::slot_DeleteRows()
       rows2Remove.append( row );
     }
 
-  qSort( rows2Remove );
+  std::sort( rows2Remove.begin(), rows2Remove.end() );
 
   for( int i = rows2Remove.size()-1; i >= 0; i-- )
     {

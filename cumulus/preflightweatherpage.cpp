@@ -13,6 +13,8 @@
  **
  ***********************************************************************/
 
+#include <algorithm>
+
 #ifndef QT_5
 #include <QtGui>
 #else
@@ -851,7 +853,7 @@ void PreFlightWeatherPage::slotAddAirport()
     }
 
   m_airportIcaoList.append( icao );
-  qSort( m_airportIcaoList );
+  std::sort( m_airportIcaoList.begin(), m_airportIcaoList.end() );
   storeAirportIcaoNames();
   loadAirportData( false, icao );
 
@@ -1221,7 +1223,7 @@ bool PreFlightWeatherPage::readAirportIcaoNames()
 
   qDebug() << m_airportIcaoList.size() << "entries read from" << f.fileName();
 
-  qSort( m_airportIcaoList );
+  std::sort( m_airportIcaoList.begin(), m_airportIcaoList.end() );
   return true;
 }
 

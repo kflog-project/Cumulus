@@ -6,17 +6,17 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008 by Axel Pauli
+ **   Copyright (c):  2008-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
 #ifndef ISO_LIST_H
 #define ISO_LIST_H
+
+#include <algorithm>
 
 #include <QPainterPath>
 #include <QList>
@@ -32,7 +32,7 @@
  * like this is created when the map is drawn and is used to detect the
  * elevation at a given position, for instance under the mouse cursor.
  *
- * \date 2008
+ * \date 2008-2016
  */
 class IsoListEntry
 {
@@ -133,7 +133,7 @@ class IsoList : public QList<IsoListEntry>
 
   void sort()
   {
-    qSort( begin(), end() );
+    std::sort( begin(), end() );
   };
 
 };

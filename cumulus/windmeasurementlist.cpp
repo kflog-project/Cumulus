@@ -7,15 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2014 by Axel Pauli
+**                   2007-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
+#include <algorithm>
 #include <cmath>
 
 #include <QtCore>
@@ -193,7 +192,7 @@ void WindMeasurementList::addMeasurement( const Vector& vector,
   // Add item to limited list.
   add( wind );
 
-  qSort( begin(), end(), WindMeasurement::lessThan );
+  std::sort( begin(), end(), WindMeasurement::lessThan );
 }
 
 /**

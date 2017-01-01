@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2009-2015 by Axel Pauli
+**                   2009-2016 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,15 +26,16 @@
  * Due to the cross pointer reference to the air region this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2000-2015
+ * \date 2000-2016
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
 #ifndef AIRSPACE_H
 #define AIRSPACE_H
 
+#include <algorithm>
 #include <cmath>
 
 #include <QDateTime>
@@ -446,7 +447,7 @@ public:
 
   void sort ()
   {
-    qSort( begin(), end(), CompareAirspaces() );
+    std::sort( begin(), end(), CompareAirspaces() );
   };
 };
 

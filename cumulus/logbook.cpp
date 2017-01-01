@@ -6,12 +6,14 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2015 Axel Pauli
+**   Copyright (c): 2012-2016 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
+
+#include <algorithm>
 
 #ifndef QT_5
 #include <QtGui>
@@ -301,7 +303,7 @@ void Logbook::slot_DeleteRows()
       rows2Remove.append( row );
     }
 
-  qSort( rows2Remove );
+  std::sort( rows2Remove.begin(), rows2Remove.end() );
 
   for( int i = rows2Remove.size()-1; i >= 0; i-- )
     {

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2015 by Axel Pauli
+ **                   2008-2016 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,6 +27,7 @@
  * It is assumed, that this class is a singleton.
  ***********************************************************************/
 
+#include <algorithm>
 #include <math.h>
 
 #include <QtCore>
@@ -429,7 +430,7 @@ void ReachableList::calculateDataInList()
       modeAltitude = false; // glider is unknown, sort by distances
     }
 
-  qSort( begin(), end() );
+  std::sort( begin(), end() );
   // qDebug("Number of reachable sites (arriv >0): %d", counter );
   // qDebug("Time for glide path calculation: %d msec", t.restart() );
   emit newReachList();
@@ -488,7 +489,7 @@ void ReachableList::calculateNewList()
   //qDebug("Number of potential reachable sites: %d", count() );
 
   // sort list according to distances
-  qSort(begin(), end() );
+  std::sort(begin(), end() );
   removeDoubles();
   // qDebug("Number of potential reachable sites (after pruning): %d", count() );
 
@@ -614,7 +615,7 @@ void ReachableList::removeDoubles()
     } // End of for i
 
   // sort remove list
-  qSort( removeList.begin(), removeList.end(), qLess<int>() );
+  std::sort( removeList.begin(), removeList.end(), qLess<int>() );
 
   // Start remove at the end of the list so that access index is always valid.
   for (int i = removeList.count()-1; i >= 0; i--)
