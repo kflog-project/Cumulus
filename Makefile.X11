@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build a Cumulus release based on Qt4.8.x/X11
 #
-# Copyright (c): 2008-2016 by Axel Pauli (kflog.cumulus@gmail.com)
+# Copyright (c): 2008-2017 by Axel Pauli (kflog.cumulus@gmail.com)
 #
 # This file is distributed under the terms of the General Public License.
 # See the file COPYING for more information.
@@ -104,40 +104,22 @@ check_dir:
 	fi
 
 .PHONY : install
-install: check_dir deinstall install_lang
+install: check_dir deinstall
 	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/bin
 	install -d $(INSTALL_ROOT)/etc
 	install -d $(INSTALL_ROOT)/help/en
 	install -d $(INSTALL_ROOT)/icons
-	install -d $(INSTALL_ROOT)/icons/small
-	install -d $(INSTALL_ROOT)/icons/windarrows
-	install -d $(INSTALL_ROOT)/locale
 	install -d $(INSTALL_ROOT)/sounds
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
 	install --mode=644 etc/*.plr $(INSTALL_ROOT)/etc
 	install --mode=644 etc/Example.plr.Readme $(INSTALL_ROOT)/etc/Example.plr.Readme
-	install --mode=644 icons/*.xpm $(INSTALL_ROOT)/icons
-	install --mode=644 icons/*.png $(INSTALL_ROOT)/icons
-	install --mode=644 icons/small/* $(INSTALL_ROOT)/icons/small
-	install --mode=644 icons/windarrows/* $(INSTALL_ROOT)/icons/windarrows
 	install --mode=644 help/en/* $(INSTALL_ROOT)/help/en
+	install --mode=644 cumulus/icons/cumulus.png $(INSTALL_ROOT)/icons
+	install --mode=644 cumulus/icons/cumulus-desktop*.png $(INSTALL_ROOT)/icons
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
-
-.PHONY : install_lang
-install_lang:
-	@echo "===== Installing Cumulus $(VERSION) languages under $(INSTALL_ROOT) ====="
-	install -d $(INSTALL_ROOT)/locale/de
-	install -d $(INSTALL_ROOT)/help/de
-	install --mode=644 help/de/* $(INSTALL_ROOT)/help/de
-	cd cumulus; \
-		$(LRELEASE) -silent -removeidentical -nounfinished cumulus_de.ts -qm $(INSTALL_ROOT)/locale/de/cumulus_de.qm
-	chmod 644 $(INSTALL_ROOT)/locale/de/cumulus_de.qm
-	cd locale/de; \
-		$(LRELEASE) -silent -removeidentical -nounfinished qt_de.ts -qm $(INSTALL_ROOT)/locale/de/qt_de.qm
-	chmod 644 $(INSTALL_ROOT)/locale/de/qt_de.qm
 
 .PHONY : deinstall
 deinstall:
@@ -232,9 +214,6 @@ dpkg_install:
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/small
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/locale/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install -d $(DESTDIR)/usr/share/applications
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
@@ -242,20 +221,14 @@ dpkg_install:
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 etc/*.plr $(DESTDIR)/$(INSTALL_ROOT)/etc
 	install --mode=644 etc/Example.plr.Readme $(DESTDIR)/$(INSTALL_ROOT)/etc/Example.plr.Readme
-	install --mode=644 icons/*.xpm $(DESTDIR)/$(INSTALL_ROOT)/icons
-	install --mode=644 icons/*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
-	install --mode=644 icons/small/* $(DESTDIR)/$(INSTALL_ROOT)/icons/small
-	install --mode=644 icons/windarrows/* $(DESTDIR)/$(INSTALL_ROOT)/icons/windarrows
+	install --mode=644 cumulus/icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/icons
+	install --mode=644 cumulus/icons/cumulus-desktop*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 help/en/*.html help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install --mode=644 help/de/*.html help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 help/en/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
 	install --mode=644 help/de/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/X11/other/cumulus.desktop $(DESTDIR)/usr/share/applications
-	# add German translations to package
-	install --mode=644 $(QT_TRANSLATIONS)/qt_de.qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/qt_de.qm
-	$(LRELEASE) -silent -removeidentical -nounfinished cumulus/cumulus_de.ts -qm $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
-	chmod 644 $(DESTDIR)/$(INSTALL_ROOT)/locale/de/cumulus_de.qm
 
 # copies change log and debian packages to the kflog web page
 .PHONY : copy2web copysrc2web

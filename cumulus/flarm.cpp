@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -740,8 +740,7 @@ void Flarm::createTrafficMessage()
 
   // Load an arrow pixmap to show the traffic direction more in detail.
   QString arrow;
-  arrow.sprintf( "%s/icons/windarrows/wind-arrow-80px-%03d.png\" width=\"%d\" height=\"%d\"",
-                 GeneralConfig::instance()->getAppRoot().toLatin1().data(),
+  arrow.sprintf( ":/icons/windarrows/wind-arrow-80px-%03d.png\" width=\"%d\" height=\"%d\"",
                  ta,
                  80 * SD,
                  80 * SD );

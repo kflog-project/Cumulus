@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2016 by Axel Pauli
+ **                   2007-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -106,7 +106,11 @@ void GeneralConfig::load()
 #ifdef ANDROID
   _guiStyle              = value("Style", "Android").toString();
 #else
+#if QT_VERSION < 0x050000
   _guiStyle              = value("Style", "Plastique").toString();
+#else
+  _guiStyle              = value("Style", "fusion").toString();
+#endif
 #endif
 #endif
 
@@ -1479,7 +1483,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale
   float scale = Layout::getScaledDensity();
 
   // determine absolute path to pixmap directory
-  QString path( _appRoot + "/icons/" + pixmapName );
+  QString path( ":/icons/" + pixmapName );
 
   // create key for cache access
   QString key(path);
@@ -1551,7 +1555,7 @@ QPixmap GeneralConfig::loadPixmapAutoScaled( const QString& pixmapName )
     }
 
   // determine absolute path to pixmap directory
-  QString path( _appRoot + "/icons/" + pixmapName );
+  QString path( ":/icons/" + pixmapName );
 
   // create key for cache access
   QString key( path + QString::number(scale, 'f', 3) );
@@ -1586,7 +1590,7 @@ QPixmap GeneralConfig::loadPixmapAutoScaled( const QString& pixmapName )
 QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
 {
   // determine absolute path to pixmap directory
-  QString path( _appRoot + "/icons/" + pixmapName );
+  QString path( ":/icons/" + pixmapName );
   QString cacheKey( path + QString::number(size, 'f', 3) );
 
   QPixmap pm;
@@ -1628,7 +1632,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
 void GeneralConfig::removePixmap( const QString& pixmapName )
 {
   // determine absolute path to pixmap directory and remove pixmap
-  QPixmapCache::remove( _appRoot + "/icons/" + pixmapName );
+  QPixmapCache::remove( ":/icons/" + pixmapName );
 }
 
 /**
@@ -2123,9 +2127,9 @@ void GeneralConfig::setLanguage( const QString& newValue )
       QString langFile = "cumulus_" + _language + ".qm";
 
 #ifdef ANDROID
-      QString langDir = _dataRoot + "/locale/" + _language;
+      QString langDir = ":/locale/" + _language;
 #else
-      QString langDir = _appRoot + "/locale/" + _language;
+      QString langDir = ":/locale/" + _language;
 #endif
 
       // Load GUI translation file
@@ -2150,11 +2154,6 @@ void GeneralConfig::setLanguage( const QString& newValue )
 
       // Load Qt library translation file, e.g. qt_de.qm
       langFile = "qt_" + _language + ".qm";
-
-#ifdef MAEMO5
-      // MAEMO5 stores here the language files of Qt.
-      langDir = "/usr/share/qt4/translations";
-#endif
 
       // Load library translation file
       if( ! qtTranslator )

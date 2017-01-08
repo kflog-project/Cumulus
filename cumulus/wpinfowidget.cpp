@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2015 by Axel Pauli
+ **                   2008-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -298,8 +298,7 @@ void WPInfoWidget::writeText()
   else
     {
       // display info from waypoint
-      QString image = GeneralConfig::instance()->getAppRoot() +
-	              "/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
+      QString image = ":/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
 
       QString is = QString::number(static_cast<int>(32.0 * Layout::getScaledDensity()));
 

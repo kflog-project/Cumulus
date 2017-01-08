@@ -3,7 +3,7 @@
              This file is also used during Debian package build
              as release information.
 
-  copyright: (C) 2007-2016 by Axel Pauli
+  copyright: (C) 2007-2017 by Axel Pauli
 
   Email of maintainer: kflog.cumulus@gmail.com
 

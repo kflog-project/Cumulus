@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2015 by Axel Pauli
+ **                   2008-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -164,7 +164,7 @@ QPixmap& Airfield::getSmallField( int runway )
 QString Airfield::getInfoString() const
 {
   QString text, elev;
-  QString path = "cumulus/";
+  QString path = ":";
 
   elev = Altitude::getText(elevation, true, 0).replace(QRegExp("\\s"),"&nbsp;");
 

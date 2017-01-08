@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2016 Axel Pauli
+# Copyright (c): 2008-2017 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -15,6 +15,7 @@ TEMPLATE = app
 # Put all generated objects into an extra directory
 OBJECTS_DIR = .obj
 MOC_DIR     = .obj
+RCC_DIR     = .obj
 
 QT += gui xml
 
@@ -30,12 +31,23 @@ CONFIG = debug \
          qt \
          warn_on
 
-# The next 3 lines shall force a compilation of the date stamp file
+# The next lines shall force a compilation of the date stamp file
 rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
 
-QMAKE_EXTRA_TARGETS += rm_build_date
+# Note! translations must be built first because the are linked
+# into the cumulus binary
 
-PRE_TARGETDEPS += rm_build_date
+#translate_cumulus.target   = locale/de/cumulus_de.qm
+#translate_cumulus.depends  = locale/de/cumulus_de.ts
+translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
+
+#translate_qt.target   = locale/de/qt_de.qm
+#translate_qt.depends  = locale/de/qt_de_de.ts
+translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt_de.ts
+
+QMAKE_EXTRA_TARGETS += rm_build_date translate_cumulus translate_qt
+
+PRE_TARGETDEPS += rm_build_date translate_cumulus translate_qt
 
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
@@ -60,6 +72,8 @@ CONFIG += numberpad
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
   error("Use at least Qt 4.7. or higher!")
 }
+
+RESOURCES = cumulus.qrc
 
 HEADERS = \
     aboutwidget.h \
@@ -412,6 +426,6 @@ QMAKE_CXXFLAGS += -fno-default-inline \
     
 LIBS += -lstdc++
 
-TRANSLATIONS = cumulus_de.ts
+TRANSLATIONS = locale/de/cumulus_de.ts locale/de/qt_de.ts
 
 CODECFORSRC = UTF-8
