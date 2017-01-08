@@ -27,8 +27,8 @@ DEFINES += QT_5
 
 # CONFIG = qt warn_on release
 
-CONFIG = debug \
-         qt \
+CONFIG = qt \
+         debug \
          warn_on
 
 # The next lines shall force a compilation of the date stamp file
@@ -74,6 +74,8 @@ CONFIG += numberpad
 }
 
 RESOURCES = cumulus.qrc
+
+CONFIG += resources
 
 HEADERS = \
     aboutwidget.h \
