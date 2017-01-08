@@ -3,11 +3,11 @@ Upstream-Name: cumulus-__VERSION__
 Source: https://svn.kflog.org/svn/repos/cumulus/qt4
 
 Files: *
-Copyright: 2012-2015 Axel Pauli <kflog.cumulus@gmail.com>
+Copyright: 2012-2017 Axel Pauli <kflog.cumulus@gmail.com>
 License: GPL-3.0+
 
 Files: debian/*
-Copyright: 2012-2015 Axel Pauli <kflog.cumulus@gmail.com>
+Copyright: 2012-2017 Axel Pauli <kflog.cumulus@gmail.com>
 License: GPL-3.0+
 
 License: GPL-3.0+
