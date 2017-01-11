@@ -1,7 +1,7 @@
 ################################################################################
 # Makefile to build Android parts used by Cumulus
 #
-# Copyright (c): 2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+# Copyright (c): 2012-2017 by Axel Pauli (kflog.cumulus@gmail.com)
 # 
 # This file is distributed under the terms of the General Public License.
 # See the file COPYING for more information.
@@ -48,15 +48,8 @@ appData:
 	@echo "===== Creating $(APP_DATA) under $(INSTALL_ROOT) ====="
 	@rm -rf $(APP_DATA_ROOT)
 	@install -d $(APP_DATA_ROOT)/etc
-	@install -d $(APP_DATA_ROOT)/icons
-	@install -d $(APP_DATA_ROOT)/icons/small
-	@install -d $(APP_DATA_ROOT)/icons/windarrows
 	@install --mode=644 etc/*.plr $(APP_DATA_ROOT)/etc
 	@install --mode=644 etc/Example.plr.Readme $(APP_DATA_ROOT)/etc/Example.plr.Readme
-	@install --mode=644 icons/*.xpm $(APP_DATA_ROOT)/icons
-	@install --mode=644 icons/*.png $(APP_DATA_ROOT)/icons
-	@install --mode=644 icons/small/* $(APP_DATA_ROOT)/icons/small
-	@install --mode=644 icons/windarrows/* $(APP_DATA_ROOT)/icons/windarrows
 	@cd $(APP_DATA_ROOT); zip -q -r -o $(APP_DATA) *
 	@mv $(APP_DATA_ROOT)/$(APP_DATA) $(INSTALL_ROOT)
 	@echo "  $(APP_DATA) created under $(INSTALL_ROOT)"
@@ -66,20 +59,10 @@ addData:
 	@rm -rf $(ADD_DATA_ROOT)
 	@install -d $(ADD_DATA_ROOT)/help/en
 	@install -d $(ADD_DATA_ROOT)/help/de
-	@install -d $(ADD_DATA_ROOT)/locale/de
-	@install -d $(ADD_DATA_ROOT)/sounds
-	@$(LRELEASE) -compress -nounfinished -removeidentical cumulus/cumulus_android_de.ts \
-	  -qm $(ADD_DATA_ROOT)/locale/de/cumulus_de.qm
-	@chmod 644 $(ADD_DATA_ROOT)/locale/de/cumulus_de.qm
-	@$(LRELEASE) -compress -nounfinished -removeidentical locale/de/qt_de.ts \
-	  -qm $(ADD_DATA_ROOT)/locale/de/qt_de.qm
-	@chmod 644 $(ADD_DATA_ROOT)/locale/de/qt_de.qm
 	@install --mode=644 help/en/*.html help/en/cumulus.png $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/en/text.css $(ADD_DATA_ROOT)/help/en
 	@install --mode=644 help/de/*.html help/de/cumulus.png $(ADD_DATA_ROOT)/help/de
 	@install --mode=644 help/de/text.css $(ADD_DATA_ROOT)/help/de
-	@install --mode=644 sounds/AlarmShort.wav $(ADD_DATA_ROOT)/sounds/Alarm.wav
-	@install --mode=644 sounds/Notify.wav $(ADD_DATA_ROOT)/sounds
 	@cd $(ADD_DATA_ROOT); zip -q -r -o $(ADD_DATA) *
 	@mv $(ADD_DATA_ROOT)/$(ADD_DATA) $(INSTALL_ROOT)
 	@echo "  $(ADD_DATA) created under $(INSTALL_ROOT)"
@@ -87,6 +70,9 @@ addData:
 addDataCopy: addData
 	@echo "===== Copy d$(ADD_DATA) to cumulus/android/assets ====="
 	@cp $(INSTALL_ROOT)/$(ADD_DATA) cumulus/android/assets
+	@install -d cumulus/android/assets/sounds
+	@install --mode=644 sounds/AlarmShort.wav cumulus/android/assets/sounds/Alarm.wav
+	@install --mode=644 sounds/Notify.wav cumulus/android/assets/sounds
 
 copyData:	appData addData
 	@echo "===== Copy data files to cumulus/android/assets ====="

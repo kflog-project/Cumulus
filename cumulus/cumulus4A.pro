@@ -2,14 +2,21 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2016 by Axel Pauli
+#                2012-2017 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
 #
-# Note, that the SDK Necessitas is used for the build!
+# Note, that the QtCreator is used for the build!
 #
 ##################################################################
+
+TEMPLATE = app
+
+# Put all generated objects into an extra directory
+OBJECTS_DIR = .obj
+MOC_DIR     = .obj
+RCC_DIR     = .obj
 
 QT += core gui xml
 
@@ -21,8 +28,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 TARGET = Cumulus
 
-TEMPLATE = app
-
 # it seems the next two lines are important for Necessitas
 CONFIG += mobility
 
@@ -32,12 +37,25 @@ CONFIG += qt \
           warn_on \
           release
 
-# The next 3 lines shall force a compilation of the date stamp file
+# The next lines shall force a compilation of the date stamp file
 rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
 
-QMAKE_EXTRA_TARGETS += rm_build_date
+# Note! translations must be built first because the are linked
+# into the cumulus binary
+# qmake hints to build the extra targets are to find here:
+# http://stackoverflow.com/questions/35847243/adding-custom-target-in-qmake
 
-PRE_TARGETDEPS += rm_build_date
+translate_cumulus.target   = locale/de/cumulus_de.qm
+translate_cumulus.depends  = locale/de/cumulus_de.ts
+translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
+
+translate_qt.target   = locale/de/qt_de.qm
+translate_qt.depends  = locale/de/qt_de.ts
+translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt_de.ts
+
+QMAKE_EXTRA_TARGETS += rm_build_date translate_cumulus translate_qt
+
+PRE_TARGETDEPS += rm_build_date locale/de/cumulus_de.qm locale/de/qt_de.qm
 
 # These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
@@ -66,6 +84,10 @@ CONFIG += numberpad
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
   error("Use at least Qt 4.7. or higher!")
 }
+
+RESOURCES = cumulus.qrc
+
+CONFIG += resources
 
 HEADERS = \
     aboutwidget.h \
@@ -507,4 +529,7 @@ OTHER_FILES += \
 
 LIBS += -lstdc++
 
-TRANSLATIONS = cumulus_android_de.ts
+TRANSLATIONS = locale/de/cumulus_android_de.ts locale/de/qt_de.ts
+
+CODECFORSRC = UTF-8
+

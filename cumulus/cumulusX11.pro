@@ -17,13 +17,15 @@ OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 RCC_DIR     = .obj
 
-QT += gui xml
+QT += core gui xml
 
 # Qt5 needs the QtWidgets library
 greaterThan(QT_MAJOR_VERSION, 4) {
 QT += widgets
 DEFINES += QT_5
 }
+
+TARGET = cumulus
 
 # CONFIG = qt warn_on release
 
@@ -36,18 +38,20 @@ rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
 
 # Note! translations must be built first because the are linked
 # into the cumulus binary
+# qmake hints to build the extra targets are to find here:
+# http://stackoverflow.com/questions/35847243/adding-custom-target-in-qmake
 
-#translate_cumulus.target   = locale/de/cumulus_de.qm
-#translate_cumulus.depends  = locale/de/cumulus_de.ts
+translate_cumulus.target   = locale/de/cumulus_de.qm
+translate_cumulus.depends  = locale/de/cumulus_de.ts
 translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
 
-#translate_qt.target   = locale/de/qt_de.qm
-#translate_qt.depends  = locale/de/qt_de_de.ts
+translate_qt.target   = locale/de/qt_de.qm
+translate_qt.depends  = locale/de/qt_de.ts
 translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt_de.ts
 
 QMAKE_EXTRA_TARGETS += rm_build_date translate_cumulus translate_qt
 
-PRE_TARGETDEPS += rm_build_date translate_cumulus translate_qt
+PRE_TARGETDEPS += rm_build_date locale/de/cumulus_de.qm locale/de/qt_de.qm
 
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
@@ -416,8 +420,6 @@ numberpad {
                settingspageairspacefillingnumpad.cpp \
                settingspageairspacewarningsnumpad.cpp
 }
-
-TARGET = cumulus
 
 DESTDIR = .
 
