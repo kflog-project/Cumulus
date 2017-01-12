@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2016 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2017 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -504,21 +504,24 @@ bool OpenAip::readRadio( QXmlStreamReader& xml, RadioPoint& rp )
               float fre = xml.readElementText().toFloat( &ok );
 
               if( rp.getTypeID() == BaseMapElement::Ndb )
-				{
-				  // TODO Workaround to handle openAIP NDB frequencies.
-				  // The frequency value is given in KHz and not in MHz.
-				  // That is a bug in openAIP version 1.x
-				  fre /= 1000.0;
-				}
+		{
+		  // TODO Workaround to handle openAIP NDB frequencies.
+		  // The frequency value is given in KHz and not in MHz.
+		  // That is a bug in openAIP version 1.x
+		  fre /= 1000.0;
+		}
 
-              if( ok)
+              if( ok )
             	{
             	  rp.setFrequency( fre );
             	}
               else
-			    {
-				  qWarning() << "Radio frequency" << fre << "is not a floating type!";
-			    }
+		{
+		  qWarning() << "OpenAip::readRadio():"
+		             << "Line=" << xml.lineNumber()
+			     << "Column=" << xml.columnNumber()
+		             << "Radio frequency" << fre << "is not a floating type!";
+		}
              }
           else if ( elementName == "CHANNEL" )
             {
@@ -1211,7 +1214,10 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
 
               if( ok == false )
                 {
-                  qWarning() << "Radio frequency" << freqStr << "is not a floating type!";
+		  qWarning() << "OpenAip::readAirfieldRadio():"
+		             << "Line=" << xml.lineNumber()
+			     << "Column=" << xml.columnNumber()
+		             << "Radio frequency" << freqStr << "is not a floating type!";
                 }
             }
           else if ( elementName == "TYPE" )
