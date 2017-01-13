@@ -1241,17 +1241,15 @@ void MainWindow::playSound( const char *name )
 #else
 
   // Native method used to play sound via Android service
-  int stream = 0;
+  int soundId = 0;
 
   if( name && QString(name) == "notify" )
     {
-      sound = "Notify.wav";
-      stream = 0;
+      soundId = 0;
     }
   else if( name && QString(name) == "alarm" )
     {
-      sound = "Alarm.wav";
-      stream = 1;
+      soundId = 1;
     }
   else
     {
@@ -1259,7 +1257,7 @@ void MainWindow::playSound( const char *name )
       return;
     }
 
-  jniPlaySound(stream, sound);
+  jniPlaySound( soundId );
 
 #endif
 }

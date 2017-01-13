@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2010 by Josua Dietze
-**                   2012-2016 by Axel Pauli
+**                   2012-2017 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -94,11 +94,11 @@ bool jniDetachCurrentThread();
 void jniShutdown( bool option=true);
 
 /**
- * Make Android OS play a sound. stream=0 will set STREAM_NOTIFICATION as
- * audio stream, stream=1 will set STREAM_ALARM.
- * Java code (playSound) is in QtMain.java
+ * Make Android OS play a sound. soundId=0 will play a NOTIFICATION
+ * soundId=1 will an ALARM.
+ * Java code (playSound) is in CumulusActivity.java
  */
-bool jniPlaySound(int stream, QString soundName);
+bool jniPlaySound(int soundId);
 
 /**
  * Forward a GPS command sentence to the Android OS. Android pass it to the

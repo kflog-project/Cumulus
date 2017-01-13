@@ -70,9 +70,6 @@ addData:
 addDataCopy: addData
 	@echo "===== Copy d$(ADD_DATA) to cumulus/android/assets ====="
 	@cp $(INSTALL_ROOT)/$(ADD_DATA) cumulus/android/assets
-	@install -d cumulus/android/assets/sounds
-	@install --mode=644 sounds/AlarmShort.wav cumulus/android/assets/sounds/Alarm.wav
-	@install --mode=644 sounds/Notify.wav cumulus/android/assets/sounds
 
 copyData:	appData addData
 	@echo "===== Copy data files to cumulus/android/assets ====="

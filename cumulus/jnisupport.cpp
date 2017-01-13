@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2016 by Axel Pauli
+ **                   2012-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -459,7 +459,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   m_playSoundID = env->GetMethodID( clazz,
                                     "playSound",
-                                    "(ILjava/lang/String;)V");
+                                    "(I)V");
 
   if (isJavaExceptionOccured(env) )
     {
@@ -647,7 +647,7 @@ bool jniDetachCurrentThread()
   return true;
 }
 
-bool jniPlaySound(int stream, QString soundName)
+bool jniPlaySound( int soundId )
 {
   JNIEnv* env = 0;
 
@@ -656,12 +656,9 @@ bool jniPlaySound(int stream, QString soundName)
       return false;
     }
 
-  jstring jSoundName = env->NewStringUTF(soundName.toUtf8());
-
   env->CallVoidMethod( m_cumActObject,
                        m_playSoundID,
-                       (jint) stream,
-                       jSoundName );
+                       (jint) soundId );
 
   bool result = true;
 
