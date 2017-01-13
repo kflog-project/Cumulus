@@ -1882,7 +1882,7 @@ public class CumulusActivity extends QtActivity
     return alert;
   }
   
-  void playSound(int stream, String soundName)
+  void playSound( int stream )
   {
     if (stream == 0)
       {
