@@ -46,8 +46,8 @@ rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
 # http://stackoverflow.com/questions/35847243/adding-custom-target-in-qmake
 
 translate_cumulus.target   = locale/de/cumulus_de.qm
-translate_cumulus.depends  = locale/de/cumulus_de.ts
-translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
+translate_cumulus.depends  = locale/de/cumulus_android_de.ts
+translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_android_de.ts -qm locale/de/cumulus_de.qm
 
 translate_qt.target   = locale/de/qt_de.qm
 translate_qt.depends  = locale/de/qt_de.ts
