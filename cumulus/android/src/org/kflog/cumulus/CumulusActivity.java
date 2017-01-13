@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2016 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2012-2017 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1884,16 +1884,15 @@ public class CumulusActivity extends QtActivity
   
   void playSound(int stream, String soundName)
   {
-    Uri sf = Uri.parse("file://" + getAddDataDir() + File.separatorChar
-        + "sounds" + File.separatorChar + soundName);
-
     if (stream == 0)
       {
+        Uri sf = Uri.parse( "android.resource://" + getPackageName() + "/" + R.raw.notify );
         stream = AudioManager.STREAM_NOTIFICATION;
         npl.play(this.getApplicationContext(), sf, false, stream);
       }
     else if (stream == 1)
       {
+        Uri sf = Uri.parse( "android.resource://" + getPackageName() + "/" + R.raw.alarm );
         stream = AudioManager.STREAM_ALARM;
         apl.play(this.getApplicationContext(), sf, false, stream);
       }
