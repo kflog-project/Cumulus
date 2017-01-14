@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2008-2017 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -152,14 +152,8 @@ void HelpBrowser::showEvent( QShowEvent * )
   // first call, we try to load the Cumulus HTML help file
   firstCall = false;
 
-#ifdef ANDROID
-  QString langPath = GeneralConfig::instance()->getDataRoot();
-#else
   QString langPath = GeneralConfig::instance()->getAppRoot();
-#endif
-
-  QString lang = GeneralConfig::instance()->getLanguage();
-
+  QString lang     = GeneralConfig::instance()->getLanguage();
   QString helpFile = langPath + "/help/" + lang + "/" + m_helpFile;
 
   // We do check, if the help file does exists

@@ -12,10 +12,8 @@ LRELEASE=lrelease
 
 # adapt install path to your needs if necessary
 INSTALL_ROOT  = .Android
-APP_DATA_ROOT = $(INSTALL_ROOT)/.appData
 ADD_DATA_ROOT = $(INSTALL_ROOT)/.addData
 
-APP_DATA = appData.zip
 ADD_DATA = addData.zip
 
 QTVERSION=$(shell qmake -query QT_VERSION)
@@ -31,28 +29,17 @@ usage:
 	@echo "usage: make -f Makefile.Android <target> ..."
 	@echo "  all          - Builds all parts for the Cumulus application"
 	@echo "  clean        - Removes all build results"
-	@echo "  appData      - Creates a appData file under $(INSTALL_ROOT)"
 	@echo "  addData      - Creates a addData file under $(INSTALL_ROOT)"
 	@echo "  copyData     - Copies the zip files to cumulus/android/assets"
 	@echo "  addDataCopy  - Creates addData and copies it to cumulus/android/assets"
 
-all:	appData addData
+all:	addData
 
 .PHONY : clean
 clean:
-	@cd $(INSTALL_ROOT); rm -f $(APP_DATA) $(ADD_DATA)
+	@cd $(INSTALL_ROOT); rm -f $(ADD_DATA)
 	@rm -rf $(APP_DATA_ROOT) $(ADD_DATA_ROOT)
 	@echo "Build area cleaned"
-
-appData:
-	@echo "===== Creating $(APP_DATA) under $(INSTALL_ROOT) ====="
-	@rm -rf $(APP_DATA_ROOT)
-	@install -d $(APP_DATA_ROOT)/etc
-	@install --mode=644 etc/*.plr $(APP_DATA_ROOT)/etc
-	@install --mode=644 etc/Example.plr.Readme $(APP_DATA_ROOT)/etc/Example.plr.Readme
-	@cd $(APP_DATA_ROOT); zip -q -r -o $(APP_DATA) *
-	@mv $(APP_DATA_ROOT)/$(APP_DATA) $(INSTALL_ROOT)
-	@echo "  $(APP_DATA) created under $(INSTALL_ROOT)"
 
 addData:
 	@echo "===== Creating $(ADD_DATA) under $(INSTALL_ROOT) ====="
@@ -71,10 +58,9 @@ addDataCopy: addData
 	@echo "===== Copy d$(ADD_DATA) to cumulus/android/assets ====="
 	@cp $(INSTALL_ROOT)/$(ADD_DATA) cumulus/android/assets
 
-copyData:	appData addData
+copyData: addData
 	@echo "===== Copy data files to cumulus/android/assets ====="
-	@cp $(INSTALL_ROOT)/$(APP_DATA) $(INSTALL_ROOT)/$(ADD_DATA) \
-	    cumulus/android/assets
+	@cp $(INSTALL_ROOT)/$(ADD_DATA) cumulus/android/assets
 	
 .PHONY : check_dir
 check_dir:
