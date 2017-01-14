@@ -217,8 +217,8 @@ dpkg_install:
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=644 cumulus/icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 cumulus/icons/cumulus-desktop*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
-	install --mode=644 cumulus/help/en/*.html help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
-	install --mode=644 cumulus/help/de/*.html help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 cumulus/help/en/*.html cumulus/help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 cumulus/help/de/*.html cumulus/help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install --mode=644 cumulus/help/en/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
 	install --mode=644 cumulus/help/de/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
