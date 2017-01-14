@@ -40,22 +40,45 @@ CONFIG += qt \
 # The next lines shall force a compilation of the date stamp file
 rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
 
+# We need this variable because the build is done in another directory by QtCreator.
+CUMDIR = ../cumulus4A
+
+ASSETDIR = /home/axel/git/kflog-project/Cumulus/cumulus/android/assets
+
+# http://stackoverflow.com/questions/7754218/qmake-how-to-add-and-use-a-variable-into-the-pro-file
+# QMake uses its own syntax for variable references.
+#
+# VAR = foobar => Assign value to variable when qmake is run
+# $$VAR => QMake variable's value at the time qmake is run
+# $${VAR} => QMake variable's value at the time qmake is run (identical but enclosed to separate from surrounding text)
+# $(VAR) => Contents of an Environment variable at the time Makefile (not qmake) is run
+# $$(VAR) =>Contents of an Environment variable at the time qmake (not Makefile) is run
+
+build_help_zip.commands = rm -f $$ASSETDIR/appData.zip; cd $$CUMDIR; zip -r -o $$ASSETDIR/appData.zip help
+
 # Note! translations must be built first because the are linked
 # into the cumulus binary
 # qmake hints to build the extra targets are to find here:
 # http://stackoverflow.com/questions/35847243/adding-custom-target-in-qmake
 
-translate_cumulus.target   = locale/de/cumulus_de.qm
-translate_cumulus.depends  = locale/de/cumulus_android_de.ts
-translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_android_de.ts -qm locale/de/cumulus_de.qm
+translate_cumulus.target   = $$CUMDIR/locale/de/cumulus_de.qm
+translate_cumulus.depends  = $$CUMDIR/locale/de/cumulus_android_de.ts
+translate_cumulus.commands = lrelease -removeidentical -nounfinished \
+                               $$CUMDIR/locale/de/cumulus_android_de.ts \
+                               -qm $$CUMDIR/locale/de/cumulus_de.qm
 
-translate_qt.target   = locale/de/qt_de.qm
-translate_qt.depends  = locale/de/qt_de.ts
-translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt_de.ts
+translate_qt.target   = $$CUMDIR/locale/de/qt_de.qm
+translate_qt.depends  = $$CUMDIR/locale/de/qt_de.ts
+translate_qt.commands = lrelease -removeidentical -nounfinished .$$CUMDIR/locale/de/qt_de.ts
 
-QMAKE_EXTRA_TARGETS += rm_build_date translate_cumulus translate_qt
+PRE_TARGETDEPS += rm_build_date $$CUMDIR/locale/de/cumulus_de.qm $$CUMDIR/locale/de/qt_de.qm
 
-PRE_TARGETDEPS += rm_build_date locale/de/cumulus_de.qm locale/de/qt_de.qm
+POST_TARGETDEPS += build_help_zip
+
+QMAKE_EXTRA_TARGETS += rm_build_date \
+                       translate_cumulus \
+                       translate_qt \
+                       build_help_zip
 
 # These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
