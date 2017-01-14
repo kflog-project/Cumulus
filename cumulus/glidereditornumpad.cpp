@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2016 by Axel Pauli
+ **                   2008-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -526,13 +526,11 @@ void GliderEditorNumPad::readPolarData()
 
 void GliderEditorNumPad::readLK8000PolarData()
 {
-  QStringList dirs;
+  // The polar data files are read from the QT resources. They are contained
+  // under the directory prefix :/etc.
 
-  // Directories where we expect polar data files. The first directory, which
-  // contains polar files is taken. The rest is ignored then.
-  dirs << GeneralConfig::instance()->getAppRoot() + "/etc"
-       << GeneralConfig::instance()->getDataRoot() + "/etc"
-       << GeneralConfig::instance()->getUserDataDirectory();
+  QStringList dirs;
+  dirs << ":/etc";
 
   QStringList filters;
 
