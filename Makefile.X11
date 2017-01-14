@@ -107,16 +107,13 @@ check_dir:
 install: check_dir deinstall
 	@echo "===== Installing Cumulus $(VERSION) under $(INSTALL_ROOT) ====="
 	install -d $(INSTALL_ROOT)/bin
-	install -d $(INSTALL_ROOT)/etc
-	install -d $(INSTALL_ROOT)/help/en
+	install -d $(INSTALL_ROOT)/help
 	install -d $(INSTALL_ROOT)/icons
 	install -d $(INSTALL_ROOT)/sounds
 	install --mode=755 cumulus/cumulus $(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(INSTALL_ROOT)/bin
-	install --mode=644 etc/*.plr $(INSTALL_ROOT)/etc
-	install --mode=644 etc/Example.plr.Readme $(INSTALL_ROOT)/etc/Example.plr.Readme
-	install --mode=644 help/en/* $(INSTALL_ROOT)/help/en
+	install --mode=644 cumulus/help/* $(INSTALL_ROOT)/help/
 	install --mode=644 cumulus/icons/cumulus.png $(INSTALL_ROOT)/icons
 	install --mode=644 cumulus/icons/cumulus-desktop*.png $(INSTALL_ROOT)/icons
 	install --mode=644 sounds/*.wav $(INSTALL_ROOT)/sounds
@@ -210,7 +207,6 @@ dpkg_install:
 	strip gpsClient/gpsClient
 	strip nmeaSimulator/nmeaSimu
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/bin
-	install -d $(DESTDIR)/$(INSTALL_ROOT)/etc
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/en
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/help/de
 	install -d $(DESTDIR)/$(INSTALL_ROOT)/icons
@@ -219,14 +215,12 @@ dpkg_install:
 	install --mode=755 cumulus/cumulus $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 gpsClient/gpsClient $(DESTDIR)/$(INSTALL_ROOT)/bin
 	install --mode=755 nmeaSimulator/nmeaSimu $(DESTDIR)/$(INSTALL_ROOT)/bin
-	install --mode=644 etc/*.plr $(DESTDIR)/$(INSTALL_ROOT)/etc
-	install --mode=644 etc/Example.plr.Readme $(DESTDIR)/$(INSTALL_ROOT)/etc/Example.plr.Readme
 	install --mode=644 cumulus/icons/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/icons
 	install --mode=644 cumulus/icons/cumulus-desktop*.png $(DESTDIR)/$(INSTALL_ROOT)/icons
-	install --mode=644 help/en/*.html help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
-	install --mode=644 help/de/*.html help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
-	install --mode=644 help/en/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
-	install --mode=644 help/de/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
+	install --mode=644 cumulus/help/en/*.html help/en/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/en
+	install --mode=644 cumulus/help/de/*.html help/de/text.css $(DESTDIR)/$(INSTALL_ROOT)/help/de
+	install --mode=644 cumulus/help/en/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/en/cumulus.png
+	install --mode=644 cumulus/help/de/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/X11/other/cumulus.desktop $(DESTDIR)/usr/share/applications
 
