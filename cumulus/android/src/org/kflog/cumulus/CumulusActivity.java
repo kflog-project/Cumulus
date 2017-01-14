@@ -85,9 +85,9 @@ import android.widget.Toast;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2016
+ * @date 2012-2017
  * 
- * @version 1.6
+ * @version 1.7
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -823,59 +823,7 @@ public class CumulusActivity extends QtActivity
             synchronized (addDataPath)
               {
                 addDataPath = addDataDir.getAbsolutePath();
-              }
-
-            // Check, if the external data are already installed. To check that,
-            // a special
-            // file name is used, which is created after data installation. The
-            // file name
-            // includes the package version, to ensure that with every new
-            // version the data
-            // are reinstalled.
-            File pvcAddFile = new File(addDataDir.getAbsolutePath()
-                + File.separator + pvcFileName);
-
-            Log.d(TAG, "pvcAdd=" + pvcAddFile.getAbsolutePath());
-
-            boolean doInstall = !pvcAddFile.exists();
-
-            if (doInstall == false)
-              {
-                // We additionally check the existence of different files.
-                // Maybe the user has removed them in the meantime.
-                File helpFile = new File(addDataDir.getAbsolutePath()
-                    + "/help/en/cumulus.html");
-                File deFile = new File(addDataDir.getAbsolutePath()
-                    + "/locale/de/cumulus_de.qm");
-                File notifyFile = new File(addDataDir.getAbsolutePath()
-                    + "/sounds/Notify.wav");
-                File alarmFile = new File(addDataDir.getAbsolutePath()
-                    + "/sounds/Alarm.wav");
-
-                if (!helpFile.exists() || !deFile.exists()
-                    || !notifyFile.exists() || !alarmFile.exists())
-                  {
-                    // There are missing files, require a new installation.
-                    doInstall = true;
-                  }
-              }
-
-            if (doInstall == true)
-              {
-                // Extract zip file from asset folder. That task is done in
-                // an extra thread.
-                AddDataInstallThread adit = new AddDataInstallThread(
-                    addDataDir.getAbsolutePath(), pvcFileName);
-                adit.start();
-              }
-            else
-              {
-                // The add data seem to be installed, make directory info for
-                // other threads available.
-                synchronized (m_ActivityMutex)
-                  {
-                    m_addDataInstalled = true;
-                  }
+                m_addDataInstalled = true;
               }
           }
       }
