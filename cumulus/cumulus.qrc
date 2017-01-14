@@ -1,6 +1,174 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
  
+  <file>etc/1-26E.plr</file>
+  <file>etc/1-34.plr</file>
+  <file>etc/1-35A.plr</file>
+  <file>etc/1-36 Sprite.plr</file>
+  <file>etc/303 Mosquito.plr</file>
+  <file>etc/Antares 18S.plr</file>
+  <file>etc/Antares 18T.plr</file>
+  <file>etc/Antares 20E.plr</file>
+  <file>etc/Apis (13m).plr</file>
+  <file>etc/Apis2 (15m).plr</file>
+  <file>etc/Arcus M.plr</file>
+  <file>etc/ASG 29 (15m).plr</file>
+  <file>etc/ASG 29 (18m).plr</file>
+  <file>etc/ASG 29E (18m).plr</file>
+  <file>etc/ASH 25M (PAS).plr</file>
+  <file>etc/ASH 25M (PIL).plr</file>
+  <file>etc/ASH 25 (PAS).plr</file>
+  <file>etc/ASH 25 (PIL).plr</file>
+  <file>etc/ASH 26E.plr</file>
+  <file>etc/ASK 13.plr</file>
+  <file>etc/ASK 21 (PAS).plr</file>
+  <file>etc/ASK 21 (PIL).plr</file>
+  <file>etc/ASK 23.plr</file>
+  <file>etc/ASW 12.plr</file>
+  <file>etc/ASW 15.plr</file>
+  <file>etc/ASW 17.plr</file>
+  <file>etc/ASW 19.plr</file>
+  <file>etc/ASW 20.plr</file>
+  <file>etc/ASW 22 BLE.plr</file>
+  <file>etc/ASW 24.plr</file>
+  <file>etc/ASW 27.plr</file>
+  <file>etc/ASW 28 (18m).plr</file>
+  <file>etc/Blanik L13.plr</file>
+  <file>etc/Blanik L23.plr</file>
+  <file>etc/Carat.plr</file>
+  <file>etc/Cirrus (15m).plr</file>
+  <file>etc/Cirrus (18m).plr</file>
+  <file>etc/Delta USHPA-2.plr</file>
+  <file>etc/Delta USHPA-3.plr</file>
+  <file>etc/Delta USHPA-4.plr</file>
+  <file>etc/DG-1000 (20m PAS).plr</file>
+  <file>etc/DG-1000 (20m PIL).plr</file>
+  <file>etc/DG-100.plr</file>
+  <file>etc/DG-200.plr</file>
+  <file>etc/DG-300.plr</file>
+  <file>etc/DG-400 (15m).plr</file>
+  <file>etc/DG-400 (17m).plr</file>
+  <file>etc/DG-500M (PAS).plr</file>
+  <file>etc/DG-500M (PIL).plr</file>
+  <file>etc/DG-500 (PAS).plr</file>
+  <file>etc/DG-500 (PIL).plr</file>
+  <file>etc/DG-600 (15m).plr</file>
+  <file>etc/DG-800 (15m).plr</file>
+  <file>etc/DG-800 (18m).plr</file>
+  <file>etc/Dimona.plr</file>
+  <file>etc/Discus 2a.plr</file>
+  <file>etc/Discus 2c 18m.plr</file>
+  <file>etc/Discus A.plr</file>
+  <file>etc/Discus B.plr</file>
+  <file>etc/Duo Discus (PAS).plr</file>
+  <file>etc/Duo Discus (PIL).plr</file>
+  <file>etc/DuoDiscus T (PAS).plr</file>
+  <file>etc/Duo Discus XT (PAS).plr</file>
+  <file>etc/Duo Discus XT (PIL).plr</file>
+  <file>etc/EB 28 Edition.plr</file>
+  <file>etc/EB 28.plr</file>
+  <file>etc/Example.plr.Readme</file>
+  <file>etc/G 102 Astir CS.plr</file>
+  <file>etc/G 102 Club Astir IIIb.plr</file>
+  <file>etc/G 102 Standard Astir III.plr</file>
+  <file>etc/G 103 Twin II (PAS).plr</file>
+  <file>etc/G 103 Twin II (PIL).plr</file>
+  <file>etc/G 104 Speed Astir.plr</file>
+  <file>etc/Genesis II.plr</file>
+  <file>etc/Glasfluegel 304.plr</file>
+  <file>etc/glider.pol</file>
+  <file>etc/H-201 Std Libelle.plr</file>
+  <file>etc/H-205 Club Libelle.plr</file>
+  <file>etc/H-206 Hornet.plr</file>
+  <file>etc/H-301 Libelle.plr</file>
+  <file>etc/H-604 Kestrel.plr</file>
+  <file>etc/HPH 304CZ.plr</file>
+  <file>etc/IS-28 B2 (PAS).plr</file>
+  <file>etc/IS-28 B2 (PIL).plr</file>
+  <file>etc/IS-29D2.plr</file>
+  <file>etc/Janus B (18.2m PAS).plr</file>
+  <file>etc/Janus B (18.2m PIL).plr</file>
+  <file>etc/Ka 2b (PAS).plr</file>
+  <file>etc/Ka 4 Rhoenlerche (PAS).plr</file>
+  <file>etc/Ka 6CR.plr</file>
+  <file>etc/Ka 6E.plr</file>
+  <file>etc/Ka 7 (PAS).plr</file>
+  <file>etc/Ka 8b.plr</file>
+  <file>etc/L-33 SOLO.plr</file>
+  <file>etc/LAK-12.plr</file>
+  <file>etc/LAK-17A (15m).plr</file>
+  <file>etc/LAK-17A (18m).plr</file>
+  <file>etc/LAK-19 (15m).plr</file>
+  <file>etc/LAK-19 (18m).plr</file>
+  <file>etc/LP-49.plr</file>
+  <file>etc/LS-10s (15m).plr</file>
+  <file>etc/LS-10s (18m).plr</file>
+  <file>etc/LS-1c.plr</file>
+  <file>etc/LS-1f.plr</file>
+  <file>etc/LS-3 (17m).plr</file>
+  <file>etc/LS-3.plr</file>
+  <file>etc/LS-4a.plr</file>
+  <file>etc/LS-6 (15m).plr</file>
+  <file>etc/LS-6 (18m).plr</file>
+  <file>etc/LS7wl.plr</file>
+  <file>etc/LS-8 (15m).plr</file>
+  <file>etc/LS-8 (18m).plr</file>
+  <file>etc/Mini Nimbus.plr</file>
+  <file>etc/Nimbus 2.plr</file>
+  <file>etc/Nimbus 3DM (PAS).plr</file>
+  <file>etc/Nimbus 3D (PAS).plr</file>
+  <file>etc/Nimbus 3D (PIL).plr</file>
+  <file>etc/Nimbus 3.plr</file>
+  <file>etc/Nimbus 3T.plr</file>
+  <file>etc/Nimbus 4DM (PAS).plr</file>
+  <file>etc/Nimbus 4DM (PIL).plr</file>
+  <file>etc/Nimbus 4D (PAS).plr</file>
+  <file>etc/Nimbus 4D (PIL).plr</file>
+  <file>etc/Nimbus 4.plr</file>
+  <file>etc/Para Competition.plr</file>
+  <file>etc/Para EN A-DHV1.plr</file>
+  <file>etc/Para EN B-DHV12.plr</file>
+  <file>etc/Para EN C-DHV2.plr</file>
+  <file>etc/Para EN D-DHV23.plr</file>
+  <file>etc/Para Ozone Delta 2.plr</file>
+  <file>etc/Para Ozone Enzo.plr</file>
+  <file>etc/Pegase 101A.plr</file>
+  <file>etc/Phoebus C.plr</file>
+  <file>etc/PIK-20B.plr</file>
+  <file>etc/PIK-20D.plr</file>
+  <file>etc/PIK-20E.plr</file>
+  <file>etc/PIK-30M.plr</file>
+  <file>etc/Pilatus B4.plr</file>
+  <file>etc/PW-5 Smyk.plr</file>
+  <file>etc/Russia AC-4.plr</file>
+  <file>etc/SF27.plr</file>
+  <file>etc/SF34.plr</file>
+  <file>etc/Stemme S-10 (PAS).plr</file>
+  <file>etc/Stemme S-10 (PIL).plr</file>
+  <file>etc/SZD-30 Pirat.plr</file>
+  <file>etc/SZD-32 Foka 5.plr</file>
+  <file>etc/SZD-36 Cobra.plr</file>
+  <file>etc/SZD-38A Jantar 1.plr</file>
+  <file>etc/SZD-42A Jantar 2.plr</file>
+  <file>etc/SZD-48-2 Jantar Std 2.plr</file>
+  <file>etc/SZD-48-3 Jantar Std 3.plr</file>
+  <file>etc/SZD-50 Puchacz.plr</file>
+  <file>etc/SZD-51-1 Junior.plr</file>
+  <file>etc/SZD-55-1 Promyk.plr</file>
+  <file>etc/SZD-56-2 Diana2.plr</file>
+  <file>etc/SZD-9bis 1E Bocian.plr</file>
+  <file>etc/Taurus.plr</file>
+  <file>etc/Ventus 2c (18m).plr</file>
+  <file>etc/Ventus 2cT (18m).plr</file>
+  <file>etc/Ventus 2cx (18m).plr</file>
+  <file>etc/Ventus 2cxT (18m).plr</file>
+  <file>etc/Ventus a-b (16.6m).plr</file>
+  <file>etc/Ventus b (15m).plr</file>
+  <file>etc/Ventus cM (17.6m).plr</file>
+  <file>etc/VSO-10.plr</file>
+  <file>etc/VT-116.plr</file>
+  <file>etc/Zuni II.plr</file>
+
   <file>locale/de/cumulus_de.qm</file>
   <file>locale/de/qt_de.qm</file>    
 
