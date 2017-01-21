@@ -350,39 +350,57 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 
 #ifdef ANDROID
 
-      // Android knows normally only two fonts:
-      // a) Droid Sans
-      // b) Roboto
-      //
-      // If a wrong font is set umlauts maybe not correct displayed!
+  // Android knows normally only two fonts:
+  // a) Droid Sans
+  // b) Roboto
+  //
+  // If a wrong font is set umlauts maybe not correct displayed!
 
+  if( fdb.weight("Roboto Condensed", "Normal") != -1 )
+    {
       // LG Nexus 5
-      if( fdb.weight("Roboto Condensed", "Normal") != -1 )
+      appFont.setFamily( "Roboto Condensed" );
+    }
+  else if( fdb.weight("Roboto-Regular", "Normal") != -1 )
+    {
+      // Samsung Galaxy S3
+      appFont.setFamily( "Roboto-Regular" );
+    }
+  else if( fdb.weight("Roboto", "Normal") != -1 )
+    {
+      // Samsung Galaxy Tab 2, Dell Streak 5
+      appFont.setFamily( "Roboto" );
+    }
+  else if( fdb.weight("Droid Serif-Regular", "Normal") != -1 )
+    {
+      appFont.setFamily( "Droid Serif-Regular" );
+    }
+  else if( fdb.weight("Droid Serif", "Normal") != -1 )
+    {
+      appFont.setFamily( "Droid Serif" );
+    }
+  else
+    {
+      qDebug() << "Android: using default font DroidSans";
+
+      int res = QFontDatabase::addApplicationFont( ":/font/DroidSans.ttf" )
+
+      if( res == -1 )
 	{
-	  appFont.setFamily( "Roboto Condensed" );
+	   qWarning() << "Could not load font :/font/DroidSans.ttf";
 	}
-      else if( fdb.weight("Roboto-Regular", "Normal") != -1 )
-	{
-	  // Samsung Galaxy S3
-	  appFont.setFamily( "Roboto-Regular" );
-	}
-      else if( fdb.weight("Roboto", "Normal") != -1 )
-	{
-	  // Samsung Galaxy Tab 2, Dell Streak 5
-	  appFont.setFamily( "Roboto" );
-	}
-      else if( fdb.weight("Droid Serif-Regular", "Normal") != -1 )
-	{
-          appFont.setFamily( "Droid Serif-Regular" );
-        }
-      else if( fdb.weight("Droid Serif", "Normal") != -1 )
-	{
-          appFont.setFamily( "Droid Serif" );
-        }
       else
-        {
-           qDebug() << "Android: using default font: " << appFt.family();
-        }
+	{
+	  appFont.setFamily( "DroidSans" );
+	}
+
+      int res = QFontDatabase::addApplicationFont( ":/font/DroidSans-Bold.ttf" )
+
+      if( res == -1 )
+	{
+	   qWarning() << "Could not load font :/font/DDroidSans-Bold.ttf";
+	}
+    }
 
 #else
 

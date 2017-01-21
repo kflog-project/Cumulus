@@ -97,6 +97,8 @@ int main(int argc, char *argv[])
   QCoreApplication::setOrganizationName( "KFLog" );
   QCoreApplication::setOrganizationDomain( "www.kflog.org" );
 
+  qDebug() << "QT's default font is set to" << QApplication::font().family();
+
   // Make sure the application uses utf8 encoding for translated widgets
 #if QT_VERSION < 0x050000
   QTextCodec::setCodecForTr( QTextCodec::codecForName ("UTF-8") );
@@ -258,31 +260,31 @@ int main(int argc, char *argv[])
 //      unsetenv("LD_BIND_NOW");
 //    }
 
-  // Load language translation file for Cumulus.
+ // Load language translation file for Cumulus.
 
 #ifndef ANDROID
 
-  conf->setLanguage( conf->getLanguage() );
+ conf->setLanguage( conf->getLanguage() );
 
 #else
 
   // Gets the default language from the Android device.
-   QString language = jniGetLanguage();
+  QString language = jniGetLanguage();
 
-   // Put Android's default language into the program environment.
-   qputenv( "LANG",  language.toLatin1().data() );
+  // Put Android's default language into the program environment.
+  qputenv( "LANG",  language.toLatin1().data() );
 
-   qDebug() << "Android sets language to" << language;
+  qDebug() << "Android sets language to" << language;
 
-   if( language.startsWith( "de" ) )
-     {
-       // In case of German there is a translation available.
-       conf->setLanguage( "de" );
-     }
-   else
-     {
-       conf->setLanguage( conf->getLanguage() );
-     }
+  if( language.startsWith( "de" ) )
+    {
+      // In case of German there is a translation available.
+      conf->setLanguage( "de" );
+    }
+  else
+    {
+      conf->setLanguage( conf->getLanguage() );
+    }
 
   QFontDatabase database;
 

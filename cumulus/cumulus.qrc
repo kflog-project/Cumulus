@@ -1,4 +1,5 @@
-<!DOCTYPE RCC><RCC version="1.0">
+<!DOCTYPE RCC>
+<RCC version="1.0">
 <qresource>
  
   <file>etc/1-26E.plr</file>
@@ -168,7 +169,11 @@
   <file>etc/VSO-10.plr</file>
   <file>etc/VT-116.plr</file>
   <file>etc/Zuni II.plr</file>
-
+  
+  <!-- That fonts are used only by Android -->
+  <file>fonts/DroidSans.ttf</file>
+  <file>fonts/DroidSans-Bold.ttf</file>
+  
   <file>locale/de/cumulus_de.qm</file>
   <file>locale/de/qt_de.qm</file>    
 
