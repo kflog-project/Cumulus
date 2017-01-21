@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
   QCoreApplication::setOrganizationName( "KFLog" );
   QCoreApplication::setOrganizationDomain( "www.kflog.org" );
 
-  qDebug() << "QT's default font is set to" << QApplication::font().family();
+  qDebug() << "QT's default font is" << QApplication::font().family();
 
   // Make sure the application uses utf8 encoding for translated widgets
 #if QT_VERSION < 0x050000
