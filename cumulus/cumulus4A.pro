@@ -68,8 +68,8 @@ translate_cumulus.commands = lrelease -removeidentical -nounfinished \
                                -qm $$CUMDIR/locale/de/cumulus_de.qm
 
 translate_qt.target   = $$CUMDIR/locale/de/qt_de.qm
-translate_qt.depends  = $$CUMDIR/locale/de/qt_de.ts
-translate_qt.commands = lrelease -removeidentical -nounfinished $$CUMDIR/locale/de/qt_de.ts
+translate_qt.depends  = $$CUMDIR/locale/de/qt4_de.ts
+translate_qt.commands = lrelease -removeidentical -nounfinished $$CUMDIR/locale/de/qt4_de.ts -qm $$CUMDIR/locale/de/qt_de.qm
 
 PRE_TARGETDEPS += rm_build_date $$CUMDIR/locale/de/cumulus_de.qm $$CUMDIR/locale/de/qt_de.qm
 
