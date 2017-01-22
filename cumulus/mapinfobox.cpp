@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2015 by Axel Pauli
+                               2008-2017 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -54,6 +54,10 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   // start font size
   int start = 14;
 
+#if defined(QT_5) && defined(ANDROID)
+  start *= 2;
+#endif
+
   QFont f = font();
 
   if( f.pointSize() != -1 )
@@ -95,6 +99,11 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 #ifdef ANDROID
   // Android uses a predefined point size
   f.setPointSize( 8 );
+#endif
+
+#if defined(QT_5) && defined(ANDROID)
+  // Android and QT5 uses a predefined point size
+  f.setPointSize( 2 * 8 );
 #endif
 
   setFont(f);

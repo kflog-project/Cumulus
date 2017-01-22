@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2014 by Axel Pauli
+**   Copyright (c):  2012-2017 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -206,9 +204,15 @@ void Layout::fitGuiFont( QFont& font )
   Layout::adaptFont( font, gfh );
 
   // Check maximum of point size and lower it, if necessary.
-  if( font.pointSize() > 14 )
+  int minPointSize = 14;
+
+#if defined(QT_5) && defined(ANDROID)
+  minPointSize *= 2;
+#endif
+
+  if( font.pointSize() > minPointSize )
     {
-      font.setPointSize( 14 );
+      font.setPointSize( minPointSize );
     }
 
 #endif
@@ -238,10 +242,16 @@ void Layout::fitGuiMenuFont( QFont& font )
 
   Layout::adaptFont( font, gmfh );
 
+  int minPointSize = 18;
+
+#if defined(QT_5) && defined(ANDROID)
+  minPointSize *= 2;
+#endif
+
   // Check maximum of point size and lower it, if necessary.
-  if( font.pointSize() > 18 )
+  if( font.pointSize() > minPointSize )
     {
-      font.setPointSize( 18 );
+      font.setPointSize( minPointSize );
     }
 
 #endif
@@ -270,10 +280,16 @@ void Layout::fitDialogFont( QFont& font )
 
   Layout::adaptFont( font, dfh );
 
+  int minPointSize = 16;
+
+#if defined(QT_5) && defined(ANDROID)
+  minPointSize *= 2;
+#endif
+
   // Check maximum of point size and lower it, if necessary.
-  if( font.pointSize() > 16 )
+  if( font.pointSize() > minPointSize )
     {
-      font.setPointSize( 16 );
+      font.setPointSize( minPointSize );
     }
 
 #endif
@@ -302,10 +318,16 @@ void Layout::fitStatusbarFont( QFont& font )
 
   Layout::adaptFont( font, sbfh );
 
+  int minPointSize = 12;
+
+#if defined(QT_5) && defined(ANDROID)
+  minPointSize *= 2;
+#endif
+
   // Check maximum of point size and lower it, if necessary.
-  if( font.pointSize() > 12 )
+  if( font.pointSize() > minPointSize )
     {
-      font.setPointSize( 12 );
+      font.setPointSize( minPointSize );
     }
 
 #endif
@@ -316,14 +338,22 @@ void Layout::fitStatusbarFont( QFont& font )
 
 int Layout::getMapZoomButtonSize()
 {
+  int pointSize = 22;
+  int minSize   = 60;
+
+#if defined(QT_5) && defined(ANDROID)
+  pointSize *= 2;
+  minSize   *= 2;
+#endif
+
   QFont font = MainWindow::mainWindow()->font();
-  font.setPointSize( 22 );
+  font.setPointSize( pointSize );
 
   int size = QFontMetrics(font).height();
 
-  if( size < 60 )
+  if( size < minSize )
     {
-      size = 60;
+      size = minSize;
     }
 
   return size;
@@ -368,7 +398,12 @@ int Layout::getButtonSize( const int points )
 #else
 
   QFont font = MainWindow::mainWindow()->font();
+
+#if defined(QT_5) && defined(ANDROID)
+  font.setPointSize( points * 2 );
+#else
   font.setPointSize( points );
+#endif
 
   return QFontMetrics(font).height();
 
@@ -405,7 +440,6 @@ void Layout::fontPoints2Pixel( QFont font )
       qDebug() << "Font Points =" << font.pointSize() << "- Pixels =" << QFontMetrics(font).height();
     }
 }
-
 
 QString Layout::getCbSbStyle()
 {

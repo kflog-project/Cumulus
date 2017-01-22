@@ -7,7 +7,7 @@
 
   copyright            : (C) 2002      by Andre Somers
                              2008      by Josua Dietze
-                             2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+                             2008-2017 by Axel Pauli <kflog.cumulus@gmail.com>
 
  ***************************************************************************/
 
@@ -89,15 +89,20 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // like the Galaxy III have a higher screen resolution e.g. 1280x720. To handle
   // that in a better way, a second fixed size limit is calculated.
   int leftFixedWidth = 220;
+  int desiredPointSize = 22;
 
-  QFont ft22; ft22.setPointSize( 22 );
-  QFontMetrics qfm22(ft22);
+#if defined(QT_5) && defined(ANDROID)
+  desiredPointSize *= 2;
+#endif
+
+  QFont desiredFont; desiredFont.setPointSize( desiredPointSize );
+  QFontMetrics qfmDesiredFont(desiredFont);
 
   if( parent->size().width() > 820 )
     {
       // If the screen width is greater than 820, we try to calculate an adequate
       // one for higher resolution screens.
-      int maxWidth = qfm22.width("MMMMM");
+      int maxWidth = qfmDesiredFont.width("MMMMM");
 
       // Calculate width as ratio to the default screen 800px width. The preferred
       // left fixed width is 220px.
@@ -131,7 +136,13 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   if( parent->size().height() > 500 )
     {
-      QFont ft20 = font(); ft20.setPointSize( 20 );
+      QFont ft20 = font();
+      ft20.setPointSize( 20 );
+
+#if defined(QT_5) && defined(ANDROID)
+      ft20.setPointSize( 2 * 20 );
+#endif
+
       QFontMetrics qfm20(ft20);
 
       // This is the default height for higher resolution screens.
