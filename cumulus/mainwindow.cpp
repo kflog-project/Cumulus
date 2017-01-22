@@ -381,25 +381,25 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
     }
   else
     {
-      qDebug() << "Android: using default font DroidSans";
+      qDebug() << "Android: No system font found, loading own font data from DroidSans";
 
-      int res = QFontDatabase::addApplicationFont( ":/font/DroidSans.ttf" )
+      int res = QFontDatabase::addApplicationFont( ":/fonts/DroidSans.ttf" );
 
       if( res == -1 )
-	{
-	   qWarning() << "Could not load font :/font/DroidSans.ttf";
-	}
+        {
+          qWarning() << "Could not load font :/fonts/DroidSans.ttf";
+        }
       else
-	{
-	  appFont.setFamily( "DroidSans" );
-	}
+        {
+          appFont.setFamily( "DroidSans" );
+        }
 
-      int res = QFontDatabase::addApplicationFont( ":/font/DroidSans-Bold.ttf" )
+      res = QFontDatabase::addApplicationFont( ":/fonts/DroidSans-Bold.ttf" );
 
       if( res == -1 )
-	{
-	   qWarning() << "Could not load font :/font/DDroidSans-Bold.ttf";
-	}
+        {
+          qWarning() << "Could not load font :/fonts/DDroidSans-Bold.ttf";
+        }
     }
 
 #else
