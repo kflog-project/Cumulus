@@ -1,4 +1,3 @@
-
 Cumulus changelog
 =================
 [+] Added feature
@@ -19,6 +18,10 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[-] 2017-04-10 AP: Issue #115 fixed. Cumulus crashes under Android, if the volume
+                   up or down key is pressed. The keys are mapped as zoom in out
+                   now.
 
 [o] 2017-01-08 AP: Issue #113 fixed. Cumulus should use Qt's resource feature
                    for icons and language data distribution.

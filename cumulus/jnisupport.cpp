@@ -233,6 +233,16 @@ static void nativeKeypress(JNIEnv* /*env*/, jobject /*myobject*/, jchar code)
         qtCode = Qt::Key_D;
         break;
 
+      case 43:
+	// Key volume up was pressed. It is interpreted as zoom in.
+        qtCode = Qt::Key_F7;
+        break;
+
+      case 45:
+	// Key volume down was pressed. It is interpreted as zoom out.
+        qtCode = Qt::Key_F8;
+        break;
+
       default:
         qWarning("JNI nativeKeypress: code %d is unknown!", code);
         return;

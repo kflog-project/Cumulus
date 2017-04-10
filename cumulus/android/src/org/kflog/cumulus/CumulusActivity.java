@@ -87,7 +87,7 @@ import android.widget.Toast;
  * 
  * @date 2012-2017
  * 
- * @version 1.7
+ * @version 1.8
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -1166,6 +1166,22 @@ public class CumulusActivity extends QtActivity
             nativeKeypress((char) 28);
             return true;
           }
+        
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+          {
+            // Key volume up was pressed. It is sent as plus key to the native part.
+            // If it is not catch here, a core dump is raised at native side.
+            nativeKeypress((char) 43);
+            return true;
+          }
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+          {
+            // Key volume down was pressed. It is sent as minus key to the native part.
+            // If it is not catch here, a core dump is raised at native side.
+            nativeKeypress((char) 45);
+            return true;
+          }
 
         if (keyCode == KeyEvent.KEYCODE_MENU)
           {
@@ -1198,7 +1214,9 @@ public class CumulusActivity extends QtActivity
         return true;
       }
 
-    if (keyCode == KeyEvent.KEYCODE_BACK)
+    if (keyCode == KeyEvent.KEYCODE_BACK ||
+        keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
+        keyCode == KeyEvent.KEYCODE_VOLUME_DOWN )
       {
         return true;
       }
