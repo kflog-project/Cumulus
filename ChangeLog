@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2017-04-10 AP: Cumulus 5.30.1 released for Android.
+
 [-] 2017-04-10 AP: Issue #115 fixed. Cumulus crashes under Android, if the volume
                    up or down key is pressed. The keys are mapped as zoom in out
                    now.
