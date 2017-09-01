@@ -45,9 +45,19 @@ translate_cumulus.target   = locale/de/cumulus_de.qm
 translate_cumulus.depends  = locale/de/cumulus_de.ts
 translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
 
+equals(QT_MAJOR_VERSION, 4) {
 translate_qt.target   = locale/de/qt_de.qm
-translate_qt.depends  = locale/de/qt_de.ts
-translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt_de.ts
+translate_qt.depends  = locale/de/qt4_de.ts
+translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt4_de.ts -qm locale/de/qt_de.qm
+}
+
+equals(QT_MAJOR_VERSION, 5) {
+translate_qt.target   = locale/de/qt_de.qm
+translate_qt.depends  = locale/de/qt5_de.ts
+translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt5_de.ts -qm locale/de/qt_de.qm
+}
+
+QMAKE_CLEAN += $$translate_cumulus.target $$translate_qt.target
 
 QMAKE_EXTRA_TARGETS += rm_build_date translate_cumulus translate_qt
 
@@ -430,6 +440,6 @@ QMAKE_CXXFLAGS += -fno-default-inline \
     
 LIBS += -lstdc++
 
-TRANSLATIONS = locale/de/cumulus_de.ts locale/de/qt_de.ts
+TRANSLATIONS = locale/de/cumulus_de.ts locale/de/qt4_de.ts
 
 CODECFORSRC = UTF-8
