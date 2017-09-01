@@ -77,14 +77,14 @@ bool jniShutdownFlag()
 // http://developer.android.com/guide/practices/jni.html
 jint JNI_OnLoad(JavaVM* vm, void* reserved)
 {
-  JNIEnv* env;
+  JNIEnv* env = 0;
 
   if( vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK )
     {
       return -1;
     }
 
-  m_jvm    = vm;
+  m_jvm = vm;
 
   bool ok = initJni( vm, env );
 
@@ -94,6 +94,11 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
     }
 
   return -1;
+}
+
+void JNI_OnUnload(JavaVM *vm, void *reserved)
+{
+  qDebug() << "JNI_OnUnload() is called: vm=" << vm;
 }
 
 void jniShutdown( bool option )
