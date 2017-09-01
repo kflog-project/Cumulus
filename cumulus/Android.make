@@ -1,12 +1,10 @@
 ################################################################################
 # Cumulus Android Makefile file for deploy preparation
 #
-# Copyright (c): 2012-2014 by Axel Pauli
+# Copyright (c): 2012-2017 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
-#
-# $Id$
 #
 # Note, that the SDK Necessitas is using this file for the deploy process.
 #
@@ -69,6 +67,7 @@ $(addprefix $(ASSET_DIR)/, $(QT_JAR)):	$(addprefix $(ASSET_DIR)/, $(QT_JAR))
 
 copy_cumulus:
 	$(STRIP) $(BUILD_DIR)/$(CUMULUS)
+	chrpath -d $(BUILD_DIR)/$(CUMULUS)
 	install --mode=755 $(BUILD_DIR)/$(CUMULUS) $(A_LIB_DIR)
 	install --mode=755 $(BUILD_DIR)/$(CUMULUS) $(CUMULUS_JAVA_LIB)
 	

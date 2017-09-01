@@ -19,6 +19,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2017-09-01 AP: Cumulus 5.30.2 released for Android.
+
+[-] 2017-09-01 AP: Android max SDK set to 23 because up API level 24 Google has
+                   introduced new retrictions, which let crash the current Qt 4
+                   build in startup phase. RPATHES removed in all shared libraries.
+
 [*] 2017-04-10 AP: Cumulus 5.30.1 released for Android.
 
 [-] 2017-04-10 AP: Issue #115 fixed. Cumulus crashes under Android, if the volume
