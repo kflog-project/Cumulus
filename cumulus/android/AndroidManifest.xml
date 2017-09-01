@@ -22,7 +22,7 @@
   <uses-feature android:name="android.hardware.usb.host" android:required="false"/>
   <uses-feature android:name="android.hardware.usb.accessory" android:required="false" />
   
-	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="10" />
+	<uses-sdk android:minSdkVersion="8" android:targetSdkVersion="10" android:maxSdkVersion="23"/>
 
 	<!-- android:debuggable="true" -->
 	
