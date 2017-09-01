@@ -20,6 +20,9 @@ RCC_DIR     = .obj
 
 QT += core gui xml
 
+# needed by Android because we build a shared library
+QMAKE_CXXFLAGS += -fpic
+
 # Qt5 needs the QtWidgets library and a extra define, to handle that.
 greaterThan(QT_MAJOR_VERSION, 4) {
   QT += widgets
