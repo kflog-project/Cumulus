@@ -144,7 +144,7 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
   double Zeitgleichung = BerechneZeitgleichung(DK,T);
   double Zeitdifferenz = acos((sin(h) - sin(B)*sin(DK)) / (cos(B)*cos(DK)))/pi;
 
-  if( isnan(Zeitdifferenz) )
+  if( std::isnan(Zeitdifferenz) )
     {
       // qDebug("Sonne::sonneAufUnter(): ist keine Zahl NaN (not a number)");
       return false;
