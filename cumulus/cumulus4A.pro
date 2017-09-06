@@ -553,9 +553,11 @@ OTHER_FILES += \
     android/res/values-de/cumulus.xml \
     android/assets/QtIndustrius-14.jar
 
+# suppress passing rpath option to the linker. Android is complaining about that.
+QMAKE_LFLAGS_RPATH =
+
 LIBS += -lstdc++
 
 TRANSLATIONS = locale/de/cumulus_android_de.ts locale/de/qt_de.ts
 
 CODECFORSRC = UTF-8
-
