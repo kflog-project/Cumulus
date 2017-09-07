@@ -173,13 +173,16 @@ dpkg_prepare:
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
 	@rm -rf $(CUMULUS_DEB)/debian
-ifneq ($(OS_REL),Ubuntu_16.04)
+ifneq ($(OS),Ubuntu)
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	echo '\n' | dh_make --packagename cumulus -c gpl3 $(DH_MAKE_OPT)
 else
-	# Python Bug in Ubuntu 16.04, Pipe input not possible
+	# Python Bug since Ubuntu 16.04, Pipe input not possible
+	@echo "--------------------------------------"
+	@echo "Please answer to question via keyboard"
+	@echo "--------------------------------------"
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
