@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2016 by Axel Pauli
+                               2008-2017 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -75,9 +75,11 @@ QHash<QString, short> GpsNmea::gpsHash;
 // Mutex for thread synchronization
 QMutex GpsNmea::mutex;
 
-// Flarm NMEAOUT initialization command for protocol version 7.
-#define FLARM_NMEAOUT_INIT_CMD "$PFLAC,S,NMEAOUT,71"
+// Flarm NMEAOUT initialization command for protocol version 8.
+#define FLARM_NMEAOUT_INIT_CMD "$PFLAC,S,NMEAOUT,81"
 
+// Flarm device type query
+#define FLARM_DEVTYPE_CMD "$PFLAC,R,DEVTYPE"
 
 GpsNmea::GpsNmea(QObject* parent) :
   QObject(parent),
@@ -145,28 +147,33 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   mutex.lock();
   gpsKeys.clear();
 
-  // Load all desired GPS sentence identifiers into the hash table
-  // NMEA Talkers
-  // GP = GPS
-  // GL = GLONASS
+  // Load all desired GPS sentence identifiers into the hash table NMEA Talkers
+  // GP = GPS Sat
+  // GA = GALILEO Sat
+  // GL = GLONASS Sat
   // GN = GPS/GLONASS
   gpsKeys.insert( "$GPRMC", 0);
+  gpsKeys.insert( "$GARMC", 0);
   gpsKeys.insert( "$GLRMC", 0);
   gpsKeys.insert( "$GNRMC", 0);
 
   gpsKeys.insert( "$GPGLL", 1);
+  gpsKeys.insert( "$GAGLL", 1);
   gpsKeys.insert( "$GLGLL", 1);
   gpsKeys.insert( "$GNGLL", 1);
 
   gpsKeys.insert( "$GPGGA", 2);
+  gpsKeys.insert( "$GAGGA", 2);
   gpsKeys.insert( "$GLGGA", 2);
   gpsKeys.insert( "$GNGGA", 2);
 
   gpsKeys.insert( "$GPGSA", 3);
+  gpsKeys.insert( "$GAGSA", 3);
   gpsKeys.insert( "$GLGSA", 3);
   gpsKeys.insert( "$GNGSA", 3);
 
   gpsKeys.insert( "$GPGSV", 4);
+  gpsKeys.insert( "$GAGSV", 4);
   gpsKeys.insert( "$GLGSV", 4);
   gpsKeys.insert( "$GNGSV", 4);
 
@@ -375,6 +382,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       // Note, it is not checked before, if the connected device
       // is a Flarm. That maybe cause trouble.
       sendSentence( FLARM_NMEAOUT_INIT_CMD );
+      sleep(1);
+      // Ask the Flarm device for its type.
+      sendSentence( FLARM_DEVTYPE_CMD );
     }
 
   if( nmeaLogFile && nmeaLogFile->isOpen() )
