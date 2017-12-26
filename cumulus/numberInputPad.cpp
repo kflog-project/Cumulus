@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2015 Axel Pauli
+**   Copyright (c): 2012-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -77,8 +77,8 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   m_editor = new QLineEdit (this);
 
-  connect( m_editor, SIGNAL(textChanged(const QString&)),
-           this, SLOT(slot_TextChanged(const QString&)) );
+  //connect( m_editor, SIGNAL(textChanged(const QString&)),
+  //         this, SLOT(slot_TextChanged(const QString&)) );
 
   setNumber( number );
   gl->addWidget( m_editor, row, 0, 1, 5 );
@@ -155,8 +155,6 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_decimal = new QPushButton( " . ", this );
   m_decimal->setMinimumWidth( minBW );
   gl->addWidget( m_decimal, row, 0 );
-
-  QStyle* style = QApplication::style();
 
   m_left = new QPushButton( " ", this);
   m_left->setMinimumWidth( minBW );
@@ -480,6 +478,12 @@ void NumberInputPad::slot_Ok()
       // Empty value is not allowed as ok.
       return;
     }
+
+  // This checks the set minimum resp. maximum of the input value. If the limits
+  // are exceeded the allowed minimum resp. maximum is taken as return value.
+  slot_TextChanged( value );
+
+  value = m_editor->text().trimmed();
 
   int pos = 0;
 
