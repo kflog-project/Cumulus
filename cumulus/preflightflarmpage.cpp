@@ -561,8 +561,8 @@ void PreFlightFlarmPage::slotRequestFlarmData()
       m_firstTaskRecord = false;
 
       m_cmdList << "$PFLAC,R,VRANGE"
-                << "$PFLAC,R,NMEAOUT1"
-                << "$PFLAC,R,NMEAOUT2"
+                << "$PFLAC,S,NMEAOUT1,81"
+                << "$PFLAC,S,NMEAOUT2,81"
                 << "$PFLAC,R,BAUD1"
                 << "$PFLAC,R,BAUD2"
                 << "$PFLAC,R,TASK";
