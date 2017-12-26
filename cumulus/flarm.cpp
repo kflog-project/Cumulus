@@ -280,11 +280,11 @@ bool Flarm::extractPflav(const QStringList& stringList)
    PFLAV,<QueryType>,<HwVersion>,<SwVersion>,<ObstVersion>
    $PFLAV,A,2.00,5.00,alps20110221_*
   */
-  m_flarmVersion.hwVersion   = stringList[2];
-  m_flarmVersion.swVersion   = stringList[3];
-  m_flarmVersion.obstVersion = stringList[4];
+  m_flarmData.hwver       = stringList[2];
+  m_flarmData.swver       = stringList[3];
+  m_flarmData.obstdb.name = stringList[4];
 
-  emit flarmVersionInfo( m_flarmVersion );
+  emit flarmVersionInfo( m_flarmData );
   return true;
 }
 
@@ -347,21 +347,233 @@ bool Flarm::extractPflae(const QStringList& stringList)
   return true;
 }
 
-bool Flarm::extractPflac(QStringList& stringList)
+bool Flarm::extractPflac(QStringList& list)
 {
   /**
    * PFLAC,<QueryType>,<Key>,<Value>
    *
-   * Attention, response can be "$PFLAC,A,ERROR*", That means the stringList
+   * Attention, response can be "$PFLAC,A,ERROR*", That means the list
    * has only 3 elements!
    */
-  if ( stringList[0] != "$PFLAC" || stringList.size() < 3 )
+  if( list[0] != "$PFLAC" || list.size() < 3 )
       {
         qWarning("$PFLAC contains too less parameters!");
         return false;
       }
 
-  emit flarmConfigurationInfo( stringList );
+  if( list[1] != "A" )
+    {
+      emit flarmConfigurationInfo( list );
+      return true;
+    }
+
+  // Some received Flarm answers are set in the static Flarm structure, that the
+  // are known for everybody.
+  if( list.size() >= 7 )
+    {
+      if( list[2] == "OBSTDB" )
+        {
+          // $PFLAC,A,OBSTDB,1,1,Name,Date*
+          // Returns information about the Flarm obstacle database
+          m_flarmData.obstdb.version = list[3];
+          m_flarmData.obstdb.status  = list[4];
+          m_flarmData.obstdb.name    = list[5];
+          m_flarmData.obstdb.date    = list[6];
+          emit flarmConfigurationInfo( list );
+          return true;
+        }
+    }
+
+  if( list.size() >= 5 )
+    {
+      if( list[2] == "RADIOID" )
+        {
+          // $PFLAC,A,RADIOID,1,A832ED*    [ICAO ID]
+          // $PFLAC,A,RADIOID,2,DE4123*    [FLARM ID]
+        QString id;
+
+        if( list[3] == "1" )
+          {
+            id = "ICAO: ";
+          }
+        else if( list[3] == "2" )
+          {
+            id = "FLARM: ";
+          }
+
+          m_flarmData.radioid = id + list[4];
+          emit flarmConfigurationInfo( list );
+          return true;
+        }
+    }
+
+  if( list.size() >= 4 )
+    {
+      if( list[2] == "DEVTYPE" )
+        {
+          m_flarmData.devtype = list[3];
+        }
+      else if( list[2] == "BAUD" )
+        {
+          m_flarmData.baud = list[3];
+        }
+      else if( list[2] == "BAUD1" )
+        {
+          m_flarmData.baud1 = list[3];
+        }
+      else if( list[2] == "BAUD2" )
+        {
+          m_flarmData.baud1 = list[3];
+        }
+      else if( list[2] == "NMEAOUT" )
+        {
+          m_flarmData.nmeaout = list[3];
+        }
+      else if( list[2] == "NMEAOUT1" )
+        {
+          m_flarmData.nmeaout1 = list[3];
+        }
+      else if( list[2] == "NMEAOUT2" )
+        {
+          m_flarmData.nmeaout1 = list[3];
+        }
+      else if( list[2] == "DEVTYPE" )
+        {
+          // $PFLAC,A,DEVTYPE,PowerFLARM-Core,67
+          m_flarmData.devtype = list[3];
+        }
+      else if( list[2] == "LOGINT" )
+        {
+          m_flarmData.logint = list[3];
+        }
+      else if( list[2] == "PRIV" )
+        {
+          m_flarmData.priv = list[3];
+        }
+      else if( list[2] == "NOTRACK" )
+        {
+          m_flarmData.notrack = list[3];
+        }
+      else if( list[2] == "PILOT" )
+        {
+          m_flarmData.pilot = list[3];
+        }
+      else if( list[2] == "COPIL" )
+        {
+          m_flarmData.copil = list[3];
+        }
+      else if( list[2] == "GLIDERID" )
+        {
+          m_flarmData.gliderid = list[3];
+        }
+      else if( list[2] == "GLIDERTYPE" )
+        {
+          m_flarmData.glidertype = list[3];
+        }
+      else if( list[2] == "COMPID" )
+        {
+          m_flarmData.compid = list[3];
+        }
+      else if( list[2] == "COMPCLASS" )
+        {
+          m_flarmData.compclass = list[3];
+        }
+      else if( list[2] == "IGCSER" )
+        {
+          // $PFLAC,A,IGCSER,7JK*
+          // $PFLAC,A,IGCSER,*               [non-IGC device]
+          m_flarmData.igcser = list[3];
+        }
+      else if( list[2] == "SER" )
+        {
+          // $PFLAC,A,SER
+          // Returns the device's serial number 6 to 10 decimal digits.
+          // Example:
+          // $PFLAC,A,SER,1342*
+          // $PFLAC,A,SER,1828342834*
+          m_flarmData.ser = list[3];
+        }
+      else if( list[2] == "SWVER" )
+        {
+          // $PFLAC,A,SWVER,123*
+          // Returns the firmware version of the Flarm.
+          m_flarmData.swver = list[3];
+        }
+      else if( list[2] == "SWEXP" )
+        {
+          // $PFLAC,A,SWEXP,123*
+          // Returns the firmware expiration date of the Flarm as d.m.yyyy
+          m_flarmData.swexp = list[3];
+        }
+      else if( list[2] == "FLARMVER" )
+        {
+          // $PFLAC,A,FLARMVER,123*
+          // Returns the boot loader version of the Flarm.
+          m_flarmData.flarmver = list[3];
+        }
+      else if( list[2] == "BUILD" )
+        {
+          // $PFLAC,A,BUILD,123*
+          // Returns the build number of the firmware
+          m_flarmData.build = list[3];
+        }
+      else if( list[2] == "REGION" )
+        {
+          // $PFLAC,A,REGION,123*
+          // Returns the region in which the device can be used.
+          m_flarmData.region = list[3];
+        }
+      else if( list[2] == "CAP" )
+        {
+          // $PFLAC,A,CAP,123*
+          // Returns the Flarm feature list.
+          m_flarmData.cap = list[3];
+        }
+      else if( list[2] == "OBSTEXP" )
+        {
+          // $PFLAC,A,OBSTEXP,2014-03-31*
+          // Returns the expiration date of the Flarm obstacle database.
+          m_flarmData.obstexp = list[3];
+        }
+      else if( list[2] == "ACFT" )
+        {
+          // $PFLAC,A,ACFT,1*
+          // Returns the set aircraft type
+          m_flarmData.acft = list[3];
+        }
+      else if( list[2] == "RANGE" )
+        {
+          // $PFLAC,A,RANGE,2000*
+          // Returns the horizontal range of the Flarm
+          m_flarmData.range = list[3];
+        }
+      else if( list[2] == "VRANGE" )
+        {
+          // $PFLAC,A,VRANGE,500*
+          // Returns the vertical range of the Flarm
+          m_flarmData.vrange = list[3];
+        }
+      else if( list[2] == "THRE" )
+        {
+          // $PFLAC,A,THRE,500*
+          // Returns the speed threshold of the Flarm
+          m_flarmData.thre = list[3];
+        }
+      else if( list[2] == "CFLAGS" )
+        {
+          // $PFLAC,A,CFLAGS,0*
+          // Returns the special mode flags of the Flarm
+          m_flarmData.cflags = list[3];
+        }
+      else if( list[2] == "UI" )
+        {
+          // $PFLAC,A,UI,0*
+          // Returns the ui flags of the Flarm
+          m_flarmData.ui = list[3];
+        }
+    }
+
+  emit flarmConfigurationInfo( list );
   return true;
 }
 

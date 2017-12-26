@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,7 @@
 bool FlarmBase::m_collectPflaa = false;
 
 FlarmBase::FlarmStatus  FlarmBase::m_flarmStatus;
-FlarmBase::FlarmVersion FlarmBase::m_flarmVersion;
+FlarmBase::FlarmData    FlarmBase::m_flarmData;
 FlarmBase::FlarmError   FlarmBase::m_flarmError;
 FlarmBase::ProtocolMode FlarmBase::m_protocolMode = text;
 
@@ -49,6 +49,9 @@ QByteArray FlarmBase::replaceUmlauts( QByteArray string )
   array = array.replace( Qt::Key_Odiaeresis + 0x20, "oe" );
   array = array.replace( Qt::Key_Udiaeresis + 0x20, "ue" );
   array = array.replace( 0xdf, "ss" );
+
+  // An additional asterisk in the NMEA sentence is not accepted by Flarm.
+  array = array.replace( "*", "." );
 
   return array;
 }

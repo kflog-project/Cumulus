@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2016 Axel Pauli
+**   Copyright (c): 2010-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2016
+ * \date 2010-2017
  *
- * \version 1.6
+ * \version 1.7
  */
 
 #ifndef FLARM_BASE_H
@@ -105,34 +105,107 @@ class FlarmBase
   };
 
   /**
-   * \struct FlarmVersion
+   * \struct FlarmData
    *
    * \author Axel Pauli
    *
-   * \brief FLARM version structure.
+   * \brief FLARM configuration data structure.
    *
-   * FLARM version structure. It contains the version data reported by the Flarm.
+   * FLARM configuration data  structure. It contains the configuration data
+   * reported by the Flarm device. The data members are identical to the Flarm
+   * key words.
    *
-   * \date 2012
+   * \date 2012-2017
    */
-  struct FlarmVersion
+  struct FlarmData
   {
-    QString hwVersion;
-    QString swVersion;
-    QString obstVersion;
-    QString igcVersion;
-    QString serial;
-    QString radioId;
+    QString acft;
+    QString baud;
+    QString baud1;
+    QString baud2;
+    QString build;
+    QString cap;
+    QString cflags;
+    QString compid;
+    QString compclass;
+    QString copil;
+    QString devtype;
+    QString flarmver;
+    QString gliderid;
+    QString glidertype;
+    QString hwver;
+    QString igcser;
+    QString logint;
+    QString nmeaout;
+    QString nmeaout1;
+    QString nmeaout2;
+    QString notrack;
+
+    struct Obstdb
+    {
+      QString version;
+      QString status;
+      QString name;
+      QString date;
+    } obstdb;
+
+    QString obstexp;
+    QString pilot;
+    QString priv;
+    QString radioid;
+    QString range;
+    QString region;
+    QString ser;
+    QString swexp;
+    QString swver;
+    QString task;
+    QString thre;
+    QString ui;
+    QString vrange;
 
     void reset()
-    {
-      hwVersion.clear();
-      swVersion.clear();
-      obstVersion.clear();
-      igcVersion.clear();
-      serial.clear();
-      radioId.clear();
-    };
+      {
+        acft.clear();
+        baud.clear();
+        baud1.clear();
+        baud2.clear();
+        build.clear();
+        cap.clear();
+        cflags.clear();
+        compid.clear();
+        compclass.clear();
+        copil.clear();
+        devtype.clear();
+        flarmver.clear();
+        gliderid.clear();
+        glidertype.clear();
+        hwver.clear();
+        igcser.clear();
+        logint.clear();
+        nmeaout.clear();
+        nmeaout1.clear();
+        nmeaout2.clear();
+        notrack.clear();
+
+        obstdb.status.clear();
+        obstdb.status.clear();
+        obstdb.name.clear();
+        obstdb.date.clear();
+
+        obstexp.clear();
+        pilot.clear();
+        priv.clear();
+        radioid.clear();
+        range.clear();
+        region.clear();
+        ser.clear();
+        swexp.clear();
+        swver.clear();
+        task.clear();
+        thre.clear();
+        ui.clear();
+        vrange.clear();
+      };
   };
 
   /**
@@ -283,11 +356,11 @@ class FlarmBase
   };
 
   /**
-   * @return the Flarm version structure
+   * @return the Flarm data structure
    */
-  static FlarmVersion& getFlarmVersion()
+  static FlarmData& getFlarmData()
   {
-    return m_flarmVersion;
+    return m_flarmData;
   };
 
   /**
@@ -328,7 +401,7 @@ class FlarmBase
   {
     m_pflaaHash.clear();
     m_flarmStatus.valid = false;
-    m_flarmVersion.reset();
+    m_flarmData.reset();
     m_flarmError.reset();
   };
 
@@ -371,9 +444,9 @@ class FlarmBase
   static FlarmStatus m_flarmStatus;
 
   /**
-   * Flarm version data.
+   * Flarm information data.
    */
-  static FlarmVersion m_flarmVersion;
+  static FlarmData m_flarmData;
 
   /**
    * Flarm error data.

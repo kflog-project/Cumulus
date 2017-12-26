@@ -198,7 +198,7 @@ class Flarm : public QObject, public FlarmBase
   /**
    * This signal is emitted if a new Flarm version info is available.
    */
-  void flarmVersionInfo( const Flarm::FlarmVersion& info );
+  void flarmVersionInfo( const Flarm::FlarmData& info );
 
   /**
    * This signal is emitted if a Flarm reset command response is received.

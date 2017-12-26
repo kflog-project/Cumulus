@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2015 by Axel Pauli
+**   Copyright (c):  2012-2017 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * A widget for pre-flight Flarm IGC settings.
  *
- * \date 2012-2015
+ * \date 2012-2017
  *
- * \version 1.5
+ * \version 1.6
  */
 
 #ifndef PREFLIGHT_FLARM_PAGE_H_
@@ -36,6 +36,7 @@
 #include "flarm.h"
 
 class QComboBox;
+class QGroupBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
@@ -45,6 +46,7 @@ class QTimer;
 
 class CuLabel;
 class FlightTask;
+class NumberEditor;
 
 class PreFlightFlarmPage : public QWidget
 {
@@ -78,7 +80,7 @@ class PreFlightFlarmPage : public QWidget
   void slotClearIgcData();
 
   /** Called to update version info. */
-  void slotUpdateVersions( const Flarm::FlarmVersion& info );
+  void slotUpdateVersions( const Flarm::FlarmData& info );
 
   /** Called to update error info. */
   void slotUpdateErrors( const Flarm::FlarmError& info );
@@ -144,11 +146,14 @@ class PreFlightFlarmPage : public QWidget
   /** Send next command to Flarm from the command list. */
   void nextFlarmCommand();
 
-  QLabel*      hwVersion;
+  QGroupBox*   dataBox;
+  QLabel*      deviceType;
   QLabel*      swVersion;
-  QLabel*      obstVersion;
+  QLabel*      swExp;
   QLabel*      igcVersion;
+  QLabel*      region;
   QLabel*      serial;
+  QLabel*      radioLabel;
   QLabel*      radioId;
   QLabel*      errSeverity;
   CuLabel*     errCode;
@@ -163,11 +168,13 @@ class PreFlightFlarmPage : public QWidget
   QLineEdit*   compClass;
   QLabel*      flarmTask;
   QComboBox*   taskBox;
-
   QPushButton* readButton;
   QPushButton* writeButton;
   QPushButton* setButton;
   QPushButton* clearButton;
+
+  NumberEditor* hRange;
+  NumberEditor* vRange;
 
   QTimer* m_timer;
 
@@ -182,6 +189,9 @@ class PreFlightFlarmPage : public QWidget
 
   // Flag to store a started Flarm task upload
   bool m_taskUploadRunning;
+
+  // Flag to recognize that the first task record is sent
+  bool m_firstTaskRecord;
 };
 
 #endif

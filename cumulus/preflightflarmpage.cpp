@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2016 by Axel Pauli
+ **   Copyright (c): 2012-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
+#include "numberEditor.h"
 #include "preflightflarmpage.h"
 #include "preflighttaskpage.h"
 #include "taskfilemanager.h"
@@ -49,7 +50,8 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   QWidget(parent),
   m_cmdIdx(0),
   m_errorReportCounter(0),
-  m_taskUploadRunning(false)
+  m_taskUploadRunning(false),
+  m_firstTaskRecord(false)
 {
   setObjectName("PreFlightFlarmPage");
   setWindowTitle(tr("Flarm IGC Setup"));
@@ -107,18 +109,19 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   gridLayout->addWidget( serial, 0, 1 );
   gridLayout->setColumnMinimumWidth( 2, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("RId:")), 0, 3 );
+  radioLabel = new QLabel("RId:");
+  gridLayout->addWidget( radioLabel, 0, 3 );
   radioId = new QLabel("???");
   gridLayout->addWidget( radioId, 0, 4 );
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
   gridLayout->addWidget( new QLabel(tr("Sv:")), 0, 6);
-  errSeverity = new QLabel("???", this);
+  errSeverity = new QLabel("---", this);
   gridLayout->addWidget( errSeverity, 0, 7 );
   gridLayout->setColumnMinimumWidth( 8, 20 );
 
   gridLayout->addWidget( new QLabel(tr("Err:")), 0, 9);
-  errCode = new CuLabel("???", this);
+  errCode = new CuLabel("---", this);
   errCode->setFrameStyle(QFrame::Box | QFrame::Panel);
   errCode->setLineWidth(3);
   gridLayout->addWidget( errCode, 0, 10 );
@@ -127,28 +130,28 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 
   //----------------------------------------------------------------------------
 
-  gridLayout->addWidget( new QLabel(tr("ODB:")), 1, 0);
-  obstVersion = new QLabel("???");
-  gridLayout->addWidget( obstVersion, 1, 1 );
+  gridLayout->addWidget( new QLabel(tr("FW:")), 1, 0);
+  swVersion = new QLabel("???");
+  gridLayout->addWidget( swVersion, 1, 1 );
   gridLayout->setColumnMinimumWidth( 2, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Hw:")), 1, 3);
-  hwVersion = new QLabel("???");
-  gridLayout->addWidget( hwVersion, 1, 4 );
+  gridLayout->addWidget( new QLabel(tr("FWEXP:")), 1, 3);
+  swExp = new QLabel("???");
+  gridLayout->addWidget( swExp, 1, 4 );
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Sw:")), 1, 6);
-  swVersion = new QLabel("???");
-  gridLayout->addWidget( swVersion, 1, 7 );
+  gridLayout->addWidget( new QLabel(tr("Region:")), 1, 6);
+  region = new QLabel("???");
+  gridLayout->addWidget( region, 1, 7 );
   gridLayout->setColumnMinimumWidth( 8, 20 );
 
-  gridLayout->addWidget( new QLabel(tr("Igc:")), 1, 9);
+  gridLayout->addWidget( new QLabel(tr("IGC:")), 1, 9);
   igcVersion = new QLabel("???");
   gridLayout->addWidget( igcVersion, 1, 10 );
 
   gridLayout->setColumnStretch( 11, 10 );
 
-  QGroupBox *dataBox = new QGroupBox(tr("Flarm Data"));
+  dataBox = new QGroupBox(tr("Flarm Data"));
   dataBox->setLayout( gridLayout );
 
   allLayout->addWidget(dataBox );
@@ -171,13 +174,35 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 
   lineLayout->addWidget( new QLabel(tr("Priv:")));
   priv = new QPushButton("?");
+  priv->setToolTip( tr("Switch stealth mode on or off") );
   lineLayout->addWidget( priv );
 
   connect( priv, SIGNAL(pressed()), SLOT(slotChangePrivMode()) );
 
   lineLayout->addWidget( new QLabel(tr("NoTrk:")));
   notrack = new QPushButton("?");
+  notrack->setToolTip( tr("Switch third party tracking mode on or off") );
   lineLayout->addWidget( notrack );
+
+  lineLayout->addWidget( new QLabel(tr("H-Range:")));
+  hRange = new NumberEditor;
+  hRange->setToolTip( tr("Maximal horizontal distance of aircraft to be shown.") );
+  hRange->setDecimalVisible( false );
+  hRange->setPmVisible( false );
+  hRange->setMaxLength(5);
+  hRange->setSuffix(" m");
+  hRange->setMinimum( 2000 );
+  hRange->setMaximum( 25500 );
+  hRange->setTip("2000...25500");
+  // PowerFlarm only
+  if( Flarm::getFlarmData().devtype.startsWith( "PowerFLARM-") == true )
+    {
+      hRange->setMaximum( 65535 );
+      hRange->setTip("2000...65535");
+    }
+
+  lineLayout->addWidget( hRange );
+  hRange->setText( Flarm::getFlarmData().range );
 
   connect( notrack, SIGNAL(pressed()), SLOT(slotChangeNotrackMode()) );
 
@@ -328,8 +353,8 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   //----------------------------------------------------------------------------
 
   // Add Flarm signals to our slots to get Flarm data.
-  connect( Flarm::instance(), SIGNAL(flarmVersionInfo(const Flarm::FlarmVersion&)),
-            this, SLOT(slotUpdateVersions(const Flarm::FlarmVersion&)) );
+  connect( Flarm::instance(), SIGNAL(flarmVersionInfo(const Flarm::FlarmData&)),
+            this, SLOT(slotUpdateVersions(const Flarm::FlarmData&)) );
 
   connect( Flarm::instance(), SIGNAL(flarmErrorInfo( const Flarm::FlarmError&)),
             this, SLOT(slotUpdateErrors(const Flarm::FlarmError&)) );
@@ -376,12 +401,13 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 	}
     }
 
-  // Check, if a Gps is connected. We try to consider that as a Flarm device.
+  // Check, if a GPS is connected. We try to consider that as a Flarm device.
   // But that must not be true!
   if( GpsNmea::gps->getConnected() == true )
     {
-      // Request Flarm data, if Flarm device was recognized.
-      slotRequestFlarmData();
+      // Request Flarm data, if Flarm device was recognized. But before return
+      // to the main loop.
+      QTimer::singleShot(0, this, SLOT(slotRequestFlarmData()));
     }
 }
 
@@ -391,18 +417,19 @@ PreFlightFlarmPage::~PreFlightFlarmPage()
 
 void PreFlightFlarmPage::loadFlarmData()
 {
-  const Flarm::FlarmVersion& version = Flarm::instance()->getFlarmVersion();
-  const Flarm::FlarmError&     error = Flarm::instance()->getFlarmError();
+  const Flarm::FlarmData&  data = Flarm::instance()->getFlarmData();
+  const Flarm::FlarmError& error = Flarm::instance()->getFlarmError();
 
-  version.hwVersion.isEmpty() ? hwVersion->setText("???") : hwVersion->setText(version.hwVersion);
-  version.swVersion.isEmpty() ? swVersion->setText("???") : swVersion->setText(version.swVersion);
-  version.obstVersion.isEmpty() ? obstVersion->setText("???") : obstVersion->setText(version.obstVersion);
-  version.igcVersion.isEmpty() ? igcVersion->setText("???") : igcVersion->setText(version.igcVersion);
-  version.serial.isEmpty() ? serial->setText("???") : serial->setText(version.serial);
-  version.radioId.isEmpty() ? radioId->setText("???") : radioId->setText(version.radioId);
+  data.devtype.isEmpty() ? dataBox->setTitle(tr("Flarm Data")) : dataBox->setTitle(data.devtype);
+  data.swver.isEmpty() ? swVersion->setText("???") : swVersion->setText(data.swver);
+  data.swexp.isEmpty() ? swExp->setText("???") : swExp->setText(data.swexp);
+  data.region.isEmpty() ? region->setText("???") : region->setText(data.region);
+  data.igcser.isEmpty() ? igcVersion->setText("???") : igcVersion->setText(data.igcser);
+  data.ser.isEmpty() ? serial->setText("???") : serial->setText(data.ser);
+  data.radioid.isEmpty() ? radioId->setText("???") : radioId->setText(data.radioid);
 
-  error.severity.isEmpty() ? errSeverity->setText("???") : errSeverity->setText(error.severity);
-  error.errorCode.isEmpty() ? errCode->setText("???") : errCode->setText(error.errorCode);
+  error.severity.isEmpty() ? errSeverity->setText("---") : errSeverity->setText(error.severity);
+  error.errorCode.isEmpty() ? errCode->setText("---") : errCode->setText(error.errorCode);
 }
 
 void PreFlightFlarmPage::slotSetIgcData()
@@ -435,9 +462,9 @@ void PreFlightFlarmPage::slotSetIgcData()
   else
     {
       if( taskBox->count() > 0 )
-	{
-	  taskBox->setCurrentIndex( 0 );
-	}
+        {
+          taskBox->setCurrentIndex( 0 );
+        }
     }
 }
 
@@ -457,6 +484,7 @@ void PreFlightFlarmPage::clearUserInputFields()
   logInt->setValue( 0 );
   priv->setText( "?" );
   notrack->setText( "?" );
+  hRange->clear();
   pilot->clear();
   copil->clear();
   gliderId->clear();
@@ -495,24 +523,50 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   m_cmdList.clear();
   m_errorReportCounter = 0;
 
-  // Here we set NMEA output and a range of 25500m. All other set items are
+  // Here we activate the NMEA output of the Flarm. All other set items are
   // untouched.
-  m_cmdList << "$PFLAC,S,NMEAOUT,71"
-	    << "$PFLAC,S,RANGE,25500"
-	    << "$PFLAE,R"
-            << "$PFLAV,R"
-            << "$PFLAC,R,RADIOID"
-            << "$PFLAC,R,IGCSER"
+  // AP 24.12.2017: "$PFLAE,R" is unsupported by PowerFlarm.
+  m_cmdList << "$PFLAC,S,NMEAOUT,81"
+            << "$PFLAC,R,DEVTYPE"
+            << "$PFLAC,R,BAUD"
+            << "$PFLAC,R,SWVER"
+            << "$PFLAC,R,SWEXP"
+            << "$PFLAC,R,FLARMVER"
+            << "$PFLAC,R,BUILD"
             << "$PFLAC,R,SER"
-            << "$PFLAC,R,LOGINT"
+            << "$PFLAC,R,REGION"
+            << "$PFLAC,R,RADIOID"
+            << "$PFLAC,R,CAP"
+            << "$PFLAC,R,OBSTDB"
+            << "$PFLAC,R,OBSTEXP"
+            << "$PFLAC,R,ACFT"
+            << "$PFLAC,R,RANGE"
             << "$PFLAC,R,PRIV"
-	    << "$PFLAC,R,NOTRACK"
+            << "$PFLAC,R,NOTRACK"
+            << "$PFLAC,R,THRE"
+            << "$PFLAC,R,LOGINT"
             << "$PFLAC,R,PILOT"
             << "$PFLAC,R,COPIL"
             << "$PFLAC,R,GLIDERID"
             << "$PFLAC,R,GLIDERTYPE"
             << "$PFLAC,R,COMPID"
-            << "$PFLAC,R,COMPCLASS";
+            << "$PFLAC,R,COMPCLASS"
+            << "$PFLAC,R,CFLAGS"
+            << "$PFLAC,R,UI"
+            << "$PFLAC,R,IGCSER";
+
+  // PowerFlarm only
+  if( Flarm::getFlarmData().devtype.startsWith( "PowerFLARM-") == true )
+    {
+      m_firstTaskRecord = false;
+
+      m_cmdList << "$PFLAC,R,VRANGE"
+                << "$PFLAC,R,NMEAOUT1"
+                << "$PFLAC,R,NMEAOUT2"
+                << "$PFLAC,R,BAUD1"
+                << "$PFLAC,R,BAUD2"
+                << "$PFLAC,R,TASK";
+   }
 
   nextFlarmCommand();
 }
@@ -527,13 +581,13 @@ void PreFlightFlarmPage::nextFlarmCommand()
 
       // nothing more to send
       if( noticeUser == true )
-	{
-	  QApplication::restoreOverrideCursor();
-	  m_taskUploadRunning = false;
+        {
+          QApplication::restoreOverrideCursor();
+          m_taskUploadRunning = false;
 
-	  // Ask the user for reboot.
-	  ask4RebootFlarm();
-	}
+          // Ask the user for reboot.
+          ask4RebootFlarm();
+        }
 
       return;
     }
@@ -599,18 +653,17 @@ void PreFlightFlarmPage::slotReportError( QStringList& info )
     }
 }
 
-void PreFlightFlarmPage::slotUpdateVersions( const Flarm::FlarmVersion& info )
+void PreFlightFlarmPage::slotUpdateVersions( const Flarm::FlarmData& info )
 {
-  hwVersion->setText( info.hwVersion);
-  swVersion->setText( info.swVersion);
-  obstVersion->setText( info.obstVersion);
+  dataBox->setTitle( info.devtype);
+  swVersion->setText( info.swver);
   nextFlarmCommand();
 }
 
 void PreFlightFlarmPage::slotUpdateErrors( const Flarm::FlarmError& info )
 {
-  errSeverity->setText( info.severity);
-  errCode->setText( info.errorCode);
+  errSeverity->setText( info.severity );
+  errCode->setText( info.errorCode );
   nextFlarmCommand();
 }
 
@@ -627,7 +680,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
   if( info[1] != "A" )
     {
       qWarning() << "PFFP::sUC: Missing query type A!"
-                  << info.join(",");
+                 << info.join(",");
       return;
     }
 
@@ -658,8 +711,46 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
   // Reset error report counter after a positive answer.
   m_errorReportCounter = 0;
 
-  if( info[2] == "NMEAOUT" || info[2] == "RANGE" )
+  if( info[2] == "BAUD" )
     {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "BAUD1" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "BAUD2" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "NMEAOUT" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "NMEAOUT1" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "NMEAOUT2" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "DEVTYPE" )
+    {
+      // $PFLAC,A,DEVTYPE,PowerFLARM-Core,67
+      dataBox->setTitle( info[3] );
       nextFlarmCommand();
       return;
     }
@@ -668,8 +759,20 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
     {
       // $PFLAC,A,RADIOID,1,A832ED*    [ICAO ID]
       // $PFLAC,A,RADIOID,2,DE4123*    [FLARM ID]
+	  QString id;
+
+	  if( info[3] == "1" )
+      {
+	      id = "ICAO: ";
+	      radioLabel->setText( "ICAO:");
+      }
+	  else if( info[3] == "2" )
+	    {
+        id = "FLARM: ";
+	      radioLabel->setText( "FLARM:");
+	    }
+
       radioId->setText( info[4] );
-      Flarm::getFlarmVersion().radioId = info[4];
       nextFlarmCommand();
       return;
     }
@@ -723,7 +826,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
   if( info[2] == "GLIDERID" )
     {
       gliderId->setText( info[3] );
-      nextFlarmCommand();
+     nextFlarmCommand();
       return;
     }
 
@@ -753,41 +856,157 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       // $PFLAC,A,IGCSER,7JK*
       // $PFLAC,A,IGCSER,*               [non-IGC device]
       igcVersion->setText( info[3] );
-      Flarm::getFlarmVersion().igcVersion = info[3];
       nextFlarmCommand();
       return;
     }
 
   if( info[2] == "SER" )
     {
-      // $PFLAC,R,SER
-      // Returns the device's serial number (32 bit unsigned integer).
+      // $PFLAC,A,SER
+      // Returns the device's serial number 6 to 10 decimal digits.
       // Example:
       // $PFLAC,A,SER,1342*
       // $PFLAC,A,SER,1828342834*
       serial->setText( info[3] );
-      Flarm::getFlarmVersion().serial = info[3];
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "NEWTASK" )
+  if( info[2] == "SWVER" )
     {
-      flarmTask->setText( info[3] );
+      // $PFLAC,A,SWVER,123*
+      // Returns the firmware version of the Flarm.
+      swVersion->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] ==  "ADDWP" )
+  if( info[2] == "SWEXP" )
     {
+      // $PFLAC,A,SWEXP,123*
+      // Returns the firmware expiration date of the Flarm as d.m.yyyy
+      swExp->setText( info[3] );
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "FLARMVER" )
+    {
+      // $PFLAC,A,FLARMVER,123*
+      // Returns the boot loader version of the Flarm.
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "BUILD" )
+    {
+      // $PFLAC,A,BUILD,123*
+      // Returns the build number of the firmware
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "REGION" )
+    {
+      // $PFLAC,A,REGION,123*
+      // Returns the region in which the device can be used.
+      region->setText( info[3] );
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "CAP" )
+    {
+      // $PFLAC,A,CAP,123*
+      // Returns the Flarm feature list.
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "OBSTDB" && info.size() >= 7 )
+    {
+      // $PFLAC,A,OBSTDB,1,1,Name,Date*
+      // Returns information about the Flarm obstacle database
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "OBSTEXP" )
+    {
+      // $PFLAC,A,OBSTEXP,2014-03-31*
+      // Returns the expiration date of the Flarm obstacle database.
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "ACFT" )
+    {
+      // $PFLAC,A,ACFT,1*
+      // Returns the set aircraft type
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "RANGE" )
+    {
+      // $PFLAC,A,RANGE,2000*
+      // Returns the horizontal range of the Flarm
+      hRange->setText( info[3] );
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "VRANGE" )
+    {
+      // $PFLAC,A,VRANGE,500*
+      // Returns the vertical range of the Flarm
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "THRE" )
+    {
+      // $PFLAC,A,THRE,500*
+      // Returns the speed threshold of the Flarm
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "CFLAGS" )
+    {
+      // $PFLAC,A,CFLAGS,0*
+      // Returns the special mode flags of the Flarm
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "UI" )
+    {
+      // $PFLAC,A,UI,0*
+      // Returns the ui flags of the Flarm
+      Flarm::getFlarmData().ui = info[3];
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "TASK" )
+    {
+      if( m_firstTaskRecord == false )
+        {
+          m_firstTaskRecord = true;
+          flarmTask->setText( info[3].mid(25) );
+          Flarm::getFlarmData().task = info[3].mid(25);
+        }
 
       nextFlarmCommand();
       return;
     }
 
   qWarning() << "PFFP::slotUpdateConfiguration:"
-              << info.join(",")
-              << "not processed!";
+             << info.join(",")
+             << "not processed!";
+
+  nextFlarmCommand();
 }
 
 /** Sends all IGC data to the Flarm. */
@@ -1049,6 +1268,7 @@ void PreFlightFlarmPage::slotShowErrorText()
 
   if( error.errorText.isEmpty() )
     {
+      messageBox( QMessageBox::Information, tr("No error info available"), tr("Error Info") );
       return;
     }
 

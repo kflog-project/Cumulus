@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[o] 2017-12-27 AP: Issue #117 fixed. Support added for Galileo GPS.
+
+[o] 2017-12-27 AP: Issue #116 fixed. Support added for PowerFlarm.
+
 [*] 2017-09-01 AP: Cumulus 5.30.2 released for Android.
 
 [-] 2017-09-01 AP: Android max SDK set to 23 because up API level 24 Google has
