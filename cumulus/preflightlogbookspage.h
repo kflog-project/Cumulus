@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2016 Axel Pauli
+**   Copyright (c):  2013-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,9 @@
  *
  * \brief A widget for pre-flight logbooks management.
  *
- * \date 2013-2016
+ * \date 2013-2017
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -75,6 +75,11 @@ class PreFlightLogBooksPage : public QWidget
    * Called to open the Flarm download flight dialog.
    */
   void slotOpenFlarmFlights();
+
+  /**
+   * Called on PowerFlarm to transfer the flights to the USB stick.
+   */
+  void slotTransferFlights2USB();
 
 #endif
 

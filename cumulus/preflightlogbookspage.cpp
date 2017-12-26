@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013-2016 by Axel Pauli
+ **   Copyright (c):  2013-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -26,7 +26,9 @@
 #include "preflightlogbookspage.h"
 
 #ifdef FLARM
+#include "flarmbase.h"
 #include "flarmlogbook.h"
+#include "preflightflarmusbpage.h"
 #endif
 
 PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
@@ -87,6 +89,31 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
   else
     {
       connect(button, SIGNAL(pressed()), SLOT(slotOpenFlarmFlights()));
+    }
+
+  if( Flarm::getFlarmData().devtype.startsWith( "PowerFLARM-") == true )
+    {
+      topLayout->setRowMinimumHeight(row, 50);
+      row++;
+
+      lbl = new QLabel(tr("Flights to USB stick:"));
+      topLayout->addWidget(lbl, row, 0);
+
+      button = new QPushButton( tr("Start") );
+      topLayout->addWidget(button, row, 1 );
+      row++;
+
+      extern Calculator *calculator;
+
+      if( calculator->moving() )
+        {
+          // Disable Flarm flight downloads if we are moving.
+          button->setEnabled( false );
+        }
+      else
+        {
+          connect(button, SIGNAL(pressed()), SLOT(slotTransferFlights2USB()));
+        }
     }
 
 #endif
@@ -164,5 +191,11 @@ void PreFlightLogBooksPage::slotOpenFlarmFlights()
   FlarmLogbook* flb = new FlarmLogbook( this );
   flb->setVisible( true );
 }
+
+void PreFlightLogBooksPage::slotTransferFlights2USB()
+  {
+    PreFlightFlarmUsbPage* usbp = new PreFlightFlarmUsbPage( this );
+    usbp->setVisible( true );
+  }
 
 #endif

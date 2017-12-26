@@ -620,6 +620,23 @@ bool Flarm::extractPflai(QStringList& stringList)
   return true;
 }
 
+bool Flarm::extractPflaq(QStringList& stringList)
+{
+  /**
+    * PFLAQ,<Operation,<Info>,<Progress>
+    *
+    * Progress info send by Flarm.
+    */
+    if ( stringList[0] != "$PFLAQ" || stringList.size() < 4 )
+        {
+          qWarning("$PFLAQ contains too less parameters!");
+          return false;
+        }
+
+    emit flarmProgressInfo( stringList );
+    return true;
+}
+
 bool Flarm::extractPflao(QStringList& stringList)
 {
   /**

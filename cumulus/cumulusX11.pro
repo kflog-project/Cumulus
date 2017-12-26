@@ -364,7 +364,8 @@ flarm {
 		           flarmlogbook.h \
 		           flarmradarview.h \
 		           flarmwidget.h \
-		           preflightflarmpage.h
+               preflightflarmpage.h \
+               preflightflarmusbpage.h
 
 		SOURCES += flarm.cpp \
 		           flarmaliaslist.cpp \
@@ -374,7 +375,8 @@ flarm {
                flarmlogbook.cpp \
 		           flarmradarview.cpp \
 		           flarmwidget.cpp \
-		           preflightflarmpage.cpp
+               preflightflarmpage.cpp \
+               preflightflarmusbpage.cpp
 }
 
 internet {

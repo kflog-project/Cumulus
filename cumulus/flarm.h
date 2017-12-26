@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This class parses Flarm sentences and provides the results to the caller.
  *
- * \date 2010-2015
+ * \date 2010-2017
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef FLARM_H
@@ -148,6 +148,13 @@ class Flarm : public QObject, public FlarmBase
   bool extractPflao(QStringList& stringList);
 
   /**
+   * Extracts all items from the $PFLAQ sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAR as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflaq(QStringList& stringList);
+
+  /**
    * Extracts all items from the $ERROR sentence sent by the Flarm device.
    * @param stringList Flarm sentence $PFLAV as string list
    * @return true if a valid value exists otherwise false
@@ -220,7 +227,12 @@ class Flarm : public QObject, public FlarmBase
    */
   void flarmAlertZoneInfo( FlarmBase::FlarmAlertZone& info );
 
- private slots:
+  /**
+   * This signal is emitted, if a new/updated progress info is available.
+   */
+  void flarmProgressInfo( QStringList& info );
+
+  private slots:
 
   /** Called if m_timer has expired. Used for Flarm data clearing. */
   void slotTimeout();

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2016 by Axel Pauli
+ **                   2008-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -58,7 +58,7 @@
 #define PREFLIGHT   "Preflight Menu"
 #define CHECKLIST   "Checklist"
 #define COMMON      "Common"
-#define FLARMENTRY  "Flarm"
+#define FLARMENTRY  "Flarm-IGC"
 #define GLIDER      "Glider"
 #define LIVETRACK   "LiveTrack"
 #define LOGBOOKS    "Logbooks"
