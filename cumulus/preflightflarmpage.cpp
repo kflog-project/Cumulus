@@ -29,6 +29,7 @@
 #include "flighttask.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
@@ -103,6 +104,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 
   QVBoxLayout *allLayout  = new QVBoxLayout(form);
   QGridLayout* gridLayout = new QGridLayout;
+  gridLayout->setSpacing( 20 * Layout::getIntScaledDensity() );
 
   gridLayout->addWidget( new QLabel(tr("SN:")), 0, 0 );
   serial = new QLabel("???");

@@ -22,6 +22,7 @@
 #include "flarm.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "preflightflarmusbpage.h"
 
@@ -45,11 +46,12 @@ PreFlightFlarmUsbPage::PreFlightFlarmUsbPage(QWidget *parent) :
     }
 
   QVBoxLayout *vbox = new QVBoxLayout( this );
-  vbox->setSpacing(10);
+  vbox->setSpacing( 10 * Layout::getIntScaledDensity() );
 
   // new widget as container for the dialog layout.
   m_info = new QLabel( tr("Copy Flarm flights to USB stick") );
   vbox->addWidget( m_info );
+  vbox->addSpacing( 25 * Layout::getIntScaledDensity() );
 
   m_pb = new QProgressBar;
   m_pb->setMinimum( 0 );
