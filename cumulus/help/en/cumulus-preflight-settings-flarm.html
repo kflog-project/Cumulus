@@ -22,7 +22,7 @@
 		</tbody>
 	</table>
 
-	<h4 align="center">Preflight Settings - Flarm</h4>
+	<h4 align="center">Preflight Settings - Flarm-IGC</h4>
 
 	<b>Flarm</b>
 
@@ -35,7 +35,8 @@
 	<h5>Window description</h5>
 
 	In the upper window part are displayed different read only items in the
-	<i>Flarm Data</i> panel from the Flarm device. If the fields are filled with <i>???</i>
+	<i>Flarm Data</i> panel from the Flarm device. The headline of the box is set
+	to the Flarm device type. If the fields are filled with <i>???</i>
 	no data could be read from the Flarm device. In this case there seems to be no
 	active connection available. The abbreviated labels in the <i>Flarm Data</i>
 	panel have the following meaning:
@@ -43,13 +44,13 @@
   <p>
   <table border="2" cellpadding=5>
   <tr> <td> <b>SN:</b> </td> <td> Serial number </td> </tr>
-  <tr> <td> <b>RId:</b> </td> <td> Radio Identifier </td> </tr>
+  <tr> <td> <b>Radio Identifier:</b> </td> <td> ICAO/FLARM </td> </tr>
   <tr> <td> <b>Sv:</b> </td> <td> Severity of issue </td> </tr>
   <tr> <td> <b>Err:</b> </td> <td> Error code </td> </tr>
-  <tr> <td> <b>ODB:</b> </td> <td> Obstacle data base version. Empty, if no data base is installed. </td> </tr>
-  <tr> <td> <b>HW:</b> </td> <td> Hardware version </td> </tr>
-  <tr> <td> <b>Sw:</b> </td> <td> Software version </td> </tr>
-  <tr> <td> <b>Igc:</b></td> <td> IGC version. Empty on none approved IGC Flarms. </td> </tr>
+  <tr> <td> <b>FW:</b> </td> <td> Installed firmware version </td> </tr>
+  <tr> <td> <b>FWEXP:</b> </td> <td> Expire date of firmware </td> </tr>
+  <tr> <td> <b>Region:</b> </td> <td> The region in which the device can be used </td> </tr>
+  <tr> <td> <b>IGC:</b></td> <td> IGC version. Empty on none approved IGC Flarms. </td> </tr>
   </table>
   </p>
 
@@ -84,30 +85,47 @@
   your glider. 0 means off and 1 means on.
   </dd>
   
-  <br><dt><b>Task</b></dt>
+  <br><dt><b>H-Range</b></dt>
+  
   <dd>
-  In the displayed combo box at the right side of the task label you can select a
-  task to be flown. Preselected is the currently activated task in Cumulus. But
-  you can change here the current task selection, if you want to do that. The new
-  selected task will be considered as the task to be used for flying, if you
-  upload it to the Flarm device.
-  <br>
-  A task can also be selected at the
-  <a  href="cumulus-preflight-settings-task.html">preflight task page</a>.
-  <br><br>
-  <b>Note:</b> A taskname must be consist of pure ASCII signs out the code
-  range 0...127. If the taskname contains other signs, e.g. umlauts, special
-  national signs, etc., the task upload to Flarm will fail with an error message.
+  Here you can set the horizontal distance of aircraft to be shown in meters.
+  PowerFlarm supports the range 2000...65535m. All other Flarms 2000...25500m. 
   </dd>
   
-  <br><dt><b>Read</b></dt>
+  <br><dt><b>Pilot and glider data</b></dt>
+
+  <dd>
+  In different input boxes you can set the pilot and glider data, used in
+  IGC data file logging. 
+  </dd>
+ 
+  <br><dt><b>Task</b></dt>
+		<dd>
+			In the displayed label at the right side of the task label you can
+			see the currently activated task in Flarm, if you have a PowerFlarm.
+			All other Flarms do not support that. <br> In the displayed
+			combo box at the right side of the task label you can select a task
+			to be flown. Preselected is the currently activated task in Cumulus.
+			But you can change here the current task selection, if you want to do
+			that. The new selected task will be considered as the task to be used
+			for flying, if you upload it to the Flarm device. <br> A task
+			can also be selected at the <a
+				href="cumulus-preflight-settings-task.html">preflight task page</a>.
+			<br>
+			<br> <b>Note:</b> A taskname and all waypoint names must be
+			consist of pure visible ASCII signs out the code range 0...127. If
+			the taskname contains other signs, e.g. umlauts, special national
+			signs, etc., the task upload to Flarm will fail with an error
+			message.
+		</dd>
+
+		<br><dt><b>Read</b></dt>
   
   <dd>
   Pressing this button will read out all available data from the Flarm device
   and put them in the related fields of the window.
   <br>
-  Note, that a set IGC Task cannot be read out. That is not supported by
-  Flarm.
+  Note, that a set IGC Task can be read out only by a PowerFlarm.
   </dd>
   
   <br><dt><b>Set</b></dt>

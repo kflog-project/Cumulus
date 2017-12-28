@@ -409,9 +409,9 @@ bool Flarm::extractPflac(QStringList& list)
 
   if( list.size() >= 4 )
     {
-      if( list[2] == "DEVTYPE" )
+      if( list[2] == "ID" )
         {
-          m_flarmData.devtype = list[3];
+          m_flarmData.id = list[3];
         }
       else if( list[2] == "BAUD" )
         {

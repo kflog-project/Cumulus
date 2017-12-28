@@ -398,9 +398,9 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
       int index = taskBox->findText(lastTask );
 
       if( index != -1 )
-	{
-	  taskBox->setCurrentIndex( index );
-	}
+        {
+          taskBox->setCurrentIndex( index );
+        }
     }
 
   // Check, if a GPS is connected. We try to consider that as a Flarm device.
@@ -530,6 +530,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
   // AP 24.12.2017: "$PFLAE,R" is unsupported by PowerFlarm.
   m_cmdList << "$PFLAC,S,NMEAOUT,81"
             << "$PFLAC,R,DEVTYPE"
+            << "$PFLAC,R,ID"
             << "$PFLAC,R,BAUD"
             << "$PFLAC,R,SWVER"
             << "$PFLAC,R,SWEXP"
@@ -695,11 +696,32 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 
   if( info[2].startsWith( "ERROR" ) || info[2].startsWith( "WARNING" ))
     {
-      closeFlarmDataTransfer();
+      //closeFlarmDataTransfer();
+      int lastCmdIdx = m_cmdIdx -1;
+
+      QString lastCmd = "";
+
+      if( lastCmdIdx >= 0 &&  lastCmdIdx < m_cmdList.size() )
+        {
+          lastCmd = m_cmdList.at( lastCmdIdx );
+        }
+
       QString text0 = tr("Flarm Problem");
-      QString text1 = "<html>" + text0 + "<br><br>" + info.join(",") + "</html>";
+      QString text1 = "<html>" + text0 + "<br><br>" + info.join(",");
+
+      if( lastCmd.isEmpty() == false )
+        {
+          text1 += "<br><br>" + tr("Sent command: ") + lastCmd;
+        }
+
+      text1 += "</html>";
+
+      // We stop the timer to prevent a timeout and a repetition of the failed
+      // command.
+      m_timer->stop();
       messageBox( QMessageBox::Warning, text1, text0 );
-      qWarning() << "$PFLAC error!" << info.join(",");
+      qWarning() << "$PFLAC error!" << info.join(",") << "sent command:" << lastCmd;
+      nextFlarmCommand();
       return;
     }
 
@@ -744,6 +766,12 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
     }
 
   if( info[2] == "NMEAOUT2" )
+    {
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "ID" )
     {
       nextFlarmCommand();
       return;

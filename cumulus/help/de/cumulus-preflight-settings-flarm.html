@@ -18,7 +18,7 @@
 		</tr>
 	</table>
 
-	<h4 align="center">Vorflug Einstellungen - Flarm</h4>
+	<h4 align="center">Vorflug Einstellungen - Flarm-IGC</h4>
 
 	<b>Flarm</b>
 
@@ -30,7 +30,9 @@
 	<h5>Fenster Beschreibung</h5>
 
   Im oberen Fensterteil mit der Umrahmung <i>Flarm Daten</i> werden nur
-  auslesbare Datenelemente vom Flarm Ger&auml;t angezeigt. Sind die Felder nur
+  auslesbare Datenelemente vom Flarm Ger&auml;t angezeigt. Die &Uuml;berschrift
+  der Umrahmung wird auf den aktuellen Flarm Ger&auml;tetyp gesetzt, wenn er
+  ausgelesen werden konnte. Sind die angezeigten Felder nur
   mit <i>???</i> gef&uuml;llt, konnten keine Daten vom Flarm gelesen werden.
   In diesem Fall scheint keine aktive Verbindung zum Flarm Ger&auml;t zu existieren. 
   Die im <i>Flarm Daten</i> Panel gezeigten abgek&uuml;rzten Beschriftungen
@@ -39,13 +41,13 @@
   <p>
   <table border="2" cellpadding=5>
   <tr> <td> <b>SN:</b> </td> <td> Flarm Seriennummer </td> </tr>
-  <tr> <td> <b>RId:</b> </td> <td> Funkkennung </td> </tr>
+  <tr> <td> <b>Funkkennung:</b> </td> <td> ICAO/FLARM </td> </tr>
   <tr> <td> <b>Sv:</b> </td> <td> Fehlerschwere </td> </tr>
   <tr> <td> <b>Err:</b> </td> <td> Fehlerkode </td> </tr>
-  <tr> <td> <b>ODB:</b> </td> <td> Version der Hindernisdatenbank. Leer, wenn keine Datenbank installiert ist. </td> </tr>
-  <tr> <td> <b>HW:</b> </td> <td> Hardware Version </td> </tr>
-  <tr> <td> <b>Sw:</b> </td> <td> Software Version </td> </tr>
-  <tr> <td> <b>Igc:</b></td> <td> IGC Version. Leer bei nicht lizensierten IGC Flarms. </td> </tr>
+  <tr> <td> <b>FW:</b> </td> <td> Firware Version des Flarm Ger&auml;tes </td> </tr>
+  <tr> <td> <b>FWEXP:</b> </td> <td> Ablaufdatum der Firware </td> </tr>
+  <tr> <td> <b>Region:</b> </td> <td> Region in der das Flarm betrieben werden kann </td> </tr>
+  <tr> <td> <b>IGC:</b></td> <td> IGC Version, leer bei nicht lizensierten IGC Flarms </td> </tr>
   </table>
   </p>
   
@@ -81,7 +83,10 @@
 
 	  <br><dt><b>Aufgabe</b></dt>
 	  <dd>
-	  In der auf der rechten Seite neben der Aufgabenbeschriftung angezeigten
+	  Rechts neben der Aufgabenbeschriftung wird die gerade aktivierte Aufgabe im Flarm
+	  angezeigt. Das wird aber nur von PowerFlarm unterst&uuml;t.
+	  <br>
+	  In der ganz rechts neben der Aufgabenbeschriftung angezeigten
 	  Combobox k&ouml;nnen Sie eine zu fliegende Aufgabe ausw&auml;hlen.
 	  Vorselektiert ist immer die gerade aktivierte Aufgabe in Cumulus. Aber wenn
 	  Sie wollen, k&ouml;nnen Sie hier die bestehende Auswahl ab&auml;ndern. Die
@@ -91,14 +96,15 @@
 	  Eine Aufgabe k&ouml;nnen Sie auch auf der Seite
 	  <a  href="cumulus-preflight-settings-task.html">Vorflug Einstellungen - Aufgabe</a>
 	  ausw&auml;hlen.
-	  <br><br>
-	  <b>Beachte:</b> Aufgabennamen d&uuml;rfen nur aus ASCII Zeichen aus dem
-	  Kodebereich 0-127 bestehen. Somit sind alle deutsche Sonderzeichen ausgeschlossen.
-	  Deutsche Umlaute und &szlig; werden von Cumulus in &auml;quivalente Zeichen
-	  automatisch umgesetzt. Alle anderen nicht erlaubten Zeichen f&uuml;hren dazu,
-	  dass Flarm nach dem Hochladen der Aufgabe einen Fehler meldet.
-	  
-	  </dd>
+	  <br><br> <b>Beachte:</b> Aufgabennamen und Wegpunkte d&uuml;rfen nur
+			aus sichtbaren ASCII Zeichen aus dem Kodebereich 0-127 bestehen.
+			Somit sind alle deutsche Sonderzeichen ausgeschlossen. Deutsche
+			Umlaute und &szlig; werden von Cumulus in &auml;quivalente Zeichen
+			automatisch umgesetzt. Alle anderen nicht erlaubten Zeichen
+			f&uuml;hren dazu, dass Flarm beim Hochladen der Aufgabe einen Fehler
+			meldet.
+
+		</dd>
 
 		<br><dt><b>Lesen</b></dt>
 		
@@ -107,8 +113,8 @@
 		aus dem Flarm	Ger&auml;t ausgelesen und in den entsprechenden Feldern des
 		Fensters angezeigt.
 		<br>
-		Beachten Sie, dass eine IGC Aufgabe nicht ausgelesen werden kann. Das wird
-		vom Flarm Ger&auml;t nicht unterst&uuml;tzt.
+		Beachten Sie, dass eine IGC Aufgabe nur von einem PowerFlarm ausgelesen
+		werden kann.
 		</dd>
 
 		<br><dt><b>Setzen</b></dt>

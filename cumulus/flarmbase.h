@@ -134,6 +134,7 @@ class FlarmBase
     QString gliderid;
     QString glidertype;
     QString hwver;
+    QString id;
     QString igcser;
     QString logint;
     QString nmeaout;
@@ -180,6 +181,7 @@ class FlarmBase
         gliderid.clear();
         glidertype.clear();
         hwver.clear();
+        id.clear();
         igcser.clear();
         logint.clear();
         nmeaout.clear();
