@@ -118,9 +118,14 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   gridLayout->setColumnMinimumWidth( 5, 20 );
 
   gridLayout->addWidget( new QLabel(tr("Sv:")), 0, 6);
-  errSeverity = new QLabel("---", this);
+
+  errSeverity = new CuLabel("---", this);
+  errSeverity->setFrameStyle(QFrame::Box | QFrame::Panel);
+  errSeverity->setLineWidth(3);
   gridLayout->addWidget( errSeverity, 0, 7 );
   gridLayout->setColumnMinimumWidth( 8, 20 );
+
+  connect( errSeverity, SIGNAL(mousePress()), SLOT(slotShowSeverityText()) );
 
   gridLayout->addWidget( new QLabel(tr("Err:")), 0, 9);
   errCode = new CuLabel("---", this);
@@ -527,7 +532,6 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 
   // Here we activate the NMEA output of the Flarm. All other set items are
   // untouched.
-  // AP 24.12.2017: "$PFLAE,R" is unsupported by PowerFlarm.
   m_cmdList << "$PFLAC,S,NMEAOUT,81"
             << "$PFLAC,R,DEVTYPE"
             << "$PFLAC,R,ID"
@@ -569,7 +573,12 @@ void PreFlightFlarmPage::slotRequestFlarmData()
                 << "$PFLAC,R,BAUD1"
                 << "$PFLAC,R,BAUD2"
                 << "$PFLAC,R,TASK";
-   }
+     }
+  else
+    {
+      // Only supported by Classic Flarm
+      m_cmdList << "$PFLAE,R";
+    }
 
   nextFlarmCommand();
 }
@@ -1292,6 +1301,46 @@ void PreFlightFlarmPage::slotChangeNotrackMode()
     }
 }
 
+void PreFlightFlarmPage::slotShowSeverityText()
+{
+  const Flarm::FlarmError& error = Flarm::instance()->getFlarmError();
+
+  if( error.severity.isEmpty() )
+    {
+      messageBox( QMessageBox::Information, tr("No severity info available"), tr("severity Info") );
+      return;
+    }
+
+  QString sevInfo = "";
+
+  if( error.severity == "0" )
+    {
+      sevInfo = tr( "No error, normal operation." );
+    }
+  else if( error.severity == "1" )
+    {
+      sevInfo = tr( "Information only, normal operation." );
+    }
+  else if( error.severity == "2" )
+    {
+      sevInfo = tr( "Functionality may be reduced." );
+    }
+  else if( error.severity == "3" )
+    {
+      sevInfo = tr( "Fatal problem, device will not work." );
+    }
+  else
+    {
+      sevInfo = tr( "Unknown severity." );
+    }
+
+  QString title = QString(tr("Severity %1 means")).arg(error.severity);
+
+  QString text = "<html>" + title + ":<br><br>" + sevInfo + "</html>";
+
+  messageBox( QMessageBox::Information, text, title );
+}
+
 void PreFlightFlarmPage::slotShowErrorText()
 {
   const Flarm::FlarmError& error = Flarm::instance()->getFlarmError();
@@ -1302,7 +1351,7 @@ void PreFlightFlarmPage::slotShowErrorText()
       return;
     }
 
-  QString title = QString(tr("Code %1 means")).arg(error.errorCode);
+  QString title = QString(tr("Error %1 means")).arg(error.errorCode);
 
   QString text = "<html>" + title + ":<br><br>" + error.errorText + "</html>";
 
