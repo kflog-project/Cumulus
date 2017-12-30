@@ -2198,7 +2198,7 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="../../preflightflarmpage.cpp" line="194"/>
         <source>H-Range:</source>
-        <translation>H-Breeich:</translation>
+        <translation>H-Bereich:</translation>
     </message>
     <message>
         <location filename="../../preflightflarmpage.cpp" line="196"/>
@@ -2280,7 +2280,7 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="../../preflightflarmpage.cpp" line="346"/>
         <source>Write data to Flarm</source>
-        <translation>Daten auf Flarm schreiben</translation>
+        <translation>Daten zum Flarm senden</translation>
     </message>
     <message>
         <location filename="../../preflightflarmpage.cpp" line="354"/>
@@ -2458,7 +2458,9 @@ All downloads are canceled!</oldsource>
         <source>
 
 USB stick really connected?</source>
-        <translation>USB Stick eingeschoben?</translation>
+        <translation>
+
+USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../preflightflarmusbpage.cpp" line="222"/>

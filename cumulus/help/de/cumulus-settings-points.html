@@ -1,5 +1,3 @@
-<!-- $Id$ -->
-
 <html>
 <head>
 <title>Cumulus Einstellungen</title>
@@ -25,22 +23,13 @@
 	<b>Punkt Daten</b>
 
 	<p>
-		Cumulus kann zwei verschiedene Quellen:
+		Cumulus l&auml;dt Punktdaten von folgender Quelle:
 		
 		<ul>
 		  <li><a href="cumulus-maps-openAIP.html">openAIP</a></li>
-      <li><a href="cumulus-maps-welt2000.html">Welt2000</a></li>
     </ul>
   </p>
   
-  <p>  
-		als Datenbasis f&uuml;r Punkt Daten, wie z.B. Flugpl&auml;tze benutzen.
-		Der Standard ist <i>Welt2000</i>. Cumulus l&auml;d die <i>Welt2000</i> Datei
-		automatisch herunter, wenn sie nicht vorhanden ist oder wenn sie aktualisiert
-		wurde. Eine <i>Welt2000</i> Datei beinhaltet die Daten von der ganzen Welt,
-		weswegen sie auch sehr gro&szlig; ist.
-	</p>
-
 	<p>
 		Das <a href="http://www.openaip.net">openAIP</a> Projekt stellt pro Land 
 		verschiedene Punkt Daten bereit. Der Vorteil von <i>openAIP</i> ist, dass
@@ -58,7 +47,6 @@
   </p>
   
   <ul>
-   <li> <a href="http://www.segelflug.de/vereine/welt2000/content/de/legal/terms-of-use.php">Welt2000</a></li>
    <li> <a href="http://www.openaip.net/legal">openAIP</a></li>
   </ul>
   
@@ -72,106 +60,14 @@
     </dt>
 
     <dd>
-      Mit Hilfe der Box Quelle k&ouml;nnen Sie die Datenquelle
-      (openAIP oder Welt2000) ausw&auml;hlen, die Cumulus benutzen soll.
+      Die Box Quelle zeigt die Auswahl an, die Cumulus benutzen soll.
       F&uuml;r jede Quelle gibt es eine eigene Form, in deren Kopf der
       Weblink zur Seite der gerade ausw&auml;hlten Quelle zu sehen ist.
     </dd>
    </dl>
     
    <hr>
-    
-   <dl>
-		<a name="Welt2000Filter"></a>
-		<dt>
-			<b>Welt2000 L&auml;nder Filter</b>
-		</dt>
-		</a>
-
-		<dd>Hier k&ouml;nnen Sie die L&auml;nder definieren, die Cumulus aus
-			der Welt2000 Datei einlesen soll. Verschiedene L&auml;nder
-			k&ouml;nnen hintereinander durch Kommas oder Leerzeichen getrennt
-			angegeben werden. Die L&auml;nderkennungen (zwei Buchstabenkode) sind
-			nach ISO-3166 kodiert. Falls eine solche Filterregel definiert wird,
-			werden nur die darin aufgef&uuml;hrten L&auml;nder aus der Welt2000
-			Datei gelesen.
-	  </dd>
-
-		<br>
-		<a name="Welt2000Radius"></a>
-		<dt>
-			<b>Welt2000 Radius Filter</b>
-		</dt>
-		</a>
-
-		<dd>
-			Als weitere M&ouml;glichkeit k&ouml;nnen Sie hier einen
-			Radius um Ihre Heimatposition herum definieren. Alle nur innerhalb des
-			Radius liegenden Punkt Daten werden dann aus der Welt2000 Datei
-			eingelesen. Wird der Radius auf Null gesetzt, wird intern ein Radius
-			von 500 Km angenommen, falls das L&auml;nder Filter nicht definiert ist.
-			<b>Achtung!</b> Ist Ihre gegenw&auml;rtige Position au&szlig;erhalb
-			der definierten Bereiche, werden keine Flug- und Landepl&auml;tze
-			mehr auf der Karte angezeigt.
-		</dd>
-
-    <br>
-    <a name="Welt2000RunwayLengthFilter"></a>
-    <dt>
-      <b>Welt2000 SLB L&auml;ngen Filter</b>
-    </dt>
-    </a>
-
-		<dd>
-		  Hier k&ouml;nnen Sie eine Mindestl&auml;nge f&uuml;r die SLB
-			des ein zu lesenden Flugplatzes oder Au&szlig;enlandefeldes vorgeben,
-			um Objekte mit zu kurzen Landebahnen weg zu filtern. Wird die
-			L&auml;nge des Filters auf Null gesetzt, ist es nicht aktiv.
-	  </dd>
-
-		<br>
-		<a name="Welt2000Outlandings"></a>
-		<dt>
-			<b>Welt2000 - Lade Landefelder</b>
-		</dt>
-		</a>
-
-		<dd>
-			Wenn die Checkbox <i>Lade Landefelder</i> aktiviert ist, werden auch
-			alle Au&szlig;enlandefelder, die in der Welt2000 Datei innerhalb der
-			definierten Region liegen, mit geladen.
-		</dd>
-
-		<br>
-		<a name="Welt2000Download"></a>
-		<dt>
-			<b>Welt2000 - Installieren</b>
-		</dt>
-
-		<dd>
-		    Cumulus kann die Welt2000 Datei aus dem Internet von der
-				entsprechenden Seite auch runterladen, wenn es nicht in Bewegung
-				ist. Wenn der Download abgearbeitet ist, wird eine Ergebnismeldung
-				angezeigt. Cumulus f&uuml;hrt keine spezielle Logdatei &uuml;ber die
-				Downloads. Wenn man Cumulus in einen X-Terminal Fenster startet,
-				kann man die einzelnen Ergebnisse als Debug Nachrichten darin sehen.
-	  </dd>
-
-		<br>
-		<dt>
-			<b>Welt2000 Daten Neuladen</b>
-		</dt>
-
-		<dd>
-		  Wird die Heimatposition bzw. die Welt2000 Konfiguration
-			ver&auml;ndert oder eine neue Datei aus dem Internet herunter
-			geladen, wird automatisch ein Neuladen der Welt2000 Datei
-			ausgef&uuml;hrt.
-		</dd>
-    </dl>
-   
-    <hr>
-    
+        
     <dl>
         <a name="openAIP_Download"></a>
     <dt>

@@ -1,4 +1,3 @@
-<!-- $Id$ -->
 <html>
 <head>
 <title>Cumulus Settings</title>
@@ -27,18 +26,16 @@
 	<b>Point Data</b>
 
 	<p>
-	  Cumulus can use two different sources:
+	  Cumulus uses the following source:
 	  
     <ul>
       <li><a href="cumulus-maps-openAIP.html">openAIP</a></li>
-      <li><a href="cumulus-maps-welt2000.html">Welt2000</a></li>
     </ul>
   </p>
   
   <p> 
-	  as database for point data, such as airfields. The default is 
-	  <i>Welt2000</i>, which is also automatically downloaded, if it is missing
-	  or was updated. <i>Welt2000</i> has stored all data in one file.
+	  as database for point data, such as airfields, radio points,
+	  thermal hotspots, etc.
 	</p>
 	
 	<p>  
@@ -57,177 +54,84 @@
   </p>
   
   <ul>
-   <li> <a href="http://www.segelflug.de/vereine/welt2000/content/en/legal/terms-of-use.php">Welt2000</a></li>
    <li> <a href="http://www.openaip.net/legal">openAIP</a></li>
   </ul>
   
   before you use these data.
 
   <hr>
-  
-	<dl>
-    <dt>
-      <b>Source</b>
-    </dt>
-
-    <dd>In the source box you can select the point data source
-			(openAIP / Welt2000) to be used. There are different forms provided
-			for every source. In the headline of the form you can see the link to
-			the appropriate webpage.</dd>
-    
-    <hr>
-    
-		<a name="Welt2000Filter"></a>
-		<br>
-		<dt>
-			<b>Welt2000 - Country Filter</b>
-		</dt>
-
-		<dd>Here you can define the countries to be read from the
-			Welt2000 file. Several countries can be entered as a list separated
-			by commas or spaces. The country identifiers have to be encoded
-			according to ISO-3166 as two letter code. Allowed separators are
-			space or comma.
-	  </dd>
-
-		<a name="Welt2000Radius"></a>
-		<br>
-		<dt>
-			<b>Welt2000 - Radius Filter</b>
-		</dt>
-
-		<dd>
-			As an alternative to using the country filter, you can define a
-			radius around your home position. All airfields laying inside this
-			radius will be read from the Welt2000 data file. If the radius is
-			zero and no country filter is defined, then a default radius of 500
-			kilometers is applied.
-			<p>
-				<i><b>Please Note!</b> If the home position is too far away from
-					the area defined by the filter or radius values, no airfield data
-					are shown on the map.</i>
-			</p>
-		</dd>
-
-    <a name="Welt2000RunwayLengthFilter"></a>
-    <dt>
-      <b>Welt2000 Runway length Filter</b>
-    </dt>
-    </a>
-
-    <dd>
-      Here you can define a minimum runway length for the airfields or
-      outlandings to be read in to filter out objects with too short runways.
-      To switch off the filter set its value to zero.
-    </dd>
 		
-		<br>
-		<a name="Welt2000Outlandings"></a>
-		<dt>
-			<b>Welt2000 - Load Outlandings</b>
-		</dt>
+	<a name="openAIP_Download"></a>
+   <dt>
+     <b>openAIP - Download</b>
+   </dt>
 
-		<dd>
-			If the check box <i>Load Outlandings</i> is activated, all outlanding
-			sites contained in the selected region will be loaded too.
-		</dd>
+   <dd>
+		Enter the countries beside the <i>Download</i> button, which you want
+		to download from openAIP. The country identifiers have to be encoded
+		according to ISO-3166 as two letter code. Allowed separators are space
+		or comma. Press the
+		<i>Download</i> button to get the desired files from openAIP. If
+		Cumulus is in move, no downloads are possible.
+		<br> Updates of the files are provided in short time intervals without
+		an extra announcement by openAIP. Therefore you should download from
+		time to time again the desired point files to be up to date.
+		<b>Note!</b> Cumulus will not do that automatically.
+	</dd>
+	
+	<a name="openAIP_Radius"></a>
+   <br>
+   <dt>
+     <b>openAIP - Radius Filter</b>
+   </dt>
 
-		<a name="Welt2000Download"></a>
-		<br>
-		<dt>
-			<b>Welt2000 - Install</b>
-		</dt>
+   <dd>
+     All point data lying inside your home position radius will be read
+     from the openAIP data files, which are selected on the load page.
+     <p>
+       <i><b>Please Note!</b> If the home position is too far away from
+         the area defined by the radius value, no airfield data
+         are shown on the map.</i>
+     </p>
+   </dd>
+   
+   <a name="openAip_RunwayLengthFilter"></a>
+   <dt>
+     <b>openAIP Runway length Filter</b>
+   </dt>
+   </a>
 
-		<dd>
-			Cumulus can download the Welt2000 file containing the airfield data
-			from the relevant Internet web page.
-			<br>
-			Note, if Cumulus is in motion no download is carried out.
-		</dd>
+   <dd>
+     Here you can define a minimum runway length for the point data to be read
+     in to filter out objects with too short runways.
+     To switch off the filter set its value to zero.
+   </dd>
+   
+   <br>
+	<a name="openAIP_Load"></a>
+   <dt>
+     <b>openAIP - Load</b>
+   </dt>
 
-		<br>
-		<dt>
-			<b>Welt2000 Data Reload</b>
-		</dt>
-
-		<dd>After a download or a change in home position or
-			configuration, Cumulus will trigger an automatic reload of the
-			Welt2000 data.
-		</dd>
-		
-		<hr>
-		
-		<a name="openAIP_Download"></a>
-    <dt>
-      <b>openAIP - Download</b>
-    </dt>
-
-    <dd>
-			Enter the countries beside the <i>Download</i> button, which you want
-			to download from openAIP. The country identifiers have to be encoded
-			according to ISO-3166 as two letter code. Allowed separators are
-			space or comma. Press the
-			<i>Download</i> button to get the desired files from openAIP. If
-			Cumulus is in move, no downloads are possible.
-			<br> Updates of the files are provided in short time intervals
-			without an extra announcement by openAIP. Therefore you should
-			download from time to time again the airfield files to be up to date.
-			<b>Note!</b> Cumulus will not do that automatically.
-		</dd>
-		
-		<a name="openAIP_Radius"></a>
-    <br>
-    <dt>
-      <b>openAIP - Radius Filter</b>
-    </dt>
-
-    <dd>
-      All point data lying inside your home position radius will be read
-      from the openAIP data files, which are selected on the load page.
-      <p>
-        <i><b>Please Note!</b> If the home position is too far away from
-          the area defined by the radius value, no airfield data
-          are shown on the map.</i>
-      </p>
-    </dd>
-    
-    <a name="openAip_RunwayLengthFilter"></a>
-    <dt>
-      <b>openAIP Runway length Filter</b>
-    </dt>
-    </a>
-
-    <dd>
-      Here you can define a minimum runway length for the point data to be read
-      in to filter out objects with too short runways.
-      To switch off the filter set its value to zero.
-    </dd>
-    
-    <br>
-		<a name="openAIP_Load"></a>
-    <dt>
-      <b>openAIP - Load</b>
-    </dt>
-
-    <dd>
-			Pressing the <i>Load</i> button opens a table showing all loadable
-			openAIP point data files. The point data files, dowloaded by Cumulus, have
-      the following naming format:
-      <br><br>
-      &lt;two-letter-country-code&gt;_wpt.aip for airfields<br>
-      &lt;two-letter-country-code&gt;_nav.aip for radio navigation facilities<br>
-      &lt;two-letter-country-code&gt;_hot.aip for thermal hotspots<br>
-      <br>
-      In the header of the table you can see the directory, where the listed
-      files are stored. At the left side of every table row you can see a
-      checkbox. If you activate the checkbox, the listed file is loaded otherwise
-      not.
-      If the box <i>Check or Uncheck all</i> is checked, all listed files are
-      loaded by Cumulus. If you want not to load all, deselect as first this
-      checkbox. Only then you can make single selections of files.
-      If you select a whole table row, you can remove the	selected data file by
-      pressing the trash button.
-		</dd>
+   <dd>
+		Pressing the <i>Load</i> button opens a table showing all loadable
+		openAIP point data files. The point data files, dowloaded by Cumulus, have
+     the following naming format:
+     <br><br>
+     &lt;two-letter-country-code&gt;_wpt.aip for airfields<br>
+     &lt;two-letter-country-code&gt;_nav.aip for radio navigation facilities<br>
+     &lt;two-letter-country-code&gt;_hot.aip for thermal hotspots<br>
+     <br>
+     In the header of the table you can see the directory, where the listed
+     files are stored. At the left side of every table row you can see a
+     checkbox. If you activate the checkbox, the listed file is loaded otherwise
+     not.
+     If the box <i>Check or Uncheck all</i> is checked, all listed files are
+     loaded by Cumulus. If you want not to load all, deselect as first this
+     checkbox. Only then you can make single selections of files.
+     If you select a whole table row, you can remove the	selected data file by
+     pressing the trash button.
+	</dd>
 		
 	</dl>
 

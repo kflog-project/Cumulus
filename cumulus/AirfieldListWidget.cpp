@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2017 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -126,7 +126,6 @@ AirfieldListWidget::AirfieldItem::AirfieldItem(Airfield* site) :
   QTreeWidgetItem(), airfield(site)
 {
   QString name = site->getWPName();
-  // Limitation for name is set in Welt2000 to 8 characters
   setText(0, name);
   setText(1, site->getName());
   setText(2, site->getCountry());

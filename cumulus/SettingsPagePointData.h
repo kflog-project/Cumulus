@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2014 Axel Pauli
+**   Copyright (c):  2008-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,15 +18,13 @@
  *
  * \author Axel Pauli
  *
- * \brief Configuration settings for point data loading from Welt2000 and
- * OpenAIP.
+ * \brief Configuration settings for point data loading from OpenAIP.
  *
- * Configuration settings for point data loading from Welt2000 and
- * OpenAIP.
+ * Configuration settings for point data loading from OpenAIP.
  *
- * \date 2008-2014
+ * \date 2008-2017
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -72,11 +70,6 @@ class SettingsPagePointData : public QWidget
   bool checkIsOpenAipChanged();
 
   /**
-   * Checks if the configuration of the Welt2000 has been changed
-   */
-  bool checkIsWelt2000Changed();
-
-  /**
    * Checks if the configuration of list display has been changed
    */
   bool checkIsListDisplayChanged();
@@ -116,25 +109,11 @@ class SettingsPagePointData : public QWidget
 #ifdef INTERNET
 
   /**
-   * Called, if install button of Welt2000 is clicked.
-   */
-  void slot_installWelt2000();
-
-  /**
    * Called, if download button of openAIP is clicked.
    */
   void slot_downloadOpenAip();
 
   signals:
-
-  /**
-   * This signal is emitted when a Welt2000 file shall be downloaded from
-   * the Internet. The filename must be the name of the web page without
-   * any path prefixes.
-   *
-   * \param welt2000FileName The Welt2000 file name to be downloaded.
-   */
-  void downloadWelt2000( const QString& welt2000FileName );
 
   /**
    * This signal is emitted when openAIP airfield and nav aids country files
@@ -151,12 +130,6 @@ class SettingsPagePointData : public QWidget
    * a reload of all data files.
    */
   void reloadOpenAip();
-
-  /**
-   * This signal is emitted, if Welt2000 items have been changed to trigger
-   * a reload of the data file.
-   */
-  void reloadWelt2000();
 
   /**
    * Emitted, if settings have been changed.
@@ -199,25 +172,13 @@ class SettingsPagePointData : public QWidget
   /** OpenAIP group box widget */
   QGroupBox* m_oaipGroup;
 
-  /** Welt2000 group box widget */
-  QGroupBox* m_weltGroup;
-
-  /** Country selector for Welt2000 data file */
-  QLineEdit* m_countriesW2000;
-
-  /** Country selector for openAIP downloads*/
+ /** Country selector for openAIP downloads*/
   QLineEdit* m_countriesOaip4Download;
 
   /** Radius around home position for Welt2000 data file */
 
   /** Home radius OpenAIP. */
   NumberEditor* m_homeRadiusOaip;
-
-  /** Home radius Welt2000. */
-  NumberEditor* m_homeRadiusW2000;
-
-  /** Filter for minimum runway length. If set to zero, the filter is inactive.*/
-  NumberEditor* m_minRwyLengthW2000;
 
   /** Filter for minimum runway length. If set to zero, the filter is inactive.*/
   NumberEditor* m_minRwyLengthOaip;
@@ -232,9 +193,6 @@ class SettingsPagePointData : public QWidget
    */
   NumberEditor* m_rpMargin;
 
-  /** Check box to load outlandings or not. */
-  QCheckBox* m_loadOutlandings;
-
   /** The home radius initial value in the selected distance unit. */
   float m_homeRadiusInitValue;
 
@@ -242,13 +200,6 @@ class SettingsPagePointData : public QWidget
   float m_runwayFilterInitValue;
 
 #ifdef INTERNET
-
-  /** Download and install Welt2000 file. */
-  QPushButton* m_installWelt2000;
-
-  /** Line editor for Welt2000 filename input. The file name on the web page
-   *  is extended by a date string. */
-  QLineEdit* m_welt2000FileName;
 
   /** Download and install openAIP country files. */
   QPushButton* m_downloadOpenAip;

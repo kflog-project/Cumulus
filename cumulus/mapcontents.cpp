@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2017 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -43,7 +43,6 @@
 #include "resource.h"
 #include "taskfilemanager.h"
 #include "waypointcatalog.h"
-#include "welt2000.h"
 #include "wgspoint.h"
 
 #include "OpenAip.h"
@@ -91,7 +90,6 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
 #ifdef INTERNET
 
     , m_downloadMangerMaps(0),
-    m_downloadMangerWelt2000(0),
     m_downloadMangerOpenAipPois(0),
     m_downloadMangerOpenAipAs(0),
     m_shallDownloadData(false),
@@ -1541,37 +1539,6 @@ bool MapContents::downloadMapFile( QString &file, QString &directory )
   return true;
 }
 
-void MapContents::slotDownloadWelt2000( const QString& welt2000FileName )
-{
-  extern Calculator* calculator;
-
-  if( GpsNmea::gps->getConnected() && calculator->moving() )
-    {
-      // We have a GPS connection and are in move. That does not allow
-      // to make any downloads.
-      return;
-    }
-
-  if( m_downloadMangerWelt2000 == 0 )
-    {
-      m_downloadMangerWelt2000 = new DownloadManager(this);
-
-      connect( m_downloadMangerWelt2000, SIGNAL(finished( int, int )),
-               this, SLOT(slotDownloadWelt2000Finished( int, int )) );
-
-      connect( m_downloadMangerWelt2000, SIGNAL(networkError()),
-               this, SLOT(slotNetworkError()) );
-
-      connect( m_downloadMangerWelt2000, SIGNAL(status( const QString& )),
-               _globalMapView, SLOT(slot_info( const QString& )) );
-    }
-
-  QString url  = GeneralConfig::instance()->getWelt2000Link() + "/" + welt2000FileName;
-  QString dest = GeneralConfig::instance()->getMapRootDir() + "/points/welt2000.txt";
-
-  m_downloadMangerWelt2000->downloadRequest( url, dest );
-}
-
 void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList )
 {
   extern Calculator* calculator;
@@ -1673,16 +1640,6 @@ void MapContents::slotDownloadMapsFinished( int requests, int errors )
   // All downloads are finished, trigger a reload of map data.
   _globalMapView->slot_info( tr("Maps downloaded") );
   emit mapDataReloaded( Map::baseLayer );
-}
-
-void MapContents::slotDownloadWelt2000Finished( int requests, int errors )
-{
-  Q_UNUSED(requests)
-  Q_UNUSED(errors)
-
-  // Welt2000 download  is finished. Trigger reload of welt2000 data.
-  _globalMapView->slot_info( tr("Welt2000 downloaded") );
-  slotReloadWelt2000Data();
 }
 
 void MapContents::slotDownloadOpenAipPoisFinished( int requests, int errors )
@@ -1830,7 +1787,7 @@ void MapContents::slotNetworkError()
 }
 
 /**
- * Ask the user once for download of missing Welt2000 or map files. The answer
+ * Ask the user once for download of missing map files. The answer
  * is stored permanently to have it for further request.
  * Returns true, if download is desired otherwise false.
  */
@@ -2029,7 +1986,8 @@ void MapContents::proofeSection()
       airspaceList.sort();
 
       // Look, which airfield source has to be taken.
-      int airfieldSource = GeneralConfig::instance()->getAirfieldSource();
+      // int airfieldSource = GeneralConfig::instance()->getAirfieldSource();
+      int airfieldSource = 0;
 
       if( airfieldSource == 0 )
         {
@@ -2061,36 +2019,6 @@ void MapContents::proofeSection()
               loadOpenAipAirfieldsViaThread();
               loadOpenAipNavAidsViaThread();
               loadOpenAipHotspotsViaThread();
-            }
-        }
-      else
-        {
-          // Welt2000 is defined as airfield source
-          ws->slot_SetText2( tr( "Reading Welt2000 Data" ) );
-
-          if( isReload == false )
-            {
-              // Load airfield data not in an extra thread
-              Welt2000 welt2000;
-
-              if( ! welt2000.load( airfieldList, gliderfieldList, outLandingList ) )
-                {
-
-#ifdef INTERNET
-                  if( askUserForDownload() == true )
-                    {
-                      // Welt2000 load failed, try to download a new Welt2000 File.
-                      slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
-                    }
-#endif
-                }
-            }
-          else
-            {
-              // In case of an reload we assume, a Welt2000 file is available.
-              // Therefore the reload is done in an extra thread because it can
-              // take a while and the GUI shall not be blocked by this action.
-              loadWelt2000DataViaThread();
             }
         }
 
@@ -2735,7 +2663,7 @@ void MapContents::slotOpenAipAirfieldLoadFinished( int noOfLists,
   delete airfieldListIn;
 
   // Glider and outlanding lists must be deleted too, they can be filled with
-  // Welt2000 data.
+  // other data.
   gliderfieldList = QList<Airfield>();
   outLandingList  = QList<Airfield>();
 
@@ -2920,113 +2848,6 @@ void MapContents::slotAirspaceLoadFinished( int noOfLists,
   delete airspaceListIn;
 
   emit mapDataReloaded( Map::airspaces );
-}
-
-/**
- * Starts a thread, which is loading the requested Welt2000 data.
- */
-void MapContents::loadWelt2000DataViaThread()
-{
-  QMutexLocker locker( &m_airfieldLoadMutex );
-
-  _globalMapView->slot_info( tr("loading Welt2000") );
-
-  Welt2000Thread *w2000Thread = new Welt2000Thread( this );
-
-  // Register a special data type for return results. That must be
-  // done to transfer the results between different threads.
-  qRegisterMetaType<AirfieldListPtr>("AirfieldListPtr");
-
-  // Connect the receiver of the results. It is located in this
-  // thread and not in the new opened thread.
-  connect( w2000Thread,
-           SIGNAL(loadedLists( bool,
-                               QList<Airfield>*,
-                               QList<Airfield>*,
-                               QList<Airfield>*  )),
-           this,
-           SLOT(slotWelt2000LoadFinished( bool,
-                                          QList<Airfield>*,
-                                          QList<Airfield>*,
-                                          QList<Airfield>* )) );
-  w2000Thread->start();
-}
-
-/**
- * This slot is called by the Welt2000 load thread to signal, that the
- * requested airfield data have been loaded. The passed lists must be
- * deleted in this method.
- */
-void MapContents::slotWelt2000LoadFinished( bool ok,
-                                            QList<Airfield>* airfieldListIn,
-                                            QList<Airfield>* gliderfieldListIn,
-                                            QList<Airfield>* outlandingListIn )
-{
-  QMutexLocker locker( &m_airfieldLoadMutex );
-
-  if( ok == false )
-    {
-      qWarning() << "slotWelt2000LoadFinished: Welt2000 loading failed!";
-
-      _globalMapView->slot_info( tr("Welt2000 load failed") );
-
-      delete airfieldListIn;
-      delete gliderfieldListIn;
-      delete outlandingListIn;
-      return;
-    }
-
-  // Take over the new loaded lists. The passed lists must be deleted!
-  airfieldList = QList<Airfield>();
-  airfieldList = *airfieldListIn;
-  delete airfieldListIn;
-
-  gliderfieldList = QList<Airfield>();
-  gliderfieldList = *gliderfieldListIn;
-  delete gliderfieldListIn;
-
-  outLandingList = QList<Airfield>();
-  outLandingList = *outlandingListIn;
-  delete outlandingListIn;
-
-  // Remove content of radio list. It can contain openAIP data.
-  radioList = QList<RadioPoint>();
-
-  // Remove content of hotspot list. It can contain openAIP data.
-  hotspotList = QList<SinglePoint>();
-
-  _globalMapView->slot_info( tr("Welt2000 loaded") );
-
-  emit mapDataReloaded( Map::airfields );
-
-  // This signal will update all list views of the main window.
-  emit mapDataReloaded();
-}
-
-/**
- * Reload the Welt2000 data file. Can be called after a configuration change or
- * a file download.
- */
-void MapContents::slotReloadWelt2000Data()
-{
-  // Check, if Welt2000 is the airfield source.
-  if( GeneralConfig::instance()->getAirfieldSource() != 1 )
-    {
-      return;
-    }
-
-  Welt2000 w2000;
-
-  if( w2000.check4File() == true )
-    {
-      // Reload Welt2000 data in an extra thread.
-      loadWelt2000DataViaThread();
-    }
-  else
-    {
-      // Download missing file from the Internet
-      slotDownloadWelt2000( GeneralConfig::instance()->getWelt2000FileName() );
-    }
 }
 
 void MapContents::slotNewFlarmAlertZoneData( FlarmBase::FlarmAlertZone& faz )

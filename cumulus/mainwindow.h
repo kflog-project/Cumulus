@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2015 by Axel Pauli
+                        : (C) 2007-2017 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -416,11 +416,6 @@ private slots:
    * Finishes the startup after the map drawing.
    */
   void slotFinishStartUp();
-
-  /**
-   * Called to check for Welt2000 updates.
-   */
-  void slotCheck4Updates();
 
   /**
    * Called to open the Android hardware menu.

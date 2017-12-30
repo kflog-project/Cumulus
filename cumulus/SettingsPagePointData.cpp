@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2015 Axel Pauli
+ **   Copyright (c): 2008-2017 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -91,7 +91,6 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   sourceLayout->addWidget( lbl, 0, 0 );
   m_sourceBox = new QComboBox;
   m_sourceBox->addItem("OpenAIP");
-  m_sourceBox->addItem("Welt2000");
   sourceLayout->addWidget( m_sourceBox, 0, 1 );
 
   QPushButton *cmdHelp = new QPushButton( tr("Help") );
@@ -166,70 +165,6 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   oaipLayout->setColumnStretch( 3, 5 );
 
   //----------------------------------------------------------------------------
-  m_weltGroup = new QGroupBox("www.segelflug.de/vereine/welt2000", this);
-  topLayout->addWidget(m_weltGroup);
-
-  QGridLayout* weltLayout = new QGridLayout(m_weltGroup);
-
-  grow = 0;
-  lbl = new QLabel(tr("Country Filter:"), (m_weltGroup));
-  weltLayout->addWidget(lbl, grow, 0);
-
-  m_countriesW2000 = new QLineEdit(m_weltGroup);
-  imh = Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText;
-  m_countriesW2000->setInputMethodHints(imh);
-
-  connect( m_countriesW2000, SIGNAL(returnPressed()),
-           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
-
-  weltLayout->addWidget(m_countriesW2000, grow, 1, 1, 3);
-  grow++;
-
-  lbl = new QLabel(tr("Radius:"), m_weltGroup);
-  weltLayout->addWidget(lbl, grow, 0);
-
-  m_homeRadiusW2000 = createHomeRadiusWidget( this );
-  weltLayout->addWidget(m_homeRadiusW2000, grow, 1 );
-
-  m_loadOutlandings = new QCheckBox( tr("Load Outlandings"), m_weltGroup );
-  weltLayout->addWidget(m_loadOutlandings, grow, 3, Qt::AlignRight );
-  grow++;
-
-  lbl = new QLabel(tr("Rwy Filter:"), m_weltGroup);
-  weltLayout->addWidget(lbl, grow, 0);
-
-  m_minRwyLengthW2000 = createRwyLenthFilterWidget( this );
-  weltLayout->addWidget(m_minRwyLengthW2000, grow, 1 );
-  grow++;
-
-#ifdef INTERNET
-
-  weltLayout->setRowMinimumHeight(grow++, 10);
-
-  m_installWelt2000 = new QPushButton( tr("Install"), m_weltGroup );
-#ifndef ANDROID
-  m_installWelt2000->setToolTip(tr("Install Welt2000 data"));
-#endif
-  weltLayout->addWidget(m_installWelt2000, grow, 0 );
-
-  connect( m_installWelt2000, SIGNAL( clicked()), this, SLOT(slot_installWelt2000()) );
-
-  m_welt2000FileName = new QLineEdit(m_weltGroup);
-  m_welt2000FileName->setInputMethodHints(imh);
-#ifndef ANDROID
-  m_welt2000FileName->setToolTip(tr("Enter Welt2000 filename as to see on the web page"));
-#endif
-
-  connect( m_welt2000FileName, SIGNAL(returnPressed()),
-           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
-
-  weltLayout->addWidget(m_welt2000FileName, grow, 1, 1, 3);
-
-#endif
-
-  weltLayout->setColumnStretch(2, 10);
-
-  //----------------------------------------------------------------------------
   // JD: adding group box for diverse list display settings
   grow = 0;
   QGroupBox* listGroup = new QGroupBox(tr("List Display"), this);
@@ -266,13 +201,6 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   grow++;
   listLayout->setRowStretch(grow, 10);
   listLayout->setColumnStretch(2, 10);
-
-#ifndef ANDROID
-  // Android makes trouble, if word detection is enabled and the input is
-  // changed by us.
-  connect( m_countriesW2000, SIGNAL(textChanged(const QString&)),
-           this, SLOT(slot_filterChanged(const QString&)) );
-#endif
 
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
@@ -349,12 +277,10 @@ void SettingsPagePointData::slot_sourceChanged( int index )
   if( index == 0 )
     {
       m_oaipGroup->setVisible( true );
-      m_weltGroup->setVisible( false );
     }
   else
     {
       m_oaipGroup->setVisible( false );
-      m_weltGroup->setVisible( true );
     }
 }
 
@@ -385,10 +311,11 @@ void SettingsPagePointData::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  m_sourceBox->setCurrentIndex( conf->getAirfieldSource() );
-  slot_sourceChanged( conf->getAirfieldSource() );
+  // int afSource = conf->getAirfieldSource();
+  int afSource = 0;
 
-  m_countriesW2000->setText( conf->getWelt2000CountryFilter() );
+  m_sourceBox->setCurrentIndex( afSource );
+  slot_sourceChanged( afSource );
 
   if( Distance::getUnit() == Distance::meters )
     {
@@ -401,7 +328,6 @@ void SettingsPagePointData::load()
     }
 
   m_homeRadiusOaip->setValue( m_homeRadiusInitValue );
-  m_homeRadiusW2000->setValue( m_homeRadiusInitValue );
 
   if( Altitude::getUnit() == Altitude::meters )
     {
@@ -413,29 +339,15 @@ void SettingsPagePointData::load()
     }
 
   m_minRwyLengthOaip->setValue( m_runwayFilterInitValue );
-  m_minRwyLengthW2000->setValue( m_runwayFilterInitValue );
-
-  if( conf->getWelt2000LoadOutlandings() )
-    {
-      m_loadOutlandings->setCheckState( Qt::Checked );
-    }
-  else
-    {
-      m_loadOutlandings->setCheckState( Qt::Unchecked );
-    }
 
 #ifdef INTERNET
 
   m_countriesOaip4Download->setText( conf->getOpenAipAirfieldCountries() );
-  m_welt2000FileName->setText( conf->getWelt2000FileName() );
 
 #endif
 
   m_afMargin->setValue(conf->getListDisplayAFMargin());
   m_rpMargin->setValue(conf->getListDisplayRPMargin());
-
-  // sets home radius enabled/disabled in dependency to filter string
-  slot_filterChanged(m_countriesW2000->text());
 }
 
 /**
@@ -447,7 +359,6 @@ bool SettingsPagePointData::save()
 
   // Save change states.
   bool openAipChanged  = checkIsOpenAipChanged();
-  bool welt2000Changed = checkIsWelt2000Changed();
 
   conf->setAirfieldSource( m_sourceBox->currentIndex() );
 
@@ -483,60 +394,6 @@ bool SettingsPagePointData::save()
 #endif
 
     }
-  else
-    {
-      Distance dist(0);
-      dist.setValueInCurrentUnit( m_homeRadiusW2000->value() );
-      conf->setAirfieldHomeRadius(dist.getMeters());
-
-      if( Altitude::getUnit() == Altitude::meters )
-        {
-          conf->setAirfieldRunwayLengthFilter(m_minRwyLengthW2000->value());
-        }
-      else
-        {
-          Altitude alt;
-          alt.setFeet(m_minRwyLengthW2000->value());
-          conf->setAirfieldRunwayLengthFilter(alt.getMeters());
-        }
-
-      // We will check, if the country entries of Welt2000 are
-      // correct. If not a warning message is displayed and the
-      // modifications are discarded.
-      QStringList clist = m_countriesW2000->text().split(QRegExp("[, ]"),
-                          QString::SkipEmptyParts);
-
-      if( ! checkCountryList(clist) )
-        {
-          QMessageBox mb( QMessageBox::Warning,
-                          tr( "Please check entries" ),
-                          tr("Every Welt2000 country sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                          QMessageBox::Ok,
-                          this );
-
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
-          mb.exec();
-          return false;
-        }
-
-      conf->setWelt2000CountryFilter(m_countriesW2000->text().trimmed().toUpper());
-
-      if( m_loadOutlandings->checkState() == Qt::Checked )
-        {
-          conf->setWelt2000LoadOutlandings( true );
-        }
-      else
-        {
-          conf->setWelt2000LoadOutlandings( false );
-        }
-    }
 
   conf->setListDisplayAFMargin(m_afMargin->value());
   conf->setListDisplayRPMargin(m_rpMargin->value());
@@ -545,11 +402,6 @@ bool SettingsPagePointData::save()
   if( openAipChanged == true )
     {
       emit reloadOpenAip();
-    }
-
-  if( welt2000Changed == true )
-    {
-      emit reloadWelt2000();
     }
 
   return true;
@@ -576,7 +428,7 @@ void SettingsPagePointData::slot_openLoadDialog()
 void SettingsPagePointData::slot_openHelp()
 {
   // Check, which help is requested.
-  QString file = (m_sourceBox->currentIndex() == 0 ? "cumulus-maps-openAIP.html" : "cumulus-maps-welt2000.html");
+  QString file = "cumulus-maps-openAIP.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
@@ -590,68 +442,12 @@ bool SettingsPagePointData::checkChanges()
       (GeneralConfig::instance()->getAirfieldSource() != m_sourceBox->currentIndex());
 
   changed |= checkIsOpenAipChanged();
-  changed |= checkIsWelt2000Changed();
   changed |= checkIsListDisplayChanged();
 
   return changed;
 }
 
 #ifdef INTERNET
-
-/**
- * Called, if install button of Welt2000 is clicked.
- */
-void SettingsPagePointData::slot_installWelt2000()
-{
-  QString wfn = m_welt2000FileName->text().trimmed();
-
-  if( wfn.isEmpty() )
-    {
-      QMessageBox mb( QMessageBox::Information,
-                      tr( "Welt2000 settings invalid!" ),
-                      tr( "Please add a valid Welt2000 filename!"),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
-      return;
-    }
-
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Download Welt2000?"),
-                  tr( "Active Internet connection is needed!") +
-                  QString("<p>") + tr("Start download now?"),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-
-  if( mb.exec() == QMessageBox::No )
-    {
-      return;
-    }
-
-  emit downloadWelt2000( wfn );
-}
 
 void SettingsPagePointData::slot_downloadOpenAip()
 {
@@ -731,32 +527,6 @@ bool SettingsPagePointData::checkIsOpenAipChanged()
   changed |= (m_homeRadiusInitValue != m_homeRadiusOaip->value());
   changed |= (m_runwayFilterInitValue != m_minRwyLengthOaip->value());
 
-  return changed;
-}
-
-/**
- * Checks, if the configuration of the Welt2000 has been changed
- */
-bool SettingsPagePointData::checkIsWelt2000Changed()
-{
-  bool changed = false;
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  changed |= (conf->getAirfieldSource() == 0 && m_sourceBox->currentIndex() == 1);
-  changed |= (conf->getWelt2000CountryFilter() != m_countriesW2000->text().trimmed().toUpper());
-  changed |= (m_homeRadiusInitValue != m_homeRadiusW2000->value());
-  changed |= (m_runwayFilterInitValue != m_minRwyLengthW2000->value());
-
-  bool currentState = false;
-
-  if( m_loadOutlandings->checkState() == Qt::Checked )
-    {
-      currentState = true;
-    }
-
-  changed |= (conf->getWelt2000LoadOutlandings() != currentState);
-
-  // qDebug( "SettingsPagePointData::checkIsWelt2000Changed(): %d", changed );
   return changed;
 }
 

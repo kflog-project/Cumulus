@@ -1560,29 +1560,6 @@ class GeneralConfig : protected QSettings
     _airfieldSource = newValue;
   };
 
-  /** Gets the welt2000 country filter */
-  QString &getWelt2000CountryFilter()
-    {
-      return _welt2000CountryFilter;
-    };
-  /** Sets the welt2000 country filter */
-  void setWelt2000CountryFilter( const QString newValue )
-  {
-    _welt2000CountryFilter = newValue;
-  };
-
-  /** Gets the welt2000 link name. */
-  QString &getWelt2000Link()
-    {
-      return _welt2000Link;
-    };
-
-  /** Gets the welt2000 file name used on web page. */
-  QString &getWelt2000FileName()
-    {
-      return _welt2000FileName;
-    };
-
   /** gets the airfield home radius */
   float getAirfieldHomeRadius() const
   {
@@ -1603,17 +1580,6 @@ class GeneralConfig : protected QSettings
   void setAirfieldRunwayLengthFilter( const float newValue )
   {
     _airfieldRunwayLengthFilter = newValue;
-  };
-
-  /** gets the welt2000 outlanding load flag */
-  bool getWelt2000LoadOutlandings() const
-  {
-    return _welt2000LoadOutlandings;
-  };
-  /** sets the welt2000 outlanding load flag */
-  void setWelt2000LoadOutlandings(const bool newValue)
-  {
-    _welt2000LoadOutlandings = newValue;
   };
 
   /** Gets the openAIP POI file list to be loaded. */
@@ -2748,18 +2714,6 @@ class GeneralConfig : protected QSettings
       return _flightLogbookFileName;
     };
 
-  /** Gets welt2000 update marker. */
-  int getWelt2000UpdateMarker() const
-  {
-    return _welt2000UpdateMarker;
-  };
-
-  /** Sets welt2000 update marker. */
-  void setWelt2000UpdateMarker( const int newValue )
-  {
-    _welt2000UpdateMarker = newValue;
-  };
-
   /** gets the pre-flight menu close flag */
   bool getClosePreFlightMenu() const
   {
@@ -3148,7 +3102,7 @@ class GeneralConfig : protected QSettings
   // Map install radius for download
   int _mapInstallRadius;
 
-  // Airfield source. 0 = OpenAip, 1 = Welt2000
+  // Airfield source. 0 = OpenAip
   int _airfieldSource;
 
   // airfield home radius in meters
@@ -3156,15 +3110,6 @@ class GeneralConfig : protected QSettings
 
   // Airfield runway length filter. 0 means filter is off.
   float _airfieldRunwayLengthFilter;
-
-  // Welt2000 country filter
-  QString _welt2000CountryFilter;
-  // Welt2000 outlanding load flag
-  bool _welt2000LoadOutlandings;
-  // Welt2000 download link
-  QString _welt2000Link;
-  // Welt2000 filename on web page
-  QString _welt2000FileName;
 
   // Airfield/WP lists page size (entries)
   int _listDisplayPageSize;
@@ -3419,9 +3364,6 @@ class GeneralConfig : protected QSettings
 
   // Heading line draw state
   bool _headingLineDrawState;
-
-  // Welt2000 update marker
-  int _welt2000UpdateMarker;
 
   /** Waypoint drawing scale borders. Addressed by waypoint priority
    *  (Low=0, Normal=1, High=2). It contains the scale borders defined

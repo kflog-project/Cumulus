@@ -402,12 +402,6 @@ void GeneralConfig::load()
   _mapScale          = value("Map Scale", 200).toDouble();
   _mapProjectionType = value("Projection Type", ProjectionBase::Cylindric ).toInt();
 
-  _welt2000CountryFilter    = value("Welt2000CountryFilter", "").toString();
-  _welt2000LoadOutlandings  = value("Welt2000LoadOutlandings", false ).toBool();
-  _welt2000Link             = value("Welt2000Link", "http://www.segelflug.de/vereine/welt2000/download").toString();
-  _welt2000FileName         = value("Welt2000FileName", "WELT2000.TXT").toString();
-  _welt2000UpdateMarker     = value("Welt2000UpdateMarker", 0 ).toInt();
-
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {
       QString name = "TerrainColor_" + QString::number(i);
@@ -858,9 +852,6 @@ void GeneralConfig::save()
   setValue("Center Longitude", _centerLon);
   setValue("Map Scale", _mapScale);
   setValue("Projection Type", _mapProjectionType);
-  setValue("Welt2000CountryFilter", _welt2000CountryFilter);
-  setValue("Welt2000LoadOutlandings", _welt2000LoadOutlandings);
-  setValue("Welt2000UpdateMarker", _welt2000UpdateMarker);
 
   for( int i = 0; i < SIZEOF_TERRAIN_COLORS; i++ )
     {

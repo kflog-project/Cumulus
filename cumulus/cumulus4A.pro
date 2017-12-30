@@ -40,8 +40,8 @@ CONFIG += qt \
           warn_on \
           release
 
-# The next lines shall force a compilation of the date stamp file
-rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o
+# The next lines shall force a compilation of the date stamp file and the QRC files.
+rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o $(OBJECTS_DIR)/qrc_cumulus.*
 
 # We need this variable because the build is done in another directory by QtCreator.
 CUMDIR = ../cumulus4A
@@ -245,7 +245,6 @@ HEADERS = \
     waypoint.h \
     waypointlistview.h \
     waypointlistwidget.h \
-    welt2000.h \
     wgspoint.h \
     whatsthat.h \
     windanalyser.h \
@@ -374,7 +373,6 @@ SOURCES = \
     waypoint.cpp \
     waypointlistview.cpp \
     waypointlistwidget.cpp \
-    welt2000.cpp \
     wgspoint.cpp \
     whatsthat.cpp \
     windanalyser.cpp \

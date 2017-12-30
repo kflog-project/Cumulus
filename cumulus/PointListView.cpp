@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2017 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -144,8 +144,7 @@ void PointListView::slot_Selected()
 }
 
 /** Called to set a new home position. The change of the home position can trigger
- *  a reload of many map data, if Welt2000 has radius option set or option projection
- *  follows home is active.
+ *  a reload of many map data, if option projection follows home is active.
  */
 void PointListView::slot_Home()
 {

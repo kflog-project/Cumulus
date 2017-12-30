@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2016 by Axel Pauli
+ **                   2007-2017 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -276,14 +276,8 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( page, SIGNAL( settingsChanged() ),
                MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
 
-      connect( page,  SIGNAL( reloadWelt2000() ),
-               _globalMapContents, SLOT( slotReloadWelt2000Data() ) );
-
       connect( page,  SIGNAL( reloadOpenAip() ),
                _globalMapContents, SLOT( slotReloadOpenAipPoi() ) );
-
-      connect( page, SIGNAL(downloadWelt2000( const QString& )),
-               _globalMapContents, SLOT(slotDownloadWelt2000( const QString& )) );
 
       connect( page, SIGNAL(downloadOpenAipPois( const QStringList& )),
                _globalMapContents, SLOT(slotDownloadOpenAipPois( const QStringList& )) );

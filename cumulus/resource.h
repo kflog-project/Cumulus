@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2015 by Axel Pauli
+**                   2009-2017 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -77,9 +77,6 @@
 
 // Type definition for compiled airspace files, used by Airspace parsers
 #define FILE_TYPE_AIRSPACE_C  0x61
-
-// Type definition for Welt2000 compiled airfield files.
-#define FILE_TYPE_AIRFIELD_C  0x63
 
 // Type definition for openAIP compiled airfield files.
 #define FILE_TYPE_AIRFIELD_OAIP_C "OpenAIP-Airfields"

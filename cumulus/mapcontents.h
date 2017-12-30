@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2015 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2017 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map files as value lists.
  *
- * \date 2000-2015
+ * \date 2000-2017
  *
- * \version 1.5
+ * \version 1.6
  */
 
 #ifndef MAP_CONTENTS_H
@@ -411,12 +411,6 @@ class MapContents : public QObject
     void slotReloadMapData();
 
     /**
-     * Reloads the Welt2000 data file. Can be called after a configuration
-     * change or a file download.
-     */
-    void slotReloadWelt2000Data();
-
-    /**
      * Reloads the airspace data files. Can be called after a configuration
      * change or a download.
      */
@@ -474,14 +468,6 @@ class MapContents : public QObject
     bool askUserForDownload();
 
     /**
-     * This slot is called to download the Welt2000 file from the internet.
-     *
-     * @param welt2000FileName The Welt2000 filename as written at the web page
-     * without any path prefixes.
-     */
-    void slotDownloadWelt2000( const QString& welt2000FileName );
-
-    /**
      * This slot is called to download openAip POI files from the Internet.
      *
      * @param openAipCountryList The list of countries to be downloaded.
@@ -510,9 +496,6 @@ class MapContents : public QObject
     /** Called, if all map downloads are finished. */
     void slotDownloadMapsFinished( int requests, int errors );
 
-    /** Called, if a welt2000 download is finished. */
-    void slotDownloadWelt2000Finished( int requests, int errors );
-
     /** Called, if all openAIP point downloads are finished. */
     void slotDownloadOpenAipPoisFinished( int requests, int errors );
 
@@ -524,14 +507,6 @@ class MapContents : public QObject
 
 #endif
 
-    /**
-     * This slot is called by the Welt2000 load thread to signal, that the
-     * requested point data have been loaded.
-     */
-    void slotWelt2000LoadFinished( bool ok,
-                                   QList<Airfield>* airfieldListIn,
-                                   QList<Airfield>* gliderfieldListIn,
-                                   QList<Airfield>* outlandingListIn );
   signals:
 
     /**
@@ -580,11 +555,6 @@ class MapContents : public QObject
      * @return "true", when the file has successfully been loaded
      */
     bool readTerrainFile( const int fileSecID, const int fileTypeID );
-
-    /**
-     * Starts a thread, which is loading the requested Welt2000 data.
-     */
-    void loadWelt2000DataViaThread();
 
     /**
      * Starts a thread, which is loading the requested OpenAIP airfield data.
@@ -804,9 +774,6 @@ class MapContents : public QObject
 
     /** Manager to handle downloads of missing map file. */
     DownloadManager *m_downloadMangerMaps;
-
-    /** Manager to handle downloads of missing welt2000.txt file. */
-    DownloadManager *m_downloadMangerWelt2000;
 
     /** Manager to handle downloads of openAIP point data. */
     DownloadManager *m_downloadMangerOpenAipPois;

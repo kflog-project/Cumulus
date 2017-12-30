@@ -104,7 +104,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
 
   QVBoxLayout *allLayout  = new QVBoxLayout(form);
   QGridLayout* gridLayout = new QGridLayout;
-  gridLayout->setSpacing( 20 * Layout::getIntScaledDensity() );
+  gridLayout->setSpacing( 5 * Layout::getIntScaledDensity() );
 
   gridLayout->addWidget( new QLabel(tr("SN:")), 0, 0 );
   serial = new QLabel("???");
@@ -197,7 +197,7 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   hRange->setDecimalVisible( false );
   hRange->setPmVisible( false );
   hRange->setMaxLength(5);
-  hRange->setSuffix(" m");
+  hRange->setSuffix("m");
   hRange->setMinimum( 2000 );
   hRange->setMaximum( 25500 );
   hRange->setTip("2000...25500");

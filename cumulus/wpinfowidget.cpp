@@ -521,8 +521,8 @@ void WPInfoWidget::slot_addAsWaypoint()
 
 /**
  *  This slot is called if the Home button is clicked. The change of the home
- *  position can trigger a reload of many map data, if Welt2000 has radius
- *  option set or option projection follows home is active.
+ *  position can trigger a reload of many map data, if option projection follows
+ *  home is active.
  */
 void WPInfoWidget::slot_setNewHome()
 {
