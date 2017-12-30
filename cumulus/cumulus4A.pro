@@ -86,6 +86,9 @@ QMAKE_EXTRA_TARGETS += rm_build_date \
 # These defines must be set for Android to enable/disable specific code parts
 DEFINES += ANDROID CUMULUS
 
+# Workaround for old g++ arm compiler where std::isnan is not working.
+DEFINES += ISNAN_WO_STD
+
 # Enable Flarm feature, if not wanted comment out the next line with a hash
 CONFIG += flarm
 
@@ -393,10 +396,11 @@ flarm {
                flarmcrc.h \
                flarmdisplay.h \
                flarmlistview.h \
+               flarmlogbook.h \
                flarmradarview.h \
                flarmwidget.h \
                preflightflarmpage.h \
-               flarmlogbook.h
+							 preflightflarmusbpage.h
 
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
@@ -406,11 +410,12 @@ flarm {
                flarmcrc.cpp \
                flarmdisplay.cpp \
                flarmlistview.cpp \
+               flarmlogbook.cpp \
                flarmradarview.cpp \
                flarmwidget.cpp \
                preflightflarmpage.cpp \
-               flarmlogbook.cpp
-
+               preflightflarmusbpage.cpp
+               
     DEFINES += FLARM
 }
 
