@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2017-12-30 AP: Issue #118 fixed. Support removed completely for Welt2000.
+                   The project was finished and provides no data updates in the
+                   future.
+
 [o] 2017-12-27 AP: Issue #117 fixed. Support added for Galileo GPS.
 
 [o] 2017-12-27 AP: Issue #116 fixed. Support added for PowerFlarm.
