@@ -90,7 +90,7 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   QLabel* lbl = new QLabel( tr("Source:") );
   sourceLayout->addWidget( lbl, 0, 0 );
   m_sourceBox = new QComboBox;
-  m_sourceBox->addItem("OpenAIP");
+  m_sourceBox->addItem("OpenAIP  ");
   sourceLayout->addWidget( m_sourceBox, 0, 1 );
 
   QPushButton *cmdHelp = new QPushButton( tr("Help") );

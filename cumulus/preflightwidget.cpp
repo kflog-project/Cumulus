@@ -25,6 +25,7 @@
 #endif
 
 #include "calculator.h"
+#include "gpsnmea.h"
 #include "igclogger.h"
 #include "layout.h"
 #include "mainwindow.h"
@@ -243,6 +244,8 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
     {
       m_headerLabels << ( tr ("FLARM" ) );
     }
+
+  requestFlarmConfig();
 
 #endif
 
@@ -468,3 +471,23 @@ void PreFlightWidget::slotReject()
   // selections in an underlaying list. Problem occurred on Galaxy S3.
   QTimer::singleShot(200, this, SLOT(close()));
 }
+
+#ifdef FLARM
+
+/**
+ * Called to request the Flarm device type from the configuration data.
+ */
+void PreFlightWidget::requestFlarmConfig()
+{
+  if( GpsNmea::gps->getConnected() != true )
+    {
+      // No GPS connection available
+      return;
+    }
+
+  // We do request the Flarm device type.
+  GpsNmea::gps->sendSentence( "$PFLAC,R,DEVTYPE" );
+}
+
+#endif
+

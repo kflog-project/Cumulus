@@ -1,20 +1,18 @@
 /***********************************************************************
-**
-**   preflightwidget.h
-**
-**   This file is part of Cumulus.
-**
-************************************************************************
-**
-**   Copyright (c):  2003      by André Somers
-**                   2008-2014 by Axel Pauli
-**
-**   This file is distributed under the terms of the General Public
-**   License. See the file COPYING for more information.
-**
-**   $Id$
-**
-***********************************************************************/
+ **
+ **   preflightwidget.h
+ **
+ **   This file is part of Cumulus.
+ **
+ ************************************************************************
+ **
+ **   Copyright (c):  2003      by André Somers
+ **                   2008-2017 by Axel Pauli
+ **
+ **   This file is distributed under the terms of the General Public
+ **   License. See the file COPYING for more information.
+ **
+ ***********************************************************************/
 
 /**
  * \class PreFlightWidget
@@ -26,9 +24,9 @@
  * This widget provides an interface to set all the pre-flight settings like
  * glider type, copilot, task, amount of water taken on, etc.
  *
- * \date 2003-2014
+ * \date 2003-2017
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef _PreFlightWidget_h
@@ -43,9 +41,9 @@ class QCheckBox;
 
 class PreFlightWidget : public QWidget
 {
-  Q_OBJECT
+Q_OBJECT
 
- private:
+private:
 
   /**
    * That macro forbids the copy constructor and the assignment operator.
@@ -59,46 +57,61 @@ public:
    *
    * @param parent Pointer to parent widget
    */
-  PreFlightWidget(QWidget *parent);
+  PreFlightWidget (QWidget *parent);
 
   /**
    * Destructor
    */
-  virtual ~PreFlightWidget();
+  virtual
+  ~PreFlightWidget ();
 
 protected:
 
-  void keyReleaseEvent( QKeyEvent* event );
+  void
+  keyReleaseEvent (QKeyEvent* event);
 
- signals:
+signals:
 
   /**
    * This signal is emitted before the widget is closed.
    * MainWindow will use it to update the current view setting.
    */
-  void closeConfig();
+  void
+  closeConfig ();
 
- private slots:
+private slots:
 
   /**
    * Called if dialog is accepted (OK button is clicked)
    */
-  void slotAccept();
+  void
+  slotAccept ();
 
   /**
    * Called if dialog is rejected (X button is clicked)
    */
-  void slotReject();
+  void
+  slotReject ();
 
   /**
    * Called, if an item is pressed in the tree view.
    */
-  void slotPageClicked( QTreeWidgetItem * item, int column );
+  void
+  slotPageClicked (QTreeWidgetItem * item, int column);
 
- private:
+private:
+
+#ifdef FLARM
+
+  /**
+   * Called to request Flarm configuration data.
+   */
+  void requestFlarmConfig();
+
+#endif
 
   QTreeWidget* m_setupTree;
-  QCheckBox*   m_menuCb;
+  QCheckBox* m_menuCb;
 
   /** List with all header labels. */
   QStringList m_headerLabels;

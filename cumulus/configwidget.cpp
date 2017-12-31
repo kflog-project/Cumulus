@@ -116,7 +116,7 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   m_setupTree->setUniformRowHeights(true);
   m_setupTree->setHeaderLabel( tr( "Settings Menu" ) );
 
-  m_headerLabels << ( tr( "Settings Menu" ) );
+  m_headerLabels << ( tr( "  Settings Menu  " ) );
 
   // Set additional space per row
   RowDelegate* rowDelegate = new RowDelegate( m_setupTree, 10 );
