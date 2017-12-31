@@ -2391,7 +2391,7 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../preflightflarmusbpage.cpp" line="222"/>
         <source>Transferring file </source>
-        <translation>Übertrage Datei</translation>
+        <translation>Übertrage Datei </translation>
     </message>
     <message>
         <location filename="../../preflightflarmusbpage.cpp" line="231"/>
