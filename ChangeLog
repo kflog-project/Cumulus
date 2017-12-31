@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2017-12-31 AP: Cumulus 5.31.0 released for Android.
+
 [-] 2017-12-30 AP: Issue #118 fixed. Support removed completely for Welt2000.
                    The project was finished and provides no data updates in the
                    future.
