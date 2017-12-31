@@ -33,8 +33,11 @@ CONFIG = qt \
          debug \
          warn_on
 
-# The next lines shall force a compilation of the date stamp file and the QRC files.
-rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o $(OBJECTS_DIR)/qrc_cumulus.*
+# The next lines shall force a compilation of the date stamp, the qrc and qm files.
+rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o \
+                         $(OBJECTS_DIR)/qrc_cumulus.* \
+                         locale/de/cumulus_de.qm \
+                         locale/de/qt_de.qm
 
 # Note! translations must be built first because the are linked
 # into the cumulus binary

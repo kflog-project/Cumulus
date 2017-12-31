@@ -40,13 +40,16 @@ CONFIG += qt \
           warn_on \
           release
 
-# The next lines shall force a compilation of the date stamp file and the QRC files.
-rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o $(OBJECTS_DIR)/qrc_cumulus.*
-
 # We need this variable because the build is done in another directory by QtCreator.
 CUMDIR = ../cumulus4A
 
 ASSETDIR = /home/axel/git/kflog-project/Cumulus/cumulus/android/assets
+
+# The next lines shall force a compilation of the date stamp file, the qrc and qm files.
+rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o \
+                         $(OBJECTS_DIR)/qrc_cumulus.* \
+                         $$CUMDIR/locale/de/cumulus_de.qm \
+                         $$CUMDIR/locale/de/qt_de.qm
 
 # http://stackoverflow.com/questions/7754218/qmake-how-to-add-and-use-a-variable-into-the-pro-file
 # QMake uses its own syntax for variable references.
