@@ -1608,7 +1608,7 @@
     <message>
         <location filename="../../mainwindow.cpp" line="2585"/>
         <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2017, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2017, Das Cumulus-Team&lt;/html&gt; {1,?} {2002-2017,?}</translation>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2017, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="2589"/>
