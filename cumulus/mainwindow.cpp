@@ -1169,9 +1169,6 @@ void MainWindow::slotFinishStartUp()
         }
     }
 
-  // Call update check
-  QTimer::singleShot(3000, this, SLOT(slotCheck4Updates()));
-
   qDebug( "End startup Cumulus" );
 }
 
