@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2018 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -523,7 +523,9 @@ void GpsClient::readSentenceFromBuffer()
         {
           // Forward sentence to the server, if checksum is ok and
           // processing is desired.
-          if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
+          // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
+          // AP 2018: we forward all sentences now.
+          if( forwardGpsData == true )
             {
               QByteArray ba;
               ba.append( MSG_GPS_DATA );
