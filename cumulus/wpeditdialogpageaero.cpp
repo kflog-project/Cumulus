@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2014 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -53,7 +51,6 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   edtFrequency->setDecimalVisible( true );
   edtFrequency->setPmVisible( false );
   edtFrequency->setMaxLength(7);
-  edtFrequency->setSuffix( tr(" MHz") );
   edtFrequency->setDecimals( 3 );
   edtFrequency->setAlignment( Qt::AlignLeft );
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.[0-9]{1,3})" ), this );
@@ -61,7 +58,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   edtFrequency->setText("0.0");
 
   QFormLayout *qfl = new QFormLayout;
-  qfl->addRow(tr("Frequency:"), edtFrequency);
+  qfl->addRow(tr("Channel:"), edtFrequency);
   qgl->addLayout(qfl, 0, 0);
 
   edtICAO = new QLineEdit;

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2017 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -181,7 +181,8 @@ QString Airfield::getInfoString() const
 
   if (m_frequency > 0)
     {
-      text += "&nbsp;/&nbsp;" + frequencyAsString(m_frequency) + "&nbsp;Mhz.";
+      text += "&nbsp;/&nbsp;" + QObject::tr("Channel") + "&nbsp;" +
+              frequencyAsString(m_frequency) + "&nbsp;.";
     }
 
   text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";

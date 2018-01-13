@@ -504,24 +504,24 @@ bool OpenAip::readRadio( QXmlStreamReader& xml, RadioPoint& rp )
               float fre = xml.readElementText().toFloat( &ok );
 
               if( rp.getTypeID() == BaseMapElement::Ndb )
-		{
-		  // TODO Workaround to handle openAIP NDB frequencies.
-		  // The frequency value is given in KHz and not in MHz.
-		  // That is a bug in openAIP version 1.x
-		  fre /= 1000.0;
-		}
+                {
+                  // TODO Workaround to handle openAIP NDB frequencies.
+                  // The frequency value is given in KHz and not in MHz.
+                  // That is a bug in openAIP version 1.x
+                  fre /= 1000.0;
+                }
 
               if( ok )
-            	{
-            	  rp.setFrequency( fre );
-            	}
+                {
+                  rp.setFrequency( fre );
+                }
               else
-		{
-		  qWarning() << "OpenAip::readRadio():"
-		             << "Line=" << xml.lineNumber()
-			     << "Column=" << xml.columnNumber()
-		             << "Radio frequency" << fre << "is not a floating type!";
-		}
+                {
+                  qWarning() << "OpenAip::readRadio():"
+                             << "Line=" << xml.lineNumber()
+                             << "Column=" << xml.columnNumber()
+                             << "Radio frequency" << fre << "is not a floating type!";
+                }
              }
           else if ( elementName == "CHANNEL" )
             {

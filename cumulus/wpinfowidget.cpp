@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2017 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -405,7 +405,7 @@ void WPInfoWidget::writeText()
 
        if( m_wp.frequency > 0.0 )
          {
-           tmp = QString("<td>" + tr("Frequency:") + "</td><td><b>%1&nbsp;MHz</b></td></tr>").arg(m_wp.frequency, 0, 'f', 3);
+           tmp = QString("<td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td></tr>").arg(m_wp.frequency, 0, 'f', 3);
            itxt += tmp;
          }
        else
