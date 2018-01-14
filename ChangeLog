@@ -19,6 +19,12 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2018-01-14 AP: Cumulus 5.31.1 released for Android.
+
+[-] 2018-01-14 AP: Issue #120 fixed. Runway directions are not displayed.
+
+[-] 2018-01-14 AP: Issue #119 fixed. Consider 8.33 KHz new radio channel distance.
+
 [*] 2017-12-31 AP: Cumulus 5.31.0 released for Android.
 
 [-] 2017-12-30 AP: Issue #118 fixed. Support removed completely for Welt2000.
