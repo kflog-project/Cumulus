@@ -105,14 +105,14 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaBoxLayout->addWidget( nmeaScrollArea );
 
   satSource = new QComboBox;
-  satSource->setEditable( true );
+  //satSource->setEditable( true );
   satSource->addItem( "$GPGSV" );
   satSource->addItem( "$GAGSV" );
   satSource->addItem( "$GLGSV" );
   satSource->addItem( "$GNGSV" );
-  satSource->addItem( "$...." );
-  QLineEdit* qle = satSource->lineEdit();
-  qle->setMaxLength( 6 );
+  //satSource->addItem( "$...." );
+  //QLineEdit* qle = satSource->lineEdit();
+  //qle->setMaxLength( 6 );
 
   startStop = new QPushButton( tr("Stop"), this );
   save      = new QPushButton( tr("Save"), this );
@@ -137,6 +137,9 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   topLayout->addLayout( hBox );
   topLayout->addLayout( nmeaBoxLayout );
 
+  connect( satSource, SIGNAL(currentIndexChanged(int)),
+                      SLOT(slot_GsvSourceChanged(int)) );
+
   connect( GpsNmea::gps, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_Sentence(const QString&)) );
 
@@ -150,6 +153,13 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 GpsStatusDialog::~GpsStatusDialog()
 {
   noOfInstances--;
+}
+
+void GpsStatusDialog::slot_GsvSourceChanged( int /* index */ )
+{
+  // We pass an empty list to clear the display.
+  QList<SIVInfo> siv;
+  slot_SIV( siv );
 }
 
 void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
@@ -535,14 +545,8 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
 
 void GpsElevationAzimuthDisplay::setSatInfo( QList<SIVInfo>& list )
 {
-  static uint counter = 1;
-
-  if( ++counter % 2 )
-    {
-      sats = list;
-      update();
-      // repaint();
-    }
+  sats = list;
+  update();
 }
 
 void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
@@ -692,14 +696,8 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
 
 void GpsSnrDisplay::setSatInfo(QList<SIVInfo>& list)
 {
-  static uint counter = 0;
-
-  if( ++counter % 2 )
-    {
-      sats = list;
-      update();
-      // repaint();
-    }
+  sats = list;
+  update();
 }
 
 void GpsSnrDisplay::drawSat( QPainter *p, int i, int cnt, const SIVInfo& sivi )

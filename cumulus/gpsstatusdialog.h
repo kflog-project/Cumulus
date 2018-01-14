@@ -112,6 +112,11 @@ public slots:
 private slots:
 
   /**
+   * Called, when the index in the combobox was changed.
+   */
+  void slot_GsvSourceChanged( int index );
+
+  /**
    * Called if the start/stop button is pressed to start or stop NMEA display.
    */
   void slot_ToggleStartStop();
