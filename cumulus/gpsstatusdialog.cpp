@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2015 by Axel Pauli
+**                  2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -37,7 +37,8 @@ int GpsStatusDialog::noOfInstances = 0;
 GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   QWidget( parent ),
   showNmeaData( true ),
-  nmeaLines( 0 )
+  nmeaLines( 0 ),
+  cntSIVSentence( 1 )
 {
   noOfInstances++;
 
@@ -103,19 +104,29 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaBoxLayout->setSpacing( 0 );
   nmeaBoxLayout->addWidget( nmeaScrollArea );
 
+  satSource = new QComboBox;
+  satSource->setEditable( true );
+  satSource->addItem( "$GPGSV" );
+  satSource->addItem( "$GAGSV" );
+  satSource->addItem( "$GLGSV" );
+  satSource->addItem( "$GNGSV" );
+  satSource->addItem( "$...." );
+  QLineEdit* qle = satSource->lineEdit();
+  qle->setMaxLength( 6 );
+
   startStop = new QPushButton( tr("Stop"), this );
   save      = new QPushButton( tr("Save"), this );
 
   QPushButton* close = new QPushButton( tr("Close"), this );
 
   QVBoxLayout* buttonBox = new QVBoxLayout;
+  buttonBox->addWidget( satSource );
   buttonBox->addStretch( 5 );
   buttonBox->addWidget( startStop );
-  buttonBox->addSpacing( 10 );
+  buttonBox->addSpacing( 5 );
   buttonBox->addWidget( save );
-  buttonBox->addSpacing( 10 );
+  buttonBox->addSpacing( 5 );
   buttonBox->addWidget( close );
-  buttonBox->addStretch( 5 );
 
   QHBoxLayout* hBox = new QHBoxLayout;
   hBox->addWidget(elevAziDisplay, 1);
@@ -126,15 +137,8 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   topLayout->addLayout( hBox );
   topLayout->addLayout( nmeaBoxLayout );
 
-  QShortcut* keySpace = new QShortcut( QKeySequence(Qt::Key_Space), this);
-
-  connect( keySpace, SIGNAL(activated()),
-           this, SLOT(slot_ToggleWindowSize()));
-
   connect( GpsNmea::gps, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_Sentence(const QString&)) );
-  connect( GpsNmea::gps, SIGNAL(newSatInViewInfo(QList<SIVInfo>&)),
-           this, SLOT(slot_SIV(QList<SIVInfo>&)) );
 
   connect( startStop, SIGNAL(clicked()), this, SLOT(slot_ToggleStartStop()) );
 
@@ -196,7 +200,110 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
           uTimer->start( 750 );
         }
     }
+
+  QString gsv = satSource->currentText();
+
+  if( sentence.startsWith(gsv) )
+    {
+      ExtractSatsInView( sentence );
+    }
 }
+
+/**
+  GPGSV - GPS Satellites in view
+  GLGSV - GLONASS Satellites in view
+
+          1 2 3 4 5 6 7     n
+          | | | | | | |     |
+   $GPGSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+   $GLGSV,x,x,x,x,x,x,x,...*hh<CR><LF>
+
+   Field Number:
+    1) total number of messages
+    2) message number
+    3) satellites in view
+    4) satellite number
+    5) elevation in degrees
+    6) azimuth in degrees to true
+    7) SNR in dB
+    more satellite infos like 4)-7)
+    n) checksum
+
+  Extract Satellites In View (SIV) info from a NMEA sentence.
+*/
+void GpsStatusDialog::ExtractSatsInView(const QString& sentence)
+{
+  QStringList slst = sentence.split( QRegExp("[,*]"), QString::KeepEmptyParts );
+
+  if( slst.size() < 8 )
+    {
+      qWarning() << slst[0] << "contains too less parameters!";
+      return;
+    }
+
+  // The GPGSV sentence can be split into multiple sentences.
+  // qDebug("expecting: %d, found: %s",cntSIVSentence,sentence[2].toLatin1().data());
+  // Check if we were expecting this part of the info.
+  if( cntSIVSentence != slst[2].toUInt() )
+    {
+      return;
+    }
+
+  if( cntSIVSentence == 1 ) //this is the first sentence of our series
+    {
+      sivInfoInternal.clear();
+    }
+
+  // extract info on the individual sats
+  ExtractSatsInView( slst[4], slst[5], slst[6], slst[7] );
+
+  if( slst.count() > 11 )
+    {
+      ExtractSatsInView( slst[8], slst[9], slst[10], slst[11] );
+    }
+
+  if( slst.count() > 15 )
+    {
+      ExtractSatsInView( slst[12], slst[13], slst[14], slst[15] );
+    }
+
+  if( slst.count() > 19 )
+    {
+      ExtractSatsInView( slst[16], slst[17], slst[18], slst[19] );
+    }
+
+  cntSIVSentence++;
+
+  if( cntSIVSentence > slst[1].toUInt() )
+    //this was the last sentence in our series
+    {
+      cntSIVSentence = 1;
+      slot_SIV( sivInfoInternal );
+    }
+}
+
+/** Extract Satellites In View (SIV) info from a NMEA sentence. */
+void GpsStatusDialog::ExtractSatsInView( const QString& id,
+                                         const QString& elev,
+                                         const QString& azimuth,
+                                         const QString& snr )
+{
+  if( id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
+    {
+      // ignore empty data
+      return;
+    }
+
+  SIVInfo sivi;
+  sivi.id = id.toInt();
+  sivi.elevation = elev.toInt();
+  sivi.azimuth = azimuth.toInt();
+  sivi.db = snr.toInt();
+
+  sivInfoInternal.append( sivi );
+  //qDebug("new sivi info (snr: %d", sivi->db);
+}
+
 
 /**
  * Called to update the GPS message display.

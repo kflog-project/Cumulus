@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003 by André Somers
-**                  2008-2014 Axel Pauli
+**                  2008-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
   * satellites tracked, elevation, azimuth, signal strengths and the NMEA
   * data stream. NMEA data stream can be save into a file on user request.
   *
-  * \date 2003-2014
+  * \date 2003-2018
   *
-  * \version $Id$
+  * \version 1.1
   */
 
 #ifndef GPS_STATUS_DIALOG_H
@@ -43,10 +43,14 @@
 #include <QKeyEvent>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QString>
 #include <QStringList>
 #include <QTimer>
 
 #include "gpsnmea.h"
+
+class QComboBox;
+class QTimer;
 
 class GpsElevationAzimuthDisplay;
 class GpsSnrDisplay;
@@ -85,6 +89,14 @@ public:
 
   void keyReleaseEvent( QKeyEvent *event );
 
+private:
+
+  void ExtractSatsInView( const QString& sentence );
+
+  void ExtractSatsInView( const QString& id,
+                          const QString& elev,
+                          const QString& azimuth,
+                          const QString& snr );
 public slots:
 
   /**
@@ -138,24 +150,33 @@ protected:
   QLabel                     *nmeaBox;
   QPushButton                *startStop;
   QPushButton                *save;
+  QComboBox                  *satSource;
 
   /** Display flag for NMEA data. */
-  bool                        showNmeaData;
+  bool showNmeaData;
 
   /** NMEA data string displayed in nmeaBox. */
-  QString                     nmeaData;
+  QString nmeaData;
 
   /** Number of NMEA records in nmeaData string. */
-  int                         nmeaLines;
+  int nmeaLines;
 
   /**
    * List with NMEA entries to be saved.
    * The list is limited to 250 elements.
    */
-  QStringList                 nmeaList;
+  QStringList nmeaList;
+
+  /**
+   * Satellites in view internal structure.
+   */
+  QList<SIVInfo> sivInfoInternal;
+
+  /** SIV sentence counter */
+  uint cntSIVSentence;
 
   /** GPS message display update timer. */
-  QTimer                      *uTimer;
+  QTimer *uTimer;
 
   /** contains the current number of class instances */
   static int noOfInstances;

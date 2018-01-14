@@ -579,7 +579,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       __ExtractConstellation( slst );
       return;
     case 4: // GPGSV or GLGSV
-      __ExtractSatsInView( slst );
+      // __ExtractSatsInView( slst );
       return;
     case 5: // PGRMZ
       __ExtractPgrmz( slst );
@@ -2685,9 +2685,9 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 
 /** Extract Satellites In View (SIV) info from a NMEA sentence. */
 void GpsNmea::__ExtractSatsInView( const QString& id,
-				   const QString& elev,
-				   const QString& azimuth,
-				   const QString& snr)
+                                   const QString& elev,
+                                   const QString& azimuth,
+                                   const QString& snr )
 {
   if( id.isEmpty() || elev.isEmpty() || azimuth.isEmpty() || snr.isEmpty() )
     {
