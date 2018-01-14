@@ -344,10 +344,8 @@ void WPInfoWidget::writeText()
               QString tmp2 = tr("Unknown");
 
               // @AP: show runway in both directions
-              uint rwh1 = rwy.m_heading / 256;
-              uint rwh2 = rwy.m_heading % 256;
-
-              // qDebug("wp.rw=%d rwh1=%d rwh2=%d", rwy.runway, rwh1, rwh2);
+              int rwh1 = rwy.m_heading / 256;
+              int rwh2 = rwy.m_heading % 256;
 
               if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
                 {
