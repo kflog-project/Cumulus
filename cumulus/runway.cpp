@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2014 Axel Pauli
+**   Copyright (c): 2008-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -83,6 +81,11 @@ void Runway::loadTranslations()
   surfaceTranslations.insert( Runway::Asphalt,  QObject::tr( "Asphalt" ) );
   surfaceTranslations.insert( Runway::Concrete, QObject::tr( "Concrete" ) );
   surfaceTranslations.insert( Runway::Sand,     QObject::tr( "Sand" ) );
+  surfaceTranslations.insert( Runway::Water,    QObject::tr( "Water" ) );
+  surfaceTranslations.insert( Runway::Gravel,   QObject::tr( "Gravel" ) );
+  surfaceTranslations.insert( Runway::Ice,      QObject::tr( "Ice" ) );
+  surfaceTranslations.insert( Runway::Snow,     QObject::tr( "Snow" ) );
+  surfaceTranslations.insert( Runway::Soil,     QObject::tr( "Soil" ) );
 
   // load sorted translation strings
   QHashIterator<int, QString> it(surfaceTranslations);

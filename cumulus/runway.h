@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2014 Axel Pauli
+**   Copyright (c): 2008-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -25,7 +23,7 @@
  * This class is used for defining a runway together with its surface and the
  * translation types.
  *
- * \date 2008-2014
+ * \date 2008-2018
  *
  */
 
@@ -44,7 +42,16 @@ public:
   /**
    * Used to define the surface of a runway.
    */
-  enum SurfaceType {Unknown = 0, Grass = 1, Asphalt = 2, Concrete = 3, Sand = 4};
+  enum SurfaceType { Unknown = 0,
+                     Grass = 1,
+                     Asphalt = 2,
+                     Concrete = 3,
+                     Sand = 4,
+                     Water = 5,
+                     Gravel = 6,
+                     Ice = 7,
+                     Snow = 8,
+                     Soil = 9 };
 
   Runway() :
     m_length(0),
