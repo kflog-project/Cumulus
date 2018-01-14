@@ -900,7 +900,7 @@
 <context>
     <name>GpsElevationAzimuthDisplay</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="408"/>
+        <location filename="../../gpsstatusdialog.cpp" line="515"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -916,7 +916,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="575"/>
+        <location filename="../../gpsstatusdialog.cpp" line="682"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -924,50 +924,50 @@
 <context>
     <name>GpsStatusDialog</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="44"/>
+        <location filename="../../gpsstatusdialog.cpp" line="45"/>
         <source>GPS Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="106"/>
-        <location filename="../../gpsstatusdialog.cpp" line="218"/>
+        <location filename="../../gpsstatusdialog.cpp" line="117"/>
+        <location filename="../../gpsstatusdialog.cpp" line="325"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="107"/>
+        <location filename="../../gpsstatusdialog.cpp" line="118"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="109"/>
+        <location filename="../../gpsstatusdialog.cpp" line="120"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="222"/>
+        <location filename="../../gpsstatusdialog.cpp" line="329"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="248"/>
-        <location filename="../../gpsstatusdialog.cpp" line="256"/>
+        <location filename="../../gpsstatusdialog.cpp" line="355"/>
+        <location filename="../../gpsstatusdialog.cpp" line="363"/>
         <source>Append to?</source>
         <translation>Anhängen an?</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="249"/>
-        <location filename="../../gpsstatusdialog.cpp" line="257"/>
+        <location filename="../../gpsstatusdialog.cpp" line="356"/>
+        <location filename="../../gpsstatusdialog.cpp" line="364"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="280"/>
+        <location filename="../../gpsstatusdialog.cpp" line="387"/>
         <source>Save failed</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="281"/>
+        <location filename="../../gpsstatusdialog.cpp" line="388"/>
         <source>Cannot open file!</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -3749,7 +3749,7 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../flighttask.cpp" line="497"/>
-        <location filename="../../runway.cpp" line="81"/>
+        <location filename="../../runway.cpp" line="79"/>
         <location filename="../../taskpoint.cpp" line="513"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
@@ -3838,24 +3838,49 @@ USB Stick eingeschoben?</translation>
         <translation>&lt;Shift&gt; hoch/runter für sinken</translation>
     </message>
     <message>
-        <location filename="../../runway.cpp" line="82"/>
+        <location filename="../../runway.cpp" line="80"/>
         <source>Grass</source>
         <translation>Gras</translation>
     </message>
     <message>
-        <location filename="../../runway.cpp" line="83"/>
+        <location filename="../../runway.cpp" line="81"/>
         <source>Asphalt</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../runway.cpp" line="84"/>
+        <location filename="../../runway.cpp" line="82"/>
         <source>Concrete</source>
         <translation>Beton</translation>
     </message>
     <message>
-        <location filename="../../runway.cpp" line="85"/>
+        <location filename="../../runway.cpp" line="83"/>
         <source>Sand</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../../runway.cpp" line="84"/>
+        <source>Water</source>
+        <translation>Wasser</translation>
+    </message>
+    <message>
+        <location filename="../../runway.cpp" line="85"/>
+        <source>Gravel</source>
+        <translation>Kies</translation>
+    </message>
+    <message>
+        <location filename="../../runway.cpp" line="86"/>
+        <source>Ice</source>
+        <translation>Eis</translation>
+    </message>
+    <message>
+        <location filename="../../runway.cpp" line="87"/>
+        <source>Snow</source>
+        <translation>Schnee</translation>
+    </message>
+    <message>
+        <location filename="../../runway.cpp" line="88"/>
+        <source>Soil</source>
+        <translation>Boden</translation>
     </message>
     <message>
         <location filename="../../gpscon.cpp" line="297"/>
@@ -4003,36 +4028,36 @@ USB Stick eingeschoben?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="250"/>
-        <location filename="../../OpenAip.cpp" line="692"/>
-        <location filename="../../OpenAip.cpp" line="901"/>
-        <location filename="../../OpenAip.cpp" line="1764"/>
+        <location filename="../../OpenAip.cpp" line="264"/>
+        <location filename="../../OpenAip.cpp" line="706"/>
+        <location filename="../../OpenAip.cpp" line="917"/>
+        <location filename="../../OpenAip.cpp" line="1612"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="192"/>
-        <location filename="../../OpenAip.cpp" line="628"/>
-        <location filename="../../OpenAip.cpp" line="841"/>
-        <location filename="../../OpenAip.cpp" line="1697"/>
+        <location filename="../../OpenAip.cpp" line="206"/>
+        <location filename="../../OpenAip.cpp" line="642"/>
+        <location filename="../../OpenAip.cpp" line="855"/>
+        <location filename="../../OpenAip.cpp" line="1545"/>
         <source>File %1 is empty</source>
         <translation>Datei %1 ist leer</translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="1688"/>
+        <location filename="../../OpenAip.cpp" line="1536"/>
         <source>has not suffix .aip!</source>
         <translation>hat nicht Suffix aip!</translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="1714"/>
+        <location filename="../../OpenAip.cpp" line="1562"/>
         <source>Cannot load airspace type mapper for</source>
         <translation>Kann Luftraumtype Mapper nicht laden</translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="199"/>
-        <location filename="../../OpenAip.cpp" line="635"/>
-        <location filename="../../OpenAip.cpp" line="848"/>
-        <location filename="../../OpenAip.cpp" line="1704"/>
+        <location filename="../../OpenAip.cpp" line="213"/>
+        <location filename="../../OpenAip.cpp" line="649"/>
+        <location filename="../../OpenAip.cpp" line="862"/>
+        <location filename="../../OpenAip.cpp" line="1552"/>
         <source>Cannot open file</source>
         <translation>Datei nicht lesbar</translation>
     </message>
@@ -6084,7 +6109,7 @@ Bitte einen Punkt löschen!</translation>
     <message>
         <location filename="../../wpinfowidget.cpp" line="116"/>
         <location filename="../../wpinfowidget.cpp" line="272"/>
-        <location filename="../../wpinfowidget.cpp" line="484"/>
+        <location filename="../../wpinfowidget.cpp" line="482"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -6121,38 +6146,38 @@ Bitte einen Punkt löschen!</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="344"/>
-        <location filename="../../wpinfowidget.cpp" line="366"/>
-        <location filename="../../wpinfowidget.cpp" line="371"/>
+        <location filename="../../wpinfowidget.cpp" line="364"/>
+        <location filename="../../wpinfowidget.cpp" line="369"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="365"/>
+        <location filename="../../wpinfowidget.cpp" line="363"/>
         <source>Runway: </source>
         <translation>Piste:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="367"/>
+        <location filename="../../wpinfowidget.cpp" line="365"/>
         <source>Length: </source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="408"/>
+        <location filename="../../wpinfowidget.cpp" line="406"/>
         <source>Channel:</source>
         <translation>Kanal:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="534"/>
+        <location filename="../../wpinfowidget.cpp" line="532"/>
         <source>&lt;br&gt;Change can take&lt;br&gt;a few seconds and more.</source>
         <translation>&lt;br&gt;Wechsel kann einige Sekunden und mehr dauern.</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="660"/>
+        <location filename="../../wpinfowidget.cpp" line="658"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="661"/>
+        <location filename="../../wpinfowidget.cpp" line="659"/>
         <source>Delete waypoint</source>
         <translation>Lösche Wegpunkt</translation>
     </message>
@@ -6162,43 +6187,43 @@ Bitte einen Punkt löschen!</translation>
         <translation>Punkt Info</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="395"/>
-        <location filename="../../wpinfowidget.cpp" line="401"/>
+        <location filename="../../wpinfowidget.cpp" line="393"/>
+        <location filename="../../wpinfowidget.cpp" line="399"/>
         <source>Elevation:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="426"/>
+        <location filename="../../wpinfowidget.cpp" line="424"/>
         <source>Sunrise:</source>
         <translation>SA:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="429"/>
+        <location filename="../../wpinfowidget.cpp" line="427"/>
         <source>Sunset:</source>
         <translation>SU:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="439"/>
+        <location filename="../../wpinfowidget.cpp" line="437"/>
         <source>Latitude:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="441"/>
+        <location filename="../../wpinfowidget.cpp" line="439"/>
         <source>Longitude:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="451"/>
+        <location filename="../../wpinfowidget.cpp" line="449"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="532"/>
+        <location filename="../../wpinfowidget.cpp" line="530"/>
         <source>Set home site</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="../../wpinfowidget.cpp" line="533"/>
+        <location filename="../../wpinfowidget.cpp" line="531"/>
         <source>Use point&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;as your home site?</source>
         <translation>Benutze Punkt&lt;br&gt;&lt;b&gt;%1&lt;/b&gt;&lt;br&gt;als Heimat?</translation>
     </message>
