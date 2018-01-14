@@ -25,15 +25,16 @@
  *
  * See here for more info: http://www.openaip.net
  *
- * \date 2013-2014
+ * \date 2013-2018
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef OpenAip_h
 #define OpenAip_h
 
 #include <QList>
+#include <QHash>
 #include <QMap>
 #include <QSet>
 #include <QString>
@@ -184,14 +185,9 @@ class OpenAip
   bool readAirfieldRadio( QXmlStreamReader& xml, Airfield& af );
 
   /**
-   * Read runway data from data format 1.0.
+   * Read runway data.
    */
-  bool readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af );
-
-  /**
-   * Read runway data from data format 1.1.
-   */
-  bool readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af );
+  bool readAirfieldRunway( QXmlStreamReader& xml, Airfield& af );
 
   /**
    * Read a complete airspace record.
@@ -239,6 +235,11 @@ class OpenAip
   void loadUserFilterValues();
 
   /**
+   * Fills the mapping hash with the runway surface mapping data.
+   */
+  void fillRunwaySurfaceMapper();
+
+  /**
    * Containing all supported OpenAip data formats.
    */
   QSet<QString> m_supportedDataFormats;
@@ -273,6 +274,12 @@ class OpenAip
    * airspace item.
    */
   QMap<QString, BaseMapElement::objectType> m_airspaceTypeMapper;
+
+  /**
+   * Contains an airspace type mapping between read item and related Cumulus
+   * airspace item.
+   */
+  QHash<QString, Runway::SurfaceType> m_runwaySurfaceMapper;
 
   /** Contains all short names of parsed file. */
   QSet<QString> m_shortNameSet;

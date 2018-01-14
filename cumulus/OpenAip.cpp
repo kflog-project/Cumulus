@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2017 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2018 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,7 +28,7 @@ OpenAip::OpenAip() :
   m_filterRadius(0.0),
   m_filterRunwayLength(0.0)
 {
-  m_supportedDataFormats << "1.0" << "1.1";
+  m_supportedDataFormats << "1.1";
 }
 
 OpenAip::~OpenAip()
@@ -46,6 +46,20 @@ void OpenAip::loadUserFilterValues()
 
   // Get runway length filter in meters.
   m_filterRunwayLength = GeneralConfig::instance()->getAirfieldRunwayLengthFilter();
+}
+
+void OpenAip::fillRunwaySurfaceMapper()
+{
+  m_runwaySurfaceMapper.insert( "UNKN", Runway::Unknown );
+  m_runwaySurfaceMapper.insert( "GRAS", Runway::Grass );
+  m_runwaySurfaceMapper.insert( "ASPH", Runway::Asphalt );
+  m_runwaySurfaceMapper.insert( "CONC", Runway::Concrete );
+  m_runwaySurfaceMapper.insert( "SAND", Runway::Sand );
+  m_runwaySurfaceMapper.insert( "WATE", Runway::Water );
+  m_runwaySurfaceMapper.insert( "GRVL", Runway::Gravel );
+  m_runwaySurfaceMapper.insert( "ICE", Runway::Ice );
+  m_runwaySurfaceMapper.insert( "SNOW", Runway::Snow );
+  m_runwaySurfaceMapper.insert( "SOIL", Runway::Soil );
 }
 
 bool OpenAip::getRootElement( QString fileName,
@@ -852,6 +866,8 @@ bool OpenAip::readAirfields( QString fileName,
 
   m_shortNameSet.clear();
 
+  fillRunwaySurfaceMapper();
+
   QXmlStreamReader xml( &file );
 
   int elementCounter   = 0;
@@ -962,9 +978,9 @@ bool OpenAip::readAirfields( QString fileName,
 
                       if( rwyLenOk == false )
                         {
-                          qDebug() << "OpenAip::readAirfields:"
-                                   << af.getName() << af.getCountry()
-                                   << "runway length" << rwy2short << "to short!";
+                          qWarning() << "OpenAip::readAirfields:"
+                                     << af.getName() << af.getCountry()
+                                     << "runway length" << rwy2short << "to short!";
                           continue;
                         }
                     }
@@ -1129,14 +1145,7 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
             }
           else if ( elementName == "RWY" )
             {
-              if( m_oaipDataFormat == "1.0" )
-                {
-                  readAirfieldRunway10( xml, af );
-                }
-              else if( m_oaipDataFormat == "1.1" )
-                {
-                  readAirfieldRunway11( xml, af );
-                }
+              readAirfieldRunway( xml, af );
             }
         }
     }
@@ -1234,153 +1243,7 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
   return false;
 }
 
-bool OpenAip::readAirfieldRunway10( QXmlStreamReader& xml, Airfield& af )
-{
-  Runway runway;
-
-  while( !xml.atEnd() && ! xml.hasError() )
-    {
-      /* Read the next element from the stream.*/
-      QXmlStreamReader::TokenType token = xml.readNext();
-
-      if( token == QXmlStreamReader::EndElement )
-        {
-          if( xml.name() == "RWY" )
-            {
-              runway.m_isOpen = true;
-
-              // All record data have been read inclusive the end element.
-              af.addRunway( runway );
-              return true;
-            }
-        }
-
-      /* If token is StartElement, we'll see if we can read it.*/
-      if( token == QXmlStreamReader::StartElement )
-        {
-          QString elementName = xml.name().toString();
-
-          if( elementName == "NAME" )
-            {
-              // That element contains the usable runway headings
-              QString name = xml.readElementText();
-
-              if( name.size() == 2 )
-                {
-                  // We have only one runway heading 06
-                  runway.m_heading = (name.toUShort() * 256) + name.toUShort();
-                }
-              else if( name.size() == 5 )
-                {
-                  // WE have two runway headings 06/24
-                  ushort dir1 = name.left(2).toUShort() * 256;
-                  ushort dir2 = name.mid(3, 2).toUShort();
-
-                  runway.m_heading = dir1 + dir2;
-                }
-              else if( name.size() == 7 )
-                {
-                  // WE have two directions beside 06R/24L 06L/24R
-                  ushort dir1 = name.left(2).toUShort() * 256;
-                  ushort dir2 = name.mid(4, 2).toUShort();
-
-                  runway.m_heading = dir1 + dir2;
-                }
-            }
-          else if ( elementName == "BIDIRECTIONAL" )
-            {
-              if( xml.readElementText() == "TRUE" )
-                {
-                  runway.m_isBidirectional = true;
-                }
-              else if( xml.readElementText() == "FALSE" )
-                {
-                  runway.m_isBidirectional = false;
-                }
-            }
-          else if( elementName == "SFC" )
-            {
-              /*
-              <SFC>ASPH</SFC>
-              <SFC>CONC</SFC>
-              <SFC>GRAS</SFC>
-              <SFC>GRVL</SFC>
-              <SFC>UNKN</SFC>
-              */
-              QString sfc = xml.readElementText();
-
-              if( sfc == "ASPH" )
-                {
-                  runway.m_surface = Runway::Asphalt;
-                }
-              else if( sfc == "CONC" )
-                {
-                  runway.m_surface = Runway::Concrete;
-                }
-              else if( sfc == "GRAS" )
-                {
-                  runway.m_surface = Runway::Grass;
-                }
-              else if( sfc == "GRVL" )
-                {
-                  runway.m_surface = Runway::Sand;
-                }
-              else if( sfc == "UNKN" )
-                {
-                  runway.m_surface = Runway::Unknown;
-                }
-              else
-                {
-                  runway.m_surface = Runway::Unknown;
-
-                  if( sfc.size() > 0 )
-                    {
-                      qWarning() << "OpenAip::readAirfieldRunway: unknown runway surface type"
-                                 << sfc;
-                    }
-                }
-            }
-          else if ( elementName == "LENGTH" )
-            {
-              float length = 0.0;
-              QString unit;
-
-              QXmlStreamAttributes attributes = xml.attributes();
-
-              if( attributes.hasAttribute("UNIT") )
-                {
-                  unit = attributes.value("UNIT").toString().toUpper();
-                }
-
-              if( getUnitValueAsFloat( xml.readElementText(), unit, length ) )
-                {
-                  runway.m_length = length;
-                }
-            }
-          else if ( elementName == "WIDTH" )
-            {
-              float width = 0;
-              QString unit;
-
-              QXmlStreamAttributes attributes = xml.attributes();
-
-              if( attributes.hasAttribute("UNIT") )
-                {
-                  unit = attributes.value("UNIT").toString().toUpper();
-                }
-
-              if( getUnitValueAsFloat( xml.readElementText(), unit, width ) )
-                {
-                  runway.m_width = width;
-                }
-            }
-        }
-    }
-
-  return false;
-}
-
-bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
+bool OpenAip::readAirfieldRunway( QXmlStreamReader& xml, Airfield& af )
 {
   Runway runway;
 
@@ -1410,6 +1273,7 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
             {
               // All record data have been read inclusive the end element.
               af.addRunway( runway );
+              // runway.printData();
               return true;
             }
         }
@@ -1465,25 +1329,9 @@ bool OpenAip::readAirfieldRunway11( QXmlStreamReader& xml, Airfield& af )
               */
               QString sfc = xml.readElementText();
 
-              if( sfc == "ASPH" )
+              if( m_runwaySurfaceMapper.contains(sfc) == true )
                 {
-                  runway.m_surface = Runway::Asphalt;
-                }
-              else if( sfc == "CONC" )
-                {
-                  runway.m_surface = Runway::Concrete;
-                }
-              else if( sfc == "GRAS" )
-                {
-                  runway.m_surface = Runway::Grass;
-                }
-              else if( sfc == "GRVL" || sfc == "SAND" )
-                {
-                  runway.m_surface = Runway::Sand;
-                }
-              else if( sfc == "UNKN" )
-                {
-                  runway.m_surface = Runway::Unknown;
+                  runway.m_surface = m_runwaySurfaceMapper.value(sfc);
                 }
               else
                 {
