@@ -107,6 +107,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   satSource = new QComboBox;
   //satSource->setEditable( true );
   satSource->addItem( "$GPGSV" );
+  satSource->addItem( "$BDGSV" );
   satSource->addItem( "$GAGSV" );
   satSource->addItem( "$GLGSV" );
   satSource->addItem( "$GNGSV" );
