@@ -173,10 +173,14 @@ dpkg_prepare:
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
 	@rm -rf $(CUMULUS_DEB)/debian
+	# Python Bug since Ubuntu 16.04, Pipe input not possible
+	@echo "--------------------------------------"
+	@echo "Please answer to question via keyboard"
+	@echo "--------------------------------------"
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
-	echo '\n' | dh_make --packagename cumulus -c gpl3 $(DH_MAKE_OPT)
+	dh_make --packagename cumulus -c gpl3 $(DH_MAKE_OPT)
 	cd $(CUMULUS_DEB)/dpkg/X11/control; \
 	cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
