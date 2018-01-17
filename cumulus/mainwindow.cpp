@@ -2333,7 +2333,7 @@ void MainWindow::setView( const AppView newView )
     case tpView:
 
       // only allow switching to this view if there is anything to see
-      if ( _globalMapContents->getCurrentTask() == 0 )
+      if( _globalMapContents->getCurrentTask() == (FlightTask *) 0 )
         {
           break;
         }
