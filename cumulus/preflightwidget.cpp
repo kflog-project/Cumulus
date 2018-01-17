@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2017 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -195,7 +195,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
   contentLayout->addSpacing( 25 );
   m_menuCb = new QCheckBox( tr("close menu") );
-  m_menuCb->setChecked( GeneralConfig::instance()->getClosePreFlightMenu() == true ? Qt::Checked : Qt::Unchecked );
+  m_menuCb->setChecked( GeneralConfig::instance()->getClosePreFlightMenu() );
   contentLayout->addWidget( m_menuCb, 0, Qt::AlignVCenter|Qt::AlignBottom );
 
   QPushButton *cancel = new QPushButton(this);
