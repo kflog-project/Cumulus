@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2010-2018 Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -53,6 +51,9 @@ HttpClient::HttpClient( QObject *parent, const bool showProgressDialog ) :
 
    connect( m_manager, SIGNAL(authenticationRequired( QNetworkReply *, QAuthenticator * )),
             this, SLOT(slotAuthenticationRequired( QNetworkReply *, QAuthenticator * )) );
+
+   connect( m_manager, SIGNAL(proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * )),
+            this, SLOT(slotProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * )) );
 
 #ifndef QT_NO_OPENSSL
    connect( m_manager, SIGNAL(sslErrors( QNetworkReply *, const QList<QSslError> & )),

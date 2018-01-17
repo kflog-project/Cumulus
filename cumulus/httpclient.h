@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2013 Axel Pauli
+**   Copyright (c): 2010-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * \brief This class is a simple HTTP download client.
  *
- * \date 2010-2013
+ * \date 2010-2018
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef HTTP_CLIENT_H
@@ -110,8 +108,10 @@ class HttpClient : public QObject
   /** User request, to cancel a running download */
   void slotCancelDownload();
 
-  // Slots for Signal emitted by QNetworkAccessManager
+  /* Slot to handle authentication request */
   void slotAuthenticationRequired( QNetworkReply *reply, QAuthenticator *authenticator );
+
+  /* Slot to handle proxy authentication request */
   void slotProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *authenticator );
 
 #ifndef QT_NO_OPENSSL
