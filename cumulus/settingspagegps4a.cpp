@@ -53,18 +53,25 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
 
   topLayout->addWidget(new QLabel(tr("GPS Source:"), this), row, 0);
   GpsSource = new QComboBox(this);
-  topLayout->addWidget(GpsSource, row++, 1);
+  topLayout->addWidget(GpsSource, row, 1);
+
+  QListView* qlv = new QListView();
+  QScrollBar* qsb = qlv->verticalScrollBar();
+  qsb->setFixedWidth(100);
+  GpsSource->setView( qlv );
+
   GpsSource->setEditable(false);
   GpsSource->addItem( tr("$GP GPS (USA)") );
   GpsSource->addItem( tr("$BD Beidou GPS (China)") );
   GpsSource->addItem( tr("$GA Gallileo GPS (Europe)") );
   GpsSource->addItem( tr("$GL Glonass GPS (Russia)") );
   GpsSource->addItem( tr("$GN Combined GPS Systems") );
+  row++;
 
   // Try to make bigger the vertical scrollbar
-  QAbstractItemView *qv = GpsSource->view();
-  QScrollBar *vsb = qv->verticalScrollBar();
-  vsb->setStyleSheet( Layout::getCbSbStyle() );
+  //QAbstractItemView *qv = GpsSource->view();
+  //QScrollBar *vsb = qv->verticalScrollBar();
+  //vsb->setStyleSheet( Layout::getCbSbStyle() );
 
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
@@ -79,7 +86,7 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   topLayout->setRowMinimumHeight( row++, 10);
 
   saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"));
-  topLayout->addWidget( saveNmeaData, row++, 0, Qt::AlignLeft );
+  topLayout->addWidget( saveNmeaData, row++, 0, 1, 2, Qt::AlignLeft );
 
   topLayout->setRowStretch( row, 10 );
 
