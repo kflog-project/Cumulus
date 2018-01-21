@@ -148,30 +148,36 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.clear();
 
   // Load all desired GPS sentence identifiers into the hash table NMEA Talkers
+  // BD = Beidou Sat
   // GP = GPS Sat
   // GA = GALILEO Sat
   // GL = GLONASS Sat
-  // GN = GPS/GLONASS
+  // GN = All GPS systems
+  gpsKeys.insert( "$BDRMC", 0);
   gpsKeys.insert( "$GPRMC", 0);
   gpsKeys.insert( "$GARMC", 0);
   gpsKeys.insert( "$GLRMC", 0);
   gpsKeys.insert( "$GNRMC", 0);
 
+  gpsKeys.insert( "$BDGLL", 1);
   gpsKeys.insert( "$GPGLL", 1);
   gpsKeys.insert( "$GAGLL", 1);
   gpsKeys.insert( "$GLGLL", 1);
   gpsKeys.insert( "$GNGLL", 1);
 
+  gpsKeys.insert( "$BDGGA", 2);
   gpsKeys.insert( "$GPGGA", 2);
   gpsKeys.insert( "$GAGGA", 2);
   gpsKeys.insert( "$GLGGA", 2);
   gpsKeys.insert( "$GNGGA", 2);
 
+  gpsKeys.insert( "$BDGSA", 3);
   gpsKeys.insert( "$GPGSA", 3);
   gpsKeys.insert( "$GAGSA", 3);
   gpsKeys.insert( "$GLGSA", 3);
   gpsKeys.insert( "$GNGSA", 3);
 
+  gpsKeys.insert( "$BDGSV", 4);
   gpsKeys.insert( "$GPGSV", 4);
   gpsKeys.insert( "$GAGSV", 4);
   gpsKeys.insert( "$GLGSV", 4);
@@ -184,6 +190,8 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$LXWP0", 9);
   gpsKeys.insert( "$LXWP2", 10);
   gpsKeys.insert( "$GPDTM", 11);
+
+  gpsKeys.insert( "$GNGNS", 12);
 
 #ifdef FLARM
   gpsKeys.insert( "$PFLAA", 20);
@@ -373,7 +381,12 @@ void GpsNmea::startGpsReceiver()
  */
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
-  // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
+  qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
+
+
+  qDebug() << "GSP-Quelle:" << _gpsSource;
+
+
   if( flarmNmeaOutInitDone == false )
     {
       flarmNmeaOutInitDone = true;
@@ -567,17 +580,33 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
   switch( gpsHash.value( slst[0] ) )
   {
     case 0: // GPRMC
-      __ExtractGprmc( slst );
+      if( slst[0].startsWith(_gpsSource) )
+          {
+            __ExtractGprmc( slst );
+          }
       return;
+
     case 1: // GPGLL
-      __ExtractGpgll( slst );
+      if( slst[0].startsWith(_gpsSource) )
+          {
+            __ExtractGpgll( slst );
+          }
       return;
+
     case 2: // GPGGA
-      __ExtractGpgga( slst );
+      if( slst[0].startsWith(_gpsSource) )
+          {
+            __ExtractGpgga( slst );
+          }
       return;
+
     case 3: // GPGSA
-      __ExtractConstellation( slst );
+      if( slst[0].startsWith(_gpsSource) )
+          {
+            __ExtractConstellation( slst );
+          }
       return;
+
     case 4: // GPGSV or GLGSV
       // __ExtractSatsInView( slst );
       return;
@@ -601,6 +630,13 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     case 11: // $GPDTM
       __ExtractGpdtm( slst );
+      return;
+
+    case 12: // $GNGNS
+      if( slst[0].startsWith(_gpsSource) )
+          {
+            __ExtractGngns( slst );
+          }
       return;
 
 #ifdef FLARM
@@ -682,9 +718,9 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
                                                                12
           1         2 3       4 5        6 7   8   9     10  11 | 13
           |         | |       | |        | |   |   |      |   | | |
-   $--RMC,hhmmss.ss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,ddmmyy,x.x,a,a*hh<CR><LF>
+   $--RMC,hhmmss.sss,A,llll.ll,a,yyyyy.yy,a,x.x,x.x,ddmmyy,x.x,a,a*hh<CR><LF>
 
-   $GPRMC,132217.00,A,5228.19856,N,01408.32249,E,47.100,267.38,300710,,,A*58
+   $GPRMC,132217.000,A,5228.19856,N,01408.32249,E,47.100,267.38,300710,,,A*58
 
    Field Number:
     1) UTC Time
@@ -703,7 +739,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
 */
 void GpsNmea::__ExtractGprmc( const QStringList& slst )
 {
-  if( slst.size() < 10 )
+  if( slst.size() < 14 )
     {
       qWarning() << slst[0] << "contains too less parameters!";
       return;
@@ -716,7 +752,18 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
     { /* Data status A=OK, V=warning */
       fixOK( "RMC" );
 
-      __ExtractTime(slst[1]);
+      static QTime lastUtcTime;
+
+      QTime utcTime = __ExtractTime(slst[1]);
+
+      if( lastUtcTime == utcTime )
+        {
+          // Only every second the RMC sentence is processed.
+          return;
+        }
+
+      lastUtcTime = utcTime;
+
       __ExtractDate(slst[9]);
       __ExtractKnotSpeed(slst[7]);
       __ExtractCoord(slst[3],slst[4],slst[5],slst[6]);
@@ -745,7 +792,7 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
           if( _lastRmcUtc != utc )
             {
               /**
-               * The fix date and time has been changed and that is reported now.
+               * The fix date and time have been changed and that is reported now.
                * We do check the fix time only here in the $GPRMC sentence.
                */
               _lastRmcUtc = utc;
@@ -791,7 +838,7 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpgll( const QStringList& slst )
 {
-  if( slst.size() < 7 )
+  if( slst.size() < 8 )
     {
       qWarning() << slst[0] << "contains too less parameters!";
       return;
@@ -842,7 +889,7 @@ void GpsNmea::__ExtractGpgll( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpgga( const QStringList& slst )
 {
-  if ( slst.size() < 15 )
+  if ( slst.size() < 16 )
     {
       qWarning() << slst[0] << "contains too less parameters!";
       return;
@@ -850,7 +897,7 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
 
   if ( slst[6] != "0" && ! slst[6].isEmpty() )
     {
-      /*a value of 0 means invalid fix and we don't need that one */
+      /* a value of 0 means invalid fix and we don't need that one */
       if( _gprmcSeen == false )
         {
           // Report fix info only, if GPRMC was not received. I saw
@@ -858,9 +905,20 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
           fixOK( "GGA" );
         }
 
-      __ExtractTime(slst[1]);
-      __ExtractCoord(slst[2],slst[3],slst[4],slst[5]);
-      __ExtractAltitude(slst[9],slst[10]);
+      static QTime lastUtcTime;
+
+      QTime utcTime = __ExtractTime(slst[1]);
+
+      if( lastUtcTime == utcTime )
+        {
+          // Only every second the GGA sentence is processed.
+          return;
+        }
+
+      lastUtcTime = utcTime;
+
+      __ExtractCoord(slst[2], slst[3], slst[4], slst[5]);
+      __ExtractAltitude(slst[9], slst[10]);
       __ExtractSatsInView(slst[7]);
     }
   else if( slst[6] == "0" )
@@ -871,6 +929,65 @@ void GpsNmea::__ExtractGpgga( const QStringList& slst )
           // sometimes different reportings. GGA said OK, RMC said NOK.
           fixNOK( "GGA" );
         }
+    }
+}
+
+/**
+       1        2           3 4            5 6  7  8   9    10  11 12 13
+       |        |           | |            | |  |  |   |    |    | |  |
+$GNGNS,124524.0,5227.153706,N,01335.903142,E,AA,15,0.7,37.5,43.0, ,  *54<CR><LF>
+
+   Field Number:
+    1) Universal Time Coordinated (UTC) of position fix, hhmmss format
+    2) Latitude, ddmm.mmmm format (leading zeros will be transmitted)
+    3) Latitude hemisphere, N or S
+    4) Longitude, dddmm.mmmm format (leading zeros will be transmitted)
+    5) Longitude hemisphere, E or W
+    6) Mode indicator per GPS System to be processed
+       N = No fix
+       A = Autonomous mode
+       D = Differential mode
+       P = Precise mode is used to compute position fix
+       R = Real Time Kinematic
+       F = Float RTKE = Estimated (dead reckoning) mode
+       M = Manual input mode
+       S = Simulator mode.
+    7) total number of satellites in use, 00 - 99
+    8) Horizontal Dilution of precision 0.5...99.9
+    9) Antenna Altitude above/below mean-sea-level (geoid)
+   10) Geoidal separation, the difference between the WGS-84 earth
+       ellipsoid and mean-sea-level (geoid), "-" means mean-sea-level
+       below ellipsoid
+   11) Age of differential GPS data, time in seconds since last SC104
+       type 1 or 9 update, null field when DGPS is not used
+   12) Differential reference station ID, 0000-1023
+   13) Checksum
+ */
+void GpsNmea::__ExtractGngns( const QStringList& slst )
+{
+  if( slst.size() < 14 )
+    {
+      qWarning() << slst[0] << "contains too less parameters!";
+      return;
+    }
+
+  if( slst[6].contains( "N") == false )
+    {
+      static QTime lastUtcTime;
+
+      QTime utcTime = __ExtractTime(slst[1]);
+
+      if( lastUtcTime == utcTime )
+        {
+          // Only every second the GNS sentence is processed.
+          return;
+        }
+
+      lastUtcTime = utcTime;
+
+      __ExtractCoord(slst[2], slst[3], slst[4], slst[5]);
+      __ExtractAltitude(slst[9], QString("M"));
+      __ExtractSatsInView(slst[7]);
     }
 }
 
@@ -948,7 +1065,7 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 */
 void GpsNmea::__ExtractPcaid( const QStringList& slst )
 {
-  if ( slst.size() < 5 )
+  if ( slst.size() < 6 )
     {
       qWarning("$PCAID contains too less parameters!");
       return;
@@ -987,7 +1104,7 @@ void GpsNmea::__ExtractPcaid( const QStringList& slst )
 */
 void GpsNmea::__ExtractPgcs( const QStringList& slst )
 {
-  if ( slst.size() < 6 )
+  if ( slst.size() < 7 )
     {
       qWarning("$PGCS contains too less parameters!");
       return;
@@ -1101,7 +1218,7 @@ void GpsNmea::__ExtractPflau( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpdtm( const QStringList& slst )
 {
-  if ( slst.size() < 9 )
+  if ( slst.size() < 10 )
     {
       qWarning("$GPDTM contains too less parameters!");
       return;
@@ -2171,6 +2288,7 @@ void GpsNmea::slot_reset()
   _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
   _reportAltitude = true;
   flarmNmeaOutInitDone = false;
+  _gpsSource = conf->getGpsSource().left(3);
 
 #ifndef ANDROID
 

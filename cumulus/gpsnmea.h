@@ -3,7 +3,7 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2015 by Axel Pauli
+                               2008-2018 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -27,9 +27,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2015
+ * \date 2002-2018
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef GPS_NMEA_H
@@ -609,6 +609,8 @@ class GpsNmea : public QObject
     void __ExtractGpgll( const QStringList& slst );
     /** Extracts GPGGA sentence. */
     void __ExtractGpgga( const QStringList& slst );
+    /** Extracts GNGNS sentence. */
+    void __ExtractGngns( const QStringList& slst );
     /** Extracts PGRMZ sentence. */
     void __ExtractPgrmz( const QStringList& slst );
     /** Extracts PCAID sentence. */
@@ -765,6 +767,8 @@ class GpsNmea : public QObject
     QString _mapDatum;
     /** selected GPS device */
     QString gpsDevice;
+    /** configurated GPS source to be used */
+    QString _gpsSource;
 
 #ifndef ANDROID
     /** The reference to the used serial connection */

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2017 by Axel Pauli
+ **                   2007-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -503,6 +503,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("GPS");
+  _gpsSource          = value( "Source", "$GP" ).toString();
   _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
   _gpsBtDevice        = value( "BT-Device", "" ).toString();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
@@ -942,6 +943,7 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("GPS");
+  setValue( "Source", _gpsSource );
   setValue( "Device", _gpsDevice );
   setValue( "BT-Device", _gpsBtDevice );
   setValue( "Speed", _gpsSpeed );

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright(c): 2002      by Andrè Somers,
-**                 2007-2015 by Axel Pauli
+**                 2007-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -57,11 +57,22 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 
   int row=0;
 
+  topLayout->addWidget(new QLabel(tr("GPS Source:"), this), row, 0);
+  GpsSource = new QComboBox(this);
+  topLayout->addWidget(GpsSource, row++, 1);
+  GpsSource->setEditable(false);
+  GpsSource->addItem( "$GP GPS (USA)" );
+  GpsSource->addItem( "$BD Beidou GPS (China)" );
+  GpsSource->addItem( "$GA Gallileo GPS (Europe)" );
+  GpsSource->addItem( "$GL Glonass GPS (Russia)" );
+  GpsSource->addItem( "$GN Combined GPS Systems" );
+
+  topLayout->setColumnStretch(2, 10);
+
   topLayout->addWidget(new QLabel(tr("GPS Device:"), this), row, 0);
   GpsDev = new QComboBox(this);
   topLayout->addWidget(GpsDev, row++, 1);
   GpsDev->setEditable(true);
-  topLayout->setColumnStretch(2, 10);
 
 #ifdef TOMTOM
   GpsDev->addItem(TOMTOM_DEVICE);
@@ -212,6 +223,12 @@ void SettingsPageGPS::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
+  Qt::MatchFlags flags =
+      static_cast<Qt::MatchFlags>(Qt::MatchStartsWith|Qt::MatchCaseSensitive);
+
+  int index = GpsSource->findText( conf->getGpsSource(), flags );
+
+  GpsSource->setCurrentIndex( index );
   GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
 
   QString rate = QString::number( conf->getGpsSpeed() );
@@ -254,6 +271,7 @@ void SettingsPageGPS::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
+  conf->setGpsSource( GpsSource->currentText() );
   conf->setGpsDevice( GpsDev->currentText() );
   conf->setGpsAltitude( GpsNmea::DeliveredAltitude(GpsAltitude->currentIndex()) );
   conf->setGpsSpeed( GpsSpeed->currentText().toInt() );

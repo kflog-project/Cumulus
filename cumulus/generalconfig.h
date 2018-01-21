@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2016 by Axel Pauli
+**                   2007-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2016
+ * \date 2004-2018
  *
- * \version 1.5
+ * \version 1.7
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -1902,6 +1902,18 @@ class GeneralConfig : protected QSettings
     _gpsBtDevice = newValue;
   };
 
+  /** Gets the Gps Source */
+  QString &getGpsSource()
+  {
+    return _gpsSource;
+  };
+
+  /** Sets the Gps Source */
+  void setGpsSource( const QString newValue )
+  {
+    _gpsSource = newValue;
+  }
+
   /** Gets the Gps Speed */
   int getGpsSpeed() const;
   /** Sets the Gps Speed */
@@ -3221,6 +3233,8 @@ class GeneralConfig : protected QSettings
   // White or black background for info displays
   bool _blackBgInfoDisplay;
 
+  // GPS source
+  QString _gpsSource;
   // Gps device
   QString _gpsDevice;
   // Gps BT device

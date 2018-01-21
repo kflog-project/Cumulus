@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2013 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -23,9 +21,7 @@
  *
  * \brief Configuration settings for the GPS device.
  *
- * \date 2002-2013
- *
- * \version $Id$
+ * \date 2002-2018
  *
  */
 
@@ -92,7 +88,7 @@ class SettingsPageGPS : public QWidget
   /** Called to save the configuration file data.*/
   void save();
 
-
+  QComboBox*   GpsSource;
   QComboBox*   GpsDev;
   QComboBox*   GpsSpeed;
   QComboBox*   GpsAltitude;
