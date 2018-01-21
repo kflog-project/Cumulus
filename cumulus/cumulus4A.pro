@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2017 by Axel Pauli
+#                2012-2018 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -564,6 +564,6 @@ QMAKE_LFLAGS_RPATH =
 
 LIBS += -lstdc++
 
-TRANSLATIONS = locale/de/cumulus_android_de.ts locale/de/qt_de.ts
+TRANSLATIONS = locale/de/cumulus_android_de.ts
 
 CODECFORSRC = UTF-8
