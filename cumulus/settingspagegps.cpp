@@ -61,11 +61,11 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsSource = new QComboBox(this);
   topLayout->addWidget(GpsSource, row++, 1);
   GpsSource->setEditable(false);
-  GpsSource->addItem( "$GP GPS (USA)" );
-  GpsSource->addItem( "$BD Beidou GPS (China)" );
-  GpsSource->addItem( "$GA Gallileo GPS (Europe)" );
-  GpsSource->addItem( "$GL Glonass GPS (Russia)" );
-  GpsSource->addItem( "$GN Combined GPS Systems" );
+  GpsSource->addItem( tr("$GP GPS (USA)") );
+  GpsSource->addItem( tr("$BD Beidou GPS (China)") );
+  GpsSource->addItem( tr("$GA Gallileo GPS (Europe)") );
+  GpsSource->addItem( tr("$GL Glonass GPS (Russia)") );
+  GpsSource->addItem( tr("$GN Combined GPS Systems") );
 
   topLayout->setColumnStretch(2, 10);
 

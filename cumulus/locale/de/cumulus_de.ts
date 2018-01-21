@@ -900,7 +900,7 @@
 <context>
     <name>GpsElevationAzimuthDisplay</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="515"/>
+        <location filename="../../gpsstatusdialog.cpp" line="526"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -908,7 +908,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2608"/>
+        <location filename="../../gpsnmea.cpp" line="2726"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -916,7 +916,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="682"/>
+        <location filename="../../gpsstatusdialog.cpp" line="687"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -929,45 +929,45 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="117"/>
-        <location filename="../../gpsstatusdialog.cpp" line="325"/>
+        <location filename="../../gpsstatusdialog.cpp" line="118"/>
+        <location filename="../../gpsstatusdialog.cpp" line="336"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="118"/>
+        <location filename="../../gpsstatusdialog.cpp" line="119"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="120"/>
+        <location filename="../../gpsstatusdialog.cpp" line="121"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="329"/>
+        <location filename="../../gpsstatusdialog.cpp" line="340"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="355"/>
-        <location filename="../../gpsstatusdialog.cpp" line="363"/>
+        <location filename="../../gpsstatusdialog.cpp" line="366"/>
+        <location filename="../../gpsstatusdialog.cpp" line="374"/>
         <source>Append to?</source>
         <translation>Anhängen an?</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="356"/>
-        <location filename="../../gpsstatusdialog.cpp" line="364"/>
+        <location filename="../../gpsstatusdialog.cpp" line="367"/>
+        <location filename="../../gpsstatusdialog.cpp" line="375"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="387"/>
+        <location filename="../../gpsstatusdialog.cpp" line="398"/>
         <source>Save failed</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="388"/>
+        <location filename="../../gpsstatusdialog.cpp" line="399"/>
         <source>Cannot open file!</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -1025,12 +1025,12 @@
 <context>
     <name>HttpClient</name>
     <message>
-        <location filename="../../httpclient.cpp" line="155"/>
+        <location filename="../../httpclient.cpp" line="156"/>
         <source>HTTP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../httpclient.cpp" line="156"/>
+        <location filename="../../httpclient.cpp" line="157"/>
         <source>Downloading %1</source>
         <translation>Download von %1</translation>
     </message>
@@ -3766,17 +3766,17 @@ USB Stick eingeschoben?</translation>
         <translation>zu stark!</translation>
     </message>
     <message>
-        <location filename="../../httpclient.cpp" line="277"/>
+        <location filename="../../httpclient.cpp" line="278"/>
         <source>HTTP-%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../httpclient.cpp" line="278"/>
+        <location filename="../../httpclient.cpp" line="279"/>
         <source>Download failed with: %1</source>
         <translation>Download Fehler: %1</translation>
     </message>
     <message>
-        <location filename="../../httpclient.cpp" line="322"/>
+        <location filename="../../httpclient.cpp" line="323"/>
         <source>%1 at %2</source>
         <translation>%1 auf %2</translation>
     </message>
@@ -4468,36 +4468,66 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../settingspagegps.cpp" line="60"/>
+        <source>GPS Source:</source>
+        <translation>GPS Quelle:</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps.cpp" line="64"/>
+        <source>$GP GPS (USA)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps.cpp" line="65"/>
+        <source>$BD Beidou GPS (China)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps.cpp" line="66"/>
+        <source>$GA Gallileo GPS (Europe)</source>
+        <translation>$GA Gallileo GPS (Europa)</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps.cpp" line="67"/>
+        <source>$GL Glonass GPS (Russia)</source>
+        <translation>$GL Glonass GPS (Russland)</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps.cpp" line="68"/>
+        <source>$GN Combined GPS Systems</source>
+        <translation>$GN Kombiniertes GPS Systeme</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps.cpp" line="72"/>
         <source>GPS Device:</source>
         <translation>GPS Gerät:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps.cpp" line="96"/>
+        <location filename="../../settingspagegps.cpp" line="107"/>
         <source>Speed (bps):</source>
         <translation>Geschwindigkeit (bps):</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps.cpp" line="113"/>
+        <location filename="../../settingspagegps.cpp" line="124"/>
         <source>Altitude Reference:</source>
         <translation>Höhenreferenz:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps.cpp" line="117"/>
+        <location filename="../../settingspagegps.cpp" line="128"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps.cpp" line="118"/>
+        <location filename="../../settingspagegps.cpp" line="129"/>
         <source>Pressure</source>
         <translation>Druck</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps.cpp" line="123"/>
+        <location filename="../../settingspagegps.cpp" line="134"/>
         <source>Sync Clock</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps.cpp" line="128"/>
+        <location filename="../../settingspagegps.cpp" line="139"/>
         <source>Save NMEA Data</source>
         <translation>Speichere NMEA Daten</translation>
     </message>

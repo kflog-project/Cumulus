@@ -443,6 +443,6 @@ QMAKE_CXXFLAGS += -fno-default-inline \
     
 LIBS += -lstdc++
 
-TRANSLATIONS = locale/de/cumulus_de.ts locale/de/qt4_de.ts
+TRANSLATIONS = locale/de/cumulus_de.ts
 
 CODECFORSRC = UTF-8
