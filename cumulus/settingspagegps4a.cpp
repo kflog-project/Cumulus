@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright(c): 2012-2015 by Axel Pauli
+**   Copyright(c): 2012-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -50,6 +50,21 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   int row = 0;
 
   topLayout->setRowMinimumHeight( row++, 20);
+
+  topLayout->addWidget(new QLabel(tr("GPS Source:"), this), row, 0);
+  GpsSource = new QComboBox(this);
+  topLayout->addWidget(GpsSource, row++, 1);
+  GpsSource->setEditable(false);
+  GpsSource->addItem( tr("$GP GPS (USA)") );
+  GpsSource->addItem( tr("$BD Beidou GPS (China)") );
+  GpsSource->addItem( tr("$GA Gallileo GPS (Europe)") );
+  GpsSource->addItem( tr("$GL Glonass GPS (Russia)") );
+  GpsSource->addItem( tr("$GN Combined GPS Systems") );
+
+  // Try to make bigger the vertical scrollbar
+  QAbstractItemView *qv = GpsSource->view();
+  QScrollBar *vsb = qv->verticalScrollBar();
+  vsb->setStyleSheet( Layout::getCbSbStyle() );
 
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
@@ -118,6 +133,12 @@ void SettingsPageGPS4A::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
+  Qt::MatchFlags flags =
+      static_cast<Qt::MatchFlags>(Qt::MatchStartsWith|Qt::MatchCaseSensitive);
+
+  int index = GpsSource->findText( conf->getGpsSource(), flags );
+
+  GpsSource->setCurrentIndex( index );
   GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
 }
@@ -126,6 +147,7 @@ void SettingsPageGPS4A::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
+  conf->setGpsSource( GpsSource->currentText() );
   conf->setGpsAltitude( GpsNmea::DeliveredAltitude( GpsAltitude->currentIndex()) );
 
   bool oldNmeaLogState = conf->getGpsNmeaLogState();
