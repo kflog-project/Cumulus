@@ -4494,7 +4494,7 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../settingspagegps.cpp" line="68"/>
         <source>$GN Combined GPS Systems</source>
-        <translation>$GN Kombiniertes GPS Systeme</translation>
+        <translation>$GN Kombinierte GPS Systeme</translation>
     </message>
     <message>
         <location filename="../../settingspagegps.cpp" line="72"/>
