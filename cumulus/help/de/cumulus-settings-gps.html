@@ -278,6 +278,20 @@
 	Wir empfehlen, diese Option nur zu Analysezwecken zu benutzen, da sie
 	auch die Leistungsf&auml;higkeit des Prozessors einschr&auml;nken kann.
 
+  <h5>GPS Quelle</h5>
+  
+  Mit der Auswahlbox <i>GPS Quelle</i> wird bestimmt, von welchem System die Standard
+  GPS Datens&auml;tze verarbeitet werden sollen. Die folgende Auswahl ist
+  m&ouml;glich:
+  
+  <ul>
+  <li>$GP GPS (USA)
+  <li>$BD GPS Beidou (China)
+  <li>$GA GPS Gallileo (Europa)
+  <li>$GL GPS Glonass (Russland)
+  <li>$GN kombinierte GPS Systeme
+  </ul>
+  
 	<h5>Verarbeitete GPS Datens&auml;tze</h5>
 
 	Cumulus verarbeitet die folgenden NMEA und propriet&auml;ren
@@ -289,23 +303,23 @@
 			<th>Beschreibung</th>
 		</tr>
 		<tr>
-			<td>$[GA|GL|GN|GP]RMC</td>
+			<td>$[BD|GA|GL|GN|GP]RMC</td>
 			<td>Recommended Minimum Specific GNSS Data</td>
 		</tr>
 		<tr>
-			<td>$[GA|GL|GN|GP]GLL</td>
+			<td>$[BD|GA|GL|GN|GP]GLL</td>
 			<td>Geographische Position - Breite und L&auml;nge</td>
 		</tr>
 		<tr>
-			<td>$[GA|GL|GN|GP]GGA</td>
+			<td>$[BD|GA|GL|GN|GP]GGA</td>
 			<td>Global Positioning System Fixed Data</td>
 		</tr>
 		<tr>
-			<td>$[GA|GL|GN|GP]GSA</td>
+			<td>$[BD|GA|GL|GN|GP]GSA</td>
 			<td>GNSS DOP und aktive Satelliten</td>
 		</tr>
 		<tr>
-			<td>$[GA|GL|GN|GP]GSV</td>
+			<td>$[BD|GA|GL|GN|GP]GSV</td>
 			<td>GNSS Satelliten in Sicht</td>
 		</tr>
 		<tr>
