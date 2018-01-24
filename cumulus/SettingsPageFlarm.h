@@ -31,6 +31,7 @@
 #define SettingsPageFlarm_H
 
 #include <QWidget>
+#include <QList>
 #include <QMap>
 
 class QCheckBox;
@@ -124,6 +125,9 @@ signals:
 
 private:
 
+  /** Loads all Flarm info and configuration items into the items list. */
+  void loadItems2List();
+
   /** Table widget with two columns for alias entries. */
   QTableWidget* list;
 
@@ -142,6 +146,10 @@ private:
    */
   QHash<QString, QString> m_configMap;
 
+  /**
+   * List with all Flarm info and configuration items.
+   */
+  QList<QString> items;
 };
 
 #endif /* SettingsPageFlarm_H */

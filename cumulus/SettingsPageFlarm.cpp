@@ -469,3 +469,22 @@ void SettingsPageFlarm::slot_scrollerBoxToggled( int state )
 
     }
 }
+
+void SettingsPageFlarm::loadItems2List()
+{
+  // Clear all old data in the list
+  items.clear();
+
+  items << "DEVTYPE;RO;ALL"
+        << "SWVER;RO;ALL"
+        << "SWEXP;RO;ALL"
+        << "FLARMVER;RO;ALL"
+        << "BUID;RO;ALL"
+        << "SER;RO;ALL"
+        << "REGION;RO;ALL"
+        << "RADIOID;RO;ALL"
+        << "CAP;RO;ALL"
+        << "OBSTDB;RO;ALL"
+        << "OBSTEXP;RO;ALL"
+        << "IGCSER;RO;ALL";
+}

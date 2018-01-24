@@ -449,32 +449,32 @@ QString Layout::getCbSbStyle()
   const QString ss =
     /* Sets up scrollbar size, border, color */
     "QScrollBar:vertical {"
-	"border: 1px solid grey;"
-	"width: 1em;"
+	    "border: 1px solid grey;"
+	    "width: 1em;"
         /* margin sets up how far the handle can travel. Here over the whole line.*/
-	"margin: 0px 0px 0px 0px;"
+	    "margin: 0px 0px 0px 0px;"
     "}"
 
     /* Sets up the color and height of the handle */
     "QScrollBar::handle:vertical {"
-        "border-radius: 5px;"
-	"background: lightgray;"
-	"min-height: 2em;"
-	"border: 1px solid grey;"
+      "border-radius: 5px;"
+	    "background: lightgray;"
+	    "min-height: 2em;"
+	    "border: 1px solid grey;"
     "}"
 
     /* This removes the bottom button by setting the height to 0px */
     "QScrollBar::add-line:vertical {"
-	"height: 0px;"
-	"subcontrol-position: bottom;"
-	"subcontrol-origin: margin;"
+	    "height: 0px;"
+	    "subcontrol-position: bottom;"
+	    "subcontrol-origin: margin;"
     "}"
 
     /* This removes the top button by setting the height to 0px */
     "QScrollBar::sub-line:vertical {"
-	"height: 0px;"
-	"subcontrol-position: top;"
-	"subcontrol-origin: margin;"
+	    "height: 0px;"
+	    "subcontrol-position: top;"
+	    "subcontrol-origin: margin;"
     "}"
 
     /* Definition not needed due to no buttons are defined.
@@ -499,6 +499,18 @@ QString Layout::getCbSbStyle()
 
 QComboBox* Layout::getComboBox()
 {
+  QString cbStyle = "\
+      QComboBox::drop-down \
+      {\
+          border: 0px;\
+      }\
+\
+      QComboBox::down-arrow {\
+          image: url(Resources/DropDownArrow.png);\
+          width: 14px;\
+          height: 14px;\
+      }";
+
   QComboBox* cb = new QComboBox;
 
   // shows always the vertical scrollbar of a combobox.
