@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010-2015 by Axel Pauli
+**   Copyright (c):  2010-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,9 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2015
+ * \date 2010-2018
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -269,6 +269,12 @@ class Layout
    */
   static int getIntScaledDensity();
 
+  /**
+   * Gets a new Combobox with a bigger icon and vertical scrollbar.
+   *
+   * @return A Combobox object.
+   */
+  static QComboBox* getComboBox();
 };
 
 #endif /* LAYOUT_H_ */

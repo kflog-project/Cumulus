@@ -48,10 +48,10 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   contentLayout->addLayout(topLayout, 10);
 
   int row = 0;
+  topLayout->setRowMinimumHeight( row, 20);
+  row++;
 
-  topLayout->setRowMinimumHeight( row++, 20);
-
-  topLayout->addWidget(new QLabel(tr("GPS Source:"), this), row, 0);
+  topLayout->addWidget(new QLabel(tr("GPS Source:")), row, 0);
   GpsSource = new QComboBox(this);
   topLayout->addWidget(GpsSource, row, 1);
 
@@ -73,21 +73,21 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   //QScrollBar *vsb = qv->verticalScrollBar();
   //vsb->setStyleSheet( Layout::getCbSbStyle() );
 
+  topLayout->addWidget(new QLabel(tr("Altitude Reference:")), row, 0);
+
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
   GpsAltitude = new QComboBox;
   GpsAltitude->setEditable(false);
   GpsAltitude->addItem(tr("GPS"));
   GpsAltitude->addItem(tr("Pressure"));
+  topLayout->addWidget(GpsAltitude, row, 1);
+  row++;
 
-  QFormLayout* fl = new QFormLayout;
-  fl->addRow( tr("Altitude Reference:"), GpsAltitude );
-  topLayout->addLayout( fl, row++, 0, Qt::AlignLeft );
   topLayout->setRowMinimumHeight( row++, 10);
 
   saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"));
   topLayout->addWidget( saveNmeaData, row++, 0, 1, 2, Qt::AlignLeft );
-
   topLayout->setRowStretch( row, 10 );
 
   QPushButton *cancel = new QPushButton(this);

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2017 by Axel Pauli
+**   Copyright (c):  2012-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -495,5 +495,16 @@ QString Layout::getCbSbStyle()
      ;
 
   return ss;
+}
+
+QComboBox* Layout::getComboBox()
+{
+  QComboBox* cb = new QComboBox;
+
+  // shows always the vertical scrollbar of a combobox.
+  QAbstractItemView *qv = cb->view();
+  qv->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+  QScrollBar *vsb = qv->verticalScrollBar();
+  return cb;
 }
 
