@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2017 Axel Pauli
+**   Copyright (c): 2010-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2017
+ * \date 2010-2018
  *
- * \version 1.7
+ * \version 1.8
  */
 
 #ifndef FLARM_BASE_H
@@ -87,7 +87,7 @@ class FlarmBase
    *
    * FLARM status structure. It contains the last data of the PFLAU sentence.
    *
-   * \date 2010
+   * \date 2010-2018
    */
   struct FlarmStatus
   {
@@ -102,6 +102,41 @@ class FlarmBase
     QString RelativeVertical; // can be empty
     QString RelativeDistance; // can be empty
     QString ID;               // can be empty
+
+    FlarmStatus() :
+      valid(false),
+      RX(0),
+      TX(0),
+      Gps(NoFix),
+      Power(0),
+      Alarm(No),
+      AlarmType(0)
+    {};
+
+    void reset()
+    {
+      valid = false;
+      RX = 0;
+      TX = 0;
+      Gps = NoFix;
+      Power = 0;
+      Alarm = No;
+      RelativeBearing.clear();
+      AlarmType = 0;
+      RelativeVertical.clear();
+      RelativeDistance.clear();
+      ID.clear();
+    }
+    /**
+     * This flag handles the validity of the structure data.
+     *
+     * \return state of valid flag. Can be true or false.
+     */
+    bool isValid() const
+    {
+      return valid;
+    }
+
   };
 
   /**
@@ -402,10 +437,26 @@ class FlarmBase
   static void reset()
   {
     m_pflaaHash.clear();
-    m_flarmStatus.valid = false;
+    m_flarmStatus.reset();
     m_flarmData.reset();
     m_flarmError.reset();
   };
+
+  /**
+   * Returns a flag, if a Flarm decive has been seen.
+   */
+  static bool isFlarmAvailable()
+  {
+    return m_flarmStatus.valid;
+  };
+
+  /**
+   * Returns the read Flarm device type.
+   */
+  static QString getDeviceType()
+  {
+    return m_flarmData.devtype;
+  }
 
   static enum ProtocolMode getProtocolMode()
   {

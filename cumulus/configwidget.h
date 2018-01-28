@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2014 by Axel Pauli
+**                   2007-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -25,9 +23,9 @@
  *
  * This is the general configuration widget for Cumulus.
  *
- * \date 2002-2014
+ * \date 2002-2018
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef _ConfigWidget_h

@@ -381,11 +381,7 @@ void GpsNmea::startGpsReceiver()
  */
 void GpsNmea::slot_sentence(const QString& sentenceIn)
 {
-  qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
-
-
-  qDebug() << "GSP-Quelle:" << _gpsSource;
-
+  // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
 
   if( flarmNmeaOutInitDone == false )
     {

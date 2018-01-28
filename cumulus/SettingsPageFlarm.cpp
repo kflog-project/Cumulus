@@ -1,3 +1,4 @@
+
 /***********************************************************************
 **
 **   SettingsPageFlarm.cpp
@@ -26,62 +27,84 @@
 #endif
 
 #include "SettingsPageFlarm.h"
-#include "flarmdisplay.h"
-#include "layout.h"
+#include "flarmbase.h"
 #include "generalconfig.h"
+#include "gpsnmea.h"
+#include "layout.h"
 #include "rowdelegate.h"
-#include "target.h"
 
+// Timeout in ms for waiting for a FLARM response
+#define RESP_TO 5000
 
 /**
  * Constructor
  */
 SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   QWidget( parent ),
-  list(0),
-  m_enableScroller(0)
+  m_table(0)
 {
-  setAttribute( Qt::WA_DeleteOnClose );
+  setObjectName("SettingsPageFlarm");
+  setWindowFlags( Qt::Tool );
+  setWindowModality( Qt::WindowModal );
+  setAttribute(Qt::WA_DeleteOnClose);
+  setWindowTitle( tr("Settings - FLARM") );
+
+  if( parent )
+    {
+      resize( parent->size() );
+    }
 
   QHBoxLayout *topLayout = new QHBoxLayout( this );
   topLayout->setSpacing(5);
 
-  list = new QTableWidget( 0, 4, this );
+  m_table = new QTableWidget( 0, 4, this );
   // list->setSelectionBehavior( QAbstractItemView::SelectRows );
-  list->setSelectionMode( QAbstractItemView::SingleSelection );
-  list->setAlternatingRowColors( true );
-  list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-  list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_table->setSelectionMode( QAbstractItemView::SingleSelection );
+  m_table->setAlternatingRowColors( true );
+  m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
 #ifdef ANDROID
-  QScrollBar* lvsb = list->verticalScrollBar();
+  QScrollBar* lvsb = m_table->verticalScrollBar();
   lvsb->setStyleSheet( Layout::getCbSbStyle() );
 #endif
 
 #ifdef QSCROLLER
-  QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
+  QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
+  QtScroller::grabGesture( m_table->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
-  list->setStyleSheet( style );
-  QHeaderView *vHeader = list->verticalHeader();
+  m_table->setStyleSheet( style );
+  QHeaderView *vHeader = m_table->verticalHeader();
   style = "QHeaderView::section { width: 2em }";
   vHeader->setStyleSheet( style );
 
   // set new row height from configuration
   int afMargin = GeneralConfig::instance()->getListDisplayAFMargin();
-  rowDelegate = new RowDelegate( list, afMargin );
-  list->setItemDelegate( rowDelegate );
+  m_rowDelegate = new RowDelegate( m_table, afMargin );
+  m_table->setItemDelegate( m_rowDelegate );
 
   // hide vertical headers
   // QHeaderView *vHeader = list->verticalHeader();
   // vHeader->setVisible(false);
 
-  QHeaderView* hHeader = list->horizontalHeader();
+  QTableWidgetItem *item = new QTableWidgetItem( tr(" Item ") );
+  m_table->setHorizontalHeaderItem( 0, item );
+
+  item = new QTableWidgetItem( tr(" Value ") );
+  m_table->setHorizontalHeaderItem( 1, item );
+
+  item = new QTableWidgetItem( tr(" CMD ") );
+  m_table->setHorizontalHeaderItem( 2, item );
+
+  item = new QTableWidgetItem( tr(" CMD ") );
+  m_table->setHorizontalHeaderItem( 3, item );
+
+  QHeaderView* hHeader = m_table->horizontalHeader();
   hHeader->setStretchLastSection( true );
 #if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
@@ -92,48 +115,22 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );
 
-  QTableWidgetItem *item = new QTableWidgetItem( tr(" Item ") );
-  list->setHorizontalHeaderItem( 0, item );
-
-  item = new QTableWidgetItem( tr(" Value ") );
-  list->setHorizontalHeaderItem( 1, item );
-
-  item = new QTableWidgetItem( tr(" Get ") );
-  list->setHorizontalHeaderItem( 2, item );
-
-  item = new QTableWidgetItem( tr(" Set ") );
-  list->setHorizontalHeaderItem( 3, item );
-
-  connect( list, SIGNAL(cellChanged( int, int )),
-           this, SLOT(slot_CellChanged( int, int )) );
-
-  connect( list, SIGNAL(cellClicked( int, int )),
+  connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
 
-  connect( list, SIGNAL(itemSelectionChanged()),
-           this, SLOT(slot_ItemSelectionChanged()) );
-
-  topLayout->addWidget( list, 2 );
+  topLayout->addWidget( m_table, 2 );
 
   QGroupBox* buttonBox = new QGroupBox( this );
 
   int buttonSize = Layout::getButtonSize();
   int iconSize   = buttonSize - 5;
 
-  QPushButton *addButton  = new QPushButton;
-  addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
-  addButton->setIconSize(QSize(iconSize, iconSize));
-  // addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  addButton->setMinimumSize(buttonSize, buttonSize);
-  addButton->setMaximumSize(buttonSize, buttonSize);
-
-  deleteButton  = new QPushButton;
-  deleteButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "delete.png" ) ) );
-  deleteButton->setIconSize(QSize(iconSize, iconSize));
-  // deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  deleteButton->setMinimumSize(buttonSize, buttonSize);
-  deleteButton->setMaximumSize(buttonSize, buttonSize);
-  deleteButton->setEnabled(false);
+  m_reloadButton  = new QPushButton;
+  m_reloadButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "resort.png" ) ) );
+  m_reloadButton->setIconSize(QSize(iconSize, iconSize));
+  m_reloadButton->setMinimumSize(buttonSize, buttonSize);
+  m_reloadButton->setMaximumSize(buttonSize, buttonSize);
+  m_reloadButton->setToolTip( tr("Get all data items from Flarm") );
 
 #if defined(QSCROLLER) || defined(QTSCROLLER)
 
@@ -146,32 +143,21 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
 #endif
 
-  QPushButton *okButton = new QPushButton;
-  okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
-  okButton->setIconSize(QSize(iconSize, iconSize));
-  // okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  okButton->setMinimumSize(buttonSize, buttonSize);
-  okButton->setMaximumSize(buttonSize, buttonSize);
-
-  QPushButton *closeButton = new QPushButton;
-  closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  closeButton->setIconSize(QSize(iconSize, iconSize));
+  m_closeButton = new QPushButton;
+  m_closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  m_closeButton->setIconSize(QSize(iconSize, iconSize));
   // closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-  closeButton->setMinimumSize(buttonSize, buttonSize);
-  closeButton->setMaximumSize(buttonSize, buttonSize);
+  m_closeButton->setMinimumSize(buttonSize, buttonSize);
+  m_closeButton->setMaximumSize(buttonSize, buttonSize);
 
-  connect( addButton, SIGNAL(clicked() ), this, SLOT(slot_AddRow()) );
-  connect( deleteButton, SIGNAL(clicked() ), this, SLOT(slot_DeleteRows()) );
-  connect( okButton, SIGNAL(clicked() ), this, SLOT(slot_Ok()) );
-  connect( closeButton, SIGNAL(clicked() ), this, SLOT(slot_Close()) );
+  connect( m_reloadButton, SIGNAL(clicked() ), this, SLOT(slot_getAllFlarmData()) );
+  connect( m_closeButton, SIGNAL(clicked() ), this, SLOT(slot_Close()) );
 
   // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
 
   vbox->setSpacing(0);
-  vbox->addWidget( addButton );
-  vbox->addSpacing(32);
-  vbox->addWidget( deleteButton );
+  vbox->addWidget( m_reloadButton );
   vbox->addStretch(2);
 
 #if defined(QSCROLLER) || defined(QTSCROLLER)
@@ -181,26 +167,23 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
 #endif
 
-  vbox->addWidget( okButton );
   vbox->addSpacing(32);
-  vbox->addWidget( closeButton );
+  vbox->addWidget( m_closeButton );
   buttonBox->setLayout( vbox );
-
   topLayout->addWidget( buttonBox );
 
-  // load alias data into table
-  if( ! aliasHash.isEmpty() )
-    {
-      QMutableHashIterator<QString, QString> it(aliasHash);
+  // Add Flarm signal to our slot to get Flarm configuration data.
+  connect( Flarm::instance(), SIGNAL(flarmPflacSentence( QStringList&)),
+           this, SLOT(slot_PflacSentence( QStringList&)) );
 
-      while( it.hasNext() )
-        {
-          it.next();
-          slot_AddRow( it.key(), it.value() );
-        }
+  // Timer for command time supervision
+  m_timer = new QTimer( this );
+  m_timer->setSingleShot( true );
+  m_timer->setInterval( RESP_TO );
 
-      list->sortByColumn( 1, Qt::AscendingOrder );
-    }
+  connect( m_timer, SIGNAL(timeout()), SLOT(slot_Timeout()));
+
+  loadTableItems();
 }
 
 SettingsPageFlarm::~SettingsPageFlarm()
@@ -210,101 +193,144 @@ SettingsPageFlarm::~SettingsPageFlarm()
 void SettingsPageFlarm::showEvent( QShowEvent *event )
 {
   Q_UNUSED( event )
-
-  list->resizeColumnToContents( 0 );
-  list->resizeRowsToContents();
+  m_table->setFocus();
 }
 
-void SettingsPageFlarm::slot_AddRow( QString col0, QString col1 )
+void SettingsPageFlarm::enableButtons( const bool toggle )
 {
-  list->setRowCount( list->rowCount() + 1 );
+  m_reloadButton->setEnabled( toggle );
+  m_closeButton->setEnabled( toggle );
 
-  int row = list->rowCount() - 1;
+  // Block all signals from the table.
+  m_table->blockSignals( ! toggle );
+}
+
+void SettingsPageFlarm::loadTableItems()
+{
+  // Clear all old data in the list
+  m_items.clear();
+
+  m_items << "DEVTYPE;RO;ALL"
+          << "SWVER;RO;ALL"
+          << "SWEXP;RO;ALL"
+          << "FLARMVER;RO;ALL"
+          << "BUILD;RO;ALL"
+          << "SER;RO;ALL"
+          << "REGION;RO;ALL"
+          << "RADIOID;RO;ALL"
+          << "CAP;RO;ALL"
+          << "OBSTDB;RO;ALL"
+          << "OBSTEXP;RO;ALL"
+          << "IGCSER;RO;ALL"
+          << "ID;RW;ALL"
+          << "NMEAOUT;RW;ALL"
+          << "NMEAOUT1;RW;PF"
+          << "NMEAOUT2;RW;PF"
+          << "BAUD;RW;ALL"
+          << "BAUD1;RW;PF"
+          << "BAUD2;RW;PF"
+          << "ACFT;RW;ALL"
+          << "RANGE;RW;ALL"
+          << "VRANGE;RW;PF"
+          << "PRIV;RW;ALL"
+          << "NOTRACK;RW;ALL"
+          << "THRE;RW;ALL"
+          << "LOGINT;RW;ALL"
+          << "PILOT;RW;ALL"
+          << "COPIL;RW;ALL"
+          << "GLIDERID;RW;ALL"
+          << "GLIDERTYPE;RW;ALL"
+          << "COMPID;RW;ALL"
+          << "COMPCLASS;RW;ALL"
+          << "CFLAGS;RW;ALL"
+          << "UI;RW;ALL"
+          << "AUDIOOUT;RW;PF"
+          << "AUDIOVOLUME;RW;PF"
+          << "CLEARMEM;WO;CF"
+          << "CLEARLOGS;WO;PF"
+          << "CLEAROBST;WO;PF"
+          << "DEF;WO;ALL";
+
+  m_table->clearContents();
+
+  for( int i = 0; i < m_items.size(); i++ )
+    {
+      addRow2List( m_items.at(i) );
+    }
+
+  m_table->setCurrentCell( 0, 0 );
+  m_table->resizeRowsToContents();
+  //m_table->resizeColumnsToContents();
+  m_table->resizeColumnToContents(0);
+  m_table->resizeColumnToContents(2);
+  m_table->resizeColumnToContents(3);
+}
+
+void SettingsPageFlarm::addRow2List( const QString& rowData )
+{
+  if( rowData.isEmpty() )
+    {
+      return;
+    }
+
+  QList<QString> items = rowData.split( ";", QString::KeepEmptyParts );
+
+  if( items.size() != 3 )
+    {
+      return;
+    }
+
+  m_table->setRowCount( m_table->rowCount() + 1 );
+
+  int row = m_table->rowCount() - 1;
 
   QTableWidgetItem* item;
 
-  item = new QTableWidgetItem( col0 );
+  // "DEVTYPE;RO;ALL"
+  // column 0 is set to Flarm's configuration item
+  item = new QTableWidgetItem( items[0] );
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-  list->setItem( row, 0, item );
-  list->setCurrentItem( item );
 
-  item = new QTableWidgetItem( col1 );
+  // Data is set to Flarm's device type
+  item->setData( Qt::UserRole, items[2] );
+  m_table->setItem( row, 0, item );
+  m_table->setCurrentItem( item );
+
+  // column 1 is set to Flarm's configuration item value
+  item = new QTableWidgetItem();
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-  list->setItem( row, 1, item );
 
-  if( ! col0.isEmpty() && col0 == FlarmDisplay::getSelectedObject() )
+  // Data is set to item's accessibility
+  item->setData( Qt::UserRole, items[1] );
+  m_table->setItem( row, 1, item );
+
+  item = new QTableWidgetItem( tr("Get") );
+  item->setTextAlignment( Qt::AlignCenter );
+
+  if( items[1] == "RW" || items[1] == "RO" )
     {
-      // Set this row to be selected because Flarm Id is selected in display.
-      list->setCurrentCell( row, 0,
-                            QItemSelectionModel::Select|QItemSelectionModel::Rows );
+      item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+    }
+  else if( items[1] == "WO" )
+    {
+      item->setFlags( Qt::ItemIsSelectable );
     }
 
-  list->resizeColumnToContents( 0 );
-  list->resizeRowsToContents();
+  m_table->setItem( row, 2, item );
 
-  deleteButton->setEnabled(true);
-}
+  item = new QTableWidgetItem( tr("Set") );
+  item->setTextAlignment( Qt::AlignCenter );
 
-
-void SettingsPageFlarm::slot_Ok()
-{
-  if( list->rowCount() != 0 )
+  if( items[1] == "RW" || items[1] == "WO" )
     {
-      // Check data for consistency. Empty entries are not accepted.
-      for( int i = 0; i < list->rowCount(); i++ )
-        {
-          for( int j = 0; j < 2; j++ )
-            {
-              if( list->item( i, j )->text().trimmed().isEmpty() )
-                {
-                  QMessageBox mb( QMessageBox::Warning,
-                                  tr( "Missing Entry" ),
-                                  tr( "Please fill out all fields!" ),
-                                  QMessageBox::Ok,
-                                  this );
-#ifdef ANDROID
-                  mb.show();
-                  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2,
-                                                   height()/2 - mb.height()/2 ));
-                  mb.move( pos );
-#endif
-                  mb.exec();
-                  return;
-                }
-            }
-        }
+      item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+    }
+  else if( items[1] == "RO" )
+    {
+      item->setFlags( Qt::ItemIsSelectable );
     }
 
-  // Save all to alias hash
-  for( int i = 0; i < list->rowCount(); i++ )
-    {
-      // Alias names are limited to MaxAliasLength characters
-      aliasHash.insert( list->item( i, 0 )->text().trimmed(),
-                        list->item( i, 1 )->text().trimmed().left(MaxAliasLength) );
-    }
-
-  saveAliasData(); // Save data into file
-
-  // Check, if only one row is selected. In this case this item is set as
-  // the selected Flarm identifier. No row selection will reset the current
-  // selected Flarm identifier.
-  QList<QTableWidgetItem *> items = list->selectedItems();
-
-  if( items.size() >= 0 && items.size() <= 2 )
-    {
-      QString selectedObject = "";
-
-      if( items.size() > 0 )
-        {
-          QTableWidgetItem *item = items.at(0);
-          selectedObject = item->text().trimmed();
-        }
-
-      // Report new selection to FlarmListView and FlarmDisplay
-      emit newObjectSelection( selectedObject );
-    }
-
-  slot_Close();
+  m_table->setItem( row, 3, item );
 }
 
 void SettingsPageFlarm::slot_Close()
@@ -316,35 +342,12 @@ void SettingsPageFlarm::slot_Close()
 
 void SettingsPageFlarm::slot_HeaderClicked( int section )
 {
-  list->sortByColumn( section, Qt::AscendingOrder );
-}
-
-void SettingsPageFlarm::slot_CellChanged( int row, int column )
-{
-  QTableWidgetItem* item = list->item ( row, column );
-
-  if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )
-    {
-      // Item can be a Null pointer, if a row has been removed.
-      return;
-    }
-
-  if( column == 0 )
-    {
-      // Converts the Flarm identifier to upper case.
-      item->setText( item->text().trimmed().toUpper() );
-      list->resizeColumnToContents( 0 );
-    }
-  else
-    {
-      // Limits alias name to MaxAliasLength characters.
-      item->setText( item->text().trimmed().left(MaxAliasLength) );
-    }
+  m_table->sortByColumn( section, Qt::AscendingOrder );
 }
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
 {
-  QTableWidgetItem* item = list->item ( row, column );
+  QTableWidgetItem* item = m_table->item( row, column );
 
   if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )
     {
@@ -352,139 +355,325 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       return;
     }
 
+  QString itemDevType = m_table->item( row, 0 )->data(Qt::UserRole).toString();
+  QString itemAccess  = m_table->item( row, 1 )->data(Qt::UserRole).toString();
+
   QString title, label;
 
-  if( column == 0 )
+  if( column == 1 )
     {
-      title = tr("Enter Flarm ID");
-      label = tr("Flarm ID:");
-    }
-  else
-    {
-      title = tr("Enter Alias");
-      label = tr("Alias (15):");
-    }
+      // Look, if Flarm item is read/write. In this case the content of the
+      // cell can be changed.
+      if( itemAccess == "RO" )
+        {
+          // A read only item cannot be edited.
+          return;
+        }
 
-  bool ok;
+      title = tr("Enter Flarm data");
+      label = tr("Flarm data:");
+
+      bool ok;
 
 #ifndef MAEMO5
-  QString text = QInputDialog::getText( this,
-                                        title,
-                                        label,
-                                        QLineEdit::Normal,
-                                        item->text(),
-                                        &ok,
-                                        0,
-                                        Qt::ImhNoPredictiveText );
+    QString text = QInputDialog::getText( this,
+                                          title,
+                                          label,
+                                          QLineEdit::Normal,
+                                          item->text(),
+                                          &ok,
+                                          0,
+                                          Qt::ImhNoPredictiveText );
 #else
-  QString text = QInputDialog::getText( this,
-                                        title,
-                                        label,
-                                        QLineEdit::Normal,
-                                        item->text(),
-                                        &ok,
-                                        0 );
+    QString text = QInputDialog::getText( this,
+                                          title,
+                                          label,
+                                          QLineEdit::Normal,
+                                          item->text(),
+                                          &ok,
+                                          0 );
 #endif
 
-  if( ok )
-    {
-      item->setText( text );
+    if( ok )
+      {
+        item->setText( text );
+      }
+
+      return;
     }
-}
 
-void SettingsPageFlarm::slot_ItemSelectionChanged()
-{
-  bool enabled = false;
-
-  for( int i = 0; i < list->rowCount(); i++ )
+  if( column == 2 )
     {
-      QTableWidgetItem *item0 = list->item( i, 0 );
-      QTableWidgetItem *item1 = list->item( i, 1 );
-
-      if( item0 && item1 )
+      if( itemAccess == "WO" )
         {
-          if( item0->isSelected() && item1->isSelected() )
-            {
-              enabled = true;
-              continue;
-            }
-
-          if( ! item0->isSelected() && ! item1->isSelected() )
-            {
-              continue;
-            }
-
-          enabled = false;
-          break;
+          // A write only item cannot be requested.
+          return;
         }
+
+      // Get was clicked
+      m_table->item( row, 1 )->setText("");
+      QString itemText = m_table->item( row, 0 )->text();
+      QString cmd = "$PFLAC,R," + itemText;
+
+      requestFlarmData( cmd, true );
+      return;
     }
 
-  deleteButton->setEnabled(enabled);
+  if( column == 3 )
+    {
+      if( itemAccess == "RO" )
+        {
+          // A read only item cannot be changed.
+          return;
+        }
+
+      // get Flarm device type
+      QString device = FlarmBase::getDeviceType();
+
+      if( itemDevType != "ALL" &&
+          ((device.startsWith( "PowerFLARM-") == true && itemDevType != "PF") ||
+          (device.startsWith( "PowerFLARM-") == false && itemDevType != "CF")) )
+        {
+          QString text0 = tr("Configuration item is unsupported by your FLARM!");
+          QString text1 = tr("Information");
+          messageBox( QMessageBox::Information, text0, text1 );
+          return;
+        }
+
+      QString itemText  = m_table->item( row, 0 )->text();
+      QString itemValue = m_table->item( row, 1 )->text();
+
+      if( itemValue.isEmpty() )
+        {
+          QString text0 = tr("Configuration item has no value assigned!");
+          QString text1 = tr("Warning");
+
+
+          int button = messageBox( QMessageBox::Warning,
+                                   text0,
+                                   text1,
+                                   QMessageBox::Abort|QMessageBox::Ignore );
+
+          if( button == QMessageBox::Abort )
+            {
+              return;
+            }
+        }
+
+      QString cmd = "$PFLAC,S," + itemText + "," + itemValue;
+
+      requestFlarmData( cmd, true );
+      return;
+    }
 }
 
-
-void SettingsPageFlarm::slot_scrollerBoxToggled( int state )
+void SettingsPageFlarm::slot_getAllFlarmData()
 {
-  if( m_enableScroller == 0 )
+  if( checkFlarmConnection() == false )
     {
       return;
     }
 
-  if( state == Qt::Checked )
+  // get Flarm device type
+  QString device = FlarmBase::getDeviceType();
+
+  for( int i = 0; i < m_table->rowCount(); i++ )
     {
+      m_table->item( i, 1 )->setText("");
 
-#ifdef QSCROLLER
-      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-      QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
+      if( m_table->item( i, 1 )->data(Qt::UserRole).toString() == "WO" )
+        {
+          // A write only item cannot be requested.
+          continue;
+        }
 
-#ifdef QTSCROLLER
-      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-      QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
+      // devType can be: ALL, PF, CF
+      QString devType = m_table->item( i, 0 )->data(Qt::UserRole).toString();
 
-#ifdef ANDROID
-       // Reset scrollbar style sheet to default.
-       QScrollBar* lvsb = list->verticalScrollBar();
-       lvsb->setStyleSheet( "" );
-#endif
+      if( devType != "ALL" )
+        {
+          // We compare the device type with the device configuration item,
+          // to handle incompabilities between the different devices.
+          if( device.startsWith( "PowerFLARM-") == true && devType != "PF" )
+            {
+              // Power Flarm Device but Classic Flam config item
+              continue;
+            }
 
-    }
-  else if( state == Qt::Unchecked)
-    {
+          if( device.startsWith( "PowerFLARM-") == false && devType != "CF" )
+            {
+              // Classic Flarm Device but Power Flam config item
+              continue;
+            }
+        }
 
-#ifdef QSCROLLER
-      QScroller::ungrabGesture( list->viewport() );
- #endif
+      QString itemText = m_table->item( i, 0 )->text();
+      QString cmd = "$PFLAC,R," + itemText;
 
-#ifdef QTSCROLLER
-       QtScroller::ungrabGesture( list->viewport() );
-#endif
+      bool overwriteCursor = ( i == 0 ) ? true : false;
 
-#ifdef ANDROID
-       // Make the vertical scrollbar bigger for Android
-       QScrollBar* lvsb = list->verticalScrollBar();
-       lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
+      requestFlarmData( cmd, overwriteCursor );
     }
 }
 
-void SettingsPageFlarm::loadItems2List()
+void SettingsPageFlarm::requestFlarmData( QString &command, bool overwriteCursor )
 {
-  // Clear all old data in the list
-  items.clear();
+  if( checkFlarmConnection() == false )
+    {
+      return;
+    }
 
-  items << "DEVTYPE;RO;ALL"
-        << "SWVER;RO;ALL"
-        << "SWEXP;RO;ALL"
-        << "FLARMVER;RO;ALL"
-        << "BUID;RO;ALL"
-        << "SER;RO;ALL"
-        << "REGION;RO;ALL"
-        << "RADIOID;RO;ALL"
-        << "CAP;RO;ALL"
-        << "OBSTDB;RO;ALL"
-        << "OBSTEXP;RO;ALL"
-        << "IGCSER;RO;ALL";
+  if( overwriteCursor == true )
+    {
+      QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+    }
+
+  // Disable button pressing.
+  enableButtons( false );
+  m_commands << command;
+  nextFlarmCommand();
+}
+
+void SettingsPageFlarm::nextFlarmCommand()
+{
+   if( m_commands.size() == 0 )
+    {
+      // nothing more to send
+      enableButtons( true );
+      m_timer->stop();
+      QApplication::restoreOverrideCursor();
+      m_table->resizeColumnToContents(0);
+      m_table->resizeColumnToContents(1);
+      return;
+    }
+
+   if( m_timer->isActive() == true )
+     {
+       // There is already running another command.
+       return;
+     }
+
+   QString cmd = m_commands.head();
+
+   QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
+
+   bool res = GpsNmea::gps->sendSentence( ba );
+
+   m_timer->start();
+
+  if( res == false )
+    {
+      QString text0 = tr("Flarm device not reachable!");
+      QString text1 = tr("Error");
+      messageBox( QMessageBox::Warning, text0, text1 );
+      m_commands.clear();
+      nextFlarmCommand();
+      return;
+    }
+}
+
+void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
+{
+  // Can be called also due to request from another side.
+  if( m_commands.size() == 0 )
+    {
+      // No command has been requested by this page. We ignore these sentence.
+      return;
+    }
+
+  // qDebug() << "slot_PflacSentence: executed Command:" << m_commands.head();
+  // qDebug() << "Answer:" << sentence;
+
+  // $PFLAC", "A", "DEVTYPE", "PowerFLARM-Core", "67"
+  //"$PFLAC", "A", "ERROR", "41"
+
+  if( sentence.size() >= 4 && sentence[1] == "A" )
+    {
+      if( sentence[2] == "ERROR" )
+        {
+          m_timer->stop();
+
+          qWarning() << "Command" << m_commands.head() << "returned with ERROR!";
+
+          QString text0 = tr("Command:")
+                          + "\n\n"
+                          + m_commands.head()
+                          + "\n\n"
+                          + tr("rejected by Flarm with error.");
+
+          QString text1 = tr("Error");
+          messageBox( QMessageBox::Warning, text0, text1 );
+        }
+      else
+        {
+          for( int i = 0; i < m_table->rowCount(); i++ )
+            {
+              QTableWidgetItem* it = m_table->item(i, 0);
+
+              if( it->text() == sentence[2] )
+                {
+                  m_table->item( i, 1 )->setText( sentence[3] );
+                  break;
+                }
+            }
+        }
+    }
+
+  QString lastCmd = m_commands.dequeue();
+
+  m_timer->stop();
+  nextFlarmCommand();
+}
+
+void SettingsPageFlarm::slot_Timeout()
+{
+  QString text0 = tr("Flarm device not reachable!");
+  QString text1 = tr("Error");
+  messageBox( QMessageBox::Warning, text0, text1 );
+
+  m_commands.clear();
+  nextFlarmCommand();
+}
+
+bool SettingsPageFlarm::checkFlarmConnection()
+{
+  const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+  QString text0 = tr("Flarm device not reachable!");
+  QString text1 = tr("Error");
+
+  if( status.valid == false || GpsNmea::gps->getConnected() != true )
+    {
+      // Flarm data were not received or GPS connection is off-line.
+      messageBox( QMessageBox::Warning, text0, text1 );
+      return false;
+    }
+
+  return true;
+}
+
+/** Shows a popup message box to the user. */
+int SettingsPageFlarm::messageBox( QMessageBox::Icon icon,
+                                   QString message,
+                                   QString title,
+                                   QMessageBox::StandardButtons buttons )
+{
+  QMessageBox mb( icon,
+                  title,
+                  message,
+                  buttons,
+                  this );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  int ret = mb.exec();
+
+  return ret;
 }

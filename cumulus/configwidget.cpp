@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2017 by Axel Pauli
+ **                   2007-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -40,6 +40,11 @@
 #include "rowdelegate.h"
 
 #include "settingspageairspace.h"
+
+#ifdef FLARM
+#include "SettingsPageFlarm.h"
+#endif
+
 #include "settingspageglider.h"
 #include "settingspageinformation.h"
 #include "settingspagelines.h"
@@ -61,6 +66,9 @@
 // Menu labels
 #define POINT_DATA      "Point Data"
 #define AIRSPACES       "Airspaces"
+#ifdef FLARM
+#define FLARML          "FLARM"
+#endif
 #define GLIDERS         "Gliders"
 #define GPS             "GPS"
 #define INFORMATION     "Information"
@@ -89,6 +97,9 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
 
   m_headerLabels  << tr("Point Data")
                   << tr("Airspaces")
+#ifdef FLARM
+                  << tr("FLARM")
+#endif
                   << tr("Gliders")
                   << tr("GPS")
                   << tr("Information")
@@ -211,6 +222,13 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   item->setText( 0, tr(LOOK_FEEL) );
   item->setData( 0, Qt::UserRole, LOOK_FEEL );
   m_setupTree->addTopLevelItem( item );
+
+#ifdef FLARM
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(FLARML) );
+  item->setData( 0, Qt::UserRole, FLARML );
+  m_setupTree->addTopLevelItem( item );
+#endif
 
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
 
@@ -443,6 +461,17 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       page->show();
       return;
     }
+
+#ifdef FLARM
+  if( itemText == FLARML )
+    {
+      SettingsPageFlarm* page = new SettingsPageFlarm( this );
+
+      page->show();
+      return;
+    }
+#endif
+
 }
 
 void ConfigWidget::slotNewHomePosition()

@@ -22,9 +22,9 @@
  *
  * This class parses Flarm sentences and provides the results to the caller.
  *
- * \date 2010-2017
+ * \date 2010-2018
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef FLARM_H
@@ -231,6 +231,11 @@ class Flarm : public QObject, public FlarmBase
    * This signal is emitted, if a new/updated progress info is available.
    */
   void flarmProgressInfo( QStringList& info );
+
+  /**
+   * This signal is emitted, if a new PFLAC sentence is available.
+   */
+  void flarmPflacSentence( QStringList& list );
 
   private slots:
 

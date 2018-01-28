@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2017 Axel Pauli
+**   Copyright (c): 2010-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -360,6 +360,9 @@ bool Flarm::extractPflac(QStringList& list)
         qWarning("$PFLAC contains too less parameters!");
         return false;
       }
+
+  // Inform interested others about PFLAC info from Flarm.
+  emit flarmPflacSentence( list );
 
   if( list[1] != "A" )
     {

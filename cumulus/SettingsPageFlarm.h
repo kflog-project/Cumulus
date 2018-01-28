@@ -32,14 +32,16 @@
 
 #include <QWidget>
 #include <QList>
-#include <QMap>
+#include <QMessageBox>
+#include <QQueue>
 
-class QCheckBox;
-class QMutex;
 class QPushButton;
 class QString;
 class QTableWidget;
 class RowDelegate;
+class QTimer;
+
+#include "flarm.h"
 
 class SettingsPageFlarm : public QWidget
 {
@@ -61,40 +63,17 @@ public:
    */
   virtual ~SettingsPageFlarm();
 
-  /**
-   * @return the aliasHash to the caller.
-   */
-  static QHash<QString, QString>& getConfigMap()
-  {
-    return aliasHash;
-  };
-
-  /** Loads the Flarm alias data from the related file into the alias hash. */
-  static bool loadAliasData();
-
-  /** Saves the Flarm alias data from the alias hash into the related file. */
-  static bool saveAliasData();
-
 protected:
 
   void showEvent( QShowEvent *event );
 
 private slots:
 
-  /** Adds a new row with two columns to the table. */
-  void slot_AddRow( QString col0="", QString col1="" );
-
-  /** Removes all selected rows from the table. */
-  void slot_DeleteRows();
-
-  /** Ok button press is handled here. */
-  void slot_Ok();
+  /** Loads all Flarm data into the table. */
+  void slot_getAllFlarmData();
 
   /** Close button press is handled here. */
   void slot_Close();
-
-  /** Cell content change is handled here. */
-  void slot_CellChanged( int row, int column );
 
   /** Called, when a cell is clicked to open an extra editor. */
   void slot_CellClicked ( int row, int column );
@@ -105,13 +84,15 @@ private slots:
    */
   void slot_HeaderClicked( int section );
 
-  /** Called, if the item selection is changed. */
-  void slot_ItemSelectionChanged();
+  /**
+   * Called, if the supervision request timer has expired.
+   */
+  void slot_Timeout();
 
   /**
-   * Called is the checkbox is toggled.
+   * This slot is called, if a new PFLAC sentence is available.
    */
-  void slot_scrollerBoxToggled( int state );
+  void slot_PflacSentence( QStringList& sentence );
 
 signals:
 
@@ -126,30 +107,53 @@ signals:
 private:
 
   /** Loads all Flarm info and configuration items into the items list. */
-  void loadItems2List();
+  void loadTableItems();
 
-  /** Table widget with two columns for alias entries. */
-  QTableWidget* list;
+  /** Adds a new row with four columns to the table. */
+  void addRow2List( const QString& rowData );
 
-  /** Adds additional space in the list. */
-  RowDelegate* rowDelegate;
+  /** Sends the command to the connected Flarm device. */
+  void requestFlarmData( QString &command, bool overwriteCursor );
 
-  /** Delete button. */
-  QPushButton *deleteButton;
+  /** Sends the next command to Flarm from the command queue. */
+  void nextFlarmCommand();
 
-  /** A checkbox to toggle scroller against a big scrollbar. */
-  QCheckBox* m_enableScroller;
+  /** Shows a popup message box to the user. */
+  int messageBox( QMessageBox::Icon icon,
+                  QString message,
+                  QString title="",
+                  QMessageBox::StandardButtons buttons = QMessageBox::Ok );
+
+  /** Toggles operation of buttons. */
+  void enableButtons( const bool toggle );
 
   /**
-   * Flarm configuration map. The key is the Flarm configuration item and the
-   * value the assigned property (rw, ro).
+   * Checks the Flarm connection and returns the check state. True in case of
+   * success otherwise false.
    */
-  QHash<QString, QString> m_configMap;
+  bool checkFlarmConnection();
+
+  /** Table widget with two columns for alias entries. */
+  QTableWidget* m_table;
+
+  QPushButton* m_reloadButton;
+  QPushButton* m_closeButton;
+
+  /** Adds additional space in the list. */
+  RowDelegate* m_rowDelegate;
 
   /**
    * List with all Flarm info and configuration items.
    */
-  QList<QString> items;
+  QList<QString> m_items;
+
+  /**
+   * Queue with the Flarm commands.
+   */
+  QQueue<QString> m_commands;
+
+  /** Supervision timer for the requests sent to the Flarm device. */
+  QTimer* m_timer;
 };
 
 #endif /* SettingsPageFlarm_H */

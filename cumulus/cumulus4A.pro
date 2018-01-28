@@ -401,7 +401,8 @@ flarm {
                flarmradarview.h \
                flarmwidget.h \
                preflightflarmpage.h \
-							 preflightflarmusbpage.h
+							 preflightflarmusbpage.h \
+               SettingsPageFlarm.h
 
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
@@ -415,7 +416,8 @@ flarm {
                flarmradarview.cpp \
                flarmwidget.cpp \
                preflightflarmpage.cpp \
-               preflightflarmusbpage.cpp
+               preflightflarmusbpage.cpp \
+               SettingsPageFlarm.cpp
                
     DEFINES += FLARM
 }
