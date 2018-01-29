@@ -136,7 +136,7 @@ private:
   /** Table widget with two columns for alias entries. */
   QTableWidget* m_table;
 
-  QPushButton* m_reloadButton;
+  QPushButton* m_loadButton;
   QPushButton* m_closeButton;
 
   /** Adds additional space in the list. */

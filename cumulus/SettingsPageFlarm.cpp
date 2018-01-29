@@ -92,16 +92,18 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   // QHeaderView *vHeader = list->verticalHeader();
   // vHeader->setVisible(false);
 
-  QTableWidgetItem *item = new QTableWidgetItem( tr(" Item ") );
+  QTableWidgetItem *item;
+
+  item = new QTableWidgetItem( tr("CMD") );
   m_table->setHorizontalHeaderItem( 0, item );
 
-  item = new QTableWidgetItem( tr(" Value ") );
+  item = new QTableWidgetItem( tr("CMD") );
   m_table->setHorizontalHeaderItem( 1, item );
 
-  item = new QTableWidgetItem( tr(" CMD ") );
+  item = new QTableWidgetItem( tr(" Item ") );
   m_table->setHorizontalHeaderItem( 2, item );
 
-  item = new QTableWidgetItem( tr(" CMD ") );
+  item = new QTableWidgetItem( tr(" Value ") );
   m_table->setHorizontalHeaderItem( 3, item );
 
   QHeaderView* hHeader = m_table->horizontalHeader();
@@ -125,12 +127,12 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   int buttonSize = Layout::getButtonSize();
   int iconSize   = buttonSize - 5;
 
-  m_reloadButton  = new QPushButton;
-  m_reloadButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "resort.png" ) ) );
-  m_reloadButton->setIconSize(QSize(iconSize, iconSize));
-  m_reloadButton->setMinimumSize(buttonSize, buttonSize);
-  m_reloadButton->setMaximumSize(buttonSize, buttonSize);
-  m_reloadButton->setToolTip( tr("Get all data items from Flarm") );
+  m_loadButton  = new QPushButton;
+  m_loadButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "resort.png" ) ) );
+  m_loadButton->setIconSize(QSize(iconSize, iconSize));
+  m_loadButton->setMinimumSize(buttonSize, buttonSize);
+  m_loadButton->setMaximumSize(buttonSize, buttonSize);
+  m_loadButton->setToolTip( tr("Get all data items from FLARM.") );
 
 #if defined(QSCROLLER) || defined(QTSCROLLER)
 
@@ -146,18 +148,17 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_closeButton = new QPushButton;
   m_closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   m_closeButton->setIconSize(QSize(iconSize, iconSize));
-  // closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
   m_closeButton->setMinimumSize(buttonSize, buttonSize);
   m_closeButton->setMaximumSize(buttonSize, buttonSize);
 
-  connect( m_reloadButton, SIGNAL(clicked() ), this, SLOT(slot_getAllFlarmData()) );
+  connect( m_loadButton, SIGNAL(clicked() ), this, SLOT(slot_getAllFlarmData()) );
   connect( m_closeButton, SIGNAL(clicked() ), this, SLOT(slot_Close()) );
 
   // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
 
   vbox->setSpacing(0);
-  vbox->addWidget( m_reloadButton );
+  vbox->addWidget( m_loadButton );
   vbox->addStretch(2);
 
 #if defined(QSCROLLER) || defined(QTSCROLLER)
@@ -182,7 +183,6 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_timer->setInterval( RESP_TO );
 
   connect( m_timer, SIGNAL(timeout()), SLOT(slot_Timeout()));
-
   loadTableItems();
 }
 
@@ -198,7 +198,7 @@ void SettingsPageFlarm::showEvent( QShowEvent *event )
 
 void SettingsPageFlarm::enableButtons( const bool toggle )
 {
-  m_reloadButton->setEnabled( toggle );
+  m_loadButton->setEnabled( toggle );
   m_closeButton->setEnabled( toggle );
 
   // Block all signals from the table.
@@ -258,12 +258,12 @@ void SettingsPageFlarm::loadTableItems()
       addRow2List( m_items.at(i) );
     }
 
-  m_table->setCurrentCell( 0, 0 );
+  m_table->setCurrentCell( 0, 2 );
   m_table->resizeRowsToContents();
-  //m_table->resizeColumnsToContents();
-  m_table->resizeColumnToContents(0);
-  m_table->resizeColumnToContents(2);
-  m_table->resizeColumnToContents(3);
+  m_table->resizeColumnsToContents();
+  // m_table->resizeColumnToContents(0);
+  // m_table->resizeColumnToContents(2);
+  // m_table->resizeColumnToContents(3);
 }
 
 void SettingsPageFlarm::addRow2List( const QString& rowData )
@@ -286,24 +286,7 @@ void SettingsPageFlarm::addRow2List( const QString& rowData )
 
   QTableWidgetItem* item;
 
-  // "DEVTYPE;RO;ALL"
-  // column 0 is set to Flarm's configuration item
-  item = new QTableWidgetItem( items[0] );
-  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-
-  // Data is set to Flarm's device type
-  item->setData( Qt::UserRole, items[2] );
-  m_table->setItem( row, 0, item );
-  m_table->setCurrentItem( item );
-
-  // column 1 is set to Flarm's configuration item value
-  item = new QTableWidgetItem();
-  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-
-  // Data is set to item's accessibility
-  item->setData( Qt::UserRole, items[1] );
-  m_table->setItem( row, 1, item );
-
+  // Column 0 is used as GET button
   item = new QTableWidgetItem( tr("Get") );
   item->setTextAlignment( Qt::AlignCenter );
 
@@ -316,8 +299,9 @@ void SettingsPageFlarm::addRow2List( const QString& rowData )
       item->setFlags( Qt::ItemIsSelectable );
     }
 
-  m_table->setItem( row, 2, item );
+  m_table->setItem( row, 0, item );
 
+  // Column 1 is used as SET button
   item = new QTableWidgetItem( tr("Set") );
   item->setTextAlignment( Qt::AlignCenter );
 
@@ -330,6 +314,24 @@ void SettingsPageFlarm::addRow2List( const QString& rowData )
       item->setFlags( Qt::ItemIsSelectable );
     }
 
+  m_table->setItem( row, 1, item );
+
+  // "DEVTYPE;RO;ALL"
+  // column 2 is set to Flarm's configuration item
+  item = new QTableWidgetItem( items[0] );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+
+  // Data is set to Flarm's device type
+  item->setData( Qt::UserRole, items[2] );
+  m_table->setItem( row, 2, item );
+  m_table->setCurrentItem( item );
+
+  // column 3 is set to Flarm's configuration item value
+  item = new QTableWidgetItem();
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+
+  // Data is set to item's accessibility
+  item->setData( Qt::UserRole, items[1] );
   m_table->setItem( row, 3, item );
 }
 
@@ -342,8 +344,19 @@ void SettingsPageFlarm::slot_Close()
 
 void SettingsPageFlarm::slot_HeaderClicked( int section )
 {
-  m_table->sortByColumn( section, Qt::AscendingOrder );
-}
+  if( section != 2 )
+    {
+      // Only the item column can be sorted. All others make no sense.
+      return;
+    }
+
+  static Qt::SortOrder so = Qt::AscendingOrder;
+
+  m_table->sortByColumn( section, so );
+
+  // Change sort order for the next click.
+  so = ( so == Qt::AscendingOrder ) ? Qt::DescendingOrder : Qt::AscendingOrder;
+ }
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
 {
@@ -355,12 +368,12 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       return;
     }
 
-  QString itemDevType = m_table->item( row, 0 )->data(Qt::UserRole).toString();
-  QString itemAccess  = m_table->item( row, 1 )->data(Qt::UserRole).toString();
+  QString itemDevType = m_table->item( row, 2 )->data(Qt::UserRole).toString();
+  QString itemAccess  = m_table->item( row, 3 )->data(Qt::UserRole).toString();
 
   QString title, label;
 
-  if( column == 1 )
+  if( column == 3 )
     {
       // Look, if Flarm item is read/write. In this case the content of the
       // cell can be changed.
@@ -370,8 +383,8 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
           return;
         }
 
-      title = tr("Enter Flarm data");
-      label = tr("Flarm data:");
+      title = tr("Enter item value");
+      label = tr("Flarm item value:");
 
       bool ok;
 
@@ -402,7 +415,7 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       return;
     }
 
-  if( column == 2 )
+  if( column == 0 )
     {
       if( itemAccess == "WO" )
         {
@@ -411,15 +424,15 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
         }
 
       // Get was clicked
-      m_table->item( row, 1 )->setText("");
-      QString itemText = m_table->item( row, 0 )->text();
+      m_table->item( row, 3 )->setText("");
+      QString itemText = m_table->item( row, 2 )->text();
       QString cmd = "$PFLAC,R," + itemText;
 
       requestFlarmData( cmd, true );
       return;
     }
 
-  if( column == 3 )
+  if( column == 1 )
     {
       if( itemAccess == "RO" )
         {
@@ -440,8 +453,8 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
           return;
         }
 
-      QString itemText  = m_table->item( row, 0 )->text();
-      QString itemValue = m_table->item( row, 1 )->text();
+      QString itemText  = m_table->item( row, 2 )->text();
+      QString itemValue = m_table->item( row, 3 )->text();
 
       if( itemValue.isEmpty() )
         {
@@ -479,16 +492,16 @@ void SettingsPageFlarm::slot_getAllFlarmData()
 
   for( int i = 0; i < m_table->rowCount(); i++ )
     {
-      m_table->item( i, 1 )->setText("");
+      m_table->item( i, 3 )->setText("");
 
-      if( m_table->item( i, 1 )->data(Qt::UserRole).toString() == "WO" )
+      if( m_table->item( i, 3 )->data(Qt::UserRole).toString() == "WO" )
         {
           // A write only item cannot be requested.
           continue;
         }
 
       // devType can be: ALL, PF, CF
-      QString devType = m_table->item( i, 0 )->data(Qt::UserRole).toString();
+      QString devType = m_table->item( i, 2 )->data(Qt::UserRole).toString();
 
       if( devType != "ALL" )
         {
@@ -507,7 +520,7 @@ void SettingsPageFlarm::slot_getAllFlarmData()
             }
         }
 
-      QString itemText = m_table->item( i, 0 )->text();
+      QString itemText = m_table->item( i, 2 )->text();
       QString cmd = "$PFLAC,R," + itemText;
 
       bool overwriteCursor = ( i == 0 ) ? true : false;
@@ -542,8 +555,7 @@ void SettingsPageFlarm::nextFlarmCommand()
       enableButtons( true );
       m_timer->stop();
       QApplication::restoreOverrideCursor();
-      m_table->resizeColumnToContents(0);
-      m_table->resizeColumnToContents(1);
+      // m_table->resizeColumnToContents(3);
       return;
     }
 
