@@ -15,6 +15,7 @@
 ***********************************************************************/
 
 #include <algorithm>
+#include <unistd.h>
 
 #ifndef QT_5
 #include <QtGui>
@@ -32,6 +33,7 @@
 #include "gpsnmea.h"
 #include "layout.h"
 #include "rowdelegate.h"
+#include "whatsthat.h"
 
 // Timeout in ms for waiting for a FLARM response
 #define RESP_TO 5000
@@ -119,6 +121,9 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
   connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
+
+  connect( m_table, SIGNAL(cellDoubleClicked( int, int )),
+           this, SLOT(slot_CellDoubleClicked( int, int )) );
 
   topLayout->addWidget( m_table, 2 );
 
@@ -357,6 +362,30 @@ void SettingsPageFlarm::slot_HeaderClicked( int section )
   // Change sort order for the next click.
   so = ( so == Qt::AscendingOrder ) ? Qt::DescendingOrder : Qt::AscendingOrder;
  }
+
+void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
+{
+  qDebug() << "slot_CellDoubleClicked" << row << column;
+
+  if( column != 2 )
+    {
+      // no Flarm item.
+      return;
+    }
+
+  QTableWidgetItem* item = m_table->item( row, column );
+
+  if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )
+    {
+      // Item can be a Null pointer, if a row has been removed.
+      return;
+    }
+
+  QString msg("Leck mich am Allerertesten");
+
+  WhatsThat* wt = new WhatsThat( this, msg, 30 );
+  wt->show();
+}
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
 {

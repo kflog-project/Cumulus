@@ -78,6 +78,9 @@ private slots:
   /** Called, when a cell is clicked to open an extra editor. */
   void slot_CellClicked ( int row, int column );
 
+  /** Called, when a cell is double clicked to open a help tool tip. */
+  void slot_CellDoubleClicked(int row, int column);
+
   /**
    * Header click is handled here. It sorts the clicked column in ascending
    * order.
