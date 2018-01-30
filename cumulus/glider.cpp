@@ -79,19 +79,19 @@ bool Glider::load(QSettings *config, int id)
 
       if( data.count() >= 17 )
         {
-	  m_polar.setWater( data[15].toInt() );
+          m_polar.setWater( data[15].toInt() );
           m_coPilot = data[16];
         }
 
       if( data.count() >= 18 )
-	{
-          m_polar.setAddLoad( data[17].toDouble() );
-	}
+        {
+                m_polar.setAddLoad( data[17].toDouble() );
+        }
 
       if( data.count() >= 19 )
-	{
-	  m_isSelected = data[18].toInt();
-	}
+        {
+          m_isSelected = data[18].toInt();
+        }
 
       return true;
     }
