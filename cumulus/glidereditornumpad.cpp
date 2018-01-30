@@ -542,35 +542,35 @@ void GliderEditorNumPad::readLK8000PolarData()
       QDir dir( dirs.at(i) );
 
       if( dir.exists() )
-	{
-	  // Look, if polar files are to find in this directory
-	  QStringList plrList = dir.entryList( filters, QDir::Files, QDir::Name );
+      {
+        // Look, if polar files are to find in this directory
+        QStringList plrList = dir.entryList( filters, QDir::Files, QDir::Name );
 
-	  if( plrList.isEmpty() )
-	    {
-	      continue;
-	    }
+        if( plrList.isEmpty() )
+          {
+            continue;
+          }
 
-	  for( int j = 0; j < plrList.size(); j++ )
-	    {
-	      // Read in all found polar data files.
-	      Polar polar;
-	      bool ok = readLK8000PolarFile( dir.absolutePath() + "/" + plrList.at(j), polar );
+        for( int j = 0; j < plrList.size(); j++ )
+          {
+            // Read in all found polar data files.
+            Polar polar;
+            bool ok = readLK8000PolarFile( dir.absolutePath() + "/" + plrList.at(j), polar );
 
-	      if( ok )
-		{
-		  m_polars.append( polar );
-		}
-	    }
+            if( ok )
+              {
+                m_polars.append( polar );
+              }
+          }
 
-	  if( m_polars.size() )
-	    {
-	      // Activate the first glider entry, that all fields are filled with data.
-	      slot_activatePolar( &m_polars[0] );
-	    }
+        if( m_polars.size() )
+          {
+            // Activate the first glider entry, that all fields are filled with data.
+            slot_activatePolar( &m_polars[0] );
+          }
 
-	  return;
-	}
+        return;
+      }
     }
 
   m_openGliderList = new QPushButton( tr("Empty") );
@@ -646,9 +646,9 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
       lineNo++;
 
       if( line.isEmpty() || line.startsWith("*") || line.startsWith("//") )
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
       // Lines can contain at their right end C++ comments. This part must be
       // removed first.
@@ -656,82 +656,82 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
       items = items.at(0).split( ",", QString::SkipEmptyParts );
 
       if( items.size() < 9 )
-	{
-	  qWarning() << "Polar file"
-	             << QFileInfo(fileName).fileName()
-	             << "line"
-	             << lineNo
-	             << "contains to less items:"
-	             << line;
+        {
+          qWarning() << "Polar file"
+                     << QFileInfo(fileName).fileName()
+                     << "line"
+                     << lineNo
+                     << "contains to less items:"
+                     << line;
 
-	  polarFile.close();
-	  return false;
-	}
+          polarFile.close();
+          return false;
+        }
 
       // Extract data, Example is from Spped Astir.
       // MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
       // 351,  90,  90, -0.63, 105, -0.72, 157, -2.00, 11.5   // BestLD40@105
       for( int i = 0; i < 9; i++ )
-	{
-	  bool ok;
-	  double dv = items.at(i).trimmed().toDouble(&ok);
+        {
+          bool ok;
+          double dv = items.at(i).trimmed().toDouble(&ok);
 
-	  Speed speed;
+          Speed speed;
 
-	  if( ! ok )
-	    {
-	      polarFile.close();
-	      return false;
-	    }
+          if( ! ok )
+            {
+              polarFile.close();
+              return false;
+            }
 
-	  switch(i)
-	  {
-	    case 0:
-	      polar.setGrossWeight( dv );
-	      break;
+          switch(i)
+          {
+            case 0:
+              polar.setGrossWeight( dv );
+              break;
 
-	    case 1:
-	      polar.setMaxWater( rint(dv) );
-	      break;
+            case 1:
+              polar.setMaxWater( rint(dv) );
+              break;
 
-	    case 2:
-	      speed.setKph( dv );
-	      polar.setV1( speed );
-	      break;
+            case 2:
+              speed.setKph( dv );
+              polar.setV1( speed );
+              break;
 
-	    case 3:
-	      speed.setMps( dv );
-	      polar.setW1( speed );
-	      break;
+            case 3:
+              speed.setMps( dv );
+              polar.setW1( speed );
+              break;
 
-	    case 4:
-	      speed.setKph( dv );
-	      polar.setV2( speed );
-	      break;
+            case 4:
+              speed.setKph( dv );
+              polar.setV2( speed );
+              break;
 
-	    case 5:
-	      speed.setMps( dv );
-	      polar.setW2( speed );
-	      break;
+            case 5:
+              speed.setMps( dv );
+              polar.setW2( speed );
+              break;
 
-	    case 6:
-	      speed.setKph( dv );
-	      polar.setV3( speed );
-	      break;
+            case 6:
+              speed.setKph( dv );
+              polar.setV3( speed );
+              break;
 
-	    case 7:
-	      speed.setMps( dv );
-	      polar.setW3( speed );
-	      break;
+            case 7:
+              speed.setMps( dv );
+              polar.setW3( speed );
+              break;
 
-	    case 8:
-	      polar.setWingArea( dv );
-	      break;
+            case 8:
+              polar.setWingArea( dv );
+              break;
 
-	    default:
-	      break;
-	  }
-	}
+            default:
+              break;
+          }
+        }
 
       polar.recalculatePolarData();
       polarFile.close();
@@ -777,13 +777,13 @@ void GliderEditorNumPad::slot_activatePolar( Polar* polar )
       m_addedWater->setValue( m_polar->maxWater() );
 
       if( m_polar->seats() == 2 )
-	{
-	  m_seats->setText( "2" );
-	}
+        {
+          m_seats->setText( "2" );
+        }
       else
-	{
-	  m_seats->setText( "1" );
-	}
+        {
+          m_seats->setText( "1" );
+        }
     }
 }
 
