@@ -30,6 +30,7 @@
 #include <QtScroller>
 #endif
 
+#include "calculator.h"
 #include "configwidget.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
@@ -80,6 +81,8 @@
 #define TASK            "Task"
 #define TERRAIN_COLORS  "Terrain Colors"
 #define UNITS           "Units"
+
+extern Calculator* calculator;
 
 ConfigWidget::ConfigWidget( QWidget* parent ) :
   QWidget(parent)
@@ -224,10 +227,13 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 
 #ifdef FLARM
-  item = new QTreeWidgetItem;
-  item->setText( 0, tr(FLARML) );
-  item->setData( 0, Qt::UserRole, FLARML );
-  m_setupTree->addTopLevelItem( item );
+  if( calculator->moving() == false )
+    {
+      item = new QTreeWidgetItem;
+      item->setText( 0, tr(FLARML) );
+      item->setData( 0, Qt::UserRole, FLARML );
+      m_setupTree->addTopLevelItem( item );
+    }
 #endif
 
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
