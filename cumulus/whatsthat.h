@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2010 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -33,11 +31,11 @@
  *
  * This class is used to display user information e.g. about airspaces.
  * It is realized as a frame less popup window and is closed by tipping on
- * it or automatically after a certain time. It can display play or html text.
+ * it or automatically after a certain time. It can display plain or html text.
  *
- * \date 2002-2012
+ * \date 2002-2018
  *
- * \version $Id$
+ * \version 1.2
  *
  */
 class WhatsThat : public QWidget
