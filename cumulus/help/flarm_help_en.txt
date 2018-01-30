@@ -1,0 +1,48 @@
+# Flarm item help
+
+!DEVTYPE!
+
+Hardware type of the FLARM device.
+
+!SWVER!
+
+Firmware version of the FLARM device.
+
+!SWEXP!
+
+Firmware expiration date.
+
+!FLARMVER!
+
+Bootloader version of the FLARM device.
+
+!BUILD!
+
+Build number of the FLARM firmware.
+
+!SER!
+
+Serial number of the FLARM device.
+
+!REGION!
+
+Region in which the FLARM device can be used.
+
+!RADIOID!
+
+<html>
+ID type and ID used in the FLARM radio broadcast.
+<ul>
+<li>ID type=1: ICAO 24-bit aircraft address
+<li>ID type=2: FLARM ID
+<li>ID: 6 hexadecimal characters used for radio communication
+</ul
+</html>
+
+!CAP!
+
+List of device features.
+
+
+
+

@@ -189,6 +189,7 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
   connect( m_timer, SIGNAL(timeout()), SLOT(slot_Timeout()));
   loadTableItems();
+  loadFlarmItemHelp();
 }
 
 SettingsPageFlarm::~SettingsPageFlarm()
@@ -365,8 +366,6 @@ void SettingsPageFlarm::slot_HeaderClicked( int section )
 
 void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
 {
-  qDebug() << "slot_CellDoubleClicked" << row << column;
-
   if( column != 2 )
     {
       // no Flarm item.
@@ -381,10 +380,13 @@ void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
       return;
     }
 
-  QString msg("Leck mich am Allerertesten");
+  QString msg = m_itemHelp.value( item->text() );
 
-  WhatsThat* wt = new WhatsThat( this, msg, 30 );
-  wt->show();
+  if( msg.size() > 0 )
+    {
+      WhatsThat* wt = new WhatsThat( this, msg, 30000 );
+      wt->show();
+    }
 }
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
@@ -653,7 +655,17 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
 
               if( it->text() == sentence[2] )
                 {
-                  m_table->item( i, 1 )->setText( sentence[3] );
+                  if( sentence[2] == "RADIOID" && sentence.size() >= 5 )
+                    {
+                      m_table->item( i, 1 )->setText( "Type="
+                                     + sentence[3]
+                                     + ", ID="
+                                     + sentence[4]);
+                    }
+                  else
+                    {
+                      m_table->item( i, 1 )->setText( sentence[3] );
+                    }
                   break;
                 }
             }
@@ -691,6 +703,63 @@ bool SettingsPageFlarm::checkFlarmConnection()
     }
 
   return true;
+}
+
+void SettingsPageFlarm::loadFlarmItemHelp()
+{
+  QFile file( ":/help/flarm_help_en.txt");
+
+  if ( ! file.open( QIODevice::ReadOnly ) )
+    {
+      // could not open file ...
+      qWarning() << "Cannot open file: " << file.fileName();
+      return;
+    }
+
+  m_itemHelp.clear();
+
+  QTextStream stream( &file );
+  QString line;
+  QString key, value;
+
+  while( !stream.atEnd() )
+    {
+      line = stream.readLine().trimmed();
+
+      if( line.startsWith("#") || line.startsWith("$") )
+        {
+          // ignore comment lines
+          continue;
+        }
+
+      if( line.startsWith( "!") && line.endsWith( "!") )
+        {
+          // Key item found
+          if( key.size() > 0 && value.size() > 0 )
+            {
+              m_itemHelp.insert( key, value.trimmed() );
+              key.clear();
+              value.clear();
+            }
+
+          key = line.mid( 1, line.size() - 2 );
+          continue;
+        }
+
+      if( key.size() == 0 )
+        {
+          continue;
+        }
+
+      value += line;
+    }
+
+  if( key.size() > 0 && value.size() > 0 )
+    {
+      m_itemHelp.insert( key, value.trimmed() );
+    }
+
+  file.close();
 }
 
 /** Shows a popup message box to the user. */

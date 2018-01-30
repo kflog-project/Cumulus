@@ -31,6 +31,7 @@
 #define SettingsPageFlarm_H
 
 #include <QWidget>
+#include <QHash>
 #include <QList>
 #include <QMessageBox>
 #include <QQueue>
@@ -136,6 +137,11 @@ private:
    */
   bool checkFlarmConnection();
 
+  /**
+   * Loads the FLARM item help.
+   */
+  void loadFlarmItemHelp();
+
   /** Table widget with two columns for alias entries. */
   QTableWidget* m_table;
 
@@ -157,6 +163,9 @@ private:
 
   /** Supervision timer for the requests sent to the Flarm device. */
   QTimer* m_timer;
+
+  /** Hash with FLARM item help data. */
+  QHash<QString, QString> m_itemHelp;
 };
 
 #endif /* SettingsPageFlarm_H */
