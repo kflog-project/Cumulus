@@ -40,12 +40,13 @@ Region in which the FLARM device can be used.
 
 <html>
 ID type and ID used in the FLARM radio broadcast.
-<br><br>
-<ul>
-<li>ID type=1: ICAO 24-bit aircraft address
-<li>ID type=2: FLARM ID
-<li>ID: 6 hexadecimal characters used for radio communication
-</ul
+<br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Parameter</th> <th align="left">Value</th> <th align="left">Description</th></tr>
+<tr><td>ID Type</td> <td>1</td> <td>ICAO 24-bit aircraft address</td></tr>
+<tr><td>ID Type</td> <td>2</td> <td>FLARM ID</td></tr>
+<tr><td>ID</td> <td>6 hex chars</td> <td>ID used for radio communication</td></tr>
+</table>
 </html>
 
 !CAP!
@@ -55,8 +56,9 @@ List of FLARM device features.
 !OBSTDB!
 
 <html>
-Obstacle database information as version, status, name and creation date.
-<br><br>
+Obstacle database information as version,<br>
+status, name and creation date.
+<br>
 <table border="0" CELLPADDING="1">
 <tr><th align="left">Status</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disabled</td></tr>
@@ -68,7 +70,6 @@ Obstacle database information as version, status, name and creation date.
 <tr><td>9</td> <td>Invalid license</td></tr>
 <tr><td>16</td> <td>Wrong database version</td></tr>
 </table>
-
 </html>
 
 !OBSTEXP!
@@ -77,35 +78,37 @@ Obstacle database expiry date if database is available.
 
 !IGCSER!
 
-The IGC serial number. The IGC serial can be set on Classic FLARM-based devices
-only and only once.
+<html>
+The IGC serial number. The IGC serial can be set <br>
+on Classic FLARM-based devices only and only once.
+</html>
 
 !ID!
 
 <html>
-Identifier which uniquely identifies the device. The ID cannot be changed when
-when moving. It is part of the radio broadcast data. The following values are
-possible:
+Identifier which uniquely identifies the device. <br>
+The ID cannot be changed when moving. It is part <br>
+of the radio broadcast data. The following values <br>
+are possible:
 
-<br><br>
+<br>
 <table border="0" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
-<tr><td>6 hex digits</td> <td>6 hexadecimal characters for official ICAO
+<tr><td>6 hex digits</td> <td>6 hex characters for official ICAO
 24-bit aircraft address</td></tr>
 <tr><td>0xFFFFFF</td> <td>Constant and unique FLARM-ID</td></tr>
 <tr><td>0</td> <td>Random ID, new after each startup</td></tr>
 </table>
-
 </html>
-
 
 !NMEAOUT!
 
 <html>
-Configure which sentences are sent by FLARM on the data ports. As specified in
-the table, adding 40, 60 or 70 to <i>value</i> selects the protocol version.
+Configure which sentences are sent by FLARM on the data ports. <br>
+As specified in the table, adding 40, 60 or 70 to <i>value</i> <br>
+selects the protocol version.
 
-<br><br>
+<br>
 <table border="0" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>no output</td></tr>
@@ -115,25 +118,28 @@ the table, adding 40, 60 or 70 to <i>value</i> selects the protocol version.
 <tr><td>4</td> <td>Garmin TIS</td></tr>
 <tr><td>4x, 6x, 7x</td> <td>Flarm protocol version</td></tr>
 </table>
-
 </html>
-
 
 !NMEAOUT1!
 
-Power FLARM data port 1. Configure it according to <i>NMEAOUT</i>.
+<html>
+PowerFLARM data port 1. Configure it according to <i>NMEAOUT</i>.
+</html>
 
 !NMEAOUT2!
 
-Power FLARM data port 2. Configure it according to <i>NMEAOUT</i>.
+<html>
+PowerFLARM data port 2. Configure it according to <i>NMEAOUT</i>.
+</html>
 
 !BAUD!
 
 <html>
-Sets the baud rate of the data1 port. FLARM will first send the acknowledge
-sentence, and then switch immediately to the new rate.
+Sets the baud rate of the data port. FLARM will first <br>
+send the acknowledge sentence, and then switch <br>
+immediately to the new rate.
 
-<br><br>
+<br>
 <table border="0" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>4.8 kBaud</td></tr>
@@ -143,34 +149,91 @@ sentence, and then switch immediately to the new rate.
 <tr><td>4</td> <td>38.4 kBaud</td></tr>
 <tr><td>5</td> <td>57.6 kBaud</td></tr>
 </table>
-
 </html>
 
 !BAUD1!
 
-Power FLARM data port 1. Configure it according to <i>BAUD</i>.
+<html>
+PowerFLARM data port 1. Configure it according to <i>BAUD</i>.
+</html>
 
 !BAUD2!
 
-Power FLARM data port 2. Configure it according to <i>BAUD</i>.
+<html>
+PowerFLARM data port 2. Configure it according to <i>BAUD</i>.
+</html>
 
 !ACFT!
 
 <html>
-Configures the aircraft type used by FLARM.
+Configures the aircraft type used by FLARM. <br>
+Not all values are listed here.
 
-
+<br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>reserved, do not use</td></tr>
+<tr><td>1</td> <td>glider / motor glider</td></tr>
+<tr><td>2</td> <td>tow / tug plane</td></tr>
+<tr><td>3</td> <td>helicopter / rotorcraft</td></tr>
+<tr><td>6</td> <td>hang glider (hard)</td></tr>
+<tr><td>7</td> <td>paraglider (soft)</td></tr>
+<tr><td>8</td> <td>aircraft with reciprocating engine(s)</td></tr>
+<tr><td>9</td> <td>aircraft with jet/turboprop engine(s)</td></tr>
+<tr><td>11</td> <td>balloon</td></tr>
+<tr><td>12</td> <td>airship</td></tr>
+<tr><td>13</td> <td>unmanned aerial vehicle (UAV)</td></tr>
+</table>
 </html>
 
 !RANGE!
 
+<html>
+Maximum horizontal distance of aircraft to be shown, in meters. <br><br>
+PowerFLARM: 2000m ... 65535 (unlimited)<br>
+ClassicFLARM: 2000m...25500m
+</html>
+
 !VRANGE!
+
+<html>
+Sets only PowerFLARM’s receive vertical range in meters. <br>
+Values between 500m and 2000m are possible.
+</html>
 
 !PRIV!
 
+<html>
+Stealth mode. It is <b>NOT</b> recommended to activate stealth mode!
+
+<br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Normal mode</td></tr>
+<tr><td>1</td> <td>Stealth mode activated</td></tr>
+</table>
+</html>
+
 !NOTRACK!
 
+<html>
+Instructs third party receiving stations that the <br>
+received ID and position data must neither be stored <br>
+nor made accessible in any time dimension (real-time, <br>
+delayed, or archived) for any purpose.<br>
+It is <b>NOT</b> recommended to enable this option!
+
+<br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Option is disabled</td></tr>
+<tr><td>1</td> <td>Option is enabled</td></tr>
+</table>
+</html>
+
 !THRE!
+
+
 
 !LOGINT!
 
