@@ -1,4 +1,12 @@
-# Flarm item help
+################################################################################
+# Cumulus Flarm item help
+#
+# Copyright (c): 2018 Axel Pauli <kflog.cumulus@gmail.com>
+#
+# This help file explains the single FLARM configuration items. It consists
+# of the configuration item enclosed in exclamation marks and the related
+# help text in subsequent lines.
+################################################################################
 
 !DEVTYPE!
 
@@ -32,6 +40,7 @@ Region in which the FLARM device can be used.
 
 <html>
 ID type and ID used in the FLARM radio broadcast.
+<br><br>
 <ul>
 <li>ID type=1: ICAO 24-bit aircraft address
 <li>ID type=2: FLARM ID
@@ -41,8 +50,155 @@ ID type and ID used in the FLARM radio broadcast.
 
 !CAP!
 
-List of device features.
+List of FLARM device features.
+
+!OBSTDB!
+
+<html>
+Obstacle database information as version, status, name and creation date.
+<br><br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Status</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Disabled</td></tr>
+<tr><td>1</td> <td>Normal operation</td></tr>
+<tr><td>2</td> <td>Failure</td></tr>
+<tr><td>3</td> <td>No database installed</td></tr>
+<tr><td>4</td> <td>Internal database inconsistency</td></tr>
+<tr><td>8</td> <td>No license</td></tr>
+<tr><td>9</td> <td>Invalid license</td></tr>
+<tr><td>16</td> <td>Wrong database version</td></tr>
+</table>
+
+</html>
+
+!OBSTEXP!
+
+Obstacle database expiry date if database is available.
+
+!IGCSER!
+
+The IGC serial number. The IGC serial can be set on Classic FLARM-based devices
+only and only once.
+
+!ID!
+
+<html>
+Identifier which uniquely identifies the device. The ID cannot be changed when
+when moving. It is part of the radio broadcast data. The following values are
+possible:
+
+<br><br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>6 hex digits</td> <td>6 hexadecimal characters for official ICAO
+24-bit aircraft address</td></tr>
+<tr><td>0xFFFFFF</td> <td>Constant and unique FLARM-ID</td></tr>
+<tr><td>0</td> <td>Random ID, new after each startup</td></tr>
+</table>
+
+</html>
 
 
+!NMEAOUT!
 
+<html>
+Configure which sentences are sent by FLARM on the data ports. As specified in
+the table, adding 40, 60 or 70 to <i>value</i> selects the protocol version.
+
+<br><br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>no output</td></tr>
+<tr><td>1</td> <td>GPRMC, GPGGA, GPGSA plus FLARM data</td></tr>
+<tr><td>2</td> <td>Only GPRMC, GPGGA, GPGSA</td></tr>
+<tr><td>3</td> <td>Only FLARM-proprietary sentences</td></tr>
+<tr><td>4</td> <td>Garmin TIS</td></tr>
+<tr><td>4x, 6x, 7x</td> <td>Flarm protocol version</td></tr>
+</table>
+
+</html>
+
+
+!NMEAOUT1!
+
+Power FLARM data port 1. Configure it according to <i>NMEAOUT</i>.
+
+!NMEAOUT2!
+
+Power FLARM data port 2. Configure it according to <i>NMEAOUT</i>.
+
+!BAUD!
+
+<html>
+Sets the baud rate of the data1 port. FLARM will first send the acknowledge
+sentence, and then switch immediately to the new rate.
+
+<br><br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>4.8 kBaud</td></tr>
+<tr><td>1</td> <td>9.6 kBaud</td></tr>
+<tr><td>2</td> <td>19.2 kBaud</td></tr>
+<tr><td>3</td> <td>28.8 kBaud</td></tr>
+<tr><td>4</td> <td>38.4 kBaud</td></tr>
+<tr><td>5</td> <td>57.6 kBaud</td></tr>
+</table>
+
+</html>
+
+!BAUD1!
+
+Power FLARM data port 1. Configure it according to <i>BAUD</i>.
+
+!BAUD2!
+
+Power FLARM data port 2. Configure it according to <i>BAUD</i>.
+
+!ACFT!
+
+<html>
+Configures the aircraft type used by FLARM.
+
+
+</html>
+
+!RANGE!
+
+!VRANGE!
+
+!PRIV!
+
+!NOTRACK!
+
+!THRE!
+
+!LOGINT!
+
+!PILOT!
+
+!COPIL!
+
+!GLIDERID!
+
+!GLIDERTYPE!
+
+!COMPID!
+
+!COMPCLASS!
+
+!CFLAGS!
+
+!UI!
+
+!AUDIOOUT!
+
+!AUDIOVOLUME!
+
+!CLEARMEM!
+
+!CLEARLOGS!
+
+!CLEAROBST!
+
+!DEF!
 

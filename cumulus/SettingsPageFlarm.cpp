@@ -649,6 +649,7 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
         }
       else
         {
+	  // Add Flarm answer to the related table column.
           for( int i = 0; i < m_table->rowCount(); i++ )
             {
               QTableWidgetItem* it = m_table->item(i, 0);
@@ -657,9 +658,10 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
                 {
                   if( sentence[2] == "RADIOID" && sentence.size() >= 5 )
                     {
-                      m_table->item( i, 1 )->setText( "Type="
+                      m_table->item( i, 1 )->setText( tr("Type=")
                                      + sentence[3]
-                                     + ", ID="
+                                     + ", "
+				     + tr("ID=")
                                      + sentence[4]);
                     }
                   else
