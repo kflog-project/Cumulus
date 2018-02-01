@@ -326,6 +326,7 @@ on PowerFLARM-based devices.
 
 !COMPCLASS!
 
+<html>
 Competition class for the flight recording. Maximum 16 case sensitive <br>
 <b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
 
@@ -333,6 +334,7 @@ Competition class for the flight recording. Maximum 16 case sensitive <br>
 
 Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
 on PowerFLARM-based devices.
+</html>
 
 !CFLAGS!
 
@@ -343,11 +345,10 @@ flags, do not use this command!
 <br>
 <table border="0" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
-<tr><td>0</td> <td>Disable <i>INFO Alerts</i> on some Classic FLARM-based devices
-only. Not on data port.</td></tr>
-<tr><td>1</td> <td>Enable competition mode (reduced alarm distances and
-times)</td></tr>
-<tr><td>2...255</td> <td>Reserved. Do not use!</td></tr>
+<tr><td>0</td> <td>No flags set.</td></tr>
+<tr><td>1</td> <td>Disable <i>INFO Alerts</i> on some Classic FLARM-based devices only.</td></tr>
+<tr><td>2</td> <td>Enable competition mode (reduced alarm distances and times).</td></tr>
+<tr><td>4...255</td> <td>Reserved. Do not use!</td></tr>
 </table>
 </html>
 
