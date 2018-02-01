@@ -182,7 +182,7 @@ Not all values are listed here.
 <tr><td>9</td> <td>aircraft with jet/turboprop engine(s)</td></tr>
 <tr><td>11</td> <td>balloon</td></tr>
 <tr><td>12</td> <td>airship</td></tr>
-<tr><td>13</td> <td>unmanned aerial vehicle (UAV)</td></tr>
+<tr><td>13</td> <td>drone  (UAV)</td></tr>
 </table>
 </html>
 
@@ -233,35 +233,155 @@ It is <b>NOT</b> recommended to enable this option!
 
 !THRE!
 
+<html>
+Sets speed threshold in m/sec below which the aircraft is treated <br>
+as <i>on ground</i>. In this mode, no warnings are given and other <br>
+aircraft are not warned about own aircraft. Decimal integer values <br>
+from 0 to 20 are allowed. It follows a table with default values.
 
+<br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">AFCT</th><th align="left">Description</th><th align="left">Def. THRE [m/s]</th></tr>
+<tr><td>1</td> <td>glider / motor glider</td><td>2</td></tr>
+<tr><td>2</td> <td>tow / tug plane</td><td>10</td></tr>
+<tr><td>3</td> <td>helicopter / rotorcraft</td><td>2</td></tr>
+<tr><td>6</td> <td>hang glider (hard)</td><td>2</td></tr>
+<tr><td>7</td> <td>paraglider (soft)</td><td>2</td></tr>
+<tr><td>11</td> <td>balloon</td><td>0</td></tr>
+<tr><td>12</td> <td>airship</td><td>0</td></tr>
+<tr><td>13</td> <td>drone (UAV)</td><td>2</td></tr>
+</table>
+</html>
 
 !LOGINT!
 
+<html>
+The value indicates the time interval in seconds between two data <br>
+points in the flight recording. For gliders and when a high resolution <br>
+is required, do not use settings higher than 4s.
+<br>
+<br>
+Decimal integer values from 1 to 8 are possible.
+</html>
+
 !PILOT!
+
+<html>
+Pilot name for the flight recording. Maximum 48 case sensitive <br>
+<b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
+
+<b>Default value:</b><br><br>
+
+Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
+on PowerFLARM-based devices.
+</html>
 
 !COPIL!
 
+<html>
+Co-pilot name for the flight recording. Maximum 48 case sensitive <br>
+<b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
+
+<b>Default value:</b><br><br>
+
+Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
+on PowerFLARM-based devices.
+</html>
+
 !GLIDERID!
+
+<html>
+Aircraft registration for the flight recording. Maximum 16 case sensitive <br>
+<b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
+
+<b>Default value:</b><br><br>
+
+Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
+on PowerFLARM-based devices.
+</html>
 
 !GLIDERTYPE!
 
+<html>
+Aircraft type for the flight recording. Maximum 32 case sensitive <br>
+<b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
+
+<b>Default value:</b><br><br>
+
+Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
+on PowerFLARM-based devices.
+</html>
+
 !COMPID!
+
+<html>
+competition ID for the flight recording. Maximum 16 case sensitive <br>
+<b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
+
+<b>Default value:</b><br><br>
+
+Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
+on PowerFLARM-based devices.
+</html>
 
 !COMPCLASS!
 
+Competition class for the flight recording. Maximum 16 case sensitive <br>
+<b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
+
+<b>Default value:</b><br><br>
+
+Empty on Classic FLARM-based devices and the string <i>undefined</i> <br>
+on PowerFLARM-based devices.
+
 !CFLAGS!
+
+<html>
+Configures special modes. If you do not understand the concept of bit <br>
+flags, do not use this command!
+
+<br>
+<table border="0" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Disable <i>INFO Alerts</i> on some Classic FLARM-based devices
+only. Not on data port.</td></tr>
+<tr><td>1</td> <td>Enable competition mode (reduced alarm distances and
+times)</td></tr>
+<tr><td>2...255</td> <td>Reserved. Do not use!</td></tr>
+</table>
+</html>
 
 !UI!
 
+<html>
+</html>
+
 !AUDIOOUT!
+
+<html>
+</html>
 
 !AUDIOVOLUME!
 
+<html>
+</html>
+
 !CLEARMEM!
+
+<html>
+</html>
 
 !CLEARLOGS!
 
+<html>
+</html>
+
 !CLEAROBST!
+
+<html>
+</html>
 
 !DEF!
 
+<html>
+</html>
