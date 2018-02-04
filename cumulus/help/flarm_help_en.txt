@@ -10,56 +10,72 @@
 
 !DEVTYPE!
 
+<html>
 Hardware type of the FLARM device.
+</html>
 
 !SWVER!
 
+<html>
 Firmware version of the FLARM device.
+</html>
 
 !SWEXP!
 
-Firmware expiration date.
+<html>
+Firmware expiration date in the format dd.mm.yyyy.
+</html>
 
 !FLARMVER!
 
-Bootloader version of the FLARM device.
+<html>
+Boot loader version of the FLARM device.
+</html>
 
 !BUILD!
 
+<html>
 Build number of the FLARM firmware.
+</html>
 
 !SER!
 
+<html>
 Serial number of the FLARM device.
+</html>
 
 !REGION!
 
+<html>
 Region in which the FLARM device can be used.
+</html>
 
 !RADIOID!
 
 <html>
 ID type and ID used in the FLARM radio broadcast.
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Parameter</th> <th align="left">Value</th> <th align="left">Description</th></tr>
 <tr><td>ID Type</td> <td>1</td> <td>ICAO 24-bit aircraft address</td></tr>
 <tr><td>ID Type</td> <td>2</td> <td>FLARM ID</td></tr>
-<tr><td>ID</td> <td>6 hex chars</td> <td>ID used for radio communication</td></tr>
+<tr><td>ID</td> <td>6 hex chars</td> <td>Radio communication ID</td></tr>
 </table>
 </html>
 
 !CAP!
 
+<html>
 List of FLARM device features.
+</html>
 
 !OBSTDB!
 
 <html>
-Obstacle database information as version,<br>
+Obstacle database information as version, <br>
 status, name and creation date.
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Status</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disabled</td></tr>
 <tr><td>1</td> <td>Normal operation</td></tr>
@@ -92,10 +108,9 @@ of the radio broadcast data. The following values <br>
 are possible:
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
-<tr><td>6 hex digits</td> <td>6 hex characters for official ICAO
-24-bit aircraft address</td></tr>
+<tr><td>6 hex chars</td> <td>Official ICAO 24-bit aircraft address</td></tr>
 <tr><td>0xFFFFFF</td> <td>Constant and unique FLARM-ID</td></tr>
 <tr><td>0</td> <td>Random ID, new after each startup</td></tr>
 </table>
@@ -109,7 +124,7 @@ As specified in the table, adding 40, 60 or 70 to <i>value</i> <br>
 selects the protocol version.
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>no output</td></tr>
 <tr><td>1</td> <td>GPRMC, GPGGA, GPGSA plus FLARM data</td></tr>
@@ -140,7 +155,7 @@ send the acknowledge sentence, and then switch <br>
 immediately to the new rate.
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>4.8 kBaud</td></tr>
 <tr><td>1</td> <td>9.6 kBaud</td></tr>
@@ -170,7 +185,7 @@ Configures the aircraft type used by FLARM. <br>
 Not all values are listed here.
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>reserved, do not use</td></tr>
 <tr><td>1</td> <td>glider / motor glider</td></tr>
@@ -189,16 +204,22 @@ Not all values are listed here.
 !RANGE!
 
 <html>
-Maximum horizontal distance of aircraft to be shown, in meters. <br><br>
-PowerFLARM: 2000m ... 65535 (unlimited)<br>
-ClassicFLARM: 2000m...25500m
+Maximum horizontal distance of aircraft to be shown in meters.
+
+<br>
+<table border="1" CELLPADDING="1">
+<tr><th align="left">Device</th><th align="left">Range (m)</th></tr>
+<tr><td>PowerFLARM</td> <td>2000m ... 65535 (unlimited)</td></tr>
+<tr><td>ClassicFLARM</td> <td>2000m ... 25500m</td></tr>
+</table>
 </html>
 
 !VRANGE!
 
 <html>
-Sets only PowerFLARM’s receive vertical range in meters. <br>
-Values between 500m and 2000m are possible.
+Sets the receive vertical range in meters. <br>
+Values between 500m and 2000m are possible. <br>
+Supported only by PowerFLARM-based devices.
 </html>
 
 !PRIV!
@@ -207,7 +228,7 @@ Values between 500m and 2000m are possible.
 Stealth mode. It is <b>NOT</b> recommended to activate stealth mode!
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Normal mode</td></tr>
 <tr><td>1</td> <td>Stealth mode activated</td></tr>
@@ -224,7 +245,7 @@ delayed, or archived) for any purpose.<br>
 It is <b>NOT</b> recommended to enable this option!
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Option is disabled</td></tr>
 <tr><td>1</td> <td>Option is enabled</td></tr>
@@ -240,7 +261,7 @@ aircraft are not warned about own aircraft. Decimal integer values <br>
 from 0 to 20 are allowed. It follows a table with default values.
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">AFCT</th><th align="left">Description</th><th align="left">Def. THRE [m/s]</th></tr>
 <tr><td>1</td> <td>glider / motor glider</td><td>2</td></tr>
 <tr><td>2</td> <td>tow / tug plane</td><td>10</td></tr>
@@ -315,7 +336,7 @@ on PowerFLARM-based devices.
 !COMPID!
 
 <html>
-competition ID for the flight recording. Maximum 16 case sensitive <br>
+Competition ID for the flight recording. Maximum 16 case sensitive <br>
 <b>ASCII</b> characters are possible, no umlauts and special signs.<br><br>
 
 <b>Default value:</b><br><br>
@@ -343,7 +364,7 @@ Configures special modes. If you do not understand the concept of bit <br>
 flags, do not use this command!
 
 <br>
-<table border="0" CELLPADDING="1">
+<table border="1" CELLPADDING="1">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>No flags set.</td></tr>
 <tr><td>1</td> <td>Disable <i>INFO Alerts</i> on some Classic FLARM-based devices only.</td></tr>
@@ -355,34 +376,66 @@ flags, do not use this command!
 !UI!
 
 <html>
+Deactivation of visual and/or aural output. Only supported by <br>
+Classic FLARM devices with integrated user interface.
+
+<br>
+<table border="1" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Normal</td></tr>
+<tr><td>1</td> <td>FLARM to switch off LEDs and buzzer</td></tr>
+<tr><td>2</td> <td>FLARM to switch off only LEDs</td></tr>
+<tr><td>3</td> <td>FLARM to switch off only buzzer</td></tr>
+</table>
 </html>
 
 !AUDIOOUT!
 
 <html>
+Enables/Disables audio output. All devices with Audio output.
+
+<br>
+<table border="1" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Disable audio output</td></tr>
+<tr><td>1</td> <td>Enable audio output</td></tr>
+</table>
 </html>
 
 !AUDIOVOLUME!
 
 <html>
+Set volume on Audio output to the given percentage. Does not <br>
+apply to the built-in buzzer in PowerFLARM Portable (use VOL <br>
+instead). In addition, AUDIOOUT has to be set to 1 for <br>
+AUDIOVOLUME to be valid. Supported by all devices with <br>
+Audio output. Decimal integer values from 0 to 100.
 </html>
 
 !CLEARMEM!
 
 <html>
+Removes the obstacles database and IGC files from memory. <br>
+Supported only by Classic FLARM-based devices.
 </html>
 
 !CLEARLOGS!
 
 <html>
+Clears all IGC flight logs on the device and restarts the <br>
+device. Supported only by PowerFLARM-based devices.
 </html>
 
 !CLEAROBST!
 
 <html>
+Clears the obstacle database (if installed) and restarts <br>
+the device. Supported only by PowerFLARM-based devices.
 </html>
 
 !DEF!
 
 <html>
+Resets all device settings to default and restarts the <br>
+device. Do not use data from the output.
 </html>

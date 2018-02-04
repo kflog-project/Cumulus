@@ -65,6 +65,8 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_table->setAlternatingRowColors( true );
   m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  //m_table->horizontalHeader()->setMinimumWidth( parent->width() );
 
 #ifdef ANDROID
   QScrollBar* lvsb = m_table->verticalScrollBar();
@@ -267,9 +269,6 @@ void SettingsPageFlarm::loadTableItems()
   m_table->setCurrentCell( 0, 2 );
   m_table->resizeRowsToContents();
   m_table->resizeColumnsToContents();
-  // m_table->resizeColumnToContents(0);
-  // m_table->resizeColumnToContents(2);
-  // m_table->resizeColumnToContents(3);
 }
 
 void SettingsPageFlarm::addRow2List( const QString& rowData )
@@ -586,7 +585,7 @@ void SettingsPageFlarm::nextFlarmCommand()
       enableButtons( true );
       m_timer->stop();
       QApplication::restoreOverrideCursor();
-      // m_table->resizeColumnToContents(3);
+      m_table->resizeColumnToContents(3);
       return;
     }
 
@@ -649,24 +648,44 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
         }
       else
         {
-	  // Add Flarm answer to the related table column.
+          // Add Flarm answer to the related table column.
           for( int i = 0; i < m_table->rowCount(); i++ )
             {
-              QTableWidgetItem* it = m_table->item(i, 0);
+              QTableWidgetItem* it = m_table->item(i, 2);
 
               if( it->text() == sentence[2] )
                 {
                   if( sentence[2] == "RADIOID" && sentence.size() >= 5 )
                     {
-                      m_table->item( i, 1 )->setText( tr("Type=")
+                      m_table->item( i, 3 )->setText( tr("Type=")
                                      + sentence[3]
                                      + ", "
-				     + tr("ID=")
+                                     + tr("ID=")
                                      + sentence[4]);
+                    }
+                  else if( sentence[2] == "OBSTDB" && sentence.size() >= 7 )
+                    {
+                      QString text = tr("Version=")
+                                         + sentence[3]
+                                         + ", "
+                                         + tr("Status=")
+                                         + sentence[4];
+
+                      if( sentence[5].isEmpty() == false )
+                        {
+                          text += ", " + tr("Name=") + sentence[5];
+                        }
+
+                      if( sentence[6].isEmpty() == false )
+                        {
+                          text += ", " + tr("Date=") + sentence[6];
+                        }
+
+                      m_table->item( i, 3 )->setText( text );
                     }
                   else
                     {
-                      m_table->item( i, 1 )->setText( sentence[3] );
+                      m_table->item( i, 3 )->setText( sentence[3] );
                     }
                   break;
                 }
