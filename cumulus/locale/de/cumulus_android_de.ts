@@ -263,82 +263,87 @@
 <context>
     <name>ConfigWidget</name>
     <message>
-        <location filename="../../configwidget.cpp" line="80"/>
+        <location filename="../../configwidget.cpp" line="91"/>
         <source>General Settings</source>
         <translation>Allgemeine Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="99"/>
+        <location filename="../../configwidget.cpp" line="113"/>
         <source>Personal</source>
         <translation>Persönliches</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="93"/>
+        <location filename="../../configwidget.cpp" line="107"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="90"/>
+        <location filename="../../configwidget.cpp" line="101"/>
         <source>Point Data</source>
         <translation>Punkt Daten</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="92"/>
+        <location filename="../../configwidget.cpp" line="106"/>
         <source>Gliders</source>
         <translation>Flugzeuge</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="98"/>
+        <location filename="../../configwidget.cpp" line="112"/>
         <source>Map Settings</source>
         <translation>Karte Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="97"/>
+        <location filename="../../configwidget.cpp" line="111"/>
         <source>Map Objects</source>
         <translation>Karte Objekte</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="101"/>
+        <location filename="../../configwidget.cpp" line="115"/>
         <source>Terrain Colors</source>
         <translation>Geländefarben</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="100"/>
+        <location filename="../../configwidget.cpp" line="114"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="91"/>
+        <location filename="../../configwidget.cpp" line="102"/>
         <source>Airspaces</source>
         <translation>Lufträume</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="95"/>
+        <location filename="../../configwidget.cpp" line="104"/>
+        <source>FLARM</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../configwidget.cpp" line="109"/>
         <source>Lines</source>
         <translation>Linien</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="96"/>
+        <location filename="../../configwidget.cpp" line="110"/>
         <source>Look&amp;Feel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="102"/>
+        <location filename="../../configwidget.cpp" line="116"/>
         <source>Units</source>
         <translation>Einheiten</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="117"/>
+        <location filename="../../configwidget.cpp" line="131"/>
         <source>Settings Menu</source>
         <translation>Menü Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="119"/>
+        <location filename="../../configwidget.cpp" line="133"/>
         <source>  Settings Menu  </source>
         <translation>  Menü Einstellungen  </translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="94"/>
+        <location filename="../../configwidget.cpp" line="108"/>
         <source>Information</source>
         <translation></translation>
     </message>
@@ -360,47 +365,47 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="../../flarm.cpp" line="955"/>
+        <location filename="../../flarm.cpp" line="958"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="958"/>
+        <location filename="../../flarm.cpp" line="961"/>
         <source>Caution</source>
         <translation>Vorsicht</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="961"/>
+        <location filename="../../flarm.cpp" line="964"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="964"/>
+        <location filename="../../flarm.cpp" line="967"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="981"/>
+        <location filename="../../flarm.cpp" line="984"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="983"/>
+        <location filename="../../flarm.cpp" line="986"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="984"/>
+        <location filename="../../flarm.cpp" line="987"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="986"/>
+        <location filename="../../flarm.cpp" line="989"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="994"/>
+        <location filename="../../flarm.cpp" line="997"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
@@ -878,7 +883,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2726"/>
+        <location filename="../../gpsnmea.cpp" line="2722"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -4415,6 +4420,130 @@ USB Stick eingeschoben?</translation>
     </message>
 </context>
 <context>
+    <name>SettingsPageFlarm</name>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="52"/>
+        <source>Settings - FLARM</source>
+        <translation>Einstellungen - FLARM</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="101"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="104"/>
+        <source>CMD</source>
+        <translation>KMD</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="107"/>
+        <source> Item </source>
+        <translation> Name </translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="110"/>
+        <source> Value </source>
+        <translation> Wert </translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="142"/>
+        <source>Get all data items from FLARM.</source>
+        <translation>Hole alle Konfigurationsdaten vom FLARM.</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="295"/>
+        <source>Get</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="310"/>
+        <source>Set</source>
+        <translation>Set</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="416"/>
+        <source>Enter item value</source>
+        <translation>Wertzuweisung zu FLARM</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="417"/>
+        <source>Flarm item value:</source>
+        <translation>Flarm Wert:</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="480"/>
+        <source>Configuration item is unsupported by your FLARM!</source>
+        <translation>Konfigurationsvariable wird durch Ihr FLARM nicht unterstützt!</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="481"/>
+        <source>Information</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="491"/>
+        <source>Configuration item has no value assigned!</source>
+        <translation>Variablen Wertzuweisung ist leer!</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="492"/>
+        <source>Warning</source>
+        <translation>Warnung</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="608"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="704"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="716"/>
+        <source>Flarm device not reachable!</source>
+        <translation>Flarm Gerät nicht erreichbar!</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="609"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="646"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="705"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="717"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="640"/>
+        <source>Command:</source>
+        <translation>Kommando:</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="644"/>
+        <source>rejected by Flarm with error.</source>
+        <translation>abgewiesen durch FLARM mit Fehler.</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="660"/>
+        <source>Type=</source>
+        <translation>Typ=</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="663"/>
+        <source>ID=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="668"/>
+        <source>Version=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="671"/>
+        <source>Status=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="676"/>
+        <source>Name=</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarm.cpp" line="681"/>
+        <source>Date=</source>
+        <translation>Datum=</translation>
+    </message>
+</context>
+<context>
     <name>SettingsPageGPS4A</name>
     <message>
         <location filename="../../settingspagegps4a.cpp" line="37"/>
@@ -4427,47 +4556,47 @@ USB Stick eingeschoben?</translation>
         <translation>GPS Quelle:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="58"/>
+        <location filename="../../settingspagegps4a.cpp" line="64"/>
         <source>$GP GPS (USA)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="59"/>
+        <location filename="../../settingspagegps4a.cpp" line="65"/>
         <source>$BD Beidou GPS (China)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="60"/>
+        <location filename="../../settingspagegps4a.cpp" line="66"/>
         <source>$GA Gallileo GPS (Europe)</source>
         <translation>$GA Gallileo GPS (Europa)</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="61"/>
+        <location filename="../../settingspagegps4a.cpp" line="67"/>
         <source>$GL Glonass GPS (Russia)</source>
         <translation>$GL Glonass GPS (Russland)</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="62"/>
+        <location filename="../../settingspagegps4a.cpp" line="68"/>
         <source>$GN Combined GPS Systems</source>
         <translation>$GN Kombinierte GPS Systeme</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="73"/>
+        <location filename="../../settingspagegps4a.cpp" line="82"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="74"/>
+        <location filename="../../settingspagegps4a.cpp" line="83"/>
         <source>Pressure</source>
         <translation>Druck</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="77"/>
+        <location filename="../../settingspagegps4a.cpp" line="76"/>
         <source>Altitude Reference:</source>
         <translation>Höhen Referenz:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="81"/>
+        <location filename="../../settingspagegps4a.cpp" line="89"/>
         <source>Save NMEA Data to file</source>
         <translation>Speichere NMEA Daten in Datei</translation>
     </message>

@@ -124,8 +124,10 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
 
+#ifndef ANDROID
   connect( m_table, SIGNAL(cellDoubleClicked( int, int )),
            this, SLOT(slot_CellDoubleClicked( int, int )) );
+#endif
 
   topLayout->addWidget( m_table, 2 );
 
@@ -140,17 +142,6 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_loadButton->setMinimumSize(buttonSize, buttonSize);
   m_loadButton->setMaximumSize(buttonSize, buttonSize);
   m_loadButton->setToolTip( tr("Get all data items from FLARM.") );
-
-#if defined(QSCROLLER) || defined(QTSCROLLER)
-
-  m_enableScroller = new QCheckBox("][");
-  m_enableScroller->setCheckState( Qt::Checked );
-  m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
-
-  connect( m_enableScroller, SIGNAL(stateChanged(int)),
-	   this, SLOT(slot_scrollerBoxToggled(int)) );
-
-#endif
 
   m_closeButton = new QPushButton;
   m_closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
@@ -167,15 +158,6 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   vbox->setSpacing(0);
   vbox->addWidget( m_loadButton );
   vbox->addStretch(2);
-
-#if defined(QSCROLLER) || defined(QTSCROLLER)
-
-  vbox->addWidget( m_enableScroller, 0, Qt::AlignCenter );
-  vbox->addStretch(2);
-
-#endif
-
-  vbox->addSpacing(32);
   vbox->addWidget( m_closeButton );
   buttonBox->setLayout( vbox );
   topLayout->addWidget( buttonBox );
@@ -390,6 +372,15 @@ void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
 {
+#ifdef ANDROID
+  if( column == 2 )
+    {
+      // Double click did not work proper on Android
+      slot_CellDoubleClicked( row, column );
+      return;
+    }
+#endif
+
   QTableWidgetItem* item = m_table->item( row, column );
 
   if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )

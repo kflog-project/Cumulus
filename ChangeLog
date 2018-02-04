@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2018-02-04 AP: Issue #122 fixed. Add more support for Flarm configuration.
+
 [-] 2018-01-21 AP: Issue #121 fixed. The used GPS source should be selectable.
 
 [*] 2018-01-14 AP: Cumulus 5.31.1 released for Android.
