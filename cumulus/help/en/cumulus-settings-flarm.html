@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>Cumulus Settings</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-gps.html">back</a></td>
+				<td align="center"><a href="cumulus-settings.html">overview</a></td>
+				<td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 align="center">Settings - FLARM</h4>
+
+	<b>FLARM</b>
+
+	<p>Cumulus supports two types of FLARM.</p>
+	
+	<ul>
+	<li>Classic FLARM</li>
+	<li>PowerFlarm</li>
+	</ul>
+
+	<p>
+		The FLARM setup page is organized as a table with the following columns
+		from left to right:
+	</p>
+
+  <table border=1" cellpadding="3">
+  <tr><Th>Column</th><th>Description</th></tr>
+  <tr><Td>CMD</td><td>Get command for the listed item</td></tr>
+  <tr><Td>CMD</td><td>Set command for the listed item</td></tr>
+  <tr><Td>Item</td><td>Configuration item name</td></tr>
+  <tr><Td>Value</td><td>Configuration item value</td></tr>
+  </table>
+  
+  <p>
+    <b>Note!</b> If you want to change items, please inform you before about the
+    possible values of the items. Some SET commands are clearing the FLARM
+    device. If you do not know what are the consequences of a SET command, do
+    not execute it. In every case you should have read the document
+    <b>FTD-014, FLARM CONFIGURATION SPECIFICATION</b>. You can request if from
+    <a href="https://flarm.com/support/manuals-documents/">here.</a>
+  </p>
+	
+	<h5>Column CMD GET</h5>
+	
+	<p>
+		If the CMD GET button is pressed, the value of the listed item is requested
+		from the FLARM device.
+	</p>
+	
+  <h5>Column CMD SET</h5>
+
+	<p>
+	  If the CMD SET button is pressed, the value of the listed item is transfered
+	  to the FLARM device.
+	</p>
+	
+	<h5>Column Item</h5>
+	
+	<p>
+	  Under the column <i>Item</i> the FLARM configuration items are listed. Read only
+	  items have only a GET button, Read-Write items have a GET and a SET button,
+	  Write only items have only a SET button.
+	  <br>
+	  Clicking on the item header will sort the item list. Double clicking of an
+	  Item field opens a little help dialog.
+	</p>
+	
+  <h5>Column Value</h5>
+
+	<p>
+	  Under the column <i>Value</i> the values of the FLARM configuration items
+	  are listed.
+	  <br>
+	  Clicking of an item Value field of a configuration item, which is writable,
+	  opens a little editor where you can modify the item value. 
+	</p>
+
+  <h5>Button Load</h5>
+
+  <p>
+    Clicking the button <i>Load</i> (upper right corner), will request all
+    supported item values from the FLARM device.
+  </p>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">start</a></td>
+				<td></td>
+			</tr>
+			<tr>
+        <td align="left"><a href="cumulus-settings-gps.html">back</a></td>
+        <td align="center"><a href="cumulus-settings.html">overview</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
