@@ -438,9 +438,10 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
 
   if( column == 0 )
     {
-      if( itemAccess == "WO" )
+      if( itemAccess == "WO" || checkFlarmConnection() == false )
         {
-          // A write only item cannot be requested.
+          // A write only item cannot be requested or
+	  // stop processing, if FLARM is not available.
           return;
         }
 
@@ -460,6 +461,12 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
           // A read only item cannot be changed.
           return;
         }
+
+      if( checkFlarmConnection() == false )
+	{
+	  // Stop processing, if FLARM is not available.
+	  return;
+	}
 
       // get Flarm device type
       QString device = FlarmBase::getDeviceType();
