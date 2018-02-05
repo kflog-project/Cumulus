@@ -544,19 +544,22 @@ void TaskEditor::slotInvertWaypoints()
   WGSPoint* start = tpList.first()->getWGSPositionPtr();
   WGSPoint* end   = tpList.last()->getWGSPositionPtr();
 
-  if( start == end )
+  if( *start == *end )
     {
       TaskPoint* tps = tpList.first();
       TaskPoint* tpe = tpList.last();
 
       enum GeneralConfig::ActiveTaskFigureScheme ss =
-	  tps->getActiveTaskPointFigureScheme();
+          tps->getActiveTaskPointFigureScheme();
 
       enum GeneralConfig::ActiveTaskFigureScheme es =
-	  tpe->getActiveTaskPointFigureScheme();
+          tpe->getActiveTaskPointFigureScheme();
 
-      tps->setActiveTaskPointFigureScheme( es );
-      tpe->setActiveTaskPointFigureScheme( ss );
+      if( ss != es )
+        {
+          tps->setActiveTaskPointFigureScheme( es );
+          tpe->setActiveTaskPointFigureScheme( ss );
+        }
     }
 
   // After an invert the first task item is selected.

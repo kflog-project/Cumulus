@@ -66,7 +66,6 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-  //m_table->horizontalHeader()->setMinimumWidth( parent->width() );
 
 #ifdef ANDROID
   QScrollBar* lvsb = m_table->verticalScrollBar();
@@ -112,7 +111,7 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
   QHeaderView* hHeader = m_table->horizontalHeader();
   hHeader->setStretchLastSection( true );
-  // hHeader->setSortIndicator( 2, Qt::AscendingOrder );
+  hHeader->setSortIndicator( 2, Qt::AscendingOrder );
   hHeader->setSortIndicatorShown( true );
 
 #if QT_VERSION >= 0x050000
@@ -121,8 +120,8 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   hHeader->setClickable( true );
 #endif
 
-  //connect( hHeader, SIGNAL(sectionClicked(int)),
-  //         this, SLOT(slot_HeaderClicked(int)) );
+  connect( hHeader, SIGNAL(sectionClicked(int)),
+           this, SLOT(slot_HeaderClicked(int)) );
 
   connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
@@ -334,19 +333,24 @@ void SettingsPageFlarm::slot_Close()
 
 void SettingsPageFlarm::slot_HeaderClicked( int section )
 {
+  static Qt::SortOrder so = Qt::AscendingOrder;
+
   if( section != 2 )
     {
       // Only the item column can be sorted. All others make no sense.
+      // Restore sort indicator at column 2
+      m_table->horizontalHeader()->setSortIndicator( 2, so );
       return;
     }
-
-  static Qt::SortOrder so = Qt::AscendingOrder;
 
   m_table->sortByColumn( section, so );
 
   // Change sort order for the next click.
   so = ( so == Qt::AscendingOrder ) ? Qt::DescendingOrder : Qt::AscendingOrder;
- }
+
+  // Restore sort indicator at column 2
+  m_table->horizontalHeader()->setSortIndicator( 2, so );
+}
 
 void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
 {
