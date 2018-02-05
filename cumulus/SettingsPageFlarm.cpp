@@ -112,14 +112,17 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
   QHeaderView* hHeader = m_table->horizontalHeader();
   hHeader->setStretchLastSection( true );
+  // hHeader->setSortIndicator( 2, Qt::AscendingOrder );
+  hHeader->setSortIndicatorShown( true );
+
 #if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
 #else
   hHeader->setClickable( true );
 #endif
 
-  connect( hHeader, SIGNAL(sectionClicked(int)),
-           this, SLOT(slot_HeaderClicked(int)) );
+  //connect( hHeader, SIGNAL(sectionClicked(int)),
+  //         this, SLOT(slot_HeaderClicked(int)) );
 
   connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );

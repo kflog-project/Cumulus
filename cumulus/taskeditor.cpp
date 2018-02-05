@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2016 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -537,6 +537,26 @@ void TaskEditor::slotInvertWaypoints()
       TaskPoint* tp = tpList.at(i);
       tpList.removeAt(i);
       tpList.append( tp );
+    }
+
+  // If start and end point have the same coordinates, the taskpoint figure
+  // schemes should be switched also.
+  WGSPoint* start = tpList.first()->getWGSPositionPtr();
+  WGSPoint* end   = tpList.last()->getWGSPositionPtr();
+
+  if( start == end )
+    {
+      TaskPoint* tps = tpList.first();
+      TaskPoint* tpe = tpList.last();
+
+      enum GeneralConfig::ActiveTaskFigureScheme ss =
+	  tps->getActiveTaskPointFigureScheme();
+
+      enum GeneralConfig::ActiveTaskFigureScheme es =
+	  tpe->getActiveTaskPointFigureScheme();
+
+      tps->setActiveTaskPointFigureScheme( es );
+      tpe->setActiveTaskPointFigureScheme( ss );
     }
 
   // After an invert the first task item is selected.
