@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2017 by Axel Pauli
+                               2008-2018 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -243,6 +243,9 @@ void GpsNmea::resetDataObjects()
   // altitude type (GPS or Baro) expected by the user
   _userExpectedAltitude = static_cast<GpsNmea::DeliveredAltitude> (GeneralConfig::instance()->getGpsAltitude());
   _userAltitudeCorrection = GeneralConfig::instance()->getGpsUserAltitudeCorrection();
+
+  // GPS source to be used
+  _gpsSource = GeneralConfig::instance()->getGpsSource().left(3);
 
   // special logger items
   _lastWindDirection = 0;
