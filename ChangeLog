@@ -18,6 +18,7 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2018-02-11 AP: Cumulus 5.32.1 released for Android.
 
 [-] 2018-02-04 AP: Issue #106 fixed. Reversing task should persist start and
                    finish

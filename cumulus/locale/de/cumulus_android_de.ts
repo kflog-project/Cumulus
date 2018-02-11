@@ -875,7 +875,7 @@
 <context>
     <name>GpsElevationAzimuthDisplay</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="526"/>
+        <location filename="../../gpsstatusdialog.cpp" line="538"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -883,7 +883,7 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2722"/>
+        <location filename="../../gpsnmea.cpp" line="2725"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -891,7 +891,7 @@
 <context>
     <name>GpsSnrDisplay</name>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="687"/>
+        <location filename="../../gpsstatusdialog.cpp" line="699"/>
         <source>No Data</source>
         <translation>Keine Daten</translation>
     </message>
@@ -904,45 +904,50 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="118"/>
-        <location filename="../../gpsstatusdialog.cpp" line="336"/>
+        <location filename="../../gpsstatusdialog.cpp" line="108"/>
+        <source>GPS source filter</source>
+        <translation>GPS Quellen Filter</translation>
+    </message>
+    <message>
+        <location filename="../../gpsstatusdialog.cpp" line="116"/>
+        <location filename="../../gpsstatusdialog.cpp" line="348"/>
         <source>Stop</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="119"/>
+        <location filename="../../gpsstatusdialog.cpp" line="117"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="121"/>
+        <location filename="../../gpsstatusdialog.cpp" line="119"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="340"/>
+        <location filename="../../gpsstatusdialog.cpp" line="352"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="366"/>
-        <location filename="../../gpsstatusdialog.cpp" line="374"/>
+        <location filename="../../gpsstatusdialog.cpp" line="378"/>
+        <location filename="../../gpsstatusdialog.cpp" line="386"/>
         <source>Append to?</source>
         <translation>Anhängen an?</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="367"/>
-        <location filename="../../gpsstatusdialog.cpp" line="375"/>
+        <location filename="../../gpsstatusdialog.cpp" line="379"/>
+        <location filename="../../gpsstatusdialog.cpp" line="387"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="398"/>
+        <location filename="../../gpsstatusdialog.cpp" line="410"/>
         <source>Save failed</source>
         <translation>Speicherfehler</translation>
     </message>
     <message>
-        <location filename="../../gpsstatusdialog.cpp" line="399"/>
+        <location filename="../../gpsstatusdialog.cpp" line="411"/>
         <source>Cannot open file!</source>
         <translation>Datei nicht vorhanden!</translation>
     </message>
@@ -4422,7 +4427,7 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageFlarm</name>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="52"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="53"/>
         <source>Settings - FLARM</source>
         <translation>Einstellungen - FLARM</translation>
     </message>
@@ -4443,102 +4448,102 @@ USB Stick eingeschoben?</translation>
         <translation> Wert </translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="142"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="145"/>
         <source>Get all data items from FLARM.</source>
         <translation>Hole alle Konfigurationsdaten vom FLARM.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="295"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="289"/>
         <source>Get</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="310"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="304"/>
         <source>Set</source>
         <translation>Set</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="416"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="424"/>
         <source>Enter item value</source>
         <translation>Wertzuweisung zu FLARM</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="417"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="425"/>
         <source>Flarm item value:</source>
         <translation>Flarm Wert:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="480"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="495"/>
         <source>Configuration item is unsupported by your FLARM!</source>
         <translation>Konfigurationsvariable wird durch Ihr FLARM nicht unterstützt!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="481"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="496"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="491"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="506"/>
         <source>Configuration item has no value assigned!</source>
         <translation>Variablen Wertzuweisung ist leer!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="492"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="507"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="608"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="704"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="716"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="623"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="729"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="741"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="609"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="646"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="705"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="717"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="624"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="661"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="730"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="742"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="640"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="655"/>
         <source>Command:</source>
         <translation>Kommando:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="644"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="659"/>
         <source>rejected by Flarm with error.</source>
         <translation>abgewiesen durch FLARM mit Fehler.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="660"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="675"/>
         <source>Type=</source>
         <translation>Typ=</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="663"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="678"/>
         <source>ID=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="668"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="683"/>
         <source>Version=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="671"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="686"/>
         <source>Status=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="676"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="691"/>
         <source>Name=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="681"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="696"/>
         <source>Date=</source>
         <translation>Datum=</translation>
     </message>
@@ -4551,52 +4556,52 @@ USB Stick eingeschoben?</translation>
         <translation>Einstellungen - GPS</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="54"/>
+        <location filename="../../settingspagegps4a.cpp" line="57"/>
         <source>GPS Source:</source>
         <translation>GPS Quelle:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="64"/>
+        <location filename="../../settingspagegps4a.cpp" line="67"/>
         <source>$GP GPS (USA)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="65"/>
+        <location filename="../../settingspagegps4a.cpp" line="68"/>
         <source>$BD Beidou GPS (China)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="66"/>
+        <location filename="../../settingspagegps4a.cpp" line="69"/>
         <source>$GA Gallileo GPS (Europe)</source>
         <translation>$GA Gallileo GPS (Europa)</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="67"/>
+        <location filename="../../settingspagegps4a.cpp" line="70"/>
         <source>$GL Glonass GPS (Russia)</source>
         <translation>$GL Glonass GPS (Russland)</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="68"/>
+        <location filename="../../settingspagegps4a.cpp" line="71"/>
         <source>$GN Combined GPS Systems</source>
         <translation>$GN Kombinierte GPS Systeme</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="82"/>
+        <location filename="../../settingspagegps4a.cpp" line="85"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="83"/>
+        <location filename="../../settingspagegps4a.cpp" line="86"/>
         <source>Pressure</source>
         <translation>Druck</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="76"/>
+        <location filename="../../settingspagegps4a.cpp" line="79"/>
         <source>Altitude Reference:</source>
         <translation>Höhen Referenz:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="89"/>
+        <location filename="../../settingspagegps4a.cpp" line="92"/>
         <source>Save NMEA Data to file</source>
         <translation>Speichere NMEA Daten in Datei</translation>
     </message>
@@ -5906,54 +5911,54 @@ USB Stick eingeschoben?</translation>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="593"/>
+        <location filename="../../taskeditor.cpp" line="616"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="594"/>
+        <location filename="../../taskeditor.cpp" line="617"/>
         <source>Task needs at least a start and a finish point!</source>
         <translation>Eine Aufgabe benötigt einen Start und einen Ziel Punkt!</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="618"/>
+        <location filename="../../taskeditor.cpp" line="641"/>
         <source>Double points in order</source>
         <translation>Doppelte Punkte in Folge</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="619"/>
+        <location filename="../../taskeditor.cpp" line="642"/>
         <source>Points %1 and %2 have the same coordinates.
 Please remove one of them!</source>
         <translation>Punkte %1 und %2 haben die selben Koordinaten.
 Bitte einen Punkt löschen!</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="643"/>
+        <location filename="../../taskeditor.cpp" line="666"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="644"/>
+        <location filename="../../taskeditor.cpp" line="667"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="668"/>
+        <location filename="../../taskeditor.cpp" line="691"/>
         <source>Name in Use</source>
         <translation>Name schon vergeben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="669"/>
+        <location filename="../../taskeditor.cpp" line="692"/>
         <source>Please enter a different name</source>
         <translation>Bitte anderen Namen eingeben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="937"/>
+        <location filename="../../taskeditor.cpp" line="960"/>
         <source>Defaults?</source>
         <translation>Standard?</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="938"/>
+        <location filename="../../taskeditor.cpp" line="961"/>
         <source>Reset all TP schemas to default configuration values?</source>
         <translation>Alle WP Schemas auf Standard Konfiguration rücksetzen?</translation>
     </message>
