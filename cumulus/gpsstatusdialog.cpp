@@ -105,15 +105,13 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaBoxLayout->addWidget( nmeaScrollArea );
 
   satSource = new QComboBox;
-  //satSource->setEditable( true );
-  satSource->addItem( "$GPGSV" );
-  satSource->addItem( "$BDGSV" );
-  satSource->addItem( "$GAGSV" );
-  satSource->addItem( "$GLGSV" );
-  satSource->addItem( "$GNGSV" );
-  //satSource->addItem( "$...." );
-  //QLineEdit* qle = satSource->lineEdit();
-  //qle->setMaxLength( 6 );
+  satSource->setToolTip( tr("GPS source filter") );
+  satSource->addItem( "$GP" );
+  satSource->addItem( "$BD" );
+  satSource->addItem( "$GA" );
+  satSource->addItem( "$GL" );
+  satSource->addItem( "$GN" );
+  satSource->addItem( "ALL" );
 
   startStop = new QPushButton( tr("Stop"), this );
   save      = new QPushButton( tr("Save"), this );
@@ -139,7 +137,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   topLayout->addLayout( nmeaBoxLayout );
 
   connect( satSource, SIGNAL(currentIndexChanged(int)),
-                      SLOT(slot_GsvSourceChanged(int)) );
+                      SLOT(slot_GpsSourceChanged(int)) );
 
   connect( GpsNmea::gps, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_Sentence(const QString&)) );
@@ -156,11 +154,16 @@ GpsStatusDialog::~GpsStatusDialog()
   noOfInstances--;
 }
 
-void GpsStatusDialog::slot_GsvSourceChanged( int /* index */ )
+void GpsStatusDialog::slot_GpsSourceChanged( int /* index */ )
 {
   // We pass an empty list to clear the display.
   QList<SIVInfo> siv;
   slot_SIV( siv );
+
+  // clear NMEA box and list
+  nmeaData.clear();
+  nmeaLines = 0;
+  nmeaBox->clear();
 }
 
 void GpsStatusDialog::slot_SIV( QList<SIVInfo>& siv )
@@ -174,47 +177,56 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
 {
   int maxLines = 100;
 
+  // Selected GPS source
+  QString gps = satSource->currentText();
+
   if( showNmeaData )
     {
-      nmeaLines++;
+      if( gps == "ALL" || sentence.startsWith( gps ) )
+	{
+	  // Show only desired sentences
+	  nmeaLines++;
 
-      if( nmeaLines > maxLines )
-        {
-          // Note! To display to many lines can become a performance issue
-          // because the window update effort is huge.
-          int idx = nmeaData.indexOf( QChar('\n') );
+	  if( nmeaLines > maxLines )
+	    {
+	      // Note! To display to many lines can become a performance issue
+	      // because the window update effort is huge.
+	      int idx = nmeaData.indexOf( QChar('\n') );
 
-          if( idx != -1 && nmeaData.size() > idx + 1 )
-            {
-              nmeaData.remove( 0, idx + 1 );
-              nmeaLines--;
-            }
-        }
+	      if( idx != -1 && nmeaData.size() > idx + 1 )
+		{
+		  nmeaData.remove( 0, idx + 1 );
+		  nmeaLines--;
+		}
+	    }
 
-      QString string = sentence.trimmed().append("\n");
+	  QString string = sentence.trimmed().append("\n");
 
-      // NMEA data string to be displayed in QLabel
-      nmeaData.append( string );
+	  // NMEA data string to be displayed in QLabel
+	  nmeaData.append( string );
 
-      // NMEA data to be saved into a file on user request.
-      nmeaList.append( string );
+	  // NMEA data to be saved into a file on user request.
+	  nmeaList.append( string );
 
-      if( nmeaList.size() > 250 )
-        {
-          nmeaList.removeFirst();
-        }
+	  if( nmeaList.size() > 250 )
+	    {
+	      nmeaList.removeFirst();
+	    }
 
-      // To reduce the load the messages are displayed only if the timer
-      // has expired. The time expires after 750ms. That was the breakdown!!!
-      if( ! uTimer->isActive() )
-        {
-          uTimer->start( 750 );
-        }
+	  // To reduce the load the messages are displayed only if the timer
+	  // has expired. The time expires after 750ms. That was the breakdown!!!
+	  if( ! uTimer->isActive() )
+	    {
+	      uTimer->start( 750 );
+	    }
+	}
     }
 
-  QString gsv = satSource->currentText();
-
-  if( sentence.startsWith(gsv) )
+  if( gps == "ALL" && sentence.contains( "GSV" ) )
+    {
+      ExtractSatsInView( sentence );
+    }
+  else if( sentence.startsWith( gps + "GSV") )
     {
       ExtractSatsInView( sentence );
     }

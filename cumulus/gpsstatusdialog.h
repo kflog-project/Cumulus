@@ -27,7 +27,7 @@
   *
   * \date 2003-2018
   *
-  * \version 1.1
+  * \version 1.2
   */
 
 #ifndef GPS_STATUS_DIALOG_H
@@ -114,7 +114,7 @@ private slots:
   /**
    * Called, when the index in the combobox was changed.
    */
-  void slot_GsvSourceChanged( int index );
+  void slot_GpsSourceChanged( int index );
 
   /**
    * Called if the start/stop button is pressed to start or stop NMEA display.

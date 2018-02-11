@@ -24,7 +24,7 @@
  *
  * \date 2018
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef SettingsPageFlarm_H
@@ -70,8 +70,11 @@ protected:
 
 private slots:
 
+  /** called, when the help button was clicked to open the help page. */
+  void slot_Help();
+
   /** Loads all Flarm data into the table. */
-  void slot_getAllFlarmData();
+  void slot_GetAllFlarmData();
 
   /** Close button press is handled here. */
   void slot_Close();

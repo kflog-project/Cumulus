@@ -44,12 +44,15 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   QHBoxLayout *contentLayout = new QHBoxLayout;
   setLayout(contentLayout);
 
-  QGridLayout* topLayout = new QGridLayout;
-  contentLayout->addLayout(topLayout, 10);
-
   int row = 0;
-  topLayout->setRowMinimumHeight( row, 20);
+
+  QGridLayout* topLayout = new QGridLayout;
+  topLayout->setMargin(10 * Layout::getIntScaledDensity());
+  topLayout->setSpacing(15 * Layout::getIntScaledDensity());
+  topLayout->setRowMinimumHeight( row, Layout::getIntScaledDensity() * 20);
+  topLayout->setColumnStretch( 1, 5 );
   row++;
+  contentLayout->addLayout(topLayout, 10);
 
   topLayout->addWidget(new QLabel(tr("GPS Source:")), row, 0);
   GpsSource = new QComboBox(this);
@@ -111,9 +114,9 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   buttonBox->setSpacing(0);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(30);
-  buttonBox->addWidget(ok, 1);
   buttonBox->addStretch(2);
+  buttonBox->addWidget(ok, 1);
+  buttonBox->addSpacing(30);
   buttonBox->addWidget(titlePix);
   contentLayout->addLayout(buttonBox);
 

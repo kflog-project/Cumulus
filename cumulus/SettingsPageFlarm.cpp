@@ -31,6 +31,7 @@
 #include "flarmbase.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "rowdelegate.h"
 #include "whatsthat.h"
@@ -135,32 +136,41 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
 
   QGroupBox* buttonBox = new QGroupBox( this );
 
-  int buttonSize = Layout::getButtonSize();
-  int iconSize   = buttonSize - 5;
+  QPushButton *helpButton = new QPushButton(this);
+  helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  helpButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  helpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   m_loadButton  = new QPushButton;
-  m_loadButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "resort.png" ) ) );
-  m_loadButton->setIconSize(QSize(iconSize, iconSize));
-  m_loadButton->setMinimumSize(buttonSize, buttonSize);
-  m_loadButton->setMaximumSize(buttonSize, buttonSize);
   m_loadButton->setToolTip( tr("Get all data items from FLARM.") );
+  m_loadButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "resort.png" ) ) );
+  m_loadButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  m_loadButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
   m_closeButton = new QPushButton;
   m_closeButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
-  m_closeButton->setIconSize(QSize(iconSize, iconSize));
-  m_closeButton->setMinimumSize(buttonSize, buttonSize);
-  m_closeButton->setMaximumSize(buttonSize, buttonSize);
+  m_closeButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  m_closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  connect( m_loadButton, SIGNAL(clicked() ), this, SLOT(slot_getAllFlarmData()) );
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setAlignment( Qt::AlignCenter );
+  titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
+
+  connect( helpButton, SIGNAL(clicked()), this, SLOT(slot_Help()) );
+  connect( m_loadButton, SIGNAL(clicked() ), this, SLOT(slot_GetAllFlarmData()) );
   connect( m_closeButton, SIGNAL(clicked() ), this, SLOT(slot_Close()) );
 
   // vertical box with operator buttons
   QVBoxLayout *vbox = new QVBoxLayout;
 
   vbox->setSpacing(0);
-  vbox->addWidget( m_loadButton );
+  vbox->addWidget( helpButton, 1 );
   vbox->addStretch(2);
-  vbox->addWidget( m_closeButton );
+  vbox->addWidget( m_closeButton, 1 );
+  vbox->addStretch(2);
+  vbox->addWidget( m_loadButton, 1 );
+  vbox->addSpacing( 10 * Layout::getIntScaledDensity() );
+  vbox->addWidget(titlePix);
   buttonBox->setLayout( vbox );
   topLayout->addWidget( buttonBox );
 
@@ -515,7 +525,7 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
     }
 }
 
-void SettingsPageFlarm::slot_getAllFlarmData()
+void SettingsPageFlarm::slot_GetAllFlarmData()
 {
   if( checkFlarmConnection() == false )
     {
@@ -702,6 +712,16 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
 
   m_timer->stop();
   nextFlarmCommand();
+}
+
+void SettingsPageFlarm::slot_Help()
+{
+  QString file = "cumulus-settings-flarm.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void SettingsPageFlarm::slot_Timeout()
