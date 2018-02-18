@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2017 by Axel Pauli
+ **   Copyright (c): 2012-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -35,7 +35,7 @@
 #include "numberEditor.h"
 #include "preflightflarmpage.h"
 #include "preflighttaskpage.h"
-#include "taskfilemanager.h"
+#include "TaskFileManager.h"
 #include "varspinbox.h"
 
 extern MapContents* _globalMapContents;
@@ -1102,7 +1102,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   // Load the flight task
   TaskFileManager tfm;
-  FlightTask* ft = tfm.loadTask( tpName );
+  FlightTask* ft = tfm.readTaskFile( tpName );
 
   if( GeneralConfig::instance()->getCurrentTaskName() != tpName )
     {

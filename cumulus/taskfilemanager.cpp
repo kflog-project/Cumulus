@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   taskfilemanager.cpp
+**   taskfilemanagerold.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -27,9 +27,7 @@
 
 extern MapMatrix *_globalMapMatrix;
 
-#warning "Task list file 'tasks.tsk' is stored at User Data Directory"
-
-TaskFileManager::TaskFileManager() :
+TaskFileManagerOld::TaskFileManagerOld() :
  m_taskFileName( "" ),
  m_tas( 0 )
 {
@@ -37,7 +35,7 @@ TaskFileManager::TaskFileManager() :
   m_taskFileName = GeneralConfig::instance()->getUserDataDirectory() + "/tasks.tsk";
 }
 
-TaskFileManager::TaskFileManager( QString fileName, const int tas ) :
+TaskFileManagerOld::TaskFileManagerOld( QString fileName, const int tas ) :
   m_taskFileName( fileName ),
   m_tas( tas )
 {
@@ -80,8 +78,8 @@ TE
 
 */
 
-bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
-                                    QString fileName )
+bool TaskFileManagerOld::loadTaskList( QList<FlightTask*>& flightTaskList,
+                                       QString fileName )
 {
   while( ! flightTaskList.isEmpty() )
     {
@@ -157,8 +155,8 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList,
   return true;
 }
 
-bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
-                                       QString fileName )
+bool TaskFileManagerOld::loadTaskListNew( QList<FlightTask*>& flightTaskList,
+                                          QString fileName )
 {
   while( ! flightTaskList.isEmpty() )
     {
@@ -300,7 +298,7 @@ bool TaskFileManager::loadTaskListNew( QList<FlightTask*>& flightTaskList,
   return true;
 }
 
-QStringList TaskFileManager::getTaskListNames( QString fileName )
+QStringList TaskFileManagerOld::getTaskListNames( QString fileName )
 {
   QStringList sl;
   QString fn;
@@ -370,7 +368,7 @@ QStringList TaskFileManager::getTaskListNames( QString fileName )
   return sl;
 }
 
-FlightTask* TaskFileManager::loadTask( QString taskName, QString fileName )
+FlightTask* TaskFileManagerOld::loadTask( QString taskName, QString fileName )
 {
   QList<FlightTask*> ftl;
 
@@ -399,7 +397,7 @@ FlightTask* TaskFileManager::loadTask( QString taskName, QString fileName )
   return ft;
 }
 
-bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList,
+bool TaskFileManagerOld::saveTaskList( QList<FlightTask*>& flightTaskList,
                                     QString fileName )
 {
   QString fn;

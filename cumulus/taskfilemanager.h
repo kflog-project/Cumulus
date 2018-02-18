@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   taskfilemanager.h
+**   taskfilemanagerold.h
 **
 **   This file is part of Cumulus.
 **
@@ -18,7 +18,7 @@
 ***********************************************************************/
 
 /**
- * \class TaskFileManager
+ * \class TaskFileManagerOld
  *
  * \author Axel Pauli
  *
@@ -31,8 +31,8 @@
  * \version 1.3
  */
 
-#ifndef TASK_FILE_MANAGER_H_
-#define TASK_FILE_MANAGER_H_
+#ifndef TASK_FILE_MANAGER_OLD_H_
+#define TASK_FILE_MANAGER_OLD_H_
 
 #include <QList>
 #include <QString>
@@ -41,7 +41,7 @@
 #include "flighttask.h"
 #include "speed.h"
 
-class TaskFileManager
+class TaskFileManagerOld
 {
  public:
 
@@ -49,7 +49,7 @@ class TaskFileManager
    * Default constructor. Sets the task file name to its default value and the
    * TAS to zero.
    */
-  TaskFileManager();
+  TaskFileManagerOld();
 
   /**
    * Special constructor.
@@ -58,7 +58,7 @@ class TaskFileManager
    *
    * \param tas TAS to be used.
    */
-  TaskFileManager( QString taskFileName, int tas=0 );
+  TaskFileManagerOld( QString taskFileName, int tas=0 );
 
   /**
    * Loads all tasks found in the task file into the list.

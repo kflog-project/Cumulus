@@ -38,7 +38,7 @@
 #include "speed.h"
 #include "target.h"
 #include "taskeditor.h"
-#include "taskfilemanager.h"
+#include "TaskFileManager.h"
 #include "wgspoint.h"
 #include "rowdelegate.h"
 
@@ -724,6 +724,7 @@ void PreFlightTaskPage::slotDeleteTask()
     }
 
   QString id( selected->text(0) );
+  QString taskName( selected->text(1).trimmed() );
 
   QMessageBox mb( QMessageBox::Question,
                   tr( "Delete Task?" ),
@@ -764,6 +765,9 @@ void PreFlightTaskPage::slotDeleteTask()
 
   uint no = id.toUInt() - 1;
   delete m_flightTaskList.takeAt( no );
+
+  TaskFileManager tfm;
+  tfm.removeTaskFile( taskName );
   saveTaskList();
   m_taskContent->clear();
   m_taskList->clear();
@@ -774,10 +778,8 @@ void PreFlightTaskPage::slotDeleteTask()
 bool PreFlightTaskPage::saveTaskList()
 {
   TaskFileManager tfm;
-
   return tfm.saveTaskList( m_flightTaskList );
 }
-
 
 /** Select the last stored task */
 void PreFlightTaskPage::selectLastTask()

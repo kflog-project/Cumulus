@@ -55,6 +55,7 @@
 #include "preflightwidget.h"
 #include "sound.h"
 #include "target.h"
+#include "TaskFileManager.h"
 #include "time_cu.h"
 #include "waypoint.h"
 #include "wgspoint.h"
@@ -1046,6 +1047,10 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // Make the status bar visible. Maemo hides it per default.
   slotViewStatusBar( true );
+
+  // Check, if a task file upgrade has to be done.
+  TaskFileManager tfm;
+  tfm.check4Upgrade();
 }
 
 /**
