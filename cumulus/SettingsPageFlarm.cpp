@@ -39,6 +39,9 @@
 // Timeout in ms for waiting for a FLARM response
 #define RESP_TO 5000
 
+// Flarm device type query
+#define FLARM_DEVTYPE_CMD "$PFLAC,R,DEVTYPE"
+
 /**
  * Constructor
  */
@@ -186,6 +189,12 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   connect( m_timer, SIGNAL(timeout()), SLOT(slot_Timeout()));
   loadTableItems();
   loadFlarmItemHelp();
+
+  // request FLARM device type, if FLARM is available
+  if( Flarm::isFlarmAvailable() == true )
+    {
+      GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
+    }
 }
 
 SettingsPageFlarm::~SettingsPageFlarm()
