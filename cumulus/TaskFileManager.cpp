@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2016 Axel Pauli
+**   Copyright (c): 2013-2018 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
@@ -154,6 +154,8 @@ bool TaskFileManager::loadTaskList( QList<FlightTask*>& flightTaskList )
 
 void TaskFileManager::removeTaskFile( QString taskName )
 {
+  qDebug() << "TaskFileManager::removeTaskFile():" << taskName;
+
   if( taskName.isEmpty() )
     {
       return;
@@ -321,6 +323,8 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList )
 
 bool TaskFileManager::writeTaskFile( FlightTask *task )
 {
+  qDebug() << "TaskFileManager::writeTaskFile():" << task;
+
   if( task == 0 && task->getTaskName().isEmpty() )
     {
       return false;

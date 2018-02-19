@@ -1,4 +1,3 @@
-<!-- $Id$ -->
 <html>
 <head>
   <title>File Storage Locations</title>
@@ -138,20 +137,27 @@
 
   <tr>
     <td>11</td>
+    <td>$ROOT/Cumulus/tasks</td>
+    <td>*.tsk</td>
+    <td>Cumulus task files</td>
+  </tr>
+
+  <tr>
+    <td>12</td>
     <td>$ROOT/Cumulus/weather</td>
     <td>airport_icao_names.txt</td>
     <td>File containing the airport ICAO identifiers</td>
   </tr>
 
   <tr>
-    <td>12</td>
+    <td>13</td>
     <td>$ROOT/Cumulus/weather/[METAR|TAF]</td>
     <td>*.TXT</td>
     <td>Downloaded METAR and TAF files from NOAA weather server</td>
   </tr>
 
   <tr>
-    <td>13</td>
+    <td>14</td>
     <td>$ROOT/Cumulus/maps/[points|airspaces|landscape]</td>
     <td>map data files</td>
     <td>Map files</td>
@@ -163,7 +169,7 @@
 Notes:
 </p> 
 In Maemo (e.g., in Nokia hardware devices, like the N800, N810 and N900),
-the location of files numbered 3-12 is defined in Setup/General, Personal
+the location of files numbered 3-13 is defined in Setup/General, Personal
 as the <a href="cumulus-settings-personal.html#DataDirectory">Data Directory</a>.
 If Cumulus does not find this entry, it tries to
 create it in the following directories in order:
@@ -175,7 +181,7 @@ create it in the following directories in order:
 </UL>
 
 <p>
-The location of files numbered 13 is defined in Setup/General, Map Settings
+The location of files numbered 14 is defined in Setup/General, Map Settings
 as <a href="cumulus-settings-map-settings.html#Maps"><i>Maps</i></a>,
 under which are found the points, airspaces and landscape folders.
 </p>

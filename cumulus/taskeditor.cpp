@@ -689,7 +689,7 @@ void TaskEditor::slotAccept()
       // The name must be unique in the task name space
       QMessageBox mb( QMessageBox::Critical,
                       tr( "Task name in use"),
-                      tr( "Task name in use." ) + "\n\n" + tr( "Overwrite old task?" ),
+                      tr( "Task name in use." ) + "\n\n" + tr( "Overwrite existing task?" ),
                       QMessageBox::Yes|QMessageBox::No,
                       this );
 

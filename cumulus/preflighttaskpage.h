@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2016 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *
  * \brief A widget for pre-flight task settings.
  *
- * \date 2002-2016
+ * \date 2002-2018
  *
- * \version 1.7
+ * \version 1.8
  *
  */
 
@@ -69,8 +69,11 @@ class PreFlightTaskPage : public QWidget
 
  private:
 
-  /** Save task list */
+  /** Save a task list */
   bool saveTaskList();
+
+  /** Save a single task into a file */
+  bool saveTask( FlightTask *task );
 
   /** Select the last stored task */
   void selectLastTask();

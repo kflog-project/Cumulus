@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2016 by Axel Pauli
+**                   2009-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -625,7 +625,7 @@ void PreFlightTaskPage::slotNewTask()
 void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
 {
   m_flightTaskList.append( newTask );
-  saveTaskList();
+  saveTask( newTask );
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
@@ -690,7 +690,7 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
       m_flightTaskList.append( editedTask );
     }
 
-  saveTaskList();
+  saveTask( editedTask );
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
@@ -768,7 +768,6 @@ void PreFlightTaskPage::slotDeleteTask()
 
   TaskFileManager tfm;
   tfm.removeTaskFile( taskName );
-  saveTaskList();
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
@@ -779,6 +778,12 @@ bool PreFlightTaskPage::saveTaskList()
 {
   TaskFileManager tfm;
   return tfm.saveTaskList( m_flightTaskList );
+}
+
+bool PreFlightTaskPage::saveTask( FlightTask *task )
+{
+  TaskFileManager tfm;
+  return tfm.writeTaskFile( task );
 }
 
 /** Select the last stored task */
