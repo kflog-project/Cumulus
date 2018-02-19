@@ -688,9 +688,9 @@ void TaskEditor::slotAccept()
       // Check if the task name does not conflict with existing onces.
       // The name must be unique in the task name space
       QMessageBox mb( QMessageBox::Critical,
-                      tr( "Name in Use"),
-                      tr( "Please enter a different name" ),
-                      QMessageBox::Ok,
+                      tr( "Task name in use"),
+                      tr( "Task name in use." ) + "\n\n" + tr( "Overwrite old task?" ),
+                      QMessageBox::Yes|QMessageBox::No,
                       this );
 
 #ifdef ANDROID
@@ -701,8 +701,13 @@ void TaskEditor::slotAccept()
       mb.move( pos );
 
 #endif
-      mb.exec();
-      return;
+
+      int ret = mb.exec();
+
+      if( ret == QMessageBox::No )
+	{
+	  return;
+	}
     }
 
   // Take over changed task data and publish it
@@ -717,7 +722,7 @@ void TaskEditor::slotAccept()
       emit editedTask( task2Edit );
     }
 
-  // closes and destroys window
+  // close and destroy window
   close();
 }
 

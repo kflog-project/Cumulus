@@ -82,16 +82,17 @@ void TaskFileManager::check4Upgrade()
 
  Task file syntax:
 
-# hashmark starts a comment line
+# A hashmark stands for a comment line
 
-A task file consists of the TS key, several TW keys and a TE key.
+A task file consists of the TS key, several TW keys and a TE key. A pipe symbol
+is used as separator between the elements on a single line.
 
 Example:
 
-TS,<TaskName>,<No of task points>
-TW,<Latitude>,<Longitude>,<Elevation>,<WpName>,<LongName>,<Waypoint-type>,
-   <ActiveTaskPointFigureScheme>,<TaskLineLength>,
-   <TaskCircleRadius>,<TaskSectorInnerRadius>,<TaskSectorOuterRadius>,
+TS|<TaskName>|<No of task points>
+TW|<Latitude>|<Longitude>|<Elevation>|<WpName>|<LongName>|<Waypoint-type>|
+   <ActiveTaskPointFigureScheme>|<TaskLineLength>|
+   <TaskCircleRadius>|<TaskSectorInnerRadius>|<TaskSectorOuterRadius>|
    <TaskSectorAngle>
 ...
 TE
@@ -99,11 +100,11 @@ TE
 --------------------------------------------------------------------------------
 # Cumulus-Task-File V5.0, created at 2016-01-25 20:50:15 by Cumulus 5.26.0
 
-TS,500 Diamant,4
-TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
-TW,31201333,7291667,80,Zerbst,Zerbst,61,1,1000,500,0,3000,90,1,0
-TW,30695333,8970167,238,Goerlitz,Goerlitz,61,1,1000,500,0,3000,90,1,0
-TW,31488167,8450167,67,Eggersdo,Eggersdorf Muenc,61,1,1000,500,0,3000,90,1,0
+TS|500 Diamant|4
+TW|31488167|8450167|67|Eggersdo|Eggersdorf Muenc|61|1|1000|500|0|3000|90|1|0
+TW|31201333|7291667|80|Zerbst|Zerbst|61|1|1000|500|0|3000|90|1|0
+TW|30695333|8970167|238|Goerlitz|Goerlitz|61|1|1000|500|0|3000|90|1|0
+TW|31488167|8450167|67|Eggersdo|Eggersdorf Muenc|61|1|1000|500|0|3000|90|1|0
 TE
 --------------------------------------------------------------------------------
 */
@@ -160,6 +161,7 @@ void TaskFileManager::removeTaskFile( QString taskName )
 
   QString task = m_taskFileDirectory + "/" + taskName + ".tsk";
 
+  QFile::remove( task + ".bak" );
   QFile::remove( task );
 }
 
@@ -213,7 +215,7 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
 
           tpList = new QList<TaskPoint *>;
 
-          tmpList = line.split( ",", QString::KeepEmptyParts );
+          tmpList = line.split( "|", QString::KeepEmptyParts );
 
           if( tmpList.size() < 2 ) continue;
 
@@ -227,7 +229,7 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
               TaskPoint* tp = new TaskPoint;
               tpList->append( tp );
 
-              tmpList = line.split( ",", QString::KeepEmptyParts );
+              tmpList = line.split( "|", QString::KeepEmptyParts );
 
               if( tmpList.size() < 14 ) continue;
 
@@ -319,20 +321,26 @@ bool TaskFileManager::saveTaskList( QList<FlightTask*>& flightTaskList )
 
 bool TaskFileManager::writeTaskFile( FlightTask *task )
 {
-  QString fn;
-
   if( task == 0 && task->getTaskName().isEmpty() )
     {
       return false;
     }
 
-  QString taskFileName = m_taskFileDirectory + "/" + task->getTaskName() + ".tsk";
+  QString tfn = m_taskFileDirectory + "/" + task->getTaskName() + ".tsk";
 
-  QFile f( taskFileName );
+  // Save one backup copy. An old backup must be remove before rename otherwise
+  // rename fails.
+  if( QFileInfo(tfn).exists() )
+    {
+      QFile::remove( tfn + ".bak" );
+      QFile::rename( tfn, tfn + ".bak" );
+    }
+
+  QFile f( tfn );
 
   if ( ! f.open( QIODevice::WriteOnly ) )
     {
-      qWarning() << __PRETTY_FUNCTION__ << "Could not create task-file:" << fn;
+      qWarning() << __PRETTY_FUNCTION__ << "Could not create task-file:" << tfn;
       return false;
     }
 
@@ -349,26 +357,26 @@ bool TaskFileManager::writeTaskFile( FlightTask *task )
 
   QList<TaskPoint *> tpList = task->getTpList();
 
-  stream << "TS," << task->getTaskName() << "," << tpList.count() << endl;
+  stream << "TS|" << task->getTaskName() << "|" << tpList.count() << endl;
 
   for ( int j=0; j < tpList.count(); j++ )
     {
       // saving each task point ...
       TaskPoint* tp = tpList.at(j);
-      stream << "TW,"
-             << tp->getWGSPosition().x() << ","
-             << tp->getWGSPosition().y() << ","
-             << tp->getElevation() << ","
-             << tp->getWPName() << ","
-             << tp->getName() << ","
-             << tp->getTypeID() << ","
-             << tp->getActiveTaskPointFigureScheme() << ","
-             << tp->getTaskLineLength().getMeters() << ","
-             << tp->getTaskCircleRadius().getMeters() << ","
-             << tp->getTaskSectorInnerRadius().getMeters() << ","
-             << tp->getTaskSectorOuterRadius().getMeters() << ","
-             << tp->getTaskSectorAngle() << ","
-             << tp->getAutoZoom() << ","
+      stream << "TW|"
+             << tp->getWGSPosition().x() << "|"
+             << tp->getWGSPosition().y() << "|"
+             << tp->getElevation() << "|"
+             << tp->getWPName() << "|"
+             << tp->getName() << "|"
+             << tp->getTypeID() << "|"
+             << tp->getActiveTaskPointFigureScheme() << "|"
+             << tp->getTaskLineLength().getMeters() << "|"
+             << tp->getTaskCircleRadius().getMeters() << "|"
+             << tp->getTaskSectorInnerRadius().getMeters() << "|"
+             << tp->getTaskSectorOuterRadius().getMeters() << "|"
+             << tp->getTaskSectorAngle() << "|"
+             << tp->getAutoZoom() << "|"
              << tp->getUserEditFlag()
              << endl;
     }
