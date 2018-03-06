@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2017 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2018 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map files as value lists.
  *
- * \date 2000-2017
+ * \date 2000-2018
  *
- * \version 1.6
+ * \version 1.7
  */
 
 #ifndef MAP_CONTENTS_H
@@ -143,7 +143,7 @@ class MapContents : public QObject
     BaseMapElement* getElement(int listType, unsigned int index);
 
     /**
-     * @return a reference to the given airspace list
+     * @return a pointer to the airspace list
      */
     SortableAirspaceList* getAirspaceList()
       {
@@ -151,7 +151,7 @@ class MapContents : public QObject
       }
 
     /**
-     * @return a pointer to the given airspace
+     * @return a pointer to the given airspace index
      *
      * @param index The list index of the  airspace.
      */
@@ -171,6 +171,14 @@ class MapContents : public QObject
       };
 
     /**
+     * @return a reference to the glider field list
+     */
+    QList<Airfield>& getGliderfieldList()
+    {
+      return gliderfieldList;
+    };
+
+    /**
      * @return a pointer to the given airfield
      *
      * @param index The list index of the airfield.
@@ -179,6 +187,14 @@ class MapContents : public QObject
       {
         return &airfieldList[index];
       };
+
+    /**
+     * @return a reference to the airfield list
+     */
+    QList<Airfield>& getAirfieldList()
+    {
+      return airfieldList;
+    };
 
     /**
      * @return a pointer to the given outlanding
@@ -191,6 +207,14 @@ class MapContents : public QObject
       };
 
     /**
+     * @return a reference to the outlanding list
+     */
+    QList<Airfield>& getQutlandingList()
+    {
+      return outLandingList;
+    };
+
+    /**
      * @return a pointer to the given RadioPoint
      *
      * @param  index The list index of the radio point
@@ -201,6 +225,14 @@ class MapContents : public QObject
       };
 
     /**
+     * @return a reference to the radio list
+     */
+    QList<RadioPoint>& getRadioList()
+    {
+      return radioList;
+    };
+
+    /**
      * @return a pointer to the given hotspot point.
      *
      * @param  index  The list index of the hotspot point
@@ -209,6 +241,14 @@ class MapContents : public QObject
       {
         return &hotspotList[index];
       };
+
+    /**
+      * @return a reference to the hotspot list
+      */
+     QList<SinglePoint>& getHotspotList()
+     {
+       return hotspotList;
+     };
 
     /**
      * @return a pointer to the SinglePoint of the given map element
