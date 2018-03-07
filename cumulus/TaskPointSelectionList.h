@@ -37,13 +37,12 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QRadioButton>
 #include <QString>
 #include <QTreeWidget>
 #include <QWidget>
 
 #include "singlepoint.h"
-
-class QRadioButton;
 
 class TaskPointSelectionList : public QWidget
 {
@@ -86,6 +85,29 @@ class TaskPointSelectionList : public QWidget
   {
     m_groupBox->setTitle( title );
   };
+
+  /**
+   * Set the header items to the passed texts.
+   */
+  void setTreeHeader( QString h0, QString h1 )
+  {
+    QTreeWidgetItem* headerItem = m_taskpointTreeWidget->headerItem();
+    headerItem->setText( 0, h0 );
+    headerItem->setText( 1, h1 );
+  }
+
+  /**
+   * Get selected search column.
+   */
+  int getSearchColumn()
+  {
+    if( m_RBCol0->isChecked() )
+      {
+        return 0;
+      }
+
+    return 1;
+  }
 
  protected:
 
@@ -149,22 +171,21 @@ class TaskPointSelectionList : public QWidget
     {
       public:
 
-	PointItem(QString item0, QString item1, SinglePoint* point);
-	PointItem(QString item0, QString item1, Waypoint* point);
+      PointItem(QString item0, QString item1, SinglePoint* point);
+      PointItem(QString item0, QString item1, Waypoint* point);
 
-	~PointItem()
-	{
-	  if( deleteSinglePoint == true )
-	    {
-	      qDebug() << "deleteSinglePoint is called";
-	      delete point;
-	    }
-	}
+      ~PointItem()
+      {
+        if( deleteSinglePoint == true )
+          {
+            delete point;
+          }
+      }
 
-        SinglePoint* getPoint() const
-	  {
-	    return point;
-	  };
+      SinglePoint* getPoint() const
+        {
+          return point;
+        };
 
       private:
 

@@ -225,9 +225,9 @@ class MapContents : public QObject
       };
 
     /**
-     * @return a reference to the radio list
+     * @return a reference to the radio point list
      */
-    QList<RadioPoint>& getRadioList()
+    QList<RadioPoint>& getRadioPointList()
     {
       return radioList;
     };

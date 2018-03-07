@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2016 by Axel Pauli
+ **   Copyright (c): 2010-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -80,6 +80,38 @@ TaskPoint::TaskPoint( const Waypoint& wp, enum TaskPointTypes::TaskPointType typ
   m_flightTaskListIndex(-1)
 {
   m_taskLine.setLineCenter( wp.wgsPoint );
+  setConfigurationDefaults();
+}
+
+TaskPoint::TaskPoint( const SinglePoint& sp, enum TaskPointTypes::TaskPointType type ) :
+  SinglePoint( sp.getName(),
+               sp.getWPName(),
+               BaseMapElement::Turnpoint,
+               sp.getWGSPosition(),
+               sp.getPosition(),
+               sp.getElevation(),
+               sp.getCountry(),
+               sp.getComment() ),
+  angle(0.0),
+  minAngle(0.0),
+  maxAngle(0.0),
+  bearing(-1),
+  distance(0.0),
+  distTime(0),
+  wca(0.0),
+  trueHeading(-1.0),
+  groundSpeed(0.0),
+  wtResult(false),
+  m_taskPointType(type),
+  m_taskActiveTaskPointFigureScheme(GeneralConfig::Undefined),
+  m_lastPassageState(Outside),
+  m_lastDistance(-1),
+  m_taskSectorAngle(0),
+  m_autoZoom(false),
+  m_userEdited(false),
+  m_flightTaskListIndex(-1)
+{
+  m_taskLine.setLineCenter( sp.getWGSPosition() );
   setConfigurationDefaults();
 }
 

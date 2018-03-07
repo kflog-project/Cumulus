@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2016 by Axel Pauli
+ **   Copyright (c): 2010-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -33,9 +33,9 @@
  * This class is an extension of the single point class. It handles all data
  * items concerning a flight task.
  *
- * \date 2010-2016
+ * \date 2010-2018
  *
- * \version 1.4
+ * \version 1.5
  */
 class TaskPoint : public SinglePoint
 {
@@ -55,6 +55,12 @@ class TaskPoint : public SinglePoint
    * Constructs a taskpoint object from a waypoint object.
    */
   TaskPoint( const Waypoint& wp,
+             enum TaskPointTypes::TaskPointType type=TaskPointTypes::Unknown );
+
+  /**
+   * Constructs a taskpoint object from a SinglePoint object.
+   */
+  TaskPoint( const SinglePoint& sp,
              enum TaskPointTypes::TaskPointType type=TaskPointTypes::Unknown );
 
   virtual ~TaskPoint();

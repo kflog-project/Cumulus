@@ -88,7 +88,11 @@ signals:
 
  private slots:
 
-  void openAfSelectionList();
+ void slotOpenAfSelectionList();
+ void slotOpenHsSelectionList();
+ void slotOpenNaSelectionList();
+ void slotOpenOlSelectionList();
+ void slotOpenWpSelectionList();
 
   /** Handles the addition of a taskpoint to the list. */
   void slotAddTaskpoint( SinglePoint* sp );
@@ -205,7 +209,18 @@ signals:
   QPushButton* editButton;
   QPushButton* defaultButton;
 
+  /** List command buttons */
+  QPushButton* afButton;
+  QPushButton* hsButton;
+  QPushButton* naButton;
+  QPushButton* olButton;
+  QPushButton* wpButton;
+
   TaskPointSelectionList* afSelectionList;
+  TaskPointSelectionList* hsSelectionList;
+  TaskPointSelectionList* naSelectionList;
+  TaskPointSelectionList* olSelectionList;
+  TaskPointSelectionList* wpSelectionList;
 
   /** The list index of the last edited taskpoint. */
   int m_lastEditedTP;

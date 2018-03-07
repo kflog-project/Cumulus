@@ -43,13 +43,24 @@
 #include "waypointlistwidget.h"
 #include "wpeditdialog.h"
 
+extern MapContents *_globalMapContents;
+
 TaskEditor::TaskEditor( QWidget* parent,
                         QStringList &taskNamesInUse,
                         FlightTask* task ) :
   QWidget( parent ),
   taskNamesInUse( taskNamesInUse ),
   lastSelectedItem(0),
+  afButton(0),
+  hsButton(0),
+  naButton(0),
+  olButton(0),
+  wpButton(0),
   afSelectionList(0),
+  hsSelectionList(0),
+  naSelectionList(0),
+  olSelectionList(0),
+  wpSelectionList(0),
   m_lastEditedTP(-1)
 {
   setObjectName("TaskEditor");
@@ -193,7 +204,6 @@ TaskEditor::TaskEditor( QWidget* parent,
   headlineLayout->addWidget( new QLabel( tr("Name:") ) );
   headlineLayout->addWidget( taskName );
 
-  // QStyle* style = QApplication::style();
   defaultButton = new QPushButton;
   // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
   defaultButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("clear-32.png")) );
@@ -211,9 +221,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   editButton->setToolTip(tr("Edit selected waypoint"));
 #endif
   headlineLayout->addWidget(editButton);
-  //headlineLayout->setSpacing(20);
   headlineLayout->addWidget(okButton);
-  //headlineLayout->addSpacing(20);
   headlineLayout->addWidget(cancelButton);
 
   totalLayout->addWidget( taskList, 1, 0 );
@@ -236,8 +244,61 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 1, 1 );
 
-  QPushButton* afSelButton = new QPushButton( "Airfields" );
-  totalLayout->addWidget( afSelButton, 1, 2 );
+  if( _globalMapContents->getAirfieldList().size() > 0 ||
+      _globalMapContents->getGliderfieldList().size() > 0 )
+    {
+      afButton = new QPushButton( tr("Airfields") );
+      connect( afButton, SIGNAL( clicked() ), SLOT(slotOpenAfSelectionList()) );
+    }
+
+  if( _globalMapContents->getHotspotList().size() > 0 )
+    {
+      hsButton = new QPushButton( tr("Hotspots") );
+      connect( hsButton, SIGNAL( clicked() ), SLOT(slotOpenHsSelectionList()) );
+    }
+
+  if( _globalMapContents->getRadioPointList().size() > 0 )
+    {
+      naButton = new QPushButton( "Navaids" );
+      connect( naButton, SIGNAL( clicked() ), SLOT(slotOpenNaSelectionList()) );
+    }
+
+  if( _globalMapContents->getQutlandingList().size() > 0 )
+    {
+      olButton = new QPushButton( "Outlandings" );
+      connect( olButton, SIGNAL( clicked() ), SLOT(slotOpenOlSelectionList()) );
+    }
+
+  if( _globalMapContents->getWaypointList().size() > 0 )
+    {
+      wpButton = new QPushButton( "Waypoints" );
+      connect( wpButton, SIGNAL( clicked() ), SLOT(slotOpenWpSelectionList()) );
+    }
+
+  if( afButton || hsButton || naButton || olButton || wpButton )
+    {
+      QVBoxLayout* buttonLayout = new QVBoxLayout;
+      buttonLayout->setMargin(10);
+
+      QPushButton* bList[5];
+      bList[0] = afButton;
+      bList[1] = hsButton;
+      bList[2] = naButton;
+      bList[3] = olButton;
+      bList[4] = wpButton;
+
+      for( int i = 0; i < 5 && bList[i] != 0; i++ )
+        {
+          buttonLayout->addWidget( bList[i] );
+        }
+
+      totalLayout->addLayout( buttonLayout, 1, 2 );
+    }
+  else
+    {
+      QLabel* label = new QLabel( tr("No data\navailable") );
+      totalLayout->addWidget( label, 1, 2 );
+    }
 
   if ( editState == TaskEditor::edit )
     {
@@ -277,17 +338,29 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   connect( taskList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
            this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );
-
-  connect( afSelButton, SIGNAL( clicked() ), SLOT(openAfSelectionList()) );
 }
 
 TaskEditor::~TaskEditor()
 {
   qDeleteAll(tpList);
   tpList.clear();
+
+  TaskPointSelectionList* tsl[4];
+  tsl[0] = afSelectionList;
+  tsl[1] = naSelectionList;
+  tsl[2] = olSelectionList;
+  tsl[3] = wpSelectionList;
+
+  for( int i = 0; i < 4; i++ )
+    {
+      if( tsl[i] != 0 )
+        {
+          delete tsl[i];
+        }
+    }
 }
 
-void TaskEditor::openAfSelectionList()
+void TaskEditor::slotOpenAfSelectionList()
 {
   if( afSelectionList == 0 )
     {
@@ -296,6 +369,50 @@ void TaskEditor::openAfSelectionList()
     }
 
   afSelectionList->show();
+}
+
+void TaskEditor::slotOpenHsSelectionList()
+{
+  if( hsSelectionList == 0 )
+    {
+      hsSelectionList = new TaskPointSelectionList( this, tr("Hotspots") );
+      hsSelectionList->fillSelectionListWithHotspots();
+    }
+
+  hsSelectionList->show();
+}
+
+void TaskEditor::slotOpenNaSelectionList()
+{
+  if( naSelectionList == 0 )
+    {
+      naSelectionList = new TaskPointSelectionList( this, tr("Navaids") );
+      naSelectionList->fillSelectionListWithNavaids();
+    }
+
+  naSelectionList->show();
+}
+
+void TaskEditor::slotOpenOlSelectionList()
+{
+  if( olSelectionList == 0 )
+    {
+      olSelectionList = new TaskPointSelectionList( this, tr("Outlandings") );
+      olSelectionList->fillSelectionListWithOutlandings();
+    }
+
+  olSelectionList->show();
+}
+
+void TaskEditor::slotOpenWpSelectionList()
+{
+  if( wpSelectionList == 0 )
+    {
+      wpSelectionList = new TaskPointSelectionList( this, tr("Waypoints") );
+      wpSelectionList->fillSelectionListWithWaypoints();
+    }
+
+  wpSelectionList->show();
 }
 
 void TaskEditor::showTask()
@@ -396,7 +513,7 @@ void TaskEditor::resizeTaskListColumns()
   taskList->resizeColumnToContents(3);
 }
 
-void TaskEditor::slotTaskWaypoint( SinglePoint* sp )
+void TaskEditor::slotAddTaskpoint( SinglePoint* sp )
 {
   if( sp == 0 )
     {
