@@ -43,14 +43,13 @@
 #include "waypointlistwidget.h"
 #include "wpeditdialog.h"
 
-extern MapContents *_globalMapContents;
-
 TaskEditor::TaskEditor( QWidget* parent,
                         QStringList &taskNamesInUse,
                         FlightTask* task ) :
   QWidget( parent ),
   taskNamesInUse( taskNamesInUse ),
   lastSelectedItem(0),
+  afSelectionList(0),
   m_lastEditedTP(-1)
 {
   setObjectName("TaskEditor");
@@ -194,12 +193,6 @@ TaskEditor::TaskEditor( QWidget* parent,
   headlineLayout->addWidget( new QLabel( tr("Name:") ) );
   headlineLayout->addWidget( taskName );
 
-  // Combo box for toggling between waypoint, airfield, outlanding lists
-  listSelectCB = new QComboBox(this);
-  listSelectCB->setEditable(false);
-  headlineLayout->addWidget( listSelectCB );
-  //headlineLayout->addSpacing(25);
-
   // QStyle* style = QApplication::style();
   defaultButton = new QPushButton;
   // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
@@ -243,71 +236,8 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 1, 1 );
 
-  // Waypoint list is always shown
-  listSelectText.append( tr("Waypoints") );
-  pointDataList.append( new WaypointListWidget( this, false ) );
-
-  // The other list are only shown, if they are not empty.
-  // Airfield list
-  if( _globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
-      _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 )
-    {
-      listSelectText.append( tr("Airfields") );
-      QVector<enum MapContents::ListID> itemList;
-      itemList << MapContents::AirfieldList << MapContents::GliderfieldList;
-      pointDataList.append( new AirfieldListWidget( itemList, this, false ) );
-    }
-
-  // Outlanding list
-  if( _globalMapContents->getListLength( MapContents::OutLandingList ) > 0 )
-    {
-      listSelectText.append( tr("Fields") );
-      QVector<enum MapContents::ListID> itemList;
-      itemList << MapContents::OutLandingList;
-      pointDataList.append( new AirfieldListWidget( itemList, this, false ) );
-    }
-
-  // Navaids
-  if( _globalMapContents->getListLength( MapContents::RadioList ) > 0 )
-    {
-      listSelectText.append( tr("Navaids") );
-      QVector<enum MapContents::ListID> itemList;
-      itemList << MapContents::RadioList;
-      pointDataList.append( new RadioPointListWidget( itemList, this, false ) );
-    }
-
-  // Hotspots
-  if( _globalMapContents->getListLength( MapContents::HotspotList ) > 0 )
-    {
-      listSelectText.append( tr("Hotspots") );
-      QVector<enum MapContents::ListID> itemList;
-      itemList << MapContents::HotspotList;
-      pointDataList.append( new SinglePointListWidget( itemList, this, false ) );
-    }
-
-  for( int i = 0; i < pointDataList.size(); i++ )
-    {
-      listSelectCB->addItem(listSelectText[i], i);
-      totalLayout->addWidget( pointDataList[i], 1, 2 );
-    }
-
-  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
-
-  if ( wpList.count() == 0 &&
-       ( _globalMapContents->getListLength( MapContents::AirfieldList ) > 0 ||
-         _globalMapContents->getListLength( MapContents::GliderfieldList ) > 0 ) )
-    {
-      // If waypoint list is zero and airfields are available,
-      // select the airfield list:
-      listSelectCB->setCurrentIndex( 1 );
-      slotToggleList( 1 );
-    }
-  else
-    {
-      // If airfield list is zero, select the waypoint list as default.
-      listSelectCB->setCurrentIndex( 0 );
-      slotToggleList( 0 );
-    }
+  QPushButton* afSelButton = new QPushButton( "Airfields" );
+  totalLayout->addWidget( afSelButton, 1, 2 );
 
   if ( editState == TaskEditor::edit )
     {
@@ -327,13 +257,13 @@ TaskEditor::TaskEditor( QWidget* parent,
   connect( addButton,    SIGNAL( clicked() ),
            this, SLOT( slotAddWaypoint() ) );
   connect( delButton,    SIGNAL( clicked() ),
-           this, SLOT( slotRemoveWaypoint() ) );
+           this, SLOT( slotRemoveTaskpoint() ) );
   connect( upButton,     SIGNAL( clicked() ),
-           this, SLOT( slotMoveWaypointUp() ) );
+           this, SLOT( slotMoveTaskpointUp() ) );
   connect( downButton,   SIGNAL( clicked() ),
-           this, SLOT( slotMoveWaypointDown() ) );
+           this, SLOT( slotMoveTaskpointDown() ) );
   connect( invertButton, SIGNAL( clicked() ),
-           this, SLOT( slotInvertWaypoints() ) );
+           this, SLOT( slotInvertTaskpoints() ) );
 
   connect( defaultButton, SIGNAL(clicked()),
            this, SLOT(slotSetTaskPointsDefaultSchema()));
@@ -345,17 +275,27 @@ TaskEditor::TaskEditor( QWidget* parent,
   connect( cancelButton, SIGNAL( clicked() ),
            this, SLOT( slotReject() ) );
 
-  connect( listSelectCB, SIGNAL(activated(int)),
-           this, SLOT(slotToggleList(int)));
-
   connect( taskList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
            this, SLOT(slotCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)) );
+
+  connect( afSelButton, SIGNAL( clicked() ), SLOT(openAfSelectionList()) );
 }
 
 TaskEditor::~TaskEditor()
 {
   qDeleteAll(tpList);
   tpList.clear();
+}
+
+void TaskEditor::openAfSelectionList()
+{
+  if( afSelectionList == 0 )
+    {
+      afSelectionList = new TaskPointSelectionList( this, tr("Airfields") );
+      afSelectionList->fillSelectionListWithAirfields();
+    }
+
+  afSelectionList->show();
 }
 
 void TaskEditor::showTask()
@@ -456,11 +396,9 @@ void TaskEditor::resizeTaskListColumns()
   taskList->resizeColumnToContents(3);
 }
 
-void TaskEditor::slotAddWaypoint()
+void TaskEditor::slotTaskWaypoint( SinglePoint* sp )
 {
-  Waypoint* wp = pointDataList[listSelectCB->currentIndex()]->getCurrentWaypoint();
-
-  if( wp == 0 )
+  if( sp == 0 )
     {
       return;
     }
@@ -472,7 +410,7 @@ void TaskEditor::slotAddWaypoint()
       // empty list
 
       // A taskpoint is only a single point and not more!
-      TaskPoint* tp = new TaskPoint( *wp );
+      TaskPoint* tp = new TaskPoint( *sp );
       tpList.append( tp );
 
       // Remember last position.
@@ -484,7 +422,7 @@ void TaskEditor::slotAddWaypoint()
       id++;
 
       // A taskpoint is only a single point and not more!
-      TaskPoint* tp = new TaskPoint( *wp );
+      TaskPoint* tp = new TaskPoint( *sp );
       tpList.insert( id, tp );
 
       // Remember last position.
@@ -495,7 +433,7 @@ void TaskEditor::slotAddWaypoint()
   showTask();
 }
 
-void TaskEditor::slotRemoveWaypoint()
+void TaskEditor::slotRemoveTaskpoint()
 {
   QTreeWidgetItem* selected = taskList->currentItem();
 
@@ -523,7 +461,7 @@ void TaskEditor::slotRemoveWaypoint()
   showTask();
 }
 
-void TaskEditor::slotInvertWaypoints()
+void TaskEditor::slotInvertTaskpoints()
 {
   if ( tpList.count() < 2 )
     {
@@ -735,7 +673,7 @@ void TaskEditor::slotReject()
   close();
 }
 
-void TaskEditor::slotMoveWaypointUp()
+void TaskEditor::slotMoveTaskpointUp()
 {
   if( taskList->selectedItems().size() == 0 ||
       taskList->topLevelItemCount() <= 2 )
@@ -759,7 +697,7 @@ void TaskEditor::slotMoveWaypointUp()
   showTask();
 }
 
-void TaskEditor::slotMoveWaypointDown()
+void TaskEditor::slotMoveTaskpointDown()
 {
   if( taskList->selectedItems().size() == 0 ||
       taskList->topLevelItemCount() <= 2 )

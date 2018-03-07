@@ -33,6 +33,7 @@
 #ifndef TaskPointSelectionList_h
 #define TaskPointSelectionList_h
 
+#include <QDebug>
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QPushButton>
@@ -41,6 +42,8 @@
 #include <QWidget>
 
 #include "singlepoint.h"
+
+class QRadioButton;
 
 class TaskPointSelectionList : public QWidget
 {
@@ -52,7 +55,7 @@ class TaskPointSelectionList : public QWidget
 
  public:
 
-  TaskPointSelectionList( QWidget *parent=0 );
+  TaskPointSelectionList( QWidget *parent=0, QString title="" );
 
   virtual ~TaskPointSelectionList();
 
@@ -129,6 +132,9 @@ class TaskPointSelectionList : public QWidget
   QPushButton* m_ok;
   QTreeWidget* m_taskpointTreeWidget;
 
+  QRadioButton* m_RBCol0;
+  QRadioButton* m_RBCol1;
+
   /**
    * \class PointItem
    *
@@ -143,7 +149,17 @@ class TaskPointSelectionList : public QWidget
     {
       public:
 
-        PointItem(QString item0, QString item1, SinglePoint* point);
+	PointItem(QString item0, QString item1, SinglePoint* point);
+	PointItem(QString item0, QString item1, Waypoint* point);
+
+	~PointItem()
+	{
+	  if( deleteSinglePoint == true )
+	    {
+	      qDebug() << "deleteSinglePoint is called";
+	      delete point;
+	    }
+	}
 
         SinglePoint* getPoint() const
 	  {
@@ -153,6 +169,7 @@ class TaskPointSelectionList : public QWidget
       private:
 
         SinglePoint* point;
+        bool deleteSinglePoint;
     };
 };
 

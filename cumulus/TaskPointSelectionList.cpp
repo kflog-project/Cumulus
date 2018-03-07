@@ -31,14 +31,18 @@
 
 extern MapContents *_globalMapContents;
 
-TaskPointSelectionList::TaskPointSelectionList( QWidget *parent ) :
+TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title ) :
  QWidget(parent)
 {
   setObjectName( "TaskPointSelectionList" );
-  setWindowTitle(tr("Airfield Selection"));
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
-  setAttribute(Qt::WA_DeleteOnClose);
+  //setAttribute(Qt::WA_DeleteOnClose);
+
+  if( title.isEmpty() == false )
+    {
+      setWindowTitle( title + " " + tr("Selection"));
+    }
 
   if( parent )
     {
@@ -55,12 +59,12 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent ) :
   m_taskpointTreeWidget->setItemsExpandable( false );
   m_taskpointTreeWidget->setSortingEnabled( true );
   m_taskpointTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
-  m_taskpointTreeWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
+  m_taskpointTreeWidget->setSelectionBehavior( QAbstractItemView::SelectItems );
   m_taskpointTreeWidget->setAlternatingRowColors(true);
-  m_taskpointTreeWidget->setColumnCount( 1 );
+  m_taskpointTreeWidget->setColumnCount( 2 );
   m_taskpointTreeWidget->setFocusPolicy( Qt::StrongFocus );
   m_taskpointTreeWidget->setUniformRowHeights(true);
-  m_taskpointTreeWidget->setHeaderLabel( tr( "Airfields" ) );
+  m_taskpointTreeWidget->setHeaderLabel( title );
 
   connect( m_taskpointTreeWidget, SIGNAL(itemSelectionChanged()),
            SLOT(slotItemSelectionChanged()) );
@@ -71,6 +75,7 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent ) :
 
   QTreeWidgetItem* headerItem = m_taskpointTreeWidget->headerItem();
   headerItem->setTextAlignment( 0, Qt::AlignCenter );
+  headerItem->setFlags( Qt::ItemIsSelectable|Qt::ItemIsEnabled );
 
   m_taskpointTreeWidget->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_taskpointTreeWidget->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -90,7 +95,7 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent ) :
 
   QVBoxLayout* groupLayout = new QVBoxLayout;
 
-  m_groupBox = new QGroupBox( tr("Search Entry"));
+  m_groupBox = new QGroupBox( tr("Search Entry") );
   m_groupBox->setLayout( groupLayout );
   mainLayout->addWidget( m_groupBox );
 
@@ -110,8 +115,24 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent ) :
   connect( m_searchInput, SIGNAL(textEdited(const QString&)),
            SLOT(slotTextEdited(const QString&)) );
 
+  m_RBCol0 = new QRadioButton( tr(" 1 ") );
+  m_RBCol0->setChecked( true );
+  m_RBCol0->setEnabled( true );
+
+  m_RBCol1 = new QRadioButton( tr(" 2 ") );
+  m_RBCol1->setChecked( false );
+  m_RBCol1->setEnabled( true );
+
+  QHBoxLayout* rbLayout = new QHBoxLayout;
+  rbLayout->addWidget( m_RBCol0 );
+  rbLayout->addWidget( m_RBCol1 );
+
+  QGroupBox* rbBox = new QGroupBox( tr("Search in column") );
+  rbBox->setLayout( rbLayout );
+
   QHBoxLayout* clearLayout = new QHBoxLayout;
   clearLayout->setSpacing(0);
+  clearLayout->addWidget( rbBox );
   clearLayout->addStretch(5);
   QPushButton* clearButton = new QPushButton(tr("Clear"));
 
@@ -171,7 +192,7 @@ void TaskPointSelectionList::fillSelectionListWithAirfields()
       for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
       {
 	Airfield* af = static_cast<Airfield *>(_globalMapContents->getElement(searchList[l], loop ));
-        PointItem* item = new PointItem( af->getICAO(), af->getInfoString(), af );
+        PointItem* item = new PointItem( af->getICAO(), af->getName(), af );
         m_taskpointTreeWidget->addTopLevelItem( item );
       }
     }
@@ -228,18 +249,49 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
     }
 
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
-
 }
 
 void TaskPointSelectionList::fillSelectionListWithWaypoints()
 {
+  m_searchInput->clear();
+  m_taskpointTreeWidget->clear();
 
+  QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
+
+  for( int loop = 0; loop < wpList.size(); loop++ )
+    {
+      Waypoint wp = wpList.at(loop);
+      PointItem* item = new PointItem( wp.name, wp.description, &wp );
+      m_taskpointTreeWidget->addTopLevelItem( item );
+    }
+
+  m_taskpointTreeWidget->sortItems( 0, Qt::AscendingOrder );
 }
 
 TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, SinglePoint* sp ) :
   QTreeWidgetItem(),
-  point(sp)
+  point(sp),
+  deleteSinglePoint(false)
 {
+  setText( 0, item0);
+  setText( 1, item1);
+}
+
+TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, Waypoint* wp ) :
+  QTreeWidgetItem(),
+  point(0),
+  deleteSinglePoint(true)
+{
+  // A SinglePoint object must be created due to a Waypoint is not derived from
+  // a SinglePoint.
+  point = new SinglePoint( wp->name,
+			   wp->description,
+			   static_cast<BaseMapElement::objectType>(wp->type),
+			   wp->wgsPoint,
+			   wp->projPoint,
+		           wp->elevation,
+		           wp->country,
+		           wp->comment );
   setText( 0, item0);
   setText( 1, item1);
 }

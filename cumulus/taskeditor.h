@@ -24,9 +24,9 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2016
+ * \date 2002-2018
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef TaskEditor_H
@@ -45,8 +45,10 @@
 #include "flighttask.h"
 #include "listviewfilter.h"
 #include "listwidgetparent.h"
-#include "waypoint.h"
+#include "singlepoint.h"
 #include "taskpoint.h"
+#include "waypoint.h"
+#include "TaskPointSelectionList.h"
 
 class TaskEditor : public QWidget
 {
@@ -86,22 +88,24 @@ signals:
 
  private slots:
 
-  /** Handles the addition of a waypoint to the list. */
-  void slotAddWaypoint();
+  void openAfSelectionList();
 
-  /** Handles the remove of a waypoint from the list. */
-  void slotRemoveWaypoint();
+  /** Handles the addition of a taskpoint to the list. */
+  void slotAddTaskpoint( SinglePoint* sp );
 
-  /** Handles moving up of a waypoint in the list. */
-  void slotMoveWaypointUp();
+  /** Handles the remove of a taskpoint from the list. */
+  void slotRemoveTaskpoint();
 
-  /** Handles moving down of a waypoint in the list. */
-  void slotMoveWaypointDown();
+  /** Handles moving up of a taskpoint in the list. */
+  void slotMoveTaskpointUp();
+
+  /** Handles moving down of a taskpoint in the list. */
+  void slotMoveTaskpointDown();
 
   /** Creates the list in reverse order. */
-  void slotInvertWaypoints();
+  void slotInvertTaskpoints();
 
-  /** Edit waypoint (define sector etc) */
+  /** Edit taskpoint (define sector etc) */
   void slotEditTaskPoint ();
 
   /** Called, if a task point has been edited. */
@@ -192,12 +196,6 @@ signals:
   /** Flag for indication of last selected item */
   int lastSelectedItem;
 
-  /** which list to show */
-  QComboBox* listSelectCB;
-
-  /** The text for the combo box */
-  QStringList listSelectText;
-
   /** Editor command buttons. */
   QPushButton* upButton;
   QPushButton* downButton;
@@ -206,6 +204,8 @@ signals:
   QPushButton* delButton;
   QPushButton* editButton;
   QPushButton* defaultButton;
+
+  TaskPointSelectionList* afSelectionList;
 
   /** The list index of the last edited taskpoint. */
   int m_lastEditedTP;
