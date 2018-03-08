@@ -195,7 +195,9 @@ void TaskPointSelectionList::fillSelectionListWithAirfields()
       for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
         {
           Airfield* af = static_cast<Airfield *>(_globalMapContents->getElement(searchList[l], loop ));
-          PointItem* item = new PointItem( af->getICAO(), af->getName(), af );
+          PointItem* item = new PointItem( af->getICAO().trimmed(),
+                                           af->getName().trimmed(),
+                                           af );
           item->setFlags( Qt::ItemIsSelectable|Qt::ItemIsEnabled );
           m_taskpointTreeWidget->addTopLevelItem( item );
         }
@@ -219,7 +221,9 @@ void TaskPointSelectionList::fillSelectionListWithOutlandings()
   for( int loop = 0; loop < olList.size(); loop++ )
     {
       Airfield ol = olList.at(loop);
-      PointItem* item = new PointItem( ol.getWPName(), ol.getName(), &ol );
+      PointItem* item = new PointItem( ol.getWPName().trimmed(),
+                                       ol.getName().trimmed(),
+                                       &ol );
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
@@ -241,7 +245,9 @@ void TaskPointSelectionList::fillSelectionListWithNavaids()
   for( int loop = 0; loop < rpList.size(); loop++ )
     {
       RadioPoint rp = rpList.at(loop);
-      PointItem* item = new PointItem( rp.getWPName(), rp.getName(), &rp );
+      PointItem* item = new PointItem( rp.getWPName().trimmed(),
+                                       rp.getName().trimmed(),
+                                       &rp );
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
@@ -263,7 +269,9 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
   for( int loop = 0; loop < hsList.size(); loop++ )
     {
       SinglePoint hsp = hsList.at(loop);
-      PointItem* item = new PointItem( hsp.getWPName(), hsp.getName(), &hsp );
+      PointItem* item = new PointItem( hsp.getWPName().trimmed(),
+                                       hsp.getName().trimmed(),
+                                       &hsp );
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
@@ -285,7 +293,9 @@ void TaskPointSelectionList::fillSelectionListWithWaypoints()
   for( int loop = 0; loop < wpList.size(); loop++ )
     {
       Waypoint wp = wpList.at(loop);
-      PointItem* item = new PointItem( wp.name, wp.description, &wp );
+      PointItem* item = new PointItem( wp.name.trimmed(),
+                                       wp.description.trimmed(),
+                                       &wp );
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
@@ -345,7 +355,7 @@ void TaskPointSelectionList::slotTextEdited( const QString& text )
       m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
                                              getSearchColumn() );
       m_taskpointTreeWidget->scrollToItem( m_taskpointTreeWidget->topLevelItem( 0 ),
-					                                 QAbstractItemView::PositionAtTop );
+                                           QAbstractItemView::PositionAtTop );
       return;
     }
 
@@ -356,7 +366,7 @@ void TaskPointSelectionList::slotTextEdited( const QString& text )
     {
       m_taskpointTreeWidget->setCurrentItem( items.at(0), getSearchColumn() );
       m_taskpointTreeWidget->scrollToItem( items.at (0),
-					                                 QAbstractItemView::PositionAtTop );
+                                           QAbstractItemView::PositionAtTop );
     }
 }
 

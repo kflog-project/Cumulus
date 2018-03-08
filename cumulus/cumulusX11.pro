@@ -205,8 +205,8 @@ HEADERS = \
     taskfilemanager.h \
     taskline.h \
     tasklistview.h \
-    taskpointeditor.h \
     taskpoint.h \
+    taskpointeditor.h \
     TaskPointSelectionList.h \
     taskpointtypes.h \
     time_cu.h \
@@ -229,7 +229,7 @@ HEADERS = \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
     wpinfowidget.h
-    
+
 SOURCES = \
     aboutwidget.cpp \
     airfield.cpp \
@@ -357,7 +357,7 @@ SOURCES = \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
     wpinfowidget.cpp
-        
+
 flarm {
     DEFINES += FLARM
 
@@ -412,11 +412,11 @@ internet {
 
 bluetooth {
     DEFINES += BLUEZ
-  
+
     HEADERS += bluetoothdevices.h
-    
+
     SOURCES += bluetoothdevices.cpp
-    
+
     LIBS += -lbluetooth
 }
 
@@ -429,7 +429,7 @@ numberpad {
                preflighttaskpage.h \
                settingspageairspacefillingnumpad.h \
                settingspageairspacewarningsnumpad.h
-    
+
     SOURCES += coordeditnumpad.cpp \
     		       doubleNumberEditor.cpp \
     		       glidereditornumpad.cpp \
@@ -446,7 +446,7 @@ INCLUDEPATH += ../
 
 QMAKE_CXXFLAGS += -fno-default-inline \
                   -fno-inline -Wextra
-    
+
 LIBS += -lstdc++
 
 TRANSLATIONS = locale/de/cumulus_de.ts

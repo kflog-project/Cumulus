@@ -89,7 +89,7 @@ TaskEditor::TaskEditor( QWidget* parent,
       setWindowTitle(tr("New Task"));
     }
 
-  int scale = Layout::getIntScaledDensity();
+  const int scale = Layout::getIntScaledDensity();
 
   Qt::InputMethodHints imh;
 
@@ -251,30 +251,40 @@ TaskEditor::TaskEditor( QWidget* parent,
       _globalMapContents->getGliderfieldList().size() > 0 )
     {
       afButton = new QPushButton( tr("Airfields") );
+      afButton->setIconSize( QSize( iconSize, iconSize ) );
+      afButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("airfield.xpm")) );
       connect( afButton, SIGNAL( clicked() ), SLOT(slotOpenAfSelectionList()) );
     }
 
   if( _globalMapContents->getHotspotList().size() > 0 )
     {
       hsButton = new QPushButton( tr("Hotspots") );
+      hsButton->setIconSize( QSize( iconSize, iconSize ) );
+      hsButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("thermal.xpm")) );
       connect( hsButton, SIGNAL( clicked() ), SLOT(slotOpenHsSelectionList()) );
     }
 
   if( _globalMapContents->getRadioPointList().size() > 0 )
     {
       naButton = new QPushButton( "Navaids" );
+      naButton->setIconSize( QSize( iconSize, iconSize ) );
+      naButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("vordme.xpm")) );
       connect( naButton, SIGNAL( clicked() ), SLOT(slotOpenNaSelectionList()) );
     }
 
   if( _globalMapContents->getQutlandingList().size() > 0 )
     {
       olButton = new QPushButton( "Outlandings" );
+      olButton->setIconSize( QSize( iconSize, iconSize ) );
+      olButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("outlanding.xpm")) );
       connect( olButton, SIGNAL( clicked() ), SLOT(slotOpenOlSelectionList()) );
     }
 
   if( _globalMapContents->getWaypointList().size() > 0 )
     {
       wpButton = new QPushButton( "Waypoints" );
+      wpButton->setIconSize( QSize( iconSize, iconSize ) );
+      wpButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("waypoint.xpm")) );
       connect( wpButton, SIGNAL( clicked() ), SLOT(slotOpenWpSelectionList()) );
     }
 
@@ -283,19 +293,18 @@ TaskEditor::TaskEditor( QWidget* parent,
       buttonLayout = new QVBoxLayout;
       buttonLayout->setMargin(10);
 
-      QPushButton* bList[5];
-      bList[0] = afButton;
-      bList[1] = hsButton;
-      bList[2] = naButton;
-      bList[3] = olButton;
-      bList[4] = wpButton;
+      QPushButton* bList[] = { afButton,
+                               hsButton,
+                               naButton,
+                               olButton,
+                               wpButton };
 
       for( int i = 0; i < 5; i++ )
         {
-	  if( bList[i] != 0 )
-	    {
-	      buttonLayout->addWidget( bList[i] );
-	    }
+          if( bList[i] != 0 )
+           {
+              buttonLayout->addWidget( bList[i] );
+           }
         }
 
       totalLayout->addLayout( buttonLayout, 1, 2 );
@@ -367,10 +376,11 @@ TaskEditor::~TaskEditor()
 
   // All allocated widgets for selections have to be removed.
   TaskPointSelectionList* tsl[] = { afSelectionList,
+                                    hsSelectionList,
                                     naSelectionList,
-				    naSelectionList,
-				    wpSelectionList };
-  for( int i = 0; i < 4; i++ )
+                                    olSelectionList,
+                                    wpSelectionList };
+  for( int i = 0; i <= 4; i++ )
     {
       if( tsl[i] != 0 )
         {
@@ -387,7 +397,7 @@ void TaskEditor::slotOpenAfSelectionList()
       afSelectionList->fillSelectionListWithAirfields();
 
       connect( afSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
-	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
+               SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   afSelectionList->show();
@@ -401,7 +411,7 @@ void TaskEditor::slotOpenHsSelectionList()
       hsSelectionList->fillSelectionListWithHotspots();
 
       connect( hsSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
- 	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
+               SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   hsSelectionList->show();
@@ -415,7 +425,7 @@ void TaskEditor::slotOpenNaSelectionList()
       naSelectionList->fillSelectionListWithNavaids();
 
       connect( naSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
-  	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
+               SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   naSelectionList->show();
@@ -429,7 +439,7 @@ void TaskEditor::slotOpenOlSelectionList()
       olSelectionList->fillSelectionListWithOutlandings();
 
       connect( olSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
-  	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
+               SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   olSelectionList->show();
@@ -443,7 +453,7 @@ void TaskEditor::slotOpenWpSelectionList()
       wpSelectionList->fillSelectionListWithWaypoints();
 
       connect( wpSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
-  	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
+               SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   wpSelectionList->show();
@@ -709,9 +719,9 @@ void TaskEditor::slotTaskPointEdited( TaskPoint* editedTaskPoint )
       QTreeWidgetItem* item = taskList->topLevelItem( m_lastEditedTP );
 
       if( item != 0 )
-	{
-	  taskList->setCurrentItem( item );
-	}
+        {
+          taskList->setCurrentItem( item );
+        }
     }
 }
 
@@ -745,25 +755,25 @@ void TaskEditor::slotAccept()
   for( int i = 0; i < tpList.count() - 1; i++ )
     {
       if( tpList.at(i)->getWGSPositionRef() == tpList.at(i+1)->getWGSPositionRef() )
-	{
-	  QMessageBox mb( QMessageBox::Critical,
-			  tr("Double points in order"),
-			  QString(tr("Points %1 and %2 have the same coordinates.\nPlease remove one of them!")).arg(i+1).arg(i+2),
-			  QMessageBox::Ok,
-			  this );
+        {
+          QMessageBox mb( QMessageBox::Critical,
+                          tr("Double points in order"),
+                          QString(tr("Points %1 and %2 have the same coordinates.\nPlease remove one of them!")).arg(i+1).arg(i+2),
+                          QMessageBox::Ok,
+                          this );
 
 #ifdef ANDROID
 
-	  mb.show();
-	  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-					   height()/2 - mb.height()/2 ));
-	  mb.move( pos );
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
 
 #endif
 
-	  mb.exec();
-	  return;
-	}
+          mb.exec();
+          return;
+        }
     }
 
   QString txt = taskName->text();
@@ -814,9 +824,9 @@ void TaskEditor::slotAccept()
       int ret = mb.exec();
 
       if( ret == QMessageBox::No )
-	{
-	  return;
-	}
+        {
+          return;
+        }
     }
 
   // Take over changed task data and publish it

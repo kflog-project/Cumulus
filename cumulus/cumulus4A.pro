@@ -237,6 +237,7 @@ HEADERS = \
     tasklistview.h \
     taskpoint.h \
     taskpointeditor.h \
+    TaskPointSelectionList.h \
     taskpointtypes.h \
     time_cu.h \
     tpinfowidget.h \
@@ -367,6 +368,7 @@ SOURCES = \
     tasklistview.cpp \
     taskpoint.cpp \
     taskpointeditor.cpp \
+    TaskPointSelectionList.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
     vario.cpp \
