@@ -2370,13 +2370,13 @@ All downloads are canceled!</oldsource>
         <translation>Kopiere Flarm Flüge auf USB Stick</translation>
     </message>
     <message>
-        <location filename="../../preflightflarmusbpage.cpp" line="118"/>
-        <location filename="../../preflightflarmusbpage.cpp" line="135"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="117"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="134"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="../../preflightflarmusbpage.cpp" line="166"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="165"/>
         <source>Severity: %1, ErrorCode: %2
 
 %3</source>
@@ -2385,12 +2385,12 @@ All downloads are canceled!</oldsource>
 %3</translation>
     </message>
     <message>
-        <location filename="../../preflightflarmusbpage.cpp" line="198"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="197"/>
         <source>All Flarm flights transfered to the USB stick.</source>
         <translation>Alle Flarm Flüge zum USB Stick übertragen.</translation>
     </message>
     <message>
-        <location filename="../../preflightflarmusbpage.cpp" line="206"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="205"/>
         <source>
 
 USB stick really connected?</source>
@@ -2399,12 +2399,12 @@ USB stick really connected?</source>
 USB Stick eingeschoben?</translation>
     </message>
     <message>
-        <location filename="../../preflightflarmusbpage.cpp" line="222"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="221"/>
         <source>Transferring file </source>
         <translation>Übertrage Datei </translation>
     </message>
     <message>
-        <location filename="../../preflightflarmusbpage.cpp" line="231"/>
+        <location filename="../../preflightflarmusbpage.cpp" line="230"/>
         <source>Timer expired, stopping transfer.</source>
         <translation>Zeit abgelaufen, stoppe Übertragung.</translation>
     </message>
@@ -3516,7 +3516,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../airspace.cpp" line="361"/>
         <location filename="../../flighttask.cpp" line="59"/>
         <location filename="../../flighttask.h" line="82"/>
-        <location filename="../../taskpoint.cpp" line="530"/>
+        <location filename="../../taskpoint.cpp" line="562"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -3752,7 +3752,7 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../flighttask.cpp" line="497"/>
         <location filename="../../runway.cpp" line="79"/>
-        <location filename="../../taskpoint.cpp" line="513"/>
+        <location filename="../../taskpoint.cpp" line="545"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
@@ -3926,69 +3926,69 @@ USB Stick eingeschoben?</translation>
         <translation>&lt;html&gt;Für dieses Programm wird&lt;p&gt;&lt;b&gt;keinerlei Garantie übernommen!&lt;/b&gt;&lt;/p&gt;Benutzen Sie diese Software nicht als die Grundlage Ihrer primären Navigation. Als verantwortlicher Pilot sind Sie verpflichtet, behördlich zugelassene Luftfahrtkarten und zuverlässige Navigationsmethoden zu benutzen. Beachten Sie! Die durch dieses Programm dargestellten Informationen können veraltet oder auch falsch sein.&lt;p&gt;&lt;b&gt;Akzeptieren Sie die zuvor genannten Einschränkungen?&lt;/b&gt;&lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="509"/>
+        <location filename="../../taskpoint.cpp" line="541"/>
         <source>F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="524"/>
+        <location filename="../../taskpoint.cpp" line="556"/>
         <source>Circle radius: %1</source>
         <translation>Kreis Radius: %1</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="526"/>
+        <location filename="../../taskpoint.cpp" line="558"/>
         <source>Sector radius: %1</source>
         <translation>Sektor Radius: %1</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="528"/>
+        <location filename="../../taskpoint.cpp" line="560"/>
         <source>Line: %1</source>
         <translation>Linie: %1</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="543"/>
+        <location filename="../../taskpoint.cpp" line="575"/>
         <source>C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="499"/>
-        <location filename="../../taskpoint.cpp" line="549"/>
+        <location filename="../../taskpoint.cpp" line="531"/>
+        <location filename="../../taskpoint.cpp" line="581"/>
         <source>S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="497"/>
+        <location filename="../../taskpoint.cpp" line="529"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="502"/>
+        <location filename="../../taskpoint.cpp" line="534"/>
         <source>Turn</source>
         <translation>Wende</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="504"/>
+        <location filename="../../taskpoint.cpp" line="536"/>
         <source>T</source>
         <translation>W</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="507"/>
+        <location filename="../../taskpoint.cpp" line="539"/>
         <source>Finish</source>
         <translation>Finish</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="546"/>
+        <location filename="../../taskpoint.cpp" line="578"/>
         <source>K</source>
         <translation>K</translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="552"/>
+        <location filename="../../taskpoint.cpp" line="584"/>
         <source>L</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../taskpoint.cpp" line="515"/>
-        <location filename="../../taskpoint.cpp" line="555"/>
+        <location filename="../../taskpoint.cpp" line="547"/>
+        <location filename="../../taskpoint.cpp" line="587"/>
         <source>U</source>
         <translation></translation>
     </message>
@@ -5806,57 +5806,52 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>TaskEditor</name>
     <message>
-        <location filename="../../taskeditor.cpp" line="79"/>
+        <location filename="../../taskeditor.cpp" line="80"/>
         <source>New Task</source>
         <translation>Neue Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="120"/>
+        <location filename="../../taskeditor.cpp" line="122"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="121"/>
+        <location filename="../../taskeditor.cpp" line="123"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="122"/>
+        <location filename="../../taskeditor.cpp" line="124"/>
         <source>Waypoint</source>
         <translation>Wegpunkt</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="123"/>
+        <location filename="../../taskeditor.cpp" line="125"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="147"/>
+        <location filename="../../taskeditor.cpp" line="151"/>
         <source>move selected waypoint up</source>
         <translation>markierten Wegpunkt hoch schieben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="153"/>
+        <location filename="../../taskeditor.cpp" line="157"/>
         <source>move selected waypoint down</source>
         <translation>markierten Wegpunkt runter schieben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="159"/>
+        <location filename="../../taskeditor.cpp" line="163"/>
         <source>reverse waypoint order</source>
         <translation>Wegpunktreihenfolge umkehren</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="165"/>
-        <source>add waypoint</source>
-        <translation>Wegpunkt hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../../taskeditor.cpp" line="171"/>
+        <location filename="../../taskeditor.cpp" line="175"/>
         <source>remove waypoint</source>
         <translation>Wegpunkt löschen</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="177"/>
+        <location filename="../../taskeditor.cpp" line="191"/>
         <source>save task</source>
         <translation>speichere Aufgabe</translation>
     </message>
@@ -5866,104 +5861,117 @@ USB Stick eingeschoben?</translation>
         <translation>verwerfe Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="194"/>
+        <location filename="../../taskeditor.cpp" line="202"/>
         <source>Name:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="209"/>
+        <location filename="../../taskeditor.cpp" line="211"/>
         <source>Set task figure default schemas</source>
         <translation>Aufgaben Figuren auf Standard rücksetzen</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="218"/>
+        <location filename="../../taskeditor.cpp" line="220"/>
         <source>Edit selected waypoint</source>
         <translation>Editiere markierten Wegpunkt</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="247"/>
+        <location filename="../../taskeditor.cpp" line="445"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="255"/>
+        <location filename="../../taskeditor.cpp" line="245"/>
+        <location filename="../../taskeditor.cpp" line="389"/>
         <source>Airfields</source>
         <translation>Flugplätze</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="264"/>
-        <source>Fields</source>
-        <translation>Felder</translation>
-    </message>
-    <message>
-        <location filename="../../taskeditor.cpp" line="273"/>
+        <location filename="../../taskeditor.cpp" line="417"/>
         <source>Navaids</source>
         <translation>Nav Hilfen</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="282"/>
+        <location filename="../../taskeditor.cpp" line="253"/>
+        <location filename="../../taskeditor.cpp" line="403"/>
         <source>Hotspots</source>
         <translation>T-Punkte</translation>
     </message>
     <message>
+        <location filename="../../taskeditor.cpp" line="169"/>
+        <source>clone waypoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../taskeditor.cpp" line="306"/>
+        <source>No data
+available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../taskeditor.cpp" line="431"/>
+        <source>Outlandings</source>
+        <translation type="unfinished">Landefelder</translation>
+    </message>
+    <message>
+        <location filename="../../taskeditor.cpp" line="525"/>
         <source>Total</source>
         <translation>Summe</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="616"/>
+        <location filename="../../taskeditor.cpp" line="728"/>
         <source>Task Incomplete</source>
         <translation>Aufgabe unvollständig</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="617"/>
+        <location filename="../../taskeditor.cpp" line="729"/>
         <source>Task needs at least a start and a finish point!</source>
         <translation>Eine Aufgabe benötigt einen Start und einen Ziel Punkt!</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="641"/>
+        <location filename="../../taskeditor.cpp" line="753"/>
         <source>Double points in order</source>
         <translation>Doppelte Punkte in Folge</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="642"/>
+        <location filename="../../taskeditor.cpp" line="754"/>
         <source>Points %1 and %2 have the same coordinates.
 Please remove one of them!</source>
         <translation>Punkte %1 und %2 haben die selben Koordinaten.
 Bitte einen Punkt löschen!</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="666"/>
+        <location filename="../../taskeditor.cpp" line="778"/>
         <source>Name Missing</source>
         <translation>Vermisse Name</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="667"/>
+        <location filename="../../taskeditor.cpp" line="779"/>
         <source>Enter a name for the task to save it</source>
         <translation>Bitte Tasknamen eingeben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="691"/>
+        <location filename="../../taskeditor.cpp" line="803"/>
         <source>Task name in use</source>
         <translation>Aufgabenname vergeben</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="692"/>
+        <location filename="../../taskeditor.cpp" line="804"/>
         <source>Task name in use.</source>
         <translation>Aufgabenname vergeben.</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="692"/>
+        <location filename="../../taskeditor.cpp" line="804"/>
         <source>Overwrite existing task?</source>
         <translation>Existierende Aufgabe überschreiben?</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="965"/>
+        <location filename="../../taskeditor.cpp" line="1061"/>
         <source>Defaults?</source>
         <translation>Standard?</translation>
     </message>
     <message>
-        <location filename="../../taskeditor.cpp" line="966"/>
+        <location filename="../../taskeditor.cpp" line="1062"/>
         <source>Reset all TP schemas to default configuration values?</source>
         <translation>Alle WP Schemas auf Standard Konfiguration rücksetzen?</translation>
     </message>
@@ -6162,6 +6170,82 @@ Bitte einen Punkt löschen!</translation>
         <location filename="../../taskpointeditor.cpp" line="474"/>
         <source>Waypoint No %1 (%2):</source>
         <translation>Wegpunkt Nr %1 (%2):</translation>
+    </message>
+</context>
+<context>
+    <name>TaskPointSelectionList</name>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="47"/>
+        <source>Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="111"/>
+        <source>Search Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="122"/>
+        <source>Enter a search string, to navigate to a certain list entry.</source>
+        <translation type="unfinished">Gebe einen Suchbegriff ein zum Navigieren zu einem Listeneintrag.</translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="131"/>
+        <source>  1  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="135"/>
+        <source>  2  </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="146"/>
+        <source>Search in column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="153"/>
+        <source>Clear</source>
+        <translation type="unfinished">Löschen</translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="156"/>
+        <source>Click Clear to remove the search string.</source>
+        <translation type="unfinished">Klicke Löschen zum Löschen des Sucheintrages.</translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="221"/>
+        <source>Airfields</source>
+        <translation type="unfinished">Flugplätze</translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="245"/>
+        <location filename="../../TaskPointSelectionList.cpp" line="269"/>
+        <location filename="../../TaskPointSelectionList.cpp" line="293"/>
+        <location filename="../../TaskPointSelectionList.cpp" line="317"/>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="245"/>
+        <source>Outlandings</source>
+        <translation type="unfinished">Landefelder</translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="269"/>
+        <source>Navaids</source>
+        <translation type="unfinished">Nav Hilfen</translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="293"/>
+        <source>Hotspots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../TaskPointSelectionList.cpp" line="317"/>
+        <source>Waypoints</source>
+        <translation type="unfinished">Wegpunkte</translation>
     </message>
 </context>
 <context>
