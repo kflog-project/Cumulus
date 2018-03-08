@@ -97,6 +97,9 @@ signals:
   /** Handles the addition of a taskpoint to the list. */
   void slotAddTaskpoint( const SinglePoint* sp );
 
+  /** Handles the cloning of a taskpoint. */
+  void slotCloneTaskpoint();
+
   /** Handles the remove of a taskpoint from the list. */
   void slotRemoveTaskpoint();
 

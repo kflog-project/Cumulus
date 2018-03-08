@@ -60,7 +60,6 @@ PreFlightFlarmUsbPage::PreFlightFlarmUsbPage(QWidget *parent) :
   vbox->addStretch( 10 );
 
   QHBoxLayout *bbox = new QHBoxLayout;
-  //QPushButton* cmd = new QPushButton(tr("Close"), this);
 
   QPushButton *close = new QPushButton(this);
   close->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));

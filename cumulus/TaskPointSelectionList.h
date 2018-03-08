@@ -73,12 +73,24 @@ class TaskPointSelectionList : public QWidget
    */
   void fillSelectionListWithAirfields();
 
+  /**
+   * Called to fill the selection list with the desired content.
+   */
   void fillSelectionListWithOutlandings();
 
+  /**
+   * Called to fill the selection list with the desired content.
+   */
   void fillSelectionListWithNavaids();
 
+  /**
+   * Called to fill the selection list with the desired content.
+   */
   void fillSelectionListWithHotspots();
 
+  /**
+   * Called to fill the selection list with the desired content.
+   */
   void fillSelectionListWithWaypoints();
 
   void setGroupBoxTitle( QString title )
@@ -87,7 +99,7 @@ class TaskPointSelectionList : public QWidget
   };
 
   /**
-   * Set the header items to the passed texts.
+   * Set the header items of the selection list to the passed texts.
    */
   void setTreeHeader( QString h0, QString h1 )
   {
@@ -97,7 +109,7 @@ class TaskPointSelectionList : public QWidget
   }
 
   /**
-   * Get selected search column.
+   * Gets the selected search column.
    */
   int getSearchColumn()
   {
@@ -108,6 +120,25 @@ class TaskPointSelectionList : public QWidget
 
     return 1;
   }
+
+ private:
+
+  /**
+   * Selects the passed radio button.
+   */
+  void setRadioButton( const ushort button )
+   {
+      if( button == 0 )
+	{
+	  m_RBCol0->setChecked( true );
+	  m_RBCol1->setChecked( false );
+	}
+      else
+	{
+	  m_RBCol0->setChecked( false );
+	  m_RBCol1->setChecked( true );
+	}
+   };
 
  protected:
 
@@ -162,7 +193,7 @@ class TaskPointSelectionList : public QWidget
    *
    * \author Axel Pauli
    *
-   * \brief A user point item element.
+   * \brief A user point item element of the selection list.
    *
    * \date 2018
    */

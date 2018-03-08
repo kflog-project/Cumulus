@@ -176,7 +176,6 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
 
 TaskPointSelectionList::~TaskPointSelectionList()
 {
-  qDebug() << "~TaskPointSelectionList() is called!";
 }
 
 void TaskPointSelectionList::showEvent( QShowEvent *event )
@@ -206,6 +205,8 @@ void TaskPointSelectionList::fillSelectionListWithAirfields()
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
   m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
                                          1 );
+  m_taskpointTreeWidget->resizeColumnToContents(0);
+  setRadioButton(1);
 }
 
 void TaskPointSelectionList::fillSelectionListWithOutlandings()
@@ -226,6 +227,8 @@ void TaskPointSelectionList::fillSelectionListWithOutlandings()
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
   m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
                                          1 );
+  m_taskpointTreeWidget->resizeColumnToContents(0);
+  setRadioButton(1);
 }
 
 void TaskPointSelectionList::fillSelectionListWithNavaids()
@@ -246,6 +249,8 @@ void TaskPointSelectionList::fillSelectionListWithNavaids()
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
   m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
                                          1 );
+  m_taskpointTreeWidget->resizeColumnToContents(0);
+  setRadioButton(1);
 }
 
 void TaskPointSelectionList::fillSelectionListWithHotspots()
@@ -266,6 +271,8 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
   m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
                                          1 );
+  m_taskpointTreeWidget->resizeColumnToContents(0);
+  setRadioButton(1);
 }
 
 void TaskPointSelectionList::fillSelectionListWithWaypoints()
@@ -286,6 +293,8 @@ void TaskPointSelectionList::fillSelectionListWithWaypoints()
   m_taskpointTreeWidget->sortItems( 0, Qt::AscendingOrder );
   m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
                                          0 );
+  m_taskpointTreeWidget->resizeColumnToContents(0);
+  setRadioButton(0);
 }
 
 TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, SinglePoint* sp ) :

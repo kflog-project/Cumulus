@@ -75,7 +75,7 @@ TaskEditor::TaskEditor( QWidget* parent,
       resize( MainWindow::mainWindow()->size() );
     }
 
-  if ( task )
+  if( task )
     {
       task2Edit = task;
       editState = TaskEditor::edit;
@@ -89,6 +89,8 @@ TaskEditor::TaskEditor( QWidget* parent,
       setWindowTitle(tr("New Task"));
     }
 
+  int scale = Layout::getIntScaledDensity();
+
   Qt::InputMethodHints imh;
 
   taskName = new QLineEdit( this );
@@ -96,13 +98,11 @@ TaskEditor::TaskEditor( QWidget* parent,
   imh = (taskName->inputMethodHints() | Qt::ImhNoPredictiveText);
   taskName->setInputMethodHints(imh);
 
-  // The task name maximum length is 10 characters. We calculate
-  // the length of a M string of 10 characters. That is the maximum
-  // width of the QLineEdit widget.
+  // The task name minimum length is 10 characters. We calculate
+  // the length of a M string of 10 characters.
   QFontMetrics fm( font() );
   int maxInputLength = fm.width("MMMMMMMMMM");
   taskName->setMinimumWidth( maxInputLength );
-  taskName->setMaximumWidth( maxInputLength );
 
   connect( taskName, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
@@ -150,83 +150,85 @@ TaskEditor::TaskEditor( QWidget* parent,
   QtScroller::grabGesture( taskList->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
+  int iconButtonSize = Layout::getButtonSize(12);
+
   upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png", true )) );
-  upButton->setIconSize(QSize(iconSize, iconSize));
+  upButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
 #ifndef ANDROID
   upButton->setToolTip( tr("move selected waypoint up") );
 #endif
   downButton = new QPushButton( this );
   downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png", true )) );
-  downButton->setIconSize(QSize(iconSize, iconSize));
+  downButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
 #ifndef ANDROID
   downButton->setToolTip( tr("move selected waypoint down") );
 #endif
   invertButton = new QPushButton( this );
   invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png", true )) );
-  invertButton->setIconSize(QSize(iconSize, iconSize));
+  invertButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
 #ifndef ANDROID
   invertButton->setToolTip( tr("reverse waypoint order") );
 #endif
   cloneButton = new QPushButton( this );
   cloneButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "clone.png", true )) );
-  cloneButton->setIconSize(QSize(iconSize, iconSize));
+  cloneButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
 #ifndef ANDROID
   cloneButton->setToolTip( tr("clone waypoint") );
 #endif
   delButton = new QPushButton( this );
   delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "delete.png", true )) );
-  delButton->setIconSize(QSize(iconSize, iconSize));
+  delButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
 #ifndef ANDROID
   delButton->setToolTip( tr("remove waypoint") );
 #endif
-  QPushButton* okButton = new QPushButton( this );
-  okButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "ok.png", true )) );
-  okButton->setIconSize(QSize(iconSize, iconSize));
-#ifndef ANDROID
-  okButton->setToolTip( tr("save task") );
-#endif
+
   QPushButton* cancelButton = new QPushButton( this );
-  cancelButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "cancel.png", true )) );
-  cancelButton->setIconSize(QSize(iconSize, iconSize));
+  cancelButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
+  cancelButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 #ifndef ANDROID
   cancelButton->setToolTip( tr("cancel task") );
 #endif
 
+  QPushButton* okButton = new QPushButton( this );
+  okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
+  okButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+#ifndef ANDROID
+  okButton->setToolTip( tr("save task") );
+#endif
+
   // all single widgets and layouts in this grid
   QGridLayout* totalLayout = new QGridLayout( this );
-  totalLayout->setMargin(5);
+  totalLayout->setMargin(5 * scale);
 
   QHBoxLayout* headlineLayout = new QHBoxLayout;
   totalLayout->addLayout( headlineLayout, 0, 0, 1, 3 );
 
   headlineLayout->setMargin(0);
   headlineLayout->addWidget( new QLabel( tr("Name:") ) );
-  headlineLayout->addWidget( taskName );
+  headlineLayout->addWidget( taskName, 5 );
+  headlineLayout->addSpacing(10 * scale);
 
   defaultButton = new QPushButton;
   // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
   defaultButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("clear-32.png")) );
-  defaultButton->setIconSize(QSize(iconSize, iconSize));
+  defaultButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
 #ifndef ANDROID
   defaultButton->setToolTip(tr("Set task figure default schemas"));
 #endif
   headlineLayout->addWidget(defaultButton);
-  //headlineLayout->addSpacing(20);
+  headlineLayout->addSpacing(10 * scale);
 
   editButton = new QPushButton;
   editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
-  editButton->setIconSize(QSize(iconSize, iconSize));
+  editButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
 #ifndef ANDROID
   editButton->setToolTip(tr("Edit selected waypoint"));
 #endif
   headlineLayout->addWidget(editButton);
-  headlineLayout->addWidget(okButton);
-  headlineLayout->addWidget(cancelButton);
-
   totalLayout->addWidget( taskList, 1, 0 );
-
-  int scale = Layout::getIntScaledDensity();
 
   // contains the task editor buttons
   QVBoxLayout* buttonLayout = new QVBoxLayout;
@@ -244,6 +246,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 1, 1 );
 
+  // The access buttons to the lists are only shown, if the lists are not empty.
   if( _globalMapContents->getAirfieldList().size() > 0 ||
       _globalMapContents->getGliderfieldList().size() > 0 )
     {
@@ -277,7 +280,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   if( afButton || hsButton || naButton || olButton || wpButton )
     {
-      QVBoxLayout* buttonLayout = new QVBoxLayout;
+      buttonLayout = new QVBoxLayout;
       buttonLayout->setMargin(10);
 
       QPushButton* bList[5];
@@ -287,9 +290,12 @@ TaskEditor::TaskEditor( QWidget* parent,
       bList[3] = olButton;
       bList[4] = wpButton;
 
-      for( int i = 0; i < 5 && bList[i] != 0; i++ )
+      for( int i = 0; i < 5; i++ )
         {
-          buttonLayout->addWidget( bList[i] );
+	  if( bList[i] != 0 )
+	    {
+	      buttonLayout->addWidget( bList[i] );
+	    }
         }
 
       totalLayout->addLayout( buttonLayout, 1, 2 );
@@ -299,6 +305,20 @@ TaskEditor::TaskEditor( QWidget* parent,
       QLabel* label = new QLabel( tr("No data\navailable") );
       totalLayout->addWidget( label, 1, 2 );
     }
+
+  QLabel *titlePix = new QLabel(this);
+  titlePix->setAlignment( Qt::AlignCenter );
+  titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
+
+  QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setSpacing(0);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(cancelButton, 1);
+  buttonBox->addSpacing(30);
+  buttonBox->addWidget(okButton, 1);
+  buttonBox->addStretch(2);
+  buttonBox->addWidget(titlePix);
+  totalLayout->addLayout(buttonBox, 0, 3, 2, 1);
 
   if ( editState == TaskEditor::edit )
     {
@@ -315,11 +335,13 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   showTask();
 
-  connect( delButton,    SIGNAL( clicked() ),
+  connect( cloneButton, SIGNAL( clicked() ),
+           this, SLOT( slotCloneTaskpoint() ) );
+  connect( delButton, SIGNAL( clicked() ),
            this, SLOT( slotRemoveTaskpoint() ) );
-  connect( upButton,     SIGNAL( clicked() ),
+  connect( upButton, SIGNAL( clicked() ),
            this, SLOT( slotMoveTaskpointUp() ) );
-  connect( downButton,   SIGNAL( clicked() ),
+  connect( downButton, SIGNAL( clicked() ),
            this, SLOT( slotMoveTaskpointDown() ) );
   connect( invertButton, SIGNAL( clicked() ),
            this, SLOT( slotInvertTaskpoints() ) );
@@ -343,6 +365,7 @@ TaskEditor::~TaskEditor()
   qDeleteAll(tpList);
   tpList.clear();
 
+  // All allocated widgets for selections have to be removed.
   TaskPointSelectionList* tsl[] = { afSelectionList,
                                     naSelectionList,
 				    naSelectionList,
@@ -559,6 +582,26 @@ void TaskEditor::slotAddTaskpoint( const SinglePoint* sp )
 
   setTaskPointFigureSchemas( tpList, false );
   showTask();
+}
+
+void TaskEditor::slotCloneTaskpoint()
+{
+  // Clone the current selected TaskPoint and insert it behind the current
+  // position.
+  QTreeWidgetItem* selected = taskList->currentItem();
+
+  if( selected == static_cast<QTreeWidgetItem *>(0) )
+    {
+      return;
+    }
+
+  int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
+
+  if( id != -1 && id < tpList.size() )
+    {
+      // Add current taskpoint again to the list.
+      slotAddTaskpoint( tpList.at(id) );
+    }
 }
 
 void TaskEditor::slotRemoveTaskpoint()
