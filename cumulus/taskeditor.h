@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2016 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -35,7 +35,6 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QList>
-#include <QPixmap>
 #include <QPushButton>
 #include <QString>
 #include <QStringList>
@@ -43,8 +42,6 @@
 #include <QWidget>
 
 #include "flighttask.h"
-#include "listviewfilter.h"
-#include "listwidgetparent.h"
 #include "singlepoint.h"
 #include "taskpoint.h"
 #include "waypoint.h"
@@ -76,7 +73,7 @@ public:
    *                         if set to true.
    */
   static void setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
-					 const bool setDefaultFigure );
+                                         const bool setDefaultFigure );
 
 signals:
 
@@ -88,13 +85,22 @@ signals:
 
  private slots:
 
+ /** Called to open the required selection widget. */
  void slotOpenAfSelectionList();
+
+ /** Called to open the required selection widget. */
  void slotOpenHsSelectionList();
+
+ /** Called to open the required selection widget. */
  void slotOpenNaSelectionList();
+
+ /** Called to open the required selection widget. */
  void slotOpenOlSelectionList();
+
+ /** Called to open the required selection widget. */
  void slotOpenWpSelectionList();
 
-  /** Handles the addition of a taskpoint to the list. */
+  /** Handles the addition of a taskpoint to the tasklist. */
   void slotAddTaskpoint( const SinglePoint* sp );
 
   /** Handles the cloning of a taskpoint. */
@@ -121,14 +127,12 @@ signals:
   /** Called to reset all task points to their task figure default schema. */
   void slotSetTaskPointsDefaultSchema();
 
-  /** Toggle between WP or AF list on user request */
-  void slotToggleList( int );
-
   /**
    * Called to check the item selection. If item Total is called, the selection
    * is reset to the previous row.
    */
-  void slotCurrentItemChanged(QTreeWidgetItem * current, QTreeWidgetItem * previous);
+  void slotCurrentItemChanged(QTreeWidgetItem * current,
+                              QTreeWidgetItem * previous);
 
   /**
    * Called, if an edited waypoint is saved.
@@ -179,17 +183,11 @@ signals:
   /** list with all defined task names */
   QStringList& taskNamesInUse;
 
-  /** selection lists with point data */
-  QList<ListWidgetParent *> pointDataList;
-
   /** name of current task */
   QLineEdit* taskName;
 
   /** name of current edited task */
   QString editedTaskName;
-
-  /** */
-  QList<ListViewFilter *> filter;
 
   /** Task point list of flight task */
   QList<TaskPoint *> tpList;
@@ -212,13 +210,14 @@ signals:
   QPushButton* editButton;
   QPushButton* defaultButton;
 
-  /** List command buttons */
+  /** Buttons for opening selection lists. */
   QPushButton* afButton;
   QPushButton* hsButton;
   QPushButton* naButton;
   QPushButton* olButton;
   QPushButton* wpButton;
 
+  /** Selection lists for taskpoints */
   TaskPointSelectionList* afSelectionList;
   TaskPointSelectionList* hsSelectionList;
   TaskPointSelectionList* naSelectionList;

@@ -31,6 +31,9 @@
 
 extern MapContents *_globalMapContents;
 
+/**
+ * Note! This widget must be deleted by its creator!!!
+ */
 TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title ) :
  QWidget(parent)
 {
@@ -80,7 +83,17 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
   m_taskpointTreeWidget->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_taskpointTreeWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-#ifdef ANDROID
+#if QT_VERSION >= 0x050000
+  m_taskpointTreeWidget->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
+#else
+  m_taskpointTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
+#endif
+
+  // See here for more explanations:
+  // https://stackoverflow.com/questions/6625188/qtreeview-horizontal-scrollbar-problems
+  m_taskpointTreeWidget->header()->setStretchLastSection( false );
+
+  #ifdef ANDROID
   QScrollBar* lvsb = m_taskpointTreeWidget->verticalScrollBar();
   lvsb->setStyleSheet( Layout::getCbSbStyle() );
 #endif
@@ -164,11 +177,13 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
 
   connect( m_ok, SIGNAL(clicked()), SLOT(slotAccept()) );
 
+  const int scale = Layout::getIntScaledDensity();
+
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(30);
+  buttonBox->addSpacing(30 * scale);
   buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
   mainLayout->addLayout(buttonBox);
@@ -388,10 +403,12 @@ void TaskPointSelectionList::slotItemSelectionChanged()
 
 void TaskPointSelectionList::slotAccept()
 {
+  // Ok was clicked.
   QList<QTreeWidgetItem *> selList = m_taskpointTreeWidget->selectedItems();
 
   if( selList.size() == 0 )
     {
+      hide();
       QWidget::close();
       return;
     }
@@ -400,6 +417,7 @@ void TaskPointSelectionList::slotAccept()
 
   if( li == static_cast<QTreeWidgetItem *> (0) )
     {
+      hide();
       QWidget::close();
       return;
     }
@@ -408,6 +426,7 @@ void TaskPointSelectionList::slotAccept()
 
   if( pi == 0 )
     {
+      hide();
       QWidget::close();
       return;
     }
@@ -417,10 +436,13 @@ void TaskPointSelectionList::slotAccept()
       emit takeThisPoint( pi->getPoint() );
     }
 
+  hide();
   QWidget::close();
 }
 
 void TaskPointSelectionList::slotReject()
 {
+  // Cancel was clicked.
+  hide();
   QWidget::close();
 }

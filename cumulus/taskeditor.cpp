@@ -24,24 +24,15 @@
 #include <QtScroller>
 #endif
 
-#include "airfield.h"
-#include "AirfieldListWidget.h"
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "listwidgetparent.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
-#include "radiopoint.h"
-#include "SinglePointListWidget.h"
-#include "RadioPointListWidget.h"
 #include "rowdelegate.h"
 #include "taskeditor.h"
-#include "taskpoint.h"
 #include "taskpointeditor.h"
-#include "waypointlistwidget.h"
-#include "wpeditdialog.h"
 
 extern MapContents *_globalMapContents;
 
@@ -89,6 +80,7 @@ TaskEditor::TaskEditor( QWidget* parent,
       setWindowTitle(tr("New Task"));
     }
 
+  // scale factor for distances, etc.
   const int scale = Layout::getIntScaledDensity();
 
   Qt::InputMethodHints imh;
@@ -323,7 +315,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonBox->setSpacing(0);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancelButton, 1);
-  buttonBox->addSpacing(30);
+  buttonBox->addSpacing(30 * scale);
   buttonBox->addWidget(okButton, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
@@ -371,10 +363,11 @@ TaskEditor::TaskEditor( QWidget* parent,
 
 TaskEditor::~TaskEditor()
 {
+  // The taskpoint list elements are pointers and must be deleted by our self.
   qDeleteAll(tpList);
   tpList.clear();
 
-  // All allocated widgets for selections have to be removed.
+  // All allocated widgets for selections have to be deleted.
   TaskPointSelectionList* tsl[] = { afSelectionList,
                                     hsSelectionList,
                                     naSelectionList,
@@ -691,9 +684,9 @@ void TaskEditor::slotEditTaskPoint ()
   int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
 
   if( id < 0 )
-  {
-    return;
-  }
+    {
+      return;
+    }
 
   m_lastEditedTP = id;
 
@@ -904,22 +897,6 @@ void TaskEditor::slotMoveTaskpointDown()
   showTask();
 }
 
-/** Toggle between the point data lists on user request */
-void TaskEditor::slotToggleList(int index)
-{
-  for( int i = 0; i < pointDataList.size(); i++ )
-    {
-      if( i != index )
-        {
-          pointDataList[i]->hide();
-        }
-      else
-        {
-          pointDataList[i]->show();
-        }
-    }
-}
-
 void TaskEditor::slotCurrentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
   Q_UNUSED(current)
@@ -1051,7 +1028,7 @@ void TaskEditor::swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 )
 }
 
 void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
-					    const bool setDefaultFigure )
+                                            const bool setDefaultFigure )
 {
   // As first set the right task point type
   for( int i = 0; i < tpList.size(); i++ )
@@ -1072,9 +1049,9 @@ void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
       // Set task point figure schema to default, if the user has not edited the
       // task point.
       if( setDefaultFigure == true || tpList.at(i)->getUserEditFlag() == false )
-	{
-	  tpList.at(i)->setConfigurationDefaults();
-	}
+        {
+          tpList.at(i)->setConfigurationDefaults();
+        }
     }
 }
 
