@@ -195,7 +195,8 @@
 	<file>icons/civmilair.xpm</file>
 	<file>icons/clear-32.png</file>
 	<file>icons/clear.png</file>
-	<file>icons/closed.xpm</file>
+  <file>icons/clone.png</file>
+  <file>icons/closed.xpm</file>
 	<file>icons/compoint.xpm</file>
 	<file>icons/cross.png</file>
 	<file>icons/cross.xpm</file>

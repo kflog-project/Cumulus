@@ -168,14 +168,14 @@ TaskEditor::TaskEditor( QWidget* parent,
 #ifndef ANDROID
   invertButton->setToolTip( tr("reverse waypoint order") );
 #endif
-  addButton = new QPushButton( this );
-  addButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "left.png", true )) );
-  addButton->setIconSize(QSize(iconSize, iconSize));
+  cloneButton = new QPushButton( this );
+  cloneButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "clone.png", true )) );
+  cloneButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
-  addButton->setToolTip( tr("add waypoint") );
+  cloneButton->setToolTip( tr("clone waypoint") );
 #endif
   delButton = new QPushButton( this );
-  delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "right.png", true )) );
+  delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "delete.png", true )) );
   delButton->setIconSize(QSize(iconSize, iconSize));
 #ifndef ANDROID
   delButton->setToolTip( tr("remove waypoint") );
@@ -238,7 +238,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addSpacing(10 * scale);
   buttonLayout->addWidget( downButton );
   buttonLayout->addSpacing(30 * scale);
-  buttonLayout->addWidget( addButton  );
+  buttonLayout->addWidget( cloneButton  );
   buttonLayout->addSpacing(10 * scale);
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
@@ -315,8 +315,6 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   showTask();
 
-  connect( addButton,    SIGNAL( clicked() ),
-           this, SLOT( slotAddWaypoint() ) );
   connect( delButton,    SIGNAL( clicked() ),
            this, SLOT( slotRemoveTaskpoint() ) );
   connect( upButton,     SIGNAL( clicked() ),
@@ -345,12 +343,10 @@ TaskEditor::~TaskEditor()
   qDeleteAll(tpList);
   tpList.clear();
 
-  TaskPointSelectionList* tsl[4];
-  tsl[0] = afSelectionList;
-  tsl[1] = naSelectionList;
-  tsl[2] = olSelectionList;
-  tsl[3] = wpSelectionList;
-
+  TaskPointSelectionList* tsl[] = { afSelectionList,
+                                    naSelectionList,
+				    naSelectionList,
+				    wpSelectionList };
   for( int i = 0; i < 4; i++ )
     {
       if( tsl[i] != 0 )
@@ -366,6 +362,9 @@ void TaskEditor::slotOpenAfSelectionList()
     {
       afSelectionList = new TaskPointSelectionList( this, tr("Airfields") );
       afSelectionList->fillSelectionListWithAirfields();
+
+      connect( afSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
+	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   afSelectionList->show();
@@ -377,6 +376,9 @@ void TaskEditor::slotOpenHsSelectionList()
     {
       hsSelectionList = new TaskPointSelectionList( this, tr("Hotspots") );
       hsSelectionList->fillSelectionListWithHotspots();
+
+      connect( hsSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
+ 	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   hsSelectionList->show();
@@ -388,6 +390,9 @@ void TaskEditor::slotOpenNaSelectionList()
     {
       naSelectionList = new TaskPointSelectionList( this, tr("Navaids") );
       naSelectionList->fillSelectionListWithNavaids();
+
+      connect( naSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
+  	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   naSelectionList->show();
@@ -399,6 +404,9 @@ void TaskEditor::slotOpenOlSelectionList()
     {
       olSelectionList = new TaskPointSelectionList( this, tr("Outlandings") );
       olSelectionList->fillSelectionListWithOutlandings();
+
+      connect( olSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
+  	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   olSelectionList->show();
@@ -410,6 +418,9 @@ void TaskEditor::slotOpenWpSelectionList()
     {
       wpSelectionList = new TaskPointSelectionList( this, tr("Waypoints") );
       wpSelectionList->fillSelectionListWithWaypoints();
+
+      connect( wpSelectionList, SIGNAL(takeThisPoint(const SinglePoint*)),
+  	       SLOT(slotAddTaskpoint( const SinglePoint*)) );
     }
 
   wpSelectionList->show();
@@ -513,7 +524,7 @@ void TaskEditor::resizeTaskListColumns()
   taskList->resizeColumnToContents(3);
 }
 
-void TaskEditor::slotAddTaskpoint( SinglePoint* sp )
+void TaskEditor::slotAddTaskpoint( const SinglePoint* sp )
 {
   if( sp == 0 )
     {
@@ -868,10 +879,10 @@ void TaskEditor::enableCommandButtons()
 {
   if( tpList.size() == 0 )
     {
+      cloneButton->setEnabled( false );
       upButton->setEnabled( false );
       downButton->setEnabled( false );
       invertButton->setEnabled( false );
-      addButton->setEnabled( true );
       delButton->setEnabled( false );
       editButton->setEnabled (false);
       defaultButton->setEnabled (false);
@@ -881,7 +892,7 @@ void TaskEditor::enableCommandButtons()
       upButton->setEnabled( false );
       downButton->setEnabled( false );
       invertButton->setEnabled( false );
-      addButton->setEnabled( true );
+      cloneButton->setEnabled( true );
       delButton->setEnabled( true );
       editButton->setEnabled (true);
       defaultButton->setEnabled (false);
@@ -889,7 +900,7 @@ void TaskEditor::enableCommandButtons()
   else
     {
       invertButton->setEnabled( true );
-      addButton->setEnabled( true );
+      cloneButton->setEnabled( true );
       delButton->setEnabled( true );
       editButton->setEnabled( true );
       defaultButton->setEnabled( true );

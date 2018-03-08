@@ -176,6 +176,7 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
 
 TaskPointSelectionList::~TaskPointSelectionList()
 {
+  qDebug() << "~TaskPointSelectionList() is called!";
 }
 
 void TaskPointSelectionList::showEvent( QShowEvent *event )
@@ -203,6 +204,8 @@ void TaskPointSelectionList::fillSelectionListWithAirfields()
 
   setTreeHeader( "ICAO", tr("Airfields") );
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
+  m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
+                                         1 );
 }
 
 void TaskPointSelectionList::fillSelectionListWithOutlandings()
@@ -219,8 +222,10 @@ void TaskPointSelectionList::fillSelectionListWithOutlandings()
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
-  setTreeHeader( tr("Short"), tr("Outlandings") );
+  setTreeHeader( tr("ID"), tr("Outlandings") );
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
+  m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
+                                         1 );
 }
 
 void TaskPointSelectionList::fillSelectionListWithNavaids()
@@ -237,8 +242,10 @@ void TaskPointSelectionList::fillSelectionListWithNavaids()
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
-  setTreeHeader( tr("Short"), tr("Navaids") );
+  setTreeHeader( tr("ID"), tr("Navaids") );
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
+  m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
+                                         1 );
 }
 
 void TaskPointSelectionList::fillSelectionListWithHotspots()
@@ -255,8 +262,10 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
-  setTreeHeader( tr("Short"), tr("Hotspots") );
+  setTreeHeader( tr("ID"), tr("Hotspots") );
   m_taskpointTreeWidget->sortItems( 1, Qt::AscendingOrder );
+  m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
+                                         1 );
 }
 
 void TaskPointSelectionList::fillSelectionListWithWaypoints()
@@ -273,8 +282,10 @@ void TaskPointSelectionList::fillSelectionListWithWaypoints()
       m_taskpointTreeWidget->addTopLevelItem( item );
     }
 
-  setTreeHeader( tr("Short"), tr("Waypoints") );
+  setTreeHeader( tr("ID"), tr("Waypoints") );
   m_taskpointTreeWidget->sortItems( 0, Qt::AscendingOrder );
+  m_taskpointTreeWidget->setCurrentItem( m_taskpointTreeWidget->topLevelItem( 0 ),
+                                         0 );
 }
 
 TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, SinglePoint* sp ) :

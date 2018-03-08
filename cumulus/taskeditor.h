@@ -95,7 +95,7 @@ signals:
  void slotOpenWpSelectionList();
 
   /** Handles the addition of a taskpoint to the list. */
-  void slotAddTaskpoint( SinglePoint* sp );
+  void slotAddTaskpoint( const SinglePoint* sp );
 
   /** Handles the remove of a taskpoint from the list. */
   void slotRemoveTaskpoint();
@@ -204,7 +204,7 @@ signals:
   QPushButton* upButton;
   QPushButton* downButton;
   QPushButton* invertButton;
-  QPushButton* addButton;
+  QPushButton* cloneButton;
   QPushButton* delButton;
   QPushButton* editButton;
   QPushButton* defaultButton;
