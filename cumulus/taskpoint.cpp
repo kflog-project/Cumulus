@@ -54,7 +54,7 @@ TaskPoint::TaskPoint( enum TaskPointTypes::TaskPointType type ) :
 TaskPoint::TaskPoint( const Waypoint& wp, enum TaskPointTypes::TaskPointType type ) :
   SinglePoint( wp.description,
                wp.name,
-               BaseMapElement::Turnpoint,
+               static_cast<BaseMapElement::objectType>(wp.type),
                wp.wgsPoint,
                wp.projPoint,
                wp.elevation,
@@ -86,7 +86,7 @@ TaskPoint::TaskPoint( const Waypoint& wp, enum TaskPointTypes::TaskPointType typ
 TaskPoint::TaskPoint( const SinglePoint& sp, enum TaskPointTypes::TaskPointType type ) :
   SinglePoint( sp.getName(),
                sp.getWPName(),
-               BaseMapElement::Turnpoint,
+               sp.getTypeID(),
                sp.getWGSPosition(),
                sp.getPosition(),
                sp.getElevation(),

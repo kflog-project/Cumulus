@@ -514,6 +514,10 @@ void TaskEditor::showTask()
           item->setBackground( 1, QBrush(Qt::yellow) );
         }
 
+      // Load point icon
+      QPixmap pm = _globalMapConfig->getPixmap(tp->getTypeID(), false);
+      item->setIcon( 2, QIcon( pm) );
+
       taskList->addTopLevelItem( item );
 
       // reselect last selected item
