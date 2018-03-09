@@ -5900,18 +5900,18 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../taskeditor.cpp" line="169"/>
         <source>clone waypoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Klone Wegpunkt</translation>
     </message>
     <message>
         <location filename="../../taskeditor.cpp" line="306"/>
         <source>No data
 available</source>
-        <translation type="unfinished"></translation>
+        <translation>keine Daten\nverfügbar</translation>
     </message>
     <message>
         <location filename="../../taskeditor.cpp" line="431"/>
         <source>Outlandings</source>
-        <translation type="unfinished">Landefelder</translation>
+        <translation>Landefelder</translation>
     </message>
     <message>
         <location filename="../../taskeditor.cpp" line="525"/>
@@ -6177,47 +6177,47 @@ Bitte einen Punkt löschen!</translation>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="47"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="111"/>
         <source>Search Entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Sucheintrag</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="122"/>
         <source>Enter a search string, to navigate to a certain list entry.</source>
-        <translation type="unfinished">Gebe einen Suchbegriff ein zum Navigieren zu einem Listeneintrag.</translation>
+        <translation>Gebe einen Suchbegriff ein zum Navigieren zu einem Listeneintrag.</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="131"/>
         <source>  1  </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="135"/>
         <source>  2  </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="146"/>
         <source>Search in column</source>
-        <translation type="unfinished"></translation>
+        <translation>Suche in Spalte</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="153"/>
         <source>Clear</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="156"/>
         <source>Click Clear to remove the search string.</source>
-        <translation type="unfinished">Klicke Löschen zum Löschen des Sucheintrages.</translation>
+        <translation>Klicke Löschen zum Löschen des Sucheintrages.</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="221"/>
         <source>Airfields</source>
-        <translation type="unfinished">Flugplätze</translation>
+        <translation>Flugplätze</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="245"/>
@@ -6225,27 +6225,27 @@ Bitte einen Punkt löschen!</translation>
         <location filename="../../TaskPointSelectionList.cpp" line="293"/>
         <location filename="../../TaskPointSelectionList.cpp" line="317"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="245"/>
         <source>Outlandings</source>
-        <translation type="unfinished">Landefelder</translation>
+        <translation>Landefelder</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="269"/>
         <source>Navaids</source>
-        <translation type="unfinished">Nav Hilfen</translation>
+        <translation>Nav Hilfen</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="293"/>
         <source>Hotspots</source>
-        <translation type="unfinished"></translation>
+        <translation>Thermik</translation>
     </message>
     <message>
         <location filename="../../TaskPointSelectionList.cpp" line="317"/>
         <source>Waypoints</source>
-        <translation type="unfinished">Wegpunkte</translation>
+        <translation>Wegpunkte</translation>
     </message>
 </context>
 <context>
