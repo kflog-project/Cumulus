@@ -383,7 +383,7 @@ bool OpenAip::readNavAidRecord( QXmlStreamReader& xml, RadioPoint& rp )
             }
           else if ( elementName == "NAME" )
             {
-              QString name = xml.readElementText();
+              QString name = xml.readElementText().trimmed();
               upperLowerName( name );
               rp.setName( name );
             }
@@ -813,7 +813,7 @@ bool OpenAip::readHotspotRecord( QXmlStreamReader& xml, SinglePoint& sp )
             }
           else if ( elementName == "NAME" )
             {
-              QString name = xml.readElementText();
+              QString name = xml.readElementText().trimmed();
 
               upperLowerName( name );
 
