@@ -27,6 +27,7 @@
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
@@ -80,9 +81,8 @@ TaskEditor::TaskEditor( QWidget* parent,
       setWindowTitle(tr("New Task"));
     }
 
-  // scale factor for distances, etc.
-  const int scale = Layout::getIntScaledDensity();
-
+  // scaling factor for distances, etc.
+  const int Scaling = Layout::getIntScaledDensity();
   Qt::InputMethodHints imh;
 
   taskName = new QLineEdit( this );
@@ -175,6 +175,11 @@ TaskEditor::TaskEditor( QWidget* parent,
   delButton->setToolTip( tr("remove waypoint") );
 #endif
 
+  QPushButton *helpButton = new QPushButton(this);
+  helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  helpButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  helpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton* cancelButton = new QPushButton( this );
   cancelButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancelButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -193,7 +198,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   // all single widgets and layouts in this grid
   QGridLayout* totalLayout = new QGridLayout( this );
-  totalLayout->setMargin(5 * scale);
+  totalLayout->setMargin(5 * Scaling);
 
   QHBoxLayout* headlineLayout = new QHBoxLayout;
   totalLayout->addLayout( headlineLayout, 0, 0, 1, 3 );
@@ -201,7 +206,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   headlineLayout->setMargin(0);
   headlineLayout->addWidget( new QLabel( tr("Name:") ) );
   headlineLayout->addWidget( taskName, 5 );
-  headlineLayout->addSpacing(10 * scale);
+  headlineLayout->addSpacing(10 * Scaling);
 
   defaultButton = new QPushButton;
   // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
@@ -211,7 +216,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   defaultButton->setToolTip(tr("Set task figure default schemas"));
 #endif
   headlineLayout->addWidget(defaultButton);
-  headlineLayout->addSpacing(10 * scale);
+  headlineLayout->addSpacing(10 * Scaling);
 
   editButton = new QPushButton;
   editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
@@ -227,13 +232,13 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->setMargin(0);
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
-  buttonLayout->addSpacing(10 * scale);
+  buttonLayout->addSpacing(10 * Scaling);
   buttonLayout->addWidget( upButton );
-  buttonLayout->addSpacing(10 * scale);
+  buttonLayout->addSpacing(10 * Scaling);
   buttonLayout->addWidget( downButton );
-  buttonLayout->addSpacing(30 * scale);
+  buttonLayout->addSpacing(30 * Scaling);
   buttonLayout->addWidget( cloneButton  );
-  buttonLayout->addSpacing(10 * scale);
+  buttonLayout->addSpacing(10 * Scaling);
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
   totalLayout->addLayout( buttonLayout, 1, 1 );
@@ -313,9 +318,11 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->setMargin( 10 * Scaling );
+  buttonBox->addWidget(helpButton, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancelButton, 1);
-  buttonBox->addSpacing(30 * scale);
+  buttonBox->addSpacing(30 * Scaling);
   buttonBox->addWidget(okButton, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
@@ -351,6 +358,8 @@ TaskEditor::TaskEditor( QWidget* parent,
            this, SLOT(slotSetTaskPointsDefaultSchema()));
   connect( editButton, SIGNAL(clicked()),
            this, SLOT(slotEditTaskPoint()));
+
+  connect( helpButton, SIGNAL(pressed()), SLOT(slotHelp()));
 
   connect( okButton, SIGNAL( clicked() ),
            this, SLOT( slotAccept() ) );
@@ -1114,4 +1123,14 @@ void TaskEditor::slotWpEdited( Waypoint &editedWp )
 
   setTaskPointFigureSchemas( tpList, false );
   showTask();
+}
+
+void TaskEditor::slotHelp()
+{
+  QString file = "cumulus-preflight-settings-task.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }

@@ -139,6 +139,9 @@ signals:
    */
   void slotWpEdited( Waypoint &editedWp );
 
+  /** Called to open the help browser. */
+  void slotHelp();
+
   /** Handles button press ok. */
   void slotAccept();
 

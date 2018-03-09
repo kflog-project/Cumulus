@@ -306,11 +306,12 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   connect(m_cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
+  buttonBox->setMargin(10 * Scaling);
   buttonBox->setSpacing(0);
   buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(m_cancel, 1);
-  buttonBox->addSpacing(30);
+  buttonBox->addSpacing(30 * Scaling);
   buttonBox->addWidget(m_ok, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(m_titlePix);
@@ -925,12 +926,6 @@ void PreFlightTaskPage::slotHelp()
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
   hb->setVisible( true );
-
-  if( m_taskList->topLevelItemCount() > 0 && m_taskList->currentItem() != 0 )
-    {
-      m_taskList->scrollToItem( m_taskList->currentItem(),
-				QAbstractItemView::PositionAtCenter );
-    }
 }
 
 void PreFlightTaskPage::slotDeactivateTask()

@@ -181,6 +181,7 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->setMargin(10 * scale);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30 * scale);
@@ -329,6 +330,18 @@ TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, Sing
 {
   setText( 0, item0);
   setText( 1, item1);
+
+  // set type icon
+  QPixmap pm = _globalMapConfig->getPixmap(sp->getTypeID(), false);
+
+  int column = 0;
+
+  if( dynamic_cast<Airfield *>(sp) != 0 )
+    {
+      column = 1;
+    }
+
+  setIcon( column, QIcon( pm) );
 }
 
 TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, Waypoint* wp ) :
@@ -348,6 +361,10 @@ TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, Wayp
                            wp->comment );
   setText( 0, item0);
   setText( 1, item1);
+
+  // set type icon
+  QPixmap pm = _globalMapConfig->getPixmap(wp->type, false);
+  setIcon( 0, QIcon( pm) );
 }
 
 void TaskPointSelectionList::slotClearSearchEntry()

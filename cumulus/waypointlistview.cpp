@@ -44,9 +44,8 @@ WaypointListView::WaypointListView( QWidget *parent ) :
   topLayout->addWidget( listw, 0, 0 );
 
   // create a vertical command button row and put it at the right widget side
-  int margin = 5 * Layout::getIntScaledDensity();
+  const int margin = 5 * Layout::getIntScaledDensity();
   QVBoxLayout *editRow = new QVBoxLayout;
-  qDebug() << "Margins" << editRow->contentsMargins();
   editRow->setContentsMargins( margin, margin, margin, margin );
   editRow->setSpacing( 20 * Layout::getIntScaledDensity() );
   editRow->addStretch( 10 );
