@@ -23,6 +23,7 @@
 #include <QtScroller>
 #endif
 
+#include "airfield.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "mapcontents.h"
@@ -201,19 +202,23 @@ void TaskPointSelectionList::showEvent( QShowEvent *event )
 
 void TaskPointSelectionList::fillSelectionListWithAirfields()
 {
-  int searchList[] = { MapContents::GliderfieldList, MapContents::AirfieldList };
-
   m_searchInput->clear();
   m_taskpointTreeWidget->clear();
 
-  for( int l = 0; l < 2; l++ )
+  QList<Airfield>* searchList[2];
+
+  searchList[0] = &_globalMapContents->getAirfieldList();
+  searchList[1] = &_globalMapContents->getGliderfieldList();
+
+  for( int i = 0; i < 2; i++ )
     {
-      for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
+      for( int loop = 0; loop < searchList[i]->size(); loop++ )
         {
-          Airfield* af = static_cast<Airfield *>(_globalMapContents->getElement(searchList[l], loop ));
-          PointItem* item = new PointItem( af->getICAO().trimmed(),
-                                           af->getName().trimmed(),
-                                           af );
+          Airfield& af = (*searchList[i])[loop];
+
+          PointItem* item = new PointItem( af.getICAO().trimmed(),
+                                           af.getName().trimmed(),
+                                           &af );
           item->setFlags( Qt::ItemIsSelectable|Qt::ItemIsEnabled );
           m_taskpointTreeWidget->addTopLevelItem( item );
         }
@@ -232,11 +237,11 @@ void TaskPointSelectionList::fillSelectionListWithOutlandings()
   m_searchInput->clear();
   m_taskpointTreeWidget->clear();
 
-  QList<Airfield> olList = _globalMapContents->getQutlandingList();
+  QList<Airfield>& olList = _globalMapContents->getQutlandingList();
 
   for( int loop = 0; loop < olList.size(); loop++ )
     {
-      Airfield ol = olList.at(loop);
+      Airfield& ol = olList[loop];
       PointItem* item = new PointItem( ol.getWPName().trimmed(),
                                        ol.getName().trimmed(),
                                        &ol );
@@ -256,11 +261,11 @@ void TaskPointSelectionList::fillSelectionListWithNavaids()
   m_searchInput->clear();
   m_taskpointTreeWidget->clear();
 
-  QList<RadioPoint> rpList = _globalMapContents->getRadioPointList();
+  QList<RadioPoint>& rpList = _globalMapContents->getRadioPointList();
 
   for( int loop = 0; loop < rpList.size(); loop++ )
     {
-      RadioPoint rp = rpList.at(loop);
+      RadioPoint& rp = rpList[loop];
       PointItem* item = new PointItem( rp.getWPName().trimmed(),
                                        rp.getName().trimmed(),
                                        &rp );
@@ -284,7 +289,7 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
 
   for( int loop = 0; loop < hsList.size(); loop++ )
     {
-      SinglePoint hsp = hsList.at(loop);
+      SinglePoint& hsp = hsList[loop];
       PointItem* item = new PointItem( hsp.getWPName().trimmed(),
                                        hsp.getName().trimmed(),
                                        &hsp );
@@ -308,7 +313,7 @@ void TaskPointSelectionList::fillSelectionListWithWaypoints()
 
   for( int loop = 0; loop < wpList.size(); loop++ )
     {
-      Waypoint wp = wpList.at(loop);
+      Waypoint& wp = wpList[loop];
       PointItem* item = new PointItem( wp.name.trimmed(),
                                        wp.description.trimmed(),
                                        &wp );
