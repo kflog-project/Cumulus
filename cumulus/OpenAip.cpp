@@ -1120,7 +1120,7 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
           else if ( elementName == "NAME" )
             {
               // Airfield name lowered.
-              QString name = xml.readElementText().toLower();
+              QString name = xml.readElementText().toLower().trimmed();
 
               // Convert airfield name to upper-lower cases
               upperLowerName( name );
