@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2016 by Axel Pauli
+**                   2007-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -44,7 +44,10 @@ WaypointListView::WaypointListView( QWidget *parent ) :
   topLayout->addWidget( listw, 0, 0 );
 
   // create a vertical command button row and put it at the right widget side
+  int margin = 5 * Layout::getIntScaledDensity();
   QVBoxLayout *editRow = new QVBoxLayout;
+  qDebug() << "Margins" << editRow->contentsMargins();
+  editRow->setContentsMargins( margin, margin, margin, margin );
   editRow->setSpacing( 20 * Layout::getIntScaledDensity() );
   editRow->addStretch( 10 );
 
