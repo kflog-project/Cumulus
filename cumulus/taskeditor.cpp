@@ -229,7 +229,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   // contains the task editor buttons
   QVBoxLayout* buttonLayout = new QVBoxLayout;
-  buttonLayout->setMargin(0);
+  buttonLayout->setMargin(10 * Scaling);
   buttonLayout->addStretch( 10 );
   buttonLayout->addWidget( invertButton );
   buttonLayout->addSpacing(10 * Scaling);

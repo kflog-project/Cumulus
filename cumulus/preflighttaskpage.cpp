@@ -625,14 +625,28 @@ void PreFlightTaskPage::slotNewTask()
  */
 void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
 {
+  QString taskName = newTask->getTaskName();
+
   m_flightTaskList.append( newTask );
   saveTask( newTask );
   m_taskContent->clear();
   m_taskList->clear();
   loadTaskList();
-  m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
+
+  QList<QTreeWidgetItem *> items = m_taskList->findItems( taskName,
+                                                          Qt::MatchExactly,
+                                                          1 );
+  if( items.size () > 0 )
+    {
+      m_taskList->setCurrentItem( items.at(0) );
+    }
+  else
+    {
+      m_taskList->setCurrentItem( m_taskList->topLevelItem(m_taskList->topLevelItemCount() - 1 ) );
+    }
+
   m_taskList->scrollToItem( m_taskList->currentItem(),
-			    QAbstractItemView::PositionAtCenter );
+                            QAbstractItemView::PositionAtCenter );
   enableButtons();
 }
 
@@ -651,7 +665,7 @@ void PreFlightTaskPage::slotEditTask()
 
   // Ensure visibility of selected item after list update.
   m_taskList->scrollToItem( m_taskList->currentItem(),
-			    QAbstractItemView::PositionAtCenter );
+                            QAbstractItemView::PositionAtCenter );
 
   QString id( m_taskList->selectedItems().at(0)->text(0) );
 
@@ -678,6 +692,8 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
   // search task item being edited
   int index = m_flightTaskList.indexOf( m_editTask );
 
+  QString taskName = editedTask->getTaskName();
+
   if ( index != -1 )
     {
       // remove old item
@@ -696,9 +712,12 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
   m_taskList->clear();
   loadTaskList();
 
-  if ( index != -1 )
+  QList<QTreeWidgetItem *> items = m_taskList->findItems( taskName,
+                                                          Qt::MatchExactly,
+                                                          1 );
+  if( items.size () > 0 )
     {
-      m_taskList->setCurrentItem( m_taskList->topLevelItem(index) );
+      m_taskList->setCurrentItem( items.at(0) );
     }
   else
     {
@@ -707,8 +726,7 @@ void PreFlightTaskPage::slotEditTaskList( FlightTask *editedTask)
 
   // Ensure visibility of selected item after list update.
   m_taskList->scrollToItem( m_taskList->currentItem(),
-			    QAbstractItemView::PositionAtCenter );
-
+                            QAbstractItemView::PositionAtCenter );
   enableButtons();
 }
 
