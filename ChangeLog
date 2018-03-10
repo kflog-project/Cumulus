@@ -18,6 +18,9 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[-] 2018-03-10 AP: Issue #123 fixed. Taskeditor should be made easier in its
+                   handling.
+
 [*] 2018-03-04 AP: Cumulus 5.32.2 released for Android.
 
 [-] 2018-03-04 AP: Issue #107 fixed. Saving a task with new name should keep
