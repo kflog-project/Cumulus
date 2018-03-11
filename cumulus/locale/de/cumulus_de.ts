@@ -6034,7 +6034,7 @@ Bitte einen Punkt löschen!</translation>
     <message>
         <location filename="../../taskeditor.cpp" line="1062"/>
         <source>Reset all TP schemas to default configuration values?</source>
-        <translation>Alle TP Schemas auf Konfugurationsstandard rücksetzen?</translation>
+        <translation>Alle TP Schemas auf Konfigurationsstandard rücksetzen?</translation>
     </message>
 </context>
 <context>

@@ -54,9 +54,7 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
     }
 
   QHBoxLayout* mainLayout = new QHBoxLayout( this );
-
   m_taskpointTreeWidget = new QTreeWidget( this );
-
   mainLayout->addWidget( m_taskpointTreeWidget );
 
   m_taskpointTreeWidget->setRootIsDecorated( false );
@@ -69,6 +67,10 @@ TaskPointSelectionList::TaskPointSelectionList( QWidget *parent, QString title )
   m_taskpointTreeWidget->setFocusPolicy( Qt::StrongFocus );
   m_taskpointTreeWidget->setUniformRowHeights(true);
   m_taskpointTreeWidget->setHeaderLabel( title );
+
+  // adapt icon size to font size
+  const int iconSize = Layout::iconSize( font() );
+  m_taskpointTreeWidget->setIconSize( QSize(iconSize, iconSize) );
 
   connect( m_taskpointTreeWidget, SIGNAL(itemSelectionChanged()),
            SLOT(slotItemSelectionChanged()) );
