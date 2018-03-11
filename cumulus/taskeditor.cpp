@@ -1137,4 +1137,5 @@ void TaskEditor::slotHelp()
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
   hb->setVisible( true );
+  hb->getTextBrowser()->scrollToAnchor("Taskeditor");
 }
