@@ -10,18 +10,19 @@
 
 !LOAD!
 <html>
-Loads all settings from the file <i>name</i>. The <i>name</i> may have a
+Loads all settings from the file <i>name</i>. The <i>name</i> may have a<br>
 maximum of 10 ASCII characters.<br>
-<b>Allowed characters:</b> Upper case letters A-Z, numbers, blank, hyphen and
-underscore.
+<b>Allowed characters:</b><br>
+Upper case letters A-Z, numbers, blank, hyphen and underscore.
 </html>
 
 !SAVE!
 <html>
-Saves all settings to a file under <i>name</i>. A maximum of 40 settings files
-are supported. The <i>name</i> may have a maximum of 10 ASCII characters.<br>
-<b>Allowed characters:</b> Upper case letters A-Z, numbers, blank, hyphen and
-underscore.
+Saves all settings to a file under <i>name</i>. A maximum of 40 <br>
+settings files are supported. The <i>name</i> may have a maximum <br>
+of 10 ASCII characters.<br>
+<b>Allowed characters:</b><br>
+Upper case letters A-Z, numbers, blank, hyphen and underscore.
 </html>
 
 !DEVTYPE!
