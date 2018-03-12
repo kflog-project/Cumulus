@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2016 by Axel Pauli
+**   Copyright (c):  2016-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -61,6 +61,10 @@ AirfieldSelectionList::AirfieldSelectionList( QWidget *parent ) :
   m_airfieldTreeWidget->setFocusPolicy( Qt::StrongFocus );
   m_airfieldTreeWidget->setUniformRowHeights(true);
   m_airfieldTreeWidget->setHeaderLabel( tr( "Airfields" ) );
+
+  // adapt icon size to font size
+  const int iconSize = Layout::iconSize( font() );
+  m_airfieldTreeWidget->setIconSize( QSize(iconSize, iconSize) );
 
   connect( m_airfieldTreeWidget, SIGNAL(itemSelectionChanged()),
            SLOT(slotItemSelectionChanged()) );
@@ -186,6 +190,10 @@ AirfieldSelectionList::PointItem::PointItem( SinglePoint* sp ) :
   point(sp)
 {
   setText( 0, sp->getName() );
+
+  // set type icon
+  QPixmap pm = _globalMapConfig->getPixmap(sp->getTypeID(), false);
+  setIcon( 0, QIcon( pm) );
 }
 
 void AirfieldSelectionList::slotClearSearchEntry()
@@ -206,7 +214,7 @@ void AirfieldSelectionList::slotTextEdited( const QString& text )
       m_airfieldTreeWidget->setCurrentItem( m_airfieldTreeWidget->topLevelItem( 0 ) );
       m_airfieldTreeWidget->clearSelection();
       m_airfieldTreeWidget->scrollToItem( m_airfieldTreeWidget->topLevelItem( 0 ),
-					  QAbstractItemView::PositionAtTop);
+                                          QAbstractItemView::PositionAtTop);
       return;
     }
 
@@ -216,7 +224,7 @@ void AirfieldSelectionList::slotTextEdited( const QString& text )
     {
       m_airfieldTreeWidget->setCurrentItem( items.at(0) );
       m_airfieldTreeWidget->scrollToItem( items.at (0),
-					  QAbstractItemView::PositionAtTop);
+                                          QAbstractItemView::PositionAtTop);
     }
 }
 

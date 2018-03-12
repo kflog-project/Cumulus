@@ -57,8 +57,8 @@ DownloadManager::~DownloadManager()
  * passed file destination. Destination must consist of a full path.
  */
 bool DownloadManager::downloadRequest( QString &url,
-					      QString &destination,
-					      bool movingCheck )
+                                       QString &destination,
+                                       bool movingCheck )
 {
   if( stopFlag() == true )
     {
@@ -162,8 +162,8 @@ void DownloadManager::slotFinished( QString urlIn, int codeIn )
 
       if( codeIn == QNetworkReply::NoError )
         {
-	  // Emit the successfully download.
-	  emit fileDownloaded( pair.second );
+          // Emit the successfully download.
+          emit fileDownloaded( pair.second );
         }
     }
 

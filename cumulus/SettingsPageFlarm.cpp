@@ -260,7 +260,9 @@ void SettingsPageFlarm::loadTableItems()
           << "CLEARMEM;WO;CF"
           << "CLEARLOGS;WO;PF"
           << "CLEAROBST;WO;PF"
-          << "DEF;WO;ALL";
+          << "DEF;WO;ALL"
+          << "SAVE;WO;PF"
+          << "LOAD;RO;PF";
 
   m_table->clearContents();
 
@@ -467,7 +469,7 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       if( itemAccess == "WO" || checkFlarmConnection() == false )
         {
           // A write only item cannot be requested or
-	  // stop processing, if FLARM is not available.
+          // stop processing, if FLARM is not available.
           return;
         }
 
@@ -489,10 +491,10 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
         }
 
       if( checkFlarmConnection() == false )
-	{
-	  // Stop processing, if FLARM is not available.
-	  return;
-	}
+        {
+          // Stop processing, if FLARM is not available.
+          return;
+        }
 
       // get Flarm device type
       QString device = FlarmBase::getDeviceType();

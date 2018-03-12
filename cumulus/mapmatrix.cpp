@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2015 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -69,7 +69,9 @@
 MapMatrix::MapMatrix( QObject* parent ) :
   QObject(parent),
   mapCenterLat(0), mapCenterLon(0),
-  homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0)
+  homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0),
+  _MaxScaleToCScaleRatio(0),
+  m11(0), m12(0), m21(0), m22(0), dx(0), dy(0), fx(0), fy(0)
 {
   viewBorder.setTop(32000000);
   viewBorder.setBottom(25000000);
@@ -467,7 +469,7 @@ void MapMatrix::slotSetScale(const double& nScale)
   GeneralConfig::instance()->setMapScale( cScale );
   GeneralConfig::instance()->save();
 
-  _MaxScaleToCScaleRatio=int((MIN_SCALE/cScale)*(MAX_SCALE));
+  _MaxScaleToCScaleRatio = int((MIN_SCALE/cScale)*(MAX_SCALE));
   // qDebug("MapMatrix::slotSetScale(): Set new scale to %f ratio: %d ",cScale,_MaxScaleToCScaleRatio );
 }
 
