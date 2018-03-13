@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2013 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -103,8 +101,7 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   QScrollArea* pcArea = new QScrollArea( tabWidget );
   pcArea->setWidgetResizable( true );
   pcArea->setFrameStyle( QFrame::NoFrame );
-  m_comment = new QTextEdit(this);
-  m_comment->setWordWrapMode(QTextOption::WordWrap);
+  m_comment = new QLineEdit (this);
   Qt::InputMethodHints imh = (m_comment->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_comment->setInputMethodHints(imh);
 
@@ -186,7 +183,7 @@ void WpEditDialog::accept()
   Waypoint newWp;
   emit save( &newWp );
   newWp.projPoint = _globalMapMatrix->wgsToMap( newWp.wgsPoint );
-  newWp.comment = m_comment->toPlainText();
+  newWp.comment = m_comment->text ().trimmed ();
   newWp.wpListMember = m_wp ? m_wp->wpListMember : false;
 
   // Make some mandatory consistency checks
