@@ -69,8 +69,8 @@ FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
 /**
  * Copy constructor
  **/
-FlightTask::FlightTask( const FlightTask& inst )
-  : BaseMapElement( inst )
+FlightTask::FlightTask (const FlightTask& inst) :
+    BaseMapElement (inst)
 {
   // qDebug("FlightTask::FlightTask( const FlighTask& inst ) is called");
 
@@ -149,13 +149,13 @@ void FlightTask::determineTaskType()
         case 5:
           // Check the DMSt Viereck rules
           if( isDMStViereck( tpList->at(0)->getWGSPositionPtr(),
-			     tpList->at(1)->getWGSPositionPtr(),
-			     tpList->at(2)->getWGSPositionPtr(),
-			     tpList->at(3)->getWGSPositionPtr(),
-			     tpList->at(4)->getWGSPositionPtr()) )
-	    {
+                             tpList->at (1)->getWGSPositionPtr (),
+                             tpList->at (2)->getWGSPositionPtr (),
+                             tpList->at (3)->getWGSPositionPtr (),
+                             tpList->at (4)->getWGSPositionPtr ()))
+            {
               flightType = FlightTask::DMStViereck;
-	    }
+            }
           else
             {
               // Vieleck
