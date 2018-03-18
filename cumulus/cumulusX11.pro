@@ -396,6 +396,7 @@ internet {
                httpclient.h \
 		           LiveTrack24.h \
 		           LiveTrack24Logger.h \
+               LiveTrackBase.h \
                preflightlivetrack24page.h \
                preflightweatherpage.h \
                proxydialog.h

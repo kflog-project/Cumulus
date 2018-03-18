@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2014 Axel Pauli
+**   Copyright (c): 2013-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -49,7 +47,7 @@ const uchar LiveTrack24::End   = 'E';
 #define MaxQueueLen 750
 
 LiveTrack24::LiveTrack24( QObject *parent ) :
-  QObject(parent),
+  LiveTrackBase(parent),
   m_httpClient(0),
   m_retryTimer(0),
   m_userId(0),
@@ -86,7 +84,7 @@ bool LiveTrack24::startTracking()
   // Check if LiveTracking is switched on
   if( conf->isLiveTrackOnOff() == false )
     {
-      return true;
+      return false;
     }
 
   // Reset package counter

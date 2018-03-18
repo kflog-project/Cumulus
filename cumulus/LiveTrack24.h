@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2014 Axel Pauli
+**   Copyright (c): 2013-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -39,16 +37,15 @@
  * \see http://www.livetrack24.com/wiki/LiveTracking%20API
  * \see https://www.skylines-project.org/tracking/info
  *
- * \date 2013-2014
+ * \date 2013-2018
  *
- * \version $Id$
+ * \version 2.0
  */
 
 #ifndef LiveTrack24_h
 #define LiveTrack24_h
 
 #include <QByteArray>
-#include <QObject>
 #include <QPair>
 #include <QQueue>
 #include <QString>
@@ -56,9 +53,10 @@
 
 #include "generalconfig.h"
 #include "httpclient.h"
+#include "LiveTrackBase.h"
 #include "wgspoint.h"
 
-class LiveTrack24 : public QObject
+class LiveTrack24 : public LiveTrackBase
 {
   Q_OBJECT
 
@@ -117,7 +115,7 @@ class LiveTrack24 : public QObject
    *
    * \return True on success otherwise false.
    */
-  bool startTracking();
+  virtual bool startTracking();
 
   /**
    * Sends a "GPS route point" packet to the tracking server
@@ -141,7 +139,7 @@ class LiveTrack24 : public QObject
    *
    * \return True on success otherwise false.
    */
-  bool endTracking();
+  virtual bool endTracking();
 
   /**
    * Provides a package statistics about the current session.
@@ -150,7 +148,7 @@ class LiveTrack24 : public QObject
    *
    * \param sentPkgs Package number transfered to the server
    */
-  void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
+  virtual void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
   {
     cachedPkgs = m_requestQueue.size();
     sentPkgs   = m_sentPackages;
@@ -162,7 +160,7 @@ class LiveTrack24 : public QObject
    * \return false, if no HTTP request is in work and the request queue is empty.
    *         Otherwise true is returned.
    */
-  bool livetrackWorkingState()
+  virtual bool livetrackWorkingState()
   {
     return ( m_httpClient->isBusy() || m_requestQueue.isEmpty() == false );
   };
