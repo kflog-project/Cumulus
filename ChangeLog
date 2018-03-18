@@ -18,6 +18,11 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2018-03-18 AP: Cumulus 5.33.1 released for Android.
+
+[-] 2018-03-15 AP: Issue #125 fixed. Flarm Settings Page should also support
+                   load/save command from PowerFlarm.
+
 [-] 2018-03-13 AP: Issue #124 fixed. Waypoint editor comment page changed to a
                    single line input.
 
