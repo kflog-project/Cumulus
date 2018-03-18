@@ -105,6 +105,9 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   Qt::InputMethodHints imh = (m_comment->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_comment->setInputMethodHints(imh);
 
+  connect( m_comment, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   pcArea->setWidget( m_comment );
   tabWidget->addTab( pcArea, tr("Comment") );
 
