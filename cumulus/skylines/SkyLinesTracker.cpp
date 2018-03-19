@@ -52,6 +52,7 @@ SkyLinesTracker::SkyLinesTracker(QObject *parent) :
   m_udp(0),
   m_packetId(0),
   m_lastPingAnswer(-1),
+  m_startDay(0),
   m_sentPackages(0)
 {
   m_retryTimer = new QTimer( this );
@@ -81,7 +82,10 @@ bool SkyLinesTracker::startTracking()
   // All previous cached data are cleared because there was no login to the
   // server in the past and in this case only the current session data
   // are stored.
-  m_requestQueue.clear();
+  m_fixPacketQueue.clear();
+
+  // Calculate begin of day in milli seconds UTC and save it
+  m_startDay = QDateTime::currentMSecsSinceEpoch() / 24 * 3600000;
 
   // Check, if user name contains a live tracking key entry.
   GeneralConfig* conf = GeneralConfig::instance();
@@ -318,6 +322,7 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
 
   fp.flags = ToBE32(flags);
 
+  quint32 time = static_cast<quint32>(utcTimeStamp - m_startDay);
 
   fp.time = ToBE32(time);
   fp.reserved = 0;
@@ -338,8 +343,7 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
 
   fp.header.crc = ToBE16( UpdateCRC16CCITT( static_cast<const void *>( &fp ),
                                             sizeof(fp), 0) );
-
-
+  queueRequest( fp );
   return true;
 }
 
@@ -360,7 +364,7 @@ void SkyLinesTracker::slotRetry()
   // If not, we stop here the data sending and clear the request queue.
   if( GeneralConfig::instance()->isLiveTrackOnOff() == false )
     {
-      m_requestQueue.clear();
+      m_fixPacketQueue.clear();
       return;
     }
 
@@ -368,30 +372,19 @@ void SkyLinesTracker::slotRetry()
   sendHttpRequest();
 }
 
-bool SkyLinesTracker::queueRequest(QPair<uchar, QString> keyAndUrl)
+bool SkyLinesTracker::queueRequest( SkyLinesTracking::FixPacket fixPaket )
 {
   checkQueueLimit();
-  m_requestQueue.enqueue( keyAndUrl );
+  m_fixPacketQueue.enqueue( fixPaket );
   return sendHttpRequest();
 }
 
 void SkyLinesTracker::checkQueueLimit()
 {
-  if( m_requestQueue.size() <= MaxQueueLen )
+  while( m_fixPacketQueue.size() > MaxQueueLen )
     {
-      return;
-    }
-
-  // The maximum queue length is reached. In this case the oldest route point
-  // element is removed.
-  for( int i = 0; i < m_requestQueue.size(); i++ )
-    {
-      if( m_requestQueue.at(i).first == Route )
-        {
-          // hau wech
-          m_requestQueue.removeAt( i );
-          break;
-        }
+      // hau wech
+      m_fixPacketQueue.removeAt( 0 );
     }
 }
 
@@ -400,10 +393,10 @@ void SkyLinesTracker::stopLiveTracking()
   // Login failed. We disable further live tracking.
   GeneralConfig::instance()->setLiveTrackOnOff( false );
   m_retryTimer->stop();
-  m_requestQueue.clear();
+  m_fixPacketQueue.clear();
 
   // Inform the user about our decision.
-  QString msg = QString(tr("<html>LiveTrack login failed!<br><br>Switching off service.</html>"));
+  QString msg = QString(tr("<html>SkyLines login failed!<br><br>Switching off service.</html>"));
 
   QMessageBox mb( QMessageBox::Critical,
                   tr("Login Error"),

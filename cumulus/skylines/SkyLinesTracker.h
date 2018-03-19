@@ -183,11 +183,11 @@ class SkyLinesTracker : public LiveTrackBase
   void processDatagram( QByteArray& datagram );
 
   /**
-   * Puts a HTTP request into the queue and activates the sending to the server.
+   * Puts a fix packet into the queue and activates the sending to the server.
    *
-   * \param keyAndUrl A pair consisting of a key identifier and an URL
+   * \param fixPaket A fix packet to be stored.
    */
-  bool queueRequest( QPair<uchar, QString> keyAndUrl );
+  bool queueRequest( SkyLinesTracking::FixPacket fixPaket );
 
   /**
    * Check if the queue limit is observed to avoid a memory problem. If the
@@ -272,6 +272,9 @@ class SkyLinesTracker : public LiveTrackBase
 
   /** Here is stored the last ping answer from the skyLines server. */
   qint32 m_lastPingAnswer;
+
+  /** Start day in ms UTC. */
+  quint64 m_startDay;
 
   /**
    * UDP request queue. All FixPackets are stored in that queue.
