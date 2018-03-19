@@ -124,15 +124,17 @@ class LiveTrack24 : public LiveTrackBase
    * \param altitude Altitude in meters above MSL
    * \param groundSpeed Speed over ground in km/h
    * \param course Course over ground 0...360 degrees
+   * \param vario vertical speed in m/s
    * \param utcTimeStamp UTC seconds since 1970
    *
    * \return True on success otherwise false.
    */
-  bool routeTracking( const QPoint& position,
-                      const int altitude,
-                      const uint groundSpeed,
-                      const uint course,
-                      qint64 utcTimeStamp );
+  virtual bool routeTracking( const QPoint& position,
+                              const int altitude,
+                              const uint groundSpeed,
+                              const uint course,
+                              const double vario,
+                              qint64 utcTimeStamp );
 
   /**
    * Sends the "end of track" packet to the tracking server.

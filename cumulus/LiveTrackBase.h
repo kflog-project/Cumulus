@@ -16,7 +16,10 @@
 #ifndef LiveTrackBase_h
 #define LiveTrackBase_h
 
+#include <QtGlobal>
 #include <QObject>
+#include <QPoint>
+
 /**
  * \class LiveTrackBase
  *
@@ -49,6 +52,25 @@ public:
    * Called to start the live tracking session.
    */
   virtual bool startTracking() = 0;
+
+  /**
+   * Sends a "GPS route point" packet to the tracking server
+   *
+   * \param position Coordinates as WGS84 in KFLog format
+   * \param altitude Altitude in meters above MSL
+   * \param groundSpeed Speed over ground in km/h
+   * \param course Course over ground 0...360 degrees
+   * \param vario vertical speed in m/s
+   * \param utcTimeStamp UTC seconds since 1970
+   *
+   * \return True on success otherwise false.
+   */
+  virtual bool routeTracking( const QPoint& position,
+                              const int altitude,
+                              const uint groundSpeed,
+                              const uint course,
+                              const double vario,
+                              qint64 utcTimeStamp ) = 0;
 
   /**
    * Called to finish the live tracking session.

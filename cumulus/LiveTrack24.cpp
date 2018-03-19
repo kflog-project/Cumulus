@@ -24,6 +24,7 @@
 #include <QtWidgets>
 #endif
 
+#include <QtGlobal>
 #include <QtNetwork>
 
 #include "calculator.h"
@@ -172,6 +173,7 @@ bool LiveTrack24::routeTracking( const QPoint& position,
                                  const int altitude,
                                  const uint groundSpeed,
                                  const uint course,
+                                 const double /* vario */,
                                  qint64 utcTimeStamp )
 {
   GeneralConfig* conf = GeneralConfig::instance();

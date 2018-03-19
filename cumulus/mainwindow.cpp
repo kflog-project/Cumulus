@@ -2019,18 +2019,18 @@ void MainWindow::closeEvent( QCloseEvent* event )
     {
       deferredCounter--;
 
-//      qDebug() << "Close deferred: deferredCounter=" << deferredCounter
-//	         << "runningDownloads=" << DownloadManager::runningDownloads()
-//               << "livetrackWorkingState=" << m_liveTrackLogger->livetrackWorkingState();
+      //      qDebug() << "Close deferred: deferredCounter=" << deferredCounter
+      //	         << "runningDownloads=" << DownloadManager::runningDownloads()
+      //               << "livetrackWorkingState=" << m_liveTrackLogger->livetrackWorkingState();
 
       if( deferredCounter > 0 && DownloadManager::runningDownloads() > 0 &&
-	  m_liveTrackLogger->livetrackWorkingState() )
-	{
+          m_liveTrackLogger->livetrackWorkingState ())
+        {
           // Trigger a recall of this slot to check again background processes.
           QTimer::singleShot( 250, this, SLOT(close()) );
-	  event->ignore();
-	  return;
-	}
+          event->ignore ();
+          return;
+        }
 
 #ifdef ANDROID
       jniShutdown();
@@ -2076,16 +2076,16 @@ void MainWindow::closeEvent( QCloseEvent* event )
 #ifdef INTERNET
 
       {
-	// Stop all downloads.
-	// Qt::HANDLE tid = QThread::currentThreadId();
-	// qDebug() << "Closing Thread=" << tid;
+          // Stop all downloads.
+          // Qt::HANDLE tid = QThread::currentThreadId();
+          // qDebug() << "Closing Thread=" << tid;
 
-	DownloadManager::setStopFlag( true );
+          DownloadManager::setStopFlag (true);
 
-	if( DownloadManager::runningDownloads() > 0 )
-	  {
-	    deferredClose = true;
-	  }
+          if (DownloadManager::runningDownloads () > 0)
+            {
+              deferredClose = true;
+            }
       }
 
       // Stop live tracking, if is is running
@@ -2096,16 +2096,16 @@ void MainWindow::closeEvent( QCloseEvent* event )
         }
 
       if( deferredClose == true)
-	{
+        {
           // Trigger a recall of this slot to check again for running
-	  // background processes.
+          // background processes.
           QTimer::singleShot( 250, this, SLOT(close()) );
 
           // Hide the main window
           setVisible( false );
           event->ignore();
           return;
-	}
+        }
 
 #endif
 
