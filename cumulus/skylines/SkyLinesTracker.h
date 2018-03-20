@@ -150,7 +150,7 @@ class SkyLinesTracker : public LiveTrackBase
   /**
    * Informs about the livetrack working state.
    *
-   * \return false, if no HTTP request is in work and the request queue is empty.
+   * \return false, if fix packet queue is empty.
    *         Otherwise true is returned.
    */
   virtual bool livetrackWorkingState()
@@ -187,7 +187,7 @@ class SkyLinesTracker : public LiveTrackBase
    *
    * \param fixPaket A fix packet to be stored.
    */
-  bool queueRequest( SkyLinesTracking::FixPacket fixPaket );
+  bool enqueueRequest( SkyLinesTracking::FixPacket fixPaket );
 
   /**
    * Check if the queue limit is observed to avoid a memory problem. If the
@@ -196,11 +196,11 @@ class SkyLinesTracker : public LiveTrackBase
   void checkQueueLimit();
 
   /**
-   * Sends the next request from the request queue to the server.
+   * Sends the next fix point from the queue to the server.
    *
    * \return True in case of success otherwise false.
    */
-  bool sendUdpRequest();
+  bool sendNextFixpoint();
 
   /**
    * Generates a package identifier. Every call increments the internal counter.
@@ -235,17 +235,24 @@ class SkyLinesTracker : public LiveTrackBase
   void slotHostInfoRequest();
 
   /**
-   * Called to send a ping to the sky lines server to verify the user data.
+   * Called to send a ping to the sky lines server to verify the connection and
+   * the user's key.
    */
   void slotSendPing();
 
   /**
-   * Called, if an UDP diagram is available.
+   * Called, if an UDP diagram is available from the sky lines server.
    */
   void slotReadPendingDatagrams();
 
   /**
-   * Called, if retry timer expires to trigger a new sent request.
+   * Called if UDP datagram was written to the network.
+   */
+  void slotBytesWritten();
+
+  /**
+   * Called, if the retry timer expires to trigger the sending of the next
+   * fix packet after a send problem.
    */
   void slotRetry();
 
@@ -267,7 +274,7 @@ class SkyLinesTracker : public LiveTrackBase
   /** UDP socket */
   QUdpSocket* m_udp;
 
-  /** Packet identifier, starting with 1 at first call. */
+  /** Packet identifier, starting with 1 at the first call. */
   static PackageId m_packetId;
 
   /** Here is stored the last ping answer from the skyLines server. */
@@ -277,14 +284,12 @@ class SkyLinesTracker : public LiveTrackBase
   quint64 m_startDay;
 
   /**
-   * UDP request queue. All FixPackets are stored in that queue.
+   * UDP request queue. All fix packets are stored in that queue.
    */
   QQueue<SkyLinesTracking::FixPacket> m_fixPacketQueue;
 
-  /** counter for successfully fix package transfer to the server. */
+  /** Counter for successfully sent UDP datagrams to the server. */
   uint m_sentPackages;
 };
-
-SkyLinesTracker::PackageId SkyLinesTracker::m_packetId = 0;
 
 #endif

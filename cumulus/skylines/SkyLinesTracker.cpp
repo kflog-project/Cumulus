@@ -44,13 +44,14 @@
 // after an hour, if all 5s an entry is made.
 #define MaxQueueLen 750
 
+SkyLinesTracker::PackageId SkyLinesTracker::m_packetId = 0;
+
 SkyLinesTracker::SkyLinesTracker(QObject *parent) :
   LiveTrackBase(parent),
   m_retryTimer(0),
   m_hostLookupIsRunning(false),
   m_liveTrackingKey(0),
   m_udp(0),
-  m_packetId(0),
   m_lastPingAnswer(-1),
   m_startDay(0),
   m_sentPackages(0)
@@ -85,7 +86,7 @@ bool SkyLinesTracker::startTracking()
   m_fixPacketQueue.clear();
 
   // Calculate begin of day in milli seconds UTC and save it
-  m_startDay = QDateTime::currentMSecsSinceEpoch() / 24 * 3600000;
+  m_startDay = QDateTime::currentMSecsSinceEpoch() / (24 * 3600000);
 
   // Check, if user name contains a live tracking key entry.
   GeneralConfig* conf = GeneralConfig::instance();
@@ -95,7 +96,7 @@ bool SkyLinesTracker::startTracking()
   if( m_liveTrackingKeyString.isEmpty() )
     {
       qWarning() << __LINE__ << method
-                 << "SkyLines Tracking user name is missing!";
+                 << "SkyLines tracking user key is missing!";
       return false;
     }
 
@@ -105,12 +106,30 @@ bool SkyLinesTracker::startTracking()
   if( ok == false )
     {
       qWarning() << __LINE__ << method
-                 << "SkyLines Tracking user name is wrong, no uint64!";
+                 << "SkyLines tracking user key is wrong, no uint64!";
       return false;
     }
 
+  // Get host information.
   slotHostInfoRequest();
   return true;
+}
+
+void SkyLinesTracker::slotHostInfoRequest()
+{
+  if( isServiceRequested() == false || m_hostLookupIsRunning == true )
+    {
+      return;
+    }
+
+  if( m_serverIpAdress.isNull() && m_hostLookupIsRunning == false )
+    {
+      // We need the IP address of the skyline tracking server.
+      m_hostLookupIsRunning = true;
+
+      QHostInfo::lookupHost( getServerName(),
+                             this, SLOT(slotHostInfoResponse(QHostInfo)) );
+    }
 }
 
 void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
@@ -136,23 +155,6 @@ void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
   slotSendPing();
 }
 
-void SkyLinesTracker::slotHostInfoRequest()
-{
-  if( isServiceRequested() == false )
-    {
-      return;
-    }
-
-  if( m_serverIpAdress.isNull() && m_hostLookupIsRunning == false )
-    {
-      // We need the IP address of the skyline tracking server.
-      m_hostLookupIsRunning = true;
-
-      QHostInfo::lookupHost( getServerName(),
-                             this, SLOT(lookedUp(QHostInfo)) );
-    }
-}
-
 void SkyLinesTracker::slotSendPing()
 {
   if( isServiceRequested() == false || m_serverIpAdress.isNull() == true )
@@ -162,13 +164,19 @@ void SkyLinesTracker::slotSendPing()
 
   if( m_udp == static_cast<QUdpSocket *> (0) )
     {
+      // Setup an UDP socket for data exchange with the SkyLines server
       m_udp = new QUdpSocket( this );
       m_udp->bind( m_serverIpAdress, getDefaultPort() );
 
       connect( m_udp, SIGNAL(readyRead()),
                this, SLOT(slotReadPendingDatagrams()));
+
+      connect( m_udp, SIGNAL(bytesWritten()),
+               this, SLOT(slotBytesWritten()) );
     }
 
+  // Send a ping packet to the server to verify the connection and the user's
+  // key.
   SkyLinesTracking::PingPacket pp;
   pp.header.magic = ToBE32( SkyLinesTracking::MAGIC );
   pp.header.crc = 0;
@@ -180,7 +188,7 @@ void SkyLinesTracker::slotSendPing()
   pp.header.crc = ToBE16( UpdateCRC16CCITT( static_cast<const void *>( &pp ),
                                             sizeof(pp), 0) );
 
-  qint64 res = m_udp->writeDatagram( static_cast<const char *>( &pp ),
+  qint64 res = m_udp->writeDatagram( (const char *) &pp,
                                      sizeof(SkyLinesTracking::PingPacket),
                                      m_serverIpAdress,
                                      getDefaultPort() );
@@ -214,7 +222,7 @@ void SkyLinesTracker::slotReadPendingDatagrams()
 
 void SkyLinesTracker::processDatagram( QByteArray& datagram )
 {
-  if( datagram.size() < sizeof(SkyLinesTracking::Header) )
+  if( static_cast<uint>(datagram.size()) < sizeof(SkyLinesTracking::Header) )
     {
       qWarning() << "SkyLinesTracker::processDatagram: Header to short!";
       return;
@@ -223,7 +231,7 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
   // extract header
   SkyLinesTracking::Header header;
 
-  qstrncpy( static_cast<char *>(&header),
+  qstrncpy( (char *) &header,
             datagram.data(),
             sizeof(SkyLinesTracking::Header) );
 
@@ -240,13 +248,16 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
       return;
     }
 
-  // extract package
+  // possible response packages from the server
   SkyLinesTracking::ACKPacket ack;
-  SkyLinesTracking::TrafficResponsePacket traffic;
-  SkyLinesTracking::UserNameResponsePacket userName;
-  SkyLinesTracking::WaveResponsePacket wave;
-  SkyLinesTracking::ThermalResponsePacket thermal;
 
+  // currently not used
+  //SkyLinesTracking::TrafficResponsePacket traffic;
+  //SkyLinesTracking::UserNameResponsePacket userName;
+  //SkyLinesTracking::WaveResponsePacket wave;
+  //SkyLinesTracking::ThermalResponsePacket thermal;
+
+  // extract received package
   switch( static_cast<SkyLinesTracking::Type>(FromBE16(header.type)) )
   {
   case SkyLinesTracking::PING:
@@ -257,27 +268,37 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
   case SkyLinesTracking::WAVE_REQUEST:
   case SkyLinesTracking::THERMAL_SUBMIT:
   case SkyLinesTracking::THERMAL_REQUEST:
+    // That are all client packages, should not come from a server.
     break;
 
   case SkyLinesTracking::ACK:
+    {
+      // acknowledge packet
+      if( static_cast<uint>(datagram.size()) < sizeof(SkyLinesTracking::ACK) )
+        {
+          qWarning() << "SkyLinesTracker::processDatagram: ACK package to short!";
+          return;
+        }
 
-    if( datagram.size() < sizeof(SkyLinesTracking::ACK) )
-      {
-        qWarning() << "SkyLinesTracker::processDatagram: ACK package to short!";
-        return;
-      }
+      qstrncpy( (char *) &ack,
+                datagram.data(),
+                sizeof(SkyLinesTracking::ACKPacket) );
 
-    qstrncpy( static_cast<char *>(&ack),
-              datagram.data(),
-              sizeof(SkyLinesTracking::ACKPacket) );
+      // Response id for request id
+      // quint16 id = FromBE16( ack.id );
 
-    // Response id for request id
-    quint16 id = FromBE16( ack.id );
+      // Response flags.
+      quint32 flags = FromBE32( ack.flags );
+      m_lastPingAnswer = static_cast<qint32>(flags);
 
-    // Response flags.
-    quint32 flags = FromBE32( ack.flags );
-    m_lastPingAnswer = static_cast<qint32>(flags);
-    break;
+      if( m_lastPingAnswer != 0 )
+        {
+          // We got an negative answer from the server. User key seems to be invalid.
+          stopLiveTracking();
+        }
+
+      break;
+    }
 
   case SkyLinesTracking::TRAFFIC_RESPONSE:
     break;
@@ -290,8 +311,16 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
 
   case SkyLinesTracking::THERMAL_RESPONSE:
      break;
-  }
 
+  default:
+    break;
+  }
+}
+
+void SkyLinesTracker::slotBytesWritten()
+{
+  m_sentPackages++;
+  sendNextFixpoint();
 }
 
 bool SkyLinesTracker::routeTracking( const QPoint& position,
@@ -306,6 +335,7 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
       return false;
     }
 
+  // Prepare a fix packet
   SkyLinesTracking::FixPacket fp;
 
   fp.header.magic = ToBE32( SkyLinesTracking::MAGIC );
@@ -328,8 +358,8 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
   fp.reserved = 0;
 
   SkyLinesTracking::GeoPoint geoPoint;
-  geoPoint.latitude = static_cast<qint32>(rint(double(position.x()) / 600000.0 * 1000000.0));
-  geoPoint.longitude = static_cast<qint32>(rint(double(position.y()) / 600000.0 * 1000000.0));
+  geoPoint.latitude = static_cast<qint32>(rint((double(position.x()) / 6.) * 100.));
+  geoPoint.longitude = static_cast<qint32>(rint((double(position.y()) / 6.) * 100.));
   geoPoint.latitude = ToBE32(geoPoint.latitude);
   geoPoint.longitude = ToBE32(geoPoint.longitude);
 
@@ -343,7 +373,7 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
 
   fp.header.crc = ToBE16( UpdateCRC16CCITT( static_cast<const void *>( &fp ),
                                             sizeof(fp), 0) );
-  queueRequest( fp );
+  enqueueRequest( fp );
   return true;
 }
 
@@ -362,21 +392,55 @@ void SkyLinesTracker::slotRetry()
   // Data sending was not possible and the retry timer has expired.
   // As next we check if LiveTracking is still switched on.
   // If not, we stop here the data sending and clear the request queue.
-  if( GeneralConfig::instance()->isLiveTrackOnOff() == false )
+  if( isServiceRequested() == false )
     {
       m_fixPacketQueue.clear();
       return;
     }
 
-  // Take the next request from the queue and try to send it to the server.
-  sendHttpRequest();
+  // Take the next fix point from the queue and try to send it to the server.
+  sendNextFixpoint();
 }
 
-bool SkyLinesTracker::queueRequest( SkyLinesTracking::FixPacket fixPaket )
+bool SkyLinesTracker::enqueueRequest( SkyLinesTracking::FixPacket fixPaket )
 {
   checkQueueLimit();
   m_fixPacketQueue.enqueue( fixPaket );
-  return sendHttpRequest();
+  return sendNextFixpoint();
+}
+
+bool SkyLinesTracker::sendNextFixpoint()
+{
+  if( isServiceRequested() == false || m_serverIpAdress.isNull() == true ||
+      m_lastPingAnswer != 0 )
+    {
+      // Note! A ping command can also call this method.
+      return false;
+    }
+
+  // A new fix packet is only send, if the ping command has received a
+  // positive response. That guaranteed, that the user key is valid.
+  if( ! m_fixPacketQueue.isEmpty() )
+    {
+      SkyLinesTracking::FixPacket fp = m_fixPacketQueue.head();
+
+      qint64 res = m_udp->writeDatagram( (const char *) &fp,
+                                         sizeof(SkyLinesTracking::FixPacket),
+                                         m_serverIpAdress,
+                                         getDefaultPort() );
+
+      if( res == -1 )
+        {
+          // Fix packet could not be send, try it again after 60s.
+          m_retryTimer->start();
+          return false;
+        }
+
+      // Remove last sent fix packet from the queue in case of success.
+      fp = m_fixPacketQueue.dequeue();
+    }
+
+  return true;
 }
 
 void SkyLinesTracker::checkQueueLimit()
@@ -396,7 +460,7 @@ void SkyLinesTracker::stopLiveTracking()
   m_fixPacketQueue.clear();
 
   // Inform the user about our decision.
-  QString msg = QString(tr("<html>SkyLines login failed!<br><br>Switching off service.</html>"));
+  QString msg = QString(tr("<html>Your SkyLines user key is invalid!<br><br>Switching off service.</html>"));
 
   QMessageBox mb( QMessageBox::Critical,
                   tr("Login Error"),

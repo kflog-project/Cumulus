@@ -399,7 +399,12 @@ internet {
                LiveTrackBase.h \
                preflightlivetrack24page.h \
                preflightweatherpage.h \
-               proxydialog.h
+               proxydialog.h \
+               skylines/byteOrder.h \
+               skylines/compiler.h \
+               skylines/crc.h \
+               skylines/skyLinesTrackingProtocol.h \
+               skylines/SkyLinesTracker.h
                               
 		SOURCES += airspacedownloaddialog.cpp \
 		           DownloadManager.cpp \
@@ -408,7 +413,9 @@ internet {
 		           LiveTrack24Logger.cpp \
 		           preflightlivetrack24page.cpp \
                preflightweatherpage.cpp \
-		           proxydialog.cpp
+		           proxydialog.cpp \
+		           skylines/crc.cpp \
+		           skylines/SkyLinesTracker.cpp
 }
 
 bluetooth {

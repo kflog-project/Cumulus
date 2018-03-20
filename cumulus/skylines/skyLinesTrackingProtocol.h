@@ -150,12 +150,12 @@ struct PingPacket {
   uint16_t id;
 
   /**
-   * Reserved for future use.  Set to zero.
+   * Reserved for future use. Set to zero.
    */
   uint16_t reserved;
 
   /**
-   * Reserved for future use.  Set to zero.
+   * Reserved for future use. Set to zero.
    */
   uint32_t reserved2;
 };
@@ -231,7 +231,7 @@ struct FixPacket {
   GeoPoint location;
 
   /**
-   * Reserved for future use.  Set to zero.
+   * Reserved for future use. Set to zero.
    */
   uint32_t reserved;
 
@@ -241,12 +241,12 @@ struct FixPacket {
   uint16_t track;
 
   /**
-   * Ground speed in m/16s.
+   * Ground speed in m*16/s.
    */
   uint16_t ground_speed;
 
   /**
-   * Indicated air speed in m/16s.
+   * Indicated air speed in m*16/s.
    */
   uint16_t airspeed;
 
@@ -256,7 +256,7 @@ struct FixPacket {
   int16_t altitude;
 
   /**
-   * Vertical speed in m/256s.
+   * Vertical speed in m*256/s.
    */
   int16_t vario;
 

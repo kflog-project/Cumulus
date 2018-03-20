@@ -27,13 +27,13 @@ Copyright_License {
 #include <QtGlobal>
 #include "compiler.h"
 
-extern const quint16 crc16ccittable[256];
+extern const quint16 crc16ccitt_table[256];
 
 gcc_const
 static inline quint16
 UpdateCRC16CCITT(quint8 octet, quint16 crc)
 {
-  return (crc << 8) ^ crc16ccittable[(crc >> 8) ^ octet];
+  return (crc << 8) ^ crc16ccitt_table[(crc >> 8) ^ octet];
 }
 
 gcc_pure
