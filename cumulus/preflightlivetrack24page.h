@@ -24,9 +24,9 @@
  * submitted to the LiveTracking24 server during flight via an active Internet
  * connection, if the user has enabled that.
  *
- * \date 2013-2016
+ * \date 2013-2018
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -106,6 +106,11 @@ class PreFlightLiveTrack24Page : public QWidget
    * Emitted, if on/off state has been changed.
    */
   void onOffStateChanged( bool newSate );
+
+  /**
+   * Emitted, if the live tracking server has changed.
+   */
+  void liveTrackingServerChanged();
 
   /**
    * Emitted, if the widget is closed.

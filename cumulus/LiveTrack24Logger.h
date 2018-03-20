@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2014 Axel Pauli
+**   Copyright (c): 2013-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,33 +20,29 @@
  *
  * \brief A LiveTrack24 logger
  *
- * Logger which reports GPS track data to a LiveTrack server. It implements
- * the Leonardo Live Tracking API.
+ * Logger which reports GPS track data to a LiveTrack server. It uses
+ * the Leonardo Live Tracking API and the SykLines UDP tracking protocol.
  *
  * This class is triggered by the slot slotNewFixEntry.
  *
  * \see http://www.livetrack24.com/wiki/en/Leonardo%20Live%20Tracking%20API
  * \see http://livexc.dhv1.dedoc/index.php
- * \see https://www.skylines-project.org/tracking/info
+ * \see https://skylines.aero/tracking/info
  *
- * \date 2013-2014
+ * \date 2013-2018
  *
- * \version $Id$
+ * \version 2.0
  */
 
 #ifndef LiveTrack24Logger_h
 #define LiveTrack24Logger_h
 
-#include <QByteArray>
 #include <QObject>
-#include <QPair>
-#include <QQueue>
-#include <QString>
 #include <QTime>
 #include <QTimer>
 
 #include "generalconfig.h"
-#include "LiveTrack24.h"
+#include "LiveTrackBase.h"
 
 class LiveTrack24Logger : public QObject
 {
@@ -82,7 +76,7 @@ class LiveTrack24Logger : public QObject
    */
   bool livetrackWorkingState()
   {
-    return m_lt24Gateway.livetrackWorkingState();
+    return m_ltGateway->livetrackWorkingState();
   }
 
   /**
@@ -94,7 +88,7 @@ class LiveTrack24Logger : public QObject
    */
   void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
   {
-    m_lt24Gateway.getPackageStatistics( cachedPkgs, sentPkgs );
+    m_ltGateway->getPackageStatistics( cachedPkgs, sentPkgs );
     return;
   };
 
@@ -111,13 +105,18 @@ class LiveTrack24Logger : public QObject
   */
   void slotFinishLogging();
 
+  /**
+   * Called, if a configuration change has done by the user.
+   */
+  void slotConfigChanged();
+
  private:
 
   /** Reports a new route point to LiveTrack server. */
   void reportRoutePoint();
 
-  /** LiveTrack24 gateway */
-  LiveTrack24 m_lt24Gateway;
+  /** LiveTrack gateway */
+  LiveTrackBase* m_ltGateway;
 
   /** Status flag for flying. */
   bool m_isFlying;

@@ -413,6 +413,10 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
                MainWindow::mainWindow()->getLiveTrack24Logger(),
                SLOT( slotNewSwitchState(bool) ) );
 
+      connect( pflt24p, SIGNAL( liveTrackingServerChanged() ),
+               MainWindow::mainWindow()->getLiveTrack24Logger(),
+               SLOT( slotConfigChanged() ) );
+
       if( m_menuCb->checkState() == Qt::Checked )
         {
           connect( pflt24p, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );

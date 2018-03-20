@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2014 Axel Pauli
+**   Copyright (c): 2013-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -21,9 +19,12 @@
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "LiveTrack24Logger.h"
+#include "LiveTrack24.h"
+#include "skylines/SkyLinesTracker.h"
 
 LiveTrack24Logger::LiveTrack24Logger( QObject *parent ) :
   QObject(parent),
+  m_ltGateway(0),
   m_isFlying(false)
 {
   m_lastTrackReporting.start();
@@ -35,6 +36,32 @@ LiveTrack24Logger::LiveTrack24Logger( QObject *parent ) :
   m_closeSessionTimer->setInterval( 30000 );
 
   connect( m_closeSessionTimer, SIGNAL(timeout ()), SLOT(slotFinishLogging()));
+
+  slotConfigChanged();
+}
+
+void LiveTrack24Logger::slotConfigChanged()
+{
+  // Initiate the selected LiveTrack gateway
+  GeneralConfig* conf = GeneralConfig::instance();
+
+  if( m_ltGateway != 0 )
+    {
+      // Stop current tracking, configuration has been changed.
+      m_ltGateway->endTracking();
+      m_ltGateway->deleteLater();
+      m_ltGateway = 0;
+    }
+
+  // Setup a new LiveTrack gateway after a configuration change.
+  if( conf->getLiveTrackServer() != SkyLinesTracker::getServerName() )
+    {
+      m_ltGateway = new LiveTrack24();
+    }
+  else
+    {
+      m_ltGateway = new SkyLinesTracker();
+    }
 }
 
 LiveTrack24Logger::~LiveTrack24Logger()
@@ -61,7 +88,7 @@ void LiveTrack24Logger::slotNewFixEntry()
         {
           // We have to report a start of moving
           m_isFlying = true;
-          m_lt24Gateway.startTracking();
+          m_ltGateway->startTracking();
         }
     }
 
@@ -84,7 +111,7 @@ void LiveTrack24Logger::slotNewFixEntry()
           // We have to report an end of moving
           m_lastTrackReporting.start();
           reportRoutePoint();
-          m_lt24Gateway.endTracking();
+          m_ltGateway->endTracking();
           m_isFlying = false;
         }
 
@@ -109,7 +136,7 @@ void LiveTrack24Logger::slotNewSwitchState( bool state )
 
 void LiveTrack24Logger::reportRoutePoint()
 {
-  m_lt24Gateway.routeTracking( calculator->getlastPosition(),
+  m_ltGateway->routeTracking( calculator->getlastPosition(),
                                rint(calculator->getlastAltitude().getMeters()),
                                rint(calculator->getLastSpeed().getKph()),
                                calculator->getlastHeading() == -1 ? 0 : calculator->getlastHeading() % 360,
@@ -125,7 +152,7 @@ void LiveTrack24Logger::slotFinishLogging()
       return;
     }
 
-  m_lt24Gateway.endTracking();
+  m_ltGateway->endTracking();
   m_isFlying = false;
   m_lastTrackReporting.start();
   m_lastMoveTimePoint.start();

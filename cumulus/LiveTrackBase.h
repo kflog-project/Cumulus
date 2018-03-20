@@ -51,7 +51,10 @@ public:
   /*
    * Called to start the live tracking session.
    */
-  virtual bool startTracking() = 0;
+  virtual bool startTracking()
+  {
+    return true;
+  }
 
   /**
    * Sends a "GPS route point" packet to the tracking server
@@ -70,12 +73,24 @@ public:
                               const uint groundSpeed,
                               const uint course,
                               const double vario,
-                              qint64 utcTimeStamp ) = 0;
+                              qint64 utcTimeStamp )
+  {
+    Q_UNUSED(position);
+    Q_UNUSED(altitude);
+    Q_UNUSED(groundSpeed);
+    Q_UNUSED(course);
+    Q_UNUSED(vario);
+    Q_UNUSED(utcTimeStamp);
+    return true;
+  }
 
   /**
    * Called to finish the live tracking session.
    */
-  virtual bool endTracking() = 0;
+  virtual bool endTracking()
+  {
+    return true;
+  }
 
   /**
    * Provides a package statistics about the current live tracking session.
@@ -84,7 +99,11 @@ public:
    *
    * \param sentPkgs Package number transfered to the server
    */
-  virtual void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs ) = 0;
+  virtual void getPackageStatistics( uint& cachedPkgs, uint& sentPkgs )
+  {
+    cachedPkgs = 0;
+    sentPkgs = 0;
+  }
 
   /**
    * Informs about the live tracking working state.
@@ -92,7 +111,10 @@ public:
    * \return False, if live tracking has not to send stored packages
    *         otherwise true.
    */
-  virtual bool livetrackWorkingState() = 0;
+  virtual bool livetrackWorkingState()
+  {
+    return false;
+  }
 };
 
 #endif /* LiveTrackBase_h */

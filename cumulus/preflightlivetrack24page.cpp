@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013-2016 by Axel Pauli
+ **   Copyright (c):  2013-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -167,21 +167,11 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
         {
           pos = 7;
         }
-      else
+      else if( srvList.at(i).startsWith("https://") )
         {
           pos = 8;
         }
 
-#ifdef ANDROID
-
-      if( srvList.at(i).startsWith("https://") && jniGetApiLevel() >= 23 )
-	{
-	  // Note, API Level 23, Android 6, Marshmallow does not more support
-	  // old Qt4 Network Lib and openssl.
-	  continue;
-	}
-
-#endif
       m_server->addItem( srvList.at(i).mid(pos), srvList.at(i) );
     }
 
@@ -304,11 +294,11 @@ void PreFlightLiveTrack24Page::load()
       int index = conf->getLiveTrackIndex();
 
       if( index == 3 )
-	{
-	  // https://skylines.aero
-	  conf->setLiveTrackOnOff( false );
-	  conf->setLiveTrackIndex( 0 );
-	}
+        {
+          // https://skylines.aero
+          conf->setLiveTrackOnOff( false );
+          conf->setLiveTrackIndex( 0 );
+        }
     }
 
 #endif
@@ -350,6 +340,14 @@ void PreFlightLiveTrack24Page::save()
       emit onOffStateChanged( newOnOffState );
     }
 
+  int oldLiveTrackIndex = conf->getLiveTrackIndex();
+  int newLiveTrackIndex = m_server->currentIndex();
+
+  if( oldLiveTrackIndex != newLiveTrackIndex )
+    {
+      emit liveTrackingServerChanged();
+    }
+
   conf->setLiveTrackOnOff( newOnOffState );
   conf->setLiveTrackInterval( m_trackingIntervalMin->value() * 60 + m_trackingIntervalSec->value() );
   conf->setLiveTrackAirplaneType( m_airplaneType->itemData(m_airplaneType->currentIndex()).toInt() );
@@ -371,34 +369,70 @@ void PreFlightLiveTrack24Page::slotHelp()
 
 void PreFlightLiveTrack24Page::slotAccept()
 {
-  if( m_liveTrackEnabled->isChecked() &&
-      ( m_username->text().trimmed().isEmpty() ||
-        ( m_server->itemText(m_server->currentIndex()).contains("live") &&
-          m_password->text().trimmed().isEmpty() )))
+  if( m_liveTrackEnabled->isChecked() )
     {
-      // User name and password are required, when service is switched on!
-      QString msg = QString(tr("<html>LiveTracking is switched on but "
-                               "user name or password are missing!"
-                               "<br><br>Please switch off service or add "
-                               "the missing items.</html>"));
+      if ( m_username->text().trimmed().isEmpty() ||
+          ( m_server->itemText(m_server->currentIndex()).contains("live") &&
+              m_password->text().trimmed().isEmpty() ))
+        {
+          // User name and password are required, when service is switched on!
+          QString msg = QString(tr("<html>LiveTracking is switched on but "
+              "user name or password are missing!"
+              "<br><br>Please switch off service or add "
+              "the missing items.</html>"));
 
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Login data missing" ),
-                      msg,
-                      QMessageBox::Ok,
-                      this );
+          QMessageBox mb( QMessageBox::Warning,
+                          tr( "Login data missing" ),
+                          msg,
+                          QMessageBox::Ok,
+                          this );
 
 #ifdef ANDROID
 
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
 
 #endif
 
-      mb.exec();
-      return;
+          mb.exec();
+          return;
+        }
+
+      if( m_server->itemText(m_server->currentIndex())== "skylines.aero" )
+        {
+          // Check SkyLines user key. Must be 8 hex digits.
+          bool ok;
+          qulonglong key = m_username->text().trimmed().toULongLong(&ok, 16);
+
+          if( ok == false )
+            {
+              // User name and password are required, when service is switched on!
+              QString msg = QString(tr("<html>LiveTracking is switched on but "
+                  "your user key is invalid!"
+                  "<br><br>Please switch off service or correct "
+                  "your user key (8 hex numbers).</html>"));
+
+              QMessageBox mb( QMessageBox::Warning,
+                              tr( "User key invalid" ),
+                              msg,
+                              QMessageBox::Ok,
+                              this );
+
+#ifdef ANDROID
+
+              mb.show();
+              QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                               height()/2 - mb.height()/2 ));
+              mb.move( pos );
+
+#endif
+
+              mb.exec();
+              return;
+            }
+        }
     }
 
   save();

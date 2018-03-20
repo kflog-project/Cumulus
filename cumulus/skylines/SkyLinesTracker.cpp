@@ -77,7 +77,7 @@ bool SkyLinesTracker::startTracking()
       return false;
     }
 
-  // Reset package counter
+  // Reset sent package counter
   m_sentPackages = 0;
 
   // All previous cached data are cleared because there was no login to the
@@ -379,11 +379,8 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
 
 bool SkyLinesTracker::endTracking()
 {
-  if( isServiceRequested() == false )
-    {
-      return true;
-    }
-
+  m_fixPacketQueue.clear();
+  m_retryTimer->stop();
   return true;
 }
 
