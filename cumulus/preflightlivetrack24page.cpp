@@ -33,10 +33,12 @@
 #include "mainwindow.h"
 #include "numberEditor.h"
 #include "preflightlivetrack24page.h"
+#include "skylines/SkyLinesTracker.h"
 
 PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   QWidget(parent),
-  m_updateTimer(0)
+  m_updateTimer(0),
+  m_slt(0)
 {
   setObjectName("PreFlightLiveTrack24Page");
   setWindowFlags( Qt::Tool );
@@ -286,24 +288,6 @@ void PreFlightLiveTrack24Page::load()
 {
   GeneralConfig* conf = GeneralConfig::instance();
 
-#ifdef ANDROID
-
-  if( jniGetApiLevel() >= 23 )
-    {
-      // Prevent calls to https://skylines.aero, they will crash on Android 6
-      int index = conf->getLiveTrackIndex();
-
-      if( index == 3 )
-        {
-          // https://skylines.aero
-          conf->setLiveTrackOnOff( false );
-          conf->setLiveTrackIndex( 0 );
-        }
-    }
-
-#endif
-
-
   m_liveTrackEnabled->setChecked( conf->isLiveTrackOnOff() );
   m_trackingIntervalMin->setValue( conf->getLiveTrackInterval() / 60 );
   m_trackingIntervalSec->setValue( conf->getLiveTrackInterval() % 60 );
@@ -400,11 +384,12 @@ void PreFlightLiveTrack24Page::slotAccept()
           return;
         }
 
-      if( m_server->itemText(m_server->currentIndex())== "skylines.aero" )
+      if( m_server->itemText(m_server->currentIndex() ) ==
+          SkyLinesTracker::getServerName() )
         {
           // Check SkyLines user key. Must be 8 hex digits.
           bool ok;
-          qulonglong key = m_username->text().trimmed().toULongLong(&ok, 16);
+          m_username->text().trimmed().toULongLong(&ok, 16);
 
           if( ok == false )
             {
@@ -449,70 +434,117 @@ void PreFlightLiveTrack24Page::slotReject()
 
 void PreFlightLiveTrack24Page::slotLoginTest()
 {
-  if( m_username->text().trimmed().isEmpty() ||
-      ( m_server->itemText(m_server->currentIndex()).contains("live") &&
-        m_password->text().trimmed().isEmpty() ))
-    {
-      // User name and password are required for the login test
-      QString msg = QString(tr("User name or password are missing!"));
-
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Login data missing" ),
-                      msg,
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
-      return;
-    }
-
   QString server = m_server->itemData(m_server->currentIndex()).toString();
 
-  QString loginUrl = server +
-                     QString( "/client.php?op=login&user=%1&pass=%2")
-                              .arg(m_username->text().trimmed())
-                              .arg(m_password->text().trimmed() );
-
-  m_httpResultBuffer.clear();
-
-  qDebug() << "loginUrl=" << loginUrl;
-
-  bool ok = m_httpClient->getData( loginUrl, &m_httpResultBuffer );
-
-  if( ! ok )
+  if( server.startsWith("http") == true )
     {
-      QString msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+      if( m_username->text().trimmed().isEmpty() ||
+          ( m_server->itemText(m_server->currentIndex()).contains("live") &&
+            m_password->text().trimmed().isEmpty() ))
+        {
+          // User name and password are required for the login test
+          QString msg = QString(tr("User name or password are missing!"));
 
-      QMessageBox mb( QMessageBox::Information,
-                      tr("Login Test failed"),
-                      msg,
-                      QMessageBox::Ok,
-                      this );
+          QMessageBox mb( QMessageBox::Warning,
+                          tr( "Login data missing" ),
+                          msg,
+                          QMessageBox::Ok,
+                          this );
 
 #ifdef ANDROID
 
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
 
 #endif
 
-      mb.exec();
+          mb.exec();
+          return;
+        }
+
+      QString loginUrl = server +
+                         QString( "/client.php?op=login&user=%1&pass=%2")
+                                  .arg(m_username->text().trimmed())
+                                  .arg(m_password->text().trimmed() );
+
+      m_httpResultBuffer.clear();
+
+      qDebug() << "loginUrl=" << loginUrl;
+
+      bool ok = m_httpClient->getData( loginUrl, &m_httpResultBuffer );
+
+      if( ! ok )
+        {
+          QString msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+
+          QMessageBox mb( QMessageBox::Information,
+                          tr("Login Test failed"),
+                          msg,
+                          QMessageBox::Ok,
+                          this );
+
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+
+          mb.exec();
+          return;
+        }
+
+      // Disable test button
+      m_loginTestButton->setEnabled( false );
       return;
     }
 
-  // Disable test button
-  m_loginTestButton->setEnabled( false );
+  if( server == SkyLinesTracker::getServerName() )
+    {
+      // Check SkyLines user key. Must be 8 hex digits.
+      bool ok;
+      m_username->text().trimmed().toULongLong(&ok, 16);
+
+      if( ok == false )
+        {
+          // User name and password are required, when service is switched on!
+          QString msg = QString(tr("<html>LiveTracking is switched on but "
+              "your user key is invalid!"
+              "<br><br>Please switch off service or correct "
+              "your user key (8 hex numbers).</html>"));
+
+          QMessageBox mb( QMessageBox::Warning,
+                          tr( "User key invalid" ),
+                          msg,
+                          QMessageBox::Ok,
+                          this );
+
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+          mb.exec();
+          return;
+        }
+
+      // Check login to SkyLines
+      m_slt = new SkyLinesTracker;
+
+      connect( m_slt, SIGNAL(connectionFailed()),
+               SLOT(slotSkyLinesConnectionFailed()) );
+      connect( m_slt, SIGNAL(pingResult(quint32)),
+               SLOT(slotSkyLinesPingResult(quint32)) );
+
+      m_slt->startTracking();
+    }
 }
 
 void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
@@ -573,4 +605,20 @@ void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
 #endif
 
   mb.exec();
+}
+
+void PreFlightLiveTrack24Page::slotSkyLinesConnectionFailed()
+{
+  qDebug() << "slotSkyLinesConnectionFailed()";
+
+  delete m_slt;
+
+}
+
+/** Called to report the ping result. */
+void PreFlightLiveTrack24Page::slotSkyLinesPingResult( quint32 result )
+{
+  qDebug() << "slotSkyLinesPingResult(): Result=" << result;
+
+  delete m_slt;
 }

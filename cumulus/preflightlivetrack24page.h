@@ -46,6 +46,7 @@ class QTimer;
 #include "httpclient.h"
 
 class NumberEditor;
+class SkyLinesTracker;
 
 class PreFlightLiveTrack24Page : public QWidget
 {
@@ -69,12 +70,12 @@ class PreFlightLiveTrack24Page : public QWidget
 
  private slots:
 
- /**
-  * Called, if the help button is clicked.
-  */
- void slotHelp();
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
- /**
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();
@@ -99,6 +100,12 @@ class PreFlightLiveTrack24Page : public QWidget
 
   /** Called, if the server ulr is changed. */
   void slotCurrentIndexChanged( int index );
+
+  /** Called, if the SkyLine server is not reachable. */
+  void slotSkyLinesConnectionFailed();
+
+  /** Called to report the ping result. */
+  void slotSkyLinesPingResult( quint32 result );
 
  signals:
 
@@ -135,6 +142,9 @@ class PreFlightLiveTrack24Page : public QWidget
 
   /** Result buffer for HTTP requests. */
   QByteArray m_httpResultBuffer;
+
+  /** SkyLines tracker for login test. */
+  SkyLinesTracker* m_slt;
 };
 
 #endif

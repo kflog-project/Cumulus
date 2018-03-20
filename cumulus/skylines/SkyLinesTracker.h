@@ -1,6 +1,6 @@
 /***********************************************************************
 **
- **   SkyLinesTracker.h
+**   SkyLinesTracker.h
 **
 **   This file is part of Cumulus.
 **
@@ -220,6 +220,16 @@ class SkyLinesTracker : public LiveTrackBase
 
  signals:
 
+  /**
+   * Emitted when the connection is not possible.
+   */
+  void connectionFailed();
+
+  /**
+   * Emits the ping result.
+   */
+  void pingResult( quint32 result );
+
  private slots:
 
   /**
@@ -248,7 +258,7 @@ class SkyLinesTracker : public LiveTrackBase
   /**
    * Called if UDP datagram was written to the network.
    */
-  void slotBytesWritten();
+  void slotBytesWritten( qint64 bytes );
 
   /**
    * Called, if the retry timer expires to trigger the sending of the next

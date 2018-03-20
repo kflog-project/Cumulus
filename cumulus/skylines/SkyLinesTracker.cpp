@@ -17,6 +17,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <unistd.h>
 
 #ifndef QT_5
 #include <QtGui>
@@ -66,6 +67,11 @@ SkyLinesTracker::SkyLinesTracker(QObject *parent) :
 SkyLinesTracker::~SkyLinesTracker()
 {
   m_retryTimer->stop();
+
+  if( m_udp != 0 )
+    {
+      m_udp->close();
+    }
 }
 
 bool SkyLinesTracker::startTracking()
@@ -134,11 +140,15 @@ void SkyLinesTracker::slotHostInfoRequest()
 
 void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
 {
+  qDebug() << "slotHostInfoResponse";
+
   m_hostLookupIsRunning = false;
 
   if( hostInfo.error() != QHostInfo::NoError )
     {
       qWarning() << "Lookup failed:" << hostInfo.errorString();
+
+      emit connectionFailed();
 
       if( isServiceRequested() == true )
         {
@@ -151,6 +161,8 @@ void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
   // We take the first address only.
   m_serverIpAdress = hostInfo.addresses().first();
 
+  qDebug() << "IP-Adaress" << m_serverIpAdress.toString();
+
   // Send a ping to the skyLines server to verify the user key.
   slotSendPing();
 }
@@ -162,17 +174,27 @@ void SkyLinesTracker::slotSendPing()
       return;
     }
 
+  qDebug() << "slotSendPing() is called";
+
   if( m_udp == static_cast<QUdpSocket *> (0) )
     {
       // Setup an UDP socket for data exchange with the SkyLines server
       m_udp = new QUdpSocket( this );
-      m_udp->bind( m_serverIpAdress, getDefaultPort() );
+
+      if( m_udp->bind( m_serverIpAdress,
+                       getDefaultPort(),
+                       QUdpSocket::ReuseAddressHint ) == false )
+        {
+          qWarning() << "SkyLinesTracker::slotSendPing: bind to host"
+                     << m_serverIpAdress.toString()
+                     << "failed";
+        }
 
       connect( m_udp, SIGNAL(readyRead()),
                this, SLOT(slotReadPendingDatagrams()));
 
-      connect( m_udp, SIGNAL(bytesWritten()),
-               this, SLOT(slotBytesWritten()) );
+      connect( m_udp, SIGNAL(bytesWritten(qint64)),
+               this, SLOT(slotBytesWritten(qint64)) );
     }
 
   // Send a ping packet to the server to verify the connection and the user's
@@ -193,12 +215,35 @@ void SkyLinesTracker::slotSendPing()
                                      m_serverIpAdress,
                                      getDefaultPort() );
 
+  qDebug() << "Size Ping" << sizeof(SkyLinesTracking::PingPacket)
+           << "res=" << res;
+
   if( res == -1 )
     {
+      qDebug() << "slotSendPing(): failed";
+
+      emit connectionFailed();
+
       // Ping could not be send, try it again after 60s.
       QTimer::singleShot( 60000, this, SLOT(slotSendPing()) );
       return;
     }
+
+  int loop = 10;
+
+
+  while( m_udp->hasPendingDatagrams() == false )
+    {
+      loop--;
+      sleep(1);
+
+      if( loop == 0)
+        {
+          break;
+        }
+    }
+
+  qDebug() << "UDP Response received";
 
   // Ping could be sent...
 }
@@ -291,6 +336,8 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
       quint32 flags = FromBE32( ack.flags );
       m_lastPingAnswer = static_cast<qint32>(flags);
 
+      emit pingResult( m_lastPingAnswer );
+
       if( m_lastPingAnswer != 0 )
         {
           // We got an negative answer from the server. User key seems to be invalid.
@@ -317,8 +364,12 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
   }
 }
 
-void SkyLinesTracker::slotBytesWritten()
+void SkyLinesTracker::slotBytesWritten( qint64 bytes )
 {
+  Q_UNUSED(bytes);
+
+  qDebug() << "slotBytesWritten" << bytes;
+
   m_sentPackages++;
   sendNextFixpoint();
 }
