@@ -211,6 +211,7 @@ HEADERS = \
     taskpointtypes.h \
     time_cu.h \
     tpinfowidget.h \
+    Udp.h \
     vario.h \
     variomodedialog.h \
     varspinbox.h \
@@ -339,6 +340,7 @@ SOURCES = \
     TaskPointSelectionList.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
+    Udp.cpp \
     vario.cpp \
     variomodedialog.cpp \
     varspinbox.cpp \

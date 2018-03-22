@@ -158,6 +158,11 @@ class SkyLinesTracker : public LiveTrackBase
     return ( m_fixPacketQueue.isEmpty() == false );
   };
 
+  /**
+   * Returns the first found local IP V4 address as string.
+   */
+  QString getMyIpAddress();
+
  private:
 
   /**
@@ -230,7 +235,7 @@ class SkyLinesTracker : public LiveTrackBase
    */
   void pingResult( quint32 result );
 
- private slots:
+ public slots:
 
   /**
   * Called to return a requested host info.
@@ -281,8 +286,11 @@ class SkyLinesTracker : public LiveTrackBase
   /** Live tracking key, consists of 16 hex digits.*/
   QString m_liveTrackingKeyString;
 
-  /** UDP socket */
-  QUdpSocket* m_udp;
+  /** UDP socket to Server. */
+  QUdpSocket* m_udpSend;
+
+  /** UDP socket for Client. */
+  QUdpSocket* m_udpReceive;
 
   /** Packet identifier, starting with 1 at the first call. */
   static PackageId m_packetId;
