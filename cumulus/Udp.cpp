@@ -15,11 +15,10 @@
  **
  ***********************************************************************/
 
-using namespace std;
-
 #include <cstdlib>
 #include <unistd.h>
 #include <cerrno>
+#include <fcntl.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <netinet/in.h>
@@ -53,6 +52,7 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
 
   setsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, (int *)&opt, sizeof(opt));
   setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, (int *)&opt, sizeof(opt));
+  fcntl(m_socket, F_SETFL, FNDELAY); // NON blocking io is requested
 
   memset( &m_sockaddr, 0, sizeof( sockaddr_in ) );
 
@@ -98,9 +98,33 @@ Udp::~Udp()
     }
 }
 
-void Udp::sendDatagram( QByteArray& datagram )
+bool Udp::sendDatagram( QByteArray& datagram )
 {
-  m_sendDatagrams.append(datagram);
+  int result = sendto( m_socket,
+                       static_cast<const void *>(datagram.data()),
+                       static_cast<uint>(datagram.size()),
+                       0,
+                       (const sockaddr*) &m_sockaddr,
+                       sizeof(m_sockaddr) );
+  if( result < 0 )
+    {
+      if( errno == EWOULDBLOCK )
+        {
+          // The write call would block because the transfer queue is full.
+          // In this case we discard the message.
+          qWarning() << "sendDatagram(): Write would block!";
+          return false;
+        }
+
+      qWarning() << "Error in sendto"
+          << "errno="
+          << errno
+          << "," << strerror(errno);
+      return false;
+    }
+
+  // TODO Send signal
+  return true;
 }
 
 QByteArray Udp::readDatagram()
@@ -111,34 +135,6 @@ QByteArray Udp::readDatagram()
     }
 
   return QByteArray();
-}
-
-void Udp::send2Server()
-{
-  /* send the next message to the server */
-  if( m_sendDatagrams.size() == 0 )
-    {
-      return;
-    }
-
-  QByteArray& next = m_readDatagrams.first();
-
-  int result = sendto( m_socket,
-                       static_cast<const void *>(next.data()),
-                       static_cast<uint>(next.size()),
-                       0,
-                       (const sockaddr*) &m_sockaddr,
-                       sizeof(m_sockaddr) );
-  if( result < 0)
-    {
-      qWarning() << "Error in sendto"
-                 << "errno="
-                 << errno
-                 << "," << strerror(errno);
-      return;
-    }
-
-  m_readDatagrams.removeFirst();
 }
 
 void Udp::receiveFromServer()
@@ -156,6 +152,13 @@ void Udp::receiveFromServer()
                          0,
                          (struct sockaddr *) &m_sockaddr,
                          &addrlen );
+
+  if( done == 0 || (done == -1 && errno != EWOULDBLOCK) )
+    {
+      qDebug() << "FlarmBinComLinux::readCharErr" << errno << strerror(errno);
+      return false;
+    }
+
   if( result < 0)
     {
       qWarning() << "Error in recvfrom"
@@ -168,5 +171,3 @@ void Udp::receiveFromServer()
 
   // TODO send Signal
 }
-
-

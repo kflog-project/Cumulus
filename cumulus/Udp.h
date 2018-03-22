@@ -56,7 +56,7 @@ public:
 
   virtual ~Udp();
 
-  void sendDatagram( QByteArray& datagram );
+  bool sendDatagram( QByteArray& datagram );
 
   QByteArray readDatagram();
 
@@ -75,7 +75,6 @@ public:
 
 private:
 
-  void send2Server();
   void receiveFromServer();
 
   QByteArray m_host;
@@ -83,7 +82,6 @@ private:
   unsigned short m_port;
   int m_socket;
   struct sockaddr_in m_sockaddr;
-  QList<QByteArray> m_sendDatagrams;
   QList<QByteArray> m_readDatagrams;
 };
 
