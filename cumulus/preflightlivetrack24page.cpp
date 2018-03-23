@@ -507,7 +507,7 @@ void PreFlightLiveTrack24Page::slotLoginTest()
 
   if( server == SkyLinesTracker::getServerName() )
     {
-      // Check SkyLines user key. Must be 8 hex digits.
+      // Check SkyLines user key. Must be a hex digit string.
       bool ok;
       m_username->text().trimmed().toULongLong(&ok, 16);
 
@@ -536,6 +536,11 @@ void PreFlightLiveTrack24Page::slotLoginTest()
           mb.exec();
           return;
         }
+
+      // Store current user data, will be used by ping test.
+      GeneralConfig::instance()->setLiveTrackAccountData( m_server->currentIndex(),
+                                                          m_username->text().trimmed(),
+                                                          m_password->text().trimmed() );
 
       // Check login to SkyLines
       m_slt = new SkyLinesTracker( this, true );
@@ -613,8 +618,7 @@ void PreFlightLiveTrack24Page::slotSkyLinesConnectionFailed()
 {
   qDebug() << "slotSkyLinesConnectionFailed()";
 
-  delete m_slt;
-
+  m_slt->deleteLater();
 }
 
 /** Called to report the ping result. */
@@ -622,5 +626,5 @@ void PreFlightLiveTrack24Page::slotSkyLinesPingResult( quint32 result )
 {
   qDebug() << "slotSkyLinesPingResult(): Result=" << result;
 
-  delete m_slt;
+  m_slt->deleteLater();
 }

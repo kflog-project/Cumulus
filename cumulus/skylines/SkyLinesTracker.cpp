@@ -72,7 +72,7 @@ SkyLinesTracker::~SkyLinesTracker()
   if( m_udp != 0 )
     {
       m_udp->closeSocket();
-      delete(m_udp);
+      m_udp->deleteLater();
     }
 }
 
@@ -277,16 +277,32 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
       return;
     }
 
+  for( int i = 0; i < datagram.size(); i++ )
+    {
+      printf( "%02x ", (uchar) datagram.at(i) );
+    }
+
+    printf("\n");
+
   // extract header
   SkyLinesTracking::Header header;
 
-  qstrncpy( (char *) &header,
-            datagram.data(),
-            sizeof(SkyLinesTracking::Header) );
+  char* dst = (char *) &header;
+  char* src = datagram.data();
 
+  for( uint i = 0; i < sizeof(SkyLinesTracking::Header); i++ )
+    {
+      *dst = *src;
+      src++;
+      dst++;
+    }
 
   const quint16 received_crc = FromBE16( header.crc );
   header.crc = 0;
+
+  // Set CRC field in datagram to zero before crc calculation.
+  datagram[4] = 0;
+  datagram[5] = 0;
 
   const quint16 calculated_crc = UpdateCRC16CCITT( datagram.data(),
                                                    datagram.size(),
@@ -329,9 +345,15 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
           return;
         }
 
-      qstrncpy( (char *) &ack,
-                datagram.data(),
-                sizeof(SkyLinesTracking::ACKPacket) );
+      char* dst = (char *) &ack;
+      char* src = datagram.data();
+
+      for( uint i = 0; i < sizeof(SkyLinesTracking::ACKPacket); i++ )
+        {
+          *dst = *src;
+          src++;
+          dst++;
+        }
 
       // Response id for request id
       // quint16 id = FromBE16( ack.id );
