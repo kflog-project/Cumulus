@@ -50,7 +50,6 @@
 #include <QQueue>
 #include <QString>
 #include <QTimer>
-#include <QUdpSocket>
 
 #include "generalconfig.h"
 #include "LiveTrackBase.h"
@@ -193,7 +192,7 @@ class SkyLinesTracker : public LiveTrackBase
    *
    * \param fixPaket A fix packet to be stored.
    */
-  bool enqueueRequest( SkyLinesTracking::FixPacket fixPaket );
+  bool enqueueRequest( QByteArray& fixPaket );
 
   /**
    * Check if the queue limit is observed to avoid a memory problem. If the
@@ -264,7 +263,7 @@ class SkyLinesTracker : public LiveTrackBase
   /**
    * Called if UDP datagram was written to the network.
    */
-  void slotBytesWritten( qint64 bytes );
+  void slotBytesWritten();
 
   /**
    * Called, if the retry timer expires to trigger the sending of the next
@@ -299,7 +298,7 @@ class SkyLinesTracker : public LiveTrackBase
   static PackageId m_packetId;
 
   /** Here is stored the last ping answer from the skyLines server. */
-  qint32 m_lastPingAnswer;
+  quint32 m_lastPingAnswer;
 
   /** Start day in ms UTC. */
   quint64 m_startDay;
@@ -307,7 +306,7 @@ class SkyLinesTracker : public LiveTrackBase
   /**
    * UDP request queue. All fix packets are stored in that queue.
    */
-  QQueue<SkyLinesTracking::FixPacket> m_fixPacketQueue;
+  QQueue<QByteArray> m_fixPacketQueue;
 
   /** Counter for successfully sent UDP datagrams to the server. */
   uint m_sentPackages;

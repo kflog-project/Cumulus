@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2016 Axel Pauli
+**   Copyright (c):  2013-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -67,6 +67,11 @@ class PreFlightLiveTrack24Page : public QWidget
   void load();
 
   void save();
+
+  /**
+   * Shows the login test result in a message box.
+   */
+  void showLoginTestResult( QString &msg );
 
  private slots:
 

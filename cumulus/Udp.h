@@ -93,6 +93,12 @@ signals:
    */
   void readyRead();
 
+  /**
+   * This signal is emitted every time a payload of data has been written to
+   * the device.
+   */
+  void bytesWritten();
+
 private slots:
 
   /**

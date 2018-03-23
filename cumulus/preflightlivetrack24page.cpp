@@ -329,11 +329,6 @@ void PreFlightLiveTrack24Page::save()
   int oldLiveTrackIndex = conf->getLiveTrackIndex();
   int newLiveTrackIndex = m_server->currentIndex();
 
-  if( oldLiveTrackIndex != newLiveTrackIndex )
-    {
-      emit liveTrackingServerChanged();
-    }
-
   conf->setLiveTrackOnOff( newOnOffState );
   conf->setLiveTrackInterval( m_trackingIntervalMin->value() * 60 + m_trackingIntervalSec->value() );
   conf->setLiveTrackAirplaneType( m_airplaneType->itemData(m_airplaneType->currentIndex()).toInt() );
@@ -341,6 +336,11 @@ void PreFlightLiveTrack24Page::save()
   conf->setLiveTrackAccountData( m_server->currentIndex(),
                                  m_username->text().trimmed(),
                                  m_password->text().trimmed() );
+
+  if( oldLiveTrackIndex != newLiveTrackIndex )
+    {
+      emit liveTrackingServerChanged();
+    }
 }
 
 void PreFlightLiveTrack24Page::slotHelp()
@@ -596,6 +596,11 @@ void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
         }
     }
 
+  showLoginTestResult( msg );
+}
+
+void PreFlightLiveTrack24Page::showLoginTestResult( QString& msg )
+{
   QMessageBox mb( QMessageBox::Information,
                   tr("Login Test result"),
                   msg,
@@ -616,15 +621,25 @@ void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
 
 void PreFlightLiveTrack24Page::slotSkyLinesConnectionFailed()
 {
-  qDebug() << "slotSkyLinesConnectionFailed()";
-
+  // There was a problem on the network.
+  QString msg = tr("<html>Network error!<br><br>Does exist an Internet connection?</html>");
+  showLoginTestResult( msg );
+  m_loginTestButton->setEnabled( true );
   m_slt->deleteLater();
 }
 
 /** Called to report the ping result. */
 void PreFlightLiveTrack24Page::slotSkyLinesPingResult( quint32 result )
 {
-  qDebug() << "slotSkyLinesPingResult(): Result=" << result;
+  QString msg = QString(tr("<html>SkyLines server login test succeeded!</html>"));
 
+  if( result == 1 )
+    {
+      msg = QString(tr("<html>SkyLines login test failed!"
+                       "<br><br>Do check your Live Tracking Key.</html>"));
+
+    }
+
+  showLoginTestResult( msg );
   m_slt->deleteLater();
 }

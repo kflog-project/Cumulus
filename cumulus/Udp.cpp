@@ -104,6 +104,8 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
  */
 Udp::~Udp()
 {
+  qDebug() << "Udp::~Udp()";
+
   if( m_socket != 0 )
     {
       close(m_socket);
@@ -118,6 +120,8 @@ Udp::~Udp()
 
 bool Udp::sendDatagram( QByteArray& datagram )
 {
+  qDebug() << "Udp::sendDatagram()";
+
   int result = sendto( m_socket,
                        static_cast<const void *>(datagram.data()),
                        static_cast<uint>(datagram.size()),
@@ -142,6 +146,8 @@ bool Udp::sendDatagram( QByteArray& datagram )
       return false;
     }
 
+  // A signal is emitted via a timer call to break the call chain.
+  QTimer::singleShot( 10, this, SIGNAL(bytesWritten()) );
   return true;
 }
 
@@ -169,6 +175,7 @@ void Udp::receiveFromServer()
 {
   qDebug() << "Udp::receiveFromServer()";
 
+#if 0
   /* gets the server's reply */
   int size = 0;
 
@@ -179,6 +186,7 @@ void Udp::receiveFromServer()
     }
 
   qDebug() << "ioctl sagt es hat" << size << "bytes";
+#endif
 
   // Buffer size should be sufficient for SkyLines answers.
   char data[128];
@@ -191,8 +199,6 @@ void Udp::receiveFromServer()
                          0,
                          (struct sockaddr *) &m_sockaddr,
                          &addrlen );
-
-  qDebug() << "recvfrom result=" << result;
 
   if( result == 0 || (result == -1 && errno != EWOULDBLOCK) )
     {
