@@ -47,19 +47,19 @@
 
 SkyLinesTracker::PackageId SkyLinesTracker::m_packetId = 0;
 
-SkyLinesTracker::SkyLinesTracker(QObject *parent) :
+SkyLinesTracker::SkyLinesTracker(QObject *parent, bool testing) :
   LiveTrackBase(parent),
+  m_testing(testing),
   m_retryTimer(0),
   m_hostLookupIsRunning(false),
   m_liveTrackingKey(0),
-  m_udpSend(0),
-  m_udpReceive(0),
+  m_udp(0),
   m_lastPingAnswer(-1),
   m_startDay(0),
   m_sentPackages(0)
 {
   m_retryTimer = new QTimer( this );
-  m_retryTimer->setInterval( 60000 ); // Timeout is 60s
+  m_retryTimer->setInterval( 30000 ); // Timeout is 30s
   m_retryTimer->setSingleShot( true );
 
   connect( m_retryTimer, SIGNAL(timeout()), this, SLOT(slotRetry()) );
@@ -69,16 +69,10 @@ SkyLinesTracker::~SkyLinesTracker()
 {
   m_retryTimer->stop();
 
-  if( m_udpSend != 0 )
+  if( m_udp != 0 )
     {
-      m_udpSend->close();
-      delete(m_udpSend);
-    }
-
-  if( m_udpReceive != 0 )
-    {
-      m_udpReceive->close();
-      delete(m_udpReceive);
+      m_udp->closeSocket();
+      delete(m_udp);
     }
 }
 
@@ -86,7 +80,7 @@ bool SkyLinesTracker::startTracking()
 {
   const char* method = "SkyLinesTracker::startTracking():";
 
-  if( isServiceRequested() == false )
+  if( m_testing == false && isServiceRequested() == false )
     {
       return false;
     }
@@ -131,7 +125,8 @@ bool SkyLinesTracker::startTracking()
 
 void SkyLinesTracker::slotHostInfoRequest()
 {
-  if( isServiceRequested() == false || m_hostLookupIsRunning == true )
+  if( ( m_testing == false && isServiceRequested() == false ) ||
+        m_hostLookupIsRunning == true )
     {
       return;
     }
@@ -140,6 +135,8 @@ void SkyLinesTracker::slotHostInfoRequest()
     {
       // We need the IP address of the skyline tracking server.
       m_hostLookupIsRunning = true;
+
+      qDebug() << "QHostInfo::lookupHost";
 
       QHostInfo::lookupHost( getServerName(),
                              this, SLOT(slotHostInfoResponse(QHostInfo)) );
@@ -195,6 +192,7 @@ QString SkyLinesTracker::getMyIpAddress()
   if (ipAddress.isEmpty())
     {
       ipAddress = QHostAddress(QHostAddress::LocalHost).toString();
+
       qWarning() << "SkyLinesTracker::getMyIpAddress():"
                  << "Returning LocalHost as IP address.";
     }
@@ -205,59 +203,23 @@ QString SkyLinesTracker::getMyIpAddress()
 
 void SkyLinesTracker::slotSendPing()
 {
-  if( isServiceRequested() == false || m_serverIpAdress.isNull() == true )
+  if( ( m_testing == false && isServiceRequested() == false ) ||
+        m_serverIpAdress.isNull() == true )
     {
       return;
     }
 
   qDebug() << "slotSendPing() is called";
 
-  if( m_udpSend == static_cast<QUdpSocket *> (0) )
+  if( m_udp == static_cast<Udp *> (0) )
     {
-      if( m_udpReceive != static_cast<QUdpSocket *> (0) )
-        {
-          m_udpReceive->close();
-          delete m_udpReceive;
-        }
-
-      /*
-       * Note! Qt's UdpSocket has problems, if I try to use one UdpSocket
-       * for sending and receiving.
-       */
-
       // Setup an UDP socket for data exchange with the SkyLines server
-      m_udpSend = new QUdpSocket( this );
-      //m_udpSend->joinMulticastGroup( QHostAddress( getMyIpAddress() ));
+      m_udp = new Udp( this,
+                       m_serverIpAdress.toString(),
+                       getDefaultPort() );
 
-      // Setup an UDP socket as receiver.
-      m_udpReceive = new QUdpSocket( this );
-      //m_udpReceive->joinMulticastGroup( QHostAddress( getMyIpAddress() ));
-
-      m_udpSend->connectToHost( m_serverIpAdress,
-                                getDefaultPort(),
-                                QIODevice::WriteOnly );
-
-      if( m_udpReceive->bind( m_udpSend->localPort(),
-                              QUdpSocket::ReuseAddressHint |
-                              QUdpSocket::ShareAddress) == false )
-        {
-          qWarning() << "SkyLinesTracker::slotSendPing: bind to host"
-                     << m_serverIpAdress.toString()
-                     << "failed";
-          qDebug() << m_udpReceive->error() << m_udpReceive->errorString();
-
-          delete m_udpSend; m_udpSend = 0;
-          delete m_udpReceive; m_udpReceive = 0;
-          return;
-        }
-
-      connect( m_udpSend, SIGNAL(bytesWritten(qint64)),
-               this, SLOT(slotBytesWritten(qint64)) );
-
-      connect( m_udpReceive, SIGNAL(readyRead()),
+      connect( m_udp, SIGNAL(readyRead()),
                this, SLOT(slotReadPendingDatagrams()));
-
-      slotReadPendingDatagrams();
     }
 
   // Send a ping packet to the server to verify the connection and the user's
@@ -273,20 +235,22 @@ void SkyLinesTracker::slotSendPing()
   pp.header.crc = ToBE16( UpdateCRC16CCITT( static_cast<const void *>( &pp ),
                                             sizeof(pp), 0) );
 
-  qint64 res = m_udpSend->write( (const char *) &pp,
-                                 sizeof(SkyLinesTracking::PingPacket) );
+  QByteArray ba;
+  ba.append( (const char *) &pp, sizeof(SkyLinesTracking::PingPacket) );
+
+  bool result = m_udp->sendDatagram(ba);
 
   qDebug() << "Size Ping" << sizeof(SkyLinesTracking::PingPacket)
-           << "res=" << res;
+           << "res=" << result;
 
-  if( res == -1 )
+  if( result == false )
     {
       qDebug() << "slotSendPing(): failed";
 
       emit connectionFailed();
 
-      // Ping could not be send, try it again after 60s.
-      QTimer::singleShot( 60000, this, SLOT(slotSendPing()) );
+      // Ping could not be send, try it again after 30s.
+      QTimer::singleShot( 30000, this, SLOT(slotSendPing()) );
       return;
     }
 
@@ -296,17 +260,12 @@ void SkyLinesTracker::slotSendPing()
 void SkyLinesTracker::slotReadPendingDatagrams()
 {
   // An UDP diagram is available. Read in each datagram.
-  while( m_udpReceive->hasPendingDatagrams() )
+  while( m_udp->hasPendingDatagrams() )
     {
-      QByteArray datagram;
-      datagram.resize( m_udpReceive->pendingDatagramSize() );
-      QHostAddress sender;
-      quint16 senderPort;
+      QByteArray dg = m_udp->readDatagram();
+      qDebug() << "dg.size=" << dg.size();
 
-      m_udpReceive->readDatagram( datagram.data(), datagram.size(),
-                                  &sender, &senderPort );
-
-      processDatagram( datagram );
+      processDatagram( dg );
     }
 }
 
@@ -386,6 +345,7 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
       if( m_lastPingAnswer != 0 )
         {
           // We got an negative answer from the server. User key seems to be invalid.
+          qDebug() << "Got negative ping answer from SkyLines.aero server";
           stopLiveTracking();
         }
 
@@ -517,12 +477,17 @@ bool SkyLinesTracker::sendNextFixpoint()
     {
       SkyLinesTracking::FixPacket fp = m_fixPacketQueue.head();
 
-      qint64 res = m_udpSend->write( (const char *) &fp,
-                                     sizeof(SkyLinesTracking::FixPacket) );
+      QByteArray ba;
+      ba.append( (const char *) &fp, sizeof(SkyLinesTracking::FixPacket) );
 
-      if( res == -1 )
+      bool result = m_udp->sendDatagram(ba);
+
+      qDebug() << "Size Fix" << sizeof(SkyLinesTracking::FixPacket)
+               << "result=" << result;
+
+      if( result == false )
         {
-          // Fix packet could not be send, try it again after 60s.
+          // Fix packet could not be send, try it again after 30s.
           m_retryTimer->start();
           return false;
         }

@@ -455,7 +455,8 @@ DESTDIR = .
 INCLUDEPATH += ../
 
 QMAKE_CXXFLAGS += -fno-default-inline \
-                  -fno-inline -Wextra
+                  -fno-inline -Wextra \
+                  -std=gnu++11
 
 LIBS += -lstdc++
 

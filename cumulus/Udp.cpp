@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 
 #include <QtCore>
+#include <QSocketNotifier>
 
 #include "Udp.h"
 
@@ -35,7 +36,8 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
     QObject(parent),
     m_ipAddress(serverIpAddress),
     m_port(port),
-    m_socket(0)
+    m_socket(0),
+    m_readNotifier(0)
 {
   m_socket = socket( AF_INET, SOCK_DGRAM, 0 );
 
@@ -52,7 +54,9 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
 
   setsockopt(m_socket, SOL_SOCKET, SO_KEEPALIVE, (int *)&opt, sizeof(opt));
   setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, (int *)&opt, sizeof(opt));
-  fcntl(m_socket, F_SETFL, FNDELAY); // NON blocking io is requested
+
+  // None blocking IO is requested.
+  fcntl(m_socket, F_SETFL, FNDELAY);
 
   memset( &m_sockaddr, 0, sizeof( sockaddr_in ) );
 
@@ -85,6 +89,14 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
       // OS assigns a free port number, if 0 is used.
       m_sockaddr.sin_port = 0;
     }
+
+  m_readNotifier = new QSocketNotifier( m_socket,
+                                        QSocketNotifier::Read,
+                                        this );
+
+  connect( m_readNotifier, SIGNAL(activated(int)),
+           this, SLOT(slotReadEvent(int)) );
+
 }
 
 /**
@@ -95,6 +107,12 @@ Udp::~Udp()
   if( m_socket != 0 )
     {
       close(m_socket);
+    }
+
+  if( m_readNotifier != 0 )
+    {
+      m_readNotifier->setEnabled( false );
+      delete m_readNotifier;
     }
 }
 
@@ -117,13 +135,13 @@ bool Udp::sendDatagram( QByteArray& datagram )
         }
 
       qWarning() << "Error in sendto"
-          << "errno="
-          << errno
-          << "," << strerror(errno);
+                 << "errno="
+                 << errno
+                 << "," << strerror(errno);
+
       return false;
     }
 
-  // TODO Send signal
   return true;
 }
 
@@ -137,12 +155,33 @@ QByteArray Udp::readDatagram()
   return QByteArray();
 }
 
+void Udp::slotReadEvent(int socket)
+{
+  Q_UNUSED( socket )
+
+  // Data for reading are available
+  m_readNotifier->setEnabled( false );
+  receiveFromServer();
+  m_readNotifier->setEnabled( true );
+}
+
 void Udp::receiveFromServer()
 {
-  /* gets the server's reply */
+  qDebug() << "Udp::receiveFromServer()";
 
-  char data[1024];
-  memset( data, 0, sizeof(data) ); // clear data buffer
+  /* gets the server's reply */
+  int size = 0;
+
+  // Get the size of bytes to be available in the socket receiver buffer.
+  if( ioctl(m_socket, FIONREAD, &size) == -1 || size == 0 )
+    {
+      return;
+    }
+
+  qDebug() << "ioctl sagt es hat" << size << "bytes";
+
+  // Buffer size should be sufficient for SkyLines answers.
+  char data[128];
 
   socklen_t addrlen = sizeof(m_sockaddr);
 
@@ -153,21 +192,20 @@ void Udp::receiveFromServer()
                          (struct sockaddr *) &m_sockaddr,
                          &addrlen );
 
-  if( done == 0 || (done == -1 && errno != EWOULDBLOCK) )
+  qDebug() << "recvfrom result=" << result;
+
+  if( result == 0 || (result == -1 && errno != EWOULDBLOCK) )
     {
-      qDebug() << "FlarmBinComLinux::readCharErr" << errno << strerror(errno);
-      return false;
+      qDebug() << "Udp::receiveFromServer(): recvfrom error"
+              << errno << ","
+              << strerror(errno);
+      return;
     }
 
-  if( result < 0)
-    {
-      qWarning() << "Error in recvfrom"
-                 << "errno="
-                 << errno
-                 << "," << strerror(errno);
-    }
+  QByteArray ba;
+  ba.append( (const char *) data, result );
 
-  m_readDatagrams.append( QByteArray(data) );
-
-  // TODO send Signal
+  // Store received datagram in the list.
+  m_readDatagrams.append( ba );
+  emit readyRead();
 }

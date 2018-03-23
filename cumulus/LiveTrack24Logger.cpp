@@ -56,11 +56,11 @@ void LiveTrack24Logger::slotConfigChanged()
   // Setup a new LiveTrack gateway after a configuration change.
   if( conf->getLiveTrackServer() != SkyLinesTracker::getServerName() )
     {
-      m_ltGateway = new LiveTrack24();
+      m_ltGateway = new LiveTrack24( this );
     }
   else
     {
-      m_ltGateway = new SkyLinesTracker();
+      m_ltGateway = new SkyLinesTracker( this );
     }
 }
 

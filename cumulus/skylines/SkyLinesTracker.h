@@ -55,6 +55,7 @@
 #include "generalconfig.h"
 #include "LiveTrackBase.h"
 #include "skyLinesTrackingProtocol.h"
+#include "Udp.h"
 
 class SkyLinesTracker : public LiveTrackBase
 {
@@ -66,7 +67,7 @@ class SkyLinesTracker : public LiveTrackBase
 
  public:
 
-  SkyLinesTracker(QObject* parent = 0);
+  SkyLinesTracker(QObject* parent, bool testing=false);
 
   virtual ~SkyLinesTracker();
 
@@ -273,6 +274,11 @@ class SkyLinesTracker : public LiveTrackBase
 
  private:
 
+  /*
+   * Flag to enable a ping test to the server.
+   */
+  bool m_testing;
+
   QTimer* m_retryTimer;
 
   bool m_hostLookupIsRunning;
@@ -286,11 +292,8 @@ class SkyLinesTracker : public LiveTrackBase
   /** Live tracking key, consists of 16 hex digits.*/
   QString m_liveTrackingKeyString;
 
-  /** UDP socket to Server. */
-  QUdpSocket* m_udpSend;
-
-  /** UDP socket for Client. */
-  QUdpSocket* m_udpReceive;
+  /** UDP socket to communicate with the Server. */
+  Udp* m_udp;
 
   /** Packet identifier, starting with 1 at the first call. */
   static PackageId m_packetId;

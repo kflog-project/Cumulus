@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QByteArray>
 
-#define IPC_IP "127.0.0.1"
+class QSocketNotifier;
 
 /**
  * \class Udp
@@ -56,15 +56,28 @@ public:
 
   virtual ~Udp();
 
+  /**
+   * Send a datagram to the server.
+   */
   bool sendDatagram( QByteArray& datagram );
 
+  /**
+   * Returns the next datagram from the receiver list, if the list is not empty.
+   * Otherwise a QByteArray with none content is returned.
+   */
   QByteArray readDatagram();
 
+  /**
+   * Checks the receiver list for pending diagrams.
+   */
   bool hasPendingDatagrams()
   {
     return (m_readDatagrams.size() > 0);
   }
 
+  /**
+   * Closes the datagram socket.
+   */
   void closeSocket()
   {
     if( m_socket != 0 )
@@ -72,6 +85,20 @@ public:
         close(m_socket);
       }
   }
+
+signals:
+
+  /**
+   * Emitted, if a datagram has been received.
+   */
+  void readyRead();
+
+private slots:
+
+  /**
+   * Called, if reading data are available in the socket buffer.
+   */
+  void slotReadEvent(int socket);
 
 private:
 
@@ -83,6 +110,7 @@ private:
   int m_socket;
   struct sockaddr_in m_sockaddr;
   QList<QByteArray> m_readDatagrams;
+  QSocketNotifier *m_readNotifier;
 };
 
 #endif

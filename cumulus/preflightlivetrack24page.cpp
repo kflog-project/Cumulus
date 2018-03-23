@@ -538,7 +538,7 @@ void PreFlightLiveTrack24Page::slotLoginTest()
         }
 
       // Check login to SkyLines
-      m_slt = new SkyLinesTracker;
+      m_slt = new SkyLinesTracker( this, true );
 
       connect( m_slt, SIGNAL(connectionFailed()),
                SLOT(slotSkyLinesConnectionFailed()) );
