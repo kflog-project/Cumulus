@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
- **   Copyright (c): 2018 Axel Pauli
+**   Copyright (c): 2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,10 +18,10 @@
  *
  * \author Axel Pauli
  *
- * \brief API for the SkyLinesTracker server at skylines.aero
+ * \brief API for a SkyLinesTracker client for skylines.aero.
  *
  * This class implements the API used by the SkylinesTracking server at
- * skylines.aero.
+ * skylines.aero. The protocol uses UDP as transport medium.
  *
  * Implemented methods:
  *
@@ -66,18 +66,25 @@ class SkyLinesTracker : public LiveTrackBase
 
  public:
 
+  /**
+   * Creates an instance of that class.
+   *
+   * \param parent Object of parent class
+   * \param test Flag for verifying user's livetrack key. It enables some calls
+   *             also is SkyLines Tracking is not activated by the user.
+   */
   SkyLinesTracker(QObject* parent, bool testing=false);
 
   virtual ~SkyLinesTracker();
 
-  /** User's live tracking key, a 8 byte hex number */
+  /** User's live tracking key, a hex string */
   typedef quint64 LiveTrackingKey;
 
   /** package identifier as sequence number. */
   typedef quint16 PackageId;
 
   /*
-   * Returns the default UDP server port as integer.
+   * Returns the default UDP server port from SykLines.aero as integer.
    */
   static unsigned getDefaultPort()
   {
@@ -85,7 +92,7 @@ class SkyLinesTracker : public LiveTrackBase
   }
 
   /*
-   * Returns the default UDP server port as string.
+   * Returns the default UDP server port from SykLines.aero as string.
    */
   static const char* getDefaultPortAsString()
   {
@@ -93,7 +100,7 @@ class SkyLinesTracker : public LiveTrackBase
   }
 
   /**
-   * Returns the SkyLines server name.
+   * Returns the SkyLines.aero server name.
    */
   static QString getServerName()
   {
@@ -101,15 +108,23 @@ class SkyLinesTracker : public LiveTrackBase
   }
 
   /**
+   * Returns the SkyLines.aero IP V4 address.
+   */
+  static QString getServerIpAddress()
+  {
+    return "95.128.34.172";
+  }
+
+  /**
    * Requests the IP address of the skylines server and after that
-   * send out a ping to the server.
+   * send out a ping to the server to verify the user's live track key.
    *
    * \return True on success otherwise false.
    */
   virtual bool startTracking();
 
   /**
-   * Sends a "GPS route point" packet to the tracking server
+   * Sends a "tracking point" packet to the skylines.aero server.
    *
    * \param position Coordinates as WGS84 in KFLog format
    * \param altitude Altitude in meters above MSL
@@ -128,7 +143,7 @@ class SkyLinesTracker : public LiveTrackBase
                               qint64 utcTimeStamp );
 
   /**
-   * Sends the "end of track" packet to the tracking server.
+   * Finishes the sending of tracking packages to the server.
    *
    * \return True on success otherwise false.
    */
@@ -166,7 +181,7 @@ class SkyLinesTracker : public LiveTrackBase
  private:
 
   /**
-   * Check, if service is requested by the user.
+   * Checks, if the service is requested by the user.
    */
   bool isServiceRequested()
   {
@@ -195,8 +210,8 @@ class SkyLinesTracker : public LiveTrackBase
   bool enqueueRequest( QByteArray& fixPaket );
 
   /**
-   * Check if the queue limit is observed to avoid a memory problem. If the
-   * queue is full, the oldest GPS route point is removed from the queue.
+   * Checks if the queue limit is reached to avoid a memory problem. If the
+   * queue is full, the oldest route point is removed from the queue.
    */
   void checkQueueLimit();
 
@@ -226,7 +241,7 @@ class SkyLinesTracker : public LiveTrackBase
  signals:
 
   /**
-   * Emitted when the connection is not possible.
+   * Emitted when the connection is not possible to the server.
    */
   void connectionFailed();
 
@@ -235,7 +250,7 @@ class SkyLinesTracker : public LiveTrackBase
    */
   void pingResult( quint32 result );
 
- public slots:
+ private slots:
 
   /**
   * Called to return a requested host info.
@@ -251,7 +266,7 @@ class SkyLinesTracker : public LiveTrackBase
 
   /**
    * Called to send a ping to the sky lines server to verify the connection and
-   * the user's key.
+   * the user's live track key.
    */
   void slotSendPing();
 
@@ -267,28 +282,29 @@ class SkyLinesTracker : public LiveTrackBase
 
   /**
    * Called, if the retry timer expires to trigger the sending of the next
-   * fix packet after a send problem.
+   * fix packet after a sent problem.
    */
   void slotRetry();
 
  private:
 
   /*
-   * Flag to enable a ping test to the server.
+   * Flag to enable a ping test to the server for external callers.
    */
   bool m_testing;
 
   QTimer* m_retryTimer;
 
+  /** Flag to signal a host lookup is running or not. */
   bool m_hostLookupIsRunning;
 
   /** IP Address of skylines.aero server. */
   QHostAddress m_serverIpAdress;
 
-  /** User's live tracking key. */
+  /** User's SkyLines tracking key as 64 bit unsigned integer. */
   LiveTrackingKey m_liveTrackingKey;
 
-  /** Live tracking key, consists of 16 hex digits.*/
+  /** User's SkyLines tracking key as hex string. */
   QString m_liveTrackingKeyString;
 
   /** UDP socket to communicate with the Server. */
@@ -300,7 +316,7 @@ class SkyLinesTracker : public LiveTrackBase
   /** Here is stored the last ping answer from the skyLines server. */
   quint32 m_lastPingAnswer;
 
-  /** Start day in ms UTC. */
+  /** Start day of tracking in ms UTC. */
   quint64 m_startDay;
 
   /**

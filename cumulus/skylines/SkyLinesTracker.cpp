@@ -1,12 +1,12 @@
 /***********************************************************************
 **
- **   SkyLinesTracker.cpp
+**   SkyLinesTracker.cpp
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
- **   Copyright (c): 2018 Axel Pauli
+**   Copyright (c): 2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,7 +29,6 @@
 #include <QtNetwork>
 
 #include "calculator.h"
-#include "hwinfo.h"
 #include "mainwindow.h"
 #include "SkyLinesTracker.h"
 
@@ -111,6 +110,7 @@ bool SkyLinesTracker::startTracking()
       return false;
     }
 
+  // Check live tracking key, must be a hex string.
   bool ok;
   m_liveTrackingKey = m_liveTrackingKeyString.toULongLong(&ok, 16);
 
@@ -121,7 +121,7 @@ bool SkyLinesTracker::startTracking()
       return false;
     }
 
-  // Get host information.
+  // Get host information, IP address of skylines.aero server.
   slotHostInfoRequest();
   return true;
 }
@@ -167,12 +167,12 @@ void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
         }
     }
 
-  // We take the first address only.
+  // We take the first IP address only.
   m_serverIpAdress = hostInfo.addresses().first();
 
   qDebug() << "IP-Address" << m_serverIpAdress.toString();
 
-  // Send a ping to the skyLines server to verify the user key.
+  // Send a ping to the skyLines server to verify the user's live tracking key.
   slotSendPing();
 }
 
@@ -217,7 +217,7 @@ void SkyLinesTracker::slotSendPing()
 
   if( m_udp == static_cast<Udp *> (0) )
     {
-      // Setup an UDP socket for data exchange with the SkyLines server
+      // Setup an UDP socket for data exchange with the SkyLines.aero server
       m_udp = new Udp( this,
                        m_serverIpAdress.toString(),
                        getDefaultPort() );
@@ -230,7 +230,7 @@ void SkyLinesTracker::slotSendPing()
     }
 
   // Send a ping packet to the server to verify the connection and the user's
-  // key.
+  // live tracking key.
   SkyLinesTracking::PingPacket pp;
   pp.header.magic = ToBE32( SkyLinesTracking::MAGIC );
   pp.header.crc = 0;
@@ -262,7 +262,7 @@ void SkyLinesTracker::slotSendPing()
 
 void SkyLinesTracker::slotReadPendingDatagrams()
 {
-  // An UDP diagram is available. Read in each datagram.
+  // UDP datagrams maybe available. Read in and process each datagram.
   while( m_udp->hasPendingDatagrams() )
     {
       QByteArray dg = m_udp->readDatagram();
@@ -272,6 +272,7 @@ void SkyLinesTracker::slotReadPendingDatagrams()
 
 void SkyLinesTracker::processDatagram( QByteArray& datagram )
 {
+  // Check header size.
   if( static_cast<uint>(datagram.size()) < sizeof(SkyLinesTracking::Header) )
     {
       qWarning() << "SkyLinesTracker::processDatagram(): Header to short!";
@@ -308,14 +309,14 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
   const quint16 calculated_crc = UpdateCRC16CCITT( datagram.data(),
                                                    datagram.size(),
                                                    0 );
+  // Check the CRCs, received and self calculated.
   if (received_crc != calculated_crc)
     {
-      // Check the CRCs
       qWarning() << "SkyLinesTracker::processDatagram(): CRC error!";
       return;
     }
 
-  // The possible response packages from the server
+  // The possible response packages at the moment from the server.
   SkyLinesTracking::ACKPacket ack;
 
   // currently not used
@@ -347,7 +348,7 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
           return;
         }
 
-      // Extract packet from datagram
+      // Extract complete ack packet from datagram
       char* dst = (char *) &ack;
       char* src = datagram.data();
 
@@ -358,7 +359,7 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
           dst++;
         }
 
-      // Response id for request id
+      // Response id from request ping. We ignaore that.
       // quint16 id = FromBE16( ack.id );
 
       // Response flags. If set to 1 the ack is negativ.
