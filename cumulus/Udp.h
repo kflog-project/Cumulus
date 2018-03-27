@@ -35,7 +35,7 @@ class QSocketNotifier;
  * \brief UDP client class.
  *
  * This class provides a simple UDP client for sending and receiving
- * UDP datagrams.
+ * UDP datagrams. Could not get running the qUdp class for that purpose.
  *
  * \date 2018
  */
@@ -108,14 +108,38 @@ private slots:
 
 private:
 
+  /**
+   * Called to read datagrams from the UDP socket.
+   */
   void receiveFromServer();
 
-  QByteArray m_host;
+  /** IP V4 server address in dotted notation. */
   QString m_ipAddress;
+
+  /**
+   * Server port.
+   */
   unsigned short m_port;
+
+  /*
+   * UDP socket used for the communication.
+   */
   int m_socket;
+
+  /**
+   * Socket address and port parameters.
+   */
   struct sockaddr_in m_sockaddr;
+
+  /**
+   * Storage for received datagrams.
+   */
   QList<QByteArray> m_readDatagrams;
+
+  /**
+   * Socket notifier. Calls method receiveFromServer(), if data for read are
+   * available.
+   */
   QSocketNotifier *m_readNotifier;
 };
 
