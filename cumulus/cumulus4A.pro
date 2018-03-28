@@ -405,7 +405,7 @@ flarm {
                flarmradarview.h \
                flarmwidget.h \
                preflightflarmpage.h \
-							 preflightflarmusbpage.h \
+               preflightflarmusbpage.h \
                SettingsPageFlarm.h
 
     SOURCES += flarm.cpp \
@@ -427,25 +427,30 @@ flarm {
 }
 
 internet {
-		QT += network
+    QT += network
 		
 		DEFINES += INTERNET
 		
     HEADERS += airspacedownloaddialog.h \
                DownloadManager.h \
                httpclient.h \
-		           LiveTrack24.h \
-		           LiveTrack24Logger.h \
-               preflightlivetrack24page.h \
-               preflightweatherpage.h
-                              
+               proxydialog.h \
+               skylines/byteOrder.h \
+               skylines/compiler.h \
+               skylines/crc.h \
+               skylines/skyLinesTrackingProtocol.h \
+               skylines/SkyLinesTracker.h
+
 		SOURCES += airspacedownloaddialog.cpp \
 		           DownloadManager.cpp \
 		           httpclient.cpp \
 		           LiveTrack24.cpp \
 		           LiveTrack24Logger.cpp \
 		           preflightlivetrack24page.cpp \
-               preflightweatherpage.cpp
+               preflightweatherpage.cpp \
+		           proxydialog.cpp \
+		           skylines/crc.cpp \
+		           skylines/SkyLinesTracker.cpp
 }
 
 numberpad {
