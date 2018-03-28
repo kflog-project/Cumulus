@@ -550,8 +550,11 @@ void PreFlightLiveTrack24Page::slotLoginTest()
       connect( m_slt, SIGNAL(pingResult(quint32)),
                SLOT(slotSkyLinesPingResult(quint32)) );
 
+      // Disable test button
+      m_loginTestButton->setEnabled( false );
       m_slt->startTracking();
-    }
+      return;
+   }
 }
 
 void PreFlightLiveTrack24Page::slotHttpResponse( QString &urlIn,
@@ -641,5 +644,6 @@ void PreFlightLiveTrack24Page::slotSkyLinesPingResult( quint32 result )
     }
 
   showLoginTestResult( msg );
+  m_loginTestButton->setEnabled( true );
   m_slt->deleteLater();
 }
