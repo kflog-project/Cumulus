@@ -287,13 +287,15 @@ void PreFlightWaypointPage::load()
 
   m_waypointFileFormat = conf->getWaypointFileFormat();
 
+  m_wpRadiusBox->setText( conf->getWaypointImportRadius() );
+
   m_wpFileFormatBox->setCurrentIndex( m_waypointFileFormat );
 
   m_wpPriorityBox->setCurrentIndex( conf->getWaypointPriority() );
 
   m_homeLabel->setText( WGSPoint::printPos(conf->getHomeLat(), true) +
-                      " - " +
-                      WGSPoint::printPos(conf->getHomeLon(), false) );
+                        " - " +
+                        WGSPoint::printPos(conf->getHomeLon(), false) );
 
   slotSelectCenterReference( conf->getWaypointCenterReference() );
 
@@ -305,7 +307,9 @@ void PreFlightWaypointPage::load()
 
   for( int l = 0; l < 2; l++ )
     {
-      for( uint loop = 0; loop < _globalMapContents->getListLength(searchList[l]); loop++ )
+      for( uint loop = 0;
+           loop < _globalMapContents->getListLength(searchList[l]);
+           loop++ )
       {
         SinglePoint *hitElement = (SinglePoint *) _globalMapContents->getElement(searchList[l], loop );
         m_airfieldDict.insert( hitElement->getName(), hitElement );
@@ -318,6 +322,7 @@ void PreFlightWaypointPage::save()
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) m_wpFileFormatBox->itemData(m_wpFileFormatBox->currentIndex()).toInt() );
+  conf->setWaypointImportRadius( m_wpRadiusBox->text() );
   conf->setWaypointPriority( m_wpPriorityBox->currentIndex() );
   conf->setWaypointCenterReference( m_centerRef );
   conf->setWaypointAirfieldReference( m_airfieldSelection->text() );

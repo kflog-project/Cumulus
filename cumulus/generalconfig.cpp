@@ -454,6 +454,7 @@ void GeneralConfig::load()
   _waypointPriority          = value( "StoragePriority", 0 ).toInt();
   _waypointCenterReference   = value( "CenterReference", PreFlightWaypointPage::Home ).toInt();
   _waypointAirfieldReference = value( "AirfieldReference", "" ).toString();
+  _waypointImportRadius      = value( "ImportRadius", "500" ).toString();
   endGroup();
 
   beginGroup("Variometer");
@@ -905,6 +906,7 @@ void GeneralConfig::save()
   setValue( "StoragePriority", _waypointPriority );
   setValue( "CenterReference", _waypointCenterReference );
   setValue( "AirfieldReference", _waypointAirfieldReference );
+  setValue( "ImportRadius", _waypointImportRadius );
   endGroup();
 
   beginGroup("Variometer");

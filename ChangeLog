@@ -18,6 +18,9 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[-] 2018-03-30 AP: Issue #125 fixed. Set value of radius box in waypoint import
+                   widget should be saved.
+
 [*] 2018-03-18 AP: Cumulus 5.33.1 released for Android.
 
 [-] 2018-03-15 AP: Issue #125 fixed. Flarm Settings Page should also support

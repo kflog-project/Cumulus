@@ -2085,6 +2085,17 @@ class GeneralConfig : protected QSettings
     _waypointAirfieldReference = newValue;
   };
 
+  /** Gets the waypoint import radius value. */
+  QString& getWaypointImportRadius()
+  {
+    return _waypointImportRadius;
+  };
+  /** Sets the waypoint import radius value. */
+  void setWaypointImportRadius(const QString newValue)
+  {
+    _waypointImportRadius = newValue;
+  };
+
   /** Gets the unit for altitude*/
   int getUnitAlt() const;
   /** Sets the unit for altitude */
@@ -3295,6 +3306,9 @@ class GeneralConfig : protected QSettings
 
   /** Waypoint import airfield reference. */
   QString _waypointAirfieldReference;
+
+  /** Waypoint import radius. */
+  QString _waypointImportRadius;
 
   /** Flarm alias file name. */
   QString _flarmAliasFileName;
