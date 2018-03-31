@@ -1,16 +1,16 @@
 /***********************************************************************
 **
-**   Udp.h
+**  Udp.h
 **
-**   This file is part of Cumulus
+**  This file is part of Cumulus
 **
 ************************************************************************
 **
-**   Copyright (c):  2018 by Axel Pauli (kflog.cumulus@gmail.com)
+**  Copyright (c):  2018 by Axel Pauli (kflog.cumulus@gmail.com)
 **
-**   This program is free software; you can redistribute it and/or modify
-**   it under the terms of the GNU General Public License as published by
-**   (at your option) any later version.
+**  This program is free software; you can redistribute it and/or modify
+**  it under the terms of the GNU General Public License as published by
+**  (at your option) any later version.
 **
 ***********************************************************************/
 
@@ -50,13 +50,24 @@ public:
 
   /**
    * Class constructor. This class is derived from QObject.
+   *
+   * \param parent Pointer to parent object instance.
+   *
+   * \param serverIpAddress Server IP V4 address in dotted notation
+   *
+   * \param port Server port
    */
   Udp( QObject* parent, QString serverIpAddress, ushort port );
 
+  /**
+   * Destructor
+   */
   virtual ~Udp();
 
   /**
-   * Send a datagram to the server.
+   * Sends a datagram to the server.
+   *
+   * \param datagram UDP datagram to be sent.
    */
   bool sendDatagram( QByteArray& datagram );
 
@@ -94,14 +105,15 @@ signals:
 
   /**
    * This signal is emitted every time a payload of data has been written to
-   * the device.
+   * the UDP socket.
    */
   void bytesWritten();
 
 private slots:
 
   /**
-   * Called, if reading data are available in the socket buffer.
+   * Called by m_readNotifier, if reading data are available in the UDP
+   * socket buffer.
    */
   void slotReadEvent(int socket);
 

@@ -66,8 +66,6 @@ SkyLinesTracker::SkyLinesTracker(QObject *parent, bool testing) :
 
 SkyLinesTracker::~SkyLinesTracker()
 {
-  qDebug() << "SkyLinesTracker::~SkyLinesTracker()";
-
   m_retryTimer->stop();
 
   if( m_udp != 0 )
@@ -148,8 +146,6 @@ void SkyLinesTracker::slotHostInfoRequest()
 
 void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
 {
-  qDebug() << "slotHostInfoResponse";
-
   m_hostLookupIsRunning = false;
 
   if( hostInfo.error() != QHostInfo::NoError )
@@ -212,8 +208,6 @@ void SkyLinesTracker::slotSendPing()
     {
       return;
     }
-
-  qDebug() << "slotSendPing() is called";
 
   if( m_udp == static_cast<Udp *> (0) )
     {
@@ -396,8 +390,6 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
 
 void SkyLinesTracker::slotBytesWritten()
 {
-  qDebug() << "SkyLinesTracker::slotBytesWritten()";
-
   m_sentPackages++;
   sendNextFixpoint();
 }
@@ -409,13 +401,11 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
                                      const double vario,
                                      qint64 utcTimeStamp )
 {
-  qDebug() << "SkyLinesTracker::routeTracking()";
-#if 0
-  if( isServiceRequested() == false || m_serverIpAdress.isNull() == true )
+  if( isServiceRequested() == false )
     {
       return false;
     }
-#endif
+
   // Prepare a fix packet
   SkyLinesTracking::FixPacket fp;
 
@@ -465,8 +455,6 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
 
 bool SkyLinesTracker::endTracking()
 {
-  qDebug() << "SkyLinesTracker::endTracking()";
-
   m_fixPacketQueue.clear();
   m_retryTimer->stop();
   return true;
@@ -474,8 +462,6 @@ bool SkyLinesTracker::endTracking()
 
 void SkyLinesTracker::slotRetry()
 {
-  qDebug() << "SkyLinesTracker::slotRetry()";
-
   // Data sending was not possible and the retry timer has expired.
   // As next we check if LiveTracking is still switched on.
   // If not, we stop here the data sending and clear the request queue.
@@ -491,8 +477,6 @@ void SkyLinesTracker::slotRetry()
 
 bool SkyLinesTracker::enqueueRequest( QByteArray& fixPaket )
 {
-  qDebug() << "SkyLinesTracker::enqueueRequest()";
-
   checkQueueLimit();
   m_fixPacketQueue.enqueue( fixPaket );
   return sendNextFixpoint();
@@ -500,8 +484,6 @@ bool SkyLinesTracker::enqueueRequest( QByteArray& fixPaket )
 
 bool SkyLinesTracker::sendNextFixpoint()
 {
-  qDebug() << "SkyLinesTracker::sendNextFixpoint()";
-
   if( isServiceRequested() == false || m_serverIpAdress.isNull() == true ||
       m_lastPingAnswer == 1 )
     {
@@ -533,8 +515,6 @@ bool SkyLinesTracker::sendNextFixpoint()
 
 void SkyLinesTracker::checkQueueLimit()
 {
-  qDebug() << "SkyLinesTracker::checkQueueLimit()";
-
   while( m_fixPacketQueue.size() > MaxQueueLen )
     {
       qDebug() << "QSize=" << m_fixPacketQueue.size() << "hau was wech";

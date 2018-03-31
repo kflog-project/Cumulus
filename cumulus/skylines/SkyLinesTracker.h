@@ -1,15 +1,15 @@
 /***********************************************************************
 **
-**   SkyLinesTracker.h
+**  SkyLinesTracker.h
 **
-**   This file is part of Cumulus.
+**  This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c): 2018 Axel Pauli
+**  Copyright (c): 2018 Axel Pauli
 **
-**   This file is distributed under the terms of the General Public
-**   License. See the file COPYING for more information.
+**  This file is distributed under the terms of the General Public
+**  License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
@@ -18,7 +18,7 @@
  *
  * \author Axel Pauli
  *
- * \brief API for a SkyLinesTracker client for skylines.aero.
+ * \brief API for a skylines.aero live tracking client.
  *
  * This class implements the API used by the SkylinesTracking server at
  * skylines.aero. The protocol uses UDP as transport medium.
@@ -194,7 +194,7 @@ class SkyLinesTracker : public LiveTrackBase
         return false;
       }
 
-      return true;
+    return true;
   }
 
   /**
@@ -205,7 +205,7 @@ class SkyLinesTracker : public LiveTrackBase
   /**
    * Puts a fix packet into the queue and activates the sending to the server.
    *
-   * \param fixPaket A fix packet to be stored.
+   * \param fixPaket A fix packet to be enqueued.
    */
   bool enqueueRequest( QByteArray& fixPaket );
 
@@ -223,7 +223,8 @@ class SkyLinesTracker : public LiveTrackBase
   bool sendNextFixpoint();
 
   /**
-   * Generates a package identifier. Every call increments the internal counter.
+   * Generates a package identifier for the ping request. Every call increments
+   * the internal counter.
    *
    * \return A package identifier.
    */

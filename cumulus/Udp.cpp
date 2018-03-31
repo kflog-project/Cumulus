@@ -1,17 +1,17 @@
 /***********************************************************************
  **
- **   Udp.cpp
+ **  Udp.cpp
  **
- **   This file is part of Cumulus
+ **  This file is part of Cumulus
  **
  ************************************************************************
  **
- **   Copyright (c): 2018 by Axel Pauli (kflog.cumulus@gmail.com)
+ **  Copyright (c): 2018 by Axel Pauli (kflog.cumulus@gmail.com)
  **
- **   This program is free software; you can redistribute it and/or modify
- **   it under the terms of the GNU General Public License as published by
- **   the Free Software Foundation; either version 2 of the License, or
- **   (at your option) any later version.
+ **  This program is free software; you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation; either version 2 of the License, or
+ **  (at your option) any later version.
  **
  ***********************************************************************/
 
@@ -90,13 +90,13 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
       m_sockaddr.sin_port = 0;
     }
 
+  // Setup a socket notifier to get read events signaled.
   m_readNotifier = new QSocketNotifier( m_socket,
                                         QSocketNotifier::Read,
                                         this );
 
   connect( m_readNotifier, SIGNAL(activated(int)),
            this, SLOT(slotReadEvent(int)) );
-
 }
 
 /**
@@ -104,8 +104,6 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
  */
 Udp::~Udp()
 {
-  qDebug() << "Udp::~Udp()";
-
   if( m_socket != 0 )
     {
       close(m_socket);
@@ -120,11 +118,9 @@ Udp::~Udp()
 
 bool Udp::sendDatagram( QByteArray& datagram )
 {
-  qDebug() << "Udp::sendDatagram()";
-
   int result = sendto( m_socket,
                        static_cast<const void *>(datagram.data()),
-                       static_cast<uint>(datagram.size()),
+                       static_cast<size_t>(datagram.size()),
                        0,
                        (const sockaddr*) &m_sockaddr,
                        sizeof(m_sockaddr) );
@@ -138,7 +134,7 @@ bool Udp::sendDatagram( QByteArray& datagram )
           return false;
         }
 
-      qWarning() << "Error in sendto"
+      qWarning() << "sendDatagram(): Error in sendto"
                  << "errno="
                  << errno
                  << "," << strerror(errno);
@@ -146,7 +142,8 @@ bool Udp::sendDatagram( QByteArray& datagram )
       return false;
     }
 
-  // A signal is emitted via a timer call to break the call chain.
+  // A signal is emitted via a timer call to break the call chain between
+  // signals and slots. Otherwise you can get unwanted recursive calls.
   QTimer::singleShot( 10, this, SIGNAL(bytesWritten()) );
   return true;
 }
@@ -173,8 +170,6 @@ void Udp::slotReadEvent(int socket)
 
 void Udp::receiveFromServer()
 {
-  qDebug() << "Udp::receiveFromServer()";
-
 #if 0
   /* gets the server's reply */
   int size = 0;
