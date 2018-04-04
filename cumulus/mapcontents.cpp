@@ -3029,9 +3029,9 @@ void MapContents::drawList( QPainter* targetP,
   for (int i = 0; i < radioList.size(); i++)
     {
       if( radioList[i].drawMapElement( targetP ) && showNaLabels )
-	{
-	  drawnNaList.append( &radioList[i] );
-	}
+        {
+          drawnNaList.append( &radioList[i] );
+        }
     }
 }
 
@@ -3093,9 +3093,9 @@ void MapContents::drawList( QPainter* targetP,
       showProgress2WaitScreen( tr("Drawing navaids") );
 
       for (int i = 0; i < radioList.size(); i++)
-	{
-	  radioList[i].drawMapElement(targetP);
-	}
+        {
+          radioList[i].drawMapElement(targetP);
+        }
 
       break;
 
@@ -3106,9 +3106,9 @@ void MapContents::drawList( QPainter* targetP,
       showProgress2WaitScreen( tr("Drawing hotspots") );
 
       for (int i = 0; i < hotspotList.size(); i++)
-	{
-	  hotspotList[i].drawMapElement(targetP);
-	}
+        {
+          hotspotList[i].drawMapElement(targetP);
+        }
 
       break;
 
@@ -3119,9 +3119,9 @@ void MapContents::drawList( QPainter* targetP,
       showProgress2WaitScreen( tr("Drawing airspaces") );
 
       for (int i = 0; i < airspaceList.size(); i++)
-	{
-	  airspaceList.at(i)->drawMapElement(targetP);
-	}
+        {
+          airspaceList.at(i)->drawMapElement(targetP);
+        }
 
       break;
 

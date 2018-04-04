@@ -74,8 +74,8 @@ bool SinglePoint::drawMapElement( QPainter* targetP )
    }
 
   targetP->drawPixmap( curPos.x() - xoff,
-		       curPos.y() - yoff,
-		       pixmap );
+                       curPos.y() - yoff,
+                       pixmap );
 
   return true;
 }

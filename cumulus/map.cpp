@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Josua Dietze
- **                   2008-2015 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -171,11 +171,11 @@ void Map::p_displayAirspaceInfo(const QPoint& current)
         {
           Airspace* pSpace = m_airspaceRegionList.at(loop)->m_airspace;
 
-	  // qDebug ("name: %s", pSpace->getName().toLatin1().data());
-	  // qDebug ("lower limit: %d", pSpace->getLowerL());
-	  // qDebug ("upper limit: %d", pSpace->getUpperL());
-	  // qDebug ("lower limit type: %d", pSpace->getLowerT());
-	  // qDebug ("upper limit type: %d", pSpace->getUpperT());
+          // qDebug ("name: %s", pSpace->getName().toLatin1().data());
+          // qDebug ("lower limit: %d", pSpace->getLowerL());
+          // qDebug ("upper limit: %d", pSpace->getUpperL());
+          // qDebug ("lower limit type: %d", pSpace->getLowerT());
+          // qDebug ("upper limit type: %d", pSpace->getUpperT());
 
           if( pSpace == 0 )
             {
@@ -185,12 +185,12 @@ void Map::p_displayAirspaceInfo(const QPoint& current)
 
           if( pSpace->getTypeID() == BaseMapElement::AirFlarm )
             {
-	      // Filter out invalid and inactive Flarm alert zones
-	      if( pSpace->getFlarmAlertZone().isValid() == false ||
-		  pSpace->getFlarmAlertZone().isActive() == false )
-		{
-		  continue;
-		}
+              // Filter out invalid and inactive Flarm alert zones
+              if( pSpace->getFlarmAlertZone().isValid() == false ||
+                  pSpace->getFlarmAlertZone().isActive() == false )
+                {
+                  continue;
+                }
             }
 
           //work around the phenomenon that airspaces tend to appear in the list twice -> this should be dealt with properly!
@@ -257,7 +257,8 @@ bool Map::p_zoomButtonPress(const QPoint& point)
 }
 
 /**
- * Display detailed Info about an airfield, a glider site or a waypoint.
+ * Display detailed Info about an airfield, a glider site, a waypoint or
+ * an airspace.
 */
 void Map::p_displayDetailedItemInfo(const QPoint& current)
 {
@@ -272,15 +273,23 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
   // Radius for Mouse Snapping
   int delta = 0, dX = 0, dY = 0;
 
-  // define lists to be used for searching
-  int searchList[] =
+  // Define lists to be used for searching. Consider current drawing.
+  QList<int> searchList;
+
+  if( _globalMapMatrix->isBorder2() )
     {
-      MapContents::AirfieldList,
-      MapContents::GliderfieldList,
-      MapContents::OutLandingList,
-      MapContents::RadioList,
-      MapContents::HotspotList
+      // These lists are drawn to this border
+      searchList.append( MapContents::AirfieldList );
+      searchList.append( MapContents::GliderfieldList );
+      searchList.append( MapContents::OutLandingList );
+      searchList.append( MapContents::RadioList );
     };
+
+  if( _globalMapMatrix->isSwitchScale() )
+    {
+      // This list is drawn to this border
+      searchList.append( MapContents::HotspotList );
+    }
 
   Waypoint *w = static_cast<Waypoint *> (0);
 
@@ -341,10 +350,11 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
     }
 
   // @AP: On map scale higher as 1024 we don't evaluate anything
-  for( int l = 0; l < 5 && cs < 1024.0; l++ )
+  for( int l = 0; l < searchList.size() && cs < 1024.0; l++ )
     {
-      for(unsigned int loop = 0;
-          loop < _globalMapContents->getListLength(searchList[l]); loop++)
+      for( unsigned int loop = 0;
+           loop < _globalMapContents->getListLength(searchList.at(l));
+           loop++)
         {
           // Get specific site data from current list. We have to
           // distinguish between AirfieldList, GilderfieldList, OutlandingList
@@ -486,7 +496,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
     {
       Waypoint& wp = wpList[i];
 
-      // consider only points, which are to drawn on the map
+      // consider only points, which are to draw on the map
       if( _globalMapMatrix->isWaypoint2Draw( wp.priority  ) )
         {
           continue;
@@ -838,12 +848,12 @@ void Map::p_drawAirspaces( bool reset )
 
           if( currentAirS->getTypeID() == BaseMapElement::AirFlarm )
             {
-	      // Filter out invalid and inactive Flarm alert zones
-	      if( currentAirS->getFlarmAlertZone().isValid() == false ||
-		  currentAirS->getFlarmAlertZone().isActive() == false )
-		{
-		  continue;
-		}
+              // Filter out invalid and inactive Flarm alert zones
+              if( currentAirS->getFlarmAlertZone().isValid() == false ||
+                  currentAirS->getFlarmAlertZone().isActive() == false )
+                {
+                  continue;
+                }
             }
 
           if( reset == true || currentAirS->getAirRegion() == 0 )
@@ -1723,52 +1733,52 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
       // Check, if point lays in the visible screen area
       if( ! testRect.contains(dispP) )
-	{
-	  continue;
-	}
+        {
+          continue;
+        }
 
     // load and draw the actual icons
     QPixmap pm;
 
     if( _globalMapConfig->isRotatable(wp.type) )
       {
-	int rwyHeading = 0;
+        int rwyHeading = 0;
 
-	if( wp.rwyList.size() > 0 )
-	  {
-	    rwyHeading = wp.rwyList.first().m_heading;
-	  }
+        if( wp.rwyList.size() > 0 )
+          {
+            rwyHeading = wp.rwyList.first().m_heading;
+          }
 
-	int heading = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
+        int heading = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
 
-	if( useSmallIcons )
-	  {
-	    if( wp.type == BaseMapElement::UltraLight ||
-		wp.type == BaseMapElement::Outlanding )
-	      {
-		pm = Airfield::getSmallField( heading );
-	      }
-	    else
-	      {
-		pm = Airfield::getSmallAirfield( heading );
-	      }
-	  }
-	else
-	  {
-	    if( wp.type == BaseMapElement::UltraLight ||
-		wp.type == BaseMapElement::Outlanding )
-	      {
-		pm = Airfield::getBigField( heading );
-	      }
-	    else
-	      {
-		pm = Airfield::getBigAirfield( heading );
-	      }
-	  }
+        if( useSmallIcons )
+          {
+            if( wp.type == BaseMapElement::UltraLight ||
+                wp.type == BaseMapElement::Outlanding )
+              {
+                pm = Airfield::getSmallField( heading );
+              }
+            else
+              {
+                pm = Airfield::getSmallAirfield( heading );
+              }
+          }
+        else
+          {
+            if( wp.type == BaseMapElement::UltraLight ||
+                wp.type == BaseMapElement::Outlanding )
+              {
+                pm = Airfield::getBigField( heading );
+              }
+            else
+              {
+                pm = Airfield::getBigAirfield( heading );
+              }
+          }
       }
     else
       {
-	pm = _globalMapConfig->getPixmap( wp.type, false );
+        pm = _globalMapConfig->getPixmap( wp.type, false );
       }
 
     int iconSize     = pm.width();
@@ -1779,15 +1789,15 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
     int cyOffset     = iconSizeHalf;
 
     if( wp.type == BaseMapElement::City ||
-	wp.type == BaseMapElement::Turnpoint ||
-	wp.type == BaseMapElement::Thermal )
+        wp.type == BaseMapElement::Turnpoint ||
+        wp.type == BaseMapElement::Thermal )
       {
-	// The lower end of the flag/beacon shall directly point to the
-	// point at the map.
-	xOffset  = iconSizeHalf;
-	yOffset  = iconSize;
-	cxOffset = iconSizeHalf;
-	cyOffset = iconSizeHalf;
+        // The lower end of the flag/beacon shall directly point to the
+        // point at the map.
+        xOffset  = iconSizeHalf;
+        yOffset  = iconSize;
+        cxOffset = iconSizeHalf;
+        cyOffset = iconSizeHalf;
       }
 
     // Consider reachability during drawing. The circles must be drawn at first.
@@ -1795,16 +1805,16 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
     if( reachable == ReachablePoint::yes )
       {
-	// draw green circle, when safety
-	painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
-			     _globalMapConfig->getGreenCircle(iconSize) );
+        // draw green circle, when safety
+        painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
+                             _globalMapConfig->getGreenCircle(iconSize) );
 
       }
     else if( reachable == ReachablePoint::belowSafety )
       {
-	// draw magenta circle
-	painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
-			     _globalMapConfig->getMagentaCircle(iconSize));
+        // draw magenta circle
+        painter->drawPixmap( dispP.x() - cxOffset, dispP.y() - cyOffset,
+                             _globalMapConfig->getMagentaCircle(iconSize));
       }
 
     painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm );
@@ -1812,9 +1822,9 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
     // Add the draw waypoint name to the list, if required by the user.
     if( showWpLabels )
       {
-	drawnWp.append( &wpList[i] );
+        drawnWp.append( &wpList[i] );
       }
-   }
+    }
 }
 
 /** Draws a label beside the map icon. It is assumed, that the icon is to see
@@ -3134,7 +3144,7 @@ void Map::checkAirspace(const QPoint& pos)
 
       if( pSpace->getTypeID() == BaseMapElement::AirFlarm )
         {
-	  // Filter out invalid and inactive Flarm alert zones
+          // Filter out invalid and inactive Flarm alert zones
           if( pSpace->getFlarmAlertZone().isValid() == false ||
               pSpace->getFlarmAlertZone().isActive() == false )
             {
@@ -3359,20 +3369,20 @@ void Map::checkAirspace(const QPoint& pos)
       bool first = true;
 
       while ( i.hasNext()  )
-	{
-	  i.next();
+        {
+          i.next();
 
-	  if( ! first )
-	    {
-	      msg += ", ";
-	    }
-	  else
-	    {
-	      first = false;
-	    }
+          if( ! first )
+            {
+              msg += ", ";
+            }
+          else
+            {
+              first = false;
+            }
 
-	  msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
-	}
+          msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+        }
 
       QMapIterator<QString, int> j(newVeryNearAsMap);
 
@@ -3395,19 +3405,19 @@ void Map::checkAirspace(const QPoint& pos)
       bool first = true;
 
       while ( i.hasNext()  )
-	{
-	  i.next();
+        {
+          i.next();
 
-	  if( ! first )
-	    {
-	      msg += ", ";
-	    }
-	  else
-	    {
-	      first = false;
-	    }
+          if( ! first )
+            {
+              msg += ", ";
+            }
+          else
+            {
+              first = false;
+            }
 
-	  msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
+          msg += Airspace::getTypeName( (BaseMapElement::objectType) i.value() );
        }
 
       QMapIterator<QString, int> j(newNearAsMap);
@@ -3447,9 +3457,9 @@ void Map::clearAirspaceMap( QMutableMapIterator<QString, QTime>& it,
       it.next();
 
       if( it.value().elapsed() > suppressTime )
-	{
-	  it.remove();
-	}
+        {
+          it.remove();
+        }
     }
 }
 

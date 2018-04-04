@@ -18,7 +18,13 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
-[-] 2018-03-30 AP: Issue #125 fixed. Set value of radius box in waypoint import
+[-] 2018-04-04 AP: Issue #128 fixed. Add syklines.aero UDP livetracking protocol
+                   to Cumulus.
+
+[-] 2018-04-04 AP: Issue #130 fixed. Do not show information about points,
+                   which are not visible at the map.
+
+[-] 2018-03-30 AP: Issue #129 fixed. Set value of radius box in waypoint import
                    widget should be saved.
 
 [*] 2018-03-18 AP: Cumulus 5.33.1 released for Android.
