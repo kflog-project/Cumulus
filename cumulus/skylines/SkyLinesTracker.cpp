@@ -137,8 +137,6 @@ void SkyLinesTracker::slotHostInfoRequest()
       // We need the IP address of the skyline tracking server.
       m_hostLookupIsRunning = true;
 
-      qDebug() << "QHostInfo::lookupHost";
-
       QHostInfo::lookupHost( getServerName(),
                              this, SLOT(slotHostInfoResponse(QHostInfo)) );
     }
@@ -166,7 +164,7 @@ void SkyLinesTracker::slotHostInfoResponse( QHostInfo hostInfo)
   // We take the first IP address only.
   m_serverIpAdress = hostInfo.addresses().first();
 
-  qDebug() << "IP-Address" << m_serverIpAdress.toString();
+  qDebug() << "skylines.aero IP-Address" << m_serverIpAdress.toString();
 
   // Send a ping to the skyLines server to verify the user's live tracking key.
   slotSendPing();
@@ -197,7 +195,6 @@ QString SkyLinesTracker::getMyIpAddress()
                  << "Returning LocalHost as IP address.";
     }
 
-  qDebug() << "MyIpAddress:" << ipAddress;
   return ipAddress;
 }
 
@@ -273,12 +270,14 @@ void SkyLinesTracker::processDatagram( QByteArray& datagram )
       return;
     }
 
+#if 0
   for( int i = 0; i < datagram.size(); i++ )
     {
       printf( "%02x ", (uchar) datagram.at(i) );
     }
 
     printf("\n");
+#endif
 
   // extract header from diagram
   SkyLinesTracking::Header header;

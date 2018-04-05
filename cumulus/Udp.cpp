@@ -197,7 +197,7 @@ void Udp::receiveFromServer()
 
   if( result == 0 || (result == -1 && errno != EWOULDBLOCK) )
     {
-      qDebug() << "Udp::receiveFromServer(): recvfrom error"
+      qWarning() << "Udp::receiveFromServer(): recvfrom error"
               << errno << ","
               << strerror(errno);
       return;
