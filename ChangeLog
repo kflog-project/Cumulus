@@ -18,6 +18,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2018-04-15 AP: Cumulus 5.34.0 released for Android.
+
 [-] 2018-04-04 AP: Issue #128 fixed. Add syklines.aero UDP livetracking protocol
                    to Cumulus.
 
