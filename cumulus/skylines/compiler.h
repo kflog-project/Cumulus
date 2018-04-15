@@ -66,7 +66,8 @@ Copyright_License {
 #    error Sorry, your clang version is too old.  You need at least version 3.8.
 #  endif
 #elif defined(__GNUC__)
-#  if GCC_OLDER_THAN(5,0)
+//#  if GCC_OLDER_THAN(5,0)
+#  if GCC_OLDER_THAN(4,0)
 #    error Sorry, your gcc version is too old.  You need at least version 5.
 #  endif
 #else

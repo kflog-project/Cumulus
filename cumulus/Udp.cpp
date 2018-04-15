@@ -56,7 +56,7 @@ Udp::Udp(QObject *parent, QString serverIpAddress, ushort port ) :
   setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, (int *)&opt, sizeof(opt));
 
   // None blocking IO is requested.
-  fcntl(m_socket, F_SETFL, FNDELAY);
+  fcntl(m_socket, F_SETFL, O_NONBLOCK);
 
   memset( &m_sockaddr, 0, sizeof( sockaddr_in ) );
 

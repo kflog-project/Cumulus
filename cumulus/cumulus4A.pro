@@ -241,6 +241,7 @@ HEADERS = \
     taskpointtypes.h \
     time_cu.h \
     tpinfowidget.h \
+    Udp.h \
     vario.h \
     variomodedialog.h \
     varspinbox.h \
@@ -371,6 +372,7 @@ SOURCES = \
     TaskPointSelectionList.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
+    Udp.cpp \
     vario.cpp \
     variomodedialog.cpp \
     varspinbox.cpp \
@@ -428,12 +430,17 @@ flarm {
 
 internet {
     QT += network
-		
-		DEFINES += INTERNET
-		
+
+    DEFINES += INTERNET
+
     HEADERS += airspacedownloaddialog.h \
                DownloadManager.h \
                httpclient.h \
+               LiveTrack24.h \
+               LiveTrack24Logger.h \
+               LiveTrackBase.h \
+               preflightlivetrack24page.h \
+               preflightweatherpage.h \
                proxydialog.h \
                skylines/byteOrder.h \
                skylines/compiler.h \

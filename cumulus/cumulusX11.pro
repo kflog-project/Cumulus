@@ -389,15 +389,15 @@ flarm {
 }
 
 internet {
-		QT += network
-		
-		DEFINES += INTERNET
-		
+    QT += network
+
+    DEFINES += INTERNET
+
     HEADERS += airspacedownloaddialog.h \
                DownloadManager.h \
                httpclient.h \
-		           LiveTrack24.h \
-		           LiveTrack24Logger.h \
+               LiveTrack24.h \
+               LiveTrack24Logger.h \
                LiveTrackBase.h \
                preflightlivetrack24page.h \
                preflightweatherpage.h \

@@ -32,8 +32,8 @@
 #ifndef skyLinesTrackingProtocol_h_
 #define skyLinesTrackingProtocol_h_
 
-#include <cstdint>
-
+//#include <cstdint>
+#include <QtGlobal>
 /*
  * This file defines the SkyLines live tracking protocol.  It is a
  * one-way datagram protocol: the client (i.e. the on-board navigation
@@ -61,7 +61,7 @@
 
 namespace SkyLinesTracking {
 
-static const uint32_t MAGIC = 0x5df4b67b;
+static const quint32 MAGIC = 0x5df4b67b;
 
 enum Type {
   PING = 1,
@@ -110,7 +110,7 @@ struct Header {
   /**
    * Must be MAGIC.
    */
-  uint32_t magic;
+  quint32 magic;
 
   /**
    * The CRC of this packet including the header, assuming this
@@ -119,21 +119,23 @@ struct Header {
    * The CRC algorithm is CRC16-CCITT with initial value 0x0000
    * (XModem) instead of CCITT's default 0xffff.
    */
-  uint16_t crc;
+  quint16 crc;
 
   /**
    * An "enum Type" value.
    */
-  uint16_t type;
+  quint16 type;
 
   /**
    * The authorization key.
    */
-  uint64_t key;
+  quint64 key;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(Header) == 16, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -147,21 +149,23 @@ struct PingPacket {
    * An arbitrary number chosen by the client, usually a sequence
    * number.
    */
-  uint16_t id;
+  quint16 id;
 
   /**
    * Reserved for future use. Set to zero.
    */
-  uint16_t reserved;
+  quint16 reserved;
 
   /**
    * Reserved for future use. Set to zero.
    */
-  uint32_t reserved2;
+  quint32 reserved2;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(PingPacket) == 24, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -174,101 +178,107 @@ struct ACKPacket {
    * silently discarded, but the server may use this flag to respond
    * to a bad key in a PING packet.
    */
-  static const uint32_t FLAG_BAD_KEY = 0x1;
+  static const quint32 FLAG_BAD_KEY = 0x1;
 
   Header header;
 
   /**
    * Copy of the request's id value.
    */
-  uint16_t id;
+  quint16 id;
 
   /**
    * Reserved for future use.  Set to zero.
    */
-  uint16_t reserved;
+  quint16 reserved;
 
-  uint32_t flags;
+  quint32 flags;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(ACKPacket) == 24, "Wrong struct size");
+#endif
 #endif
 
 struct GeoPoint {
   /**
    * Angle in micro degrees. Positive means north or east.
    */
-  int32_t latitude, longitude;
+  qint32 latitude, longitude;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(GeoPoint) == 8, "Wrong struct size");
+#endif
 #endif
 
 /**
  * A GPS fix being uploaded to the server.
  */
 struct FixPacket {
-  static const uint32_t FLAG_LOCATION = 0x1;
-  static const uint32_t FLAG_TRACK = 0x2;
-  static const uint32_t FLAG_GROUND_SPEED = 0x4;
-  static const uint32_t FLAG_AIRSPEED = 0x8;
-  static const uint32_t FLAG_ALTITUDE = 0x10;
-  static const uint32_t FLAG_VARIO = 0x20;
-  static const uint32_t FLAG_ENL = 0x40;
+  static const quint32 FLAG_LOCATION = 0x1;
+  static const quint32 FLAG_TRACK = 0x2;
+  static const quint32 FLAG_GROUND_SPEED = 0x4;
+  static const quint32 FLAG_AIRSPEED = 0x8;
+  static const quint32 FLAG_ALTITUDE = 0x10;
+  static const quint32 FLAG_VARIO = 0x20;
+  static const quint32 FLAG_ENL = 0x40;
 
   Header header;
 
-  uint32_t flags;
+  quint32 flags;
 
   /**
    * Millisecond of day (UTC).  May be bigger than 24*60*60*1000 if
    * the flight has wrapped midnight.
    */
-  uint32_t time;
+  quint32 time;
 
   GeoPoint location;
 
   /**
    * Reserved for future use. Set to zero.
    */
-  uint32_t reserved;
+  quint32 reserved;
 
   /**
    * Ground track in degrees (0..359).
    */
-  uint16_t track;
+  quint16 track;
 
   /**
    * Ground speed in m*16/s.
    */
-  uint16_t ground_speed;
+  quint16 ground_speed;
 
   /**
    * Indicated air speed in m*16/s.
    */
-  uint16_t airspeed;
+  quint16 airspeed;
 
   /**
    * Altitude in m above MSL.
    */
-  int16_t altitude;
+  qint16 altitude;
 
   /**
    * Vertical speed in m*256/s.
    */
-  int16_t vario;
+  qint16 vario;
 
   /**
    * Engine noise level value from the logger, valid range is
    * 0..999.
    */
-  uint16_t engine_noise_level;
+  quint16 engine_noise_level;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(FixPacket) == 48, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -279,30 +289,32 @@ struct TrafficRequestPacket {
    * The client wants to receive information about all pilots he
    * follows on the SkyLines web site.
    */
-  static const uint32_t FLAG_FOLLOWEES = 0x1;
+  static const quint32 FLAG_FOLLOWEES = 0x1;
 
   /**
    * The client wants to receive information about all members in
    * the same club.
    */
-  static const uint32_t FLAG_CLUB = 0x2;
+  static const quint32 FLAG_CLUB = 0x2;
 
   /**
    * The client wants to receive information about all traffic near
    * the location he submitted recently in a #FixPacket.  The server
    * chooses a reasonable range.
    */
-  static const uint32_t FLAG_NEAR = 0x4;
+  static const quint32 FLAG_NEAR = 0x4;
 
   Header header;
 
-  uint32_t flags;
+  quint32 flags;
 
-  uint32_t reserved;
+  quint32 reserved;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(TrafficRequestPacket) == 24, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -313,32 +325,34 @@ static_assert(sizeof(TrafficRequestPacket) == 24, "Wrong struct size");
  */
 struct TrafficResponsePacket {
   struct Traffic {
-    uint32_t pilot_id;
+    quint32 pilot_id;
 
     /**
      * Millisecond of day (UTC).  This is the time this information
      * was submitted to SkyLines by the pilot described in this
      * object.
      */
-    uint32_t time;
+    quint32 time;
 
     GeoPoint location;
 
-    int16_t altitude;
+    qint16 altitude;
 
     /**
      * Reserved for future use.
      */
-    uint16_t reserved;
+    quint16 reserved;
 
     /**
      * Reserved for future use.
      */
-    uint32_t reserved2;
+    quint32 reserved2;
   };
 
+#ifndef ANDROID
 #ifdef __cplusplus
-  static_assert(sizeof(Traffic) == 24, "Wrong struct size");
+static_assert(sizeof(Traffic) == 24, "Wrong struct size");
+#endif
 #endif
 
   Header header;
@@ -346,28 +360,30 @@ struct TrafficResponsePacket {
   /**
    * Reserved for future use.
    */
-  uint16_t reserved;
+  quint16 reserved;
 
   /**
    * Reserved for future use.
    */
-  uint8_t reserved2;
+  quint8 reserved2;
 
   /**
    * The number of #Traffic instances following this struct.
    */
-  uint8_t traffic_count;
+  quint8 traffic_count;
 
   /**
    * Reserved for future use.
    */
-  uint32_t reserved3;
+  quint32 reserved3;
 
   /* followed by a number of #Traffic instances */
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(TrafficRequestPacket) == 24, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -380,16 +396,18 @@ struct UserNameRequestPacket {
    * The id of the user, as obtained by
    * #TrafficResponsePacket::Packet::pilot_id.
    */
-  uint32_t user_id;
+  quint32 user_id;
 
   /**
    * Reserved for future use.
    */
-  uint32_t reserved;
+  quint32 reserved;
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(UserNameRequestPacket) == 24, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -400,7 +418,7 @@ struct UserNameResponsePacket {
    * A user with the specified id was not found.  The following
    * attributes are undefined.
    */
-  static const uint32_t FLAG_NOT_FOUND = 0x1;
+  static const quint32 FLAG_NOT_FOUND = 0x1;
 
   Header header;
 
@@ -408,32 +426,34 @@ struct UserNameResponsePacket {
    * The id of the user, as obtained by
    * #TrafficResponsePacket::Packet::pilot_id.
    */
-  uint32_t user_id;
+  quint32 user_id;
 
-  uint32_t flags;
+  quint32 flags;
 
   /**
    * The club the user belongs to.  0 means no club.
    */
-  uint32_t club_id;
+  quint32 club_id;
 
   /**
    * The name of the user in UTF-8 bytes.
    */
-  uint8_t name_length;
+  quint8 name_length;
 
   /**
    * Reserved for future use.
    */
-  uint8_t reserved1, reserved2, reserved3;
-  uint32_t reserved4, reserved5;
+  quint8 reserved1, reserved2, reserved3;
+  quint32 reserved4, reserved5;
 
   /* the struct is followed by #name_length bytes of UTF-8
      containing the name, not null-terminated */
 };
 
+#ifndef ANDROID
 #ifdef __cplusplus
 static_assert(sizeof(UserNameResponsePacket) == 40, "Wrong struct size");
+#endif
 #endif
 
 /**
@@ -444,12 +464,12 @@ struct Wave {
    * Millisecond of day (UTC).  This is the time this wave was last
    * seen.
    */
-  uint32_t time;
+  quint32 time;
 
   /**
    * This reserved field may one day become the reporter's user id.
    */
-  uint32_t reserved1;
+  quint32 reserved1;
 
   /**
    * Two points describing the wave axis where lift was found.
@@ -463,7 +483,7 @@ struct Wave {
    *
    * Note: this is unused currently.
    */
-  int16_t bottom_altitude;
+  qint16 bottom_altitude;
 
   /**
    * Approximate top altitude where this wave was found.  For
@@ -472,16 +492,16 @@ struct Wave {
    *
    * Note: this is unused currently.
    */
-  int16_t top_altitude;
+  qint16 top_altitude;
 
   /**
    * Average lift m/256s.
    *
    * Note: this is unused currently.
    */
-  uint16_t lift;
+  quint16 lift;
 
-  int16_t reserved2;
+  qint16 reserved2;
 };
 
 /**
@@ -503,9 +523,9 @@ struct WaveRequestPacket {
   /**
    * Unused.
    */
-  uint32_t flags;
+  quint32 flags;
 
-  uint32_t reserved1;
+  quint32 reserved1;
 };
 
 /**
@@ -514,15 +534,15 @@ struct WaveRequestPacket {
 struct WaveResponsePacket {
   Header header;
 
-  uint16_t reserved1;
-  uint8_t reserved2;
+  quint16 reserved1;
+  quint8 reserved2;
 
   /**
    * The number of #Wave instances following this struct.
    */
-  uint8_t wave_count;
+  quint8 wave_count;
 
-  uint32_t reserved3;
+  quint32 reserved3;
 
   /* followed by a number of #Wave instances */
 };
@@ -535,12 +555,12 @@ struct Thermal {
    * Millisecond of day (UTC).  This is the time this thermal was
    * last seen.
    */
-  uint32_t time;
+  quint32 time;
 
   /**
    * This reserved field may one day become the reporter's user id.
    */
-  uint32_t reserved1;
+  quint32 reserved1;
 
   /**
    * The location of the glider at its bottom-most altitude.
@@ -557,19 +577,19 @@ struct Thermal {
   /**
    * The bottom-most aircraft altitude inside this thermal.
    */
-  int16_t bottom_altitude;
+  qint16 bottom_altitude;
 
   /**
    * The top-most aircraft altitude inside this thermal.
    */
-  int16_t top_altitude;
+  qint16 top_altitude;
 
   /**
    * Average lift [m/256s].
    */
-  uint16_t lift;
+  quint16 lift;
 
-  int16_t reserved2;
+  qint16 reserved2;
 };
 
 /**
@@ -591,9 +611,9 @@ struct ThermalRequestPacket {
   /**
    * Unused.
    */
-  uint32_t flags;
+  quint32 flags;
 
-  uint32_t reserved1;
+  quint32 reserved1;
 };
 
 /**
@@ -602,15 +622,15 @@ struct ThermalRequestPacket {
 struct ThermalResponsePacket {
   Header header;
 
-  uint16_t reserved1;
-  uint8_t reserved2;
+  quint16 reserved1;
+  quint8 reserved2;
 
   /**
    * The number of #Thermal instances following this struct.
    */
-  uint8_t thermal_count;
+  quint8 thermal_count;
 
-  uint32_t reserved3;
+  quint32 reserved3;
 
   /* followed by a number of #Thermal instances */
 };

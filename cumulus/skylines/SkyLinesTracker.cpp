@@ -225,7 +225,7 @@ void SkyLinesTracker::slotSendPing()
   SkyLinesTracking::PingPacket pp;
   pp.header.magic = ToBE32( SkyLinesTracking::MAGIC );
   pp.header.crc = 0;
-  pp.header.type = ToBE16( SkyLinesTracking::Type::PING);
+  pp.header.type = ToBE16( SkyLinesTracking::PING);
   pp.header.key = ToBE64( m_liveTrackingKey );
   pp.id = ToBE16( getId() );
   pp.reserved = 0;
@@ -410,7 +410,7 @@ bool SkyLinesTracker::routeTracking( const QPoint& position,
 
   fp.header.magic = ToBE32( SkyLinesTracking::MAGIC );
   fp.header.crc = 0;
-  fp.header.type = ToBE16( SkyLinesTracking::Type::FIX);
+  fp.header.type = ToBE16( SkyLinesTracking::FIX);
   fp.header.key = ToBE64( m_liveTrackingKey );
 
   quint32 flags = 0;
