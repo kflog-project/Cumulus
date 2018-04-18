@@ -71,7 +71,7 @@ class SkyLinesTracker : public LiveTrackBase
    *
    * \param parent Object of parent class
    * \param test Flag for verifying user's livetrack key. It enables some calls
-   *             also is SkyLines Tracking is not activated by the user.
+   *             even SkyLines Tracking is not activated by the user.
    */
   SkyLinesTracker(QObject* parent, bool testing=false);
 
