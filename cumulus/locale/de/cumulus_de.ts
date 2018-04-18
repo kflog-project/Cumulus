@@ -1422,6 +1422,11 @@
         <translation>Ziel löschen</translation>
     </message>
     <message>
+        <location filename="../../mainwindow.cpp" line="1803"/>
+        <source>Flying</source>
+        <translation>Fliegen</translation>
+    </message>
+    <message>
         <location filename="../../mainwindow.cpp" line="1851"/>
         <source>Map Info Boxes</source>
         <translation>Karte Info Boxen</translation>
@@ -1501,11 +1506,6 @@
         <location filename="../../mainwindow.cpp" line="1782"/>
         <source>Start flight task</source>
         <translation>Start Flugaufgabe</translation>
-    </message>
-    <message>
-        <location filename="../../mainwindow.cpp" line="1803"/>
-        <source>Pre-flight</source>
-        <translation>Vorflug</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="1811"/>
@@ -1649,55 +1649,55 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="2786"/>
-        <location filename="../../map.cpp" line="2841"/>
+        <location filename="../../map.cpp" line="2796"/>
+        <location filename="../../map.cpp" line="2851"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3300"/>
+        <location filename="../../map.cpp" line="3310"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3304"/>
+        <location filename="../../map.cpp" line="3314"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3309"/>
-        <location filename="../../map.cpp" line="3478"/>
+        <location filename="../../map.cpp" line="3319"/>
+        <location filename="../../map.cpp" line="3488"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3320"/>
-        <location filename="../../map.cpp" line="3347"/>
-        <location filename="../../map.cpp" line="3500"/>
+        <location filename="../../map.cpp" line="3330"/>
+        <location filename="../../map.cpp" line="3357"/>
+        <location filename="../../map.cpp" line="3510"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3356"/>
-        <location filename="../../map.cpp" line="3384"/>
-        <location filename="../../map.cpp" line="3514"/>
+        <location filename="../../map.cpp" line="3366"/>
+        <location filename="../../map.cpp" line="3394"/>
+        <location filename="../../map.cpp" line="3524"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3393"/>
-        <location filename="../../map.cpp" line="3420"/>
-        <location filename="../../map.cpp" line="3528"/>
+        <location filename="../../map.cpp" line="3403"/>
+        <location filename="../../map.cpp" line="3430"/>
+        <location filename="../../map.cpp" line="3538"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3478"/>
+        <location filename="../../map.cpp" line="3488"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3488"/>
+        <location filename="../../map.cpp" line="3498"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
@@ -2909,7 +2909,7 @@ USB Stick eingeschoben?</translation>
     <name>PreFlightWaypointPage</name>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="89"/>
-        <location filename="../../preflightwaypointpage.cpp" line="413"/>
+        <location filename="../../preflightwaypointpage.cpp" line="418"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
@@ -2995,13 +2995,13 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="211"/>
-        <location filename="../../preflightwaypointpage.cpp" line="415"/>
+        <location filename="../../preflightwaypointpage.cpp" line="420"/>
         <source>Binary</source>
         <translation>Binär</translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="212"/>
-        <location filename="../../preflightwaypointpage.cpp" line="414"/>
+        <location filename="../../preflightwaypointpage.cpp" line="419"/>
         <source>XML</source>
         <translation></translation>
     </message>
@@ -3036,53 +3036,53 @@ USB Stick eingeschoben?</translation>
         <translation>Priorität:</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="332"/>
+        <location filename="../../preflightwaypointpage.cpp" line="337"/>
         <source>The waypoint storage format was changed. Storing data in new format can overwrite existing data!</source>
         <translation>Das Wegpunkt Speicherformat wurde geändert. Speichern im neuen Format kann alte Daten überschreiben!</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="335"/>
+        <location filename="../../preflightwaypointpage.cpp" line="340"/>
         <source>Continue storing?</source>
         <translation>Speichern fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="416"/>
+        <location filename="../../preflightwaypointpage.cpp" line="421"/>
         <source>SeeYou</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="418"/>
+        <location filename="../../preflightwaypointpage.cpp" line="423"/>
         <source>AIP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="419"/>
+        <location filename="../../preflightwaypointpage.cpp" line="424"/>
         <source>DOS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="422"/>
+        <location filename="../../preflightwaypointpage.cpp" line="427"/>
         <source>Open waypoint catalog</source>
         <translation>Öffne Wegpunkt Katalog</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="509"/>
+        <location filename="../../preflightwaypointpage.cpp" line="514"/>
         <source>No entries read</source>
         <translation>Keine Einträge gelesen</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="510"/>
+        <location filename="../../preflightwaypointpage.cpp" line="515"/>
         <source>No waypoints read from file!</source>
         <translation>Datei enthielt keine Wegpunkte!</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="512"/>
+        <location filename="../../preflightwaypointpage.cpp" line="517"/>
         <source>Maybe you should change the filter values?</source>
         <translation>Vielleicht sollten Sie das Filter ändern?</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="331"/>
-        <location filename="../../preflightwaypointpage.cpp" line="551"/>
+        <location filename="../../preflightwaypointpage.cpp" line="336"/>
+        <location filename="../../preflightwaypointpage.cpp" line="556"/>
         <source>Continue?</source>
         <translation>Fortfahren?</translation>
     </message>
@@ -3092,47 +3092,47 @@ USB Stick eingeschoben?</translation>
         <translation>Vorflug - Wegpunkte</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="417"/>
+        <location filename="../../preflightwaypointpage.cpp" line="422"/>
         <source>CAI</source>
         <translation>CAI</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="531"/>
+        <location filename="../../preflightwaypointpage.cpp" line="536"/>
         <source>Error in file </source>
         <translation>Fehler in Datei</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="553"/>
+        <location filename="../../preflightwaypointpage.cpp" line="558"/>
         <source>%1 waypoints would be read.</source>
         <translation>%1 Wegpunkte würden gelesen.</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="555"/>
+        <location filename="../../preflightwaypointpage.cpp" line="560"/>
         <source>Continue loading?</source>
         <translation>Laden fortsetzen?</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="608"/>
+        <location filename="../../preflightwaypointpage.cpp" line="613"/>
         <source>Low on memory!</source>
         <translation>Speicher Problem!</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="610"/>
+        <location filename="../../preflightwaypointpage.cpp" line="615"/>
         <source>Waypoint import failed due to low on memory!</source>
         <translation>Wegpunkt Import fehlgeschlagen wegen zu wenig freien Speicher!</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="681"/>
+        <location filename="../../preflightwaypointpage.cpp" line="686"/>
         <source>%1 waypoints added.</source>
         <translation>%1 Wegpunkte zugefügt.</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="685"/>
+        <location filename="../../preflightwaypointpage.cpp" line="690"/>
         <source>%1 waypoints ignored.</source>
         <translation>%1 Wegpunkte ignoriert.</translation>
     </message>
     <message>
-        <location filename="../../preflightwaypointpage.cpp" line="691"/>
+        <location filename="../../preflightwaypointpage.cpp" line="696"/>
         <source>Import Results</source>
         <translation>Import Resultate</translation>
     </message>
@@ -3288,6 +3288,16 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>PreFlightWidget</name>
     <message>
+        <location filename="../../preflightwidget.cpp" line="76"/>
+        <source>Flight Settings</source>
+        <translation>Flugeinstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../preflightwidget.cpp" line="224"/>
+        <source>Flight Menu</source>
+        <translation>Menü Fliegen</translation>
+    </message>
+    <message>
         <location filename="../../preflightwidget.cpp" line="225"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
@@ -3342,17 +3352,6 @@ USB Stick eingeschoben?</translation>
         <location filename="../../preflightwidget.cpp" line="245"/>
         <source>FLARM</source>
         <translation></translation>
-    </message>
-    <message>
-        <location filename="../../preflightwidget.cpp" line="76"/>
-        <source>Preflight Settings</source>
-        <translation>Vorflug Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="../../preflightwidget.cpp" line="99"/>
-        <location filename="../../preflightwidget.cpp" line="224"/>
-        <source>Preflight Menu</source>
-        <translation>Vorflug-Menü</translation>
     </message>
     <message>
         <location filename="../../preflightwidget.cpp" line="197"/>
@@ -5762,12 +5761,12 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SkyLinesTracker</name>
     <message>
-        <location filename="../../skylines/SkyLinesTracker.cpp" line="554"/>
+        <location filename="../../skylines/SkyLinesTracker.cpp" line="533"/>
         <source>&lt;html&gt;Your SkyLines user key is invalid!&lt;br&gt;&lt;br&gt;Switching off service.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Dein SkyLines Schlüssel ist ungültig!&lt;br&gt;&lt;br&gt;Schalte Service aus.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../skylines/SkyLinesTracker.cpp" line="557"/>
+        <location filename="../../skylines/SkyLinesTracker.cpp" line="536"/>
         <source>Login Error</source>
         <translation>Login Fehler</translation>
     </message>

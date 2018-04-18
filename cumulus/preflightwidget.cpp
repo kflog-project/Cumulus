@@ -56,10 +56,10 @@
 #include "rowdelegate.h"
 
 // Menu labels
-#define PREFLIGHT   "Preflight Menu"
+#define FLYING      "Flight Menu"
 #define CHECKLIST   "Checklist"
 #define COMMON      "Common"
-#define FLARMENTRY  "Flarm-IGC"
+#define FLARMIGC    "Flarm-IGC"
 #define GLIDER      "Glider"
 #define LIVETRACK   "LiveTrack"
 #define LOGBOOKS    "Logbooks"
@@ -73,7 +73,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   QWidget(parent)
 {
   setObjectName("PreFlightWidget");
-  setWindowTitle(tr("Preflight Settings"));
+  setWindowTitle(tr("Flight Settings"));
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
@@ -96,7 +96,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_setupTree->setColumnCount( 1 );
   m_setupTree->setFocusPolicy( Qt::StrongFocus );
   m_setupTree->setUniformRowHeights(true);
-  m_setupTree->setHeaderLabel( tr( "Preflight Menu" ) );
+  m_setupTree->setHeaderLabel( tr( FLYING ) );
 
   // Set additional space per row
   RowDelegate* rowDelegate = new RowDelegate( m_setupTree, 10 );
@@ -158,8 +158,8 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
 #ifdef FLARM
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(FLARMENTRY) );
-  item->setData( 0, Qt::UserRole, FLARMENTRY );
+  item->setText( 0, tr(FLARMIGC) );
+  item->setData( 0, Qt::UserRole, FLARMIGC );
 
   if( calculator->moving() == false )
     {
@@ -221,7 +221,7 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   contentLayout->addStretch( 10 );
   contentLayout->addLayout(buttonBox);
 
-  m_headerLabels << ( tr ("Preflight Menu") )
+  m_headerLabels << ( tr ("Flight Menu") )
                  << ( tr ("Glider") )
                  << ( tr ("Tasks/Routes") )
 #ifdef ANDROID
@@ -383,7 +383,7 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
 #ifdef FLARM
 
-  else if( itemText == FLARMENTRY )
+  else if( itemText == FLARMIGC )
     {
       PreFlightFlarmPage* pffp = new PreFlightFlarmPage( this );
 

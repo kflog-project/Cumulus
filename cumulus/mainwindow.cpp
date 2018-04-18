@@ -1800,7 +1800,7 @@ void MainWindow::createActions()
             this, SLOT( slotToggleGps( bool ) ) );
 #endif
 
-  actionPreFlight = new QAction( tr( "Pre-flight" ), this );
+  actionPreFlight = new QAction( tr( "Flying" ), this );
 #ifndef ANDROID
   actionPreFlight->setShortcut(Qt::Key_P);
 #endif
@@ -2559,7 +2559,7 @@ void MainWindow::slotOpenConfig()
   cDlg->setVisible( true );
 }
 
-/** Closes the configuration or pre-flight widget */
+/** Closes the configuration or Flying widget */
 void MainWindow::slotCloseConfig()
 {
   if ( !calculator->gliderType().isEmpty() )
@@ -2902,7 +2902,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 
   if( event->key() == Qt::Key_F12 )
     {
-      // Open pre-flight setup from Android menu
+      // Open Flying setup from Android menu
       if ( isRootWindow() )
         {
           slotOpenPreFlightConfig();
