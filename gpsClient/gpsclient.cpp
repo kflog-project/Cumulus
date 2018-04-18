@@ -478,7 +478,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       tcflush(fd, TCIOFLUSH);
       tcsetattr(fd, TCSANOW, &newtio);
 
-      fcntl(fd, F_SETFL, FNDELAY); // NON blocking io is requested
+      fcntl(fd, F_SETFL, O_NONBLOCK); // NON blocking io is requested
     }
 
   last.start(); // store time point for supervision control

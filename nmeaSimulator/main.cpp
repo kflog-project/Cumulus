@@ -214,7 +214,7 @@ int init_io( void )
       cfsetospeed( &newtio, speed ); // set baud rate for output
       tcflush(devFd, TCIOFLUSH);
       tcsetattr(devFd, TCSANOW, &newtio);
-      fcntl(devFd, F_SETFL, FNDELAY); // NON blocking io is requested
+      fcntl(devFd, F_SETFL, O_NONBLOCK); // NON blocking io is requested
     }
   else
     {
