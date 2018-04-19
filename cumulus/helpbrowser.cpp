@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2017 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2008-2018 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -170,6 +170,10 @@ void HelpBrowser::showEvent( QShowEvent * )
   if( ! info.exists() || ! info.isReadable() )
     {
       hide();
+
+      qWarning() << "Help file"
+                 << helpFile
+                 << "not accessible!";
 
       QMessageBox mb( QMessageBox::Warning,
                       tr( "Missing help file" ),
