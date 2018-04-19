@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2015 by Axel Pauli
+**                   2009-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -40,9 +40,9 @@ class NumberEditor;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2015
+ * \date 2002-2018
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -101,6 +101,11 @@ class SettingsPageAirspace : public QWidget
    * Called to request the download of openAIP airspace files.
    */
   void slot_downloadAirspaces();
+
+   /**
+    * Called, if the help button is clicked.
+    */
+   void slotHelp();
 
    /**
     * Called if the Ok button is pressed.

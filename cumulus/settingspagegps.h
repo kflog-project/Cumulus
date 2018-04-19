@@ -54,6 +54,11 @@ class SettingsPageGPS : public QWidget
   void slot_gpsDeviceChanged( const QString& text );
 
   /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
+
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();

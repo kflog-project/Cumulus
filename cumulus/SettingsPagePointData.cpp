@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2017 Axel Pauli
+ **   Copyright (c): 2008-2018 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -92,16 +92,11 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   m_sourceBox = new QComboBox;
   m_sourceBox->addItem("OpenAIP  ");
   sourceLayout->addWidget( m_sourceBox, 0, 1 );
-
-  QPushButton *cmdHelp = new QPushButton( tr("Help") );
-  sourceLayout->addWidget( cmdHelp, 0, 3 );
   sourceLayout->setColumnStretch( 2, 5 );
   topLayout->addLayout(sourceLayout);
 
   connect( m_sourceBox, SIGNAL(currentIndexChanged(int)),
            this, SLOT(slot_sourceChanged(int)));
-
-  connect( cmdHelp, SIGNAL(clicked()), this, SLOT(slot_openHelp()) );
 
   //----------------------------------------------------------------------------
   m_oaipGroup = new QGroupBox( "www.openaip.net", this );
@@ -202,6 +197,11 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   listLayout->setRowStretch(grow, 10);
   listLayout->setColumnStretch(2, 10);
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -216,11 +216,13 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
@@ -228,7 +230,6 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
   contentLayout->addLayout(buttonBox);
-
   load();
 }
 
@@ -425,7 +426,7 @@ void SettingsPagePointData::slot_openLoadDialog()
   dlg->setVisible( true );
 }
 
-void SettingsPagePointData::slot_openHelp()
+void SettingsPagePointData::slotHelp()
 {
   // Check, which help is requested.
   QString file = "cumulus-maps-openAIP.html";

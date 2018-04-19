@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2016 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,9 +23,9 @@
  *
  * Configuration settings for personal settings.
  *
- * \date 2002-2016
+ * \date 2002-2018
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef SETTINGS_PAGE_PERSONAL_H
@@ -68,6 +68,11 @@ public:
   bool checkIsHomeLongitudeChanged();
 
 private slots:
+
+  /**
+  * Called, if the help button is clicked.
+  */
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.

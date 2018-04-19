@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 by Axel Pauli
+**   Copyright (c): 2013-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -34,9 +32,9 @@ class NumberEditor;
  *
  * Configuration settings for Line drawing.
  *
- * \date 2013
+ * \date 2013-2018
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 class SettingsPageLines : public QWidget
@@ -87,6 +85,11 @@ class SettingsPageLines : public QWidget
     void slot_drawLineIcon3( const QString& number );
     void slot_drawLineIcon4( const QString& number );
     void slot_drawLineIcon5( const QString& number );
+
+    /**
+     * Called, if the help button is clicked.
+     */
+    void slotHelp();
 
     /**
      * Called to set all items to their default value.

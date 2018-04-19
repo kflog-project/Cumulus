@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2013 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2003-2018 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * \brief Configuration settings for popup window display times and alarm sound.
  *
- * \date 2003-2013
+ * \date 2003-2018
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -65,6 +63,11 @@ class SettingsPageInformation : public QWidget
    * Called to restore the factory settings
    */
   void slot_setFactoryDefault();
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.

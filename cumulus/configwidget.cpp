@@ -34,6 +34,7 @@
 #include "configwidget.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
@@ -238,6 +239,11 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
 
   m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -247,10 +253,12 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addStretch(2);
@@ -488,6 +496,16 @@ void ConfigWidget::slotNewHomePosition()
     {
       emit gotoHomePosition();
     }
+}
+
+void ConfigWidget::slotHelp()
+{
+  QString file = "cumulus-settings.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void ConfigWidget::slotAccept()

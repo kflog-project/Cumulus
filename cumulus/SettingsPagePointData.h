@@ -22,9 +22,9 @@
  *
  * Configuration settings for point data loading from OpenAIP.
  *
- * \date 2008-2017
+ * \date 2008-2018
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -94,7 +94,7 @@ class SettingsPagePointData : public QWidget
   /**
    * Called if the help button is clicked.
    */
-  void slot_openHelp();
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.

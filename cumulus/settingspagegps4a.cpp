@@ -25,6 +25,7 @@
 
 #include "generalconfig.h"
 #include "gpsnmea.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "settingspagegps4a.h"
 
@@ -93,6 +94,11 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   topLayout->addWidget( saveNmeaData, row++, 0, 1, 2, Qt::AlignLeft );
   topLayout->setRowStretch( row, 10 );
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -107,11 +113,13 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addStretch(2);
@@ -119,12 +127,21 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   buttonBox->addSpacing(30);
   buttonBox->addWidget(titlePix);
   contentLayout->addLayout(buttonBox);
-
   load();
 }
 
 SettingsPageGPS4A::~SettingsPageGPS4A()
 {
+}
+
+void SettingsPageGPS4A::slotHelp()
+{
+  QString file = "cumulus-settings-gps.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void SettingsPageGPS4A::slotAccept()

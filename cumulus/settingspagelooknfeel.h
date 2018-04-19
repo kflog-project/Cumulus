@@ -6,12 +6,11 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2014 Axel Pauli
+**   Copyright (c):  2008-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
+
 **
 ***********************************************************************/
 
@@ -22,9 +21,9 @@
  *
  * \brief Configuration settings for personal look and feel.
  *
- * \date 2008-2013
+ * \date 2008-2018
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -76,6 +75,11 @@ private slots:
 
   /** Called to set the default color. */
   void slot_defaultColor();
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.

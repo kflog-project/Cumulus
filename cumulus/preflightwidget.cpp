@@ -27,6 +27,7 @@
 #include "calculator.h"
 #include "gpsnmea.h"
 #include "igclogger.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "mapconfig.h"
@@ -198,6 +199,11 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
   m_menuCb->setChecked( GeneralConfig::instance()->getClosePreFlightMenu() );
   contentLayout->addWidget( m_menuCb, 0, Qt::AlignVCenter|Qt::AlignBottom );
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png", true)));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -209,10 +215,12 @@ PreFlightWidget::PreFlightWidget( QWidget* parent ) :
 
   titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addStretch(2);
@@ -454,6 +462,16 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
 #endif
 
+}
+
+void PreFlightWidget::slotHelp()
+{
+  QString file = "cumulus-preflight-settings.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void PreFlightWidget::slotAccept()

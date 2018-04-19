@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2013 by Axel Pauli
+**   Copyright (c):  2007-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,9 +20,9 @@
  *
  * \brief Configuration settings for flight tasks.
  *
- * \date 2007-2013
+ * \date 2007-2018
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -100,6 +98,11 @@ private slots:
    * Called if the Cancel button is pressed.
    */
   void slotReject();
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
 private:
 

@@ -48,6 +48,11 @@ class SettingsPageGPS4A : public QWidget
  private slots:
 
   /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
+
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2015 by Axel Pauli
+**   Copyright (c):  2009-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,6 +27,7 @@
 #include "colordialog.h"
 #include "elevationcolorimage.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
 #include "settingspageterraincolors.h"
@@ -297,6 +298,11 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   topLayout->insertSpacing(1, 60 );
   topLayout->addStretch( 10 );
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -311,11 +317,13 @@ SettingsPageTerrainColors::SettingsPageTerrainColors(QWidget *parent) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
@@ -341,6 +349,16 @@ void SettingsPageTerrainColors::showEvent(QShowEvent *)
 void SettingsPageTerrainColors::hideEvent( QHideEvent *)
 {
   qApp->setAutoSipEnabled( m_autoSip );
+}
+
+void SettingsPageTerrainColors::slotHelp()
+{
+  QString file = "cumulus-settings-terrain.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void SettingsPageTerrainColors::slotAccept()

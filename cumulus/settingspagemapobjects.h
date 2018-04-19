@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2014 by Axel Pauli
+**                   2009-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *
  * \brief Configuration settings for map loading and drawing..
  *
- * \date 2002-2014
+ * \date 2002-2018
  *
- * \version $Id$
+ * \version 1.1
  *
  */
 
@@ -87,6 +87,11 @@ private slots:
    * Called, if the value in the spin box is changed.
    */
   void slot_wpHighScaleLimitChanged( int newValue );
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.

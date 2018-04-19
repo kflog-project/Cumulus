@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2016 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,6 +27,7 @@
 #include "layout.h"
 #include "generalconfig.h"
 #include "glidereditornumpad.h"
+#include "helpbrowser.h"
 #include "settingspageglider.h"
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
@@ -94,6 +95,11 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   connect(cmdEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
   connect(cmdDel,  SIGNAL(clicked()), this, SLOT(slot_delete()));
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -108,11 +114,13 @@ SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
@@ -132,6 +140,16 @@ SettingsPageGlider::~SettingsPageGlider()
 void SettingsPageGlider::showEvent(QShowEvent *)
 {
   m_list->setFocus();
+}
+
+void SettingsPageGlider::slotHelp()
+{
+  QString file = "cumulus-settings-glider.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void SettingsPageGlider::slotAccept()

@@ -25,7 +25,7 @@
  *
  * \date 2002-2018
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef _ConfigWidget_h
@@ -79,6 +79,11 @@ protected:
   void gotoHomePosition();
 
  private slots:
+
+  /**
+   * Called, if the help button is clicked.
+   */
+  void slotHelp();
 
   /**
    * Called if dialog is accepted (OK button is clicked)
