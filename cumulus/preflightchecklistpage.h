@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2016 by Axel Pauli
+**   Copyright (c):  2014-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,9 @@
  *
  * \brief A widget for a pre-flight checklist display and editor.
  *
- * \date 2014-2016
+ * \date 2014-2018
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -90,45 +90,50 @@ class PreFlightCheckListPage : public QWidget
 
  private slots:
 
- /**
+  /**
   * Called to show/hide the filename of the checklist.
   */
- void slotToogleFilenameDisplay();
+  void slotToogleFilenameDisplay();
 
- /**
+  /**
   * Adds a new row with one column to the table. The new column is placed
   * after the last selected list entry resp. at the end of the list.
   */
- void slotAddRow( QString text="" );
+  void slotAddRow( QString text="" );
 
- /** Removes all selected rows from the table. */
- void slotDeleteRows();
+  /** Removes all selected rows from the table. */
+  void slotDeleteRows();
 
- /** Called, if the item selection is changed. */
- void slotItemSelectionChanged();
+  /** Called, if the item selection is changed. */
+  void slotItemSelectionChanged();
 
- /**
+  /**
   * The passed cell can be modified in a editor widget.
   *
   * \param row row of table cell
   *
   * \param column column of table cell
   */
- void slotEditCell( int row, int column );
+  void slotEditCell( int row, int column );
 
- /**
+  /**
   * Called, if a cell is clicked in the table.
   *
   * \param row row of table cell
   *
   * \param column column of table cell
   */
- void slotCellClicked( int row, int column );
+  void slotCellClicked( int row, int column );
 
- /**
+  /**
   * Called, if the edit button is pressed.
   */
- void slotEdit();
+  void slotEdit();
+
+  /**
+  * Called, if the help button is pressed.
+  */
+  void slotHelp();
 
   /**
    * Called if the Ok button is pressed.

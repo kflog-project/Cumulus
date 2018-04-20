@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2014-2016 by Axel Pauli
+**   Copyright (c): 2014-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,6 +26,7 @@
 #endif
 
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
 #include "mapconfig.h"
 #include "preflightchecklistpage.h"
@@ -119,6 +120,13 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
 
   iconSize   = buttonSize - 5;
 
+  QPushButton* helpButton = new QPushButton(this);
+  helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  helpButton->setIconSize( QSize(iconSize, iconSize) );
+  helpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  helpButton->setMinimumSize(buttonSize, buttonSize);
+  helpButton->setMaximumSize(buttonSize, buttonSize);
+
   QPushButton* toggleButton = new QPushButton(this);
   toggleButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("file-32.png")));
   toggleButton->setIconSize( QSize(iconSize, iconSize) );
@@ -166,6 +174,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   titlePix->setAlignment( Qt::AlignCenter );
   titlePix->setPixmap( _globalMapConfig->createGlider(315, 1.6) );
 
+  connect( helpButton, SIGNAL(pressed()), this, SLOT(slotHelp()) );
   connect( addButton, SIGNAL(pressed()), SLOT(slotAddRow()) );
   connect( toggleButton, SIGNAL(pressed()), SLOT(slotToogleFilenameDisplay()) );
   connect( m_editButton, SIGNAL(pressed()), SLOT(slotEdit()) );
@@ -177,6 +186,8 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   hbox->addLayout(buttonBox);
 
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(helpButton);
+  buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
   buttonBox->addWidget(toggleButton);
   buttonBox->addSpacing(10 * Layout::getIntScaledDensity());
   buttonBox->addWidget(addButton);
@@ -458,6 +469,16 @@ void PreFlightCheckListPage::slotDeleteRows()
       m_editButton->setEnabled( false );
       m_deleteButton->setEnabled( false );
     }
+}
+
+void PreFlightCheckListPage::slotHelp()
+{
+  QString file = "cumulus-preflight-settings-checklist.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void PreFlightCheckListPage::slotAccept()
