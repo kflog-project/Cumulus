@@ -42,7 +42,7 @@ class NumberEditor;
  *
  * \date 2002-2018
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -161,6 +161,7 @@ class SettingsPageAirspace : public QWidget
   QTableWidgetItem* drawAirspaceF;
   QTableWidgetItem* drawAirspaceFir;
   QTableWidgetItem* drawAirspaceFlarm;
+  QTableWidgetItem* drawAirspaceG;
   QTableWidgetItem* drawControl;
   QTableWidgetItem* drawRestricted;
   QTableWidgetItem* drawDanger;
@@ -180,6 +181,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* borderColorAirspaceF;
   QWidget* borderColorAirspaceFir;
   QWidget* borderColorAirspaceFlarm;
+  QWidget* borderColorAirspaceG;
   QWidget* borderColorControl;
   QWidget* borderColorRestricted;
   QWidget* borderColorDanger;
@@ -198,6 +200,7 @@ class SettingsPageAirspace : public QWidget
   QWidget* fillColorAirspaceE;
   QWidget* fillColorAirspaceF;
   QWidget* fillColorAirspaceFlarm;
+  QWidget* fillColorAirspaceG;
   QWidget* fillColorControl;
   QWidget* fillColorRestricted;
   QWidget* fillColorDanger;

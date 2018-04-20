@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2015 by Axel Pauli
+**                   2009-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -618,6 +618,34 @@
 #define AIRFIR_BRUSH_STYLE_2 Qt::NoBrush
 #define AIRFIR_BRUSH_STYLE_3 Qt::NoBrush
 #define AIRFIR_BRUSH_STYLE_4 Qt::NoBrush
+
+// [Airspace G] used by openAIP for Poland's TSAs
+#define AIRG_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define AIRG_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define AIRG_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define AIRG_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
+
+#define AIRG_PEN_STYLE_1 Qt::SolidLine
+#define AIRG_PEN_STYLE_2 Qt::SolidLine
+#define AIRG_PEN_STYLE_3 Qt::SolidLine
+#define AIRG_PEN_STYLE_4 Qt::SolidLine
+
+#define AIRG_COLOR QColor(170,0,127).name()
+#define AIRG_COLOR_1 QColor(170,0,127)
+#define AIRG_COLOR_2 QColor(170,0,127)
+#define AIRG_COLOR_3 QColor(170,0,127)
+#define AIRG_COLOR_4 QColor(170,0,127)
+
+#define AIRG_BRUSH_COLOR QColor(170,0,127).name()
+#define AIRG_BRUSH_COLOR_1 QColor(170,0,127)
+#define AIRG_BRUSH_COLOR_2 QColor(170,0,127)
+#define AIRG_BRUSH_COLOR_3 QColor(170,0,127)
+#define AIRG_BRUSH_COLOR_4 QColor(170,0,127)
+
+#define AIRG_BRUSH_STYLE_1 Qt::BDiagPattern
+#define AIRG_BRUSH_STYLE_2 Qt::BDiagPattern
+#define AIRG_BRUSH_STYLE_3 Qt::BDiagPattern
+#define AIRG_BRUSH_STYLE_4 Qt::BDiagPattern
 
 // [Control Zone]
 #define CTR_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()

@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2015 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -337,6 +337,8 @@ QString Airspace::getTypeName (objectType type)
       return QObject::tr("Flarm");
     case BaseMapElement::AirFir:
       return QObject::tr("FIR");
+    case BaseMapElement::AirG:
+      return QObject::tr("AS-G");
     case BaseMapElement::Restricted:
       return QObject::tr("Restricted");
     case BaseMapElement::Danger:

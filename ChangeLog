@@ -18,6 +18,13 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2018-04-20 AP: Cumulus 5.35.1 released for Android.
+
+[-] 2018-04-20 AP: Issue #128 fixed. Polands airspace type TSA has changed to
+                   category G by openAIP.
+
+[*] 2018-04-20 AP: Cumulus 5.35.0 released for Android.
+
 [-] 2018-04-19 AP: Issue #128 fixed. Add a help button to the single
                    configuration widgets.
 

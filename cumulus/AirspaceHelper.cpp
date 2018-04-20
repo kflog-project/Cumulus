@@ -2,13 +2,13 @@
 **
 **   AirspaceHelper.cpp
 **
-**   Created on: 03.02.2014
+**   Created on: 03.02.2014 by Axel Pauli
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2018 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -633,7 +633,7 @@ void AirspaceHelper::loadAirspaceTypeMapping()
   m_airspaceTypeMap.insert("AirC", BaseMapElement::AirC);
   m_airspaceTypeMap.insert("AirD", BaseMapElement::AirD);
   m_airspaceTypeMap.insert("AirE", BaseMapElement::AirE);
-  //m_airspaceTypeMap.insert("AirG", BaseMapElement::AirG);
+  m_airspaceTypeMap.insert("AirG", BaseMapElement::AirG);
   m_airspaceTypeMap.insert("WaveWindow", BaseMapElement::WaveWindow);
   m_airspaceTypeMap.insert("AirF", BaseMapElement::AirF);
   m_airspaceTypeMap.insert("ControlC", BaseMapElement::ControlC);
@@ -665,6 +665,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("D", BaseMapElement::AirD);
       typeMap.insert("E", BaseMapElement::AirE);
       typeMap.insert("F", BaseMapElement::AirF);
+      typeMap.insert("G", BaseMapElement::AirG);
       typeMap.insert("UKN", BaseMapElement::AirUkn);
       typeMap.insert("GP", BaseMapElement::Restricted);
       typeMap.insert("R", BaseMapElement::Restricted);
@@ -687,6 +688,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("E", BaseMapElement::AirE);
       typeMap.insert("F", BaseMapElement::AirF);
       typeMap.insert("FIR", BaseMapElement::AirFir);
+      typeMap.insert("G", BaseMapElement::AirG);
       typeMap.insert("CTR", BaseMapElement::Ctr);
       typeMap.insert("DANGER", BaseMapElement::Danger);
       typeMap.insert("RESTRICTED", BaseMapElement::Restricted);

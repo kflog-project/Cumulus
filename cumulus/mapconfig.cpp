@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Heiner Lamprecht,
  **                   2002      by André Somers
- **                   2008-2016 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -307,6 +307,16 @@ void MapConfig::slotReloadAirspaceColors()
                   AIRFIR_BRUSH_STYLE_1, AIRFIR_BRUSH_STYLE_2,
                   AIRFIR_BRUSH_STYLE_3, AIRFIR_BRUSH_STYLE_4)
 
+  READ_PEN_BRUSH("Airspace G", airGPenList, airGBorder, airGBrushList,
+                 conf->getBorderColorAirspaceG(), conf->getBorderColorAirspaceG(),
+                 conf->getBorderColorAirspaceG(), conf->getBorderColorAirspaceG(),
+                 AIRG_PEN_WIDTH_1, AIRG_PEN_WIDTH_2, AIRG_PEN_WIDTH_3, AIRG_PEN_WIDTH_4,
+                 AIRG_PEN_STYLE_1, AIRG_PEN_STYLE_2, AIRG_PEN_STYLE_3, AIRG_PEN_STYLE_4,
+                 conf->getFillColorAirspaceG(), conf->getFillColorAirspaceG(),
+                 conf->getFillColorAirspaceG(), conf->getFillColorAirspaceG(),
+                 AIRG_BRUSH_STYLE_1, AIRG_BRUSH_STYLE_2,
+                 AIRG_BRUSH_STYLE_3, AIRG_BRUSH_STYLE_4)
+
   READ_PEN_BRUSH("Wave Window", waveWindowPenList, waveWindowBorder, waveWindowBrushList,
                  conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
                  conf->getBorderColorWaveWindow(), conf->getBorderColorWaveWindow(),
@@ -475,6 +485,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return airFlarmPenList[sIndex];
     case BaseMapElement::AirFir:
       return airFirPenList[sIndex];
+    case BaseMapElement::AirG:
+      return airGPenList[sIndex];
     case BaseMapElement::Ctr:
       return ctrPenList[sIndex];
     case BaseMapElement::ControlC:
@@ -551,6 +563,8 @@ bool MapConfig::isBorder(unsigned int typeID)
       return airFlarmBorder[scaleIndex];
     case BaseMapElement::AirFir:
       return airFirBorder[scaleIndex];
+    case BaseMapElement::AirG:
+      return airGBorder[scaleIndex];
     case BaseMapElement::Ctr:
       return ctrBorder[scaleIndex];
     case BaseMapElement::ControlC:
@@ -619,6 +633,8 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
       return airFlarmBrushList[sIndex];
     case BaseMapElement::AirFir:
       return airFirBrushList[sIndex];
+    case BaseMapElement::AirG:
+      return airGBrushList[sIndex];
     case BaseMapElement::Ctr:
       return ctrBrushList[sIndex];
     case BaseMapElement::ControlC:

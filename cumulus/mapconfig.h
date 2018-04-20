@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001      by Heiner Lamprecht,
 **                   2002      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -45,9 +45,9 @@
  * calling overhead. Furthermore all pointer classes have been replaced
  * by value classes.
  *
- * \date 2001-2015
+ * \date 2001-2018
  *
- * \version 1.2
+ * \version 1.3
  */
 
 class MapConfig : public QObject
@@ -338,6 +338,8 @@ private:
     QBrush airFirBrushList[4];
     QPen airFlarmPenList[4];
     QBrush airFlarmBrushList[4];
+    QPen airGPenList[4];
+    QBrush airGBrushList[4];
     QPen ctrPenList[4];
     QBrush ctrBrushList[4];
     QPen ctrCPenList[4];
@@ -395,6 +397,7 @@ private:
     bool airFBorder[4];
     bool airFlarmBorder[4];
     bool airFirBorder[4];
+    bool airGBorder[4];
     bool ctrBorder[4];
     bool ctrCBorder[4];
     bool ctrDBorder[4];
