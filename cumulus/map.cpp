@@ -257,8 +257,8 @@ bool Map::p_zoomButtonPress(const QPoint& point)
 }
 
 /**
- * Display detailed Info about an airfield, a glider site, a waypoint or
- * an airspace.
+ * Display detailed Info about a task point, an airfield, a glider site,
+ * a waypoint or an airspace.
 */
 void Map::p_displayDetailedItemInfo(const QPoint& current)
 {
@@ -343,7 +343,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
               if( lastDist < (delta / 3) )
                 {
-                  break;
+                  emit showPoi( w );
+                  return;
                 }
             }
         }
@@ -482,7 +483,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
             if( lastDist < (delta/3) ) //if we're very near, stop searching the list
               {
-                break;
+                emit showPoi( w );
+                return;
               }
             }
         }
@@ -533,22 +535,14 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
           if( lastDist < (delta / 3) )
             {
               // if we're very near, stop searching the list
-              break;
+              emit showPoi( w );
+              return;
             }
         }
     }
 
-  if( found )
-    {
-      emit showPoi( w );
-      return;
-    }
-
   // @ee maybe we can show airspace info
-  if( !found )
-    {
-      p_displayAirspaceInfo( current );
-    }
+  p_displayAirspaceInfo( current );
 }
 
 void Map::wheelEvent(QWheelEvent *event)
