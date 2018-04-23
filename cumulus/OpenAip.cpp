@@ -1201,9 +1201,9 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
                       af.setAtis( frequency );
                     }
                   else
-				    {
-                	  af.setFrequency( frequency );
-				    }
+                    {
+                      af.setFrequency( frequency );
+                    }
                 }
 
               return true;
@@ -1223,10 +1223,10 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
 
               if( ok == false )
                 {
-		  qWarning() << "OpenAip::readAirfieldRadio():"
-		             << "Line=" << xml.lineNumber()
-			     << "Column=" << xml.columnNumber()
-		             << "Radio frequency" << freqStr << "is not a floating type!";
+                  qWarning () << "OpenAip::readAirfieldRadio():" << "Line="
+                      << xml.lineNumber () << "Column=" << xml.columnNumber ()
+                      << "Radio frequency" << freqStr
+                      << "is not a floating type!";
                 }
             }
           else if ( elementName == "TYPE" )
