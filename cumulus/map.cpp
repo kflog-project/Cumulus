@@ -258,13 +258,13 @@ bool Map::p_zoomButtonPress(const QPoint& point)
 
 /**
  * Display detailed Info about a task point, an airfield, a glider site,
- * a waypoint or an airspace.
-*/
+ * a waypoint or an airspace. The first found shortest point is taken as
+ * result.
+ */
 void Map::p_displayDetailedItemInfo(const QPoint& current)
 {
   if( mutex() )
     {
-      //qDebug("Map::p_displayDetailedItemInfo: Map drawing in progress: return");
       return;
     }
 
@@ -287,7 +287,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
   if( _globalMapMatrix->isSwitchScale() )
     {
-      // This list is drawn to this border
+      // This list is drawn to this border only
       searchList.append( MapContents::HotspotList );
     }
 
@@ -332,7 +332,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
           if( dX < delta && dY < delta )
             {
-              if( found && ((dX + dY) > lastDist) )
+              if( found && ((dX + dY) >= lastDist) )
                 {
                   continue; // the point we found earlier was closer
                 }
@@ -343,8 +343,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
               if( lastDist < (delta / 3) )
                 {
-                  emit showPoi( w );
-                  return;
+                  break;
                 }
             }
         }
@@ -421,7 +420,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
           // Abstand entspricht der Icon-Groesse
           if( dX < delta && dY < delta )
             {
-              if( found && ((dX+dY) > lastDist) )
+              if( found && ((dX+dY) >= lastDist) )
                 {
                   // The point we found earlier was closer but a
                   // taskpoint can be overwritten by an better point.
@@ -483,8 +482,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
             if( lastDist < (delta/3) ) //if we're very near, stop searching the list
               {
-                emit showPoi( w );
-                return;
+                break;
               }
             }
         }
@@ -518,27 +516,28 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
       // Abstand entspricht der Icon-Groesse
       if( dX < delta && dY < delta )
         {
-          if( found && ((dX + dY) > lastDist) )
-            { // subtle difference with airfields: replace already
-              // found waypoint if we find a waypoint at the same
-              // distance.
+          if( found && ((dX + dY) >= lastDist) )
+            {
               continue; // the point we found earlier was closer
             }
 
           found = true;
           w = &wp;
 
-          // qDebug ("Waypoint: %s", w->name.toLatin1().data() );
-
           lastDist = dX+dY;
 
           if( lastDist < (delta / 3) )
             {
               // if we're very near, stop searching the list
-              emit showPoi( w );
-              return;
+              break;
             }
         }
+    }
+
+  if( found )
+    {
+      emit showPoi( w );
+      return;
     }
 
   // @ee maybe we can show airspace info
