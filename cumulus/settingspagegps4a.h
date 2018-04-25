@@ -30,6 +30,7 @@
 #include <QWidget>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLineEdit>
 
 class SettingsPageGPS4A : public QWidget
 {
@@ -87,9 +88,12 @@ class SettingsPageGPS4A : public QWidget
   /** Called to save the configuration file data.*/
   void save();
 
-  QComboBox*   GpsSource;
-  QComboBox*   GpsAltitude;
-  QCheckBox*   saveNmeaData;
+  QComboBox* GpsSource;
+  QComboBox* GpsAltitude;
+  QCheckBox* saveNmeaData;
+  QLineEdit* wlanIpAddress;
+  QLineEdit* wlanPort;
+  QLineEdit* wlanPassword;
 };
 
 #endif

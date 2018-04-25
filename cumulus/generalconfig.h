@@ -1938,6 +1938,42 @@ class GeneralConfig : protected QSettings
     _gpsSource = newValue;
   }
 
+  /** Gets the Gps WLAN IP */
+  QString &getGpsWlanIp()
+  {
+    return _gpsWlanIp;
+  };
+
+  /** Sets the Gps WLAN IP */
+  void setGpsWlanIp( const QString newValue )
+  {
+    _gpsWlanIp = newValue;
+  }
+
+  /** Gets the Gps WLAN IP port */
+  QString &getGpsWlanPort()
+  {
+    return _gpsWlanPort;
+  };
+
+  /** Sets the Gps WLAN IP port*/
+  void setGpsWlanPort( const QString newValue )
+  {
+    _gpsWlanPort = newValue;
+  }
+
+  /** Gets the Gps WLAN password */
+  QString &getGpsWlanPassword()
+  {
+    return _gpsWlanPassword;
+  };
+
+  /** Sets the Gps WLAN password*/
+  void setGpsWlanPassword( const QString newValue )
+  {
+    _gpsWlanPassword = newValue;
+  }
+
   /** Gets the Gps Speed */
   int getGpsSpeed() const;
   /** Sets the Gps Speed */
@@ -3302,6 +3338,12 @@ class GeneralConfig : protected QSettings
   int _gpsLastFixAlt;
   // Gps last fix clock
   int _gpsLastFixClk;
+  // WLAN IP address
+  QString _gpsWlanIp;
+  // WLAN IP port
+  QString _gpsWlanPort;
+  // WLAN password
+  QString _gpsWlanPassword;
 
   // minimum sat count for wind calculation
   int _windMinSatCount;

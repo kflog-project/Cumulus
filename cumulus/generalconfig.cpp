@@ -523,6 +523,9 @@ void GeneralConfig::load()
   _gpsLastFixLon      = value( "LastFixLon", 0 ).toInt();
   _gpsLastFixAlt      = value( "LastFixAlt", 0 ).toInt();
   _gpsLastFixClk      = value( "LastFixClk", 0 ).toInt();
+  _gpsWlanIp          = value( "WlanIp", "192.168.1.1" ).toString();
+  _gpsWlanPort        = value( "WlanPort", "2000" ).toString();
+  _gpsWlanPassword    = value( "WlanPassword", "" ).toString();
   endGroup();
 
   beginGroup("Wind");
@@ -967,6 +970,9 @@ void GeneralConfig::save()
   setValue( "LastFixLon", _gpsLastFixLon );
   setValue( "LastFixAlt", _gpsLastFixAlt );
   setValue( "LastFixClk", _gpsLastFixClk );
+  setValue( "WlanIp", _gpsWlanIp );
+  setValue( "WlanPort", _gpsWlanPort );
+  setValue( "WlanPassword", _gpsWlanPassword );
   endGroup();
 
   beginGroup("Wind");

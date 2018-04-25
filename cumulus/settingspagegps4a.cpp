@@ -88,6 +88,21 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(GpsAltitude, row, 1);
   row++;
 
+  topLayout->addWidget(new QLabel(tr("WLAN IP:")), row, 0);
+  wlanIpAddress = new QLineEdit;
+  topLayout->addWidget(wlanIpAddress, row, 1);
+  row++;
+
+  topLayout->addWidget(new QLabel(tr("WLAN Port:")), row, 0);
+  wlanPort = new QLineEdit;
+  topLayout->addWidget(wlanPort, row, 1);
+  row++;
+
+  topLayout->addWidget(new QLabel(tr("WLAN Password:")), row, 0);
+  wlanPassword = new QLineEdit;
+  topLayout->addWidget(wlanPassword, row, 1);
+  row++;
+
   topLayout->setRowMinimumHeight( row++, 10);
 
   saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"));
