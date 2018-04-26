@@ -161,7 +161,11 @@ void SettingsPageGPS4A::slotHelp()
 
 void SettingsPageGPS4A::slotAccept()
 {
-  save();
+  if ( save() == false )
+    {
+      return;
+    }
+
   emit settingsChanged();
   QWidget::close();
 }
@@ -182,15 +186,61 @@ void SettingsPageGPS4A::load()
 
   GpsSource->setCurrentIndex( index );
   GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
+  wlanIpAddress->setText( conf->getGpsWlanIp() );
+  wlanPort->setText( conf->getGpsWlanPort() );
+  wlanPassword->setText( conf->getGpsWlanPassword() );
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
 }
 
-void SettingsPageGPS4A::save()
+bool SettingsPageGPS4A::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
   conf->setGpsSource( GpsSource->currentText() );
   conf->setGpsAltitude( GpsNmea::DeliveredAltitude( GpsAltitude->currentIndex()) );
+
+  // Save old settings to check for done updates
+  QString oldIp = conf->getGpsWlanIp();
+  QString oldPort = conf->getGpsWlanPort();
+  QString oldPassword = conf->getGpsWlanPassword();
+
+  // Save current settings.
+  QString curIp = wlanIpAddress->text().trimmed();
+  QString curPort = wlanPort->text().trimmed();
+  QString curPassword = wlanPassword->text().trimmed();
+
+  // Check, if port is a number.
+  bool ok = false;
+  ushort portNum = wlanPort->text().trimmed().toUShort(&ok, 10);
+
+  if( wlanPort->text().trimmed().isEmpty() || ok == false || portNum == 0 )
+    {
+      QMessageBox mb( QMessageBox::Warning,
+                      tr("Port settings invalid!"),
+                      tr("Port must be a number and > 0!"),
+                      QMessageBox::Ok,
+                      this );
+
+#ifdef ANDROID
+
+      mb.show();
+      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
+      mb.move( pos );
+
+#endif
+      mb.exec();
+      return false;
+    }
+
+  conf->setGpsWlanIp( curIp );
+  conf->setGpsWlanPort( curPort );
+  conf->setGpsWlanPassword( curPassword );
+
+  if( oldIp != curIp || oldPort != curPort || oldPassword != curPassword )
+    {
+      emit ipSettingsChanged();
+    }
 
   bool oldNmeaLogState = conf->getGpsNmeaLogState();
 
@@ -207,4 +257,6 @@ void SettingsPageGPS4A::save()
           emit endNmeaLog();
         }
     }
+
+  return true;
 }

@@ -27,7 +27,7 @@
  *
  * \date 2004-2018
  *
- * \version 1.8
+ * \version 1.9
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -1939,7 +1939,7 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the Gps WLAN IP */
-  QString &getGpsWlanIp()
+  const QString &getGpsWlanIp()
   {
     return _gpsWlanIp;
   };
@@ -1951,7 +1951,7 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the Gps WLAN IP port */
-  QString &getGpsWlanPort()
+  const QString &getGpsWlanPort()
   {
     return _gpsWlanPort;
   };
@@ -1963,7 +1963,7 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the Gps WLAN password */
-  QString &getGpsWlanPassword()
+  const QString &getGpsWlanPassword()
   {
     return _gpsWlanPassword;
   };

@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli
+**   Copyright (c): 2010-2018 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -131,7 +129,6 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
 
 ProxyDialog::~ProxyDialog()
 {
-  // qDebug("ProxyDialog::~ProxyDialog()");
 }
 
 /** User has pressed Ok button */
@@ -153,9 +150,21 @@ void ProxyDialog::accept()
 
       if( host.isEmpty() || port.isEmpty() || ok == false || portNum == 0 )
         {
-          QMessageBox::information ( this,
-                                     tr("Settings invalid!"),
-                                     tr("Please correct your Proxy settings!") );
+          QMessageBox mb( QMessageBox::Information,
+                          tr("Settings invalid!"),
+                          tr("Please correct your Proxy settings!"),
+                          QMessageBox::Ok,
+                          this );
+
+#ifdef ANDROID
+
+          mb.show();
+          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                           height()/2 - mb.height()/2 ));
+          mb.move( pos );
+
+#endif
+          mb.exec();
           return;
         }
 

@@ -80,13 +80,21 @@ class SettingsPageGPS4A : public QWidget
    */
   void settingsChanged();
 
+  /**
+   * Emitted, if IP settings have been changed.
+   */
+  void ipSettingsChanged();
+
  private:
 
   /** Called to load the configuration file data. */
   void load();
 
-  /** Called to save the configuration file data.*/
-  void save();
+  /**
+   * Called to save the configuration file data.
+   * Returns false, if parameters are not acceptable.
+   */
+  bool save();
 
   QComboBox* GpsSource;
   QComboBox* GpsAltitude;
