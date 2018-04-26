@@ -263,87 +263,87 @@
 <context>
     <name>ConfigWidget</name>
     <message>
-        <location filename="../../configwidget.cpp" line="91"/>
+        <location filename="../../configwidget.cpp" line="92"/>
         <source>General Settings</source>
         <translation>Allgemeine Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="113"/>
+        <location filename="../../configwidget.cpp" line="114"/>
         <source>Personal</source>
         <translation>Persönliches</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="107"/>
+        <location filename="../../configwidget.cpp" line="108"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="101"/>
+        <location filename="../../configwidget.cpp" line="102"/>
         <source>Point Data</source>
         <translation>Punkt Daten</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="106"/>
+        <location filename="../../configwidget.cpp" line="107"/>
         <source>Gliders</source>
         <translation>Flugzeuge</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="112"/>
+        <location filename="../../configwidget.cpp" line="113"/>
         <source>Map Settings</source>
         <translation>Karte Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="111"/>
+        <location filename="../../configwidget.cpp" line="112"/>
         <source>Map Objects</source>
         <translation>Karte Objekte</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="115"/>
+        <location filename="../../configwidget.cpp" line="116"/>
         <source>Terrain Colors</source>
         <translation>Geländefarben</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="114"/>
+        <location filename="../../configwidget.cpp" line="115"/>
         <source>Task</source>
         <translation>Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="102"/>
+        <location filename="../../configwidget.cpp" line="103"/>
         <source>Airspaces</source>
         <translation>Lufträume</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="104"/>
+        <location filename="../../configwidget.cpp" line="105"/>
         <source>FLARM</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="109"/>
+        <location filename="../../configwidget.cpp" line="110"/>
         <source>Lines</source>
         <translation>Linien</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="110"/>
+        <location filename="../../configwidget.cpp" line="111"/>
         <source>Look&amp;Feel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="116"/>
+        <location filename="../../configwidget.cpp" line="117"/>
         <source>Units</source>
         <translation>Einheiten</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="131"/>
+        <location filename="../../configwidget.cpp" line="132"/>
         <source>Settings Menu</source>
         <translation>Menü Einstellungen</translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="133"/>
+        <location filename="../../configwidget.cpp" line="134"/>
         <source>  Settings Menu  </source>
         <translation>  Menü Einstellungen  </translation>
     </message>
     <message>
-        <location filename="../../configwidget.cpp" line="108"/>
+        <location filename="../../configwidget.cpp" line="109"/>
         <source>Information</source>
         <translation></translation>
     </message>
@@ -992,12 +992,12 @@
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="175"/>
+        <location filename="../../helpbrowser.cpp" line="179"/>
         <source>Missing help file</source>
         <translation>Keine Hilfedaten</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="176"/>
+        <location filename="../../helpbrowser.cpp" line="180"/>
         <source>&lt;html&gt;&lt;b&gt;The help file was not found.&lt;br&gt;Maybe it is not installed?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Hilfedatei nicht gefunden.&lt;br&gt;Ist sie installiert?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
@@ -1619,55 +1619,55 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="2796"/>
-        <location filename="../../map.cpp" line="2851"/>
+        <location filename="../../map.cpp" line="2789"/>
+        <location filename="../../map.cpp" line="2844"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3310"/>
+        <location filename="../../map.cpp" line="3303"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3314"/>
+        <location filename="../../map.cpp" line="3307"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3319"/>
-        <location filename="../../map.cpp" line="3488"/>
+        <location filename="../../map.cpp" line="3312"/>
+        <location filename="../../map.cpp" line="3481"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3330"/>
-        <location filename="../../map.cpp" line="3357"/>
-        <location filename="../../map.cpp" line="3510"/>
+        <location filename="../../map.cpp" line="3323"/>
+        <location filename="../../map.cpp" line="3350"/>
+        <location filename="../../map.cpp" line="3503"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3366"/>
-        <location filename="../../map.cpp" line="3394"/>
-        <location filename="../../map.cpp" line="3524"/>
+        <location filename="../../map.cpp" line="3359"/>
+        <location filename="../../map.cpp" line="3387"/>
+        <location filename="../../map.cpp" line="3517"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3403"/>
-        <location filename="../../map.cpp" line="3430"/>
-        <location filename="../../map.cpp" line="3538"/>
+        <location filename="../../map.cpp" line="3396"/>
+        <location filename="../../map.cpp" line="3423"/>
+        <location filename="../../map.cpp" line="3531"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3488"/>
+        <location filename="../../map.cpp" line="3481"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3498"/>
+        <location filename="../../map.cpp" line="3491"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
@@ -2043,42 +2043,42 @@ All downloads are canceled!</oldsource>
 <context>
     <name>PreFlightCheckListPage</name>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="42"/>
+        <location filename="../../preflightchecklistpage.cpp" line="43"/>
         <source>PreFlight - Checklist</source>
         <translation>Vorflug - Checkliste</translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="111"/>
+        <location filename="../../preflightchecklistpage.cpp" line="112"/>
         <source> Check Point </source>
         <translation>Checkpunkt</translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="201"/>
+        <location filename="../../preflightchecklistpage.cpp" line="212"/>
         <source>File: </source>
         <translation>Datei: </translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="244"/>
+        <location filename="../../preflightchecklistpage.cpp" line="255"/>
         <source>Edit Checkpoint</source>
         <translation>Editiere Checkpunkt</translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="245"/>
+        <location filename="../../preflightchecklistpage.cpp" line="256"/>
         <source>Text:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="360"/>
+        <location filename="../../preflightchecklistpage.cpp" line="371"/>
         <source>Click icon to mark line as checked.</source>
         <translation>Klicke auf Fragezeichen um auf OK zu wechseln.</translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="406"/>
+        <location filename="../../preflightchecklistpage.cpp" line="417"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="../../preflightchecklistpage.cpp" line="407"/>
+        <location filename="../../preflightchecklistpage.cpp" line="418"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
@@ -3307,74 +3307,74 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>PreFlightWidget</name>
     <message>
-        <location filename="../../preflightwidget.cpp" line="76"/>
+        <location filename="../../preflightwidget.cpp" line="77"/>
         <source>Flight Settings</source>
         <translation>Flugeinstellungen</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="197"/>
+        <location filename="../../preflightwidget.cpp" line="198"/>
         <source>close menu</source>
         <translation>Schließe Menü</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="224"/>
+        <location filename="../../preflightwidget.cpp" line="232"/>
         <source>Flight Menu</source>
         <translation>Menü Fliegen</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="225"/>
+        <location filename="../../preflightwidget.cpp" line="233"/>
         <source>Glider</source>
         <translation>Flugzeug</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="226"/>
+        <location filename="../../preflightwidget.cpp" line="234"/>
         <source>Tasks/Routes</source>
         <oldsource>Tasks</oldsource>
         <translation>Aufgaben/Routen</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="228"/>
+        <location filename="../../preflightwidget.cpp" line="236"/>
         <source>Retrieve</source>
         <oldsource>Returner</oldsource>
         <translation>Rückholer</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="230"/>
+        <location filename="../../preflightwidget.cpp" line="238"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="231"/>
+        <location filename="../../preflightwidget.cpp" line="239"/>
         <source>Logbooks</source>
         <translation>Flugbücher</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="233"/>
+        <location filename="../../preflightwidget.cpp" line="241"/>
         <source>LiveTrack</source>
         <translation>Verfolgung</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="234"/>
+        <location filename="../../preflightwidget.cpp" line="242"/>
         <source>METAR-TAF</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="237"/>
+        <location filename="../../preflightwidget.cpp" line="245"/>
         <source>Wind</source>
         <translation>Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="238"/>
+        <location filename="../../preflightwidget.cpp" line="246"/>
         <source>Common</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="239"/>
+        <location filename="../../preflightwidget.cpp" line="247"/>
         <source>Checklist</source>
         <translation>Checkliste</translation>
     </message>
     <message>
-        <location filename="../../preflightwidget.cpp" line="245"/>
+        <location filename="../../preflightwidget.cpp" line="253"/>
         <source>FLARM</source>
         <translation></translation>
     </message>
@@ -3440,27 +3440,27 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>ProxyDialog</name>
     <message>
-        <location filename="../../proxydialog.cpp" line="36"/>
+        <location filename="../../proxydialog.cpp" line="34"/>
         <source>Proxy Configuration</source>
         <translation>Proxy Konfiguration</translation>
     </message>
     <message>
-        <location filename="../../proxydialog.cpp" line="69"/>
+        <location filename="../../proxydialog.cpp" line="67"/>
         <source>Host:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../proxydialog.cpp" line="70"/>
+        <location filename="../../proxydialog.cpp" line="68"/>
         <source>Port:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../proxydialog.cpp" line="157"/>
+        <location filename="../../proxydialog.cpp" line="154"/>
         <source>Settings invalid!</source>
         <translation>Eingaben sind falsch!</translation>
     </message>
     <message>
-        <location filename="../../proxydialog.cpp" line="158"/>
+        <location filename="../../proxydialog.cpp" line="155"/>
         <source>Please correct your Proxy settings!</source>
         <translation>Bitte korriegiere die Proxy Eingaben!</translation>
     </message>
@@ -3514,56 +3514,61 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="341"/>
-        <source>Restricted</source>
+        <source>AS-G</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="343"/>
-        <source>Danger</source>
+        <source>Restricted</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="345"/>
-        <source>Prohibited</source>
+        <source>Danger</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="347"/>
-        <source>CTR-C</source>
+        <source>Prohibited</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="349"/>
-        <source>CTR-D</source>
+        <source>CTR-C</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="351"/>
+        <source>CTR-D</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../airspace.cpp" line="353"/>
         <source>CTR</source>
         <translation>CTR</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="353"/>
+        <location filename="../../airspace.cpp" line="355"/>
         <source>Low Flight</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="355"/>
+        <location filename="../../airspace.cpp" line="357"/>
         <source>RMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="357"/>
+        <location filename="../../airspace.cpp" line="359"/>
         <source>TMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="359"/>
+        <location filename="../../airspace.cpp" line="361"/>
         <source>Glider Sector</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="361"/>
+        <location filename="../../airspace.cpp" line="363"/>
         <location filename="../../flighttask.cpp" line="59"/>
         <location filename="../../flighttask.h" line="82"/>
         <location filename="../../taskpoint.cpp" line="562"/>
@@ -3571,19 +3576,19 @@ USB Stick eingeschoben?</translation>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="388"/>
-        <location filename="../../airspace.cpp" line="397"/>
-        <location filename="../../airspace.cpp" line="411"/>
+        <location filename="../../airspace.cpp" line="390"/>
+        <location filename="../../airspace.cpp" line="399"/>
+        <location filename="../../airspace.cpp" line="413"/>
         <source>Unlimited</source>
         <translation>Unbegrenzt</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="436"/>
+        <location filename="../../airspace.cpp" line="438"/>
         <source>always active</source>
         <translation>immer aktiv</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="454"/>
+        <location filename="../../airspace.cpp" line="456"/>
         <source>active until </source>
         <translation>aktiv bis </translation>
     </message>
@@ -4276,60 +4281,60 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageAirspace</name>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="123"/>
-        <location filename="../../settingspageairspace.cpp" line="132"/>
+        <location filename="../../settingspageairspace.cpp" line="124"/>
+        <location filename="../../settingspageairspace.cpp" line="133"/>
         <source>Border</source>
         <translation>Grenze</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="120"/>
-        <location filename="../../settingspageairspace.cpp" line="129"/>
+        <location filename="../../settingspageairspace.cpp" line="121"/>
+        <location filename="../../settingspageairspace.cpp" line="130"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="59"/>
+        <location filename="../../settingspageairspace.cpp" line="60"/>
         <source>Settings - Airspaces</source>
         <translation>Einstellungen - Lufträume</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="126"/>
-        <location filename="../../settingspageairspace.cpp" line="135"/>
+        <location filename="../../settingspageairspace.cpp" line="127"/>
+        <location filename="../../settingspageairspace.cpp" line="136"/>
         <source>Area</source>
         <translation>Raum</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="144"/>
+        <location filename="../../settingspageairspace.cpp" line="145"/>
         <source>Ignore AS</source>
         <translation>Ignoriere LR</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="162"/>
+        <location filename="../../settingspageairspace.cpp" line="163"/>
         <source>Color Defaults</source>
         <translation>Standard Farben</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="175"/>
+        <location filename="../../settingspageairspace.cpp" line="176"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="183"/>
+        <location filename="../../settingspageairspace.cpp" line="184"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="189"/>
+        <location filename="../../settingspageairspace.cpp" line="190"/>
         <source>Warnings</source>
         <translation>Warnungen</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="195"/>
+        <location filename="../../settingspageairspace.cpp" line="196"/>
         <source>Filling</source>
         <translation>Füllung</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="329"/>
+        <location filename="../../settingspageairspace.cpp" line="334"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
@@ -4601,57 +4606,82 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageGPS4A</name>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="37"/>
+        <location filename="../../settingspagegps4a.cpp" line="38"/>
         <source>Settings - GPS</source>
         <translation>Einstellungen - GPS</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="57"/>
+        <location filename="../../settingspagegps4a.cpp" line="58"/>
         <source>GPS Source:</source>
         <translation>GPS Quelle:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="67"/>
+        <location filename="../../settingspagegps4a.cpp" line="68"/>
         <source>$GP GPS (USA)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="68"/>
+        <location filename="../../settingspagegps4a.cpp" line="69"/>
         <source>$BD Beidou GPS (China)</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="69"/>
+        <location filename="../../settingspagegps4a.cpp" line="70"/>
         <source>$GA Gallileo GPS (Europe)</source>
         <translation>$GA Gallileo GPS (Europa)</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="70"/>
+        <location filename="../../settingspagegps4a.cpp" line="71"/>
         <source>$GL Glonass GPS (Russia)</source>
         <translation>$GL Glonass GPS (Russland)</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="71"/>
+        <location filename="../../settingspagegps4a.cpp" line="72"/>
         <source>$GN Combined GPS Systems</source>
         <translation>$GN Kombinierte GPS Systeme</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="85"/>
+        <location filename="../../settingspagegps4a.cpp" line="86"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="86"/>
+        <location filename="../../settingspagegps4a.cpp" line="87"/>
         <source>Pressure</source>
         <translation>Druck</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="79"/>
+        <location filename="../../settingspagegps4a.cpp" line="219"/>
+        <source>Port settings invalid!</source>
+        <translation>Portangabe ungültig!</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps4a.cpp" line="220"/>
+        <source>Port must be a number and &gt; 0!</source>
+        <translation>Port muss eine Zahl &gt; 0 sein!</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps4a.cpp" line="80"/>
         <source>Altitude Reference:</source>
         <translation>Höhen Referenz:</translation>
     </message>
     <message>
-        <location filename="../../settingspagegps4a.cpp" line="92"/>
+        <location filename="../../settingspagegps4a.cpp" line="91"/>
+        <source>WLAN IP:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps4a.cpp" line="96"/>
+        <source>WLAN Port:</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps4a.cpp" line="101"/>
+        <source>WLAN Password:</source>
+        <translation>WLAN Passwort:</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagegps4a.cpp" line="108"/>
         <source>Save NMEA Data to file</source>
         <translation>Speichere NMEA Daten in Datei</translation>
     </message>
@@ -4659,17 +4689,17 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageGlider</name>
     <message>
-        <location filename="../../settingspageglider.cpp" line="38"/>
+        <location filename="../../settingspageglider.cpp" line="39"/>
         <source>Settings - Gliders</source>
         <translation>Einstellungen - Flugzeuge</translation>
     </message>
     <message>
-        <location filename="../../settingspageglider.cpp" line="187"/>
+        <location filename="../../settingspageglider.cpp" line="205"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="../../settingspageglider.cpp" line="188"/>
+        <location filename="../../settingspageglider.cpp" line="206"/>
         <source>Delete selected glider?</source>
         <translation>Flugzeug löschen?</translation>
     </message>
@@ -4677,83 +4707,83 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageInformation</name>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="42"/>
+        <location filename="../../settingspageinformation.cpp" line="43"/>
         <source>Settings - Information</source>
         <translation>Einstellungen - Informationen</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="90"/>
+        <location filename="../../settingspageinformation.cpp" line="91"/>
         <source>Sound Player</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="91"/>
+        <location filename="../../settingspageinformation.cpp" line="92"/>
         <source>Select a sound player, use %s if played file is enclosed in command line arguments</source>
         <translation>Wähle einen Sound Player, benutze %s wenn Sounddatei in Kommando Argumenten eingeschlossen ist</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="111"/>
+        <location filename="../../settingspageinformation.cpp" line="112"/>
         <source>Airfield display time:</source>
         <translation>Anzeige Flugplatz:</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="116"/>
+        <location filename="../../settingspageinformation.cpp" line="117"/>
         <source>Airspace display time:</source>
         <translation>Anzeige Luftraum:</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="121"/>
+        <location filename="../../settingspageinformation.cpp" line="122"/>
         <source>Info display time:</source>
         <translation>Anzeige Info:</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="126"/>
+        <location filename="../../settingspageinformation.cpp" line="127"/>
         <source>Waypoint display time:</source>
         <translation>Anzeige Wegpunkt:</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="131"/>
+        <location filename="../../settingspageinformation.cpp" line="132"/>
         <source>Warning display time:</source>
         <translation>Anzeige Warnung:</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="136"/>
+        <location filename="../../settingspageinformation.cpp" line="137"/>
         <source>Warning suppress time:</source>
         <translation>Unterdrückung Warnung:</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="143"/>
-        <location filename="../../settingspageinformation.cpp" line="241"/>
+        <location filename="../../settingspageinformation.cpp" line="144"/>
+        <location filename="../../settingspageinformation.cpp" line="259"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="154"/>
+        <location filename="../../settingspageinformation.cpp" line="155"/>
         <source>Defaults</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="158"/>
+        <location filename="../../settingspageinformation.cpp" line="159"/>
         <source>Alarm Sound</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="163"/>
+        <location filename="../../settingspageinformation.cpp" line="164"/>
         <source>Flarm Alarms</source>
         <translation>Flarm Alarme</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="169"/>
+        <location filename="../../settingspageinformation.cpp" line="170"/>
         <source>Nearest Site Calculator</source>
         <translation>Ortszielberechnung</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="174"/>
+        <location filename="../../settingspageinformation.cpp" line="175"/>
         <source>Black Display</source>
         <translation>Schwarze Anzeige</translation>
     </message>
     <message>
-        <location filename="../../settingspageinformation.cpp" line="323"/>
+        <location filename="../../settingspageinformation.cpp" line="341"/>
         <source>Please select a sound player</source>
         <translation>Wähle Sound Player aus</translation>
     </message>
@@ -4761,73 +4791,73 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageLines</name>
     <message>
-        <location filename="../../settingspagelines.cpp" line="43"/>
+        <location filename="../../settingspagelines.cpp" line="44"/>
         <source>Settings - Lines</source>
         <translation>Einstellungen - Linien</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="84"/>
+        <location filename="../../settingspagelines.cpp" line="85"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="87"/>
+        <location filename="../../settingspagelines.cpp" line="88"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="90"/>
+        <location filename="../../settingspagelines.cpp" line="91"/>
         <source>Width</source>
         <translation>Breite</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="93"/>
+        <location filename="../../settingspagelines.cpp" line="94"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="98"/>
+        <location filename="../../settingspagelines.cpp" line="99"/>
         <source>Defaults</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="105"/>
+        <location filename="../../settingspagelines.cpp" line="106"/>
         <source>Heading</source>
         <translation>Steuerkurs</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="109"/>
+        <location filename="../../settingspagelines.cpp" line="110"/>
         <source>Path</source>
         <translation>Weg</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="113"/>
+        <location filename="../../settingspagelines.cpp" line="114"/>
         <source>Target</source>
         <translation>Ziel</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="117"/>
+        <location filename="../../settingspagelines.cpp" line="118"/>
         <source>Trail</source>
         <translation>Spur</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="121"/>
+        <location filename="../../settingspagelines.cpp" line="122"/>
         <source>Task Figures</source>
         <translation>Aufgaben Figuren</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="125"/>
+        <location filename="../../settingspagelines.cpp" line="126"/>
         <source>AS Border</source>
         <translation>LR Grenze</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="144"/>
-        <location filename="../../settingspagelines.cpp" line="159"/>
+        <location filename="../../settingspagelines.cpp" line="145"/>
+        <location filename="../../settingspagelines.cpp" line="160"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="../../settingspagelines.cpp" line="261"/>
+        <location filename="../../settingspagelines.cpp" line="279"/>
         <source> px</source>
         <translation></translation>
     </message>
@@ -4835,68 +4865,68 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageLookNFeel</name>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="49"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="50"/>
         <source>Settings - Look&amp;Feel</source>
         <translation>Einstellungen - Look&amp;Feel </translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="99"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="100"/>
         <source>GUI Style:</source>
         <translation>GUI Stil:</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="114"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="115"/>
         <source>GUI Font:</source>
         <translation>GUI Schrift:</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="116"/>
-        <location filename="../../settingspagelooknfeel.cpp" line="125"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="117"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="126"/>
         <source>Select Font</source>
         <translation>Wähle Schrift</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="123"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="124"/>
         <source>GUI Menu Font:</source>
         <translation>GUI Menü Schrift:</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="132"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="133"/>
         <source>Infobox frame color:</source>
         <translation>Infobox Rahmenfarbe:</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="135"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="136"/>
         <source>Select Color</source>
         <translation>Wähle Farbe</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="139"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="140"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="146"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="147"/>
         <source>Screensaver on:</source>
         <translation>Screensaver ein:</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="154"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="155"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="329"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="347"/>
         <source>GUI Font</source>
         <translation>GUI Schrift</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="368"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="386"/>
         <source>GUI Menu Font</source>
         <translation>GUI Menü Schrift</translation>
     </message>
     <message>
-        <location filename="../../settingspagelooknfeel.cpp" line="393"/>
+        <location filename="../../settingspagelooknfeel.cpp" line="411"/>
         <source>Map sidebar color</source>
         <translation>Karte Randleistenfarbe</translation>
     </message>
@@ -4904,122 +4934,122 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageMapObjects</name>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="84"/>
+        <location filename="../../settingspagemapobjects.cpp" line="85"/>
         <source>Draw Waypoints until this scale</source>
         <translation>Zeichne Wegpunkte bis zu dieser Skala</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="90"/>
+        <location filename="../../settingspagemapobjects.cpp" line="91"/>
         <source>Low</source>
         <oldsource>Low:</oldsource>
         <translation>Klein</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="108"/>
+        <location filename="../../settingspagemapobjects.cpp" line="109"/>
         <source>Normal</source>
         <oldsource>Normal:</oldsource>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="126"/>
+        <location filename="../../settingspagemapobjects.cpp" line="127"/>
         <source>High</source>
         <oldsource>High:</oldsource>
         <translation>Hoch</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="166"/>
+        <location filename="../../settingspagemapobjects.cpp" line="167"/>
         <source>Load/Draw objects</source>
         <oldsource>Load/Draw map objects</oldsource>
         <translation>Lade/Zeichne Objekte</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="170"/>
+        <location filename="../../settingspagemapobjects.cpp" line="171"/>
         <source>Draw objects</source>
         <translation>Zeichne Objekte</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="355"/>
+        <location filename="../../settingspagemapobjects.cpp" line="372"/>
         <source>Cities</source>
         <translation>Städte</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="359"/>
+        <location filename="../../settingspagemapobjects.cpp" line="376"/>
         <source>Forests</source>
         <translation>Wald</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="371"/>
+        <location filename="../../settingspagemapobjects.cpp" line="388"/>
         <source>Motorways</source>
         <oldsource>Highways</oldsource>
         <translation>Autobahnen</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="363"/>
+        <location filename="../../settingspagemapobjects.cpp" line="380"/>
         <source>Isolines</source>
         <translation>Isolinien</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="40"/>
+        <location filename="../../settingspagemapobjects.cpp" line="41"/>
         <source>Settings - Map Objects</source>
         <translation>Einstellungen - Karten Objekte</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="367"/>
+        <location filename="../../settingspagemapobjects.cpp" line="384"/>
         <source>Isoline borders</source>
         <translation>Isolinienumrandung</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="375"/>
+        <location filename="../../settingspagemapobjects.cpp" line="392"/>
         <source>Railways</source>
         <translation>Eisenbahnen</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="379"/>
+        <location filename="../../settingspagemapobjects.cpp" line="396"/>
         <source>Roads</source>
         <translation>Straßen</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="383"/>
+        <location filename="../../settingspagemapobjects.cpp" line="400"/>
         <source>Rivers &amp; Canals</source>
         <translation>Flüsse &amp; Kanäle</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="391"/>
+        <location filename="../../settingspagemapobjects.cpp" line="408"/>
         <source>Airfield labels</source>
         <translation>Flugplatz Marken</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="399"/>
+        <location filename="../../settingspagemapobjects.cpp" line="416"/>
         <source>Navaid labels</source>
         <translation>Nav Hilfen Marken</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="403"/>
+        <location filename="../../settingspagemapobjects.cpp" line="420"/>
         <source>Taskpoint labels</source>
         <translation>Aufgabenpunkt Marken</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="395"/>
+        <location filename="../../settingspagemapobjects.cpp" line="412"/>
         <source>Outlanding labels</source>
         <translation>Landefelder Marken</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="407"/>
+        <location filename="../../settingspagemapobjects.cpp" line="424"/>
         <source>Waypoint labels</source>
         <translation>Wegpunkt Marken</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="411"/>
+        <location filename="../../settingspagemapobjects.cpp" line="428"/>
         <source>Labels - Extra info</source>
         <translation>Zusatzinfo Marken</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="415"/>
+        <location filename="../../settingspagemapobjects.cpp" line="432"/>
         <source>Relative bearing info</source>
         <translation>Relative Peilungsinfo</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapobjects.cpp" line="419"/>
+        <location filename="../../settingspagemapobjects.cpp" line="436"/>
         <source>Flight trail</source>
         <translation>Flugspur</translation>
     </message>
@@ -5027,108 +5057,108 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageMapSettings</name>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="50"/>
+        <location filename="../../settingspagemapsettings.cpp" line="51"/>
         <source>Settings - Map</source>
         <translation>Einstellungen - Karte</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="95"/>
-        <location filename="../../settingspagemapsettings.cpp" line="97"/>
+        <location filename="../../settingspagemapsettings.cpp" line="96"/>
+        <location filename="../../settingspagemapsettings.cpp" line="98"/>
         <source>Maps</source>
         <translation>Karten</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="98"/>
+        <location filename="../../settingspagemapsettings.cpp" line="99"/>
         <source>Select your personal map directory</source>
         <translation>Auswahl vom persönlichen Kartenverzeichnis</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="121"/>
+        <location filename="../../settingspagemapsettings.cpp" line="122"/>
         <source>Projection:</source>
         <translation>Projektion:</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="124"/>
+        <location filename="../../settingspagemapsettings.cpp" line="125"/>
         <source>Lambert</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="125"/>
+        <location filename="../../settingspagemapsettings.cpp" line="126"/>
         <source>Plate Carrée</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="130"/>
+        <location filename="../../settingspagemapsettings.cpp" line="131"/>
         <source>1. St. Parallel:</source>
         <translation>1. St. Parallele:</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="135"/>
+        <location filename="../../settingspagemapsettings.cpp" line="136"/>
         <source>2. St. Parallel:</source>
         <translation>2. St. Parallele:</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="141"/>
+        <location filename="../../settingspagemapsettings.cpp" line="142"/>
         <source>Origin Longitude:</source>
         <translation>Originallänge:</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="152"/>
+        <location filename="../../settingspagemapsettings.cpp" line="153"/>
         <source>Projection follows Home Position</source>
         <translation>Projektierung folgt Heimatposition</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="156"/>
+        <location filename="../../settingspagemapsettings.cpp" line="157"/>
         <source>Unload unused maps from RAM</source>
         <translation>Lösche unbenutze Karten</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="164"/>
+        <location filename="../../settingspagemapsettings.cpp" line="165"/>
         <source>Center Latitude:</source>
         <translation>Mittelpunkt Breite:</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="170"/>
+        <location filename="../../settingspagemapsettings.cpp" line="171"/>
         <source>Center Longitude:</source>
         <translation>Mittelpunkt Länge:</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="176"/>
+        <location filename="../../settingspagemapsettings.cpp" line="177"/>
         <source>Install Maps</source>
         <translation>Installiere Karten</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="177"/>
+        <location filename="../../settingspagemapsettings.cpp" line="178"/>
         <source>Install maps around center point</source>
         <translation>Installiere Karten um Mittelpunkt herum</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="183"/>
+        <location filename="../../settingspagemapsettings.cpp" line="184"/>
         <source>Radius around center point</source>
         <translation>Radius um Mittelpunkt herum</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="285"/>
+        <location filename="../../settingspagemapsettings.cpp" line="303"/>
         <source>&lt;html&gt;&lt;b&gt;Map projection was changed!&lt;/b&gt;&lt;p&gt;System update can take a few seconds and more!&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Die Kartenprojektion wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="380"/>
+        <location filename="../../settingspagemapsettings.cpp" line="398"/>
         <source>Download Maps?</source>
         <translation>Karten Download?</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="381"/>
+        <location filename="../../settingspagemapsettings.cpp" line="399"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="382"/>
+        <location filename="../../settingspagemapsettings.cpp" line="400"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>
     <message>
-        <location filename="../../settingspagemapsettings.cpp" line="431"/>
+        <location filename="../../settingspagemapsettings.cpp" line="449"/>
         <source>Please select your map directory</source>
         <translation>Wählen Sie ein Kartenverzeichnis aus</translation>
     </message>
@@ -5136,88 +5166,88 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPagePersonal</name>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="99"/>
+        <location filename="../../settingspagepersonal.cpp" line="100"/>
         <source>Pilot name:</source>
         <translation>Pilotenname:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="115"/>
+        <location filename="../../settingspagepersonal.cpp" line="116"/>
         <source>Language:</source>
         <translation>Sprache:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="177"/>
+        <location filename="../../settingspagepersonal.cpp" line="178"/>
         <source>Home site latitude:</source>
         <translation>Heimat Breite:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="184"/>
+        <location filename="../../settingspagepersonal.cpp" line="185"/>
         <source>Home site longitude:</source>
         <translation>Heimat Länge:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="162"/>
+        <location filename="../../settingspagepersonal.cpp" line="163"/>
         <source>Home site elevation:</source>
         <translation>Heimat Höhe:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="52"/>
+        <location filename="../../settingspagepersonal.cpp" line="53"/>
         <source>Settings - Personal</source>
         <translation>Einstellungen - Persönliches</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="121"/>
+        <location filename="../../settingspagepersonal.cpp" line="122"/>
         <source>Home site country:</source>
         <translation>Heimatland:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="140"/>
+        <location filename="../../settingspagepersonal.cpp" line="141"/>
         <source>Home site name:</source>
         <translation>Heimat Name:</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="154"/>
+        <location filename="../../settingspagepersonal.cpp" line="155"/>
         <source>New Home</source>
         <translation>Neue Heimat</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="192"/>
-        <location filename="../../settingspagepersonal.cpp" line="194"/>
+        <location filename="../../settingspagepersonal.cpp" line="193"/>
+        <location filename="../../settingspagepersonal.cpp" line="195"/>
         <source>Data Directory</source>
         <translation>Datenverzeichnis</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="195"/>
+        <location filename="../../settingspagepersonal.cpp" line="196"/>
         <source>Select your personal data directory</source>
         <translation>Wählen Sie ein Datenverzeichnis aus</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="218"/>
+        <location filename="../../settingspagepersonal.cpp" line="219"/>
         <source>Set Proxy</source>
         <translation>Setze Proxy</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="219"/>
+        <location filename="../../settingspagepersonal.cpp" line="220"/>
         <source>Enter Proxy data if needed</source>
         <translation>Definiere Proxy bei Bedarf</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="574"/>
+        <location filename="../../settingspagepersonal.cpp" line="591"/>
         <source>No proxy defined</source>
         <translation>Kein Proxy Eintrag</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="350"/>
+        <location filename="../../settingspagepersonal.cpp" line="367"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="401"/>
+        <location filename="../../settingspagepersonal.cpp" line="418"/>
         <source>&lt;html&gt;&lt;b&gt;Home position was changed!&lt;/b&gt;&lt;p&gt;System update can take a few seconds and more!&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Die Heimat Position wurde geändert!&lt;/b&gt;&lt;p&gt;Ein System Update kann etwas dauern!&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../settingspagepersonal.cpp" line="494"/>
+        <location filename="../../settingspagepersonal.cpp" line="511"/>
         <source>Please select your data directory</source>
         <translation>Wählen Sie ein Datenverzeichnis aus</translation>
     </message>
@@ -5235,94 +5265,89 @@ USB Stick eingeschoben?</translation>
         <translation>Quelle:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="96"/>
-        <source>Help</source>
-        <translation>Hilfe</translation>
-    </message>
-    <message>
-        <location filename="../../SettingsPagePointData.cpp" line="115"/>
+        <location filename="../../SettingsPagePointData.cpp" line="110"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="124"/>
+        <location filename="../../SettingsPagePointData.cpp" line="119"/>
         <source>Countries:</source>
         <translation>Länder:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="141"/>
+        <location filename="../../SettingsPagePointData.cpp" line="136"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="150"/>
+        <location filename="../../SettingsPagePointData.cpp" line="145"/>
         <source>Radius:</source>
         <translation>Radius:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="157"/>
+        <location filename="../../SettingsPagePointData.cpp" line="152"/>
         <source>Rwy Filter:</source>
         <translation>SLB Filter:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="170"/>
+        <location filename="../../SettingsPagePointData.cpp" line="165"/>
         <source>List Display</source>
         <translation>Listenanzeige</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="176"/>
+        <location filename="../../SettingsPagePointData.cpp" line="171"/>
         <source>More space in points lists:</source>
         <translation>Mehr Raum in Punkt Listen:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="183"/>
-        <location filename="../../SettingsPagePointData.cpp" line="196"/>
+        <location filename="../../SettingsPagePointData.cpp" line="178"/>
+        <location filename="../../SettingsPagePointData.cpp" line="191"/>
         <source> Pixels</source>
         <translation> Pixel</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="189"/>
+        <location filename="../../SettingsPagePointData.cpp" line="184"/>
         <source>More space in reachable list:</source>
         <translation>Mehr Raum in Erreichbarkeitsliste:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="246"/>
-        <location filename="../../SettingsPagePointData.cpp" line="268"/>
+        <location filename="../../SettingsPagePointData.cpp" line="247"/>
+        <location filename="../../SettingsPagePointData.cpp" line="269"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="247"/>
+        <location filename="../../SettingsPagePointData.cpp" line="248"/>
         <source>Home Radius</source>
         <translation>Heimat Radius</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="269"/>
+        <location filename="../../SettingsPagePointData.cpp" line="270"/>
         <source>Minimum Runway length</source>
         <translation>Minimale SLB Länge</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="471"/>
+        <location filename="../../SettingsPagePointData.cpp" line="472"/>
         <source>Please check entries</source>
         <translation>Einträge bitte prüfen</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="492"/>
+        <location filename="../../SettingsPagePointData.cpp" line="493"/>
         <source>Active Internet connection is needed!</source>
         <translation>Aktive Internetverbindung ist erforderlich!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="493"/>
+        <location filename="../../SettingsPagePointData.cpp" line="494"/>
         <source>Start download now?</source>
         <translation>Start Download?</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="472"/>
+        <location filename="../../SettingsPagePointData.cpp" line="473"/>
         <source>Every openAIP country sign must consist of two letters!&lt;br&gt;Allowed separators are space and comma!</source>
         <translation>Jedes openAIP Länderzeichen muss aus zwei Buchstaben bestehen!&lt;br&gt;Erlaubte Trenner sind Leerzeichen und Komma!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPagePointData.cpp" line="491"/>
+        <location filename="../../SettingsPagePointData.cpp" line="492"/>
         <source>Download openAIP files?</source>
         <translation>Download openAIP Dateien?</translation>
     </message>
@@ -5358,181 +5383,181 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageTask</name>
     <message>
-        <location filename="../../settingspagetask.cpp" line="239"/>
-        <location filename="../../settingspagetask.cpp" line="319"/>
-        <location filename="../../settingspagetask.cpp" line="395"/>
+        <location filename="../../settingspagetask.cpp" line="240"/>
+        <location filename="../../settingspagetask.cpp" line="320"/>
+        <location filename="../../settingspagetask.cpp" line="396"/>
         <source>Sector</source>
         <translation>Sektor</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="106"/>
+        <location filename="../../settingspagetask.cpp" line="107"/>
         <source>Switch Scheme</source>
         <translation>Schaltschema</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="55"/>
+        <location filename="../../settingspagetask.cpp" line="56"/>
         <source>Settings - Task</source>
         <translation>Einstellungen - Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="110"/>
+        <location filename="../../settingspagetask.cpp" line="111"/>
         <source>Minimum</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="111"/>
+        <location filename="../../settingspagetask.cpp" line="112"/>
         <source>Touched</source>
         <translation>Berührt</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="116"/>
+        <location filename="../../settingspagetask.cpp" line="117"/>
         <source>Report</source>
         <translation>Melde</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="142"/>
+        <location filename="../../settingspagetask.cpp" line="143"/>
         <source>Shape</source>
         <translation>Umriss</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="150"/>
+        <location filename="../../settingspagetask.cpp" line="151"/>
         <source>Fill</source>
         <translation>Füllen</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="163"/>
+        <location filename="../../settingspagetask.cpp" line="164"/>
         <source>Opacity </source>
         <translation>Deckkraft</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="178"/>
+        <location filename="../../settingspagetask.cpp" line="179"/>
         <source>Zoom</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="184"/>
+        <location filename="../../settingspagetask.cpp" line="185"/>
         <source>Auto</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="198"/>
+        <location filename="../../settingspagetask.cpp" line="199"/>
         <source>Start</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="204"/>
-        <location filename="../../settingspagetask.cpp" line="285"/>
+        <location filename="../../settingspagetask.cpp" line="205"/>
+        <location filename="../../settingspagetask.cpp" line="286"/>
         <source>Line Length</source>
         <translation>Linienlänge</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="205"/>
-        <location filename="../../settingspagetask.cpp" line="286"/>
+        <location filename="../../settingspagetask.cpp" line="206"/>
+        <location filename="../../settingspagetask.cpp" line="287"/>
         <source>Line:</source>
         <translation>Linie:</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="208"/>
-        <location filename="../../settingspagetask.cpp" line="289"/>
-        <location filename="../../settingspagetask.cpp" line="365"/>
+        <location filename="../../settingspagetask.cpp" line="209"/>
+        <location filename="../../settingspagetask.cpp" line="290"/>
+        <location filename="../../settingspagetask.cpp" line="366"/>
         <source>Circle Radius</source>
         <translation>Kreis Radius</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="209"/>
-        <location filename="../../settingspagetask.cpp" line="366"/>
+        <location filename="../../settingspagetask.cpp" line="210"/>
+        <location filename="../../settingspagetask.cpp" line="367"/>
         <source>Circle:</source>
         <translation>Kreis:</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="213"/>
-        <location filename="../../settingspagetask.cpp" line="294"/>
-        <location filename="../../settingspagetask.cpp" line="370"/>
+        <location filename="../../settingspagetask.cpp" line="214"/>
+        <location filename="../../settingspagetask.cpp" line="295"/>
+        <location filename="../../settingspagetask.cpp" line="371"/>
         <source>Sectors</source>
         <translation>Sektoren</translation>
-    </message>
-    <message>
-        <location filename="../../settingspagetask.cpp" line="219"/>
-        <location filename="../../settingspagetask.cpp" line="300"/>
-        <location filename="../../settingspagetask.cpp" line="376"/>
-        <source>Inner Radius</source>
-        <translation>Innerer Radius</translation>
     </message>
     <message>
         <location filename="../../settingspagetask.cpp" line="220"/>
         <location filename="../../settingspagetask.cpp" line="301"/>
         <location filename="../../settingspagetask.cpp" line="377"/>
-        <source>Radius 1:</source>
-        <translation></translation>
+        <source>Inner Radius</source>
+        <translation>Innerer Radius</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="223"/>
-        <location filename="../../settingspagetask.cpp" line="304"/>
-        <location filename="../../settingspagetask.cpp" line="380"/>
-        <source>Outer Radius</source>
-        <translation>Äußerer Radius</translation>
+        <location filename="../../settingspagetask.cpp" line="221"/>
+        <location filename="../../settingspagetask.cpp" line="302"/>
+        <location filename="../../settingspagetask.cpp" line="378"/>
+        <source>Radius 1:</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../settingspagetask.cpp" line="224"/>
         <location filename="../../settingspagetask.cpp" line="305"/>
         <location filename="../../settingspagetask.cpp" line="381"/>
+        <source>Outer Radius</source>
+        <translation>Äußerer Radius</translation>
+    </message>
+    <message>
+        <location filename="../../settingspagetask.cpp" line="225"/>
+        <location filename="../../settingspagetask.cpp" line="306"/>
+        <location filename="../../settingspagetask.cpp" line="382"/>
         <source>Radius 2:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="227"/>
-        <location filename="../../settingspagetask.cpp" line="308"/>
-        <location filename="../../settingspagetask.cpp" line="384"/>
+        <location filename="../../settingspagetask.cpp" line="228"/>
+        <location filename="../../settingspagetask.cpp" line="309"/>
+        <location filename="../../settingspagetask.cpp" line="385"/>
         <source>Angle 1...360</source>
         <translation>Winkel 1...360</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="233"/>
-        <location filename="../../settingspagetask.cpp" line="313"/>
-        <location filename="../../settingspagetask.cpp" line="389"/>
+        <location filename="../../settingspagetask.cpp" line="234"/>
+        <location filename="../../settingspagetask.cpp" line="314"/>
+        <location filename="../../settingspagetask.cpp" line="390"/>
         <source>Scheme</source>
         <translation>Schema</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="238"/>
-        <location filename="../../settingspagetask.cpp" line="290"/>
-        <location filename="../../settingspagetask.cpp" line="318"/>
-        <location filename="../../settingspagetask.cpp" line="394"/>
+        <location filename="../../settingspagetask.cpp" line="239"/>
+        <location filename="../../settingspagetask.cpp" line="291"/>
+        <location filename="../../settingspagetask.cpp" line="319"/>
+        <location filename="../../settingspagetask.cpp" line="395"/>
         <source>Circle</source>
         <translation>Kreis</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="240"/>
-        <location filename="../../settingspagetask.cpp" line="320"/>
-        <location filename="../../settingspagetask.cpp" line="396"/>
+        <location filename="../../settingspagetask.cpp" line="241"/>
+        <location filename="../../settingspagetask.cpp" line="321"/>
+        <location filename="../../settingspagetask.cpp" line="397"/>
         <source>Keyhole</source>
         <translation>S-Loch</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="241"/>
-        <location filename="../../settingspagetask.cpp" line="321"/>
+        <location filename="../../settingspagetask.cpp" line="242"/>
+        <location filename="../../settingspagetask.cpp" line="322"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="279"/>
+        <location filename="../../settingspagetask.cpp" line="280"/>
         <source>Finish</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="359"/>
+        <location filename="../../settingspagetask.cpp" line="360"/>
         <source>Observation</source>
         <translation>Beobachtung</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="229"/>
-        <location filename="../../settingspagetask.cpp" line="309"/>
-        <location filename="../../settingspagetask.cpp" line="385"/>
+        <location filename="../../settingspagetask.cpp" line="230"/>
+        <location filename="../../settingspagetask.cpp" line="310"/>
+        <location filename="../../settingspagetask.cpp" line="386"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="../../settingspagetask.cpp" line="148"/>
+        <location filename="../../settingspagetask.cpp" line="149"/>
         <source>Draw</source>
         <translation>Zeichne</translation>
     </message>
@@ -5540,40 +5565,40 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageTerrainColors</name>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="45"/>
+        <location filename="../../settingspageterraincolors.cpp" line="46"/>
         <source>Settings - Terrain Colors</source>
         <oldsource>Settings - Personal</oldsource>
         <translation>Einstellungen - Geländefarben</translation>
     </message>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="160"/>
+        <location filename="../../settingspageterraincolors.cpp" line="161"/>
         <source>Color Selection</source>
         <translation>Farbenauswahl</translation>
     </message>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="174"/>
-        <location filename="../../settingspageterraincolors.cpp" line="377"/>
+        <location filename="../../settingspageterraincolors.cpp" line="175"/>
+        <location filename="../../settingspageterraincolors.cpp" line="395"/>
         <source>Terrain Level</source>
         <translation>Geländehöhe</translation>
     </message>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="237"/>
+        <location filename="../../settingspageterraincolors.cpp" line="238"/>
         <source>Terrain Color</source>
         <translation>Geländefarbe</translation>
     </message>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="246"/>
-        <location filename="../../settingspageterraincolors.cpp" line="405"/>
+        <location filename="../../settingspageterraincolors.cpp" line="247"/>
+        <location filename="../../settingspageterraincolors.cpp" line="423"/>
         <source>Ground Color</source>
         <translation>Bodenfarbe</translation>
     </message>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="260"/>
+        <location filename="../../settingspageterraincolors.cpp" line="261"/>
         <source>Color Defaults</source>
         <translation>Standardfarben</translation>
     </message>
     <message>
-        <location filename="../../settingspageterraincolors.cpp" line="275"/>
+        <location filename="../../settingspageterraincolors.cpp" line="276"/>
         <source>Elevation Offset</source>
         <translation>Höhenanpassung</translation>
     </message>
@@ -5581,138 +5606,138 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageUnits</name>
     <message>
-        <location filename="../../settingspageunits.cpp" line="43"/>
+        <location filename="../../settingspageunits.cpp" line="44"/>
         <source>Settings - Units</source>
         <translation>Einstellungen - Einheiten</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="89"/>
+        <location filename="../../settingspageunits.cpp" line="90"/>
         <source>Altitude:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="95"/>
+        <location filename="../../settingspageunits.cpp" line="96"/>
         <source>meters</source>
         <translation>Meter</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="96"/>
+        <location filename="../../settingspageunits.cpp" line="97"/>
         <source>feet</source>
         <translation>Fuß</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="100"/>
+        <location filename="../../settingspageunits.cpp" line="101"/>
         <source>Speed:</source>
         <translation>Geschwindigkeit:</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="106"/>
-        <location filename="../../settingspageunits.cpp" line="134"/>
-        <location filename="../../settingspageunits.cpp" line="147"/>
+        <location filename="../../settingspageunits.cpp" line="107"/>
+        <location filename="../../settingspageunits.cpp" line="135"/>
+        <location filename="../../settingspageunits.cpp" line="148"/>
         <source>meters per second</source>
         <translation>Meter pro Sekunde</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="107"/>
-        <location filename="../../settingspageunits.cpp" line="148"/>
+        <location filename="../../settingspageunits.cpp" line="108"/>
+        <location filename="../../settingspageunits.cpp" line="149"/>
         <source>kilometers per hour</source>
         <translation>Kilometer pro Stunde</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="108"/>
-        <location filename="../../settingspageunits.cpp" line="136"/>
-        <location filename="../../settingspageunits.cpp" line="149"/>
+        <location filename="../../settingspageunits.cpp" line="109"/>
+        <location filename="../../settingspageunits.cpp" line="137"/>
+        <location filename="../../settingspageunits.cpp" line="150"/>
         <source>knots</source>
         <translation>Knoten</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="109"/>
-        <location filename="../../settingspageunits.cpp" line="150"/>
+        <location filename="../../settingspageunits.cpp" line="110"/>
+        <location filename="../../settingspageunits.cpp" line="151"/>
         <source>miles per hour</source>
         <translation>Meilen pro Stunde</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="115"/>
+        <location filename="../../settingspageunits.cpp" line="116"/>
         <source>Distance:</source>
         <translation>Entfernung:</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="121"/>
+        <location filename="../../settingspageunits.cpp" line="122"/>
         <source>kilometers</source>
         <translation>Kilometer</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="122"/>
+        <location filename="../../settingspageunits.cpp" line="123"/>
         <source>statute miles</source>
         <translation>Statut Meilen</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="123"/>
+        <location filename="../../settingspageunits.cpp" line="124"/>
         <source>nautical miles</source>
         <translation>Nautische Meilen</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="128"/>
+        <location filename="../../settingspageunits.cpp" line="129"/>
         <source>Vario:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="135"/>
+        <location filename="../../settingspageunits.cpp" line="136"/>
         <source>feet per minute</source>
         <translation>Fuß pro Minute</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="141"/>
+        <location filename="../../settingspageunits.cpp" line="142"/>
         <source>Wind:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="156"/>
+        <location filename="../../settingspageunits.cpp" line="157"/>
         <source>Position:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="169"/>
+        <location filename="../../settingspageunits.cpp" line="170"/>
         <source>Time:</source>
         <translation>Zeit:</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="175"/>
+        <location filename="../../settingspageunits.cpp" line="176"/>
         <source>UTC</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="176"/>
+        <location filename="../../settingspageunits.cpp" line="177"/>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="180"/>
+        <location filename="../../settingspageunits.cpp" line="181"/>
         <source>Temperature:</source>
         <translation>Temperatur:</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="186"/>
+        <location filename="../../settingspageunits.cpp" line="187"/>
         <source>Celsius</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="187"/>
+        <location filename="../../settingspageunits.cpp" line="188"/>
         <source>Fahrenheit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="191"/>
+        <location filename="../../settingspageunits.cpp" line="192"/>
         <source>Air Pressure:</source>
         <translation>Luftdruck:</translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="197"/>
+        <location filename="../../settingspageunits.cpp" line="198"/>
         <source>hPa</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../settingspageunits.cpp" line="198"/>
+        <location filename="../../settingspageunits.cpp" line="199"/>
         <source>inHg</source>
         <translation></translation>
     </message>
