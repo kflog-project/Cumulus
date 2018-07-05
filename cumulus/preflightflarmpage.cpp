@@ -386,6 +386,12 @@ PreFlightFlarmPage::PreFlightFlarmPage(QWidget *parent) :
   TaskFileManager tfm;
   QStringList sl = tfm.getTaskListNames();
 
+  for( int i = 0; i < sl.size(); i++ )
+    {
+      // remove extension .tsk from the task name
+      sl[i] = sl[i].left(sl[i].size() - 4);
+    }
+
   if( sl.isEmpty() )
     {
       // Don't show a box, if no data are available.
@@ -1090,7 +1096,9 @@ void PreFlightFlarmPage::slotWriteFlarmData()
             << "$PFLAC,S,COMPID," + FlarmBase::replaceUmlauts( compId->text().trimmed().toLatin1() )
             << "$PFLAC,S,COMPCLASS," + FlarmBase::replaceUmlauts( compClass->text().trimmed().toLatin1() );
 
-  if( taskBox->count() <= 1 || taskBox->isVisible() == false )
+  if( taskBox->currentIndex() <= 0 ||
+      taskBox->isVisible() == false ||
+      taskBox->currentText().trimmed().isEmpty() == true )
     {
       m_cmdList << "$PFLAC,S,NEWTASK,";
       nextFlarmCommand();
@@ -1098,20 +1106,25 @@ void PreFlightFlarmPage::slotWriteFlarmData()
     }
 
   // A flight task is selected in the task box.
-  QString tpName = taskBox->currentText().left(50);
+  QString taskName = taskBox->currentText().trimmed();
+  qDebug() << "taskName" << taskName;
+  QString taskFileName(taskName);
+  taskFileName.append(".tsk");
+  qDebug() << "taskFileName" << taskFileName;
+  qDebug() << "taskName" << taskName;
 
   // Load the flight task
   TaskFileManager tfm;
-  FlightTask* ft = tfm.readTaskFile( tpName );
+  FlightTask* ft = tfm.readTaskFile( taskFileName );
 
-  if( GeneralConfig::instance()->getCurrentTaskName() != tpName )
+  if( GeneralConfig::instance()->getCurrentTaskName() != taskName )
     {
-      GeneralConfig::instance()->setCurrentTaskName( tpName );
+      GeneralConfig::instance()->setCurrentTaskName( taskName );
       _globalMapContents->setCurrentTask( ft );
       emit newTaskSelected();
     }
 
-  m_cmdList << "$PFLAC,S,NEWTASK," + tpName;
+  m_cmdList << "$PFLAC,S,NEWTASK," + taskName;
 
   if( ft == static_cast<FlightTask *>(0) )
     {

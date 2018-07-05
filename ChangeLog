@@ -18,6 +18,10 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2018-07-05 AP: Cumulus 5.35.2 released for Android.
+
+[-] 2018-07-05 AP: Issue #133 fixed. Flarm IGC task handling has a bug.
+
 [*] 2018-04-20 AP: Cumulus 5.35.1 released for Android.
 
 [-] 2018-04-20 AP: Issue #128 fixed. Polands airspace type TSA has changed to
