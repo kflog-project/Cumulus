@@ -1107,11 +1107,10 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   // A flight task is selected in the task box.
   QString taskName = taskBox->currentText().trimmed();
-  qDebug() << "taskName" << taskName;
+
+  // add task file extension to the task name
   QString taskFileName(taskName);
   taskFileName.append(".tsk");
-  qDebug() << "taskFileName" << taskFileName;
-  qDebug() << "taskName" << taskName;
 
   // Load the flight task
   TaskFileManager tfm;
