@@ -284,7 +284,15 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
 
   edtICAO->setText(wp->icao.toUpper());
 
-  QString tmp = QString("%1").arg(wp->frequency, 0, 'f', 3);
+  float frequency = 0.0;
+
+  // Only the frequency at index 0 is supported.
+  if( wp->frequencyList.size() > 0 )
+    {
+      frequency = wp->frequencyList.at(0).getFrequency();
+    }
+
+  QString tmp = QString("%1").arg(frequency, 0, 'f', 3);
 
   while( tmp.size() < 7 )
     {
@@ -359,11 +367,20 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
   wp->icao = edtICAO->text().trimmed().toUpper();
 
   bool ok;
-  wp->frequency = edtFrequency->text().toFloat(&ok);
+  float frequency = edtFrequency->text().toFloat(&ok);
 
   if( ! ok )
     {
-      wp->frequency = 0.0;
+      frequency = 0.0;
+    }
+
+  if( wp->frequencyList.size() == 0 )
+    {
+      wp->addFrequency( Frequency(frequency) );
+    }
+  else
+    {
+      wp->frequencyList[0].setFrequency(frequency);
     }
 
   wp->rwyList.clear();

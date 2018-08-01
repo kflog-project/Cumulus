@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2015 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@ RadioPoint::RadioPoint(const QString& name,
                        BaseMapElement::objectType type,
                        const WGSPoint& wgsP,
                        const QPoint& pos,
-                       const float frequency,
+                       const QList<Frequency> frequencyList,
                        const QString channel,
                        const float elevation,
                        const QString country,
@@ -33,7 +33,7 @@ RadioPoint::RadioPoint(const QString& name,
                        const float declination,
                        const bool aligned2TrueNorth ) :
   SinglePoint( name, shortName, type, wgsP, pos, elevation, country ),
-  m_frequency(frequency),
+  m_frequencyList(frequencyList),
   m_channel(channel),
   m_icao(icao),
   m_range(range),

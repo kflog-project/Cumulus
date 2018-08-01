@@ -401,14 +401,37 @@ void WPInfoWidget::writeText()
              "</b></td>";
          }
 
-       if( m_wp.frequency > 0.0 )
+       if( m_wp.frequencyList.isEmpty() )
          {
-           tmp = QString("<td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td></tr>").arg(m_wp.frequency, 0, 'f', 3);
-           itxt += tmp;
+           // no frequencies assigned
+           itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
          }
        else
          {
-           itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
+           int i = 0;
+
+           for( i = 0; i < m_wp.frequencyList.size(); i++ )
+             {
+               Frequency fre = m_wp.frequencyList[i];
+               QString frestr = fre.frequencyAsString();
+
+               if( i % 2 )
+                 {
+                   tmp = QString("<tr><td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td>").arg( frestr);
+                 }
+               else
+                 {
+                   tmp = QString("<td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td></tr>").arg( frestr);
+                 }
+
+               itxt += tmp;
+             }
+
+           if( (i % 2) == 0 )
+             {
+               // second column have to be closed with an empty item
+               itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
+             }
          }
 
       QString sr, ss, tz;

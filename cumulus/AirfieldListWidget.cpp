@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2017 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,10 +22,10 @@
 #include <QtWidgets>
 #endif
 
+#include "airfield.h"
+#include "calculator.h"
 #include "generalconfig.h"
 #include "mapconfig.h"
-#include "calculator.h"
-#include "airfield.h"
 
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
@@ -70,12 +70,12 @@ void AirfieldListWidget::fillItemList()
         {
           Airfield* site = dynamic_cast<Airfield *> (_globalMapContents->getElement( m_itemList.at(item), i ));
 
-	  if( site == 0 )
-	    {
-	      continue;
-	    }
+          if (site == 0)
+            {
+              continue;
+            }
 
-          filter->addListItem( new AirfieldItem(site) );
+          filter->addListItem (new AirfieldItem (site));
         }
     }
 
@@ -114,10 +114,10 @@ Waypoint* AirfieldListWidget::getCurrentWaypoint()
   m_wp.type = site->getTypeID();
   m_wp.elevation = site->getElevation();
   m_wp.icao = site->getICAO();
-  m_wp.frequency = site->getFrequency();
   m_wp.comment = site->getComment();
   m_wp.country = site->getCountry();
   m_wp.rwyList = site->getRunwayList();
+  m_wp.frequencyList = site->getFrequencyList();
 
   return &m_wp;
 }

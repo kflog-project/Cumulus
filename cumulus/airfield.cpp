@@ -33,8 +33,6 @@ QPixmap* Airfield::m_smallFields = 0;
 
 Airfield::Airfield() :
   SinglePoint(),
-  m_frequency(0.0),
-  m_atis(0.0),
   m_winch(false),
   m_towing(false),
   m_rwShift(0),
@@ -51,17 +49,15 @@ Airfield::Airfield( const QString& name,
                     const QPoint& pos,
                     const QList<Runway>& rwList,
                     const float elevation,
-                    const float frequency,
+                    const QList<Frequency> frequencyList,
                     const QString country,
                     const QString comment,
                     bool winch,
                     bool towing,
-                    bool landable,
-                    const float atis ) :
+                    bool landable ) :
   SinglePoint(name, shortName, typeId, wgsPos, pos, elevation, country, comment),
   m_icao(icao),
-  m_frequency(frequency),
-  m_atis(atis),
+  m_frequencyList(frequencyList),
   m_rwList(rwList),
   m_winch(winch),
   m_towing(towing),
@@ -179,10 +175,9 @@ QString Airfield::getInfoString() const
 
   text += "<FONT SIZE=-1><BR><BR>" + elev;
 
-  if (m_frequency > 0)
+  if( m_frequencyList.isEmpty() == false )
     {
-      text += "&nbsp;/&nbsp;" + QObject::tr("Channel") + "&nbsp;" +
-              frequencyAsString(m_frequency) + "&nbsp;.";
+      // TODO
     }
 
   text += "&nbsp;&nbsp;</FONT></TD></TR></TABLE></HTML>";

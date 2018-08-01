@@ -98,10 +98,10 @@
 #define FILE_VERSION_AIRSPACE_C 2
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 2
+#define FILE_VERSION_AIRFIELD_C 3
 
 // Version definition for compiled navigation aid files.
-#define FILE_VERSION_NAV_AIDS_C 2
+#define FILE_VERSION_NAV_AIDS_C 3
 
 // Version definition for compiled hotspot files.
 #define FILE_VERSION_HOTSPOT_C 2

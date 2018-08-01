@@ -294,20 +294,28 @@ void ReachpointListView::fillRpList()
           rLen = QString("%1").arg( rp.getRunwayLength(), 0, 'f', 0 ) + " m";
         }
 
-      QString frequency;
+      QString frequencies;
 
-      if( rp.getFrequency() > 0.0 )
+      QList<Frequency>& fList = rp.getFrequencyList();
+
+      for( int i = 0; i < fList.size(); i++ )
         {
-          frequency = QString("%1").arg( rp.getFrequency(), 0, 'f', 3 );
+          if( i > 0 )
+            {
+              frequencies += ", ";
+            }
+
+          frequencies += fList.at(i).frequencyAsString();
         }
-      else
+
+      if( frequencies.isEmpty() )
         {
-          frequency = "   ";
+          frequencies = "   ";
         }
 
       QStringList sl;
       sl << rp.getName()
-         << frequency
+         << frequencies
          << rp.getDistance().getText(false,1)
          << bearing
          << arrival

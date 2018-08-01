@@ -2702,7 +2702,6 @@ void MainWindow::slotRememberWaypoint()
   wp.comment = tr("created by remember action at") + QString(" ") +
   QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
   wp.priority = Waypoint::High; // high to make sure it is visible
-  wp.frequency = 0.0;
   AltitudeCollection alt = calculator->getAltitudeCollection();
   wp.elevation = int ( ( alt.gpsAltitude - alt.gndAltitude ).getMeters() );
   wp.type = BaseMapElement::UserPoint;

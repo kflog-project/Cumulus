@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2015 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -19,9 +19,11 @@
 
 #include <climits>
 
+#include <QList>
 #include <QPoint>
 #include <QString>
 
+#include "Frequency.h"
 #include "singlepoint.h"
 
 /**
@@ -37,7 +39,7 @@
  *
  * @see BaseMapElement#objectType
  *
- * \date 2000-2015
+ * \date 2000-2018
  */
 
 class RadioPoint : public SinglePoint
@@ -49,7 +51,6 @@ class RadioPoint : public SinglePoint
    */
   RadioPoint() :
     SinglePoint(),
-    m_frequency(0.0),
     m_range(0.0),
     m_declination(SHRT_MIN),
     m_aligned2TrueNorth(false)
@@ -65,7 +66,7 @@ class RadioPoint : public SinglePoint
    * @param  typeID The type identifier.
    * @param  wgsPos The original WGS84 position.
    * @param  pos    The projected position.
-   * @param  frequency  The frequency.
+   * @param  frequencyList A list with the frequency objects
    * @param  channel The channel.
    * @param  elevation The elevation.
    * @param  country The country location.
@@ -79,7 +80,7 @@ class RadioPoint : public SinglePoint
               BaseMapElement::objectType typeID,
               const WGSPoint& wgsPos,
               const QPoint& pos,
-              const float frequency,
+              const QList<Frequency> frequencyList,
               const QString channel = "",
               const float elevation = 0.0,
               const QString country = "",
@@ -93,21 +94,27 @@ class RadioPoint : public SinglePoint
   virtual ~RadioPoint();
 
   /**
-   * @return The frequency
+   * @return The frequency as string.
    */
-  QString frequencyAsString() const
+  QString frequencyAsString( const float frequency ) const
     {
-      return (m_frequency > 0) ? QString("%1").arg(m_frequency, 0, 'f', 3) : QString("");
+      return (frequency > 0) ? QString("%1").arg(frequency, 0, 'f', 3) : QString("");
     };
 
-  float getFrequency() const
+  /**
+   * @return The frequency list of the airfield.
+   */
+  QList<Frequency>& getFrequencyList()
     {
-      return m_frequency;
+      return m_frequencyList;
     };
 
-  void setFrequency( const float value)
+  /**
+   * @param freq The frequency and its type.
+   */
+  void addFrequency( Frequency freqencyAndType )
     {
-      m_frequency = value;
+      m_frequencyList.append( freqencyAndType );
     };
 
   QString getChannel() const
@@ -175,9 +182,9 @@ class RadioPoint : public SinglePoint
 
  protected:
   /**
-   * The frequency
-   */
-  float m_frequency;
+  * All frequencies of the radio point.
+  */
+  QList<Frequency> m_frequencyList;
 
   /**
    * The channel.

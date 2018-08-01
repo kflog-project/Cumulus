@@ -26,7 +26,7 @@ ReachablePoint::ReachablePoint( QString name,
                                 QString country,
                                 bool orignAfl,
                                 short type,
-                                float frequency,
+                                QList<Frequency> frequencyList,
                                 WGSPoint pos,
                                 QPoint   ppos,
                                 float elevation,
@@ -40,7 +40,7 @@ ReachablePoint::ReachablePoint( QString name,
   _wp.icao = icao;
   _wp.description = description;
   _wp.country = country;
-  _wp.frequency = frequency;
+  _wp.frequencyList = frequencyList;
   _wp.elevation = elevation;
   _wp.comment = comment;
   _wp.priority = Waypoint::High; // high to make sure it is visible

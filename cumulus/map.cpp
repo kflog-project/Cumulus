@@ -311,37 +311,37 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
   // As first search in the current task list, if waypoints can be found.
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 
-  if( task != static_cast<FlightTask *> (0) && cs < 1024.0 )
+  if (task != static_cast<FlightTask *> (0) && cs < 1024.0)
     {
-      QList<TaskPoint*>& tpList = task->getTpList();
+      QList<TaskPoint*>& tpList = task->getTpList ();
 
-      for( int i = 0; i < tpList.size(); i++ )
+      for (int i = 0; i < tpList.size (); i++)
         {
           TaskPoint* tp = tpList[i];
 
-          QPoint sitePos( _globalMapMatrix->map( tp->getPosition() ) );
+          QPoint sitePos (_globalMapMatrix->map (tp->getPosition ()));
 
-          if( ! snapRect.contains(sitePos) )
+          if (!snapRect.contains (sitePos))
             {
               // @AP: Point lays outside of snap rectangle, we ignore it
               continue;
             }
 
-          dX = abs(sitePos.x() - current.x());
-          dY = abs(sitePos.y() - current.y());
+          dX = abs (sitePos.x () - current.x ());
+          dY = abs (sitePos.y () - current.y ());
 
-          if( dX < delta && dY < delta )
+          if (dX < delta && dY < delta)
             {
-              if( found && ((dX + dY) >= lastDist) )
+              if (found && ((dX + dY) >= lastDist))
                 {
                   continue; // the point we found earlier was closer
                 }
 
               found = true;
-              w = tp->getWaypointObject();
-              lastDist = dX+dY;
+              w = tp->getWaypointObject ();
+              lastDist = dX + dY;
 
-              if( lastDist < (delta / 3) )
+              if (lastDist < (delta / 3))
                 {
                   break;
                 }
@@ -352,9 +352,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
   // @AP: On map scale higher as 1024 we don't evaluate anything
   for( int l = 0; l < searchList.size() && cs < 1024.0; l++ )
     {
-      for( unsigned int loop = 0;
-           loop < _globalMapContents->getListLength(searchList.at(l));
-           loop++)
+      for (unsigned int loop = 0;
+          loop < _globalMapContents->getListLength (searchList.at (l)); loop++)
         {
           // Get specific site data from current list. We have to
           // distinguish between AirfieldList, GilderfieldList, OutlandingList
@@ -371,119 +370,121 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
           QString siteComment;
           QString siteCountry;
 
-          if( searchList[l] == MapContents::AirfieldList )
+          if (searchList[l] == MapContents::AirfieldList)
             {
               // Fetch data from the airfield list
-              poi = _globalMapContents->getAirfield(loop);
+              poi = _globalMapContents->getAirfield (loop);
             }
-          else if( searchList[l] == MapContents::GliderfieldList )
+          else if (searchList[l] == MapContents::GliderfieldList)
             {
               // fetch data from the gliderfield list
-              poi = _globalMapContents->getGliderfield(loop);
+              poi = _globalMapContents->getGliderfield (loop);
             }
-          else if( searchList[l] == MapContents::OutLandingList )
+          else if (searchList[l] == MapContents::OutLandingList)
             {
               // fetch data from the outlanding list
-              poi = _globalMapContents->getOutlanding(loop);
+              poi = _globalMapContents->getOutlanding (loop);
             }
-          else if( searchList[l] == MapContents::RadioList )
+          else if (searchList[l] == MapContents::RadioList)
             {
               // fetch data from the radio point list
-              poi = _globalMapContents->getRadioPoint(loop);
+              poi = _globalMapContents->getRadioPoint (loop);
             }
-          else if( searchList[l] == MapContents::HotspotList )
+          else if (searchList[l] == MapContents::HotspotList)
             {
               // fetch data from the hotspot list
-              poi = _globalMapContents->getHotspot(loop);
+              poi = _globalMapContents->getHotspot (loop);
             }
           else
             {
-              qWarning( "Map::p_displayDetailedItemInfo: ListType %d is unknown",
-                        searchList[l] );
+              qWarning (
+                  "Map::p_displayDetailedItemInfo: ListType %d is unknown",
+                  searchList[l]);
               break;
             }
 
-          curPos = poi->getMapPosition();
+          curPos = poi->getMapPosition ();
 
-          if( ! snapRect.contains(curPos) )
+          if (!snapRect.contains (curPos))
             {
               // @AP: Point lays outside of snap rectangle, we ignore it
               continue;
             }
 
-          dX = abs(curPos.x() - current.x());
-          dY = abs(curPos.y() - current.y());
+          dX = abs (curPos.x () - current.x ());
+          dY = abs (curPos.y () - current.y ());
 
           // qDebug( "pX=%d, pY=%d, cX=%d, cY=%d, delta=%d, dX=%d, dY=%d, lastDist=%d",
           //         curPos.x(), curPos.y(), current.x(), current.y(), delta, dX, dY, lastDist );
 
           // Abstand entspricht der Icon-Groesse
-          if( dX < delta && dY < delta )
+          if (dX < delta && dY < delta)
             {
-              if( found && ((dX+dY) >= lastDist) )
+              if (found && ((dX + dY) >= lastDist))
                 {
                   // The point we found earlier was closer but a
                   // taskpoint can be overwritten by an better point.
                   continue;
                 }
 
-            siteName = poi->getWPName();
-            siteDescription = poi->getName();
-            siteType = poi->getTypeID();
-            siteWgsPosition = poi->getWGSPosition();
-            sitePosition = poi->getPosition();
-            siteElevation = poi->getElevation();
-            siteComment = poi->getComment();
-            siteCountry = poi->getCountry();
+              siteName = poi->getWPName ();
+              siteDescription = poi->getName ();
+              siteType = poi->getTypeID ();
+              siteWgsPosition = poi->getWGSPosition ();
+              sitePosition = poi->getPosition ();
+              siteElevation = poi->getElevation ();
+              siteComment = poi->getComment ();
+              siteCountry = poi->getCountry ();
 
-            w = &m_wp;
-            w->name = siteName;
-            w->description = siteDescription;
-            w->type = siteType;
-            w->wgsPoint = siteWgsPosition;
-            w->projPoint = sitePosition;
-            w->elevation = siteElevation;
-            w->comment = siteComment;
-            w->country = siteCountry;
-            w->icao.clear();
-            w->frequency = 0.0;
-            w->taskPointIndex = -1;
-            w->wpListMember = false;
-            w->rwyList.clear();
+              w = &m_wp;
+              w->name = siteName;
+              w->description = siteDescription;
+              w->type = siteType;
+              w->wgsPoint = siteWgsPosition;
+              w->projPoint = sitePosition;
+              w->elevation = siteElevation;
+              w->comment = siteComment;
+              w->country = siteCountry;
+              w->icao.clear ();
+              w->frequencyList.clear ();
+              w->taskPointIndex = -1;
+              w->wpListMember = false;
+              w->rwyList.clear ();
 
-            Airfield*   af = dynamic_cast<Airfield *>(poi);
-            RadioPoint* rp = dynamic_cast<RadioPoint *>(poi);
+              Airfield* af = dynamic_cast<Airfield *> (poi);
+              RadioPoint* rp = dynamic_cast<RadioPoint *> (poi);
 
-            if( af != static_cast<Airfield *>(0) )
-              {
-                // This is an airfield object
-                w->icao = af->getICAO();
-                w->frequency = af->getFrequency();
-                w->rwyList = af->getRunwayList();
-              }
-            else if( rp != static_cast<RadioPoint *>(0) )
-              {
-                // This is a RadioPoint
-                w->icao = rp->getICAO();
-                w->frequency = rp->getFrequency();
+              if (af != static_cast<Airfield *> (0))
+                {
+                  // This is an airfield object
+                  w->icao = af->getICAO ();
+                  w->frequencyList = af->getFrequencyList ();
+                  w->rwyList = af->getRunwayList ();
+                }
+              else if (rp != static_cast<RadioPoint *> (0))
+                {
+                  // This is a RadioPoint
+                  w->icao = rp->getICAO ();
+                  w->frequencyList = rp->getFrequencyList ();
 
-                // Workaround for declination a.s.o. These data are passed
-                // as comment.
-                if( m_wp.comment.isEmpty() == false )
-                  {
-                    m_wp.comment += ", ";
-                  }
+                  // Workaround for declination a.s.o. These data are passed
+                  // as comment.
+                  if (m_wp.comment.isEmpty () == false)
+                    {
+                      m_wp.comment += ", ";
+                    }
 
-                m_wp.comment += rp->getAdditionalText();
-              }
+                  m_wp.comment += rp->getAdditionalText ();
+                }
 
-            found = true;
-            lastDist = dX+dY;
+              found = true;
+              lastDist = dX + dY;
 
-            if( lastDist < (delta/3) ) //if we're very near, stop searching the list
-              {
-                break;
-              }
+              if (lastDist < (delta / 3))
+                {
+                  // if we're very near, stop searching the list
+                  break;
+                }
             }
         }
     }

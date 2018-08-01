@@ -114,6 +114,7 @@ HEADERS = \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
+    frequency.h \
     filetools.h \
     flighttask.h \
     fontdialog.h \

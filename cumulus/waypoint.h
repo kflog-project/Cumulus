@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2015 by Axel Pauli
+ **                         2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -22,6 +22,7 @@
 #include <QPoint>
 #include <QString>
 
+#include "Frequency.h"
 #include "runway.h"
 #include "wgspoint.h"
 
@@ -32,9 +33,9 @@
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2015
+ * \date 1999-2018
  *
- * \version 1.0
+ * \version 1.1
  */
 
 class Waypoint
@@ -78,6 +79,24 @@ class Waypoint
    */
   bool read( Waypoint* wp, const QString& fileName );
 
+  /**
+   * @return The frequency list as reference.
+   */
+  QList<Frequency>& getFrequencyList()
+    {
+      return frequencyList;
+    };
+
+  /**
+   * Adds a new frequency to the frequency list.
+   *
+   * @param freq The frequency and its type.
+   */
+  void addFrequency( Frequency freqencyAndType )
+    {
+      frequencyList.append( freqencyAndType );
+    };
+
   /** The short name of the waypoint limited to 8 characters and upper cases. */
   QString name;
   /** The type of the waypoint */
@@ -102,8 +121,10 @@ class Waypoint
   /** elevation of waypoint in meters */
   float elevation;
 
-  /** frequency of contact for waypoint in MHz */
-  float frequency;
+  /**
+  * All speech frequencies with type of the airfield.
+  */
+  QList<Frequency> frequencyList;
 
   /** contains an priority indication for the waypoint
    * 0=low

@@ -527,7 +527,7 @@ bool OpenAip::readRadio( QXmlStreamReader& xml, RadioPoint& rp )
 
               if( ok )
                 {
-                  rp.setFrequency( fre );
+                  rp.addFrequency( Frequency(fre) );
                 }
               else
                 {
@@ -1194,16 +1194,10 @@ bool OpenAip::readAirfieldRadio( QXmlStreamReader& xml, Airfield& af )
           if( xml.name() == "RADIO" )
             {
               // All record data have been read inclusive the end element.
-              if( ok )
+              if( ok && frequency >= 118.0 )
                 {
-                  if( type == "ATIS" )
-                    {
-                      af.setAtis( frequency );
-                    }
-                  else
-                    {
-                      af.setFrequency( frequency );
-                    }
+                  // We add only speech frequencies.
+                  af.addFrequency( Frequency(frequency, type) );
                 }
 
               return true;

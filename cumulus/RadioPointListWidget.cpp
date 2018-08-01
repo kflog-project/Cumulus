@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2015 by Axel Pauli
+**   Copyright (c):  2014-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -109,7 +109,7 @@ Waypoint* RadioPointListWidget::getCurrentWaypoint()
   m_wp.type = site->getTypeID();
   m_wp.elevation = site->getElevation();
   m_wp.icao = site->getICAO();
-  m_wp.frequency = site->getFrequency();
+  m_wp.frequencyList = site->getFrequencyList();
   m_wp.comment = site->getAdditionalText();
   m_wp.country = site->getCountry();
 

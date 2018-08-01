@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2018 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 #include "airfield.h"
 #include "filetools.h"
 #include "generalconfig.h"
+#include "Frequency.h"
 #include "mapcontents.h"
 #include "OpenAip.h"
 #include "OpenAipPoiLoader.h"
@@ -32,8 +33,8 @@ extern MapMatrix* _globalMapMatrix;
 // set static member variable
 QMutex OpenAipPoiLoader::m_mutex;
 
-// Dats stream version to be used for compiled files.
-#define Q_DATA_STREAM QDataStream::Qt_4_7
+// Data stream version to be used for compiled files.
+#define Q_DATA_STREAM QDataStream::Qt_4_8
 
 OpenAipPoiLoader::OpenAipPoiLoader()
 {
@@ -575,8 +576,8 @@ int OpenAipPoiLoader::load( QList<SinglePoint>& spList, bool readSource )
 }
 
 bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
-					   QList<Airfield>& airfieldList,
-					   int listBegin )
+                                           QList<Airfield>& airfieldList,
+                                           int listBegin)
 {
   if( airfieldList.size() == 0 || airfieldList.size() < listBegin )
     {
@@ -648,15 +649,21 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       // elevation in meters
       out << af.getElevation();
 
-      // frequency is written as e.g. 126.575, is reduced to 16 bits
-      if( af.getFrequency() == 0.0 )
-        {
-          out << quint16(0);
-        }
-      else
-        {
-          out << quint16( rint((af.getFrequency() - 100.0) * 1000.0 ));
-        }
+      // The frequency list is saved.
+      QList<Frequency>& fList = af.getFrequencyList();
+
+      // Number of Frequencies
+      out << quint8( fList.size() );
+
+      for( int i = 0; i < fList.size(); i++ )
+       {
+          Frequency freq = fList.at(i);
+
+          // frequency is written as e.g. 126.575, is reduced to 16 bits
+          out << quint16( rint((freq.getFrequency() - 100.0) * 1000.0 ));
+          // frequency type
+          ShortSave(out, freq.getType().toUtf8());
+       }
 
       // The runway list is saved
       QList<Runway>& rwyList = af.getRunwayList();
@@ -755,8 +762,23 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
       out << rp.getPosition();
       // elevation in meters
       out << rp.getElevation();
-      // frequency is save in MHz
-      out << rp.getFrequency();
+
+      // The frequency list is saved.
+      QList<Frequency>& fList = rp.getFrequencyList();
+
+      // Number of Frequencies
+      out << quint8( fList.size() );
+
+      for( int i = 0; i < fList.size (); i++ )
+        {
+          Frequency freq = fList.at (i);
+
+          // frequency is saved as MHz
+          out << freq.getFrequency ();
+          // frequency type
+          ShortSave (out, freq.getType ().toUtf8 ());
+        }
+
       // Channel info
       ShortSave(out, rp.getChannel().toUtf8());
       // Service range as float
@@ -889,7 +911,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
   QPoint position;
   float elevation;
   quint16 inFrequency;
-
+  quint8 listSize;
   uint counter = 0;
 
   while( ! in.atEnd() )
@@ -926,19 +948,22 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
       in >> elevation; af.setElevation(elevation);
 
-      in >> inFrequency;
+      // The frequency list has to be read
+      in >> listSize;
 
-      if( inFrequency == 0 )
+      for( short i = 0; i < (short) listSize; i++ )
         {
-          af.setFrequency( 0.0 );
-        }
-      else
-        {
-          af.setFrequency((((float) inFrequency) / 1000.0) + 100.);
+          in >> inFrequency;
+          ShortLoad(in, utf8_temp);
+
+          Frequency freq( ((((float) inFrequency) / 1000.0) + 100.),
+                          QString::fromUtf8(utf8_temp) );
+
+          af.addFrequency( freq );
         }
 
       // The runway list has to be read
-      quint8 listSize; in >> listSize;
+      in >> listSize;
 
       for( short i = 0; i < (short) listSize; i++ )
         {
@@ -1016,7 +1041,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
   float range;
   float declination;
   quint8 isAligned2TrueNorth;
-
+  quint8 listSize;
   uint counter = 0;
 
   while( ! in.atEnd() )
@@ -1053,8 +1078,20 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
       in >> elevation; rp.setElevation(elevation);
 
-      // Frequency in MHz
-      in >> inFrequency; rp.setFrequency( inFrequency );
+      // The frequency list has to be read
+      in >> listSize;
+
+      for( short i = 0; i < (short) listSize; i++ )
+        {
+          // Frequency in MHz
+          in >> inFrequency;
+          ShortLoad(in, utf8_temp);
+
+          Frequency freq( ((((float) inFrequency) / 1000.0) + 100.),
+                          QString::fromUtf8(utf8_temp) );
+
+          rp.addFrequency( freq );
+        }
 
       // Channel info
       ShortLoad(in, utf8_temp);

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2016 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -39,6 +39,7 @@
 #include "polar.h"
 #include "waypoint.h"
 #include "airfield.h"
+#include "Frequency.h"
 
 extern MapContents *_globalMapContents;
 
@@ -223,7 +224,7 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
           QString siteDescription = site->getName();
           QString siteCountry = site->getCountry();
           short siteType = site->getTypeID();
-          float siteFrequency = site->getFrequency();
+          QList<Frequency> frequencyList = site->getFrequencyList();
           WGSPoint siteWgsPosition = site->getWGSPosition();
           QPoint sitePosition = site->getPosition();
           float siteElevation = site->getElevation();
@@ -261,7 +262,7 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
                              siteCountry,
                              true,
                              siteType,
-                             siteFrequency,
+                             frequencyList,
                              siteWgsPosition,
                              sitePosition,
                              siteElevation,

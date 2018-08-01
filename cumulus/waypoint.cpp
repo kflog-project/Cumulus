@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2018 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,6 +16,8 @@
 #ifndef KFLOG_FILE_MAGIC
 #define KFLOG_FILE_MAGIC 0x404b464c
 #endif
+
+#define WP_FILE_VERSION 1
 
 #include <QtCore>
 
@@ -33,7 +35,6 @@ Waypoint::Waypoint()
   country        = "";
   icao           = "";
   elevation      = 0;
-  frequency      = 0.;
   priority       = Waypoint::Low;
   taskPointIndex = -1;
   wpListMember   = false;
@@ -57,7 +58,7 @@ Waypoint::Waypoint(const Waypoint& inst)
   comment        = inst.comment;
   country        = inst.country;
   elevation      = inst.elevation;
-  frequency      = inst.frequency;
+  frequencyList  = inst.frequencyList;
   priority       = inst.priority;
   taskPointIndex = inst.taskPointIndex;
   wpListMember   = inst.wpListMember;
@@ -126,6 +127,7 @@ bool Waypoint::write( const Waypoint* wp, const QString& fileName )
 #endif
 
   out << quint32( KFLOG_FILE_MAGIC );
+  out << quint8(WP_FILE_VERSION);
   out << wp->name;
   out << (qint16) wp->type;
   out << (qint32) wp->wgsPoint.lat();
@@ -134,11 +136,20 @@ bool Waypoint::write( const Waypoint* wp, const QString& fileName )
   out << wp->icao;
   out << wp->comment;
   out << wp->elevation;
-  out << wp->frequency;
   out << (quint8) wp->priority;
   out << (qint16) wp->taskPointIndex;
   out << wp->country;
   out << wp->wpListMember;
+
+  // The frequency list is saved
+  out << quint8( wp->frequencyList.size() );
+
+  for( int i = 0; i < wp->frequencyList.size(); i++ )
+    {
+      Frequency fre = wp->frequencyList.at(i);
+      out << fre.getFrequency();
+      out << fre.getType();
+    }
 
   // The runway list is saved
   out << quint8( wp->rwyList.size() );
@@ -197,12 +208,18 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
       return false;
     }
 
+  quint8 version;
+  in >> version;
+
+  wp->frequencyList.clear();
   wp->rwyList.clear();
 
   qint16 qint16v;
   qint32 qint32v;
   quint8 quint8v;
   quint16 quint16v;
+  float floatv;
+  QString qstringv;
 
   in >> wp->name;
   in >> qint16v;  wp->type = qint16v;
@@ -212,19 +229,38 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   in >> wp->icao;
   in >> wp->comment;
   in >> wp->elevation;
-  in >> wp->frequency;
+
+  if( version != WP_FILE_VERSION )
+    {
+      // That seems to be an old record. It must be migrated.
+      in >> floatv;
+      wp->addFrequency( Frequency( floatv, "INFO" ) );
+    }
+
   in >> quint8v; wp->priority = (enum Priority) quint8v;
   in >> qint16v; wp->taskPointIndex = qint16v;
   in >> wp->country;
   in >> wp->wpListMember;
 
-  // The runway list is saved
+  // The frequency list is read
+  if( version == WP_FILE_VERSION )
+    {
+      in >> quint8v;
+
+      for( int i = 0; i < quint8v; i++ )
+        {
+          in >> floatv;
+          in >> qstringv;
+          wp->addFrequency( Frequency(floatv, qstringv) );
+        }
+    }
+
+  // The runway list is read
   in >> quint8v;
 
   for( int i = 0; i < quint8v; i++ )
     {
       Runway rwy;
-
       in >> rwy.m_length;
       in >> rwy.m_width;
       in >> quint16v; rwy.m_heading = quint16v;

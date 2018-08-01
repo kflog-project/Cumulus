@@ -29,7 +29,7 @@
  *
  * This class is derived from \ref SinglePoint
  *
- * \date 2000-2015
+ * \date 2000-2018
  *
  */
 
@@ -41,6 +41,7 @@
 #include <QPixmap>
 #include <QString>
 
+#include "Frequency.h"
 #include "runway.h"
 #include "singlepoint.h"
 
@@ -64,13 +65,12 @@ class Airfield : public SinglePoint
    * @param  pos  The position
    * @param  rwList A list with runway objects
    * @param  elevation  The elevation
-   * @param  frequency  The frequency
+   * @param  frequencyList A list with the frequency objects
    * @param  country The country of the airfield as two letter code
    * @param  comment An additional comment related to the airfield
    * @param  winch  "true", if winch launch is available
    * @param  towing "true", if aero towing is available
    * @param  landable "true", if airfield is landable
-   * @param  atis ATIS
    */
   Airfield( const QString& name,
             const QString& icao,
@@ -80,13 +80,12 @@ class Airfield : public SinglePoint
             const QPoint& pos,
             const QList<Runway>& rwList,
             const float elevation,
-            const float frequency,
+            const QList<Frequency> frequencyList,
             const QString country = "",
             const QString comment = "",
             bool winch = false,
             bool towing = false,
-            bool landable = true,
-            const float atis = 0.0 );
+            bool landable = true );
 
   /**
    * Destructor
@@ -94,7 +93,7 @@ class Airfield : public SinglePoint
   virtual ~Airfield();
 
   /**
-   * @return The frequency of the airfield as String.
+   * @return The frequency as String.
    */
   QString frequencyAsString( const float frequency ) const
     {
@@ -102,35 +101,27 @@ class Airfield : public SinglePoint
     };
 
   /**
-   * @return The frequency of the airfield as float value.
+   * @return The frequency list of the airfield.
    */
-  float getFrequency() const
+  QList<Frequency>& getFrequencyList()
     {
-      return m_frequency;
+      return m_frequencyList;
     };
 
   /**
-   * @param value The frequency of the airfield as float value.
+   * @param freq The frequency and its type of the airfield.
    */
-  void setFrequency( const float value )
+  void addFrequency( Frequency freqencyAndType)
     {
-      m_frequency = value;
+      m_frequencyList.append( freqencyAndType );
     };
 
   /**
    * @return The ATIS frequency of the airfield.
    */
-  float getAtis() const
+  Frequency* getAtis()
     {
-      return m_atis;
-    };
-
-  /**
-   * @param The ATIS frequency of the airfield.
-   */
-  void setAtis( const float value )
-    {
-      m_atis = value;
+      return 0;
     };
 
   /**
@@ -301,14 +292,9 @@ class Airfield : public SinglePoint
   QString m_icao;
 
   /**
-  * The speech frequency
+  * All speech frequencies with type of the airfield.
   */
-  float m_frequency;
-
-  /**
-   * The ATIS frequency
-   */
-  float m_atis;
+  QList<Frequency> m_frequencyList;
 
   /**
    * Contains all runways.

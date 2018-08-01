@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2015 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #include <QtXml>
 
 #include "distance.h"
+#include "Frequency.h"
 #include "generalconfig.h"
 #include "OpenAip.h"
 #include "mainwindow.h"
@@ -41,6 +42,7 @@ extern MapMatrix* _globalMapMatrix;
 #define WP_FILE_FORMAT_ID_3 103 // waypoint list size added
 #define WP_FILE_FORMAT_ID_4 104 // runway list added
 #define WP_FILE_FORMAT_ID_5 105 // runway length stored as float to avoid rounding issues between ft - m
+#define WP_FILE_FORMAT_ID_6 106 // frequency list introduced
 
 WaypointCatalog::WaypointCatalog() :
   _type(All),
@@ -81,8 +83,6 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   qint8 wpType;
   qint32 wpLatitude;
   qint32 wpLongitude;
-  qint16 wpElevation;
-  double wpFrequency=0.;
   qint8 wpLandable;
   qint16 wpRunway;
   qint16 wpLength;
@@ -100,6 +100,9 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   float wpFrequency3;
   float wpElevation3;
   float wpLength3;
+
+  // new element from format 6
+  QList<Frequency> frequencyList;
 
   // new element from format version 4
   QList<Runway> rwyList;
@@ -176,15 +179,16 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
     }
 
   // from here on, we assume that the file has the correct format.
-  if( fileFormat == WP_FILE_FORMAT_ID_2 )
+  if( fileFormat < WP_FILE_FORMAT_ID_6 )
     {
-      in.setVersion( QDataStream::Qt_2_0 );
+      in.setVersion( QDataStream::Qt_4_7 );
     }
   else
     {
-      in.setVersion( QDataStream::Qt_4_7 );
-      in >> wpListSize;
+      in.setVersion( QDataStream::Qt_4_8 );
     }
+
+  in >> wpListSize;
 
   // Only 20 animations should be done because the animation is a performance
   // blocker.
@@ -216,15 +220,25 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       in >> wpLatitude;
       in >> wpLongitude;
 
-      if( fileFormat < WP_FILE_FORMAT_ID_3 )
-        {
-          in >> wpElevation;
-          in >> wpFrequency;
-        }
-      else
+      if( fileFormat < WP_FILE_FORMAT_ID_6 )
         {
           in >> wpElevation3;
           in >> wpFrequency3;
+        }
+      else
+        {
+          quint8 listSize;
+          float frequency;
+          QString type;
+
+          in >> listSize;
+
+          for( int i = 0; i < (int) listSize; i++ )
+            {
+              in >> frequency;
+              in >> type;
+              frequencyList.append( Frequency( frequency, type) );
+            }
         }
 
       if( fileFormat < WP_FILE_FORMAT_ID_4 )
@@ -246,11 +260,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
       in >> wpComment;
       in >> wpImportance;
-
-      if( fileFormat >= WP_FILE_FORMAT_ID_3 )
-        {
-          in >> wpCountry;
-        }
+      in >> wpCountry;
 
       if( fileFormat >= WP_FILE_FORMAT_ID_4 )
         {
@@ -325,16 +335,16 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.priority = ( enum Waypoint::Priority ) wpImportance;
           wp.country = wpCountry;
           wp.wpListMember = true;
+          wp.elevation = wpElevation3;
 
-          if( fileFormat < WP_FILE_FORMAT_ID_3 )
+          if( fileFormat < WP_FILE_FORMAT_ID_6 )
             {
-              wp.elevation = wpElevation;
-              wp.frequency = wpFrequency;
+              wp.addFrequency( Frequency(wpFrequency3) );
             }
           else
             {
-              wp.elevation = wpElevation3;
-              wp.frequency = wpFrequency3;
+              // The read frequency list has to be assigned
+              wp.frequencyList = frequencyList;
             }
 
           if( fileFormat >= WP_FILE_FORMAT_ID_4 )
@@ -405,7 +415,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   qint32 wpLatitude;
   qint32 wpLongitude;
   float wpElevation;
-  float wpFrequency;
   QString wpComment="";
   quint8 wpImportance;
 
@@ -416,12 +425,12 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   if( file.open( QIODevice::WriteOnly ) )
     {
       QDataStream out( &file );
-      out.setVersion( QDataStream::Qt_4_7 );
+      out.setVersion( QDataStream::Qt_4_8 );
 
       // write file header
       out << quint32( KFLOG_FILE_MAGIC );
       out << qint8( FILE_TYPE_WAYPOINTS );
-      out << quint16( WP_FILE_FORMAT_ID_5 );
+      out << quint16( WP_FILE_FORMAT_ID_6 );
       out << qint32( wpList.size() );
 
       for (int i = 0; i < wpList.size(); i++)
@@ -434,7 +443,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           wpLatitude = wp.wgsPoint.lat();
           wpLongitude = wp.wgsPoint.lon();
           wpElevation = wp.elevation;
-          wpFrequency = wp.frequency;
           wpComment = wp.comment;
           wpImportance = wp.priority;
 
@@ -445,7 +453,18 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           out << wpLatitude;
           out << wpLongitude;
           out << wpElevation;
-          out << wpFrequency;
+
+          // The frequency list is saved
+          out << quint8( wp.frequencyList.size() );
+
+          for( int i = 0; i < wp.frequencyList.size(); i++ )
+            {
+              Frequency fre = wp.frequencyList.at(i);
+
+              out << fre.getFrequency();
+              out << fre.getType();
+            }
+
           out << wpComment;
           out << wpImportance;
           out << wp.country;
@@ -571,7 +590,8 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString&
       w.wgsPoint.setLon(nm.namedItem("Longitude").toAttr().value().toInt());
       w.projPoint = _globalMapMatrix->wgsToMap(w.wgsPoint);
       w.elevation = nm.namedItem("Elevation").toAttr().value().toFloat();
-      w.frequency = nm.namedItem("Frequency").toAttr().value().toFloat();
+      w.addFrequency(nm.namedItem("Frequency").toAttr().value().toFloat());
+
       float length = nm.namedItem("Length").toAttr().value().toFloat();
       int surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
 
@@ -681,7 +701,16 @@ bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
       child.setAttribute( "Latitude", w.wgsPoint.lat() );
       child.setAttribute( "Longitude", w.wgsPoint.lon() );
       child.setAttribute( "Elevation", w.elevation );
-      child.setAttribute( "Frequency", w.frequency );
+
+      if( w.frequencyList.isEmpty() )
+        {
+          child.setAttribute( "Frequency", 0 );
+        }
+      else
+        {
+          child.setAttribute( "Frequency", w.frequencyList.at(0).getFrequency() );
+        }
+
       child.setAttribute( "Landable", w.rwyList.size() > 0 ? true : false );
 
       // Only the main runway is stored as 10...36
@@ -809,7 +838,7 @@ int WaypointCatalog::readOpenAipNavAids( QString catalog,
 
   for( int i = 0; i < navAidList.size(); i++ )
     {
-      const RadioPoint& rp = navAidList.at(i);
+      RadioPoint& rp = navAidList[i];
 
       // Check filter, if type should be taken
       if( ! takeType( rp.getTypeID() ) )
@@ -861,7 +890,7 @@ int WaypointCatalog::readOpenAipNavAids( QString catalog,
       wp.icao = rp.getICAO();
       wp.comment = rp.getComment();
       wp.elevation = rp.getElevation();
-      wp.frequency = rp.getFrequency();
+      wp.frequencyList = rp.getFrequencyList();
       wp.priority = Waypoint::Low;
       wp.country = rp.getCountry();
 
@@ -1060,7 +1089,7 @@ int WaypointCatalog::readOpenAipAirfields( QString catalog,
       wp.priority = Waypoint::Low;
       wp.country = af.getCountry();
       wp.icao = af.getICAO();
-      wp.frequency = af.getFrequency();
+      wp.frequencyList = af.getFrequencyList();
 
       if( af.getRunwayList().size() > 0 )
         {
@@ -2072,11 +2101,11 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
           if( ok )
             {
-              wp.frequency = frequency;
+              wp.addFrequency( Frequency(frequency, "CUP") );
             }
           else
             {
-              wp.frequency = 0.0;
+              wp.addFrequency( Frequency(0.0) );
             }
         }
 

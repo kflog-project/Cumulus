@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2014 by Axel Pauli
+ **                   2008-2018 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -28,9 +26,9 @@
  * Class for one entry in the \ref ReachableList class. It covers all belonging
  * to a reachable point element.
  *
- * \date 2004-2014
+ * \date 2004-2018
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef REACHABLE_POINT_H
@@ -42,8 +40,9 @@
 #include <QString>
 #include <QPoint>
 
-#include "distance.h"
 #include "altitude.h"
+#include "distance.h"
+#include "Frequency.h"
 #include "runway.h"
 #include "wgspoint.h"
 #include "waypoint.h"
@@ -60,7 +59,7 @@ class ReachablePoint
                   QString country,
                   bool orignAfl,
                   short type,
-                  float frequency,
+                  QList<Frequency> frequencyList,
                   WGSPoint pos,
                   QPoint ppos,
                   float elevation,
@@ -159,9 +158,9 @@ class ReachablePoint
     return _wp.wgsPoint;
   };
 
-  float getFrequency() const
+  QList<Frequency>& getFrequencyList()
   {
-    return _wp.frequency;
+    return _wp.getFrequencyList();
   };
 
   const Waypoint *getWaypoint() const

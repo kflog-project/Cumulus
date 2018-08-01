@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2008-2015 by Axel Pauli
+ **   Copyright (c):  2008-2018 by Axel Pauli
  **
  **   Email of maintainer: <kflog.cumulus@gmail.com>
  **
