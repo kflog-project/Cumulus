@@ -298,14 +298,29 @@ void ReachpointListView::fillRpList()
 
       QList<Frequency>& fList = rp.getFrequencyList();
 
-      for( int i = 0; i < fList.size(); i++ )
+      if( fList.size() == 1 )
         {
-          if( i > 0 )
+          frequencies = fList.at(0).frequencyAsString();
+        }
+      else
+        {
+          // Only a main frequency should be shown in the table
+          for( int i = 0; i < fList.size(); i++ )
             {
-              frequencies += ", ";
-            }
+              QString& type = fList[i].getType();
 
-          frequencies += fList.at(i).frequencyAsString();
+              if( type == "TOWER" || type == "INFO"  )
+                {
+                  frequencies = fList.at(i).frequencyAsString();
+                  break;
+                }
+            }
+        }
+
+      if( fList.size() > 0 && frequencies.isEmpty() )
+        {
+          // Nothing assigned, take the first element.
+          frequencies = fList.at(0).frequencyAsString();
         }
 
       if( frequencies.isEmpty() )

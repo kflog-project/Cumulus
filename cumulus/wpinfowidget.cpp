@@ -415,13 +415,20 @@ void WPInfoWidget::writeText()
                Frequency fre = m_wp.frequencyList[i];
                QString frestr = fre.frequencyAsString();
 
+               if( m_wp.type ==BaseMapElement::Ndb )
+                 {
+                   // A NDB needs a special handling. Frequency is shown in KHz.
+                   float freq = fre.getFrequency() * 1000;
+                   frestr = QString("%1 KHz").arg(freq);
+                 }
+
                if( i % 2 )
                  {
-                   tmp = QString("<tr><td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td>").arg( frestr);
+                   tmp = QString("<tr><td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td>").arg(frestr);
                  }
                else
                  {
-                   tmp = QString("<td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td></tr>").arg( frestr);
+                   tmp = QString("<td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td></tr>").arg(frestr);
                  }
 
                itxt += tmp;

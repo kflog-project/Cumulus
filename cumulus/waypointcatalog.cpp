@@ -44,6 +44,9 @@ extern MapMatrix* _globalMapMatrix;
 #define WP_FILE_FORMAT_ID_5 105 // runway length stored as float to avoid rounding issues between ft - m
 #define WP_FILE_FORMAT_ID_6 106 // frequency list introduced
 
+// Note! If you introduce a new WP_FILE_FORMAT_ID, consider readOldVersion
+// handling!
+
 WaypointCatalog::WaypointCatalog() :
   _type(All),
   _radius(-1),
@@ -76,6 +79,8 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       qWarning("WaypointCatalog::readBinary: Global pointer '_globalMapMatrix' is Null!");
       return -1;
     }
+
+  bool readOldVersion = false;
 
   QString wpName="";
   QString wpDescription="";
@@ -167,6 +172,12 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
     }
 
   in >> fileFormat;
+
+  if( fileFormat < WP_FILE_FORMAT_ID_6 )
+    {
+      // we have read an old version.
+      readOldVersion = true;
+    }
 
   if( fileFormat < WP_FILE_FORMAT_ID_2 )
     {
@@ -370,6 +381,12 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
     }
 
   file.close();
+
+  if( readOldVersion == true )
+    {
+      // create a new waypoint file in the changed format
+      writeBinary( catalog, *wpList );
+    }
 
   if( _showProgress )
     {

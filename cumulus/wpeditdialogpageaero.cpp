@@ -29,6 +29,7 @@
 #include "altitude.h"
 #include "airfield.h"
 #include "doubleNumberEditor.h"
+#include "layout.h"
 #include "mainwindow.h"
 #include "numberEditor.h"
 #include "wpeditdialogpageaero.h"
@@ -39,7 +40,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   setObjectName("WpEditDialogPageAero");
 
   QVBoxLayout* topLayout = new QVBoxLayout(this);
-  topLayout->setMargin(10);
+  topLayout->setMargin(10 * Layout::getIntScaledDensity());
 
   QGridLayout *qgl = new QGridLayout;
   qgl->setMargin(0);
@@ -57,9 +58,22 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   edtFrequency->setValidator( eValidator );
   edtFrequency->setText("0.0");
 
-  QFormLayout *qfl = new QFormLayout;
-  qfl->addRow(tr("Channel:"), edtFrequency);
-  qgl->addLayout(qfl, 0, 0);
+  QHBoxLayout *hbox = new QHBoxLayout;
+  hbox->setSpacing(10 * Layout::getIntScaledDensity());
+  hbox->addWidget( new QLabel(tr("Channel:")) );
+  hbox->addWidget( edtFrequency );
+  hbox->addWidget( new QLabel(tr("Ch-Type:")) );
+
+  edtFrequencyType = new QLineEdit;
+  imh = Qt::ImhUppercaseOnly | Qt::ImhDigitsOnly | Qt::ImhNoPredictiveText;
+  edtFrequencyType->setInputMethodHints(imh);
+  edtFrequencyType->setMaxLength(20); // limit to 20 characters
+
+  connect( edtFrequencyType, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  hbox->addWidget( edtFrequencyType );
+  qgl->addLayout(hbox, 0, 0);
 
   edtICAO = new QLineEdit;
   imh = Qt::ImhUppercaseOnly | Qt::ImhDigitsOnly | Qt::ImhNoPredictiveText;
@@ -69,11 +83,9 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   connect( edtICAO, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
-  qfl = new QFormLayout;
+  QFormLayout* qfl = new QFormLayout;
   qfl->addRow(tr("ICAO:"), edtICAO);
   qgl->addLayout(qfl, 0, 2);
-
-  qgl->setColumnStretch(1, 10);
   qgl->setRowMinimumHeight(1, 20);
 
   //----------------------------------------------------------------------------
@@ -95,7 +107,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QHBoxLayout* grpLayout1 = new QHBoxLayout;
   gboxRunway1->setLayout( grpLayout1 );
 
-  QHBoxLayout* hbox = new QHBoxLayout;
+  hbox = new QHBoxLayout;
 
   chkRwy1Both = new QCheckBox( tr("bidirectional") );
   hbox->addWidget( chkRwy1Both );
@@ -290,6 +302,8 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
   if( wp->frequencyList.size() > 0 )
     {
       frequency = wp->frequencyList.at(0).getFrequency();
+      QString type = wp->frequencyList[0].getType();
+      edtFrequencyType->setText( type );
     }
 
   QString tmp = QString("%1").arg(frequency, 0, 'f', 3);
@@ -376,11 +390,14 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
 
   if( wp->frequencyList.size() == 0 )
     {
-      wp->addFrequency( Frequency(frequency) );
+      wp->addFrequency( Frequency(frequency,
+                                  edtFrequencyType->text().trimmed()) );
     }
   else
     {
       wp->frequencyList[0].setFrequency(frequency);
+      QString type = edtFrequencyType->text().trimmed();
+      wp->frequencyList[0].setType( type );
     }
 
   wp->rwyList.clear();

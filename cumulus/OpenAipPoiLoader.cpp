@@ -1087,9 +1087,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
           in >> inFrequency;
           ShortLoad(in, utf8_temp);
 
-          Frequency freq( ((((float) inFrequency) / 1000.0) + 100.),
-                          QString::fromUtf8(utf8_temp) );
-
+          Frequency freq( inFrequency, QString::fromUtf8(utf8_temp) );
           rp.addFrequency( freq );
         }
 

@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2013 by Axel Pauli
+**                   2008-2018 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -23,7 +21,7 @@
  *
  * \brief This is the general page for the waypoint editor dialog
  *
- * \date 2002-2013
+ * \date 2002-2018
  */
 
 #ifndef WPEDIT_DIALOG_PAGE_AERO_H
@@ -124,6 +122,7 @@ class WpEditDialogPageAero : public QWidget
 
   QLineEdit* edtICAO;
   DoubleNumberEditor* edtFrequency;
+  QLineEdit* edtFrequencyType;
 
   QGroupBox* gboxRunway1;
   QGroupBox* gboxRunway2;

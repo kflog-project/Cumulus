@@ -145,6 +145,7 @@ HEADERS = \
     elevationcolorimage.h \
     filetools.h \
     flighttask.h \
+    Frequency.h \
     fontdialog.h \
     generalconfig.h \
     gliderflightdialog.h \
