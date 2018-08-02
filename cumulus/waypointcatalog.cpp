@@ -221,6 +221,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           //                                 QEventLoop::ExcludeSocketNotifiers );
         }
 
+      frequencyList.clear();
       rwyList.clear();
 
       // read values from file
@@ -230,10 +231,10 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       in >> wpType;
       in >> wpLatitude;
       in >> wpLongitude;
+      in >> wpElevation3;
 
       if( fileFormat < WP_FILE_FORMAT_ID_6 )
         {
-          in >> wpElevation3;
           in >> wpFrequency3;
         }
       else
