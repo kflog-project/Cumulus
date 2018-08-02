@@ -13,11 +13,8 @@
 **
 ***********************************************************************/
 
-#ifndef KFLOG_FILE_MAGIC
-#define KFLOG_FILE_MAGIC 0x404b464c
-#endif
-
-#define WP_FILE_VERSION 1
+// Magic of waypoint file with version number in lsb
+#define WP_FILE_MAGIC 0x57504601
 
 #include <QtCore>
 
@@ -126,8 +123,7 @@ bool Waypoint::write( const Waypoint* wp, const QString& fileName )
   out.setVersion( QDataStream::Qt_4_8 );
 #endif
 
-  out << quint32( KFLOG_FILE_MAGIC );
-  out << quint8(WP_FILE_VERSION);
+  out << quint32( WP_FILE_MAGIC );
   out << wp->name;
   out << (qint16) wp->type;
   out << (qint32) wp->wgsPoint.lat();
@@ -202,14 +198,11 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   //check if the file has the correct format
   in >> fileMagic;
 
-  if (fileMagic != KFLOG_FILE_MAGIC)
+  if (fileMagic != WP_FILE_MAGIC)
     {
       file.close();
       return false;
     }
-
-  quint8 version;
-  in >> version;
 
   wp->frequencyList.clear();
   wp->rwyList.clear();
@@ -229,30 +222,19 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   in >> wp->icao;
   in >> wp->comment;
   in >> wp->elevation;
-
-  if( version != WP_FILE_VERSION )
-    {
-      // That seems to be an old record. It must be migrated.
-      in >> floatv;
-      wp->addFrequency( Frequency( floatv, "INFO" ) );
-    }
-
   in >> quint8v; wp->priority = (enum Priority) quint8v;
   in >> qint16v; wp->taskPointIndex = qint16v;
   in >> wp->country;
   in >> wp->wpListMember;
 
   // The frequency list is read
-  if( version == WP_FILE_VERSION )
-    {
-      in >> quint8v;
+  in >> quint8v;
 
-      for( int i = 0; i < quint8v; i++ )
-        {
-          in >> floatv;
-          in >> qstringv;
-          wp->addFrequency( Frequency(floatv, qstringv) );
-        }
+  for( int i = 0; i < quint8v; i++ )
+    {
+      in >> floatv;
+      in >> qstringv;
+      wp->addFrequency( Frequency(floatv, qstringv) );
     }
 
   // The runway list is read
@@ -275,3 +257,4 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   wp->projPoint = _globalMapMatrix->wgsToMap(wp->wgsPoint);
   return true;
 }
+
