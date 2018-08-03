@@ -648,7 +648,7 @@ void WPInfoWidget::slot_edit()
 
   WpEditDialog *dlg = new WpEditDialog( this, wplelem );
 
-  connect( dlg, SIGNAL(wpListChanged(Waypoint &)), this,
+  connect( dlg, SIGNAL(wpEdited(Waypoint &)), this,
            SLOT(slot_edited(Waypoint &)) );
 
   dlg->setVisible( true );

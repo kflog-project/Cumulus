@@ -1032,6 +1032,7 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
       "AD_MIL"
       "AF_CIVIL"
       "AF_MIL_CIVIL"
+      "AF_WATER"
       "APT"
       "GLIDING"
       "HELI_CIVIL"
@@ -1055,7 +1056,7 @@ bool OpenAip::readAirfieldRecord( QXmlStreamReader& xml, Airfield& af )
         {
           af.setTypeID( BaseMapElement::MilAirport );
         }
-      else if( type == "AF_CIVIL" )
+      else if( type == "AF_CIVIL" || type == "AF_WATER" )
         {
           af.setTypeID( BaseMapElement::Airfield );
         }

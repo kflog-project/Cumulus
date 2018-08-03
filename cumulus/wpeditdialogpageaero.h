@@ -144,6 +144,9 @@ class WpEditDialogPageAero : public QWidget
 
   NumberEditor* edtRwy1Length;
   NumberEditor* edtRwy2Length;
+
+  // Index of edited frequency record
+  int edtFequencyListIndex;
 };
 
 #endif

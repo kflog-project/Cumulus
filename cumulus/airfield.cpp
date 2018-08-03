@@ -220,25 +220,27 @@ bool Airfield::drawMapElement( QPainter* targetP )
                            glConfig->getMagentaCircle(iconSize) );
     }
 
-  if( glConfig->isRotatable( typeID ) )
+  if (glConfig->isRotatable( typeID ))
     {
-      if( typeID == BaseMapElement::UltraLight ||
-	  typeID == BaseMapElement::Outlanding )
-	{
-	  QPixmap& pm = glConfig->useSmallIcons() ? m_smallFields[m_rwShift] : m_bigFields[m_rwShift];
+      if (typeID == BaseMapElement::UltraLight
+          || typeID == BaseMapElement::Outlanding)
+        {
+          QPixmap& pm =
+              glConfig->useSmallIcons() ?
+                  m_smallFields[m_rwShift] : m_bigFields[m_rwShift];
 
-	  targetP->drawPixmap( curPos.x() - pm.width() / 2,
-			       curPos.y() - pm.height() / 2,
-			       pm );
-	}
+          targetP->drawPixmap( curPos.x() - pm.width() / 2,
+                               curPos.y() - pm.height() / 2, pm );
+        }
       else
-	{
-	  QPixmap& pm = glConfig->useSmallIcons() ? m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
+        {
+          QPixmap& pm =
+              glConfig->useSmallIcons() ?
+                  m_smallAirfields[m_rwShift] : m_bigAirfields[m_rwShift];
 
-	  targetP->drawPixmap( curPos.x() - pm.width() / 2,
-			       curPos.y() - pm.height() / 2,
-			       pm );
-	}
+          targetP->drawPixmap( curPos.x() - pm.width() / 2,
+                               curPos.y() - pm.height() / 2, pm );
+        }
     }
   else
     {

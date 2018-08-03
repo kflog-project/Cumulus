@@ -35,7 +35,8 @@
 #include "wpeditdialogpageaero.h"
 
 WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
-  QWidget(parent, Qt::WindowStaysOnTopHint)
+  QWidget(parent, Qt::WindowStaysOnTopHint),
+  edtFequencyListIndex(-1)
 {
   setObjectName("WpEditDialogPageAero");
 
@@ -297,12 +298,27 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
   edtICAO->setText(wp->icao.toUpper());
 
   float frequency = 0.0;
+  edtFequencyListIndex = -1;
 
   // Only the frequency at index 0 is supported.
   if( wp->frequencyList.size() > 0 )
     {
-      frequency = wp->frequencyList.at(0).getFrequency();
-      QString type = wp->frequencyList[0].getType();
+      int i = 0;
+
+      // Only a main frequency should be shown in the table
+      for( i = 0; i < wp->frequencyList.size(); i++ )
+        {
+          QString& type = wp->frequencyList[i].getType();
+
+          if( type == "TOWER" || type == "INFO"  )
+            {
+              edtFequencyListIndex = i;
+              break;
+            }
+        }
+
+      frequency = wp->frequencyList.at(i).getFrequency();
+      QString type = wp->frequencyList[i].getType();
       edtFrequencyType->setText( type );
     }
 
@@ -390,14 +406,14 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
 
   if( wp->frequencyList.size() == 0 )
     {
-      wp->addFrequency( Frequency(frequency,
-                                  edtFrequencyType->text().trimmed()) );
+      wp->addFrequency( Frequency( frequency,
+                                   edtFrequencyType->text().trimmed()) );
     }
   else
     {
-      wp->frequencyList[0].setFrequency(frequency);
+      wp->frequencyList[edtFequencyListIndex].setFrequency(frequency);
       QString type = edtFrequencyType->text().trimmed();
-      wp->frequencyList[0].setType( type );
+      wp->frequencyList[edtFequencyListIndex].setType( type );
     }
 
   wp->rwyList.clear();
