@@ -340,7 +340,7 @@ void ReachpointListView::fillRpList()
 
       QTreeWidgetItem* li = new QTreeWidgetItem( sl );
 
-      li->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
+      li->setTextAlignment( 1, Qt::AlignLeft|Qt::AlignVCenter );
       li->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
       li->setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
