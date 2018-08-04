@@ -343,7 +343,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
               if (lastDist < (delta / 3))
                 {
-                  break;
+                  emit showPoi( w );
+                  return;
                 }
             }
         }
@@ -483,7 +484,8 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               if (lastDist < (delta / 3))
                 {
                   // if we're very near, stop searching the list
-                  break;
+                  emit showPoi( w );
+                  return;
                 }
             }
         }
