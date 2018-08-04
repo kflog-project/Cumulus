@@ -18,10 +18,10 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2018-08-04 AP: Cumulus 5.36.0 released for Android.
+
 [-] 2018-08-03 AP: Issue #134 fixed. Request to support more as one frequency
                    for airfields
-
-[*] 2018-07-05 AP: Cumulus 5.35.2 released for Android.
 
 [-] 2018-07-05 AP: Issue #133 fixed. Flarm IGC task handling has a bug.
 
