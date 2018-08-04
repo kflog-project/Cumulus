@@ -317,8 +317,14 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
             }
         }
 
-      frequency = wp->frequencyList.at(i).getFrequency();
-      QString type = wp->frequencyList[i].getType();
+      if( edtFequencyListIndex == -1 )
+        {
+          // No assignment has been done, take first index.
+          edtFequencyListIndex = 0;
+        }
+
+      frequency = wp->frequencyList.at(edtFequencyListIndex).getFrequency();
+      QString type = wp->frequencyList[edtFequencyListIndex].getType();
       edtFrequencyType->setText( type );
     }
 
