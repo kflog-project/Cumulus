@@ -343,11 +343,16 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
               if (lastDist < (delta / 3))
                 {
-                  emit showPoi( w );
-                  return;
+                  break;
                 }
             }
         }
+    }
+
+  if( found == true )
+    {
+      emit showPoi( w );
+      return;
     }
 
   // @AP: On map scale higher as 1024 we don't evaluate anything
@@ -484,11 +489,16 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
               if (lastDist < (delta / 3))
                 {
                   // if we're very near, stop searching the list
-                  emit showPoi( w );
-                  return;
+                  break;
                 }
             }
         }
+    }
+
+  if( found == true )
+    {
+      emit showPoi( w );
+      return;
     }
 
   // let's show waypoints
