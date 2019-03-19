@@ -20,16 +20,20 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2018
+ * \date 2010-2019
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
 #ifndef LAYOUT_H_
 #define LAYOUT_H_
 
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #if defined MAEMO
 
