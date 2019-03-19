@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2016 by Axel Pauli
+ **   Copyright (c): 2013-2019 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -35,9 +35,9 @@ QHash<QString, QHash<QString, QString> > PreFlightWeatherPage::m_metarReports;
 
 QHash<QString, QString> PreFlightWeatherPage::m_tafReports;
 
-const QString PreFlightWeatherPage::MetarUrl = "http://tgftp.nws.noaa.gov/data/observations/metar/decoded/";
+const QString PreFlightWeatherPage::MetarUrl = "https://tgftp.nws.noaa.gov/data/observations/metar/decoded/";
 
-const QString PreFlightWeatherPage::TafUrl = "http://tgftp.nws.noaa.gov/data/forecasts/taf/stations/";
+const QString PreFlightWeatherPage::TafUrl = "https://tgftp.nws.noaa.gov/data/forecasts/taf/stations/";
 
 PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   QWidget(parent),
