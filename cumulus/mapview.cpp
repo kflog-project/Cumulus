@@ -512,6 +512,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QFrame* filler = new QFrame(_statusbar);
   filler->setFont(fontSB);
   filler->setLineWidth(0);
+
   _statusbar->addWidget(filler);
   topLayout->addWidget(_statusbar);
 
