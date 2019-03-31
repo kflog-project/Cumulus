@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2015 Axel Pauli
+**   Copyright (c): 2012-2019 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,11 +23,17 @@
 
 CuLabel::CuLabel( QWidget* parent, Qt::WindowFlags flags ) :
   QLabel( parent, flags )
-{}
+{
+  setFrameStyle( QFrame::Box );
+  setLineWidth(3);
+}
 
 CuLabel::CuLabel( const QString& text, QWidget* parent, Qt::WindowFlags flags ) :
   QLabel( text, parent, flags )
-{}
+{
+  setFrameStyle( QFrame::Box );
+  setLineWidth(3);
+}
 
 void CuLabel::mousePressEvent ( QMouseEvent* event )
 {
