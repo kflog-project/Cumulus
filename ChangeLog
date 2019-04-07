@@ -18,6 +18,11 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2019-04-07 AP: Cumulus 5.36.1 released for Android.
+
+[-] 2019-04-07 AP: Issue #135 fixed. URL of Metar and TAF links have been
+                   changed to https.
+
 [*] 2018-08-04 AP: Cumulus 5.36.0 released for Android.
 
 [-] 2018-08-03 AP: Issue #134 fixed. Request to support more as one frequency
