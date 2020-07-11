@@ -97,7 +97,7 @@ public:
                  airspaces,
                  grid,
                  navigationLayer,
-		 hotspots,
+                 hotspots,
                  navaids,
                  airfields,
                  outlandings,
