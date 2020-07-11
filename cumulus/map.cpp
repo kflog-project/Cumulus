@@ -1387,7 +1387,7 @@ void Map::p_drawBaseLayer()
   _globalMapContents->drawList(&baseMapP, MapContents::LakeList, drawnElements);
 
   // draw the roads, the railroads, the hydro
-  if( cs <= 200.0 )
+  if( cs <= 130.0 )
     {
       _globalMapContents->drawList(&baseMapP, MapContents::RoadList, drawnElements);
       _globalMapContents->drawList(&baseMapP, MapContents::RailList, drawnElements);
@@ -1395,7 +1395,7 @@ void Map::p_drawBaseLayer()
    }
 
   // draw the landmarks and the obstacles
-  if( cs < 1024.0 )
+  if( cs < 130.0 )
     {
       _globalMapContents->drawList(&baseMapP, MapContents::LandmarkList, drawnElements);
       _globalMapContents->drawList(&baseMapP, MapContents::ObstacleList, drawnElements);
