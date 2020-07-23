@@ -109,7 +109,7 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   QTableWidgetItem *item = new QTableWidgetItem( tr(" State ") );
   table->setHorizontalHeaderItem( 0, item );
 
-  item = new QTableWidgetItem( tr(" Country, AS-Type, Name-Filter ") );
+  item = new QTableWidgetItem( tr(" Country, AS-Type, AS-Name ") );
   table->setHorizontalHeaderItem( 1, item );
 
   item = new QTableWidgetItem( tr(" Command ") );
