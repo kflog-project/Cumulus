@@ -110,6 +110,83 @@
     </message>
 </context>
 <context>
+    <name>AirspaceFilters</name>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="50"/>
+        <source>Airspace filters</source>
+        <translation>Luftraum Filter</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="109"/>
+        <source> State </source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="112"/>
+        <source> Country, AS-Type, AS-Name </source>
+        <translation>Land, LR-Tpy,LR-Name</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="115"/>
+        <source> Command </source>
+        <translation>Kommando</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="354"/>
+        <location filename="../../AirspaceFilters.cpp" line="553"/>
+        <source>off</source>
+        <translation>aus</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="358"/>
+        <location filename="../../AirspaceFilters.cpp" line="558"/>
+        <source>on</source>
+        <translation>ein</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="370"/>
+        <location filename="../../AirspaceFilters.cpp" line="613"/>
+        <location filename="../../AirspaceFilters.cpp" line="621"/>
+        <source>upper</source>
+        <translation>gross</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="399"/>
+        <source>Delete?</source>
+        <translation>Löschen?</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="400"/>
+        <source>Delete selected entries?</source>
+        <translation>Auswahl löschen?</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="474"/>
+        <source>Filter definition incomplete</source>
+        <translation>Filter Definition unvollständig</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="475"/>
+        <source>Expecting filter elements: &lt;country&gt;,&lt;AS-Type&gt;,&lt;Name&gt;</source>
+        <translation>Erwartete Filter Elemente: &lt;Land&gt;,&lt;LR-Typ&gt;,&lt;LR-Name&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="566"/>
+        <source>Enter Country, AS-Type, AS-Name</source>
+        <translation>Eingabe von Land, LR-Typ, LR-Name</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="567"/>
+        <source>Country, AS-Type, AS-Name:</source>
+        <translation>Land, LR-Typ, LR-Name</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="616"/>
+        <source>lower</source>
+        <translation>klein</translation>
+    </message>
+</context>
+<context>
     <name>AltimeterDialog</name>
     <message>
         <location filename="../../altimeterdialog.cpp" line="47"/>
@@ -1432,11 +1509,6 @@
         <translation>Karte Info Boxen</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="2587"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2018, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2018, Das Cumulus-Team&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../../mainwindow.cpp" line="2605"/>
         <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
@@ -1609,6 +1681,11 @@
         <translation>Nächste</translation>
     </message>
     <message>
+        <location filename="../../mainwindow.cpp" line="2587"/>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2020, The Cumulus-Team&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2020, Das Cumulus-Team&lt;/html&gt;</translation>
+    </message>
+    <message>
         <location filename="../../mainwindow.cpp" line="2591"/>
         <source>&lt;hml&gt;Cumulus %1, compiled at %2 with QT %3&lt;br&gt;&lt;br&gt;Homepage: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Repository: &lt;a href=&quot;https://github.com/kflog-project/Cumulus&quot;&gt;github.com/kflog-project/Cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;ChangeLog &lt;a href=&quot;https://github.com/kflog-project/Cumulus/blob/%1/ChangeLog&quot;&gt;%1&lt;/a&gt;&lt;br&gt;&lt;br&gt;Report bugs to: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt; or to &lt;a href=&quot;https://github.com/kflog-project/Cumulus/issues&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;&lt;br&gt;Published under the &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;Cumulus %1, kompiliert am %2 mit QT %3&lt;br&gt;&lt;br&gt;Heimatseite: &lt;a href=&quot;http://www.kflog.org/cumulus/&quot;&gt;www.kflog.org/cumulus/&lt;/a&gt;&lt;br&gt;&lt;br&gt;Software Archiv: &lt;a href=&quot;https://github.com/kflog-project/Cumulus&quot;&gt;github.com/kflog-project/Cumulus&lt;/a&gt;&lt;br&gt;&lt;br&gt;ÄnderungsLog &lt;a href=&quot;https://github.com/kflog-project/Cumulus/blob/%1/ChangeLog&quot;&gt;%1&lt;/a&gt;&lt;br&gt;&lt;br&gt;Melde Fehler an: &lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt; or to &lt;a href=&quot;https://github.com/kflog-project/Cumulus/issues&quot;&gt;GitHub&lt;/a&gt;&lt;br&gt;&lt;br&gt;Veröffentlicht unter der &lt;a href=&quot;http://www.gnu.org/licenses/licenses.html#GPL&quot;&gt;GPL&lt;/a&gt;&lt;/html&gt;</translation>
@@ -1644,60 +1721,60 @@
 <context>
     <name>Map</name>
     <message>
-        <location filename="../../map.cpp" line="165"/>
+        <location filename="../../map.cpp" line="169"/>
         <source>Airspace&amp;nbsp;Structure</source>
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="2790"/>
-        <location filename="../../map.cpp" line="2845"/>
+        <location filename="../../map.cpp" line="2866"/>
+        <location filename="../../map.cpp" line="2921"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3304"/>
+        <location filename="../../map.cpp" line="3380"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3308"/>
+        <location filename="../../map.cpp" line="3384"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3313"/>
-        <location filename="../../map.cpp" line="3482"/>
+        <location filename="../../map.cpp" line="3389"/>
+        <location filename="../../map.cpp" line="3558"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3324"/>
-        <location filename="../../map.cpp" line="3351"/>
-        <location filename="../../map.cpp" line="3504"/>
+        <location filename="../../map.cpp" line="3400"/>
+        <location filename="../../map.cpp" line="3427"/>
+        <location filename="../../map.cpp" line="3580"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3360"/>
-        <location filename="../../map.cpp" line="3388"/>
-        <location filename="../../map.cpp" line="3518"/>
+        <location filename="../../map.cpp" line="3436"/>
+        <location filename="../../map.cpp" line="3464"/>
+        <location filename="../../map.cpp" line="3594"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3397"/>
-        <location filename="../../map.cpp" line="3424"/>
-        <location filename="../../map.cpp" line="3532"/>
+        <location filename="../../map.cpp" line="3473"/>
+        <location filename="../../map.cpp" line="3500"/>
+        <location filename="../../map.cpp" line="3608"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3482"/>
+        <location filename="../../map.cpp" line="3558"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3492"/>
+        <location filename="../../map.cpp" line="3568"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
@@ -1919,19 +1996,19 @@ All downloads are canceled!</oldsource>
     <message>
         <location filename="../../mapview.cpp" line="381"/>
         <location filename="../../mapview.cpp" line="392"/>
-        <location filename="../../mapview.cpp" line="962"/>
+        <location filename="../../mapview.cpp" line="963"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
         <location filename="../../mapview.cpp" line="460"/>
-        <location filename="../../mapview.cpp" line="896"/>
+        <location filename="../../mapview.cpp" line="897"/>
         <source>Man</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../../mapview.cpp" line="468"/>
-        <location filename="../../mapview.cpp" line="1197"/>
+        <location filename="../../mapview.cpp" line="1198"/>
         <source>?</source>
         <comment>Unknown</comment>
         <translation></translation>
@@ -1942,65 +2019,65 @@ All downloads are canceled!</oldsource>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="631"/>
+        <location filename="../../mapview.cpp" line="632"/>
         <source>TP</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="872"/>
+        <location filename="../../mapview.cpp" line="873"/>
         <source>GPS OK</source>
         <oldsource>GPS new fix</oldsource>
         <translation>GPS OK</translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="876"/>
+        <location filename="../../mapview.cpp" line="877"/>
         <source>GPS no fix</source>
         <oldsource>GPS fix lost</oldsource>
         <translation>GPS kein Fix</translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="880"/>
+        <location filename="../../mapview.cpp" line="881"/>
         <source>GPS ?</source>
         <oldsource>GPS lost</oldsource>
         <translation>GPS ?</translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="887"/>
+        <location filename="../../mapview.cpp" line="888"/>
         <source>GPS</source>
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="1200"/>
+        <location filename="../../mapview.cpp" line="1201"/>
         <source>S</source>
         <comment>Standstill</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="1203"/>
+        <location filename="../../mapview.cpp" line="1204"/>
         <source>C</source>
         <comment>Cruising</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="1206"/>
+        <location filename="../../mapview.cpp" line="1207"/>
         <source>L</source>
         <comment>Circling Left</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="1209"/>
+        <location filename="../../mapview.cpp" line="1210"/>
         <source>R</source>
         <comment>Circling Right</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="1237"/>
+        <location filename="../../mapview.cpp" line="1238"/>
         <source>L</source>
         <comment>Logging</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../mapview.cpp" line="1247"/>
+        <location filename="../../mapview.cpp" line="1248"/>
         <source>Ls</source>
         <comment>LoggingStandby</comment>
         <translation></translation>
@@ -3958,36 +4035,36 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../waypointcatalog.cpp" line="148"/>
-        <location filename="../../waypointcatalog.cpp" line="1177"/>
-        <location filename="../../waypointcatalog.cpp" line="1475"/>
-        <location filename="../../waypointcatalog.cpp" line="1844"/>
+        <location filename="../../waypointcatalog.cpp" line="1178"/>
+        <location filename="../../waypointcatalog.cpp" line="1476"/>
+        <location filename="../../waypointcatalog.cpp" line="1845"/>
         <source>Reading file</source>
         <translation>Lese Datei</translation>
     </message>
     <message>
-        <location filename="../../waypointcatalog.cpp" line="790"/>
-        <location filename="../../waypointcatalog.cpp" line="1143"/>
+        <location filename="../../waypointcatalog.cpp" line="791"/>
+        <location filename="../../waypointcatalog.cpp" line="1144"/>
         <source>File does not exist!</source>
         <translation>Datei existiert nicht!</translation>
     </message>
     <message>
-        <location filename="../../waypointcatalog.cpp" line="796"/>
-        <location filename="../../waypointcatalog.cpp" line="1149"/>
+        <location filename="../../waypointcatalog.cpp" line="797"/>
+        <location filename="../../waypointcatalog.cpp" line="1150"/>
         <source>File is empty!</source>
         <translation>Datei ist leer!</translation>
     </message>
     <message>
-        <location filename="../../waypointcatalog.cpp" line="808"/>
+        <location filename="../../waypointcatalog.cpp" line="809"/>
         <source>Invalid OpenAip data format!</source>
         <translation>Ungültiges OpenAIP Datenformat!</translation>
     </message>
     <message>
-        <location filename="../../waypointcatalog.cpp" line="826"/>
+        <location filename="../../waypointcatalog.cpp" line="827"/>
         <source>OpenAip %1 is unsupported!</source>
         <translation>OpenAip %1 nicht unterstützt!</translation>
     </message>
     <message>
-        <location filename="../../waypointcatalog.cpp" line="1155"/>
+        <location filename="../../waypointcatalog.cpp" line="1156"/>
         <source>Cannot open File!</source>
         <translation>Datei nicht lesbar!</translation>
     </message>
@@ -4068,7 +4145,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="264"/>
         <location filename="../../OpenAip.cpp" line="706"/>
         <location filename="../../OpenAip.cpp" line="917"/>
-        <location filename="../../OpenAip.cpp" line="1606"/>
+        <location filename="../../OpenAip.cpp" line="1607"/>
         <source>Wrong XML data format</source>
         <translation>Falsches XML Datenformat</translation>
     </message>
@@ -4076,17 +4153,17 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="206"/>
         <location filename="../../OpenAip.cpp" line="642"/>
         <location filename="../../OpenAip.cpp" line="855"/>
-        <location filename="../../OpenAip.cpp" line="1539"/>
+        <location filename="../../OpenAip.cpp" line="1540"/>
         <source>File %1 is empty</source>
         <translation>Datei %1 ist leer</translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="1530"/>
+        <location filename="../../OpenAip.cpp" line="1531"/>
         <source>has not suffix .aip!</source>
         <translation>hat nicht Suffix aip!</translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="1556"/>
+        <location filename="../../OpenAip.cpp" line="1557"/>
         <source>Cannot load airspace type mapper for</source>
         <translation>Kann Luftraumtype Mapper nicht laden</translation>
     </message>
@@ -4094,7 +4171,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="213"/>
         <location filename="../../OpenAip.cpp" line="649"/>
         <location filename="../../OpenAip.cpp" line="862"/>
-        <location filename="../../OpenAip.cpp" line="1546"/>
+        <location filename="../../OpenAip.cpp" line="1547"/>
         <source>Cannot open file</source>
         <translation>Datei nicht lesbar</translation>
     </message>
@@ -4293,60 +4370,65 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageAirspace</name>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="124"/>
-        <location filename="../../settingspageairspace.cpp" line="133"/>
+        <location filename="../../settingspageairspace.cpp" line="125"/>
+        <location filename="../../settingspageairspace.cpp" line="134"/>
         <source>Border</source>
         <translation>Grenze</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="121"/>
-        <location filename="../../settingspageairspace.cpp" line="130"/>
+        <location filename="../../settingspageairspace.cpp" line="122"/>
+        <location filename="../../settingspageairspace.cpp" line="131"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="60"/>
+        <location filename="../../settingspageairspace.cpp" line="61"/>
         <source>Settings - Airspaces</source>
         <translation>Einstellungen - Lufträume</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="127"/>
-        <location filename="../../settingspageairspace.cpp" line="136"/>
+        <location filename="../../settingspageairspace.cpp" line="128"/>
+        <location filename="../../settingspageairspace.cpp" line="137"/>
         <source>Area</source>
         <translation>Raum</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="145"/>
+        <location filename="../../settingspageairspace.cpp" line="146"/>
         <source>Ignore AS</source>
         <translation>Ignoriere LR</translation>
     </message>
     <message>
         <location filename="../../settingspageairspace.cpp" line="163"/>
+        <source>AS Filters</source>
+        <translation>LR-Filter</translation>
+    </message>
+    <message>
+        <location filename="../../settingspageairspace.cpp" line="168"/>
         <source>Color Defaults</source>
         <translation>Standard Farben</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="176"/>
+        <location filename="../../settingspageairspace.cpp" line="181"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="184"/>
+        <location filename="../../settingspageairspace.cpp" line="189"/>
         <source>Load</source>
         <translation>Laden</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="190"/>
+        <location filename="../../settingspageairspace.cpp" line="195"/>
         <source>Warnings</source>
         <translation>Warnungen</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="196"/>
+        <location filename="../../settingspageairspace.cpp" line="201"/>
         <source>Filling</source>
         <translation>Füllung</translation>
     </message>
     <message>
-        <location filename="../../settingspageairspace.cpp" line="334"/>
+        <location filename="../../settingspageairspace.cpp" line="339"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
@@ -6700,85 +6782,85 @@ Namen für den neuen Wegpunkt</translation>
 <context>
     <name>WpEditDialogPageAero</name>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="87"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="88"/>
         <source>ICAO:</source>
         <translation>ICAO:</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="94"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="103"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="95"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="104"/>
         <source>Runway 1</source>
         <translation>SLB 1</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="97"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="158"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="98"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="159"/>
         <source>Runway 2</source>
         <translation>SLB 2</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="112"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="167"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="113"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="168"/>
         <source>bidirectional</source>
         <translation>beidseitig</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="123"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="177"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="124"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="178"/>
         <source>Heading:</source>
         <translation>Richtung:</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="129"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="183"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="130"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="184"/>
         <source>Length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="149"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="203"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="150"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="204"/>
         <source>both</source>
         <translation>beide</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="153"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="207"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="154"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="208"/>
         <source>usable</source>
         <translation>nutzbar</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="253"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="254"/>
         <source>Set Runway heading</source>
         <translation>Setze SLB Richtung</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="271"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="272"/>
         <source>Set Runway length</source>
         <translation>Setze SLB Länge</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="272"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="273"/>
         <source>0=unknown</source>
         <translation>0=unbekannt</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="254"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="255"/>
         <source>00=unknown</source>
         <translation>00=unbekannt</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="63"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="64"/>
         <source>Channel:</source>
         <translation>Kanal:</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="65"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="66"/>
         <source>Ch-Type:</source>
         <translation>K-Typ:</translation>
     </message>
     <message>
-        <location filename="../../wpeditdialogpageaero.cpp" line="146"/>
-        <location filename="../../wpeditdialogpageaero.cpp" line="200"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="147"/>
+        <location filename="../../wpeditdialogpageaero.cpp" line="201"/>
         <source>Surface:</source>
         <translation>Oberfläche:</translation>
     </message>
