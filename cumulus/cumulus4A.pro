@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2018 by Axel Pauli
+#                2012-2020 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -128,6 +128,7 @@ HEADERS = \
     AirfieldSelectionList.h \
     airregion.h \
     airspace.h \
+    AirspaceFilters.h \
     AirspaceHelper.h \
     airspacewarningdistance.h \
     altimeterdialog.h \
@@ -269,6 +270,7 @@ SOURCES = \
     AirfieldSelectionList.cpp \
     airregion.cpp \
     airspace.cpp \
+    AirspaceFilters.cpp \
     AirspaceHelper.cpp \
     altimeterdialog.cpp \
     altitude.cpp \
