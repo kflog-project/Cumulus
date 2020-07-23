@@ -18,6 +18,9 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[-] 2020-07-23 AP: Issue #137 fixed. Added airspace filters to Cumulus.
+
 [*] 2019-04-07 AP: Cumulus 5.36.1 released for Android.
 
 [-] 2019-04-07 AP: Issue #135 fixed. URL of Metar and TAF links have been

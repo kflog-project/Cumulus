@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2018 by Axel Pauli
+**                   2007-2020 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2018
+ * \date 2004-2020
  *
- * \version 1.9
+ * \version 1.10
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -2791,6 +2791,12 @@ class GeneralConfig : protected QSettings
       return _flarmAliasFileName;
     };
 
+  /** Gets the Airspace filters file name. */
+  const QString &getAirspaceFlitersFileName() const
+    {
+      return _airspaceFiltersFileName;
+    };
+
   /** Gets the flight logbook file name. */
   const QString &getFlightLogbookFileName() const
     {
@@ -3380,6 +3386,9 @@ class GeneralConfig : protected QSettings
 
   /** Flarm alias file name. */
   QString _flarmAliasFileName;
+
+  /** Airspace filters file name. */
+  QString _airspaceFiltersFileName;
 
   /** Flarm Radar wind arrow drawing. */
   bool _flarmRadarDrawWindArrow;

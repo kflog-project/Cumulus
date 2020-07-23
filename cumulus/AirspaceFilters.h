@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   flarmaliaslist.h
+**   AirspaceFilters.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2020 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -14,27 +14,30 @@
 ***********************************************************************/
 
 /**
- * \class FlarmAliasList
+ * \class AirspaceFilters
  *
  * \author Axel Pauli
  *
- * \brief Flarm alias list display and editor.
+ * \brief Airspace filters display and editor.
  *
- * This widget can create, modify or remove alias names for FLARM hexadecimal
- * identifiers. The names are displayed in a two column table. The content of
+ * This widget can create, modify or remove filters for certain airspaces.
+ * The single filters are defined is a table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2010-2015
+ * \date 2020
  *
- * \version 1.1
+ * \version 1.0
  */
 
-#ifndef FLARM_ALIAS_LIST_H
-#define FLARM_ALIAS_LIST_H
+#ifndef AIRSPACE_FILTERS_H
+#define AIRSPACE_FILTERS_H
 
 #include <QWidget>
 #include <QHash>
+#include <QMultiHash>
 #include <QMutex>
+
+#include "map.h"
 
 class QCheckBox;
 class QPushButton;
@@ -42,42 +45,50 @@ class QString;
 class QTableWidget;
 class RowDelegate;
 
-class FlarmAliasList : public QWidget
+class AirspaceFilters : public QWidget
 {
   Q_OBJECT
 
 private:
 
-  Q_DISABLE_COPY ( FlarmAliasList )
+  Q_DISABLE_COPY ( AirspaceFilters )
 
 public:
-
-  // The alias name length is limited to 15 characters
-  static const int MaxAliasLength = 15;
 
   /**
    * Constructor
    */
-  FlarmAliasList( QWidget *parent=0 );
+  AirspaceFilters( QWidget *parent=0 );
 
   /**
    * Destructor
    */
-  virtual ~FlarmAliasList();
+  virtual ~AirspaceFilters();
 
   /**
-   * @return a aliasHash copy to the caller.
+   * @return countryHash copy to the caller.
    */
-  static QHash<QString, QString>& getAliasHash()
+  static QHash<QString, QMultiHash<QString, QString> > getAirspaceFilters()
   {
-    return aliasHash;
+    mutex.lock();
+    QHash<QString, QMultiHash<QString, QString> > ch = countryHash;
+    mutex.unlock();
+    return ch;
   };
 
-  /** Loads the Flarm alias data from the related file into the alias hash. */
-  static bool loadAliasData();
+  /** Loads the filter data from the related file into the alias hash. */
+  static bool loadFilterData();
 
-  /** Saves the Flarm alias data from the alias hash into the related file. */
-  static bool saveAliasData();
+private:
+
+  /** Load data from the file into the table. */
+  void loadDataFromFile();
+
+  /** Save table data into the file. */
+  void saveData2File();
+
+  /** Returns the airspace filters filename. */
+  static QString getFilterFileName();
 
 protected:
 
@@ -86,7 +97,7 @@ protected:
 private slots:
 
   /** Adds a new row with two columns to the table. */
-  void slot_AddRow( QString col0="", QString col1="" );
+  void slot_AddRow( bool col0=true, QString col1="" );
 
   /** Removes all selected rows from the table. */
   void slot_DeleteRows();
@@ -97,9 +108,6 @@ private slots:
   /** Close button press is handled here. */
   void slot_Close();
 
-  /** Cell content change is handled here. */
-  void slot_CellChanged( int row, int column );
-
   /** Called, when a cell is clicked to open an extra editor. */
   void slot_CellClicked ( int row, int column );
 
@@ -109,9 +117,6 @@ private slots:
    */
   void slot_HeaderClicked( int section );
 
-  /** Called, if the item selection is changed. */
-  void slot_ItemSelectionChanged();
-
   /**
    * Called is the checkbox is toggled.
    */
@@ -120,17 +125,14 @@ private slots:
 signals:
 
   /**
-   * Emit a new Flarm object selection.
+   * Emit airspace filters change to the world.
    */
-  void newObjectSelection( QString newObject );
-
-  /** Emitted if the widget was closed. */
-  void closed();
+  void airspaceFiltersChanged( Map::mapLayer );
 
 private:
 
   /** Table widget with two columns for alias entries. */
-  QTableWidget* list;
+  QTableWidget* table;
 
   /** Adds additional space in the list. */
   RowDelegate* rowDelegate;
@@ -142,12 +144,12 @@ private:
   QCheckBox* m_enableScroller;
 
   /**
-   * Flarm alias hash dictionary. The key is the Flarm Id and the value the
-   * assigned alias name.
+   * Country hash dictionary. The key is the country and the value the
+   * assigned filter string.
    */
-  static QHash<QString, QString> aliasHash;
+  static QHash< QString, QMultiHash<QString, QString> > countryHash;
 
-  /** Mutex used for alias file load and save. */
+  /** Mutex used for filter data file load and save. */
   static QMutex mutex;
 };
 

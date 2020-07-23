@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2018 by Axel Pauli
+ **                   2007-2020 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -139,6 +139,7 @@ void GeneralConfig::load()
   _asDrawingBorder          = value("AirspaceNoDrawingBorder", 100).toInt();
 
   _airspaceLineWidth        = value( "AirSpaceBorderLineWidth", AirSpaceBorderLineWidth ).toInt();
+  _airspaceFiltersFileName  = value( "AirspaceFilters", "airspace_filters.txt").toString();
 
   // Airspace drawing types, set all to true as default
   for( int i=0; i < BaseMapElement::objectTypeSize; i++ )

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2009-2018 by Axel Pauli
+ **                   2009-2020 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,6 +27,7 @@
 #endif
 
 #include "airspace.h"
+#include "AirspaceFilters.h"
 #include "basemapelement.h"
 #include "colordialog.h"
 #include "distance.h"
@@ -158,7 +159,11 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([5-9][0-9]|[1-4][0-9][0-9]|500)" ), this );
   m_borderDrawingValue->setValidator( eValidator );
   hbox->addWidget( m_borderDrawingValue );
+
+  cmdAirspaceFilters = new QPushButton(tr("AS Filters"), this);
+  hbox->addWidget( cmdAirspaceFilters );
   hbox->addStretch( 10 );
+  connect( cmdAirspaceFilters, SIGNAL(clicked()), this, SLOT(slot_editAsFilters()) );
 
   cmdColorDefaults = new QPushButton(tr("Color Defaults"), this);
   hbox->addWidget( cmdColorDefaults );
@@ -841,6 +846,15 @@ void SettingsPageAirspace::slot_openLoadDialog()
 
   dlg->setVisible( true );
 }
+
+/* Called to open the airspace filters dialog. */
+void SettingsPageAirspace::slot_editAsFilters()
+{
+  AirspaceFilters* dlg = new AirspaceFilters(this);
+
+  dlg->setVisible( true );
+}
+
 
 bool SettingsPageAirspace::checkChanges()
 {

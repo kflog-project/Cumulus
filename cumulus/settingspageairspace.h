@@ -40,9 +40,9 @@ class NumberEditor;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2018
+ * \date 2002-2020
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -95,6 +95,11 @@ class SettingsPageAirspace : public QWidget
    */
   void slot_openLoadDialog();
 
+  /**
+   * Called to open the airspace filters editor.
+   */
+  void slot_editAsFilters();
+
 #ifdef INTERNET
 
   /**
@@ -146,6 +151,7 @@ class SettingsPageAirspace : public QWidget
   QPushButton* cmdWarning;
   QPushButton* cmdFilling;
   QPushButton* cmdLoading;
+  QPushButton* cmdAirspaceFilters;
   QPushButton* cmdColorDefaults;
 
 #ifdef INTERNET

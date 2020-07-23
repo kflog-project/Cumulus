@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2018 Axel Pauli
+# Copyright (c): 2008-2020 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -101,6 +101,7 @@ HEADERS = \
     AirfieldSelectionList.h \
     airregion.h \
     airspace.h \
+    AirspaceFilters.h \
     AirspaceHelper.h \
     airspacewarningdistance.h \
     altimeterdialog.h \
@@ -239,6 +240,7 @@ SOURCES = \
     AirfieldSelectionList.cpp \
     airregion.cpp \
     airspace.cpp \
+    AirspaceFilters.cpp \
     AirspaceHelper.cpp \
     altimeterdialog.cpp \
     altitude.cpp \
@@ -457,6 +459,7 @@ INCLUDEPATH += ../
 
 QMAKE_CXXFLAGS += -fno-default-inline \
                   -fno-inline -Wextra \
+                  -Wno-deprecated-copy \
                   -std=gnu++11
 
 LIBS += -lstdc++

@@ -23,6 +23,7 @@
 
 #include "airfield.h"
 #include "airspace.h"
+#include "AirspaceFilters.h"
 #include "calculator.h"
 #include "mainwindow.h"
 #include "distance.h"
@@ -90,6 +91,9 @@ Map::Map(QWidget* parent) : QWidget(parent),
   m_scheduledFromLayer = baseLayer;
   m_ShowGlider = false;
   setMutex(false);
+
+  // Initiate loading of airspace filter data
+  AirspaceFilters::loadFilterData();
 
   //setup progressive zooming values
   m_zoomProgressive = 0;
@@ -780,6 +784,18 @@ void Map::p_drawAirspaces( bool reset )
 
   cuAeroMapP.begin(&m_pixAeroMap);
 
+  // Get airspace filter data
+  QHash<QString, QMultiHash<QString, QString> > asfs =
+      AirspaceFilters::getAirspaceFilters();
+
+  // AS type mapper from stored as-type to shown as-type
+  QHash<QString, QString> astMapper;
+  astMapper.insert( "Restricted", "AR" );
+  astMapper.insert( "Danger", "AD" );
+  astMapper.insert( "Prohibited", "AP" );
+  astMapper.insert( "AS-E low", "AS-El" );
+  astMapper.insert( "AS-E high", "AS-Eh" );
+
   QTime t;
   t.start();
 
@@ -835,6 +851,54 @@ void Map::p_drawAirspaces( bool reset )
             {
               // Not of interest, step away
               continue;
+            }
+
+          // Check airspace against airspace filters
+          // Key of AS Hash is country. Value is a multi hash where key is
+          // AS-Type and value is AS-Name
+          QString asCountry = currentAirS->getCountry();
+
+          if( asfs.contains( asCountry ) == true )
+            {
+              // Country filter is defined
+              QMultiHash<QString, QString> countryFilter = asfs[asCountry];
+
+              // get AS-Type as string
+              QString asType = currentAirS->getTypeName(currentAirS->getTypeID() );
+
+              // map back displayed airspace type to stored airspace type.
+              if( astMapper.contains( asType ) == true )
+                {
+                  QString asTypeShown = astMapper.value( asType );
+                  asType = asTypeShown;
+                }
+
+              // Look for Airspace type in country filters data
+              if( countryFilter.contains( asType ) == true )
+                {
+                  QList<QString> asNames = countryFilter.values( asType );
+
+                  // get airspace name
+                  QString asName = currentAirS->getName();
+
+                  bool ignore = false;
+
+                  // Look, if airspace should be filtered out.
+                  for( int i = 0; i < asNames.size(); i++ )
+                    {
+                      if( asName.startsWith( asNames.at( i )) == true )
+                        {
+                          // filter out this airspace
+                          // qDebug() << "Filter out AS " << asType << ": " << asName;
+                          ignore = true;
+                        }
+                    }
+
+                  if( ignore == true )
+                    {
+                      continue;
+                    }
+                }
             }
 
           if( drawingBorder == true )

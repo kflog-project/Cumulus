@@ -3,7 +3,7 @@
              This file is also used during Debian package build
              as release information.
 
-  copyright: (C) 2007-2019 by Axel Pauli
+  copyright: (C) 2007-2020 by Axel Pauli
 
   Email of maintainer: kflog.cumulus@gmail.com
 
@@ -21,6 +21,6 @@
 #ifndef target_h
 #define target_h
 
-#define CU_VERSION "5.36.1"
+#define CU_VERSION "5.37.0"
 
 #endif
