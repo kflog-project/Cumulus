@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Josua Dietze
- **                   2008-2018 by Axel Pauli
+ **                   2008-2020 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -858,6 +858,14 @@ void Map::p_drawAirspaces( bool reset )
           // AS-Type and value is AS-Name
           QString asCountry = currentAirS->getCountry();
 
+          if( asCountry.isEmpty() == true )
+            {
+              // Country is not set. In this case we use * as country selector.
+              // That is a workaround for openair files, which have no county
+              // definitions inside.
+              asCountry = "*";
+            }
+
           if( asfs.contains( asCountry ) == true )
             {
               // Country filter is defined
@@ -889,7 +897,7 @@ void Map::p_drawAirspaces( bool reset )
                       if( asName.startsWith( asNames.at( i )) == true )
                         {
                           // filter out this airspace
-                          // qDebug() << "Filter out AS " << asType << ": " << asName;
+                          qDebug() << "Filter out AS " << asType << ": " << asName;
                           ignore = true;
                         }
                     }

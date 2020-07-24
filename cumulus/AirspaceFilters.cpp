@@ -301,7 +301,7 @@ void AirspaceFilters::saveData2File()
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
 
-  stream << "# Cumulus Flarm airspace filters file created at "
+  stream << "# Cumulus Airspace filters file created at "
          << dtStr
          << " by Cumulus "
          << QCoreApplication::applicationVersion() << endl;
@@ -367,7 +367,7 @@ void AirspaceFilters::slot_AddRow( bool col0, QString col1 )
   table->setItem( row, 1, item );
   table->setCurrentItem( item );
 
-  item = new QTableWidgetItem( tr("upper") );
+  item = new QTableWidgetItem( tr("letters up") );
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   item->setTextAlignment( Qt::AlignCenter );
 
@@ -465,14 +465,14 @@ void AirspaceFilters::slot_Ok()
               continue;
             }
 
-            // <activated (True/False)>,<country>,<AS-Type>,<Name>
+            // <activated (True/False)>,<country>,<AS-Type>,<AS-Name>
             QStringList sl = filter.split( ",", QString::KeepEmptyParts );
 
             if( sl.size() != 3 )
               {
                 QMessageBox mb( QMessageBox::Warning,
                                 tr( "Filter definition incomplete" ),
-                                tr( "Expecting filter elements: <country>,<AS-Type>,<Name>" ),
+                                tr( "Expecting filter elements: <country>,<AS-Type>,<AS-Name>" ),
                                 QMessageBox::Ok,
                                 this );
   #ifdef ANDROID
@@ -610,15 +610,15 @@ void AirspaceFilters::slot_CellClicked( int row, int column )
           return;
         }
 
-      if( item->text() == tr("upper") )
+      if( item->text() == tr("letters up") )
         {
           item1->setText( item1->text().toUpper() );
-          item->setText( tr("lower") );
+          item->setText( tr("letters down") );
         }
       else
         {
           item1->setText(item1->text().toLower() );
-          item->setText( tr("upper") );
+          item->setText( tr("letters up") );
         }
 
       return;

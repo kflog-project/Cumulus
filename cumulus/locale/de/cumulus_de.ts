@@ -124,7 +124,7 @@
     <message>
         <location filename="../../AirspaceFilters.cpp" line="112"/>
         <source> Country, AS-Type, AS-Name </source>
-        <translation>Land, LR-Tpy,LR-Name</translation>
+        <translation>Land, LR-Typ,LR-Name</translation>
     </message>
     <message>
         <location filename="../../AirspaceFilters.cpp" line="115"/>
@@ -147,8 +147,18 @@
         <location filename="../../AirspaceFilters.cpp" line="370"/>
         <location filename="../../AirspaceFilters.cpp" line="613"/>
         <location filename="../../AirspaceFilters.cpp" line="621"/>
-        <source>upper</source>
-        <translation>gross</translation>
+        <source>letters up</source>
+        <translation>Großbuchstaben</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="475"/>
+        <source>Expecting filter elements: &lt;country&gt;,&lt;AS-Type&gt;,&lt;AS-Name&gt;</source>
+        <translation>Erwartete Filterelemente: &lt;Land|*&gt;,&lt;LR-Typ&gt;,&lt;LR-Name&gt;</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceFilters.cpp" line="616"/>
+        <source>letters down</source>
+        <translation>Kleinbuchstaben</translation>
     </message>
     <message>
         <location filename="../../AirspaceFilters.cpp" line="399"/>
@@ -166,11 +176,6 @@
         <translation>Filter Definition unvollständig</translation>
     </message>
     <message>
-        <location filename="../../AirspaceFilters.cpp" line="475"/>
-        <source>Expecting filter elements: &lt;country&gt;,&lt;AS-Type&gt;,&lt;Name&gt;</source>
-        <translation>Erwartete Filter Elemente: &lt;Land&gt;,&lt;LR-Typ&gt;,&lt;LR-Name&gt;</translation>
-    </message>
-    <message>
         <location filename="../../AirspaceFilters.cpp" line="566"/>
         <source>Enter Country, AS-Type, AS-Name</source>
         <translation>Eingabe von Land, LR-Typ, LR-Name</translation>
@@ -178,12 +183,7 @@
     <message>
         <location filename="../../AirspaceFilters.cpp" line="567"/>
         <source>Country, AS-Type, AS-Name:</source>
-        <translation>Land, LR-Typ, LR-Name</translation>
-    </message>
-    <message>
-        <location filename="../../AirspaceFilters.cpp" line="616"/>
-        <source>lower</source>
-        <translation>klein</translation>
+        <translation>Land, LR-Typ, LR-Name:</translation>
     </message>
 </context>
 <context>
@@ -1726,55 +1726,55 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="2866"/>
-        <location filename="../../map.cpp" line="2921"/>
+        <location filename="../../map.cpp" line="2874"/>
+        <location filename="../../map.cpp" line="2929"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3380"/>
+        <location filename="../../map.cpp" line="3388"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3384"/>
+        <location filename="../../map.cpp" line="3392"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3389"/>
-        <location filename="../../map.cpp" line="3558"/>
+        <location filename="../../map.cpp" line="3397"/>
+        <location filename="../../map.cpp" line="3566"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3400"/>
-        <location filename="../../map.cpp" line="3427"/>
-        <location filename="../../map.cpp" line="3580"/>
+        <location filename="../../map.cpp" line="3408"/>
+        <location filename="../../map.cpp" line="3435"/>
+        <location filename="../../map.cpp" line="3588"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3436"/>
-        <location filename="../../map.cpp" line="3464"/>
-        <location filename="../../map.cpp" line="3594"/>
+        <location filename="../../map.cpp" line="3444"/>
+        <location filename="../../map.cpp" line="3472"/>
+        <location filename="../../map.cpp" line="3602"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3473"/>
-        <location filename="../../map.cpp" line="3500"/>
-        <location filename="../../map.cpp" line="3608"/>
+        <location filename="../../map.cpp" line="3481"/>
+        <location filename="../../map.cpp" line="3508"/>
+        <location filename="../../map.cpp" line="3616"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3558"/>
+        <location filename="../../map.cpp" line="3566"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3568"/>
+        <location filename="../../map.cpp" line="3576"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
