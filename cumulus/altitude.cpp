@@ -3,13 +3,11 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers
-                               2010-2012 by Axel Pauli
+                               2010-2020 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
     This file is part of Cumulus
-
-    $Id$
 
 ***************************************************************************/
 
@@ -22,7 +20,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cmath>
 #include <QtCore>
+
 #include "altitude.h"
 
 // initialize static value
@@ -153,4 +153,23 @@ QString Altitude::getUnitText()
     }
 
   return unit;
+}
+
+/**
+ * Calculate the altitude in meters from a pressure value and return it.
+ *
+ * @param pressure Pressure value in hPa
+ */
+double Altitude::altitudeFromPressure( double pressure )
+{
+  // Calculate altitude according to formula 9, see paragraph 1.1.4.
+  // The result is in meters.
+  // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
+  // http://www.deutscher-wetterdienst.de/lexikon/download.php?file=Barometrische_Hoehenformel.pdf
+  const double k1 = 29.27 * 288.15;
+  const double log_p0_p1 = log(1013.25 / pressure);
+
+  double altitude = (k1 * log_p0_p1) / (1 + (0.09513 * log_p0_p1));
+
+  return altitude;
 }

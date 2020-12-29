@@ -3,13 +3,11 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers
-                               2010 by Axel Pauli
+                               2010-2020 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
     This file is part of Cumulus.
-
-    $Id$
 
  ***************************************************************************/
 
@@ -38,7 +36,7 @@
  *
  * This class handles different altitude units and arithmetics.
  *
- * \date 2002-2010
+ * \date 2002-2020
  */
 
 class Altitude : public Distance
@@ -138,6 +136,13 @@ public:
     {
       return rint( Distance::getFeet() / 100.0 );
     };
+
+    /**
+     * Calculate the altitude in meters from a pressure value and return it.
+     *
+     * @param pressure Pressure value in hPa
+     */
+    static double altitudeFromPressure( double pressure );
 
     /**
      * implements == operator for altitude
