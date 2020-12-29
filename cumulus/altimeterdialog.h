@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2014 by Axel Pauli
+**                   2008-2020 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,7 @@
  *
  * This dialog is the user interface for the altimeter settings.
  *
- * \date 2004-2014
- *
- * \version $Id$
+ * \date 2004-2020
  *
  */
 
@@ -118,13 +116,13 @@ private:
   QRadioButton* m_baro;
 
   /** Altitude display */
-  QLabel* m_altitudeDisplay;
+  QSpinBox* m_altitudeDisplay;
 
   /** Altitude gain display */
   QLineEdit* altitudeGainDisplay;
 
-  /** Spin box for altitude leveling */
-  QSpinBox* spinLeveling;
+  /** Display for altitude correction factor */
+  QLabel* levelingDisplay;
 
   /** Spin box for QNH setting */
   QSpinBox* spinQnh;
@@ -178,12 +176,6 @@ private slots:
    * restarts too the close timer.
    */
   void slotReferenceChanged( int reference );
-
-  /**
-   * This slot is called if a value in a spin box has been changed
-   * to restart the close timer.
-   */
-  void slotSpinValueChanged( const QString& text );
 
   /**
    * This slot is called if a button is pressed to change the content of the
