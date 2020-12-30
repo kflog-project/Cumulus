@@ -5,7 +5,7 @@
 
  copyright            : (C) 2002-2007 by André Somers
 
-                      : (C) 2007-2020 by Axel Pauli
+                      : (C) 2007-2021 by Axel Pauli
 
  maintainer           : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -2338,11 +2338,13 @@ void MainWindow::setView( const AppView newView )
     case tpView:
 
       // only allow switching to this view if there is anything to see
-      if( _globalMapContents->getCurrentTask() == (FlightTask *) 0 )
+      if( _globalMapContents->getCurrentTask() == static_cast<FlightTask *>(0) )
         {
           break;
         }
-      /* no break */
+
+      /* no break is desired here */
+      [[fallthrough]];
 
     case afView:
     case hsView:
@@ -2584,7 +2586,7 @@ void MainWindow::slotVersion()
   aw->setWindowTitle( tr( "About Cumulus") );
   aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
-  QString header( tr("<html>Cumulus %1, &copy; 2002-2020, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2021, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
 
   aw->setHeaderText( header );
 
