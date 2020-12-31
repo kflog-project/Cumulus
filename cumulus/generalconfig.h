@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2020 by Axel Pauli
+**                   2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2020
+ * \date 2004-2021
  *
- * \version 1.10
+ * \version 1.11
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -38,8 +38,8 @@
 #include <QPixmap>
 #include <QSettings>
 #include <QString>
-#include <QSize>
 #include <QStringList>
+#include <QSize>
 
 #include "airspace.h"
 #include "altitude.h"
@@ -191,31 +191,31 @@ class GeneralConfig : protected QSettings
   QString &getAppRoot()
     {
       return _appRoot;
-    };
+    }
 
   /** sets the application root path of Cumulus */
   void setAppRoot( QString &newRoot )
   {
     _appRoot = newRoot;
-  };
+  }
 
   /** gets the application root path of Cumulus */
   QString &getDataRoot()
     {
       return _dataRoot;
-    };
+    }
 
   /** sets the application root path of Cumulus */
   void setDataRoot( QString &newRoot )
   {
     _dataRoot = newRoot;
-  };
+  }
 
   /** gets the built date of Cumulus */
   static QString getBuiltDate()
     {
       return QString(CumulusBuildDate);
-    };
+    }
 
   /** gets the user data directory where waypoint file, task file,
       glider.pol, logger files are stored */
@@ -229,13 +229,13 @@ class GeneralConfig : protected QSettings
   QSize getWindowSize() const
   {
     return _windowSize;
-  };
+  }
 
   /** set main window size */
   void setWindowSize( QSize size )
   {
     _windowSize = size;
-  };
+  }
 
   /** Sets the GUI style, selected by the user.
    * Overwrites some GUI Style elements under Maemo to make them user friendly.
@@ -285,481 +285,481 @@ class GeneralConfig : protected QSettings
   QColor &getBorderColorAirspaceA()
     {
       return _borderColorAirspaceA;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceA( const QColor& newValue )
   {
     _borderColorAirspaceA = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceB()
     {
       return _borderColorAirspaceB;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceB( const QColor& newValue )
   {
     _borderColorAirspaceB = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceC()
     {
       return _borderColorAirspaceC;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceC( const QColor& newValue )
   {
     _borderColorAirspaceC = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceD()
     {
       return _borderColorAirspaceD;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceD( const QColor& newValue )
   {
     _borderColorAirspaceD = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceE()
     {
       return _borderColorAirspaceE;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceE( const QColor& newValue )
   {
     _borderColorAirspaceE = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceF()
     {
       return _borderColorAirspaceF;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceF( const QColor& newValue )
   {
     _borderColorAirspaceF = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceFlarm()
     {
       return _borderColorAirspaceFlarm;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceFlarm( const QColor& newValue )
   {
     _borderColorAirspaceFlarm = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceFir()
     {
       return _borderColorAirspaceFir;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceFir( const QColor& newValue )
   {
     _borderColorAirspaceFir = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorAirspaceG()
     {
       return _borderColorAirspaceG;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorAirspaceG( const QColor& newValue )
   {
     _borderColorAirspaceG = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorWaveWindow()
     {
       return _borderColorWaveWindow;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorWaveWindow( const QColor& newValue )
   {
     _borderColorWaveWindow = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorControl()
     {
       return _borderColorControl;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorControl( const QColor& newValue )
   {
     _borderColorControl = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorControlC()
     {
       return _borderColorControlC;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorControlC( const QColor& newValue )
   {
     _borderColorControlC = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorControlD()
     {
       return _borderColorControlD;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorControlD( const QColor& newValue )
   {
     _borderColorControlD = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorRestricted()
     {
       return _borderColorRestricted;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorRestricted( const QColor& newValue )
   {
     _borderColorRestricted = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorDanger()
     {
       return _borderColorDanger;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorDanger( const QColor& newValue )
   {
     _borderColorDanger = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorProhibited()
     {
       return _borderColorProhibited;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorProhibited( const QColor& newValue )
   {
     _borderColorProhibited = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorRMZ()
     {
       return _borderColorRMZ;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorRMZ( const QColor& newValue )
   {
     _borderColorRMZ = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorTMZ()
     {
       return _borderColorTMZ;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorTMZ( const QColor& newValue )
   {
     _borderColorTMZ = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorLowFlight()
     {
       return _borderColorLowFlight;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorLowFlight( const QColor& newValue )
   {
     _borderColorLowFlight = newValue;
-  };
+  }
 
   /** Gets the airspace border color */
   QColor &getBorderColorGliderSector()
     {
       return _borderColorGliderSector;
-    };
+    }
 
   /** Sets the airspace border color */
   void setBorderColorGliderSector( const QColor& newValue )
   {
     _borderColorGliderSector = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceA()
     {
       return _fillColorAirspaceA;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceA( const QColor& newValue )
   {
     _fillColorAirspaceA = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceB()
     {
       return _fillColorAirspaceB;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceB( const QColor& newValue )
   {
     _fillColorAirspaceB = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceC()
     {
       return _fillColorAirspaceC;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceC( const QColor& newValue )
   {
     _fillColorAirspaceC = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceD()
     {
       return _fillColorAirspaceD;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceD( const QColor& newValue )
   {
     _fillColorAirspaceD = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceE()
     {
       return _fillColorAirspaceE;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceE( const QColor& newValue )
   {
     _fillColorAirspaceE = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceF()
     {
       return _fillColorAirspaceF;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceF( const QColor& newValue )
   {
     _fillColorAirspaceF = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceFlarm()
     {
       return _fillColorAirspaceFlarm;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceFlarm( const QColor& newValue )
   {
     _fillColorAirspaceFlarm = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceFir()
     {
       return _fillColorAirspaceFir;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceFir( const QColor& newValue )
   {
     _fillColorAirspaceFir = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorAirspaceG()
     {
       return _fillColorAirspaceG;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorAirspaceG( const QColor& newValue )
   {
     _fillColorAirspaceG = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorWaveWindow()
     {
       return _fillColorWaveWindow;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorWaveWindow( const QColor& newValue )
   {
     _fillColorWaveWindow = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorControl()
     {
       return _fillColorControl;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorControl( const QColor& newValue )
   {
     _fillColorControl = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorControlC()
     {
       return _fillColorControlC;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorControlC( const QColor& newValue )
   {
     _fillColorControlC = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorControlD()
     {
       return _fillColorControlD;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorControlD( const QColor& newValue )
   {
     _fillColorControlD = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorRestricted()
     {
       return _fillColorRestricted;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorRestricted( const QColor& newValue )
   {
     _fillColorRestricted = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorDanger()
     {
       return _fillColorDanger;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorDanger( const QColor& newValue )
   {
     _fillColorDanger = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorProhibited()
     {
       return _fillColorProhibited;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorProhibited( const QColor& newValue )
   {
     _fillColorProhibited = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorRMZ()
     {
       return _fillColorRMZ;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorRMZ( const QColor& newValue )
   {
     _fillColorRMZ = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorTMZ()
     {
       return _fillColorTMZ;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorTMZ( const QColor& newValue )
   {
     _fillColorTMZ = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorLowFlight()
     {
       return _fillColorLowFlight;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorLowFlight( const QColor& newValue )
   {
     _fillColorLowFlight = newValue;
-  };
+  }
 
   /** Gets the airspace fill color */
   QColor &getFillColorGliderSector()
     {
       return _fillColorGliderSector;
-    };
+    }
 
   /** Sets the airspace fill color */
   void setFillColorGliderSector( const QColor& newValue )
   {
     _fillColorGliderSector = newValue;
-  };
+  }
 
   /**
    * @returns Structure with warning distances for airspace warnings
@@ -767,7 +767,7 @@ class GeneralConfig : protected QSettings
   AirspaceWarningDistance getAirspaceWarningDistances()
   {
     return _awd;
-  };
+  }
 
   /**
    * Sets the warning distances for airspaces
@@ -775,7 +775,7 @@ class GeneralConfig : protected QSettings
   void setAirspaceWarningDistances(const AirspaceWarningDistance& awd)
   {
     _awd = awd;
-  };
+  }
 
   /**
    * @return True if drawing is enabled for the given base map type.
@@ -792,7 +792,7 @@ class GeneralConfig : protected QSettings
   void setItemDrawingEnabled (BaseMapElement::objectType type, bool enable=true)
   {
     _mapDrawingEnabled[type] = enable;
-  };
+  }
 
   /**
    * @return True if warnings are enabled in general
@@ -800,7 +800,7 @@ class GeneralConfig : protected QSettings
   bool getAirspaceWarningEnabled () const
   {
     return _airspaceWarningGeneral;
-  };
+  }
 
   /**
    * Enables or disables the airspace warnings in general
@@ -808,7 +808,7 @@ class GeneralConfig : protected QSettings
   void setAirspaceWarningEnabled (bool enable=true)
   {
     _airspaceWarningGeneral=enable;
-  };
+  }
 
   /**
    * @return True if forcing of airspace drawing for closed by
@@ -817,7 +817,7 @@ class GeneralConfig : protected QSettings
   bool getForceAirspaceDrawingEnabled () const
   {
     return _forceDrawing;
-  };
+  }
 
   /**
    * Enables or disables the forcing of airspace drawing for closed by
@@ -826,7 +826,7 @@ class GeneralConfig : protected QSettings
   void setForceAirspaceDrawingEnabled (bool enable=true)
   {
     _forceDrawing=enable;
-  };
+  }
 
   /**
    * Gets the distance for the forcing of airspace drawing for closed by
@@ -835,7 +835,7 @@ class GeneralConfig : protected QSettings
   Distance getForceAirspaceDrawingDistance() const
   {
     return _forceDrawingDistance;
-  };
+  }
 
   /**
    * Sets the distance for the forcing of airspace drawing for closed by
@@ -844,7 +844,7 @@ class GeneralConfig : protected QSettings
   void setForceAirspaceDrawingDistance(const Distance dist)
   {
     _forceDrawingDistance = dist;
-  };
+  }
 
   /**
    * @return True if airspace ignore border should be active.
@@ -852,7 +852,7 @@ class GeneralConfig : protected QSettings
   bool getAirspaceDrawBorderEnabled() const
   {
     return _asNoDrawing;
-  };
+  }
 
   /**
    * Enables or disables the drawing of airspaces at a certain vertical border.
@@ -860,7 +860,7 @@ class GeneralConfig : protected QSettings
   void setAirspaceDrawBorderEnabled(bool enable=false)
   {
     _asNoDrawing = enable;
-  };
+  }
 
   /**
    * Gets the lower vertical distance border for airspace drawing. The lower
@@ -870,7 +870,7 @@ class GeneralConfig : protected QSettings
   int getAirspaceDrawingBorder() const
   {
     return _asDrawingBorder;
-  };
+  }
 
   /**
    * Sets the lower vertical distance border for airspace drawing. The lower
@@ -880,31 +880,49 @@ class GeneralConfig : protected QSettings
   void setAirspaceDrawingBorder(const int alt)
   {
     _asDrawingBorder = alt;
-  };
+  }
 
   /** Gets the openAIP airspace countries */
   QString &getOpenAipAirspaceCountries()
     {
       return _openAIPAirspaceCountries;
-    };
+    }
 
   /** Sets the openAIP airspace countries */
   void setOpenAipAirspaceCountries( const QString newValue )
   {
     _openAIPAirspaceCountries = newValue;
-  };
+  }
+
+  /** Gets the pressure device */
+  QString &getPressureDevice()
+  {
+    return _pressureDevice;
+  }
+
+  /** Sets the pressure device  */
+  void setPressureDevice( const QString newValue )
+  {
+    _pressureDevice = newValue;
+  }
+
+  /** Gets the pressure devices list. */
+  static const QStringList& getPressureDevicesList()
+  {
+    return _pressureDevicesList;
+  }
 
   /** gets disclaimer version */
   int getDisclaimerVersion() const
   {
     return _disclaimerVersion;
-  };
+  }
 
   /** sets disclaimer version */
   void setDisclaimerVersion( const int newValue )
   {
     _disclaimerVersion = newValue;
-  };
+  }
 
   /**
    * return the set safety altitude
@@ -912,7 +930,7 @@ class GeneralConfig : protected QSettings
   Altitude &getSafetyAltitude ()
     {
       return _safetyAltitude;
-    };
+    }
 
   /**
    * Sets the safety altitude
@@ -920,24 +938,24 @@ class GeneralConfig : protected QSettings
   void setSafetyAltitude( const Altitude& alt )
   {
     _safetyAltitude=alt;
-  };
+  }
 
   /** Gets the surname */
   QString &getSurname()
     {
       return _surname;
-    };
+    }
   /** Sets the surname */
   void setSurname( const QString newValue )
   {
     _surname = newValue;
-  };
+  }
 
   /** Gets the used language */
   QString &getLanguage()
     {
       return _language;
-    };
+    }
   /** Sets the language to be used. */
   void setLanguage( const QString& newValue );
 
@@ -951,311 +969,311 @@ class GeneralConfig : protected QSettings
   QString &getProxy()
     {
       return _proxy;
-    };
+    }
   /** Sets the proxy */
   void setProxy( const QString newValue )
   {
     _proxy = newValue;
-  };
+  }
 
   /** Gets the map sidebar frame color */
   QColor &getMapFrameColor()
     {
       return _mapSideFrameColor;
-    };
+    }
   /** Sets the map sidebar frame color */
   void setMapFrameColor( const QColor& newValue )
   {
     _mapSideFrameColor = newValue;
-  };
+  }
 
   /** Gets the GUI style */
   QString &getGuiStyle()
     {
       return _guiStyle;
-    };
+    }
 
   /** Sets the GUI style */
   void setGuiStyle( const QString newValue )
   {
     _guiStyle = newValue;
-  };
+  }
 
   /** gets GUI font */
   QString &getGuiFont()
   {
     return _guiFont;
-  };
+  }
   /** sets GUI font  */
   void setGuiFont( const QString newValue )
   {
     _guiFont = newValue;
-  };
+  }
 
   /** gets GUI menu font */
   QString &getGuiMenuFont()
   {
     return _guiMenuFont;
-  };
+  }
   /** sets GUI menu font  */
   void setGuiMenuFont( const QString newValue )
   {
     _guiMenuFont = newValue;
-  };
+  }
 
   /** gets virtual keyboard usage */
   bool getVirtualKeyboard() const
   {
     return _virtualKeyboard;
-  };
+  }
 
   /** sets virtual keyboard usage */
   void setVirtualKeyboard(const bool newValue)
   {
     _virtualKeyboard = newValue;
-  };
+  }
 
   /** gets screen saver speed limit in Km/h */
   double getScreenSaverSpeedLimit() const
   {
     return _screenSaverSpeedLimit;
-  };
+  }
 
   /** sets screen saver speed limit in Km/h */
   void setScreenSaverSpeedLimit( const double newValue )
   {
     _screenSaverSpeedLimit = newValue;
-  };
+  }
 
   /** gets auto logger start speed in Km/h */
   double getAutoLoggerStartSpeed() const
   {
     return _autoLoggerStartSpeed;
-  };
+  }
 
   /** sets auto logger start speed in Km/h */
   void setAutoLoggerStartSpeed( const double newValue )
   {
     _autoLoggerStartSpeed = newValue;
-  };
+  }
 
   /** gets QNH */
   int getQNH() const
   {
     return _qnh;
-  };
+  }
   /** sets QNH */
   void setQNH( const int newValue )
   {
     _qnh = newValue;
-  };
+  }
 
   /** gets B-Record logger interval */
   int getBRecordInterval() const
   {
     return _bRecordInterval;
-  };
+  }
   /** sets B-Record logger interval */
   void setBRecordInterval( const int newValue )
   {
     _bRecordInterval = newValue;
-  };
+  }
 
   /** gets K-Record logger interval */
   int getKRecordInterval() const
   {
     return _kRecordInterval;
-  };
+  }
   /** sets K-Record logger interval */
   void setKRecordInterval( const int newValue )
   {
     _kRecordInterval = newValue;
-  };
+  }
 
   /** gets logger autostart mode */
   bool getLoggerAutostartMode() const
   {
     return _loggerAutostartMode;
-  };
+  }
   /** sets logger autostart mode */
   void setLoggerAutostartMode( const bool newValue )
   {
     _loggerAutostartMode = newValue;
-  };
+  }
 
   /** gets TAS */
   const Speed&  getTas() const
   {
     return _tas;
-  };
+  }
 
   /** sets TAS */
   void setTas( const Speed& newValue )
   {
     _tas = newValue;
-  };
+  }
 
   /** gets manual wind speed */
   const Speed& getManualWindSpeed() const
   {
     return _manualWindSpeed;
-  };
+  }
 
   /** sets manual wind speed */
   void setManualWindSpeed( const Speed& newValue )
   {
     _manualWindSpeed = newValue;
-  };
+  }
 
   /** gets manual wind direction */
   int getManualWindDirection() const
   {
     return _manualWindDirection;
-  };
+  }
 
   /** sets manual wind direction */
   void setManualWindDirection( const int newValue )
   {
     _manualWindDirection = newValue;
-  };
+  }
 
   /** gets the manual wind flag. */
   bool isManualWindEnabled() const
   {
     return _manualWindIsEnabled;
-  };
+  }
 
   /** sets the manual wind flag. */
   void setManualWindEnabled( bool newValue )
   {
     _manualWindIsEnabled = newValue;
-  };
+  }
 
   /** gets the McCready value */
   const Speed& getMcCready() const
   {
     return _mcCready;
-  };
+  }
 
   /** sets the McCready value */
   void setMcCready( const Speed& newValue )
   {
 	_mcCready = newValue;
-  };
+  }
 
   /** sets current map task  */
   void setMapCurrentTask( const QString newValue )
   {
     _mapCurrentTask = newValue;
-  };
+  }
 
   /** gets current map task */
   QString &getMapCurrentTask()
   {
     return _mapCurrentTask;
-  };
+  }
 
   /** gets the current task name */
   QString &getCurrentTaskName()
   {
     return _currentTaskName;
-  };
+  }
 
   /** sets the current task name */
   void setCurrentTaskName( const QString newValue )
   {
     _currentTaskName = newValue;
-  };
+  }
 
   /** Gets the homesite country code */
   QString &getHomeCountryCode()
     {
       return _homeCountryCode;
-    };
+    }
   /** Sets the homesite country code */
   void setHomeCountryCode( const QString newValue )
   {
     _homeCountryCode = newValue;
-  };
+  }
 
   /** Gets the homesite name */
   QString &getHomeName()
     {
       return _homeName;
-    };
+    }
   /** Sets the homesite name */
   void setHomeName( const QString newValue )
   {
     _homeName = newValue;
-  };
+  }
 
   /** gets homesite Latitude */
   int getHomeLat() const
   {
     return _home.x();
-  };
+  }
   /** sets homesite Latitude */
   void setHomeLat( const int newValue )
   {
     _home.setX( newValue );
-  };
+  }
 
   /** gets Homesite  Longitude */
   int getHomeLon() const
   {
     return _home.y();
-  };
+  }
   /** sets Homesite  Longitude */
   void setHomeLon( const int newValue )
   {
     _home.setY( newValue );
-  };
+  }
 
   /** gets homesite coordinates */
   QPoint getHomeCoord() const
     {
       return _home;
-    };
+    }
 
   /** sets homesite coordinates */
   void setHomeCoord( const QPoint& newValue )
   {
     _home = newValue;
-  };
+  }
 
   /** Gets homesite elevation. */
   Distance &getHomeElevation()
   {
     return _homeElevation;
-  };
+  }
 
   /** Sets homesite elevation. */
   void setHomeElevation( const Distance &newValue )
   {
     _homeElevation = newValue;
-  };
+  }
 
   /** gets Center Latitude */
   int getCenterLat()  const
   {
     return _centerLat;
-  };
+  }
   /** sets Center Latitude */
   void setCenterLat( const int newValue )
   {
     _centerLat = newValue;
-  };
+  }
 
   /** gets Center  Longitude */
   int getCenterLon()  const
   {
     return _centerLon;
-  };
+  }
   /** sets Center  Longitude */
   void setCenterLon( const int newValue )
   {
     _centerLon = newValue;
-  };
+  }
 
   /** gets the expected places of map directories */
   QStringList getMapDirectories();
@@ -1264,7 +1282,7 @@ class GeneralConfig : protected QSettings
   QString getMapRootDir() const
   {
     return _mapRootDir;
-  };
+  }
   /** Sets map root directory. All needed subdirectories are created if
    *  they are missing.
    */
@@ -1279,566 +1297,566 @@ class GeneralConfig : protected QSettings
   QString getMapServerUrl() const
   {
     return _mapServerUrl;
-  };
+  }
 
   /** sets map server url */
   void setMapServerUrl( QString newValue )
   {
     _mapServerUrl = newValue;
-  };
+  }
 
   /** gets map scale */
   double getMapScale() const
   {
     return _mapScale;
-  };
+  }
   /** sets map scale */
   void setMapScale( const double newValue )
   {
     _mapScale = newValue;
-  };
+  }
 
   /** gets map Lower Limit */
   int getMapLowerLimit() const
   {
     return _mapLowerLimit;
-  };
+  }
   /** sets map  */
   void setMapLowerLimit( const int newValue )
   {
     _mapLowerLimit = newValue;
-  };
+  }
 
   /** gets map Upper Limit */
   int getMapUpperLimit() const
   {
     return _mapUpperLimit;
-  };
+  }
   /** sets map Upper Limit */
   void setMapUpperLimit( const int newValue )
   {
     _mapUpperLimit = newValue;
-  };
+  }
 
   /** gets map Border 1 */
   int getMapBorder1() const
   {
     return _mapBorder1;
-  };
+  }
   /** sets map Border 1 */
   void setMapBorder1( const int newValue )
   {
     _mapBorder1 = newValue;
-  };
+  }
 
   /** gets map Border 2 */
   int getMapBorder2() const
   {
     return _mapBorder2;
-  };
+  }
   /** sets map Border 2 */
   void setMapBorder2( const int newValue )
   {
     _mapBorder2 = newValue;
-  };
+  }
 
   /** gets map Border 3 */
   int getMapBorder3() const
   {
     return _mapBorder3;
-  };
+  }
   /** sets map Border 3 */
   void setMapBorder3( const int newValue )
   {
     _mapBorder3 = newValue;
-  };
+  }
 
   /** gets map Switch Scale */
   int getMapSwitchScale() const
   {
     return _mapSwitchScale;
-  };
+  }
   /** sets map Switch Scale */
   void setMapSwitchScale( const int newValue )
   {
     _mapSwitchScale = newValue;
-  };
+  }
 
   /** gets Map LoadIsoLines */
   bool getMapLoadIsoLines() const
   {
     return _mapLoadIsoLines;
-  };
+  }
   /** sets Map LoadIsoLines */
   void setMapLoadIsoLines(const bool newValue)
   {
     _mapLoadIsoLines = newValue;
-  };
+  }
 
   /** gets Map ShowIsoLineBorders */
   bool getMapShowIsoLineBorders() const
   {
     return _mapShowIsoLineBorders;
-  };
+  }
   /** sets Map ShowIsoLineBorders */
   void setMapShowIsoLineBorders(const bool newValue)
   {
     _mapShowIsoLineBorders = newValue;
-  };
+  }
 
   /** gets Map ShowWaypointLabels */
   bool getMapShowWaypointLabels() const
   {
     return _mapShowWaypointLabels;
-  };
+  }
   /** sets Map ShowWaypointLabels */
   void setMapShowWaypointLabels(const bool newValue)
   {
     _mapShowWaypointLabels = newValue;
-  };
+  }
 
   /** gets Map ShowAirfieldLabels */
   bool getMapShowAirfieldLabels() const
   {
     return _mapShowAirfieldLabels;
-  };
+  }
   /** sets Map ShowAirfieldLabels */
   void setMapShowAirfieldLabels(const bool newValue)
   {
     _mapShowAirfieldLabels = newValue;
-  };
+  }
 
   /** gets Map ShowNavAidsLabels */
   bool getMapShowNavAidsLabels() const
   {
     return _mapShowNavAidsLabels;
-  };
+  }
   /** sets Map ShowAirfieldLabels */
   void setMapShowNavAidsLabels(const bool newValue)
   {
     _mapShowNavAidsLabels = newValue;
-  };
+  }
 
   /** gets Map ShowTaskPointLabels */
   bool getMapShowTaskPointLabels() const
   {
     return _mapShowTaskPointLabels;
-  };
+  }
   /** sets Map ShowTaskPointLabels */
   void setMapShowTaskPointLabels(const bool newValue)
   {
     _mapShowTaskPointLabels = newValue;
-  };
+  }
 
   /** gets Map ShowOutLandingLabels */
   bool getMapShowOutLandingLabels() const
   {
     return _mapShowOutLandingLabels;
-  };
+  }
   /** sets Map ShowOutLandingLabels */
   void setMapShowOutLandingLabels(const bool newValue)
   {
     _mapShowOutLandingLabels = newValue;
-  };
+  }
 
   /** gets Map ShowRelBearingInfo */
   bool getMapShowRelBearingInfo() const
   {
     return _mapShowRelBearingInfo;
-  };
+  }
   /** sets Map ShowRelBearingInfo */
   void setMapShowRelBearingInfo(const bool newValue)
   {
     _mapShowRelBearingInfo = newValue;
-  };
+  }
 
   /** gets Map ShowLabelsExtraInfo */
   bool getMapShowLabelsExtraInfo() const
   {
     return _mapShowLabelsExtraInfo;
-  };
+  }
   /** sets Map ShowLabelsExtraInfo */
   void setMapShowLabelsExtraInfo(const bool newValue)
   {
     _mapShowLabelsExtraInfo = newValue;
-  };
+  }
 
   /** gets Map LoadRoads */
   bool getMapLoadRoads() const
   {
     return _mapLoadRoads;
-  };
+  }
   /** sets Map LoadRoads */
   void setMapLoadRoads(const bool newValue)
   {
     _mapLoadRoads = newValue;
-  };
+  }
 
   /** gets Map LoadMotorways */
   bool getMapLoadMotorways() const
   {
     return _mapLoadMotorways;
-  };
+  }
   /** sets Map LoadMotorways */
   void setMapLoadMotorways(const bool newValue)
   {
     _mapLoadMotorways = newValue;
-  };
+  }
 
   /** gets Map LoadRailways */
   bool getMapLoadRailways() const
   {
     return _mapLoadRailways;
-  };
+  }
   /** sets Map LoadRailways */
   void setMapLoadRailways(const bool newValue)
   {
     _mapLoadRailways = newValue;
-  };
+  }
 
   /** gets Map LoadCities */
   bool getMapLoadCities() const
   {
     return _mapLoadCities;
-  };
+  }
   /** sets Map LoadCities */
   void setMapLoadCities(const bool newValue)
   {
     _mapLoadCities = newValue;
-  };
+  }
 
   /** gets Map LoadWaterways */
   bool getMapLoadWaterways() const
   {
     return _mapLoadWaterways;
-  };
+  }
   /** sets Map LoadWaterways */
   void setMapLoadWaterways(const bool newValue)
   {
     _mapLoadWaterways = newValue;
-  };
+  }
 
   /** gets Map LoadForests */
   bool getMapLoadForests() const
   {
     return _mapLoadForests;
-  };
+  }
   /** sets Map LoadForests */
   void setMapLoadForests(const bool newValue)
   {
     _mapLoadForests = newValue;
-  };
+  }
 
   /** gets Map projection settings follows home position */
   bool getMapProjectionFollowsHome() const
   {
     return _mapProjFollowsHome;
-  };
+  }
   /** sets Map projection settings follows home position */
   void setMapProjectionFollowsHome(const bool newValue)
   {
     _mapProjFollowsHome = newValue;
-  };
+  }
 
   /** gets Map unload unneeded */
   bool getMapUnload() const
   {
     return _mapUnload;
-  };
+  }
   /** sets Map unload unneeded */
   void setMapUnload(const bool newValue)
   {
     _mapUnload = newValue;
-  };
+  }
 
   /** gets download missing map files */
   bool getDownloadMissingMaps() const
   {
     return _downloadMissingMaps;
-  };
+  }
   /** sets download missing map files */
   void setDownloadMissingMaps(const bool newValue)
   {
     _downloadMissingMaps = newValue;
-  };
+  }
 
   /** gets map install radius */
   int getMapInstallRadius() const
   {
     return _mapInstallRadius;
-  };
+  }
   /** sets map install radius */
   void setMapInstallRadius(const int newValue)
   {
     _mapInstallRadius = newValue;
-  };
+  }
 
   /** gets the airfield source */
   int getAirfieldSource() const
   {
     return _airfieldSource;
-  };
+  }
   /** sets the airfield source */
   void setAirfieldSource( const int newValue )
   {
     _airfieldSource = newValue;
-  };
+  }
 
   /** gets the airfield home radius */
   float getAirfieldHomeRadius() const
   {
     return _airfieldHomeRadius;
-  };
+  }
   /** sets the airfield home radius */
   void setAirfieldHomeRadius( const float newValue )
   {
     _airfieldHomeRadius = newValue;
-  };
+  }
 
   /** gets the airfield runway length filter radius */
   float getAirfieldRunwayLengthFilter() const
   {
     return _airfieldRunwayLengthFilter;
-  };
+  }
   /** sets the airfield runway length filter radius */
   void setAirfieldRunwayLengthFilter( const float newValue )
   {
     _airfieldRunwayLengthFilter = newValue;
-  };
+  }
 
   /** Gets the openAIP POI file list to be loaded. */
   QStringList& getOpenAipPoiFileList()
   {
     return _openAipPoiFileList;
-  };
+  }
 
   /** Sets the openAIP POI file list to be loaded. */
   void setOpenAipPoiFileList( const QStringList& newValue )
   {
     _openAipPoiFileList = newValue;
-  };
+  }
 
   /** Gets the openAip airfield countries to be downloaded */
   QString &getOpenAipAirfieldCountries()
     {
       return _openAipAirfieldCountries;
-    };
+    }
 
   /** Sets the openAip airfield countries to be downloaded */
   void setOpenAipAirfieldCountries( const QString newValue )
   {
     _openAipAirfieldCountries = newValue;
-  };
+  }
 
   QString getOpenAipLink()
   {
     return QString(rot47(_openAipLink));
-  };
+  }
 
   /** gets the af/wp list page size */
   int getListDisplayPageSize() const
   {
     return _listDisplayPageSize;
-  };
+  }
   /** sets the af/wp list page size */
   void setListDisplayPageSize( const int newValue )
   {
     _listDisplayPageSize = newValue;
-  };
+  }
 
   /** gets the additional af list row margin */
   int getListDisplayAFMargin() const
   {
     return _listDisplayAFMargin;
-  };
+  }
   /** sets the additional af list row margin */
   void setListDisplayAFMargin( const int newValue )
   {
     _listDisplayAFMargin = newValue;
-  };
+  }
 
   /** gets the additional rp list row margin */
   int getListDisplayRPMargin() const
   {
     return _listDisplayRPMargin;
-  };
+  }
   /** sets the additional rp list row margin */
   void setListDisplayRPMargin( const int newValue )
   {
     _listDisplayRPMargin = newValue;
-  };
+  }
 
   /** gets map Projection Type */
   int getMapProjectionType()  const
   {
     return _mapProjectionType;
-  };
+  }
   /** sets map Projection Type */
   void setMapProjectionType( const int newValue )
   {
     _mapProjectionType = newValue;
-  };
+  }
 
   /** gets Lambert Parallel1 */
   int getLambertParallel1()  const
   {
     return _lambertParallel1;
-  };
+  }
   /** sets map Projection Type */
   void setLambertParallel1( const int newValue )
   {
     _lambertParallel1 = newValue;
-  };
+  }
 
   /** gets Lambert Parallel2 */
   int getLambertParallel2()  const
   {
     return _lambertParallel2;
-  };
+  }
   /** sets map Projection Type */
   void setLambertParallel2( const int newValue )
   {
     _lambertParallel2 = newValue;
-  };
+  }
 
   /** gets Lambert Orign */
   int getLambertOrign()  const
   {
     return _lambertOrign;
-  };
+  }
   /** sets Lambert Orign */
   void setLambertOrign( const int newValue )
   {
     _lambertOrign = newValue;
-  };
+  }
 
   /** gets Circle Parallel */
   int getCylinderParallel()  const
   {
     return _cylinderParallel;
-  };
+  }
   /** sets Circle Parallel */
   void setCylinderParallel( const int newValue )
   {
     _cylinderParallel = newValue;
-  };
+  }
 
   /** gets variometer integration time */
   int getVarioIntegrationTime() const
   {
     return _varioIntegrationTime;
-  };
+  }
   /** sets variometer integration time */
   void setVarioIntegrationTime(const int newValue)
   {
     _varioIntegrationTime = newValue;
-  };
+  }
 
   /** gets variometer tek adjust */
   int getVarioTekAdjust() const
   {
     return _varioTekAdjust;
-  };
+  }
   /** sets variometer tek adjust */
   void setVarioTekAdjust(const int newValue)
   {
     _varioTekAdjust = newValue;
-  };
+  }
 
   /** gets variometer tek compensation */
   bool getVarioTekCompensation() const
   {
     return _varioTekCompensation;
-  };
+  }
   /** sets variometer tek compensation */
   void setVarioTekCompensation(const bool newValue)
   {
     _varioTekCompensation = newValue;
-  };
+  }
 
   /** gets altimeter mode */
   int getAltimeterMode() const
   {
     return _altimeterMode;
-  };
+  }
 
   /** sets altimeter mode */
   void setAltimeterMode(const int newValue)
   {
     _altimeterMode = newValue;
-  };
+  }
 
   /** gets altimeter toggle mode */
   bool getAltimeterToggleMode() const
   {
     return _altimeterToggleMode;
-  };
+  }
 
   /** sets altimeter toggle mode */
   void setAltimeterToggleMode(const bool newValue)
   {
     _altimeterToggleMode = newValue;
-  };
+  }
 
   /** gets log to file mode */
   bool getLog2FileMode() const
   {
     return _log2File;
-  };
+  }
 
   /** sets log to file mode */
   void setLog2FileMode(const bool newValue)
   {
     _log2File = newValue;
-  };
+  }
 
   /** gets sys log mode flag */
   bool getSystemLogMode() const
   {
     return _useSysLog;
-  };
+  }
 
   /** sets sys log mode flag */
   void setSystemLogMode(const bool newValue)
   {
     _useSysLog = newValue;
-  };
+  }
 
   /** gets nearest site calculator switch */
   bool getNearestSiteCalculatorSwitch() const
   {
     return _nearestSiteCalculatorSwitch;
-  };
+  }
 
   /** sets nearest site calculator switch */
   void setNearestSiteCalculatorSwitch(const bool newValue)
   {
     _nearestSiteCalculatorSwitch = newValue;
-  };
+  }
 
   /** gets max nearest site calculator sites */
   int getMaxNearestSiteCalculatorSites() const
   {
     return _maxNearestSiteCalculatorSites;
-  };
+  }
 
   /** sets max nearest site calculator sites */
   void setMaxNearestSiteCalculatorSites(const int newValue)
   {
     _maxNearestSiteCalculatorSites = newValue;
-  };
+  }
 
   /** Gets the user sound player */
   QString &getSoundPlayer()
     {
       return _soundPlayer;
-    };
+    }
 
   /** Sets the user sound player */
   void setSoundPlayer( const QString newValue )
   {
     _soundPlayer = newValue;
-  };
+  }
 
   /** gets AirfieldDisplayTime */
   int getAirfieldDisplayTime() const;
@@ -1884,53 +1902,53 @@ class GeneralConfig : protected QSettings
   bool getPopupFlarmAlarms() const
   {
     return _popupFlarmAlarms;
-  };
+  }
 
   /** sets Popup Flarm alarms */
   void setPopupFlarmAlarms(const bool newValue)
   {
     _popupFlarmAlarms = newValue;
-  };
+  }
 
   /** Gets flag for white or black info display background. */
   bool getBlackBgInfoDisplay() const
   {
     return _blackBgInfoDisplay;
-  };
+  }
 
   /** sets Popup Flarm alarms */
   void setBlackBgInfoDisplay(const bool newValue)
   {
     _blackBgInfoDisplay = newValue;
-  };
+  }
 
   /** Gets the Gps Device */
   QString &getGpsDevice()
   {
     return _gpsDevice;
-  };
+  }
   /** Sets the Gps Device */
   void setGpsDevice( const QString newValue )
   {
     _gpsDevice = newValue;
-  };
+  }
 
   /** Gets the Gps BT Device */
   QString &getGpsBtDevice()
   {
     return _gpsBtDevice;
-  };
+  }
   /** Sets the Gps BT Device */
   void setGpsBtDevice( const QString newValue )
   {
     _gpsBtDevice = newValue;
-  };
+  }
 
   /** Gets the Gps Source */
   QString &getGpsSource()
   {
     return _gpsSource;
-  };
+  }
 
   /** Sets the Gps Source */
   void setGpsSource( const QString newValue )
@@ -1942,7 +1960,7 @@ class GeneralConfig : protected QSettings
   const QString &getGpsWlanIp()
   {
     return _gpsWlanIp;
-  };
+  }
 
   /** Sets the Gps WLAN IP */
   void setGpsWlanIp( const QString newValue )
@@ -1954,7 +1972,7 @@ class GeneralConfig : protected QSettings
   const QString &getGpsWlanPort()
   {
     return _gpsWlanPort;
-  };
+  }
 
   /** Sets the Gps WLAN IP port*/
   void setGpsWlanPort( const QString newValue )
@@ -1966,7 +1984,7 @@ class GeneralConfig : protected QSettings
   const QString &getGpsWlanPassword()
   {
     return _gpsWlanPassword;
-  };
+  }
 
   /** Sets the Gps WLAN password*/
   void setGpsWlanPassword( const QString newValue )
@@ -2071,7 +2089,7 @@ class GeneralConfig : protected QSettings
   int getLDCalculationTime() const
   {
     return _time4LDCalc;
-  };
+  }
 
   /** sets the average time for the LD calculation */
   void setLDCalculationTime(const int newValue)
@@ -2083,78 +2101,78 @@ class GeneralConfig : protected QSettings
   QString &getBinaryWaypointFileName()
   {
     return _waypointBinaryFileName;
-  };
+  }
   /** Sets the default binary waypoint file name with path. */
   void setBinaryWaypointFileName( const QString newValue )
   {
     _waypointBinaryFileName = newValue;
-  };
+  }
 
   /** Gets the default XML waypoint file name with path. */
   QString &getXmlWaypointFileName()
   {
     return _waypointXmlFileName;
-  };
+  }
   /** Sets the default XML waypoint file name with path. */
   void setXmlWaypointFileName( const QString newValue )
   {
     _waypointXmlFileName = newValue;
-  };
+  }
 
   /** Gets the waypoint file format */
   enum WpFileFormat getWaypointFileFormat() const
   {
     return _waypointFileFormat;
-  };
+  }
   /** Sets the waypoint file format */
   void setWaypointFileFormat(const enum WpFileFormat newValue)
   {
     _waypointFileFormat = newValue;
-  };
+  }
 
   /** Gets the waypoint priority */
   int getWaypointPriority() const
   {
     return _waypointPriority;
-  };
+  }
   /** Sets the waypoint priority */
   void setWaypointPriority(const int newValue)
   {
     _waypointPriority = newValue;
-  };
+  }
 
   /** Gets the waypoint import center reference. */
   int getWaypointCenterReference() const
   {
     return _waypointCenterReference;
-  };
+  }
   /** Sets the waypoint import center reference. */
   void setWaypointCenterReference(const int newValue)
   {
     _waypointCenterReference = newValue;
-  };
+  }
 
   /** Gets the waypoint import airfield reference. */
   QString &getWaypointAirfieldReference()
   {
     return _waypointAirfieldReference;
-  };
+  }
   /** Sets the waypoint import airfield reference. */
   void setWaypointAirfieldReference( const QString newValue )
   {
     _waypointAirfieldReference = newValue;
-  };
+  }
 
   /** Gets the waypoint import radius value. */
   QString& getWaypointImportRadius()
   {
     return _waypointImportRadius;
-  };
+  }
   /** Sets the waypoint import radius value. */
   void setWaypointImportRadius(const QString newValue)
   {
     _waypointImportRadius = newValue;
-  };
+  }
 
   /** Gets the unit for altitude*/
   int getUnitAlt() const;
@@ -2190,69 +2208,69 @@ class GeneralConfig : protected QSettings
   int getUnitTime() const
   {
     return _unitTime;
-  };
+  }
 
   /** Sets the unit for time */
   void setUnitTime(const int newValue)
   {
     _unitTime = newValue;
-  };
+  }
 
   /** Gets the unit for the temperature */
   int getUnitTemperature() const
   {
     return _unitTemperature;
-  };
+  }
 
   /** Sets the unit for the temperature */
   void setUnitTemperature(const int newValue)
   {
     _unitTemperature = newValue;
-  };
+  }
 
   /** Gets the unit for the air pressure */
   int getUnitAirPressure() const
   {
     return _unitAirPressure;
-  };
+  }
 
   /** Sets the unit for the air pressure  */
   void setUnitAirPressure(const int newValue)
   {
     _unitAirPressure = newValue;
-  };
+  }
 
   /** Gets the airspace line width */
   int getAirspaceLineWidth() const
   {
     return _airspaceLineWidth;
-  };
+  }
   /** Sets the airspace line width */
   void setAirspaceLineWidth(const int newValue)
   {
     _airspaceLineWidth = newValue;
-  };
+  }
 
   /** Gets the airspace file list to be loaded. */
   QStringList& getAirspaceFileList()
   {
     return _airspaceFileList;
-  };
+  }
 
   /** Sets the airspace file list to be loaded. */
   void setAirspaceFileList( const QStringList& newValue )
   {
     _airspaceFileList = newValue;
-  };
+  }
 
   /**
    * Get whether airspace filling is enabled at all
    */
-  bool getAirspaceFillingEnabled() {return m_airspaceFillingEnabled;};
+  bool getAirspaceFillingEnabled() {return m_airspaceFillingEnabled;}
   /**
    * Set whether airspace filling is enabled at all
    */
-  void setAirspaceFillingEnabled(bool enabled) {m_airspaceFillingEnabled = enabled;};
+  void setAirspaceFillingEnabled(bool enabled) {m_airspaceFillingEnabled = enabled;}
 
   /**
    * Get the filling percentages for the indicated "nearness"
@@ -2308,7 +2326,7 @@ class GeneralConfig : protected QSettings
   bool getMapDrawTrail() const
   {
     return _drawTrail;
-  };
+  }
 
   /**
    * Sets map trail drawing.
@@ -2316,67 +2334,67 @@ class GeneralConfig : protected QSettings
   void setMapDrawTrail( bool draw )
   {
     _drawTrail = draw;
-  };
+  }
 
   /** Gets the arrival altitude display selection. */
   enum ArrivalAltitudeDisplay getArrivalAltitudeDisplay() const
   {
     return _arrivalAltitudeDisplay;
-  };
+  }
 
   /** Sets the arrival altitude display selection. */
   void setArrivalAltitudeDisplay( const enum ArrivalAltitudeDisplay newValue )
   {
     _arrivalAltitudeDisplay = newValue;
-  };
+  }
 
   /** Gets the active task start scheme */
   enum ActiveTaskFigureScheme getActiveTaskStartScheme() const
   {
     return _taskActiveStartScheme;
-  };
+  }
 
   /** Sets the active task start scheme */
   void setActiveTaskStartScheme( const enum ActiveTaskFigureScheme newValue )
   {
     _taskActiveStartScheme = newValue;
-  };
+  }
 
   /** Gets the active task finish scheme */
   enum ActiveTaskFigureScheme getActiveTaskFinishScheme() const
   {
     return _taskActiveFinishScheme;
-  };
+  }
 
   /** Sets the active task finish scheme */
   void setActiveTaskFinishScheme( const enum ActiveTaskFigureScheme newValue )
   {
     _taskActiveFinishScheme = newValue;
-  };
+  }
 
   /** Gets the active task observer scheme */
   enum ActiveTaskFigureScheme getActiveTaskObsScheme() const
   {
     return _taskActiveObsScheme;
-  };
+  }
 
   /** Sets the active task observer scheme */
   void setActiveTaskObsScheme( const enum ActiveTaskFigureScheme newValue )
   {
     _taskActiveObsScheme = newValue;
-  };
+  }
 
   /** Gets the active task switch scheme */
   enum ActiveTaskSwitchScheme getActiveTaskSwitchScheme() const
   {
     return _taskActiveSwitchScheme;
-  };
+  }
 
   /** Sets the active nt task scheme */
   void setActiveTaskSwitchScheme( const enum ActiveTaskSwitchScheme newValue )
   {
     _taskActiveSwitchScheme = newValue;
-  };
+  }
 
   /**
    * Gets the report task point switch flag.
@@ -2384,7 +2402,7 @@ class GeneralConfig : protected QSettings
   bool getReportTpSwitch() const
   {
     return _reportTaskpointSwitch;
-  };
+  }
 
   /**
    * Sets the report task point switch flag.
@@ -2392,7 +2410,7 @@ class GeneralConfig : protected QSettings
   void setReportTpSwitch( const bool value )
   {
     _reportTaskpointSwitch = value;
-  };
+  }
 
   /** Gets task shape alpha transparency. 0 represents a fully
       transparent color, while 255 represents a fully opaque
@@ -2403,250 +2421,250 @@ class GeneralConfig : protected QSettings
   int getTaskShapeAlpha()
   {
     return _taskShapeAlpha;
-  };
+  }
 
   /** Sets task shape alpha transparency. */
   void setTaskShapeAlpha( const int newValue )
   {
     _taskShapeAlpha = newValue;
-  };
+  }
 
   /** gets cylinder/sector draw option */
   bool getTaskDrawShape() const
   {
     return _taskDrawShape;
-  };
+  }
 
   /** sets cylinder/sector draw option */
   void setTaskDrawShape( const bool newValue )
   {
     _taskDrawShape = newValue;
-  };
+  }
 
   /** gets cylinder/sector fill option */
   bool getTaskFillShape() const
   {
     return _taskFillShape;
-  };
+  }
   /** sets cylinder/sector fill option */
   void setTaskFillShape( const bool newValue )
   {
     _taskFillShape = newValue;
-  };
+  }
 
   /** gets taskpoint auto zoom option */
   bool getTaskPointAutoZoom() const
   {
     return _taskPointAutoZoom;
-  };
+  }
 
   /** sets taskpoint auto zoom option */
   void setTaskPointAutoZoom( const bool newValue )
   {
     _taskPointAutoZoom = newValue;
-  };
+  }
 
   /** Gets the length of the finish line. */
   Distance getTaskFinishLineLength() const
   {
     return _taskFinishLineLength;
-  };
+  }
 
   /** Sets the length of the finish line. */
   void setTaskFinishLineLength( const Distance& taskFinishLineLength )
   {
     _taskFinishLineLength = taskFinishLineLength;
-  };
+  }
 
   /** Gets the radius of the finish ring. */
   Distance getTaskFinishRingRadius() const
   {
     return _taskFinishRingRadius;
-  };
+  }
 
   /** Sets the radius of the finish ring. */
   void setTaskFinishRingRadius( const Distance& taskFinishRingRadius )
   {
     _taskFinishRingRadius = taskFinishRingRadius;
-  };
+  }
 
   /** Gets the angle of the task finish sector. */
   int getTaskFinishSectorAngel() const
   {
     return _taskFinishSectorAngel;
-  };
+  }
 
   /** Sets the angle of the task finish sector. */
   void setTaskFinishSectorAngel( const int taskFinishSectorAngel )
   {
     _taskFinishSectorAngel = taskFinishSectorAngel;
-  };
+  }
 
   /** Gets the inner radius of the task finish sector. */
   Distance getTaskFinishSectorIRadius() const
   {
     return _taskFinishSectorIRadius;
-  };
+  }
 
   /** Sets the inner radius of the task finish sector. */
   void setTaskFinishSectorIRadius( const Distance& taskFinishSectorIRadius )
   {
     _taskFinishSectorIRadius = taskFinishSectorIRadius;
-  };
+  }
 
   /** Gets the outer radius of the task finish sector. */
   Distance getTaskFinishSectorORadius() const
   {
     return _taskFinishSectorORadius;
-  };
+  }
 
   /** Sets the outer radius of the task finish sector. */
   void setTaskFinishSectorORadius( const Distance& taskFinishSectorORadius )
   {
     _taskFinishSectorORadius = taskFinishSectorORadius;
-  };
+  }
 
   /** Gets the length of the start line. */
   Distance getTaskStartLineLength() const
   {
     return _taskStartLineLength;
-  };
+  }
 
   /** Sets the length of the start line. */
   void setTaskStartLineLength( const Distance& taskStartLineLength )
   {
     _taskStartLineLength = taskStartLineLength;
-  };
+  }
 
   /** Gets the radius of the start ring. */
   Distance getTaskStartRingRadius() const
   {
     return _taskStartRingRadius;
-  };
+  }
 
   /** Sets the radius of the start ring. */
   void setTaskStartRingRadius( const Distance& taskStartRingRadius )
   {
     _taskStartRingRadius = taskStartRingRadius;
-  };
+  }
 
   /** Gets the angle of the task start sector. */
   int getTaskStartSectorAngel() const
   {
     return _taskStartSectorAngel;
-  };
+  }
 
   /** Sets the angle of the task start sector. */
   void setTaskStartSectorAngel( const int taskStartSectorAngel )
   {
     _taskStartSectorAngel = taskStartSectorAngel;
-  };
+  }
 
   /** Gets the inner radius of the task start sector. */
   Distance getTaskStartSectorIRadius() const
   {
     return _taskStartSectorIRadius;
-  };
+  }
 
   /** Sets the inner radius of the task start sector. */
   void setTaskStartSectorIRadius( const Distance& taskStartSectorIRadius )
   {
     _taskStartSectorIRadius = taskStartSectorIRadius;
-  };
+  }
 
   /** Gets the outer radius of the task start sector. */
   Distance getTaskStartSectorORadius() const
   {
     return _taskStartSectorORadius;
-  };
+  }
 
   /** Sets the outer radius of the task start sector. */
   void setTaskStartSectorORadius( const Distance& taskStartSectorORadius )
   {
     _taskStartSectorORadius = taskStartSectorORadius;
-  };
+  }
 
   /** Gets task observation zone circle radius in meters */
   Distance &getTaskObsCircleRadius()
   {
     return _taskObsCircleRadius;
-  };
+  }
 
   /** Sets task observation zone circle radius. Unit must be meters. */
   void setTaskObsCircleRadius( const Distance &newValue )
   {
     _taskObsCircleRadius = newValue;
-  };
+  }
 
   /** Gets task observation zone sector inner radius in meters */
   Distance &getTaskObsSectorInnerRadius()
   {
     return _taskObsSectorInnerRadius;
-  };
+  }
 
   /** Sets task observation zone sector inner radius. Unit must be meters. */
   void setTaskObsSectorInnerRadius( const Distance &newValue )
   {
     _taskObsSectorInnerRadius = newValue;
-  };
+  }
 
   /** Gets task observation zone sector outer radius in meters */
   Distance &getTaskObsSectorOuterRadius()
   {
     return _taskObsSectorOuterRadius;
-  };
+  }
 
   /** Sets task observation zone sector outer radius. Unit must be meters. */
   void setTaskObsSectorOuterRadius( const Distance &newValue )
   {
     _taskObsSectorOuterRadius = newValue;
-  };
+  }
 
   /** Gets task observation zone sector angle 1-360 degrees.  */
   int getTaskObsSectorAngle() const
   {
     return _taskObsSectorAngle;
-  };
+  }
 
   /** Sets task sector angle 1-360 degrees.  */
   void setTaskObsSectorAngle( const int newValue )
   {
     _taskObsSectorAngle = newValue;
-  };
+  }
 
   /** gets the target line draw state */
   bool getTargetLineDrawState() const
   {
     return _targetLineDrawState;
-  };
+  }
   /** sets the target line draw state */
   void setTargetLineDrawState(const bool newValue)
   {
     _targetLineDrawState = newValue;
-  };
+  }
 
   /** gets target line width */
   int getTargetLineWidth() const
   {
     return _targetLineWidth;
-  };
+  }
 
   /** sets target line width */
   void setTargetLineWidth(const int newValue)
   {
     _targetLineWidth = newValue;
-  };
+  }
 
   /** gets the heading line draw state */
   bool getHeadingLineDrawState() const
   {
     return _headingLineDrawState;
-  };
+  }
   /** sets the track line draw state */
   void setHeadingLineDrawState(const bool newValue)
   {
     _headingLineDrawState = newValue;
-  };
+  }
 
   /** Gets the GPS default device depending on the hardware type */
   QString getGpsDefaultDevice();
@@ -2661,73 +2679,73 @@ class GeneralConfig : protected QSettings
   void setGroundColor( const QColor& newValue )
   {
     _groundColor = newValue;
-  };
+  }
 
   /** Gets the common ground color */
   QColor& getGroundColor()
   {
     return _groundColor;
-  };
+  }
 
   /** Gets the elevation color offset index. */
   int getElevationColorOffset()
   {
     return _elevationColorOffset;
-  };
+  }
 
   /** Sets the elevation color offset index. */
   void setElevationColorOffset( const int newValue )
   {
     _elevationColorOffset = newValue;
-  };
+  }
 
   /** Sets the task line color */
   void setTaskLineColor( const QColor& newValue )
   {
     _taskLineColor = newValue;
-  };
+  }
 
   /** Gets the task line color */
   QColor& getTaskLineColor()
   {
     return _taskLineColor;
-  };
+  }
 
   /** gets task line width */
   int getTaskLineWidth() const
   {
     return _taskLineWidth;
-  };
+  }
 
   /** sets task line width */
   void setTaskLineWidth(const int newValue)
   {
     _taskLineWidth = newValue;
-  };
+  }
 
   /** Sets the heading line color */
   void setHeadingLineColor( const QColor& newValue )
   {
     _headingLineColor = newValue;
-  };
+  }
 
   /** Gets the heading line color */
   QColor& getHeadingLineColor()
   {
     return _headingLineColor;
-  };
+  }
 
   /** gets the heading line width */
   int getHeadingLineWidth() const
   {
     return _headingLineWidth;
-  };
+  }
 
   /** sets the heading line width */
   void setHeadingLineWidth(const int newValue)
   {
     _headingLineWidth = newValue;
-  };
+  }
 
   /** Gets waypoint scale border. */
   int getWaypointScaleBorder( const Waypoint::Priority importance) const;
@@ -2741,114 +2759,114 @@ class GeneralConfig : protected QSettings
   QColor& getMapTrailColor()
   {
     return _mapTrailLineColor;
-  };
+  }
 
   /** Sets the map trail color. */
   void setMapTrailColor(QColor mapTrailColor)
   {
     _mapTrailLineColor = mapTrailColor;
-  };
+  }
 
   /** Gets the map trail line width. */
   int getMapTrailLineWidth() const
   {
     return _mapTrailLineWidth;
-  };
+  }
 
   /** Sets the map trail line width. */
   void setMapTrailLineWidth(int mapTrailLineWidth)
   {
     _mapTrailLineWidth = mapTrailLineWidth;
-  };
+  }
 
   /** Gets the task figures color. */
   QColor& getTaskFiguresColor()
   {
     return _taskFiguresColor;
-  };
+  }
 
   /** Sets the task figures color. */
   void setTaskFiguresColor(const QColor& taskFigureColor)
   {
     _taskFiguresColor = taskFigureColor;
-  };
+  }
 
   /** Gets the task figures line width. */
   int getTaskFiguresLineWidth() const
   {
     return _taskFiguresLineWidth;
-  };
+  }
 
   /** Sets the task figures line width. */
   void setTaskFiguresLineWidth(int taskFigureLineWidth)
   {
     _taskFiguresLineWidth = taskFigureLineWidth;
-  };
+  }
 
   /** Gets the Flarm alias file name. */
   const QString &getFlarmAliasFileName() const
     {
       return _flarmAliasFileName;
-    };
+    }
 
   /** Gets the Airspace filters file name. */
   const QString &getAirspaceFlitersFileName() const
     {
       return _airspaceFiltersFileName;
-    };
+    }
 
   /** Gets the flight logbook file name. */
   const QString &getFlightLogbookFileName() const
     {
       return _flightLogbookFileName;
-    };
+    }
 
   /** gets the pre-flight menu close flag */
   bool getClosePreFlightMenu() const
   {
     return _closePreFlightMenu;
-  };
+  }
   /** sets the the pre-flight menu close flag */
   void setClosePreFlightMenu(const bool newValue)
   {
     _closePreFlightMenu = newValue;
-  };
+  }
 
   /** Gets reset configuration value. */
   int getResetConfiguration() const
   {
     return _resetConfiguration;
-  };
+  }
 
   /** Sets reset configuration value. */
   void setResetConfiguration( const int newValue )
   {
     _resetConfiguration = newValue;
-  };
+  }
 
   /** Gets the returner's mobile number. */
   QString getReturnerMobileNumber()
   {
     return _retrieverMobileNumber;
-  };
+  }
 
   /** Sets the returner's mobile number. */
   void setReturnerMobileNumber( const QString newValue )
   {
     _retrieverMobileNumber = newValue;
-  };
+  }
 
   /** Gets the returner's position format. */
   int getReturnerPositionFormat() const
   {
     return _retrieverPositionFormat;
-  };
+  }
 
   /** Sets the returner's position format. */
   void setReturnerPositionFormat( const int newValue )
   {
     _retrieverPositionFormat = newValue;
-  };
+  }
 
   /**
    * Encode/decode a string using rot47 algorithm.
@@ -2863,43 +2881,43 @@ class GeneralConfig : protected QSettings
   int getLiveTrackAirplaneType() const
   {
     return _liveTrackAirplaneType;
-  };
+  }
 
   /** Sets the Livetrack airplane type. */
   void setLiveTrackAirplaneType(int liveTrackAirplaneType)
   {
     _liveTrackAirplaneType = liveTrackAirplaneType;
-  };
+  }
 
   /** Gets the Livetrack tracking interval. */
   int getLiveTrackInterval() const
   {
     return _liveTrackInterval;
-  };
+  }
 
   /** Sets the Livetrack tracking interval. */
   void setLiveTrackInterval(int liveTrackInterval)
   {
     _liveTrackInterval = liveTrackInterval;
-  };
+  }
 
   /** Gets the Livetrack state. */
   bool isLiveTrackOnOff() const
   {
     return _liveTrackOnOff;
-  };
+  }
 
   /** Sets the Livetrack state. */
   void setLiveTrackOnOff(bool liveTrackOnOff)
   {
     _liveTrackOnOff = liveTrackOnOff;
-  };
+  }
 
   /** Gets the Livetrack password. */
   QString getLiveTrackPassword() const
   {
     return _liveTrackAccounts[_liveTrackIndex][2];
-  };
+  }
 
   /** Gets the Livetrack server url with http prefix. */
   const QString& getLiveTrackServer() const
@@ -2913,31 +2931,31 @@ class GeneralConfig : protected QSettings
         static QString empty;
         return empty;
       }
-  };
+  }
 
   /** Gets the LiveTrack server list as URLs with http prefix. */
   static const QStringList& getLiveTrackServerList()
   {
     return _liveTrackServerList;
-  };
+  }
 
   /** Gets the Livetrack user name. */
   const QString& getLiveTrackUserName() const
   {
     return _liveTrackAccounts[_liveTrackIndex][1];
-  };
+  }
 
   /** Gets the Livetrack selection index. */
   int getLiveTrackIndex() const
   {
     return _liveTrackIndex;
-  };
+  }
 
   /** Sets the Livetrack selection index. */
   void setLiveTrackIndex(int liveTrackindex)
   {
     _liveTrackIndex = liveTrackindex;
-  };
+  }
 
   /**
    * Gets the live track user account data, server url with http prefix,
@@ -2948,7 +2966,7 @@ class GeneralConfig : protected QSettings
     data[0] = _liveTrackAccounts[index][0];
     data[1] = _liveTrackAccounts[index][1];
     data[2] = _liveTrackAccounts[index][2];
-  };
+  }
 
   /** Sets the live track user account data. */
   void setLiveTrackAccountData( int index,
@@ -2957,17 +2975,17 @@ class GeneralConfig : protected QSettings
   {
     _liveTrackAccounts[index][1] = user;
     _liveTrackAccounts[index][2] = password;
-  };
+  }
 
   bool getFlarmRadarDrawWindArrow() const
   {
     return _flarmRadarDrawWindArrow;
-  };
+  }
 
   void setFlarmRadarDrawWindArrow( bool flarmRadarDrawWindArrow )
   {
     _flarmRadarDrawWindArrow = flarmRadarDrawWindArrow;
-  };
+  }
 
  private:
 
@@ -3395,6 +3413,12 @@ class GeneralConfig : protected QSettings
 
   /** Flight logbook file name */
   QString _flightLogbookFileName;
+
+  /** List with supported pressure devices. */
+  static QStringList _pressureDevicesList;
+
+  /** Device which delivers pressure data or an barometric altitude. */
+  QString _pressureDevice;
 
   // In the unit items is stored the label index of the related combo box.
   // The indexes are used in the unit setting tabulator.

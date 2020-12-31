@@ -51,6 +51,20 @@ QStringList GeneralConfig::_liveTrackServerList =
                   << "http://livexc.dhv.de"
                   << "skylines.aero";
 
+// define pressure devices list
+QStringList GeneralConfig::_pressureDevicesList =
+#ifdef ANDROID
+    QStringList() << "Android"
+                  << "Flarm"
+#else
+    QStringList() << "Flarm"
+#endif
+                  << "Garmin"
+                  << "LX"
+                  << "OpenVario"
+                  << "Volkslogger"
+                  << "XCVario";
+
 // @AP: We derive here from QSettings as base class. The config
 // file will be stored in the user home directory as $HOME/.config/Cumulus.conf
 GeneralConfig::GeneralConfig() : QSettings( QSettings::UserScope, "Cumulus" )
@@ -470,6 +484,7 @@ void GeneralConfig::load()
   beginGroup("Altimeter");
   _altimeterToggleMode = value( "Toggling_Mode", false ).toBool();
   _altimeterMode       = value( "Mode", 0 ).toInt();
+  _pressureDevice      = value( "PressureDevice", "Flarm" ).toString();
   endGroup();
 
   beginGroup("Debug");
@@ -928,6 +943,7 @@ void GeneralConfig::save()
   beginGroup("Altimeter");
   setValue( "Toggling_Mode", _altimeterToggleMode );
   setValue( "Mode", _altimeterMode );
+  setValue( "PressureDevice", _pressureDevice );
   endGroup();
 
   beginGroup("Debug");
