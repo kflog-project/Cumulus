@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2018 by Axel Pauli
+ **                   2007-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -363,6 +363,9 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       connect( page , SIGNAL(endNmeaLog()),
                GpsNmea::gps, SLOT(slot_closeNmeaLogFile()) );
+
+      connect( page , SIGNAL(newPressureDevice( const QString& )),
+               GpsNmea::gps, SLOT(slot_pressureDevice( const QString&)) );
 
       page->show();
       return;

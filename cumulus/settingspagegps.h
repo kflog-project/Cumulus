@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,7 @@
  *
  * \brief Configuration settings for the GPS device.
  *
- * \date 2002-2018
+ * \date 2002-2021
  *
  */
 
@@ -51,7 +51,12 @@ class SettingsPageGPS : public QWidget
   /**
    * Called when the GPS device is changed.
    */
-  void slot_gpsDeviceChanged( const QString& text );
+  void slotGpsDeviceChanged( const QString& text );
+
+  /**
+   * Called when the GPS altitude reference is changed.
+   */
+  void slotGpsAltitudeChanged( int index );
 
   /**
    * Called, if the help button is clicked.
@@ -81,6 +86,11 @@ class SettingsPageGPS : public QWidget
   void endNmeaLog();
 
   /**
+   * Emitted, if the pressure device is changed.
+   * */
+  void newPressureDevice( const QString& device );
+
+  /**
    * Emitted, if settings have been changed.
    */
   void settingsChanged();
@@ -94,6 +104,7 @@ class SettingsPageGPS : public QWidget
   void save();
 
   QComboBox*   GpsSource;
+  QComboBox*   PressureDevice;
   QComboBox*   GpsDev;
   QComboBox*   GpsSpeed;
   QComboBox*   GpsAltitude;

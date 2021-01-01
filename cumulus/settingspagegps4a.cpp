@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright(c): 2012-2018 by Axel Pauli
+**   Copyright(c): 2012-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -87,6 +87,29 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   GpsAltitude->addItem(tr("Pressure"));
   topLayout->addWidget(GpsAltitude, row, 1);
   row++;
+
+  topLayout->addWidget(new QLabel(tr("Pressure Supplier:"), this), row, 0);
+
+  PressureDevice = new QComboBox();
+  PressureDevice->setToolTip( tr("Device which delivers pressure altitude.") );
+  PressureDevice->setEnabled( false );
+  PressureDevice->setObjectName("DeviceSelection");
+  PressureDevice->setEditable(false);
+  PressureDevice->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  PressureDevice->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+#ifdef QSCROLLER
+    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  PressureDevice->addItems( GeneralConfig::getPressureDevicesList() );
+  topLayout->addWidget( PressureDevice, row++, 1);
 
   topLayout->addWidget(new QLabel(tr("WLAN IP:")), row, 0);
   wlanIpAddress = new QLineEdit;
@@ -180,12 +203,36 @@ void SettingsPageGPS4A::load()
   GeneralConfig *conf = GeneralConfig::instance();
 
   Qt::MatchFlags flags =
-      static_cast<Qt::MatchFlags>(Qt::MatchStartsWith|Qt::MatchCaseSensitive);
+      static_cast<Qt::MatchFlags>(Qt::MatchStartsWith | Qt::MatchCaseSensitive);
 
   int index = GpsSource->findText( conf->getGpsSource(), flags );
 
   GpsSource->setCurrentIndex( index );
   GpsAltitude->setCurrentIndex( conf->getGpsAltitude() );
+
+  // activate altitude change signal
+  connect( GpsAltitude, SIGNAL(currentIndexChanged(int) ),
+           this, SLOT(slotGpsAltitudeChanged(int)) );
+
+  int idx = PressureDevice->findText( conf->getPressureDevice() );
+
+  if( idx == -1 )
+    {
+      idx = 0;
+    }
+
+  // select last stored pressure device
+  PressureDevice->setCurrentIndex( idx );
+
+  if( conf->getGpsAltitude() == GpsNmea::PRESSURE )
+    {
+      PressureDevice->setEnabled( true );
+    }
+  else
+    {
+      PressureDevice->setEnabled( false );
+    }
+
   wlanIpAddress->setText( conf->getGpsWlanIp() );
   wlanPort->setText( conf->getGpsWlanPort() );
   wlanPassword->setText( conf->getGpsWlanPassword() );
@@ -198,6 +245,12 @@ bool SettingsPageGPS4A::save()
 
   conf->setGpsSource( GpsSource->currentText() );
   conf->setGpsAltitude( GpsNmea::DeliveredAltitude( GpsAltitude->currentIndex()) );
+
+  if( PressureDevice->isEnabled() == true )
+    {
+      conf->setPressureDevice( PressureDevice->currentText() );
+      emit newPressureDevice( PressureDevice->currentText() ); // informs GpsNmea
+    }
 
   // Save old settings to check for done updates
   QString oldIp = conf->getGpsWlanIp();
@@ -259,4 +312,21 @@ bool SettingsPageGPS4A::save()
     }
 
   return true;
+}
+
+/**
+ * Called when the GPS altitude reference is changed.
+ */
+void SettingsPageGPS4A::slotGpsAltitudeChanged( int index )
+{
+  if( index == 1 )
+    {
+      // Altitude reference Pressure is selected, enable device selection.
+      PressureDevice->setEnabled( true );
+    }
+  else
+    {
+      // Altitude reference GPS is selected, disable device selection.
+      PressureDevice->setEnabled( false );
+    }
 }
