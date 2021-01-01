@@ -1351,6 +1351,9 @@ void MapView::slot_AltimeterDialog()
   connect( amDlg, SIGNAL( newAltimeterMode() ), SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( newAltimeterSettings() ),
            GpsNmea::gps, SLOT( slot_reset() ) );
+  connect( amDlg, SIGNAL( newPressureDevice( const QString&) ),
+           GpsNmea::gps, SLOT( slot_pressureDevice( const QString& )) );
+
   connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
            amDlg, SLOT( slotAltitudeChanged( const Altitude& ) ) );
 

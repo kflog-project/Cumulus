@@ -70,12 +70,15 @@ Calculator::Calculator(QObject* parent) :
 
   lastSpeed.setMps(0);
 
-  lastETA=QTime();
-  lastBearing=-1;
-  lastHeading=-1;
-  lastDistance=-1;
+  lastETA = QTime();
+  lastBearing = -1;
+  lastHeading = -1;
+  lastDistance = -1;
   lastRequiredLD = -1.0;
   lastCurrentLD = -1.0;
+  lastDynamicPressure = 0.0;
+  lastStaticPressure = 0.0;
+  m_lastTemperature = infiniteTemperature;
   m_calculateLD = false;
   m_calculateETA = false;
   m_calculateVario = true;
@@ -1606,8 +1609,8 @@ void Calculator::newFlightMode(Calculator::FlightMode fm)
   emit flightModeChanged( fm );
 }
 
-/** Called if a new wind measurement is delivered by the GPS/Logger device */
-void Calculator::slot_GpsWind( const Speed& speed, const short direction )
+/** Called if a new wind measurement is delivered by an external device */
+void Calculator::slot_ExternalWind( const Speed& speed, const short direction )
 {
   // Hey we got a wind value directly from the GPS.
   // Therefore internal calculation is not needed and can be switched off.

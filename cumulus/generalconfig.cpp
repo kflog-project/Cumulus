@@ -55,10 +55,11 @@ QStringList GeneralConfig::_liveTrackServerList =
 QStringList GeneralConfig::_pressureDevicesList =
 #ifdef ANDROID
     QStringList() << "Android"
-                  << "Flarm"
+                  << "Cambridge"
 #else
-    QStringList() << "Flarm"
+    QStringList() << "Cambridge"
 #endif
+                  << "Flarm"
                   << "Garmin"
                   << "LX"
                   << "OpenVario"

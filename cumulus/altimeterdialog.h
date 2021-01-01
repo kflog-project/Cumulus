@@ -12,8 +12,6 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
 /**
@@ -25,16 +23,18 @@
  *
  * This dialog is the user interface for the altimeter settings.
  *
- * \date 2004-2020
+ * \date 2004-2021
  *
  */
 
 #ifndef ALTIMETER_DIALOG_H
 #define ALTIMETER_DIALOG_H
 
+#include <QComboBox>
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QString>
 #include <QTimer>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -115,6 +115,9 @@ private:
   QRadioButton* m_gps;
   QRadioButton* m_baro;
 
+  /** selection list of devices, which delivers a pressure altitude. */
+  QComboBox* m_devicesList;
+
   /** Altitude display */
   QSpinBox* m_altitudeDisplay;
 
@@ -142,6 +145,7 @@ private:
   int m_saveRef;
   int m_saveQnh;
   int m_saveLeveling;
+  QString m_savePressureDevice;
 
   /** Auto sip flag storage. */
   bool m_autoSip;
@@ -184,6 +188,11 @@ private slots:
   void slotChangeSpinValue();
 
   /**
+   * This slot is called if the pressure device is changed.
+   */
+  void slotPressureDeviceChanged( const QString& device );
+
+  /**
    * This slot is called if the S button is pressed. It resets the gained
    * altitude display and informs the calculator about that.
    */
@@ -196,6 +205,9 @@ signals:
 
   /** Emitted, if the altimeter QNH resp. leveling have been changed. */
   void newAltimeterSettings();
+
+  /** Emitted, if the pressure device is changed. */
+  void newPressureDevice( const QString& device );
 
   /**
    * This signal is emitted, when the dialog is closed

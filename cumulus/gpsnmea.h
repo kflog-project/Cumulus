@@ -27,9 +27,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2018
+ * \date 2002-2020
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef GPS_NMEA_H
@@ -440,6 +440,14 @@ class GpsNmea : public QObject
      */
     void slot_closeNmeaLogFile();
 
+    /**
+     * Called, when the pressure device is changed.
+     */
+    void slot_pressureDevice( const QString& device )
+    {
+      _pressureDevice = device;
+    }
+
 #if 0
     /**
      * This slot is called to reset the gps device to factory
@@ -574,6 +582,26 @@ class GpsNmea : public QObject
     void newSentence(const QString&);
 
     /**
+     * This signal is send to indicate a new temperature value.
+     */
+    void newTemperature( const double );
+
+    /**
+     * This signal is send to indicate a new bug value.
+     */
+    void newBugs( const unsigned short );
+
+    /**
+     * This signal is send to indicate a new static pressure value.
+     */
+    void newStaticPressure( const double );
+
+    /**
+     * This signal is send to indicate a new dynamic pressure value.
+     */
+    void newDynamicPressure( const double );
+
+    /**
      * This signal is send to indicate that the number of received
      * Flarms has been changed.
      */
@@ -615,6 +643,10 @@ class GpsNmea : public QObject
     void __ExtractPgrmz( const QStringList& slst );
     /** Extracts PCAID sentence. */
     void __ExtractPcaid( const QStringList& slst );
+    /** Extracts POV sentence. */
+    void __ExtractPov( const QStringList& slst );
+    /** Extracts PXCV sentence. */
+    void __ExtractPxcv( const QStringList& slst );
     /** Extracts PGCS sentence. */
     void __ExtractPgcs( const QStringList& slst );
     /** Extracts GPDTM sentence. */
@@ -742,6 +774,14 @@ class GpsNmea : public QObject
     Speed _lastMc;
     /** Contains the last TAS setting */
     Speed _lastTas;
+    /** Contains the last temperature in degree Celsius. */
+    double _lastTemperature;
+    /** Contains the bug value in percent 0...100% */
+    unsigned short _lastBugs;
+    /** Contains the last static pressure value in hPa. */
+    double _lastStaticPressure;
+    /** Contains the last dynamic pressure value in Pa. */
+    double _lastDynamicPressure;
 
     /** This timer fires if a timeout on the data reception occurs.
      * The connection is then probably (temporary?) lost. */
@@ -769,6 +809,8 @@ class GpsNmea : public QObject
     QString gpsDevice;
     /** configurated GPS source to be used */
     QString _gpsSource;
+    /** pressure device to be taken for pressure data */
+    QString _pressureDevice;
 
 #ifndef ANDROID
     /** The reference to the used serial connection */

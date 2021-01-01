@@ -134,10 +134,31 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   m_baro->setEnabled( true );
   m_baro->setFocusPolicy( Qt::NoFocus );
 
+  m_devicesList = new QComboBox();
+  m_devicesList->setToolTip( tr("Device which delivers pressure altitude.") );
+  m_devicesList->setVisible( false );
+  m_devicesList->setObjectName("DeviceSelection");
+  m_devicesList->setEditable(false);
+  m_devicesList->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+  m_devicesList->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+#ifdef QSCROLLER
+    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
+
+  m_devicesList->addItems( GeneralConfig::getPressureDevicesList() );
+
   QHBoxLayout* radioLayout2 = new QHBoxLayout( altRef );
   radioLayout2->addWidget( m_gps );
   radioLayout2->addStretch( 5 );
   radioLayout2->addWidget( m_baro );
+  radioLayout2->addWidget( m_devicesList );
 
   QHBoxLayout* urHBLayout = new QHBoxLayout;
 
@@ -409,14 +430,32 @@ void AltimeterDialog::load()
   {
     case 0:
       m_gps->setChecked(true);
+      m_devicesList->setVisible( false );
       break;
     case 1:
       m_baro->setChecked(true);
+      m_devicesList->setVisible( true );
       break;
     default:
       m_gps->setChecked(true);
+      m_devicesList->setVisible( false );
       break;
   }
+
+  m_savePressureDevice = conf->getPressureDevice();
+  int idx = m_devicesList->findText( m_savePressureDevice );
+
+  if( idx == -1 )
+    {
+      idx = 0;
+    }
+
+  // select last stored pressure device
+  m_devicesList->setCurrentIndex( idx );
+
+  // Activate signal handler, if pressure device is changed.
+  connect( m_devicesList, SIGNAL(currentIndexChanged(const QString &)),
+           SLOT(slotPressureDeviceChanged(const QString&)));
 
   slotAltitudeGain( calculator->getGainedAltitude() );
 
@@ -425,6 +464,12 @@ void AltimeterDialog::load()
   spinQnh->setValue( m_saveQnh );
 
   startTimer();
+}
+
+void AltimeterDialog::slotPressureDeviceChanged( const QString& device )
+{
+  GeneralConfig::instance()->setPressureDevice( device );
+  emit newPressureDevice( device ); // informs GpsNmea
 }
 
 void AltimeterDialog::slotModeChanged( int mode )
@@ -483,6 +528,22 @@ void AltimeterDialog::slotReferenceChanged( int ref )
 {
   _ref = ref;
   GeneralConfig::instance()->setGpsAltitude( _ref );
+
+  switch( _ref )
+  {
+    case 0:
+      m_gps->setChecked(true);
+      m_devicesList->setVisible( false );
+      break;
+    case 1:
+      m_baro->setChecked(true);
+      m_devicesList->setVisible( true );
+      break;
+    default:
+      m_gps->setChecked(true);
+      m_devicesList->setVisible( false );
+      break;
+  }
 
   emit newAltimeterMode();     // informs MapView
   emit newAltimeterSettings(); // informs GpsNmea
@@ -627,7 +688,8 @@ bool AltimeterDialog::changesDone()
            m_mode != m_saveMode ||
            _ref != m_saveRef ||
            m_saveLeveling != levelingDisplay->text().toInt() ||
-           m_saveQnh != spinQnh->value() );
+           m_saveQnh != spinQnh->value() ||
+           m_savePressureDevice != m_devicesList->currentText() );
 }
 
 void AltimeterDialog::accept()
@@ -687,8 +749,10 @@ void AltimeterDialog::reject()
       conf->setGpsAltitude( m_saveRef );
       conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters(m_saveLeveling) );
       conf->setQNH( m_saveQnh );
+      conf->setPressureDevice( m_savePressureDevice );
       conf->save();
 
+      emit newPressureDevice( m_savePressureDevice ); // informs GpsNmea
       emit newAltimeterMode();     // informs MapView
       emit newAltimeterSettings(); // informs GpsNmea
     }

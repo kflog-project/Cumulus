@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2016 by Axel Pauli
+**                   2008-2020 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,9 +53,9 @@ class WindAnalyser;
  *
  * This class represents a single sample of flight data obtained.
  *
- * \date 2002-2016
+ * \date 2002-2020
  *
- * \version 1.2
+ * \version 1.3
  */
 class FlightSample
 {
@@ -122,7 +122,7 @@ public:
  *
  * \date 2002-2015
  *
- * \version 1.2
+ * \version 1.3
  */
 class Calculator : public QObject
 {
@@ -145,6 +145,8 @@ public:
    */
   enum positionFrom {GPS=0, MAN};
 
+  const double infiniteTemperature = -300.0;
+
 public:
   /**
    * Constructor
@@ -157,29 +159,37 @@ public:
   virtual ~Calculator();
 
   /**
+   * Read property of last temperature.
+   */
+  double getLastTemperature() const
+   {
+     return m_lastTemperature;
+   }
+
+  /**
    * Read property of QTime lastETA.
    */
-  const QTime& getlastETA() const { return lastETA; };
+  const QTime& getlastETA() const { return lastETA; }
 
   /**
    * Read property of integer lastBearing.
    */
-  const int& getlastBearing() const { return lastBearing; };
+  const int& getlastBearing() const { return lastBearing; }
 
   /**
    * Read property of double lastDistance.
    */
-  const Distance& getlastDistance() const { return lastDistance; };
+  const Distance& getlastDistance() const { return lastDistance; }
 
   /**
    * \return The selected target waypoint object.
    */
-  const Waypoint* getTargetWp() const { return targetWp; };
+  const Waypoint* getTargetWp() const { return targetWp; }
 
   /**
    * Read property of Altitude lastAltitude.
    */
-  const Altitude& getlastAltitude()const { return lastAltitude; };
+  const Altitude& getlastAltitude()const { return lastAltitude; }
 
   /**
    * \return the last known altitude AGL (Above ground Level)
@@ -188,7 +198,7 @@ public:
     {
       lastAGLAltitude = lastAltitude - lastElevation;
       return lastAGLAltitude;
-    };
+    }
 
   /**
    * \return the last known altitude AHL (Above home level)
@@ -197,7 +207,7 @@ public:
     {
       lastAHLAltitude = lastAltitude - GeneralConfig::instance()->getHomeElevation();
       return lastAHLAltitude;
-    };
+    }
 
   /**
    * Read property of altitude.
@@ -210,12 +220,28 @@ public:
   const AltitudeCollection& getAltitudeCollection();
 
   /**
+   * Read property of lastStaticPressure in hPa.
+   */
+  double getLastStaticPressure()
+  {
+    return lastStaticPressure;
+  }
+
+  /**
+   * Read property of lastDynamicPressure in Pa.
+   */
+  double getLastDynamicPressure()
+  {
+    return lastDynamicPressure;
+  }
+
+  /**
    * Read property of lastSpeed.
    */
   Speed& getLastSpeed()
   {
     return lastSpeed;
-  };
+  }
 
   /**
    * Read property of lastBestSpeed.
@@ -223,7 +249,7 @@ public:
   Speed& getlastBestSpeed()
   {
     return lastBestSpeed;
-  };
+  }
 
   /**
    * Read property of lastGlidePath.
@@ -246,7 +272,7 @@ public:
       {
         return -1.0;
       }
-  };
+  }
 
   /**
    * Get last current LD.
@@ -254,7 +280,7 @@ public:
   double getLastCurrentLD()
   {
     return lastCurrentLD;
-  };
+  }
 
   /**
    * Read property of QPoint lastPosition.
@@ -262,7 +288,7 @@ public:
   const QPoint& getlastPosition()
   {
     return lastPosition;
-  };
+  }
 
   /**
    * Read property of McCready setting
@@ -270,7 +296,7 @@ public:
   const Speed& getlastMc()
   {
     return lastMc;
-  };
+  }
 
   /**
    * Read property of TAS setting.
@@ -278,7 +304,7 @@ public:
   Speed& getlastTas()
   {
     return lastTas;
-  };
+  }
 
   /**
    * Read property of variometer setting.
@@ -286,7 +312,7 @@ public:
   Speed& getlastVario()
   {
     return lastVario;
-  };
+  }
 
   /**
    * Returns the last stored wind value.
@@ -294,7 +320,7 @@ public:
   Vector& getLastStoredWind()
   {
     return m_lastWind.wind;
-  };
+  }
 
   /**
    * Gets the last known Wind from the wind store.
@@ -308,7 +334,7 @@ public:
   {
     m_lastWind.wind = v;
     m_lastWind.altitude = lastAltitude;
-  };
+  }
 
   /**
    * Read property of lastHeading.
@@ -316,7 +342,7 @@ public:
   int getlastHeading()
   {
     return lastHeading;
-  };
+  }
 
   /**
    * Sets the current position to point newPos.
@@ -334,7 +360,7 @@ public:
   FlightMode currentFlightMode()
     {
       return lastFlightMode;
-    };
+    }
 
   /**
    * Write property of Glider glider.
@@ -347,7 +373,7 @@ public:
   Glider* glider() const
     {
       return m_glider;
-    };
+    }
 
   /**
    * get glider type
@@ -355,7 +381,7 @@ public:
   QString gliderType () const
   {
     return ( m_glider != 0 ) ? m_glider->type() : "";
-  };
+  }
 
   /**
    * \return the arrival Altitude regarding wind and last altitude
@@ -369,7 +395,7 @@ public:
   Polar* getPolar()
   {
     return m_polar;
-  };
+  }
 
   /**
    * \return the Reachable List
@@ -377,12 +403,12 @@ public:
   ReachableList* getReachList()
   {
       return m_reachablelist;
-  };
+  }
 
   void clearReachable()
   {
       m_reachablelist->clearLists();
-  };
+  }
 
   /**
    * \return the variometer object
@@ -390,7 +416,7 @@ public:
   const Vario* getVario()
   {
       return m_vario;
-  };
+  }
 
   /**
    * recalculate reachable list as new sites came in
@@ -398,7 +424,7 @@ public:
   void newSites()
     {
       m_reachablelist->calculateNewList();
-    };
+    }
 
   /**
    * \return the wind analyzer
@@ -406,7 +432,7 @@ public:
   const WindAnalyser* getWindAnalyser()
   {
       return m_windAnalyser;
-  };
+  }
 
   /**
    * \return true if the current flight mode matches the given pseudo-mode
@@ -418,7 +444,7 @@ public:
   bool isManualInFlight()
     {
       return m_manualInFlight;
-    };
+    }
 
   /**
    * @return True if we are in move otherwise fale.
@@ -447,7 +473,7 @@ public:
   const FlightSample& getLastFlightSample() const
   {
     return lastSample;
-  };
+  }
 
   /**
    * \return The time when the last sample was taken.
@@ -455,7 +481,7 @@ public:
   const QDateTime& getLastSampleTime() const
   {
     return lastSample.time;
-  };
+  }
 
   /**
    * \return The wind store
@@ -463,7 +489,7 @@ public:
   WindStore* getWindStore()
   {
     return m_windStore;
-  };
+  }
 
   /**
    * Sets a new waypoint as target. The old waypoint instance is
@@ -612,25 +638,32 @@ public:
   void slot_toggleLDCalculation(const bool newVal)
   {
     m_calculateLD = newVal;
-  };
+  }
   /**
    * Called to switch on/off Variometer calculation
    */
   void slot_toggleVarioCalculation(const bool newVal)
   {
     m_calculateVario = newVal;
-  };
+  }
   /**
    * Called to switch on/off ETA calculation
    */
   void slot_toggleETACalculation(const bool newVal)
   {
     m_calculateETA = newVal;
-  };
+  }
 
-  /** Called if a new wind measurement is available
-   * by the GPS/Logger device */
-  void slot_GpsWind(const Speed& speed, const short direction);
+  /**
+   * Called, if a new temperature value is available.
+   */
+  void slot_Temperature( const double temperature )
+  {
+    m_lastTemperature = temperature;
+  }
+
+  /** Called if a new wind measurement is available from an external device */
+  void slot_ExternalWind(const Speed& speed, const short direction);
 
   /**
    * Called if the Cumulus wind analyzer has a new measurement.
@@ -657,6 +690,22 @@ public:
   {
     m_gainedAltitude = 0;
     m_minimumAltitude = lastAltitude;
+  }
+
+  /**
+   * Called to set the static pressure value. Pressure in hPa.
+   */
+  void slot_staticPressure( const double pressure )
+  {
+    lastStaticPressure = pressure;
+  }
+
+  /**
+   * Called to set the dynamic pressure value. Pressure in Pa.
+   */
+  void slot_dynamicPressure( const double pressure )
+  {
+    lastDynamicPressure = pressure;
   }
 
   /**
@@ -765,6 +814,11 @@ public:
    * Sent if a new wind has been obtained
    */
   void newWind (Vector&);
+
+  /**
+   * Sent if a new temperature value is available.
+   */
+  void newTemperature(const double);
 
   /**
    * Sent the name of the glider type, if a new glider has been set.
@@ -925,6 +979,10 @@ private: // Private attributes
   QPoint lastPosition, lastGPSPosition;
   /** contains the last known heading */
   int lastHeading;
+  /** Contains the last know static pressure in hPa */
+  double lastStaticPressure;
+  /** Contains the last know dynamic pressure in Pa */
+  double lastDynamicPressure;
 
   /** contains the last known wind */
   struct
@@ -977,6 +1035,9 @@ private: // Private attributes
 
   /** Altitude gain. */
   Altitude m_gainedAltitude;
+
+  /** Last got temperature in degree Celsius */
+  double m_lastTemperature;
 
   /** Last task point passage state. */
   enum TaskPoint::PassageState m_lastTpPassageState;

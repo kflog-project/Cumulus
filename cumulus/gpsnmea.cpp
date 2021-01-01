@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2018 by Axel Pauli
+                               2008-2021 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -41,11 +41,13 @@
 
 #include <QtCore>
 
+#include "altitude.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "mapmatrix.h"
 #include "mapcalc.h"
 #include "mapview.h"
+#include "speed.h"
 
 #ifdef ANDROID
 #include "androidevents.h"
@@ -193,6 +195,13 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
 
   gpsKeys.insert( "$GNGNS", 12);
 
+  // OpenVario
+  gpsKeys.insert( "$POV", 13 );
+
+  // XCVario
+  gpsKeys.insert( "$PXCV", 14 );
+
+
 #ifdef FLARM
   gpsKeys.insert( "$PFLAA", 20);
   gpsKeys.insert( "$PFLAU", 21);
@@ -228,6 +237,11 @@ void GpsNmea::resetDataObjects()
   _lastCoord = QPoint(0,0);
   _lastSpeed = Speed(-1.0);
   _lastHeading = -1;
+  _lastTemperature = -300.0;
+  _lastBugs = 0;
+  _lastStaticPressure = 0.0;
+  _lastDynamicPressure = 0.0;
+
   _lastDate = QDate::currentDate(); // set date to a valid value
   cntSIVSentence = 1;
 
@@ -246,6 +260,9 @@ void GpsNmea::resetDataObjects()
 
   // GPS source to be used
   _gpsSource = GeneralConfig::instance()->getGpsSource().left(3);
+
+    // Pressure device to be used.
+  _pressureDevice = GeneralConfig::instance()->getPressureDevice();
 
   // special logger items
   _lastWindDirection = 0;
@@ -411,7 +428,7 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
-  if ( QObject::signalsBlocked() )
+  if( QObject::signalsBlocked() )
     {
       // @AP: If the emitting of signals is blocked, we will ignore
       // this call. Otherwise this module can do internal state
@@ -636,6 +653,14 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
           {
             __ExtractGngns( slst );
           }
+      return;
+
+    case 13: // $POV,  OpenVario
+      __ExtractPov( slst );
+      return;
+
+    case 14: // $PXCV, XCVario
+      __ExtractPxcv( slst );
       return;
 
 #ifdef FLARM
@@ -1005,23 +1030,25 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
       return;
     }
 
-  /* Garmin proprietary sentence with altitude information */
-  if ( slst[3] == "2" ) // pressure altitude
+  /*
+   * Garmin or Flarm proprietary sentence with pressure altitude information.
+   * Only considered, if pressure device is Garmin or FLARM.
+   */
+  if ( slst[3] == "2" &&
+      (_pressureDevice == "Garmin" || _pressureDevice == "Flarm") )
     {
       bool ok;
       double num = slst[1].toDouble( &ok );
 
       if( ok )
         {
-          _baroAltitudeSeen = true;
-
           Altitude altitude;
-
           altitude.setFeet( num );
 
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
               _reportAltitude = false;
+              _baroAltitudeSeen = true;
 
               // If we have pressure altitude, the barometer sensor is
               // normally calibrated to 1013.25hPa and that is the standard
@@ -1051,6 +1078,322 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 }
 
 /**
+  Used by XC and OpenVario devices:
+
+  https://www.openvario.org/doku.php?id=projects:series_00:software:nmea
+
+  $POV,P,<baro>,Q,<dp>,E,<te>,T,<temp>“
+
+  <baro>: static pressure in hPa, Example: 1018.35
+
+  <dp>: dynamic pressure in Pa, Example: 23.3
+
+  <te>: TE vario in m/s, Example: 2.15
+
+  <temp>: temperature in deg C, Example: 23.52
+
+  $POV,P,+949.30,Q,24.57*7D
+ */
+void GpsNmea::__ExtractPov( const QStringList& slst )
+{
+  if ( slst.size() < 3 )
+    {
+      qWarning("$POV contains too less parameters!");
+      return;
+    }
+
+  if( _pressureDevice != "OpenVario" )
+    {
+      // OpenVario is not selected as pressure device.
+      return;
+    }
+
+  for( int i=1; i < slst.size() - 1; i += 2 )
+    {
+      if( slst[i] == "P" )
+        {
+          // P: static pressure in hPa
+          // Example: $POV,P,1018.35*39
+          bool ok = false;
+          double p = slst[i+1].toDouble( &ok );
+
+          if( ok == false )
+            {
+              // abort all in error case
+              return;
+            }
+
+          if( _lastStaticPressure != p )
+            {
+              _lastStaticPressure = p;
+              emit newStaticPressure( p );
+            }
+
+          Altitude altitude( Altitude::altitudeFromPressure( p ) );
+
+          if( _lastPressureAltitude != altitude || _reportAltitude == true )
+            {
+              _baroAltitudeSeen = true;
+              _reportAltitude = false;
+
+              // If we have pressure altitude, the barometer sensor is
+              // normally calibrated to 1013.25hPa and that is the standard
+              // pressure altitude.
+              _lastPressureAltitude = altitude;
+              _lastStdAltitude = altitude;
+
+              if( _userExpectedAltitude == GpsNmea::PRESSURE )
+                {
+                  // Set these altitude too, when pressure is selected.
+                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
+
+                  // report new pressure altitude
+                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+                }
+            }
+        }
+      else if( slst[i] == "Q" )
+        {
+          // Q: dynamic pressure in Pa, Example: 23.3
+          // Example: $POV,Q,23.3*39
+          bool ok = false;
+          double q = slst[i+1].toDouble( &ok );
+
+          if( ok == false )
+            {
+              // abort all in error case
+              return;
+            }
+
+          if( _lastDynamicPressure != q )
+            {
+              _lastDynamicPressure = q;
+              emit newDynamicPressure( q );
+            }
+        }
+      else if( slst[i] == "E" )
+        {
+          // E: TE vario in m/s
+          // Example: $POV,E,2.15*14
+          bool ok = false;
+          double vs = slst[i+1].toDouble( &ok );
+
+          if( ok == false )
+            {
+              // abort all in error case
+              return;
+            }
+
+          Speed speed( vs );
+
+          if ( _lastVariometer != speed )
+            {
+              _lastVariometer = speed;
+              emit newVario( _lastVariometer ); // notify change
+            }
+        }
+      else if( slst[i] == "S" )
+        {
+          // S: true airspeed in km/h
+          // Example: $POV,S,123.45*05
+          bool ok = false;
+          double tas = slst[i+1].toDouble( &ok );
+
+          if( ok == false )
+            {
+              // abort all in error case
+              return;
+            }
+
+          Speed speed;
+          speed.setKph( tas );
+
+          if( _lastTas != speed )
+            {
+              _lastTas = speed;
+              emit newTas( _lastTas );
+            }
+        }
+      else if( slst[i] == "T" )
+        {
+          // T: temperature in deg C
+          // Example: $POV,T,23.52*35
+          bool ok = false;
+          double temperature = slst[i+1].toDouble( &ok );
+
+          if( ok == false )
+            {
+              // abort all in error case
+              return;
+            }
+
+          if( _lastTemperature != temperature )
+            {
+              _lastTemperature = temperature;
+              emit newTemperature(_lastTemperature );
+            }
+        }
+    }
+}
+
+/**
+  Used by XCVario devices:
+
+  The sentence has following format:
+
+   0 - $PXCV,
+   1 - BBB.B, ​​ // Vario, -30 to +30 m/s, negative sign for sink
+   2 - C.C,  ​​ ​​​​ // MacCready 0 to 10 m/s
+   3 - EE,  ​​ ​​ ​​​​ // Bugs degradation, 0 = clean to 30 %
+   4 - F.FF,  ​​​​ // Ballast 1.00 to 1.60
+   5 - G,  ​​ ​​ ​​ ​​​​ // 0 in climb, 1 in cruise
+   6 - HH.H,  ​​​​ // Outside airtemp in degrees celcius ( may have leading negative sign )
+   7 - QQQQ.Q, // QNH e.g. 1013.2
+   8 - PPPP.P, // Static pressure in hPa
+   9 - QQQQ.Q, // Dynamic pressure in Pa
+  10 - RRR.R, ​​ // Roll angle
+  11 - III.I, ​​ // Pitch angle
+  12 - X.XX,  ​​​​ // Acceleration in X-Axis
+  13 - Y.YY,  ​​​​ // Acceleration in Y-Axis
+  14 - Z.ZZ,  ​​​​ // Acceleration in Z-Axis
+       *CHK = standard NMEA checksum
+       <CR><LF>
+*/
+void GpsNmea::__ExtractPxcv( const QStringList& slst )
+{
+  if ( slst.size() < 15 )
+    {
+      qWarning("$PXCV contains too less parameters!");
+      return;
+    }
+
+  if( _pressureDevice != "XCVario" )
+    {
+      // XCVario is not selected as pressure device.
+      return;
+    }
+
+  bool ok = false;
+
+  // 1 - BBB.B, ​​Vario, -30 to +30 m/s, negative sign for sink
+  double vs = slst[1].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  Speed vSpeed( vs );
+
+  if ( _lastVariometer != vSpeed )
+    {
+      _lastVariometer = vSpeed;
+      emit newVario( _lastVariometer ); // notify change
+    }
+
+  // 2 - C.C, MacCready 0 to 10 m/s
+  double mc = slst[2].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  Speed mcSpeed( mc );
+
+  if ( _lastMc != mcSpeed )
+    {
+      _lastMc = mcSpeed;
+      emit newMc( _lastMc ); // notify change
+    }
+
+  // 3 - EE, Bugs degradation, 0 = clean to 30 %
+  unsigned short bugs = slst[3].toUShort( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  if ( bugs <= 100 && _lastBugs != bugs )
+    {
+      _lastBugs = bugs;
+      emit newBugs( _lastBugs ); // notify change
+    }
+
+  // 6 - HH.H, Outside airtemp in degrees celcius ( may have leading negative sign )
+  double temperature = slst[6].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  if( _lastTemperature != temperature )
+    {
+      _lastTemperature = temperature;
+      emit newTemperature(_lastTemperature );
+    }
+
+  // 8 - PPPP.P, Static pressure in hPa
+  double p = slst[8].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  if( _lastStaticPressure != p )
+    {
+      _lastStaticPressure = p;
+      emit newStaticPressure( p );
+    }
+
+  Altitude altitude( Altitude::altitudeFromPressure( p ) );
+
+  if( _lastPressureAltitude != altitude || _reportAltitude == true )
+    {
+      _baroAltitudeSeen = true;
+      _reportAltitude = false;
+
+      // If we have pressure altitude, the barometer sensor is
+      // normally calibrated to 1013.25hPa and that is the standard
+      // pressure altitude.
+      _lastPressureAltitude = altitude;
+      _lastStdAltitude = altitude;
+
+      if( _userExpectedAltitude == GpsNmea::PRESSURE )
+        {
+          // Set these altitude too, when pressure is selected.
+          _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
+
+          // report new pressure altitude
+          emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+        }
+    }
+
+  // 9 - QQQQ.Q, Dynamic pressure in Pa
+  double q = slst[9].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  if( _lastDynamicPressure != q )
+    {
+      _lastDynamicPressure = q;
+      emit newDynamicPressure( q );
+    }
+}
+
+/**
   Used by Cambridge devices. The PCAID sentence format is:
 
   $PCAID,<1>,<2>,<3>,<4>*hh<CR><LF>
@@ -1070,12 +1413,21 @@ void GpsNmea::__ExtractPcaid( const QStringList& slst )
       return;
     }
 
+  if( _pressureDevice != "Cambridge" )
+    {
+      // Cambridge is not selected as pressure device.
+      return;
+    }
+
   Altitude res(0);
   double num = slst[2].toDouble();
   res.setMeters( num );
 
-  if ( _lastStdAltitude != res && _userExpectedAltitude == GpsNmea::PRESSURE )
+  if ( (_lastStdAltitude != res && _userExpectedAltitude == GpsNmea::PRESSURE ) ||
+      _reportAltitude == true )
     {
+      _reportAltitude = false;
+      _baroAltitudeSeen = true;
       // Store this altitude as STD, if the user has pressure selected.
       // In the other case the STD is derived from the GPS altitude.
       _lastStdAltitude = res;
@@ -1109,6 +1461,12 @@ void GpsNmea::__ExtractPgcs( const QStringList& slst )
       return;
     }
 
+  if( _pressureDevice != "Volkslogger" )
+    {
+      // Volkslogger is not selected as pressure device.
+      return;
+    }
+
   Altitude res(0);
   bool ok;
   int num = slst[3].toInt(&ok, 16);
@@ -1118,6 +1476,8 @@ void GpsNmea::__ExtractPgcs( const QStringList& slst )
       qWarning("$PGCS contains corrupt pressure altitude!");
       return;
     }
+
+  _baroAltitudeSeen = true;
 
   if (num > 32768)
     {
@@ -1139,8 +1499,8 @@ void GpsNmea::__ExtractPgcs( const QStringList& slst )
       _lastPressureAltitude = res;
 
       // We only get a STD altitude from the Volkslogger, so we calculate
-      // the MSL altitude using the QNH provided by the user
-      calcMslAltitude( res );
+      // the MSL altitude by using the correction value set the user.
+      _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
 
       emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
     }
@@ -1279,6 +1639,12 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
       return;
     }
 
+  if( _pressureDevice != "Cambridge" )
+    {
+      // Cambridge is not selected as pressure device.
+      return;
+    }
+
   // extract wind direction in degrees
   int windDir = stringList[1].toInt( &ok );
 
@@ -1307,6 +1673,7 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
     {
       if( _lastPressureAltitude != res || _reportAltitude == true )
       {
+        _baroAltitudeSeen = true;
         _reportAltitude = false;
         _lastPressureAltitude = res; // store the new pressure altitude
         _lastStdAltitude = res;
@@ -1402,6 +1769,12 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
       return;
     }
 
+  if( _pressureDevice != "LX" )
+    {
+      // LX is not selected as pressure device.
+      return;
+    }
+
   // airspeed TAS in km/h
   if( ! stringList[2].isEmpty() )
     {
@@ -1427,7 +1800,6 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
       if( ok )
         {
           _baroAltitudeSeen = true;
-
           Altitude altitude( num );
 
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
@@ -1527,6 +1899,12 @@ void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
       return;
     }
 
+  if( _pressureDevice != "LX" )
+    {
+      // LX is not selected as pressure device.
+      return;
+    }
+
   // extract MacCready in m/s
   if( ! stringList[1].isEmpty() )
     {
@@ -1537,6 +1915,18 @@ void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
         {
           _lastMc = speed;
           emit newMc( _lastMc ); // notify change
+        }
+    }
+
+  // extract bugs in percent
+  if( ! stringList[2].isEmpty() )
+    {
+      unsigned short bugs = stringList[2].toUShort( &ok );
+
+      if ( ok && bugs <= 100 && _lastBugs != bugs )
+        {
+          _lastBugs = bugs;
+          emit newBugs( _lastBugs ); // notify change
         }
     }
 }
@@ -3049,10 +3439,8 @@ bool GpsNmea::event(QEvent *event)
     {
       AltitudeEvent *ae = dynamic_cast<AltitudeEvent *>(event);
 
-      if( ae )
+      if( ae != nullptr && _pressureDevice == "Android" )
         {
-          _baroAltitudeSeen = true;
-
           Altitude altitude( ae->altitude() );
 
           // Inform calculator about a new Android altitude. This value is
@@ -3061,6 +3449,7 @@ bool GpsNmea::event(QEvent *event)
 
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
+              _baroAltitudeSeen = true;
               _reportAltitude = false;
               _lastPressureAltitude = altitude; // store the new pressure altitude
               _lastStdAltitude = altitude;
