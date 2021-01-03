@@ -85,9 +85,9 @@ import android.widget.Toast;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2017
+ * @date 2012-2021
  * 
- * @version 1.8
+ * @version 1.9
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -324,7 +324,7 @@ public class CumulusActivity extends QtActivity
 
   public static native void nativeNmeaString(String nmea);
 
-  public static native void nativeBaroAltitude(double altitude);
+  public static native void nativeBaroPressure(double pressure);
 
   public static native void nativeGpsStatus(int status);
 
@@ -586,22 +586,13 @@ public class CumulusActivity extends QtActivity
           return;
         }
 
-      // About every 1000 ms a new altitude value is calculated.
-      double average = sum / elements;
-
-      // Calculate altitude according to formula 9, see paragraph 1.1.4.
-      // The result is in meters.
-      // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
-      // http://www.deutscher-wetterdienst.de/lexikon/download.php?file=Barometrische_Hoehenformel.pdf
-      final double k1 = 29.27 * 288.15;
-      final double log_p0_p1 = Math.log(1013.25 / average);
-
-      double altitude = (k1 * log_p0_p1) / (1 + (0.09513 * log_p0_p1));
+      // About every 1000 ms a average pressure value is calculated.
+      double averagePressure = sum / elements;
 
       try
       {
-        // Send altitude value to native application part.
-        nativeBaroAltitude(altitude);
+        // Send pressure value to native application part.
+        nativeBaroPressure( averagePressure );
       }
       catch( UnsatisfiedLinkError e )
       {
