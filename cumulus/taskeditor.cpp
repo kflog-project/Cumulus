@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2018 by Axel Pauli
+**                   2008-2020 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -806,9 +806,9 @@ void TaskEditor::slotAccept()
       return;
     }
 
-  if ( ( editState == TaskEditor::create && taskNamesInUse.contains( txt ) > 0 ) ||
+  if ( ( editState == TaskEditor::create && taskNamesInUse.contains( txt ) ) ||
        ( editState != TaskEditor::create && txt != editedTaskName &&
-         taskNamesInUse.contains( txt ) > 0 ) )
+         taskNamesInUse.contains( txt ) ) )
     {
       // Check if the task name does not conflict with existing onces.
       // The name must be unique in the task name space
