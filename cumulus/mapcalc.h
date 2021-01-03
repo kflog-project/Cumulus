@@ -17,6 +17,7 @@
 #ifndef MAP_CALC_H
 #define MAP_CALC_H
 
+#include <cmath>
 #include <QRect>
 
 #include "speed.h"
