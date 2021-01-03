@@ -247,26 +247,12 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @return the last know standard pressure altitude
-     */
-    Altitude getLastStdAltitude() const
-      {
-        return _lastStdAltitude;
-      };
-
-    /**
      * @return the last know pressure altitude above sea level
      */
     Altitude getLastPressureAltitude() const
       {
         return _lastPressureAltitude;
       };
-
-    /**
-     * @return the last know gps altitude depending on user
-     * selection MSL or Pressure
-     */
-    Altitude getLastAltitude() const;
 
     /**
      * @return the last know altitude above the WGS84 ellipsoid
@@ -322,37 +308,12 @@ class GpsNmea : public QObject
     void forceReset();
 
     /**
-     * set altitude reference delivered by the GPS unit
-     */
-    void setDeliveredAltitude( const GpsNmea::DeliveredAltitude newAltRef )
-    {
-      _userExpectedAltitude = newAltRef;
-    };
-
-    /**
-     * set altitude correction for the altitude by the GPS unit
-     * (used in USER mode only)
-     */
-    void setDeliveredUserAltitude( const Altitude& userAlt  )
-    {
-      _userAltitudeCorrection = userAlt;
-    };
-
-    /**
      * Don't report once a connection lost
      */
     void ignoreConnectionLost()
     {
       _ignoreConnectionLost = true;
     };
-
-    /**
-     * @return selected altitude reference delivered by the GPS unit
-     */
-    GpsNmea::DeliveredAltitude getDeliveredAltitude() const
-      {
-        return _userExpectedAltitude;
-      };
 
     /**
      * @return the satellites in view.
@@ -499,42 +460,43 @@ class GpsNmea : public QObject
     void newPosition( QPoint &newPosition );
 
     /**
-     * This signal is emitted if the altitude has been changed.
+     * This signal is emitted if the GNSS altitude has been changed.
      */
-    void newAltitude( Altitude& user, Altitude& std, Altitude& gnns );
+    void newGNSSAltitude( Altitude& gnns );
 
     /**
-     * This signal is emitted if a new Android altitude is available.
+     * This signal is emitted if the pressure altitude has been changed.
      */
-    void newAndroidAltitude(const Altitude& altitude);
+    void newPressureAltitude( Altitude& pressure );
 
     /**
-     * This signal is emitted if a new speed fix has been established.
+     * This signal is emitted if a new speed fix has been received.
      */
     void newSpeed( Speed& newSpeed );
 
     /**
-     * This signal is emitted if a new heading has been established.
+     * This signal is emitted if a new heading has been received.
      */
     void newHeading( const double& newHeading );
 
     /**
      * This signal is emitted if a new wind (speed, direction)
-     * has been established.
+     * has been received.
      */
     void newWind( const Speed&, const short );
 
     /**
-     * This signal is emitted if a new TAS value has been established.
+     * This signal is emitted if a new TAS value has been received.
      */
     void newTas( const Speed& );
+
     /**
-     * This signal is emitted if a new variometer value has been established.
+     * This signal is emitted if a new variometer value has been received.
      */
     void newVario( const Speed& );
 
     /**
-     * This signal is emitted if a new MacCready value has been established.
+     * This signal is emitted if a new MacCready value has been received.
      */
     void newMc( const Speed& );
 
@@ -628,9 +590,6 @@ class GpsNmea : public QObject
      *  at startup, at restart and if the GPS fix has been lost. */
     void resetDataObjects();
 
-    /** write configuration data to allow restore of last fix */
-    void writeConfig();
-
     /** Extracts GPRMC sentence. */
     void __ExtractGprmc( const QStringList& slst );
     /** Extracts GPGLL sentence. */
@@ -717,11 +676,6 @@ class GpsNmea : public QObject
 
   private:
 
-    /** This function calculates the STD altitude from the passed MSL altitude. */
-    void calcStdAltitude(const Altitude& altitude);
-    /** This function calculates the MSL altitude from the passed STD altitude. */
-    void calcMslAltitude(const Altitude& altitude);
-
     /** Set system date/time. Input is UTC related. */
     void setSystemClock( const QDateTime& utcDt );
     /** create a GPS connection */
@@ -741,14 +695,12 @@ class GpsNmea : public QObject
     Speed _lastSpeed;
     /** Contains the last known coordinate in KFLog format */
     QPoint _lastCoord;
-    /** Contains the last known STD pressure altitude */
-    Altitude _lastStdAltitude;
+
     /** Contains the last known pressure altitude */
     Altitude _lastPressureAltitude;
-    /** Contains the last known MSL altitude */
-    Altitude _lastMslAltitude;
-    /** Contains the last known HAE */
+    /** Contains the last known GNSS altitude */
     Altitude _lastGNSSAltitude;
+
     /** Force one altitude report after reset, regardless of change or not */
     bool _reportAltitude;
     /** Contains the last known heading */
@@ -793,8 +745,6 @@ class GpsNmea : public QObject
     GpsStatus _status;
     /** The altitude (GPS or Baro) expected by the user. */
     DeliveredAltitude _userExpectedAltitude;
-    /** The correction for the altitude when the altitude type is USER */
-    Altitude _userAltitudeCorrection;
     /** Flag to ignore a lost connection, caused by a system clock update */
     bool _ignoreConnectionLost;
     /** SIV sentence count */

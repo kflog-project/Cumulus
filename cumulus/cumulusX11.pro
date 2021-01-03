@@ -96,7 +96,6 @@ CONFIG += resources
 
 HEADERS = \
     aboutwidget.h \
-    AirDensity.h \
     airfield.h \
     AirfieldListWidget.h \
     AirfieldSelectionList.h \
@@ -107,6 +106,7 @@ HEADERS = \
     airspacewarningdistance.h \
     altimeterdialog.h \
     altitude.h \
+    Atmosphere.h \
     authdialog.h \
     basemapelement.h \
     calculator.h \
@@ -236,7 +236,6 @@ HEADERS = \
 
 SOURCES = \
     aboutwidget.cpp \
-    AirDensity.cpp \
     airfield.cpp \
     AirfieldListWidget.cpp \
     AirfieldSelectionList.cpp \

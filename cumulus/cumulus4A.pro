@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2020 by Axel Pauli
+#                2012-2021 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -135,6 +135,7 @@ HEADERS = \
     altitude.h \
     androidevents.h \
     androidstyle.h \
+    Atmosphere.h \
     authdialog.h \
     basemapelement.h \
     calculator.h \

@@ -648,7 +648,7 @@ void AltimeterDialog::slotChangeSpinValue()
       conf->setGpsUserAltitudeCorrection( newAlt );
 
       if( m_baro->isChecked() && m_msl->isChecked() &&
-          GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
+          conf->getGpsAltitude() == GpsNmea::PRESSURE &&
           GpsNmea::gps->baroAltitudeSeen() )
         {
           // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
@@ -708,7 +708,7 @@ void AltimeterDialog::accept()
       int qnh = spinQnh->value();
 
       if( m_baro->isChecked() && m_msl->isChecked() &&
-          GpsNmea::gps->getDeliveredAltitude() == GpsNmea::PRESSURE &&
+          conf->getGpsAltitude() == GpsNmea::PRESSURE &&
           GpsNmea::gps->baroAltitudeSeen() )
         {
           // Calculate again the QNH to avoid wrong value, if the leveling spin box

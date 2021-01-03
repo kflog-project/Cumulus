@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2020 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -53,7 +53,7 @@ class WindAnalyser;
  *
  * This class represents a single sample of flight data obtained.
  *
- * \date 2002-2020
+ * \date 2002-2021
  *
  * \version 1.3
  */
@@ -307,6 +307,14 @@ public:
   }
 
   /**
+   * Read property of IAS setting.
+   */
+  Speed& getlastIas()
+  {
+    return lastIas;
+  }
+
+  /**
    * Read property of variometer setting.
    */
   Speed& getlastVario()
@@ -534,62 +542,95 @@ public:
    * called if a new speed fix has been received
    */
   void slot_Speed( Speed& newSpeed );
+
   /**
-   * called on altitude change
+   * called on GNSS altitude change.
    */
-  void slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns);
+  void slot_GnssAltitude( Altitude& gnns );
+
+  /**
+   * called on pressure altitude change.
+   */
+  void slot_PressureAltitude( Altitude& pressure );
+
   /**
    * Called if the position is changed manually.
    */
   void slot_changePosition(int direction);
+
   /**
    * Called if a new heading has been obtained
    */
   void slot_Heading( const double& newHeading );
+
   /**
    * Change position to the North
    */
   void slot_changePositionN();
+
   /**
    * Change position to the South
    */
   void slot_changePositionS();
+
   /**
    * Change position to the East
    */
   void slot_changePositionE();
+
   /**
    * Change position to the West
    */
   void slot_changePositionW();
+
   /**
    * Change position to the Homesite
    */
   void slot_changePositionHome();
+
   /**
    * Change position to the selected waypoint
    */
   void slot_changePositionWp();
+
   /**
    * Change position to the new coordinate point. Called by move map with mouse.
    */
   void slot_changePosition(QPoint& newPosition);
 
   /**
-   * set McCready value
+   * Set McCready value, delivered by Mc dialog of Cumulus.
    */
   void slot_Mc(const Speed&);
 
   /**
-   * set water and bug values used by glider polare.
+   * Set McCready value, delivered by external device.
+   */
+  void slot_ExternalMc(const Speed&);
+
+  /**
+   * Set water and bug values, delivered by Mc dialog, used by glider polare.
    */
   void slot_WaterAndBugs( const int water, const int bugs );
 
   /**
-   * Set the TAS value, delivered by the GPS. It is received by an external
-   * logger device.
+   * Set bug value used by glider polare and delivered from an external device.
    */
-  void slot_GpsTas(const Speed& tas);
+  void slot_ExternalBugs( const unsigned short bugs );
+
+  /**
+   * Called if a new TAS is available from an external device.
+   */
+  void slot_ExternalTas( const Speed& speed );
+
+  /**
+   * Called if external data shall be used for Mc and bugs.
+   * Source is GliderFlightDialog.
+   */
+  void slot_ExternalData4McAndBugs( const bool state )
+  {
+    m_useExternalData4McAndBugs = state;
+  }
 
   /**
    * increment McCready value
@@ -602,23 +643,15 @@ public:
   void slot_McDown();
 
   /**
-   * Variometer lift receiver and distributor to map display.
-   */
-  void slot_Variometer(const Speed&);
-
-  /**
-   * A new altitude derived from the Android pressure sensor is delivered.
-   * We use this value for the variometer calculation. The default variometer
-   * calculation derived from the GPS altitude is switched off, if we got
-   * values via this slot.
-   */
-  void slot_AndroidAltitude(const Altitude& altitude);
-
-  /**
    * GPS variometer lift receiver. The internal variometer
    * calculation can be switched off, if we got values via this slot.
    */
-  void slot_GpsVariometer(const Speed&);
+  void slot_ExternalVariometer(const Speed&);
+
+  /**
+   * Variometer lift receiver and distributor to map display.
+   */
+  void slot_Variometer(const Speed&);
 
   /**
    * settings have been changed
@@ -632,6 +665,7 @@ public:
    * Called if the status of the GPS changes.
    */
   void slot_GpsStatus(GpsNmea::GpsStatus);
+
   /**
    * Called to switch on/off LD calculation
    */
@@ -639,13 +673,7 @@ public:
   {
     m_calculateLD = newVal;
   }
-  /**
-   * Called to switch on/off Variometer calculation
-   */
-  void slot_toggleVarioCalculation(const bool newVal)
-  {
-    m_calculateVario = newVal;
-  }
+
   /**
    * Called to switch on/off ETA calculation
    */
@@ -655,12 +683,11 @@ public:
   }
 
   /**
-   * Called, if a new temperature value is available.
+   * Called, if a new temperature value is available from an external device
+   * (OpenVario or XCVario).
+   * Temperature in degree Celsius.
    */
-  void slot_Temperature( const double temperature )
-  {
-    m_lastTemperature = temperature;
-  }
+  void slot_Temperature( const double temperature );
 
   /** Called if a new wind measurement is available from an external device */
   void slot_ExternalWind(const Speed& speed, const short direction);
@@ -693,20 +720,23 @@ public:
   }
 
   /**
-   * Called to set the static pressure value. Pressure in hPa.
+   * Called to set the static pressure value from an external device
+   * (OpenVario or XCVario).
+   * Pressure in hPa. From the static pressure value the STD altitude is
+   * calculated.
+   *
+   * @param pressure Static pressure value in hPa.
    */
-  void slot_staticPressure( const double pressure )
-  {
-    lastStaticPressure = pressure;
-  }
+  void slot_staticPressure( const double pressure );
 
   /**
-   * Called to set the dynamic pressure value. Pressure in Pa.
+   * Called to set the dynamic pressure value from an external device
+   * (OpenVario or XCVario).
+   * Pressure in Pa.
+   *
+   * @param pressure Static pressudouble re value in Pa.
    */
-  void slot_dynamicPressure( const double pressure )
-  {
-    lastDynamicPressure = pressure;
-  }
+  void slot_dynamicPressure( const double pressure );
 
   /**
    * Called, if the user has zoomed the map. That will reset the auto zoom value
@@ -776,6 +806,11 @@ public:
   void newTas(const Speed&);
 
   /**
+  * Sent if a new indicated airspeed has been obtained
+  */
+  void newIas(const Speed&);
+
+  /**
    * Sent if a new heading has been obtained
    */
   void newHeading(int);
@@ -816,11 +851,6 @@ public:
   void newWind (Vector&);
 
   /**
-   * Sent if a new temperature value is available.
-   */
-  void newTemperature(const double);
-
-  /**
    * Sent the name of the glider type, if a new glider has been set.
    */
   void newGlider(const QString&);
@@ -858,6 +888,21 @@ public:
    * Sent if the map shall change the zoom factor
    */
   void switchMapScale(const double& newScale);
+
+  /**
+   * Send, if a new static pressure value is avialable in hPa.
+   */
+  void newStaticPressure( const double pressure );
+
+  /**
+   * Send, if a new dynamic pressure value is avialable in Pa.
+   */
+  void newDynamicPressure( const double pressure );
+
+  /**
+   * Send, if a new temperature value is available in degree Celsius.
+   */
+  void newTemperature( const double pressure );
 
 private:
 
@@ -949,26 +994,34 @@ private: // Private attributes
   Speed lastMc;
   /** Contains the last TAS value */
   Speed lastTas;
+  /** Contains the last IAS value */
+  Speed lastIas;
   /** contains the current state of TAS calculation */
   bool m_calculateTas;
   /** Contains the last variometer value */
   Speed lastVario;
   /** Contains the last known glide path information */
   Altitude lastGlidePath;
+
   /** Contains the last known altitude */
   Altitude lastAltitude;
+
+  /** Contains the last known GNSS altitude */
+  Altitude lastGNSSAltitude;
+  /** Contains the last known pressure altitude */
+  Altitude lastPressureAltitude;
+
   /** Contains the last known AGL altitude */
   Altitude lastAGLAltitude;
   /** Contains the last known STD altitude */
   Altitude lastSTDAltitude;
   /** Contains the last known Error margin for the AGL altitude */
   Distance lastAGLAltitudeError;
-  /** Contains the last known altitude */
-  Altitude lastGNSSAltitude;
   /** Contains the last known altitude about home level. */
   Altitude lastAHLAltitude;
   /** Contains the altitude used for manual navigation mode */
   Altitude manualAltitude;
+
   /** Contains the error margin for the lastElevation */
   Distance lastElevationError;
   /** Contains the last known elevation */
@@ -1003,8 +1056,6 @@ private: // Private attributes
   Vario* m_vario;
   /** contains the current state of vario calculation */
   bool m_calculateVario;
-  /** Reminder, that pressure altitude data from an Android device have been received. */
-  bool m_androidPressureAltitude;
   /** Contains the last known flight mode */
   FlightMode lastFlightMode;
   /** Last marker value used */
@@ -1054,6 +1105,11 @@ private: // Private attributes
    * Timer to supervise external vaiometer data.
    */
   QTimer* m_varioDataControl;
+
+  /**
+   * Use external data for Mc and bugs, if the flag is set to true.
+   */
+  bool m_useExternalData4McAndBugs;
 };
 
 extern Calculator* calculator;

@@ -259,6 +259,11 @@ class MapView : public QWidget
     void slot_LD( const double& rLD, const double& cLD );
 
     /**
+     * This slot is called, if the current IAS value has been modified
+     */
+    void slot_Ias( const Speed& ias );
+
+    /**
      * This slot is called, if the current TAS value has been modified
      */
     void slot_Tas( const Speed& tas );
@@ -323,9 +328,9 @@ class MapView : public QWidget
     void slot_toggleDistanceEta();
 
     /**
-     * toggle between ground speed and TAS widget on mouse signal
+     * toggle between ground speed, IAS and TAS widget on mouse signal
      */
-    void slot_toggleGsTas();
+    void slot_toggleGsIasTas();
 
     /**
      * toggle between wind and LD widget on mouse signal
@@ -374,11 +379,6 @@ signals:
   void toggleETACalculation( const bool );
 
   /**
-   * toggle variometer calculation on/off
-   */
-  void toggleVarioCalculation( const bool );
-
-  /**
    * toggle menu in main window.
    */
   void toggleMenu();
@@ -422,6 +422,8 @@ signals:
     MapInfoBox* _speed;
     /** reference to the tas label */
     MapInfoBox* _tas;
+    /** reference to the ias label */
+    MapInfoBox* _ias;
     /** reference to the best speed label */
     MapInfoBox* _speed2fly;
     /** reference to the McCready label */

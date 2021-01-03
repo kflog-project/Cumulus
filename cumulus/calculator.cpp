@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2016 by Axel Pauli
+ **                  2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -27,6 +27,7 @@
 #endif
 
 #include "altimeterdialog.h"
+#include "Atmosphere.h"
 #include "calculator.h"
 #include "flarmbase.h"
 #include "generalconfig.h"
@@ -58,11 +59,12 @@ Calculator::Calculator(QObject* parent) :
 
   manualAltitude.setMeters( conf->getManualNavModeAltitude() );
 
-  lastAltitude     = manualAltitude;
-  lastAGLAltitude  = manualAltitude;
-  lastSTDAltitude  = manualAltitude;
-  lastGNSSAltitude = manualAltitude;
-  lastAHLAltitude  = manualAltitude;
+  lastGNSSAltitude     = manualAltitude;
+  lastPressureAltitude = manualAltitude;
+  lastAltitude         = manualAltitude;
+  lastAGLAltitude      = manualAltitude;
+  lastSTDAltitude      = manualAltitude;
+  lastAHLAltitude      = manualAltitude;
   lastAGLAltitudeError.setMeters(0);
 
   lastPosition.setX( conf->getCenterLat() );
@@ -81,9 +83,7 @@ Calculator::Calculator(QObject* parent) :
   m_lastTemperature = infiniteTemperature;
   m_calculateLD = false;
   m_calculateETA = false;
-  m_calculateVario = true;
   m_calculateTas = true;
-  m_androidPressureAltitude = false;
   m_calculateWind = true;
   m_lastWind.wind = Vector(0.0, 0.0);
   m_lastWind.altitude = lastAltitude;
@@ -91,6 +91,7 @@ Calculator::Calculator(QObject* parent) :
   lastMc = GeneralConfig::instance()->getMcCready();
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
+  lastIas = 0.0;
   m_polar = 0;
   m_vario = new Vario (this);
   m_windAnalyser = new WindAnalyser(this);
@@ -113,6 +114,8 @@ Calculator::Calculator(QObject* parent) :
 
   m_varioDataControl = new QTimer( this );
   m_varioDataControl->setSingleShot( true );
+
+  m_useExternalData4McAndBugs = conf->getGliderFlightDialogUseExternalData();
 
   connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
            this, SLOT(slot_switchMapScaleBack()) );
@@ -192,21 +195,60 @@ const AltitudeCollection& Calculator::getAltitudeCollection()
   return lastAltCollection;
 }
 
-/** called on altitude change */
-void Calculator::slot_Altitude(Altitude& user, Altitude& std, Altitude& gnns)
+/** called on a GNNS altitude change */
+void Calculator::slot_GnssAltitude( Altitude& altitude )
 {
-  lastAltitude         = user;
-  lastSTDAltitude      = std;
-  lastGNSSAltitude     = gnns;
-  lastAGLAltitude      = lastAltitude - lastElevation;
-  lastAGLAltitudeError = lastElevationError;
+  if( lastGNSSAltitude != altitude )
+    {
+      lastGNSSAltitude = altitude;
 
-  lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
-  emit newAltitude( lastAltitude );
-  emit newUserAltitude( getAltimeterAltitude() );
+      if( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::GPS )
+        {
+          // Altitude correction value set by the user.
+          Altitude _userAltitudeCorrection =
+              GeneralConfig::instance()->getGpsUserAltitudeCorrection();
 
-  calcGlidePath();
-  calcAltitudeGain();
+          lastAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
+          lastSTDAltitude = altitude;
+          lastAGLAltitude  = lastAltitude - lastElevation;
+          lastAGLAltitudeError = lastElevationError;
+          lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
+
+          emit newAltitude( lastAltitude );
+          emit newUserAltitude( getAltimeterAltitude() );
+
+          calcGlidePath();
+          calcAltitudeGain();
+        }
+    }
+}
+
+/** called on a pressure altitude change */
+void Calculator::slot_PressureAltitude( Altitude& altitude )
+{
+  if( lastPressureAltitude != altitude )
+    {
+      lastPressureAltitude = altitude;
+
+      if( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::PRESSURE )
+        {
+          // Altitude correction value set by the user.
+          Altitude _userAltitudeCorrection =
+              GeneralConfig::instance()->getGpsUserAltitudeCorrection();
+
+          lastAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
+          lastSTDAltitude = altitude;
+          lastAGLAltitude  = lastAltitude - lastElevation;
+          lastAGLAltitudeError = lastElevationError;
+          lastAHLAltitude  = lastAltitude - GeneralConfig::instance()->getHomeElevation();
+
+          emit newAltitude( lastAltitude );
+          emit newUserAltitude( getAltimeterAltitude() );
+
+          calcGlidePath();
+          calcAltitudeGain();
+        }
+    }
 }
 
 /** Called if a new heading has been obtained */
@@ -1052,10 +1094,106 @@ void Calculator::slot_changePosition(QPoint& newPosition)
   slot_changePosition(MapMatrix::Position);
 }
 
+/**
+ * Called to set the static pressure value from an external device.
+ * Pressure in hPa. From the static pressure value the STD altitude is
+ * calculated.
+ *
+ * @param pressure Static pressure value in hPa.
+ */
+void Calculator::slot_staticPressure( const double pressure )
+{
+  if( pressure <= 0.0 )
+    {
+      // undefined static pressure
+      return;
+    }
+
+  if( lastStaticPressure != pressure )
+    {
+      lastStaticPressure = pressure;
+      emit newStaticPressure( pressure );
+    }
+}
+
+/**
+ * Called to set the dynamic pressure value from an external device
+ * (OpenVario or XCVario).
+ * Pressure in Pa.
+ *
+ * @param pressure Static pressure value in Pa.
+ */
+void Calculator::slot_dynamicPressure( const double pressure )
+{
+  if( pressure <= 0.0 )
+    {
+      // undefined dynamic pressure
+      return;
+    }
+
+  if( lastDynamicPressure != pressure )
+    {
+      lastDynamicPressure = pressure;
+      emit newDynamicPressure( lastDynamicPressure );
+    }
+
+  // calculate IAS in mps from dynamic pressure in Pa
+  double dIas = Atmosphere::pascal2mps( pressure );
+
+  Speed ias( dIas );
+
+  if( lastIas != ias )
+    {
+      lastIas = ias;
+      emit newIas( ias );
+    }
+
+  double temp = m_lastTemperature;
+
+  if( temp == infiniteTemperature )
+    {
+      // assume default temperature of 15 degree Celsius
+      temp = 15.0;
+    }
+
+  if( lastStaticPressure <= 0.0 )
+    {
+      // undefined static pressure
+      return;
+    }
+
+  // Calculate the TAS in m/s from the IAS.
+  double dTas = Atmosphere::tas( dIas,
+                                 lastStaticPressure,
+                                 temp );
+  Speed tas( dTas );
+
+  if( lastTas != tas )
+    {
+      lastTas = tas;
+      emit newTas( tas );
+    }
+}
+
+/**
+ * Called, if a new temperature value is available from an external device
+ * (OpenVario or XCVario).
+ * Temperature in degree Celsius.
+ */
+void Calculator::slot_Temperature( const double temperature )
+{
+  if( m_lastTemperature != temperature )
+    {
+      m_lastTemperature = temperature;
+      emit newTemperature( temperature );
+    }
+}
+
 /** increment McCready value */
 void Calculator::slot_McUp()
 {
-  if( m_glider && lastMc.getMps() <= MAX_MCCREADY - 0.5 )
+  if( m_glider && m_useExternalData4McAndBugs == false &&
+      lastMc.getMps() <= MAX_MCCREADY - 0.5 )
     {
       lastMc.setMps( lastMc.getMps() + 0.5 );
       GeneralConfig::instance()->setMcCready(lastMc);
@@ -1064,10 +1202,24 @@ void Calculator::slot_McUp()
     }
 }
 
-/** set McCready value */
+/** Set McCready value, delivered by external device. */
+void Calculator::slot_ExternalMc(const Speed& mc)
+{
+  if( m_glider && m_useExternalData4McAndBugs == true &&
+      lastMc.getMps() != mc.getMps() )
+    {
+      lastMc = mc;
+      GeneralConfig::instance()->setMcCready(lastMc);
+      calcGlidePath();
+      emit newMc( mc );
+    }
+}
+
+/** Set McCready value, delivered by Mc dialog. */
 void Calculator::slot_Mc(const Speed& mc)
 {
-  if( m_glider && lastMc.getMps() != mc.getMps() )
+  if( m_glider && m_useExternalData4McAndBugs == false &&
+      lastMc.getMps() != mc.getMps() )
     {
       lastMc = mc;
       GeneralConfig::instance()->setMcCready(lastMc);
@@ -1079,7 +1231,8 @@ void Calculator::slot_Mc(const Speed& mc)
 /** decrement McCready value; don't get negative */
 void Calculator::slot_McDown()
 {
-  if( m_glider && lastMc.getMps() >= 0.5 )
+  if( m_glider && m_useExternalData4McAndBugs == false &&
+      lastMc.getMps() >= 0.5 )
     {
       lastMc.setMps( lastMc.getMps() - 0.5 );
       GeneralConfig::instance()->setMcCready(lastMc);
@@ -1089,29 +1242,46 @@ void Calculator::slot_McDown()
 }
 
 /**
- * set water and bug values used by glider polare.
+ * Set water and bug values, delivered by Mc dialog, used by glider polare.
  */
 void Calculator::slot_WaterAndBugs( const int water, const int bugs )
 {
-  if( m_glider )
+  if( m_glider && m_useExternalData4McAndBugs == false )
     {
       if(m_glider->polar()->water() != water )
-	{
-	  m_glider->polar()->setWater( water );
-	}
+        {
+          m_glider->polar()->setWater( water );
+        }
 
-      if( m_glider->polar()->bugs() != bugs )
-	{
-	  m_glider->polar()->setBugs( bugs );
-	}
+       if( m_glider->polar()->bugs() != bugs )
+        {
+          m_glider->polar()->setBugs( bugs );
+        }
 
       calcGlidePath();
     }
 }
 
-void Calculator::slot_GpsTas(const Speed& tas)
+/**
+ * Set bug value used by glider polare and delivered from an external device.
+ */
+void Calculator::slot_ExternalBugs( const unsigned short bugs )
 {
-  // We get the TAS from another source. Therefore it must not be calculated by us.
+  if( m_glider && m_useExternalData4McAndBugs == true )
+    {
+       if( m_glider->polar()->bugs() != bugs )
+        {
+          m_glider->polar()->setBugs( bugs );
+        }
+
+      calcGlidePath();
+    }
+}
+
+void Calculator::slot_ExternalTas( const Speed& tas )
+{
+  // We get the TAS from an external device. Therefore it must not be calculated
+  // by Cumulus.
   m_calculateTas = false;
   lastTas.setMps( tas.getMps() );
   emit newTas( lastTas );
@@ -1130,35 +1300,13 @@ void Calculator::slot_Variometer(const Speed& lift)
 }
 
 /**
- * This slot triggers a variometer calculation based on Android pressure
- * altitude values.
- */
-void Calculator::slot_AndroidAltitude(const Altitude& altitude)
-{
-  // qDebug() << "slot_AndroidAltitude: m_calculateVario="
-  //         << m_calculateVario << altitude.getMeters();
-
-  if( m_calculateVario == false )
-    {
-      // Variometer data from another external device are used.
-      // Abort calculation.
-      return;
-    }
-
-  m_androidPressureAltitude = true;
-  m_vario->newPressureAltitude( altitude, lastTas );
-  m_varioDataControl->start( 5000 );
-}
-
-/**
- * GPS variometer lift receiver. The internal variometer
+ * External variometer lift receiver. The internal variometer
  * calculation can be switched off, if we got values via this slot.
  */
-void Calculator::slot_GpsVariometer(const Speed& lift)
+void Calculator::slot_ExternalVariometer(const Speed& lift)
 {
-  // Hey we got a variometer value directly from the GPS.
-  // Therefore internal calculation is not needed and can be
-  // switched off.
+  // Hey we got a variometer value directly from the external device.
+  // Therefore internal calculation is not needed and can be switched off.
   m_calculateVario = false;
 
   if (lastVario != lift)
@@ -1187,7 +1335,6 @@ void Calculator::slot_varioDataControl()
   // Variometer control timer expired. Reset variometer status variables
   // to ensure normal calculation from GPS altitude.
   m_calculateVario = true;
-  m_androidPressureAltitude = false;
 }
 
 /** Resets some internal items to the initial state */
@@ -1208,8 +1355,6 @@ void Calculator::slot_settingsChanged()
   m_calculateVario = true;
   m_calculateWind  = true;
   m_calculateTas   = true;
-
-  m_androidPressureAltitude = false;
 
   slot_CheckHomeSiteSelection();
 
@@ -1260,7 +1405,7 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
   // Call variometer calculation derived from GPS altitude. Can be switched off,
   // when an external device delivers variometer information derived from a
   // baro sensor.
-  if ( m_calculateVario == true && m_androidPressureAltitude == false )
+  if ( m_calculateVario == true )
     {
       m_vario->newAltitude();
     }

@@ -7,7 +7,7 @@
 
   copyright            : (C) 2002      by Andre Somers
                              2008      by Josua Dietze
-                             2008-2017 by Axel Pauli <kflog.cumulus@gmail.com>
+                             2008-2021 by Axel Pauli <kflog.cumulus@gmail.com>
 
  ***************************************************************************/
 
@@ -283,7 +283,17 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed->setUpdateInterval( 750 );
   _speed->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _speed);
-  connect(_speed, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsTas()));
+  connect(_speed, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsIasTas()));
+
+  // add Ias widget
+  _ias = new MapInfoBox( this, "#c0c0c0" );
+  _ias->setVisible( false );
+  _ias->setPreText("Ias");
+  _ias->setValue("-");
+  _ias->setUpdateInterval( 750 );
+  _ias->setMapInfoBoxMaxHeight( textLabelBoxHeight );
+  SHLayout->addWidget( _ias);
+  connect(_ias, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsIasTas()));
 
   // add Tas widget
   _tas = new MapInfoBox( this, "#c0c0c0" );
@@ -293,7 +303,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _tas->setUpdateInterval( 750 );
   _tas->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _tas);
-  connect(_tas, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsTas()));
+  connect(_tas, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsIasTas()));
 
   //add Heading widget
   _heading = new MapInfoBox( this, "#c0c0c0" );
@@ -529,11 +539,12 @@ void MapView::showEvent( QShowEvent* event )
   Q_UNUSED( event )
 
   // Used map info box widgets
-  MapInfoBox *boxWidgets[15] = { _heading,
+  MapInfoBox *boxWidgets[16] = { _heading,
                                  _bearing,
                                  _rel_bearing,
                                  _distance,
                                  _speed,
+                                 _ias,
                                  _tas,
                                  _speed2fly,
                                  _mc,
@@ -546,7 +557,7 @@ void MapView::showEvent( QShowEvent* event )
                                  _glidepath };
 
   // Adapt the pretext display width to the text size.
-  for( int i = 0; i < 15; i++ )
+  for( int i = 0; i < 16; i++ )
     {
       MapInfoBox *ptr = boxWidgets[i];
 
@@ -605,6 +616,19 @@ void MapView::slot_Speed(const Speed& speed)
     }
 }
 
+/** Called if IAS has changed */
+void MapView::slot_Ias( const Speed& ias )
+{
+  if( ! ias.isValid() || ias.getMph() < 0 )
+    {
+      _ias->setValue("-");
+    }
+  else
+    {
+      _ias->setValue(ias.getHorizontalText(false, 0));
+    }
+}
+
 /** Called if TAS has changed */
 void MapView::slot_Tas( const Speed& tas )
 {
@@ -617,7 +641,6 @@ void MapView::slot_Tas( const Speed& tas )
       _tas->setValue(tas.getHorizontalText(false, 0));
     }
 }
-
 /** called if the waypoint is changed in the calculator */
 void MapView::slot_Waypoint(const Waypoint *wp)
 {
@@ -1294,18 +1317,27 @@ void MapView::slot_toggleDistanceEta()
     }
 }
 
-// toggle between ground speed and TAS widget on mouse signal
-void MapView::slot_toggleGsTas()
+// toggle between ground speed, IAS and TAS widget on mouse signal
+void MapView::slot_toggleGsIasTas()
 {
   if( _speed->isVisible() )
     {
       _speed->setVisible(false);
+      _ias->setVisible(true);
+      _tas->setVisible(false);
+      _ias->setValue( _ias->getValue(), true );
+    }
+  else if( _ias->isVisible() )
+    {
+      _speed->setVisible(false);
+      _ias->setVisible(false);
       _tas->setVisible(true);
       _tas->setValue( _tas->getValue(), true );
     }
   else
     {
       _tas->setVisible(false);
+      _ias->setVisible(false);
       _speed->setVisible(true);
       _speed->setValue( _speed->getValue(), true );
     }
@@ -1467,6 +1499,9 @@ void MapView::slot_gliderFlightDialog()
 
   connect( gfDlg, SIGNAL(newWaterAndBugs(const int, const int)),
            calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
+
+  connect( gfDlg, SIGNAL(useExternalData( const bool )),
+           calculator, SLOT(slot_ExternalData4McAndBugs( const bool)) );
 
   emit openingSubWidget();
   gfDlg->setVisible(true);

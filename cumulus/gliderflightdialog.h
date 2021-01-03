@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2014 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,14 +24,15 @@
  * This dialog handles the Mc, load balance and bug settings. It shall
  * enable a simple change also during flight.
  *
- * \date 2002-2014
+ * \date 2002-2021
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef GLIDER_FLIGHT_DIALOG_H
 #define GLIDER_FLIGHT_DIALOG_H
 
+#include <QCheckBox>
 #include <QDialog>
 #include <QEvent>
 #include <QLabel>
@@ -74,7 +73,17 @@ class GliderFlightDialog : public QDialog
 
  private slots:
 
-  /**
+ /**
+  * Called, if the checkbox m_useExternalData changes its state.
+  */
+ void slotUseExternalData( int state );
+
+ /**
+  * Called if the UseExternalData Label is pressed.
+  */
+ void slotCheckBoxLabelPressed();
+
+ /**
   * This method changes the value in the spin box which has the current focus.
   *
   * @param newStep value to be set in spin box
@@ -125,6 +134,11 @@ class GliderFlightDialog : public QDialog
 
  signals:
 
+ /**
+  * This signal is emitted, if external data for Mc and bugs should be used.
+  */
+ void useExternalData( const bool state );
+
   /**
    * This signal is emitted, if water or bugs have been changed.
    */
@@ -154,6 +168,7 @@ class GliderFlightDialog : public QDialog
    */
   void startTimer();
 
+  QCheckBox* m_useExternalData;
   QDoubleSpinBox* spinMcCready;
   double m_mcSmallStep;
   double m_mcBigStep;
@@ -178,6 +193,8 @@ class GliderFlightDialog : public QDialog
   // Flight time display
   QLabel* ftLabel;
   QLabel* ftText;
+
+
 
   QPushButton *plus;
   QPushButton *pplus;

@@ -774,12 +774,14 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewTP, SLOT( slot_updateTask() ) );
 
+  connect( GpsNmea::gps, SIGNAL( newBugs(const unsigned) ),
+           calculator, SLOT( slot_ExternalBugs(const unsigned) ) );
   connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
-           calculator, SLOT( slot_GpsVariometer(const Speed&) ) );
+           calculator, SLOT( slot_ExternalVariometer(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newMc(const Speed&) ),
-           calculator, SLOT( slot_Mc(const Speed&) ) );
+           calculator, SLOT( slot_ExternalMc(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newWind(const Speed&, const short) ),
-           calculator, SLOT( slot_GpsWind(const Speed&, const short) ) );
+           calculator, SLOT( slot_ExternalWind(const Speed&, const short) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            viewMap, SLOT( slot_GPSStatus( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSatCount(SatInfo&) ),
@@ -796,22 +798,28 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator->getWindAnalyser(), SLOT( slot_gpsStatusChange( GpsNmea::GpsStatus ) ) );
   connect( GpsNmea::gps, SIGNAL( newSpeed(Speed&) ),
            calculator, SLOT( slot_Speed(Speed&) ) );
-  connect( GpsNmea::gps, SIGNAL( newTas(const Speed&) ),
-           calculator, SLOT( slot_GpsTas(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newPosition(QPoint&) ),
            calculator, SLOT( slot_Position(QPoint&) ) );
-  connect( GpsNmea::gps, SIGNAL( newAltitude(Altitude&, Altitude&, Altitude&) ),
-           calculator, SLOT( slot_Altitude(Altitude&, Altitude&, Altitude&) ) );
-  connect( GpsNmea::gps, SIGNAL( newAndroidAltitude(const Altitude&) ),
-           calculator, SLOT( slot_AndroidAltitude(const Altitude&) ) );
+  connect( GpsNmea::gps, SIGNAL( newGNSSAltitude(Altitude&) ),
+           calculator, SLOT( slot_GnssAltitude(Altitude&) ) );
+  connect( GpsNmea::gps, SIGNAL( newPressureAltitude(Altitude&) ),
+           calculator, SLOT( slot_PressureAltitude(Altitude&) ) );
   connect( GpsNmea::gps, SIGNAL( newHeading(const double&) ),
            calculator, SLOT( slot_Heading(const double&) ) );
   connect( GpsNmea::gps, SIGNAL( newFix(const QDateTime&) ),
            calculator, SLOT( slot_newFix(const QDateTime&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
            calculator, SLOT( slot_GpsStatus( GpsNmea::GpsStatus ) ) );
+  connect( GpsNmea::gps, SIGNAL( newDynamicPressure( const double ) ),
+           calculator, SLOT( slot_dynamicPressure( const double )) );
+  connect( GpsNmea::gps, SIGNAL( newStaticPressure( const double ) ),
+           calculator, SLOT( slot_staticPressure( const double) ) );
+  connect( GpsNmea::gps, SIGNAL( newTemperature( const double ) ),
+           calculator, SLOT( slot_Temperature( const double ) ) );
+  connect( GpsNmea::gps, SIGNAL( newTas(const Speed&) ),
+           calculator, SLOT( slot_ExternalTas(const Speed&) ) );
 
-#ifdef FLARM
+  #ifdef FLARM
   connect( GpsNmea::gps, SIGNAL( newFlarmCount(int) ),
            viewMap, SLOT( slot_FlarmCount(int) ) );
 #endif
@@ -907,8 +915,6 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( viewMap, SIGNAL( toggleLDCalculation( const bool ) ),
            calculator, SLOT( slot_toggleLDCalculation(const bool) ) );
   connect( viewMap, SIGNAL( toggleMenu() ), SLOT( slotShowContextMenu() ) );
-  connect( viewMap, SIGNAL( toggleVarioCalculation( const bool ) ),
-           calculator, SLOT( slot_toggleVarioCalculation(const bool) ) );
   connect( viewMap, SIGNAL( toggleETACalculation( const bool ) ),
            calculator, SLOT( slot_toggleETACalculation(const bool) ) );
 
@@ -926,6 +932,8 @@ void MainWindow::slotCreateApplicationWidgets()
            viewMap, SLOT( slot_Heading( int ) ) );
   connect( calculator, SIGNAL( newSpeed( const Speed& ) ),
            viewMap, SLOT( slot_Speed( const Speed& ) ) );
+  connect( calculator, SIGNAL( newIas( const Speed& ) ),
+           viewMap, SLOT( slot_Ias( const Speed& ) ) );
   connect( calculator, SIGNAL( newTas( const Speed& ) ),
            viewMap, SLOT( slot_Tas( const Speed& ) ) );
   connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),

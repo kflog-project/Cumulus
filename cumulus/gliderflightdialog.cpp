@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2015 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #endif
 
 #include "calculator.h"
+#include "CuLabel.h"
 #include "generalconfig.h"
 #include "gliderflightdialog.h"
 #include "glider.h"
@@ -78,6 +79,22 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   ftText  = new QLabel;
   gridLayout->addWidget(ftLabel, row, 0);
   gridLayout->addWidget(ftText, row++, 1);
+
+  //---------------------------------------------------------------------
+
+  m_useExternalData = new QCheckBox();
+  m_useExternalData->setChecked( false );
+  CuLabel* checkBoxLabel = new CuLabel( tr("Use Mc & bugs from external device"), this );
+
+  QHBoxLayout* hbox = new QHBoxLayout();
+  hbox->setSpacing(0);
+  hbox->addWidget( m_useExternalData );
+  hbox->addSpacing( 10 * Layout::getIntScaledDensity() );
+  hbox->addWidget( checkBoxLabel );
+  hbox->addStretch( 5 );
+  gridLayout->addLayout(hbox, row++, 0, 1, 3 );
+
+  connect( checkBoxLabel, SIGNAL(mousePress()), SLOT(slotCheckBoxLabelPressed()) );
 
   //---------------------------------------------------------------------
 
@@ -209,12 +226,17 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   gridLayout->setColumnStretch( 2, 10 );
 
   // @AP: let us take the user's defined info display time
-  GeneralConfig *conf = GeneralConfig::instance();
+  GeneralConfig *config = GeneralConfig::instance();
   timer = new QTimer(this);
   timer->setSingleShot(true);
-  m_time = conf->getInfoDisplayTime();
+  m_time = config->getInfoDisplayTime();
+
+  bool checkState = config->getGliderFlightDialogUseExternalData();
+  m_useExternalData->setChecked( checkState );
 
   connect (timer, SIGNAL(timeout()), this, SLOT(slotReject()));
+  connect (m_useExternalData, SIGNAL(stateChanged(int )),
+           this, SLOT(slotUseExternalData(int)) );
   connect (buttonDump, SIGNAL(released()), this, SLOT(slotDump()));
   connect (ok, SIGNAL(released()), this, SLOT(slotAccept()));
   connect (cancel, SIGNAL(released()), this, SLOT(slotReject()));
@@ -304,13 +326,24 @@ bool GliderFlightDialog::eventFilter( QObject *o , QEvent *e )
 
 void GliderFlightDialog::load()
 {
+  bool checkState = m_useExternalData->isChecked();
   Glider *glider = calculator->glider();
 
   if( glider )
     {
-      spinMcCready->setEnabled(true);
+      if( checkState == false )
+        {
+          spinMcCready->setEnabled(true);
+          spinBugs->setEnabled(true);
+        }
+      else
+        {
+          // Mc and bugs are delivered by an external device.
+          spinMcCready->setEnabled(false);
+          spinBugs->setEnabled(false);
+        }
+
       spinWater->setEnabled(true);
-      spinBugs->setEnabled(true);
       buttonDump->setEnabled(true);
       pplus->setEnabled(true);
       plus->setEnabled(true);
@@ -325,9 +358,14 @@ void GliderFlightDialog::load()
           buttonDump->setEnabled(false);
         }
 
-      spinMcCready->setValue(calculator->getlastMc().getVerticalValue());
+      if( checkState == false )
+        {
+          // Mc and bugs are delivered by Cumulus.
+          spinMcCready->setValue(calculator->getlastMc().getVerticalValue());
+          spinBugs->setValue(glider->polar()->bugs());
+        }
+
       spinWater->setValue(glider->polar()->water());
-      spinBugs->setValue(glider->polar()->bugs());
 
       // Save the configuration values as fall backs, if the user cancel the dialog.
       m_mcConfig = spinMcCready->value();
@@ -349,6 +387,17 @@ void GliderFlightDialog::load()
 
 void GliderFlightDialog::save()
 {
+  GeneralConfig* config = GeneralConfig::instance();
+
+  if( config->getGliderFlightDialogUseExternalData() !=
+      m_useExternalData->isChecked() )
+    {
+      // Save new state for external data usage.
+      bool checkState = m_useExternalData->isChecked();
+      config->setGliderFlightDialogUseExternalData( checkState );
+      emit useExternalData( checkState );
+    }
+
   if( spinMcCready->isEnabled() && spinBugs->isEnabled() )
     {
       // To see the changed results immediately at the map displays, don't
@@ -358,6 +407,37 @@ void GliderFlightDialog::save()
 
       mc.setVerticalValue( spinMcCready->value() );
       emit newMc( mc );
+    }
+}
+
+void GliderFlightDialog::slotCheckBoxLabelPressed()
+{
+  m_useExternalData->setChecked( ! m_useExternalData->isChecked() );
+}
+
+/**
+ * Called, if the checkbox m_useExternalData changes its state.
+ */
+void GliderFlightDialog::slotUseExternalData( int state )
+{
+  timer->stop();
+
+  Glider *glider = calculator->glider();
+
+  if( glider )
+    {
+      if( state == static_cast<int>(Qt::Unchecked) )
+        {
+          // Cumulus shall consider the data
+          spinMcCready->setEnabled(true);
+          spinBugs->setEnabled(true);
+        }
+      else
+        {
+          // Mc and bugs are delivered by an external device.
+          spinMcCready->setEnabled(false);
+          spinBugs->setEnabled(false);
+        }
     }
 }
 

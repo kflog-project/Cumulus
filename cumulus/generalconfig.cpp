@@ -293,6 +293,10 @@ void GeneralConfig::load()
     _closePreFlightMenu = value( "CloseMenu", true ).toBool();
   endGroup();
 
+  beginGroup("Glider Flight Dialog");
+  _gliderFlightDialogUseExternalData = value("UseExternalData", false).toBool();
+  endGroup();
+
   beginGroup("LiveTrack24");
   _liveTrackOnOff        = value( "OnOff", false ).toBool();
   _liveTrackInterval     = value( "Interval", 10 ).toInt();
@@ -767,6 +771,10 @@ void GeneralConfig::save()
 
   beginGroup("Preflight Window");
   setValue( "CloseMenu", _closePreFlightMenu );
+  endGroup();
+
+  beginGroup("Glider Flight Dialog");
+  setValue("UseExternalData", _gliderFlightDialogUseExternalData);
   endGroup();
 
   beginGroup("LiveTrack24");

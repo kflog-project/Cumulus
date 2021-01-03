@@ -42,6 +42,7 @@
 #include <QtCore>
 
 #include "altitude.h"
+#include "Atmosphere.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "mapmatrix.h"
@@ -130,7 +131,6 @@ GpsNmea::~GpsNmea()
   if ( serial )
     {
       delete serial;
-      writeConfig();
     }
 
   if( nmeaLogFile )
@@ -229,9 +229,7 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
 void GpsNmea::resetDataObjects()
 {
   _status = notConnected;
-  _lastMslAltitude = Altitude(0);
   _lastGNSSAltitude = Altitude(0);
-  calcStdAltitude( Altitude(0) );
   _lastPressureAltitude = Altitude(0);
   _reportAltitude = true;
   _lastCoord = QPoint(0,0);
@@ -256,7 +254,6 @@ void GpsNmea::resetDataObjects()
 
   // altitude type (GPS or Baro) expected by the user
   _userExpectedAltitude = static_cast<GpsNmea::DeliveredAltitude> (GeneralConfig::instance()->getGpsAltitude());
-  _userAltitudeCorrection = GeneralConfig::instance()->getGpsUserAltitudeCorrection();
 
   // GPS source to be used
   _gpsSource = GeneralConfig::instance()->getGpsSource().left(3);
@@ -1054,16 +1051,9 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
               // normally calibrated to 1013.25hPa and that is the standard
               // pressure altitude.
               _lastPressureAltitude = altitude;
-              _lastStdAltitude = altitude;
 
-              if( _userExpectedAltitude == GpsNmea::PRESSURE )
-                {
-                  // Set these altitude too, when pressure is selected.
-                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-
-                  // report new pressure altitude
-                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-                }
+              // report new pressure altitude
+              emit newPressureAltitude( _lastPressureAltitude );
             }
           }
 
@@ -1129,7 +1119,7 @@ void GpsNmea::__ExtractPov( const QStringList& slst )
               emit newStaticPressure( p );
             }
 
-          Altitude altitude( Altitude::altitudeFromPressure( p ) );
+          Altitude altitude( Atmosphere::calcAltitude( p ) );
 
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
@@ -1140,16 +1130,9 @@ void GpsNmea::__ExtractPov( const QStringList& slst )
               // normally calibrated to 1013.25hPa and that is the standard
               // pressure altitude.
               _lastPressureAltitude = altitude;
-              _lastStdAltitude = altitude;
 
-              if( _userExpectedAltitude == GpsNmea::PRESSURE )
-                {
-                  // Set these altitude too, when pressure is selected.
-                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-
-                  // report new pressure altitude
-                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-                }
+              // report new pressure altitude
+              emit newPressureAltitude( _lastPressureAltitude );
             }
         }
       else if( slst[i] == "Q" )
@@ -1365,16 +1348,9 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
       // normally calibrated to 1013.25hPa and that is the standard
       // pressure altitude.
       _lastPressureAltitude = altitude;
-      _lastStdAltitude = altitude;
 
-      if( _userExpectedAltitude == GpsNmea::PRESSURE )
-        {
-          // Set these altitude too, when pressure is selected.
-          _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-
-          // report new pressure altitude
-          emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-        }
+      // report new pressure altitude
+      emit newPressureAltitude( _lastPressureAltitude );
     }
 
   // 9 - QQQQ.Q, Dynamic pressure in Pa
@@ -1423,17 +1399,15 @@ void GpsNmea::__ExtractPcaid( const QStringList& slst )
   double num = slst[2].toDouble();
   res.setMeters( num );
 
-  if ( (_lastStdAltitude != res && _userExpectedAltitude == GpsNmea::PRESSURE ) ||
-      _reportAltitude == true )
+  if (_lastPressureAltitude != res || _reportAltitude == true )
     {
       _reportAltitude = false;
       _baroAltitudeSeen = true;
-      // Store this altitude as STD, if the user has pressure selected.
-      // In the other case the STD is derived from the GPS altitude.
-      _lastStdAltitude = res;
       _lastPressureAltitude = res;
       // This altitude must not be notified as new value because
       // the Cambridge device delivers also MSL in its !w sentence.
+      // report new pressure altitude
+      // emit newPressureAltitude( _lastPressureAltitude );
     }
 }
 
@@ -1486,23 +1460,14 @@ void GpsNmea::__ExtractPgcs( const QStringList& slst )
 
   res.setMeters( num );
 
-  if( ( _lastStdAltitude != res || _reportAltitude == true ) &&
-      _userExpectedAltitude == GpsNmea::PRESSURE )
+  if( _lastPressureAltitude != res || _reportAltitude == true )
     {
       _reportAltitude = false;
-
-      // Store this altitude as STD, if the user has pressure selected.
-      // In the other case the STD is derived from the GPS altitude.
-      _lastStdAltitude = res;
 
       // Store this value as pressure altitude.
       _lastPressureAltitude = res;
 
-      // We only get a STD altitude from the Volkslogger, so we calculate
-      // the MSL altitude by using the correction value set the user.
-      _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
-
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+      emit newPressureAltitude( _lastPressureAltitude );
     }
 }
 
@@ -1587,22 +1552,6 @@ void GpsNmea::__ExtractGpdtm( const QStringList& slst )
 }
 
 /**
- * @Returns the last know GPS altitude depending on user
- * selection MSL or Pressure. MSL is the default.
- */
-Altitude GpsNmea::getLastAltitude() const
-{
-  if ( GeneralConfig::instance()->getGpsAltitude() == GpsNmea::PRESSURE )
-    {
-      return _lastPressureAltitude;
-    }
-
-  // MSL is the default in all other cases, when the user did
-  // not select pressure.
-  return _lastMslAltitude;
-};
-
-/**
   Used by Cambridge devices. The !w proprietary  sentence format is:
 
   !w,<1>,<2>,<3>,<4>,<5>,<6>,<7>,<8>,<9>,<10>,<11>,<12>,<13>*hh<CR><LF>
@@ -1676,15 +1625,8 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
         _baroAltitudeSeen = true;
         _reportAltitude = false;
         _lastPressureAltitude = res; // store the new pressure altitude
-        _lastStdAltitude = res;
 
-        if ( _userExpectedAltitude == GpsNmea::PRESSURE )
-          {
-            // set these altitudes too, when pressure is selected
-            _lastMslAltitude.setMeters( res.getMeters() + _userAltitudeCorrection.getMeters() );
-            // STD altitude is delivered by Cambrigde via $PCAID record
-            emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-          }
+        emit newPressureAltitude( _lastPressureAltitude );
       }
     }
 
@@ -1809,18 +1751,7 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
               // store the new pressure altitude
               _lastPressureAltitude = altitude;
 
-              // If we have pressure altitude, the barometer sensor is
-              // normally calibrated to 1013.25hPa and that is the standard
-              // pressure altitude.
-              _lastStdAltitude = altitude;
-
-              if( _userExpectedAltitude == GpsNmea::PRESSURE )
-                {
-                  // set these altitudes too, when pressure is selected
-                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-
-                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-                }
+              emit newPressureAltitude( _lastPressureAltitude );
             }
         }
     }
@@ -2152,22 +2083,11 @@ Altitude GpsNmea::__ExtractAltitude( const QString& altitude, const QString& uni
       res.setMeters( alt );
     }
 
-  // The GNNS altitude is never modified.
-  _lastGNSSAltitude = res;
-
-  // Apply the user's set altitude correction
-  res = res + _userAltitudeCorrection;
-
-  if( ( _lastMslAltitude != res || _reportAltitude == true ) &&
-      _userExpectedAltitude != GpsNmea::PRESSURE )
+  if( _lastGNSSAltitude != res )
     {
-      _reportAltitude = false;
-      // set these altitudes only, when pressure is not selected
-      _lastMslAltitude = res;
-      calcStdAltitude( res );
+      _lastGNSSAltitude = res;
+      emit newGNSSAltitude( _lastGNSSAltitude );
     }
-
-  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
 
   return res;
 }
@@ -2617,11 +2537,11 @@ void GpsNmea::dataOK()
   if ( _status == notConnected )
     {
       // reset altitudes, will set in manual mode to 1000m
-      _lastMslAltitude = Altitude(0);
       _lastGNSSAltitude = Altitude(0);
-      calcStdAltitude( Altitude(0) );
       _lastPressureAltitude = Altitude(0);
-      emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+
+      emit newGNSSAltitude( _lastGNSSAltitude );
+      emit newPressureAltitude( _lastPressureAltitude );
 
       _status = noFix;
       emit statusChange(_status);
@@ -2674,7 +2594,6 @@ void GpsNmea::slot_reset()
 
   // altitude reference delivered by GPS unit
   _userExpectedAltitude = static_cast<GpsNmea::DeliveredAltitude> (conf->getGpsAltitude());
-  _userAltitudeCorrection = conf->getGpsUserAltitudeCorrection();
   _reportAltitude = true;
   flarmNmeaOutInitDone = false;
   _gpsSource = conf->getGpsSource().left(3);
@@ -2979,62 +2898,6 @@ uchar GpsNmea::calcCheckSum( const char *sentence )
     }
 
   return sum;
-}
-
-/** This function calculates the STD altitude from the passed MSL altitude. */
-void GpsNmea::calcStdAltitude(const Altitude& altitude)
-{
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  int qnhDiff = 1013 - conf->getQNH();
-
-  if( qnhDiff != 0 )
-    {
-      // Calculate altitude correction in meters from pressure difference.
-      // The common approach is to expect a pressure difference of 1 hPa per
-      // 30ft until 18.000ft. 30ft are 9.1437m
-      int delta = (int) rint( qnhDiff * 9.1437 );
-      _lastStdAltitude.setMeters( altitude.getMeters() + delta );
-    }
-  else
-    {
-      _lastStdAltitude = altitude;
-    }
-}
-
-/** This function calculates the MSL altitude from the passed STD altitude. */
-void GpsNmea::calcMslAltitude(const Altitude& altitude)
-{
-  GeneralConfig *conf = GeneralConfig::instance();
-
-  int qnhDiff = 1013 - conf->getQNH();
-
-  if( qnhDiff != 0 )
-    {
-      // Calculate altitude correction in meters from pressure difference.
-      // The common approach is to expect a pressure difference of 1 hPa per
-      // 30ft until 18.000ft. 30ft are 9.1437m
-      int delta = (int) rint( qnhDiff * 9.1437 );
-      _lastMslAltitude.setMeters( altitude.getMeters() - delta );
-    }
-  else
-    {
-      _lastMslAltitude = altitude;
-    }
-}
-
-/** write configuration data to allow restore of last fix */
-void GpsNmea::writeConfig()
-{
-  if (_status == validFix)
-    {
-      GeneralConfig *conf = GeneralConfig::instance();
-      conf->setGpsLastFixLat(_lastCoord.x());
-      conf->setGpsLastFixLon(_lastCoord.y());
-      conf->setGpsLastFixAlt( (int) rint(_lastMslAltitude.getMeters()) );
-      conf->setGpsLastFixClk(_lastClockOffset);
-      conf->save();
-    }
 }
 
 /** Set system date/time. Input is UTC related. */
@@ -3443,24 +3306,13 @@ bool GpsNmea::event(QEvent *event)
         {
           Altitude altitude( ae->altitude() );
 
-          // Inform calculator about a new Android altitude. This value is
-          // used for the variometer calculation.
-          emit newAndroidAltitude( altitude );
-
           if( _lastPressureAltitude != altitude || _reportAltitude == true )
             {
               _baroAltitudeSeen = true;
               _reportAltitude = false;
               _lastPressureAltitude = altitude; // store the new pressure altitude
-              _lastStdAltitude = altitude;
 
-              if( _userExpectedAltitude == GpsNmea::PRESSURE )
-                {
-                  // set these altitudes too, when pressure is selected
-                  _lastMslAltitude.setMeters( altitude.getMeters() + _userAltitudeCorrection.getMeters() );
-                   // report new barometer altitude
-                  emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
-                }
+              emit newPressureAltitude( _lastPressureAltitude );
            }
 
           return true;

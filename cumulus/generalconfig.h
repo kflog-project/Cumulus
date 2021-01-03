@@ -1101,6 +1101,18 @@ class GeneralConfig : protected QSettings
     _loggerAutostartMode = newValue;
   }
 
+  /** get glider's flight dialog external data flag. */
+  bool getGliderFlightDialogUseExternalData() const
+  {
+    return _gliderFlightDialogUseExternalData;
+  }
+
+  /** sets glider's flight dialog external data flag. */
+  void setGliderFlightDialogUseExternalData( const bool newValue )
+  {
+    _gliderFlightDialogUseExternalData = newValue;
+  }
+
   /** gets TAS */
   const Speed&  getTas() const
   {
@@ -3535,6 +3547,9 @@ class GeneralConfig : protected QSettings
 
   // LiveTrack server list
   static QStringList _liveTrackServerList;
+
+  // Glider flight dialog data uasge (internal/external)
+  bool _gliderFlightDialogUseExternalData;
 };
 
 #endif

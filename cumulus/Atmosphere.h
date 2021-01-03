@@ -58,15 +58,15 @@ public:
 	 */
 	static double tas( double ias, double baro, double temp )
 	{
-		return( ias * sqrt( 1.225 / ( baro * 100.0 / (287.058 * (273.15+temp)))));
+		return( ias * sqrt( 1.225 / ( baro * 100.0 / (287.058 * (273.15 + temp)))));
 	}
 
   /**
-   * IAS in km/h from dynamic pressure in Pa.
+   * IAS in m/s from dynamic pressure in Pa.
    */
-	static double pascal2kmh( double pascal )
+	static double pascal2mps( double pascal )
 	{
-		return sqrt( 2 * pascal / 1.225 ) * 3.6;
+		return sqrt( 2 * pascal / 1.225 );
 	}
 
 	/**
@@ -86,6 +86,11 @@ public:
 	 */
 	static double calcAltitude( double pressure, double mslPressure=1013.25 )
 	{
+	  if( pressure <= 0.0 || mslPressure <= 0.0 )
+	    {
+	      return -9999.0;
+	    }
+
 	  const double power = 287.05 * 0.0065 / 9.80665;
 
 	  const double k1 = 288.15 / 0.0065;
