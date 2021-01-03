@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2017 by Axel Pauli
+ **                   2012-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -319,13 +319,13 @@ static void nativeByteFromGps(JNIEnv* /*env*/, jobject /*myobject*/, jbyte byte)
     }
 }
 
-static void nativeBaroAltitude( JNIEnv* /*env*/,
+static void nativeBaroPressure( JNIEnv* /*env*/,
                                 jobject /*myobject*/,
-                                jdouble altitude )
+                                jdouble pressure )
 {
   if( ! shutdown )
     {
-      AltitudeEvent *ae = new AltitudeEvent( altitude );
+      PressureEvent *ae = new PressureEvent( pressure );
       QCoreApplication::postEvent( GpsNmea::gps, ae );
     }
 }
@@ -356,7 +356,7 @@ static JNINativeMethod methods[] = {
 	{"nativeKeypress", "(C)V", (void *)nativeKeypress},
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
-	{"nativeBaroAltitude", "(D)V", (void *)nativeBaroAltitude},
+	{"nativeBaroPressure", "(D)V", (void *)nativeBaroPressure},
 	{"nativeHttpsResponse", "(ILjava/lang/String;)V", (void *)nativeHttpsResponse}
 };
 

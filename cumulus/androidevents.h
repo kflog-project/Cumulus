@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010 by Josua Dietze (digidietze@draisberghof.de)
- **                   2012-2016 by Axel Pauli
+ **                   2012-2021 by Axel Pauli
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
  * \brief Android custom events, used by the JNI to report results from the
  * Java part.
  *
- * \date 2012-2016
+ * \date 2012-2021
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
@@ -214,25 +214,25 @@ class FlarmFlightDownloadProgressEvent : public QEvent
 /* Posted by the native method "nativeBaroAltitude" which is called from Java
  * object BaroSensorListener, method "onSensorChanged".
  */
-class AltitudeEvent : public QEvent
+class PressureEvent : public QEvent
 {
   public:
 
-  AltitudeEvent( const double altitude ) :
+  PressureEvent( const double pressure ) :
     QEvent( (QEvent::Type) (QEvent::User + 6) ),
-    m_altitude(altitude)
+    m_pressure(pressure)
   {};
 
-  virtual ~AltitudeEvent() {};
+  virtual ~PressureEvent() {};
 
-  double altitude() const
+  double pressure() const
   {
-    return m_altitude;
+    return m_pressure;
   };
 
   private:
 
-  double m_altitude;
+  double m_pressure;
 };
 
 class HttpsResponseEvent : public QEvent

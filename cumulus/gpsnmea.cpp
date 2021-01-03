@@ -3297,22 +3297,19 @@ bool GpsNmea::event(QEvent *event)
       return true;
     }
 
-  // Handles a barometer sensor event. A new altitude in meters is passed.
+  // Handles a barometer sensor event. A new pressure value in hPa is passed.
   if( event->type() == QEvent::User + 6 )
     {
-      AltitudeEvent *ae = dynamic_cast<AltitudeEvent *>(event);
+      PressureEvent *ae = dynamic_cast<PressureEvent *>(event);
 
       if( ae != nullptr && _pressureDevice == "Android" )
         {
-          Altitude altitude( ae->altitude() );
+          double pressure = ae->pressure();
 
-          if( _lastPressureAltitude != altitude || _reportAltitude == true )
+          if( _lastStaticPressure != pressure )
             {
-              _baroAltitudeSeen = true;
-              _reportAltitude = false;
-              _lastPressureAltitude = altitude; // store the new pressure altitude
-
-              emit newPressureAltitude( _lastPressureAltitude );
+              _lastStaticPressure != pressure
+              emit newStaticPressure( _lastStaticPressure );
            }
 
           return true;
