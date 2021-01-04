@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2016 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This widget shows the Flarm display view.
  *
- * \date 2010-2016
+ * \date 2010-2020
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef FLARM_DISPLAY_H
@@ -38,6 +38,7 @@
 #include <QMouseEvent>
 #include <QHash>
 #include <QPoint>
+#include <QTimer>
 
 #include "generalconfig.h"
 
@@ -75,7 +76,7 @@ public:
   /**
    * Sets the update interval to the new value. The unit is seconds.
    */
-  void setUpdateInterval( int newInterval )
+  void setUpdateInterval( unsigned short newInterval )
   {
     updateInterval = newInterval;
   };
@@ -172,7 +173,12 @@ private:
   /**
    * Time interval of screen update in seconds.
    */
-  int updateInterval;
+  unsigned short updateInterval;
+
+  /**
+   * Update timer for redraw of radar.
+   */
+  QTimer* updateTimer;
 };
 
 #endif /* FLARM_DISPLAY_H */

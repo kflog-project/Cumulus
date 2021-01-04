@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2016 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -41,8 +41,11 @@ FlarmDisplay::FlarmDisplay( QWidget *parent ) :
   height(0),
   scale(0.0),
   radius(0),
-  updateInterval(2)
+  updateInterval(1)
 {
+  updateTimer = new QTimer();
+  connect( updateTimer, SIGNAL(timeout()), SLOT(slot_UpdateDisplay()) );
+  updateTimer->start((updateInterval * 1000));
 }
 
 FlarmDisplay::~FlarmDisplay()
@@ -179,15 +182,25 @@ void FlarmDisplay::slot_SwitchZoom( enum Zoom value )
 /** Update display */
 void FlarmDisplay::slot_UpdateDisplay()
 {
-  static int counter = 0;
+  static QTime lastDisplay = QTime::currentTime();
 
-  // Generate a paint event for this widget, if it is visible.
-  if( isVisible() == true && (counter % updateInterval) == 0 )
+  // Widget is hidden
+  if( isVisible() == false )
     {
-      repaint();
+      return;
     }
 
-  counter++;
+  // The display is updated every 1 seconds only.
+  // That will reduce the X-Server load.
+  if( lastDisplay.elapsed() < ((updateInterval * 1000) - 100) )
+    {
+      return;
+    }
+
+  lastDisplay = QTime::currentTime();
+
+  // Generate a paint event for this widget, if it is visible.
+  repaint();
 }
 
 /** Reset display to background. */
@@ -290,16 +303,9 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
   // Here starts the Flarm object analysis and drawing
   QHash<QString, Flarm::FlarmAcft> flarmAcfts = Flarm::getPflaaHash();
 
-  if( flarmAcfts.size() == 0 )
-    {
-      // qDebug() << "FlarmDisplay::paintEvent: empty hash";
-      // hash is empty
-      return;
-    }
-
-  // Draw wind arrow, if Flarm objects are available.
   Vector& wind = calculator->getLastStoredWind();
 
+  // Draw wind arrow, if drawing is enabled
   if( getDrawWindArrow() == true && wind.isValid() && wind.getSpeed().getMps() > 0.0 )
     {
       int myTrack = calculator->getlastHeading();
@@ -338,6 +344,13 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
       painter.drawLine( centerX, centerY, centerX + x, centerY + y );
       painter.drawLine( centerX, centerY, centerX + xr, centerY + yr );
       painter.drawLine( centerX, centerY, centerX + xl, centerY + yl );
+    }
+  else if( flarmAcfts.size() == 0 )
+    {
+      // Drawing of wind is false and no Flarm objects are avaialable -> Return.
+      // qDebug() << "FlarmDisplay::paintEvent: empty hash";
+      // hash is empty
+      return;
     }
 
   QFont font = this->font();
