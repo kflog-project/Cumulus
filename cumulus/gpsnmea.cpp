@@ -1283,6 +1283,9 @@ void GpsNmea::__ExtractPov( const QStringList& slst )
   14 - Z.ZZ,  ​​​​ // Acceleration in Z-Axis
        *CHK = standard NMEA checksum
        <CR><LF>
+
+  Note! Items 10, 11, 12, 13, 14 are empty, if the AHRS feature is not switched
+  on by a valid license key.
 */
 void GpsNmea::__ExtractPxcv( const QStringList& slst )
 {
@@ -1408,6 +1411,16 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
     {
       _lastDynamicPressure = q;
       emit newDynamicPressure( q );
+    }
+
+  for( int i = 10; i <= 14; i++ )
+    {
+      // Check, if AHRS data is available. If items are missing don't process
+      // AHRS data.
+      if( slst[i].isEmpty() == true )
+        {
+          return;
+        }
     }
 
   // 10 - RRR.R, ​​Roll angle
