@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt4.8.x for Linux/Unix
 
-Last update: 2014-10-10 by Axel Pauli
+Last update: 2021-01-04 by Axel Pauli
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
@@ -28,7 +28,7 @@ that. For XUbuntu 14.04 you have to execute the following command to get them:
   sudo apt-get install g++ git unzip
   sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
                        libqt4-dev libqt4-network libqt4-xml
-  sudo apt-get install libbluetooth-dev bluez-utils bluez
+  sudo apt-get install libbluetooth-dev bluez
 
 You can build too Qt from the sources but that is not recommend, if you not
 familiar with that. 
