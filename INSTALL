@@ -1,5 +1,5 @@
 ===============================================================================
-Building and installing Cumulus under X11 and Qt4.8.x for Linux/Unix
+Building and installing Cumulus under X11 and Qt5 for Linux/Unix
 
 Last update: 2021-01-04 by Axel Pauli
 ===============================================================================
@@ -19,99 +19,38 @@ following components are mandatory:
   d) The Qt header files
   e) The Bluetooth header files and the libbluetooth library
   f) A git client and the tool unzip
+  g) The tool dh_make
   
-At least a Qt Release 4.8.0 or higher has to be used.
+At least a Qt Release 5.12.8 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For XUbuntu 14.04 you have to execute the following command to get them:
+that. For XUbuntu 20.04 you have to execute the following command to get them:
 
   sudo apt-get install g++ git unzip
-  sudo apt-get install qt4-qmake qt4-dev-tools libqtcore4 libqtgui4 \
-                       libqt4-dev libqt4-network libqt4-xml
+  sudo apt-get install qt5-default qttools5-dev-tools qttools5-dev-tools qt5-doc
   sudo apt-get install libbluetooth-dev bluez
-
-You can build too Qt from the sources but that is not recommend, if you not
-familiar with that. 
-
-If all Qt stuff is already available you can continue with step 2)
-
-To build your own Qt from scratch download a X11/Qt release from the
-Qt Project web page. I recommend that release:
-
-http://download.qt-project.org/official_releases/qt/4.8/4.8.6/qt-everywhere-opensource-src-4.8.6.tar.gz
-
-I did the development with this release. For Cumulus you need the standard
-Qt4 libraries libQtCore, libQtGui, libQtNetwork and libQtXml. If you want to
-debug Cumulus together with Qt it is recommend to activate the debug option
-during run of the configure script.
-
-Copy the Qt tar ball in a local directory of your Linux desktop and extract it
-with:
-  
-  tar zxf qt-everywhere-opensource-src-4.8.6.tar.gz
-
-Call the configure script in the root directory of your Qt source tree with the
-following options:
-              
-  ./configure -prefix /opt/qt4.8.6 -opensource -no-largefile -no-qt3support\
-              -no-multimedia -no-audio-backend -no-phonon\
-              -no-phonon-backend -no-webkit -no-javascript-jit -no-script\
-              -no-scripttools -no-declarative -no-declarative-debug\
-              -nomake examples -nomake demos -no-nis -no-cups -no-opengl\
-              -silent -graphicssystem raster              
-              
-Note, that all options must be passed on one line. If you want to set another
-prefix option please do it now. The installation is done under this path and
-under /opt/... you need later on root rights. To build Qt with debugging on add
-the option -debug to the others.
-            
-If configure has finished successfully, call as next:
-
-  make
-
-That can take a while (1-3 hours). If make has finished successfully call:
-
-  su -c 'make install' or sudo make install
-
-For executing this command you need root rights to install the Qt installation
-under /opt/... Please enter the root password when you ask for it.
-
-Now you should have installed a Qt installation under the directory of your
--prefix option.
-
-To use your own Qt version, you have to add the
-<QT_INSTALLDIR>/bin component at the first position of your PATH variable.
-
-e.g. BASH example
-
-  PATH=/opt/qt4.8.6/bin:$PATH
-  export PATH
-	
-  in the assumption, that <QT_INSTALLDIR> is '/opt/qt4.8.6'.
-
-The PATH variable can be displayed by calling 'echo $PATH' on a shell
-command line.
+  sudo apt-get install dh-make
 
 Step 2)
 
 Check if you can call 'g++ --version' from a shell command line. You should
 see some output like this:
 
-  g++ (Ubuntu 4.8.2-19ubuntu1) 4.8.2
+  g++ (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
   
 Check if you can call 'qmake -v' from a shell command line. You should
 see some output like this:
 
-  QMake version 2.01a
-  Using Qt version 4.8.6 in /usr/lib/x86_64-linux-gnu
+  QMake version 3.1
+  Using Qt version 5.12.8 in /usr/lib/x86_64-linux-gnu
    
 Check if you can call 'moc -v' from a shell command line. You should
 see some output like this:
 
-  Qt Meta Object Compiler version 63 (Qt 4.8.6)
+  moc 5.12.8
    
 If both checks are successfully Qt is right installed. If a call fails or you
-see a version less than 4.7.0 check the PATH variable for containing the right
+see a version less than 5.12.8 check the PATH variable for containing the right
 Qt bin directory at the first position (see above).
 
 Step 3)
