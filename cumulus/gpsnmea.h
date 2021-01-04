@@ -584,6 +584,15 @@ class GpsNmea : public QObject
      */
     void newFlarmFlightDownloadProgress(const int idx, const int progress);
 
+    /**
+      * This signal is emitted, when a new AHRS data set is available.
+      */
+    void newAHRSInfo( const double rollAngle,
+                      const double pitchAngle,
+                      const double accelarationX,
+                      const double accelarationY,
+                      const double accelarationZ );
+
   private:
 
     /** Resets all data objects to their initial values. This is called
@@ -592,24 +601,36 @@ class GpsNmea : public QObject
 
     /** Extracts GPRMC sentence. */
     void __ExtractGprmc( const QStringList& slst );
+
     /** Extracts GPGLL sentence. */
     void __ExtractGpgll( const QStringList& slst );
+
     /** Extracts GPGGA sentence. */
     void __ExtractGpgga( const QStringList& slst );
+
     /** Extracts GNGNS sentence. */
     void __ExtractGngns( const QStringList& slst );
+
     /** Extracts PGRMZ sentence. */
     void __ExtractPgrmz( const QStringList& slst );
+
     /** Extracts PCAID sentence. */
     void __ExtractPcaid( const QStringList& slst );
+
     /** Extracts POV sentence. */
     void __ExtractPov( const QStringList& slst );
+
     /** Extracts PXCV sentence. */
     void __ExtractPxcv( const QStringList& slst );
+
     /** Extracts PGCS sentence. */
     void __ExtractPgcs( const QStringList& slst );
+
     /** Extracts GPDTM sentence. */
     void __ExtractGpdtm( const QStringList& slst );
+
+    /** Extracts GPVTG sentence. */
+    void __ExtractGpvtg( const QStringList& slst );
 
 #ifdef FLARM
     /** Extracts PFLAU sentence. */

@@ -818,6 +818,16 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_Temperature( const double ) ) );
   connect( GpsNmea::gps, SIGNAL( newTas(const Speed&) ),
            calculator, SLOT( slot_ExternalTas(const Speed&) ) );
+  connect( GpsNmea::gps, SIGNAL( newAHRSInfo( const double,
+                                              const double,
+                                              const double,
+                                              const double,
+                                              const double) ),
+           calculator, SLOT( slot_AHRSInfo( const double,
+                                            const double,
+                                            const double,
+                                            const double,
+                                            const double)) );
 
   #ifdef FLARM
   connect( GpsNmea::gps, SIGNAL( newFlarmCount(int) ),

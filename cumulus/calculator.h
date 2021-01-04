@@ -710,6 +710,15 @@ public:
   void slot_startTask();
 
   /**
+   * Called when a new AHRS data set is available.
+   */
+  void slot_AHRSInfo( const double rollAngle,
+                      const double pitchAngle,
+                      const double accelarationX,
+                      const double accelarationY,
+                      const double accelarationZ );
+
+  /**
    * Called to set the minimum altitude to the current altitude value.
    * That also resets the gained altitude.
    */

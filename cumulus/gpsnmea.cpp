@@ -201,6 +201,8 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   // XCVario
   gpsKeys.insert( "$PXCV", 14 );
 
+  gpsKeys.insert( "$GPVTG", 15 );
+  gpsKeys.insert( "$GNVTG", 15 );
 
 #ifdef FLARM
   gpsKeys.insert( "$PFLAA", 20);
@@ -660,6 +662,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       __ExtractPxcv( slst );
       return;
 
+    case 15: // $GPVTG, $GNVTG
+      __ExtractGpvtg( slst );
+      return;
+
 #ifdef FLARM
 
     case 20: // $PFLAA
@@ -1009,6 +1015,42 @@ void GpsNmea::__ExtractGngns( const QStringList& slst )
       __ExtractCoord(slst[2], slst[3], slst[4], slst[5]);
       __ExtractAltitude(slst[9], QString("M"));
       __ExtractSatsInView(slst[7]);
+    }
+}
+
+/**
+$GPVTG,147.6,T,147.6,M,2.5,N,4.7,K,D*22
+
+0 $GPVTG, Log header. See Messages for more information.
+1 track true, Track made good, degrees True
+2 T, True track indicator
+3 track mag, Track made good, degrees Magnetic;
+4 M, Magnetic track indicator
+5 speed Kn, Speed over ground, knots
+6 N, Nautical speed indicator (N = Knots)
+7 speed Km, Speed, kilometers/hour
+8 K, Speed indicator (K = km/hr)
+9 mode ind, Positioning system mode indicator,
+   see Table: NMEA Positioning System Mode Indicator
+10 *xx, Check sum
+11 [CR][LF], Sentence terminator
+
+NMEA Positioning System Mode Indicator
+Mode Indicator
+
+A    Autonomous
+D    Differential
+E    Estimated (dead reckoning) mode
+M    Manual input
+N    Data not valid
+
+*/
+void GpsNmea::__ExtractGpvtg( const QStringList& slst )
+{
+  if ( slst.size() < 10 )
+    {
+      qWarning("$PGVTG contains too less parameters!");
+      return;
     }
 }
 
@@ -1367,6 +1409,53 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
       _lastDynamicPressure = q;
       emit newDynamicPressure( q );
     }
+
+  // 10 - RRR.R, ​​Roll angle
+  double ra = slst[10].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  // 11 - III.I, Pitch angle
+  double pa = slst[11].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  // 12 - X.XX, Acceleration in X-Axis
+  double ax = slst[12].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  // 13 - Y.YY,  ​​​Acceleration in Y-Axis
+  double ay = slst[13].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  // 14 - Z.ZZ, Acceleration in Z-Axis
+  double az = slst[14].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  emit newAHRSInfo( ra, pa, ax, ay, az );
 }
 
 /**

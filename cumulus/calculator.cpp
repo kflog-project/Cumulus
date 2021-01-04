@@ -305,6 +305,18 @@ void Calculator::slot_Position( QPoint& newPositionValue )
   m_reachablelist->calculate(false);
 }
 
+/**
+ * Called when a new AHRS data set is available.
+ */
+void Calculator::slot_AHRSInfo( const double rollAngle,
+                                const double pitchAngle,
+                                const double accelarationX,
+                                const double accelarationY,
+                                const double accelarationZ )
+{
+
+}
+
 /** Called if a new waypoint has been selected. If user action is
     true, change was done by an user interaction.*/
 void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
