@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -359,6 +359,11 @@ void WPInfoWidget::writeText()
                                      arg(rwh2, 2, 10, QLatin1Char('0'));
                     }
                  }
+
+              if( rwy.m_name.isEmpty() == false )
+                {
+                  tmp2 = "<b>" + rwy.getName() + "</b>";
+                }
 
               itxt += "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
                       Runway::item2Text(rwy.m_surface, tr("Unknown")) + ")</td>" +

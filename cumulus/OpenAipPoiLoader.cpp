@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2018 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2021 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -675,6 +675,8 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
        {
          Runway rwy = rwyList.at(i);
 
+         // runway name
+         ShortSave(out, rwy.getName().toUtf8());
          out << rwy.m_length;
          out << rwy.m_width;
          out << quint16( rwy.m_heading );
@@ -967,12 +969,18 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
       for( short i = 0; i < (short) listSize; i++ )
         {
+          QByteArray utf8_temp;
+          QString name;
           float length;
           float width;
           quint16 heading;
           quint8 surface;
           quint8 isOpen;
           quint8 isBidirectional;
+
+          // read runway name
+          ShortLoad(in, utf8_temp);
+          name = QString::fromUtf8(utf8_temp);
 
           in >> length;
           in >> width;
@@ -981,7 +989,13 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
           in >> isOpen;
           in >> isBidirectional;
 
-          Runway rwy( length, heading, surface, isOpen, isBidirectional, width );
+          Runway rwy( name,
+                      length,
+                      heading,
+                      surface,
+                      isOpen,
+                      isBidirectional,
+                      width );
 
           af.addRunway( rwy );
         }

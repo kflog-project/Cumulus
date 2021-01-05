@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2017 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -98,7 +98,7 @@
 #define FILE_VERSION_AIRSPACE_C 2
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 3
+#define FILE_VERSION_AIRFIELD_C 4
 
 // Version definition for compiled navigation aid files.
 #define FILE_VERSION_NAV_AIDS_C 3

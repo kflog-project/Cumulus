@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #include <QtXml>
 
 #include "distance.h"
+#include "filetools.h"
 #include "Frequency.h"
 #include "generalconfig.h"
 #include "OpenAip.h"
@@ -43,6 +44,7 @@ extern MapMatrix* _globalMapMatrix;
 #define WP_FILE_FORMAT_ID_4 104 // runway list added
 #define WP_FILE_FORMAT_ID_5 105 // runway length stored as float to avoid rounding issues between ft - m
 #define WP_FILE_FORMAT_ID_6 106 // frequency list introduced
+#define WP_FILE_FORMAT_ID_7 107 // runway name added
 
 // Note! If you introduce a new WP_FILE_FORMAT_ID, consider readOldVersion
 // handling!
@@ -277,6 +279,8 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       if( fileFormat >= WP_FILE_FORMAT_ID_4 )
         {
           // The runway list has to be read
+          QByteArray utf8_temp;
+          QString name;
           quint8 listSize;
           quint16 ilength;
           float   flength;
@@ -291,6 +295,13 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
           for( int i = 0; i < (int) listSize; i++ )
             {
+              if( fileFormat >= WP_FILE_FORMAT_ID_7 )
+                {
+                  // read runway name
+                  ShortLoad(in, utf8_temp);
+                  name = QString::fromUtf8(utf8_temp);
+                }
+
               if( fileFormat >= WP_FILE_FORMAT_ID_5 )
                 {
                   in >> flength;
@@ -309,7 +320,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
               in >> isOpen;
               in >> isBidirectional;
 
-              Runway rwy( flength, heading, surface, isOpen, isBidirectional, fwidth );
+              Runway rwy( name, flength, heading, surface, isOpen, isBidirectional, fwidth );
               rwyList.append(rwy);
             }
         }
@@ -372,7 +383,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
               if ( wpRunway > 0 )
                 {
                   // Runway heading must be > 0 to be a right runway.
-                  Runway rwy( wpLength3, wpRunway, wpSurface, true, true );
+                  Runway rwy( "", wpLength3, wpRunway, wpSurface, true, true );
                   wp.rwyList.append( rwy );
                 }
             }
@@ -448,7 +459,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
       // write file header
       out << quint32( KFLOG_FILE_MAGIC );
       out << qint8( FILE_TYPE_WAYPOINTS );
-      out << quint16( WP_FILE_FORMAT_ID_6 );
+      out << quint16( WP_FILE_FORMAT_ID_7 );
       out << qint32( wpList.size() );
 
       for (int i = 0; i < wpList.size(); i++)
@@ -494,6 +505,8 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
             {
               Runway rwy = wp.rwyList.at(i);
 
+              // element name
+              ShortSave(out, rwy.getName().toUtf8());
               out << rwy.m_length;
               out << rwy.m_width;
               out << quint16( rwy.m_heading );
@@ -624,7 +637,7 @@ int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString&
           int heading = (rwh1) * 256 + (rwh2);
 
           // Store runways in the runway list.
-          Runway rwy( length, heading, surface, true, true );
+          Runway rwy( "", length, heading, surface, true, true );
           w.rwyList.append( rwy );
         }
 

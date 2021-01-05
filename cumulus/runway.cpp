@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2018 Axel Pauli
+**   Copyright (c): 2008-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,12 +21,14 @@
 QHash<int, QString> Runway::surfaceTranslations;
 QStringList Runway::sortedTranslations;
 
-Runway::Runway( const float rwLength,
+Runway::Runway( const QString& name,
+                const float rwLength,
                 const unsigned short head,
                 const unsigned short surf,
                 const bool open,
                 const bool bidirectional,
                 const float rwWidth ) :
+ m_name(name),
  m_length(rwLength),
  m_heading(head),
  m_surface(surf),
@@ -38,7 +40,8 @@ Runway::Runway( const float rwLength,
 
 void Runway::printData()
 {
-  qDebug() << "RWY-Heading=" << (m_heading / 256) << "/"<< (m_heading & 255)
+  qDebug() << "RWY-Name=" << m_name
+           << "RWY-Heading=" << (m_heading / 256) << "/"<< (m_heading & 255)
            << "Length=" << m_length
            << "Width=" << m_width
            << "Sfc=" << m_surface

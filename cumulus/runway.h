@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2018 Axel Pauli
+**   Copyright (c): 2008-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  * This class is used for defining a runway together with its surface and the
  * translation types.
  *
- * \date 2008-2018
+ * \date 2008-2021
  *
  */
 
@@ -52,8 +52,8 @@ public:
                      Ice = 7,
                      Snow = 8,
                      Soil = 9 };
-
   Runway() :
+    m_name(),
     m_length(0),
     m_heading(0),
     m_surface(Unknown),
@@ -63,7 +63,8 @@ public:
     {
     };
 
-  Runway( const float rwLength,
+  Runway( const QString& name,
+          const float rwLength,
           const unsigned short head,
           const unsigned short surf,
           const bool open=true,
@@ -88,9 +89,22 @@ public:
   static QStringList& getSortedTranslationList();
 
   /**
+   * Returns the name of the runway.
+   */
+  QString getName()
+  {
+    return m_name;
+  }
+
+  /**
    * Prints out all runway data.
    */
   void printData();
+
+  /**
+   * The name of the runway.
+   */
+  QString m_name;
 
   /**
    * The length of the runway, given in meters.

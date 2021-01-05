@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2018 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2021 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -1282,6 +1282,8 @@ bool OpenAip::readAirfieldRunway( QXmlStreamReader& xml, Airfield& af )
             {
               // That element contains the usable runway headings
               QString name = xml.readElementText();
+
+              runway.m_name = name;
             }
           else if ( elementName == "DIRECTION" )
             {
