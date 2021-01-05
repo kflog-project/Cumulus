@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2002      by André Somers
-**                  2007-2014 by Axel Pauli
+**                  2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *
  * \brief This widget provides a list of waypoints and a means to select one.
  *
- * \date 2002-2014
+ * \date 2002-2021
  *
- * \version $Id$
+ * \version 1.1
  */
 
 #ifndef WAYPOINT_LISTVIEW_H
@@ -33,6 +33,7 @@
 #include <QPoint>
 #include <QPushButton>
 
+#include "singlepoint.h"
 #include "waypointlistwidget.h"
 #include "waypoint.h"
 
@@ -87,9 +88,19 @@ public slots:
 private slots:
 
   /**
-   * This slot is called if the select button is pressed.
+   * This slot is called, if the select button is pressed.
    */
   void slot_Select();
+
+  /**
+   * This slot is called, if the search button is pressed;
+   */
+  void slot_Search();
+
+  /**
+   * This slot is called, to pass the search result.
+   */
+  void slot_SearchResult( const SinglePoint* singlePoint );
 
   /**
    * This slot is called if the info button has been
@@ -188,6 +199,7 @@ signals:
 private:
 
   WaypointListWidget* listw;
+  QPushButton*        cmdSearch;
   QPushButton*        cmdSelect;
   QPushButton*        cmdHome;
   QPushButton*        cmdPriority;
