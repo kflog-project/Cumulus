@@ -22,6 +22,10 @@
 #include <QtWidgets>
 #endif
 
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "generalconfig.h"
 #include "altitude.h"
 #include "altimeterdialog.h"
@@ -143,13 +147,13 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   m_devicesList->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
+  m_devicesList->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  QScroller::grabGesture( m_devicesList->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+  m_devicesList->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  QtScroller::grabGesture( m_devicesList->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   m_devicesList->addItems( GeneralConfig::getPressureDevicesList() );

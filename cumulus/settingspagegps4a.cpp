@@ -23,6 +23,10 @@
 #include <QtWidgets>
 #endif
 
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "helpbrowser.h"
@@ -99,13 +103,13 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   PressureDevice->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 #ifdef QSCROLLER
-    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
+  PressureDevice->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    QScroller::grabGesture( PressureDevice->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-    m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+    PressureDevice->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    QtScroller::grabGesture( PressureDevice->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
   PressureDevice->addItems( GeneralConfig::getPressureDevicesList() );

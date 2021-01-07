@@ -3270,19 +3270,12 @@ bool GpsNmea::event(QEvent *event)
       GpsFixEvent *gpsFixEvent = static_cast<GpsFixEvent *>(event);
 
       // Handle altitude
-      Altitude newAlt(0);
-      double alt = gpsFixEvent->altitude();
+      Altitude newAlt( gpsFixEvent->altitude() );
 
-      _lastGNSSAltitude = Altitude( alt );
-
-      // Consider user's altitude correction
-      newAlt.setMeters( alt + _userAltitudeCorrection.getMeters() );
-
-      if ( _lastMslAltitude != newAlt )
+      if ( _lastGNSSAltitude != newAlt )
         {
-          _lastMslAltitude = newAlt;
-          calcStdAltitude( newAlt );
-          emit newAltitude( _lastMslAltitude, _lastStdAltitude, _lastGNSSAltitude );
+          _lastGNSSAltitude = newAlt;
+          emit newGNSSAltitude( _lastGNSSAltitude );
         }
 
       msg += newAlt.getText( true, 0 );
@@ -3404,13 +3397,13 @@ bool GpsNmea::event(QEvent *event)
     {
       PressureEvent *ae = dynamic_cast<PressureEvent *>(event);
 
-      if( ae != nullptr && _pressureDevice == "Android" )
+      if( ae != static_cast<PressureEvent *>(0) && _pressureDevice == "Android" )
         {
           double pressure = ae->pressure();
 
           if( _lastStaticPressure != pressure )
             {
-              _lastStaticPressure != pressure
+              _lastStaticPressure = pressure;
               emit newStaticPressure( _lastStaticPressure );
            }
 

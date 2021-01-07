@@ -145,7 +145,7 @@ public:
    */
   enum positionFrom {GPS=0, MAN};
 
-  const double infiniteTemperature = -300.0;
+  const double infiniteTemperature;
 
 public:
   /**

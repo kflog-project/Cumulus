@@ -2362,7 +2362,9 @@ void MainWindow::setView( const AppView newView )
         }
 
       /* no break is desired here */
+#ifndef ANDROID
       [[fallthrough]];
+#endif
 
     case afView:
     case hsView:

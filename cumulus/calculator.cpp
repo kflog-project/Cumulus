@@ -52,6 +52,7 @@ extern MapMatrix   *_globalMapMatrix;
 
 Calculator::Calculator(QObject* parent) :
   QObject(parent),
+  infiniteTemperature(-300.0),
   samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
 {
   setObjectName( "Calculator" );
