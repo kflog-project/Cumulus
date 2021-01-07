@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2021-01-07 AP: New serach possibility added to different list views.
+
 [-] 2020-07-23 AP: Issue #137 fixed. Added airspace filters to Cumulus.
 
 [*] 2019-04-07 AP: Cumulus 5.36.1 released for Android.
