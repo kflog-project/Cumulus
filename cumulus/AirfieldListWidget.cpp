@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,9 @@
 #include "airfield.h"
 #include "calculator.h"
 #include "generalconfig.h"
+#include "mainwindow.h"
 #include "mapconfig.h"
+#include "TaskPointSelectionList.h"
 
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
@@ -144,4 +146,53 @@ AirfieldListWidget::AirfieldItem::AirfieldItem(Airfield* site) :
   QPixmap afPm = _globalMapConfig->getPixmap(site->getTypeID(), false);
 
   setIcon( 0, QIcon( afPm) );
+}
+
+/**
+ * This method is called, if the search button is pressed;
+ */
+void AirfieldListWidget::searchButtonPressed()
+{
+  if( listWidget()->topLevelItemCount() == 0 )
+    {
+      // list is empty, return
+      return;
+    }
+
+  TaskPointSelectionList* sl = new TaskPointSelectionList( this, tr("Airfields") );
+  sl->setAttribute(Qt::WA_DeleteOnClose);
+  sl->fillSelectionListWithAirfields();
+  sl->resize( MainWindow::mainWindow()->size() );
+
+  connect( sl, SIGNAL(takeThisPoint(const SinglePoint*)),
+           this, SLOT(slot_SearchResult( const SinglePoint*)) );
+
+  sl->show();
+}
+
+/**
+ * This slot is called, to pass the search result.
+ */
+void AirfieldListWidget::slot_SearchResult( const SinglePoint* sp )
+{
+  // Make the whole list visible to ensure visibility of selection.
+  resetListFilter();
+
+  // qDebug() << "WPName:" << sp->getWPName();
+  // qDebug() << "Name:" << sp->getName();
+
+  QTreeWidget* lw = listWidget();
+
+  for( int i = 0; i < lw->topLevelItemCount(); i++ )
+    {
+      QTreeWidgetItem* twi = lw->topLevelItem( i );
+      const QString name = sp->getWPName();
+
+      if( twi->text(0) == name )
+        {
+          lw->setCurrentItem( twi );
+          lw->scrollToItem( twi, QAbstractItemView::PositionAtTop );
+          break;
+        }
+    }
 }

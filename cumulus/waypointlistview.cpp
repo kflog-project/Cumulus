@@ -20,7 +20,7 @@
 #include <QtWidgets>
 #endif
 
-#include"TaskPointSelectionList.h"
+#include "TaskPointSelectionList.h"
 #include "waypointlistview.h"
 #include "generalconfig.h"
 #include "wpeditdialog.h"
@@ -52,13 +52,6 @@ WaypointListView::WaypointListView( QWidget *parent ) :
   editRow->addStretch( 10 );
 
   const int iconSize = Layout::iconSize( font() );
-
-  QPushButton *cmdSearch = new QPushButton( this );
-  cmdSearch->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "zoom32.png" ) ) );
-  cmdSearch->setIconSize( QSize( iconSize, iconSize ) );
-  cmdSearch->setToolTip( tr( "Search and select a waypoint" ) );
-  editRow->addWidget( cmdSearch );
-  editRow->addStretch( 5 );
 
   QPushButton *cmdNew = new QPushButton( this );
   cmdNew->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
@@ -109,7 +102,7 @@ WaypointListView::WaypointListView( QWidget *parent ) :
 
   topLayout->addLayout( buttonRow, 1, 0, 1, 2 );
 
-  connect( cmdSearch, SIGNAL(clicked()), this, SLOT( slot_Search()) );
+  connect( listw, SIGNAL(searchButtonClicked()), this, SLOT( slot_Search()) );
   connect( cmdNew, SIGNAL(clicked()), this, SLOT(slot_newWP()) );
   connect( cmdEdit, SIGNAL(clicked()), this, SLOT(slot_editWP()) );
   connect( cmdDel, SIGNAL(clicked()), this, SLOT(slot_deleteWPs()) );
@@ -152,9 +145,16 @@ void WaypointListView::showEvent( QShowEvent* event )
  */
 void WaypointListView::slot_Search()
 {
+  if( listw->listWidget()->topLevelItemCount() == 0 )
+    {
+      // list is empty, return
+      return;
+    }
+
   TaskPointSelectionList* wpsl = new TaskPointSelectionList( this, tr("Waypoints") );
   wpsl->setAttribute(Qt::WA_DeleteOnClose);
   wpsl->fillSelectionListWithWaypoints();
+  wpsl->resize( MainWindow::mainWindow()->size() );
 
   connect( wpsl, SIGNAL(takeThisPoint(const SinglePoint*)),
            SLOT(slot_SearchResult( const SinglePoint*)) );
@@ -165,23 +165,23 @@ void WaypointListView::slot_Search()
 /**
  * This slot is called, to pass the search result.
  */
-void WaypointListView::slot_SearchResult( const SinglePoint* singlePoint )
+void WaypointListView::slot_SearchResult( const SinglePoint* sp )
 {
-  // That is the entry displayed in column 0
-  const QString& name = singlePoint->getName();
+  // Reset list filter, to get visible the whole list.
+  listw->resetListFilter();
+
   QTreeWidget* lw = listw->listWidget();
 
-  // Searching in column 0 for the passed entry
-  for( int i=0; i < lw->topLevelItemCount(); i++ )
+  for( int i = 0; i < lw->topLevelItemCount(); i++ )
     {
       QTreeWidgetItem* twi = lw->topLevelItem( i );
+      const QString& name = sp->getName();
 
       if( twi->text(0) == name )
         {
-         // waypoint name found, select list entry.
           lw->setCurrentItem( twi );
           lw->scrollToItem( twi, QAbstractItemView::PositionAtTop );
-          return;
+          break;
         }
     }
 }

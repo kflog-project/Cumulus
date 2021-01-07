@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2018 by Axel Pauli
+**   Copyright (c):  2014-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,11 @@
 #include <QtWidgets>
 #endif
 
-#include "generalconfig.h"
-#include "mapconfig.h"
 #include "calculator.h"
+#include "generalconfig.h"
+#include "mainwindow.h"
+#include "mapconfig.h"
+#include "TaskPointSelectionList.h"
 
 extern MapContents *_globalMapContents;
 extern MapConfig   *_globalMapConfig;
@@ -62,12 +64,13 @@ void RadioPointListWidget::fillItemList()
 
       for (int i = 0; i < nr; i++ )
         {
-	  RadioPoint* site = dynamic_cast<RadioPoint *> (_globalMapContents->getElement( m_itemList.at(item), i ));
+          RadioPoint* site =
+              dynamic_cast<RadioPoint *> (_globalMapContents->getElement( m_itemList.at(item), i ));
 
-	  if( site == 0 )
-	    {
-	      continue;
-	    }
+          if( site == 0 )
+            {
+              continue;
+            }
 
           filter->addListItem( new RadioPointItem(site) );
         }
@@ -128,4 +131,50 @@ RadioPointListWidget::RadioPointItem::RadioPointItem(RadioPoint* site) :
   // set type icon
   QPixmap pm = _globalMapConfig->getPixmap(site->getTypeID(), false);
   setIcon( 0, QIcon( pm) );
+}
+
+/**
+ * This method is called, if the search button is pressed;
+ */
+void RadioPointListWidget::searchButtonPressed()
+{
+  if( listWidget()->topLevelItemCount() == 0 )
+    {
+      // list is empty, return
+      return;
+    }
+
+  TaskPointSelectionList* sl = new TaskPointSelectionList( this, tr("Navaids") );
+  sl->setAttribute(Qt::WA_DeleteOnClose);
+  sl->fillSelectionListWithNavaids();
+  sl->resize( MainWindow::mainWindow()->size() );
+
+  connect( sl, SIGNAL(takeThisPoint(const SinglePoint*)),
+           this, SLOT(slot_SearchResult( const SinglePoint*)) );
+
+  sl->show();
+}
+
+/**
+ * This slot is called, to pass the search result.
+ */
+void RadioPointListWidget::slot_SearchResult( const SinglePoint* sp )
+{
+  // Make the whole list visible to ensure visibility of selection.
+  resetListFilter();
+
+  QTreeWidget* lw = listWidget();
+
+  for( int i = 0; i < lw->topLevelItemCount(); i++ )
+    {
+      QTreeWidgetItem* twi = lw->topLevelItem( i );
+      const QString name = sp->getWPName();
+
+      if( twi->text(0) == name )
+        {
+          lw->setCurrentItem( twi );
+          lw->scrollToItem( twi, QAbstractItemView::PositionAtTop );
+          break;
+        }
+    }
 }

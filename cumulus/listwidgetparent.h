@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2015 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,7 +30,7 @@
  * Subclassed by \ref AirfieldListWidget, \ref WaypointListWidget
  *               \ref SinglePointListWidget
  *
- * \date 2002-2015
+ * \date 2002-2021
  *
  * \version 1.1
  */
@@ -98,6 +98,14 @@ class ListWidgetParent : public QWidget
     };
 
     /**
+     * Set visibility of saerch button.
+     */
+    void setVisibilityOfSearchButton( bool value )
+    {
+      searchButton->setVisible( value );
+    }
+
+    /**
      * \return The top level item count of the tree list.
      */
     int topLevelItemCount()
@@ -116,12 +124,27 @@ class ListWidgetParent : public QWidget
       list->resizeColumnToContents(3);
     };
 
+    /*
+     * This method is called, if the search button is pressed. Can be overwritten
+     * in a subclass.
+     */
+    virtual void searchButtonPressed()
+    {
+    }
+
   public slots:
 
     /**
      * Called from parent when closing
      */
     void slot_Done();
+
+  private slots:
+
+    /**
+     * Called, if the search button is clicked.
+     */
+    void slot_searchButtonClicked();
 
   signals:
 
@@ -130,12 +153,18 @@ class ListWidgetParent : public QWidget
      */
     void wpSelectionChanged();
 
+    /*
+     * This signal is emitted, if the search button is clicked.
+     */
+    void searchButtonClicked();
+
   protected:
 
     void showEvent( QShowEvent *event );
 
     QTreeWidget*    list;
     ListViewFilter* filter;
+    QPushButton* searchButton;
 
     /** Up and down buttons for page moving */
     QPushButton* up;

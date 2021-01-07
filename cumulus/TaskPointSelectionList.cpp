@@ -457,6 +457,7 @@ void TaskPointSelectionList::slotAccept()
 
   if( pi->getPoint() != 0 )
     {
+      int idx = m_taskpointTreeWidget->indexOfTopLevelItem( li );
       emit takeThisPoint( pi->getPoint() );
     }
 

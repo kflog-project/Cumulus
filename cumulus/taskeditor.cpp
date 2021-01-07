@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2020 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -263,7 +263,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   if( _globalMapContents->getRadioPointList().size() > 0 )
     {
-      naButton = new QPushButton( "Navaids" );
+      naButton = new QPushButton( tr("Navaids") );
       naButton->setIconSize( QSize( iconSize, iconSize ) );
       naButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("vordme.xpm")) );
       connect( naButton, SIGNAL( clicked() ), SLOT(slotOpenNaSelectionList()) );
@@ -271,7 +271,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   if( _globalMapContents->getQutlandingList().size() > 0 )
     {
-      olButton = new QPushButton( "Outlandings" );
+      olButton = new QPushButton( tr("Outlandings") );
       olButton->setIconSize( QSize( iconSize, iconSize ) );
       olButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("outlanding.xpm")) );
       connect( olButton, SIGNAL( clicked() ), SLOT(slotOpenOlSelectionList()) );
@@ -279,7 +279,7 @@ TaskEditor::TaskEditor( QWidget* parent,
 
   if( _globalMapContents->getWaypointList().size() > 0 )
     {
-      wpButton = new QPushButton( "Waypoints" );
+      wpButton = new QPushButton( tr("Waypoints") );
       wpButton->setIconSize( QSize( iconSize, iconSize ) );
       wpButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("waypoint.xpm")) );
       connect( wpButton, SIGNAL( clicked() ), SLOT(slotOpenWpSelectionList()) );

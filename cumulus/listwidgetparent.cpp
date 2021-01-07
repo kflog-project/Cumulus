@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2008      by Josua Dietze
-**                   2009-2015 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,6 +27,7 @@
 #include "layout.h"
 #include "listwidgetparent.h"
 #include "generalconfig.h"
+#include"TaskPointSelectionList.h"
 
 ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   QWidget(parent),
@@ -70,6 +71,14 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
+  // const int iconSize = Layout::iconSize( font() );
+
+  searchButton = new QPushButton( this );
+  searchButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "fernglas.png" ) ) );
+  searchButton->setIconSize( QSize(Layout::getButtonSize(24), Layout::getButtonSize(24)) );
+  searchButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Fixed );
+  searchButton->setToolTip( tr( "Search and select a waypoint" ) );
+
   up = new QPushButton( this );
   up->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png", true )));
   up->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
@@ -108,11 +117,16 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   movePageBox->addWidget( down, 10 );
 
   QHBoxLayout *hBox = new QHBoxLayout;
-
   hBox->addWidget( list );
   hBox->addLayout( movePageBox );
 
-  topLayout->addWidget( filter );
+  QHBoxLayout *filterBox = new QHBoxLayout;
+  filterBox->setSpacing( 0 );
+  filterBox->addWidget( filter, 10 );
+  filterBox->addSpacing( 10 * Layout::getIntScaledDensity() );
+  filterBox->addWidget( searchButton );
+
+  topLayout->addLayout( filterBox );
   topLayout->addLayout( hBox);
 
   if( showMovePage == false )
@@ -123,6 +137,8 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   connect( list, SIGNAL( itemClicked(QTreeWidgetItem*,int) ),
            this, SLOT( slot_listItemClicked(QTreeWidgetItem*,int) ) );
+
+  connect( searchButton, SIGNAL(clicked()), this, SLOT( slot_searchButtonClicked()) );
 
   connect( up, SIGNAL(pressed()), this, SLOT(slot_PageUp()) );
   connect( down, SIGNAL(pressed()), this, SLOT(slot_PageDown()) );
@@ -332,4 +348,22 @@ void ListWidgetParent::slot_scrollerBoxToggled( int state )
 #endif
 
     }
+}
+
+/**
+ * Called, if the search button is clicked.
+ */
+void ListWidgetParent::slot_searchButtonClicked()
+{
+  // Check, if entries are contained in the list.
+  if( list->topLevelItemCount() == 0 )
+    {
+      return;
+    }
+
+  // inform subscribers about the search button press.
+  emit searchButtonClicked();
+
+  // inform subclasses about the search button press.
+  searchButtonPressed();
 }

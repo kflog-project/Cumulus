@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,7 @@
  * \brief This widget provides a list of navigation aids and a means to select
  *  one.
  *
- * \date 2014
+ * \date 2014-2021
  *
  */
 
@@ -72,6 +72,26 @@ public:
    * Clears and fills the RadioPoint item list.
    */
   void fillItemList();
+
+  /**
+   * Reset list filter.
+   */
+  void resetListFilter()
+  {
+    filter->reset();
+  }
+
+  /**
+   * This is called in the parent, if the search button is pressed;
+   */
+  virtual void searchButtonPressed();
+
+public slots:
+
+  /**
+   * This slot is called, to pass the search result.
+   */
+  void slot_SearchResult( const SinglePoint* singlePoint );
 
 private:
 

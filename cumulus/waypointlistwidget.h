@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2013 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -26,9 +24,9 @@
  *
  * This widget displays a list of waypoints and provides some management methods.
  *
- * \date 2002-2013
+ * \date 2002-2021
  *
- * \version $Id$
+ * \version 1.2
  *
  */
 
@@ -102,6 +100,14 @@ public:
    * Clears and fills the waypoint item list with the current waypoints.
    */
   void fillItemList();
+
+  /**
+   * Reset list filter.
+   */
+  void resetListFilter()
+  {
+    filter->reset();
+  }
 
   /**
    * Gets the current set waypoint priority.

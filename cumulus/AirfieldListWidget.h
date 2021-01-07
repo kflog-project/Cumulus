@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,7 @@
  *
  * \brief This widget provides a list of airfields and a means to select one.
  *
- * \date 2002-2018
+ * \date 2002-2021
  *
  */
 
@@ -31,6 +31,7 @@
 #include <QWidget>
 #include <QVector>
 
+#include "singlepoint.h"
 #include "waypoint.h"
 #include "listwidgetparent.h"
 #include "mapcontents.h"
@@ -61,6 +62,26 @@ public:
      * Clears and fills the airfield item list.
      */
     void fillItemList();
+
+    /**
+     * Reset list filter.
+     */
+    void resetListFilter()
+    {
+      filter->reset();
+    }
+
+    /**
+     * This is called in the parent, if the search button is pressed;
+     */
+    virtual void searchButtonPressed();
+
+ public slots:
+
+    /**
+     * This slot is called, to pass the search result.
+     */
+    void slot_SearchResult( const SinglePoint* singlePoint );
 
 private:
 

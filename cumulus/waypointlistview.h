@@ -199,7 +199,6 @@ signals:
 private:
 
   WaypointListWidget* listw;
-  QPushButton*        cmdSearch;
   QPushButton*        cmdSelect;
   QPushButton*        cmdHome;
   QPushButton*        cmdPriority;

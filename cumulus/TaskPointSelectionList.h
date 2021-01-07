@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2018 by Axel Pauli
+**   Copyright (c):  2018-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * the list. The currently selected entry in the list is emitted as signal,
  * if the OK button is clicked.
  *
- * \date 2018
+ * \date 2021
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef TaskPointSelectionList_h
@@ -147,7 +147,8 @@ class TaskPointSelectionList : public QWidget
  signals:
 
   /**
-   * Emitted, if the OK button is pressed to broadcast the selected point.
+   * Emitted, if the OK button is pressed to broadcast the content of the
+   * selected point.
    */
   void takeThisPoint( const SinglePoint* singePoint );
 
