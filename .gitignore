@@ -24,9 +24,13 @@ cumulus/cumulus
 
 # Directories
 .obj/*
+/doxy
 /gpsClient
 /bin
 /.Android
 /.settings/
 /help/
 /help/
+
+# Temp and lock files
+.*.swp
