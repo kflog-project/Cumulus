@@ -460,7 +460,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar = new QStatusBar(this);
   _statusbar->setObjectName("status");
   _statusbar->setSizeGripEnabled(false);
-
   _statusbar->setFont(fontSB);
 
   // Fixing the height caused some times problems on larger screens
@@ -468,51 +467,58 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // _statusbar->setFixedHeight(fm.boundingRect("WE°'?\"").height() + 6 );
 
   _statusGps = new CuLabel(tr("Man"), _statusbar);
+  _statusGps->setFrameStyle(QFrame::Box | QFrame::Plain);
   _statusGps->setFont(fontSB);
-  _statusGps->setLineWidth(0);
+  _statusGps->setLineWidth(1);
   _statusGps->setAlignment(Qt::AlignCenter);
-  _statusGps->setMargin(0);
+  _statusGps->setMargin(2);
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
+  _statusFlightstatus->setFrameStyle(QFrame::Box | QFrame::Plain);
   _statusFlightstatus->setFont(fontSB);
-  _statusFlightstatus->setLineWidth(0);
+  _statusFlightstatus->setLineWidth(1);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
-  _statusFlightstatus->setMargin(0);
+  _statusFlightstatus->setMargin(2);
   _statusFlightstatus->setMinimumSize(_statusFlightstatus->fontMetrics().boundingRect(" L ? ").width(), 5);
   _statusbar->addWidget(_statusFlightstatus);
 
 #ifdef FLARM
 
   _statusFlarm = new CuLabel( tr( "F" ), _statusbar );
+  _statusFlarm->setFrameStyle(QFrame::Box | QFrame::Plain);
   _statusFlarm->setFont(fontSB);
-  _statusFlarm->setLineWidth( 0 );
+  _statusFlarm->setLineWidth( 1 );
   _statusFlarm->setAlignment( Qt::AlignCenter );
-  _statusFlarm->setMargin( 0 );
+  _statusFlarm->setMargin( 2 );
   _statusbar->addWidget( _statusFlarm );
   _statusFlarm->setVisible( false );
 
 #endif
 
   _statusPosition = new QLabel(_statusbar);
+  _statusPosition->setFrameStyle(QFrame::Box | QFrame::Plain);
   _statusPosition->setFont(fontSB);
-  _statusPosition->setLineWidth(0);
+  _statusPosition->setLineWidth(1);
   _statusPosition->setAlignment(Qt::AlignCenter);
-  _statusPosition->setMargin(0);
+  _statusPosition->setMargin(2);
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
+  _statusGlider->setFrameStyle(QFrame::Box | QFrame::Plain);
   _statusGlider->setFont(fontSB);
-  _statusGlider->setLineWidth(0);
+  _statusGlider->setLineWidth(1);
   _statusGlider->setAlignment(Qt::AlignCenter);
-  _statusGlider->setMargin(0);
+  _statusGlider->setMargin(2);
   _statusbar->addWidget(_statusGlider);
 
   _statusInfo = new QLabel(_statusbar);
+  _statusInfo->setFrameStyle(QFrame::Box | QFrame::Plain);
   _statusInfo->setFont(fontSB);
+  _statusInfo->setLineWidth(1);
   _statusInfo->setAlignment(Qt::AlignCenter);
-  _statusInfo->setMargin(0);
+  _statusInfo->setMargin(2);
   _statusbar->addWidget(_statusInfo, 1);
 
   m_infoTimer = new QTimer(this);
@@ -520,8 +526,9 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_infoTimer()));
 
   QFrame* filler = new QFrame(_statusbar);
+  filler->setFrameStyle(QFrame::Box | QFrame::Plain);
   filler->setFont(fontSB);
-  filler->setLineWidth(0);
+  filler->setLineWidth(1);
 
   _statusbar->addWidget(filler);
   topLayout->addWidget(_statusbar);
