@@ -444,12 +444,14 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   GeneralConfig::instance()->setOurGuiStyle();
 
 #ifdef ANDROID
-
   // Overwrite some style items globally. Note the all new style items must be
   // defined in one string!
   QString style = "QDialog { background: lightgray }";
   qApp->setStyleSheet( style );
-
+#else
+  // Make tooltip text readable.
+  QString style = "QToolTip { color:black; background-color:white }";
+  qApp->setStyleSheet( style );
 #endif
 
   qDebug() << "AutoSipEnabled:" << qApp->autoSipEnabled();
