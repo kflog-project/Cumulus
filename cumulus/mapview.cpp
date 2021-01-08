@@ -467,9 +467,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   const int lineWidth = 0;
   const int margin = 2;
+  const int style = QFrame::StyledPanel | QFrame::Plain;
 
   _statusGps = new CuLabel(tr("Man"), _statusbar);
-  _statusGps->setFrameStyle(QFrame::Panel | QFrame::Plain);
+  _statusGps->setFrameStyle( style );
   _statusGps->setLineWidth( lineWidth );
   _statusGps->setMargin( margin );
   _statusGps->setFont(fontSB);
@@ -478,7 +479,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
-  _statusFlightstatus->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusFlightstatus->setFrameStyle( style );
   _statusFlightstatus->setLineWidth( lineWidth );
   _statusFlightstatus->setMargin( margin );
   _statusFlightstatus->setFont(fontSB);
@@ -488,7 +489,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 #ifdef FLARM
   _statusFlarm = new CuLabel( tr( "F" ), _statusbar );
-  _statusFlarm->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusFlarm->setFrameStyle( style );
   _statusFlarm->setLineWidth( 1 );
   _statusFlarm->setMargin( 2 );
   _statusFlarm->setFont(fontSB);
@@ -498,7 +499,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #endif
 
   _statusPosition = new QLabel(_statusbar);
-  _statusPosition->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusPosition->setFrameStyle( style );
   _statusPosition->setLineWidth( lineWidth );
   _statusPosition->setMargin( margin );
   _statusPosition->setFont(fontSB);
@@ -506,7 +507,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
-  _statusGlider->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusGlider->setFrameStyle( style );
   _statusGlider->setLineWidth( lineWidth );
   _statusGlider->setMargin( margin );
   _statusGlider->setFont(fontSB);
@@ -514,7 +515,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusbar->addWidget(_statusGlider);
 
   _statusInfo = new QLabel(_statusbar);
-  _statusInfo->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusInfo->setFrameStyle( style );
   _statusInfo->setLineWidth( lineWidth );
   _statusInfo->setMargin( margin );
   _statusInfo->setFont(fontSB);
