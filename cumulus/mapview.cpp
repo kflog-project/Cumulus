@@ -109,19 +109,19 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
       int preferredWidth = static_cast<int>(float(parent->size().width()) * 220.0 / 800.0);
 
       if( preferredWidth < maxWidth )
-	{
-	  leftFixedWidth = preferredWidth;
-	}
-      else
-	{
-	  leftFixedWidth = maxWidth;
-	}
+        {
+          leftFixedWidth = preferredWidth;
+        }
+       else
+        {
+          leftFixedWidth = maxWidth;
+        }
 
       if( leftFixedWidth < 220 )
-	{
-	  // Fallback in error case
-	  leftFixedWidth = 220;
-	}
+        {
+          // Fallback in error case
+          leftFixedWidth = 220;
+        }
     }
 
   // Calculate the statusbar font.
@@ -447,7 +447,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _theMap->setMode(Map::headUp);
 
 #ifdef FLARM
-
   // Flarm widget with radar view
   _flarmWidget = new FlarmWidget(this);
   MapLayout->addWidget(_flarmWidget, 10);
@@ -466,71 +465,66 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // QFontMetrics fm(font);
   // _statusbar->setFixedHeight(fm.boundingRect("WE°'?\"").height() + 6 );
 
+  const int lineWidth = 0;
+  const int margin = 2;
+
   _statusGps = new CuLabel(tr("Man"), _statusbar);
-  _statusGps->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusGps->setFrameStyle(QFrame::Panel | QFrame::Plain);
+  _statusGps->setLineWidth( lineWidth );
+  _statusGps->setMargin( margin );
   _statusGps->setFont(fontSB);
-  _statusGps->setLineWidth(1);
   _statusGps->setAlignment(Qt::AlignCenter);
-  _statusGps->setMargin(2);
   _statusbar->addWidget(_statusGps);
   connect(_statusGps, SIGNAL(mousePress()), this, SLOT(slot_gpsStatusDialog()));
 
   _statusFlightstatus = new QLabel(tr("?","Unknown"), _statusbar);
   _statusFlightstatus->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusFlightstatus->setLineWidth( lineWidth );
+  _statusFlightstatus->setMargin( margin );
   _statusFlightstatus->setFont(fontSB);
-  _statusFlightstatus->setLineWidth(1);
   _statusFlightstatus->setAlignment(Qt::AlignCenter);
-  _statusFlightstatus->setMargin(2);
   _statusFlightstatus->setMinimumSize(_statusFlightstatus->fontMetrics().boundingRect(" L ? ").width(), 5);
   _statusbar->addWidget(_statusFlightstatus);
 
 #ifdef FLARM
-
   _statusFlarm = new CuLabel( tr( "F" ), _statusbar );
   _statusFlarm->setFrameStyle(QFrame::Box | QFrame::Plain);
-  _statusFlarm->setFont(fontSB);
   _statusFlarm->setLineWidth( 1 );
-  _statusFlarm->setAlignment( Qt::AlignCenter );
   _statusFlarm->setMargin( 2 );
+  _statusFlarm->setFont(fontSB);
+  _statusFlarm->setAlignment( Qt::AlignCenter );
   _statusbar->addWidget( _statusFlarm );
   _statusFlarm->setVisible( false );
-
 #endif
 
   _statusPosition = new QLabel(_statusbar);
   _statusPosition->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusPosition->setLineWidth( lineWidth );
+  _statusPosition->setMargin( margin );
   _statusPosition->setFont(fontSB);
-  _statusPosition->setLineWidth(1);
   _statusPosition->setAlignment(Qt::AlignCenter);
-  _statusPosition->setMargin(2);
   _statusbar->addWidget(_statusPosition);
 
   _statusGlider = new QLabel(_statusbar);
   _statusGlider->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusGlider->setLineWidth( lineWidth );
+  _statusGlider->setMargin( margin );
   _statusGlider->setFont(fontSB);
-  _statusGlider->setLineWidth(1);
   _statusGlider->setAlignment(Qt::AlignCenter);
-  _statusGlider->setMargin(2);
   _statusbar->addWidget(_statusGlider);
 
   _statusInfo = new QLabel(_statusbar);
   _statusInfo->setFrameStyle(QFrame::Box | QFrame::Plain);
+  _statusInfo->setLineWidth( lineWidth );
+  _statusInfo->setMargin( margin );
   _statusInfo->setFont(fontSB);
-  _statusInfo->setLineWidth(1);
   _statusInfo->setAlignment(Qt::AlignCenter);
-  _statusInfo->setMargin(2);
   _statusbar->addWidget(_statusInfo, 1);
 
   m_infoTimer = new QTimer(this);
   m_infoTimer->setSingleShot( true );
   connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_infoTimer()));
 
-  QFrame* filler = new QFrame(_statusbar);
-  filler->setFrameStyle(QFrame::Box | QFrame::Plain);
-  filler->setFont(fontSB);
-  filler->setLineWidth(1);
-
-  _statusbar->addWidget(filler);
   topLayout->addWidget(_statusbar);
 
   lastPositionChangeSource = Calculator::MAN;
