@@ -65,37 +65,29 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // load pixmap of arrows for relative bearing
   _arrows = GeneralConfig::instance()->loadPixmap( "arrows60pix-15.png", false );
 
-  // Make the main box layout, all distances of the layout are set to 0.
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-  topLayout->setMargin(0);
+  // Make the main layout of the widget, all distances of the layout are set to 0.
+  QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing(0);
-  topLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  // Left "sidebar" layout, all distances of the layout are set to 0.
-  QBoxLayout *centerLayout = new QHBoxLayout;
+#ifdef QT5
+  // That must be done under Qt 5 only.
+  topLayout->setMargin(0);
+  // Qt4: topLayout Left=9 Top=9 Right=9 Bottom=9
+  topLayout->setContentsMargins( 0, 0, 0, 0 );
+#endif
+
+  QHBoxLayout *centerLayout = new QHBoxLayout;
   topLayout->addLayout(centerLayout);
   topLayout->setStretchFactor( centerLayout, 1 );
-  centerLayout->setSpacing(0);
+  centerLayout->setSpacing(2);
 
+  // Left "sidebar" layout, all distances of the layout are set to 0.
   QVBoxLayout *sideLayout = new QVBoxLayout;
   sideLayout->setContentsMargins( 0, 0, 0, 0 );
   sideLayout->setMargin(0);
   sideLayout->setSpacing(0);
 
-  qDebug() << "sideLayout"
-           << "Left=" << sideLayout->contentsMargins().left()
-		   << "Top=" << sideLayout->contentsMargins().top()
-		   << "Right=" << sideLayout->contentsMargins().right()
-		   << "Bottom=" << sideLayout->contentsMargins().bottom();
-
   _sidebarWidget = new QWidget(this);
-
-  qDebug() << "_sidebarWidget"
-           << "Left=" << _sidebarWidget->contentsMargins().left()
-		   << "Top=" << _sidebarWidget->contentsMargins().top()
-		   << "Right=" << _sidebarWidget->contentsMargins().right()
-		   << "Bottom=" << _sidebarWidget->contentsMargins().bottom();
-
   _sidebarWidget->setLayout(sideLayout);
   centerLayout->addWidget(_sidebarWidget);
 
