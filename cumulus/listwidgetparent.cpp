@@ -124,6 +124,7 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
   filterBox->setSpacing( 0 );
   filterBox->addWidget( filter, 10 );
   filterBox->addSpacing( 10 * Layout::getIntScaledDensity() );
+  filterBox->addStretch( 1 );
   filterBox->addWidget( searchButton );
 
   topLayout->addLayout( filterBox );
