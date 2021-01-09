@@ -51,7 +51,7 @@
 MapView::MapView(QWidget *parent) : QWidget(parent)
 {
   setObjectName("MapView");
-  setContentsMargins(-9, -9, -9, -9);
+  setContentsMargins(-11, -11, -11, -11);
 
   if( parent )
     {
@@ -64,21 +64,38 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   // load pixmap of arrows for relative bearing
   _arrows = GeneralConfig::instance()->loadPixmap( "arrows60pix-15.png", false );
-  //make the main box layout
-  QBoxLayout *topLayout = new QVBoxLayout( this );
-  topLayout->setSpacing(0);
 
-  //@JD: the new "sidebar" layout
+  // Make the main box layout, all distances of the layout are set to 0.
+  QBoxLayout *topLayout = new QVBoxLayout( this );
+  topLayout->setMargin(0);
+  topLayout->setSpacing(0);
+  topLayout->setContentsMargins( 0, 0, 0, 0 );
+
+  // Left "sidebar" layout, all distances of the layout are set to 0.
   QBoxLayout *centerLayout = new QHBoxLayout;
   topLayout->addLayout(centerLayout);
   topLayout->setStretchFactor( centerLayout, 1 );
   centerLayout->setSpacing(0);
 
-  QBoxLayout *sideLayout = new QVBoxLayout;
+  QVBoxLayout *sideLayout = new QVBoxLayout;
+  sideLayout->setContentsMargins( 0, 0, 0, 0 );
+  sideLayout->setMargin(0);
   sideLayout->setSpacing(0);
 
+  qDebug() << "sideLayout"
+           << "Left=" << sideLayout->contentsMargins().left()
+		   << "Top=" << sideLayout->contentsMargins().top()
+		   << "Right=" << sideLayout->contentsMargins().right()
+		   << "Bottom=" << sideLayout->contentsMargins().bottom();
+
   _sidebarWidget = new QWidget(this);
-  _sidebarWidget->setContentsMargins(-9,-9,-6,-9);
+
+  qDebug() << "_sidebarWidget"
+           << "Left=" << _sidebarWidget->contentsMargins().left()
+		   << "Top=" << _sidebarWidget->contentsMargins().top()
+		   << "Right=" << _sidebarWidget->contentsMargins().right()
+		   << "Bottom=" << _sidebarWidget->contentsMargins().bottom();
+
   _sidebarWidget->setLayout(sideLayout);
   centerLayout->addWidget(_sidebarWidget);
 
@@ -435,12 +452,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
 #else
 
-  // normal layout for the map
-  QBoxLayout *MapLayout = new QHBoxLayout;
-  centerLayout->addLayout(MapLayout);
-  centerLayout->setStretchFactor( MapLayout, 1 );
+  // Normal layout for the map or the flarm widget
+  QHBoxLayout *mapLayout = new QHBoxLayout;
+  centerLayout->addLayout(mapLayout);
+  centerLayout->setStretchFactor( mapLayout, 1 );
   _theMap = new Map(this);
-  MapLayout->addWidget(_theMap, 10);
+  mapLayout->addWidget(_theMap, 10);
 
 #endif
 
@@ -449,7 +466,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 #ifdef FLARM
   // Flarm widget with radar view
   _flarmWidget = new FlarmWidget(this);
-  MapLayout->addWidget(_flarmWidget, 10);
+  mapLayout->addWidget(_flarmWidget, 10);
   _flarmWidget->setVisible( false );
   connect( _flarmWidget, SIGNAL(closed()), this, SLOT(slot_OpenMapView()) );
 #endif
