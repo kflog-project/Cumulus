@@ -60,6 +60,12 @@ TaskListStatusView::TaskListStatusView( QWidget *parent ) :
   startTime = new QLabel( "", this );
   endTime = new QLabel( "", this );
 
+  distance->setToolTip( tr( "Distance over the whole task." ) );
+  avSpeed->setToolTip( tr( "Task average speed." ) );
+  flightTime->setToolTip( tr( "Time since task start to be in flight." ) );
+  startTime->setToolTip( tr( "Start time of task" ) );
+  endTime->setToolTip( tr( "Finish time of task." ) );
+
   distance->setAlignment( Qt::AlignCenter );
   avSpeed->setAlignment( Qt::AlignCenter );
   flightTime->setAlignment( Qt::AlignCenter );
