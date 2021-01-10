@@ -67,6 +67,11 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   distTotal  = new QLabel("", this );
   timeTotal  = new QLabel("", this );
 
+  speedTotal->setAlignment( Qt::AlignCenter );
+  wind->setAlignment( Qt::AlignCenter );
+  distTotal->setAlignment( Qt::AlignCenter );
+  timeTotal->setAlignment( Qt::AlignCenter );
+
   total->addWidget( speedTotal );
   total->addWidget( wind );
   total->addWidget( distTotal );
