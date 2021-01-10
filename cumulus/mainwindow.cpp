@@ -451,6 +451,10 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 #else
   // Make tooltip text readable.
   QString style = "QToolTip { color:black; background-color:white }";
+
+  // Set the background color of the bas class.
+  style.append( "QAbstractItemView { alternate-background-color:rgb(224, 224, 224); }" );
+
   qApp->setStyleSheet( style );
 #endif
 
