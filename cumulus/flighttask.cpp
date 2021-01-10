@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2016 by Axel Pauli
+**                   2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -17,6 +17,7 @@
 #include <cmath>
 #include <QtGui>
 
+#include "mapcalc.h"
 #include "calculator.h"
 #include "flighttask.h"
 #include "generalconfig.h"
@@ -42,7 +43,7 @@ FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
   windSpeed(0),
   wtCalculation(false),
   flightType(FlightTask::NotSet),
-  distance_task(0.0),
+  distance(0.0),
   duration_total(0),
   _planningType(RouteBased),
   _taskName(taskName)
@@ -84,7 +85,7 @@ FlightTask::FlightTask (const FlightTask& inst) :
   tpList = copyTpList( inst.tpList );
 
   flightType = inst.flightType;
-  distance_task = inst.distance_task;
+  distance = inst.distance;
   duration_total = inst.duration_total;
   _planningType = inst._planningType;
   _taskName = inst._taskName;
@@ -107,14 +108,14 @@ FlightTask::~FlightTask()
  **/
 void FlightTask::determineTaskType()
 {
-  distance_task = 0.0;
+  distance = 0.0;
 
   if( tpList->size() > 0 )
     {
       for( int loop = 0; loop < tpList->size(); loop++)
         {
           // qDebug("distance: %f", tpList->at(loop)->distance);
-	  distance_task += tpList->at(loop)->distance;
+	  distance += tpList->at(loop)->distance;
         }
       // qDebug("Total Distance: %f", distance_total);
     }
@@ -138,7 +139,7 @@ void FlightTask::determineTaskType()
 
         case 4:
           // FAI Dreieck
-          if(isFAI( distance_task, tpList->at(1)->distance,
+          if(isFAI( distance, tpList->at(1)->distance,
                     tpList->at(2)->distance, tpList->at(3)->distance))
             flightType = FlightTask::FAI;
           else
@@ -1244,7 +1245,7 @@ QString FlightTask::getTaskDistanceString( bool unit ) const
       return "--";
     }
 
-  return Distance::getText(distance_task * 1000, unit, 1);
+  return Distance::getText(distance * 1000, unit, 1);
 }
 
 /**
@@ -1371,7 +1372,7 @@ void FlightTask::updateProjection()
   for(int loop = 0; loop < tpList->count(); loop++)
     {
       // calculate projection data
-      tpList->at(loop)->getPosition() = _globalMapMatrix->wgsToMap(tpList->at(loop)->getWGSPosition());
+      tpList->at(loop)->setPosition( _globalMapMatrix->wgsToMap(tpList->at(loop)->getWGSPosition()) );
     }
 }
 
@@ -1426,4 +1427,136 @@ void FlightTask::setPlanningType(const int type)
 {
   _planningType = type;
   setTaskPointData();
+}
+
+/**
+ * Returns the flown time of the task in seconds. The result is null, if
+ * task has not been started.
+ */
+int FlightTask::getFlightTime()
+{
+  if( _taskStartTime.isNull() )
+    {
+      // task time is invalid
+      return 0;
+    }
+
+  if( _taskEndTime.isNull() )
+    {
+      // Task is not yet finished, calculate against current time.
+      return _taskStartTime.secsTo( QDateTime::currentDateTime() );
+    }
+
+    // Task is finished.
+  return _taskStartTime.secsTo( _taskEndTime );
+}
+
+/**
+ * Reset all time entries in the flight task. E.g. start, pass and finish
+ * times.
+ */
+void FlightTask::resetTimes()
+{
+  _taskStartTime = QDateTime();
+  _taskEndTime = QDateTime();
+
+  for( int i=0; i < tpList->size(); i++ )
+    {
+      tpList->at( i )->resetPassTime();
+    }
+  }
+
+/**
+ * Called to calculate an average speed since task start. The speed is invalid,
+ * when the calculation is not possible.
+ */
+Speed FlightTask::calAverageSpeed()
+{
+  Speed speed;
+
+  if( tpList->size() == 0 || _taskStartTime.isNull() == true )
+    {
+      // Speed is invalid
+      return speed;
+    }
+
+  double flownDistance = 0.0;
+  int i = 0;
+
+  for( i = 0; i < tpList->size(); i++ )
+    {
+      TaskPoint *tp = tpList->at(i);
+
+      if( tp->getPassTime().isNull() )
+        {
+          break;
+        }
+
+      // distance in km
+      flownDistance += tp->distance;
+    }
+
+  if( i == 0 )
+    {
+      // Check, if not the first task element has not time set. In this case
+      // we cannot calculate a speed. Normally that should not be happen ;-)
+      return speed;
+    }
+
+  if( _taskEndTime.isNull() )
+    {
+      // The task end is not reached. We have to calculate the distance to the
+      // last passed taskpoint, to calculate the average speed.
+      // calculate distance in km.
+      QPoint cPos = calculator->getlastPosition();
+      double lastdistance = MapCalc::dist( tpList->at(i-1)->getWGSPositionPtr(),
+                                           &cPos );
+
+      // The task is unfinished. Calculate the result speed in m/s.
+      flownDistance += lastdistance;
+      double av = flownDistance * 1000 / getFlightTime();
+      speed.setMps( av );
+    }
+  else
+    {
+      // The task is finished. Calculate the result speed in m/s.
+      double av = flownDistance * 1000 / getFlightTime();
+      speed.setMps( av );
+    }
+
+  /*
+  qDebug() << "FlightTask::calAverageSpeed()"
+           << "Distance" << flownDistance
+           << "AV" << speed.getHorizontalText();
+  */
+
+  return speed;
+}
+
+/**
+ * Reset all time entries from all task points and set the task start date
+ * and time as local time.
+ */
+void FlightTask::setStartTime()
+{
+  resetTimes();
+  _taskStartTime = QDateTime::currentDateTime();
+
+  if( tpList->size() > 0 )
+    {
+      TaskPoint* tp = tpList->at(0);
+      tp->setPassTime();
+    }
+}
+
+/** Set the task end date and time as local time. */
+void FlightTask::setEndTime()
+{
+  _taskEndTime = QDateTime::currentDateTime();
+
+  if( tpList->size() > 0 )
+    {
+      TaskPoint* tp = tpList->at( tpList->size() - 1 );
+      tp->setPassTime();
+    }
 }

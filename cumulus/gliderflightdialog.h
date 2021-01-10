@@ -26,7 +26,7 @@
  *
  * \date 2002-2021
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef GLIDER_FLIGHT_DIALOG_H
@@ -122,6 +122,9 @@ class GliderFlightDialog : public QDialog
   /** Shows the flight time. */
   void slotShowFlightTime();
 
+  /** Shows the task average speed */
+  void slotShowTaskSpeed();
+
   /**
    * This slot is called, if the user has pressed the ok button.
    */
@@ -194,7 +197,9 @@ class GliderFlightDialog : public QDialog
   QLabel* ftLabel;
   QLabel* ftText;
 
-
+  // show the average task speed.
+  QLabel* taskSpeedLabel;
+  QLabel* taskSpeed;
 
   QPushButton *plus;
   QPushButton *pplus;

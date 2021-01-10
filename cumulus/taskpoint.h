@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2018 by Axel Pauli
+ **   Copyright (c): 2010-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,6 +15,8 @@
 
 #ifndef TASK_POINT_H
 #define TASK_POINT_H
+
+#include <QDateTime>
 
 #include "distance.h"
 #include "generalconfig.h"
@@ -33,9 +35,9 @@
  * This class is an extension of the single point class. It handles all data
  * items concerning a flight task.
  *
- * \date 2010-2018
+ * \date 2010-2021
  *
- * \version 1.5
+ * \version 1.6
  */
 class TaskPoint : public SinglePoint
 {
@@ -240,7 +242,46 @@ class TaskPoint : public SinglePoint
   /** A waypoint object, filled with the taskpoint basic data.*/
   Waypoint m_wpObject;
 
+   /**
+   * The time, when the task point has been passed. Otherwise the object is
+   * invalid.
+   */
+  QDateTime m_passedDateTime;
+
  public:
+
+  /**
+    * A flag to indicate that this task point has been passed.
+    */
+   bool passed()
+   {
+     return m_passedDateTime.isValid();
+   }
+
+   /**
+    * Set the pass time to the current time.
+    */
+   void setPassTime()
+   {
+     m_passedDateTime = QDateTime::currentDateTime();
+   }
+
+   /**
+    * Get the DateTime of the pass time. The object is invalid, if the task
+    * point is not passed.
+    */
+   QDateTime getPassTime()
+   {
+     return m_passedDateTime;
+   }
+
+   /**
+    * Reset pass time to invalid.
+    */
+   void resetPassTime()
+   {
+     m_passedDateTime = QDateTime();
+   }
 
   /**
    * Gets the flight task list index of this task point.

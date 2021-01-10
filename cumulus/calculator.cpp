@@ -366,8 +366,15 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
   // save new target waypoint
   setTargetWp( newWp );
 
+  FlightTask *task = _globalMapContents->getCurrentTask();
+
   if ( newWp == 0 )
     {
+      if ( task != static_cast<FlightTask *> (0) )
+        {
+          task->resetTimes();
+        }
+
       lastBestSpeed.setInvalid();
       emit bestSpeed( lastBestSpeed );
 
@@ -382,16 +389,17 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 
   if ( targetWp && userAction && targetWp->taskPointIndex != -1 )
     {
-      // this was not an automatic switch, it was made manually by the
+      // This was not an automatic switch, it was made manually by the
       // user in the tasklistview or initiated by pressing accept in the
       // preflight dialog.
       m_taskEndReached = false;
       m_selectedWpInList = -1;
 
-      FlightTask *task = _globalMapContents->getCurrentTask();
-
       if ( task != static_cast<FlightTask *> (0) )
         {
+          // Clear all times in the selected task.
+          task->resetTimes();
+
           QList<TaskPoint *> tpList = task->getTpList();
 
           // Tasks with less 2 entries are incomplete!
@@ -534,9 +542,8 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // That increases the IGC logger interval to 1s for 30s.
           if( FlarmBase::getFlarmStatus().valid == true )
             {
-	      const QString pilotEvent = "$PFLAI,PILOTEVENT";
-	      GpsNmea::gps->sendSentence( pilotEvent );
-	      qDebug() << "Calculator is sending" << pilotEvent;
+              const QString pilotEvent = "$PFLAI,PILOTEVENT";
+              GpsNmea::gps->sendSentence( pilotEvent );
             }
         }
 
@@ -557,6 +564,15 @@ void Calculator::calcDistance( bool autoWpSwitch )
       // a) we touched/passed the target radius
       // b) the finish task point is selected
       TaskPoint* tp = tpList.at( targetWp->taskPointIndex );
+
+      if( targetWp->taskPointIndex == 0 )
+        {
+          // The first task point has been passed, set start time of task.
+          task->setStartTime();
+        }
+
+      // Set pass time of task point
+      tp->setPassTime();
 
       if( tp->getTaskPointType() == TaskPointTypes::Finish )
         {
@@ -586,40 +602,43 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // Reset the task point index of the selected waypoint. That stops
           // the further automatic task point switch.
           targetWp->taskPointIndex = -1;
+
+          // Set the end date-time in the current task
+          task->setEndTime();
         }
       else
-	{
-	  if( tpList.count() > m_selectedWpInList + 1 )
-	    {
-	      // this loop excludes the last WP
-	      TaskPoint *lastWp = tpList.at(m_selectedWpInList);
-	      m_selectedWpInList++;
-	      TaskPoint *nextWp = tpList.at(m_selectedWpInList);
+        {
+          if( tpList.count() > m_selectedWpInList + 1 )
+          {
+            // this loop excludes the last WP
+            TaskPoint *lastWp = tpList.at(m_selectedWpInList);
+            m_selectedWpInList++;
+            TaskPoint *nextWp = tpList.at(m_selectedWpInList);
 
-	      // calculate the distance to the next waypoint
-	      Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
-						 double(lastPosition.y()),
-						 nextWp->getWGSPosition().lat(),
-						 nextWp->getWGSPosition().lon() ) * 1000);
-	      curDistance = dist2Next;
+            // calculate the distance to the next waypoint
+            Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
+                 double(lastPosition.y()),
+                 nextWp->getWGSPosition().lat(),
+                 nextWp->getWGSPosition().lon() ) * 1000);
+            curDistance = dist2Next;
 
-	      // announce task point change as none user interaction
-	      slot_WaypointChange( nextWp->getWaypointObject(), false );
+            // announce task point change as none user interaction
+            slot_WaypointChange( nextWp->getWaypointObject(), false );
 
-	      // Here we send a notice to the user about the task point switch.
-	      emit taskInfo( tr("TP passed"), true );
+            // Here we send a notice to the user about the task point switch.
+            emit taskInfo( tr("TP passed"), true );
 
-	      if( GeneralConfig::instance()->getReportTpSwitch() == true )
-		{
-		  // Show a detailed switch info, if the user has configured that.
-		  TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
+            if( GeneralConfig::instance()->getReportTpSwitch() == true )
+              {
+                // Show a detailed switch info, if the user has configured that.
+                TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
 
-		  tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
-					     dist2Next.getKilometers() );
-		  tpInfo->showTP();
-		}
-	    }
-	}
+                tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
+                         dist2Next.getKilometers() );
+                tpInfo->showTP();
+              }
+          }
+        }
     }
 
   lastDistance = curDistance;
@@ -2016,6 +2035,9 @@ void Calculator::slot_startTask()
             {
               return;
             }
+
+          // All time data are reset in the current selected task.
+          task->resetTimes();
         }
     }
 

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2016 by Axel Pauli
+**                   2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * for flight tasks and contains the data of the flight task.
  *
  *
- * \date 2002-2016
+ * \date 2002-2021
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef FLIGHT_TASK_H
@@ -380,6 +380,33 @@ class FlightTask : public BaseMapElement
     _declarationDateTime = QDateTime::currentDateTime();
   };
 
+  /**
+   * Reset all time entries from all task points and set the task start date
+   * and time as local time.
+   */
+  void setStartTime();
+
+  /** Set the task end date and time as local time. */
+  void setEndTime();
+
+  /**
+   * Returns the flown time of the task in seconds. The result is null, if
+   * task has not been started.
+   */
+  int getFlightTime();
+
+  /**
+   * Reset all time entries in the flight task. E.g. start, pass and finish
+   * times.
+   */
+  void resetTimes();
+
+  /**
+   * Called to calculate an average speed since task start. The speed is invalid,
+   * when the calculation is not possible.
+   */
+  Speed calAverageSpeed();
+
   /////////////////////////////////////////////////////////////////////////
 
  private:
@@ -483,8 +510,8 @@ class FlightTask : public BaseMapElement
   /** Type of flight task */
   unsigned int flightType;
 
-  /** Task length */
-  double distance_task;
+  /** Task distance in km */
+  double distance;
 
   /** Total duration of task in seconds */
   int duration_total;
@@ -497,6 +524,12 @@ class FlightTask : public BaseMapElement
 
   /** Declaration date-time of task */
   QDateTime _declarationDateTime;
+
+  /** Task start time */
+  QDateTime _taskStartTime;
+
+  /** Task end time */
+  QDateTime _taskEndTime;
 };
 
 #endif

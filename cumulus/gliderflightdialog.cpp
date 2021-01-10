@@ -22,15 +22,19 @@
 
 #include "calculator.h"
 #include "CuLabel.h"
+#include "flighttask.h"
 #include "generalconfig.h"
 #include "gliderflightdialog.h"
 #include "glider.h"
 #include "igclogger.h"
 #include "layout.h"
+#include "mapcontents.h"
 #include "mapconfig.h"
 
 // set static member variable
 int GliderFlightDialog::m_noOfInstances = 0;
+
+extern MapContents *_globalMapContents;
 
 GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   QDialog(parent, Qt::WindowStaysOnTopHint),
@@ -76,9 +80,17 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   int row = 0;
 
   ftLabel = new QLabel(tr("Flight time:"), this);
-  ftText  = new QLabel;
+  ftText  = new QLabel( this );
   gridLayout->addWidget(ftLabel, row, 0);
   gridLayout->addWidget(ftText, row++, 1);
+
+  // Show the average speed of a flown task.
+  taskSpeedLabel = new QLabel(tr("Average speed:"), this);
+  taskSpeedLabel->hide();
+  taskSpeed = new QLabel( this );
+  taskSpeed->hide();
+  gridLayout->addWidget(taskSpeedLabel, row, 0);
+  gridLayout->addWidget(taskSpeed, row++, 1);
 
   //---------------------------------------------------------------------
 
@@ -306,6 +318,7 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
   startTimer();
 
   slotShowFlightTime();
+  slotShowTaskSpeed();
 }
 
 bool GliderFlightDialog::eventFilter( QObject *o , QEvent *e )
@@ -636,13 +649,37 @@ void GliderFlightDialog::slotShowFlightTime()
       ftText->setText( time.toString("hh:mm:ss") );
 
       // Fire an update timer after 5 seconds.
-      QTimer::singleShot(5000, this, SLOT(slotShowFlightTime()));
+      QTimer::singleShot( 5000, this, SLOT(slotShowFlightTime()) );
     }
   else
     {
       ftLabel->setVisible(false);
       ftText->setVisible(false);
     }
+}
+
+/** Shows the task average speed */
+void GliderFlightDialog::slotShowTaskSpeed()
+{
+  FlightTask* ft = _globalMapContents->getCurrentTask();
+
+  if( ft == static_cast<FlightTask*>(0) ||
+      ft->calAverageSpeed().isValid() == false )
+    {
+      taskSpeedLabel->hide();
+      taskSpeed->hide();
+      return;
+    }
+
+  // show the last calculated average speed.
+  Speed av = ft->calAverageSpeed();
+
+  taskSpeed->setText( av.getHorizontalText( true, 1 ) );
+  taskSpeedLabel->show();
+  taskSpeed->show();
+
+  // Fire an update timer after 5 seconds.
+  QTimer::singleShot( 5000, this, SLOT(slotShowTaskSpeed()) );
 }
 
 void GliderFlightDialog::slotAccept()
