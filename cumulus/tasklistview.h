@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2016 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * actions. Can be used in two modes, as display only, buttons for
  * actions are not visible or with command buttons.
  *
- * \date 2004-2016
+ * \date 2004-2021
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef TASK_LIST_VIEW_H
@@ -119,6 +119,11 @@ public slots:
    * or the user pressed 'i'
    */
   void slot_Info();
+
+  /**
+   * This slot is called, if the status button has been clicked,
+   */
+  void slot_Status();
 
   /**
    * This slot is called if the close button has been clicked.

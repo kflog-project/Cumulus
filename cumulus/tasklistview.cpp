@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2009-2016 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -35,6 +35,7 @@
 #include "distance.h"
 #include "calculator.h"
 #include "sonne.h"
+#include "TaskListStatusView.h"
 
 extern MapConfig * _globalMapConfig;
 extern Calculator* calculator;
@@ -118,17 +119,20 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
       QBoxLayout *buttonrow=new QHBoxLayout;
       topLayout->addLayout( buttonrow );
 
-      QPushButton *cmdClose = new QPushButton(tr("Close"), this);
-      buttonrow->addWidget(cmdClose);
+      QPushButton *cmdClose = new QPushButton( tr( "Close" ), this );
+      buttonrow->addWidget( cmdClose );
 
-      QPushButton *cmdInfo = new QPushButton(tr("Info"), this);
-      buttonrow->addWidget(cmdInfo);
+      QPushButton *cmdInfo = new QPushButton( tr( "Info" ), this );
+      buttonrow->addWidget( cmdInfo );
 
-      cmdSelect = new QPushButton(_selectText, this);
-      buttonrow->addWidget(cmdSelect);
+      cmdSelect = new QPushButton( _selectText, this );
+      buttonrow->addWidget( cmdSelect );
 
-      QPushButton *cmdStart = new QPushButton(tr("Start"), this);
-      buttonrow->addWidget(cmdStart);
+      QPushButton *cmdStart = new QPushButton( tr( "Start" ), this );
+      buttonrow->addWidget( cmdStart );
+
+      QPushButton *cmdStatus = new QPushButton( tr( "Status" ), this );
+      buttonrow->addWidget( cmdStatus );
 
       connect( cmdSelect, SIGNAL(clicked()),
                this, SLOT(slot_Select()) );
@@ -140,6 +144,8 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
                this, SLOT(slot_itemClicked(QTreeWidgetItem*, int)));
       connect( cmdStart, SIGNAL(clicked() ),
                this, SLOT(slot_Start()) );
+      connect( cmdStatus, SIGNAL(clicked() ),
+               this, SLOT(slot_Status()) );
 
       // activate keyboard shortcut Return as select
       QShortcut* scSelect = new QShortcut( this );
@@ -308,6 +314,15 @@ void TaskListView::slot_Info()
     {
       emit info( wp );
     }
+}
+
+/**
+ * This slot is called, if the status button has been clicked,
+ */
+void TaskListView::slot_Status()
+{
+  TaskListStatusView* tlvs = new TaskListStatusView( this );
+  tlvs->show();
 }
 
 /** @ee This slot is called if the listview is closed without selecting */

@@ -776,8 +776,8 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewTP, SLOT( slot_updateTask() ) );
 
-  connect( GpsNmea::gps, SIGNAL( newBugs(const unsigned) ),
-           calculator, SLOT( slot_ExternalBugs(const unsigned) ) );
+  connect( GpsNmea::gps, SIGNAL( newBugs(const unsigned short) ),
+           calculator, SLOT( slot_ExternalBugs(const unsigned short) ) );
   connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
            calculator, SLOT( slot_ExternalVariometer(const Speed&) ) );
   connect( GpsNmea::gps, SIGNAL( newMc(const Speed&) ),

@@ -386,8 +386,24 @@ class FlightTask : public BaseMapElement
    */
   void setStartTime();
 
+  /**
+   * Get the start time of the task.
+   */
+  const QDateTime& getStartTime()
+  {
+    return _taskStartTime;
+  }
+
   /** Set the task end date and time as local time. */
   void setEndTime();
+
+  /**
+   * Get the end time of the task.
+   */
+  const QDateTime& getEndTime()
+  {
+    return _taskEndTime;
+  }
 
   /**
    * Returns the flown time of the task in seconds. The result is null, if

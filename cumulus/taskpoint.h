@@ -174,6 +174,17 @@ class TaskPoint : public SinglePoint
    */
   QString getTaskPointTypeFigureString() const;
 
+  /**
+   * The distance to the forerunner.
+   * @return
+   */
+  Distance getDistance2forerunner()
+  {
+    Distance dist;
+    dist.setKilometers( distance );
+    return dist;
+  }
+
   /** The bisecting line of the sector in radian */
   double angle;
   /** The minimum angle of the sector in radian */

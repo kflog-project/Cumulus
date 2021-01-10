@@ -90,6 +90,8 @@ FlightTask::FlightTask (const FlightTask& inst) :
   _planningType = inst._planningType;
   _taskName = inst._taskName;
   _declarationDateTime = inst._declarationDateTime;
+  _taskStartTime = inst._taskStartTime;
+  _taskEndTime = inst._taskEndTime;
 }
 
 FlightTask::~FlightTask()

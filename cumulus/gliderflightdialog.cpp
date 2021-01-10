@@ -643,13 +643,13 @@ void GliderFlightDialog::slotShowFlightTime()
 
       int seconds = takeoff.secsTo( QDateTime::currentDateTime() );
 
-      QTime time(0, 0, 0, 0);
+      QTime time( 0, 0, 0, 0 );
       time = time.addSecs( seconds );
 
-      ftText->setText( time.toString("hh:mm:ss") );
+      ftText->setText( time.toString( "hh:mm:ss" ) );
 
       // Fire an update timer after 5 seconds.
-      QTimer::singleShot( 5000, this, SLOT(slotShowFlightTime()) );
+      QTimer::singleShot( 5000, this, SLOT( slotShowFlightTime() ) );
     }
   else
     {

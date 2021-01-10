@@ -207,6 +207,7 @@ HEADERS = \
     TaskFileManager.h \
     taskfilemanager.h \
     taskline.h \
+    TaskListStatusView.h \
     tasklistview.h \
     taskpoint.h \
     taskpointeditor.h \
@@ -338,6 +339,7 @@ SOURCES = \
     TaskFileManager.cpp \
     taskfilemanager.cpp \
     taskline.cpp \
+    TaskListStatusView.cpp \
     tasklistview.cpp \
     taskpoint.cpp \
     taskpointeditor.cpp \
