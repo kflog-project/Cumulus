@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -80,19 +78,22 @@ void MessageWidget::showEvent( QShowEvent* )
   QSize ws = size();
 
   QTextDocument *doc = m_text->document();
-
   QSize ds = doc->size().toSize();
+  QSize extraSpace( 0, 20);
 
-  while( true )
+  // Try to get displayed the whole message in the Window without scrolling.
+  while( m_text->currentFont().pointSize() >= 10 )
     {
       ds = doc->size().toSize();
 
-      qDebug() << "ds=" << ds << "ws=" << ws
+      qDebug() << "MessageWidget:"
+               << "ds=" << ds << "ws=" << ws
                << "FPS=" << m_text->currentFont().pointSize()
-               << "Diff=" << (ws - ds - QSize(20, 50 ));
+               << "Diff=" << (ws - ds - extraSpace);
 
-      if( (ws - ds - QSize(20, 50 )).isValid() == false )
+      if( (ws - ds - extraSpace).isValid() == false )
         {
+          // The displayed text is too big for the window, try to narrow the font.
           m_text->zoomOut();
           continue;
         }

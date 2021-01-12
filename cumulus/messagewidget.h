@@ -24,9 +24,9 @@
  *
  * This widget displays in a dialog a question with yes and no buttons.
  *
- * \date 2012
+ * \date 2012-2021
  *
- * \version $Id$
+ * \version 1.1
  *
 */
 
