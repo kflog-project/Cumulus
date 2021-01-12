@@ -74,6 +74,7 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev = new QComboBox(this);
   topLayout->addWidget(GpsDev, row++, 1);
   GpsDev->setEditable(true);
+  GpsDev->setToolTip( tr("You can adapt a device entry by editing to your own needs.") );
 
 #ifdef TOMTOM
   GpsDev->addItem(TOMTOM_DEVICE);
@@ -86,16 +87,15 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->addItem("/dev/ttyS3");
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
 #ifdef BLUEZ
-  // Bluetooth default devices
-  GpsDev->addItem("/dev/rfcomm0");
-  GpsDev->addItem("/dev/rfcomm1");
+  // Bluetooth adapter
+  GpsDev->addItem(BT_ADAPTER);
 #endif
   // add entry for NMEA simulator choice
   GpsDev->addItem(NMEASIM_DEVICE);
 #else
   // Under Maemo there are only three predefined sources.
   GpsDev->addItem(MAEMO_LOCATION_SERVICE); // Maemo GPS Location Service
-  // Bluetooth default adapter
+  // Bluetooth adapter
   GpsDev->addItem(BT_ADAPTER);
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
   GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
