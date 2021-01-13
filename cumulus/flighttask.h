@@ -42,9 +42,10 @@
 #include <QPainterPath>
 #include <QDateTime>
 
+#include "altitude.h"
 #include "basemapelement.h"
 #include "distance.h"
-#include "altitude.h"
+#include "generalconfig.h"
 #include "speed.h"
 #include "reachablepoint.h"
 #include "taskpoint.h"
@@ -387,10 +388,16 @@ class FlightTask : public BaseMapElement
   void setStartTime();
 
   /**
-   * Get the start time of the task.
+   * Get the start time of the task according to the user selected time base as
+   * local time or UTC time.
    */
-  const QDateTime& getStartTime()
+  const QDateTime getStartTime()
   {
+    if( GeneralConfig::instance()->getUnitTime() == 0 )
+      {
+        return _taskStartTime.toUTC();
+      }
+
     return _taskStartTime;
   }
 
@@ -398,10 +405,16 @@ class FlightTask : public BaseMapElement
   void setEndTime();
 
   /**
-   * Get the end time of the task.
+   * Get the end time of the task according to the user selected time base as
+   * local time or UTC time.
    */
-  const QDateTime& getEndTime()
+  const QDateTime getEndTime()
   {
+    if( GeneralConfig::instance()->getUnitTime() == 0 )
+      {
+        return _taskEndTime.toUTC();
+      }
+
     return _taskEndTime;
   }
 

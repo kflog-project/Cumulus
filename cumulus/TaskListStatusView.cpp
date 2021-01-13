@@ -228,7 +228,7 @@ void TaskListStatusView::slot_updateTask()
       avSpeed->setText( "AV=??" );
     }
 
-  const QDateTime& stime = m_task->getStartTime();
+  const QDateTime stime = m_task->getStartTime();
 
   if( stime.isValid() )
     {
@@ -255,7 +255,7 @@ void TaskListStatusView::slot_updateTask()
       flightTime->setText( "FT=" + tstr );
     }
 
-  const QDateTime& etime = m_task->getEndTime();
+  const QDateTime etime = m_task->getEndTime();
 
   if( etime.isValid() )
     {
