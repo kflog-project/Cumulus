@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt5 for Linux/Unix
 
-Last update: 2021-01-04 by Axel Pauli
+Last update: 2021-01-13 by Axel Pauli
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
@@ -176,36 +176,6 @@ can use it for generation of NMEA data. Call it without any arguments and you
 will get a help usage displayed. The simulator writes its output in a named
 pipe. Select in Cumulus as GPS device /tmp/nmeasim and Cumulus will read
 the data from the simulator.
-
-===============================================================================
-
-Cumulus package for Maemo
-
-Cumulus packages for the Nokia Internet Tablets N8x0 and N900 can only be built
-in a scratchbox environment called Maemo SDK. How to setup it look here:
-
-  http://maemo.org/development/
-
-The makefiles Makefile.Maemo4 or Makefile.Maemo5 will do the package build.
-
-Issue the following make comand for Maemo4 (N8x0)
-
-  make -f Makefile.Maemo4 all dpkg dpkg_lang
-
-Issue the following make comand for Maemo5 (N900)
-
-  make -f Makefile.Maemo5 all dpkg dpkg_lang
-
-in the right Maemo SDK envrironment to get a dpkg package of Cumulus. Maemo 4
-and Maemo 5 uses different SDK installations. The make target dpkg_lang provides
-a German language package for the GUI. The built debian packages are to find in
-the subdirectories dpkg/n810, dpkg/n900 and dpkg/Languages.
-
-Hints, improvements or help are always welcome. Please contact the maintainer of
-Cumulus, Axel Pauli, via email kflog.cumulus@gmail.com or use the mailing 
-lists of KFLog to find under www.kflog.org/mailman/listinfo.
-
-Have fun with Cumulus ...
 
 ===============================================================================
 License of Cumulus
