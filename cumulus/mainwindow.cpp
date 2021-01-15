@@ -654,7 +654,8 @@ void MainWindow::slotCreateSplash()
 
   ws->slot_SetText1( tr( "Starting Cumulus..." ) );
 
-  QCoreApplication::flush();
+  QCoreApplication::sendPostedEvents();
+  QCoreApplication::processEvents();
 
   // Here we finish the base initialization and start a timer
   // to continue startup in another method. This is done, to return
@@ -1049,14 +1050,15 @@ void MainWindow::slotCreateApplicationWidgets()
           GeneralConfig::instance()->setAirspaceWarningEnabled(true);
         }
 
-      QCoreApplication::flush();
+      QCoreApplication::sendPostedEvents();
+      QCoreApplication::processEvents();
       sleep(1);
     }
 
   splash->setVisible( true );
   ws->setVisible( true );
 
-  QCoreApplication::flush();
+  QCoreApplication::sendPostedEvents();
   QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
 
   Map::instance->setDrawing( true );
