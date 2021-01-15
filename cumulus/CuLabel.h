@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2015 Axel Pauli
+**   Copyright (c): 2012-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,7 +28,7 @@
  *
  * This is a slight modification of a QLabel. It adds a mousePress event.
  *
- * \date 2002-2015
+ * \date 2002-2021
  *
  */
 class CuLabel : public QLabel
@@ -41,9 +41,11 @@ private:
 
 public:
 
-  CuLabel ( QWidget *parent, Qt::WindowFlags flags=0 );
+  CuLabel ( QWidget *parent, Qt::WindowFlags flags=Qt::Widget );
 
-  CuLabel ( const QString &text, QWidget *parent, Qt::WindowFlags flags=0 );
+  CuLabel ( const QString &text,
+            QWidget *parent,
+            Qt::WindowFlags flags=Qt::Widget );
 
 signals:
 
