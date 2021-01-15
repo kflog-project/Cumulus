@@ -82,6 +82,7 @@ Calculator::Calculator( QObject* parent ) :
   lastDynamicPressure = 0.0;
   lastStaticPressure = 0.0;
   m_lastTemperature = infiniteTemperature;
+  m_calculateVario = true,
   m_calculateLD = false;
   m_calculateETA = false;
   m_calculateTas = true;
