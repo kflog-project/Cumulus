@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2012-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 
 #include "flarmbincomlinux.h"
 
+// #define DEBUG 1
+
 FlarmBinComLinux::FlarmBinComLinux( int socket ) :
   FlarmBinCom(),
   m_Socket(socket)
@@ -41,7 +43,9 @@ int FlarmBinComLinux::writeChar(const unsigned char c)
 {
   int done = -1;
 
-  // qDebug("%02X ", c);
+#ifdef DEBUG
+  qDebug("%02X ", c);
+#endif
 
   while(true)
     {
@@ -70,7 +74,9 @@ int FlarmBinComLinux::readChar(unsigned char* b, const int timeout)
 
   if( done > 0 )
     {
-      // qDebug("%02X ", *b);
+#ifdef DEBUG
+      qDebug("%02X ", *b);
+#endif
       return true;
     }
 
@@ -109,6 +115,9 @@ int FlarmBinComLinux::readChar(unsigned char* b, const int timeout)
 
   done = read( m_Socket, b, sizeof(unsigned char) );
 
-  // qDebug("%02X ", *b);
+#ifdef DEBUG
+  qDebug("%02X ", *b);
+#endif
+
   return done;
 }
