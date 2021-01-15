@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This widget provides an interface to set all the pre-flight settings like
  * glider type, copilot, task, amount of water taken on, etc.
  *
- * \date 2003-2018
+ * \date 2003-2021
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef _PreFlightWidget_h
@@ -62,13 +62,13 @@ public:
   /**
    * Destructor
    */
-  virtual
-  ~PreFlightWidget ();
+  virtual ~PreFlightWidget();
 
 protected:
 
-  void
-  keyReleaseEvent (QKeyEvent* event);
+  void keyReleaseEvent( QKeyEvent *event );
+
+  virtual void closeEvent( QCloseEvent *event );
 
 signals:
 

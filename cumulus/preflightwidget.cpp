@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2003      by André Somers
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -279,6 +279,14 @@ void PreFlightWidget::keyReleaseEvent( QKeyEvent* event )
         QWidget::keyReleaseEvent( event );
         break;
     }
+}
+
+void PreFlightWidget::closeEvent( QCloseEvent *event )
+{
+  // That is called, if the little x is pressed at the window frame.
+  GeneralConfig::instance()->setClosePreFlightMenu( m_menuCb->checkState() == Qt::Checked ? true : false );
+  emit closeConfig();
+  event->accept();
 }
 
 /**

@@ -526,3 +526,9 @@ void ConfigWidget::slotReject()
   // selections in an underlaying list. Problem occurred on Galaxy S3.
   QTimer::singleShot(200, this, SLOT(close()));
 }
+
+void ConfigWidget::closeEvent( QCloseEvent *event )
+{
+  emit closeConfig();
+  event->accept();
+}
