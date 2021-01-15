@@ -254,6 +254,7 @@ bool GpsClient::readGpsData()
 
       databuffer[dbsize] = '\0'; // terminate buffer with a null
 
+      // qDebug() << "GPS Data:" << databuffer;
       readSentenceFromBuffer();
 
 #ifdef FLARM
@@ -310,7 +311,7 @@ int GpsClient::writeGpsData( const char *sentence )
 // Opens the connection to the GPS. All old messages in the queue are removed.
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
-  // qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
+  qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
 
   device          = deviceIn;
   ioSpeedDevice   = ioSpeedIn;
@@ -1058,7 +1059,7 @@ bool GpsClient::flarmBinMode()
   // Precondition is that the NMEA output of the Flarm device was disabled by
   // the calling method before!
 
-  // qDebug() << "Switch Flarm to binary mode";
+  qDebug() << "Switch Flarm to binary mode";
 
   // I made the experience, that the Flarm device did not answer to the first
   // binary transfer switch. Therefore I make several tries. Flarm tool makes
@@ -1315,7 +1316,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
             }
 
           qDebug() << flightData.at(0) << "downloaded in"
-                    << (dlTime.elapsed() / 1000.0) << "s";
+                   << (dlTime.elapsed() / 1000.0) << "s";
         }
      }
 
@@ -1341,7 +1342,7 @@ void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
 
 bool GpsClient::flarmReset()
 {
-  qDebug() << "GpsClient::flarmReset()";
+  qDebug() << "GpsClient::flarmReset() after binary mode usage.";
 
   // Switch off timeout control
   last = QTime();

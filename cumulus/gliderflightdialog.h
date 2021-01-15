@@ -71,6 +71,8 @@ class GliderFlightDialog : public QDialog
 
   virtual bool eventFilter( QObject *o , QEvent *e );
 
+  virtual void closeEvent( QCloseEvent *event );
+
  private slots:
 
  /**
@@ -137,15 +139,20 @@ class GliderFlightDialog : public QDialog
 
  signals:
 
- /**
-  * This signal is emitted, if external data for Mc and bugs should be used.
+  /**
+  * This signal is emitted, if external data for Mc and bugs should be used or not.
   */
- void useExternalData( const bool state );
+  void useExternalData( const bool state );
 
   /**
-   * This signal is emitted, if water or bugs have been changed.
+   * This signal is emitted, if the water has been changed.
    */
-  void newWaterAndBugs( const int water, const int bugs );
+  void newWater( const int water );
+
+  /**
+   * This signal is emitted, if the bugs has been changed.
+   */
+  void newBugs( const int bugs );
 
   /**
    * This signal is emitted, if the Mc value has been changed.

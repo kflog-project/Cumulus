@@ -50,7 +50,7 @@ extern MainWindow  *_globalMainWindow;
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
 
-Calculator::Calculator(QObject* parent) :
+Calculator::Calculator( QObject* parent ) :
   QObject(parent),
   infiniteTemperature(-300.0),
   samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
@@ -90,6 +90,9 @@ Calculator::Calculator(QObject* parent) :
   m_lastWind.altitude = lastAltitude;
   targetWp = static_cast<Waypoint *> (0);
   lastMc = GeneralConfig::instance()->getMcCready();
+  lastExternalMc = GeneralConfig::instance()->getExternalMcCready();
+  lastBugs = 0;
+  lastExternalBugs = 0;
   lastBestSpeed.setInvalid();
   lastTas = 0.0;
   lastIas = 0.0;
@@ -116,9 +119,7 @@ Calculator::Calculator(QObject* parent) :
   m_varioDataControl = new QTimer( this );
   m_varioDataControl->setSingleShot( true );
 
-  m_useExternalData4McAndBugs = conf->getGliderFlightDialogUseExternalData();
-
-  connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
+ connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
            this, SLOT(slot_switchMapScaleBack()) );
 
   connect( m_varioDataControl, SIGNAL(timeout()),
@@ -1224,47 +1225,58 @@ void Calculator::slot_Temperature( const double temperature )
 /** increment McCready value */
 void Calculator::slot_McUp()
 {
-  if( m_glider && m_useExternalData4McAndBugs == false &&
-      lastMc.getMps() <= MAX_MCCREADY - 0.5 )
+  lastMc.setMps( lastMc.getMps() + 0.5 );
+  GeneralConfig::instance()->setMcCready(lastMc);
+  calcGlidePath();
+  emit newMc( lastMc );
+}
+
+/**
+ * Called, if in the glider flight dialog this option is changed.
+ *
+ */
+void Calculator::slot_ExternalData4McAndBugs( const bool flag )
+{
+  if( flag == true )
     {
-      lastMc.setMps( lastMc.getMps() + 0.5 );
-      GeneralConfig::instance()->setMcCready(lastMc);
-      calcGlidePath();
-      emit newMc( lastMc );
+      // Call external mc and bug methods to switch to those data
+      slot_ExternalMc( lastExternalMc );
+      slot_ExternalBugs( lastExternalBugs );
     }
 }
 
 /** Set McCready value, delivered by external device. */
-void Calculator::slot_ExternalMc(const Speed& mc)
+void Calculator::slot_ExternalMc( const Speed &mc )
 {
-  if( m_glider && m_useExternalData4McAndBugs == true &&
-      lastMc.getMps() != mc.getMps() )
+  if( GeneralConfig::instance()->getUseExternalMcAndBugs() == false )
     {
-      lastMc = mc;
-      GeneralConfig::instance()->setMcCready(lastMc);
-      calcGlidePath();
-      emit newMc( mc );
+      return;
     }
+
+  lastExternalMc = mc;
+  GeneralConfig::instance()->setExternalMcCready( lastExternalMc );
+  calcGlidePath();
+  emit newMc( mc );
 }
 
 /** Set McCready value, delivered by Mc dialog. */
-void Calculator::slot_Mc(const Speed& mc)
+void Calculator::slot_Mc( const Speed &mc )
 {
-  if( m_glider && m_useExternalData4McAndBugs == false &&
-      lastMc.getMps() != mc.getMps() )
+  if( GeneralConfig::instance()->getUseExternalMcAndBugs() == true )
     {
-      lastMc = mc;
-      GeneralConfig::instance()->setMcCready(lastMc);
-      calcGlidePath();
-      emit newMc( mc );
+      return;
     }
+
+  lastMc = mc;
+  GeneralConfig::instance()->setMcCready( lastMc );
+  calcGlidePath();
+  emit newMc( mc );
 }
 
 /** decrement McCready value; don't get negative */
 void Calculator::slot_McDown()
 {
-  if( m_glider && m_useExternalData4McAndBugs == false &&
-      lastMc.getMps() >= 0.5 )
+  if( m_glider && lastMc.getMps() >= 0.5 )
     {
       lastMc.setMps( lastMc.getMps() - 0.5 );
       GeneralConfig::instance()->setMcCready(lastMc);
@@ -1274,24 +1286,29 @@ void Calculator::slot_McDown()
 }
 
 /**
- * Set water and bug values, delivered by Mc dialog, used by glider polare.
+ * Set water value, delivered by Mc dialog, used by glider polare.
  */
-void Calculator::slot_WaterAndBugs( const int water, const int bugs )
+void Calculator::slot_Water( const int water )
 {
-  if( m_glider && m_useExternalData4McAndBugs == false )
+  if( m_glider->polar()->water() != water )
     {
-      if(m_glider->polar()->water() != water )
-        {
-          m_glider->polar()->setWater( water );
-        }
-
-       if( m_glider->polar()->bugs() != bugs )
-        {
-          m_glider->polar()->setBugs( bugs );
-        }
-
-      calcGlidePath();
+      m_glider->polar()->setWater( water );
     }
+
+  calcGlidePath();
+}
+
+/**
+ * Set bug value, delivered by Mc dialog, used by glider polare.
+ */
+void Calculator::slot_Bugs( const int bugs )
+{
+  if( m_glider->polar()->bugs() != bugs )
+    {
+      m_glider->polar()->setBugs( bugs );
+    }
+
+  calcGlidePath();
 }
 
 /**
@@ -1299,15 +1316,35 @@ void Calculator::slot_WaterAndBugs( const int water, const int bugs )
  */
 void Calculator::slot_ExternalBugs( const unsigned short bugs )
 {
-  if( m_glider && m_useExternalData4McAndBugs == true )
+  lastExternalBugs = bugs;
+
+  if( GeneralConfig::instance()->getUseExternalMcAndBugs() == false )
+    {
+      return;
+    }
+
+  if( m_glider )
     {
        if( m_glider->polar()->bugs() != bugs )
         {
           m_glider->polar()->setBugs( bugs );
+          calcGlidePath();
         }
-
-      calcGlidePath();
     }
+}
+
+/**
+ * Return the bug value contained in the gilder polar.
+ */
+ushort Calculator::getBugsFromPolar()
+{
+  if( m_glider )
+    {
+      return m_glider->polar()->bugs();
+    }
+
+  // No glider is defined, return zero.
+  return 0;
 }
 
 void Calculator::slot_ExternalTas( const Speed& tas )
@@ -1322,12 +1359,12 @@ void Calculator::slot_ExternalTas( const Speed& tas )
 /**
  * Variometer lift receiver and distributor to map display.
  */
-void Calculator::slot_Variometer(const Speed& lift)
+void Calculator::slot_Variometer( const Speed &lift )
 {
-  if (lastVario != lift)
+  if( lastVario != lift )
     {
       lastVario = lift;
-      emit newVario (lift);
+      emit newVario( lift );
     }
 }
 
@@ -1335,26 +1372,26 @@ void Calculator::slot_Variometer(const Speed& lift)
  * External variometer lift receiver. The internal variometer
  * calculation can be switched off, if we got values via this slot.
  */
-void Calculator::slot_ExternalVariometer(const Speed& lift)
+void Calculator::slot_ExternalVariometer( const Speed &lift )
 {
   // Hey we got a variometer value directly from the external device.
   // Therefore internal calculation is not needed and can be switched off.
   m_calculateVario = false;
 
-  if (lastVario != lift)
+  if( lastVario != lift )
     {
       lastVario = lift;
-      emit newVario (lift);
+      emit newVario( lift );
     }
 
   m_varioDataControl->start( 5000 );
 }
 
 /** Sets the current position to point newPos. */
-void Calculator::setPosition(const QPoint& newPos)
+void Calculator::setPosition( const QPoint &newPos )
 {
   lastPosition = newPos;
-  emit newPosition(lastPosition, Calculator::MAN);
+  emit newPosition( lastPosition, Calculator::MAN );
 
   calcDistance();
   calcBearing();

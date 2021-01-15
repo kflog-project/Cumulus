@@ -8,7 +8,6 @@
 **
 **   Copyright (c):  2002      by Eggert Ehmke
 **                   2008-2021 by Axel Pauli
-**
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
@@ -243,9 +242,6 @@ GliderFlightDialog::GliderFlightDialog (QWidget *parent) :
   timer->setSingleShot(true);
   m_time = config->getInfoDisplayTime();
 
-  bool checkState = config->getGliderFlightDialogUseExternalData();
-  m_useExternalData->setChecked( checkState );
-
   connect (timer, SIGNAL(timeout()), this, SLOT(slotReject()));
   connect (m_useExternalData, SIGNAL(stateChanged(int )),
            this, SLOT(slotUseExternalData(int)) );
@@ -339,7 +335,9 @@ bool GliderFlightDialog::eventFilter( QObject *o , QEvent *e )
 
 void GliderFlightDialog::load()
 {
-  bool checkState = m_useExternalData->isChecked();
+  bool checkState = GeneralConfig::instance()->getUseExternalMcAndBugs();
+  m_useExternalData->setChecked( checkState );
+
   Glider *glider = calculator->glider();
 
   if( glider )
@@ -373,11 +371,14 @@ void GliderFlightDialog::load()
 
       if( checkState == false )
         {
-          // Mc and bugs are delivered by Cumulus.
-          spinMcCready->setValue(calculator->getlastMc().getVerticalValue());
-          spinBugs->setValue(glider->polar()->bugs());
+          spinMcCready->setValue( calculator->getlastMc().getVerticalValue() );
+        }
+      else
+        {
+          spinMcCready->setValue( calculator->getlastExternalMc().getVerticalValue() );
         }
 
+      spinBugs->setValue( calculator->getBugsFromPolar() );
       spinWater->setValue(glider->polar()->water());
 
       // Save the configuration values as fall backs, if the user cancel the dialog.
@@ -400,27 +401,19 @@ void GliderFlightDialog::load()
 
 void GliderFlightDialog::save()
 {
-  GeneralConfig* config = GeneralConfig::instance();
-
-  if( config->getGliderFlightDialogUseExternalData() !=
-      m_useExternalData->isChecked() )
-    {
-      // Save new state for external data usage.
-      bool checkState = m_useExternalData->isChecked();
-      config->setGliderFlightDialogUseExternalData( checkState );
-      emit useExternalData( checkState );
-    }
+  GeneralConfig::instance()->setUseExternalMcAndBugs( m_useExternalData->isChecked() );
 
   if( spinMcCready->isEnabled() && spinBugs->isEnabled() )
     {
-      // To see the changed results immediately at the map displays, don't
-      // make further checks.
-      emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
+      emit newBugs( spinBugs->value() );
       Speed mc;
 
       mc.setVerticalValue( spinMcCready->value() );
       emit newMc( mc );
     }
+
+  emit newWater( spinWater->value() );
+  emit useExternalData( m_useExternalData->isChecked() );
 }
 
 void GliderFlightDialog::slotCheckBoxLabelPressed()
@@ -439,17 +432,17 @@ void GliderFlightDialog::slotUseExternalData( int state )
 
   if( glider )
     {
-      if( state == static_cast<int>(Qt::Unchecked) )
+      if( state == static_cast<int>( Qt::Unchecked ) )
         {
           // Cumulus shall consider the data
-          spinMcCready->setEnabled(true);
-          spinBugs->setEnabled(true);
+          spinMcCready->setEnabled( true );
+          spinBugs->setEnabled( true );
         }
       else
         {
           // Mc and bugs are delivered by an external device.
-          spinMcCready->setEnabled(false);
-          spinBugs->setEnabled(false);
+          spinMcCready->setEnabled( false );
+          spinBugs->setEnabled( false );
         }
     }
 }
@@ -459,7 +452,6 @@ void GliderFlightDialog::slotMcPlus()
   if( plus->isDown() || pplus->isDown() )
     {
       spinMcCready->stepUp();
-      save();
 
       // Start repetition timer, to check, if button is longer pressed.
       QTimer::singleShot(300, this, SLOT(slotMcPlus()));
@@ -471,7 +463,6 @@ void GliderFlightDialog::slotMcMinus()
   if( minus->isDown() || mminus->isDown() )
     {
       spinMcCready->stepDown();
-      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotMcMinus()));
@@ -483,7 +474,6 @@ void GliderFlightDialog::slotWaterPlus()
   if( plus->isDown() || pplus->isDown() )
     {
       spinWater->stepUp();
-      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotWaterPlus()));
@@ -495,7 +485,6 @@ void GliderFlightDialog::slotWaterMinus()
   if( minus->isDown() || mminus->isDown() )
     {
       spinWater->stepDown();
-      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotWaterMinus()));
@@ -507,7 +496,6 @@ void GliderFlightDialog::slotBugsPlus()
   if( plus->isDown() || pplus->isDown() )
     {
       spinBugs->stepUp();
-      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotBugsPlus()));
@@ -519,7 +507,6 @@ void GliderFlightDialog::slotBugsMinus()
   if( minus->isDown() || mminus->isDown() )
     {
       spinBugs->stepDown();
-      save();
 
       // Start repetition timer, to check, if button is longer pressed.
        QTimer::singleShot(300, this, SLOT(slotBugsMinus()));
@@ -585,7 +572,6 @@ void GliderFlightDialog::slotChange( int newStep )
           break;
         case 4: // Reset was pressed
           spinWater->setValue( 0 );
-          emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
         }
     }
   else if( QApplication::focusWidget() == spinBugs )
@@ -611,7 +597,6 @@ void GliderFlightDialog::slotChange( int newStep )
           break;
         case 4: // Reset was pressed
           spinBugs->setValue( 0 );
-          emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
         }
     }
 }
@@ -627,7 +612,6 @@ void GliderFlightDialog::slotSpinValueChanged( const QString& text )
 void GliderFlightDialog::slotDump()
 {
   spinWater->setValue(0);
-  emit newWaterAndBugs( spinWater->value(), spinBugs->value() );
   spinWater->setFocus();
 }
 
@@ -686,27 +670,21 @@ void GliderFlightDialog::slotAccept()
 {
   save();
   timer->stop();
+  emit
   emit closingWidget();
   QDialog::accept();
 }
 
 void GliderFlightDialog::slotReject()
 {
-  // Reset done value changes to their original ones, if the dialog is canceled.
-  if( spinWater->value() != m_waterConfig || spinBugs->value() != m_bugsConfig )
-    {
-      emit newWaterAndBugs( m_waterConfig, m_bugsConfig );
-    }
-
-  if( spinMcCready->value() != m_mcConfig )
-    {
-      Speed mc;
-      mc.setVerticalValue( m_mcConfig );
-      emit newMc( mc );
-    }
-
   emit closingWidget();
   QDialog::reject();
+}
+
+void GliderFlightDialog::closeEvent( QCloseEvent *event )
+{
+  slotReject();
+  event->accept();
 }
 
 void GliderFlightDialog::startTimer()

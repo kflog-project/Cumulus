@@ -1508,8 +1508,11 @@ void MapView::slot_gliderFlightDialog()
   connect( gfDlg, SIGNAL(newMc(const Speed&)),
            calculator, SLOT(slot_Mc(const Speed&)) );
 
-  connect( gfDlg, SIGNAL(newWaterAndBugs(const int, const int)),
-           calculator, SLOT(slot_WaterAndBugs(const int, const int)) );
+  connect( gfDlg, SIGNAL(newWater(const int)),
+           calculator, SLOT(slot_Water(const int)) );
+
+  connect( gfDlg, SIGNAL(newBugs(const int)),
+           calculator, SLOT(slot_Bugs(const int)) );
 
   connect( gfDlg, SIGNAL(useExternalData( const bool )),
            calculator, SLOT(slot_ExternalData4McAndBugs( const bool)) );

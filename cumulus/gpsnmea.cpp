@@ -1286,6 +1286,10 @@ void GpsNmea::__ExtractPov( const QStringList& slst )
 
   Note! Items 10, 11, 12, 13, 14 are empty, if the AHRS feature is not switched
   on by a valid license key.
+
+  Example:
+
+  $PXCV,0.0,1.0,0,1.00,0,20.9,1024.5,1016.4, 0.0,0.3,20.4,0.41,0.01,1.09*3F
 */
 void GpsNmea::__ExtractPxcv( const QStringList& slst )
 {

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003 by André Somers
-**                  2008-2018 Axel Pauli
+**                  2008-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
   * satellites tracked, elevation, azimuth, signal strengths and the NMEA
   * data stream. NMEA data stream can be save into a file on user request.
   *
-  * \date 2003-2018
+  * \date 2003-2021
   *
-  * \version 1.2
+  * \version 1.3
   */
 
 #ifndef GPS_STATUS_DIALOG_H
@@ -149,6 +149,8 @@ signals:
   void closingWidget();
 
 protected:
+
+  virtual void closeEvent(QCloseEvent * event);
 
   GpsElevationAzimuthDisplay *elevAziDisplay;
   GpsSnrDisplay              *snrDisplay;

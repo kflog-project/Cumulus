@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2020 by Axel Pauli
+ **                   2007-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -263,6 +263,11 @@ void GeneralConfig::load()
   _userDataDirectory = value("UserDataDir", "").toString();
   endGroup();
 
+  // in Flight Settings
+  beginGroup("Flight Settings");
+  _useExternalMcAndBugs = value( "ExternalMcAndBugs", true ).toBool();
+  endGroup();
+
   // Pre-flight settings
   beginGroup("Preflight Data");
   _safetyAltitude.setMeters(  value( "Arrival Altitude", 250.0 ).toDouble() );
@@ -291,10 +296,6 @@ void GeneralConfig::load()
 
   beginGroup("Preflight Window");
     _closePreFlightMenu = value( "CloseMenu", true ).toBool();
-  endGroup();
-
-  beginGroup("Glider Flight Dialog");
-  _gliderFlightDialogUseExternalData = value("UseExternalData", false).toBool();
   endGroup();
 
   beginGroup("LiveTrack24");
@@ -549,6 +550,10 @@ void GeneralConfig::load()
   _gpsWlanPassword    = value( "WlanPassword", "" ).toString();
   endGroup();
 
+  beginGroup( "GPS-Status" );
+  _gpsFilterIndex = value( "FilterIndex", 0 ).toInt();
+  endGroup();
+
   beginGroup("Wind");
   _windMinSatCount   = value( "MinSatCount", 4 ).toInt();
   _windAltitudeRange = value( "AltitudeRange", 1000 ).toInt();
@@ -556,6 +561,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup ("Calculator");
+
   _manualNavModeAltitude = value( "ManualNavModeAltitude", 1000 ).toInt();
   _time4LDCalc           = value( "Time4LDCalculation", 30 ).toInt();
 
@@ -563,12 +569,24 @@ void GeneralConfig::load()
 
   if( mc != -1.0 )
     {
-	  _mcCready = Speed( mc );
+      _mcCready = Speed( mc );
     }
   else
     {
-	  _mcCready.setInvalid();
+      _mcCready.setInvalid();
     }
+
+  mc = value( "ExternalMcCready", -1.0 ).toDouble();
+
+    if( mc != -1.0 )
+      {
+        _mcCreadyExternal = Speed( mc );
+      }
+    else
+      {
+        _mcCreadyExternal.setInvalid();
+      }
+
   endGroup();
 
   beginGroup("Flarm");
@@ -744,6 +762,11 @@ void GeneralConfig::save()
   setValue("Proxy", _proxy);
   endGroup();
 
+  // in Flight Settings
+  beginGroup("Flight Settings");
+  setValue( "ExternalMcAndBugs", _useExternalMcAndBugs );
+  endGroup();
+
   // Preflight data
   beginGroup("Preflight Data");
   setValue( "Arrival Altitude", _safetyAltitude.getMeters() );
@@ -771,10 +794,6 @@ void GeneralConfig::save()
 
   beginGroup("Preflight Window");
   setValue( "CloseMenu", _closePreFlightMenu );
-  endGroup();
-
-  beginGroup("Glider Flight Dialog");
-  setValue("UseExternalData", _gliderFlightDialogUseExternalData);
   endGroup();
 
   beginGroup("LiveTrack24");
@@ -1001,6 +1020,10 @@ void GeneralConfig::save()
   setValue( "WlanPassword", _gpsWlanPassword );
   endGroup();
 
+  beginGroup( "GPS-Status" );
+  setValue( "FilterIndex", _gpsFilterIndex );
+  endGroup();
+
   beginGroup("Wind");
   setValue( "MinSatCount", _windMinSatCount );
   setValue( "AltitudeRange", _windAltitudeRange );
@@ -1018,6 +1041,15 @@ void GeneralConfig::save()
   else
     {
       setValue( "McCready", -1.0 );
+    }
+
+  if( _mcCreadyExternal.isValid() )
+    {
+      setValue( "ExternalMcCready", _mcCreadyExternal.getMps() );
+    }
+  else
+    {
+      setValue( "ExternalMcCready", -1.0 );
     }
 
   endGroup();

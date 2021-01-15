@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2018 by Axel Pauli
+**                  2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,6 +26,7 @@
 #include <QtScroller>
 #endif
 
+#include "generalconfig.h"
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 #include "layout.h"
@@ -69,6 +70,8 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaBox->setBackgroundRole( QPalette::Light );
   nmeaBox->setAutoFillBackground( true );
   nmeaBox->setMargin(5);
+  nmeaBox->setTextInteractionFlags( Qt::TextSelectableByMouse |
+                                    Qt::TextSelectableByKeyboard);
 
   QFont f = font();
 
@@ -105,13 +108,15 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   nmeaBoxLayout->addWidget( nmeaScrollArea );
 
   satSource = new QComboBox;
-  satSource->setToolTip( tr("GPS source filter") );
+  satSource->setToolTip( tr("Editable GPS source filter") );
   satSource->addItem( "$GP" );
   satSource->addItem( "$BD" );
   satSource->addItem( "$GA" );
   satSource->addItem( "$GL" );
   satSource->addItem( "$GN" );
   satSource->addItem( "ALL" );
+  satSource->setEditable( true );
+  satSource->setCurrentIndex( GeneralConfig::instance()->getGpsFilterIndex() );
 
   startStop = new QPushButton( tr("Stop"), this );
   save      = new QPushButton( tr("Save"), this );
@@ -434,8 +439,14 @@ void GpsStatusDialog::slot_SaveNmeaData()
 
 void GpsStatusDialog::slot_Close()
 {
-  emit closingWidget();
   close();
+}
+
+void GpsStatusDialog::closeEvent( QCloseEvent *event )
+{
+  GeneralConfig::instance()->setGpsFilterIndex( satSource->currentIndex() );
+  emit closingWidget();
+  event->accept();
 }
 
 void GpsStatusDialog::keyReleaseEvent(QKeyEvent *event)
@@ -445,8 +456,7 @@ void GpsStatusDialog::keyReleaseEvent(QKeyEvent *event)
     {
       case Qt::Key_Close:
       case Qt::Key_Escape:
-        emit closingWidget();
-        close();
+         close();
         break;
       default:
         QWidget::keyReleaseEvent( event );

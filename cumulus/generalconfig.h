@@ -27,7 +27,7 @@
  *
  * \date 2004-2021
  *
- * \version 1.11
+ * \version 1.12
  */
 
 #ifndef GENERAL_CONFIG_H
@@ -1101,18 +1101,6 @@ class GeneralConfig : protected QSettings
     _loggerAutostartMode = newValue;
   }
 
-  /** get glider's flight dialog external data flag. */
-  bool getGliderFlightDialogUseExternalData() const
-  {
-    return _gliderFlightDialogUseExternalData;
-  }
-
-  /** sets glider's flight dialog external data flag. */
-  void setGliderFlightDialogUseExternalData( const bool newValue )
-  {
-    _gliderFlightDialogUseExternalData = newValue;
-  }
-
   /** gets TAS */
   const Speed&  getTas() const
   {
@@ -1170,7 +1158,19 @@ class GeneralConfig : protected QSettings
   /** sets the McCready value */
   void setMcCready( const Speed& newValue )
   {
-	_mcCready = newValue;
+    _mcCready = newValue;
+  }
+
+  /** gets the external McCready value */
+  const Speed& getExternalMcCready() const
+  {
+    return _mcCreadyExternal;
+  }
+
+  /** sets the external McCready value */
+  void setExternalMcCready( const Speed& newValue )
+  {
+    _mcCreadyExternal = newValue;
   }
 
   /** sets current map task  */
@@ -2999,6 +2999,28 @@ class GeneralConfig : protected QSettings
     _flarmRadarDrawWindArrow = flarmRadarDrawWindArrow;
   }
 
+  // Get GPS filter index
+  int getGpsFilterIndex() const
+  {
+    return _gpsFilterIndex;
+  }
+
+  // Set GPS filter index
+  void setGpsFilterIndex( int gpsFilterIndex )
+  {
+    _gpsFilterIndex = gpsFilterIndex;
+  }
+
+  bool getUseExternalMcAndBugs() const
+  {
+    return _useExternalMcAndBugs;
+  }
+
+  void setUseExternalMcAndBugs( bool useExternalMcAndBugs )
+  {
+    _useExternalMcAndBugs = useExternalMcAndBugs;
+  }
+
  private:
 
   /** loads the terrain default colors */
@@ -3183,6 +3205,9 @@ class GeneralConfig : protected QSettings
 
   // The current used McCready value
   Speed _mcCready;
+
+  // The current used external McCready value
+  Speed _mcCreadyExternal;
 
   // manual wind speed
   Speed _manualWindSpeed;
@@ -3548,8 +3573,11 @@ class GeneralConfig : protected QSettings
   // LiveTrack server list
   static QStringList _liveTrackServerList;
 
-  // Glider flight dialog data uasge (internal/external)
-  bool _gliderFlightDialogUseExternalData;
+  // GPS Filter index
+  int _gpsFilterIndex;
+
+  // use external Mc and bug values
+  bool _useExternalMcAndBugs;
 };
 
 #endif

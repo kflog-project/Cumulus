@@ -151,7 +151,7 @@ public:
   /**
    * Constructor
    */
-  Calculator(QObject*);
+  Calculator( QObject* );
 
   /**
    * Destructor
@@ -299,6 +299,14 @@ public:
   }
 
   /**
+   * Read property of external McCready setting
+   */
+  const Speed& getlastExternalMc()
+  {
+    return lastExternalMc;
+  }
+
+  /**
    * Read property of TAS setting.
    */
   Speed& getlastTas()
@@ -369,6 +377,11 @@ public:
     {
       return lastFlightMode;
     }
+
+  /**
+   * Return the bug value contained in the gilder polar.
+   */
+  ushort getBugsFromPolar();
 
   /**
    * Write property of Glider glider.
@@ -609,9 +622,14 @@ public:
   void slot_ExternalMc(const Speed&);
 
   /**
-   * Set water and bug values, delivered by Mc dialog, used by glider polare.
+   * Set water value, delivered by Mc dialog, used by glider polare.
    */
-  void slot_WaterAndBugs( const int water, const int bugs );
+  void slot_Water( const int water );
+
+  /**
+   * Set bug value, delivered by Mc dialog, used by glider polare.
+   */
+  void slot_Bugs( const int bugs );
 
   /**
    * Set bug value used by glider polare and delivered from an external device.
@@ -622,15 +640,6 @@ public:
    * Called if a new TAS is available from an external device.
    */
   void slot_ExternalTas( const Speed& speed );
-
-  /**
-   * Called if external data shall be used for Mc and bugs.
-   * Source is GliderFlightDialog.
-   */
-  void slot_ExternalData4McAndBugs( const bool state )
-  {
-    m_useExternalData4McAndBugs = state;
-  }
 
   /**
    * increment McCready value
@@ -758,6 +767,12 @@ public:
    * passing a task point.
    */
   void slot_switchMapScaleBack();
+
+  /**
+   * Called, if in the glider flight dialog this option is changed.
+   *
+   */
+  void slot_ExternalData4McAndBugs( const bool flag );
 
  private slots:
 
@@ -1001,6 +1016,12 @@ private: // Private attributes
   Speed lastBestSpeed;
   /** Contains the last McCready setting */
   Speed lastMc;
+  /** Contains the last external McCready setting */
+  Speed lastExternalMc;
+  /** Contains the last bug setting */
+  ushort lastBugs;
+  /** Contains the last external bug setting */
+  ushort lastExternalBugs;
   /** Contains the last TAS value */
   Speed lastTas;
   /** Contains the last IAS value */
@@ -1114,11 +1135,6 @@ private: // Private attributes
    * Timer to supervise external vaiometer data.
    */
   QTimer* m_varioDataControl;
-
-  /**
-   * Use external data for Mc and bugs, if the flag is set to true.
-   */
-  bool m_useExternalData4McAndBugs;
 };
 
 extern Calculator* calculator;
