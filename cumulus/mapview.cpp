@@ -44,7 +44,7 @@
 #include "preflightwindpage.h"
 #include "speed.h"
 #include "time_cu.h"
-#include "variomodedialog.h"
+#include "VarioModeDialog.h"
 #include "waypointcatalog.h"
 #include "waypoint.h"
 
