@@ -1,17 +1,15 @@
 /***********************************************************************
 **
-**   variomodedialog.h
+**   VarioModeDialog.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c): 2004-2012 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -24,9 +22,9 @@
  *
  * This dialog is the user interface for the variometer settings.
  *
- * \date 2004-2012
+ * \date 2004-2021
  *
- * \version $Id$
+ * \version 1.2
  *
  */
 
@@ -64,7 +62,9 @@ public:
 
 protected:
 
-  void showEvent(QShowEvent *);
+  virtual void showEvent(QShowEvent *);
+
+  virtual void closeEvent( QCloseEvent *event );
 
 private slots:
 

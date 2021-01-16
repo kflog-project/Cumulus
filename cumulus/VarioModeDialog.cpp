@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   variomodedialog.cpp
+ **   VarioModeDialog.cpp
  **
  **   This file is part of Cumulus
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
 #endif
 
 #include "vario.h"
-#include "variomodedialog.h"
+#include "VarioModeDialog.h"
 #include "calculator.h"
 #include "mapconfig.h"
 #include "generalconfig.h"
@@ -37,7 +37,7 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
   setObjectName("VarioModeDialog");
   setAttribute(Qt::WA_DeleteOnClose);
   setModal(true);
-  setWindowTitle( tr("Set Variometer") );
+  setWindowTitle( tr("Set internal Variometer") );
 
   QPalette p = palette();
 
@@ -69,17 +69,20 @@ VarioModeDialog::VarioModeDialog(QWidget *parent) :
 
   //---------------------------------------------------------------------
 
-  QLabel *label = new QLabel(tr("Time:"), this);
-  gridLayout->addWidget(label, row, 0);
+  QLabel *hint = new QLabel( tr( "Internal Variometer Setup" ), this );
+  gridLayout->addWidget( hint, row++, 0, 1, 3 );
 
-  spinTime = new QSpinBox(this);
-  spinTime->setRange(2, 60);
+  QLabel *label = new QLabel( tr( "Time:" ), this );
+  gridLayout->addWidget( label, row, 0 );
+
+  spinTime = new QSpinBox( this );
+  spinTime->setRange( 2, 60 );
   spinTime->setSuffix( " s" );
-  spinTime->setButtonSymbols(QSpinBox::NoButtons);
+  spinTime->setButtonSymbols( QSpinBox::NoButtons );
   spinTime->setAlignment( Qt::AlignHCenter );
   spinTime->setFocus();
 
-  gridLayout->addWidget(spinTime, row++, 1);
+  gridLayout->addWidget( spinTime, row++, 1 );
 
   //---------------------------------------------------------------------
 
@@ -358,6 +361,7 @@ void VarioModeDialog::slot_tekMinus()
 
 void VarioModeDialog::slot_accept()
 {
+  qDebug() << "VarioModeDialog::slot_accept()";
   save();
   emit closingWidget();
   QDialog::accept();
@@ -365,8 +369,16 @@ void VarioModeDialog::slot_accept()
 
 void VarioModeDialog::slot_reject()
 {
+  qDebug() << "VarioModeDialog::slot_reject()";
   emit closingWidget();
   QDialog::reject();
+}
+
+void VarioModeDialog::closeEvent( QCloseEvent *event )
+{
+  qDebug() << "VarioModeDialog::closeEvent()";
+  slot_reject();
+  event->accept();
 }
 
 void VarioModeDialog::slot_setTimer()

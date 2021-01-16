@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli
+**   Copyright (c):  2014-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -348,12 +346,16 @@ void PreFlightWindPage::slotAccept()
       emit manualWindStateChange( newWindState );
     }
 
-  emit closingWidget();
   QWidget::close();
 }
 
 void PreFlightWindPage::slotReject()
 {
-  emit closingWidget();
   QWidget::close();
+}
+
+void PreFlightWindPage::closeEvent( QCloseEvent *event )
+{
+  emit closingWidget();
+  event->accept();
 }

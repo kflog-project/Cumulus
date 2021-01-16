@@ -217,7 +217,7 @@ HEADERS = \
     tpinfowidget.h \
     Udp.h \
     vario.h \
-    variomodedialog.h \
+    VarioModeDialog.h \
     varspinbox.h \
     vector.h \
     waitscreen.h \
@@ -348,7 +348,7 @@ SOURCES = \
     tpinfowidget.cpp \
     Udp.cpp \
     vario.cpp \
-    variomodedialog.cpp \
+    VarioModeDialog.cpp \
     varspinbox.cpp \
     vector.cpp \
     waitscreen.cpp \
