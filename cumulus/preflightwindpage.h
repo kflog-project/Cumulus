@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2016 by Axel Pauli
+**   Copyright (c):  2014-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,9 +20,9 @@
  *
  * \brief A widget for pre-flight wind settings.
  *
- * \date 2014-2016
+ * \date 2014-2021
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -55,7 +55,9 @@ class PreFlightWindPage : public QWidget
 
  protected:
 
-  void showEvent(QShowEvent *);
+  void showEvent( QShowEvent* );
+
+  virtual void closeEvent( QCloseEvent *event );
 
  private:
 
