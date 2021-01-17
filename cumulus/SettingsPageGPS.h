@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspagegps.h
+**   SettingsPageGPS.h
 **
 **   This file is part of Cumulus.
 **
@@ -31,6 +31,9 @@
 #include <QWidget>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QLineEdit>
+
+#include "numberEditor.h"
 
 class SettingsPageGPS : public QWidget
 {
@@ -73,7 +76,17 @@ class SettingsPageGPS : public QWidget
    */
   void slotReject();
 
- signals:
+  /**
+   * Called, if the password toggle button 1 is pressed.
+   */
+  void slotTogglePw1();
+
+  /**
+   * Called, if the password toggle button 1 is pressed.
+   */
+  void slotTogglePw2();
+
+  signals:
 
   /**
    * Emitted when the NMEA logging into a file shall be started.
@@ -103,13 +116,24 @@ class SettingsPageGPS : public QWidget
   /** Called to save the configuration file data.*/
   void save();
 
-  QComboBox*   GpsSource;
-  QComboBox*   PressureDevice;
-  QComboBox*   GpsDev;
-  QComboBox*   GpsSpeed;
-  QComboBox*   GpsAltitude;
-  QCheckBox*   checkSyncSystemClock;
-  QCheckBox*   saveNmeaData;
+  QComboBox*     GpsSource;
+  QComboBox*     PressureDevice;
+  QComboBox*     GpsDev;
+  QLabel*        GpsSpeedLabel;
+  QComboBox*     GpsSpeed;
+  QComboBox*     GpsAltitude;
+  NumberEditor*  WiFi1_IP;
+  NumberEditor*  WiFi1_Port;
+  NumberEditor*  WiFi2_IP;
+  NumberEditor*  WiFi2_Port;
+  QLineEdit*     WiFi1_Password;
+  QLineEdit*     WiFi2_Password;
+  QPushButton*   WiFi1_PwToggle;
+  QPushButton*   WiFi2_PwToggle;
+  QCheckBox*     checkSyncSystemClock;
+  QCheckBox*     saveNmeaData;
+  bool           WiFi1_PasswordIsHidden;
+  bool           WiFi2_PasswordIsHidden;
 };
 
 #endif

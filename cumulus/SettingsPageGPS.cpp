@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   settingspagegps.cpp
+**   SettingsPageGPS.cpp
 **
 **   This file is part of Cumulus.
 **
@@ -35,9 +35,11 @@
 #include "helpbrowser.h"
 #include "hwinfo.h"
 #include "layout.h"
-#include "settingspagegps.h"
+#include "SettingsPageGPS.h"
 
-SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
+SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent),
+WiFi1_PasswordIsHidden( true ),
+WiFi2_PasswordIsHidden( true )
 {
   setObjectName("SettingsPageGPS");
   setWindowFlags( Qt::Tool );
@@ -53,22 +55,24 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   QHBoxLayout *contentLayout = new QHBoxLayout;
   setLayout(contentLayout);
 
-  QGridLayout* topLayout = new QGridLayout;
-  contentLayout->addLayout(topLayout);
+  QGridLayout *topLayout = new QGridLayout;
+  topLayout->setHorizontalSpacing(20 * Layout::getIntScaledDensity() );
+  topLayout->setVerticalSpacing(10 * Layout::getIntScaledDensity() );
+
+  contentLayout->addLayout( topLayout, 10 );
+  contentLayout->addSpacing( 25 * Layout::getIntScaledDensity() );
 
   int row=0;
 
-  topLayout->addWidget(new QLabel(tr("GPS Source:"), this), row, 0);
-  GpsSource = new QComboBox(this);
-  topLayout->addWidget(GpsSource, row++, 1);
-  GpsSource->setEditable(false);
-  GpsSource->addItem( tr("$GP GPS (USA)") );
-  GpsSource->addItem( tr("$BD Beidou GPS (China)") );
-  GpsSource->addItem( tr("$GA Gallileo GPS (Europe)") );
-  GpsSource->addItem( tr("$GL Glonass GPS (Russia)") );
-  GpsSource->addItem( tr("$GN Combined GPS Systems") );
-
-  topLayout->setColumnStretch(2, 10);
+  topLayout->addWidget( new QLabel( tr( "GPS Source:" ), this ), row, 0 );
+  GpsSource = new QComboBox( this );
+  topLayout->addWidget( GpsSource, row++, 1 );
+  GpsSource->setEditable( false );
+  GpsSource->addItem( tr( "$GP GPS (USA)" ) );
+  GpsSource->addItem( tr( "$BD Beidou GPS (China)" ) );
+  GpsSource->addItem( tr( "$GA Gallileo GPS (Europe)" ) );
+  GpsSource->addItem( tr( "$GL Glonass GPS (Russia)" ) );
+  GpsSource->addItem( tr( "$GN Combined GPS Systems" ) );
 
   topLayout->addWidget(new QLabel(tr("GPS Device:"), this), row, 0);
   GpsDev = new QComboBox(this);
@@ -76,60 +80,70 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   GpsDev->setEditable(true);
   GpsDev->setToolTip( tr("You can adapt a device entry by editing to your own needs.") );
 
-#ifdef TOMTOM
+#ifdef TOMTOMQLineEdit
   GpsDev->addItem(TOMTOM_DEVICE);
 #endif
 
 #ifndef MAEMO
-  GpsDev->addItem("/dev/ttyS0");
-  GpsDev->addItem("/dev/ttyS1");
-  GpsDev->addItem("/dev/ttyS2");
-  GpsDev->addItem("/dev/ttyS3");
-  GpsDev->addItem("/dev/ttyUSB0"); // external USB device
+  GpsDev->addItem( "/dev/ttyS0" );
+  GpsDev->addItem( "/dev/ttyS1" );
+  GpsDev->addItem( "/dev/ttyS2" );
+  GpsDev->addItem( "/dev/ttyS3" );
+  GpsDev->addItem( "/dev/ttyUSB0" ); // external USB device
 #ifdef BLUEZ
   // Bluetooth adapter
-  GpsDev->addItem(BT_ADAPTER);
+  GpsDev->addItem( BT_ADAPTER );
 #endif
+  GpsDev->addItem( WIFI_1 ); // WiFi 1
+  GpsDev->addItem( WIFI_2 ); // WiFi 2
+  GpsDev->addItem( WIFI_1_2 ); // WiFi 1+2
+
   // add entry for NMEA simulator choice
-  GpsDev->addItem(NMEASIM_DEVICE);
+  GpsDev->addItem( NMEASIM_DEVICE );
 #else
   // Under Maemo there are only three predefined sources.
   GpsDev->addItem(MAEMO_LOCATION_SERVICE); // Maemo GPS Location Service
   // Bluetooth adapter
   GpsDev->addItem(BT_ADAPTER);
   GpsDev->addItem("/dev/ttyUSB0"); // external USB device
+  GpsDev->addItem(WIFI_1); // WiFi 1
+  GpsDev->addItem(WIFI_2); // WiFi 2
+  GpsDev->addItem(WIFI_1_2); // WiFi 1+2
   GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
 #endif
 
   // catch selection changes of the GPS device combo box
-  connect( GpsDev, SIGNAL(activated(const QString &)),
-           this, SLOT(slotGpsDeviceChanged(const QString&)) );
+  connect( GpsDev, SIGNAL( activated(const QString &) ), this,
+           SLOT( slotGpsDeviceChanged(const QString&) ) );
 
-  topLayout->addWidget(new QLabel(tr("Speed (bps):"), this), row, 0);
-  GpsSpeed = new QComboBox(this);
-  GpsSpeed->setEditable(false);
-  GpsSpeed->addItem("230400");
-  GpsSpeed->addItem("115200");
-  GpsSpeed->addItem("57600");
-  GpsSpeed->addItem("38400");
-  GpsSpeed->addItem("19200");
-  GpsSpeed->addItem("9600");
-  GpsSpeed->addItem("4800");
-  GpsSpeed->addItem("2400");
-  GpsSpeed->addItem("1200");
-  GpsSpeed->addItem("600");
-  topLayout->addWidget(GpsSpeed, row++, 1);
+  //----------------------------------------------------------------------------
+  GpsSpeedLabel = new QLabel( tr( "Speed (bps):" ), this );
+  topLayout->addWidget( GpsSpeedLabel, row, 0 );
+  GpsSpeed = new QComboBox( this );
+  GpsSpeed->setEditable( false );
+  GpsSpeed->addItem( "230400" );
+  GpsSpeed->addItem( "115200" );
+  GpsSpeed->addItem( "57600" );
+  GpsSpeed->addItem( "38400" );
+  GpsSpeed->addItem( "19200" );
+  GpsSpeed->addItem( "9600" );
+  GpsSpeed->addItem( "4800" );
+  GpsSpeed->addItem( "2400" );
+  GpsSpeed->addItem( "1200" );
+  GpsSpeed->addItem( "600" );
+  topLayout->addWidget( GpsSpeed, row++, 1 );
 
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
-  topLayout->addWidget(new QLabel(tr("Altitude Reference:"), this), row, 0);
-  GpsAltitude = new QComboBox(this);
-  GpsAltitude->setEditable(false);
-  topLayout->addWidget(GpsAltitude,row++,1);
-  GpsAltitude->addItem(tr("GPS"));
-  GpsAltitude->addItem(tr("Pressure"));
+  topLayout->addWidget( new QLabel( tr( "Altitude Reference:" ), this ), row, 0 );
+  GpsAltitude = new QComboBox( this );
+  GpsAltitude->setEditable( false );
+  topLayout->addWidget( GpsAltitude, row++, 1 );
+  GpsAltitude->addItem( tr( "GPS" ) );
+  GpsAltitude->addItem( tr( "Pressure" ) );
 
-  topLayout->addWidget(new QLabel(tr("Pressure Supplier:"), this), row, 0);
+  //----------------------------------------------------------------------------
+  topLayout->addWidget( new QLabel( tr( "Pressure Supplier:" ), this ), row, 0 );
 
   PressureDevice = new QComboBox();
   PressureDevice->setToolTip( tr("Device which delivers pressure altitude.") );
@@ -152,6 +166,119 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   PressureDevice->addItems( GeneralConfig::getPressureDevicesList() );
   topLayout->addWidget( PressureDevice, row++, 1);
 
+  QLabel *label = new QLabel( tr( "WiFi-1 IP : Port" ) );
+  topLayout->addWidget( label, row, 0 );
+
+  //----------------------------------------------------------------------------
+  QHBoxLayout *hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
+  WiFi1_IP = new NumberEditor( this );
+  WiFi1_IP->disableNumberCheck( true );
+  WiFi1_IP->setDecimalVisible( true );
+  WiFi1_IP->setPmVisible( false );
+  WiFi1_IP->setMaxLength( 15 );
+  WiFi1_IP->setAlignment( Qt::AlignLeft );
+  WiFi1_IP->setTitle( tr( "Enter a IP address" ) );
+  WiFi1_IP->setTip( tr( "Enter a IP address xxx.xxx.xxx.xxx )" ) );
+  WiFi1_IP->setText( "" );
+  WiFi1_IP->setValidator( new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.){3}[0-9]{1,3}" ), this ) );
+
+  hbox->addWidget( WiFi1_IP, 3 );
+
+  label = new QLabel(" : ", this );
+  hbox->addWidget( label );
+
+  WiFi1_Port = new NumberEditor( this );
+  WiFi1_Port->setDecimalVisible( false );
+  WiFi1_Port->setPmVisible( false );
+  WiFi1_Port->setMaxLength( 5 );
+  WiFi1_Port->setAlignment( Qt::AlignLeft );
+  WiFi1_Port->setRange( 1, 65535 );
+  WiFi1_Port->setTitle( tr( "Enter a TCP port" ) );
+  WiFi1_Port->setTip( tr( "Enter a TCP port 1...65535)" ) );
+  WiFi1_Port->setText( "" );
+
+  hbox->addWidget( WiFi1_Port, 1 );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  //----------------------------------------------------------------------------
+  label = new QLabel( tr( "WiFi-1 Password" ) );
+  topLayout->addWidget( label, row, 0 );
+
+  hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
+  Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
+
+  WiFi1_Password = new QLineEdit( this );
+  WiFi1_Password->setInputMethodHints( imh | WiFi1_Password->inputMethodHints() );
+  WiFi1_Password->setEchoMode( QLineEdit::Password );
+  hbox->addWidget( WiFi1_Password );
+
+  WiFi1_PwToggle = new QPushButton( tr("Show") );
+  hbox->addWidget( WiFi1_PwToggle );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  connect( WiFi1_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw1() ) );
+
+  //----------------------------------------------------------------------------
+  label = new QLabel( tr( "WiFi-2 IP : Port" ), this );
+  topLayout->addWidget( label, row, 0 );
+
+  hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
+  WiFi2_IP = new NumberEditor( this );
+  WiFi2_IP->disableNumberCheck( true );
+  WiFi2_IP->setDecimalVisible( true );
+  WiFi2_IP->setPmVisible( false );
+  WiFi2_IP->setMaxLength( 15 );
+  WiFi2_IP->setAlignment( Qt::AlignLeft );
+  WiFi2_IP->setTitle( tr( "Enter a IP address" ) );
+  WiFi2_IP->setTip( tr( "Enter a IP address xxx.xxx.xxx.xxx )" ) );
+  WiFi2_IP->setText( "" );
+  WiFi2_IP->setValidator( new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.){3}[0-9]{1,3}" ), this ) );
+
+  hbox->addWidget( WiFi2_IP, 3 );
+
+  label = new QLabel(" : ", this );
+  hbox->addWidget( label );
+
+  WiFi2_Port = new NumberEditor( this );
+  WiFi2_Port->setDecimalVisible( false );
+  WiFi2_Port->setPmVisible( false );
+  WiFi2_Port->setMaxLength( 5 );
+  WiFi2_Port->setAlignment( Qt::AlignLeft );
+  WiFi2_Port->setRange( 1, 65535 );
+  WiFi2_Port->setTitle( tr( "Enter a TCP port" ) );
+  WiFi2_Port->setTip( tr( "Enter a TCP port 1...65535)" ) );
+  WiFi2_Port->setText( "" );
+
+  hbox->addWidget( WiFi2_Port, 1 );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  label = new QLabel( tr( "WiFi-2 Password" ) );
+  topLayout->addWidget( label, row, 0 );
+
+  //----------------------------------------------------------------------------
+  hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
+  imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
+
+  WiFi2_Password = new QLineEdit( this );
+  WiFi2_Password->setInputMethodHints( imh | WiFi2_Password->inputMethodHints() );
+  WiFi2_Password->setEchoMode( QLineEdit::Password );
+  hbox->addWidget( WiFi2_Password );
+
+  WiFi2_PwToggle = new QPushButton( tr("Show") );
+  hbox->addWidget( WiFi2_PwToggle );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  connect( WiFi2_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw2() ) );
+
+
 #ifndef MAEMO
   topLayout->setRowMinimumHeight( row++, 10);
 
@@ -164,8 +291,8 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   topLayout->addWidget(saveNmeaData, row, 0 );
   row++;
 
-  topLayout->setRowStretch(row++, 10);
-  topLayout->setColumnStretch(2, 10);
+  topLayout->setRowStretch( row++, 10 );
+  topLayout->setColumnStretch( 1, 10 );
 
   // search for GPS device to be selected
   bool found = false;
@@ -220,15 +347,15 @@ SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
-  buttonBox->setSpacing(0);
-  buttonBox->addWidget(help, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(30);
-  buttonBox->addWidget(ok, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix);
-  contentLayout->addLayout(buttonBox);
+  buttonBox->setSpacing( 0 );
+  buttonBox->addWidget( help, 1 );
+  buttonBox->addStretch( 2 );
+  buttonBox->addWidget( cancel, 1 );
+  buttonBox->addSpacing( 30 );
+  buttonBox->addWidget( ok, 1 );
+  buttonBox->addStretch( 2 );
+  buttonBox->addWidget( titlePix );
+  contentLayout->addLayout( buttonBox );
   load();
 }
 
@@ -305,22 +432,21 @@ void SettingsPageGPS::load()
         }
     }
 
-#ifdef MAEMO
-  if( GpsDev->currentText() != "/dev/ttyUSB0" )
+  if( GpsDev->currentText().startsWith( "/dev/tty" ) == false )
     {
-      // switch off access to speed box, when USB is not selected
-      GpsSpeed->setEnabled( false );
+      qDebug() << "DEv" << GpsDev->currentText();
+      // switch off access to speed box, when no tty is selected
+      GpsSpeed->setVisible( false );
+      GpsSpeedLabel->setVisible( false );
     }
-#endif
 
-  if( GpsDev->currentText() == NMEASIM_DEVICE ||
-      GpsDev->currentText() == TOMTOM_DEVICE ||
-      GpsDev->currentText() == BT_ADAPTER )
-    {
-      // switch off access to speed box, when NMEA Simulator, TomTom or
-      // BT adapter are selected
-      GpsSpeed->setEnabled( false );
-    }
+  WiFi1_IP->setText( conf->getGpsWlanIp1() );
+  WiFi1_Port->setText( conf->getGpsWlanPort1() );
+  WiFi1_Password->setText( conf->getGpsWlanPassword1() );
+
+  WiFi2_IP->setText( conf->getGpsWlanIp2() );
+  WiFi2_Port->setText( conf->getGpsWlanPort2() );
+  WiFi2_Password->setText( conf->getGpsWlanPassword2() );
 
 #ifndef MAEMO
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
@@ -344,6 +470,14 @@ void SettingsPageGPS::save()
       conf->setPressureDevice( PressureDevice->currentText() );
       emit newPressureDevice( PressureDevice->currentText() ); // informs GpsNmea
     }
+
+  conf->setGpsWlanIp1( WiFi1_IP->text() );
+  conf->setGpsWlanPort1( WiFi1_Port->text() );
+  conf->setGpsWlanPassword1( WiFi1_Password->text() );
+
+  conf->setGpsWlanIp2( WiFi2_IP->text() );
+  conf->setGpsWlanPort2( WiFi2_Port->text() );
+  conf->setGpsWlanPassword2( WiFi2_Password->text() );
 
 #ifndef MAEMO
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
@@ -369,32 +503,23 @@ void SettingsPageGPS::save()
 }
 
 /**
- * Called when the GPS device selection is changed to toggle the access
+ * Called when the GPS device selection is changed to toggle the visibility
  * to the GPS speed box in dependency of the necessity.
  */
-void SettingsPageGPS::slotGpsDeviceChanged( const QString& text )
+void SettingsPageGPS::slotGpsDeviceChanged( const QString &text )
 {
-  // qDebug("text=%s", text.toLatin1().data());
+  qDebug() << "SettingsPageGPS::slotGpsDeviceChanged()" << text;
 
-  if( text == NMEASIM_DEVICE || text == TOMTOM_DEVICE || text == BT_ADAPTER )
+  if( text.startsWith( "/dev/tty" ) == true )
     {
-      // Switch off access to speed box, when a named pipe is used.
-      GpsSpeed->setEnabled( false );
+      // Switch off visibility to speed box, when no tty is selected.
+      GpsSpeed->setVisible( true );
+      GpsSpeedLabel->setVisible( true );
       return;
     }
 
-#ifdef MAEMO
-  if( ! text.startsWith("/dev/ttyUSB") )
-    {
-      // Switch off access to speed box, when USB is not selected.
-      // That is done only for Maemo because in those cases a speed
-      // entry is not necessary.
-      GpsSpeed->setEnabled( false );
-      return;
-    }
-#endif
-
-  GpsSpeed->setEnabled( true );
+  GpsSpeed->setVisible( false );
+  GpsSpeedLabel->setVisible( false );
 }
 
 /**
@@ -411,5 +536,43 @@ void SettingsPageGPS::slotGpsAltitudeChanged( int index )
     {
       // Altitude reference GPS is selected, disable device selection.
       PressureDevice->setEnabled( false );
+    }
+}
+
+/**
+ * Called, if the password toggle button 1 is pressed.
+ */
+void SettingsPageGPS::slotTogglePw1()
+{
+  if( WiFi1_PasswordIsHidden == true )
+    {
+      WiFi1_PasswordIsHidden = false;
+      WiFi1_Password->setEchoMode( QLineEdit::Normal );
+      WiFi1_PwToggle->setText( tr( "Hide" ) );
+    }
+  else
+    {
+      WiFi1_PasswordIsHidden = true;
+      WiFi1_Password->setEchoMode( QLineEdit::Password );
+      WiFi1_PwToggle->setText( tr( "Show" ) );
+    }
+}
+
+/**
+ * Called, if the password toggle button 1 is pressed.
+ */
+void SettingsPageGPS::slotTogglePw2()
+{
+  if( WiFi2_PasswordIsHidden == true )
+    {
+      WiFi2_PasswordIsHidden = false;
+      WiFi2_Password->setEchoMode( QLineEdit::Normal );
+      WiFi2_PwToggle->setText( tr( "Hide" ) );
+    }
+  else
+    {
+      WiFi2_PasswordIsHidden = true;
+      WiFi2_Password->setEchoMode( QLineEdit::Password );
+      WiFi2_PwToggle->setText( tr( "Show" ) );
     }
 }
