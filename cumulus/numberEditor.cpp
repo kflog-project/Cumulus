@@ -40,6 +40,7 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_title(tr("edit number")),
   m_decimalFlag(true),
   m_pmFlag(true),
+  m_allowEmptyResult(false),
   m_validator(0),
   m_inputMask(""),
   m_maxLength(32767),
@@ -104,6 +105,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setValidator( m_validator );
       m_nip->setTip( m_tip );
       m_nip->disableNumberCheck( m_disableNumberCheck );
+      m_nip->allowEmptyResult( m_allowEmptyResult );
 
       if( m_intMax.first ) m_nip->setIntMaximum( m_intMax.second );
       if( m_intMin.first ) m_nip->setIntMinimum( m_intMin.second );

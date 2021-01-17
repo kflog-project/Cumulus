@@ -25,7 +25,7 @@
  *
  * \date 2012-2021
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #ifndef NumberInputPad_h
@@ -212,6 +212,14 @@ class NumberInputPad : public QFrame
    */
   void setTip( QString tip );
 
+  /**
+   * If true, the returned input number can be empty.
+   */
+  void allowEmptyResult( const bool flag )
+  {
+    m_allowEmptyResult = flag;
+  }
+
  protected:
 
   /**
@@ -354,6 +362,9 @@ class NumberInputPad : public QFrame
 
   /** Disable input check for valid number. Used, to enter IP addresses. */
   bool m_disbaleNumberCheck;
+
+  /** Allow returning of empty result value */
+  bool m_allowEmptyResult;
 };
 
 #endif // NumberInputPad_h

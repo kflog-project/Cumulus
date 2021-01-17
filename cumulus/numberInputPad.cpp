@@ -31,7 +31,8 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_doubleMinimum(false, 0.0),
   m_pressedButton( 0 ),
   m_closeOk(false),
-  m_disbaleNumberCheck( false )
+  m_disbaleNumberCheck( false ),
+  m_allowEmptyResult( false )
 {
 #ifdef ANDROID
   setFrameStyle( QFrame::Box );
@@ -472,9 +473,13 @@ void NumberInputPad::slot_Ok()
 
   QString value = m_editor->text().trimmed();
 
-  if( value.isEmpty() )
+  if( value.isEmpty() && m_allowEmptyResult == true )
     {
-      // Empty value is not allowed as ok.
+      // Return of an empty value is allowed.
+      emit numberEdited( value );
+      // Make a delay of 200 ms before the widget is closed to prevent undesired
+      // selections in an underlaying list. Problem occurred on Galaxy S3.
+      QTimer::singleShot(200, this, SLOT(slot_closeWidget()));
       return;
     }
 

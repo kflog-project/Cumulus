@@ -345,6 +345,14 @@ class NumberEditor : public QLabel
     m_disableNumberCheck = flag;
   }
 
+  /**
+   * If true, the returned input number can be empty.
+   */
+  void allowEmptyResult( const bool flag )
+  {
+    m_allowEmptyResult = flag;
+  }
+
  signals:
 
   /**
@@ -413,6 +421,7 @@ class NumberEditor : public QLabel
 
   bool m_decimalFlag;
   bool m_pmFlag;
+  bool m_allowEmptyResult;
 
   QValidator* m_validator;
   QString m_inputMask;
