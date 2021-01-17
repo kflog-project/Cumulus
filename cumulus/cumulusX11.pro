@@ -184,7 +184,7 @@ HEADERS = \
     settingspageairspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
-    settingspagegps.h \
+    SettingsPageGPS.h \
     settingspageinformation.h \
     settingspagelines.h \
     settingspagelooknfeel.h \
@@ -317,7 +317,7 @@ SOURCES = \
     settingspageairspace.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \
-    settingspagegps.cpp \
+    SettingsPageGPS.cpp \
     settingspageinformation.cpp \
     settingspagelines.cpp \
     settingspagelooknfeel.cpp \

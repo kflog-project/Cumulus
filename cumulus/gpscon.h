@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
  * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
  * can be found. It lays in the same directory as Cumulus.
  *
- * \date 2004-2015
+ * \date 2004-2021
  */
 
 #ifndef GPS_CON_H
@@ -56,6 +56,15 @@
 
 // Bluetooth default adapter of bluez stack.
 #define BT_ADAPTER "BT Adapter"
+
+// WiFi connection 1
+#define WIFI_1 "WiFi 1"
+
+// WiFi connection 2
+#define WIFI_2 "WiFi 2"
+
+// WiFi connection 1+2
+#define WIFI_1_2 "WiFi 1+2"
 
 class GpsCon : public QObject
 {

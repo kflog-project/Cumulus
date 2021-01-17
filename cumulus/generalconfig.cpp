@@ -545,9 +545,16 @@ void GeneralConfig::load()
   _gpsLastFixLon      = value( "LastFixLon", 0 ).toInt();
   _gpsLastFixAlt      = value( "LastFixAlt", 0 ).toInt();
   _gpsLastFixClk      = value( "LastFixClk", 0 ).toInt();
-  _gpsWlanIp          = value( "WlanIp", "192.168.1.1" ).toString();
-  _gpsWlanPort        = value( "WlanPort", "2000" ).toString();
-  _gpsWlanPassword    = value( "WlanPassword", "" ).toString();
+
+  _gpsWlanIp1         = value( "WlanIp1", "192.168.4.1" ).toString();
+  _gpsWlanPort1       = value( "WlanPort1", "8880" ).toString();
+  _gpsWlanPassword1   = value( "WlanPassword1", "" ).toString();
+  _gpsWlanPassword1 = rot47( _gpsWlanPassword1.toLatin1() );
+
+  _gpsWlanIp2         = value( "WlanIp2", "192.168.4.1" ).toString();
+  _gpsWlanPort2       = value( "WlanPort2", "8881" ).toString();
+  _gpsWlanPassword2   = value( "WlanPassword2", "" ).toString();
+  _gpsWlanPassword2 = rot47( _gpsWlanPassword2.toLatin1() );
   endGroup();
 
   beginGroup( "GPS-Status" );
@@ -1015,9 +1022,14 @@ void GeneralConfig::save()
   setValue( "LastFixLon", _gpsLastFixLon );
   setValue( "LastFixAlt", _gpsLastFixAlt );
   setValue( "LastFixClk", _gpsLastFixClk );
-  setValue( "WlanIp", _gpsWlanIp );
-  setValue( "WlanPort", _gpsWlanPort );
-  setValue( "WlanPassword", _gpsWlanPassword );
+
+  setValue( "WlanIp1", _gpsWlanIp1 );
+  setValue( "WlanPort1", _gpsWlanPort1 );
+  setValue( "WlanPassword1", rot47( _gpsWlanPassword1.toLatin1() ) );
+
+  setValue( "WlanIp2", _gpsWlanIp2 );
+  setValue( "WlanPort2", _gpsWlanPort2 );
+  setValue( "WlanPassword2", rot47( _gpsWlanPassword2.toLatin1() ) );
   endGroup();
 
   beginGroup( "GPS-Status" );

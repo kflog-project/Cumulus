@@ -1968,40 +1968,76 @@ class GeneralConfig : protected QSettings
     _gpsSource = newValue;
   }
 
-  /** Gets the Gps WLAN IP */
-  const QString &getGpsWlanIp()
+  /** Gets the Gps WLAN IP 1 */
+  const QString &getGpsWlanIp1()
   {
-    return _gpsWlanIp;
+    return _gpsWlanIp1;
   }
 
-  /** Sets the Gps WLAN IP */
-  void setGpsWlanIp( const QString newValue )
+  /** Sets the Gps WLAN IP 1 */
+  void setGpsWlanIp1( const QString newValue )
   {
-    _gpsWlanIp = newValue;
+    _gpsWlanIp1 = newValue;
   }
 
-  /** Gets the Gps WLAN IP port */
-  const QString &getGpsWlanPort()
+  /** Gets the Gps WLAN IP port 1 */
+  const QString &getGpsWlanPort1()
   {
-    return _gpsWlanPort;
+    return _gpsWlanPort1;
   }
 
-  /** Sets the Gps WLAN IP port*/
-  void setGpsWlanPort( const QString newValue )
+  /** Sets the Gps WLAN IP port 1 */
+  void setGpsWlanPort1( const QString newValue )
   {
-    _gpsWlanPort = newValue;
+    _gpsWlanPort1 = newValue;
   }
 
-  /** Gets the Gps WLAN password */
-  const QString &getGpsWlanPassword()
+  /** Gets the Gps WLAN password 1 */
+  const QString &getGpsWlanPassword1()
   {
-    return _gpsWlanPassword;
+    return _gpsWlanPassword1;
   }
 
-  /** Sets the Gps WLAN password*/
-  void setGpsWlanPassword( const QString newValue )
+  /** Sets the Gps WLAN password 1 */
+  void setGpsWlanPassword1( const QString newValue )
   {
-    _gpsWlanPassword = newValue;
+    _gpsWlanPassword1 = newValue;
+  }
+
+  /** Gets the Gps WLAN IP 2 */
+  const QString &getGpsWlanIp2()
+  {
+    return _gpsWlanIp2;
+  }
+
+  /** Sets the Gps WLAN IP 2 */
+  void setGpsWlanIp2( const QString newValue )
+  {
+    _gpsWlanIp2 = newValue;
+  }
+
+  /** Gets the Gps WLAN IP port 2 */
+  const QString &getGpsWlanPort2()
+  {
+    return _gpsWlanPort2;
+  }
+
+  /** Sets the Gps WLAN IP port 2 */
+  void setGpsWlanPort2( const QString newValue )
+  {
+    _gpsWlanPort2 = newValue;
+  }
+
+  /** Gets the Gps WLAN password 2 */
+  const QString &getGpsWlanPassword2()
+  {
+    return _gpsWlanPassword2;
+  }
+
+  /** Sets the Gps WLAN password 2 */
+  void setGpsWlanPassword2( const QString newValue )
+  {
+    _gpsWlanPassword2 = newValue;
   }
 
   /** Gets the Gps Speed */
@@ -3399,12 +3435,20 @@ class GeneralConfig : protected QSettings
   int _gpsLastFixAlt;
   // Gps last fix clock
   int _gpsLastFixClk;
-  // WLAN IP address
-  QString _gpsWlanIp;
-  // WLAN IP port
-  QString _gpsWlanPort;
-  // WLAN password
-  QString _gpsWlanPassword;
+
+  // WLAN IP address 1
+  QString _gpsWlanIp1;
+  // WLAN IP port 1
+  QString _gpsWlanPort1;
+  // WLAN password 1
+  QString _gpsWlanPassword1;
+
+  // WLAN IP address 2
+  QString _gpsWlanIp2;
+  // WLAN IP port 2
+  QString _gpsWlanPort2;
+  // WLAN password 2
+  QString _gpsWlanPassword2;
 
   // minimum sat count for wind calculation
   int _windMinSatCount;

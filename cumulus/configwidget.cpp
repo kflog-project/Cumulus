@@ -60,7 +60,7 @@
 #include "settingspageterraincolors.h"
 
 #ifndef ANDROID
-#include "settingspagegps.h"
+#include "SettingsPageGPS.h"
 #else
 #include "settingspagegps4a.h"
 #endif

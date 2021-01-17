@@ -65,7 +65,7 @@ protected:
 
   void keyReleaseEvent( QKeyEvent* event );
 
-  virtual void closeEvent(QCloseEvent * event);
+  virtual void closeEvent( QCloseEvent *event );
 
  signals:
 
