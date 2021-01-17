@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli
+**   Copyright (c): 2012-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -50,14 +48,15 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_doubleMax(false, double(INT_MAX)),
   m_doubleMin(false, double(INT_MIN)),
   m_specialValueText(""),
-  m_fixHeight( true )
+  m_fixHeight( true ),
+  m_disableNumberCheck( false )
 {
   setObjectName("NumberEditor");
   setBackgroundRole( QPalette::Light );
   setAutoFillBackground( true );
   setAlignment(Qt::AlignCenter);
   setMargin(2);
-  setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+  setFrameStyle( QFrame::StyledPanel );
 
   QSizePolicy sp = sizePolicy();
   sp.setVerticalPolicy( QSizePolicy::Fixed );
@@ -83,6 +82,11 @@ void NumberEditor::showEvent( QShowEvent* event )
       setMaximumHeight( size.height() );
     }
 
+  // Set minimum width
+  QFontMetrics fm( font() );
+  int strWidth = fm.width( QString( "MMMMMM" ) );
+  setMinimumWidth( strWidth );
+
   QLabel::showEvent(event);
 }
 
@@ -99,6 +103,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setInputMask( m_inputMask );
       m_nip->setValidator( m_validator );
       m_nip->setTip( m_tip );
+      m_nip->disableNumberCheck( m_disableNumberCheck );
 
       if( m_intMax.first ) m_nip->setIntMaximum( m_intMax.second );
       if( m_intMin.first ) m_nip->setIntMinimum( m_intMin.second );
@@ -114,6 +119,21 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 
       m_nip->show();
 
+      QCoreApplication::processEvents();
+
+      if( parentWidget() != 0 )
+        {
+          // Center the input panel about its parent
+          QSize ps = parentWidget()->frameSize();
+          QSize nip = m_nip->frameSize();
+
+          m_nip->move( ps.width() / 2 - nip.width() / 2,
+                       ps.height() / 2 - nip.height() / 2 );
+        }
+
+      // Set focus at the editor.
+      m_nip->getEditor()->setFocus();
+
 #ifdef ANDROID
 
       // Sets the window's background to another color.
@@ -124,14 +144,11 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       QSize ms = m_nip->minimumSizeHint();
       ms += QSize(10, 10);
 
-      // A dialog is not centered over the parent and not limited in
+      // This widget is not centered over the parent and not limited in
       // its size under Android. Therefore this must be done by our self.
       m_nip->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
                           (MainWindow::mainWindow()->height() - ms.height()) / 2,
                            ms.width(), ms.height() );
-
-      // That do not work under Android.
-      m_nip->getEditor()->setFocus();
 
 #endif
 
@@ -146,6 +163,14 @@ void NumberEditor::slot_NumberEdited( const QString& number )
   m_number = number;
   setText();
   emit numberEdited( number );
+}
+
+void NumberEditor::closeEvent( QCloseEvent *event )
+{
+  qDebug() << "NumberEditor::closeEvent()";
+
+  m_nip = 0;
+  event->accept();
 }
 
 void NumberEditor::setText()

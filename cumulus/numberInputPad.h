@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2015 Axel Pauli
+**   Copyright (c): 2012-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,26 +23,19 @@
  * This widget can be used to enter a number or to modify it with an own
  * provided keypad.
  *
- * \date 2012-2015
+ * \date 2012-2021
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #ifndef NumberInputPad_h
 #define NumberInputPad_h
 
+#ifndef QT_5
 #include <QtGui>
-
-#include <QLineEdit>
-#include <QPair>
-#include <QPushButton>
-#include <QString>
-#include <QValidator>
-#include <QLabel>
-#include <QFrame>
-
-class QSignalMapper;
-class QTimer;
+#else
+#include <QtWidgets>
+#endif
 
 class NumberInputPad : public QFrame
 {
@@ -69,6 +62,14 @@ class NumberInputPad : public QFrame
     m_editor->setText(number);
     m_editor->setCursorPosition( 0 );
   };
+
+  /**
+   * If true, the input number is not checked for a valid number.
+   */
+  void disableNumberCheck(const bool flag )
+  {
+    m_disbaleNumberCheck = flag;
+  }
 
   QString getNumber() const
   {
@@ -216,7 +217,12 @@ class NumberInputPad : public QFrame
   /**
    * Catch show events in this class to set the widths of some widgets.
    */
-  void showEvent( QShowEvent* event );
+  virtual void showEvent( QShowEvent* event );
+
+  /**
+   * Catch the Close event, when the little x at the window frame is pressed.
+   */
+  virtual void closeEvent( QCloseEvent *event );
 
  signals:
 
@@ -341,7 +347,13 @@ class NumberInputPad : public QFrame
   QPair<bool, double> m_doubleMinimum;
 
   /** To remember the last pressed button */
-  QAbstractButton* m_pressedButton;
+  QPushButton* m_pressedButton;
+
+  /** Flag to handle window frame close button. */
+  bool m_closeOk;
+
+  /** Disable input check for valid number. Used, to enter IP addresses. */
+  bool m_disbaleNumberCheck;
 };
 
 #endif // NumberInputPad_h

@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2013 Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c): 2012-2021 Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -25,9 +23,9 @@
  * This widget can be used to display a text in a QLabel and to edit it
  * by using an own text keypad.
  *
- * \date 2012-2013
+ * \date 2012-2021
  *
- * \version $Id$
+ * \version 1.2
  */
 
 #ifndef NUMBER_EDITOR_H_
@@ -39,7 +37,8 @@
 #include <QValidator>
 
 class QMouseEvent;
-class NumberInputPad;
+
+#include "numberInputPad.h"
 
 class NumberEditor : public QLabel
 {
@@ -198,11 +197,6 @@ class NumberEditor : public QLabel
 
     m_validator = validator;
 
-    if( validator == 0 )
-      {
-        // We install a default validator, if the user resets its validator.
-        m_validator = new QRegExpValidator( QRegExp( "-?([0-9]+|[0-9]+\\.[0-9]+)" ), this );
-      }
   };
 
   void setInputMask( const QString inputMask )
@@ -343,6 +337,14 @@ class NumberEditor : public QLabel
     m_fixHeight = newValue;
   };
 
+  /**
+   * If true, the input number is not checked for a valid number.
+   */
+  void disableNumberCheck( const bool flag )
+  {
+    m_disableNumberCheck = flag;
+  }
+
  signals:
 
   /**
@@ -390,9 +392,11 @@ class NumberEditor : public QLabel
  /**
   * Handles mouse button presses.
   */
-  void mousePressEvent( QMouseEvent* event );
+  virtual void mousePressEvent( QMouseEvent* event );
 
-  void showEvent( QShowEvent *event );
+  virtual void showEvent( QShowEvent *event );
+
+  virtual void closeEvent(QCloseEvent * event);
 
   /**
    * Sets the number with prefix and suffix in the display label.
@@ -426,6 +430,8 @@ class NumberEditor : public QLabel
 
   /** Fix height flag of the label. */
   bool m_fixHeight;
+
+  bool m_disableNumberCheck;
 };
 
 #endif /* NUMBER_EDITOR_H_ */

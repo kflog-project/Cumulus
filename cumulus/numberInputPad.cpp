@@ -5,7 +5,7 @@
 **   This file is part of Cumulus.
 **
 ************************************************************************
-**
+**m_editor
 **   Copyright (c): 2012-2017 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
@@ -14,15 +14,6 @@
 ***********************************************************************/
 
 #include <climits>
-
-#ifndef QT_5
-#include <QtGui>
-#else
-#include <QtWidgets>
-#endif
-
-#include <QPalette>
-
 #include "generalconfig.h"
 #include "layout.h"
 #include "numberInputPad.h"
@@ -38,12 +29,14 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   m_intMinimum(false, INT_MIN),
   m_doubleMaximum(false, 0.0),
   m_doubleMinimum(false, 0.0),
-  m_pressedButton( 0 )
+  m_pressedButton( 0 ),
+  m_closeOk(false),
+  m_disbaleNumberCheck( false )
 {
 #ifdef ANDROID
-  setFrameStyle(QFrame::Box | QFrame::Plain);
+  setFrameStyle( QFrame::Box );
 #else
-  setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
+  setFrameStyle( QFrame::StyledPanel );
 #endif
 
   setLineWidth( 3 * Layout::getIntScaledDensity() );
@@ -52,10 +45,10 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   palette.setColor(QPalette::WindowText, Qt::darkBlue);
   setPalette(palette);
 
-  setObjectName("NumberInputPad");
-  setWindowFlags(Qt::Tool);
+  setObjectName( "NumberInputPad" );
+  setWindowFlags( Qt::Window );
   setWindowModality( Qt::WindowModal );
-  setAttribute(Qt::WA_DeleteOnClose);
+  setAttribute( Qt::WA_DeleteOnClose );
 
   // Save the current state of the software input panel
   m_autoSip = qApp->autoSipEnabled();
@@ -148,7 +141,6 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   m_pm = new QPushButton( "+ -", this );
   m_pm->setMinimumWidth( minBW );
-  gl->addWidget( m_pm, row, 6 );
 
   row++;
 
@@ -335,17 +327,18 @@ void NumberInputPad::slot_ButtonPressed( QWidget* widget )
 
   if( button == m_decimal )
     {
-      if( m_editor->text().contains(".") == false )
+     if( m_disbaleNumberCheck == true ||
+          m_editor->text().contains( "." ) == false )
         {
           // First input of decimal point
-          m_editor->setSelection(m_editor->cursorPosition(), 1);
+          m_editor->setSelection( m_editor->cursorPosition(), 1 );
           m_editor->insert( "." );
         }
       else
         {
           // Check, if decimal point is at the old place. Under this condition
           // move cursor one position to the right and accept input.
-          if( m_editor->text().indexOf(".") == m_editor->cursorPosition() )
+          if( m_editor->text().indexOf( "." ) == m_editor->cursorPosition() )
             {
               m_editor->cursorForward( false );
             }
@@ -391,6 +384,11 @@ void NumberInputPad::slot_TextChanged( const QString& text )
   // Check input as integer value against the allowed maximum/minimum.
   bool ok;
   int iValue = text.toInt( &ok );
+
+  if( m_disbaleNumberCheck == true )
+    {
+      return;
+    }
 
   if( ok )
     {
@@ -466,6 +464,7 @@ void NumberInputPad::slot_Pm()
 
 void NumberInputPad::slot_Ok()
 {
+  m_closeOk = true;
   m_timerButton->stop();
   m_timerDigit->stop();
 
@@ -512,6 +511,7 @@ void NumberInputPad::slot_Ok()
 
 void NumberInputPad::slot_Close()
 {
+  m_closeOk = true;
   m_timerButton->stop();
   m_timerDigit->stop();
 
@@ -526,4 +526,19 @@ void NumberInputPad::slot_Close()
 void NumberInputPad::slot_closeWidget()
 {
   QWidget::close();
+}
+
+/**
+ * Catch the Close event, when the little x at the window frame is pressed.
+ */
+void NumberInputPad::closeEvent( QCloseEvent *event )
+{
+  if( m_closeOk == false )
+    {
+      // OhhhhHuuu the frame x button was pressed.
+      // Nothing should be changed, return initial number.
+      emit numberEdited( m_setNumber );
+    }
+
+  event->accept();
 }
