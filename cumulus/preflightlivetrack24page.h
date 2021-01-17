@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2018 Axel Pauli
+**   Copyright (c):  2013-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * submitted to the LiveTracking24 server during flight via an active Internet
  * connection, if the user has enabled that.
  *
- * \date 2013-2018
+ * \date 2013-2021
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
@@ -112,6 +112,11 @@ class PreFlightLiveTrack24Page : public QWidget
   /** Called to report the ping result. */
   void slotSkyLinesPingResult( quint32 result );
 
+  /**
+   * Called, if the password toggle button is pressed.
+   */
+  void slotTogglePassword();
+
  signals:
 
   /**
@@ -138,6 +143,8 @@ class PreFlightLiveTrack24Page : public QWidget
   QComboBox*    m_server;
   QLineEdit*    m_username;
   QLineEdit*    m_password;
+  bool          m_passwordIsHidden;
+  QPushButton*  m_logglePassword;
   QPushButton*  m_loginTestButton;
   QLabel*       m_sessionDisplay;
   QTimer*       m_updateTimer;

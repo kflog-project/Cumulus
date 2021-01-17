@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013-2018 by Axel Pauli
+ **   Copyright (c):  2013-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -39,6 +39,7 @@
 
 PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   QWidget(parent),
+  m_passwordIsHidden(true),
   m_updateTimer(0),
   m_slt(0)
 {
@@ -202,13 +203,26 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   lbl = new QLabel(tr("Password:"));
   topLayout->addWidget(lbl, row, 0);
 
+  QHBoxLayout* hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
   m_password = new QLineEdit;
-  m_password->setInputMethodHints(imh | m_password->inputMethodHints() );
+  m_password->setInputMethodHints( imh | m_password->inputMethodHints() );
+  m_password->setEchoMode( QLineEdit::Password );
+  hbox->addWidget( m_password );
 
-  connect( m_password, SIGNAL(returnPressed()),
-           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+  connect( m_password, SIGNAL( returnPressed() ), MainWindow::mainWindow(),
+           SLOT( slotCloseSip() ) );
 
-  topLayout->addWidget(m_password, row, 1);
+  connect( m_password, SIGNAL( returnPressed() ), MainWindow::mainWindow(),
+           SLOT( slotCloseSip() ) );
+
+  m_logglePassword = new QPushButton( tr( "Show" ) );
+
+  connect( m_logglePassword, SIGNAL( clicked() ), SLOT( slotTogglePassword() ) );
+
+  hbox->addWidget( m_logglePassword );
+  topLayout->addLayout( hbox, row, 1 );
   row++;
 
   m_loginTestButton = new QPushButton( tr("Login Test") );
@@ -646,4 +660,23 @@ void PreFlightLiveTrack24Page::slotSkyLinesPingResult( quint32 result )
   showLoginTestResult( msg );
   m_loginTestButton->setEnabled( true );
   m_slt->deleteLater();
+}
+
+/**
+ * Called, if the password toggle button is pressed.
+ */
+void PreFlightLiveTrack24Page::slotTogglePassword()
+{
+  if( m_passwordIsHidden == true )
+    {
+      m_passwordIsHidden = false;
+      m_password->setEchoMode( QLineEdit::Normal );
+      m_logglePassword->setText( tr( "Hide" ) );
+    }
+  else
+    {
+      m_passwordIsHidden = true;
+      m_password->setEchoMode( QLineEdit::Password );
+      m_logglePassword->setText( tr( "Show" ) );
+    }
 }
