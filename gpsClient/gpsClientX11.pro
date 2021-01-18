@@ -28,6 +28,8 @@ contains (QT_VERSION, ^5\\..*) {
 DEFINES += QT_5
 }
 
+# Enable TCP feature.
+QT += network
 
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += bluetooth

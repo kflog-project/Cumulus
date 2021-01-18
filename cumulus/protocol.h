@@ -6,14 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2012 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
 **   the Free Software Foundation; either version 2 of the License, or
 **   (at your option) any later version.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -29,7 +27,7 @@
 
 //------- Used by Command/Response channel -------//
 
-#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.5_Axel@kflog.org"
+#define MSG_PROTOCOL   "Cumulus-GPS_Client_IPC_V1.6_Axel@kflog.org"
 
 #define MSG_MAGIC      "\\Magic\\"
 
@@ -39,6 +37,12 @@
 
 // open connection to the GPS device "Open" <device> <speed>
 #define MSG_OPEN       "\\Open\\"
+
+// open one WiFi connection to the GPS device "Open_WiFi" <IP> <Port>
+#define MSG_OPEN_WIFI_1 "\\Open_WiFi_1\\"
+
+// open two WiFi connection to the GPS device "Open_WiFi_2" <IP1> <Port1> <IP2> <Port2>
+#define MSG_OPEN_WIFI_2 "\\Open_WiFi_2\\"
 
 // close connection to the GPS device
 #define MSG_CLOSE      "\\Close\\"

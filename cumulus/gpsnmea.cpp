@@ -110,7 +110,20 @@ GpsNmea::GpsNmea(QObject* parent) :
   // Load last used device
   gpsDevice = GeneralConfig::instance()->getGpsDevice();
 
-  serial = 0;
+  // Connector to the GPS data provider
+  connector = 0;
+
+  /** WiFi-1 IP Address */
+  wifi_1_Ip = GeneralConfig::instance()->getGpsWlanIp1();
+
+  /** WiFi-1 Port */
+  wifi_1_Port = GeneralConfig::instance()->getGpsWlanPort1();
+
+  /** WiFi-2 IP Address */
+  wifi_2_Ip = GeneralConfig::instance()->getGpsWlanIp2();
+
+  /** WiFi-2 Port */
+  wifi_2_Port = GeneralConfig::instance()->getGpsWlanPort2();
 
   nmeaLogFile = static_cast<QFile *> (0);
 
@@ -128,9 +141,9 @@ GpsNmea::~GpsNmea()
   instances--;
 
   // stop GPS client process
-  if ( serial )
+  if ( connector )
     {
-      delete serial;
+      delete connector;
     }
 
   if( nmeaLogFile )
@@ -260,7 +273,7 @@ void GpsNmea::resetDataObjects()
   // GPS source to be used
   _gpsSource = GeneralConfig::instance()->getGpsSource().left(3);
 
-    // Pressure device to be used.
+  // Pressure device to be used.
   _pressureDevice = GeneralConfig::instance()->getPressureDevice();
 
   // special logger items
@@ -297,9 +310,9 @@ void GpsNmea::createGpsConnection()
   // later. This is also valid hence Maemo5.
   QString callPath = GeneralConfig::instance()->getAppRoot() + "/bin";
 
-  serial = new GpsCon(this, callPath.toLatin1().data());
+  connector = new GpsCon(this, callPath.toLatin1().data());
 
-  gpsObject = serial;
+  gpsObject = connector;
 
   connect (gpsObject, SIGNAL(newSentence(const QString&)),
            this, SLOT(slot_sentence(const QString&)) );
@@ -347,11 +360,11 @@ void GpsNmea::enableReceiving( bool enable )
 
 #ifndef ANDROID
 
-  if ( serial )
+  if ( connector )
     {
       QSocketNotifier* notifier = static_cast<QSocketNotifier *> (0);
 
-      notifier = serial->getDaemonNotifier();
+      notifier = connector->getDaemonNotifier();
 
       if( notifier )
         {
@@ -369,9 +382,9 @@ void GpsNmea::startGpsReceiver()
 {
 #ifndef ANDROID
 
-  if ( serial )
+  if( connector )
     {
-      serial->startClientProcess();
+      connector->startClientProcess();
     }
 
 #endif
@@ -2708,17 +2721,17 @@ void GpsNmea::slot_reset()
 
   QString oldDevice = gpsDevice;
 
-  if ( gpsDevice != conf->getGpsDevice() )
+  if( gpsDevice != conf->getGpsDevice() )
     {
       // qDebug() << "slot_reset(): GPS Device changed";
       // GPS device has been changed by the user
       gpsDevice = conf->getGpsDevice();
 
-      if ( serial )
+      if( connector )
         {
-          serial->stopGpsReceiving();
-          delete serial;
-          serial = 0;
+          connector->stopGpsReceiving();
+          delete connector;
+          connector = 0;
         }
 
       // reset data objects
@@ -2730,20 +2743,38 @@ void GpsNmea::slot_reset()
       return;
     }
 
-  // no device modification, check serials baud rate
-  if ( serial )
+  if( connector != 0 )
     {
-      if ( serial->currentBautrate() != conf->getGpsSpeed() )
+      // No device modification
+      if( gpsDevice.startsWith( "/dev/tty" ) )
         {
-          // qDebug() << "slot_reset(): GPS Baudrate changed";
-          serial->stopGpsReceiving();
-          serial->startGpsReceiving();
+          // check serials baud rate
+          if( connector->currentBautrate() != conf->getGpsSpeed() )
+            {
+              // restart connector
+              connector->stopGpsReceiving();
+              connector->startGpsReceiving();
+            }
         }
+      else if( gpsDevice.startsWith( "WiFi" ) )
+        {
+          // Check, if WiFi data have been changed.
+          if( wifi_1_Ip != GeneralConfig::instance()->getGpsWlanIp1() ||
+              wifi_1_Port != GeneralConfig::instance()->getGpsWlanPort1() ||
+              wifi_2_Ip != GeneralConfig::instance()->getGpsWlanIp2() ||
+              wifi_2_Port != GeneralConfig::instance()->getGpsWlanPort2() )
+            {
+              // Take over new WiFi data from configuration
+              wifi_1_Ip = GeneralConfig::instance()->getGpsWlanIp1();
+              wifi_1_Port = GeneralConfig::instance()->getGpsWlanPort1();
+              wifi_2_Ip = GeneralConfig::instance()->getGpsWlanIp2();
+              wifi_2_Port = GeneralConfig::instance()->getGpsWlanPort2();
 
-      // @AP: Must we do that?
-      // bool hard = conf->getGpsHardStart();
-      // bool soft = conf->getGpsSoftStart();
-      // sendLastFix (hard, soft);
+                // restart connector
+              connector->stopGpsReceiving();
+              connector->startGpsReceiving();
+            }
+        }
     }
 
 #endif
@@ -2754,10 +2785,10 @@ void GpsNmea::slot_reset()
 
 bool GpsNmea::sendSentence(const QString command)
 {
-  if( serial )
+  if( connector )
     {
-      // Only a serial can forward commands to the GPS.
-      return serial->sendSentence( command );
+      // Only a connector can forward commands to the GPS.
+      return connector->sendSentence( command );
     }
 
   return false;
@@ -2788,14 +2819,14 @@ bool GpsNmea::sendSentence(const QString command)
 /** Requests a flight list from a Flarm device. */
 bool GpsNmea::getFlarmFlightList()
 {
-  if( serial )
+  if( connector )
     {
       // No GPS data are available, if flights are downloaded from Flarm.
       // The timer must be stopped to prevent TO actions.
       timeOutFix->stop();
 
-      // Only a serial can request a Flarm fight list.
-      return serial->getFlarmFlightList();
+      // Only a connector can request a Flarm fight list.
+      return connector->getFlarmFlightList();
     }
 
   return false;
@@ -2818,14 +2849,14 @@ bool GpsNmea::getFlarmFlightList()
 
 bool GpsNmea::getFlarmIgcFiles( QString& flightData )
 {
-  if( serial )
+  if( connector )
     {
       // No GPS data are available, if flights are downloaded from Flarm.
       // The timer must be stopped to prevent TO actions.
       timeOutFix->stop();
 
-      /// Only a serial can request a Flarm file download.
-      return serial->getFlarmIgcFiles( flightData );
+      /// Only a connector can request a Flarm file download.
+      return connector->getFlarmIgcFiles( flightData );
     }
 
   return false;
@@ -2847,14 +2878,14 @@ bool GpsNmea::getFlarmIgcFiles( QString& flightData )
 
 bool GpsNmea::flarmReset()
 {
-  if( serial )
+  if( connector )
     {
       // No GPS data are available, if flights are downloaded from Flarm.
       // The timer must be stopped to prevent TO actions.
       timeOutFix->stop();
 
-      /// Only a serial can request a Flarm reset.
-      return serial->flarmReset();
+      /// Only a connector can request a Flarm reset.
+      return connector->flarmReset();
     }
 
   return false;
@@ -2879,7 +2910,7 @@ bool GpsNmea::flarmReset()
 /** This slot is called to reset the gps device to factory settings */
 void GpsNmea::sendFactoryReset()
 {
-  if ( serial ) serial->sendSentence ("$PSRF104,0.0,0.0,0,0,0,0,12,8");
+  if ( connector ) connector->sendSentence ("$PSRF104,0.0,0.0,0,0,0,0,12,8");
 }
 
 
@@ -2888,7 +2919,7 @@ void GpsNmea::switchDebugging (bool on)
 {
   QString cmd;
   cmd.sprintf ("$PSRF105,%d", on);
-  if ( serial ) serial->sendSentence (cmd);
+  if ( connector ) connector->sendSentence (cmd);
 }
 
 /**
@@ -2950,22 +2981,22 @@ void GpsNmea::sendLastFix (bool hard, bool soft)
                  lat,lon,alt,_lastClockOffset,gps_seconds,gps_week,SATS,SOFT_RESET);
 
   if (!cmd.isEmpty())
-    if ( serial ) serial->sendSentence (cmd);
+    if ( connector ) connector->sendSentence (cmd);
 }
 #endif
 
 
-/** force a reset of the serial connection after a resume */
+/** force a reset of the connector connection after a resume */
 void GpsNmea::forceReset()
 {
   qDebug("GpsNmea::forceReset()");
 
 #ifndef ANDROID
 
-  if ( serial )
+  if ( connector )
     {
-      serial->stopGpsReceiving();
-      serial->startGpsReceiving();
+      connector->stopGpsReceiving();
+      connector->startGpsReceiving();
       slot_reset();
     }
 

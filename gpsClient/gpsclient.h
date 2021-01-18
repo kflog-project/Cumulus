@@ -6,14 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2012 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
 **   the Free Software Foundation; either version 2 of the License, or
 **   (at your option) any later version.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -22,17 +20,18 @@
  *
  * \author Axel Pauli
  *
- * \date 2004-2012
+ * \date 2004-2021
  *
  * \brief GPS client manager
  *
- * This class manages the connection and supervision to a GPS device via
- * different interfaces. Those can be:
+ * This class manages the connection and supervision to a GPS or other device
+ * via different interfaces. Those can be:
  *
  * a) RS232
  * b) USB
  * c) a named pipe
  * d) Bluetooth via RFCOMM
+ * c) 1-2 TCP sockets
  *
  * The communication between this client class and the Cumulus main
  * process is realized via two sockets. One socket for NMEA data message
@@ -49,6 +48,9 @@
 #include <QByteArray>
 #include <QQueue>
 #include <QSet>
+#include <QString>
+#include <QStringList>
+#include <QTcpSocket>
 #include <QTime>
 
 #include "ipc.h"
@@ -89,16 +91,33 @@ public:
   fd_set *getReadFdMask();
 
   /**
-   * Reads data from the connected GPS device.
+   * Reads NMEA data from the connected GPS device via tty, BT or pipe.
    *
    * @return true=success / false=unsuccess
    */
   bool readGpsData();
 
+  /**
+   * Reads NMEA data from the connected socket 1
+   *
+   * @return true=success / false=unsuccess
+   */
+  bool readSocket1Data();
+
+  /**
+   * Reads NMEA data from the connected socket 2
+   *
+   * @return true=success / false=unsuccess
+   */
+  bool readSocket2Data();
+
+  /**
+   * Writes data to the connected GPS device.
+   */
   int writeGpsData( const char *dataIn );
 
   /**
-   * Opens a connection to the GPS device.
+   * Opens a connection to the GPS device via tty, BT or pipe.
    *
    * \param deviceIn Name of the device.
    * \param ioSpeedIn Speed of the device.
@@ -107,7 +126,15 @@ public:
   bool openGps( const char *deviceIn, const uint ioSpeedIn );
 
   /**
-   * Closes the connection to the GPS device.
+   * Opens a connection to one or two NMEA sockets. E.g. XC-Vario. The socket
+   * data are contained in the class members so1Data and so2Data.
+   *
+   * \return True on success otherwise false.
+   */
+  bool openNmeaSockets();
+
+  /**
+   * CCloses all connections to the external GPS devices.
    */
   void closeGps();
 
@@ -155,7 +182,7 @@ public:
   };
 
   /**
-   * \return The current used device.
+   * \return The current used non socket device.
    */
   QByteArray getDevice() const { return device; }
 
@@ -217,7 +244,7 @@ public:
 
   private:
 
-  // Used GPS device. Can be a /dev/... device name, a named pipe or a
+  // Used GPS device. Can be a tty device name, a named pipe or a
   // Bluetooth address.
   QByteArray device;
 
@@ -231,8 +258,23 @@ public:
 
   int   dbsize;
 
-  // file descriptor to GPS device
+  // file descriptor to TTY GPS device
   int fd;
+
+  // TCP socket 1 to e.g.XC-Vario data channel
+  QTcpSocket* so1;
+
+  // IP and port data of socket 1
+  QStringList so1Data;
+
+  // TCP socket 2 to e.g.XC-Vario Flarm data channel
+  QTcpSocket* so2;
+
+  // IP and port data of socket 2
+  QStringList so2Data;
+
+  // Pointer to Flarm socket
+  QTcpSocket* soFlarm;
 
   // terminal info data
   struct termios oldtio, newtio;
@@ -282,7 +324,6 @@ public:
 
   /** Timeout control for Flarm IGC download. */
   QTime downloadTimeControl;
-
 };
 
 #endif

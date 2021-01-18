@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2018 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@
 #undef DEBUG
 #endif
 
+#define DEBUG
+
 // #define DEBUG_NMEA 1
 
 // Switch this on for permanent error logging. That will display
@@ -57,6 +59,8 @@
 #ifdef ERROR_LOG
 #undef ERROR_LOG
 #endif
+
+#define ERROR_LOG
 
 // Define connection lost timeout in milli seconds
 #define TO_CONLOST  10000
@@ -69,6 +73,9 @@ GpsClient::GpsClient( const ushort portIn )
   ioSpeedDevice    = 0;
   ipcPort          = portIn;
   fd               = -1;
+  so1              = 0;
+  so2              = 0;
+  soFlarm          = 0;
   forwardGpsData   = true;
   connectionLost   = true;
   shutdown         = false;
@@ -83,7 +90,7 @@ GpsClient::GpsClient( const ushort portIn )
       if( clientData.connect2Server( IPC_IP, ipcPort ) == -1 )
         {
           qCritical() << "Command channel Connection to Cumulus Server failed!"
-                      << "Fatal error, terminate process!" << endl;
+                      << "Fatal error, terminate process!";
 
           setShutdownFlag(true);
           return;
@@ -132,6 +139,28 @@ fd_set *GpsClient::getReadFdMask()
       if( sfd != -1 )
         {
           FD_SET( sfd, &fdMask );
+        }
+    }
+
+  // WiFi socket 1
+  if( so1 != 0 and so1->isOpen() == true )
+    {
+      int sd1 = so1->socketDescriptor();
+
+      if( sd1 != -1 )
+        {
+          FD_SET( sd1, &fdMask );
+        }
+    }
+
+  // WiFi socket 2
+  if( so2 != 0 and so2->isOpen() == true )
+    {
+      int sd2 = so2->socketDescriptor();
+
+      if( sd2 != -1 )
+        {
+          FD_SET( sd2, &fdMask );
         }
     }
 
@@ -206,9 +235,59 @@ void GpsClient::processEvent( fd_set *fdMask )
             }
         }
     }
+
+  // Look, if WiFi sockets are used.
+  int sd1 = -1;
+  int sd2 = -1;
+
+  if( so1 != 0 )
+    {
+      sd1 = so1->socketDescriptor();
+    }
+
+  if( so2 != 0 )
+    {
+      sd2 = so2->socketDescriptor();
+    }
+
+  // WiFi socket 1
+  if( sd1 != -1 && FD_ISSET( sd1, fdMask ) )
+    {
+      if( readSocket1Data() == false )
+        {
+          // Error occured, we close the socket and try a reconnect.
+          closeGps();
+
+          if( so1->error() == QAbstractSocket::ConnectionRefusedError )
+            {
+              // TCP devices can reject a connection try. If we don't return here
+              // we run in an endless loop.
+               setShutdownFlag(true);
+            }
+        }
+    }
+
+  // WiFi socket 2
+  if( sd2 != -1 && FD_ISSET( sd2, fdMask ) )
+    {
+      if( readSocket2Data() == false )
+        {
+          // Error occured, we close the socket and try a reconnect.
+          closeGps();
+
+          if( so2->error() == QAbstractSocket::ConnectionRefusedError )
+            {
+              // TCP devices can reject a connection try. If we don't return here
+              // we run in an endless loop.
+               setShutdownFlag(true);
+            }
+        }
+    }
 }
 
-// returns true=success / false=unsuccess
+/**
+ * Reads NMEA data from the connected GPS device via tty, BT or pipe.
+ */
 bool GpsClient::readGpsData()
 {
   if( fd == -1 ) // no connection is active
@@ -273,7 +352,7 @@ bool GpsClient::readGpsData()
   return true;
 }
 
-// Sends a NMEA sentence to the GPS. Check sum will be calculated by
+// Sends a NMEA sentence to the connected GPS. Check sum will be calculated by
 // this routine. Don't add an asterix at the end of the sentence. It
 // will be part of the check sum.
 int GpsClient::writeGpsData( const char *sentence )
@@ -286,8 +365,7 @@ int GpsClient::writeGpsData( const char *sentence )
     }
 
   uchar csum = calcCheckSum( sentence );
-  QString check;
-  check.sprintf ("*%02X\r\n", csum);
+  QString check = QString( "*%1X\r\n" ).arg( csum, 2, 16, QChar('0') ).toUpper();
   QString cmd (sentence + check);
 
 #ifdef DEBUG_NMEA
@@ -308,7 +386,177 @@ int GpsClient::writeGpsData( const char *sentence )
   return result;
 }
 
-// Opens the connection to the GPS. All old messages in the queue are removed.
+/**
+ * Reads NMEA data from the connected socket 1
+ *
+ * @return true=success / false=unsuccess
+ */
+bool GpsClient::readSocket1Data()
+{
+  char buffer[256];
+  qint64 bytes = 0;
+
+  // This method must be called, otherwise no data is read because the absense
+  // of a Qt mainloop.
+  so1->waitForReadyRead(0);
+
+  do
+    {
+      // read NMEA sentence, it ends with crlf
+      bytes = so1->readLine( buffer, 256 );
+
+      if( bytes <= 0 )
+        {
+          // all read or error
+          break;
+        }
+
+      // qDebug() << "SO_1 Data:" << buffer;
+
+      if( verifyCheckSum( buffer ) == false )
+        {
+          // ignore sentence with bad checksum
+          continue;
+        }
+
+      // Forward sentence to the server, if checksum is ok and
+      // processing is desired.
+      // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
+      // AP 2018: we forward all sentences now.
+      if( forwardGpsData == true )
+        {
+          QByteArray ba;
+          ba.append( MSG_GPS_DATA );
+          ba.append( ' ' );
+          ba.append( buffer );
+          writeForwardMsg( ba.data() );
+
+          if( ba.startsWith( "$PFLAU" ) )
+            {
+              // Flarm channel detected, remember it.
+              soFlarm = so1;
+            }
+        }
+
+    }  while( bytes > 0 );
+
+  if( bytes == -1 )
+    {
+      QString error = so1->errorString();
+
+      if( error.isEmpty() == false )
+        {
+          qWarning() << "GpsClient::readSocket1Data(): Socket Error:"
+                     << error;
+        }
+
+      return false;
+    }
+
+#ifdef FLARM
+
+      if( ! activateTimeout )
+        {
+          // update supervision timer/variables
+          last.start();
+        }
+
+#endif
+
+  connectionLost = false;
+
+  return true;
+}
+
+/**
+ * Reads NMEA data from the connected socket 2
+ *
+ * @return true=success / false=unsuccess
+ */
+bool GpsClient::readSocket2Data()
+{
+  char buffer[256];
+  qint64 bytes = 0;
+
+  // This method must be called, otherwise no data is read because the absense
+  // of a Qt mainloop.
+  so2->waitForReadyRead(0);
+
+  do
+    {
+      // read NMEA sentence, it ends with crlf
+      bytes = so2->readLine( buffer, 256 );
+
+      if( bytes <= 0 )
+        {
+          // all read or error
+          break;
+        }
+
+      // qDebug() << "SO_2 Data:" << buffer;
+
+      if( verifyCheckSum( buffer ) == false )
+        {
+          // ignore sentence with bad checksum
+          continue;
+        }
+
+      // Forward sentence to the server, if checksum is ok and
+      // processing is desired.
+      // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
+      // AP 2018: we forward all sentences now.
+      if( forwardGpsData == true )
+        {
+          QByteArray ba;
+          ba.append( MSG_GPS_DATA );
+          ba.append( ' ' );
+          ba.append( buffer );
+          writeForwardMsg( ba.data() );
+
+          if( ba.startsWith( "$PFLAU" ) )
+            {
+              // Flarm channel detected, remember it.
+              soFlarm = so2;
+            }
+        }
+
+    }  while( bytes > 0 );
+
+  if( bytes == -1 )
+    {
+      QString error = so2->errorString();
+
+      if( error.isEmpty() == false )
+        {
+          qWarning() << "GpsClient::readSocket1Data(): Socket Error:"
+                     << error;
+        }
+
+      return false;
+    }
+
+#ifdef FLARM
+
+      if( ! activateTimeout )
+        {
+          // update supervision timer/variables
+          last.start();
+        }
+
+#endif
+
+  connectionLost = false;
+
+  return true;
+}
+
+/**
+ * Opens a connection to the GPS device via tty, BT or pipe.
+ *
+ * \param deviceIn Name of the device.
+ * \param ioSpeedIn Speed of the device.
+ * \return True on success otherwise false.
+ */
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
   qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
@@ -389,6 +637,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       if( ret && errno != EEXIST )
         {
           perror("mkfifo");
+          last.start(); // store time point for restart control
+          return false;
         }
     }
 
@@ -413,7 +663,7 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     {
       // Fifo needs no serial initialization.
       // Write a notice for the user about that fact
-      if( device.startsWith("/dev/") )
+      if( device.startsWith("/dev/tty") )
         {
           qDebug() << "GpsClient::openGps: Device '"
                     << deviceIn
@@ -483,6 +733,98 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
     }
 
   last.start(); // store time point for supervision control
+  return true;
+}
+
+/**
+ * Opens a connection to one or two NMEA sockets. E.g. XC-Vario. The socket
+ * data are contained in the class members so1Data and so2Data.
+ *
+ * \return True on success otherwise false.
+ */
+bool GpsClient::openNmeaSockets()
+{
+  qDebug() << "GpsClient::openNmeaSockets() is called";
+
+  if( so1Data.size() == 0 && so2Data.size() == 0 )
+    {
+      qWarning() << "GpsClient::openNmeaSockets():"
+                 << "No socket data available!";
+
+      // No socket data are available
+      return false;
+    }
+
+  badSentences = 0;
+  unknownsReported.clear();
+
+  // Reset Flarm channel
+  soFlarm = 0;
+
+  // Check for old sockets, close and delete them
+  if( so1 != 0 || so2 != 0 )
+    {
+      // First close old existing connections
+      closeGps();
+      sleep(2);
+    }
+
+  if( so1Data.size() > 0 )
+    {
+      // Create a TCP socket
+      so1 = new QTcpSocket( 0 );
+      so1->setSocketOption( QAbstractSocket::LowDelayOption, QVariant( 1 ).toInt() );
+      //so1->setSocketOption( QAbstractSocket::KeepAliveOption, QVariant( 1 ).toInt() );
+      so1->connectToHost( so1Data[0], so1Data[1].toUShort() );
+
+      if( so1->waitForConnected( 2000 ) == false )
+        {
+          // We wait 2s for the connection success
+          qCritical( ) << "GpsClient::openNmeaSockets(): connection error"
+                       << so1Data[0] << so1Data[1] << so1->error()
+                       << so1->errorString();
+          so1->close();
+          delete so1;
+          so1 = 0;
+
+          last = QTime();
+          setShutdownFlag( true );
+          return false;
+        }
+
+      last.start(); // store time point for supervision control
+
+      qDebug() << "WiFi-1 connected to" << so1Data[0] << ":" << so1Data[1];
+    }
+
+  if( so2Data.size() > 0 )
+    {
+      // Create one TCP socket
+      so2 = new QTcpSocket( 0 );
+      so2->setSocketOption( QAbstractSocket::LowDelayOption, QVariant( 1 ).toInt() );
+      //so2->setSocketOption( QAbstractSocket::KeepAliveOption, QVariant( 1 ).toInt() );
+      so2->connectToHost( so2Data[0], so2Data[1].toUShort() );
+
+      if( so2->waitForConnected( 2000 ) == false )
+        {
+          // We wait 2s for the connection success
+          qCritical( ) << "GpsClient::openNmeaSockets(): connection error"
+                       << so2Data[0] << so2Data[1] << so2->error()
+                       << so2->errorString();
+          so2->close();
+          delete so2;
+          so2 = 0;
+
+          last = QTime();
+          setShutdownFlag( true );
+          return false;
+        }
+
+      last.start(); // store time point for supervision control
+
+      qDebug() << "WiFi-2 connected to" << so2Data[0] << ":" << so2Data[1];
+    }
+
   return true;
 }
 
@@ -558,7 +900,7 @@ void GpsClient::readSentenceFromBuffer()
 }
 
 /**
- * closes the connection to the GPS device
+ * Closes all connections to the external GPS devices.
  */
 void GpsClient::closeGps()
 {
@@ -577,6 +919,31 @@ void GpsClient::closeGps()
 
       close(fd);
       fd = -1;
+    }
+
+  // Reset Flarm socket
+  soFlarm = 0;
+
+  if( so1 != 0 )
+    {
+      if( so1->openMode() != QIODevice::NotOpen )
+        {
+          so1->close();
+        }
+
+      delete so1;
+      so1 = 0;
+    }
+
+  if( so2 != 0 )
+    {
+      if( so2->openMode() != QIODevice::NotOpen )
+        {
+          so2->close();
+        }
+
+      delete so2;
+      so2 = 0;
     }
 
   connectionLost = true;
@@ -748,10 +1115,21 @@ void GpsClient::toController()
           sleep(3); // wait before a restart is tried
         }
 
-      // try to reconnect to the GPS receiver
-      if( openGps( device.data(), ioSpeedDevice ) == false )
+      // Try to reconnect to the GPS receiver, if a device is defined
+      if( device.size() > 0 )
         {
-          last.start(); // set next retry time point
+          if( openGps( device.data(), ioSpeedDevice ) == false )
+            {
+              last.start(); // set next retry time point
+            }
+        }
+      else if( so1 != 0 || so2 != 0 )
+        {
+          // Try to reconnect the socket connections.
+          if( openNmeaSockets() == false )
+            {
+              last.start(); // set next retry time point
+            }
         }
     }
 }
@@ -778,7 +1156,7 @@ void GpsClient::readServerMsg()
     {
       // such messages length are not defined. we will ignore that.
       qWarning() << method
-                  << "message" << msgLen << "too large, ignoring it!";
+                 << "message" << msgLen << "too large, ignoring it!";
 
       setShutdownFlag(true);
       return; // Error occurred
@@ -802,27 +1180,14 @@ void GpsClient::readServerMsg()
   qDebug() << method << "Received Message:" << buf;
 #endif
 
-  // Split the received message into its two parts. Space is used as separator
+  // Split the received message into its parts. Space is used as separator
   // between the command word and the optional content of the message.
   QString qbuf( buf );
 
   delete[] buf;
   buf = 0;
 
-  int spaceIdx = qbuf.indexOf( QChar(' ') );
-
-  QStringList args;
-
-  if( spaceIdx == -1 || qbuf.size() == spaceIdx )
-    {
-      args.append(qbuf);
-      args.append("");
-    }
-  else
-    {
-      args.append(qbuf.left(spaceIdx));
-      args.append(qbuf.mid(spaceIdx+1));
-    }
+  QStringList args = qbuf.split( " " );
 
   // look, what the server is requesting
  if( MSG_MAGIC == args[0] )
@@ -844,17 +1209,15 @@ void GpsClient::readServerMsg()
     }
   else if( MSG_OPEN == args[0] )
     {
-      QStringList devArgs = args[1].split(QChar(' '));
-
-      if( devArgs.size() == 2 )
+      if( args.size() == 2 )
         {
-          // Initialization of GPS device is requested. The message
-          // consists of two parts separated by spaces.
+          // A connection via tty or pipe to the GPS device is requested. The
+          // message consists of two parts separated by spaces.
           // 1) device name
           // 2) io speed
-          bool res = openGps( devArgs[0].toLatin1().data(), devArgs[1].toUInt() );
+          bool res = openGps( args[0].toLatin1().data(), args[1].toUInt() );
 
-          if( res )
+          if( res == true )
             {
               writeServerMsg( MSG_POS );
             }
@@ -862,6 +1225,65 @@ void GpsClient::readServerMsg()
             {
               writeServerMsg( MSG_NEG );
             }
+        }
+    }
+  else if( MSG_OPEN_WIFI_1 == args[0] )
+    {
+      if( args.size() == 3 )
+        {
+          // A socket connection to the GPS device is requested. The message
+          // consists of two parts separated by spaces.
+          // 1) IP address
+          // 2) IP port
+          so1Data.clear();
+
+          // save IP and port
+          so1Data.append( args[1] );
+          so1Data.append( args[2] );
+
+          // remove the tty device name
+          device.clear();
+         }
+
+      bool res = openNmeaSockets();
+
+      if( res == true )
+        {
+          writeServerMsg( MSG_POS );
+        }
+      else
+        {
+          writeServerMsg( MSG_NEG );
+        }
+    }
+  else if( MSG_OPEN_WIFI_2 == args[0] )
+    {
+      if( args.size() == 5 )
+        {
+          so1Data.clear();
+          so2Data.clear();
+
+          // WiFi 1 save IP and port
+          so1Data.append( args[1] );
+          so1Data.append( args[2] );
+
+          // WiFi 2 save IP and port
+          so2Data.append( args[3] );
+          so2Data.append( args[4] );
+
+          // remove the tty device name
+          device.clear();
+        }
+
+      bool res = openNmeaSockets();
+
+      if( res == true )
+        {
+          writeServerMsg( MSG_POS );
+        }
+      else
+        {
+          writeServerMsg( MSG_NEG );
         }
     }
   else if( MSG_CLOSE == args[0] )

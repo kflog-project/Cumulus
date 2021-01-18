@@ -114,7 +114,7 @@ class SettingsPageGPS : public QWidget
   void load();
 
   /** Called to save the configuration file data.*/
-  void save();
+  bool save();
 
   QComboBox*     GpsSource;
   QComboBox*     PressureDevice;

@@ -27,9 +27,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2020
+ * \date 2002-2021
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #ifndef GPS_NMEA_H
@@ -783,14 +783,26 @@ class GpsNmea : public QObject
     /** pressure device to be taken for pressure data */
     QString _pressureDevice;
 
+    /** WiFi-1 IP Address */
+    QString wifi_1_Ip;
+
+    /** WiFi-1 Port */
+    QString wifi_1_Port;
+
+    /** WiFi-2 IP Address */
+    QString wifi_2_Ip;
+
+    /** WiFi-2 Port */
+    QString wifi_2_Port;
+
 #ifndef ANDROID
-    /** The reference to the used serial connection */
-    GpsCon* serial;
+    /** The reference to the used GPS connector */
+    GpsCon* connector;
 #endif
 
 #ifdef ANDROID
-    /** Fake a serial connection pointer for Android. */
-    QObject* serial;
+    /** Fake a GPS connection pointer for Android. */
+    QObject* connector;
 #endif
 
     /** Flag to enable/disable the GPS data processing. */

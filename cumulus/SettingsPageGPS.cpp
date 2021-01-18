@@ -175,6 +175,7 @@ WiFi2_PasswordIsHidden( true )
 
   WiFi1_IP = new NumberEditor( this );
   WiFi1_IP->disableNumberCheck( true );
+  WiFi1_IP->allowEmptyResult( true );
   WiFi1_IP->setDecimalVisible( true );
   WiFi1_IP->setPmVisible( false );
   WiFi1_IP->setMaxLength( 15 );
@@ -190,6 +191,7 @@ WiFi2_PasswordIsHidden( true )
   hbox->addWidget( label );
 
   WiFi1_Port = new NumberEditor( this );
+  WiFi1_Port->allowEmptyResult( true );
   WiFi1_Port->setDecimalVisible( false );
   WiFi1_Port->setPmVisible( false );
   WiFi1_Port->setMaxLength( 5 );
@@ -203,6 +205,7 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addLayout( hbox, row++, 1 );
 
   //----------------------------------------------------------------------------
+#if 0
   label = new QLabel( tr( "WiFi-1 Password" ) );
   topLayout->addWidget( label, row, 0 );
 
@@ -221,6 +224,7 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addLayout( hbox, row++, 1 );
 
   connect( WiFi1_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw1() ) );
+#endif
 
   //----------------------------------------------------------------------------
   label = new QLabel( tr( "WiFi-2 IP : Port" ), this );
@@ -231,6 +235,7 @@ WiFi2_PasswordIsHidden( true )
 
   WiFi2_IP = new NumberEditor( this );
   WiFi2_IP->disableNumberCheck( true );
+  WiFi2_IP->allowEmptyResult( true );
   WiFi2_IP->setDecimalVisible( true );
   WiFi2_IP->setPmVisible( false );
   WiFi2_IP->setMaxLength( 15 );
@@ -246,6 +251,7 @@ WiFi2_PasswordIsHidden( true )
   hbox->addWidget( label );
 
   WiFi2_Port = new NumberEditor( this );
+  WiFi2_Port->allowEmptyResult( true );
   WiFi2_Port->setDecimalVisible( false );
   WiFi2_Port->setPmVisible( false );
   WiFi2_Port->setMaxLength( 5 );
@@ -258,10 +264,11 @@ WiFi2_PasswordIsHidden( true )
   hbox->addWidget( WiFi2_Port, 1 );
   topLayout->addLayout( hbox, row++, 1 );
 
+  //----------------------------------------------------------------------------
+#if 0
   label = new QLabel( tr( "WiFi-2 Password" ) );
   topLayout->addWidget( label, row, 0 );
 
-  //----------------------------------------------------------------------------
   hbox = new QHBoxLayout();
   hbox->setMargin( 0 );
 
@@ -277,7 +284,7 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addLayout( hbox, row++, 1 );
 
   connect( WiFi2_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw2() ) );
-
+#endif
 
 #ifndef MAEMO
   topLayout->setRowMinimumHeight( row++, 10);
@@ -375,7 +382,11 @@ void SettingsPageGPS::slotHelp()
 
 void SettingsPageGPS::slotAccept()
 {
-  save();
+  if( save() == false )
+    {
+      return;
+    }
+
   emit settingsChanged();
   QWidget::close();
 }
@@ -434,7 +445,6 @@ void SettingsPageGPS::load()
 
   if( GpsDev->currentText().startsWith( "/dev/tty" ) == false )
     {
-      qDebug() << "DEv" << GpsDev->currentText();
       // switch off access to speed box, when no tty is selected
       GpsSpeed->setVisible( false );
       GpsSpeedLabel->setVisible( false );
@@ -442,11 +452,14 @@ void SettingsPageGPS::load()
 
   WiFi1_IP->setText( conf->getGpsWlanIp1() );
   WiFi1_Port->setText( conf->getGpsWlanPort1() );
+#if 0
   WiFi1_Password->setText( conf->getGpsWlanPassword1() );
-
+#endif
   WiFi2_IP->setText( conf->getGpsWlanIp2() );
   WiFi2_Port->setText( conf->getGpsWlanPort2() );
+#if 0
   WiFi2_Password->setText( conf->getGpsWlanPassword2() );
+#endif
 
 #ifndef MAEMO
   checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
@@ -456,7 +469,7 @@ void SettingsPageGPS::load()
 }
 
 /** Called to initiate saving to the configuration file. */
-void SettingsPageGPS::save()
+bool SettingsPageGPS::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
@@ -471,13 +484,69 @@ void SettingsPageGPS::save()
       emit newPressureDevice( PressureDevice->currentText() ); // informs GpsNmea
     }
 
+  QString gpsDevice = GpsDev->currentText();
+
+  if( gpsDevice == WIFI_1 || gpsDevice == WIFI_1_2 )
+    {
+      if( WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty() )
+        {
+          // IP address and port are required, when service is switched on!
+          QString msg = QString(
+              tr( "<html>WiFi-1 IP or Port entry are missing!"
+                  "<br><br>Please add the missing items.</html>" ) );
+
+           QMessageBox mb( QMessageBox::Warning,
+                           tr( "WiFi-1 data missing" ),
+                           msg,
+                           QMessageBox::Ok,
+                           this );
+ #ifdef ANDROID
+           mb.show();
+           QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                            height()/2 - mb.height()/2 ));
+           mb.move( pos );
+ #endif
+           mb.exec();
+           return false;
+        }
+    }
+
+  if( gpsDevice == WIFI_2 || gpsDevice == WIFI_1_2 )
+    {
+      if( WiFi2_IP->text().isEmpty() || WiFi2_Port->text().isEmpty() )
+        {
+          // IP address and port are required, when service is switched on!
+          QString msg = QString(
+              tr( "<html>WiFi-2 IP or Port entry are missing!"
+                  "<br><br>Please add the missing items.</html>" ) );
+
+           QMessageBox mb( QMessageBox::Warning,
+                           tr( "WiFi-2 data missing" ),
+                           msg,
+                           QMessageBox::Ok,
+                           this );
+ #ifdef ANDROID
+           mb.show();
+           QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                            height()/2 - mb.height()/2 ));
+           mb.move( pos );
+ #endif
+           mb.exec();
+           return false;
+        }
+    }
+
   conf->setGpsWlanIp1( WiFi1_IP->text() );
   conf->setGpsWlanPort1( WiFi1_Port->text() );
+#if 0
   conf->setGpsWlanPassword1( WiFi1_Password->text() );
+#endif
 
   conf->setGpsWlanIp2( WiFi2_IP->text() );
   conf->setGpsWlanPort2( WiFi2_Port->text() );
+#if 0
   conf->setGpsWlanPassword2( WiFi2_Password->text() );
+#endif
 
 #ifndef MAEMO
   conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
@@ -500,6 +569,7 @@ void SettingsPageGPS::save()
     }
 
   conf->save();
+  return( true );
 }
 
 /**

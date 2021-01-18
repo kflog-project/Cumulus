@@ -6,14 +6,12 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2013 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -195,6 +193,7 @@ GpsCon::~GpsCon()
  * b) USB
  * c) BT via RFCOMM
  * d) MAEMO Location service
+ * e) WiFi one or two channels
  */
 bool GpsCon::startGpsReceiving()
 {
@@ -250,14 +249,39 @@ bool GpsCon::startGpsReceiving()
         }
 #endif
 
+      else if( gpsDevice == WIFI_1 )
+        {
+          // one WiFi channel shall be used
+          QString ip = conf->getGpsWlanIp1();
+          QString port = conf->getGpsWlanPort1();
+          msg = QString("%1 %2 %3").arg(MSG_OPEN_WIFI_1).arg(ip).arg(port);
+        }
+      else if( gpsDevice == WIFI_2 )
+        {
+          // one WiFi channel shall be used
+          QString ip = conf->getGpsWlanIp2();
+          QString port = conf->getGpsWlanPort2();
+          msg = QString("%1 %2 %3").arg(MSG_OPEN_WIFI_1).arg(ip).arg(port);
+        }
+      else if( gpsDevice == WIFI_1_2 )
+        {
+          // one WiFi channel shall be used
+          QString ip1 = conf->getGpsWlanIp1();
+          QString port1 = conf->getGpsWlanPort1();
+          QString ip2 = conf->getGpsWlanIp2();
+          QString port2 = conf->getGpsWlanPort2();
+          msg = QString("%1 %2 %3 %4 %5").arg(MSG_OPEN_WIFI_2)
+                                         .arg(ip1).arg(port1)
+                                         .arg(ip2).arg(port2);
+        }
       else
         {
           // Using RS232, USB or Pipe device.
           msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(gpsDevice).arg(QString::number(ioSpeed));
         }
 
-      writeClientMessage(0, msg.toLatin1().data());
-      readClientMessage(0, msg);
+      writeClientMessage( 0, msg.toLatin1().data() );
+      readClientMessage( 0, msg );
 
       if (msg == MSG_NEG)
         {
