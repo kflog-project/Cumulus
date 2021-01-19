@@ -344,6 +344,10 @@ void GpsNmea::createGpsConnection()
   connect (gpsObject, SIGNAL(gpsConnectionOn()),
            this, SLOT( _slotGpsConnectionOn()) );
 
+  // Broadcasts an device error report from the GPS client
+  connect (gpsObject, SIGNAL(deviceReport( const QString&, int ) ),
+           this, SIGNAL( deviceReport( const QString&, int ) ) );
+
 #endif
 }
 
@@ -3112,7 +3116,7 @@ void GpsNmea::setSystemClock( const QDateTime& utcDt )
   // set flag to avoid reporting of connection lost
   _ignoreConnectionLost = true;
 
-  _globalMapView->message( tr( "System clock synchronized" ) );
+  emit deviceReport( tr( "System clock synchronized" ), 3000 );
 
   free( noTZ );
   free( utcTZ );

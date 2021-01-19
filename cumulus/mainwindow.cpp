@@ -780,7 +780,8 @@ void MainWindow::slotCreateApplicationWidgets()
            viewWP, SLOT( slot_reloadList() ) );
   connect( _globalMapContents, SIGNAL( mapDataReloaded() ),
            viewTP, SLOT( slot_updateTask() ) );
-
+  connect( GpsNmea::gps, SIGNAL( deviceReport( const QString&, int ) ),
+           viewMap, SLOT( slot_message(const QString&, int )) );
   connect( GpsNmea::gps, SIGNAL( newBugs(const unsigned short) ),
            calculator, SLOT( slot_ExternalBugs(const unsigned short) ) );
   connect( GpsNmea::gps, SIGNAL( newVario(const Speed&) ),
@@ -836,7 +837,7 @@ void MainWindow::slotCreateApplicationWidgets()
                                             const double,
                                             const double)) );
 
-  #ifdef FLARM
+#ifdef FLARM
   connect( GpsNmea::gps, SIGNAL( newFlarmCount(int) ),
            viewMap, SLOT( slot_FlarmCount(int) ) );
 #endif
@@ -2875,7 +2876,7 @@ void MainWindow::slotEnsureVisible()
         }
       else
         {
-          viewMap->message( tr( "Waypoint out of map range." ) );
+          viewMap->slot_message( tr( "Waypoint out of map range." ), 5000 );
         }
     }
 }

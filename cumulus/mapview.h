@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2015 by Axel Pauli
+                               2008-2021 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -277,6 +277,11 @@ class MapView : public QWidget
      * This slot is called if a info message shall be displayed
      */
     void slot_info( const QString& info );
+
+    /**
+     * Show a message in the whole status bar.
+     */
+    void slot_message( const QString& message, int ms );
 
     /**
      * This slot is called if the settings have been changed.

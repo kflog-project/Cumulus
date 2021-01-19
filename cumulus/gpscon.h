@@ -168,17 +168,23 @@ class GpsCon : public QObject
 
   signals:
     /**
-     * This signal is send every time a new sentence has arrived.
+     * This signal is emitted every time a new sentence has arrived.
      */
     void newSentence(const QString& sentence);
 
     /**
-     * This signal is send, if the GPS connection has been lost.
+     * This signal is emitted to report a device message coming
+     * in from the GPS Client process.
+     */
+    void deviceReport( const QString& error, int msShowTime );
+
+    /**
+     * This signal is emitted, if the GPS connection has been lost.
      */
     void gpsConnectionOff();
 
     /**
-     * This signal is send, if the GPS connection has been established.
+     * This signal is emitted, if the GPS connection has been established.
      */
     void gpsConnectionOn();
 

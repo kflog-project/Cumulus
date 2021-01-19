@@ -1556,7 +1556,7 @@ void MapView::slot_openManualWind()
  * @writes a message into the status bar for the given time. Default
  * is 5s. If time is zero, the message will never disappear.
  */
-void MapView::message( const QString& message, int ms )
+void MapView::slot_message( const QString& message, int ms )
 {
   _statusbar->showMessage( message, ms );
 }

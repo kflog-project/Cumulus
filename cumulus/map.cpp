@@ -2872,7 +2872,7 @@ void Map::slotZoomIn()
 
   scheduleRedraw();
   QString msg = QString(tr("Zoom scale 1:%1")).arg(m_zoomFactor, 0, 'f', 0);
-  _globalMapView->message( msg );
+  _globalMapView->slot_message( msg, 1000 );
 }
 
 /** Used . Will schedule a redraw. */
@@ -2927,7 +2927,7 @@ void Map::slotZoomOut()
 
   scheduleRedraw();
   QString msg = QString(tr("Zoom scale 1:%1")).arg(m_zoomFactor, 0, 'f', 0);
-  _globalMapView->message( msg );
+  _globalMapView->slot_message( msg, 2000 );
 }
 
 /**

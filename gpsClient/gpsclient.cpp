@@ -48,8 +48,6 @@
 #undef DEBUG
 #endif
 
-#define DEBUG
-
 // #define DEBUG_NMEA 1
 
 // Switch this on for permanent error logging. That will display
@@ -75,7 +73,7 @@ GpsClient::GpsClient( const ushort portIn )
   fd               = -1;
   so1              = 0;
   so2              = 0;
-  soFlarm          = 0;
+  flarmFd          = -1;
   forwardGpsData   = true;
   connectionLost   = true;
   shutdown         = false;
@@ -253,7 +251,7 @@ void GpsClient::processEvent( fd_set *fdMask )
   // WiFi socket 1
   if( sd1 != -1 && FD_ISSET( sd1, fdMask ) )
     {
-      if( readSocket1Data() == false )
+      if( readNmeaSocketData( so1, so1Data ) == false )
         {
           // Error occured, we close the socket and try a reconnect.
           closeGps();
@@ -270,7 +268,7 @@ void GpsClient::processEvent( fd_set *fdMask )
   // WiFi socket 2
   if( sd2 != -1 && FD_ISSET( sd2, fdMask ) )
     {
-      if( readSocket2Data() == false )
+      if( readNmeaSocketData( so2, so2Data ) == false )
         {
           // Error occured, we close the socket and try a reconnect.
           closeGps();
@@ -279,7 +277,7 @@ void GpsClient::processEvent( fd_set *fdMask )
             {
               // TCP devices can reject a connection try. If we don't return here
               // we run in an endless loop.
-               setShutdownFlag(true);
+              setShutdownFlag( true );
             }
         }
     }
@@ -322,7 +320,11 @@ bool GpsClient::readGpsData()
   if( bytes == -1 )
     {
       qWarning() << "GpsClient::readGpsData(): Read error"
-                  << errno << "," << strerror(errno);
+                 << errno << "," << strerror(errno);
+
+      forwardDeviceError( QObject::tr("Device") + " " +
+                          device + " " + QObject::tr("reported error") + " " +
+                          strerror(errno) );
       return false;
     }
 
@@ -357,9 +359,8 @@ bool GpsClient::readGpsData()
 // will be part of the check sum.
 int GpsClient::writeGpsData( const char *sentence )
 {
-  // don't try to send anything if there is no valid connection
-  // available
-  if( fd < 0 )
+  // don't try to send anything if there is no connection to a Flarm available.
+  if( flarmFd < 0 )
     {
       return -1;
     }
@@ -373,9 +374,9 @@ int GpsClient::writeGpsData( const char *sentence )
 #endif
 
   // write sentence to gps device
-  int result = write (fd, cmd.toLatin1().data(), cmd.length());
+  int result = write( flarmFd, cmd.toLatin1().data(), cmd.length() );
 
-  if (result != -1 && result != cmd.length())
+  if( result != -1 && result != cmd.length() )
     {
       qWarning() << "GpsClient::writeGpsData Only"
                  << result
@@ -387,23 +388,24 @@ int GpsClient::writeGpsData( const char *sentence )
 }
 
 /**
- * Reads NMEA data from the connected socket 1
+ * Reads NMEA data from the passed socket.
  *
  * @return true=success / false=unsuccess
  */
-bool GpsClient::readSocket1Data()
+bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
+                                    QStringList& socketData )
 {
-  char buffer[256];
+  char buffer[512];
   qint64 bytes = 0;
 
   // This method must be called, otherwise no data is read because the absense
   // of a Qt mainloop.
-  so1->waitForReadyRead(0);
+  socket->waitForReadyRead(0);
 
   do
     {
       // read NMEA sentence, it ends with crlf
-      bytes = so1->readLine( buffer, 256 );
+      bytes = socket->readLine( buffer, 512 );
 
       if( bytes <= 0 )
         {
@@ -419,86 +421,15 @@ bool GpsClient::readSocket1Data()
           continue;
         }
 
-      // Forward sentence to the server, if checksum is ok and
-      // processing is desired.
-      // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
-      // AP 2018: we forward all sentences now.
-      if( forwardGpsData == true )
-        {
-          QByteArray ba;
-          ba.append( MSG_GPS_DATA );
-          ba.append( ' ' );
-          ba.append( buffer );
-          writeForwardMsg( ba.data() );
+      const char* pflau = "$PFLAU";
 
-          if( ba.startsWith( "$PFLAU" ) )
+      // Look, if data from Flarm have been received. If yes remember fd.
+      if( strlen(buffer) > strlen(pflau) )
+        {
+          if( strncmp( buffer, pflau, strlen( pflau ) ) == 0 )
             {
-              // Flarm channel detected, remember it.
-              soFlarm = so1;
+              flarmFd = socket->socketDescriptor();
             }
-        }
-
-    }  while( bytes > 0 );
-
-  if( bytes == -1 )
-    {
-      QString error = so1->errorString();
-
-      if( error.isEmpty() == false )
-        {
-          qWarning() << "GpsClient::readSocket1Data(): Socket Error:"
-                     << error;
-        }
-
-      return false;
-    }
-
-#ifdef FLARM
-
-      if( ! activateTimeout )
-        {
-          // update supervision timer/variables
-          last.start();
-        }
-
-#endif
-
-  connectionLost = false;
-
-  return true;
-}
-
-/**
- * Reads NMEA data from the connected socket 2
- *
- * @return true=success / false=unsuccess
- */
-bool GpsClient::readSocket2Data()
-{
-  char buffer[256];
-  qint64 bytes = 0;
-
-  // This method must be called, otherwise no data is read because the absense
-  // of a Qt mainloop.
-  so2->waitForReadyRead(0);
-
-  do
-    {
-      // read NMEA sentence, it ends with crlf
-      bytes = so2->readLine( buffer, 256 );
-
-      if( bytes <= 0 )
-        {
-          // all read or error
-          break;
-        }
-
-      // qDebug() << "SO_2 Data:" << buffer;
-
-      if( verifyCheckSum( buffer ) == false )
-        {
-          // ignore sentence with bad checksum
-          continue;
         }
 
       // Forward sentence to the server, if checksum is ok and
@@ -512,24 +443,24 @@ bool GpsClient::readSocket2Data()
           ba.append( ' ' );
           ba.append( buffer );
           writeForwardMsg( ba.data() );
-
-          if( ba.startsWith( "$PFLAU" ) )
-            {
-              // Flarm channel detected, remember it.
-              soFlarm = so2;
-            }
         }
 
     }  while( bytes > 0 );
 
   if( bytes == -1 )
     {
-      QString error = so2->errorString();
+      QString error = socket->errorString();
 
       if( error.isEmpty() == false )
         {
           qWarning() << "GpsClient::readSocket1Data(): Socket Error:"
                      << error;
+
+          forwardDeviceError( QObject::tr("Device") + " " +
+                              socketData[0] + ":" + socketData[1] + ", " +
+                              "reported error" + " " +
+                              socket->error() );
+
         }
 
       return false;
@@ -566,6 +497,9 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
   ioSpeedTerminal = getBaudrate(ioSpeedIn);
   badSentences    = 0;
   unknownsReported.clear();
+
+  // Close existing TCP connections.
+  closeTcpSockets();
 
   if( deviceIn == (const char *) 0 || strlen(deviceIn) == 0 )
     {
@@ -613,9 +547,14 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
           qCritical() << "GpsClient::openGps(): BT connect error"
                       << errno << "," << strerror(errno);
 
+          forwardDeviceError( QObject::tr("Cannot open BT device") + " " +
+                              device );
+
           close( fd );
           fd = -1;
 
+          // We initiate a shutdown of the process. That forces Cumulus to
+          // start a new BT search, so that the user can select another device.
           last = QTime();
           setShutdownFlag(true);
           return false;
@@ -655,6 +594,8 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
                  << ioSpeedIn;
 #endif
 
+      forwardDeviceError( QObject::tr("Cannot open GPS device") + " " +
+                          device );
       last.start(); // store time point for restart control
       return false;
     }
@@ -744,8 +685,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
  */
 bool GpsClient::openNmeaSockets()
 {
-  qDebug() << "GpsClient::openNmeaSockets() is called";
-
   if( so1Data.size() == 0 && so2Data.size() == 0 )
     {
       qWarning() << "GpsClient::openNmeaSockets():"
@@ -758,14 +697,20 @@ bool GpsClient::openNmeaSockets()
   badSentences = 0;
   unknownsReported.clear();
 
-  // Reset Flarm channel
-  soFlarm = 0;
+  if( fd != -1 )
+    {
+      // closes an existing TTY, BT or pipe running connection.
+      closeGps();
+    }
 
-  // Check for old sockets, close and delete them
+  // Reset Flarm descriptor
+  flarmFd = -1;
+
+  // Check for old socket connections, close and delete them.
   if( so1 != 0 || so2 != 0 )
     {
       // First close old existing connections
-      closeGps();
+      closeTcpSockets();
       sleep(2);
     }
 
@@ -783,17 +728,16 @@ bool GpsClient::openNmeaSockets()
           qCritical( ) << "GpsClient::openNmeaSockets(): connection error"
                        << so1Data[0] << so1Data[1] << so1->error()
                        << so1->errorString();
-          so1->close();
-          delete so1;
-          so1 = 0;
 
-          last = QTime();
-          setShutdownFlag( true );
+          forwardDeviceError( QObject::tr("Cannot open device") + " " +
+                              so1Data[0] + ":" + so1Data[1] + ", " +
+                              so1->errorString() );
+          so1->close();
+          last.start(); // store time point for restart control
           return false;
         }
 
       last.start(); // store time point for supervision control
-
       qDebug() << "WiFi-1 connected to" << so1Data[0] << ":" << so1Data[1];
     }
 
@@ -811,17 +755,16 @@ bool GpsClient::openNmeaSockets()
           qCritical( ) << "GpsClient::openNmeaSockets(): connection error"
                        << so2Data[0] << so2Data[1] << so2->error()
                        << so2->errorString();
-          so2->close();
-          delete so2;
-          so2 = 0;
 
-          last = QTime();
-          setShutdownFlag( true );
+          forwardDeviceError( QObject::tr("Cannot open device") + " " +
+                              so2Data[0] + ":" + so2Data[1] + ", " +
+                              so2->errorString() );
+          so2->close();
+          last.start(); // store time point for restart control
           return false;
         }
 
       last.start(); // store time point for supervision control
-
       qDebug() << "WiFi-2 connected to" << so2Data[0] << ":" << so2Data[1];
     }
 
@@ -859,8 +802,18 @@ void GpsClient::readSentenceFromBuffer()
       char *record = (char *) malloc( end-start + 2 );
 
       memset( record, 0, end-start + 2 );
-
       strncpy( record, start, end-start + 1);
+
+      const char* pflau = "$PFLAU";
+
+      // Look, if data from Flarm have been received. If yes remember fd.
+      if( strlen(record) > strlen(pflau) )
+        {
+          if( strncmp( record, pflau, strlen(pflau) ) == 0 )
+            {
+              flarmFd = fd;
+            }
+        }
 
       if( verifyCheckSum( record ) == true )
         {
@@ -900,6 +853,18 @@ void GpsClient::readSentenceFromBuffer()
 }
 
 /**
+ * Send a device error message to Cumulus.
+ */
+void GpsClient::forwardDeviceError( QString error )
+{
+  QByteArray ba;
+  ba.append( MSG_DEVICE_REPORT );
+  ba.append( ' ' );
+  ba.append( error.toLatin1() );
+  writeForwardMsg( ba.data() );
+}
+
+/**
  * Closes all connections to the external GPS devices.
  */
 void GpsClient::closeGps()
@@ -917,12 +882,23 @@ void GpsClient::closeGps()
           //tcsetattr( fd, TCSANOW, &oldtio );
         }
 
-      close(fd);
+      close( fd );
       fd = -1;
     }
 
+  closeTcpSockets();
+  connectionLost = true;
+  badSentences   = 0;
+  last = QTime();
+}
+
+/**
+ * Close and delete TCP sockets.
+ */
+void GpsClient::closeTcpSockets()
+{
   // Reset Flarm socket
-  soFlarm = 0;
+  flarmFd = -1;
 
   if( so1 != 0 )
     {
@@ -945,10 +921,6 @@ void GpsClient::closeGps()
       delete so2;
       so2 = 0;
     }
-
-  connectionLost = true;
-  badSentences   = 0;
-  last = QTime();
 }
 
 /**
@@ -1075,7 +1047,7 @@ void GpsClient::toController()
 
   if( activateTimeout )
     {
-      if( last.elapsed() >= 120000  )
+      if( last.elapsed() >= 130000  )
         {
           // Activate timeout again after a Flarm reset. Flarm needs ca. 130s
           // to come up again.
@@ -1209,13 +1181,13 @@ void GpsClient::readServerMsg()
     }
   else if( MSG_OPEN == args[0] )
     {
-      if( args.size() == 2 )
+      if( args.size() == 3 )
         {
           // A connection via tty or pipe to the GPS device is requested. The
           // message consists of two parts separated by spaces.
           // 1) device name
           // 2) io speed
-          bool res = openGps( args[0].toLatin1().data(), args[1].toUInt() );
+          bool res = openGps( args[1].toLatin1().data(), args[2].toUInt() );
 
           if( res == true )
             {
@@ -1421,7 +1393,7 @@ void GpsClient::writeForwardMsg( const char *msg )
           // The write call would block because the transfer queue is full.
           // In this case we discard the message.
           qWarning() << method
-                      << "Write would block, drop Message!";
+                     << "Write would block, drop Message!";
         }
       else
         {
@@ -1476,7 +1448,14 @@ bool GpsClient::flarmBinMode()
   // Binary switch command for Flarm interface
   const char* pflax = "$PFLAX\r\n";
 
-  FlarmBinComLinux fbc( fd );
+  if( flarmFd < 0 )
+    {
+      // no Flarm channel is opened, reject request
+      qWarning() << "flarmBinMode(): No Flarm channel is opened";
+      return false;
+    }
+
+  FlarmBinComLinux fbc( flarmFd );
 
   // Precondition is that the NMEA output of the Flarm device was disabled by
   // the calling method before!
@@ -1492,7 +1471,7 @@ bool GpsClient::flarmBinMode()
   while( loop-- )
     {
       // Switch connection to binary mode.
-      if( write( fd, pflax, strlen(pflax) ) <= 0 )
+      if( write( flarmFd, pflax, strlen(pflax) ) <= 0 )
         {
           // write failed
           break;
@@ -1551,7 +1530,15 @@ void GpsClient::getFlarmFlightList()
   // Switch off timeout control
   last = QTime();
 
-  FlarmBinComLinux fbc( fd );
+  if( flarmFd < 0 )
+    {
+      // no Flarm channel is opened, reject request
+      qWarning() << "getFlarmFlightList(): No Flarm channel is opened";
+      flarmFlightListError();
+      return;
+    }
+
+  FlarmBinComLinux fbc( flarmFd );
 
   if( flarmBinMode() == false )
     {
@@ -1621,8 +1608,15 @@ void GpsClient::flarmFlightListError()
   writeForwardMsg( ba.data() );
 }
 
-void GpsClient::getFlarmIgcFiles(QString& args)
+void GpsClient::getFlarmIgcFiles( QString& args )
 {
+  if( flarmFd < 0 )
+    {
+      // no Flarm channel is opened, reject request
+      qWarning() << "getFlarmIgcFiles(): No Flarm channel is opened!";
+      return;
+    }
+
   // The argument string contains at the first position the destination directory
   // for the files and then the indexes of the flights separated by vertical tabs.
   QStringList idxList = args.split("\v");
@@ -1635,7 +1629,7 @@ void GpsClient::getFlarmIgcFiles(QString& args)
   // Switch off timeout control
   last = QTime();
 
-  FlarmBinComLinux fbc( fd );
+  FlarmBinComLinux fbc( flarmFd );
 
   if( flarmBinMode() == false )
     {
@@ -1775,11 +1769,20 @@ bool GpsClient::flarmReset()
       return false;
     }
 
-  FlarmBinComLinux fbc( fd );
+  if( flarmFd < 0 )
+    {
+      // no Flarm channel is opened, reject request
+      qWarning() << "flarmReset(): No Flarm channel is opened!";
+      return false;
+    }
+
+  FlarmBinComLinux fbc( flarmFd );
   bool res = fbc.exit();
 
   // Switch Flarm back to text mode.
   FlarmBase::setProtocolMode( FlarmBase::text );
+
+  qDebug() << "GpsClient::flarmReset() Flarm has switched to text mode usage.";
 
   activateTimeout = true;
   last.start();

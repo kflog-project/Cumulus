@@ -544,6 +544,11 @@ class GpsNmea : public QObject
     void newSentence(const QString&);
 
     /**
+     * This signal emits a device report from the GPS Client.
+     */
+    void deviceReport( const QString& report, int msShowTime );
+
+    /**
      * This signal is send to indicate a new temperature value.
      */
     void newTemperature( const double );

@@ -205,7 +205,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
 
   if (memoryFull) //if we already know the memory if full and can't be emptied at this point, just return.
     {
-      _globalMapView->message(tr("Out of memory! Map not loaded."));
+      _globalMapView->slot_message( tr("Out of memory! Map not loaded."), 5000 );
       return false;
     }
 
@@ -222,7 +222,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
             {
               memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
               qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-              _globalMapView->message(tr("Out of memory! Map not loaded."));
+              _globalMapView->slot_message(tr("Out of memory! Map not loaded."), 5000);
               return false;
             }
         }
@@ -230,7 +230,7 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
         {
           memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
           qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-          _globalMapView->message(tr("Out of memory! Map not loaded."));
+          _globalMapView->slot_message(tr("Out of memory! Map not loaded."), 5000);
           return false;
         }
     }
@@ -701,7 +701,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
 
   if (memoryFull)   //if we already know the memory if full and can't be emptied at this point, just return.
     {
-      _globalMapView->message(tr("Out of memory! Map not loaded."));
+      _globalMapView->slot_message(tr("Out of memory! Map not loaded."), 5000);
       return false;
     }
 
@@ -718,7 +718,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
             {
               memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
               qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-              _globalMapView->message(tr("Out of memory! Map not loaded."));
+              _globalMapView->slot_message(tr("Out of memory! Map not loaded."), 5000);
               return false;
             }
         }
@@ -726,7 +726,7 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
         {
           memoryFull=true; //set flag to indicate that we need not try loading any more mapfiles now.
           qWarning("Cumulus couldn't load file, low on memory! Memory needed: %d kB, free: %d kB", MINIMUM_FREE_MEMORY, memFree );
-          _globalMapView->message(tr("Out of memory! Map not loaded."));
+          _globalMapView->slot_message(tr("Out of memory! Map not loaded."), 5000);
           return false;
         }
     }

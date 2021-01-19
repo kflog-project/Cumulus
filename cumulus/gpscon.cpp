@@ -34,9 +34,9 @@
 #include <QInputDialog>
 
 #include "generalconfig.h"
-#include "mapview.h"
 #include "gpsnmea.h"
 #include "gpscon.h"
+#include "mainwindow.h"
 #include "signalhandler.h"
 #include "protocol.h"
 #include "ipc.h"
@@ -52,8 +52,6 @@
 
 // define alive check timeout
 #define ALIVE_TO 15000
-
-extern MapView *_globalMapView;
 
 /**
  * This module manages the startup and supervision of the GPS client process
@@ -227,7 +225,7 @@ bool GpsCon::startGpsReceiving()
           // user select one of them. This is done in an extra thread.
           if( BluetoothDevices::getNoOfInstances() == 0 )
             {
-              _globalMapView->message( tr("Searching GPS BT devices") );
+              emit deviceReport( tr("Searching GPS BT devices"), 5000 );
               // allow only one instance to run.
               BluetoothDevices *btThread = new BluetoothDevices( this );
 
@@ -285,7 +283,7 @@ bool GpsCon::startGpsReceiving()
 
       if (msg == MSG_NEG)
         {
-          _globalMapView->message( tr("GPS device not reachable!") );
+          emit deviceReport( tr("GPS device not reachable!"), 5000 );
           return false;
         }
       else
@@ -321,7 +319,7 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
                           QObject::tr("GPS BT Devices?"),
                           QObject::tr("No GPS BT devices are in view!"),
                           QMessageBox::Ok,
-                          _globalMapView );
+                          MainWindow::mainWindow() );
 
       msgBox.setInformativeText( error );
       msgBox.exec();
@@ -353,7 +351,7 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
   bool okay;
 
   // Ask the user to select a BT device.
-  QString item = QInputDialog::getItem( _globalMapView,
+  QString item = QInputDialog::getItem( MainWindow::mainWindow(),
                                         QObject::tr( "Select GPS BT Device" ),
                                         QObject::tr( "GPS BT Device:" ),
                                         items, no, false, &okay );
@@ -378,7 +376,7 @@ void GpsCon::slot_StartGpsBtReceiving( bool ok,
 
   if (msg == MSG_NEG)
     {
-      _globalMapView->message(tr("GPS device not reachable!"));
+      emit deviceReport( tr("GPS device not reachable!"), 5000 );
       return;
     }
   else
@@ -507,7 +505,7 @@ bool GpsCon::startClientProcess()
           qWarning( "%s gpsClient(%d) process has died!",
                     method.toLatin1().data(), getPid() );
 
-          _globalMapView->message( tr("GPS daemon crashed!") );
+          emit deviceReport( tr("GPS daemon crashed!"), 5000 );
         }
       else if(  pid == -1 && errno == ECHILD )
         {
@@ -667,7 +665,7 @@ bool GpsCon::startClientProcess()
           qWarning() << method
                      << "Startup gpsClient process failed!";
 
-          _globalMapView->message( tr("GPS daemon start failed!") );
+          emit deviceReport( tr("GPS daemon start failed!"), 5000 );
           return false;
         }
 
@@ -866,10 +864,16 @@ void GpsCon::getDataFromClient()
           emit gpsConnectionOff();
           qDebug(MSG_CON_OFF);
         }
-      else if ( msg == MSG_CON_ON ) // GPS connection has gone on
+      else if( msg == MSG_CON_ON ) // GPS connection has gone on
         {
           emit gpsConnectionOn();
           qDebug(MSG_CON_ON);
+        }
+      else if( msg.startsWith( MSG_DEVICE_REPORT ) ) // GPS Device report
+        {
+          msg = msg.right(msg.length() - strlen(MSG_DEVICE_REPORT) - 1);
+          // forward device report to show it in the status bar for 5s.
+          emit deviceReport( msg, 5000 );
         }
       else if( msg.startsWith(MSG_FLARM_FLIGHT_LIST_RES) )
         {

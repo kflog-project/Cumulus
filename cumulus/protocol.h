@@ -31,7 +31,7 @@
 
 #define MSG_MAGIC      "\\Magic\\"
 
-#define MSG_POS	"\\Positive\\"
+#define MSG_POS	       "\\Positive\\"
 
 #define MSG_NEG        "\\Negative\\"
 
@@ -85,8 +85,11 @@
 // Flarm flight download progress, used to report dowload progress.
 #define MSG_FLARM_FLIGHT_DOWNLOAD_PROGRESS  "#FFDP#"
 
-#define MSG_CON_OFF     "#GPS_Connection_off#"
+// Device report.
+#define MSG_DEVICE_REPORT "#Device_Report#"
 
-#define MSG_CON_ON      "#GPS_Connection_on#"
+#define MSG_CON_OFF       "#GPS_Connection_off#"
+
+#define MSG_CON_ON        "#GPS_Connection_on#"
 
 #endif  // #ifndef _Protocol_h_

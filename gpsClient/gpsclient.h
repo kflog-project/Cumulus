@@ -83,6 +83,11 @@ public:
   void processEvent( fd_set *fdMaskIn );
 
   /**
+   * Send a device error message to Cumulus.
+   */
+  void forwardDeviceError( QString error );
+
+  /**
    * Returns all currently used read file descriptors as mask, usable by the
    * select call.
    *
@@ -98,18 +103,11 @@ public:
   bool readGpsData();
 
   /**
-   * Reads NMEA data from the connected socket 1
+   * Reads NMEA data from the passed socket.
    *
    * @return true=success / false=unsuccess
    */
-  bool readSocket1Data();
-
-  /**
-   * Reads NMEA data from the connected socket 2
-   *
-   * @return true=success / false=unsuccess
-   */
-  bool readSocket2Data();
+  bool readNmeaSocketData( QTcpSocket* socket, QStringList& socketData );
 
   /**
    * Writes data to the connected GPS device.
@@ -185,6 +183,11 @@ public:
    * \return The current used non socket device.
    */
   QByteArray getDevice() const { return device; }
+
+  /**
+   * Close and delete TCP sockets.
+   */
+  void closeTcpSockets();
 
   private:
 
@@ -273,8 +276,8 @@ public:
   // IP and port data of socket 2
   QStringList so2Data;
 
-  // Pointer to Flarm socket
-  QTcpSocket* soFlarm;
+  // file/socket descriptor to Flarm
+  int flarmFd;
 
   // terminal info data
   struct termios oldtio, newtio;
