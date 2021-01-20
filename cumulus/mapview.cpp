@@ -1388,17 +1388,12 @@ void MapView::slot_AltimeterDialog()
 
   AltimeterDialog *amDlg = new AltimeterDialog( this );
 
-  amDlg->slotAltitudeChanged( calculator->getAltimeterAltitude() );
-
   connect( amDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
   connect( amDlg, SIGNAL( newAltimeterMode() ), SLOT( slot_newAltimeterMode() ) );
   connect( amDlg, SIGNAL( newAltimeterSettings() ),
            GpsNmea::gps, SLOT( slot_reset() ) );
   connect( amDlg, SIGNAL( newPressureDevice( const QString&) ),
            GpsNmea::gps, SLOT( slot_pressureDevice( const QString& )) );
-
-  connect( calculator, SIGNAL( newUserAltitude( const Altitude& ) ),
-           amDlg, SLOT( slotAltitudeChanged( const Altitude& ) ) );
 
   emit openingSubWidget();
   amDlg->setVisible(true);

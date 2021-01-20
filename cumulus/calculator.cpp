@@ -1052,24 +1052,19 @@ void Calculator::slot_changePosition(int direction)
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastPosition, Calculator::MAN);
 
-  lastAltitude    = manualAltitude;  // provide support to config altitude in settings
+  // In manual mode an STD altitude of 1000 m is set.
+  lastSTDAltitude = manualAltitude;
+  lastGNSSAltitude = manualAltitude;
+
+  // Altitude correction value set by the user.
+  Altitude _userAltitudeCorrection =
+      GeneralConfig::instance()->getGpsUserAltitudeCorrection();
+
+  // The last altitude is set by considering the user defined offset.
+  lastAltitude = manualAltitude + _userAltitudeCorrection;
+
   lastAGLAltitude = lastAltitude - lastElevation;
   lastAHLAltitude = lastAltitude - GeneralConfig::instance()->getHomeElevation();
-  lastSTDAltitude = manualAltitude;
-
-  GeneralConfig *conf = GeneralConfig::instance();
-  int qnhDiff = 1013 - conf->getQNH();
-
-  if ( qnhDiff != 0 )
-    {
-      // Calculate altitude correction in meters from pressure difference.
-      // The common approach is to expect a pressure difference of 1 hPa per
-      // 30ft until 18.000ft. 30ft are 9.1437m
-      int delta = (int) rint( qnhDiff * 9.1437 );
-
-      // qDebug("Calculator::slot_changePosition(): QNH=%d, Delta=%d", conf->getQNH(), delta);
-      lastSTDAltitude.setMeters(manualAltitude.getMeters() + delta );
-    }
 
   emit newAltitude(lastAltitude);
   emit newUserAltitude( getAltimeterAltitude() );

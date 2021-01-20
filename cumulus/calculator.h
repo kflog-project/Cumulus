@@ -192,6 +192,11 @@ public:
   const Altitude& getlastAltitude()const { return lastAltitude; }
 
   /**
+   * Read property of Altitude lastSTDAltitude.
+   */
+  const Altitude& getlastSTDAltitude()const { return lastSTDAltitude; }
+
+  /**
    * \return the last known altitude AGL (Above ground Level)
    */
   const Altitude& getlastAGLAltitude()

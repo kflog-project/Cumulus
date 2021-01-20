@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2020 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #define ALTIMETER_DIALOG_H
 
 #include <QComboBox>
+#include <QCheckBox>
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
@@ -39,7 +40,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 
-class Altitude;
+#include "altitude.h"
 
 class AltimeterDialog : public QDialog
 {
@@ -93,6 +94,9 @@ private:
   /** Check for configuration changes. */
   bool changesDone();
 
+  /** Calculate a new altitude considering user offset */
+  int calNewAltitude();
+
   /** inactively timer control */
   QTimer* m_timeout;
 
@@ -130,6 +134,9 @@ private:
   /** Spin box for QNH setting */
   QSpinBox* spinQnh;
 
+  /** Checkbox for auto QNH or manelly ONH handling. */
+  QCheckBox* autoQnh;
+
   /** Setup buttons */
   QPushButton *plus;
   QPushButton *pplus;
@@ -140,6 +147,7 @@ private:
   QPushButton *setAltitudeGain;
 
   /** Save the initial values here. They are needed in the reject case. */
+  Altitude m_savedAltitude;
   int m_saveMode;
   int m_saveUnit;
   int m_saveRef;
@@ -155,11 +163,11 @@ private:
 
 public slots:
 
-  /** This slot is being called if the altitude value has been changed. */
-  void slotAltitudeChanged(const Altitude& altitude );
+  /** This slot is being called if the altitude display has been to updated. */
+  void slotAltitudeChanged();
 
   /** This slot is being called if the altitude gain value has been changed. */
-  void slotAltitudeGain(const Altitude& altitudeGain );
+  void slotAltitudeGain( const Altitude &altitudeGain );
 
 private slots:
 
@@ -197,6 +205,11 @@ private slots:
    * altitude display and informs the calculator about that.
    */
   void slotResetGainedAltitude();
+
+  /**
+   * This slot is called if the auto ONH checkbox has changed its state.
+   */
+  void slotQnhAutoChanged( int state );
 
 signals:
 

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2020 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,7 +27,6 @@
 #endif
 
 #include "generalconfig.h"
-#include "altitude.h"
 #include "altimeterdialog.h"
 #include "calculator.h"
 #include "glider.h"
@@ -186,6 +185,7 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   altitudeGainDisplay = new QLineEdit( this );
   altitudeGainDisplay->setReadOnly( true );
   altitudeGainDisplay->setFont( font() );
+  altitudeGainDisplay->setAlignment( Qt::AlignHCenter );
   altitudeLayout->addWidget( altitudeGainDisplay, row, 1 );
 
   setAltitudeGain = new QPushButton( "S", this );
@@ -196,9 +196,9 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   connect( calculator, SIGNAL(newGainedAltitude(const Altitude&)),
            this, SLOT( slotAltitudeGain(const Altitude&)) );
 
-  QString tip = tr("Adjust altitude to your airfield elevation.");
+  QString tip = tr("Adjust STD altitude to your airfield elevation.");
 
-  lbl = new QLabel( tr( "Altitude:" ), this );
+  lbl = new QLabel( tr( "QNH Altitude:" ), this );
   lbl->setToolTip( tip );
   altitudeLayout->addWidget( lbl, row, 0 );
 
@@ -207,6 +207,7 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   m_altitudeDisplay->setButtonSymbols( QSpinBox::NoButtons );
   m_altitudeDisplay->setMinimum( -1000 );
   m_altitudeDisplay->setMaximum( 1000000 );
+  m_altitudeDisplay->setAlignment( Qt::AlignHCenter );
 
   altitudeLayout->addWidget( m_altitudeDisplay, row, 1 );
 
@@ -223,8 +224,18 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   spinQnh->setSuffix( " hPa" );
   spinQnh->setButtonSymbols( QSpinBox::NoButtons );
   spinQnh->setAlignment( Qt::AlignHCenter );
+  spinQnh->setEnabled( false );
 
-  altitudeLayout->addWidget( spinQnh, row++, 1 );
+  altitudeLayout->addWidget( spinQnh, row, 1 );
+
+  autoQnh = new QCheckBox( tr( "auto ONH" ), this );
+  autoQnh->setCheckable( true );
+  autoQnh->setChecked( true );
+
+  connect( autoQnh, SIGNAL(stateChanged(int)), SLOT(slotQnhAutoChanged(int)) );
+
+  altitudeLayout->addWidget( autoQnh, row++, 2, 1, 2 );
+
   altitudeLayout->setColumnStretch( 4, 5 );
 
   altitudeBox->setLayout( altitudeLayout );
@@ -387,6 +398,7 @@ void AltimeterDialog::load()
 
   m_mode = conf->getAltimeterMode();
   m_saveMode = m_mode;
+  m_savedAltitude = calculator->getlastSTDAltitude();
 
   switch( m_mode )
   {
@@ -467,6 +479,9 @@ void AltimeterDialog::load()
   m_saveQnh = conf->getQNH();
   spinQnh->setValue( m_saveQnh );
 
+  // Update altitude display
+  slotAltitudeChanged() ;
+
   startTimer();
 }
 
@@ -474,6 +489,11 @@ void AltimeterDialog::slotPressureDeviceChanged( const QString& device )
 {
   GeneralConfig::instance()->setPressureDevice( device );
   emit newPressureDevice( device ); // informs GpsNmea
+
+  // Update altitude display with a delay to get the new STD altitude
+  QTimer::singleShot( 3000, this, SLOT( slotAltitudeChanged() ) );
+
+  m_timeout->stop();
 }
 
 void AltimeterDialog::slotModeChanged( int mode )
@@ -484,8 +504,8 @@ void AltimeterDialog::slotModeChanged( int mode )
   emit newAltimeterMode();     // informs MapView
   emit newAltimeterSettings(); // informs GpsNmea
 
-  // Altitude display must be updated to the new altitude reference
-  slotAltitudeChanged( calculator->getAltimeterAltitude() );
+  // Altitude display is updated to get the last delivered altitude.
+  slotAltitudeChanged();
 
   // The gained altitude display must be updated to the new altitude reference.
   slotAltitudeGain( calculator->getGainedAltitude() );
@@ -520,7 +540,8 @@ void AltimeterDialog::slotUnitChanged( int unit )
   // informs MapView
   emit newAltimeterMode();
 
-  slotAltitudeChanged( calculator->getAltimeterAltitude() );
+  // Update altitude display
+  slotAltitudeChanged();
 
   // The gained altitude display must be updated to the new altitude unit.
   slotAltitudeGain( calculator->getGainedAltitude() );
@@ -551,14 +572,36 @@ void AltimeterDialog::slotReferenceChanged( int ref )
 
   emit newAltimeterMode();     // informs MapView
   emit newAltimeterSettings(); // informs GpsNmea
+
+  // Update altitude display with a delay to get the new STD altitude
+  QTimer::singleShot( 3000, this, SLOT( slotAltitudeChanged() ) );
+
   m_timeout->stop();
 }
 
 /** This slot is being called if the altitude has been changed. */
-void AltimeterDialog::slotAltitudeChanged(const Altitude& altitude )
+void AltimeterDialog::slotAltitudeChanged()
 {
+  Altitude altitude = calculator->getlastSTDAltitude() +
+      GeneralConfig::instance()->getGpsUserAltitudeCorrection();
+
   m_altitudeDisplay->setValue( altitude.getText( false, 0 ).toInt() );
   m_altitudeDisplay->setSuffix( " " + altitude.getUnitText() );
+}
+
+/**
+ * This slot is called if the auto ONH checkbox has changed its state.
+ */
+void AltimeterDialog::slotQnhAutoChanged( int state )
+{
+  if( state == Qt::Unchecked )
+    {
+      spinQnh->setEnabled( true );
+    }
+  else
+    {
+      spinQnh->setEnabled( false );
+    }
 }
 
 void AltimeterDialog::slotChangeSpinValue()
@@ -566,7 +609,7 @@ void AltimeterDialog::slotChangeSpinValue()
   m_timeout->stop();
 
   // Look which spin box has the focus
-  if( QApplication::focusWidget() == spinQnh )
+  if( autoQnh->isChecked() == false && QApplication::focusWidget() == spinQnh )
     {
       if( reset->isDown() )
         {
@@ -636,6 +679,11 @@ void AltimeterDialog::slotChangeSpinValue()
         {
           // reset is pressed
           levelingDisplay->setText( "0" );
+
+          if( autoQnh->isChecked() == true )
+            {
+              spinQnh->setValue( 1013 );
+            }
         }
       else
         {
@@ -648,12 +696,31 @@ void AltimeterDialog::slotChangeSpinValue()
       Altitude::setUnit( (Altitude::altitudeUnit) m_unit );
 
       GeneralConfig *conf = GeneralConfig::instance();
-      Altitude newAlt = Altitude::convertToMeters( levelingDisplay->text().toInt() );
-      conf->setGpsUserAltitudeCorrection( newAlt );
 
-      if( m_baro->isChecked() && m_msl->isChecked() &&
-          conf->getGpsAltitude() == GpsNmea::PRESSURE &&
-          GpsNmea::gps->baroAltitudeSeen() )
+      Altitude altCorrection;
+
+      // Get last know altitude
+      m_savedAltitude = calculator->getlastSTDAltitude();
+
+      switch( m_unit )
+      {
+        case Altitude::meters:
+          altCorrection.setMeters( levelingDisplay->text().toInt() );
+          break;
+        case Altitude::feet:
+          altCorrection.setFeet( levelingDisplay->text().toInt() );
+          break;
+        default:
+          break;
+      }
+
+      // Update altitude display
+      slotAltitudeChanged();
+
+      // Save altitude correction value.
+      conf->setGpsUserAltitudeCorrection( altCorrection );
+
+      if( autoQnh->isChecked() == true )
         {
           // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
           // WE have pressure selected and got a pressure altitude.
@@ -666,10 +733,6 @@ void AltimeterDialog::slotChangeSpinValue()
           int qnh = getQNH( newAltQnh );
           spinQnh->setValue( qnh );
         }
-
-      emit newAltimeterMode();     // informs MapView
-      emit newAltimeterSettings(); // informs GpsNmea
-      return;
     }
 }
 
@@ -708,28 +771,7 @@ void AltimeterDialog::accept()
       conf->setAltimeterMode( m_mode );
       conf->setGpsAltitude( _ref );
       conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters( levelingDisplay->text().toInt()) );
-
-      int qnh = spinQnh->value();
-
-      if( m_baro->isChecked() && m_msl->isChecked() &&
-          conf->getGpsAltitude() == GpsNmea::PRESSURE &&
-          GpsNmea::gps->baroAltitudeSeen() )
-        {
-          // Calculate again the QNH to avoid wrong value, if the leveling spin box
-          // has not been operated via the plus and minus buttons or a radio button
-          // has been pressed as last.
-
-          // We have pressure selected and get pressure altitude. So we can try
-          // to calculate the QNH.
-          // The common approach is to expect a pressure difference of 1 hPa per
-          // 30ft until 18.000ft. 30ft are 9.1437m
-          // ### Altitude newAlt = Altitude::convertToMeters( spinLeveling->value() );
-          // ### qnh = (int) rint( 1013.25 + newAlt.getFeet() / 30.0 );
-          Altitude newAlt = Altitude::convertToMeters( - levelingDisplay->text().toInt() );
-          qnh = getQNH( newAlt );
-        }
-
-      conf->setQNH( qnh );
+      conf->setQNH( spinQnh->value() );
       conf->save();
 
       emit newAltimeterMode();     // informs MapView
