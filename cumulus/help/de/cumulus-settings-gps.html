@@ -26,42 +26,38 @@
 		korrekte &Uuml;bertragungsrate aus. Schauen Sie in das Handbuch Ihres
 		GPS-Empf&auml;ngers um diese Daten zu erfahren.</p>
 
-  <h5>Android Hinweise</h5>
-  
+	<h5>Android Hinweise</h5>
+
 	<p>Unter Android ist diese Seite nahezu leer. Hier m&uuml;ssen Sie
-	   mittels der Android Men&uuml;taste &uuml;ber das Men&uuml; GPS den
-		 GPS Empfang ein- bzw. auszuschalten. Dazu gibt es je nach Ausstattungsgrad
-     ihres Android Ger&auml;tes verschiedene M&ouml;glichkeiten:
-     
-     <ul>
-       <li>
-          Eingebautes GPS verwenden.
-       </li>
-       
-       <li>
-          Verbindung &uuml;ber Bluetooth zu einem GPS Ger&auml;t herstellen.
-          Verf&uuml;gt das GPS Ger&auml;t &uuml;ber keine Bluetooth
-          Schnittstelle, muss man einen entsprechenden Adapter dazwischen schalten.
-       </li>
+		mittels der Android Men&uuml;taste &uuml;ber das Men&uuml; GPS den GPS
+		Empfang ein- bzw. auszuschalten. Dazu gibt es je nach Ausstattungsgrad
+		ihres Android Ger&auml;tes verschiedene M&ouml;glichkeiten:
+	<ul>
+		<li>Eingebautes GPS verwenden.</li>
 
-       <li>
-         Verbindung &uuml;ber ein USB IOIO Uart Board zu einem GPS Ger&auml;t mit serieller
-         Schnittstelle aufbauen. Cumulus unterst&uuml;tzt das im Moment nur f&uuml;r
-         IOIO Boards ab Firewareversion 4.0 und nur f&uuml;r
-         einen Uart, den man in den IOIO Einstellungen
-        (Android Men&uuml; Taste->Einstellungen->IOIO GPS) unter
-         <i>Aktiviere IOIO Uart</i> festlegen kann. Weiterhin muss f&uuml;r den IOIO
-         Uart die richtige &Uuml;bertragungsgeschwindigkeit zum angeschlossenen GPS
-         Ger&auml;t eingestellt werden. Wenn man ein <b>Android Ger&auml;t &lt; Release 4.1</b> 
-         benutzt, so muss <b>USB Debugging</b> in den Android Entwickler Einstellungen
-         <b>aktiviert</b> werden. Ist das <b>Android Release &gt;= 4.1</b> muss <b>USB Debugging
-         deaktiviert</b> sein.          
-       </li>
-     </ul>
-  </p>
+		<li>Verbindung &uuml;ber Bluetooth zu einem GPS Ger&auml;t
+			herstellen. Verf&uuml;gt das GPS Ger&auml;t &uuml;ber keine Bluetooth
+			Schnittstelle, muss man einen entsprechenden Adapter dazwischen
+			schalten.</li>
 
-  <h5>Allgemeines</h5>
-  
+		<li>Verbindung &uuml;ber ein USB IOIO Uart Board zu einem GPS
+			Ger&auml;t mit serieller Schnittstelle aufbauen. Cumulus
+			unterst&uuml;tzt das im Moment nur f&uuml;r IOIO Boards ab
+			Firewareversion 4.0 und nur f&uuml;r einen Uart, den man in den IOIO
+			Einstellungen (Android Men&uuml; Taste->Einstellungen->IOIO GPS)
+			unter <i>Aktiviere IOIO Uart</i> festlegen kann. Weiterhin muss
+			f&uuml;r den IOIO Uart die richtige &Uuml;bertragungsgeschwindigkeit
+			zum angeschlossenen GPS Ger&auml;t eingestellt werden. Wenn man ein <b>Android
+				Ger&auml;t &lt; Release 4.1</b> benutzt, so muss <b>USB Debugging</b> in
+			den Android Entwickler Einstellungen <b>aktiviert</b> werden. Ist das
+			<b>Android Release &gt;= 4.1</b> muss <b>USB Debugging
+				deaktiviert</b> sein.
+		</li>
+	</ul>
+	</p>
+
+	<h5>Allgemeines</h5>
+
 	<p>
 		Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die
 		Anzahl der empfangenen Satelliten, deren Signalst&auml;rke und die
@@ -75,18 +71,44 @@
 		<b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer
 		g&uuml;ltigen Checksumme. Es kann ebenfalls einige propriet&auml;re
 		Datens&auml;tze verarbeiten, die von Ger&auml;ten wie, Cambridge,
-		Volkslogger, Flarm oder LX angeboten werden. Solche Daten sind Wind,
-		barometrische H&ouml;he, Variometer, MacCready, Kollisions- und
-		Hindernisinformationen.
+		Volkslogger, Flarm, LX oder XCVario angeboten werden. Solche Daten
+		sind Wind, barometrische H&ouml;he, Variometer, MacCready, Kollisions-
+		und Hindernisinformationen.
 	</p>
 
-	<h5>GPS Ger&auml;te</h5>
+	<h5>GPS Quelle</h5>
+
+	Mit der Auswahlbox <i>GPS Quelle</i> wird bestimmt, von welchem System die
+	Standard GPS NMEA Datens&auml;tze verarbeitet werden sollen. Die folgende
+	Auswahl	ist m&ouml;glich:
+
+	<ul>
+		<li>$GP GPS (USA)
+			
+		<li>$BD GPS Beidou (China)
+  
+		<li>$GA GPS Gallileo (Europa)
+  
+		<li>$GL GPS Glonass (Russland)
+  
+		<li>$GN kombinierte GPS Systeme
+  
+	</ul>
+  
+  Standard ist <i>$GP GPS (USA)</i>. Wenn Sie eine andere Quelle verwenden
+  wollen, pr&uuml;fen Sie, ob ihr GPS Empf&auml;nger auch die von Cumulus
+  erwarteten NMEA Daten liefert.
+  
+  <p>
+  </p>
+  
+  <h5>GPS Ger&auml;t</h5>
 
 	In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle
 	ausw&auml;hlen, &uuml;ber die die Verbindung zum GPS Empf&auml;nger
 	hergestellt werden soll:
-
-  <p>
+	
+	<p>
   </p>
   
   <table border="1" cellpadding="5">
@@ -118,7 +140,7 @@
     </tr>
 
     <tr>
-      <th>/dev/ttyS0</th>
+      <th>/dev/ttyS[0...3]</th>
       <td>
         Serielle Schittstelle (RS232) wie bei einem FLARM Ger&auml;t
 				zu finden. Eine solche Schittstelle ben&ouml;tigt auch eine
@@ -145,13 +167,28 @@
       <th>/dev/ttyUSB0</th>
       <td>
           F&uuml;r eine USB Ger&auml;tekopplung oder einem USB-RS232 Adapter, falls
-          das GPS Ger&auml;t nur ein serielles Interface hat. <b>Achtung!</b>
-          ein USB-RS232 Adapter ben&ouml;tigt auch eine Geschwindigkeitsangabe
+          das GPS Ger&auml;t nur ein serielles Interface hat. <b>Beachte!</b>
+          Ein USB-RS232 Adapter ben&ouml;tigt auch eine Geschwindigkeitsangabe
           f&uuml;r die &Uuml;bertragung.
           <p>
-          <b>Achtung!</b> Bei einem USB Anschluss muss der USB Port des PDA den OTG
-          (On-the-go) Mode unterst&uuml;tzen.
+          <b>Achtung!</b> Bei einem USB Anschluss muss der USB Port des PDA den
+          OTG (On-the-go) Mode unterst&uuml;tzen.
           </p>
+      </td>
+    </tr>
+
+    <tr>
+      <th>WiFi 1, WiFi 2 oder WiFi 1+2</th>
+      <td>
+        F&uuml;r eine Wifi Verbindung zu einem externen Ger&auml;t. Es
+        k&ouml;nnen ein oder zwei Kanäle benutzt werden. Pro Kanal sind
+        die IP Adresse und der Port anzugeben. Die Kopplung mit dem externen
+        Ger&auml; muss zuvor über das Betriebssystem erfolgen. Hier&uuml;ber
+        kann auch ein <i>XCVario</i> folgenderma&szlig;en angebunden werden:
+        <p>
+        WiFi-1 IP:Port 192.168.4.1:8880 (XCVario Daten)
+        <p>
+        WiFi-2 IP:Port 192.168.4.1:8881 (Flarm Deten)
       </td>
     </tr>
 
@@ -170,7 +207,7 @@
 	
 	<p>Ist Ihre Schittstelle nicht in der Liste zu finden, so
 		&auml;ndern Sie einfach einen bestehenden Eintrag entspreched Ihren
-		W&uuml;nschen, ab.</p>
+		W&uuml;nschen ab.</p>
 
 	<h5>H&ouml;henreferenz</h5>
 
@@ -183,20 +220,20 @@
 	l&auml;&szlig;t sich dieses mittels des H&ouml;hendialogs korregieren.
 	Dies trifft haups&auml;chlich bei Drucksonden zu. Tippen Sie auf die
 	H&ouml;henanzeige in der Kartenansicht und ein Dialog wird
-	ge&ouml;ffnet. Selektieren Sie das Feld Abgleich und &auml;ndern Sie
+	ge&ouml;ffnet. Selektieren Sie das Feld QNH H&ouml;he und &auml;ndern Sie
 	mit den Plus bzw. Minus Tasten den eingestellten Wert. Positive Werte
 	werden zur angezeigten H&ouml;he dazu addiert, negative Werten werden
-	abgezogen. Wenn ein GPS Fix existiert, wird der Korrekturwert sofort
+	abgezogen. Nach Ok Best&auml;tigung, wird der Korrekturwert sofort
 	auf die Anzeige angewendet.
 	<p>
-		Einige Ger&auml;te, z.B. Flarms, k&ouml;nnen H&ouml;henangaben liefern,
-		die von ihrer eingebauten Drucksonde stammen. Um diese Daten zu
-		nutzen, m&uuml;ssen Sie den Eintrag <i>Druck</i> bei der
-		H&ouml;henreferenz Einstellung ausw&auml;hlen.
+		Einige Ger&auml;te, z.B. Flarm, XCVario, diverse Logger k&ouml;nnen
+		H&ouml;henangaben liefern, die von ihrer eingebauten Drucksonde stammen.
+		Um diese Daten zu	nutzen, m&uuml;ssen Sie den Eintrag <i>Baro</i> und das
+		Ger&auml;t bei der H&ouml;henreferenz Einstellung mit ausw&auml;hlen.
 	</p>
 	<p>
-		<b>Achtung! Wenn Sie den Eintrag Druck gew&auml;hlt haben,
-			erwartet Cumulus spezielle NMEA Datens&auml;tze von Ihren
+		<b>Achtung! Wenn Sie den Eintrag Baro gew&auml;hlt haben,
+			erwartet Cumulus spezielle NMEA Datens&auml;tze von Ihrem
 			angeschlossenen Ger&auml;t. Andernfalls werden weder H&ouml;he noch
 			Variometer Daten angezeigt!</b>
 	</p>
@@ -253,6 +290,13 @@
 				Cumulus finden Sie auch auf der Seite <a href="cumulus-flarm.html">Flarm</a>.
 			</td>
 		</tr>
+
+    <tr>
+    <th>XCVario</th>
+      <td>Es liefert H&ouml;hendaten bezogen auf MSL, Geschwindigkeitsdaten
+          (IAS),  Vario-, Mc- and Bugs und Temperatur Daten.
+      </td>
+    </tr>
 	</table>
 
 	<h5>Abgleich der Systemuhr</h5>
@@ -276,27 +320,14 @@
 	f&uuml;r eine sp&auml;tere Weiterverarbeitung der GPS Daten benutzen.
 	Wir empfehlen, diese Option nur zu Analysezwecken zu benutzen, da sie
 	auch die Leistungsf&auml;higkeit des Prozessors einschr&auml;nken kann.
-
-  <h5>GPS Quelle</h5>
-  
-  Mit der Auswahlbox <i>GPS Quelle</i> wird bestimmt, von welchem System die Standard
-  GPS Datens&auml;tze verarbeitet werden sollen. Die folgende Auswahl ist
-  m&ouml;glich:
-  
-  <ul>
-  <li>$GP GPS (USA)
-  <li>$BD GPS Beidou (China)
-  <li>$GA GPS Gallileo (Europa)
-  <li>$GL GPS Glonass (Russland)
-  <li>$GN kombinierte GPS Systeme
-  </ul>
   
 	<h5>Verarbeitete GPS Datens&auml;tze</h5>
 
 	Cumulus verarbeitet die folgenden NMEA und propriet&auml;ren
 	Datens&auml;tze:
 	<p>
-	<table border="1" cellpadding="5">
+	
+			<table border="1" cellpadding="5">
 		<tr>
 			<th>NMEA Id</th>
 			<th>Beschreibung</th>
@@ -404,5 +435,6 @@
 		</tr>
 	</table>
 
-</body>
+
+		</body>
 </html>
