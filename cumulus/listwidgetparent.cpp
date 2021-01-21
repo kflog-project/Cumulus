@@ -75,7 +75,7 @@ ListWidgetParent::ListWidgetParent( QWidget *parent, bool showMovePage ) :
 
   searchButton = new QPushButton( this );
   searchButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "fernglas.png" ) ) );
-  searchButton->setIconSize( QSize(Layout::getButtonSize(24), Layout::getButtonSize(24)) );
+  searchButton->setIconSize( QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)) );
   searchButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Fixed );
   searchButton->setToolTip( tr( "Search and select a waypoint" ) );
 
