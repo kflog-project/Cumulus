@@ -105,7 +105,7 @@
 		</tr>
 
     <tr>
-      <th>/dev/ttyS0</th>
+      <th>/dev/ttyS[0...3]</th>
       <td>for a serial GPS device like Flarm, using an RS232 interface.
           <b>Note!</b> On a Linux desktop, e.g. Ubuntu, it is required, that
           the Cumulus user must be a member of the Linux group <i>dialout</i>.
@@ -122,6 +122,21 @@
 			<td>for a USB GPS device or, e.g., a USB-serial adaptor</td>
 		</tr>
 
+    <tr>
+      <th>WiFi 1, WiFi 2 oder WiFi 1+2</th>
+      <td>
+        for a WiFi connection to an external device. You can use up to two
+        channels. Per channel you have to add an IP address and the related port.
+        The coupling to the external device have to be done by using the WLAN
+        manager of your OS. E.g. to connect to a XCVario you have to enter the
+        following values:
+        <p>
+        WiFi-1 IP:Port 192.168.4.1:8880 (XCVario Data)
+        <p>
+        WiFi-2 IP:Port 192.168.4.1:8881 (Flarm Data)
+       </td>
+    </tr>
+
 		<tr>
 			<th>/tmp/nmeasim</th>
 			<td>for the Cumulus NMEA Simulator</td>
@@ -136,7 +151,7 @@
 		
 	<p>If your device is not found in the selection list, you can
 		change one of the predefined entries to what you need, e.g. /dev/ttyS0
-		for an RS232 serial device or /dev/rfcomm0 for a Bluetooth device.</p>
+		for an RS232 serial.</p>
 
 	<h5>Speed (bps):</h5>
 
@@ -153,16 +168,18 @@
 
 		<tr>
 			<th>GPS</th>
-			<td>The default selection is GPS. Most GPS devices send MSL
-				(mean sea level) altitudes, but some send HAE (Height above
-				ellipsoid).</td>
+			<td>
+			  The default selection is GPS. Most GPS devices send MSL (mean sea
+				level) altitudes, but some send HAE (Height above ellipsoid).
+			</td>
 		</tr>
 
 		<tr>
 			<th>Pressure</th>
-			<td>Some logger devices can deliver altitude values derived from
-				a pressure sensor. If you want to use these pressure data, select
-				this alternative. <br>
+			<td>Some external devices, e.g. Flarm, XCVario can deliver altitude values
+			  derived from a pressure sensor. If you want to use these pressure data,
+			  select this alternative.
+			  <br>
 			<b>Please note!</b> If you have selected the pressure item, Cumulus
 				expects to receive the appropriate NMEA records from the connected
 				peripheral device. Without these you will not get any altitude data
@@ -175,11 +192,11 @@
 	<p>If your displayed altitude always deviates by a constant factor
 		from the expected value, you can correct this in the altitude dialog.
 		This is opened by tapping on the altitude display in the map view. Add
-		your correction value in the spin box labelled "Leveling". Positive
+		your correction value in the box labelled with <i>QNH Altitude</i>. Positive
 		values will be added to and negative values subtracted from the
 		delivered altitude value. For pressure values, the correction will be
-		applied immediately. For GPS values, the correction will only be
-		applied when a GPS fix is established.</p>
+		applied immediately after pressing  Ok. For GPS values, the correction will
+		only be	applied when a GPS fix is established.</p>
 
 	<h5>Processed data from supported devices</h5>
 
@@ -239,6 +256,14 @@
 				href="cumulus-flarm.html">Cumulus Flarm</a> for more information.
 			</td>
 		</tr>
+
+    <tr>
+    <th>XCVario</th>
+      <td>It delivers MSL altitude, IAS, variometer, Mc, bugs and temperature
+          data.
+     </td>
+    </tr>
+
 	</table>
 	</p>
 
