@@ -2704,6 +2704,8 @@ void GpsNmea::fixNOK( const char* who )
  */
 void GpsNmea::slot_userGpsSwitchRequest()
 {
+#ifndef ANDROID
+
   bool gpsSwitchState = GeneralConfig::instance()->getGpsSwitchState();
 
   // qDebug() << "GpsNmea::slot_userGpsSwitchRequest()" << gpsSwitchState;
@@ -2724,6 +2726,8 @@ void GpsNmea::slot_userGpsSwitchRequest()
           QTimer::singleShot( 3000, this, SLOT( _slotGpsReportConnectionOff() ) );
         }
     }
+
+#endif
 }
 
 /**

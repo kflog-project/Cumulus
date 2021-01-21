@@ -237,9 +237,9 @@ void SettingsPageGPS4A::load()
       PressureDevice->setEnabled( false );
     }
 
-  wlanIpAddress->setText( conf->getGpsWlanIp() );
-  wlanPort->setText( conf->getGpsWlanPort() );
-  wlanPassword->setText( conf->getGpsWlanPassword() );
+  wlanIpAddress->setText( conf->getGpsWlanIp1() );
+  wlanPort->setText( conf->getGpsWlanPort1() );
+  wlanPassword->setText( conf->getGpsWlanPassword1() );
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
 }
 
@@ -257,9 +257,9 @@ bool SettingsPageGPS4A::save()
     }
 
   // Save old settings to check for done updates
-  QString oldIp = conf->getGpsWlanIp();
-  QString oldPort = conf->getGpsWlanPort();
-  QString oldPassword = conf->getGpsWlanPassword();
+  QString oldIp = conf->getGpsWlanIp1();
+  QString oldPort = conf->getGpsWlanPort1();
+  QString oldPassword = conf->getGpsWlanPassword1();
 
   // Save current settings.
   QString curIp = wlanIpAddress->text().trimmed();
@@ -290,9 +290,9 @@ bool SettingsPageGPS4A::save()
       return false;
     }
 
-  conf->setGpsWlanIp( curIp );
-  conf->setGpsWlanPort( curPort );
-  conf->setGpsWlanPassword( curPassword );
+  conf->setGpsWlanIp1( curIp );
+  conf->setGpsWlanPort1( curPort );
+  conf->setGpsWlanPassword1( curPassword );
 
   if( oldIp != curIp || oldPort != curPort || oldPassword != curPassword )
     {
