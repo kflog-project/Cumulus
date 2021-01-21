@@ -3057,6 +3057,18 @@ class GeneralConfig : protected QSettings
     _useExternalMcAndBugs = useExternalMcAndBugs;
   }
 
+  /** Get GPS link switch state. */
+  bool getGpsSwitchState() const
+  {
+    return _gpsSwitchState;
+  }
+
+  /** Set GPS link switch state */
+  void setGpsSwitchState( bool state )
+  {
+    _gpsSwitchState = state;
+  }
+
  private:
 
   /** loads the terrain default colors */
@@ -3415,10 +3427,6 @@ class GeneralConfig : protected QSettings
   int _gpsAltitudeType;
   // Gps delivered altitude user correction
   Altitude _gpsAltitudeUserCorrection;
-  // Gps soft start
-  bool _gpsSoftStart;
-  // Gps hard start
-  bool _gpsHardStart;
   // Gps synchronize system clock
   bool _gpsSyncSystemClock;
   // Gps NMEA log state
@@ -3622,6 +3630,9 @@ class GeneralConfig : protected QSettings
 
   // use external Mc and bug values
   bool _useExternalMcAndBugs;
+
+  // GPS switch state.
+  bool _gpsSwitchState;
 };
 
 #endif

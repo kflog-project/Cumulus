@@ -367,6 +367,9 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( page , SIGNAL(newPressureDevice( const QString& )),
                GpsNmea::gps, SLOT(slot_pressureDevice( const QString&)) );
 
+      connect( page , SIGNAL(userGpsSwitchRequest()),
+               GpsNmea::gps, SLOT(slot_userGpsSwitchRequest()) );
+
       page->show();
       return;
     }

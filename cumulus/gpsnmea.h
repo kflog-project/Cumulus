@@ -29,7 +29,7 @@
  *
  * \date 2002-2021
  *
- * \version 1.4
+ * \version 1.5
  */
 
 #ifndef GPS_NMEA_H
@@ -409,21 +409,10 @@ class GpsNmea : public QObject
       _pressureDevice = device;
     }
 
-#if 0
     /**
-     * This slot is called to reset the gps device to factory
-     * settings
+     * Called, if the user want to switch on/off the GPS data processing.
      */
-    void sendFactoryReset();
-
-    /**
-     * This slot is called to switch debugging mode on/off
-     */
-    void switchDebugging (bool on);
-
-    /** This function sends the data of last valid fix to the gps receiver. */
-    void sendLastFix (bool hard, bool soft);
-#endif
+    void slot_userGpsSwitchRequest();
 
 #ifdef ANDROID
 
@@ -452,6 +441,11 @@ class GpsNmea : public QObject
      *  view to the sky is not clear a.s.o.
      */
     void _slotTimeoutFix();
+
+    /**
+     * Called to report a switched off GPS connection by the user.
+     */
+    void _slotGpsReportConnectionOff();
 
   signals: // Signals
     /**
@@ -694,6 +688,7 @@ class GpsNmea : public QObject
   public:
 
     void fixOK( const char* who );
+
     /** This function is called to indicate that a negative fix has been received. */
     void fixNOK( const char* who );
 
@@ -704,6 +699,7 @@ class GpsNmea : public QObject
 
     /** Set system date/time. Input is UTC related. */
     void setSystemClock( const QDateTime& utcDt );
+
     /** create a GPS connection */
     void createGpsConnection();
 

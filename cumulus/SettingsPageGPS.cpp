@@ -52,6 +52,28 @@ WiFi2_PasswordIsHidden( true )
       resize( parent->size() );
     }
 
+  QPixmap gps = GeneralConfig::instance()->loadPixmap("gps.png");
+  int frame = 40;
+
+  gpsOn = QPixmap( gps.width() + frame, gps.height() + frame );
+  gpsOn.fill( Qt::green );
+
+  gpsOff = QPixmap( gps.width() + frame, gps.height() + frame );
+  gpsOff.fill( Qt::red );
+
+  QPainter painter;
+  painter.begin(&gpsOn);
+  painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+  painter.drawPixmap( frame/2, frame/2, gps );
+  painter.end();
+
+  QPainter painterOff;
+  painter.begin( &gpsOff );
+
+  painter.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+  painter.drawPixmap( frame/2, frame/2, gps );
+  painter.end();
+
   QHBoxLayout *contentLayout = new QHBoxLayout;
   setLayout(contentLayout);
 
@@ -146,7 +168,7 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addWidget( new QLabel( tr( "Pressure Supplier:" ), this ), row, 0 );
 
   PressureDevice = new QComboBox();
-  PressureDevice->setToolTip( tr("Device which delivers pressure altitude.") );
+  PressureDevice->setToolTip( tr("Device which delivers pressure altitude") );
   PressureDevice->setEnabled( false );
   PressureDevice->setObjectName("DeviceSelection");
   PressureDevice->setEditable(false);
@@ -335,6 +357,11 @@ WiFi2_PasswordIsHidden( true )
   help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
+  GpsToggle = new QPushButton(this);
+  GpsToggle->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("gps.png")));
+  GpsToggle->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  GpsToggle->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   QPushButton *cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
@@ -350,6 +377,7 @@ WiFi2_PasswordIsHidden( true )
   titlePix->setPixmap(GeneralConfig::instance()->loadPixmap("setup.png"));
 
   connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
+  connect(GpsToggle, SIGNAL(pressed()), this, SLOT(slotToggleGps()));
   connect(ok, SIGNAL(pressed()), this, SLOT(slotAccept()));
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
@@ -361,6 +389,8 @@ WiFi2_PasswordIsHidden( true )
   buttonBox->addSpacing( 30 );
   buttonBox->addWidget( ok, 1 );
   buttonBox->addStretch( 2 );
+  buttonBox->addWidget( GpsToggle, 1 );
+  buttonBox->addSpacing( 10 );
   buttonBox->addWidget( titlePix );
   contentLayout->addLayout( buttonBox );
   load();
@@ -368,6 +398,46 @@ WiFi2_PasswordIsHidden( true )
 
 SettingsPageGPS::~SettingsPageGPS()
 {
+}
+
+/**
+ * Called, if the GPS toggle button is pressed.
+ */
+void SettingsPageGPS::slotToggleGps()
+{
+  bool gpsSwitchState = GeneralConfig::instance()->getGpsSwitchState();
+
+  GeneralConfig::instance()->setGpsSwitchState( ! gpsSwitchState );
+  updateGpsToggle();
+
+  // Disable GPS switch button for some seconds
+  GpsToggle->setEnabled( false );
+  QTimer::singleShot( 10000, this, SLOT( slotEnableGpsToggle() ) );
+
+  emit userGpsSwitchRequest();
+}
+
+void SettingsPageGPS::updateGpsToggle()
+{
+  bool gpsSwitchState = GeneralConfig::instance()->getGpsSwitchState();
+
+  if( gpsSwitchState == true )
+    {
+      // Switch on connection to GPS receiver
+      GpsToggle->setIcon( QIcon( gpsOff ) );
+      GpsToggle->setToolTip( tr( "Press button to disconnect from GPS" ) );
+    }
+  else
+    {
+      // Switch off connection to GPS receiver
+      GpsToggle->setIcon( QIcon( gpsOn ) );
+      GpsToggle->setToolTip( tr( "Press button to connect to GPS" ) );
+    }
+}
+
+void SettingsPageGPS::slotEnableGpsToggle()
+{
+  GpsToggle->setEnabled( true );
 }
 
 void SettingsPageGPS::slotHelp()
@@ -466,6 +536,8 @@ void SettingsPageGPS::load()
 #endif
 
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
+
+  updateGpsToggle();
 }
 
 /** Called to initiate saving to the configuration file. */

@@ -32,6 +32,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QPixmap>
 
 #include "numberEditor.h"
 
@@ -86,6 +87,16 @@ class SettingsPageGPS : public QWidget
    */
   void slotTogglePw2();
 
+  /**
+   * Called, if GPS button has been pressed.
+   */
+  void slotToggleGps();
+
+  /**
+   * Called to enable to GPS toggle button.
+   */
+  void slotEnableGpsToggle();
+
   signals:
 
   /**
@@ -108,6 +119,11 @@ class SettingsPageGPS : public QWidget
    */
   void settingsChanged();
 
+  /**
+   * Emitted when the user wants to switch on/off the GPS connection.
+   */
+  void userGpsSwitchRequest();
+
  private:
 
   /** Called to load the configuration file data. */
@@ -115,6 +131,9 @@ class SettingsPageGPS : public QWidget
 
   /** Called to save the configuration file data.*/
   bool save();
+
+  /** Update icon and tool tip of GPS toggle */
+  void updateGpsToggle();
 
   QComboBox*     GpsSource;
   QComboBox*     PressureDevice;
@@ -134,6 +153,11 @@ class SettingsPageGPS : public QWidget
   QCheckBox*     saveNmeaData;
   bool           WiFi1_PasswordIsHidden;
   bool           WiFi2_PasswordIsHidden;
+  QPushButton*   GpsToggle;
+
+  /** Pixmaps for GPS button. */
+  QPixmap gpsOn;
+  QPixmap gpsOff;
 };
 
 #endif

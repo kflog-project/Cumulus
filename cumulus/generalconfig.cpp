@@ -535,8 +535,7 @@ void GeneralConfig::load()
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
   _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::GPS ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toDouble());
-  _gpsSoftStart       = value( "SoftStart", false ).toBool();
-  _gpsHardStart       = value( "HardStart", false ).toBool();
+  _gpsSwitchState     = value( "SwitchState", true ).toBool();
   _gpsSyncSystemClock = value( "SyncSystemClock", false ).toBool();
   _gpsNmeaLogState    = value( "NmeaLogState", false ).toBool();
   _gpsIpcPort         = value( "IpcPort", 0 ).toInt();
@@ -1012,8 +1011,7 @@ void GeneralConfig::save()
   setValue( "Speed", _gpsSpeed );
   setValue( "AltitudeType", _gpsAltitudeType );
   setValue( "AltitudeCorrection", _gpsAltitudeUserCorrection.getMeters() );
-  setValue( "HardStart", _gpsHardStart );
-  setValue( "SoftStart", _gpsSoftStart );
+  setValue( "SwitchState", _gpsSwitchState );
   setValue( "SyncSystemClock", _gpsSyncSystemClock );
   setValue( "NmeaLogState", _gpsNmeaLogState );
   setValue( "IpcPort", _gpsIpcPort );
@@ -1236,35 +1234,6 @@ void GeneralConfig::setGpsUserAltitudeCorrection(const Altitude newValue)
 {
   _gpsAltitudeUserCorrection = newValue;
 }
-
-
-/** gets Gps soft start */
-bool GeneralConfig::getGpsSoftStart() const
-{
-  return _gpsSoftStart;
-}
-
-
-/** sets Gps soft start */
-void GeneralConfig::setGpsSoftStart(const bool newValue)
-{
-  _gpsSoftStart = newValue;
-}
-
-
-/** gets Gps hard start */
-bool GeneralConfig::getGpsHardStart() const
-{
-  return _gpsHardStart;
-}
-
-
-/** sets Gps hard start */
-void GeneralConfig::setGpsHardStart(const bool newValue)
-{
-  _gpsHardStart = newValue;
-}
-
 
 /** gets Gps sync system clock */
 bool GeneralConfig::getGpsSyncSystemClock() const

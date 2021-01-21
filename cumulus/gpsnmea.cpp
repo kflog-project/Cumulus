@@ -386,7 +386,7 @@ void GpsNmea::startGpsReceiver()
 {
 #ifndef ANDROID
 
-  if( connector )
+  if( GeneralConfig::instance()->getGpsSwitchState() == true && connector != 0 )
     {
       connector->startClientProcess();
     }
@@ -791,7 +791,6 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
 
   _gprmcSeen = true;
 
-  //qDebug("%s",slst[2].toLatin1().data());
   if( slst[2] == "A" )
     { /* Data status A=OK, V=warning */
       fixOK( "RMC" );
@@ -2107,9 +2106,6 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
   lat  = slat.left(2).toInt(&ok1);
   fLat = slat.mid(2).toFloat(&ok2);
 
-  // qDebug ("slat: %s", slat.toLatin1().data());
-  // qDebug ("lat/fLat: %d/%f", lat, fLat);
-
   lon  = slon.left(3).toInt(&ok3);
   fLon = slon.mid(3).toFloat(&ok4);
 
@@ -2117,9 +2113,6 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
     {
       return QPoint();
     }
-
-  // qDebug ("slon: %s", slon.toLatin1().data());
-  // qDebug ("lon/fLon: %d/%f", lon, fLon);
 
   int latMin = (int) rint(fLat * 10000);
   int lonMin = (int) rint(fLon * 10000);
@@ -2280,7 +2273,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
       if( sentence[i] != "" )
         {
           _lastSatInfo.satsInUse++;
-          tmp.sprintf( "%02d", sentence[i].toInt() );
+          tmp = QString( "%1" ).arg( sentence[i], 2, QChar('0') );
           result += tmp;
         }
     }
@@ -2707,6 +2700,44 @@ void GpsNmea::fixNOK( const char* who )
 }
 
 /**
+ * Called, if the user wants to switch on/off the GPS data processing.
+ */
+void GpsNmea::slot_userGpsSwitchRequest()
+{
+  bool gpsSwitchState = GeneralConfig::instance()->getGpsSwitchState();
+
+  // qDebug() << "GpsNmea::slot_userGpsSwitchRequest()" << gpsSwitchState;
+
+  if( connector != 0 )
+    {
+      if( gpsSwitchState == true )
+        {
+          connector->startGpsReceiving();
+        }
+      else
+        {
+          connector->stopGpsReceiving();
+
+          // Report connection stop after 3s to garantee that all GPS
+          // data have been read from the queue to avoid a reconnect.
+          // The report changes to GPS ststus to manuelly.
+          QTimer::singleShot( 3000, this, SLOT( _slotGpsReportConnectionOff() ) );
+        }
+    }
+}
+
+/**
+ * Called to report a switched off GPS connection by the user.
+ */
+void GpsNmea::_slotGpsReportConnectionOff()
+{
+  resetDataObjects();
+  emit statusChange( _status );
+  emit deviceReport( tr( "GPS connection switched off by user" ), 5000 );
+  qDebug() << "User has switched off GPS connection";
+}
+
+/**
  * This slot is called if the GPS needs to reset or update. It is used to stop
  * the GPS receiver connection and to opens a new one to adjust the
  * new settings.
@@ -2720,6 +2751,7 @@ void GpsNmea::slot_reset()
   _reportAltitude = true;
   flarmNmeaOutInitDone = false;
   _gpsSource = conf->getGpsSource().left(3);
+  bool gpsSwitchState = conf->getGpsSwitchState();
 
 #ifndef ANDROID
 
@@ -2757,7 +2789,11 @@ void GpsNmea::slot_reset()
             {
               // restart connector
               connector->stopGpsReceiving();
-              connector->startGpsReceiving();
+
+              if( gpsSwitchState == true )
+                {
+                  connector->startGpsReceiving();
+                }
             }
         }
       else if( gpsDevice.startsWith( "WiFi" ) )
@@ -2776,7 +2812,11 @@ void GpsNmea::slot_reset()
 
                 // restart connector
               connector->stopGpsReceiving();
-              connector->startGpsReceiving();
+
+              if( gpsSwitchState == true )
+                {
+                  connector->startGpsReceiving();
+                }
             }
         }
     }
@@ -2804,8 +2844,8 @@ bool GpsNmea::sendSentence(const QString command)
 {
   // We have to add the checksum and cr lf to the command.
   uint csum = calcCheckSum( command.toLatin1().data() );
-  QString check;
-  check.sprintf ("*%02X\r\n", csum);
+  QString check = QString( "*%1X\r\n" ).arg( csum, 2, 16, QChar('0') ).toUpper();
+
   QString cmd (command + check);
 
   // Forward command to the java part via jni
@@ -2910,86 +2950,6 @@ bool GpsNmea::flarmReset()
 
 //------------------------------------------------------------------------------
 
-#if 0
-/** This slot is called to reset the gps device to factory settings */
-void GpsNmea::sendFactoryReset()
-{
-  if ( connector ) connector->sendSentence ("$PSRF104,0.0,0.0,0,0,0,0,12,8");
-}
-
-
-/** This slot is called to switch debugging mode on/off */
-void GpsNmea::switchDebugging (bool on)
-{
-  QString cmd;
-  cmd.sprintf ("$PSRF105,%d", on);
-  if ( connector ) connector->sendSentence (cmd);
-}
-
-/**
- * Send the data of last valid fix to the gps receiver. Use the current utc
- * time as basis for calculating gps week and time of week. This function is
- * called only at initialization; we don't optimize to show the algorithm
- * clear.
- */
-void GpsNmea::sendLastFix (bool hard, bool soft)
-{
-  switchDebugging (true);
-
-  GeneralConfig *conf = GeneralConfig::instance();
-  int ilat = conf->getGpsLastFixLat();
-  int ilon = conf->getGpsLastFixLon();
-  int alt  = conf->getGpsLastFixAlt();
-  _lastClockOffset = conf->getGpsLastFixClk();
-
-  int latdeg, latmin, latsec;
-  int londeg, lonmin, lonsec;
-  WGSPoint::calcPos (ilat, latdeg, latmin, latsec);
-  WGSPoint::calcPos (ilon, londeg, lonmin, lonsec);
-  double lat = latdeg + (double)latmin/60 + (double)latsec/3600;
-  double lon = londeg + (double)lonmin/60 + (double)lonsec/3600;
-
-  // get current time
-  time_t currentTime;
-  time (&currentTime);
-
-  // gps weeks count from 0 to 1023, starting at Jan 5 1980.
-  // the last gps week number 0 was Aug 22 1999
-  // the next will be Apr 7 2019
-  struct tm reftime;
-  reftime.tm_year = 1999 - 1990; // unix years start at 1990
-  reftime.tm_mon = 8 - 1;        // months start at 0
-  reftime.tm_mday = 22;           // that's right - days start at 1
-  reftime.tm_hour = 0;
-  reftime.tm_min = 0;
-  reftime.tm_sec = 0;
-  reftime.tm_isdst = 0;          // no daylight saving time
-  time_t reference = mktime (&reftime);
-  time_t diff = currentTime - reference;
-  const uint seconds_per_week = 60*60*24*7;
-  // We don't expect this program to run after 2019, but you never know ...
-  uint gps_week = (diff / seconds_per_week) % 1024;
-  uint gps_seconds = diff % seconds_per_week;
-
-#define SATS  12
-#define HARD_RESET 4
-#define SOFT_RESET 3
-
-  QString cmd;
-  // if we have no valid fix, do a hard reset
-  if ((ilat == 0) && (ilon ==0) && hard)
-    cmd.sprintf ("$PSRF104,%02.4f,%03.4f,%d,%d,%d,%d,%d,%d",
-                 0.0,0.0,0,_lastClockOffset,gps_seconds,gps_week,SATS,HARD_RESET);
-  else if (soft)
-    cmd.sprintf ("$PSRF104,%02.4f,%03.4f,%d,%d,%d,%d,%d,%d",
-                 lat,lon,alt,_lastClockOffset,gps_seconds,gps_week,SATS,SOFT_RESET);
-
-  if (!cmd.isEmpty())
-    if ( connector ) connector->sendSentence (cmd);
-}
-#endif
-
-
 /** force a reset of the connector connection after a resume */
 void GpsNmea::forceReset()
 {
@@ -2997,10 +2957,15 @@ void GpsNmea::forceReset()
 
 #ifndef ANDROID
 
-  if ( connector )
+  if( connector )
     {
       connector->stopGpsReceiving();
-      connector->startGpsReceiving();
+
+      if( GeneralConfig::instance()->getGpsSwitchState() )
+        {
+          connector->startGpsReceiving();
+        }
+
       slot_reset();
     }
 
