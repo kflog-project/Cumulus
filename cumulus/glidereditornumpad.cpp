@@ -264,7 +264,7 @@ GliderEditorNumPad::GliderEditorNumPad(QWidget *parent, Glider *glider ) :
 
   itemsLayout->addLayout(spinboxLayout, row++, 0, 1, 4);
   itemsLayout->setColumnStretch( 1, 10 );
-  itemsLayout->setColumnStretch( 4, 20 );
+  // itemsLayout->setColumnStretch( 4, 20 );
 
   connect(m_buttonShow, SIGNAL(pressed()), this, SLOT(slotButtonShow()));
 
