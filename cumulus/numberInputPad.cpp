@@ -5,8 +5,8 @@
 **   This file is part of Cumulus.
 **
 ************************************************************************
-**m_editor
-**   Copyright (c): 2012-2017 Axel Pauli
+**
+**   Copyright (c): 2012-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -245,6 +245,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   connect( m_buttonSignalMapper, SIGNAL(mapped(QWidget *)),
            this, SLOT(slot_ButtonPressed(QWidget *)));
 
+  connect( m_editor, SIGNAL(returnPressed() ), this, SLOT(slot_Ok()) );
   connect( m_pm, SIGNAL(pressed() ), this, SLOT(slot_Pm()) );
   connect( m_ok, SIGNAL(pressed() ), this, SLOT(slot_Ok()) );
   connect( m_cancel, SIGNAL(pressed() ), this, SLOT(slot_Close()) );
