@@ -121,6 +121,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 
       m_nip->show();
 
+      QCoreApplication::sendPostedEvents();
       QCoreApplication::processEvents();
 
       // Set focus at the editor.

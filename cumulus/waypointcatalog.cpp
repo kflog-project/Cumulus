@@ -149,7 +149,8 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
-      QCoreApplication::flush();
+      QCoreApplication::sendPostedEvents();
+      QCoreApplication::processEvents();
     }
 
   QDataStream in( &file );
@@ -403,7 +404,8 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws->setVisible( false );
-      QCoreApplication::flush();
+      QCoreApplication::sendPostedEvents();
+      QCoreApplication::processEvents();
       delete ws;
     }
 
@@ -1190,6 +1192,7 @@ int WaypointCatalog::readBgaDos( QString catalog,
 
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
+      QCoreApplication::sendPostedEvents();
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
                                        QEventLoop::ExcludeSocketNotifiers );
     }
@@ -1262,6 +1265,7 @@ int WaypointCatalog::readBgaDos( QString catalog,
         {
           nextWsMove += wsMove;
           ws->slot_Progress( 2 );
+          QCoreApplication::sendPostedEvents();
           QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                            QEventLoop::ExcludeSocketNotifiers );
         }
@@ -1427,6 +1431,7 @@ int WaypointCatalog::readBgaDos( QString catalog,
   if( _showProgress )
     {
       ws->setVisible( false );
+      QCoreApplication::sendPostedEvents();
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
                                        QEventLoop::ExcludeSocketNotifiers );
       delete ws;
@@ -1488,7 +1493,8 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
 
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+      QCoreApplication::sendPostedEvents();
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                        QEventLoop::ExcludeSocketNotifiers );
     }
 
@@ -1515,6 +1521,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
       if( _showProgress && (lineNo % wsCycles) == 0 )
         {
           ws->slot_Progress( 2 );
+          QCoreApplication::sendPostedEvents();
           QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
                                            QEventLoop::ExcludeSocketNotifiers );
         }
@@ -1809,6 +1816,7 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws->setVisible( false );
+      QCoreApplication::sendPostedEvents();
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
                                        QEventLoop::ExcludeSocketNotifiers );
       delete ws;
@@ -1857,7 +1865,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
       ws->slot_SetText1( QObject::tr("Reading file") );
       ws->slot_SetText2( QFileInfo(catalog).fileName() );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+      QCoreApplication::sendPostedEvents();
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                        QEventLoop::ExcludeSocketNotifiers );
     }
 
@@ -1884,7 +1893,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       if( _showProgress && (lineNo % wsCycles) == 0 )
         {
           ws->slot_Progress( 2 );
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+          QCoreApplication::sendPostedEvents();
+          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                            QEventLoop::ExcludeSocketNotifiers );
         }
 
@@ -2237,7 +2247,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
   if( _showProgress )
     {
       ws->setVisible( false );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents|
+      QCoreApplication::sendPostedEvents();
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                        QEventLoop::ExcludeSocketNotifiers );
       delete ws;
     }

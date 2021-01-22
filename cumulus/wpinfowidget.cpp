@@ -582,10 +582,9 @@ void WPInfoWidget::slot_setNewHome()
 
   if( mb.exec() == QMessageBox::Yes )
     {
+      QCoreApplication::sendPostedEvents();
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                         QEventLoop::ExcludeSocketNotifiers );
-
-      QCoreApplication::flush();
+                                       QEventLoop::ExcludeSocketNotifiers );
 
       // save new home position and elevation
       GeneralConfig *conf = GeneralConfig::instance();

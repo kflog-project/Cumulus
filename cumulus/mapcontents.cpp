@@ -1879,6 +1879,7 @@ void MapContents::proofeSection()
     {
       ws->setScreenUsage( true );
       ws->setVisible( true );
+      QCoreApplication::sendPostedEvents();
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                        QEventLoop::ExcludeSocketNotifiers );
     }

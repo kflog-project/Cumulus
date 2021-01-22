@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
 #include "layout.h"
 #include "waitscreen.h"
 
-WaitScreen::WaitScreen(QWidget *parent ) :
+WaitScreen::WaitScreen( QWidget *parent ) :
   QDialog( parent, Qt::FramelessWindowHint ),
   progress( 0 ),
   lastRot( 0 ),
@@ -158,11 +158,8 @@ void WaitScreen::slot_Progress( int stepsize )
 
 void WaitScreen::flush()
 {
-  QCoreApplication::flush();
-
-#ifdef ANDROID
-  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
-#endif
-
+  QCoreApplication::sendPostedEvents();
+  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                   QEventLoop::ExcludeSocketNotifiers );
   //usleep(250000);
 }

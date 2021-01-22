@@ -644,7 +644,7 @@ void MainWindow::slotCreateSplash()
   splash->setVisible( true );
   setVisible( true );
 
-  ws = new WaitScreen(this);
+  ws = new WaitScreen( this );
 
 #ifdef ANDROID
   // The waitscreen is not centered over the parent and not limited in
@@ -663,7 +663,7 @@ void MainWindow::slotCreateSplash()
   // of some widgets is undefined.
 
   // when the timer expires the cumulus startup is continued
-  QTimer::singleShot(500, this, SLOT(slotCreateApplicationWidgets()));
+  QTimer::singleShot(1000, this, SLOT(slotCreateApplicationWidgets()));
 }
 
 /**
@@ -1022,10 +1022,11 @@ void MainWindow::slotCreateApplicationWidgets()
     }
 
   calculator->newSites();  // New sites have been loaded in map draw
+
   // this call is responsible for setting correct AGL/STD for manual mode,
   // must be called after Map::instance->draw(), there the AGL info is loaded
   // I do not connect since it is never emitted, only called once here
-  calculator->slot_changePosition(MapMatrix::NotSet);
+  calculator->slot_changePosition( MapMatrix::NotSet );
 
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
@@ -1041,7 +1042,8 @@ void MainWindow::slotCreateApplicationWidgets()
 #ifdef ANDROID
 
       mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
+      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2,
+                                       height()/2 - mb.height()/2 ));
       mb.move( pos );
 
 #endif
@@ -1060,7 +1062,8 @@ void MainWindow::slotCreateApplicationWidgets()
   ws->setVisible( true );
 
   QCoreApplication::sendPostedEvents();
-  QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents|QEventLoop::ExcludeSocketNotifiers);
+  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                   QEventLoop::ExcludeSocketNotifiers );
 
   Map::instance->setDrawing( true );
   viewMap->setVisible( true );
