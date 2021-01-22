@@ -210,6 +210,7 @@ void FlarmAliasList::showEvent( QShowEvent *event )
 
   list->resizeColumnToContents( 0 );
   list->resizeRowsToContents();
+  QWidget::showEvent( event );
 }
 
 void FlarmAliasList::slot_AddRow( QString col0, QString col1 )

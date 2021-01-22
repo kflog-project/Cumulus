@@ -61,17 +61,22 @@ PointListView::PointListView( ListWidgetParent* lwParent, QWidget *parent ) :
   connect(this, SIGNAL(done()),
           m_listw, SLOT(slot_Done()));
 
+#ifndef ANDROID
+
   // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+
+#endif
+
 }
 
 PointListView::~PointListView()
 {
 }
 
-void PointListView::showEvent(QShowEvent *)
+void PointListView::showEvent( QShowEvent *event )
 {
   // Show the home button only if we are not to fast in move to avoid
   // usage during flight. The redefinition of the home position will trigger
@@ -87,6 +92,8 @@ void PointListView::showEvent(QShowEvent *)
 
   // Reset home changed
   m_homeChanged = false;
+
+  QWidget::showEvent( event );
 }
 
 /** This signal is called to indicate that a selection has been made. */

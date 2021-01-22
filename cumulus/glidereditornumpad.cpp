@@ -310,7 +310,7 @@ GliderEditorNumPad::~GliderEditorNumPad()
 
 void GliderEditorNumPad::showEvent( QShowEvent *event )
 {
-  Q_UNUSED(event)
+  QWidget::showEvent( event );
 }
 
 /** Called to initiate loading of the configuration file. */

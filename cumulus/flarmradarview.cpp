@@ -131,7 +131,7 @@ FlarmRadarView::~FlarmRadarView()
 {
 }
 
-void FlarmRadarView::showEvent( QShowEvent* )
+void FlarmRadarView::showEvent( QShowEvent* event )
 {
   // According to the window height the button sizes are adapted.
   int buttonSize = Layout::getButtonSize();
@@ -152,7 +152,7 @@ void FlarmRadarView::showEvent( QShowEvent* )
                           updateButton,
                           aliasButton,
                           addButton,
-			  windButton,
+                          windButton,
                           closeButton };
 
   for( int i = 0; i < 7; i++ )
@@ -162,6 +162,8 @@ void FlarmRadarView::showEvent( QShowEvent* )
       pb->setMinimumSize(buttonSize, buttonSize);
       pb->setMaximumSize(buttonSize, buttonSize);
     }
+
+  QWidget::showEvent( event );
 }
 
 /** Called if zoom level shall be changed. */

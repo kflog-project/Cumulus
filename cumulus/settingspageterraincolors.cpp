@@ -339,11 +339,13 @@ SettingsPageTerrainColors::~SettingsPageTerrainColors()
 {
 }
 
-void SettingsPageTerrainColors::showEvent(QShowEvent *)
+void SettingsPageTerrainColors::showEvent( QShowEvent *event )
 {
   // Switch off automatic software input panel popup
   m_autoSip = qApp->autoSipEnabled();
   qApp->setAutoSipEnabled( false );
+
+  QWidget::showEvent( event );
 }
 
 void SettingsPageTerrainColors::hideEvent( QHideEvent *)

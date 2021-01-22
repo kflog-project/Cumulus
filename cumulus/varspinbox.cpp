@@ -114,6 +114,8 @@ void VarSpinBox::showEvent( QShowEvent *event )
       m_minus->setMaximumSize( height, height );
       m_minus->setMinimumSize( height, height );
     }
+
+  QWidget::showEvent( event );
 }
 
 void VarSpinBox::slotPlusPressed()

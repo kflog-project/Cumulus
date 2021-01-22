@@ -154,7 +154,7 @@ void TaskListStatusView::setHeader()
   resizeTaskList();
 }
 
-void TaskListStatusView::showEvent(QShowEvent *)
+void TaskListStatusView::showEvent( QShowEvent *event )
 {
   // get the current activated task
   FlightTask* ft = _globalMapContents->getCurrentTask();
@@ -162,6 +162,8 @@ void TaskListStatusView::showEvent(QShowEvent *)
 
   resizeTaskList();
   list->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 /** This slot is called if the info button has been clicked */

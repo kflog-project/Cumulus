@@ -396,10 +396,12 @@ void PreFlightGliderPage::slotWaterEdited( const QString& number )
   slotUpdateWingLoad( 0 );
 }
 
-void PreFlightGliderPage::showEvent(QShowEvent *)
+void PreFlightGliderPage::showEvent( QShowEvent *event )
 {
   slotGliderChanged();
   m_gliderList->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 void PreFlightGliderPage::slotHelp()

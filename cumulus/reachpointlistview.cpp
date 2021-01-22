@@ -168,10 +168,13 @@ ReachpointListView::ReachpointListView( QWidget* parent ) :
   cmdShowOl->hide();
   cmdHideOl->show();
 
+#ifndef ANDROID
   // activate keyboard shortcut Return as select
   QShortcut* scSelect = new QShortcut( this );
   scSelect->setKey( Qt::Key_Return );
   connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+#endif
+
 }
 
 ReachpointListView::~ReachpointListView()
@@ -461,7 +464,7 @@ void ReachpointListView::fillRpList()
   list->setUpdatesEnabled(true);
 }
 
-void ReachpointListView::showEvent(QShowEvent *)
+void ReachpointListView::showEvent( QShowEvent *event )
 {
   // clear an old selection
   list->clearSelection();
@@ -495,6 +498,8 @@ void ReachpointListView::showEvent(QShowEvent *)
 
   // Reset home changed
   _homeChanged = false;
+
+  QWidget::showEvent( event );
 }
 
 /** This slot is called to indicate that a selection has been made. */

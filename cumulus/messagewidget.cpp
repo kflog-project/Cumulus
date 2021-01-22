@@ -71,7 +71,7 @@ MessageWidget::~MessageWidget()
 {
 }
 
-void MessageWidget::showEvent( QShowEvent* )
+void MessageWidget::showEvent( QShowEvent* event )
 {
   qDebug() << "MessageWidget::showEvent: font=" << font().toString();
 
@@ -114,4 +114,6 @@ void MessageWidget::showEvent( QShowEvent* )
       qDebug() << "MessageWidget: GUI font has narrowed from"
                << guiPs << "to" << mwPs;
     }
+
+  QWidget::showEvent( event );
 }

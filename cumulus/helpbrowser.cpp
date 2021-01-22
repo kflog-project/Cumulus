@@ -141,7 +141,7 @@ HelpBrowser::~HelpBrowser()
 /** Catch show events. If the first event is caught, we will load
  *  the help file into the m_browser.
  */
-void HelpBrowser::showEvent( QShowEvent * )
+void HelpBrowser::showEvent( QShowEvent *event )
 {
   if( ! firstCall )
     {
@@ -198,6 +198,8 @@ void HelpBrowser::showEvent( QShowEvent * )
   QUrl url = QUrl::fromLocalFile( helpFile );
 
   m_browser->setSource( url );
+
+  QWidget::showEvent( event );
 }
 
 /** User request, to zoom into the document. */

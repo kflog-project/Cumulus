@@ -207,7 +207,7 @@ PreFlightCheckListPage::~PreFlightCheckListPage()
 {
 }
 
-void PreFlightCheckListPage::showEvent(QShowEvent *)
+void PreFlightCheckListPage::showEvent( QShowEvent *event )
 {
   QString path = tr("File: ") +
                  GeneralConfig::instance()->getUserDataDirectory() + "/" +
@@ -228,6 +228,8 @@ void PreFlightCheckListPage::showEvent(QShowEvent *)
     }
 
   m_ok->hide();
+
+  QWidget::showEvent( event );
 }
 
 void PreFlightCheckListPage::slotToogleFilenameDisplay()

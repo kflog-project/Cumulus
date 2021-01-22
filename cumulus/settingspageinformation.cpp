@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2018 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2003-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -86,11 +86,12 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
 
 #ifndef ANDROID
 
-  QHBoxLayout *hBox = new QHBoxLayout();
+  QHBoxLayout *hBox = new QHBoxLayout;
 
   QPushButton *soundSelection = new QPushButton( tr("Sound Player"), this );
   soundSelection->setToolTip(tr("Select a sound player, use %s if played file is enclosed in command line arguments"));
-  hBox->addWidget(soundSelection);
+  hBox->addWidget( soundSelection );
+  hBox->addSpacing( 10 );
 
   connect(soundSelection, SIGNAL( clicked()), this, SLOT(slot_openToolDialog()) );
 

@@ -325,7 +325,7 @@ PreFlightTaskPage::~PreFlightTaskPage()
   qDeleteAll(m_flightTaskList);
 }
 
-void PreFlightTaskPage::showEvent(QShowEvent *)
+void PreFlightTaskPage::showEvent( QShowEvent *event )
 {
   m_taskList->resizeColumnToContents(0);
   m_taskList->resizeColumnToContents(1);
@@ -341,6 +341,8 @@ void PreFlightTaskPage::showEvent(QShowEvent *)
     }
 
   enableButtons();
+
+  QWidget::showEvent( event );
 }
 
 void PreFlightTaskPage::enableButtons()

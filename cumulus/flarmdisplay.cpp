@@ -218,9 +218,8 @@ void FlarmDisplay::slot_SetSelectedObject( QString newObject )
 
 void FlarmDisplay::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
-
   createBackground();
+  QWidget::showEvent( event );
 }
 
 void FlarmDisplay::resizeEvent( QResizeEvent *event )

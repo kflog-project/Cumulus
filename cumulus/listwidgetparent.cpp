@@ -155,8 +155,6 @@ ListWidgetParent::~ListWidgetParent()
 
 void ListWidgetParent::showEvent( QShowEvent *event )
 {
-  Q_UNUSED(event)
-
   // load list items during first show
   if( firstLoadDone == false )
     {
@@ -167,6 +165,8 @@ void ListWidgetParent::showEvent( QShowEvent *event )
   // align columns to contents before showing
   resizeListColumns();
   list->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 void ListWidgetParent::fillItemList()

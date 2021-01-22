@@ -277,8 +277,6 @@ GliderFlightDialog::~GliderFlightDialog()
 
 void GliderFlightDialog::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
-
   load();
 
   double mcMax;
@@ -315,6 +313,8 @@ void GliderFlightDialog::showEvent( QShowEvent *event )
 
   slotShowFlightTime();
   slotShowTaskSpeed();
+
+  QDialog::showEvent( event );
 }
 
 bool GliderFlightDialog::eventFilter( QObject *o , QEvent *e )

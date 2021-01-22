@@ -547,8 +547,6 @@ MapView::~MapView()
 
 void MapView::showEvent( QShowEvent* event )
 {
-  Q_UNUSED( event )
-
   // Used map info box widgets
   MapInfoBox *boxWidgets[16] = { _heading,
                                  _bearing,
@@ -579,9 +577,9 @@ void MapView::showEvent( QShowEvent* event )
       // qDebug() << "Text=" << ptr->getPreText() << "Width=" << w;
 
       if( ! ptr->getPreText().isEmpty() )
-	{
-	  ptr->getPreTextLabelWidget()->setFixedWidth( w );
-	}
+        {
+          ptr->getPreTextLabelWidget()->setFixedWidth( w );
+        }
     }
 
 #if defined ANDROID || defined MAEMO
@@ -591,6 +589,8 @@ void MapView::showEvent( QShowEvent* event )
   _statusbar->setMaximumWidth( width() );
 
 #endif
+
+  QWidget::showEvent( event );
 }
 
 /** called if heading has changed */

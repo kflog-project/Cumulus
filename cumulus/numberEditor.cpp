@@ -88,7 +88,7 @@ void NumberEditor::showEvent( QShowEvent* event )
   int strWidth = fm.width( QString( "MMMMMM" ) );
   setMinimumWidth( strWidth );
 
-  QLabel::showEvent(event);
+  QLabel::showEvent( event );
 }
 
 void NumberEditor::mousePressEvent( QMouseEvent* event )
@@ -123,37 +123,26 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 
       QCoreApplication::processEvents();
 
-      if( parentWidget() != 0 )
-        {
-          // Center the input panel about its parent
-          QSize ps = parentWidget()->frameSize();
-          QSize nip = m_nip->frameSize();
-
-          m_nip->move( ps.width() / 2 - nip.width() / 2,
-                       ps.height() / 2 - nip.height() / 2 );
-        }
-
       // Set focus at the editor.
       m_nip->getEditor()->setFocus();
 
 #ifdef ANDROID
-
       // Sets the window's background to another color.
       m_nip->setAutoFillBackground( true );
       m_nip->setBackgroundRole( QPalette::Window );
       m_nip->setPalette( QPalette( QColor( Qt::lightGray ) ) );
+#endif
 
+      // The number input widget to be shown is not centered over this parent.
+      // Therefore this must be done by our self.
       QSize ms = m_nip->minimumSizeHint();
       ms += QSize(10, 10);
 
-      // This widget is not centered over the parent and not limited in
-      // its size under Android. Therefore this must be done by our self.
-      m_nip->setGeometry( (MainWindow::mainWindow()->width() - ms.width()) / 2,
-                          (MainWindow::mainWindow()->height() - ms.height()) / 2,
-                           ms.width(), ms.height() );
+      QPoint pos = MainWindow::mainWindow()->pos();
 
-#endif
-
+      m_nip->setGeometry( pos.x() + ms.width() / 2,
+                          pos.y() + ms.height() / 2,
+                          ms.width(), ms.height() );
     }
 
   event->accept();

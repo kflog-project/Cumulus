@@ -382,7 +382,7 @@ TaskPointEditor::~TaskPointEditor()
 {
 }
 
-void TaskPointEditor::showEvent(QShowEvent *event)
+void TaskPointEditor::showEvent( QShowEvent *event )
 {
   QWidget::showEvent( event );
 }

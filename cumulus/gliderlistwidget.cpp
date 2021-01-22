@@ -29,7 +29,7 @@ GliderListWidget::GliderListWidget() :
 }
 
 GliderListWidget::GliderListWidget( QWidget *parent,
-				    bool considerSelectionChanges ) :
+	                                  bool considerSelectionChanges ) :
   QTreeWidget(parent),
   m_added(0),
   m_changed(false)
@@ -141,9 +141,8 @@ void GliderListWidget::migrateGliderList()
 
 void GliderListWidget::showEvent( QShowEvent* event )
 {
-  Q_UNUSED( event )
-
   resizeListColumns();
+  QTreeWidget::showEvent( event );
 }
 
 /** Retrieves the gliders from the configuration file and fills the list. */

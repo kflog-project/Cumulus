@@ -203,9 +203,10 @@ VarioModeDialog::~VarioModeDialog()
   qApp->setAutoSipEnabled( true );
 }
 
-void VarioModeDialog::showEvent(QShowEvent *)
+void VarioModeDialog::showEvent( QShowEvent *event )
 {
   spinTime->setFocus();
+  QDialog::showEvent( event );
 }
 
 void VarioModeDialog::slot_tekChanged( bool newState )

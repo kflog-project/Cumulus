@@ -152,10 +152,13 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
       connect( cmdStatus, SIGNAL(clicked() ),
                this, SLOT(slot_Status()) );
 
+#ifndef ANDROID
       // activate keyboard shortcut Return as select
       QShortcut* scSelect = new QShortcut( this );
       scSelect->setKey( Qt::Key_Return );
       connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
+#endif
+
     }
 }
 
@@ -245,7 +248,7 @@ void TaskListView::slot_itemClicked( QTreeWidgetItem* item, int column )
     }
 }
 
-void TaskListView::showEvent(QShowEvent *)
+void TaskListView::showEvent( QShowEvent *event )
 {
   resizeTaskList();
 
@@ -287,6 +290,8 @@ void TaskListView::showEvent(QShowEvent *)
     }
 
   list->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 /** This slot is called if the select button has been clicked */

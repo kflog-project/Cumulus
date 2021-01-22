@@ -176,10 +176,9 @@ void FlarmLogbook::enableButtons( const bool toggle )
 
 void FlarmLogbook::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
-
   // m_table->resizeColumnsToContents();
   // m_table->resizeRowsToContents();
+  QWidget::showEvent( event );
 }
 
 void FlarmLogbook::closeEvent( QCloseEvent* event )

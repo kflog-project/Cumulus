@@ -39,8 +39,6 @@ FlarmWidget::~FlarmWidget()
 
 void FlarmWidget::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
-
   // Start $PFLAA data collecting
   Flarm::setCollectPflaa( true );
 
@@ -83,6 +81,8 @@ void FlarmWidget::showEvent( QShowEvent *event )
       connect( display, SIGNAL(newObjectSelection(QString)),
                radarView, SLOT(slotShowAddButton(QString)) );
     }
+
+  QWidget::showEvent( event );
 }
 
 /** Called if list view shall be opened with all Flarm objects. */

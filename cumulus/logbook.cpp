@@ -160,8 +160,6 @@ Logbook::~Logbook()
 
 void Logbook::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
-
   if( m_table->rowCount() == 0 )
     {
       m_okButton->setEnabled( false );
@@ -177,6 +175,8 @@ void Logbook::showEvent( QShowEvent *event )
 
   m_table->resizeColumnsToContents();
   m_table->resizeRowsToContents();
+
+  QWidget::showEvent( event );
 }
 
 void Logbook::setTableHeader()

@@ -212,6 +212,7 @@ void AirspaceFilters::showEvent( QShowEvent *event )
 
   table->resizeColumnsToContents();
   table->resizeRowsToContents();
+  QWidget::showEvent( event );
 }
 
 QString AirspaceFilters::getFilterFileName()

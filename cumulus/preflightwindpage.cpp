@@ -210,11 +210,13 @@ PreFlightWindPage::~PreFlightWindPage()
   m_reloadTimer->stop();
 }
 
-void PreFlightWindPage::showEvent(QShowEvent *)
+void PreFlightWindPage::showEvent(QShowEvent *event )
 {
   m_windListStatistics->resizeColumnToContents(0);
   m_windListStatistics->resizeColumnToContents(1);
   m_windListStatistics->resizeColumnToContents(2);
+
+  QWidget::showEvent( event );
 }
 
 void PreFlightWindPage::slotLoadWindStatistics()

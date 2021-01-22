@@ -134,8 +134,6 @@ FlarmListView::~FlarmListView()
 
 void FlarmListView::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
-
   configRowHeight();
 
   // Set the list object to be selected to the current selected Flarm object.
@@ -143,6 +141,7 @@ void FlarmListView::showEvent( QShowEvent *event )
   selectedListObject = selectedFlarmObject;
   fillItemList( selectedFlarmObject );
   list->setFocus();
+  QWidget::showEvent( event );
 }
 
 void FlarmListView::configRowHeight()

@@ -203,8 +203,9 @@ SettingsPageFlarm::~SettingsPageFlarm()
 
 void SettingsPageFlarm::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
   m_table->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 void SettingsPageFlarm::enableButtons( const bool toggle )

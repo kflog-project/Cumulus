@@ -137,9 +137,11 @@ SettingsPageGlider::~SettingsPageGlider()
   // qDebug("SettingsPageGlider::~SettingsPageGlider() is called");
 }
 
-void SettingsPageGlider::showEvent(QShowEvent *)
+void SettingsPageGlider::showEvent( QShowEvent *event )
 {
   m_list->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 void SettingsPageGlider::slotHelp()

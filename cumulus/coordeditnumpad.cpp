@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013 by Axel Pauli
+**   Copyright (c): 2013-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -116,7 +114,7 @@ CoordEditNumPad::~CoordEditNumPad()
  * widgets depending on the used font.
  *
  */
-void CoordEditNumPad::showEvent( QShowEvent * )
+void CoordEditNumPad::showEvent( QShowEvent *event )
 {
   QFontMetrics fm( font() );
 
@@ -153,6 +151,8 @@ void CoordEditNumPad::showEvent( QShowEvent * )
 
   skyDirection->setMinimumSize( height + height / 2, height );
   skyDirection->setMaximumSize( height + height / 2, height );
+
+  QWidget::showEvent( event );
 }
 
 void CoordEditNumPad::slot_changeSkyDirection()
@@ -206,7 +206,8 @@ bool CoordEditNumPad::isInputChanged()
 /**
  * Sets the controls for the latitude editor.
  */
-LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(parent)
+LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) :
+  CoordEditNumPad(parent)
 {
   setObjectName("LatEditNumPad");
 
@@ -283,7 +284,8 @@ LatEditNumPad::LatEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(
 /**
  * Sets the controls for the longitude editor.
  */
-LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) : CoordEditNumPad(parent)
+LongEditNumPad::LongEditNumPad(QWidget *parent, const int base) :
+  CoordEditNumPad(parent)
 {
   setObjectName("LongEditNumPad");
 
@@ -461,18 +463,20 @@ void CoordEditNumPad::setKFLogDegree( const int coord, const bool isLat )
 
       if (isLat)
         {
-          posDeg.sprintf("%02d", (degree < 0)  ? -degree : degree);
+          posDeg = QString( "%1" ).arg( (degree < 0)  ? -degree : degree,
+                                        2, 10, QChar('0') );
         }
       else
         {
-          posDeg.sprintf("%03d", (degree < 0)  ? -degree : degree);
+          posDeg = QString( "%1" ).arg( (degree < 0)  ? -degree : degree,
+                                        3, 10, QChar('0') );
         }
 
       min = abs(min);
-      posMin.sprintf("%02d", min);
+      posMin = QString( "%1" ).arg( min, 2, 10, QChar('0') );
 
       sec = abs(sec);
-      posSec.sprintf("%02d", sec);
+      posSec = QString( "%1" ).arg( sec, 2, 10, QChar('0') );
 
       degreeBox->setText( posDeg );
       minuteBox->setText( posMin );
@@ -490,18 +494,20 @@ void CoordEditNumPad::setKFLogDegree( const int coord, const bool isLat )
 
       if (isLat)
         {
-          posDeg.sprintf("%02d", (degree < 0)  ? -degree : degree);
+          posDeg = QString( "%1" ).arg( (degree < 0)  ? -degree : degree,
+                                        2, 10, QChar('0') );
         }
       else
         {
-          posDeg.sprintf("%03d", (degree < 0)  ? -degree : degree);
+          posDeg = QString( "%1" ).arg( (degree < 0)  ? -degree : degree,
+                                        3, 10, QChar('0') );
         }
 
       decMin = fabs(decMin);
 
-      posMin.sprintf("%.3f", decMin);
+      posMin = QString( "%1" ).arg( decMin, 2, 'f', 3, QChar('0') );
 
-      // Unfortunately sprintf does not support leading zero in float
+      // Unfortunately QString does not support leading zero in float
       // formating. So we must do it alone.
       if ( decMin < 10.0 )
         {
@@ -520,9 +526,10 @@ void CoordEditNumPad::setKFLogDegree( const int coord, const bool isLat )
       // decimal degrees is used as format
       WGSPoint::calcPos (coord, decDegree);
 
-      posDeg.sprintf("%.5f", (decDegree < 0)  ? -decDegree : decDegree);
+      posDeg = QString( "%1" ).arg( (decDegree < 0)  ? -decDegree : decDegree,
+                                     3, 'f', 5, QChar('0') );
 
-      // Unfortunately sprintf does not support leading zero in float
+      // Unfortunately QString does not support leading zero in float
       // formating. So we must do it alone.
       if (isLat)
         {

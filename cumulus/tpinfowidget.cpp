@@ -179,8 +179,9 @@ void TPInfoWidget::showTP( bool automaticClose )
 /**
  * Called, if the widget will be shown.
  */
-void TPInfoWidget::showEvent(QShowEvent *)
+void TPInfoWidget::showEvent( QShowEvent *event )
 {
+  QWidget::showEvent( event );
 }
 
 /**

@@ -369,7 +369,7 @@ void MapInfoBox::setPreWidgetsBGColor( const QColor& newValue )
     }
 }
 
-void MapInfoBox::showEvent(QShowEvent *event)
+void MapInfoBox::showEvent( QShowEvent *event )
 {
   QFrame::showEvent( event );
 

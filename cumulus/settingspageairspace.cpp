@@ -521,11 +521,13 @@ SettingsPageAirspace::~SettingsPageAirspace()
 {
 }
 
-void SettingsPageAirspace::showEvent(QShowEvent *)
+void SettingsPageAirspace::showEvent( QShowEvent *event )
 {
   // align all columns to contents before showing
   drawOptions->resizeColumnsToContents();
   drawOptions->setFocus();
+
+  QWidget::showEvent( event );
 }
 
 void SettingsPageAirspace::slotHelp()
