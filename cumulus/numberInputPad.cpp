@@ -142,7 +142,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
 
   m_pm = new QPushButton( "+ -", this );
   m_pm->setMinimumWidth( minBW );
-
+  gl->addWidget( m_pm, row, 6 );
   row++;
 
   m_decimal = new QPushButton( " . ", this );
