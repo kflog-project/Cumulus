@@ -27,7 +27,7 @@
   *
   * \date 2003-2021
   *
-  * \version 1.3
+  * \version 1.4
   */
 
 #ifndef GPS_STATUS_DIALOG_H
@@ -274,6 +274,9 @@ private:
   int xoff;
   int yoff;
   QList<SIVInfo> sats;
+
+  /** Number of class instances */
+  static ushort instances;
 };
 
 #endif

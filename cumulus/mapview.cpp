@@ -1478,9 +1478,14 @@ void MapView::slot_gpsStatusDialog()
     }
 
   GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
-  connect( gpsDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
 
+#ifndef CUM4DESKTOP
+  // For desptop applikations the GPS status dialog can shown in parallel
+  // to the root window.
+  connect( gpsDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
   emit openingSubWidget();
+#endif
+
   gpsDlg->setVisible(true);
 }
 

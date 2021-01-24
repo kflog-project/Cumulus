@@ -25,6 +25,9 @@ QT += widgets
 DEFINES += QT_5
 }
 
+# Set DESKTOP as common define, if Cumulus is build for the LINUX desktop
+DEFINES += CUM4DESKTOP
+
 TARGET = cumulus
 
 # CONFIG = qt warn_on release

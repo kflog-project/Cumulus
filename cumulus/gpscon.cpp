@@ -15,6 +15,12 @@
  **
  ***********************************************************************/
 
+#ifndef QT_5
+#include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -28,10 +34,6 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <linux/limits.h>
-
-#include <QtGui>
-#include <QMessageBox>
-#include <QInputDialog>
 
 #include "generalconfig.h"
 #include "gpsnmea.h"
@@ -634,7 +636,12 @@ bool GpsCon::startClientProcess()
 
       if( maxOpenFds == -1 ) // call failed
         {
-          maxOpenFds = NR_OPEN; // normal default from linux/limits.h
+          qWarning() << method
+                     << "Startup gpsClient process failed!"
+                     << "Calling getrlimit() returned -1.";
+
+          emit deviceReport( tr("GPS daemon start failed!"), 5000 );
+          return false;
         }
       else
         {

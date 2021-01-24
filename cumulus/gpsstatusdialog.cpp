@@ -45,7 +45,7 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
 
   setWindowTitle(tr("GPS Status"));
   setWindowFlags( Qt::Tool );
-  setWindowModality( Qt::WindowModal );
+  // setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
 
   if( _globalMainWindow )
