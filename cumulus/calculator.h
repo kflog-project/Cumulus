@@ -366,6 +366,14 @@ public:
   }
 
   /**
+   * Read property of lastMagneticHeading.
+   */
+  int getlastMagneticHeading()
+  {
+    return lastMagneticHeading;
+  }
+
+  /**
    * Sets the current position to point newPos.
    */
   void setPosition(const QPoint& newPos);
@@ -577,9 +585,14 @@ public:
   void slot_changePosition(int direction);
 
   /**
-   * Called if a new heading has been obtained
+   * Called if a new GPS heading has been obtained
    */
   void slot_Heading( const double& newHeading );
+
+  /**
+   * Called if a new magnetic heading has been obtained
+   */
+  void slot_MagneticHeading( const double& newHeading );
 
   /**
    * Change position to the North
@@ -845,6 +858,11 @@ public:
   void newHeading(int);
 
   /**
+   * Sent if a new magneticheading has been obtained
+   */
+  void newMagneticHeading(int);
+
+  /**
    * Sent if a new position has been selected, either manually or by GPS
    */
   void newPosition(const QPoint&, const int);
@@ -1065,8 +1083,10 @@ private: // Private attributes
   AltitudeCollection lastAltCollection;
   /** Contains the last known position, either obtained from the GPS or modified by manual input. */
   QPoint lastPosition, lastGPSPosition;
-  /** contains the last known heading */
+  /** contains the last known GPS heading */
   int lastHeading;
+  /** contains the last known magnetic heading */
+  int lastMagneticHeading;
   /** Contains the last know static pressure in hPa */
   double lastStaticPressure;
   /** Contains the last know dynamic pressure in Pa */

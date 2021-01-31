@@ -76,6 +76,7 @@ Calculator::Calculator( QObject* parent ) :
   lastETA = QTime();
   lastBearing = -1;
   lastHeading = -1;
+  lastMagneticHeading = -1;
   lastDistance = -1;
   lastRequiredLD = -1.0;
   lastCurrentLD = -1.0;
@@ -265,9 +266,9 @@ void Calculator::slot_Heading( const double& newHeadingValue )
       return;
     }
 
-  lastHeading = static_cast<int> (rint(newHeadingValue));
+  lastHeading = static_cast<int>( rint( newHeadingValue ) );
 
-  emit newHeading(lastHeading);
+  emit newHeading( lastHeading );
 
   // if we have no bearing, lastBearing is -1;
   // this is only a small mistake, relBearing points to north
@@ -278,6 +279,20 @@ void Calculator::slot_Heading( const double& newHeadingValue )
     }
 
   emit newRelBearing (lastBearing - lastHeading);
+}
+
+/**
+ * Called if a new magnetic heading has been obtained.
+ */
+void Calculator::slot_MagneticHeading( const double& newHeading )
+{
+  int intHeading = static_cast<int>( rint( newHeading ) );
+
+  if( lastMagneticHeading != intHeading )
+    {
+      lastMagneticHeading = intHeading;
+      emit newMagneticHeading( intHeading );
+    }
 }
 
 /** called if a new speed fix has been received */

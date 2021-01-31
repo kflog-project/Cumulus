@@ -29,7 +29,7 @@
  *
  * \date 2002-2021
  *
- * \version 1.5
+ * \version 1.6
  */
 
 #ifndef GPS_NMEA_H
@@ -239,11 +239,19 @@ class GpsNmea : public QObject
       };
 
     /**
-     * @return the last know heading.
+     * @return the last know GPS heading.
      */
     double getLastHeading() const
       {
         return _lastHeading;
+      };
+
+    /**
+     * @return the last know magnetic heading.
+     */
+    double getLastMagneticHeading() const
+      {
+        return _lastMagneticHeading;
       };
 
     /**
@@ -469,9 +477,14 @@ class GpsNmea : public QObject
     void newSpeed( Speed& newSpeed );
 
     /**
-     * This signal is emitted if a new heading has been received.
+     * This signal is emitted if a new GPS heading has been received.
      */
     void newHeading( const double& newHeading );
+
+    /**
+     * This signal is emitted if a new magnetic heading has been received.
+     */
+    void newMagneticHeading( const double& newMagneticHeading );
 
     /**
      * This signal is emitted if a new wind (speed, direction)
@@ -631,6 +644,12 @@ class GpsNmea : public QObject
     /** Extracts GPVTG sentence. */
     void __ExtractGpvtg( const QStringList& slst );
 
+    /**
+     * Extracts HCHDM sentence, magnetic compass with magnetic heading
+     * message.
+     * */
+    void __ExtractHchdm( const QStringList& slst );
+
 #ifdef FLARM
     /** Extracts PFLAU sentence. */
     void __ExtractPflau( const QStringList& slst );
@@ -725,8 +744,13 @@ class GpsNmea : public QObject
 
     /** Force one altitude report after reset, regardless of change or not */
     bool _reportAltitude;
-    /** Contains the last known heading */
+
+    /** Contains the last known GPS heading */
     double _lastHeading;
+
+    /** Contains the last known Magnetic heading */
+    double _lastMagneticHeading;
+
     /** Contains the last known satellite information */
     SatInfo _lastSatInfo;
     /** Contains the last known clock offset of the gps receiver */

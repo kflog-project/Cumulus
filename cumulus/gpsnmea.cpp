@@ -217,6 +217,9 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$GPVTG", 15 );
   gpsKeys.insert( "$GNVTG", 15 );
 
+  // Magnetic heading from XCVario
+  gpsKeys.insert( "$HCHDM", 16 );
+
 #ifdef FLARM
   gpsKeys.insert( "$PFLAA", 20);
   gpsKeys.insert( "$PFLAU", 21);
@@ -683,6 +686,10 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       __ExtractGpvtg( slst );
       return;
 
+    case 16: // $HCHDM magnatic compass
+      __ExtractHchdm( slst );
+      return;
+
 #ifdef FLARM
 
     case 20: // $PFLAA
@@ -1067,6 +1074,49 @@ void GpsNmea::__ExtractGpvtg( const QStringList& slst )
     {
       qWarning("$PGVTG contains too less parameters!");
       return;
+    }
+}
+
+/**
+ * $HCHDM,238,M*xx<CR><LF>
+ *
+ * 0 HCHDM
+ * 1 Magnetic track in degree
+ * 2 M, Magnetic track indicator
+ * 3 *xx Check sum
+ * 4 [CR][LF], Sentence terminator
+ *
+ * Extracts HCHDM sentence, magnetic compass with magnetic heading
+ * message.
+ * */
+void GpsNmea::__ExtractHchdm( const QStringList& slst )
+{
+  if ( slst.size() < 3 )
+    {
+      qWarning("HCHDM contains too less parameters!");
+      return;
+    }
+
+  bool ok = false;
+
+  if( slst[2] != "M" )
+    {
+      // No magnetic heading, ignore it
+      return;
+    }
+
+  double mh = slst[1].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  if ( _lastMagneticHeading != mh )
+    {
+      _lastMagneticHeading = mh;
+      emit newMagneticHeading( mh ); // notify change
     }
 }
 

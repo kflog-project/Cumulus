@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -370,50 +370,54 @@ QString Airspace::getInfoString() const
 
   QString type;
 
-  switch(m_lLimitType) {
-  case MSL:
-    tempL.sprintf("%s MSL", m_lLimit.getText(true,0).toLatin1().data());
-    break;
-  case GND:
-    if(m_lLimit.getMeters())
-      tempL.sprintf("%s GND", m_lLimit.getText(true,0).toLatin1().data());
-    else
-      tempL = "GND";
-    break;
-  case FL:
-    tempL.sprintf("FL %d (%s)", (int) rint(m_lLimit.getFeet()/100.), m_lLimit.getText(true,0).toLatin1().data());
-    break;
-  case STD:
-    tempL.sprintf("%s STD", m_lLimit.getText(true,0).toLatin1().data());
-    break;
-  case UNLTD:
-    tempL = QObject::tr("Unlimited");
-    break;
-  default:
-    break;
+  switch( m_lLimitType )
+  {
+    case MSL:
+      tempL = QString( "%1 MSL" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      break;
+    case GND:
+      if( m_lLimit.getMeters() )
+        tempL = QString( "%1 GND" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      else
+        tempL = "GND";
+      break;
+    case FL:
+      tempL = QString( "FL %1 (%2)" ).arg( (int) rint( m_lLimit.getFeet() / 100.) )
+                                     .arg( m_lLimit.getText( true, 0 ).toLatin1().data() );
+      break;
+    case STD:
+      tempL = QString( "%1 STD" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      break;
+    case UNLTD:
+      tempL = QObject::tr("Unlimited");
+      break;
+    default:
+      break;
   }
 
-  switch(m_uLimitType) {
-  case MSL:
-    if(m_uLimit.getMeters() >= 99999)
+  switch( m_uLimitType )
+  {
+    case MSL:
+      if(m_uLimit.getMeters() >= 99999)
+        tempU = QObject::tr("Unlimited");
+      else
+        tempU = QString( "%1 MSL" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      break;
+    case GND:
+      tempU = QString( "%1 GND" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      break;
+    case FL:
+      tempU = QString( "FL %1 (%2)" ).arg( (int) rint(m_uLimit.getFeet() / 100.) )
+                                     .arg( m_uLimit.getText(true,0).toLatin1().data() );
+      break;
+    case STD:
+      tempU = QString( "%1 STD" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      break;
+    case UNLTD:
       tempU = QObject::tr("Unlimited");
-    else
-      tempU.sprintf("%s MSL", m_uLimit.getText(true,0).toLatin1().data());
-    break;
-  case GND:
-    tempU.sprintf("%s GND", m_uLimit.getText(true,0).toLatin1().data());
-    break;
-  case FL:
-    tempU.sprintf("FL %d (%s)", (int) rint(m_uLimit.getFeet()/100.), m_uLimit.getText(true,0).toLatin1().data());
-    break;
-  case STD:
-    tempU.sprintf("%s STD", m_uLimit.getText(true,0).toLatin1().data());
-    break;
-  case UNLTD:
-    tempU = QObject::tr("Unlimited");
-    break;
-  default:
-    break;
+      break;
+    default:
+      break;
   }
 
   text = getTypeName(typeID);
