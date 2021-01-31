@@ -294,7 +294,9 @@
     <tr>
     <th>XCVario</th>
       <td>Es liefert H&ouml;hendaten bezogen auf MSL, Geschwindigkeitsdaten
-          (IAS),  Vario-, Mc- and Bugs und Temperatur Daten.
+          (IAS), Vario-, Mc- and Bugs und Temperatur Daten. Wenn ein
+          Magnetsensor angeschlossen und aktiviert wurde, werden auch
+          Kompasskurse geliefert.
       </td>
     </tr>
 	</table>
@@ -326,8 +328,7 @@
 	Cumulus verarbeitet die folgenden NMEA und propriet&auml;ren
 	Datens&auml;tze:
 	<p>
-	
-			<table border="1" cellpadding="5">
+	<table border="1" cellpadding="5">
 		<tr>
 			<th>NMEA Id</th>
 			<th>Beschreibung</th>
@@ -402,6 +403,10 @@
     <tr>
       <td>$PXCV</td>
       <td>XCVario eigener propriet&auml;rer Datensatz.</td>
+    </tr>
+    <tr>
+      <td>$HCHDM</td>
+      <td>Magnetkompass propriet&auml;rer Datensatz.</td>
     </tr>
 		<tr>
 			<td>$MAEMO0</td>
