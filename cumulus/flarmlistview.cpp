@@ -263,7 +263,7 @@ void FlarmListView::fillItemList( QString& object2Select )
           int alpha = static_cast<int> (rint(atan2( ((double) north), (double) east ) * 180. / M_PI));
 
           // correct angle because the different coordinate systems.
-          int heading2Object = (360 - calculator->getlastHeading()) + (90 - alpha);
+          int heading2Object = (360 - calculator->getLastHeading()) + (90 - alpha);
 
           // qDebug() << "ID=" << it.key() << "Alpha" << alpha << "H2O=" << heading2Object;
           MapConfig::createTriangle( pixmap,

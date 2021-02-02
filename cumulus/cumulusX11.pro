@@ -231,6 +231,7 @@ HEADERS = \
     wgspoint.h \
     whatsthat.h \
     windanalyser.h \
+    WindCalcInStraightFlight.h \
     windmeasurementlist.h \
     windstore.h \
     wpeditdialog.h \
@@ -362,6 +363,7 @@ SOURCES = \
     wgspoint.cpp \
     whatsthat.cpp \
     windanalyser.cpp \
+    WindCalcInStraightFlight.cpp \
     windmeasurementlist.cpp \
     windstore.cpp \
     wpeditdialog.cpp \

@@ -76,7 +76,8 @@ Calculator::Calculator( QObject* parent ) :
   lastETA = QTime();
   lastBearing = -1;
   lastHeading = -1;
-  lastMagneticHeading = -1;
+  lastMagneticHeading = -1.0;
+  lastMagneticTrueHeading = -1.0;
   lastDistance = -1;
   lastRequiredLD = -1.0;
   lastCurrentLD = -1.0;
@@ -101,6 +102,7 @@ Calculator::Calculator( QObject* parent ) :
   m_polar = 0;
   m_vario = new Vario (this);
   m_windAnalyser = new WindAnalyser(this);
+  m_windInStraightFlight = new WindCalcInStraightFlight(this);
   m_reachablelist = new ReachableList(this);
   m_windStore = new WindStore(this);
   lastFlightMode=unknown;
@@ -136,6 +138,9 @@ Calculator::Calculator( QObject* parent ) :
   // mode is available and the wind calculation is enabled. Wind calculation
   // can be disabled when the Logger device delivers already wind data.
   connect (m_windAnalyser, SIGNAL(newMeasurement(const Vector&, int)),
+           m_windStore, SLOT(slot_Measurement(const Vector&, int)));
+
+  connect (m_windInStraightFlight, SIGNAL(newMeasurement(const Vector&, int)),
            m_windStore, SLOT(slot_Measurement(const Vector&, int)));
 
   connect (m_windStore, SIGNAL(newWind(Vector&)),
@@ -282,16 +287,29 @@ void Calculator::slot_Heading( const double& newHeadingValue )
 }
 
 /**
- * Called if a new magnetic heading has been obtained.
+ * Called if a new compass magnetic heading has been obtained.
  */
 void Calculator::slot_MagneticHeading( const double& newHeading )
 {
-  int intHeading = static_cast<int>( rint( newHeading ) );
-
-  if( lastMagneticHeading != intHeading )
+  if( lastMagneticHeading != newHeading )
     {
-      lastMagneticHeading = intHeading;
-      emit newMagneticHeading( intHeading );
+      lastMagneticHeading = newHeading;
+      emit newMagneticHeading( newHeading );
+    }
+}
+
+/**
+ * Called if a new compass true magnetic heading has been obtained
+ */
+void Calculator::slot_MagneticTrueHeading( const double& newHeading )
+{
+  // Call always the wind calculator
+  m_windInStraightFlight->slot_trueCompassHeading( newHeading );
+
+  if( lastMagneticTrueHeading != newHeading )
+    {
+      lastMagneticTrueHeading = newHeading;
+      emit newMagneticTrueHeading( newHeading );
     }
 }
 

@@ -252,7 +252,7 @@ void ReachpointListView::fillRpList()
       QString bearing = QString("%1%2").arg( rp.getBearing() ).arg( QString(Qt::Key_degree) );
 
       // Calculate relative bearing too, very cool feature
-      int relbearing = rp.getBearing() - calculator->getlastHeading();
+      int relbearing = rp.getBearing() - calculator->getLastHeading();
 
       while (relbearing < 0)
         {

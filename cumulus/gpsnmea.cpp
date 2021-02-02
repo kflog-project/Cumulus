@@ -220,7 +220,10 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   // Magnetic heading from XCVario
   gpsKeys.insert( "$HCHDM", 16 );
 
-#ifdef FLARM
+  // Magnetic true heading from XCVario
+  gpsKeys.insert( "$HCHDT", 17 );
+
+  #ifdef FLARM
   gpsKeys.insert( "$PFLAA", 20);
   gpsKeys.insert( "$PFLAU", 21);
   gpsKeys.insert( "$PFLAV", 22);
@@ -252,7 +255,9 @@ void GpsNmea::resetDataObjects()
   _reportAltitude = true;
   _lastCoord = QPoint(0,0);
   _lastSpeed = Speed(-1.0);
-  _lastHeading = -1;
+  _lastHeading = -1.;
+  _lastMagneticHeading = -1.;
+  _lastMagneticTrueHeading = -1.;
   _lastTemperature = -300.0;
   _lastBugs = 0;
   _lastStaticPressure = 0.0;
@@ -686,8 +691,12 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       __ExtractGpvtg( slst );
       return;
 
-    case 16: // $HCHDM magnatic compass
+    case 16: // $HCHDM compass magnetic heading
       __ExtractHchdm( slst );
+      return;
+
+    case 17: // $HCHDT compass true magnetic heading
+      __ExtractHchdt( slst );
       return;
 
 #ifdef FLARM
@@ -1078,17 +1087,19 @@ void GpsNmea::__ExtractGpvtg( const QStringList& slst )
 }
 
 /**
- * $HCHDM,238,M*xx<CR><LF>
+ * Compass sentence
+ *
+ * $HCHDM,238.5,M*xx<CR><LF>
  *
  * 0 HCHDM
- * 1 Magnetic track in degree
+ * 1 Heading Degrees, magnetic
  * 2 M, Magnetic track indicator
  * 3 *xx Check sum
  * 4 [CR][LF], Sentence terminator
  *
  * Extracts HCHDM sentence, magnetic compass with magnetic heading
  * message.
- * */
+ */
 void GpsNmea::__ExtractHchdm( const QStringList& slst )
 {
   if ( slst.size() < 3 )
@@ -1117,6 +1128,51 @@ void GpsNmea::__ExtractHchdm( const QStringList& slst )
     {
       _lastMagneticHeading = mh;
       emit newMagneticHeading( mh ); // notify change
+    }
+}
+
+/**
+ * Compass sentence
+ *
+ * $HCHDT,238.5,T*xx<CR><LF>
+ *
+ * 0 HCHDT
+ * 1 Heading Degrees, true
+ * 2 T, True track indicator
+ * 3 *xx Check sum
+ * 4 [CR][LF], Sentence terminator
+ *
+ * Extracts HCHDM sentence, magnetic compass with magnetic heading
+ * message.
+ */
+void GpsNmea::__ExtractHchdt( const QStringList& slst )
+{
+  if ( slst.size() < 3 )
+    {
+      qWarning("HCHDT contains too less parameters!");
+      return;
+    }
+
+  bool ok = false;
+
+  if( slst[2] != "T" )
+    {
+      // No true magnetic heading, ignore it
+      return;
+    }
+
+  double mh = slst[1].toDouble( &ok );
+
+  if( ok == false )
+    {
+      // abort all in error case
+      return;
+    }
+
+  if ( _lastMagneticTrueHeading != mh )
+    {
+      _lastMagneticTrueHeading = mh;
+      emit newMagneticTrueHeading( mh ); // notify change
     }
 }
 

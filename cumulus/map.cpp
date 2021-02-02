@@ -3046,7 +3046,7 @@ void Map::p_drawHeadingLine(const QPoint& from)
   static const double rad = M_PI / 180.;
 
   // correct angle because the different coordinate systems.
-  int heading = (360 - calculator->getlastHeading()) + 90;
+  int heading = (360 - calculator->getLastHeading()) + 90;
 
   // Note, that the Cartesian coordinate system must be mirrored at the
   // the X-axis to get the painter's coordinate system. That means all
@@ -3084,7 +3084,7 @@ void Map::p_drawRelBearingInfo()
       return;
     }
 
-  int heading = calculator->getlastHeading();
+  int heading = calculator->getLastHeading();
   int bearing = calculator->getlastBearing();
 
   int relBearing = bearing - heading;

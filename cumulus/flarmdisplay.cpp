@@ -307,7 +307,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
   // Draw wind arrow, if drawing is enabled
   if( getDrawWindArrow() == true && wind.isValid() && wind.getSpeed().getMps() > 0.0 )
     {
-      int myTrack = calculator->getlastHeading();
+      int myTrack = calculator->getLastHeading();
 
       if( myTrack > 180 )
         {
@@ -408,7 +408,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           alpha = atan2( ((double) north), (double) east );
         }
 
-      double heading2Object = ((double) (360. - calculator->getlastHeading()) * M_PI / 180.) + (M_PI_2 - alpha);
+      double heading2Object = ((double) (360. - calculator->getLastHeading()) * M_PI / 180.) + (M_PI_2 - alpha);
 
       /*
       qDebug() << "North=" << north
@@ -437,7 +437,7 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
       if( acft.Track != INT_MIN )
         {
-          int myTrack = calculator->getlastHeading();
+          int myTrack = calculator->getLastHeading();
 
           if( myTrack > 180 )
             {

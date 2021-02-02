@@ -40,6 +40,7 @@
 #include "vector.h"
 #include "waypoint.h"
 #include "windstore.h"
+#include "WindCalcInStraightFlight.h"
 
 class ReachableList;
 class WindAnalyser;
@@ -72,7 +73,7 @@ public:
   Altitude altitude;
 
   /**
-   * Pressure Altitude of point, if available. Otherwise it is derived from
+   * Pressure Altitude of poinnewMagneticTrueHeadingt, if available. Otherwise it is derived from
    * the GNSSAltitude.
    */
   Altitude STDAltitude;
@@ -120,9 +121,9 @@ public:
  *
  * This is a Singleton class.
  *
- * \date 2002-2015
+ * \date 2002-2021
  *
- * \version 1.3
+ * \version 1.4
  */
 class Calculator : public QObject
 {
@@ -358,9 +359,9 @@ public:
   }
 
   /**
-   * Read property of lastHeading.
+   * Read property of last GPS Heading.
    */
-  int getlastHeading()
+  int getLastHeading()
   {
     return lastHeading;
   }
@@ -368,9 +369,17 @@ public:
   /**
    * Read property of lastMagneticHeading.
    */
-  int getlastMagneticHeading()
+  double getLastMagneticHeading()
   {
     return lastMagneticHeading;
+  }
+
+  /**
+   * Read property of lastMagneticTrueHeading.
+   */
+  double getLastMagneticTrueHeading()
+  {
+    return lastMagneticTrueHeading;
   }
 
   /**
@@ -590,9 +599,14 @@ public:
   void slot_Heading( const double& newHeading );
 
   /**
-   * Called if a new magnetic heading has been obtained
+   * Called if a new compass magnetic heading has been obtained
    */
   void slot_MagneticHeading( const double& newHeading );
+
+  /**
+   * Called if a new compass true magnetic heading has been obtained
+   */
+  void slot_MagneticTrueHeading( const double& newHeading );
 
   /**
    * Change position to the North
@@ -858,9 +872,14 @@ public:
   void newHeading(int);
 
   /**
-   * Sent if a new magneticheading has been obtained
+   * Sent if a new compass magnetic heading has been obtained
    */
-  void newMagneticHeading(int);
+  void newMagneticHeading( double );
+
+  /**
+   * Sent if a new compass magnetic true heading has been obtained
+   */
+  void newMagneticTrueHeading( double );
 
   /**
    * Sent if a new position has been selected, either manually or by GPS
@@ -1083,10 +1102,14 @@ private: // Private attributes
   AltitudeCollection lastAltCollection;
   /** Contains the last known position, either obtained from the GPS or modified by manual input. */
   QPoint lastPosition, lastGPSPosition;
+
   /** contains the last known GPS heading */
   int lastHeading;
-  /** contains the last known magnetic heading */
-  int lastMagneticHeading;
+  /** contains the last known compass magnetic heading */
+  double lastMagneticHeading;
+  /** contains the last known compass true magnetic heading */
+  double lastMagneticTrueHeading;
+
   /** Contains the last know static pressure in hPa */
   double lastStaticPressure;
   /** Contains the last know dynamic pressure in Pa */
@@ -1115,11 +1138,17 @@ private: // Private attributes
   FlightMode lastFlightMode;
   /** Last marker value used */
   int m_marker;
+
   /** contains the current state of wind calculation */
   bool m_calculateWind;
+
   /** contains functions to analyze the wind */
   WindAnalyser* m_windAnalyser;
-  /** contains functions to analyze the wind */
+
+  /** Wind analyser in straight flight */
+  WindCalcInStraightFlight* m_windInStraightFlight;
+
+  /** contains functions to analyze the next reachable points. */
   ReachableList* m_reachablelist;
   /** maintains wind measurements and returns new wind values */
   WindStore* m_windStore;

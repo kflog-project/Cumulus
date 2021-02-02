@@ -816,6 +816,8 @@ void MainWindow::slotCreateApplicationWidgets()
            calculator, SLOT( slot_Heading(const double&) ) );
   connect( GpsNmea::gps, SIGNAL( newMagneticHeading(const double&) ),
            calculator, SLOT( slot_MagneticHeading(const double&) ) );
+  connect( GpsNmea::gps, SIGNAL( newMagneticTrueHeading(const double&) ),
+           calculator, SLOT( slot_MagneticTrueHeading(const double&) ) );
   connect( GpsNmea::gps, SIGNAL( newFix(const QDateTime&) ),
            calculator, SLOT( slot_newFix(const QDateTime&) ) );
   connect( GpsNmea::gps, SIGNAL( statusChange( GpsNmea::GpsStatus ) ),
