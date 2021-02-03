@@ -31,7 +31,7 @@
 #include <QObject>
 #include <QTime>
 
-#include "calculator.h"
+#include "vector.h"
 
 class WindCalcInStraightFlight : public QObject
 {
@@ -83,11 +83,11 @@ private:
   double trueHeading;        // GPS heading
   double sumTas;             // TAS in km/h
   double sumGroundSpeed;     // sum of GS in km/h
-  double sumTrueCourse;      // sum ofCompass true heading
-  double sumTrueHeading;     // sum of GPS heading
+  double sumTHDeviation;     // sum of Compass true heading deviation
+  double sumTCDeviation;     // sum of GPS heading (true course) deviation
   double vMin;               // minimal measured speed
   double vMax;               // maximal measured speed
-  double hMin;               // minimal measured heading
-  double hMax;               // maximal measured heading
+  double hMin;               // lower limit of heading observation window
+  double hMax;               // upper limit of heading observation window
 };
 

@@ -303,8 +303,12 @@ void Calculator::slot_MagneticHeading( const double& newHeading )
  */
 void Calculator::slot_MagneticTrueHeading( const double& newHeading )
 {
-  // Call always the wind calculator
-  m_windInStraightFlight->slot_trueCompassHeading( newHeading );
+  // Call always the in straight flight wind calculator, when external TAS
+  // is available
+  if( m_calculateTas == false )
+    {
+      m_windInStraightFlight->slot_trueCompassHeading( newHeading );;
+    }
 
   if( lastMagneticTrueHeading != newHeading )
     {
