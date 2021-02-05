@@ -218,6 +218,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _rel_bearing = new MapInfoBox( this, conf->getMapFrameColor().name(), arrow );
   _rel_bearing->setFixedSize(textLabelBoxHeight, textLabelBoxHeight);
   _rel_bearing->setToolTip( tr("Click here to save current position as waypoint") );
+  _rel_bearing->setUpdateInterval( 750 );
   GRLayout->addWidget(_rel_bearing);
 
   connect(_rel_bearing, SIGNAL(mouseShortPress()),
@@ -234,7 +235,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _distance->setValue("-");
   _distance->setPreUnit( Distance::getUnitText() );
   _distance->setMapInfoBoxMaxHeight( textLabelBoxHeight );
-  _distance->setUpdateInterval( 750 );
+  _distance->setUpdateInterval( 950 );
   DEBLayout->addWidget( _distance );
   connect(_distance, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleDistanceEta()));
 
@@ -244,7 +245,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _eta->setPreText( "Eta" );
   _eta->setValue("-");
   _eta->setPreUnit( "td" );
-  _eta->setUpdateInterval( 750 );
+  _eta->setUpdateInterval( 950 );
   _eta->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _eta );
   connect(_eta, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleDistanceEta()));
@@ -259,7 +260,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _bearingBGColor = wayBar->palette().color(QPalette::Window);
   _bearing->setValue("-");
   _bearing->setPreText("Brg");
-  _bearing->setUpdateInterval( 750 );
+  _bearing->setUpdateInterval( 950 );
   _bearing->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   DEBLayout->addWidget( _bearing);
   connect(_bearing, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleBearing()));
@@ -289,7 +290,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
 
   _speed->setPreText("Gs");
   _speed->setValue("-");
-  _speed->setUpdateInterval( 750 );
+  _speed->setUpdateInterval( 950 );
   _speed->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _speed);
   connect(_speed, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsIasTas()));
@@ -299,7 +300,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _ias->setVisible( false );
   _ias->setPreText("Ias");
   _ias->setValue("-");
-  _ias->setUpdateInterval( 750 );
+  _ias->setUpdateInterval( 950 );
   _ias->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _ias);
   connect(_ias, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsIasTas()));
@@ -309,7 +310,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _tas->setVisible( false );
   _tas->setPreText("Tas");
   _tas->setValue("-");
-  _tas->setUpdateInterval( 750 );
+  _tas->setUpdateInterval( 950 );
   _tas->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _tas);
   connect(_tas, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleGsIasTas()));
@@ -319,6 +320,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   //_heading = new MapInfoBox( this, QColor(Qt::darkGray).name() );
   _heading->setPreText("Trk");
   _heading->setValue("-");
+  _heading->setUpdateInterval( 950 );
   _heading->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   SHLayout->addWidget( _heading);
 
@@ -334,6 +336,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _wind = new MapInfoBox( this, conf->getMapFrameColor().name() );
   _wind->setPreText("Wd");
   _wind->setValue("-");
+  _wind->setUpdateInterval( 950 );
   _wind->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget(_wind );
   connect(_wind, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleWindAndLD()));
@@ -344,6 +347,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _ld->setVisible(false);
   _ld->setPreText( "LD" );
   _ld->setValue("-/-");
+  _ld->setUpdateInterval( 950 );
   _ld->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   WLLayout->addWidget( _ld );
   connect(_ld, SIGNAL(mouseShortPress()), this, SLOT(slot_toggleWindAndLD()));
@@ -399,6 +403,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _speed2fly->setPreText("S2f");
   _speed2fly->setValue(tr("Menu"));
   _speed2fly->setPreUnit( "|=|" );
+  _speed2fly->setUpdateInterval( 950 );
   _speed2fly->setVisible( false );
   _speed2fly->setMapInfoBoxMaxHeight( textLabelBoxHeight );
   MSLayout->addWidget( _speed2fly );
@@ -596,23 +601,9 @@ void MapView::showEvent( QShowEvent* event )
 /** called if heading has changed */
 void MapView::slot_Heading(int head)
 {
-  static QTime lastDisplay = QTime::currentTime();
-
-  // The display is updated every 1 seconds only.
-  // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < 750 )
-    {
-      return;
-    }
-  else
-    {
-      lastDisplay = QTime::currentTime();
-    }
-
-  _heading->setValue(QString("%1").arg( head, 3, 10, QChar('0') ));
-  _theMap->setHeading(head);
+  _heading->setValue( QString( "%1" ).arg( head, 3, 10, QChar( '0' ) ) );
+  _theMap->setHeading( head );
 }
-
 
 /** Called if speed has changed */
 void MapView::slot_Speed(const Speed& speed)
@@ -630,13 +621,13 @@ void MapView::slot_Speed(const Speed& speed)
 /** Called if IAS has changed */
 void MapView::slot_Ias( const Speed& ias )
 {
-  if( ! ias.isValid() || ias.getMph() < 0 )
+  if( !ias.isValid() || ias.getMph() < 0 )
     {
-      _ias->setValue("-");
+      _ias->setValue( "-" );
     }
   else
     {
-      _ias->setValue(ias.getHorizontalText(false, 0));
+      _ias->setValue( ias.getHorizontalText( false, 0 ) );
     }
 }
 
@@ -772,28 +763,15 @@ void MapView::slot_RelBearing(int relbearing)
       return;
     }
 
-  static QTime lastDisplay = QTime::currentTime();
-
-  // The display is updated every 1 seconds only.
-  // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < 750 )
-    {
-      return;
-    }
-  else
-    {
-      lastDisplay = QTime::currentTime();
-    }
-
   while (relbearing < 0)
     {
       relbearing += 360;
     }
 
   //we only want to rotate in steps of 15 degrees. Finer is not useful.
-  int rot=((relbearing+7)/15) % 24;
-  QPixmap arrow = _arrows.copy( rot*60+3, 3, 54, 54 );
-  _rel_bearing->setPixmap (arrow);
+  int rot = ((relbearing + 7) / 15) % 24;
+  QPixmap arrow = _arrows.copy( rot * 60 + 3, 3, 54, 54 );
+  _rel_bearing->setPixmap( arrow );
 }
 
 
@@ -1058,19 +1036,6 @@ void MapView::slot_Wind( Vector& wind )
 /** This slot is called if a new current LD value has been set */
 void MapView::slot_LD( const double& rLD, const double& cLD )
 {
-  static QTime lastDisplay = QTime::currentTime();
-
-  // The display is updated every 1 seconds only.
-  // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < 750 )
-    {
-      return;
-    }
-  else
-    {
-      lastDisplay = QTime::currentTime();
-    }
-
   // qDebug( "MapView::slot_LD: %f, %f", rLD, cLD );
 
   QString cld, rld;

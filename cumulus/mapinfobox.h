@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2015 by Axel Pauli
+                               2008-2021 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -45,9 +45,9 @@
  * pre-text or a pixmap. Optionally it can be clicked and connected to
  * a slot. Used on the \ref MapView.
  *
- * \date 2002-2015
+ * \date 2002-2021
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
@@ -271,8 +271,8 @@ private:
   int m_maxTextLabelFontHeight;
 
   /**
-   * Minimum update interval of display label in milli seconds. The variable
-   * is undefined, if set to zero.
+   * Minimum update interval of display label in milli seconds. If the variable
+   * is set to 0, the update interval is not active.
    */
   int m_minUpdateInterval;
 
