@@ -1124,11 +1124,8 @@ void GpsNmea::__ExtractHchdm( const QStringList& slst )
       return;
     }
 
-  if ( _lastMagneticHeading != mh )
-    {
-      _lastMagneticHeading = mh;
-      emit newMagneticHeading( mh ); // notify change
-    }
+  _lastMagneticHeading = mh;
+  emit newMagneticHeading( mh );
 }
 
 /**
@@ -1169,11 +1166,8 @@ void GpsNmea::__ExtractHchdt( const QStringList& slst )
       return;
     }
 
-  if ( _lastMagneticTrueHeading != mh )
-    {
-      _lastMagneticTrueHeading = mh;
-      emit newMagneticTrueHeading( mh ); // notify change
-    }
+  _lastMagneticTrueHeading = mh;
+  emit newMagneticTrueHeading( mh );
 }
 
 /**
@@ -2177,13 +2171,9 @@ Speed GpsNmea::__ExtractKnotSpeed(const QString& speedString)
     }
 
   res.setKnot( speed );
+  _lastSpeed = res;
 
-  if( res != _lastSpeed )
-    {
-      _lastSpeed = res;
-      emit newSpeed( _lastSpeed );
-    }
-
+  emit newSpeed( _lastSpeed );
   return res;
 }
 
@@ -2253,8 +2243,6 @@ QPoint GpsNmea::__ExtractCoord(const QString& slat, const QString& slatNS,
 /** Extract the heading from the NMEA sentence. */
 double GpsNmea::__ExtractHeading(const QString& headingstring)
 {
-  static uint report = 0;
-
   if( headingstring.isEmpty() )
     {
       return 0.0;
@@ -2269,11 +2257,8 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
       return 0.0;
     }
 
-  if ( heading != _lastHeading || (++report % 5) == 0 )
-    {
-      _lastHeading = heading;
-      emit newHeading( _lastHeading );
-    }
+  _lastHeading = heading;
+  emit newHeading( _lastHeading );
 
   return heading;
 }
