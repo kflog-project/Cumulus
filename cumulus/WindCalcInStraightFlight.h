@@ -74,6 +74,7 @@ private:
   void _calcWind();
 
   uint   nunberOfSamples;    // current number of samples
+  uint   deliverWind;        // time in seconds for next wind delivery
   QTime measurementDuration; // time measurement in seconds
   double deltaSpeed;         // accepted speed deviation in km/h
   double deltaHeading;       // accepted heading deviation in degrees
