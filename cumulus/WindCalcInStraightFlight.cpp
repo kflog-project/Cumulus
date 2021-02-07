@@ -17,6 +17,7 @@
 #include <QtGlobal>
 
 #include "WindCalcInStraightFlight.h"
+#include "generalconfig.h"
 #include "calculator.h"
 #include "speed.h"
 
@@ -70,7 +71,7 @@ WindCalcInStraightFlight::~WindCalcInStraightFlight()
 void WindCalcInStraightFlight::start()
 {
   nunberOfSamples = 1;
-  deliverWind = 10;
+  deliverWind = GeneralConfig::instance()->getStartWindCalcInStraightFlight();
   measurementDuration.start();
   vMin = vMax = tas = calculator->getlastTas().getKph();
   groundSpeed = calculator->getLastSpeed().getKph();

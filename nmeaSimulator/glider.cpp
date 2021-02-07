@@ -28,7 +28,19 @@
 
 using namespace std;
 
-glider::glider(double &alat, double &alon, float &aspeed, float &aheading, float awind, float awinddir, float &aaltitude, float aclimb ): lat (alat), lon(alon), speed(aspeed), heading(aheading), altitude(aaltitude)
+glider::glider(double &alat,
+               double &alon,
+               float &aspeed,
+               float &aheading,
+               float awind,
+               float awinddir,
+               float &aaltitude,
+               float aclimb ) :
+  lat (alat),
+  lon(alon),
+  speed(aspeed),
+  heading(aheading),
+  altitude(aaltitude)
 {
   speedKnots = speed / 1.852;
   wind = awind;
