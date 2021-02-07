@@ -1,5 +1,6 @@
-<html>
+<html lang="en">>
 <head>
+<meta charset="utf-8"/>
 <title>Cumulus Flight Settings</title>
 <link rel="stylesheet" type="text/css" href="text.css">
 </head>
@@ -23,14 +24,14 @@
 	<b>Wind</b>
 
 	 <p>
-    At this page you define the manual wind settings. Furthermore you get
+    At this page you can define the different wind settings. Furthermore you get
     displayed a wind statistics about the altitude range.
    </p>
    
 	<dl>
 
 		<dt>
-			<b>Manual Wind On/Off</b>
+			<b>Take Manual Wind</b>
 		</dt>
 
 		<dd>
@@ -41,24 +42,58 @@
 
 		<br>
 		<dt>
-			<b>Manual Wind WD</b>
+			<b>Manual Wind WD (direction)</b>
 		</dt>
 
 		<dd>
 		Clicking the label <i>WD</i> opens a number editor where you can enter a
 		value for the wind direction. The direction range covers the interval
-		from 0...360 degrees.
+		from 0...360° degrees.
 		</dd>
 
     <br>
     <dt>
-      <b>Manual Wind WS</b>
+      <b>Manual Wind WS (speed)</b>
     </dt>
 
 		<dd>
 		Clicking the label <i>WS</i> opens a number editor where you can enter a
     value for the wind speed.
 		</dd>
+
+    <br>
+    <dt>
+      <b>Take External Wind</b>
+    </dt>
+    
+    <dd>
+    Here you can switch on/off the usage of an external wind source by Cumulus.
+    If the external wind is switched on, Cumulus will never calculate its own
+    wind. Furthermore you cannot activate the external wind together with the
+    manually wind. The external wind is used immediately after its activation
+    for the glide path calculation.
+    </dd>
+
+    <br>
+    <dt>
+      <b>Calculate wind in straight flight after ...</b>
+    </dt>
+
+    <dd>
+    The wind calculation in straight flight can only work, if an external source
+    delivers True Heading and IAS (Indicated Air Speed) resp. TAS (True Air
+    Speed) next to the GPS data. Such a device is e.g. a XCVariomenter together
+    with a compass modul. Here you can define after which time the wind
+    calculation should start working. As start criteria count
+    
+    <ul>
+    <li>Heading variations smaller than +-5°</li>
+    <li>Speed variations smaller than +- 10Km/h</li>
+    </ul>
+    
+    in the given time frame. So long the conditions are fulfilled, the wind is
+    calculated after each second.
+    </dd>
 
     <br>
     <dt>

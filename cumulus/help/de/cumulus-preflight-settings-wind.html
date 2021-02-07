@@ -1,5 +1,6 @@
-<html>
+<html lang="de">
 <head>
+<meta charset="utf-8"/>
 <title>Cumulus Flugeinstellungen</title>
 <link rel="stylesheet" type="text/css" href="text.css">
 </head>
@@ -23,8 +24,9 @@
 	<b>Wind</b>
 
 	 <p>
-	  Hier haben Sie die M&ouml;glichkeit den Wind manuell einzugeben. Weiterhin
-	  wird hier eine Windstatistik &uuml;ber die H&ouml;he angezeigt.
+	  Hier haben Sie die M&ouml;glichkeit den Wind manuell vorzugeben oder ihn
+	  aus einer externen Quelle zu beziehen, z.B. von einem angeschlossenen Logger.
+	  Weiterhin wird hier eine Windstatistik &uuml;ber die H&ouml;he angezeigt.
    </p>
    
 	<dl>
@@ -42,17 +44,18 @@
 
 		<br>
 		<dt>
-			<b>Manueller Wind WD</b>
+			<b>Manueller Wind WD (Richtung)</b>
 		</dt>
 
 		<dd>
     Wenn man auf das Feld <i>WD</i> klickt, wird ein Zahlen Eingabe Fenster
-    ge&ouml;ffnet, wo man die Windrichtung in Grad zwischen 0...360 eingeben kann.
+    ge&ouml;ffnet, wo man die Windrichtung in Grad zwischen 0...360° eingeben
+    kann.
 		</dd>
 
     <br>
     <dt>
-      <b>Manueller Wind WS</b>
+      <b>Manueller Wind WS (Geschwindigkeit)</b>
     </dt>
 
 		<dd>
@@ -62,12 +65,48 @@
 
     <br>
     <dt>
+      <b>Externer Wind Ein/Aus</b>
+    </dt>
+    
+    <dd>
+    Hier k&ouml;nnen Sie die Verwendung einer extenen Windquelle ein- bzw.
+    ausschalten. Wenn der externe Wimd eingeschaltet ist, macht Cumulus intern
+    keinerlei Windberechnungen mehr. Ferner kann dann auch kein manueller Wind
+    vorgegeben werden. Das Einschalten k&ouml;nnen Sie zu jeder Zeit tun,
+    auch w&auml;hrend des Fluges. Der externe Wind wird sofort nach seiner
+    Aktivierung zur Zielanflug Berechnung benutzt.
+    </dd>
+    
+    <br>
+    <dt>
+      <b>Berechne Wind im Geradeausflug nach ...</b>
+    </dt>
+    
+    <dd>
+    Der Wind kann nur im Geadeausflug berechnet werden, wenn von einer externen
+    Quelle rechtweisende Kompassdaten (true heading) und die IAC (indicated
+    airspeed) bzw. die TAS (true airspeed) zus&auml;tzlich zu den GPS Daten
+    geliefert werden. Das ist z.B mit einem XCVario und dem Kompassmodul
+    m&ouml;glich. Hier kann man die Zeit vorgeben, ab wann die Windberechnung
+    starten soll. Als Startkriterium z&auml;hlen
+    
+    <ul>
+    <li>Kursschwankungen kleiner +-5°</li>
+    <li>Geschwindigkeitsschwankungen kleiner +- 10Km/h</li>
+    </ul>
+    
+    innerhalb des vorgegebenen Zeitfensters. Solange wie die vorgegebenen
+    Kriterien eingehalten werden, wird jede Sekunde der Wind daraus berechnet.
+    </dd>
+    
+    <br>
+    <dt>
       <b>Wind Statistik</b>
     </dt>
 
     <dd>
-    Die Windstatistik zeigt die beim Kreisen berechnete Wind Richtung und
-    Geschwindigkeit von der letzte Stunde &uuml;ber die H&ouml;he an.
+    Die Windstatistik zeigt die ermittelte Windrichtung und Geschwindigkeit
+    von der letzte Stunde &uuml;ber die H&ouml;he an.
     </dd>
     
   </dl>
