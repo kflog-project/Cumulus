@@ -283,10 +283,12 @@ void GeneralConfig::load()
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
   endGroup();
 
-  beginGroup("Manual Wind");
+  beginGroup("Preflight Wind");
   _manualWindSpeed     = Speed(value( "Speed", 0 ).toDouble());
   _manualWindDirection = value( "Direction", 0 ).toInt();
-  _manualWindIsEnabled = value( "Enabled", false ).toBool();
+  _manualWindIsEnabled = value( "ManualWindEnabled", false ).toBool();
+  _externalWindIsEnabled = value( "ExternalWindEnabled", false ).toBool();
+  _startWindCalcInStraightFlight = value( "CalculationDelay", 10 ).toInt();
   endGroup();
 
   beginGroup("Retriever");
@@ -787,10 +789,12 @@ void GeneralConfig::save()
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
   endGroup();
 
-  beginGroup("Manual Wind");
+  beginGroup("Preflight Wind");
   setValue( "Speed", _manualWindSpeed.getMps() );
   setValue( "Direction", _manualWindDirection );
-  setValue( "Enabled", _manualWindIsEnabled );
+  setValue( "ManualWindEnabled", _manualWindIsEnabled );
+  setValue( "ExternalWindEnabled", _externalWindIsEnabled );
+  setValue( "CalculationDelay", _startWindCalcInStraightFlight );
   endGroup();
 
   beginGroup("Retriever");

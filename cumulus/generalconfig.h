@@ -1149,6 +1149,18 @@ class GeneralConfig : protected QSettings
     _manualWindIsEnabled = newValue;
   }
 
+  /** gets the external wind flag. */
+  bool isExternalWindEnabled() const
+  {
+    return _externalWindIsEnabled;
+  }
+
+  /** sets the external wind flag. */
+  void setExternalWindEnabled( bool newValue )
+  {
+    _externalWindIsEnabled = newValue;
+  }
+
   /** gets the McCready value */
   const Speed& getMcCready() const
   {
@@ -3069,6 +3081,24 @@ class GeneralConfig : protected QSettings
     _gpsSwitchState = state;
   }
 
+  /**
+   * Get wait time in seconds for starting wind calculation in straight
+   * flight.
+   */
+  int getStartWindCalcInStraightFlight() const
+  {
+    return _startWindCalcInStraightFlight;
+  }
+
+  /**
+   * Set wait time in seconds for starting wind calculation in straight
+   * flight.
+   */
+  void setStartWindCalcInStraightFlight( int startWindCalcInStraightFlight )
+  {
+    _startWindCalcInStraightFlight = startWindCalcInStraightFlight;
+  }
+
  private:
 
   /** loads the terrain default colors */
@@ -3259,10 +3289,18 @@ class GeneralConfig : protected QSettings
 
   // manual wind speed
   Speed _manualWindSpeed;
+
   // manual wind direction
   int _manualWindDirection;
+
   // manual wind enable state
   bool _manualWindIsEnabled;
+
+  // external wind enable state
+  bool _externalWindIsEnabled;
+
+  // Start calculation of wind in straight flight after
+  int _startWindCalcInStraightFlight;
 
   // Homesite country code
   QString _homeCountryCode;
