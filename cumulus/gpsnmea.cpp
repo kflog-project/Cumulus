@@ -1051,17 +1051,19 @@ void GpsNmea::__ExtractGngns( const QStringList& slst )
 }
 
 /**
+Track made good and speed over ground
+
 $GPVTG,147.6,T,147.6,M,2.5,N,4.7,K,D*22
 
-0 $GPVTG, Log header. See Messages for more information.
-1 track true, Track made good, degrees True
-2 T, True track indicator
-3 track mag, Track made good, degrees Magnetic;
-4 M, Magnetic track indicator
-5 speed Kn, Speed over ground, knots
-6 N, Nautical speed indicator (N = Knots)
-7 speed Km, Speed, kilometers/hour
-8 K, Speed indicator (K = km/hr)
+0 $GPVTG, Message ID
+1 Track made good (degrees true)
+2 T: track made good is relative to true north
+3 Track made good (degrees magnetic)
+4 M: track made good is relative to magnetic north
+5 Speed Kn, Speed over ground, knots
+6 N: speed is measured in knots
+7 Speed over ground in kilometers/hour (kph)
+8 K: speed over ground is measured in kph
 9 mode ind, Positioning system mode indicator,
    see Table: NMEA Positioning System Mode Indicator
 10 *xx, Check sum
@@ -1083,6 +1085,29 @@ void GpsNmea::__ExtractGpvtg( const QStringList& slst )
     {
       qWarning("$PGVTG contains too less parameters!");
       return;
+    }
+
+  if( slst[2] == "T" )
+    {
+      __ExtractHeading( slst[1] );
+    }
+
+  if( slst[4] == "M" )
+    {
+      bool ok = false;
+
+      double mh = slst[3].toDouble( &ok );
+
+      if( ok == true )
+        {
+          _lastMagneticHeading = mh;
+          emit newMagneticHeading( mh );
+        }
+    }
+
+  if( slst[6] == "N" )
+    {
+      __ExtractKnotSpeed( slst[5] );
     }
 }
 
