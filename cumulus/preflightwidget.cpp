@@ -389,6 +389,9 @@ void PreFlightWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( pfwp, SIGNAL(manualWindStateChange(bool)),
                calculator, SLOT(slot_ManualWindChanged(bool)) );
 
+      connect( pfwp, SIGNAL(externalWindChange(bool)),
+               calculator, SLOT(slot_ExternalWindRequired(bool)) );
+
       if( m_menuCb->checkState() == Qt::Checked )
         {
           connect( pfwp, SIGNAL( closingWidget() ), this, SLOT( slotAccept() ) );

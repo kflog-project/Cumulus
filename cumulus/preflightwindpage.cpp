@@ -39,11 +39,11 @@
 PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   QWidget( parent )
 {
-  setObjectName("PreFlightWindPage");
+  setObjectName( "PreFlightWindPage" );
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
-  setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("PreFlight - Wind") );
+  setAttribute( Qt::WA_DeleteOnClose );
+  setWindowTitle( tr( "PreFlight - Wind" ) );
 
   if( parent )
     {
@@ -55,28 +55,34 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
 
   int msw = QFontMetrics(font()).width("9999 Km/h") + 10;
   int mdw = QFontMetrics(font()).width("999" + QString(Qt::Key_degree)) + 10;
+  int mcw = QFontMetrics(font()).width("99 s") + 10;
 
   QVBoxLayout* windLayout = new QVBoxLayout;
   contentLayout->addLayout( windLayout, 5 );
 
   windLayout->setSpacing(5);
-  windLayout->setMargin(0);
+  windLayout->setMargin(5);
 
-  QGroupBox *windBox = new QGroupBox( tr("Manual Wind"), this );
-  windLayout->addWidget( windBox );
-
+  // Wind row layout as one line
   QHBoxLayout* windRow = new QHBoxLayout;
-  windRow->setSpacing(5);
-  windBox->setLayout( windRow );
+  windLayout->addLayout( windRow );
+
+  QGroupBox *windBox = new QGroupBox( tr("Take manual Wind"), this );
+  windRow->addWidget( windBox );
+
+  QHBoxLayout* windRowManual = new QHBoxLayout;
+  windRowManual->setSpacing(10);
+  windBox->setLayout( windRowManual );
+
   windLayout->addSpacing( 10 );
 
-  m_windCheckBox = new QCheckBox( tr("On/Off") );
-  windRow->addWidget(m_windCheckBox);
+  m_windCheckBox = new QCheckBox( tr("On/Off"), this );
+  windRowManual->addWidget(m_windCheckBox);
   connect( m_windCheckBox, SIGNAL(stateChanged(int)),
-           this, SLOT(slotWindCbStateChanged(int)));
+           this, SLOT(slotManualWindCbStateChanged(int)));
 
   QLabel* label = new QLabel( tr("WD"), this );
-  windRow->addWidget(label);
+  windRowManual->addWidget(label);
 
   m_windDirection = new NumberEditor( this );
 #ifndef ANDROID
@@ -90,10 +96,10 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windDirection->setValue( GeneralConfig::instance()->getManualWindDirection() );
   m_windDirection->setSuffix( QString(Qt::Key_degree) );
   m_windDirection->setMinimumWidth( mdw );
-  windRow->addWidget(m_windDirection);
+  windRowManual->addWidget(m_windDirection);
 
   label = new QLabel( tr("WS"), this );
-  windRow->addWidget(label);
+  windRowManual->addWidget(label);
 
   m_windSpeed = new NumberEditor( this );
 #ifndef ANDROID
@@ -109,11 +115,52 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
 
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );
-  windRow->addWidget(m_windSpeed);
+  windRowManual->addWidget(m_windSpeed);
   windRow->addStretch(10);
 
+  QGroupBox* windBoxExtern = new QGroupBox( tr("Take external Wind"), this );
+  windRow->addWidget( windBoxExtern );
+
+  QHBoxLayout* hbox = new QHBoxLayout;
+  windRowManual->setSpacing(10);
+  windBoxExtern->setLayout( hbox );
+
+  m_useExternalWind = new QCheckBox( tr("On/Off"), this );
+  hbox->addWidget( m_useExternalWind );
+
+  connect( m_useExternalWind, SIGNAL(stateChanged(int)),
+           this, SLOT(slotExternalWindCbStateChanged(int)) );
+
   //----------------------------------------------------------------------------
-  windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
+  hbox = new QHBoxLayout;
+  windLayout->addLayout( hbox );
+
+  QString wTip = tr("Time before the wind calculation is started in straight flight.");
+
+  label = new QLabel( tr("Calculate Wind in straight flight after"), this );
+#ifndef ANDROID
+  label->setToolTip( wTip );
+#endif
+  hbox->addWidget( label );
+
+  m_startWindCalculation = new NumberEditor( this );
+#ifndef ANDROID
+  m_startWindCalculation->setToolTip( wTip );
+#endif
+  m_startWindCalculation->setPmVisible(false);
+  m_startWindCalculation->setDecimalVisible(false);
+  m_startWindCalculation->setRange( 10, 60 );
+  m_startWindCalculation->setTip("10...60 s");
+  m_startWindCalculation->setMaxLength(2);
+  m_startWindCalculation->setValue( GeneralConfig::instance()->getManualWindDirection() );
+  m_startWindCalculation->setSuffix( " s" );
+  m_startWindCalculation->setMinimumWidth( mcw );
+  hbox->addWidget( m_startWindCalculation );
+  hbox->addStretch( 10 );
+
+  //----------------------------------------------------------------------------
+  // windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
+  windLayout->addSpacing( 10 );
 
   m_windListStatistics = new QTreeWidget;
   m_windListStatistics->setRootIsDecorated(false);
@@ -183,19 +230,20 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   connect(cancel, SIGNAL(pressed()), this, SLOT(slotReject()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
-  buttonBox->setSpacing(0);
-  buttonBox->addWidget(help, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(cancel, 1);
-  buttonBox->addSpacing(30);
-  buttonBox->addWidget(ok, 1);
-  buttonBox->addStretch(2);
-  buttonBox->addWidget(titlePix);
-  contentLayout->addLayout(buttonBox);
+  buttonBox->setSpacing( 0 );
+  buttonBox->addWidget( help, 1 );
+  buttonBox->addStretch( 2 );
+  buttonBox->addWidget( cancel, 1 );
+  buttonBox->addSpacing( 30 );
+  buttonBox->addWidget( ok, 1 );
+  buttonBox->addStretch( 2 );
+  buttonBox->addWidget( titlePix );
+  contentLayout->addLayout( buttonBox );
 
   m_windCheckBox->setCheckState( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
-  slotWindCbStateChanged( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
-
+  slotManualWindCbStateChanged( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
+  slotExternalWindCbStateChanged( GeneralConfig::instance()->isExternalWindEnabled() ? Qt::Checked : Qt::Unchecked );
+  m_startWindCalculation->setValue( GeneralConfig::instance()->getStartWindCalcInStraightFlight() );
   slotLoadWindStatistics();
 
   // Activate reload timer for wind statistics.
@@ -301,21 +349,37 @@ void PreFlightWindPage::slotLoadWindStatistics()
   m_windListStatistics->resizeColumnToContents(2);
 }
 
-void PreFlightWindPage::slotWindCbStateChanged( int state )
+void PreFlightWindPage::slotManualWindCbStateChanged( int state )
 {
-  bool enabled = false;
+  qDebug() << "PreFlightWindPage::slotManualWindCbStateChanged()" << state;
 
-  if( state == Qt::Checked )
-    {
-      enabled = true;
-    }
-  else
-    {
-      enabled = false;
-    }
+  bool enabled = ( state == Qt::Checked ) ? true : false;
 
   m_windDirection->setEnabled( enabled );
   m_windSpeed->setEnabled( enabled );
+
+  if( enabled == true && m_useExternalWind->isChecked() )
+    {
+      m_useExternalWind->blockSignals( true );
+      m_useExternalWind->setChecked( false );
+      m_useExternalWind->blockSignals( false );
+    }
+}
+
+void PreFlightWindPage::slotExternalWindCbStateChanged( int state )
+{
+  qDebug() << "PreFlightWindPage::slotExternalWindCbStateChanged()" << state;
+
+  bool enabled = ( state == Qt::Checked ) ? true : false;
+
+  if( enabled == true && m_windCheckBox->isChecked() )
+    {
+      m_windCheckBox->blockSignals( true );
+      m_windCheckBox->setChecked( false );
+      m_windDirection->setEnabled( false );
+      m_windSpeed->setEnabled( false );
+      m_windCheckBox->blockSignals( false );
+    }
 }
 
 void PreFlightWindPage::slotHelp()
@@ -335,8 +399,13 @@ void PreFlightWindPage::slotAccept()
   bool oldWindState = conf->isManualWindEnabled();
   bool newWindState = m_windCheckBox->isChecked();
 
+  bool oldExternalWindState = conf->isExternalWindEnabled();
+  bool newExternalWindState = m_useExternalWind->isChecked();
+
   conf->setManualWindEnabled( newWindState );
   conf->setManualWindDirection( m_windDirection->value() );
+  conf->setExternalWindEnabled( m_useExternalWind->isChecked() );
+  conf->setStartWindCalcInStraightFlight( m_startWindCalculation->value() );
 
   Speed wv;
   wv.setValueInUnit( m_windSpeed->text().toDouble(), Speed::getWindUnit() );
@@ -346,6 +415,12 @@ void PreFlightWindPage::slotAccept()
     {
       // Inform about a wind state or parameter change.
       emit manualWindStateChange( newWindState );
+    }
+
+  if( newExternalWindState == true || oldExternalWindState != newWindState )
+    {
+      // Inform about a wind state or parameter change.
+      emit externalWindRequired( newExternalWindState );
     }
 
   QWidget::close();

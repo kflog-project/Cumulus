@@ -55,25 +55,30 @@ class PreFlightWindPage : public QWidget
 
  protected:
 
-  void showEvent( QShowEvent* );
+  void showEvent( QShowEvent* event );
 
-  virtual void closeEvent( QCloseEvent *event );
+  virtual void closeEvent( QCloseEvent* event );
 
  private:
 
  signals:
 
-   /**
-    * Emitted, if the enable state of the manual wind has been changed.
-    * If the enable state is true and wind parameters have been changed,
-    * the signal is emitted too.
-    */
-   void manualWindStateChange( bool newEnableState );
+  /**
+  * Emitted, if the enable state of the manual wind has been changed.
+  * If the enable state is true and wind parameters have been changed,
+  * the signal is emitted too.
+  */
+  void manualWindStateChange( bool newEnableState );
 
-   /**
-    * Emitted, if the widget is closed.
-    */
-   void closingWidget();
+  /**
+  * Emitted, if the enable state of the external wind has been changed.
+  */
+  void externalWindRequired( bool newState );
+
+  /**
+  * Emitted, if the widget is closed.
+  */
+  void closingWidget();
 
  private slots:
 
@@ -88,9 +93,14 @@ class PreFlightWindPage : public QWidget
  void slotLoadWindStatistics();
 
   /**
+  * Called, if the state of the manually m_windCheckBox is changed.
+  */
+  void slotManualWindCbStateChanged( int state );
+
+  /**
   * Called, if the state of the m_windCheckBox is changed.
   */
-  void slotWindCbStateChanged( int state );
+  void slotExternalWindCbStateChanged( int state );
 
   /**
    * Called if the Ok button is pressed.
@@ -112,6 +122,12 @@ class PreFlightWindPage : public QWidget
 
   /** editor box for wind speed entry */
   NumberEditor* m_windSpeed;
+
+  /** check box for external wind usage. */
+  QCheckBox* m_useExternalWind;
+
+  /** editor box for setup start time of wind calculation in straight flight. */
+  NumberEditor* m_startWindCalculation;
 
   /** widget with wind statistics */
   QTreeWidget* m_windListStatistics;
