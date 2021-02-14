@@ -137,7 +137,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
 
   QString wTip = tr("Time before the wind calculation is started in straight flight.");
 
-  label = new QLabel( tr("Calculate Wind in straight flight after"), this );
+  label = new QLabel( tr("Time for straight flight"), this );
 #ifndef ANDROID
   label->setToolTip( wTip );
 #endif
