@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -68,6 +68,7 @@
 
 MapMatrix::MapMatrix( QObject* parent ) :
   QObject(parent),
+  rotationAngle(0.0),
   mapCenterLat(0), mapCenterLon(0),
   homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0),
   _MaxScaleToCScaleRatio(0),
@@ -378,7 +379,13 @@ void MapMatrix::__moveMap(int dir)
 
 void MapMatrix::createMatrix(const QSize& newSize)
 {
+  qDebug() << "MapMatrix::createMatrix()" << newSize;
+
+  mapViewSize = newSize;
+
   const QPoint tempPoint(wgsToMap(mapCenterLat, mapCenterLon));
+
+  qDebug() << "Center" << float(mapCenterLat/600000.0) << float(mapCenterLon/600000.0);
 
   /* Set rotating and scaling */
   const double scale = MAX_SCALE / cScale;
@@ -388,20 +395,26 @@ void MapMatrix::createMatrix(const QSize& newSize)
   double cosscaled = cos(rotationArc) * scale;
   worldMatrix = QTransform( cosscaled, sinscaled, -sinscaled, cosscaled, 0, 0 );
 
-  /* Set the translation */
+  /* Map WGS Center point to map center */
   const QPoint map = worldMatrix.map(tempPoint);
+
+  qDebug() << "MapCenter" << map;
+
+  qDebug() << "getTranslationX=" << currentProjection->getTranslationX(newSize.width(),map.x());
+  qDebug() << "getTranslationY=" << currentProjection->getTranslationX(newSize.height(),map.y());
+
   QTransform translateMatrix( 1, 0, 0, 1,
-                              currentProjection->getTranslationX(newSize.width(),map.x()),
-                              currentProjection->getTranslationY(newSize.height(),map.y()));
+                              currentProjection->getTranslationX( newSize.width(), map.x()),
+                              currentProjection->getTranslationY( newSize.height(), map.y()));
 
   worldMatrix *= translateMatrix;
 
-  //trying to rotate around center
   /*
-    QPoint curProjCenter= worldMatrix * QPoint(mapCenterLat, mapCenterLon);
-    worldMatrix.translate(-curProjCenter.x(),-curProjCenter.y());
-    worldMatrix.rotate(180);
-    worldMatrix.translate(curProjCenter.x(),curProjCenter.y());
+  //trying to rotate around center
+  // QPoint curProjCenter= worldMatrix * QPoint(mapCenterLat, mapCenterLon);
+  worldMatrix.translate(-map.x(),-map.y());
+  worldMatrix.rotate(0);
+  worldMatrix.translate(map.x(),map.y());
   */
 
   // Setting the viewBorder
@@ -430,20 +443,19 @@ void MapMatrix::createMatrix(const QSize& newSize)
   viewBorder.setBottom( qMin(blCorner.y(), brCorner.y()) );
 
   mapBorder = invertMatrix.mapRect( QRect( 0, 0, newSize.width(), newSize.height() ) );
-  mapViewSize = newSize;
 
   //create the map center area definition
   int vqDist = -viewBorder.height() / 5;
   int hqDist = viewBorder.width() / 5;
 
-  mapCenterArea=QRect(mapCenterLat - vqDist, mapCenterLon - hqDist, 2* vqDist, 2* hqDist);
+  mapCenterArea = QRect(mapCenterLat - vqDist, mapCenterLon - hqDist, 2* vqDist, 2* hqDist);
 
   vqDist = mapBorder.height() / 5;
   hqDist = mapBorder.width() / 5;
 
-  mapCenterAreaProj=QRect(tempPoint.x() - vqDist,
-                          tempPoint.y() - hqDist,
-                          2* vqDist, 2* hqDist);
+  mapCenterAreaProj = QRect(tempPoint.x() - vqDist,
+                            tempPoint.y() - hqDist,
+                            2 * vqDist, 2 * hqDist);
 
   // fixed math mapping value assignment
   m11 = (fp24p8_t)( worldMatrix.m11() * 16777216.0 );

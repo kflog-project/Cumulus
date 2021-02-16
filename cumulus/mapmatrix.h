@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2001      by Heiner Lamprecht, Florian Ehinger
- **                  2008-2015 by Axel Pauli
+ **                  2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -122,7 +122,7 @@ public:
 #if 0
   {
     return worldMatrix.map(pPolygon);
-  };
+  }
 #endif
 
   /**
@@ -136,8 +136,28 @@ public:
 #if 0
   {
     return worldMatrix.map(point);
-  };
+  }
 #endif
+
+  /**
+    * Maps the given projected point into the current map-matrix.
+    *
+    * @param  point  The point to be mapped
+    *
+    * @return the mapped point
+    */
+   QPoint mapAndRotate(const QPoint &point)
+   {
+     QPoint mp = map( point );
+
+     if( rotationAngle == 0 )
+       {
+         return mp;
+       }
+
+     // apply rotation at mapped point
+     return rotationMatrix.map( mp );
+   }
 
   /**
    * Maps the given projected rectangle into the current map-matrix.
@@ -149,7 +169,7 @@ public:
   QRect map(const QRect& rect) const
   {
     return worldMatrix.mapRect(rect);
-  };
+  }
 
   /**
    * Maps the given bearing into the current map-matrix.
@@ -161,7 +181,7 @@ public:
   double map(double bearing) const
   {
     return (bearing + rotationArc);
-  };
+  }
 
   /**
    * @param  type  The type of scale to be returned.
@@ -178,7 +198,7 @@ public:
   int getScaleRatio()
   {
     return _MaxScaleToCScaleRatio;
-  };
+  }
 
   /**
    * Note, the returned map uses the x-axis for longitude and the y-axis
@@ -191,7 +211,7 @@ public:
   QRect getViewBorder() const
   {
     return viewBorder;
-  };
+  }
 
   /**
    * @return The lat/lon-border of the current map in projected coordinates.
@@ -201,7 +221,7 @@ public:
   QRect getMapBorder() const
   {
     return mapBorder;
-  };
+  }
 
   /**
    * Initializes the matrix for displaying the map.
@@ -214,7 +234,7 @@ public:
   bool isVisible(const QPoint& pos) const
   {
     return (mapBorder.contains(pos));
-  };
+  }
 
   /**
    * @return "true", if the given rectangle intersects with the current map.
@@ -254,7 +274,7 @@ public:
   bool isBorder1() const
   {
    return(cScale <= scaleBorders[Border1]);
-  };
+  }
 
   /**
    * @return "true", if the current scale is smaller than the border2.
@@ -262,7 +282,7 @@ public:
   bool isBorder2() const
   {
    return(cScale <= scaleBorders[Border2]);
-  };
+  }
 
   /**
    * @return "true", if the current scale is smaller than the border3.
@@ -270,7 +290,7 @@ public:
   bool isBorder3() const
   {
    return(cScale <= scaleBorders[Border3]);
-  };
+  }
 
   /**
    * @return "true", if the current scale is smaller than the switch-scale.
@@ -330,7 +350,7 @@ public:
   QPoint getHomeCoord() const
   {
     return QPoint(homeLat, homeLon);
-  };
+  }
 
   /**
    * @returns true if the point is close to the center of the map, and false otherwise.
@@ -340,15 +360,13 @@ public:
     return mapCenterArea.contains(coord);
   }
 
-
   /**
    * @returns true if the rectangle @arg r intersects with the center rectangle of the map
    */
   bool isInCenterArea(const QRect& r)
   {
     return mapCenterArea.intersects(r);
-  };
-
+  }
 
   /**
    * @returns true if the projected rectangle @arg r intersects
@@ -357,15 +375,52 @@ public:
   bool isInProjCenterArea(const QRect& r)
   {
     return mapCenterAreaProj.intersects(r);
-  };
+  }
 
   /**
    * @returns the current projection type
    */
   ProjectionBase* getProjection() const
-    {
-      return currentProjection;
-    };
+  {
+    return currentProjection;
+  }
+
+  /**
+   * Initialize the rotation matrix.
+   */
+  void createRotationMatrix( double angle, int width, int height )
+  {
+    rotationAngle = angle;
+    rotationMatrix.reset();
+    rotationMatrix.translate( width/2, height/2 );
+    rotationMatrix.rotate( angle );
+    rotationMatrix.translate( -width/2, -height/2 );
+  }
+
+  double getRatationAngle()
+  {
+    return rotationAngle;
+  }
+
+  /**
+   * If map rotation is active, the passed point is mapped to the rotated
+   * position.
+   *
+   * @param point Point to be mapped to the rotated position
+   *
+   * @return Point mapped to the rotated position.
+   */
+  QPoint getRotatedPoint( const QPoint& point )
+  {
+    if( rotationAngle == 0 )
+      {
+        return point;
+      }
+
+    return rotationMatrix.map( point );
+  }
+
+  //////////////////////////////////////////////////////////////////////////////
 
   public slots:
 
@@ -435,18 +490,28 @@ public:
   QTransform invertMatrix;
 
   /**
+   * Transformation used for map rotation.
+   */
+  QTransform rotationMatrix;
+
+  /**
+   * Rotation angle of the rotationMatrix.
+   */
+  double rotationAngle;
+
+  /**
    * The mapCenter is the position displayed in the center of the map.
    * It is used in two different ways:
    * 1.: Determine the area shown in the map-widget
    * 2.: Calculating the difference in latitude between a point in the
    * map and the center.
    *
-   * The latitude of the center of the map.
+   * The WGS latitude of the map center.
    */
   int mapCenterLat;
 
   /**
-   * The longitude of the center of the map.
+   * The WGS longitude of the map center.
    */
   int mapCenterLon;
 
@@ -457,10 +522,10 @@ public:
   int homeLon;
 
   /**
-   * Contains the geographical border of the map (lat/lon).
+   * Contains the geographical border of the map (WGS lat/lon).
    */
   QRect viewBorder;
-  // QRect printBorder;
+
   QRect mapBorder;
 
   /** The mapCenterArea is the rectangle in which the glider symbol
@@ -468,7 +533,8 @@ public:
   QRect mapCenterArea;
 
   QRect mapCenterAreaProj;
-  /** */
+
+  /** Size of the created map matrix */
   QSize mapViewSize;
 
   /** Number of meters per pixel? */
@@ -490,7 +556,6 @@ public:
 
   /** Root path to the map directories */
   QString mapRootDir;
-
 };
 
 #endif
