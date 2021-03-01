@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2015 by Axel Pauli
+ **                   2009-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -997,7 +997,7 @@ void OpenAirParser::addArc(const double& rX, const double& rY,
         angle1 += 2.0 * M_PI;
     }
 
-  int nsteps = abs(int(((angle2 - angle1) * 180) / (STEP_WIDTH * M_PI))) + 2;
+  int nsteps = abs((int) rint(((angle2 - angle1) * 180) / (STEP_WIDTH * M_PI)));
 
   //qDebug("delta=%d pai=%d",int(((angle2-angle1)*180)/(STEP_WIDTH*M_PI)), pai );
 
