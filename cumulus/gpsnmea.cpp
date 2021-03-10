@@ -3531,6 +3531,22 @@ bool GpsNmea::event(QEvent *event)
               emit newStaticPressure( _lastStaticPressure );
            }
 
+          Altitude altitude( Atmosphere::calcAltitude( pressure ) );
+
+          if( _lastPressureAltitude != altitude || _reportAltitude == true )
+            {
+              _baroAltitudeSeen = true;
+              _reportAltitude = false;
+
+              // If we have pressure altitude, the barometer sensor is
+              // normally calibrated to 1013.25hPa and that is the standard
+              // pressure altitude.
+              _lastPressureAltitude = altitude;
+
+              // report new pressure altitude
+              emit newPressureAltitude( _lastPressureAltitude );
+            }
+
           return true;
         }
     }
