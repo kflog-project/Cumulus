@@ -64,7 +64,7 @@
 //      After this time an alarm is generated.
 #define FIX_TO 25000
 
-extern MapView   *_globalMapView;
+extern MapView *_globalMapView;
 
 // global GPS object pointer
 GpsNmea *GpsNmea::gps = static_cast<GpsNmea *> (0);
@@ -3306,7 +3306,9 @@ void GpsNmea::__ExtractSatsInView( const QString& id,
  */
 void GpsNmea::slot_openNmeaLogFile()
 {
-  QString fname = GeneralConfig::instance()->getUserDataDirectory() + "/CumulusNmea.log";
+  QString logStart = QDateTime::currentDateTime().toString( Qt::ISODate );
+  QString fname = GeneralConfig::instance()->getUserDataDirectory() +
+                  "/CumulusNmea_" + logStart + ".log";
 
   if( nmeaLogFile == 0 )
     {
