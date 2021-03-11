@@ -19,6 +19,7 @@
 #include <unistd.h>
 
 #include <QtCore>
+#include <QString>
 
 #include "airspace.h"
 #include "AirspaceHelper.h"
