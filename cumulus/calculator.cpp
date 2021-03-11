@@ -88,7 +88,7 @@ Calculator::Calculator( QObject* parent ) :
   m_calculateLD = false;
   m_calculateETA = false;
   m_calculateTas = true;
-  m_calculateWind = true;
+  m_calculateWind = conf->isExternalWindEnabled();
   m_lastWind.wind = Vector(0.0, 0.0);
   m_lastWind.altitude = lastAltitude;
   targetWp = static_cast<Waypoint *> (0);
@@ -263,7 +263,7 @@ void Calculator::slot_PressureAltitude( Altitude& altitude )
 /** Called if a new heading has been obtained */
 void Calculator::slot_Heading( const double& newHeadingValue )
 {
-  if ( lastSpeed.getMps() <= 0.3 )
+  if( lastSpeed.getMps() <= 0.3 )
     {
       // @AP: don't forward values, when the speed is nearly
       // zero. Arrow will stay in last position. Same does make
@@ -291,11 +291,8 @@ void Calculator::slot_Heading( const double& newHeadingValue )
  */
 void Calculator::slot_MagneticHeading( const double& newHeading )
 {
-  if( lastMagneticHeading != newHeading )
-    {
-      lastMagneticHeading = newHeading;
-      emit newMagneticHeading( newHeading );
-    }
+  lastMagneticHeading = newHeading;
+  emit newMagneticHeading( newHeading );
 }
 
 /**
@@ -307,14 +304,11 @@ void Calculator::slot_MagneticTrueHeading( const double& newHeading )
   // is available
   if( m_calculateTas == false )
     {
-      m_windInStraightFlight->slot_trueCompassHeading( newHeading );;
+      m_windInStraightFlight->slot_trueCompassHeading( newHeading );
     }
 
-  if( lastMagneticTrueHeading != newHeading )
-    {
-      lastMagneticTrueHeading = newHeading;
-      emit newMagneticTrueHeading( newHeading );
-    }
+  lastMagneticTrueHeading = newHeading;
+  emit newMagneticTrueHeading( newHeading );
 }
 
 /** called if a new speed fix has been received */
@@ -1455,7 +1449,7 @@ void Calculator::slot_settingsChanged()
   // Switch on the internal variometer lift and wind calculation.
   // User could be changed the GPS device.
   m_calculateVario = true;
-  m_calculateWind  = true;
+  m_calculateWind  = conf->isExternalWindEnabled();
   m_calculateTas   = true;
 
   slot_CheckHomeSiteSelection();
@@ -1846,7 +1840,7 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
 /** This function is used internally to emit the flight mode signal with the marker value */
 void Calculator::newFlightMode(Calculator::FlightMode fm)
 {
-  if ( m_calculateWind )
+  if( m_calculateWind == true )
     {
       // Wind calculation can be disabled when the Logger device
       // delivers already wind data.
@@ -1859,9 +1853,12 @@ void Calculator::newFlightMode(Calculator::FlightMode fm)
 /** Called if a new wind measurement is delivered by an external device */
 void Calculator::slot_ExternalWind( const Speed& speed, const short direction )
 {
-  // Hey we got a wind value directly from the GPS.
-  // Therefore internal calculation is not needed and can be switched off.
-  m_calculateWind = false;
+  // Hey we got a wind value directly from an external device.
+  if( m_calculateWind == true )
+    {
+      // User has disabled the usage of external wind.
+      return;
+    }
 
   Vector v;
   v.setAngle( direction );

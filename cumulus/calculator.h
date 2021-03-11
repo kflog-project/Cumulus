@@ -739,10 +739,18 @@ public:
   void slot_Wind(Vector&);
 
   /**
-   * Called, if the user has activated manual wind and has changed the
-   * wind values.
+   * Called, if the user has activated/deactivated manual wind and has changed
+   * the wind values.
    */
   void slot_ManualWindChanged( bool enabled );
+
+  /**
+   * Called, if the user has activated/deactivated external wind usage.
+   */
+  void slot_ExternalWindRequired( bool flag )
+  {
+    m_calculateWind = flag;
+  }
 
   /**
    * Called to select the start point of a loaded task.
@@ -1139,7 +1147,7 @@ private: // Private attributes
   /** Last marker value used */
   int m_marker;
 
-  /** contains the current state of wind calculation */
+  /** contains the current state of the internal wind calculation */
   bool m_calculateWind;
 
   /** contains functions to analyze the wind */
