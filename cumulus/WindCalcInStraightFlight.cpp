@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2021 by Axel PauliWindCalcInStraightFlight.h
+ **   Copyright (c): 2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -199,7 +199,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 
       // normalize angle
       if (tc >= 360.) { tc -= 360.; }
-      if (tc < 0.)    { tc += 360.; }
+      else if (tc < 0.) { tc += 360.; }
 
       tc += trueCourse; // Average of TC
 
@@ -207,7 +207,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 
       // normalize angle
        if (th >= 360.) { th -= 360.; }
-       if (th < 0.)    { th += 360.; }
+       else if (th < 0.) { th += 360.; }
 
        th += trueHeading; // Average of TH
 
@@ -233,6 +233,10 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
         {
           // correct negative angels
           wd += 360.;
+        }
+      else if( wd >= 360. )
+        {
+          wd -= 360;
         }
 
       Speed WS;

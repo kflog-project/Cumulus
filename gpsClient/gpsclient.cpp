@@ -490,7 +490,7 @@ bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
  */
 bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 {
-  qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
+  //qDebug() << "GpsClient::openGps:" << deviceIn << "," << ioSpeedIn;
 
   device          = deviceIn;
   ioSpeedDevice   = ioSpeedIn;
@@ -1070,8 +1070,8 @@ void GpsClient::toController()
         }
 
 #ifdef ERROR_LOG
-      qWarning() << "GpsClient::toController():"
-                 << "Connection to GPS seems to be dead, trying restart.";
+      //qWarning() << "GpsClient::toController():"
+      //           << "Connection to GPS seems to be dead, trying restart.";
 #endif
 
       // A timeout occurs from GPS side, when the receiver is

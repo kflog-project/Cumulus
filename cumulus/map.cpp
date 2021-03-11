@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Josua Dietze
- **                   2008-2020 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -839,6 +839,9 @@ void Map::p_drawAirspaces( bool reset )
   asl[0] = _globalMapContents->getAirspaceList();
   asl[1] = _globalMapContents->getFlarmAlertZoneList();
 
+  QList<Airspace*> gsAs;
+  QList<qreal> gsOpacity;
+
   for( int i = 0; i < 2; i++ )
     {
       for( int loop = 0; loop < asl[i]->size(); loop++ )
@@ -973,7 +976,24 @@ void Map::p_drawAirspaces( bool reset )
                 }
             }
 
+          if( currentAirS->getTypeID() == BaseMapElement::GliderSector )
+            {
+              // We draw glider sectors at last to get them full visible
+              gsAs.append( currentAirS );
+              gsOpacity.append( airspaceOpacity );
+              continue;
+            }
+
           currentAirS->drawRegion( &cuAeroMapP, airspaceOpacity );
+        }
+
+      if( gsAs.size() > 0 )
+        {
+          // At last draw all glider sectors.
+          for( int i = 0; i < gsAs.size(); i++ )
+            {
+              gsAs.at(i)->drawRegion( &cuAeroMapP, gsOpacity.at(i) );
+            }
         }
     }
 
