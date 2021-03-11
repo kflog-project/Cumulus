@@ -379,13 +379,13 @@ void MapMatrix::__moveMap(int dir)
 
 void MapMatrix::createMatrix(const QSize& newSize)
 {
-  qDebug() << "MapMatrix::createMatrix()" << newSize;
+  // qDebug() << "MapMatrix::createMatrix()" << newSize;
 
   mapViewSize = newSize;
 
   const QPoint tempPoint(wgsToMap(mapCenterLat, mapCenterLon));
 
-  qDebug() << "Center" << float(mapCenterLat/600000.0) << float(mapCenterLon/600000.0);
+  // qDebug() << "Center" << float(mapCenterLat/600000.0) << float(mapCenterLon/600000.0);
 
   /* Set rotating and scaling */
   const double scale = MAX_SCALE / cScale;
@@ -398,10 +398,11 @@ void MapMatrix::createMatrix(const QSize& newSize)
   /* Map WGS Center point to map center */
   const QPoint map = worldMatrix.map(tempPoint);
 
+#if 0
   qDebug() << "MapCenter" << map;
-
   qDebug() << "getTranslationX=" << currentProjection->getTranslationX(newSize.width(),map.x());
   qDebug() << "getTranslationY=" << currentProjection->getTranslationX(newSize.height(),map.y());
+#endif
 
   QTransform translateMatrix( 1, 0, 0, 1,
                               currentProjection->getTranslationX( newSize.width(), map.x()),
