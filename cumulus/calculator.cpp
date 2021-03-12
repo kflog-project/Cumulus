@@ -226,10 +226,14 @@ void Calculator::slot_GnssAltitude( Altitude& altitude )
           emit newAltitude( lastAltitude );
           emit newUserAltitude( getAltimeterAltitude() );
 
-          calcGlidePath();
+          // Calculate GPS altitude gain.
           calcAltitudeGain();
         }
     }
+
+  // The glide path is only calculated with the GPS altitude, which is
+  // independently from the pressure variation.
+  calcGlidePath();
 }
 
 /** called on a pressure altitude change */
@@ -254,7 +258,7 @@ void Calculator::slot_PressureAltitude( Altitude& altitude )
           emit newAltitude( lastAltitude );
           emit newUserAltitude( getAltimeterAltitude() );
 
-          calcGlidePath();
+          // Calculate pressure altitude gain
           calcAltitudeGain();
         }
     }
