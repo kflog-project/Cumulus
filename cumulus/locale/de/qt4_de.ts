@@ -1163,11 +1163,11 @@ nach
     </message>
     <message>
         <source>&amp;Custom colors</source>
-        <translation>&amp;Benutzerdefinierte Farben</translation>
+        <translation>&amp;eigene Farben</translation>
     </message>
     <message>
         <source>&amp;Add to Custom Colors</source>
-        <translation>Zu benutzerdefinierten Farben &amp;hinzufügen</translation>
+        <translation>Zu eigenen Farben &amp;hinzufügen</translation>
     </message>
 </context>
 <context>
