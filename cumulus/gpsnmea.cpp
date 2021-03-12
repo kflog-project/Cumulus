@@ -2869,10 +2869,10 @@ void GpsNmea::slot_reset()
   _reportAltitude = true;
   flarmNmeaOutInitDone = false;
   _gpsSource = conf->getGpsSource().left(3);
-  bool gpsSwitchState = conf->getGpsSwitchState();
 
 #ifndef ANDROID
 
+  bool gpsSwitchState = conf->getGpsSwitchState();
   QString oldDevice = gpsDevice;
 
   if( gpsDevice != conf->getGpsDevice() )
