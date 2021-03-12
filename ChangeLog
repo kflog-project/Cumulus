@@ -19,7 +19,31 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
-[+] 2021-01-07 AP: New serach possibility added to different list views.
+[+] 2021-03-12 AP: Issue #77 fixed. Provide the flown average speed from a
+                   flight task.
+
+[+] 2021-03-12 AP: Issue #145 fixed. Glider sectors should be drawn at last.
+
+[+] 2021-03-12 AP: Issue #144 fixed. Start/Stop GPS by user under Linux.
+
+[+] 2021-03-12 AP: Issue #143 fixed. WLAN Service to XC-Vario should be
+                   implemented.
+
+[-] 2021-03-12 AP: Issue #142 fixed. The LiveTrack password should be show
+                   hidden.
+
+[-] 2021-03-12 AP: Issue #141 fixed. BT connect should also be possible under
+                   Ubuntu Linux.
+
+[+] 2021-03-12 AP: Issue #140 fixed. Process NMEA data sentence for OpenVario
+                   and XCVario
+
+[+] 2021-03-12 AP: Issue #139 fixed. Add an additional selection possibitity to
+                   the list views.
+
+[-] 2021-03-12 AP: Issue #138 fixed. Runway designators are incomplete.
+
+[+] 2021-01-07 AP: New search possibility added to different list views.
 
 [-] 2020-07-23 AP: Issue #137 fixed. Added airspace filters to Cumulus.
 
