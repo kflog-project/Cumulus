@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2018 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -938,11 +938,11 @@
 #define GLIDER_SECTOR_PEN_STYLE_3 Qt::SolidLine
 #define GLIDER_SECTOR_PEN_STYLE_4 Qt::SolidLine
 
-#define GLIDER_SECTOR_COLOR QColor(255,51,0).name()
-#define GLIDER_SECTOR_COLOR_1 QColor(255,51,0)
-#define GLIDER_SECTOR_COLOR_2 QColor(255,51,0)
-#define GLIDER_SECTOR_COLOR_3 QColor(255,51,0)
-#define GLIDER_SECTOR_COLOR_4 QColor(255,51,0)
+#define GLIDER_SECTOR_COLOR QColor(255,100,0).name()
+#define GLIDER_SECTOR_COLOR_1 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_2 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_3 QColor(255,100,0)
+#define GLIDER_SECTOR_COLOR_4 QColor(255,100,0)
 
 #define GLIDER_SECTOR_BRUSH_COLOR QColor(255,100,0).name()
 #define GLIDER_SECTOR_BRUSH_COLOR_1 QColor(255,100,0)
