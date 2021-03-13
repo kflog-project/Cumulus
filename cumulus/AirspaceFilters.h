@@ -96,6 +96,9 @@ protected:
 
 private slots:
 
+  /** Called, if the help button is clicked. */
+  void slot_Help();
+
   /** Adds a new row with two columns to the table. */
   void slot_AddRow( bool col0=true, QString col1="" );
 

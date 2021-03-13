@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2020 Axel Pauli
+**   Copyright (c): 2020-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -28,6 +28,7 @@
 #include "AirspaceFilters.h"
 #include "layout.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "map.h"
 #include "rowdelegate.h"
 #include "target.h"
@@ -125,6 +126,13 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   int buttonSize = Layout::getButtonSize();
   int iconSize   = buttonSize - 5;
 
+  QPushButton *helpButton = new QPushButton(this);
+  helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  helpButton->setIconSize(QSize(iconSize, iconSize));
+  // helpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  helpButton->setMinimumSize(buttonSize, buttonSize);
+  helpButton->setMaximumSize(buttonSize, buttonSize);
+
   QPushButton *addButton  = new QPushButton;
   addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
   addButton->setIconSize(QSize(iconSize, iconSize));
@@ -165,6 +173,7 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   closeButton->setMinimumSize(buttonSize, buttonSize);
   closeButton->setMaximumSize(buttonSize, buttonSize);
 
+  connect( helpButton, SIGNAL(clicked() ), this, SLOT(slot_Help()) );
   connect( addButton, SIGNAL(clicked() ), this, SLOT(slot_AddRow()) );
   connect( deleteButton, SIGNAL(clicked() ), this, SLOT(slot_DeleteRows()) );
   connect( okButton, SIGNAL(clicked() ), this, SLOT(slot_Ok()) );
@@ -177,6 +186,8 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   QVBoxLayout *vbox = new QVBoxLayout;
 
   vbox->setSpacing(0);
+  vbox->addWidget( helpButton );
+  vbox->addSpacing(32);
   vbox->addWidget( addButton );
   vbox->addSpacing(32);
   vbox->addWidget( deleteButton );
@@ -449,6 +460,16 @@ void AirspaceFilters::slot_DeleteRows()
     }
 
   table->resizeColumnsToContents();
+}
+
+void AirspaceFilters::slot_Help()
+{
+  QString file = "cumulus-settings-airspace.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file, "LR_Filter" );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 void AirspaceFilters::slot_Ok()
