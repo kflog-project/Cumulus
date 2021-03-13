@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2018 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2008-2021 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -29,10 +29,11 @@
 #include "helpbrowser.h"
 #include "layout.h"
 
-HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile ) :
+HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile, QString anker ) :
   QWidget(parent),
   firstCall(true),
-  m_helpFile(helpFile)
+  m_helpFile(helpFile),
+  m_anker(anker)
 {
   setObjectName("HelpBrowser");
   setWindowTitle(tr("Cumulus Help"));
@@ -196,8 +197,13 @@ void HelpBrowser::showEvent( QShowEvent *event )
     }
 
   QUrl url = QUrl::fromLocalFile( helpFile );
-
   m_browser->setSource( url );
+
+  if( m_anker.size() > 0 )
+    {
+      // Try to go to the anker
+      m_browser->scrollToAnchor( m_anker );
+    }
 
   QWidget::showEvent( event );
 }

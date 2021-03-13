@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2018 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2008-2021 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -35,9 +35,9 @@
  * language. The user can navigate through the text, zoom in and out,
  * maximize/normalize the window display size.
  *
- * \date 2008-2018
+ * \date 2008-2021
  *
- * \version 1.1
+ * \version 1.2
  */
 
 class HelpBrowser : public QWidget
@@ -50,7 +50,9 @@ private:
 
  public:
 
-  HelpBrowser( QWidget *parent=0, QString helpFile="cumulus.html" );
+  HelpBrowser( QWidget *parent=0,
+               QString helpFile="cumulus.html",
+               QString anker="" );
 
   virtual ~HelpBrowser();
 
@@ -89,6 +91,9 @@ private:
 
   /** Name of help file to be displayed. */
   QString m_helpFile;
+
+  /** Name of the anker to start display. */
+  QString m_anker;
 };
 
 #endif
