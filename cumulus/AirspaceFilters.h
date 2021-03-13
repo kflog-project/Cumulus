@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2020 Axel Pauli
+**   Copyright (c): 2020-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * The single filters are defined is a table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2020
+ * \date 2020-2021
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #ifndef AIRSPACE_FILTERS_H
@@ -153,4 +153,4 @@ private:
   static QMutex mutex;
 };
 
-#endif /* FLARM_ALIAS_LIST_H_ */
+#endif /* AIRSPACE_FILTERS_H */
