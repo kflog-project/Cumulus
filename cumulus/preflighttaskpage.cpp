@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2018 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "numberEditor.h"
@@ -56,9 +57,17 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   setAttribute(Qt::WA_DeleteOnClose);
   setWindowTitle( tr("PreFlight - Task/Route") );
 
-  if( parent )
+  if( MainWindow::mainWindow() )
     {
-      resize( parent->size() );
+      // Resize the window to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( MainWindow::mainWindow()->size() );
+
+#ifdef ANDROID
+      // On Galaxy S3 there are size problems observed
+      setMinimumSize( MainWindow::mainWindow()->size() );
+      setMaximumSize( MainWindow::mainWindow()->size() );
+#endif
     }
 
   QHBoxLayout *contentLayout = new QHBoxLayout;

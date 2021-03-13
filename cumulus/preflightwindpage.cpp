@@ -28,6 +28,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
+#include "mainwindow.h"
 #include "mapconfig.h"
 #include "numberEditor.h"
 #include "preflightwindpage.h"
@@ -45,9 +46,17 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   setAttribute( Qt::WA_DeleteOnClose );
   setWindowTitle( tr( "PreFlight - Wind" ) );
 
-  if( parent )
+  if( MainWindow::mainWindow() )
     {
-      resize( parent->size() );
+      // Resize the window to the same size as the main window has. That will
+      // completely hide the parent window.
+      resize( MainWindow::mainWindow()->size() );
+
+#ifdef ANDROID
+      // On Galaxy S3 there are size problems observed
+      setMinimumSize( MainWindow::mainWindow()->size() );
+      setMaximumSize( MainWindow::mainWindow()->size() );
+#endif
     }
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
