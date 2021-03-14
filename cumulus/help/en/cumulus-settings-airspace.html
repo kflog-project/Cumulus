@@ -1,8 +1,8 @@
-<!-- $Id$ -->
 <html>
 <head>
-<title>Cumulus Airspace</title>
-<link rel="stylesheet" type="text/css" href="text.css">
+  <meta charset="utf-8"/>
+  <title>Cumulus Airspace</title>
+  <link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
 <body>
@@ -63,6 +63,73 @@
 			the unit FL (Flight Level). This feature allows you to filter out
 			upper airspaces and to reduce the drawn items at the map.
 		</dd>
+
+    <br>
+    <dt id="LR_Filter">
+      <b>AS Filters</b>
+    </dt>
+
+    <dd>
+      By using airspace filters you can suppress the showing of single or
+      groups of airspaces, which are not of interest for you.
+      <p>
+      When you press the button <i>AS-Filters</i> a new window is opened in
+      which you can define the filters. Every filter entry consists of three
+      elements.
+      </p>
+      
+      <ul>
+      <li>State: Activates or deactivates the listed filter.</li>
+      
+      <li>Filter definition consisting of country, airspace type and airspace
+          name.</li>
+          
+      <li>Command letters up: After pressing this column, all letters of the
+          filter definition will be set to upper cases. Airspaces uses often
+          only upper cases.</li>
+      </ul>
+      
+      The filter to be defined consists of three elements, divided by commas.
+      
+      <ol>
+      <li> Country sign as 2 letter code or * for unknown or all countries.</li>
+      
+      <li> Airspace type as it is shown, e.g. AR or AS-G or CTR, ...</li>
+      
+      <li> Airspace name as sub- or full string. By using substrings you can
+           suppress several airspaces, if the airspace name starts with the
+           substring. Wild cards like * are unsupported. </li>
+      </ol>
+      
+      <p>
+      <b>Note!</b> A filter can also suppress several airspaces, if they use
+      the same name.
+      </p>
+      <p>
+      Examples:
+      
+      <ul>
+      <li> <i>*,AR,ED-R Lindenberg</i>
+           <ul>
+           <li><b>*</b> valid for all countries </li>
+           <li><b>AR</b> Airspace Restricted </li>
+           <li><b>ED-R Lindenberg</b> Name of the airspace. </li>
+           </ul>
+      </li>
+      </ul>
+      
+      <ul>
+      <li> <i>PL,AS-G,TRA</i>
+           <ul>
+           <li><b>PL</b> Only valid for Poland </li>
+           <li><b>AS-G</b> Airspace G </li>
+           <li><b>TRA</b> all airspace names starting with TRA are suppressed. </li>
+           </ul>
+      </li>
+      </ul>
+      </p>
+      
+    </dd>
 
 		<br>
 		<dt>
