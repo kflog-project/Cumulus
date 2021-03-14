@@ -94,24 +94,30 @@
 			<ol>
 			<li> Landeskenner vom Luftraum als 2 Buchstabenkode oder * f&uuml;r
 			     unbekanntes oder alle L&auml;nder. </li>
-			<li> Luftraumtyp, so wie er angezeigt wird. Z.B. AR oder AS-G oder CTR.
+			     
+			<li> Luftraumtyp, so wie er angezeigt wird. Z.B. AR oder AS-G oder CTR ...
 			     </li>
 			<li> Luftraumname als Teil- oder volle Textkette. Mit Teiltextketten
-			     kann man ggf. mehrere Luftr&auml;e weg filtern.
+			     kann man ggf. mehrere Luftr&auml;e weg filtern, wenn der
+			     Luftr&auml;mname mit der Teiltextkette beginnt und &uuml;bereinstimmt.
+			     Platzhalterzeichen, wie * werden nicht unterst&uuml;tzt.</li>
 			</ol>
 			
 			<p>
-			<b>Beachte!</b> Das Filter unterdr&uuml;ckt bei gleichen Luftraumnamen
-			alle betroffenen Luftr&auml;me.
+			<b>Beachte!</b> Das definierte Filter unterdr&uuml;ckt bei gleichen
+			Luftraumnamen alle betroffenen Luftr&auml;me.
 			</p>
 			<p>
 			Beispiele:
 			
 			<ul>
-			<li> <i>*,AR,ED-R Lindenberg</i> gilt f&uuml;r alle L&auml;nder, Airspace
-			     Restricted, Name des Luftraumes. </li>
-			<li> <i>PL,AS-G,TRA</i> gilt nur f&uuml;r Polen, Airspace G, alle
-			     Luftr&auml;me die mit TRA anfangen werden ausgeblendet. </li>
+			<li> <i>*,AR,ED-R Lindenberg</i> <b>*</b> gilt f&uuml;r alle L&auml;nder,
+			     <b>AR</b> Airspace Restricted, <b>ED-R Lindenberg</b> Name des
+			     Luftraumes. </li>
+			     
+			<li> <i>PL,AS-G,TRA</i> <b>PL</b> gilt nur f&uuml;r Polen,
+			     <b>AS-G</b> Airspace G, <b>TRA</b> alle Luftr&auml;me die mit TRA
+			     anfangen werden ausgeblendet. </li>
 			</ul>
 			</p>
 			
