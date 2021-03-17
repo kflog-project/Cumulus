@@ -393,12 +393,13 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
   // it in task list as selected too.
   const Waypoint *calcWp = calculator->getTargetWp();
 
-  QList<TaskPoint *> tmpList = _task->getTpList();
+  QList<TaskPoint>& tmpList = _task->getTpList();
 
   for( int loop = 0; loop < tmpList.size(); loop++ )
     {
-      TaskPoint* tp = tmpList.at( loop );
-      _TaskPointItem* _tpi = new _TaskPointItem( list, tp, _task->getWtCalcFlag(), true );
+      TaskPoint& tp = tmpList[ loop ];
+
+      _TaskPointItem* _tpi = new _TaskPointItem( list, &tp, _task->getWtCalcFlag(), true );
 
       if( tmpList.size() < 10 )
         {
@@ -410,7 +411,7 @@ void TaskListView::slot_setTask(const FlightTask *tsk)
           _tpi->setText( 0, no );
         }
 
-      if ( calcWp && calcWp->wgsPoint == tp->getWGSPosition() )
+      if ( calcWp && calcWp->wgsPoint == tp.getWGSPosition() )
         {
           list->setCurrentItem( _tpi, 0 );
           _currSelectedTp = _tpi;

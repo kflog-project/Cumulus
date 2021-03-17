@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2018 by Axel Pauli
+ **   Copyright (c): 2012-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1136,7 +1136,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
   // Flarm limits tasks in its length to 192 characters. We do check and
   // adapt that here.
-  QList<TaskPoint *>& tpList = ft->getTpList();
+  QList<TaskPoint>& tpList = ft->getTpList();
   int left = -1;
 
   while( true )
@@ -1145,7 +1145,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
 
       for( int i = 0; i < tpList.count(); i++ )
         {
-          sizeDescr += tpList.at(i)->getWPName().left(left).size();
+          sizeDescr += tpList[i].getWPName().left(left).size();
         }
 
       int total = 7 + (tpList.size() * 9) + sizeDescr;
@@ -1186,12 +1186,12 @@ void PreFlightFlarmPage::slotWriteFlarmData()
   for( int i = 0; i < tpList.count(); i++ )
     {
       // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
-      TaskPoint* tp = tpList.at(i);
+      TaskPoint& tp = tpList[i];
 
       int degree, intMin;
       double min;
 
-      WGSPoint::calcPos( tp->getWGSPosition().x(), degree, min );
+      WGSPoint::calcPos( tp.getWGSPosition().x(), degree, min );
 
       // Minute is expected as 1/1000
       intMin = static_cast<int> (rint(min * 1000));
@@ -1201,7 +1201,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
                     arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
                     arg( (degree < 0) ? QString("S") : QString("N") );
 
-      WGSPoint::calcPos( tp->getWGSPosition().y(), degree, min );
+      WGSPoint::calcPos( tp.getWGSPosition().y(), degree, min );
 
       intMin = static_cast<int> (rint(min * 1000));
 
@@ -1213,7 +1213,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       QString cmd = "$PFLAC,S,ADDWP,"
                     + lat
                     + "," + lon + ","
-                    + tp->getWPName().left(left).trimmed();
+                    + tp.getWPName().left(left).trimmed();
 
       m_cmdList <<  cmd;
     }
@@ -1440,7 +1440,7 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
       return false;
     }
 
-  QList<TaskPoint *>& tpList = flightTask->getTpList();
+  QList<TaskPoint>& tpList = flightTask->getTpList();
 
   if( tpList.isEmpty() || tpList.size() < 2 )
     {
@@ -1474,24 +1474,24 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
   stream << "// Flarm task declaration created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
+         << QCoreApplication::applicationVersion() << Qt::endl;
 
   stream << "$PFLAC,S,NEWTASK,"
          << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
-         << endl;
+         << Qt::endl;
 
   // Takeoff point as dummy point
-  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << endl;
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << Qt::endl;
 
   for( int i = 0; i < tpList.count(); i++ )
     {
       // $PFLAC,S,ADDWP,4647900N,01252700E,Lienz Ni
-      TaskPoint* tp = tpList.at(i);
+      TaskPoint& tp = tpList[i];
 
       int degree, intMin;
       double min;
 
-      WGSPoint::calcPos( tp->getWGSPosition().x(), degree, min );
+      WGSPoint::calcPos( tp.getWGSPosition().x(), degree, min );
 
       // Minute is expected as 1/1000
       intMin = static_cast<int> (rint(min * 1000));
@@ -1501,7 +1501,7 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
                     arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
                     arg( (degree < 0) ? QString("S") : QString("N") );
 
-      WGSPoint::calcPos( tp->getWGSPosition().y(), degree, min );
+      WGSPoint::calcPos( tp.getWGSPosition().y(), degree, min );
 
       intMin = static_cast<int> (rint(min * 1000));
 
@@ -1513,14 +1513,14 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
       stream << "$PFLAC,S,ADDWP,"
              << lat
              << "," << lon << ","
-             << FlarmBase::replaceUmlauts( tp->getWPName().toLatin1() )
-             << endl;
+             << FlarmBase::replaceUmlauts( tp.getWPName().toLatin1() )
+             << Qt::endl;
     }
 
   // Landing point as dummy point
-  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << endl;
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << Qt::endl;
 
-  stream << endl;
+  stream << Qt::endl;
   f.close();
 
   return true;

@@ -1081,10 +1081,6 @@ void MainWindow::slotCreateApplicationWidgets()
 
   // Make the status bar visible. Maemo hides it per default.
   slotViewStatusBar( true );
-
-  // Check, if a task file upgrade has to be done.
-  TaskFileManager tfm;
-  tfm.check4Upgrade();
 }
 
 /**

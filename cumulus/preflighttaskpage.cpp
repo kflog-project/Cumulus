@@ -682,8 +682,7 @@ void PreFlightTaskPage::slotEditTask()
 
   m_editTask = m_flightTaskList.at(id.toInt() - 1);
 
-  // make a deep copy of fetched task item
-  FlightTask* modTask = new FlightTask( m_editTask->getCopiedTpList(),
+  FlightTask* modTask = new FlightTask( m_editTask->getTpList(),
                                         true,
                                         m_editTask->getTaskName() );
 

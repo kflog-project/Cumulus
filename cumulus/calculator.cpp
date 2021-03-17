@@ -437,13 +437,13 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
           // Clear all times in the selected task.
           task->resetTimes();
 
-          QList<TaskPoint *> tpList = task->getTpList();
+          QList<TaskPoint>& tpList = task->getTpList();
 
           // Tasks with less 2 entries are incomplete!
           for ( int i=0; i < tpList.count() && tpList.count() >= 2; i++ )
             {
-              if ( targetWp->wgsPoint == tpList.at(i)->getWGSPosition() &&
-                   targetWp->taskPointIndex == tpList.at(i)->getFlightTaskListIndex() )
+              if ( targetWp->wgsPoint == tpList.at(i).getWGSPosition() &&
+                   targetWp->taskPointIndex == tpList.at(i).getFlightTaskListIndex() )
                 {
                   m_selectedWpInList = i;
                   break;
@@ -525,7 +525,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
     }
 
   // load task point list from task
-  QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint>& tpList = task->getTpList();
 
   // Load active task switch scheme. Switch to next TP can be executed
   // by nearest to TP or touched TP sector/circle.
@@ -534,9 +534,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
 
   enum TaskPoint::PassageState passageState = TaskPoint::Outside;
 
-  TaskPoint* tp = tpList.at( targetWp->taskPointIndex );
+  TaskPoint& tp = tpList[ targetWp->taskPointIndex ];
 
-  passageState = tp->checkPassage( curDistance, lastPosition );
+  passageState = tp.checkPassage( curDistance, lastPosition );
 
   if( passageState == TaskPoint::Near )
     {
@@ -545,7 +545,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
           // Auto zoom in to make the task point figure better visible.
           autoZoomInMap();
 
-          if( tp->getActiveTaskPointFigureScheme() == GeneralConfig::Line )
+          if( tp.getActiveTaskPointFigureScheme() == GeneralConfig::Line )
             {
               // Announce task point in sight for a line only, if nearest
               // position is reached.
@@ -564,7 +564,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
           autoZoomInMap();
 
           if( ntScheme == GeneralConfig::Nearst &&
-              tp->getActiveTaskPointFigureScheme() != GeneralConfig::Line )
+              tp.getActiveTaskPointFigureScheme() != GeneralConfig::Line )
             {
               // Announce task point touch only, if nearest switch scheme is
               // chosen by the user and no line figure is active to avoid to
@@ -600,7 +600,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
       // Display a task end message under the following conditions:
       // a) we touched/passed the target radius
       // b) the finish task point is selected
-      TaskPoint* tp = tpList.at( targetWp->taskPointIndex );
+      TaskPoint& tp = tpList[ targetWp->taskPointIndex ];
 
       if( targetWp->taskPointIndex == 0 )
         {
@@ -609,9 +609,9 @@ void Calculator::calcDistance( bool autoWpSwitch )
         }
 
       // Set pass time of task point
-      tp->setPassTime();
+      tp.setPassTime();
 
-      if( tp->getTaskPointType() == TaskPointTypes::Finish )
+      if( tp.getTaskPointType() == TaskPointTypes::Finish )
         {
           m_taskEndReached = true;
           emit taskInfo( tr("Task ended"), true );
@@ -648,19 +648,19 @@ void Calculator::calcDistance( bool autoWpSwitch )
           if( tpList.count() > m_selectedWpInList + 1 )
           {
             // this loop excludes the last WP
-            TaskPoint *lastWp = tpList.at(m_selectedWpInList);
+            TaskPoint& lastWp = tpList[ m_selectedWpInList ];
             m_selectedWpInList++;
-            TaskPoint *nextWp = tpList.at(m_selectedWpInList);
+            TaskPoint& nextWp = tpList[ m_selectedWpInList ];
 
             // calculate the distance to the next waypoint
             Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
                  double(lastPosition.y()),
-                 nextWp->getWGSPosition().lat(),
-                 nextWp->getWGSPosition().lon() ) * 1000);
+                 nextWp.getWGSPosition().lat(),
+                 nextWp.getWGSPosition().lon() ) * 1000);
             curDistance = dist2Next;
 
             // announce task point change as none user interaction
-            slot_WaypointChange( nextWp->getWaypointObject(), false );
+            slot_WaypointChange( nextWp.getWaypointObject(), false );
 
             // Here we send a notice to the user about the task point switch.
             emit taskInfo( tr("TP passed"), true );
@@ -670,7 +670,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
                 // Show a detailed switch info, if the user has configured that.
                 TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
 
-                tpInfo->prepareSwitchText( lastWp->getFlightTaskListIndex(),
+                tpInfo->prepareSwitchText( lastWp.getFlightTaskListIndex(),
                          dist2Next.getKilometers() );
                 tpInfo->showTP();
               }
@@ -2063,7 +2063,7 @@ void Calculator::slot_startTask()
       return;
     }
 
-  QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint> tpList = task->getTpList();
 
   // Tasks with less 2 points are incomplete, request is ignored.
   if( tpList.count() < 2 )
@@ -2072,14 +2072,14 @@ void Calculator::slot_startTask()
     }
 
   // Take the start point of the task.
-  TaskPoint *tp2Taken = tpList.at(0);
+  TaskPoint& tp2Taken = tpList[0];
 
   if( targetWp )
     {
       // Check, if another task point is already selected. In this case ask the
       // user if the first point shall be really selected.
       if( targetWp->taskPointIndex != -1 &&
-          targetWp->taskPointIndex != tp2Taken->getFlightTaskListIndex() )
+          targetWp->taskPointIndex != tp2Taken.getFlightTaskListIndex() )
         {
           QMessageBox mb( QMessageBox::Question,
                           tr( "Restart current task?" ),
@@ -2112,7 +2112,7 @@ void Calculator::slot_startTask()
         }
     }
 
-  slot_WaypointChange( tp2Taken->getWaypointObject(), true );
+  slot_WaypointChange( tp2Taken.getWaypointObject(), true );
 }
 
 /**

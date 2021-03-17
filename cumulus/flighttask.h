@@ -67,10 +67,14 @@ class FlightTask : public BaseMapElement
  public:
 
   /**
+    * Creates an empty task.
+    */
+   FlightTask();
+
+  /**
    * Creates a task with the given turnpoints.
    *
-   * @param tpList The list of task points. Object ownership will be
-   *        taken over by this class.
+   * @param tpList The list of task points.
    *
    * @param  fai If true, drawing is done according to FAI rules, otherwise not.
    *
@@ -79,7 +83,7 @@ class FlightTask : public BaseMapElement
    * @param  tas The planned true airspeed.
    *
    */
-  FlightTask( QList<TaskPoint*> *tpList=0, bool fai=true,
+  FlightTask( QList<TaskPoint>& tpList, bool fai=true,
               QString taskName=QObject::tr("unknown"), Speed tas=Speed(0.0) );
 
   /**
@@ -142,23 +146,10 @@ class FlightTask : public BaseMapElement
   /**
    * Returns the task point list by reference
    */
-  QList<TaskPoint *>& getTpList()
+  QList<TaskPoint>& getTpList()
   {
-    return *tpList;
+    return tpList;
   };
-
-  /**
-   * Returns a deep copy of the task point list. The ownership of the
-   * list is taken over by the caller.
-   */
-  QList<TaskPoint *> *getCopiedTpList();
-
-  /**
-   * Returns a deep copy of the passed task point list. The ownership of
-   * the list is taken over by the caller. For convenience provided as
-   * static method.
-   */
-  static QList<TaskPoint *> *copyTpList(QList<TaskPoint *> *tpListIn);
 
   /**
    * Returns the type of the task.
@@ -195,7 +186,7 @@ class FlightTask : public BaseMapElement
    * @param drawnTp List of drawn task points, if taskpoint label drawing
    *        option is set.
    */
-  void drawTask(QPainter* painter, QList<TaskPoint *> &drawnTp );
+  void drawTask(QPainter* painter, QList<TaskPoint*> &drawnTp );
 
   /**
    * function for drawing the element into the given painter.
@@ -231,10 +222,10 @@ class FlightTask : public BaseMapElement
   };
 
   /** */
-  void setTaskPointList(QList<TaskPoint *> *newTpList);
+  void setTaskPointList( QList<TaskPoint>& newTpList );
 
   /** */
-  void addTaskPoint( TaskPoint *newTP );
+  void addTaskPoint( TaskPoint& newTP );
 
   /** */
   void setPlanningType( const int type );
@@ -517,7 +508,7 @@ class FlightTask : public BaseMapElement
   void setTaskPointData();
 
   /** Flight task with single task points. */
-  QList<TaskPoint*> *tpList;
+  QList<TaskPoint> tpList;
 
   /**
    * if true, FAI rules will be taken into account

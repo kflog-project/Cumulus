@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2007-2016 Axel Pauli, kflog.cumulus@gmail.com
+**   Copyright (c):  2007-2021 Axel Pauli, kflog.cumulus@gmail.com
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -212,7 +212,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       return;
     }
 
-  QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint>& tpList = task->getTpList();
 
   if( tpList.count() < 2 || tpList.count() <= currentTpIndex+1 )
     {
@@ -220,19 +220,19 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
       return;
     }
 
-  TaskPoint *currentTP = tpList.at( currentTpIndex );
-  TaskPoint *nextTP    = tpList.at( currentTpIndex + 1 );
+  TaskPoint& currentTP = tpList[ currentTpIndex ];
+  TaskPoint& nextTP    = tpList[ currentTpIndex + 1 ];
 
   QString display;
   QString no1, no2;
-  QString currentTpDes = currentTP->getName();
-  QString nextTpDes    = nextTP->getName();
+  QString currentTpDes = currentTP.getName();
+  QString nextTpDes    = nextTP.getName();
 
   currentTpDes.replace(  QRegExp(" "), "&nbsp;" );
   nextTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
-  no1.sprintf( "%02d", currentTpIndex );
-  no2.sprintf( "%02d", currentTpIndex + 1 );
+  no1 = QString( "%1" ).arg( currentTpIndex, 2, 10, QChar('0') );
+  no2 = QString( "%1" ).arg( currentTpIndex + 1, 2, 10, QChar('0') );
 
   display += "<html><center><b>" +
     tr("Taskpoint switch") + " " + no1 + "->" + no2 +
@@ -240,12 +240,12 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   display += "<table width=100% cellpadding=4 cellspacing=0 border=1><tr><th colspan=2 align=left>" +
     tr("Reached target") + " " + no1 + "</th>" +
-    "<th colspan=2 align=left>" + currentTP->getWPName() + "&nbsp;(" + currentTpDes + ")" +
+    "<th colspan=2 align=left>" + currentTP.getWPName() + "&nbsp;(" + currentTpDes + ")" +
     "</th></tr>";
 
   display += "<tr><th colspan=2 align=\"left\">" +
     tr("Next target") + " " + no2 + "</th>" +
-    "<th colspan=2 align=left>" + nextTP->getWPName() + "&nbsp;(" + nextTpDes + ")" +
+    "<th colspan=2 align=left>" + nextTP.getWPName() + "&nbsp;(" + nextTpDes + ")" +
     "</th></tr>";
 
   // to avoid wrapping in the table we have to code spaces as forced spaces in html
@@ -261,10 +261,10 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   // calculate Bearing
   int bearing= int( rint(MapCalc::getBearingWgs( calculator->getlastPosition(),
-                                                 nextTP->getWGSPosition() ) * 180/M_PI) );
+                                                 nextTP.getWGSPosition() ) * 180/M_PI) );
   // glide path
   calculator->glidePath( bearing, dist2Next,
-                         nextTP->getElevation(),
+                         nextTP.getElevation(),
                          arrivalAlt, bestSpeed );
 
   // fetch minimal arrival altitude
@@ -306,7 +306,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   speed.replace(  QRegExp(" "), "&nbsp;" );
 
   display += "<tr><td>&nbsp;&nbsp;" + tr("Vg") + "</td><td align=\"left\"><b>" +
-    speed + "</b></td>";
+             speed + "</b></td>";
 
   // If speed is to less we do not display any time values
   if( gs > 0.3 )
@@ -350,7 +350,7 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
   QString sr, ss, tz;
   QDate date = QDate::currentDate();
 
-  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP->getWGSPositionRef(), tz );
+  bool res = Sonne::sonneAufUnter( sr, ss, date, nextTP.getWGSPositionRef(), tz );
 
   if( res )
     {
@@ -367,123 +367,128 @@ void TPInfoWidget::prepareSwitchText( const int currentTpIndex,
 
   //-----------------------------------------------------------------------
   // Show data of finish target, if it is not already included.
-  if( nextTP->getTaskPointType() != TaskPointTypes::Finish )
+  if( nextTP.getTaskPointType() != TaskPointTypes::Finish )
     {
-      TaskPoint *finalTP = tpList.at( tpList.count() - 1 );
-      no1.sprintf( "%02d", finalTP->getFlightTaskListIndex() );
+      TaskPoint& finalTP = tpList[ tpList.count() - 1 ];
 
-      QString finalTpDes = finalTP->getName();
+      no1 = QString( "%1" ).arg( finalTP.getFlightTaskListIndex(), 2, 10, QChar('0') );
+
+      QString finalTpDes = finalTP.getName();
 
       finalTpDes.replace(  QRegExp(" "), "&nbsp;" );
 
       display += "<tr><th colspan=\"2\" align=\"left\">" +
-	tr("Finish target") + " " + no1 + "</th>" +
-	"<th colspan=2 align=left>" + finalTP->getWPName() + "&nbsp;(" + finalTpDes + ")" +
-	"</th></tr>";
+                  tr("Finish target") + " " + no1 + "</th>" +
+                  "<th colspan=2 align=left>" + finalTP.getWPName() +
+                  "&nbsp;(" + finalTpDes + ")" +
+                  "</th></tr>";
 
       // distance in km to final target must be calculated
       double finalDistance = dist2Next;
 
-      for( int loop=currentTpIndex+2; loop <= tpList.count() - 1; loop++ )
-	  {
-	    // qDebug("distance: %f", tpList.at(loop)->distance);
-	    finalDistance += tpList.at(loop)->distance;
-	  }
+      for( int loop = currentTpIndex + 2; loop <= tpList.count() - 1; loop++ )
+        {
+          // qDebug("distance: %f", tpList.at(loop)->distance);
+          finalDistance += tpList[loop].distance;
+        }
 
       // to avoid wraping in the table we have to code spaces as forced
       // spaces in html
       distance = Distance::getText( finalDistance*1000., true, 1);
       distance.replace(  QRegExp(" "), "&nbsp;" );
 
-      display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") + "</td><td align=\"left\"><b>" +
-		 distance + "</b></td>";
+      display += "<tr><td>&nbsp;&nbsp;" + tr("Distance") +
+                 "</td><td align=\"left\"><b>" +
+		  distance + "</b></td>";
 
       // calculation of the final arrival altitude
       reach = (ReachablePoint::reachable) task->calculateFinalGlidePath( currentTpIndex, arrivalAlt, bestSpeed );
 
       if( arrivalAlt.isValid() )
-	{
-	  switch (reach)
-	    {
-	    case ReachablePoint::yes:
-	      display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
-		arrivalAlt.getText(true,0) + "</b></td></tr>";
-	      break;
-	    case ReachablePoint::no:
-	      display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
-		arrivalAlt.getText(true,0) + "</font></b></td></tr>";
-	      break;
-	    case ReachablePoint::belowSafety:
-	      display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
-		arrivalAlt.getText(true,0) + "</font></b></td></tr>";
-	      break;
-	    }
-	}
+        {
+          switch (reach)
+            {
+            case ReachablePoint::yes:
+              display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>+" +
+          arrivalAlt.getText(true,0) + "</b></td></tr>";
+              break;
+            case ReachablePoint::no:
+              display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><font color=\"#FF0000\"><b>" +
+          arrivalAlt.getText(true,0) + "</font></b></td></tr>";
+              break;
+            case ReachablePoint::belowSafety:
+              display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b><font color=\"#FF00FF\">" +
+          arrivalAlt.getText(true,0) + "</font></b></td></tr>";
+              break;
+            }
+        }
       else
-	{
-	  display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>" +
-	    tr("unknown") + "</b></td></tr>";
-	}
+        {
+          display += "<td>&nbsp;&nbsp;" + tr("Arrival Alt") + "</td><td><b>" +
+            tr("unknown") + "</b></td></tr>";
+        }
 
       display += "<tr><td>&nbsp;&nbsp;" + tr("Vg") + "</td><td align=\"left\"><b>" +
-	speed + "</b></td>";
+                 speed + "</b></td>";
 
       // If speed is to less we do not display any time values
       if( gs > 0.3 )
-	{
-	  int time2Final = (int) rint( finalDistance*1000. / gs );
+        {
+          int time2Final = (int) rint( finalDistance*1000. / gs );
 
-	  QTime qtime(0,0);
-	  qtime = qtime.addSecs(time2Final);
+          QTime qtime(0,0);
+          qtime = qtime.addSecs(time2Final);
 
-	  display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
-		      qtime.toString() + "</b></td></tr>";
+          display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+                qtime.toString() + "</b></td></tr>";
 
-	  QDateTime eta( QDateTime::currentDateTime() );
+          QDateTime eta( QDateTime::currentDateTime() );
 
-	  eta = eta.addSecs( time2Final );
+          eta = eta.addSecs( time2Final );
 
-	  QString etaString;
+          QString etaString;
 
-	    if( Time::getTimeUnit() == Time::local )
-	      {
-		etaString = eta.toLocalTime().toString("hh:mm:ss");
-	      }
-	    else
-	      {
-		etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
-	      }
+            if( Time::getTimeUnit() == Time::local )
+              {
+          etaString = eta.toLocalTime().toString("hh:mm:ss");
+              }
+            else
+              {
+          etaString = eta.toTimeSpec(Qt::UTC).toString("hh:mm:ss") + " UTC";
+              }
 
-	    display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-		       etaString + "</b></td>";
-	}
+            display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+                 etaString + "</b></td>";
+        }
       else
-	{
-	  display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
-	    tr("unknown") + "</b></td></tr>";
+        {
+          display += "<td>&nbsp;&nbsp;" + tr("Duration") + "</td><td align=\"left\"><b>" +
+            tr("unknown") + "</b></td></tr>";
 
-	  display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
-	    tr("unknown") + "</b></td>";
-	}
+          display += "<tr><td>&nbsp;&nbsp;" + tr("ETA") + "</td><td align=\"left\"><b>" +
+            tr("unknown") + "</b></td>";
+        }
 
       // calculate sunset for the finish destination
       QString sr, ss, tz;
       QDate date = QDate::currentDate();
 
-      bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP->getWGSPositionRef(), tz );
+      bool res = Sonne::sonneAufUnter( sr, ss, date, finalTP.getWGSPositionRef(), tz );
 
       if( res )
-	{
-	  // In some areas no results available. In this case we skip
-	  // this output.
-	  display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-	    ss + " " + tz + "</b></td></tr>";
-	}
+        {
+          // In some areas no results available. In this case we skip
+          // this output.
+          display += "<td>&nbsp;&nbsp;" + tr("Sunset") +
+                     "</td><td align=\"left\"><b>" +
+                     ss + " " + tz + "</b></td></tr>";
+        }
       else
-	{
-	  display += "<td>&nbsp;&nbsp;" + tr("Sunset") + "</td><td align=\"left\"><b>" +
-	    tr("unknown")+ "</b></td></tr>";
-	}
+        {
+          display += "<td>&nbsp;&nbsp;" + tr("Sunset") +
+                     "</td><td align=\"left\"><b>" +
+                     tr("unknown")+ "</b></td></tr>";
+        }
     }
 
   display += "</table><html>";
@@ -646,7 +651,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       return;
     }
 
-  QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint>& tpList = task->getTpList();
 
   if( tpList.count() < 4 )
     {
@@ -656,10 +661,10 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       return;
     }
 
-  TaskPoint *tp = tpList.at( wp->taskPointIndex );
-  TaskPoint *finalTp = tpList.at( tpList.count() - 1 );
+  TaskPoint& tp = tpList[wp->taskPointIndex];
+  TaskPoint& finalTp = tpList[tpList.count() - 1];
 
-  if( tp->getTaskPointType() == TaskPointTypes::Finish )
+  if( tp.getTaskPointType() == TaskPointTypes::Finish )
     {
       // Waypoint is identical in position to finish point of flight
       // task. So we do display nothing more.
@@ -670,7 +675,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
 
   display += "<tr><th colspan=\"2\" align=\"left\">" +
     tr("Finish target") + "</th></tr>" +
-    "<tr><td colspan=\"2\">&nbsp;&nbsp;" + finalTp->getWPName() + " (" + finalTp->getComment() + ")" +
+    "<tr><td colspan=\"2\">&nbsp;&nbsp;" + finalTp.getWPName() + " (" + finalTp.getComment() + ")" +
     "</td></tr>";
 
   // distance in km to final target must be calculated
@@ -679,7 +684,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   for( int loop=tpIdx+1; loop <= tpList.count() - 1; loop++ )
     {
       // qDebug("distance: %f", tpList.at(loop)->distance);
-      finalDistance += tpList.at(loop)->distance;
+      finalDistance += tpList[loop].distance;
     }
 
   // to avoid wrapping in the table we have to code spaces as forced
@@ -746,7 +751,7 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       }
 
     // calculate sunset for the finish destination
-    res = Sonne::sonneAufUnter( sr, ss, date, finalTp->getWGSPositionRef(), tz );
+    res = Sonne::sonneAufUnter( sr, ss, date, finalTp.getWGSPositionRef(), tz );
 
     if( res )
       {

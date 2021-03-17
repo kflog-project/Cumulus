@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2018 Axel Pauli
+**   Copyright (c): 2013-2021 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
@@ -24,7 +24,6 @@
 #include "mapmatrix.h"
 #include "taskeditor.h"
 #include "TaskFileManager.h"
-#include "taskfilemanager.h"
 
 extern MapMatrix *_globalMapMatrix;
 
@@ -36,46 +35,6 @@ TaskFileManager::TaskFileManager( const int tas ) :
   // Sets the default task directory
   m_taskFileDirectory = GeneralConfig::instance()->getUserDataDirectory() + "/tasks";
   createTaskDirectory();
-}
-
-void TaskFileManager::check4Upgrade()
-{
-  QString check = m_taskFileDirectory + "/" + UPGRADE_CHECK;
-  QDir dir( m_taskFileDirectory );
-
-  if( dir.exists() && QFileInfo(check).exists() == true )
-    {
-      // upgrade has been done already
-      return;
-    }
-
-  TaskFileManagerOld tfm;
-  QList<FlightTask*> ftl;
-
-  bool ret = tfm.loadTaskListNew( ftl );
-
-  if( ret == false )
-    {
-      return;
-    }
-
-  qDebug() << "TaskFileManager executes upgrade to new structure.";
-
-  saveTaskList( ftl );
-
-  QFile file( check);
-
-  if( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
-    {
-      return;
-    }
-
-  QDateTime dt = QDateTime::currentDateTime();
-  QString dtStr = dt.toString("yyyy-MM-dd hh:mm:ss");
-
-  QTextStream out(&file);
-  out << "Task file migration done at " << dtStr << "\n";
-  file.close();
 }
 
 /**
@@ -197,7 +156,7 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
 
   QString name;
   QStringList tmpList;
-  QList<TaskPoint *> *tpList = 0;
+  QList<TaskPoint> tpList;
   FlightTask* ft = static_cast<FlightTask *>(0);
 
   while ( !stream.atEnd() )
@@ -214,8 +173,7 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
         {
           // new task ...
           isTask = true;
-
-          tpList = new QList<TaskPoint *>;
+          tpList.clear();
 
           tmpList = line.split( "|", QString::KeepEmptyParts );
 
@@ -227,9 +185,8 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
         {
           if ( line.mid( 0, 2 ) == "TW" && isTask )
             {
-              // new task point
-              TaskPoint* tp = new TaskPoint;
-              tpList->append( tp );
+              // new task point to be created
+              TaskPoint tp;
 
               tmpList = line.split( "|", QString::KeepEmptyParts );
 
@@ -238,35 +195,36 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
               WGSPoint wgsp( tmpList.at( 1 ).toInt(), tmpList.at( 2 ) .toInt() );
 
               int i = 3;
-
-              tp->setWGSPosition( wgsp );
-              tp->setPosition( _globalMapMatrix->wgsToMap( wgsp ) );
-              tp->setElevation( tmpList.at( i++ ).toInt() );
-              tp->setWPName( tmpList.at( i++ ) );
-              tp->setName( tmpList.at( i++ ) );
-              tp->setTypeID( (BaseMapElement::objectType) tmpList.at( i++ ).toShort() ) ;
-
-              tp->setActiveTaskPointFigureScheme( static_cast<enum GeneralConfig::ActiveTaskFigureScheme> (tmpList.at( i++ ).toInt()) );
-              tp->setTaskLineLength( tmpList.at( i++ ).toDouble() );
-              tp->setTaskCircleRadius( tmpList.at( i++ ).toDouble() );
-              tp->setTaskSectorInnerRadius( tmpList.at( i++ ).toDouble() );
-              tp->setTaskSectorOuterRadius( tmpList.at( i++ ).toDouble() );
-              tp->setTaskSectorAngle( tmpList.at( i++ ).toInt() );
-              tp->setAutoZoom( tmpList.at( i++ ).toInt() > 0 ? true : false );
-              tp->setUserEditFlag( tmpList.at( i++ ).toInt() > 0 ? true : false );
+              tp.setCountry( "" );
+              tp.setWGSPosition( wgsp );
+              tp.setPosition( _globalMapMatrix->wgsToMap( wgsp ) );
+              tp.setElevation( tmpList.at( i++ ).toInt() );
+              tp.setWPName( tmpList.at( i++ ) );
+              tp.setName( tmpList.at( i++ ) );
+              tp.setTypeID( (BaseMapElement::objectType) tmpList.at( i++ ).toShort() ) ;
+              tp.setActiveTaskPointFigureScheme( static_cast<enum GeneralConfig::ActiveTaskFigureScheme> (tmpList.at( i++ ).toInt()) );
+              tp.setTaskLineLength( tmpList.at( i++ ).toDouble() );
+              tp.setTaskCircleRadius( tmpList.at( i++ ).toDouble() );
+              tp.setTaskSectorInnerRadius( tmpList.at( i++ ).toDouble() );
+              tp.setTaskSectorOuterRadius( tmpList.at( i++ ).toDouble() );
+              tp.setTaskSectorAngle( tmpList.at( i++ ).toInt() );
+              tp.setAutoZoom( tmpList.at( i++ ).toInt() > 0 ? true : false );
+              tp.setUserEditFlag( tmpList.at( i++ ).toInt() > 0 ? true : false );
 
               // Check active task figure schema
-              switch( tp->getActiveTaskPointFigureScheme() )
-              {
-                case GeneralConfig::Circle:
-                case GeneralConfig::Sector:
-                case GeneralConfig::Line:
-                case GeneralConfig::Keyhole:
-                  break;
-                default:
-                  tp->setActiveTaskPointFigureScheme( GeneralConfig::Circle );
-                  break;
-              }
+              switch( tp.getActiveTaskPointFigureScheme() )
+                {
+                  case GeneralConfig::Circle:
+                  case GeneralConfig::Sector:
+                  case GeneralConfig::Line:
+                  case GeneralConfig::Keyhole:
+                    break;
+                  default:
+                    tp.setActiveTaskPointFigureScheme( GeneralConfig::Circle );
+                    break;
+                }
+
+              tpList.append( tp );
             }
           else
             {
@@ -277,13 +235,6 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
                 }
             }
         }
-    }
-
-  if( ft == 0 && tpList != 0 )
-    {
-      // remove all elements from an incomplete task
-      qDeleteAll(*tpList);
-      delete tpList;
     }
 
   file.close();
@@ -356,36 +307,36 @@ bool TaskFileManager::writeTaskFile( FlightTask *task )
 
   stream << "# Cumulus-Task-File V5.0, created at "
          << dtStr << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl
-         << "# Task name: " << task->getTaskName() <<endl << endl;
+         << QCoreApplication::applicationVersion() << Qt::endl
+         << "# Task name: " << task->getTaskName() << Qt::endl << Qt::endl;
 
-  QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint>& tpList = task->getTpList();
 
-  stream << "TS|" << task->getTaskName() << "|" << tpList.count() << endl;
+  stream << "TS|" << task->getTaskName() << "|" << tpList.count() << Qt::endl;
 
   for ( int j=0; j < tpList.count(); j++ )
     {
       // saving each task point ...
-      TaskPoint* tp = tpList.at(j);
+      TaskPoint& tp = tpList[j];
       stream << "TW|"
-             << tp->getWGSPosition().x() << "|"
-             << tp->getWGSPosition().y() << "|"
-             << tp->getElevation() << "|"
-             << tp->getWPName() << "|"
-             << tp->getName() << "|"
-             << tp->getTypeID() << "|"
-             << tp->getActiveTaskPointFigureScheme() << "|"
-             << tp->getTaskLineLength().getMeters() << "|"
-             << tp->getTaskCircleRadius().getMeters() << "|"
-             << tp->getTaskSectorInnerRadius().getMeters() << "|"
-             << tp->getTaskSectorOuterRadius().getMeters() << "|"
-             << tp->getTaskSectorAngle() << "|"
-             << tp->getAutoZoom() << "|"
-             << tp->getUserEditFlag()
-             << endl;
+             << tp.getWGSPosition().x() << "|"
+             << tp.getWGSPosition().y() << "|"
+             << tp.getElevation() << "|"
+             << tp.getWPName() << "|"
+             << tp.getName() << "|"
+             << tp.getTypeID() << "|"
+             << tp.getActiveTaskPointFigureScheme() << "|"
+             << tp.getTaskLineLength().getMeters() << "|"
+             << tp.getTaskCircleRadius().getMeters() << "|"
+             << tp.getTaskSectorInnerRadius().getMeters() << "|"
+             << tp.getTaskSectorOuterRadius().getMeters() << "|"
+             << tp.getTaskSectorAngle() << "|"
+             << tp.getAutoZoom() << "|"
+             << tp.getUserEditFlag()
+             << Qt::endl;
     }
 
-  stream << "TE" << endl;
+  stream << "TE" << Qt::endl;
 
   f.close();
   return true;

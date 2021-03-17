@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2016 by Axel Pauli
+                               2008-2021 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -543,7 +543,7 @@ void IgcLogger::writeHeader()
       return; // no task active
     }
 
-  QList<TaskPoint *> tpList = task->getTpList();
+  QList<TaskPoint>& tpList = task->getTpList();
 
   if ( tpList.count() < 2 )
     {
@@ -552,8 +552,8 @@ void IgcLogger::writeHeader()
 
   QString taskDate = formatDate( task->getDeclarationDateTime().date() );
   QString taskTime = formatTime( task->getDeclarationDateTime().time() );
-  QString fnr; fnr = fnr.sprintf( "%04d", flightNumber );
-  QString tpnr; tpnr = tpnr.sprintf( "%02d ", tpList.count() - 4 );
+  QString fnr = QString("%1").arg( flightNumber, 4, 10, QChar('0') );
+  QString tpnr = QString("%1").arg( tpList.count() - 4, 2, 10, QChar('0') );
   QString taskId = task->getTaskTypeString();
 
   // date, time UTC is expected at first and second position
@@ -572,11 +572,11 @@ void IgcLogger::writeHeader()
 
   for( int i=0; i < tpList.count(); i++ )
     {
-      TaskPoint *tp = tpList.at(i);
+      TaskPoint& tp = tpList[i];
 
       _stream << "C"
-              << formatPosition( tp->getWGSPosition() )
-              << tp->getWPName() << "\r\n";
+              << formatPosition( tp.getWGSPosition() )
+              << tp.getWPName() << "\r\n";
     }
 
   // Landing point as dummy entry
@@ -586,8 +586,9 @@ void IgcLogger::writeHeader()
 /** This function formats a date in the correct IGC format DDMMYY */
 QString IgcLogger::formatDate(const QDate& date)
 {
-  QString result;
-  result.sprintf("%02d%02d%02d",date.day(),date.month(),date.year()-2000);
+  QString result = QString("%1%2%3").arg( date.day(), 2, 10, QChar('0') )
+                                    .arg( date.month(), 2, 10, QChar('0') )
+                                    .arg( date.year()-2000, 2, 10, QChar('0') );
   return result;
 }
 
@@ -730,8 +731,9 @@ void IgcLogger::makeSatConstEntry(const QTime &time)
 /** This function formats a QTime to the correct format for IGC files (HHMMSS) */
 QString IgcLogger::formatTime(const QTime& time)
 {
-  QString result;
-  result.sprintf("%02d%02d%02d",time.hour(),time.minute(),time.second());
+  QString result = QString( "%1%2%3").arg( time.hour(), 2, 10, QChar('0') )
+                                     .arg( time.minute(), 2, 10, QChar('0') )
+                                     .arg( time.second(), 2, 10, QChar('0') );
   return result;
 }
 
@@ -1011,7 +1013,7 @@ bool IgcLogger::writeLogbookEntry()
          << _flightData.pilot2 << ";"
          << _flightData.gliderType << ";"
          << _flightData.gliderReg << ";"
-         << endl;
+         << Qt::endl;
 
   f.close();
   mutex.unlock();
@@ -1091,7 +1093,7 @@ bool IgcLogger::writeLogbook( QStringList& logbook )
 
   for( int i = 0; i < logbook.size(); i++ )
     {
-      stream << logbook.at(i) << endl;
+      stream << logbook.at(i) << Qt::endl;
     }
 
   f.close();

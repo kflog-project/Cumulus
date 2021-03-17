@@ -235,7 +235,6 @@ HEADERS = \
     target.h \
     taskeditor.h \
     TaskFileManager.h \
-    taskfilemanager.h \
     taskline.h \
     TaskListStatusView.h \
     tasklistview.h \
@@ -370,7 +369,6 @@ SOURCES = \
     splash.cpp \
     taskeditor.cpp \
     TaskFileManager.cpp \
-    taskfilemanager.cpp \
     taskline.cpp \
     TaskListStatusView.cpp \
     tasklistview.cpp \

@@ -317,13 +317,13 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
 
   if (task != static_cast<FlightTask *> (0) && cs < 1024.0)
     {
-      QList<TaskPoint*>& tpList = task->getTpList ();
+      QList<TaskPoint>& tpList = task->getTpList();
 
       for (int i = 0; i < tpList.size (); i++)
         {
-          TaskPoint* tp = tpList[i];
+          TaskPoint& tp = tpList[i];
 
-          QPoint sitePos (_globalMapMatrix->map (tp->getPosition ()));
+          QPoint sitePos (_globalMapMatrix->map (tp.getPosition ()));
 
           if (!snapRect.contains (sitePos))
             {
@@ -342,7 +342,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
                 }
 
               found = true;
-              w = tp->getWaypointObject ();
+              w = tp.getWaypointObject ();
               lastDist = dX + dY;
 
               if (lastDist < (delta / 3))
@@ -1114,7 +1114,7 @@ void Map::p_drawGrid()
   gridP.end();
 }
 
-void Map::p_drawPlannedTask( QPainter *taskP, QList<TaskPoint*> &drawnTp )
+void Map::p_drawPlannedTask( QPainter *taskP, QList<TaskPoint*>& drawnTp )
 {
   FlightTask* task = (FlightTask*) _globalMapContents->getCurrentTask();
 

@@ -402,7 +402,7 @@ private:
    * @arg drawnTp List of drawn taskpoints, if taskpoint label drawing
    *      option is set.
    */
-  void p_drawPlannedTask(QPainter *taskP, QList<TaskPoint*> &drawnTp);
+  void p_drawPlannedTask(QPainter *taskP, QList<TaskPoint*>& drawnTp);
 
   /**
    * Draws the grid on the map.

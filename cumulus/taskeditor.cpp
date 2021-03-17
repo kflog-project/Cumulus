@@ -76,7 +76,7 @@ TaskEditor::TaskEditor( QWidget* parent,
     }
   else
     {
-      task2Edit = new FlightTask( 0, false, "" );
+      task2Edit = new FlightTask();
       editState = TaskEditor::create;
       setWindowTitle(tr("New Task"));
     }
@@ -328,17 +328,10 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonBox->addWidget(titlePix);
   totalLayout->addLayout(buttonBox, 0, 3, 2, 1);
 
-  if ( editState == TaskEditor::edit )
+  if( editState == TaskEditor::edit )
     {
       taskName->setText( task2Edit->getTaskName() );
-
-      QList<TaskPoint *> tmpList = task2Edit->getTpList();
-
-      // @AP: Make a deep copy from all elements of the list
-      for ( int i=0; i < tmpList.count(); i++ )
-        {
-          tpList.append( new TaskPoint( *tmpList.at(i)) );
-        }
+      tpList = task2Edit->getTpList();
     }
 
   showTask();
@@ -372,10 +365,6 @@ TaskEditor::TaskEditor( QWidget* parent,
 
 TaskEditor::~TaskEditor()
 {
-  // The taskpoint list elements are pointers and must be deleted by our self.
-  qDeleteAll(tpList);
-  tpList.clear();
-
   // All allocated widgets for selections have to be deleted.
   TaskPointSelectionList* tsl[] = { afSelectionList,
                                     hsSelectionList,
@@ -470,14 +459,14 @@ void TaskEditor::showTask()
     }
 
   // That updates all task internal data
-  task2Edit->setTaskPointList( FlightTask::copyTpList( &tpList ) );
+  task2Edit->setTaskPointList( tpList );
 
   QString txt = task2Edit->getTaskTypeString() +
                 " / " + task2Edit->getTaskDistanceString();
 
   setWindowTitle(txt);
 
-  QList<TaskPoint *> tmpList = task2Edit->getTpList();
+  QList<TaskPoint> tmpList = task2Edit->getTpList();
 
   taskList->clear();
 
@@ -488,16 +477,16 @@ void TaskEditor::showTask()
 
   for( int loop = 0; loop < tmpList.size(); loop++ )
     {
-      TaskPoint* tp = tmpList.at( loop );
-      typeName = tp->getTaskPointTypeString();
+      TaskPoint& tp = tmpList[loop];
+      typeName = tp.getTaskPointTypeString();
 
-      distTotal += tp->distance;
+      distTotal += tp.distance;
 
-      distance = Distance::getText(tp->distance*1000, true, 1);
+      distance = Distance::getText(tp.distance*1000, true, 1);
       idString = QString( "%1").arg( loop, 2, 10, QLatin1Char('0') );
 
       rowList.clear();
-      rowList << idString << typeName << tp->getWPName() << distance;
+      rowList << idString << typeName << tp.getWPName() << distance;
 
       const int iconSize = Layout::iconSize( font() );
 
@@ -505,17 +494,17 @@ void TaskEditor::showTask()
 
       if( tmpList.size() > 1 )
         {
-          item->setIcon ( 1, tp->getIcon( iconSize ) );
+          item->setIcon ( 1, tp.getIcon( iconSize ) );
         }
 
-      if( tp->getUserEditFlag() == true )
+      if( tp.getUserEditFlag() == true )
         {
           // Mark the user edited entry
           item->setBackground( 1, QBrush(Qt::yellow) );
         }
 
       // Load point icon
-      QPixmap pm = _globalMapConfig->getPixmap(tp->getTypeID(), false);
+      QPixmap pm = _globalMapConfig->getPixmap(tp.getTypeID(), false);
       item->setIcon( 2, QIcon( pm) );
 
       taskList->addTopLevelItem( item );
@@ -577,7 +566,7 @@ void TaskEditor::slotAddTaskpoint( const SinglePoint* sp )
       // empty list
 
       // A taskpoint is only a single point and not more!
-      TaskPoint* tp = new TaskPoint( *sp );
+      TaskPoint tp( *sp );
       tpList.append( tp );
 
       // Remember last position.
@@ -589,7 +578,7 @@ void TaskEditor::slotAddTaskpoint( const SinglePoint* sp )
       id++;
 
       // A taskpoint is only a single point and not more!
-      TaskPoint* tp = new TaskPoint( *sp );
+      TaskPoint tp( *sp );
       tpList.insert( id, tp );
 
       // Remember last position.
@@ -616,7 +605,7 @@ void TaskEditor::slotCloneTaskpoint()
   if( id != -1 && id < tpList.size() )
     {
       // Add current taskpoint again to the list.
-      slotAddTaskpoint( tpList.at(id) );
+      slotAddTaskpoint( &tpList.at(id) );
     }
 }
 
@@ -632,7 +621,7 @@ void TaskEditor::slotRemoveTaskpoint()
   int id = taskList->indexOfTopLevelItem( taskList->currentItem() );
 
   delete taskList->takeTopLevelItem( taskList->currentIndex().row() );
-  delete tpList.takeAt( id );
+  tpList.removeAt( id );
 
   // Remember last position.
   if( id >= tpList.size() )
@@ -659,31 +648,31 @@ void TaskEditor::slotInvertTaskpoints()
   // invert list order
   for ( int i = tpList.count() - 2; i >= 0; i-- )
     {
-      TaskPoint* tp = tpList.at(i);
+      TaskPoint tp = tpList.at(i);
       tpList.removeAt(i);
       tpList.append( tp );
     }
 
   // If start and end point have the same coordinates, the taskpoint figure
   // schemes should be switched also.
-  WGSPoint* start = tpList.first()->getWGSPositionPtr();
-  WGSPoint* end   = tpList.last()->getWGSPositionPtr();
+  WGSPoint* start = tpList.first().getWGSPositionPtr();
+  WGSPoint* end   = tpList.last().getWGSPositionPtr();
 
   if( *start == *end )
     {
-      TaskPoint* tps = tpList.first();
-      TaskPoint* tpe = tpList.last();
+      TaskPoint& tps = tpList.first();
+      TaskPoint& tpe = tpList.last();
 
       enum GeneralConfig::ActiveTaskFigureScheme ss =
-          tps->getActiveTaskPointFigureScheme();
+          tps.getActiveTaskPointFigureScheme();
 
       enum GeneralConfig::ActiveTaskFigureScheme es =
-          tpe->getActiveTaskPointFigureScheme();
+          tpe.getActiveTaskPointFigureScheme();
 
       if( ss != es )
         {
-          tps->setActiveTaskPointFigureScheme( es );
-          tpe->setActiveTaskPointFigureScheme( ss );
+          tps.setActiveTaskPointFigureScheme( es );
+          tpe.setActiveTaskPointFigureScheme( ss );
         }
     }
 
@@ -703,8 +692,9 @@ void TaskEditor::slotEditTaskPoint ()
 
   m_lastEditedTP = id;
 
-  TaskPoint* modPoint = tpList.at(id);
-  TaskPointEditor *tpe = new TaskPointEditor(this, modPoint );
+  TaskPoint& modPoint = tpList[id];
+
+  TaskPointEditor *tpe = new TaskPointEditor( this, &modPoint );
 
   connect( tpe, SIGNAL(taskPointEdited(TaskPoint*)),
            this, SLOT(slotTaskPointEdited(TaskPoint*)));
@@ -760,7 +750,7 @@ void TaskEditor::slotAccept()
   // in order.
   for( int i = 0; i < tpList.count() - 1; i++ )
     {
-      if( tpList.at(i)->getWGSPositionRef() == tpList.at(i+1)->getWGSPositionRef() )
+      if( tpList[i].getWGSPositionRef() == tpList[i+1].getWGSPositionRef() )
         {
           QMessageBox mb( QMessageBox::Critical,
                           tr("Double points in order"),
@@ -982,10 +972,9 @@ void TaskEditor::enableCommandButtons()
 
 void TaskEditor::swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 )
 {
-  qDebug() << "TaskEditor::swapTaskPointSchemas";
-
-  qDebug() << "tp1=" << tp1->getName() << tp1->getActiveTaskPointFigureScheme();
-  qDebug() << "tp2=" << tp2->getName() << tp2->getActiveTaskPointFigureScheme();
+  // qDebug() << "TaskEditor::swapTaskPointSchemas";
+  // qDebug() << "tp1=" << tp1->getName() << tp1->getActiveTaskPointFigureScheme();
+  // qDebug() << "tp2=" << tp2->getName() << tp2->getActiveTaskPointFigureScheme();
 
   Distance d1, d2;
 
@@ -1040,7 +1029,7 @@ void TaskEditor::swapTaskPointSchemas( TaskPoint* tp1, TaskPoint* tp2 )
   tp2->setUserEditFlag( e1 );
 }
 
-void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
+void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint>& tpList,
                                             const bool setDefaultFigure )
 {
   // As first set the right task point type
@@ -1048,22 +1037,22 @@ void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
     {
       if( i == 0 )
         {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::Start);
+          tpList[i].setTaskPointType(TaskPointTypes::Start);
         }
       else if( tpList.size() >= 2 && i == tpList.size() - 1 )
         {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::Finish);
+          tpList[i].setTaskPointType(TaskPointTypes::Finish);
         }
       else
         {
-          tpList.at(i)->setTaskPointType(TaskPointTypes::Turn);
+          tpList[i].setTaskPointType(TaskPointTypes::Turn);
         }
 
       // Set task point figure schema to default, if the user has not edited the
       // task point.
-      if( setDefaultFigure == true || tpList.at(i)->getUserEditFlag() == false )
+      if( setDefaultFigure == true || tpList.at(i).getUserEditFlag() == false )
         {
-          tpList.at(i)->setConfigurationDefaults();
+          tpList[i].setConfigurationDefaults();
         }
     }
 }
@@ -1115,11 +1104,10 @@ void TaskEditor::slotWpEdited( Waypoint &editedWp )
       return;
     }
 
-  // Take old point from the list
-  TaskPoint* tp = tpList.takeAt( idx );
-  delete tp;
+  // remove old task point from the list
+  tpList.removeAt( idx );
 
-  tp = new TaskPoint( editedWp );
+  TaskPoint tp( editedWp );
   tpList.insert( idx, tp );
 
   // Remember last position.

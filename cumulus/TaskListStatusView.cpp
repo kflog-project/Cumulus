@@ -284,12 +284,12 @@ void TaskListStatusView::slot_updateTask()
       list->setItemDelegate( rowDelegate );
     }
 
-  QList<TaskPoint *> tpList = m_task->getTpList();
+  QList<TaskPoint>& tpList = m_task->getTpList();
 
   for( int i = 0; i < tpList.size() - 1; i++ )
     {
-      TaskPoint* tp1 = tpList.at( i );
-      TaskPoint* tp2 = tpList.at( i + 1 );
+      TaskPoint& tp1 = tpList[i];
+      TaskPoint& tp2 = tpList[i + 1];
 
       QTreeWidgetItem* twi = new QTreeWidgetItem( list );
 
@@ -305,15 +305,15 @@ void TaskListStatusView::slot_updateTask()
 
       twi->setTextAlignment( 0, Qt::AlignCenter );
 
-      twi->setText( 1, tp1->getWPName() + "-" + tp2->getWPName() );
+      twi->setText( 1, tp1.getWPName() + "-" + tp2.getWPName() );
 
       // Get the distance to the prevous tp.
-      Distance dist = tp2->getDistance2forerunner();
+      Distance dist = tp2.getDistance2forerunner();
       twi->setText( 2, Distance::getText( dist.getMeters(), true ) );
 
       // calculate the leg time, if possible
-      QDateTime t1 = tp1->getPassTime();
-      QDateTime t2 = tp2->getPassTime();
+      QDateTime t1 = tp1.getPassTime();
+      QDateTime t2 = tp2.getPassTime();
 
       if( t1.isValid() && t2.isValid() )
         {

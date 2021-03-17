@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2018 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -72,7 +72,7 @@ public:
    * @param setDefaultFigure Assign the default figure to the task point
    *                         if set to true.
    */
-  static void setTaskPointFigureSchemas( QList<TaskPoint *>& tpList,
+  static void setTaskPointFigureSchemas( QList<TaskPoint>& tpList,
                                          const bool setDefaultFigure );
 
 signals:
@@ -193,7 +193,7 @@ signals:
   QString editedTaskName;
 
   /** Task point list of flight task */
-  QList<TaskPoint *> tpList;
+  QList<TaskPoint> tpList;
 
   /** Flight task to be edited */
   FlightTask* task2Edit;

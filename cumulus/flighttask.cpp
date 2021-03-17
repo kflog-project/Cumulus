@@ -31,7 +31,25 @@
 extern Calculator *calculator;
 extern MapMatrix  *_globalMapMatrix;
 
-FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
+/**
+  * Creates an empty task.
+  */
+FlightTask:: FlightTask() :
+  BaseMapElement("FlightTask", BaseMapElement::Task ),
+  faiRules(false),
+  windDirection(0),
+  windSpeed(0),
+  wtCalculation(false),
+  flightType(FlightTask::NotSet),
+  distance(0.0),
+  duration_total(0),
+  _planningType(RouteBased),
+  _taskName(QObject::tr("unknown"))
+{
+  cruisingSpeed.setMps( 0.0 );
+}
+
+FlightTask::FlightTask( QList<TaskPoint>& tpListIn,
                         bool faiRules,
                         QString taskName,
                         Speed tas ) :
@@ -48,20 +66,13 @@ FlightTask::FlightTask( QList<TaskPoint *> *tpListIn,
   _planningType(RouteBased),
   _taskName(taskName)
 {
-  // Check, if a valid object has been passed
-  if( tpList == static_cast<QList<TaskPoint *> *> (0) )
-    {
-      // no, so let us create a new one
-      tpList = new QList<TaskPoint *>;
-    }
-
   if( _taskName.isNull() )
     {
       _taskName = QObject::tr("unknown");
     }
 
   // only do this if tpList is not empty!
-  if( tpList->count() != 0 )
+  if( tpList.count() > 0 )
     {
       updateTask();
     }
@@ -80,10 +91,7 @@ FlightTask::FlightTask (const FlightTask& inst) :
   windDirection = inst.windDirection;
   windSpeed = inst.windSpeed;
   wtCalculation = inst.wtCalculation;
-
-  // create a deep copy of the task point list
-  tpList = copyTpList( inst.tpList );
-
+  tpList = inst.tpList;
   flightType = inst.flightType;
   distance = inst.distance;
   duration_total = inst.duration_total;
@@ -97,12 +105,6 @@ FlightTask::FlightTask (const FlightTask& inst) :
 FlightTask::~FlightTask()
 {
   // qDebug("FlightTask::~FlightTask(): name=%s, %X", _taskName.toLatin1().data(), this );
-  if( tpList != 0 )
-    {
-      qDeleteAll( *tpList );
-      delete tpList;
-      tpList = 0;
-    }
 }
 
 /**
@@ -112,27 +114,28 @@ void FlightTask::determineTaskType()
 {
   distance = 0.0;
 
-  if( tpList->size() > 0 )
+  if( tpList.size() > 0 )
     {
-      for( int loop = 0; loop < tpList->size(); loop++)
+      for( int loop = 0; loop < tpList.size(); loop++)
         {
-          // qDebug("distance: %f", tpList->at(loop)->distance);
-	  distance += tpList->at(loop)->distance;
+          // qDebug("distance: %f", tpList.at(loop)->distance);
+	  distance += tpList.at(loop).distance;
         }
       // qDebug("Total Distance: %f", distance_total);
     }
 
-  if( tpList->size() < 2 )
+  if( tpList.size() < 2 )
     {
       flightType = FlightTask::NotSet;
       return;
     }
 
-  if( MapCalc::dist(tpList->at(0)->getWGSPositionPtr(), tpList->at(tpList->count()-1)->getWGSPositionPtr()) < 1.0 )
+  if( MapCalc::dist( tpList[0].getWGSPositionPtr(),
+                     tpList[tpList.count()-1].getWGSPositionPtr()) < 1.0 )
     {
       // Distance between start and finish point is lower as one km. We
       // check the FAI rules
-      switch( tpList->count() )
+      switch( tpList.count() )
         {
         case 3:
           // Zielrückkehr
@@ -141,8 +144,8 @@ void FlightTask::determineTaskType()
 
         case 4:
           // FAI Dreieck
-          if(isFAI( distance, tpList->at(1)->distance,
-                    tpList->at(2)->distance, tpList->at(3)->distance))
+          if(isFAI( distance, tpList.at(1).distance,
+                    tpList.at(2).distance, tpList.at(3).distance))
             flightType = FlightTask::FAI;
           else
             // Dreieck
@@ -151,11 +154,11 @@ void FlightTask::determineTaskType()
 
         case 5:
           // Check the DMSt Viereck rules
-          if( isDMStViereck( tpList->at(0)->getWGSPositionPtr(),
-                             tpList->at (1)->getWGSPositionPtr (),
-                             tpList->at (2)->getWGSPositionPtr (),
-                             tpList->at (3)->getWGSPositionPtr (),
-                             tpList->at (4)->getWGSPositionPtr ()))
+          if( isDMStViereck( tpList[0].getWGSPositionPtr(),
+                             tpList[1].getWGSPositionPtr (),
+                             tpList[2].getWGSPositionPtr (),
+                             tpList[3].getWGSPositionPtr (),
+                             tpList[4].getWGSPositionPtr ()) )
             {
               flightType = FlightTask::DMStViereck;
             }
@@ -175,7 +178,7 @@ void FlightTask::determineTaskType()
     }
   else
     {
-      if( tpList->count() >= 2 )
+      if( tpList.count() >= 2 )
         // Zielstrecke
         flightType = FlightTask::ZielS;
     }
@@ -188,7 +191,7 @@ void FlightTask::determineTaskType()
 double FlightTask::calculateSectorAngles( int loop )
 {
   // get configured sector angle
-  const double sectorAngle = tpList->at(loop)->getTaskSectorAngle() * M_PI/180.;
+  const double sectorAngle = tpList.at(loop).getTaskSectorAngle() * M_PI/180.;
 
   double bisectorAngle = 0.0;
   double minAngle = 0.0;
@@ -201,51 +204,51 @@ double FlightTask::calculateSectorAngles( int loop )
   // In some cases during planning, this method is called with wrong
   // loop-values. Therefore we must check the id before calculating
   // the direction
-  int taskPointType = tpList->at(loop)->getTaskPointType();
+  int taskPointType = tpList.at(loop).getTaskPointType();
 
   switch( taskPointType )
     {
     case TaskPointTypes::Start:
 
 #ifdef CUMULUS_DEBUG
-      part = "WP-Begin (" + tpList->at(loop)->name + "-" + tpList->at(loop+1)->name + ")";
+      part = "WP-Begin (" + tpList.at(loop)->name + "-" + tpList.at(loop+1)->name + ")";
 #endif
 
       // directions to the next point
-      if(tpList->count() >= loop + 1)
+      if(tpList.count() >= loop + 1)
         {
-          bisectorAngle = MapCalc::getBearing(tpList->at(loop)->getWGSPosition(),
-                                              tpList->at(loop+1)->getWGSPosition());
+          bisectorAngle = MapCalc::getBearing(tpList.at(loop).getWGSPosition(),
+                                              tpList.at(loop+1).getWGSPosition());
         }
       break;
 
     case TaskPointTypes::Turn:
 
 #ifdef CUMULUS_DEBUG
-      part = "WP-RouteP ( " + tpList->at(loop-1)->name + "-" +
-             tpList->at(loop)->name + "-" + tpList->at(loop+1)->name + ")";
+      part = "WP-RouteP ( " + tpList.at(loop-1).name + "-" +
+             tpList.at(loop).name + "-" + tpList.at(loop+1).name + ")";
 #endif
 
-      if( loop >= 1 && tpList->count() >= loop + 1 )
+      if( loop >= 1 && tpList.count() >= loop + 1 )
         {
           // vector pointing to the outside of the two points
-          bisectorAngle = MapCalc::outsideVector(tpList->at(loop)->getWGSPosition(),
-                                                 tpList->at(loop-1)->getWGSPosition(),
-                                                 tpList->at(loop+1)->getWGSPosition());
+          bisectorAngle = MapCalc::outsideVector(tpList.at(loop).getWGSPosition(),
+                                                 tpList.at(loop-1).getWGSPosition(),
+                                                 tpList.at(loop+1).getWGSPosition());
         }
       break;
 
     case TaskPointTypes::Finish:
 
 #ifdef CUMULUS_DEBUG
-      part = "WP-End (" + tpList->at(loop)->name +"-" + tpList->at(loop-1)->name + ")";
+      part = "WP-End (" + tpList.at(loop).name +"-" + tpList.at(loop-1).name + ")";
 #endif
 
-      if(loop >= 1 && loop < tpList->count())
+      if(loop >= 1 && loop < tpList.count())
         {
           // direction to the previous point:
-          bisectorAngle = MapCalc::getBearing( tpList->at(loop)->getWGSPosition(),
-                                               tpList->at(loop-1)->getWGSPosition() );
+          bisectorAngle = MapCalc::getBearing( tpList.at(loop).getWGSPosition(),
+                                               tpList.at(loop-1).getWGSPosition() );
         }
       break;
 
@@ -255,27 +258,27 @@ double FlightTask::calculateSectorAngles( int loop )
 
   // set bisector angle of task point
   bisectorAngle = MapCalc::normalize( bisectorAngle );
-  tpList->at(loop)->angle = bisectorAngle;
+  tpList[loop].angle = bisectorAngle;
 
   // Update line settings, if required.
-  if( tpList->at(loop)->getActiveTaskPointFigureScheme() == GeneralConfig::Line )
+  if( tpList[loop].getActiveTaskPointFigureScheme() == GeneralConfig::Line )
     {
       // set bisector angle for the task line as course direction
       if( taskPointType != TaskPointTypes::Finish )
         {
-          tpList->at(loop)->getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) );
+          tpList[loop].getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) );
         }
       else
         {
           // direction to the previous point must be inverted in case of end point.
-          tpList->at(loop)->getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) + 180 );
+          tpList[loop].getTaskLine().setDirection( static_cast<int>(rint(bisectorAngle * 180.0/M_PI)) + 180 );
         }
 
       // set the center point of the task line
-      tpList->at(loop)->getTaskLine().setLineCenter( tpList->at(loop)->getWGSPosition() );
+      tpList[loop].getTaskLine().setLineCenter( tpList[loop].getWGSPosition() );
 
       // calculate all line elements after a new setting
-      tpList->at(loop)->getTaskLine().calculateElements();
+      tpList[loop].getTaskLine().calculateElements();
     }
 
   // invert bisector angle
@@ -287,14 +290,14 @@ double FlightTask::calculateSectorAngles( int loop )
   maxAngle = MapCalc::normalize( invertAngle + (sectorAngle/2.) );
 
   // save min and max bisector angles
-  tpList->at(loop)->minAngle = minAngle;
-  tpList->at(loop)->maxAngle = maxAngle;
+  tpList[loop].minAngle = minAngle;
+  tpList[loop].maxAngle = maxAngle;
 
 
 #ifdef CUMULUS_DEBUG
   qDebug( "Loop=%d, Part=%s, Name=%s, Scale=%f, BisectorAngle=%3.1f, minAngle=%3.1f, maxAngle=%3.1f",
-          loop, part.toLatin1().data(), tpList->at(loop)->name.toLatin1().data(),
-          glMapMatrix->getScale(),
+          loop, part.toLatin1().data(), tpList[loop].name.toLatin1().data(),
+          glMapMatrix.getScale(),
           bisectorAngle*180/M_PI, minAngle*180/M_PI, maxAngle*180/M_PI );
 #endif
 
@@ -308,23 +311,23 @@ double FlightTask::calculateSectorAngles( int loop )
  */
 void FlightTask::setTaskPointData()
 {
-  int cnt = tpList->size();
+  int cnt = tpList.size();
 
   if (cnt == 0)
     {
       return;
     }
 
-  tpList->at(0)->setTaskPointType(TaskPointTypes::Unknown);
+  tpList[0].setTaskPointType(TaskPointTypes::Unknown);
 
   //  First task point is always set to these values
-  tpList->at(0)->distTime = 0;
-  tpList->at(0)->bearing = -1.;
-  tpList->at(0)->distance = 0.0;
-  tpList->at(0)->wca = 0;
-  tpList->at(0)->trueHeading = -1;
-  tpList->at(0)->groundSpeed = 0.0;
-  tpList->at(0)->wtResult = false;
+  tpList[0].distTime = 0;
+  tpList[0].bearing = -1.;
+  tpList[0].distance = 0.0;
+  tpList[0].wca = 0;
+  tpList[0].trueHeading = -1;
+  tpList[0].groundSpeed = 0.0;
+  tpList[0].wtResult = false;
 
   // Reset total duration
   duration_total = 0;
@@ -346,38 +349,38 @@ void FlightTask::setTaskPointData()
   for( int n = 1; n < cnt; n++ )
     {
       // Set default parameters for every item
-      tpList->at(n)->bearing = -1.;
-      tpList->at(n)->distance = 0.;
-      tpList->at(n)->wca = 0;
-      tpList->at(n)->trueHeading = -1.;
-      tpList->at(n)->groundSpeed = 0.0;
-      tpList->at(n)->wtResult = false;
+      tpList[n].bearing = -1.;
+      tpList[n].distance = 0.;
+      tpList[n].wca = 0;
+      tpList[n].trueHeading = -1.;
+      tpList[n].groundSpeed = 0.0;
+      tpList[n].wtResult = false;
 
-      if( tpList->at(n-1)->getWGSPosition() != tpList->at(n)->getWGSPosition() )
+      if( tpList[n-1].getWGSPosition() != tpList[n].getWGSPosition() )
         {
           // Points are not identical, do calculate navigation parameters.
           // calculate bearing
-          tpList->at(n)->bearing = MapCalc::getBearing( tpList->at(n-1)->getWGSPosition(),
-                                                        tpList->at(n)->getWGSPosition() );
+          tpList[n].bearing = MapCalc::getBearing( tpList[n-1].getWGSPosition(),
+                                                   tpList[n].getWGSPosition() );
 
           // calculate distance
-          tpList->at(n)->distance =
-              MapCalc::dist(tpList->at(n-1)->getWGSPositionPtr(), tpList->at(n)->getWGSPositionPtr());
+          tpList[n].distance = MapCalc::dist(tpList[n-1].getWGSPositionPtr(),
+                                             tpList[n].getWGSPositionPtr());
 
           // calculate wind parameters, if wind speed is defined. Ground
           // speed unit is meter per second.
           if( wtCalculation )
               {
-                tpList->at(n)->wtResult =
-                    MapCalc::windTriangle( tpList->at(n)->bearing * 180/M_PI,
+                tpList[n].wtResult =
+                    MapCalc::windTriangle( tpList[n].bearing * 180/M_PI,
 				           cruisingSpeed.getMps(),
 				 	   windDirection,
 					   windSpeed.getMps(),
-					   tpList->at(n)->groundSpeed,
-					   tpList->at(n)->wca,
-					   tpList->at(n)->trueHeading );
+					   tpList[n].groundSpeed,
+					   tpList[n].wca,
+					   tpList[n].trueHeading );
 
-                if( tpList->at(n)->wtResult == false )
+                if( tpList[n].wtResult == false )
                   {
                     // No wind triangle calculation possible. In such a case
                     // we do reset the global wt calculation flag too.
@@ -386,36 +389,36 @@ void FlightTask::setTaskPointData()
               }
         }
 
-      tpList->at(n)->setTaskPointType(TaskPointTypes::Unknown);
+      tpList[n].setTaskPointType(TaskPointTypes::Unknown);
 
       double cs = cruisingSpeed.getMps();
 
       // Calculate all without wind because wind can be too strong at
       // one of the next legs.
-      if( cs > 0. && tpList->at(n)->distance > 0.)
+      if( cs > 0. && tpList[n].distance > 0.)
         {
           // t=s/v distance unit is m, duration time unit is seconds and
           // TAS unit is meter per second.
-          tpList->at(n)->distTime =
-            int( rint(tpList->at(n)->distance * 1000 / cs) );
+          tpList[n].distTime =
+            int( rint(tpList[n].distance * 1000 / cs) );
 
           // summarize total duration as seconds
-          duration_total += tpList->at(n)->distTime;
+          duration_total += tpList[n].distTime;
         }
       else
         {
           // reset duration to zero
-          tpList->at(n)->distTime = 0;
+          tpList[n].distTime = 0;
         }
 
 #ifdef CUMULUS_DEBUG
       qDebug("Without Wind: WP=%s, TAS=%f, dist=%f, duration=%d, tc=%f, th=%f",
-             tpList->at(n)->name.toLatin1().data(),
+             tpList[n].name.toLatin1().data(),
              cruisingSpeed.getKph(),
-             tpList->at(n)->distance,
-             tpList->at(n)->distTime,
-             tpList->at(n)->bearing,
-             tpList->at(n)->trueHeading);
+             tpList[n].distance,
+             tpList[n].distTime,
+             tpList[n].bearing,
+             tpList[n].trueHeading);
 #endif
 
     }
@@ -429,34 +432,34 @@ void FlightTask::setTaskPointData()
 
       for( int n = 1; n < cnt; n++ )
         {
-          double gs = tpList->at(n)->groundSpeed;
+          double gs = tpList[n].groundSpeed;
 
           // Calculate all without wind because wind can be too strong at
           // one of the next legs.
-          if( gs > 0. && tpList->at(n)->distance > 0.)
+          if( gs > 0. && tpList[n].distance > 0.)
             {
               // t=s/v distance unit is m, duration time unit is seconds and
               // ground speed unit is meter per second.
-              tpList->at(n)->distTime =
-                int( rint(tpList->at(n)->distance * 1000 / gs) );
+              tpList[n].distTime =
+                int( rint(tpList[n].distance * 1000 / gs) );
 
               // summarize total duration as seconds
-              duration_total += tpList->at(n)->distTime;
+              duration_total += tpList[n].distTime;
             }
           else
             {
               // reset duration to zero
-              tpList->at(n)->distTime = 0;
+              tpList[n].distTime = 0;
             }
 
 #ifdef CUMULUS_DEBUG
           qDebug("With Wind: WP=%s, GS=%f, Wca=%f, dist=%f, duration=%d, th=%f",
-                 tpList->at(n)->name.toLatin1().data(),
+                 tpList[n].name.toLatin1().data(),
                  gs*3.6,
-                 tpList->at(n)->wca,
-                 tpList->at(n)->distance,
-                 tpList->at(n)->distTime,
-                 tpList->at(n)->trueHeading);
+                 tpList[n].wca,
+                 tpList[n].distance,
+                 tpList[n].distTime,
+                 tpList[n].trueHeading);
 #endif
 
         }
@@ -468,12 +471,12 @@ void FlightTask::setTaskPointData()
       return;
     }
 
-  tpList->at(0)->setTaskPointType(TaskPointTypes::Start);
-  tpList->at(cnt - 1)->setTaskPointType(TaskPointTypes::Finish);
+  tpList[0].setTaskPointType(TaskPointTypes::Start);
+  tpList[cnt - 1].setTaskPointType(TaskPointTypes::Finish);
 
   for(int n = 1; n + 1 < cnt; n++)
     {
-      tpList->at(n)->setTaskPointType(TaskPointTypes::Turn);
+      tpList[n].setTaskPointType(TaskPointTypes::Turn);
     }
 }
 
@@ -556,7 +559,7 @@ bool FlightTask::isDMStViereck( QPoint* p1,
  * Draws course lines and turn point sectors/circles according to the
  * user configuration.
  */
-void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
+void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*>& drawnTp )
 {
   // qDebug() << __PRETTY_FUNCTION__;
 
@@ -564,16 +567,16 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
   GeneralConfig* conf = GeneralConfig::instance();
 
   // Load the currently selected task point.
-  const TaskPoint* selectedTp = 0;
+  TaskPoint selectedTp;
 
   if( calculator->getTargetWp() )
     {
       int tpIdx = calculator->getTargetWp()->taskPointIndex;
 
-      if( tpIdx >= 0 && tpIdx < tpList->count() )
+      if( tpIdx >= 0 && tpIdx < tpList.count() )
         {
           // Get selected taskpoint from the list.
-          selectedTp = tpList->at(tpIdx);
+          selectedTp = tpList[tpIdx];
         }
      }
 
@@ -598,12 +601,12 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
   painter->save();
   painter->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
 
-  for( int loop=0; loop < tpList->count(); loop++ )
+  for( int loop=0; loop < tpList.count(); loop++ )
     {
       // Load the sector data
-      const int SectorAngle = tpList->at(loop)->getTaskSectorAngle();
-      const double Sor      = tpList->at(loop)->getTaskSectorOuterRadius().getMeters();
-      const double Sir      = tpList->at(loop)->getTaskSectorInnerRadius().getMeters();
+      const int SectorAngle = tpList[loop].getTaskSectorAngle();
+      const double Sor      = tpList[loop].getTaskSectorOuterRadius().getMeters();
+      const double Sir      = tpList[loop].getTaskSectorInnerRadius().getMeters();
 
       int sorScaled = 0; // scaled sector outer radius
       int sirScaled = 0; // scaled sector inner radius
@@ -611,14 +614,14 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
       int llScaled  = 0;  // scaled line length
 
       // Load the circle data
-      const double circleRadius = tpList->at(loop)->getTaskCircleRadius().getMeters();
+      const double circleRadius = tpList[loop].getTaskCircleRadius().getMeters();
 
       // Load the line data
-      const double lineLength = tpList->at(loop)->getTaskLineLength().getMeters();
+      const double lineLength = tpList[loop].getTaskLineLength().getMeters();
 
       // Determine what task figure has to be drawn.
       enum GeneralConfig::ActiveTaskFigureScheme figure =
-          tpList->at(loop)->getActiveTaskPointFigureScheme();
+          tpList[loop].getActiveTaskPointFigureScheme();
 
       QRect viewport;
 
@@ -652,11 +655,11 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
       // Append all waypoints to the label list on user request
       if( drawTpLabels )
         {
-          drawnTp.append( tpList->at(loop) );
+          drawnTp.append( &tpList[loop] );
         }
 
       // map projected point to map display
-      QPoint mPoint(glMapMatrix->map(tpList->at(loop)->getPosition()));
+      QPoint mPoint( glMapMatrix->map(tpList[loop].getPosition()) );
 
       bool mPointIsContained = viewport.contains(mPoint);
 
@@ -675,15 +678,15 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
             {
               painter->setPen(QPen(courseLineColor, courseLineWidth));
               // Draws the course line
-              painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->getPosition()),
-                                 glMapMatrix->map(tpList->at(loop)->getPosition()) );
+              painter->drawLine( glMapMatrix->map(tpList.at(loop - 1).getPosition()),
+                                 glMapMatrix->map(tpList.at(loop).getPosition()) );
             }
         }
 
       // convert biangle (90...180) from radian to degrees
-      int biangle = (int) rint( ((tpList->at(loop)->angle) / M_PI ) * 180.0 );
+      int biangle = (int) rint( ((tpList.at(loop).angle) / M_PI ) * 180.0 );
 
-      switch( tpList->at(loop)->getTaskPointType() )
+      switch( tpList.at(loop).getTaskPointType() )
       {
       case TaskPointTypes::Turn:
 
@@ -699,7 +702,7 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
             switch (figure)
             {
                 case GeneralConfig::Line:
-                    tpList->at(loop)->getTaskLine().drawLine(painter);
+                    tpList[loop].getTaskLine().drawLine(painter);
                     break;
                 case GeneralConfig::Circle:
                     // Draw circle around given position
@@ -734,8 +737,8 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
         if( loop )
           {
             painter->setPen(QPen(courseLineColor, courseLineWidth));
-            painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->getPosition()),
-                               glMapMatrix->map(tpList->at(loop)->getPosition()) );
+            painter->drawLine( glMapMatrix->map(tpList.at(loop - 1).getPosition()),
+                               glMapMatrix->map(tpList.at(loop).getPosition()) );
           }
 
         break;
@@ -744,11 +747,11 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
         if( mPointIsContained )
           {
-            if( selectedTp != 0 && selectedTp->getFlightTaskListIndex() != -1 &&
+            if( selectedTp.getFlightTaskListIndex() != -1 &&
                 // Task start point is not selected
-                selectedTp->getFlightTaskListIndex() != tpList->at(0)->getFlightTaskListIndex() &&
+                selectedTp.getFlightTaskListIndex() != tpList[0].getFlightTaskListIndex() &&
                 // Check, if task start and finish point are identically
-                tpList->at(0)->getWGSPosition() == tpList->at( tpList->size() - 1 )->getWGSPosition() )
+                tpList[0].getWGSPosition() == tpList.at( tpList.size() - 1 ).getWGSPosition() )
               {
                 // The selected TP is not the point and start and finish point are
                 // identically. In this case the start task figure
@@ -766,9 +769,9 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
             switch ( figure )
             {
             case GeneralConfig::Line:
-                tpList->at(loop)->getTaskLine().drawLine(painter);
+                tpList[loop].getTaskLine().drawLine(painter);
                 // draw boxes for debugging purposes
-                // tpList->at(loop)->getTaskLine().drawRegionBoxes( painter );
+                // tpList.at(loop).getTaskLine().drawRegionBoxes( painter );
                 break;
             case GeneralConfig::Circle:
                 drawCircle( painter, mPoint, crScaled, color, drawShape );
@@ -803,11 +806,11 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
 
       case TaskPointTypes::Finish:
 
-        if( selectedTp != 0 && selectedTp->getFlightTaskListIndex() != -1 &&
+        if( selectedTp.getFlightTaskListIndex() != -1 &&
             // Task start point is selected
-            selectedTp->getFlightTaskListIndex() == tpList->at(0)->getFlightTaskListIndex() &&
+            selectedTp.getFlightTaskListIndex() == tpList[0].getFlightTaskListIndex() &&
             // Check, if task start and finish point are identically
-            tpList->at(0)->getWGSPosition() == tpList->at( tpList->size() - 1 )->getWGSPosition() )
+            tpList[0].getWGSPosition() == tpList.at( tpList.size() - 1 ).getWGSPosition() )
           {
             // The selected TP is the start point
             // and start and finish point are identically.
@@ -828,9 +831,9 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
             switch ( figure )
             {
                 case GeneralConfig::Line:
-                    tpList->at(loop)->getTaskLine().drawLine(painter);
+                    tpList[loop].getTaskLine().drawLine(painter);
                     // draw boxes for debugging purposes
-                    // tpList->at(loop)->getTaskLine().drawRegionBoxes( painter );
+                    // tpList.at(loop).getTaskLine().drawRegionBoxes( painter );
                     break;
                 case GeneralConfig::Circle:
                     drawCircle( painter, mPoint, crScaled, color, drawShape );
@@ -862,8 +865,8 @@ void FlightTask::drawTask( QPainter* painter, QList<TaskPoint*> &drawnTp )
           }
 
         painter->setPen(QPen(courseLineColor, courseLineWidth));
-        painter->drawLine( glMapMatrix->map(tpList->at(loop - 1)->getPosition()),
-                           glMapMatrix->map(tpList->at(loop)->getPosition()) );
+        painter->drawLine( glMapMatrix->map(tpList.at(loop - 1).getPosition()),
+                           glMapMatrix->map(tpList.at(loop).getPosition()) );
         break;
 
       default:
@@ -1143,7 +1146,7 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
                                      Altitude &arrivalAlt,
                                      Speed &bestSpeed )
 {
-  int wpCount = tpList->count();
+  int wpCount = tpList.count();
 
   arrivalAlt.setInvalid();
   bestSpeed.setInvalid();
@@ -1168,16 +1171,16 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   // calculate bearing from current position to the next task point from
   // task in radian
   int bearing = int ( rint( MapCalc::getBearingWgs( calculator->getlastPosition(),
-                                                    tpList->at( taskPointIndex )->getWGSPosition() ) ));
+                                                    tpList.at( taskPointIndex ).getWGSPosition() ) ));
 
   // calculate distance from current position to the next task point from
   // task in km
   QPoint p1 = calculator->getlastPosition();
-  QPoint p2 = tpList->at( taskPointIndex )->getWGSPosition();
+  QPoint p2 = tpList.at( taskPointIndex ).getWGSPosition();
   double distance = MapCalc::dist( &p1, &p2 );
 
   bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
-                                    tpList->at( taskPointIndex )->getElevation(),
+                                    tpList.at( taskPointIndex ).getElevation(),
                                     arrAlt, bestSpeed );
 
   if( ! res )
@@ -1187,10 +1190,10 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
 #ifdef CUMULUS_DEBUG
   qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%.1fm, ArrAlt=%.1f",
-          tpList->at( taskPointIndex )->name.toLatin1().data(),
+          tpList.at( taskPointIndex ).name.toLatin1().data(),
           bearing*180/M_PI,
           distance,
-          tpList->at( taskPointIndex )->elevation,
+          tpList.at( taskPointIndex ).elevation,
           arrAlt.getMeters() );
 #endif
 
@@ -1199,21 +1202,21 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
 
   for( int i=taskPointIndex; i+1 < wpCount; i++ )
     {
-      if( tpList->at(i)->getWGSPosition() == tpList->at(i+1)->getWGSPosition() )
+      if( tpList.at(i).getWGSPosition() == tpList.at(i+1).getWGSPosition() )
         {
           continue; // points are equal, we ignore them
         }
 
-      res = calculator->glidePath( (int) rint( tpList->at( i+1 )->bearing ),
-                                   Distance( tpList->at( i+1 )->distance * 1000.0),
-                                   tpList->at( i+1 )->getElevation(),
+      res = calculator->glidePath( (int) rint( tpList.at( i+1 ).bearing ),
+                                   Distance( tpList.at( i+1 ).distance * 1000.0),
+                                   tpList.at( i+1 ).getElevation(),
                                    arrAlt, speed );
 #ifdef CUMULUS_DEBUG
       qDebug( "WP=%s, Bearing=%.1f°, Dist=%.1fkm, Ele=%.1m, ArrAlt=%.1f",
-              tpList->at( i+1 )->name.toLatin1().data(),
-              tpList->at( i+1 )->bearing*180/M_PI,
-              tpList->at( i+1 )->distance,
-              tpList->at( i+1 )->elevation,
+              tpList.at( i+1 ).name.toLatin1().data(),
+              tpList.at( i+1 ).bearing*180/M_PI,
+              tpList.at( i+1 ).distance,
+              tpList.at( i+1 ).elevation,
               arrAlt.getMeters() );
 #endif
 
@@ -1332,18 +1335,8 @@ QString FlightTask::getWindString() const
 /**
  * Takes over a task point list. An old list is deleted.
  */
-void FlightTask::setTaskPointList(QList<TaskPoint*> *newtpList)
+void FlightTask::setTaskPointList( QList<TaskPoint>& newtpList )
 {
-  if( newtpList == 0 )
-    {
-      return; // ignore null object
-    }
-
-   // Remove old content of list
-  qDeleteAll(*tpList);
-  delete tpList;
-
-  // @AP: take over ownership about the new passed list
   tpList = newtpList;
   updateTask();
 }
@@ -1356,10 +1349,10 @@ void FlightTask::updateTask()
   setTaskPointData();
   determineTaskType();
 
-  for (int loop = 0; loop < tpList->count(); loop++)
+  for (int loop = 0; loop < tpList.count(); loop++)
     {
       // number point with index
-      tpList->at(loop)->setFlightTaskListIndex( loop );
+      tpList[loop].setFlightTaskListIndex( loop );
 
       // calculate turn point sector angles
       calculateSectorAngles(loop);
@@ -1371,58 +1364,20 @@ void FlightTask::updateTask()
  */
 void FlightTask::updateProjection()
 {
-  for(int loop = 0; loop < tpList->count(); loop++)
+  for(int loop = 0; loop < tpList.count(); loop++)
     {
       // calculate projection data
-      tpList->at(loop)->setPosition( _globalMapMatrix->wgsToMap(tpList->at(loop)->getWGSPosition()) );
+      tpList[loop].setPosition( _globalMapMatrix->wgsToMap(tpList[loop].getWGSPosition()) );
     }
 }
 
 /**
- * @AP: Add a new task point to the list. This takes over the ownership
- * of the passed object.
+ * Add a new task point to the list.
  */
-void FlightTask::addTaskPoint( TaskPoint *newTp )
+void FlightTask::addTaskPoint( TaskPoint& newTp )
 {
-  if( newTp == static_cast<TaskPoint *>(0) )
-    {
-      return; // ignore null object
-    }
-
-  tpList->append( newTp );
+  tpList.append( newTp );
   updateTask();
-}
-
-/**
- * Returns a deep copy of the task point list. The ownership of the list
- * is taken over by the caller.
- */
-QList<TaskPoint*> *FlightTask::getCopiedTpList()
-{
-  return copyTpList( tpList );
-}
-
-  /**
-   * Returns a deep copy of the input list. The ownership of the
-   * list is taken over by the caller.
-   */
-QList<TaskPoint*> *FlightTask::copyTpList(QList<TaskPoint*> *tpListIn)
-{
-  QList<TaskPoint *> *outList = new QList<TaskPoint *>;
-
-  if( tpListIn == 0 )
-    {
-      // returns an empty list on no input
-      return outList;
-    }
-
-  for(int loop = 0; loop < tpListIn->count(); loop++)
-    {
-      TaskPoint *tp = new TaskPoint( *tpListIn->at(loop) );
-      outList->append( tp );
-    }
-
-  return outList;
 }
 
 void FlightTask::setPlanningType(const int type)
@@ -1462,9 +1417,9 @@ void FlightTask::resetTimes()
   _taskStartTime = QDateTime();
   _taskEndTime = QDateTime();
 
-  for( int i=0; i < tpList->size(); i++ )
+  for( int i=0; i < tpList.size(); i++ )
     {
-      tpList->at( i )->resetPassTime();
+      tpList[i].resetPassTime();
     }
   }
 
@@ -1476,7 +1431,7 @@ Speed FlightTask::calAverageSpeed()
 {
   Speed speed;
 
-  if( tpList->size() == 0 || _taskStartTime.isNull() == true )
+  if( tpList.size() == 0 || _taskStartTime.isNull() == true )
     {
       // Speed is invalid
       return speed;
@@ -1485,17 +1440,17 @@ Speed FlightTask::calAverageSpeed()
   double flownDistance = 0.0;
   int i = 0;
 
-  for( i = 0; i < tpList->size(); i++ )
+  for( i = 0; i < tpList.size(); i++ )
     {
-      TaskPoint *tp = tpList->at(i);
+      TaskPoint& tp = tpList[i];
 
-      if( tp->getPassTime().isNull() )
+      if( tp.getPassTime().isNull() )
         {
           break;
         }
 
       // distance in km
-      flownDistance += tp->distance;
+      flownDistance += tp.distance;
     }
 
   if( i == 0 )
@@ -1511,7 +1466,7 @@ Speed FlightTask::calAverageSpeed()
       // last passed taskpoint, to calculate the average speed.
       // calculate distance in km.
       QPoint cPos = calculator->getlastPosition();
-      double lastdistance = MapCalc::dist( tpList->at(i-1)->getWGSPositionPtr(),
+      double lastdistance = MapCalc::dist( tpList[i-1].getWGSPositionPtr(),
                                            &cPos );
 
       // The task is unfinished. Calculate the result speed in m/s.
@@ -1544,10 +1499,10 @@ void FlightTask::setStartTime()
   resetTimes();
   _taskStartTime = QDateTime::currentDateTime();
 
-  if( tpList->size() > 0 )
+  if( tpList.size() > 0 )
     {
-      TaskPoint* tp = tpList->at(0);
-      tp->setPassTime();
+      TaskPoint& tp = tpList[0];
+      tp.setPassTime();
     }
 }
 
@@ -1556,9 +1511,9 @@ void FlightTask::setEndTime()
 {
   _taskEndTime = QDateTime::currentDateTime();
 
-  if( tpList->size() > 0 )
+  if( tpList.size() > 0 )
     {
-      TaskPoint* tp = tpList->at( tpList->size() - 1 );
-      tp->setPassTime();
+      TaskPoint& tp = tpList[ tpList.size() - 1 ];
+      tp.setPassTime();
     }
 }
