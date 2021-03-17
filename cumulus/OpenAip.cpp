@@ -145,9 +145,9 @@ bool OpenAip::getRootElement( QString fileName,
   if( xml.hasError() )
     {
       QString errorInfo = "XML-Error: " + xml.errorString() +
-                          " at line=" + xml.lineNumber() +
-                          " column=" + xml.columnNumber() +
-                          " offset=" + xml.characterOffset();
+                          " at line=" + QString::number(xml.lineNumber()) +
+                          " column=" + QString::number(xml.columnNumber()) +
+                          " offset=" + QString::number(xml.characterOffset());
 
       qWarning() << "OpenAip::getRootElement:" << errorInfo;
     }
@@ -307,9 +307,9 @@ bool OpenAip::readNavAids( QString fileName,
   if( xml.hasError() )
     {
       errorInfo = "XML-Error: " + xml.errorString() +
-                  " at line=" + xml.lineNumber() +
-                  " column=" + xml.columnNumber() +
-                  " offset=" + xml.characterOffset();
+                  " at line=" + QString::number(xml.lineNumber()) +
+                  " column=" + QString::number(xml.columnNumber()) +
+                  " offset=" + QString::number(xml.characterOffset());
 
       qWarning() << "OpenAip::readNavAids: XML-Error" << errorInfo;
       file.close();
@@ -757,9 +757,9 @@ bool OpenAip::readHotspots( QString fileName,
   if( xml.hasError() )
     {
       errorInfo = "XML-Error: " + xml.errorString() +
-                  " at line=" + xml.lineNumber() +
-                  " column=" + xml.columnNumber() +
-                  " offset=" + xml.characterOffset();
+                  " at line=" + QString::number(xml.lineNumber()) +
+                  " column=" + QString::number(xml.columnNumber()) +
+                  " offset=" + QString::number(xml.characterOffset());
 
       qWarning() << "OpenAip::readHotspots: XML-Error" << errorInfo;
       file.close();
@@ -1006,9 +1006,9 @@ bool OpenAip::readAirfields( QString fileName,
   if( xml.hasError() )
     {
       errorInfo = "XML-Error: " + xml.errorString() +
-                  " at line=" + xml.lineNumber() +
-                  " column=" + xml.columnNumber() +
-                  " offset=" + xml.characterOffset();
+                  " at line=" + QString::number(xml.lineNumber()) +
+                  " column=" + QString::number(xml.columnNumber()) +
+                  " offset=" + QString::number(xml.characterOffset());
 
       qWarning() << "OpenAip::readNavAid: XML-Error" << errorInfo;
       file.close();
@@ -1661,9 +1661,9 @@ bool OpenAip::readAirspaces( QString fileName,
   if( xml.hasError() )
     {
       errorInfo = "XML-Error: " + xml.errorString() +
-                  " at line=" + xml.lineNumber() +
-                  " column=" + xml.columnNumber() +
-                  " offset=" + xml.characterOffset();
+                  " at line=" + QString::number(xml.lineNumber()) +
+                  " column=" + QString::number(xml.columnNumber()) +
+                  " offset=" + QString::number(xml.characterOffset());
 
       qWarning() << method << "XML-Error" << errorInfo;
       file.close();
