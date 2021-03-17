@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2018 by Axel Pauli
+**                   2008-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,14 +21,13 @@
  *
  * \brief A widget for pre-flight task settings.
  *
- * \date 2002-2018
+ * \date 2002-2021
  *
- * \version 1.8
+ * \version 1.9
  *
  */
 
-#ifndef PRE_FLIGHT_TASK_PAGE_H
-#define PRE_FLIGHT_TASK_PAGE_H
+#pragma once
 
 #include <QLabel>
 #include <QList>
@@ -160,6 +159,11 @@ class PreFlightTaskPage : public QWidget
   void slotDeactivateTask();
 
   /**
+   * Called, to import a WeGilde task.
+   */
+  void slotImportTask();
+
+  /**
    * Called, if a item is clicked in the task list.
    */
   void slotItemClicked(QTreeWidgetItem * item, int column);
@@ -187,6 +191,7 @@ class PreFlightTaskPage : public QWidget
   QWidget *m_taskViewWidget;
 
   QPushButton* m_deactivateButton;
+  QPushButton* m_importButton;
   QPushButton* m_showButton;
   QPushButton* m_cmdNew;
   QPushButton* m_cmdEdit;
@@ -214,4 +219,3 @@ class PreFlightTaskPage : public QWidget
   QStringList m_taskNames;
 };
 
-#endif

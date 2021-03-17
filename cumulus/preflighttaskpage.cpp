@@ -42,6 +42,7 @@
 #include "TaskFileManager.h"
 #include "wgspoint.h"
 #include "rowdelegate.h"
+#include "XCSoar.h"
 
 #ifdef FLARM
 #include "preflightflarmpage.h"
@@ -239,6 +240,14 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_deactivateButton->setToolTip(tr("Deactivate the currently activated task"));
 #endif
   tlButtonLayout->addWidget( m_deactivateButton, 0, Qt::AlignLeft );
+  tlButtonLayout->addSpacing( 30 );
+
+  m_importButton = new QPushButton( tr("Import") );
+#ifndef ANDROID
+  m_importButton->setToolTip(tr("Import WeGlide task"));
+#endif
+  tlButtonLayout->addWidget( m_importButton );
+
   tlButtonLayout->addStretch( 5 );
 
   m_showButton = new QPushButton( tr("Show") );
@@ -284,6 +293,9 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
 
   connect( m_deactivateButton, SIGNAL(pressed()),
            this, SLOT( slotDeactivateTask() ) );
+
+  connect( m_importButton, SIGNAL(pressed()),
+           this, SLOT( slotImportTask() ) );
 
   connect( m_showButton, SIGNAL(pressed()),
            this, SLOT( slotShowTaskViewWidget() ) );
@@ -350,7 +362,6 @@ void PreFlightTaskPage::showEvent( QShowEvent *event )
     }
 
   enableButtons();
-
   QWidget::showEvent( event );
 }
 
@@ -632,7 +643,7 @@ void PreFlightTaskPage::slotNewTask()
 }
 
 /**
- * Taking over a new flight task from the editor
+ * Taking over a new flight task from the editor or importer
  */
 void PreFlightTaskPage::slotUpdateTaskList( FlightTask *newTask)
 {
@@ -959,5 +970,48 @@ void PreFlightTaskPage::slotHelp()
 void PreFlightTaskPage::slotDeactivateTask()
 {
   m_taskList->clearSelection();
-  enableButtons();
 }
+
+/**
+ * Called, to import a WeGilde task.
+ */
+void PreFlightTaskPage::slotImportTask()
+{
+  QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
+
+  QString filter;
+  filter.append(tr("TSK") + " (*.tsk *.TSK);;");
+
+  QString fName = QFileDialog::getOpenFileName( this,
+                                                tr("Import task"),
+                                                wayPointDir,
+                                                filter );
+  if( fName.isEmpty() )
+    {
+      return;
+    }
+
+  QString errorInfo;
+
+  FlightTask* ft = XCSoar::reakTaskFile( fName, errorInfo );
+
+  if( ft == nullptr )
+    {
+      QMessageBox mb( QMessageBox::Critical,
+                       tr("Error in file ") + QFileInfo( fName ).fileName(),
+                       errorInfo,
+                       QMessageBox::Ok,
+                       this );
+#ifdef ANDROID
+       mb.show();
+       QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                        height()/2 - mb.height()/2 ));
+       mb.move( pos );
+#endif
+       mb.exec();
+       return;
+    }
+
+  slotUpdateTaskList( ft );
+}
+
