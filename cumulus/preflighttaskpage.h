@@ -218,4 +218,3 @@ class PreFlightTaskPage : public QWidget
   /** names of flight tasks */
   QStringList m_taskNames;
 };
-
