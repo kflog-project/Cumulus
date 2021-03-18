@@ -263,7 +263,8 @@ HEADERS = \
     wpeditdialog.h \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
-    wpinfowidget.h
+    wpinfowidget.h \
+    XCSoar.h
 
 SOURCES = \
     aboutwidget.cpp \
@@ -396,7 +397,8 @@ SOURCES = \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \
-    wpinfowidget.cpp
+    wpinfowidget.cpp \
+    XCSoar.cpp
 
 flarm {
     DEFINES += FLARM
