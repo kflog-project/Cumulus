@@ -119,7 +119,7 @@ void FlightTask::determineTaskType()
       for( int loop = 0; loop < tpList.size(); loop++)
         {
           // qDebug("distance: %f", tpList.at(loop)->distance);
-	  distance += tpList.at(loop).distance;
+          distance += tpList.at(loop).distance;
         }
       // qDebug("Total Distance: %f", distance_total);
     }
@@ -130,8 +130,11 @@ void FlightTask::determineTaskType()
       return;
     }
 
-  if( MapCalc::dist( tpList[0].getWGSPositionPtr(),
-                     tpList[tpList.count()-1].getWGSPositionPtr()) < 1.0 )
+  QPair<double, double> p =
+      MapCalc::distVinc( tpList[0].getWGSPositionPtr(),
+                         tpList[tpList.count()-1].getWGSPositionPtr() );
+
+  if( p.first < 1.0 )
     {
       // Distance between start and finish point is lower as one km. We
       // check the FAI rules
@@ -155,10 +158,10 @@ void FlightTask::determineTaskType()
         case 5:
           // Check the DMSt Viereck rules
           if( isDMStViereck( tpList[0].getWGSPositionPtr(),
-                             tpList[1].getWGSPositionPtr (),
-                             tpList[2].getWGSPositionPtr (),
-                             tpList[3].getWGSPositionPtr (),
-                             tpList[4].getWGSPositionPtr ()) )
+                             tpList[1].getWGSPositionPtr(),
+                             tpList[2].getWGSPositionPtr(),
+                             tpList[3].getWGSPositionPtr(),
+                             tpList[4].getWGSPositionPtr()) )
             {
               flightType = FlightTask::DMStViereck;
             }
@@ -359,13 +362,16 @@ void FlightTask::setTaskPointData()
       if( tpList[n-1].getWGSPosition() != tpList[n].getWGSPosition() )
         {
           // Points are not identical, do calculate navigation parameters.
-          // calculate bearing
-          tpList[n].bearing = MapCalc::getBearing( tpList[n-1].getWGSPosition(),
-                                                   tpList[n].getWGSPosition() );
+          QPair<double, double> pair;
 
-          // calculate distance
-          tpList[n].distance = MapCalc::dist(tpList[n-1].getWGSPositionPtr(),
-                                             tpList[n].getWGSPositionPtr());
+          // Calculate distance and bearing according to DMST specification.
+          pair = MapCalc::distVinc( double( tpList[n-1].getWGSPositionPtr()->x() ),
+                                    double( tpList[n-1].getWGSPositionPtr()->y() ),
+                                    double( tpList[n].getWGSPositionPtr()->x() ),
+                                    double( tpList[n].getWGSPositionPtr()->y() ) );
+
+          tpList[n].distance = pair.first;
+          tpList[n].bearing = pair.second;
 
           // calculate wind parameters, if wind speed is defined. Ground
           // speed unit is meter per second.
@@ -524,12 +530,12 @@ bool FlightTask::isDMStViereck( QPoint* p1,
                                 QPoint* p4,
                                 QPoint* p5 )
 {
-  double d15 = MapCalc::dist( p1, p5 );
-  double d12 = MapCalc::dist( p1, p2 );
-  double d23 = MapCalc::dist( p2, p3 );
-  double d34 = MapCalc::dist( p3, p4 );
-  double d41 = MapCalc::dist( p4, p1 );
-  double d13 = MapCalc::dist( p1, p3 );
+  double d15 = MapCalc::distVinc( p1, p5 ).first;
+  double d12 = MapCalc::distVinc( p1, p2 ).first;
+  double d23 = MapCalc::distVinc( p2, p3 ).first;
+  double d34 = MapCalc::distVinc( p3, p4 ).first;
+  double d41 = MapCalc::distVinc( p4, p1 ).first;
+  double d13 = MapCalc::distVinc( p1, p3 ).first;
 
   double distTotal1 = d12 + d23 + d13;
   double distTotal2 = d13 + d34 + d41;
@@ -1168,18 +1174,17 @@ FlightTask::calculateFinalGlidePath( const int taskPointIndex,
   Altitude arrAlt(0);
   Speed speed(0);
 
-  // calculate bearing from current position to the next task point from
-  // task in radian
-  int bearing = int ( rint( MapCalc::getBearingWgs( calculator->getlastPosition(),
-                                                    tpList.at( taskPointIndex ).getWGSPosition() ) ));
-
-  // calculate distance from current position to the next task point from
-  // task in km
+  // calculate distance and bearing from current position to the next task point
+  // from the task in km
   QPoint p1 = calculator->getlastPosition();
   QPoint p2 = tpList.at( taskPointIndex ).getWGSPosition();
-  double distance = MapCalc::dist( &p1, &p2 );
 
-  bool res = calculator->glidePath( bearing, Distance(distance * 1000.0),
+  QPair<double, double> p = MapCalc::distVinc( &p1, &p2 );
+
+  double distance = p.first;
+  int bearing = static_cast<int>( rint( p.second ) );
+
+  bool res = calculator->glidePath( bearing, Distance( distance * 1000.0 ),
                                     tpList.at( taskPointIndex ).getElevation(),
                                     arrAlt, bestSpeed );
 
@@ -1313,7 +1318,7 @@ QString FlightTask::getWindString() const
 {
   if( windSpeed.getMps() == 0 )
     {
-      return QObject::tr("none");
+      return "-/-";
     }
 
   if( wtCalculation == false )
@@ -1466,8 +1471,8 @@ Speed FlightTask::calAverageSpeed()
       // last passed taskpoint, to calculate the average speed.
       // calculate distance in km.
       QPoint cPos = calculator->getlastPosition();
-      double lastdistance = MapCalc::dist( tpList[i-1].getWGSPositionPtr(),
-                                           &cPos );
+      double lastdistance = MapCalc::distVinc( tpList[i-1].getWGSPositionPtr(),
+                                               &cPos ).first;
 
       // The task is unfinished. Calculate the result speed in m/s.
       flownDistance += lastdistance;

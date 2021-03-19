@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+
+[o] 2021-03-12 AP: Issue #146 fixed. Calculate distences by using Vincenty's
+                   formulae.
+                   
 [+] 2021-03-12 AP: Issue #77 fixed. Provide the flown average speed from a
                    flight task.
 

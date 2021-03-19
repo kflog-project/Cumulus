@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2015  by Axel Pauli
+**                   2008-2021  by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,6 +18,7 @@
 #define MAP_CALC_H
 
 #include <cmath>
+#include <QPair>
 #include <QRect>
 
 #include "speed.h"
@@ -30,6 +31,11 @@
  * NOTE: We use the earth as a sphere, not as a spheroid!
  */
 #define RADIUS 6371000 // FAI Radius, this was the previous radius ->6370290
+
+// WGS84 averrage radius
+// #define RADIUS ((6378137 + 6356752) / 2)
+
+// Our nautical mile definition
 #define RADIUS_kfl (RADIUS / (360.0 * 600000.0))
 
 // Define nautical mile in meters according to earth radius of KFL
@@ -37,7 +43,6 @@
 
 namespace MapCalc
 {
-
   /**
    * Calculates the distance between two given points according to great circle in km.
    */
@@ -46,6 +51,33 @@ namespace MapCalc
   double distP(double lat1, double lon1, double lat2, double lon2);
 
   double distC1(double lat1, double lon1, double lat2, double lon2);
+
+  /**
+   * Vincentys-formula for DMST distance calculation taken over from:
+   *
+   * https://github.com/dariusarnold/vincentys-formula
+   *
+   * http://www.movable-type.co.uk/scripts/latlong-vincenty.html#direct
+   *
+   * @param lat1 from point
+   * @param lon1 from point
+   * @param lat2 to point
+   * @param lon2 to point
+   *
+   * @return distance in Kilometers and bearing from/to in radiant.
+   */
+  QPair<double, double> distVinc(double latp, double longp,
+                                 double latc, double longc);
+
+  /**
+   * Wrapper function for Vincentys-formula for DMST distance calculation.
+   *
+   * @param p1 from point in kflog format
+   * @param p2 to point in kflog format
+   *
+   * @return distance in Kilometers and bearing from/to in radiant.
+   */
+  QPair<double, double> distVinc( QPoint *p1, QPoint *p2 );
 
   /**
    * Calculates the distance between two given points in km.

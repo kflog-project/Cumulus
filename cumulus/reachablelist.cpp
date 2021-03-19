@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2018 by Axel Pauli
+ **                   2008-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -103,7 +103,10 @@ void ReachableList::calculate(bool always)
 
   // Calculate distance to position of last full computed list.
   // The result has the unit kilometers.
-  double dist2Last = MapCalc::dist(&currentPosition, &lastCalculationPosition);
+  QPair<double, double> p =
+      MapCalc::distVinc( &currentPosition, &lastCalculationPosition );
+
+  double dist2Last = p.first;
 
   // qDebug("tick %d %d",tick, always );
   // The whole list is new computed, if the distance has become
@@ -153,7 +156,11 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
               //qDebug("In bounding box, so accept! (distance: %d, %s)", (int)distance.getKilometers(), wpList.at(i)->name.latin1());
             }
 
-          distance.setKilometers(MapCalc::dist(&lastPosition, &pt));
+          // Calculate distance and bearing
+          QPair<double, double> p =
+              MapCalc::distVinc( &lastPosition, &pt );
+
+          distance.setKilometers( p.first );
 
           bool isLandable = false;
 
@@ -171,9 +178,8 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
               continue;
             }
 
-          // calculate bearing
-          double result = MapCalc::getBearing(lastPosition, pt);
-          int bearing = int(rint(result * 180./M_PI));
+          // set bearing
+          int bearing = int( rint( p.second * 180. / M_PI ) );
           Altitude altitude(0);
 
           ReachablePoint rp( wpList[i],
@@ -181,7 +187,6 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
                              distance,
                              bearing,
                              altitude );
-
           append(rp);
         }
     }
@@ -242,7 +247,12 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
               a++;
               //qDebug("In bounding box, so accept! (distance: %d, %s)", (int)distance.getKilometers(), site->getName().latin1());
             }
-          distance.setKilometers(MapCalc::dist(&lastPosition,&siteWgsPosition));
+
+          // Calculate distance and bearing
+          QPair<double, double> p =
+              MapCalc::distVinc( &lastPosition, &siteWgsPosition );
+
+          distance.setKilometers( p.first );
           // qDebug("%d  %f %f", i, (float)distance.getKilometers(),_maxReach );
           // check if point is a potential reachable candidate at best LD
           if ( distance.getKilometers() > _maxReach )
@@ -250,10 +260,9 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
               continue;
             }
 
-          // calculate bearing
-          double result = MapCalc::getBearing(lastPosition, siteWgsPosition);
-          short bearing = short(rint(result * 180./M_PI));
-          Altitude altitude(0);
+          // set bearing
+          short bearing = short( rint( p.second * 180. / M_PI ) );
+          Altitude altitude( 0 );
 
           // add all potential reachable points to the list, altitude is calculated later
           ReachablePoint rp( siteName,
@@ -380,7 +389,11 @@ void ReachableList::calculateDataInList()
       Distance distance;
       Speed bestSpeed;
 
-      distance.setKilometers( MapCalc::dist(&lastPosition, &pt) );
+      // Calculate distance and bearing
+      QPair<double, double> pr =
+          MapCalc::distVinc( &lastPosition, &pt );
+
+      distance.setKilometers( pr.first );
 
       if ( lastPosition == pt || distance.getMeters() <= 100.0 )
         {
@@ -396,7 +409,7 @@ void ReachableList::calculateDataInList()
           p.setDistance( distance );
 
           // recalculate Bearing
-          p.setBearing( short (rint(MapCalc::getBearingWgs(lastPosition, pt) * 180/M_PI)) );
+          p.setBearing( short (rint( pr.second * 180/M_PI)) );
 
           // Calculate glide path. Returns false, if no glider is known.
           calculator->glidePath( p.getBearing(), p.getDistance(),

@@ -518,14 +518,16 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
       m_text->setStyleSheet( QString( "color: white; background-color: black;" ) );
     }
 
-  Distance distance2Target;
   QPoint lastPosition = calculator->getlastPosition();
+
   // fetch minimal arrival altitude
   Altitude minAlt( GeneralConfig::instance()->getSafetyAltitude().getMeters() );
 
-  // calculate distance to passed waypoint
-  distance2Target.setKilometers(MapCalc::dist(double(lastPosition.x()), double(lastPosition.y()),
-                                              wp->wgsPoint.lat(), wp->wgsPoint.lon()));
+  // calculate distance and bearing to passed waypoint
+  QPair<double, double> p = MapCalc::distVinc( &lastPosition, &wp->wgsPoint );
+
+  Distance distance2Target( p.first * 1000.0 );
+  int bearing= int( rint( p.second * 180/M_PI) );
 
   // Prepare output data
   QString display;
@@ -549,9 +551,6 @@ void TPInfoWidget::prepareArrivalInfoText( Waypoint *wp )
   Altitude arrivalAlt;
   Speed bestSpeed;
   ReachablePoint::reachable reach = ReachablePoint::no;
-
-  // calculate Bearing
-  int bearing= int( rint(MapCalc::getBearingWgs( lastPosition, wp->wgsPoint ) * 180/M_PI) );
 
   // glide path
   calculator->glidePath( bearing, distance2Target,

@@ -140,7 +140,7 @@ void TaskListStatusView::setHeader()
      << tr("From-To")
      << tr("Length")
      << tr("Time")
-     << tr("AV-Speed");
+     << tr("Va");
 
   list->setHeaderLabels(sl);
 
@@ -169,7 +169,7 @@ void TaskListStatusView::showEvent( QShowEvent *event )
 /** This slot is called if the info button has been clicked */
 void TaskListStatusView::slot_Help()
 {
-  QString file = "cumulus-preflight-settings-task.html";
+  QString file = "cumulus-tasks.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
@@ -227,7 +227,7 @@ void TaskListStatusView::slot_updateTask()
     }
   else
     {
-      avSpeed->setText( "AV=??" );
+      avSpeed->setText( "AV=--" );
     }
 
   const QDateTime stime = m_task->getStartTime();
@@ -238,7 +238,7 @@ void TaskListStatusView::slot_updateTask()
     }
   else
     {
-      startTime->setText( "ST=??" );
+      startTime->setText( "ST=--" );
     }
 
   int ftime = m_task->getFlightTime();
@@ -265,7 +265,7 @@ void TaskListStatusView::slot_updateTask()
     }
   else
     {
-      endTime->setText( "ET=??" );
+      endTime->setText( "ET=--" );
     }
 
   list->clear();

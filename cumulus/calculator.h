@@ -992,7 +992,7 @@ private:
    * Calculates the bearing to the currently selected waypoint, and
    * emits signal newBearing if the bearing has changed.
    */
-  void calcBearing();
+  void calcBearing( double bearing=-1.0 );
 
   /**
    * Calculates the direction of heading and emits the signal

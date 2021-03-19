@@ -335,7 +335,6 @@ void Calculator::slot_Position( QPoint& newPositionValue )
   lastElevation = Altitude( _globalMapContents->findElevation(lastPosition, &lastElevationError) );
   emit newPosition(lastGPSPosition, Calculator::GPS);
   calcDistance();
-  calcBearing();
   calcETA();
   calcTas();
   calcGlidePath();
@@ -405,7 +404,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if ( newWp == 0 )
+  if ( newWp == nullptr )
     {
       if ( task != static_cast<FlightTask *> (0) )
         {
@@ -458,8 +457,11 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
     {
       calcDistance( !userAction );
     }
+  else
+    {
+      calcBearing();
+    }
 
-  calcBearing();
   calcETA();
   calcGlidePath();
   // for debug purpose trigger manually a calculation by selecting a waypoint
@@ -484,10 +486,11 @@ void Calculator::slot_WaypointDelete(Waypoint* newWp)
     }
 }
 
-/** Calculates the distance to the currently selected waypoint and
-    emits newDistance if the distance has been changed. If a flight
-    task has been activated, the automatic switch from one task point
-    to the next is also controlled and handled here.
+/**
+  Calculates the distance and the bearing to the currently selected waypoint
+  and emits newDistance if the distance has been changed. If a flight
+  task has been activated, the automatic switch from one task point
+  to the next is also controlled and handled here.
 */
 void Calculator::calcDistance( bool autoWpSwitch )
 {
@@ -497,12 +500,14 @@ void Calculator::calcDistance( bool autoWpSwitch )
       return;
     }
 
-  Distance curDistance;
+  QPair<double, double> p = MapCalc::distVinc( double(lastPosition.x()),
+                                               double(lastPosition.y()),
+                                               targetWp->wgsPoint.lat(),
+                                               targetWp->wgsPoint.lon() );
+  // pass bearing to related method
+  calcBearing( p.second );
 
-  curDistance.setKilometers( MapCalc::dist(double(lastPosition.x()),
-                                           double(lastPosition.y()),
-                                           targetWp->wgsPoint.lat(),
-                                           targetWp->wgsPoint.lon()) );
+  Distance curDistance( p.first * 1000.0 );
 
   if ( curDistance == lastDistance )
     {
@@ -653,10 +658,10 @@ void Calculator::calcDistance( bool autoWpSwitch )
             TaskPoint& nextWp = tpList[ m_selectedWpInList ];
 
             // calculate the distance to the next waypoint
-            Distance dist2Next( MapCalc::dist( double(lastPosition.x()),
-                 double(lastPosition.y()),
-                 nextWp.getWGSPosition().lat(),
-                 nextWp.getWGSPosition().lon() ) * 1000);
+            QPair<double, double> p =
+                MapCalc::distVinc( &lastPosition, nextWp.getWGSPositionPtr() );
+
+            Distance dist2Next( p.first * 1000.0 );
             curDistance = dist2Next;
 
             // announce task point change as none user interaction
@@ -671,7 +676,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
                 TPInfoWidget *tpInfo = new TPInfoWidget( _globalMainWindow );
 
                 tpInfo->prepareSwitchText( lastWp.getFlightTaskListIndex(),
-                         dist2Next.getKilometers() );
+                                           dist2Next.getKilometers() );
                 tpInfo->showTP();
               }
           }
@@ -970,19 +975,19 @@ void Calculator::calcGlidePath()
  * Calculates the bearing to the currently selected waypoint and emits signal
  * newBearing if the bearing has changed.
  */
-void Calculator::calcBearing()
+void Calculator::calcBearing( double bearingIn )
 {
   int iresult = -1;
-  int lH = -1;
+  int lH = lastHeading;
 
   if( lastHeading == -1 )
     {
       lH = 0;
     }
 
-  if( targetWp == 0 )
+  if( targetWp == nullptr )
     {
-      if (iresult != lastBearing)
+      if( iresult != lastBearing )
         {
           lastBearing = iresult;
 
@@ -994,14 +999,25 @@ void Calculator::calcBearing()
     }
   else
     {
-      double result = MapCalc::getBearing( lastPosition, targetWp->wgsPoint );
+      double bearing = 0.0;
 
-      iresult = int (rint(result * 180./M_PI) );
+      if( bearingIn != -1.0 )
+        {
+          // We got a valid bearing
+          bearing = bearingIn;
+        }
+      else
+        {
+          // Calculate bearing
+          bearing = MapCalc::getBearing( lastPosition, targetWp->wgsPoint );
+        }
+
+      iresult = static_cast<int>( rint(bearing * 180./M_PI) );
 
       if( iresult != lastBearing )
         {
           lastBearing = iresult;
-          emit newBearing(lastBearing);
+          emit newBearing( lastBearing );
           emit newRelBearing (lastBearing - lH);
         }
     }
@@ -1105,7 +1121,6 @@ void Calculator::slot_changePosition(int direction)
   emit newUserAltitude( getAltimeterAltitude() );
 
   calcDistance();
-  calcBearing();
   calcHeading( previousPosition, lastPosition );
   calcGlidePath();
 
@@ -1425,7 +1440,6 @@ void Calculator::setPosition( const QPoint &newPos )
   emit newPosition( lastPosition, Calculator::MAN );
 
   calcDistance();
-  calcBearing();
   calcETA();
   calcGlidePath();
 }
