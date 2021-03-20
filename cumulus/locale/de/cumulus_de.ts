@@ -290,72 +290,72 @@
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="../../calculator.cpp" line="367"/>
+        <location filename="../../calculator.cpp" line="371"/>
         <source>Replace current task point?</source>
         <translation>Aufgabenpunkt ersetzen?</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="368"/>
+        <location filename="../../calculator.cpp" line="372"/>
         <source>&lt;html&gt;A flight task is activated!&lt;br&gt;This selection will stop the automatic task point switch.To avoid that make a selection from task menu.&lt;br&gt;Do You really want to replace?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="627"/>
+        <location filename="../../calculator.cpp" line="631"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="633"/>
+        <location filename="../../calculator.cpp" line="637"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="452"/>
+        <location filename="../../calculator.cpp" line="456"/>
         <source>Task started</source>
         <oldsource>Task start</oldsource>
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2223"/>
+        <location filename="../../calculator.cpp" line="2227"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="622"/>
+        <location filename="../../calculator.cpp" line="626"/>
         <source>Task ended</source>
         <oldsource>Task end</oldsource>
         <translation>Aufgabe beendet</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="557"/>
-        <location filename="../../calculator.cpp" line="577"/>
+        <location filename="../../calculator.cpp" line="561"/>
+        <location filename="../../calculator.cpp" line="581"/>
         <source>TP in sight</source>
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="671"/>
+        <location filename="../../calculator.cpp" line="675"/>
         <source>TP passed</source>
         <oldsource>TP switch</oldsource>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2053"/>
-        <location filename="../../calculator.cpp" line="2058"/>
+        <location filename="../../calculator.cpp" line="2057"/>
+        <location filename="../../calculator.cpp" line="2062"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2059"/>
+        <location filename="../../calculator.cpp" line="2063"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2099"/>
+        <location filename="../../calculator.cpp" line="2103"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2100"/>
+        <location filename="../../calculator.cpp" line="2104"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -1161,37 +1161,37 @@
 <context>
     <name>IgcLogger</name>
     <message>
-        <location filename="../../igclogger.cpp" line="478"/>
+        <location filename="../../igclogger.cpp" line="479"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../../igclogger.cpp" line="602"/>
+        <location filename="../../igclogger.cpp" line="603"/>
         <source>Stop Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../igclogger.cpp" line="603"/>
+        <location filename="../../igclogger.cpp" line="604"/>
         <source>&lt;html&gt;Are you sure you want&lt;br&gt;stop logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Wollen Sie wirklich&lt;br&gt;den Logger stoppen?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../igclogger.cpp" line="632"/>
+        <location filename="../../igclogger.cpp" line="633"/>
         <source>Start Logging?</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../igclogger.cpp" line="633"/>
+        <location filename="../../igclogger.cpp" line="634"/>
         <source>&lt;html&gt;You should select a glider&lt;br&gt;before start logging.&lt;br&gt;Continue start logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Vor Loggerstart&lt;br&gt;ein Flugzeug auswählen.&lt;br&gt;Logger wirklich starten?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../igclogger.cpp" line="673"/>
+        <location filename="../../igclogger.cpp" line="674"/>
         <source>Restart Logging?</source>
         <translation>Neustart Logging?</translation>
     </message>
     <message>
-        <location filename="../../igclogger.cpp" line="674"/>
+        <location filename="../../igclogger.cpp" line="675"/>
         <source>&lt;html&gt;A new flight task was selected.&lt;br&gt;Restart logging?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine neue Flugaufgabe wurde ausgewählt.&lt;br&gt;Logging neu starten?&lt;/html&gt;</translation>
     </message>
@@ -2866,157 +2866,157 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>PreFlightTaskPage</name>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="59"/>
+        <location filename="../../preflighttaskpage.cpp" line="63"/>
         <source>PreFlight - Task/Route</source>
         <translation>Vorflug Aufgabe/Route</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="94"/>
+        <location filename="../../preflighttaskpage.cpp" line="98"/>
         <source>TAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="99"/>
+        <location filename="../../preflighttaskpage.cpp" line="103"/>
         <source>True Air Speed</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="112"/>
+        <location filename="../../preflighttaskpage.cpp" line="116"/>
         <source>WD</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="117"/>
+        <location filename="../../preflighttaskpage.cpp" line="121"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="129"/>
+        <location filename="../../preflighttaskpage.cpp" line="133"/>
         <source>WS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="134"/>
+        <location filename="../../preflighttaskpage.cpp" line="138"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="153"/>
+        <location filename="../../preflighttaskpage.cpp" line="157"/>
         <source>Define a new task</source>
         <translation>Neue Aufgabe definieren</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="162"/>
+        <location filename="../../preflighttaskpage.cpp" line="166"/>
         <source>Edit selected task</source>
         <translation>Editiere ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="171"/>
+        <location filename="../../preflighttaskpage.cpp" line="175"/>
         <source>Remove selected task</source>
         <translation>Lösche ausgewählte Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="190"/>
+        <location filename="../../preflighttaskpage.cpp" line="194"/>
         <source>Choose a flight task to be flown</source>
         <translation>Wähle eine zu fliegende Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="255"/>
+        <location filename="../../preflighttaskpage.cpp" line="259"/>
         <source>Show details of selected task</source>
         <translation>Zeige Details der selektierten Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="217"/>
+        <location filename="../../preflighttaskpage.cpp" line="221"/>
         <source>No.</source>
         <translation>Nr.</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="218"/>
+        <location filename="../../preflighttaskpage.cpp" line="222"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="219"/>
+        <location filename="../../preflighttaskpage.cpp" line="223"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="220"/>
+        <location filename="../../preflighttaskpage.cpp" line="224"/>
         <source>Distance</source>
         <translation>Strecke</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="221"/>
+        <location filename="../../preflighttaskpage.cpp" line="225"/>
         <source>Time</source>
         <translation>Zeit</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="238"/>
+        <location filename="../../preflighttaskpage.cpp" line="242"/>
         <source>Deactivate Task</source>
         <translation>Deaktiviere  Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="240"/>
+        <location filename="../../preflighttaskpage.cpp" line="244"/>
         <source>Deactivate the currently activated task</source>
         <translation>Deaktiviere die aktuelle Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="245"/>
+        <location filename="../../preflighttaskpage.cpp" line="249"/>
         <source>Import</source>
         <translation>Import</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="247"/>
+        <location filename="../../preflighttaskpage.cpp" line="251"/>
         <source>Import WeGlide task</source>
         <translation>import WeGlide Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="253"/>
+        <location filename="../../preflighttaskpage.cpp" line="257"/>
         <source>Show</source>
         <translation>Zeige</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="270"/>
+        <location filename="../../preflighttaskpage.cpp" line="274"/>
         <source>Task display</source>
         <translation>Aufgabenanzeige</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="275"/>
+        <location filename="../../preflighttaskpage.cpp" line="279"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="770"/>
+        <location filename="../../preflighttaskpage.cpp" line="774"/>
         <source>Delete Task?</source>
         <translation>Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="771"/>
+        <location filename="../../preflighttaskpage.cpp" line="775"/>
         <source>Delete the selected task?</source>
         <translation>Markierte Aufgabe löschen?</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="869"/>
+        <location filename="../../preflighttaskpage.cpp" line="873"/>
         <source>Replace current task?</source>
         <translation>Akt. Aufgabe ersetzen?</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="870"/>
+        <location filename="../../preflighttaskpage.cpp" line="874"/>
         <source>&lt;html&gt;Do you want to replace the current task?&lt;br&gt;A selected target is reset to task start.&lt;/html&gt;</source>
         <translation>&lt;html&gt;Akt. Aufgabe ersetzen?&lt;br&gt;Das markierte Ziel wird auf Aufgabenbeginn rückgesetzt.&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="983"/>
+        <location filename="../../preflighttaskpage.cpp" line="987"/>
         <source>TSK</source>
         <translation>TSK</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="986"/>
+        <location filename="../../preflighttaskpage.cpp" line="990"/>
         <source>Import task</source>
         <translation>importiere Aufgabe</translation>
     </message>
     <message>
-        <location filename="../../preflighttaskpage.cpp" line="1001"/>
+        <location filename="../../preflighttaskpage.cpp" line="1005"/>
         <source>Error in file </source>
         <translation>Fehler in Datei</translation>
     </message>
@@ -3484,8 +3484,8 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../preflightwindpage.cpp" line="79"/>
-        <source>Take manual Wind</source>
-        <translation>Nehme manuellen Wind</translation>
+        <source>Manual Wind</source>
+        <translation>Manueller Winf</translation>
     </message>
     <message>
         <location filename="../../preflightwindpage.cpp" line="88"/>
@@ -3515,8 +3515,8 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../preflightwindpage.cpp" line="130"/>
-        <source>Take external Wind</source>
-        <translation>Nehme externen Wind</translation>
+        <source>Ext. Wind</source>
+        <translation>Ext. Wind</translation>
     </message>
     <message>
         <location filename="../../preflightwindpage.cpp" line="147"/>

@@ -76,7 +76,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   QHBoxLayout* windRow = new QHBoxLayout;
   windLayout->addLayout( windRow );
 
-  QGroupBox *windBox = new QGroupBox( tr("Take manual Wind"), this );
+  QGroupBox *windBox = new QGroupBox( tr("Manual Wind"), this );
   windRow->addWidget( windBox );
 
   QHBoxLayout* windRowManual = new QHBoxLayout;
@@ -127,7 +127,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   windRowManual->addWidget(m_windSpeed);
   windRow->addStretch(10);
 
-  QGroupBox* windBoxExtern = new QGroupBox( tr("Take external Wind"), this );
+  QGroupBox* windBoxExtern = new QGroupBox( tr("Ext. Wind"), this );
   windRow->addWidget( windBoxExtern );
 
   QHBoxLayout* hbox = new QHBoxLayout;
