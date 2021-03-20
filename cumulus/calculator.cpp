@@ -404,7 +404,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if ( newWp == nullptr )
+  if ( newWp == 0 )
     {
       if ( task != static_cast<FlightTask *> (0) )
         {
@@ -985,7 +985,7 @@ void Calculator::calcBearing( double bearingIn )
       lH = 0;
     }
 
-  if( targetWp == nullptr )
+  if( targetWp == 0 )
     {
       if( iresult != lastBearing )
         {
