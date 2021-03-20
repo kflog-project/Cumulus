@@ -22,6 +22,7 @@
 
 #include <cstdlib>
 
+#include <QtCore>
 #include <QtGui>
 #include <QMessageBox>
 
@@ -1012,8 +1013,7 @@ bool IgcLogger::writeLogbookEntry()
          << _flightData.pilot1 << ";"
          << _flightData.pilot2 << ";"
          << _flightData.gliderType << ";"
-         << _flightData.gliderReg << ";"
-         << Qt::endl;
+         << _flightData.gliderReg << ";\n";
 
   f.close();
   mutex.unlock();
@@ -1093,7 +1093,7 @@ bool IgcLogger::writeLogbook( QStringList& logbook )
 
   for( int i = 0; i < logbook.size(); i++ )
     {
-      stream << logbook.at(i) << Qt::endl;
+      stream << logbook.at(i) << "\n";
     }
 
   f.close();

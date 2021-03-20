@@ -116,9 +116,9 @@ double MapCalc::distC1(double lat1, double lon1, double lat2, double lon2)
 QPair<double, double> MapCalc::distVinc( double lat1, double lon1,
                                          double lat2, double lon2 )
 {
-  constexpr double req = 6378137.0;             // Radius at equator
-  constexpr double flat = 1 / 298.257223563;    // flattening of earth
-  constexpr double rpol = (1 - flat) * req;
+  const double req = 6378137.0;             // Radius at equator
+  const double flat = 1 / 298.257223563;    // flattening of earth
+  const double rpol = (1 - flat) * req;
 
   double sin_sigma, cos_sigma, sigma, sin_alpha, cos_sq_alpha, cos2sigma;
   double C, lam_pre;
@@ -140,7 +140,7 @@ QPair<double, double> MapCalc::distVinc( double lat1, double lon1,
 
   double lon = lon1 - lon2;
   double lam = lon;
-  constexpr double tol = pow(10., -12.); // iteration tolerance
+  const double tol = pow(10., -12.); // iteration tolerance
   double diff = 1.;
 
   while (abs(diff) > tol)

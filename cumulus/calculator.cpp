@@ -26,6 +26,10 @@
 #include <QtWidgets>
 #endif
 
+#ifdef ANDROID
+#define nullptr 0
+#endif
+
 #include "altimeterdialog.h"
 #include "Atmosphere.h"
 #include "calculator.h"
@@ -404,7 +408,7 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
 
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if ( newWp == 0 )
+  if ( newWp == nullptr )
     {
       if ( task != static_cast<FlightTask *> (0) )
         {
@@ -691,7 +695,7 @@ void Calculator::calcDistance( bool autoWpSwitch )
     waypoint and emits a signal newETA if the value has changed. */
 void Calculator::calcETA()
 {
-  if ( targetWp == 0 ||
+  if ( targetWp == nullptr ||
        lastSpeed.getMps() <= 0.3 || ! GpsNmea::gps->getConnected() )
     {
       if( lastETA.isValid() )
@@ -985,7 +989,7 @@ void Calculator::calcBearing( double bearingIn )
       lH = 0;
     }
 
-  if( targetWp == 0 )
+  if( targetWp == nullptr )
     {
       if( iresult != lastBearing )
         {
@@ -2071,7 +2075,7 @@ void Calculator::slot_startTask()
 {
   FlightTask *task = _globalMapContents->getCurrentTask();
 
-  if ( task == static_cast<FlightTask *> (0) )
+  if ( task == nullptr )
     {
       // no task defined, ignore request
       return;

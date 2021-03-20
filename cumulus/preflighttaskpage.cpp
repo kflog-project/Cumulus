@@ -26,6 +26,10 @@
 #include <QtScroller>
 #endif
 
+#ifdef ANDROID
+#define nullptr 0
+#endif
+
 #include "calculator.h"
 #include "distance.h"
 #include "generalconfig.h"

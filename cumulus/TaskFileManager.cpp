@@ -307,12 +307,12 @@ bool TaskFileManager::writeTaskFile( FlightTask *task )
 
   stream << "# Cumulus-Task-File V5.0, created at "
          << dtStr << " by Cumulus "
-         << QCoreApplication::applicationVersion() << Qt::endl
-         << "# Task name: " << task->getTaskName() << Qt::endl << Qt::endl;
+         << QCoreApplication::applicationVersion() << "\n"
+         << "# Task name: " << task->getTaskName() << "\n\n";
 
   QList<TaskPoint>& tpList = task->getTpList();
 
-  stream << "TS|" << task->getTaskName() << "|" << tpList.count() << Qt::endl;
+  stream << "TS|" << task->getTaskName() << "|" << tpList.count() << "\n";
 
   for ( int j=0; j < tpList.count(); j++ )
     {
@@ -333,10 +333,10 @@ bool TaskFileManager::writeTaskFile( FlightTask *task )
              << tp.getTaskSectorAngle() << "|"
              << tp.getAutoZoom() << "|"
              << tp.getUserEditFlag()
-             << Qt::endl;
+             << "\n";
     }
 
-  stream << "TE" << Qt::endl;
+  stream << "TE" << "\n";
 
   f.close();
   return true;

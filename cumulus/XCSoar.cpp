@@ -20,6 +20,10 @@
 #include "taskpoint.h"
 #include "XCSoar.h"
 
+#ifdef ANDROID
+#define nullptr 0
+#endif
+
 /**
  * Reads a single XCSoar task file created by WeGlide and returns a FlightTask
  * object.

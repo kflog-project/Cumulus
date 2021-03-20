@@ -1474,14 +1474,14 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
   stream << "// Flarm task declaration created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << Qt::endl;
+         << QCoreApplication::applicationVersion() << '\n';
 
   stream << "$PFLAC,S,NEWTASK,"
          << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
-         << Qt::endl;
+         << '\n';
 
   // Takeoff point as dummy point
-  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << Qt::endl;
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << '\n';
 
   for( int i = 0; i < tpList.count(); i++ )
     {
@@ -1514,13 +1514,13 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
              << lat
              << "," << lon << ","
              << FlarmBase::replaceUmlauts( tp.getWPName().toLatin1() )
-             << Qt::endl;
+             << '\n';
     }
 
   // Landing point as dummy point
-  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << Qt::endl;
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << '\n';
 
-  stream << Qt::endl;
+  stream << '\n';
   f.close();
 
   return true;
