@@ -421,11 +421,9 @@ void GpsNmea::startGpsReceiver()
  * @AP 2010-08-12: The GPS sentence checksum is checked now in the receiver
  * function. Only positive verified sentences are forwarded to this slot.
  */
-void GpsNmea::slot_sentence(const QString& sentenceIn)
+void GpsNmea::slot_sentence( const QString& sentenceIn )
 {
-  // qDebug("GpsNmea::slot_sentence: %s", sentenceIn.toLatin1().data());
-
-  if( flarmNmeaOutInitDone == false )
+  if( flarmNmeaOutInitDone == false && sentenceIn.startsWith( "$GPRMC" ) )
     {
       flarmNmeaOutInitDone = true;
 
@@ -459,9 +457,19 @@ void GpsNmea::slot_sentence(const QString& sentenceIn)
       return;
     }
 
+  QString sentence( sentenceIn );
+
+  // Remove the checksum *hh<CR><LF> from the sentence
+  int idx = sentence.lastIndexOf( QChar('*') );
+
+  if( idx != -1 )
+    {
+      sentence = sentenceIn.left( idx + 1 );
+    }
+
   // Split sentence in single parts for each comma and the checksum. The first
   // part will contain the identifier, the rest the arguments.
-  QStringList slst = sentenceIn.split( QRegExp("[,*]"), QString::KeepEmptyParts );
+  QStringList slst = sentence.split( QRegExp("[,*]"), QString::KeepEmptyParts );
 
   if( ! gpsHash.contains(slst[0]) )
     {
@@ -2962,10 +2970,10 @@ bool GpsNmea::sendSentence( const QString command )
 {
   QString cmd ( command );
 
-  if( cmd.startsWith( "$PFLAC") == true )
+  if( cmd.startsWith( "$PFLA") == true )
     {
-      // According to the Flarm specification sentence $PFLAC has not a checksum.
-      // Ignoring that, Flarm will answer with error.
+      // According to the Flarm specification commands $PFLA... have not a
+      // checksum. Ignoring that, Flarm will answer with error.
       cmd += "\r\n";
     }
   else
