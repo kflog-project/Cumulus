@@ -132,7 +132,7 @@ int main( int argc, char* argv[] )
 
 #ifdef QT_5
   // install message handler
-  qInstallMessageHandler(0);**   $Id$
+  qInstallMessageHandler(0);
 #else
   qInstallMsgHandler(0);
 #endif
