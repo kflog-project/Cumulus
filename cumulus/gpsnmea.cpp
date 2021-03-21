@@ -76,8 +76,8 @@ QHash<QString, short> GpsNmea::gpsHash;
 // Mutex for thread synchronization
 QMutex GpsNmea::mutex;
 
-// Flarm NMEAOUT initialization command for protocol version 8.
-#define FLARM_NMEAOUT_INIT_CMD "$PFLAC,S,NMEAOUT,81"
+// Flarm NMEAOUT initialization command for protocol version 9.
+#define FLARM_NMEAOUT_INIT_CMD "$PFLAC,S,NMEAOUT,91"
 
 // Flarm device type query
 #define FLARM_DEVTYPE_CMD "$PFLAC,R,DEVTYPE"
