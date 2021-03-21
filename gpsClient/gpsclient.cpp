@@ -365,9 +365,20 @@ int GpsClient::writeGpsData( const char *sentence )
       return -1;
     }
 
-  uchar csum = calcCheckSum( sentence );
-  QString check = QString( "*%1X\r\n" ).arg( csum, 2, 16, QChar('0') ).toUpper();
-  QString cmd (sentence + check);
+  QString cmd( sentence );
+
+  if( cmd.startsWith( "$PFLAC") == true )
+    {
+      // According to the Flarm specification sentence $PFLAC has not a checksum.
+      // Ignoring that, Flarm will answer with error.
+      cmd += "\r\n";
+    }
+  else
+    {
+      uchar csum = calcCheckSum( sentence );
+      QString check = QString( "*%1X\r\n" ).arg( csum, 2, 16, QChar('0') ).toUpper();
+      cmd += check;
+    }
 
 #ifdef DEBUG_NMEA
   qDebug() << "GpsClient::write():" << cmd;
