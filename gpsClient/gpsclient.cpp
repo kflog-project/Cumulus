@@ -359,18 +359,12 @@ bool GpsClient::readGpsData()
 // will be part of the check sum.
 int GpsClient::writeGpsData( const char *sentence )
 {
-  // don't try to send anything if there is no connection to a Flarm available.
-  if( flarmFd < 0 )
-    {
-      return -1;
-    }
-
   QString cmd( sentence );
 
   if( cmd.startsWith( "$PFLA") == true )
     {
       // According to the Flarm specification commands $PFLA... have not a
-      // checksum. Ignoring that, Flarm will answer with error.
+      // checksum. Ignoring that, Otherwise Flarm will answer with error.
       cmd += "\r\n";
     }
   else
@@ -385,7 +379,7 @@ int GpsClient::writeGpsData( const char *sentence )
 #endif
 
   // write sentence to gps device
-  int result = write( flarmFd, cmd.toLatin1().data(), cmd.length() );
+  int result = write( fd, cmd.toLatin1().data(), cmd.length() );
 
   if( result != -1 && result != cmd.length() )
     {
