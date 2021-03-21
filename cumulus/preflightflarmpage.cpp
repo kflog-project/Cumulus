@@ -538,7 +538,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
 
   // Here we activate the NMEA output of the Flarm. All other set items are
   // untouched.
-  m_cmdList << "$PFLAC,S,NMEAOUT,81"
+  m_cmdList << "$PFLAC,S,NMEAOUT,91"
             << "$PFLAC,R,DEVTYPE"
             << "$PFLAC,R,ID"
             << "$PFLAC,R,BAUD"
@@ -574,8 +574,8 @@ void PreFlightFlarmPage::slotRequestFlarmData()
       m_firstTaskRecord = false;
 
       m_cmdList << "$PFLAC,R,VRANGE"
-                << "$PFLAC,S,NMEAOUT1,81"
-                << "$PFLAC,S,NMEAOUT2,81"
+                << "$PFLAC,S,NMEAOUT1,91"
+                << "$PFLAC,S,NMEAOUT2,91"
                 << "$PFLAC,R,BAUD1"
                 << "$PFLAC,R,BAUD2"
                 << "$PFLAC,R,TASK";
