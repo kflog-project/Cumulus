@@ -367,10 +367,10 @@ int GpsClient::writeGpsData( const char *sentence )
 
   QString cmd( sentence );
 
-  if( cmd.startsWith( "$PFLAC") == true )
+  if( cmd.startsWith( "$PFLA") == true )
     {
-      // According to the Flarm specification sentence $PFLAC has not a checksum.
-      // Ignoring that, Flarm will answer with error.
+      // According to the Flarm specification commands $PFLA... have not a
+      // checksum. Ignoring that, Flarm will answer with error.
       cmd += "\r\n";
     }
   else
