@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2021-03-21 AP: Issue #147 fixed. Flarm sentence $PFLAC has to be sent
+                   without a checksum.
 
 [o] 2021-03-12 AP: Issue #146 fixed. Calculate distences by using Vincenty's
                    formulae.

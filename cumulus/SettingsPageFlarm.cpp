@@ -7,7 +7,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018 Axel Pauli
+**   Copyright (c): 2018-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -263,7 +263,7 @@ void SettingsPageFlarm::loadTableItems()
           << "CLEAROBST;WO;PF"
           << "DEF;WO;ALL"
           << "SAVE;WO;PF"
-          << "LOAD;RO;PF";
+          << "LOAD;WO;PF";
 
   m_table->clearContents();
 
@@ -662,7 +662,8 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
         {
           m_timer->stop();
 
-          qWarning() << "Command" << m_commands.head() << "returned with ERROR!";
+          qWarning() << "Command" << m_commands.head()
+                     << "ERROR-Answer:" << sentence;
 
           QString text0 = tr("Command:")
                           + "\n\n"

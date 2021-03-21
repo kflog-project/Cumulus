@@ -2958,13 +2958,23 @@ bool GpsNmea::sendSentence(const QString command)
 
 #else
 
-bool GpsNmea::sendSentence(const QString command)
+bool GpsNmea::sendSentence( const QString command )
 {
-  // We have to add the checksum and cr lf to the command.
-  uint csum = calcCheckSum( command.toLatin1().data() );
-  QString check = QString( "*%1X\r\n" ).arg( csum, 2, 16, QChar('0') ).toUpper();
+  QString cmd ( command );
 
-  QString cmd (command + check);
+  if( cmd.startsWith( "$PFLAC") == true )
+    {
+      // According to the Flarm specification sentence $PFLAC has not a checksum.
+      // Ignoring that, Flarm will answer with error.
+      cmd += "\r\n";
+    }
+  else
+    {
+      // We have to add the checksum and cr lf to the end of the command.
+      uint csum = calcCheckSum( command.toLatin1().data() );
+      QString check = QString( "*%1X\r\n" ).arg( csum, 2, 16, QChar('0') ).toUpper();
+      cmd += check;
+    }
 
   // Forward command to the java part via jni
   return jniGpsCmd( cmd );
