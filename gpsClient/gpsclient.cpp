@@ -1281,18 +1281,24 @@ void GpsClient::readServerMsg()
       forwardGpsData = false;
       writeServerMsg( MSG_POS );
     }
-  else if( MSG_SM == args[0] && args.count() == 2 )
+  else if( MSG_SM == args[0] && args.count() >= 2 )
     {
-      // Sent message to the GPS device
-      int res = writeGpsData( args[1].toLatin1().data() );
+      // Sent message to the GPS device.
+      // Remove protocol key word from the received string.
+      int idx = qbuf.indexOf( QChar(' ') );
 
-      if( res == -1 )
+      if( idx != -1 )
         {
-          writeServerMsg( MSG_NEG );
-        }
-      else
-        {
-          writeServerMsg( MSG_POS );
+          int res = writeGpsData( qbuf.mid( idx + 1).toLatin1().data() );
+
+          if( res == -1 )
+            {
+              writeServerMsg( MSG_NEG );
+            }
+          else
+            {
+              writeServerMsg( MSG_POS );
+            }
         }
     }
   else if( MSG_GPS_KEYS == args[0] && args.count() == 2 )
