@@ -391,12 +391,12 @@ void TaskPointEditor::slotAccept()
 {
   save();
   emit taskPointEdited( m_taskPoint );
-  close ();
+  close();
 }
 
 void TaskPointEditor::slotReject()
 {
-  close ();
+  close();
 }
 
 // value of outer spin box changed
