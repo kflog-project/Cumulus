@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE" sourcelanguage="en_US">
+<TS version="2.1" language="de_DE" sourcelanguage="en_US">
 <context>
     <name>AboutWidget</name>
     <message>
@@ -1021,12 +1021,12 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2854"/>
+        <location filename="../../gpsnmea.cpp" line="2862"/>
         <source>GPS connection switched off by user</source>
         <translation>GPS Verbingung abgeschaltet durch Benutzer</translation>
     </message>
     <message>
-        <location filename="../../gpsnmea.cpp" line="3202"/>
+        <location filename="../../gpsnmea.cpp" line="3220"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -1237,6 +1237,44 @@
         <location filename="../../ListViewTabs.cpp" line="85"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
+    </message>
+</context>
+<context>
+    <name>ListWidgetParent</name>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>Country</source>
+        <translation>Land</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>ICAO</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="80"/>
+        <source>Search and select a waypoint</source>
+        <translation>Suche und aktiviere Wegpunkt</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="86"/>
+        <source>move page up</source>
+        <translation>Seite hoch</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="103"/>
+        <source>move page down</source>
+        <translation>Seite runter</translation>
     </message>
 </context>
 <context>
@@ -4698,56 +4736,56 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarm.cpp" line="635"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="741"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="753"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="742"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="754"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarm.cpp" line="636"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="673"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="742"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="754"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="674"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="743"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="755"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="667"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="668"/>
         <source>Command:</source>
         <translation>Kommando:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="671"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="672"/>
         <source>rejected by Flarm with error.</source>
         <translation>abgewiesen durch FLARM mit Fehler.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="687"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="688"/>
         <source>Type=</source>
         <translation>Typ=</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="690"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="691"/>
         <source>ID=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="695"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="696"/>
         <source>Version=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="698"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="699"/>
         <source>Status=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="703"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="704"/>
         <source>Name=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="708"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="709"/>
         <source>Date=</source>
         <translation>Datum=</translation>
     </message>
@@ -6381,6 +6419,16 @@ Bitte einen Punkt löschen!</translation>
         <location filename="../../TaskListStatusView.cpp" line="143"/>
         <source>Va</source>
         <translation>Vm</translation>
+    </message>
+    <message>
+        <location filename="../../TaskListStatusView.cpp" line="226"/>
+        <source>Va=</source>
+        <translation>Vm=</translation>
+    </message>
+    <message>
+        <location filename="../../TaskListStatusView.cpp" line="230"/>
+        <source>Va=--</source>
+        <translation>Vm=--</translation>
     </message>
 </context>
 <context>

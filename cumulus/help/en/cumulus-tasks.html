@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset="utf-8"/>
 <title>Cumulus Tasks/Routes</title>
 <link rel="stylesheet" type="text/css" href="text.css">
 </head>
@@ -18,26 +19,31 @@
 
 	<h3 align="center">Tasks/Routes</h3>
 
-	<p>
-		Tasks are routes between waypoints which are handled as turnpoints here.
-		They can be created and modified in the <a
-		href="cumulus-preflight-settings-task.html"> Flight
-	  Settings-Task</a> menu. The task/route is drawn on the map using a dark magenta
-		line with clearly marked turnpoint figures. The turnpoint figures can
-		be configured under <a href="cumulus-settings-task.html">Settings-Task</a>.
-		Currently three taskpoint figures, line, circle and sector with  
-    symmetrical angels are supported.
-	</p>
+	Tasks are routes between waypoints which are handled as turnpoints here.
+	
+	<h4>Task Creation</h4>
+	
+	Tasks can be created and modified in the <a	href="cumulus-preflight-settings-task.html">
+	Flight Menu Tasks/Routes</a>.
+	
+	<h4>Presentation at the map</h4>
+	
+	The task/route is drawn on the map using a dark magenta
+	line with clearly marked turnpoint figures. The turnpoint figures can
+	be configured under <a href="cumulus-settings-task.html">Settings-Task</a>.
+	Currently three taskpoint figures, line, circle and sector with  
+  symmetrical angels are supported.
 
-	<p>
-	  A task comprises at least two points according to FAI IGC, a Start and a
-	  Finish point. Take-off and Landing airfield are not more a mandatory part
-	  of an IGC task. Therefore these points are not considered by Cumulus.
-	  
-	  Two Points are the minimum in Cumulus, if you will fly a direct route.
-	  The used points have the following names in the display:
+	<h4>Composition of a tast/route</h4>
+	
+  A task comprises at least two points according to FAI IGC, a Start and a
+  Finish point. Take-off and Landing airfield are not more a mandatory part
+  of an IGC task. Therefore these points are not considered by Cumulus.
+  
+  Two Points are the minimum in Cumulus, if you will fly a direct route.
+  The used task points have the following names in the display:
 		
-	<p><table border="1">
+	<p><table border="1" cellpadding="3">	
 	
 	  <tr>
 	    <th>Taskpoint</th>
@@ -46,47 +52,76 @@
 	  </tr>
 	
 	  <tr>
-	  <td>Start</td>
-	  <td>S</td>
+	  <td style="text-align:center">Start</td>
+	  <td style="text-align:center">S</td>
 	  <td>Here starts the task or route</td>
 	  </tr>
 	  
 	  <tr>
-	  <td>Turn</td>
-	  <td>T</td>
+	  <td style="text-align:center">Turn</td>
+	  <td  style="text-align:center">T</td>
 	  <td>One or more turnpoints, can be omitted for a direct route</td>
 	  </tr>
 	
 	  <tr>
-	  <td>Finish</td>
-	  <td>F</td>
+	  <td style="text-align:center">Finish</td>
+	  <td style="text-align:center">F</td>
 	  <td>Here ends the task or route</td>
 	  </tr>
 		
 	</table></p>
  
-	<p>
-		Cumulus stores every task in a single file. These files are to find under your
-		selected <a href="cumulus-settings-personal.html#DataDirectory">Data
-		Directory</a> in a subdirectory with the name <i>tasks</i>. As file name
-		uses Cumulus the task name extended by the suffix <i>.tsk</i>.
-		You can make task file transfer between your PC and PDA but make it only
-		when Cumulus is not running. Otherwise the results are undefined.
-	</p>
+	<h4>Task files</h4>
+	
+	Cumulus stores every task in a single file. These files are to find under your
+	selected <a href="cumulus-settings-personal.html#DataDirectory">Data
+	Directory</a> in a subdirectory with the name <i>tasks</i>. As file name
+	uses Cumulus the task name extended by the suffix <i>.tsk</i>.
+	You can make task file transfer between your PC and PDA but make it only
+	when Cumulus is not running. Otherwise the results are undefined.
+	
+	<h4>Show the activated task</h4>
 
-	<p>
-		Press <i><b>T</b></i> to open the task list from the mapview.
-	</p>
+	Press <b>T</b> or or tip at the <i>To</i> box upper left in the map view
+	to open the currently activated task. The task is displayed as list with all
+	task points.
+	
+	<h4 id="Task-Status">Show task status</h4>
+	
+	If you press the button <i>Status</i> in the task list overview, a new window
+	is opened with the task status view to show you the currently state of the
+	flown task. In the headline the following data items are to see:
+	
+  <p><table border="1" cellpadding="3">
+    <tr>
+      <th>Abbreviation</th>
+      <th>Description</th>
+    </tr>
+  <tr><td style="text-align:center"> S= </td><td> total length of task</td></tr>
+  <tr><td style="text-align:center"> Va= </td><td> average speed of flown task</td></tr>
+  <tr><td style="text-align:center"> Ft= </td><td> current flight time of task</td></tr>
+  <tr><td style="text-align:center"> St= </td><td> start time of task</td></tr>
+  <tr><td style="text-align:center"> Et= </td><td> end time of task</td></tr>
+  </table></p>
+  	
+  Below follows a list of the single task legs, their length, their flight time
+  and their flown average speed.
+	
+	<h4>Deactivation of an active task</h4>
+	
+	Open the menu <a href="cumulus-preflight-settings-task.html">
+	Flight Menu Tasks/Routes</a> and press the button <i>Deactivate Task</i>.
+	Leave the menu with the <i>Ok</i> button.
+	
+  <p></p>
 
-	<table width="100%">
-		<tbody>
-			<tr>
-				<td align="left"><a href="cumulus-waypoints.html">back</a></td>
-				<td align="center"><a href="cumulus.html">start</a></td>
-				<td align="right"><a href="cumulus-flarm.html">next</a></td>
-			</tr>
-		</tbody>
-	</table>
+  <table width="100%">
+    <tr>
+      <td align="left"><a href="cumulus-waypoints.html">zur&uuml;ck</a></td>
+      <td align="center"><a href="cumulus.html">Anfang</a></td>
+      <td align="right"><a href="cumulus-flarm.html">weiter</a></td>
+    </tr>
+  </table>
 
 </body>
 </html>

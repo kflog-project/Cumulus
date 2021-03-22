@@ -173,6 +173,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.toolchain.gnu.base.151648933.347149177.418667557" name="TaskListStatusView.cpp" rcbsApplicability="disable" resourcePath="cumulus/TaskListStatusView.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.base.422164602.1686307100">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.422164602.1686307100" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.422164602">
+							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1804778368" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+						</tool>
+					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -232,6 +237,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.toolchain.gnu.base.151648933.845492302.605552307" name="TaskListStatusView.cpp" rcbsApplicability="disable" resourcePath="cumulus/TaskListStatusView.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.base.1747423056.761978622">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1747423056.761978622" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.1747423056">
+							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.101040694" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+						</tool>
+					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -246,6 +256,8 @@
 		<configuration configurationName="Linux GCC">
 			<resource resourceType="PROJECT" workspacePath="/Cumulus"/>
 		</configuration>
+		<configuration configurationName="QT5 Cumulus GCC"/>
+		<configuration configurationName="QT5 Cumulus"/>
 		<configuration configurationName="Android">
 			<resource resourceType="PROJECT" workspacePath="/Cumulus"/>
 		</configuration>

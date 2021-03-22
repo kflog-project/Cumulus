@@ -175,7 +175,7 @@ void TaskListStatusView::slot_Help()
   hb->resize( this->size() );
   hb->setWindowState( windowState() );
   hb->setVisible( true );
-  hb->getTextBrowser()->scrollToAnchor("Taskeditor");
+  hb->getTextBrowser()->scrollToAnchor("Task-Status");
 }
 
 /** @ee This slot is called if the listview is closed without selecting */
@@ -223,11 +223,11 @@ void TaskListStatusView::slot_updateTask()
 
   if( tav.isValid() )
     {
-      avSpeed->setText( "AV=" + tav.getHorizontalText( true, 1 ) );
+      avSpeed->setText( tr("Va=") + tav.getHorizontalText( true, 1 ) );
     }
   else
     {
-      avSpeed->setText( "AV=--" );
+      avSpeed->setText( tr("Va=--") );
     }
 
   const QDateTime stime = m_task->getStartTime();
@@ -255,6 +255,10 @@ void TaskListStatusView::slot_updateTask()
                                   .arg( ss, 2, 10, QChar('0') );
 
       flightTime->setText( "FT=" + tstr );
+    }
+  else
+    {
+      flightTime->setText( "FT=--" );
     }
 
   const QDateTime etime = m_task->getEndTime();
