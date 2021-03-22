@@ -225,7 +225,7 @@ Not all values are listed here.
 <tr><td>12</td> <td>airship</td></tr>
 <tr><td>13</td> <td>drone  (UAV)</td></tr>
 <tr><td>14</td> <td>reserved, do not use</td></tr>
-<tr><td>15</td> <td>static obkect</td></tr>
+<tr><td>15</td> <td>static object</td></tr>
 </table>
 </html>
 
@@ -497,7 +497,7 @@ Force flight state change for 20 seconds. <br>
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Resume normal operation</td></tr>
 <tr><td>1</td> <td>Forces device to be on ground</td></tr>
-<tr><td>2</td> <td><Forces device to be in flight/td></tr>
+<tr><td>2</td> <td>Forces device to be in flight</td></tr>
 </table>
 </html>
 
