@@ -308,7 +308,7 @@ void IgcLogger::writeKRecord( const QTime& timeFix )
   QString kRecord( "K" + formatTime(timeFix) +
                    QString("%1").arg( (int) rint(GpsNmea::gps->getLastHeading()), 3, 10, QChar('0')) +
                    QString("%1").arg( (int) rint(GpsNmea::gps->getLastTas().getKph()), 3, 10, QChar('0')) + "kph" +
-                   QString("%1").arg( calculator->getLastWind().getAngleDeg(), 3, 10, QChar('0')) +
+                   QString("%1").arg( (int) calculator->getLastWind().getAngleDeg(), 3, 10, QChar('0')) +
                    QString("%1").arg( (int) rint(calculator->getLastWind().getSpeed().getKph()), 3, 10, QChar('0')) +
                    formatVario(calculator->getlastVario()) );
 
@@ -767,13 +767,16 @@ QString IgcLogger::formatVario(const Speed vSpeed)
 /** This function formats an Altitude to the correct format for IGC files (XXXXX) */
 QString IgcLogger::formatAltitude(Altitude altitude)
 {
-  QString result;
-  result.sprintf("%05.0f",altitude.getMeters());
+  QString result = QString( "%1" ).arg( (int) altitude.getMeters(), 5, 10, QChar('0') );
   return result;
 
 }
 
-/** This function formats the position to the correct format for igc files. Latitude and Longitude are encoded as DDMMmmmADDDMMmmmO, with A=N or S and O=E or W. */
+/**
+ * This function formats the position to the correct format for igc files.
+ * Latitude and Longitude are encoded as DDMMmmmADDDMMmmmO, with
+ * A=N or S and O=E or W.
+ */
 QString IgcLogger::formatPosition(const QPoint& position)
 {
   /*The internal KFLog format for coordinates represents coordinates in 10.000'st of a minute.
@@ -783,7 +786,7 @@ QString IgcLogger::formatPosition(const QPoint& position)
   */
 
   int latdeg, londeg, calc, latmin, lonmin;
-  QString result, latmark, lonmark;
+  QString latmark, lonmark;
 
   calc = position.x(); // Latitude
 
@@ -818,7 +821,12 @@ QString IgcLogger::formatPosition(const QPoint& position)
   calc -= londeg * 600000; //subtract the whole degrees part
   lonmin = calc / 10; //we need the minutes in 1000'st of a minute, not in 10.000'st.
 
-  result.sprintf("%02d%05d%1s%03d%05d%1s",latdeg,latmin,latmark.toLatin1().data(),londeg,lonmin,lonmark.toLatin1().data());
+  QString result = QString("%1%2%3%4%5%6").arg( latdeg, 2, 10, QChar('0') )
+                                          .arg( latmin, 5, 10, QChar('0') )
+                                          .arg( latmark )
+                                          .arg( londeg, 3, 10, QChar('0') )
+                                          .arg( lonmin, 5, 10, QChar('0') )
+                                          .arg( lonmark );
   return result;
 }
 
