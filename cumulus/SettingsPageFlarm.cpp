@@ -424,14 +424,19 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
 
   QString itemDevType = m_table->item( row, 2 )->data(Qt::UserRole).toString();
   QString itemAccess  = m_table->item( row, 3 )->data(Qt::UserRole).toString();
-
   QString title, label;
+
+  // items with no argument
+  QStringList noValue;
+  noValue << "CLEARMEM" << "CLEARLOGS" << "CLEAROBST" << "DEF";
 
   if( column == 3 )
     {
-      // Look, if Flarm item is read/write. In this case the content of the
-      // cell can be changed.
-      if( itemAccess == "RO" )
+      QString itemName = m_table->item( row, 2 )->text();
+
+      // Look, if Flarm item is read/write or has no value argument.
+      // In this case the content of the cell can not be changed.
+      if( itemAccess == "RO" ||  noValue.contains( itemName ) == true )
         {
           // A read only item cannot be edited.
           return;
@@ -517,7 +522,7 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       QString itemText  = m_table->item( row, 2 )->text();
       QString itemValue = m_table->item( row, 3 )->text();
 
-      if( itemValue.isEmpty() )
+      if( itemValue.isEmpty() && noValue.contains( itemText) == false )
         {
           QString text0 = tr("Configuration item has no value assigned!");
           QString text1 = tr("Warning");
@@ -534,7 +539,12 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
             }
         }
 
-      QString cmd = "$PFLAC,S," + itemText + "," + itemValue;
+      QString cmd = "$PFLAC,S," + itemText;
+
+      if( itemValue.isEmpty() == false )
+        {
+          cmd += "," + itemValue;
+        }
 
       requestFlarmData( cmd, true );
       return;
