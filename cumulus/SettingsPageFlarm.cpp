@@ -223,6 +223,7 @@ void SettingsPageFlarm::loadTableItems()
   m_items.clear();
 
   m_items << "DEVTYPE;RO;ALL"
+          << "DEVICEID;RO;PF"
           << "SWVER;RO;ALL"
           << "SWEXP;RO;ALL"
           << "FLARMVER;RO;ALL"
@@ -258,12 +259,15 @@ void SettingsPageFlarm::loadTableItems()
           << "UI;RW;ALL"
           << "AUDIOOUT;RW;PF"
           << "AUDIOVOLUME;RW;PF"
+          << "BATTERYTYPE;RW;PF"
+          << "BRIGHTNESS;RW;PF"
           << "CLEARMEM;WO;CF"
           << "CLEARLOGS;WO;PF"
           << "CLEAROBST;WO;PF"
           << "DEF;WO;ALL"
           << "SAVE;WO;PF"
-          << "LOAD;WO;PF";
+          << "LOAD;WO;PF"
+          << "FFS;WO;PF";
 
   m_table->clearContents();
 
