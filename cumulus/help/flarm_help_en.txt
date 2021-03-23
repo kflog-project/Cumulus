@@ -501,3 +501,16 @@ Force flight state change for 20 seconds. <br>
 </table>
 </html>
 
+!PFLAR!
+
+<html>
+Sends a reset command to the FLARM without any read-back. <br>
+<table border="1" CELLPADDING="1">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Reboot the device, all settings will be retained</td></tr>
+<tr><td>33</td> <td>Shutdown the device into power save mode</td></tr>
+<tr><td>99</td> <td>Reboot the device, all settings are reset to <br>
+                    default values, user's configuration is lost</td></tr>
+</table>
+</html>
+

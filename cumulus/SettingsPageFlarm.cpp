@@ -267,7 +267,8 @@ void SettingsPageFlarm::loadTableItems()
           << "DEF;WO;ALL"
           << "SAVE;WO;PF"
           << "LOAD;WO;PF"
-          << "FFS;WO;PF";
+          << "FFS;WO;PF"
+          << "PFLAR;WO;ALL";
 
   m_table->clearContents();
 
@@ -539,11 +540,21 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
             }
         }
 
-      QString cmd = "$PFLAC,S," + itemText;
+      QString cmd;
 
-      if( itemValue.isEmpty() == false )
+      if( m_table->item( row, 2 )->text() == "PFLAR" )
         {
-          cmd += "," + itemValue;
+          // Flarm Reset is requested
+          cmd = "$PFLAR," + itemValue;
+        }
+      else
+        {
+          cmd = "$PFLAC,S," + itemText;
+
+          if( itemValue.isEmpty() == false )
+            {
+              cmd += "," + itemValue;
+            }
         }
 
       requestFlarmData( cmd, true );
@@ -652,6 +663,14 @@ void SettingsPageFlarm::nextFlarmCommand()
       m_commands.clear();
       nextFlarmCommand();
       return;
+    }
+
+  if( cmd.startsWith( "$PFLAR" ) == true )
+    {
+      // RESET is requested. The reset command is not committed by Flarm.
+      // Clear command buffer and finish action.
+      m_commands.clear();
+      nextFlarmCommand();
     }
 }
 
