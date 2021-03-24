@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2013 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -224,11 +224,20 @@ void FlarmListView::fillItemList( QString& object2Select )
          }
 
        // Try tp map the Flarm Id to an alias name
-       const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
+       const QHash<QString, QPair<QString, bool>>& aliasHash =
+           FlarmAliasList::getAliasHash();
+
+       // Try to map the Flarm Id to an alias name
+       QString actfId = acft.ID;
+
+       if( aliasHash.contains( acft.ID) )
+         {
+           actfId = aliasHash.value(acft.ID).first;
+         }
 
       // Add hash key as invisible column
       sl << it.key()
-         << aliasHash.value( acft.ID, acft.ID )
+         << actfId
          << Distance::getText( distAcft, true, -1 )
          << vertical
          << "";

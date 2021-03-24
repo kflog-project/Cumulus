@@ -156,10 +156,16 @@ void FlarmDisplay::createBackground()
       pen.setWidth(3 * SD);
       painter.setPen( pen );
 
-      const QHash<QString, QString> &aliasHash = FlarmAliasList::getAliasHash();
+      const QHash<QString, QPair<QString, bool>>& aliasHash =
+          FlarmAliasList::getAliasHash();
 
       // Try to map the Flarm Id to an alias name
-      QString actfId = aliasHash.value(selectedObject, selectedObject );
+      QString actfId = selectedObject;
+
+      if( aliasHash.contains( selectedObject) )
+        {
+          actfId = aliasHash.value(selectedObject).first;
+        }
 
       // Draw the Flarm Id of the selected object.
       painter.drawText( 5, size().height() - 5, actfId );

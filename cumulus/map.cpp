@@ -2724,7 +2724,7 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
       usedObjectSize = triangle;
     }
 
-  // additional info can be drawn here, like horizontal arelDistancend vertical distance
+  // additional info can be drawn here, like horizontal and vertical distance
   QString text = Distance::getText( distance, false, -1 );
 
   if( flarmAcft.ClimbRate != INT_MIN )

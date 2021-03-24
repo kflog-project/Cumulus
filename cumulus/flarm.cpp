@@ -1062,7 +1062,7 @@ void Flarm::createTrafficMessage()
           "<td align=right>" + Altitude::getText( rdist, true, 0 ) + "</td></tr>";
 
   // If an alias is known, it is added to the table
-  QString alias = FlarmAliasList::getAliasHash().value( m_flarmStatus.ID );
+  QString alias = FlarmAliasList::getAliasHash().value( m_flarmStatus.ID ).first;
 
   if( alias.isEmpty() == false )
     {

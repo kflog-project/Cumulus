@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2016 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -32,7 +32,7 @@
 #include "rowdelegate.h"
 #include "target.h"
 
-QHash<QString, QString> FlarmAliasList::aliasHash;
+QHash<QString, QPair<QString, bool>> FlarmAliasList::aliasHash;
 
 QMutex FlarmAliasList::mutex;
 
@@ -49,7 +49,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   QHBoxLayout *topLayout = new QHBoxLayout( this );
   topLayout->setSpacing(5);
 
-  list = new QTableWidget( 0, 2, this );
+  list = new QTableWidget( 0, 3, this );
   list->setSelectionBehavior( QAbstractItemView::SelectRows );
   // list->setSelectionMode( QAbstractItemView::SingleSelection );
   list->setAlternatingRowColors( true );
@@ -100,6 +100,9 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   item = new QTableWidgetItem( tr(" Alias (15) ") );
   list->setHorizontalHeaderItem( 1, item );
+
+  item = new QTableWidgetItem( tr(" Show ") );
+  list->setHorizontalHeaderItem( 2, item );
 
   connect( list, SIGNAL(cellChanged( int, int )),
            this, SLOT(slot_CellChanged( int, int )) );
@@ -188,12 +191,12 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   // load alias data into table
   if( ! aliasHash.isEmpty() )
     {
-      QMutableHashIterator<QString, QString> it(aliasHash);
+      QMutableHashIterator<QString, QPair<QString, bool>> it(aliasHash);
 
       while( it.hasNext() )
         {
           it.next();
-          slot_AddRow( it.key(), it.value() );
+          slot_AddRow( it.key(), it.value().first, it.value().second );
         }
 
       list->sortByColumn( 1, Qt::AscendingOrder );
@@ -213,7 +216,7 @@ void FlarmAliasList::showEvent( QShowEvent *event )
   QWidget::showEvent( event );
 }
 
-void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
+void FlarmAliasList::slot_AddRow( QString col0, QString col1, bool col2 )
 {
   list->setRowCount( list->rowCount() + 1 );
 
@@ -230,6 +233,11 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
   item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
   list->setItem( row, 1, item );
 
+  item = new QTableWidgetItem( col2 );
+  item->setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+  item->setCheckState( (col2 == false) ? Qt::Unchecked : Qt::Checked );
+  list->setItem( row, 2, item );
+
   if( ! col0.isEmpty() && col0 == FlarmDisplay::getSelectedObject() )
     {
       // Set this row to be selected because Flarm Id is selected in display.
@@ -238,6 +246,8 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
     }
 
   list->resizeColumnToContents( 0 );
+  list->resizeColumnToContents( 1 );
+  list->resizeColumnToContents( 2 );
   list->resizeRowsToContents();
 
   deleteButton->setEnabled(true);
@@ -245,7 +255,7 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1 )
 
 void FlarmAliasList::slot_DeleteRows()
 {
-  if( list->rowCount() == 0 || list->columnCount() != 2 )
+  if( list->rowCount() == 0 || list->columnCount() != 3 )
     {
       return;
     }
@@ -305,7 +315,7 @@ void FlarmAliasList::slot_DeleteRows()
       list->removeRow( rows2Remove.at(i) );
     }
 
-  list->resizeColumnToContents( 0 );
+  list->resizeColumnsToContents();
 }
 
 void FlarmAliasList::slot_Ok()
@@ -344,7 +354,8 @@ void FlarmAliasList::slot_Ok()
     {
       // Alias names are limited to MaxAliasLength characters
       aliasHash.insert( list->item( i, 0 )->text().trimmed(),
-                        list->item( i, 1 )->text().trimmed().left(MaxAliasLength) );
+                        qMakePair( list->item( i, 1 )->text().trimmed().left(MaxAliasLength),
+                                   (list->item( i, 2 )->checkState() == Qt::Checked) ? true : false ) );
     }
 
   saveAliasData(); // Save data into file
@@ -416,6 +427,21 @@ void FlarmAliasList::slot_CellClicked( int row, int column )
       return;
     }
 
+  if( column == 2 )
+    {
+      // Toggle check box state
+      if( item->checkState() == Qt::Checked )
+        {
+          item->setCheckState( Qt::Unchecked );
+        }
+      else
+        {
+          item->setCheckState( Qt::Checked );
+        }
+
+      return;
+    }
+
   QString title, label;
 
   if( column == 0 )
@@ -464,16 +490,17 @@ void FlarmAliasList::slot_ItemSelectionChanged()
     {
       QTableWidgetItem *item0 = list->item( i, 0 );
       QTableWidgetItem *item1 = list->item( i, 1 );
+      QTableWidgetItem *item2 = list->item( i, 2 );
 
-      if( item0 && item1 )
+      if( item0 && item1 && item2 )
         {
-          if( item0->isSelected() && item1->isSelected() )
+          if( item0->isSelected() && item1->isSelected() && item2->isSelected() )
             {
               enabled = true;
               continue;
             }
 
-          if( ! item0->isSelected() && ! item1->isSelected() )
+          if( ! item0->isSelected() && ! item1->isSelected() && ! item2->isSelected() )
             {
               continue;
             }
@@ -524,19 +551,35 @@ bool FlarmAliasList::loadAliasData()
         }
 
       // A valid line entry has the format: <id>=<alias> where the equal sign
-      // is the delimiter between the two parts.
+      // is the delimiter between the two parts. (old format)
       QStringList sl = line.split( "=", QString::KeepEmptyParts );
 
-      QString key = "";
-      QString val = "";
+      if( sl.size() == 1 )
+        {
+          // The new alias file format has to be used, where the delimeter is ;
+          // <id>;<alias>;<draw-flag>
+          sl = line.split( ";", QString::KeepEmptyParts );
+        }
 
-      if( sl.size() == 2 )
+      QString key;
+      QString val;
+      QString checkState;
+
+      if( sl.size() >= 2 )
         {
           key = sl.at(0).trimmed();
           val = sl.at(1).trimmed();
         }
 
-      if( sl.size() != 2 || key.isEmpty() || val.isEmpty() )
+      if( sl.size() == 3 )
+        {
+          checkState = sl.at(2).trimmed();
+        }
+
+      qDebug() << sl;
+
+      if( sl.size() < 2 || key.isEmpty() || val.isEmpty() ||
+          (sl.size() == 3 && checkState.isEmpty()) )
         {
           qWarning() << "Wrong entry at line" << lineNo << "of"
                      << GeneralConfig::instance()->getFlarmAliasFileName();
@@ -544,7 +587,8 @@ bool FlarmAliasList::loadAliasData()
         }
 
       // Alias names are limited to MaxAliasLength characters
-      aliasHash.insert( key, val.left(MaxAliasLength) );
+      aliasHash.insert( key, qMakePair( val.left(MaxAliasLength),
+                                        (checkState == "1") ? true : false) );
     }
 
   f.close();
@@ -585,14 +629,16 @@ bool FlarmAliasList::saveAliasData()
   stream << "# Cumulus Flarm alias file created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
+         << QCoreApplication::applicationVersion() << "\n";
 
-  QMutableHashIterator<QString, QString> it(aliasHash);
+  QMutableHashIterator<QString, QPair<QString, bool>> it(aliasHash);
 
   while( it.hasNext() )
     {
       it.next();
-      stream << it.key() << "=" << it.value() << endl;
+      stream << it.key() << ";"
+             << it.value().first << ";"
+             << it.value().second << "\n";
     }
 
   f.close();

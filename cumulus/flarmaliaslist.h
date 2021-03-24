@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,13 +24,12 @@
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2010-2015
+ * \date 2010-2021
  *
- * \version 1.1
+ * \version 1.2
  */
 
-#ifndef FLARM_ALIAS_LIST_H
-#define FLARM_ALIAS_LIST_H
+#pragma once
 
 #include <QWidget>
 #include <QHash>
@@ -68,7 +67,7 @@ public:
   /**
    * @return a aliasHash copy to the caller.
    */
-  static QHash<QString, QString>& getAliasHash()
+  static QHash<QString, QPair<QString, bool>>& getAliasHash()
   {
     return aliasHash;
   };
@@ -85,8 +84,8 @@ protected:
 
 private slots:
 
-  /** Adds a new row with two columns to the table. */
-  void slot_AddRow( QString col0="", QString col1="" );
+  /** Adds a new row with three columns to the table. */
+  void slot_AddRow( QString col0="", QString col1="", bool col2=false );
 
   /** Removes all selected rows from the table. */
   void slot_DeleteRows();
@@ -143,12 +142,11 @@ private:
 
   /**
    * Flarm alias hash dictionary. The key is the Flarm Id and the value the
-   * assigned alias name.
+   * assigned alias name together with a draw flag.
    */
-  static QHash<QString, QString> aliasHash;
+  static QHash<QString, QPair<QString, bool>> aliasHash;
 
   /** Mutex used for alias file load and save. */
   static QMutex mutex;
 };
 
-#endif /* FLARM_ALIAS_LIST_H_ */

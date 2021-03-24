@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2016 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -257,7 +257,7 @@ void FlarmRadarView::slotAddFlarmId()
       return;
     }
 
-  QHash<QString, QString>& aliasHash = FlarmAliasList::getAliasHash();
+  QHash<QString, QPair<QString, bool>>& aliasHash = FlarmAliasList::getAliasHash();
 
   if( aliasHash.isEmpty() )
     {
@@ -268,7 +268,12 @@ void FlarmRadarView::slotAddFlarmId()
   aliasHash = FlarmAliasList::getAliasHash();
 
   // Look for an existing alias name
-  QString alias = aliasHash.value( selectedObject, "" );
+  QString alias = "";
+
+  if( aliasHash.contains( selectedObject) )
+    {
+      alias = aliasHash.value(selectedObject).first;
+    }
 
   // Add the selected Flarm Id to the alias list.
   bool ok;
@@ -298,7 +303,9 @@ void FlarmRadarView::slotAddFlarmId()
     }
 
   // Add an alias name to the alias list. An existing alias name will be updated.
-  aliasHash.insert( selectedObject, alias.trimmed().left(FlarmAliasList::MaxAliasLength) );
+  aliasHash.insert( selectedObject,
+                    qMakePair( alias.trimmed().left(FlarmAliasList::MaxAliasLength),
+                               false ) );
   FlarmAliasList::saveAliasData();
   display->createBackground();
   display->update();
