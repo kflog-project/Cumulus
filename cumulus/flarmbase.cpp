@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2017 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -50,8 +50,8 @@ QByteArray FlarmBase::replaceUmlauts( QByteArray string )
   array = array.replace( Qt::Key_Udiaeresis + 0x20, "ue" );
   array = array.replace( 0xdf, "ss" );
 
-  // An additional asterisk in the NMEA sentence is not accepted by Flarm.
-  array = array.replace( "*", "." );
+  // An asterisk in the Flarm command payload is not accepted by Flarm.
+  array = array.replace( "*", "+" );
 
   return array;
 }
@@ -63,15 +63,16 @@ QString FlarmBase::translateAlarmType( const short hexType )
   switch( hexType )
   {
     case 0:
-    case 1:
+      alarmType = QObject::tr("No Traffic");
+      break;
     case 2:
-      alarmType = QObject::tr("Traffic");
+      alarmType = QObject::tr("Aircraft Alarm");
       break;
     case 3:
-      alarmType = QObject::tr("Obstacle");
+      alarmType = QObject::tr("Obstacle Alarm");
       break;
     case 4:
-      alarmType = QObject::tr("Info Alert");
+      alarmType = QObject::tr("Traffic Advisory");
       break;
     case 0x41:
       alarmType = QObject::tr("Skydiver drop zone");
@@ -108,4 +109,59 @@ QString FlarmBase::translateAlarmType( const short hexType )
   }
 
   return alarmType;
+}
+
+QString FlarmBase::translateAcftType( const short acftTypeIn )
+{
+  QString acftType;
+
+  switch( acftTypeIn )
+   {
+     case 1:
+       acftType = QObject::tr("Glider/TMG");
+       break;
+     case 2:
+       acftType = QObject::tr("Tow plane");
+       break;
+     case 3:
+       acftType = QObject::tr("Helicopter");
+       break;
+     case 4:
+       acftType = QObject::tr("Skydiver");
+       break;
+     case 5:
+       acftType = QObject::tr("Drop plane");
+       break;
+     case 6:
+       acftType = QObject::tr("Hangglider");
+       break;
+     case 7:
+       acftType = QObject::tr("Paraglider");
+       break;
+     case 8:
+       acftType = QObject::tr("Motor Aircraft");
+       break;
+     case 9:
+       acftType = QObject::tr("Jet Aircraft");
+       break;
+     case 0xA:
+       acftType = QObject::tr("unknown");
+       break;
+     case 0xB:
+       acftType = QObject::tr("Balloon");
+       break;
+     case 0xC:
+       acftType = QObject::tr("Airship");
+       break;
+     case 0xD:
+       acftType = QObject::tr("Drone");
+       break;
+     case 0xF:
+       acftType = QObject::tr("Obstacle");
+       break;
+     default:
+       break;
+   }
+
+  return acftType;
 }

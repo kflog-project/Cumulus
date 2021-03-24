@@ -268,6 +268,7 @@ void SettingsPageFlarm::loadTableItems()
           << "SAVE;WO;PF"
           << "LOAD;WO;PF"
           << "FFS;WO;PF"
+          << "VOL;RW;PF"
           << "PFLAR;WO;ALL";
 
   m_table->clearContents();

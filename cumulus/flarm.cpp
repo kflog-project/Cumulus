@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2018 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,6 +23,7 @@
 #include "flarmaliaslist.h"
 #include "generalconfig.h"
 #include "layout.h"
+#include "mapconfig.h"
 
 Flarm::Flarm(QObject* parent) : QObject(parent), FlarmBase()
 {
@@ -416,18 +417,6 @@ bool Flarm::extractPflac(QStringList& list)
         {
           m_flarmData.id = list[3];
         }
-      else if( list[2] == "BAUD" )
-        {
-          m_flarmData.baud = list[3];
-        }
-      else if( list[2] == "BAUD1" )
-        {
-          m_flarmData.baud1 = list[3];
-        }
-      else if( list[2] == "BAUD2" )
-        {
-          m_flarmData.baud1 = list[3];
-        }
       else if( list[2] == "NMEAOUT" )
         {
           m_flarmData.nmeaout = list[3];
@@ -439,6 +428,18 @@ bool Flarm::extractPflac(QStringList& list)
       else if( list[2] == "NMEAOUT2" )
         {
           m_flarmData.nmeaout1 = list[3];
+        }
+      else if( list[2] == "BAUD" )
+        {
+          m_flarmData.baud = list[3];
+        }
+      else if( list[2] == "BAUD1" )
+        {
+          m_flarmData.baud1 = list[3];
+        }
+      else if( list[2] == "BAUD2" )
+        {
+          m_flarmData.baud1 = list[3];
         }
       else if( list[2] == "DEVTYPE" )
         {
@@ -573,6 +574,42 @@ bool Flarm::extractPflac(QStringList& list)
           // $PFLAC,A,UI,0*
           // Returns the ui flags of the Flarm
           m_flarmData.ui = list[3];
+        }
+      else if( list[2] == "AUDIOOUT" )
+        {
+          // $PFLAC,A,AUDIOOUT,0*
+          // Returns the audio out flags of the Flarm
+          m_flarmData.audioout = list[3];
+        }
+      else if( list[2] == "AUDIOVOLUME" )
+        {
+          // $PFLAC,A,AUDIOVOLUME,100*
+          // Returns the audio out flags of the Flarm
+          m_flarmData.audiovolume = list[3];
+        }
+      else if( list[2] == "VOL" )
+        {
+          // $PFLAC,A,VOL,100*
+          // Returns the volume on the internal buzzer of the Flarm
+          m_flarmData.vol = list[3];
+        }
+      else if( list[2] == "BATTERYTYPE" )
+        {
+          // $PFLAC,A,BATTERYTYPE,0*
+          // Returns the the used battery chemistry/type of the Flarm
+          m_flarmData.batterytype = list[3];
+        }
+      else if( list[2] == "BRIGHTNESS" )
+        {
+          // $PFLAC,A,BRIGHTNESS,100*
+          // Returns the brightness of the display of the Flarm
+          m_flarmData.brightness = list[3];
+        }
+      else if( list[2] == "DEVICEID" )
+        {
+          // $PFLAC,A,DEVICEID,123*
+          // Returns tthe device identifier of the Flarm
+          m_flarmData.deviceid = list[3];
         }
     }
 
@@ -934,8 +971,6 @@ void Flarm::createTrafficMessage()
 
   int rvert = m_flarmStatus.RelativeVertical.toInt(&ok);
 
-  QString rverts = (rvert > 0) ? "+" : "";
-
   if( ! ok )
     {
       return;
@@ -946,6 +981,25 @@ void Flarm::createTrafficMessage()
   if( ! ok )
     {
       return;
+    }
+
+  QString rverts = (rvert > 0) ? "+" : "";
+  QString arrowVertical;
+
+  if( abs(rvert) < 25 && rdist < 75 )
+    {
+      arrowVertical = QString( ":/icons/cancel-rund.png\" width=\"%1\" height=\"%2\"" )
+                                .arg( 26 * SD).arg( 26 * SD );
+    }
+  else if( rverts > 10 )
+    {
+      arrowVertical = QString( ":/icons/down.png\" width=\"%1\" height=\"%2\"" )
+                               .arg( 26 * SD).arg( 26 * SD );
+    }
+  else if( rverts < 10  )
+    {
+      arrowVertical = QString( ":/icons/up.png\" width=\"%1\" height=\"%2\"" )
+                               .arg( 26 * SD).arg( 26 * SD );
     }
 
   QString almType = FlarmBase::translateAlarmType( m_flarmStatus.AlarmType );
@@ -970,22 +1024,40 @@ void Flarm::createTrafficMessage()
       break;
   }
 
+  QString acftType;
+
+  // Check, if additional information of aircraft type is available
+  if( m_pflaaHash.contains( m_flarmStatus.ID ) == true )
+    {
+      FlarmAcft& aircraftEntry = m_pflaaHash[m_flarmStatus.ID];
+
+      acftType = FlarmBase::translateAcftType( aircraftEntry.AcftType );
+    }
+
   // Load an arrow pixmap to show the traffic direction more in detail.
-  QString arrow;
-  arrow.sprintf( ":/icons/windarrows/wind-arrow-80px-%03d.png\" width=\"%d\" height=\"%d\"",
-                 ta,
-                 80 * SD,
-                 80 * SD );
+  QString arrow = QString( ":/icons/windarrows/wind-arrow-80px-%1.png\" width=\"%2\" height=\"%3\"" )
+                  .arg( ta, 3, 10, QChar('0') )
+                  .arg( 80 * SD )
+                  .arg( 80 * SD );
 
   QString text = "<html><table border=1 cellpadding=\"5\"><tr><th align=center colspan=\"2\">" +
-                  almlevel + "&nbsp;" + almType +
-                 "</th></tr>";
+                  almlevel + "&nbsp;" + almType + "</th></tr>";
+
+  // Add object, if info is available
+  if( acftType.isEmpty() == false )
+    {
+      text += "<tr><td align=left>" + tr("Object")+ "</td>" +
+              "<td align=right>" + acftType + "</td></tr>";
+    }
 
   text += "<tr><td align=left valign=middle>" + tr("Direction") + "</td>" +
           "<td align=right valign=middle>" + "<img src=\"" + arrow + ">" +
           QString::number(dir) + " " + tr("o'clock") + "</td></tr>" +
           "<tr><td align=left>" + tr("Vertical") + "</td>" +
-          "<td align=right>" + rverts + Altitude::getText( rvert, true, 0 ) + "</td></tr>" +
+
+          "<td align=right valign=middle>" +"<img src=\"" + arrowVertical + ">&nbsp;&nbsp;" +
+          rverts + Altitude::getText( rvert, true, 0 ) + "</td></tr>" +
+
           "<tr><td align=left>" + tr("Distance") + "</td>" +
           "<td align=right>" + Altitude::getText( rdist, true, 0 ) + "</td></tr>";
 

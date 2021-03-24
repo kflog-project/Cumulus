@@ -501,6 +501,15 @@ Force flight state change for 20 seconds. <br>
 </table>
 </html>
 
+!VOL!
+
+<html>
+Set volume on the internal buzzer in <br>
+PowerFLARM Portable.0 turns off the buzzer.
+<br><br>
+Decimal integer values from 0 to 3.
+</html>
+
 !PFLAR!
 
 <html>

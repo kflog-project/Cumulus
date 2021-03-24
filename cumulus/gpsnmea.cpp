@@ -514,7 +514,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
         <RelativeVertical>,<RelativeDistance>,<ID>
       */
       //                  1   2 3 4 5 6 7  8   9   10    11
-      QString pflau = "$PFLAU,9,1,2,1,2,20,4,-139,2073,DD8451*";
+      QString pflau = "$PFLAU,9,1,2,1,2,20,4,-10,30,DD8451*";
 
       uint sum = calcCheckSum( pflau.toLatin1().data() );
 
@@ -523,9 +523,9 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       static int i = 0;
 
       if( (++i % 15) == 0 )
-	{
-	  slot_sentence( pflau + sumStr );
-	}
+        {
+          slot_sentence( pflau + sumStr );
+        }
 
       //-------------------------------------------------------------
       QString pflao = "$PFLAO,1,1,471122335,85577812,2000,100,4550,1432832400,DF4738,2,41*";
@@ -537,12 +537,12 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       static int j = 0;
 
       if( (++j % 30) == 0 )
-	{
+        {
       	  slot_sentence( pflao + sumStr );
       	}
 
       //-------------------------------------------------------------
-      QString pflaa = "$PFLAA,3,242,40,139,2,DD8450,270,,21,4.1,1*";
+      QString pflaa = "$PFLAA,3,20,20,-10,2,DD8451,20,,21,4.1,6*";
 
       sum = calcCheckSum( pflaa.toLatin1().data() );
 

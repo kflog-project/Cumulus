@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2018 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,13 +22,12 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2018
+ * \date 2010-2021
  *
- * \version 1.8
+ * \version 1.9
  */
 
-#ifndef FLARM_BASE_H
-#define FLARM_BASE_H
+#pragma once
 
 #include <QDateTime>
 #include <QHash>
@@ -150,11 +149,15 @@ class FlarmBase
    * reported by the Flarm device. The data members are identical to the Flarm
    * key words.
    *
-   * \date 2012-2017
+   * \date 2012-2021
    */
   struct FlarmData
   {
     QString acft;
+    QString audioout;
+    QString audiovolume;
+    QString batterytype;
+    QString brightness;
     QString baud;
     QString baud1;
     QString baud2;
@@ -164,6 +167,7 @@ class FlarmBase
     QString compid;
     QString compclass;
     QString copil;
+    QString deviceid;
     QString devtype;
     QString flarmver;
     QString gliderid;
@@ -197,11 +201,16 @@ class FlarmBase
     QString task;
     QString thre;
     QString ui;
+    QString vol;
     QString vrange;
 
     void reset()
       {
         acft.clear();
+        audioout.clear();
+        audiovolume.clear();
+        batterytype.clear();
+        brightness.clear();
         baud.clear();
         baud1.clear();
         baud2.clear();
@@ -211,6 +220,7 @@ class FlarmBase
         compid.clear();
         compclass.clear();
         copil.clear();
+        deviceid.clear();
         devtype.clear();
         flarmver.clear();
         gliderid.clear();
@@ -241,6 +251,7 @@ class FlarmBase
         task.clear();
         thre.clear();
         ui.clear();
+        vol.clear();
         vrange.clear();
       };
   };
@@ -482,11 +493,20 @@ class FlarmBase
   /**
    * Translates a hexadecimal alarm type into a readable string.
    *
-   * \param hexType alarm type as hex byte
+   * \param hexType alarm type as byte value
    *
    * \return Alarm type as string
    */
   static QString translateAlarmType( const short hexType );
+
+  /**
+   * Translates a hexadecimal aircraft type into a readable string.
+   *
+   * \param acftType aircraft type as byte value
+   *
+   * \return Aircraft type as string
+   */
+  static QString translateAcftType( const short acftType );
 
  protected:
 
@@ -521,4 +541,3 @@ class FlarmBase
   static QMutex m_mutex;
 };
 
-#endif /* FLARM_BASE_H */

@@ -465,47 +465,52 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="../../flarm.cpp" line="958"/>
+        <location filename="../../flarm.cpp" line="1012"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="961"/>
+        <location filename="../../flarm.cpp" line="1015"/>
         <source>Caution</source>
         <translation>Vorsicht</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="964"/>
+        <location filename="../../flarm.cpp" line="1018"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="967"/>
+        <location filename="../../flarm.cpp" line="1021"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="984"/>
+        <location filename="../../flarm.cpp" line="1049"/>
+        <source>Object</source>
+        <translation>Objekt</translation>
+    </message>
+    <message>
+        <location filename="../../flarm.cpp" line="1053"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="986"/>
+        <location filename="../../flarm.cpp" line="1055"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="987"/>
+        <location filename="../../flarm.cpp" line="1056"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="989"/>
+        <location filename="../../flarm.cpp" line="1061"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="997"/>
+        <location filename="../../flarm.cpp" line="1069"/>
         <source>Alias</source>
         <translation></translation>
     </message>
@@ -3714,6 +3719,7 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="363"/>
+        <location filename="../../flarmbase.cpp" line="148"/>
         <location filename="../../flighttask.cpp" line="47"/>
         <location filename="../../flighttask.cpp" line="71"/>
         <location filename="../../flighttask.h" line="87"/>
@@ -3760,6 +3766,7 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../basemapelement.cpp" line="94"/>
+        <location filename="../../flarmbase.cpp" line="151"/>
         <source>Balloon</source>
         <translation>Ballon</translation>
     </message>
@@ -3836,7 +3843,7 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../basemapelement.cpp" line="109"/>
-        <location filename="../../flarmbase.cpp" line="71"/>
+        <location filename="../../flarmbase.cpp" line="160"/>
         <source>Obstacle</source>
         <translation>Hindernis</translation>
     </message>
@@ -4289,69 +4296,134 @@ USB Stick eingeschoben?</translation>
         <translation>Geo N ausgerichtet</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="68"/>
-        <source>Traffic</source>
-        <translation>Verkehr</translation>
+        <location filename="../../flarmbase.cpp" line="66"/>
+        <source>No Traffic</source>
+        <translation>Kein Verkehr</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="74"/>
-        <source>Info Alert</source>
-        <translation>Info Hinweis</translation>
+        <location filename="../../flarmbase.cpp" line="69"/>
+        <source>Aircraft Alarm</source>
+        <translation>Flugzeug Alarm</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="77"/>
+        <location filename="../../flarmbase.cpp" line="72"/>
+        <source>Obstacle Alarm</source>
+        <translation>Hindernis Alarm</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="75"/>
+        <source>Traffic Advisory</source>
+        <translation>Verkehrshinweis</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="78"/>
         <source>Skydiver drop zone</source>
         <translation>Fallschirmsprung Zone</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="80"/>
+        <location filename="../../flarmbase.cpp" line="81"/>
         <source>Aerodrom traffic zone</source>
         <translation>Flughafen Verkehrszone</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="83"/>
+        <location filename="../../flarmbase.cpp" line="84"/>
         <source>Military firing area</source>
         <translation>Militärschießgebiet</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="86"/>
+        <location filename="../../flarmbase.cpp" line="87"/>
         <source>Kite flying zone</source>
         <translation>Drachenflugzone</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="89"/>
+        <location filename="../../flarmbase.cpp" line="90"/>
         <source>Winch launching area</source>
         <translation>Windenstart Gebiet</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="92"/>
+        <location filename="../../flarmbase.cpp" line="93"/>
         <source>RC flying area</source>
         <translation>RC Fluggebiet</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="95"/>
+        <location filename="../../flarmbase.cpp" line="96"/>
         <source>UAS flying area</source>
         <translation>UAS Fluggebiet</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="98"/>
+        <location filename="../../flarmbase.cpp" line="99"/>
         <source>Acrobatic box</source>
         <translation>Kunstflugbox</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="101"/>
+        <location filename="../../flarmbase.cpp" line="102"/>
         <source>Generic danger area</source>
         <translation>Allgemeine Gefahrenzone</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="104"/>
+        <location filename="../../flarmbase.cpp" line="105"/>
         <source>Generic prohibited area</source>
         <translation>Allgemeine Verbotszone</translation>
     </message>
     <message>
-        <location filename="../../flarmbase.cpp" line="107"/>
+        <location filename="../../flarmbase.cpp" line="108"/>
         <source>Other alert zone</source>
         <translation>Unbekannte Alarm Zone</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="121"/>
+        <source>Glider/TMG</source>
+        <translation>Segler/TMG</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="124"/>
+        <source>Tow plane</source>
+        <translation>Schleppflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="127"/>
+        <source>Helicopter</source>
+        <translation>Helikopter</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="130"/>
+        <source>Skydiver</source>
+        <translation>Fallschirmspringer</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="133"/>
+        <source>Drop plane</source>
+        <translation>Absetzflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="136"/>
+        <source>Hangglider</source>
+        <translation>Hängegleiter</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="139"/>
+        <source>Paraglider</source>
+        <translation>Paragleiter</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="142"/>
+        <source>Motor Aircraft</source>
+        <translation>Motorflugzeug</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="145"/>
+        <source>Jet Aircraft</source>
+        <translation>Jet Flugzeug</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="154"/>
+        <source>Airship</source>
+        <translation>Luftschiff</translation>
+    </message>
+    <message>
+        <location filename="../../flarmbase.cpp" line="157"/>
+        <source>Drone</source>
+        <translation>Drone</translation>
     </message>
 </context>
 <context>
@@ -4695,97 +4767,97 @@ USB Stick eingeschoben?</translation>
         <translation>Hole alle Konfigurationsdaten vom FLARM.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="301"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="307"/>
         <source>Get</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="316"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="322"/>
         <source>Set</source>
         <translation>Set</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="436"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="447"/>
         <source>Enter item value</source>
         <translation>Wertzuweisung zu FLARM</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="437"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="448"/>
         <source>Flarm item value:</source>
         <translation>Flarm Wert:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="507"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="518"/>
         <source>Configuration item is unsupported by your FLARM!</source>
         <translation>Konfigurationsvariable wird durch Ihr FLARM nicht unterstützt!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="508"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="519"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="518"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="529"/>
         <source>Configuration item has no value assigned!</source>
         <translation>Variablen Wertzuweisung ist leer!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="519"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="530"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="635"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="742"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="754"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="661"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="776"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="788"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="636"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="674"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="743"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="755"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="662"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="708"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="777"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="789"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="668"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="702"/>
         <source>Command:</source>
         <translation>Kommando:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="672"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="706"/>
         <source>rejected by Flarm with error.</source>
         <translation>abgewiesen durch FLARM mit Fehler.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="688"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="722"/>
         <source>Type=</source>
         <translation>Typ=</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="691"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="725"/>
         <source>ID=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="696"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="730"/>
         <source>Version=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="699"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="733"/>
         <source>Status=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="704"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="738"/>
         <source>Name=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="709"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="743"/>
         <source>Date=</source>
         <translation>Datum=</translation>
     </message>
