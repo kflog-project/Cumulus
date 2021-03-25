@@ -188,43 +188,43 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
   if( showNmeaData )
     {
       if( gps == "ALL" || sentence.startsWith( gps ) )
-	{
-	  // Show only desired sentences
-	  nmeaLines++;
+        {
+          // Show only desired sentences
+          nmeaLines++;
 
-	  if( nmeaLines > maxLines )
-	    {
-	      // Note! To display to many lines can become a performance issue
-	      // because the window update effort is huge.
-	      int idx = nmeaData.indexOf( QChar('\n') );
+          if( nmeaLines > maxLines )
+            {
+              // Note! To display to many lines can become a performance issue
+              // because the window update effort is huge.
+              int idx = nmeaData.indexOf( QChar( '\n' ) );
 
-	      if( idx != -1 && nmeaData.size() > idx + 1 )
-		{
-		  nmeaData.remove( 0, idx + 1 );
-		  nmeaLines--;
-		}
-	    }
+              if( idx != -1 && nmeaData.size() > idx + 1 )
+                {
+                  nmeaData.remove( 0, idx + 1 );
+                  nmeaLines--;
+                }
+            }
 
-	  QString string = sentence.trimmed().append("\n");
+        QString string = sentence.trimmed().append("\n");
 
-	  // NMEA data string to be displayed in QLabel
-	  nmeaData.append( string );
+        // NMEA data string to be displayed in QLabel
+        nmeaData.append( string );
 
-	  // NMEA data to be saved into a file on user request.
-	  nmeaList.append( string );
+        // NMEA data to be saved into a file on user request.
+        nmeaList.append( string );
 
-	  if( nmeaList.size() > 250 )
-	    {
-	      nmeaList.removeFirst();
-	    }
+        if( nmeaList.size() > 250 )
+          {
+            nmeaList.removeFirst();
+          }
 
-	  // To reduce the load the messages are displayed only if the timer
-	  // has expired. The time expires after 750ms. That was the breakdown!!!
-	  if( ! uTimer->isActive() )
-	    {
-	      uTimer->start( 750 );
-	    }
-	}
+        // To reduce the load the messages are displayed only if the timer
+        // has expired. The time expires after 750ms. That was the breakdown!!!
+        if( ! uTimer->isActive() )
+          {
+            uTimer->start( 750 );
+          }
+        }
     }
 
   if( gps == "ALL" && sentence.contains( "GSV" ) )
