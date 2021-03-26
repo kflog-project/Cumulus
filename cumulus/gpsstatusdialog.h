@@ -72,7 +72,7 @@ public:
    * Constructor
    * @param parent Pointer to parent widget
    */
-  GpsStatusDialog( QWidget *parent );
+  GpsStatusDialog( QWidget *parent=0 );
 
   /**
    * Destructor
