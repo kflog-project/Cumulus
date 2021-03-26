@@ -362,7 +362,7 @@ void VarioModeDialog::slot_tekMinus()
 
 void VarioModeDialog::slot_accept()
 {
-  qDebug() << "VarioModeDialog::slot_accept()";
+  // qDebug() << "VarioModeDialog::slot_accept()";
   save();
   emit closingWidget();
   QDialog::accept();
@@ -370,14 +370,14 @@ void VarioModeDialog::slot_accept()
 
 void VarioModeDialog::slot_reject()
 {
-  qDebug() << "VarioModeDialog::slot_reject()";
+  // qDebug() << "VarioModeDialog::slot_reject()";
   emit closingWidget();
   QDialog::reject();
 }
 
 void VarioModeDialog::closeEvent( QCloseEvent *event )
 {
-  qDebug() << "VarioModeDialog::closeEvent()";
+  // qDebug() << "VarioModeDialog::closeEvent()";
   slot_reject();
   event->accept();
 }
