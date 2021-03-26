@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2018 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2021 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -238,10 +238,15 @@ bool MapContents::readTerrainFile( const int fileSecID, const int fileTypeID )
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
 
-  kflName.sprintf("%c_%.5d.kfl", fileTypeID, fileSecID);
+  kflName = QString( "%1_%2.kfl" ).arg( QChar(fileTypeID) )
+                                  .arg( fileSecID, 5, 10, QChar('0') );
+
   kflExists = locateFile("landscape/" + kflName, kflPathName);
 
-  kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
+  kfcName = QString( "landscape/%1_%2.kfc" ).arg( QChar(fileTypeID) )
+                                            .arg( fileSecID, 5, 10, QChar('0') );
+
+
   kfcExists = locateFile(kfcName, kfcPathName);
 
   if ( ! (kflExists || kfcExists) )
@@ -734,10 +739,14 @@ bool MapContents::readBinaryFile(const int fileSecID, const char fileTypeID)
   QString kflPathName, kfcPathName, pathName;
   QString kflName, kfcName;
 
-  kflName.sprintf("%c_%.5d.kfl", fileTypeID, fileSecID);
+  kflName = QString( "%1_%2.kfl" ).arg( QChar(fileTypeID) )
+                                  .arg( fileSecID, 5, 10, QChar('0') );
+
   kflExists = locateFile("landscape/" + kflName, kflPathName);
 
-  kfcName.sprintf("landscape/%c_%.5d.kfc", fileTypeID, fileSecID);
+  kfcName = QString( "landscape/%1_%2.kfc" ).arg( QChar(fileTypeID) )
+                                            .arg( fileSecID, 5, 10, QChar('0') );
+
   kfcExists = locateFile(kfcName, kfcPathName);
 
   if ( ! (kflExists || kfcExists) )
@@ -1488,7 +1497,8 @@ void MapContents::slotDownloadMapArea( const QPoint &center, const Distance& len
             {
               QString kflName, kflPathName;
 
-              kflName.sprintf( "%c_%.5d.kfl", fileType[k], tile );
+              kflName = QString( "%1_%2.kfl" ).arg( QChar(fileType[k]) )
+                                              .arg( tile, 5, 10, QChar('0') );
 
               if( locateFile( "landscape/" + kflName, kflPathName ) == true )
                 {
