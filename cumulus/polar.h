@@ -25,17 +25,16 @@
  *
  * \brief Class for glider polar calculations and drawing.
  *
- * \date 2002-2015
+ * \date 2002-2021
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
-#ifndef POLAR_H
-#define POLAR_H
+#pragma once
 
-#include <QWidget>
 #include <QString>
+#include <QWidget>
 
 #include "speed.h"
 
@@ -85,8 +84,8 @@ class Polar
   /** draw a graphical polar on the given widget;
    * draw glide path according to lift, wind and McCready value
    */
-  void drawPolar (QWidget* view, const Speed& wind,
-		  const Speed& lift, const Speed& mc) const;
+  void drawPolar( QWidget* view, const Speed& wind,
+                  const Speed& lift, const Speed& mc) const;
 
   QString name() const
   {
@@ -267,5 +266,3 @@ class Polar
   int    _seats;
   int    _maxWater;
 };
-
-#endif
