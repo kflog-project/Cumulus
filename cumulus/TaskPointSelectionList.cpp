@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2018 by Axel Pauli
+**   Copyright (c):  2018-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -358,8 +358,8 @@ TaskPointSelectionList::PointItem::PointItem( QString item0, QString item1, Wayp
 {
   // A SinglePoint object must be created due to a Waypoint is not derived from
   // a SinglePoint.
-  point = new SinglePoint( wp->name,
-                           wp->description,
+  point = new SinglePoint( wp->description,
+                           wp->name,
                            static_cast<BaseMapElement::objectType>(wp->type),
                            wp->wgsPoint,
                            wp->projPoint,

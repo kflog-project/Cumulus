@@ -34,9 +34,9 @@
 #include "rowdelegate.h"
 #include "target.h"
 
-QHash<QString, QPair<QString, bool>> FlarmAliasList::aliasHash;
+QHash<QString, QPair<QString, bool> > FlarmAliasList::aliasHash;
 
-QHash<QString, QPair<QString, bool>> FlarmAliasList::aliasShowHash;
+QHash<QString, QPair<QString, bool> > FlarmAliasList::aliasShowHash;
 
 QMutex FlarmAliasList::mutex;
 
@@ -205,7 +205,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   // load alias data into table
   if( ! aliasHash.isEmpty() )
     {
-      QMutableHashIterator<QString, QPair<QString, bool>> it(aliasHash);
+      QMutableHashIterator<QString, QPair<QString, bool> > it(aliasHash);
 
       while( it.hasNext() )
         {
@@ -660,7 +660,7 @@ bool FlarmAliasList::saveAliasData()
          << " by Cumulus "
          << QCoreApplication::applicationVersion() << "\n";
 
-  QMutableHashIterator<QString, QPair<QString, bool>> it(aliasHash);
+  QMutableHashIterator<QString, QPair<QString, bool> > it(aliasHash);
 
   while( it.hasNext() )
     {
@@ -686,7 +686,7 @@ void FlarmAliasList::loadAliasShowData()
       return;
     }
 
-  QMutableHashIterator<QString, QPair<QString, bool>> it(aliasHash);
+  QMutableHashIterator<QString, QPair<QString, bool> > it(aliasHash);
 
   while( it.hasNext() )
     {

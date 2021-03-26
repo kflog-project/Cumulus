@@ -156,7 +156,7 @@ void FlarmDisplay::createBackground()
       pen.setWidth(3 * SD);
       painter.setPen( pen );
 
-      const QHash<QString, QPair<QString, bool>>& aliasHash =
+      const QHash<QString, QPair<QString, bool> >& aliasHash =
           FlarmAliasList::getAliasHash();
 
       // Try to map the Flarm Id to an alias name

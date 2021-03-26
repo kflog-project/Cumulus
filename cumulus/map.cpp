@@ -2538,7 +2538,7 @@ void Map::p_drawOtherAircraft()
     }
 
   // Draw all selected objects from the Flarm alias list
-  QHash<QString, QPair<QString, bool>>& fa = FlarmAliasList::getAliasShowHash();
+  QHash<QString, QPair<QString, bool> >& fa = FlarmAliasList::getAliasShowHash();
 
   if( fa.size() > 0 )
     {
@@ -2779,7 +2779,7 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
   QString id = flarmAcft.ID.left( 3 );
 
   // Check, if id can be mapped to an alias name
-  QHash<QString, QPair<QString, bool>>& fa = FlarmAliasList::getAliasHash();
+  QHash<QString, QPair<QString, bool> >& fa = FlarmAliasList::getAliasHash();
 
   if( fa.contains( flarmAcft.ID ) == true )
     {

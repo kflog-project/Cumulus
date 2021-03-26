@@ -999,12 +999,12 @@ void Flarm::createTrafficMessage()
       arrowVertical = QString( ":/icons/cancel-rund.png\" width=\"%1\" height=\"%2\"" )
                                 .arg( 26 * SD).arg( 26 * SD );
     }
-  else if( rverts > 10 )
+  else if( rvert > 10 )
     {
       arrowVertical = QString( ":/icons/down.png\" width=\"%1\" height=\"%2\"" )
                                .arg( 26 * SD).arg( 26 * SD );
     }
-  else if( rverts < 10  )
+  else if( rvert < 10  )
     {
       arrowVertical = QString( ":/icons/up.png\" width=\"%1\" height=\"%2\"" )
                                .arg( 26 * SD).arg( 26 * SD );

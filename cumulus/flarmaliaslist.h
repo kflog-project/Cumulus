@@ -23,7 +23,7 @@
  * This widget can create, modify or remove alias names for FLARM hexadecimal
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
- *
+ *> >
  * \date 2010-2021
  *
  * \version 1.2
@@ -67,7 +67,7 @@ public:
   /**
    * @return a aliasHash reference to the caller.
    */
-  static QHash<QString, QPair<QString, bool>>& getAliasHash()
+  static QHash<QString, QPair<QString, bool> >& getAliasHash()
   {
     return aliasHash;
   };
@@ -75,7 +75,7 @@ public:
   /**
    * @return a aliasShowHash reference to the caller.
    */
-  static QHash<QString, QPair<QString, bool>>& getAliasShowHash()
+  static QHash<QString, QPair<QString, bool> >& getAliasShowHash()
   {
     return aliasShowHash;
   };
@@ -158,12 +158,12 @@ private:
    * Flarm alias hash dictionary. The key is the Flarm Id and the value the
    * assigned alias name together with a draw flag.
    */
-  static QHash<QString, QPair<QString, bool>> aliasHash;
+  static QHash<QString, QPair<QString, bool> > aliasHash;
 
   /**
    * Flarm alias hash dictionary, where the show flag is set to true.
    */
-  static QHash<QString, QPair<QString, bool>> aliasShowHash;
+  static QHash<QString, QPair<QString, bool> > aliasShowHash;
 
   /** Mutex used for alias file load and save. */
   static QMutex mutex;

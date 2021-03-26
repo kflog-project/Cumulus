@@ -277,7 +277,7 @@ void FlarmRadarView::slotAddFlarmId()
       return;
     }
 
-  QHash<QString, QPair<QString, bool>>& aliasHash = FlarmAliasList::getAliasHash();
+  QHash<QString, QPair<QString, bool> >& aliasHash = FlarmAliasList::getAliasHash();
 
   if( aliasHash.isEmpty() )
     {
