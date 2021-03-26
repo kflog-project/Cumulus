@@ -1,11 +1,9 @@
 /************************************************************************
  **
- **   Copyright (c): 2007-2009 by Axel Pauli, kflog.cumulus@gmail.com
+ **   Copyright (c): 2007-2021 by Axel Pauli, kflog.cumulus@gmail.com
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  *************************************************************************
  **
@@ -189,8 +187,11 @@ bool Sonne::sonneAufUnter( QString& Auf, QString& Unter,
   int hUnter = (Untergang / 3600) % 24;
   int mUnter = (Untergang % 3600) / 60;
 
-  Auf.sprintf("%02d:%02d", hAuf, mAuf);
-  Unter.sprintf("%02d:%02d", hUnter, mUnter);
+  Auf = QString( "%1:%2" ).arg( hAuf, 2, 10, QChar('0') )
+                          .arg( mAuf, 2, 10, QChar('0') );
+
+  Unter = QString( "%1:%2" ).arg( hUnter, 2, 10, QChar('0') )
+                            .arg( mUnter, 2, 10, QChar('0') );
 
   // Die Auf- und Untergangszeiten sind auf UTC bezogen
   if( Time::getTimeUnit() == Time::local )
