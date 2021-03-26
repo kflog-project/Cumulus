@@ -1442,16 +1442,21 @@ void MapView::slot_gpsStatusDialog()
       return;
     }
 
-  GpsStatusDialog *gpsDlg = new GpsStatusDialog( this );
+  GpsStatusDialog* gpsDlg = 0;
 
-#ifndef CUM4DESKTOP
-  // For desptop applikations the GPS status dialog can shown in parallel
-  // to the root window.
+#ifdef CUM4DESKTOP
+  // For desptop applications the GPS status dialog can shown and operate in
+  // parallel to the root window.
+  gpsDlg = new GpsStatusDialog( 0 );
+
+#else
+  gpsDlg = new GpsStatusDialog( this );
+
   connect( gpsDlg, SIGNAL( closingWidget() ), SIGNAL( closingSubWidget() ) );
   emit openingSubWidget();
 #endif
 
-  gpsDlg->setVisible(true);
+  gpsDlg->setVisible( true );
 }
 
 /** Opens the inflight glider settings dialog. */
