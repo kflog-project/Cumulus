@@ -24,7 +24,9 @@
 #include "flarmdisplay.h"
 #include "flarmradarview.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
 #include "layout.h"
+#include "mainwindow.h"
 
 /**
  * Constructor
@@ -67,6 +69,9 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   QGroupBox* buttonBox = new QGroupBox( this );
   buttonBox->setContentsMargins(2, 2, 2, 2);
 
+  helpButton = new QPushButton;
+  helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+
   zoomButton = new QPushButton;
   zoomButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("zoom32.png")));
 
@@ -94,6 +99,7 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
       addButton->setVisible( false );
     }
 
+  connect( helpButton, SIGNAL(clicked() ), this, SLOT(slotHelp()) );
   connect( zoomButton, SIGNAL(clicked() ), this, SLOT(slotZoom()) );
   connect( listButton, SIGNAL(clicked() ), this, SLOT(slotOpenListView()) );
   connect( updateButton, SIGNAL(clicked() ), this, SLOT(slotUpdateInterval()) );
@@ -106,6 +112,8 @@ FlarmRadarView::FlarmRadarView( QWidget *parent ) :
   QVBoxLayout *vbox = new QVBoxLayout;
 
   vbox->setSpacing(0);
+  vbox->addWidget( helpButton );
+  vbox->addStretch(2);
   vbox->addWidget( zoomButton );
   vbox->addStretch(2);
   vbox->addWidget( listButton );
@@ -147,7 +155,8 @@ void FlarmRadarView::showEvent( QShowEvent* event )
       iconSize   = buttonSize - 5;
     }
 
-  QPushButton* pba[7] = { zoomButton,
+  QPushButton* pba[8] = { helpButton,
+                          zoomButton,
                           listButton,
                           updateButton,
                           aliasButton,
@@ -155,7 +164,7 @@ void FlarmRadarView::showEvent( QShowEvent* event )
                           windButton,
                           closeButton };
 
-  for( int i = 0; i < 7; i++ )
+  for( int i = 0; i < 8; i++ )
     {
       QPushButton* pb = pba[i];
       pb->setIconSize(QSize(iconSize, iconSize));
@@ -183,6 +192,17 @@ void FlarmRadarView::slotZoom()
     {
       display->slot_SwitchZoom( FlarmDisplay::Low );
     }
+}
+
+/** Called if the help button was pressed. */
+void FlarmRadarView::slotHelp()
+{
+  QString file = "cumulus-flarm.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file );
+  hb->resize( MainWindow::mainWindow()->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
 }
 
 /** Called if list view button was pressed. */

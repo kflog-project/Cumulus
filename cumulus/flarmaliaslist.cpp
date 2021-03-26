@@ -29,10 +29,14 @@
 #include "flarmdisplay.h"
 #include "layout.h"
 #include "generalconfig.h"
+#include "helpbrowser.h"
+#include "mainwindow.h"
 #include "rowdelegate.h"
 #include "target.h"
 
 QHash<QString, QPair<QString, bool>> FlarmAliasList::aliasHash;
+
+QHash<QString, QPair<QString, bool>> FlarmAliasList::aliasShowHash;
 
 QMutex FlarmAliasList::mutex;
 
@@ -120,6 +124,13 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   int buttonSize = Layout::getButtonSize();
   int iconSize   = buttonSize - 5;
 
+  QPushButton *helpButton  = new QPushButton;
+  helpButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "help32.png" ) ) );
+  helpButton->setIconSize(QSize(iconSize, iconSize));
+  // helpButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+  helpButton->setMinimumSize(buttonSize, buttonSize);
+  helpButton->setMaximumSize(buttonSize, buttonSize);
+
   QPushButton *addButton  = new QPushButton;
   addButton->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "add.png" ) ) );
   addButton->setIconSize(QSize(iconSize, iconSize));
@@ -160,6 +171,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   closeButton->setMinimumSize(buttonSize, buttonSize);
   closeButton->setMaximumSize(buttonSize, buttonSize);
 
+  connect( helpButton, SIGNAL(clicked() ), this, SLOT(slot_Help()) );
   connect( addButton, SIGNAL(clicked() ), this, SLOT(slot_AddRow()) );
   connect( deleteButton, SIGNAL(clicked() ), this, SLOT(slot_DeleteRows()) );
   connect( okButton, SIGNAL(clicked() ), this, SLOT(slot_Ok()) );
@@ -169,6 +181,8 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   QVBoxLayout *vbox = new QVBoxLayout;
 
   vbox->setSpacing(0);
+  vbox->addWidget( helpButton );
+  vbox->addSpacing(32);
   vbox->addWidget( addButton );
   vbox->addSpacing(32);
   vbox->addWidget( deleteButton );
@@ -318,6 +332,17 @@ void FlarmAliasList::slot_DeleteRows()
   list->resizeColumnsToContents();
 }
 
+/** Called if the help button was pressed. */
+void FlarmAliasList::slot_Help()
+{
+  QString file = "cumulus-flarm.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file, "AliasList" );
+  hb->resize( MainWindow::mainWindow()->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
+}
+
 void FlarmAliasList::slot_Ok()
 {
   if( list->rowCount() != 0 )
@@ -357,6 +382,8 @@ void FlarmAliasList::slot_Ok()
                         qMakePair( list->item( i, 1 )->text().trimmed().left(MaxAliasLength),
                                    (list->item( i, 2 )->checkState() == Qt::Checked) ? true : false ) );
     }
+
+  loadAliasShowData(); // update show data
 
   saveAliasData(); // Save data into file
 
@@ -510,7 +537,7 @@ void FlarmAliasList::slot_ItemSelectionChanged()
         }
     }
 
-  deleteButton->setEnabled(enabled);
+  deleteButton->setEnabled( enabled );
 }
 
 #warning "FLARM alias file 'cumulus-flarm.txt' is stored at User Data Directory"
@@ -593,6 +620,8 @@ bool FlarmAliasList::loadAliasData()
 
   f.close();
 
+  loadAliasShowData();
+
   qDebug() << aliasHash.size() << "entries read from" << f.fileName();
 
   mutex.unlock();
@@ -645,6 +674,29 @@ bool FlarmAliasList::saveAliasData()
 
   mutex.unlock();
   return true;
+}
+
+void FlarmAliasList::loadAliasShowData()
+{
+  // remove all hash data
+  aliasShowHash.clear();
+
+  if( aliasHash.isEmpty() )
+    {
+      return;
+    }
+
+  QMutableHashIterator<QString, QPair<QString, bool>> it(aliasHash);
+
+  while( it.hasNext() )
+    {
+      it.next();
+
+      if( it.value().second == true )
+        {
+          aliasShowHash.insert( it.key(), it.value() );
+        }
+    }
 }
 
 void FlarmAliasList::slot_scrollerBoxToggled( int state )

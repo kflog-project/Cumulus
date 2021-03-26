@@ -19,7 +19,13 @@
 #include <cstdlib>
 #include <cmath>
 
+#include <QtCore>
+
+#ifndef QT_5
 #include <QtGui>
+#else
+#include <QtWidgets>
+#endif
 
 #include "airfield.h"
 #include "airspace.h"
@@ -27,6 +33,7 @@
 #include "calculator.h"
 #include "mainwindow.h"
 #include "distance.h"
+#include "flarmaliaslist.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "layout.h"
@@ -765,8 +772,9 @@ void Map::slotNewWind( Vector& wind )
       int angle = wind.getAngleDeg();
       angle = (((angle + 5) / 10) * 10) % 360;  // Quantizes modulo 10
 
-      QString resource;
-      resource.sprintf("windarrows/wind-arrow-80px-%03d.png", angle );
+      QString resource = QString( "windarrows/wind-arrow-80px-%1.png" )
+                                  .arg(angle, 3, 10, QChar('0') );
+
       m_windArrow = GeneralConfig::instance()->loadPixmap( resource, true );
     }
   else
@@ -2528,6 +2536,31 @@ void Map::p_drawOtherAircraft()
       // Draw most relevant object.
       p_drawMostRelevantObject( status );
     }
+
+  // Draw all selected objects from the Flarm alias list
+  QHash<QString, QPair<QString, bool>>& fa = FlarmAliasList::getAliasShowHash();
+
+  if( fa.size() > 0 )
+    {
+      // Loads all ID's as list
+      QList<QString> ids = fa.keys();
+
+      for( int i=0; i < ids.size(); i++ )
+        {
+          if( ids[i] == selectedObject )
+            {
+              // Object was already drawn
+              continue;
+            }
+
+          if( Flarm::getPflaaHash().contains( ids[i] ) == true )
+            {
+              // ID is contained in current collected data
+              const Flarm::FlarmAcft& flarmAcft = Flarm::getPflaaHash().value( ids[i] );
+              p_drawSelectedFlarmObject( flarmAcft );
+            }
+        }
+    }
 }
 
 /**
@@ -2741,6 +2774,19 @@ void Map::p_drawSelectedFlarmObject( const Flarm::FlarmAcft& flarmAcft )
 
       text += climb.getVerticalText( false, 1);
     }
+
+  // add first 3 letters of id or alias name to text.
+  QString id = flarmAcft.ID.left( 3 );
+
+  // Check, if id can be mapped to an alias name
+  QHash<QString, QPair<QString, bool>>& fa = FlarmAliasList::getAliasHash();
+
+  if( fa.contains( flarmAcft.ID ) == true )
+    {
+      id = fa.value( flarmAcft.ID ).first.left( 3 );
+    }
+
+  text += " " + id;
 
   QRect textRect = painter.fontMetrics().boundingRect( text );
 

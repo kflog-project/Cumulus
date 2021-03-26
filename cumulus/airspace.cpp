@@ -438,27 +438,27 @@ QString Airspace::getInfoString() const
       text += ", ";
 
       if( m_flarmAlertZone.ActivityLimit == 0 )
-	{
-	  text += QObject::tr("always active");
-	}
+        {
+          text += QObject::tr("always active");
+        }
       else
-	{
-	  QDateTime dt;
-	  dt.setMSecsSinceEpoch( qint64(m_flarmAlertZone.ActivityLimit) * 1000 );
+        {
+          QDateTime dt;
+          dt.setMSecsSinceEpoch( qint64(m_flarmAlertZone.ActivityLimit) * 1000 );
 
-	  QString dtString;
+          QString dtString;
 
-	  if( Time::getTimeUnit() == Time::local )
-	    {
-	      dtString = dt.toLocalTime().toString("yyyy-MM-dd hh:mm:ss");
-	    }
-	  else
-	    {
-	      dtString = dt.toTimeSpec(Qt::UTC).toString("yyyy-MM-dd hh:mm:ss") + " UTC";
-	    }
+          if( Time::getTimeUnit() == Time::local )
+            {
+              dtString = dt.toLocalTime().toString("yyyy-MM-dd hh:mm:ss");
+            }
+          else
+            {
+              dtString = dt.toTimeSpec(Qt::UTC).toString("yyyy-MM-dd hh:mm:ss") + " UTC";
+            }
 
-	  text += QObject::tr("active until ") + dtString;
-	}
+          text += QObject::tr("active until ") + dtString;
+        }
     }
 
   text += "</FONT>";

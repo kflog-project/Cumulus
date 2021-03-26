@@ -65,11 +65,19 @@ public:
   virtual ~FlarmAliasList();
 
   /**
-   * @return a aliasHash copy to the caller.
+   * @return a aliasHash reference to the caller.
    */
   static QHash<QString, QPair<QString, bool>>& getAliasHash()
   {
     return aliasHash;
+  };
+
+  /**
+   * @return a aliasShowHash reference to the caller.
+   */
+  static QHash<QString, QPair<QString, bool>>& getAliasShowHash()
+  {
+    return aliasShowHash;
   };
 
   /** Loads the Flarm alias data from the related file into the alias hash. */
@@ -84,6 +92,9 @@ protected:
 
 private slots:
 
+  /** Loads the Flarm alias show data from the alias hash. */
+  static void loadAliasShowData();
+
   /** Adds a new row with three columns to the table. */
   void slot_AddRow( QString col0="", QString col1="", bool col2=false );
 
@@ -95,6 +106,9 @@ private slots:
 
   /** Close button press is handled here. */
   void slot_Close();
+
+  /** Called if the help button was pressed. */
+  void slot_Help();
 
   /** Cell content change is handled here. */
   void slot_CellChanged( int row, int column );
@@ -145,6 +159,11 @@ private:
    * assigned alias name together with a draw flag.
    */
   static QHash<QString, QPair<QString, bool>> aliasHash;
+
+  /**
+   * Flarm alias hash dictionary, where the show flag is set to true.
+   */
+  static QHash<QString, QPair<QString, bool>> aliasShowHash;
 
   /** Mutex used for alias file load and save. */
   static QMutex mutex;

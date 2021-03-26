@@ -1,7 +1,8 @@
 <html>
 <head>
-<title>Cumulus Flarm</title>
-<link rel="stylesheet" type="text/css" href="text.css">
+	<meta charset="utf-8"/>
+	<title>Cumulus Flarm</title>
+	<link rel="stylesheet" type="text/css" href="text.css">
 </head>
 
 <body>
@@ -20,9 +21,9 @@
 
 	Cumulus can be connected to a Classic FLARM or to a PowerFlarm device
 	and is able to process the proprietary sentences emitted by that
-	device. On the map display it shows the positions of the most important
-	(collision-threatening) aircraft or ground obstacles, as well as one
-	selected object. Furthermore, as an alternative to the map view, a
+	devices. On the map display it shows the positions of the most important
+	(collision-threatening) aircraft or ground obstacles, as well as all
+	selected objects by you. Furthermore, as an alternative to the map view, a
 	radar view display is provided showing all received Flarm contacts.
 
 	<font color="#CC0000">
@@ -34,7 +35,7 @@
 
 	Flarm devices only have a bidirectional serial RS232 interface. Cumulus
 	can be connected to a Flarm device via this interface or by means of an
-	RS232-USB gadget or an USB IOIO Uart Board or an RS232-Bluetooth gadget.
+	RS232-USB gadget or an RS232-Bluetooth gadget.
 	Which variant do you use depends on your available PDA hardware. The use
 	of a USB connection requires the USB port to support the OTG (On-the-go)
 	mode. See also in	<a href="cumulus-settings-gps.html">Settings - GPS</a>
@@ -285,16 +286,18 @@
 	<i>Close</i> button.
 
 	<h4>
-		<a name="AliasList"></a>Flarm alias list
+		<a id="AliasList"></a>Flarm alias list
 	</h4>
 
 	Pressing the monkey button opens a new window giving a table view of
 	your defined Flarm alias names. A 6-digit Flarm hex identifier can be
 	replaced by a more easily-remembered name. The length of an alias name
 	is limited to 15 characters. To add a new alias name, press the
-	<i>Plus</i> button. This appends a new row with two columns at the end
+	<i>Plus</i> button. This appends a new row with three columns at the end
 	of the table. In the left column enter the Flarm identifier to be
-	translated and in the right column your desired alias name. An existing
+	translated and in the right column beside your desired alias name.
+	If you check the box at the right side, the contact is shown at the map,
+	when it is received. An existing
 	entry can be changed by clicking on the cell to be modified.
 	<b>Note!</b> If you add the same Flarm identifier to the table more
 	than once, only the last entry is saved. If you want to remove one or
@@ -328,7 +331,7 @@
 		format:</p>
 
 	<blockquote>
-		<b>&lt;Flarm-Id&gt; '=' &lt;Alias-Name&gt;</b>
+		<b>&lt;Flarm-Id&gt; ';' &lt;Alias-Name&gt; ';' &lt;Map-display [0,1]&gt;</b>
 
 		<p>
 			<b>Example:</b>
@@ -336,13 +339,12 @@
 		<pre>
 # Flarm alias file, comment line
 $ another comment line
-ABCDEF=My best friend
+ABCDEF;My best friend;1
 </pre>
 
 	</blockquote>
 
-	Note that no white spaces are allowed on either side of the equals
-	sign!
+	Note that no white spaces are allowed on either side of the semicolon!
 
 	<h4>
 		<a name="DataUpdate"></a>Flarm data up-to-dateness

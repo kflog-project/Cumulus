@@ -49,6 +49,7 @@ bool Flarm::extractPflau( const QStringList& stringList )
 
   if ( stringList[0] != "$PFLAU" || stringList.size() < 11 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PFLAU contains too less parameters!");
       return false;
     }
@@ -146,6 +147,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
 {
   if ( stringList[0] != "$PFLAA" || stringList.size() < 12 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PFLAA contains too less parameters!");
       return false;
     }
@@ -250,7 +252,8 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   // is put or updated in the pflaaHash hash dictionary.
   QString key = createHashKey( aircraft.IdType, aircraft.ID );
 
-  if( m_collectPflaa == true || key == FlarmDisplay::getSelectedObject() )
+  if( m_collectPflaa == true || key == FlarmDisplay::getSelectedObject() ||
+      FlarmAliasList::getAliasShowHash().contains( key ) )
     {
       // first check, if record is already contained in the hash.
       if( m_pflaaHash.contains( key ) == true )
@@ -273,6 +276,7 @@ bool Flarm::extractPflav(const QStringList& stringList)
 {
   if ( stringList[0] != "$PFLAV" || stringList.size() < 5 )
      {
+      // Checksum has to be ignored in counting.
        qWarning("$PFLAV contains too less parameters!");
        return false;
      }
@@ -328,6 +332,7 @@ bool Flarm::extractPflae(const QStringList& stringList)
 
   if( stringList[0] != "$PFLAE" || stringList.size() < 4 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PFLAE contains too less parameters!");
       return false;
     }
@@ -626,11 +631,12 @@ bool Flarm::extractPflar(QStringList& stringList)
    *
    * Answer send by Flarm after a reset command.
    */
-  if ( stringList[0] != "$PFLAR" || stringList.size() < 2 )
-      {
-        qWarning("$PFLAR contains too less parameters!");
-        return false;
-      }
+  if( stringList[0] != "$PFLAR" || stringList.size() < 2 )
+    {
+      // Checksum has to be ignored in counting.
+      qWarning( "$PFLAR contains too less parameters!" );
+      return false;
+    }
 
   emit flarmResetResponse( stringList );
   return true;
@@ -667,14 +673,15 @@ bool Flarm::extractPflaq(QStringList& stringList)
     *
     * Progress info send by Flarm.
     */
-    if ( stringList[0] != "$PFLAQ" || stringList.size() < 4 )
-        {
-          qWarning("$PFLAQ contains too less parameters!");
-          return false;
-        }
+  if( stringList[0] != "$PFLAQ" || stringList.size() < 4 )
+    {
+      // Checksum has to be ignored in counting.
+      qWarning( "$PFLAQ contains too less parameters!" );
+      return false;
+    }
 
-    emit flarmProgressInfo( stringList );
-    return true;
+  emit flarmProgressInfo( stringList );
+  return true;
 }
 
 bool Flarm::extractPflao(QStringList& stringList)
@@ -697,6 +704,7 @@ bool Flarm::extractPflao(QStringList& stringList)
    */
   if( stringList[0] != "$PFLAO" || stringList.size() < 12 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PFLAO contains too less parameters!");
       return false;
     }

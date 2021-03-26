@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2016 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,13 +22,12 @@
  *
  * This widget shows the Flarm radar view with the operation buttons.
  *
- * \date 2010-2016
+ * \date 2010-2021
  *
- * \version 1.1
+ * \version 1.2
  */
 
-#ifndef FLARM_RADAR_VIEW_H
-#define FLARM_RADAR_VIEW_H
+#pragma once
 
 #include <QWidget>
 
@@ -90,6 +89,9 @@ private slots:
   /** Called if close button was pressed. */
   void slotClose();
 
+  /** Called if the help button was pressed. */
+  void slotHelp();
+
   /** Called if zoom level shall be changed. */
   void slotZoom();
 
@@ -124,6 +126,7 @@ private:
   /** Display with radar view. */
   FlarmDisplay* display;
 
+  QPushButton* helpButton;
   QPushButton* zoomButton;
   QPushButton* listButton;
   QPushButton* aliasButton;
@@ -141,4 +144,3 @@ private:
   QPixmap pmWindOff;
 };
 
-#endif /* FLARM_RADAR_VIEW_H */

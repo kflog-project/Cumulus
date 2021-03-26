@@ -404,22 +404,6 @@ void GpsNmea::startGpsReceiver()
  * This slot is called by the GpsCon object when a new sentence has
  * arrived from the GPS receiver. The argument contains the sentence to
  * analyze.
- *
- * @AP 2009-03-02: There was added support for a Cambrigde device. This device
- * emits proprietary sentences $PCAID and !w. It can also deliver altitudes
- * (MSL and STD) derived from a pressure sensor. If these values should be
- * used as base altitude instead of the normal GPS altitude, the user option
- * altitude must be set to PRESSURE.
- *
- * @AP 2010-03-16: There was added special support for Maemo. Two proprietary
- * sentences $MAEMO[0/1] are used to transfer the GPS data from the daemon process
- * to Cumulus.
- *
- * @AP 2010-07-31: There was added support for FLARM devices. The sentences
- * $PFLAU, $PFLAA and $PGRMZ are processed.
- *
- * @AP 2010-08-12: The GPS sentence checksum is checked now in the receiver
- * function. Only positive verified sentences are forwarded to this slot.
  */
 void GpsNmea::slot_sentence( const QString& sentenceIn )
 {
@@ -459,7 +443,8 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
 
   QString sentence( sentenceIn );
 
-  // Remove the checksum *hh<CR><LF> from the sentence
+  // Remove the checksum *hh<CR><LF> from the sentence. It was already checked
+  // in the receiver method.
   int idx = sentence.lastIndexOf( QChar('*') );
 
   if( idx != -1 )
@@ -469,7 +454,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
 
   // Split sentence in single parts for each comma and the checksum. The first
   // part will contain the identifier, the rest the arguments.
-  QStringList slst = sentence.split( QRegExp("[,*]"), QString::KeepEmptyParts );
+  QStringList slst = sentence.split( ",", QString::KeepEmptyParts );
 
   if( ! gpsHash.contains(slst[0]) )
     {
@@ -502,7 +487,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
 
 #endif
 
-#if 0
+// #if 0
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
@@ -542,7 +527,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       	}
 
       //-------------------------------------------------------------
-      QString pflaa = "$PFLAA,3,20,20,-10,2,DD8451,20,,21,4.1,6*";
+      QString pflaa = "$PFLAA,3,0,50,-10,2,123456,20,,21,4.1,6*";
 
       sum = calcCheckSum( pflaa.toLatin1().data() );
 
@@ -551,7 +536,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       slot_sentence( pflaa + sumStr );
 
       //---------------------------------------------------------------
-      pflaa = "$PFLAA,2,-700,-700,100,2,222222,0,,30,-0.2,1*";
+      pflaa = "$PFLAA,2,0,-100,10,2,654321,20,,30,-0.2,1*";
 
       sum = calcCheckSum( pflaa.toLatin1().data() );
 
@@ -616,11 +601,10 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       sumStr = QString("%1").arg( sum, 2, 16,  QChar('0') );
 
       slot_sentence( pflaa + sumStr );
-
     }
 
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-#endif
+//#endif
 
   // Call the decode methods for the known sentences
   switch( gpsHash.value( slst[0] ) )
@@ -805,8 +789,9 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
 */
 void GpsNmea::__ExtractGprmc( const QStringList& slst )
 {
-  if( slst.size() < 14 )
+  if( slst.size() < 13 )
     {
+      // Checksum has to be ignored in counting.
       qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
@@ -903,8 +888,9 @@ void GpsNmea::__ExtractGprmc( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpgll( const QStringList& slst )
 {
-  if( slst.size() < 8 )
+  if( slst.size() < 7 )
     {
+      // Checksum has to be ignored in counting.
       qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
@@ -954,8 +940,9 @@ void GpsNmea::__ExtractGpgll( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpgga( const QStringList& slst )
 {
-  if ( slst.size() < 16 )
+  if ( slst.size() < 15 )
     {
+      // Checksum has to be ignored in counting.
       qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
@@ -1030,8 +1017,9 @@ $GNGNS,124524.0,5227.153706,N,01335.903142,E,AA,15,0.7,37.5,43.0, ,  *54<CR><LF>
  */
 void GpsNmea::__ExtractGngns( const QStringList& slst )
 {
-  if( slst.size() < 14 )
+  if( slst.size() < 13 )
     {
+      // Checksum has to be ignored in counting.
       qWarning() << slst[0] << "contains too less parameters!";
       return;
     }
@@ -1087,8 +1075,9 @@ N    Data not valid
 */
 void GpsNmea::__ExtractGpvtg( const QStringList& slst )
 {
-  if ( slst.size() < 10 )
+  if ( slst.size() < 9 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PGVTG contains too less parameters!");
       return;
     }
@@ -1135,6 +1124,7 @@ void GpsNmea::__ExtractHchdm( const QStringList& slst )
 {
   if ( slst.size() < 3 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("HCHDM contains too less parameters!");
       return;
     }
@@ -1177,6 +1167,7 @@ void GpsNmea::__ExtractHchdt( const QStringList& slst )
 {
   if ( slst.size() < 3 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("HCHDT contains too less parameters!");
       return;
     }
@@ -1212,6 +1203,7 @@ void GpsNmea::__ExtractPgrmz( const QStringList& slst )
 {
   if ( slst.size() < 4 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PGRMZ contains too less parameters!");
       return;
     }
@@ -1428,7 +1420,7 @@ void GpsNmea::__ExtractPov( const QStringList& slst )
   12 - X.XX,  ​​​​ // Acceleration in X-Axis
   13 - Y.YY,  ​​​​ // Acceleration in Y-Axis
   14 - Z.ZZ,  ​​​​ // Acceleration in Z-Axis
-       *CHK = standard NMEA checksum
+  15   *CHK = standard NMEA checksum
        <CR><LF>
 
   Note! Items 10, 11, 12, 13, 14 are empty, if the AHRS feature is not switched
@@ -1442,6 +1434,7 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
 {
   if ( slst.size() < 15 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PXCV contains too less parameters!");
       return;
     }
@@ -1632,12 +1625,13 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
   <2>     Barometer Altitude in meters (Leading zeros will be transmitted), Hendrik said: STD
   <3>     Engine Noise Level
   <4>     Log Flags
-  *hh     Checksum, XOR of all bytes of the sentence after the `$' and before the '!'
+  <5>     *hh Checksum, XOR of all bytes of the sentence after the `$' and before the '!'
 */
 void GpsNmea::__ExtractPcaid( const QStringList& slst )
 {
-  if ( slst.size() < 6 )
+  if ( slst.size() < 5 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PCAID contains too less parameters!");
       return;
     }
@@ -1682,8 +1676,9 @@ void GpsNmea::__ExtractPcaid( const QStringList& slst )
 */
 void GpsNmea::__ExtractPgcs( const QStringList& slst )
 {
-  if ( slst.size() < 7 )
+  if ( slst.size() < 6 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$PGCS contains too less parameters!");
       return;
     }
@@ -1795,8 +1790,9 @@ void GpsNmea::__ExtractPflau( const QStringList& slst )
 */
 void GpsNmea::__ExtractGpdtm( const QStringList& slst )
 {
-  if ( slst.size() < 10 )
+  if ( slst.size() < 9 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$GPDTM contains too less parameters!");
       return;
     }
@@ -1837,6 +1833,7 @@ void GpsNmea::__ExtractCambridgeW( const QStringList& stringList )
 
   if ( stringList.size() < 14 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("!w contains too less parameters!");
       return;
     }
@@ -1960,6 +1957,7 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
 
   if ( stringList.size() < 13 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$LXWP0 contains too less parameters!");
       return;
     }
@@ -2060,7 +2058,7 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
     }
 }
 
-/**
+  /**
     Used by LX Navigation devices. The LXWP2 sentence format is:
 
     $LXWP2,<1>,<2>,<3>,<4>,<5>,<6>,<7>,*CS
@@ -2070,7 +2068,7 @@ void GpsNmea::__ExtractLxwp0( const QStringList& stringList )
     ...
 
    Extracts McCready data from LX Navigation $LXWP2 sentence.
-*/
+   */
 void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
 {
   bool ok;
@@ -2079,6 +2077,7 @@ void GpsNmea::__ExtractLxwp2( const QStringList& stringList )
 
   if ( stringList.size() < 8 )
     {
+      // Checksum has to be ignored in counting.
       qWarning("$LXWP2 contains too less parameters!");
       return;
     }
@@ -2355,6 +2354,7 @@ QString GpsNmea::__ExtractConstellation(const QStringList& sentence)
 {
   if ( sentence.size() < 18 )
     {
+      // Checksum has to be ignored in counting.
       qWarning() << sentence[0] << "contains too less parameters!";
       return "";
     }
@@ -3249,6 +3249,7 @@ void GpsNmea::__ExtractSatsInView(const QStringList& sentence)
 {
   if( sentence.size() < 8 )
     {
+      // Checksum has to be ignored in counting.
       qWarning( "$GPGSV contains too less parameters!" );
       return;
     }
