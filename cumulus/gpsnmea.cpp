@@ -487,7 +487,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
 
 #endif
 
-// #if 0
+#if 0
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
   if( slst[0] == "$GPRMC" )
@@ -604,7 +604,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
     }
 
 //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-//#endif
+#endif
 
   // Call the decode methods for the known sentences
   switch( gpsHash.value( slst[0] ) )
