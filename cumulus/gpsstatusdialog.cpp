@@ -138,8 +138,8 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
   hBox->addLayout( buttonBox );
 
   QVBoxLayout* topLayout = new QVBoxLayout( this );
-  topLayout->addLayout( hBox );
-  topLayout->addLayout( nmeaBoxLayout );
+  topLayout->addLayout( hBox, 1 );
+  topLayout->addLayout( nmeaBoxLayout, 2 );
 
   connect( satSource, SIGNAL(currentIndexChanged(int)),
                       SLOT(slot_GpsSourceChanged(int)) );
