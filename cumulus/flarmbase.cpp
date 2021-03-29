@@ -50,10 +50,9 @@ QByteArray FlarmBase::replaceUmlauts( QByteArray string )
   array = array.replace( Qt::Key_Udiaeresis + 0x20, "ue" );
   array = array.replace( 0xdf, "ss" );
 
-  // An asterisk, comma, !, $, \, ^, ~ in the Flarm command
+  // An asterisk, !, $, \, ^, ~ in the Flarm command
   // payload are not accepted by Flarm.
   array = array.replace( "*", "+" );
-  array = array.replace( ",", ";" );
   array = array.replace( "!", "." );
   array = array.replace( "\\", "|" );
   array = array.replace( "^", "+" );
