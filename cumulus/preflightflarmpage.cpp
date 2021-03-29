@@ -582,7 +582,7 @@ void PreFlightFlarmPage::slotRequestFlarmData()
      }
   else
     {
-      // Only supported by Classic Flarm
+      // Only requestable by Classic Flarm, PowerFlarm sends it only.
       m_cmdList << "$PFLAE,R";
     }
 
