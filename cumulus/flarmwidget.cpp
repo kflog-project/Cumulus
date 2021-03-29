@@ -109,7 +109,7 @@ void FlarmWidget::slotOpenAliasList()
     }
 
   aliasList = new FlarmAliasList( this );
-  aliasList->resize( size() );
+  // aliasList->resize( size() );
 
   FlarmDisplay* display = radarView->getDisplay();
 

@@ -49,6 +49,8 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   m_enableScroller(0)
 {
   setAttribute( Qt::WA_DeleteOnClose );
+  setWindowFlags( Qt::Tool );
+  resize( MainWindow::mainWindow()->size() );
 
   QHBoxLayout *topLayout = new QHBoxLayout( this );
   topLayout->setSpacing(5);
@@ -223,9 +225,16 @@ FlarmAliasList::~FlarmAliasList()
 
 void FlarmAliasList::showEvent( QShowEvent *event )
 {
-  Q_UNUSED( event )
+  QHeaderView* hv = list->horizontalHeader();
+  int len = hv->length() / 3;
+  int len1 = len - len / 5;
+  int len2 = len + (2 * len / 5);
 
-  list->resizeColumnToContents( 0 );
+  hv->setResizeMode( QHeaderView::Fixed );
+  hv->resizeSection( 0, len1 );
+  hv->resizeSection( 1, len2 );
+  hv->resizeSection( 2, len1 );
+
   list->resizeRowsToContents();
   QWidget::showEvent( event );
 }
@@ -259,9 +268,6 @@ void FlarmAliasList::slot_AddRow( QString col0, QString col1, bool col2 )
                             QItemSelectionModel::Select|QItemSelectionModel::Rows );
     }
 
-  list->resizeColumnToContents( 0 );
-  list->resizeColumnToContents( 1 );
-  list->resizeColumnToContents( 2 );
   list->resizeRowsToContents();
 
   deleteButton->setEnabled(true);
@@ -435,7 +441,6 @@ void FlarmAliasList::slot_CellChanged( int row, int column )
     {
       // Converts the Flarm identifier to upper case.
       item->setText( item->text().trimmed().toUpper() );
-      list->resizeColumnToContents( 0 );
     }
   else
     {
