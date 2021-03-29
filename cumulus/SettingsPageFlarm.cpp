@@ -68,6 +68,7 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_table->setSelectionMode( QAbstractItemView::SingleSelection );
   m_table->setAlternatingRowColors( true );
   m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+  m_table->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
