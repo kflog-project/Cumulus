@@ -441,15 +441,19 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       return;
     }
 
-  QString sentence( sentenceIn );
+  QString sentence;
 
   // Remove the checksum *hh<CR><LF> from the sentence. It was already checked
   // in the receiver method.
-  int idx = sentence.lastIndexOf( QChar('*') );
+  int idx = sentenceIn.lastIndexOf( QChar('*') );
 
   if( idx != -1 )
     {
-      sentence = sentenceIn.left( idx + 1 );
+      sentence = sentenceIn.left( idx );
+    }
+  else
+    {
+      sentence = sentenceIn;
     }
 
   // Split sentence in single parts for each comma and the checksum. The first
