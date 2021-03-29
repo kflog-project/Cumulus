@@ -15,6 +15,7 @@
 
 #include <cmath>
 
+#include <QtDebug>
 #include <QtCore>
 
 #include "altitude.h"
@@ -328,12 +329,16 @@ bool Flarm::extractPflae(const QStringList& stringList)
       or empty.
 
      $PFLAE,A,2,81*
+
+     Note! This sentence can be requested by ClassicFlarm, PowerFlarm sends it
+     only, when it is necessary.
    */
 
   if( stringList[0] != "$PFLAE" || stringList.size() < 4 )
     {
       // Checksum has to be ignored in counting.
-      qWarning("$PFLAE contains too less parameters!");
+      qWarning() << "$PFLAE contains too less parameters!"
+                 << stringList.join(",");
       return false;
     }
 
