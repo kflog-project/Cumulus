@@ -230,7 +230,11 @@ void FlarmAliasList::showEvent( QShowEvent *event )
   int len1 = len - len / 5;
   int len2 = len + (2 * len / 5);
 
+#ifdef QT_5
+  hv->setSectionResizeMode( QHeaderView::Fixed );
+#else
   hv->setResizeMode( QHeaderView::Fixed );
+#endif
   hv->resizeSection( 0, len1 );
   hv->resizeSection( 1, len2 );
   hv->resizeSection( 2, len1 );
