@@ -15,8 +15,8 @@ If an used Android device has built-in a barometric sensor, you can activate it 
 
 Cumulus releases can be downloaded from [here](https://github.com/kflog-project/Cumulus/tree/master/Releases/) for Linux and Android. <b>Note! Android packages are only available til release level 6.</b>
 
-[Cumulus PDF Manual English](https://github.com/kflog-project/Cumulus/tree/master/cumulus/help/en/Cumulus.pdf)
-[Cumulus PDF Manual Deutsch](https://github.com/kflog-project/Cumulus/tree/master/cumulus/help/de/Cumulus.pdf)
+[Cumulus PDF Manual English](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/en/Cumulus.pdf)<br>
+[Cumulus PDF Manual Deutsch](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/de/Cumulus.pdf)<br>
 
-[Cumulus HTML Help English](https://github.com/kflog-project/Cumulus/tree/master/cumulus/help/en/Cumulus.html)
-[Cumulus HTML Hilfe Deutsch](https://github.com/kflog-project/Cumulus/tree/master/cumulus/help/de/Cumulus.html)
+[Cumulus HTML Help English](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/en/Cumulus.html)<br>
+[Cumulus HTML Hilfe Deutsch](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/de/Cumulus.html)<br>
