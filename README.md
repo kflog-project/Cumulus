@@ -20,6 +20,3 @@ Cumulus releases can be downloaded from [here](https://github.com/kflog-project/
 
 [Cumulus HTML Help English](https://github.com/kflog-project/Cumulus/blob/master/cumulus/help/en/cumulus.html)<br>
 [Cumulus HTML Hilfe Deutsch](https://github.com/kflog-project/Cumulus/blob/master/cumulus/help/de/cumulus.html)<br>
-
-https://github.com/kflog-project/Cumulus/blob/59e3765f806244aa3092a6b2ca8cef32ce835224/cumulus/help/de/cumulus.html
-cumulus/help/de/cumulus.html
