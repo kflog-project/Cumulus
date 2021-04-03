@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2017 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2012-2021 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +88,7 @@ import android.widget.Toast;
  * 
  * @date 2012-2021
  * 
- * @version 1.9
+ * @version 1.10
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -473,38 +474,45 @@ public class CumulusActivity extends QtActivity
   {
     Log.i( TAG, "DownloadFile: Entry URL: " + urlIn + ", Dest: " + destinationIn);
     
-    Context context = getApplicationContext();
+    BufferedInputStream in = null;
+    FileOutputStream out = null;
     
-    WebCommService wcs = new WebCommService( context );
-    
-    return wcs.downloadFile( urlIn, destinationIn );
-  }
-  
-  void sendHttpsRequest( String urlIn, String urlParamsIn )
-  {
-    Log.d(TAG, "sendHttpsRequest: Entry URL: " + urlIn + ", urlParamsIn: " + urlParamsIn);
-    
-    // The HTTPS request is setup as runnable, to avoid a blocking of the calling thread.
-    new Runnable() 
+    try
     {
-        String rUrl;
-        String rParams;
+      in = new BufferedInputStream( new URL(urlIn).openStream() );
+      out = new FileOutputStream( destinationIn );
       
-        @Override
-        public void run() 
+      byte dataBuffer[] = new byte[1024];
+      int bytesRead;
+      
+      while( (bytesRead = in.read(dataBuffer, 0, 1024)) != -1 )
         {
-          WebCommService wcs = new WebCommService( getApplicationContext() );
-          WebCommService.WebCommResult result = wcs.sendHttpsRequest( rUrl,  rParams );
-          nativeHttpsResponse( result.errorCode, result.response );
+          out.write(dataBuffer, 0, bytesRead);
         }
-        
-        public Runnable init(String url, String params)
+      }
+    
+    catch (IOException e)
+      {
+        // handle exception
+        Log.e( TAG, "Download error for " + urlIn +": " + e.getMessage());
+        return -1;
+      }
+    
+    finally
+    {
+      if( in != null )
         {
-          this.rUrl = url;
-          this.rParams = params;
-          return(this);
+          try { in.close(); } catch (IOException e) {};
         }
-    }.init(urlIn, urlParamsIn);
+      
+      if( out != null )
+        {
+          try { out.close(); } catch (IOException e) {};
+        }
+    }
+    
+    // Log.i( TAG, "Download Ok for " + urlIn );
+    return 0;
   }
 	  
   /**
