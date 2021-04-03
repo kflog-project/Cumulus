@@ -18,5 +18,5 @@ Cumulus releases can be downloaded from [here](https://github.com/kflog-project/
 [Cumulus PDF Manual English](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/en/Cumulus.pdf)<br>
 [Cumulus PDF Manual Deutsch](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/de/Cumulus.pdf)<br>
 
-[Cumulus HTML Help English](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/en/cumulus.html)<br>
-[Cumulus HTML Hilfe Deutsch](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/de/cumulus.html)<br>
+[Cumulus HTML Help English](https://github.com/kflog-project/Cumulus/blob/master/cumulus/help/en/cumulus.html)<br>
+[Cumulus HTML Hilfe Deutsch](https://github.com/kflog-project/Cumulus/blob/master/cumulus/help/de/cumulus.html)<br>
