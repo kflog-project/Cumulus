@@ -58,7 +58,6 @@ static jmethodID m_openHardwareMenu   = 0;
 static jmethodID m_downloadFile       = 0;
 static jmethodID m_isRestarted        = 0;
 static jmethodID m_apiLevel           = 0;
-static jmethodID m_httpsRequest       = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -582,16 +581,6 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
-  m_httpsRequest = env->GetMethodID( clazz,
-                                     "sendHttpsRequest",
-                                     "(Ljava/lang/String;Ljava/lang/String;)V");
-
-  if ( isJavaExceptionOccured(env) )
-    {
-      qWarning() << "initJni: could not get ID of sendHttpsRequest";
-      return false;
-    }
-
   return true;
 }
 
@@ -1052,32 +1041,4 @@ int jniGetApiLevel()
 
   jniDetachCurrentThread();
   return result;
-}
-
-int jniSendHttpsRequest( QString& url, QString& urlParams )
-{
-  JNIEnv* env = 0;
-
-  if( !jniEnv( &env ) || shutdown )
-    {
-      return OperationCanceledError;
-    }
-
-  jstring jurl = env->NewStringUTF( url.toUtf8() );
-
-  jstring jparams = env->NewStringUTF( urlParams.toUtf8() );
-
-  jint result = env->CallIntMethod( m_cumActObject,
-                                    m_httpsRequest,
-                                    jurl,
-                                    jparams );
-
-  if ( isJavaExceptionOccured(env) )
-    {
-      qWarning("jniSendHttpsRequest: exception when calling Java method \"sendHttpsRequest\"");
-      result = OperationCanceledError;
-    }
-
-  jniDetachCurrentThread();
-  return NoError;
 }
