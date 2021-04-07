@@ -2,7 +2,8 @@ Source: cumulus
 Section: other
 Priority: optional
 Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
-Build-Depends: debhelper (>= 8.0.0), g++ (>= 4:4.7), libbluetooth-dev (>= 4.99), libqt4-dev (>= 4:4.7.0), libqt4-dev-bin (>= 4:4.7.0), qt4-qmake (>= 4:4.7.0), qt4-linguist-tools (>= 4:4.7.0) 
+Build-Depends: debhelper (>= 13.0.0), g++ (>= 4:10.2), libbluetooth-dev (>= 5.55), libqt5core5a (>= 5.14.0), libqt5network5 (>= 5.14.0), libqt5xml5 (>= 5.14.0), libqt5gui5 (>= 5.14.0), libqt5widgets5 (>= 5.14.0)
+
 Standards-Version: 3.9.2
 Homepage: http://www.kflog.org/cumulus/
 #Vcs-Git: git://git.debian.org/collab-maint/cumulus-2.12.2.git
@@ -17,10 +18,10 @@ Description: Cumulus is a flight computer for glider pilots.
  and logs flights according to the IGC standard.
  .
  Cumulus can be used with different GPS receivers either with the built in
- or an external GPS device connected via serial, USB or BT.
+ or an external GPS device connected via serial, USB, BT or WLAN.
  .
  Cumulus can also process and display FLARM data, if it is connected with
  such a device.
  .
- For more information about Cumulus please take a look at its home page at
- http://www.kflog.org/cumulus/
+ For more information about Cumulus please take a look at its github page at
+ https://github.com/kflog-project/Cumulus
