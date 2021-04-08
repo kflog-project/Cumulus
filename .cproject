@@ -106,11 +106,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.toolchain.gnu.base.151648933.1367526811.1055572773" name="airspace.cpp" rcbsApplicability="disable" resourcePath="cumulus/airspace.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.base.1396492629.2017882870">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1396492629.2017882870" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.1396492629">
-							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1781922442" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-						</tool>
-					</fileInfo>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -178,11 +173,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.toolchain.gnu.base.151648933.347149177.1856089678" name="airspace.cpp" rcbsApplicability="disable" resourcePath="cumulus/airspace.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.base.422164602.1346819305">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.422164602.1346819305" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base.422164602">
-							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1631524996" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-						</tool>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>

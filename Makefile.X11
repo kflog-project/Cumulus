@@ -70,8 +70,6 @@ usage:
 	@echo "  release      - Cleans the build area before build"
 	@echo "  dpkg         - Builds a Debian binary package under the directory dpkg"
 	@echo "  dpkg_src     - Builds a Debian source package under the directory dpkg"
-	@echo "  copy2web     - Copies the Debian package to the webpage"
-	@echo "  copysrc2web  - Copies the Debian source package to the webpage"
 	@echo "  tar          - Cleans the build area and builds a tar file from the source tree"
 	
 all:	qmake
@@ -146,6 +144,7 @@ nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 # This target builds a Debian binary package
 dpkg:	dpkg_prepare
 	@echo "===== Building a Debian binary package for Cumulus $(VERSION) ====="
+	# Change into the build area and call make there
 	@cd $(CUMULUS_DEB); \
 	$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
 		DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" \
@@ -174,26 +173,21 @@ dpkg_prepare:
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
-	@rm -rf $(CUMULUS_DEB)/debian
-	# Python Bug since Ubuntu 16.04, Pipe input not possible
-	@echo "--------------------------------------"
-	@echo "Please answer to question via keyboard"
-	@echo "--------------------------------------"
-	cd $(CUMULUS_DEB); \
+	@rm -rf debian
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	dh_make --packagename cumulus -c gpl3 --yes $(DH_MAKE_OPT)
-	cd $(CUMULUS_DEB)/dpkg/X11/control; \
+	@cd dpkg/X11/control; \
 	cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
 	# Define the package format as native
-	echo '3.0 (native)' > $(CUMULUS_DEB)/debian/source/format
-	echo '10' > $(CUMULUS_DEB)/debian/compat
+	@echo '3.0 (native)' > debian/source/format
+	# Set debian compat to 10
+	@echo '10' > debian/compat
 	
 # This target builds the debian package, if all is prepared before.
 dpkg_build:
-	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage $(DPKG_OPT)
 
 # Copies all files of KFLog into the debian package area. It is called by the
@@ -222,39 +216,6 @@ dpkg_install:
 	install --mode=644 cumulus/help/de/cumulus.png $(DESTDIR)/$(INSTALL_ROOT)/help/de/cumulus.png
 	install --mode=644 sounds/*.wav $(DESTDIR)/$(INSTALL_ROOT)/sounds
 	install --mode=644 dpkg/X11/other/cumulus.desktop $(DESTDIR)/usr/share/applications
-
-# copies change log and debian packages to the kflog web page
-.PHONY : copy2web copysrc2web
-
-copy2web:
-	echo $(ARCHITECTURE)
-ifneq ($(ARCHITECTURE),amd64)
-	# 32bit is assumed
-	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)
-	scp -C $(CUMULUS_DEB_ROOT)/cumulus_$(VERSION)_i386.changes \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_$(OS_REL)_i386.changes
-	scp -C $(CUMULUS_DEB_ROOT)/cumulus_$(VERSION)_i386.deb \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_$(OS_REL)_i386.deb
-	ssh web31_axel@kflog.org 'cd /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots; chmod 644 *.deb *.changes ChangeLog*'
-else
-	# 64bit is assumed
-	scp -C ChangeLog web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/ChangeLog_$(VERSION)
-	scp -C $(CUMULUS_DEB_ROOT)/cumulus_$(VERSION)_amd64.changes \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_$(OS_REL)_amd64.changes
-	scp -C $(CUMULUS_DEB_ROOT)/cumulus_$(VERSION)_amd64.deb \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/cumulus_$(VERSION)_$(OS_REL)_amd64.deb
-	ssh web31_axel@kflog.org 'cd /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots; chmod 644 *.deb *.changes ChangeLog*'
-endif
-
-# copy Ubuntu Debian source package to webpage
-copysrc2web:
-	ssh web31_axel@kflog.org 'mkdir -p /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL); chmod 755 /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL)'
-	cd $(CUMULUS_DEB_ROOT); \
-	scp -C cumulus_$(VERSION)*.tar.* \
-	       cumulus_$(VERSION).dsc \
-	       cumulus_$(VERSION)_source.changes \
-	       web31_axel@kflog.org:/srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL)
-	ssh web31_axel@kflog.org 'chmod 644 /srv/www/web31/web/fileadmin/user_upload/cumulus_snapshots/$(VERSION)_$(OS_REL)/*'
 
 .PHONY : tar
 
