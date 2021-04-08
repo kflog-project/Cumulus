@@ -963,7 +963,7 @@ void PreFlightTaskPage::slotReject()
 
 void PreFlightTaskPage::slotHelp()
 {
-  QString file = "cumulus-tasks.html";
+  QString file = "cumulus-preflight-settings-task.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
