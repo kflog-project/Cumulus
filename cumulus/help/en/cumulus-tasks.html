@@ -34,7 +34,7 @@
 	Currently three taskpoint figures, line, circle and sector with  
   symmetrical angels are supported.
 
-	<h4>Composition of a tast/route</h4>
+	<h4>Composition of a task/route</h4>
 	
   A task comprises at least two points according to FAI IGC, a Start and a
   Finish point. Take-off and Landing airfield are not more a mandatory part
@@ -71,6 +71,13 @@
 		
 	</table></p>
  
+  <h4>Length calculation of task legs</h4>
+  
+  According to the DMSt requirement from 2021 task leg length are calculated
+  by using the
+  <a href="https://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty's
+  formulae</a>. This formulae considers more the earth ellipsoid.
+
 	<h4>Task files</h4>
 	
 	Cumulus stores every task in a single file. These files are to find under your
