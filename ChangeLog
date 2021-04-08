@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2021-04-08 AP: HTML helps updated.
+
+[*] 2021-04-08 AP: Cumulus 5.38.0 released for Android and Ubuntu.
+
 [-] 2021-04-03 AP: Issue #148 fixed. Metar/Taf did not work for Android after
                    https usage.
 
