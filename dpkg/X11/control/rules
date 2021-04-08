@@ -12,6 +12,9 @@
 
 CFLAGS = -Wall
 
+# This is the debhelper compatability version to use.
+export DH_COMPAT=10
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
@@ -65,7 +68,7 @@ binary-arch: install
 # dh_installinit
 # dh_installcron
 # dh_installinfo
-	dh_installman
+' dh_installman
 	dh_link
 	dh_strip
 	dh_compress
@@ -73,7 +76,7 @@ binary-arch: install
 # dh_perl
 # dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps -Xlibkfr -Xlibopengl_igc
+# dh_shlibdeps -Xlibkfr -Xlibopengl_igc
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb

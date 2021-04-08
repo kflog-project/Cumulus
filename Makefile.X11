@@ -36,7 +36,8 @@ CUMULUS_DEB=$(CUMULUS_DEB_ROOT)/$(CUMULUS_REL)
 SRC_PACK=-sa -S -us -uc
 
 # Debian binary package options
-BIN_PACK=-b -us -uc
+# BIN_PACK=--build=any --no-sign
+BIN_PACK=-b --no-sign
 
 # adapt install path to your needs if necessary
 INSTALL_ROOT = /opt/cumulus
@@ -143,11 +144,12 @@ nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 .PHONY : dpkg dpkg_src dpkg_prepare dpkg_make dpkg_build
 
 # This target builds a Debian binary package
-dpkg:
+dpkg:	dpkg_prepare
 	@echo "===== Building a Debian binary package for Cumulus $(VERSION) ====="
-	@$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
+	@cd $(CUMULUS_DEB); \
+	$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
 		DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" \
-		dpkg_prepare dpkg_make dpkg_build
+		dpkg_make dpkg_build
 
 # This target builds a Debian source package. 
 dpkg_src:
@@ -180,18 +182,19 @@ dpkg_make:
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
-	dh_make --packagename cumulus -c gpl3 $(DH_MAKE_OPT)
+	dh_make --packagename cumulus -c gpl3 --yes $(DH_MAKE_OPT)
 	cd $(CUMULUS_DEB)/dpkg/X11/control; \
 	cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
 	# Define the package format as native
 	echo '3.0 (native)' > $(CUMULUS_DEB)/debian/source/format
+	echo '10' > $(CUMULUS_DEB)/debian/compat
 	
 # This target builds the debian package, if all is prepared before.
 dpkg_build:
 	cd $(CUMULUS_DEB); \
-	dpkg-buildpackage -rfakeroot $(DPKG_OPT)
+	dpkg-buildpackage $(DPKG_OPT)
 
 # Copies all files of KFLog into the debian package area. It is called by the
 # Debian rule file.

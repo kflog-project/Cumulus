@@ -1,17 +1,18 @@
 Source: cumulus
-Section: other
+Section: utils
 Priority: optional
 Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
-Build-Depends: debhelper (>= 13.0.0), g++ (>= 4:10.2), libbluetooth-dev (>= 5.55), libqt5core5a (>= 5.14.0), libqt5network5 (>= 5.14.0), libqt5xml5 (>= 5.14.0), libqt5gui5 (>= 5.14.0), libqt5widgets5 (>= 5.14.0)
-
-Standards-Version: 3.9.2
-Homepage: http://www.kflog.org/cumulus/
-#Vcs-Git: git://git.debian.org/collab-maint/cumulus-2.12.2.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/cumulus-2.12.2.git;a=summary
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 4.5.1
+Homepage: https://github.com/kflog-project/Cumulus
+Vcs-Browser: https://github.com/kflog-project/Cumulus
+Vcs-Git: https://github.com/kflog-project/Cumulus
 
 Package: cumulus
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Section: utils
+Priority: optional
+Depends: libbluetooth-dev (>= 5.55), libqt5core5a (>= 5.14.0), libqt5network5 (>= 5.14.0), libqt5xml5 (>= 5.14.0), libqt5gui5 (>= 5.14.0), libqt5widgets5 (>= 5.14.0)
 Description: Cumulus is a flight computer for glider pilots.
  Cumulus features a full colored moving map display with elevations, airspace,
  terrain and airfields information. It can use waypoints, supports flight tasks
