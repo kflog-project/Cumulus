@@ -86,8 +86,6 @@ private:
   double sumGroundSpeed;     // sum of GS in km/h
   double sumTHDeviation;     // sum of Compass true heading deviation
   double sumTCDeviation;     // sum of GPS heading (true course) deviation
-  double vMin;               // minimal measured speed
-  double vMax;               // maximal measured speed
   double hMin;               // lower limit of heading observation window
   double hMax;               // upper limit of heading observation window
 };

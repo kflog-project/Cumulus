@@ -54,8 +54,6 @@ WindCalcInStraightFlight::WindCalcInStraightFlight( QObject* parent ) :
   sumGroundSpeed( 0.0 ),
   sumTHDeviation( 0.0 ),
   sumTCDeviation( 0.0 ),
-  vMin( 0.0 ),
-  vMax( 0.0 ),
   hMin( 0.0 ),
   hMax( 0.0 )
 {
@@ -73,7 +71,7 @@ void WindCalcInStraightFlight::start()
   nunberOfSamples = 1;
   deliverWind = GeneralConfig::instance()->getStartWindCalcInStraightFlight();
   measurementDuration.start();
-  vMin = vMax = tas = calculator->getlastTas().getKph();
+  tas = calculator->getlastTas().getKph();
   groundSpeed = calculator->getLastSpeed().getKph();
   trueCourse = calculator->getLastHeading();
   trueHeading = calculator->getLastMagneticTrueHeading();
@@ -101,12 +99,12 @@ void WindCalcInStraightFlight::start()
 
 void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 {
-  // get current TAS
-  double ctas = calculator->getlastTas().getKph();
+  // get current ground speed.
+  double cgs = calculator->getLastSpeed().getKph();
 
-  // Check, if we have a TAS value > 25 km/h. GS can be nearly zero in the wave.
-  // If TAS is to low, the measurement make no sense.
-  if( ctas < 25.0 )
+  // Check, if we have a GS value > 25 km/h. GS can be nearly zero in the wave.
+  // If GS is to low, the measurement make no sense.
+  if( cgs < 25.0 )
     {
       // Stop measurements.
       nunberOfSamples = 0;
@@ -120,17 +118,6 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       return;
     }
 
-  // check if given TAS deltas are valid.
-  if( fabs( tas - ctas ) > deltaSpeed )
-    {
-      // Condition violated, start a new measurements cycle.
-      start();
-      return;
-    }
-
-  // get current ground speed.
-  double cgs = calculator->getLastSpeed().getKph();
-
   // check, if given ground speed deltas are valid.
   if( fabs( groundSpeed - cgs ) > deltaSpeed )
     {
@@ -139,15 +126,43 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       return;
     }
 
-  // check if given magnetic heading deltas are valid.
-  double th = calculator->getLastMagneticTrueHeading();
+  // get current TAS
+  double ctas = calculator->getlastTas().getKph();
 
-  if( th >= (360.0 - deltaHeading ) )
+  // check if given TAS deltas are valid.
+  if( fabs( tas - ctas ) > deltaSpeed )
     {
-      th -= 360.0;
+      // Condition violated, start a new measurements cycle.
+      start();
+      return;
     }
 
-  if( ! ( hMin <= th && th <= hMax ) )
+  // get true magnetic heading
+  double cth = calculator->getLastMagneticTrueHeading();
+
+  if( cth >= (360.0 - deltaHeading ) )
+    {
+      cth -= 360.0;
+    }
+
+  // check if given magnetic heading deltas are valid.
+  if( ! ( cth >= hMin && cth <= hMax ) )
+    {
+      // Condition violated, start a new measurements cycle.
+      start();
+      return;
+    }
+
+  // get true course
+  double ctc = calculator->getLastMagneticTrueHeading();
+
+  if( ctc >= (360.0 - deltaHeading ) )
+    {
+      ctc -= 360.0;
+    }
+
+  // check if given true course deltas are valid.
+  if( ! ( ctc >= hMin && ctc <= hMax ) )
     {
       // Condition violated, start a new measurements cycle.
       start();
@@ -161,22 +176,19 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
   sumTas += ctas;
   sumGroundSpeed += cgs;
 
-  // Calculate course deviations
-  double deviation = calculator->getLastHeading() - trueCourse;
+  // Calculate true course deviations
+  double deviation = ctc - trueCourse;
 
   if( deviation < -180. ) { deviation += 360.; }
 
   sumTCDeviation += deviation;
 
-  deviation = calculator->getLastMagneticTrueHeading() - trueHeading;
+  // Calculate true magnetic heading deviations
+  deviation = cth - trueHeading;
 
   if( deviation < -180. ) { deviation += 360.; }
 
   sumTHDeviation += deviation;
-
-  // store min max values for TAS
-  vMin = qMin( vMin, ctas );
-  vMax = qMax( vMax, ctas );
 
   if( measurementDuration.elapsed() >= deliverWind * 1000 )
     {
@@ -193,7 +205,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       // A new wind is only delivered after one second has elapsed in minimum.
       deliverWind++;
 
-      double nos = static_cast<double>(nunberOfSamples);
+      double nos = double( nunberOfSamples );
 
       double tc = sumTCDeviation / nos;
 
@@ -224,23 +236,22 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       double term = ws / sin( wca );
 
       // calculate WA (wind angle) in degree
-      double wa = asin( tas / term ) * 180. / M_PI;
+      double wa = asin( tas / term ) * 180.0 / M_PI;
 
       // Wind direction: W = TC - WA
       double wd = tc - wa;
 
-      if( wd < 0 )
+      if( wd < 0.0 )
         {
-          // correct negative angels
-          wd += 360.;
+          wd += 360.0;
         }
-      else if( wd >= 360. )
+      else if( wd >= 360.0 )
         {
-          wd -= 360;
+          wd -= 360.0;
         }
 
       Speed WS;
-      WS.setMph( ws );
+      WS.setKph( ws );
       Vector wind;
       wind.setSpeed ( WS );
       wind.setAngle( wd );
