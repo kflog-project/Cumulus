@@ -246,7 +246,7 @@ void WindAnalyser::_calcWind()
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2.0 );
 
   // Let the world know about our measurement!
-  // qDebug("### ComputedWind: %dGrad/%.0fKm/h", result.getAngleDeg(), result.getSpeed().getKph());
+  qDebug("### CircleWind: %d°/%.0fKm/h", result.getAngleDeg(), result.getSpeed().getKph());
 
   emit newMeasurement( result, quality );
 }
