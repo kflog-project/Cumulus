@@ -75,7 +75,7 @@ private:
 
   uint   nunberOfSamples;    // current number of samples
   uint   deliverWind;        // time in seconds for next wind delivery
-  QTime measurementDuration; // time measurement in seconds
+  QTime measurementStart;    // time measurement in seconds
   double deltaSpeed;         // accepted speed deviation in km/h
   double deltaHeading;       // accepted heading deviation in degrees
   double tas;                // TAS in km/h
@@ -86,7 +86,9 @@ private:
   double sumGroundSpeed;     // sum of GS in km/h
   double sumTHDeviation;     // sum of Compass true heading deviation
   double sumTCDeviation;     // sum of GPS heading (true course) deviation
-  double hMin;               // lower limit of heading observation window
-  double hMax;               // upper limit of heading observation window
+  double tcMin;              // lower limit of true course observation window
+  double tcMax;              // upper limit of true course observation window
+  double thMin;              // lower limit of true heading observation window
+  double thMax;              // upper limit of true heading observation window
 };
 

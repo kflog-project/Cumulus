@@ -54,8 +54,10 @@ WindCalcInStraightFlight::WindCalcInStraightFlight( QObject* parent ) :
   sumGroundSpeed( 0.0 ),
   sumTHDeviation( 0.0 ),
   sumTCDeviation( 0.0 ),
-  hMin( 0.0 ),
-  hMax( 0.0 )
+  tcMin( 0.0 ),
+  tcMax( 0.0 ),
+  thMin( 0.0 ),
+  thMax( 0.0 )
 {
 }
 
@@ -70,7 +72,7 @@ void WindCalcInStraightFlight::start()
 {
   nunberOfSamples = 1;
   deliverWind = GeneralConfig::instance()->getStartWindCalcInStraightFlight();
-  measurementDuration.start();
+  measurementStart.start();
   tas = calculator->getlastTas().getKph();
   groundSpeed = calculator->getLastSpeed().getKph();
   trueCourse = calculator->getLastHeading();
@@ -80,20 +82,34 @@ void WindCalcInStraightFlight::start()
   sumTCDeviation = 0.0;
   sumTHDeviation = 0.0;
 
-  // Define limit of observation window
-  hMin = trueHeading - deltaHeading;
+  // Define limits of course observation window
+  tcMin = trueCourse - deltaHeading;
 
-  if( trueHeading >= (360. - deltaHeading ) )
+  if( tcMin < 0.0 )
     {
-      hMin = trueHeading - 360. - deltaHeading;
+      tcMin += 360.0;
     }
 
-  // Define limit of observation window
-  hMax = trueHeading + deltaHeading;
+  tcMax = trueCourse + deltaHeading;
 
-  if( hMax >= 360. )
+  if( tcMax >= 360.0 )
     {
-      hMax -= 360.;
+      tcMax -= 360.0;
+    }
+
+  // Define limits of heading observation window
+  thMin = trueHeading - deltaHeading;
+
+  if( thMin < 0.0 )
+    {
+      thMin += 360.0;
+    }
+
+  thMax = trueHeading + deltaHeading;
+
+  if( thMax >= 360. )
+    {
+      thMax -= 360.;
     }
 }
 
@@ -140,34 +156,48 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
   // get true magnetic heading
   double cth = calculator->getLastMagneticTrueHeading();
 
-  if( cth >= (360.0 - deltaHeading ) )
+  bool ok = true;
+
+  // Check if given magnetic heading deltas are valid.
+  if( thMin < thMax && ( cth < thMin || cth > thMax ) )
     {
-      cth -= 360.0;
+      // Heading outside of observation window
+      ok = false;
+    }
+  else if( thMin > thMax && cth < thMin && cth > thMax )
+    {
+      // Heading outside of observation window
+      ok = false;
     }
 
-  // check if given magnetic heading deltas are valid.
-  if( ! ( cth >= hMin && cth <= hMax ) )
+ if( ok == false )
+   {
+     // Condition violated, start a new measurements cycle.
+     start();
+     return;
+   }
+
+  // get true course (GPS heading)
+  double ctc = calculator->getLastHeading();
+
+  // Check if given true course deltas are valid.
+  if( tcMin < tcMax && ( ctc < tcMin || ctc > tcMax ) )
     {
-      // Condition violated, start a new measurements cycle.
-      start();
-      return;
+      // Heading outside of observation window
+      ok = false;
+    }
+  else if( tcMin > tcMax && ctc < tcMin && ctc > tcMax )
+    {
+      // Heading outside of observation window
+      ok = false;
     }
 
-  // get true course
-  double ctc = calculator->getLastMagneticTrueHeading();
-
-  if( ctc >= (360.0 - deltaHeading ) )
-    {
-      ctc -= 360.0;
-    }
-
-  // check if given true course deltas are valid.
-  if( ! ( ctc >= hMin && ctc <= hMax ) )
-    {
-      // Condition violated, start a new measurements cycle.
-      start();
-      return;
-    }
+ if( ok == false )
+   {
+     // Condition violated, start a new measurements cycle.
+     start();
+     return;
+   }
 
   // Take values
   nunberOfSamples++;
@@ -190,7 +220,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 
   sumTHDeviation += deviation;
 
-  if( measurementDuration.elapsed() >= deliverWind * 1000 )
+  if( measurementStart.elapsed() >= deliverWind * 1000 )
     {
       /**
        calculate wind by using wind triangle, see more here:
@@ -258,7 +288,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       emit newMeasurement( wind, 5 );
 
       qDebug() << "SF-Wind: Samples=" << nunberOfSamples
-               << "MM-Time=" << measurementDuration.elapsed() / 1000
+               << "MM-Time=" << measurementStart.elapsed() / 1000
                << "s, WS=" << ws << "Km/h, WD=" << wd << "°";
     }
 }
