@@ -127,10 +127,25 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   windRowManual->addWidget(m_windSpeed);
   windRow->addStretch(10);
 
+  //----------------------------------------------------------------------------
+  QGroupBox* windBoxSF = new QGroupBox( tr("SF Wind"), this );
+  windBoxSF->setToolTip( tr("Wind calculation in straight flight") );
+  windRow->addWidget( windBoxSF );
+
+  QHBoxLayout* hbox = new QHBoxLayout;
+  windRowManual->setSpacing(10);
+  windBoxSF->setLayout( hbox );
+
+  m_enableWindInSF = new QCheckBox( tr("On/Off"), this );
+  m_enableWindInSF->setToolTip( tr("Switch on/off wind calculation in straight flight") );
+  m_enableWindInSF->setChecked( GeneralConfig::instance()->isSfWCEnabled() );
+  hbox->addWidget( m_enableWindInSF );
+
+  //----------------------------------------------------------------------------
   QGroupBox* windBoxExtern = new QGroupBox( tr("Ext. Wind"), this );
   windRow->addWidget( windBoxExtern );
 
-  QHBoxLayout* hbox = new QHBoxLayout;
+  hbox = new QHBoxLayout;
   windRowManual->setSpacing(10);
   windBoxExtern->setLayout( hbox );
 
@@ -141,34 +156,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
            this, SLOT(slotExternalWindCbStateChanged(int)) );
 
   //----------------------------------------------------------------------------
-  hbox = new QHBoxLayout;
-  windLayout->addLayout( hbox );
-
-  QString wTip = tr("Time before the wind calculation is started in straight flight.");
-
-  label = new QLabel( tr("Time for straight flight"), this );
-#ifndef ANDROID
-  label->setToolTip( wTip );
-#endif
-  hbox->addWidget( label );
-
-  m_startWindCalculation = new NumberEditor( this );
-#ifndef ANDROID
-  m_startWindCalculation->setToolTip( wTip );
-#endif
-  m_startWindCalculation->setPmVisible(false);
-  m_startWindCalculation->setDecimalVisible(false);
-  m_startWindCalculation->setRange( 10, 60 );
-  m_startWindCalculation->setTip("10...60 s");
-  m_startWindCalculation->setMaxLength(2);
-  m_startWindCalculation->setValue( GeneralConfig::instance()->getManualWindDirection() );
-  m_startWindCalculation->setSuffix( " s" );
-  m_startWindCalculation->setMinimumWidth( mcw );
-  hbox->addWidget( m_startWindCalculation );
-  hbox->addStretch( 10 );
-
-  //----------------------------------------------------------------------------
-  // windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
+  windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
   windLayout->addSpacing( 10 );
 
   m_windListStatistics = new QTreeWidget;
@@ -252,7 +240,6 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windCheckBox->setCheckState( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
   slotManualWindCbStateChanged( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
   slotExternalWindCbStateChanged( GeneralConfig::instance()->isExternalWindEnabled() ? Qt::Checked : Qt::Unchecked );
-  m_startWindCalculation->setValue( GeneralConfig::instance()->getStartWindCalcInStraightFlight() );
   slotLoadWindStatistics();
 
   // Activate reload timer for wind statistics.
@@ -414,7 +401,7 @@ void PreFlightWindPage::slotAccept()
   conf->setManualWindEnabled( newWindState );
   conf->setManualWindDirection( m_windDirection->value() );
   conf->setExternalWindEnabled( m_useExternalWind->isChecked() );
-  conf->setStartWindCalcInStraightFlight( m_startWindCalculation->value() );
+  conf->setSfWCEnabled( m_enableWindInSF->isChecked() );
 
   Speed wv;
   wv.setValueInUnit( m_windSpeed->text().toDouble(), Speed::getWindUnit() );

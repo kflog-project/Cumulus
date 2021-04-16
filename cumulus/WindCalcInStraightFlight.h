@@ -52,6 +52,20 @@ public:
    */
   void start();
 
+  /**
+   * Normalize angels into range 0...359 degrees.
+   * @param angle to be normalized
+   * @return normalized angle
+   */
+  static double normAngle( double angle )
+  {
+    while( angle < 0.0 )
+      angle += 360.0;
+    while( angle >= 360.0 )
+      angle -= 360.0;
+    return angle;
+  }
+
 signals:
 
   /**
@@ -71,11 +85,19 @@ public slots:
 
 private:
 
-  void _calcWind();
+  /**
+   * Calculate average value from angle.
+   *
+   * @param angle as degree 0...359
+   * @param average as degree 0...359
+   * @return average angle as degree 0...359
+   */
+  double meanAngle( double angle, double average );
 
   uint   nunberOfSamples;    // current number of samples
   uint   deliverWind;        // time in seconds for next wind delivery
   QTime measurementStart;    // time measurement in seconds
+  double minimumAirSpeed;    // minimum air speed to start calculation
   double deltaSpeed;         // accepted speed deviation in km/h
   double deltaHeading;       // accepted heading deviation in degrees
   double tas;                // TAS in km/h
@@ -84,8 +106,8 @@ private:
   double trueHeading;        // GPS heading
   double sumTas;             // TAS in km/h
   double sumGroundSpeed;     // sum of GS in km/h
-  double sumTHDeviation;     // sum of Compass true heading deviation
-  double sumTCDeviation;     // sum of GPS heading (true course) deviation
+  double meanTH;             // mean of Compass true heading
+  double meanTC;             // mean of GPS heading (true course)
   double tcMin;              // lower limit of true course observation window
   double tcMax;              // upper limit of true course observation window
   double thMin;              // lower limit of true heading observation window

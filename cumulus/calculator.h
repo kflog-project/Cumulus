@@ -747,7 +747,7 @@ public:
   /**
    * Called, if the user has activated/deactivated external wind usage.
    */
-  void slot_ExternalWindRequired( bool flag )
+  void slot_ExternalWindChanged( bool flag )
   {
     m_calculateWind = flag;
   }

@@ -283,12 +283,16 @@ void GeneralConfig::load()
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
   endGroup();
 
-  beginGroup("Preflight Wind");
+  beginGroup("Wind");
   _manualWindSpeed     = Speed(value( "Speed", 0 ).toDouble());
   _manualWindDirection = value( "Direction", 0 ).toInt();
   _manualWindIsEnabled = value( "ManualWindEnabled", false ).toBool();
   _externalWindIsEnabled = value( "ExternalWindEnabled", false ).toBool();
-  _startWindCalcInStraightFlight = value( "CalculationDelay", 10 ).toInt();
+  _sfWCIsEnabled = value( "SfWindCalculationEnabled", false ).toBool();
+  _startWindCalcInStraightFlight = value( "SfCalculationStart", 10 ).toInt();
+  _minimumAirSpeed4WC = Speed(value( "SfMinimumAirSpeed4WC", 25.0 / 3.6 ).toDouble());
+  _speedTolerance4WC = Speed(value( "SfSpeedTolerance4WC", 10.0 / 3.6).toDouble());
+  _headingTolerance4WC = value( "SfHeadingTolerance4WC", 5 ).toInt();
   endGroup();
 
   beginGroup("Retriever");
@@ -789,12 +793,16 @@ void GeneralConfig::save()
   setValue( "AutoLoggerStartSpeed", _autoLoggerStartSpeed );
   endGroup();
 
-  beginGroup("Preflight Wind");
+  beginGroup("Wind");
   setValue( "Speed", _manualWindSpeed.getMps() );
   setValue( "Direction", _manualWindDirection );
   setValue( "ManualWindEnabled", _manualWindIsEnabled );
   setValue( "ExternalWindEnabled", _externalWindIsEnabled );
-  setValue( "CalculationDelay", _startWindCalcInStraightFlight );
+  setValue( "SfWindCalculationEnabled", _sfWCIsEnabled );
+  setValue( "SfCalculationStart", _startWindCalcInStraightFlight );
+  setValue( "SfMinimumAirSpeed4WC", _minimumAirSpeed4WC.getMps() );
+  setValue( "SfSpeedTolerance4WC", _speedTolerance4WC.getMps() );
+  setValue( "SfHeadingTolerance4WC", _headingTolerance4WC );
   endGroup();
 
   beginGroup("Retriever");

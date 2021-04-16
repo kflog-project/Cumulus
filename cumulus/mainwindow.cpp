@@ -41,7 +41,7 @@
 #include "aboutwidget.h"
 #include "airfield.h"
 #include "calculator.h"
-#include "configwidget.h"
+#include "SettingsWidget.h"
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
 #include "helpbrowser.h"
@@ -2581,7 +2581,7 @@ void MainWindow::slotSwitchToInfoView( Waypoint* wp )
 /** Opens the configuration widget */
 void MainWindow::slotOpenConfig()
 {
-  ConfigWidget *cDlg = new ConfigWidget( this );
+  SettingsWidget *cDlg = new SettingsWidget( this );
   configView = static_cast<QWidget *> (cDlg);
 
   connect( cDlg, SIGNAL( closeConfig() ), this, SLOT( slotCloseConfig() ) );

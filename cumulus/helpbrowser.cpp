@@ -38,9 +38,8 @@ HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile, QString anker ) :
   setObjectName("HelpBrowser");
   setWindowTitle(tr("Cumulus Help"));
   setWindowFlags( Qt::Tool );
-  setWindowModality( Qt::WindowModal );
   setWindowIcon( GeneralConfig::instance()->loadPixmap( "cumulus.png" ) );
-  setAttribute(Qt::WA_DeleteOnClose);
+  setAttribute( Qt::WA_DeleteOnClose );
 
   m_browser = new QTextBrowser(this);
 
@@ -191,8 +190,9 @@ void HelpBrowser::showEvent( QShowEvent *event )
 
 #endif
 
+      QWidget::showEvent( event );
       mb.exec();
-      close();
+      QWidget::close();
       return;
     }
 

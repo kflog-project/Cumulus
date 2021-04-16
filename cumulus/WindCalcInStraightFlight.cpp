@@ -16,6 +16,7 @@
 #include <cmath>
 #include <QtGlobal>
 
+#include "generalconfig.h"
 #include "WindCalcInStraightFlight.h"
 #include "generalconfig.h"
 #include "calculator.h"
@@ -44,6 +45,7 @@ WindCalcInStraightFlight::WindCalcInStraightFlight( QObject* parent ) :
   QObject(parent),
   nunberOfSamples( 0 ),
   deliverWind( 10 ),
+  minimumAirSpeed( 0 ),
   deltaSpeed( OI_TAS ), // +- 10 kmph
   deltaHeading( OI_HD ), // +- 5 degree
   tas( 0.0 ),
@@ -52,8 +54,8 @@ WindCalcInStraightFlight::WindCalcInStraightFlight( QObject* parent ) :
   trueHeading( 0.0 ),
   sumTas( 0.0 ),
   sumGroundSpeed( 0.0 ),
-  sumTHDeviation( 0.0 ),
-  sumTCDeviation( 0.0 ),
+  meanTH( 0.0 ),
+  meanTC( 0.0 ),
   tcMin( 0.0 ),
   tcMax( 0.0 ),
   thMin( 0.0 ),
@@ -70,8 +72,13 @@ WindCalcInStraightFlight::~WindCalcInStraightFlight()
  */
 void WindCalcInStraightFlight::start()
 {
+  GeneralConfig *conf = GeneralConfig::instance();
+
   nunberOfSamples = 1;
-  deliverWind = GeneralConfig::instance()->getStartWindCalcInStraightFlight();
+  deliverWind = conf->getStartWindCalcInStraightFlight();
+  minimumAirSpeed = conf->getMinimumAirSpeed4WC().getKph();
+  deltaSpeed = conf->getSpeedTolerance4WC().getKph();
+  deltaHeading = conf->getHeadingTolerance4WC();
   measurementStart.start();
   tas = calculator->getlastTas().getKph();
   groundSpeed = calculator->getLastSpeed().getKph();
@@ -79,48 +86,43 @@ void WindCalcInStraightFlight::start()
   trueHeading = calculator->getLastMagneticTrueHeading();
   sumTas = tas;
   sumGroundSpeed = groundSpeed;
-  sumTCDeviation = 0.0;
-  sumTHDeviation = 0.0;
+  meanTC = 0.0;
+  meanTH = 0.0;
 
   // Define limits of course observation window
-  tcMin = trueCourse - deltaHeading;
-
-  if( tcMin < 0.0 )
-    {
-      tcMin += 360.0;
-    }
-
-  tcMax = trueCourse + deltaHeading;
-
-  if( tcMax >= 360.0 )
-    {
-      tcMax -= 360.0;
-    }
+  tcMin = normAngle( trueCourse - deltaHeading );
+  tcMax = normAngle( trueCourse + deltaHeading );
 
   // Define limits of heading observation window
-  thMin = trueHeading - deltaHeading;
-
-  if( thMin < 0.0 )
-    {
-      thMin += 360.0;
-    }
-
-  thMax = trueHeading + deltaHeading;
-
-  if( thMax >= 360. )
-    {
-      thMax -= 360.;
-    }
+  thMin = normAngle( trueHeading - deltaHeading );
+  thMax = normAngle( trueHeading + deltaHeading );
 }
 
 void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 {
+  if( GeneralConfig::instance()->isSfWCEnabled() == false )
+    {
+      // Wind calculation is disabled.
+      nunberOfSamples = 0;
+      return;
+    }
+
+  // get current TAS
+  double ctas = calculator->getlastTas().getKph();
+
+  if( ctas < minimumAirSpeed )
+    {
+      // We are not in flight
+      nunberOfSamples = 0;
+      return;
+    }
+
   // get current ground speed.
   double cgs = calculator->getLastSpeed().getKph();
 
-  // Check, if we have a GS value > 25 km/h. GS can be nearly zero in the wave.
+  // Check, if we have a GS value > 2 km/h. GS can be nearly zero in the wave.
   // If GS is to low, the measurement make no sense.
-  if( cgs < 25.0 )
+  if( cgs < 2.0 )
     {
       // Stop measurements.
       nunberOfSamples = 0;
@@ -141,9 +143,6 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       start();
       return;
     }
-
-  // get current TAS
-  double ctas = calculator->getlastTas().getKph();
 
   // check if given TAS deltas are valid.
   if( fabs( tas - ctas ) > deltaSpeed )
@@ -206,19 +205,11 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
   sumTas += ctas;
   sumGroundSpeed += cgs;
 
-  // Calculate true course deviations
-  double deviation = ctc - trueCourse;
+  // Calculate true course mean
+  meanTC = meanAngle( ctc, meanTC );
 
-  if( deviation < -180. ) { deviation += 360.; }
-
-  sumTCDeviation += deviation;
-
-  // Calculate true magnetic heading deviations
-  deviation = cth - trueHeading;
-
-  if( deviation < -180. ) { deviation += 360.; }
-
-  sumTHDeviation += deviation;
+  // Calculate true magnetic heading mean
+  meanTH = meanAngle( cth, meanTH );
 
   if( measurementStart.elapsed() >= deliverWind * 1000 )
     {
@@ -237,24 +228,8 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 
       double nos = double( nunberOfSamples );
 
-      double tc = sumTCDeviation / nos;
-
-      // normalize angle
-      if (tc >= 360.) { tc -= 360.; }
-      else if (tc < 0.) { tc += 360.; }
-
-      tc += trueCourse; // Average of TC
-
-      double th = sumTHDeviation / nos;
-
-      // normalize angle
-       if (th >= 360.) { th -= 360.; }
-       else if (th < 0.) { th += 360.; }
-
-       th += trueHeading; // Average of TH
-
       // WCA in radians
-      double wca = (( sumTCDeviation - sumTHDeviation ) / nos ) * M_PI / 180.0;
+      double wca = ( meanTC - meanTH ) * M_PI / 180.0;
       double tas = sumTas / nos;
       double gs = sumGroundSpeed / nos;
 
@@ -269,16 +244,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       double wa = asin( tas / term ) * 180.0 / M_PI;
 
       // Wind direction: W = TC - WA
-      double wd = tc - wa;
-
-      if( wd < 0.0 )
-        {
-          wd += 360.0;
-        }
-      else if( wd >= 360.0 )
-        {
-          wd -= 360.0;
-        }
+      double wd = normAngle( meanTC - wa );
 
       Speed WS;
       WS.setKph( ws );
@@ -291,4 +257,29 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
                << "MM-Time=" << measurementStart.elapsed() / 1000
                << "s, WS=" << ws << "Km/h, WD=" << wd << "°";
     }
+}
+
+/**
+ * Calculate average value from angles.
+ *
+ * @param angle as degree 0...359
+ * @param average as degree 0...359
+ * @return average angle as degree 0...359
+ */
+double WindCalcInStraightFlight::meanAngle( double angle, double average )
+{
+  // Check in which direction North has been passed
+  if( (average < 90.) && (angle > 270.) )
+    {
+      // 0 -> 359
+      angle -= 360.0;
+    }
+  else if( (average > 270.) && (angle < 90.) )
+    {
+      // 359 -> 0
+      angle += 360.0;
+    }
+
+  double result = ( average + angle ) / 2.0;
+  return normAngle( result );
 }

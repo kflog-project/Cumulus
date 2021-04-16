@@ -114,7 +114,6 @@ HEADERS = \
     basemapelement.h \
     calculator.h \
     colordialog.h \
-    configwidget.h \
     CuLabel.h \
     datatypes.h \
     distance.h \
@@ -199,6 +198,8 @@ HEADERS = \
     settingspagetask.h \
     settingspageterraincolors.h \
     settingspageunits.h \
+    SettingsPageWind.h \
+    SettingsWidget.h \
     signalhandler.h \
     singlepoint.h \
     sonne.h \
@@ -255,7 +256,6 @@ SOURCES = \
     builddate.cpp \
     calculator.cpp \
     colordialog.cpp \
-    configwidget.cpp \
     CuLabel.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
@@ -333,6 +333,8 @@ SOURCES = \
     settingspagetask.cpp \
     settingspageterraincolors.cpp \
     settingspageunits.cpp \
+    SettingsPageWind.cpp \
+    SettingsWidget.cpp \
     signalhandler.cpp \
     singlepoint.cpp \
     sonne.cpp \

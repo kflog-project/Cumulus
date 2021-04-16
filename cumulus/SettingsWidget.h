@@ -1,13 +1,13 @@
 /***********************************************************************
 **
-**   configwidget.h
+**   SettingsWidget.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2018 by Axel Pauli
+**                   2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,7 +15,7 @@
 ***********************************************************************/
 
 /**
- * \class ConfigWidget
+ * \class SettingsWidget
  *
  * \author André Somers, Axel Pauli
  *
@@ -23,20 +23,19 @@
  *
  * This is the general configuration widget for Cumulus.
  *
- * \date 2002-2018
+ * \date 2002-2021
  *
- * \version 1.2
+ * \version 1.3
  */
 
-#ifndef _ConfigWidget_h
-#define _ConfigWidget_h
+#pragma once
 
 #include <QString>
 #include <QTreeWidget>
 #include <QWidget>
 #include <QStringList>
 
-class ConfigWidget : public QWidget
+class SettingsWidget : public QWidget
 {
   Q_OBJECT
 
@@ -45,7 +44,7 @@ class ConfigWidget : public QWidget
   /**
    * That macro forbids the copy constructor and the assignment operator.
    */
-  Q_DISABLE_COPY( ConfigWidget )
+  Q_DISABLE_COPY( SettingsWidget )
 
 public:
 
@@ -54,12 +53,12 @@ public:
    *
    * @param parent Pointer to parent widget
    */
-  ConfigWidget(QWidget *parent);
+  SettingsWidget(QWidget *parent);
 
   /**
    * Destructor
    */
-  virtual ~ConfigWidget();
+  virtual ~SettingsWidget();
 
 protected:
 
@@ -114,5 +113,3 @@ protected:
   /** List with all header labels. */
   QStringList m_headerLabels;
 };
-
-#endif

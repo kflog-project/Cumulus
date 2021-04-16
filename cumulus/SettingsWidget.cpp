@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   configwidget.cpp
+ **   SettingsWidget.cpp
  **
  **   This file is part of Cumulus.
  **
@@ -31,7 +31,6 @@
 #endif
 
 #include "calculator.h"
-#include "configwidget.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "helpbrowser.h"
@@ -40,6 +39,7 @@
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "rowdelegate.h"
+#include "SettingsWidget.h"
 
 #include "settingspageairspace.h"
 
@@ -58,6 +58,7 @@
 #include "settingspageunits.h"
 #include "settingspagetask.h"
 #include "settingspageterraincolors.h"
+#include "SettingsPageWind.h"
 
 #ifndef ANDROID
 #include "SettingsPageGPS.h"
@@ -82,10 +83,11 @@
 #define TASK            "Task"
 #define TERRAIN_COLORS  "Terrain Colors"
 #define UNITS           "Units"
+#define WIND            "Wind"
 
 extern Calculator* calculator;
 
-ConfigWidget::ConfigWidget( QWidget* parent ) :
+SettingsWidget::SettingsWidget( QWidget* parent ) :
   QWidget(parent)
 {
   setObjectName("ConfigWidget");
@@ -114,7 +116,8 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
                   << tr("Personal")
                   << tr("Task")
                   << tr("Terrain Colors")
-                  << tr("Units");
+                  << tr("Units")
+                  << tr("Wind");
 
   QHBoxLayout *contentLayout = new QHBoxLayout;
   setLayout(contentLayout);
@@ -223,11 +226,16 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   m_setupTree->addTopLevelItem( item );
 
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(LOOK_FEEL) );
+  item->setText( 0, tr( LOOK_FEEL ) );
   item->setData( 0, Qt::UserRole, LOOK_FEEL );
   m_setupTree->addTopLevelItem( item );
 
-#ifdef FLARM
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr( WIND ) );
+  item->setData( 0, Qt::UserRole, WIND );
+  m_setupTree->addTopLevelItem( item );
+
+  #ifdef FLARM
   if( calculator->moving() == false )
     {
       item = new QTreeWidgetItem;
@@ -270,11 +278,11 @@ ConfigWidget::ConfigWidget( QWidget* parent ) :
   setVisible( true );
 }
 
-ConfigWidget::~ConfigWidget()
+SettingsWidget::~SettingsWidget()
 {
 }
 
-void ConfigWidget::keyReleaseEvent( QKeyEvent* event )
+void SettingsWidget::keyReleaseEvent( QKeyEvent* event )
 {
   // close the dialog on key press
   switch(event->key())
@@ -293,7 +301,7 @@ void ConfigWidget::keyReleaseEvent( QKeyEvent* event )
 /**
  * Called, if an item is pressed in the tree view.
  */
-void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
+void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 {
   Q_UNUSED( column );
 
@@ -482,7 +490,18 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       return;
     }
 
-#ifdef FLARM
+  if( itemText == WIND )
+    {
+      SettingsPageWind* page = new SettingsPageWind( this );
+
+      connect( page, SIGNAL( settingsChanged() ),
+               MainWindow::mainWindow(), SLOT( slotReadconfig() ) );
+
+      page->show();
+      return;
+    }
+
+  #ifdef FLARM
   if( itemText == FLARML )
     {
       SettingsPageFlarm* page = new SettingsPageFlarm( this );
@@ -494,7 +513,7 @@ void ConfigWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
 }
 
-void ConfigWidget::slotNewHomePosition()
+void SettingsWidget::slotNewHomePosition()
 {
   // Check, if we have not a valid GPS fix. In this case we do move the map
   // to the new home position.
@@ -504,7 +523,7 @@ void ConfigWidget::slotNewHomePosition()
     }
 }
 
-void ConfigWidget::slotHelp()
+void SettingsWidget::slotHelp()
 {
   QString file = "cumulus-settings.html";
 
@@ -514,7 +533,7 @@ void ConfigWidget::slotHelp()
   hb->setVisible( true );
 }
 
-void ConfigWidget::slotAccept()
+void SettingsWidget::slotAccept()
 {
   emit closeConfig();
   // Make a delay of 200 ms before the widget is closed to prevent undesired
@@ -522,7 +541,7 @@ void ConfigWidget::slotAccept()
   QTimer::singleShot(200, this, SLOT(close()));
 }
 
-void ConfigWidget::slotReject()
+void SettingsWidget::slotReject()
 {
   emit closeConfig();
   // Make a delay of 200 ms before the widget is closed to prevent undesired
@@ -530,7 +549,7 @@ void ConfigWidget::slotReject()
   QTimer::singleShot(200, this, SLOT(close()));
 }
 
-void ConfigWidget::closeEvent( QCloseEvent *event )
+void SettingsWidget::closeEvent( QCloseEvent *event )
 {
   emit closeConfig();
   event->accept();

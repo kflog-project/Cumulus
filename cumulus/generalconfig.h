@@ -1161,6 +1161,70 @@ class GeneralConfig : protected QSettings
     _externalWindIsEnabled = newValue;
   }
 
+  /** gets the straight wind calculation flag. */
+  bool isSfWCEnabled() const
+  {
+    return _sfWCIsEnabled;
+  }
+
+  /** sets the straight wind calculation flag. */
+  void setSfWCEnabled( bool newValue )
+  {
+    _sfWCIsEnabled = newValue;
+  }
+
+  /** gets the minimum air speed value for the wind calculation. */
+  const Speed& getMinimumAirSpeed4WC() const
+  {
+    return _minimumAirSpeed4WC;
+  }
+
+  /** sets the minimum air speed value for the wind calculation. */
+  void setMinimumAirSpeed4WC( const Speed& newValue )
+  {
+    _minimumAirSpeed4WC = newValue;
+  }
+
+  /** gets the speed tolerance value for the wind calculation. */
+  const Speed& getSpeedTolerance4WC() const
+  {
+    return _speedTolerance4WC;
+  }
+
+  /** sets the speed tolerance value for the wind calculation. */
+  void setSpeedTolerance4WC( const Speed& newValue )
+  {
+    _speedTolerance4WC = newValue;
+  }
+
+  /** gets the heading tolerance value for the wind calculation. */
+  int getHeadingTolerance4WC() const
+  {
+    return _headingTolerance4WC;
+  }
+
+  /** sets the heading tolerance value for the wind calculation. */
+  void setHeadingTolerance4WC( const int newValue )
+  {
+    _headingTolerance4WC = newValue;
+  }
+
+  /**
+   * Get wait time in seconds for starting wind calculation in straight flight.
+   */
+  int getStartWindCalcInStraightFlight() const
+  {
+    return _startWindCalcInStraightFlight;
+  }
+
+  /**
+   * Set wait time in seconds for starting wind calculation in straight flight.
+   */
+  void setStartWindCalcInStraightFlight( int startWindCalcInStraightFlight )
+  {
+    _startWindCalcInStraightFlight = startWindCalcInStraightFlight;
+  }
+
   /** gets the McCready value */
   const Speed& getMcCready() const
   {
@@ -3081,24 +3145,6 @@ class GeneralConfig : protected QSettings
     _gpsSwitchState = state;
   }
 
-  /**
-   * Get wait time in seconds for starting wind calculation in straight
-   * flight.
-   */
-  int getStartWindCalcInStraightFlight() const
-  {
-    return _startWindCalcInStraightFlight;
-  }
-
-  /**
-   * Set wait time in seconds for starting wind calculation in straight
-   * flight.
-   */
-  void setStartWindCalcInStraightFlight( int startWindCalcInStraightFlight )
-  {
-    _startWindCalcInStraightFlight = startWindCalcInStraightFlight;
-  }
-
  private:
 
   /** loads the terrain default colors */
@@ -3299,8 +3345,20 @@ class GeneralConfig : protected QSettings
   // external wind enable state
   bool _externalWindIsEnabled;
 
-  // Start calculation of wind in straight flight after
+  // straight flight wind calculation enable state
+  bool _sfWCIsEnabled;
+
+  // start calculation of wind in straight flight after
   int _startWindCalcInStraightFlight;
+
+  // minimum air speed for wind calculation in straight flight.
+  Speed _minimumAirSpeed4WC;
+
+  // speed tolerance for wind calculation in straight flight.
+  Speed _speedTolerance4WC;
+
+  // heading tolerance for wind calculation in straight flight in degrees
+  int _headingTolerance4WC;
 
   // Homesite country code
   QString _homeCountryCode;

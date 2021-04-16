@@ -26,8 +26,7 @@
  *
  */
 
-#ifndef PRE_FLIGHT_WIND_PAGE_H
-#define PRE_FLIGHT_WIND_PAGE_H
+#pragma once
 
 #include <QList>
 #include <QTreeWidget>
@@ -126,8 +125,8 @@ class PreFlightWindPage : public QWidget
   /** check box for external wind usage. */
   QCheckBox* m_useExternalWind;
 
-  /** editor box for setup start time of wind calculation in straight flight. */
-  NumberEditor* m_startWindCalculation;
+  /** check box for straight flight wind calculation. */
+  QCheckBox* m_enableWindInSF;
 
   /** widget with wind statistics */
   QTreeWidget* m_windListStatistics;
@@ -136,4 +135,3 @@ class PreFlightWindPage : public QWidget
   QTimer* m_reloadTimer;
 };
 
-#endif
