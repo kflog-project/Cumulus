@@ -72,7 +72,7 @@ class PreFlightWindPage : public QWidget
   /**
   * Emitted, if the enable state of the external wind has been changed.
   */
-  void externalWindRequired( bool newState );
+  void externalWindStateChange( bool newState );
 
   /**
   * Emitted, if the widget is closed.

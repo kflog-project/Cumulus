@@ -347,8 +347,6 @@ void PreFlightWindPage::slotLoadWindStatistics()
 
 void PreFlightWindPage::slotManualWindCbStateChanged( int state )
 {
-  qDebug() << "PreFlightWindPage::slotManualWindCbStateChanged()" << state;
-
   bool enabled = ( state == Qt::Checked ) ? true : false;
 
   m_windDirection->setEnabled( enabled );
@@ -364,8 +362,6 @@ void PreFlightWindPage::slotManualWindCbStateChanged( int state )
 
 void PreFlightWindPage::slotExternalWindCbStateChanged( int state )
 {
-  qDebug() << "PreFlightWindPage::slotExternalWindCbStateChanged()" << state;
-
   bool enabled = ( state == Qt::Checked ) ? true : false;
 
   if( enabled == true && m_windCheckBox->isChecked() )
@@ -416,7 +412,7 @@ void PreFlightWindPage::slotAccept()
   if( newExternalWindState == true || oldExternalWindState != newWindState )
     {
       // Inform about a wind state or parameter change.
-      emit externalWindRequired( newExternalWindState );
+      emit externalWindStateChange( newExternalWindState );
     }
 
   QWidget::close();
