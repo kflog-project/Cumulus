@@ -86,7 +86,7 @@ public slots:
 private:
 
   /**
-   * Calculate average value from angle.
+   * Calculate smaller bisector value from angles.
    *
    * @param angle as degree 0...359
    * @param average as degree 0...359
@@ -113,4 +113,3 @@ private:
   double thMin;              // lower limit of true heading observation window
   double thMax;              // upper limit of true heading observation window
 };
-

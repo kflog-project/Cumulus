@@ -120,15 +120,6 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
   // get current ground speed.
   double cgs = calculator->getLastSpeed().getKph();
 
-  // Check, if we have a GS value > 2 km/h. GS can be nearly zero in the wave.
-  // If GS is to low, the measurement make no sense.
-  if( cgs < 2.0 )
-    {
-      // Stop measurements.
-      nunberOfSamples = 0;
-      return;
-    }
-
   if( nunberOfSamples == 0 )
     {
       // We start a new measurement cycle.
@@ -226,25 +217,39 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       // A new wind is only delivered after one second has elapsed in minimum.
       deliverWind++;
 
+      double ws = 0.0;
+      double wd = 0.0;
       double nos = double( nunberOfSamples );
-
-      // WCA in radians
-      double wca = ( meanTC - meanTH ) * M_PI / 180.0;
       double tas = sumTas / nos;
       double gs = sumGroundSpeed / nos;
 
-      // Apply the Cosinus sentence: c^2 = a^2 + b^2 − 2 * a * b * cos( α )
-      // to calculate the WS (wind speed)
-      double ws = sqrt( (tas * tas) + (gs * gs ) - ( 2 * tas * gs * cos( wca ) ) );
+      if( gs < 2.0 )
+        {
+          // In the wave the ground speed can be nearly zero. In this case
+          // the GPS can deliver a wrong true course. Therefore the wind
+          // direction is set to true heading and the wind speed is set to the
+          // tas.
+          wd = meanTH;
+          ws = tas;
+        }
+      else
+        {
+          // WCA in radians
+          double wca = ( meanTC - meanTH ) * M_PI / 180.0;
 
-      // WS / sin(WCA)
-      double term = ws / sin( wca );
+          // Apply the Cosinus sentence: c^2 = a^2 + b^2 − 2 * a * b * cos( α )
+          // to calculate the WS (wind speed)
+          ws = sqrt( (tas * tas) + (gs * gs ) - ( 2 * tas * gs * cos( wca ) ) );
 
-      // calculate WA (wind angle) in degree
-      double wa = asin( tas / term ) * 180.0 / M_PI;
+          // WS / sin(WCA)
+          double term = ws / sin( wca );
 
-      // Wind direction: W = TC - WA
-      double wd = normAngle( meanTC - wa );
+          // calculate WA (wind angle) in degree
+          double wa = asin( tas / term ) * 180.0 / M_PI;
+
+          // Wind direction: W = TC - WA
+          wd = normAngle( meanTC - wa );
+        }
 
       Speed WS;
       WS.setKph( ws );
@@ -260,7 +265,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 }
 
 /**
- * Calculate average value from angles.
+ * Calculate smaller bisector value from angles.
  *
  * @param angle as degree 0...359
  * @param average as degree 0...359
@@ -268,18 +273,36 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
  */
 double WindCalcInStraightFlight::meanAngle( double angle, double average )
 {
-  // Check in which direction North has been passed
-  if( (average < 90.) && (angle > 270.) )
-    {
-      // 0 -> 359
-      angle -= 360.0;
-    }
-  else if( (average > 270.) && (angle < 90.) )
-    {
-      // 359 -> 0
-      angle += 360.0;
-    }
+  double bisector = 0.0;
+  double result = 0.0;
+  double absDiff = fabs( angle - average );
 
-  double result = ( average + angle ) / 2.0;
+  if( absDiff > 180.0 )
+    {
+      bisector = ( 360.0 - absDiff ) / 2.0;
+
+      if( angle <= average )
+        {
+          result = average + bisector;
+        }
+      else
+        {
+          result = average - bisector;
+        }
+    }
+  else
+    {
+      bisector = absDiff / 2.0;
+
+      if( angle <= average )
+        {
+          result = angle + bisector;
+        }
+      else
+        {
+          result = angle - bisector;
+        }
+   }
+
   return normAngle( result );
 }

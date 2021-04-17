@@ -85,7 +85,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
 
   topLayout->setRowMinimumHeight( row, 50 * Layout::getScaledDensity() );
 
-  m_enableWindInSF = new QCheckBox(tr("Enable wind in straight flight"));
+  m_enableWindInSF = new QCheckBox(tr("Enable wind calculation in straight flight"));
   topLayout->addWidget( m_enableWindInSF, row, 0, 1, 2 );
   row++;
 
