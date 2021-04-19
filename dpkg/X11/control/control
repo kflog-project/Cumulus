@@ -2,7 +2,7 @@ Source: cumulus
 Section: utils
 Priority: optional
 Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
-Build-Depends: debhelper-compat (= 13)
+Build-Depends: debhelper-compat (= 13), libbluetooth-dev (>= 5.55), libqt5core5a (>= 5.14.0), libqt5network5 (>= 5.14.0), libqt5xml5 (>= 5.14.0), libqt5gui5 (>= 5.14.0), libqt5widgets5 (>= 5.14.0), qt5-qmake (>= 5.14.0), qttools5-dev-tools (>= 5.14.0)
 Standards-Version: 4.5.1
 Homepage: https://github.com/kflog-project/Cumulus
 Vcs-Browser: https://github.com/kflog-project/Cumulus
