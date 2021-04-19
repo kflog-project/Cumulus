@@ -151,11 +151,11 @@ dpkg:	dpkg_prepare
 		dpkg_make dpkg_build
 
 # This target builds a Debian source package. 
-dpkg_src:
+dpkg_src:	dpkg_prepare
 	@echo "===== Building a Debian source package for Cumulus $(VERSION) ====="
 	$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
 		DPKG_OPT="$(SRC_PACK)" DH_MAKE_OPT="-s --createorig" \
-		dpkg_prepare dpkg_make dpkg_build
+	  dpkg_make dpkg_build
 
 # This target prepares the Debian build. A fresh copy of Cumulus is fetched
 # from the remote git master branch as zip file from GitHub.
@@ -174,20 +174,23 @@ dpkg_prepare:
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
 	@rm -rf debian
+	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
 	dh_make --packagename cumulus -c gpl3 --yes $(DH_MAKE_OPT)
-	@cd dpkg/X11/control; \
-	cp control rules ../../../debian/; \
+	cd $(CUMULUS_DEB)/dpkg/X11/control; \
+	@cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
 	# Define the package format as native
-	@echo '3.0 (native)' > debian/source/format
+	@mkdir -p $(CUMULUS_DEB)/debian/source
+	@echo '3.0 (native)' > $(CUMULUS_DEB)/debian/source/format
 	# Set debian compat to 10
-	@echo '10' > debian/compat
+	@echo '10' > $(CUMULUS_DEB)/debian/compat
 	
 # This target builds the debian package, if all is prepared before.
 dpkg_build:
+	cd $(CUMULUS_DEB); \
 	dpkg-buildpackage $(DPKG_OPT)
 
 # Copies all files of KFLog into the debian package area. It is called by the
