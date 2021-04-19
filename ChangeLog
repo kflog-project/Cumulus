@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2021-04-18 AP: Bugfixing in wind calculation in straight flight
+
 [*] 2021-04-08 AP: Cumulus 5.38.1 released for Android and Ubuntu.
 
 [-] 2021-04-08 AP: HTML helps updated.
