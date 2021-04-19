@@ -167,6 +167,8 @@ dpkg_prepare:
 	  unzip -qq master.zip; \
 	  cp -rp Cumulus-master/. .; \
 	  rm -rf Cumulus-master master.zip
+	@cd $(CUMULUS_DEB); \
+	  rm -rf Releases/ Tests/ Tools/ docs/ java/
 
 # This target creates the debian package files. It is called via another makefile
 # due to the VERSION macro. The special letters apostroph and quotation mark
