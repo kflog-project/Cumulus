@@ -186,7 +186,7 @@ dpkg_make:
 	@mkdir -p $(CUMULUS_DEB)/debian/source
 	@echo '3.0 (native)' > $(CUMULUS_DEB)/debian/source/format
 	# Set debian compat to 13
-	@echo '13' > $(CUMULUS_DEB)/debian/compat
+	# @echo '13' > $(CUMULUS_DEB)/debian/compat
 	
 # This target builds the debian package, if all is prepared before.
 dpkg_build:
