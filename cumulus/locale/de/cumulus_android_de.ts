@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE" sourcelanguage="en_US">
+<TS version="2.1" language="de_DE" sourcelanguage="en_US">
 <context>
     <name>AboutWidget</name>
     <message>
@@ -355,94 +355,6 @@
         <location filename="../../calculator.cpp" line="2104"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>ConfigWidget</name>
-    <message>
-        <location filename="../../configwidget.cpp" line="92"/>
-        <source>General Settings</source>
-        <translation>Allgemeine Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="114"/>
-        <source>Personal</source>
-        <translation>Persönliches</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="108"/>
-        <source>GPS</source>
-        <translation>GPS</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="102"/>
-        <source>Point Data</source>
-        <translation>Punkt Daten</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="107"/>
-        <source>Gliders</source>
-        <translation>Flugzeuge</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="113"/>
-        <source>Map Settings</source>
-        <translation>Karte Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="112"/>
-        <source>Map Objects</source>
-        <translation>Karte Objekte</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="116"/>
-        <source>Terrain Colors</source>
-        <translation>Geländefarben</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="115"/>
-        <source>Task</source>
-        <translation>Aufgabe</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="103"/>
-        <source>Airspaces</source>
-        <translation>Lufträume</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="105"/>
-        <source>FLARM</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="110"/>
-        <source>Lines</source>
-        <translation>Linien</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="111"/>
-        <source>Look&amp;Feel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="117"/>
-        <source>Units</source>
-        <translation>Einheiten</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="132"/>
-        <source>Settings Menu</source>
-        <translation>Menü Einstellungen</translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="134"/>
-        <source>  Settings Menu  </source>
-        <translation>  Menü Einstellungen  </translation>
-    </message>
-    <message>
-        <location filename="../../configwidget.cpp" line="109"/>
-        <source>Information</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -1082,44 +994,44 @@
         <translation>Cumulus Hilfe</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="80"/>
+        <location filename="../../helpbrowser.cpp" line="79"/>
         <source>Begin</source>
         <translation>Beginn</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="87"/>
+        <location filename="../../helpbrowser.cpp" line="86"/>
         <source>Backward</source>
         <oldsource>Go backward</oldsource>
         <translation>Zurück</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="94"/>
+        <location filename="../../helpbrowser.cpp" line="93"/>
         <source>Forward</source>
         <oldsource>Go forward</oldsource>
         <translation>Vorwärts</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="101"/>
+        <location filename="../../helpbrowser.cpp" line="100"/>
         <source>Zoom in</source>
         <translation>Vergrößern</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="108"/>
+        <location filename="../../helpbrowser.cpp" line="107"/>
         <source>Zoom out</source>
         <translation>Verkleinern</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="113"/>
+        <location filename="../../helpbrowser.cpp" line="112"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="180"/>
+        <location filename="../../helpbrowser.cpp" line="179"/>
         <source>Missing help file</source>
         <translation>Keine Hilfedaten</translation>
     </message>
     <message>
-        <location filename="../../helpbrowser.cpp" line="181"/>
+        <location filename="../../helpbrowser.cpp" line="180"/>
         <source>&lt;html&gt;&lt;b&gt;The help file was not found.&lt;br&gt;Maybe it is not installed?&lt;/b&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;b&gt;Hilfedatei nicht gefunden.&lt;br&gt;Ist sie installiert?&lt;/b&gt;&lt;/html&gt;</translation>
     </message>
@@ -1216,6 +1128,44 @@
         <location filename="../../ListViewTabs.cpp" line="85"/>
         <source>Waypoints</source>
         <translation>Wegpunkte</translation>
+    </message>
+</context>
+<context>
+    <name>ListWidgetParent</name>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>Country</source>
+        <translation>Land</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="54"/>
+        <source>ICAO</source>
+        <translation>ICAO</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="80"/>
+        <source>Search and select a waypoint</source>
+        <translation>Suche und wähle einen Wegpunkt aus</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="86"/>
+        <source>move page up</source>
+        <translation>Seite hoch</translation>
+    </message>
+    <message>
+        <location filename="../../listwidgetparent.cpp" line="103"/>
+        <source>move page down</source>
+        <translation>Seite runter</translation>
     </message>
 </context>
 <context>
@@ -3533,7 +3483,8 @@ USB Stick eingeschoben?</translation>
     </message>
     <message>
         <location filename="../../preflightwindpage.cpp" line="88"/>
-        <location filename="../../preflightwindpage.cpp" line="137"/>
+        <location filename="../../preflightwindpage.cpp" line="139"/>
+        <location filename="../../preflightwindpage.cpp" line="152"/>
         <source>On/Off</source>
         <translation>Ein/Aus</translation>
     </message>
@@ -3558,32 +3509,42 @@ USB Stick eingeschoben?</translation>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="130"/>
+        <location filename="../../preflightwindpage.cpp" line="131"/>
+        <source>SF Wind</source>
+        <translation>GF-Wind</translation>
+    </message>
+    <message>
+        <location filename="../../preflightwindpage.cpp" line="132"/>
+        <source>Wind calculation in straight flight</source>
+        <translation>Windberechnung im Geradeausflug</translation>
+    </message>
+    <message>
+        <location filename="../../preflightwindpage.cpp" line="140"/>
+        <source>Switch on/off wind calculation in straight flight</source>
+        <translation>Schalte Windberechnung im Geradeausflug an/aus</translation>
+    </message>
+    <message>
+        <location filename="../../preflightwindpage.cpp" line="145"/>
         <source>Ext. Wind</source>
         <translation>Ext. Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="147"/>
-        <source>Time before the wind calculation is started in straight flight.</source>
-        <translation>Zeit bevor Windberechnung im Geradeausflug gestertet wird.</translation>
+        <location filename="../../preflightwindpage.cpp" line="159"/>
+        <source>Wind Statistics</source>
+        <translation>Wind Statistik</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="149"/>
-        <source>Time for straight flight</source>
-        <translation>Zeit für Geradeausflug</translation>
-    </message>
-    <message>
-        <location filename="../../preflightwindpage.cpp" line="203"/>
+        <location filename="../../preflightwindpage.cpp" line="191"/>
         <source>Altitude</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="204"/>
+        <location filename="../../preflightwindpage.cpp" line="192"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="205"/>
+        <location filename="../../preflightwindpage.cpp" line="193"/>
         <source>Speed</source>
         <translation>Geschwindigkeit</translation>
     </message>
@@ -5973,6 +5934,137 @@ USB Stick eingeschoben?</translation>
         <location filename="../../settingspageunits.cpp" line="199"/>
         <source>inHg</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>SettingsPageWind</name>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="42"/>
+        <source>Settings - Wind</source>
+        <translation>Einstellungen - Wind</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="82"/>
+        <source>Wind settings for straight flight</source>
+        <translation>Windeinstellungen für den Geradeausflug</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="88"/>
+        <source>Enable wind calculation in straight flight</source>
+        <translation>An/Aus Windberechnung im Geardeausflug</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="96"/>
+        <source>Minimum airspeed:</source>
+        <translation>Minimale Luftgeschwindigkeit:</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="114"/>
+        <source>Speed tolerance:</source>
+        <translation>Geschwindigkeitstoleranz:</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="131"/>
+        <source>Heading tolerance:</source>
+        <translation>Kurstoleranz:</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageWind.cpp" line="151"/>
+        <source>Wind after:</source>
+        <translation>Wind nach:</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsWidget</name>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="94"/>
+        <source>General Settings</source>
+        <translation>Allgemeine Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="104"/>
+        <source>Point Data</source>
+        <translation>Punkt Daten</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="105"/>
+        <source>Airspaces</source>
+        <translation>Lufträume</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="107"/>
+        <source>FLARM</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="109"/>
+        <source>Gliders</source>
+        <translation>Flugzeuge</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="110"/>
+        <source>GPS</source>
+        <translation>GPS</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="111"/>
+        <source>Information</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="112"/>
+        <source>Lines</source>
+        <translation>Linien</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="113"/>
+        <source>Look&amp;Feel</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="114"/>
+        <source>Map Objects</source>
+        <translation>Karte Objekte</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="115"/>
+        <source>Map Settings</source>
+        <translation>Karte Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="116"/>
+        <source>Personal</source>
+        <translation>Persönliches</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="117"/>
+        <source>Task</source>
+        <translation>Aufgabe</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="118"/>
+        <source>Terrain Colors</source>
+        <translation>Geländefarben</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="119"/>
+        <source>Units</source>
+        <translation>Einheiten</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="120"/>
+        <source>Wind</source>
+        <translation>Wind</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="135"/>
+        <source>Settings Menu</source>
+        <translation>Menü Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsWidget.cpp" line="137"/>
+        <source>  Settings Menu  </source>
+        <translation>  Menü Einstellungen  </translation>
     </message>
 </context>
 <context>
