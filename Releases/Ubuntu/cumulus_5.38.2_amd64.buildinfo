@@ -4,14 +4,14 @@ Binary: cumulus
 Architecture: amd64
 Version: 5.38.2
 Checksums-Md5:
- fa57cd6bf1e7b2ce4e3208e6500d898a 1877888 cumulus_5.38.2_amd64.deb
+ 162ada60838b707a97c5ba11551dc2a8 1879524 cumulus_5.38.2_amd64.deb
 Checksums-Sha1:
- b399167b81e686b1b9ab6e2f4503c3a48b929a2b 1877888 cumulus_5.38.2_amd64.deb
+ 56583e6904d8240d1fa89626fd7ee05e07820961 1879524 cumulus_5.38.2_amd64.deb
 Checksums-Sha256:
- dff4bea5b735510a7c1e3b0a40734998d64934f1d763f2d972230b4b701fefad 1877888 cumulus_5.38.2_amd64.deb
+ f898647e976992fc5c801b06d5c58ad3cd702030c66fdff828c1f5dd0a366293 1879524 cumulus_5.38.2_amd64.deb
 Build-Origin: Ubuntu
 Build-Architecture: amd64
-Build-Date: Mon, 19 Apr 2021 16:06:33 +0200
+Build-Date: Mon, 19 Apr 2021 16:11:31 +0200
 Build-Tainted-By:
  merged-usr-via-symlinks
  usr-local-has-libraries
@@ -175,4 +175,4 @@ Environment:
  DEB_BUILD_OPTIONS="parallel=6"
  LANG="C"
  MAKEFLAGS="w -- DH_MAKE_OPT=-s\ --native DPKG_OPT=-b\ --no-sign VERSION=5.38.2"
- SOURCE_DATE_EPOCH="1618839893"
+ SOURCE_DATE_EPOCH="1618841433"
