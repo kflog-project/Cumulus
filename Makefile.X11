@@ -178,7 +178,7 @@ dpkg_make:
 	export DEBFULLNAME='Axel Pauli'; \
 	dh_make --packagename cumulus -c gpl3 --yes $(DH_MAKE_OPT)
 	cd $(CUMULUS_DEB)/dpkg/X11/control; \
-	@cp control rules ../../../debian/; \
+	cp control rules ../../../debian/; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" copyright > ../../../debian/copyright; \
 	sed -e "s/__VERSION__/$(VERSION)/g" -e "s/__DATE__/$(DATE)/g" changelog > ../../../debian/changelog
 	# Define the package format as native
