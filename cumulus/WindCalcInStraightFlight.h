@@ -95,7 +95,7 @@ private:
   double meanAngle( double angle, double average );
 
   uint   nunberOfSamples;    // current number of samples
-  uint   deliverWind;        // time in seconds for next wind delivery
+  int    deliverWind;        // time in seconds for next wind delivery
   QTime measurementStart;    // time measurement in seconds
   double minimumAirSpeed;    // minimum air speed to start calculation
   double deltaSpeed;         // accepted speed deviation in km/h

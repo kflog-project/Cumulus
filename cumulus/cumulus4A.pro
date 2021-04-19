@@ -225,7 +225,7 @@ HEADERS = \
     settingspagetask.h \
     settingspageterraincolors.h \
     settingspageunits.h \
-    SettingsPageWind \
+    SettingsPageWind.h \
     SettingsWidget.h \
     signalhandler.h \
     singlepoint.h \

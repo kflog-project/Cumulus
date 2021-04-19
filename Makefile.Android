@@ -41,6 +41,7 @@ clean:
 	@rm -rf $(APP_DATA_ROOT) $(ADD_DATA_ROOT)
 	@echo "Build area cleaned"
 
+.PHONY : addData
 addData:
 	@echo "===== Creating $(ADD_DATA) under $(INSTALL_ROOT) ====="
 	@rm -rf $(ADD_DATA_ROOT)

@@ -97,6 +97,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   topLayout->addWidget( lbl, row, 0 );
 
   m_minimumAirSpeed = new DoubleNumberEditor( this );
+  m_minimumAirSpeed->setTip( "Vair minimal" );
   m_minimumAirSpeed->setDecimalVisible( true );
   m_minimumAirSpeed->setPmVisible( false );
   m_minimumAirSpeed->setMaxLength(4);
@@ -115,6 +116,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   topLayout->addWidget( lbl, row, 0 );
 
   m_speedTolerance = new DoubleNumberEditor( this );
+  m_speedTolerance->setTip( "Delta V" );
   m_speedTolerance->setDecimalVisible( true );
   m_speedTolerance->setPmVisible( false );
   m_speedTolerance->setMaxLength(4);
@@ -132,11 +134,12 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   topLayout->addWidget( lbl, row, 0 );
 
   m_headingTolerance = new NumberEditor;
+  m_headingTolerance->setTip( "Delta " + QString(Qt::Key_degree) );
   m_headingTolerance->setDecimalVisible( false );
   m_headingTolerance->setPmVisible( false );
   m_headingTolerance->setRange( 0, 359);
   m_headingTolerance->setMaxLength( 3 );
-  m_headingTolerance->setSuffix( " °" );
+  m_headingTolerance->setSuffix( " " + QString(Qt::Key_degree) );
 
   QIntValidator* iValidator = new QIntValidator( 0, 359, this );
   m_headingTolerance->setValidator( iValidator );
