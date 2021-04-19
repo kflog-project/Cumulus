@@ -13,7 +13,7 @@ Cumulus can also process and display Flarm data, if the target device was connec
 
 If an used Android device has built-in a barometric sensor, you can activate it in Cumulus and use its data as a barometric pressure altitude.
 
-Cumulus packages for *Android* and *Ubuntu* 64bit can be downloaded from [here](https://github.com/kflog-project/Cumulus/tree/master/Releases/).
+Cumulus packages for *Android* and *Ubuntu* 64bit can be downloaded from [here](https://github.com/kflog-project/Cumulus/tree/master/Releases/). For Ubuntu are binary and source packages available.
 
 <b>Note! Current Android packages are only available til release level 6. They are only provided here and not more in GooglePlay due to Google restrictions.</b>
 
