@@ -145,7 +145,6 @@ nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
 dpkg:	dpkg_prepare
 	@echo "===== Building a Debian binary package for Cumulus $(VERSION) ====="
 	# Change into the build area and call make there
-	@cd $(CUMULUS_DEB); \
 	$(MAKE) -f Makefile.X11 VERSION=$(VERSION) \
 		DPKG_OPT="$(BIN_PACK)" DH_MAKE_OPT="-s --native" \
 		dpkg_make dpkg_build
@@ -173,7 +172,7 @@ dpkg_prepare:
 # due to the VERSION macro. The special letters apostroph and quotation mark
 # cause problems in other shell commands, if they not expanded before.
 dpkg_make:
-	@rm -rf debian
+	@rm -rf $(CUMULUS_DEB)/debian
 	cd $(CUMULUS_DEB); \
 	export DEBEMAIL='kflog.cumulus@gmail.com'; \
 	export DEBFULLNAME='Axel Pauli'; \
