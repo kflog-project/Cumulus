@@ -1,0 +1,26 @@
+Format: 1.8
+Date: Mon, 19 Apr 2021 15:44:53 +0200
+Source: cumulus
+Binary: cumulus
+Architecture: amd64
+Version: 5.38.2
+Distribution: stable
+Urgency: low
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
+Changed-By: Axel Pauli <kflog.cumulus@gmail.com>
+Description:
+ cumulus    - Cumulus is a flight computer for glider pilots.
+Changes:
+ cumulus (5.38.2) stable; urgency=low
+ .
+   * Cumulus Linux Desktop Release for X11/Qt. For changelog see here:
+     https://github.com/kflog-project/Cumulus/blob/5.38.2/ChangeLog
+Checksums-Sha1:
+ ef48ef329aa1e6cbc9da62d746d4927a566ee6f8 5462 cumulus_5.38.2_amd64.buildinfo
+ b399167b81e686b1b9ab6e2f4503c3a48b929a2b 1877888 cumulus_5.38.2_amd64.deb
+Checksums-Sha256:
+ 3588d4cb7e90e9b8552e0e3216f0238e3af4fe330e0403944b05bbd70308edf0 5462 cumulus_5.38.2_amd64.buildinfo
+ dff4bea5b735510a7c1e3b0a40734998d64934f1d763f2d972230b4b701fefad 1877888 cumulus_5.38.2_amd64.deb
+Files:
+ 12189667fadbb5f0ca7488149da62330 5462 utils optional cumulus_5.38.2_amd64.buildinfo
+ fa57cd6bf1e7b2ce4e3208e6500d898a 1877888 utils optional cumulus_5.38.2_amd64.deb
