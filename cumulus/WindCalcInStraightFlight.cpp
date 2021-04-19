@@ -170,24 +170,29 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
   // get true course (GPS heading)
   double ctc = calculator->getLastHeading();
 
-  // Check if given true course deltas are valid.
-  if( tcMin < tcMax && ( ctc < tcMin || ctc > tcMax ) )
+  if( cgs >= 5 )
     {
-      // Heading outside of observation window
-      ok = false;
-    }
-  else if( tcMin > tcMax && ctc < tcMin && ctc > tcMax )
-    {
-      // Heading outside of observation window
-      ok = false;
-    }
+      // The ground course check is only done, if the ground speed is >=5 Km/h.
+      // Near speed zero, the ground course is not stable in its direction.
+      // Check if given true course deltas are valid.
+      if( tcMin < tcMax && ( ctc < tcMin || ctc > tcMax ) )
+        {
+          // Heading outside of observation window
+          ok = false;
+        }
+      else if( tcMin > tcMax && ctc < tcMin && ctc > tcMax )
+        {
+          // Heading outside of observation window
+          ok = false;
+        }
 
- if( ok == false )
-   {
-     // Condition violated, start a new measurements cycle.
-     start();
-     return;
-   }
+     if( ok == false )
+       {
+         // Condition violated, start a new measurements cycle.
+         start();
+         return;
+       }
+    }
 
   // Take values
   nunberOfSamples++;
@@ -265,7 +270,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
 }
 
 /**
- * Calculate smaller bisector value from angles.
+ * Calculate the smaller bisector value from angles.
  *
  * @param angle as degree 0...359
  * @param average as degree 0...359
