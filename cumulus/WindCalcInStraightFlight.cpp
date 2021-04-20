@@ -222,6 +222,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       // A new wind is only delivered after one second has elapsed in minimum.
       deliverWind++;
 
+      double wca = 0.0;
       double ws = 0.0;
       double wd = 0.0;
       double nos = double( nunberOfSamples );
@@ -240,32 +241,44 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       else
         {
           // WCA in radians
-          double wca = ( meanTC - meanTH ) * M_PI / 180.0;
+          wca = ( meanTC - meanTH ) * M_PI / 180.0;
 
           // Apply the Cosinus sentence: c^2 = a^2 + b^2 − 2 * a * b * cos( α )
           // to calculate the WS (wind speed)
           ws = sqrt( (tas * tas) + (gs * gs ) - ( 2 * tas * gs * cos( wca ) ) );
 
-          // WS / sin(WCA)
-          double term = ws / sin( wca );
+          // wind direction calculation taken from here:
+          // view-source:http://www.owoba.de/fliegerei/flugrechner.html
+          double tcrad = meanTC * M_PI / 180.0;
+          double thrad = meanTH * M_PI / 180.0;
 
-          // calculate WA (wind angle) in degree
-          double wa = asin( tas / term ) * 180.0 / M_PI;
+          // wind direction formula to calculate wd
+          wd = tcrad + atan2( tas * sin( thrad - tcrad ),
+                              tas * cos( thrad - tcrad ) - gs );
 
-          // Wind direction: W = TC - WA
-          wd = normAngle( meanTC - wa );
+          if( wd < 0 )
+            {
+              wd = wd + 2 * M_PI;
+            }
+          if( wd > 2 * M_PI )
+            {
+              wd = wd - 2 * M_PI;
+            }
+
+          wd = wd * 180.0 / M_PI;
         }
 
       Speed WS;
       WS.setKph( ws );
       Vector wind;
       wind.setSpeed ( WS );
-      wind.setAngle( wd );
+      wind.setAngle( wd + 0.5 );
       emit newMeasurement( wind, 5 );
 
       qDebug() << "SF-Wind: Samples=" << nunberOfSamples
                << "MM-Time=" << measurementStart.elapsed() / 1000
-               << "s, WS=" << ws << "Km/h, WD=" << wd << "°";
+               << "s, WCA=" << ( meanTC - meanTH ) << "WS="
+               << ws << "Km/h, WD=" << wd;
     }
 }
 

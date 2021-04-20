@@ -239,6 +239,9 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$MAEMO1", 41);
 #endif
 
+  // Only for test purposes
+  gpsKeys.insert( "$PTAS", 42);
+
   gpsKeys.squeeze();
   mutex.unlock();
 }
@@ -755,6 +758,11 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       return;
 
 #endif
+
+    case 42:
+       // // Only for test purposes for simulating TAS in km/h
+       __ExtractTas( slst );
+       return;
 
     default:
 
@@ -2295,6 +2303,34 @@ double GpsNmea::__ExtractHeading(const QString& headingstring)
   emit newHeading( _lastHeading );
 
   return heading;
+}
+
+/**
+ * Extract proprietary test sentence $PTAS,<TAS>*
+ * TAS in km/h
+ */
+void GpsNmea::__ExtractTas( const QStringList& data )
+{
+  if( data.isEmpty() or data.size() < 2 )
+    {
+      qWarning("$PTAS contains too less parameters!");
+      return;
+    }
+
+  bool ok;
+
+  double tas = data[1].toDouble(&ok);
+
+  if( ok == false )
+    {
+      return;
+    }
+
+  Speed speed;
+  speed.setKph( tas );
+
+   _lastTas = speed;
+   emit newTas( _lastTas );
 }
 
 /**

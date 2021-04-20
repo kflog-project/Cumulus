@@ -717,6 +717,11 @@ class GpsNmea : public QObject
     void __ExtractMaemo1(const QStringList& stringList);
 #endif
 
+    /**
+     * Extract proprietary test sentence $PTAS.
+     */
+    void __ExtractTas(const QStringList& stringList);
+
     /** This function is called to indicate that good data has been received.
      *  It resets the TimeOut timer and if necessary changes the connected status.
      */
