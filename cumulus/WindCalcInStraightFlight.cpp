@@ -256,16 +256,9 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
           wd = tcrad + atan2( tas * sin( thrad - tcrad ),
                               tas * cos( thrad - tcrad ) - gs );
 
-          if( wd < 0 )
-            {
-              wd = wd + 2 * M_PI;
-            }
-          if( wd > 2 * M_PI )
-            {
-              wd = wd - 2 * M_PI;
-            }
-
+          // transfer radian to degree
           wd = wd * 180.0 / M_PI;
+          wd = normAngle( wd );
         }
 
       Speed WS;
