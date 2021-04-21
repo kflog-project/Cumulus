@@ -1,0 +1,26 @@
+Format: 1.8
+Date: Wed, 21 Apr 2021 22:29:15 +0200
+Source: cumulus
+Architecture: source
+Version: 5.38.3
+Distribution: stable
+Urgency: low
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
+Changed-By: Axel Pauli <kflog.cumulus@gmail.com>
+Changes:
+ cumulus (5.38.3) stable; urgency=low
+ .
+   * Cumulus Linux Desktop Release for X11/Qt. For changelog see here:
+     https://github.com/kflog-project/Cumulus/blob/5.38.3/ChangeLog
+Checksums-Sha1:
+ 28e359dad040b7076cd33405520da284b8855308 892 cumulus_5.38.3.dsc
+ 0f1a7f584cfe26f83c8ee91fd7392cee4d42814e 2203924 cumulus_5.38.3.tar.xz
+ 8cf869b9f87d72e423595b9e0f16ebf56660cc3f 9883 cumulus_5.38.3_source.buildinfo
+Checksums-Sha256:
+ b85843c85e213f5edb568b561ead64056a8a2f5082cfe87da9725dbee10e88ba 892 cumulus_5.38.3.dsc
+ ff9de3ce8b76ad0b16e741b270d978d6bbaf3db296df013aa253fbb606291f26 2203924 cumulus_5.38.3.tar.xz
+ d2941f230a7fd088e7e6dd872ab97dede4e6310346ee4e4e0c2c850a5cb1c157 9883 cumulus_5.38.3_source.buildinfo
+Files:
+ c2e89a2da92b8d01521819536b3459bb 892 utils optional cumulus_5.38.3.dsc
+ ed2f6cb5433207b9ee9bc4533bf06959 2203924 utils optional cumulus_5.38.3.tar.xz
+ 2b71cd0ccd20820fefeaab0961b15b60 9883 utils optional cumulus_5.38.3_source.buildinfo
