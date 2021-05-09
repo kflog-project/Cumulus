@@ -92,7 +92,7 @@ Calculator::Calculator( QObject* parent ) :
   m_calculateLD = false;
   m_calculateETA = false;
   m_calculateTas = true;
-  m_calculateWind = conf->isExternalWindEnabled();
+  m_calculateWind = ! conf->isExternalWindEnabled();
   m_lastWind.wind = Vector(0.0, 0.0);
   m_lastWind.altitude = lastAltitude;
   targetWp = static_cast<Waypoint *> (0);
@@ -145,6 +145,9 @@ Calculator::Calculator( QObject* parent ) :
            m_windStore, SLOT(slot_Measurement(const Vector&, int)));
 
   connect (m_windInStraightFlight, SIGNAL(newMeasurement(const Vector&, int)),
+           m_windStore, SLOT(slot_Measurement(const Vector&, int)));
+
+  connect (this, SIGNAL(newMeasurement(const Vector&, int)),
            m_windStore, SLOT(slot_Measurement(const Vector&, int)));
 
   connect (m_windStore, SIGNAL(newWind(Vector&)),
@@ -1256,6 +1259,29 @@ void Calculator::slot_dynamicPressure( const double pressure )
       lastTas = tas;
       emit newTas( tas );
     }
+
+  // If we have a TAS, we can calculate wind, if the ground speed is going
+  // against zero. That maybe helpful in the wave, where we can have such
+  // situations.
+  if( tas.getKph() > 30 && lastSpeed.getKph() < 5 && lastHeading != -1 )
+    {
+      int wd = 0;
+
+      if( lastHeading < 180 )
+        {
+          wd = lastHeading + 180;
+        }
+      else
+        {
+          wd = lastHeading - 180;
+        }
+
+      Vector wind;
+      wind.setAngle( wd );
+      wind.setSpeed( tas );
+
+      emit newMeasurement( wind, 5 );
+    }
 }
 
 /**
@@ -1471,7 +1497,7 @@ void Calculator::slot_settingsChanged()
   // Switch on the internal variometer lift and wind calculation.
   // User could be changed the GPS device.
   m_calculateVario = true;
-  m_calculateWind  = conf->isExternalWindEnabled();
+  m_calculateWind  = ! conf->isExternalWindEnabled();
   m_calculateTas   = true;
 
   slot_CheckHomeSiteSelection();

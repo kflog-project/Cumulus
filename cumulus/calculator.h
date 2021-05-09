@@ -978,6 +978,13 @@ public:
    */
   void newTemperature( const double pressure );
 
+  /**
+   * Called with a new wind measurement. The quality is a measure for how good
+   * the measurement is. Higher quality measurements are more important in the
+   * end result and stay in the store longer.
+   */
+  void newMeasurement( const Vector& windvector, int quality );
+
 private:
 
   /**
