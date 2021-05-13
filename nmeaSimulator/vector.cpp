@@ -169,8 +169,6 @@ Speed Vector::getSpeed() {
     return Speed( sqrt((_y*_y)+(_x*_x)) );
 }
 
-
-
 /** returns the speed in X (longtide) direction (north is positive, south is negative) */
 double Vector::getXMps() {
     if (dirtyXY) recalcXY();

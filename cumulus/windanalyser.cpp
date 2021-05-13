@@ -79,7 +79,7 @@ void WindAnalyser::slot_newSample()
       return; // do only work if we are in active mode
     }
 
-  Vector &curVec = calculator->samplelist[0].vector;
+  Vector curVec = calculator->samplelist[0].vector;
 
   // circle detection
   if( lastHeading != -1 )
@@ -100,6 +100,10 @@ void WindAnalyser::slot_newSample()
     {
       minVector = curVec;
       maxVector = curVec;
+
+      // set start limits in m/s
+      minVector.setSpeed( 100.0 );
+      maxVector.setSpeed( 0.0 );
     }
 
   lastHeading = curVec.getAngleDeg();
@@ -123,9 +127,9 @@ void WindAnalyser::slot_newSample()
          maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
   */
 
-  if( circleDegrees > 360 )
+  if( circleDegrees > 365 )
     {
-      // full circle made!
+      // a bit more than one circle to ensure both ends are in
       // increase the number of circles flown (used to determine the quality)
       circleCount++;
 
@@ -137,12 +141,18 @@ void WindAnalyser::slot_newSample()
 
       minVector = curVec;
       maxVector = curVec;
+
+      // set start limits in m/s
+      minVector.setSpeed( 100.0 );
+      maxVector.setSpeed( 0.0 );
     }
 }
 
 /** Called if the flight mode changes */
 void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
 {
+  qDebug() << "WindAnalyser::newFlightMode()" << newFlightMode;
+
   // Reset the circle counter for each flight mode change. The important thing
   // to measure is the number of turns in a thermal per turn direction.
   circleCount   = 0;
@@ -191,9 +201,11 @@ void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
 
 void WindAnalyser::_calcWind()
 {
-  // int degreePerStep = circleDegrees / circleSectors;
+  int degreePerStep = circleDegrees / circleSectors;
 
-  int aDiff = rint(MapCalc::angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() ));
+  qDebug() << "calcWind(): degreePerStep=" << degreePerStep;
+
+  double aDiff = MapCalc::angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() );
 
   /*
     Determine quality.
@@ -201,46 +213,41 @@ void WindAnalyser::_calcWind()
     Currently, we are using the question how well the min and the max vectors
     are on opposing sides of the circle to determine the quality. 140 degrees is
     the minimum separation, 180 is ideal.
-    Furthermore, the first two circles are considered to be of lesser quality.
+    Furthermore, the first circle IS considered to be of lesser quality.
+    5 is maximum quality, make sure we honor that.
   */
 
-  int quality = 5 - ((180 - abs( aDiff )) / 8);
+  float quality = 5 - ((180.0 - fabsf( aDiff )) / 8.0 );
 
   if( circleCount < 2 )
     {
-      quality--;
+      quality -= 1.0;
     }
 
-  if( circleCount < 1 )
-    {
-      quality--;
-    }
-
-  // qDebug() << "WindQuality=" << quality;
+  qDebug() << "WindQuality=" << quality;
 
   if( quality < 1 )
     {
       return; // Measurement quality too low
     }
 
-  // 5 is maximum quality, make sure we honor that.
-  quality = qMin( quality, 5 );
+  // take both directions for min and max vector into account
+  qDebug( "maxAngle=%d/%.0f minAngle=%d/%.0f",
+           maxVector.getAngleDeg(), maxVector.getSpeed().getKph(),
+           minVector.getAngleDeg(), minVector.getSpeed().getKph() );
 
   // Invert maxVector angle
   maxVector.setAngle( MapCalc::normalize( maxVector.getAngleDeg() + 180 ) );
 
-  // take both directions for min and max vector into account
-  /*
-  qDebug( "maxAngle=%d/%.0f minAngle=%d/%.0f",
-           maxVector.getAngleDeg(), maxVector.getSpeed().getKph(),
-           minVector.getAngleDeg(), minVector.getSpeed().getKph() );
-  */
-
   // create a vector object for the resulting wind
   Vector result;
 
+  // Calculate bisector between the two angles.
+  double bisector = MapCalc::bisectorOfAngles( maxVector.getAngleDegDouble(),
+                                               minVector.getAngleDegDouble() );
+
   // the direction of the wind is the direction where the greatest speed occurred
-  result.setAngle( ( maxVector.getAngleDeg() + minVector.getAngleDeg() ) / 2);
+  result.setAngle( bisector);
 
   // The speed of the wind is half the difference between the minimum and the maximum speeds.
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2.0 );

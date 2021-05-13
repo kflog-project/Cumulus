@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2009-2014 by Axel Pauli
+ **                   2009-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -27,7 +25,7 @@
  * single measurements to provide a mean value, differentiated for altitude,
  * quality and time range.
  *
- * \date 2002-2014
+ * \date 2002-2021
  */
 
 #ifndef WIND_STORE_H
@@ -69,7 +67,7 @@ class WindStore : public QObject
    * the measurement is. Higher quality measurements are more important in the
    * end result and stay in the store longer.
    */
-  void slot_Measurement( const Vector& windvector, int quality );
+  void slot_Measurement( const Vector& windvector, float quality );
 
   /**
    * Called if the altitude changes. Can recalculate the wind and may result

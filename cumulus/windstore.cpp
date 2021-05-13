@@ -7,12 +7,10 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2014 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -34,7 +32,7 @@ WindStore::~WindStore()
  * good the measurement is. Higher quality measurements are more
  * important in the end result and stay in the store longer.
  */
-void WindStore::slot_Measurement( const Vector& windVector, int quality )
+void WindStore::slot_Measurement( const Vector& windVector, float quality )
 {
   m_windlist.addMeasurement( windVector, calculator->getlastAltitude(), quality );
 

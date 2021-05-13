@@ -46,11 +46,13 @@ namespace MapCalc
   /**
    * Calculates the distance between two given points according to great circle in km.
    */
-  double dist(double lat1, double lon1, double lat2, double lon2);
+  double dist( double lat1, double lon1, double lat2, double lon2 );
 
-  double distP(double lat1, double lon1, double lat2, double lon2);
+  double distP( double lat1, double lon1, double lat2, double lon2 );
 
-  double distC1(double lat1, double lon1, double lat2, double lon2);
+  double distC1( double lat1, double lon1, double lat2, double lon2 );
+
+  double distC1( QPoint *p1, QPoint *p2 );
 
   /**
    * Vincentys-formula for DMST distance calculation taken over from:
@@ -130,6 +132,15 @@ namespace MapCalc
   double normalize(double angle);
 
   int normalize(int angle);
+
+  /**
+   * Calculate the smaller bisector value from angles.
+   *
+   * @param angle as degree 0...359
+   * @param average as degree 0...359
+   * @return average angle as degree 0...359
+   */
+  double bisectorOfAngles( double angle1, double angle2 );
 
   /**
     * Calculates the difference between two angles, returning the smallest

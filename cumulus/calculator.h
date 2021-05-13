@@ -983,7 +983,7 @@ public:
    * the measurement is. Higher quality measurements are more important in the
    * end result and stay in the store longer.
    */
-  void newMeasurement( const Vector& windvector, int quality );
+  void newMeasurement( const Vector& windvector, float quality );
 
 private:
 

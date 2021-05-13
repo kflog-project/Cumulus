@@ -7,17 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2014 by Axel Pauli
+**                   2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
-#ifndef WIND_MEASUREMENT_LIST_H
-#define WIND_MEASUREMENT_LIST_H
+#pragma once
 
 #include <QTime>
 
@@ -40,7 +37,7 @@ class WindMeasurement
 public:
 
   Vector vector;
-  int quality;
+  float quality;
   QTime time;
   Altitude altitude;
 
@@ -65,7 +62,7 @@ public:
  * The WindMeasurementList is a list that contains and
  * processes wind measurements.
  *
- * \date 2002-2014
+ * \date 2002-2021
  */
 class WindMeasurementList : public LimitedList<WindMeasurement>
 {
@@ -93,7 +90,7 @@ public:
   Vector getWind( const Altitude& alt, const int timeWindow=0, const int altRange=0 );
 
   /** Adds the wind vector vector with quality quality to the list. */
-  void addMeasurement( const Vector& vector, const Altitude& alt, int quality );
+  void addMeasurement( const Vector& vector, const Altitude& alt, float quality );
 
 protected:
   /**
@@ -103,4 +100,3 @@ protected:
   virtual int getLeastImportantItemIndex() const;
 };
 
-#endif

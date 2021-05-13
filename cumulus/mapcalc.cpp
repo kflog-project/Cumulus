@@ -196,6 +196,12 @@ double MapCalc::dist( QPoint *p1, QPoint *p2 )
 		             double(p2->x()), double(p2->y()) ));
 }
 
+double MapCalc::distC1( QPoint *p1, QPoint *p2 )
+{
+  return ( distC1( double(p1->x()), double(p1->y()),
+                 double(p2->x()), double(p2->y()) ));
+}
+
 double MapCalc::dist(Waypoint* wp1, Waypoint* wp2)
 {
   return ( dist( wp1->wgsPoint.lat(), wp1->wgsPoint.lon(),
@@ -457,6 +463,49 @@ double MapCalc::angleDiff(double ang1, double ang2)
     return (a + PI2);
 
   return a;
+}
+
+/**
+ * Calculate the smaller bisector value from angles.
+ *
+ * @param angle as degree 0...359
+ * @param average as degree 0...359
+ * @return average angle as degree 0...359
+ */
+double MapCalc::bisectorOfAngles( double angle1, double angle2 )
+{
+  double bisector = 0.0;
+  double result = 0.0;
+  double absDiff = fabs( angle1 - angle2 );
+
+  if( absDiff > 180.0 )
+    {
+      bisector = ( 360.0 - absDiff ) / 2.0;
+
+      if( angle1 <= angle2 )
+        {
+          result = angle2 + bisector;
+        }
+      else
+        {
+          result = angle2 - bisector;
+        }
+    }
+  else
+    {
+      bisector = absDiff / 2.0;
+
+      if( angle1 <= angle2 )
+        {
+          result = angle1 + bisector;
+        }
+      else
+        {
+          result = angle1 - bisector;
+        }
+   }
+
+  return normalize( result );
 }
 
 /**

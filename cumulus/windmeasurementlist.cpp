@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2007-2016 by Axel Pauli
+**                   2007-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -181,7 +181,7 @@ Vector WindMeasurementList::getWind( const Altitude& alt,
 /** Adds the wind vector vector with quality quality to the list. */
 void WindMeasurementList::addMeasurement( const Vector& vector,
                                           const Altitude& alt,
-                                          int quality )
+                                          float quality )
 {
   WindMeasurement wind;
   wind.vector = vector;
