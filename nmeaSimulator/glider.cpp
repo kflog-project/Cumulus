@@ -7,8 +7,6 @@
 
     email                : kflog.cumulus@gmail.com
 
-    $Id$
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -192,4 +190,3 @@ void glider::Circle()
   myPGRMZ.send( altitude, myFd );
   myGPRMC.send( lat,lon, speedWind, angW, myFd);
 }
-
