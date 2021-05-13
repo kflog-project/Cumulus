@@ -13,6 +13,7 @@
                                2012 Axel Pauli NMEA Play option added
                                2013 Axel Pauli ttySx enabled as additional device
                                2014 Axel Pauli IGC Play option added
+                               2021 Axel Pauli Option circle radius replaced by roll angle
 
     email                : kflog.cumulus@gmail.com
 
@@ -76,7 +77,7 @@ static    QString direction="right";
 static    float  heading=230.0;
 static    float  wind=25.0;
 static    float  winddir=270.0;   // wind is coming from west usually
-static    float  radius=130.0;    // default circle radius
+static    float  rollangle=30.0;  // default roll angle in degree
 static    float  altitude=1000.0; // default altitude
 static    float  climb=0.0;       // default climb rate zero
 static    int    Time=3600;       // lets fly one hour per default
@@ -311,9 +312,9 @@ void scanConfig( QString cfg )
     {
       sscanf(cfg.toLatin1().data()+5,"%f", &wind );
     }
-  else if( cfg.left(7) == "radius=" )
+  else if( cfg.left(10) == "rollangle=" )
     {
-      sscanf(cfg.toLatin1().data()+7,"%f", &radius );
+      sscanf(cfg.toLatin1().data()+10,"%f", &rollangle );
     }
   else if( cfg.left(6) == "climb=" )
     {
@@ -395,7 +396,7 @@ void safeConfig()
   fprintf(file,"head=%f\n", (float)heading );
   fprintf(file,"wind=%f\n", (float)wind );
   fprintf(file,"winddir=%f\n", (float)winddir );
-  fprintf(file,"radius=%f\n", (float)radius );
+  fprintf(file,"rollangle=%f\n", (float)rollangle );
   fprintf(file,"alt=%f\n", (float)altitude );
   fprintf(file,"climb=%f\n", (float)climb );
   fprintf(file,"time=%d\n", (int)Time );
@@ -465,7 +466,7 @@ int main(int argc, char **argv)
     {
       char *prog = basename(argv[0]);
 
-      cout << "NMEA GPS Simulator 1.6.0 for Cumulus, 2003-2008 E. Voellm, 2009-2014 A. Pauli (GPL)" << endl << endl
+      cout << "NMEA GPS Simulator 1.7.0 for Cumulus, 2003-2008 E. Voellm, 2009-2021 A. Pauli (GPL)" << endl << endl
            << "Usage: " << prog << " str|cir|pos|gpos|nplay|iplay [params]" << endl << endl
            << "Parameters: str:  Straight Flight "<< endl
            << "            cir:  Circling "<< endl
@@ -478,7 +479,7 @@ int main(int argc, char **argv)
            << "              lon=ddd:mm:ss[E|W] or lon=dd.mmmm  Initial Longitude" << endl
            << "              speed=[km/h] head=[deg]: Glider speed and heading" << endl
            << "              wind=[km/h]  winddir=[deg]: Wind force and direction" << endl
-           << "              radius=[m]:  needed for circling" << endl
+           << "              rollangle=[°]:  needed for circling" << endl
            << "              dir=[right|left]: Direction of Circle" << endl
            << "              alt=[m]: Altitude of Glider" << endl
            << "              climb=[m/s]: Climbrate" << endl
@@ -602,19 +603,19 @@ int main(int argc, char **argv)
       return 0;
     }
 
-  cout << "Latitude:  " << lat << endl;
-  cout << "Longitude: " << lon << endl;
-  cout << "Speed:     " << speed << " km/h" << endl;
-  cout << "Heading:   " << heading << " deg" << endl;
-  cout << "Wind:      " << wind << " km/h" << endl;
-  cout << "Winddir:   " << winddir << " deg" << endl;
-  cout << "Altitude:  " << altitude << " m" << endl;
-  cout << "Radius:    " << radius << " m  (if circling)" << endl;
-  cout << "Direction: " << direction.toLatin1().data() << " Turn" << endl;
-  cout << "Climbrate: " << climb << " m/s" << endl;
-  cout << "Time:      " << Time << " sec" << endl;
-  cout << "Pause:     " << Pause << " ms" << endl;
-  cout << "Device:    " << device.toLatin1().data() << endl;
+  cout << "Latitude:   " << lat << endl;
+  cout << "Longitude:  " << lon << endl;
+  cout << "Speed:      " << speed << " km/h" << endl;
+  cout << "Heading:    " << heading << " deg" << endl;
+  cout << "Wind:       " << wind << " km/h" << endl;
+  cout << "Winddir:    " << winddir << " deg" << endl;
+  cout << "Altitude:   " << altitude << " m" << endl;
+  cout << "Rollangle:  " << rollangle << " ° (if circling)" << endl;
+  cout << "Direction:  " << direction.toLatin1().data() << " Turn" << endl;
+  cout << "Climbrate:  " << climb << " m/s" << endl;
+  cout << "Time:       " << Time << " sec" << endl;
+  cout << "Pause:      " << Pause << " ms" << endl;
+  cout << "Device:     " << device.toLatin1().data() << endl;
 
   for( int i = 0; i < 10; i++ )
     {
@@ -632,7 +633,7 @@ int main(int argc, char **argv)
 
   glider myGl( lat, lon, speed, heading, wind, winddirTrue, altitude, climb );
   myGl.setFd( fifo );
-  myGl.setCircle( radius, direction );
+  myGl.setCircle( rollangle, direction );
 
   // @AP: This is used for the GSA output simulation
   uint gsa = 0;

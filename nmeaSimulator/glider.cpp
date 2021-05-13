@@ -3,7 +3,7 @@
                              -------------------
     begin                : 23.12.2003
     copyright            : (C) 2003      by Eckhard Völlm
-                               2009-2014 by Axel Pauli
+                               2009-2021 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -123,19 +123,24 @@ void glider::Straight()
   myGPRMC.send( lat, lon, speed, head, myFd );
 }
 
-void glider::setCircle(float radius, QString direction )
+void glider::setCircle(float rollangle, QString direction )
 {
-  double circle=M_PI*2*radius;
-  double ctime = circle/(speed*1000.0/3600.0);
-  cout << "Time for circle: " << ctime << " sec" << endl;
-  courseChg = 360.0/ctime;
+  // circle radius formula: https://de.wikipedia.org/wiki/Kurvenflug
+  double speedms = speed / 3.6;
+  double radius = (speedms * speedms) / (9.81 * tan( rollangle * M_PI / 180 ));
+  double circle = M_PI * 2 * radius;
+  double ctime = circle / speedms;
+  cout << "Time for circle:  " << ctime << " sec" << endl;
+  courseChg = 360.0 / ctime;
 
   if( direction == "left" )
     {
       courseChg = -courseChg;
     }
 
-  cout << "Heading chg per second: " << courseChg << " deg" << endl;
+  cout << "Roll Angle:       " << rollangle << "°" << endl;
+  cout << "Circle Radius:    " << radius << "m" << endl;
+  cout << "Spin Speed:       " << courseChg << "°/s" << endl;
 }
 
 void glider::Circle()

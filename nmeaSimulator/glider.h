@@ -2,10 +2,9 @@
                           glider.h  -  description
                              -------------------
     begin                : 23.12.2003
-    copyright            : (C) 2003 by Eckhard Völlm
+    copyright            : (C) 2003 by Eckhard Völlm, Axel Pauli
     email                : kflog.cumulus@gmail.com
 
-    $Id$
 
  ***************************************************************************/
 
@@ -34,7 +33,7 @@ public:
   glider( double &lat, double &lon, float &speed, float &heading, float wind, float winddir, float &altitude, float climb );
   void setFd( int fd );
   void Straight();
-  void setCircle( float radius, QString direction );
+  void setCircle( float rollangle, QString direction );
   void Circle();
   void FixedPos();
   void FixedPosGround();
