@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2015 by Axel Pauli
+**                   2009-2021 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -85,7 +85,9 @@ Vector::Vector(const int angle, const Speed& R)
 Vector::~Vector()
 {}
 
-/** Read property of integer angle. */
+/**
+ * Get angle in degrees as integer.
+ */
 int Vector::getAngleDeg()
 {
   if( dirtyDR )
@@ -95,6 +97,20 @@ int Vector::getAngleDeg()
 
   return int( rint( (_angle / M_PI) * 180.0 ) );
 }
+
+/**
+ * Get angle in degrees as double.
+ */
+double Vector::getAngleDegDouble()
+{
+  if( dirtyDR )
+    {
+      recalcDR();
+    }
+
+  return (_angle / M_PI) * 180.0;
+}
+
 
 /** Get angle in radian. */
 double Vector::getAngleRad()
@@ -313,22 +329,6 @@ void Vector::setY(const Speed& y)
   _isValid = true;
 }
 
-
-/** = operator for Vector. */
-Vector& Vector::operator = (const Vector& x)
-{
-  _isValid = x._isValid;
-  setX( x._x );
-  setY( x._y );
-  _speed = x._speed;
-  _angle = x._angle;
-  dirtyXY = x.dirtyXY;
-  dirtyDR = x.dirtyDR;
-
-  return *this;
-}
-
-
 /** + operator for Vector. */
 Vector Vector::operator + (Vector& x)
 {
@@ -512,15 +512,17 @@ void Vector::add(Vector arg)
   dirtyDR = true;
 }
 
-
 /** Returns a copy of the object */
 Vector Vector::clone()
 {
   Vector result;
 
-  result._isValid = _isValid;
+  result._angle = _angle;
+  result.dirtyXY = dirtyXY;
+  result.dirtyDR = dirtyDR;
+  result._x = _x;
+  result._y = _y;
   result._speed = _speed;
-  result.setAngleRad( this->getAngleRad() );
-  result.dirtyDR = false;
+  result._isValid = _isValid;
   return result;
 }
