@@ -260,7 +260,7 @@ HEADERS = \
     WindAnalyser.h \
     WindCalcInStraightFlight.h \
     WindMeasurement.h \
-    Windstore.h \
+    WindStore.h \
     wpeditdialog.h \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \

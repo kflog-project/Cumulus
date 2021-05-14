@@ -31,6 +31,7 @@
 #pragma once
 
 #include <QObject>
+#include <QList>
 #include <QMap>
 
 #include "altitude.h"
@@ -83,7 +84,9 @@ class WindStore : public QObject
         return wm;
       }
 
-    return windMap.first();
+    QList<int> keys = windMap.keys();
+
+    return windMap[ keys.first() ];
   }
 
   /**
@@ -100,7 +103,9 @@ class WindStore : public QObject
         return wm;
       }
 
-    return windMap.last();
+    QList<int> keys = windMap.keys();
+
+    return windMap[ keys.last() ];
   }
 
   public slots:
