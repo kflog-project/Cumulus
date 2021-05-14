@@ -43,7 +43,7 @@
 #include "reachablelist.h"
 #include "tpinfowidget.h"
 #include "whatsthat.h"
-#include "windanalyser.h"
+#include "WindAnalyser.h"
 
 #define MAX_MCCREADY 10.0
 #define MAX_SAMPLECOUNT 600
@@ -93,7 +93,7 @@ Calculator::Calculator( QObject* parent ) :
   m_calculateETA = false;
   m_calculateTas = true;
   m_calculateWind = ! conf->isExternalWindEnabled();
-  m_lastWind.wind = Vector(0.0, 0.0);
+  m_lastWind.wind = Vector();
   m_lastWind.altitude = lastAltitude;
   targetWp = static_cast<Waypoint *> (0);
   lastMc = GeneralConfig::instance()->getMcCready();
@@ -141,20 +141,20 @@ Calculator::Calculator( QObject* parent ) :
   // analyzer are replaced by direct calls, when a new sample or flight
   // mode is available and the wind calculation is enabled. Wind calculation
   // can be disabled when the Logger device delivers already wind data.
-  connect (m_windAnalyser, SIGNAL(newMeasurement(const Vector&, float)),
-           m_windStore, SLOT(slot_Measurement(const Vector&, float)));
+  connect( m_windAnalyser, SIGNAL(newMeasurement( Vector&, const Altitude&, float ) ),
+           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float ) ));
 
-  connect (m_windInStraightFlight, SIGNAL(newMeasurement(const Vector&, float)),
-           m_windStore, SLOT(slot_Measurement(const Vector&, float)));
+  connect( m_windInStraightFlight, SIGNAL(newMeasurement( Vector&, const Altitude&, float ) ),
+           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float) ));
 
-  connect (this, SIGNAL(newMeasurement(const Vector&, float)),
-           m_windStore, SLOT(slot_Measurement(const Vector&, float)));
+  connect( this, SIGNAL(newMeasurement( Vector&, const Altitude&, float ) ),
+           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float ) ));
 
-  connect (m_windStore, SIGNAL(newWind(Vector&)),
-           this, SLOT(slot_Wind(Vector&)));
+  connect( m_windStore, SIGNAL(newWind( Vector& )),
+           this, SLOT(slot_Wind( Vector& )));
 
-  connect (this, SIGNAL(newAltitude(const Altitude&)),
-           m_windStore, SLOT(slot_Altitude(const Altitude&)));
+  connect( this, SIGNAL(newAltitude(const Altitude&)),
+           m_windInStraightFlight, SLOT(slot_Altitude(const Altitude&)));
 }
 
 Calculator::~Calculator()
@@ -235,6 +235,23 @@ void Calculator::slot_GnssAltitude( Altitude& altitude )
 
           // Calculate GPS altitude gain.
           calcAltitudeGain();
+        }
+    }
+
+  // The GNNS altitude has been changed. Check, if a wind information has to be
+  // distributed. It is get from the wind store. If we are in still stand or
+  // circling, that is not necessary.
+  if( GeneralConfig::instance()->isManualWindEnabled() == false &&
+      lastFlightMode == cruising )
+    {
+      // Only in cruise mode we have to retrieve the wind from the wind store
+      // and to distribute.
+      Vector v = getWindStore()->getWind( lastAltitude );
+
+      if( v.isValid() == true )
+        {
+          setLastWind( v );
+          emit newWind( v ); // forwards the wind info to the MapView
         }
     }
 
@@ -765,7 +782,7 @@ void Calculator::calcTas()
 
   Vector& wind = getLastWind();
 
-  if( ! wind.getSpeed().isValid() )
+  if( ! wind.isValid() )
     {
       return;
     }
@@ -773,11 +790,11 @@ void Calculator::calcTas()
   int eth = -1;
 
   MapCalc::calcETAS( lastHeading,
-		     lastSpeed,
-		     wind.getAngleDeg(),
-		     wind.getSpeed(),
-		     lastTas,
-		     eth );
+                     lastSpeed,
+                     wind.getAngleDeg(),
+                     wind.getSpeed(),
+                     lastTas,
+                     eth );
 
   emit newTas( lastTas );
 }
@@ -884,9 +901,9 @@ void Calculator::calcLD()
 
 
 /** Calculates the glide path to the current waypoint and the needed height */
-bool Calculator::glidePath(int aLastBearing, Distance aDistance,
-                           Altitude aElevation, Altitude &arrivalAlt,
-                           Speed &bestSpeed )
+bool Calculator::glidePath( int aLastBearing, Distance aDistance,
+                            Altitude aElevation, Altitude &arrivalAlt,
+                            Speed &bestSpeed )
 {
 
   if (!m_polar)
@@ -910,8 +927,16 @@ bool Calculator::glidePath(int aLastBearing, Distance aDistance,
   Vector groundspeed (aLastBearing, speed);
   //qDebug ("groundspeed: %d/%f", groundspeed.getAngleDeg(), groundspeed.getSpeed().getKph());
 
+  // get last knwon wind.
+  Vector lastWind = getLastWind();
+
+  if( lastWind.isValid() == false )
+    {
+      lastWind = Vector( 0.0, 0.0 );
+    }
+
   // we add wind because of the negative direction
-  Vector airspeed = groundspeed + getLastWind();
+  Vector airspeed = groundspeed + lastWind;
   //qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
 
   // this is the first iteration of the Bob Hansen method
@@ -1461,12 +1486,10 @@ void Calculator::slot_varioDataControl()
 /** Resets some internal items to the initial state */
 void Calculator::slot_settingsChanged()
 {
-  // Send last known wind to MapView for update of speed. User maybe
-  // changed the speed unit or has assigned its own wind.
   GeneralConfig* conf = GeneralConfig::instance();
 
   // Reset last wind information
-  m_lastWind.wind = Vector(0.0, 0.0);
+  m_lastWind.wind = Vector();
   m_lastWind.altitude = lastAltitude;
 
   slot_ManualWindChanged( conf->isManualWindEnabled() );
@@ -1510,11 +1533,24 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
   // qDebug ("groundspeed: %d/%f", groundspeed.getAngleDeg(), groundspeed.getSpeed().getKph());
   // qDebug ("wind: %d/%f", lastWind.getAngleDeg(), lastWind.getSpeed().getKph());
 
-  Vector& lastWind = getLastWind();
-  Vector airspeed = groundspeed + lastWind;
-  // qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
-  if ( lastWind.getSpeed().getKph() != 0 )
+  if( m_calculateTas == false )
     {
+      // We have a real TAS
+      sample.airspeed = lastTas;
+    }
+  else
+    {
+      // Try to calculate a TAS, when wind is available.
+      Vector lastWind = getLastWind();
+
+      if( lastWind.isValid() == false )
+        {
+          // work around, set TAS equal to ground speed, if wind is not available.
+          lastWind = Vector( 0.0, 0.0 );
+        }
+
+      Vector airspeed = groundspeed + lastWind;
+      // qDebug ("airspeed: %d/%f", airspeed.getAngleDeg(), airspeed.getSpeed().getKph());
       sample.airspeed = airspeed.getSpeed();
     }
 
@@ -1618,7 +1654,7 @@ void Calculator::determineFlightStatus()
   if( lastFlightMode == cruising &&
       abs(MapCalc::angleDiff( lastHead, m_cruiseDirection) ) <=  MAXCRUISEANGDIFF )
     {
-      qDebug() << "determineFlightStatus: further crusing detected";
+      // qDebug() << "determineFlightStatus: further crusing detected";
       return;
     }
 
@@ -1713,11 +1749,11 @@ void Calculator::slot_ExternalWind( const Speed& speed, const short direction )
   v.setSpeed( speed );
 
   // Add new wind with the best quality 5 to the windStore.
-  m_windStore->slot_Measurement( v, 5 );
+  m_windStore->slot_Measurement( v, lastAltitude, 5.0 );
 }
 
 /** Called if the wind measurement changes */
-void Calculator::slot_Wind(Vector& v)
+void Calculator::slot_Wind( Vector& v )
 {
   if( GeneralConfig::instance()->isManualWindEnabled() )
     {
@@ -1744,9 +1780,7 @@ void Calculator::slot_ManualWindChanged( bool enabled )
   else
     {
       // Try to get a wind info from the wind store.
-      WindMeasurementList& wml = getWindStore()->getWindMeasurementList();
-
-      v = wml.getWind( lastAltitude, 1800 );
+      v = getWindStore()->getWind( lastAltitude );
 
       if( v.isValid() == false )
         {
@@ -2056,7 +2090,8 @@ void Calculator::autoZoomInMap()
 }
 
 /**
- * Gets the last Wind.
+ * Gets the last Wind from the wind store. If no wind is available, the
+ * returned wind vector is invalid.
  */
 Vector& Calculator::getLastWind()
 {
@@ -2066,27 +2101,10 @@ Vector& Calculator::getLastWind()
       return m_lastWind.wind;
     }
 
-  if( fabs(m_lastWind.altitude.getMeters() - lastAltitude.getMeters()) < 200.0 )
-    {
-      // In a 200m band we assume that the wind changes are moderate only.
-      return m_lastWind.wind;
-    }
-
-  // Try to get a wind info from the wind store.
-  WindMeasurementList& wml = getWindStore()->getWindMeasurementList();
-
-  Vector v = wml.getWind( lastAltitude, 1800, 400 );
-
-  if( v.isValid() )
-    {
-      // Update last wind
-      setLastWind(v);
-      emit newWind(v); // forwards the wind info to the MapView
-    }
-  else
-    {
-      m_lastWind.altitude = lastAltitude;
-    }
+  // Try to get a wind info from the wind store. If no wind is available,
+  // the wind vector is invalid.
+  Vector v = m_windStore->getWind( lastAltitude );
+  setLastWind( v );
 
   return m_lastWind.wind;
 }

@@ -407,7 +407,13 @@ QPoint MapCalc::getPosition( QPoint startPos, double distance, int direction )
   return( target );
 }
 
-double MapCalc::normalize(double angle)
+/**
+ * Normalize radian angle
+ *
+ * @param angle as radian
+ * @return Normalized angle
+ */
+double MapCalc::normalize( double angle )
 {
   //we needed to use a modulo for the integer version. We should
   //perhaps use something similar here?
@@ -420,7 +426,7 @@ double MapCalc::normalize(double angle)
   return angle;
 }
 
-int MapCalc::normalize(int angle)
+int MapCalc::normalize( int angle )
 {
   if (angle >= 360)
     return angle % 360;
@@ -431,6 +437,20 @@ int MapCalc::normalize(int angle)
   if (angle < 0)
     return normalize (angle + 360);
 
+  return angle;
+}
+
+/**
+ * Normalize angels into range 0...359 degrees.
+ * @param angle to be normalized
+ * @return normalized angle
+ */
+double MapCalc::normalizeAngleDegree( double angle )
+{
+  while( angle < 0.0 )
+    angle += 360.0;
+  while( angle >= 360.0 )
+    angle -= 360.0;
   return angle;
 }
 
@@ -448,7 +468,6 @@ int MapCalc::angleDiff(int ang1, int ang2)
 
   return a;
 }
-
 
 double MapCalc::angleDiff(double ang1, double ang2)
 {
@@ -478,6 +497,8 @@ double MapCalc::bisectorOfAngles( double angle1, double angle2 )
   double result = 0.0;
   double absDiff = fabs( angle1 - angle2 );
 
+  // qDebug() << "bisectorOfAngles: absDiff:" << absDiff;
+
   if( absDiff > 180.0 )
     {
       bisector = ( 360.0 - absDiff ) / 2.0;
@@ -505,7 +526,9 @@ double MapCalc::bisectorOfAngles( double angle1, double angle2 )
         }
    }
 
-  return normalize( result );
+  // qDebug() << "bisector:" << bisector << "result:" << result;
+
+  return normalizeAngleDegree( result );
 }
 
 /**
@@ -668,11 +691,11 @@ bool MapCalc::windTriangle( const double trueCourse,
 }
 
 bool MapCalc::calcETAS( const int tk,
-		        const Speed& gs,
-		        const int wd,
-		        const Speed& ws,
-		        Speed& etas,
-		        int& eth )
+                        const Speed& gs,
+                        const int wd,
+                        const Speed& ws,
+                        Speed& etas,
+                        int& eth )
 {
   Vector gsv( tk, gs);
   Vector wsv( wd, ws );

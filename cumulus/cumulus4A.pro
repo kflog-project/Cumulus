@@ -257,10 +257,10 @@ HEADERS = \
     waypointlistwidget.h \
     wgspoint.h \
     whatsthat.h \
-    windanalyser.h \
+    WindAnalyser.h \
     WindCalcInStraightFlight.h \
-    windmeasurementlist.h \
-    windstore.h \
+    WindMeasurement.h \
+    Windstore.h \
     wpeditdialog.h \
     wpeditdialogpageaero.h \
     wpeditdialogpagegeneral.h \
@@ -392,10 +392,9 @@ SOURCES = \
     waypointlistwidget.cpp \
     wgspoint.cpp \
     whatsthat.cpp \
-    windanalyser.cpp \
+    WindAnalyser.cpp \
     WindCalcInStraightFlight.cpp \
-    windmeasurementlist.cpp \
-    windstore.cpp \
+    WindStore.cpp \
     wpeditdialog.cpp \
     wpeditdialogpageaero.cpp \
     wpeditdialogpagegeneral.cpp \

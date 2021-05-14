@@ -129,9 +129,27 @@ namespace MapCalc
    */
   double outsideVector(QPoint center, QPoint p1, QPoint p2);
 
+  /**
+   * Normalize radian angle
+   *
+   * @param angle as radian
+   * @return Normalized angle
+   */
   double normalize(double angle);
 
-  int normalize(int angle);
+  /**
+   * Normalize angels into range 0...359 degrees.
+   * @param angle to be normalized
+   * @return normalized angle
+   */
+  int normalize( int angle );
+
+  /**
+   * Normalize angels into range 0...359 degrees.
+   * @param angle to be normalized
+   * @return normalized angle
+   */
+  double normalizeAngleDegree( double angle );
 
   /**
    * Calculate the smaller bisector value from angles.

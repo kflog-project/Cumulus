@@ -59,7 +59,7 @@
 #include "time_cu.h"
 #include "waypoint.h"
 #include "wgspoint.h"
-#include "windanalyser.h"
+#include "WindAnalyser.h"
 #include "wpeditdialog.h"
 
 #ifdef INTERNET

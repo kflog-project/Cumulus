@@ -1,6 +1,6 @@
 /***********************************************************************
  **
- **   windanalyser.h
+ **   WindAnalyser.h
  **
  **   This file is part of Cumulus.
  **
@@ -27,14 +27,13 @@
  * \date 2002-2021
  */
 
-#ifndef WINDANALYSER_H
-#define WINDANALYSER_H
+#pragma once
 
 #include <QObject>
 
-#include "vector.h"
 #include "calculator.h"
 #include "gpsnmea.h"
+#include "vector.h"
 
 class WindAnalyser : public QObject
 {
@@ -42,7 +41,7 @@ class WindAnalyser : public QObject
 
 private:
 
-  Q_DISABLE_COPY ( WindAnalyser )
+  Q_DISABLE_COPY( WindAnalyser )
 
 public:
 
@@ -56,7 +55,7 @@ signals:
    * Send if a new wind measurement has been made. The result is included in wind,
    * the quality of the measurement (1-5; 1 is bad, 5 is excellent) in quality.
    */
-  void newMeasurement( const Vector& wind, float quality );
+  void newMeasurement( Vector& wind, const Altitude&, float quality );
 
 public slots:
   /**
@@ -97,5 +96,3 @@ private:
   Vector minVector;
   Vector maxVector;
 };
-
-#endif

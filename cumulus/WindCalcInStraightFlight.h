@@ -31,6 +31,7 @@
 #include <QObject>
 #include <QTime>
 
+#include "altitude.h"
 #include "vector.h"
 
 class WindCalcInStraightFlight : public QObject
@@ -72,7 +73,9 @@ signals:
    * Send if a new wind measurement has been made. The result is included in wind,
    * the quality of the measurement (1-5; 1 is bad, 5 is excellent) in quality.
    */
-  void newMeasurement( const Vector& wind, float quality );
+void newMeasurement( Vector& windvector,
+                     const Altitude& altitude,
+                     float quality );
 
 public slots:
 
@@ -82,6 +85,14 @@ public slots:
    * @param heading in degrees
    */
   void slot_trueCompassHeading( const double& heading );
+
+  /**
+   * Called if the altitude changes.
+   */
+  void slot_Altitude(const Altitude& altitude)
+  {
+    lastAltitude = altitude;
+  }
 
 private:
 
@@ -112,4 +123,5 @@ private:
   double tcMax;              // upper limit of true course observation window
   double thMin;              // lower limit of true heading observation window
   double thMax;              // upper limit of true heading observation window
+  Altitude lastAltitude;     // last known altitude, delivered by the Calculator
 };

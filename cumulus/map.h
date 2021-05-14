@@ -23,12 +23,11 @@
  *
  * \date 1999-2021
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 
 #include <QMap>
 #include <QMutableMapIterator>
@@ -725,4 +724,3 @@ public:
   static Map *instance;
 };
 
-#endif

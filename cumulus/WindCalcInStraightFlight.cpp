@@ -68,7 +68,7 @@ WindCalcInStraightFlight::~WindCalcInStraightFlight()
 }
 
 /**
- * Starts a new measurment cycle.
+ * Starts a new measurement cycle.
  */
 void WindCalcInStraightFlight::start()
 {
@@ -266,7 +266,7 @@ void WindCalcInStraightFlight::slot_trueCompassHeading( const double& )
       Vector wind;
       wind.setSpeed ( WS );
       wind.setAngle( wd + 0.5 );
-      emit newMeasurement( wind, 5 );
+      emit newMeasurement( wind, lastAltitude, 5 );
 
       qDebug() << "SF-Wind: Samples=" << nunberOfSamples
                << "MM-Time=" << measurementStart.elapsed() / 1000

@@ -22,12 +22,13 @@
  *
  * \date 2014-2021
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
 #pragma once
 
+#include <QLabel>
 #include <QList>
 #include <QTreeWidget>
 #include <QWidget>
@@ -130,6 +131,9 @@ class PreFlightWindPage : public QWidget
 
   /** widget with wind statistics */
   QTreeWidget* m_windListStatistics;
+
+  /** Label as averarge display. */
+  QLabel* m_averageLabel;
 
   /** Timer for reload wind statistics. */
   QTimer* m_reloadTimer;

@@ -290,72 +290,72 @@
 <context>
     <name>Calculator</name>
     <message>
-        <location filename="../../calculator.cpp" line="371"/>
+        <location filename="../../calculator.cpp" line="391"/>
         <source>Replace current task point?</source>
         <translation>Aufgabenpunkt ersetzen?</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="372"/>
+        <location filename="../../calculator.cpp" line="392"/>
         <source>&lt;html&gt;A flight task is activated!&lt;br&gt;This selection will stop the automatic task point switch.To avoid that make a selection from task menu.&lt;br&gt;Do You really want to replace?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiviert!&lt;br&gt;Diese Auswahl stoppt die automatische Punkt Weiterschaltung. Zur Vermeidung machen Sie eine Auswahl im Aufgabenmenü.&lt;br&gt;Wollen Sie wirklich fortfahren?&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="631"/>
+        <location filename="../../calculator.cpp" line="651"/>
         <source>Task Target</source>
         <translation>Aufgabenziel</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="637"/>
+        <location filename="../../calculator.cpp" line="657"/>
         <source>reached</source>
         <translation>erreicht</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="456"/>
+        <location filename="../../calculator.cpp" line="476"/>
         <source>Task started</source>
         <oldsource>Task start</oldsource>
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2227"/>
+        <location filename="../../calculator.cpp" line="2087"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="626"/>
+        <location filename="../../calculator.cpp" line="646"/>
         <source>Task ended</source>
         <oldsource>Task end</oldsource>
         <translation>Aufgabe beendet</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="561"/>
         <location filename="../../calculator.cpp" line="581"/>
+        <location filename="../../calculator.cpp" line="601"/>
         <source>TP in sight</source>
         <translation>WP in Sicht</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="675"/>
+        <location filename="../../calculator.cpp" line="695"/>
         <source>TP passed</source>
         <oldsource>TP switch</oldsource>
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2057"/>
-        <location filename="../../calculator.cpp" line="2062"/>
+        <location filename="../../calculator.cpp" line="1917"/>
+        <location filename="../../calculator.cpp" line="1922"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2063"/>
+        <location filename="../../calculator.cpp" line="1923"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2103"/>
+        <location filename="../../calculator.cpp" line="1963"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2104"/>
+        <location filename="../../calculator.cpp" line="1964"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -943,12 +943,12 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2866"/>
+        <location filename="../../gpsnmea.cpp" line="2902"/>
         <source>GPS connection switched off by user</source>
         <translation>GPS Verbingung abgeschaltet durch Benutzer</translation>
     </message>
     <message>
-        <location filename="../../gpsnmea.cpp" line="3224"/>
+        <location filename="../../gpsnmea.cpp" line="3260"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -3453,79 +3453,79 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>PreFlightWindPage</name>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="47"/>
+        <location filename="../../preflightwindpage.cpp" line="48"/>
         <source>PreFlight - Wind</source>
         <translation>Vorflug - Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="79"/>
+        <location filename="../../preflightwindpage.cpp" line="80"/>
         <source>Manual Wind</source>
         <translation>Manueller Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="88"/>
-        <location filename="../../preflightwindpage.cpp" line="139"/>
-        <location filename="../../preflightwindpage.cpp" line="152"/>
+        <location filename="../../preflightwindpage.cpp" line="89"/>
+        <location filename="../../preflightwindpage.cpp" line="140"/>
+        <location filename="../../preflightwindpage.cpp" line="153"/>
         <source>On/Off</source>
         <translation>Ein/Aus</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="93"/>
+        <location filename="../../preflightwindpage.cpp" line="94"/>
         <source>WD</source>
         <translation>WD</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="98"/>
+        <location filename="../../preflightwindpage.cpp" line="99"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="110"/>
+        <location filename="../../preflightwindpage.cpp" line="111"/>
         <source>WS</source>
         <translation>WS</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="115"/>
+        <location filename="../../preflightwindpage.cpp" line="116"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="131"/>
+        <location filename="../../preflightwindpage.cpp" line="132"/>
         <source>SF Wind</source>
         <translation>GF-Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="132"/>
+        <location filename="../../preflightwindpage.cpp" line="133"/>
         <source>Wind calculation in straight flight</source>
         <translation>Windberechnung im Geradeausflug</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="140"/>
+        <location filename="../../preflightwindpage.cpp" line="141"/>
         <source>Switch on/off wind calculation in straight flight</source>
         <translation>Schalte Windberechnung im Geradeausflug an/aus</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="145"/>
+        <location filename="../../preflightwindpage.cpp" line="146"/>
         <source>Ext. Wind</source>
         <translation>Ext. Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="159"/>
+        <location filename="../../preflightwindpage.cpp" line="162"/>
         <source>Wind Statistics</source>
         <translation>Wind Statistik</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="191"/>
+        <location filename="../../preflightwindpage.cpp" line="199"/>
         <source>Altitude</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="192"/>
+        <location filename="../../preflightwindpage.cpp" line="200"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="193"/>
+        <location filename="../../preflightwindpage.cpp" line="201"/>
         <source>Speed</source>
         <translation>Geschwindigkeit</translation>
     </message>
@@ -6061,17 +6061,17 @@ USB Stick eingeschoben?</translation>
         <translation>Minimale Luftgeschwindigkeit:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageWind.cpp" line="114"/>
+        <location filename="../../SettingsPageWind.cpp" line="115"/>
         <source>Speed tolerance:</source>
         <translation>Geschwindigkeitstoleranz:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageWind.cpp" line="131"/>
+        <location filename="../../SettingsPageWind.cpp" line="133"/>
         <source>Heading tolerance:</source>
         <translation>Kurstoleranz:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageWind.cpp" line="151"/>
+        <location filename="../../SettingsPageWind.cpp" line="154"/>
         <source>Wind after:</source>
         <translation>Wind nach:</translation>
     </message>

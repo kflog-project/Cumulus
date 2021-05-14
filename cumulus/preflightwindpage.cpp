@@ -29,13 +29,14 @@
 #include "helpbrowser.h"
 #include "layout.h"
 #include "mainwindow.h"
+#include "mapcalc.h"
 #include "mapconfig.h"
 #include "numberEditor.h"
 #include "preflightwindpage.h"
 #include "rowdelegate.h"
 #include "speed.h"
 #include "vector.h"
-#include "windmeasurementlist.h"
+#include "WindMeasurement.h"
 
 PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   QWidget( parent )
@@ -156,7 +157,14 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
            this, SLOT(slotExternalWindCbStateChanged(int)) );
 
   //----------------------------------------------------------------------------
-  windLayout->addWidget( new QLabel( tr("Wind Statistics") ) );
+  QHBoxLayout* header = new QHBoxLayout;
+  header->setSpacing( 5 );
+  header->addWidget( new QLabel( tr("Wind Statistics") ) );
+  header->addSpacing( 30 );
+  m_averageLabel = new QLabel( this );
+  header->addWidget( m_averageLabel, 5 );
+
+  windLayout->addLayout( header );
   windLayout->addSpacing( 10 );
 
   m_windListStatistics = new QTreeWidget;
@@ -265,44 +273,39 @@ void PreFlightWindPage::showEvent(QShowEvent *event )
 
 void PreFlightWindPage::slotLoadWindStatistics()
 {
+  m_averageLabel->clear();
   m_windListStatistics->clear();
 
-  WindMeasurementList& wml = calculator->getWindStore()->getWindMeasurementList();
+  WindStore* ws = calculator->getWindStore();
+
+  if( ws->numberOfWindSamples() == 0 )
+    {
+      // No data in wind map.
+      return;
+    }
 
   int iconSize = QFontMetrics(font()).height() - 4;
   m_windListStatistics->setIconSize( QSize(iconSize, iconSize) );
 
-  int start, end;
+  int start = ws->getFirstWindMeasurement().altitude;
+  int end = ws->getLastWindMeasurement().altitude;
+  int items = 0;
 
-  if( Altitude::getUnit() == Altitude::meters )
-    {
-      start = 250;
-      end   = 6000;
-    }
-  else if( Altitude::getUnit() == Altitude::feet )
-    {
-      start = 1000;
-      end   = 20000;
-    }
-  else
-    {
-      return;
-    }
+  double wv = 0.0;
+  double wd = 0.0;
 
-  for( int i = start; i <= end; i += start )
+  for( int i = start; i <= end; i += 100 )
     {
-      Altitude alt;
+      items++;
 
-      if( Altitude::getUnit() == Altitude::meters )
-        {
-          alt.setMeters(i);
-        }
-      else if( Altitude::getUnit() == Altitude::feet )
+      Altitude alt( i );
+
+      if( Altitude::getUnit() == Altitude::feet )
         {
           alt.setFeet(i);
         }
 
-      Vector v = wml.getWind( alt, 3600, 250 );
+      Vector v = ws->getWind( i, true );
 
       if( v.isValid() )
         {
@@ -313,8 +316,19 @@ void PreFlightWindPage::slotLoadWindStatistics()
              << v.getSpeed().getWindText( true, 0 );
 
           QPixmap pixmap;
+          int windAngle = v.getAngleDeg();
 
-          int windAngle = rint(v.getAngleDeg());
+          // Summarize wind over all samples
+          if( items == 1 )
+            {
+              wd = v.getAngleDegDouble();
+            }
+          else
+            {
+              wd = MapCalc::bisectorOfAngles( wd, v.getAngleDegDouble() );
+            }
+
+          wv += v.getSpeed().getMps();
 
           // Wind angle must be turned by 180 degrees to get the right triangle
           // direction.
@@ -339,6 +353,16 @@ void PreFlightWindPage::slotLoadWindStatistics()
           m_windListStatistics->addTopLevelItem( item );
         }
     }
+
+  // Calculate average speed over all samples
+  wv /= items;
+  Speed wva( wv );
+
+  // prepare label text for wind average display
+  QString lt = QString( "%1°/%2" ).arg( int(wd + 0.5) )
+                                  .arg( wva.getWindText(true, 0) );
+
+  m_averageLabel->setText( lt );
 
   m_windListStatistics->resizeColumnToContents(0);
   m_windListStatistics->resizeColumnToContents(1);

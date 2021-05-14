@@ -1,13 +1,13 @@
 /***********************************************************************
  **
- **   windanalyser.cpp
+ **   WindAnalyser.cpp
  **
  **   This file is part of Cumulus
  **
  ************************************************************************
  **
  **   Copyright (c):  2002      by Andre Somers
- **                   2009-2015 by Axel Pauli
+ **                   2009-2021 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,9 +18,9 @@
 
 #include <QtGlobal>
 
-#include "windanalyser.h"
-#include "mapcalc.h"
 #include "generalconfig.h"
+#include "mapcalc.h"
+#include "WindAnalyser.h"
 
 /*
   About Wind analysis
@@ -203,8 +203,6 @@ void WindAnalyser::_calcWind()
 {
   int degreePerStep = circleDegrees / circleSectors;
 
-  qDebug() << "calcWind(): degreePerStep=" << degreePerStep;
-
   double aDiff = MapCalc::angleDiff( minVector.getAngleDeg(), maxVector.getAngleDeg() );
 
   /*
@@ -224,7 +222,8 @@ void WindAnalyser::_calcWind()
       quality -= 1.0;
     }
 
-  qDebug() << "WindQuality=" << quality;
+  qDebug() << "calcWind(): degree/Step=" << degreePerStep
+           << "WindQuality=" << quality;
 
   if( quality < 1 )
     {
@@ -247,15 +246,15 @@ void WindAnalyser::_calcWind()
                                                minVector.getAngleDegDouble() );
 
   // the direction of the wind is the direction where the greatest speed occurred
-  result.setAngle( bisector);
+  result.setAngle( bisector );
 
   // The speed of the wind is half the difference between the minimum and the maximum speeds.
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2.0 );
 
   // Let the world know about our measurement!
-  qDebug("### CircleWind: %d°/%.0fKm/h", result.getAngleDeg(), result.getSpeed().getKph());
+  qDebug("### Circle-Wind: %d°/%.0fKm/h", result.getAngleDeg(), result.getSpeed().getKph());
 
-  emit newMeasurement( result, quality );
+  emit newMeasurement( result, calculator->samplelist[0].altitude, quality );
 }
 
 void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )

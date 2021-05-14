@@ -39,7 +39,7 @@
 #include "vario.h"
 #include "vector.h"
 #include "waypoint.h"
-#include "windstore.h"
+#include "WindStore.h"
 #include "WindCalcInStraightFlight.h"
 
 class ReachableList;
@@ -73,8 +73,8 @@ public:
   Altitude altitude;
 
   /**
-   * Pressure Altitude of poinnewMagneticTrueHeadingt, if available. Otherwise it is derived from
-   * the GNSSAltitude.
+   * Pressure Altitude from an external device, if available. Otherwise it is
+   * derived from the GNSSAltitude.
    */
   Altitude STDAltitude;
 
@@ -337,7 +337,8 @@ public:
   }
 
   /**
-   * Returns the last stored wind value.
+   * Returns the last stored wind value in the calculator. Note, the returned
+   * wind vector can be invalid.
    */
   Vector& getLastStoredWind()
   {
@@ -345,12 +346,13 @@ public:
   }
 
   /**
-   * Gets the last known Wind from the wind store.
+   * Gets the last Wind from the wind store. If no wind is available, the
+   * returned wind vector is invalid.
    */
   Vector& getLastWind();
 
   /**
-   * Sets the last Wind.
+   * Sets the last Wind and the related altitude.
    */
   void setLastWind( Vector& v )
   {
@@ -361,7 +363,7 @@ public:
   /**
    * Read property of last GPS Heading.
    */
-  int getLastHeading()
+  int getLastHeading() const
   {
     return lastHeading;
   }
@@ -369,7 +371,7 @@ public:
   /**
    * Read property of lastMagneticHeading.
    */
-  double getLastMagneticHeading()
+  double getLastMagneticHeading() const
   {
     return lastMagneticHeading;
   }
@@ -377,7 +379,7 @@ public:
   /**
    * Read property of lastMagneticTrueHeading.
    */
-  double getLastMagneticTrueHeading()
+  double getLastMagneticTrueHeading() const
   {
     return lastMagneticTrueHeading;
   }
@@ -395,7 +397,7 @@ public:
   /**
    * Returns the current flight mode
    */
-  FlightMode currentFlightMode()
+  FlightMode currentFlightMode() const
     {
       return lastFlightMode;
     }
@@ -734,9 +736,9 @@ public:
   void slot_ExternalWind(const Speed& speed, const short direction);
 
   /**
-   * Called if the Cumulus wind analyzer has a new measurement.
+   * Called if the Cumulus wind store has a new measurement.
    */
-  void slot_Wind(Vector&);
+  void slot_Wind( Vector& );
 
   /**
    * Called, if the user has activated/deactivated manual wind and has changed
@@ -922,7 +924,7 @@ public:
   /**
    * Sent if a new wind has been obtained
    */
-  void newWind (Vector&);
+  void newWind( Vector& );
 
   /**
    * Sent the name of the glider type, if a new glider has been set.
@@ -932,7 +934,7 @@ public:
   /**
    * Sent if the flight mode has changed.
    */
-  void flightModeChanged(Calculator::FlightMode);
+  void flightModeChanged( Calculator::FlightMode );
 
   /**
    * Sent if a new sample has been added to the sample list
@@ -983,7 +985,9 @@ public:
    * the measurement is. Higher quality measurements are more important in the
    * end result and stay in the store longer.
    */
-  void newMeasurement( const Vector& windvector, float quality );
+  void newMeasurement( Vector& windvector,
+                       const Altitude& altitude,
+                       float quality );
 
 private:
 
