@@ -90,6 +90,13 @@ class WindStore : public QObject
   }
 
   /**
+   * Returns the stored wind measurement from the required altitude from the
+   * wind map. If the measurement is not available, the wind vector is set
+   * to invalid.
+   */
+  WindMeasurement getWindMeasurement( const Altitude &altitude );
+
+  /**
    * Returns the last stored wind measurement (highest altitude) from the
    * wind map. If the measurement is not available, the wind vector is set
    * to invalid.

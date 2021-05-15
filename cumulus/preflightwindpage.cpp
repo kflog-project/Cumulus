@@ -172,7 +172,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   m_windListStatistics->setUniformRowHeights(true);
   m_windListStatistics->setAlternatingRowColors(true);
   m_windListStatistics->setSortingEnabled(false);
-  m_windListStatistics->setColumnCount(4);
+  m_windListStatistics->setColumnCount(6);
   m_windListStatistics->setFocus();
   m_windListStatistics->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_windListStatistics->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
@@ -198,15 +198,20 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
   QString h0 = tr("Altitude");
   QString h1 = tr("Direction");
   QString h2 = tr("Speed");
+  QString h3 = tr("Age");
+  QString h4 = tr("Quality");
+
   QStringList sl;
 
-  sl << h0 << h1 << h2 << "";
+  sl << h0 << h1 << h2 << h3 << h4 << "";
   m_windListStatistics->setHeaderLabels(sl);
 
   QTreeWidgetItem* headerItem = m_windListStatistics->headerItem();
   headerItem->setTextAlignment( 0, Qt::AlignCenter );
   headerItem->setTextAlignment( 1, Qt::AlignCenter );
   headerItem->setTextAlignment( 2, Qt::AlignCenter );
+  headerItem->setTextAlignment( 3, Qt::AlignCenter );
+  headerItem->setTextAlignment( 4, Qt::AlignCenter );
 
   windLayout->addWidget( m_windListStatistics, 5 );
 
@@ -251,7 +256,7 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
 
   // Activate reload timer for wind statistics.
   m_reloadTimer = new QTimer( this );
-  m_reloadTimer->setInterval( 30000 );
+  m_reloadTimer->setInterval( 15000 );
   connect(m_reloadTimer, SIGNAL(timeout()), SLOT(slotLoadWindStatistics()));
   m_reloadTimer->start();
 }
@@ -266,6 +271,8 @@ void PreFlightWindPage::showEvent(QShowEvent *event )
   m_windListStatistics->resizeColumnToContents(0);
   m_windListStatistics->resizeColumnToContents(1);
   m_windListStatistics->resizeColumnToContents(2);
+  m_windListStatistics->resizeColumnToContents(3);
+  m_windListStatistics->resizeColumnToContents(4);
 
   QWidget::showEvent( event );
 }
@@ -304,30 +311,37 @@ void PreFlightWindPage::slotLoadWindStatistics()
           alt.setFeet(i);
         }
 
-      Vector v = ws->getWind( i, true );
+      WindMeasurement wm = ws->getWindMeasurement( i );
 
-      if( v.isValid() )
+      if( wm.vector.isValid() )
         {
+          // calculate age in seconds.
+          int age = wm.time.secsTo( QTime::currentTime() );
+
           // Add wind of altitude to the list
           QStringList sl;
           sl << QString::number(i) + " " + Altitude::getUnitText()
-             << QString("%1%2").arg( v.getAngleDeg() ).arg( QString(Qt::Key_degree) )
-             << v.getSpeed().getWindText( true, 0 );
+             << QString("%1%2").arg( wm.vector.getAngleDeg() ).arg( QString(Qt::Key_degree) )
+             << wm.vector.getSpeed().getWindText( true, 0 )
+             << QString( "%1:%2:%3" ).arg( age / 3600, 2, 10, QChar('0') ) \
+                                     .arg( (age % 3600) / 60 , 2, 10, QChar('0') ) \
+                                     .arg( age % 60, 2, 10, QChar('0') )
+             << QString( "%1" ).arg( wm.quality, 0, 'f', 3 );
 
           QPixmap pixmap;
-          int windAngle = v.getAngleDeg();
+          int windAngle = wm.vector.getAngleDeg();
 
           // Summarize wind over all samples
           if( items == 1 )
             {
-              wd = v.getAngleDegDouble();
+              wd = wm.vector.getAngleDegDouble();
             }
           else
             {
-              wd = MapCalc::bisectorOfAngles( wd, v.getAngleDegDouble() );
+              wd = MapCalc::bisectorOfAngles( wd, wm.vector.getAngleDegDouble() );
             }
 
-          wv += v.getSpeed().getMps();
+          wv += wm.vector.getSpeed().getMps();
 
           // Wind angle must be turned by 180 degrees to get the right triangle
           // direction.
@@ -344,6 +358,8 @@ void PreFlightWindPage::slotLoadWindStatistics()
           item->setTextAlignment( 0, Qt::AlignRight|Qt::AlignVCenter );
           item->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
           item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
+          item->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
+          item->setTextAlignment( 4, Qt::AlignRight|Qt::AlignVCenter );
 
           QIcon qi;
           qi.addPixmap( pixmap );
@@ -358,14 +374,17 @@ void PreFlightWindPage::slotLoadWindStatistics()
   Speed wva( wv );
 
   // prepare label text for wind average display
-  QString lt = QString( "%1°/%2" ).arg( int(wd + 0.5) )
-                                  .arg( wva.getWindText(true, 0) );
+  QString lt = QString( "%1%2/%3" ).arg( int(wd + 0.5) )
+                                   .arg(QString(Qt::Key_degree))
+                                   .arg( wva.getWindText(true, 0) );
 
   m_averageLabel->setText( lt );
 
   m_windListStatistics->resizeColumnToContents(0);
   m_windListStatistics->resizeColumnToContents(1);
   m_windListStatistics->resizeColumnToContents(2);
+  m_windListStatistics->resizeColumnToContents(3);
+  m_windListStatistics->resizeColumnToContents(5);
 }
 
 void PreFlightWindPage::slotManualWindCbStateChanged( int state )

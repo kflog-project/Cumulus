@@ -82,29 +82,29 @@ void WindStore::slot_Measurement( Vector& windVector,
 
           qDebug() << "WindStore: qDiff=" << qDiff << "WindAge=" << age;
 
-          if( age >= 60 * 60 && qDiff <= 2.5 )
+          if( age >= 30 * 60 && qDiff <= 2.0 )
             {
-              // after 60 minutes
+              // after 30 minutes
               takeIt = true;
-              qDebug() << "WindStore: replace wind after 60m";
+              qDebug() << "WindStore: replace wind after 30m";
             }
-          else if( age >= 40 * 60 && qDiff <= 2. )
-            {
-              // after 40 minutes
-              takeIt = true;
-              qDebug() << "WindStore: replace wind after 40m";
-            }
-          else if( age >= 20 * 60 && qDiff <= 1. )
+          else if( age >= 20 * 60 && qDiff <= 1.5 )
             {
               // after 20 minutes
               takeIt = true;
               qDebug() << "WindStore: replace wind after 20m";
-             }
-          else if( age >= 10 * 60 && qDiff <= 0.5 )
+            }
+          else if( age >= 10 * 60 && qDiff <= 1.0 )
             {
               // after 10 minutes
               takeIt = true;
               qDebug() << "WindStore: replace wind after 10m";
+             }
+          else if( age >= 5 * 60 && qDiff <= 0.5 )
+            {
+              // after 5 minutes
+              takeIt = true;
+              qDebug() << "WindStore: replace wind after 5m";
             }
         }
     }
@@ -113,13 +113,13 @@ void WindStore::slot_Measurement( Vector& windVector,
     {
       // insert new measurement into the map.
       windMap.insert( wind.altitude, wind );
-    }
 
-  // we may have a new wind value, so make sure it's emitted if needed!
-  if( wind.vector != m_lastReportedWind )
-    {
-      m_lastReportedWind = wind.vector;
-      emit newWind( wind.vector );
+      // we may have a new wind value, so make sure it's emitted if needed!
+      if( wind.vector != m_lastReportedWind )
+        {
+          m_lastReportedWind = wind.vector;
+          emit newWind( wind.vector );
+        }
     }
 }
 
@@ -129,7 +129,7 @@ void WindStore::slot_Measurement( Vector& windVector,
  */
 Vector WindStore::getWind( const Altitude &altitude, bool exact )
 {
-  qDebug() << "WindStore::getWind(): " << altitude.getMeters();
+  // qDebug() << "WindStore::getWind(): " << altitude.getMeters();
   Vector wind;
 
   if( windMap.isEmpty() == true )
@@ -214,4 +214,32 @@ Vector WindStore::getWind( const Altitude &altitude, bool exact )
   m_lastRequiredWind = wind;
 
   return wind;
+}
+
+/**
+ * Returns the stored wind measurement from the required altitude from the
+ * wind map. If the measurement is not available, the wind vector is set
+ * to invalid.
+ */
+WindMeasurement WindStore::getWindMeasurement( const Altitude &altitude )
+{
+  WindMeasurement wm;
+
+  if( windMap.isEmpty() == true )
+    {
+      return wm;
+    }
+
+  // reduce altitude to a 100m interval
+  int altInterval = static_cast<int>( altitude.getMeters() );
+  altInterval = ( altInterval / 100 ) * 100;
+
+  // Check, if a wind is available for the required altitude. We always deliver
+  // the up to date wind as first.
+  if( windMap.contains( altInterval ) == true )
+    {
+      return windMap[altInterval];
+    }
+
+  return wm;
 }

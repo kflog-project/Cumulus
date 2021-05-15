@@ -927,7 +927,7 @@ bool Calculator::glidePath( int aLastBearing, Distance aDistance,
   Vector groundspeed (aLastBearing, speed);
   //qDebug ("groundspeed: %d/%f", groundspeed.getAngleDeg(), groundspeed.getSpeed().getKph());
 
-  // get last knwon wind.
+  // get last known wind.
   Vector lastWind = getLastWind();
 
   if( lastWind.isValid() == false )
@@ -1506,7 +1506,10 @@ void Calculator::slot_settingsChanged()
   setGlider( GliderListWidget::getUserSelectedGlider() );
 }
 
-/** This slot is called by the NMEA interpreter if a new fix has been received.  */
+/**
+ * This slot is called by the NMEA interpreter if a new fix in GPRMC has been
+ * received.
+ */
 void Calculator::slot_newFix( const QDateTime& newFixTime )
 {
   // before we start making samples, let's be sure we have all the
