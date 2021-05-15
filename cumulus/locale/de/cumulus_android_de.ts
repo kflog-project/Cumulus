@@ -315,7 +315,7 @@
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2087"/>
+        <location filename="../../calculator.cpp" line="2090"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
@@ -336,23 +336,23 @@
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1917"/>
-        <location filename="../../calculator.cpp" line="1922"/>
+        <location filename="../../calculator.cpp" line="1920"/>
+        <location filename="../../calculator.cpp" line="1925"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1923"/>
+        <location filename="../../calculator.cpp" line="1926"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1963"/>
+        <location filename="../../calculator.cpp" line="1966"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1964"/>
+        <location filename="../../calculator.cpp" line="1967"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -3477,76 +3477,86 @@ USB Stick eingeschoben?</translation>
         <translation>Vorflug - Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="80"/>
+        <location filename="../../preflightwindpage.cpp" line="79"/>
         <source>Manual Wind</source>
         <translation>Manueller Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="89"/>
-        <location filename="../../preflightwindpage.cpp" line="140"/>
-        <location filename="../../preflightwindpage.cpp" line="153"/>
+        <location filename="../../preflightwindpage.cpp" line="88"/>
+        <location filename="../../preflightwindpage.cpp" line="139"/>
+        <location filename="../../preflightwindpage.cpp" line="152"/>
         <source>On/Off</source>
         <translation>Ein/Aus</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="94"/>
+        <location filename="../../preflightwindpage.cpp" line="93"/>
         <source>WD</source>
         <translation>WD</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="99"/>
+        <location filename="../../preflightwindpage.cpp" line="98"/>
         <source>Wind Direction</source>
         <translation>Wind Richtung</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="111"/>
+        <location filename="../../preflightwindpage.cpp" line="110"/>
         <source>WS</source>
         <translation>WS</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="116"/>
+        <location filename="../../preflightwindpage.cpp" line="115"/>
         <source>Wind Speed</source>
         <translation>Wind Geschwindigkeit</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="132"/>
+        <location filename="../../preflightwindpage.cpp" line="131"/>
         <source>SF Wind</source>
         <translation>GF-Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="133"/>
+        <location filename="../../preflightwindpage.cpp" line="132"/>
         <source>Wind calculation in straight flight</source>
         <translation>Windberechnung im Geradeausflug</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="141"/>
+        <location filename="../../preflightwindpage.cpp" line="140"/>
         <source>Switch on/off wind calculation in straight flight</source>
         <translation>Schalte Windberechnung im Geradeausflug an/aus</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="146"/>
+        <location filename="../../preflightwindpage.cpp" line="145"/>
         <source>Ext. Wind</source>
         <translation>Ext. Wind</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="162"/>
+        <location filename="../../preflightwindpage.cpp" line="161"/>
         <source>Wind Statistics</source>
         <translation>Wind Statistik</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="199"/>
+        <location filename="../../preflightwindpage.cpp" line="198"/>
         <source>Altitude</source>
         <translation>Höhe</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="200"/>
+        <location filename="../../preflightwindpage.cpp" line="199"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../preflightwindpage.cpp" line="201"/>
+        <location filename="../../preflightwindpage.cpp" line="200"/>
         <source>Speed</source>
         <translation>Geschwindigkeit</translation>
+    </message>
+    <message>
+        <location filename="../../preflightwindpage.cpp" line="201"/>
+        <source>Age</source>
+        <translation>Alter</translation>
+    </message>
+    <message>
+        <location filename="../../preflightwindpage.cpp" line="202"/>
+        <source>Quality</source>
+        <translation>Qualität</translation>
     </message>
 </context>
 <context>
