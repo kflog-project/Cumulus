@@ -151,8 +151,6 @@ void WindAnalyser::slot_newSample()
 /** Called if the flight mode changes */
 void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
 {
-  qDebug() << "WindAnalyser::newFlightMode()" << newFlightMode;
-
   // Reset the circle counter for each flight mode change. The important thing
   // to measure is the number of turns in a thermal per turn direction.
   circleCount   = 0;
@@ -217,13 +215,15 @@ void WindAnalyser::_calcWind()
 
   float quality = 5 - ((180.0 - fabsf( aDiff )) / 8.0 );
 
+  qDebug() << "calcWind(): circles=" << circleCount
+           << "degree/Step=" << degreePerStep
+           << "WindQuality=" << quality;
+
   if( circleCount < 2 )
     {
       quality -= 1.0;
+      qDebug() << "WindQuality-1=" << quality;
     }
-
-  qDebug() << "calcWind(): degree/Step=" << degreePerStep
-           << "WindQuality=" << quality;
 
   if( quality < 1 )
     {
@@ -252,7 +252,8 @@ void WindAnalyser::_calcWind()
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2.0 );
 
   // Let the world know about our measurement!
-  qDebug("### Circle-Wind: %d°/%.0fKm/h", result.getAngleDeg(), result.getSpeed().getKph());
+  qDebug( "### Circle-Wind: %d%c/%.0fKm/h", result.getAngleDeg(),
+          QChar( Qt::Key_degree), result.getSpeed().getKph() );
 
   emit newMeasurement( result, calculator->samplelist[0].altitude, quality );
 }

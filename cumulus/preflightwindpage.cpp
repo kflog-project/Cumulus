@@ -320,7 +320,7 @@ void PreFlightWindPage::slotLoadWindStatistics()
 
           // Add wind of altitude to the list
           QStringList sl;
-          sl << QString::number(i) + " " + Altitude::getUnitText()
+          sl << Altitude::getText( i, true, 0 )
              << QString("%1%2").arg( wm.vector.getAngleDeg() ).arg( QString(Qt::Key_degree) )
              << wm.vector.getSpeed().getWindText( true, 0 )
              << QString( "%1:%2:%3" ).arg( age / 3600, 2, 10, QChar('0') ) \
