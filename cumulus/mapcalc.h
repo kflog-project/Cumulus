@@ -169,6 +169,13 @@ namespace MapCalc
 
   /**
     * Calculates the difference between two angles, returning the smallest
+    * angle. It returns an angle between -180 and 180 in degrees. Positive
+    * in clockwise direction.
+    */
+  int angleDiffDegree(double ang1, double ang2);
+
+  /**
+    * Calculates the difference between two angles, returning the smallest
     * angle. It returns an angle between -Pi and Pi in rad.
     */
   double angleDiff(double ang1, double ang2);

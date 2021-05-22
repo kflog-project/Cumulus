@@ -454,6 +454,26 @@ double MapCalc::normalizeAngleDegree( double angle )
   return angle;
 }
 
+/**
+  * Calculates the difference between two angles, returning the smallest
+  * angle. It returns an angle between -180 and 180 in degrees. Positive
+  * in clockwise direction.
+  */
+int MapCalc::angleDiffDegree(double ang1, double ang2)
+{
+  double a1 = normalizeAngleDegree(ang1);
+  double a2 = normalizeAngleDegree(ang2);
+  double a = a2 - a1;
+
+  if (a > 180.)
+    return (a - 360.);
+
+  if (a < -180.)
+    return (a + 360.);
+
+  return a;
+}
+
 int MapCalc::angleDiff(int ang1, int ang2)
 {
   int a1 = normalize (ang1);
