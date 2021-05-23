@@ -14,11 +14,18 @@
 **
 ***********************************************************************/
 
+#include <distance.h>
+#include <mapcalc.h>
+#include <qdatetime.h>
+#include <qdebug.h>
+#include <qlist.h>
+#include <qlogging.h>
+#include <qmap.h>
+#include <qobjectdefs.h>
+#include <speed.h>
+#include <WindStore.h>
 #include <cmath>
-
-#include <QtCore>
-
-#include "WindStore.h"
+#include <cstdlib>
 
 WindStore::WindStore( QObject* parent ) :
   QObject(parent),
@@ -33,94 +40,129 @@ WindStore::WindStore( QObject* parent ) :
  */
 void WindStore::slot_Measurement( Vector& windVector,
                                   const Altitude& altitude,
-                                  float quality )
+                                  float quality,
+                                  int /* numberOfMeasurement */ )
 {
-  qDebug() << "WindStore::slot_Measurement: WS="
-           <<  windVector.getSpeed().getKph()
+  qDebug() << "WindStore::slot_Measurement:"
            << "WD=" << windVector.getAngleDeg()
+           << "WS=" << windVector.getSpeed().getKph()
            << "Alt=" << altitude.getMeters()
            << "quality=" << quality;
 
-  WindMeasurement wind;
-  wind.vector = windVector;
-  wind.quality = quality;
+  WindMeasurement wm;
+  wm.vector = windVector;
+  wm.quality = quality;
 
   // reduce altitude to a 100m interval
-  wind.altitude = static_cast<int>( altitude.getMeters() );
-  wind.altitude = ( wind.altitude / 100 ) * 100;
-  wind.time = QTime::currentTime();
+  wm.altitude = static_cast<int>( altitude.getMeters() );
+  wm.altitude = ( wm.altitude / 100 ) * 100;
+  wm.time = QTime::currentTime();
+
+  WindMeasurement& oldWm = lastWindMeasurement;
+
+  if( windMap.contains( wm.altitude ) == true )
+    {
+      oldWm = windMap[wm.altitude];;
+    }
 
   bool takeIt = false;
 
-  if( windMap.contains( wind.altitude ) == false )
+  // Check, if we have a last wind measurement that fulfills the following
+  // conditions:
+  // 1. not older as 5 minutes
+  // 2. altitude difference <= 300m
+  // 3. Speed difference <= 5 Km/h
+  // 4. Heading difference <= 10 degrees
+  // In this case we apply a low pass filter to the new wind.
+  // Otherwise the new original wind measurement is taken.
+  if( lastWindMeasurement.vector.isValid() )
     {
-      qDebug() << "WindStore: first wind added";
-      // insert new measurement into the map.
-      takeIt = true;
-    }
-  else
-    {
-      // Load existing measurement
-      WindMeasurement& oldWind = windMap[wind.altitude];
+      int age = lastWindMeasurement.time.secsTo( wm.time );
+      int altDiff = abs( lastWindMeasurement.altitude - wm.altitude );
+      double deltaSpeed = fabs( wm.vector.getSpeed().getKph() - lastWindMeasurement.vector.getSpeed().getKph() );
+      double angleDiff = fabs( MapCalc::angleDiffDegree( lastWindMeasurement.vector.getAngleDeg(),
+                                                         wm.vector.getAngleDeg() ));
 
-      if( wind.quality >= oldWind.quality )
+      if( age <= 5 * 60 && altDiff <= 300 && deltaSpeed <= 5.0 && angleDiff <= 10.0 )
         {
-          qDebug() << "WindStore: wind replaced due to better quality"
-                   << "oldQual=" << oldWind.quality
-                   << "newQual=" << wind.quality;
+          filterWindmeasurement( wm, lastWindMeasurement, quality );
+          takeIt = true;
+        }
+    }
 
-          // The better or younger quality is stored.
+  if( takeIt == false )
+    {
+      if( windMap.contains( wm.altitude ) == false )
+        {
+          // No wind contained in altitude interval
           takeIt = true;
         }
       else
         {
-          // Evaluate the quality difference
-          float qDiff = fabsf( oldWind.quality - wind.quality );
+          // Old wind exists, lower quality over the elapsed time
+          double age = double( oldWm.time.secsTo( wm.time ) );
+          double oldQuality = oldWm.quality * ( 1 - (age / 3600.) );
 
-          // calculate age in seconds.
-          int age = oldWind.time.secsTo( wind.time );
+          qDebug() << "Age=" << age << "OldQuality=" << oldQuality
+                   << "newQuality=" << wm.quality;
 
-          qDebug() << "WindStore: qDiff=" << qDiff << "WindAge=" << age;
-
-          if( age >= 30 * 60 && qDiff <= 2.0 )
+          if( wm.quality >= oldQuality )
             {
-              // after 30 minutes
               takeIt = true;
-              qDebug() << "WindStore: replace wind after 30m";
-            }
-          else if( age >= 20 * 60 && qDiff <= 1.5 )
-            {
-              // after 20 minutes
-              takeIt = true;
-              qDebug() << "WindStore: replace wind after 20m";
-            }
-          else if( age >= 10 * 60 && qDiff <= 1.0 )
-            {
-              // after 10 minutes
-              takeIt = true;
-              qDebug() << "WindStore: replace wind after 10m";
-             }
-          else if( age >= 5 * 60 && qDiff <= 0.5 )
-            {
-              // after 5 minutes
-              takeIt = true;
-              qDebug() << "WindStore: replace wind after 5m";
             }
         }
     }
 
   if( takeIt == true )
     {
-      // insert new measurement into the map.
-      windMap.insert( wind.altitude, wind );
+      // insert new or updated measurement into the map.
+      windMap.insert( wm.altitude, wm );
 
       // we may have a new wind value, so make sure it's emitted if needed!
-      if( wind.vector != m_lastReportedWind )
+      if( wm.vector != m_lastReportedWind )
         {
-          m_lastReportedWind = wind.vector;
-          emit newWind( wind.vector );
+          m_lastReportedWind = wm.vector;
+          emit newWind( wm.vector );
+          qDebug() << "new Wind is reported"
+                   << wm.vector.getAngleDeg() << "/"
+                   << wm.vector.getSpeed().getKph();
         }
     }
+
+  // Save last stored wind measurement
+  lastWindMeasurement = wm;
+}
+
+/**
+ * Filter wind measurement by using a low pass and by considering the
+ * delivered quality.
+ */
+void WindStore::filterWindmeasurement( WindMeasurement& newWm,
+                                       WindMeasurement& oldWm,
+                                       float quality )
+{
+  float kq = quality / 20.0;
+  double a1 = oldWm.vector.getAngleDegDouble();
+  double a2 = newWm.vector.getAngleDegDouble();
+
+  double wdDelta = MapCalc::angleDiffDegree( a1, a2) * kq;
+  double wsDelta = ( newWm.vector.getSpeed().getMps() - oldWm.vector.getSpeed().getMps() ) * kq;
+
+  qDebug() << "w1=" << a1 << "w2=" << a2
+           << "w1-w2=" << MapCalc::angleDiffDegree( a1, a2)
+           << "wdDelta=" << wdDelta << "wsDelta" << wsDelta;
+
+  newWm.vector.setAngle( oldWm.vector.getAngleDegDouble() + wdDelta );
+  newWm.vector.setSpeed( oldWm.vector.getSpeed().getMps() + wsDelta );
+
+  // average quality.
+  newWm.quality = ( newWm.quality + oldWm.quality ) / 2.0;
+
+  qDebug() << "WindStore: wind filtered by kq=" << kq
+           << "newWD=" << newWm.vector.getAngleDeg()
+           << "newWS=" <<  newWm.vector.getSpeed().getKph()
+           << "Alt=" << newWm.altitude
+           << "newQuality=" << newWm.quality;
 }
 
 /**

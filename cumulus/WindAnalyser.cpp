@@ -217,7 +217,8 @@ void WindAnalyser::_calcWind()
 
   qDebug() << "calcWind(): circles=" << circleCount
            << "degree/Step=" << degreePerStep
-           << "WindQuality=" << quality;
+           << "angleDiff=" << aDiff
+           << "quality=" << quality;
 
   if( circleCount < 2 )
     {
@@ -227,7 +228,7 @@ void WindAnalyser::_calcWind()
 
   if( quality < 1 )
     {
-      return; // Measurement quality too low
+      return; // Measurement quality too low, aDiff > 32°
     }
 
   // take both directions for min and max vector into account
@@ -255,7 +256,10 @@ void WindAnalyser::_calcWind()
   qDebug( "### Circle-Wind: %d%c/%.0fKm/h", result.getAngleDeg(),
           QChar( Qt::Key_degree), result.getSpeed().getKph() );
 
-  emit newMeasurement( result, calculator->samplelist[0].altitude, quality );
+  emit newMeasurement( result,
+                       calculator->samplelist[0].altitude,
+                       quality,
+                       circleCount );
 }
 
 void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )

@@ -85,6 +85,11 @@ public:
   void setAngle(const int angle);
 
   /**
+   * set the angle in degrees
+   */
+  void setAngle(const double angle);
+
+  /**
    * set the angle in degrees  and the speed
    */
   void setAngleAndSpeed(const int angle, const Speed&);

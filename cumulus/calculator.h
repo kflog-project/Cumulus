@@ -987,7 +987,8 @@ public:
    */
   void newMeasurement( Vector& windvector,
                        const Altitude& altitude,
-                       float quality );
+                       float quality,
+                       int numberOfMeasurement );
 
 private:
 

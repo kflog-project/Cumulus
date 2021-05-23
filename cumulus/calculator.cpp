@@ -141,14 +141,14 @@ Calculator::Calculator( QObject* parent ) :
   // analyzer are replaced by direct calls, when a new sample or flight
   // mode is available and the wind calculation is enabled. Wind calculation
   // can be disabled when the Logger device delivers already wind data.
-  connect( m_windAnalyser, SIGNAL(newMeasurement( Vector&, const Altitude&, float ) ),
-           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float ) ));
+  connect( m_windAnalyser, SIGNAL(newMeasurement( Vector&, const Altitude&, float, int ) ),
+           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float, int ) ));
 
-  connect( m_windInStraightFlight, SIGNAL(newMeasurement( Vector&, const Altitude&, float ) ),
-           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float) ));
+  connect( m_windInStraightFlight, SIGNAL(newMeasurement( Vector&, const Altitude&, float, int ) ),
+           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float, int ) ));
 
-  connect( this, SIGNAL(newMeasurement( Vector&, const Altitude&, float ) ),
-           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float ) ));
+  connect( this, SIGNAL(newMeasurement( Vector&, const Altitude&, float, int ) ),
+           m_windStore, SLOT(slot_Measurement( Vector&, const Altitude&, float, int ) ));
 
   connect( m_windStore, SIGNAL(newWind( Vector& )),
            this, SLOT(slot_Wind( Vector& )));
@@ -1752,7 +1752,7 @@ void Calculator::slot_ExternalWind( const Speed& speed, const short direction )
   v.setSpeed( speed );
 
   // Add new wind with the best quality 5 to the windStore.
-  m_windStore->slot_Measurement( v, lastAltitude, 5.0 );
+  m_windStore->slot_Measurement( v, lastAltitude, 5.0, 1 );
 }
 
 /** Called if the wind measurement changes */

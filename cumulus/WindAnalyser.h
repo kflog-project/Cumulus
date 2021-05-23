@@ -55,7 +55,10 @@ signals:
    * Send if a new wind measurement has been made. The result is included in wind,
    * the quality of the measurement (1-5; 1 is bad, 5 is excellent) in quality.
    */
-  void newMeasurement( Vector& wind, const Altitude&, float quality );
+  void newMeasurement( Vector& wind,
+                       const Altitude&,
+                       float quality,
+                       int numberOfmeasurment );
 
 public slots:
   /**

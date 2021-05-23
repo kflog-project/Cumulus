@@ -124,7 +124,8 @@ class WindStore : public QObject
    */
   void slot_Measurement( Vector& windvector,
                          const Altitude& altitude,
-                         float quality );
+                         float quality,
+                         int numberOfMeasurement );
 
  signals:
 
@@ -136,6 +137,13 @@ class WindStore : public QObject
 
  private:
 
+  /**
+   * Filter wind measurement by using a low pass and by considering the
+   * delivered quality.
+   */
+  void filterWindmeasurement( WindMeasurement& newWm,
+                              WindMeasurement& oldWm,
+                              float quality );
   /**
    * Stores the last reported wind for update checks.
    */
@@ -150,6 +158,11 @@ class WindStore : public QObject
    * Stores the last required wind related to the required altitude interval.
    */
   Vector m_lastRequiredWind;
+
+  /**
+   * Stores the last received wind measurement.
+   */
+  WindMeasurement lastWindMeasurement;
 
   /**
    * Contains the single wind measuements separated per 100 meters. The keys

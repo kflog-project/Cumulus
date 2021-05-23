@@ -136,6 +136,19 @@ void Vector::setAngle(const int angle)
   _isValid = true;
 }
 
+/** Set property of double angle in degrees. */
+void Vector::setAngle(const double angle)
+{
+  if( dirtyDR )
+    {
+      recalcDR();
+    }
+
+  _angle = MapCalc::normalizeAngleDegree( angle ) / 180.0 * M_PI;
+  dirtyXY = true;
+  _isValid = true;
+}
+
 /**
  * set the angle in degrees and the speed.
  */

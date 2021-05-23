@@ -75,7 +75,8 @@ signals:
    */
 void newMeasurement( Vector& windvector,
                      const Altitude& altitude,
-                     float quality );
+                     float quality,
+                     int numberOfmeasurment );
 
 public slots:
 
