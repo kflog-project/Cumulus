@@ -14,18 +14,14 @@
 **
 ***********************************************************************/
 
+#include <cmath>
+
+#include <QtCore>
+
 #include <distance.h>
 #include <mapcalc.h>
-#include <qdatetime.h>
-#include <qdebug.h>
-#include <qlist.h>
-#include <qlogging.h>
-#include <qmap.h>
-#include <qobjectdefs.h>
 #include <speed.h>
 #include <WindStore.h>
-#include <cmath>
-#include <cstdlib>
 
 WindStore::WindStore( QObject* parent ) :
   QObject(parent),
