@@ -251,7 +251,10 @@ PreFlightWindPage::PreFlightWindPage( QWidget* parent ) :
 
   m_windCheckBox->setCheckState( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
   slotManualWindCbStateChanged( GeneralConfig::instance()->isManualWindEnabled() ? Qt::Checked : Qt::Unchecked );
+
+  m_useExternalWind->setCheckState( GeneralConfig::instance()->isExternalWindEnabled() ? Qt::Checked : Qt::Unchecked );
   slotExternalWindCbStateChanged( GeneralConfig::instance()->isExternalWindEnabled() ? Qt::Checked : Qt::Unchecked );
+
   slotLoadWindStatistics();
 
   // Activate reload timer for wind statistics.
