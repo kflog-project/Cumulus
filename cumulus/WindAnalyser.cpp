@@ -253,8 +253,8 @@ void WindAnalyser::_calcWind()
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2.0 );
 
   // Let the world know about our measurement!
-  qDebug( "### Circle-Wind: %d%c/%.0fKm/h", result.getAngleDeg(),
-          QChar( Qt::Key_degree), result.getSpeed().getKph() );
+  qDebug( "### Circle-Wind: %d\260/%.0fKm/h", result.getAngleDeg(),
+          result.getSpeed().getKph() );
 
   emit newMeasurement( result,
                        calculator->samplelist[0].altitude,
