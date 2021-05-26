@@ -23,7 +23,7 @@
  *
  * WindStore receives single wind measurements and stores these. It uses
  * single measurements to provide wind values, differentiated for altitude,
- * quality and time range.
+ * quality and time age.
  *
  * \date 2002-2021
  */
@@ -150,14 +150,14 @@ class WindStore : public QObject
   Vector m_lastReportedWind;
 
   /**
-   * Stores the last required wind altitude interval.
+   * Stores the last requested wind altitude interval.
    */
-  int m_lastRequiredAltitudeInterval;
+  int m_lastRequestedAltitudeInterval;
 
   /**
-   * Stores the last required wind related to the required altitude interval.
+   * Stores the last requested wind related to the requested altitude interval.
    */
-  Vector m_lastRequiredWind;
+  Vector m_lastRequestedWind;
 
   /**
    * Stores the last received wind measurement.

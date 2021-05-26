@@ -83,18 +83,25 @@ public slots:
 
 private:
 
-  void _calcWind();
+  /**
+   * After a full circle the wind is calculated by this method.
+   */
+  void calcWind();
 
-  /** active is set to true or false by the slot_newFlightMode slot. */
-  bool active;
-  int circleCount; // we are counting the number of circles, the first onces are probably not very round
-  bool circleLeft; // true=left, false=right
+  /**
+   * Reset all wind calculation variables to their defaults.
+   *
+   * @param clean if true, the circleCount is also set to zero.
+   */
+  void restartCycle( const bool clean );
+
+  int circleCount; // we are counting the number of circles, the first one are probably not very round
   int circleDegrees; // Degrees of current flown circle
   int circleSectors; // Sectors of current flown circle
   int lastHeading; // Last processed heading
-  int satCnt;
-  int minSatCnt;
-  bool ciclingMode;
+  int satCnt; // last reported sat count
+  int minSatCnt; // configured minimal sat count
+  Calculator::FlightMode flightMode;
   GpsNmea::GpsStatus gpsStatus;
   Vector minVector;
   Vector maxVector;

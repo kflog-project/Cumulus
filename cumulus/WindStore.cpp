@@ -25,7 +25,7 @@
 
 WindStore::WindStore( QObject* parent ) :
   QObject(parent),
-  m_lastRequiredAltitudeInterval(-1)
+  m_lastRequestedAltitudeInterval(-1)
 {
 }
 
@@ -97,12 +97,17 @@ void WindStore::slot_Measurement( Vector& windVector,
         {
           // Old wind exists, lower quality over the elapsed time
           double age = double( oldWm.time.secsTo( wm.time ) );
+          double deltaSpeed = fabs( wm.vector.getSpeed().getKph() - oldWm.vector.getSpeed().getKph() );
+          double angleDiff = fabs( MapCalc::angleDiffDegree( oldWm.vector.getAngleDeg(),
+                                                             wm.vector.getAngleDeg() ));
           double oldQuality = oldWm.quality * ( 1 - (age / 3600.) );
 
           qDebug() << "Age=" << age << "OldQuality=" << oldQuality
-                   << "newQuality=" << wm.quality;
+                   << "newQuality=" << wm.quality
+                   << "deltaSpeed" << deltaSpeed
+                   << "angleDiff" << angleDiff;
 
-          if( wm.quality >= oldQuality )
+          if( wm.quality >= oldQuality || deltaSpeed > 5 || angleDiff > 10 )
             {
               takeIt = true;
             }
@@ -119,7 +124,7 @@ void WindStore::slot_Measurement( Vector& windVector,
         {
           m_lastReportedWind = wm.vector;
           emit newWind( wm.vector );
-          qDebug() << "new Wind is reported"
+          qDebug() << "### New Wind is reported"
                    << wm.vector.getAngleDeg() << "/"
                    << wm.vector.getSpeed().getKph();
         }
@@ -137,7 +142,7 @@ void WindStore::filterWindmeasurement( WindMeasurement& newWm,
                                        WindMeasurement& oldWm,
                                        float quality )
 {
-  float kq = quality / 20.0;
+  float kq = quality / 10.0;
   double a1 = oldWm.vector.getAngleDegDouble();
   double a2 = newWm.vector.getAngleDegDouble();
 
@@ -187,7 +192,7 @@ Vector WindStore::getWind( const Altitude &altitude, bool exact )
       wind = windMap[altInterval].vector;
 
       // Reset older search results.
-      m_lastRequiredAltitudeInterval = -1;
+      m_lastRequestedAltitudeInterval = -1;
 
       return wind;
     }
@@ -199,9 +204,9 @@ Vector WindStore::getWind( const Altitude &altitude, bool exact )
     }
 
   // Look, if old wind data can be reused
-  if( m_lastRequiredAltitudeInterval == altInterval )
+  if( m_lastRequestedAltitudeInterval == altInterval )
     {
-      return m_lastRequiredWind;
+      return m_lastRequestedWind;
     }
 
   // Now we try to search a wind in the near of the requested altitude.
@@ -248,8 +253,8 @@ Vector WindStore::getWind( const Altitude &altitude, bool exact )
     }
 
   // Store wind data for reusage.
-  m_lastRequiredAltitudeInterval = altInterval;
-  m_lastRequiredWind = wind;
+  m_lastRequestedAltitudeInterval = altInterval;
+  m_lastRequestedWind = wind;
 
   return wind;
 }

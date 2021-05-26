@@ -567,9 +567,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Wind");
-  _windMinSatCount   = value( "MinSatCount", 4 ).toInt();
-  _windAltitudeRange = value( "AltitudeRange", 1000 ).toInt();
-  _windTimeRange     = value( "TimeRange", 600 ).toInt();
+  _windMinSatCount   = value( "MinSatCount", 5 ).toInt();
   endGroup();
 
   beginGroup ("Calculator");
@@ -1048,8 +1046,6 @@ void GeneralConfig::save()
 
   beginGroup("Wind");
   setValue( "MinSatCount", _windMinSatCount );
-  setValue( "AltitudeRange", _windAltitudeRange );
-  setValue( "TimeRange", _windTimeRange );
   endGroup();
 
   beginGroup("Calculator");
@@ -1364,35 +1360,6 @@ void GeneralConfig::setMinSatCount(const int newValue)
 {
   _windMinSatCount = newValue;
 }
-
-
-/** gets wind altitude range */
-int GeneralConfig::getWindAltitudeRange() const
-{
-  return _windAltitudeRange;
-}
-
-
-/** sets wind altitude range */
-void GeneralConfig::setWindAltitudeRange(const int newValue)
-{
-  _windAltitudeRange = newValue;
-}
-
-
-/** gets wind time range */
-int GeneralConfig::getWindTimeRange() const
-{
-  return _windTimeRange;
-}
-
-
-/** sets wind time range */
-void GeneralConfig::setWindTimeRange(const int newValue)
-{
-  _windTimeRange = newValue;
-}
-
 
 /** gets manual navigation mode altitude */
 int GeneralConfig::getManualNavModeAltitude() const

@@ -48,24 +48,26 @@
   more CPU intensive, but may produce better results.
 
   Some of the errors made here will be averaged-out by the WindStore, which keeps
-  a number of wind measurements and calculates a weighted average based on quality.
+  a number of wind measurements and calculates a weighted average based on quality
+  for an given altitude band.
 */
 
 WindAnalyser::WindAnalyser(QObject* parent) :
   QObject(parent),
-  active(false),
   circleCount(0),
-  circleLeft(false),
   circleDegrees(0),
   circleSectors(0),
   lastHeading(-1),
-  satCnt(0),
-  minSatCnt(4),
-  ciclingMode(false),
+  satCnt(5),
+  minSatCnt(5),
+  flightMode(Calculator::unknown),
   gpsStatus(GpsNmea::notConnected)
 {
   // Initialization
   minSatCnt = GeneralConfig::instance()->getWindMinSatCount();
+
+  // Note: Flarm devivers a new sat count only after a sat count change.
+  satCnt = minSatCnt;
 }
 
 WindAnalyser::~WindAnalyser()
@@ -74,14 +76,28 @@ WindAnalyser::~WindAnalyser()
 /** Called if a new sample is available in the sample list. */
 void WindAnalyser::slot_newSample()
 {
-  if( ! active )
+  if( flightMode != Calculator::circlingL &&
+      flightMode != Calculator::circlingR )
     {
-      return; // do only work if we are in active mode
+      // Do not work if we are not in circling mode.
+      return;
     }
 
+  if( satCnt < minSatCnt )
+    {
+      // The satellite count is below minimum.
+      return;
+    }
+
+  if( gpsStatus != GpsNmea::validFix )
+    {
+      // No valid GPS fix.
+      return;
+    }
+
+  // load the last stored flight sample
   Vector curVec = calculator->samplelist[0].vector;
 
-  // circle detection
   if( lastHeading != -1 )
     {
       int diff = abs( curVec.getAngleDeg() - lastHeading );
@@ -95,15 +111,6 @@ void WindAnalyser::slot_newSample()
 
       circleDegrees += diff;
       circleSectors++;
-    }
-  else
-    {
-      minVector = curVec;
-      maxVector = curVec;
-
-      // set start limits in m/s
-      minVector.setSpeed( 100.0 );
-      maxVector.setSpeed( 0.0 );
     }
 
   lastHeading = curVec.getAngleDeg();
@@ -121,83 +128,26 @@ void WindAnalyser::slot_newSample()
     }
 
   /*
-  qDebug( "curVec: %.3f/%dGrad, minVec: %.3f/%dGrad, maxVec: %.3f/%dGrad",
-         curVec.getSpeed().getKph(), curVec.getAngleDeg(),
-         minVector.getSpeed().getKph(), minVector.getAngleDeg(),
-         maxVector.getSpeed().getKph(), maxVector.getAngleDeg() );
+  qDebug( "curVec: %d/%.3f, minVec: %d/%.3f, maxVec: %d/%.3f",
+          curVec.getAngleDeg(), curVec.getSpeed().getKph(),
+          minVector.getAngleDeg(), minVector.getSpeed().getKph(),
+          maxVector.getAngleDeg(), maxVector.getSpeed().getKph() );
   */
 
-  if( circleDegrees > 365 )
+  if( circleDegrees > 361 )
     {
       // a bit more than one circle to ensure both ends are in
-      // increase the number of circles flown (used to determine the quality)
+      // increase the number of circles flown (used to determine the last
+      // heading uality
       circleCount++;
 
       // calculate the wind for this circle
-      _calcWind();
-
-      circleDegrees = 0;
-      circleSectors = 0;
-
-      minVector = curVec;
-      maxVector = curVec;
-
-      // set start limits in m/s
-      minVector.setSpeed( 100.0 );
-      maxVector.setSpeed( 0.0 );
+      calcWind();
+      restartCycle( false );
     }
 }
 
-/** Called if the flight mode changes */
-void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
-{
-  // Reset the circle counter for each flight mode change. The important thing
-  // to measure is the number of turns in a thermal per turn direction.
-  circleCount   = 0;
-  circleDegrees = 0;
-  circleSectors = 0;
-  lastHeading   = -1;
-
-  // We are inactive as default.
-  active = false;
-
-  if( newFlightMode == Calculator::circlingL )
-    {
-      circleLeft = true;
-    }
-  else if( newFlightMode == Calculator::circlingR )
-    {
-      circleLeft = false;
-    }
-  else
-    {
-      ciclingMode = false;
-
-      // Ok, so we are not circling.
-      return;
-    }
-
-  // Set circle mode to true.
-  ciclingMode = true;
-
-  // Do we have enough satellites in view? The minimum should be four. Otherwise
-  // the calculated wind results are very bad.
-  if( satCnt < minSatCnt )
-    {
-      return;
-    }
-
-  if( gpsStatus != GpsNmea::validFix )
-    {
-      // We have not a valid fix.
-      return;
-    }
-
-  // We are active now.
-  active = true;
-}
-
-void WindAnalyser::_calcWind()
+void WindAnalyser::calcWind()
 {
   int degreePerStep = circleDegrees / circleSectors;
 
@@ -232,9 +182,10 @@ void WindAnalyser::_calcWind()
     }
 
   // take both directions for min and max vector into account
-  qDebug( "maxAngle=%d/%.0f minAngle=%d/%.0f",
-           maxVector.getAngleDeg(), maxVector.getSpeed().getKph(),
-           minVector.getAngleDeg(), minVector.getSpeed().getKph() );
+  int maxAngle = maxVector.getAngleDeg();
+  int minAngle = minVector.getAngleDeg();
+  double maxSpeed = maxVector.getSpeed().getKph();
+  double minSpeed = minVector.getSpeed().getKph();
 
   // Invert maxVector angle
   maxVector.setAngle( MapCalc::normalize( maxVector.getAngleDeg() + 180 ) );
@@ -253,8 +204,11 @@ void WindAnalyser::_calcWind()
   result.setSpeed( (maxVector.getSpeed().getMps() - minVector.getSpeed().getMps()) / 2.0 );
 
   // Let the world know about our measurement!
-  qDebug( "### Circle-Wind: %d\260/%.0fKm/h", result.getAngleDeg(),
-          result.getSpeed().getKph() );
+  qDebug( "### Circle-Wind: %d/%.0fKm/h, maxAngle=%d/%.0f minAngle=%d/%.0f",
+          result.getAngleDeg(),
+          result.getSpeed().getKph(),
+          maxAngle, maxSpeed,
+          minAngle, minSpeed );
 
   emit newMeasurement( result,
                        calculator->samplelist[0].altitude,
@@ -262,26 +216,47 @@ void WindAnalyser::_calcWind()
                        circleCount );
 }
 
+/**
+ * Reset all wind calculation variables to their defaults.
+ *
+ * @param clean if true, the circleCount is also set to zero.
+ */
+void WindAnalyser::restartCycle( const bool clean )
+{
+  if( clean == true )
+    {
+      circleCount = 0;
+    }
+
+  circleDegrees = 0;
+  circleSectors = 0;
+  lastHeading   = -1;
+
+  // set start limits in m/s
+  minVector.setSpeed( 100.0 );
+  maxVector.setSpeed( 0.0 );
+}
+
+/** Called if the flight mode changes */
+void WindAnalyser::slot_newFlightMode( Calculator::FlightMode newFlightMode )
+{
+  // Store new flight mode
+  flightMode = newFlightMode;
+
+  // Restart wind analysis for each flight mode change. The important thing
+  // to measure is the number of turns in a thermal per turn direction.
+  restartCycle( true );
+}
+
 void WindAnalyser::slot_newConstellation( SatInfo& newConstellation )
 {
   satCnt = newConstellation.satsInView;
 
-  if( active && (satCnt < minSatCnt) )
+  if( satCnt < minSatCnt )
     {
-      // we are active, but the satellite count drops below minimum
-      active = false;
-      return;
-    }
-
-  if( !active && ciclingMode && satCnt >= minSatCnt )
-    {
-      // we are not active because we had low satellite count but that has been
-      // changed now. So we become active.
-      // Initialize analyzer-parameters
-      circleCount   = 0;
-      circleDegrees = 0;
-      circleSectors = 0;
-      lastHeading   = -1;
+      // We are active, but the satellite count drops below minimum. A new
+      // wind analysis is started.
+      restartCycle( true );
     }
 }
 
@@ -289,21 +264,9 @@ void WindAnalyser::slot_gpsStatusChange( GpsNmea::GpsStatus newStatus )
 {
   gpsStatus = newStatus;
 
-  if( active && newStatus != GpsNmea::validFix )
+  if( newStatus != GpsNmea::validFix )
     {
-      // we are active, but the GPS fix is lost
-      active = false;
-      return;
-    }
-
-  if( !active && ciclingMode )
-    {
-      // we are not active because we had no GPS fix but that has been
-      // changed now. So we become active.
-      // Initialize analyzer-parameters
-      circleCount   = 0;
-      circleDegrees = 0;
-      circleSectors = 0;
-      lastHeading   = -1;
+      // GPS fix is lost, start a new wind analysis.
+      restartCycle( true );
     }
 }

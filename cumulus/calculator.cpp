@@ -1604,7 +1604,7 @@ void Calculator::determineFlightStatus()
     This can be a bit more advanced to allow for temporary changes in
     circling speed in order to better center a thermal.
   */
-#define MINTURNANGDIFF 4 //see above
+#define MINTURNANGDIFF 3 //see above
 
   if( samplelist.count() < 2 )
     {

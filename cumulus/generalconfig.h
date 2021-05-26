@@ -3556,10 +3556,7 @@ class GeneralConfig : protected QSettings
 
   // minimum sat count for wind calculation
   int _windMinSatCount;
-  // wind altitude range
-  int _windAltitudeRange;
-  // wind time range
-  int _windTimeRange;
+
   // manual navigation mode altitude
   int _manualNavModeAltitude;
 
