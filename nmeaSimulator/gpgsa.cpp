@@ -73,7 +73,7 @@ int GPGSA::send( QStringList& satIds, QString& pdop, QString& hdop, QString &vdo
   int pos = sentence.length()-1;
   uint sum = calcCheckSum( pos, sentence );
   QString scheck;
-  scheck.sprintf ("%02X\n", sum);
+  scheck.sprintf ("%02X\r\n", sum);
   sentence += scheck;
 
   int sent = write( fd, sentence.toLatin1().data(), sentence.length() );
