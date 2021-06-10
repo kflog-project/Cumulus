@@ -98,6 +98,9 @@ void WindAnalyser::slot_newSample()
   // load the last stored flight sample
   Vector curVec = calculator->samplelist[0].vector;
 
+  // Save the last stored altitude
+  lastAltitude = calculator->samplelist[0].altitude;
+
   if( lastHeading != -1 )
     {
       int diff = abs( curVec.getAngleDeg() - lastHeading );
@@ -162,19 +165,13 @@ void WindAnalyser::calcWind()
     Furthermore, the first circle IS considered to be of lesser quality.
     5 is maximum quality, make sure we honor that.
   */
-
   float quality = 5 - ((180.0 - fabsf( aDiff )) / 8.0 );
 
   qDebug() << "calcWind(): circles=" << circleCount
+           << "altitude(m)=" << lastAltitude.getMeters()
            << "degree/Step=" << degreePerStep
            << "angleDiff=" << aDiff
            << "quality=" << quality;
-
-  if( circleCount < 2 )
-    {
-      quality -= 1.0;
-      qDebug() << "WindQuality-1=" << quality;
-    }
 
   if( quality < 1 )
     {

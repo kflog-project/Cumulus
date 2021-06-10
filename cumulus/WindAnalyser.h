@@ -31,6 +31,7 @@
 
 #include <QObject>
 
+#include "altitude.h"
 #include "calculator.h"
 #include "gpsnmea.h"
 #include "vector.h"
@@ -99,6 +100,7 @@ private:
   int circleDegrees; // Degrees of current flown circle
   int circleSectors; // Sectors of current flown circle
   int lastHeading; // Last processed heading
+  Altitude lastAltitude; // last got altitude
   int satCnt; // last reported sat count
   int minSatCnt; // configured minimal sat count
   Calculator::FlightMode flightMode;

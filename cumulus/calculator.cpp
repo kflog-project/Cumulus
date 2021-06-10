@@ -1592,13 +1592,13 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
 void Calculator::determineFlightStatus()
 {
  /*
-    We define a maximum deviation of 15 degrees from the cruising course.
+    We define a maximum deviation of 5 degrees from the cruising course.
     This should be allowed for course corrections.
   */
-#define MAXCRUISEANGDIFF 15 //see above
+#define MAXCRUISEANGDIFF 5 //see above
 
   /*
-    We define a minimum turn rate of 4 degrees per second (that is,
+    We define a minimum turn rate of 3 degrees per second (that is,
     one turn takes at most one and a half minute).
 
     This can be a bit more advanced to allow for temporary changes in

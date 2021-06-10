@@ -908,7 +908,7 @@ void Map::p_drawAirspaces( bool reset )
                       if( asName.startsWith( asNames.at( i )) == true )
                         {
                           // filter out this airspace
-                          qDebug() << "Filter out AS " << asType << ": " << asName;
+                          // qDebug() << "Filter out AS " << asType << ": " << asName;
                           ignore = true;
                         }
                     }
