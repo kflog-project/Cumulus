@@ -85,8 +85,8 @@ Calculator::Calculator( QObject* parent ) :
   lastDistance = -1;
   lastRequiredLD = -1.0;
   lastCurrentLD = -1.0;
-  lastDynamicPressure = 0.0;
-  lastStaticPressure = 0.0;
+  lastDynamicPressure = -1.0;
+  lastStaticPressure = -1.0;
   m_lastTemperature = infiniteTemperature;
   m_calculateVario = true,
   m_calculateLD = false;
@@ -101,8 +101,8 @@ Calculator::Calculator( QObject* parent ) :
   lastBugs = 0;
   lastExternalBugs = 0;
   lastBestSpeed.setInvalid();
-  lastTas = 0.0;
-  lastIas = 0.0;
+  lastTas = -1.0;
+  lastIas = -1.0;
   m_polar = 0;
   m_vario = new Vario (this);
   m_windAnalyser = new WindAnalyser(this);
@@ -1236,7 +1236,7 @@ void Calculator::slot_staticPressure( const double pressure )
  */
 void Calculator::slot_dynamicPressure( const double pressure )
 {
-  if( pressure <= 0.0 )
+  if( pressure < 0.0 )
     {
       // undefined dynamic pressure
       return;
@@ -1267,7 +1267,7 @@ void Calculator::slot_dynamicPressure( const double pressure )
       temp = 15.0;
     }
 
-  if( lastStaticPressure <= 0.0 )
+  if( lastStaticPressure < 0.0 )
     {
       // undefined static pressure
       return;

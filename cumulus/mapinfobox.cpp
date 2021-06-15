@@ -44,7 +44,9 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   m_maxFontDotsize( fontDotsize ),
   m_maxTextLabelFontHeight( -1 ),
   m_minUpdateInterval( 0 ),
-  m_lastUpdateTime(0, 0, 0)
+  m_lastUpdateTime(0, 0, 0),
+  m_mousePressTimer( 0 ),
+  m_displayTimer( 0 )
 {
   initMousePressTimer();
 
@@ -207,6 +209,39 @@ void MapInfoBox::initMousePressTimer()
   connect( m_mousePressTimer, SIGNAL(timeout()), SIGNAL(mouseLongPress()));
 }
 
+/**
+ * Initializes the update display timer.
+ */
+void MapInfoBox::initUpdateDisplayTimer()
+{
+  if( m_minUpdateInterval == 0 )
+    {
+      return;
+    }
+
+  if( m_displayTimer == 0 )
+    {
+      m_displayTimer = new QTimer( this );
+      m_displayTimer->setSingleShot( true );
+      connect( m_displayTimer, SIGNAL( timeout() ), SLOT( updateDisplay() ) );
+    }
+
+  m_displayTimer->setInterval( 2 * m_minUpdateInterval );
+  m_displayTimer->start();
+}
+
+/**
+ * Update the display with the last received value.
+ */
+
+void MapInfoBox::updateDisplay()
+{
+  setValue( m_value, true );
+
+  qDebug() << "MapInfoBox::updateDisplay() is called";
+}
+
+
 void MapInfoBox::basics( const QString& borderColor )
 {
   QHBoxLayout* topLayout = new QHBoxLayout(this);
@@ -285,6 +320,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
         }
 
       m_lastUpdateTime.start();
+      initUpdateDisplayTimer();
     }
 
   // Show new value in box.
@@ -293,7 +329,7 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
     {
       if( m_pminus )
         {
-	  // The minus sign is displayed in an separate place
+          // The minus sign is displayed in an separate place
           m_pminus->setVisible( true );
           m_text->setText( m_value.mid(1) );
         }

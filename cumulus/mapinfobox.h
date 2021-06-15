@@ -195,9 +195,16 @@ public:
   void mouseShortPress();
 
   /**
-   * TThe mouse is long time pressed over the widget.
+   * The mouse is long time pressed over the widget.
    */
   void mouseLongPress();
+
+ private slots:
+
+  /**
+   * Update the display with the last received value.
+   */
+  void updateDisplay();
 
  protected:
 
@@ -227,6 +234,11 @@ private:
    * Initializes the mouse press timer.
    */
   void initMousePressTimer();
+
+  /**
+   * Initializes the update display timer.
+   */
+  void initUpdateDisplayTimer();
 
   /**
    * Determines the maximum usable font height in the text label box.
@@ -281,6 +293,9 @@ private:
 
   /** Timer to generate long mouse press signals. */
   QTimer* m_mousePressTimer;
+
+  /** Timer to ensure display of last received value.. */
+  QTimer* m_displayTimer;
 };
 
 #endif

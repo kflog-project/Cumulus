@@ -261,8 +261,8 @@ void GpsNmea::resetDataObjects()
   _lastMagneticTrueHeading = -1.;
   _lastTemperature = -300.0;
   _lastBugs = 0;
-  _lastStaticPressure = 0.0;
-  _lastDynamicPressure = 0.0;
+  _lastStaticPressure = -1.0;
+  _lastDynamicPressure = -1.0;
 
   _lastDate = QDate::currentDate(); // set date to a valid value
   cntSIVSentence = 1;
@@ -1565,6 +1565,8 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
 
   if( _lastDynamicPressure != q )
     {
+      qDebug() << "newDynamicPressure" << q;
+
       _lastDynamicPressure = q;
       emit newDynamicPressure( q );
     }
