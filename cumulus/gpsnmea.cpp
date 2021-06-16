@@ -1565,8 +1565,6 @@ void GpsNmea::__ExtractPxcv( const QStringList& slst )
 
   if( _lastDynamicPressure != q )
     {
-      qDebug() << "newDynamicPressure" << q;
-
       _lastDynamicPressure = q;
       emit newDynamicPressure( q );
     }

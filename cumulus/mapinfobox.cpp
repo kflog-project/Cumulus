@@ -237,8 +237,6 @@ void MapInfoBox::initUpdateDisplayTimer()
 void MapInfoBox::updateDisplay()
 {
   setValue( m_value, true );
-
-  qDebug() << "MapInfoBox::updateDisplay() is called";
 }
 
 
@@ -315,12 +313,18 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
       // A time update interval is set.
       if( m_lastUpdateTime.elapsed() < m_minUpdateInterval )
         {
+          initUpdateDisplayTimer();
+
           // We return, if the next update time is not yet reached.
           return;
         }
 
       m_lastUpdateTime.start();
-      initUpdateDisplayTimer();
+
+      if( m_displayTimer != 0 )
+        {
+          m_displayTimer->stop();
+        }
     }
 
   // Show new value in box.
