@@ -1640,7 +1640,7 @@ void Calculator::determineFlightStatus()
 
   // Check for standstill at first
   if( samplelist[0].position == samplelist[1].position ||
-      lastSpeed.getMps() < 1.0 )
+      lastSpeed.getMps() <= 1.0 )
     {
       if( lastFlightMode != standstill )
         {
@@ -1657,7 +1657,10 @@ void Calculator::determineFlightStatus()
   if( lastFlightMode == cruising &&
       abs(MapCalc::angleDiff( lastHead, m_cruiseDirection) ) <=  MAXCRUISEANGDIFF )
     {
-      // qDebug() << "determineFlightStatus: further crusing detected";
+      qDebug() << "determineFlightStatus: further cruising detected,"
+               << "HeadingDiff="
+               << MapCalc::angleDiff( lastHead, m_cruiseDirection)
+               << "Vm/s=" << lastSpeed.getMps();
       return;
     }
 
@@ -1666,7 +1669,9 @@ void Calculator::determineFlightStatus()
       // right circling is assumed
       if( lastFlightMode != circlingR )
         {
-          qDebug() << "determineFlightStatus: circlingR detected";
+          qDebug() << "determineFlightStatus: circlingR detected,"
+                   << "HeadingDiff=" << headingDiff
+                   << "Vm/s=" << lastSpeed.getMps();
           lastFlightMode = circlingR;
           newFlightMode( lastFlightMode );
         }
@@ -1676,19 +1681,23 @@ void Calculator::determineFlightStatus()
         // left circling is assumed
       if( lastFlightMode != circlingL )
         {
-          qDebug() << "determineFlightStatus: circlingL detected";
+          qDebug() << "determineFlightStatus: circlingL detected"
+                   << "HeadingDiff=" << headingDiff
+                   << "Vm/s=" << lastSpeed.getMps();
           lastFlightMode = circlingL;
           newFlightMode( lastFlightMode );
         }
     }
   else
     {
-      // cruising is assumed, set start heading point
+      // cruising is assumed, set heading start point
       m_cruiseDirection = lastHead;
 
       if( lastFlightMode != cruising )
         {
-          qDebug() << "determineFlightStatus: cruising detected";
+          qDebug() << "determineFlightStatus: cruising detected"
+                   << "HeadingDiff=" << headingDiff
+                   << "Vm/s=" << lastSpeed.getMps();
           lastFlightMode = cruising;
           newFlightMode( lastFlightMode );
         }

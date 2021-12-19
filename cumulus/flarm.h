@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2017 Axel Pauli
+**   Copyright (c): 2010-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This class parses Flarm sentences and provides the results to the caller.
  *
- * \date 2010-2018
+ * \date 2010-2021
  *
- * \version 1.4
+ * \version 1.5
  */
 
 #ifndef FLARM_H
@@ -153,6 +153,13 @@ class Flarm : public QObject, public FlarmBase
    * @return true if a valid value exists otherwise false
    */
   bool extractPflaq(QStringList& stringList);
+
+  /**
+   * Extracts all items from the $PFLAX sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAX as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflax(QStringList& stringList);
 
   /**
    * Extracts all items from the $ERROR sentence sent by the Flarm device.

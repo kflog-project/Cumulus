@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2016 Axel Pauli
+**   Copyright (c): 2012-2021 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -34,12 +34,13 @@
 // Timeout in ms for waiting for response of Flarm device.
 #define RESP_TO 30000
 
+QStringList FlarmLogbook::s_devtype;
+
 /**
  * Constructor
  */
 FlarmLogbook::FlarmLogbook( QWidget *parent ) :
   QWidget( parent ),
-  m_resetFlarm( false ),
   m_ignoreClose( false )
 {
   setObjectName("FlarmLogbook");
@@ -193,9 +194,9 @@ void FlarmLogbook::closeEvent( QCloseEvent* event )
   m_timer->stop();
 
   disconnect( Flarm::instance(), SIGNAL(flarmConfigurationInfo(QStringList&)),
-               this, SLOT(slot_UpdateConfiguration( QStringList&)) );
+              this, SLOT(slot_UpdateConfiguration( QStringList&)) );
 
-  if( m_resetFlarm )
+  if( Flarm::getProtocolMode() == FlarmBase::binary )
     {
       // Flarm device must be reset to normal mode.
       if( ! GpsNmea::gps->flarmReset() )
@@ -205,7 +206,7 @@ void FlarmLogbook::closeEvent( QCloseEvent* event )
     }
 
   // Set protocol mode of Flarm back to text.
-  Flarm::setProtocolMode( Flarm::text );
+  Flarm::setProtocolMode( FlarmBase::text );
   event->accept();
 }
 
@@ -237,14 +238,12 @@ void FlarmLogbook::slot_UpdateConfiguration( QStringList& info )
   qDebug() << "FlarmLogbook::slot_UpdateConfiguration():" << info;
 
   if( info.size() >= 4 &&
-      info[0] == "$PFLAC" && info[1] == "A" && info[2] == "NMEAOUT" )
+      info[0] == "$PFLAC" && info[1] == "A" && info[2] == "DEVTYPE" )
     {
-      // Flarm has answered to our NMEAOUT request. So we know,
+      // Flarm has answered to our DEVTYPE request. So we know,
       // that a Flarm is connected to us and we can request the download
       // of the Flight overview now.
-
-      // Remembered us that Flarm must be reset if window is closed.
-      m_resetFlarm = true;
+      s_devtype = info;
 
       // Restart timer for connection supervision.
       m_timer->start();
@@ -358,7 +357,7 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
 
 void FlarmLogbook::slot_ReadFlights()
 {
-  // qDebug() << "FlarmLogbook::slot_ReadFlights(): m_resetFlarm=" << m_resetFlarm;
+  qDebug() << "FlarmLogbook::slot_ReadFlights(): FlarmProtocol=" << Flarm::getProtocolMode();
 
   // Read button was pressed to get the flight list from the Flarm device.
   m_logbook.clear(); // remove old content
@@ -381,18 +380,16 @@ void FlarmLogbook::slot_ReadFlights()
 
   m_ignoreClose = true;
 
-  if( m_resetFlarm == true )
+  if( Flarm::getProtocolMode() == FlarmBase::binary )
     {
       // Flarm was already switched to the binary mode. We simulate a callback
       // to the update slot.
-      QStringList info;
-      info << "$PFLAC" << "A" << "NMEAOUT" << "0";
-      slot_UpdateConfiguration(  info );
+      slot_UpdateConfiguration( s_devtype );
       return;
     }
 
-  // As first test with requesting setting of NMEAOUT, if a Flarm device is connected.
-  if( GpsNmea::gps->sendSentence( "$PFLAC,R,NMEAOUT" ) == false )
+  // As first test with requesting setting of DEVTYPE, if a Flarm device is connected.
+  if( GpsNmea::gps->sendSentence( "$PFLAC,R,DEVTYPE" ) == false )
     {
       slot_Timeout();
       QString text0 = tr("Flarm device not reachable!");

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2012-2021 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -217,13 +217,77 @@ bool GpsConAndroid::verifyCheckSum( const char *sentence )
 
 bool GpsConAndroid::flarmBinMode()
 {
+  if( FlarmBase::getProtocolMode() == FlarmBase::binary )
+    {
+      return true;
+    }
+
   // Binary switch command for Flarm interface
   QByteArray pflax("$PFLAX\r\n");
 
   FlarmBinComAndroid fbc;
 
-  // Precondition is that the NMEA output of the Flarm device was disabled by
-  // the calling method before!
+  qDebug() << "Switch Flarm to binary mode";
+
+  // Switch connection to binary mode.
+  if( sndBytes( pflax ) == false )
+    {
+      // write failed
+      qWarning() << "GpsConAndroid::flarmBinMode(): Sending of $PFLAX failed!";
+      return false;
+    }
+
+  // Read out the Flarm answer. Flarm sent $PFLAX,A*2E\r\n in good case.
+  // Note that other sentences can be sent before the answer $PFLAX is sent.
+  const char* ok = "$PFLAX,A*2E";
+  const char* error = "$PFLAX,A,ERROR";
+  QByteArray buffer;
+  int loops = 512;
+  unsigned char c;
+  bool readAnswer = false;
+
+  while( loops-- )
+    {
+      bool res = getByte( &c, 0 );
+
+      if( res == true )
+        {
+          buffer.append( c );
+        }
+      else
+        {
+          // timeout
+          qWarning() << "GpsConAndroid::flarmBinMode(): Timeout!";
+          return false;
+        }
+
+      if( c == '\n' )
+        {
+          if( buffer.contains( ok ) == true )
+            {
+              qDebug() << "GpsConAndroid::flarmBinMode(): $PFLAX Ok!";
+              FlarmBase::setProtocolMode( FlarmBase::binary );
+              readAnswer = true;
+              break;
+            }
+          else if( buffer.contains( error ) == true )
+            {
+              qWarning() << "GpsConAndroid::flarmBinMode(): $PFLAX Error!";
+              return false;
+            }
+          else
+            {
+              // Expected answer was not received, clear buffer for next sentence.
+              buffer.clear();
+            }
+        }
+    }
+
+  if( readAnswer == false )
+    {
+      qWarning() << "GpsConAndroid::flarmBinMode(): $PFLAX no answer!";
+      return false;
+    }
 
   // I made the experience, that the Flarm device did not answer to the first
   // binary transfer switch. Therefore I make several tries. Flarm tool makes
@@ -231,17 +295,8 @@ bool GpsConAndroid::flarmBinMode()
   bool pingOk = false;
   int loop = 5;
 
-  FlarmBase::setProtocolMode( FlarmBase::binary );
-
   while( loop-- )
     {
-      // Switch connection to binary mode.
-      if( sndBytes(pflax) == false )
-        {
-          // write failed
-          break;
-        }
-
       // Check connection with a ping command.
       if( fbc.ping() == true )
         {

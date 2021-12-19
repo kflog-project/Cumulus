@@ -820,8 +820,26 @@ bool Flarm::extractPflao(QStringList& stringList)
   return true;
 }
 
+bool Flarm::extractPflax(QStringList& stringList)
+{
+  /**
+   * $PFLAX,A*2E in good case or
+   * $PFLAX,A,ERROR,<error>
+   *
+   * This sentence commits the switch to the binary Flarm protocol in good
+   * case.
+   */
+  if( stringList.size() == 2 )
+    {
+      // switch to binary protocol was successful
+      FlarmBase::setProtocolMode( FlarmBase::binary );
+      qDebug() << "***** Flarm::extractPflax(): Bin Mode is on";
+    }
+}
+
 bool Flarm::extractError(QStringList& stringList)
 {
+  qDebug() << "Flarm::extractError():" << stringList;
   /**
    * $ERROR,CKSUM*37
    */

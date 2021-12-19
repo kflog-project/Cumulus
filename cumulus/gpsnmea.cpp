@@ -231,7 +231,8 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$PFLAI", 26);
   gpsKeys.insert( "$PFLAO", 27);
   gpsKeys.insert( "$PFLAQ", 28);
-  gpsKeys.insert( "$ERROR", 29);
+  gpsKeys.insert( "$PFLAX", 29);
+  gpsKeys.insert( "$ERROR", 30);
 #endif
 
 #ifdef MAEMO5
@@ -492,6 +493,11 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       Flarm::instance()->collectPflaaFinished();
     }
 
+  // If we receive NMEA sentences, we assume, that the Flarm works in text mode.
+  // PowerFlarm changes after a timeout of 60s automatically back from the
+  // binary mode into the text mode. That is stored in the Flarm class.
+  FlarmBase::setProtocolMode( FlarmBase::text );
+
 #endif
 
 #if 0
@@ -737,7 +743,11 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       Flarm::instance()->extractPflaq( slst );
       return;
 
-    case 29: // $ERROR
+    case 29: // $PFLAX
+      Flarm::instance()->extractPflax( slst );
+      return;
+
+    case 30: // $ERROR
       Flarm::instance()->extractError( slst );
       return;
 

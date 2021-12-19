@@ -374,9 +374,9 @@ int GpsClient::writeGpsData( const char *sentence )
       cmd += check;
     }
 
-#ifdef DEBUG_NMEA
+//#ifdef DEBUG_NMEA
   qDebug() << "GpsClient::write():" << cmd;
-#endif
+//#endif
 
   // write sentence to gps device
   int result = write( fd, cmd.toLatin1().data(), cmd.length() );
@@ -822,6 +822,9 @@ void GpsClient::readSentenceFromBuffer()
 
       if( verifyCheckSum( record ) == true )
         {
+          // Set Flarm back to text mode.
+          FlarmBase::setProtocolMode( FlarmBase::text );
+
           // Forward sentence to the server, if checksum is ok and
           // processing is desired.
           // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
@@ -836,9 +839,9 @@ void GpsClient::readSentenceFromBuffer()
             }
         }
 
-#ifdef DEBUG_NMEA
+// #ifdef DEBUG_NMEA
       qDebug() << "GpsClient::read():" << record;
-#endif
+// #endif
 
       free(record);
       record = 0;
@@ -1456,8 +1459,12 @@ uint GpsClient::getBaudrate(int rate)
 
 bool GpsClient::flarmBinMode()
 {
-  // Binary switch command for Flarm interface
-  const char* pflax = "$PFLAX\r\n";
+  qDebug() << "GpsClient::flarmBinMode() is called";
+
+  if( FlarmBase::getProtocolMode() == FlarmBase::binary )
+    {
+      return true;
+    }
 
   if( flarmFd < 0 )
     {
@@ -1466,29 +1473,101 @@ bool GpsClient::flarmBinMode()
       return false;
     }
 
-  FlarmBinComLinux fbc( flarmFd );
+  // Binary switch command for Flarm interface
+  const char* pflax = "$PFLAX\r\n";
 
-  // Precondition is that the NMEA output of the Flarm device was disabled by
-  // the calling method before!
+  FlarmBinComLinux fbc( flarmFd );
 
   qDebug() << "Switch Flarm to binary mode";
 
-  // I made the experience, that the Flarm device did not answer to the first
-  // binary transfer switch. Therefore I make several tries. Flarm tool makes
-  // the same, as I could observe with a RS232 port sniffer.
-  bool pingOk = false;
-  int loop = 5;
-
-  while( loop-- )
+  // Switch Flarm to binary mode.
+  if( write( flarmFd, pflax, strlen(pflax) ) <= 0 )
     {
-      // Switch connection to binary mode.
-      if( write( flarmFd, pflax, strlen(pflax) ) <= 0 )
-        {
-          // write failed
-          break;
-        }
+      // write failed
+      return false;
+    }
 
-      // Check connection with a ping command.
+  // Read out the Flarm answer. Flarm sent $PFLAX,A*2E\r\n in good case and
+  // $PFLAX,A,ERROR,<error>*.. in error case.
+  // Note that other sentences can be sent before the answer $PFLAX is sent.
+  const char* ok = "$PFLAX,A*2E";
+  const char* error = "$PFLAX,A,ERROR";
+  char buf[128];
+  buf[0] = '\0';
+  int idx = 0;
+  int loops = 512;
+  bool readAnswer = false;
+
+  while( loops-- )
+    {
+      // Read a maximum of 512 characters and then leaf the loop to avoid
+      // a deadlock
+      char in[2];
+      in[1] = '\0';
+
+      int c = read( flarmFd, in, 1 );
+
+      if( c != -1 )
+        {
+          qDebug() << "read:" << in[0];
+          buf[idx] = in[0];
+          idx++;
+          buf[idx] = '\0';
+
+          if( in[0] == '\n' )
+            {
+              QString check( buf );
+
+              if( check.startsWith( ok ) == true )
+                {
+                  qDebug() << "flarmBinMode(): $PFLAX ok!";
+                  readAnswer = true;
+                  break;
+                }
+              else if( check.startsWith( error ) )
+                {
+                  qCritical() << "flarmBinMode() Error:" << buf;
+                  return false;
+                }
+              else
+                {
+                  // expected answer was not received.
+                  idx = 0;
+                  buf[0] = '\0';
+                }
+            }
+        }
+      else
+        {
+          QThread::msleep( 100 );
+        }
+    }
+
+  if( readAnswer == false )
+    {
+      qCritical() << "flarmBinMode() Error: got no answer to $PFLAX";
+      return false;
+    }
+
+  // Forward $PFLAX sentence to the Cumulus main process to signal switch to
+  // Flarm's binary protocol.
+  QByteArray ba;
+  ba.append( MSG_GPS_DATA );
+  ba.append( ' ' );
+  ba.append( buf );
+  writeForwardMsg( ba.data() );
+
+  qDebug() << "$PFLAX an Cumulus gesendet";
+
+  // I made the experience, that a Classic Flarm device did not answer to the
+  // first ping. Therefore I make several tries. Flarm tool makes the same, as
+  // I could observe with a RS232 port sniffer.
+  bool pingOk = false;
+  loops = 5;
+
+  while( loops-- )
+    {
+      // Check binary connection with a ping command.
       if( fbc.ping() == true )
         {
           FlarmBase::setProtocolMode( FlarmBase::binary );
@@ -1500,11 +1579,11 @@ bool GpsClient::flarmBinMode()
   if( pingOk == false )
     {
       // Switch to binary mode failed
-      qWarning() << "GpsClient::flarmBinMode(): Switch failed!";
+      qWarning() << "GpsClient::flarmBinMode(): Switch to binary mode failed!";
     }
   else
     {
-      qDebug() << "GpsClient::flarmBinMode(): Switch Ok!";
+      qDebug() << "GpsClient::flarmBinMode(): Switch to binary mode Ok!";
     }
 
   return pingOk;
@@ -1769,15 +1848,18 @@ void GpsClient::flarmFlightDowloadProgress( const int idx, const int progress )
 
 bool GpsClient::flarmReset()
 {
-  qDebug() << "GpsClient::flarmReset() after binary mode usage.";
+  qDebug() << "GpsClient::flarmReset() is called -> switching to text mode.";
 
   // Switch off timeout control
   last = QTime();
 
-  if( ! flarmBinMode() )
+  if( FlarmBase::getProtocolMode() != FlarmBase::binary )
     {
-      last.start();
-      return false;
+      if( ! flarmBinMode() )
+        {
+          last.start();
+          return false;
+        }
     }
 
   if( flarmFd < 0 )
@@ -1790,10 +1872,10 @@ bool GpsClient::flarmReset()
   FlarmBinComLinux fbc( flarmFd );
   bool res = fbc.exit();
 
-  // Switch Flarm back to text mode.
+  // Set Flarm back to text mode.
   FlarmBase::setProtocolMode( FlarmBase::text );
 
-  qDebug() << "GpsClient::flarmReset() Flarm has switched to text mode usage.";
+  qDebug() << "GpsClient::flarmReset(): Flarm has switched to text mode usage.";
 
   activateTimeout = true;
   last.start();
