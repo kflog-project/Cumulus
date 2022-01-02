@@ -7,7 +7,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018-2021 Axel Pauli
+**   Copyright (c): 2018-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -223,7 +223,8 @@ void SettingsPageFlarm::loadTableItems()
   // Clear all old data in the list
   m_items.clear();
 
-  m_items << "DEVTYPE;RO;ALL"
+  m_items << "HWVER;RO;ALL"
+          << "DEVTYPE;RO;ALL"
           << "DEVICEID;RO;PF"
           << "SWVER;RO;ALL"
           << "SWEXP;RO;ALL"
