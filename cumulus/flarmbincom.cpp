@@ -28,7 +28,7 @@
 unsigned short FlarmBinCom::m_Seq = 0;
 
 // Enable DEBUG_SR to dump out the messages on the interface in hex format
-#define DEBUG_SR 1
+// #define DEBUG_SR 1
 
 FlarmBinCom::FlarmBinCom()
 {
