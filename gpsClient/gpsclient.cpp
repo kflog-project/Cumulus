@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -839,9 +839,9 @@ void GpsClient::readSentenceFromBuffer()
             }
         }
 
-// #ifdef DEBUG_NMEA
+#ifdef DEBUG_NMEA
       qDebug() << "GpsClient::read():" << record;
-// #endif
+#endif
 
       free(record);
       record = 0;
@@ -1459,7 +1459,7 @@ uint GpsClient::getBaudrate(int rate)
 
 bool GpsClient::flarmBinMode()
 {
-  qDebug() << "GpsClient::flarmBinMode() is called";
+  // qDebug() << "GpsClient::flarmBinMode() is called";
 
   if( FlarmBase::getProtocolMode() == FlarmBase::binary )
     {
@@ -1478,7 +1478,7 @@ bool GpsClient::flarmBinMode()
 
   FlarmBinComLinux fbc( flarmFd );
 
-  qDebug() << "Switch Flarm to binary mode";
+  qDebug() << "Switching Flarm to binary mode";
 
   // Switch Flarm to binary mode.
   if( write( flarmFd, pflax, strlen(pflax) ) <= 0 )
@@ -1492,13 +1492,13 @@ bool GpsClient::flarmBinMode()
   // Note that other sentences can be sent before the answer $PFLAX is sent.
   const char* ok = "$PFLAX,A*2E";
   const char* error = "$PFLAX,A,ERROR";
-  char buf[128];
+  char buf[256];
   buf[0] = '\0';
   int idx = 0;
   int loops = 512;
   bool readAnswer = false;
 
-  while( loops-- )
+  while( loops-- && idx < sizeof(buf) )
     {
       // Read a maximum of 512 characters and then leaf the loop to avoid
       // a deadlock
@@ -1509,7 +1509,7 @@ bool GpsClient::flarmBinMode()
 
       if( c != -1 )
         {
-          qDebug() << "read:" << in[0];
+          // qDebug() << "read:" << in[0];
           buf[idx] = in[0];
           idx++;
           buf[idx] = '\0';
@@ -1518,20 +1518,20 @@ bool GpsClient::flarmBinMode()
             {
               QString check( buf );
 
-              if( check.startsWith( ok ) == true )
+              if( check.contains( ok ) == true )
                 {
                   qDebug() << "flarmBinMode(): $PFLAX ok!";
                   readAnswer = true;
                   break;
                 }
-              else if( check.startsWith( error ) )
+              else if( check.contains( error ) )
                 {
                   qCritical() << "flarmBinMode() Error:" << buf;
                   return false;
                 }
               else
                 {
-                  // expected answer was not received.
+                  // Expected answer was not received. Reset buffer.
                   idx = 0;
                   buf[0] = '\0';
                 }
@@ -1557,7 +1557,7 @@ bool GpsClient::flarmBinMode()
   ba.append( buf );
   writeForwardMsg( ba.data() );
 
-  qDebug() << "$PFLAX an Cumulus gesendet";
+  qDebug() << "$PFLAX Ok send to Cumulus.";
 
   // I made the experience, that a Classic Flarm device did not answer to the
   // first ping. Therefore I make several tries. Flarm tool makes the same, as
