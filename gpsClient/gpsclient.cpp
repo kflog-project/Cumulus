@@ -1494,7 +1494,7 @@ bool GpsClient::flarmBinMode()
   const char* error = "$PFLAX,A,ERROR";
   char buf[256];
   buf[0] = '\0';
-  int idx = 0;
+  unsigned int idx = 0;
   int loops = 512;
   bool readAnswer = false;
 
@@ -1539,7 +1539,7 @@ bool GpsClient::flarmBinMode()
         }
       else
         {
-          QThread::msleep( 100 );
+          usleep( 100000 ); // 100ms
         }
     }
 
