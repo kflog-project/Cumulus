@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,7 +23,7 @@
  *
  * This dialog is the user interface for the altimeter settings.
  *
- * \date 2004-2021
+ * \date 2004-2022
  *
  */
 
@@ -41,6 +41,7 @@
 #include <QSpinBox>
 
 #include "altitude.h"
+#include "numberEditor.h"
 
 class AltimeterDialog : public QDialog
 {
@@ -128,6 +129,9 @@ private:
   /** Altitude gain display */
   QLineEdit* altitudeGainDisplay;
 
+  /** Airfield elevation display */
+  NumberEditor* m_afElevationDisplay;
+
   /** Display for altitude correction factor */
   QLabel* levelingDisplay;
 
@@ -144,9 +148,11 @@ private:
   QPushButton *mminus;
   QPushButton *reset;
 
-  QPushButton *setAltitudeGain;
+  QPushButton *startAltitudeGain;
+  QPushButton *setQnh;
 
   /** Save the initial values here. They are needed in the reject case. */
+  Distance m_savedElevation;
   Altitude m_savedAltitude;
   int m_saveMode;
   int m_saveUnit;
@@ -169,7 +175,13 @@ public slots:
   /** This slot is being called if the altitude gain value has been changed. */
   void slotAltitudeGain( const Altitude &altitudeGain );
 
-private slots:
+  private slots:
+
+  /** This slot is being called if the setQhn button is pressed. */
+  void slotSetQnh();
+
+  /** This slot is being called if the elevation is being edited. */
+  void slotElevationIsEdited();
 
   /**
    * This slot is called if the altitude reference has been changed. It
@@ -210,6 +222,22 @@ private slots:
    * This slot is called if the auto ONH checkbox has changed its state.
    */
   void slotQnhAutoChanged( int state );
+
+  /**
+   * This slot is called, if the GPS radio buttion is toggeled to show or hide
+   * the auto qnh checkbox.
+   */
+  void slotGpsRBToggled( bool checked )
+  {
+    if( checked == false )
+      {
+        autoQnh->show();
+      }
+    else
+      {
+        autoQnh->hide();
+      }
+  }
 
 signals:
 

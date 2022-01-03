@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -132,6 +132,8 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   m_gps->setEnabled( true );
   m_gps->setFocusPolicy( Qt::NoFocus );
 
+  connect( m_gps, SIGNAL(toggled(bool)), SLOT(slotGpsRBToggled(bool)));
+
   m_baro  = new QRadioButton( tr( "Baro" ), altRef );
   m_baro->setFont( font() );
   m_baro->setEnabled( true );
@@ -188,16 +190,36 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   altitudeGainDisplay->setAlignment( Qt::AlignHCenter );
   altitudeLayout->addWidget( altitudeGainDisplay, row, 1 );
 
-  setAltitudeGain = new QPushButton( "S", this );
-  altitudeLayout->addWidget( setAltitudeGain, row++, 2 );
+  startAltitudeGain = new QPushButton( "S", this );
+  startAltitudeGain->setToolTip( tr("Start altitude gain recording") );
+  altitudeLayout->addWidget( startAltitudeGain, row++, 2 );
 
-  connect( setAltitudeGain, SIGNAL(pressed()), SLOT(slotResetGainedAltitude()) );
+  connect( startAltitudeGain, SIGNAL(pressed()), SLOT(slotResetGainedAltitude()) );
 
   connect( calculator, SIGNAL(newGainedAltitude(const Altitude&)),
            this, SLOT( slotAltitudeGain(const Altitude&)) );
 
-  QString tip = tr("Adjust STD altitude to your airfield elevation.");
+  lbl = new QLabel( tr( "AF Elevation:" ), this );
+  altitudeLayout->addWidget( lbl, row, 0 );
 
+  m_afElevationDisplay = new NumberEditor( this );
+  m_afElevationDisplay->setSuffix( " " + Altitude::getUnitText() );
+  m_afElevationDisplay->setRange( 0, 9999 );
+  m_afElevationDisplay->setDecimalVisible( false );
+  m_afElevationDisplay->setPmVisible( false );
+  m_afElevationDisplay->setTip(tr("Elevation ") + "0...9999 " + Altitude::getUnitText() );
+  m_afElevationDisplay->setValue( 0 );
+  m_afElevationDisplay->setToolTip( tr("Set your airfield elevation.") );
+  altitudeLayout->addWidget( m_afElevationDisplay, row, 1 );
+
+  setQnh = new QPushButton( tr("Align"), this );
+  setQnh->setToolTip( tr("Align QNH altitude to airfield elevation") );
+  altitudeLayout->addWidget( setQnh, row++, 2 );
+
+  connect( m_afElevationDisplay, SIGNAL(numberPadOpened()), SLOT(slotElevationIsEdited()) );
+  connect( setQnh, SIGNAL(pressed()), SLOT(slotSetQnh()) );
+
+  QString tip = tr("Adjust altitude to your airfield elevation.");
   lbl = new QLabel( tr( "QNH Altitude:" ), this );
   lbl->setToolTip( tip );
   altitudeLayout->addWidget( lbl, row, 0 );
@@ -208,7 +230,6 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   m_altitudeDisplay->setMinimum( -1000 );
   m_altitudeDisplay->setMaximum( 1000000 );
   m_altitudeDisplay->setAlignment( Qt::AlignHCenter );
-
   altitudeLayout->addWidget( m_altitudeDisplay, row, 1 );
 
   lbl = new QLabel( tr( "Correction:" ), this );
@@ -231,6 +252,7 @@ AltimeterDialog::AltimeterDialog (QWidget *parent) :
   autoQnh = new QCheckBox( tr( "auto ONH" ), this );
   autoQnh->setCheckable( true );
   autoQnh->setChecked( true );
+  autoQnh->setToolTip( tr("Check box for auto ONH setting") );
 
   connect( autoQnh, SIGNAL(stateChanged(int)), SLOT(slotQnhAutoChanged(int)) );
 
@@ -399,6 +421,7 @@ void AltimeterDialog::load()
   m_mode = conf->getAltimeterMode();
   m_saveMode = m_mode;
   m_savedAltitude = calculator->getlastSTDAltitude();
+  m_savedElevation = conf->getHomeElevation();
 
   switch( m_mode )
   {
@@ -427,11 +450,14 @@ void AltimeterDialog::load()
       m_meter->setChecked(true);
       m_unit = 0;
       levelingDisplay->setText( QString::number((int) rint(conf->getGpsUserAltitudeCorrection().getMeters()) ));
+      m_afElevationDisplay->setValue((int) rint(m_savedElevation.getMeters()));
+
       break;
     case Altitude::feet:
       m_feet->setChecked(true);
       m_unit = 1;
       levelingDisplay->setText( QString::number((int) rint(conf->getGpsUserAltitudeCorrection().getFeet()) ));
+      m_afElevationDisplay->setValue((int) rint(m_savedElevation.getFeet()));
       break;
     default:
       m_meter->setChecked(true);
@@ -447,14 +473,17 @@ void AltimeterDialog::load()
     case 0:
       m_gps->setChecked(true);
       m_devicesList->setVisible( false );
-      break;
+      autoQnh->setVisible( false );
+     break;
     case 1:
       m_baro->setChecked(true);
       m_devicesList->setVisible( true );
+      autoQnh->setVisible( true );
       break;
     default:
       m_gps->setChecked(true);
       m_devicesList->setVisible( false );
+      autoQnh->setVisible( false );
       break;
   }
 
@@ -530,12 +559,22 @@ void AltimeterDialog::slotUnitChanged( int unit )
     {
       newAltLeveling.setMeters(levelingDisplay->text().toInt());
       levelingDisplay->setText( QString::number((int) rint(newAltLeveling.getFeet())) );
+
+      Altitude elevation( m_afElevationDisplay->value() );
+      m_afElevationDisplay->setValue( (int) rint(elevation.getFeet()) );
     }
   else if( oldAltUnit == Altitude::feet && m_unit == Altitude::meters )
     {
       newAltLeveling.setFeet(levelingDisplay->text().toInt());
       levelingDisplay->setText( QString::number((int) rint(newAltLeveling.getMeters())) );
+
+      Altitude elevation(0);
+      elevation.setFeet( m_afElevationDisplay->value() );
+      m_afElevationDisplay->setValue( (int) rint(elevation.getMeters()) );
     }
+
+  m_afElevationDisplay->setSuffix( " " + Altitude::getUnitText() );
+  m_afElevationDisplay->setTip(tr("Elevation ") + "0...5000 " + Altitude::getUnitText() );
 
   // informs MapView
   emit newAltimeterMode();
@@ -714,13 +753,13 @@ void AltimeterDialog::slotChangeSpinValue()
           break;
       }
 
-      // Update altitude display
-      slotAltitudeChanged();
-
       // Save altitude correction value.
       conf->setGpsUserAltitudeCorrection( altCorrection );
 
-      if( autoQnh->isChecked() == true )
+      // Update altitude display
+      slotAltitudeChanged();
+
+      if( autoQnh->isVisible() == true && autoQnh->isChecked() == true )
         {
           // http://wolkenschnueffler.de/media//DIR_62701/7c9e0b09d2109871ffff8127ac144233.pdf
           // WE have pressure selected and got a pressure altitude.
@@ -764,14 +803,31 @@ void AltimeterDialog::accept()
   if( changesDone() )
     {
       Altitude::setUnit( (Altitude::altitudeUnit) m_unit );
-
       GeneralConfig *conf = GeneralConfig::instance();
 
       conf->setUnitAlt( m_unit );
       conf->setAltimeterMode( m_mode );
       conf->setGpsAltitude( _ref );
-      conf->setGpsUserAltitudeCorrection( Altitude::convertToMeters( levelingDisplay->text().toInt()) );
       conf->setQNH( spinQnh->value() );
+
+      Altitude correction;
+      Distance elevation;
+
+      switch( Altitude::getUnit() )
+        {
+        case Altitude::feet:
+          correction.setFeet( levelingDisplay->text().toInt() );
+          elevation.setFeet( m_afElevationDisplay->value() );
+          break;
+        case Altitude::meters:
+        default:
+          correction.setMeters( levelingDisplay->text().toInt() );
+          elevation.setMeters( m_afElevationDisplay->value() );
+          break;
+        }
+
+      conf->setGpsUserAltitudeCorrection( correction );
+      conf->setHomeElevation( elevation );
       conf->save();
 
       emit newAltimeterMode();     // informs MapView
@@ -829,4 +885,56 @@ int AltimeterDialog::getQNH( const Altitude& altitude )
   double p1 = 1013.25 * pow( 1 + (k1 * altitude.getMeters()), power );
 
   return static_cast<int>(rint(p1));
+}
+
+/** This slot is being called if the setQhn button is pressed. */
+void AltimeterDialog::slotSetQnh()
+{
+  m_timeout->stop();
+
+  GeneralConfig *conf = GeneralConfig::instance();
+  Altitude elevation;
+
+  switch( Altitude::getUnit() )
+    {
+    case Altitude::feet:
+      elevation.setFeet( m_afElevationDisplay->value() );
+      break;
+    case Altitude::meters:
+    default:
+      elevation.setMeters( m_afElevationDisplay->value() );
+      break;
+    }
+
+  Altitude altCorrection = elevation - calculator->getlastSTDAltitude();
+
+  switch( Altitude::getUnit() )
+    {
+    case Altitude::feet:
+      levelingDisplay->setText( QString::number( (int) rint(altCorrection.getFeet() )));
+      break;
+    case Altitude::meters:
+    default:
+      levelingDisplay->setText( QString::number( (int) rint(altCorrection.getMeters() )));
+      break;
+    }
+
+  // Save altitude correction value.
+  conf->setGpsUserAltitudeCorrection( altCorrection );
+
+  // Update altitude display
+  slotAltitudeChanged();
+
+  if( autoQnh->isVisible() == true && autoQnh->isChecked() == true )
+    {
+      Altitude newAltQnh(Altitude::convertToMeters( - levelingDisplay->text().toInt() ));
+      int qnh = getQNH( newAltQnh );
+      spinQnh->setValue( qnh );
+    }
+}
+
+/** This slot is being called if the elevation is being edited. */
+void AltimeterDialog::slotElevationIsEdited()
+{
+  m_timeout->stop();
 }

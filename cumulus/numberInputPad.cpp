@@ -47,7 +47,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   setPalette(palette);
 
   setObjectName( "NumberInputPad" );
-  setWindowFlags( Qt::Window );
+  setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
 

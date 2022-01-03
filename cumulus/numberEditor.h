@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2021 Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c): 2012-2022 Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -374,6 +374,11 @@ class NumberEditor : public QLabel
    * @param d The new double value.
    */
   void valueChanged( double d );
+
+  /**
+   * Emitted when the number input pad is opened.
+   */
+ void numberPadOpened();
 
  public slots:
 

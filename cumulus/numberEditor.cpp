@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2021 Axel Pauli
+**   Copyright (c): 2012-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -144,6 +144,8 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setGeometry( pos.x() + ms.width() / 2,
                           pos.y() + ms.height() / 2,
                           ms.width(), ms.height() );
+
+      emit numberPadOpened();
     }
 
   event->accept();
