@@ -234,42 +234,78 @@
         <translation>GPS</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="135"/>
+        <location filename="../../altimeterdialog.cpp" line="137"/>
         <source>Baro</source>
         <translation>Baro</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="141"/>
+        <location filename="../../altimeterdialog.cpp" line="143"/>
         <source>Device which delivers pressure altitude.</source>
         <translation>Gerät welches Druckhöhe liefert.</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="182"/>
+        <location filename="../../altimeterdialog.cpp" line="184"/>
         <source>AltGain:</source>
         <translation>H-Gewinn:</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="199"/>
-        <source>Adjust STD altitude to your airfield elevation.</source>
-        <translation>Gleiche STD Höhe auf die Flugplatzhöhe ab.</translation>
+        <location filename="../../altimeterdialog.cpp" line="194"/>
+        <source>Start altitude gain recording</source>
+        <translation>Starte Höhengewinnaufzeichnung</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="201"/>
+        <location filename="../../altimeterdialog.cpp" line="202"/>
+        <source>AF Elevation:</source>
+        <translation>FP-Elevation:</translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="210"/>
+        <location filename="../../altimeterdialog.cpp" line="577"/>
+        <source>Elevation </source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="212"/>
+        <source>Set your airfield elevation.</source>
+        <translation>Setze Flugplatzhöhe über NN</translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="215"/>
+        <source>Align</source>
+        <translation>Abgleich</translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="216"/>
+        <source>Align QNH altitude to airfield elevation</source>
+        <translation>Gleiche QNH auf Flugplatzhöhe ab</translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="222"/>
+        <source>Adjust altitude to your airfield elevation.</source>
+        <translation>Gleiche Höhenanzeige auf Flugplatzhöhe ab.</translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="255"/>
+        <source>Check box for auto ONH setting</source>
+        <translation>Check Box für automatisches QNH setzen</translation>
+    </message>
+    <message>
+        <location filename="../../altimeterdialog.cpp" line="223"/>
         <source>QNH Altitude:</source>
         <translation>QNH Höhe:</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="214"/>
+        <location filename="../../altimeterdialog.cpp" line="235"/>
         <source>Correction:</source>
         <translation>Korrektur:</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="231"/>
+        <location filename="../../altimeterdialog.cpp" line="252"/>
         <source>auto ONH</source>
         <translation>Auto QHN</translation>
     </message>
     <message>
-        <location filename="../../altimeterdialog.cpp" line="219"/>
+        <location filename="../../altimeterdialog.cpp" line="240"/>
         <source>QNH:</source>
         <translation>QNH:</translation>
     </message>
@@ -316,7 +352,7 @@
         <translation>Aufgabe gestartet</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="2090"/>
+        <location filename="../../calculator.cpp" line="2099"/>
         <source>TP zoom</source>
         <translation>WP Zoom</translation>
     </message>
@@ -339,23 +375,23 @@
         <translation>WP passiert</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1920"/>
-        <location filename="../../calculator.cpp" line="1925"/>
+        <location filename="../../calculator.cpp" line="1929"/>
+        <location filename="../../calculator.cpp" line="1934"/>
         <source>Home</source>
         <translation>Heimat</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1926"/>
+        <location filename="../../calculator.cpp" line="1935"/>
         <source>Home Site</source>
         <translation>Heimatort</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1966"/>
+        <location filename="../../calculator.cpp" line="1975"/>
         <source>Restart current task?</source>
         <translation>Akt. Aufgabe neu starten?</translation>
     </message>
     <message>
-        <location filename="../../calculator.cpp" line="1967"/>
+        <location filename="../../calculator.cpp" line="1976"/>
         <source>&lt;html&gt;A flight task is running!&lt;br&gt;This command will start the&lt;br&gt;task again at the beginning.&lt;br&gt;Do You really want to restart?&lt;/html&gt;</source>
         <translation>&lt;html&gt;Eine Flugaufgabe ist aktiv!&lt;br&gt;Dieses Kommando startet&lt;br&gt;die Aufgabe erneut am Beginn.&lt;br&gt;Wollen Sie das?&lt;/html&gt;</translation>
     </message>
@@ -377,52 +413,52 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="../../flarm.cpp" line="1025"/>
+        <location filename="../../flarm.cpp" line="1043"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1028"/>
+        <location filename="../../flarm.cpp" line="1046"/>
         <source>Caution</source>
         <translation>Vorsicht</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1031"/>
+        <location filename="../../flarm.cpp" line="1049"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1034"/>
+        <location filename="../../flarm.cpp" line="1052"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1062"/>
+        <location filename="../../flarm.cpp" line="1080"/>
         <source>Object</source>
         <translation>Objekt</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1066"/>
+        <location filename="../../flarm.cpp" line="1084"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1068"/>
+        <location filename="../../flarm.cpp" line="1086"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1069"/>
+        <location filename="../../flarm.cpp" line="1087"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1074"/>
+        <location filename="../../flarm.cpp" line="1092"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1082"/>
+        <location filename="../../flarm.cpp" line="1100"/>
         <source>Alias</source>
         <translation></translation>
     </message>
@@ -541,116 +577,116 @@
 <context>
     <name>FlarmLogbook</name>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="47"/>
+        <location filename="../../flarmlogbook.cpp" line="48"/>
         <source>Flarm Logbook</source>
         <translation>Flarm Logbuch</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="83"/>
+        <location filename="../../flarmlogbook.cpp" line="84"/>
         <source>Read</source>
         <translation>Lesen</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="84"/>
+        <location filename="../../flarmlogbook.cpp" line="85"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="85"/>
+        <location filename="../../flarmlogbook.cpp" line="86"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="109"/>
+        <location filename="../../flarmlogbook.cpp" line="110"/>
         <source>Flight:</source>
         <translation>Flug:</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="214"/>
+        <location filename="../../flarmlogbook.cpp" line="215"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="217"/>
+        <location filename="../../flarmlogbook.cpp" line="218"/>
         <source>To</source>
         <translation>St</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="220"/>
+        <location filename="../../flarmlogbook.cpp" line="221"/>
         <source>Ft</source>
         <translation>Fz</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="223"/>
+        <location filename="../../flarmlogbook.cpp" line="224"/>
         <source>Pilot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="226"/>
+        <location filename="../../flarmlogbook.cpp" line="227"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="229"/>
+        <location filename="../../flarmlogbook.cpp" line="230"/>
         <source>Class</source>
         <translation>Klasse</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="261"/>
-        <location filename="../../flarmlogbook.cpp" line="398"/>
-        <location filename="../../flarmlogbook.cpp" line="482"/>
-        <location filename="../../flarmlogbook.cpp" line="555"/>
+        <location filename="../../flarmlogbook.cpp" line="260"/>
+        <location filename="../../flarmlogbook.cpp" line="395"/>
+        <location filename="../../flarmlogbook.cpp" line="479"/>
+        <location filename="../../flarmlogbook.cpp" line="552"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="262"/>
-        <location filename="../../flarmlogbook.cpp" line="284"/>
-        <location filename="../../flarmlogbook.cpp" line="399"/>
-        <location filename="../../flarmlogbook.cpp" line="461"/>
-        <location filename="../../flarmlogbook.cpp" line="483"/>
-        <location filename="../../flarmlogbook.cpp" line="506"/>
-        <location filename="../../flarmlogbook.cpp" line="556"/>
+        <location filename="../../flarmlogbook.cpp" line="261"/>
+        <location filename="../../flarmlogbook.cpp" line="283"/>
+        <location filename="../../flarmlogbook.cpp" line="396"/>
+        <location filename="../../flarmlogbook.cpp" line="458"/>
+        <location filename="../../flarmlogbook.cpp" line="480"/>
+        <location filename="../../flarmlogbook.cpp" line="503"/>
+        <location filename="../../flarmlogbook.cpp" line="553"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="283"/>
+        <location filename="../../flarmlogbook.cpp" line="282"/>
         <source>Flarm flight list read error!</source>
         <translation>Flarm Fluglisten Lesefehler!</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="293"/>
+        <location filename="../../flarmlogbook.cpp" line="292"/>
         <source>Flarm flight list is empty!</source>
         <translation>Flarm Flugliste ist leer!</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="294"/>
+        <location filename="../../flarmlogbook.cpp" line="293"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="454"/>
+        <location filename="../../flarmlogbook.cpp" line="451"/>
         <source>Too less free space on:</source>
         <translation>Zu wenig Platz auf:</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="458"/>
+        <location filename="../../flarmlogbook.cpp" line="455"/>
         <source>Download not possible!</source>
         <translation>Download nicht möglich!</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="505"/>
+        <location filename="../../flarmlogbook.cpp" line="502"/>
         <source>Flarm download error!</source>
         <translation>Flarm Download Fehler!</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="514"/>
+        <location filename="../../flarmlogbook.cpp" line="511"/>
         <source>Flights downloaded!</source>
         <translation>Flüge runter geladen!</translation>
     </message>
     <message>
-        <location filename="../../flarmlogbook.cpp" line="515"/>
+        <location filename="../../flarmlogbook.cpp" line="512"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
@@ -943,12 +979,12 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2902"/>
+        <location filename="../../gpsnmea.cpp" line="2912"/>
         <source>GPS connection switched off by user</source>
         <translation>GPS Verbingung abgeschaltet durch Benutzer</translation>
     </message>
     <message>
-        <location filename="../../gpsnmea.cpp" line="3260"/>
+        <location filename="../../gpsnmea.cpp" line="3270"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -1472,11 +1508,6 @@
         <translation>Karte Info Boxen</translation>
     </message>
     <message>
-        <location filename="../../mainwindow.cpp" line="2621"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2021, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2021, Das Cumulus-Team&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../../mainwindow.cpp" line="2639"/>
         <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
@@ -1647,6 +1678,11 @@
         <location filename="../../mainwindow.cpp" line="2432"/>
         <source>Nearest</source>
         <translation>Nächste</translation>
+    </message>
+    <message>
+        <location filename="../../mainwindow.cpp" line="2621"/>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2022, The Cumulus-Team&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2022, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="2625"/>
@@ -4720,97 +4756,97 @@ USB Stick eingeschoben?</translation>
         <translation>Hole alle Konfigurationsdaten vom FLARM.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="308"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="309"/>
         <source>Get</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="323"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="324"/>
         <source>Set</source>
         <translation>Set</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="448"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="449"/>
         <source>Enter item value</source>
         <translation>Wertzuweisung zu FLARM</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="449"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="450"/>
         <source>Flarm item value:</source>
         <translation>Flarm Wert:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="519"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="520"/>
         <source>Configuration item is unsupported by your FLARM!</source>
         <translation>Konfigurationsvariable wird durch Ihr FLARM nicht unterstützt!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="520"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="521"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="530"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="531"/>
         <source>Configuration item has no value assigned!</source>
         <translation>Variablen Wertzuweisung ist leer!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="531"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="532"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="662"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="777"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="789"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="663"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="778"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="790"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="663"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="709"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="778"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="790"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="664"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="710"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="779"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="791"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="703"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="704"/>
         <source>Command:</source>
         <translation>Kommando:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="707"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="708"/>
         <source>rejected by Flarm with error.</source>
         <translation>abgewiesen durch FLARM mit Fehler.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="723"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="724"/>
         <source>Type=</source>
         <translation>Typ=</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="726"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="727"/>
         <source>ID=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="731"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="732"/>
         <source>Version=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="734"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="735"/>
         <source>Status=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="739"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="740"/>
         <source>Name=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="744"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="745"/>
         <source>Date=</source>
         <translation>Datum=</translation>
     </message>
