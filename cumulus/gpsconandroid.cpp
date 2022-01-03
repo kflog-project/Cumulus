@@ -78,6 +78,13 @@ void GpsConAndroid::rcvByte( const char byte )
 
   if( FlarmBase::getProtocolMode() == FlarmBase::text && byte == '\n' )
     {
+      // Check if Flarm has answered to the $PFLAX command
+      if( rcvBuffer.contains( "$PFLAX,A") )
+        {
+          // This answer is expected by the flarmBinMode() method.
+          return;
+        }
+
       // Flarm works in text mode and the complete GPS sentence must be
       // forwarded to GpsNmea.
       QString ns( rcvBuffer.data() );
@@ -219,6 +226,7 @@ bool GpsConAndroid::flarmBinMode()
 {
   if( FlarmBase::getProtocolMode() == FlarmBase::binary )
     {
+      qDebug() << "GpsConAndroid::flarmBinMode() is binary";
       return true;
     }
 
@@ -227,7 +235,7 @@ bool GpsConAndroid::flarmBinMode()
 
   FlarmBinComAndroid fbc;
 
-  qDebug() << "Switch Flarm to binary mode";
+  qDebug() << "GpsConAndroid::flarmBinMode(): Request Flarm to switch to binary mode";
 
   // Switch connection to binary mode.
   if( sndBytes( pflax ) == false )
@@ -265,7 +273,7 @@ bool GpsConAndroid::flarmBinMode()
         {
           if( buffer.contains( ok ) == true )
             {
-              qDebug() << "GpsConAndroid::flarmBinMode(): $PFLAX Ok!";
+              qDebug() << "GpsConAndroid::flarmBinMode(): $PFLAX switch to binary mode Ok!";
               FlarmBase::setProtocolMode( FlarmBase::binary );
               readAnswer = true;
               break;
