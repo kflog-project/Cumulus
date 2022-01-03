@@ -19,6 +19,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[+] 2022-01-03 AP: Issue #149 fixed. QNH setting and altitude adjustment should
+                   be improved.
+
 [*] 2021-04-21 AP: Cumulus 5.38.3 released for Android and Ubuntu.
 
 [-] 2021-04-21 AP: Bugfixing in wind calculation in straight flight
