@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -38,8 +38,7 @@
  * transfer and a second socket for command exchange.
  */
 
-#ifndef _GpsClient_hh_
-#define _GpsClient_hh_ 1
+#pragma once
 
 #include <termios.h>
 #include <unistd.h>
@@ -212,7 +211,7 @@ public:
   void getFlarmFlightList();
 
   /** Reports an error to the calling application. */
-  void flarmFlightListError();
+  void flarmFlightListError( QString error );
 
   /**
    * Downloads the requested IGC flights. The args string contains the destination
@@ -230,9 +229,11 @@ public:
   /**
    * Switches the Flarm device into the binary mode.
    *
+   * \param errorInfo When defined, an error message can also given back.
+   *
    * \return True on success otherwise false.
    */
-  bool flarmBinMode();
+  bool flarmBinMode( QString* errorInfo=nullptr );
 
   /**
    * Resets the Farm device. Should be called only if Flarm is in binary mode.
@@ -329,4 +330,3 @@ public:
   QTime downloadTimeControl;
 };
 
-#endif

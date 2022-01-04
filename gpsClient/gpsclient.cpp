@@ -141,7 +141,7 @@ fd_set *GpsClient::getReadFdMask()
     }
 
   // WiFi socket 1
-  if( so1 != 0 and so1->isOpen() == true )
+  if( so1 != nullptr and so1->isOpen() == true )
     {
       int sd1 = so1->socketDescriptor();
 
@@ -152,7 +152,7 @@ fd_set *GpsClient::getReadFdMask()
     }
 
   // WiFi socket 2
-  if( so2 != 0 and so2->isOpen() == true )
+  if( so2 != nullptr and so2->isOpen() == true )
     {
       int sd2 = so2->socketDescriptor();
 
@@ -238,12 +238,12 @@ void GpsClient::processEvent( fd_set *fdMask )
   int sd1 = -1;
   int sd2 = -1;
 
-  if( so1 != 0 )
+  if( so1 != nullptr )
     {
       sd1 = so1->socketDescriptor();
     }
 
-  if( so2 != 0 )
+  if( so2 != nullptr )
     {
       sd2 = so2->socketDescriptor();
     }
@@ -377,6 +377,22 @@ int GpsClient::writeGpsData( const char *sentence )
 //#ifdef DEBUG_NMEA
   qDebug() << "GpsClient::write():" << cmd;
 //#endif
+
+  int fdout = -1;
+
+  if( fd != -1 )
+    {
+      // Serial or bt socket is used
+      fdout = fd;
+    }
+  else if( so1 != nullptr and so1->isOpen() == true )
+    {
+      fd = so1->socketDescriptor();
+    }
+  else if( so2 != nullptr and so2->isOpen() == true )
+    {
+      fd = so2->socketDescriptor();
+    }
 
   // write sentence to gps device
   int result = write( fd, cmd.toLatin1().data(), cmd.length() );
@@ -712,7 +728,7 @@ bool GpsClient::openNmeaSockets()
   flarmFd = -1;
 
   // Check for old socket connections, close and delete them.
-  if( so1 != 0 || so2 != 0 )
+  if( so1 != nullptr || so2 != nullptr )
     {
       // First close old existing connections
       closeTcpSockets();
@@ -908,7 +924,7 @@ void GpsClient::closeTcpSockets()
   // Reset Flarm socket
   flarmFd = -1;
 
-  if( so1 != 0 )
+  if( so1 != nullptr )
     {
       if( so1->openMode() != QIODevice::NotOpen )
         {
@@ -916,10 +932,10 @@ void GpsClient::closeTcpSockets()
         }
 
       delete so1;
-      so1 = 0;
+      so1 = nullptr;
     }
 
-  if( so2 != 0 )
+  if( so2 != nullptr )
     {
       if( so2->openMode() != QIODevice::NotOpen )
         {
@@ -927,7 +943,7 @@ void GpsClient::closeTcpSockets()
         }
 
       delete so2;
-      so2 = 0;
+      so2 = nullptr;
     }
 }
 
@@ -1103,7 +1119,7 @@ void GpsClient::toController()
               last.start(); // set next retry time point
             }
         }
-      else if( so1 != 0 || so2 != 0 )
+      else if( so1 != nullptr || so2 != nullptr )
         {
           // Try to reconnect the socket connections.
           if( openNmeaSockets() == false )
@@ -1457,7 +1473,7 @@ uint GpsClient::getBaudrate(int rate)
 
 #ifdef FLARM
 
-bool GpsClient::flarmBinMode()
+bool GpsClient::flarmBinMode( QString* errorInfo )
 {
   // qDebug() << "GpsClient::flarmBinMode() is called";
 
@@ -1491,7 +1507,7 @@ bool GpsClient::flarmBinMode()
   // $PFLAX,A,ERROR,<error>*.. in error case.
   // Note that other sentences can be sent before the answer $PFLAX is sent.
   const char* ok = "$PFLAX,A*2E";
-  const char* error = "$PFLAX,A,ERROR";
+  const char* error = "$PFLAX,A,ERROR,";
   char buf[256];
   buf[0] = '\0';
   unsigned int idx = 0;
@@ -1527,6 +1543,12 @@ bool GpsClient::flarmBinMode()
               else if( check.contains( error ) )
                 {
                   qCritical() << "flarmBinMode() Error:" << buf;
+
+                  if( errorInfo != nullptr )
+                    {
+                      *errorInfo = check.remove( error ).remove( '\r').remove('\n');
+                    }
+
                   return false;
                 }
               else
@@ -1624,15 +1646,18 @@ void GpsClient::getFlarmFlightList()
     {
       // no Flarm channel is opened, reject request
       qWarning() << "getFlarmFlightList(): No Flarm channel is opened";
-      flarmFlightListError();
+      flarmFlightListError( "Flarm not connected!" );
       return;
     }
 
   FlarmBinComLinux fbc( flarmFd );
 
-  if( flarmBinMode() == false )
+  QString error;
+  bool res = flarmBinMode( &error );
+
+  if( res == false )
     {
-      flarmFlightListError();
+      flarmFlightListError( error );
       return;
     }
 
@@ -1691,10 +1716,10 @@ void GpsClient::getFlarmFlightList()
   writeForwardMsg( ba.data() );
 }
 
-void GpsClient::flarmFlightListError()
+void GpsClient::flarmFlightListError( QString error )
 {
   QByteArray ba( MSG_FLARM_FLIGHT_LIST_RES );
-  ba.append( " Error" );
+  ba.append( " Error: " + error );
   writeForwardMsg( ba.data() );
 }
 

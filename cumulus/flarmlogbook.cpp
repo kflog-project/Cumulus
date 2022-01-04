@@ -280,8 +280,14 @@ void FlarmLogbook::slot_FlarmLogbookData( const QString& data )
       // Stop timer
       slot_Timeout();
       QString text0 = tr("Flarm flight list read error!");
-      QString text1 = tr("Error");
-      messageBox( QMessageBox::Warning, text0, text1 );
+      QString text1 = data;
+      QMessageBox msgBox;
+      msgBox.setText( text0 );
+      msgBox.setIcon( QMessageBox::Warning );
+      msgBox.setInformativeText( text1 );
+      msgBox.setStandardButtons( QMessageBox::Ok );
+      msgBox.setDefaultButton( QMessageBox::Ok );
+      msgBox.exec();
       return;
     }
 
