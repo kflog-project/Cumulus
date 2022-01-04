@@ -23,8 +23,6 @@
 	
 	<ul>
   <li>Android Ger&auml;te ab Release Level 2.2.x (Froyo) bis Release Level 6</li>
-	<li>Nokia Internet Tablets N800/N810 mit Maemo 4 OS2008</li>
-	<li>Nokia Internet Tablet N900 mit Maemo5 OS2009</li>
 	<li>PCs mit Debian und Ubuntu Linux Installationen</li>
 	</ul>
 
@@ -87,11 +85,8 @@
       verf&uuml;gt, k&ouml;nnen Sie diesen aktivieren, damit er Luftdruckdaten
       liefert. Wenn Sie diese Daten verwenden wollen, m&uuml;ssen Sie die
       <a href="cumulus-display.html#altitude">H&ouml;henanzeige</a> auf
-      Baro umschalten und anschlie&szlig;end die richtige MSL H&ouml;he einstellen.
-      <br>
-      Achten Sie darauf, dass in diesem Fall keine anderen extern gekoppelten
-      Ger&auml;te barometrische H&ouml;hendaten liefern, da es ansonsten zu
-      Fehlanzeigen kommen kann!
+      Baro umschalten, <i>Android</i> in der Ger&auml;teliste ausw&auml;hlen und
+      anschlie&szlig;end die richtige MSL H&ouml;he einstellen.
     </dd>
 
     <br>
@@ -115,30 +110,12 @@
           <li>WiFi</li>
         </ul>
       </li>
-      
-      <li>
-      <b>Nokia Internet Tablet N8x0</b>
-        <ul>
-          <li>Eingebautes GPS</li>
-          <li>USB</li>
-          <li>Bluetooth</li>
-        </ul>      
-      </li>
-      
-      <li>
-      <b>Nokia Internet Tablet N900</b>
-        <ul>
-          <li>Eingebautes GPS</li>
-          <li>Bluetooth</li>
-        </ul>      
-      </li>
 
       <li>
       <b>Android Ger&auml;te</b>
         <ul>
           <li>Eingebautes GPS</li>
           <li>Bluetooth</li>
-          <li>USB-IOIO</li>
           <li>WiFi</li>
         </ul>      
       </li>
@@ -158,7 +135,6 @@
       <ul>
         <li>Serial-USB Adapter (nicht f&uuml;r Android)</li>
         <li>Serial-Bluetooth Adapter</li>
-        <li>USB IOIO Uart Board (nur f&uuml;r Android)</li>
         <li>WLAN TCP/IP client</li>
       </ul>      
     
@@ -167,13 +143,7 @@
       <ul>
         <li>Serial-Bluetooth Adapter</li>
         <ul>
-          <li><a href="http://www.k6-team.de">K6-Team</a></li>
           <li>LM TECHNOLOGIES - LM048V2 Adapter</li>
-        </ul>
-
-        <li>USB IOIO Uart Board, Firmware 4.0 und h&ouml;her (nur f&uuml;r Android)</li>
-        <ul>
-          <li><a href="http://www.soartronic.net/products">SoarTronic's IOIO UART Interface Board</a></li>
         </ul>
       </ul>      
     </dd>
@@ -200,27 +170,15 @@
 			<p>Die NMEA Standard &Uuml;bertragungsrate betr&auml;gt 4800 bps.</p>
 
 			<p>
-				<b>Nokia Internet Tablets N800, N810, N900:</b> Bei diesen Ger&auml;ten
-				ist es nicht erforderlich spezielle Einstellungen zus&auml;tzlich zu
-				machen, so lange Sie die Voreinstellung <i>GPS Location</i>
-				benutzen. Soll ein Bluetooth Ger&auml;t verwendet werden, so muss
-				dieses &uuml;ber den Bluetooth Dialog von Maemo eingebunden werden.
-			</p>
-
-			<p>
 				<b>Android:</b> Wenn Ihr Ger&auml;t bereits mit einem internen GPS
 				Empf&auml;nger ausger&uuml;stet ist, m&uuml;ssen Sie nichts weiter einstellen.
-				Externe GPS Empf&auml;nger sind nur mittels Bluetooth Funk oder einem
-        USB IOIO Uart Board koppelbar. Ein USB IOIO Uart Board muss &uuml;ber das
-        Android Men&uuml; zuvor konfiguriert und aktiviert werden. Schauen Sie dazu
-        im Men&uuml; <A HREF="cumulus-settings-gps.html">Einstellungen - GPS</A> nach.
-        
+				Externe GPS Empf&auml;nger sind nur mittels Bluetooth Funk koppelbar.
 				<b>Beachten Sie die folgende Ausnahme!</b> Nach jedem
 				Cumulus Start unter Android m&uuml;ssen Sie den GPS Empfang <b>per
 			  Hand selber aktivieren</b>. Dr&uuml;cken Sie dazu die Android
 				Men&uuml;taste und w&auml;hlen Sie den Eintrag <b>GPS ein</b> aus.
 				Jetzt w&auml;hlen Sie das gew&uuml;nschte Ger&auml;t aus (internes
-				GPS, Bluetooth oder IOIO GPS). Beachten Sie, ein Bluetooth GPS m&uuml;ssen Sie
+				GPS oder Bluetooth GPS). Beachten Sie, ein Bluetooth GPS m&uuml;ssen Sie
 				vor dem Cumulus Start mit Ihrem Android Ger&auml;t gekoppelt haben,
 				denn das wird nicht von Cumlus unterst&uuml;zt.
 			</p>

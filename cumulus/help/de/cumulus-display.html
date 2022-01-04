@@ -240,30 +240,50 @@
 
 	<ul>
 
-		<li>Msl - H&ouml;he &uuml;ber dem Meeresspiegel.</li>
-		<li>Std - H&ouml;he bezogen auf den Standarddruck 1013,25 hPa.
+		<li>MSL - H&ouml;he &uuml;ber dem Meeresspiegel.</li>
+		<li>STD - H&ouml;he bezogen auf den Standarddruck 1013,25 hPa.
 			Diese wird von Cumulus nur zur vertikalen Abstandsbestimmung zu
 			Luftr&auml;umen benutzt, deren Referenz Flugfl&auml;che (FL) ist. Da
 			Cumulus das aktuelle QNH nicht kennt, m&uuml;ssen Sie dieses im
 			H&ouml;henanzeigedialog setzen, damit die Abstandbestimmung auch
 			richtig berechnet werden kann.</li>
-		<li>Agl - H&ouml;he &uuml;ber Grund. Nur verf&uuml;gbar, wenn
+		<li>AGL - H&ouml;he &uuml;ber Grund. Nur verf&uuml;gbar, wenn
 			Gel&auml;ndekarten geladen wurden.</li>
-		<li>Ahl - H&ouml;he &uuml;ber dem Heimatplatz. Erfordert das
-			richtige Setzen der Heimath&ouml;he &uuml;ber dem Meer im Men&uuml; <a
-			href="cumulus-settings-personal.html#HomeSiteElevation">
-				Einstellungen/Pers&ouml;nliches/Heimatplatz H&ouml;he</a> und ist dann
-			gleich zusetzen mit einer QFE Einstellung eines H&ouml;henmessers.
+		<li>AHL - H&ouml;he &uuml;ber dem Heimatplatz. Erfordert das
+			richtige Setzen der Flugplatzh&ouml;he &uuml;ber dem Meer im
+			H&ouml;henanzeigedialog und ist dann gleich zusetzen mit einer QFE
+			Einstellung eines H&ouml;henmessers.
 		</li>
 	</ul>
 
-	<p>Sie k&ouml;nnen die H&ouml;henanzeige jederzeit sehr einfach
+	<p>
+	  Sie k&ouml;nnen die H&ouml;henanzeige jederzeit sehr einfach
 		umkonfigurieren. Tippen Sie dazu einfach auf die H&ouml;henanzeige, um
 		den Konfigurationsdialog zu &ouml;ffnen. Hier k&ouml;nnen Sie nun die
-		Referenz, die Ma&szlig;einheit, eine Korrekturh&ouml;he und das QNH
-		setzen. Die Korrekturh&ouml;he dient dazu, Differenzen zur wahren
+		Referenz, die Ma&szlig;einheit als Meter oder Fu&szlig;, eine
+		Flugplatzh&ouml;he, eine Korrekturh&ouml;he und das QNH setzen.
+		Die Korrekturh&ouml;he dient dazu, Differenzen zur wahren
 		H&ouml;he, die bei Drucksonden- bzw. GPS-H&ouml;henangaben auftreten
-		k&ouml;nnen, auszugleichen.</p>
+		k&ouml;nnen, auszugleichen.
+	</p>
+	
+	<p>
+	  Wenn man als H&ouml;henbezugsquelle <i>Baro</i> auswählt, dann muss man
+	  sicher stellen, dass auch eine barometrische H&ouml;heninformation von
+	  einem angeschlossenen externen Ger&auml;t geliefert wird. In der neben
+	  stehenden Liste ist das entsprechende Ger&auml;t auszuw&auml;hlen,
+	  welches diese Information liefern soll. Fehlt diese Information, dann wird
+	  Cumulus auch keine H&ouml;he anzeigen.
+	</p>
+	
+	<p>
+	 Wenn man die Flugplatzh&ouml;he richtig gesetzt hat, kann man durch
+	 dr&uuml;cken auf den Knopf <i>Abgleich</i> die richtige QNH H&ouml;he
+	 automatisch einstellen. Ist die Checkbox <i>Auto OHN</i> aktiviert, wird
+	 auch automatisch das passende QHN berechnet, sofern die Drucksonde, die die
+	 Daten liefert, auch richtig kalibriert ist. Leider ist das aber oft nicht der
+	 Fall, so dass das QNH dann fehlerhaft berechnet wird.
+	</p>
 
 	<p>
 		Eine andere Funktion in diesem Dialog ist die Berechnung und Anzeige
