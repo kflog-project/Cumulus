@@ -223,8 +223,7 @@ void SettingsPageFlarm::loadTableItems()
   // Clear all old data in the list
   m_items.clear();
 
-  m_items << "HWVER;RO;ALL"
-          << "DEVTYPE;RO;ALL"
+  m_items << "DEVTYPE;RO;ALL"
           << "DEVICEID;RO;PF"
           << "SWVER;RO;ALL"
           << "SWEXP;RO;ALL"
@@ -689,9 +688,8 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
   // qDebug() << "slot_PflacSentence: executed Command:" << m_commands.head();
   // qDebug() << "Answer:" << sentence;
 
-  // $PFLAC", "A", "DEVTYPE", "PowerFLARM-Core", "67"
-  //"$PFLAC", "A", "ERROR", "41"
-
+  // "$PFLAC", "A", "DEVTYPE", "PowerFLARM-Core", "67"
+  // "$PFLAC", "A", "ERROR", "41"
   if( sentence.size() >= 4 && sentence[1] == "A" )
     {
       if( sentence[2] == "ERROR" )
@@ -775,12 +773,18 @@ void SettingsPageFlarm::slot_Help()
 
 void SettingsPageFlarm::slot_Timeout()
 {
-  QString text0 = tr("Flarm device not reachable!");
-  QString text1 = tr("Error");
-  messageBox( QMessageBox::Warning, text0, text1 );
+  // generate a timeout message from request
+  // "$PFLAC,R,NMEAOUT"
+  QString& cmd = m_commands.head();
+  QStringList answer = cmd.split( "," );
 
-  m_commands.clear();
-  nextFlarmCommand();
+  answer[1] = "A";
+  answer.append( "--" );
+  answer.append( "TIMEOUT" );
+
+  qDebug() << "SettingsPageFlarm::slot_Timeout()" << answer;
+
+  slot_PflacSentence( answer );
 }
 
 bool SettingsPageFlarm::checkFlarmConnection()
