@@ -148,8 +148,8 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 #ifdef ANDROID
       // center window
   pos = mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2 - m_nip->width()/2,
-                            MainWindow::mainWindow()->height()/2 - m_nip.height()/2 ));
-  mb.move( pos );
+                            MainWindow::mainWindow()->height()/2 - m_nip->height()/2 ));
+  m_nip->move( pos );
 
 #endif
 
