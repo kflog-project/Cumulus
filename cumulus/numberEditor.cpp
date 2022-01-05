@@ -137,21 +137,17 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
 
       // The number input widget to be shown is not centered over this parent.
       // Therefore this must be done by our self.
-      QSize ms = m_nip->minimumSizeHint();
+      // QSize ms = m_nip->minimumSizeHint();
+      QSize ms = m_nip->size();
       ms += QSize(10, 10);
 
       QPoint pos = MainWindow::mainWindow()->pos();
+      int mwWidth = MainWindow::mainWindow()->width();
+      int mwHeight = MainWindow::mainWindow()->height();
 
-      m_nip->setGeometry( pos.x() + ms.width() / 2,
-                          pos.y() + ms.height() / 2,
+      m_nip->setGeometry( pos.x() + mwWidth / 2 - ms.width() / 2,
+                          pos.y() + mwHeight / 2 - ms.height() / 2,
                           ms.width(), ms.height() );
-#ifdef ANDROID
-      // center window
-  pos = mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2 - m_nip->width()/2,
-                            MainWindow::mainWindow()->height()/2 - m_nip->height()/2 ));
-  m_nip->move( pos );
-
-#endif
 
       emit numberPadOpened();
     }
