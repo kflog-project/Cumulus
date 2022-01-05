@@ -119,6 +119,7 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       connect( m_nip, SIGNAL(valueChanged(double) ),
                this, SIGNAL(valueChanged(double)) );
 
+      m_nip->raise();
       m_nip->show();
 
       QCoreApplication::sendPostedEvents();
@@ -144,6 +145,13 @@ void NumberEditor::mousePressEvent( QMouseEvent* event )
       m_nip->setGeometry( pos.x() + ms.width() / 2,
                           pos.y() + ms.height() / 2,
                           ms.width(), ms.height() );
+#ifdef ANDROID
+      // center window
+  pos = mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2 - m_nip->width()/2,
+                            MainWindow::mainWindow()->height()/2 - m_nip.height()/2 ));
+  mb.move( pos );
+
+#endif
 
       emit numberPadOpened();
     }
