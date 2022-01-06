@@ -1,0 +1,27 @@
+Format: 1.8
+Date: Thu, 06 Jan 2022 10:37:40 +0100
+Source: cumulus
+Built-For-Profiles: noudeb
+Architecture: source
+Version: 5.40.1
+Distribution: stable
+Urgency: low
+Maintainer: Axel Pauli <kflog.cumulus@gmail.com>
+Changed-By: Axel Pauli <kflog.cumulus@gmail.com>
+Changes:
+ cumulus (5.40.1) stable; urgency=low
+ .
+   * Cumulus Linux Desktop Release for X11/Qt. For changelog see here:
+     https://github.com/kflog-project/Cumulus/blob/5.40.1/ChangeLog
+Checksums-Sha1:
+ 04eee7a84feab92bcc6a84f10590862cc5cc1740 934 cumulus_5.40.1.dsc
+ 94904610b2e89df5d1070c994504d42e0232f154 2187208 cumulus_5.40.1.tar.xz
+ 7fb73d1ac7e36f9a45d21412768f6b8a8f59d8b6 15083 cumulus_5.40.1_source.buildinfo
+Checksums-Sha256:
+ 71f636ea4cd3e4d27c94a691f11aeeb35fd2960c3e6b948f78551328635f642a 934 cumulus_5.40.1.dsc
+ efe5c779a912a44875de883857de1e2bbcd1aadd57ccfafe1a64d145d735303c 2187208 cumulus_5.40.1.tar.xz
+ b9d1db0a01c430a54dd1ffcd1fb46962b1b3d1b13882eff9737982e11c48d1bb 15083 cumulus_5.40.1_source.buildinfo
+Files:
+ 249169f8d57c6be97a8713733234fddf 934 utils optional cumulus_5.40.1.dsc
+ 91364a59a30020f669f9adf21d0cb108 2187208 utils optional cumulus_5.40.1.tar.xz
+ 12a784dfacc674a3ce32b59bfd3c8ab4 15083 utils optional cumulus_5.40.1_source.buildinfo
