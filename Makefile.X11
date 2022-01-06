@@ -1,7 +1,7 @@
 ################################################################################
-# Makefile to build a Cumulus release based on Qt4.8.x/X11
+# Makefile to build a Cumulus release based on Qt5.15.x/X11
 #
-# Copyright (c): 2008-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+# Copyright (c): 2008-2022 by Axel Pauli (kflog.cumulus@gmail.com)
 #
 # This file is distributed under the terms of the General Public License.
 # See the file COPYING for more information.
@@ -9,13 +9,16 @@
 ################################################################################
 
 # adapt call pathes to your needs if necessary
-QMAKE    = qmake
-LRELEASE = lrelease
+MY_QT    = /home/axel/Qt/5.15.2
+
+QMAKE    = $(MY_QT)/gcc_64/bin/qmake
+LRELEASE = $(MY_QT)/lrelease
 
 # Version is determined from the header file target.h
 VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
 
 QTVERSION=$(shell $(QMAKE) -query QT_VERSION)
+QMAKEVERSION=$(shell $(QMAKE) -v)
 
 # OS name and version
 OS=$(shell lsb_release -i -s)
@@ -24,7 +27,7 @@ OS_REL=$(OS)_$(REL)
 ARCHITECTURE=$(shell dpkg --print-architecture)
 
 # Qt's translation directory
-QT_TRANSLATIONS=/usr/share/qt4/translations
+# QT_TRANSLATIONS=/usr/share/qt4/translations
 
 CUMULUS_REL=cumulus-$(VERSION)
 
@@ -74,6 +77,9 @@ usage:
 	
 all:	qmake
 	@echo "Using Qt version $(QTVERSION)"
+	@echo "qmake_path=`type qmake`"
+	@echo "Using qmake $(QMAKEVERSION)"
+	
 	cd cumulus; make
 	cd gpsClient; make
 	cd nmeaSimulator; make

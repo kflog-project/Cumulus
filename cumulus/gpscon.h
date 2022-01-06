@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -26,14 +26,13 @@
  * and the communication between this client process and the Cumulus
  * process. All data transfer between the two processes is be done via a
  * socket interface. The path name, used during startup of Cumulus must be
- * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
- * can be found. It lays in the same directory as Cumulus.
+ * passed in the constructor, that the gpsClient can be found. It lays in the
+ * same directory as Cumulus.
  *
- * \date 2004-2021
+ * \date 2004-2022
  */
 
-#ifndef GPS_CON_H
-#define GPS_CON_H
+#pragma once
 
 #include <QObject>
 #include <QString>
@@ -47,12 +46,6 @@
 
 // Device name for NMEA simulator. This name is also taken for the named pipe.
 #define NMEASIM_DEVICE "/tmp/nmeasim"
-
-// GPS device name for TomTom
-#define TOMTOM_DEVICE "/var/run/gpspipe"
-
-// Device name for the Maemo location service.
-#define MAEMO_LOCATION_SERVICE "GPS Location"
 
 // Bluetooth default adapter of bluez stack.
 #define BT_ADAPTER "BT Adapter"
@@ -260,26 +253,6 @@ class GpsCon : public QObject
      */
     void slot_Timeout();
 
-#ifdef BLUEZ
-
-    /**
-     * This slot is called by the Bluetooth device search thread, to
-     * return the search results. In dependency of the results the
-     * connection to the BT GPS device will be established or not.
-     *
-     * \param ok        True means BT devices have been found. In case of
-     *                  false an error message is contained in parameter
-     *                  error.
-     * \param error     An error string, if ok is false.
-     * \param devices   Found bluetooth devices. Key is the logical name,
-     *                  value is the bluetooth address.
-     *
-     */
-    void slot_StartGpsBtReceiving( bool ok,
-                                   QString error,
-                                   BtDeviceMap devices );
-#endif
-
   private:
 
     // gpsClient program name with path
@@ -310,5 +283,3 @@ class GpsCon : public QObject
     // GPS device name
     QString device;
  };
-
-#endif

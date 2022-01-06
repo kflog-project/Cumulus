@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2021 Axel Pauli
+# Copyright (c): 2008-2022 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -17,7 +17,7 @@ OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 RCC_DIR     = .obj
 
-QT += core gui xml
+QT += core gui xml bluetooth
 
 # Qt5 needs the QtWidgets library
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -76,7 +76,7 @@ CONFIG += flarm
 CONFIG += internet
 
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
-CONFIG += bluetooth
+CONFIG += Bluetooth
 
 # Activate this define, if Qt class QScroller is available.
 # DEFINES += QSCROLLER
@@ -432,14 +432,14 @@ internet {
 		           skylines/SkyLinesTracker.cpp
 }
 
-bluetooth {
+Bluetooth {
     DEFINES += BLUEZ
 
-    HEADERS += bluetoothdevices.h
+    HEADERS += BluetoothDiscovery.h
 
-    SOURCES += bluetoothdevices.cpp
+    SOURCES += BluetoothDiscovery.cpp
 
-    LIBS += -lbluetooth
+    # LIBS += -lbluetooth
 }
 
 numberpad {

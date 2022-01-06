@@ -15,11 +15,7 @@
  **
  ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include <cstdio>
 #include <cstdlib>
@@ -38,15 +34,9 @@
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "gpscon.h"
-#include "mainwindow.h"
 #include "signalhandler.h"
 #include "protocol.h"
 #include "ipc.h"
-#include "hwinfo.h"
-
-#ifdef BLUEZ
-#include "bluetoothdevices.h"
-#endif
 
 #ifdef DEBUG
 #undef DEBUG
@@ -57,11 +47,11 @@
 
 /**
  * This module manages the startup and supervision of the GPS client process
- * and the communication between this client and the Cumulus process.
- * All data transfer between the two processes is be done via a
+ * and the communication between this client process and the Cumulus
+ * process. All data transfer between the two processes is be done via a
  * socket interface. The path name, used during startup of Cumulus must be
- * passed in the constructor, that the gpsClient resp. gpsMaemoClient binary
- * can be found. It lays in the same directory as the Cumulus binary.
+ * passed in the constructor, that the gpsClient can be found. It lays in the
+ * same directory as Cumulus.
  */
 GpsCon::GpsCon(QObject* parent, const char *pathIn) :
   QObject(parent),
@@ -78,17 +68,7 @@ GpsCon::GpsCon(QObject* parent, const char *pathIn) :
 
   QString gpsDevice = conf->getGpsDevice();
 
-  // Do check, what kind of connection the user has selected. Under Maemo
-  // we have to consider two possibilities.
-  if( gpsDevice != MAEMO_LOCATION_SERVICE )
-    {
-      exe = QString("%1/%2").arg(pathIn).arg("gpsClient");
-    }
-  else
-    {
-      // Location Service has an own client.
-      exe = QString("%1/%2").arg(pathIn).arg("gpsMaemoClient");
-    }
+  exe = QString("%1/%2").arg(pathIn).arg("gpsClient");
 
   pid = -1;
 
@@ -192,8 +172,7 @@ GpsCon::~GpsCon()
  * a) RS232
  * b) USB
  * c) BT via RFCOMM
- * d) MAEMO Location service
- * e) WiFi one or two channels
+ * d) WiFi one or two channels
  */
 bool GpsCon::startGpsReceiving()
 {
@@ -212,44 +191,7 @@ bool GpsCon::startGpsReceiving()
       QString msg;
 
       // Do check, what kind of connection the user has selected.
-      if( gpsDevice == MAEMO_LOCATION_SERVICE )
-        {
-          // Using Location Service under MAEMO needs no arguments because we
-          // have no access to the GPS hardware device.
-          msg = QString(MSG_OPEN);
-        }
-
-#ifdef BLUEZ
-
-      else if( gpsDevice == BT_ADAPTER )
-        {
-          // BT Adapter shall be used. Get available BT devices and let the
-          // user select one of them. This is done in an extra thread.
-          if( BluetoothDevices::getNoOfInstances() == 0 )
-            {
-              emit deviceReport( tr("Searching GPS BT devices"), 5000 );
-              // allow only one instance to run.
-              BluetoothDevices *btThread = new BluetoothDevices( this );
-
-              // Register a special data type for return results. That must be
-              // done to transfer the results between different threads.
-              qRegisterMetaType<BtDeviceMap>("BtDeviceMap");
-
-              // Connect the receiver of the results. It is located in this
-              // thread and not in the new opened thread.
-              connect( btThread,
-                       SIGNAL(retrievedBtDevices(bool, QString, BtDeviceMap)),
-                       this,
-                       SLOT(slot_StartGpsBtReceiving(bool, QString, BtDeviceMap)) );
-
-              btThread->start();
-            }
-
-          return true;
-        }
-#endif
-
-      else if( gpsDevice == WIFI_1 )
+      if( gpsDevice == WIFI_1 )
         {
           // one WiFi channel shall be used
           QString ip = conf->getGpsWlanIp1();
@@ -274,6 +216,24 @@ bool GpsCon::startGpsReceiving()
                                          .arg(ip1).arg(port1)
                                          .arg(ip2).arg(port2);
         }
+#ifdef BLUEZ
+      else if( gpsDevice == BT_ADAPTER )
+        {
+          // BT Adapter shall be used. Get selected BT device.
+          QString& btDevice = GeneralConfig::instance()->getGpsBtDevice();
+
+          if( btDevice.size() == 0 )
+            {
+              emit deviceReport( tr("No GPS BT device defined"), 5000 );
+              return false;
+            }
+
+          // prepare the connection data to the GPS client process now.
+          // Note! Device and speed are always expected at GPS client side,
+          // never mind are necessary or not.
+          QString msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(btDevice).arg(115200);
+        }
+#endif
       else
         {
           // Using RS232, USB or Pipe device.
@@ -307,98 +267,6 @@ bool GpsCon::startGpsReceiving()
 
   return false;
 }
-
-#ifdef BLUEZ
-
-void GpsCon::slot_StartGpsBtReceiving( bool ok,
-                                       QString error,
-                                       BtDeviceMap devices )
-{
-  // First check for unsuccess
-  if( ok == false )
-    {
-      QMessageBox msgBox( QMessageBox::Critical,
-                          QObject::tr("GPS BT Devices?"),
-                          QObject::tr("No GPS BT devices are in view!"),
-                          QMessageBox::Ok,
-                          MainWindow::mainWindow() );
-
-      msgBox.setInformativeText( error );
-      msgBox.exec();
-
-      // No BT device available or other error.
-      triggerRetry();
-      return;
-    }
-
-  QString lastBtDevice = GeneralConfig::instance()->getGpsBtDevice();
-
-  QStringList items( devices.keys() );
-
-  // Try to preselect a previous used BT GPS device from the returned results.
-  int no = 0;
-
-  if( ! lastBtDevice.isEmpty() )
-    {
-      for( int i = 0; i < items.size(); i++ )
-        {
-          if( items[i] == lastBtDevice )
-            {
-              no = i;
-              break;
-            }
-        }
-    }
-
-  bool okay;
-
-  // Ask the user to select a BT device.
-  QString item = QInputDialog::getItem( MainWindow::mainWindow(),
-                                        QObject::tr( "Select GPS BT Device" ),
-                                        QObject::tr( "GPS BT Device:" ),
-                                        items, no, false, &okay );
-  if( ! okay || item.isEmpty() )
-    {
-      triggerRetry();
-      return;
-    }
-
-  // Get BT address from device map.
-  QString btAddress = devices.value( item );
-
-  // Save last selected BT device.
-  GeneralConfig::instance()->setGpsBtDevice( item );
-
-  // We do send the connection data to the GPS client process now.
-  // Note! Device and speed are always expected at GPS client side,
-  // never mind are necessary or not.
-  QString msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(btAddress).arg(115200);
-  writeClientMessage(0, msg.toLatin1().data());
-  readClientMessage(0, msg);
-
-  if (msg == MSG_NEG)
-    {
-      emit deviceReport( tr("GPS device not reachable!"), 5000 );
-      return;
-    }
-  else
-    {
-#ifdef DEBUG
-      qDebug() << method << "GPS client initialization succeeded";
-#endif
-    }
-
-  // We switch on the data forwarding on the client side.
-  writeClientMessage(0, MSG_FGPS_ON );
-  readClientMessage(0, msg);
-
-  // remember last start time
-  lastQuery.start();
-
-  return;
-}
-
-#endif
 
 void GpsCon::triggerRetry()
 {
