@@ -33,7 +33,8 @@
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent),
 WiFi1_PasswordIsHidden( true ),
 WiFi2_PasswordIsHidden( true ),
-btAgent( nullptr )
+btsAgent( nullptr ),
+btdAgent( nullptr )
 {
   setObjectName("SettingsPageGPS");
   setWindowFlags( Qt::Tool );
@@ -149,7 +150,7 @@ btAgent( nullptr )
   // Switch BT menu line off
   toggleBtMenu( false );
 
-  connect( searchBts, SIGNAL(pressed()), SLOT(slotSearchBtServices()) );
+  connect( searchBts, SIGNAL(pressed()), SLOT(slotSearchBtDevices()) );
 
   //----------------------------------------------------------------------------
   // Defines from which device the altitude data shall be taken. Possible
@@ -517,13 +518,13 @@ void SettingsPageGPS::load()
       toggleBtMenu( true );
 
 #ifdef BLUEZ
-      // load BT Service list
-      if( btAgent == nullptr )
+      // request BT Service list
+      if( btdAgent == nullptr )
         {
-          btAgent = new BluetoothDiscovery( this );
+          btdAgent = new BluetoothDeviceDiscovery( this );
         }
 
-      btAgent->start();
+      btdAgent->start();
 #endif
     }
 
@@ -678,17 +679,8 @@ void SettingsPageGPS::slotGpsDeviceChanged( const QString &text )
   else
     {
       toggleBtMenu( true );
-
-#ifdef BLUEZ
-      // request BT Service list
-      if( btAgent == nullptr )
-        {
-          btAgent = new BluetoothDiscovery( this );
-        }
-
-      btAgent->start();
-#endif
-
+      // request BT Devices
+      slotSearchBtDevices();
     }
 }
 
@@ -750,9 +742,25 @@ void SettingsPageGPS::slotTogglePw2()
 /**
  * Called, when the BT search button is pressed.
  */
-void SettingsPageGPS::slotSearchBtServices()
+void SettingsPageGPS::slotSearchBtDevices()
 {
-  qDebug() << "SettingsPageGPS::slotSearchBtServices()";
+  qDebug() << "SettingsPageGPS::slotSearchBtDevices()";
+
+#ifdef BLUEZ
+  searchBts->setEnabled( false );
+  BtList->clear();
+  BtList->addItem( tr("Searching BT devices") );
+  // request BT Service list
+  if( btdAgent == nullptr )
+    {
+      btdAgent = new BluetoothDeviceDiscovery( this );
+      connect( btdAgent, SIGNAL(foundBtDevices(bool, QString&, QList<QBluetoothDeviceInfo>&)),
+               this, SLOT(slotFoundBtDevices(bool, QString&, QList<QBluetoothDeviceInfo>&) ) );
+    }
+
+  btdAgent->start();
+
+#endif
 }
 
 /**
@@ -763,4 +771,31 @@ void SettingsPageGPS::slotFoundBtServices( bool ok,
                                            QList<QBluetoothServiceInfo>& btsi )
 {
   qDebug() << "SettingsPageGPS::slotFoundBtServices()";
+}
+
+/**
+ * Called by the BT scanner to transmit the found BT devices.
+ */
+void SettingsPageGPS::slotFoundBtDevices( bool ok,
+                                          QString& error,
+                                          QList<QBluetoothDeviceInfo>& btdi )
+{
+  qDebug() << "SettingsPageGPS::slotFoundBtDevices()";
+
+  BtList->clear();
+
+  if( ok == true )
+    {
+      // comboBox->model()->sort(0, Qt::DescendingOrder); // default Qt::AscendingOrder
+      for( int i=0; i < btdi.size(); i++ )
+        {
+          const QBluetoothDeviceInfo& di = btdi.at(i);
+          BtList->addItem( di.name(), di.address().toString() );
+        }
+
+      BtList->model()->sort(0, Qt::AscendingOrder);
+      BtList->setCurrentIndex( 0 );
+    }
+
+  searchBts->setEnabled( true );
 }

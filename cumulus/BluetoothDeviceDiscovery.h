@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   BluetoothDiscovery.h
+**   BluetoothDeviceDiscovery.h
 **
 **   This file is part of Cumulus.
 **
@@ -14,7 +14,7 @@
 ***********************************************************************/
 
 /**
- * \class BluetoothDiscovery
+ * \class BluetoothDeviceDiscovery
  *
  * \author Axel Pauli
  *
@@ -33,19 +33,19 @@
 
 #include <QObject>
 #include <QString>
-#include <QBluetoothServiceDiscoveryAgent>
+#include <QBluetoothDeviceDiscoveryAgent>
 
 #include "datatypes.h"
 
-class BluetoothDiscovery : public QObject
+class BluetoothDeviceDiscovery : public QObject
 {
   Q_OBJECT
 
  public:
 
-  BluetoothDiscovery( QObject *parent = nullptr );
+  BluetoothDeviceDiscovery( QObject *parent = nullptr );
 
-  virtual ~BluetoothDiscovery();
+  virtual ~BluetoothDeviceDiscovery();
 
   /**
    * Number of created instances of this class.
@@ -60,8 +60,8 @@ class BluetoothDiscovery : public QObject
   /**
    * That is the start method of the BT discovery agent.
    */
-  void start( QBluetoothServiceDiscoveryAgent::DiscoveryMode mode =
-                      QBluetoothServiceDiscoveryAgent::MinimalDiscovery );
+  void start( QBluetoothDeviceDiscoveryAgent::DiscoveryMethods methods =
+      QBluetoothDeviceDiscoveryAgent::ClassicMethod | QBluetoothDeviceDiscoveryAgent::LowEnergyMethod );
 
   /**
    * That stops the BT discovery agent.
@@ -71,17 +71,17 @@ class BluetoothDiscovery : public QObject
   /**
    * @return Returns a list with the stored BT services from the last scan.
    */
-  QList<QBluetoothServiceInfo> getBtServices() const;
+  QList<QBluetoothDeviceInfo> getBtDevices() const;
 
  private slots:
 
   void slotCanceled();
 
-  void slotError( QBluetoothServiceDiscoveryAgent::Error error );
+  void slotError( QBluetoothDeviceDiscoveryAgent::Error error );
 
   void slotFinished();
 
-  void slotServiceDiscovered( const QBluetoothServiceInfo &service );
+  void slotDeviceDiscovered( const QBluetoothDeviceInfo &device );
 
  signals:
 
@@ -95,12 +95,12 @@ class BluetoothDiscovery : public QObject
   *
   * \param devices List of found bluetooth devices.
   */
-  void foundBtDevices( bool ok, QString& error, QList<QBluetoothServiceInfo>& btsi );
+  void foundBtDevices( bool ok, QString& error, QList<QBluetoothDeviceInfo>& btdi );
 
  private:
 
   static int noOfInstances;
 
   // BT agent
-  QBluetoothServiceDiscoveryAgent *discoveryAgent;
+  QBluetoothDeviceDiscoveryAgent *discoveryAgent;
 };

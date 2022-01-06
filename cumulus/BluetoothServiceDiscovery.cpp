@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   BluetoothDiscovery.h
+**   BluetoothServiceDiscovery.h
 **
 **   This file is part of Cumulus.
 **
@@ -13,14 +13,13 @@
 **
 ***********************************************************************/
 
+#include <BluetoothServiceDiscovery.h>
 #include <QtCore>
 
-#include "BluetoothDiscovery.h"
-
 // set static member variable
-int BluetoothDiscovery::noOfInstances = 0;
+int BluetoothServiceDiscovery::noOfInstances = 0;
 
-BluetoothDiscovery::BluetoothDiscovery( QObject *parent ) : QObject( parent )
+BluetoothServiceDiscovery::BluetoothServiceDiscovery( QObject *parent ) : QObject( parent )
 {
   if( noOfInstances > 0 )
     {
@@ -29,7 +28,7 @@ BluetoothDiscovery::BluetoothDiscovery( QObject *parent ) : QObject( parent )
 
   noOfInstances++;
 
-  setObjectName( "BluetoothDiscovery" );
+  setObjectName( "BluetoothServiceDiscovery" );
 
   // Create a discovery agent and connect to its signals
   discoveryAgent = new QBluetoothServiceDiscoveryAgent( parent );
@@ -48,7 +47,7 @@ BluetoothDiscovery::BluetoothDiscovery( QObject *parent ) : QObject( parent )
            this, SLOT(slotError(QBluetoothServiceDiscoveryAgent::Error )) );
 }
 
-BluetoothDiscovery::~BluetoothDiscovery()
+BluetoothServiceDiscovery::~BluetoothServiceDiscovery()
 {
   noOfInstances--;
 }
@@ -56,7 +55,7 @@ BluetoothDiscovery::~BluetoothDiscovery()
 /**
  * That is the start method of the BT discovery agent.
  */
-void BluetoothDiscovery::start( QBluetoothServiceDiscoveryAgent::DiscoveryMode mode )
+void BluetoothServiceDiscovery::start( QBluetoothServiceDiscoveryAgent::DiscoveryMode mode )
 {
   if( discoveryAgent->isActive() == true )
     {
@@ -70,7 +69,7 @@ void BluetoothDiscovery::start( QBluetoothServiceDiscoveryAgent::DiscoveryMode m
 /**
  * That stops the BT discovery agent.
  */
-void BluetoothDiscovery::stop()
+void BluetoothServiceDiscovery::stop()
 {
   if( discoveryAgent->isActive() == true )
     {
@@ -78,25 +77,25 @@ void BluetoothDiscovery::stop()
     }
 }
 
-QList<QBluetoothServiceInfo> BluetoothDiscovery::getBtServices() const
+QList<QBluetoothServiceInfo> BluetoothServiceDiscovery::getBtServices() const
 {
   return discoveryAgent->discoveredServices();
 }
 
-void BluetoothDiscovery::slotError( QBluetoothServiceDiscoveryAgent::Error error )
+void BluetoothServiceDiscovery::slotError( QBluetoothServiceDiscoveryAgent::Error error )
 {
-  qDebug() << "BluetoothDiscovery::slotError()" << error
+  qDebug() << "BluetoothServiceDiscovery::slotError()" << error
            << discoveryAgent->errorString();
 }
 
-void BluetoothDiscovery::slotCanceled()
+void BluetoothServiceDiscovery::slotCanceled()
 {
-  qDebug() << "BluetoothDiscovery::slotCanceled()";
+  qDebug() << "BluetoothServiceDiscovery::slotCanceled()";
 }
 
-void BluetoothDiscovery::slotFinished()
+void BluetoothServiceDiscovery::slotFinished()
 {
-  qDebug() << "BluetoothDiscovery::slotFinished()";
+  qDebug() << "BluetoothServiceDiscovery::slotFinished()";
 
   bool result = true;
   QString error = discoveryAgent->errorString();
@@ -106,7 +105,7 @@ void BluetoothDiscovery::slotFinished()
     {
       result = false;
 
-      qDebug() << "BluetoothDiscovery::slotFinished()"
+      qDebug() << "BluetoothServiceDiscovery::slotFinished()"
                << discoveryAgent->error()
                << error;
     }
@@ -117,7 +116,7 @@ void BluetoothDiscovery::slotFinished()
   emit foundBtDevices( result, error, btsi );
 }
 
-void BluetoothDiscovery::slotServiceDiscovered( const QBluetoothServiceInfo &service )
+void BluetoothServiceDiscovery::slotServiceDiscovered( const QBluetoothServiceInfo &service )
 {
   qDebug() << "Found new service:"
            << "Service:" << service.serviceName()

@@ -435,9 +435,11 @@ internet {
 Bluetooth {
     DEFINES += BLUEZ
 
-    HEADERS += BluetoothDiscovery.h
+    HEADERS += BluetoothServiceDiscovery.h \
+               BluetoothDeviceDiscovery.h
 
-    SOURCES += BluetoothDiscovery.cpp
+    SOURCES += BluetoothServiceDiscovery.cpp \
+               BluetoothDeviceDiscovery.cpp
 
     # LIBS += -lbluetooth
 }

@@ -22,9 +22,11 @@
  * \brief Configuration settings for the GPS device.
  *
  * \date 2002-2022
- *
  */
 #pragma once
+
+#include <BluetoothServiceDiscovery.h>
+#include <BluetoothDeviceDiscovery.h>
 
 #include <QWidget>
 #include <QComboBox>
@@ -33,7 +35,6 @@
 #include <QPixmap>
 
 #include "numberEditor.h"
-#include "BluetoothDiscovery.h"
 
 class SettingsPageGPS : public QWidget
 {
@@ -49,16 +50,21 @@ class SettingsPageGPS : public QWidget
 
   virtual ~SettingsPageGPS();
 
- public slots:
+  private slots:
 
   /**
-   * Called by the BT scanner to transmit the found BTs.
+   * Called by the BT scanner to transmit the found BT services.
    */
   void slotFoundBtServices( bool ok,
                             QString& error,
                             QList<QBluetoothServiceInfo>& btsi );
 
- private slots:
+  /**
+   * Called by the BT scanner to transmit the found BT devices.
+   */
+  void slotFoundBtDevices( bool ok,
+                           QString& error,
+                           QList<QBluetoothDeviceInfo>& btdi );
 
   /**
    * Called when the GPS device is changed.
@@ -108,7 +114,7 @@ class SettingsPageGPS : public QWidget
   /**
    * Called, when the BT search button is pressed.
    */
-  void slotSearchBtServices();
+  void slotSearchBtDevices();
 
   signals:
 
@@ -192,6 +198,7 @@ class SettingsPageGPS : public QWidget
   QPixmap gpsOn;
   QPixmap gpsOff;
 
-  BluetoothDiscovery* btAgent;
+  BluetoothServiceDiscovery* btsAgent;
+  BluetoothDeviceDiscovery* btdAgent;
 };
 
