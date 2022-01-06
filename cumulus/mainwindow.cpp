@@ -32,11 +32,7 @@
 #include <csignal>
 #include <sys/ioctl.h>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "aboutwidget.h"
 #include "airfield.h"
@@ -64,29 +60,6 @@
 
 #ifdef INTERNET
 #include "DownloadManager.h"
-#endif
-
-#ifdef ANDROID
-
-#include "androidevents.h"
-#include "jnisupport.h"
-
-#endif
-
-#ifdef MAEMO
-
-extern "C" {
-
-#include <glib-object.h>
-#include <libosso.h>
-
-}
-
-// @AP: That is a little hack, to avoid the include of all glib
-// functionality in the header file of this class. There are
-// redefinitions of macros in glib and other cumulus header files.
-static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
-
 #endif
 
 /** Define the disclaimer version */
@@ -228,10 +201,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 {
   _globalMainWindow = this;
 
-#if defined ANDROID || defined MAEMO
-  m_displayTrigger = static_cast<QTimer *> (0);
-#endif
-
   // This is used to make it possible to reset some user configuration items once
   // or to execute a necessary migration.
   int rc = GeneralConfig::instance()->getResetConfiguration();
@@ -267,69 +236,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 	}
     }
 
-#ifdef ANDROID
-
-  // Check Android Gui fonts for existence to force a recalculation if needed.
-  QFontDatabase fdb;
-
-  QString gfs = GeneralConfig::instance()->getGuiFont();
-
-  if( gfs.isEmpty() == false )
-    {
-      QFont ft;
-      bool ok = ft.fromString( gfs );
-
-      if( ok == false )
-        {
-          // The defined font is not available. We reset it to force a recalculation.
-          GeneralConfig::instance()->setGuiFont( "" );
-        }
-      else
-        {
-          QList<int> psl = fdb.pointSizes( ft.family(), fdb.styleString(ft) );
-
-          qDebug() << "GuiFont" << gfs << "Points" << psl;
-
-          if( psl.size() == 0 )
-            {
-              // The defined font is not available. We reset it to force a recalculation.
-              GeneralConfig::instance()->setGuiFont( "" );
-
-              qWarning() << "GuiFont" << gfs << "not available, force font reset!";
-            }
-        }
-    }
-
-  QString mfs = GeneralConfig::instance()->getGuiMenuFont();
-
-  if( mfs.isEmpty() == false )
-    {
-      QFont tf;
-      bool ok = tf.fromString( mfs );
-
-      if( ok == false )
-        {
-          // The defined font is not available. We reset it to force a recalculation.
-          GeneralConfig::instance()->setGuiMenuFont( "" );
-        }
-      else
-        {
-          QList<int> psl = fdb.pointSizes( tf.family(), fdb.styleString(tf) );
-
-          qDebug() << "GuiMenuFont" << mfs << "Points" << psl;
-
-          if( psl.size() == 0 )
-            {
-              // The defined font is not available. We reset it to force a recalculation.
-              GeneralConfig::instance()->setGuiMenuFont( "" );
-
-              qWarning() << "GuiMenuFont" << mfs << "not available, force font reset!";
-            }
-        }
-    }
-
-#endif
-
   // Get application font for user adaptions.
   QFont appFt = QApplication::font();
 
@@ -347,71 +253,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
     {
       // No Gui font is defined, we try to define a senseful default.
       QFont appFont = QApplication::font();
-
-#ifdef ANDROID
-
-  // Android knows normally only two fonts:
-  // a) Droid Sans
-  // b) Roboto
-  //
-  // If a wrong font is set umlauts maybe not correct displayed!
-
-  if( fdb.weight("Roboto Condensed", "Normal") != -1 )
-    {
-      // LG Nexus 5
-      appFont.setFamily( "Roboto Condensed" );
-    }
-  else if( fdb.weight("Roboto-Regular", "Normal") != -1 )
-    {
-      // Samsung Galaxy S3
-      appFont.setFamily( "Roboto-Regular" );
-    }
-  else if( fdb.weight("Roboto", "Normal") != -1 )
-    {
-      // Samsung Galaxy Tab 2, Dell Streak 5
-      appFont.setFamily( "Roboto" );
-    }
-  else if( fdb.weight("Droid Serif-Regular", "Normal") != -1 )
-    {
-      appFont.setFamily( "Droid Serif-Regular" );
-    }
-  else if( fdb.weight("Droid Serif", "Normal") != -1 )
-    {
-      appFont.setFamily( "Droid Serif" );
-    }
-  else
-    {
-      qDebug() << "Android: No system font found, loading own font data from DroidSans";
-
-      int res = QFontDatabase::addApplicationFont( ":/fonts/DroidSans.ttf" );
-
-      if( res == -1 )
-        {
-          qWarning() << "Could not load font :/fonts/DroidSans.ttf";
-        }
-      else
-        {
-          appFont.setFamily( "DroidSans" );
-        }
-
-      res = QFontDatabase::addApplicationFont( ":/fonts/DroidSans-Bold.ttf" );
-
-      if( res == -1 )
-        {
-          qWarning() << "Could not load font :/fonts/DDroidSans-Bold.ttf";
-        }
-    }
-
-#else
-
-#ifdef MAEMO
-      appFont.setFamily("Nokia Sans");
-#else
       appFont.setFamily("Sans Serif");
-#endif
-
-#endif
-
       appFont.setWeight( QFont::Normal );
       appFont.setStyle( QFont::StyleNormal );
 
@@ -436,19 +278,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 
   Layout::fontPoints2Pixel( appFt );
 
-  // For Maemo it's really better to adapt the size of some common widget
-  // elements. That is done with the help of the class MaemoStyle.
   qDebug() << "GuiStyles:" << QStyleFactory::keys();
 
   // Set GUI style and style proxy.
   GeneralConfig::instance()->setOurGuiStyle();
 
-#ifdef ANDROID
-  // Overwrite some style items globally. Note the all new style items must be
-  // defined in one string!
-  QString style = "QDialog { background: lightgray }";
-  qApp->setStyleSheet( style );
-#else
   // Make tooltip text readable.
   QString style = "QToolTip { color:black; background-color:white }";
 
@@ -456,58 +290,11 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   style.append( "QAbstractItemView { alternate-background-color:rgb(224, 224, 224); }" );
 
   qApp->setStyleSheet( style );
-#endif
 
   qDebug() << "AutoSipEnabled:" << qApp->autoSipEnabled();
 
-#ifdef MAEMO
-
-  // That we do need for the location service. This service emits signals, which
-  // are bound to a g_object. This call initializes the g_object handling.
-  g_type_init();
-
-#ifdef MAEMO4
-  // N8x0 display has bad contrast for light shades, so make the (dialog)
-  // background darker
-  QPalette appPal = QApplication::palette();
-  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(236,236,236));
-  appPal.setColor(QPalette::Normal,QPalette::Button,QColor(216,216,216));
-  appPal.setColor(QPalette::Normal,QPalette::Base,Qt::white);
-  appPal.setColor(QPalette::Normal,QPalette::AlternateBase,QColor(246,246,246));
-  appPal.setColor(QPalette::Normal,QPalette::Highlight,Qt::darkBlue);
-  QApplication::setPalette(appPal);
-#endif
-
-#endif
-
-#if defined MAEMO || defined ANDROID
-
-  QSize dSize = QApplication::desktop()->availableGeometry().size();
-
-  if( dSize == QSize(0, 0) )
-    {
-      // Qt5 for Android sets the available geometry sometimes to 0x0
-      // Found out that the available geometry is still set after the widget
-      // becomes visible.
-      dSize = QApplication::desktop()->screenGeometry().size();
-    }
-
-  // Limit maximum size for Maemo and Android
-  setMaximumSize( dSize );
-
-#ifdef ANDROID
-  setMinimumSize( dSize );
-#endif
-
-  resize( dSize );
-#else
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
-#endif
-
-#ifdef MAEMO
-  setWindowState(Qt::WindowFullScreen);
-#endif
 
   qDebug() << "Cumulus Release:"
            << QCoreApplication::applicationVersion()
@@ -619,10 +406,6 @@ void MainWindow::slotDisclaimerQuit()
   // This slot is called, if the disclaimer was rejected by the user.
   // We quit the application now.
   qWarning() << "Disclaimer was rejected by the user. Abort further processing!";
-
-#ifdef ANDROID
-      jniShutdown();
-#endif
 
   hide();
   qApp->quit();

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2009-2018 Axel Pauli
+**   Copyright (c): 2009-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,12 +16,7 @@
 /**
  * This class represents the personal style settings.
  */
-
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #ifdef QTSCROLLER
 #include <QtScroller>
