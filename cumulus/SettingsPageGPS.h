@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,12 +21,10 @@
  *
  * \brief Configuration settings for the GPS device.
  *
- * \date 2002-2021
+ * \date 2002-2022
  *
  */
-
-#ifndef SETTINGS_PAGE_GPS_H
-#define SETTINGS_PAGE_GPS_H
+#pragma once
 
 #include <QWidget>
 #include <QComboBox>
@@ -35,6 +33,7 @@
 #include <QPixmap>
 
 #include "numberEditor.h"
+#include "BluetoothDiscovery.h"
 
 class SettingsPageGPS : public QWidget
 {
@@ -49,6 +48,15 @@ class SettingsPageGPS : public QWidget
   SettingsPageGPS( QWidget *parent=0 );
 
   virtual ~SettingsPageGPS();
+
+ public slots:
+
+  /**
+   * Called by the BT scanner to transmit the found BTs.
+   */
+  void slotFoundBtServices( bool ok,
+                            QString& error,
+                            QList<QBluetoothServiceInfo>& btsi );
 
  private slots:
 
@@ -97,6 +105,11 @@ class SettingsPageGPS : public QWidget
    */
   void slotEnableGpsToggle();
 
+  /**
+   * Called, when the BT search button is pressed.
+   */
+  void slotSearchBtServices();
+
   signals:
 
   /**
@@ -135,12 +148,32 @@ class SettingsPageGPS : public QWidget
   /** Update icon and tool tip of GPS toggle */
   void updateGpsToggle();
 
+  /** Called to toggle the BT menu line. */
+  void toggleBtMenu( bool toggle )
+  {
+    if( toggle == true )
+      {
+        BtListLabel->show();
+        BtList->show();
+        searchBts->show();
+      }
+    else
+      {
+        BtListLabel->hide();
+        BtList->hide();
+        searchBts->hide();
+      }
+  }
+
   QComboBox*     GpsSource;
   QComboBox*     PressureDevice;
   QComboBox*     GpsDev;
   QLabel*        GpsSpeedLabel;
   QComboBox*     GpsSpeed;
   QComboBox*     GpsAltitude;
+  QLabel*        BtListLabel;
+  QComboBox*     BtList;
+  QPushButton*   searchBts;
   NumberEditor*  WiFi1_IP;
   NumberEditor*  WiFi1_Port;
   NumberEditor*  WiFi2_IP;
@@ -158,6 +191,7 @@ class SettingsPageGPS : public QWidget
   /** Pixmaps for GPS button. */
   QPixmap gpsOn;
   QPixmap gpsOff;
+
+  BluetoothDiscovery* btAgent;
 };
 
-#endif

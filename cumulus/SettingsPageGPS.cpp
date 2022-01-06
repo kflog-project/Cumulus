@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright(c): 2002      by Andrè Somers,
-**                 2007-2021 by Axel Pauli
+**                 2007-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,16 +18,9 @@
  * This widget is used to define the GPS interface parameters.
  * The user can select different source devices and some special
  * GPS parameters.
- *
- * There is a difference in the provided options between normal Desktop
- * and Maemo. Under Maemo RS232 devices are supported only via USB.
  */
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "generalconfig.h"
 #include "gpsnmea.h"
@@ -39,7 +32,8 @@
 
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent),
 WiFi1_PasswordIsHidden( true ),
-WiFi2_PasswordIsHidden( true )
+WiFi2_PasswordIsHidden( true ),
+btAgent( nullptr )
 {
   setObjectName("SettingsPageGPS");
   setWindowFlags( Qt::Tool );
@@ -102,11 +96,6 @@ WiFi2_PasswordIsHidden( true )
   GpsDev->setEditable(true);
   GpsDev->setToolTip( tr("You can adapt a device entry by editing to your own needs.") );
 
-#ifdef TOMTOMQLineEdit
-  GpsDev->addItem(TOMTOM_DEVICE);
-#endif
-
-#ifndef MAEMO
   GpsDev->addItem( "/dev/ttyS0" );
   GpsDev->addItem( "/dev/ttyS1" );
   GpsDev->addItem( "/dev/ttyS2" );
@@ -122,17 +111,6 @@ WiFi2_PasswordIsHidden( true )
 
   // add entry for NMEA simulator choice
   GpsDev->addItem( NMEASIM_DEVICE );
-#else
-  // Under Maemo there are only three predefined sources.
-  GpsDev->addItem(MAEMO_LOCATION_SERVICE); // Maemo GPS Location Service
-  // Bluetooth adapter
-  GpsDev->addItem(BT_ADAPTER);
-  GpsDev->addItem("/dev/ttyUSB0"); // external USB device
-  GpsDev->addItem(WIFI_1); // WiFi 1
-  GpsDev->addItem(WIFI_2); // WiFi 2
-  GpsDev->addItem(WIFI_1_2); // WiFi 1+2
-  GpsDev->addItem(NMEASIM_DEVICE); // Cumulus NMEA simulator
-#endif
 
   // catch selection changes of the GPS device combo box
   connect( GpsDev, SIGNAL( activated(const QString &) ), this,
@@ -155,6 +133,25 @@ WiFi2_PasswordIsHidden( true )
   GpsSpeed->addItem( "600" );
   topLayout->addWidget( GpsSpeed, row++, 1 );
 
+  //----------------------------------------------------------------------------
+  BtListLabel = new QLabel( tr( "BT Devices:" ), this );
+  topLayout->addWidget( BtListLabel, row, 0 );
+  BtList= new QComboBox( this );
+  BtList->setEditable( false );
+  searchBts = new QPushButton( tr("Scan") );
+
+  QHBoxLayout *hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+  hbox->addWidget( BtList, 3 );
+  hbox->addWidget( searchBts );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  // Switch BT menu line off
+  toggleBtMenu( false );
+
+  connect( searchBts, SIGNAL(pressed()), SLOT(slotSearchBtServices()) );
+
+  //----------------------------------------------------------------------------
   // Defines from which device the altitude data shall be taken. Possible
   // devices are the GPS or a pressure sonde.
   topLayout->addWidget( new QLabel( tr( "Altitude Reference:" ), this ), row, 0 );
@@ -167,7 +164,7 @@ WiFi2_PasswordIsHidden( true )
   //----------------------------------------------------------------------------
   topLayout->addWidget( new QLabel( tr( "Pressure Supplier:" ), this ), row, 0 );
 
-  PressureDevice = new QComboBox();
+  PressureDevice = new QComboBox( this );
   PressureDevice->setToolTip( tr("Device which delivers pressure altitude") );
   PressureDevice->setEnabled( false );
   PressureDevice->setObjectName("DeviceSelection");
@@ -192,7 +189,7 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addWidget( label, row, 0 );
 
   //----------------------------------------------------------------------------
-  QHBoxLayout *hbox = new QHBoxLayout();
+  hbox = new QHBoxLayout();
   hbox->setMargin( 0 );
 
   WiFi1_IP = new NumberEditor( this );
@@ -343,13 +340,8 @@ WiFi2_PasswordIsHidden( true )
   // Therefore we do add it to the list too.
   if ( found == false )
     {
-#ifndef MAEMO
       GpsDev->addItem( devText );
       GpsDev->setCurrentIndex(GpsDev->findText( devText ));
-#else
-      // On Maemo we select the first entry, the Maemo GPS daemon as default
-      GpsDev->setCurrentIndex(0);
-#endif
     }
 
   QPushButton *help = new QPushButton(this);
@@ -520,6 +512,21 @@ void SettingsPageGPS::load()
       GpsSpeedLabel->setVisible( false );
     }
 
+  if( GpsDev->currentText().startsWith( BT_ADAPTER ) == true )
+    {
+      toggleBtMenu( true );
+
+#ifdef BLUEZ
+      // load BT Service list
+      if( btAgent == nullptr )
+        {
+          btAgent = new BluetoothDiscovery( this );
+        }
+
+      btAgent->start();
+#endif
+    }
+
   WiFi1_IP->setText( conf->getGpsWlanIp1() );
   WiFi1_Port->setText( conf->getGpsWlanPort1() );
 #if 0
@@ -657,11 +664,32 @@ void SettingsPageGPS::slotGpsDeviceChanged( const QString &text )
       // Switch off visibility to speed box, when no tty is selected.
       GpsSpeed->setVisible( true );
       GpsSpeedLabel->setVisible( true );
-      return;
+    }
+  else
+    {
+      GpsSpeed->setVisible( false );
+      GpsSpeedLabel->setVisible( false );
     }
 
-  GpsSpeed->setVisible( false );
-  GpsSpeedLabel->setVisible( false );
+  if( text.startsWith( BT_ADAPTER ) == false )
+    {
+      toggleBtMenu( false );
+    }
+  else
+    {
+      toggleBtMenu( true );
+
+#ifdef BLUEZ
+      // request BT Service list
+      if( btAgent == nullptr )
+        {
+          btAgent = new BluetoothDiscovery( this );
+        }
+
+      btAgent->start();
+#endif
+
+    }
 }
 
 /**
@@ -717,4 +745,22 @@ void SettingsPageGPS::slotTogglePw2()
       WiFi2_Password->setEchoMode( QLineEdit::Password );
       WiFi2_PwToggle->setText( tr( "Show" ) );
     }
+}
+
+/**
+ * Called, when the BT search button is pressed.
+ */
+void SettingsPageGPS::slotSearchBtServices()
+{
+  qDebug() << "SettingsPageGPS::slotSearchBtServices()";
+}
+
+/**
+ * Called by the BT scanner to transmit the found BTs.
+ */
+void SettingsPageGPS::slotFoundBtServices( bool ok,
+                                           QString& error,
+                                           QList<QBluetoothServiceInfo>& btsi )
+{
+  qDebug() << "SettingsPageGPS::slotFoundBtServices()";
 }
