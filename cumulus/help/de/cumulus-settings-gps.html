@@ -23,38 +23,8 @@
 
 	<b>GPS</b>
 
-	<p>W&auml;hlen Sie hier die Ger&auml;teschnittstelle und die
-		korrekte &Uuml;bertragungsrate aus. Schauen Sie in das Handbuch Ihres
-		GPS-Empf&auml;ngers um diese Daten zu erfahren.</p>
-
-	<h5>Android Hinweise</h5>
-
-	<p>Unter Android ist diese Seite nahezu leer. Hier m&uuml;ssen Sie
-		mittels der Android Men&uuml;taste &uuml;ber das Men&uuml; GPS den GPS
-		Empfang ein- bzw. auszuschalten. Dazu gibt es je nach Ausstattungsgrad
-		ihres Android Ger&auml;tes verschiedene M&ouml;glichkeiten:
-	<ul>
-		<li>Eingebautes GPS verwenden.</li>
-
-		<li>Verbindung &uuml;ber Bluetooth zu einem GPS Ger&auml;t
-			herstellen. Verf&uuml;gt das GPS Ger&auml;t &uuml;ber keine Bluetooth
-			Schnittstelle, muss man einen entsprechenden Adapter dazwischen
-			schalten.</li>
-
-		<li>Verbindung &uuml;ber ein USB IOIO Uart Board zu einem GPS
-			Ger&auml;t mit serieller Schnittstelle aufbauen. Cumulus
-			unterst&uuml;tzt das im Moment nur f&uuml;r IOIO Boards ab
-			Firewareversion 4.0 und nur f&uuml;r einen Uart, den man in den IOIO
-			Einstellungen (Android Men&uuml; Taste->Einstellungen->IOIO GPS)
-			unter <i>Aktiviere IOIO Uart</i> festlegen kann. Weiterhin muss
-			f&uuml;r den IOIO Uart die richtige &Uuml;bertragungsgeschwindigkeit
-			zum angeschlossenen GPS Ger&auml;t eingestellt werden. Wenn man ein <b>Android
-				Ger&auml;t &lt; Release 4.1</b> benutzt, so muss <b>USB Debugging</b> in
-			den Android Entwickler Einstellungen <b>aktiviert</b> werden. Ist das
-			<b>Android Release &gt;= 4.1</b> muss <b>USB Debugging
-				deaktiviert</b> sein.
-		</li>
-	</ul>
+	<p>W&auml;hlen Sie hier die Ger&auml;teschnittstelle aus, &uuml;ber die
+	   Cumulus die GPS Daten einlesen und verarbeiten soll.
 	</p>
 
 	<h5>Allgemeines</h5>
@@ -63,9 +33,9 @@
 		Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die
 		Anzahl der empfangenen Satelliten, deren Signalst&auml;rke und die
 		empfangenen NMEA Datens&auml;tze sehen k&ouml;nnen. Diese
-		&Uuml;bersicht kann mit der <b>g</b>-Taste, duch antippen des GPS
-		Status Indikators in der Statusleiste oder &uuml;ber <b>Men&uuml;/Status/GPS</b>
-		ge&ouml;ffnet werden.
+		&Uuml;bersicht kann mit der <b>g</b> Taste, duch antippen des GPS
+		Status Indikators in der Statusleiste unten links oder &uuml;ber das 
+		<b>Men&uuml;/Einstellungen/Allgemein/GPS</b> ge&ouml;ffnet werden.
 	</p>
 
 	<p>
@@ -119,28 +89,6 @@
     </tr>
 
     <tr>
-      <th>GPS Location</th>
-      <td>Nur bei den Nokia Internet Tablets N8x0 und N900 verf&uuml;gbar,
-          um den eingebauten GPS Empf&auml;nger zu benutzen. Diese Auswahl
-          sollte in der Regel Ihre erste Wahl dort sein.</td>
-    </tr>
-
-    <tr>
-      <th>BT Adapter</th>
-      <td>
-        F&uuml;r die direkte Verbindung zu einem externen Bluetooth Ger&auml;t,
-        welches zuvor mit dem Betriebssystem gepaart wurde.
-        Wenn Sie diese Auswahl treffen, startet Cumulus automatisch einen
-		    Suchlauf nach erreichbaren Bluetooth Ger&auml;ten in Ihrer Umgebung.
-		    Werden solche Ger&auml;te gefunden, werden Sie Ihnen in einem Auswahl
-		    Dialog nach einiger Zeit angeboten. W&auml;hlen Sie dort einen
-		    passenden Eintrag aus. War Ihre Auswahl falsch, so m&uuml;ssen Sie
-		    Cumulus beenden und neu starten. Eine andere M&ouml;glichkeit gibt es
-		    in diesem Fall nicht.
-		  </td>
-    </tr>
-
-    <tr>
       <th>/dev/ttyS[0...3]</th>
       <td>
         Serielle Schittstelle (RS232) wie bei einem FLARM Ger&auml;t
@@ -179,6 +127,28 @@
     </tr>
 
     <tr>
+      <th>BT Adapter</th>
+      
+      <td>
+        F&uuml;r die direkte Verbindung zu einem externen Bluetooth
+				Ger&auml;t, welches zuvor mit dem Betriebssystem gepaart wurde. Wenn
+				Sie diese Auswahl treffen, wird auf der Konfigurationsseite eine
+				neue zus&auml;tzliche Zeile eingeblendet. Diese startet ganz links
+				mit dem Text <i>BT Ger&auml;te:</i>. Erfolgt diese Auswahl erstmalig,
+				so ist die Auswahlliste mit den BT Ger&auml;ten leer und
+				es wird sofort ein Suchlauf nach BT Ger&auml;ten gestartet. In der
+				Regel werden nach einiger Zeit alle vom OS gepaarten BT Ger&auml;rte
+				angezeigt. Werden keine Ger&auml;te gefunden, so bleibt die Liste
+				leer und man kann das Men&uuml; nicht mit <i>Ok</i> verlassen.
+				<p>
+					Um eine bestehende Auswahlliste zu erneuren, kann man auf den
+					<i>Scan</i>	Knopf dr&uuml;cken. Dadurch wird eine erneute Suche
+					nach BT Ger&auml;ten gestartet.
+				</p>
+			</td>
+    </tr>
+
+    <tr>
       <th>WiFi 1, WiFi 2 oder WiFi 1+2</th>
       <td>
         F&uuml;r eine Wifi Verbindung zu einem externen Ger&auml;t. Es
@@ -208,7 +178,8 @@
 	
 	<p>Ist Ihre Schittstelle nicht in der Liste zu finden, so
 		&auml;ndern Sie einfach einen bestehenden Eintrag entspreched Ihren
-		W&uuml;nschen ab.</p>
+		W&uuml;nschen ab. Das kann eventuell bei USB Ger&auml;ten erfoderlich sein.
+	</p>
 
 	<h5>H&ouml;henreferenz</h5>
 
@@ -221,11 +192,11 @@
 	l&auml;&szlig;t sich dieses mittels des H&ouml;hendialogs korregieren.
 	Dies trifft haups&auml;chlich bei Drucksonden zu. Tippen Sie auf die
 	H&ouml;henanzeige in der Kartenansicht und ein Dialog wird
-	ge&ouml;ffnet. Selektieren Sie das Feld QNH H&ouml;he und &auml;ndern Sie
-	mit den Plus bzw. Minus Tasten den eingestellten Wert. Positive Werte
-	werden zur angezeigten H&ouml;he dazu addiert, negative Werten werden
-	abgezogen. Nach Ok Best&auml;tigung, wird der Korrekturwert sofort
-	auf die Anzeige angewendet.
+	ge&ouml;ffnet. Tragen Sie im Feld <i>FP-Elevation</i> die Flugplatzh&ouml;he
+	&uuml;ber dem Meer ein und dr&uuml;cken Sie dann auf den Knopf <i>Abgleich</i>.
+	Damit wird die vom externen Ger&auml;t gelieferte H&ouml;he auf die
+	Flugplatzh&ouml;he korrigiert. Nach Ok Best&auml;tigung, wird der
+	Korrekturwert weiter auf die Anzeige angewendet.
 	<p>
 		Einige Ger&auml;te, z.B. Flarm, XCVario, diverse Logger k&ouml;nnen
 		H&ouml;henangaben liefern, die von ihrer eingebauten Drucksonde stammen.
@@ -301,13 +272,6 @@
       </td>
     </tr>
 	</table>
-
-	<h5>Abgleich der Systemuhr</h5>
-
-	Cumulus gestattet auch das Abgleichen der Systemuhr des PDA auf die GPS
-	Zeit, wenn die Option	<i>Sync Clock</i> aktiviert wird. Dazu muss das Programm
-  aber unter dem Benutzer	<i>root</i> laufen. Bei Android und den Nokia Internet
-  Tablets ist diese Option nicht verf&uuml;gbar.
 
 	<h5>Speichere NMEA Daten</h5>
 
@@ -409,23 +373,7 @@
     <tr>
       <td>$HCHDT</td>
       <td>Magnetkompass propriet&auml;rer Datensatz, wahrer Kompasskurs</td>
-    </tr>
-		<tr>
-			<td>$MAEMO0</td>
-			<td>Cumulus eigener propriet&auml;rer Satz, wenn LibLocation von
-        MAEMO 5 benutzt wird.</td>
-		</tr>
-		<tr>
-			<td>$MAEMO1</td>
-			<td>Cumulus eigener propriet&auml;rer Satz, wenn LibLocation von
-				MAEMO 5 benutzt wird.</td>
-		</tr>
-    <tr>
-      <td>$Android</td>
-      <td>Cumulus eigener propriet&auml;rer Satz, wenn das Android Ger&auml;t
-          keine NMEA Datens&auml;tze liefert.</td>
-    </tr>
-		
+    </tr>		
 	</table>
 	</p>
 
@@ -441,7 +389,5 @@
 			<td align="right"><a href="cumulus-settings-flarm.html">weiter</a></td>
 		</tr>
 	</table>
-
-
-		</body>
+</body>
 </html>
