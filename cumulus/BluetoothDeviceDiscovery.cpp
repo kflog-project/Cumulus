@@ -87,6 +87,8 @@ void BluetoothDeviceDiscovery::slotError( QBluetoothDeviceDiscoveryAgent::Error 
 {
   qDebug() << "BluetoothDeviceDiscovery::slotError()" << error
            << discoveryAgent->errorString();
+  // signal finished is not send in error case.
+  slotFinished();
 }
 
 void BluetoothDeviceDiscovery::slotCanceled()

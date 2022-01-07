@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2021 by Axel Pauli
+ **                   2007-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -19,16 +19,7 @@
  * handled here. These are in general not related to the pre-flight
  * preparation. For that exists a separate configuration widget.
  */
-
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "calculator.h"
 #include "generalconfig.h"
@@ -146,19 +137,6 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
   m_setupTree->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_setupTree->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef ANDROID
-  QScrollBar* lvsb = m_setupTree->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
-  QScroller::grabGesture(m_setupTree->viewport(), QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture(m_setupTree->viewport(), QtScroller::LeftMouseButtonGesture);
-#endif
-
   connect( m_setupTree, SIGNAL(itemClicked( QTreeWidgetItem*, int )),
            this, SLOT( slotPageClicked( QTreeWidgetItem*, int )) );
 
@@ -235,7 +213,7 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
   item->setData( 0, Qt::UserRole, WIND );
   m_setupTree->addTopLevelItem( item );
 
-  #ifdef FLARM
+#ifdef FLARM
   if( calculator->moving() == false )
     {
       item = new QTreeWidgetItem;
@@ -356,12 +334,7 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
   if( itemText == GPS )
     {
-
-#ifndef ANDROID
       SettingsPageGPS* page = new SettingsPageGPS( this );
-#else
-      SettingsPageGPS4A* page = new SettingsPageGPS4A( this );
-#endif
 
       connect( page, SIGNAL(settingsChanged()),
                GpsNmea::gps, SLOT(slot_reset()) );

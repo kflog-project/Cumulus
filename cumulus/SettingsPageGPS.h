@@ -25,8 +25,10 @@
  */
 #pragma once
 
+#ifdef BLUEZ
 #include <BluetoothServiceDiscovery.h>
 #include <BluetoothDeviceDiscovery.h>
+#endif
 
 #include <QWidget>
 #include <QComboBox>
@@ -52,6 +54,7 @@ class SettingsPageGPS : public QWidget
 
   private slots:
 
+#ifdef BLUEZ
   /**
    * Called by the BT scanner to transmit the found BT services.
    */
@@ -65,6 +68,7 @@ class SettingsPageGPS : public QWidget
   void slotFoundBtDevices( bool ok,
                            QString& error,
                            QList<QBluetoothDeviceInfo>& btdi );
+#endif
 
   /**
    * Called when the GPS device is changed.
@@ -145,6 +149,9 @@ class SettingsPageGPS : public QWidget
 
  private:
 
+  /** Shows a popup message box to the user. */
+  void messageBox( QMessageBox::Icon icon, QString text, QString infoText="" );
+
   /** Called to load the configuration file data. */
   void load();
 
@@ -188,7 +195,6 @@ class SettingsPageGPS : public QWidget
   QLineEdit*     WiFi2_Password;
   QPushButton*   WiFi1_PwToggle;
   QPushButton*   WiFi2_PwToggle;
-  QCheckBox*     checkSyncSystemClock;
   QCheckBox*     saveNmeaData;
   bool           WiFi1_PasswordIsHidden;
   bool           WiFi2_PasswordIsHidden;
@@ -198,7 +204,9 @@ class SettingsPageGPS : public QWidget
   QPixmap gpsOn;
   QPixmap gpsOff;
 
+#ifdef BLUEZ
   BluetoothServiceDiscovery* btsAgent;
   BluetoothDeviceDiscovery* btdAgent;
-};
+#endif
 
+};

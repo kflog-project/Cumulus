@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2021 Axel Pauli
+**   Copyright (c): 2012-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,11 +24,10 @@
  * select one or more flight entries to be downloaded. The content of the
  * downloded IGC files is stored in the user's data directory.
  *
- * \date 2012-2021
+ * \date 2012-2022
  */
 
-#ifndef FlarmLogbook_h
-#define FlarmLogbook_h
+#pragma once
 
 #include <QWidget>
 #include <QMessageBox>
@@ -150,4 +149,3 @@ private:
   static QStringList s_devtype;
 };
 
-#endif /* FlarmLogbook_h */

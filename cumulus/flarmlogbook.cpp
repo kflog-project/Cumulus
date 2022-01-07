@@ -13,15 +13,7 @@
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "generalconfig.h"
 #include "hwinfo.h"
@@ -60,20 +52,6 @@ FlarmLogbook::FlarmLogbook( QWidget *parent ) :
 
   m_table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-
-#ifdef ANDROID
-  QScrollBar* lvsb = m_table->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_table->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
   m_table->setSelectionBehavior( QAbstractItemView::SelectRows );
   m_table->setAlternatingRowColors( true );
 
@@ -563,23 +541,14 @@ void FlarmLogbook::slot_Timeout()
 
 /** Shows a popup message box to the user. */
 void FlarmLogbook::messageBox( QMessageBox::Icon icon,
-                                   QString message,
-                                   QString title )
+                               QString message,
+                               QString title )
 {
-  QMessageBox mb( icon,
-                  title,
-                  message,
-                  QMessageBox::Ok,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  QMessageBox msgBox( this );
+  msgBox.setText( title );
+  msgBox.setIcon( icon );
+  msgBox.setInformativeText( message );
+  msgBox.setStandardButtons( QMessageBox::Ok );
+  msgBox.setDefaultButton( QMessageBox::Ok );
+  msgBox.exec();
 }

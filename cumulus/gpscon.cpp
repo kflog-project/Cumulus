@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  **
  ***********************************************************************/
 
-#include <QtWidgets>
+#include <QtCore>
 
 #include <cstdio>
 #include <cstdlib>
@@ -220,9 +220,9 @@ bool GpsCon::startGpsReceiving()
       else if( gpsDevice == BT_ADAPTER )
         {
           // BT Adapter shall be used. Get selected BT device.
-          QString& btDevice = GeneralConfig::instance()->getGpsBtDevice();
+          QPair<QString, QString>& btDevice = GeneralConfig::instance()->getGpsBtDevice();
 
-          if( btDevice.size() == 0 )
+          if( btDevice.first.size() == 0 || btDevice.second.size() == 0 )
             {
               emit deviceReport( tr("No GPS BT device defined"), 5000 );
               return false;
@@ -231,7 +231,7 @@ bool GpsCon::startGpsReceiving()
           // prepare the connection data to the GPS client process now.
           // Note! Device and speed are always expected at GPS client side,
           // never mind are necessary or not.
-          QString msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(btDevice).arg(115200);
+          msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(btDevice.second).arg(115200);
         }
 #endif
       else
@@ -240,6 +240,7 @@ bool GpsCon::startGpsReceiving()
           msg = QString("%1 %2 %3").arg(MSG_OPEN).arg(gpsDevice).arg(QString::number(ioSpeed));
         }
 
+      qDebug() << msg;
       writeClientMessage( 0, msg.toLatin1().data() );
       readClientMessage( 0, msg );
 
@@ -250,9 +251,7 @@ bool GpsCon::startGpsReceiving()
         }
       else
         {
-#ifdef DEBUG
-          qDebug() << method << "GPS client initialization succeeded";
-#endif
+          qDebug() << "GPS client initialization succeeded";
         }
 
       // We switch on the data forwarding on the client side.

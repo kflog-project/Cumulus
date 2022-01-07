@@ -17,7 +17,7 @@ OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 RCC_DIR     = .obj
 
-QT += core gui xml bluetooth
+QT += core gui xml
 
 # Qt5 needs the QtWidgets library
 greaterThan(QT_MAJOR_VERSION, 4) {
@@ -51,12 +51,6 @@ translate_cumulus.target   = locale/de/cumulus_de.qm
 translate_cumulus.depends  = locale/de/cumulus_de.ts
 translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
 
-equals(QT_MAJOR_VERSION, 4) {
-translate_qt.target   = locale/de/qt_de.qm
-translate_qt.depends  = locale/de/qt4_de.ts
-translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt4_de.ts -qm locale/de/qt_de.qm
-}
-
 equals(QT_MAJOR_VERSION, 5) {
 translate_qt.target   = locale/de/qt_de.qm
 translate_qt.depends  = locale/de/qt5_de.ts
@@ -78,19 +72,13 @@ CONFIG += internet
 # Enable bluetooth feature, if not wanted comment out the next line with a hash
 CONFIG += Bluetooth
 
-# Activate this define, if Qt class QScroller is available.
-# DEFINES += QSCROLLER
-
-# Activate this, if Qt class QScroller is not available.
-# CONFIG += qtscroller
-
 # Must be always enabled now otherwise you will get compile errors.
 CONFIG += numberpad
 
-#version check for Qt 4.7 / Qt 5.x
-! contains(QT_VERSION, ^4\\.[78]\\..*|^5\\..*) {
+#version check for Qt 5.x
+! contains(QT_VERSION, ^5\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
-  error("Use at least Qt 4.7. or higher!")
+  error("Use at least Qt 5 only!")
 }
 
 RESOURCES = cumulus.qrc
@@ -433,6 +421,8 @@ internet {
 }
 
 Bluetooth {
+    QT += bluetooth
+    
     DEFINES += BLUEZ
 
     HEADERS += BluetoothServiceDiscovery.h \
@@ -440,8 +430,6 @@ Bluetooth {
 
     SOURCES += BluetoothServiceDiscovery.cpp \
                BluetoothDeviceDiscovery.cpp
-
-    # LIBS += -lbluetooth
 }
 
 numberpad {

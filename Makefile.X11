@@ -76,6 +76,7 @@ usage:
 	@echo "  tar          - Cleans the build area and builds a tar file from the source tree"
 	
 all:	qmake
+	@echo "PATH=$(PATH)"
 	@echo "Using Qt version $(QTVERSION)"
 	@echo "qmake_path=`type qmake`"
 	@echo "Using qmake $(QMAKEVERSION)"

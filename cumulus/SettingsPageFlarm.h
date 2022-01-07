@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018 Axel Pauli
+**   Copyright (c): 2018-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,13 +22,12 @@
  *
  * This widget can get and set Flarm configuration items.
  *
- * \date 2018
+ * \date 2018-2022
  *
- * \version 1.1
+ * \version 1.2
  */
 
-#ifndef SettingsPageFlarm_H
-#define SettingsPageFlarm_H
+#pragma once
 
 #include <QWidget>
 #include <QHash>
@@ -171,4 +170,3 @@ private:
   QHash<QString, QString> m_itemHelp;
 };
 
-#endif /* SettingsPageFlarm_H */

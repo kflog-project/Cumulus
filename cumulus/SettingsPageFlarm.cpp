@@ -17,15 +17,7 @@
 #include <algorithm>
 #include <unistd.h>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "SettingsPageFlarm.h"
 #include "flarmbase.h"
@@ -72,19 +64,6 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-#ifdef ANDROID
-  QScrollBar* lvsb = m_table->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_table->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   m_table->setStyleSheet( style );
   QHeaderView *vHeader = m_table->verticalHeader();
@@ -118,12 +97,7 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   hHeader->setStretchLastSection( true );
   hHeader->setSortIndicator( 2, Qt::AscendingOrder );
   hHeader->setSortIndicatorShown( true );
-
-#if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
-#else
-  hHeader->setClickable( true );
-#endif
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );
@@ -131,10 +105,8 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
 
-#ifndef ANDROID
   connect( m_table, SIGNAL(cellDoubleClicked( int, int )),
            this, SLOT(slot_CellDoubleClicked( int, int )) );
-#endif
 
   topLayout->addWidget( m_table, 2 );
 
@@ -408,15 +380,6 @@ void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
 {
-#ifdef ANDROID
-  if( column == 2 )
-    {
-      // Double click did not work proper on Android
-      slot_CellDoubleClicked( row, column );
-      return;
-    }
-#endif
-
   QTableWidgetItem* item = m_table->item( row, column );
 
   if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )
@@ -450,7 +413,6 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
 
       bool ok;
 
-#ifndef MAEMO5
     QString text = QInputDialog::getText( this,
                                           title,
                                           label,
@@ -459,16 +421,6 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
                                           &ok,
                                           0,
                                           Qt::ImhNoPredictiveText );
-#else
-    QString text = QInputDialog::getText( this,
-                                          title,
-                                          label,
-                                          QLineEdit::Normal,
-                                          item->text(),
-                                          &ok,
-                                          0 );
-#endif
-
     if( ok )
       {
         item->setText( text );
@@ -867,22 +819,12 @@ int SettingsPageFlarm::messageBox( QMessageBox::Icon icon,
                                    QString title,
                                    QMessageBox::StandardButtons buttons )
 {
-  QMessageBox mb( icon,
-                  title,
-                  message,
-                  buttons,
-                  this );
+  QMessageBox msgBox( this );
+  msgBox.setText( title );
+  msgBox.setIcon( icon );
+  msgBox.setInformativeText( message );
+  msgBox.setStandardButtons( buttons );
+  msgBox.setDefaultButton( QMessageBox::Ok );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  int ret = mb.exec();
-
-  return ret;
+  return msgBox.exec();
 }

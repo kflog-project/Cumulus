@@ -32,9 +32,7 @@
 
 SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent),
 WiFi1_PasswordIsHidden( true ),
-WiFi2_PasswordIsHidden( true ),
-btsAgent( nullptr ),
-btdAgent( nullptr )
+WiFi2_PasswordIsHidden( true )
 {
   setObjectName("SettingsPageGPS");
   setWindowFlags( Qt::Tool );
@@ -46,6 +44,11 @@ btdAgent( nullptr )
     {
       resize( parent->size() );
     }
+
+#ifdef BLUEZ
+  btsAgent = nullptr;
+  btdAgent = nullptr;
+#endif
 
   QPixmap gps = GeneralConfig::instance()->loadPixmap("gps.png");
   int frame = 40;
@@ -306,14 +309,6 @@ btdAgent( nullptr )
   connect( WiFi2_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw2() ) );
 #endif
 
-#ifndef MAEMO
-  topLayout->setRowMinimumHeight( row++, 10);
-
-  checkSyncSystemClock = new QCheckBox (tr("Sync Clock"), this);
-  topLayout->addWidget(checkSyncSystemClock, row, 0 );
-  row++;
-#endif
-
   saveNmeaData = new QCheckBox (tr("Save NMEA Data"), this);
   topLayout->addWidget(saveNmeaData, row, 0 );
   row++;
@@ -518,13 +513,42 @@ void SettingsPageGPS::load()
       toggleBtMenu( true );
 
 #ifdef BLUEZ
-      // request BT Service list
-      if( btdAgent == nullptr )
-        {
-          btdAgent = new BluetoothDeviceDiscovery( this );
-        }
 
-      btdAgent->start();
+      QMap<QString, QVariant>& btDevList = conf->getGpsBtDeviceList();
+
+      if( btDevList.size() == 0 )
+        {
+          // empty list --> start BT scan
+          slotSearchBtDevices();
+        }
+      else
+        {
+          BtList->clear();
+          QList<QString> keys = btDevList.keys();
+
+          for( int i = 0; i < keys.size(); i++ )
+            {
+              const QString& key = keys.at(i);
+              BtList->addItem( key, btDevList.value(key).toString() );
+            }
+
+          BtList->model()->sort(0, Qt::AscendingOrder);
+
+          // Select last known device
+          QPair<QString, QString>& btDev = conf->getGpsBtDevice();
+
+          int idx = BtList->findText( btDev.first);
+
+          if( idx == -1 )
+            {
+              // BT device not found
+              BtList->setCurrentIndex( 0 );
+            }
+          else
+            {
+              BtList->setCurrentIndex( BtList->findText( btDev.first) );
+            }
+        }
 #endif
     }
 
@@ -537,10 +561,6 @@ void SettingsPageGPS::load()
   WiFi2_Port->setText( conf->getGpsWlanPort2() );
 #if 0
   WiFi2_Password->setText( conf->getGpsWlanPassword2() );
-#endif
-
-#ifndef MAEMO
-  checkSyncSystemClock->setChecked( conf->getGpsSyncSystemClock() );
 #endif
 
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
@@ -571,47 +591,65 @@ bool SettingsPageGPS::save()
       if( WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty() )
         {
           // IP address and port are required, when service is switched on!
-          QString msg = QString(
+          QString info = QString(
               tr( "<html>WiFi-1 IP or Port entry are missing!"
                   "<br><br>Please add the missing items.</html>" ) );
 
-           QMessageBox mb( QMessageBox::Warning,
-                           tr( "WiFi-1 data missing" ),
-                           msg,
-                           QMessageBox::Ok,
-                           this );
- #ifdef ANDROID
-           mb.show();
-           QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                            height()/2 - mb.height()/2 ));
-           mb.move( pos );
- #endif
-           mb.exec();
+           messageBox( QMessageBox::Warning,
+                       tr( "WiFi-1 data missing" ),
+                       info );
+
            return false;
         }
     }
+
+#ifdef BLUEZ
+
+  // Save current selected BT device in combo box.
+  QPair<QString, QString> btDev;
+  btDev.first = BtList->currentText();
+  btDev.second = BtList->currentData().toString();
+  conf->setGpsBtDevice( btDev );
+
+  // Save BT list
+  QMap<QString, QVariant> btDevList;
+
+  for( int i = 0; i < BtList->count(); i++ )
+    {
+      BtList->setCurrentIndex(i);
+      btDevList.insert( BtList->currentText(), BtList->currentData() );
+    }
+
+  conf->setGpsBtDeviceList( btDevList );
+
+  if( btDev.first.size() == 0 )
+    {
+      QString info = QString(
+          tr( "<html>no BT device is defined!"
+              "<br><br>Please make a scan or<br>select another service.</html>" ) );
+
+       messageBox( QMessageBox::Warning,
+                   tr( "BT device data missing" ),
+                   info );
+
+       return false;
+    }
+
+#endif
 
   if( gpsDevice == WIFI_2 || gpsDevice == WIFI_1_2 )
     {
       if( WiFi2_IP->text().isEmpty() || WiFi2_Port->text().isEmpty() )
         {
           // IP address and port are required, when service is switched on!
-          QString msg = QString(
+          QString info = QString(
               tr( "<html>WiFi-2 IP or Port entry are missing!"
                   "<br><br>Please add the missing items.</html>" ) );
 
-           QMessageBox mb( QMessageBox::Warning,
-                           tr( "WiFi-2 data missing" ),
-                           msg,
-                           QMessageBox::Ok,
-                           this );
- #ifdef ANDROID
-           mb.show();
-           QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                            height()/2 - mb.height()/2 ));
-           mb.move( pos );
- #endif
-           mb.exec();
+           messageBox( QMessageBox::Warning,
+                       tr( "WiFi-2 data missing" ),
+                       info );
+
            return false;
         }
     }
@@ -626,10 +664,6 @@ bool SettingsPageGPS::save()
   conf->setGpsWlanPort2( WiFi2_Port->text() );
 #if 0
   conf->setGpsWlanPassword2( WiFi2_Password->text() );
-#endif
-
-#ifndef MAEMO
-  conf->setGpsSyncSystemClock( checkSyncSystemClock->isChecked() );
 #endif
 
   bool oldNmeaLogState = conf->getGpsNmeaLogState();
@@ -763,6 +797,8 @@ void SettingsPageGPS::slotSearchBtDevices()
 #endif
 }
 
+#ifdef BLUEZ
+
 /**
  * Called by the BT scanner to transmit the found BTs.
  */
@@ -770,6 +806,9 @@ void SettingsPageGPS::slotFoundBtServices( bool ok,
                                            QString& error,
                                            QList<QBluetoothServiceInfo>& btsi )
 {
+  Q_UNUSED(ok)
+  Q_UNUSED(error)
+  Q_UNUSED(btsi)
   qDebug() << "SettingsPageGPS::slotFoundBtServices()";
 }
 
@@ -786,7 +825,6 @@ void SettingsPageGPS::slotFoundBtDevices( bool ok,
 
   if( ok == true )
     {
-      // comboBox->model()->sort(0, Qt::DescendingOrder); // default Qt::AscendingOrder
       for( int i=0; i < btdi.size(); i++ )
         {
           const QBluetoothDeviceInfo& di = btdi.at(i);
@@ -794,8 +832,50 @@ void SettingsPageGPS::slotFoundBtDevices( bool ok,
         }
 
       BtList->model()->sort(0, Qt::AscendingOrder);
-      BtList->setCurrentIndex( 0 );
+
+      // Select last known device
+      QPair<QString, QString>& btDev = GeneralConfig::instance()->getGpsBtDevice();
+
+      int idx = BtList->findText( btDev.first);
+
+      if( idx == -1 )
+        {
+          // BT device not found
+          BtList->setCurrentIndex( 0 );
+        }
+      else
+        {
+          BtList->setCurrentIndex( BtList->findText( btDev.first) );
+        }
+    }
+  else
+    {
+      QString text = tr("BT search error!");
+      QString info = error;
+      messageBox( QMessageBox::Warning, text, info );
     }
 
   searchBts->setEnabled( true );
+}
+
+#endif
+
+/**
+ * Message box with text and info text.
+ *
+ * @param icon
+ * @param text
+ * @param infoText
+ */
+void SettingsPageGPS::messageBox( QMessageBox::Icon icon,
+                                  QString text,
+                                  QString infoText )
+{
+  QMessageBox msgBox( this );
+  msgBox.setText( text );
+  msgBox.setIcon( icon );
+  msgBox.setInformativeText( infoText );
+  msgBox.setStandardButtons( QMessageBox::Ok );
+  msgBox.setDefaultButton( QMessageBox::Ok );
+  msgBox.exec();
 }

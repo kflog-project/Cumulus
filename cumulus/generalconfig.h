@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2021 by Axel Pauli
+**                   2007-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,21 +25,22 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2021
+ * \date 2004-2022
  *
- * \version 1.12
+ * \version 1.13
  */
 
-#ifndef GENERAL_CONFIG_H
-#define GENERAL_CONFIG_H
+#pragma once
 
 #include <QtGlobal>
 #include <QByteArray>
+#include <QPair>
 #include <QPixmap>
 #include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QSize>
+#include <QVariant>
 
 #include "airspace.h"
 #include "altitude.h"
@@ -83,11 +84,7 @@
 #define HeadingLineColor QColor(Qt::gray).name()
 #define TrailLineColor QColor(Qt::black).name()
 
-#ifdef MAEMO4
-#define SoundPlayer "/opt/cumulus/bin/aplay"
-#else
 #define SoundPlayer "/usr/bin/aplay"
-#endif
 
 class QTranslator;
 
@@ -2022,14 +2019,25 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the Gps BT Device */
-  QString &getGpsBtDevice()
+  QPair<QString, QString> &getGpsBtDevice()
   {
     return _gpsBtDevice;
   }
   /** Sets the Gps BT Device */
-  void setGpsBtDevice( const QString newValue )
+  void setGpsBtDevice( const QPair<QString, QString>& newValue )
   {
     _gpsBtDevice = newValue;
+  }
+
+  /** Gets the Gps BT Device list */
+  QMap<QString, QVariant> &getGpsBtDeviceList()
+  {
+    return _gpsBtDeviceList;
+  }
+  /** Sets the Gps BT Device list */
+  void setGpsBtDeviceList( const QMap<QString, QVariant>& newValue )
+  {
+    _gpsBtDeviceList = newValue;
   }
 
   /** Gets the Gps Source */
@@ -3516,7 +3524,9 @@ class GeneralConfig : protected QSettings
   // Gps device
   QString _gpsDevice;
   // Gps BT device
-  QString _gpsBtDevice;
+  QPair<QString, QString> _gpsBtDevice;
+  // GPS BT device list
+  QMap<QString, QVariant> _gpsBtDeviceList;
   // Gps speed
   int _gpsSpeed;
   // Gps delivered altitude
@@ -3727,5 +3737,3 @@ class GeneralConfig : protected QSettings
   // GPS switch state.
   bool _gpsSwitchState;
 };
-
-#endif

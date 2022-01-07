@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2021 by Axel Pauli
+ **                   2007-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,7 +18,6 @@
 #include <cmath>
 #include <iostream>
 
-#include <QtGui>
 #include <QApplication>
 
 #include "altitude.h"
@@ -30,14 +29,6 @@
 #include "preflightwaypointpage.h"
 #include "speed.h"
 #include "time_cu.h"
-
-#ifdef MAEMO
-#include "maemostyle.h"
-#endif
-
-#ifdef ANDROID
-#include "androidstyle.h"
-#endif
 
 extern MapConfig* _globalMapConfig;
 
@@ -53,12 +44,7 @@ QStringList GeneralConfig::_liveTrackServerList =
 
 // define pressure devices list
 QStringList GeneralConfig::_pressureDevicesList =
-#ifdef ANDROID
-    QStringList() << "Android"
-                  << "Cambridge"
-#else
     QStringList() << "Cambridge"
-#endif
                   << "Flarm"
                   << "Garmin"
                   << "LX"
@@ -107,28 +93,9 @@ void GeneralConfig::load()
   // Main window properties
   beginGroup("MainWindow");
 
-#ifdef TOMTOM
-  _windowSize            = value("Geometry", QSize(480, 272)).toSize();
-#else
   _windowSize            = value("Geometry", QSize(800, 480)).toSize();
-#endif
-
   _mapSideFrameColor     = QColor( value("MapSideFrameColor", INFOBOX_FRAME_COLOR).toString() );
-
-#ifdef MAEMO
-  _guiStyle              = value("Style", "Plastique").toString();
-#else
-#ifdef ANDROID
-  _guiStyle              = value("Style", "Android").toString();
-#else
-#if QT_VERSION < 0x050000
-  _guiStyle              = value("Style", "Plastique").toString();
-#else
   _guiStyle              = value("Style", "fusion").toString();
-#endif
-#endif
-#endif
-
   _guiFont               = value("Font", "").toString();
   _guiMenuFont           = value("MenuFont", "").toString();
   _virtualKeyboard       = value("VirtualKeyboard", false).toBool();
@@ -511,11 +478,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Information");
-#ifdef MAEMO4
   _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
-#else
-  _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
-#endif
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
   _airspaceDisplayTime   = value( "AirspaceDisplayTime",
@@ -537,7 +500,15 @@ void GeneralConfig::load()
   beginGroup("GPS");
   _gpsSource          = value( "Source", "$GP" ).toString();
   _gpsDevice          = value( "Device", getGpsDefaultDevice() ).toString();
-  _gpsBtDevice        = value( "BT-Device", "" ).toString();
+   QStringList sl     = value( "BT-Device", "" ).toString().split('|');
+
+  if( sl.size() == 2 )
+    {
+      _gpsBtDevice.first = sl[0];
+      _gpsBtDevice.second = sl[1];
+    }
+
+  _gpsBtDeviceList    = value( "BT-DeviceList" ).toMap();
   _gpsSpeed           = value( "Speed", 4800 ).toInt();
   _gpsAltitudeType    = value( "AltitudeType", (int) GpsNmea::GPS ).toInt();
   _gpsAltitudeUserCorrection.setMeters(value( "AltitudeCorrection", 0 ).toDouble());
@@ -1017,7 +988,8 @@ void GeneralConfig::save()
   beginGroup("GPS");
   setValue( "Source", _gpsSource );
   setValue( "Device", _gpsDevice );
-  setValue( "BT-Device", _gpsBtDevice );
+  setValue( "BT-Device", _gpsBtDevice.first + '|' + _gpsBtDevice.second );
+  setValue( "BT-DeviceList", _gpsBtDeviceList );
   setValue( "Speed", _gpsSpeed );
   setValue( "AltitudeType", _gpsAltitudeType );
   setValue( "AltitudeCorrection", _gpsAltitudeUserCorrection.getMeters() );
@@ -1726,44 +1698,6 @@ void GeneralConfig::setMapRootDir( QString newValue )
 QString GeneralConfig::getUserDefaultRootDir()
 {
   QString root = QDir::homePath();
-
-#ifdef MAEMO
-
-  QStringList paths;
-
-  // Look if MMCs are mounted
-  paths << "/media/mmc1"
-        << "/media/mmc2";
-
-  // Check, if root path is mounted.
-  for( int i = 0; i < paths.size(); i++ )
-    {
-      if( ! HwInfo::isMounted( paths.at(i)) )
-        {
-          continue;
-        }
-
-      root = paths.at(i);
-
-      break;
-    }
-
-  // That is the fall back solution but normally unfit for map files on a
-  // N800 or N810 due to the limited space on that file system.
-  // For N900 it is a good location because the file system lays there
-  // on the internal MMC.
-  if( root == QDir::homePath() )
-    {
-      root += "/MyDocs"; // Maemo user default directory
-    }
-
-#endif
-
-  // Note under Android $HOME is set to the root of user's external storage directory
-#ifndef ANDROID
-  root += "/Cumulus"; // Cumulus default user root directory
-#endif
-
   return root;
 }
 
@@ -1776,12 +1710,6 @@ QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
   QString     mapDefault = getUserDefaultRootDir() + "/maps";
-
-#ifdef ANDROID
-  // Under Android only the default map directory on sdcard exists
-  mapDirs << mapDefault;
-  return mapDirs;
-#endif
 
   // First takes defined map directory
   if(  ! _mapRootDir.isEmpty() )
@@ -1855,24 +1783,6 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
 /** Get the GPS default device depending on the hardware type. */
 QString GeneralConfig::getGpsDefaultDevice()
 {
-#ifdef MAEMO
-
-  if( HwInfo::instance()->getSubType() == HwInfo::n800 )
-    {
-      return MAEMO_LOCATION_SERVICE;
-    }
-
-  if( HwInfo::instance()->getSubType() == HwInfo::n810 )
-    {
-      return MAEMO_LOCATION_SERVICE;
-    }
-
-  if( HwInfo::instance()->getSubType() == HwInfo::n900 )
-    {
-      return MAEMO_LOCATION_SERVICE;
-    }
-#endif
-
   // Default in unknown case is the serial device
   return "/dev/ttyS0";
 }
@@ -1908,31 +1818,7 @@ QString GeneralConfig::getDefaultProxy()
 void GeneralConfig::setOurGuiStyle()
 {
   qDebug() << "Setting GuiStyle:" << _guiStyle;
-
-#ifdef ANDROID
-
-  // QStyle* style = QApplication::setStyle( _guiStyle );
-
-#warning "GUI Style for Android is hard coded to Plastique"
-
-  // The Android style makes trouble, therefore we use only Plastique atm.
-  QStyle* style = QApplication::setStyle( "Plastique" );
-
-
-  QApplication::setStyle( new AndroidProxyStyle( style ) );
-
-#else
-#ifdef MAEMO
-
-  QStyle* style = QApplication::setStyle( _guiStyle );
-  QApplication::setStyle( new MaemoProxyStyle( style ) );
-
-#else
-
   QApplication::setStyle( _guiStyle );
-
-#endif
-#endif
 }
 
 /** Sets the terrain color at position index */
@@ -2150,12 +2036,7 @@ void GeneralConfig::setLanguage( const QString& newValue )
   if( ! _language.isEmpty() )
     {
       QString langFile = "cumulus_" + _language + ".qm";
-
-#ifdef ANDROID
       QString langDir = ":/locale/" + _language;
-#else
-      QString langDir = ":/locale/" + _language;
-#endif
 
       // Load GUI translation file
       if( ! cumulusTranslator )

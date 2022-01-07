@@ -3,7 +3,7 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2018 by Axel Pauli
+                               2008-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -27,19 +27,19 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2021
+ * \date 2002-2022
  *
- * \version 1.7
+ * \version 1.8
  */
 
-#ifndef GPS_NMEA_H
-#define GPS_NMEA_H
+#pragma once
 
 #include <QObject>
 #include <QString>
 #include <QList>
 #include <QDateTime>
 #include <QEvent>
+#include <QPair>
 #include <QPoint>
 #include <QTimer>
 #include <QHash>
@@ -50,10 +50,7 @@
 #include "speed.h"
 #include "altitude.h"
 #include "wgspoint.h"
-
-#ifndef ANDROID
 #include "gpscon.h"
-#endif
 
 struct SatInfo
   {
@@ -90,51 +87,6 @@ struct GPSInfo
     bool Wind;
     bool AirSpeed;
   };
-
-#ifdef MAEMO
-
-/**
- * The following two enumerations are used by Maemo's Location Service for
- * status and mode encoding. They are reused here again for decoding purposes.
- *
- * See here for more information:
- *
- * http://maemo.org/api_refs/5.0/5.0-final/liblocation/LocationGPSDevice.html
- */
-
-/**
-Enumeration representing the various states that a Maemo GPS device can be in.
-
-LOCATION_GPS_DEVICE_STATUS_NO_FIX   The device does not have a fix.
-LOCATION_GPS_DEVICE_STATUS_FIX      The device has a fix.
-LOCATION_GPS_DEVICE_STATUS_DGPS_FIX The device has a DGPS fix.
-                                    Deprecated: this constant is not used anymore.
-*/
-
-typedef enum
-  {
-    LOCATION_GPS_DEVICE_STATUS_NO_FIX,
-    LOCATION_GPS_DEVICE_STATUS_FIX,
-    LOCATION_GPS_DEVICE_STATUS_DGPS_FIX,
-  } LocationGPSDeviceStatus;
-
-/**
-Enumeration representing the modes that a Maemo GPS device can operate in.
-
-LOCATION_GPS_DEVICE_MODE_NOT_SEEN The device has not seen a satellite yet.
-LOCATION_GPS_DEVICE_MODE_NO_FIX   The device has no fix.
-LOCATION_GPS_DEVICE_MODE_2D       The device has latitude and longitude fix.
-LOCATION_GPS_DEVICE_MODE_3D       The device has latitude, longitude, and altitude.
-*/
-typedef enum
-  {
-    LOCATION_GPS_DEVICE_MODE_NOT_SEEN,
-    LOCATION_GPS_DEVICE_MODE_NO_FIX,
-    LOCATION_GPS_DEVICE_MODE_2D,
-    LOCATION_GPS_DEVICE_MODE_3D
-  } LocationGPSDeviceMode;
-
-#endif
 
 class GpsNmea : public QObject
   {
@@ -430,15 +382,6 @@ class GpsNmea : public QObject
      */
     void slot_userGpsSwitchRequest();
 
-#ifdef ANDROID
-
-  protected:
-
-    /** Add an event receiver, used by Android only. */
-    bool event(QEvent *event);
-
-#endif
-
   private slots: // Private slots
 
     /** This slot is called by the external GPS receiver process to signal
@@ -617,7 +560,6 @@ class GpsNmea : public QObject
                       const double accelarationX,
                       const double accelarationY,
                       const double accelarationZ );
-
   private:
 
     /** Resets all data objects to their initial values. This is called
@@ -705,17 +647,6 @@ class GpsNmea : public QObject
      * Extracts McCready data from LX Navigation $LXWP2 sentence.
      */
     void __ExtractLxwp2(const QStringList& stringList);
-
-#ifdef MAEMO
-    /**
-     * Extract proprietary sentence $MAEMO0.
-     */
-    void __ExtractMaemo0(const QStringList& stringList);
-    /**
-     * Extract proprietary sentence $MAEMO1.
-     */
-    void __ExtractMaemo1(const QStringList& stringList);
-#endif
 
     /**
      * Extract proprietary test sentence $PTAS.
@@ -847,15 +778,11 @@ class GpsNmea : public QObject
     /** WiFi-2 Port */
     QString wifi_2_Port;
 
-#ifndef ANDROID
+    /** BT Device */
+    QPair<QString, QString> btDevice;
+
     /** The reference to the used GPS connector */
     GpsCon* connector;
-#endif
-
-#ifdef ANDROID
-    /** Fake a GPS connection pointer for Android. */
-    QObject* connector;
-#endif
 
     /** Flag to enable/disable the GPS data processing. */
     bool _enableGpsDataProcessing;
@@ -896,5 +823,3 @@ class GpsNmea : public QObject
     // make class object for all available
     static GpsNmea *gps;
   };
-
-#endif
