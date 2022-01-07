@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2018 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -39,7 +39,7 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
 {
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
-  QTime t; t.start();
+  QElapsedTimer t; t.start();
   uint loadCounter = 0; // number of successfully loaded files
 
   m_airspaceDictionary.clear();
@@ -329,7 +329,7 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
         }
     } // End of While
 
-  qDebug("ASH: %d Airspace file(s) loaded in %dms", loadCounter, t.elapsed());
+  qDebug("ASH: %d Airspace file(s) loaded in %lldms", loadCounter, t.elapsed());
 
 //    for(int i=0; i < list.size(); i++ )
 //      {
@@ -423,7 +423,7 @@ bool AirspaceHelper::createCompiledFile( QString& fileName,
  */
 bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   QFile inFile(path);
@@ -548,7 +548,7 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   QFileInfo fi( path );
 
-  qDebug( "ASH: %d airspace objects read from file %s in %dms",
+  qDebug( "ASH: %d airspace objects read from file %s in %lldms",
           counter, fi.fileName().toLatin1().data(), t.elapsed() );
 
   return true;

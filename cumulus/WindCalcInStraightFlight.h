@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2021 by Axel Pauli
+ **   Copyright (c): 2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -29,7 +29,7 @@
 #pragma once
 
 #include <QObject>
-#include <QTime>
+#include <QElapsedTimer>
 
 #include "altitude.h"
 #include "vector.h"
@@ -108,7 +108,7 @@ private:
 
   uint   nunberOfSamples;    // current number of samples
   int    deliverWind;        // time in seconds for next wind delivery
-  QTime measurementStart;    // time measurement in seconds
+  QElapsedTimer measurementStart; // time measurement in seconds
   double minimumAirSpeed;    // minimum air speed to start calculation
   double deltaSpeed;         // accepted speed deviation in km/h
   double deltaHeading;       // accepted heading deviation in degrees

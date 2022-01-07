@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,14 +22,15 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2021
+ * \date 2010-2022
  *
- * \version 1.9
+ * \version 1.10
  */
 
 #pragma once
 
 #include <QDateTime>
+#include <QElapsedTimer>
 #include <QHash>
 #include <QMutex>
 #include <QMutexLocker>
@@ -37,7 +38,7 @@
 
 class QPoint;
 class QStringList;
-class QTimer;
+class QElapsedTimer;
 
 class FlarmBase
 {
@@ -294,7 +295,7 @@ class FlarmBase
    */
   struct FlarmAcft
   {
-    QTime   TimeStamp;  // Creation time of this structure
+    QElapsedTimer TimeStamp;  // Creation time of this structure
     enum AlarmLevel Alarm;
     int     RelativeNorth;
     int     RelativeEast;
@@ -321,24 +322,24 @@ class FlarmBase
    */
   struct FlarmAlertZone
   {
-    bool    valid;         // valid flag of structure
-    QTime   TimeStamp;     // Creation time of this structure
+    bool    valid;              // valid flag of structure
+    QElapsedTimer   TimeStamp;  // Creation time of this structure
     enum AlarmLevel Alarmlevel;
-    bool    Inside;        // 1=active and inside, 0=otherwise
-    long    Latitude;      // in KFLog degree format
-    long    Longitude;     // in KFLog degree format
-    int     Radius;        // 0...2000m
-    int     Bottom;        // -1000...6000m
-    int     Top;           // 0...6000m
-    ulong   ActivityLimit; // 0...4294967295
-    short   ZoneType;      // 0x10 ... 0xFF
-    QString ID;            // Flarm Identifier
-    short   IdType;        // ID-Type
-    QString Key;           // A key built from ID and IDType
+    bool    Inside;             // 1=active and inside, 0=otherwise
+    long    Latitude;           // in KFLog degree format
+    long    Longitude;          // in KFLog degree format
+    int     Radius;             // 0...2000m
+    int     Bottom;             // -1000...6000m
+    int     Top;                // 0...6000m
+    ulong   ActivityLimit;      // 0...4294967295
+    short   ZoneType;           // 0x10 ... 0xFF
+    QString ID;                 // Flarm Identifier
+    short   IdType;             // ID-Type
+    QString Key;                // A key built from ID and IDType
 
     FlarmAlertZone() :
       valid(false),
-      TimeStamp(0, 0, 0),
+      TimeStamp(),
       Alarmlevel(No),
       Inside(0),
       Latitude(0),

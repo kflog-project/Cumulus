@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2021 by Axel Pauli
+                               2008-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -19,9 +19,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MAP_INFO_BOX_H
-#define MAP_INFO_BOX_H
+#pragma once
 
+#include <QElapsedTimer>
 #include <QEvent>
 #include <QFont>
 #include <QLabel>
@@ -178,7 +178,7 @@ public:
   void setUpdateInterval( int value )
   {
     m_minUpdateInterval = value;
-    m_lastUpdateTime.setHMS( 0, 0, 0);
+    m_lastUpdateTime.start();
   };
 
   /** Gets the minimum update time interval of the text label box. */
@@ -289,7 +289,7 @@ private:
   int m_minUpdateInterval;
 
   /** Last time of label update. */
-  QTime m_lastUpdateTime;
+  QElapsedTimer m_lastUpdateTime;
 
   /** Timer to generate long mouse press signals. */
   QTimer* m_mousePressTimer;
@@ -297,5 +297,3 @@ private:
   /** Timer to ensure display of last received value.. */
   QTimer* m_displayTimer;
 };
-
-#endif

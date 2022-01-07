@@ -44,7 +44,7 @@ MapInfoBox::MapInfoBox( QWidget *parent,
   m_maxFontDotsize( fontDotsize ),
   m_maxTextLabelFontHeight( -1 ),
   m_minUpdateInterval( 0 ),
-  m_lastUpdateTime(0, 0, 0),
+  m_lastUpdateTime(),
   m_mousePressTimer( 0 ),
   m_displayTimer( 0 )
 {

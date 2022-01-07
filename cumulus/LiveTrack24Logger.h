@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2018 Axel Pauli
+**   Copyright (c): 2013-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,16 +29,15 @@
  * \see http://livexc.dhv1.dedoc/index.php
  * \see https://skylines.aero/tracking/info
  *
- * \date 2013-2018
+ * \date 2013-2022
  *
- * \version 2.0
+ * \version 2.1
  */
 
-#ifndef LiveTrack24Logger_h
-#define LiveTrack24Logger_h
+#pragma once
 
 #include <QObject>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTimer>
 
 #include "generalconfig.h"
@@ -122,10 +121,10 @@ class LiveTrack24Logger : public QObject
   bool m_isFlying;
 
   /** Last time point of track reporting. */
-  QTime m_lastTrackReporting;
+  QElapsedTimer m_lastTrackReporting;
 
   /** Last time point of moving. */
-  QTime m_lastMoveTimePoint;
+  QElapsedTimer m_lastMoveTimePoint;
 
   /**
    * Timer to close a running session, if no new fix is reported for a certain
@@ -133,5 +132,3 @@ class LiveTrack24Logger : public QObject
    */
   QTimer* m_closeSessionTimer;
 };
-
-#endif

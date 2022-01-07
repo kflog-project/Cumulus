@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2009-2016 by Axel Pauli
+**                   2009-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,19 +26,19 @@
  * Due to the cross pointer reference to the air region this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2000-2016
+ * \date 2000-2022
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
-#ifndef AIRSPACE_H
-#define AIRSPACE_H
+#pragma once
 
 #include <algorithm>
 #include <cmath>
 
 #include <QDateTime>
+#include <QElapsedTimer>
 #include <QPolygon>
 #include <QPainter>
 #include <QPainterPath>
@@ -235,7 +235,7 @@ public:
   ConflictType lastVConflict() const
   {
       return m_lastVConflict;
-  };
+  }
 
   /**
    * sets the touch time of air space to current time
@@ -243,31 +243,35 @@ public:
   void setLastNear()
   {
       m_lastNear.start();
-  };
+  }
+
   void setLastVeryNear()
   {
       m_lastVeryNear.start();
-  };
+  }
+
   void setLastInside()
   {
       m_lastInside.start();
-  };
+  }
 
   /**
   * returns the touch time of air space
   */
-  QTime& getLastNear()
+  QElapsedTimer& getLastNear()
   {
       return m_lastNear;
-  };
-  QTime& getLastVeryNear()
+  }
+
+  QElapsedTimer& getLastVeryNear()
   {
       return m_lastVeryNear;
-  };
-  QTime& getLastInside()
+  }
+
+  QElapsedTimer& getLastInside()
   {
       return m_lastInside;
-  };
+  }
 
   /**
    * @returns the associated AirRegion object
@@ -372,9 +376,9 @@ private:
   mutable ConflictType m_lastVConflict;
 
   /** save time of last touch of airspace */
-  QTime m_lastNear;
-  QTime m_lastVeryNear;
-  QTime m_lastInside;
+  QElapsedTimer m_lastNear;
+  QElapsedTimer m_lastVeryNear;
+  QElapsedTimer m_lastInside;
 
   // pointer to associated airRegion object
   AirRegion* m_airRegion;
@@ -448,7 +452,5 @@ public:
   void sort ()
   {
     std::sort( begin(), end(), CompareAirspaces() );
-  };
+  }
 };
-
-#endif

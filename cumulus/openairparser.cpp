@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2021 by Axel Pauli
+ **                   2009-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -63,7 +63,7 @@ bool OpenAirParser::parse( const QString& path,
                            QList<Airspace*>& list,
                            bool doCompile )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
   QFile source(path);
 

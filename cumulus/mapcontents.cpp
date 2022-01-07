@@ -2130,7 +2130,7 @@ void MapContents::unloadMaps(unsigned int distance)
   int memFreeBegin = HwInfo::instance()->getFreeMemory();
 #endif
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   unloadMapObjects( cityList );
@@ -3273,7 +3273,7 @@ void MapContents::drawIsoList(QPainter* targetP)
 {
   // qDebug("MapContents::drawIsoList():");
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   extern MapMatrix* _globalMapMatrix;

@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2021 by Axel Pauli
+                               2008-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -23,9 +23,8 @@
 #include <cstdlib>
 
 #include <QtCore>
-#include <QtGui>
-#include <QMessageBox>
-
+#include <QtWidgets>
+#
 #include "igclogger.h"
 #include "gpsnmea.h"
 #include "hwinfo.h"
@@ -36,10 +35,6 @@
 #include "mapcontents.h"
 #include "flighttask.h"
 #include "taskpoint.h"
-
-#ifdef ANDROID
-#include "jnisupport.h"
-#endif
 
 // Define a timeout after landing in seconds. If the timeout is reached
 // an open log file is automatically closed.

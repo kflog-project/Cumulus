@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2021 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -49,7 +49,7 @@ int OpenAipPoiLoader::load( QList<Airfield>& airfieldList, bool readSource )
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   int loadCounter = 0; // number of successfully loaded files
 
@@ -223,7 +223,7 @@ int OpenAipPoiLoader::load( QList<Airfield>& airfieldList, bool readSource )
         }
     } // End of While
 
-  qDebug( "OAIP: %d airfield file(s) with %d items loaded in %dms",
+  qDebug( "OAIP: %d airfield file(s) with %d items loaded in %lldms",
           loadCounter, airfieldList.size(), t.elapsed() );
 
   return loadCounter;
@@ -234,7 +234,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidList, bool readSource )
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   int loadCounter = 0; // number of successfully loaded files
 
@@ -396,7 +396,7 @@ int OpenAipPoiLoader::load( QList<RadioPoint>& navAidList, bool readSource )
         }
     } // End of While
 
-  qDebug( "OAIP: %d navAid file(s) with %d items loaded in %dms",
+  qDebug( "OAIP: %d navAid file(s) with %d items loaded in %lldms",
           loadCounter, navAidList.size(), t.elapsed() );
 
   return loadCounter;
@@ -407,7 +407,7 @@ int OpenAipPoiLoader::load( QList<SinglePoint>& spList, bool readSource )
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   int loadCounter = 0; // number of successfully loaded files
 
@@ -569,7 +569,7 @@ int OpenAipPoiLoader::load( QList<SinglePoint>& spList, bool readSource )
         }
     } // End of While
 
-  qDebug( "OAIP: %d single point file(s) with %d items loaded in %dms",
+  qDebug( "OAIP: %d single point file(s) with %d items loaded in %lldms",
           loadCounter, spList.size(), t.elapsed() );
 
   return loadCounter;
@@ -876,7 +876,7 @@ bool OpenAipPoiLoader::createCompiledFile( QString& fileName,
 bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
                                          QList<Airfield>& airfieldList )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   QFile inFile( fileName );
@@ -1006,7 +1006,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
   inFile.close();
 
-  qDebug( "OAIP: %d airfields read from %s in %dms",
+  qDebug( "OAIP: %d airfields read from %s in %lldms",
           counter, fileName.toLatin1().data(), t.elapsed() );
 
   return true;
@@ -1015,7 +1015,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
                                          QList<RadioPoint>& navAidList )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   QFile inFile( fileName );
@@ -1124,7 +1124,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
   inFile.close();
 
-  qDebug( "OAIP: %d navAids read from %s in %dms",
+  qDebug( "OAIP: %d navAids read from %s in %lldms",
           counter, fileName.toLatin1().data(), t.elapsed() );
 
   return true;
@@ -1133,7 +1133,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
                                          QList<SinglePoint>& spList )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   QFile inFile( fileName );
@@ -1206,7 +1206,7 @@ bool OpenAipPoiLoader::readCompiledFile( QString &fileName,
 
   inFile.close();
 
-  qDebug( "OAIP: %d single points read from %s in %dms",
+  qDebug( "OAIP: %d single points read from %s in %lldms",
           counter, fileName.toLatin1().data(), t.elapsed() );
 
   return true;

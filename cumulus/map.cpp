@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Josua Dietze
- **                   2008-2021 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,12 +20,7 @@
 #include <cmath>
 
 #include <QtCore>
-
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "airfield.h"
 #include "airspace.h"
@@ -804,7 +799,7 @@ void Map::p_drawAirspaces( bool reset )
   astMapper.insert( "AS-E low", "AS-El" );
   astMapper.insert( "AS-E high", "AS-Eh" );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   if( reset )
@@ -1143,7 +1138,7 @@ void Map::p_drawTrail()
 {
   static uint counter = 0;
 
-  // QTime t; t.start();
+  // QElapsedTimer t; t.start();
 
   int pointCnt = m_trailPoints.size();
 
@@ -2402,11 +2397,11 @@ void Map::slotPosition(const QPoint& newPos, const int source)
                 }
               else
                 {
-                  static QTime lastDisplay = QTime::currentTime();
+                  static QElapsedTimer lastDisplay;
 
                   // The display is updated every 1 seconds only.
                   // That will reduce the X-Server load.
-                  if( lastDisplay.elapsed() < 750 )
+                  if( lastDisplay.isValid() && lastDisplay.elapsed() < 750 )
                     {
                       scheduleRedraw( informationLayer );
                     }
@@ -2414,8 +2409,7 @@ void Map::slotPosition(const QPoint& newPos, const int source)
                     {
                       // this is the faster redraw
                       p_redrawMap( informationLayer, false );
-
-                      lastDisplay = QTime::currentTime();
+                      lastDisplay.start();
                     }
                 }
             }

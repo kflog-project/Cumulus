@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -170,7 +170,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
 
   bool ok;
 
-  aircraft.TimeStamp = QTime::currentTime();
+  aircraft.TimeStamp.start();
 
   // AlarmLevel
   aircraft.Alarm = static_cast<enum AlarmLevel> (stringList[1].toInt( &ok ));
@@ -813,7 +813,7 @@ bool Flarm::extractPflao(QStringList& stringList)
     }
 
   faz.Key = FlarmBase::createHashKey( faz.IdType, faz.ID );
-  faz.TimeStamp = QTime::currentTime();
+  faz.TimeStamp.start();
 
   // Post new/updated alert zone.
   emit flarmAlertZoneInfo( faz );
@@ -834,7 +834,10 @@ bool Flarm::extractPflax(QStringList& stringList)
       // switch to binary protocol was successful
       FlarmBase::setProtocolMode( FlarmBase::binary );
       qDebug() << "***** Flarm::extractPflax(): Bin Mode is on";
+      return true;
     }
+
+  return false;
 }
 
 bool Flarm::extractError(QStringList& stringList)
