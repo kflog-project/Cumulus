@@ -1,6 +1,0 @@
-#!/bin/bash
-
-adb uninstall org.kflog.cumulus
-ant debug
-adb install bin/Cumulus-debug.apk
-
