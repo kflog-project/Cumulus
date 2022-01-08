@@ -605,34 +605,37 @@ bool SettingsPageGPS::save()
 
 #ifdef BLUEZ
 
-  // Save current selected BT device in combo box.
-  QPair<QString, QString> btDev;
-  btDev.first = BtList->currentText();
-  btDev.second = BtList->currentData().toString();
-  conf->setGpsBtDevice( btDev );
-
-  // Save BT list
-  QMap<QString, QVariant> btDevList;
-
-  for( int i = 0; i < BtList->count(); i++ )
+  if( BtList->currentText() == BT_ADAPTER )
     {
-      BtList->setCurrentIndex(i);
-      btDevList.insert( BtList->currentText(), BtList->currentData() );
-    }
+      // Save current selected BT device from combo box, when BT is selected.
+      QPair<QString, QString> btDev;
+      btDev.first = BtList->currentText();
+      btDev.second = BtList->currentData().toString();
+      conf->setGpsBtDevice( btDev );
 
-  conf->setGpsBtDeviceList( btDevList );
+      // Save BT list
+      QMap<QString, QVariant> btDevList;
 
-  if( btDev.first.size() == 0 )
-    {
-      QString info = QString(
-          tr( "<html>no BT device is defined!"
-              "<br><br>Please make a scan or<br>select another service.</html>" ) );
+      for( int i = 0; i < BtList->count(); i++ )
+        {
+          BtList->setCurrentIndex(i);
+          btDevList.insert( BtList->currentText(), BtList->currentData() );
+        }
 
-       messageBox( QMessageBox::Warning,
-                   tr( "BT device data missing" ),
-                   info );
+      conf->setGpsBtDeviceList( btDevList );
 
-       return false;
+      if( btDev.first.size() == 0 )
+        {
+          QString info = QString(
+              tr( "<html>no BT device is defined!"
+                  "<br><br>Please make a scan or<br>select another service.</html>" ) );
+
+           messageBox( QMessageBox::Warning,
+                       tr( "BT device data missing" ),
+                       info );
+
+           return false;
+        }
     }
 
 #endif
