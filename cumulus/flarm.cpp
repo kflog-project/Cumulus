@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -678,7 +678,7 @@ bool Flarm::extractPflaq(QStringList& stringList)
     *
     * Progress info send by Flarm.
     */
-  if( stringList[0] != "$PFLAQ" || stringList.size() < 4 )
+  if( stringList[0] != "$PFLAQ" || stringList.size() < 3 )
     {
       // Checksum has to be ignored in counting.
       qWarning( "$PFLAQ contains too less parameters!" );
