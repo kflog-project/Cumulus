@@ -93,7 +93,7 @@ void BluetoothDeviceDiscovery::slotError( QBluetoothDeviceDiscoveryAgent::Error 
 
 void BluetoothDeviceDiscovery::slotCanceled()
 {
-  qDebug() << "BluetoothDeviceDiscovery::slotCanceled()";
+  // qDebug() << "BluetoothDeviceDiscovery::slotCanceled()";
 }
 
 void BluetoothDeviceDiscovery::slotFinished()

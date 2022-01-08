@@ -605,9 +605,10 @@ bool SettingsPageGPS::save()
 
 #ifdef BLUEZ
 
-  if( BtList->currentText() == BT_ADAPTER )
+  if( GpsDev->currentText() == BT_ADAPTER )
     {
-      // Save current selected BT device from combo box, when BT is selected.
+      // Save current selected BT device from combo box, when BT is selected
+      // as GPS source.
       QPair<QString, QString> btDev;
       btDev.first = BtList->currentText();
       btDev.second = BtList->currentData().toString();
