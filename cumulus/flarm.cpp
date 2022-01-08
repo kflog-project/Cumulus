@@ -678,7 +678,7 @@ bool Flarm::extractPflaq(QStringList& stringList)
     *
     * Progress info send by Flarm.
     */
-  if( stringList[0] != "$PFLAQ" || stringList.size() < 4 )
+  if( stringList[0] != "$PFLAQ" || stringList.size() < 3 )
     {
       // Checksum has to be ignored in counting.
       qWarning( "$PFLAQ contains too less parameters!" );
