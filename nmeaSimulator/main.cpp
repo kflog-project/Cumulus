@@ -643,7 +643,8 @@ int main(int argc, char **argv)
   QString hdop = "1.1";
   QString vdop = "1.2";
 
-  QTime start = QTime::currentTime();
+  QElapsedTimer start;
+  start.start();
 
   if( Pause < 100 )
     {

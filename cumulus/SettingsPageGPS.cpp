@@ -105,6 +105,7 @@ WiFi2_PasswordIsHidden( true )
   GpsDev->addItem( "/dev/ttyS2" );
   GpsDev->addItem( "/dev/ttyS3" );
   GpsDev->addItem( "/dev/ttyUSB0" ); // external USB device
+  GpsDev->addItem( "/dev/ttyUSB1" ); // external USB device
 #ifdef BLUEZ
   // Bluetooth adapter
   GpsDev->addItem( BT_ADAPTER );
@@ -782,8 +783,6 @@ void SettingsPageGPS::slotTogglePw2()
  */
 void SettingsPageGPS::slotSearchBtDevices()
 {
-  qDebug() << "SettingsPageGPS::slotSearchBtDevices()";
-
 #ifdef BLUEZ
   searchBts->setEnabled( false );
   BtList->clear();
@@ -823,8 +822,6 @@ void SettingsPageGPS::slotFoundBtDevices( bool ok,
                                           QString& error,
                                           QList<QBluetoothDeviceInfo>& btdi )
 {
-  qDebug() << "SettingsPageGPS::slotFoundBtDevices()";
-
   BtList->clear();
 
   if( ok == true )

@@ -833,7 +833,7 @@ void MapView::show_ETA(const QTime& eta, bool immediately )
 /** This slot is called if a new position fix has been established. */
 void MapView::slot_Position(const QPoint& position, const int source)
 {
-  static QTime lastDisplay = QTime::currentTime();
+  static QElapsedTimer lastDisplay;
 
   // remember for slot_settingsChange
   lastPositionChangeSource = source;
@@ -855,12 +855,12 @@ void MapView::slot_Position(const QPoint& position, const int source)
     {
       // If we have a valid fix the display is updated every 3 seconds only.
       // That will reduce the X-Server load.
-      if( lastDisplay.elapsed() < 3000 )
+      if( lastDisplay.isValid() && lastDisplay.elapsed() < 3000 )
         {
           return;
         }
 
-      lastDisplay = QTime::currentTime();
+      lastDisplay.start();
     }
 
   // if in manual mode: show position in status bar for the cross, not for the glider

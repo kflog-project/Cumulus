@@ -692,7 +692,7 @@ void GpsCon::getDataFromClient()
       return;
     }
 
-  // QTime t; t.start();
+  // QElapsedTimer t; t.start();
 
   int loops = 0;
 

@@ -40,6 +40,7 @@
 #include <QSocketNotifier>
 #include <QDateTime>
 #include <QTimer>
+#include <QElapsedTimer>
 
 #include "ipc.h"
 #include "datatypes.h"
@@ -272,7 +273,7 @@ class GpsCon : public QObject
     QTimer *timer;
 
     // Time of last client query
-    QTime lastQuery;
+    QElapsedTimer lastQuery;
 
     // IPC instance to client process
     Ipc::Server server;

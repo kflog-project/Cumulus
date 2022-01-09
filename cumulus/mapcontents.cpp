@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2021 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2022 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,7 +18,6 @@
 #include <cstdlib>
 #include <unistd.h>
 
-#include <QtGui>
 #include <QMessageBox>
 
 #include "airfield.h"
@@ -1765,15 +1764,15 @@ void MapContents::slotDownloadOpenAipAsFinished( int requests, int errors )
 
 void MapContents::slotNetworkError()
 {
-  static QTime time;
+  static QElapsedTimer timer;
 
-  if( time.isValid() && time.elapsed() < 10000 )
+  if( timer.isValid() && timer.elapsed() < 10000 )
     {
       // Do not report several errors in that time period
       return;
     }
 
-  time = QTime::currentTime();
+  timer.start();
 
   // A network error has occurred. We do report that to the user.
   QString msg = QString(tr("No connection to the Internet.<br><br>All downloads are canceled!"));
@@ -1783,15 +1782,6 @@ void MapContents::slotNetworkError()
                   msg,
                   QMessageBox::Ok,
                   MainWindow::mainWindow() );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
 
   mb.exec();
 }
@@ -3399,7 +3389,7 @@ void MapContents::drawIsoList(QPainter* targetP)
   pathIsoLines.sort();
   _isoLevelReset = false;
 
-  qDebug( "IsoList, drawTime=%dms", t.elapsed() );
+  qDebug( "IsoList, drawTime=%lldms", t.elapsed() );
 
 #if 0
   QString isos;

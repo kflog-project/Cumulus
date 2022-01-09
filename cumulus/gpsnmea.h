@@ -25,7 +25,7 @@
  *
  * This class parses and decodes NMEA sentences and provides access
  * to the last know data. Furthermore it is managing the connection to a GPS
- * receiver connected by RS232, USB or to a Maemo GPS daemon process.
+ * receiver connected by RS232, USB, BT or WiFi.
  *
  * \date 2002-2022
  *
