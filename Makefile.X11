@@ -9,10 +9,10 @@
 ################################################################################
 
 # adapt call pathes to your needs if necessary
-MY_QT    = /home/axel/Qt/5.15.2
+#MY_QT    = /home/axel/Qt/5.15.2
 
-QMAKE    = $(MY_QT)/gcc_64/bin/qmake
-LRELEASE = $(MY_QT)/lrelease
+QMAKE    = $(MY_QT)qmake
+LRELEASE = $(MY_QT)lrelease
 
 # Version is determined from the header file target.h
 VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)

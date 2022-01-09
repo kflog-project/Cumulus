@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,7 +15,7 @@
 
 #include <cmath>
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "altitude.h"
 #include "calculator.h"
@@ -188,7 +188,7 @@ void FlarmDisplay::slot_SwitchZoom( enum Zoom value )
 /** Update display */
 void FlarmDisplay::slot_UpdateDisplay()
 {
-  static QTime lastDisplay = QTime::currentTime();
+  static QElapsedTimer lastDisplay;
 
   // Widget is hidden
   if( isVisible() == false )
@@ -198,12 +198,13 @@ void FlarmDisplay::slot_UpdateDisplay()
 
   // The display is updated every 1 seconds only.
   // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < ((updateInterval * 1000) - 100) )
+  if( lastDisplay.isValid() &&
+      lastDisplay.elapsed() < ((updateInterval * 1000) - 100) )
     {
       return;
     }
 
-  lastDisplay = QTime::currentTime();
+  lastDisplay.start();
 
   // Generate a paint event for this widget, if it is visible.
   repaint();

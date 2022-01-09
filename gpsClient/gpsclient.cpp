@@ -63,7 +63,6 @@
 // Define connection lost timeout in milli seconds
 #define TO_CONLOST  10000
 
-
 GpsClient::GpsClient( const ushort portIn )
 {
   device           = "";
@@ -378,20 +377,17 @@ int GpsClient::writeGpsData( const char *sentence )
   qDebug() << "GpsClient::write():" << cmd;
 //#endif
 
-  int fdout = -1;
-
-  if( fd != -1 )
+  if( fd == -1 )
     {
-      // Serial or bt socket is used
-      fdout = fd;
-    }
-  else if( so1 != nullptr and so1->isOpen() == true )
-    {
-      fd = so1->socketDescriptor();
-    }
-  else if( so2 != nullptr and so2->isOpen() == true )
-    {
-      fd = so2->socketDescriptor();
+      // Serial or BT socket is not used
+      if( so1 != nullptr and so1->isOpen() == true )
+        {
+          fd = so1->socketDescriptor();
+        }
+      else if( so2 != nullptr and so2->isOpen() == true )
+        {
+          fd = so2->socketDescriptor();
+        }
     }
 
   // write sentence to gps device
@@ -576,14 +572,14 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
           // We initiate a shutdown of the process. That forces Cumulus to
           // start a new BT search, so that the user can select another device.
-          last = QTime();
+          last.invalidate();
           setShutdownFlag(true);
           return false;
         }
 
       // Stop supervision control to give the BT daemon time for connection.
       // The first data read will activate it again.
-      last = QTime();
+      last.invalidate();
       return true;
     }
 
@@ -913,7 +909,7 @@ void GpsClient::closeGps()
   closeTcpSockets();
   connectionLost = true;
   badSentences   = 0;
-  last = QTime();
+  last.invalidate();
 }
 
 /**
@@ -1061,8 +1057,8 @@ uchar GpsClient::calcCheckSum( const char *sentence )
 // Timeout controller
 void GpsClient::toController()
 {
-  // Null time is used to switch off the timeout control.
-  if( last.isNull() )
+  // An invalid time is used to switch off the timeout control.
+  if( last.isValid() == false )
     {
       return;
     }
@@ -1323,7 +1319,7 @@ void GpsClient::readServerMsg()
   else if( MSG_GPS_KEYS == args[0] && args.count() == 2 )
     {
       // Well known GPS message keys are received.
-      QStringList keys = args[1].split( ",", QString::SkipEmptyParts );
+      QStringList keys = args[1].split( ",", Qt::SkipEmptyParts );
 
       // Clear old content.
       gpsMessageFilter.clear();
@@ -1640,7 +1636,7 @@ bool GpsClient::flarmBinMode( QString* errorInfo )
 void GpsClient::getFlarmFlightList()
 {
   // Switch off timeout control
-  last = QTime();
+  last.invalidate();
 
   if( flarmFd < 0 )
     {
@@ -1719,7 +1715,7 @@ void GpsClient::getFlarmFlightList()
 void GpsClient::flarmFlightListError( QString error )
 {
   QByteArray ba( MSG_FLARM_FLIGHT_LIST_RES );
-  ba.append( " Error: " + error );
+  ba.append( (" Error: " + error).toUtf8() );
   writeForwardMsg( ba.data() );
 }
 
@@ -1742,7 +1738,7 @@ void GpsClient::getFlarmIgcFiles( QString& args )
     }
 
   // Switch off timeout control
-  last = QTime();
+  last.invalidate();
 
   FlarmBinComLinux fbc( flarmFd );
 
@@ -1769,7 +1765,7 @@ void GpsClient::getFlarmIgcFiles( QString& args )
         }
     }
 
-  QTime dlTime;
+  QElapsedTimer dlTime;
 
   for( int idx = 0; idx < idxList.size(); idx++ )
     {
@@ -1876,7 +1872,7 @@ bool GpsClient::flarmReset()
   qDebug() << "GpsClient::flarmReset() is called -> switching to text mode.";
 
   // Switch off timeout control
-  last = QTime();
+  last.invalidate();
 
   if( FlarmBase::getProtocolMode() != FlarmBase::binary )
     {

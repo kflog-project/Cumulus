@@ -1,11 +1,9 @@
 ################################################################################
 # X11 Cumulus-GpsClient project file for qmake
 #
-# (c) 2008-2013 Axel Pauli
+# (c) 2008-2022 Axel Pauli
 #
 # This template generate a makefile for the gpsClient binary.
-#
-# $Id$
 #
 ################################################################################
 
@@ -17,10 +15,10 @@ CONFIG     = qt warn_on
 OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 
-#version check for Qt 4.7, 4.8 and 5.x
-! contains(QT_VERSION, ^4\\.[78]\\..*|^5\\..*) {
+#version check for Qt 5.x
+! contains(QT_VERSION, ^5\\..*) {
   message("Cannot build Cumulus with Qt version $${QT_VERSION}.")
-  error("Use at least Qt 4.7. or higher!")
+  error("Please use Qt 5!")
 }
 
 # Set a Qt5 compiler define

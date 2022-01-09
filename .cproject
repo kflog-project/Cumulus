@@ -125,7 +125,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration artifactName="Cumulus" buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.151648933.347149177" name="QT5 Cumulus GCC" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=" parent="org.eclipse.cdt.build.core.emptycfg">
+				<configuration artifactName="Cumulus" buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.151648933.347149177" name="QT5 Cumulus GCC" optionalBuildProperties="org.eclipse.cdt.docker.launcher.containerbuild.property.selectedvolumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.volumes=,org.eclipse.cdt.docker.launcher.containerbuild.property.connection=unix:///var/run/docker.sock" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.151648933.347149177." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1350869435" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.GNU_ELF" id="cdt.managedbuild.target.gnu.platform.base.1488231568" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
@@ -136,10 +136,11 @@
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/Qt"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtCore"/>
-									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/Gui"/>
-									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtWidgets"/>
+									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtGui"/>
+									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtXml"/>
+									<listOptionValue builtIn="false" value="/home/axel/Ot/5.15,2/gcc_64/include/QtBluetooth"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.compiler.option.preprocessor.def.599795164" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="BLUEZ=1"/>
@@ -154,9 +155,9 @@
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtCore"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtGui"/>
-									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/Widget"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtNetwork"/>
 									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtXml"/>
+									<listOptionValue builtIn="false" value="/home/axel/Qt/5.15.2/gcc_64/include/QtWidgets"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.836416623" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>

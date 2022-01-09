@@ -20,7 +20,7 @@
  *
  * \author Axel Pauli
  *
- * \date 2004-2021
+ * \date 2004-2022
  *
  * \brief GPS client manager
  *
@@ -50,7 +50,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTcpSocket>
-#include <QTime>
+#include <QElapsedTimer>
 
 #include "ipc.h"
 
@@ -296,7 +296,7 @@ public:
   Ipc::Client clientForward;
 
   // used as timeout control supervision for the GPS device connection
-  QTime last;
+  QElapsedTimer last;
 
   // Flag to indicate forwarding of GPS data to the server process.
   bool forwardGpsData;
@@ -327,6 +327,6 @@ public:
   bool activateTimeout;
 
   /** Timeout control for Flarm IGC download. */
-  QTime downloadTimeControl;
+  QElapsedTimer downloadTimeControl;
 };
 
