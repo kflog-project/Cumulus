@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2021 by Axel Pauli
+                               2008-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -21,11 +21,7 @@
 
 #include <cmath>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "generalconfig.h"
 #include "layout.h"
@@ -55,10 +51,6 @@ MapInfoBox::MapInfoBox( QWidget *parent,
 
   // start font size
   int start = 14;
-
-#if defined(QT_5) && defined(ANDROID)
-  start *= 2;
-#endif
 
   QFont f = font();
 
@@ -96,17 +88,6 @@ MapInfoBox::MapInfoBox( QWidget *parent,
           break;
         }
     }
-
-  // Set the calculated font.
-#ifdef ANDROID
-  // Android uses a predefined point size
-  f.setPointSize( 8 );
-#endif
-
-#if defined(QT_5) && defined(ANDROID)
-  // Android and QT5 uses a predefined point size
-  f.setPointSize( 2 * 8 );
-#endif
 
   setFont(f);
 
@@ -416,7 +397,9 @@ void MapInfoBox::showEvent( QShowEvent *event )
   // reset this variable to force a recalculation
   m_maxTextLabelFontHeight = -1;
 
-  if( m_text->pixmap() == 0 )
+  QPixmap pixmap = m_text->pixmap( Qt::ReturnByValue );
+
+  if( pixmap.isNull() )
     {
       // Update text box only, if it is a text box. Calling setValue shall ensure
       // that the font is adapted to the layout size.
@@ -449,7 +432,9 @@ void MapInfoBox::resizeEvent( QResizeEvent* event )
   // reset this variable to force a recalculation
   m_maxTextLabelFontHeight = -1;
 
-  if( m_text->pixmap() == 0 )
+  QPixmap pixmap = m_text->pixmap( Qt::ReturnByValue );
+
+  if( pixmap.isNull() )
     {
       // We are a text label.
       if( isVisible() )
@@ -461,7 +446,9 @@ void MapInfoBox::resizeEvent( QResizeEvent* event )
 
 void MapInfoBox::determineMaxFontHeight()
 {
-  if( m_text->pixmap() != 0 )
+  QPixmap pixmap = m_text->pixmap( Qt::ReturnByValue );
+
+  if( pixmap.isNull() == false )
     {
       // MapInfoBox is not a text display box.
       return;
@@ -487,7 +474,9 @@ void MapInfoBox::determineMaxFontHeight()
 
 void MapInfoBox::adaptText2LabelBox()
 {
-  if( m_text->pixmap() != 0 || m_text->text().isEmpty() )
+  QPixmap pixmap = m_text->pixmap( Qt::ReturnByValue );
+
+  if( pixmap.isNull() == false || m_text->text().isEmpty() )
     {
       // MapInfoBox is not a text display box or text is empty.
       return;

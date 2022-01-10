@@ -57,10 +57,9 @@ class Airspace : public LineElement
 private:
 
 /**
- * Don't allow copies and assignments.
+ * Don't allow copies.
  */
 Airspace(const Airspace& );
-Airspace& operator=(const Airspace& x);
 
 public:
 

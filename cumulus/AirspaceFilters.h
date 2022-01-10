@@ -24,13 +24,12 @@
  * The single filters are defined is a table. The content of
  * the table is stored in a text file in the user's data directory.
  *
- * \date 2020-2021
+ * \date 2020-2022
  *
  * \version 1.1
  */
 
-#ifndef AIRSPACE_FILTERS_H
-#define AIRSPACE_FILTERS_H
+#pragma once
 
 #include <QWidget>
 #include <QHash>
@@ -156,4 +155,3 @@ private:
   static QMutex mutex;
 };
 
-#endif /* AIRSPACE_FILTERS_H */

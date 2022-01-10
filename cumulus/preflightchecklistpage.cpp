@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2014-2018 by Axel Pauli
+**   Copyright (c): 2014-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,15 +15,7 @@
 
 #include <algorithm>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "generalconfig.h"
 #include "helpbrowser.h"
@@ -81,18 +73,7 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   connect( m_list, SIGNAL(cellClicked(int, int)),
            SLOT(slotCellClicked(int, int)) );
 
-#ifdef ANDROID
-  QScrollBar* lvsb = m_list->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture(m_list->viewport(), QtScroller::LeftMouseButtonGesture);
-#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   m_list->setStyleSheet( style );
@@ -112,13 +93,8 @@ PreFlightCheckListPage::PreFlightCheckListPage( QWidget* parent ) :
   QTableWidgetItem *item = new QTableWidgetItem( tr(" Check Point ") );
   m_list->setHorizontalHeaderItem( 0, item );
 
-#ifndef ANDROID
   int buttonSize = Layout::getButtonSize();
-#else
-  int buttonSize = Layout::getButtonSize(16);
-#endif
-
-  iconSize   = buttonSize - 5;
+  iconSize = buttonSize - 5;
 
   QPushButton* helpButton = new QPushButton(this);
   helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
@@ -261,11 +237,7 @@ void PreFlightCheckListPage::slotEditCell( int row, int column )
   qid.setWindowTitle( title );
   qid.setLabelText( label );
   qid.setInputMode( QInputDialog::TextInput );
-
-#ifndef MAEMO5
   qid.setInputMethodHints( Qt::ImhNoPredictiveText );
-#endif
-
   qid.setTextValue( item->text() );
   qid.show();
   qid.setMinimumWidth( width() );
@@ -423,14 +395,6 @@ void PreFlightCheckListPage::slotDeleteRows()
 
   mb.setDefaultButton( QMessageBox::No );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
   if( mb.exec() == QMessageBox::No )
     {
       return;
@@ -550,7 +514,7 @@ bool PreFlightCheckListPage::saveCheckList()
   stream << "# Cumulus checklist, created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
+         << QCoreApplication::applicationVersion() << Qt::endl;
 
   for( int i = 0; i < m_list->rowCount(); i++ )
     {
@@ -561,7 +525,7 @@ bool PreFlightCheckListPage::saveCheckList()
 	  continue;
 	}
 
-      stream << m_list->item( i, 1 )->text().trimmed() << endl;
+      stream << m_list->item( i, 1 )->text().trimmed() << Qt::endl;
     }
 
   f.close();

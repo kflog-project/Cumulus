@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,15 +15,7 @@
 
 #include <algorithm>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
@@ -62,18 +54,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef ANDROID
-  QScrollBar* lvsb = list->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   list->setStyleSheet( style );
@@ -92,11 +73,7 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
 
   QHeaderView* hHeader = list->horizontalHeader();
   hHeader->setStretchLastSection( true );
-#if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
-#else
-  hHeader->setClickable( true );
-#endif
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );
@@ -148,16 +125,12 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   deleteButton->setMaximumSize(buttonSize, buttonSize);
   deleteButton->setEnabled(false);
 
-#if defined(QSCROLLER) || defined(QTSCROLLER)
-
   m_enableScroller = new QCheckBox("][");
   m_enableScroller->setCheckState( Qt::Checked );
   m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
 
   connect( m_enableScroller, SIGNAL(stateChanged(int)),
 	   this, SLOT(slot_scrollerBoxToggled(int)) );
-
-#endif
 
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
@@ -189,14 +162,8 @@ FlarmAliasList::FlarmAliasList( QWidget *parent ) :
   vbox->addSpacing(32);
   vbox->addWidget( deleteButton );
   vbox->addStretch(2);
-
-#if defined(QSCROLLER) || defined(QTSCROLLER)
-
   vbox->addWidget( m_enableScroller, 0, Qt::AlignCenter );
   vbox->addStretch(2);
-
-#endif
-
   vbox->addWidget( okButton );
   vbox->addSpacing(32);
   vbox->addWidget( closeButton );
@@ -230,11 +197,7 @@ void FlarmAliasList::showEvent( QShowEvent *event )
   int len1 = len - len / 5;
   int len2 = len + (2 * len / 5);
 
-#ifdef QT_5
   hv->setSectionResizeMode( QHeaderView::Fixed );
-#else
-  hv->setResizeMode( QHeaderView::Fixed );
-#endif
   hv->resizeSection( 0, len1 );
   hv->resizeSection( 1, len2 );
   hv->resizeSection( 2, len1 );
@@ -300,14 +263,6 @@ void FlarmAliasList::slot_DeleteRows()
 
   mb.setDefaultButton( QMessageBox::No );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
   if( mb.exec() == QMessageBox::No )
     {
       return;
@@ -369,12 +324,6 @@ void FlarmAliasList::slot_Ok()
                                   tr( "Please fill out all fields!" ),
                                   QMessageBox::Ok,
                                   this );
-#ifdef ANDROID
-                  mb.show();
-                  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2,
-                                                   height()/2 - mb.height()/2 ));
-                  mb.move( pos );
-#endif
                   mb.exec();
                   return;
                 }
@@ -493,25 +442,14 @@ void FlarmAliasList::slot_CellClicked( int row, int column )
 
   bool ok;
 
-#ifndef MAEMO5
   QString text = QInputDialog::getText( this,
                                         title,
                                         label,
                                         QLineEdit::Normal,
                                         item->text(),
                                         &ok,
-                                        0,
+                                        Qt::Dialog,
                                         Qt::ImhNoPredictiveText );
-#else
-  QString text = QInputDialog::getText( this,
-                                        title,
-                                        label,
-                                        QLineEdit::Normal,
-                                        item->text(),
-                                        &ok,
-                                        0 );
-#endif
-
   if( ok )
     {
       item->setText( text );
@@ -588,13 +526,13 @@ bool FlarmAliasList::loadAliasData()
 
       // A valid line entry has the format: <id>=<alias> where the equal sign
       // is the delimiter between the two parts. (old format)
-      QStringList sl = line.split( "=", QString::KeepEmptyParts );
+      QStringList sl = line.split( "=", Qt::KeepEmptyParts );
 
       if( sl.size() == 1 )
         {
           // The new alias file format has to be used, where the delimeter is ;
           // <id>;<alias>;<draw-flag>
-          sl = line.split( ";", QString::KeepEmptyParts );
+          sl = line.split( ";", Qt::KeepEmptyParts );
         }
 
       QString key;
@@ -717,40 +655,11 @@ void FlarmAliasList::slot_scrollerBoxToggled( int state )
 
   if( state == Qt::Checked )
     {
-
-#ifdef QSCROLLER
       list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
       QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-      list->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-      QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef ANDROID
-       // Reset scrollbar style sheet to default.
-       QScrollBar* lvsb = list->verticalScrollBar();
-       lvsb->setStyleSheet( "" );
-#endif
-
     }
   else if( state == Qt::Unchecked)
     {
-
-#ifdef QSCROLLER
       QScroller::ungrabGesture( list->viewport() );
- #endif
-
-#ifdef QTSCROLLER
-       QtScroller::ungrabGesture( list->viewport() );
-#endif
-
-#ifdef ANDROID
-       // Make the vertical scrollbar bigger for Android
-       QScrollBar* lvsb = list->verticalScrollBar();
-       lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
     }
 }

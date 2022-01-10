@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2021 Axel Pauli
+**   Copyright (c): 2013-2022 Axel Pauli
 **
 **   Created on: 16.01.2013
 **
@@ -175,7 +175,7 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
           isTask = true;
           tpList.clear();
 
-          tmpList = line.split( "|", QString::KeepEmptyParts );
+          tmpList = line.split( "|", Qt::KeepEmptyParts );
 
           if( tmpList.size() < 2 ) continue;
 
@@ -188,7 +188,7 @@ FlightTask* TaskFileManager::readTaskFile( QString taskName )
               // new task point to be created
               TaskPoint tp;
 
-              tmpList = line.split( "|", QString::KeepEmptyParts );
+              tmpList = line.split( "|", Qt::KeepEmptyParts );
 
               if( tmpList.size() < 14 ) continue;
 

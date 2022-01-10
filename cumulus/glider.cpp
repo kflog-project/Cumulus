@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -33,7 +33,7 @@ bool Glider::load(QSettings *config, int id)
   //check if an entry exists
   if( config->contains( keyname.arg( id ) ) )
     {
-      QStringList data = config->value( keyname.arg( id ), "" ).toString().split(';', QString::KeepEmptyParts);
+      QStringList data = config->value( keyname.arg( id ), "" ).toString().split(';', Qt::KeepEmptyParts);
 
       // qDebug("Glider::load(): No of fetched glider items is %d", data.count());
 

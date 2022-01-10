@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2018 Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2010-2022 Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,12 +16,8 @@
 /**
  * This class is a simple HTTP download client.
  */
-#ifndef QT_5
-#include <QtGui>
-#else
-#include <QtWidgets>
-#endif
 
+#include <QtWidgets>
 #include <QtNetwork>
 
 #include "httpclient.h"
@@ -180,14 +176,6 @@ bool HttpClient::sendRequest2Server()
     }
 
   QString hw = " (Qt/Linux)";
-
-#ifdef ANDROID
-  hw = " (Qt/Android)";
-#elif MAEMO4
-  hw = " (Qt/Maemo4)";
-#elif MAEMO5
-  hw = " (Qt/Maemo5)";
-#endif
 
   QString appl = QCoreApplication::applicationName() + "/" +
                  QCoreApplication::applicationVersion() + hw;
@@ -465,7 +453,7 @@ void HttpClient::slotFinished()
  */
 bool HttpClient::parseProxy( QString proxyIn, QString& hostName, quint16& port )
 {
-  QStringList proxyParams = proxyIn.split(":", QString::SkipEmptyParts);
+  QStringList proxyParams = proxyIn.split(":", Qt::SkipEmptyParts);
 
   if( proxyParams.size() != 2 )
     {

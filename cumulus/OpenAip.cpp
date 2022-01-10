@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2021 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -1952,7 +1952,7 @@ bool OpenAip::readAirspaceGeometrie( QXmlStreamReader& xml, Airspace& as )
       return false;
     }
 
-  QStringList polygonList = xml.readElementText().split(QRegExp(",?\\s+"), QString::SkipEmptyParts );
+  QStringList polygonList = xml.readElementText().split(QRegExp(",?\\s+"), Qt::SkipEmptyParts );
 
   if( polygonList.isEmpty() )
     {

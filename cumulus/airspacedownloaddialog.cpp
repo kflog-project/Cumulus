@@ -6,18 +6,14 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "airspacedownloaddialog.h"
 #include "generalconfig.h"
@@ -114,15 +110,6 @@ void AirspaceDownloadDialog::slotDownload()
 
   mb.setDefaultButton( QMessageBox::No );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
   if( mb.exec() == QMessageBox::No )
     {
       return;
@@ -158,7 +145,7 @@ bool AirspaceDownloadDialog::checkCountryList( const QString& countries, QString
     }
 
   // We check, if the passed country string is correct.
-  countrylist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+  countrylist = openAipCountries.split(QRegExp("[, ]"), Qt::SkipEmptyParts);
 
   for( int i = 0; i < countrylist.size(); i++ )
     {
@@ -174,15 +161,6 @@ bool AirspaceDownloadDialog::checkCountryList( const QString& countries, QString
                       tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
                       QMessageBox::Ok,
                       this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
       mb.exec();
       countrylist.clear();
       return false;

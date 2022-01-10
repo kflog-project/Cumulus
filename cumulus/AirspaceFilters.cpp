@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2020-2021 Axel Pauli
+**   Copyright (c): 2020-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,15 +15,7 @@
 
 #include <algorithm>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "AirspaceFilters.h"
 #include "layout.h"
@@ -31,7 +23,6 @@
 #include "helpbrowser.h"
 #include "map.h"
 #include "rowdelegate.h"
-#include "target.h"
 
 QHash<QString, QMultiHash<QString, QString> > AirspaceFilters::countryHash;
 
@@ -68,18 +59,7 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   table->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef ANDROID
-  QScrollBar* lvsb = table->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture( table->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( table->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   table->setStyleSheet( style );
@@ -98,11 +78,7 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
 
   QHeaderView* hHeader = table->horizontalHeader();
   hHeader->setStretchLastSection( true );
-#if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
-#else
-  hHeader->setClickable( true );
-#endif
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );
@@ -148,16 +124,12 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   deleteButton->setMaximumSize(buttonSize, buttonSize);
   deleteButton->setEnabled(false);
 
-#if defined(QSCROLLER) || defined(QTSCROLLER)
-
   m_enableScroller = new QCheckBox("][");
   m_enableScroller->setCheckState( Qt::Checked );
   m_enableScroller->setMinimumHeight( Layout::getButtonSize(12) );
 
   connect( m_enableScroller, SIGNAL(stateChanged(int)),
            this, SLOT(slot_scrollerBoxToggled(int)) );
-
-#endif
 
   QPushButton *okButton = new QPushButton;
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
@@ -192,14 +164,8 @@ AirspaceFilters::AirspaceFilters( QWidget *parent ) :
   vbox->addSpacing(32);
   vbox->addWidget( deleteButton );
   vbox->addStretch(2);
-
-#if defined(QSCROLLER) || defined(QTSCROLLER)
-
   vbox->addWidget( m_enableScroller, 0, Qt::AlignCenter );
   vbox->addStretch(2);
-
-#endif
-
   vbox->addWidget( okButton );
   vbox->addSpacing(32);
   vbox->addWidget( closeButton );
@@ -266,7 +232,7 @@ void AirspaceFilters::loadDataFromFile()
 
       // A valid line entry has the format:
       // <activated (True/False)>,<country>,<AS-Type>,<Name>
-      QStringList sl = line.split( ",", QString::KeepEmptyParts );
+      QStringList sl = line.split( ",", Qt::KeepEmptyParts );
 
       if( sl.size() != 4 )
         {
@@ -316,7 +282,7 @@ void AirspaceFilters::saveData2File()
   stream << "# Cumulus Airspace filters file created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
+         << QCoreApplication::applicationVersion() << Qt::endl;
 
     for( int i = 0; i < table->rowCount(); i++ )
       {
@@ -329,7 +295,7 @@ void AirspaceFilters::saveData2File()
             continue;
           }
 
-        QStringList sl = item1->text().split( ",", QString::KeepEmptyParts );
+        QStringList sl = item1->text().split( ",", Qt::KeepEmptyParts );
 
         // A valid line entry has the format:
         // <activated (True/False)>,<country>,<AS-Type>,<Name>
@@ -340,7 +306,7 @@ void AirspaceFilters::saveData2File()
                << sl[0].trimmed() << ","
                << sl[1].trimmed() << ","
                << sl[2].trimmed()
-               << endl;
+               << Qt::endl;
       }
 
   f.close();
@@ -415,14 +381,6 @@ void AirspaceFilters::slot_DeleteRows()
 
   mb.setDefaultButton( QMessageBox::No );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
   if( mb.exec() == QMessageBox::No )
     {
       return;
@@ -488,7 +446,7 @@ void AirspaceFilters::slot_Ok()
             }
 
             // <activated (True/False)>,<country>,<AS-Type>,<AS-Name>
-            QStringList sl = filter.split( ",", QString::KeepEmptyParts );
+            QStringList sl = filter.split( ",", Qt::KeepEmptyParts );
 
             if( sl.size() != 3 )
               {
@@ -497,12 +455,6 @@ void AirspaceFilters::slot_Ok()
                                 tr( "Expecting filter elements: <country>,<AS-Type>,<AS-Name>" ),
                                 QMessageBox::Ok,
                                 this );
-  #ifdef ANDROID
-                mb.show();
-                QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2,
-                                                 height()/2 - mb.height()/2 ));
-                mb.move( pos );
-  #endif
                 mb.exec();
                 return;
               }
@@ -524,7 +476,7 @@ void AirspaceFilters::slot_Ok()
       QString text1 = table->item( i, 1 )->text().trimmed();
 
       // <activated (True/False)>,<country>,<AS-Type>,<Name>
-      QStringList sl = text1.split( ",", QString::KeepEmptyParts );
+      QStringList sl = text1.split( ",", Qt::KeepEmptyParts );
 
       if( countryHash.contains( sl[0].trimmed() ) )
         {
@@ -590,25 +542,14 @@ void AirspaceFilters::slot_CellClicked( int row, int column )
 
       bool ok;
 
-#ifndef MAEMO5
       QString text = QInputDialog::getText( this,
                                             title,
                                             label,
                                             QLineEdit::Normal,
                                             item->text(),
                                             &ok,
-                                            0,
+                                            Qt::Dialog,
                                             Qt::ImhNoPredictiveText );
-#else
-      QString text = QInputDialog::getText( this,
-                                            title,
-                                            label,
-                                            QLineEdit::Normal,
-                                            item->text(),
-                                            &ok,
-                                            0 );
-#endif
-
       if( ok )
         {
           item->setText( text );
@@ -683,7 +624,7 @@ bool AirspaceFilters::loadFilterData()
 
       // A valid line entry has the format:
       // <activated (True/False)>,<country>,<AS-Type>,<Name>
-      QStringList sl = line.split( ",", QString::KeepEmptyParts );
+      QStringList sl = line.split( ",", Qt::KeepEmptyParts );
 
       if( sl.size() != 4 )
         {
@@ -737,40 +678,11 @@ void AirspaceFilters::slot_scrollerBoxToggled( int state )
 
   if( state == Qt::Checked )
     {
-
-#ifdef QSCROLLER
       table->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
       QScroller::grabGesture( table->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-      table->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-      QtScroller::grabGesture( table->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef ANDROID
-       // Reset scrollbar style sheet to default.
-       QScrollBar* lvsb = table->verticalScrollBar();
-       lvsb->setStyleSheet( "" );
-#endif
-
     }
   else if( state == Qt::Unchecked)
     {
-
-#ifdef QSCROLLER
       QScroller::ungrabGesture( table->viewport() );
- #endif
-
-#ifdef QTSCROLLER
-       QtScroller::ungrabGesture( table->viewport() );
-#endif
-
-#ifdef ANDROID
-       // Make the vertical scrollbar bigger for Android
-       QScrollBar* lvsb = table->verticalScrollBar();
-       lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
     }
 }

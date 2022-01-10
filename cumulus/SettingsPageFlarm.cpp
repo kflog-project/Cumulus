@@ -263,7 +263,7 @@ void SettingsPageFlarm::addRow2List( const QString& rowData )
       return;
     }
 
-  QList<QString> items = rowData.split( ";", QString::KeepEmptyParts );
+  QList<QString> items = rowData.split( ";", Qt::KeepEmptyParts );
 
   if( items.size() != 3 )
     {
@@ -419,7 +419,7 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
                                           QLineEdit::Normal,
                                           item->text(),
                                           &ok,
-                                          0,
+                                          Qt::Dialog,
                                           Qt::ImhNoPredictiveText );
     if( ok )
       {

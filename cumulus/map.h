@@ -31,6 +31,7 @@
 
 #include <QMap>
 #include <QMutableMapIterator>
+#include <QElapsedTimer>
 #include <QPoint>
 #include <QWidget>
 #include <QBitmap>
@@ -527,7 +528,7 @@ private:
    *
    * \param suppressTime Elapsed suppress time for removing of map element.
    */
-  void clearAirspaceMap( QMutableMapIterator<QString, QTime>& it,
+  void clearAirspaceMap( QMutableMapIterator<QString, QElapsedTimer>& it,
                          int suppressTime );
 
 #ifdef FLARM
@@ -697,9 +698,9 @@ protected:
   QMap<QString, int> m_nearAsMap;     // AS Text and AS type
 
   /* Airspace conflicts touch times */
-  QMap<QString, QTime> m_insideAsMapTouchTime;   // AS Text and touch time
-  QMap<QString, QTime> m_veryNearAsMapTouchTime; // AS Text and touch time
-  QMap<QString, QTime> m_nearAsMapTouchTime;     // AS Text and touch time
+  QMap<QString, QElapsedTimer> m_insideAsMapTouchTime;   // AS Text and touch time
+  QMap<QString, QElapsedTimer> m_veryNearAsMapTouchTime; // AS Text and touch time
+  QMap<QString, QElapsedTimer> m_nearAsMapTouchTime;     // AS Text and touch time
 
   /** List of drawn cities. */
   QList<BaseMapElement *> m_drawnCityList;

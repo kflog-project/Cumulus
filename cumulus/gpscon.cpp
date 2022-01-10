@@ -416,7 +416,7 @@ bool GpsCon::startClientProcess()
     {
       pathOSVar += QString(":") + QString(pathVar);
 
-      pathes = pathOSVar.split( QChar(':'), QString::SkipEmptyParts );
+      pathes = pathOSVar.split( QChar(':'), Qt::SkipEmptyParts );
     }
 
   bool found = false;

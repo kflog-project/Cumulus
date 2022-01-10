@@ -1495,7 +1495,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, const bool doScale
 
   QPixmap pm;
 
-  if( QPixmapCache::find( key, pm ) )
+  if( QPixmapCache::find( key, &pm ) )
     {
       return pm;
     }
@@ -1559,7 +1559,7 @@ QPixmap GeneralConfig::loadPixmapAutoScaled( const QString& pixmapName )
 
   QPixmap pm;
 
-  if( QPixmapCache::find( key, pm ) )
+  if( QPixmapCache::find( key, &pm ) )
     {
       return pm;
     }
@@ -1592,7 +1592,7 @@ QPixmap GeneralConfig::loadPixmap( const QString& pixmapName, int size )
 
   QPixmap pm;
 
-  if( QPixmapCache::find( cacheKey, pm ) )
+  if( QPixmapCache::find( cacheKey, &pm ) )
     {
       return pm;
     }

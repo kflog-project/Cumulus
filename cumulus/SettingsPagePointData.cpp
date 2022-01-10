@@ -6,22 +6,14 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2018 Axel Pauli
+ **   Copyright (c): 2008-2022 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "generalconfig.h"
 #include "helpbrowser.h"
@@ -66,13 +58,7 @@ SettingsPagePointData::SettingsPagePointData(QWidget *parent) :
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
 
-#ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   // Add scroll area to its own layout
   sal->addWidget( sa );
@@ -385,7 +371,7 @@ bool SettingsPagePointData::save()
 #ifdef INTERNET
 
       QString openAipCountries = m_countriesOaip4Download->text().trimmed().toLower();
-      QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+      QStringList clist = openAipCountries.split(QRegExp("[, ]"), Qt::SkipEmptyParts);
 
       // Store only valid entries permanently.
       if( checkCountryList(clist) )
@@ -464,7 +450,7 @@ void SettingsPagePointData::slot_downloadOpenAip()
 
   // We will check, if the country entries of openAIP are valid. If not a
   // warning message is displayed and the action is aborted.
-  QStringList clist = openAipCountries.split(QRegExp("[, ]"), QString::SkipEmptyParts);
+  QStringList clist = openAipCountries.split(QRegExp("[, ]"), Qt::SkipEmptyParts);
 
   if( ! checkCountryList(clist) )
     {
@@ -473,15 +459,6 @@ void SettingsPagePointData::slot_downloadOpenAip()
                       tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
                       QMessageBox::Ok,
                       this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
       mb.exec();
       return;
     }
@@ -496,16 +473,6 @@ void SettingsPagePointData::slot_downloadOpenAip()
                   this );
 
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
 
   if( mb.exec() == QMessageBox::No )
     {

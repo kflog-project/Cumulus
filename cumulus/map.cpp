@@ -563,9 +563,9 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
   p_displayAirspaceInfo( current );
 }
 
-void Map::wheelEvent(QWheelEvent *event)
+void Map::wheelEvent( QWheelEvent *event )
 {
-  int numDegrees = event->delta() / 8;
+  int numDegrees = event->angleDelta().y() / 8;
   int numSteps = numDegrees / 15;
 
   if( abs(numSteps) > 10 || numSteps == 0 )
@@ -3240,9 +3240,9 @@ void Map::checkAirspace(const QPoint& pos)
     {
       // Tidy up suppress maps with stored conflicts, if warning suppression time
       // is set.
-      QMutableMapIterator<QString, QTime> it(m_insideAsMapTouchTime);
-      QMutableMapIterator<QString, QTime> vt(m_veryNearAsMapTouchTime);
-      QMutableMapIterator<QString, QTime> nt(m_nearAsMapTouchTime);
+      QMutableMapIterator<QString, QElapsedTimer> it(m_insideAsMapTouchTime);
+      QMutableMapIterator<QString, QElapsedTimer> vt(m_veryNearAsMapTouchTime);
+      QMutableMapIterator<QString, QElapsedTimer> nt(m_nearAsMapTouchTime);
 
       clearAirspaceMap( it, warSupMS );
       clearAirspaceMap( vt, warSupMS );
@@ -3268,6 +3268,8 @@ void Map::checkAirspace(const QPoint& pos)
   Airspace::ConflictType conflict= Airspace::none, lastConflict= Airspace::none;
 
   bool warn = false; // warning flag
+  QElapsedTimer timer; // time control
+  timer.start();
 
   // check if there are overlaps between the region around our current position and airspaces
   for( int loop = 0; loop < m_airspaceRegionList.count(); loop++ )
@@ -3339,14 +3341,14 @@ void Map::checkAirspace(const QPoint& pos)
           // Check, if airspace is to suppress
           if( warSupMS > 0 )
             {
-              if( m_insideAsMapTouchTime.contains(pSpace->getInfoString()) )
+              if( m_insideAsMapTouchTime.contains( pSpace->getInfoString()) )
                 {
                   // Yes suppress airspace
                   continue;
                 }
 
               // Add airspace to suppression control map
-              m_insideAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
+              m_insideAsMapTouchTime.insert( pSpace->getInfoString(), timer );
             }
 
           // Check, if airspace is already known as conflict
@@ -3374,7 +3376,7 @@ void Map::checkAirspace(const QPoint& pos)
                 }
 
               // Add airspace to suppression control map
-              m_veryNearAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
+              m_veryNearAsMapTouchTime.insert( pSpace->getInfoString(), timer );
             }
 
           // Check, if airspace is already known as conflict. A warning is setup
@@ -3404,7 +3406,7 @@ void Map::checkAirspace(const QPoint& pos)
                 }
 
               // Add airspace to suppression control map
-              m_nearAsMapTouchTime.insert( pSpace->getInfoString(), QTime::currentTime() );
+              m_nearAsMapTouchTime.insert( pSpace->getInfoString(), timer );
             }
 
           // Check, if airspace is already known as conflict. A warning is setup
@@ -3587,7 +3589,7 @@ void Map::checkAirspace(const QPoint& pos)
     }
 }
 
-void Map::clearAirspaceMap( QMutableMapIterator<QString, QTime>& it,
+void Map::clearAirspaceMap( QMutableMapIterator<QString, QElapsedTimer>& it,
                             int suppressTime )
 {
   while( it.hasNext () )

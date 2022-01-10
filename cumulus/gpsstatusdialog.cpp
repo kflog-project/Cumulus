@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2021 by Axel Pauli
+**                  2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,15 +16,7 @@
 
 #include <cmath>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "generalconfig.h"
 #include "gpsstatusdialog.h"
@@ -74,34 +66,14 @@ GpsStatusDialog::GpsStatusDialog(QWidget * parent) :
                                     Qt::TextSelectableByKeyboard);
 
   QFont f = font();
-
-#if defined MAEMO
-  f.setPixelSize(16);
-#elif ANDROID
-  f.setPointSize(6);
-#else
   f.setPixelSize(14);
-#endif
 
   nmeaBox->setFont(f);
 
   QScrollArea *nmeaScrollArea = new QScrollArea;
   nmeaScrollArea->setWidgetResizable( true );
   nmeaScrollArea->setWidget(nmeaBox);
-
-#ifdef ANDROID
-  // Make the vertical scrollbar bigger for Android
-  QScrollBar* vsb = nmeaScrollArea->verticalScrollBar();
-  vsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture( nmeaScrollArea->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( nmeaScrollArea->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   QVBoxLayout* nmeaBoxLayout = new QVBoxLayout;
   nmeaBoxLayout->setSpacing( 0 );
@@ -261,7 +233,7 @@ void GpsStatusDialog::slot_Sentence(const QString& sentence)
 */
 void GpsStatusDialog::ExtractSatsInView(const QString& sentence)
 {
-  QStringList slst = sentence.split( QRegExp("[,*]"), QString::KeepEmptyParts );
+  QStringList slst = sentence.split( QRegExp("[,*]"), Qt::KeepEmptyParts );
 
   if( slst.size() < 8 )
     {
@@ -379,24 +351,13 @@ void GpsStatusDialog::slot_SaveNmeaData()
 
   bool ok;
 
-#ifndef MAEMO5
   QString fileName = QInputDialog::getText( this, tr("Append to?"),
                                             tr("File name:"),
                                             QLineEdit::Normal,
                                             "nmea-stream.log",
                                             &ok,
-                                            0,
+                                            Qt::Dialog,
                                             Qt::ImhNoPredictiveText );
-#else
-  QString fileName = QInputDialog::getText( this, tr("Append to?"),
-                                            tr("File name:"),
-                                            QLineEdit::Normal,
-                                            "nmea-stream.log",
-                                            &ok,
-                                            0 );
-
-#endif
-
   if( ok && ! fileName.isEmpty() )
     {
       if( ! fileName.startsWith( "/") )
@@ -416,14 +377,6 @@ void GpsStatusDialog::slot_SaveNmeaData()
                           tr( "Cannot open file!" ),
                           QMessageBox::Ok,
                           this );
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
           mb.exec();
           return;
         }
@@ -522,13 +475,7 @@ void GpsElevationAzimuthDisplay::paintEvent( QPaintEvent *event )
 
   QPainter p(this);
   QFont f = font();
-
-#ifdef ANDROID
-  f.setPointSize(6);
-#else
   f.setPixelSize(12);
-#endif
-
   p.setFont(f);
 
   // copy background to widget
@@ -600,13 +547,7 @@ void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
     }
 
   QFont f = font();
-
-#ifdef ANDROID
-  f.setPointSize(6);
-#else
   f.setPixelSize(12);
-#endif
-
   p->setFont(f);
 
   int margin = 2 * Layout::getIntScaledDensity();
@@ -696,13 +637,7 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
   else
     {
       QFont f = font();
-
-#ifdef ANDROID
-  f.setPointSize(6);
-#else
-  f.setPixelSize(12);
-#endif
-
+      f.setPixelSize(12);
       pw.setFont(f);
       pw.fillRect( center.x()-23, center.y()-7, 46, 14, palette().color(QPalette::Window) );
 
@@ -742,12 +677,7 @@ void GpsSnrDisplay::drawSat( QPainter *p, int i, int cnt, const SIVInfo& sivi )
     }
 
   QFont f = font();
-
-#ifdef ANDROID
-  f.setPointSize(6);
-#else
   f.setPixelSize(12);
-#endif
 
   p->setFont( f );
   p->setPen( Qt::black );

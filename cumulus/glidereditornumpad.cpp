@@ -7,22 +7,14 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2017 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "androidstyle.h"
 #include "doubleNumberEditor.h"
@@ -653,7 +645,7 @@ bool GliderEditorNumPad::readLK8000PolarFile( const QString& fileName, Polar& po
       // Lines can contain at their right end C++ comments. This part must be
       // removed first.
       QStringList items = line.split( "//" );
-      items = items.at(0).split( ",", QString::SkipEmptyParts );
+      items = items.at(0).split( ",", Qt::SkipEmptyParts );
 
       if( items.size() < 9 )
         {
@@ -861,15 +853,6 @@ void GliderEditorNumPad::accept()
                   text,
                   QMessageBox::Ok,
                   this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
   mb.exec();
 }
 

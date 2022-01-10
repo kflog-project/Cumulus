@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2021 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -629,7 +629,7 @@ void ReachableList::removeDoubles()
     } // End of for i
 
   // sort remove list
-  std::sort( removeList.begin(), removeList.end(), qLess<int>() );
+  std::sort( removeList.begin(), removeList.end(), std::less<int>() );
 
   // Start remove at the end of the list so that access index is always valid.
   for (int i = removeList.count()-1; i >= 0; i--)

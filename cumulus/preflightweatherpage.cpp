@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2021 by Axel Pauli
+ **   Copyright (c): 2013-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,20 +15,7 @@
 
 #include <algorithm>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
-
-#ifdef ANDROID
-#include "jnisupport.h"
-#include "layout.h"
-#endif
 
 #include "generalconfig.h"
 #include "mainwindow.h"
@@ -62,12 +49,6 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
       // Resize the window to the same size as the main window has. That will
       // completely hide the parent window.
       resize( MainWindow::mainWindow()->size() );
-
-#ifdef ANDROID
-      // On Galaxy S3 there are size problems observed
-      setMinimumSize( MainWindow::mainWindow()->size() );
-      setMaximumSize( MainWindow::mainWindow()->size() );
-#endif
     }
 
   QVBoxLayout *mainLayout  = new QVBoxLayout( this );
@@ -102,18 +83,7 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   m_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   m_list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef ANDROID
-  QScrollBar* lvsb = m_list->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture(m_list->viewport(), QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture(m_list->viewport(), QtScroller::LeftMouseButtonGesture);
-#endif
 
   listLayout->addWidget( m_list );
 
@@ -156,18 +126,7 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   m_display = new QTextEdit;
   m_display->setReadOnly( true );
 
-#ifdef ANDROID
-  lvsb = m_display->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture(m_display->viewport(), QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture(m_display->viewport(), QtScroller::LeftMouseButtonGesture);
-#endif
 
   displayLayout->addWidget( m_display );
 
@@ -836,16 +795,6 @@ void PreFlightWeatherPage::slotAddAirport()
                       tr( "Station name requires 4 characters!" ),
                       QMessageBox::Ok,
                       this );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
       mb.exec();
       return;
     }
@@ -890,14 +839,6 @@ void PreFlightWeatherPage::slotDeleteAirport()
                   this );
 
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
 
   if( mb.exec() == QMessageBox::No )
     {
@@ -1069,8 +1010,6 @@ void PreFlightWeatherPage::slotRequestWeatherData()
     }
 }
 
-#ifndef ANDROID
-
 void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
 {
   if( stations.size() == 0 )
@@ -1128,124 +1067,6 @@ void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
     }
 }
 
-#else
-
-/**
- * Android method.
- */
-void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
-{
-  if( stations.size() == 0 )
-    {
-      return;
-    }
-
-  if( m_updateIsRunning == true )
-    {
-      // Do not allow multiple calls, if download is already running.
-      return;
-    }
-
-  // set update marker
-  m_updateIsRunning = true;
-
-  // Disable update buttons.
-  switchUpdateButtons( false );
-
-  // Create download destination directories
-  QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
-  dir.mkdir( "weather");
-  dir.mkdir( "weather/METAR");
-  dir.mkdir( "weather/TAF");
-
-  // QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  QProgressDialog pd( this );
-  pd.setWindowModality( Qt::WindowModal );
-  pd.setLabelText( tr("Download weather data") );
-  pd.setRange( 0, stations.size() );
-  pd.setCancelButtonText( QString() );
-  pd.show();
-  pd.resize( 400 * Layout::getIntScaledDensity(),
-             100 * Layout::getIntScaledDensity() );
-
-  QPoint pos = QPoint( width()/2  - pd.width()/2, height()/2 - pd.height()/2 );
-  pd.move( pos );
-
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                   QEventLoop::ExcludeSocketNotifiers );
-  int result = 0;
-  int files = 0;
-
-  for( int i = 0; i < stations.size(); i++ )
-    {
-      QString fn = stations.at(i) + ".TXT";
-      QString urlMetar = MetarUrl + fn;
-      QString destMetar = dir.absolutePath() + "/weather/METAR/" + fn;
-
-      result = jniDownloadFile( urlMetar, destMetar );
-
-      files++;
-      pd.setValue( files );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                       QEventLoop::ExcludeSocketNotifiers );
-
-      if( result != 0 )
-        {
-          break;
-        }
-      else
-        {
-          slotNewWeaterReport( destMetar );
-        }
-
-      QString urlTaf = TafUrl + fn;
-      QString destTaf = dir.absolutePath() + "/weather/TAF/" + fn;
-
-      result = jniDownloadFile( urlTaf, destTaf );
-
-      files++;
-      pd.setValue( files );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                       QEventLoop::ExcludeSocketNotifiers );
-
-      if( result != 0 )
-        {
-          break;
-        }
-      else
-        {
-          slotNewWeaterReport( destTaf );
-        }
-    }
-
-  pd.hide();
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                   QEventLoop::ExcludeSocketNotifiers );
-
-
-  // QApplication::restoreOverrideCursor();
-
-  if( result != 0 )
-     {
-       QString msg = QString(tr("<html>Download error occurred!<br>Is the Internet connection up?</html>"));
-
-       QMessageBox mb( QMessageBox::Warning,
-                       tr("Download Error"),
-                       msg,
-                       QMessageBox::Ok,
-                       this );
-       mb.show();
-       QPoint pos = QPoint( width()/2  - mb.width()/2, height()/2 - mb.height()/2 );
-       mb.move( pos );
-       mb.exec();
-     }
-
-  slotDownloadsFinished( 0, 0 );
-}
-
-#endif
-
 void PreFlightWeatherPage::slotNetworkError()
 {
   // A network error has occurred. We delete the download manager to get faster
@@ -1260,15 +1081,6 @@ void PreFlightWeatherPage::slotNetworkError()
                   msg,
                   QMessageBox::Ok,
                   this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = QPoint( width()/2  - mb.width()/2, height()/2 - mb.height()/2 );
-  mb.move( pos );
-
-#endif
-
   mb.exec();
 
   m_updateIsRunning = false;
@@ -1376,13 +1188,13 @@ bool PreFlightWeatherPage::storeAirportIcaoNames()
   stream << "# Cumulus airport ICAO names file created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << endl;
+         << QCoreApplication::applicationVersion() << Qt::endl;
 
   QListIterator<QString> it(m_airportIcaoList);
 
   while( it.hasNext() )
     {
-      stream << it.next() << endl;
+      stream << it.next() << Qt::endl;
     }
 
   f.close();

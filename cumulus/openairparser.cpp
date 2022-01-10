@@ -124,7 +124,7 @@ bool OpenAirParser::parse( const QString& path,
 
   QFileInfo fi( path );
 
-  qDebug( "OAP: %d airspace objects read from file %s in %dms",
+  qDebug( "OAP: %d airspace objects read from file %s in %lldms",
           _objCounter, fi.fileName().toLatin1().data(), t.elapsed() );
 
   source.close();
