@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2021 by Axel Pauli
+                        : (C) 2007-2022 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,15 +25,13 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2021
+ * \date 2002-2022
  *
- * \version 1.2
+ * \version 1.3
  */
 
-#ifndef _MainWindow_h
-#define _MainWindow_h
+#pragma once
 
-#include <QApplication>
 #include <QMainWindow>
 #include <QWidget>
 #include <QAction>
@@ -586,4 +584,3 @@ private slots:
 
 };
 
-#endif

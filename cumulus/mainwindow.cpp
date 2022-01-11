@@ -31,7 +31,7 @@
 #include <cstring>
 #include <csignal>
 #include <sys/ioctl.h>
-
+#include <QApplication>
 #include <QtWidgets>
 
 #include "aboutwidget.h"
@@ -303,17 +303,21 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
            << "based on Qt Version"
            << QT_VERSION_STR;
 
-  qDebug( "ScreenGeometry is %dx%d, width=%d, height=%d",
-           QApplication::desktop()->screenGeometry().width(),
-           QApplication::desktop()->screenGeometry().height(),
-           QApplication::desktop()->screenGeometry().width(),
-           QApplication::desktop()->screenGeometry().height() );
+  qDebug() << "Platform Name:" << QGuiApplication::platformName();
 
-  qDebug( "AvailableGeometry is %dx%d, width=%d, height=%d",
-           QApplication::desktop()->availableGeometry().width(),
-           QApplication::desktop()->availableGeometry().height(),
-           QApplication::desktop()->availableGeometry().width(),
-           QApplication::desktop()->availableGeometry().height() );
+  QScreen *screen = QGuiApplication::primaryScreen();
+
+  qDebug( "ScreenGeometry is %dx%d, width=%d, height=%d",
+           screen->availableGeometry().width(),
+           screen->availableGeometry().height(),
+           screen->availableGeometry().width(),
+           screen->availableGeometry().height() );
+
+  qDebug( "AvailableSize is %dx%d, width=%d, height=%d",
+           screen->availableSize().width(),
+           screen->availableSize().height(),
+           screen->availableSize().width(),
+           screen->availableSize().height() );
 
   qDebug( "Main window size is %dx%d, width=%d, height=%d",
            size().width(),
