@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm
- **                   2008-2012 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -27,13 +25,12 @@
  * return things like the type of a device and other useful hardware
  * information.
  *
- * \date 2004-2012
+ * \date 2004-2022
  *
- * \version $Id$
+ * \version 1.1
  */
 
-#ifndef CLASS_HWINFO
-#define CLASS_HWINFO
+#pragma once
 
 #include <QString>
 
@@ -179,5 +176,3 @@ class HwInfo
     int _fbRot;
     int _fbDepth;
   };
-
-#endif

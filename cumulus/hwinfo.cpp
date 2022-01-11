@@ -7,12 +7,10 @@
  ************************************************************************
  **
  **   Copyright (c):  2004 by      Eckhard Völlm
- **                   2008-2014 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -158,7 +156,7 @@ int HwInfo::getFreeMemory()
     }
 
   //get free heap space
-  struct mallinfo m = mallinfo();
+  struct mallinfo2 m = mallinfo2();
   //qDebug ("  fordblks: %d (%d KB)\n  uordblks: %d\n  hblkhd: %d\nTotal used: %d; total allocated: %d", m.fordblks, m.fordblks/1024,m.uordblks, m.hblkhd, m.uordblks+m.hblkhd,  m.uordblks+m.hblkhd+m.fordblks);
   //add the free space on the heap to the total free space, minus the fragmentation factor
   int heapfree = m.fordblks/1024;

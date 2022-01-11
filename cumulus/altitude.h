@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002 by André Somers
-                               2010-2020 by Axel Pauli
+                               2010-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -20,8 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ALTITUDE_H
-#define ALTITUDE_H
+#pragma once
 
 #include <cmath>
 
@@ -36,7 +35,7 @@
  *
  * This class handles different altitude units and arithmetics.
  *
- * \date 2002-2020
+ * \date 2002-2022
  */
 
 class Altitude : public Distance
@@ -73,6 +72,11 @@ public:
      * copy constructor
      */
     Altitude(const Distance&);
+
+    /**
+     * Define a default assignment operator.
+     */
+    Altitude& operator = ( const Altitude& ) = default;
 
     /**
      * destuctor
@@ -288,5 +292,3 @@ struct AltitudeCollection
     Distance gpsAltitudeError;
 
 };
-
-#endif
