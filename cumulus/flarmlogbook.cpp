@@ -20,7 +20,7 @@
 #include "igclogger.h"
 #include "flarmlogbook.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "rowdelegate.h"
 
 // Timeout in ms for waiting for response of Flarm device.

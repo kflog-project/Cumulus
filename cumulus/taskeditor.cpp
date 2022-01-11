@@ -7,29 +7,21 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "rowdelegate.h"
 #include "taskeditor.h"
@@ -93,7 +85,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   // The task name minimum length is 10 characters. We calculate
   // the length of a M string of 10 characters.
   QFontMetrics fm( font() );
-  int maxInputLength = fm.width("MMMMMMMMMM");
+  int maxInputLength = fm.horizontalAdvance("MMMMMMMMMM");
   taskName->setMinimumWidth( maxInputLength );
 
   connect( taskName, SIGNAL(returnPressed()),
@@ -125,55 +117,32 @@ TaskEditor::TaskEditor( QWidget* parent,
      << tr("Length");
 
   taskList->setHeaderLabels(sl);
-#if QT_VERSION >= 0x050000
   taskList->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-#else
-  taskList->header()->setResizeMode( QHeaderView::ResizeToContents );
-#endif
-
   taskList->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   taskList->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( taskList->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( taskList->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   int iconButtonSize = Layout::getButtonSize(12);
 
   upButton = new QPushButton( this );
   upButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "up.png", true )) );
   upButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
-#ifndef ANDROID
   upButton->setToolTip( tr("move selected waypoint up") );
-#endif
   downButton = new QPushButton( this );
   downButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "down.png", true )) );
   downButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
-#ifndef ANDROID
   downButton->setToolTip( tr("move selected waypoint down") );
-#endif
   invertButton = new QPushButton( this );
   invertButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "resort.png", true )) );
   invertButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
-#ifndef ANDROID
   invertButton->setToolTip( tr("reverse waypoint order") );
-#endif
   cloneButton = new QPushButton( this );
   cloneButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "clone.png", true )) );
   cloneButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
-#ifndef ANDROID
   cloneButton->setToolTip( tr("clone waypoint") );
-#endif
   delButton = new QPushButton( this );
   delButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap( "delete.png", true )) );
   delButton->setIconSize(QSize(iconButtonSize, iconButtonSize));
-#ifndef ANDROID
   delButton->setToolTip( tr("remove waypoint") );
-#endif
 
   QPushButton *helpButton = new QPushButton(this);
   helpButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
@@ -184,17 +153,13 @@ TaskEditor::TaskEditor( QWidget* parent,
   cancelButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancelButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-#ifndef ANDROID
   cancelButton->setToolTip( tr("cancel task") );
-#endif
 
   QPushButton* okButton = new QPushButton( this );
   okButton->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
   okButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
-#ifndef ANDROID
   okButton->setToolTip( tr("save task") );
-#endif
 
   // all single widgets and layouts in this grid
   QGridLayout* totalLayout = new QGridLayout( this );
@@ -212,18 +177,14 @@ TaskEditor::TaskEditor( QWidget* parent,
   // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
   defaultButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("clear-32.png")) );
   defaultButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
-#ifndef ANDROID
   defaultButton->setToolTip(tr("Set task figure default schemas"));
-#endif
   headlineLayout->addWidget(defaultButton);
   headlineLayout->addSpacing(10 * Scaling);
 
   editButton = new QPushButton;
   editButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("edit_new.png")) );
   editButton->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
-#ifndef ANDROID
   editButton->setToolTip(tr("Edit selected waypoint"));
-#endif
   headlineLayout->addWidget(editButton);
   totalLayout->addWidget( taskList, 1, 0 );
 
@@ -732,16 +693,6 @@ void TaskEditor::slotAccept()
                       tr( "Task needs at least a start and a finish point!" ),
                       QMessageBox::Ok,
                       this );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
       mb.exec();
       return;
     }
@@ -757,16 +708,6 @@ void TaskEditor::slotAccept()
                           QString(tr("Points %1 and %2 have the same coordinates.\nPlease remove one of them!")).arg(i+1).arg(i+2),
                           QMessageBox::Ok,
                           this );
-
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
-
           mb.exec();
           return;
         }
@@ -782,16 +723,6 @@ void TaskEditor::slotAccept()
                       tr("Enter a name for the task to save it"),
                       QMessageBox::Ok,
                       this );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
       mb.exec();
       return;
     }
@@ -807,15 +738,6 @@ void TaskEditor::slotAccept()
                       tr( "Task name in use." ) + "\n\n" + tr( "Overwrite existing task?" ),
                       QMessageBox::Yes|QMessageBox::No,
                       this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
 
       int ret = mb.exec();
 
@@ -1066,15 +988,6 @@ void TaskEditor::slotSetTaskPointsDefaultSchema()
                   this );
 
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
 
   if( mb.exec() == QMessageBox::Yes )
     {

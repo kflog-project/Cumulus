@@ -24,7 +24,7 @@
 #include "altitude.h"
 #include "generalconfig.h"
 #include "numberEditor.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "map.h"
 #include "settingspageairspacefillingnumpad.h"
 
@@ -150,7 +150,7 @@ NumberEditor* SettingsPageAirspaceFillingNumPad::createNumEd( QWidget* parent )
   numEd->setValidator( eValidator );
 
   // Sets a minimum width for the widget
-  int mw1 = QFontMetrics(font()).width("100 %") + 10;
+  int mw1 = QFontMetrics(font()).horizontalAdvance("100 %") + 10;
   numEd->setMinimumWidth( mw1 );
   return numEd;
 }

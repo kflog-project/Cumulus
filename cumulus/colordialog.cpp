@@ -22,7 +22,7 @@
 #endif
 
 #include "colordialog.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 QColor ColorDialog::getColor( const QColor& initial,
                               QWidget* parent,

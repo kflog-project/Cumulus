@@ -6,28 +6,20 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2016 Eggert Ehmke, Axel Pauli
+**   Copyright (c):  2013-2022 Eggert Ehmke, Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "doubleNumberEditor.h"
 #include "flighttask.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
 #include "taskpointeditor.h"
@@ -80,13 +72,7 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
 
-#ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   // Add scroll area to its own layout
   sal->addWidget( sa );
@@ -102,7 +88,7 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
 
   // The input size of a QLineEditor is calculated a one M.
   QFontMetrics fm( font() );
-  int charWidth = fm.width(QChar('M'));
+  int charWidth = fm.horizontalAdvance(QChar('M'));
 
   Qt::InputMethodHints imh;
 
@@ -136,13 +122,8 @@ TaskPointEditor::TaskPointEditor( QWidget *parent, TaskPoint* tp) :
   imh = (m_pointLongNameEditor->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_pointLongNameEditor->setInputMethodHints(imh);
   m_pointLongNameEditor->setMaxLength(25); // limit name to 25 characters
-#ifndef ANDROID
   m_pointLongNameEditor->setMinimumWidth( 18*charWidth );
   m_pointLongNameEditor->setMaximumWidth( 18*charWidth );
-#else
-  m_pointLongNameEditor->setMinimumWidth( 18*charWidth );
-  m_pointLongNameEditor->setMaximumWidth( 18*charWidth );
-#endif
 
   connect( m_pointLongNameEditor, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );

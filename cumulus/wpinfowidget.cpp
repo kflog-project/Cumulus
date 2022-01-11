@@ -32,7 +32,7 @@
 #include "generalconfig.h"
 #include "calculator.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapcalc.h"

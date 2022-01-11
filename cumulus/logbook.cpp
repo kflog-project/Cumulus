@@ -29,7 +29,7 @@
 #include "igclogger.h"
 #include "logbook.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "rowdelegate.h"
 
 /**

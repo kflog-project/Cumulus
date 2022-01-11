@@ -31,7 +31,7 @@
 
 #include "target.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "flighttask.h"
 #include "taskpoint.h"

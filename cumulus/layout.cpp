@@ -20,7 +20,7 @@
 #endif
 
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 #ifdef ANDROID
 #include "jnisupport.h"

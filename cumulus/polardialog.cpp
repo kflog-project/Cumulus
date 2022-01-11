@@ -19,7 +19,7 @@
 #include <QtGui>
 
 #include "polardialog.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 PolarDialog::PolarDialog( Polar& polar, QWidget* parent) :
   QWidget(parent),

@@ -29,7 +29,7 @@
 #include <QtNetwork>
 
 #include "calculator.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "SkyLinesTracker.h"
 
 #include "byteOrder.h"

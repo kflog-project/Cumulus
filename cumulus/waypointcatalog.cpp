@@ -25,7 +25,7 @@
 #include "Frequency.h"
 #include "generalconfig.h"
 #include "OpenAip.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
 #include "radiopoint.h"

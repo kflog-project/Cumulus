@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2016 by Axel Pauli <kflog.cumulus@gmail.com>
+**                   2008-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,21 +16,13 @@
 
 #include <cmath>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "altitude.h"
 #include "basemapelement.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapconfig.h"
 #include "numberEditor.h"
 #include "wgspoint.h"
@@ -52,7 +44,7 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   // the length of a M string of 27 characters. That is the maximum
   // width of the QLineEdit widgets.
   QFontMetrics fm( font() );
-  int charWidth = fm.width(QChar('M'));
+  int charWidth = fm.horizontalAdvance(QChar('M'));
 
   int row=0;
 
@@ -65,28 +57,16 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_edtName = new QLineEdit(this);
   m_edtName->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText);
   m_edtName->setMaxLength(8); // limit name to 8 characters
-#ifndef ANDROID
   m_edtName->setMinimumWidth( 27*charWidth );
   m_edtName->setMaximumWidth( 27*charWidth );
-#else
-  m_edtName->setMinimumWidth( 22*charWidth );
-  m_edtName->setMaximumWidth( 22*charWidth );
-#endif
 
   connect( m_edtName, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   topLayout->addWidget(m_edtName, row++, 1, 1, 3);
 
-#ifndef ANDROID
   connect( m_edtName, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedName( const QString& )) );
-#else
-  // Android makes trouble, if word detection is enabled. Therefore the
-  // entered string is modified, when the finish signal is emitted.
-  connect( m_edtName, SIGNAL(editingFinished()),
-           this, SLOT(slot_textEditedNameFinished()) );
-#endif
 
   QLabel * lblDescription = new QLabel(tr("Description:"), this);
   topLayout->addWidget(lblDescription, row, 0);
@@ -94,13 +74,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   imh = (m_edtDescription->inputMethodHints() | Qt::ImhNoPredictiveText);
   m_edtDescription->setInputMethodHints(imh);
   m_edtDescription->setMaxLength(25); // limit name to 25 characters
-#ifndef ANDROID
   m_edtDescription->setMinimumWidth( 27*charWidth );
   m_edtDescription->setMaximumWidth( 27*charWidth );
-#else
-  m_edtDescription->setMinimumWidth( 22*charWidth );
-  m_edtDescription->setMaximumWidth( 22*charWidth );
-#endif
 
   connect( m_edtDescription, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
@@ -121,15 +96,8 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   connect( m_edtCountry, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
-#ifndef ANDROID
   connect( m_edtCountry, SIGNAL(textEdited( const QString& )),
            this, SLOT(slot_textEditedCountry( const QString& )) );
-#else
-  // Android makes trouble, if word detection is enabled. Therefore the
-  // entered string is modified, when the finish signal is emitted.
-  connect( m_edtCountry, SIGNAL(editingFinished()),
-           this, SLOT(slot_textEditedCountryFinished()) );
-#endif
 
   topLayout->addWidget(m_edtCountry, row++, 1, 1, 2);
 
@@ -170,22 +138,9 @@ WpEditDialogPageGeneral::WpEditDialogPageGeneral(QWidget *parent) :
   m_cmbType->setEditable(false);
   m_cmbType->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   m_cmbType->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-
-#ifdef ANDROID
-  QAbstractItemView* listView = m_cmbType->view();
-  QScrollBar* lvsb = listView->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+
   QScroller::grabGesture( m_cmbType->view()->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  m_cmbType->view()->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-  QtScroller::grabGesture( m_cmbType->view()->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   topLayout->addWidget(m_cmbType, row++, 1);
 

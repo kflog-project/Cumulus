@@ -25,7 +25,7 @@
 
 #include "generalconfig.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "SettingsPagePointDataLoading.h"
 
 /*

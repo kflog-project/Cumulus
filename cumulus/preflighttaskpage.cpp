@@ -35,7 +35,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "numberEditor.h"
@@ -78,8 +78,8 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   QHBoxLayout *contentLayout = new QHBoxLayout;
   setLayout(contentLayout);
 
-  int msw = QFontMetrics(font()).width("999 Km/h") + 10;
-  int mdw = QFontMetrics(font()).width("999" + QString(Qt::Key_degree)) + 10;
+  int msw = QFontMetrics(font()).horizontalAdvance("999 Km/h") + 10;
+  int mdw = QFontMetrics(font()).horizontalAdvance("999" + QString(Qt::Key_degree)) + 10;
 
   const int iconSize = Layout::iconSize( font() );
   const int Scaling = Layout::getIntScaledDensity();

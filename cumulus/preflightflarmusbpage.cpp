@@ -23,7 +23,7 @@
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "preflightflarmusbpage.h"
 
 // Timeout in ms for waiting for response

@@ -22,7 +22,7 @@
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 // initialize static member variable
 int GpsStatusDialog::noOfInstances = 0;
@@ -551,7 +551,7 @@ void GpsElevationAzimuthDisplay::drawSat( QPainter *p, const SIVInfo& sivi )
   p->setFont(f);
 
   int margin = 2 * Layout::getIntScaledDensity();
-  int w = QFontMetrics(f).width("MM") + 2 * margin;
+  int w = QFontMetrics(f).horizontalAdvance("MM") + 2 * margin;
   int h = QFontMetrics(f).height() + 2 * margin;
 
   p->setBrush(QColor(R,G,0));
@@ -645,7 +645,7 @@ void GpsSnrDisplay::paintEvent( QPaintEvent *event )
 
       QFontMetrics fm( font() );
 
-      int w = fm.width( text );
+      int w = fm.horizontalAdvance( text );
       int h = fm.height();
 
       pw.drawText( center.x() - w / 2, center.y() + h / 2, text );

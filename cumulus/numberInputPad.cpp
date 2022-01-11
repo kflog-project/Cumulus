@@ -80,7 +80,7 @@ NumberInputPad::NumberInputPad( QString number, QWidget *parent ) :
   int iconSize = Layout::iconSize( font() );
   QSize qis( iconSize, iconSize );
 
-  int minBW = QFontMetrics(font()).width("MMM");
+  int minBW = QFontMetrics(font()).horizontalAdvance("MMM");
 
   m_cancel = new QPushButton( " ", this );
   m_cancel->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")) );

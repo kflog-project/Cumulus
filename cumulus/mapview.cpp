@@ -20,11 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "altimeterdialog.h"
 #include "filetools.h"
@@ -35,7 +31,7 @@
 #include "igclogger.h"
 #include "interfaceelements.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcalc.h"
 #include "map.h"
 #include "mapinfobox.h"
@@ -69,12 +65,10 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing(0);
 
-#ifdef QT5
   // That must be done under Qt 5 only.
   topLayout->setMargin(0);
   // Qt4: topLayout Left=9 Top=9 Right=9 Bottom=9
   topLayout->setContentsMargins( 0, 0, 0, 0 );
-#endif
 
   QHBoxLayout *centerLayout = new QHBoxLayout;
   topLayout->addLayout(centerLayout);
@@ -100,9 +94,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   int leftFixedWidth = 220;
   int desiredPointSize = 22;
 
-#if defined(QT_5) && defined(ANDROID)
   desiredPointSize *= 2;
-#endif
 
   QFont desiredFont; desiredFont.setPointSize( desiredPointSize );
   QFontMetrics qfmDesiredFont(desiredFont);
@@ -111,7 +103,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
     {
       // If the screen width is greater than 820, we try to calculate an adequate
       // one for higher resolution screens.
-      int maxWidth = qfmDesiredFont.width("MMMMM");
+      int maxWidth = qfmDesiredFont.horizontalAdvance("MMMMM");
 
       // Calculate width as ratio to the default screen 800px width. The preferred
       // left fixed width is 220px.
@@ -146,11 +138,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   if( parent->size().height() > 500 )
     {
       QFont ft20 = font();
-      ft20.setPointSize( 20 );
-
-#if defined(QT_5) && defined(ANDROID)
       ft20.setPointSize( 2 * 20 );
-#endif
 
       QFontMetrics qfm20(ft20);
 
@@ -577,7 +565,7 @@ void MapView::showEvent( QShowEvent* event )
 
       QFontMetrics fm( ptr->font() );
 
-      int w = fm.width( ptr->getPreText() );
+      int w = fm.horizontalAdvance( ptr->getPreText() );
 
       // qDebug() << "Text=" << ptr->getPreText() << "Width=" << w;
 
@@ -1362,19 +1350,6 @@ void MapView::slot_AltimeterDialog()
 
   emit openingSubWidget();
   amDlg->setVisible(true);
-
-#ifdef ANDROID
-
-  QSize ms = amDlg->minimumSizeHint();
-
-  ms += QSize(10, 10);
-
-  // A dialog is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  amDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
-                       ms.width(), ms.height() );
-
-#endif
 }
 
 /** Called, if altimeter mode has been changed. */
@@ -1418,19 +1393,6 @@ void MapView::slot_VarioDialog()
 
   emit openingSubWidget();
   vmDlg->setVisible(true);
-
-#ifdef ANDROID
-
-  QSize ms = vmDlg->minimumSizeHint();
-
-  ms += QSize(10, 10);
-
-  // A dialog is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  vmDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
-                       ms.width(), ms.height() );
-
-#endif
 }
 
 /** Opens the GPS status dialog */
@@ -1489,19 +1451,6 @@ void MapView::slot_gliderFlightDialog()
 
   emit openingSubWidget();
   gfDlg->setVisible(true);
-
-#ifdef ANDROID
-
-  QSize ms = gfDlg->minimumSizeHint();
-
-  ms += QSize(10, 10);
-
-  // A dialog is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  gfDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
-                       ms.width(), ms.height() );
-
-#endif
 }
 
 void MapView::slot_showInfoBoxes( bool show )

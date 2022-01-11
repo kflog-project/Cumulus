@@ -23,7 +23,7 @@
 
 #include "calculator.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapconfig.h"
 #include "TaskPointSelectionList.h"
 

@@ -101,7 +101,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,4})" ), this );
   m_edtMinimalArrival->setValidator( eValidator );
 
-  int maw = QFontMetrics(font()).width("9999 ft") + 10;
+  int maw = QFontMetrics(font()).horizontalAdvance("9999 ft") + 10;
   m_edtMinimalArrival->setMinimumWidth( maw );
 
   topLayout->addWidget(m_edtMinimalArrival, row, 1);
@@ -129,7 +129,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,4})" ), this );
   m_edtQNH->setValidator( eValidator );
 
-  int mqw = QFontMetrics(font()).width("9999 hPa") + 10;
+  int mqw = QFontMetrics(font()).horizontalAdvance("9999 hPa") + 10;
   m_edtQNH->setMinimumWidth( mqw );
 
   topLayout->addWidget(m_edtQNH, row, 1);
@@ -172,7 +172,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   m_logAutoStartSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
   m_logAutoStartSpeed->setDecimals( 1 );
 
-  int mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
+  int mlw = QFontMetrics(font()).horizontalAdvance("99.9" + Speed::getHorizontalUnitText()) + 10;
   m_logAutoStartSpeed->setMinimumWidth( mlw );
 
   topLayout->addWidget( m_logAutoStartSpeed, row, 1 );
@@ -192,7 +192,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
   m_bRecordInterval->setValidator( eValidator );
 
-  int mbrw = QFontMetrics(font()).width("99 s") + 10;
+  int mbrw = QFontMetrics(font()).horizontalAdvance("99 s") + 10;
   m_bRecordInterval->setMinimumWidth( mbrw );
 
   topLayout->addWidget(m_bRecordInterval, row, 1);
@@ -213,7 +213,7 @@ PreFlightMiscPage::PreFlightMiscPage(QWidget *parent) :
   eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
   m_kRecordInterval->setValidator( eValidator );
 
-  int mkrw = QFontMetrics(font()).width("999 s") + 10;
+  int mkrw = QFontMetrics(font()).horizontalAdvance("999 s") + 10;
   m_kRecordInterval->setMinimumWidth( mkrw );
 
   topLayout->addWidget(m_kRecordInterval, row, 1);

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mainwindow.h  -  main application object
+                          MainWindow.h  -  main application object
                              -------------------
    begin                : Sun Jul 21 2002
 

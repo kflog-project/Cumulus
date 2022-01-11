@@ -32,7 +32,7 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "helpbrowser.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "preflightlivetrack24page.h"
 #include "skylines/SkyLinesTracker.h"
@@ -119,7 +119,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   QRegExpValidator* eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,3})" ), this );
   m_trackingIntervalMin->setValidator( eValidator );
 
-  int maw = QFontMetrics(font()).width("999 min") + 10;
+  int maw = QFontMetrics(font()).horizontalAdvance("999 min") + 10;
   m_trackingIntervalMin->setMinimumWidth( maw );
   tiHbox->addWidget( m_trackingIntervalMin );
   tiHbox->addSpacing( 10 );
@@ -140,7 +140,7 @@ PreFlightLiveTrack24Page::PreFlightLiveTrack24Page(QWidget *parent) :
   eValidator = new QRegExpValidator( QRegExp( "([0-9]{1,2})" ), this );
   m_trackingIntervalSec->setValidator( eValidator );
 
-  maw = QFontMetrics(font()).width("99 s") + 10;
+  maw = QFontMetrics(font()).horizontalAdvance("99 s") + 10;
   m_trackingIntervalSec->setMinimumWidth( maw );
   tiHbox->addWidget( m_trackingIntervalSec );
   tiHbox->addStretch( 10 );

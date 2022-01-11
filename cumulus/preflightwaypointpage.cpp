@@ -103,7 +103,7 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   QRegExpValidator *eValidator = new QRegExpValidator( QRegExp( "([1-9][0-9]{0,3})" ), this );
   m_wpRadiusBox->setValidator( eValidator );
 
-  int mw = QFontMetrics(font()).width("9999 Km") + 10;
+  int mw = QFontMetrics(font()).horizontalAdvance("9999 Km") + 10;
   m_wpRadiusBox->setMinimumWidth( mw );
 
   QFormLayout* selectLayout1 = new QFormLayout;

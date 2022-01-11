@@ -28,7 +28,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapdefaults.h"
 #include "numberEditor.h"
 #include "settingspageinformation.h"
@@ -149,7 +149,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   spinSuppress->setValidator( eValidator );
 
   // Sets a minimum width for the widget
-  int mw = QFontMetrics(font()).width(QString("999 min")) + 10;
+  int mw = QFontMetrics(font()).horizontalAdvance(QString("999 min")) + 10;
   spinSuppress->setMinimumWidth( mw );
   topLayout->addWidget( spinSuppress, row, 1 );
 
@@ -263,7 +263,7 @@ NumberEditor* SettingsPageInformation::createNumEd( QWidget* parent )
   numEd->setValidator( eValidator );
 
   // Sets a minimum width for the widget
-  int mw = QFontMetrics(font()).width(QString("99 s")) + 10;
+  int mw = QFontMetrics(font()).horizontalAdvance(QString("99 s")) + 10;
   numEd->setMinimumWidth( mw );
 
   return numEd;

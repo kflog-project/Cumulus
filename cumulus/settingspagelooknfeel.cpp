@@ -28,7 +28,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapdefaults.h"
 #include "settingspagelooknfeel.h"
 
@@ -152,7 +152,7 @@ SettingsPageLookNFeel::SettingsPageLookNFeel(QWidget *parent) :
   m_screenSaverSpeedLimit->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
   m_screenSaverSpeedLimit->setDecimals( 1 );
 
-  int mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
+  int mlw = QFontMetrics(font()).horizontalAdvance("99.9" + Speed::getHorizontalUnitText()) + 10;
   m_screenSaverSpeedLimit->setMinimumWidth( mlw );
   topLayout->addWidget( m_screenSaverSpeedLimit, row, 1 );
   row++;

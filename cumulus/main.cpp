@@ -42,7 +42,7 @@
 #include <QtGui>
 
 #include "target.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "generalconfig.h"
 #include "messagehandler.h"
 #include "hwinfo.h"

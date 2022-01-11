@@ -18,7 +18,7 @@
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
 #include "SettingsPagePointData.h"

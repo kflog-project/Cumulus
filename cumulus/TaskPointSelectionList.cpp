@@ -25,7 +25,7 @@
 
 #include "airfield.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "rowdelegate.h"
 #include "TaskPointSelectionList.h"

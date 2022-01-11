@@ -26,7 +26,7 @@
 #include "airspace.h"
 #include "AirspaceFilters.h"
 #include "calculator.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "distance.h"
 #include "flarmaliaslist.h"
 #include "generalconfig.h"

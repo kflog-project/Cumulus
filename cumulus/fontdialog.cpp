@@ -27,7 +27,7 @@
 
 #include "fontdialog.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "rowdelegate.h"
 
 FontDialog::FontDialog (QWidget *parent) :

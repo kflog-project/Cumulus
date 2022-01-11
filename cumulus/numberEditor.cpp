@@ -15,13 +15,9 @@
 
 #include <climits>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberInputPad.h"
 #include "numberEditor.h"
 
@@ -85,7 +81,7 @@ void NumberEditor::showEvent( QShowEvent* event )
 
   // Set minimum width
   QFontMetrics fm( font() );
-  int strWidth = fm.width( QString( "MMMMMM" ) );
+  int strWidth = fm.horizontalAdvance( QString( "MMMMMM" ) );
   setMinimumWidth( strWidth );
 
   QLabel::showEvent( event );

@@ -1,5 +1,5 @@
 /***************************************************************************
- mainwindow.cpp  -  main application window
+ MainWindow.cpp  -  main application window
  ---------------------------------------------------------------------------
  begin                : Sun Jul 21 2002
 
@@ -43,7 +43,7 @@
 #include "helpbrowser.h"
 #include "layout.h"
 #include "ListViewTabs.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
@@ -905,24 +905,6 @@ void MainWindow::slotFinishStartUp()
 
   // Get the language from the environment
   QString language = qgetenv("LANG");
-
-#ifdef MAEMO
-
-  if( ossoContext )
-    {
-      osso_display_blanking_pause( ossoContext );
-
-      // setup timer to prevent screen blank
-      m_displayTrigger = new QTimer(this);
-      m_displayTrigger->setSingleShot(true);
-
-      connect( m_displayTrigger, SIGNAL(timeout()),
-               this, SLOT(slotDisplayTrigger()) );
-
-      // start timer with 10s
-      m_displayTrigger->start( 10000 );
-    }
-#endif
 
 #ifdef ANDROID
 

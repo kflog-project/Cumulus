@@ -106,7 +106,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   m_minimumAirSpeed->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
   m_minimumAirSpeed->setDecimals( 1 );
 
-  int mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
+  int mlw = QFontMetrics(font()).horizontalAdvance("99.9" + Speed::getHorizontalUnitText()) + 10;
   m_minimumAirSpeed->setMinimumWidth( mlw );
 
   topLayout->addWidget( m_minimumAirSpeed, row, 1 );
@@ -124,7 +124,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   m_speedTolerance->setSuffix( QString(" ") + Speed::getHorizontalUnitText() );
   m_speedTolerance->setDecimals( 1 );
 
-  mlw = QFontMetrics(font()).width("99.9" + Speed::getHorizontalUnitText()) + 10;
+  mlw = QFontMetrics(font()).horizontalAdvance("99.9" + Speed::getHorizontalUnitText()) + 10;
   m_speedTolerance->setMinimumWidth( mlw );
 
   topLayout->addWidget( m_speedTolerance, row, 1 );
@@ -144,7 +144,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   QIntValidator* iValidator = new QIntValidator( 0, 359, this );
   m_headingTolerance->setValidator( iValidator );
 
-  int maw = QFontMetrics(font()).width("999 °") + 10;
+  int maw = QFontMetrics(font()).horizontalAdvance("999 °") + 10;
   m_headingTolerance->setMinimumWidth( maw );
 
   topLayout->addWidget(m_headingTolerance, row, 1);
@@ -164,7 +164,7 @@ SettingsPageWind::SettingsPageWind( QWidget *parent ) :
   iValidator = new QIntValidator( 3, 60, this );
   m_windAfter->setValidator( iValidator );
 
-  maw = QFontMetrics(font()).width("999 °") + 10;
+  maw = QFontMetrics(font()).horizontalAdvance("999 °") + 10;
   m_windAfter->setMinimumWidth( maw );
 
   topLayout->addWidget(m_windAfter, row, 1);

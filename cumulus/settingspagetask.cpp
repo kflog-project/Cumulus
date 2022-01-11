@@ -167,7 +167,7 @@ SettingsPageTask::SettingsPageTask( QWidget *parent) :
   m_transShape->setValidator( eValidator );
 
   // Sets a minimum width for the widget
-  int mw1 = QFontMetrics(font()).width("100 %") + 10;
+  int mw1 = QFontMetrics(font()).horizontalAdvance("100 %") + 10;
   m_transShape->setMinimumWidth( mw1 );
   gBox->addWidget(m_transShape, 1, 1 );
 

@@ -37,7 +37,7 @@
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
 #include "gpsnmea.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
 #include "reachablelist.h"

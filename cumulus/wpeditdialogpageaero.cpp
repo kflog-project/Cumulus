@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2018 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,21 +16,13 @@
 
 #include <cmath>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "altitude.h"
 #include "airfield.h"
 #include "doubleNumberEditor.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "wpeditdialogpageaero.h"
 
@@ -135,13 +127,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   cmbRwy1Surface->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   cmbRwy1Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-#ifdef QSCROLLER
   QScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   qfl = new QFormLayout;
   qfl->addRow(tr("Surface:"), cmbRwy1Surface);
@@ -189,13 +175,7 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   cmbRwy2Surface->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
   cmbRwy2Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
-#ifdef QSCROLLER
   QScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   qfl = new QFormLayout;
   qfl->addRow(tr("Surface:"), cmbRwy2Surface);

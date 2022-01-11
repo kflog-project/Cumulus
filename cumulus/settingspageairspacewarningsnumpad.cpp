@@ -24,7 +24,7 @@
 #include "airspacewarningdistance.h"
 #include "altitude.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "settingspageairspacewarningsnumpad.h"
 
@@ -144,7 +144,7 @@ NumberEditor* SettingsPageAirspaceWarningsNumPad::createNumEd( QWidget* parent )
   numEd->setValidator( eValidator );
 
   // Sets a minimum width for the widget
-  int mw = QFontMetrics(font()).width("9999999 " + unit) + 10;
+  int mw = QFontMetrics(font()).horizontalAdvance("9999999 " + unit) + 10;
   numEd->setMinimumWidth( mw );
 
   return numEd;
