@@ -378,24 +378,23 @@ int GpsClient::writeGpsData( const char *sentence )
   qDebug() << "GpsClient::write():" << cmd;
 //#endif
 
-  int fdout = -1;
+  int fdout = fd;
 
-  if( fd != -1 )
+  if( fd == -1 )
     {
-      // Serial or bt socket is used
-      fdout = fd;
-    }
-  else if( so1 != nullptr and so1->isOpen() == true )
-    {
-      fd = so1->socketDescriptor();
-    }
-  else if( so2 != nullptr and so2->isOpen() == true )
-    {
-      fd = so2->socketDescriptor();
+      // Serial or BT socket are not used
+      if( so1 != nullptr and so1->isOpen() == true )
+        {
+          fdout = so1->socketDescriptor();
+        }
+      else if( so2 != nullptr and so2->isOpen() == true )
+        {
+          fdout = so2->socketDescriptor();
+        }
     }
 
   // write sentence to gps device
-  int result = write( fd, cmd.toLatin1().data(), cmd.length() );
+  int result = write( fdout, cmd.toLatin1().data(), cmd.length() );
 
   if( result != -1 && result != cmd.length() )
     {
