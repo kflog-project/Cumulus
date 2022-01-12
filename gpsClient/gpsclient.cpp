@@ -229,6 +229,7 @@ void GpsClient::processEvent( fd_set *fdMask )
               sleep(3);
               // reopen connection
               openGps( device.data(), ioSpeedDevice );
+              last.start(); // set next retry time point
             }
         }
     }
@@ -252,7 +253,7 @@ void GpsClient::processEvent( fd_set *fdMask )
     {
       if( readNmeaSocketData( so1, so1Data ) == false )
         {
-          // Error occured, we close the socket and try a reconnect.
+          // Error occurred, we close the socket and try a reconnect.
           closeGps();
 
           if( so1->error() == QAbstractSocket::ConnectionRefusedError )
@@ -269,7 +270,7 @@ void GpsClient::processEvent( fd_set *fdMask )
     {
       if( readNmeaSocketData( so2, so2Data ) == false )
         {
-          // Error occured, we close the socket and try a reconnect.
+          // Error occur red, we close the socket and try a reconnect.
           closeGps();
 
           if( so2->error() == QAbstractSocket::ConnectionRefusedError )
@@ -377,21 +378,23 @@ int GpsClient::writeGpsData( const char *sentence )
   qDebug() << "GpsClient::write():" << cmd;
 //#endif
 
+  int fdout = fd;
+
   if( fd == -1 )
     {
-      // Serial or BT socket is not used
+      // Serial or BT socket are not used
       if( so1 != nullptr and so1->isOpen() == true )
         {
-          fd = so1->socketDescriptor();
+          fdout = so1->socketDescriptor();
         }
       else if( so2 != nullptr and so2->isOpen() == true )
         {
-          fd = so2->socketDescriptor();
+          fdout = so2->socketDescriptor();
         }
     }
 
   // write sentence to gps device
-  int result = write( fd, cmd.toLatin1().data(), cmd.length() );
+  int result = write( fdout, cmd.toLatin1().data(), cmd.length() );
 
   if( result != -1 && result != cmd.length() )
     {
@@ -477,7 +480,6 @@ bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
                               socketData[0] + ":" + socketData[1] + ", " +
                               "reported error" + " " +
                               socket->error() );
-
         }
 
       return false;
@@ -569,17 +571,9 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
           close( fd );
           fd = -1;
-
-          // We initiate a shutdown of the process. That forces Cumulus to
-          // start a new BT search, so that the user can select another device.
-          last.invalidate();
-          setShutdownFlag(true);
           return false;
         }
 
-      // Stop supervision control to give the BT daemon time for connection.
-      // The first data read will activate it again.
-      last.invalidate();
       return true;
     }
 
@@ -593,7 +587,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       if( ret && errno != EEXIST )
         {
           perror("mkfifo");
-          last.start(); // store time point for restart control
           return false;
         }
     }
@@ -613,7 +606,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
 
       forwardDeviceError( QObject::tr("Cannot open GPS device") + " " +
                           device );
-      last.start(); // store time point for restart control
       return false;
     }
 
@@ -690,7 +682,6 @@ bool GpsClient::openGps( const char *deviceIn, const uint ioSpeedIn )
       fcntl(fd, F_SETFL, O_NONBLOCK); // NON blocking io is requested
     }
 
-  last.start(); // store time point for supervision control
   return true;
 }
 
@@ -750,7 +741,6 @@ bool GpsClient::openNmeaSockets()
                               so1Data[0] + ":" + so1Data[1] + ", " +
                               so1->errorString() );
           so1->close();
-          last.start(); // store time point for restart control
           return false;
         }
 
@@ -777,11 +767,9 @@ bool GpsClient::openNmeaSockets()
                               so2Data[0] + ":" + so2Data[1] + ", " +
                               so2->errorString() );
           so2->close();
-          last.start(); // store time point for restart control
           return false;
         }
 
-      last.start(); // store time point for supervision control
       qDebug() << "WiFi-2 connected to" << so2Data[0] << ":" << so2Data[1];
     }
 
@@ -1026,6 +1014,7 @@ bool GpsClient::verifyCheckSum( const char *sentence )
         }
     }
 
+  qWarning() << "GpsClient::CheckSumError, missing *cs:" << sentence;
   return false;
 }
 
@@ -1057,9 +1046,12 @@ uchar GpsClient::calcCheckSum( const char *sentence )
 // Timeout controller
 void GpsClient::toController()
 {
+  // qDebug() << "GpsClient::toController()";
+
   // An invalid time is used to switch off the timeout control.
   if( last.isValid() == false )
     {
+      qDebug() << "GpsClient::toController(): time is not valid";
       return;
     }
 
@@ -1110,18 +1102,14 @@ void GpsClient::toController()
       // Try to reconnect to the GPS receiver, if a device is defined
       if( device.size() > 0 )
         {
-          if( openGps( device.data(), ioSpeedDevice ) == false )
-            {
-              last.start(); // set next retry time point
-            }
+          openGps( device.data(), ioSpeedDevice );
+          last.start(); // set next retry time point
         }
       else if( so1 != nullptr || so2 != nullptr )
         {
           // Try to reconnect the socket connections.
-          if( openNmeaSockets() == false )
-            {
-              last.start(); // set next retry time point
-            }
+          openNmeaSockets();
+          last.start(); // set next retry time point
         }
     }
 }
@@ -1208,6 +1196,7 @@ void GpsClient::readServerMsg()
           // 1) device name
           // 2) io speed
           bool res = openGps( args[1].toLatin1().data(), args[2].toUInt() );
+          last.start(); // set next retry time point
 
           if( res == true )
             {
@@ -1238,6 +1227,7 @@ void GpsClient::readServerMsg()
          }
 
       bool res = openNmeaSockets();
+      last.start(); // set next retry time point
 
       if( res == true )
         {
@@ -1268,6 +1258,7 @@ void GpsClient::readServerMsg()
         }
 
       bool res = openNmeaSockets();
+      last.start(); // set next retry time point
 
       if( res == true )
         {

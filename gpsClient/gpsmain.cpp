@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2015 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -130,12 +130,8 @@ int main( int argc, char* argv[] )
       usage( argv[0] );
     }
 
-#ifdef QT_5
   // install message handler
   qInstallMessageHandler(0);
-#else
-  qInstallMsgHandler(0);
-#endif
 
   // install signal handler for catching termination requests
   initSignalHandler();
