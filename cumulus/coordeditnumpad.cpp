@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2013-2021 by Axel Pauli
+**   Copyright (c): 2013-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,9 +15,7 @@
 
 #include <cmath>
 
-#include <QtGui>
-#include <QPushButton>
-#include <QHBoxLayout>
+#include <QtWidgets>
 
 #include "coordeditnumpad.h"
 #include "numberEditor.h"
@@ -120,7 +118,7 @@ void CoordEditNumPad::showEvent( QShowEvent *event )
 
   if ( WGSPoint::getFormat() == WGSPoint::DMS )
     {
-      int strWidth = fm.width(QString("00000"));
+      int strWidth = fm.horizontalAdvance(QString("00000"));
 
       degreeBox->setMinimumWidth( strWidth );
       degreeBox->setMaximumWidth( strWidth );
@@ -131,8 +129,8 @@ void CoordEditNumPad::showEvent( QShowEvent *event )
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDM )
     {
-      int strWidth1 = fm.width(QString("00000"));
-      int strWidth2 = fm.width(QString("00.00000"));
+      int strWidth1 = fm.horizontalAdvance(QString("00000"));
+      int strWidth2 = fm.horizontalAdvance(QString("00.00000"));
 
       degreeBox->setMinimumWidth( strWidth1 );
       degreeBox->setMaximumWidth( strWidth1 );
@@ -141,7 +139,7 @@ void CoordEditNumPad::showEvent( QShowEvent *event )
     }
   else if ( WGSPoint::getFormat() == WGSPoint::DDD )
     {
-      int strWidth = fm.width(QString("000.0000000"));
+      int strWidth = fm.horizontalAdvance(QString("000.0000000"));
 
       degreeBox->setMinimumWidth( strWidth );
       degreeBox->setMaximumWidth( strWidth );

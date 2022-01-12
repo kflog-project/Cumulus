@@ -6,25 +6,17 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2019 by Axel Pauli
+**   Copyright (c):  2012-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "layout.h"
 #include "MainWindow.h"
-
-#ifdef ANDROID
-#include "jnisupport.h"
-#endif
 
 void Layout::adaptFont( QFont& fontRef,
                         const int pxHeight,

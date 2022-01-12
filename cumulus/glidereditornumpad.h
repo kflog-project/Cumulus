@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2016 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,13 +21,12 @@
  *
  * \brief This widget provides a glider editor dialog.
  *
- * \date 2002-2016
+ * \date 2002-2022
  *
  * \version 1.1
  */
 
-#ifndef GLIDER_EDITOR_NUMPAD_H
-#define GLIDER_EDITOR_NUMPAD_H
+#pragma once
 
 #include <QWidget>
 
@@ -170,4 +169,3 @@ private:
   double m_currW3;
 };
 
-#endif

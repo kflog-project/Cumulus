@@ -16,7 +16,6 @@
 
 #include <QtWidgets>
 
-#include "androidstyle.h"
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "glidereditornumpad.h"
