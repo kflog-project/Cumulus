@@ -163,15 +163,18 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   loadTableItems();
   loadFlarmItemHelp();
 
-  // request FLARM device type, if FLARM is available
-  if( Flarm::isFlarmAvailable() == true )
-    {
-      GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
-    }
+  // request FLARM device type in every case. Maybe a Flarm is not connected
+  // but in this case we will not get an answer.
+  getFlarmDevice();
 }
 
 SettingsPageFlarm::~SettingsPageFlarm()
 {
+}
+
+void SettingsPageFlarm::getFlarmDevice()
+{
+  GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
 }
 
 void SettingsPageFlarm::showEvent( QShowEvent *event )
@@ -464,14 +467,30 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       // get Flarm device type
       QString device = FlarmBase::getDeviceType();
 
+      if( device.size() == 0 )
+        {
+          getFlarmDevice();
+          sleep(2);
+        }
+
       if( itemDevType != "ALL" &&
           ((device.startsWith( "PowerFLARM-") == true && itemDevType != "PF") ||
           (device.startsWith( "PowerFLARM-") == false && itemDevType != "CF")) )
         {
-          QString text0 = tr("Configuration item is unsupported by your FLARM!");
+          QString text0 = "<html>" +
+                          tr("Configuration item maybe unsupported by your FLARM!") +
+                          "<br><br>" +
+                          tr("Continue ?");
           QString text1 = tr("Information");
-          messageBox( QMessageBox::Information, text0, text1 );
-          return;
+          int ret = messageBox( QMessageBox::Information,
+                                text0,
+                                text1,
+                                QMessageBox::Yes|QMessageBox::Cancel );
+
+          if( ret == QMessageBox::Cancel )
+            {
+              return;
+            }
         }
 
       QString itemText  = m_table->item( row, 2 )->text();
@@ -604,6 +623,8 @@ void SettingsPageFlarm::nextFlarmCommand()
    QString cmd = m_commands.head();
 
    QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
+
+   qDebug() << "nextFlarmCommand" << cmd;
 
    bool res = GpsNmea::gps->sendSentence( ba );
 
@@ -742,6 +763,8 @@ void SettingsPageFlarm::slot_Timeout()
 bool SettingsPageFlarm::checkFlarmConnection()
 {
   const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+  return true;
 
   QString text0 = tr("Flarm device not reachable!");
   QString text1 = tr("Error");

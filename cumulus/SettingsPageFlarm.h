@@ -112,6 +112,9 @@ signals:
 
 private:
 
+  /** Query Flarm device. */
+  void getFlarmDevice();
+
   /** Loads all Flarm info and configuration items into the items list. */
   void loadTableItems();
 
