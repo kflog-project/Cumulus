@@ -512,45 +512,7 @@ void SettingsPageGPS::load()
   if( GpsDev->currentText().startsWith( BT_ADAPTER ) == true )
     {
       toggleBtMenu( true );
-
-#ifdef BLUEZ
-
-      QMap<QString, QVariant>& btDevList = conf->getGpsBtDeviceList();
-
-      if( btDevList.size() == 0 )
-        {
-          // empty list --> start BT scan
-          slotSearchBtDevices();
-        }
-      else
-        {
-          BtList->clear();
-          QList<QString> keys = btDevList.keys();
-
-          for( int i = 0; i < keys.size(); i++ )
-            {
-              const QString& key = keys.at(i);
-              BtList->addItem( key, btDevList.value(key).toString() );
-            }
-
-          BtList->model()->sort(0, Qt::AscendingOrder);
-
-          // Select last known device
-          QPair<QString, QString>& btDev = conf->getGpsBtDevice();
-
-          int idx = BtList->findText( btDev.first);
-
-          if( idx == -1 )
-            {
-              // BT device not found
-              BtList->setCurrentIndex( 0 );
-            }
-          else
-            {
-              BtList->setCurrentIndex( BtList->findText( btDev.first) );
-            }
-        }
-#endif
+      loadBtDeviceList();
     }
 
   WiFi1_IP->setText( conf->getGpsWlanIp1() );
@@ -718,8 +680,8 @@ void SettingsPageGPS::slotGpsDeviceChanged( const QString &text )
   else
     {
       toggleBtMenu( true );
-      // request BT Devices
-      slotSearchBtDevices();
+      // load BT device list
+      loadBtDeviceList();
     }
 }
 
@@ -776,6 +738,53 @@ void SettingsPageGPS::slotTogglePw2()
       WiFi2_Password->setEchoMode( QLineEdit::Password );
       WiFi2_PwToggle->setText( tr( "Show" ) );
     }
+}
+
+/** Loads a stored BT device list. */
+void SettingsPageGPS::loadBtDeviceList()
+{
+#ifdef BLUEZ
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  // Load BT device list
+  QMap<QString, QVariant>& btDevList = conf->getGpsBtDeviceList();
+
+  if( btDevList.size() == 0 )
+    {
+      // empty list --> start BT scan
+      slotSearchBtDevices();
+    }
+  else
+    {
+      BtList->clear();
+      QList<QString> keys = btDevList.keys();
+
+      for( int i = 0; i < keys.size(); i++ )
+        {
+          const QString& key = keys.at(i);
+          BtList->addItem( key, btDevList.value(key).toString() );
+        }
+
+      BtList->model()->sort(0, Qt::AscendingOrder);
+
+      // Select last known device
+      QPair<QString, QString>& btDev = conf->getGpsBtDevice();
+
+      int idx = BtList->findText( btDev.first);
+
+      if( idx == -1 )
+        {
+          // BT device not found
+          BtList->setCurrentIndex( 0 );
+        }
+      else
+        {
+          BtList->setCurrentIndex( BtList->findText( btDev.first) );
+        }
+    }
+
+#endif
 }
 
 /**

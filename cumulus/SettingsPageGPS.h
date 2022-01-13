@@ -161,6 +161,9 @@ class SettingsPageGPS : public QWidget
   /** Update icon and tool tip of GPS toggle */
   void updateGpsToggle();
 
+  /** Loads a stored BT device list. */
+  void loadBtDeviceList();
+
   /** Called to toggle the BT menu line. */
   void toggleBtMenu( bool toggle )
   {
