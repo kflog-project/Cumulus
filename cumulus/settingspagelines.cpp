@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2018 by Axel Pauli
+ **   Copyright (c): 2013-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,15 +15,7 @@
 
 #include <cmath>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "colordialog.h"
 #include "generalconfig.h"
@@ -63,17 +55,10 @@ SettingsPageLines::SettingsPageLines(QWidget *parent) :
   m_drawOptions->setItemDelegate( new RowDelegate( m_drawOptions, afMargin ) );
 
   // m_drawOptions->setShowGrid( false );
-
   m_drawOptions->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_drawOptions->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef QSCROLLER
   QScroller::grabGesture( m_drawOptions->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_drawOptions->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   connect( m_drawOptions, SIGNAL(cellClicked ( int, int )),
            SLOT(slot_toggleCheckBox( int, int )));
@@ -490,7 +475,7 @@ void SettingsPageLines::drawLineIcon( const QString& number, const int row )
 
   // At this place the icon with the line must be updated.
   QFontMetrics fm( font() );
-  int charWidth = fm.width(QChar('M'));
+  int charWidth = fm.horizontalAdvance(QChar('M'));
 
   int pmw = 4 * charWidth;
   int pmh = fm.height() + 2;

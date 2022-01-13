@@ -6,12 +6,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -21,7 +19,7 @@
  *
  */
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QDialogButtonBox>
@@ -79,8 +77,8 @@ AuthDialog::AuthDialog( QString &user, QString &password,
 
   // Set minimum size of input line
   QFontMetrics fm( font() );
-  int strWidth = fm.width(QString("***************"));
-  int strWidthTiltle = fm.width( windowTitle() );
+  int strWidth = fm.horizontalAdvance(QString("***************"));
+  int strWidthTiltle = fm.horizontalAdvance( windowTitle() );
 
   if( strWidth >= strWidthTiltle )
     {

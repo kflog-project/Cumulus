@@ -7,15 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#include <QtGui>
-#include <QHBoxLayout>
+#include <QtWidgets>
 
 #include "layout.h"
 #include "listviewfilter.h"
@@ -393,7 +392,7 @@ void ListViewFilter::activateFilter( ListViewFilterItem* filter, int shrink )
 
       int buttonWidth = _buttonList.at(i)->width();
 
-      int textWidth = _buttonList.at( i )->fontMetrics().width( buttonText );
+      int textWidth = _buttonList.at( i )->fontMetrics().horizontalAdvance( buttonText );
 
       /*
       qDebug() << "activateFilter: Text=" << buttonText

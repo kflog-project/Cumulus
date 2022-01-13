@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2018 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,11 +18,7 @@
  * for correctness and stored in the GeneralConfig data.
  */
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "proxydialog.h"
 #include "generalconfig.h"
@@ -35,14 +31,6 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
-
-#ifdef ANDROID
-  // Activate box drawing to make the widget better visible under Android.
-  setFrameStyle( QFrame::Box );
-  setLineWidth( 3 );
-  QString style = "QWidget { background: lightgray }";
-  setStyleSheet( style );
-#endif
 
   Qt::InputMethodHints imh;
 
@@ -114,8 +102,8 @@ ProxyDialog::ProxyDialog( QWidget *parent ) :
 
   // Set minimum size of input line
   QFontMetrics fm( font() );
-  int strWidth = fm.width(QString("*")) * 30;
-  int strWidthTiltle = fm.width( windowTitle() );
+  int strWidth = fm.horizontalAdvance(QString("*")) * 30;
+  int strWidthTiltle = fm.horizontalAdvance( windowTitle() );
 
   if( strWidth >= strWidthTiltle )
     {
@@ -155,15 +143,6 @@ void ProxyDialog::accept()
                           tr("Please correct your Proxy settings!"),
                           QMessageBox::Ok,
                           this );
-
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
           mb.exec();
           return;
         }

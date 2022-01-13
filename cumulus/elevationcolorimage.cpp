@@ -6,14 +6,14 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2009-2015 Axel Pauli, kflog.cumulus@gmail.com
+**   Copyright (c):  2009-2022 Axel Pauli, kflog.cumulus@gmail.com
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "altitude.h"
 #include "elevationcolorimage.h"
@@ -52,7 +52,7 @@ QSize ElevationColorImage::minimumSizeHint() const
 
   QFontMetrics fm( myFont );
 
-  int tw = fm.width( "10000ft" );
+  int tw = fm.horizontalAdvance( "10000ft" );
 
   // Possible height in widget
   int ph = height() - (20 * m_scale);
