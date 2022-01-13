@@ -67,6 +67,8 @@ protected:
 
   void showEvent( QShowEvent *event );
 
+  void closeEvent(QCloseEvent *event );
+
 private slots:
 
   /** called, when the help button was clicked to open the help page. */

@@ -180,14 +180,20 @@ void SettingsPageFlarm::getFlarmDevice()
 void SettingsPageFlarm::showEvent( QShowEvent *event )
 {
   m_table->setFocus();
-
   QWidget::showEvent( event );
+}
+
+void SettingsPageFlarm::closeEvent( QCloseEvent *event )
+{
+  m_timer->stop();
+  QApplication::restoreOverrideCursor();
+  QWidget::closeEvent( event );
 }
 
 void SettingsPageFlarm::enableButtons( const bool toggle )
 {
   m_loadButton->setEnabled( toggle );
-  m_closeButton->setEnabled( toggle );
+  // m_closeButton->setEnabled( toggle );
 
   // Block all signals from the table.
   m_table->blockSignals( ! toggle );
