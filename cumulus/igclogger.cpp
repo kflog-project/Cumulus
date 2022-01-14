@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2021 by Axel Pauli
+                               2008-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -216,7 +216,7 @@ void IgcLogger::slotMakeFixEntry()
           emit takeoffTime( startLogging );
 
           // If log mode was before in standby we have to write out the backtrack entries.
-          if( _backtrack.size() > 0 )
+          if( _backtrack.size() >= 2 )
             {
               if( _backtrack.last().at( 0 ).startsWith( "B" ) )
                 {
@@ -231,17 +231,16 @@ void IgcLogger::slotMakeFixEntry()
                   // qDebug( "backtrack %d: %s, %s", i,
                   // _backtrack.at(i).at(0).toLatin1().data(),
                   // _backtrack.at(i).at(1).toLatin1().data() );
-
                   _stream << _backtrack.at(i).at(0) << "\r\n";
                 }
-
-              _backtrack.clear(); // make sure we aren't leaving old data behind.
             }
           else
             {
               // If backtrack contains no entries we must write out a F record at first
               makeSatConstEntry( lastfix.time.time() );
             }
+        
+          _backtrack.clear(); // make sure we aren't leaving old data behind.
         }
 
       /*
@@ -262,7 +261,6 @@ void IgcLogger::slotMakeFixEntry()
 
       // write K-Record
       writeKRecord( lastfix.time.time() );
-
       emit madeEntry();
     }
 }
