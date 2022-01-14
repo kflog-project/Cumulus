@@ -23,14 +23,15 @@
 #include <cstdlib>
 
 #include <QtCore>
-#include <QtWidgets>
-#
+#include <QMessageBox>
+
 #include "igclogger.h"
 #include "gpsnmea.h"
 #include "hwinfo.h"
 
 #include "target.h"
 #include "generalconfig.h"
+#include "layout.h"
 #include "MainWindow.h"
 #include "mapcontents.h"
 #include "flighttask.h"
@@ -51,6 +52,7 @@ IgcLogger::IgcLogger(QObject* parent) :
   closeTimer(0),
   _kRecordLogging(false),
   _backtrack( LimitedList<QStringList>(60) ),
+  _satsInUse(0),
   flightNumber(0),
   _flightMode( Calculator::unknown)
 {
@@ -69,10 +71,6 @@ IgcLogger::IgcLogger(QObject* parent) :
   _bRecordInterval = GeneralConfig::instance()->getBRecordInterval();
   _kRecordInterval = GeneralConfig::instance()->getKRecordInterval();
 
-  lastLoggedBRecord = new QTime();
-  lastLoggedFRecord = new QTime();
-  lastLoggedKRecord = new QTime();
-
   resetTimer = new QTimer( this );
   connect( resetTimer, SIGNAL(timeout()), this, SLOT(slotResetLoggingTime()) );
 
@@ -80,7 +78,6 @@ IgcLogger::IgcLogger(QObject* parent) :
   closeTimer = new QTimer(this);
   closeTimer->setSingleShot( true );
   connect( closeTimer, SIGNAL(timeout()), this, SLOT(slotCloseLogFile()) );
-
   connect( this, SIGNAL(takeoffTime(QDateTime&)), SLOT(slotTakeoff(QDateTime&)) );
   connect( this, SIGNAL(landingTime(QDateTime&)), SLOT(slotLanded(QDateTime&)) );
 }
@@ -92,18 +89,16 @@ IgcLogger::~IgcLogger()
       CloseFile();
     }
 
-  _theInstance = static_cast<IgcLogger *>(0);
-
-  delete lastLoggedBRecord;
-  delete lastLoggedFRecord;
-  delete lastLoggedKRecord;
   delete resetTimer;
+  delete closeTimer;
+
+  _theInstance = nullptr;
 }
 
 /** returns the existing singleton class */
 IgcLogger* IgcLogger::instance()
 {
-  if( _theInstance == static_cast<IgcLogger *> (0) )
+  if( _theInstance == nullptr )
     {
       // first instance of this class is created
       _theInstance = new IgcLogger(0);
@@ -150,7 +145,7 @@ void IgcLogger::slotResetLoggingTime()
  */
 void IgcLogger::slotMakeFixEntry()
 {
-  if ( _logMode == off || calculator->samplelist.count() == 0 )
+  if ( _logMode == off || calculator->samplelist.count() < 2 )
     {
       // make sure logger is not off and and entries are in the sample list
       return;
@@ -158,40 +153,27 @@ void IgcLogger::slotMakeFixEntry()
 
   const FlightSample &lastfix = calculator->samplelist.at(0);
 
-  // check if we have to log a new B-Record
-  if ( ! lastLoggedBRecord->isNull() &&
-         lastLoggedBRecord->addSecs( _bRecordInterval ) > lastfix.time.time() )
-    {
-      // write K-Record, if needed
-      writeKRecord( lastfix.time.time() );
-      return;
-    }
-
-  *lastLoggedBRecord = lastfix.time.time();
-
-  QString bRecord( "B" + formatTime(lastfix.time.time()) + formatPosition(lastfix.position) + "A" +
-                   formatAltitude(lastfix.STDAltitude) + formatAltitude(lastfix.GNSSAltitude) +
-                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
-                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().satsInUse, 2, 10, QChar('0')) );
-
   if ( _logMode == standby &&
        ( calculator->moving() == false ||
          _flightMode == Calculator::unknown ||
          _flightMode == Calculator::standstill ) )
     {
-      // save B and F record and time in backtrack, if we are not in move
+      // save B and F record and time in backtrack, if we are not in move. We do
+      // it for every call, maybe every second to have a good start point.
+      QString bRecord = createBRecord( lastfix );
+
       QString fRecord = "F" +
                          formatTime( lastfix.time.time() ) +
                          GpsNmea::gps->getLastSatInfo().constellation;
       QStringList list;
-      list << bRecord << fRecord << QTime::currentTime ().toString("hhmmss");
+      list << bRecord << fRecord << QTime::currentTime().toString("hhmmss");
       _backtrack.add( list );
 
       // qDebug( "Backtrack add: backtrack.size=%d", _backtrack.size() );
 
-      // Set last F recording time from the oldest log entry. Looks a little bit
-      // tricky but should work so. ;-)
-      *lastLoggedFRecord = QTime::fromString( _backtrack.last().at(2), "hhmmss" );
+      // Set last recording times
+      lastLoggedBRecord = lastfix.time;
+      lastLoggedFRecord.start();
       return;
     }
 
@@ -205,9 +187,8 @@ void IgcLogger::slotMakeFixEntry()
           // before start with normal logging. Otherwise the first B record is missing.
           _logMode = on;
 
-          // set start date and time of logging
-          startLogging = QDateTime::currentDateTime();
-
+          // set UTC start date and time of logging
+          startLogging = QDateTime::currentDateTimeUtc();
           emit takeoffTime( startLogging );
 
           // If log mode was before in standby we have to write out the backtrack entries.
@@ -215,28 +196,30 @@ void IgcLogger::slotMakeFixEntry()
             {
               if( _backtrack.last().at( 0 ).startsWith( "B" ) )
                 {
-                  // The backtrack contains at the last position a B record but IGC log
-                  // should start with a F record. Therefore we take the corresponding
-                  // F record from the stored string list.
+                  // The IGC logfile should start with a F-Record. We take the
+                  // oldest one from the backtrack list.
                   _stream << _backtrack.last().at( 1 ) << "\r\n";
                 }
 
               for( int i = _backtrack.count() - 1; i >= 0; i-- )
                 {
+                  // All stored B-Records are written into the IGC logfile.
                   // qDebug( "backtrack %d: %s, %s", i,
                   // _backtrack.at(i).at(0).toLatin1().data(),
                   // _backtrack.at(i).at(1).toLatin1().data() );
-
                   _stream << _backtrack.at(i).at(0) << "\r\n";
                 }
-
-              _backtrack.clear(); // make sure we aren't leaving old data behind.
             }
           else
             {
-              // If backtrack contains no entries we must write out a F record at first
-              makeSatConstEntry( lastfix.time.time() );
+              // If backtrack contains too less entries we must write out a F record as first
+              lastLoggedFRecord.invalidate();
+
+              // ensure a B-Record is written as next.
+              lastLoggedBRecord = QDateTime();
             }
+
+          _backtrack.clear(); // make sure we aren't leaving old data behind.
         }
 
       /*
@@ -245,27 +228,55 @@ void IgcLogger::slotMakeFixEntry()
               lastLoggedFRecord->elapsed());
       */
 
-      // Check if F record has to be written
-      if( lastLoggedFRecord->elapsed() >= 5*60*1000 )
-        {
-          // According to the IGC specification after 5 minutes a F record has
-          // to be logged. So we will do now.
-          makeSatConstEntry( lastfix.time.time() );
-        }
+      makeSatConstEntry( lastfix.time.time() );
 
-      _stream << bRecord << "\r\n";
+      // write B-Record
+      writeBRecord( lastfix );
 
       // write K-Record
-      writeKRecord( lastfix.time.time() );
-
+      writeKRecord( lastfix.time );
+      _stream.flush();
       emit madeEntry();
     }
 }
 
 /**
+ * Create B-Record with the given timeFix.
+ *
+ * @param timeFix current date and time
+ */
+QString IgcLogger::createBRecord( const FlightSample &fs )
+{
+  QString bRecord( "B" + formatTime(fs.time.time()) + formatPosition(fs.position) + "A" +
+                   formatAltitude(fs.STDAltitude) + formatAltitude(fs.GNSSAltitude) +
+                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().fixAccuracy, 3, 10, QChar('0')) +
+                   QString("%1").arg(GpsNmea::gps->getLastSatInfo().satsInUse, 2, 10, QChar('0')) );
+  return bRecord;
+}
+
+/**
+ * Writes a B-Record, if all conditions are true.
+ *
+ * @param fs flight sample to be used.
+ */
+void IgcLogger::writeBRecord( const FlightSample &fs )
+{
+  // check if we have to log a new B-Record
+  if ( lastLoggedBRecord.isValid() &&
+       lastLoggedBRecord.addSecs( _bRecordInterval ) < fs.time )
+    {
+      return;
+    }
+
+  QString bRecord = createBRecord( fs );
+  _stream << bRecord << "\r\n";
+  lastLoggedBRecord = fs.time;
+}
+
+/**
  * Writes a K-Record, if all conditions for that are true.
  */
-void IgcLogger::writeKRecord( const QTime& timeFix )
+void IgcLogger::writeKRecord( const QDateTime& timeFix )
 {
   if( _kRecordLogging == false || ! _logfile.isOpen()  )
     {
@@ -275,14 +286,12 @@ void IgcLogger::writeKRecord( const QTime& timeFix )
     }
 
   // Check if we have to log a new K-Record.
-  if ( ! lastLoggedKRecord->isNull() &&
-         lastLoggedKRecord->addSecs( _kRecordInterval ) > timeFix )
+  if ( lastLoggedKRecord.isValid() &&
+       lastLoggedKRecord.addSecs( _kRecordInterval ) < timeFix )
     {
       // there is no log to do
       return;
     }
-
-  *lastLoggedKRecord = timeFix;
 
   /**
    *  The additional five parameters are logged as K record.
@@ -300,7 +309,7 @@ void IgcLogger::writeKRecord( const QTime& timeFix )
       23-29 VAT, vario speed in meters as sign +/-, 3 numbers with 3 decimal numbers
    *
    */
-  QString kRecord( "K" + formatTime(timeFix) +
+  QString kRecord( "K" + formatTime(timeFix.time()) +
                    QString("%1").arg( (int) rint(GpsNmea::gps->getLastHeading()), 3, 10, QChar('0')) +
                    QString("%1").arg( (int) rint(GpsNmea::gps->getLastTas().getKph()), 3, 10, QChar('0')) + "kph" +
                    QString("%1").arg( (int) calculator->getLastWind().getAngleDeg(), 3, 10, QChar('0')) +
@@ -308,6 +317,7 @@ void IgcLogger::writeKRecord( const QTime& timeFix )
                    formatVario(calculator->getlastVario()) );
 
   _stream << kRecord << "\r\n";
+  lastLoggedKRecord = timeFix;
 }
 
 /** Call this slot, if a task sector has been touched to increase
@@ -343,14 +353,12 @@ void IgcLogger::Stop()
 
   _logMode = off;
   _backtrack.clear();
+  _satsInUse = 0;
 
   // Reset time classes to initial state
-  delete lastLoggedBRecord;
-  delete lastLoggedFRecord;
-  delete lastLoggedKRecord;
-  lastLoggedBRecord = new QTime();
-  lastLoggedFRecord = new QTime();
-  lastLoggedKRecord = new QTime();
+  lastLoggedBRecord = QDateTime();
+  lastLoggedFRecord.invalidate();
+  lastLoggedKRecord = QDateTime();
   emit logging( getIsLogging() );
 }
 
@@ -369,12 +377,9 @@ void IgcLogger::Standby()
   _backtrack.clear();
 
   // Reset time classes to initial state
-  delete lastLoggedBRecord;
-  delete lastLoggedFRecord;
-  delete lastLoggedKRecord;
-  lastLoggedBRecord = new QTime();
-  lastLoggedFRecord = new QTime();
-  lastLoggedKRecord = new QTime();
+  lastLoggedBRecord = QDateTime();
+  lastLoggedFRecord.invalidate();
+  lastLoggedKRecord = QDateTime();
   emit logging( getIsLogging() );
 }
 
@@ -416,12 +421,7 @@ bool IgcLogger::isLogFileOpen()
   // qDebug( "IGC-Logger: Created Logfile %s", fname.toLatin1().data() );
 
   _stream.setDevice(&_logfile);
-
   writeHeader();
-
-  // As first create a F record
-  slotConstellation( GpsNmea::gps->getLastSatInfo() );
-
   return true;
 }
 
@@ -477,29 +477,10 @@ void IgcLogger::writeHeader()
       _stream << "HFCM2CREW2: " << coPilot << "\r\n";
     }
 
-  QString os;
-
-#ifdef MAEMO4
-  os = "Maemo 4";
-#elif MAEMO5
-  os = "Maemo 5";
-#elif ANDROID
-  os = "Android";
-#else
-  os = "Linux";
-#endif
-
+  QString os = "Linux";
   QString hwv;
 
-#ifndef ANDROID
   hwv = HwInfo::instance()->getTypeString();
-#else
-  QHash<QString, QString> hwh = jniGetBuildData();
-
-  hwv = hwh.value("MANUFACTURER", "Unknown") + ", " +
-        hwh.value("HARDWARE", "Unknown") + ", " +
-        hwh.value("MODEL", "Unknown");
-#endif
 
   _stream << "HFGTYGLIDERTYPE: " << gliderType << "\r\n";
   _stream << "HFGIDGLIDERID: " << gliderRegistration << "\r\n";
@@ -594,24 +575,16 @@ void IgcLogger::slotToggleLogging()
   // qDebug("toggle logging!");
   if ( _logMode == on )
     {
-      QMessageBox mb( QMessageBox::Question,
-                      tr( "Stop Logging?" ),
-                      tr("<html>Are you sure you want<br>stop logging?</html>"),
-                      QMessageBox::Yes | QMessageBox::No,
-                      MainWindow::mainWindow() );
+      QString text = tr( "Stop Logging?" );
+      QString infoText = tr( "<html>Are you sure you want<br>stop logging?</html>" );
 
-      mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = MainWindow::mainWindow()->mapToGlobal( QPoint( MainWindow::mainWindow()->width()/2 - mb.width()/2,
-                                                                  MainWindow::mainWindow()->height()/2 - mb.height()/2 ) );
-      mb.move( pos );
-
-#endif
-
-      if( mb.exec() == QMessageBox::Yes )
+      int ret = Layout::messageBox( QMessageBox::Question,
+                                    text,
+                                    infoText,
+                                    QMessageBox::Yes | QMessageBox::No,
+                                    QMessageBox::No,
+                                    QApplication::desktop() );
+      if( ret == QMessageBox::Yes )
         {
           // qDebug("Stopping logging...");
           Stop();
@@ -624,24 +597,15 @@ void IgcLogger::slotToggleLogging()
 
       if( ! calculator->glider() )
         {
-          QMessageBox mb( QMessageBox::Warning,
-                          tr( "Start Logging?" ),
-                          tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>"),
-                          QMessageBox::Yes | QMessageBox::No,
-                          MainWindow::mainWindow() );
+          QString text = tr( "Start Logging?" );
+          QString infoText = tr("<html>You should select a glider<br>before start logging.<br>Continue start logging?</html>");
 
-          mb.setDefaultButton( QMessageBox::No );
-
-    #ifdef ANDROID
-
-          mb.show();
-          QPoint pos = MainWindow::mainWindow()->mapToGlobal( QPoint( MainWindow::mainWindow()->width()/2 - mb.width()/2,
-                                                                      MainWindow::mainWindow()->height()/2 - mb.height()/2 ) );
-          mb.move( pos );
-
-    #endif
-
-          answer = mb.exec();
+          answer = Layout::messageBox( QMessageBox::Warning,
+                                       text,
+                                       infoText,
+                                       QMessageBox::Yes | QMessageBox::No,
+                                       QMessageBox::No,
+                                       QApplication::desktop() );
         }
 
       if( answer == QMessageBox::Yes )
@@ -665,24 +629,17 @@ void IgcLogger::slotNewTaskSelected()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Warning,
-                  tr( "Restart Logging?" ),
-                  tr("<html>A new flight task was selected.<br>Restart logging?</html>"),
-                  QMessageBox::Yes | QMessageBox::No,
-                  MainWindow::mainWindow() );
+  QString text = tr( "Restart Logging?" );
+  QString infoText = tr("<html>A new flight task was selected.<br>Restart logging?</html>");
 
-  mb.setDefaultButton( QMessageBox::No );
+  int ret = Layout::messageBox( QMessageBox::Warning,
+                                text,
+                                infoText,
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                QApplication::desktop() );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal( QPoint( MainWindow::mainWindow()->width()/2 - mb.width()/2,
-                                                              MainWindow::mainWindow()->height()/2 - mb.height()/2 ) );
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::Yes )
+  if( ret == QMessageBox::Yes )
     {
       // qDebug("Restarting logging...");
       Stop();
@@ -703,24 +660,27 @@ void IgcLogger::makeSatConstEntry(const QTime &time)
 {
   if( _logMode == on )
     {
-      if( ! lastLoggedFRecord->isNull() && lastLoggedFRecord->elapsed() < 5*60*1000 )
+      int satsInUse = GpsNmea::gps->getLastSatInfo().satsInUse;
+
+      if( _satsInUse == satsInUse ||
+          ( lastLoggedFRecord.isValid() && lastLoggedFRecord.elapsed() < 5*60*1000 ))
         {
           // According to ICG Specification F-records should not updated at intervals
           // of less than 5 minutes.
           return;
         }
 
-      QString entry = "F" +
-                       formatTime( time ) +
-                       GpsNmea::gps->getLastSatInfo().constellation;
-
       if( isLogFileOpen() )
         {
+          QString entry = "F" +
+                           formatTime( time ) +
+                           GpsNmea::gps->getLastSatInfo().constellation;
+
           _stream << entry << "\r\n";
-          emit madeEntry();
         }
 
-      lastLoggedFRecord->start();
+      _satsInUse = satsInUse;
+      lastLoggedFRecord.start();
     }
 }
 
@@ -881,7 +841,7 @@ void IgcLogger::slotCloseLogFile()
   if( GeneralConfig::instance()->getLoggerAutostartMode() )
     {
       // Correct landing time by subtraction of stand time on earth.
-      QDateTime lt = QDateTime::currentDateTime().addSecs( -TOAL );
+      QDateTime lt = QDateTime::currentDateTimeUtc().addSecs( -TOAL );
       emit landingTime( lt );
       Standby();
     }

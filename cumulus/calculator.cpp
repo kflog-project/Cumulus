@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2021 by Axel Pauli
+ **                  2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -20,15 +20,7 @@
 #include <cmath>
 #include <cstdlib>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef ANDROID
-#define nullptr 0
-#endif
 
 #include "altimeterdialog.h"
 #include "Atmosphere.h"
@@ -37,6 +29,7 @@
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
 #include "gpsnmea.h"
+#include "layout.h"
 #include "MainWindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
@@ -387,29 +380,23 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
     {
       // A user action will overwrite a task point. That will stop the
       // automatic task point switch. We will notice the user about that fact.
-      QMessageBox mb( QMessageBox::Question,
-                      tr( "Replace current task point?" ),
-                      tr( "<html>"
-                          "A flight task is activated!<br>"
-                          "This selection will stop the automatic task point switch."
-                          "To avoid that make a selection from task menu."
-                          "<br>Do You really want to replace?"
-                          "</html>" ),
-                      QMessageBox::Yes | QMessageBox::No,
-                      QApplication::desktop() );
+      QString text = tr( "Replace current task point?" );
 
-      mb.setDefaultButton( QMessageBox::Yes );
+      QString infoText = tr( "<html>"
+                              "A flight task is activated!<br>"
+                              "This selection will stop the automatic task point switch."
+                              "To avoid that make a selection from task menu."
+                              "<br>Do You really want to replace?"
+                              "</html>" );
 
-#ifdef ANDROID
+      int ret = Layout::messageBox( QMessageBox::Question,
+                                    text,
+                                    infoText,
+                                    QMessageBox::Yes | QMessageBox::No,
+                                    QMessageBox::No,
+                                    QApplication::desktop() );
 
-      mb.show();
-      QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
-                                                                 QApplication::desktop()->height()/2 - mb.height()/2 ) );
-      mb.move( pos );
-
-#endif
-
-      if ( mb.exec() != QMessageBox::Yes )
+      if( ret != QMessageBox::Yes )
         {
           // do nothing change
           return;
@@ -1971,28 +1958,22 @@ void Calculator::slot_startTask()
       if( targetWp->taskPointIndex != -1 &&
           targetWp->taskPointIndex != tp2Taken.getFlightTaskListIndex() )
         {
-          QMessageBox mb( QMessageBox::Question,
-                          tr( "Restart current task?" ),
-                          tr( "<html>"
-                              "A flight task is running!<br>"
-                              "This command will start the<br>"
-                              "task again at the beginning."
-                              "<br>Do You really want to restart?"
-                              "</html>" ),
-                          QMessageBox::Yes | QMessageBox::No,
-                          QApplication::desktop() );
+          QString text = tr( "Restart current task?" );
+          QString infoText = tr( "<html>"
+                                 "A flight task is running!<br>"
+                                 "This command will start the<br>"
+                                 "task again at the beginning."
+                                 "<br>Do You really want to restart?"
+                                 "</html>" );
 
-          mb.setDefaultButton( QMessageBox::Yes );
+          int ret = Layout::messageBox( QMessageBox::Question,
+                                        text,
+                                        infoText,
+                                        QMessageBox::Yes | QMessageBox::No,
+                                        QMessageBox::Yes,
+                                        QApplication::desktop() );
 
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
-                                                                     QApplication::desktop()->height()/2 - mb.height()/2 ) );
-          mb.move( pos );
-
-#endif
-          if ( mb.exec() == QMessageBox::No )
+          if( ret == QMessageBox::No )
             {
               return;
             }

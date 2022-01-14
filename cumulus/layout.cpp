@@ -516,3 +516,24 @@ QComboBox* Layout::getComboBox()
   return cb;
 }
 
+/**
+ * Pop up a messagebox with the given parameters and an own main loop.
+ *
+ * @return the pressed messagebox button
+ */
+int Layout::messageBox( QMessageBox::Icon icon,
+                        QString text,
+                        QString infoText,
+                        QMessageBox::StandardButtons buttons,
+                        QMessageBox::StandardButton button,
+                        QWidget *parent )
+{
+  QMessageBox msgBox( parent );
+  msgBox.setText( text );
+  msgBox.setIcon( icon );
+  msgBox.setInformativeText( infoText );
+  msgBox.setStandardButtons( buttons );
+  msgBox.setDefaultButton( button );
+
+  return msgBox.exec();
+}

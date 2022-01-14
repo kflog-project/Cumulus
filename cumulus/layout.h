@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010-2018 by Axel Pauli
+**   Copyright (c):  2010-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,111 +20,15 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2019
+ * \date 2010-2022
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
-#ifndef LAYOUT_H_
-#define LAYOUT_H_
+#pragma once
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#if defined MAEMO
-
-// @AP: It seems that under MAEMO point size and pixel size are to be identically.
-//      That is a big difference to Android!
-
-#define IconSize 32
-
-// Snap radius size on the map
-#define SnapRadius 25
-
-// Dialog font size in pixels
-#define DialogMinFontSize 22
-
-// Statusbar font height in pixels
-#define StatusbarFontHeight 25
-
-// GUI font height in pixels
-#define GuiFontHeight 27
-
-// GUI menu font height in pixels
-#define GuiMenuFontHeight 44
-
-// Map scale bar font height in pixels
-#define MapScalebarFontHeight 22
-
-// Map label font point size
-#define MapLabelFontPointSize 18
-
-// Map city label font point size
-#define MapCityLabelFontPointSize 11
-
-// Map bearing indicator font point size
-#define MapBearingIndicatorFontPointSize 20
-
-// Map Flarm label font point size
-#define MapFlarmLabelFontPointSize 20
-
-// Flarm display text point size
-#define FlarmDisplayTextPointSize 20
-
-// Flarm display icon point size
-#define FlarmDisplayIconPointSize 28
-
-// WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
-#define WhatsThatFontPointSize 16
-
-#elif defined ANDROID
-
-#define IconSize 32
-
-// Snap radius size on the map
-#define SnapRadius 25
-
-// Dialog font size in pixels
-#define DialogMinFontSize 22
-
-// Statusbar font height in pixels
-#define StatusbarFontHeight 20
-
-// GUI font height in pixels
-#define GuiFontHeight 16
-
-// GUI menu font height in pixels
-#define GuiMenuFontHeight 22
-
-// Map scale bar font height in pixels
-#define MapScalebarFontHeight 20
-
-// Map label font point size
-#define MapLabelFontPointSize 7
-
-// Map city label font point size
-#define MapCityLabelFontPointSize 7
-
-// Map bearing indicator font point size
-#define MapBearingIndicatorFontPointSize 12
-
-// Map Flarm label font point size
-#define MapFlarmLabelFontPointSize 12
-
-// Flarm display text point size
-#define FlarmDisplayTextPointSize 12
-
-// Flarm display icon point size
-#define FlarmDisplayIconPointSize 16
-
-// WhatsThat font point sizeFlarmDisplayPainterFontPixelSize
-#define WhatsThatFontPointSize 16
-
-#else
 
 #define IconSize 30
 #define SnapRadius 15
@@ -164,8 +68,6 @@
 
 // WhatsThat font point size
 #define WhatsThatFontPointSize 16
-
-#endif
 
 class Layout
 {
@@ -279,6 +181,16 @@ class Layout
    * @return A Combobox object.
    */
   static QComboBox* getComboBox();
-};
 
-#endif /* LAYOUT_H_ */
+  /**
+   * Pop up a messagebox with the given parameters and an own main loop.
+   *
+   * @return the pressed messagebox button
+   */
+  static int messageBox( QMessageBox::Icon icon,
+                         QString text,
+                         QString infoText,
+                         QMessageBox::StandardButtons buttons,
+                         QMessageBox::StandardButton button,
+                         QWidget *parent=nullptr );
+};
