@@ -1638,25 +1638,24 @@ void GeneralConfig::removePixmap( const QString& pixmapName )
  */
 void GeneralConfig::setMapRootDir( QString newValue )
 {
+  QString defaultRoot = getUserDefaultRootDir() + "/Cumulus/maps";
+
   if( newValue.isEmpty() )
     {
-      // New directory name is empty, fall back to a default one.
-      newValue = getUserDefaultRootDir() + "/maps";
+      // New directory name is empty, use the default one.
+      newValue = defaultRoot;
     }
   else
     {
       QDir testMapDir( newValue );
 
-      if( ! testMapDir.exists() )
+      if( ! testMapDir.exists() && ! testMapDir.mkpath( newValue ) )
         {
+          // New directory not creatable, fall back to a default one.
           qWarning( "Cannot create map root directory %s! Fall back to default.",
                       _mapRootDir.toLatin1().data() );
 
-          if( ! testMapDir.mkpath( newValue ) )
-            {
-              // New directory not creatable, fall back to a default one.
-              newValue = getUserDefaultRootDir() + "/maps";
-            }
+          newValue = defaultRoot;
         }
     }
 
@@ -1697,19 +1696,18 @@ void GeneralConfig::setMapRootDir( QString newValue )
  */
 QString GeneralConfig::getUserDefaultRootDir()
 {
-  QString root = QDir::homePath();
-  return root;
+  return QDir::homePath();
 }
 
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
-               2. $HOME/cumulus/maps (desktop) or
-                  /media/mmc.../Cumulus/maps resp. $HOME/MyDocs/Cumulus/maps (Maemo)
+               2. $HOME/Cumulus/maps (desktop) or
+                  /media/mmc.../Cumulus/maps
 */
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
-  QString     mapDefault = getUserDefaultRootDir() + "/maps";
+  QString     mapRoot = getUserDefaultRootDir() + "/Cumulus//maps";
 
   // First takes defined map directory
   if(  ! _mapRootDir.isEmpty() )
@@ -1718,10 +1716,10 @@ QStringList GeneralConfig::getMapDirectories()
     }
 
   // Next follows default map directory
-  if( _mapRootDir != mapDefault )
+  if( _mapRootDir != mapRoot )
     {
       // add only if different
-      mapDirs << mapDefault;
+      mapDirs << mapRoot;
     }
 
   return mapDirs;
@@ -1739,11 +1737,15 @@ QString GeneralConfig::getUserDataDirectory()
       // try to create it
       if( ! userDir.mkpath( _userDataDirectory ) )
         {
-          // user data directory is not createable, fall back to the default one
-          _userDataDirectory = getUserDefaultRootDir();
-          userDir.mkpath( _userDataDirectory );
-          qWarning( "Cannot create user data directory %s",
-                    _userDataDirectory.toLatin1().data() );
+          // user data directory is not createable, fall back to the default
+          // one, under Linux $HOME/Cumulus.
+          _userDataDirectory = getUserDefaultRootDir() + "/Cumulus";
+
+          if( ! userDir.mkpath( _userDataDirectory ) )
+            {
+              qWarning( "Cannot create user data directory %s",
+                        _userDataDirectory.toLatin1().data() );
+            }
         }
     }
 
@@ -1756,8 +1758,9 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
 {
   if( newDir.isEmpty() )
     {
-      // No directory defined, we do fall back to the default one.
-      _userDataDirectory = getUserDefaultRootDir();
+      // No directory defined, we do fall back to the default one, under Linux
+      // $HOME/Cumulus.
+      _userDataDirectory = getUserDefaultRootDir() + "/Cumulus";
     }
   else
     {
