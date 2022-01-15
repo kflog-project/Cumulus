@@ -28,13 +28,13 @@
 #ifndef ListViewTabs_h
 #define ListViewTabs_h
 
+#include <TaskListView.h>
 #include <QTabWidget>
 #include <QTimer>
 #include <QWidget>
 
 #include "PointListView.h"
 #include "reachpointlistview.h"
-#include "tasklistview.h"
 #include "waypointlistview.h"
 
 class ListViewTabs : public QWidget

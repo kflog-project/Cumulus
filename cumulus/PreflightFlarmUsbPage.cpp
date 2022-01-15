@@ -1,30 +1,26 @@
 /***********************************************************************
  **
- **   preflightflarmusbpage.cpp
+ **   PreflightFlarmUsbPage.cpp
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
- **   Copyright (c): 2017 by Axel Pauli
+ **   Copyright (c): 2017-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
+#include <PreflightFlarmUsbPage.h>
 #include <QtWidgets>
-#endif
 
 #include "flarm.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "layout.h"
 #include "MainWindow.h"
-#include "preflightflarmusbpage.h"
 
 // Timeout in ms for waiting for response
 #define RESP_TO 5000

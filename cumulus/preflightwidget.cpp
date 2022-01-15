@@ -36,7 +36,7 @@
 #include "preflightgliderpage.h"
 #include "preflightlogbookspage.h"
 #include "preflightmiscpage.h"
-#include "preflighttaskpage.h"
+#include <PreflightTaskPage.h>
 #include "preflightwaypointpage.h"
 #include "preflightwidget.h"
 #include "preflightwindpage.h"

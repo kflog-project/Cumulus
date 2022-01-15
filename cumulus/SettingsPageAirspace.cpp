@@ -1,13 +1,13 @@
 /***********************************************************************
  **
- **   settingspageairspace.cpp
+ **   SettingsPageAirspace.cpp
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2009-2020 by Axel Pauli
+ **                   2009-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,15 +16,7 @@
 
 #include <cmath>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "airspace.h"
 #include "AirspaceFilters.h"
@@ -33,6 +25,7 @@
 #include "distance.h"
 #include "generalconfig.h"
 #include <HelpBrowser.h>
+#include <SettingsPageAirspace.h>
 #include "layout.h"
 #include "MainWindow.h"
 #include "map.h"
@@ -40,7 +33,6 @@
 #include "mapdefaults.h"
 #include "numberEditor.h"
 
-#include "settingspageairspace.h"
 #include "settingspageairspacefillingnumpad.h"
 #include "settingspageairspacewarningsnumpad.h"
 #include "settingspageairspaceloading.h"
@@ -77,13 +69,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
 
-#ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   // Add scroll area to its own layout
   sal->addWidget( sa );
@@ -104,13 +90,7 @@ SettingsPageAirspace::SettingsPageAirspace(QWidget *parent) :
   drawOptions->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   drawOptions->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef QSCROLLER
   QScroller::grabGesture( drawOptions->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( drawOptions->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   connect( drawOptions, SIGNAL(cellClicked ( int, int )),
            SLOT(slot_toggleCheckBox( int, int )));

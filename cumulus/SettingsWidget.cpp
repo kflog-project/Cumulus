@@ -20,6 +20,7 @@
  * preparation. For that exists a separate configuration widget.
  */
 #include <HelpBrowser.h>
+#include <SettingsPageAirspace.h>
 #include <QtWidgets>
 
 #include "calculator.h"
@@ -32,7 +33,6 @@
 #include "rowdelegate.h"
 #include "SettingsWidget.h"
 
-#include "settingspageairspace.h"
 
 #ifdef FLARM
 #include "SettingsPageFlarm.h"

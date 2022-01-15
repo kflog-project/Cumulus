@@ -1,13 +1,13 @@
 /***********************************************************************
 **
-**   tasklistview.h
+**   TaskListView.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,13 +25,12 @@
  * actions. Can be used in two modes, as display only, buttons for
  * actions are not visible or with command buttons.
  *
- * \date 2004-2021
+ * \date 2004-2022
  *
- * \version 1.3
+ * \version 1.2
  */
 
-#ifndef TASK_LIST_VIEW_H
-#define TASK_LIST_VIEW_H
+#pragma once
 
 #include <QWidget>
 #include <QTreeWidget>
@@ -232,5 +231,3 @@ private:
         TaskPoint *tp;
     };
 };
-
-#endif

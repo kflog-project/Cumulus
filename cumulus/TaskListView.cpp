@@ -1,13 +1,13 @@
 /***********************************************************************
 **
-**   tasklistview.cpp
+**   TaskListView.cpp
 **
 **   This file is part of Cumulus
 **
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2009-2021 by Axel Pauli
+**                   2009-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,19 +18,11 @@
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
+#include <TaskListView.h>
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "layout.h"
 #include "MainWindow.h"
-#include "tasklistview.h"
 #include "flighttask.h"
 #include "distance.h"
 #include "calculator.h"
@@ -92,17 +84,10 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
   list->setSelectionMode(QAbstractItemView::NoSelection);
   list->setFocusPolicy(Qt::NoFocus);
   setHeader();
-
   list->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   list->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef QSCROLLER
   QScroller::grabGesture( list->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( list->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   // calculates the needed icon size
   const int iconSize = Layout::iconSize( font() );
@@ -152,13 +137,10 @@ TaskListView::TaskListView( QWidget *parent, bool showButtons ) :
       connect( cmdStatus, SIGNAL(clicked() ),
                this, SLOT(slot_Status()) );
 
-#ifndef ANDROID
       // activate keyboard shortcut Return as select
       QShortcut* scSelect = new QShortcut( this );
       scSelect->setKey( Qt::Key_Return );
       connect( scSelect, SIGNAL(activated()), this, SLOT( slot_Select() ));
-#endif
-
     }
 }
 

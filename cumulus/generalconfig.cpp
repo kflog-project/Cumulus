@@ -244,7 +244,7 @@ void GeneralConfig::load()
   _bRecordInterval        = value( "B-RecordLoggerInterval", 3 ).toInt();
   _kRecordInterval        = value( "K-RecordLoggerInterval", 0 ).toInt();
   _loggerAutostartMode    = value( "LoggerAutostartMode", true ).toBool();
-  _tas                    = Speed(value( "TAS", 100.0 ).toDouble());
+  _tas                    = Speed(value( "TAS", 100.0 / 3.6 ).toDouble());
   _currentTaskName        = value( "CurrentTask", "").toString();
   _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();

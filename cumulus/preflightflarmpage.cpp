@@ -34,7 +34,7 @@
 #include "mapcontents.h"
 #include "numberEditor.h"
 #include "preflightflarmpage.h"
-#include "preflighttaskpage.h"
+#include <PreflightTaskPage.h>
 #include "TaskFileManager.h"
 #include "varspinbox.h"
 

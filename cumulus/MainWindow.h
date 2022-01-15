@@ -33,6 +33,7 @@
 #pragma once
 
 #include <IgcLogger.h>
+#include <TaskListView.h>
 #include <QMainWindow>
 #include <QWidget>
 #include <QAction>
@@ -48,7 +49,6 @@
 #include "waypointlistview.h"
 #include "PointListView.h"
 #include "reachpointlistview.h"
-#include "tasklistview.h"
 #include "wpinfowidget.h"
 #include "gpsnmea.h"
 #include "mapinfobox.h"

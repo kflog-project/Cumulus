@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   preflightflarmusbpage.h
+**   PreflightFlarmUsbPage.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c):  2017 by Axel Pauli
+**   Copyright (c):  2017-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,13 +22,12 @@
  *
  * A widget for Flarm flights transfer to an USB stick.
  *
- * \date 2017
+ * \date 2017-2022
  *
- * \version 1.0
+ * \version 1.1
  */
 
-#ifndef PREFLIGHT_FLARM_USB_PAGE_H
-#define PREFLIGHT_FLARM_USB_PAGE_H
+#pragma once
 
 #include <QWidget>
 
@@ -89,5 +88,3 @@ class PreFlightFlarmUsbPage : public QWidget
   QProgressBar* m_pb;
   QTimer*       m_timer;
 };
-
-#endif

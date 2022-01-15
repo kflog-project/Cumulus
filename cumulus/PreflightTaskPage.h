@@ -1,13 +1,13 @@
 /***********************************************************************
 **
-**   preflighttaskpage.h
+**   PreflightTaskPage.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,14 +21,15 @@
  *
  * \brief A widget for pre-flight task settings.
  *
- * \date 2002-2021
+ * \date 2002-2022
  *
- * \version 1.9
+ * \version 1.10
  *
  */
 
 #pragma once
 
+#include <TaskListView.h>
 #include <QLabel>
 #include <QList>
 #include <QTreeWidget>
@@ -38,7 +39,6 @@
 #include <QCheckBox>
 
 #include "flighttask.h"
-#include "tasklistview.h"
 
 class NumberEditor;
 

@@ -1,21 +1,20 @@
 /***********************************************************************
 **
-**   settingspageairspace.h
+**   SettingsPageAirspace.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2009-2018 by Axel Pauli
+**                   2009-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef SettingsPageAirSpace_H
-#define SettingsPageAirSpace_H
+#pragma once
 
 #include <QCheckBox>
 #include <QWidget>
@@ -40,9 +39,9 @@ class NumberEditor;
  * loading. Filling, warnings and loading configuration are realized as separate
  * widgets, callable via buttons.
  *
- * \date 2002-2020
+ * \date 2002-2022
  *
- * \version 1.4
+ * \version 1.5
  *
  */
 class SettingsPageAirspace : public QWidget
@@ -224,4 +223,3 @@ class SettingsPageAirspace : public QWidget
   NumberEditor* m_borderDrawingValue;
 };
 
-#endif

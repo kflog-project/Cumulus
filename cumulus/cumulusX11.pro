@@ -1,4 +1,4 @@
-##################################################################
+################################################################################
 # Cumulus Qt5/X11 project file for qmake
 #
 # Compatibility for Qt5 by Eggert Ehmke
@@ -8,7 +8,7 @@
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
 #
-##################################################################
+################################################################################
 
 TEMPLATE = app
 
@@ -37,7 +37,7 @@ CONFIG += qt \
           warn_on
 
 # The next lines shall force a compilation of the date stamp, the qrc and qm files.
-rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o \
+rm_build_date.commands = rm -f $(OBJECTS_DIR)/BuildDate.o \
                          $(OBJECTS_DIR)/qrc_cumulus.* \
                          locale/de/cumulus_de.qm \
                          locale/de/qt_de.qm
@@ -179,7 +179,7 @@ HEADERS = \
     rowdelegate.h \
     runway.h \
     SinglePointListWidget.h \
-    settingspageairspace.h \
+    SettingsPageAirspace.h \
     settingspageairspaceloading.h \
     settingspageglider.h \
     SettingsPageGPS.h \
@@ -207,7 +207,7 @@ HEADERS = \
     TaskFileManager.h \
     taskline.h \
     TaskListStatusView.h \
-    tasklistview.h \
+    TaskListView.h \
     taskpoint.h \
     taskpointeditor.h \
     TaskPointSelectionList.h \
@@ -249,7 +249,7 @@ SOURCES = \
     altitude.cpp \
     authdialog.cpp \
     basemapelement.cpp \
-    builddate.cpp \
+    BuildDate.cpp \
     calculator.cpp \
     colordialog.cpp \
     CuLabel.cpp \
@@ -314,7 +314,7 @@ SOURCES = \
     rowdelegate.cpp \
     runway.cpp \
     SinglePointListWidget.cpp \
-    settingspageairspace.cpp \
+    SettingsPageAirspace.cpp \
     settingspageairspaceloading.cpp \
     settingspageglider.cpp \
     SettingsPageGPS.cpp \
@@ -341,7 +341,7 @@ SOURCES = \
     TaskFileManager.cpp \
     taskline.cpp \
     TaskListStatusView.cpp \
-    tasklistview.cpp \
+    TaskListView.cpp \
     taskpoint.cpp \
     taskpointeditor.cpp \
     TaskPointSelectionList.cpp \
@@ -380,7 +380,7 @@ flarm {
 		           flarmradarview.h \
 		           flarmwidget.h \
                preflightflarmpage.h \
-               preflightflarmusbpage.h \
+               PreflightFlarmUsbPage.h \
                SettingsPageFlarm.h
 
 		SOURCES += flarm.cpp \
@@ -392,7 +392,7 @@ flarm {
 		           flarmradarview.cpp \
 		           flarmwidget.cpp \
                preflightflarmpage.cpp \
-               preflightflarmusbpage.cpp \
+               PreflightFlarmUsbPage.cpp \
                SettingsPageFlarm.cpp
 }
 
@@ -446,7 +446,7 @@ numberpad {
           		 glidereditornumpad.h \
                numberEditor.h \
                numberInputPad.h \
-               preflighttaskpage.h \
+               PreflightTaskPage.h \
                settingspageairspacefillingnumpad.h \
                settingspageairspacewarningsnumpad.h
 
@@ -455,7 +455,7 @@ numberpad {
     		       glidereditornumpad.cpp \
                numberEditor.cpp \
                numberInputPad.cpp \
-               preflighttaskpage.cpp \
+               PreflightTaskPage.cpp \
                settingspageairspacefillingnumpad.cpp \
                settingspageairspacewarningsnumpad.cpp
 }
