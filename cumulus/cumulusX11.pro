@@ -51,11 +51,19 @@ translate_cumulus.target   = locale/de/cumulus_de.qm
 translate_cumulus.depends  = locale/de/cumulus_de.ts
 translate_cumulus.commands = lrelease -removeidentical -nounfinished locale/de/cumulus_de.ts
 
-equals(QT_MAJOR_VERSION, 5) {
-translate_qt.target   = locale/de/qt_de.qm
-translate_qt.depends  = locale/de/qt5_de.ts
-translate_qt.commands = lrelease -removeidentical -nounfinished locale/de/qt5_de.ts -qm locale/de/qt_de.qm
-}
+QT_DE = locale/de/qtbase_de.ts \
+        locale/de/qtscript_de.ts \
+        locale/de/qtmultimedia_de.ts \
+        locale/de/qtxmlpatterns_de.ts
+
+# VAR = foobar => Assign value to variable when qmake is run.
+# $$VAR => QMake variable's value at the time qmake is run.
+# $${VAR} => QMake variable's value at the time qmake is run (identical but
+#            enclosed to separate from surrounding text)
+
+translate_qt.target  = locale/de/qt_de.qm
+translate_qt.depends = $$QT_DE
+translate_qt.commands = lrelease -removeidentical -nounfinished $$QT_DE -qm locale/de/qt_de.qm
 
 QMAKE_CLEAN += $$translate_cumulus.target $$translate_qt.target
 
