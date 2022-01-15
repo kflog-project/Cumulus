@@ -64,6 +64,8 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
+  QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
+
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   m_table->setStyleSheet( style );
   QHeaderView *vHeader = m_table->verticalHeader();
