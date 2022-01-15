@@ -6,22 +6,14 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2016 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "generalconfig.h"
 #include "layout.h"
@@ -66,20 +58,9 @@ SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
   m_fileTable->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_fileTable->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 
-#ifdef ANDROID
-  QScrollBar* lvsb = m_fileTable->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture( m_fileTable->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_fileTable->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
   QString style = "QTableView QTableCornerButton::section { background: gray }";
+
   m_fileTable->setStyleSheet( style );
 
   QHeaderView *vHeader = m_fileTable->verticalHeader();

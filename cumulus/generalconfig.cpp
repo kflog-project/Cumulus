@@ -1707,7 +1707,7 @@ QString GeneralConfig::getUserDefaultRootDir()
 QStringList GeneralConfig::getMapDirectories()
 {
   QStringList mapDirs;
-  QString     mapRoot = getUserDefaultRootDir() + "/Cumulus//maps";
+  QString     mapRoot = getUserDefaultRootDir() + "/Cumulus/maps";
 
   // First takes defined map directory
   if(  ! _mapRootDir.isEmpty() )
