@@ -30,7 +30,7 @@
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
-#include "igclogger.h"
+#include <IgcLogger.h>
 #include "layout.h"
 #include "numberEditor.h"
 #include "preflightmiscpage.h"

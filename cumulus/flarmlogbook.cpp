@@ -13,11 +13,11 @@
 **
 ***********************************************************************/
 
+#include <IgcLogger.h>
 #include <QtWidgets>
 
 #include "generalconfig.h"
 #include "hwinfo.h"
-#include "igclogger.h"
 #include "flarmlogbook.h"
 #include "layout.h"
 #include "MainWindow.h"

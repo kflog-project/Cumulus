@@ -120,7 +120,7 @@ HEADERS = \
     gpsstatusdialog.h \
     helpbrowser.h \
     hwinfo.h \
-    igclogger.h \
+    IgcLogger.h \
     interfaceelements.h \
     ipc.h \
     isohypse.h \
@@ -260,7 +260,7 @@ SOURCES = \
     gpsstatusdialog.cpp \
     helpbrowser.cpp \
     hwinfo.cpp \
-    igclogger.cpp \
+    IgcLogger.cpp \
     ipc.cpp \
     isohypse.cpp \
     isolist.cpp \

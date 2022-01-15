@@ -25,7 +25,7 @@
 #include "generalconfig.h"
 #include "gliderflightdialog.h"
 #include "glider.h"
-#include "igclogger.h"
+#include <IgcLogger.h>
 #include "layout.h"
 #include "mapcontents.h"
 #include "mapconfig.h"

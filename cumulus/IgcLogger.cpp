@@ -1,5 +1,5 @@
 /***************************************************************************
-                          igclogger.cpp - creates an IGC logfile
+                          IgcLogger.cpp - creates an IGC logfile
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
@@ -20,12 +20,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <IgcLogger.h>
 #include <cstdlib>
 
 #include <QtCore>
 #include <QMessageBox>
 
-#include "igclogger.h"
 #include "gpsnmea.h"
 #include "hwinfo.h"
 
@@ -263,7 +263,7 @@ void IgcLogger::writeBRecord( const FlightSample &fs )
 {
   // check if we have to log a new B-Record
   if ( lastLoggedBRecord.isValid() &&
-       lastLoggedBRecord.addSecs( _bRecordInterval ) < fs.time )
+       lastLoggedBRecord.addSecs( _bRecordInterval ) > fs.time )
     {
       return;
     }
@@ -287,7 +287,7 @@ void IgcLogger::writeKRecord( const QDateTime& timeFix )
 
   // Check if we have to log a new K-Record.
   if ( lastLoggedKRecord.isValid() &&
-       lastLoggedKRecord.addSecs( _kRecordInterval ) < timeFix )
+       lastLoggedKRecord.addSecs( _kRecordInterval ) > timeFix )
     {
       // there is no log to do
       return;
@@ -462,7 +462,7 @@ void IgcLogger::writeHeader()
       gliderCallSign     = calculator->glider()->callSign();
     }
 
-  _stream << "AXXXCUM Cumulus soaring flight computer, Flight: " << flightNumber << "\r\n" ;
+  _stream << "AXYYCUM Cumulus soaring flight computer, Flight: " << flightNumber << "\r\n" ;
   _stream << "HFDTE" << date << "\r\n";
   _stream << "HFFXA500" << "\r\n";
   _stream << "HFPLTPILOTINCHARGE: " << (pilot.isEmpty() ? "Unknown" : pilot) << "\r\n";

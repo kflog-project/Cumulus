@@ -32,6 +32,7 @@
 
 #pragma once
 
+#include <IgcLogger.h>
 #include <QMainWindow>
 #include <QWidget>
 #include <QAction>
@@ -43,7 +44,6 @@
 #include <QShortcut>
 #include <QPointer>
 
-#include "igclogger.h"
 #include "mapview.h"
 #include "waypointlistview.h"
 #include "PointListView.h"

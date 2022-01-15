@@ -1,5 +1,5 @@
 /***************************************************************************
-                          igclogger.h  -  creates an IGC logfile
+                          IgcLogger.h  -  creates an IGC logfile
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers

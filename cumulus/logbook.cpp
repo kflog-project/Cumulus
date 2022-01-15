@@ -26,7 +26,7 @@
 #endif
 
 #include "generalconfig.h"
-#include "igclogger.h"
+#include <IgcLogger.h>
 #include "logbook.h"
 #include "layout.h"
 #include "MainWindow.h"

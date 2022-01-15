@@ -20,6 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <IgcLogger.h>
 #include <QtWidgets>
 
 #include "altimeterdialog.h"
@@ -28,7 +29,6 @@
 #include "gliderflightdialog.h"
 #include "gpsnmea.h"
 #include "gpsstatusdialog.h"
-#include "igclogger.h"
 #include "interfaceelements.h"
 #include "layout.h"
 #include "MainWindow.h"

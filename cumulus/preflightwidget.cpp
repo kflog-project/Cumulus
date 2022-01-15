@@ -26,7 +26,7 @@
 
 #include "calculator.h"
 #include "gpsnmea.h"
-#include "igclogger.h"
+#include <IgcLogger.h>
 #include "helpbrowser.h"
 #include "layout.h"
 #include "MainWindow.h"
