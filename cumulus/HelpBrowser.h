@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   helpbrowser.h
+**   HelpBrowser.h
 **
 **   This file is part of Cumulus.
 **
 ************************************************************************
 **
-**   Copyright (c): 2008-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2008-2022 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,8 +15,7 @@
 **
 ***********************************************************************/
 
-#ifndef HelpBrowser_H
-#define HelpBrowser_H
+#pragma once
 
 #include <QWidget>
 #include <QPushButton>
@@ -95,5 +94,3 @@ private:
   /** Name of the anker to start display. */
   QString m_anker;
 };
-
-#endif

@@ -19,12 +19,12 @@
  * handled here. These are in general not related to the pre-flight
  * preparation. For that exists a separate configuration widget.
  */
+#include <HelpBrowser.h>
 #include <QtWidgets>
 
 #include "calculator.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "MainWindow.h"
 #include "mapconfig.h"

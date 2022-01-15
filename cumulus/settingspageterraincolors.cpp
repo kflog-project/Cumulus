@@ -27,7 +27,7 @@
 #include "colordialog.h"
 #include "elevationcolorimage.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "layout.h"
 #include "MainWindow.h"
 #include "settingspageterraincolors.h"

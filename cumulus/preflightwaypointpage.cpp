@@ -27,7 +27,7 @@
 
 #include "AirfieldSelectionList.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "hwinfo.h"
 #include "layout.h"
 #include "mapcontents.h"

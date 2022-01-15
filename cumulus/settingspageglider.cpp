@@ -27,7 +27,7 @@
 #include "layout.h"
 #include "generalconfig.h"
 #include "glidereditornumpad.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "settingspageglider.h"
 
 SettingsPageGlider::SettingsPageGlider(QWidget *parent) : QWidget(parent)

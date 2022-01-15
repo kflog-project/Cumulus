@@ -29,7 +29,7 @@
 
 #include "distance.h"
 #include "layout.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "MainWindow.h"
 #include "mapcontents.h"
 #include "TaskListStatusView.h"

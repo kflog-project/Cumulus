@@ -26,7 +26,7 @@
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "numberEditor.h"
 #include "settingspagetask.h"
 

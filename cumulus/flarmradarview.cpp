@@ -13,6 +13,7 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <QtWidgets>
 
 #include "flarm.h"
@@ -20,7 +21,6 @@
 #include "flarmdisplay.h"
 #include "flarmradarview.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "MainWindow.h"
 

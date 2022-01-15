@@ -20,12 +20,12 @@
  * GPS parameters.
  */
 
+#include <HelpBrowser.h>
 #include <QtWidgets>
 
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "gpscon.h"
-#include "helpbrowser.h"
 #include "hwinfo.h"
 #include "layout.h"
 #include "SettingsPageGPS.h"

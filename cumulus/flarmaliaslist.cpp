@@ -13,6 +13,7 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <algorithm>
 
 #include <QtWidgets>
@@ -21,7 +22,6 @@
 #include "flarmdisplay.h"
 #include "layout.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "MainWindow.h"
 #include "rowdelegate.h"
 #include "target.h"

@@ -24,7 +24,7 @@
 #endif
 
 #include "generalconfig.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "layout.h"
 #include "MainWindow.h"
 #include "settingspageairspaceloading.h"

@@ -25,6 +25,7 @@
  *  and to initiate the load of the map and all other data.
  */
 
+#include <HelpBrowser.h>
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
@@ -40,7 +41,6 @@
 #include "SettingsWidget.h"
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "ListViewTabs.h"
 #include "MainWindow.h"

@@ -26,7 +26,7 @@
 
 #include "distance.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "layout.h"
 #include "MainWindow.h"
 #include "mapcontents.h"

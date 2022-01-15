@@ -29,7 +29,7 @@
 #include "calculator.h"
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include <IgcLogger.h>
 #include "layout.h"
 #include "numberEditor.h"

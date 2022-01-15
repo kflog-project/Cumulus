@@ -14,6 +14,7 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <algorithm>
 #include <unistd.h>
 
@@ -23,7 +24,6 @@
 #include "flarmbase.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "rowdelegate.h"
 #include "whatsthat.h"

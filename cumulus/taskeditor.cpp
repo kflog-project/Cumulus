@@ -14,12 +14,12 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <QtWidgets>
 
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "MainWindow.h"
 #include "mapcontents.h"

@@ -31,7 +31,7 @@
 
 #include "generalconfig.h"
 #include "layout.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "MainWindow.h"
 #include "numberEditor.h"
 #include "preflightlivetrack24page.h"

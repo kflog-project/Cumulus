@@ -1,12 +1,12 @@
 /***********************************************************************
  **
- **   helpbrowser.cpp
+ **   HelpBrowser.cpp
  **
  **   This file is part of Cumulus.
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2008-2022 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -15,18 +15,10 @@
  **
  ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
-
+#include "HelpBrowser.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "layout.h"
 
 HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile, QString anker ) :
@@ -42,33 +34,14 @@ HelpBrowser::HelpBrowser( QWidget *parent, QString helpFile, QString anker ) :
   setAttribute( Qt::WA_DeleteOnClose );
 
   m_browser = new QTextBrowser(this);
-
-#ifdef ANDROID
-  // Make the vertical scrollbar bigger for Android
-  QScrollBar* vsb = m_browser->verticalScrollBar();
-  vsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
-  QScroller::grabGesture(m_browser->viewport(), QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture(m_browser->viewport(), QtScroller::LeftMouseButtonGesture);
-#endif
-
   m_browser->setOpenLinks( true );
   m_browser->setOpenExternalLinks( true );
+  QScroller::grabGesture(m_browser->viewport(), QScroller::LeftMouseButtonGesture);
 
   connect( m_browser, SIGNAL(cursorPositionChanged()), SLOT(slotCursorChanged()));
 
   // get the icon size to be used
   int buttonSize = Layout::getButtonSize();
-
-#ifdef MAEMO
-  buttonSize = IconSize + 5;
-#endif
-
   int iconSize   = buttonSize - 5;
 
   QPushButton *home = new QPushButton();
@@ -175,23 +148,19 @@ void HelpBrowser::showEvent( QShowEvent *event )
                  << helpFile
                  << "not accessible!";
 
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Missing help file" ),
-                      tr("<html><b>The help file was not found.<br>"
-                         "Maybe it is not installed?</b></html>"),
-                      QMessageBox::Ok,
-                      this );
-#ifdef ANDROID
+      QString text = tr( "Missing help file" );
 
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
+      QString infoText = tr("<html><b>The help file was not found.<br>"
+                            "Maybe it is not installed?</b></html>");
 
       QWidget::showEvent( event );
-      mb.exec();
+
+      Layout::messageBox( QMessageBox::Warning,
+                          text,
+                          infoText,
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
       QWidget::close();
       return;
     }

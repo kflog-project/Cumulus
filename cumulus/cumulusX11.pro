@@ -32,9 +32,9 @@ TARGET = cumulus
 
 # CONFIG = qt warn_on release
 
-CONFIG = qt \
-         debug \
-         warn_on
+CONFIG += qt \
+          debug \
+          warn_on
 
 # The next lines shall force a compilation of the date stamp, the qrc and qm files.
 rm_build_date.commands = rm -f $(OBJECTS_DIR)/builddate.o \
@@ -118,7 +118,7 @@ HEADERS = \
     gpscon.h \
     gpsnmea.h \
     gpsstatusdialog.h \
-    helpbrowser.h \
+    HelpBrowser.h \
     hwinfo.h \
     IgcLogger.h \
     interfaceelements.h \
@@ -258,7 +258,7 @@ SOURCES = \
     gpscon.cpp \
     gpsnmea.cpp \
     gpsstatusdialog.cpp \
-    helpbrowser.cpp \
+    HelpBrowser.cpp \
     hwinfo.cpp \
     IgcLogger.cpp \
     ipc.cpp \

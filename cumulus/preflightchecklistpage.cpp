@@ -13,12 +13,12 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <algorithm>
 
 #include <QtWidgets>
 
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "mapconfig.h"
 #include "preflightchecklistpage.h"

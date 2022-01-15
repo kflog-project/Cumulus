@@ -22,7 +22,7 @@
 #include "calculator.h"
 #include "layout.h"
 #include "logbook.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "preflightlogbookspage.h"
 
 #ifdef FLARM

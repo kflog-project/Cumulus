@@ -13,6 +13,7 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <algorithm>
 
 #include <QtWidgets>
@@ -20,7 +21,6 @@
 #include "AirspaceFilters.h"
 #include "layout.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "map.h"
 #include "rowdelegate.h"
 

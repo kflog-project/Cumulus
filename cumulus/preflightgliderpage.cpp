@@ -27,7 +27,7 @@
 #include "calculator.h"
 #include "generalconfig.h"
 #include "glider.h"
-#include "helpbrowser.h"
+#include <HelpBrowser.h>
 #include "layout.h"
 #include "MainWindow.h"
 #include "numberEditor.h"

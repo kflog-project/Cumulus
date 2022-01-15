@@ -13,13 +13,13 @@
  **
  ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <cmath>
 
 #include <QtWidgets>
 
 #include "colordialog.h"
 #include "generalconfig.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "map.h"
 #include "numberEditor.h"
