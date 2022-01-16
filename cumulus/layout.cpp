@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2019 by Axel Pauli
+**   Copyright (c):  2012-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -524,3 +524,33 @@ QComboBox* Layout::getComboBox()
   return cb;
 }
 
+/**
+ * Pop up a messagebox with the given parameters and an own main loop.
+ *
+ * @return the pressed messagebox button
+ */
+int Layout::messageBox( QMessageBox::Icon icon,
+                        QString text,
+                        QString infoText,
+                        QMessageBox::StandardButtons buttons,
+                        QMessageBox::StandardButton button,
+                        QWidget *parent )
+{
+  QMessageBox msgBox( parent );
+  msgBox.setText( text );
+  msgBox.setIcon( icon );
+  msgBox.setInformativeText( infoText );
+  msgBox.setStandardButtons( buttons );
+  msgBox.setDefaultButton( button );
+
+#ifdef ANDROID
+  // Center messagebox over the root window.
+  msgBox.show();
+  QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - msgBox.width()/2,
+                                                             QApplication::desktop()->height()/2 - msgBox.height()/2 ) );
+  msgBox.move( pos );
+
+#endif
+
+  return msgBox.exec();
+}

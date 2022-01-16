@@ -20,14 +20,13 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2019
+ * \date 2010-2022
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
-#ifndef LAYOUT_H_
-#define LAYOUT_H_
+#pragma once
 
 #ifndef QT_5
 #include <QtGui>
@@ -279,6 +278,16 @@ class Layout
    * @return A Combobox object.
    */
   static QComboBox* getComboBox();
-};
 
-#endif /* LAYOUT_H_ */
+  /**
+    * Pop up a messagebox with the given parameters and an own main loop.
+    *
+    * @return the pressed messagebox button
+    */
+   static int messageBox( QMessageBox::Icon icon,
+                          QString text,
+                          QString infoText,
+                          QMessageBox::StandardButtons buttons,
+                          QMessageBox::StandardButton button,
+                          QWidget *parent=0 );
+};
