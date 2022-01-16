@@ -1051,7 +1051,7 @@ void GpsClient::toController()
   // An invalid time is used to switch off the timeout control.
   if( last.isValid() == false )
     {
-      qDebug() << "GpsClient::toController(): time is not valid";
+      // qDebug() << "GpsClient::toController(): time is not valid";
       return;
     }
 
