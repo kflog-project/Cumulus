@@ -20,7 +20,7 @@ Cumulus packages for *Android* and *Ubuntu* 64bit can be downloaded from [here](
 Last available Cumulus packages: Release 5.40.1, published at 2022-01-06. Press the link below and then the download button.
 - Ubuntu 21.10, 64bit, binary package, [cumulus_5.40.1_amd64.deb](https://github.com/kflog-project/Cumulus/tree/master/Releases/Ubuntu/binary-packages/cumulus_5.40.1_amd64.deb)
 - Ubuntu 21.10, 64bit, source package, [cumulus_5.40.1...](https://github.com/kflog-project/Cumulus/tree/master/Releases/Ubuntu/source-packages)
-- Android 6, installation package, [CumulusActivity_5.40.1.apk](https://github.com/kflog-project/Cumulus/tree/master/Releases/Android/CumulusActivity_5.40.1.apk)
+- Android 6, installation package, [CumulusActivity_5.40.2.apk](https://github.com/kflog-project/Cumulus/tree/master/Releases/Android/CumulusActivity_5.40.2.apk)
 
 [Cumulus PDF Manual English](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/en/Cumulus.pdf)<br>
 [Cumulus PDF Manual Deutsch](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/de/Cumulus.pdf)<br>
