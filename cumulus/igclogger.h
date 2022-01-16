@@ -1,15 +1,13 @@
 /***************************************************************************
-                          igclogger.h  -  creates an IGC logfile
+                          IgcLogger.h  -  creates an IGC logfile
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2012 by Axel Pauli
+                               2008-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
     This file is part of Cumulus
-
-    $Id$
 
  ***************************************************************************/
 
@@ -32,13 +30,12 @@
  * This class provides the IGC logging facilities, using the
  * parsed data from the GPS NMEA object.
  *
- * \date 2002-2012
+ * \date 2002-2022
  *
- * \version $Id$
+ * \version 1.2
  */
 
-#ifndef IGC_LOGGER_H
-#define IGC_LOGGER_H
+#pragma once
 
 /* info about flight logger */
 #define FL_CODE X
@@ -61,6 +58,7 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QTime>
+#include <QElapsedTimer>
 
 #include "altitude.h"
 #include "calculator.h"
@@ -243,12 +241,12 @@ signals: // Signals
   void madeEntry();
 
   /**
-   * Reports take off time, if auto logger mode is enabled.
+   * Reports UTC take off time, if auto logger mode is enabled.
    */
   void takeoffTime( QDateTime& dt );
 
   /**
-   * Reports landing time, if auto logger mode is enabled.
+   * Reports UTC landing time, if auto logger mode is enabled.
    */
   void landingTime( QDateTime& dt );
 
@@ -260,9 +258,23 @@ private:
   IgcLogger(QObject* parent = static_cast<QObject *>(0) );
 
   /**
+   * Create B-Record from the given flight sample.
+   *
+   * @param fs flight sample to be used.
+   */
+  QString createBRecord( const FlightSample &fs );
+
+  /**
+   * Writes a B-Record, if all conditions are true.
+   *
+   * @param fs flight sample to be used.
+   */
+  void writeBRecord( const FlightSample &fs );
+
+  /**
    * Writes a K-Record, if all conditions are true.
    */
-  void writeKRecord( const QTime& timeFix );
+  void writeKRecord( const QDateTime& timeFix );
 
   /**
    * Creates a log file, if it not yet already exists and writes the header items
@@ -363,13 +375,13 @@ private:
   bool _kRecordLogging;
 
   /** Time stamp of the last logged B record */
-  QTime* lastLoggedBRecord;
+  QDateTime lastLoggedBRecord;
 
   /** Time stamp of the last logged F record */
-  QTime* lastLoggedFRecord;
+  QElapsedTimer lastLoggedFRecord;
 
   /** Time stamp of the last logged K record */
-  QTime* lastLoggedKRecord;
+  QDateTime lastLoggedKRecord;
 
   /** Date and time of logging start. */
   QDateTime startLogging;
@@ -381,6 +393,9 @@ private:
     * to the log. This way, we can be sure that the complete start sequence is
     * available in the log. */
   LimitedList<QStringList> _backtrack;
+
+  /** store the satsInUse number */
+  int _satsInUse;
 
   /** Stores the flight number for this day */
   int flightNumber;
@@ -394,5 +409,3 @@ private:
   /** Mutex used for load and save of logbook file. */
   static QMutex mutex;
 };
-
-#endif
