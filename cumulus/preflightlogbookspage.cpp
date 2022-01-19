@@ -6,29 +6,25 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2013-2017 by Axel Pauli
+ **   Copyright (c):  2013-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
 
 #include "calculator.h"
 #include "layout.h"
 #include "logbook.h"
-#include <HelpBrowser.h>
+#include "HelpBrowser.h"
 #include "preflightlogbookspage.h"
 
 #ifdef FLARM
 #include "flarmbase.h"
 #include "flarmlogbook.h"
-#include "preflightflarmusbpage.h"
+#include "PreflightFlarmUsbPage.h"
 #endif
 
 PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :

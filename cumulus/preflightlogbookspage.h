@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2017 Axel Pauli
+**   Copyright (c):  2013-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,14 +20,13 @@
  *
  * \brief A widget for pre-flight logbooks management.
  *
- * \date 2013-2017
+ * \date 2013-2022
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
-#ifndef PREFLIGHT_LOGBOOKS_PAGE_H
-#define PREFLIGHT_LOGBOOKS_PAGE_H
+#pragma once
 
 #include <QWidget>
 
@@ -95,5 +94,3 @@ class PreFlightLogBooksPage : public QWidget
    */
   void closingWidget();
 };
-
-#endif
