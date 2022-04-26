@@ -1735,7 +1735,8 @@ class GeneralConfig : protected QSettings
 
   QString getOpenAipLink()
   {
-    return QString(rot47(_openAipLink));
+    // return QString(rot47(_openAipLink));
+    return _openAipLink;
   }
 
   /** gets the af/wp list page size */

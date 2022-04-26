@@ -18,6 +18,11 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+
+[*] 2022-04-26 AP: Cumulus 5.41.1 released for Ubuntu/Debian.
+
+[-] 2022-04-26 AP: workaround added for access to openaip data.
+
 [*] 2022-01-06 AP: Cumulus 5.40.1 released for Android and Ubuntu.
 
 [+] 2022-01-05 AP: Setting page Flarm, don't stop query of Flarm config items,
