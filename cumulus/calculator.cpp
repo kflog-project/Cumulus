@@ -1578,12 +1578,6 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
 /** Determines the status of the flight: unknown, standstill, cruising, circlingL, circlingR */
 void Calculator::determineFlightStatus()
 {
- /*
-    We define a maximum deviation of 5 degrees from the cruising course.
-    This should be allowed for course corrections.
-  */
-#define MAXCRUISEANGDIFF 5 //see above
-
   /*
     We define a minimum turn rate of 3 degrees per second (that is,
     one turn takes at most one and a half minute).
@@ -1637,18 +1631,6 @@ void Calculator::determineFlightStatus()
         }
 
        return;
-    }
-
-  // Check if cruising is furthermore valid because we allow a heading delta to
-  // the start heading.
-  if( lastFlightMode == cruising &&
-      abs(MapCalc::angleDiff( lastHead, m_cruiseDirection) ) <=  MAXCRUISEANGDIFF )
-    {
-      qDebug() << "determineFlightStatus: further cruising detected,"
-               << "HeadingDiff="
-               << MapCalc::angleDiff( lastHead, m_cruiseDirection)
-               << "Vm/s=" << lastSpeed.getMps();
-      return;
     }
 
   if( headingDiff > MINTURNANGDIFF )
