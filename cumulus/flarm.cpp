@@ -143,6 +143,8 @@ bool Flarm::extractPflau( const QStringList& stringList )
 
 /**
  * Extracts all items from the $PFLAA sentence sent by the Flarm device.
+ * PowerFlarms can deliver MODE-S and ADSB data. Sometimes these data are
+ * incomplete.
  */
 bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
 {
@@ -185,6 +187,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   if( ! ok )
     {
       aircraft.RelativeNorth = INT_MIN;
+      return false;
     }
 
   aircraft.RelativeEast = stringList[3].toInt( &ok );
@@ -192,6 +195,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   if( ! ok )
     {
       aircraft.RelativeEast = INT_MIN;
+      return false;
     }
 
   aircraft.RelativeVertical = stringList[4].toInt( &ok );
@@ -199,6 +203,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   if( ! ok )
     {
       aircraft.RelativeVertical = INT_MIN;
+      return false;
     }
 
   aircraft.IdType = stringList[5].toShort( &ok );
@@ -206,6 +211,7 @@ bool Flarm::extractPflaa( const QStringList& stringList, FlarmAcft& aircraft )
   if( ! ok )
     {
       aircraft.IdType = 0;
+      return false;
     }
 
   aircraft.ID = stringList[6];
