@@ -14,24 +14,16 @@
 **
 ***********************************************************************/
 
+#include <HelpBrowser.h>
 #include <algorithm>
 #include <unistd.h>
 
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "SettingsPageFlarm.h"
 #include "flarmbase.h"
 #include "generalconfig.h"
 #include "gpsnmea.h"
-#include "helpbrowser.h"
 #include "layout.h"
 #include "rowdelegate.h"
 #include "whatsthat.h"
@@ -72,18 +64,7 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
-#ifdef ANDROID
-  QScrollBar* lvsb = m_table->verticalScrollBar();
-  lvsb->setStyleSheet( Layout::getCbSbStyle() );
-#endif
-
-#ifdef QSCROLLER
   QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_table->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   m_table->setStyleSheet( style );
@@ -118,12 +99,7 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   hHeader->setStretchLastSection( true );
   hHeader->setSortIndicator( 2, Qt::AscendingOrder );
   hHeader->setSortIndicatorShown( true );
-
-#if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
-#else
-  hHeader->setClickable( true );
-#endif
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );
@@ -131,10 +107,8 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   connect( m_table, SIGNAL(cellClicked( int, int )),
            this, SLOT(slot_CellClicked( int, int )) );
 
-#ifndef ANDROID
   connect( m_table, SIGNAL(cellDoubleClicked( int, int )),
            this, SLOT(slot_CellDoubleClicked( int, int )) );
-#endif
 
   topLayout->addWidget( m_table, 2 );
 
@@ -191,28 +165,37 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   loadTableItems();
   loadFlarmItemHelp();
 
-  // request FLARM device type, if FLARM is available
-  if( Flarm::isFlarmAvailable() == true )
-    {
-      GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
-    }
+  // request FLARM device type in every case. Maybe a Flarm is not connected
+  // but in this case we will not get an answer.
+  getFlarmDevice();
 }
 
 SettingsPageFlarm::~SettingsPageFlarm()
 {
 }
 
+void SettingsPageFlarm::getFlarmDevice()
+{
+  GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
+}
+
 void SettingsPageFlarm::showEvent( QShowEvent *event )
 {
   m_table->setFocus();
-
   QWidget::showEvent( event );
+}
+
+void SettingsPageFlarm::closeEvent( QCloseEvent *event )
+{
+  m_timer->stop();
+  QApplication::restoreOverrideCursor();
+  QWidget::closeEvent( event );
 }
 
 void SettingsPageFlarm::enableButtons( const bool toggle )
 {
   m_loadButton->setEnabled( toggle );
-  m_closeButton->setEnabled( toggle );
+  // m_closeButton->setEnabled( toggle );
 
   // Block all signals from the table.
   m_table->blockSignals( ! toggle );
@@ -270,7 +253,22 @@ void SettingsPageFlarm::loadTableItems()
           << "LOAD;WO;PF"
           << "FFS;WO;PF"
           << "VOL;RW;PF"
-          << "PFLAR;WO;ALL";
+          << "PFLAR;WO;ALL"
+          << "XPDR;RW;PF"
+          << "PCASPFLAU;RW;PF"
+          << "PCASPFLAU1;RW;PF"
+          << "PCASPFLAU2;RW;PF"
+          << "PCASCALIBRATION;RW;PF"
+          << "PCASBEEP;RW;PF"
+          << "MODEC;RW;PF"
+          << "OWNMODEC;RW;PF"
+          << "MODESALT;RW;PF"
+          << "PCASRANGE;RW;PF"
+          << "PCASVRANGE;RW;PF"
+          << "ADSBRANGE;RW;PF"
+          << "ADSBVBRANGE;RW;PF"
+          << "ADSBWARNINGS;RW;PF"
+          << "REBROADCASTSERVICES;RW;PF";
 
   m_table->clearContents();
 
@@ -291,7 +289,7 @@ void SettingsPageFlarm::addRow2List( const QString& rowData )
       return;
     }
 
-  QList<QString> items = rowData.split( ";", QString::KeepEmptyParts );
+  QList<QString> items = rowData.split( ";", Qt::KeepEmptyParts );
 
   if( items.size() != 3 )
     {
@@ -408,15 +406,6 @@ void SettingsPageFlarm::slot_CellDoubleClicked(int row, int column)
 
 void SettingsPageFlarm::slot_CellClicked( int row, int column )
 {
-#ifdef ANDROID
-  if( column == 2 )
-    {
-      // Double click did not work proper on Android
-      slot_CellDoubleClicked( row, column );
-      return;
-    }
-#endif
-
   QTableWidgetItem* item = m_table->item( row, column );
 
   if( item == static_cast<QTableWidgetItem *>(0) || row < 0 || column < 0 )
@@ -450,25 +439,14 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
 
       bool ok;
 
-#ifndef MAEMO5
     QString text = QInputDialog::getText( this,
                                           title,
                                           label,
                                           QLineEdit::Normal,
                                           item->text(),
                                           &ok,
-                                          0,
+                                          Qt::Dialog,
                                           Qt::ImhNoPredictiveText );
-#else
-    QString text = QInputDialog::getText( this,
-                                          title,
-                                          label,
-                                          QLineEdit::Normal,
-                                          item->text(),
-                                          &ok,
-                                          0 );
-#endif
-
     if( ok )
       {
         item->setText( text );
@@ -512,14 +490,30 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       // get Flarm device type
       QString device = FlarmBase::getDeviceType();
 
+      if( device.size() == 0 )
+        {
+          getFlarmDevice();
+          sleep(2);
+        }
+
       if( itemDevType != "ALL" &&
           ((device.startsWith( "PowerFLARM-") == true && itemDevType != "PF") ||
           (device.startsWith( "PowerFLARM-") == false && itemDevType != "CF")) )
         {
-          QString text0 = tr("Configuration item is unsupported by your FLARM!");
+          QString text0 = "<html>" +
+                          tr("Configuration item maybe unsupported by your FLARM!") +
+                          "<br><br>" +
+                          tr("Continue ?");
           QString text1 = tr("Information");
-          messageBox( QMessageBox::Information, text0, text1 );
-          return;
+          int ret = messageBox( QMessageBox::Information,
+                                text0,
+                                text1,
+                                QMessageBox::Yes|QMessageBox::Cancel );
+
+          if( ret == QMessageBox::Cancel )
+            {
+              return;
+            }
         }
 
       QString itemText  = m_table->item( row, 2 )->text();
@@ -652,6 +646,8 @@ void SettingsPageFlarm::nextFlarmCommand()
    QString cmd = m_commands.head();
 
    QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
+
+   qDebug() << "nextFlarmCommand" << cmd;
 
    bool res = GpsNmea::gps->sendSentence( ba );
 
@@ -791,6 +787,8 @@ bool SettingsPageFlarm::checkFlarmConnection()
 {
   const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
 
+  return true;
+
   QString text0 = tr("Flarm device not reachable!");
   QString text1 = tr("Error");
 
@@ -867,22 +865,12 @@ int SettingsPageFlarm::messageBox( QMessageBox::Icon icon,
                                    QString title,
                                    QMessageBox::StandardButtons buttons )
 {
-  QMessageBox mb( icon,
-                  title,
-                  message,
-                  buttons,
-                  this );
+  QMessageBox msgBox( this );
+  msgBox.setText( title );
+  msgBox.setIcon( icon );
+  msgBox.setInformativeText( message );
+  msgBox.setStandardButtons( buttons );
+  msgBox.setDefaultButton( QMessageBox::Ok );
 
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  int ret = mb.exec();
-
-  return ret;
+  return msgBox.exec();
 }
