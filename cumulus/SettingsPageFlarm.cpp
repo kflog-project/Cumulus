@@ -253,7 +253,22 @@ void SettingsPageFlarm::loadTableItems()
           << "LOAD;WO;PF"
           << "FFS;WO;PF"
           << "VOL;RW;PF"
-          << "PFLAR;WO;ALL";
+          << "PFLAR;WO;ALL"
+          << "XPDR;RW;PF"
+          << "PCASPFLAU;RW;PF"
+          << "PCASPFLAU1;RW;PF"
+          << "PCASPFLAU2;RW;PF"
+          << "PCASCALIBRATION;RW;PF"
+          << "PCASBEEP;RW;PF"
+          << "MODEC;RW;PF"
+          << "OWNMODEC;RW;PF"
+          << "MODESALT;RW;PF"
+          << "PCASRANGE;RW;PF"
+          << "PCASVRANGE;RW;PF"
+          << "ADSBRANGE;RW;PF"
+          << "ADSBVBRANGE;RW;PF"
+          << "ADSBWARNINGS;RW;PF"
+          << "REBROADCASTSERVICES;RW;PF";
 
   m_table->clearContents();
 
