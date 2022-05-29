@@ -19,9 +19,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2022-05-29 AP: Cumulus 5.40.4 released for Android.
+
+[-] 2022-05-29 AP: Settings Flarm spelling error corrected in ADSBVRANGE.
+
 [*] 2022-05-20 AP: Cumulus 5.40.3 released for Android.
 
-[-] 2022-05-20 AP: Settings Flarm enhanced for XPDR and ADS-B items.
+[-] 2022-05-20 AP: Settings Flarm enhanced by XPDR and ADS-B items.
 
 [-] 2022-05-20 AP: Issue #153 fixed. Suppress incomplete $PFLAA sentences.
 
