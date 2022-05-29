@@ -79,7 +79,7 @@ Region in which the FLARM device can be used.
 <html>
 ID type and ID used in the FLARM radio broadcast.
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Parameter</th> <th align="left">Value</th> <th align="left">Description</th></tr>
 <tr><td>ID Type</td> <td>1</td> <td>ICAO 24-bit aircraft address</td></tr>
 <tr><td>ID Type</td> <td>2</td> <td>FLARM ID</td></tr>
@@ -99,7 +99,7 @@ List of FLARM device features.
 Obstacle database information as version, <br>
 status, name and creation date.
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Status</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disabled</td></tr>
 <tr><td>1</td> <td>Normal operation</td></tr>
@@ -132,7 +132,7 @@ of the radio broadcast data. The following values <br>
 are possible:
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>6 hex chars</td> <td>Official ICAO 24-bit aircraft address</td></tr>
 <tr><td>0xFFFFFF</td> <td>Constant and unique FLARM-ID</td></tr>
@@ -148,7 +148,7 @@ As specified in the table, adding 40, 60 or 70 to <i>value</i> <br>
 selects the protocol version.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>no output</td></tr>
 <tr><td>1</td> <td>GPRMC, GPGGA, GPGSA plus FLARM data</td></tr>
@@ -179,7 +179,7 @@ send the acknowledge sentence, and then switch <br>
 immediately to the new rate.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>4.8 kBaud</td></tr>
 <tr><td>1</td> <td>9.6 kBaud</td></tr>
@@ -211,7 +211,7 @@ Configures the aircraft type used by FLARM. <br>
 Not all values are listed here.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>reserved, do not use</td></tr>
 <tr><td>1</td> <td>glider / motor glider</td></tr>
@@ -235,7 +235,7 @@ Not all values are listed here.
 Maximum horizontal distance of aircraft to be shown in meters.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Device</th><th align="left">Range (m)</th></tr>
 <tr><td>PowerFLARM</td> <td>2000m ... 65535 (unlimited)</td></tr>
 <tr><td>ClassicFLARM</td> <td>2000m ... 25500m</td></tr>
@@ -256,7 +256,7 @@ Supported only by PowerFLARM-based devices.
 Stealth mode. It is <b>NOT</b> recommended to activate stealth mode!
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Normal mode</td></tr>
 <tr><td>1</td> <td>Stealth mode activated</td></tr>
@@ -273,7 +273,7 @@ delayed, or archived) for any purpose.<br>
 It is <b>NOT</b> recommended to enable this option!
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Option is disabled</td></tr>
 <tr><td>1</td> <td>Option is enabled</td></tr>
@@ -289,7 +289,7 @@ aircraft are not warned about own aircraft. Decimal integer values <br>
 from 0 to 20 are allowed. It follows a table with default values.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">AFCT</th><th align="left">Description</th><th align="left">Def. THRE [m/s]</th></tr>
 <tr><td>1</td> <td>glider / motor glider</td><td>2</td></tr>
 <tr><td>2</td> <td>tow / tug plane</td><td>10</td></tr>
@@ -392,7 +392,7 @@ Configures special modes. If you do not understand the concept of bit <br>
 flags, do not use this command!
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>No flags set.</td></tr>
 <tr><td>1</td> <td>Disable <i>INFO Alerts</i> on some Classic FLARM-based devices only.</td></tr>
@@ -408,7 +408,7 @@ Deactivation of visual and/or aural output. Only supported by <br>
 Classic FLARM devices with integrated user interface.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Normal</td></tr>
 <tr><td>1</td> <td>FLARM to switch off LEDs and buzzer</td></tr>
@@ -423,7 +423,7 @@ Classic FLARM devices with integrated user interface.
 Enables/Disables audio output. All devices with Audio output.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disable audio output</td></tr>
 <tr><td>1</td> <td>Enable audio output</td></tr>
@@ -446,7 +446,7 @@ Audio output. Decimal integer values from 0 to 100.
 Set the used battery type of PowerFLARM Portable.
 
 <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Alkaline</td></tr>
 <tr><td>1</td> <td>Rechargeable</td></tr>
@@ -493,7 +493,7 @@ device. Do not use data from the output.
 
 <html>
 Force flight state change for 20 seconds. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Resume normal operation</td></tr>
 <tr><td>1</td> <td>Forces device to be on ground</td></tr>
@@ -514,7 +514,7 @@ Decimal integer values from 0 to 3.
 
 <html>
 Sends a reset command to the FLARM without any read-back. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Reboot the device, all settings will be retained</td></tr>
 <tr><td>33</td> <td>Shutdown the device into power save mode</td></tr>
@@ -527,7 +527,7 @@ Sends a reset command to the FLARM without any read-back. <br>
 
 <html>
 Sets the type of transponder is installed in the airplane. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>No transponder is installed</td></tr>
 <tr><td>1</td> <td>Mode-C</td></tr>
@@ -539,7 +539,7 @@ Sets the type of transponder is installed in the airplane. <br>
 
 <html>
 Disables or Enables output of non-direction target as PFLAU. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Output is disabled</td></tr>
 <tr><td>1</td> <td>Output is enabled</td></tr>
@@ -551,7 +551,7 @@ Disables or Enables output of non-direction target as PFLAU. <br>
 <html>
 Disables or Enables output of non-direction target <br>
 as PFLAU on data port 1. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Output is disabled</td></tr>
 <tr><td>1</td> <td>Output is enabled</td></tr>
@@ -563,7 +563,7 @@ as PFLAU on data port 1. <br>
 <html>
 Disables or Enables output of non-direction <br>
 target as PFLAU on data port 2. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Output is disabled</td></tr>
 <tr><td>1</td> <td>Output is enabled</td></tr>
@@ -574,7 +574,7 @@ target as PFLAU on data port 2. <br>
 
 <html>
 Sets the 1090 antenna amplification value. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0 to 100</td> <td>Default value is 30</td></tr>
 </table>
@@ -585,7 +585,7 @@ Sets the 1090 antenna amplification value. <br>
 <html>
 Disables or Enables alarms and buzzer if non-directional <br>
 target cross certain danger threshold. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disable alarms and buzzer</td></tr>
 <tr><td>1</td> <td>Enable alarms and buzzer</td></tr>
@@ -597,7 +597,7 @@ target cross certain danger threshold. <br>
 
 <html>
 Disables or Enables processing of Mode-C targets. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disable processing of Mode-C targets</td></tr>
 <tr><td>1</td> <td>Enable processing of Mode-C targets</td></tr>
@@ -608,7 +608,7 @@ Disables or Enables processing of Mode-C targets. <br>
 
 <html>
 Select method for suppressing own Mode-C XPDR. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Aggressive, may suppress other Mode-C targets on the same altitude</td></tr>
 <tr><td>1</td> <td>Less aggressive, may cause warnings from own MODE-C XPDR</td></tr>
@@ -620,7 +620,7 @@ Select method for suppressing own Mode-C XPDR. <br>
 <html>
 Disables or Enables the use of the barometric altitude <br>
 received from the own Mode-S transponder. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disable use of Mode-S altitude</td></tr>
 <tr><td>1</td> <td>Enable use of Mode-S altitude</td></tr>
@@ -633,7 +633,7 @@ received from the own Mode-S transponder. <br>
 Sets the maximum horizontal range in meters <br>
 for showing transponder targets. <br>
 Default value is 7408 meters. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0 to 9260</td> <td>0 disables PFLAA sentences</td></tr>
 </table>
@@ -646,7 +646,7 @@ Default value is 7408 meters. <br>
 Sets the maximum vertical range in meters <br>
 for showing transponder targets. <br>
 Default value is 610 meters. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>100 to 65535</td> <td>65535 means unlimited</td></tr>
 </table>
@@ -658,7 +658,7 @@ Default value is 610 meters. <br>
 Sets the maximum ADS-B horizontal range <br>
 in meters for showing targets. <br>
 Default value is 65535 meters (unlimited). <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0 to 65535</td> <td>0 disables PFLAA sentences</td></tr>
 </table>
@@ -671,7 +671,7 @@ Default value is 65535 meters (unlimited). <br>
 Sets the maximum ADS-B vertical range <br>
 in meters for showing targets. <br>
 Default value is 65535 meters (unlimited). <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>100 to 65535</td> <td>65535 means unlimited</td></tr>
 </table>
@@ -681,7 +681,7 @@ Default value is 65535 meters (unlimited). <br>
 
 <html>
 Disables or Enables ADS-B warnings. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>Disable ADS-B warnings</td></tr>
 <tr><td>1</td> <td>Enable ADS-B warnings</td></tr>
@@ -693,7 +693,7 @@ Disables or Enables ADS-B warnings. <br>
 <html>
 Selects which ground-based rebroadcast <br>
 services to process via bit flags. <br>
-<table border="1" CELLPADDING="1">
+<table border="1" CELLPADDING="3">
 <tr><th align="left">Value</th><th align="left">Description</th></tr>
 <tr><td>0</td> <td>No ground-based rebroadcast services will be used</td></tr>
 <tr><td>1</td> <td>ADS-R traffic in $PFLAA is enabled</td></tr>
