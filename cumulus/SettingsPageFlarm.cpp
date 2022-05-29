@@ -280,7 +280,7 @@ void SettingsPageFlarm::loadTableItems()
           << "PCASRANGE;RW;PF"
           << "PCASVRANGE;RW;PF"
           << "ADSBRANGE;RW;PF"
-          << "ADSBVBRANGE;RW;PF"
+          << "ADSBVRANGE;RW;PF"
           << "ADSBWARNINGS;RW;PF"
           << "REBROADCASTSERVICES;RW;PF";
 
