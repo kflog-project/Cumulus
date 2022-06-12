@@ -19,6 +19,11 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2022-06-12 AP: Cumulus 5.40.5 released for Android.
+
+[-] 2022-06-12 AP: Issue #154 fixed. Disable altimeter auto qhn setup during
+                   flight.
+
 [*] 2022-05-29 AP: Cumulus 5.40.4 released for Android.
 
 [-] 2022-05-29 AP: Settings Flarm spelling error corrected in ADSBVRANGE.
