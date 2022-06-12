@@ -423,6 +423,12 @@ void AltimeterDialog::load()
   m_savedAltitude = calculator->getlastSTDAltitude();
   m_savedElevation = conf->getHomeElevation();
 
+  // Check, if cumulus is in move. In this case disable setQhn button.
+  if( calculator->moving() )
+    {
+      setQnh->setEnabled( false );
+    }
+
   switch( m_mode )
   {
     case 0:
@@ -890,6 +896,12 @@ int AltimeterDialog::getQNH( const Altitude& altitude )
 /** This slot is being called if the setQhn button is pressed. */
 void AltimeterDialog::slotSetQnh()
 {
+  // Check, if cumulus is in move. In this case disable action.
+  if( calculator->moving() )
+    {
+      return;
+    }
+
   m_timeout->stop();
 
   GeneralConfig *conf = GeneralConfig::instance();
