@@ -546,6 +546,19 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
           text = "";
 
+          // Draw the ground speed, if available.
+          if( acft.GroundSpeed != INT_MIN )
+            {
+              Speed speed(acft.GroundSpeed);
+
+              text = speed.getHorizontalText( true, 0 );
+
+              textRect = painter.fontMetrics().boundingRect( text );
+
+              painter.drawText( size().width() - 5 - textRect.width(),
+                                size().height() - 5 - painter.fontMetrics().height(), text );
+            }
+
           // Draw the relative vertical separation
           if( acft.RelativeVertical > 0 )
             {
