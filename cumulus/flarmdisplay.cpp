@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -544,6 +544,19 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
                             size().height() - 5, text );
 
           text = "";
+
+          // Draw the ground speed, if available.
+          if( acft.GroundSpeed != INT_MIN )
+            {
+              Speed speed(acft.GroundSpeed);
+
+              text = speed.getHorizontalText( true, 0 );
+
+              textRect = painter.fontMetrics().boundingRect( text );
+
+              painter.drawText( size().width() - 5 - textRect.width(),
+                                size().height() - 5 - painter.fontMetrics().height(), text );
+            }
 
           // Draw the relative vertical separation
           if( acft.RelativeVertical > 0 )

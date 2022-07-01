@@ -19,6 +19,33 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2022-07-01 AP: Cumulus 5.40.6 released for Android.
+
+[-] 2022-07-01 AP: Issue #156 fixed. Flarm radar view should display the ground
+                   speed of a selected object.
+
+[*] 2022-06-12 AP: Cumulus 5.40.5 released for Android.
+
+[-] 2022-06-12 AP: Issue #154 fixed. Disable altimeter auto qhn setup during
+                   flight.
+
+[*] 2022-05-29 AP: Cumulus 5.40.4 released for Android.
+
+[-] 2022-05-29 AP: Settings Flarm spelling error corrected in ADSBVRANGE.
+
+[*] 2022-05-20 AP: Cumulus 5.40.3 released for Android.
+
+[-] 2022-05-20 AP: Settings Flarm enhanced by XPDR and ADS-B items.
+
+[-] 2022-05-20 AP: Issue #153 fixed. Suppress incomplete $PFLAA sentences.
+
+[*] 2022-04-26 AP: Cumulus 5.41.1 released for Ubuntu/Debian.
+
+[-] 2022-04-26 AP: workaround added for access to openaip data.
+
+[-] 2022-06-12 AP: Issue #156 fixed. Flarm radar view should display the ground
+                  speed of a selected object.
+
 [*] 2022-06-12 AP: Cumulus 5.40.5 released for Android.
 
 [-] 2022-06-12 AP: Issue #154 fixed. Disable altimeter auto qhn setup during
