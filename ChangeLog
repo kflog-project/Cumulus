@@ -19,8 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
--] 2022-06-12 AP: Issue #156 fixed. Flarm radar view should display the ground
-                  speed of a selected object.
+[*] 2022-07-01 AP: Cumulus 5.40.6 released for Android.
+
+[-] 2022-07-01 AP: Issue #156 fixed. Flarm radar view should display the ground
+                   speed of a selected object.
 
 [*] 2022-06-12 AP: Cumulus 5.40.5 released for Android.
 
