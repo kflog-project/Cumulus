@@ -543,8 +543,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
           painter.drawText( size().width() - 5 - textRect.width(),
                             size().height() - 5, text );
 
-          text = "";
-
           // Draw the ground speed, if available.
           if( acft.GroundSpeed != INT_MIN )
             {
@@ -564,6 +562,10 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
               // prefix positive value with a plus sign
               text = "+";
             }
+          else
+            {
+              text = "";
+            }
 
           text += Altitude::getText( acft.RelativeVertical, true, 0 );
 
@@ -571,8 +573,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
 
           painter.drawText( size().width() - 5 - textRect.width(),
                             5 + painter.fontMetrics().height(), text );
-
-          text = "";
 
           // Draw climb rate, if available
           if( acft.ClimbRate != INT_MIN )
@@ -583,6 +583,10 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
                 {
                   // prefix positive value with a plus sign
                   text = "+";
+                }
+              else
+                {
+                  text = "";
                 }
 
               text += speed.getVerticalText( true, 1 );
