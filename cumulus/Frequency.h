@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2018 by Axel Pauli
+ **   Copyright (c):  2018-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,16 +18,15 @@
  *
  * \author Axel Pauli
  *
- * \brief Class to handle frequency and type of an airfield.
+ * \brief Class to handle frequency and type of an radiopoint and an airfield.
  *
  * This class contains a frequency and its related type.
  *
- * \date 2018
+ * \date 2018-2022
  *
  */
 
-#ifndef Frequency_h
-#define Frequency_h
+#pragma once
 
 #include <QString>
 
@@ -102,11 +101,9 @@ class Frequency
     return frequencyAsString( *this );
   }
 
-
  protected:
 
   float m_frequency;
-  QString m_type;
+  QString m_type; // kHz or MHz
 };
 
-#endif
