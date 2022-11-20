@@ -310,9 +310,11 @@ void ReachpointListView::fillRpList()
           // Only a main frequency should be shown in the table
           for( int i = 0; i < fList.size(); i++ )
             {
-              QString& type = fList[i].getType();
+              quint8 type = fList[i].getType();
+              bool primary = fList[i].isPrimary();
 
-              if( type == "TOWER" || type == "INFO"  )
+              if( type == Frequency::Tower || type == Frequency::Info ||
+                  type == Frequency::Information || primary == true )
                 {
                   frequencies = fList.at(i).frequencyAsString();
                   break;
