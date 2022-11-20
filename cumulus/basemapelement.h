@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2008-2018 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,13 +27,12 @@
  * the class provides two enumerations for the element-type and the type of
  * elevation-values.
  *
- * \date 2000-2018
+ * \date 2000-2022
  *
- * \version 1.2
+ * \version 1.4
  */
 
-#ifndef BASE_MAP_ELEMENT_H
-#define BASE_MAP_ELEMENT_H
+#pragma once
 
 #include "resource.h"
 
@@ -61,6 +60,7 @@ public:
     MilAirport = MIL_AIRPORT,
     CivMilAirport = CIVMIL_AIRPORT,
     Airfield = AIRFIELD,
+    Alitport = ALTIPORT,
     ClosedAirfield = CLOSED_AIRFIELD,
     CivHeliport = CIV_HELIPORT,
     MilHeliport = MIL_HELIPORT,
@@ -343,5 +343,3 @@ protected:
    */
   unsigned short MapSegment;
 };
-
-#endif
