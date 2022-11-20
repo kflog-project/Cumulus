@@ -7,15 +7,14 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2018 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef RADIO_POINT_H
-#define RADIO_POINT_H
+#pragma once
 
 #include <climits>
 
@@ -39,12 +38,25 @@
  *
  * @see BaseMapElement#objectType
  *
- * \date 2000-2018
+ * \date 2000-2022
  */
 
 class RadioPoint : public SinglePoint
 {
   public:
+
+  enum RadioType {
+    // The navaid types. Possible values:
+    dme=0,
+    tacan=1,
+    ndb=2,
+    vor=3,
+    vor_dme=4,
+    vortac=5,
+    dvor=6,
+    dvor_dme=7,
+    dvortac=8
+  };
 
   /**
    * Default constructor
@@ -212,4 +224,3 @@ class RadioPoint : public SinglePoint
   bool m_aligned2TrueNorth;
 };
 
-#endif
