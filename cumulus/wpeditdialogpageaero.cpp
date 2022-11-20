@@ -288,9 +288,11 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
       // Only a main frequency should be shown in the table
       for( i = 0; i < wp->frequencyList.size(); i++ )
         {
-          QString& type = wp->frequencyList[i].getType();
+          quint8 type = wp->frequencyList[i].getType();
+          bool primary = wp->frequencyList[i].isPrimary();
 
-          if( type == "TOWER" || type == "INFO"  )
+          if( type == Frequency::Tower || type == Frequency::Info ||
+              type == Frequency::Information || primary == true )
             {
               edtFequencyListIndex = i;
               break;
@@ -303,9 +305,18 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
           edtFequencyListIndex = 0;
         }
 
-      frequency = wp->frequencyList.at(edtFequencyListIndex).getFrequency();
-      QString type = wp->frequencyList[edtFequencyListIndex].getType();
-      edtFrequencyType->setText( type );
+      Frequency fobj = wp->frequencyList.at( edtFequencyListIndex );
+      frequency = wp->frequencyList.at(edtFequencyListIndex).getValue();
+      quint8 type = wp->frequencyList[edtFequencyListIndex].getType();
+
+      if( type == Frequency::Unknown && fobj.getUserType().size() > 0 )
+        {
+          edtFrequencyType->setText( fobj.getUserType() );
+        }
+      else
+        {
+          edtFrequencyType->setText( Frequency::typeAsString(type) );
+        }
     }
 
   QString tmp = QString("%1").arg(frequency, 0, 'f', 3);
@@ -390,16 +401,24 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
       frequency = 0.0;
     }
 
+  QString userType = edtFrequencyType->text().trimmed();
+  quint8 intType = Frequency::typeAsInt( userType );
+
+  Frequency f = Frequency( frequency, Frequency::typeAsInt(userType) );
+
+  if( intType == Frequency::Unknown )
+    {
+      // User has defined an own type
+      f.setUserType( userType);
+    }
+
   if( wp->frequencyList.size() == 0 )
     {
-      wp->addFrequency( Frequency( frequency,
-                                   edtFrequencyType->text().trimmed()) );
+      wp->addFrequency( f );
     }
   else
     {
-      wp->frequencyList[edtFequencyListIndex].setFrequency(frequency);
-      QString type = edtFrequencyType->text().trimmed();
-      wp->frequencyList[edtFequencyListIndex].setType( type );
+      wp->frequencyList[edtFequencyListIndex] = f;
     }
 
   wp->rwyList.clear();
