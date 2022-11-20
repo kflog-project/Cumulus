@@ -114,7 +114,7 @@ HEADERS = \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
-    frequency.h \
+    Frequency.h \
     filetools.h \
     flighttask.h \
     fontdialog.h \
@@ -213,6 +213,7 @@ HEADERS = \
     TaskPointSelectionList.h \
     taskpointtypes.h \
     time_cu.h \
+    ThermalPoint.h \
     tpinfowidget.h \
     Udp.h \
     vario.h \
@@ -258,6 +259,7 @@ SOURCES = \
     filetools.cpp \
     flighttask.cpp \
     fontdialog.cpp \
+    Frequency.cpp \
     generalconfig.cpp \
     glider.cpp \
     gliderflightdialog.cpp \
@@ -346,6 +348,7 @@ SOURCES = \
     taskpointeditor.cpp \
     TaskPointSelectionList.cpp \
     time_cu.cpp \
+    ThermalPoint.cpp \
     tpinfowidget.cpp \
     Udp.cpp \
     vario.cpp \
