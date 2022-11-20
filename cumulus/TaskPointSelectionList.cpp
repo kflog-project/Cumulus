@@ -287,11 +287,11 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
   m_searchInput->clear();
   m_taskpointTreeWidget->clear();
 
-  QList<SinglePoint>& hsList = _globalMapContents->getHotspotList();
+  QList<ThermalPoint>& hsList = _globalMapContents->getHotspotList();
 
   for( int loop = 0; loop < hsList.size(); loop++ )
     {
-      SinglePoint& hsp = hsList[loop];
+      ThermalPoint& hsp = hsList[loop];
       PointItem* item = new PointItem( hsp.getWPName().trimmed(),
                                        hsp.getName().trimmed(),
                                        &hsp );
