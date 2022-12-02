@@ -415,7 +415,8 @@ void GeneralConfig::load()
   _airfieldRunwayLengthFilter = value("RunwayLengthFilter", 0).toFloat(); // m is used
   _openAipPoiFileList         = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
   _openAipAirfieldCountries   = value("OpenAipAirfieldCountries", "" ).toString();
-  _openAipLink                = value("OpenAipLink", "https://exports.openaip.net/customer_export").toByteArray();
+  // See https://www.openaip.net/docs for more info.
+  _openAipLink                = value("OpenAipLink", "https://storage.googleapis.com/download/storage/v1/b/29f98e10-a489-4c82-ae5e-489dbcd4912f/o/%1?alt=media").toByteArray();
   endGroup();
 
   beginGroup("List Display");
