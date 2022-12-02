@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2018 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -29,12 +29,11 @@
  *
  * This class is derived from \ref SinglePoint
  *
- * \date 2000-2018
+ * \date 2000-2022
  *
  */
 
-#ifndef AIRFIELD_H
-#define AIRFIELD_H
+#pragma once
 
 #include <QList>
 #include <QMutex>
@@ -68,9 +67,12 @@ class Airfield : public SinglePoint
    * @param  frequencyList A list with the frequency objects
    * @param  country The country of the airfield as two letter code
    * @param  comment An additional comment related to the airfield
-   * @param  winch  "true", if winch launch is available
-   * @param  towing "true", if aero towing is available
-   * @param  landable "true", if airfield is landable
+   * @param  hasWinch "true", if winch launch is available
+   * @param  hasTowing "true", if aero towing is available
+   * @param  isPPR "true", if airfield is PPR
+   * @param  isPrivate "true", if airfield is private
+   * @param  hasSkyDiving "true", if airfield has sky diving
+   * @param  isLandable "true", if airfield is landable
    */
   Airfield( const QString& name,
             const QString& icao,
@@ -78,14 +80,17 @@ class Airfield : public SinglePoint
             const BaseMapElement::objectType typeId,
             const WGSPoint& wgsPos,
             const QPoint& pos,
-            const QList<Runway>& rwList,
             const float elevation,
+            const QList<Runway>& rwyList,
             const QList<Frequency> frequencyList,
-            const QString country = "",
-            const QString comment = "",
-            bool winch = false,
-            bool towing = false,
-            bool landable = true );
+            const QString country,
+            const QString comment,
+            bool hasWinch,
+            bool hasTowing,
+            bool isPPR,
+            bool isPrivate,
+            bool hasSkyDiving,
+            bool isLandable );
 
   /**
    * Destructor
@@ -145,7 +150,7 @@ class Airfield : public SinglePoint
    */
   QList<Runway>& getRunwayList()
     {
-      return m_rwList;
+      return m_rwyList;
     };
 
   /**
@@ -155,8 +160,7 @@ class Airfield : public SinglePoint
    */
    void addRunway( const Runway& value )
      {
-       m_rwList.append( value );
-       calculateRunwayShift();
+       m_rwyList.append( value );
      };
 
   /**
@@ -206,6 +210,36 @@ class Airfield : public SinglePoint
     {
       m_landable = value;
     };
+
+  bool isPPR() const
+  {
+    return m_ppr;
+  }
+
+  void setPPR( bool attribute )
+  {
+    m_ppr = attribute;
+  }
+
+  bool isPrivate() const
+  {
+    return m_private;
+  }
+
+  void setPrivate( bool attribute )
+  {
+    m_private = attribute;
+  }
+
+  bool hasSkyDiving() const
+  {
+    return m_skyDiving;
+  }
+
+  void setSkyDiving( bool attribute )
+  {
+    m_skyDiving = attribute;
+  }
 
   /**
    * Return a short html-info-string about the airport, containing the
@@ -263,28 +297,26 @@ class Airfield : public SinglePoint
    */
   static void createStaticIcons();
 
- protected:
+
+  quint16 getRwShift() const
+  {
+    return m_rwShift;
+  }
+
+  void setRwShift( quint16 mRwShift )
+  {
+    m_rwShift = mRwShift;
+  }
 
   /**
    * Calculates the runway shift for the icon to be drawn.
    */
   void calculateRunwayShift()
-  {
-    // calculate the default runway shift in 1/10 degrees.
-    m_rwShift = 90/10; // default direction is 90 degrees
+    {
+      m_rwShift = Runway::calculateRunwayShift( m_rwyList );
+    }
 
-    // We assume, that the first runway is always the main runway.
-    if( m_rwList.size() > 0 )
-      {
-        Runway rw = m_rwList.first();
-
-        // calculate the real runway shift in 1/10 degrees.
-        if ( rw.m_heading/256 <= 36 )
-          {
-            m_rwShift = (rw.m_heading/256 >= 18 ? (rw.m_heading/256)-18 : rw.m_heading/256);
-          }
-      }
-  };
+ protected:
 
   /**
   * The ICAO name
@@ -299,7 +331,7 @@ class Airfield : public SinglePoint
   /**
    * Contains all runways.
    */
-  QList<Runway> m_rwList;
+  QList<Runway> m_rwyList;
 
   /**
    * The launching-type. "true" if the site has a m_winch.
@@ -312,14 +344,29 @@ class Airfield : public SinglePoint
   bool m_towing;
 
   /**
-   * Contains the shift of the runway during drawing in 1/10 degrees.
+   * PPR flag
    */
-  unsigned short m_rwShift;
+  bool m_ppr;
 
   /**
-   * Flag to indicate the landability of the airfield.
+   * Private flag
    */
-  bool m_landable;
+  bool m_private;
+
+  /**
+   * sky diving flag
+   */
+   bool m_skyDiving;
+
+   /**
+    * Flag to indicate the land ability of the airfield.
+    */
+   bool m_landable;
+
+   /**
+   * Contains the shift of the runway during drawing in 1/10 degrees.
+   */
+  quint16 m_rwShift;
 
   /**
    * Pixmaps with big airfields.
@@ -346,5 +393,3 @@ class Airfield : public SinglePoint
    */
   static QMutex mutex;
 };
-
-#endif
