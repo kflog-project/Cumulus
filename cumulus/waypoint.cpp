@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2018 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -100,7 +100,7 @@ bool Waypoint::operator==( const Waypoint& second ) const
   return false;
 }
 
-bool Waypoint::write( const Waypoint* wp, const QString& fileName )
+bool Waypoint::write( Waypoint* wp, const QString& fileName )
 {
   QFile file( fileName );
 
@@ -116,12 +116,7 @@ bool Waypoint::write( const Waypoint* wp, const QString& fileName )
     }
 
   QDataStream out( &file );
-
-#ifdef MAEMO5
-  out.setVersion( QDataStream::Qt_4_7 );
-#else
   out.setVersion( QDataStream::Qt_4_8 );
-#endif
 
   out << quint32( WP_FILE_MAGIC );
   out << wp->name;
@@ -138,29 +133,10 @@ bool Waypoint::write( const Waypoint* wp, const QString& fileName )
   out << wp->wpListMember;
 
   // The frequency list is saved
-  out << quint8( wp->frequencyList.size() );
-
-  for( int i = 0; i < wp->frequencyList.size(); i++ )
-    {
-      Frequency fre = wp->frequencyList.at(i);
-      out << fre.getFrequency();
-      out << fre.getType();
-    }
+  Frequency::saveFrequencies( out, wp->getFrequencyList() );
 
   // The runway list is saved
-  out << quint8( wp->rwyList.size() );
-
-  for( int i = 0; i < wp->rwyList.size(); i++ )
-    {
-      Runway rwy = wp->rwyList.at(i);
-
-      out << rwy.m_length;
-      out << rwy.m_width;
-      out << quint16( rwy.m_heading );
-      out << quint8( rwy.m_surface );
-      out << quint8( rwy.m_isOpen );
-      out << quint8( rwy.m_isBidirectional );
-    }
+  Runway::saveRunways(out, wp->getRunwayList() );
 
   file.close();
   return true;
@@ -186,12 +162,7 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
     }
 
   QDataStream in( &file );
-
-#ifdef MAEMO5
-  in.setVersion( QDataStream::Qt_4_7 );
-#else
   in.setVersion( QDataStream::Qt_4_8 );
-#endif
 
   quint32 fileMagic;
 
@@ -210,9 +181,7 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   qint16 qint16v;
   qint32 qint32v;
   quint8 quint8v;
-  quint16 quint16v;
-  float floatv;
-  QString qstringv;
+  QString qs;
 
   in >> wp->name;
   in >> qint16v;  wp->type = qint16v;
@@ -228,28 +197,10 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   in >> wp->wpListMember;
 
   // The frequency list is read
-  in >> quint8v;
-
-  for( int i = 0; i < quint8v; i++ )
-    {
-      in >> floatv;
-      in >> qstringv;
-      wp->addFrequency( Frequency(floatv, qstringv) );
-    }
+  Frequency::loadFrequencies( in, wp->getFrequencyList() );
 
   // The runway list is read
-  in >> quint8v;
-
-  for( int i = 0; i < quint8v; i++ )
-    {
-      Runway rwy;
-      in >> rwy.m_length;
-      in >> rwy.m_width;
-      in >> quint16v; rwy.m_heading = quint16v;
-      in >> quint8v;  rwy.m_surface = quint8v;
-      in >> quint8v;  rwy.m_isOpen = quint8v;
-      in >> quint8v;  rwy.m_isBidirectional = quint8v;
-    }
+  Runway::loadRunways(in, wp->getRunwayList() );
 
   file.close();
 
@@ -257,4 +208,3 @@ bool Waypoint::read( Waypoint* wp, const QString& fileName )
   wp->projPoint = _globalMapMatrix->wgsToMap(wp->wgsPoint);
   return true;
 }
-

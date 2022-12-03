@@ -8,15 +8,14 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2018 by Axel Pauli
+ **                         2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef __Waypoint__
-#define __Waypoint__
+#pragma once
 
 #include <QList>
 #include <QPoint>
@@ -33,9 +32,9 @@
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2018
+ * \date 1999-2022
  *
- * \version 1.1
+ * \version 1.2
  */
 
 class Waypoint
@@ -66,7 +65,7 @@ class Waypoint
    *
    * \return True on success otherwise false.
    */
-  static bool write( const Waypoint* wp, const QString& fileName );
+  static bool write( Waypoint* wp, const QString& fileName );
 
   /**
    * Read a waypoint from a file.
@@ -85,7 +84,23 @@ class Waypoint
   QList<Frequency>& getFrequencyList()
     {
       return frequencyList;
-    };
+    }
+
+  /**
+   * Sets a new frequency list.
+   */
+  void setFequencyList( QList<Frequency>& fqList )
+  {
+    frequencyList = fqList;
+  }
+
+  /**
+   * @return The runway list as reference.
+   */
+  QList<Runway>& getRunwayList()
+    {
+      return rwyList;
+    }
 
   /**
    * Adds a new frequency to the frequency list.
@@ -95,7 +110,7 @@ class Waypoint
   void addFrequency( Frequency freqencyAndType )
     {
       frequencyList.append( freqencyAndType );
-    };
+    }
 
   /** The short name of the waypoint limited to 8 characters and upper cases. */
   QString name;
@@ -149,4 +164,3 @@ class Waypoint
   bool wpListMember;
 };
 
-#endif
