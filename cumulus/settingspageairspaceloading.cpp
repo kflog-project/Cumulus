@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2018 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2011-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -158,13 +158,13 @@ SettingsPageAirspaceLoading::SettingsPageAirspaceLoading( QWidget *parent ) :
   topLayout->addLayout( buttonBox );
 
   //---------------------------------------------------------------------------
-  // Load table with openair files
+  // Load table with files to be selected
   QStringList preselect;
 
   for ( int i = 0; i < mapDirs.size(); ++i )
     {
       // Setup a filter for the wanted file extensions.
-      QString filter = "*.txt *.TXT *.aip *.AIP";
+      QString filter = "*.txt *.TXT *_asp.json";
 
       MapContents::addDir( preselect, mapDirs.at(i) + "/airspaces", filter );
     }
