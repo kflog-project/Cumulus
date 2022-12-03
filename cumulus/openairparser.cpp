@@ -19,7 +19,6 @@
 #include <unistd.h>
 
 #include <QtCore>
-#include <QString>
 
 #include "airspace.h"
 #include "AirspaceHelper.h"
@@ -199,20 +198,6 @@ void OpenAirParser::parseLine(QString& line)
           _anRead = true;
           return;
         }
-
-#warning "Remove airspace mapping workaround for RMZ if it is not more necessary!"
-
-      if( asName.startsWith("RMZ ") )
-	{
-	  // The OpenAir file of the DAeC uses a workaroud for RMZ airspaces.
-	  // Such airspaces are declared as airspace D and they have an remark
-	  // in its name.
-	  // Example: AN RMZ Barth
-	  // We do remap this airspace from D to RMZ
-	  asName = asName.mid(4); // remove prefix RMZ
-	  asType = BaseMapElement::Rmz;
-	  return;
-	}
 
       return;
     }
