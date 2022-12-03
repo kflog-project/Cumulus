@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Andre Somers
-**                   2007-2021 by Axel Pauli
+**                   2007-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -177,7 +177,7 @@ void WaypointListView::slot_SearchResult( const SinglePoint* sp )
       QTreeWidgetItem* twi = lw->topLevelItem( i );
       const QString& name = sp->getName();
 
-      if( twi->text(0) == name )
+      if( twi->text(1) == name )
         {
           lw->setCurrentItem( twi );
           lw->scrollToItem( twi, QAbstractItemView::PositionAtTop );
@@ -472,11 +472,7 @@ void WaypointListView::slot_deleteAllWPs()
             }
         }
 
-      // First select all items in the list
-      listw->listWidget()->selectAll();
-
-      // Second delete all selected waypoints
-      listw->deleteSelectedWaypoints();
+      listw->deleteAllWaypoints();
 
       MainWindow::mainWindow()->viewMap->getMap()->scheduleRedraw( Map::waypoints );
     }
