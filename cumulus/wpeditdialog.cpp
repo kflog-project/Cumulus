@@ -86,7 +86,7 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   QScrollArea* paArea = new QScrollArea( tabWidget );
   paArea->setWidgetResizable( true );
   paArea->setFrameStyle( QFrame::NoFrame );
-  WpEditDialogPageAero *pageA = new WpEditDialogPageAero(this);
+  pageA = new WpEditDialogPageAero(this);
   paArea->setWidget( pageA );
   tabWidget->addTab( paArea, tr("Aero") );
 
@@ -190,8 +190,11 @@ void WpEditDialog::accept()
   newWp.wpListMember = m_wp ? m_wp->wpListMember : false;
 
   // Make some mandatory consistency checks
-  if( checkWaypointData( newWp ) == false )
-    {
+  if( pageA->checkRunways() == false ) {
+      return;
+  }
+
+  if( checkWaypointData( newWp ) == false ) {
       // reject saving due to missing data items
       return;
     }

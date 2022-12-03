@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
- **                  2008-2018 by Axel Pauli
+ **                  2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,19 +24,20 @@
  * The WpEditDialog widget allows the creation of a new waypoint or the
  * modification of an existing waypoint. It is a modal window.
  *
- * \date 2002-2018
+ * \date 2002-2022
  *
- * \version 1.1
+ * \version 1.2
  */
 
-#ifndef WP_EDIT_DIALOG_H
-#define WP_EDIT_DIALOG_H
+#pragma once
 
 #include <QWidget>
 #include <QString>
 #include <QLineEdit>
 
 #include "waypoint.h"
+
+class WpEditDialogPageAero;
 
 class WpEditDialog : public QWidget
 {
@@ -109,9 +110,8 @@ signals:
 
 private:
 
+    WpEditDialogPageAero *pageA;
     Waypoint*  m_wp;
     QString    m_oldName; // old name of waypoint before rename
-  QLineEdit* m_comment;
+    QLineEdit* m_comment;
 };
-
-#endif

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2018 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -19,20 +19,22 @@
  *
  * \author André Somers, Axel Pauli
  *
- * \brief This is the general page for the waypoint editor dialog
+ * \brief This is the aeronautical page for the waypoint editor dialog
  *
- * \date 2002-2018
+ * \date 2002-2022
  */
 
-#ifndef WPEDIT_DIALOG_PAGE_AERO_H
-#define WPEDIT_DIALOG_PAGE_AERO_H
+#pragma once
 
 #include <QWidget>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QList>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QSignalMapper>
 
+#include "Frequency.h"
 #include "waypoint.h"
 
 class DoubleNumberEditor;
@@ -48,6 +50,37 @@ class WpEditDialogPageAero : public QWidget
 
   virtual ~WpEditDialogPageAero();
 
+  /**
+   * Checks all runway designators and only flags for correctness.
+   *
+   * @return true in case of ok otherwise false.
+   */
+  bool checkRunways();
+
+ private:
+
+  /**
+   * Check the runway designator for 01...36 [ L, C, R ].
+   *
+   * Return true in case of success otherwise false.
+   */
+  bool checkRunwayDesignator( QString id );
+
+  /**
+   * Report a runway designator error.
+   *
+   * @param rwyNo Runway number 1...4
+   */
+  void reportRwyIdError( short rwyNo );
+
+  /**
+   * Report a runway takeoff or landing only error.
+   *
+   * @param rwyNo Runway number 1...4
+   */
+  void reportRwyOnlyError( short rwyNo );
+
+
  public slots:
 
   /**
@@ -60,41 +93,41 @@ class WpEditDialogPageAero : public QWidget
    */
   void slot_load(Waypoint* wp);
 
+ signals:
+
+  /**
+   * Signal for signal mapper
+   *
+   * \param idx Index 0...3
+   */
+  void stateChangedRwyEnable( int idx );
+
+  /**
+   * Signal for signal mapper
+   *
+   * \param idx Index 0...3
+   */
+  void rwyHeadingEditingFinished( int idx );
+
  private slots:
 
  /**
   * Called, if runway enable checkbox is selected/unselected.
   *
-  * \param state The new state of check box.
+  * \param idx the index of the check array
   */
- void slot_stateChangedRwy1Enable( int state )
+ void slot_stateChangedRwyEnable( int idx )
    {
-     gboxRunway1->setEnabled( state == 0 ? false : true );
-   };
-
- /**
-  * Called, if runway enable checkbox is selected/unselected.
-  *
-  * \param state The new state of check box.
-  */
- void slot_stateChangedRwy2Enable( int state )
-   {
-     gboxRunway2->setEnabled( state == 0 ? false : true );
-   };
+     bool state = chkRwyEnable[idx]->isChecked();
+     gboxRunway[idx]->setVisible( state == 0 ? false : true );
+   }
 
  /**
   * Called, if the runway heading editor is closed by the user.
   *
-  * \param value New runway heading
+  * \param idx The index of the runway heading editor array
   */
- void slot_rwy1HeadingEdited( const QString& value );
-
- /**
-  * Called, if the runway heading editor is closed by the user.
-  *
-  * \param value New runway heading
-  */
- void slot_rwy2HeadingEdited( const QString& value );
+ void slot_rwyHeadingEdited( int idx );
 
  private:
 
@@ -124,29 +157,24 @@ class WpEditDialogPageAero : public QWidget
   DoubleNumberEditor* edtFrequency;
   QLineEdit* edtFrequencyType;
 
-  QGroupBox* gboxRunway1;
-  QGroupBox* gboxRunway2;
-
-  QCheckBox* chkRwy1Enable;
-  QCheckBox* chkRwy2Enable;
-
-  NumberEditor* edtRwy1Heading;
-  NumberEditor* edtRwy2Heading;
-
-  QCheckBox* chkRwy1Both;
-  QCheckBox* chkRwy2Both;
-
-  QCheckBox* chkRwy1Usable;
-  QCheckBox* chkRwy2Usable;
-
-  QComboBox* cmbRwy1Surface;
-  QComboBox* cmbRwy2Surface;
-
-  NumberEditor* edtRwy1Length;
-  NumberEditor* edtRwy2Length;
+  // Frequency list of edited waypoint
+  QList<Frequency> fqList;
 
   // Index of edited frequency record
   int edtFequencyListIndex;
-};
 
-#endif
+  QCheckBox* chkRwyEnable[4];
+  QGroupBox* gboxRunway[4];
+  QLineEdit* edtRwyHeading[4];
+  QCheckBox* chkRwyBoth[4];
+  QCheckBox* chkRwyUsable[4];
+  QCheckBox* chkRwyMain[4];
+  QCheckBox* chkRwyTakeoffOnly[4];
+  QCheckBox* chkRwyLandingOnly[4];
+  QComboBox* cmbRwySurface[4];
+  NumberEditor* edtRwyLength[4];
+  NumberEditor* edtRwyWidth[4];
+
+  QSignalMapper *signalMapperEnable;
+  QSignalMapper *signalMapperHeading;
+};
