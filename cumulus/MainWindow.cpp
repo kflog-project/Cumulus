@@ -224,16 +224,16 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
       QDir dir( dirNameOld );
 
       if( dir.exists() )
-	{
-	  QString dirNameNew = mapDirs.at( i ) + "/points";
+        {
+          QString dirNameNew = mapDirs.at( i ) + "/points";
 
-	  int ok = rename( dirNameOld.toLatin1().data(), dirNameNew.toLatin1().data() );
+          int ok = rename( dirNameOld.toLatin1().data(), dirNameNew.toLatin1().data() );
 
-	  if( ok == 0 )
-	    {
-	      qDebug() << "Renaming" << dirNameOld << "-->" << dirNameNew;
-	    }
-	}
+          if( ok == 0 )
+            {
+              qDebug() << "Renaming" << dirNameOld << "-->" << dirNameNew;
+            }
+        }
     }
 
   // Get application font for user adaptions.
@@ -431,7 +431,7 @@ void MainWindow::slotCreateSplash()
   splash->setVisible( true );
   setVisible( true );
 
-  ws = new WaitScreen( this );
+  ws = new WaitScreen( splash );
 
 #ifdef ANDROID
   // The waitscreen is not centered over the parent and not limited in
@@ -460,25 +460,6 @@ void MainWindow::slotCreateSplash()
 void MainWindow::slotCreateApplicationWidgets()
 {
   qDebug() << "MainWindow::slotCreateApplicationWidgets()";
-
-#ifdef MAEMO
-
-  ossoContext = osso_initialize( "org.kflog.Cumulus",
-                                 QCoreApplication::applicationVersion().toAscii().data(),
-                                 false,
-                                 0 );
-
-  if( ! ossoContext )
-    {
-      qWarning("Could not initialize Osso Library");
-    }
-  else
-    {
-      // prevent screen blanking
-      osso_display_blanking_pause( ossoContext );
-    }
-
-#endif
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
 
