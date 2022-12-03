@@ -225,6 +225,27 @@ class NumberEditor : public QLabel
   };
 
   /**
+   * Sets the minimum width of the input field.
+   *
+   * \param min numbers of M's to be considered.
+   */
+  void setMinWidth( int min )
+  {
+    m_minWidth = min;
+  };
+
+  /**
+   * Gets the minimum width of the input field. If not defined, INT_MIN is
+   * returned.
+   *
+   * \return Minimum width of the input field.
+   */
+  int minWidth()
+  {
+    return m_minWidth;
+  };
+
+  /**
    * Sets the integer maximum input value.
    *
    * \param maximum The integer maximum input value
@@ -430,6 +451,7 @@ class NumberEditor : public QLabel
 
   QValidator* m_validator;
   QString m_inputMask;
+  int m_minWidth;
   int m_maxLength;
 
   QPair<bool, int> m_intMax;
