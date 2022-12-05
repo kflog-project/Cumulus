@@ -289,6 +289,7 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
       searchList.append( MapContents::GliderfieldList );
       searchList.append( MapContents::OutLandingList );
       searchList.append( MapContents::RadioList );
+      searchList.append( MapContents::ReportList );
     };
 
   if( _globalMapMatrix->isSwitchScale() )
@@ -385,27 +386,32 @@ void Map::p_displayDetailedItemInfo(const QPoint& current)
           if (searchList[l] == MapContents::AirfieldList)
             {
               // Fetch data from the airfield list
-              poi = _globalMapContents->getAirfield (loop);
+              poi = _globalMapContents->getAirfield(loop);
             }
           else if (searchList[l] == MapContents::GliderfieldList)
             {
               // fetch data from the gliderfield list
-              poi = _globalMapContents->getGliderfield (loop);
+              poi = _globalMapContents->getGliderfield(loop);
             }
           else if (searchList[l] == MapContents::OutLandingList)
             {
               // fetch data from the outlanding list
-              poi = _globalMapContents->getOutlanding (loop);
+              poi = _globalMapContents->getOutlanding(loop);
             }
           else if (searchList[l] == MapContents::RadioList)
             {
               // fetch data from the radio point list
-              poi = _globalMapContents->getRadioPoint (loop);
+              poi = _globalMapContents->getRadioPoint(loop);
             }
           else if (searchList[l] == MapContents::HotspotList)
             {
               // fetch data from the hotspot list
-              poi = _globalMapContents->getHotspot (loop);
+              poi = _globalMapContents->getHotspot(loop);
+            }
+          else if (searchList[l] == MapContents::ReportList)
+            {
+              // fetch data from the hotspot list
+              poi = _globalMapContents->getSinglePoint(MapContents::ReportList, loop);
             }
           else
             {
@@ -1652,7 +1658,7 @@ void Map::p_drawNavigationLayer()
 
       if( drawnWp[i]->rwyList.size() > 0 )
         {
-          isLandable = drawnWp[i]->rwyList.at(0).m_isOpen;
+          isLandable = drawnWp[i]->rwyList.at(0).isOpen();
         }
 
       p_drawLabel( &navP,
@@ -1843,25 +1849,23 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
     if( _globalMapConfig->isRotatable(wp.type) )
       {
-        int rwyHeading = 0;
+        quint16 rwyHeading = 0;
 
         if( wp.rwyList.size() > 0 )
           {
-            rwyHeading = wp.rwyList.first().m_heading;
+            rwyHeading = Runway::calculateRunwayShift( wp.rwyList );
           }
-
-        int heading = rwyHeading/256 >= 18 ? (rwyHeading/256)-18 : rwyHeading/256;
 
         if( useSmallIcons )
           {
             if( wp.type == BaseMapElement::UltraLight ||
                 wp.type == BaseMapElement::Outlanding )
               {
-                pm = Airfield::getSmallField( heading );
+                pm = Airfield::getSmallField( rwyHeading );
               }
             else
               {
-                pm = Airfield::getSmallAirfield( heading );
+                pm = Airfield::getSmallAirfield( rwyHeading );
               }
           }
         else
@@ -1869,11 +1873,11 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
             if( wp.type == BaseMapElement::UltraLight ||
                 wp.type == BaseMapElement::Outlanding )
               {
-                pm = Airfield::getBigField( heading );
+                pm = Airfield::getBigField( rwyHeading );
               }
             else
               {
-                pm = Airfield::getBigAirfield( heading );
+                pm = Airfield::getBigAirfield( rwyHeading );
               }
           }
       }

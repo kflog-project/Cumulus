@@ -75,7 +75,7 @@
 #define FILE_TYPE_MAP_C       0x6d
 
 // Type definition for compiled airspace files, used by Airspace parsers
-#define FILE_TYPE_AIRSPACE_C  0x61
+#define FILE_TYPE_AIRSPACE_C  "Cumulus-Airspaces"
 
 // Type definition for openAIP compiled airfield files.
 #define FILE_TYPE_AIRFIELD_OAIP_C "OpenAIP-Airfields"
@@ -97,10 +97,10 @@
 #define FILE_VERSION_MAP_C      103
 
 // Version definition for compiled airspace files.
-#define FILE_VERSION_AIRSPACE_C 2
+#define FILE_VERSION_AIRSPACE_C 3
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 5
+#define FILE_VERSION_AIRFIELD_C 6
 
 // Version definition for compiled navigation aid files.
 #define FILE_VERSION_NAV_AIDS_C 3
@@ -146,7 +146,7 @@
 #define CONTROL_C        28
 #define CONTROL_D        29
 #define DANGER           30
-#define LOW_FLIGHT       31
+#define SUA              31 // Special Use Airspace (SUA)
 #define RESTRICTED       32
 #define TMZ              33
 #define OBSTACLE         34
@@ -192,5 +192,5 @@
 #define USER_POINT       75 // A point set by the user
 #define AIR_FLARM        76 // Flarm alert zone
 #define ALTIPORT         77
-#define LAST_ENTRY       78 // This must be always the last entry!!!
+#define LAST_ENTRY       79 // This must be always the last entry!!!
 

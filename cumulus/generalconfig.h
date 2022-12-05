@@ -88,7 +88,7 @@
 
 class QTranslator;
 
-extern const char* CumulusBuildDate;
+extern const char *CumulusBuildDate;
 
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings
@@ -495,15 +495,15 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the airspace border color */
-  QColor &getBorderColorLowFlight()
+  QColor &getBorderColorSUA()
     {
-      return _borderColorLowFlight;
+      return _borderColorSUA;
     }
 
   /** Sets the airspace border color */
-  void setBorderColorLowFlight( const QColor& newValue )
+  void setBorderColorSUA( const QColor& newValue )
   {
-    _borderColorLowFlight = newValue;
+    _borderColorSUA = newValue;
   }
 
   /** Gets the airspace border color */
@@ -735,15 +735,15 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the airspace fill color */
-  QColor &getFillColorLowFlight()
+  QColor &getFillColorSUA()
     {
-      return _fillColorLowFlight;
+      return _fillColorSUA;
     }
 
   /** Sets the airspace fill color */
-  void setFillColorLowFlight( const QColor& newValue )
+  void setFillColorSUA( const QColor& newValue )
   {
-    _fillColorLowFlight = newValue;
+    _fillColorSUA = newValue;
   }
 
   /** Gets the airspace fill color */
@@ -3235,7 +3235,7 @@ class GeneralConfig : protected QSettings
   QColor _borderColorProhibited;
   QColor _borderColorRMZ;
   QColor _borderColorTMZ;
-  QColor _borderColorLowFlight;
+  QColor _borderColorSUA;
   QColor _borderColorGliderSector;
 
   // fill (brush) colors of airspaces
@@ -3257,7 +3257,7 @@ class GeneralConfig : protected QSettings
   QColor _fillColorProhibited;
   QColor _fillColorRMZ;
   QColor _fillColorTMZ;
-  QColor _fillColorLowFlight;
+  QColor _fillColorSUA;
   QColor _fillColorGliderSector;
 
   //display airspace warnings at all?

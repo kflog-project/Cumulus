@@ -145,7 +145,7 @@ void GeneralConfig::load()
   _mapDrawingEnabled[BaseMapElement::Prohibited]   = value("checkProhibited", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Rmz]          = value("checkRMZ", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Tmz]          = value("checkTMZ", true).toBool();
-  _mapDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Sua]          = value("checkSUA", true).toBool();
   _mapDrawingEnabled[BaseMapElement::WaveWindow]   = value("checkWaveWindow", false).toBool();
   _mapDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
 
@@ -168,7 +168,7 @@ void GeneralConfig::load()
   _borderColorProhibited     = QColor( value("borderColorProhibited", PROHIBITED_COLOR).toString() );
   _borderColorRMZ            = QColor( value("borderColorRMZ", RMZ_COLOR).toString() );
   _borderColorTMZ            = QColor( value("borderColorTMZ", TMZ_COLOR).toString() );
-  _borderColorLowFlight      = QColor( value("borderColorLowFlight", LOWF_COLOR).toString() );
+  _borderColorSUA            = QColor( value("borderColorSUA", SUA_COLOR).toString() );
   _borderColorGliderSector   = QColor( value("borderColorGliderSector", GLIDER_SECTOR_COLOR).toString() );
 
   // Airspace fill (brush) draw color
@@ -190,7 +190,7 @@ void GeneralConfig::load()
   _fillColorProhibited    = QColor( value("fillColorProhibited", PROHIBITED_BRUSH_COLOR).toString() );
   _fillColorRMZ           = QColor( value("fillColorRMZ", RMZ_BRUSH_COLOR).toString() );
   _fillColorTMZ           = QColor( value("fillColorTMZ", TMZ_BRUSH_COLOR).toString() );
-  _fillColorLowFlight     = QColor( value("fillColorLowFlight", LOWF_BRUSH_COLOR).toString() );
+  _fillColorSUA           = QColor( value("fillColorSUA", SUA_BRUSH_COLOR).toString() );
   _fillColorGliderSector  = QColor( value("fillColorGliderSector", GLIDER_SECTOR_BRUSH_COLOR).toString() );
 
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
@@ -666,7 +666,7 @@ void GeneralConfig::save()
   setValue("checkProhibited", _mapDrawingEnabled[BaseMapElement::Prohibited]);
   setValue("checkRMZ", _mapDrawingEnabled[BaseMapElement::Rmz]);
   setValue("checkTMZ", _mapDrawingEnabled[BaseMapElement::Tmz]);
-  setValue("checkLowFlight", _mapDrawingEnabled[BaseMapElement::LowFlight]);
+  setValue("checkSUA", _mapDrawingEnabled[BaseMapElement::Sua]);
   setValue("checkGliderSector", _mapDrawingEnabled[BaseMapElement::GliderSector]);
 
   // Airspace border draw color
@@ -688,7 +688,7 @@ void GeneralConfig::save()
   setValue("borderColorProhibited",     _borderColorProhibited.name());
   setValue("borderColorRMZ",            _borderColorRMZ.name());
   setValue("borderColorTMZ",            _borderColorTMZ.name());
-  setValue("borderColorLowFlight",      _borderColorLowFlight.name());
+  setValue("borderColorSUA",            _borderColorSUA.name());
   setValue("borderColorGliderSector",   _borderColorGliderSector.name());
 
   // Airspace fill (brush) draw color
@@ -709,7 +709,7 @@ void GeneralConfig::save()
   setValue("fillColorProhibited",     _fillColorProhibited.name());
   setValue("fillColorRMZ",            _fillColorRMZ.name());
   setValue("fillColorTMZ",            _fillColorTMZ.name());
-  setValue("fillColorLowFlight",      _fillColorLowFlight.name());
+  setValue("fillColorSUA",            _fillColorSUA.name());
   setValue("fillColorGliderSector",   _fillColorGliderSector.name());
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);

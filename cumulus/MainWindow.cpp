@@ -325,6 +325,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
            size().width(),
            size().height() );
 
+  qDebug() << "MainWindow Position" << pos();
+
   // @AP: Display some environment variables, to get more clearness
   // about their settings during process startup
   char *pwd = getenv( "PWD" );
@@ -427,9 +429,13 @@ void MainWindow::slotCreateSplash()
   conf->save();
 
   splash = new Splash( this );
+  splash->setGeometry( 0, 0, 800, 480 );
   setCentralWidget( splash );
-  splash->setVisible( true );
   setVisible( true );
+  splash->setVisible( true );
+
+  QCoreApplication::sendPostedEvents();
+  QCoreApplication::processEvents();
 
   ws = new WaitScreen( splash );
 
@@ -439,10 +445,12 @@ void MainWindow::slotCreateSplash()
   ws->setGeometry ( width() / 2 - 250, height() / 2 - 75,  500, 150 );
 #endif
 
-  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
+  // Sometimes the ws dialog is not moved over the parent. maybe this helps.
+  //QPoint pos = mapToGlobal(QPoint( width()/2 - ws->width()/2,
+  //                                 height()/2 - ws->height()/2 ));
+  // ws->move( pos );
 
-  QCoreApplication::sendPostedEvents();
-  QCoreApplication::processEvents();
+  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
 
   // Here we finish the base initialization and start a timer
   // to continue startup in another method. This is done, to return

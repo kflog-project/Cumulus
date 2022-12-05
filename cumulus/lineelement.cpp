@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2015 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -31,8 +31,8 @@ LineElement::LineElement( const QString& name,
                           const QPolygon& pP,
                           const bool isV,
                           const unsigned short secID,
-                          const QString& country )
-  : BaseMapElement(name, t, secID, country),
+                          const QString& country ) :
+    BaseMapElement(name, t, secID, country),
     projPolygon(pP),
     bBox(pP.boundingRect()),
     valley(isV),
