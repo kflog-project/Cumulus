@@ -92,7 +92,7 @@ public:
     Ctr = CTR,
     Danger = DANGER,
     GliderSector = GLIDER_SECTOR,
-    LowFlight = LOW_FLIGHT,
+    Sua = SUA,
     Restricted = RESTRICTED,
     Prohibited = PROHIBITED,
     Rmz = RMZ,
@@ -185,7 +185,7 @@ public:
   /**
    * @return The name of the element.
    */
-  virtual const QString& getName() const
+  const virtual QString& getName() const
   {
     return name;
   };

@@ -377,15 +377,15 @@ void MapConfig::slotReloadAirspaceColors()
                  PRO_BRUSH_STYLE_1, PRO_BRUSH_STYLE_2,
                  PRO_BRUSH_STYLE_3, PRO_BRUSH_STYLE_4)
 
-  READ_PEN_BRUSH("Low Flight", lowFPenList, lowFBorder,lowFBrushList,
-                 conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
-                 conf->getBorderColorLowFlight(), conf->getBorderColorLowFlight(),
-                 LOWF_PEN_WIDTH_1, LOWF_PEN_WIDTH_2, LOWF_PEN_WIDTH_3, LOWF_PEN_WIDTH_4,
-                 LOWF_PEN_STYLE_1, LOWF_PEN_STYLE_2, LOWF_PEN_STYLE_3, LOWF_PEN_STYLE_4,
-                 conf->getFillColorLowFlight(), conf->getFillColorLowFlight(),
-                 conf->getFillColorLowFlight(), conf->getFillColorLowFlight(),
-                 LOWF_BRUSH_STYLE_1, LOWF_BRUSH_STYLE_2,
-                 LOWF_BRUSH_STYLE_3, LOWF_BRUSH_STYLE_4)
+  READ_PEN_BRUSH("SUA", suaPenList, suaBorder, suaBrushList,
+                 conf->getBorderColorSUA(), conf->getBorderColorSUA(),
+                 conf->getBorderColorSUA(), conf->getBorderColorSUA(),
+                 SUA_PEN_WIDTH_1, SUA_PEN_WIDTH_2, SUA_PEN_WIDTH_3, SUA_PEN_WIDTH_4,
+                 SUA_PEN_STYLE_1, SUA_PEN_STYLE_2, SUA_PEN_STYLE_3, SUA_PEN_STYLE_4,
+                 conf->getFillColorSUA(), conf->getFillColorSUA(),
+                 conf->getFillColorSUA(), conf->getFillColorSUA(),
+                 SUA_BRUSH_STYLE_1, SUA_BRUSH_STYLE_2,
+                 SUA_BRUSH_STYLE_3, SUA_BRUSH_STYLE_4)
 
   READ_PEN_BRUSH("Restricted Area", restrPenList, restrBorder, restrBrushList,
                  conf->getBorderColorRestricted(), conf->getBorderColorRestricted(),
@@ -497,8 +497,8 @@ const QPen& MapConfig::__getPen(unsigned int typeID, int sIndex)
       return dangerPenList[sIndex];
     case BaseMapElement::Prohibited:
       return prohibitedPenList[sIndex];
-    case BaseMapElement::LowFlight:
-      return lowFPenList[sIndex];
+    case BaseMapElement::Sua:
+      return suaPenList[sIndex];
     case BaseMapElement::Restricted:
       return restrPenList[sIndex];
     case BaseMapElement::Rmz:
@@ -575,8 +575,8 @@ bool MapConfig::isBorder(unsigned int typeID)
       return dangerBorder[scaleIndex];
     case BaseMapElement::Prohibited:
       return prohibitedBorder[scaleIndex];
-    case BaseMapElement::LowFlight:
-      return lowFBorder[scaleIndex];
+    case BaseMapElement::Sua:
+      return suaBorder[scaleIndex];
     case BaseMapElement::Restricted:
       return restrBorder[scaleIndex];
     case BaseMapElement::Rmz:
@@ -645,8 +645,8 @@ const QBrush& MapConfig::__getBrush(unsigned int typeID, int sIndex)
       return dangerBrushList[sIndex];
     case BaseMapElement::Prohibited:
       return prohibitedBrushList[sIndex];
-    case BaseMapElement::LowFlight:
-      return lowFBrushList[sIndex];
+    case BaseMapElement::Sua:
+      return suaBrushList[sIndex];
     case BaseMapElement::Restricted:
       return restrBrushList[sIndex];
     case BaseMapElement::Rmz:
