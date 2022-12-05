@@ -6,15 +6,14 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef OpenAip_Loader_Thread_h_
-#define OpenAip_Loader_Thread_h_
+#pragma once
 
 #include <QObject>
 #include <QList>
@@ -22,8 +21,9 @@
 #include <QThread>
 
 #include "airfield.h"
-#include "singlepoint.h"
 #include "radiopoint.h"
+#include "singlepoint.h"
+#include "ThermalPoint.h"
 
 /**
 * \class OpenAipLoaderThread
@@ -36,9 +36,9 @@
 * the content in a binary format. All work is done in an extra thread.
 * The results are returned via the signal \ref loadedList.
 *
-* \date 2014
+* \date 2014-2022
 *
-* \version $Id$
+* \version 1.1
 */
 
 class OpenAipLoaderThread : public QThread
@@ -50,7 +50,7 @@ class OpenAipLoaderThread : public QThread
   /**
    * POI Source definitions
    */
-  enum Poi { Airfields, Hotspots, NavAids };
+  enum Poi { Airfields, Hotspots, NavAids, Reportings };
 
   OpenAipLoaderThread( QObject *parent,
                        enum Poi poiSource,
@@ -75,7 +75,8 @@ class OpenAipLoaderThread : public QThread
   * \param airfieldList The list with the POI data
   *
   */
-  void loadedAfList( int loadedLists, QList<Airfield>* airfieldList );
+  void loadedAfList( int loadedLists,
+                     QList<Airfield>* airfieldList );
 
   /**
   * This signal emits the results of the OpenAIP load. The receiver slot is
@@ -95,12 +96,20 @@ class OpenAipLoaderThread : public QThread
   * \param hotspotList  The list with the POI data
   *
   */
-  void loadedHotspotList( int loadedLists, QList<SinglePoint>* hotspotList );
+  void loadedHotspotList( int loadedLists, QList<ThermalPoint>* hotspotList );
+
+  /**
+  * This signal emits the results of the OpenAIP load. The receiver slot is
+  * responsible to delete the dynamic allocated list in every case.
+  *
+  * \param loadedLists The number of loaded lists
+  * \param spList      The list with the POI data
+  *
+  */
+  void loadedReportingPointList( int loadedLists, QList<SinglePoint>* spList );
 
  private:
 
   enum Poi m_poiSource;
   bool m_readSource;
 };
-
-#endif /* OpenAip_Loader_Thread_h_ */

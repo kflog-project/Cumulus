@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -18,20 +18,20 @@
  *
  * \author Axel Pauli
  *
- * \brief A class for reading openAIP POI data from OpenAIP XML files.
+ * \brief A class for reading openAIP POI data from OpenAIP Json files.
  *
- * A class for reading openAIP POI data from OpenAIP XML files provided by
- * Butterfly Avionics GmbH. The data are licensed under the CC BY-NC-SA license.
+ * A class for reading openAIP POI data from OpenAIP Json files provided by
+ * Butterfly Avionics GmbH. The data are licensed under the
+ * Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license.
  *
  * See here for more info: http://www.openaip.net
  *
- * \date 2013-2014
+ * \date 2013-2022
  *
- * \version 1.0
+ * \version 1.2
  */
 
-#ifndef OpenAip_Poi_Loader_h_
-#define OpenAip_Poi_Loader_h_
+#pragma once
 
 #include <QByteArray>
 #include <QDataStream>
@@ -47,6 +47,7 @@
 #include "projectionbase.h"
 #include "radiopoint.h"
 #include "singlepoint.h"
+#include "ThermalPoint.h"
 
 class OpenAipPoiLoader
 {
@@ -58,12 +59,12 @@ class OpenAipPoiLoader
 
   /**
    * Searches on default places openAIP airfield files and load them. A source
-   * can be an original XML file or a compiled version of it. The
+   * can be an original Json file or a compiled version of it. The
    * results are appended to the passed list.
    *
    * \param airfieldList All read airfields have to be appended to this list.
    *
-   * \param readSource If true the source files have to be read instead of
+  * \param readSource If true the source files have to be read instead of
    * compiled sources.
    *
    * \return number of loaded airfield files
@@ -72,7 +73,7 @@ class OpenAipPoiLoader
 
   /**
    * Searches on default places openAIP navAid files and load them. A source
-   * can be an original XML file or a compiled version of it. The
+   * can be an original Json file or a compiled version of it. The
    * results are appended to the passed list.
    *
    * \param navAidList All read navAids have to be appended to this list.
@@ -86,7 +87,7 @@ class OpenAipPoiLoader
 
   /**
    * Searches on default places openAIP hotspot files and load them. A source
-   * can be an original XML file or a compiled version of it. The
+   * can be an original Json file or a compiled version of it. The
    * results are appended to the passed list.
    *
    * \param hotspotList All read hotspots have to be appended to this list.
@@ -96,7 +97,28 @@ class OpenAipPoiLoader
    *
    * \return number of loaded hotspot files
    */
-  int load( QList<SinglePoint>& hotspotList, bool readSource=false );
+  int load( QList<ThermalPoint>& hotspotList, bool readSource=false );
+
+  /**
+   * Searches on default places openAIP files according to the given filter
+   * string and load them. A source can be an original Json file or a compiled
+   * version of it. The results are appended to the passed list.
+   *
+   * \param filter Files to be loaded as wildcard definition.
+   *
+   * \param type Type of single point
+   *
+   * \param spList All read single points have to be appended to this list.
+   *
+   * \param readSource If true the source files have to be read instead of
+   * compiled sources.
+   *
+   * \return number of loaded files
+   */
+  int load( QString filter,
+            int type,
+            QList<SinglePoint>& spList,
+            bool readSource=false );
 
   /**
    * Creates a compiled file from the passed airfield list beginning at the
@@ -132,6 +154,22 @@ class OpenAipPoiLoader
                            int listBegin );
 
   /**
+   * Creates a compiled file from the passed thermal list beginning at the
+   * given start position and ending at the end of the list.
+   *
+   * \param fileName Name of the compiled file
+   *
+   * \param thermalList List with thermal records
+   *
+   * \param listBegin Begin index in passed list
+   *
+   * \return true in case of success otherwise false
+   */
+  bool createCompiledFile( QString& fileName,
+                           QList<ThermalPoint>& thermalList,
+                           int listBegin );
+
+  /**
    * Creates a compiled file from the passed single point list beginning at the
    * given start position and ending at the end of the list.
    *
@@ -158,6 +196,18 @@ class OpenAipPoiLoader
    */
   bool readCompiledFile( QString &fileName,
                          QList<Airfield>& airfieldList );
+
+  /**
+   * Read the content of a compiled file and append it to the passed list.
+   *
+   * \param path Full name with path of the openAIP binary file
+   *
+   * \param hotspotList All read thermal points have to be appended to this list.
+   *
+   * \return true (success) or false (error occurred)
+   */
+  bool readCompiledFile( QString &fileName,
+                         QList<ThermalPoint>& hotspotList );
 
   /**
    * Read the content of a compiled file and append it to the passed list.
@@ -220,24 +270,24 @@ class OpenAipPoiLoader
   {
     public:
 
-      HeaderData() :
-	h_magic(0),
-	h_fileType(),
-	h_fileVersion(0),
-	h_homeRadius(0.0),
-	h_runwayLengthFilter(0.0),
-	h_projection(static_cast<ProjectionBase *> (0)),
-	h_headerIsValid(false)
-	{
-	};
+        HeaderData() :
+          h_magic(0),
+          h_fileType(),
+          h_fileVersion(0),
+          h_homeRadius(0.0),
+          h_runwayLengthFilter(0.0),
+          h_projection(static_cast<ProjectionBase *> (0)),
+          h_headerIsValid(false)
+          {
+          }
 
       ~HeaderData()
-	{
-	  if( h_projection )
-	    {
-	      delete h_projection;
-	    }
-	};
+        {
+          if( h_projection )
+            {
+              delete h_projection;
+            }
+        }
 
       quint32         h_magic;
       QByteArray      h_fileType;
@@ -258,5 +308,3 @@ class OpenAipPoiLoader
   /** Mutex to ensure thread safety. */
   static QMutex m_mutex;
 };
-
-#endif /* OpenAip_Poi_Loader_h_ */
