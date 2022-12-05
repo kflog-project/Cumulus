@@ -7,15 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  2001      by Heiner Lamprecht
-**                   2009-2021 by Axel Pauli
+**                   2009-20222 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef MAP_DEFAULTS_H
-#define MAP_DEFAULTS_H
+#pragma once
 
 #include <QColor>
 #include "layout.h"
@@ -759,33 +758,33 @@
 #define WAVE_WINDOW_BRUSH_STYLE_3 Qt::Dense7Pattern
 #define WAVE_WINDOW_BRUSH_STYLE_4 Qt::Dense7Pattern
 
-// [Low flight area]
-#define LOWF_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
-#define LOWF_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
-#define LOWF_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
-#define LOWF_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
+// [SUA Special Use Airspace]
+#define SUA_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
+#define SUA_PEN_WIDTH_2 3 * Layout::getIntScaledDensity()
+#define SUA_PEN_WIDTH_3 3 * Layout::getIntScaledDensity()
+#define SUA_PEN_WIDTH_4 2 * Layout::getIntScaledDensity()
 
-#define LOWF_PEN_STYLE_1 Qt::DotLine
-#define LOWF_PEN_STYLE_2 Qt::DotLine
-#define LOWF_PEN_STYLE_3 Qt::DotLine
-#define LOWF_PEN_STYLE_4 Qt::DotLine
+#define SUA_PEN_STYLE_1 Qt::DotLine
+#define SUA_PEN_STYLE_2 Qt::DotLine
+#define SUA_PEN_STYLE_3 Qt::DotLine
+#define SUA_PEN_STYLE_4 Qt::DotLine
 
-#define LOWF_COLOR QColor(180,0,0).name()
-#define LOWF_COLOR_1 QColor(180,0,0)
-#define LOWF_COLOR_2 QColor(180,0,0)
-#define LOWF_COLOR_3 QColor(180,0,0)
-#define LOWF_COLOR_4 QColor(180,0,0)
+#define SUA_COLOR QColor(180,0,0).name()
+#define SUA_COLOR_1 QColor(180,0,0)
+#define SUA_COLOR_2 QColor(180,0,0)
+#define SUA_COLOR_3 QColor(180,0,0)
+#define SUA_COLOR_4 QColor(180,0,0)
 
-#define LOWF_BRUSH_COLOR QColor(180,0,0).name()
-#define LOWF_BRUSH_COLOR_1 QColor(180,0,0)
-#define LOWF_BRUSH_COLOR_2 QColor(180,0,0)
-#define LOWF_BRUSH_COLOR_3 QColor(180,0,0)
-#define LOWF_BRUSH_COLOR_4 QColor(180,0,0)
+#define SUA_BRUSH_COLOR QColor(180,0,0).name()
+#define SUA_BRUSH_COLOR_1 QColor(180,0,0)
+#define SUA_BRUSH_COLOR_2 QColor(180,0,0)
+#define SUA_BRUSH_COLOR_3 QColor(180,0,0)
+#define SUA_BRUSH_COLOR_4 QColor(180,0,0)
 
-#define LOWF_BRUSH_STYLE_1 Qt::Dense7Pattern
-#define LOWF_BRUSH_STYLE_2 Qt::Dense7Pattern
-#define LOWF_BRUSH_STYLE_3 Qt::Dense7Pattern
-#define LOWF_BRUSH_STYLE_4 Qt::Dense7Pattern
+#define SUA_BRUSH_STYLE_1 Qt::Dense7Pattern
+#define SUA_BRUSH_STYLE_2 Qt::Dense7Pattern
+#define SUA_BRUSH_STYLE_3 Qt::Dense7Pattern
+#define SUA_BRUSH_STYLE_4 Qt::Dense7Pattern
 
 // [Danger]
 #define DNG_PEN_WIDTH_1 4 * Layout::getIntScaledDensity()
@@ -954,5 +953,3 @@
 #define GLIDER_SECTOR_BRUSH_STYLE_2 Qt::Dense4Pattern
 #define GLIDER_SECTOR_BRUSH_STYLE_3 Qt::Dense4Pattern
 #define GLIDER_SECTOR_BRUSH_STYLE_4 Qt::Dense4Pattern
-
-#endif

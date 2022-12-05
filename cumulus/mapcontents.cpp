@@ -121,11 +121,6 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
       ok = wpCat.readBinary( "", &wpList );
       format = "binary";
     }
-  else
-    {
-      ok = wpCat.readXml( "", &wpList, error );
-      format = "xml";
-    }
 
   if( ok )
     {
@@ -162,10 +157,6 @@ void MapContents::saveWaypointList()
   if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::Binary )
     {
       wpCat.writeBinary( "", wpList );
-    }
-  else
-    {
-      wpCat.writeXml( "", wpList );
     }
 }
 
@@ -1578,26 +1569,40 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
+  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink();
   const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/points/";
 
   for( int i = 0; i < openAipCountryList.size(); i++ )
     {
-      // Airfield file name format: <country-code>_wpt.aip, example: de_wpt.aip
-      QString file = openAipCountryList.at(i).toLower() + "_wpt.aip";
-      QString url  = urlPrefix + file;
+      // Airports file name format: <country-code>_apt.json, example: de_apt.json
+      QString file = openAipCountryList.at(i).toLower() + "_apt.json";
+      QString url  = urlPrefix.arg( file );
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
-      // Navaid file name format: <country-code>_nav.aip, example: de_nav.aip
-      file = openAipCountryList.at(i).toLower() + "_nav.aip";
-      url  = urlPrefix + file;
+      // Navaid file name format: <country-code>_nav.json, example: de_nav.json
+      file = openAipCountryList.at(i).toLower() + "_nav.json";
+      url  = urlPrefix.arg( file );
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
-      // Hotspot file name format: <country-code>_hot.aip, example: de_hot.aip
-      file = openAipCountryList.at(i).toLower() + "_hot.aip";
-      url  = urlPrefix + file;
+      // Hotspot file name format: <country-code>_hot.aip, example: de_hot.json
+      file = openAipCountryList.at(i).toLower() + "_hot.json";
+      url  = urlPrefix.arg( file );
+      dest = destPrefix + file;
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+
+#if 0
+      // Curently not downloaded. Contains a lot of wind turbines
+      // Ostacles file name format: <country-code>_obs.json, example: de_obs.json
+      file = openAipCountryList.at(i).toLower() + "_obs.json";
+      url  = urlPrefix.arg( file );
+      dest = destPrefix + file;
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+#endif
+      // Reporting points file name format: <country-code>_obs.json, example: de_rpp.json
+      file = openAipCountryList.at(i).toLower() + "_rpp.json";
+      url  = urlPrefix.arg( file );
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
     }
@@ -1628,14 +1633,14 @@ void MapContents::slotDownloadAirspaces( const QStringList& openAipCountryList )
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
+  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink();
   const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/airspaces/";
 
   for( int i = 0; i < openAipCountryList.size(); i++ )
     {
-      // File name format: <country-code>_asp.aip, example: de_asp.aip
-      QString file = openAipCountryList.at(i).toLower() + "_asp.aip";
-      QString url  = urlPrefix + file;
+      // File name format: <country-code>_asp.json, example: de_asp.json
+      QString file = openAipCountryList.at(i).toLower() + "_asp.json";
+      QString url  = urlPrefix.arg( file );
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipAs->downloadRequest( url, dest );
     }
@@ -1659,23 +1664,16 @@ void MapContents::slotDownloadOpenAipPoisFinished( int requests, int errors )
   // Tidy up POI directory after download of openAIP files.
   const QString poiDirName = GeneralConfig::instance()->getMapRootDir() + "/points/";
 
-  // Get the list of airfield files to be loaded.
-  QStringList& files2load = GeneralConfig::instance()->getOpenAipPoiFileList();
-
-  // Check if option load all is set by the user
-  bool loadAll = (files2load.isEmpty() == false && files2load.at(0) == "All");
-
   QDir poiDir(poiDirName);
   poiDir.setFilter(QDir::Files);
 
   QStringList filters;
 
-  // Airfield file name format: <country-code>_wpt.aip, example: de_wpt.aip
-  // Hotspot file name format: <country-code>_hot.aip, example: de_hot.aip
-  // Navaid file name format: <country-code>_nav.aip, example: de_nav.aip
-  filters << "*_wpt.aic" << "*_wpt.aip"
-          << "*_nav.aic" << "*_nav.aip"
-	  << "*_hot.aic" << "*_hot.aip";
+  // Airfield file name format: <country-code>_apt.json, example: de_apt.json
+  // Hotspot file name format: <country-code>_hot.json, example: de_hot.json
+  // Navaid file name format: <country-code>_nav.json, example: de_nav.json
+  // Reporting file name format: <country-code>_rpp.json, example: de_rpp.json
+  filters << "*_apt.json" << "*_hot.json" << "*_nav.json" << "*_rpp.json";
 
   poiDir.setNameFilters(filters);
 
@@ -1687,29 +1685,18 @@ void MapContents::slotDownloadOpenAipPoisFinished( int requests, int errors )
     {
       const QString& fn = filesFound.at(i);
 
-      if( fn.endsWith(".aic") )
-	{
-	  // Remove compiled POI files in every case.
-	  poiDir.remove( fn );
-	  continue;
-	}
-
-      if( loadAll && (fn.startsWith("openaip_") == true ) )
-	{
-	  // That file was installed by the user. We remove it to avoid
-	  // problems with the new downloaded files by Cumulus,
-	  // if the load All option is activated.
-	  // Example of file names:
-	  // User installed file:    openaip_..._germany_de.aip
-	  // Cumulus installed file: de_wpt.aip
-	  poiDir.remove( fn );
-	}
-    }
+      if( QFile::exists( fn + 'c') == true )
+        {
+          // Remove compiled POI files in every case.
+          QFile::remove( fn + 'c' );
+        }
+   }
 
   _globalMapView->slot_info( tr("openAIP points downloaded") );
   loadOpenAipAirfieldsViaThread();
   loadOpenAipNavAidsViaThread();
   loadOpenAipHotspotsViaThread();
+  loadOpenAipReportingsViaThread();
 }
 
 void MapContents::slotDownloadOpenAipAsFinished( int requests, int errors )
@@ -2010,6 +1997,13 @@ void MapContents::proofeSection()
               m_hotspotLoadMutex.lock();
               poiLoader.load( hotspotList );
               m_hotspotLoadMutex.unlock();
+
+              m_reportingPointLoadMutex.lock();
+              poiLoader.load( "*_rpp.json",
+                              BaseMapElement::CompPoint,
+                              reportList );
+              m_reportingPointLoadMutex.unlock();
+
             }
           else
             {
@@ -2019,7 +2013,8 @@ void MapContents::proofeSection()
               // blocked by this action.
               loadOpenAipAirfieldsViaThread();
               loadOpenAipNavAidsViaThread();
-              loadOpenAipHotspotsViaThread();
+              loadOpenAipReportingsViaThread();
+              loadOpenAipReportingsViaThread();
             }
         }
 
@@ -2520,7 +2515,6 @@ void MapContents::slotReloadMapData()
   landmarkList.clear();
   obstacleList.clear();
   railList.clear();
-  reportList.clear();
   motorwayList.clear();
   roadList.clear();
   topoList.clear();
@@ -2539,8 +2533,13 @@ void MapContents::slotReloadMapData()
   m_radioPointLoadMutex.unlock();
 
   // free internal allocated memory in QList
+  m_reportingPointLoadMutex.lock();
+  reportList = QList<SinglePoint>();
+  m_reportingPointLoadMutex.unlock();
+
+  // free internal allocated memory in QList
   m_hotspotLoadMutex.lock();
-  hotspotList = QList<SinglePoint>();
+  hotspotList = QList<ThermalPoint>();
   m_hotspotLoadMutex.unlock();
 
   // all isolines are cleared
@@ -2610,6 +2609,7 @@ void MapContents::slotReloadOpenAipPoi()
       loadOpenAipAirfieldsViaThread();
       loadOpenAipNavAidsViaThread();
       loadOpenAipHotspotsViaThread();
+      loadOpenAipReportingsViaThread();
     }
 }
 
@@ -2731,6 +2731,62 @@ void MapContents::slotOpenAipNavAidLoadFinished( int noOfLists,
 }
 
 /**
+ * Starts a thread, which is loading the requested OpenAIP Reporting data.
+ */
+void MapContents::loadOpenAipReportingsViaThread()
+{
+  QMutexLocker locker( &m_reportingPointLoadMutex );
+
+  _globalMapView->slot_info( tr("Loading OpenAIP data") );
+
+  OpenAipLoaderThread *oaipThread = new OpenAipLoaderThread( this,
+                                                             OpenAipLoaderThread::Reportings );
+
+  // Register a special data type for return results. That must be
+  // done to transfer the results between different threads.
+  qRegisterMetaType<SingleListPtr>("SingleListPtr");
+
+  // Connect the receiver of the results. It is located in this
+  // thread and not in the new opened thread.
+  connect( oaipThread,
+           SIGNAL(loadedReportingPointList( int, QList<SinglePoint>* )),
+           this,
+           SLOT(slotOpenAipReportingsLoadFinished( int, QList<SinglePoint>* )) );
+
+  oaipThread->start();
+}
+
+/**
+ * This slot is called by the OpenAipThread loader thread to signal, that the
+ * requested reporting data have been loaded. The passed list must be
+ * deleted in this method.
+ */
+void MapContents::slotOpenAipReportingsLoadFinished( int noOfLists,
+                                                     QList<SinglePoint>* listIn )
+{
+  QMutexLocker locker( &m_reportingPointLoadMutex );
+
+  if( noOfLists == 0 )
+    {
+      _globalMapView->slot_info( tr("No OpenAIP loaded") );
+    }
+  else
+    {
+      _globalMapView->slot_info( tr("OpenAIP loaded") );
+    }
+
+  // Take over the new loaded list. The passed list must be deleted!
+  reportList = QList<SinglePoint>();
+  reportList = *listIn;
+  delete listIn;
+
+  emit mapDataReloaded( Map::navaids );
+
+  // This signal will update all list views of the main window.
+  emit mapDataReloaded();
+}
+
+/**
  * Starts a thread, which is loading the requested OpenAIP hotspot data.
  */
 void MapContents::loadOpenAipHotspotsViaThread()
@@ -2744,14 +2800,14 @@ void MapContents::loadOpenAipHotspotsViaThread()
 
   // Register a special data type for return results. That must be
   // done to transfer the results between different threads.
-  qRegisterMetaType<SingleListPtr>("SingleListPtr");
+  qRegisterMetaType<ThermalListPtr>("ThermalListPtr");
 
   // Connect the receiver of the results. It is located in this
   // thread and not in the new opened thread.
   connect( oaipThread,
-           SIGNAL(loadedHotspotList( int, QList<SinglePoint>* )),
+           SIGNAL(loadedHotspotList( int, QList<ThermalPoint>* )),
            this,
-           SLOT(slotOpenAipHotspotLoadFinished( int, QList<SinglePoint>* )) );
+           SLOT(slotOpenAipHotspotLoadFinished( int, QList<ThermalPoint>* )) );
 
   oaipThread->start();
 }
@@ -2762,7 +2818,7 @@ void MapContents::loadOpenAipHotspotsViaThread()
  * deleted in this method.
  */
 void MapContents::slotOpenAipHotspotLoadFinished( int noOfLists,
-                                                  QList<SinglePoint>* hotspotListIn )
+                                                  QList<ThermalPoint>* hotspotListIn )
 {
   QMutexLocker locker( &m_hotspotLoadMutex );
 
@@ -2776,7 +2832,7 @@ void MapContents::slotOpenAipHotspotLoadFinished( int noOfLists,
     }
 
   // Take over the new loaded airfield list. The passed list must be deleted!
-  hotspotList = QList<SinglePoint>();
+  hotspotList = QList<ThermalPoint>();
   hotspotList = *hotspotListIn;
   delete hotspotListIn;
 
