@@ -377,20 +377,21 @@ QString Airspace::getInfoString() const
   switch( m_lLimitType )
   {
     case MSL:
-      tempL = QString( "%1 MSL" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      tempL = QString( "%1 ft (%2 m) MSL" ).arg( m_lLimit.getFeet(), 0, 'f', 0 )
+                                        .arg( m_lLimit.getMeters(), 0, 'f', 0 );
       break;
     case GND:
       if( m_lLimit.getMeters() )
-        tempL = QString( "%1 GND" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+        tempL = QString( "%1 GND" ).arg( m_lLimit.getText(true,0) );
       else
         tempL = "GND";
       break;
     case FL:
       tempL = QString( "FL %1 (%2)" ).arg( (int) rint( m_lLimit.getFeet() / 100.) )
-                                     .arg( m_lLimit.getText( true, 0 ).toLatin1().data() );
+                                     .arg( m_lLimit.getText( true, 0 ) );
       break;
     case STD:
-      tempL = QString( "%1 STD" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      tempL = QString( "%1 STD" ).arg( m_lLimit.getText(true,0) );
       break;
     case UNLTD:
       tempL = QObject::tr("Unlimited");
@@ -405,17 +406,18 @@ QString Airspace::getInfoString() const
       if(m_uLimit.getMeters() >= 99999)
         tempU = QObject::tr("Unlimited");
       else
-        tempU = QString( "%1 MSL" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+        tempU = QString( "%1 ft (%2 m) MSL" ).arg( m_uLimit.getFeet(), 0, 'f', 0 )
+                                          .arg( m_uLimit.getMeters(), 0, 'f', 0 );
       break;
     case GND:
-      tempU = QString( "%1 GND" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      tempU = QString( "%1 GND" ).arg( m_uLimit.getText(true,0) );
       break;
     case FL:
       tempU = QString( "FL %1 (%2)" ).arg( (int) rint(m_uLimit.getFeet() / 100.) )
-                                     .arg( m_uLimit.getText(true,0).toLatin1().data() );
+                                     .arg( m_uLimit.getText(true,0) );
       break;
     case STD:
-      tempU = QString( "%1 STD" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      tempU = QString( "%1 STD" ).arg( m_uLimit.getText(true,0) );
       break;
     case UNLTD:
       tempU = QObject::tr("Unlimited");
