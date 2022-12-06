@@ -49,8 +49,6 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
   // Check, which files the user wants to load.
   QStringList& files = GeneralConfig::instance()->getAirspaceFileList();
 
-  qDebug() << "User files:" << files;
-
   if( files.isEmpty() )
     {
       // No files shall be loaded
@@ -120,7 +118,6 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
 
       if( QFile::exists( aicName ) == true && readSource == false )
         {
-          qDebug() << "ASH: compiled file exists:" << aicName;
           QDateTime h_creationDateTime;
           ProjectionBase* h_projection = 0;
 
@@ -311,8 +308,6 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
       qWarning("ASH: Cannot open airspace file %s!", path.toLatin1().data());
       return false;
     }
-
-  qDebug() << "ASH: Reading" << path;
 
   QDataStream in(&inFile);
   in.setVersion( QDataStream::Qt_4_7 );
