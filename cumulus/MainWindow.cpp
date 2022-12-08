@@ -434,24 +434,6 @@ void MainWindow::slotCreateSplash()
   setVisible( true );
   splash->setVisible( true );
 
-  QCoreApplication::sendPostedEvents();
-  QCoreApplication::processEvents();
-
-  ws = new WaitScreen( splash );
-
-#ifdef ANDROID
-  // The waitscreen is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  ws->setGeometry ( width() / 2 - 250, height() / 2 - 75,  500, 150 );
-#endif
-
-  // Sometimes the ws dialog is not moved over the parent. maybe this helps.
-  //QPoint pos = mapToGlobal(QPoint( width()/2 - ws->width()/2,
-  //                                 height()/2 - ws->height()/2 ));
-  // ws->move( pos );
-
-  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
-
   // Here we finish the base initialization and start a timer
   // to continue startup in another method. This is done, to return
   // to the window's manager event loop. Otherwise the behavior
@@ -468,6 +450,11 @@ void MainWindow::slotCreateSplash()
 void MainWindow::slotCreateApplicationWidgets()
 {
   qDebug() << "MainWindow::slotCreateApplicationWidgets()";
+
+  ws = new WaitScreen( splash );
+
+  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
+  sleep( 1 );
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
 
