@@ -644,19 +644,6 @@ void MainWindow::slotCreateSplash()
   splash->setVisible( true );
   setVisible( true );
 
-  ws = new WaitScreen( this );
-
-#ifdef ANDROID
-  // The waitscreen is not centered over the parent and not limited in
-  // its size under Android. Therefore this must be done by our self.
-  ws->setGeometry ( width() / 2 - 250, height() / 2 - 75,  500, 150 );
-#endif
-
-  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
-
-  QCoreApplication::sendPostedEvents();
-  QCoreApplication::processEvents();
-
   // Here we finish the base initialization and start a timer
   // to continue startup in another method. This is done, to return
   // to the window's manager event loop. Otherwise the behavior
@@ -680,7 +667,6 @@ void MainWindow::slotCreateApplicationWidgets()
                                  QCoreApplication::applicationVersion().toAscii().data(),
                                  false,
                                  0 );
-
   if( ! ossoContext )
     {
       qWarning("Could not initialize Osso Library");
@@ -692,6 +678,17 @@ void MainWindow::slotCreateApplicationWidgets()
     }
 
 #endif
+
+  ws = new WaitScreen( splash );
+
+#ifdef ANDROID
+  // The waitscreen is not centered over the parent and not limited in
+  // its size under Android. Therefore this must be done by our self.
+  ws->setGeometry ( width() / 2 - 250, height() / 2 - 75,  500, 150 );
+#endif
+
+  ws->slot_SetText1( tr( "Starting Cumulus..." ) );
+  sleep(1);
 
   ws->slot_SetText1( tr( "Creating map elements..." ) );
 
