@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010 by Josua Dietze (digidietze@draisberghof.de)
- **                   2012-2021 by Axel Pauli
+ **                   2012-2022 by Axel Pauli
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -23,14 +23,13 @@
  * \brief Android custom events, used by the JNI to report results from the
  * Java part.
  *
- * \date 2012-2021
+ * \date 2012-2022
  *
- * \version 1.4
+ * \version 1.5
  *
  */
 
-#ifndef ANDROID_EVENTS_H
-#define ANDROID_EVENTS_H
+#pragma once
 
 #include <QtCore>
 #include <QEvent>
@@ -259,5 +258,3 @@ class HttpsResponseEvent : public QEvent
   int m_errorCode;
   QString m_response;
 };
-
-#endif

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2021 by Axel Pauli
+ **                   2012-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -32,6 +32,7 @@
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "mainwindow.h"
+#include "DownloadManager.h"
 
 /**
  * Adapt this define to the full Java CumulusActivity class name including
@@ -332,14 +333,17 @@ static void nativeBaroPressure( JNIEnv* /*env*/,
 static void nativeHttpsResponse( JNIEnv* env,
                                  jobject /*myobject*/,
                                  jint errorCode,
-                                 jstring response )
+                                 jstring response,
+                                 jlong cb )
 {
   const char* nativeString = env->GetStringUTFChars(response, 0);
   QString qResponse(nativeString);
   env->ReleaseStringUTFChars(response, nativeString);
 
   HttpsResponseEvent *hrs = new HttpsResponseEvent( errorCode, qResponse );
-  QCoreApplication::postEvent( MainWindow::mainWindow(), hrs );
+
+  DownloadManager* dm = ( DownloadManager *) cb;
+  QCoreApplication::postEvent( dm, hrs );
 }
 
 /* The array of native methods to register.
@@ -356,7 +360,7 @@ static JNINativeMethod methods[] = {
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
 	{"nativeBaroPressure", "(D)V", (void *)nativeBaroPressure},
-	{"nativeHttpsResponse", "(ILjava/lang/String;)V", (void *)nativeHttpsResponse}
+	{"nativeHttpsResponse", "(ILjava/lang/String;J)V", (void *)nativeHttpsResponse}
 };
 
 /**
@@ -553,7 +557,8 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   m_downloadFile = env->GetMethodID( clazz,
                                      "downloadFile",
-                                     "(Ljava/lang/String;Ljava/lang/String;)I");
+                                     "(Ljava/lang/String;Ljava/lang/String;)I",
+                                     "()J");
 
   if ( isJavaExceptionOccured(env) )
     {
@@ -971,7 +976,7 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
   return true;
 }
 
-int jniDownloadFile( QString& url, QString& destination )
+void jniDownloadFile( QString& url, QString& destination, long long cb )
 {
   JNIEnv* env = 0;
 
@@ -984,19 +989,19 @@ int jniDownloadFile( QString& url, QString& destination )
 
   jstring jdest = env->NewStringUTF( destination.toUtf8() );
 
-  jint result = env->CallIntMethod( m_cumActObject,
-                                    m_downloadFile,
-                                    jurl,
-                                    jdest );
+
+  env->CallVoidMethod( m_cumActObject,
+                       m_downloadFile,
+                       jurl,
+                       jdest,
+                       (jlong) cb );
 
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniDownloadFile: exception when calling Java method \"downloadFile\"");
-      result = OperationCanceledError;
     }
 
   jniDetachCurrentThread();
-  return result;
 }
 
 bool jniIsRestarted()

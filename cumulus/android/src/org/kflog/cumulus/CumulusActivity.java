@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2021 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2012-2022 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -86,9 +86,9 @@ import android.widget.Toast;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2021
+ * @date 2012-2022
  * 
- * @version 1.10
+ * @version 1.11
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -333,7 +333,7 @@ public class CumulusActivity extends QtActivity
 
   public static native boolean isRootWindow();
   
-  public static native void nativeHttpsResponse(int errorCode, String response);
+  public static native void nativeHttpsResponse(int errorCode, String response, long cb);
 
   /**
    * Called from JNI to get the class instance.
@@ -461,19 +461,35 @@ public class CumulusActivity extends QtActivity
   }
  
   /**
-   * Called from JNI to request a HTTP file download from the native side.
+   * Called from JNI to request a HTTPS file download from the native side.
    * 
-   * @param url Url pointing to the source to be downloaded.
+   * @param urlIn Url pointing to the source to be downloaded.
    * 
-   * @param destination Full file path, where the downloaded file shall be stored.
+   * @param destinationIn Full file path, where the downloaded file shall be stored.
    * 
-   * @return Result code of download action.
-   * 
+   * @param cbIn Callback from native side.
    */
-  int downloadFile( String urlIn, String destinationIn )
+  synchronized void downloadFile( String urlIn, String destinationIn, long long cbIn )
   {
-    Log.i( TAG, "DownloadFile: Entry URL: " + urlIn + ", Dest: " + destinationIn);
+    Log.i( TAG, "DownloadFile: Entry URL: " + urlIn + ", Dest: " + destinationIn );
     
+    Runnable r = new Runnable()
+      {
+        public void run()
+          {
+        	executeDownlaod( urlIn, destinationIn, cb );
+          }
+      };
+
+    new Thread(r).start();
+  }
+  
+  void executeDownlaod( String urlIn, String destinationIn, long long cbIn )
+  {
+    Log.i( TAG, "executeDownlaod: Entry URL: " + urlIn + ", Dest: " + destinationIn );
+    
+    // sleep 100ms to guarantee the return of the calling method.
+    Thread.sleep( 100 );
     BufferedInputStream in = null;
     FileOutputStream out = null;
     
@@ -495,7 +511,8 @@ public class CumulusActivity extends QtActivity
       {
         // handle exception
         Log.e( TAG, "Download error for " + urlIn +": " + e.getMessage());
-        return -1;
+        nativeHttpsResponse( -1, e.getMessage(), cbIn );
+        return;
       }
     
     finally
@@ -511,10 +528,10 @@ public class CumulusActivity extends QtActivity
         }
     }
     
-    // Log.i( TAG, "Download Ok for " + urlIn );
-    return 0;
+    nativeHttpsResponse( 0, urlIn, cbIn );
+    Log.i( TAG, "Download Ok for " + urlIn );
   }
-	  
+
   /**
    * Setup a barometer sensor listener, if a barometer sensor is build in.
    * 

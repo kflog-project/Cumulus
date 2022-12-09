@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2010 by Josua Dietze
-**                   2012-2021 by Axel Pauli
+**                   2012-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -184,9 +184,9 @@ bool jniShutdownFlag();
  *
  * \param destination The storage destination of the file.
  *
- * \return Result of download. 0 means all is ok.
+ * \param cb The call back address at naitive side.
  */
-int jniDownloadFile( QString& url, QString& destination );
+void jniDownloadFile( QString& url, QString& destination, long long cb );
 
 /**
  * Gets the restart flag from the Android activity.

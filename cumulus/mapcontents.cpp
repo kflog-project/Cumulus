@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2021 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2022 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1579,26 +1579,39 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
                _globalMapView, SLOT(slot_info( const QString& )) );
     }
 
-  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink() + "/";
+  const QString urlPrefix  = GeneralConfig::instance()->getOpenAipLink();
   const QString destPrefix = GeneralConfig::instance()->getMapRootDir() + "/points/";
 
   for( int i = 0; i < openAipCountryList.size(); i++ )
     {
-      // Airfield file name format: <country-code>_wpt.aip, example: de_wpt.aip
-      QString file = openAipCountryList.at(i).toLower() + "_wpt.aip";
-      QString url  = urlPrefix + file;
+      // Airports file name format: <country-code>_apt.json, example: de_apt.json
+      QString file = openAipCountryList.at(i).toLower() + "_apt.json";
+      QString url  = urlPrefix.arg( file );
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
-      // Navaid file name format: <country-code>_nav.aip, example: de_nav.aip
-      file = openAipCountryList.at(i).toLower() + "_nav.aip";
-      url  = urlPrefix + file;
+      // Navaid file name format: <country-code>_nav.json, example: de_nav.json
+      file = openAipCountryList.at(i).toLower() + "_nav.json";
+      url  = urlPrefix.arg( file );
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
-      // Hotspot file name format: <country-code>_hot.aip, example: de_hot.aip
-      file = openAipCountryList.at(i).toLower() + "_hot.aip";
-      url  = urlPrefix + file;
+      // Hotspot file name format: <country-code>_hot.aip, example: de_hot.json
+      file = openAipCountryList.at(i).toLower() + "_hot.json";
+      url  = urlPrefix.arg( file );
+      dest = destPrefix + file;
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+#if 0
+      // Curently not downloaded. Contains a lot of wind turbines
+      // Ostacles file name format: <country-code>_obs.json, example: de_obs.json
+      file = openAipCountryList.at(i).toLower() + "_obs.json";
+      url  = urlPrefix.arg( file );
+      dest = destPrefix + file;
+      m_downloadMangerOpenAipPois->downloadRequest( url, dest );
+#endif
+      // Reporting points file name format: <country-code>_obs.json, example: de_rpp.json
+      file = openAipCountryList.at(i).toLower() + "_rpp.json";
+      url  = urlPrefix.arg( file );
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
     }
