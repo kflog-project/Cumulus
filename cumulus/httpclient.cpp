@@ -391,20 +391,7 @@ void HttpClient::slotFinished()
       if( m_tmpFile )
         {
           // File download has been done
-          QString url;
-          QString link = GeneralConfig::instance()->getOpenAipLink();
-
-          if( m_url.contains(link) )
-            {
-              QStringList sl = m_url.split( "/");
-              url = sl.last();
-            }
-          else
-            {
-              url = m_url;
-            }
-
-          qDebug( "Download %s finished with %d", url.toLatin1().data(), m_reply->error() );
+          qDebug( "Download %s finished with %d", m_url.toLatin1().data(), m_reply->error() );
 
           // Close temporary file.
           m_tmpFile->close();
