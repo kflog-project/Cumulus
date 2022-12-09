@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,8 +20,13 @@
 #include <QtNetwork>
 
 #include "DownloadManager.h"
+#include "androidevents.h"
 #include "calculator.h"
 #include "gpsnmea.h"
+
+#ifdef ANDROID
+#include "jnisupport.h"
+#endif
 
 /** Initializes static number. */
 short DownloadManager::m_runningDownloads = 0;
@@ -48,9 +53,41 @@ DownloadManager::DownloadManager( QObject *parent ) :
            this, SLOT( slotFinished(QString &, QNetworkReply::NetworkError) ));
 }
 
-
 DownloadManager::~DownloadManager()
 {
+}
+
+/** Add an event receiver, used by Android only. */
+bool DownloadManager::event( QEvent *event )
+{
+  if( event->type() == QEvent::User + 7 )
+    {
+      HttpsResponseEvent *httpsEvent = dynamic_cast<HttpsResponseEvent *>(event);
+
+      if( httpsEvent == 0 )
+        {
+          return QObject::event( event );
+        }
+
+      int errorCode;
+      QString response;
+      long long cb;
+
+      httpsEvent->responseInfo( errorCode, response );
+
+      if( errorCode == 0 ) // all ok
+        {
+          slotFinished( response, QNetworkReply::NoError );
+        }
+      else
+        {
+          slotFinished( response, QNetworkReply::UnknownNetworkError );
+        }
+
+      return true;
+    }
+
+  return QObject::event( event );
 }
 
 /**
@@ -99,6 +136,7 @@ bool DownloadManager::downloadRequest( QString &url,
   if( downloadRunning == false )
     {
       // No download is running, do start the next one
+#ifndef ANDROID
       if( client->downloadFile( url, destination ) == false )
         {
           qWarning( "DownloadManager(%d): Download of '%s' failed!",
@@ -107,6 +145,16 @@ bool DownloadManager::downloadRequest( QString &url,
           // Start of download failed.
           return false;
         }
+#else
+      if( jniDownloadFile( url, destination, (long long) this ) != 0 )
+        {
+          qWarning( "DownloadManager(%d): Download of '%s' failed!",
+                     __LINE__, url.toLatin1().data() );
+
+          // Start of download failed.
+          return false;
+        }
+#endif
 
       QString destFile = QFileInfo(destination).fileName();
       emit status( tr("downloading ") + destFile );

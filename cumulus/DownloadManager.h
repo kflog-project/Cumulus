@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,13 +24,12 @@
  * of different files can be requested. The requests are queued and executed
  * in a serial order.
  *
- * \date 2010-2014
+ * \date 2010-2022
  *
- * \version 1.0
+ * \version 1.1
  */
 
-#ifndef DOWNLOAD_MANAGER_H
-#define DOWNLOAD_MANAGER_H
+#pragma once
 
 #include <QtCore>
 
@@ -126,6 +125,11 @@ class DownloadManager : public QObject
     return result;
   }
 
+ protected:
+
+   /** Add an event receiver, used by Android only. */
+   bool event( QEvent *event );
+
   signals:
 
    /** Sends out a status message. */
@@ -204,4 +208,3 @@ class DownloadManager : public QObject
   const double MinFsSpaceInMB;
 };
 
-#endif /* DOWNLOAD_MANAGER_H */
