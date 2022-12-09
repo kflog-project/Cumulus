@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2018 Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2010-2022 Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -403,20 +403,7 @@ void HttpClient::slotFinished()
       if( m_tmpFile )
         {
           // File download has been done
-          QString url;
-          QString link = GeneralConfig::instance()->getOpenAipLink();
-
-          if( m_url.contains(link) )
-            {
-              QStringList sl = m_url.split( "/");
-              url = sl.last();
-            }
-          else
-            {
-              url = m_url;
-            }
-
-          qDebug( "Download %s finished with %d", url.toLatin1().data(), m_reply->error() );
+          qDebug( "Download %s finished with %d", m_url.toLatin1().data(), m_reply->error() );
 
           // Close temporary file.
           m_tmpFile->close();
