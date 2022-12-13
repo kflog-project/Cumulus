@@ -557,7 +557,7 @@ bool initJni( JavaVM* vm, JNIEnv* env )
 
   m_downloadFile = env->GetMethodID( clazz,
                                      "downloadFile",
-                                     "(Ljava/lang/String;Ljava/lang/String;J)V");
+                                     "(Ljava/lang/String;Ljava/lang/String;J)Z");
 
   if ( isJavaExceptionOccured(env) )
     {
