@@ -333,7 +333,7 @@ public class CumulusActivity extends QtActivity
 
   public static native boolean isRootWindow();
   
-  public static native boolean nativeHttpsResponse(int errorCode, String response, long cb);
+  public static native void nativeHttpsResponse(int errorCode, String response, long cb);
 
   /**
    * Called from JNI to get the class instance.
@@ -469,7 +469,9 @@ public class CumulusActivity extends QtActivity
    * 
    * @param cbIn Callback from native side.
    */
-  synchronized boolean downloadFile( String urlIn, String destinationIn, long long cbIn )
+  synchronized boolean downloadFile( final String urlIn,
+                                     final String destinationIn,
+                                     final long cbIn )
   {
     Log.i( TAG, "DownloadFile: Entry URL: " + urlIn + ", Dest: " + destinationIn );
     
@@ -477,7 +479,7 @@ public class CumulusActivity extends QtActivity
       {
         public void run()
           {
-        	executeDownlaod( urlIn, destinationIn, cb );
+        	  executeDownlaod( urlIn, destinationIn, cbIn );
           }
       };
 
@@ -485,12 +487,20 @@ public class CumulusActivity extends QtActivity
     return true;
   }
   
-  void executeDownlaod( String urlIn, String destinationIn, long long cbIn )
+  void executeDownlaod( String urlIn, String destinationIn, long cbIn )
   {
     Log.i( TAG, "executeDownlaod: Entry URL: " + urlIn + ", Dest: " + destinationIn );
     
     // sleep 100ms to guarantee the return of the calling method.
-    Thread.sleep( 100 );
+    try
+    {
+      Thread.sleep( 100 );
+    } catch (InterruptedException e1)
+    {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    
     BufferedInputStream in = null;
     FileOutputStream out = null;
     
