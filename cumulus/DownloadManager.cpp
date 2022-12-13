@@ -71,7 +71,6 @@ bool DownloadManager::event( QEvent *event )
 
       int errorCode;
       QString response;
-      long long cb;
 
       httpsEvent->responseInfo( errorCode, response );
 
@@ -136,18 +135,21 @@ bool DownloadManager::downloadRequest( QString &url,
   if( downloadRunning == false )
     {
       // No download is running, do start the next one
-      if( url.startsWith( "https://") == false &&
-          // no https downlaod
-          client->downloadFile( url, destination ) == false )
-        {
-          qWarning( "DownloadManager(%d): Download of '%s' failed!",
-                     __LINE__, url.toLatin1().data() );
-
-          // Start of download failed.
-          return false;
-        }
-
 #ifdef ANDROID
+      if( url.startsWith( "https://" ) == false )
+        {
+#endif
+          // no https downlaod
+          if( client->downloadFile( url, destination ) == false )
+            {
+              qWarning( "DownloadManager(%d): Download of '%s' failed!",
+                         __LINE__, url.toLatin1().data() );
+
+              // Start of download failed.
+              return false;
+            }
+#ifdef ANDROID
+        }
       else if( jniDownloadFile( url, destination, (long long int) this ) != 0 )
         {
           qWarning( "DownloadManager(%d): Download of '%s' failed!",
@@ -280,24 +282,25 @@ void DownloadManager::slotFinished( QString &urlIn,
       return;
     }
 
-  // sleep(1); // make a short break
-
   // Start the next download.
-  if( url.startsWith( "https://") == false &&
-      // no https download
-      client->downloadFile( url, destination ) == false )
+#ifdef ANDROID
+  if( url.startsWith( "https://" ) == false )
     {
-    // Start of download failed.
-      qWarning( "DownloadManager(%d): Download of '%s' failed!",
-                 __LINE__, url.toLatin1().data() );
+#endif
+      if( client->downloadFile( url, destination ) == false )
+        {
+        // Start of download failed.
+          qWarning( "DownloadManager(%d): Download of '%s' failed!",
+                     __LINE__, url.toLatin1().data() );
 
-      // We simulate an operation cancel error, if download
-      // could not be started.
-      slotFinished( url, QNetworkReply::OperationCanceledError );
-      return;
-    }
+          // We simulate an operation cancel error, if download
+          // could not be started.
+          slotFinished( url, QNetworkReply::OperationCanceledError );
+          return;
+        }
 
 #ifdef ANDROID
+        }
       else if( jniDownloadFile( url, destination, (long long int) this ) != 0 )
         {
           qWarning( "DownloadManager(%d): Download of '%s' failed!",
