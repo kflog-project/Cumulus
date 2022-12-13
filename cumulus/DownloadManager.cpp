@@ -150,7 +150,7 @@ bool DownloadManager::downloadRequest( QString &url,
             }
 #ifdef ANDROID
         }
-      else if( jniDownloadFile( url, destination, (long long int) this ) != 0 )
+      else if( jniDownloadFile( url, destination, (long long int) this ) == false )
         {
           qWarning( "DownloadManager(%d): Download of '%s' failed!",
                      __LINE__, url.toLatin1().data() );
@@ -301,13 +301,16 @@ void DownloadManager::slotFinished( QString &urlIn,
 
 #ifdef ANDROID
         }
-      else if( jniDownloadFile( url, destination, (long long int) this ) != 0 )
+      else if( jniDownloadFile( url, destination, (long long int) this ) == false )
         {
           qWarning( "DownloadManager(%d): Download of '%s' failed!",
                      __LINE__, url.toLatin1().data() );
 
           // Start of download failed.
-          return false;
+          // We simulate an operation cancel error, if download
+          // could not be started.
+          slotFinished( url, QNetworkReply::OperationCanceledError );
+          return;
         }
 #endif
 

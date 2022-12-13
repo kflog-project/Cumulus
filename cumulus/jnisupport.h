@@ -185,8 +185,10 @@ bool jniShutdownFlag();
  * \param destination The storage destination of the file.
  *
  * \param cb The call back address at naitive side.
+ *
+ * \return true on success otherwise false
  */
-void jniDownloadFile( QString& url, QString& destination, long long int cb );
+bool jniDownloadFile( QString& url, QString& destination, long long int cb );
 
 /**
  * Gets the restart flag from the Android activity.

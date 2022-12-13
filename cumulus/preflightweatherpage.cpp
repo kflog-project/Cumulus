@@ -1069,8 +1069,6 @@ void PreFlightWeatherPage::slotRequestWeatherData()
     }
 }
 
-#ifndef ANDROID
-
 void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
 {
   if( stations.size() == 0 )
@@ -1127,124 +1125,6 @@ void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
       m_downloadManger->downloadRequest( urlTaf, destTaf, false );
     }
 }
-
-#else
-
-/**
- * Android method.
- */
-void PreFlightWeatherPage::downloadWeatherData( QList<QString>& stations )
-{
-  if( stations.size() == 0 )
-    {
-      return;
-    }
-
-  if( m_updateIsRunning == true )
-    {
-      // Do not allow multiple calls, if download is already running.
-      return;
-    }
-
-  // set update marker
-  m_updateIsRunning = true;
-
-  // Disable update buttons.
-  switchUpdateButtons( false );
-
-  // Create download destination directories
-  QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
-  dir.mkdir( "weather");
-  dir.mkdir( "weather/METAR");
-  dir.mkdir( "weather/TAF");
-
-  // QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  QProgressDialog pd( this );
-  pd.setWindowModality( Qt::WindowModal );
-  pd.setLabelText( tr("Download weather data") );
-  pd.setRange( 0, stations.size() );
-  pd.setCancelButtonText( QString() );
-  pd.show();
-  pd.resize( 400 * Layout::getIntScaledDensity(),
-             100 * Layout::getIntScaledDensity() );
-
-  QPoint pos = QPoint( width()/2  - pd.width()/2, height()/2 - pd.height()/2 );
-  pd.move( pos );
-
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                   QEventLoop::ExcludeSocketNotifiers );
-  int result = 0;
-  int files = 0;
-
-  for( int i = 0; i < stations.size(); i++ )
-    {
-      QString fn = stations.at(i) + ".TXT";
-      QString urlMetar = MetarUrl + fn;
-      QString destMetar = dir.absolutePath() + "/weather/METAR/" + fn;
-
-      result = jniDownloadFile( urlMetar, destMetar );
-
-      files++;
-      pd.setValue( files );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                       QEventLoop::ExcludeSocketNotifiers );
-
-      if( result != 0 )
-        {
-          break;
-        }
-      else
-        {
-          slotNewWeaterReport( destMetar );
-        }
-
-      QString urlTaf = TafUrl + fn;
-      QString destTaf = dir.absolutePath() + "/weather/TAF/" + fn;
-
-      result = jniDownloadFile( urlTaf, destTaf );
-
-      files++;
-      pd.setValue( files );
-      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                       QEventLoop::ExcludeSocketNotifiers );
-
-      if( result != 0 )
-        {
-          break;
-        }
-      else
-        {
-          slotNewWeaterReport( destTaf );
-        }
-    }
-
-  pd.hide();
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                   QEventLoop::ExcludeSocketNotifiers );
-
-
-  // QApplication::restoreOverrideCursor();
-
-  if( result != 0 )
-     {
-       QString msg = QString(tr("<html>Download error occurred!<br>Is the Internet connection up?</html>"));
-
-       QMessageBox mb( QMessageBox::Warning,
-                       tr("Download Error"),
-                       msg,
-                       QMessageBox::Ok,
-                       this );
-       mb.show();
-       QPoint pos = QPoint( width()/2  - mb.width()/2, height()/2 - mb.height()/2 );
-       mb.move( pos );
-       mb.exec();
-     }
-
-  slotDownloadsFinished( 0, 0 );
-}
-
-#endif
 
 void PreFlightWeatherPage::slotNetworkError()
 {

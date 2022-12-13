@@ -975,32 +975,32 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
   return true;
 }
 
-void jniDownloadFile( QString& url, QString& destination, long long int cb )
+bool jniDownloadFile( QString& url, QString& destination, long long int cb )
 {
   JNIEnv* env = 0;
 
   if( !jniEnv( &env ) || shutdown )
     {
-      return OperationCanceledError;
+      return false;
     }
 
   jstring jurl = env->NewStringUTF( url.toUtf8() );
-
   jstring jdest = env->NewStringUTF( destination.toUtf8() );
 
-
-  env->CallVoidMethod( m_cumActObject,
-                       m_downloadFile,
-                       jurl,
-                       jdest,
-                       (jlong) cb );
+  jboolean result = (jboolean) env->CallBooleanMethod( m_cumActObject,
+                                                       m_downloadFile,
+                                                       jurl,
+                                                       jdest,
+                                                       (jlong) cb );
 
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniDownloadFile: exception when calling Java method \"downloadFile\"");
+      return false;
     }
 
   jniDetachCurrentThread();
+  return result;
 }
 
 bool jniIsRestarted()
