@@ -233,7 +233,7 @@ public:
    *
    * \return True on success otherwise false.
    */
-  bool flarmBinMode( QString* errorInfo=nullptr );
+  bool flarmBinMode( QString* errorInfo=0 );
 
   /**
    * Resets the Farm device. Should be called only if Flarm is in binary mode.

@@ -141,7 +141,7 @@ fd_set *GpsClient::getReadFdMask()
     }
 
   // WiFi socket 1
-  if( so1 != nullptr and so1->isOpen() == true )
+  if( so1 != 0 and so1->isOpen() == true )
     {
       int sd1 = so1->socketDescriptor();
 
@@ -152,7 +152,7 @@ fd_set *GpsClient::getReadFdMask()
     }
 
   // WiFi socket 2
-  if( so2 != nullptr and so2->isOpen() == true )
+  if( so2 != 0 and so2->isOpen() == true )
     {
       int sd2 = so2->socketDescriptor();
 
@@ -238,12 +238,12 @@ void GpsClient::processEvent( fd_set *fdMask )
   int sd1 = -1;
   int sd2 = -1;
 
-  if( so1 != nullptr )
+  if( so1 != 0 )
     {
       sd1 = so1->socketDescriptor();
     }
 
-  if( so2 != nullptr )
+  if( so2 != 0 )
     {
       sd2 = so2->socketDescriptor();
     }
@@ -383,11 +383,11 @@ int GpsClient::writeGpsData( const char *sentence )
   if( fd == -1 )
     {
       // Serial or BT socket are not used
-      if( so1 != nullptr and so1->isOpen() == true )
+      if( so1 != 0 and so1->isOpen() == true )
         {
           fdout = so1->socketDescriptor();
         }
-      else if( so2 != nullptr and so2->isOpen() == true )
+      else if( so2 != 0 and so2->isOpen() == true )
         {
           fdout = so2->socketDescriptor();
         }
@@ -727,7 +727,7 @@ bool GpsClient::openNmeaSockets()
   flarmFd = -1;
 
   // Check for old socket connections, close and delete them.
-  if( so1 != nullptr || so2 != nullptr )
+  if( so1 != 0 || so2 != 0 )
     {
       // First close old existing connections
       closeTcpSockets();
@@ -923,7 +923,7 @@ void GpsClient::closeTcpSockets()
   // Reset Flarm socket
   flarmFd = -1;
 
-  if( so1 != nullptr )
+  if( so1 != 0 )
     {
       if( so1->openMode() != QIODevice::NotOpen )
         {
@@ -931,10 +931,10 @@ void GpsClient::closeTcpSockets()
         }
 
       delete so1;
-      so1 = nullptr;
+      so1 = 0;
     }
 
-  if( so2 != nullptr )
+  if( so2 != 0 )
     {
       if( so2->openMode() != QIODevice::NotOpen )
         {
@@ -942,7 +942,7 @@ void GpsClient::closeTcpSockets()
         }
 
       delete so2;
-      so2 = nullptr;
+      so2 = 0;
     }
 }
 
@@ -1118,7 +1118,7 @@ void GpsClient::toController()
               last.start(); // set next retry time point
             }
         }
-      else if( so1 != nullptr || so2 != nullptr )
+      else if( so1 != 0 || so2 != 0 )
         {
           // Try to reconnect the socket connections.
           if( openNmeaSockets() == false )
@@ -1543,7 +1543,7 @@ bool GpsClient::flarmBinMode( QString* errorInfo )
                 {
                   qCritical() << "flarmBinMode() Error:" << buf;
 
-                  if( errorInfo != nullptr )
+                  if( errorInfo != 0 )
                     {
                       *errorInfo = check.remove( error ).remove( '\r').remove('\n');
                     }
