@@ -186,7 +186,7 @@ bool jniShutdownFlag();
  *
  * \param cb The call back address at naitive side.
  */
-void jniDownloadFile( QString& url, QString& destination, long long cb );
+void jniDownloadFile( QString& url, QString& destination, long long int cb );
 
 /**
  * Gets the restart flag from the Android activity.

@@ -340,10 +340,10 @@ static void nativeHttpsResponse( JNIEnv* env,
   QString qResponse(nativeString);
   env->ReleaseStringUTFChars(response, nativeString);
 
-  HttpsResponseEvent *hrs = new HttpsResponseEvent( errorCode, qResponse );
+  HttpsResponseEvent *hre = new HttpsResponseEvent( errorCode, qResponse );
 
   DownloadManager* dm = ( DownloadManager *) cb;
-  QCoreApplication::postEvent( dm, hrs );
+  QCoreApplication::postEvent( dm, hre );
 }
 
 /* The array of native methods to register.
@@ -976,7 +976,7 @@ bool jniCallStringMethod( const char* method, jmethodID mId, QString& strResult 
   return true;
 }
 
-void jniDownloadFile( QString& url, QString& destination, long long cb )
+void jniDownloadFile( QString& url, QString& destination, long long int cb )
 {
   JNIEnv* env = 0;
 
