@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2021 by Axel Pauli
+#                2012-2022 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -14,9 +14,9 @@
 TEMPLATE = app
 
 # Put all generated objects into an extra directory
-OBJECTS_DIR = .obj
-MOC_DIR     = .obj
-RCC_DIR     = .obj
+OBJECTS_DIR = .obj_android
+MOC_DIR     = .obj_android
+RCC_DIR     = .obj_android
 
 QT += core gui xml
 
@@ -509,6 +509,33 @@ qtscroller {
                QtScroller/src/qtscrollerfilter.cpp \
                QtScroller/src/qtscrollerproperties.cpp \
                QtScroller/src/qtscrollevent.cpp
+}
+
+# Backport of QJson for Qt4
+CONFIG += qjson
+
+qjson {
+
+    DEFINES += QJSONBACKPORT_LIBRARY
+    
+    INCLUDEPATH += QJson-backport
+    
+    SOURCES += QJson-backport/qjsonwriter.cpp \
+        QJson-backport/qjsonvalue.cpp \
+        QJson-backport/qjsonparser.cpp \
+        QJson-backport/qjsonobject.cpp \
+        QJson-backport/qjsondocument.cpp \
+        QJson-backport/qjsonarray.cpp \
+        QJson-backport/qjson.cpp
+    
+    HEADERS += QJson-backport/qjsonwriter_p.h \
+        QJson-backport/qjsonvalue.h \
+        QJson-backport/qjsonparser_p.h \
+        QJson-backport/qjson_p.h \
+        QJson-backport/qjsonobject.h \
+        QJson-backport/qjsonexport.h \
+        QJson-backport/qjsondocument.h \
+        QJson-backport/qjsonarray.h
 }
 
 # Files managed and needed by Necessitas

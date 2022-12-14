@@ -462,9 +462,34 @@ numberpad {
                settingspageairspacewarningsnumpad.cpp
 }
 
-DESTDIR = .
+# Backport of QJson for Qt4
+CONFIG += qjson
 
-INCLUDEPATH += ../
+qjson {
+
+    DEFINES += QJSONBACKPORT_LIBRARY
+    
+    INCLUDEPATH += QJson-backport
+    
+    SOURCES += QJson-backport/qjsonwriter.cpp \
+        QJson-backport/qjsonvalue.cpp \
+        QJson-backport/qjsonparser.cpp \
+        QJson-backport/qjsonobject.cpp \
+        QJson-backport/qjsondocument.cpp \
+        QJson-backport/qjsonarray.cpp \
+        QJson-backport/qjson.cpp
+    
+    HEADERS += QJson-backport/qjsonwriter_p.h \
+        QJson-backport/qjsonvalue.h \
+        QJson-backport/qjsonparser_p.h \
+        QJson-backport/qjson_p.h \
+        QJson-backport/qjsonobject.h \
+        QJson-backport/qjsonexport.h \
+        QJson-backport/qjsondocument.h \
+        QJson-backport/qjsonarray.h
+}
+
+DESTDIR = .
 
 QMAKE_CXXFLAGS += -fno-default-inline \
                   -fno-inline -Wextra \
