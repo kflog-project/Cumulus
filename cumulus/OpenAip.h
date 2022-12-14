@@ -55,7 +55,7 @@ class OpenAip
   virtual ~OpenAip();
 
   /**
-   * Reads in a navigation aid file provided as openAIP xml format.
+   * Reads in a navigation aid file provided as openAIP json format.
    *
    * \param filename File containing navigation aid definitions
    *
@@ -112,7 +112,7 @@ class OpenAip
                          bool useFiltering=false );
 
   /**
-   * Reads in an airfield file provided as openAIP xml format.
+   * Reads in an airfield file provided as openAIP json format.
    *
    * \param filename File containing airfield definitions
    *
@@ -130,7 +130,7 @@ class OpenAip
                       bool useFiltering=false );
 
   /**
-   * Reads in an airspace file provided as openAIP xml format.
+   * Reads in an airspace file provided as openAIP json format.
    *
    * \param filename File containing airspace definitions
    *
@@ -219,15 +219,15 @@ class OpenAip
   void setJAirfieldRunwaySurface( const QJsonObject& object, Runway& rw );
 
   /**
-   * Read a complete airspace record.
+   * Reads the airspace limit data.
    */
-  bool readAirspaceRecord( QXmlStreamReader& xml, Airspace& as );
-
-  bool readJAirspaceLimit( const QString& asName,
+ bool readJAirspaceLimit( const QString& asName,
                            const QJsonObject& object,
                            BaseMapElement::elevationType& reference,
                            Altitude& altitude );
-
+ /**
+  * Reads the airspace coordinates data.
+  */
   bool readJAirspaceGeometrie( const QJsonObject& object, Airspace& as );
 
   /**
