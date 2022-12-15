@@ -378,11 +378,12 @@ QString Airspace::getInfoString() const
   {
     case MSL:
       tempL = QString( "%1 ft (%2 m) MSL" ).arg( m_lLimit.getFeet(), 0, 'f', 0 )
-                                        .arg( m_lLimit.getMeters(), 0, 'f', 0 );
+                                           .arg( m_lLimit.getMeters(), 0, 'f', 0 );
       break;
     case GND:
       if( m_lLimit.getMeters() )
-        tempL = QString( "%1 GND" ).arg( m_lLimit.getText(true,0) );
+        tempL = QString( "%1 ft (%2 m) AGL" ).arg( m_lLimit.getFeet(), 0, 'f', 0 )
+                                             .arg( m_lLimit.getMeters(), 0, 'f', 0 );
       else
         tempL = "GND";
       break;
@@ -407,10 +408,12 @@ QString Airspace::getInfoString() const
         tempU = QObject::tr("Unlimited");
       else
         tempU = QString( "%1 ft (%2 m) MSL" ).arg( m_uLimit.getFeet(), 0, 'f', 0 )
-                                          .arg( m_uLimit.getMeters(), 0, 'f', 0 );
+                                             .arg( m_uLimit.getMeters(), 0, 'f', 0 );
       break;
     case GND:
-      tempU = QString( "%1 GND" ).arg( m_uLimit.getText(true,0) );
+      tempU = QString( "%1 ft (%2 m) AGL" ).arg( m_uLimit.getFeet(), 0, 'f', 0 )
+                                           .arg( m_uLimit.getMeters(), 0, 'f', 0 );
+
       break;
     case FL:
       tempU = QString( "FL %1 (%2)" ).arg( (int) rint(m_uLimit.getFeet() / 100.) )
