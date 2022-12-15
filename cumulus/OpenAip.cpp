@@ -183,7 +183,7 @@ bool OpenAip::readSinglePoints( QString fileName,
       sp.setWPName( wpName.left(8) );
 
       // iterate over the single point object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
 
@@ -320,7 +320,7 @@ bool OpenAip::readNavAids( QString fileName,
       rp.setName( name );
 
       // iterate over the navaids object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
 
@@ -580,7 +580,7 @@ bool OpenAip::readHotspots( QString fileName,
       tp.setWPName( wpName.left(8) );
 
       // iterate over the thermal object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
 
@@ -792,7 +792,7 @@ bool OpenAip::readAirfields( QString fileName,
       af.setWPName( shortName(name) );
 
       // iterate over the airfield object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
 
@@ -963,7 +963,7 @@ void OpenAip::setJAirfieldFrequencies( QJsonArray& array, Airfield& af )
       Frequency fq;
 
       // iterate over the frequency object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Frequency Key: " << it.key() << "Val: " << it.value();
           if( it.key() == "name" )
@@ -1008,7 +1008,7 @@ void OpenAip::setJAirfieldRunways( QJsonArray& array, Airfield& af )
       Runway rwy;
 
       // iterate over the runway object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Runway Key: " << it.key() << "Val: " << it.value();
           if( it.key() == "designator" )
@@ -1082,7 +1082,7 @@ void OpenAip::setJAirfieldRunways( QJsonArray& array, Airfield& af )
 void OpenAip::setJAirfieldRunwayDimensions( const QJsonObject& object, Runway& rw )
 {
   // iterate over the runway dimension object list
-  for( auto it = object.begin(), end=object.end(); it != end; ++it )
+  for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
     {
       // qDebug() << "Runway dimension Key: " << it.key() << "Val: " << it.value();
 
@@ -1113,7 +1113,7 @@ void OpenAip::setJAirfieldRunwayDimensions( const QJsonObject& object, Runway& r
 void OpenAip::setJAirfieldRunwaySurface( const QJsonObject& object, Runway& rw )
 {
   // iterate over the runway surface object list
-  for( auto it = object.begin(), end=object.end(); it != end; ++it )
+  for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
     {
       // qDebug() << "Runway surface Key: " << it.key() << "Val: " << it.value();
 
@@ -1308,7 +1308,7 @@ bool OpenAip::readAirspaces( QString fileName,
       bool ok = true;
 
       // iterate over the airfield object list
-      for( auto it = object.begin(), end=object.end(); it != end; ++it )
+      for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
 
@@ -1441,7 +1441,7 @@ bool OpenAip::readJAirspaceLimit( const QString& asName,
   int referenceDatum = -1;
 
   // iterate over the limit object list
-  for( auto it = object.begin(), end=object.end(); it != end; ++it )
+  for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
     {
       // qDebug() << "Runway dimension Key: " << it.key() << "Val: " << it.value();
 
@@ -1515,7 +1515,7 @@ bool OpenAip::readJAirspaceLimit( const QString& asName,
 bool OpenAip::readJAirspaceGeometrie( const QJsonObject& object, Airspace& as )
 {
   // iterate over the limit object list
-  for( auto it = object.begin(), end=object.end(); it != end; ++it )
+  for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
     {
       // qDebug() << "AS Geo Key: " << it.key() << "Val: " << it.value();
 
