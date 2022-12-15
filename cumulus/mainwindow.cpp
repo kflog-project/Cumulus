@@ -73,22 +73,6 @@
 
 #endif
 
-#ifdef MAEMO
-
-extern "C" {
-
-#include <glib-object.h>
-#include <libosso.h>
-
-}
-
-// @AP: That is a little hack, to avoid the include of all glib
-// functionality in the header file of this class. There are
-// redefinitions of macros in glib and other cumulus header files.
-static osso_context_t *ossoContext = static_cast<osso_context_t *> (0);
-
-#endif
-
 /** Define the disclaimer version */
 #define DISCLAIMER_VERSION 1
 
@@ -228,7 +212,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 {
   _globalMainWindow = this;
 
-#if defined ANDROID || defined MAEMO
+#if defined ANDROID
   m_displayTrigger = static_cast<QTimer *> (0);
 #endif
 
@@ -255,16 +239,16 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
       QDir dir( dirNameOld );
 
       if( dir.exists() )
-	{
-	  QString dirNameNew = mapDirs.at( i ) + "/points";
+        {
+          QString dirNameNew = mapDirs.at( i ) + "/points";
 
-	  int ok = rename( dirNameOld.toLatin1().data(), dirNameNew.toLatin1().data() );
+          int ok = rename( dirNameOld.toLatin1().data(), dirNameNew.toLatin1().data() );
 
-	  if( ok == 0 )
-	    {
-	      qDebug() << "Renaming" << dirNameOld << "-->" << dirNameNew;
-	    }
-	}
+          if( ok == 0 )
+            {
+              qDebug() << "Renaming" << dirNameOld << "-->" << dirNameNew;
+            }
+        }
     }
 
 #ifdef ANDROID
@@ -403,13 +387,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
     }
 
 #else
-
-#ifdef MAEMO
-      appFont.setFamily("Nokia Sans");
-#else
       appFont.setFamily("Sans Serif");
-#endif
-
 #endif
 
       appFont.setWeight( QFont::Normal );
@@ -460,27 +438,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 
   qDebug() << "AutoSipEnabled:" << qApp->autoSipEnabled();
 
-#ifdef MAEMO
-
-  // That we do need for the location service. This service emits signals, which
-  // are bound to a g_object. This call initializes the g_object handling.
-  g_type_init();
-
-#ifdef MAEMO4
-  // N8x0 display has bad contrast for light shades, so make the (dialog)
-  // background darker
-  QPalette appPal = QApplication::palette();
-  appPal.setColor(QPalette::Normal,QPalette::Window,QColor(236,236,236));
-  appPal.setColor(QPalette::Normal,QPalette::Button,QColor(216,216,216));
-  appPal.setColor(QPalette::Normal,QPalette::Base,Qt::white);
-  appPal.setColor(QPalette::Normal,QPalette::AlternateBase,QColor(246,246,246));
-  appPal.setColor(QPalette::Normal,QPalette::Highlight,Qt::darkBlue);
-  QApplication::setPalette(appPal);
-#endif
-
-#endif
-
-#if defined MAEMO || defined ANDROID
+#ifdef ANDROID
 
   QSize dSize = QApplication::desktop()->availableGeometry().size();
 
@@ -492,21 +450,13 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
       dSize = QApplication::desktop()->screenGeometry().size();
     }
 
-  // Limit maximum size for Maemo and Android
+  // Limit maximum size for Android
   setMaximumSize( dSize );
-
-#ifdef ANDROID
   setMinimumSize( dSize );
-#endif
-
   resize( dSize );
 #else
   // get last saved window geometric from GeneralConfig and set it again
   resize( GeneralConfig::instance()->getWindowSize() );
-#endif
-
-#ifdef MAEMO
-  setWindowState(Qt::WindowFullScreen);
 #endif
 
   qDebug() << "Cumulus Release:"
@@ -660,24 +610,6 @@ void MainWindow::slotCreateSplash()
 void MainWindow::slotCreateApplicationWidgets()
 {
   qDebug() << "MainWindow::slotCreateApplicationWidgets()";
-
-#ifdef MAEMO
-
-  ossoContext = osso_initialize( "org.kflog.Cumulus",
-                                 QCoreApplication::applicationVersion().toAscii().data(),
-                                 false,
-                                 0 );
-  if( ! ossoContext )
-    {
-      qWarning("Could not initialize Osso Library");
-    }
-  else
-    {
-      // prevent screen blanking
-      osso_display_blanking_pause( ossoContext );
-    }
-
-#endif
 
   ws = new WaitScreen( splash );
 
@@ -1115,24 +1047,6 @@ void MainWindow::slotFinishStartUp()
 
   // Get the language from the environment
   QString language = qgetenv("LANG");
-
-#ifdef MAEMO
-
-  if( ossoContext )
-    {
-      osso_display_blanking_pause( ossoContext );
-
-      // setup timer to prevent screen blank
-      m_displayTrigger = new QTimer(this);
-      m_displayTrigger->setSingleShot(true);
-
-      connect( m_displayTrigger, SIGNAL(timeout()),
-               this, SLOT(slotDisplayTrigger()) );
-
-      // start timer with 10s
-      m_displayTrigger->start( 10000 );
-    }
-#endif
 
 #ifdef ANDROID
 

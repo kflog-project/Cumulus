@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2021 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -294,205 +294,267 @@ void WPInfoWidget::writeText()
       text->setHtml("<html><big><center><b>" +
                     tr("No waypoint data available") +
                     "</b></center></big></html>");
+      return;
+    }
+
+  // display info from waypoint
+  QString image = ":/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
+
+  QString is = QString::number(static_cast<int>(32.0 * Layout::getScaledDensity()));
+
+  // save current unit
+  Altitude::altitudeUnit currentUnit = Altitude::getUnit();
+
+  Altitude::setUnit(Altitude::meters);
+  QString meters = Altitude::getText(m_wp.elevation, true, 0);
+
+  Altitude::setUnit(Altitude::feet);
+  QString feet = Altitude::getText(m_wp.elevation, true, 0);
+
+  // restore save unit
+  Altitude::setUnit(currentUnit);
+
+  QString imageSrc = "<img src=\"" + image +
+                     "\" width=\"" + is +
+                     "\" height=\"" + is + "\">";
+  QString itxt;
+  QString tmp;
+  QString table = "<p><table cellpadding=\"5\" width=\"100%\" style=\"white-space:nowrap;\">";
+
+  itxt += "<html><center><b>" + m_wp.description + " (" + m_wp.name;
+
+  if( !m_wp.icao.isEmpty() )
+    {
+      itxt += ",&nbsp;" + m_wp.icao;
+    }
+
+  if( !m_wp.country.isEmpty() )
+    {
+      itxt += ",&nbsp;" + m_wp.country;
+    }
+
+  // prepare elevation display
+  QString elevText = "&nbsp;%1&nbsp;/&nbsp;%2";
+
+  if( currentUnit == Altitude::meters )
+    {
+      elevText = elevText.arg( meters, feet );
     }
   else
     {
-      // display info from waypoint
-      QString image = ":/icons/" + _globalMapConfig->getPixmapName(m_wp.type);
+      elevText = elevText.arg( feet, meters );
+    }
 
-      QString is = QString::number(static_cast<int>(32.0 * Layout::getScaledDensity()));
+  itxt += ")</b></center>"
+          "<p><center>"
+          "<table cellpadding=\"5\"><tr valign=\"middle\"><td>" +
+          imageSrc + "</td><td><b>" +
+          BaseMapElement::item2Text(m_wp.type, tr("(unknown)")) +
+          elevText +
+          "</b></td></tr>"
+          "</table></center></p>";
 
-      QString imageSrc = "<img src=\"" + image +
-	                 "\" width=\"" + is +
-	                 "\" height=\"" + is + "\">";
-      QString itxt;
-      QString tmp;
-      QString table = "<p><table cellpadding=5 width=100%>";
+  int dataItems = 0;
 
-      itxt += "<html><center><b>" + m_wp.description + " (" + m_wp.name;
-
-      if( !m_wp.icao.isEmpty() )
+  if( m_wp.rwyList.size() > 0 )
+    {
+      for( int i = 0; i < m_wp.rwyList.size(); i++ )
         {
-          itxt += ",&nbsp;" + m_wp.icao;
-        }
+          Runway rwy = m_wp.rwyList[i];
 
-      if( !m_wp.country.isEmpty() )
-        {
-          itxt += ",&nbsp;" + m_wp.country;
-        }
-
-      itxt += ")</b></center>"
-              "<p><center>"
-              "<table cellpadding=\"5\"><tr valign=\"middle\"><td>" +
-              imageSrc + "</td><td><b>" +
-              BaseMapElement::item2Text(m_wp.type, tr("(unknown)")) +
-              "</b></td></tr>"
-              "</table></center></p>" +
-              table;
-
-      if( m_wp.rwyList.size() > 0 )
-        {
-          for( int i = 0; i < m_wp.rwyList.size(); i++ )
+          if( ! rwy.isOpen() )
             {
-              Runway rwy = m_wp.rwyList[i];
-
-              if( ! rwy.m_isOpen )
-                {
-                  continue;
-                }
-
-              QString tmp2 = tr("Unknown");
-
-              // @AP: show runway in both directions
-              int rwh1 = rwy.m_heading / 256;
-              int rwh2 = rwy.m_heading % 256;
-
-              if( rwh1 > 0 && rwh1 <= 36 && rwh2 > 0 && rwh2 <= 36 )
-                {
-                  // heading lays in the expected range
-                 if( rwh1 == rwh2 || abs( rwh1-rwh2) == 18 )
-                    {
-                      // a) If both directions are equal, there is only one landing direction.
-                      // b) If the difference is 18, there are two landing directions,
-                      //    where the first direction is the preferred one.
-                      tmp2 = QString("<b>%1/%2</b>").arg(rwh1, 2, 10, QLatin1Char('0')).
-                                     arg(rwh2, 2, 10, QLatin1Char('0'));
-                    }
-                 }
-
-              if( rwy.m_name.isEmpty() == false )
-                {
-                  tmp2 = "<b>" + rwy.getName() + "</b>";
-                }
-
-              itxt += "<tr><td>" + tr("Runway: ") + "</td><td>" + tmp2 + " (" +
-                      Runway::item2Text(rwy.m_surface, tr("Unknown")) + ")</td>" +
-                      "<td>" + tr("Length: ") + "</td><td><b>";
-
-              if( rwy.m_length <= 0 )
-                {
-                  itxt += tr("Unknown") + "</b></td></tr>";
-                }
-              else
-                {
-                  tmp = QString("%1 m</b></td></tr>").arg(rwy.m_length, 0, 'f', 0);
-                  itxt += tmp;
-                }
+              continue;
             }
+
+          dataItems++;
+
+          if( dataItems == 1 ) {
+              // Open a new table for the runway display
+              itxt += table;
+          }
+
+          QString mainRwy;
+
+          if( rwy.isMainRunway() == true ) {
+              mainRwy = "&nbsp;*";
+          }
+
+          QString tmp2;
+
+          if( rwy.getName().isEmpty() == false ) {
+              tmp2 = "<b> " + rwy.getName() + mainRwy + "</b>";
+            }
+          else {
+              // No name is set
+              tmp2 = "<b> ??</b>";
+            }
+
+          itxt += "<tr><td>" + tr("Runway:") + tmp2 + " (" +
+                  Runway::item2Text(rwy.getSurface(), tr("Unknown")) + ") </td>" +
+                  "<td>" + tr("L:") + "&nbsp;<b>";
+
+          if( rwy.getLength() <= 0 )
+            {
+              itxt += "??</b></td>";
+            }
+          else
+            {
+              tmp = QString("%1m</b></td>").arg( rwy.getLength(), 0, 'f', 0 );
+              itxt += tmp;
+            }
+
+          itxt += "<td>" + tr("W:") + " <b>";
+
+          if( rwy.getWidth() <= 0 )
+            {
+              itxt += "??</b></td>";
+            }
+          else
+            {
+              tmp = QString("%1m</b></td>").arg( rwy.getWidth(), 0, 'f', 0 );
+              itxt += tmp;
+            }
+
+          itxt += "<td>";
+
+          ( rwy.isOpen() == true ) ? itxt += tr("open") : itxt += tr("closed");
+          itxt += ", &nbsp;";
+
+          ( rwy.isBidirectional() == true ) ? itxt += tr("both") : itxt += tr("one way");
+
+          if( rwy.isTakeOffOnly() == true ) {
+              itxt += ", &nbsp;" + tr("take off only" );
+          }
+
+          if( rwy.isLandingOnly() == true ) {
+              itxt += ", &nbsp;" + tr("landing only" );
+          }
+
+          itxt += "</td>";
+          itxt += "</tr>";
         }
 
-      // save current unit
-      Altitude::altitudeUnit currentUnit = Altitude::getUnit();
+      if( dataItems > 0 ) {
+          itxt += "</table></p>";
+      }
+    }
 
-      Altitude::setUnit(Altitude::meters);
-      QString meters = Altitude::getText(m_wp.elevation, true, 0);
+  // Table has to be open.
+  itxt += table;
 
-      Altitude::setUnit(Altitude::feet);
-      QString feet = Altitude::getText(m_wp.elevation, true, 0);
+   if( m_wp.frequencyList.isEmpty() )
+     {
+       // no frequencies assigned
+       itxt += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
+     }
+   else
+     {
+       int i = 0;
 
-      // restore save unit
-       Altitude::setUnit(currentUnit);
-
-       if( currentUnit == Altitude::meters )
+       for( i = 0; i < m_wp.frequencyList.size(); i++ )
          {
-           itxt += "<tr><td>" + tr( "Elevation:" ) +
-             "</td><td><b>" + meters + "&nbsp;/&nbsp;" + feet +
-             "</b></td>";
-         }
-       else
-         {
-           itxt += "<tr><td>" + tr( "Elevation:" ) +
-             "</td><td><b>" + feet + "&nbsp;/&nbsp;" + meters +
-             "</b></td>";
-         }
+           Frequency fre = m_wp.frequencyList[i];
+           QString frestr = fre.frequencyAsString( false );
+           QString type = fre.typeAsString();
+           QString primary;
 
-       if( m_wp.frequencyList.isEmpty() )
-         {
-           // no frequencies assigned
-           itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
-         }
-       else
-         {
-           int i = 0;
-
-           for( i = 0; i < m_wp.frequencyList.size(); i++ )
+           if( fre.isPrimary() == true )
              {
-               Frequency fre = m_wp.frequencyList[i];
-               QString frestr = fre.frequencyAsString();
+               primary  = " *";
+             }
 
-               if( m_wp.type ==BaseMapElement::Ndb )
+           if( fre.getType() == Frequency::Unknown )
+             {
+               if( fre.getUserType().size() > 0 )
                  {
-                   // A NDB needs a special handling. Frequency is shown in KHz.
-                   float freq = fre.getFrequency() * 1000;
-                   frestr = QString("%1 KHz").arg(freq);
-                 }
-
-               if( i % 2 )
-                 {
-                   tmp = QString("<tr><td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td>").arg(frestr);
+                   type = fre.getUserType() + " ";
                  }
                else
                  {
-                   tmp = QString("<td>" + tr("Channel:") + "</td><td><b>%1&nbsp;</b></td></tr>").arg(frestr);
+                   // unknown shall not be shown.
+                   type.clear();
                  }
-
-               itxt += tmp;
              }
 
-           if( (i % 2) == 0 )
+           if( i % 2 == 0 )
              {
-               // second column have to be closed with an empty item
-               itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
+               tmp = QString("<tr><td>" + tr("Channel:") +
+                             "</td><td><b>%1 %2%3</b></td>").arg(frestr, type, primary);
              }
+           else
+             {
+               tmp = QString("<td>" + tr("Channel:") +
+                             "</td><td><b>%1 %2%3</b></td></tr>").arg(frestr, type, primary);
+             }
+
+           itxt += tmp;
          }
 
-      QString sr, ss, tz;
-      QDate date = QDate::currentDate();
+       if( (i % 2) != 0 )
+         {
+           // second column have to be closed with an empty item
+           itxt+="<td>&nbsp;</td><td>&nbsp;</td></tr>";
+         }
+     }
 
-      // calculate Sunrise and Sunset
-      bool res = Sonne::sonneAufUnter( sr, ss, date, m_wp.wgsPoint , tz );
+  QString sr, ss, tz;
+  QDate date = QDate::currentDate();
 
-      if( res )
-        {
-        // In some areas are no results available. In this case we skip
-        // the times output.
-          itxt += QString( "<tr><td>" + tr("Sunrise:") + "</td><td><b>" + sr +
-                           " " + tz + "</b></td>" );
+  // calculate Sunrise and Sunset
+  bool res = Sonne::sonneAufUnter( sr, ss, date, m_wp.wgsPoint , tz );
 
-          itxt += QString( "<td>" + tr("Sunset:") + "</td><td><b>" + ss +
-                           " " + tz + "</b></td></tr>" );
-        }
+  if( res )
+    {
+    // In some areas are no results available. In this case we skip
+    // the times output.
+      itxt += QString( "<tr><td>" + tr("Sunrise:") + "</td><td><b>" + sr +
+                       " " + tz + "</b></td>" );
 
-      QString lat = WGSPoint::printPos(m_wp.wgsPoint.x(),true);
-      QString lon = WGSPoint::printPos(m_wp.wgsPoint.y(),false);
-
-      lat = lat.replace(QRegExp(" "), "&nbsp;");
-      lon = lon.replace(QRegExp(" "), "&nbsp;");
-
-      itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
-              lat + "</b></td>" +
-              "<td>" + tr("Longitude:") + "</td><td><b>" +
-              lon +
-              "</b></td></tr>";
-
-      if( m_wp.comment.isEmpty() == false )
-        {
-          QString comment = m_wp.comment;
-
-          comment.replace( "\n", "<br>");
-
-          itxt += "<tr><td>" + tr("Comment") + ":</td>"
-                  "<td colspan=3><b>" + comment + "</b></td></tr>";
-        }
-
-      itxt+="</table></html>";
-
-      text->setHtml(itxt);
+      itxt += QString( "<td>" + tr("Sunset:") + "</td><td><b>" + ss +
+                       " " + tz + "</b></td></tr>" );
     }
+
+  QString lat = WGSPoint::printPos(m_wp.wgsPoint.x(),true);
+  QString lon = WGSPoint::printPos(m_wp.wgsPoint.y(),false);
+
+  lat = lat.replace(QRegExp(" "), "&nbsp;");
+  lon = lon.replace(QRegExp(" "), "&nbsp;");
+
+  itxt += "<tr><td>" + tr("Latitude:") + "</td><td><b>" +
+          lat + "</b></td>" +
+          "<td>" + tr("Longitude:") + "</td><td><b>" +
+          lon +
+          "</b></td></tr>";
+
+  if( m_wp.comment.isEmpty() == false )
+    {
+      QString comment = m_wp.comment;
+
+      comment.replace( "\n", "<br>");
+
+      itxt += "<tr><td>" + tr("Comment") + ":</td>"
+              "<td colspan=3><b>" + comment + "</b></td></tr>";
+    }
+
+  itxt+="</table></p></html>";
+  text->setHtml(itxt);
+
+  // printf( "%s\n", itxt.toUtf8().data() );
 }
 
 /** Hide widget and return to the calling view in MainWindow */
 void WPInfoWidget::slot_SwitchBack()
+{
+  QWidget::close();
+}
+
+/**
+ * User has pressed X button of the window or QWidget::close has been called.
+ *
+ * @param event
+ */
+void WPInfoWidget::closeEvent( QCloseEvent *event )
 {
   m_timer->stop();
   text->clearFocus();
@@ -506,8 +568,11 @@ void WPInfoWidget::slot_SwitchBack()
       m_homeChanged = false;
     }
 
+  // Inform main window about closing of widget.
   emit closingWidget();
-  QWidget::close();
+
+  event->accept();
+  QWidget::closeEvent( event );
 }
 
 /** This slot is called by the KeepOpen button to... yes... keep the dialog open. :-) */

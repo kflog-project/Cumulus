@@ -26,14 +26,13 @@
  * Due to the cross pointer reference to the air region this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2000-2016
+ * \date 2000-2022
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
-#ifndef AIRSPACE_H
-#define AIRSPACE_H
+#pragma once
 
 #include <algorithm>
 #include <cmath>
@@ -66,6 +65,33 @@ public:
 
   enum ConflictType { none=0, near=1, veryNear=2, inside=3 };
 
+  /**
+   * ICAO airspace classes of openAIP.
+   */
+  enum icaoClass {
+    AS_A=0,
+    AS_B=1,
+    AS_C=2,
+    AS_D=3,
+    AS_E=4,
+    AS_F=5,
+    AS_G=6,
+    AS_SUA=8,
+    AS_Unkown=255
+  };
+
+  /**
+   * Kind of activity used by openAIP
+   */
+  enum activity {
+    None=0, // No specific activity (default)
+    Parachuting=1,
+    Aerobatics=2,
+    AeroclubAndArialWorkArea=3,
+    UltraLightMachines=4, // (ULM) Activity
+    HangGlidingAndParagliding=5
+  };
+
   Airspace();
 
   /**
@@ -78,7 +104,7 @@ public:
    * \param upperType The upper altitude reference
    * \param lower The lower altitude limit of the airspace in feet
    * \param lowerType The lower altitude reference
-   * \param identifier openAIP record identifier
+   * \param icaoClass openAIP ICAO class identifier
    * \param country The country as two letter code, where the airspace is located
   */
   Airspace( QString name,
@@ -87,8 +113,10 @@ public:
             const BaseMapElement::elevationType upperType,
             const float lower,
             const BaseMapElement::elevationType lowerType,
-            const int identifier=-1,
-            QString country="" );
+            const int icaoClass=AS_Unkown,
+            QString country="",
+            quint8 activity=0,
+            bool byNotam=false );
 
   /**
    * Destructor
@@ -235,7 +263,7 @@ public:
   ConflictType lastVConflict() const
   {
       return m_lastVConflict;
-  };
+  }
 
   /**
    * sets the touch time of air space to current time
@@ -243,15 +271,17 @@ public:
   void setLastNear()
   {
       m_lastNear.start();
-  };
+  }
+
   void setLastVeryNear()
   {
       m_lastVeryNear.start();
-  };
+  }
+
   void setLastInside()
   {
       m_lastInside.start();
-  };
+  }
 
   /**
   * returns the touch time of air space
@@ -259,15 +289,17 @@ public:
   QTime& getLastNear()
   {
       return m_lastNear;
-  };
+  }
+  
   QTime& getLastVeryNear()
   {
       return m_lastVeryNear;
-  };
+  }
+  
   QTime& getLastInside()
   {
       return m_lastInside;
-  };
+  }
 
   /**
    * @returns the associated AirRegion object
@@ -301,24 +333,24 @@ public:
   bool operator < (const Airspace& other) const;
 
   /**
-   * Get airspace identifier.
+   * Get icao airspace identifier.
    *
    * \return airspace identifier
    */
-  int getId() const
+  quint8 getIcaoClass() const
   {
-    return m_id;
-  };
+    return m_icaoClass;
+  }
 
   /**
-   * Set airspace identifier
+   * Set icao airspace identifier
    *
    * \param id airspace identifier
    */
-  void setId(int id)
+  void setIcaoClass( int icaoClass)
   {
-    m_id = id;
-  };
+    m_icaoClass = icaoClass;
+  }
 
   /**
    * Get Flarm Alert Zone.
@@ -328,7 +360,7 @@ public:
   FlarmBase::FlarmAlertZone& getFlarmAlertZone()
   {
     return m_flarmAlertZone;
-  };
+  }
 
   /**
    * Set Flarm Alert Zone.
@@ -338,12 +370,42 @@ public:
   void setFlarmAlertZone( const FlarmBase::FlarmAlertZone& faz)
   {
     m_flarmAlertZone = faz;
-  };
+  }
 
   /**
    * Prints out all relevant airspace data.
    */
   void debug();
+
+  /**
+   * Kind of activity used by openAip.
+   *
+   * @return
+   */
+  quint8 getActivity() const
+  {
+    return m_activity;
+  }
+
+  /**
+   * Kind of activity used by openAip.
+   *
+   * @param activity enumeration
+   */
+  void setActivity( quint8 activity )
+  {
+    m_activity = activity;
+  }
+
+  bool isByNotam() const
+  {
+    return m_byNotam;
+  }
+
+  void setByNotam( bool byNotam )
+  {
+    m_byNotam = byNotam;
+  }
 
 private:
   /**
@@ -380,10 +442,19 @@ private:
   AirRegion* m_airRegion;
 
   /**
-   * Unique identifier used by openAip.
+   * ICAO identifier used by openAip.
    */
-  int m_id;
+  quint8 m_icaoClass;
 
+  /**
+   * Kind of activity used by openAip.
+   */
+  quint8 m_activity;
+
+  /**
+   * Activation by NOTAM
+   */
+  bool m_byNotam;
   /**
    * Flarm Alert Zone object.
    */
@@ -448,7 +519,5 @@ public:
   void sort ()
   {
     std::sort( begin(), end(), CompareAirspaces() );
-  };
+  }
 };
-
-#endif

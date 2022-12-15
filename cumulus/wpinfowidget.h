@@ -65,6 +65,10 @@ public:
    */
   bool showWP(int returnView, const Waypoint& wp);
 
+protected:
+
+  virtual void closeEvent( QCloseEvent *event );
+
 public slots:
 
   /**

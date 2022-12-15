@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2018 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -39,6 +39,9 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   edtFequencyListIndex(-1)
 {
   setObjectName("WpEditDialogPageAero");
+
+  signalMapperEnable = new QSignalMapper( this );
+  signalMapperHeading = new QSignalMapper( this );
 
   QVBoxLayout* topLayout = new QVBoxLayout(this);
   topLayout->setMargin(10 * Layout::getIntScaledDensity());
@@ -92,48 +95,75 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   //----------------------------------------------------------------------------
   QHBoxLayout* hboxEnabRwy = new QHBoxLayout;
 
-  chkRwy1Enable = new QCheckBox( tr("Runway 1") );
-  hboxEnabRwy->addWidget( chkRwy1Enable );
+  for( int i = 0; i < 4; i++ )
+    {
+      chkRwyEnable[i] = new QCheckBox( tr("Runway %1").arg(i + 1) );
+      chkRwyEnable[i]->setToolTip( tr("Check box to enable a new runway.") );
+      hboxEnabRwy->addWidget( chkRwyEnable[i] );
 
-  chkRwy2Enable = new QCheckBox( tr("Runway 2") );
-  hboxEnabRwy->addWidget( chkRwy2Enable );
+      // prepare the signal mapper
+      connect (chkRwyEnable[i], SIGNAL(clicked()), signalMapperEnable, SLOT(map()));
+      signalMapperEnable->setMapping( chkRwyEnable[i], i );
+    }
+
+  connect( signalMapperEnable, SIGNAL(mapped(int)),
+           this, SIGNAL(stateChangedRwyEnable(int)));
+
+  connect( this, SIGNAL(stateChangedRwyEnable(int)),
+           this, SLOT( slot_stateChangedRwyEnable( int )));
 
   topLayout->addLayout( hboxEnabRwy );
 
   //----------------------------------------------------------------------------
-  gboxRunway1 = new QGroupBox( tr("Runway 1"), this );
-  gboxRunway1->setEnabled(false);
-  topLayout->addWidget( gboxRunway1 );
+  for( int i = 0; i < 4; i++ )
+    {
+      gboxRunway[i] = new QGroupBox( tr("Runway %1").arg( i + 1 ), this );
+      gboxRunway[i]->setVisible(false);
+      topLayout->addWidget( gboxRunway[i] );
+      topLayout->addStretch( 10 );
 
-  QHBoxLayout* grpLayout1 = new QHBoxLayout;
-  gboxRunway1->setLayout( grpLayout1 );
+      QHBoxLayout* grpLayout = new QHBoxLayout;
+      gboxRunway[i]->setLayout( grpLayout );
 
-  hbox = new QHBoxLayout;
+      hbox = new QHBoxLayout;
+      chkRwyBoth[i] = new QCheckBox( tr("bidirectional") );
+      hbox->addWidget( chkRwyBoth[i] );
 
-  chkRwy1Both = new QCheckBox( tr("bidirectional") );
-  hbox->addWidget( chkRwy1Both );
+      qgl = new QGridLayout;
+      qgl->setMargin(0);
+      grpLayout->addLayout(qgl);
 
-  qgl = new QGridLayout;
-  qgl->setMargin(0);
-  grpLayout1->addLayout(qgl);
+      edtRwyHeading[i] = new QLineEdit( this );
+      edtRwyHeading[i]->setMaxLength(3);
+      edtRwyHeading[i]->setToolTip( tr("Runway designator 01...36 [L, C, R]") );
+      imh = Qt::ImhUppercaseOnly | Qt::ImhNoPredictiveText;
+      edtRwyHeading[i]->setInputMethodHints(imh);
 
-  edtRwy1Heading = createRunwayHeadingEditor();
-  slot_rwy1HeadingEdited( "0" );
+      // Set minimum width
+      QFontMetrics fm( font() );
+      int strWidth = fm.width( QString( "MMM" ) );
+      edtRwyHeading[i]->setMinimumWidth( strWidth );
+      edtRwyHeading[i]->setMaximumWidth( strWidth );
 
-  qfl = new QFormLayout;
-  qfl->addRow(tr("Heading:"), edtRwy1Heading);
+      // prepare the signal mapper
+      connect (edtRwyHeading[i], SIGNAL(editingFinished()), signalMapperHeading, SLOT(map()));
+      signalMapperHeading->setMapping( edtRwyHeading[i], i );
 
-  qgl->addLayout( qfl, 0, 0 );
+      qfl = new QFormLayout;
+      qfl->addRow(tr("ID:"), edtRwyHeading[i]);
+      qgl->addLayout( qfl, 0, 0 );
 
-  edtRwy1Length = createRunwayLengthEditor();
-  qfl = new QFormLayout;
-  qfl->addRow(tr("Length:"), edtRwy1Length);
-  qgl->addLayout( qfl, 0, 1 );
+      edtRwyLength[i] = createRunwayLengthEditor();
+      qfl = new QFormLayout;
+      qfl->addRow(tr("Length:"), edtRwyLength[i]);
+      qgl->addLayout( qfl, 0, 1 );
 
-  cmbRwy1Surface = new QComboBox;
-  cmbRwy1Surface->setEditable(false);
-  cmbRwy1Surface->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  cmbRwy1Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+      edtRwyWidth[i] = createRunwayLengthEditor();
+      edtRwyWidth[i]->setMaxLength(4);
+      edtRwyWidth[i]->setMinWidth( 4 );
+      qfl = new QFormLayout;
+      qfl->addRow(tr("Width:"), edtRwyWidth[i]);
+      qgl->addLayout( qfl, 0, 2 );
 
 #ifdef QSCROLLER
   QScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
@@ -143,99 +173,57 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
   QtScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
-  qfl = new QFormLayout;
-  qfl->addRow(tr("Surface:"), cmbRwy1Surface);
-  qgl->addLayout( qfl, 0, 2 );
+      qfl = new QFormLayout;
+      qfl->addRow(tr("Surface:"), cmbRwySurface[i]);
+      qgl->addLayout( qfl, 0, 3 );
 
-  chkRwy1Both = new QCheckBox( tr("both") );
-  chkRwy1Both->setChecked( true );
-  qgl->addWidget( chkRwy1Both, 1, 0, 1, 2 );
+      QHBoxLayout* hb = new QHBoxLayout();
+      hb->setSpacing( 5 );
 
-  chkRwy1Usable = new QCheckBox( tr("usable") );
-  chkRwy1Usable->setChecked( true );
-  qgl->addWidget( chkRwy1Usable, 1, 2, 1, 2 );
+      chkRwyBoth[i] = new QCheckBox( tr("both") );
+      chkRwyBoth[i]->setChecked( true );
+      hb->addWidget( chkRwyBoth[i] );
 
-  //----------------------------------------------------------------------------
-  gboxRunway2 = new QGroupBox( tr("Runway 2"), this );
-  gboxRunway2->setEnabled(false);
-  topLayout->addWidget( gboxRunway2 );
+      chkRwyUsable[i] = new QCheckBox( tr("usable") );
+      chkRwyUsable[i]->setChecked( true );
+      hb->addWidget( chkRwyUsable[i] );
 
-  QHBoxLayout* grpLayout2 = new QHBoxLayout;
-  gboxRunway2->setLayout( grpLayout2 );
+      chkRwyMain[i] = new QCheckBox( tr("main RWY") );
+      chkRwyMain[i]->setChecked( true );
+      hb->addWidget( chkRwyMain[i] );
 
-  hbox = new QHBoxLayout;
+      chkRwyTakeoffOnly[i] = new QCheckBox( tr("takeoff only") );
+      chkRwyTakeoffOnly[i]->setChecked( false );
+      hb->addWidget( chkRwyTakeoffOnly[i] );
 
-  chkRwy2Both = new QCheckBox( tr("bidirectional") );
-  hbox->addWidget( chkRwy2Both );
+      chkRwyLandingOnly[i] = new QCheckBox( tr("landing only") );
+      chkRwyLandingOnly[i]->setChecked( false );
+      hb->addWidget( chkRwyLandingOnly[i] );
 
-  qgl = new QGridLayout;
-  qgl->setMargin(0);
-  grpLayout2->addLayout(qgl);
-
-  edtRwy2Heading = createRunwayHeadingEditor();
-  slot_rwy2HeadingEdited( "0" );
-  qfl = new QFormLayout;
-  qfl->addRow(tr("Heading:"), edtRwy2Heading);
-  qgl->addLayout( qfl, 0, 0 );
-
-  edtRwy2Length = createRunwayLengthEditor();
-
-  qfl = new QFormLayout;
-  qfl->addRow(tr("Length:"), edtRwy2Length);
-  qgl->addLayout( qfl, 0, 1 );
-
-  cmbRwy2Surface = new QComboBox;
-  cmbRwy2Surface->setEditable(false);
-  cmbRwy2Surface->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-  cmbRwy2Surface->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
-
-#ifdef QSCROLLER
-  QScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( cmbRwy2Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
-
-  qfl = new QFormLayout;
-  qfl->addRow(tr("Surface:"), cmbRwy2Surface);
-  qgl->addLayout( qfl, 0, 2 );
-
-  chkRwy2Both = new QCheckBox( tr("both") );
-  chkRwy2Both->setChecked( true );
-  qgl->addWidget( chkRwy2Both, 1, 0, 1, 2 );
-
-  chkRwy2Usable = new QCheckBox( tr("usable") );
-  chkRwy2Usable->setChecked( true );
-  qgl->addWidget( chkRwy2Usable, 1, 2, 1, 2 );
-
-  topLayout->addStretch( 10 );
+      qgl->addLayout( hb, 1, 0, 1, 4 );
+    }
 
   //----------------------------------------------------------------------------
-
   // initialize surface combo boxes
   QStringList &tlist = Runway::getSortedTranslationList();
 
-  for( int i=0; i < tlist.size(); i++ )
+  for( int i=0; i < 4; i++ )
     {
-      cmbRwy1Surface->addItem( tlist.at(i) );
-      cmbRwy2Surface->addItem( tlist.at(i) );
+      for( int j=0; j < tlist.size(); j++ )
+        {
+          cmbRwySurface[i]->addItem( tlist.at(j) );
+        }
+
+      cmbRwySurface[i]->setCurrentIndex(cmbRwySurface[i]->count()-1);
     }
 
-  cmbRwy1Surface->setCurrentIndex(cmbRwy1Surface->count()-1);
-  cmbRwy2Surface->setCurrentIndex(cmbRwy2Surface->count()-1);
+  // Connect the signal mapper to our own signal
+  connect( signalMapperHeading, SIGNAL(mapped(int)),
+           this, SIGNAL(rwyHeadingEditingFinished(int)));
 
-  connect( chkRwy1Enable, SIGNAL(stateChanged(int)),
-           SLOT(slot_stateChangedRwy1Enable(int)) );
-
-  connect( chkRwy2Enable, SIGNAL(stateChanged(int)),
-           SLOT(slot_stateChangedRwy2Enable(int)) );
-
-  connect( edtRwy1Heading, SIGNAL(numberEdited(const QString&)),
-           this, SLOT(slot_rwy1HeadingEdited(const QString&)) );
-
-  connect( edtRwy2Heading, SIGNAL(numberEdited(const QString&)),
-           this, SLOT(slot_rwy2HeadingEdited(const QString&)) );
+  // Connect out own signal mapper signal to our slot.
+  connect( this, SIGNAL(rwyHeadingEditingFinished(int)),
+           this, SLOT(slot_rwyHeadingEdited(int)));
 }
 
 WpEditDialogPageAero::~WpEditDialogPageAero()
@@ -264,28 +252,24 @@ NumberEditor* WpEditDialogPageAero::createRunwayLengthEditor( QWidget* parent )
   ne->setMaxLength(6);
   ne->setAlignment( Qt::AlignLeft );
 
-  // Note! We take as runway length unit the altitude unit (m/ft)
+  // Note! We take as runway length/width unit the altitude unit (m/ft)
   ne->setSuffix( " " + Altitude::getUnitText() );
   ne->setSpecialValueText( "-" );
   ne->setRange( 0, 999999 );
   ne->setValue( 0 );
-  ne->setTitle( tr("Set Runway length") );
+  ne->setTitle( tr("Set Runway length/width") );
   ne->setTip( tr("0=unknown") + ", 1-9...");
   return ne;
 }
 
-void WpEditDialogPageAero::slot_rwy1HeadingEdited( const QString& value )
+void WpEditDialogPageAero::slot_rwyHeadingEdited( int idx )
 {
-  QString iv = QString("%1").arg(value, 2, QChar('0') );
+  edtRwyHeading[idx]->setText( edtRwyHeading[idx]->text().toUpper() );
 
-  edtRwy1Heading->setText( iv );
-}
-
-void WpEditDialogPageAero::slot_rwy2HeadingEdited( const QString& value )
-{
-  QString iv = QString("%1").arg(value, 2, QChar('0') );
-
-  edtRwy2Heading->setText( iv );
+  if( checkRunwayDesignator( edtRwyHeading[idx]->text() ) == false )
+      {
+        reportRwyIdError( idx + 1 );
+      }
 }
 
 void WpEditDialogPageAero::slot_load( Waypoint *wp )
@@ -300,17 +284,21 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
   float frequency = 0.0;
   edtFequencyListIndex = -1;
 
-  // Only the frequency at index 0 is supported.
+  // Only one frequency is supported. It should be the primary frequency.
   if( wp->frequencyList.size() > 0 )
     {
+      // save frequency list of waypoint
+      fqList = wp->getFrequencyList();
       int i = 0;
 
-      // Only a main frequency should be shown in the table
+      // Only a main frequency should be shown in the display
       for( i = 0; i < wp->frequencyList.size(); i++ )
         {
-          QString& type = wp->frequencyList[i].getType();
+          quint8 type = wp->frequencyList[i].getType();
+          bool primary = wp->frequencyList[i].isPrimary();
 
-          if( type == "TOWER" || type == "INFO"  )
+          if( type == Frequency::Tower || type == Frequency::Info ||
+              type == Frequency::Information || primary == true )
             {
               edtFequencyListIndex = i;
               break;
@@ -323,9 +311,20 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
           edtFequencyListIndex = 0;
         }
 
-      frequency = wp->frequencyList.at(edtFequencyListIndex).getFrequency();
-      QString type = wp->frequencyList[edtFequencyListIndex].getType();
-      edtFrequencyType->setText( type );
+      const Frequency& fobj = wp->frequencyList.at( edtFequencyListIndex );
+      frequency = fobj.getValue();
+      quint8 type = fobj.getType();
+
+      edtFrequencyType->setText( Frequency::typeAsString(type) );
+
+      if( type == Frequency::Unknown )
+        {
+          // In case of unknown, look if user has defined a type.
+          if( fobj.getUserType().size() > 0 )
+          {
+            edtFrequencyType->setText( fobj.getUserType() );
+          }
+        }
     }
 
   QString tmp = QString("%1").arg(frequency, 0, 'f', 3);
@@ -340,54 +339,53 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
   edtFrequency->setText(tmp);
 
   // switch off both, that is the default.
-  chkRwy1Enable->setCheckState( Qt::Unchecked );
-  chkRwy2Enable->setCheckState( Qt::Unchecked );
+  for( int i=0; i < 4; i++ )
+    {
+      chkRwyEnable[i]->setCheckState( Qt::Unchecked );
+    }
 
-  // Set headings to unknown as default
-  slot_rwy1HeadingEdited( "0" );
-  slot_rwy2HeadingEdited( "0" );
+  // chkRwy1Enable->setCheckState( Qt::Unchecked );
+  for( int i=0; i < 4; i++ )
+    {
+      chkRwyBoth[i]->setCheckState( Qt::Unchecked );
+      chkRwyUsable[i]->setCheckState( Qt::Unchecked );
+      chkRwyMain[i]->setCheckState( Qt::Unchecked );
+      chkRwyTakeoffOnly[i]->setCheckState( Qt::Unchecked );
+      chkRwyLandingOnly[i]->setCheckState( Qt::Unchecked );
+    }
 
   if( wp->rwyList.size() > 0 )
     {
-      for( int i = 0; i < wp->rwyList.size() && i < 2; i++ )
+      for( int i = 0; i < wp->rwyList.size() && i < 4; i++ )
         {
           Runway rwy = wp->rwyList.at(i);
 
-          if( i == 0 )
-            {
-              chkRwy1Enable->setCheckState( Qt::Checked );
+          chkRwyEnable[i]->setCheckState( Qt::Checked );
+          gboxRunway[i]->setVisible(true);
+          edtRwyHeading[i]->setText( rwy.getName() );
+          edtRwyLength[i]->setText( Altitude::getText((rwy.getLength()), false, 0) );
+          edtRwyWidth[i]->setText( Altitude::getText((rwy.getWidth()), false, 0) );
+          setSurface( cmbRwySurface[i], rwy.getSurface() );
+          chkRwyUsable[i]->setChecked( rwy.isOpen() );
 
-              slot_rwy1HeadingEdited( QString::number( rwy.m_heading / 256 ) );
-              edtRwy1Length->setText( Altitude::getText((rwy.m_length), false, 0) );
-              setSurface( cmbRwy1Surface, rwy.m_surface );
-              chkRwy1Usable->setChecked( rwy.m_isOpen );
-
-              if( rwy.m_isBidirectional || ( rwy.m_heading / 256 != rwy.m_heading % 256) )
-                {
-                  chkRwy1Both->setChecked( true );
-                }
-              else
-                {
-                  chkRwy1Both->setChecked( false );
-                }
+          if( rwy.isBidirectional() ) {
+              chkRwyBoth[i]->setChecked( true );
             }
-          else if( i == 1 )
-            {
-              chkRwy2Enable->setCheckState( Qt::Checked );
 
-              slot_rwy2HeadingEdited( QString::number( rwy.m_heading / 256 ) );
-              edtRwy2Length->setText( Altitude::getText((rwy.m_length), false, 0) );
-              setSurface( cmbRwy2Surface, rwy.m_surface );
-              chkRwy2Usable->setChecked( rwy.m_isOpen );
+          if( rwy.isOpen() ) {
+              chkRwyUsable[i]->setChecked( true );
+            }
 
-              if( rwy.m_isBidirectional || ( rwy.m_heading / 256 != rwy.m_heading % 256) )
-                {
-                  chkRwy2Both->setChecked( true );
-                }
-              else
-                {
-                  chkRwy2Both->setChecked( false );
-                }
+          if( rwy.isMainRunway() ) {
+              chkRwyMain[i]->setChecked( true );
+            }
+
+          if( rwy.isTakeOffOnly() ) {
+              chkRwyTakeoffOnly[i]->setChecked( true );
+            }
+
+          if( rwy.isLandingOnly() ) {
+              chkRwyLandingOnly[i]->setChecked( true );
             }
         }
     }
@@ -410,69 +408,173 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
       frequency = 0.0;
     }
 
-  if( wp->frequencyList.size() == 0 )
+  QString userType = edtFrequencyType->text().trimmed();
+  quint8 intType = Frequency::typeAsInt( userType );
+  Frequency f;
+  f.setValue( frequency );
+  f.setUnit( Frequency::MHz );
+  f.setType( intType );
+
+  if( intType == Frequency::Unknown )
     {
-      wp->addFrequency( Frequency( frequency,
-                                   edtFrequencyType->text().trimmed()) );
+      // User has defined an own type
+      f.setUserType( userType );
     }
   else
     {
-      wp->frequencyList[edtFequencyListIndex].setFrequency(frequency);
-      QString type = edtFrequencyType->text().trimmed();
-      wp->frequencyList[edtFequencyListIndex].setType( type );
+      f.setUserType( "" );
+      userType.clear();
     }
 
+  if( fqList.size() == 0 )
+    {
+      // Add the new frequency to the list
+      fqList.append( f );
+    }
+  else
+    {
+      // Modify the frequency in the list
+      fqList[edtFequencyListIndex].setValue( frequency );
+      fqList[edtFequencyListIndex].setUnit( Frequency::MHz );
+      fqList[edtFequencyListIndex].setType( intType );
+      fqList[edtFequencyListIndex].setUserType( userType );
+    }
+
+  // Sets the edited frequency list of the waypoint.
+  wp->setFequencyList( fqList );
   wp->rwyList.clear();
 
-  // If the runway heading is not defined, all data are ignored!
-  if( chkRwy1Enable->isChecked() && edtRwy1Heading->value() > 0 )
+  for( int i = 0; i < 4; i++ )
     {
-      Runway rwy;
-
-      rwy.m_length = static_cast<float> (Altitude::convertToMeters(edtRwy1Length->text().toDouble()));
-      rwy.m_surface = getSurface( cmbRwy1Surface );
-      rwy.m_isOpen = chkRwy1Usable->isChecked();
-      rwy.m_isBidirectional = chkRwy1Both->isChecked();
-
-      int hdg1 = edtRwy1Heading->value();
-      int hdg2 = hdg1 > 18 ? hdg1 - 18 : hdg1 + 18;
-
-      if( rwy.m_isBidirectional )
+      // If the runway heading is not defined, all data are ignored!
+      if( chkRwyEnable[i]->isChecked() &&
+          checkRunwayDesignator( edtRwyHeading[i]->text() ) == true )
         {
-          rwy.m_heading = (hdg1 * 256) + hdg2;
-        }
-      else
-        {
-          rwy.m_heading = (hdg1 * 256) + hdg1;
-        }
+          Runway rwy;
+          rwy.setName( edtRwyHeading[i]->text() );
+          rwy.setLength( static_cast<float> (Altitude::convertToMeters(edtRwyLength[i]->text().toDouble())));
+          rwy.setWidth( static_cast<float> (Altitude::convertToMeters(edtRwyWidth[i]->text().toDouble())));
+          rwy.setSurface( getSurface( cmbRwySurface[i] ) );
 
-      wp->rwyList.append( rwy );
+          chkRwyBoth[i]->isChecked() ? rwy.setTurnDirection( Runway::Both ) : rwy.setTurnDirection( Runway::OneWay );
+          chkRwyUsable[i]->isChecked() ? rwy.setOperations( Runway::Active ): rwy.setOperations( Runway::Closed );
+          chkRwyMain[i]->isChecked() ? rwy.setMainRunway( true ) : rwy.setMainRunway( false );
+          chkRwyTakeoffOnly[i]->isChecked() ? rwy.setTakeOffOnly( true ) : rwy.setTakeOffOnly( false );
+          chkRwyLandingOnly[i]->isChecked() ? rwy.setLandingOnly( true ) : rwy.setLandingOnly( false );
+
+          int hdg = edtRwyHeading[i]->text().left(2).toInt() * 10;
+          rwy.setHeading( hdg );
+          wp->rwyList.append( rwy );
+        }
+    }
+}
+
+void WpEditDialogPageAero::reportRwyIdError( short rwyNo )
+{
+  QMessageBox mb( QMessageBox::Critical,
+                  tr( "RWY %1 ID error" ).arg(rwyNo),
+                  tr( "RWY %1: Excepting 01...36 [C, L, R]" ).arg( rwyNo ),
+                  QMessageBox::Ok,
+                  this );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
+}
+
+/**
+ * Report a runway takeoff or landing only error.
+ *
+ * @param rwyNo Runway number 1...4
+ */
+void WpEditDialogPageAero::reportRwyOnlyError( short rwyNo )
+{
+  QMessageBox mb( QMessageBox::Critical,
+                  tr( "RWY %1 only error" ).arg(rwyNo),
+                  tr( "RWY %1: Takeoff or landing only cannot set both!" ).arg(rwyNo),
+                  QMessageBox::Ok,
+                  this );
+
+#ifdef ANDROID
+
+  mb.show();
+  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
+                                   height()/2 - mb.height()/2 ));
+  mb.move( pos );
+
+#endif
+
+  mb.exec();
+}
+
+
+/**
+ * Checks all runway designators and only flags for correctness.
+ *
+ * @return true in case of ok otherwise false.
+ */
+bool WpEditDialogPageAero::checkRunways()
+{
+  for( int i = 0; i < 4; i++ )
+    {
+      if( chkRwyEnable[i]->isChecked() )
+        {
+          if( checkRunwayDesignator( edtRwyHeading[i]->text() ) == false )
+            {
+              reportRwyIdError( i + 1 );
+              return false;
+            }
+
+          if( chkRwyTakeoffOnly[i]->isChecked() && chkRwyLandingOnly[i]->isChecked() )
+            {
+              reportRwyOnlyError( i + 1 );
+              return false;
+            }
+        }
     }
 
-  // If the runway heading is not defined, all data are ignored!
-  if( chkRwy2Enable->isChecked() && edtRwy2Heading->value() > 0 )
-    {
-      Runway rwy;
+  return true;
+}
 
-      rwy.m_length = static_cast<float> (Altitude::convertToMeters(edtRwy2Length->text().toDouble()));
-      rwy.m_surface = getSurface( cmbRwy2Surface );
-      rwy.m_isOpen = chkRwy2Usable->isChecked();
-      rwy.m_isBidirectional = chkRwy2Both->isChecked();
+/**
+ * Check the runway designator for 01...36 [ L, C, R ].
+ *
+ * Return true in case of success otherwise false.
+ */
+bool WpEditDialogPageAero::checkRunwayDesignator( QString id )
+{
+  if( id.size() < 2 ) {
+      //qDebug() << "rwy < 2";
+      return false;
+  }
 
-      int hdg1 = edtRwy2Heading->value();
-      int hdg2 = hdg1 > 18 ? hdg1 - 18 : hdg1 + 18;
+  if( id[0].isDigit() == false || id[1].isDigit() == false ) {
+      //qDebug() << "rwy0-1 nix digit";
+      return false;
+  }
 
-      if( rwy.m_isBidirectional )
-        {
-          rwy.m_heading = (hdg1 * 256) + hdg2;
-        }
-      else
-        {
-          rwy.m_heading = (hdg1 * 256) + hdg1;
-        }
+  if( QString(id[0]).toInt() > 3 ) {
+      //qDebug() << "rwy > 3";
+      return false;
+  }
 
-      wp->rwyList.append( rwy );
-    }
+  if( id[0] == '3' && QString( id[1] ).toInt() > 6 ) {
+      //qDebug() << "rwy==3 und rwy1 > 6";
+      return false;
+  }
+
+  if( id.size() == 3 && id[2] != 'C' && id[2] != 'L' && id[2] != 'R' ) {
+      return false;
+  }
+
+  return true;
 }
 
 int WpEditDialogPageAero::getSurface(QComboBox* cbox)

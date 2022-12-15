@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2018 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -33,10 +33,14 @@ QPixmap* Airfield::m_smallFields = 0;
 
 Airfield::Airfield() :
   SinglePoint(),
+  m_icao(),
   m_winch(false),
   m_towing(false),
-  m_rwShift(0),
-  m_landable(true)
+  m_ppr(false),
+  m_private(false),
+  m_skyDiving(false),
+  m_landable(true),
+  m_rwShift(9)
  {
   createStaticIcons();
  }
@@ -47,22 +51,28 @@ Airfield::Airfield( const QString& name,
                     const BaseMapElement::objectType typeId,
                     const WGSPoint& wgsPos,
                     const QPoint& pos,
-                    const QList<Runway>& rwList,
                     const float elevation,
+                    const QList<Runway>& rwyList,
                     const QList<Frequency> frequencyList,
                     const QString country,
                     const QString comment,
-                    bool winch,
-                    bool towing,
-                    bool landable ) :
-  SinglePoint(name, shortName, typeId, wgsPos, pos, elevation, country, comment),
+                    bool hasWinch,
+                    bool hasTowing,
+                    bool isPPR,
+                    bool isPrivate,
+                    bool hasSkyDiving,
+                    bool isLandable ) :
+  SinglePoint( name, shortName, typeId, wgsPos, pos, elevation, country, comment ),
   m_icao(icao),
   m_frequencyList(frequencyList),
-  m_rwList(rwList),
-  m_winch(winch),
-  m_towing(towing),
-  m_rwShift(0),
-  m_landable(landable)
+  m_rwyList(rwyList),
+  m_winch(hasWinch),
+  m_towing(hasTowing),
+  m_ppr(isPPR),
+  m_private(isPrivate),
+  m_skyDiving(hasSkyDiving),
+  m_landable(isLandable),
+  m_rwShift(0)
 {
   createStaticIcons();
   calculateRunwayShift();
@@ -74,15 +84,16 @@ Airfield::~Airfield()
 
 void Airfield::createStaticIcons()
 {
-  QMutexLocker locker(&mutex);
+  QMutexLocker locker( &mutex );
 
   if( m_bigAirfields == 0 )
     {
       m_bigAirfields = new QPixmap[36];
 
-      for( int i = 0; i < 360/10; i++ )
+      for( int i = 0; i < 360 / 10; i++ )
         {
-	  m_bigAirfields[i] = _globalMapConfig->createAirfield( i*10, 32, false );
+          m_bigAirfields[i] = _globalMapConfig->createAirfield( i * 10, 32,
+                                                                false );
         }
     }
 
@@ -90,9 +101,9 @@ void Airfield::createStaticIcons()
     {
       m_smallAirfields = new QPixmap[36];
 
-      for( int i = 0; i < 360/10; i++ )
+      for( int i = 0; i < 360 / 10; i++ )
         {
-	  m_smallAirfields[i] = _globalMapConfig->createAirfield( i*10, 16, true );
+          m_smallAirfields[i] = _globalMapConfig->createAirfield( i * 10, 16, true );
         }
     }
 
@@ -100,9 +111,9 @@ void Airfield::createStaticIcons()
     {
       m_bigFields = new QPixmap[36];
 
-      for( int i = 0; i < 360/10; i++ )
+      for( int i = 0; i < 360 / 10; i++ )
         {
-	  m_bigFields[i] = _globalMapConfig->createLandingField( i*10, 32, false );
+          m_bigFields[i] = _globalMapConfig->createLandingField( i * 10, 32, false );
         }
     }
 
@@ -110,9 +121,9 @@ void Airfield::createStaticIcons()
     {
       m_smallFields = new QPixmap[36];
 
-      for( int i = 0; i < 360/10; i++ )
+      for( int i = 0; i < 360 / 10; i++ )
         {
-	  m_smallFields[i] = _globalMapConfig->createLandingField( i*10, 16, true );
+          m_smallFields[i] = _globalMapConfig->createLandingField( i * 10, 16, true );
         }
     }
 }
@@ -198,6 +209,8 @@ bool Airfield::drawMapElement( QPainter* targetP )
 
   curPos = glMapMatrix->map(position);
 
+  calculateRunwayShift();
+
   // draw also the small dot's in reachability color
   targetP->setPen(QPen(col, 2));
 
@@ -222,8 +235,9 @@ bool Airfield::drawMapElement( QPainter* targetP )
 
   if (glConfig->isRotatable( typeID ))
     {
-      if (typeID == BaseMapElement::UltraLight
-          || typeID == BaseMapElement::Outlanding)
+      if (typeID == BaseMapElement::UltraLight ||
+          typeID == BaseMapElement::Outlanding ||
+          typeID == BaseMapElement::Alitport )
         {
           QPixmap& pm =
               glConfig->useSmallIcons() ?

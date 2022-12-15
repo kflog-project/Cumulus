@@ -146,8 +146,8 @@ HEADERS = \
     elevationcolorimage.h \
     filetools.h \
     flighttask.h \
-    Frequency.h \
     fontdialog.h \
+    Frequency.h \
     generalconfig.h \
     gliderflightdialog.h \
     glider.h \
@@ -243,6 +243,7 @@ HEADERS = \
     taskpointeditor.h \
     TaskPointSelectionList.h \
     taskpointtypes.h \
+    ThermalPoint.h \
     time_cu.h \
     tpinfowidget.h \
     Udp.h \
@@ -290,6 +291,7 @@ SOURCES = \
     filetools.cpp \
     flighttask.cpp \
     fontdialog.cpp \
+    Frequency.cpp \
     generalconfig.cpp \
     glider.cpp \
     gliderflightdialog.cpp \
@@ -378,6 +380,7 @@ SOURCES = \
     taskpoint.cpp \
     taskpointeditor.cpp \
     TaskPointSelectionList.cpp \
+    ThermalPoint.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \
     Udp.cpp \
@@ -511,31 +514,29 @@ qtscroller {
                QtScroller/src/qtscrollevent.cpp
 }
 
-# Backport of QJson for Qt4
+# Backport of QJson for Qt4 fetched from https://github.com/eteran/qjson4
 CONFIG += qjson
 
 qjson {
 
-    DEFINES += QJSONBACKPORT_LIBRARY
-    
-    INCLUDEPATH += QJson-backport
-    
-    SOURCES += QJson-backport/qjsonwriter.cpp \
-        QJson-backport/qjsonvalue.cpp \
-        QJson-backport/qjsonparser.cpp \
-        QJson-backport/qjsonobject.cpp \
-        QJson-backport/qjsondocument.cpp \
-        QJson-backport/qjsonarray.cpp \
-        QJson-backport/qjson.cpp
-    
-    HEADERS += QJson-backport/qjsonwriter_p.h \
-        QJson-backport/qjsonvalue.h \
-        QJson-backport/qjsonparser_p.h \
-        QJson-backport/qjson_p.h \
-        QJson-backport/qjsonobject.h \
-        QJson-backport/qjsonexport.h \
-        QJson-backport/qjsondocument.h \
-        QJson-backport/qjsonarray.h
+    INCLUDEPATH += QJson4
+
+    HEADERS += QJson4/QJsonArray.h        \
+               QJson4/QJsonDocument.h     \
+               QJson4/QJsonObject.h       \
+               QJson4/QJsonParseError.h   \
+               QJson4/QJsonValue.h        \
+               QJson4/QJsonValueRef.h     \
+               QJson4/QJsonParser.h       \
+               QJson4/QJsonRoot.h
+
+    SOURCES += QJson4/QJsonArray.cpp      \
+               QJson4/QJsonDocument.cpp   \
+               QJson4/QJsonObject.cpp     \
+               QJson4/QJsonParseError.cpp \
+               QJson4/QJsonValue.cpp      \
+               QJson4/QJsonValueRef.cpp   \
+               QJson4/QJsonParser.cpp
 }
 
 # Files managed and needed by Necessitas

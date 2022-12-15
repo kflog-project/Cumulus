@@ -8,15 +8,14 @@
 **
 **   Copyright (c):  2001      by Heiner Lamprecht,
 **                   2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef MAP_CONFIG_H
-#define MAP_CONFIG_H
+#pragma once
 
 #include <QObject>
 #include <QPen>
@@ -346,8 +345,8 @@ private:
     QBrush ctrCBrushList[4];
     QPen ctrDPenList[4];
     QBrush ctrDBrushList[4];
-    QPen lowFPenList[4];
-    QBrush lowFBrushList[4];
+    QPen suaPenList[4];
+    QBrush suaBrushList[4];
     QPen dangerPenList[4];
     QBrush dangerBrushList[4];
     QPen prohibitedPenList[4];
@@ -403,7 +402,7 @@ private:
     bool ctrDBorder[4];
     bool dangerBorder[4];
     bool prohibitedBorder[4];
-    bool lowFBorder[4];
+    bool suaBorder[4];
     bool restrBorder[4];
     bool rmzBorder[4];
     bool tmzBorder[4];
@@ -452,4 +451,3 @@ private:
 
 extern MapConfig* _globalMapConfig;
 
-#endif

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2021 by Axel Pauli
+ **                   2007-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,7 +18,6 @@
 #include <cmath>
 #include <iostream>
 
-#include <QtGui>
 #include <QApplication>
 
 #include "altitude.h"
@@ -30,10 +29,6 @@
 #include "preflightwaypointpage.h"
 #include "speed.h"
 #include "time_cu.h"
-
-#ifdef MAEMO
-#include "maemostyle.h"
-#endif
 
 #ifdef ANDROID
 #include "androidstyle.h"
@@ -107,17 +102,9 @@ void GeneralConfig::load()
   // Main window properties
   beginGroup("MainWindow");
 
-#ifdef TOMTOM
-  _windowSize            = value("Geometry", QSize(480, 272)).toSize();
-#else
   _windowSize            = value("Geometry", QSize(800, 480)).toSize();
-#endif
-
   _mapSideFrameColor     = QColor( value("MapSideFrameColor", INFOBOX_FRAME_COLOR).toString() );
 
-#ifdef MAEMO
-  _guiStyle              = value("Style", "Plastique").toString();
-#else
 #ifdef ANDROID
   _guiStyle              = value("Style", "Android").toString();
 #else
@@ -125,7 +112,6 @@ void GeneralConfig::load()
   _guiStyle              = value("Style", "Plastique").toString();
 #else
   _guiStyle              = value("Style", "fusion").toString();
-#endif
 #endif
 #endif
 
@@ -178,7 +164,7 @@ void GeneralConfig::load()
   _mapDrawingEnabled[BaseMapElement::Prohibited]   = value("checkProhibited", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Rmz]          = value("checkRMZ", true).toBool();
   _mapDrawingEnabled[BaseMapElement::Tmz]          = value("checkTMZ", true).toBool();
-  _mapDrawingEnabled[BaseMapElement::LowFlight]    = value("checkLowFlight", true).toBool();
+  _mapDrawingEnabled[BaseMapElement::Sua]          = value("checkSUA", true).toBool();
   _mapDrawingEnabled[BaseMapElement::WaveWindow]   = value("checkWaveWindow", false).toBool();
   _mapDrawingEnabled[BaseMapElement::GliderSector] = value("checkGliderSector", true).toBool();
 
@@ -201,7 +187,7 @@ void GeneralConfig::load()
   _borderColorProhibited     = QColor( value("borderColorProhibited", PROHIBITED_COLOR).toString() );
   _borderColorRMZ            = QColor( value("borderColorRMZ", RMZ_COLOR).toString() );
   _borderColorTMZ            = QColor( value("borderColorTMZ", TMZ_COLOR).toString() );
-  _borderColorLowFlight      = QColor( value("borderColorLowFlight", LOWF_COLOR).toString() );
+  _borderColorSUA            = QColor( value("borderColorSUA", SUA_COLOR).toString() );
   _borderColorGliderSector   = QColor( value("borderColorGliderSector", GLIDER_SECTOR_COLOR).toString() );
 
   // Airspace fill (brush) draw color
@@ -223,7 +209,7 @@ void GeneralConfig::load()
   _fillColorProhibited    = QColor( value("fillColorProhibited", PROHIBITED_BRUSH_COLOR).toString() );
   _fillColorRMZ           = QColor( value("fillColorRMZ", RMZ_BRUSH_COLOR).toString() );
   _fillColorTMZ           = QColor( value("fillColorTMZ", TMZ_BRUSH_COLOR).toString() );
-  _fillColorLowFlight     = QColor( value("fillColorLowFlight", LOWF_BRUSH_COLOR).toString() );
+  _fillColorSUA           = QColor( value("fillColorSUA", SUA_BRUSH_COLOR).toString() );
   _fillColorGliderSector  = QColor( value("fillColorGliderSector", GLIDER_SECTOR_BRUSH_COLOR).toString() );
 
   _airspaceWarningGeneral = value("enableAirspaceWarning", true).toBool();
@@ -277,7 +263,7 @@ void GeneralConfig::load()
   _bRecordInterval        = value( "B-RecordLoggerInterval", 3 ).toInt();
   _kRecordInterval        = value( "K-RecordLoggerInterval", 0 ).toInt();
   _loggerAutostartMode    = value( "LoggerAutostartMode", true ).toBool();
-  _tas                    = Speed(value( "TAS", 100.0 ).toDouble());
+  _tas                    = Speed(value( "TAS", 100.0 / 3.6 ).toDouble());
   _currentTaskName        = value( "CurrentTask", "").toString();
   _flightLogbookFileName  = value( "FlightLogbookFileName", "cumulus-logbook.txt" ).toString();
   _autoLoggerStartSpeed   = value( "AutoLoggerStartSpeed", 35.0).toDouble();
@@ -511,11 +497,7 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Information");
-#ifdef MAEMO4
   _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
-#else
-  _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
-#endif
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
   _airspaceDisplayTime   = value( "AirspaceDisplayTime",
@@ -695,7 +677,7 @@ void GeneralConfig::save()
   setValue("checkProhibited", _mapDrawingEnabled[BaseMapElement::Prohibited]);
   setValue("checkRMZ", _mapDrawingEnabled[BaseMapElement::Rmz]);
   setValue("checkTMZ", _mapDrawingEnabled[BaseMapElement::Tmz]);
-  setValue("checkLowFlight", _mapDrawingEnabled[BaseMapElement::LowFlight]);
+  setValue("checkSUA", _mapDrawingEnabled[BaseMapElement::Sua]);
   setValue("checkGliderSector", _mapDrawingEnabled[BaseMapElement::GliderSector]);
 
   // Airspace border draw color
@@ -717,7 +699,7 @@ void GeneralConfig::save()
   setValue("borderColorProhibited",     _borderColorProhibited.name());
   setValue("borderColorRMZ",            _borderColorRMZ.name());
   setValue("borderColorTMZ",            _borderColorTMZ.name());
-  setValue("borderColorLowFlight",      _borderColorLowFlight.name());
+  setValue("borderColorSUA",            _borderColorSUA.name());
   setValue("borderColorGliderSector",   _borderColorGliderSector.name());
 
   // Airspace fill (brush) draw color
@@ -738,7 +720,7 @@ void GeneralConfig::save()
   setValue("fillColorProhibited",     _fillColorProhibited.name());
   setValue("fillColorRMZ",            _fillColorRMZ.name());
   setValue("fillColorTMZ",            _fillColorTMZ.name());
-  setValue("fillColorLowFlight",      _fillColorLowFlight.name());
+  setValue("fillColorSUA",            _fillColorSUA.name());
   setValue("fillColorGliderSector",   _fillColorGliderSector.name());
 
   setValue("enableAirspaceWarning", _airspaceWarningGeneral);
@@ -1725,52 +1707,13 @@ void GeneralConfig::setMapRootDir( QString newValue )
  */
 QString GeneralConfig::getUserDefaultRootDir()
 {
-  QString root = QDir::homePath();
-
-#ifdef MAEMO
-
-  QStringList paths;
-
-  // Look if MMCs are mounted
-  paths << "/media/mmc1"
-        << "/media/mmc2";
-
-  // Check, if root path is mounted.
-  for( int i = 0; i < paths.size(); i++ )
-    {
-      if( ! HwInfo::isMounted( paths.at(i)) )
-        {
-          continue;
-        }
-
-      root = paths.at(i);
-
-      break;
-    }
-
-  // That is the fall back solution but normally unfit for map files on a
-  // N800 or N810 due to the limited space on that file system.
-  // For N900 it is a good location because the file system lays there
-  // on the internal MMC.
-  if( root == QDir::homePath() )
-    {
-      root += "/MyDocs"; // Maemo user default directory
-    }
-
-#endif
-
-  // Note under Android $HOME is set to the root of user's external storage directory
-#ifndef ANDROID
-  root += "/Cumulus"; // Cumulus default user root directory
-#endif
-
-  return root;
+  return QDir::homePath();
 }
 
 /** Returns the expected places of map directories
     There are: 1. Map directory defined by user
-               2. $HOME/cumulus/maps (desktop) or
-                  /media/mmc.../Cumulus/maps resp. $HOME/MyDocs/Cumulus/maps (Maemo)
+               2. $HOME/Cumulus/maps (desktop) or
+                  /media/mmc.../Cumulus/maps
 */
 QStringList GeneralConfig::getMapDirectories()
 {
@@ -1855,24 +1798,6 @@ void GeneralConfig::setUserDataDirectory( QString newDir )
 /** Get the GPS default device depending on the hardware type. */
 QString GeneralConfig::getGpsDefaultDevice()
 {
-#ifdef MAEMO
-
-  if( HwInfo::instance()->getSubType() == HwInfo::n800 )
-    {
-      return MAEMO_LOCATION_SERVICE;
-    }
-
-  if( HwInfo::instance()->getSubType() == HwInfo::n810 )
-    {
-      return MAEMO_LOCATION_SERVICE;
-    }
-
-  if( HwInfo::instance()->getSubType() == HwInfo::n900 )
-    {
-      return MAEMO_LOCATION_SERVICE;
-    }
-#endif
-
   // Default in unknown case is the serial device
   return "/dev/ttyS0";
 }
@@ -2150,12 +2075,7 @@ void GeneralConfig::setLanguage( const QString& newValue )
   if( ! _language.isEmpty() )
     {
       QString langFile = "cumulus_" + _language + ".qm";
-
-#ifdef ANDROID
       QString langDir = ":/locale/" + _language;
-#else
-      QString langDir = ":/locale/" + _language;
-#endif
 
       // Load GUI translation file
       if( ! cumulusTranslator )

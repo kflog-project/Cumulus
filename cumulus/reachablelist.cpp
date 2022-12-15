@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by Eckhard Völlm,
- **                   2008-2021 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -166,9 +166,8 @@ void ReachableList::addItemsToList(enum MapContents::ListID item)
 
           if( wpList.at(i).rwyList.size() > 0 )
             {
-              isLandable = wpList.at(i).rwyList.at(0).m_isOpen;
+              isLandable = wpList.at(i).rwyList.at(0).isOpen();
             }
-
 
           // check if point is a potential reachable candidate at best LD
           if ( (distance.getKilometers() > _maxReach ) ||

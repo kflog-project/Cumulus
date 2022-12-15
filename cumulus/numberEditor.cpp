@@ -43,6 +43,7 @@ NumberEditor::NumberEditor( QWidget *parent,
   m_allowEmptyResult(false),
   m_validator(0),
   m_inputMask(""),
+  m_minWidth(INT_MIN),
   m_maxLength(32767),
   m_intMax(false, INT_MAX),
   m_intMin(false, INT_MIN),
@@ -83,9 +84,22 @@ void NumberEditor::showEvent( QShowEvent* event )
       setMaximumHeight( size.height() );
     }
 
+  if( m_minWidth == INT_MIN )
+    {
+      // Default value, if not set.
+      m_minWidth = 6;
+    }
+
+  QString ms;
+
   // Set minimum width
+  for(int i=0; i < m_minWidth; i++ )
+    {
+      ms += 'M';
+    }
+
   QFontMetrics fm( font() );
-  int strWidth = fm.width( QString( "MMMMMM" ) );
+  int strWidth = fm.width( QString( ms ) );
   setMinimumWidth( strWidth );
 
   QLabel::showEvent( event );

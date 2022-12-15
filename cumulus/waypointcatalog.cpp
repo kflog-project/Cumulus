@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2021 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -18,17 +18,16 @@
 #include <unistd.h>
 
 #include <QtGui>
-#include <QtXml>
 
 #include "distance.h"
 #include "filetools.h"
 #include "Frequency.h"
 #include "generalconfig.h"
-#include "OpenAip.h"
 #include "mainwindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
 #include "radiopoint.h"
+#include "ThermalPoint.h"
 #include "waitscreen.h"
 #include "waypointcatalog.h"
 
@@ -45,6 +44,7 @@ extern MapMatrix* _globalMapMatrix;
 #define WP_FILE_FORMAT_ID_5 105 // runway length stored as float to avoid rounding issues between ft - m
 #define WP_FILE_FORMAT_ID_6 106 // frequency list introduced
 #define WP_FILE_FORMAT_ID_7 107 // runway name added
+#define WP_FILE_FORMAT_ID_8 108 // frequency and runway attributes changed
 
 // Note! If you introduce a new WP_FILE_FORMAT_ID, consider readOldVersion
 // handling!
@@ -243,16 +243,41 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       else
         {
           quint8 listSize;
-          float frequency;
-          QString type;
-
           in >> listSize;
 
           for( int i = 0; i < (int) listSize; i++ )
             {
+              float frequency;
               in >> frequency;
-              in >> type;
-              frequencyList.append( Frequency( frequency, type) );
+
+              if( fileFormat < WP_FILE_FORMAT_ID_8 )
+                {
+                  // Old type is set to unknown.
+                  QString type;
+                  in >> type;
+
+                  Frequency fre;
+                  fre.setValue( frequency );
+                  fre.setUnit( Frequency::MHz );
+                  fre.setType( Frequency::Unknown );
+                  frequencyList.append( fre );
+                }
+              else
+                {
+                  quint8 unit;
+                  quint8 type;
+                  QString userType;
+                  bool primary;
+                  bool publicUse;
+                  in >> unit;
+                  in >> type;
+                  ShortLoad(in, userType);
+                  in >> primary;
+                  in >> publicUse;
+
+                  Frequency freq = Frequency( frequency, unit, type, userType, primary, publicUse );
+                  frequencyList.append( freq );
+                }
             }
         }
 
@@ -280,17 +305,21 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       if( fileFormat >= WP_FILE_FORMAT_ID_4 )
         {
           // The runway list has to be read
-          QByteArray utf8_temp;
-          QString name;
           quint8 listSize;
+          QString name;
           quint16 ilength;
           float   flength;
           quint16 iwidth;
           float   fwidth;
           quint16 heading;
-          quint8 surface;
-          quint8 isOpen;
-          quint8 isBidirectional;
+
+          bool alignedTrueNorth = false; // new in V 8
+          quint8 operations = Runway::Active; // new in V 8
+          quint8 turnDirection = Runway::Both;  // new in V 8
+          bool mainRunway = true; // new in V 8
+          bool takeOffOnly = false; // new in V 8
+          bool landingOnly = false; // new in V 8
+          quint8 surface = Runway::Unknown;
 
           in >> listSize;
 
@@ -299,8 +328,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
               if( fileFormat >= WP_FILE_FORMAT_ID_7 )
                 {
                   // read runway name
-                  ShortLoad(in, utf8_temp);
-                  name = QString::fromUtf8(utf8_temp);
+                  ShortLoad(in, name);
                 }
 
               if( fileFormat >= WP_FILE_FORMAT_ID_5 )
@@ -317,12 +345,32 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
                 }
 
               in >> heading;
-              in >> surface;
-              in >> isOpen;
-              in >> isBidirectional;
 
-              Runway rwy( name, flength, heading, surface, isOpen, isBidirectional, fwidth );
-              rwyList.append(rwy);
+              if( fileFormat >= WP_FILE_FORMAT_ID_8 )
+                {
+                  in >> alignedTrueNorth;
+                  in >> operations;
+                  in >> turnDirection;
+                  in >> mainRunway;
+                  in >> takeOffOnly;
+                  in >> landingOnly;
+                }
+
+              in >> surface;
+
+              Runway rwy( name,
+                          flength,
+                          fwidth,
+                          heading,
+                          alignedTrueNorth,
+                          operations,
+                          turnDirection,
+                          mainRunway,
+                          takeOffOnly,
+                          landingOnly,
+                          surface );
+
+              rwyList.append( rwy );
             }
         }
 
@@ -363,7 +411,9 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
           if( fileFormat < WP_FILE_FORMAT_ID_6 )
             {
-              wp.addFrequency( Frequency(wpFrequency3) );
+              Frequency freq;
+              freq.setValue( wpFrequency3 );
+              wp.addFrequency( Frequency( freq ) );
             }
           else
             {
@@ -384,7 +434,10 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
               if ( wpRunway > 0 )
                 {
                   // Runway heading must be > 0 to be a right runway.
-                  Runway rwy( "", wpLength3, wpRunway, wpSurface, true, true );
+                  Runway rwy;
+                  rwy.setLength( wpLength3 );
+                  rwy.setSurface( wpSurface );
+                  rwy.setHeading( (wpRunway & 0xFF) * 10 );
                   wp.rwyList.append( rwy );
                 }
             }
@@ -461,7 +514,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
       // write file header
       out << quint32( KFLOG_FILE_MAGIC );
       out << qint8( FILE_TYPE_WAYPOINTS );
-      out << quint16( WP_FILE_FORMAT_ID_7 );
+      out << quint16( WP_FILE_FORMAT_ID_8 );
       out << qint32( wpList.size() );
 
       for (int i = 0; i < wpList.size(); i++)
@@ -486,37 +539,15 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           out << wpElevation;
 
           // The frequency list is saved
-          out << quint8( wp.frequencyList.size() );
-
-          for( int i = 0; i < wp.frequencyList.size(); i++ )
-            {
-              Frequency fre = wp.frequencyList.at(i);
-
-              out << fre.getFrequency();
-              out << fre.getType();
-            }
+          Frequency::saveFrequencies( out, wp.getFrequencyList() );
 
           out << wpComment;
           out << wpImportance;
           out << wp.country;
 
           // The runway list is saved
-          out << quint8( wp.rwyList.size() );
-
-          for( int i = 0; i < wp.rwyList.size(); i++ )
-            {
-              Runway rwy = wp.rwyList.at(i);
-
-              // element name
-              ShortSave(out, rwy.getName().toUtf8());
-              out << rwy.m_length;
-              out << rwy.m_width;
-              out << quint16( rwy.m_heading );
-              out << quint8( rwy.m_surface );
-              out << quint8( rwy.m_isOpen );
-              out << quint8( rwy.m_isBidirectional );
-            }
-        }
+          Runway::saveRunways( out, wp.rwyList );
+       }
 
       file.close();
     }
@@ -533,616 +564,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
   QApplication::restoreOverrideCursor();
   return ok;
 }
-
-
-/** read in KFLog xml data catalog from file name */
-int WaypointCatalog::readXml( QString catalog, QList<Waypoint>* wpList, QString& errorMsg )
-{
-  QString fName;
-
-  if( catalog.isEmpty() )
-    {
-      // use default file name
-      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
-              GeneralConfig::instance()->getXmlWaypointFileName();
-    }
-  else
-    {
-      fName = catalog;
-    }
-
-  if( _globalMapMatrix == 0 )
-    {
-      qWarning( "WaypointCatalog::readXml: Global pointer '_globalMapMatrix' is Null!" );
-      return -1;
-    }
-
-  QFile file( fName );
-
-  if( ! file.exists() )
-    {
-      qWarning() << "WaypointCatalog::readXml: Catalog"
-                 << catalog
-                 << "not found!";
-      return -1;
-    }
-
-  if( file.size() == 0 )
-    {
-      return 0;
-    }
-
-  if( ! file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      qWarning() << "WaypointCatalog::readXml(): Cannot open catalog"
-                 << catalog;
-      return -1;
-    }
-
-  QString errorText;
-  int errorLine;
-  int errorColumn;
-  QDomDocument doc;
-
-  bool ok = doc.setContent( &file, false, &errorText, &errorLine, &errorColumn );
-
-  if( ! ok )
-    {
-      errorMsg = QString("<html>XML Error at line %1 column %2:<br><br>%3</html>")
-                 .arg(errorLine).arg(errorColumn).arg(errorText);
-
-      qWarning() << "WaypointCatalog::readXml(): XML parse error in File="
-                 << catalog
-                 << "Error=" << errorText
-                 << "Line=" << errorLine
-                 << "Column=" << errorColumn;
-      return -1;
-    }
-
-  if( doc.doctype().name() != "KFLogWaypoint" )
-    {
-      qWarning() << "WaypointCatalog::readXml(): Wrong XML format of file"
-                 << catalog;
-      return -1;
-    }
-
-  QDomNodeList nl = doc.elementsByTagName("Waypoint");
-
-  int wpCount = 0;
-
-  for( int i = 0; i < nl.count(); i++ )
-    {
-      QDomNamedNodeMap nm =  nl.item(i).attributes();
-      Waypoint w;
-
-      w.name = nm.namedItem("Name").toAttr().value().left(8).toUpper();
-      w.description = nm.namedItem("Description").toAttr().value();
-      w.icao = nm.namedItem("ICAO").toAttr().value().toUpper();
-      w.type = nm.namedItem("Type").toAttr().value().toInt();
-      w.wgsPoint.setLat(nm.namedItem("Latitude").toAttr().value().toInt());
-      w.wgsPoint.setLon(nm.namedItem("Longitude").toAttr().value().toInt());
-      w.projPoint = _globalMapMatrix->wgsToMap(w.wgsPoint);
-      w.elevation = nm.namedItem("Elevation").toAttr().value().toFloat();
-      w.addFrequency(nm.namedItem("Frequency").toAttr().value().toFloat());
-
-      float length = nm.namedItem("Length").toAttr().value().toFloat();
-      int surface = (enum Runway::SurfaceType)nm.namedItem("Surface").toAttr().value().toInt();
-
-      int rdir = nm.namedItem("Runway").toAttr().value().toInt();
-
-      if( rdir > 0 )
-        {
-          int rwh1 = rdir;
-          int rwh2 = rwh1 <= 18 ? rwh1+18 : rwh1-18;
-
-          // put both directions into one variable, each in a byte
-          int heading = (rwh1) * 256 + (rwh2);
-
-          // Store runways in the runway list.
-          Runway rwy( "", length, heading, surface, true, true );
-          w.rwyList.append( rwy );
-        }
-
-      w.comment = nm.namedItem("Comment").toAttr().value();
-      w.priority = (enum Waypoint::Priority) nm.namedItem("Importance").toAttr().value().toInt();
-
-      if( nm.contains("Country") )
-        {
-          w.country = nm.namedItem("Country").toAttr().value();
-        }
-
-      // Check filter, if type should be taken
-      if( ! takeType( (enum BaseMapElement::objectType) w.type ) )
-        {
-          continue;
-        }
-
-      // Check radius filter
-      if( ! takePoint( w.wgsPoint ) )
-        {
-          // Distance is greater than the defined radius around the center point.
-          continue;
-        }
-
-      if( wpList )
-        {
-          w.wpListMember = true;
-          wpList->append( w );
-        }
-
-      wpCount++;
-    }
-
-  file.close();
-
-  return wpCount;
-}
-
-/** write out KFLog xml data catalog to file name */
-bool WaypointCatalog::writeXml( QString catalog, QList<Waypoint>& wpList )
-{
-  QString fName;
-
-  if( catalog.isEmpty() )
-    {
-      // use default file name
-      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
-              GeneralConfig::instance()->getXmlWaypointFileName();
-
-      // Make a backup of an existing file
-      if( QFile::exists( fName ) )
-        {
-          QString oldFn = GeneralConfig::instance()->getUserDataDirectory() +
-                          "/Cumulus_backup.kflogwp";
-
-          QFile::remove( oldFn );
-          QFile::rename( fName, oldFn );
-        }
-    }
-  else
-    {
-      fName = catalog;
-    }
-
-  bool ok = true;
-
-  QDomDocument doc( "KFLogWaypoint" );
-  QDomElement root = doc.createElement( "KFLogWaypoint" );
-  QDomElement child;
-
-  root.setAttribute( "Application", "Cumulus" );
-  root.setAttribute( "Creator", getlogin() );
-  root.setAttribute( "Time", QTime::currentTime().toString( "HH:mm:mm" ) );
-  root.setAttribute( "Date", QDate::currentDate().toString( Qt::ISODate ) );
-  root.setAttribute( "Version", "1.0" );
-  root.setAttribute( "Entries", wpList.size() );
-
-  doc.appendChild(root);
-
-  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  for( int i = 0; i < wpList.size(); i++ )
-    {
-      Waypoint& w = wpList[i];
-
-      child = doc.createElement( "Waypoint" );
-
-      child.setAttribute( "Name", w.name.left(8).toUpper() );
-      child.setAttribute( "Description", w.description );
-      child.setAttribute( "ICAO", w.icao );
-      child.setAttribute( "Type", w.type );
-      child.setAttribute( "Latitude", w.wgsPoint.lat() );
-      child.setAttribute( "Longitude", w.wgsPoint.lon() );
-      child.setAttribute( "Elevation", w.elevation );
-
-      if( w.frequencyList.isEmpty() )
-        {
-          child.setAttribute( "Frequency", 0 );
-        }
-      else
-        {
-          child.setAttribute( "Frequency", w.frequencyList.at(0).getFrequency() );
-        }
-
-      child.setAttribute( "Landable", w.rwyList.size() > 0 ? true : false );
-
-      // Only the main runway is stored as 10...36
-      if( w.rwyList.size() )
-        {
-          Runway rwy = w.rwyList.first();
-
-          child.setAttribute( "Runway", rwy.m_heading/256 );
-          child.setAttribute( "Length", rwy.m_length );
-          child.setAttribute( "Surface", rwy.m_surface );
-        }
-      else
-        {
-          child.setAttribute( "Runway", 0 );
-          child.setAttribute( "Length", 0 );
-          child.setAttribute( "Surface", 0 );
-        }
-
-      child.setAttribute( "Comment", w.comment );
-      child.setAttribute( "Importance", w.priority );
-      child.setAttribute( "Country", w.country );
-
-      root.appendChild( child );
-    }
-
-  QFile file(fName);
-
-  if( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
-    {
-      const int IndentSize = 4;
-
-      QTextStream out( &file );
-      doc.save( out, IndentSize );
-      file.close();
-
-      qDebug() << "WaypointCatalog::writeXml():"
-               << wpList.count() << "entries written to"
-               << fName;
-    }
-  else
-    {
-      qWarning("WaypointCatalog::writeXml(): Open File Error");
-      ok = false;
-    }
-
-  QApplication::restoreOverrideCursor();
-  return ok;
-}
-
-int WaypointCatalog::readOpenAip( QString catalog,
-                                  QList<Waypoint>* wpList,
-                                  QString& errorInfo )
-{
-  qDebug() << "WaypointCatalog::readOpenAip" << catalog;
-
-  QFile file(catalog);
-
-  if( !file.exists() )
-    {
-      errorInfo = QObject::tr("File does not exist!");
-      return 0;
-    }
-
-  if( file.size() == 0 )
-    {
-      errorInfo = QObject::tr("File is empty!");
-      return 0;
-    }
-
-  OpenAip openAip;
-
-  // We have to look, which data is contained in the passed file to be read.
-  QString dataFormat;
-  QString dataElement;
-
-  if( ! openAip.getRootElement( catalog, dataFormat, dataElement) )
-    {
-      errorInfo = QObject::tr("Invalid OpenAip data format!");
-      return 0;
-    }
-
-  if( dataElement == "NAVAIDS" )
-    {
-      return readOpenAipNavAids( catalog, wpList, errorInfo );
-    }
-  else if( dataElement == "HOTSPOTS" )
-    {
-      return readOpenAipHotspots( catalog, wpList, errorInfo );
-    }
-  else if( dataElement == "WAYPOINTS" )
-    {
-      return readOpenAipAirfields( catalog, wpList, errorInfo );
-    }
-  else
-    {
-      errorInfo = QObject::tr("OpenAip %1 is unsupported!").arg(dataElement);
-      return 0;
-    }
-}
-
-int WaypointCatalog::readOpenAipNavAids( QString catalog,
-                                         QList<Waypoint>* wpList,
-                                         QString& errorInfo )
-{
-  OpenAip openAip;
-  QList<RadioPoint> navAidList;
-
-  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  if( ! openAip.readNavAids( catalog, navAidList, errorInfo, false ) )
-    {
-      QApplication::restoreOverrideCursor();
-      return 0;
-    }
-
-  if( navAidList.size() == 0 )
-    {
-      // navAid list is empty
-      QApplication::restoreOverrideCursor();
-      return 0;
-    }
-
-  QSet<QString> namesInUse;
-  int wpCount = 0;
-
-  for( int i = 0; i < navAidList.size(); i++ )
-    {
-      RadioPoint& rp = navAidList[i];
-
-      // Check filter, if type should be taken
-      if( ! takeType( rp.getTypeID() ) )
-        {
-          continue;
-        }
-
-      // Check radius filter
-      WGSPoint wgsp = rp.getWGSPosition();
-
-      if( ! takePoint( wgsp) )
-        {
-          // Distance is greater than the defined radius around the center point.
-          continue;
-        }
-
-      if( wpList == 0 )
-        {
-          // Only the list size is desired and returned.
-          wpCount++;
-          continue;
-        }
-
-      Waypoint wp;
-      wp.name = rp.getWPName();
-
-      // We do check, if the waypoint name is already in use because
-      // short names are not always unique.
-      if( namesInUse.contains( wp.name ) )
-        {
-          for( int i = 0; i < 100; i++ )
-            {
-              // Hope that not more as 100 same names will be exist.
-              QString number = QString::number(i);
-               wp.name = wp.name.left(wp.name.size() - number.size()) + number;
-
-              if( namesInUse.contains( wp.name ) == false )
-                {
-                  break;
-                }
-            }
-        }
-
-      // Copy all navAid data to waypoint object
-      wp.type = rp.getTypeID();
-      wp.wgsPoint = rp.getWGSPosition();
-      wp.projPoint = rp.getPosition();
-      wp.description = rp.getName();
-      wp.icao = rp.getICAO();
-      wp.comment = rp.getComment();
-      wp.elevation = rp.getElevation();
-      wp.frequencyList = rp.getFrequencyList();
-      wp.priority = Waypoint::Low;
-      wp.country = rp.getCountry();
-
-      if( wp.comment.size() > 0 )
-        {
-          wp.comment += "\n";
-        }
-
-      wp.comment += "Channel " + rp.getChannel();
-
-      // Add waypoint to list
-      wp.wpListMember = true;
-      wpList->append( wp );
-
-      // Store used waypoint name in set.
-      namesInUse.insert( wp.name );
-      wpCount++;
-    }
-
-  QApplication::restoreOverrideCursor();
-  return wpCount;
-}
-
-int WaypointCatalog::readOpenAipHotspots( QString catalog,
-                                          QList<Waypoint>* wpList,
-                                          QString& errorInfo )
-{
-  OpenAip openAip;
-  QList<SinglePoint> hotspotList;
-
-  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  if( ! openAip.readHotspots( catalog, hotspotList, errorInfo ) )
-    {
-      QApplication::restoreOverrideCursor();
-      return 0;
-    }
-
-  if( hotspotList.size() == 0 )
-    {
-      // navAid list is empty
-      QApplication::restoreOverrideCursor();
-      return 0;
-    }
-
-  QSet<QString> namesInUse;
-  int wpCount = 0;
-
-  for( int i = 0; i < hotspotList.size(); i++ )
-    {
-      const SinglePoint& sp = hotspotList.at(i);
-
-      // Check filter, if type should be taken
-      if( ! takeType( sp.getTypeID() ) )
-        {
-          continue;
-        }
-
-      // Check radius filter
-      WGSPoint wgsp = sp.getWGSPosition();
-
-      if( ! takePoint( wgsp) )
-        {
-          // Distance is greater than the defined radius around the center point.
-          continue;
-        }
-
-      if( wpList == 0 )
-        {
-          // Only the list size is desired and returned.
-          wpCount++;
-          continue;
-        }
-
-      Waypoint wp;
-      wp.name = sp.getWPName();
-
-      // We do check, if the waypoint name is already in use because
-      // short names are not always unique.
-      if( namesInUse.contains( wp.name ) )
-        {
-          for( int i = 0; i < 100; i++ )
-            {
-              // Hope that not more as 100 same names will be exist.
-              QString number = QString::number(i);
-               wp.name = wp.name.left(wp.name.size() - number.size()) + number;
-
-              if( namesInUse.contains( wp.name ) == false )
-                {
-                  break;
-                }
-            }
-        }
-
-      // Copy all hotspot data into the waypoint object
-      wp.type = sp.getTypeID();
-      wp.wgsPoint = sp.getWGSPosition();
-      wp.projPoint = sp.getPosition();
-      wp.description = sp.getName();
-      wp.comment = sp.getComment();
-      wp.elevation = sp.getElevation();
-      wp.priority = Waypoint::Low;
-      wp.country = sp.getCountry();
-
-      // Add waypoint to list
-      wp.wpListMember = true;
-      wpList->append( wp );
-
-      // Store used waypoint name in set.
-      namesInUse.insert( wp.name );
-      wpCount++;
-    }
-
-  QApplication::restoreOverrideCursor();
-  return wpCount;
-}
-
-int WaypointCatalog::readOpenAipAirfields( QString catalog,
-                                           QList<Waypoint>* wpList,
-                                           QString& errorInfo )
-{
-  OpenAip openAip;
-  QList<Airfield> airfieldList;
-
-  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
-
-  if( ! openAip.readAirfields( catalog, airfieldList, errorInfo ) )
-    {
-      QApplication::restoreOverrideCursor();
-      return 0;
-    }
-
-  if( airfieldList.size() == 0 )
-    {
-      // navAid list is empty
-      QApplication::restoreOverrideCursor();
-      return 0;
-    }
-
-  QSet<QString> namesInUse;
-  int wpCount = 0;
-
-  for( int i = 0; i < airfieldList.size(); i++ )
-    {
-      Airfield& af = airfieldList[i];
-
-      // Check filter, if type should be taken
-      if( ! takeType( af.getTypeID() ) )
-        {
-          continue;
-        }
-
-      // Check radius filter
-      WGSPoint wgsp = af.getWGSPosition();
-
-      if( ! takePoint( wgsp) )
-        {
-          // Distance is greater than the defined radius around the center point.
-          continue;
-        }
-
-      if( wpList == 0 )
-        {
-          // Only the list size is desired and returned.
-          wpCount++;
-          continue;
-        }
-
-      Waypoint wp;
-      wp.name = af.getWPName();
-
-      // We do check, if the waypoint name is already in use because
-      // short names are not always unique.
-      if( namesInUse.contains( wp.name ) )
-        {
-          for( int i = 0; i < 100; i++ )
-            {
-              // Hope that not more as 100 same names will be exist.
-              QString number = QString::number(i);
-               wp.name = wp.name.left(wp.name.size() - number.size()) + number;
-
-              if( namesInUse.contains( wp.name ) == false )
-                {
-                  break;
-                }
-            }
-        }
-
-      // Copy all airfield data into the waypoint object
-      wp.type = af.getTypeID();
-      wp.wgsPoint = af.getWGSPosition();
-      wp.projPoint = af.getPosition();
-      wp.description = af.getName();
-      wp.comment = af.getComment();
-      wp.elevation = af.getElevation();
-      wp.priority = Waypoint::Low;
-      wp.country = af.getCountry();
-      wp.icao = af.getICAO();
-      wp.frequencyList = af.getFrequencyList();
-
-      if( af.getRunwayList().size() > 0 )
-        {
-          // Take over the whole runway list.
-          wp.rwyList = af.getRunwayList();
-        }
-
-      // Add waypoint to list
-      wp.wpListMember = true;
-      wpList->append( wp );
-
-      // Store used waypoint name in set.
-      namesInUse.insert( wp.name );
-      wpCount++;
-    }
-
-  QApplication::restoreOverrideCursor();
-  return wpCount;
-}
-
 
 int WaypointCatalog::readBgaDos( QString catalog,
                                  QList<Waypoint>* wpList,
@@ -1825,7 +1246,14 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
   return wpCount;
 }
 
-/** read a waypoint catalog from a SeeYou cup file, only waypoint part */
+/**
+ * Read a waypoint catalog from a SeeYou cup file, only the waypoint part.
+ *
+ * Format desciption, see here:
+ *
+ * https://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf
+ *
+ */
 int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 {
   QFile file(catalog);
@@ -1884,11 +1312,50 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
   QTextStream in(&file);
   in.setCodec( "ISO 8859-15" );
 
+  QString cupFormatMinimal = "name,code,country,lat,lon,elev,style";
+  QString cupFormatOld = cupFormatMinimal + ",rwdir,rwlen,freq,desc";
+  QString cupFormat = cupFormatMinimal + ",rwdir,rwlen,rwwidth,freq,desc";
+
+  int old = 0;
+
   while( !in.atEnd() )
     {
       QString line = in.readLine().trimmed();
 
+      if( line[0] == '#' )
+        {
+          // ignore comments at the beginning of the file
+          continue;
+        }
+
       lineNo++;
+
+      if( lineNo == 1 )
+        {
+          // Check first line, describing cup format
+          if( line.size() > cupFormatMinimal.size() &&
+              line.startsWith( cupFormat ) == true )
+            {
+              old = 0;
+            }
+          else if( line.size() > cupFormatMinimal.size() &&
+                   line.startsWith( cupFormatOld ) == true )
+            {
+              old = 1;
+            }
+          else if( line != cupFormatMinimal )
+            {
+              qWarning() << "WaypointCatalog::readCup(): File"
+                         << catalog
+                         << "is not a supported cup file according"
+                         << "to specification of 2022!";
+              ws->close();
+              delete ws;
+              return 0;
+            }
+
+          continue;
+        }
 
       if( _showProgress && (lineNo % wsCycles) == 0 )
         {
@@ -1896,11 +1363,6 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           QCoreApplication::sendPostedEvents();
           QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
                                            QEventLoop::ExcludeSocketNotifiers );
-        }
-
-      if( line.size() == 0 || line.startsWith("#") )
-        {
-          continue;
         }
 
       bool ok;
@@ -1913,23 +1375,25 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         }
 
-      // 10 elements are mandatory, element 11 description is optional
-      if( list.count() < 10 ||
-          list[0].toLower() == "name" ||
-          list[1].toLower() == "code" ||
-          list[2].toLower() == "country" )
+      // 7 elements are mandatory, the rest is optional
+      if( list.size() < 7 )
         {
-          // too less elements or a description line, ignore this
+          // too less elements, ignore this entry
           continue;
         }
 
-      // A cup line consists of the following elements:
+      // A cup line consists of the following elements in 2022:
       //
-      // Name,Code,Country,Latitude,Longitude,Elevation,Style,Direction,Length,Frequency,Description
+      // 0     1     2        3    4    5     6      7      8      9        10    11    12        13
+      // name, code, country, lat, lon, elev, style, rwdir, rwlen, rwwidth, freq, desc, userdata, pics
       //
-      // See here for more info: http://download.naviter.com/docs/cup_format.pdf
-      Waypoint wp;
+      // Older versions of CUP has no item rwwidth.
+      //
+      // Columns after style field may be missing and can be removed from header and data.
+      //
+      // See here for more info: https://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf
 
+      Waypoint wp;
       Runway rwy;
 
       wp.priority = Waypoint::Low;
@@ -1940,12 +1404,14 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
         }
       else
         {
-          wp.description = "";
-        }
+          qWarning( "CUP Read (%d): No name is defined, ignoring record.",
+                    lineNo );
+          continue;
+         }
 
       if( list[1].isEmpty() )
         {
-          // If no code is set, we assign the long name as code to have a workaround.
+          // If no code (short name) is set, we assign the long name as code to have a workaround.
           list[1] = list[0];
         }
 
@@ -1953,9 +1419,8 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       wp.name = list[1].replace( QRegExp("\""), "" ).left(8).toUpper();
       wp.country = list[2].left(2).toUpper();
       wp.icao = "";
-      rwy.m_surface = Runway::Unknown;
 
-      // waypoint type
+      // waypoint type aka style
       uint wpType = list[6].toUInt(&ok);
 
       if( ! ok )
@@ -1972,7 +1437,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         case 2:
           wp.type = BaseMapElement::Airfield;
-          rwy.m_surface = Runway::Grass;
+          rwy.setSurface( Runway::Grass );
           wp.priority = Waypoint::Normal;
           break;
         case 3:
@@ -1981,22 +1446,30 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           break;
         case 4:
           wp.type = BaseMapElement::Gliderfield;
+          rwy.setSurface( Runway::Grass );
           wp.priority = Waypoint::Normal;
           break;
         case 5:
           wp.type = BaseMapElement::Airfield;
-          rwy.m_surface = Runway::Concrete;
+          rwy.setSurface( Runway::Concrete );
           wp.priority = Waypoint::Normal;
           break;
         case 9:
-          wp.type = BaseMapElement::Ndb;
+          wp.type = BaseMapElement::Vor;
           break;
         case 10:
-          wp.type = BaseMapElement::Vor;
+          wp.type = BaseMapElement::Ndb;
           break;
         case 11:
           // Mapped to thermal hotspot defined by http://glidinghotspots.eu/
           wp.type = BaseMapElement::Thermal;
+          break;
+        case 19:
+          wp.type = BaseMapElement::CompPoint;
+          break;
+        case 20:
+        case 21:
+          wp.type = BaseMapElement::HangGlider;
           break;
         default:
           wp.type = BaseMapElement::Landmark;
@@ -2071,35 +1544,14 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       // Sets the projected coordinates
       wp.projPoint = _globalMapMatrix->wgsToMap( wp.wgsPoint );
 
-      QString unit;
-      int uStart = list[8].indexOf( QRegExp("[lmn]") );
-
-      if( uStart != -1 )
-        {
-          unit = list[8].mid( uStart ).toLower();
-          float length = list[8].left( list[8].length()-unit.length() ).toFloat(&ok);
-
-          if( ok )
-            {
-              if( unit == "nm" ) // nautical miles
-                {
-                  length *= 1852;
-                }
-              else if( unit == "ml" ) // statute miles
-                {
-                  length *= 1609.34;
-                }
-
-              rwy.m_length = length;
-            }
-        }
-
+      // read elevation
       // two units are possible:
       // o meter: m
       // o feet:  ft
       if( list[5].length() ) // elevation in meter or feet
         {
           QString unit;
+          list[5] = list[5].toLower();
           int uStart = list[5].indexOf( QRegExp("[mf]") );
 
           if( uStart == -1 )
@@ -2136,37 +1588,43 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
             }
         }
 
-      if( list[9].trimmed().length() ) // airport frequency
+      if( list.size() == 7 )
         {
-          float frequency = list[9].replace( QRegExp("\""), "" ).toFloat(&ok);
-
-          if( ok )
-            {
-              wp.addFrequency( Frequency(frequency, "CUP") );
-            }
-          else
-            {
-              wp.addFrequency( Frequency(0.0) );
-            }
+          // no more data defined
+          continue;
         }
 
-      if( list[7].trimmed().length() ) // runway direction 010...360
+      bool takeRwyData = false;
+
+      // runway direction 010...360
+      if( list.size() >= 8  && list[7].trimmed().size() > 0 )
         {
           uint rdir = list[7].toInt(&ok);
 
           if( ok )
             {
-              // Runway has only one direction entry 010...360.
-              // We split it into two parts.
-              int rwh1 = rdir;
-              int rwh2 = rwh1 <= 180 ? rwh1+180 : rwh1-180;
+              rwy.setHeading( rdir );
 
-              // put both directions into one variable, each in a byte
-              rwy.m_heading = (rwh1/10) * 256 + (rwh2/10);
+              // set runway designator
+              QString name;
+
+              int rd = ( rdir + 5 ) / 10;
+
+              if( rd == 0 ) {
+                  rd = 36;
+              }
+
+              if( rd < 10 ) {
+                  name += '0';
+              }
+
+              rwy.setName( name + QString::number( rd ) );
+              takeRwyData = true;
             }
         }
 
-      if( list[8].trimmed().length() ) // runway length in meters
+      // runway length with unit
+      if( list.size() >= 9 && list[8].trimmed().size() > 0 )
         {
           // three units are possible:
           // o meter: m
@@ -2175,6 +1633,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           // o feet: ft, @AP: Note that is not conform to the SeeYou specification
           //                  but I saw it in an south African file.
           QString unit;
+          list[8] = list[8].toLower();
           int uStart = list[8].indexOf( QRegExp("[fmn]") );
 
           if( uStart != -1 )
@@ -2197,19 +1656,83 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
                       length *= 0.3048;
                     }
 
-                  rwy.m_length = length;
-                  rwy.m_isOpen = true;
-                  rwy.m_isBidirectional = true;
-
-                  // Store runway in the runway list.
-                  wp.rwyList.append( rwy );
+                  rwy.setLength( length );
+                  rwy.setOperations( Runway::Active );
+                  rwy.setTurnDirection( Runway::Both );
+                  takeRwyData = true;
                 }
             }
         }
 
-      if( list.count() == 11 && list[10].trimmed().length() ) // description, optional
+      // runway width with unit as new item
+      if( old == 0 && list.size() >= 10 && list[9].trimmed().size() > 0 )
         {
-          wp.comment += list[10].replace( QRegExp("\""), "" );
+          // three units are possible:
+          // o meter: m
+          // o nautical mile: nm
+          // o statute mile: ml
+          // o feet: ft, @AP: Note that is not conform to the SeeYou specification
+          //                  but I saw it in an south African file.
+          QString unit;
+          list[9] = list[9].toLower();
+          int uStart = list[9].indexOf( QRegExp("[fmn]") );
+
+          if( uStart != -1 )
+            {
+              unit = list[9].mid( uStart ).toLower();
+              float width = list[9].left( list[9].length()-unit.length() ).toFloat(&ok);
+
+              if( ok )
+                {
+                  if( unit == "nm" ) // nautical miles
+                    {
+                      width *= 1852;
+                    }
+                  else if( unit == "ml" ) // statute miles
+                    {
+                      width *= 1609.34;
+                    }
+                  else if( unit == "ft" ) // feet
+                    {
+                      width *= 0.3048;
+                    }
+
+                  rwy.setWidth( width );
+                  takeRwyData = true;
+                }
+            }
+        }
+
+      if( takeRwyData == true )
+        {
+          // Store runway in the runway list with the set data
+          wp.rwyList.append( rwy );
+        }
+
+      // airport frequency as 123.500, can be enclosed in quotations marks
+      if( list.size() >= 11 - old && list[10 -old].trimmed().size() )
+        {
+          float frequency = list[10 - old].replace( QRegExp("\""), "" ).toFloat(&ok);
+
+          Frequency freq;
+
+          if( ok )
+            {
+              freq.setValue( frequency );
+              freq.setUnit( Frequency::MHz );
+              freq.setType( Frequency::Info );
+              wp.addFrequency( freq );
+            }
+          else
+            {
+              wp.addFrequency( freq );
+            }
+        }
+
+      // description, optional
+      if( list.count() >= 12 - old && list[11 - old].trimmed().length() )
+        {
+          wp.comment += list[11 - old ].replace( QRegExp("\""), "" );
         }
 
       // We do check, if the waypoint name is already in use because cup

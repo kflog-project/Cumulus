@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2021 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -25,14 +25,15 @@
 #include "time_cu.h"
 
 Airspace::Airspace() :
+  LineElement(),
   m_lLimitType(BaseMapElement::NotSet),
   m_uLimitType(BaseMapElement::NotSet),
   m_lastVConflict(none),
   m_airRegion(0),
-  m_id(-1)
+  m_icaoClass( AS_Unkown ),
+  m_activity( 0 ),
+  m_byNotam( false )
 {
-  // All Airspaces are closed regions ...
-  closed = true;
 }
 
 Airspace::Airspace( QString name,
@@ -42,14 +43,18 @@ Airspace::Airspace( QString name,
                     const BaseMapElement::elevationType uType,
                     const float lower,
                     const BaseMapElement::elevationType lType,
-                    const int identifier,
-                    QString country ) :
+                    const int icaoClass,
+                    QString country,
+                    quint8 activity,
+                    bool byNotam ) :
   LineElement(name, oType, pP, false, 0, country),
   m_lLimitType(lType),
   m_uLimitType(uType),
   m_lastVConflict(none),
   m_airRegion(0),
-  m_id(identifier)
+  m_icaoClass(icaoClass),
+  m_activity(activity),
+  m_byNotam(byNotam)
 {
   // All Airspaces are closed regions ...
   closed = true;
@@ -118,8 +123,9 @@ Airspace* Airspace::createAirspaceObject()
                                m_uLimitType,
                                m_lLimit.getFeet(),
                                m_lLimitType,
-                               m_id,
-                               getCountry() );
+                               m_icaoClass,
+                               getCountry(),
+                               isByNotam() );
 
   as->setFlarmAlertZone( m_flarmAlertZone );
   return as;
@@ -351,8 +357,8 @@ QString Airspace::getTypeName (objectType type)
       return QObject::tr("CTR-D");
     case BaseMapElement::Ctr:
       return QObject::tr("CTR");
-    case BaseMapElement::LowFlight:
-      return QObject::tr("Low Flight");
+    case BaseMapElement::Sua:
+      return QObject::tr("SUA");
     case BaseMapElement::Rmz:
       return QObject::tr("RMZ");
     case BaseMapElement::Tmz:
@@ -366,27 +372,26 @@ QString Airspace::getTypeName (objectType type)
 
 QString Airspace::getInfoString() const
 {
-  QString text, tempL, tempU;
-
-  QString type;
+  QString text, tempL, tempU, type;
 
   switch( m_lLimitType )
   {
     case MSL:
-      tempL = QString( "%1 MSL" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      tempL = QString( "%1 ft (%2 m) MSL" ).arg( m_lLimit.getFeet(), 0, 'f', 0 )
+                                        .arg( m_lLimit.getMeters(), 0, 'f', 0 );
       break;
     case GND:
       if( m_lLimit.getMeters() )
-        tempL = QString( "%1 GND" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+        tempL = QString( "%1 GND" ).arg( m_lLimit.getText(true,0) );
       else
         tempL = "GND";
       break;
     case FL:
       tempL = QString( "FL %1 (%2)" ).arg( (int) rint( m_lLimit.getFeet() / 100.) )
-                                     .arg( m_lLimit.getText( true, 0 ).toLatin1().data() );
+                                     .arg( m_lLimit.getText( true, 0 ) );
       break;
     case STD:
-      tempL = QString( "%1 STD" ).arg( m_lLimit.getText(true,0).toLatin1().data() );
+      tempL = QString( "%1 STD" ).arg( m_lLimit.getText(true,0) );
       break;
     case UNLTD:
       tempL = QObject::tr("Unlimited");
@@ -401,17 +406,18 @@ QString Airspace::getInfoString() const
       if(m_uLimit.getMeters() >= 99999)
         tempU = QObject::tr("Unlimited");
       else
-        tempU = QString( "%1 MSL" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+        tempU = QString( "%1 ft (%2 m) MSL" ).arg( m_uLimit.getFeet(), 0, 'f', 0 )
+                                          .arg( m_uLimit.getMeters(), 0, 'f', 0 );
       break;
     case GND:
-      tempU = QString( "%1 GND" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      tempU = QString( "%1 GND" ).arg( m_uLimit.getText(true,0) );
       break;
     case FL:
       tempU = QString( "FL %1 (%2)" ).arg( (int) rint(m_uLimit.getFeet() / 100.) )
-                                     .arg( m_uLimit.getText(true,0).toLatin1().data() );
+                                     .arg( m_uLimit.getText(true,0) );
       break;
     case STD:
-      tempU = QString( "%1 STD" ).arg( m_uLimit.getText(true,0).toLatin1().data() );
+      tempU = QString( "%1 STD" ).arg( m_uLimit.getText(true,0) );
       break;
     case UNLTD:
       tempU = QObject::tr("Unlimited");
@@ -577,8 +583,8 @@ bool Airspace::operator < (const Airspace& other) const
 void Airspace::debug()
 {
   qDebug() << "AsName=" << getName()
-           << "ASId=" << getId()
            << "AsType=" << getTypeName(getTypeID())
+           << "IcaoClass=" << getIcaoClass()
            << "Country=" << getCountry()
            << "ULimit=" << m_uLimit.getMeters()
            << "LLimit=" << m_lLimit.getMeters();

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2016 by Axel Pauli
+**   Copyright (c):  2011-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -415,12 +415,10 @@ void PreFlightWaypointPage::slotImportFile()
   QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
 
   QString filter;
-  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT *.aip *.dos *.DOS);;");
-  filter.append(tr("XML") + " (*.kflogwp *.KFLOGWP);;");
+  filter.append(tr("All") + " (*.kflogwp *.KFLOGWP *.kwp *.KWP *.cup *.CUP *.dat *.DAT *.dos *.DOS);;");
   filter.append(tr("Binary") + " (*.kwp *.KWP);;");
   filter.append(tr("SeeYou") + " (*.cup *.CUP);;");
   filter.append(tr("CAI") + " (*.dat *.DAT);;");
-  filter.append(tr("AIP") + " (*.aip);;");
   filter.append(tr("DOS") + " (*.dos *.DOS)");
 
   QString fName = QFileDialog::getOpenFileName( this,
@@ -479,10 +477,6 @@ void PreFlightWaypointPage::slotImportFile()
     {
       wpCount = catalog.readBinary( fName, 0 );
     }
-  else if( fSuffix == "kflogwp")
-    {
-      wpCount = catalog.readXml( fName, 0, errorInfo );
-    }
   else if( fSuffix == "cup" )
     {
       wpCount = catalog.readCup( fName, 0 );
@@ -490,10 +484,6 @@ void PreFlightWaypointPage::slotImportFile()
   else if( fSuffix == "dat" )
     {
       wpCount = catalog.readDat( fName, 0 );
-    }
-  else if( fSuffix == "aip" )
-    {
-      wpCount = catalog.readOpenAip( fName, 0, errorInfo );
     }
   else if( fSuffix == "dos" )
     {
@@ -583,10 +573,6 @@ void PreFlightWaypointPage::slotImportFile()
     {
       wpCount = catalog.readBinary( fName, &wpList );
     }
-  else if( fSuffix == "kflogwp")
-    {
-      wpCount = catalog.readXml( fName, &wpList, errorInfo );
-    }
   else if( fSuffix == "cup")
     {
       wpCount = catalog.readCup( fName, &wpList );
@@ -594,10 +580,6 @@ void PreFlightWaypointPage::slotImportFile()
   else if( fSuffix == "dat")
     {
       wpCount = catalog.readDat( fName, &wpList );
-    }
-  else if( fSuffix == "aip")
-    {
-      wpCount = catalog.readOpenAip( fName, &wpList, errorInfo );
     }
   else if( fSuffix == "dos" )
     {

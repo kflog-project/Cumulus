@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2021 by Axel Pauli
+ **   Copyright (c): 2013-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -201,6 +201,11 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
   m_airportEditor->setInputMethodHints(Qt::ImhUppercaseOnly | Qt::ImhDigitsOnly | Qt::ImhNoPredictiveText);
   m_airportEditor->setValidator( eValidator );
 
+#ifdef ANDROID
+  m_airportEditor->setAttribute( Qt::WA_InputMethodEnabled, true );
+  qApp->setAutoSipEnabled( true );
+#endif
+
   connect( m_airportEditor, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
@@ -226,6 +231,12 @@ PreFlightWeatherPage::PreFlightWeatherPage( QWidget *parent ) :
 
 PreFlightWeatherPage::~PreFlightWeatherPage()
 {
+}
+
+void PreFlightWeatherPage::showEvent( QShowEvent *event )
+{
+  m_airportEditor->setFocus();
+  QWidget::showEvent( event );
 }
 
 void PreFlightWeatherPage::switchUpdateButtons( bool enable )

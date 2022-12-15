@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2014 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -21,22 +21,14 @@
  *
  * \brief Map element used for small point objects.
  *
- * Map element used for small point objects. The object can be one of:
- * UltraLight, HangGlider, Parachute, Balloon, Village
- * or Landmark. Consists only of a name and a position.
+ * Map element used for small point objects like obstacles and reporting points.
  *
- * \see BaseMapElement#objectType
- * \see Airfield
- * \see Gliderfield
- * \see RadioPoint
+ * \date 2000-2022
  *
- * \date 2000-2014
- *
- * \version 1.0
+ * \version 1.1
  */
 
-#ifndef SINGLE_POINT_H
-#define SINGLE_POINT_H
+#pragma once
 
 #include "basemapelement.h"
 #include "wgspoint.h"
@@ -62,6 +54,7 @@ class SinglePoint : public BaseMapElement
    * @param country The country of the point as two letter code
    * @param comment An additional comment related to the point
    * @param secID  The map section ID
+   * @param compulsory The compulsory of the single point
    */
   SinglePoint(const QString& name,
               const QString& shortName,
@@ -71,7 +64,8 @@ class SinglePoint : public BaseMapElement
               const float elevation = 0.0,
               const QString country = "",
               const QString comment = "",
-              const unsigned short secID=0 );
+              const unsigned short secID=0,
+              const bool compulsory = false );
   /**
    * Destructor
    */
@@ -212,6 +206,24 @@ class SinglePoint : public BaseMapElement
       comment = value;
     };
 
+  /**
+   * @return The compulsory of the single point.
+   */
+  virtual bool getCompulsory() const
+    {
+      return compulsory;
+    }
+
+  /**
+   * Sets the compulsory of the single point.
+   *
+   * @param newValue New country code of the element.
+   */
+  virtual void setCompulsory( bool value )
+    {
+      compulsory = value;
+    }
+
  protected:
   /**
    */
@@ -242,6 +254,9 @@ class SinglePoint : public BaseMapElement
    */
   QString comment;
 
+  /*
+   * Feature of single point.
+   */
+  bool compulsory;
 };
 
-#endif

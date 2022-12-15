@@ -8,12 +8,10 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
-**
-**   $Id$
 **
 ***********************************************************************/
 
@@ -29,16 +27,15 @@
  *
  * <ul>
  * <li>OpenAir format, an ASCII text description of the airspaces</li>
- * <li>OpenAIP format, a XML description of the airspaces</li>
+ * <li>OpenAIP format, a JSON description of the airspaces</li>
  * </ul>
  *
- * \date 2014
+ * \date 2014-2022
  *
- * \version $Id$
+ * \version 1.1
  */
 
-#ifndef AIRSPACE_HELPER_H
-#define AIRSPACE_HELPER_H
+#pragma once
 
 #include <QDateTime>
 #include <QList>
@@ -166,32 +163,49 @@ class AirspaceHelper
   }
 
   /**
+   * Maps an openAIP ICAO class to the related Cumulus airspace type.
+   *
+   * \param id openAIP ICAO class identifier
+   *
+   * \return short airspace type name or empty string, if mapping fails
+   */
+  static BaseMapElement::objectType mapIcaoClassId( const int id )
+  {
+    if( m_icaoClassMap.isEmpty() )
+      {
+        loadIcaoClassMapping();
+      }
+
+    return m_icaoClassMap.value( id, BaseMapElement::AirUkn );
+  }
+
+  /**
    * Reports, if a airspace object is already loaded or not.
    *
-   * \param id airspace identifier
+   * \param name airspace name or identifier
    *
    * \return true in case of contained otherwise false
    */
-  static bool isAirspaceKnown( const int id )
+  static bool isAirspaceKnown( const QString& name )
   {
-    return m_airspaceDictionary.contains( id );
+    return m_airspaceDictionary.contains( name );
   };
 
   /**
    * Adds an airspace identifier to the airspace dictionary.
    *
-   * \param id airspace identifier
+   * \param name airspace name or identifier
    *
    * \return true in case of added otherwise false
    */
-  static bool addAirspaceIdentifier( const int id )
+  static bool addAirspaceIdentifier( const QString& name )
   {
-    if( m_airspaceDictionary.contains( id ) )
+    if( m_airspaceDictionary.contains( name ) )
       {
         return false;
       }
 
-    m_airspaceDictionary.insert(id);
+    m_airspaceDictionary.insert( name );
     return true;
   }
 
@@ -206,14 +220,25 @@ class AirspaceHelper
   static void loadAirspaceTypeMapping();
 
   /**
+   * Initialize a mapping from an openAIP ICAO class integer to the related
+   * Cumulus integer type.
+   */
+  static void loadIcaoClassMapping();
+
+  /**
    * A map containing Cumulus's supported airspace types as key value pair.
    */
   static QMap<QString, BaseMapElement::objectType> m_airspaceTypeMap;
 
   /**
-   * Contains all read airspaces to avoid duplicates.
+   * A map for mapping of openAIP ICAO class to Cumulus ICAO airspace item.
    */
-  static QSet<int> m_airspaceDictionary;
+  static QMap<quint16, BaseMapElement::objectType> m_icaoClassMap;
+
+  /**
+   * Contains the names of all read airspaces to avoid duplicates.
+   */
+  static QSet<QString> m_airspaceDictionary;
 
   /** Mutex to ensure thread safety. */
   static QMutex m_mutex;
@@ -273,5 +298,3 @@ class AirspaceHelperThread : public QThread
   bool m_readSource;
 };
 
-
-#endif /* AIRSPACE_HELPER_H */

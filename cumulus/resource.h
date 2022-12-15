@@ -7,15 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2021 by Axel Pauli
+**                   2009-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef RESSOURCE_H
-#define RESSOURCE_H
+#pragma once
 
 /*
  * Definiert Macros zur Festlegung des Datei-Headers von KFLog-Karten
@@ -76,7 +75,7 @@
 #define FILE_TYPE_MAP_C       0x6d
 
 // Type definition for compiled airspace files, used by Airspace parsers
-#define FILE_TYPE_AIRSPACE_C  0x61
+#define FILE_TYPE_AIRSPACE_C  "Cumulus-Airspaces"
 
 // Type definition for openAIP compiled airfield files.
 #define FILE_TYPE_AIRFIELD_OAIP_C "OpenAIP-Airfields"
@@ -85,7 +84,10 @@
 #define FILE_TYPE_NAV_AIDS_OAIP_C "OpenAIP-NavAids"
 
 // Type definition for openAIP compiled hotspot files.
-#define FILE_TYPE_HOTSPOTS_OAIP_C "OpenAIP-Hotspots"
+#define FILE_TYPE_HOTSPOT_OAIP_C "OpenAIP-Hotspots"
+
+// Type definition for openAIP compiled single point files.
+#define FILE_TYPE_SINGLE_POINT_OAIP_C "OpenAIP-SinglePoints"
 
 //=================================================================================
 // Compiled file versions. Increment this value, if you change the compiled format.
@@ -95,16 +97,20 @@
 #define FILE_VERSION_MAP_C      103
 
 // Version definition for compiled airspace files.
-#define FILE_VERSION_AIRSPACE_C 2
+#define FILE_VERSION_AIRSPACE_C 3
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 4
+#define FILE_VERSION_AIRFIELD_C 6
 
 // Version definition for compiled navigation aid files.
 #define FILE_VERSION_NAV_AIDS_C 3
 
 // Version definition for compiled hotspot files.
-#define FILE_VERSION_HOTSPOT_C 2
+#define FILE_VERSION_HOTSPOT_C 3
+
+// Version definition for compiled single point files.
+#define FILE_VERSION_SINGLE_POINT_C 1
+
 
 /******************************************************************************
  * Definition of map element types
@@ -140,7 +146,7 @@
 #define CONTROL_C        28
 #define CONTROL_D        29
 #define DANGER           30
-#define LOW_FLIGHT       31
+#define SUA              31 // Special Use Airspace (SUA)
 #define RESTRICTED       32
 #define TMZ              33
 #define OBSTACLE         34
@@ -185,6 +191,6 @@
 #define CTR              74 // Control Zone
 #define USER_POINT       75 // A point set by the user
 #define AIR_FLARM        76 // Flarm alert zone
-#define LAST_ENTRY       77 // This must be always the last entry!!!
+#define ALTIPORT         77
+#define LAST_ENTRY       79 // This must be always the last entry!!!
 
-#endif // RESOURCE_H

@@ -69,13 +69,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setSpacing(0);
 
-#ifdef QT5
-  // That must be done under Qt 5 only.
-  topLayout->setMargin(0);
-  // Qt4: topLayout Left=9 Top=9 Right=9 Bottom=9
-  topLayout->setContentsMargins( 0, 0, 0, 0 );
-#endif
-
   QHBoxLayout *centerLayout = new QHBoxLayout;
   topLayout->addLayout(centerLayout);
   topLayout->setStretchFactor( centerLayout, 1 );

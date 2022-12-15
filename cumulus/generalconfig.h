@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2021 by Axel Pauli
+**                   2007-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,21 +25,22 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2021
+ * \date 2004-2022
  *
- * \version 1.12
+ * \version 1.13
  */
 
-#ifndef GENERAL_CONFIG_H
-#define GENERAL_CONFIG_H
+#pragma once
 
 #include <QtGlobal>
 #include <QByteArray>
+#include <QPair>
 #include <QPixmap>
 #include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QSize>
+#include <QVariant>
 
 #include "airspace.h"
 #include "altitude.h"
@@ -83,15 +84,11 @@
 #define HeadingLineColor QColor(Qt::gray).name()
 #define TrailLineColor QColor(Qt::black).name()
 
-#ifdef MAEMO4
-#define SoundPlayer "/opt/cumulus/bin/aplay"
-#else
 #define SoundPlayer "/usr/bin/aplay"
-#endif
 
 class QTranslator;
 
-extern const char* CumulusBuildDate;
+extern const char *CumulusBuildDate;
 
 // We do derive from the QT settings class as base class
 class GeneralConfig : protected QSettings
@@ -498,15 +495,15 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the airspace border color */
-  QColor &getBorderColorLowFlight()
+  QColor &getBorderColorSUA()
     {
-      return _borderColorLowFlight;
+      return _borderColorSUA;
     }
 
   /** Sets the airspace border color */
-  void setBorderColorLowFlight( const QColor& newValue )
+  void setBorderColorSUA( const QColor& newValue )
   {
-    _borderColorLowFlight = newValue;
+    _borderColorSUA = newValue;
   }
 
   /** Gets the airspace border color */
@@ -738,15 +735,15 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the airspace fill color */
-  QColor &getFillColorLowFlight()
+  QColor &getFillColorSUA()
     {
-      return _fillColorLowFlight;
+      return _fillColorSUA;
     }
 
   /** Sets the airspace fill color */
-  void setFillColorLowFlight( const QColor& newValue )
+  void setFillColorSUA( const QColor& newValue )
   {
-    _fillColorLowFlight = newValue;
+    _fillColorSUA = newValue;
   }
 
   /** Gets the airspace fill color */
@@ -3226,7 +3223,7 @@ class GeneralConfig : protected QSettings
   QColor _borderColorProhibited;
   QColor _borderColorRMZ;
   QColor _borderColorTMZ;
-  QColor _borderColorLowFlight;
+  QColor _borderColorSUA;
   QColor _borderColorGliderSector;
 
   // fill (brush) colors of airspaces
@@ -3248,7 +3245,7 @@ class GeneralConfig : protected QSettings
   QColor _fillColorProhibited;
   QColor _fillColorRMZ;
   QColor _fillColorTMZ;
-  QColor _fillColorLowFlight;
+  QColor _fillColorSUA;
   QColor _fillColorGliderSector;
 
   //display airspace warnings at all?
@@ -3727,5 +3724,3 @@ class GeneralConfig : protected QSettings
   // GPS switch state.
   bool _gpsSwitchState;
 };
-
-#endif

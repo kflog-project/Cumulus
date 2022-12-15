@@ -30,8 +30,7 @@
  * \version 1.2
  */
 
-#ifndef _MainWindow_h
-#define _MainWindow_h
+#pragma once
 
 #include <QApplication>
 #include <QMainWindow>
@@ -585,5 +584,3 @@ private slots:
 #endif
 
 };
-
-#endif

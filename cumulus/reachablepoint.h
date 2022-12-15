@@ -130,12 +130,8 @@ class ReachablePoint
 
   float getRunwayLength() const
   {
-    if( _wp.rwyList.size() > 0 )
-      {
-        return _wp.rwyList.first().m_length;
-      }
-
-    return 0.0;
+    const Runway& rw = Runway::getMainRunway( _wp.rwyList );
+    return rw.getLength();
   }
 
   Altitude getArrivalAlt() const

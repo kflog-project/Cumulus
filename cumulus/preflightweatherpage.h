@@ -60,6 +60,10 @@ class PreFlightWeatherPage : public QWidget
 
   virtual ~PreFlightWeatherPage();
 
+ protected:
+
+  void showEvent( QShowEvent *event );
+
  public slots:
 
   /** Called, if a new weather report is available. */

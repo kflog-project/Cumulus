@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2018-2021 by Axel Pauli
+**   Copyright (c):  2018-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -287,11 +287,11 @@ void TaskPointSelectionList::fillSelectionListWithHotspots()
   m_searchInput->clear();
   m_taskpointTreeWidget->clear();
 
-  QList<SinglePoint>& hsList = _globalMapContents->getHotspotList();
+  QList<ThermalPoint>& hsList = _globalMapContents->getHotspotList();
 
   for( int loop = 0; loop < hsList.size(); loop++ )
     {
-      SinglePoint& hsp = hsList[loop];
+      ThermalPoint& hsp = hsList[loop];
       PointItem* item = new PointItem( hsp.getWPName().trimmed(),
                                        hsp.getName().trimmed(),
                                        &hsp );

@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2018 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2022 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,13 +24,12 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map files as value lists.
  *
- * \date 2000-2018
+ * \date 2000-2022
  *
- * \version 1.7
+ * \version 1.8
  */
 
-#ifndef MAP_CONTENTS_H
-#define MAP_CONTENTS_H
+#pragma once
 
 #include <QSet>
 #include <QFile>
@@ -52,6 +51,7 @@
 #include "map.h"
 #include "radiopoint.h"
 #include "singlepoint.h"
+#include "ThermalPoint.h"
 #include "waitscreen.h"
 
 #ifdef INTERNET
@@ -237,7 +237,7 @@ class MapContents : public QObject
      *
      * @param  index  The list index of the hotspot point
      */
-    SinglePoint* getHotspot(unsigned int index)
+    ThermalPoint* getHotspot(unsigned int index)
       {
         return &hotspotList[index];
       };
@@ -245,7 +245,7 @@ class MapContents : public QObject
     /**
       * @return a reference to the hotspot list
       */
-     QList<SinglePoint>& getHotspotList()
+     QList<ThermalPoint>& getHotspotList()
      {
        return hotspotList;
      };
@@ -481,7 +481,14 @@ class MapContents : public QObject
      * requested hotspot data have been loaded.
      */
     void slotOpenAipHotspotLoadFinished( int noOfLists,
-                                         QList<SinglePoint>* hotspotListIn );
+                                         QList<ThermalPoint>* hotspotListIn );
+
+    /**
+     * This slot is called by the OpenAip load thread to signal, that the
+     * requested Reporting point data have been loaded.
+     */
+    void slotOpenAipReportingsLoadFinished( int noOfLists,
+                                            QList<SinglePoint>* listIn );
 
     /**
      * This slot is called by the AirspaceHelper load thread to signal, that the
@@ -612,6 +619,11 @@ class MapContents : public QObject
     void loadOpenAipHotspotsViaThread();
 
     /**
+     * Starts a thread, which is loading the requested OpenAIP reporting data.
+     */
+    void loadOpenAipReportingsViaThread();
+
+    /**
      * Starts a thread, which is loading the requested airspace data.
      */
     void loadAirspacesViaThread();
@@ -657,7 +669,7 @@ class MapContents : public QObject
     /**
      * hotspotList contains all thermal hotspots.
      */
-    QList<SinglePoint> hotspotList;
+    QList<ThermalPoint> hotspotList;
 
     /**
      * airspaceList contains all airspaces. The sort function on this
@@ -682,7 +694,7 @@ class MapContents : public QObject
     QList<SinglePoint> obstacleList;
 
     /**
-     * reportList contains all reporting points.
+     * reportList contains all Airport Reporting Points.
      */
     QList<SinglePoint> reportList;
 
@@ -835,11 +847,12 @@ class MapContents : public QObject
     /** Mutex to protect radio point loading actions. */
     QMutex m_radioPointLoadMutex;
 
+    /** Mutex to protect reporting point loading actions. */
+    QMutex m_reportingPointLoadMutex;
+
     /** Mutex to protect hotspot loading actions. */
     QMutex m_hotspotLoadMutex;
 
     /** Mutex to protect airspace loading actions. */
     QMutex m_airspaceLoadMutex;
   };
-
-#endif

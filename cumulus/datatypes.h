@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c): 2010-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *  A class defining QT user data types usable in queued connections of
  *  threads.
  *
- *  \date 2010-2014
+ *  \date 2010-2022
  *
- *  \version 1.0
+ *  \version 1.1
  */
 
 #ifndef DATA_TYPES_H
@@ -53,6 +53,7 @@ Q_DECLARE_METATYPE(BtDeviceMap)
 
 #include "airfield.h"
 #include "airspace.h"
+#include "ThermalPoint.h"
 #include "radiopoint.h"
 #include "singlepoint.h"
 
@@ -74,6 +75,10 @@ Q_DECLARE_METATYPE(RadioListPtr)
 typedef QList<SinglePoint>* SingleListPtr;
 
 Q_DECLARE_METATYPE(SingleListPtr)
+
+typedef QList<ThermalPoint>* ThermalListPtr;
+
+Q_DECLARE_METATYPE(ThermalListPtr)
 
 /**
  * Special data type to return the loaded airspace data list to the GUI thread.
