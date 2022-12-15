@@ -48,7 +48,7 @@ void OpenAipLoaderThread::run()
   if( m_poiSource == Airfields )
     {
       // Check if signal is connected to a slot.
-      if( receivers( SIGNAL( loadedAfList( int, QList<Airfield>*, QList<Airfield>* )) ) == 0 )
+      if( receivers( SIGNAL( loadedAfList( int, QList<Airfield>* )) ) == 0 )
         {
           qWarning() << "OpenAipLoaderThread: No Slot connection to Signal loadedAfList!";
           return;
