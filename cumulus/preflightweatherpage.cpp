@@ -235,7 +235,6 @@ PreFlightWeatherPage::~PreFlightWeatherPage()
 
 void PreFlightWeatherPage::showEvent( QShowEvent *event )
 {
-  m_airportEditor->setFocus();
   QWidget::showEvent( event );
 }
 
@@ -834,6 +833,10 @@ void PreFlightWeatherPage::slotShowAirportEditor()
   m_editorWidget->show();
   m_airportEditor->clear();
   m_airportEditor->setFocus();
+
+  // Open software input panel
+  QEvent event(QEvent::RequestSoftwareInputPanel);
+  QApplication::sendEvent( m_airportEditor, &event );
 }
 
 void PreFlightWeatherPage::slotAddAirport()

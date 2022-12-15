@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2016 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -156,9 +156,10 @@ SettingsPagePointDataLoading::SettingsPagePointDataLoading( QWidget *parent ) :
 
   for ( int i = 0; i < mapDirs.size(); ++i )
     {
-      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_wpt.aip");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_nav.aip");
-      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_hot.aip");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_apt.json");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_nav.json");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_hot.json");
+      MapContents::addDir(preselect, mapDirs.at(i) + "/points", "*_rpp.json");
     }
 
   preselect.sort();
