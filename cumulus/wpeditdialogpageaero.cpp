@@ -16,11 +16,7 @@
 
 #include <cmath>
 
-#ifndef QT_5
 #include <QtGui>
-#else
-#include <QtWidgets>
-#endif
 
 #ifdef QTSCROLLER
 #include <QtScroller>
@@ -165,12 +161,17 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
       qfl->addRow(tr("Width:"), edtRwyWidth[i]);
       qgl->addLayout( qfl, 0, 2 );
 
+      cmbRwySurface[i] = new QComboBox;
+      cmbRwySurface[i]->setEditable(false);
+      cmbRwySurface[i]->view()->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+      cmbRwySurface[i]->view()->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+
 #ifdef QSCROLLER
-  QScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QScroller::LeftMouseButtonGesture );
+      QScroller::grabGesture( cmbRwySurface[i]->view()->viewport(), QScroller::LeftMouseButtonGesture );
 #endif
 
 #ifdef QTSCROLLER
-  QtScroller::grabGesture( cmbRwy1Surface->view()->viewport(), QtScroller::LeftMouseButtonGesture );
+      QtScroller::grabGesture( cmbRwySurface[i]->view()->viewport(), QtScroller::LeftMouseButtonGesture );
 #endif
 
       qfl = new QFormLayout;
