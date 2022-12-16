@@ -1110,7 +1110,7 @@ void OpenAip::setJAirfieldRunwaySurface( const QJsonObject& object, Runway& rw )
     {
       // qDebug() << "Runway surface Key: " << it.key() << "Val: " << it.value();
 
-      if( it.key() == "composition" )
+      if( it.key() == "mainComposite" )
         {
           quint8 type = m_runwaySurfaceMapper.value( it.value().toInt(),
                                                      Runway::Unknown );
