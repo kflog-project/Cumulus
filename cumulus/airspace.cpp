@@ -437,7 +437,16 @@ QString Airspace::getInfoString() const
     }
   else
     {
-      text += " " + name;
+      if( name.startsWith( text ) == true )
+        {
+          // An airspace name can start with the type name. In this case
+          // suppress the type name at the beginning.
+          text = name;
+        }
+      else
+        {
+          text += " " + name;
+        }
     }
 
   text += QString("<BR>") + "<FONT SIZE=-1>" + tempL + " / " + tempU;
