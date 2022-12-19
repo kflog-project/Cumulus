@@ -17,7 +17,7 @@ OBJECTS_DIR = .obj
 MOC_DIR     = .obj
 RCC_DIR     = .obj
 
-QT += core gui
+QT += core gui xml
 
 # Qt5 needs the QtWidgets library
 greaterThan(QT_MAJOR_VERSION, 4) {
