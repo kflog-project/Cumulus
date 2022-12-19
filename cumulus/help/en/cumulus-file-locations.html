@@ -23,7 +23,7 @@
   <tr>
     <th>No</th>
     <th>OS</th>
-    <th>Root Path</th>
+    <th>Root Path $ROOT</th>
     <th>Description</th>
   </tr>
   
@@ -39,16 +39,6 @@
     <td>Android</td>
     <td>/sdcard</td>
     <td>Root directory of Android user is put on the SD-card</td>
-  </tr>
-  
-  <tr>
-    <td>3</td>
-    <td>Maemo 4 and 5</td>
-    <td>/media/mmc1<br>
-				/media/mmc2<br>
-				/home/user/MyDocs<br>
-    </td>
-    <td>Root directory of Maemo 4 and 5 users</td>
   </tr>
 
 </table>
@@ -168,25 +158,12 @@
 <p>
 Notes:
 </p> 
-In Maemo (e.g., in Nokia hardware devices, like the N800, N810 and N900),
-the location of files numbered 3-13 is defined in Setup/General, Personal
-as the <a href="cumulus-settings-personal.html#DataDirectory">Data Directory</a>.
-If Cumulus does not find this entry, it tries to
-create it in the following directories in order:
 
-<UL>
-	<LI>/media/mmc1/Cumulus</LI>
-	<LI>/media/mmc2/Cumulus</LI>
-	<LI>/home/user/MyDocs/Cumulus</LI>
-</UL>
-
-<p>
 The location of files numbered 14 is defined in Setup/General, Map Settings
 as <a href="cumulus-settings-map-settings.html#Maps"><i>Maps</i></a>,
 under which are found the points, airspaces and landscape folders.
-</p>
-<p>
 
+<p>
 <table width="100%">
   <tbody>
     <tr>
