@@ -44,20 +44,23 @@
 	  corrections on their webpage at <a href="http://www.openaip.net">
 	  www.openaip.net</a>. A little disadvantage is, that you have to define
 	  in Cumulus the countries which you want to install. The rest is done
-	  automatically by Cumulus, if you press the download button.
+	  automatically by Cumulus, if you press the download button. Cumulus uses only
+	  openAIP files in <i>JSON</i> format.
 	 </p>
 
-  <p><b>Terms of use for external data</b></p>
+  <p><b>Terms of use for openAIP data</b></p>
   
   <p>
-  Please read and accept the Terms and Conditions of
+  Please read and accept the Terms and Conditions of the
   </p>
   
   <ul>
-   <li> <a href="http://www.openaip.net/legal">openAIP</a></li>
+   <li> <a href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <b>openAIP License</b></a>,
+  </li>
   </ul>
   
-  before you use these data.
+  before you download and use these data.
 
   <hr>
 		
@@ -118,9 +121,10 @@
 		openAIP point data files. The point data files, dowloaded by Cumulus, have
      the following naming format:
      <br><br>
-     &lt;two-letter-country-code&gt;_wpt.aip for airfields<br>
-     &lt;two-letter-country-code&gt;_nav.aip for radio navigation facilities<br>
-     &lt;two-letter-country-code&gt;_hot.aip for thermal hotspots<br>
+     &lt;two-letter-country-code&gt;_apt.json for airports, airfields, ...<br>
+     &lt;two-letter-country-code&gt;_rpp.json for airport reporting points<br>
+     &lt;two-letter-country-code&gt;_nav.json for radio navigation facilities<br>
+     &lt;two-letter-country-code&gt;_hot.json for thermal hotspots<br>
      <br>
      In the header of the table you can see the directory, where the listed
      files are stored. At the left side of every table row you can see a
