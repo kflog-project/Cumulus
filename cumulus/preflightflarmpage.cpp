@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2021 by Axel Pauli
+ **   Copyright (c): 2012-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -740,7 +740,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info.size() < 4 )
+  if( info.size() < 3 )
     {
       qWarning() << "$PFLAC too less parameters!" << info.join(",");
       closeFlarmDataTransfer();
@@ -792,7 +792,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "DEVTYPE" )
+  if( info[2] == "DEVTYPE" && info.size() >= 4 )
     {
       // $PFLAC,A,DEVTYPE,PowerFLARM-Core,67
       dataBox->setTitle( info[3] );
@@ -822,7 +822,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "LOGINT" )
+  if( info[2] == "LOGINT" && info.size() >= 4 )
     {
       bool ok;
       int val = info[3].toInt(&ok);
@@ -840,63 +840,63 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "PRIV" )
+  if( info[2] == "PRIV" && info.size() >= 4 )
     {
       priv->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "NOTRACK" )
+  if( info[2] == "NOTRACK" && info.size() >= 4 )
     {
       notrack->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "PILOT" )
+  if( info[2] == "PILOT" && info.size() >= 4 )
     {
       pilot->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "COPIL" )
+  if( info[2] == "COPIL" && info.size() >= 4 )
     {
       copil->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "GLIDERID" )
+  if( info[2] == "GLIDERID" && info.size() >= 4 )
     {
       gliderId->setText( info[3] );
      nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "GLIDERTYPE" )
+  if( info[2] == "GLIDERTYPE" && info.size() >= 4 )
     {
       gliderType->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "COMPID" )
+  if( info[2] == "COMPID" && info.size() >= 4 )
     {
       compId->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "COMPCLASS" )
+  if( info[2] == "COMPCLASS" && info.size() >= 4 )
     {
       compClass->setText( info[3] );
       nextFlarmCommand();
       return;
     }
 
-  if( info[2] == "IGCSER" )
+  if( info[2] == "IGCSER" && info.size() >= 4 )
     {
       // $PFLAC,A,IGCSER,7JK*
       // $PFLAC,A,IGCSER,*               [non-IGC device]
@@ -905,7 +905,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "SER" )
+  if( info[2] == "SER" && info.size() >= 4 )
     {
       // $PFLAC,A,SER
       // Returns the device's serial number 6 to 10 decimal digits.
@@ -917,7 +917,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "SWVER" )
+  if( info[2] == "SWVER" && info.size() >= 4 )
     {
       // $PFLAC,A,SWVER,123*
       // Returns the firmware version of the Flarm.
@@ -926,7 +926,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "SWEXP" )
+  if( info[2] == "SWEXP" && info.size() >= 4 )
     {
       // $PFLAC,A,SWEXP,123*
       // Returns the firmware expiration date of the Flarm as d.m.yyyy
@@ -951,7 +951,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "REGION" )
+  if( info[2] == "REGION" && info.size() >= 4 )
     {
       // $PFLAC,A,REGION,123*
       // Returns the region in which the device can be used.
@@ -968,7 +968,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "OBSTDB" && info.size() >= 7 )
+  if( info[2] == "OBSTDB" )
     {
       // $PFLAC,A,OBSTDB,1,1,Name,Date*
       // Returns information about the Flarm obstacle database
@@ -992,7 +992,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "RANGE" )
+  if( info[2] == "RANGE" && info.size() >= 4 )
     {
       // $PFLAC,A,RANGE,2000*
       // Returns the horizontal range of the Flarm
@@ -1025,7 +1025,7 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
       return;
     }
 
-  if( info[2] == "UI" )
+  if( info[2] == "UI" && info.size() >= 4 )
     {
       // $PFLAC,A,UI,0*
       // Returns the ui flags of the Flarm
@@ -1036,13 +1036,44 @@ void PreFlightFlarmPage::slotUpdateConfiguration( QStringList& info )
 
   if( info[2] == "TASK" )
     {
-      if( m_firstTaskRecord == false )
+      /**
+        That is the report of a queried flarm task. The task end is signaled by
+        an empty description.
+        "$PFLAC", "A", "TASK", "C201222104634000000000102254 km"
+        "$PFLAC", "A", "TASK", "C0000000N00000000ETakeoff"
+        "$PFLAC", "A", "TASK", "C5228967N01405449EEggersdo"
+        "$PFLAC", "A", "TASK", "C5153365N01431909ECottbus-"
+        "$PFLAC", "A", "TASK", "C5154052N01311726EReinsdor"
+        "$PFLAC", "A", "TASK", "C5228967N01405449EEggersdo"
+        "$PFLAC", "A", "TASK", "C0000000N00000000ELanding"
+        "$PFLAC", "A", "TASK"
+       */
+      if( info.size() >= 4 )
         {
-          m_firstTaskRecord = true;
-          flarmTask->setText( info[3].mid(25) );
-          Flarm::getFlarmData().task = info[3].mid(25);
+          if( m_firstTaskRecord == false )
+            {
+              m_firstTaskRecord = true;
+              flarmTask->setText( info[3].mid(25) );
+              Flarm::getFlarmData().task = info[3].mid(25);
+            }
         }
 
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "NEWTASK" )
+    {
+      // $PFLAC,A,NEWTASK,254 km*
+      // Confirmed a new task description
+      nextFlarmCommand();
+      return;
+    }
+
+  if( info[2] == "ADDWP" )
+    {
+      // "$PFLAC", "A", "ADDWP", "0000000N", "00000000E", "Takeoff"
+      // Confirmed the new waypoint description
       nextFlarmCommand();
       return;
     }
@@ -1100,6 +1131,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       taskBox->isVisible() == false ||
       taskBox->currentText().trimmed().isEmpty() == true )
     {
+      // remove a declared task, if no new one is defined.
       m_cmdList << "$PFLAC,S,NEWTASK,";
       nextFlarmCommand();
       return;
@@ -1123,7 +1155,7 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       emit newTaskSelected();
     }
 
-  m_cmdList << "$PFLAC,S,NEWTASK," + taskName;
+  m_cmdList << "$PFLAC,S,NEWTASK," + taskName.left(50);
 
   if( ft == static_cast<FlightTask *>(0) )
     {
@@ -1474,14 +1506,15 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
   stream << "// Flarm task declaration created at "
          << dtStr
          << " by Cumulus "
-         << QCoreApplication::applicationVersion() << '\n';
+         << QCoreApplication::applicationVersion() << "\r\n";
 
-  stream << "$PFLAC,S,NEWTASK,"
-         << FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1() )
-         << '\n';
+  // A task description can be a maximum of 50 characters long.
+  QByteArray tn = FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1().left( 50 ) );
+
+  stream << "$PFLAC,S,NEWTASK," << tn << "\r\n";
 
   // Takeoff point as dummy point
-  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << '\n';
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Takeoff dummy" << "\r\n";
 
   for( int i = 0; i < tpList.count(); i++ )
     {
@@ -1510,17 +1543,18 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
                     arg( (intMin < 0) ? -intMin : intMin, 5, 10, QChar('0') ).
                     arg( (degree < 0) ? QString("W") : QString("E") );
 
+      // A waypoint description can be a maximum of 50 characters long.
+      QByteArray wp = FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1().left( 50 ) );
+
       stream << "$PFLAC,S,ADDWP,"
              << lat
              << "," << lon << ","
-             << FlarmBase::replaceUmlauts( tp.getWPName().toLatin1() )
-             << '\n';
+             << wp
+             << "\r\n";
     }
 
   // Landing point as dummy point
-  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << '\n';
-
-  stream << '\n';
+  stream << "$PFLAC,S,ADDWP,0000000N,00000000E,Landing dummy" << "\r\n";
   f.close();
 
   return true;
