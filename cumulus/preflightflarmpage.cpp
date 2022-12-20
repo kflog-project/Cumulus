@@ -1544,7 +1544,7 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
                     arg( (degree < 0) ? QString("W") : QString("E") );
 
       // A waypoint description can be a maximum of 50 characters long.
-      QByteArray wp = FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1().left( 50 ) );
+      QByteArray wp = FlarmBase::replaceUmlauts( tp.getWPName().toLatin1().left( 50 ) );
 
       stream << "$PFLAC,S,ADDWP,"
              << lat
