@@ -456,7 +456,7 @@ Set the used battery type of PowerFLARM Portable.
 !BRIGHTNESS!
 
 <html>
-Set the brightness of the dilplay orf PowerFLARM Portable.
+Set the brightness of the display of PowerFLARM Portable.
 <br><br>
 Decimal integer values from 0 to 100.
 </html>
@@ -702,3 +702,11 @@ services to process via bit flags. <br>
 <tr><td>255</td> <td>All ground-based rebroadcast services are enabled</td></tr>
 </table>
 </html>
+
+!TASK!
+
+<html>
+Shows the name of the stored flight task. <br>
+Supported only by PowerFLARM-based devices.
+</html>
+
