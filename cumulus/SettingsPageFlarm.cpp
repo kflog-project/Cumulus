@@ -39,7 +39,8 @@
  */
 SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   QWidget( parent ),
-  m_table(0)
+  m_table(0),
+  m_taskQueryIsRunning( false )
 {
   setObjectName("SettingsPageFlarm");
   setWindowFlags( Qt::Tool );
@@ -239,6 +240,7 @@ void SettingsPageFlarm::loadTableItems()
           << "GLIDERTYPE;RW;ALL"
           << "COMPID;RW;ALL"
           << "COMPCLASS;RW;ALL"
+          << "TASK;RO;PF"
           << "CFLAGS;RW;ALL"
           << "UI;RW;ALL"
           << "AUDIOOUT;RW;PF"
@@ -630,6 +632,7 @@ void SettingsPageFlarm::nextFlarmCommand()
    if( m_commands.size() == 0 )
     {
       // nothing more to send
+      m_taskQueryIsRunning = false;
       enableButtons( true );
       m_timer->stop();
       QApplication::restoreOverrideCursor();
@@ -644,6 +647,12 @@ void SettingsPageFlarm::nextFlarmCommand()
      }
 
    QString cmd = m_commands.head();
+
+   if( cmd.contains( "$PFLAC,R,TASK") )
+     {
+       // A task query is started
+       m_taskQueryIsRunning = true;
+     }
 
    QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
 
@@ -740,6 +749,16 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
                         }
 
                       m_table->item( i, 3 )->setText( text );
+                    }
+                  else if( sentence[2] == "TASK" )
+                    {
+                      if( m_taskQueryIsRunning == true )
+                        {
+                          // Only the first TASK answer is from interest, it
+                          // contains the task name
+                          m_taskQueryIsRunning = false;
+                          m_table->item( i, 3 )->setText( sentence[3].mid(25) );
+                        }
                     }
                   else
                     {

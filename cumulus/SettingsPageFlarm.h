@@ -173,5 +173,8 @@ private:
 
   /** Hash with FLARM item help data. */
   QHash<QString, QString> m_itemHelp;
+
+  /** Flag to handle TASK query */
+  bool m_taskQueryIsRunning;
 };
 
