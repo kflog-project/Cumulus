@@ -77,9 +77,11 @@ PreFlightLogBooksPage::PreFlightLogBooksPage(QWidget *parent) :
 
   extern Calculator *calculator;
 
-  if( calculator->moving() )
+  if( calculator->moving() ||
+      Flarm::getFlarmData().devtype.contains( "Fusion" ) )
     {
-      // Disable Flarm flight downloads if we are moving.
+      // Disable Flarm flight downloads if we are moving or a PowerFlarm
+      // Fusion is connected, which does not more support binary downloads.
       button->setEnabled( false );
     }
   else
