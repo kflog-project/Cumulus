@@ -32,25 +32,27 @@
   
 	<p>
 		Das <a href="http://www.openaip.net">openAIP</a> Projekt stellt pro Land 
-		verschiedene Punkt Daten bereit. Der Vorteil von <i>openAIP</i> ist, dass
-		jeder daran selber mitarbeiten kann, wenn er sich beim Projekt registriert
+		verschiedene Punktdaten Dateien bereit. Der Vorteil von <i>openAIP</i> ist,
+		dass jeder daran selber mitarbeiten kann, wenn er sich beim Projekt registriert
 		hat. Ein kleiner Nachteil ist, dass Sie erst in Cumulus die L&auml;nder
 		definieren m&uuml;ssen, die Sie installieren wollen. Der Rest wird
 		dann automatisch durch Cumulus getan, wenn Sie den <i>Download</i> Knopf
-		dr&uuml;cken.
+		dr&uuml;cken. Cumulus verwendet nur openAIP Dateien im <i>JSON</i> Format.
 	</p>
 	
-	<p><b>Nutzungsbedingen f&uuml;r externe Daten</b></p>
+	<p><b>Nutzungsbedingen f&uuml;r openAIP Daten</b></p>
 	
 	<p>
-	Bitte lesen und akzeptieren Sie die Nutzungsbedingen von
+	Bitte lesen und akzeptieren Sie die Nutzungsbedingen der
   </p>
   
   <ul>
-   <li> <a href="http://www.openaip.net/legal">openAIP</a></li>
+   <li> <a href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <b>openAIP Lizenz</b></a>,
+  </li>
   </ul>
   
-  bevor Sie diese Daten benutzen.
+  bevor Sie diese Daten herunterladen und benutzen.
 
 	<hr>
   
@@ -130,11 +132,12 @@
     <dd>
       Wenn Sie den <i>Laden</i> Knopf dr&uuml;cken, wird eine Tabelle ge&ouml;ffnet
       in der Sie alle ladbaren <i>openAIP</i> Punkt Dateien sehen. Die von
-      Cumulus runter geladenen Punkt Dateien haben folgendes Namensformat:
+      Cumulus runter geladenen Punkt Dateien haben das folgende Namensformat:
       <br><br>
-      &lt;L&auml;nderkenner&gt;_wpt.aip f&uuml;r Flugpl&auml;tze<br>
-      &lt;L&auml;nderkenner&gt;_nav.aip f&uuml;r Funk Navigationshilfen<br>
-      &lt;L&auml;nderkenner&gt;_hot.aip f&uuml;r Thermikpunkte<br>
+      &lt;L&auml;nderkenner&gt;_apt.json f&uuml;r Flugpl&auml;tze<br>
+      &lt;L&auml;nderkenner&gt;_rpp.json f&uuml;r Pflichtmeldepunkte<br>
+      &lt;L&auml;nderkenner&gt;_nav.json f&uuml;r Funk Navigationshilfen<br>
+      &lt;L&auml;nderkenner&gt;_hot.json f&uuml;r Thermikpunkte<br>
       <br>
       Im Kopf der Tabelle sehen Sie das Datenverzeichnis, in dem die
       angezeigten Dateien zu finden sind.
@@ -142,7 +145,8 @@
       wenn die entsprechende Datei geladen werden soll. Ist die Checkbox
       deaktiviert, erfolgt kein laden. Wenn Sie alle Dateien laden wollen,
       so aktivieren Sie die Checkbox ganz oben links in der ersten
-      Tabellenzeile mit dem Titel <i>Alle Ein/Aus schalten</i>. <b>Beachten Sie!</b>
+      Tabellenzeile mit dem Titel <i>Alle Ein/Aus schalten</i>.
+      <br><b>Beachten Sie!</b>
       Wenn Sie eine Einzelauswahl vornehmen m&ouml;chten, muss die
       <i>Alle Ein/Aus schalten</i> Checkbox <b>deaktiviert</b> sein.
       <BR> Wenn Sie das Fenster mit <i>Ok</i>

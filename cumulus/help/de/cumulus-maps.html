@@ -33,12 +33,12 @@
       <a href="cumulus-maps-airspaces.html">hier</a>.
 		</li>
 		
-		<br><li><b>Punktdaten:</b> Quellen f&uuml;r  Flugh&auml;fen, Flugpl&auml;tze,
-		           Funknavigationshilfen und Au&szlig;enlandefelder sind:<br><br>
+		<br><li><b>Punktdaten:</b> Quelle f&uuml;r Flugh&auml;fen, Flugpl&auml;tze,
+		           Funknavigationshilfen und Thermikpunkte ist:<br><br>
 			<ul>
-			  <li><a href="cumulus-maps-openAIP.html">openAIP</a> Projekt, welches
-			  Flugplatzdaten, Funknavigationshilfen und Thermikpunkte
-			  aber keine Au&szlig;enlandefelder im Moment anbietet.</li>
+			  <li><a href="cumulus-maps-openAIP.html">openAIP</a> Ein offenes Projekt,
+			  welches oben gelistete Daten zum Download anbietet.
+			  </li>
 			</ul>
 		</li>
 	</ul>
@@ -56,12 +56,7 @@
       <th>Linux Desktop</th>
       <td>$HOME/Cumulus/maps</td>
     </tr>
-    
-    <tr>
-      <th>Maemo</th>
-      <td>$HOME/MyDocs/Cumulus/maps</td>
-    </tr>
-    
+        
     <tr>
       <th>Android</th>
       <td>/sdcard/Cumulus/maps (interne oder externe SD-Karte)</td>
@@ -71,24 +66,6 @@
 	<p>
 	  Das sind die Standardpl&auml;tze.
   </p>
-
-	<p>
-	  Auf den Nokia Internet Tablets sollten Sie als Speicherort stets
-		ein externes Medium w&auml;hlen, da das interne Dateisystem im
-		Speichervolumen begrenzt ist. Beim ersten Start von Cumulus auf den
-		Nokia Internet Tablets versucht Cumulus selbst den besten Speicherort
-		f&uuml;r die Karten heraus zu finden. Die folgenden Pl&auml;tze werden
-		der Reihe nach gepr&uuml;ft, ob sie existieren:
-  </p>
-
-	<ul>
-		<li>/media/mmc1/Cumulus</li>
-		<li>/media/mmc2/Cumulus</li>
-		<li>/home/user/MyDocs/Cumulus</li>
-	</ul>
-
-	<p>Der erste Treffer wird genommen und die erforderlichen
-		Unterverzeichnisse darunter angelegt.</p>
 
 	<p>
 		<b>Achtung!</b> Die Kartendateien sind in verschiedenen
@@ -156,7 +133,7 @@
 		eine bestimmte Projektion zugeschnitten. Das wird erst w&auml;hrend
 		des erstmaligen Ladens gemacht. Dabei werden die Kartendaten in das
 		neue Format konvertiert und in diesem auch als
-		<i>.kfc</i>, <i>.aic</i> oder <i>.txc</i> Dateien gespeichert. Dieser
+		<i>.kfc</i>, <i>.jsonc</i> oder <i>.txc</i> Dateien gespeichert. Dieser
 		Vorgang nimmt einige Zeit in Anspruch, hat aber den Vorteil, das die
 		neuen Dateien kleiner sind und dann auch schneller geladen werden
 		k&ouml;nnen. In dem Men&uuml;

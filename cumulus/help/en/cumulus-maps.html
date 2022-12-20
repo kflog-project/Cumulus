@@ -34,12 +34,12 @@
 			can find <a href="cumulus-maps-airspaces.html">here</a>.
 		</li>
 
-		<br><li><b>Point Data:</b> Sources for airports, airfields, navaids and
-		  outlandings are:<br><br>
+		<br><li><b>Point Data:</b> Source for airports, airfields, navaids,
+		airport reporting points and thermal hotspots is the:<br><br>
 			<ul>
 			 <li><a href="cumulus-maps-openAIP.html">openAIP</a> project.
-				It provides airfields, navaids and hotspot data but no
-				outlandings at the moment.</li>
+				It provides the data listed above for Download.
+				</li>
 			</ul>
 	 </li>
 	</ul>
@@ -56,12 +56,7 @@
       <th>Linux Desktop</th>
       <td>$HOME/Cumulus/maps</td>
     </tr>
-    
-    <tr>
-      <th>Maemo</th>
-      <td>$HOME/MyDocs/Cumulus/maps</td>
-    </tr>
-    
+        
     <tr>
       <th>Android</th>
       <td>/sdcard/Cumulus/maps (internal or external SD-card)</td>
@@ -71,26 +66,7 @@
   <p>
 	  These are the default locations.
   </p>
-  
-	<p>
-	  On the Nokia Internet Tablet you should use an external storage medium if
-	  possible, because the internal file system is limited in its capacity.
-	  At the first startup on the Nokia Internet Tablet, Cumulus
-		itself tries to discover the best location for storing the map files.
-		The following places are checked for existence in chronological order:
-	</p>
-
-	<ul>
-		<li>/media/mmc1/Cumulus</li>
-		<li>/media/mmc2/Cumulus</li>
-		<li>/home/user/MyDocs/Cumulus</li>
-	</ul>
-
-  <p>
-	The first match is taken and the necessary subdirectories are created
-	by Cumulus itself.
-  </p>
-  
+    
 	<p>
 		<b>Please note! The map files have to be stored in different
 			subdirectories under the root map path.</b>
@@ -146,7 +122,7 @@
 		The maps you install are not projected. This work is done on loading.
 		Because this is a computationally complex operation, the resulting
 		maps are stored again with a
-		<i>.kfc</i>, <i>.aic</i> or <i>.txc</i> extension. For many maps,
+		<i>.kfc</i>, <i>.jsonc</i> or <i>.txc</i> extension. For many maps,
 		these files are a bit smaller than the original files. The next time
 		Cumulus needs to load the file, it first tries to load this
 		<i>compiled</i> file to improve speed. In the
