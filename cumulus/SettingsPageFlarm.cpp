@@ -47,7 +47,8 @@
  */
 SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   QWidget( parent ),
-  m_table(0)
+  m_table(0),
+  m_taskQueryIsRunning( false )
 {
   setObjectName("SettingsPageFlarm");
   setWindowFlags( Qt::Tool );
@@ -192,24 +193,37 @@ SettingsPageFlarm::SettingsPageFlarm( QWidget *parent ) :
   loadFlarmItemHelp();
 
   // request always FLARM device type, if not available no answer is sent.
-  GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
+  // request FLARM device type in every case. Maybe a Flarm is not connected
+  // but in this case we will not get an answer.
+  getFlarmDevice();
 }
 
 SettingsPageFlarm::~SettingsPageFlarm()
 {
 }
 
+void SettingsPageFlarm::getFlarmDevice()
+{
+  GpsNmea::gps->sendSentence( FLARM_DEVTYPE_CMD );
+}
+
 void SettingsPageFlarm::showEvent( QShowEvent *event )
 {
   m_table->setFocus();
-
   QWidget::showEvent( event );
+}
+
+void SettingsPageFlarm::closeEvent( QCloseEvent *event )
+{
+  m_timer->stop();
+  QApplication::restoreOverrideCursor();
+  QWidget::closeEvent( event );
 }
 
 void SettingsPageFlarm::enableButtons( const bool toggle )
 {
   m_loadButton->setEnabled( toggle );
-  m_closeButton->setEnabled( toggle );
+  // m_closeButton->setEnabled( toggle );
 
   // Block all signals from the table.
   m_table->blockSignals( ! toggle );
@@ -253,6 +267,7 @@ void SettingsPageFlarm::loadTableItems()
           << "GLIDERTYPE;RW;ALL"
           << "COMPID;RW;ALL"
           << "COMPCLASS;RW;ALL"
+          << "TASK;RO;PF"
           << "CFLAGS;RW;ALL"
           << "UI;RW;ALL"
           << "AUDIOOUT;RW;PF"
@@ -423,7 +438,7 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
 #ifdef ANDROID
   if( column == 2 )
     {
-      // Double click did not work proper on Android
+      // Double click did not work properly on Android
       slot_CellDoubleClicked( row, column );
       return;
     }
@@ -462,7 +477,6 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
 
       bool ok;
 
-#ifndef MAEMO5
     QString text = QInputDialog::getText( this,
                                           title,
                                           label,
@@ -471,16 +485,6 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
                                           &ok,
                                           0,
                                           Qt::ImhNoPredictiveText );
-#else
-    QString text = QInputDialog::getText( this,
-                                          title,
-                                          label,
-                                          QLineEdit::Normal,
-                                          item->text(),
-                                          &ok,
-                                          0 );
-#endif
-
     if( ok )
       {
         item->setText( text );
@@ -524,14 +528,30 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
       // get Flarm device type
       QString device = FlarmBase::getDeviceType();
 
+      if( device.size() == 0 )
+        {
+          getFlarmDevice();
+          sleep(2);
+        }
+
       if( itemDevType != "ALL" &&
           ((device.startsWith( "PowerFLARM-") == true && itemDevType != "PF") ||
           (device.startsWith( "PowerFLARM-") == false && itemDevType != "CF")) )
         {
-          QString text0 = tr("Configuration item is unsupported by your FLARM!");
+          QString text0 = "<html>" +
+                          tr("Configuration item maybe unsupported by your FLARM!") +
+                          "<br><br>" +
+                          tr("Continue ?");
           QString text1 = tr("Information");
-          messageBox( QMessageBox::Information, text0, text1 );
-          return;
+          int ret = messageBox( QMessageBox::Information,
+                                text0,
+                                text1,
+                                QMessageBox::Yes|QMessageBox::Cancel );
+
+          if( ret == QMessageBox::Cancel )
+            {
+          		return;
+        		}
         }
 
       QString itemText  = m_table->item( row, 2 )->text();
@@ -648,6 +668,7 @@ void SettingsPageFlarm::nextFlarmCommand()
    if( m_commands.size() == 0 )
     {
       // nothing more to send
+      m_taskQueryIsRunning = false;
       enableButtons( true );
       m_timer->stop();
       QApplication::restoreOverrideCursor();
@@ -663,7 +684,15 @@ void SettingsPageFlarm::nextFlarmCommand()
 
    QString cmd = m_commands.head();
 
+   if( cmd.contains( "$PFLAC,R,TASK") )
+     {
+       // A task query is started
+       m_taskQueryIsRunning = true;
+     }
+
    QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
+
+   qDebug() << "nextFlarmCommand" << cmd;
 
    bool res = GpsNmea::gps->sendSentence( ba );
 
@@ -757,6 +786,16 @@ void SettingsPageFlarm::slot_PflacSentence( QStringList& sentence )
 
                       m_table->item( i, 3 )->setText( text );
                     }
+                  else if( sentence[2] == "TASK" )
+                    {
+                      if( m_taskQueryIsRunning == true )
+                        {
+                          // Only the first TASK answer is from interest, it
+                          // contains the task name
+                          m_taskQueryIsRunning = false;
+                          m_table->item( i, 3 )->setText( sentence[3].mid(25) );
+                        }
+                    }
                   else
                     {
                       m_table->item( i, 3 )->setText( sentence[3] );
@@ -802,6 +841,8 @@ void SettingsPageFlarm::slot_Timeout()
 bool SettingsPageFlarm::checkFlarmConnection()
 {
   const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
+
+  return true;
 
   QString text0 = tr("Flarm device not reachable!");
   QString text1 = tr("Error");
@@ -894,7 +935,5 @@ int SettingsPageFlarm::messageBox( QMessageBox::Icon icon,
 
 #endif
 
-  int ret = mb.exec();
-
-  return ret;
+  return mb.exec();
 }

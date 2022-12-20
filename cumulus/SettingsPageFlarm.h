@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018 Axel Pauli
+**   Copyright (c): 2018-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,13 +22,12 @@
  *
  * This widget can get and set Flarm configuration items.
  *
- * \date 2018
+ * \date 2018-2022
  *
- * \version 1.1
+ * \version 1.2
  */
 
-#ifndef SettingsPageFlarm_H
-#define SettingsPageFlarm_H
+#pragma once
 
 #include <QWidget>
 #include <QHash>
@@ -67,6 +66,8 @@ public:
 protected:
 
   void showEvent( QShowEvent *event );
+
+  void closeEvent(QCloseEvent *event );
 
 private slots:
 
@@ -112,6 +113,9 @@ signals:
   void closed();
 
 private:
+
+  /** Query Flarm device. */
+  void getFlarmDevice();
 
   /** Loads all Flarm info and configuration items into the items list. */
   void loadTableItems();
@@ -169,6 +173,8 @@ private:
 
   /** Hash with FLARM item help data. */
   QHash<QString, QString> m_itemHelp;
+
+  /** Flag to handle TASK query */
+  bool m_taskQueryIsRunning;
 };
 
-#endif /* SettingsPageFlarm_H */
