@@ -415,7 +415,7 @@ void SettingsPagePointData::slot_openLoadDialog()
 void SettingsPagePointData::slotHelp()
 {
   // Check, which help is requested.
-  QString file = "cumulus-maps-openAIP.html";
+  QString file = "cumulus-setting-points.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
