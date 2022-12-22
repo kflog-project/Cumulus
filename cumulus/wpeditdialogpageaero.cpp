@@ -190,8 +190,12 @@ WpEditDialogPageAero::WpEditDialogPageAero(QWidget *parent) :
       chkRwyLandingOnly[i] = new QCheckBox( tr("landing only") );
       chkRwyLandingOnly[i]->setChecked( false );
       hb->addWidget( chkRwyLandingOnly[i] );
-
       qgl->addLayout( hb, 1, 0, 1, 4 );
+
+      QButtonGroup *bg = new QButtonGroup( this );
+      bg->setExclusive( true );
+      bg->addButton( chkRwyTakeoffOnly[i] );
+      bg->addButton( chkRwyLandingOnly[i] );
     }
 
   //----------------------------------------------------------------------------
@@ -480,31 +484,6 @@ void WpEditDialogPageAero::reportRwyIdError( short rwyNo )
   mb.exec();
 }
 
-/**
- * Report a runway takeoff or landing only error.
- *
- * @param rwyNo Runway number 1...4
- */
-void WpEditDialogPageAero::reportRwyOnlyError( short rwyNo )
-{
-  QMessageBox mb( QMessageBox::Critical,
-                  tr( "RWY %1 only error" ).arg(rwyNo),
-                  tr( "RWY %1: Takeoff or landing only cannot set both!" ).arg(rwyNo),
-                  QMessageBox::Ok,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
-}
-
 
 /**
  * Checks all runway designators and only flags for correctness.
@@ -520,12 +499,6 @@ bool WpEditDialogPageAero::checkRunways()
           if( checkRunwayDesignator( edtRwyHeading[i]->text() ) == false )
             {
               reportRwyIdError( i + 1 );
-              return false;
-            }
-
-          if( chkRwyTakeoffOnly[i]->isChecked() && chkRwyLandingOnly[i]->isChecked() )
-            {
-              reportRwyOnlyError( i + 1 );
               return false;
             }
         }
