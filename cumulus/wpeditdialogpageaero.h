@@ -73,14 +73,6 @@ class WpEditDialogPageAero : public QWidget
    */
   void reportRwyIdError( short rwyNo );
 
-  /**
-   * Report a runway takeoff or landing only error.
-   *
-   * @param rwyNo Runway number 1...4
-   */
-  void reportRwyOnlyError( short rwyNo );
-
-
  public slots:
 
   /**
