@@ -415,7 +415,7 @@ void SettingsPagePointData::slot_openLoadDialog()
 void SettingsPagePointData::slotHelp()
 {
   // Check, which help is requested.
-  QString file = "cumulus-setting-points.html";
+  QString file = "cumulus-settings-points.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
