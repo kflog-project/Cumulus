@@ -672,7 +672,7 @@ void SettingsPageFlarm::nextFlarmCommand()
       enableButtons( true );
       m_timer->stop();
       QApplication::restoreOverrideCursor();
-      m_table->resizeColumnsToContents();
+      m_table->resizeColumnToContents(3);
       return;
     }
 
