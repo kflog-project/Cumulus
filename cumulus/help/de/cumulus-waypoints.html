@@ -37,6 +37,7 @@
 			Speicherung wird der Name <i>cumulus.kwp</i> benutzt.
 		</dd>
 
+    <br>
 		<dt>
 			<b>Wegpunkt Import</b>
 		</dt>
@@ -72,7 +73,7 @@
 			Mit verschiedenen Kn&ouml;pfen im Fenster kann man verschiedene
 			Kommands pro Wegpunkt ausf&uuml;hren.
 
-			<p>
+			<br>
 			<ul>
 				<li>Druch dr&uuml;cken eines <b>Filterknopfes</b> oberhalb der
 					Liste kann man relativ schnell zu einen bestimmten Wegpunkt
@@ -142,7 +143,7 @@
 		</dd>
 
 		<br>
-		<dt>
+		<dt id="WaypointEditor">
 			<b>Wegpunkt Verwaltung</b>
 		</dt>
 
@@ -180,29 +181,51 @@
 			Priorit&auml;t gezeichnet werden.
 		</dd>
 
-		<br>
+    <br>
+    <dt>
+      <b>Wegpunkt Flugplatz Frequenz</b>
+    </dt>
+
+    <dd>
+    Im Wegpunkt Editor kann man f&uuml;r einen Flugplatz auch eine Frequenz
+    definieren. Diese setzt sich aus folgenden Teilen zusammen:  
+    <br>
+    <ul>
+      <li><b>Kanal:</b> Geben Sie hier die Kanal Frequenz in MHz ein.</li>
+      <li><b>K-Type:</b> Geben Sie hier den Rufnamen des Kanals, z.B. <i>INFO</i> ein.</li>
+      <li><b>ICAO:</b> Geben Sie hier den ICAO Kode des Flugplatzes ein, sofern er einem hat.</li>
+    </ul>
+    </dd>
+
 		<dt>
-			<b>Wegpunkt SLBs</b>
+			<b>Wegpunkt Flugplatz SLBs</b>
 		</dt>
 
 		<dd>
-			Im Wegpunkt Editor gibt es die M&ouml;glichkeit, bis zu zwei SLBs zu
-      definieren. Wenn die Checkbox SLB aktiviert wird, werden auch die anderen
-      SLB Eingabefelder freigegeben. 
-
-			<p>
+			Im Wegpunkt Editor gibt es die M&ouml;glichkeit, bis zu vier SLBs zu
+      definieren. Wenn eine der Checkboxen SLB[1...4] aktiviert wird, werden
+      auch die zugeh&ouml;rigen Eingabefelder dazu angezeigt. Jede definierte
+      SLB beschreibt aber immer nur eine Himmelsrichtung. Das wird von openAIP
+      so praktiziert und wurde deshalb von Cumulus auch so &uuml;bernommen.
+			<br>
 			<ul>
-				<li><b>Richtung</b> Geben Sie hier die SLB Richtung als 01...36 ein.
-             0 bedeutet das keine Richtung definiert ist. In diesem Fall werden
-             immer alle Eingaben ignoriert, auch wenn die Ok Taste gedr&uuml;ckt wird!</li>
-				<li><b>L&auml;nge</b> Geben Sie hier die L&auml;nge der SLB ein.</li>
+				<li><b>ID</b> Geben Sie hier die SLB Richtung als <i>01...36</i> ein
+				     und erg&auml;nzen sie diese ggf. mit <i>[R,C,L]</i> für rechts,
+				     Mitte oder links.
+        </li>
+        <li><b>L&auml;nge</b> Geben Sie hier die SLB L&auml;nge ein.</li>
+        <li><b>Breite</b> Geben Sie hier die SLB Breite ein.</li>
 				<li><b>Oberfl&auml;che</b> Geben Sie hier die SLB Oberfl&auml;che ein.</li>
         <li><b>beide</b> Wenn beide SLB Richtungen nutzbar sind, aktivieren Sie die
-        Checkbox, im anderen Fall nicht.</li>
+               Checkbox, im anderen Fall nicht.</li>
         <li><b>nutzbar</b> Wenn die SLB benutzbar ist, aktivieren Sie die
-        Checkbox, im anderen Fall nicht.</li>
+               Checkbox, im anderen Fall nicht.</li>
+        <li><b>Haupt-SLB</b> Aktivieren Sie die Checkbox, wenn es eine Hauptbahn ist.</li>
+        <li><b>nur starten</b> Aktivieren Sie die Checkbox, wenn man auf der Bahn
+               nur starten kann.</li>
+        <li><b>nur landen</b> Aktivieren Sie die Checkbox, wenn man auf der Bahn
+               nur starten kann.</li>
 			</ul>
-			</p>
 
 		</dd>
 
@@ -238,8 +261,7 @@
 
 	</dl>
 
-	<p></p>
-
+	<br>
 	<table width="100%">
 		<tr>
 			<td align="left"><a href="cumulus-manual.html">zur&uuml;ck</a></td>
