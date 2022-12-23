@@ -1,0 +1,4 @@
+* LK8000 polar for: SZD-54-2 Perkoz (WL 20m)
+* MassDryGross[kg], MaxWaterBallast[liters], Speed1[km/h], Sink1[m/s], Speed2, Sink2, Speed3, Sink3, WingArea[m2]
+ 442, 0, 91, -0.69, 170, -3.98, 250, -12.66, 17.30
+
