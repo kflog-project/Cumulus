@@ -1,3 +1,3 @@
-* XCSoar polar for: LS-8 15m
+* XCVario polar for: Janus CM
 * MassDryGross[kg],  MaxWaterBallast[liters],  Speed1[km/h],  Sink1[m/s],  Speed2,  Sink2,  Speed3,  Sink3,  WingArea[m2]
-  360, 175, 100, -0.67, 155, -1.45, 185, -2.5, 10.5
+  675, 0, 90, -0.64, 120, -0.78, 180, -1.80, 17.3
