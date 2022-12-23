@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2018 by Axel Pauli
+ **                   2008-2022 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -32,6 +32,7 @@
 #include "generalconfig.h"
 #include "MainWindow.h"
 #include "layout.h"
+#include "HelpBrowser.h"
 
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;
@@ -131,6 +132,11 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   connect(this, SIGNAL(save(Waypoint *)),
           pageA, SLOT(slot_save(Waypoint *)));
 
+  QPushButton *help = new QPushButton(this);
+  help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
+  help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
+  help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
+
   // Add ok and cancel buttons
   QPushButton *cancel = new QPushButton;
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
@@ -142,11 +148,13 @@ WpEditDialog::WpEditDialog(QWidget *parent, Waypoint *wp ) :
   ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
+  connect(help, SIGNAL(pressed()), this, SLOT(slotHelp()));
   connect(ok, SIGNAL(clicked()), this, SLOT(accept()));
   connect(cancel, SIGNAL(clicked()), this, SLOT(close()));
 
   QVBoxLayout *buttonBox = new QVBoxLayout;
   buttonBox->setSpacing(0);
+  buttonBox->addWidget(help, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(cancel, 1);
   buttonBox->addSpacing(30);
@@ -348,3 +356,14 @@ bool WpEditDialog::isWaypointNameInList( QString& wpName )
 
   return false;
 }
+
+void WpEditDialog::slotHelp()
+{
+  QString file = "cumulus-waypoints.html";
+
+  HelpBrowser *hb = new HelpBrowser( this, file, "WaypointEditor" );
+  hb->resize( this->size() );
+  hb->setWindowState( windowState() );
+  hb->setVisible( true );
+}
+

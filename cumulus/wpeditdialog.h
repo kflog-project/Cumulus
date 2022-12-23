@@ -26,7 +26,7 @@
  *
  * \date 2002-2022
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #pragma once
@@ -83,6 +83,11 @@ private:
     bool isWaypointNameInList( QString& wpName );
 
 private slots:
+
+    /**
+     * Called, if the help button is clicked.
+     */
+    void slotHelp();
 
     /**
      * Called if OK button is pressed
