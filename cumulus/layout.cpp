@@ -463,7 +463,7 @@ QString Layout::getCbSbStyle()
     "QScrollBar::handle:vertical {"
       "border-radius: 5px;"
 	    "background: lightgray;"
-	    "min-height: 2em;"
+	    "min-height: 3em;"
 	    "border: 1px solid grey;"
     "}"
 
