@@ -120,14 +120,14 @@
 			as any other waypoint.
 		</dd>
 
-		<dt>
+		<dt id="WaypointEditor">
 			<b>Waypoint management</b>
 		</dt>
 
 		<dd>
 			If you want to add, modify or delete waypoints use the buttons at the
 			right side of the waypoint list. <b>For security reason it is not
-				recommended to do that in flight!</b> If you press the plus sign or the
+			recommended to do that in flight!</b> If you press the plus sign or the
 			pencil button an editor is opened with entry fields for the waypoint
 			properties.
 		</dd>
@@ -151,29 +151,47 @@
 				href="cumulus-settings-map-objects.html#WaypointImportance">here</a>
 			for more information.
 		</dd>
+		
+    <dt>
+      <b>Waypoint airfield frequency</b>
+    </dt>
 
+    <dd>
+    In the waypoint editor you can define a frequency of an airfield. The
+    frequency entry has the following input fields:
+    <br>
+    <ul>
+      <li><b>Channel:</b> Type in here the frequency in MHz. </li>
+      <li><b>C-Type:</b> Type in here the type name of the channel, e.g. <i>INFO</i>.</li>
+      <li><b>ICAO:</b> Type in here the ICAO code of the airfield, if available.</li>
+    </ul>
+    </dd>
+		
 		<dt>
-			<b>Waypoint runway headings</b>
+			<b>Waypoint airfield runways</b>
 		</dt>
 
 		<dd>
-			In the wayoint editor you can define two different runways. To activate a
-			runway, click in the runway checkbox. That enables the other runway
-			input fields.
-
-			<p>
+			In the wayoint editor you can define until four different runways.
+			To add a new runway, activate one of the runway checkboxes. That enables
+			the all runway input fields. Every defined runway describes only one sky
+			direction. That is the default in openAIP and Cumulus has taken over it.
+			<br>
 			<ul>
-				<li><b>Heading</b> The runway heading in the range 01...36. 0 means
-				there is no runway heading defined. In this case all other runway
-				entries are ignored after pressing save!</li>
-				<li><b>Length</b> The runway length in the user's preferred unit.</li>
+				<li><b>ID</b> The runway heading in the range of <i>01...36</i>. Additionally
+				    you can enhance that by one of the letters <i>[R,C,L]</i> for right,
+				    center or left.
+				</li>
+        <li><b>Length</b> The runway length in the user's preferred unit.</li>
+        <li><b>Width</b> The runway width in the user's preferred unit.</li>
 				<li><b>Surface</b> The surface of the runway.</li>
-				<li><b>both</b> If the box is checked the runway has to headings otherwise
-				 only one</li>
-				<li><b>usable</b> If the box is checked the runway is usable otherwise not.</li>
+				<li><b>both</b> If the box is checked the runway can be used in both
+				       directions otherwise only in one.</li>
+        <li><b>usable</b> If the box is checked the runway is usable otherwise not.</li>
+        <li><b>main RWY</b> If the box is checked the runway is the main runway.</li>
+        <li><b>takeoff only</b> If the box is checked the runway is usable only for takeoff.</li>
+        <li><b>landing only</b> If the box is checked the runway is usable only for landing.</li>
 			</ul>
-			</p>
-
 		</dd>
 
 		<dt>
@@ -182,7 +200,7 @@
 
 		<dd>
 			Via the menu bar entries <i>Toggels/Waypoint lables</i> and <i>Toggels/Extra
-				labels info</i> you can switch on the display of the waypoint names and
+			labels info</i> you can switch on the display of the waypoint names and
 			their reachability (distance and arrival altitude) besides their
 			icons, if a glider is selected. The text labels are drawn at a white
 			background with black letters. The currently selected waypoint is
