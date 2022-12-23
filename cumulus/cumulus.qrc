@@ -155,9 +155,12 @@
   <file>etc/SZD-48-3 Jantar Std 3.plr</file>
   <file>etc/SZD-50 Puchacz.plr</file>
   <file>etc/SZD-51-1 Junior.plr</file>
+  <file>etc/SZD-54-2 Perkoz (FT 17m).plr</file>
+  <file>etc/SZD-54-2 Perkoz (WL 17m).plr</file>
+  <file>etc/SZD-54-2 Perkoz (WL 20m).plr</file>
   <file>etc/SZD-55-1 Promyk.plr</file>
   <file>etc/SZD-56-2 Diana2.plr</file>
-  <file>etc/SZD-9bis 1E Bocian.plr</file>
+  <file>etc/SZD-9 bis 1E Bocian.plr</file>
   <file>etc/Taurus.plr</file>
   <file>etc/Ventus 2c (18m).plr</file>
   <file>etc/Ventus 2cT (18m).plr</file>
@@ -166,8 +169,8 @@
   <file>etc/Ventus a-b (16.6m).plr</file>
   <file>etc/Ventus b (15m).plr</file>
   <file>etc/Ventus cM (17.6m).plr</file>
-  <file>etc/VSO-10.plr</file>
-  <file>etc/VT-116.plr</file>
+  <file>etc/VSO-10 Gradient.plr</file>
+  <file>etc/VT-116 Orlik II.plr</file>
   <file>etc/Zuni II.plr</file>
   
   <!-- That fonts are used only by Android -->
