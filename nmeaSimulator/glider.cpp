@@ -3,7 +3,7 @@
                              -------------------
     begin                : 23.12.2003
     copyright            : (C) 2003      by Eckhard Völlm
-                               2009-2021 by Axel Pauli
+                               2009-2022 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -173,6 +173,7 @@ void glider::Circle()
   gVec.add( wVec );
   cout << "Speed:             " << gVec.getSpeed().getKph() << endl;
   cout << "Heading:           " << gVec.getAngleDeg() << endl;
+  cout << "Roll Angle:        " << courseChg << "°/s" << endl;
 
   double angW = gVec.getAngleDeg();
   double yDelta = gVec.getY().getKnots()/(3600*60.0); // this is Y in vector

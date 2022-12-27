@@ -371,7 +371,7 @@ void scanConfig( QString cfg )
 
       if( ! ok )
         {
-	  playFactor = 1;
+          playFactor = 1;
         }
     }
   else if( cfg.startsWith("start=") )
@@ -383,6 +383,8 @@ void scanConfig( QString cfg )
       cerr << "Unknown parameter: '"
            << cfg.toLatin1().data()
            << "' ignored!" << endl;
+
+      exit(-1);
     }
 }
 
@@ -435,7 +437,7 @@ void readConfig()
 
       while( ! inStream.atEnd() )
         {
-	  QString line = inStream.readLine().trimmed();
+	        QString line = inStream.readLine().trimmed();
           qDebug() << line;
 
           if( ! line.isEmpty())
@@ -643,7 +645,8 @@ int main(int argc, char **argv)
   QString hdop = "1.1";
   QString vdop = "1.2";
 
-  QTime start = QTime::currentTime();
+  QElapsedTimer start;
+  start.start();
 
   if( Pause < 100 )
     {
