@@ -50,7 +50,10 @@ extern MapMatrix   *_globalMapMatrix;
 Calculator::Calculator( QObject* parent ) :
   QObject(parent),
   infiniteTemperature(-300.0),
-  samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) )
+  samplelist( LimitedList<FlightSample>( MAX_SAMPLECOUNT ) ),
+  m_turnRight(0),
+  m_turnLeft(0),
+  m_flyStraight(0)
 {
   setObjectName( "Calculator" );
   GeneralConfig *conf = GeneralConfig::instance();
@@ -120,7 +123,7 @@ Calculator::Calculator( QObject* parent ) :
   m_varioDataControl = new QTimer( this );
   m_varioDataControl->setSingleShot( true );
 
- connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
+  connect( m_resetAutoZoomTimer, SIGNAL(timeout()),
            this, SLOT(slot_switchMapScaleBack()) );
 
   connect( m_varioDataControl, SIGNAL(timeout()),
@@ -1579,13 +1582,13 @@ void Calculator::slot_newFix( const QDateTime& newFixTime )
 void Calculator::determineFlightStatus()
 {
   /*
-    We define a minimum turn rate of 3 degrees per second (that is,
+    We define a minimum turn rate of 4 degrees per second (that is,
     one turn takes at most one and a half minute).
 
     This can be a bit more advanced to allow for temporary changes in
     circling speed in order to better center a thermal.
   */
-#define MINTURNANGDIFF 3 //see above
+#define MINTURNANGDIFF 4 //see above
 
   if( samplelist.count() < 2 )
     {
@@ -1626,6 +1629,7 @@ void Calculator::determineFlightStatus()
       if( lastFlightMode != standstill )
         {
           qDebug() << "determineFlightStatus: standstill detected";
+          m_turnRight = m_turnLeft = m_flyStraight = 0;
           lastFlightMode = standstill;
           newFlightMode( lastFlightMode );
         }
@@ -1635,8 +1639,15 @@ void Calculator::determineFlightStatus()
 
   if( headingDiff > MINTURNANGDIFF )
     {
+      if( m_turnRight < 4 )  // hold down
+        {
+          m_turnRight++;
+        }
+
+      m_turnLeft = m_flyStraight = 0;
+
       // right circling is assumed
-      if( lastFlightMode != circlingR )
+      if( lastFlightMode != circlingR && m_turnRight > 2 )
         {
           qDebug() << "determineFlightStatus: circlingR detected,"
                    << "HeadingDiff=" << headingDiff
@@ -1647,8 +1658,15 @@ void Calculator::determineFlightStatus()
     }
   else if( headingDiff < -MINTURNANGDIFF )
     {
+      if( m_turnLeft < 4)
+        {
+          m_turnLeft++;
+        }
+
+      m_turnRight = m_flyStraight = 0;
+
         // left circling is assumed
-      if( lastFlightMode != circlingL )
+      if( lastFlightMode != circlingL && m_turnLeft > 2 )
         {
           qDebug() << "determineFlightStatus: circlingL detected"
                    << "HeadingDiff=" << headingDiff
@@ -1659,14 +1677,21 @@ void Calculator::determineFlightStatus()
     }
   else
     {
-      // cruising is assumed, set heading start point
-      m_cruiseDirection = lastHead;
+      if( m_flyStraight < 4 )
+        {
+          m_flyStraight++;
+        }
 
-      if( lastFlightMode != cruising )
+      m_turnLeft = m_turnRight = 0;
+
+      if( lastFlightMode != cruising  && m_flyStraight > 2 )
         {
           qDebug() << "determineFlightStatus: cruising detected"
                    << "HeadingDiff=" << headingDiff
                    << "Vm/s=" << lastSpeed.getMps();
+
+          // cruising is assumed, set heading start point
+          m_cruiseDirection = lastHead;
           lastFlightMode = cruising;
           newFlightMode( lastFlightMode );
         }
@@ -1699,6 +1724,9 @@ void Calculator::slot_GpsStatus(GpsNmea::GpsStatus newState)
     {
       // Reset ETA in calculator and on map display.
       calcETA();
+
+      // reset flight detection
+      m_turnRight = m_turnLeft = m_flyStraight = 0;
     }
 }
 

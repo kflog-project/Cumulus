@@ -7,15 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2021 by Axel Pauli
+**                   2008-2022 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef CALCULATOR_H
-#define CALCULATOR_H
+#pragma once
 
 #include <QDateTime>
 #include <QObject>
@@ -1209,8 +1208,22 @@ private: // Private attributes
    * Timer to supervise external vaiometer data.
    */
   QTimer* m_varioDataControl;
+
+  /**
+   * Counter for right turns for circle wind.
+   */
+  quint8 m_turnRight;
+
+  /**
+   * Counter for left turns for circle wind.
+   */
+  quint8 m_turnLeft;
+
+  /**
+   * Counter for straight fly for circle wind.
+   */
+  quint8 m_flyStraight;
 };
 
 extern Calculator* calculator;
 
-#endif
