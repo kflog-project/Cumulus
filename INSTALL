@@ -154,7 +154,7 @@ Step 7)
 
 To start Cumulus issue the command:
 
-  INSTALL_ROOT/bin/cumulus normally /opt/cumulus/bin/cumulus
+  $INSTALL_ROOT/bin/cumulus normally /opt/cumulus/bin/cumulus
 
 Personal stuff is stored under $HOME/Cumulus.
 
