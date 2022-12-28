@@ -5,7 +5,7 @@ A navigation program for glider pilots and other flight enthusiasts...
 
 Cumulus is a well established free Open Source flight navigation software written for glider pilots and other flight enthusiasts. This software is currently running on Android til release level 6 and on the Linux Desktops Ubuntu and Debian.
 
-Cumulus provides a moving map display with all the information you need to make navigation easier while flying, yet requiring a minimum of user interaction. Navigation during flight is based on the processing of GPS information delivered either by a built in GPS receiver or an external Bluetooth GPS device.
+Cumulus provides a moving map display with all the information you need to make navigation easier while flying, yet requiring a minimum of user interaction. Navigation during flight is based on the processing of GPS information delivered either by a built in GPS receiver or an external GPS device.
 
 Cumulus features a full color moving map with information on terrain, airfields, airspace, (rail-) roads, water, cities and many other details. It handles waypoints, IGC logging and tasks in cooperation with KFLog, wind determination, reachable sites, final glide, sunrise and sunset calculations, airport weather stations query (METAR and TAF), flight logbook, live flight tracking via Internet and as well as automatic task point switching is also supported.
 
