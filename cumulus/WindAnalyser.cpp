@@ -141,7 +141,7 @@ void WindAnalyser::slot_newSample()
     {
       // a bit more than one circle to ensure both ends are in
       // increase the number of circles flown (used to determine the last
-      // heading uality
+      // heading quality
       circleCount++;
 
       // calculate the wind for this circle
