@@ -68,7 +68,7 @@ void WindStore::slot_Measurement( Vector& windVector,
   // 1. not older as 5 minutes
   // 2. altitude difference <= 300m
   // 3. Speed difference <= 5 Km/h
-  // 4. Heading difference <= 16 degrees
+  // 4. Heading difference <= 20 degrees
   // In this case we apply a low pass filter to the new wind.
   // Otherwise the new original wind measurement is taken.
   if( lastWindMeasurement.vector.isValid() )
@@ -79,7 +79,7 @@ void WindStore::slot_Measurement( Vector& windVector,
       double angleDiff = fabs( MapCalc::angleDiffDegree( lastWindMeasurement.vector.getAngleDeg(),
                                                          wm.vector.getAngleDeg() ));
 
-      if( age <= 5 * 60 && altDiff <= 300 && deltaSpeed <= 5.0 && angleDiff <= 16.0 )
+      if( age <= 5 * 60 && altDiff <= 300 && deltaSpeed <= 5.0 && angleDiff <= 20.0 )
         {
           filterWindmeasurement( wm, lastWindMeasurement, quality );
           takeIt = true;
