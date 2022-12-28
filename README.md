@@ -22,6 +22,7 @@ Ubuntu/Debian packagees are Qt5 based and they are further developed in the futu
 Last available Cumulus packages: Release 5.40.1, published at 2022-01-06. Press the link below and then the download button.
 - Ubuntu 21.10, 64bit, binary package, [cumulus_5.40.1_amd64.deb](https://github.com/kflog-project/Cumulus/tree/master/Releases/Ubuntu/binary-packages/cumulus_5.40.1_amd64.deb)
 - Ubuntu 21.10, 64bit, source package, [cumulus_5.40.1...](https://github.com/kflog-project/Cumulus/tree/master/Releases/Ubuntu/source-packages)
+- Debian 11 (bullseye), 64bit, binary package, [cumulus_5.40.8_amd64.deb](https://github.com/kflog-project/Cumulus/blob/master/Releases/Debian/cumulus_5.40.8_amd64.deb)
 - Android 6, QT4 installation package, [CumulusActivity_5.40.2.apk](https://github.com/kflog-project/Cumulus/tree/QT4_END_Development/Releases/Android/CumulusActivity_5.40.2.apk)
 
 [Cumulus PDF Manual English](https://github.com/kflog-project/Cumulus/raw/master/cumulus/help/en/Cumulus.pdf)<br>
