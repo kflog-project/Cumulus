@@ -112,7 +112,7 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
 
   // read in waypoint list from catalog
   WaypointCatalog wpCat;
-  int ok;
+  int ok = false;
   const char* format;
   QString error;
 
@@ -120,12 +120,12 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
     {
       ok = wpCat.readBinary( "", &wpList );
       format = "binary";
-    }
 
-  if( ok )
-    {
-      qDebug() << "MapContents():" << wpList.size() << "waypoints read from"
-               << format << "catalog.";
+      if( ok )
+        {
+          qDebug() << "MapContents():" << wpList.size() << "waypoints read from"
+                   << format << "catalog.";
+        }
     }
 
   currentTask = 0;
