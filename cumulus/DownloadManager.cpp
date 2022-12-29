@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2014 Axel Pauli
+**   Copyright (c): 2010-2022 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -167,10 +167,10 @@ void DownloadManager::slotFinished( QString &urlIn,
       QPair<QString, QString> pair = queue.dequeue();
 
       if( codeIn == QNetworkReply::NoError )
-	{
-	  // Emit the successfully download.
-	  emit fileDownloaded( pair.second );
-	}
+        {
+          // Emit the successfully download.
+          emit fileDownloaded( pair.second );
+        }
     }
 
   // Remove last done request from the url set.
