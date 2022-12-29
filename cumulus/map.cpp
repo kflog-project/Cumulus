@@ -1292,11 +1292,10 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  Q_UNUSED( event )
-
   // set resize flag
   m_isResizeEvent = true;
   slotDraw();
+  event->accept();
 }
 
 void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
