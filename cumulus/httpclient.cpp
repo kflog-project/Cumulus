@@ -408,15 +408,20 @@ void HttpClient::slotFinished()
           // Close temporary file.
           m_tmpFile->close();
 
-          if( error != QNetworkReply::NoError )
+          if( error != QNetworkReply::NoError &&
+              error != QNetworkReply::ContentNotFoundError )
             {
-              // Request was aborted, tmp file must be removed.
+              // Request has failed, tmp file must be removed.
               m_tmpFile->remove();
             }
           else
             {
               // Read last received bytes. Seems not to be necessary.
               // slotReadyRead();
+
+              // In case of ContentNotFoundError an empty file is created
+              // to avoid an endless download loop. Some KFLog data tiles are
+              // missing.
 
               // Remove an old existing destination file before rename file.
               QFile::remove( m_destination );
