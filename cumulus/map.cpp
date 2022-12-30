@@ -2999,7 +2999,7 @@ void Map::slotZoomOut()
  * is called. This allows for several modifications to the map being used for the
  * redraw at once.
  * The second timer is set for a larger interval, and is not reset. It makes sure
- * the redraw occurs once in awhile, even if events modifying the map keep comming
+ * the redraw occurs once in awhile, even if events modifying the map keep coming
  * in and would otherwise prevent the map from being redrawn.
  *
  * If either of the two timers expires, the status of redrawScheduled is reset
@@ -3028,11 +3028,7 @@ void Map::scheduleRedraw(mapLayer fromLayer)
     }
 
   // start resp. restart short timer to combine several draw requests to one
-#ifndef MAEMO
   m_redrawTimerShort->start(500);
-#else
-  m_redrawTimerShort->start(750);
-#endif
 
   if (!m_redrawTimerLong->isActive() && m_ShowGlider)
     {

@@ -451,7 +451,7 @@ void MainWindow::slotCreateApplicationWidgets()
 {
   qDebug() << "MainWindow::slotCreateApplicationWidgets()";
 
-  ws = new WaitScreen( splash );
+  ws = new WaitScreen( this );
 
   ws->slot_SetText1( tr( "Starting Cumulus..." ) );
   sleep( 1 );
@@ -2560,7 +2560,6 @@ void MainWindow::slotReadconfig()
         {
           calculator->clearReachable();
           viewRP->clearList(); // this clears the reachable list in the view
-          Map::instance->scheduleRedraw(Map::waypoints);
           m_reachpointListVisible = false;
         }
     }
@@ -2569,7 +2568,6 @@ void MainWindow::slotReadconfig()
   if( m_outlandingListVisible )
     {
       viewRP->clearList();  // this clears the outlanding list in the view
-      Map::instance->scheduleRedraw(Map::outlandings);
       m_outlandingListVisible = false;
     }
 
