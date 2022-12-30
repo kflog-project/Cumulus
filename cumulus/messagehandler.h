@@ -13,12 +13,9 @@
 **   the Free Software Foundation; either version 2 of the License, or
 **   (at your option) any later version.
 **
-**   $Id$
-**
 ***********************************************************************/
 
-#ifndef MESSAGE_HANDLER_H
-#define MESSAGE_HANDLER_H
+#pragma once
 
 /**
  * \author Axel Pauli
@@ -28,15 +25,9 @@
  * This function is used to handle the messages generated in Cumulus by
  * using qDebug, qWarning, qFatal.
  *
- * \date 2005-2010
+ * \date 2005-2022
  **/
 
 #include <QApplication>
 
-#if QT_VERSION >= 0x050000
-void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
-#else
 void messageHandler(QtMsgType type, const char *msg);
-#endif
-
-#endif

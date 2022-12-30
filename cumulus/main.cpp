@@ -168,11 +168,7 @@ int main(int argc, char *argv[])
   conf->setAppRoot( rootPath );
 #endif
 
-#ifdef MAEMO
-  bool isLog2File = true;
-#else
   bool isLog2File = conf->getLog2FileMode();
-#endif
 
   QString logDir = "/tmp";
 
@@ -186,28 +182,6 @@ int main(int argc, char *argv[])
 
   if( isLog2File )
     {
-
-#ifdef MAEMO
-      // check for alternate paths under Maemo
-      QDir path1("/media/mmc1"); // N8x0
-      QDir path2("/media/mmc2"); // N8x0
-      QDir path3("/home/user/MyDocs");
-
-      if( path1.exists() && HwInfo::isMounted(path1.absolutePath()) )
-        {
-          logDir = path1.absolutePath();
-        }
-      else if( path2.exists() && HwInfo::isMounted(path2.absolutePath()) )
-        {
-          logDir = path2.absolutePath();
-        }
-      else if( path3.exists() )
-         {
-           logDir = path3.absolutePath();
-         }
-
-#endif
-
       logDir += "/cumulus.log";
 
       // Save one old log file version.

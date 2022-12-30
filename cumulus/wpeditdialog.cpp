@@ -32,7 +32,7 @@
 #include "generalconfig.h"
 #include "mainwindow.h"
 #include "layout.h"
-#include "HelpBrowser.h"
+#include "helpbrowser.h"
 
 extern MapContents *_globalMapContents;
 extern MapMatrix   *_globalMapMatrix;

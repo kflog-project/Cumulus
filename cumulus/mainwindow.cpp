@@ -1065,8 +1065,8 @@ void MainWindow::slotFinishStartUp()
   if( jniIsRestarted() )
     {
       if( _globalMapContents->restoreFlightTask() == true )
-	{
-	  slotPreFlightDataChanged();
+        {
+          slotPreFlightDataChanged();
         }
 
       calculator->restoreWaypoint();
@@ -1086,6 +1086,9 @@ void MainWindow::slotFinishStartUp()
 
   // Enable JNI transfer now.
   jniShutdown( false );
+
+  // That will trigger a new download of missing map data.
+  Map::instance->scheduleRedraw();
 
 #endif
 
@@ -2726,7 +2729,6 @@ void MainWindow::slotReadconfig()
         {
           calculator->clearReachable();
           viewRP->clearList(); // this clears the reachable list in the view
-          Map::instance->scheduleRedraw(Map::waypoints);
           m_reachpointListVisible = false;
         }
     }
@@ -2735,7 +2737,6 @@ void MainWindow::slotReadconfig()
   if( m_outlandingListVisible )
     {
       viewRP->clearList();  // this clears the outlanding list in the view
-      Map::instance->scheduleRedraw(Map::outlandings);
       m_outlandingListVisible = false;
     }
 

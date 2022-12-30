@@ -521,7 +521,26 @@ public class CumulusActivity extends QtActivity
     catch (IOException e)
       {
         // handle exception
-        Log.e( TAG, "Download error for " + urlIn +": " + e.getMessage());
+        Log.e( TAG, "Download error for " + urlIn +": \"" + e.getMessage() +
+               "\", Code: \"" + e.getCause() + "\"" );
+        
+        if( e.getCause() == null )
+        {
+          // create an empty output file in case of null cause. It is received,
+          // when the download file does not exist.
+          try
+            {
+              out = new FileOutputStream( destinationIn );
+              out.close();
+              Log.e( TAG, "Creating emppty download file for null cause." );
+            }
+          
+          catch (IOException e1) {};
+          nativeHttpsResponse( 0, urlIn, cbIn );
+          return;
+        }
+        
+        // That should be a common error.
         nativeHttpsResponse( -1, e.getMessage(), cbIn );
         return;
       }
@@ -1999,6 +2018,7 @@ public class CumulusActivity extends QtActivity
   {
     synchronized (addDataPath)
       {
+        Log.d( TAG, "addDataPath=" + addDataPath );
         return addDataPath;
       }
   }
@@ -2022,13 +2042,13 @@ public class CumulusActivity extends QtActivity
     StringBuffer buffer = new StringBuffer();
 
     buffer.append("density=").append(displayMetrics.density).append(';')
-        .append("densityDpi=").append(displayMetrics.densityDpi).append(';')
-        .append("heightPixels=").append(displayMetrics.heightPixels)
-        .append(';').append("scaledDensity=")
-        .append(displayMetrics.scaledDensity).append(';')
-        .append("widthPixels=").append(displayMetrics.widthPixels).append(';')
-        .append("xdpi=").append(displayMetrics.xdpi).append(';')
-        .append("ydpi=").append(displayMetrics.ydpi).append(';');
+          .append("densityDpi=").append(displayMetrics.densityDpi).append(';')
+          .append("heightPixels=").append(displayMetrics.heightPixels)
+          .append(';').append("scaledDensity=")
+          .append(displayMetrics.scaledDensity).append(';')
+          .append("widthPixels=").append(displayMetrics.widthPixels).append(';')
+          .append("xdpi=").append(displayMetrics.xdpi).append(';')
+          .append("ydpi=").append(displayMetrics.ydpi).append(';');
 
     return buffer.toString();
   }

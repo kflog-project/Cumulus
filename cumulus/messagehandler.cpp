@@ -6,14 +6,12 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2007-2013 by Axel Pauli <kflog.cumulus@gmail.com>
+ **   Copyright (c):  2007-2022 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
  **   the Free Software Foundation; either version 2 of the License, or
  **   (at your option) any later version.
- **
- **   $Id$
  **
  ***********************************************************************/
 
@@ -22,18 +20,20 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <syslog.h>
 
+#ifndef ANDROID
+#include <syslog.h>
 #include "generalconfig.h"
+#endif
+
 #include "messagehandler.h"
 
-#if QT_VERSION >= 0x050000
-void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-#else
 void messageHandler(QtMsgType type, const char *msg)
-#endif
 {
+#ifndef ANDROID
   static GeneralConfig *conf = static_cast<GeneralConfig *> (0);
+#endif
+
   static bool sysLogMode = false;
   static bool init = false;
 
@@ -44,6 +44,8 @@ void messageHandler(QtMsgType type, const char *msg)
       // log facility and this will end in an infinite loop.
       return;
     }
+
+#ifndef ANDROID
 
   if (conf == 0)
     {
@@ -60,54 +62,56 @@ void messageHandler(QtMsgType type, const char *msg)
         }
     }
 
-  if( ! sysLogMode ) // normal logging via stderr
-    {
-#if QT_VERSION >= 0x050000
-#define MSG msg.toLocal8Bit().constData()
-#else
-#define MSG msg
 #endif
+
+  if( ! sysLogMode ) // normal logging via stderr, default for Android
+    {
       switch( type )
         {
           case QtDebugMsg:
-            fprintf( stderr, "Debug: %s\n", MSG);
+            fprintf( stderr, "Debug: %s\n", msg);
             break;
           case QtWarningMsg:
-            fprintf( stderr, "Warning: %s\n", MSG);
+            fprintf( stderr, "Warning: %s\n", msg);
             break;
           case QtCriticalMsg:
-            fprintf(stderr, "Critical: %s\n", MSG);
+            fprintf(stderr, "Critical: %s\n", msg);
             break;
           case QtFatalMsg:
-            fprintf( stderr, "Fatal: %s\n", MSG);
+            fprintf( stderr, "Fatal: %s\n", msg);
             abort();
             break;
           default:
-            fprintf( stderr, "Default: %s\n", MSG);
+            fprintf( stderr, "Default: %s\n", msg);
             break;
         }
 
       return;
     }
 
+#ifndef ANDROID
+
   // Logging via syslog daemon into system log file
   switch( type )
   {
     case QtDebugMsg:
-      syslog( LOG_DEBUG, "Debug: %s", MSG);
+      syslog( LOG_DEBUG, "Debug: %s", msg);
       break;
     case QtWarningMsg:
-      syslog( LOG_WARNING, "Warning: %s", MSG);
+      syslog( LOG_WARNING, "Warning: %s", msg);
       break;
     case QtCriticalMsg:
-      syslog( LOG_CRIT, "Critical: %s", MSG);
+      syslog( LOG_CRIT, "Critical: %s", msg);
       break;
     case QtFatalMsg:
-      syslog( LOG_CRIT, "Fatal: %s", MSG);
+      syslog( LOG_CRIT, "Fatal: %s", msg);
       abort();
       break;
     default:
-      syslog( LOG_DEBUG, "Default: %s", MSG);
+      syslog( LOG_DEBUG, "Default: %s", msg);
       break;
   }
+
+#endif
+
 }
