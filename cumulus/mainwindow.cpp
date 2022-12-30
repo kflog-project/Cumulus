@@ -611,7 +611,7 @@ void MainWindow::slotCreateApplicationWidgets()
 {
   qDebug() << "MainWindow::slotCreateApplicationWidgets()";
 
-  ws = new WaitScreen( splash );
+  ws = new WaitScreen( this );
 
 #ifdef ANDROID
   // The waitscreen is not centered over the parent and not limited in
