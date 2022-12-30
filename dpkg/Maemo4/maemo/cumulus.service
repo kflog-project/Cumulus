@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.kflog.Cumulus
-Exec=/opt/cumulus/bin/start_cumulus
