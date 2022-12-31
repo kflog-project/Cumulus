@@ -744,26 +744,33 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
 
 void Map::paintEvent(QPaintEvent* event)
 {
-//QDateTime dt = QDateTime::currentDateTime();
-//QString dtStr = dt.toString(Qt::ISODate);
-//
-//   qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
-//          dtStr.toAscii().data(),
-//          event->rect().width(), event->rect().height(),
-//          event->rect().left(), event->rect().top() );
+#if 0
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString(Qt::ISODate);
+
+  qDebug("%s: Map::paintEvent(): RecW=%d, RecH=%d, RecLeft(X)=%d, RecTop(Y)=%d",
+         dtStr.toLatin1().data(),
+         event->rect().width(), event->rect().height(),
+         event->rect().left(), event->rect().top() );
+#endif
 
   if( mutex() )
     {
-      qDebug("Map::paintEvent(): mutex is locked");
+      qDebug("Map::paintEvent(): mutex is locked, ignoring it.");
+      return;
     }
 
-  // We copy always the content from the m_pixPaintBuffer to the paint device.
-  QPainter p(this);
+  if( m_pixPaintBuffer.rect().contains(event->rect() ) )
+    {
+      // We copy the content from the m_pixPaintBuffer to the paint device in
+      // this case only.
+      QPainter p(this);
 
-  p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
-                0, 0, event->rect().width(), event->rect().height() );
+      p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
+                    0, 0, event->rect().width(), event->rect().height() );
+    }
 
-  // qDebug("Map.paintEvent(): return");
+  // qDebug("Map.paintEvent(): return from paint");
 }
 
 void Map::slotNewWind( Vector& wind )
@@ -1290,8 +1297,17 @@ void Map::setDrawing(bool isEnable)
     }
 }
 
-void Map::resizeEvent(QResizeEvent* event)
+void Map::resizeEvent( QResizeEvent* event )
 {
+#if 0
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString(Qt::ISODate);
+
+   qDebug() << dtStr << "Map::resizeEvent():"
+            << "oldSize=" << event->oldSize()
+            << "newSize=" << event->size();
+#endif
+
   // set resize flag
   m_isResizeEvent = true;
   slotDraw();
@@ -1301,8 +1317,11 @@ void Map::resizeEvent(QResizeEvent* event)
 void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
 {
   static bool first = true; // mark first calling of method
-
   static QSize lastSize; // Save the last used window size
+
+  // stop timers
+  m_redrawTimerShort->stop();
+  m_redrawTimerLong->stop();
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
@@ -1758,20 +1777,22 @@ void Map::slotDraw()
 // will be queued only.
 void Map::slotRedrawMap()
 {
-  // qDebug("Map::slotRedrawMap(): LoopLevel=%d", qApp->loopLevel());
-
-  // @AP: Don't allows changes on matrix data during drawing!!!
-
-  if( mutex() )
-    {
-      // @AP: we ignore such events to get no infinite loops
-      qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
-      return;
-    }
+  static quint8 level = 0;
+  level++;
+  qDebug("Map::slotRedrawMap(): LoopLevel=%d", level );
 
   // stop timers
   m_redrawTimerShort->stop();
   m_redrawTimerLong->stop();
+
+  // @AP: Don't allows changes on matrix data during drawing!!!
+  if( mutex() )
+    {
+      // @AP: we ignore such events to get no infinite loops
+      qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
+      level--;
+      return;
+    }
 
   // save requested layer
   mapLayer drawLayer = m_scheduledFromLayer;
@@ -1781,6 +1802,7 @@ void Map::slotRedrawMap()
 
   // do drawing
   p_redrawMap(drawLayer);
+  level--;
 }
 
 /** Draws the waypoints of the waypoint catalog on the map */
@@ -3007,7 +3029,7 @@ void Map::slotZoomOut()
  */
 void Map::scheduleRedraw(mapLayer fromLayer)
 {
-  // qDebug("Map::scheduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
+  qDebug("Map::scheduleRedraw(): mapLayer=%d", fromLayer );
 
   if( !m_isEnable )
     {
