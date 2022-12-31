@@ -825,18 +825,16 @@ void MainWindow::slotCreateApplicationWidgets()
       sleep(1);
     }
 
-  splash->setVisible( true );
-  ws->setVisible( true );
-
-  QCoreApplication::sendPostedEvents();
-  QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
-                                   QEventLoop::ExcludeSocketNotifiers );
-
+  splash->setVisible( false );
   Map::instance->setDrawing( true );
   viewMap->setVisible( true );
   viewMap->resize( size() );
 
-  // set viewMap as central widget
+  // Set viewMap as new central widget. The former splash widget seems to be
+  // deleted by the QMainWindow, if a new widget is set as central widget:
+  //
+  // Qt: Note: QMainWindow takes ownership of the widget pointer and deletes it
+  // at the appropriate time.
   setCentralWidget( viewMap );
 
   // set the map view as the default widget
@@ -869,9 +867,6 @@ void MainWindow::slotFinishStartUp()
   ws->setScreenUsage( false );
   ws->setVisible( false );
 
-  // closes and removes the splash screen
-  splash->close();
-
   // Startup GPS client process now for data receiving
   GpsNmea::gps->blockSignals( false );
 
@@ -899,8 +894,8 @@ void MainWindow::slotFinishStartUp()
   if( jniIsRestarted() )
     {
       if( _globalMapContents->restoreFlightTask() == true )
-	{
-	  slotPreFlightDataChanged();
+        {
+          slotPreFlightDataChanged();
         }
 
       calculator->restoreWaypoint();
