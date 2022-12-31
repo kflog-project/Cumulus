@@ -61,11 +61,7 @@ extern MapView     *_globalMapView;
 
 Map *Map::instance = static_cast<Map *>(0);
 
-#ifdef MAEMO
-#define TRAIL_LENGTH 7*60
-#else
 #define TRAIL_LENGTH 10*60
-#endif
 
 Map::Map(QWidget* parent) : QWidget(parent),
   TrailListLength( TRAIL_LENGTH )
@@ -756,7 +752,7 @@ void Map::paintEvent(QPaintEvent* event)
 
   if( mutex() )
     {
-      qDebug("Map::paintEvent(): mutex is locked, ignoring it.");
+      qDebug("Map::paintEvent(): mutex is locked, ignoring event.");
       return;
     }
 
@@ -769,8 +765,12 @@ void Map::paintEvent(QPaintEvent* event)
       p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
                     0, 0, event->rect().width(), event->rect().height() );
     }
-
-  // qDebug("Map.paintEvent(): return from paint");
+#if 0
+  else
+    {
+      qDebug() << "Map::paintEvent(): pixelImage to small, no drawing.";
+    }
+#endif
 }
 
 void Map::slotNewWind( Vector& wind )
@@ -1299,6 +1299,8 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent( QResizeEvent* event )
 {
+  static bool first = true;
+
 #if 0
   QDateTime dt = QDateTime::currentDateTime();
   QString dtStr = dt.toString(Qt::ISODate);
@@ -1310,8 +1312,20 @@ void Map::resizeEvent( QResizeEvent* event )
 
   // set resize flag
   m_isResizeEvent = true;
-  slotDraw();
   event->accept();
+
+  if( first )
+    {
+      qDebug() << "Map::resizeEvent() No 1.";
+      first = false;
+      slotDraw();
+      return;
+    }
+
+  // Under Qt5 there was a crash, if resize events not handled in time.
+  // Therefore resize events are committed immediately and processed delayed.
+  m_redrawTimerShort->stop();
+  m_redrawTimerLong->start( 2000 );
 }
 
 void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
@@ -1777,10 +1791,6 @@ void Map::slotDraw()
 // will be queued only.
 void Map::slotRedrawMap()
 {
-  static quint8 level = 0;
-  level++;
-  qDebug("Map::slotRedrawMap(): LoopLevel=%d", level );
-
   // stop timers
   m_redrawTimerShort->stop();
   m_redrawTimerLong->stop();
@@ -1790,7 +1800,6 @@ void Map::slotRedrawMap()
     {
       // @AP: we ignore such events to get no infinite loops
       qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
-      level--;
       return;
     }
 
@@ -1802,7 +1811,6 @@ void Map::slotRedrawMap()
 
   // do drawing
   p_redrawMap(drawLayer);
-  level--;
 }
 
 /** Draws the waypoints of the waypoint catalog on the map */
@@ -2491,12 +2499,7 @@ void Map::slotSwitchManualInFlight()
 /** Draws the most important aircraft reported by Flarm. */
 void Map::p_drawOtherAircraft()
 {
-
-#ifndef MAEMO
-  const int diameter = 22 * Layout::getIntScaledDensity();
-#else
   const int diameter = 30;
-#endif
 
   if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 150.0 )
     {
@@ -3029,7 +3032,7 @@ void Map::slotZoomOut()
  */
 void Map::scheduleRedraw(mapLayer fromLayer)
 {
-  qDebug("Map::scheduleRedraw(): mapLayer=%d", fromLayer );
+  // qDebug("Map::scheduleRedraw(): mapLayer=%d", fromLayer );
 
   if( !m_isEnable )
     {
@@ -3060,7 +3063,6 @@ void Map::scheduleRedraw(mapLayer fromLayer)
       m_redrawTimerLong->start(2000);
     }
 }
-
 
 /** sets a new scale */
 void Map::slotSetScale(const double& newScale)
