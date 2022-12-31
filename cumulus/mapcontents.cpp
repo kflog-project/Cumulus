@@ -1931,20 +1931,32 @@ void MapContents::proofeSection()
                   //try loading the currently unloaded files
                   if (!(hasstep & 1))
                     {
-                      if (readTerrainFile(secID, FILE_TYPE_GROUND))
+                      if (readTerrainFile(secID, FILE_TYPE_GROUND)) {
                         step |= 1;
+                        QCoreApplication::sendPostedEvents();
+                        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                                         QEventLoop::ExcludeSocketNotifiers );
+                      }
                     }
 
                   if (!(hasstep & 2))
                     {
-                      if (readTerrainFile(secID, FILE_TYPE_TERRAIN))
+                      if (readTerrainFile(secID, FILE_TYPE_TERRAIN)) {
                         step |= 2;
+                        QCoreApplication::sendPostedEvents();
+                        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                                         QEventLoop::ExcludeSocketNotifiers );
+                      }
                     }
 
                   if (!(hasstep & 4))
                     {
-                      if (readBinaryFile(secID, FILE_TYPE_MAP))
+                      if (readBinaryFile(secID, FILE_TYPE_MAP)) {
                         step |= 4;
+                        QCoreApplication::sendPostedEvents();
+                        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                                         QEventLoop::ExcludeSocketNotifiers );
+                      }
                     }
 
                   if (step == 7) //set the correct flags for this map tile
