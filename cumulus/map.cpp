@@ -1297,11 +1297,33 @@ void Map::setDrawing(bool isEnable)
 
 void Map::resizeEvent(QResizeEvent* event)
 {
-  Q_UNUSED( event )
+  static bool first = true;
+
+#if 0
+  QDateTime dt = QDateTime::currentDateTime();
+  QString dtStr = dt.toString(Qt::ISODate);
+
+   qDebug() << dtStr << "Map::resizeEvent():"
+            << "oldSize=" << event->oldSize()
+            << "newSize=" << event->size();
+#endif
 
   // set resize flag
   m_isResizeEvent = true;
-  slotDraw();
+  event->accept();
+
+  if( first )
+    {
+      qDebug() << "Map::resizeEvent() No 1.";
+      first = false;
+      slotDraw();
+      return;
+    }
+
+  // Under Qt5 there was a crash, if resize events not handled in time.
+  // Therefore resize events are committed immediately and processed delayed.
+  m_redrawTimerShort->stop();
+  m_redrawTimerLong->start( 2000 );
 }
 
 void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
