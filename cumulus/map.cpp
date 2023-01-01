@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Josua Dietze
- **                   2008-2022 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1329,8 +1329,11 @@ void Map::resizeEvent(QResizeEvent* event)
 void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
 {
   static bool first = true; // mark first calling of method
-
   static QSize lastSize; // Save the last used window size
+
+  // stop timers
+  m_redrawTimerShort->stop();
+  m_redrawTimerLong->stop();
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
