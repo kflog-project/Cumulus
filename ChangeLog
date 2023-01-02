@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2023-01-02 AP: Cumulus 5.40.8 released for Debian, Android.
+
 [-] 2022-12-28 AP: Issue #160 fixed. PowerFlarm-Fusion does not more support
                    binary download of flights. This feature should be disabled
                    in Cumulus, when a PowerFlarm-Fusion device is regognized.
