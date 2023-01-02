@@ -24,12 +24,16 @@ following components are mandatory:
 At least a Qt Release 5.14.0 or higher has to be used.
 
 The different Linux distributions do provide normally installable packages for
-that. For XUbuntu 20.04 you have to execute the following command to get them:
+that. For XUbuntu 22.04 you have to execute the following command to get them:
 
-  sudo apt-get install g++ git unzip
-  sudo apt-get install qt5-default qttools5-dev-tools qttools5-dev-tools qt5-doc
+  sudo apt-get install build-essential git unzip
+  sudo apt-get install qtcreator qtbase5-dev qttools5-dev-tools qt5-doc
   sudo apt-get install libbluetooth-dev bluez
   sudo apt-get install dh-make fakeroot dpkg-dev
+  
+  Additional help is to find here:
+  
+  https://wiki.qt.io/Install_Qt_5_on_Ubuntu
 
 Step 2)
 
