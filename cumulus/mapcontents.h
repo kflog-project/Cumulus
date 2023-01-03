@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000 by Heiner Lamprecht, Florian Ehinger
- **                   2008-2022 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2023 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * This class provides methods for accessing the contents of the map.
  * It takes control over loading all needed map files as value lists.
  *
- * \date 2000-2022
+ * \date 2000-2023
  *
- * \version 1.8
+ * \version 1.9
  */
 
 #pragma once
@@ -314,8 +314,11 @@ class MapContents : public QObject
 
     /**
      * Saves the current waypoint list into a file.
+     *
+     * \param file File name with full path or empty, if default name should be
+     *             used.
      */
-    void saveWaypointList();
+    void saveWaypointList( QString file="" );
 
     /**
      * Sets the current flight task.
@@ -805,7 +808,7 @@ class MapContents : public QObject
      * Array containing the used elevation levels in meters. Is used as help
      * for reverse mapping elevation to array index.
      */
-    static const short isoLevels[ISO_LINE_LEVELS];
+  static const short isoLevels[ ISO_LINE_LEVELS ];
 
     /** Hash table with elevation in meters as key and related elevation
      * index as value

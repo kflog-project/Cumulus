@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2022 by Axel Pauli
+**                   2007-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2022
+ * \date 2004-2023
  *
- * \version 1.13
+ * \version 1.14
  */
 
 #pragma once
@@ -115,7 +115,7 @@ class GeneralConfig : protected QSettings
   /** Waypoint file storage formats. */
   enum WpFileFormat
   {
-    Binary = 0, XML = 1
+    Binary = 0, CUP = 1
   };
 
   /** Arrival altitude display selection, if a flight task is active. */
@@ -2241,15 +2241,15 @@ class GeneralConfig : protected QSettings
     _waypointBinaryFileName = newValue;
   }
 
-  /** Gets the default XML waypoint file name with path. */
-  QString &getXmlWaypointFileName()
+  /** Gets the default CUP waypoint file name with path. */
+  QString &getCupWaypointFileName()
   {
-    return _waypointXmlFileName;
+    return _waypointCupFileName;
   }
-  /** Sets the default XML waypoint file name with path. */
-  void setXmlWaypointFileName( const QString newValue )
+  /** Sets the default CUP waypoint file name with path. */
+  void setCupWaypointFileName( const QString newValue )
   {
-    _waypointXmlFileName = newValue;
+    _waypointCupFileName = newValue;
   }
 
   /** Gets the waypoint file format */
@@ -3577,8 +3577,8 @@ class GeneralConfig : protected QSettings
   // Default binary waypoint file name
   QString _waypointBinaryFileName;
 
-  // Default XML waypoint file name
-  QString _waypointXmlFileName;
+  // Default CUP waypoint file name
+  QString _waypointCupFileName;
 
   /** Waypoint file format. 0=binary, 1=xml */
   enum WpFileFormat _waypointFileFormat;

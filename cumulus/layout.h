@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2010-2022 by Axel Pauli
+**   Copyright (c):  2010-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,7 +20,7 @@
  *
  * This class defines common GUI layout parameters.
  *
- * \date 2010-2022
+ * \date 2010-2023
  *
  * \version 1.4
  *
@@ -193,4 +193,12 @@ class Layout
                          QMessageBox::StandardButtons buttons,
                          QMessageBox::StandardButton button,
                          QWidget *parent=nullptr );
+
+  /**
+   * Center a child widget over its parent.
+   *
+   * @param parent
+   * @param child
+   */
+  static void centerWidget( QWidget* parent, QWidget* child );
 };

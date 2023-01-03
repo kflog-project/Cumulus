@@ -165,7 +165,7 @@ void WaypointListWidget::deleteSelectedWaypoints()
         }
 
       // save the modified catalog
-      _globalMapContents->saveWaypointList();
+      _globalMapContents->saveWaypointList( "" );
 
       filter->reset();
       resizeListColumns();
@@ -182,7 +182,7 @@ void WaypointListWidget::deleteAllWaypoints()
   _globalMapContents->getWaypointList().clear();
 
   // save the modified catalog
-  _globalMapContents->saveWaypointList();
+  _globalMapContents->saveWaypointList( "" );
 
   list->clear();
   filter->reset();
@@ -212,7 +212,7 @@ void WaypointListWidget::deleteCurrentWaypoint()
   // remove waypoint from waypoint list in MapContents
   _globalMapContents->getWaypointList().removeAll( *wp );
   // save the modified catalog
-  _globalMapContents->saveWaypointList();
+  _globalMapContents->saveWaypointList( "" );
 
   // update the filter and reset the view
   list->setUpdatesEnabled(false);
@@ -247,7 +247,7 @@ void WaypointListWidget::deleteWaypoint(Waypoint &wp)
   // Remove waypoint from global waypoint list in MapContents
   _globalMapContents->getWaypointList().removeAll( wp );
   // Save the modified waypoint list as file.
-  _globalMapContents->saveWaypointList();
+  _globalMapContents->saveWaypointList( "" );
 }
 
 /** Called if a waypoint has been edited. */
@@ -284,7 +284,7 @@ void WaypointListWidget::updateCurrentWaypoint(Waypoint& wp)
   list->setUpdatesEnabled(true);
 
   // save modified catalog
-  _globalMapContents->saveWaypointList();
+  _globalMapContents->saveWaypointList( "" );
 }
 
 /** Called if a waypoint has been added. */
@@ -300,7 +300,7 @@ void WaypointListWidget::addWaypoint( Waypoint& newWp )
   wpList.append( newWp );
 
   // save the modified waypoint catalog
-  _globalMapContents->saveWaypointList();
+  _globalMapContents->saveWaypointList( "" );
 
   // retrieve the reference of the appended waypoint from the global list
   Waypoint& wp = wpList.last();

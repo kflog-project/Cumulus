@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2022 by Axel Pauli
+**   Copyright (c):  2012-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -537,3 +537,22 @@ int Layout::messageBox( QMessageBox::Icon icon,
 
   return msgBox.exec();
 }
+
+/**
+ * Center a child widget over its parent.
+ *
+ * @param parent
+ * @param child
+ */
+void Layout::centerWidget( QWidget* parent, QWidget* child )
+{
+#ifdef ANDROID
+
+  child.show();
+  QPoint pos = mapToGlobal(QPoint( parent->width()/2  - child->width()/2,
+                                   parent->height()/2 - child->height()/2 ));
+  child.move( pos );
+
+ #endif
+}
+

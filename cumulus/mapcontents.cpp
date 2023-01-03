@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2022 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2023 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -127,6 +127,21 @@ MapContents::MapContents(QObject* parent, WaitScreen* waitscreen) :
                    << format << "catalog.";
         }
     }
+  else if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::CUP )
+    {
+      ok = wpCat.readCup( "", &wpList );
+      format = "CUP";
+
+      if( ok != -1 )
+        {
+          qDebug() << "MapContents():" << wpList.size() << "waypoints read from"
+                   << format << "catalog.";
+        }
+    }
+  else
+    {
+      qDebug() << "MapContents(): no waypoints to read";
+    }
 
   currentTask = 0;
 
@@ -149,14 +164,18 @@ MapContents::~MapContents()
   qDeleteAll( flarmAlertZoneList );
 }
 
-// save the current waypoint list
-void MapContents::saveWaypointList()
+// save the current waypoint list into a file
+void MapContents::saveWaypointList( QString file )
 {
   WaypointCatalog wpCat;
 
   if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::Binary )
     {
-      wpCat.writeBinary( "", wpList );
+      wpCat.writeBinary( file, wpList );
+    }
+  else if( GeneralConfig::instance()->getWaypointFileFormat() == GeneralConfig::CUP )
+    {
+      wpCat.writeCup( file, wpList );
     }
 }
 

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2022 by Axel Pauli
+**   Copyright (c):  2011-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -44,7 +44,8 @@ extern MapContents* _globalMapContents;
 PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   QWidget(parent),
   m_centerRef(Position),
-  m_waypointFileFormat(GeneralConfig::Binary)
+  m_waypointFileFormat(GeneralConfig::Binary),
+  m_fileLoaded( false )
 {
   setObjectName("PreFlightWaypointPage");
   setWindowFlags( Qt::Tool );
@@ -209,7 +210,7 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
 
   m_wpFileFormatBox = new QComboBox;
   m_wpFileFormatBox->addItem( tr("Binary"), 0 );
-  m_wpFileFormatBox->addItem( tr("XML"), 1 );
+  m_wpFileFormatBox->addItem( tr("CUP"), 1 );
 
   m_wpPriorityBox = new QComboBox;
   m_wpPriorityBox->addItem( tr("Source"), 3 );
@@ -227,6 +228,12 @@ PreFlightWaypointPage::PreFlightWaypointPage(QWidget *parent) :
   buttomLayout->setSpacing( 5 );
   buttomLayout->addLayout( storageLayout );
   buttomLayout->addLayout( priorityLayout );
+
+  m_saveAs = new QPushButton( tr("Save as"), this );
+  m_saveAs->setToolTip( tr( "Save waypoints at another location as separate file." ) );
+  buttomLayout->addWidget( m_saveAs );
+
+  connect( m_saveAs, SIGNAL(pressed()), this, SLOT(slotSaveAs()) );
 
   //---------------------------------------------------------------------------
   // The parent of the layout is the scroll widget
@@ -321,45 +328,78 @@ void PreFlightWaypointPage::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) m_wpFileFormatBox->itemData(m_wpFileFormatBox->currentIndex()).toInt() );
+  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) m_wpFileFormatBox->currentIndex() );
   conf->setWaypointImportRadius( m_wpRadiusBox->text() );
   conf->setWaypointPriority( m_wpPriorityBox->currentIndex() );
   conf->setWaypointCenterReference( m_centerRef );
   conf->setWaypointAirfieldReference( m_airfieldSelection->text() );
 
-  if( m_waypointFileFormat != m_wpFileFormatBox->currentIndex() &&
+  if( ( m_waypointFileFormat != m_wpFileFormatBox->currentIndex() ||
+        m_fileLoaded == true ) &&
       _globalMapContents->getWaypointList().size() > 0 )
     {
-      // Waypoint storage format has been changed, store all waypoints
-      // in the new format, if the waypoint list is not empty and the user agrees.
-      QMessageBox mb( QMessageBox::Question,
-                      tr( "Continue?" ),
-                      tr("The waypoint storage format was changed. "
-                      "Storing data in new format can overwrite existing data!") +
-                      "<br><br>" +
-                      tr("Continue storing?") +
-                      "</html>",
-                      QMessageBox::Yes | QMessageBox::No,
-                      this );
-
-      mb.setDefaultButton( QMessageBox::No );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
-      if( mb.exec() == QMessageBox::No )
-        {
-          return;
-        }
-
       _globalMapContents->saveWaypointList();
     }
+}
+
+/**
+ * Save the waypoint data as file at another place.
+ */
+void PreFlightWaypointPage::slotSaveAs()
+{
+  QString fName;
+  QString caption;
+  QString filter;
+
+  if( m_wpFileFormatBox->currentIndex() == 0 )
+    {
+      caption = tr( "Save as Binary file" );
+      filter.append(tr( "Binary" ) + " (*.kwp *.KWP)");
+    }
+  else
+    {
+      caption = tr(" Save as CUP file ");
+      filter.append(tr("SeeYou") + " (*.cup *.CUP)");
+    }
+
+  // Save waypoint catalog in desired format
+  QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
+
+  fName = QFileDialog::getSaveFileName( this,
+                                        caption,
+                                        wayPointDir,
+                                        filter );
+  if( fName.isEmpty() )
+    {
+      return;
+    }
+
+  if( m_wpFileFormatBox->currentIndex() == 0 )
+    {
+      if( fName.toLower().endsWith( ".kwp" ) == false )
+        {
+          fName.append( ".kwp" );
+        }
+    }
+  else
+    {
+      if( fName.toLower().endsWith( ".cup" ) == false )
+        {
+          fName.append( ".cup" );
+        }
+    }
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  // Save currently used stored file format
+  int wpfFormat = conf->getWaypointFileFormat();
+
+  // Change format globally to the selected format
+  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) m_wpFileFormatBox->currentIndex() );
+  _globalMapContents->saveWaypointList( fName );
+
+  // Restore saved stored file format
+  conf->setWaypointFileFormat( (GeneralConfig::WpFileFormat) wpfFormat );
 }
 
 /** Stores the new selected radius */
@@ -509,15 +549,7 @@ void PreFlightWaypointPage::slotImportFile()
                           QMessageBox::Ok,
                           this );
 
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
-
+          Layout::centerWidget( this, &mb );
           mb.exec();
         }
       else
@@ -528,14 +560,7 @@ void PreFlightWaypointPage::slotImportFile()
                           QMessageBox::Ok,
                           this );
 
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
+          Layout::centerWidget( this, &mb );
           mb.exec();
         }
 
@@ -553,16 +578,7 @@ void PreFlightWaypointPage::slotImportFile()
                   this );
 
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
+  Layout::centerWidget( this, &mb );
 
   if( mb.exec() == QMessageBox::No )
     {
@@ -599,15 +615,7 @@ void PreFlightWaypointPage::slotImportFile()
                       QMessageBox::Ok,
                       this );
 
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
+      Layout::centerWidget( this, &mb );
       mb.exec();
       return;
     }
@@ -659,6 +667,7 @@ void PreFlightWaypointPage::slotImportFile()
 
   if( added )
     {
+      m_fileLoaded = true;
       _globalMapContents->saveWaypointList();
       // Trigger a redraw of the map.
       emit waypointsAdded();
@@ -680,15 +689,7 @@ void PreFlightWaypointPage::slotImportFile()
                    QMessageBox::Ok,
                    this );
 
-#ifdef ANDROID
-
-  mb1.show();
-  QPoint pos1 = mapToGlobal(QPoint( width()/2  - mb1.width()/2,
-                                    height()/2 - mb1.height()/2 ));
-  mb1.move( pos1 );
-
-#endif
-
+  Layout::centerWidget( this, &mb1 );
   mb1.exec();
 }
 
