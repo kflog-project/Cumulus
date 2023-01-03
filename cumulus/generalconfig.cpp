@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2022 by Axel Pauli
+ **                   2007-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -466,7 +466,7 @@ void GeneralConfig::load()
 
   beginGroup("Waypoint Data");
   _waypointBinaryFileName    = value( "BinaryDefaultFileName", "cumulus.kwp" ).toString();
-  _waypointXmlFileName       = value( "XmlDefaultFileName", "cumulus.kflogwp" ).toString();
+  _waypointCupFileName       = value( "CupDefaultFileName", "cumulus.cup" ).toString();
   _waypointFileFormat        = (enum WpFileFormat) value( "FileFormat", Binary ).toInt();
   _waypointPriority          = value( "StoragePriority", 0 ).toInt();
   _waypointCenterReference   = value( "CenterReference", PreFlightWaypointPage::Home ).toInt();
@@ -953,7 +953,7 @@ void GeneralConfig::save()
 
   beginGroup("Waypoint Data");
   setValue( "BinaryDefaultFileName", _waypointBinaryFileName );
-  setValue( "XmlDefaultFileName", _waypointXmlFileName );
+  setValue( "CupDefaultFileName", _waypointCupFileName );
   setValue( "FileFormat", _waypointFileFormat );
   setValue( "StoragePriority", _waypointPriority );
   setValue( "CenterReference", _waypointCenterReference );

@@ -8,7 +8,7 @@
 **
 **   Copyright (c):  2001 by Harald Maier
 **          modified 2002 by Andre Somers
-**          modified 2008-2022 by Axel Pauli
+**          modified 2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,7 +25,7 @@
  * This class reads or writes the waypoint catalog data into a file. Filters can
  * be set to reduce the data mount to be read.
  *
- * \date 2002-2022
+ * \date 2002-2023
  */
 
 #pragma once
@@ -64,6 +64,11 @@ class WaypointCatalog
    * \return Number of read waypoints. In error case -1.
    */
   int readCup( QString catalog, QList<Waypoint>* wpList );
+
+  /**
+   * Writes a SeeYou cup file, only waypoint part.
+   */
+  bool writeCup( const QString& catalog, QList<Waypoint>& wpList );
 
   /**
    * Reads a Cambridge Aero Instruments or a Winpilot turnpoint file.

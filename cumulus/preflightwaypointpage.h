@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2016 by Axel Pauli
+**   Copyright (c):  2011-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,14 +24,13 @@
  * The supported waypoint formats are the Seeyou cup format and the KFLog
  * XML waypoint format.
  *
- * \date 2011-2016
+ * \date 2011-2023
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
-#ifndef PREFLIGHT_WAYPOINT_PAGE_H
-#define PREFLIGHT_WAYPOINT_PAGE_H
+#pragma once
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -99,6 +98,11 @@ private slots:
   void slotImportFile();
 
   /**
+   * Save the waypoint data as file at another place.
+   */
+  void slotSaveAs();
+
+  /**
    * Called if the Ok button is pressed.
    */
   void slotAccept();
@@ -146,6 +150,8 @@ private:
   QRadioButton* m_homeRB;
   QRadioButton* m_airfieldRB;
 
+  QPushButton* m_saveAs;
+
   QLabel* m_centerLatLabel;
   QLabel* m_centerLonLabel;
   QLabel* m_homeLabel;
@@ -156,6 +162,7 @@ private:
 
   /** Saved waypoint file format after load. */
   int m_waypointFileFormat;
-};
 
-#endif
+  /** Flag to remember of a file load. */
+  bool m_fileLoaded;
+};
