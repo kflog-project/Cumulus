@@ -1790,7 +1790,7 @@ void MapContents::slotNetworkError()
                   QMessageBox::Ok,
                   MainWindow::mainWindow() );
 
-  Layout::centerWidget( this, &mb );
+  Layout::centerWidget( MainWindow::mainWindow(), &mb );
   mb.exec();
 }
 
@@ -1816,7 +1816,7 @@ bool MapContents::askUserForDownload()
                   MainWindow::mainWindow() );
 
   mb.setDefaultButton( QMessageBox::No );
-  Layout::centerWidget( this, &mb );
+  Layout::centerWidget( MainWindow::mainWindow(), &mb );
 
   if( mb.exec() == QMessageBox::Yes )
     {
