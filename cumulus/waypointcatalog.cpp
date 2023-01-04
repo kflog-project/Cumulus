@@ -1555,17 +1555,16 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
       // two units are possible:
       // o meter: m
       // o feet:  ft
-      if( list[5].length() ) // elevation in meter or feet
+      if( list[5].length() )
         {
+          // elevation in meter or feet, if missing meter is assumed
           QString unit;
           list[5] = list[5].toLower();
           int uStart = list[5].indexOf( QRegExp("[mf]") );
 
           if( uStart == -1 )
             {
-              qWarning("CUP Read (%d): Error reading elevation unit '%s'.", lineNo,
-                       list[5].toLatin1().data());
-              continue;
+              unit = "m";
             }
 
           unit = list[5].mid( uStart ).toLower();
@@ -1639,35 +1638,42 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           // o statute mile: ml
           // o feet: ft, @AP: Note that is not conform to the SeeYou specification
           //                  but I saw it in an south African file.
+          // If unit is missing, meter is assumed
           QString unit;
           list[8] = list[8].toLower();
           int uStart = list[8].indexOf( QRegExp("[fmn]") );
+          float length = 0.0;
 
           if( uStart != -1 )
             {
               unit = list[8].mid( uStart ).toLower();
-              float length = list[8].left( list[8].length()-unit.length() ).toFloat(&ok);
+              length = list[8].left( list[8].length()-unit.length() ).toFloat(&ok);
+            }
+          else
+            {
+              unit = "m";
+              length = list[8].toFloat( &ok );
+            }
 
-              if( ok )
+          if( ok )
+            {
+              if( unit == "nm" ) // nautical miles
                 {
-                  if( unit == "nm" ) // nautical miles
-                    {
-                      length *= 1852;
-                    }
-                  else if( unit == "ml" ) // statute miles
-                    {
-                      length *= 1609.34;
-                    }
-                  else if( unit == "ft" ) // feet
-                    {
-                      length *= 0.3048;
-                    }
-
-                  rwy.setLength( length );
-                  rwy.setOperations( Runway::Active );
-                  rwy.setTurnDirection( Runway::Both );
-                  takeRwyData = true;
+                  length *= 1852;
                 }
+              else if( unit == "ml" ) // statute miles
+                {
+                  length *= 1609.34;
+                }
+              else if( unit == "ft" ) // feet
+                {
+                  length *= 0.3048;
+                }
+
+              rwy.setLength( length );
+              rwy.setOperations( Runway::Active );
+              rwy.setTurnDirection( Runway::Both );
+              takeRwyData = true;
             }
         }
 
@@ -1680,33 +1686,40 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
           // o statute mile: ml
           // o feet: ft, @AP: Note that is not conform to the SeeYou specification
           //                  but I saw it in an south African file.
+          // If unit is missing, meter is assumed
           QString unit;
           list[9] = list[9].toLower();
           int uStart = list[9].indexOf( QRegExp("[fmn]") );
+          float width = 0.0;
 
           if( uStart != -1 )
             {
               unit = list[9].mid( uStart ).toLower();
-              float width = list[9].left( list[9].length()-unit.length() ).toFloat(&ok);
+              width = list[9].left( list[9].length()-unit.length() ).toFloat(&ok);
+            }
+          else
+            {
+              unit = "m";
+              width = list[9].toFloat( &ok );
+            }
 
-              if( ok )
+          if( ok )
+            {
+              if( unit == "nm" ) // nautical miles
                 {
-                  if( unit == "nm" ) // nautical miles
-                    {
-                      width *= 1852;
-                    }
-                  else if( unit == "ml" ) // statute miles
-                    {
-                      width *= 1609.34;
-                    }
-                  else if( unit == "ft" ) // feet
-                    {
-                      width *= 0.3048;
-                    }
-
-                  rwy.setWidth( width );
-                  takeRwyData = true;
+                  width *= 1852;
                 }
+              else if( unit == "ml" ) // statute miles
+                {
+                  width *= 1609.34;
+                }
+              else if( unit == "ft" ) // feet
+                {
+                  width *= 0.3048;
+                }
+
+              rwy.setWidth( width );
+              takeRwyData = true;
             }
         }
 
@@ -1788,6 +1801,11 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 
 /**
  * Writes a SeeYou cup file, only waypoint part.
+ *
+ * Format desciption, see here:
+ *
+ * https://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf
+ *
  */
 bool WaypointCatalog::writeCup( const QString& catalog, QList<Waypoint>& wpList )
 {

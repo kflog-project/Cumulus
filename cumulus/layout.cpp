@@ -563,6 +563,11 @@ int Layout::messageBox( QMessageBox::Icon icon,
  */
 void Layout::centerWidget( QWidget* parent, QWidget* child )
 {
+#ifndef ANDROID
+  Q_UNUSED( parent )
+  Q_UNUSED( child )
+#endif
+
 #ifdef ANDROID
 
   child.show();
