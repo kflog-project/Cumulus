@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2022 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -63,17 +63,13 @@ WaypointCatalog::~WaypointCatalog()
 /** read a catalog from file */
 int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 {
-  QString fName;
+  QString fName = catalog;
 
   if( catalog.isEmpty() )
     {
       // use default file name
       fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
               GeneralConfig::instance()->getBinaryWaypointFileName();
-    }
-  else
-    {
-      fName = catalog;
     }
 
   if( _globalMapMatrix == 0 )
@@ -468,7 +464,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 /** write a catalog to file */
 bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
 {
-  QString fName;
+  QString fName = catalog;
 
   if( catalog.isEmpty() )
     {
@@ -485,10 +481,6 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           QFile::remove( oldFn );
           QFile::rename( fName, oldFn );
         }
-    }
-  else
-    {
-      fName = catalog;
     }
 
   bool ok = true;
@@ -1256,7 +1248,22 @@ int WaypointCatalog::readDat( QString catalog, QList<Waypoint>* wpList )
  */
 int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
 {
-  QFile file(catalog);
+  QString fName = catalog;
+
+  if( catalog.isEmpty() )
+    {
+      // use default file name
+      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
+              GeneralConfig::instance()->getCupWaypointFileName();
+    }
+
+  if( _globalMapMatrix == 0 )
+    {
+      qWarning("WaypointCatalog::readBinary: Global pointer '_globalMapMatrix' is Null!");
+      return -1;
+    }
+
+  QFile file( fName );
 
   if( ! file.exists() )
     {
@@ -1777,6 +1784,255 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
     }
 
   return wpCount;
+}
+
+/**
+ * Writes a SeeYou cup file, only waypoint part.
+ */
+bool WaypointCatalog::writeCup( const QString& catalog, QList<Waypoint>& wpList )
+{
+  qDebug() << "WaypointCatalog::writeCup:" << catalog;
+
+  QString fName = catalog;
+
+  if( catalog.isEmpty() )
+    {
+      // use default file name
+      fName = GeneralConfig::instance()->getUserDataDirectory() + "/" +
+              GeneralConfig::instance()->getCupWaypointFileName();
+
+      // Make a backup of an existing file
+      if( QFile::exists( fName ) )
+        {
+          QString oldFn = GeneralConfig::instance()->getUserDataDirectory() +
+                          "/Cumulus_backup.cup";
+
+          QFile::remove( oldFn );
+          QFile::rename( fName, oldFn );
+        }
+    }
+
+  QFile file( fName );
+
+  if( ! file.open(QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      qWarning() << "WaypointCatalog::writeCup():"
+                 << "Cannot open file" << catalog;
+      return false;
+    }
+
+  QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+
+  QTextStream out (&file);
+  out.setCodec( "ISO 8859-15" );
+
+  // A cup line consists of the following elements:
+  //
+  // name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc
+  //
+  // Format desciption, see here:
+  //
+  // https://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf
+  //
+  // "Lesce","LJBL",SI,4621.379N,01410.467E,504.0m,5,144,1130.0m,,123.500,"Home Airfield"
+  //
+  // That's the first line in a cup waypoint file
+  out << "name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc\r\n";
+
+  for( int i = 0; i < wpList.size(); i++ )
+    {
+      out << "\"" << wpList[i].description << "\","
+          << "\"" << wpList[i].name << "\","
+          << wpList[i].country << ",";
+
+      int degree;
+      double minutes;
+
+      WGSPoint::calcPos( wpList[i].wgsPoint.lat(), degree, minutes );
+
+      out << QString("%1").arg( abs(degree), 2, 10, QChar('0') );
+
+      QString min = QString("%1").arg( fabs(minutes), 0, 'f', 3, QChar('0') );
+
+      if( fabs(minutes) < 10.0 )
+        {
+          // add missing leading zero
+          min.insert(0, "0");
+        }
+
+      out << min
+          << ( (degree >= 0) ? "N" : "S" )
+          << ",";
+
+      WGSPoint::calcPos( wpList[i].wgsPoint.lon(), degree, minutes );
+
+      out << QString("%1").arg( abs(degree), 3, 10, QChar('0') );
+
+      min = QString("%1").arg( fabs(minutes), 0, 'f', 3, QChar('0') );
+
+      if( fabs(minutes) < 10.0 )
+        {
+          // add missing leading zero
+          min.insert(0, "0");
+        }
+
+      out << min
+          << ( (degree >= 0) ? "E" : "W" )
+          << ",";
+
+      // elevation is always in meters
+      float elevation = wpList[i].elevation;
+
+      if( Altitude::getUnit() == Altitude::feet )
+        {
+          elevation = Altitude(elevation).getFeet();
+          out << QString("%1ft,").arg(elevation, 0, 'f', 1);
+        }
+      else
+        {
+          out << QString("%1m,").arg(elevation, 0, 'f', 1);
+        }
+
+      uint wpType = BaseMapElement::Landmark;
+
+      switch( wpList[i].type )
+        {
+        case BaseMapElement::Landmark:
+          wpType = 1;
+          break;
+
+        case BaseMapElement::UltraLight:
+        case BaseMapElement::Airfield:
+        case BaseMapElement::Airport:
+        case BaseMapElement::IntAirport:
+        case BaseMapElement::MilAirport:
+        case BaseMapElement::CivMilAirport:
+          {
+            if( wpList[i].getRunwayList().size() > 0 )
+              {
+                const Runway& rwy = wpList[i].getRunwayList().at(0);
+
+                if( rwy.getSurface() == Runway::Concrete )
+                  {
+                    wpType = 5;
+                    break;
+                  }
+
+                if( rwy.getSurface() == Runway::Grass )
+                  {
+                    wpType = 2;
+                    break;
+                  }
+              }
+
+            // default assumption is airfield grass
+            wpType = 2;
+            break;
+          }
+
+        case BaseMapElement::Outlanding:
+          wpType = 3;
+          break;
+
+        case BaseMapElement::Gliderfield:
+          wpType = 4;
+         break;
+
+        case BaseMapElement::Vor:
+        case BaseMapElement::VorDme:
+        case BaseMapElement::VorTac:
+          wpType = 9;
+         break;
+
+        case BaseMapElement::Ndb:
+          wpType = 10;
+         break;
+
+        default:
+          wpType = 1;
+          break;
+        }
+
+      out << wpType << ",";
+
+      if( wpList[i].rwyList.size() > 0 )
+        {
+          Runway rwy = wpList[i].rwyList[0];
+
+          // heading as 000...360
+          out << QString( "%1,").arg( rwy.getHeading(), 3, 10, QChar('0') );
+
+          if( rwy.getLength() > 0 )
+            {
+              // Runway length in meters
+              out << QString("%1m").arg( rwy.getLength(), 1 );
+            }
+
+          out << ",";
+
+          if( rwy.getWidth() > 0 )
+            {
+              // Runway width in meters
+              out << QString("%1m").arg( rwy.getWidth(), 1 );
+            }
+
+          out << ",";
+        }
+      else
+        {
+          // no runway data available
+          out << ",,";
+        }
+
+      QList<Frequency>& fqList = wpList[i].getFrequencyList();
+
+      if( fqList.size() > 0.0 )
+        {
+          int i = 0;
+          int fqlIdx = -1;
+
+          // Only a main frequency should be shown in the display
+          for( i = 0; i < fqList.size(); i++ )
+            {
+              quint8 type = fqList[i].getType();
+
+              if( type == Frequency::Tower || type == Frequency::Info ||
+                  type == Frequency::Information ||
+                  fqList[i].isPrimary() == true )
+                {
+                  fqlIdx = i;
+                  break;
+                }
+            }
+
+          if( fqlIdx == -1  )
+            {
+              // No assignment has been done, take first index.
+              fqlIdx = 0;
+            }
+
+          out << "\""
+              << QString("%1").arg( fqList[i].getValue(), 0, 'f', 3, QChar('0') )
+              << "\"";
+        }
+
+      out << ",";
+
+      if( ! wpList[i].comment.isEmpty() )
+        {
+          out << "\""
+              << wpList[i].comment
+              << "\"";
+        }
+
+      out << "\r\n";
+    }
+
+  out << "-----Related Tasks-----" << "\r\n";
+
+  file.close();
+  QApplication::restoreOverrideCursor();
+  return true;
 }
 
 QList<QString> WaypointCatalog::splitCupLine( QString& line, bool &ok )
