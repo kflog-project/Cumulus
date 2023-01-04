@@ -570,10 +570,10 @@ void Layout::centerWidget( QWidget* parent, QWidget* child )
 
 #ifdef ANDROID
 
-  child.show();
-  QPoint pos = mapToGlobal(QPoint( parent->width()/2  - child->width()/2,
-                                   parent->height()/2 - child->height()/2 ));
-  child.move( pos );
+  child->show();
+  QPoint pos = parent->mapToGlobal( QPoint( parent->width()/2  - child->width()/2,
+                                    parent->height()/2 - child->height()/2 ) );
+  child->move( pos );
 
  #endif
 }
