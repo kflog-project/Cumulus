@@ -24,15 +24,13 @@
 
 	<h4 align="center">Settings - GPS and other peripheral devices</h4>
 
-	<b>GPS</b>
-
 	<p>This page is used for entering the connection information for
 		the primary GPS device used by Cumulus for navigation. Please refer to
 		your GPS manual for these connection values. Cumulus can also accept
 		and process data from other peripherals such as Cambridge,
 		Volkslogger, Flarm or LX Navigation.</p>
 
-		<h5>Android Hints</h5>
+		<h4>Android Hints</h4>
 
      Under Android this page is nearly empty. Please use the Android menu key
 		 and the GPS menu to switch on/off your desired GPS device. There are exist
@@ -45,13 +43,13 @@
        </li>
        
        <li>
-          Connection estalishment via Bluetooth to a GPS device. If the GPS
+          Connection establishment via Bluetooth to a GPS device. If the GPS
           device does not support Bluetooth you will need an adapter to
           connect the device.
        </li>
 
        <li>
-         Connection estalishment via an USB IOIO Uart board to a GPS device
+         Connection establishment via an USB IOIO Uart board to a GPS device
          with a serial interface. Cumulus supports that at the moment only
          for IOIO boards with firmware 4.0 or higher and for only one Uart.
          The IOIO uart to be used and its connection speed have to setup
@@ -73,7 +71,7 @@
 		dialog for the GPS. The dialog can be closed with the "close" button.
 	</p>
 
-	<h5>GPS Device</h5>
+	<h4>GPS Device</h4>
 
 	In the combo box you can select the connection type to be used for your
 	GPS or peripheral connection. The following alternatives are available:
@@ -154,12 +152,12 @@
 		change one of the predefined entries to what you need, e.g. /dev/ttyS0
 		for an RS232 serial.</p>
 
-	<h5>Speed (bps):</h5>
+	<h4>Speed (bps):</h4>
 
 	This will have the greyed-out default value unless e.g. the connection
 	selected above is to a device whose speed can be manually set.
 
-	<h5>Altitude Reference</h5>
+	<h4>Altitude Reference</h4>
 
 	<table border="1" cellpadding="5">
 		<tr>
@@ -199,7 +197,7 @@
 		applied immediately after pressing  Ok. For GPS values, the correction will
 		only be	applied when a GPS fix is established.</p>
 
-	<h5>Processed data from supported devices</h5>
+	<h4>Processed data from supported devices</h4>
 
 	<p>Cumulus processes additional data from the devices listed below,
 		if they are connected, but only if the data sentences have a valid
@@ -269,7 +267,7 @@
 	</table>
 	</p>
 
-	<h5>Sync Clock</h5>
+	<h4>Sync Clock</h4>
 
 	If the option
 	<i>Sync Clock</i> is activated, Cumulus is able to synchronize the PDA
@@ -278,7 +276,7 @@
 	feature is available, because user processes are not normally running under the
 	root user.
 
-	<h5>Save NMEA Data</h5>
+	<h4>Save NMEA Data</h4>
 
 	If the option
 	<i>Save NMEA Data</i> is activated, the received NMEA data stream is
@@ -291,7 +289,7 @@
 	recommend to use this option only for special purposes because it has
 	also influence to the performance in general.
 
-  <h5>GPS Source</h5>
+  <h4>GPS Source</h4>
   
   With the selection box <i>GPS Source</i> you can define the GPS system, from
   witch the default sentences should be processed. The following choice is
@@ -305,7 +303,7 @@
   <li>$GN combined GPS Systems
   </ul>  
 
-	<h5>Processed GPS sentences</h5>
+	<h4>Processed GPS sentences</h4>
 
 	Cumulus processes the following NMEA and proprietary sentences:
 
@@ -395,16 +393,6 @@
        <td>$HCHDT</td>
       <td>Magnetic compass proprietary sentence, true heading.</td>
     </tr>
-		<tr>
-			<td>$MAEMO0</td>
-			<td>Cumulus internal proprietary sentence, if LibLocation from
-				MAEMO 5 is used</td>
-		</tr>
-		<tr>
-			<td>$MAEMO1</td>
-			<td>Cumulus internal proprietary sentence, if LibLocation from
-				MAEMO 5 is used</td>
-		</tr>
     <tr>
       <td>$Android</td>
       <td>Cumulus internal proprietary sentence, if the Android device
