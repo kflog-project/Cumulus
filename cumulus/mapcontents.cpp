@@ -33,6 +33,7 @@
 #include "hwinfo.h"
 #include "isohypse.h"
 #include "lineelement.h"
+#include "layout.h"
 #include "MainWindow.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
@@ -1789,6 +1790,7 @@ void MapContents::slotNetworkError()
                   QMessageBox::Ok,
                   MainWindow::mainWindow() );
 
+  Layout::centerWidget( this, &mb );
   mb.exec();
 }
 
@@ -1814,15 +1816,7 @@ bool MapContents::askUserForDownload()
                   MainWindow::mainWindow() );
 
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
+  Layout::centerWidget( this, &mb );
 
   if( mb.exec() == QMessageBox::Yes )
     {
