@@ -2019,25 +2019,14 @@ class GeneralConfig : protected QSettings
   }
 
   /** Gets the Gps BT Device */
-  QPair<QString, QString> &getGpsBtDevice()
+  QString &getGpsBtDevice()
   {
     return _gpsBtDevice;
   }
   /** Sets the Gps BT Device */
-  void setGpsBtDevice( const QPair<QString, QString>& newValue )
+  void setGpsBtDevice( const QString newValue )
   {
     _gpsBtDevice = newValue;
-  }
-
-  /** Gets the Gps BT Device list */
-  QMap<QString, QVariant> &getGpsBtDeviceList()
-  {
-    return _gpsBtDeviceList;
-  }
-  /** Sets the Gps BT Device list */
-  void setGpsBtDeviceList( const QMap<QString, QVariant>& newValue )
-  {
-    _gpsBtDeviceList = newValue;
   }
 
   /** Gets the Gps Source */
@@ -3524,9 +3513,7 @@ class GeneralConfig : protected QSettings
   // Gps device
   QString _gpsDevice;
   // Gps BT device
-  QPair<QString, QString> _gpsBtDevice;
-  // GPS BT device list
-  QMap<QString, QVariant> _gpsBtDeviceList;
+  QString _gpsBtDevice;
   // Gps speed
   int _gpsSpeed;
   // Gps delivered altitude
