@@ -23,7 +23,9 @@ Cumulus changelog
 
 [-] 2022-01-06 AP: Issue #161 fixed. Save waypoints in an user file.
                    Issue #162 fixed. Cumulus should store waypoints as replacement
-                   of xml storage in the SeeYou CUP format .
+                   of xml storage in the SeeYou CUP format.
+                   Issue #163 fixed. Replace old download links in configuration
+                   after loading.
                    
 [*] 2023-01-02 AP: Cumulus 5.40.8 released for Debian, Android.
 
