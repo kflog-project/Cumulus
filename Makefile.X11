@@ -11,8 +11,9 @@
 # adapt call pathes to your needs if necessary
 #MY_QT    = /home/axel/Qt/5.15.2
 
-QMAKE    = $(MY_QT)qmake
-LRELEASE = $(MY_QT)lrelease
+QMAKE     = $(MY_QT)qmake
+QMAKEOPTS = -Wall -nocache
+LRELEASE  = $(MY_QT)lrelease
 
 # Version is determined from the header file target.h
 VERSION=$(shell cat cumulus/target.h | grep CU_VERSION | cut -d '"' -f 2)
@@ -134,13 +135,13 @@ release: clean all
 qmake: cumulus/Makefile gpsClient/Makefile nmeaSimulator/Makefile
 
 cumulus/Makefile: cumulus/cumulusX11.pro
-	cd cumulus; $(QMAKE) cumulusX11.pro -o Makefile
+	cd cumulus; $(QMAKE) $(QMAKEOPTS) cumulusX11.pro -o Makefile
 
 gpsClient/Makefile: gpsClient/gpsClientX11.pro
-	cd gpsClient; $(QMAKE) gpsClientX11.pro -o Makefile
+	cd gpsClient; $(QMAKE)  $(QMAKEOPTS) gpsClientX11.pro -o Makefile
 
 nmeaSimulator/Makefile: nmeaSimulator/simuX11.pro
-	cd nmeaSimulator; $(QMAKE) simuX11.pro -o Makefile
+	cd nmeaSimulator; $(QMAKE) $(QMAKEOPTS) simuX11.pro -o Makefile
 	
 ####################################################
 # call target dpkg to build a debian Cumulus package
