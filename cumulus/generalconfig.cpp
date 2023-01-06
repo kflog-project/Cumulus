@@ -620,6 +620,17 @@ void GeneralConfig::load()
     {
       _proxy = getDefaultProxy();
     }
+
+  // Update download links for kflog and openAIP
+  if( _mapServerUrl == "http://www.kflog.org/data/landscape/" )
+    {
+      _mapServerUrl = "https://raw.githubusercontent.com/kflog-project/MapConverting/master/Landscape/";
+    }
+
+  if( _openAipLink == "9EEAi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987" )
+    {
+      _openAipLink = "https://storage.googleapis.com/download/storage/v1/b/29f98e10-a489-4c82-ae5e-489dbcd4912f/o/%1?alt=media";
+    }
 }
 
 void GeneralConfig::save()
@@ -923,7 +934,7 @@ void GeneralConfig::save()
   setValue("RunwayLengthFilter", _airfieldRunwayLengthFilter);
   setValue("OpenAipFileList", _openAipPoiFileList);
   setValue("OpenAipAirfieldCountries", _openAipAirfieldCountries);
-  // setValue("OpenAipLink", _openAipLink);
+  setValue("OpenAipLink", _openAipLink);
   endGroup();
 
   beginGroup("List Display");
