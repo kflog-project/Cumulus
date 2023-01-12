@@ -469,7 +469,6 @@ INCLUDEPATH += ../
 
 QMAKE_CXXFLAGS += -fno-default-inline \
                   -fno-inline -Wextra \
-                  -Wno-deprecated-copy \
                   -std=gnu++11
 
 LIBS += -lstdc++
