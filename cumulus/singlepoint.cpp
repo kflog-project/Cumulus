@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2022 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -16,7 +16,6 @@
 
 #include <QtGui>
 
-#include "generalconfig.h"
 #include "singlepoint.h"
 
 SinglePoint::SinglePoint() :

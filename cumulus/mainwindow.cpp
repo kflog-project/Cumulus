@@ -941,7 +941,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( m_logger, SIGNAL( landingTime(QDateTime&) ),
             SLOT( slotLanded(QDateTime&) ) );
 
-  calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
+  calculator->setPosition( _globalMapMatrix->getMapCenter() );
 
   slotReadconfig();
 
@@ -1130,20 +1130,6 @@ MainWindow::~MainWindow()
     {
       delete m_logger;
     }
-
-#ifdef MAEMO
-
-  // stop Maemo screen saver off triggering
-  if( ossoContext )
-    {
-      if( m_displayTrigger )
-        {
-          m_displayTrigger->stop();
-        }
-
-      osso_deinitialize( ossoContext );
-    }
-#endif
 
 #ifdef ANDROID
 
@@ -1778,9 +1764,9 @@ void MainWindow::createActions()
   connect( actionHelpAboutApp, SIGNAL( triggered() ),
             this, SLOT( slotVersion() ) );
 
-#if ! defined ANDROID && ! defined MAEMO
+#if ! defined ANDROID
   // The Qt about is too big for small screens. Therefore it is undefined for
-  // Android and Maemo
+  // Android
   actionHelpAboutQt = new QAction( tr( "About Qt" ), this );
   actionHelpAboutQt->setShortcut(Qt::Key_Q);
   addAction( actionHelpAboutQt );
@@ -1870,7 +1856,7 @@ void  MainWindow::toggleActions( const bool toggle )
   actionHelpCumulus->setEnabled( toggle );
   actionHelpAboutApp->setEnabled( toggle );
 
-#if ! defined ANDROID && ! defined MAEMO
+#if ! defined ANDROID
   actionHelpAboutQt->setEnabled( toggle );
 #endif
 
@@ -3061,35 +3047,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
   QMainWindow::resizeEvent(event);
 }
-
-#ifdef MAEMO
-
-/** Called to prevent the switch off of the screen display */
-void MainWindow::slotDisplayTrigger()
-{
-  // If the speed is greater or equal as the limit and we have a connected
-  // GPS we switch off the screen saver. Otherwise we let all as it is.
-  double speedLimit = GeneralConfig::instance()->getScreenSaverSpeedLimit();
-
-  if( speedLimit == 0.0 ||
-      ( calculator->getLastSpeed().getKph() >= speedLimit &&
-      GpsNmea::gps->getConnected() ) )
-    {
-      // tells Maemo that we are in move enough to switch off or avoid blank screen
-      osso_return_t ret = osso_display_blanking_pause( ossoContext );
-
-      if( ret != OSSO_OK )
-        {
-          qWarning( "osso_display_blanking_pause() call failed" );
-        }
-    }
-
-  // Restart the timer because we use a single shot timer to avoid
-  // multiple triggering in case of delays. Next trigger is in 10s.
-  m_displayTrigger->start( 10000 );
-}
-
-#endif
 
 #ifdef ANDROID
 

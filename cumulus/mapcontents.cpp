@@ -1961,20 +1961,32 @@ void MapContents::proofeSection()
                   //try loading the currently unloaded files
                   if (!(hasstep & 1))
                     {
-                      if (readTerrainFile(secID, FILE_TYPE_GROUND))
+                      if (readTerrainFile(secID, FILE_TYPE_GROUND)) {
                         step |= 1;
+                        QCoreApplication::sendPostedEvents();
+                        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                                         QEventLoop::ExcludeSocketNotifiers );
+                      }
                     }
 
                   if (!(hasstep & 2))
                     {
-                      if (readTerrainFile(secID, FILE_TYPE_TERRAIN))
+                      if (readTerrainFile(secID, FILE_TYPE_TERRAIN)) {
                         step |= 2;
+                        QCoreApplication::sendPostedEvents();
+                        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                                         QEventLoop::ExcludeSocketNotifiers );
+                      }
                     }
 
                   if (!(hasstep & 4))
                     {
-                      if (readBinaryFile(secID, FILE_TYPE_MAP))
+                      if (readBinaryFile(secID, FILE_TYPE_MAP)) {
                         step |= 4;
+                        QCoreApplication::sendPostedEvents();
+                        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents |
+                                                         QEventLoop::ExcludeSocketNotifiers );
+                      }
                     }
 
                   if (step == 7) //set the correct flags for this map tile
@@ -2539,16 +2551,16 @@ void MapContents::slotReloadMapData()
   qDeleteAll(flarmAlertZoneList);
   flarmAlertZoneList = SortableAirspaceList();
 
-  cityList.clear();
-  hydroList.clear();
-  lakeList.clear();
-  landmarkList.clear();
-  obstacleList.clear();
-  railList.clear();
-  motorwayList.clear();
-  roadList.clear();
-  topoList.clear();
-  villageList.clear();
+  cityList = QList<LineElement>();
+  hydroList = QList<LineElement>();
+  lakeList = QList<LineElement>();
+  landmarkList = QList<SinglePoint>();
+  obstacleList = QList<SinglePoint>();
+  railList = QList<LineElement>();
+  motorwayList = QList<LineElement>();
+  roadList = QList<LineElement>();
+  topoList = QList<LineElement>();
+  villageList = QList<SinglePoint>();
 
   // free internal allocated memory in QList
   m_airfieldLoadMutex.lock();

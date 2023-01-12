@@ -66,11 +66,7 @@ extern MapView     *_globalMapView;
 
 Map *Map::instance = static_cast<Map *>(0);
 
-#ifdef MAEMO
-#define TRAIL_LENGTH 7*60
-#else
 #define TRAIL_LENGTH 10*60
-#endif
 
 Map::Map(QWidget* parent) : QWidget(parent),
   TrailListLength( TRAIL_LENGTH )
@@ -759,16 +755,25 @@ void Map::paintEvent(QPaintEvent* event)
 
   if( mutex() )
     {
-      qDebug("Map::paintEvent(): mutex is locked");
+      qDebug("Map::paintEvent(): mutex is locked, ignoring event.");
+      return;
     }
 
-  // We copy always the content from the m_pixPaintBuffer to the paint device.
-  QPainter p(this);
+  if( m_pixPaintBuffer.rect().contains(event->rect() ) )
+    {
+      // We copy the content from the m_pixPaintBuffer to the paint device in
+      // this case only.
+      QPainter p(this);
 
-  p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
-                0, 0, event->rect().width(), event->rect().height() );
-
-  // qDebug("Map.paintEvent(): return");
+      p.drawPixmap( event->rect().left(), event->rect().top(), m_pixPaintBuffer,
+                    0, 0, event->rect().width(), event->rect().height() );
+    }
+#if 0
+  else
+    {
+      qDebug() << "Map::paintEvent(): pixelImage to small, no drawing.";
+    }
+#endif
 }
 
 void Map::slotNewWind( Vector& wind )
@@ -1331,9 +1336,21 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
   static bool first = true; // mark first calling of method
   static QSize lastSize; // Save the last used window size
 
+  // Store the map center and position to decide a reload of all map data, if we
+  // moved to far away.
+  static QPoint lastMapCenter;
+  static QPoint lastPosition;
+
   // stop timers
   m_redrawTimerShort->stop();
   m_redrawTimerLong->stop();
+
+  if( first == true )
+    {
+      // Load last map center at startup.
+      lastMapCenter = _globalMapMatrix->getMapCenter();
+      lastPosition = calculator->getlastPosition();
+    }
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
@@ -1368,6 +1385,40 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
 
   // set mutex to block recursive entries and unwanted data modifications.
   setMutex(true);
+
+  // Current used map center
+  QPoint mapCenter = _globalMapMatrix->getMapCenter();
+  QPoint position = calculator->getlastPosition();
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  // Current used projection type
+  int projectionType = conf->getMapProjectionType();
+
+  // latitude delta of map center and position in degrees
+  double delta1 = fabs( (lastMapCenter.x() - mapCenter.x()) / 600000.0 );
+  double delta2 = fabs( (lastPosition.x() - position.x()) / 600000.0 );
+
+  qDebug() << "Delta1=" << delta1 << "Delta2=" << delta2;
+
+  if( projectionType == ProjectionBase::Cylindric &&
+      ( delta1 > 1.0 || delta2 > 1.0 ) )
+    {
+      // Set a new center parallel for the cylinder map projection, if
+      // the latitude delta is bigger as one degree to ensure a low-distortion
+      // map display.
+      int parallel = static_cast<int>(round( position.x() / 600000.0 ) );
+      conf->setCylinderParallel( parallel * 600000 );
+
+      // save last map center and last position
+      lastMapCenter = mapCenter;
+      lastPosition = position;
+
+      // Activate the new projection via timer.
+      QTimer::singleShot( 500, _globalMapMatrix, SLOT( slotInitMatrix() ) );
+      qDebug() << "Map::p_redrawMap: Setting new cylinder parallel: Delta-Lat"
+               << delta1 << delta2 << "parallel" << parallel;
+    }
 
   // Check, if a resize event is queued. In this case it must be
   // considered to create the right matrix size.
@@ -1789,7 +1840,9 @@ void Map::slotDraw()
 // will be queued only.
 void Map::slotRedrawMap()
 {
-  // qDebug("Map::slotRedrawMap(): LoopLevel=%d", qApp->loopLevel());
+  // stop timers
+  m_redrawTimerShort->stop();
+  m_redrawTimerLong->stop();
 
   // @AP: Don't allows changes on matrix data during drawing!!!
 
@@ -1799,10 +1852,6 @@ void Map::slotRedrawMap()
       qDebug("Map::slotRedrawMap(): is locked by mutex, returning");
       return;
     }
-
-  // stop timers
-  m_redrawTimerShort->stop();
-  m_redrawTimerLong->stop();
 
   // save requested layer
   mapLayer drawLayer = m_scheduledFromLayer;
@@ -2069,7 +2118,7 @@ void Map::p_drawLabel( QPainter* painter,
   int xOffset = xShift;
   int yOffset = 0;
 
-  if( origP.lon() < _globalMapMatrix->getMapCenter(false).y() )
+  if( origP.lon() < _globalMapMatrix->getMapCenter().y() )
     {
       // The point is on the left side of the map,
       // so draw the text label on the right side.
@@ -2500,12 +2549,7 @@ void Map::slotSwitchManualInFlight()
 /** Draws the most important aircraft reported by Flarm. */
 void Map::p_drawOtherAircraft()
 {
-
-#ifndef MAEMO
-  const int diameter = 22 * Layout::getIntScaledDensity();
-#else
   const int diameter = 30;
-#endif
 
   if( _globalMapMatrix->getScale(MapMatrix::CurrentScale) > 150.0 )
     {
@@ -3030,7 +3074,7 @@ void Map::slotZoomOut()
  * is called. This allows for several modifications to the map being used for the
  * redraw at once.
  * The second timer is set for a larger interval, and is not reset. It makes sure
- * the redraw occurs once in awhile, even if events modifying the map keep comming
+ * the redraw occurs once in awhile, even if events modifying the map keep coming
  * in and would otherwise prevent the map from being redrawn.
  *
  * If either of the two timers expires, the status of redrawScheduled is reset
@@ -3038,7 +3082,7 @@ void Map::slotZoomOut()
  */
 void Map::scheduleRedraw(mapLayer fromLayer)
 {
-  // qDebug("Map::scheduleRedraw(): mapLayer=%d, loopLevel=%d", fromLayer, qApp->loopLevel() );
+  // qDebug("Map::scheduleRedraw(): mapLayer=%d", fromLayer );
 
   if( !m_isEnable )
     {
@@ -3059,11 +3103,7 @@ void Map::scheduleRedraw(mapLayer fromLayer)
     }
 
   // start resp. restart short timer to combine several draw requests to one
-#ifndef MAEMO
   m_redrawTimerShort->start(500);
-#else
-  m_redrawTimerShort->start(750);
-#endif
 
   if (!m_redrawTimerLong->isActive() && m_ShowGlider)
     {

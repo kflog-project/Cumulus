@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2021 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -150,10 +150,6 @@ SettingsPageMapSettings::SettingsPageMapSettings(QWidget *parent) :
 
   topLayout->setRowMinimumHeight(row++,15);
 
-  chkProjectionFollowHome = new QCheckBox(tr("Projection follows Home Position"), this );
-  topLayout->addWidget(chkProjectionFollowHome, row, 0, 1, 2);
-  row++;
-
   chkUnloadUnneeded = new QCheckBox(tr("Unload unused maps from RAM"), this );
   topLayout->addWidget(chkUnloadUnneeded, row, 0, 1, 2);
   row++;
@@ -266,7 +262,6 @@ void SettingsPageMapSettings::load()
   mapDirectory->setText( conf->getMapDirectories()[0] );
 
   chkUnloadUnneeded->setChecked( conf->getMapUnload() );
-  chkProjectionFollowHome->setChecked( conf->getMapProjectionFollowsHome() );
 
 #ifdef INTERNET
 
@@ -361,7 +356,6 @@ void SettingsPageMapSettings::save()
 
   conf->setMapRootDir( mapDirectory->text() );
   conf->setMapUnload( chkUnloadUnneeded->isChecked() );
-  conf->setMapProjectionFollowsHome( chkProjectionFollowHome->isChecked() );
 #ifdef INTERNET
   conf->setMapInstallRadius( installRadius->value() );
 #endif
@@ -470,7 +464,6 @@ void SettingsPageMapSettings::slot_selectProjection(int index)
         edtLat2->setVisible(true);
         edtLonLabel->setVisible(true);
         edtLon->setVisible(true);
-        chkProjectionFollowHome->setVisible(false);
         edtLat1->setKFLogDegree(m_lambertV1);
         edtLat2->setKFLogDegree(m_lambertV2);
         edtLon->setKFLogDegree(m_lambertOrigin);
@@ -484,7 +477,6 @@ void SettingsPageMapSettings::slot_selectProjection(int index)
         edtLat2->setVisible(false);
         edtLonLabel->setVisible(false);
         edtLon->setVisible(false);
-        chkProjectionFollowHome->setVisible(true);
         edtLat1->setKFLogDegree(m_cylinPar);
         edtLat2->setKFLogDegree(0);
         edtLon->setKFLogDegree(0);
@@ -500,7 +492,6 @@ bool SettingsPageMapSettings::checkChanges()
 
   changed |= ( mapDirectory->text() != conf->getMapRootDir() );
   changed |= ( chkUnloadUnneeded->isChecked() != conf->getMapUnload() );
-  changed |= ( chkProjectionFollowHome->isChecked() != conf->getMapProjectionFollowsHome() );
 
 #ifdef INTERNET
   changed |= ( installRadius->value() != conf->getMapInstallRadius() );

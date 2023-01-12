@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2022 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -34,6 +34,8 @@ Airspace::Airspace() :
   m_activity( 0 ),
   m_byNotam( false )
 {
+  // All Airspaces are closed regions ...
+  closed = true;
 }
 
 Airspace::Airspace( QString name,
@@ -81,7 +83,7 @@ Airspace::Airspace( QString name,
   default:
     lLim=0.0;
     break;
-  };
+  }
 
   m_lLimit.setMeters( lLim );
   double uLim=0.0;
@@ -105,7 +107,7 @@ Airspace::Airspace( QString name,
   default:
     uLim=0.0;
     break;
-  };
+  }
 
   m_uLimit.setMeters( uLim );
   m_lastVConflict=none;
@@ -372,7 +374,7 @@ QString Airspace::getTypeName (objectType type)
 
 QString Airspace::getInfoString() const
 {
-  QString text, tempL, tempU, type;
+  QString text, tempL, tempU;
 
   switch( m_lLimitType )
   {

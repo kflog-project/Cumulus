@@ -25,9 +25,9 @@
  *
  * See here for more info: http://www.openaip.net
  *
- * \date 2013-2022
+ * \date 2013-2023
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #pragma once
@@ -181,6 +181,14 @@ class OpenAip
    * @return float
    */
   Frequency getJNavaidFrequency( QJsonObject& object );
+
+  /**
+   * Read and set the range value from a navaid json object.
+   *
+   * @param object
+   * @return float
+   */
+  int getJNavaidRange( QJsonObject& object );
 
   /**
    * Read and return the elevation value from a json object as meters.

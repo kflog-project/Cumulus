@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2001      by Heiner Lamprecht
- **                   2008-2021 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -72,7 +72,8 @@ MapMatrix::MapMatrix( QObject* parent ) :
   mapCenterLat(0), mapCenterLon(0),
   homeLat(0), homeLon(0), cScale(0), pScale(0), rotationArc(0),
   _MaxScaleToCScaleRatio(0),
-  m11(0), m12(0), m21(0), m22(0), dx(0), dy(0), fx(0), fy(0)
+  m11(0), m12(0), m21(0), m22(0), dx(0), dy(0), fx(0), fy(0),
+  cylinderParallel(0)
 {
   viewBorder.setTop(32000000);
   viewBorder.setBottom(25000000);
@@ -88,6 +89,9 @@ MapMatrix::MapMatrix( QObject* parent ) :
 
   // get current map root directory to detect user changes during run-time
   mapRootDir = conf->getMapRootDir();
+
+  // Save the last used cylinder parallel to detect changes during running.
+  cylinderParallel = conf->getCylinderParallel();
 
   int projectionType = conf->getMapProjectionType();
 
@@ -253,7 +257,7 @@ int MapMatrix::getScaleRange()  const
     return Border3;
 }
 
-QPoint MapMatrix::getMapCenter(bool) const
+QPoint MapMatrix::getMapCenter() const
 {
   return QPoint(mapCenterLat, mapCenterLon);
 }
@@ -559,6 +563,12 @@ void MapMatrix::slotInitMatrix()
   else if (currentProjection->projectionType() == ProjectionBase::Cylindric)
     {
       initChanged = ((ProjectionCylindric*)currentProjection)->initProjection( conf->getCylinderParallel() );
+
+      if( cylinderParallel != conf->getCylinderParallel() )
+        {
+          cylinderParallel = conf->getCylinderParallel();
+          initChanged = true;
+    		}
     }
 
   if( mapRootDir != conf->getMapRootDir() )
@@ -666,27 +676,13 @@ bool MapMatrix::isWaypoint2Draw( Waypoint::Priority importance ) const
 void MapMatrix::slotSetNewHome(const QPoint& newHome)
 {
   // qDebug( "MapMatrix::slotSetNewHome() is called" );
-  homeLat = newHome.x();
-  homeLon = newHome.y();
+  Q_UNUSED( newHome )
 
-  GeneralConfig *conf = GeneralConfig::instance();
+  // The former change of the cylinder standard parallel was removed but it
+  // makes to much effort to changed all the signal-slot handling in the code.
 
-  if( currentProjection->projectionType() == ProjectionBase::Cylindric &&
-      conf->getMapProjectionFollowsHome() == true )
-    {
-      // Update parallel of cylinder projection
-      conf->setCylinderParallel( homeLat );
-
-      // update projection
-      slotInitMatrix();
-    }
-  else
-    {
-      // Emit an update trigger for home position change.
-      emit homePositionChanged();
-    }
-
-  conf->save();
+  // Emit an update trigger for home position change.
+  emit homePositionChanged();
 }
 
 #ifdef MAP_FLOAT

@@ -377,7 +377,6 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Map");
-  _mapProjFollowsHome             = value( "ProjectionFollowsHome", true ).toBool();
   _mapUnload                      = value( "UnloadUnneededMap", true ).toBool();
   _downloadMissingMaps            = value( "DownloadMissingMaps", false ).toBool();
   _mapInstallRadius               = value( "MapInstallRadius", 500 ).toInt();
@@ -874,7 +873,6 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Map");
-  setValue( "ProjectionFollowsHome", _mapProjFollowsHome );
   setValue( "UnloadUnneededMap", _mapUnload );
   setValue( "DownloadMissingMaps", _downloadMissingMaps );
   setValue( "MapInstallRadius", _mapInstallRadius );

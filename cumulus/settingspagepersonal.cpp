@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -403,38 +403,6 @@ void SettingsPagePersonal::save()
 
   if( homeChanged )
     {
-      if( conf->getMapProjectionType() == ProjectionBase::Cylindric &&
-          conf->getMapProjectionFollowsHome() == true )
-        {
-          // @AP: In case of cylinder projection and an active projection follows home
-          // option and a latitude change of the home position, the projection
-          // parallel is set to the new home latitude. That shall ensure
-          // optimized results during map drawing. Note, that is only
-          // supported for the cylinder projection!
-          conf->setCylinderParallel( conf->getHomeLat() );
-
-          QMessageBox mb( QMessageBox::Information,
-                           "Cumulus",
-                           tr( "<html>"
-                           "<b>Home position was changed!</b><p>"
-                           "System update can take a few seconds and more!"
-                           "</html>" ),
-                           QMessageBox::Ok,
-                           this );
-
-     #ifdef ANDROID
-
-           // Under Android the box must be moved into the center of the desktop screen.
-           // Note the box must be set as first to visible otherwise move will not work.
-           mb.show();
-           QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-           mb.move( pos );
-
-     #endif
-
-           mb.exec();
-        }
-
       emit homePositionChanged();
     }
 
