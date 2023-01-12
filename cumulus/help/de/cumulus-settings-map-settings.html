@@ -34,15 +34,13 @@
 		</a>
 
 		<dd>
-			Als Speicherort f&uuml;r die Kartendaten sollten Sie unter Maemo
-			(Nokia Internet Tablets N8x0) ein Verzeichnis auf einer der beiden SD
-			Karten anlegen. F&uuml;r ein N900 ist das nicht erforderlich. Mit
-			Hilfe des Knopfes <i>Karten</i> k&ouml;nnen Sie einen Verzeichnis
-			Auswahl Dialog &ouml;ffnen und zu einen neuen Ort auf einer der SD
-			Karten navigieren. Diese sind unter den Wurzeln <i>/media/mmc[1|2]</i>
-			zu finden. Im Textfeld neben dem Knopf sehen Sie das gerade
-			ausgew&auml;hlte Verzeichnis. Sie k&ouml;nnen diesen Texteintrag auch
-			mit der Hand modifizieren und so Ihr bevorzugtes Verzeichnis setzen.
+			Mit	Hilfe des Knopfes <i>Karten</i> k&ouml;nnen Sie einen Verzeichnis
+			Auswahl Dialog &ouml;ffnen, um einen anderen Ort zum Speichern der
+			Landkarten festzulegen. UnterAndroid wird das nicht unterst&uuml;zt.
+			<br><br>
+			Im Textfeld neben dem Knopf sehen Sie das gerade ausgew&auml;hlte
+			Verzeichnis. Sie k&ouml;nnen diesen Texteintrag auch
+			mit der Hand modifizieren und so ihr bevorzugtes Verzeichnis setzen.
 		</dd>
 
 		<br>
@@ -71,21 +69,26 @@
 			ist deshalb der Standard in Cumulus. Die Lambertsche Schnittkegel
 			Projektion ist mehr komplex und braucht deswegen auch l&auml;nger
 			f&uuml;r das erste Laden aber sie ist auch verzerrungs&auml;rmer als
-			die Zylinder Projektion. <br> Jede Kartenprojektion
-			ben&ouml;tigt Referenzpunkte (Standard Parallelen), auf die sie sich
-			beziehen kann. Diese sollten stets in der N&auml;he Ihres
-			Heimatplatzes liegen. F&uuml;r die <i>Zylinder Projektion</i> ist nur
-			eine Breitenparallele auszuw&auml;hlen. Die <i>Lambert Projektion</i>
-			dagegen ben&ouml;tigt zwei Standard Parallen als Bezugspunkt.
-			W&auml;hlen Sie hier zwei Breitengrade aus, die das von ihnen
-			beflogene Gebiet einfassen. Beispielsweise k&ouml;nnen Sie die
-			Standard Parallelen ihrer offiziellen Flugkarten benutzen, um eine
-			&auml;quivalente Darstellung zu diesen Karten zu erhalten. Den
-			L&auml;ngengrad w&auml;hlen sie aus der Mitte des von ihnen
-			beflogenen Gebietes aus. Er hat nichts mit der eigentlichen
-			Projektion zu tun, mu&szlig; aber aus technischen Gr&uuml;nden mit
-			angegeben werden. Nach dem &Auml;ndern der Projektionsdaten muss
-			Cumulus alle Karten aus den Rohdaten neu berechnen.
+			die Zylinder Projektion.<br><br>
+			
+			Jede Kartenprojektion ben&ouml;tigt Referenzpunkte (Standard Parallelen),
+			auf die sie sich beziehen kann. Diese sollten stets in der N&auml;he Ihres
+			Heimatplatzes liegen. F&uuml;r die <i>Zylinder Projektion</i> ist nur eine
+			Breitenparallele zu definieren. Cumulus setzt diese Parallele
+			w&auml;hrend der Laufzeit allein, um immer ein optimales Kartenbild
+			auzuzeigen.<br><br>
+			
+			Die <i>Lambert Projektion</i> dagegen
+			ben&ouml;tigt zwei Standard Parallen als Bezugspunkt. W&auml;hlen Sie
+			hier zwei Breitengrade aus, die das von ihnen beflogene Gebiet
+			einfassen. Beispielsweise k&ouml;nnen Sie die Standard Parallelen
+			ihrer offiziellen Flugkarten benutzen, um eine &auml;quivalente
+			Darstellung zu diesen Karten zu erhalten. Den L&auml;ngengrad
+			w&auml;hlen sie aus der Mitte des von ihnen beflogenen Gebietes aus.
+			Er hat nichts mit der eigentlichen Projektion zu tun, mu&szlig; aber
+			aus technischen Gr&uuml;nden mit angegeben werden. Nach dem
+			&Auml;ndern der Projektionsdaten berechnet Cumulus alle Karten aus
+			den Rohdaten neu.
 
 			<p>
 				<b>Achtung!</b> Sind die Standard Parallelen falsch gew&auml;hlt,
@@ -96,18 +99,6 @@
 				Hemisph&auml;re dann m&uuml;ssen Sie auch die Standard Parallelen
 				unbedingt anpassen!
 			</p>
-		</dd>
-
-		<dt>
-			<b>Projektion folgt Heimatposition</b>
-		</dt>
-
-		<dd>
-			Wenn diese Checkbox aktiviert ist, werden alle Karten automatisch
-			nach einem Heimatortwechsel neu berechnet. Als Standard Parallele
-			wird die Breite des Heimatplatzes genommen. Diese Option sichert die
-			besten Zeichenresultate ist aber nur f&uuml;r die <i>Zylinder
-				Projektion</i> verf&uuml;gbar.
 		</dd>
 
 		<br>

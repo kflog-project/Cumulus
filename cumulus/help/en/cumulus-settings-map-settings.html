@@ -34,10 +34,8 @@
 		</a>
 
 		<dd>
-			As location for the map data for Maemo (Nokia Internet Tablet) you
-			should define a directory on one of the SD cards. With the help of
-			the button <i>Maps</i> you can open a directory selection dialog and
-			navigate to the SD card locations to find under <i>/media/mmc[1|2]</i>.
+			With the help of the button <i>Maps</i> you can open a directory selection
+			dialog and define a new storage folder for the landscape maps.
 			In the text field beside the button you can see the current
 			selection. You can modify the text field also by hand and set so your
 			preferred location.
@@ -69,14 +67,12 @@
 				The first is computationally simpler and thus the preferred one in
 				Cumulus. The latter is more complex, so your maps will take much
 				longer on first load but it is more realistic. Each map projection
-				needs a basis from where to work. <br>For the <i>Plate
-					Carr&eacute;e</i> projection choose a parallel close to your home base.
-				If the option <i>Projection follows Home Position</i> is activated,
-				the parallel is automatically set to the latitude of your Home
-				Position in the assumption that the Home Position is your preferred
-				flight space. That ensures an unskewed map display and you are not
-				forced to set this parallel by hand. That is the default setting. <br>For
-				<i>Lambert</i> projection you should select the parallels so that
+				needs a basis from where to work. <br>The <i>Plate
+				Carr&eacute;e</i> projection needs a parallel close to the displayed
+				map center. That ensures an unskewed map display. You are not
+				forced to set this parallel by hand, Cumulus will do it automatically.
+				<br><br>
+				For	<i>Lambert</i> projection you should select the parallels so that
 				they are covering the area you are flying. For example, you could
 				choose the parallels from your official flying map. Then you will
 				have an equal look like these maps. You should select the longitude
@@ -95,17 +91,6 @@
 				map. This is especially so if you are far away from the coordinates
 				used in the projection!
 			</p>
-		</dd>
-
-		<dt>
-			<b>Projection follows Home Position</b>
-		</dt>
-
-		<dd>
-			If this check box is selected a Home Position change will trigger
-			automatically a recompilation of the map files. This option ensures
-			best drawing results but it is only available for the <i>Plate
-				Carr&eacute;e</i> projection.
 		</dd>
 
 		<br>
@@ -127,7 +112,7 @@
 		</dt>
 
 		<dd>The coordinates of your center point around that map files
-			shall be downloaded from the Internet.</dd>
+			  shall be downloaded from the Internet.</dd>
 
 		<br>
 		<dt>
