@@ -6,15 +6,14 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2010-2021 by Axel Pauli
+ **   Copyright (c): 2010-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef TASK_POINT_H
-#define TASK_POINT_H
+#pragma once
 
 #include <QDateTime>
 
@@ -35,9 +34,9 @@
  * This class is an extension of the single point class. It handles all data
  * items concerning a flight task.
  *
- * \date 2010-2021
+ * \date 2010-2023
  *
- * \version 1.6
+ * \version 1.7
  */
 class TaskPoint : public SinglePoint
 {
@@ -64,6 +63,8 @@ class TaskPoint : public SinglePoint
    */
   TaskPoint( const SinglePoint& sp,
              enum TaskPointTypes::TaskPointType type=TaskPointTypes::Unknown );
+
+  TaskPoint& operator=(const TaskPoint&) = default;
 
   virtual ~TaskPoint();
 
@@ -469,5 +470,3 @@ class TaskPoint : public SinglePoint
    */
   QPixmap& createLineIcon( const int iconSize );
 };
-
-#endif /* TASK_POINT_H */
