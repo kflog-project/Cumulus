@@ -14,8 +14,7 @@
 **
 ***********************************************************************/
 
-#ifndef MAP_CALC_H
-#define MAP_CALC_H
+#pragma once
 
 #include <cmath>
 #include <QPair>
@@ -244,5 +243,3 @@ namespace MapCalc
 		 Speed& etas,
 		 int& eth );
 };
-
-#endif

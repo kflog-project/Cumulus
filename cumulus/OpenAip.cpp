@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2023 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -108,7 +108,7 @@ bool OpenAip::readSinglePoints( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << "SinglePoints Json Parse result:" << error.errorString();
+  qDebug() << fileName << "SinglePoints Json Parse result:" << error.errorString();
 
   if( doc.isNull() == true )
     {
@@ -179,7 +179,6 @@ bool OpenAip::readSinglePoints( QString fileName,
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
-
           if( it.key() == "compulsory" )
             {
               sp.setCompulsory( it.value().toBool( false ) );
@@ -206,15 +205,15 @@ bool OpenAip::readSinglePoints( QString fileName,
                   // ignore data set
                   continue;
                 }
-
-              if( useFiltering == true &&
-                  checkRadius( sp.getWGSPositionPtr() ) == false )
-                {
-                  // The radius filter said no. To far away from home.
-                  continue;
-                }
             }
         } // end of for loop of object list
+
+      if( useFiltering == true &&
+          checkRadius( sp.getWGSPositionPtr() ) == false )
+        {
+          // The radius filter said no. To far away from home.
+          continue;
+        }
 
       spList.append( sp );
     }  // end of array for loop
@@ -255,7 +254,7 @@ bool OpenAip::readNavAids( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << "NavAids Json Parse result:" << error.errorString();
+  qDebug() << fileName << "NavAids Json Parse result:" << error.errorString();
 
   if( doc.isNull() == true )
     {
@@ -316,7 +315,6 @@ bool OpenAip::readNavAids( QString fileName,
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
-
           if( it.key() == "identifier" )
             {
               rp.setWPName( it.value().toString() );
@@ -372,7 +370,8 @@ bool OpenAip::readNavAids( QString fileName,
           else if( it.key() == "range" )
             {
               // The range of the navaid. Always 'NM'. We convert it to meters.
-              rp.setRange( it.value().toInt() * Distance::mFromNMile );
+              QJsonObject object = it.value().toObject();
+              rp.setRange( getJNavaidRange( object ) * Distance::mFromNMile );
             }
           else if( it.key() == "alignedTrueNorth" )
             {
@@ -401,15 +400,15 @@ bool OpenAip::readNavAids( QString fileName,
                   // ignore data set
                   continue;
                 }
-
-              if( useFiltering == true &&
-                  checkRadius( rp.getWGSPositionPtr() ) == false )
-                {
-                  // The radius filter said no. To far away from home.
-                  continue;
-                }
             }
         } // end of for loop of object list
+
+      if( useFiltering == true &&
+          checkRadius( rp.getWGSPositionPtr() ) == false )
+        {
+          // The radius filter said no. To far away from home.
+          continue;
+        }
 
       navAidList.append( rp );
     }  // end of array for loop
@@ -500,7 +499,7 @@ bool OpenAip::readHotspots( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << "Hotspots Json Parse result:" << error.errorString();
+  qDebug() << fileName << "Hotspots Json Parse result:" << error.errorString();
 
   if( doc.isNull() == true )
     {
@@ -576,7 +575,6 @@ bool OpenAip::readHotspots( QString fileName,
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
-
           if( it.key() == "type" )
             {
               tp.setType( it.value().toInt() );
@@ -615,15 +613,16 @@ bool OpenAip::readHotspots( QString fileName,
                   // ignore data set
                   continue;
                 }
-
-              if( useFiltering == true &&
-                  checkRadius( tp.getWGSPositionPtr() ) == false )
-                {
-                  // The radius filter said no. To far away from home.
-                  continue;
-                }
             }
         } // end of for loop of object list
+
+
+      if( useFiltering == true &&
+          checkRadius( tp.getWGSPositionPtr() ) == false )
+        {
+          // The radius filter said no. To far away from home.
+          continue;
+        }
 
       // Increment name counter for the hotspot.
       hsno++;
@@ -682,6 +681,24 @@ Frequency OpenAip::getJNavaidFrequency( QJsonObject& object )
   return Frequency( value, unit, Frequency::Other, "", true, true );
 }
 
+/**
+ * Read and set the range value from a navaid json object.
+ *
+ * @param object
+ * @return float
+ */
+int OpenAip::getJNavaidRange( QJsonObject& object )
+{
+  int value = 0;
+
+  if( object.contains("value") && object["value"].isDouble() )
+    {
+      value = object["value"].toInt();
+    }
+
+  return value;
+}
+
 bool OpenAip::readAirfields( QString fileName,
                              QList<Airfield>& airfieldList,
                              QString& errorInfo,
@@ -718,7 +735,7 @@ bool OpenAip::readAirfields( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << "Airfield Json Parse result:" << error.errorString();
+  qDebug() << fileName << "Airfield Json Parse result:" << error.errorString();
 
   if( doc.isNull() == true )
     {
@@ -788,7 +805,6 @@ bool OpenAip::readAirfields( QString fileName,
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
-
           if( it.key() == "type" )
             {
               setJAirfieldType( it.value().toInt(0), af );
@@ -813,13 +829,6 @@ bool OpenAip::readAirfields( QString fileName,
               if( setJGeoLocation( object, af ) == false )
                 {
                   // ignore data set
-                  continue;
-                }
-
-              if( useFiltering == true &&
-                  checkRadius( af.getWGSPositionPtr() ) == false )
-                {
-                  // The radius filter said no. To far away from home.
                   continue;
                 }
             }
@@ -854,6 +863,13 @@ bool OpenAip::readAirfields( QString fileName,
               setJAirfieldRunways( array, af );
             }
         } // end of for loop
+
+      if( useFiltering == true &&
+          checkRadius( af.getWGSPositionPtr() ) == false )
+        {
+          // The radius filter said no. To far away from home.
+          continue;
+        }
 
       airfieldList.append( af );
     }
@@ -1232,7 +1248,7 @@ bool OpenAip::readAirspaces( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << "Airspaces Json Parse result:" << error.errorString();
+  qDebug() << fileName << "Airspaces Json Parse result:" << error.errorString();
 
   if( doc.isNull() == true )
     {

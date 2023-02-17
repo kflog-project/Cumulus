@@ -7,15 +7,14 @@
  ************************************************************************
  **
  **   Copyright (c): 2001      by Heiner Lamprecht, Florian Ehinger
- **                  2008-2021 by Axel Pauli
+ **                  2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
  **
  ***********************************************************************/
 
-#ifndef MAP_MATRIX_H
-#define MAP_MATRIX_H
+#pragma once
 
 #include <QObject>
 #include <QTransform>
@@ -42,7 +41,7 @@ typedef int32_t fp8p24_t;
  * and the projection-type. To avoid problems, there should be only
  * one element per application.
  *
- * \date 2001-2015
+ * \date 2001-2023
  */
 
 class MapMatrix : public QObject
@@ -260,7 +259,9 @@ public:
    */
   double centerToRect(const QRect&, const QSize& = QSize(0,0));
 
-  /** */
+  /**
+   * Maps a projected point to WGS84 coordinates.
+   */
   QPoint mapToWgs(const QPoint& pos) const;
 
   /**
@@ -301,9 +302,9 @@ public:
   }
 
   /**
-   * @return the lat/lon-position of the map center.
+   * @return the lat/lon-position of the map center in WGS84 coordinates.
    */
-  QPoint getMapCenter(bool isPrint = false) const;
+  QPoint getMapCenter() const;
 
   /** */
   void centerToLatLon(const QPoint& center);
@@ -345,7 +346,7 @@ public:
   bool isWaypoint2Draw( Waypoint::Priority importance ) const;
 
   /**
-   * @returns the coordinates of the home site
+   * @returns the coordinates of the home site in WGS84 coordinates.
    */
   QPoint getHomeCoord() const
   {
@@ -556,6 +557,10 @@ public:
 
   /** Root path to the map directories */
   QString mapRootDir;
+
+  /**
+   * Save the last used cylinder parallel
+   */
+  int cylinderParallel;
 };
 
-#endif

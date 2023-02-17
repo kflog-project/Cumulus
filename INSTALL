@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt5 for Linux/Unix
 
-Last update: 2021-04-10 by Axel Pauli
+Last update: 2023-01-19 by Axel Pauli
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
@@ -21,7 +21,7 @@ following components are mandatory:
   f) A git client and the tool unzip
   g) The tools dh_make and dpkg-buildpackage
   
-At least a Qt Release 5.14.0 or higher has to be used.
+At least the last Qt Release 5.15.2 should be used.
 
 The different Linux distributions do provide normally installable packages for
 that. For XUbuntu 22.04 you have to execute the following command to get them:

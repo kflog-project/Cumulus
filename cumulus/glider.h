@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2003      by André Somers
-**                   2008-2015 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,14 +25,13 @@
  * on a glider, it's type, it's registration, call sign, polar,
  * single or double seater, maximum water capacity, etc.
  *
- * \date 2003-2015
+ * \date 2003-2023
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
-#ifndef GLIDER_H
-#define GLIDER_H
+#pragma once
 
 #include <QString>
 #include <QSettings>
@@ -226,5 +225,3 @@ private:
      */
     bool m_isSelected;
 };
-
-#endif

@@ -1,27 +1,23 @@
-/***************************************************************************
-                          distance.h  -  general distance representation
-                             -------------------
-    begin                : Sat Jul 20 2002
-    copyright            : (C) 2002 by André Somers, 2007-2013 Axel Pauli
-    email                : kflog.cumulus@gmail.com
-
-    $Id$
-
-***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/***********************************************************************
+**
+**   distance.h
+**
+**   This file is part of Cumulus.
+**
+************************************************************************
+**
+**   Copyright (c):  2002      by Andre Somers
+**                   2007-2023 by Axel Pauli
+**
+**   This file is distributed under the terms of the General Public
+**   License. See the file COPYING for more information.
+**
+***********************************************************************/
 
 /**
  * \class Distance
  *
- * \author Heiner Lamprecht, Axel Pauli
+ * \author Heiner Lamprecht, Andre Somers, Axel Pauli
  *
  * \brief This class handles different distance units and arithmetics.
  *
@@ -33,8 +29,7 @@
  * \date 2002-2013
  */
 
-#ifndef DISTANCE_H
-#define DISTANCE_H
+#pragma once
 
 #include <QString>
 
@@ -72,6 +67,11 @@ class Distance
    * Copy constructor
    */
   Distance(const Distance& dst);
+
+  /**
+   * Copy assignment operator
+   */
+  Distance& operator=(const Distance& dst);
 
   /**
    * Destructor
@@ -317,5 +317,3 @@ class Distance
 
   static distanceUnit _distanceUnit;
 };
-
-#endif

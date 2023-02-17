@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2018-2022 by Axel Pauli
+ **   Copyright (c):  2018-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -76,6 +76,44 @@ QString unitAsString( const quint8 unit )
     default:
       return QString( QObject::tr("unknown") );
   }
+}
+
+/**
+ * Search and return the main frequency. If no main frequency is found,
+ * return the first list element.
+ *
+ * Return true, if a frequency is put into the passed argument fq otherwise
+ * false.
+ */
+bool Frequency::getMainFrequency( const QList<Frequency>& fqList, Frequency& fq )
+{
+  if( fqList.size() > 0.0 )
+    {
+      int i = 0;
+      int fqlIdx = -1;
+
+      // Only a main frequency should be shown in the display
+      for( i = 0; i < fqList.size(); i++ )
+        {
+          quint8 type = fqList.at(i).getType();
+
+          if( type == Frequency::Tower || type == Frequency::Info ||
+              type == Frequency::Radio || type == Frequency::Information ||
+              fqList.at(i).isPrimary() == true )
+            {
+              fqlIdx = i;
+              break;
+            }
+        }
+
+      if( fqlIdx != -1  )
+        {
+          fq = fqList.at(i);
+          return true;
+        }
+    }
+
+  return false;
 }
 
 void Frequency::loadTranslations()

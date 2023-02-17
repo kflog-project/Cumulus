@@ -314,7 +314,8 @@ void ReachpointListView::fillRpList()
               bool primary = fList[i].isPrimary();
 
               if( type == Frequency::Tower || type == Frequency::Info ||
-                  type == Frequency::Information || primary == true )
+                  type == Frequency::Radio || type == Frequency::Information ||
+                  primary == true )
                 {
                   frequencies = fList.at(i).frequencyAsString();
                   break;

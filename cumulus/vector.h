@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002 by André Somers
-**                   2009-2021 Axel Pauli
+**                   2009-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -33,7 +33,7 @@
  * You can also access the components of the speed in the X and Y directions.
  * Note that X counts latitudinal, Y count longitudinal.
  *
- * \date 2002-2021
+ * \date 2002-2023
  */
 class Vector
 {
@@ -44,6 +44,8 @@ public:
   Vector(const Speed& x, const Speed& y);
   Vector(const double& angle, const Speed& R);
   Vector(const int angle, const Speed& R);
+
+  Vector(const Vector&) = default;
 
   Vector& operator=( const Vector& other )
   {

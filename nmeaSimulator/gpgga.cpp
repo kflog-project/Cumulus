@@ -2,10 +2,8 @@
                           gpgga.cpp  -  description
                              -------------------
     begin                : 23.12.2003
-    copyright            : (C) 2003 by Eckhard Völlm, 2009-2013 by Axel Pauli
+    copyright            : (C) 2003 by Eckhard Völlm, 2009-2023 by Axel Pauli
     email                : kflog.cumulus@gmail.com
-
-    $Id$
 
  ***************************************************************************/
 
@@ -22,7 +20,7 @@
 #include <iostream>
 #include <cstdio>
 #include <unistd.h>
-#include <QDateTime>
+#include <QtCore>
 
 using namespace std;
 
@@ -45,7 +43,6 @@ char * GPGGA::dmshh_format_lat(double degrees)
   min_part = 60.0 * (degrees - deg_part);
 
   sprintf( buf, "%02d%07.4f", deg_part, min_part );
-
   return buf;
 }
 
@@ -64,7 +61,6 @@ char * GPGGA::dmshh_format_lon(double degrees)
   min_part = 60.0 * (degrees - deg_part);
 
   sprintf( buf, "%03d%07.4f", deg_part, min_part );
-
   return buf;
 }
 
@@ -90,25 +86,21 @@ int GPGGA::send( double lat, double lon, float altitude, int fd )
 
   sentence = "$GPGGA," + utcTime +",";
 
-  QString lati;
-  lati.sprintf( "%s,%c,", dmshh_format_lat( lat ), lat > 0 ? 'N' : 'S' );
+  QString lati = lati.asprintf( "%s,%c,", dmshh_format_lat( lat ), lat > 0 ? 'N' : 'S' );
   sentence += lati;
-  QString longi;
-  longi.sprintf( "%s,%c,", dmshh_format_lon( lon ), lon > 0 ? 'E' : 'W' );
+  QString longi = longi.asprintf( "%s,%c,", dmshh_format_lon( lon ), lon > 0 ? 'E' : 'W' );
   sentence += longi;
   sentence += "1,"; // valid
   sentence += "08,"; // Sats used
   sentence += "2.1,"; // HDOP
-  QString alti;
-  alti.sprintf( "%.1f,", altitude );
+  QString alti = alti.asprintf( "%.1f,", altitude );
   sentence += alti;
   sentence += "M,,,,"; // unit in Meters, and some stuff
   sentence += "0000,*"; // station ID
 
   int pos = sentence.length() - 1;
   uint sum = calcCheckSum( pos, sentence );
-  QString scheck;
-  scheck.sprintf( "%02X\r\n", sum );
+  QString scheck = scheck.asprintf( "%02X\r\n", sum );
   sentence += scheck;
 
   int sent = write( fd, sentence.toLatin1().data(), (int) sentence.length() );
@@ -116,4 +108,3 @@ int GPGGA::send( double lat, double lon, float altitude, int fd )
   cout << sentence.toLatin1().data();
   return sent;
 }
-

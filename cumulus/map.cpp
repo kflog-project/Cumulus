@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                   2008 by Josua Dietze
- **                   2008-2022 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -613,8 +613,8 @@ void Map::mousePressEvent(QMouseEvent* event)
         event->accept();
         break;
 
-      case Qt::MidButton:
-        // qDebug("MP-MidButton");
+      case Qt::MiddleButton:
+        // qDebug("MP-MiddleButton");
         break;
 
       default:
@@ -726,9 +726,9 @@ void Map::mouseReleaseEvent( QMouseEvent* event )
         p_displayDetailedItemInfo( event->pos() );
         break;
 
-      case Qt::MidButton:
+      case Qt::MiddleButton:
 
-        // qDebug("MR-MidButton");
+        // qDebug("MR-MiddleButton");
         break;
 
       default:
@@ -1333,9 +1333,22 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
   static bool first = true; // mark first calling of method
   static QSize lastSize; // Save the last used window size
 
+  // Store the map center and position to decide a reload of all map data, if we
+  // moved to far away.
+  static QPoint lastMapCenter;
+  static QPoint lastPosition;
+
   // stop timers
   m_redrawTimerShort->stop();
   m_redrawTimerLong->stop();
+
+  if( first == true )
+    {
+      // Load last map center at startup.
+      lastMapCenter = _globalMapMatrix->getMapCenter();
+      lastPosition = calculator->getlastPosition();
+      qDebug() << "setting last MapCenter and position";
+    }
 
   // First call after creation of object can pass
   if( ! isVisible() && ! first )
@@ -1370,6 +1383,40 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
 
   // set mutex to block recursive entries and unwanted data modifications.
   setMutex(true);
+
+  // Current used map center
+  QPoint mapCenter = _globalMapMatrix->getMapCenter();
+  QPoint position = calculator->getlastPosition();
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  // Current used projection type
+  int projectionType = conf->getMapProjectionType();
+
+  // latitude delta of map center and position in degrees
+  double delta1 = fabs( (lastMapCenter.x() - mapCenter.x()) / 600000.0 );
+  double delta2 = fabs( (lastPosition.x() - position.x()) / 600000.0 );
+
+  qDebug() << "Delta1=" << delta1 << "Delta2=" << delta2;
+
+  if( projectionType == ProjectionBase::Cylindric &&
+      ( delta1 > 1.0 || delta2 > 1.0 ) )
+    {
+      // Set a new center parallel for the cylinder map projection, if
+      // the latitude delta is bigger as one degree to ensure a low-distortion
+      // map display.
+      int parallel = static_cast<int>(round( position.x() / 600000.0 ) );
+      conf->setCylinderParallel( parallel * 600000 );
+
+      // save last map center and last position
+      lastMapCenter = mapCenter;
+      lastPosition = position;
+
+      // Activate the new projection via timer.
+      QTimer::singleShot( 500, _globalMapMatrix, SLOT( slotInitMatrix() ) );
+      qDebug() << "Map::p_redrawMap: Setting new cylinder parallel: Delta-Lat"
+               << delta1 << delta2 << "parallel" << parallel;
+    }
 
   // Check, if a resize event is queued. In this case it must be
   // considered to create the right matrix size.
@@ -2068,7 +2115,7 @@ void Map::p_drawLabel( QPainter* painter,
   int xOffset = xShift;
   int yOffset = 0;
 
-  if( origP.lon() < _globalMapMatrix->getMapCenter(false).y() )
+  if( origP.lon() < _globalMapMatrix->getMapCenter().y() )
     {
       // The point is on the left side of the map,
       // so draw the text label on the right side.

@@ -16,7 +16,6 @@
 
 #include <QtGui>
 
-#include "generalconfig.h"
 #include "singlepoint.h"
 
 SinglePoint::SinglePoint() :

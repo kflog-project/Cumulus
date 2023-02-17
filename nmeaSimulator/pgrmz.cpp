@@ -2,10 +2,8 @@
                           pgrmz.cpp - description
                              -------------------
     begin                : 02.08.2010
-    copyright            : (C) 2010-2013 by Axel Pauli
+    copyright            : (C) 2010-2023 by Axel Pauli
     email                : kflog.cumulus@gmail.com
-
-    $Id$
 
  ***************************************************************************/
 
@@ -21,6 +19,8 @@
 #include <iostream>
 #include <cstdio>
 #include <unistd.h>
+
+#include <QtCore>
 
 #include "pgrmz.h"
 
@@ -47,8 +47,7 @@ int PGRMZ::send( float altitude, int fd )
 
   int pos = sentence.length() - 1;
   uint sum = calcCheckSum( pos, sentence );
-  QString scheck;
-  scheck.sprintf ("%02X\r\n", sum);
+  QString scheck = scheck.asprintf ("%02X\r\n", sum);
   sentence += scheck;
 
   int sent = write( fd, sentence.toLatin1().data(), sentence.length() );

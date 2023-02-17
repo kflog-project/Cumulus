@@ -293,7 +293,8 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
           bool primary = wp->frequencyList[i].isPrimary();
 
           if( type == Frequency::Tower || type == Frequency::Info ||
-              type == Frequency::Information || primary == true )
+              type == Frequency::Radio || type == Frequency::Information ||
+              primary == true )
             {
               edtFequencyListIndex = i;
               break;

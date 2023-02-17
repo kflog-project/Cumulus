@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  1999, 2000 by Heiner Lamprecht, Florian Ehinger
  **                         2002 adjusted by André Somers for Cumulus
- **                         2008-2022 by Axel Pauli
+ **                         2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -32,9 +32,9 @@
  *
  * \brief This class contains all data items of a waypoint.
  *
- * \date 1999-2022
+ * \date 1999-2023
  *
- * \version 1.2
+ * \version 1.3
  */
 
 class Waypoint
@@ -48,6 +48,8 @@ class Waypoint
   Waypoint();
 
   Waypoint(const Waypoint& inst);
+
+  Waypoint& operator=(const Waypoint&) = default;
 
   virtual ~Waypoint();
 
@@ -95,6 +97,24 @@ class Waypoint
   }
 
   /**
+   * Adds a new frequency to the frequency list.
+   *
+   * @param freq The frequency and its type.
+   */
+  void addFrequency( const Frequency& freqencyAndType )
+    {
+      frequencyList.append( freqencyAndType );
+    }
+
+  /**
+   * Sets a new runway list.
+   */
+  void setRunwayList( QList<Runway>& runwayList )
+  {
+    rwyList = runwayList;
+  }
+
+  /**
    * @return The runway list as reference.
    */
   QList<Runway>& getRunwayList()
@@ -103,13 +123,13 @@ class Waypoint
     }
 
   /**
-   * Adds a new frequency to the frequency list.
+   * Adds a new runway to the runway list.
    *
-   * @param freq The frequency and its type.
+   * @param rwy The runway to be added.
    */
-  void addFrequency( Frequency freqencyAndType )
+  void addRunway( const Runway& runway )
     {
-      frequencyList.append( freqencyAndType );
+      rwyList.append( runway );
     }
 
   /** The short name of the waypoint limited to 8 characters and upper cases. */

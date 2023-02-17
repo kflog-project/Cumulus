@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,14 +22,13 @@
  *
  * \brief Configuration settings for map projection.
  *
- * \date 2002-2018
+ * \date 2002-2023
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
-#ifndef SettingsPageMapSettings_H
-#define SettingsPageMapSettings_H
+#pragma once
 
 #include <QWidget>
 #include <QCheckBox>
@@ -129,7 +128,6 @@ class SettingsPageMapSettings : public QWidget
 
   QLineEdit   *mapDirectory;
   QCheckBox   *chkUnloadUnneeded;
-  QCheckBox   *chkProjectionFollowHome;
   QComboBox   *cmbProjection;
   QLabel      *edtLat2Label;
   QLabel      *edtLonLabel;
@@ -157,5 +155,3 @@ class SettingsPageMapSettings : public QWidget
   // variable m_currentProjType is an enumeration ProjectionBase::ProjectionType
   int m_currentProjType;
 };
-
-#endif

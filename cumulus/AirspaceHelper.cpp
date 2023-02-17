@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2022 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2023 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -159,7 +159,7 @@ int AirspaceHelper::loadAirspaces( QList<Airspace*>& list, bool readSource )
                   h_projection = 0;
                 }
 
-              qDebug() << "AHS:" << QFileInfo(aicName).fileName() << "Projection mismatch";
+              qDebug() << "ASH:" << QFileInfo(aicName).fileName() << "Projection mismatch";
               QFile::remove( aicName );
               continue;
             }

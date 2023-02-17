@@ -35,7 +35,6 @@ Waypoint::Waypoint()
   priority       = Waypoint::Low;
   taskPointIndex = -1;
   wpListMember   = false;
-
   wgsPoint.setPos(0,0);
   projPoint.setX(0);
   projPoint.setY(0);

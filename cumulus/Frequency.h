@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2018-2022 by Axel Pauli
+ **   Copyright (c):  2018-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * This class contains a frequency and its related type.
  *
- * \date 2018-2022
+ * \date 2018-2023
  *
  */
 
@@ -249,6 +249,15 @@ class Frequency
   {
     m_userType = type;
   }
+
+  /**
+   * Search and return the main frequency. If no main frequency is found,
+   * return the first list element.
+   *
+   * Return true, if a frequency is put into the passed argument fq otherwise
+   * false.
+   */
+  static bool getMainFrequency( const QList<Frequency>& fqList, Frequency& fq );
 
   /**
    * Save a frequency list into a data stream.

@@ -2,10 +2,8 @@
                           gprmc.cpp  -  description
                              -------------------
     begin                : 23.12.2003
-    copyright            : (C) 2003 by Eckhard Völlm, by 2009-2013 Axel Pauli
+    copyright            : (C) 2003 by Eckhard Völlm, by 2009-2023 Axel Pauli
     email                : kflog.cumulus@gmail.com
-
-    $Id$
 
  ***************************************************************************/
 
@@ -24,7 +22,7 @@
 #include <unistd.h>
 #include <cmath>
 
-#include <QDateTime>
+#include <QtCore>
 
 using namespace std;
 
@@ -47,7 +45,6 @@ char* GPRMC::dmshh_format_lat(double degrees)
   min_part = 60.0 * (degrees - deg_part);
 
   sprintf( buf, "%02d%07.4f", deg_part, min_part );
-
   return buf;
 }
 
@@ -66,7 +63,6 @@ char* GPRMC::dmshh_format_lon(double degrees)
   min_part = 60.0 * (degrees - deg_part);
 
   sprintf( buf, "%03d%07.4f", deg_part, min_part );
-
   return buf;
 }
 
@@ -92,19 +88,15 @@ int GPRMC::send( double lat, double lon, float speed, float course, int fd )
   QString utcTime = dateTimeUtc.time().toString("hhmmss.zzz");
 
   sentence = "$GPRMC," + utcTime + ",A,";
-  QString lati;
-  lati.sprintf( "%s,%c,", dmshh_format_lat( lat ), lat > 0 ? 'N' : 'S' );
+  QString lati = lati.asprintf( "%s,%c,", dmshh_format_lat( lat ), lat > 0 ? 'N' : 'S' );
   sentence += lati;
-  QString longi;
-  longi.sprintf( "%s,%c,", dmshh_format_lon( lon ), lon > 0 ? 'E' : 'W' );
+  QString longi = longi.asprintf( "%s,%c,", dmshh_format_lon( lon ), lon > 0 ? 'E' : 'W' );
   sentence += longi;
 
-  QString sp;
-  sp.sprintf( "%0.3f,", speed );
+  QString sp = sp.asprintf( "%0.3f,", speed );
   sentence += sp;
 
-  QString co;
-  co.sprintf( "%0.2f,", course );
+  QString co = co.asprintf( "%0.2f,", course );
   sentence += co;
 
   sentence += utcDate;
@@ -112,8 +104,7 @@ int GPRMC::send( double lat, double lon, float speed, float course, int fd )
   sentence += ",,,A*";
   int pos = sentence.length() - 1;
   uint sum = calcCheckSum( pos, sentence );
-  QString scheck;
-  scheck.sprintf( "%02X\r\n", sum );
+  QString scheck = scheck.asprintf( "%02X\r\n", sum );
   sentence += scheck;
 
   int sent = write( fd, sentence.toLatin1().data(), (int) sentence.length() );
@@ -121,4 +112,3 @@ int GPRMC::send( double lat, double lon, float speed, float course, int fd )
   cout << sentence.toLatin1().data();
   return sent;
 }
-

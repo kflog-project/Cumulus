@@ -108,7 +108,8 @@ public:
    * \param country The country as two letter code, where the airspace is located
   */
   Airspace( QString name,
-            BaseMapElement::objectType oType, QPolygon pP,
+            BaseMapElement::objectType oType,
+            QPolygon pP,
             const float upper,
             const BaseMapElement::elevationType upperType,
             const float lower,

@@ -775,7 +775,7 @@ void MainWindow::slotCreateApplicationWidgets()
   connect( m_logger, SIGNAL( landingTime(QDateTime&) ),
             SLOT( slotLanded(QDateTime&) ) );
 
-  calculator->setPosition( _globalMapMatrix->getMapCenter( false ) );
+  calculator->setPosition( _globalMapMatrix->getMapCenter() );
 
   slotReadconfig();
 
@@ -915,6 +915,9 @@ void MainWindow::slotFinishStartUp()
 
   // Enable JNI transfer now.
   jniShutdown( false );
+
+  // That will trigger a new download of missing map data.
+  Map::instance->scheduleRedraw();
 
 #endif
 

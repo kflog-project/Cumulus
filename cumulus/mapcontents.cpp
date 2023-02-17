@@ -2534,16 +2534,16 @@ void MapContents::slotReloadMapData()
   qDeleteAll(flarmAlertZoneList);
   flarmAlertZoneList = SortableAirspaceList();
 
-  cityList.clear();
-  hydroList.clear();
-  lakeList.clear();
-  landmarkList.clear();
-  obstacleList.clear();
-  railList.clear();
-  motorwayList.clear();
-  roadList.clear();
-  topoList.clear();
-  villageList.clear();
+  cityList = QList<LineElement>();
+  hydroList = QList<LineElement>();
+  lakeList = QList<LineElement>();
+  landmarkList = QList<SinglePoint>();
+  obstacleList = QList<SinglePoint>();
+  railList = QList<LineElement>();
+  motorwayList = QList<LineElement>();
+  roadList = QList<LineElement>();
+  topoList = QList<LineElement>();
+  villageList = QList<SinglePoint>();
 
   // free internal allocated memory in QList
   m_airfieldLoadMutex.lock();

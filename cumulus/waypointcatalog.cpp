@@ -2015,7 +2015,7 @@ bool WaypointCatalog::writeCup( const QString& catalog, QList<Waypoint>& wpList 
               quint8 type = fqList[i].getType();
 
               if( type == Frequency::Tower || type == Frequency::Info ||
-                  type == Frequency::Information ||
+                  type == Frequency::Radio || type == Frequency::Information ||
                   fqList[i].isPrimary() == true )
                 {
                   fqlIdx = i;

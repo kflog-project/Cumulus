@@ -3,7 +3,7 @@
                              -------------------
     begin                : Okt 18 2002
     copyright            : (C) 2002      by Eggert Ehmke
-                               2008-2015 by Axel Pauli
+                               2008-2023 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -25,7 +25,7 @@
  *
  * \brief Class for glider polar calculations and drawing.
  *
- * \date 2002-2021
+ * \date 2002-2023
  *
  * \version 1.2
  *
@@ -53,7 +53,9 @@ class Polar
 	 int grossWeight,
 	 int addLoad=0 );
 
-  Polar(const Polar&);
+  Polar( const Polar& );
+
+  Polar& operator=(const Polar&) = default;
 
   virtual ~Polar();
 

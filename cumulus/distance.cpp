@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                         :     2007-2013 by Axel Pauli
+                         :     2007-2023 by Axel Pauli
     email                : kflog.cumulus@gmail.com
 
     $Id$
@@ -50,6 +50,16 @@ Distance::Distance(const Distance& dst) :
   _dist(dst._dist),
   _isValid(dst._isValid)
 {
+}
+
+/**
+ * Copy assignment operator
+ */
+Distance& Distance::operator=(const Distance& dst)
+{
+  _dist = dst._dist;
+  _isValid = dst._isValid;
+  return *this;
 }
 
 Distance::~Distance()

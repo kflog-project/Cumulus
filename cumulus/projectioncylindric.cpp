@@ -11,8 +11,6 @@
  **   This file is distributed under the terms of the General Public
  **   Licence. See the file COPYING for more information.
  **
- **   $Id$
- **
  ***********************************************************************/
 
 #include <cmath>
@@ -41,21 +39,24 @@ ProjectionCylindric::~ProjectionCylindric()
 
 bool ProjectionCylindric::initProjection(int v1_new)
 {
-  bool changed(false);
+  bool changed( false );
 
-  if(v1_new > 54000000 || v1_new < -54000000) {
-    // this is >90° or <-90°: take default of 45°;
-    // better check in input dlg and not here???
-    changed = ( v1 != NUM_TO_RAD(27000000) );
-    v1 = NUM_TO_RAD(27000000);
-    i_v1=27000000;
-  } else {
-    changed = ( i_v1 != v1_new );
-    v1 = NUM_TO_RAD(v1_new);
-    i_v1=v1_new;
-  }
+  if( v1_new > 54000000 || v1_new < -54000000 )
+    {
+      // this is >90Â° or <-90Â°: take default of 45Â°;
+      // better check in input dlg and not here???
+      changed = ( v1 != NUM_TO_RAD( 27000000 ) );
+      v1 = NUM_TO_RAD( 27000000 );
+      i_v1 = 27000000;
+    }
+  else
+    {
+      changed = ( i_v1 != v1_new );
+      v1 = NUM_TO_RAD( v1_new );
+      i_v1 = v1_new;
+    }
 
-  cos_v1=cos(v1);
+  cos_v1 = cos( v1 );
 
   return changed;
 }

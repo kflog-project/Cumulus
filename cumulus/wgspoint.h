@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2008-2010 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2008-2023 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,11 +25,10 @@
  * and "lon". Furthermore it controls the unit to be used for position
  * representation.
  *
- * \date 2008-2010
+ * \date 2008-2023
  */
 
-#ifndef WGS_Point_H
-#define WGS_Point_H
+#pragma once
 
 #include <QPoint>
 #include <QString>
@@ -204,4 +203,3 @@ protected:
 
 };
 
-#endif // WGS_Point_H

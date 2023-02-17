@@ -1632,17 +1632,6 @@ class GeneralConfig : protected QSettings
     _mapLoadForests = newValue;
   }
 
-  /** gets Map projection settings follows home position */
-  bool getMapProjectionFollowsHome() const
-  {
-    return _mapProjFollowsHome;
-  }
-  /** sets Map projection settings follows home position */
-  void setMapProjectionFollowsHome(const bool newValue)
-  {
-    _mapProjFollowsHome = newValue;
-  }
-
   /** gets Map unload unneeded */
   bool getMapUnload() const
   {
@@ -1735,7 +1724,6 @@ class GeneralConfig : protected QSettings
 
   QString getOpenAipLink()
   {
-    // return QString(rot47(_openAipLink));
     return _openAipLink;
   }
 
@@ -3392,8 +3380,6 @@ class GeneralConfig : protected QSettings
   double _mapScale;
   // Map Data Projection Type
   int _mapProjectionType;
-  // Map projection settings follows home position
-  bool _mapProjFollowsHome;
   // Map unload unneeded
   bool _mapUnload;
   // Download missing map files

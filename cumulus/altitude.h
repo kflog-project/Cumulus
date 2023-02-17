@@ -81,7 +81,7 @@ public:
     /**
      * destuctor
      */
-    ~Altitude();
+    virtual ~Altitude();
 
     /**
      * Sets the unit for altitudes. This unit is used to return the correct string

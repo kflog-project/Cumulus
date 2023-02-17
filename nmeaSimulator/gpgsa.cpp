@@ -2,10 +2,8 @@
                           gpgsa.cpp  -  description
                              -------------------
     begin                : 24.10.2009
-    copyright            : (C) 2009-2013 by Axel Pauli
+    copyright            : (C) 2009-2023 by Axel Pauli
     email                : kflog.cumulus@gmail.com
-
-    $Id$
 
  ***************************************************************************/
 
@@ -20,6 +18,8 @@
 
 #include <unistd.h>
 #include <iostream>
+
+#include <QtCore>
 
 #include "gpgsa.h"
 
@@ -72,8 +72,7 @@ int GPGSA::send( QStringList& satIds, QString& pdop, QString& hdop, QString &vdo
 
   int pos = sentence.length()-1;
   uint sum = calcCheckSum( pos, sentence );
-  QString scheck;
-  scheck.sprintf ("%02X\r\n", sum);
+  QString scheck = scheck.asprintf ("%02X\r\n", sum);
   sentence += scheck;
 
   int sent = write( fd, sentence.toLatin1().data(), sentence.length() );
