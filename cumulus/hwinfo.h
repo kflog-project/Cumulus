@@ -25,9 +25,9 @@
  * return things like the type of a device and other useful hardware
  * information.
  *
- * \date 2004-2022
+ * \date 2004-2023
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #pragma once
@@ -156,18 +156,19 @@ class HwInfo
      */
     static double getFreeUserSpace( QString& path );
 
+    /**
+     * Because this is a singleton, don't allow copies and assignments.
+     */
+    HwInfo(const HwInfo& ) = delete;
+
+    HwInfo& operator=(const HwInfo& ) = delete;
+
   private:
+
     /**
      * Because this is a singleton, the constructor is private!
      */
     HwInfo();
-
-    /**
-     * Because this is a singleton, don't allow copies and assignments.
-     */
-    HwInfo(const HwInfo& ){};
-
-    HwInfo& operator=(const HwInfo& ){return *this;};
 
     static HwInfo *theInstance;
     enum hwType _hwType;

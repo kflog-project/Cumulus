@@ -156,8 +156,8 @@ int HwInfo::getFreeMemory()
     }
 
   //get free heap space
-  // struct mallinfo2 m = mallinfo2();
-  struct mallinfo m = mallinfo();
+  struct mallinfo2 m = mallinfo2();
+  // struct mallinfo m = mallinfo(); // now deprecated
   //qDebug ("  fordblks: %d (%d KB)\n  uordblks: %d\n  hblkhd: %d\nTotal used: %d; total allocated: %d", m.fordblks, m.fordblks/1024,m.uordblks, m.hblkhd, m.uordblks+m.hblkhd,  m.uordblks+m.hblkhd+m.fordblks);
   //add the free space on the heap to the total free space, minus the fragmentation factor
   int heapfree = m.fordblks/1024;
