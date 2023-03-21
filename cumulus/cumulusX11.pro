@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2022 Axel Pauli
+# Copyright (c): 2008-2023 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -23,6 +23,14 @@ QT += core gui xml
 greaterThan(QT_MAJOR_VERSION, 4) {
 QT += widgets
 DEFINES += QT_5
+}
+
+GLIBC_VERSION = $$system( "ldd --version | grep GLIBC | awk '{print $NF}'" )
+message( GLIBC_VERSION is set to ($$GLIBC_VERSION) )
+
+lessThan(GLIBC_VERSION, 2.33) {
+DEFINES += OLD_MALLOC
+message( Setting OLD_MALLOC define because GLIB < 2.33 )
 }
 
 # Set DESKTOP as common define, if Cumulus is build for the LINUX desktop
