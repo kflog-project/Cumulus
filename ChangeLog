@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2023-03-21 AP: Issue #164 fixed. Update cylinder map projection automatically.
+                   Issue #165 fixed. Call sign Info has changed to Radio in
+                   Germany.
+
 [*] 2023-01-06 AP: Cumulus 5.40.9 released for Debian, Android.
 
 [-] 2022-01-06 AP: Issue #161 fixed. Save waypoints in an user file.
