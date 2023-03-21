@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2022 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -304,7 +304,8 @@ void WpEditDialogPageAero::slot_load( Waypoint *wp )
           bool primary = wp->frequencyList[i].isPrimary();
 
           if( type == Frequency::Tower || type == Frequency::Info ||
-              type == Frequency::Information || primary == true )
+              type == Frequency::Radio || type == Frequency::Information ||
+              primary == true )
             {
               edtFequencyListIndex = i;
               break;

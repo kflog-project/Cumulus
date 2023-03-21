@@ -1350,6 +1350,7 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
       // Load last map center at startup.
       lastMapCenter = _globalMapMatrix->getMapCenter();
       lastPosition = calculator->getlastPosition();
+      //qDebug() << "setting last MapCenter and position";
     }
 
   // First call after creation of object can pass

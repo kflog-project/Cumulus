@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2022 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.ListWidgetParent
@@ -314,7 +314,8 @@ void ReachpointListView::fillRpList()
               bool primary = fList[i].isPrimary();
 
               if( type == Frequency::Tower || type == Frequency::Info ||
-                  type == Frequency::Information || primary == true )
+                  type == Frequency::Radio || type == Frequency::Information ||
+                  primary == true )
                 {
                   frequencies = fList.at(i).frequencyAsString();
                   break;
