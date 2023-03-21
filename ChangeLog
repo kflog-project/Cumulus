@@ -19,6 +19,36 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2023-03-21 AP: Issue #164 fixed. Update cylinder map projection automatically.
+                   Issue #165 fixed. Call sign Info has changed to Radio in
+                   Germany.
+
+[*] 2023-01-06 AP: Cumulus 5.40.9 released for Debian, Android.
+
+[-] 2022-01-06 AP: Issue #161 fixed. Save waypoints in an user file.
+                   Issue #162 fixed. Cumulus should store waypoints as replacement
+                   of xml storage in the SeeYou CUP format.
+                   Issue #163 fixed. Replace old download links in configuration
+                   after loading.
+
+[*] 2023-01-02 AP: Cumulus 5.40.8 released for Debian, Android.
+
+[-] 2022-12-28 AP: Issue #160 fixed. PowerFlarm-Fusion does not more support
+                   binary download of flights. This feature should be disabled
+                   in Cumulus, when a PowerFlarm-Fusion device is regognized.
+
+[-] 2022-12-28 AP: Issue #159 fixed. Flarm answers to NEWTASK and ADDWP sentences
+                   are reported as error by Cumulus.
+
+[-] 2022-12-28 AP: Issue #158 fixed. Using X button in info widget prevents
+                   using of close button of main window.
+
+[-] 2022-12-28 AP: Issue #157 fixed. SeeYou has extended the CUP waypoint format
+                   by a runway width.
+
+[-] 2022-12-28 AP: Issue #152 fixed. New access to openaip aeronautical data.
+
+
 [*] 2022-07-01 AP: Cumulus 5.40.6 released for Android.
 
 [-] 2022-07-01 AP: Issue #156 fixed. Flarm radar view should display the ground
