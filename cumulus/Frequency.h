@@ -22,7 +22,7 @@
  *
  * This class contains a frequency and its related type.
  *
- * \date 2018-2022
+ * \date 2018-2023
  *
  */
 
@@ -199,6 +199,15 @@ class Frequency
   {
     return frequencyAsString( *this, withUnit );
   }
+
+  /**
+   * Search and return the main frequency. If no main frequency is found,
+   * return the first list element.
+   *
+   * Return true, if a frequency is put into the passed argument fq otherwise
+   * false.
+   */
+  bool getMainFrequency( const QList<Frequency>& fqList, Frequency& fq );
 
   bool isPrimary() const
   {
