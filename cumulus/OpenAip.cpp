@@ -147,21 +147,6 @@ bool OpenAip::readSinglePoints( QString fileName,
           continue;
         }
 
-      // check for approval
-      if( object.contains("approved") == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "contains not the approved key, ignoring data";
-          continue;
-        }
-
-      if( object.value("approved").toBool() == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "not approved, ignoring data";
-          continue;
-        }
-
       SinglePoint sp;
       sp.setTypeID( static_cast<enum BaseMapElement::objectType>(type) );
 
@@ -290,21 +275,6 @@ bool OpenAip::readNavAids( QString fileName,
       else
         {
           // Ignore object without a name
-          continue;
-        }
-
-      // check for approval
-      if( object.contains("approved") == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "contains not the approved key, ignoring data";
-          continue;
-        }
-
-      if( object.value("approved").toBool() == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "not approved, ignoring data";
           continue;
         }
 
@@ -544,21 +514,6 @@ bool OpenAip::readHotspots( QString fileName,
           continue;
         }
 
-      // check for approval
-      if( object.contains("approved") == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "contains not the approved key, ignoring data";
-          continue;
-        }
-
-      if( object.value("approved").toBool() == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "not approved, ignoring data";
-          continue;
-        }
-
       ThermalPoint tp;
 
       // Set thermal's name
@@ -771,21 +726,6 @@ bool OpenAip::readAirfields( QString fileName,
       else
         {
           // Ignore object without a name
-          continue;
-        }
-
-      // check for approval
-      if( object.contains("approved") == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "contains not the approved key, ignoring data";
-          continue;
-        }
-
-      if( object.value("approved").toBool() == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "not approved, ignoring data";
           continue;
         }
 
@@ -1294,21 +1234,6 @@ bool OpenAip::readAirspaces( QString fileName,
       else
         {
           // Ignore object without a name
-          continue;
-        }
-
-      // check for approval
-      if( object.contains("approved") == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "contains not the approved key, ignoring data";
-          continue;
-        }
-
-      if( object.value("approved").toBool() == false )
-        {
-          qWarning() << "Object" << "'" + name + "'"
-                     << "not approved, ignoring data";
           continue;
         }
 

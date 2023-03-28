@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2023-03-28 AP: Cumulus 5.41.1 released for Debian, Ubuntu and Android.
+
+[-] 2023-03-28 AP: Issue #166 fixed. openAip data are not loaded.
+
 [*] 2023-03-25 AP: Cumulus 5.41.0 released for Debian, Ubuntu and Android.
 
 [-] 2023-03-21 AP: Issue #164 fixed. Update cylinder map projection automatically.
