@@ -109,7 +109,9 @@ bool OpenAip::readSinglePoints( QString fileName,
       return false;
     }
 
-  QString content = file.readAll();
+  QTextStream ts(&file);
+  ts.setCodec( "UTF-8" );
+  QString content = ts.readAll();
   file.close();
 
   QJsonParseError error;
@@ -241,7 +243,9 @@ bool OpenAip::readNavAids( QString fileName,
       return false;
     }
 
-  QString content = file.readAll();
+  QTextStream ts(&file);
+  ts.setCodec( "UTF-8" );
+  QString content = ts.readAll();
   file.close();
 
   QJsonParseError error;
@@ -472,7 +476,9 @@ bool OpenAip::readHotspots( QString fileName,
       return false;
     }
 
-  QString content = file.readAll();
+  QTextStream ts(&file);
+  ts.setCodec( "UTF-8" );
+  QString content = ts.readAll();
   file.close();
 
   QJsonParseError error;
@@ -693,7 +699,9 @@ bool OpenAip::readAirfields( QString fileName,
       return false;
     }
 
-  QString content = file.readAll();
+  QTextStream ts(&file);
+  ts.setCodec( "UTF-8" );
+  QString content = ts.readAll();
   file.close();
 
   QJsonParseError error;
@@ -1192,7 +1200,9 @@ bool OpenAip::readAirspaces( QString fileName,
       return false;
     }
 
-  QString content = file.readAll();
+  QTextStream ts(&file);
+  ts.setCodec( "UTF-8" );
+  QString content = ts.readAll();
   file.close();
 
   QJsonParseError error;
