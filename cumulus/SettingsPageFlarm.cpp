@@ -690,7 +690,7 @@ void SettingsPageFlarm::nextFlarmCommand()
        m_taskQueryIsRunning = true;
      }
 
-   QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
+   QByteArray ba = FlarmBase::replaceUmlauts( cmd );
 
    qDebug() << "nextFlarmCommand" << cmd;
 

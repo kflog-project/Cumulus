@@ -610,7 +610,7 @@ void PreFlightFlarmPage::nextFlarmCommand()
       return;
     }
 
-   QByteArray ba = FlarmBase::replaceUmlauts(m_cmdList.at(m_cmdIdx).toLatin1());
+   QByteArray ba = FlarmBase::replaceUmlauts(m_cmdList.at(m_cmdIdx));
 
    qDebug() << "Flarm $Command:" << ba;
 
@@ -1120,12 +1120,12 @@ void PreFlightFlarmPage::slotWriteFlarmData()
       m_cmdList << "$PFLAC,S,NOTRACK," + notrack->text();
     }
 
-  m_cmdList << "$PFLAC,S,PILOT," + FlarmBase::replaceUmlauts( pilot->text().trimmed().toLatin1() )
-            << "$PFLAC,S,COPIL," + FlarmBase::replaceUmlauts( copil->text().trimmed().toLatin1() )
-            << "$PFLAC,S,GLIDERID," + FlarmBase::replaceUmlauts( gliderId->text().trimmed().toLatin1() )
-            << "$PFLAC,S,GLIDERTYPE," + FlarmBase::replaceUmlauts( gliderType->text().trimmed().toLatin1() )
-            << "$PFLAC,S,COMPID," + FlarmBase::replaceUmlauts( compId->text().trimmed().toLatin1() )
-            << "$PFLAC,S,COMPCLASS," + FlarmBase::replaceUmlauts( compClass->text().trimmed().toLatin1() );
+  m_cmdList << "$PFLAC,S,PILOT," + FlarmBase::replaceUmlauts( pilot->text().trimmed() )
+            << "$PFLAC,S,COPIL," + FlarmBase::replaceUmlauts( copil->text().trimmed() )
+            << "$PFLAC,S,GLIDERID," + FlarmBase::replaceUmlauts( gliderId->text().trimmed() )
+            << "$PFLAC,S,GLIDERTYPE," + FlarmBase::replaceUmlauts( gliderType->text().trimmed() )
+            << "$PFLAC,S,COMPID," + FlarmBase::replaceUmlauts( compId->text().trimmed() )
+            << "$PFLAC,S,COMPCLASS," + FlarmBase::replaceUmlauts( compClass->text().trimmed() );
 
   if( taskBox->currentIndex() <= 0 ||
       taskBox->isVisible() == false ||
@@ -1509,7 +1509,7 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
          << QCoreApplication::applicationVersion() << "\r\n";
 
   // A task description can be a maximum of 50 characters long.
-  QByteArray tn = FlarmBase::replaceUmlauts( flightTask->getTaskName().toLatin1().left( 50 ) );
+  QByteArray tn = FlarmBase::replaceUmlauts( flightTask->getTaskName().left( 50 ) );
 
   stream << "$PFLAC,S,NEWTASK," << tn << "\r\n";
 
@@ -1544,7 +1544,7 @@ bool PreFlightFlarmPage::createFlarmTaskList( FlightTask* flightTask )
                     arg( (degree < 0) ? QString("W") : QString("E") );
 
       // A waypoint description can be a maximum of 50 characters long.
-      QByteArray wp = FlarmBase::replaceUmlauts( tp.getWPName().toLatin1().left( 50 ) );
+      QByteArray wp = FlarmBase::replaceUmlauts( tp.getWPName().left( 50 ) );
 
       stream << "$PFLAC,S,ADDWP,"
              << lat

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2017 by Axel Pauli
+ **   Copyright (c): 2017-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -122,11 +122,9 @@ void PreFlightFlarmUsbPage::slotRequestIgcReadout()
 
   QString cmd = "$PFLAI,IGCREADOUT";
 
-  QByteArray ba = FlarmBase::replaceUmlauts(cmd.toLatin1());
+  qDebug() << "Flarm $Command:" << cmd;
 
-  qDebug() << "Flarm $Command:" << ba;
-
-  bool res = GpsNmea::gps->sendSentence( ba );
+  bool res = GpsNmea::gps->sendSentence( cmd );
 
   if( res == false )
     {
