@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2022 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,9 +22,9 @@
  *
  * This is the base Flarm class containing static methods and data definitions.
  *
- * \date 2010-2022
+ * \date 2010-2023
  *
- * \version 1.10
+ * \version 1.13
  */
 
 #pragma once
@@ -487,9 +487,9 @@ class FlarmBase
    *
    * @param string String to be processed as latin-1 encoding.
    *
-   * @return String with replaced umlauts.
+   * @return QByteArray with replaced umlauts.
    */
-  static QByteArray replaceUmlauts( QByteArray string );
+  static QByteArray replaceUmlauts( QString string );
 
   /**
    * Translates a hexadecimal alarm type into a readable string.

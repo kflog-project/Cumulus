@@ -7,7 +7,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018-2022 Axel Pauli
+**   Copyright (c): 2018-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -654,7 +654,7 @@ void SettingsPageFlarm::nextFlarmCommand()
        m_taskQueryIsRunning = true;
      }
 
-   QByteArray ba = FlarmBase::replaceUmlauts( cmd.toLatin1() );
+   QByteArray ba = FlarmBase::replaceUmlauts( cmd );
 
    qDebug() << "nextFlarmCommand" << cmd;
 

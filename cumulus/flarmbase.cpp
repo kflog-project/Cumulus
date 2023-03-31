@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -38,26 +38,37 @@ FlarmBase::~FlarmBase()
 {
 }
 
-QByteArray FlarmBase::replaceUmlauts( QByteArray string )
+QByteArray FlarmBase::replaceUmlauts( QString string )
 {
-  QByteArray array( string );
-
-  array = array.replace( Qt::Key_Adiaeresis, "Ae" );
-  array = array.replace( Qt::Key_Odiaeresis, "Oe" );
-  array = array.replace( Qt::Key_Udiaeresis, "Ue" );
-  array = array.replace( Qt::Key_Adiaeresis + 0x20, "ae" );
-  array = array.replace( Qt::Key_Odiaeresis + 0x20, "oe" );
-  array = array.replace( Qt::Key_Udiaeresis + 0x20, "ue" );
-  array = array.replace( 0xdf, "ss" );
+  string = string.replace( Qt::Key_Adiaeresis, "Ae" );
+  string = string.replace( Qt::Key_Odiaeresis, "Oe" );
+  string = string.replace( Qt::Key_Udiaeresis, "Ue" );
+  string = string.replace( Qt::Key_Adiaeresis + 0x20, "ae" );
+  string = string.replace( Qt::Key_Odiaeresis + 0x20, "oe" );
+  string = string.replace( Qt::Key_Udiaeresis + 0x20, "ue" );
+  string = string.replace( 0xdf, "ss" );
 
   // An asterisk, !, $, \, ^, ~ in the Flarm command
   // payload are not accepted by Flarm.
-  array = array.replace( "*", "+" );
-  array = array.replace( "!", "." );
-  array = array.replace( "\\", "|" );
-  array = array.replace( "^", "+" );
-  array = array.replace( "~", "+" );
-  return array;
+  string = string.replace( "*", "+" );
+  string = string.replace( "!", "." );
+  string = string.replace( "\\", "|" );
+  string = string.replace( "^", "+" );
+  string = string.replace( "~", "+" );
+
+  // Check for other non ASCII characters and replace them by ?
+  for( int i=0; i < string.size(); i++ )
+    {
+      QChar qc = string[i];
+
+      if( qc.toLatin1() == 0 )
+        {
+          // Convert unknown ASCII character to ?
+          string[i] = QChar( '?' );
+        }
+    }
+
+  return string.toLatin1();
 }
 
 QString FlarmBase::translateAlarmType( const short hexType )
