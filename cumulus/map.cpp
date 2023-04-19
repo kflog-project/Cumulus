@@ -1397,7 +1397,7 @@ void Map::p_redrawMap(mapLayer fromLayer, bool queueRequest)
   double delta1 = fabs( (lastMapCenter.x() - mapCenter.x()) / 600000.0 );
   double delta2 = fabs( (lastPosition.x() - position.x()) / 600000.0 );
 
-  qDebug() << "Delta1=" << delta1 << "Delta2=" << delta2;
+  // qDebug() << "Delta1=" << delta1 << "Delta2=" << delta2;
 
   if( projectionType == ProjectionBase::Cylindric &&
       ( delta1 > 1.0 || delta2 > 1.0 ) )
