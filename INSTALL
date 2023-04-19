@@ -1,7 +1,7 @@
 ===============================================================================
 Building and installing Cumulus under X11 and Qt5 for Linux/Unix
 
-Last update: 2023-01-19 by Axel Pauli
+Last update: 2023-04-19 by Axel Pauli
 ===============================================================================
 
 These are the instructions to build and install Cumulus from source under
@@ -27,7 +27,7 @@ The different Linux distributions do provide normally installable packages for
 that. For XUbuntu 22.04 you have to execute the following command to get them:
 
   sudo apt-get install build-essential git unzip
-  sudo apt-get install qtcreator qtbase5-dev qttools5-dev-tools qt5-doc
+  sudo apt-get install qtcreator qtbase5-dev qttools5-dev-tools qtmultimedia5-dev qt5-doc
   sudo apt-get install libbluetooth-dev bluez
   sudo apt-get install dh-make fakeroot dpkg-dev
   
