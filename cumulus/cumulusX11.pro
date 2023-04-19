@@ -21,7 +21,7 @@ QT += core gui xml
 
 # Qt5 needs the QtWidgets library
 greaterThan(QT_MAJOR_VERSION, 4) {
-QT += widgets
+QT += widgets multimedia
 DEFINES += QT_5
 }
 
@@ -207,7 +207,6 @@ HEADERS = \
     signalhandler.h \
     singlepoint.h \
     sonne.h \
-    sound.h \
     speed.h \
     splash.h \
     target.h \
@@ -344,7 +343,6 @@ SOURCES = \
     signalhandler.cpp \
     singlepoint.cpp \
     sonne.cpp \
-    sound.cpp \
     speed.cpp \
     splash.cpp \
     taskeditor.cpp \
