@@ -584,6 +584,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("28", BaseMapElement::Sua); // Aerial Sporting Or Recreational Activity
       typeMap.insert("29", BaseMapElement::Sua); // Low Altitude Overflight Restriction
       typeMap.insert("30", BaseMapElement::Sua); // MRT Military Route (used in Poland)
+      typeMap.insert("31", BaseMapElement::Sua); // TSA/TRA Feeding Route (TFR) (used in Poland)
     }
   else
     {
