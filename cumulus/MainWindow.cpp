@@ -34,6 +34,7 @@
 #include <sys/ioctl.h>
 #include <QApplication>
 #include <QtWidgets>
+#include <QSound>
 
 #include "aboutwidget.h"
 #include "airfield.h"
@@ -965,17 +966,7 @@ MainWindow::~MainWindow()
       delete m_logger;
     }
 
-#ifdef ANDROID
-
-  if( m_displayTrigger )
-    {
-
-      m_displayTrigger->stop();
-    }
-
-#endif
-
-  _globalMainWindow = static_cast<MainWindow *> (0);
+  _globalMainWindow = nullptr;
 }
 
 void MainWindow::playSound( const char *name )
@@ -993,8 +984,6 @@ void MainWindow::playSound( const char *name )
 
   QString sound;
 
-#ifndef ANDROID
-
   if( name && QString(name) == "notify" )
     {
       sound = GeneralConfig::instance()->getAppRoot() + "/sounds/Notify.wav";
@@ -1005,36 +994,10 @@ void MainWindow::playSound( const char *name )
     }
   else if( name )
     {
-      sound = *name;
+      sound = QString( name );
     }
 
-  // The sound is played in an extra thread
-  Sound *player = new Sound( sound );
-
-  player->start( QThread::HighestPriority );
-
-#else
-
-  // Native method used to play sound via Android service
-  int soundId = 0;
-
-  if( name && QString(name) == "notify" )
-    {
-      soundId = 0;
-    }
-  else if( name && QString(name) == "alarm" )
-    {
-      soundId = 1;
-    }
-  else
-    {
-      // All other is unsupported
-      return;
-    }
-
-  jniPlaySound( soundId );
-
-#endif
+  QSound::play( sound );
 }
 
 void MainWindow::slotAlarm( const QString& msg, const bool sound )
