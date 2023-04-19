@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2022 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2023 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -583,6 +583,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("27", BaseMapElement::Sua); // ACC Sector (ACC)
       typeMap.insert("28", BaseMapElement::Sua); // Aerial Sporting Or Recreational Activity
       typeMap.insert("29", BaseMapElement::Sua); // Low Altitude Overflight Restriction
+      typeMap.insert("30", BaseMapElement::Sua); // MRT Military Route (used in Poland)
     }
   else
     {

@@ -1171,7 +1171,7 @@ void MainWindow::playSound( const char *name )
     }
   else if( name )
     {
-      sound = *name;
+      sound = QString( name );
     }
 
   // The sound is played in an extra thread
