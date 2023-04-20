@@ -19,6 +19,10 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2023-04-20 AP: Cumulus 5.41.2 released for Debian, Ubuntu and Android.
+
+[-] 2023-04-19 AP: Minor bug fixing.
+
 [*] 2023-03-28 AP: Cumulus 5.41.1 released for Debian, Ubuntu and Android.
 
 [-] 2023-03-28 AP: Issue #166 fixed. openAip data are not loaded.
