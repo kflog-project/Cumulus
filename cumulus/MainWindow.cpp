@@ -50,7 +50,6 @@
 #include "mapmatrix.h"
 #include "messagewidget.h"
 #include "preflightwidget.h"
-#include "sound.h"
 #include "target.h"
 #include "TaskFileManager.h"
 #include "time_cu.h"
