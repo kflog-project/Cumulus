@@ -368,7 +368,9 @@ void PreFlightWaypointPage::slotSaveAs()
   fName = QFileDialog::getSaveFileName( this,
                                         caption,
                                         wayPointDir,
-                                        filter );
+                                        filter,
+                                        0,
+                                        QFileDialog::DontUseNativeDialog );
   if( fName.isEmpty() )
     {
       return;
@@ -614,7 +616,7 @@ void PreFlightWaypointPage::slotImportFile()
                       "</html>",
                       QMessageBox::Ok,
                       this );
-                      
+
 		  Layout::centerWidget( this, &mb );
       mb.exec();
       return;
