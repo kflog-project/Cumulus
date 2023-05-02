@@ -19,6 +19,13 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[*] 2023-05-02 AP: Cumulus 5.41.3 released for Debian, Ubuntu and Android.
+
+[-] 2023-05-02 AP: Issue #167 fixed. Enlarge scrollbars of file selection dialog
+                   under Android.
+                   Issue #168 fixed. A closed airfield shall set the runways
+                   to closed too.
+
 [*] 2023-04-20 AP: Cumulus 5.41.2 released for Debian, Ubuntu and Android.
 
 [-] 2023-04-19 AP: Minor bug fixing.
