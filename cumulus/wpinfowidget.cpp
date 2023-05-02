@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2022 by Axel Pauli
+ **                   2008-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -361,11 +361,6 @@ void WPInfoWidget::writeText()
       for( int i = 0; i < m_wp.rwyList.size(); i++ )
         {
           Runway rwy = m_wp.rwyList[i];
-
-          if( ! rwy.isOpen() )
-            {
-              continue;
-            }
 
           dataItems++;
 
