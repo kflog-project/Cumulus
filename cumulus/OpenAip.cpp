@@ -812,6 +812,19 @@ bool OpenAip::readAirfields( QString fileName,
             }
         } // end of for loop
 
+      // Workaround for a closed airfield. The runway operation attribute
+      // should be set too to close.
+      if( af.getTypeID() == BaseMapElement::ClosedAirfield &&
+          af.getRunwayList().size() > 0 )
+        {
+          QList<Runway>& rwyList = af.getRunwayList();
+
+          for( int i=0; i < rwyList.size(); i++ )
+            {
+              rwyList[i].setOperations( Runway::Closed );
+            }
+        }
+
       if( useFiltering == true &&
           checkRadius( af.getWGSPositionPtr() ) == false )
         {
@@ -983,11 +996,6 @@ void OpenAip::setJAirfieldRunways( QJsonArray& array, Airfield& af )
           else if( it.key() == "operations" )
             {
               rwy.setOperations( it.value().toInt( 2 ) );
-
-              if( af.getTypeID() == BaseMapElement::ClosedAirfield )
-                {
-                  rwy.setOperations( Runway::Closed );
-                }
             }
           else if( it.key() == "mainRunway" )
             {

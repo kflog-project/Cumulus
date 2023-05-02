@@ -362,11 +362,6 @@ void WPInfoWidget::writeText()
         {
           Runway rwy = m_wp.rwyList[i];
 
-          if( ! rwy.isOpen() )
-            {
-              continue;
-            }
-
           dataItems++;
 
           if( dataItems == 1 ) {
