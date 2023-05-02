@@ -474,11 +474,35 @@ bool SettingsPagePersonal::checkChanges()
 /** Called to open the directory selection dialog */
 void SettingsPagePersonal::slot_openDirectoryDialog()
 {
+  QString dataDir;
+
+  QFileDialog fd( this,
+                  tr("Please select your data directory"),
+                  userDataDir->text() );
+
+  fd.setOptions( QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly );
+  fd.setFileMode( QFileDialog::Directory );
+  fd.setViewMode( QFileDialog::List );
+  fd.setStyleSheet( Layout::getSBStyles() );
+
+  if( fd.exec() == QFileDialog::Accepted )
+    {
+      QStringList fl = fd.selectedFiles();
+
+      if( fl.size() > 0 )
+        {
+          dataDir = fl.at(0);
+        }
+    }
+
+#if 0
   QString dataDir =
       QFileDialog::getExistingDirectory( this,
                                          tr("Please select your data directory"),
                                          userDataDir->text(),
-                                          QFileDialog::ShowDirsOnly );
+                                         QFileDialog::ShowDirsOnly );
+#endif
+
   if( dataDir.isEmpty() )
     {
       return; // nothing was selected by the user

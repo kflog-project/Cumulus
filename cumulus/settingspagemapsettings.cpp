@@ -438,10 +438,34 @@ void SettingsPageMapSettings::slot_openFileDialog()
         mapDirCurrent = QDir::homePath();
       }
 
+  QString mapDirNew;
+
+  QFileDialog fd( this,
+                  tr("Please select your map directory"),
+                  mapDirCurrent );
+
+  fd.setOptions( QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly );
+  fd.setFileMode( QFileDialog::Directory );
+  fd.setViewMode( QFileDialog::List );
+  fd.setStyleSheet( Layout::getSBStyles() );
+
+  if( fd.exec() == QFileDialog::Accepted )
+    {
+      QStringList fl = fd.selectedFiles();
+
+      if( fl.size() > 0 )
+        {
+          mapDirNew = fl.at(0);
+        }
+    }
+
+#if 0
   QString mapDirNew = QFileDialog::getExistingDirectory( this,
                                                          tr("Please select your map directory"),
                                                          mapDirCurrent,
                                                          QFileDialog::ShowDirsOnly );
+#endif
+
   if( mapDirNew.isEmpty() )
     {
       return; // cancel was selected by the user

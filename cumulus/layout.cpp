@@ -445,12 +445,52 @@ void Layout::fontPoints2Pixel( QFont font )
     }
 }
 
+QString Layout::getSBStyles()
+{
+  QString ss =
+    "QScrollBar:horizontal { \
+         border: 1px solid grey; \
+         height: 1em; \
+         margin: 0px 0px 0px 0px; \
+     }"
+
+     "QScrollBar::handle:horizontal {  \
+         border-radius: 5px; \
+         background: lightgray; \
+         min-width: 3em; \
+         border: 1px red; \
+     }"
+
+     "QScrollBar::add-line:horizontal { \
+         width: 0px; \
+         subcontrol-position: right; \
+         subcontrol-origin: margin; \
+     }"
+
+     "QScrollBar::sub-line:horizontal { \
+         width: 0px; \
+         subcontrol-position: top right; \
+         subcontrol-origin: margin; \
+     }";
+
+     /* Definition not needed due to no buttons are defined.
+     QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+         width: 3px;
+         height: 3px;
+         background: pink;
+     };
+     */
+
+  ss += Layout::getCbSbStyle();
+  return ss;
+}
+
 QString Layout::getCbSbStyle()
 {
   // See: http://qt-project.org/forums/viewthread/30208 and
   //      http://qt-project.org/doc/qt-4.8/stylesheet-examples.html#customizing-qscrollbar
 
-  const QString ss =
+  QString ss =
     /* Sets up scrollbar size, border, color */
     "QScrollBar:vertical {"
 	    "border: 1px solid grey;"

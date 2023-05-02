@@ -365,16 +365,40 @@ void PreFlightWaypointPage::slotSaveAs()
   // Save waypoint catalog in desired format
   QString wayPointDir = GeneralConfig::instance()->getUserDataDirectory();
 
+  QFileDialog fd( this,
+              caption,
+              wayPointDir,
+              filter );
+
+  fd.setOptions( QFileDialog::DontUseNativeDialog );
+  fd.setFileMode( QFileDialog::ExistingFile );
+  fd.setViewMode( QFileDialog::List );
+  fd.setStyleSheet( Layout::getSBStyles() );
+
+  if( fd.exec() == QFileDialog::Accepted )
+    {
+      QStringList fl = fd.selectedFiles();
+
+      if( fl.size() > 0 )
+        {
+          fName = fl.at(0);
+        }
+    }
+
+#if 0
   fName = QFileDialog::getSaveFileName( this,
                                         caption,
                                         wayPointDir,
                                         filter,
                                         0,
                                         QFileDialog::DontUseNativeDialog );
+#endif
+
   if( fName.isEmpty() )
     {
       return;
     }
+
 
   if( m_wpFileFormatBox->currentIndex() == 0 )
     {
@@ -463,10 +487,36 @@ void PreFlightWaypointPage::slotImportFile()
   filter.append(tr("CAI") + " (*.dat *.DAT);;");
   filter.append(tr("DOS") + " (*.dos *.DOS)");
 
+  QString fName;
+
+  QFileDialog fd( this,
+                  tr("Open waypoint catalog"),
+                  wayPointDir,
+                  filter );
+
+  fd.setOptions( QFileDialog::DontUseNativeDialog );
+  fd.setFileMode( QFileDialog::ExistingFile );
+  fd.setViewMode( QFileDialog::List );
+  fd.setStyleSheet( Layout::getSBStyles() );
+
+  if( fd.exec() == QFileDialog::Accepted )
+    {
+      QStringList fl = fd.selectedFiles();
+
+      if( fl.size() > 0 )
+        {
+          fName = fl.at(0);
+        }
+    }
+
+#if 0
+
   QString fName = QFileDialog::getOpenFileName( this,
                                                 tr("Open waypoint catalog"),
                                                 wayPointDir,
                                                 filter );
+#endif
+
   if( fName.isEmpty() )
     {
       return;

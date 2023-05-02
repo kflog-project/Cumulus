@@ -251,6 +251,14 @@ class Layout
   static void fontPoints2Pixel( QFont font );
 
   /**
+   * Returns a style sheet to make the horizontal and vertial scrollbar of
+   * a widget wider.
+   *
+   * \return Style sheet for scrollbar of combobox.
+   */
+  static QString getSBStyles();
+
+  /**
    * Returns a style sheet for usage in a combobox, to make the scrollbar
    * wider.
    *
@@ -299,4 +307,3 @@ class Layout
    */
   static void centerWidget( QWidget* parent, QWidget* child );
 };
-                          
