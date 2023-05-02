@@ -1090,13 +1090,14 @@ void OpenAip::setJAirfieldRunwaySurface( const QJsonObject& object, Runway& rw )
       if( it.key() == "mainComposite" )
         {
           quint8 type = m_runwaySurfaceMapper.value( it.value().toInt(),
-                                                     Runway::Unknown );
+                                                     (Runway::SurfaceType) 255 );
           rw.setSurface( type );
 
-          if( type == Runway::Unknown )
+          if( type == 255 )
             {
-              qWarning() << "OpenAip::setJAirfieldRunwaySurface: unknown runway surface type"
-                         << type;
+              rw.setSurface( Runway::Unknown );
+              qWarning() << "OpenAip::setJAirfieldRunwaySurface: unknown json runway surface type"
+                         << it.value().toInt();
             }
         }
     }
