@@ -983,6 +983,11 @@ void OpenAip::setJAirfieldRunways( QJsonArray& array, Airfield& af )
           else if( it.key() == "operations" )
             {
               rwy.setOperations( it.value().toInt( 2 ) );
+
+              if( af.getTypeID() == BaseMapElement::ClosedAirfield )
+                {
+                  rwy.setOperations( Runway::Closed );
+                }
             }
           else if( it.key() == "mainRunway" )
             {
