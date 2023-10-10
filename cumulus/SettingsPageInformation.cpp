@@ -6,32 +6,22 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2003-2023 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#include <QtGui>
-
-#ifndef QT_5
-#include <QtGui>
-#else
 #include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
 
 #include "generalconfig.h"
-#include <HelpBrowser.h>
+#include "HelpBrowser.h"
+#include "SettingsPageInformation.h"
 #include "layout.h"
 #include "MainWindow.h"
 #include "mapdefaults.h"
 #include "numberEditor.h"
-#include "settingspageinformation.h"
 
 SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   QWidget(parent)
@@ -58,14 +48,7 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
-
-#ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
-#endif
 
   // Add scroll area to its own layout
   sal->addWidget( sa );
@@ -83,33 +66,6 @@ SettingsPageInformation::SettingsPageInformation( QWidget *parent ) :
   topLayout->setVerticalSpacing(10 * Layout::getIntScaledDensity() );
 
   int row=0;
-
-#ifndef ANDROID
-
-  QHBoxLayout *hBox = new QHBoxLayout;
-
-  QPushButton *soundSelection = new QPushButton( tr("Sound Player"), this );
-  soundSelection->setToolTip(tr("Select a sound player, use %s if played file is enclosed in command line arguments"));
-  hBox->addWidget( soundSelection );
-  hBox->addSpacing( 10 );
-
-  connect(soundSelection, SIGNAL( clicked()), this, SLOT(slot_openToolDialog()) );
-
-  Qt::InputMethodHints imh;
-
-  soundTool = new QLineEdit( this );
-  imh = (soundTool->inputMethodHints() | Qt::ImhNoPredictiveText);
-  soundTool->setInputMethodHints(imh);
-
-  connect( soundTool, SIGNAL(returnPressed()),
-           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
-
-  hBox->addWidget(soundTool);
-  topLayout->addLayout( hBox, row++, 0, 1, 3 );
-  topLayout->setRowMinimumHeight( row++, 10 );
-
-#endif
-
   topLayout->addWidget(new QLabel(tr("Airfield display time:"), this), row, 0);
 
   spinAirfield = createNumEd( this );
@@ -273,10 +229,6 @@ void SettingsPageInformation::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-#ifndef ANDROID
-  soundTool->setText( conf->getSoundPlayer() );
-#endif
-
   spinAirfield->setValue( conf->getAirfieldDisplayTime() );
   spinAirspace->setValue( conf->getAirspaceDisplayTime() );
   spinInfo->setValue( conf->getInfoDisplayTime() );
@@ -293,10 +245,6 @@ void SettingsPageInformation::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
-#ifndef ANDROID
-  conf->setSoundPlayer( soundTool->text() );
-#endif
-
   conf->setAirfieldDisplayTime( spinAirfield->value() );
   conf->setAirspaceDisplayTime( spinAirspace->value() );
   conf->setInfoDisplayTime( spinInfo->value() );
@@ -311,10 +259,6 @@ void SettingsPageInformation::save()
 
 void SettingsPageInformation::slot_setFactoryDefault()
 {
-#ifndef ANDROID
-  soundTool->setText( SoundPlayer );
-#endif
-
   spinAirfield->setValue(AIRFIELD_DISPLAY_TIME_DEFAULT);
   spinAirspace->setValue(AIRSPACE_DISPLAY_TIME_DEFAULT);
   spinInfo->setValue(INFO_DISPLAY_TIME_DEFAULT);
@@ -326,27 +270,3 @@ void SettingsPageInformation::slot_setFactoryDefault()
   inverseInfoDisplay->setChecked( false );
   calculateNearestSites->setChecked(NEAREST_SITE_CALCULATOR_DEFAULT);
 }
-
-#ifndef ANDROID
-
-void SettingsPageInformation::slot_openToolDialog()
-{
-  QString player = GeneralConfig::instance()->getSoundPlayer();
-
-  if( player.isEmpty() )
-    {
-      player = QDir::homePath();
-    }
-
-  QString file = QFileDialog::getOpenFileName( this,
-                                               tr("Please select a sound player"),
-                                               player );
-  if( file.isEmpty() )
-    {
-      return; // nothing was selected by the user
-    }
-
-  soundTool->setText( file );
-}
-
-#endif

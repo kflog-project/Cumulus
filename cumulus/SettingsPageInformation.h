@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2003-2018 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2003-2023 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,14 +20,13 @@
  *
  * \brief Configuration settings for popup window display times and alarm sound.
  *
- * \date 2003-2018
+ * \date 2003-2023
  *
- * \version 1.1
+ * \version 1.2
  *
  */
 
-#ifndef  SettingsPageInformation_H
-#define  SettingsPageInformation_H
+#pragma once
 
 #include <QWidget>
 #include <QCheckBox>
@@ -79,15 +78,6 @@ class SettingsPageInformation : public QWidget
    */
   void slotReject();
 
-#ifndef ANDROID
-
-  /**
-   * Called to open a selection file dialog for the sound tool
-   */
-  void slot_openToolDialog();
-
-#endif
-
  private:
 
   /** Called to load the configuration file data. */
@@ -102,10 +92,6 @@ class SettingsPageInformation : public QWidget
    * @return an NumberEditor instance
    */
   NumberEditor* createNumEd( QWidget* parent=0 );
-
-#ifndef ANDROID
-  QLineEdit*   soundTool;
-#endif
 
   NumberEditor* spinAirfield;
   NumberEditor* spinAirspace;
@@ -122,4 +108,3 @@ class SettingsPageInformation : public QWidget
   QPushButton* buttonReset;
 };
 
-#endif // SettingsPageInformation_h
