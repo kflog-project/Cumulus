@@ -223,11 +223,6 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$ERROR", 30);
 #endif
 
-#ifdef MAEMO5
-  gpsKeys.insert( "$MAEMO0", 40);
-  gpsKeys.insert( "$MAEMO1", 41);
-#endif
-
   // Only for test purposes
   gpsKeys.insert( "$PTAS", 42);
 
@@ -303,7 +298,7 @@ void GpsNmea::createGpsConnection()
   QObject *gpsObject = 0;
 
   // We create only a GpsCon instance. The GPS daemon process will be started
-  // later. This is also valid hence Maemo5.
+  // later.
   QString callPath = GeneralConfig::instance()->getAppRoot() + "/bin";
 
   connector = new GpsCon(this, callPath.toLatin1().data());
@@ -725,22 +720,6 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
 
     case 30: // $ERROR
       Flarm::instance()->extractError( slst );
-      return;
-
-#endif
-
-#ifdef MAEMO5
-
-    case 40:
-      // Handle sentences created by GPS Maemo Client process. These sentenceIns
-      // contain no checksum items.
-      __ExtractMaemo0( slst );
-      return;
-
-    case 41:
-      // Handle sentences created by GPS Maemo Client process. These sentenceIns
-      // contain no checksum items.
-      __ExtractMaemo1( slst );
       return;
 
 #endif
