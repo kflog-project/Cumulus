@@ -105,7 +105,20 @@ int FlarmDb::loadData()
           continue;
         }
 
-      QByteArray fdata = ba.mid( 27, 21 ).trimmed().toUpper(); // KZ
+      /**
+        bytearray content
+                  1         2         3         4         5         6         7         8
+        01234567890123456789012345678901234567890123456789012345678901234567890123456789012345
+        3e7c78                     D-KMII               Ventus bT            D-KMII V  123.005
+        ba, 6, record.flarm_id;
+        ba + 6, 21, record.pilot;
+        ba + 27, 21, record.airfield;
+        ba + 48, 21, record.plane_type;
+        ba + 69, 7, record.registration;
+        ba + 76, 3, record.callsign;
+        ba + 79, 7, record.frequency;
+       */
+      QByteArray fdata = ba.mid( 69, 7 ).trimmed().toUpper(); // KZ
       QString kz = QString( fdata ).toUpper();
 
       if( filterList.size() > 0 )
@@ -130,12 +143,13 @@ int FlarmDb::loadData()
 
       items++;
       fdata.append( "|" ); // Trenner
-      fdata.append( ba.mid( 48, 21 ).trimmed() ); // Type
+      fdata.append( ba.mid( 48, 21 ).trimmed() ); // Flugzeug Type
       fdata.append( "|" ); // Trenner
       fdata.append( ba.mid( 76, 3 ).trimmed() ); // WKZ
       fdata.append( "|" ); // Trenner
-      fdata.append( ba.mid( 79 ).trimmed() ); // Frequenz
+      fdata.append( ba.mid( 79, 7 ).trimmed() ); // Frequenz
       m_datamap.insert( fid, fdata );
+      // qDebug() << fid << fdata;
     } // End of While
 
   qDebug( "FlarmDb: %d items loaded in %lldms", items-1, t.elapsed() );
