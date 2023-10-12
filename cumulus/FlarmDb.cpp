@@ -23,6 +23,12 @@
 QHash<uint, QString> FlarmDb::m_datamap;
 QMutex FlarmDb::m_mutex;
 
+void FlarmDb::unloadData()
+{
+  QMutexLocker locker( &m_mutex );
+  m_datamap.clear();
+}
+
 int FlarmDb::loadData()
 {
   // Set a global lock during execution to avoid calls in parallel.
@@ -93,6 +99,12 @@ int FlarmDb::loadData()
 
       bool ok;
       uint fid = ba.mid( 0, 6 ).toUInt( &ok, 16);
+
+      if( ! ok )
+        {
+          continue;
+        }
+
       QByteArray fdata = ba.mid( 27, 21 ).trimmed().toUpper(); // KZ
       QString kz = QString( fdata ).toUpper();
 
@@ -132,6 +144,14 @@ int FlarmDb::loadData()
 
 bool FlarmDb::getData( int id, QString &data )
 {
+  QMutexLocker locker( &m_mutex );
+
+  if( m_datamap.contains( id ) )
+    {
+      data = m_datamap.value( id );
+      return true;
+    }
+
   return false;
 }
 
@@ -159,4 +179,6 @@ void FlarmDbThread::run()
 
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
+
+  FlarmDb::loadData();
 }

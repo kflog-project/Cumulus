@@ -64,6 +64,12 @@ class FlarmDb
   static int loadData();
 
   /**
+   * unloads the data hash dictionary.
+   *
+   */
+  static void unloadData();
+
+  /**
    * Read the content of a compiled file and put it into the passed
    * list.
    *
