@@ -218,7 +218,11 @@
 				<td><b>Flarm identifier:</b></td>
 				<td>The identifier of the selected Flarm object is displayed in
 					the lower left corner as a 6-digit hex value. If an alias name has
-					been defined for the Flarm identifier, this name replaces it.</td>
+					been defined for the Flarm identifier, this name replaces it.
+					If FlarmNet data are available, the Flarm identifier can be replaced
+					by the airplane registration, if it is contained in that data. But the
+					alias name has the first priority in the replacement.
+					</td>
 			</tr>
 
 			<tr>
@@ -249,9 +253,12 @@
 		<table>
 			<tr>
 				<td><b>Flarm identifier:</b></td>
-				<td>The identifier of the Flarm object as 6-digit hex value. If
-					an alias name has been defined for the Flarm identifier, this name
-					replaces it.</td>
+				<td>The identifier of the Flarm object as 6-digit hex value. If an
+					alias name has been defined for the Flarm identifier, this name
+					replaces it. If FlarmNet data are available, the Flarm identifier
+					can be replaced by the airplane registration, if it is contained in
+					that data. But the alias name has the first priority in the
+					replacement.</td>
 			</tr>
 
 			<tr>
@@ -263,9 +270,11 @@
 				<td><b>Vertical separation:</b></td>
 				<td>The vertical separation of the Flarm object above (positive
 					value) or below (negative value) one's own position.</td>
+			</tr>
 			<tr>
 				<td><b>Relative bearing:</b></td>
 				<td>The relative bearing to the Flarm object as an arrowhead.</td>
+			</tr>
 			<tr>
 				<td><b>Ground speed:</b></td>
 				<td>The ground speed of the Flarm object.</td>
@@ -274,6 +283,21 @@
 				<td>The rate of climb of the Flarm object. Can be positive or
 					negative.</td>
 			</tr>
+			<tr>
+        <td><b>Competition sign:</b></td>
+        <td>The competition sign is displayed, if FlarmNet data have been
+            loaded and it is contained in them.</td>
+      </tr>
+      <tr>
+        <td><b>Frequency:</b></td>
+        <td>The Frequency is displayed, if FlarmNet data have been
+            loaded and it is contained in them.</td>
+      </tr>
+      <tr>
+        <td><b>Airplane type:</b></td>
+        <td>The airplane type is displayed, if FlarmNet data have been
+            loaded and it is contained in them.</td>
+      </tr>
 		</table>
 	</blockquote>
 
