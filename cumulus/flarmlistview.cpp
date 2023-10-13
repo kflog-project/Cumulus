@@ -6,12 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
+**   V1.1
 **
 ***********************************************************************/
 
@@ -30,6 +30,7 @@
 #include "flarmlistview.h"
 #include "flarmaliaslist.h"
 #include "flarm.h"
+#include "FlarmNet.h"
 #include "generalconfig.h"
 #include "distance.h"
 #include "altitude.h"
@@ -37,6 +38,7 @@
 #include "calculator.h"
 #include "distance.h"
 #include "mapconfig.h"
+#include "MainWindow.h"
 
 QString FlarmListView::selectedListObject  = "";
 QString FlarmListView::selectedFlarmObject = "";
@@ -50,6 +52,8 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   rowDelegate(0)
 {
   setAttribute( Qt::WA_DeleteOnClose );
+  setWindowFlags( Qt::Tool );
+  resize( MainWindow::mainWindow()->size() );
 
   QBoxLayout *topLayout = new QVBoxLayout( this );
 
@@ -72,7 +76,7 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
-  list->setColumnCount(8);
+  list->setColumnCount(11);
   list->hideColumn(0);
   list->setFocusPolicy(Qt::StrongFocus);
 
@@ -80,11 +84,14 @@ FlarmListView::FlarmListView( QWidget *parent ) :
 
   sl << tr("Hash")
      << tr("ID")
-     << tr("Distance")
-     << tr("Vertical")
-     << tr("R")
+     << tr("H-Dist")
+     << tr("V-Dist")
+     << tr("Trk")
      << tr("Vg")
-     << tr("R/C")
+     << tr("CR")
+     << tr("CS")
+     << tr("MHz")
+     << tr("Type")
      << "";
 
   list->setHeaderLabels(sl);
@@ -94,9 +101,12 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   headerItem->setTextAlignment( 1, Qt::AlignCenter );
   headerItem->setTextAlignment( 2, Qt::AlignCenter );
   headerItem->setTextAlignment( 3, Qt::AlignCenter );
-  headerItem->setTextAlignment( 4, Qt::AlignLeft );
+  headerItem->setTextAlignment( 4, Qt::AlignCenter );
   headerItem->setTextAlignment( 5, Qt::AlignCenter );
   headerItem->setTextAlignment( 6, Qt::AlignCenter );
+  headerItem->setTextAlignment( 7, Qt::AlignCenter );
+  headerItem->setTextAlignment( 8, Qt::AlignCenter );
+  headerItem->setTextAlignment( 9, Qt::AlignCenter );
 
   QFontMetrics qfm( font() );
   list->setColumnWidth( 4, qfm.height() );
@@ -228,11 +238,30 @@ void FlarmListView::fillItemList( QString& object2Select )
            FlarmAliasList::getAliasHash();
 
        // Try to map the Flarm Id to an alias name
-       QString actfId = acft.ID;
+       QString actfId = acft.ID.toUpper();
+       bool look4Reg = true;
 
-       if( aliasHash.contains( acft.ID) )
+       if( aliasHash.contains( actfId ) )
          {
-           actfId = aliasHash.value(acft.ID).first;
+           actfId = aliasHash.value( actfId ).first;
+           look4Reg = false;
+         }
+
+       // Try to load Flarmnet data
+       GeneralConfig *conf = GeneralConfig::instance();
+       QStringList fnd;
+
+       if( conf->useFlarmNet() == true )
+         {
+           bool ok;
+           uint fid = acft.ID.toUInt( &ok, 16);
+           ok = FlarmNet::getData( fid, fnd );
+
+           if( ok == true && look4Reg == true && fnd.at(0).size() > 0 )
+             {
+               // Kennzeichen instead of hex id
+               actfId = fnd.at(0);
+             }
          }
 
       // Add hash key as invisible column
@@ -249,13 +278,24 @@ void FlarmListView::fillItemList( QString& object2Select )
 
       sl << climb;
 
+      if( fnd.size() == 4 )
+        {
+          // display other Flarm data e.g. Type, WKZ, Frequenz
+          ( fnd.at(2).size() > 0 ) ? sl << fnd.at(2) : sl << " ";
+          ( fnd.at(3).size() > 0 ) ? sl << fnd.at(3) : sl << " ";
+          ( fnd.at(1).size() > 0 ) ? sl << fnd.at(1) : sl << " ";
+        }
+
       QTreeWidgetItem* item = new QTreeWidgetItem( sl );
-      item->setTextAlignment( 1, Qt::AlignRight|Qt::AlignVCenter );
+      item->setTextAlignment( 1, Qt::AlignLeft|Qt::AlignVCenter );
       item->setTextAlignment( 2, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 3, Qt::AlignRight|Qt::AlignVCenter );
-      item->setTextAlignment( 4, Qt::AlignLeft );
+      item->setTextAlignment( 4, Qt::AlignCenter );
       item->setTextAlignment( 5, Qt::AlignRight|Qt::AlignVCenter );
       item->setTextAlignment( 6, Qt::AlignRight|Qt::AlignVCenter );
+      item->setTextAlignment( 7, Qt::AlignLeft|Qt::AlignVCenter );
+      item->setTextAlignment( 8, Qt::AlignLeft|Qt::AlignVCenter );
+      item->setTextAlignment( 9, Qt::AlignLeft|Qt::AlignVCenter );
 
       QPixmap pixmap;
 
