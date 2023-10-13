@@ -77,7 +77,7 @@ class FlarmDb
    * @param data related data fetched by key.
    * @return true (success) or false (nothing found)
    */
-  static bool getData( int id, QString &data );
+  static bool getData( int id, QStringList &data );
 
  private:
 

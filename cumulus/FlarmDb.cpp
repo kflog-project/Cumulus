@@ -156,13 +156,14 @@ int FlarmDb::loadData()
   return items-1;
 }
 
-bool FlarmDb::getData( int id, QString &data )
+bool FlarmDb::getData( int id, QStringList &data )
 {
   QMutexLocker locker( &m_mutex );
 
   if( m_datamap.contains( id ) )
     {
-      data = m_datamap.value( id );
+      // List contains KZ, Type, WKZ, Frequenz. Unknown elements are empty.
+      data = m_datamap.value( id ).split( "|", Qt::KeepEmptyParts );
       return true;
     }
 
