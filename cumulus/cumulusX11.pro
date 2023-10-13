@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2021 Axel Pauli
+# Copyright (c): 2008-2023 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -381,6 +381,7 @@ flarm {
 		HEADERS += flarm.h \
 		           flarmaliaslist.h \
 		           flarmbase.h \
+		           FlarmNet.h \
 		           flarmdisplay.h \
 		           flarmlistview.h \
 		           flarmlogbook.h \
@@ -388,7 +389,8 @@ flarm {
 		           flarmwidget.h \
                preflightflarmpage.h \
                preflightflarmusbpage.h \
-               SettingsPageFlarm.h
+               SettingsPageFlarm.h \
+               SettingsPageFlarmNet.h
 
 		SOURCES += flarm.cpp \
 		           flarmaliaslist.cpp \
@@ -400,7 +402,8 @@ flarm {
 		           flarmwidget.cpp \
                preflightflarmpage.cpp \
                preflightflarmusbpage.cpp \
-               SettingsPageFlarm.cpp
+               SettingsPageFlarm.cpp \
+               SettingsPageFlarmNet.cpp
 }
 
 internet {
