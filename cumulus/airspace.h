@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2009-2016 by Axel Pauli
+**                   2009-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,9 +26,9 @@
  * Due to the cross pointer reference to the air region this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2000-2022
+ * \date 2000-2023
  *
- * \version 1.4
+ * \version 1.5
  *
  */
 
@@ -113,6 +113,7 @@ public:
             const BaseMapElement::elevationType upperType,
             const float lower,
             const BaseMapElement::elevationType lowerType,
+            const QList<Frequency> frequencyList,
             const int icaoClass=AS_Unkown,
             QString country="",
             quint8 activity=0,
@@ -407,6 +408,30 @@ public:
     m_byNotam = byNotam;
   }
 
+  /**
+   * @return The frequency as String.
+   */
+  QString frequencyAsString( const float frequency ) const
+    {
+      return (frequency > 0) ? QString("%1").arg(frequency, 0, 'f', 3) : QString("");
+    };
+
+  /**
+   * @return The airspace frequency list.
+   */
+  QList<Frequency>& getFrequencyList()
+    {
+      return m_frequencyList;
+    };
+
+  /**
+   * @param freq The airspace frequency and its type.
+   */
+  void addFrequency( Frequency freqencyAndType)
+    {
+      m_frequencyList.append( freqencyAndType );
+    };
+
 private:
   /**
    * Contains the lower limit.
@@ -430,6 +455,12 @@ private:
    * @see #getUpperT
    */
   BaseMapElement::elevationType m_uLimitType;
+
+  /**
+   * Specifies the frequencies, e.g. "132.505", and the ground stations
+   * responsible for this airspace.
+   */
+  QList<Frequency> m_frequencyList;
 
   mutable ConflictType m_lastVConflict;
 

@@ -1315,7 +1315,7 @@ void MainWindow::createContextMenu()
   helpMenu->addAction( actionHelpCumulus );
   helpMenu->addAction( actionHelpAboutApp );
 
-#if ! defined ANDROID && ! defined MAEMO
+#if ! defined ANDROID
   helpMenu->addAction( actionHelpAboutQt );
 #endif
 }

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -298,7 +298,6 @@ void FlarmRadarView::slotAddFlarmId()
   // Add the selected Flarm Id to the alias list.
   bool ok;
 
-#ifndef MAEMO5
   alias = QInputDialog::getText( this,
                                  tr("Add alias name"),
                                  tr("Alias name (15) for ") + selectedObject + ":",
@@ -307,15 +306,6 @@ void FlarmRadarView::slotAddFlarmId()
                                  &ok,
                                  0,
                                  Qt::ImhNoPredictiveText );
-#else
-  alias = QInputDialog::getText( this,
-                                 tr("Add alias name"),
-                                 tr("Alias name (15) for ") + selectedObject + ":",
-                                 QLineEdit::Normal,
-                                 alias,
-                                 &ok,
-                                 0 );
-#endif
 
   if( !ok || alias.isEmpty() )
     {

@@ -214,7 +214,8 @@ void FlarmDisplay::slot_UpdateDisplay()
 
   // The display is updated every 1 seconds only.
   // That will reduce the X-Server load.
-  if( lastDisplay.elapsed() < ((updateInterval * 1000) - 100) )
+  if( lastDisplay.isValid() &&
+      lastDisplay.elapsed() < ((updateInterval * 1000) - 100) )
     {
       return;
     }

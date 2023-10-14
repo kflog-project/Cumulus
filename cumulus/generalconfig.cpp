@@ -584,6 +584,9 @@ void GeneralConfig::load()
   beginGroup("Flarm");
   _flarmAliasFileName      = value("AliasFileName", "cumulus-flarm.txt").toString();
   _flarmRadarDrawWindArrow = value("RadarDrawWindArrow", true).toBool();
+  _flarmNetUrl              = value( "DB-URL", FLARM_NET_URL ).toString();
+  _flarmNetFilter           = value( "DB-Filter", "" ).toString();
+  _useFlarmNet              = value( "DB-Usage", false ).toBool();
   endGroup();
 
   beginGroup("Units");
@@ -1066,6 +1069,9 @@ void GeneralConfig::save()
 
   beginGroup ("Flarm");
   setValue( "RadarDrawWindArrow", _flarmRadarDrawWindArrow );
+  setValue( "DB-URL", _flarmNetUrl );
+  setValue( "DB-Filter", _flarmNetFilter );
+  setValue( "DB-Usage", _useFlarmNet );
   endGroup();
 
   beginGroup("Units");

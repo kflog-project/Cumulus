@@ -6,12 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2011 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
+**   V1.1
 **
 ***********************************************************************/
 
@@ -61,7 +61,7 @@ void FlarmWidget::showEvent( QShowEvent *event )
   if( listView == static_cast<FlarmListView *> (0) )
     {
       listView = new FlarmListView( this );
-      listView->resize( size() );
+      // listView->resize( size() );
       listView->setVisible( false );
       listView->setFont( fnt );
 

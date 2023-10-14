@@ -1286,7 +1286,7 @@ bool OpenAip::readAirspaces( QString fileName,
 
               QString type = QString::number( it.value().toInt() );
 
-              // Check not senseful because airspace names are not unique
+              // Check, if we know this airspace type
               if( m_airspaceTypeMapper.contains( type ) == false )
                 {
                   qWarning() << method
@@ -1364,6 +1364,11 @@ bool OpenAip::readAirspaces( QString fileName,
                   // ignore data
                   break;
                 }
+            }
+          else if( it.key() == "frequencies" )
+            {
+              QJsonArray array = it.value().toArray();
+              setJFrequencies( array, as.getFrequencyList() );
             }
         } // End of object for loop
 
