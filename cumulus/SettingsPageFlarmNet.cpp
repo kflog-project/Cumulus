@@ -72,7 +72,7 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
 
   int row=0;
 
-  useFlarmNet = new QCheckBox( "use FlarmNet data", this );
+  useFlarmNet = new QCheckBox( tr("use FlarmNet data"), this );
   useFlarmNet->setToolTip( tr("Check it for FlarmNet usage") );
   topLayout->addWidget( useFlarmNet, row, 0 );
   row++;
