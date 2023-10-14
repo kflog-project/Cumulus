@@ -524,67 +524,67 @@
 <context>
     <name>FlarmListView</name>
     <message>
-        <location filename="../../flarmlistview.cpp" line="85"/>
+        <location filename="../../flarmlistview.cpp" line="69"/>
         <source>Hash</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="86"/>
+        <location filename="../../flarmlistview.cpp" line="70"/>
         <source>ID</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="90"/>
+        <location filename="../../flarmlistview.cpp" line="74"/>
         <source>Vg</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="87"/>
+        <location filename="../../flarmlistview.cpp" line="71"/>
         <source>H-Dist</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="88"/>
+        <location filename="../../flarmlistview.cpp" line="72"/>
         <source>V-Dist</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="89"/>
+        <location filename="../../flarmlistview.cpp" line="73"/>
         <source>Trk</source>
         <translation>P</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="91"/>
+        <location filename="../../flarmlistview.cpp" line="75"/>
         <source>CR</source>
         <translation>SR</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="92"/>
+        <location filename="../../flarmlistview.cpp" line="76"/>
         <source>CS</source>
         <translation>WKZ</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="93"/>
+        <location filename="../../flarmlistview.cpp" line="77"/>
         <source>MHz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="94"/>
+        <location filename="../../flarmlistview.cpp" line="78"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="121"/>
+        <location filename="../../flarmlistview.cpp" line="105"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="124"/>
+        <location filename="../../flarmlistview.cpp" line="108"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="127"/>
+        <location filename="../../flarmlistview.cpp" line="111"/>
         <source>Unselect</source>
         <translation>Abwählen</translation>
     </message>
@@ -4798,6 +4798,11 @@ USB Stick eingeschoben?</translation>
         <location filename="../../SettingsPageFlarmNet.cpp" line="38"/>
         <source>Settings - FlarmNet</source>
         <translation>Einstellungen - FlarmNet</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="75"/>
+        <source>use FlarmNet data</source>
+        <translation>verwende FlarmNet Daten</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="76"/>
