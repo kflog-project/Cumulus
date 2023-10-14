@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2005      by André Somers
-**                   2008-2014 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -34,13 +34,12 @@
  * For a file named airspace.txt, the matching mapping file would be
  * named airspace_mappings.conf and must be placed in the same directory.
  *
- * \date 2005-2014
+ * \date 2005-2023
  *
- * \version 1.0
+ * \version 1.1
  */
 
-#ifndef _openair_parser_h
-#define _openair_parser_h
+#pragma once
 
 #include <QString>
 #include <QList>
@@ -118,8 +117,10 @@ private:
   bool _acRead;
   bool _anRead;
 
-  QString asName;
+  QString asName; // Tag AN
   BaseMapElement::objectType asType;
+  float asFrequency; // Tag AF
+  QString asGSCallSign; // Tag AG
   QPolygon asPA;
   unsigned int asUpper;
   BaseMapElement::elevationType asUpperType;
@@ -138,5 +139,3 @@ private:
   // bounding box
   QRect *_boundingBox;
 };
-
-#endif

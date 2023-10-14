@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   SettingsPageFlarmDB.cpp
+**   SettingsPageFlarmNet.cpp
 **
 **   This file is part of Cumulus
 **
@@ -13,22 +13,29 @@
 **
 ***********************************************************************/
 
+#include <FlarmNet.h>
+#include <SettingsPageFlarmNet.h>
 #include <QtWidgets>
 
 #include "generalconfig.h"
 #include "HelpBrowser.h"
-#include "SettingsPageFlarmDB.h"
 #include "layout.h"
 #include "MainWindow.h"
+#include "whatsthat.h"
 
-SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
-  QWidget(parent)
+SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
+  QWidget(parent),
+  fnUseStart(false),
+  m_downloadManger(nullptr),
+  m_downloadIsRunning(false),
+  m_downloadDone(false),
+  m_first(true)
 {
-  setObjectName("SettingsPageFlarmDB");
+  setObjectName("SettingsPageFlarmNet");
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("Settings - FLARM DB") );
+  setWindowTitle( tr("Settings - FlarmNet") );
 
   if( parent )
     {
@@ -65,23 +72,36 @@ SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
 
   int row=0;
 
-  useFlarmDB = new QCheckBox( "use FLARM Database", this );
-  useFlarmDB->setToolTip( tr("Check it for FLARM Database usage") );
-  topLayout->addWidget( useFlarmDB, row, 0 );
+  useFlarmNet = new QCheckBox( "use FlarmNet data", this );
+  useFlarmNet->setToolTip( tr("Check it for FlarmNet usage") );
+  topLayout->addWidget( useFlarmNet, row, 0 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("FLARM Database URL:"), this), row, 0);
+  topLayout->addWidget(new QLabel(tr("FlarmNet URL:"), this), row, 0);
   row++;
 
   Qt::InputMethodHints imh;
-  editDbFile = new QLineEdit( this );
-  imh = (editDbFile->inputMethodHints() | Qt::ImhNoPredictiveText);
-  editDbFile->setInputMethodHints(imh);
-  topLayout->addWidget( editDbFile, row, 0, 1, 2 );
+  editFnFile = new QLineEdit( this );
+  imh = (editFnFile->inputMethodHints() | Qt::ImhNoPredictiveText);
+  editFnFile->setInputMethodHints(imh);
+  topLayout->addWidget( editFnFile, row, 0, 1, 2 );
+  row++;
+
+  topLayout->addWidget(new QLabel(tr("FlarmNet Filter:"), this), row, 0);
+  row++;
+
+  Qt::InputMethodHints imh1;
+  editFnFilter = new QLineEdit( this );
+  imh1 = (editFnFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
+  editFnFilter->setInputMethodHints(imh1);
+  topLayout->addWidget( editFnFilter, row, 0, 1, 2 );
   row++;
 
   buttonDownload = new QPushButton( tr("Download"), this );
   topLayout->addWidget( buttonDownload, row, 0 );
+
+  info = new QLabel( this );
+  topLayout->addWidget( info, row, 1 );
   row++;
 
   buttonReset = new QPushButton( tr("Defaults"), this );
@@ -132,13 +152,13 @@ SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
   load();
 }
 
-SettingsPageFlarmDB::~SettingsPageFlarmDB()
+SettingsPageFlarmNet::~SettingsPageFlarmNet()
 {
 }
 
-void SettingsPageFlarmDB::slotHelp()
+void SettingsPageFlarmNet::slotHelp()
 {
-  QString file = "cumulus-settings-flarm-db.html";
+  QString file = "cumulus-settings-flarmnet.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
@@ -146,58 +166,163 @@ void SettingsPageFlarmDB::slotHelp()
   hb->setVisible( true );
 }
 
-void SettingsPageFlarmDB::slotAccept()
+void SettingsPageFlarmNet::slotAccept()
 {
-  if( dbFileStart != editDbFile->text().trimmed() ||
-      useFlarmDBStart != useFlarmDB->isChecked() )
+  if( m_downloadIsRunning == true )
+    {
+      return;
+    }
+
+  if( fnFileStart != editFnFile->text().trimmed() ||
+      fnFilterStart != editFnFilter->text().trimmed() ||
+      fnUseStart != useFlarmNet->isChecked() ||
+      m_downloadDone == true )
     {
       save();
       GeneralConfig::instance()->save();
       emit settingsChanged();
     }
 
+  if( useFlarmNet->isChecked() == true &&
+      ( fnUseStart != useFlarmNet->isChecked() ||
+        fnFilterStart != editFnFilter->text().trimmed() ||
+        m_downloadDone == true ) )
+    {
+      // reload database from file.
+      FlarmNetThread* thread = new FlarmNetThread( 0 );
+      thread->start();
+    }
+  else if( useFlarmNet->isChecked() == false )
+    {
+      FlarmNet::unloadData();
+    }
+
   QWidget::close();
 }
 
-void SettingsPageFlarmDB::slotReject()
+void SettingsPageFlarmNet::slotReject()
 {
+  if( m_downloadIsRunning == true )
+    {
+      return;
+    }
+
   QWidget::close();
 }
 
-void SettingsPageFlarmDB::load()
+void SettingsPageFlarmNet::load()
 {
-  static bool first = true;
-
   GeneralConfig *conf = GeneralConfig::instance();
 
-  editDbFile->setText( conf->getFlarmDBUrl() );
-  useFlarmDB->setChecked( conf->useFlarmDb() );
+  editFnFile->setText( conf->getFlarmNetUrl() );
+  editFnFilter->setText( conf->getFlarmNetFilter() );
+  useFlarmNet->setChecked( conf->useFlarmNet() );
 
-  if( first == true )
+  if( m_first == true )
     {
-      first = false;
-      dbFileStart = conf->getFlarmDBUrl().trimmed();
-      useFlarmDBStart = conf->useFlarmDb();
+      m_first = false;
+      fnFileStart = conf->getFlarmNetUrl().trimmed();
+      fnFilterStart = conf->getFlarmNetFilter().trimmed();
+      fnUseStart = conf->useFlarmNet();
     }
 }
 
-void SettingsPageFlarmDB::save()
+void SettingsPageFlarmNet::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-
-  conf->setFlarmDBUrl( editDbFile->text().trimmed() );
-  conf->setUseFlarmDb( useFlarmDB->isChecked() );
+  conf->setFlarmNetUrl( editFnFile->text().trimmed() );
+  conf->setFlarmNetFilter( editFnFilter->text().trimmed() );
+  conf->setUseFlarmNet( useFlarmNet->isChecked() );
 }
 
-void SettingsPageFlarmDB::slotSetFactoryDefault()
+void SettingsPageFlarmNet::slotSetFactoryDefault()
 {
   GeneralConfig *conf = GeneralConfig::instance();
-  conf->setFlarmDBUrl( FLARM_DB_URL );
-  conf->setUseFlarmDb( false );
+  conf->setFlarmNetUrl( FLARM_NET_URL );
+  conf->setFlarmNetFilter( "" );
+  conf->setUseFlarmNet( false );
   load();
+  info->clear();
 }
 
-void SettingsPageFlarmDB::slotDownload()
+void SettingsPageFlarmNet::slotDownload()
 {
+  QString url = editFnFile->text().trimmed();
 
+  if( url.size() == 0 || url.startsWith( "https:") == false )
+    {
+      return;
+    }
+
+  if( m_downloadIsRunning == true )
+    {
+      // Do not allow multiple calls, if download is already running.
+      return;
+    }
+
+  // set download marker, disable download button usage
+  m_downloadIsRunning = true;
+  buttonDownload->setEnabled( false );
+
+  if( m_downloadManger == nullptr )
+    {
+      m_downloadManger = new DownloadManager(this);
+
+      connect( m_downloadManger, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinished( int, int )) );
+
+      connect( m_downloadManger, SIGNAL(networkError()),
+               this, SLOT(slotNetworkError()) );
+
+      connect( m_downloadManger, SIGNAL(fileDownloaded(QString&)),
+               this, SLOT(slotFileDownloaded(QString&)) );
+    }
+
+  // Create download destination directories
+  QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
+  dir.mkdir( "flarmNet");
+  QString fileDb = QFileInfo( url.mid( 6 ) ).fileName();
+  QString destDb = dir.absolutePath() + "/flarmNet/" + fileDb;
+
+  info->setText( tr("Running") );
+
+  m_downloadManger->downloadRequest( url, destDb, true );
+}
+
+void SettingsPageFlarmNet::slotFileDownloaded( QString& /* file */)
+{
+  // we inform about the database file download, if database usage is desired.
+  if( useFlarmNet->isChecked() == true )
+    {
+      m_downloadDone = true;
+    }
+
+  info->setText( tr("Finished") );
+}
+
+void SettingsPageFlarmNet::slotNetworkError()
+{
+  // A network error has occurred. We delete the download manager to get faster
+  // a new connection.
+  m_downloadManger->deleteLater();
+  m_downloadManger = nullptr;
+
+  QString msg = QString(tr("Network error. Check Internet connection!"));
+  info->setText( msg );
+
+  m_downloadIsRunning = false;
+  buttonDownload->setEnabled( true );
+}
+
+void SettingsPageFlarmNet::slotDownloadsFinished( int /* requests */,
+                                                  int errors )
+{
+  if( errors != 0 )
+    {
+      QString msg = QString(tr("Download error, check URL!"));
+      info->setText( msg );
+    }
+
+  m_downloadIsRunning = false;
+  buttonDownload->setEnabled( true );
 }

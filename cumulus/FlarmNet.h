@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   FlarmDb.h
+**   FlarmNet.h
 **
 **   Created on: 12.10.2023
 **
@@ -16,7 +16,7 @@
 ***********************************************************************/
 
 /**
- * \class FlarmDb
+ * \class FlarmNet
  *
  * \author Axel Pauli
  *
@@ -37,21 +37,21 @@
 #include <QMutex>
 #include <QString>
 
-class FlarmDb
+class FlarmNet
 {
   public:
 
   /**
    * Constructor
    */
-  FlarmDb()
+  FlarmNet()
   {
   };
 
   /**
    * Destructor
    */
-  virtual ~FlarmDb()
+  virtual ~FlarmNet()
   {
   };
 
@@ -95,7 +95,7 @@ class FlarmDb
 #include <QThread>
 
 /**
-* \class FlarmDbThread
+* \class FlarmNetThread
 *
 * \author Axel Pauli
 *
@@ -106,15 +106,15 @@ class FlarmDb
 * \version 1.0
 */
 
-class FlarmDbThread : public QThread
+class FlarmNetThread : public QThread
 {
   Q_OBJECT
 
  public:
 
-  FlarmDbThread( QObject *parent=0 );
+  FlarmNetThread( QObject *parent=0 );
 
-  virtual ~FlarmDbThread();
+  virtual ~FlarmNetThread();
 
  protected:
 

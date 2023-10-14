@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   FlarmDb.cpp
+**   FlarmNet.cpp
 **
 **   Created on: 12.10.2023 by Axel Pauli
 **
@@ -15,21 +15,21 @@
 **
 ***********************************************************************/
 
+#include <FlarmNet.h>
 #include <QtCore>
 
-#include "FlarmDb.h"
 #include "generalconfig.h"
 
-QHash<uint, QString> FlarmDb::m_datamap;
-QMutex FlarmDb::m_mutex;
+QHash<uint, QString> FlarmNet::m_datamap;
+QMutex FlarmNet::m_mutex;
 
-void FlarmDb::unloadData()
+void FlarmNet::unloadData()
 {
   QMutexLocker locker( &m_mutex );
   m_datamap.clear();
 }
 
-int FlarmDb::loadData()
+int FlarmNet::loadData()
 {
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
@@ -40,29 +40,29 @@ int FlarmDb::loadData()
 
   // Check, which file the user wants to load.
   QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
-  QString url = GeneralConfig::instance()->getFlarmDBUrl();
+  QString url = GeneralConfig::instance()->getFlarmNetUrl();
 
   if( url.isEmpty() )
     {
       // No file shall be loaded
-      qWarning() << "FlarmDb: No DB file defined for loading!";
+      qWarning() << "FlarmNet: No DB file defined for loading!";
       return items;
     }
 
   QString fname = QFileInfo( url.mid( 6 ) ).fileName();
-  QString fpath = dir.absolutePath() + "/flarmDb/" + fname;
+  QString fpath = dir.absolutePath() + "/flarmNet/" + fname;
   QFile file( fpath);
 
   if( file.open( QIODevice::ReadOnly | QIODevice::Text) == false )
     {
-      qWarning( "FlarmDb: Can't open DB file %s for writing!"
+      qWarning( "FlarmNet: Can't open DB file %s for writing!"
                 " Aborting ...",
                 fpath.toLatin1().data() );
 
       return items;
     }
 
-  QString fs = GeneralConfig::instance()->getFlarmDBFilter().toUpper();
+  QString fs = GeneralConfig::instance()->getFlarmNetFilter().toUpper();
   QStringList filterList = fs.split( QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
 
   QTextStream in( &file );
@@ -75,7 +75,7 @@ int FlarmDb::loadData()
       if( items == 0 )
         {
           // Magic id is expected
-          qDebug() << "Flarm DB magic" << line;
+          qDebug() << "FlarmNet magic" << line;
           items++;
           continue;
         }
@@ -83,7 +83,7 @@ int FlarmDb::loadData()
       if( line.size() < 172 )
         {
           // ignore short line.
-          qDebug() << "FlarmDb: line shorter than 172:" << line.size();
+          qDebug() << "FlarmNet: line shorter than 172:" << line.size();
           continue;
         }
 
@@ -152,11 +152,11 @@ int FlarmDb::loadData()
       // qDebug() << fid << fdata;
     } // End of While
 
-  qDebug( "FlarmDb: %d items loaded in %lldms", items-1, t.elapsed() );
+  qDebug( "FlarmNet: %d items loaded in %lldms", items-1, t.elapsed() );
   return items-1;
 }
 
-bool FlarmDb::getData( int id, QStringList &data )
+bool FlarmNet::getData( int id, QStringList &data )
 {
   QMutexLocker locker( &m_mutex );
 
@@ -170,24 +170,24 @@ bool FlarmDb::getData( int id, QStringList &data )
   return false;
 }
 
-/*---------------------- FlarmDbThread --------------------------------*/
+/*---------------------- FlarmNetThread --------------------------------*/
 
 #include <csignal>
 
-FlarmDbThread::FlarmDbThread( QObject *parent ) :
+FlarmNetThread::FlarmNetThread( QObject *parent ) :
   QThread( parent )
 {
-  setObjectName( "FlarmDbThread" );
+  setObjectName( "FlarmNetThread" );
 
   // Activate self destroy after finish signal has been caught.
   connect( this, SIGNAL(finished()), this, SLOT(deleteLater()) );
 }
 
-FlarmDbThread::~FlarmDbThread()
+FlarmNetThread::~FlarmNetThread()
 {
 }
 
-void FlarmDbThread::run()
+void FlarmNetThread::run()
 {
   sigset_t sigset;
   sigfillset( &sigset );
@@ -195,5 +195,5 @@ void FlarmDbThread::run()
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
-  FlarmDb::loadData();
+  FlarmNet::loadData();
 }

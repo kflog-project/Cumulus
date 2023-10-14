@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2022 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,6 +22,7 @@
 #include "distance.h"
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
+#include "FlarmNet.h"
 #include "flarm.h"
 #include "layout.h"
 #include "mapconfig.h"
@@ -164,7 +165,22 @@ void FlarmDisplay::createBackground()
 
       if( aliasHash.contains( selectedObject) )
         {
+          // Alias list is always the first choice
           actfId = aliasHash.value(selectedObject).first;
+        }
+      else if( GeneralConfig::instance()->useFlarmNet() == true )
+        {
+          // Flarmnet DB is the second choice
+          QStringList fnd;
+          bool ok;
+          uint fid = selectedObject.toUInt( &ok, 16);
+          ok = FlarmNet::getData( fid, fnd );
+
+          if( ok == true && fnd.at(0).size() > 0 )
+            {
+              // Kennzeichen instead of hex id
+              actfId = fnd.at(0);
+            }
         }
 
       // Draw the Flarm Id of the selected object.
@@ -411,7 +427,6 @@ void FlarmDisplay::paintEvent( QPaintEvent *event )
         {
           distAcft = sqrt( north*north + east*east);
           distAcftShort = distAcft;
-
           alpha = atan2( ((double) north), (double) east );
         }
 

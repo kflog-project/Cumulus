@@ -19,6 +19,7 @@
 
 #include "AirspaceHelper.h"
 #include "filetools.h"
+#include "Frequency.h"
 #include "generalconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"
@@ -275,6 +276,10 @@ bool AirspaceHelper::createCompiledFile( QString& fileName,
       ShortSave( out, as->getName() );
       out.writeRawData( country, 2 );
       out << quint8( as->getIcaoClass() );
+
+      // The frequency list is saved.
+      Frequency::saveFrequencies( out, as->getFrequencyList() );
+
       out << quint8( as->getActivity() );
       out << as->isByNotam();
       out << quint8( as->getTypeID() );
@@ -374,6 +379,7 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
   uint counter = 0;
 
   QString name;
+  QList<Frequency> fqList;
   quint8 icaoClass;
   quint8 activity;
   bool byNotam;
@@ -393,6 +399,10 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
       ShortLoad( in, name );
       in.readRawData( country, 2 );
       in >> icaoClass;
+
+      // The frequency list is loaded.
+      Frequency::loadFrequencies( in, fqList );
+
       in >> activity;
       in >> byNotam;
       in >> type;
@@ -407,6 +417,7 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
                                   pa,
                                   upper, (BaseMapElement::elevationType) upperType,
                                   lower, (BaseMapElement::elevationType) lowerType,
+                                  fqList,
                                   icaoClass,
                                   QString(country),
                                   activity,

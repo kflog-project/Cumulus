@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2009-2022 by Axel Pauli
+**                   2009-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,9 +26,9 @@
  * Due to the cross pointer reference to the air region this class do not
  * allow copies and assignments of an existing instance.
  *
- * \date 2000-2022
+ * \date 2000-2023
  *
- * \version 1.4
+ * \version 1.5
  *
  */
 
@@ -48,6 +48,7 @@
 #include "lineelement.h"
 #include "airspacewarningdistance.h"
 #include "flarmbase.h"
+#include "Frequency.h"
 
 class AirRegion;
 
@@ -104,6 +105,7 @@ public:
    * \param upperType The upper altitude reference
    * \param lower The lower altitude limit of the airspace in feet
    * \param lowerType The lower altitude reference
+   * \param frequencyList A list with the frequency objects
    * \param icaoClass openAIP ICAO class identifier
    * \param country The country as two letter code, where the airspace is located
   */
@@ -114,6 +116,7 @@ public:
             const BaseMapElement::elevationType upperType,
             const float lower,
             const BaseMapElement::elevationType lowerType,
+            const QList<Frequency> frequencyList,
             const int icaoClass=AS_Unkown,
             QString country="",
             quint8 activity=0,
@@ -408,29 +411,62 @@ public:
     m_byNotam = byNotam;
   }
 
+  /**
+   * @return The frequency as String.
+   */
+  QString frequencyAsString( const float frequency ) const
+    {
+      return (frequency > 0) ? QString("%1").arg(frequency, 0, 'f', 3) : QString("");
+    };
+
+  /**
+   * @return The airspace frequency list.
+   */
+  QList<Frequency>& getFrequencyList()
+    {
+      return m_frequencyList;
+    };
+
+  /**
+   * @param freq The airspace frequency and its type.
+   */
+  void addFrequency( Frequency freqencyAndType)
+    {
+      m_frequencyList.append( freqencyAndType );
+    };
+
 private:
   /**
    * Contains the lower limit.
    * @see #getLowerL
    */
   Altitude m_lLimit;
+
   /**
    * Contains the type of the lower limit
    * @see #lLimit
    * @see #getLowerT
    */
   BaseMapElement::elevationType m_lLimitType;
+
   /**
    * Contains the upper limit.
    * @see #getUpperL
    */
   Altitude m_uLimit;
+
   /**
    * Contains the type of the upper limit
    * @see #uLimit
    * @see #getUpperT
    */
   BaseMapElement::elevationType m_uLimitType;
+
+  /**
+   * Specifies the frequencies, e.g. "132.505", and the ground stations
+   * responsible for this airspace.
+   */
+  QList<Frequency> m_frequencyList;
 
   mutable ConflictType m_lastVConflict;
 
@@ -456,6 +492,7 @@ private:
    * Activation by NOTAM
    */
   bool m_byNotam;
+
   /**
    * Flarm Alert Zone object.
    */

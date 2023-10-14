@@ -27,7 +27,7 @@
  *
  * \date 2004-2023
  *
- * \version 1.14
+ * \version 1.15
  */
 
 #pragma once
@@ -84,7 +84,8 @@
 #define HeadingLineColor QColor(Qt::gray).name()
 #define TrailLineColor QColor(Qt::black).name()
 
-#define SoundPlayer "/usr/bin/aplay"
+// FlarmNet default URL
+#define FLARM_NET_URL "https://www.flarmnet.org/static/files/wfn/data.fln"
 
 class QTranslator;
 
@@ -1920,16 +1921,40 @@ class GeneralConfig : protected QSettings
     _maxNearestSiteCalculatorSites = newValue;
   }
 
-  /** Gets the user sound player */
-  QString &getSoundPlayer()
+  /** Gets the FlarmNet URL */
+  QString &getFlarmNetUrl()
     {
-      return _soundPlayer;
+      return _flarmNetUrl;
     }
 
-  /** Sets the user sound player */
-  void setSoundPlayer( const QString newValue )
+  /** Sets the FlarmNet URL */
+  void setFlarmNetUrl( const QString newValue )
   {
-    _soundPlayer = newValue;
+    _flarmNetUrl = newValue;
+  }
+
+  /** Gets the FlarmNet Filter */
+  QString &getFlarmNetFilter()
+    {
+      return _flarmNetFilter;
+    }
+
+  /** Sets the FlarmNet Filter */
+  void setFlarmNetFilter( const QString newValue )
+  {
+    _flarmNetFilter = newValue;
+  }
+
+  /** Gets flag for FlarmNet usage. */
+  bool useFlarmNet() const
+  {
+    return _useFlarmNet;
+  }
+
+  /** sets flag for FlarmNet usage. */
+  void setUseFlarmNet(const bool newValue)
+  {
+    _useFlarmNet = newValue;
   }
 
   /** gets AirfieldDisplayTime */
@@ -3483,8 +3508,15 @@ class GeneralConfig : protected QSettings
   // maximum sites considered by nearest site calculator
   int _maxNearestSiteCalculatorSites;
 
-  // sound player selected by user
-  QString _soundPlayer;
+  // FlarmNet URL
+  QString _flarmNetUrl;
+
+  // FlarmNet Filter
+  QString _flarmNetFilter;
+
+  // FlarmNet usage flag;
+  bool _useFlarmNet;
+
   // AirfieldDisplayTime
   int _airfieldDisplayTime;
   // AirspaceDisplayTime

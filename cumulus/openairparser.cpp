@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2022 by Axel Pauli
+ **                   2009-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -22,6 +22,7 @@
 
 #include "airspace.h"
 #include "AirspaceHelper.h"
+#include "Frequency.h"
 #include "openairparser.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
@@ -43,6 +44,7 @@ OpenAirParser::OpenAirParser() :
   _acRead(false),
   _anRead(false),
   asType(BaseMapElement::NotSelected),
+  asFrequency(0.0),
   asUpper(0),
   asUpperType(BaseMapElement::NotSet),
   asLower(0),
@@ -223,6 +225,34 @@ void OpenAirParser::parseLine(QString& line)
       return;
     }
 
+  if (line.startsWith("AF "))
+    {
+      //airspace Frequency as 130.925
+      QString sfreq = line.mid(3, 7);
+      bool ok = false;
+      asFrequency = sfreq.toFloat(&ok);
+
+      // check for error
+      if( ok == false )
+        {
+          asFrequency = 0.0;
+        }
+
+      qDebug() << "AS-Frequency:" << asFrequency;
+      return;
+    }
+
+  if (line.startsWith("AG "))
+    {
+      //airspace ground station call sign
+      QString gsn = line.mid(3);
+      int idx = gsn.indexOf( "*" );
+      asGSCallSign = gsn.mid(0, idx);
+
+      qDebug() << "AS-Ground Station:" << asGSCallSign;
+      return;
+    }
+
   if (line.startsWith("DP "))
     {
       int lat, lon;
@@ -343,6 +373,8 @@ void OpenAirParser::newAirspace()
   asUpperType = BaseMapElement::NotSet;
   asLower = BaseMapElement::NotSet;
   asLowerType = BaseMapElement::NotSet;
+  asFrequency = 0.0;
+  asGSCallSign.clear();
   _isCurrentAirspace = true;
   _acRead = false;
   _anRead = false;
@@ -386,11 +418,23 @@ void OpenAirParser::finishAirspace()
       astPA.append( _globalMapMatrix->wgsToMap(asPA.at(i)) );
     }
 
+  QList<Frequency> fqList;
+
+  if( asFrequency != 0.0 )
+    {
+      Frequency fq;
+      fq.setValue( asFrequency );
+      fq.setUserType( asGSCallSign );
+      fq.setUnit( Frequency::MHz );
+      fqList.append( fq );
+    }
+
   Airspace* as = new Airspace( asName,
                                asType,
                                astPA,
                                asUpper, asUpperType,
-                               asLower, asLowerType );
+                               asLower, asLowerType,
+                               fqList );
   _airlist.append(as);
   _objCounter++;
 

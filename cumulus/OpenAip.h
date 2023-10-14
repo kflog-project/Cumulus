@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2022 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2023 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -207,9 +207,9 @@ class OpenAip
   bool setJAirfieldType( const int type, Airfield& af );
 
   /**
-   * Read and set Json freqeuncy data of an airfield.
+   * Read and set Json frequency data.
    */
-  void setJAirfieldFrequencies( QJsonArray& array, Airfield& af );
+  void setJFrequencies( QJsonArray& array, QList<Frequency>& fl );
 
   /**
    * Read and set Json runway data of an airfield.

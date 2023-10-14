@@ -803,7 +803,7 @@ bool OpenAip::readAirfields( QString fileName,
           else if( it.key() == "frequencies" )
             {
               QJsonArray array = it.value().toArray();
-              setJAirfieldFrequencies( array, af );
+              setJFrequencies( array, af.getFrequencyList() );
             }
           else if( it.key() == "runways" )
             {
@@ -921,10 +921,8 @@ bool OpenAip::setJAirfieldType( const int type, Airfield& af )
   return true;
 }
 
-void OpenAip::setJAirfieldFrequencies( QJsonArray& array, Airfield& af )
+void OpenAip::setJFrequencies( QJsonArray& array, QList<Frequency>& fl )
 {
-  QList<Frequency>& fl = af.getFrequencyList();
-
   // step over the json array to extract the frequency objects
   for( int i=0; i < array.size(); i++ )
     {
@@ -935,7 +933,7 @@ void OpenAip::setJAirfieldFrequencies( QJsonArray& array, Airfield& af )
       // iterate over the frequency object list
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
-          // qDebug() << "Frequency Key: " << it.key() << "Val: " << it.value();
+          qDebug() << "Frequency Key: " << it.key() << "Val: " << it.value();
           if( it.key() == "name" )
             {
               fq.setName( it.value().toString() );
@@ -1269,14 +1267,13 @@ bool OpenAip::readAirspaces( QString fileName,
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();
-
           if( it.key() == "type" )
             {
               // qDebug() << "AS-Name=" << name << "AS-Type=" << it.value();
 
               QString type = QString::number( it.value().toInt() );
 
-              // Check not senseful because airspace names are not unique
+              // Check, if we know this airspace type
               if( m_airspaceTypeMapper.contains( type ) == false )
                 {
                   qWarning() << method
@@ -1354,6 +1351,11 @@ bool OpenAip::readAirspaces( QString fileName,
                   // ignore data
                   break;
                 }
+            }
+          else if( it.key() == "frequencies" )
+            {
+              QJsonArray array = it.value().toArray();
+              setJFrequencies( array, as.getFrequencyList() );
             }
         } // End of object for loop
 

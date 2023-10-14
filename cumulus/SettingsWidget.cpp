@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2022 by Axel Pauli
+ **                   2007-2023 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -36,10 +36,11 @@
 
 #ifdef FLARM
 #include "SettingsPageFlarm.h"
+#include <SettingsPageFlarmNet.h>
 #endif
 
 #include "settingspageglider.h"
-#include "settingspageinformation.h"
+#include "SettingsPageInformation.h"
 #include "settingspagelines.h"
 #include "settingspagelooknfeel.h"
 #include "settingspagemapobjects.h"
@@ -61,7 +62,8 @@
 #define POINT_DATA      "Point Data"
 #define AIRSPACES       "Airspaces"
 #ifdef FLARM
-#define FLARML          "FLARM"
+#define FLARMCONF       "FLARM Configuration"
+#define FLARMNET        "FlarmNet"
 #endif
 #define GLIDERS         "Gliders"
 #define GPS             "GPS"
@@ -95,7 +97,8 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
   m_headerLabels  << tr("Point Data")
                   << tr("Airspaces")
 #ifdef FLARM
-                  << tr("FLARM")
+                  << tr("FLARM Configuration")
+                  << tr("FlarmNet")
 #endif
                   << tr("Gliders")
                   << tr("GPS")
@@ -217,13 +220,19 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
   if( calculator->moving() == false )
     {
       item = new QTreeWidgetItem;
-      item->setText( 0, tr(FLARML) );
-      item->setData( 0, Qt::UserRole, FLARML );
+      item->setText( 0, tr(FLARMCONF) );
+      item->setData( 0, Qt::UserRole, FLARMCONF );
+      m_setupTree->addTopLevelItem( item );
+
+      item = new QTreeWidgetItem;
+      item->setText( 0, tr(FLARMNET) );
+      item->setData( 0, Qt::UserRole, FLARMNET );
       m_setupTree->addTopLevelItem( item );
     }
+
 #endif
 
-  m_setupTree->sortByColumn ( 0, Qt::AscendingOrder );
+  m_setupTree->sortByColumn( 0, Qt::AscendingOrder );
 
   QPushButton *help = new QPushButton(this);
   help->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("help32.png")));
@@ -474,14 +483,22 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       return;
     }
 
-  #ifdef FLARM
-  if( itemText == FLARML )
+#ifdef FLARM
+
+  if( itemText == FLARMCONF )
     {
       SettingsPageFlarm* page = new SettingsPageFlarm( this );
-
       page->show();
       return;
     }
+
+  if( itemText == FLARMNET )
+    {
+      SettingsPageFlarmNet* page = new SettingsPageFlarmNet( this );
+      page->show();
+      return;
+    }
+
 #endif
 
 }

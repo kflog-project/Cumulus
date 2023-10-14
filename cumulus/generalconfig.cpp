@@ -478,7 +478,6 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Information");
-  _soundPlayer           = value( "SoundPlayer", SoundPlayer ).toString();
   _airfieldDisplayTime   = value( "AirfieldDisplayTime",
                                   AIRFIELD_DISPLAY_TIME_DEFAULT ).toInt();
   _airspaceDisplayTime   = value( "AirspaceDisplayTime",
@@ -571,8 +570,11 @@ void GeneralConfig::load()
   endGroup();
 
   beginGroup("Flarm");
-  _flarmAliasFileName      = value("AliasFileName", "cumulus-flarm.txt").toString();
-  _flarmRadarDrawWindArrow = value("RadarDrawWindArrow", true).toBool();
+  _flarmAliasFileName      = value( "AliasFileName", "cumulus-flarm.txt" ).toString();
+  _flarmRadarDrawWindArrow = value( "RadarDrawWindArrow", true ).toBool();
+  _flarmNetUrl              = value( "DB-URL", FLARM_NET_URL ).toString();
+  _flarmNetFilter           = value( "DB-Filter", "" ).toString();
+  _useFlarmNet              = value( "DB-Usage", false ).toBool();
   endGroup();
 
   beginGroup("Units");
@@ -982,7 +984,6 @@ void GeneralConfig::save()
   endGroup();
 
   beginGroup("Information");
-  setValue( "SoundPlayer", _soundPlayer );
   setValue( "AirfieldDisplayTime", _airfieldDisplayTime );
   setValue( "AirspaceDisplayTime", _airspaceDisplayTime );
   setValue( "InfoDisplayTime", _infoDisplayTime );
@@ -1056,6 +1057,9 @@ void GeneralConfig::save()
 
   beginGroup ("Flarm");
   setValue( "RadarDrawWindArrow", _flarmRadarDrawWindArrow );
+  setValue( "DB-URL", _flarmNetUrl );
+  setValue( "DB-Filter", _flarmNetFilter );
+  setValue( "DB-Usage", _useFlarmNet );
   endGroup();
 
   beginGroup("Units");

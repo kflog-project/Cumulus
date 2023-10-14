@@ -25,6 +25,7 @@
  *  and to initiate the load of the map and all other data.
  */
 
+#include <FlarmNet.h>
 #include <HelpBrowser.h>
 #include <cstdio>
 #include <cstdlib>
@@ -776,6 +777,17 @@ void MainWindow::slotCreateApplicationWidgets()
             SLOT( slotLanded(QDateTime&) ) );
 
   calculator->setPosition( _globalMapMatrix->getMapCenter() );
+
+#ifdef FLARM
+
+  if( GeneralConfig::instance()->useFlarmNet() == true )
+    {
+      // load Flarm database from file.
+      FlarmNetThread* thread = new FlarmNetThread( 0 );
+      thread->start();
+    }
+
+#endif
 
   slotReadconfig();
 

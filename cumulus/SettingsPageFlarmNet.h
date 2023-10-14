@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   SettingsPageFlarmDB.h
+**   SettingsPageFlarmNet.h
 **
 **   This file is part of Cumulus.
 **
@@ -14,11 +14,11 @@
 ***********************************************************************/
 
 /**
- * \class SettingsPageFlarmDB
+ * \class SettingsPageFlarmNet
  *
  * \author Axel Pauli
  *
- * \brief Configuration settings for popup window of Flarm Database
+ * \brief Configuration settings for a FlarmNet Database window
  *
  * \date 2023
  *
@@ -32,20 +32,23 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QLabel>
 
-class SettingsPageFlarmDB : public QWidget
+#include "DownloadManager.h"
+
+class SettingsPageFlarmNet : public QWidget
 {
   Q_OBJECT
 
   private:
 
-  Q_DISABLE_COPY ( SettingsPageFlarmDB )
+  Q_DISABLE_COPY ( SettingsPageFlarmNet )
 
   public:
 
-  SettingsPageFlarmDB(QWidget *parent=0);
+  SettingsPageFlarmNet(QWidget *parent=0);
 
-  virtual ~SettingsPageFlarmDB();
+  virtual ~SettingsPageFlarmNet();
 
   signals:
 
@@ -81,6 +84,21 @@ class SettingsPageFlarmDB : public QWidget
    */
   void slotDownload();
 
+  /**
+   * Slot for download manager.
+   */
+  void slotDownloadsFinished( int, int );
+
+  /**
+   * Slot for download manager.
+   */
+  void slotNetworkError();
+
+  /**
+   * Slot for download manager.
+   */
+  void slotFileDownloaded(QString& );
+
  private:
 
   /** Called to load the configuration file data. */
@@ -89,13 +107,27 @@ class SettingsPageFlarmDB : public QWidget
   /** Called to save the configuration file data.*/
   void save();
 
-  QCheckBox*   useFlarmDB;
-  QLineEdit*   editDbFile;
+  QCheckBox*   useFlarmNet;
+  QLineEdit*   editFnFile;
+  QLineEdit*   editFnFilter;
   QPushButton* buttonDownload;
   QPushButton* buttonReset;
+  QLabel*      info;
 
   /** save start values for change check. */
-  bool useFlarmDBStart;
-  QString dbFileStart;
-};
+  bool fnUseStart;
+  QString fnFileStart;
+  QString fnFilterStart;
 
+  /** Manager to handle downloads of METAR-TAF data. */
+  DownloadManager* m_downloadManger;
+
+  /** Flag to mark a running update action. */
+  bool m_downloadIsRunning;
+
+  /** Flag to mark a database download. */
+  bool m_downloadDone;
+
+  /** first entry flag */
+  bool m_first;
+};
