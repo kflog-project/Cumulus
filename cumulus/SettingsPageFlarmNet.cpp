@@ -13,14 +13,22 @@
 **
 ***********************************************************************/
 
+#ifndef QT_5
+#include <QtGui>
+#else
+#include <QtWidgets>
+#endif
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
+
 #include <FlarmNet.h>
 #include <SettingsPageFlarmNet.h>
-#include <QtWidgets>
-
 #include "generalconfig.h"
-#include "HelpBrowser.h"
+#include "helpbrowser.h"
 #include "layout.h"
-#include "MainWindow.h"
+#include "mainwindow.h"
 #include "whatsthat.h"
 
 SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
@@ -53,7 +61,19 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   sa->setWidgetResizable( true );
   sa->setFrameStyle( QFrame::NoFrame );
   sa->setWidget( sw );
+
+#ifdef ANDROID
+  QScrollBar* lvsb = sa->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
+#ifdef QSCROLLER
   QScroller::grabGesture( sa->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( sa->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
 
   // Add scroll area to its own layout
   sal->addWidget( sa );

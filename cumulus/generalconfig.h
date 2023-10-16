@@ -84,6 +84,8 @@
 #define HeadingLineColor QColor(Qt::gray).name()
 #define TrailLineColor QColor(Qt::black).name()
 
+#define SoundPlayer "/usr/bin/aplay"
+
 // FlarmNet default URL
 #define FLARM_NET_URL "https://www.flarmnet.org/static/files/wfn/data.fln"
 

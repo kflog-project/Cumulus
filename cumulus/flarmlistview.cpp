@@ -38,7 +38,7 @@
 #include "calculator.h"
 #include "distance.h"
 #include "mapconfig.h"
-#include "MainWindow.h"
+#include "mainwindow.h"
 
 QString FlarmListView::selectedListObject  = "";
 QString FlarmListView::selectedFlarmObject = "";

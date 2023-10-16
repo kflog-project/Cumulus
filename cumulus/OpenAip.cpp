@@ -813,7 +813,7 @@ bool OpenAip::readAirfields( QString fileName,
           else if( it.key() == "frequencies" )
             {
               QJsonArray array = it.value().toArray();
-              setJAirfieldFrequencies( array, af );
+              setJFrequencies( array, af.getFrequencyList() );
             }
           else if( it.key() == "runways" )
             {
@@ -931,10 +931,8 @@ bool OpenAip::setJAirfieldType( const int type, Airfield& af )
   return true;
 }
 
-void OpenAip::setJAirfieldFrequencies( QJsonArray& array, Airfield& af )
+void OpenAip::setJFrequencies( QJsonArray& array, QList<Frequency>& fl )
 {
-  QList<Frequency>& fl = af.getFrequencyList();
-
   // step over the json array to extract the frequency objects
   for( int i=0; i < array.size(); i++ )
     {

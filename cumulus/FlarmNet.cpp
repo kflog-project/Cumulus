@@ -63,7 +63,7 @@ int FlarmNet::loadData()
     }
 
   QString fs = GeneralConfig::instance()->getFlarmNetFilter().toUpper();
-  QStringList filterList = fs.split( QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+  QStringList filterList = fs.split( QRegExp("[\\s,]+"), QString::SkipEmptyParts);
 
   QTextStream in( &file );
   in.setCodec( "ISO 8859-15" );
@@ -163,7 +163,7 @@ bool FlarmNet::getData( int id, QStringList &data )
   if( m_datamap.contains( id ) )
     {
       // List contains KZ, Type, WKZ, Frequenz. Unknown elements are empty.
-      data = m_datamap.value( id ).split( "|", Qt::KeepEmptyParts );
+      data = m_datamap.value( id ).split( "|", QString::KeepEmptyParts );
       return true;
     }
 
