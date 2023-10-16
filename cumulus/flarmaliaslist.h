@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2023 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,9 +24,9 @@
  * identifiers. The names are displayed in a two column table. The content of
  * the table is stored in a text file in the user's data directory.
  *> >
- * \date 2010-2021
+ * \date 2010-2023
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #pragma once
@@ -141,6 +141,9 @@ signals:
   void closed();
 
 private:
+
+  /** resize to table to fixed values */
+  void resizeTable();
 
   /** Table widget with two columns for alias entries. */
   QTableWidget* list;

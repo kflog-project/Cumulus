@@ -34,7 +34,7 @@
 SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   QWidget(parent),
   fnUseStart(false),
-  m_downloadManger(nullptr),
+  m_downloadManger(0),
   m_downloadIsRunning(false),
   m_downloadDone(false),
   m_first(true)
@@ -107,6 +107,9 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   topLayout->addWidget( editFnFile, row, 0, 1, 2 );
   row++;
 
+  connect( editFnFile, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget(new QLabel(tr("FlarmNet Filter:"), this), row, 0);
   row++;
 
@@ -116,6 +119,9 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   editFnFilter->setInputMethodHints(imh1);
   topLayout->addWidget( editFnFilter, row, 0, 1, 2 );
   row++;
+
+  connect( editFnFilter, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
   buttonDownload = new QPushButton( tr("Download"), this );
   topLayout->addWidget( buttonDownload, row, 0 );
@@ -284,7 +290,7 @@ void SettingsPageFlarmNet::slotDownload()
   m_downloadIsRunning = true;
   buttonDownload->setEnabled( false );
 
-  if( m_downloadManger == nullptr )
+  if( m_downloadManger == 0 )
     {
       m_downloadManger = new DownloadManager(this);
 
@@ -325,7 +331,7 @@ void SettingsPageFlarmNet::slotNetworkError()
   // A network error has occurred. We delete the download manager to get faster
   // a new connection.
   m_downloadManger->deleteLater();
-  m_downloadManger = nullptr;
+  m_downloadManger = 0;
 
   QString msg = QString(tr("Network error. Check Internet connection!"));
   info->setText( msg );

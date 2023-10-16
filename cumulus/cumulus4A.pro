@@ -410,6 +410,7 @@ flarm {
     HEADERS += flarm.h \
                flarmaliaslist.h \
                flarmbase.h \
+               FlarmNet.h \
                flarmbincom.h \
                flarmbincomandroid.h \
                flarmcrc.h \

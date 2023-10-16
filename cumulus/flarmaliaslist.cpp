@@ -225,6 +225,12 @@ FlarmAliasList::~FlarmAliasList()
 
 void FlarmAliasList::showEvent( QShowEvent *event )
 {
+  resizeTable();
+  QWidget::showEvent( event );
+}
+
+void FlarmAliasList::resizeTable()
+{
   QHeaderView* hv = list->horizontalHeader();
   int len = hv->length() / 3;
   int len1 = len - len / 5;
@@ -238,9 +244,7 @@ void FlarmAliasList::showEvent( QShowEvent *event )
   hv->resizeSection( 0, len1 );
   hv->resizeSection( 1, len2 );
   hv->resizeSection( 2, len1 );
-
   list->resizeRowsToContents();
-  QWidget::showEvent( event );
 }
 
 void FlarmAliasList::slot_AddRow( QString col0, QString col1, bool col2 )
@@ -339,7 +343,7 @@ void FlarmAliasList::slot_DeleteRows()
       list->removeRow( rows2Remove.at(i) );
     }
 
-  list->resizeColumnsToContents();
+  resizeTable();
 }
 
 /** Called if the help button was pressed. */
