@@ -395,6 +395,7 @@ flarm {
 		SOURCES += flarm.cpp \
 		           flarmaliaslist.cpp \
 		           flarmbase.cpp \
+		           FlarmNet.cpp \
 		           flarmdisplay.cpp \
 		           flarmlistview.cpp \
                flarmlogbook.cpp \

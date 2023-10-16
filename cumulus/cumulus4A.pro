@@ -420,11 +420,13 @@ flarm {
                flarmwidget.h \
                preflightflarmpage.h \
                preflightflarmusbpage.h \
-               SettingsPageFlarm.h
+               SettingsPageFlarm.h \
+               SettingsPageFlarmNet.h
 
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
                flarmbase.cpp \
+		           FlarmNet.cpp \
                flarmbincom.cpp \
                flarmbincomandroid.cpp \
                flarmcrc.cpp \
@@ -435,7 +437,8 @@ flarm {
                flarmwidget.cpp \
                preflightflarmpage.cpp \
                preflightflarmusbpage.cpp \
-               SettingsPageFlarm.cpp
+               SettingsPageFlarm.cpp \
+               SettingsPageFlarmNet.cpp
                
     DEFINES += FLARM
 }
