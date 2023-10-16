@@ -1,0 +1,109 @@
+<html>
+<head>
+<title>Cumulus Einstellungen</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">Anfang</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-flarm.html">zur&uuml;ck</a></td>
+				<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+				<td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 align="center">Settings - Flarmnet</h4>
+	
+  <p>This configuration page is only available, if Cumulus is not moving.</p>
+
+	<p>Cumulus may use data in the Flarm display for Flarm objects, if it is
+	   configured in that way. To get more information about that, please have
+	   a look at the webpage of <a href="https://www.flarmnet.org">FlarmNet</a>.
+  </p>
+	
+	<p>
+		The FlarmNet configuration window consists of the following elements:
+	</p>
+
+	<b>use FlarmNet Data</b>
+	
+	<p>
+	  If the checkbox is activated, FlarmNet data will be used, if they are
+	  installed, otherwise not.
+	</p>
+	
+  <b>FlarmNet URL</b>
+
+	<p>
+	  This entry shows the current used URL by Cumulus to download FlarmNet data.
+    Here you can adapt the URL, if it has been changed.
+	  <br><b>Note:</b> Cumulus can process only the FlarmNet file, which is
+	  provided for <i>XCSoar</i>.
+	</p>
+	
+	<b>FlarmNet Filter</b>
+	
+	<p>
+	  If you don't want to load the whole FlarmNet data by Cumulus during run-time,
+	  you can here define, which subset of data should be loaded. A single filter
+	  item is a substring of the airplane registration. If the filter item
+	  matches the beginning of the registration sign during load, this FlarmNet
+	  record is loaded, otherwise not. You can define several filter items divided
+	  by space or comma.
+	</p>
+	
+	<p><b>Example:</b></p>
+	
+	<p>
+	If the filter item <i>D</i> is defined, all data records, which airplane
+	registration starts with <i>D</i> will be loaded.
+	</p>
+	
+  <b>Button Download</b>
+
+	<p>
+		If you press the <i>Download</i> button, Cumulus tries to download the
+		FlarmNet file by using the FlarmNet URL, defined above. Preconditions
+		is, that an active Internet connection exists.
+	</p>
+
+  <b>Button Default</b>
+
+  <p>
+    If you press the <i>Default</i> button, all configuration items of
+    the window will be set to their default values. That means:
+  </p>
+    <p>
+    <ul>
+    <li>The checkbox <i>use FlarmNet Data</i> is deactivated.</li>
+    <li>The URL will be set to the value, stored internally in Cumulus.</li>
+    <li>All filter items are cleared.
+    </ul>
+    </p>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">Anfang</a></td>
+				<td></td>
+			</tr>
+			<tr>
+        <td align="left"><a href="cumulus-settings-flarm.html">zur&uuml;ck</a></td>
+        <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
