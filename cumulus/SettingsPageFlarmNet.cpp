@@ -23,6 +23,7 @@
 #include <QtScroller>
 #endif
 
+#include "calculator.h"
 #include <FlarmNet.h>
 #include <SettingsPageFlarmNet.h>
 #include "generalconfig.h"
@@ -250,6 +251,15 @@ void SettingsPageFlarmNet::load()
       fnFileStart = conf->getFlarmNetUrl().trimmed();
       fnFilterStart = conf->getFlarmNetFilter().trimmed();
       fnUseStart = conf->useFlarmNet();
+    }
+
+  if( calculator->moving() == true )
+    {
+      buttonDownload->setEnabled( false );
+    }
+  else
+    {
+      buttonDownload->setEnabled( true );
     }
 }
 

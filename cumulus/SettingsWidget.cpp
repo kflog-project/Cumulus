@@ -511,11 +511,14 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
   #ifdef FLARM
 
-  if( itemText == FLARMCONF )
+  if( calculator->moving() == false )
     {
-      SettingsPageFlarm* page = new SettingsPageFlarm( this );
-      page->show();
-      return;
+      if( itemText == FLARMCONF )
+        {
+          SettingsPageFlarm* page = new SettingsPageFlarm( this );
+          page->show();
+          return;
+        }
     }
 
   if( itemText == FLARMNET )
@@ -524,6 +527,7 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       page->show();
       return;
     }
+
 #endif
 
 }
