@@ -27,7 +27,7 @@ The different Linux distributions do provide normally installable packages for
 that. For XUbuntu 22.04 you have to execute the following command to get them:
 
   sudo apt-get install build-essential git unzip
-  sudo apt-get install qtcreator qtbase5-dev qttools5-dev-tools qtmultimedia5-dev qt5-doc
+  sudo apt-get install qtcreator qtbase5-dev qttools5-dev-tools qtmultimedia5-dev libqt5bluetooth5 qt5-doc
   sudo apt-get install libbluetooth-dev bluez
   sudo apt-get install dh-make fakeroot dpkg-dev
   
