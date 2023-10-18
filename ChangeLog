@@ -19,6 +19,9 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+This change log is not more updated. Pleade have a look to the change log at
+the Master branch.
+
 [-] 2023-03-21 AP: Issue #164 fixed. Update cylinder map projection automatically.
                    Issue #165 fixed. Call sign Info has changed to Radio in
                    Germany.
