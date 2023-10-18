@@ -223,12 +223,12 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
       item->setText( 0, tr(FLARMCONF) );
       item->setData( 0, Qt::UserRole, FLARMCONF );
       m_setupTree->addTopLevelItem( item );
-
-      item = new QTreeWidgetItem;
-      item->setText( 0, tr(FLARMNET) );
-      item->setData( 0, Qt::UserRole, FLARMNET );
-      m_setupTree->addTopLevelItem( item );
     }
+
+  item = new QTreeWidgetItem;
+  item->setText( 0, tr(FLARMNET) );
+  item->setData( 0, Qt::UserRole, FLARMNET );
+  m_setupTree->addTopLevelItem( item );
 
 #endif
 

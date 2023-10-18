@@ -17,6 +17,7 @@
 #include <SettingsPageFlarmNet.h>
 #include <QtWidgets>
 
+#include "calculator.h"
 #include "generalconfig.h"
 #include "HelpBrowser.h"
 #include "layout.h"
@@ -224,6 +225,15 @@ void SettingsPageFlarmNet::load()
       fnFileStart = conf->getFlarmNetUrl().trimmed();
       fnFilterStart = conf->getFlarmNetFilter().trimmed();
       fnUseStart = conf->useFlarmNet();
+    }
+
+  if( calculator->moving() == true )
+    {
+      buttonDownload->setEnabled( false );
+    }
+  else
+    {
+      buttonDownload->setEnabled( true );
     }
 }
 
