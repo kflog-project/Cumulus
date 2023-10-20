@@ -453,6 +453,25 @@ QString Airspace::getInfoString() const
         {
           text += " " + name;
         }
+
+      // Handle airspace frequency. Often it is already contained in the
+      // airspace name.
+      if( m_frequencyList.size() > 0 )
+        {
+          Frequency fq;
+          bool found = Frequency::getMainFrequency( m_frequencyList, fq );
+
+          if( found == true )
+            {
+              QString fqstr = fq.frequencyAsString( false );
+
+              // Look, if frequency is not to find in the name
+              if( name.contains( fqstr) == false )
+                {
+                  text += " " + fqstr;
+                }
+            }
+        }
     }
 
   text += QString("<BR>") + "<FONT SIZE=-1>" + tempL + " / " + tempU;
