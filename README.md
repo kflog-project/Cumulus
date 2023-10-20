@@ -19,10 +19,10 @@ Cumulus packages for *Android* and *Ubuntu* 64bit can be downloaded from [here](
 
 Ubuntu/Debian packagees are Qt5 based and they are further developed in the future for the Linux desktop. Other target hardware may be taken into account in the future.
 
-Last available Cumulus packages: Release 5.41.3, published at 2023-05-02. Press the link below and then the download button.
-- Ubuntu 22.04, 64bit, binary package, [cumulus_5.41.3_amd64.deb](https://github.com/kflog-project/Cumulus/tree/master/Releases/Ubuntu/binary-packages/cumulus_5.41.3_amd64.deb)
-- Debian 11 (bullseye), 64bit, binary package, [cumulus_5.41.3_amd64.deb](https://github.com/kflog-project/Cumulus/blob/master/Releases/Debian/cumulus_5.41.3_amd64.deb)
-- Android 6, QT4 installation package, [CumulusActivity_5.41.3.apk](https://github.com/kflog-project/Cumulus/blob/master/Releases/Android/CumulusActivity_5.41.3.apk)
+Last available Cumulus packages: Release 5.42.0, published at 2023-10-20. Press the link below and then the download button.
+- Ubuntu 23.04, 64bit, binary package, [cumulus_5.42.0_amd64.deb](https://github.com/kflog-project/Cumulus/tree/master/Releases/Ubuntu/binary-packages/cumulus_5.42.0_amd64.deb)
+- Debian 11 (bullseye), 64bit, binary package, [cumulus_5.42.0_amd64.deb](https://github.com/kflog-project/Cumulus/blob/master/Releases/Debian/cumulus_5.42.0_amd64.deb)
+- Android 6, QT4 installation package, [CumulusActivity_5.42.0.apk](https://github.com/kflog-project/Cumulus/blob/master/Releases/Android/CumulusActivity_5.42.0.apk)
 
 [Changelog file](https://github.com/kflog-project/Cumulus/blob/master/ChangeLog)
 
