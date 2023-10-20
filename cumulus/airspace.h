@@ -47,6 +47,7 @@
 #include "lineelement.h"
 #include "airspacewarningdistance.h"
 #include "flarmbase.h"
+#include "Frequency.h"
 
 class AirRegion;
 
@@ -291,12 +292,12 @@ public:
   {
       return m_lastNear;
   }
-  
+
   QTime& getLastVeryNear()
   {
       return m_lastVeryNear;
   }
-  
+
   QTime& getLastInside()
   {
       return m_lastInside;
