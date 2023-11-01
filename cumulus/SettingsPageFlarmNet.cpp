@@ -22,7 +22,6 @@
 #include "HelpBrowser.h"
 #include "layout.h"
 #include "MainWindow.h"
-#include "whatsthat.h"
 
 SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   QWidget(parent),

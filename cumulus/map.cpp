@@ -25,6 +25,7 @@
 #include "airfield.h"
 #include "airspace.h"
 #include "AirspaceFilters.h"
+#include "AirspaceInfo.h"
 #include "calculator.h"
 #include "MainWindow.h"
 #include "distance.h"
@@ -147,9 +148,9 @@ Map::~Map()
 /**
  * Display Info about Airspace items
 */
-void Map::p_displayAirspaceInfo(const QPoint& current)
+void Map::p_displayAirspaceInfo( const QPoint& current )
 {
-  static QPointer<WhatsThat> box;
+  static QPointer<AirspaceInfo> box;
 
   if( mutex() || ! isVisible() || ! box.isNull() )
     {
@@ -223,8 +224,7 @@ void Map::p_displayAirspaceInfo(const QPoint& current)
   text.replace( QRegExp("AS-E low "), "AS-El " );
   text.replace( QRegExp("AS-E high "), "AS-Eh " );
 
-  int showTime = GeneralConfig::instance()->getAirspaceDisplayTime() * 1000;
-  box = new WhatsThat(this, text, showTime);
+  box = new AirspaceInfo( this, text );
   box->show();
 }
 

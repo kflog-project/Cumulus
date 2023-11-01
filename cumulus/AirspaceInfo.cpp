@@ -32,10 +32,11 @@ const int vMargin = 5;
 const int hMargin = 5;
 
 AirspaceInfo::AirspaceInfo( QWidget* parent, QString& txt ) :
-  QFrame( parent )
+  QFrame( parent ),
+  m_timerCount(0)
 {
   setObjectName("AirspaceInfo");
-  setWindowFlags( Qt::Window | Qt::WindowStaysOnTopHint );
+  setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute( Qt::WA_DeleteOnClose );
   setStyleSheet("#AirspaceInfo { border: 5px solid red; }");

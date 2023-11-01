@@ -12,11 +12,9 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   $Id$
-**
 ***********************************************************************/
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "layout.h"
 #include "MainWindow.h"

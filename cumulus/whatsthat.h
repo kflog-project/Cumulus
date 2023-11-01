@@ -7,15 +7,14 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2023 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
 ***********************************************************************/
 
-#ifndef WHATS_THAT_H
-#define WHATS_THAT_H
+#pragma once
 
 #include <QWidget>
 #include <QTimer>
@@ -33,9 +32,9 @@
  * It is realized as a frame less popup window and is closed by tipping on
  * it or automatically after a certain time. It can display plain or html text.
  *
- * \date 2002-2018
+ * \date 2002-2023
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 class WhatsThat : public QWidget
@@ -86,5 +85,3 @@ class WhatsThat : public QWidget
   static uint instance;
 
 };
-
-#endif

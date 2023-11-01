@@ -129,7 +129,6 @@ TPInfoWidget::~TPInfoWidget()
 void TPInfoWidget::slot_Close()
 {
   setVisible(false);
-  emit closed();
   QWidget::close();
 }
 
