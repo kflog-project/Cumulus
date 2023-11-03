@@ -13,15 +13,7 @@
 **
 ***********************************************************************/
 
-#ifndef QT_5
-#include <QtGui>
-#else
-#include <QtWidgets>
-#endif
-
-#ifdef QTSCROLLER
-#include <QtScroller>
-#endif
+#include <QWidget>
 
 #include "layout.h"
 #include "MainWindow.h"
@@ -58,15 +50,7 @@ AirspaceInfo::AirspaceInfo( QWidget* parent, QString& txt ) :
   m_display->setReadOnly( true );
   // LightYellow www.wackerart.de/rgbfarben.html
   m_display->setStyleSheet( QString( "QTextEdit { background-color: rgb(255, 255, 224); }" ) );
-
-#ifdef QSCROLLER
   QScroller::grabGesture( m_display->viewport(), QScroller::LeftMouseButtonGesture);
-#endif
-
-#ifdef QTSCROLLER
-  QtScroller::grabGesture( m_display->viewport(), QtScroller::LeftMouseButtonGesture);
-#endif
-
   topLayout->addWidget( m_display, 10 );
 
   QHBoxLayout *buttonrow = new QHBoxLayout;
