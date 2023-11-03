@@ -238,7 +238,7 @@ void OpenAirParser::parseLine(QString& line)
           asFrequency = 0.0;
         }
 
-      qDebug() << "AS-Frequency:" << asFrequency;
+      // qDebug() << "AS-Frequency:" << asFrequency;
       return;
     }
 
@@ -249,7 +249,7 @@ void OpenAirParser::parseLine(QString& line)
       int idx = gsn.indexOf( "*" );
       asGSCallSign = gsn.mid(0, idx);
 
-      qDebug() << "AS-Ground Station:" << asGSCallSign;
+      // qDebug() << "AS-Ground Station:" << asGSCallSign;
       return;
     }
 
@@ -424,7 +424,7 @@ void OpenAirParser::finishAirspace()
     {
       Frequency fq;
       fq.setValue( asFrequency );
-      fq.setUserType( asGSCallSign );
+      fq.setCallSign( asGSCallSign );
       fq.setUnit( Frequency::MHz );
       fqList.append( fq );
     }

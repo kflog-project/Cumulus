@@ -639,7 +639,7 @@ Frequency OpenAip::getJNavaidFrequency( QJsonObject& object )
       unit = object["unit"].toInt();
     }
 
-  return Frequency( value, unit, Frequency::Other, "", true, true );
+  return Frequency( value, unit, Frequency::Other, "", true, true, "" );
 }
 
 /**
@@ -933,10 +933,10 @@ void OpenAip::setJFrequencies( QJsonArray& array, QList<Frequency>& fl )
       // iterate over the frequency object list
       for( auto it = object.begin(), end=object.end(); it != end; ++it )
         {
-          qDebug() << "Frequency Key: " << it.key() << "Val: " << it.value();
+          // qDebug() << "Frequency Key: " << it.key() << "Val: " << it.value();
           if( it.key() == "name" )
             {
-              fq.setName( it.value().toString() );
+              fq.setCallSign( it.value().toString() );
             }
           else if( it.key() == "value" )
             {

@@ -366,7 +366,6 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
   projectionFromFile = 0;
 
 #ifdef BOUNDING_BOX
-
   in >> boundingBox;
 #endif
 
@@ -378,23 +377,21 @@ bool AirspaceHelper::readCompiledFile( QString &path, QList<Airspace*>& list )
 
   uint counter = 0;
 
-  QString name;
-  QList<Frequency> fqList;
-  quint8 icaoClass;
-  quint8 activity;
-  bool byNotam;
-  quint8 type;
-  quint8 lowerType;
-  float lower;
-  quint8 upperType;
-  float upper;
-  QPolygon pa;
-  QByteArray utf8_temp;
-  char country[3] = { 0, 0, 0 };
-
   while ( ! in.atEnd() )
     {
-      pa.resize(0);
+      QString name;
+      QList<Frequency> fqList;
+      quint8 icaoClass;
+      quint8 activity;
+      bool byNotam;
+      quint8 type;
+      quint8 lowerType;
+      float lower;
+      quint8 upperType;
+      float upper;
+      QPolygon pa;
+      QByteArray utf8_temp;
+      char country[3] = { 0, 0, 0 };
 
       ShortLoad( in, name );
       in.readRawData( country, 2 );
