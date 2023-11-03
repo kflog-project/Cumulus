@@ -19,6 +19,8 @@ Cumulus changelog
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
 
+[-] 2023-11-03 AP: Issue #169 fixed. Improve airspace display.
+
 [*] 2023-10-20 AP: Cumulus 5.42.0 released for Debian, Ubuntu and Android.
 
 [+] 2023-10-18 AP: Cumulus can use FlarmNet data now.
