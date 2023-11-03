@@ -107,12 +107,18 @@ class SettingsPageFlarmNet : public QWidget
   /** Called to save the configuration file data.*/
   void save();
 
+  /**
+   * Set the loaded FlarmNet records.
+   */
+  void setLoadedRecords();
+
   QCheckBox*   useFlarmNet;
   QLineEdit*   editFnFile;
   QLineEdit*   editFnFilter;
   QPushButton* buttonDownload;
   QPushButton* buttonReset;
   QLabel*      info;
+  QLabel*      fnFilterLabel;
 
   /** save start values for change check. */
   bool fnUseStart;

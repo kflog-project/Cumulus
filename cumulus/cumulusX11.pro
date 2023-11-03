@@ -106,6 +106,7 @@ HEADERS = \
     airspace.h \
     AirspaceFilters.h \
     AirspaceHelper.h \
+    AirspaceInfo.h \
     airspacewarningdistance.h \
     altimeterdialog.h \
     altitude.h \
@@ -250,6 +251,7 @@ SOURCES = \
     airspace.cpp \
     AirspaceFilters.cpp \
     AirspaceHelper.cpp \
+    AirspaceInfo.cpp \
     altimeterdialog.cpp \
     altitude.cpp \
     authdialog.cpp \
