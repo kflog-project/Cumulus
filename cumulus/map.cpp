@@ -3655,7 +3655,7 @@ void Map::checkAirspace(const QPoint& pos)
       if( GeneralConfig::instance()->getPopupAirspaceWarnings() )
         {
           emit alarm( "", true );
-          WhatsThat *box = new WhatsThat(this, text, showTime);
+          WhatsThat *box = new WhatsThat( _globalMainWindow, text, showTime );
           box->show();
           return;
         }
