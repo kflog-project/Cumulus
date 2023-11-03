@@ -195,5 +195,6 @@ void FlarmNetThread::run()
   // deactivate all signals in this thread
   pthread_sigmask( SIG_SETMASK, &sigset, 0 );
 
-  FlarmNet::loadData();
+  int records = FlarmNet::loadData();
+  emit loadedRecords( records );
 }

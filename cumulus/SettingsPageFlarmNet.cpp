@@ -87,7 +87,8 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   topLayout->addWidget( editFnFile, row, 0, 1, 2 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("FlarmNet Filter:"), this), row, 0);
+  fnFilterLabel = new QLabel( this );
+  topLayout->addWidget( fnFilterLabel, row, 0 );
   row++;
 
   Qt::InputMethodHints imh1;
@@ -234,6 +235,8 @@ void SettingsPageFlarmNet::load()
     {
       buttonDownload->setEnabled( true );
     }
+
+  setLoadedRecords();
 }
 
 void SettingsPageFlarmNet::save()
@@ -334,4 +337,15 @@ void SettingsPageFlarmNet::slotDownloadsFinished( int /* requests */,
 
   m_downloadIsRunning = false;
   buttonDownload->setEnabled( true );
+}
+
+/**
+ * Set the loaded FlarmNet records.
+ */
+void SettingsPageFlarmNet::setLoadedRecords()
+{
+  int records = FlarmNet::getRecords();
+
+  fnFilterLabel->setText( tr("FlarmNet Filter - loaded elements") +
+		          QString(": %1 ").arg( records ) );
 }
