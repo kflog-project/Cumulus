@@ -465,11 +465,15 @@ QString Airspace::getInfoString() const
             {
               QString fqstr = fq.frequencyAsString( false );
 
-              // Look, if frequency is not to find in the name
-              if( name.contains( fqstr) == false )
+              text += "<BR>";
+
+              // Look, if frequency has a call name defined
+              if( fq.getCallSign().isEmpty() == false )
                 {
-                  text += " " + fqstr;
+                  text += fq.getCallSign() + " ";
                 }
+
+              text += fqstr;
             }
         }
     }

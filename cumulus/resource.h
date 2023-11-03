@@ -97,10 +97,10 @@
 #define FILE_VERSION_MAP_C      103
 
 // Version definition for compiled airspace files.
-#define FILE_VERSION_AIRSPACE_C 4
+#define FILE_VERSION_AIRSPACE_C 5
 
 // Version definition for compiled airfield files.
-#define FILE_VERSION_AIRFIELD_C 6
+#define FILE_VERSION_AIRFIELD_C 7
 
 // Version definition for compiled navigation aid files.
 #define FILE_VERSION_NAV_AIDS_C 3

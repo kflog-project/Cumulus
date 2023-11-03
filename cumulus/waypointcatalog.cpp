@@ -271,7 +271,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
                   in >> primary;
                   in >> publicUse;
 
-                  Frequency freq = Frequency( frequency, unit, type, userType, primary, publicUse );
+                  Frequency freq = Frequency( frequency, unit, type, userType, primary, publicUse, "" );
                   frequencyList.append( freq );
                 }
             }

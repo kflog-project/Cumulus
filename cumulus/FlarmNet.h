@@ -79,6 +79,14 @@ class FlarmNet
    */
   static bool getData( int id, QStringList &data );
 
+  /**
+   * Get number of FlarmNet records.
+   */
+  static int getRecords()
+  {
+    return m_datamap.size();
+  }
+
  private:
 
   /**
@@ -122,5 +130,13 @@ class FlarmNetThread : public QThread
    * That is the main method of the thread.
    */
   void run();
-};
 
+  signals:
+
+   /**
+   * This signal emits the number of loaded FlarmNet records
+   *
+   * \param loadedRecords  The number of loaded records
+   */
+   void loadedRecords( int loadedRecords );
+};

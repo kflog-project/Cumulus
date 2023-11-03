@@ -424,7 +424,7 @@ void OpenAirParser::finishAirspace()
     {
       Frequency fq;
       fq.setValue( asFrequency );
-      fq.setUserType( asGSCallSign );
+      fq.setCallSign( asGSCallSign );
       fq.setUnit( Frequency::MHz );
       fqList.append( fq );
     }

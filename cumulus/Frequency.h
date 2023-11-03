@@ -87,7 +87,8 @@ class Frequency
     m_unit(unknown),
     m_type(Unknown),
     m_primary(true),
-    m_publicUse(true)
+    m_publicUse(true),
+    m_callSign()
   {
   }
 
@@ -96,13 +97,15 @@ class Frequency
              quint8 type,
              QString userType,
              bool primary,
-             bool publicUse ) :
+             bool publicUse,
+	     QString callSign ) :
     m_value(value),
     m_unit(unit),
     m_type(type),
     m_userType(userType),
     m_primary(primary),
-    m_publicUse(publicUse)
+    m_publicUse(publicUse),
+    m_callSign(callSign)
   {
   }
 
@@ -230,14 +233,14 @@ class Frequency
     m_unit = unit;
   }
 
-  const QString& getName() const
+  const QString& getCallSign() const
   {
-    return m_name;
+    return m_callSign;
   }
 
-  void setName( const QString &name )
+  void setCallSign( const QString &name )
   {
-    m_name = name;
+    m_callSign = name;
   }
 
   const QString& getUserType() const
@@ -277,13 +280,6 @@ class Frequency
   static void loadTranslations();
 
   /**
-   * An optional frequency name and/or callsign, like 'Herrenteich Info',
-   * that may help to clarify the intended purpose of the frequency.
-   * The frequency name should not contain any additional frequencies.
-   */
-  QString m_name;
-
-  /**
    * Frequency value
    */
   float m_value;
@@ -313,5 +309,12 @@ class Frequency
    */
 
   bool m_publicUse;
+
+  /**
+   * An optional frequency name and/or callsign, like 'Herrenteich Radio',
+   * that may help to clarify the intended purpose of the frequency.
+   * The frequency name should not contain any additional frequencies.
+   */
+  QString m_callSign;
 };
 

@@ -170,6 +170,7 @@ void Frequency::saveFrequencies( QDataStream& out, const QList<Frequency>& fqLis
       ShortSave( out, fq.m_userType.toUtf8() );
       out << fq.m_primary;
       out << fq.m_publicUse;
+      ShortSave( out, fq.m_callSign.toUtf8() );
    }
 }
 
@@ -189,6 +190,7 @@ void Frequency::loadFrequencies( QDataStream& in, QList<Frequency>& fqList )
       QString userType;
       bool primary;
       bool publicUse;
+      QString callSign;
 
       in >> value;
       in >> unit;
@@ -196,13 +198,15 @@ void Frequency::loadFrequencies( QDataStream& in, QList<Frequency>& fqList )
       ShortLoad(in, userType);
       in >> primary;
       in >> publicUse;
+      ShortLoad(in, callSign);
 
       Frequency fq( value,
                     unit,
                     type,
                     userType,
                     primary,
-                    publicUse );
+                    publicUse,
+		    callSign );
 
       fqList.append( fq );
     }
