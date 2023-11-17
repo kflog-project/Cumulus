@@ -192,6 +192,25 @@
     </message>
 </context>
 <context>
+    <name>AirspaceInfo</name>
+    <message>
+        <location filename="../../AirspaceInfo.cpp" line="59"/>
+        <location filename="../../AirspaceInfo.cpp" line="158"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceInfo.cpp" line="64"/>
+        <source>Stop</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceInfo.cpp" line="149"/>
+        <source>Close in %1 s</source>
+        <translation>Schliesse in %1 s</translation>
+    </message>
+</context>
+<context>
     <name>AltimeterDialog</name>
     <message>
         <location filename="../../altimeterdialog.cpp" line="50"/>
@@ -481,42 +500,42 @@
         <translation> Zeige </translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="259"/>
+        <location filename="../../flarmaliaslist.cpp" line="268"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="260"/>
+        <location filename="../../flarmaliaslist.cpp" line="269"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="323"/>
+        <location filename="../../flarmaliaslist.cpp" line="332"/>
         <source>Missing Entry</source>
         <translation>Eingabe fehlt</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="324"/>
+        <location filename="../../flarmaliaslist.cpp" line="333"/>
         <source>Please fill out all fields!</source>
         <translation>Füllen Sie alle Felder aus!</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="434"/>
+        <location filename="../../flarmaliaslist.cpp" line="443"/>
         <source>Enter Flarm ID</source>
         <translation>Eingabe Flarm ID</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="435"/>
+        <location filename="../../flarmaliaslist.cpp" line="444"/>
         <source>Flarm ID:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="439"/>
+        <location filename="../../flarmaliaslist.cpp" line="448"/>
         <source>Enter Alias</source>
         <translation>Eingabe Alias</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="440"/>
+        <location filename="../../flarmaliaslist.cpp" line="449"/>
         <source>Alias (15):</source>
         <translation></translation>
     </message>
@@ -1728,7 +1747,7 @@
 <context>
     <name>Map</name>
     <message>
-        <location filename="../../map.cpp" line="167"/>
+        <location filename="../../map.cpp" line="168"/>
         <source>Airspace&amp;nbsp;Structure</source>
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
@@ -3679,12 +3698,12 @@ USB Stick eingeschoben?</translation>
         <translation>Unbegrenzt</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="466"/>
+        <location filename="../../airspace.cpp" line="489"/>
         <source>always active</source>
         <translation>immer aktiv</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="484"/>
+        <location filename="../../airspace.cpp" line="507"/>
         <source>active until </source>
         <translation>aktiv bis </translation>
     </message>
@@ -4815,44 +4834,54 @@ USB Stick eingeschoben?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="90"/>
-        <source>FlarmNet Filter:</source>
-        <translation></translation>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="92"/>
+        <source>Count</source>
+        <translation>zähle</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="100"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="105"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="107"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="112"/>
         <source>Defaults</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="108"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="113"/>
         <source>Reset all to defaults</source>
         <translation>Alles rücksetzen auf Standdard</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="287"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="303"/>
         <source>Running</source>
         <translation>Läuft</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="300"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="316"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="310"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="326"/>
         <source>Network error. Check Internet connection!</source>
         <translation>Netzwerkfehler. Prüfe Internet Verbindung!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="322"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="338"/>
         <source>Download error, check URL!</source>
         <translation>Downloadfehler, prüfe URL!</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="352"/>
+        <source>FlarmNet Filter - loaded elements</source>
+        <translation>FlarmNet Filter - geladene Elemente</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="365"/>
+        <source>FlarmNet Filter - would load %1 elements</source>
+        <translation>FlarmNet Filter - würde %1 Elemente laden</translation>
     </message>
 </context>
 <context>
@@ -6254,8 +6283,8 @@ USB Stick eingeschoben?</translation>
     <name>TPInfoWidget</name>
     <message>
         <location filename="../../tpinfowidget.cpp" line="99"/>
-        <location filename="../../tpinfowidget.cpp" line="172"/>
-        <location filename="../../tpinfowidget.cpp" line="771"/>
+        <location filename="../../tpinfowidget.cpp" line="171"/>
+        <location filename="../../tpinfowidget.cpp" line="770"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -6265,115 +6294,115 @@ USB Stick eingeschoben?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="147"/>
-        <location filename="../../tpinfowidget.cpp" line="165"/>
+        <location filename="../../tpinfowidget.cpp" line="146"/>
+        <location filename="../../tpinfowidget.cpp" line="164"/>
         <source>Close (%1)</source>
         <translation>Schließen (%1)</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="238"/>
+        <location filename="../../tpinfowidget.cpp" line="237"/>
         <source>Taskpoint switch</source>
         <translation>Aufgabenpunktschaltung</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="242"/>
+        <location filename="../../tpinfowidget.cpp" line="241"/>
         <source>Reached target</source>
         <translation>Erreichtes Ziel</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="247"/>
+        <location filename="../../tpinfowidget.cpp" line="246"/>
         <source>Next target</source>
         <translation>Nächstes Ziel</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="255"/>
-        <location filename="../../tpinfowidget.cpp" line="400"/>
-        <location filename="../../tpinfowidget.cpp" line="548"/>
-        <location filename="../../tpinfowidget.cpp" line="694"/>
+        <location filename="../../tpinfowidget.cpp" line="254"/>
+        <location filename="../../tpinfowidget.cpp" line="399"/>
+        <location filename="../../tpinfowidget.cpp" line="547"/>
+        <location filename="../../tpinfowidget.cpp" line="693"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="277"/>
-        <location filename="../../tpinfowidget.cpp" line="282"/>
-        <location filename="../../tpinfowidget.cpp" line="287"/>
-        <location filename="../../tpinfowidget.cpp" line="293"/>
-        <location filename="../../tpinfowidget.cpp" line="412"/>
-        <location filename="../../tpinfowidget.cpp" line="416"/>
-        <location filename="../../tpinfowidget.cpp" line="420"/>
-        <location filename="../../tpinfowidget.cpp" line="427"/>
-        <location filename="../../tpinfowidget.cpp" line="564"/>
-        <location filename="../../tpinfowidget.cpp" line="569"/>
-        <location filename="../../tpinfowidget.cpp" line="574"/>
-        <location filename="../../tpinfowidget.cpp" line="705"/>
-        <location filename="../../tpinfowidget.cpp" line="709"/>
-        <location filename="../../tpinfowidget.cpp" line="713"/>
+        <location filename="../../tpinfowidget.cpp" line="276"/>
+        <location filename="../../tpinfowidget.cpp" line="281"/>
+        <location filename="../../tpinfowidget.cpp" line="286"/>
+        <location filename="../../tpinfowidget.cpp" line="292"/>
+        <location filename="../../tpinfowidget.cpp" line="411"/>
+        <location filename="../../tpinfowidget.cpp" line="415"/>
+        <location filename="../../tpinfowidget.cpp" line="419"/>
+        <location filename="../../tpinfowidget.cpp" line="426"/>
+        <location filename="../../tpinfowidget.cpp" line="563"/>
+        <location filename="../../tpinfowidget.cpp" line="568"/>
+        <location filename="../../tpinfowidget.cpp" line="573"/>
+        <location filename="../../tpinfowidget.cpp" line="704"/>
+        <location filename="../../tpinfowidget.cpp" line="708"/>
+        <location filename="../../tpinfowidget.cpp" line="712"/>
         <source>Arrival Alt</source>
         <translation>Ankunftshöhe</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="294"/>
-        <location filename="../../tpinfowidget.cpp" line="343"/>
-        <location filename="../../tpinfowidget.cpp" line="346"/>
-        <location filename="../../tpinfowidget.cpp" line="365"/>
-        <location filename="../../tpinfowidget.cpp" line="428"/>
-        <location filename="../../tpinfowidget.cpp" line="466"/>
-        <location filename="../../tpinfowidget.cpp" line="469"/>
-        <location filename="../../tpinfowidget.cpp" line="490"/>
+        <location filename="../../tpinfowidget.cpp" line="293"/>
+        <location filename="../../tpinfowidget.cpp" line="342"/>
+        <location filename="../../tpinfowidget.cpp" line="345"/>
+        <location filename="../../tpinfowidget.cpp" line="364"/>
+        <location filename="../../tpinfowidget.cpp" line="427"/>
+        <location filename="../../tpinfowidget.cpp" line="465"/>
+        <location filename="../../tpinfowidget.cpp" line="468"/>
+        <location filename="../../tpinfowidget.cpp" line="489"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="308"/>
-        <location filename="../../tpinfowidget.cpp" line="431"/>
-        <location filename="../../tpinfowidget.cpp" line="590"/>
-        <location filename="../../tpinfowidget.cpp" line="719"/>
+        <location filename="../../tpinfowidget.cpp" line="307"/>
+        <location filename="../../tpinfowidget.cpp" line="430"/>
+        <location filename="../../tpinfowidget.cpp" line="589"/>
+        <location filename="../../tpinfowidget.cpp" line="718"/>
         <source>Vg</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="319"/>
-        <location filename="../../tpinfowidget.cpp" line="342"/>
-        <location filename="../../tpinfowidget.cpp" line="442"/>
-        <location filename="../../tpinfowidget.cpp" line="465"/>
-        <location filename="../../tpinfowidget.cpp" line="603"/>
-        <location filename="../../tpinfowidget.cpp" line="730"/>
+        <location filename="../../tpinfowidget.cpp" line="318"/>
+        <location filename="../../tpinfowidget.cpp" line="341"/>
+        <location filename="../../tpinfowidget.cpp" line="441"/>
+        <location filename="../../tpinfowidget.cpp" line="464"/>
+        <location filename="../../tpinfowidget.cpp" line="602"/>
+        <location filename="../../tpinfowidget.cpp" line="729"/>
         <source>Duration</source>
         <translation>Dauer</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="337"/>
-        <location filename="../../tpinfowidget.cpp" line="345"/>
-        <location filename="../../tpinfowidget.cpp" line="460"/>
-        <location filename="../../tpinfowidget.cpp" line="468"/>
-        <location filename="../../tpinfowidget.cpp" line="621"/>
-        <location filename="../../tpinfowidget.cpp" line="748"/>
+        <location filename="../../tpinfowidget.cpp" line="336"/>
+        <location filename="../../tpinfowidget.cpp" line="344"/>
+        <location filename="../../tpinfowidget.cpp" line="459"/>
+        <location filename="../../tpinfowidget.cpp" line="467"/>
+        <location filename="../../tpinfowidget.cpp" line="620"/>
+        <location filename="../../tpinfowidget.cpp" line="747"/>
         <source>ETA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="359"/>
-        <location filename="../../tpinfowidget.cpp" line="364"/>
-        <location filename="../../tpinfowidget.cpp" line="482"/>
-        <location filename="../../tpinfowidget.cpp" line="488"/>
-        <location filename="../../tpinfowidget.cpp" line="635"/>
-        <location filename="../../tpinfowidget.cpp" line="759"/>
+        <location filename="../../tpinfowidget.cpp" line="358"/>
+        <location filename="../../tpinfowidget.cpp" line="363"/>
+        <location filename="../../tpinfowidget.cpp" line="481"/>
+        <location filename="../../tpinfowidget.cpp" line="487"/>
+        <location filename="../../tpinfowidget.cpp" line="634"/>
+        <location filename="../../tpinfowidget.cpp" line="758"/>
         <source>Sunset</source>
         <translation>SU</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="381"/>
-        <location filename="../../tpinfowidget.cpp" line="676"/>
+        <location filename="../../tpinfowidget.cpp" line="380"/>
+        <location filename="../../tpinfowidget.cpp" line="675"/>
         <source>Finish target</source>
         <translation>Finish Ziel</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="536"/>
+        <location filename="../../tpinfowidget.cpp" line="535"/>
         <source>Arrival Info</source>
         <translation>Ankunftsinfo</translation>
     </message>
     <message>
-        <location filename="../../tpinfowidget.cpp" line="540"/>
+        <location filename="../../tpinfowidget.cpp" line="539"/>
         <source>Selected target</source>
         <translation>Gewähltes Ziel</translation>
     </message>
