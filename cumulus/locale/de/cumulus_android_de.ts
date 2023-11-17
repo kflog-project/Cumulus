@@ -192,6 +192,25 @@
     </message>
 </context>
 <context>
+    <name>AirspaceInfo</name>
+    <message>
+        <location filename="../../AirspaceInfo.cpp" line="75"/>
+        <location filename="../../AirspaceInfo.cpp" line="174"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceInfo.cpp" line="80"/>
+        <source>Stop</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../../AirspaceInfo.cpp" line="165"/>
+        <source>Close in %1 s</source>
+        <translation>Schließe in %1 s</translation>
+    </message>
+</context>
+<context>
     <name>AltimeterDialog</name>
     <message>
         <location filename="../../altimeterdialog.cpp" line="50"/>
@@ -478,42 +497,42 @@
         <translation> Zeige </translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="296"/>
+        <location filename="../../flarmaliaslist.cpp" line="300"/>
         <source>Delete?</source>
         <translation>Löschen?</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="297"/>
+        <location filename="../../flarmaliaslist.cpp" line="301"/>
         <source>Delete selected entries?</source>
         <translation>Auswahl löschen?</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="368"/>
+        <location filename="../../flarmaliaslist.cpp" line="372"/>
         <source>Missing Entry</source>
         <translation>Eingabe fehlt</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="369"/>
+        <location filename="../../flarmaliaslist.cpp" line="373"/>
         <source>Please fill out all fields!</source>
         <translation>Füllen Sie alle Felder aus!</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="485"/>
+        <location filename="../../flarmaliaslist.cpp" line="489"/>
         <source>Enter Flarm ID</source>
         <translation>Eingabe Flarm ID</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="486"/>
+        <location filename="../../flarmaliaslist.cpp" line="490"/>
         <source>Flarm ID:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="490"/>
+        <location filename="../../flarmaliaslist.cpp" line="494"/>
         <source>Enter Alias</source>
         <translation>Eingabe Alias</translation>
     </message>
     <message>
-        <location filename="../../flarmaliaslist.cpp" line="491"/>
+        <location filename="../../flarmaliaslist.cpp" line="495"/>
         <source>Alias (15):</source>
         <translation></translation>
     </message>
@@ -1701,7 +1720,7 @@
 <context>
     <name>Map</name>
     <message>
-        <location filename="../../map.cpp" line="172"/>
+        <location filename="../../map.cpp" line="173"/>
         <source>Airspace&amp;nbsp;Structure</source>
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
@@ -3861,12 +3880,12 @@ USB Stick eingeschoben?</translation>
         <translation>Unbegrenzt</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="466"/>
+        <location filename="../../airspace.cpp" line="489"/>
         <source>always active</source>
         <translation>immer aktiv</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="484"/>
+        <location filename="../../airspace.cpp" line="507"/>
         <source>active until </source>
         <translation>aktiv bis </translation>
     </message>
@@ -4343,7 +4362,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="234"/>
         <location filename="../../OpenAip.cpp" line="467"/>
         <location filename="../../OpenAip.cpp" line="690"/>
-        <location filename="../../OpenAip.cpp" line="1205"/>
+        <location filename="../../OpenAip.cpp" line="1203"/>
         <source>File %1 is empty</source>
         <translation>Datei %1 ist leer</translation>
     </message>
@@ -4352,7 +4371,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="258"/>
         <location filename="../../OpenAip.cpp" line="491"/>
         <location filename="../../OpenAip.cpp" line="714"/>
-        <location filename="../../OpenAip.cpp" line="1229"/>
+        <location filename="../../OpenAip.cpp" line="1227"/>
         <source>Json parser error for file: </source>
         <translation>Json Parser Fehler in Datei: </translation>
     </message>
@@ -4361,12 +4380,12 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="268"/>
         <location filename="../../OpenAip.cpp" line="501"/>
         <location filename="../../OpenAip.cpp" line="724"/>
-        <location filename="../../OpenAip.cpp" line="1239"/>
+        <location filename="../../OpenAip.cpp" line="1237"/>
         <source>Json format error for file: </source>
         <translation>Json Format Fehler in Datei: </translation>
     </message>
     <message>
-        <location filename="../../OpenAip.cpp" line="1249"/>
+        <location filename="../../OpenAip.cpp" line="1247"/>
         <source>Cannot load airspace type mapper for</source>
         <translation>Kann Luftraumtyp Mapper nicht laden für</translation>
     </message>
@@ -4375,7 +4394,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="241"/>
         <location filename="../../OpenAip.cpp" line="474"/>
         <location filename="../../OpenAip.cpp" line="697"/>
-        <location filename="../../OpenAip.cpp" line="1212"/>
+        <location filename="../../OpenAip.cpp" line="1210"/>
         <source>Cannot open file</source>
         <translation>Kann nicht öffnen Datei</translation>
     </message>
@@ -4977,64 +4996,74 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>SettingsPageFlarmNet</name>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="38"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="47"/>
         <source>Settings - FlarmNet</source>
         <translation>Einstellungen - FlarmNet</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="75"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="96"/>
         <source>use FlarmNet data</source>
         <translation>verwende FlarmNet Daten</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="76"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="97"/>
         <source>Check it for FlarmNet usage</source>
         <translation>Ein- Ausschalten von FlarmNet Benutzung</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="80"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="101"/>
         <source>FlarmNet URL:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="90"/>
-        <source>FlarmNet Filter:</source>
-        <translation></translation>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="113"/>
+        <source>Count</source>
+        <translation>Zähle</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="100"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="129"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="107"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="136"/>
         <source>Defaults</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="108"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="137"/>
         <source>Reset all to defaults</source>
         <translation>Alles rücksetzen auf Standdard</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="287"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="327"/>
         <source>Running</source>
         <translation>Läuft</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="300"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="340"/>
         <source>Finished</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="310"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="350"/>
         <source>Network error. Check Internet connection!</source>
         <translation>Netzwerkfehler. Prüfe Internet Verbindung!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarmNet.cpp" line="322"/>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="362"/>
         <source>Download error, check URL!</source>
         <translation>Downloadfehler, prüfe URL!</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="376"/>
+        <source>FlarmNet Filter - loaded elements</source>
+        <translation>FlarmNet Filter - geladene Elemente</translation>
+    </message>
+    <message>
+        <location filename="../../SettingsPageFlarmNet.cpp" line="388"/>
+        <source>FlarmNet Filter - would load %1 elements</source>
+        <translation>FlarmNet Filter - würde %1 Elemente laden</translation>
     </message>
 </context>
 <context>
