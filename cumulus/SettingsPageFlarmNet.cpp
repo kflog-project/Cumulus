@@ -110,7 +110,11 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
 
   fnFilterLabel = new QLabel( this );
   topLayout->addWidget( fnFilterLabel, row, 0 );
+  count = new QPushButton( tr("Count"), this );
+  topLayout->addWidget( count, row, 1 );
   row++;
+
+  connect( count, SIGNAL(clicked()), SLOT(slotCount()) );
 
   Qt::InputMethodHints imh1;
   editFnFilter = new QLineEdit( this );
@@ -145,12 +149,12 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   help->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   help->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QPushButton *cancel = new QPushButton(this);
+  cancel = new QPushButton(this);
   cancel->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("cancel.png")));
   cancel->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   cancel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
 
-  QPushButton *ok = new QPushButton(this);
+  ok = new QPushButton(this);
   ok->setIcon(QIcon(GeneralConfig::instance()->loadPixmap("ok.png")));
   ok->setIconSize(QSize(Layout::getButtonSize(12), Layout::getButtonSize(12)));
   ok->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::QSizePolicy::Preferred);
@@ -371,4 +375,18 @@ void SettingsPageFlarmNet::setLoadedRecords()
 
   fnFilterLabel->setText( tr("FlarmNet Filter - loaded elements") +
 		          QString(": %1 ").arg( records ) );
+}
+/**
+ * Slot to count filter items.
+ */
+void SettingsPageFlarmNet::slotCount()
+{
+  ok->setEnabled( false );
+  cancel->setEnabled( false );
+
+  int records = FlarmNet::applyFilter( editFnFilter->text().trimmed() );
+  fnFilterLabel->setText( tr("FlarmNet Filter - would load %1 elements").arg( records ) );
+
+  ok->setEnabled( true );
+  cancel->setEnabled( true );
 }

@@ -99,6 +99,11 @@ class SettingsPageFlarmNet : public QWidget
    */
   void slotFileDownloaded(QString& );
 
+  /**
+   * Slot to count filter items.
+   */
+  void slotCount();
+
  private:
 
   /** Called to load the configuration file data. */
@@ -117,6 +122,10 @@ class SettingsPageFlarmNet : public QWidget
   QLineEdit*   editFnFilter;
   QPushButton* buttonDownload;
   QPushButton* buttonReset;
+  QPushButton *cancel;
+  QPushButton *ok;
+  QPushButton *count;
+
   QLabel*      info;
   QLabel*      fnFilterLabel;
 

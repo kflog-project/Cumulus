@@ -28,7 +28,7 @@
  *
  * \date 2023
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #pragma once
@@ -86,6 +86,11 @@ class FlarmNet
   {
     return m_datamap.size();
   }
+
+  /**
+   * Count filtered elements and return it.
+   */
+  static int applyFilter( QString filter );
 
  private:
 
