@@ -164,12 +164,12 @@ void Map::p_displayAirspaceInfo(const QPoint& current)
     }
 
   int itemcount=0;
-
   QString text;
-
   bool show = false;
+  int border = 2 * Layout::getIntScaledDensity();
 
-  text += "<html><table border=1 cellpadding=\"2\"><tr><th align=center>" +
+  text += "<html><table border=\"" + QString::number( border ) +
+          "\" bordercolor=\"black\" cellpadding=\"2\"><tr><th align=center>" +
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
