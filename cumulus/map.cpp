@@ -164,7 +164,7 @@ void Map::p_displayAirspaceInfo( const QPoint& current )
 
   bool show = false;
 
-  text += "<html><table border=1 cellpadding=\"2\"><tr><th align=center>" +
+  text += "<html><table border=2 bordercolor=\"black\" cellpadding=\"2\"><tr><th align=center>" +
           tr("Airspace&nbsp;Structure") +
           "</th></tr>";
 
