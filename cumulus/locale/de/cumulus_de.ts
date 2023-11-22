@@ -4836,7 +4836,7 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="92"/>
         <source>Count</source>
-        <translation>zähle</translation>
+        <translation>Zähle</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="105"/>
