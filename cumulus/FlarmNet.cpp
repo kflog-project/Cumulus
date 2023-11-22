@@ -187,7 +187,7 @@ int FlarmNet::applyFilter( QString filter )
       return items;
     }
 
-  QStringList filterList = filter.split( QRegExp("[\\s,]+"), Qt::SkipEmptyParts);
+  QStringList filterList = filter.split( QRegExp("[\\s,]+"), QString::SkipEmptyParts);
 
   QTextStream in( &file );
   in.setCodec( "ISO 8859-15" );
