@@ -21,7 +21,9 @@ Cumulus changelog
 
 [*] 2023-11-23 AP: Cumulus 5.42.2 released for Debian, Ubuntu and Android.
 
-[-] 2023-11-03 AP: Issue #169 fixed. Improve airspace display.
+[-] 2023-11-03 AP: Issue #169 fixed. Improve airspace display. Call station
+                   and Frequency of airspace are displaed, if they are contained
+                   in OpenAip airspace data.
 
 [*] 2023-10-20 AP: Cumulus 5.42.0 released for Debian, Ubuntu and Android.
 
