@@ -24,7 +24,7 @@
 #include "altitude.h"
 #include "generalconfig.h"
 #include "numberEditor.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "map.h"
 #include "settingspageairspacefillingnumpad.h"
 

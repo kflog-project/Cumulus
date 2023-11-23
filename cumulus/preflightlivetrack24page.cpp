@@ -32,7 +32,7 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "helpbrowser.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "preflightlivetrack24page.h"
 #include "skylines/SkyLinesTracker.h"

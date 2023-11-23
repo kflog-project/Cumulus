@@ -31,7 +31,7 @@
 #include "gpsconandroid.h"
 #include "gpsnmea.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "DownloadManager.h"
 
 /**

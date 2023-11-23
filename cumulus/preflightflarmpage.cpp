@@ -30,7 +30,7 @@
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "numberEditor.h"
 #include "preflightflarmpage.h"

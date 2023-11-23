@@ -38,7 +38,7 @@
 #include "generalconfig.h"
 #include "gpsnmea.h"
 #include "gpscon.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "signalhandler.h"
 #include "protocol.h"
 #include "ipc.h"

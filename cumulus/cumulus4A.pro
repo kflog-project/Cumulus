@@ -171,7 +171,7 @@ HEADERS = \
     ListViewTabs.h \
     listwidgetparent.h \
     logbook.h \
-    mainwindow.h \
+    MainWindow.h \
     mapcalc.h \
     mapconfig.h \
     mapcontents.h \
@@ -315,7 +315,7 @@ SOURCES = \
     listwidgetparent.cpp \
     logbook.cpp \
     main.cpp \
-    mainwindow.cpp \
+    MainWindow.cpp \
     mapcalc.cpp \
     mapconfig.cpp \
     mapcontents.cpp \

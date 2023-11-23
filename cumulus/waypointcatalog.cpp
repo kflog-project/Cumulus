@@ -23,7 +23,7 @@
 #include "filetools.h"
 #include "Frequency.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcalc.h"
 #include "mapmatrix.h"
 #include "radiopoint.h"

@@ -24,7 +24,7 @@
 #include "airspacewarningdistance.h"
 #include "altitude.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "settingspageairspacewarningsnumpad.h"
 

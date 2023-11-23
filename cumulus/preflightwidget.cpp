@@ -29,7 +29,7 @@
 #include "igclogger.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapconfig.h"
 #include "map.h"
 #include "preflightchecklistpage.h"

@@ -19,7 +19,7 @@
 #include <QtGui>
 
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "whatsthat.h"
 
 uint WhatsThat::instance = 0;

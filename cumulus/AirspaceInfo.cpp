@@ -24,7 +24,7 @@
 #endif
 
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "AirspaceInfo.h"
 #include "generalconfig.h"
 

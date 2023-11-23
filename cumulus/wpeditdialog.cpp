@@ -30,7 +30,7 @@
 #include "mapcontents.h"
 #include "mapmatrix.h"
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "layout.h"
 #include "helpbrowser.h"
 

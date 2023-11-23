@@ -31,7 +31,7 @@
 #include "generalconfig.h"
 #include "hwinfo.h"
 #include "LiveTrack24.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 #ifdef ANDROID
 #include "jnisupport.h"

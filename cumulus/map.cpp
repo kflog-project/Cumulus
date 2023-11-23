@@ -32,7 +32,7 @@
 #include "AirspaceFilters.h"
 #include "AirspaceInfo.h"
 #include "calculator.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "distance.h"
 #include "flarmaliaslist.h"
 #include "generalconfig.h"

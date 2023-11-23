@@ -21,7 +21,7 @@
 #include <QtWidgets>
 #endif
 
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberInputPad.h"
 #include "numberEditor.h"
 

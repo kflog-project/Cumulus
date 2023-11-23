@@ -25,7 +25,7 @@
 #include "generalconfig.h"
 #include "wpeditdialog.h"
 #include "calculator.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "layout.h"
 
 extern MapContents* _globalMapContents;

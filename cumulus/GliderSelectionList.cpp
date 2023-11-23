@@ -25,7 +25,7 @@
 
 #include "GliderSelectionList.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "rowdelegate.h"
 
 GliderSelectionList::GliderSelectionList( QWidget *parent ) :

@@ -35,7 +35,7 @@
 #include "igclogger.h"
 #include "interfaceelements.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcalc.h"
 #include "map.h"
 #include "mapinfobox.h"

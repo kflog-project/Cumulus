@@ -26,7 +26,7 @@
 #include "airfield.h"
 #include "doubleNumberEditor.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "wpeditdialogpageaero.h"
 

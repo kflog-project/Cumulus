@@ -33,7 +33,7 @@
 #include "hwinfo.h"
 #include "isohypse.h"
 #include "lineelement.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcalc.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"

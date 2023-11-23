@@ -1,5 +1,5 @@
 /***************************************************************************
- mainwindow.cpp  -  main application window
+ MainWindow.cpp  -  main application window
  ---------------------------------------------------------------------------
  begin                : Sun Jul 21 2002
 
@@ -48,7 +48,7 @@
 #include "helpbrowser.h"
 #include "layout.h"
 #include "ListViewTabs.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapconfig.h"
 #include "mapcontents.h"
 #include "mapmatrix.h"

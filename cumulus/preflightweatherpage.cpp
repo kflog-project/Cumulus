@@ -31,7 +31,7 @@
 #endif
 
 #include "generalconfig.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "preflightweatherpage.h"
 #include "speed.h"
 #include "whatsthat.h"

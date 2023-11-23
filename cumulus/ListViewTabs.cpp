@@ -22,7 +22,7 @@
 #include "AirfieldListWidget.h"
 #include "generalconfig.h"
 #include "ListViewTabs.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "mapcontents.h"
 #include "RadioPointListWidget.h"
 #include "SinglePointListWidget.h"

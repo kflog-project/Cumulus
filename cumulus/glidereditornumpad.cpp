@@ -31,7 +31,7 @@
 #include "GliderSelectionList.h"
 #include "layout.h"
 #include "mapview.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "polar.h"
 #include "polardialog.h"

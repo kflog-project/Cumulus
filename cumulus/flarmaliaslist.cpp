@@ -30,7 +30,7 @@
 #include "layout.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "rowdelegate.h"
 #include "target.h"
 

@@ -30,7 +30,7 @@
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 
 // initialize static member variable
 int GpsStatusDialog::noOfInstances = 0;

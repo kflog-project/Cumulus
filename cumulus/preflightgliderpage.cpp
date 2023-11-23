@@ -29,7 +29,7 @@
 #include "glider.h"
 #include "helpbrowser.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "numberEditor.h"
 #include "preflightgliderpage.h"
 

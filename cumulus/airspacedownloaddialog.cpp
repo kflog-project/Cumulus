@@ -22,7 +22,7 @@
 #include "airspacedownloaddialog.h"
 #include "generalconfig.h"
 #include "layout.h"
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "proxydialog.h"
 
 AirspaceDownloadDialog::AirspaceDownloadDialog( QWidget *parent ) :
