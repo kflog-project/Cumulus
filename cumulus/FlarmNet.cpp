@@ -34,7 +34,8 @@ int FlarmNet::loadData()
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
   QElapsedTimer t; t.start();
-  uint items = 0; // number of successfully loaded items
+  uint items = 0; // number of loaded items
+  bool start = true;
 
   m_datamap.clear();
 
@@ -72,11 +73,11 @@ int FlarmNet::loadData()
     {
       QString line = in.readLine();
 
-      if( items == 0 )
+      if( start == true )
         {
           // Magic id is expected
           qDebug() << "FlarmNet magic" << line;
-          items++;
+          start = false;
           continue;
         }
 
@@ -152,8 +153,8 @@ int FlarmNet::loadData()
       // qDebug() << fid << fdata;
     } // End of While
 
-  qDebug( "FlarmNet: %d items loaded in %lldms", items-1, t.elapsed() );
-  return items-1;
+  qDebug( "FlarmNet: %d items loaded in %lldms", items, t.elapsed() );
+  return items;
 }
 
 int FlarmNet::applyFilter( QString filter )
@@ -161,7 +162,8 @@ int FlarmNet::applyFilter( QString filter )
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
   QElapsedTimer t; t.start();
-  uint items = 0; // number of count items
+  uint items = 0; // number of loaded items
+  bool start = true;
 
   // Check, which file the user wants to load.
   QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
@@ -196,11 +198,11 @@ int FlarmNet::applyFilter( QString filter )
     {
       QString line = in.readLine();
 
-      if( items == 0 )
+      if( start == true )
         {
           // Magic id is expected
+          start = false;
           qDebug() << "FlarmNet magic" << line;
-          items++;
           continue;
         }
 
@@ -268,8 +270,8 @@ int FlarmNet::applyFilter( QString filter )
       items++;
     } // End of While
 
-  qDebug( "FlarmNet: %d items filtered and count in %lldms", items-1, t.elapsed() );
-  return items-1;
+  qDebug( "FlarmNet: %d items filtered and count in %lldms", items, t.elapsed() );
+  return items;
 }
 
 bool FlarmNet::getData( int id, QStringList &data )
