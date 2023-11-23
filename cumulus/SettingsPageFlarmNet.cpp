@@ -74,7 +74,7 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
 
   useFlarmNet = new QCheckBox( tr("use FlarmNet data"), this );
   useFlarmNet->setToolTip( tr("Check it for FlarmNet usage") );
-  topLayout->addWidget( useFlarmNet, row, 0 );
+  topLayout->addWidget( useFlarmNet, row, 0, 1, 3 );
   row++;
 
   topLayout->addWidget(new QLabel(tr("FlarmNet URL:"), this), row, 0);
@@ -84,13 +84,13 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   editFnFile = new QLineEdit( this );
   imh = (editFnFile->inputMethodHints() | Qt::ImhNoPredictiveText);
   editFnFile->setInputMethodHints(imh);
-  topLayout->addWidget( editFnFile, row, 0, 1, 2 );
+  topLayout->addWidget( editFnFile, row, 0, 1, 3 );
   row++;
 
   fnFilterLabel = new QLabel( this );
-  topLayout->addWidget( fnFilterLabel, row, 0  );
+  topLayout->addWidget( fnFilterLabel, row, 0, 1, 2  );
   count = new QPushButton( tr("Count"), this );
-  topLayout->addWidget( count, row, 1 );
+  topLayout->addWidget( count, row, 2 );
   row++;
 
   connect( count, SIGNAL(clicked()), SLOT(slotCount()) );
@@ -99,14 +99,14 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   editFnFilter = new QLineEdit( this );
   imh1 = (editFnFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
   editFnFilter->setInputMethodHints(imh1);
-  topLayout->addWidget( editFnFilter, row, 0, 1, 2 );
+  topLayout->addWidget( editFnFilter, row, 0, 1, 3 );
   row++;
 
   buttonDownload = new QPushButton( tr("Download"), this );
   topLayout->addWidget( buttonDownload, row, 0 );
 
   info = new QLabel( this );
-  topLayout->addWidget( info, row, 1 );
+  topLayout->addWidget( info, row, 1, 1, 2 );
   row++;
 
   buttonReset = new QPushButton( tr("Defaults"), this );
