@@ -86,9 +86,9 @@ import android.widget.Toast;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2022
+ * @date 2012-2024
  * 
- * @version 1.11
+ * @version 1.12
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -504,9 +504,39 @@ public class CumulusActivity extends QtActivity
     BufferedInputStream in = null;
     FileOutputStream out = null;
     
+    // Create a trust manager that does not validate certificate chains
+    TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        }
+        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        }
+      }
+    };
+    
+    // Install the all-trusting trust manager
+    SSLContext sc = SSLContext.getInstance("SSL");
+    sc.init(null, trustAllCerts, new java.security.SecureRandom());
+    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+    // Create all-trusting host name verifier
+    HostnameVerifier allHostsValid = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
+
+    // Install the all-trusting host verifier
+    // HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+    
     try
     {
-      in = new BufferedInputStream( new URL(urlIn).openStream() );
+      URL url = new URL(urlIn);
+      URLConnection con = url.openConnection();
+      
+      in = new BufferedInputStream( con.getInputStream() );
       out = new FileOutputStream( destinationIn );
       
       byte dataBuffer[] = new byte[1024];
@@ -532,7 +562,7 @@ public class CumulusActivity extends QtActivity
             {
               out = new FileOutputStream( destinationIn );
               out.close();
-              Log.e( TAG, "Creating emppty download file for null cause." );
+              Log.e( TAG, "Creating empty download file for null cause." );
             }
           
           catch (IOException e1) {};
@@ -541,7 +571,9 @@ public class CumulusActivity extends QtActivity
         }
         
         // That should be a common error.
-        nativeHttpsResponse( -1, e.getMessage(), cbIn );
+        nativeHttpsResponse( -1,
+        		             e.getMessage() + ", Cause: " + e.getCause(),
+        		             cbIn );
         return;
       }
     
