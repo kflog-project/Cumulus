@@ -1535,11 +1535,6 @@
         <translation>Karte Info Boxen</translation>
     </message>
     <message>
-        <location filename="../../MainWindow.cpp" line="2324"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2023, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2023, Das Cumulus-Team&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../../MainWindow.cpp" line="2342"/>
         <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
@@ -1710,6 +1705,11 @@
         <location filename="../../MainWindow.cpp" line="2135"/>
         <source>Nearest</source>
         <translation>Nächste</translation>
+    </message>
+    <message>
+        <location filename="../../MainWindow.cpp" line="2324"/>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2024, The Cumulus-Team&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2024, Das Cumulus-Team&lt;/html&gt; {1,?} {2002-2024,?}</translation>
     </message>
     <message>
         <location filename="../../MainWindow.cpp" line="2328"/>
