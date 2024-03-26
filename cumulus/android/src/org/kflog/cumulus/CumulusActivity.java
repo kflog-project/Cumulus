@@ -25,6 +25,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +38,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.kde.necessitas.origo.QtActivity;
 
@@ -495,10 +507,15 @@ public class CumulusActivity extends QtActivity
     try
     {
       Thread.sleep( 100 );
-    } catch (InterruptedException e1)
+    }
+    
+    catch (InterruptedException e1)
     {
-      // TODO Auto-generated catch block
       e1.printStackTrace();
+      nativeHttpsResponse( -1,
+                           e1.getMessage() + ", Cause: " + e1.getCause(),
+                           cbIn );
+      return;
     }
     
     BufferedInputStream in = null;
@@ -509,22 +526,61 @@ public class CumulusActivity extends QtActivity
         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
             return null;
         }
-        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException
+        {
         }
-        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException
+        {
         }
       }
     };
     
     // Install the all-trusting trust manager
-    SSLContext sc = SSLContext.getInstance("SSL");
-    sc.init(null, trustAllCerts, new java.security.SecureRandom());
-    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+    SSLContext sc = null;
+    
+    try
+    {
+      sc = SSLContext.getInstance("SSL");
+    }
+    
+    catch (NoSuchAlgorithmException e2)
+    {
+      e2.printStackTrace();
+      Log.e( TAG, e2.getMessage() );
+      nativeHttpsResponse( -1,
+                           e2.getMessage() + ", Cause: " + e2.getCause(),
+                           cbIn );
+      return;
+    }
+    
+    try
+    {
+      sc.init(null, trustAllCerts, new java.security.SecureRandom());
+    } 
+    
+    catch (KeyManagementException e2)
+    {
+      e2.printStackTrace();
+      Log.e( TAG, e2.getMessage() );
+      nativeHttpsResponse( -1,
+                           e2.getMessage() + ", Cause: " + e2.getCause(),
+                           cbIn );
+                           return;
+    }
+    
+    HttpsURLConnection.setDefaultSSLSocketFactory( sc.getSocketFactory() );
 
     // Create all-trusting host name verifier
+    @SuppressWarnings("unused")
     HostnameVerifier allHostsValid = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
+        @Override
+        public boolean verify(String hostname, SSLSession session)
+        {
+          return true;
         }
     };
 
@@ -572,8 +628,8 @@ public class CumulusActivity extends QtActivity
         
         // That should be a common error.
         nativeHttpsResponse( -1,
-        		             e.getMessage() + ", Cause: " + e.getCause(),
-        		             cbIn );
+        		                 e.getMessage() + ", Cause: " + e.getCause(),
+        		                 cbIn );
         return;
       }
     
