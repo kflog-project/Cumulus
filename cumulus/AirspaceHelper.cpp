@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2023 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2024 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -593,6 +593,8 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("29", BaseMapElement::Sua); // Low Altitude Overflight Restriction
       typeMap.insert("30", BaseMapElement::Sua); // MRT Military Route (used in Poland)
       typeMap.insert("31", BaseMapElement::Sua); // TSA/TRA Feeding Route (TFR) (used in Poland)
+      typeMap.insert("32", BaseMapElement::AirFir); // VFR Sector
+      typeMap.insert("33", BaseMapElement::AirFir); // FIS Sector
     }
   else
     {
