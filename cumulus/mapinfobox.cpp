@@ -4,7 +4,7 @@
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by Andre Somers
                                2008      by Josua Dietze
-                               2008-2022 by Axel Pauli
+                               2008-2024 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -292,7 +292,8 @@ void MapInfoBox::setValue( const QString& newVal, bool showEvent )
   if( m_minUpdateInterval > 0 && showEvent == false )
     {
       // A time update interval is set.
-      if( m_lastUpdateTime.elapsed() < m_minUpdateInterval )
+      if( m_lastUpdateTime.isValid() == true &&
+          m_lastUpdateTime.elapsed() < m_minUpdateInterval )
         {
           initUpdateDisplayTimer();
 
