@@ -7,7 +7,7 @@
 
   copyright            : (C) 2002      by Andre Somers
                              2008      by Josua Dietze
-                             2008-2021 by Axel Pauli <kflog.cumulus@gmail.com>
+                             2008-2024 by Axel Pauli <kflog.cumulus@gmail.com>
 
  ***************************************************************************/
 
@@ -529,9 +529,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusInfo->setAlignment(Qt::AlignCenter);
   _statusbar->addWidget(_statusInfo, 1);
 
+  // Shows the elapsed flight time during flight
   m_infoTimer = new QTimer(this);
-  m_infoTimer->setSingleShot( true );
-  connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_infoTimer()));
+  m_infoTimer->setSingleShot( false );
+  m_infoTimer->setInterval( 5000 );
+  connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_flightTime()));
+  m_infoTimer->start();
 
   topLayout->addWidget(_statusbar);
 
@@ -1088,12 +1091,23 @@ void MapView::slot_glider( const QString& glider )
  */
 void MapView::slot_info( const QString& info )
 {
-  _statusInfo->setText( info );
+  _statusbar->showMessage( info, 5000 );
+}
 
-  if( info.isEmpty() == false )
+/**
+ * This slot is called to show the current flight time.
+ */
+void MapView::slot_flightTime()
+{
+  QDateTime& takeoff = IgcLogger::instance()->loggerStart();
+
+  if( takeoff.isValid() )
     {
-      // clear display after 30s.
-      m_infoTimer->start(30000);
+      int seconds = takeoff.secsTo( QDateTime::currentDateTime() );
+
+      QTime time( 0, 0, 0, 0 );
+      time = time.addSecs( seconds );
+      _statusInfo->setText( time.toString( "hh:mm:ss" ) );
     }
 }
 

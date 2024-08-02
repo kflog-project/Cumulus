@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2021 by Axel Pauli
+                               2008-2024 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -277,6 +277,11 @@ class MapView : public QWidget
      * This slot is called if a info message shall be displayed
      */
     void slot_info( const QString& info );
+
+    /**
+     * This slot is called if the flight time shall be displayed
+     */
+    void slot_flightTime();
 
     /**
      * Show a message in the whole status bar.
