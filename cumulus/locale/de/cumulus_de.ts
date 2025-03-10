@@ -1708,8 +1708,8 @@
     </message>
     <message>
         <location filename="../../MainWindow.cpp" line="2324"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2024, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2024, Das Cumulus-Team&lt;/html&gt; {1,?} {2002-2024,?}</translation>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2025, The Cumulus-Team&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2025, Das Cumulus-Team&lt;/html&gt; {1,?} {2002-2025,?}</translation>
     </message>
     <message>
         <location filename="../../MainWindow.cpp" line="2328"/>
