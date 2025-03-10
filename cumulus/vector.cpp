@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2009-2021 by Axel Pauli
+**                   2009-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -191,6 +191,7 @@ void Vector::setSpeed(const Speed& speed)
     }
 
   _speed = speed.getMps();
+  dirtyXY = true;
   _isValid = true;
 }
 
@@ -205,6 +206,7 @@ void Vector::setSpeed(const double mps)
     }
 
   _speed = mps;
+  dirtyXY = true;
   _isValid = true;
 }
 
