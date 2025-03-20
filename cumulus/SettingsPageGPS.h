@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2022 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,7 +21,7 @@
  *
  * \brief Configuration settings for the GPS device.
  *
- * \date 2002-2022
+ * \date 2002-2025
  */
 #pragma once
 
@@ -94,16 +94,6 @@ class SettingsPageGPS : public QWidget
    * Called if the Cancel button is pressed.
    */
   void slotReject();
-
-  /**
-   * Called, if the password toggle button 1 is pressed.
-   */
-  void slotTogglePw1();
-
-  /**
-   * Called, if the password toggle button 1 is pressed.
-   */
-  void slotTogglePw2();
 
   /**
    * Called, if GPS button has been pressed.
@@ -181,6 +171,9 @@ class SettingsPageGPS : public QWidget
       }
   }
 
+  /** Called to toggle the WiFi menu lines. */
+  void toggleWiFiMenu();
+
   QComboBox*     GpsSource;
   QComboBox*     PressureDevice;
   QComboBox*     GpsDev;
@@ -194,13 +187,15 @@ class SettingsPageGPS : public QWidget
   NumberEditor*  WiFi1_Port;
   NumberEditor*  WiFi2_IP;
   NumberEditor*  WiFi2_Port;
-  QLineEdit*     WiFi1_Password;
-  QLineEdit*     WiFi2_Password;
-  QPushButton*   WiFi1_PwToggle;
-  QPushButton*   WiFi2_PwToggle;
+  NumberEditor*  WiFi3_IP;
+  NumberEditor*  WiFi3_Port;
+  QCheckBox*     WiFi1CB;
+  QCheckBox*     WiFi2CB;
+  QCheckBox*     WiFi3CB;
+  QLabel*        label1;
+  QLabel*        label2;
+  QLabel*        label3;
   QCheckBox*     saveNmeaData;
-  bool           WiFi1_PasswordIsHidden;
-  bool           WiFi2_PasswordIsHidden;
   QPushButton*   GpsToggle;
 
   /** Pixmaps for GPS button. */

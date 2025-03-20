@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright(c): 2002      by Andrè Somers,
-**                 2007-2022 by Axel Pauli
+**                 2007-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -15,7 +15,7 @@
 ***********************************************************************/
 
 /**
- * This widget is used to define the GPS interface parameters.
+ * This widget is used to define the GPS/KRT2 interface parameters.
  * The user can select different source devices and some special
  * GPS parameters.
  */
@@ -30,9 +30,7 @@
 #include "layout.h"
 #include "SettingsPageGPS.h"
 
-SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent),
-WiFi1_PasswordIsHidden( true ),
-WiFi2_PasswordIsHidden( true )
+SettingsPageGPS::SettingsPageGPS(QWidget *parent) : QWidget(parent)
 {
   setObjectName("SettingsPageGPS");
   setWindowFlags( Qt::Tool );
@@ -110,9 +108,7 @@ WiFi2_PasswordIsHidden( true )
   // Bluetooth adapter
   GpsDev->addItem( BT_ADAPTER );
 #endif
-  GpsDev->addItem( WIFI_1 ); // WiFi 1
-  GpsDev->addItem( WIFI_2 ); // WiFi 2
-  GpsDev->addItem( WIFI_1_2 ); // WiFi 1+2
+  GpsDev->addItem( "WiFi" ); // WiFi interface shall be used
 
   // add entry for NMEA simulator choice
   GpsDev->addItem( NMEASIM_DEVICE );
@@ -190,8 +186,8 @@ WiFi2_PasswordIsHidden( true )
   PressureDevice->addItems( GeneralConfig::getPressureDevicesList() );
   topLayout->addWidget( PressureDevice, row++, 1);
 
-  QLabel *label = new QLabel( tr( "WiFi-1 IP : Port" ) );
-  topLayout->addWidget( label, row, 0 );
+  WiFi1CB = new QCheckBox( tr( "WiFi-1 IP : Port" ) );
+  topLayout->addWidget( WiFi1CB, row, 0 );
 
   //----------------------------------------------------------------------------
   hbox = new QHBoxLayout();
@@ -211,8 +207,8 @@ WiFi2_PasswordIsHidden( true )
 
   hbox->addWidget( WiFi1_IP, 3 );
 
-  label = new QLabel(" : ", this );
-  hbox->addWidget( label );
+  label1 = new QLabel(" : ", this );
+  hbox->addWidget( label1 );
 
   WiFi1_Port = new NumberEditor( this );
   WiFi1_Port->allowEmptyResult( true );
@@ -229,30 +225,8 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addLayout( hbox, row++, 1 );
 
   //----------------------------------------------------------------------------
-#if 0
-  label = new QLabel( tr( "WiFi-1 Password" ) );
-  topLayout->addWidget( label, row, 0 );
-
-  hbox = new QHBoxLayout();
-  hbox->setMargin( 0 );
-
-  Qt::InputMethodHints imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
-
-  WiFi1_Password = new QLineEdit( this );
-  WiFi1_Password->setInputMethodHints( imh | WiFi1_Password->inputMethodHints() );
-  WiFi1_Password->setEchoMode( QLineEdit::Password );
-  hbox->addWidget( WiFi1_Password );
-
-  WiFi1_PwToggle = new QPushButton( tr("Show") );
-  hbox->addWidget( WiFi1_PwToggle );
-  topLayout->addLayout( hbox, row++, 1 );
-
-  connect( WiFi1_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw1() ) );
-#endif
-
-  //----------------------------------------------------------------------------
-  label = new QLabel( tr( "WiFi-2 IP : Port" ), this );
-  topLayout->addWidget( label, row, 0 );
+  WiFi2CB = new QCheckBox( tr( "WiFi-2 IP : Port" ) );
+  topLayout->addWidget( WiFi2CB, row, 0 );
 
   hbox = new QHBoxLayout();
   hbox->setMargin( 0 );
@@ -271,8 +245,8 @@ WiFi2_PasswordIsHidden( true )
 
   hbox->addWidget( WiFi2_IP, 3 );
 
-  label = new QLabel(" : ", this );
-  hbox->addWidget( label );
+  label2 = new QLabel(" : ", this );
+  hbox->addWidget( label2 );
 
   WiFi2_Port = new NumberEditor( this );
   WiFi2_Port->allowEmptyResult( true );
@@ -289,26 +263,44 @@ WiFi2_PasswordIsHidden( true )
   topLayout->addLayout( hbox, row++, 1 );
 
   //----------------------------------------------------------------------------
-#if 0
-  label = new QLabel( tr( "WiFi-2 Password" ) );
-  topLayout->addWidget( label, row, 0 );
+  WiFi3CB = new QCheckBox( tr( "WiFi-KRT2 IP : Port" ) );
+  topLayout->addWidget( WiFi3CB, row, 0 );
 
   hbox = new QHBoxLayout();
   hbox->setMargin( 0 );
 
-  imh = Qt::ImhNoAutoUppercase | Qt::ImhNoPredictiveText;
+  WiFi3_IP = new NumberEditor( this );
+  WiFi3_IP->disableNumberCheck( true );
+  WiFi3_IP->allowEmptyResult( true );
+  WiFi3_IP->setDecimalVisible( true );
+  WiFi3_IP->setPmVisible( false );
+  WiFi3_IP->setMaxLength( 15 );
+  WiFi3_IP->setAlignment( Qt::AlignLeft );
+  WiFi3_IP->setTitle( tr( "Enter a IP address" ) );
+  WiFi3_IP->setTip( tr( "Enter a IP address xxx.xxx.xxx.xxx )" ) );
+  WiFi3_IP->setText( "" );
+  WiFi3_IP->setValidator( new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.){3}[0-9]{1,3}" ), this ) );
 
-  WiFi2_Password = new QLineEdit( this );
-  WiFi2_Password->setInputMethodHints( imh | WiFi2_Password->inputMethodHints() );
-  WiFi2_Password->setEchoMode( QLineEdit::Password );
-  hbox->addWidget( WiFi2_Password );
+  hbox->addWidget( WiFi3_IP, 3 );
 
-  WiFi2_PwToggle = new QPushButton( tr("Show") );
-  hbox->addWidget( WiFi2_PwToggle );
+  label3 = new QLabel(" : ", this );
+  hbox->addWidget( label3 );
+
+  WiFi3_Port = new NumberEditor( this );
+  WiFi3_Port->allowEmptyResult( true );
+  WiFi3_Port->setDecimalVisible( false );
+  WiFi3_Port->setPmVisible( false );
+  WiFi3_Port->setMaxLength( 5 );
+  WiFi3_Port->setAlignment( Qt::AlignLeft );
+  WiFi3_Port->setRange( 1, 65535 );
+  WiFi3_Port->setTitle( tr( "Enter a TCP port" ) );
+  WiFi3_Port->setTip( tr( "Enter a TCP port 1...65535)" ) );
+  WiFi3_Port->setText( "" );
+
+  hbox->addWidget( WiFi3_Port, 1 );
   topLayout->addLayout( hbox, row++, 1 );
 
-  connect( WiFi2_PwToggle, SIGNAL(clicked() ), SLOT(slotTogglePw2() ) );
-#endif
+  //----------------------------------------------------------------------------
 
   saveNmeaData = new QCheckBox (tr("Save NMEA Data"), this);
   topLayout->addWidget(saveNmeaData, row, 0 );
@@ -517,18 +509,53 @@ void SettingsPageGPS::load()
 
   WiFi1_IP->setText( conf->getGpsWlanIp1() );
   WiFi1_Port->setText( conf->getGpsWlanPort1() );
-#if 0
-  WiFi1_Password->setText( conf->getGpsWlanPassword1() );
-#endif
+  WiFi1CB->setChecked( conf->getGpsWlanCB1() );
   WiFi2_IP->setText( conf->getGpsWlanIp2() );
   WiFi2_Port->setText( conf->getGpsWlanPort2() );
-#if 0
-  WiFi2_Password->setText( conf->getGpsWlanPassword2() );
-#endif
+  WiFi2CB->setChecked( conf->getGpsWlanCB2() );
+  WiFi3_IP->setText( conf->getGpsWlanIp3() );
+  WiFi3_Port->setText( conf->getGpsWlanPort3() );
+  WiFi3CB->setChecked( conf->getGpsWlanCB3() );
+  toggleWiFiMenu();
 
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
 
   updateGpsToggle();
+}
+
+/** Called to toggle the WiFi menu lines. */
+void SettingsPageGPS::toggleWiFiMenu()
+{
+  if( GpsDev->currentText().startsWith( "WiFi" ) == true )
+    {
+      WiFi1_IP->show();
+      WiFi1_Port->show();
+      WiFi1CB->show();
+      WiFi2_IP->show();
+      WiFi2_Port->show();
+      WiFi2CB->show();
+      WiFi3_IP->show();
+      WiFi3_Port->show();
+      WiFi3CB->show();
+      label1->show();
+      label2->show();
+      label3->show();
+    }
+  else
+    {
+      WiFi1_IP->hide();
+      WiFi1_Port->hide();
+      WiFi1CB->hide();
+      WiFi2_IP->hide();
+      WiFi2_Port->hide();
+      WiFi2CB->hide();
+      WiFi3_IP->hide();
+      WiFi3_Port->hide();
+      WiFi3CB->hide();
+      label1->hide();
+      label2->hide();
+      label3->hide();
+    }
 }
 
 /** Called to initiate saving to the configuration file. */
@@ -548,23 +575,6 @@ bool SettingsPageGPS::save()
     }
 
   QString gpsDevice = GpsDev->currentText();
-
-  if( gpsDevice == WIFI_1 || gpsDevice == WIFI_1_2 )
-    {
-      if( WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty() )
-        {
-          // IP address and port are required, when service is switched on!
-          QString info = QString(
-              tr( "<html>WiFi-1 IP or Port entry are missing!"
-                  "<br><br>Please add the missing items.</html>" ) );
-
-           messageBox( QMessageBox::Warning,
-                       tr( "WiFi-1 data missing" ),
-                       info );
-
-           return false;
-        }
-    }
 
 #ifdef BLUEZ
 
@@ -604,17 +614,20 @@ bool SettingsPageGPS::save()
 
 #endif
 
-  if( gpsDevice == WIFI_2 || gpsDevice == WIFI_1_2 )
+  if( gpsDevice == "WiFi" )
     {
-      if( WiFi2_IP->text().isEmpty() || WiFi2_Port->text().isEmpty() )
+      if( (! WiFi1CB->isChecked() && ! WiFi2CB->isChecked() && ! WiFi3CB->isChecked()) ||
+          (WiFi1CB->isChecked() && (WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty())) ||
+          (WiFi2CB->isChecked() && (WiFi2_IP->text().isEmpty() || WiFi2_Port->text().isEmpty())) ||
+          (WiFi3CB->isChecked() && (WiFi3_IP->text().isEmpty() || WiFi3_Port->text().isEmpty())) )
         {
           // IP address and port are required, when service is switched on!
           QString info = QString(
-              tr( "<html>WiFi-2 IP or Port entry are missing!"
+              tr( "<html>WiFi IPs or Ports entries are missing!"
                   "<br><br>Please add the missing items.</html>" ) );
 
            messageBox( QMessageBox::Warning,
-                       tr( "WiFi-2 data missing" ),
+                       tr( "WiFi data missing" ),
                        info );
 
            return false;
@@ -623,15 +636,15 @@ bool SettingsPageGPS::save()
 
   conf->setGpsWlanIp1( WiFi1_IP->text() );
   conf->setGpsWlanPort1( WiFi1_Port->text() );
-#if 0
-  conf->setGpsWlanPassword1( WiFi1_Password->text() );
-#endif
+  conf->setGpsWlanCB1( WiFi1CB->isChecked() );
 
   conf->setGpsWlanIp2( WiFi2_IP->text() );
   conf->setGpsWlanPort2( WiFi2_Port->text() );
-#if 0
-  conf->setGpsWlanPassword2( WiFi2_Password->text() );
-#endif
+  conf->setGpsWlanCB2( WiFi2CB->isChecked() );
+
+  conf->setGpsWlanIp3( WiFi3_IP->text() );
+  conf->setGpsWlanPort3( WiFi3_Port->text() );
+  conf->setGpsWlanCB3( WiFi3CB->isChecked() );
 
   bool oldNmeaLogState = conf->getGpsNmeaLogState();
 
@@ -683,6 +696,8 @@ void SettingsPageGPS::slotGpsDeviceChanged( const QString &text )
       // load BT device list
       loadBtDeviceList();
     }
+
+  toggleWiFiMenu();
 }
 
 /**
@@ -699,44 +714,6 @@ void SettingsPageGPS::slotGpsAltitudeChanged( int index )
     {
       // Altitude reference GPS is selected, disable device selection.
       PressureDevice->setEnabled( false );
-    }
-}
-
-/**
- * Called, if the password toggle button 1 is pressed.
- */
-void SettingsPageGPS::slotTogglePw1()
-{
-  if( WiFi1_PasswordIsHidden == true )
-    {
-      WiFi1_PasswordIsHidden = false;
-      WiFi1_Password->setEchoMode( QLineEdit::Normal );
-      WiFi1_PwToggle->setText( tr( "Hide" ) );
-    }
-  else
-    {
-      WiFi1_PasswordIsHidden = true;
-      WiFi1_Password->setEchoMode( QLineEdit::Password );
-      WiFi1_PwToggle->setText( tr( "Show" ) );
-    }
-}
-
-/**
- * Called, if the password toggle button 1 is pressed.
- */
-void SettingsPageGPS::slotTogglePw2()
-{
-  if( WiFi2_PasswordIsHidden == true )
-    {
-      WiFi2_PasswordIsHidden = false;
-      WiFi2_Password->setEchoMode( QLineEdit::Normal );
-      WiFi2_PwToggle->setText( tr( "Hide" ) );
-    }
-  else
-    {
-      WiFi2_PasswordIsHidden = true;
-      WiFi2_Password->setEchoMode( QLineEdit::Password );
-      WiFi2_PwToggle->setText( tr( "Show" ) );
     }
 }
 
