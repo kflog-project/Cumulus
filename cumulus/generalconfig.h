@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2023 by Axel Pauli
+**                   2007-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2023
+ * \date 2004-2025
  *
- * \version 1.15
+ * \version 1.16
  */
 
 #pragma once
@@ -2090,16 +2090,16 @@ class GeneralConfig : protected QSettings
     _gpsWlanPort1 = newValue;
   }
 
-  /** Gets the Gps WLAN password 1 */
-  const QString &getGpsWlanPassword1()
+  /** Gets activation flag for WLAN 1. */
+  bool getGpsWlanCB1() const
   {
-    return _gpsWlanPassword1;
+    return _gpsWlanCheckbox1;
   }
 
-  /** Sets the Gps WLAN password 1 */
-  void setGpsWlanPassword1( const QString newValue )
+  /** Sets activation flag for WLAN 1. */
+  void setGpsWlanCB1(const bool newValue)
   {
-    _gpsWlanPassword1 = newValue;
+    _gpsWlanCheckbox1 = newValue;
   }
 
   /** Gets the Gps WLAN IP 2 */
@@ -2126,16 +2126,52 @@ class GeneralConfig : protected QSettings
     _gpsWlanPort2 = newValue;
   }
 
-  /** Gets the Gps WLAN password 2 */
-  const QString &getGpsWlanPassword2()
+  /** Gets activation flag for WLAN 2. */
+  bool getGpsWlanCB2() const
   {
-    return _gpsWlanPassword2;
+    return _gpsWlanCheckbox2;
   }
 
-  /** Sets the Gps WLAN password 2 */
-  void setGpsWlanPassword2( const QString newValue )
+  /** Sets activation flag for WLAN 2. */
+  void setGpsWlanCB2(const bool newValue)
   {
-    _gpsWlanPassword2 = newValue;
+    _gpsWlanCheckbox2 = newValue;
+  }
+
+  /** Gets the Gps WLAN IP 3 */
+  const QString &getGpsWlanIp3()
+  {
+    return _gpsWlanIp3;
+  }
+
+  /** Sets the Gps WLAN IP 3 */
+  void setGpsWlanIp3( const QString newValue )
+  {
+    _gpsWlanIp3 = newValue;
+  }
+
+  /** Gets the Gps WLAN IP port 3 */
+  const QString &getGpsWlanPort3()
+  {
+    return _gpsWlanPort3;
+  }
+
+  /** Sets the Gps WLAN IP port 3 */
+  void setGpsWlanPort3( const QString newValue )
+  {
+    _gpsWlanPort3 = newValue;
+  }
+
+  /** Gets activation flag for WLAN 3. */
+  bool getGpsWlanCB3() const
+  {
+    return _gpsWlanCheckbox3;
+  }
+
+  /** Sets activation flag for WLAN 3. */
+  void setGpsWlanCB3(const bool newValue)
+  {
+    _gpsWlanCheckbox3 = newValue;
   }
 
   /** Gets the Gps Speed */
@@ -3573,15 +3609,22 @@ class GeneralConfig : protected QSettings
   QString _gpsWlanIp1;
   // WLAN IP port 1
   QString _gpsWlanPort1;
-  // WLAN password 1
-  QString _gpsWlanPassword1;
+  // WLAN Checkbox 1
+  bool _gpsWlanCheckbox1;
 
   // WLAN IP address 2
   QString _gpsWlanIp2;
   // WLAN IP port 2
   QString _gpsWlanPort2;
-  // WLAN password 2
-  QString _gpsWlanPassword2;
+  // WLAN Checkbox 2
+  bool _gpsWlanCheckbox2;
+
+  // WLAN IP address 3 for KTR-2
+  QString _gpsWlanIp3;
+  // WLAN IP port 3
+  QString _gpsWlanPort3;
+  // WLAN Checkbox 3
+  bool _gpsWlanCheckbox3;
 
   // minimum sat count for wind calculation
   int _windMinSatCount;

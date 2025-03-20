@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2023 by Axel Pauli
+ **                   2007-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -347,6 +347,9 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       connect( page, SIGNAL(settingsChanged()),
                GpsNmea::gps, SLOT(slot_reset()) );
+
+      connect( page, SIGNAL(settingsChanged()),
+               MainWindow::mainWindow(), SLOT(slotKRT2()) );
 
       connect( page, SIGNAL(startNmeaLog()),
                GpsNmea::gps, SLOT(slot_openNmeaLogFile()) );

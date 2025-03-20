@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2023 by Axel Pauli
+ **                   2007-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -523,13 +523,15 @@ void GeneralConfig::load()
 
   _gpsWlanIp1         = value( "WlanIp1", "192.168.4.1" ).toString();
   _gpsWlanPort1       = value( "WlanPort1", "8880" ).toString();
-  _gpsWlanPassword1   = value( "WlanPassword1", "" ).toString();
-  _gpsWlanPassword1 = rot47( _gpsWlanPassword1.toLatin1() );
+  _gpsWlanCheckbox1   = value( "WlanCheckbox1", false ).toBool();
 
   _gpsWlanIp2         = value( "WlanIp2", "192.168.4.1" ).toString();
   _gpsWlanPort2       = value( "WlanPort2", "8881" ).toString();
-  _gpsWlanPassword2   = value( "WlanPassword2", "" ).toString();
-  _gpsWlanPassword2 = rot47( _gpsWlanPassword2.toLatin1() );
+  _gpsWlanCheckbox2   = value( "WlanCheckbox2", false ).toBool();
+
+  _gpsWlanIp3         = value( "WlanIp3", "192.168.4.1" ).toString();
+  _gpsWlanPort3       = value( "WlanPort3", "8882" ).toString();
+  _gpsWlanCheckbox3   = value( "WlanCheckbox3", false ).toBool();
   endGroup();
 
   beginGroup( "GPS-Status" );
@@ -1016,11 +1018,15 @@ void GeneralConfig::save()
 
   setValue( "WlanIp1", _gpsWlanIp1 );
   setValue( "WlanPort1", _gpsWlanPort1 );
-  setValue( "WlanPassword1", rot47( _gpsWlanPassword1.toLatin1() ) );
+  setValue( "WlanCheckbox1", _gpsWlanCheckbox1 );
 
   setValue( "WlanIp2", _gpsWlanIp2 );
   setValue( "WlanPort2", _gpsWlanPort2 );
-  setValue( "WlanPassword2", rot47( _gpsWlanPassword2.toLatin1() ) );
+  setValue( "WlanCheckbox2", _gpsWlanCheckbox2 );
+
+  setValue( "WlanIp3", _gpsWlanIp3 );
+  setValue( "WlanPort3", _gpsWlanPort3 );
+  setValue( "WlanCheckbox3", _gpsWlanCheckbox3 );
   endGroup();
 
   beginGroup( "GPS-Status" );
