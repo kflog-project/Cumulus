@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2022 by Axel Pauli
+                               2008-2025 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -95,18 +95,6 @@ GpsNmea::GpsNmea(QObject* parent) :
 
   // Connector to the GPS data provider
   connector = 0;
-
-  /** WiFi-1 IP Address */
-  wifi_1_Ip = GeneralConfig::instance()->getGpsWlanIp1();
-
-  /** WiFi-1 Port */
-  wifi_1_Port = GeneralConfig::instance()->getGpsWlanPort1();
-
-  /** WiFi-2 IP Address */
-  wifi_2_Ip = GeneralConfig::instance()->getGpsWlanIp2();
-
-  /** WiFi-2 Port */
-  wifi_2_Port = GeneralConfig::instance()->getGpsWlanPort2();
 
   /** BT Device name and address */
   btDevice = GeneralConfig::instance()->getGpsBtDevice();
@@ -2663,14 +2651,18 @@ void GpsNmea::slot_reset()
           // Check, if WiFi data have been changed.
           if( wifi_1_Ip != conf->getGpsWlanIp1() ||
               wifi_1_Port != conf->getGpsWlanPort1() ||
+              wifi_1_active != conf->getGpsWlanCB1() ||
               wifi_2_Ip != conf->getGpsWlanIp2() ||
-              wifi_2_Port != conf->getGpsWlanPort2() )
+              wifi_2_Port != conf->getGpsWlanPort2() ||
+              wifi_2_active != conf->getGpsWlanCB2())
             {
               // Take over new WiFi data from configuration
               wifi_1_Ip = conf->getGpsWlanIp1();
               wifi_1_Port = conf->getGpsWlanPort1();
+              wifi_1_active = conf->getGpsWlanCB1();
               wifi_2_Ip = conf->getGpsWlanIp2();
               wifi_2_Port = conf->getGpsWlanPort2();
+              wifi_2_active = conf->getGpsWlanCB2();
 
               // restart connector
               connector->stopGpsReceiving();

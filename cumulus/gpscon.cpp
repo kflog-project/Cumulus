@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2004-2025 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -191,30 +191,33 @@ bool GpsCon::startGpsReceiving()
       QString msg;
 
       // Do check, what kind of connection the user has selected.
-      if( gpsDevice == WIFI_1 )
+      if( gpsDevice == "WiFi" )
         {
-          // one WiFi channel shall be used
-          QString ip = conf->getGpsWlanIp1();
-          QString port = conf->getGpsWlanPort1();
-          msg = QString("%1 %2 %3").arg(MSG_OPEN_WIFI_1).arg(ip).arg(port);
-        }
-      else if( gpsDevice == WIFI_2 )
-        {
-          // one WiFi channel shall be used
-          QString ip = conf->getGpsWlanIp2();
-          QString port = conf->getGpsWlanPort2();
-          msg = QString("%1 %2 %3").arg(MSG_OPEN_WIFI_1).arg(ip).arg(port);
-        }
-      else if( gpsDevice == WIFI_1_2 )
-        {
-          // one WiFi channel shall be used
-          QString ip1 = conf->getGpsWlanIp1();
-          QString port1 = conf->getGpsWlanPort1();
-          QString ip2 = conf->getGpsWlanIp2();
-          QString port2 = conf->getGpsWlanPort2();
-          msg = QString("%1 %2 %3 %4 %5").arg(MSG_OPEN_WIFI_2)
-                                         .arg(ip1).arg(port1)
-                                         .arg(ip2).arg(port2);
+          if( conf->getGpsWlanCB1() && conf->getGpsWlanCB2() )
+            {
+              // one WiFi channel shall be used
+              QString ip1 = conf->getGpsWlanIp1();
+              QString port1 = conf->getGpsWlanPort1();
+              QString ip2 = conf->getGpsWlanIp2();
+              QString port2 = conf->getGpsWlanPort2();
+              msg = QString("%1 %2 %3 %4 %5").arg(MSG_OPEN_WIFI_2)
+                                             .arg(ip1).arg(port1)
+                                             .arg(ip2).arg(port2);
+            }
+          else if( conf->getGpsWlanCB1() )
+            {
+              // one WiFi channel shall be used
+              QString ip = conf->getGpsWlanIp1();
+              QString port = conf->getGpsWlanPort1();
+              msg = QString("%1 %2 %3").arg(MSG_OPEN_WIFI_1).arg(ip).arg(port);
+            }
+          else if( conf->getGpsWlanCB2() )
+            {
+              // one WiFi channel shall be used
+              QString ip = conf->getGpsWlanIp2();
+              QString port = conf->getGpsWlanPort2();
+              msg = QString("%1 %2 %3").arg(MSG_OPEN_WIFI_1).arg(ip).arg(port);
+            }
         }
 #ifdef BLUEZ
       else if( gpsDevice == BT_ADAPTER )

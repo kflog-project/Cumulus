@@ -3,7 +3,7 @@
                             -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2022 by Axel Pauli
+                               2008-2025 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -27,9 +27,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB, BT or WiFi.
  *
- * \date 2002-2022
+ * \date 2002-2025
  *
- * \version 1.8
+ * \version 1.9
  */
 
 #pragma once
@@ -772,11 +772,26 @@ class GpsNmea : public QObject
     /** WiFi-1 Port */
     QString wifi_1_Port;
 
+    /** WiFi-1 activation flag */
+    bool wifi_1_active;
+
     /** WiFi-2 IP Address */
     QString wifi_2_Ip;
 
     /** WiFi-2 Port */
     QString wifi_2_Port;
+
+    /** WiFi-2 activation flag */
+    bool wifi_2_active;
+
+    /** WiFi-3 IP Address */
+    QString wifi_3_Ip;
+
+    /** WiFi-3 Port */
+    QString wifi_3_Port;
+
+    /** WiFi-3 activation flag */
+    bool wifi_3_active;
 
     /** BT Device */
     QPair<QString, QString> btDevice;
