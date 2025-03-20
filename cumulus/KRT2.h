@@ -32,9 +32,6 @@ class KRT2 : public QObject
 
  public:
 
-  static constexpr uint16_t CMD_TIMEOUT = 250; //!< Command timeout 250ms
-  static constexpr unsigned NR_RETRIES = 3; //!< Number of tries to send a command.
-
   KRT2( QObject *parent, QString ip, QString port );
 
   virtual ~KRT2();
@@ -69,13 +66,13 @@ class KRT2 : public QObject
  private slots:
 
   /**
-   * Handle KRT message.
+   * Handle KRT-2 message.
    */
   void handleKRTMessage( QByteArray& data );
 
   private:
 
-  // WiFi3 data
+  // WiFi data
   QString m_ip;
   QString m_port;
   bool m_active;
@@ -95,7 +92,7 @@ class KRT2Thread : public QThread
   virtual ~KRT2Thread();
 
   /**
-   * Send the passed data to the KRT2 device.
+   * Send the passed data to the KRT-2 device.
    *
    * @param data
    * @return true in case of success otherwise false.
@@ -110,6 +107,11 @@ class KRT2Thread : public QThread
   void run();
 
  private:
+
+  /**
+   * Try to establish the connection to the KRT2 device.
+   */
+  bool connect();
 
   /**
    * Handle data coming in from the KRT2 device.
@@ -146,12 +148,7 @@ class KRT2Thread : public QThread
   void handleException( int type );
 
   /**
-   * Try to establish the connection to the KRT2 device.
-   */
-  bool connect();
-
-  /**
-   * Retry connection after timeout.
+   * Retries connection after timeout.
    */
   void slotRetry()
   {
@@ -159,7 +156,7 @@ class KRT2Thread : public QThread
   }
 
   /**
-   * Called when the thread has got the signal finished.
+   * Handles end of thread.
    */
   void slotFinished();
 

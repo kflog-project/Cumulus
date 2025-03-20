@@ -80,7 +80,6 @@ bool KRT2::sendFrequency( const uint8_t cmd,
                           const QString& name )
 {
   QByteArray msg;
-
   uint8_t mhz;
   uint8_t channel;
 
@@ -90,10 +89,10 @@ bool KRT2::sendFrequency( const uint8_t cmd,
       return false;
     }
 
-  msg.setNum( STX, 16 );
-  msg.setNum( cmd, 16 );
-  msg.setNum( mhz, 16 );
-  msg.setNum( channel, 16 );
+  msg.append( STX );
+  msg.append( cmd );
+  msg.append( mhz );
+  msg.append( channel );
 
   if( name.size() <= MAX_NAME_LENGTH )
     {
@@ -110,7 +109,9 @@ bool KRT2::sendFrequency( const uint8_t cmd,
       msg.append( name.left( MAX_NAME_LENGTH ).toLatin1() );
     }
 
-  msg.setNum( mhz ^ channel, 16 );
+  msg.append( mhz ^ channel );
+
+  qDebug() << "sendFrequency" << msg.toHex();
 
   krt2->send( msg );
   return true;
