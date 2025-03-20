@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2022 by Axel Pauli
+                        : (C) 2007-2025 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,9 +25,9 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2022
+ * \date 2002-2025
  *
- * \version 1.3
+ * \version 1.4
  */
 
 #pragma once
@@ -54,6 +54,7 @@
 #include "mapinfobox.h"
 #include "waitscreen.h"
 #include "splash.h"
+#include "KRT2.h"
 
 #ifdef INTERNET
 #include "LiveTrack24Logger.h"
@@ -219,6 +220,11 @@ public slots:
    * of the program to read the initial configuration.
    */
   void slotReadconfig();
+
+  /**
+   * This slot is called to handle the KRT-2 connection interface.
+   */
+  void slotKRT2();
 
   /**
    * Called if the status of the GPS changes, and controls the availability
@@ -564,6 +570,12 @@ private:
   /** LiveTrack24 logger object. */
   LiveTrack24Logger* m_liveTrackLogger;
 #endif
+
+  // KRT-2 interface objects
+  KRT2* m_krt2;
+  QString m_krt2Ip;
+  QString m_krt2Port;
+  bool m_krt2Active;
 
   /** A flag to indicate a first startup after the installation. */
   bool m_firstStartup;

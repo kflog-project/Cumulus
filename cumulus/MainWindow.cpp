@@ -198,8 +198,12 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 #ifdef INTERNET
   m_liveTrackLogger(0),
 #endif
+  m_krt2(0),
+  m_krt2Active(false),
   m_firstStartup( false )
 {
+  qDebug() << "MainThreadId: " << QApplication::instance()->thread();
+
   _globalMainWindow = this;
 
   // This is used to make it possible to reset some user configuration items once
@@ -1828,6 +1832,12 @@ void MainWindow::closeEvent( QCloseEvent* event )
           m_liveTrackLogger->slotFinishLogging();
         }
 
+      // Close KRT2 connection
+      if( m_krt2 != 0 )
+        {
+          delete m_krt2;
+        }
+
       if( deferredClose == true)
         {
           // Trigger a recall of this slot to check again for running
@@ -2530,6 +2540,42 @@ void MainWindow::slotReadconfig()
     }
 
   Map::instance->scheduleRedraw();
+
+  slotKRT2();
+}
+
+/**
+ * This slot is called to handle the KRT-2 connection interface.
+ */
+void MainWindow::slotKRT2()
+{
+  qDebug() << "MainWindow::slotKRT2()";
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString ip = conf->getGpsWlanIp3();
+  QString port = conf->getGpsWlanPort3();
+  bool active = GeneralConfig::instance()->getGpsWlanCB3();
+
+  if( m_krt2 == 0 && active == true )
+    {
+      m_krt2 = new KRT2( this, ip, port );
+    }
+  else if( active == false )
+    {
+      delete m_krt2;
+      m_krt2 = 0;
+    }
+  else if( m_krt2Ip != ip || m_krt2Port != port )
+    {
+      delete m_krt2;
+      m_krt2 = new KRT2( this, ip, port );
+    }
+
+  // store last configuration
+  m_krt2Ip = ip;
+  m_krt2Port = port;
+  m_krt2Active = active;
 }
 
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )
