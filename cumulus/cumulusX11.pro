@@ -3,7 +3,7 @@
 #
 # Compatibility for Qt5 by Eggert Ehmke
 #
-# Copyright (c): 2008-2023 Axel Pauli
+# Copyright (c): 2008-2025 Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -138,6 +138,9 @@ HEADERS = \
     ipc.h \
     isohypse.h \
     isolist.h \
+    KRT2.h \
+    KRT2Constants.h \
+    KRT2Widget.h \
     layout.h \
     limitedlist.h \
     lineelement.h \
@@ -280,6 +283,8 @@ SOURCES = \
     ipc.cpp \
     isohypse.cpp \
     isolist.cpp \
+    KRT2.cpp \
+    KRT2Widget.cpp \
     layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \

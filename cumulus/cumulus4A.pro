@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2022 by Axel Pauli
+#                2012-2025 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -164,6 +164,9 @@ HEADERS = \
     isohypse.h \
     isolist.h \
     jnisupport.h \
+    KRT2.h \
+    KRT2Constants.h \
+    KRT2Widget.h \    
     layout.h \
     limitedlist.h \
     lineelement.h \
@@ -308,6 +311,8 @@ SOURCES = \
     isohypse.cpp \
     isolist.cpp \
     jnisupport.cpp \
+    KRT2.cpp \
+    KRT2Widget.cpp \
     layout.cpp \
     lineelement.cpp \
     listviewfilter.cpp \
