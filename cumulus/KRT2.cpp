@@ -47,7 +47,7 @@ KRT2::~KRT2()
 }
 
 /**
- * Close the socket connection.
+ * Closes the socket connection.
  */
 void KRT2::close()
 {

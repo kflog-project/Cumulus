@@ -98,9 +98,9 @@ import android.widget.Toast;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2024
+ * @date 2012-2025
  * 
- * @version 1.12
+ * @version 1.13
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -193,6 +193,10 @@ public class CumulusActivity extends QtActivity
   private BluetoothService m_btService = null;
   private String m_btMacAddress = null;
 
+  // WiFi variables
+  // Store status of WiFi service
+  static private boolean m_wiFiService = false;
+  
   // Used to signal, that we waiting to the on state of the Bluetooth adapter
   private boolean m_wait4BluetoothAdapterOn = false;
   
@@ -206,6 +210,7 @@ public class CumulusActivity extends QtActivity
   static final byte GPS_DEVICE_INTERNAL = 2;
   static final byte GPS_DEVICE_BT = 3;
   static final byte GPS_DEVICE_IOIO = 4;
+  static final byte GPS_DEVICE_WIFI = 5;
 
   /**
    * That bundle contains a restored instance state or is null, if nothing
@@ -346,6 +351,8 @@ public class CumulusActivity extends QtActivity
   public static native boolean isRootWindow();
   
   public static native void nativeHttpsResponse(int errorCode, String response, long cb);
+
+  public static native void nativeWifiRequest(int status);
 
   /**
    * Called from JNI to get the class instance.
@@ -1210,6 +1217,11 @@ public class CumulusActivity extends QtActivity
       outState.putByte("GpsDevice", GPS_DEVICE_BT );
       outState.putString("BtMacAddress", m_btMacAddress );
     }
+    else if (m_wiFiService == true )
+    {
+      // WiFi GPS is activated
+      outState.putByte("GpsDevice", GPS_DEVICE_WIFI );
+    }
     else if ( m_ioio.isStarted() == true )
     {
        // IOIO GPS is activated
@@ -1261,10 +1273,22 @@ public class CumulusActivity extends QtActivity
 	    connect2BtDevice( mac );
 	  }
 	}
+	else if( m_restoreInstanceState.getByte("GpsDevice") == GPS_DEVICE_WIFI )
+	{
+	  // We have to wait a while, to ensure that the WiFi service is running
+	  // before we can restart the WiFi connection. It's now done after 5s.
+	  m_commHandler.postDelayed( new Runnable() {
+	                             public void run() {
+	    	                        nativeWifiRequest( 1 );
+	    	                        m_wiFiService = true;
+	                             }
+                               }, 5000 );
+  
+	}
 	else if( m_restoreInstanceState.getByte("GpsDevice") == GPS_DEVICE_IOIO )
 	{
 	  // We have to wait a while, to ensure that the IOIO service is running
-	  //  before we can restart the ioio connection. It's now done after 5s.
+	  // before we can restart the ioio connection. It's now done after 5s.
 	  m_commHandler.postDelayed( new Runnable() {
 	                             public void run() {
 	    	                        enableIoioGps( false );
@@ -1843,6 +1867,11 @@ public class CumulusActivity extends QtActivity
               gpsMenuItems.add(getString(R.string.gpsBluetooth));
             }
           
+          if ( m_wifiService == false )
+	        {
+	          gpsMenuItems.add(getString(R.string.gpsWifi));
+	        }
+
           if ( m_ioio.isStarted() == false )
             {
               gpsMenuItems.add(getString(R.string.gpsIoio));
@@ -1863,6 +1892,10 @@ public class CumulusActivity extends QtActivity
               else if( gpsMenuItems.get(item).equals(getString(R.string.gpsBluetooth)))
                 {
                   enableBtGps(true);
+                }
+              else if( gpsMenuItems.get(item).equals(getString(R.string.gpsWifi)))
+                {
+                  enableWifiGps(true);
                 }
               else if( gpsMenuItems.get(item).equals(getString(R.string.gpsIoio)))
                 {
@@ -2236,6 +2269,11 @@ public class CumulusActivity extends QtActivity
         m_btService.stop();
         m_btService = null;
       }
+    
+    if( m_wiFiService == true )
+      {
+    	m_wiFiService = false;
+      }
 
     deactivateBarometerSensor();
   }
@@ -2256,7 +2294,7 @@ public class CumulusActivity extends QtActivity
           lm.removeUpdates(ll);
           ll = null;
         }
-
+        
         reportGpsStatus(0);
         gpsEnabled = false;
 
@@ -2267,17 +2305,25 @@ public class CumulusActivity extends QtActivity
             m_btService = null;
           }
         
+        // Lock, if WiFi Service is used. It will be terminated then at C++ side.
+        if (m_wiFiService == true )
+          {
+        	nativeWifiRequest( 0 );
+        	m_wiFiService = false;
+          }
+        
         // Lock, if IOIO Service is used. It will be stopped then.
         if( m_ioio.isStarted() )
           {
             m_ioio.stop();
           }
       }
-    else
+    else // GPS is disabled
       {
         Log.i(TAG, "Enable GPS");
 
-        if ((lm != null || mBtAdapter != null) && m_ioio.isStarted() == false)
+        if ((lm != null || mBtAdapter != null) && m_ioio.isStarted() == false &&
+        	 m_wiFiService == false	)
           {
             showDialog(R.id.dialog_gps);
           }
@@ -2289,6 +2335,10 @@ public class CumulusActivity extends QtActivity
           {
             enableBtGps(false);
           }
+        else if (m_wiFiService == false )
+          {
+        	enableWifiGps(false);
+          }
         else if ( m_ioio.isStarted() == false )
           {
             enableIoioGps(false);
@@ -2296,6 +2346,22 @@ public class CumulusActivity extends QtActivity
       }
   }
 
+  private void enableWifiGps(boolean clearDialog)
+  {
+	Log.i(TAG, "Enable enableWifiGps");
+	
+    if (clearDialog)
+      {
+        removeDialog(R.id.dialog_gps);
+      }
+    
+    nativeWifiRequest( 1 );
+    m_wiFiService = true;
+    
+    reportGpsStatus(1);
+    gpsEnabled = true;
+  }
+  
   private void enableInternalGps(boolean clearDialog)
   {
     if (clearDialog)

@@ -271,10 +271,9 @@ class WifiEvent : public QEvent
 
   virtual ~WifiEvent() {};
 
-  void requestInfo( int& request )
+  int requestInfo()
     {
-      request = m_request;
-      return;
+      return = m_request;
     };
 
  private:

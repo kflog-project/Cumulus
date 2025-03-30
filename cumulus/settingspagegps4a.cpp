@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright(c): 2012-2021 by Axel Pauli
+**   Copyright(c): 2012-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -115,22 +115,121 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   PressureDevice->addItems( GeneralConfig::getPressureDevicesList() );
   topLayout->addWidget( PressureDevice, row++, 1);
 
-  topLayout->addWidget(new QLabel(tr("WLAN IP:")), row, 0);
-  wlanIpAddress = new QLineEdit;
-  topLayout->addWidget(wlanIpAddress, row, 1);
-  row++;
+  //----------------------------------------------------------------------------
+  hbox = new QHBoxLayout;
+  hbox->setMargin( 0 );
 
-  topLayout->addWidget(new QLabel(tr("WLAN Port:")), row, 0);
-  wlanPort = new QLineEdit;
-  topLayout->addWidget(wlanPort, row, 1);
-  row++;
+  WiFi1CB = new QCheckBox( tr( "WiFi-1 IP : Port" ) );
+  topLayout->addWidget( WiFi1CB, row, 0 );
 
-  topLayout->addWidget(new QLabel(tr("WLAN Password:")), row, 0);
-  wlanPassword = new QLineEdit;
-  topLayout->addWidget(wlanPassword, row, 1);
-  row++;
+  WiFi1_IP = new NumberEditor( this );
+  WiFi1_IP->disableNumberCheck( true );
+  WiFi1_IP->allowEmptyResult( true );
+  WiFi1_IP->setDecimalVisible( true );
+  WiFi1_IP->setPmVisible( false );
+  WiFi1_IP->setMaxLength( 15 );
+  WiFi1_IP->setAlignment( Qt::AlignLeft );
+  WiFi1_IP->setTitle( tr( "Enter a IP address" ) );
+  WiFi1_IP->setTip( tr( "Enter a IP address xxx.xxx.xxx.xxx )" ) );
+  WiFi1_IP->setText( "" );
+  WiFi1_IP->setValidator( new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.){3}[0-9]{1,3}" ), this ) );
 
-  topLayout->setRowMinimumHeight( row++, 10);
+  hbox->addWidget( WiFi1_IP, 3 );
+
+  label1 = new QLabel(" : ", this );
+  hbox->addWidget( label1 );
+
+  WiFi1_Port = new NumberEditor( this );
+  WiFi1_Port->allowEmptyResult( true );
+  WiFi1_Port->setDecimalVisible( false );
+  WiFi1_Port->setPmVisible( false );
+  WiFi1_Port->setMaxLength( 5 );
+  WiFi1_Port->setAlignment( Qt::AlignLeft );
+  WiFi1_Port->setRange( 1, 65535 );
+  WiFi1_Port->setTitle( tr( "Enter a TCP port" ) );
+  WiFi1_Port->setTip( tr( "Enter a TCP port 1...65535)" ) );
+  WiFi1_Port->setText( "" );
+
+  hbox->addWidget( WiFi1_Port, 1 );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  //----------------------------------------------------------------------------
+  WiFi2CB = new QCheckBox( tr( "WiFi-2 IP : Port" ) );
+  topLayout->addWidget( WiFi2CB, row, 0 );
+
+  hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
+  WiFi2_IP = new NumberEditor( this );
+  WiFi2_IP->disableNumberCheck( true );
+  WiFi2_IP->allowEmptyResult( true );
+  WiFi2_IP->setDecimalVisible( true );
+  WiFi2_IP->setPmVisible( false );
+  WiFi2_IP->setMaxLength( 15 );
+  WiFi2_IP->setAlignment( Qt::AlignLeft );
+  WiFi2_IP->setTitle( tr( "Enter a IP address" ) );
+  WiFi2_IP->setTip( tr( "Enter a IP address xxx.xxx.xxx.xxx )" ) );
+  WiFi2_IP->setText( "" );
+  WiFi2_IP->setValidator( new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.){3}[0-9]{1,3}" ), this ) );
+
+  hbox->addWidget( WiFi2_IP, 3 );
+
+  label2 = new QLabel(" : ", this );
+  hbox->addWidget( label2 );
+
+  WiFi2_Port = new NumberEditor( this );
+  WiFi2_Port->allowEmptyResult( true );
+  WiFi2_Port->setDecimalVisible( false );
+  WiFi2_Port->setPmVisible( false );
+  WiFi2_Port->setMaxLength( 5 );
+  WiFi2_Port->setAlignment( Qt::AlignLeft );
+  WiFi2_Port->setRange( 1, 65535 );
+  WiFi2_Port->setTitle( tr( "Enter a TCP port" ) );
+  WiFi2_Port->setTip( tr( "Enter a TCP port 1...65535)" ) );
+  WiFi2_Port->setText( "" );
+
+  hbox->addWidget( WiFi2_Port, 1 );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  //----------------------------------------------------------------------------
+  WiFi3CB = new QCheckBox( tr( "WiFi-KRT2 IP : Port" ) );
+  topLayout->addWidget( WiFi3CB, row, 0 );
+
+  hbox = new QHBoxLayout();
+  hbox->setMargin( 0 );
+
+  WiFi3_IP = new NumberEditor( this );
+  WiFi3_IP->disableNumberCheck( true );
+  WiFi3_IP->allowEmptyResult( true );
+  WiFi3_IP->setDecimalVisible( true );
+  WiFi3_IP->setPmVisible( false );
+  WiFi3_IP->setMaxLength( 15 );
+  WiFi3_IP->setAlignment( Qt::AlignLeft );
+  WiFi3_IP->setTitle( tr( "Enter a IP address" ) );
+  WiFi3_IP->setTip( tr( "Enter a IP address xxx.xxx.xxx.xxx )" ) );
+  WiFi3_IP->setText( "" );
+  WiFi3_IP->setValidator( new QRegExpValidator( QRegExp( "([0-9]{1,3}\\.){3}[0-9]{1,3}" ), this ) );
+
+  hbox->addWidget( WiFi3_IP, 3 );
+
+  label3 = new QLabel(" : ", this );
+  hbox->addWidget( label3 );
+
+  WiFi3_Port = new NumberEditor( this );
+  WiFi3_Port->allowEmptyResult( true );
+  WiFi3_Port->setDecimalVisible( false );
+  WiFi3_Port->setPmVisible( false );
+  WiFi3_Port->setMaxLength( 5 );
+  WiFi3_Port->setAlignment( Qt::AlignLeft );
+  WiFi3_Port->setRange( 1, 65535 );
+  WiFi3_Port->setTitle( tr( "Enter a TCP port" ) );
+  WiFi3_Port->setTip( tr( "Enter a TCP port 1...65535)" ) );
+  WiFi3_Port->setText( "" );
+
+  hbox->addWidget( WiFi3_Port, 1 );
+  topLayout->addLayout( hbox, row++, 1 );
+
+  //----------------------------------------------------------------------------
 
   saveNmeaData = new QCheckBox (tr("Save NMEA Data to file"));
   topLayout->addWidget( saveNmeaData, row++, 0, 1, 2, Qt::AlignLeft );
@@ -237,10 +336,53 @@ void SettingsPageGPS4A::load()
       PressureDevice->setEnabled( false );
     }
 
-  wlanIpAddress->setText( conf->getGpsWlanIp1() );
-  wlanPort->setText( conf->getGpsWlanPort1() );
-  wlanPassword->setText( conf->getGpsWlanPassword1() );
+  WiFi1_IP->setText( conf->getGpsWlanIp1() );
+  WiFi1_Port->setText( conf->getGpsWlanPort1() );
+  WiFi1CB->setChecked( conf->getGpsWlanCB1() );
+  WiFi2_IP->setText( conf->getGpsWlanIp2() );
+  WiFi2_Port->setText( conf->getGpsWlanPort2() );
+  WiFi2CB->setChecked( conf->getGpsWlanCB2() );
+  WiFi3_IP->setText( conf->getGpsWlanIp3() );
+  WiFi3_Port->setText( conf->getGpsWlanPort3() );
+  WiFi3CB->setChecked( conf->getGpsWlanCB3() );
+  //toggleWiFiMenu();
+
   saveNmeaData->setChecked( conf->getGpsNmeaLogState() );
+}
+
+/** Called to toggle the WiFi menu lines. */
+void SettingsPageGPS4A::toggleWiFiMenu()
+{
+  if( GpsDev->currentText().startsWith( "WiFi" ) == true )
+    {
+      WiFi1_IP->show();
+      WiFi1_Port->show();
+      WiFi1CB->show();
+      WiFi2_IP->show();
+      WiFi2_Port->show();
+      WiFi2CB->show();
+      WiFi3_IP->show();
+      WiFi3_Port->show();
+      WiFi3CB->show();
+      label1->show();
+      label2->show();
+      label3->show();
+    }
+  else
+    {
+      WiFi1_IP->hide();
+      WiFi1_Port->hide();
+      WiFi1CB->hide();
+      WiFi2_IP->hide();
+      WiFi2_Port->hide();
+      WiFi2CB->hide();
+      WiFi3_IP->hide();
+      WiFi3_Port->hide();
+      WiFi3CB->hide();
+      label1->hide();
+      label2->hide();
+      label3->hide();
+    }
 }
 
 bool SettingsPageGPS4A::save()
@@ -256,45 +398,66 @@ bool SettingsPageGPS4A::save()
       emit newPressureDevice( PressureDevice->currentText() ); // informs GpsNmea
     }
 
-  // Save old settings to check for done updates
-  QString oldIp = conf->getGpsWlanIp1();
-  QString oldPort = conf->getGpsWlanPort1();
-  QString oldPassword = conf->getGpsWlanPassword1();
+  QString ip1 = conf->getGpsWlanIp1();
+  QString port1 = conf->getGpsWlanPort1();
+  bool cb1 = conf->getGpsWlanCB1();
+  QString ip2 = conf->getGpsWlanIp2();
+  QString port2 = conf->getGpsWlanPort2();
+  bool cb2 = conf->getGpsWlanCB2();
+  QString ip3 = conf->getGpsWlanIp3();
+  QString port3 = conf->getGpsWlanPort3();
+  bool cb3 = conf->getGpsWlanCB3();
 
-  // Save current settings.
-  QString curIp = wlanIpAddress->text().trimmed();
-  QString curPort = wlanPort->text().trimmed();
-  QString curPassword = wlanPassword->text().trimmed();
+  QString ip1n = WiFi1_IP->text();
+  QString port1n = WiFi1_Port->text();
+  bool cb1n = WiFi1CB->isChecked();
+  QString ip2n = WiFi2_IP->text();
+  QString port2n = WiFi2_Port->text();
+  bool cb2n = WiFi2CB->isChecked();
+  QString ip3n = WiFi3_IP->text();
+  QString port3n = WiFi3_Port->text();
+  bool cb3n = WiFi3CB->isChecked();
 
-  // Check, if port is a number.
-  bool ok = false;
-  ushort portNum = wlanPort->text().trimmed().toUShort(&ok, 10);
+  conf->setGpsWlanIp2( WiFi2_IP->text() );
+  conf->setGpsWlanPort2( WiFi2_Port->text() );
+  conf->setGpsWlanCB2( WiFi2CB->isChecked() );
 
-  if( wlanPort->text().trimmed().isEmpty() || ok == false || portNum == 0 )
+  conf->setGpsWlanIp3( WiFi3_IP->text() );
+  conf->setGpsWlanPort3( WiFi3_Port->text() );
+  conf->setGpsWlanCB3( WiFi3CB->isChecked() );
+
+  if( (! WiFi1CB->isChecked() && ! WiFi2CB->isChecked() && ! WiFi3CB->isChecked()) ||
+      (WiFi1CB->isChecked() && (WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty())) ||
+      (WiFi2CB->isChecked() && (WiFi2_IP->text().isEmpty() || WiFi2_Port->text().isEmpty())) ||
+      (WiFi3CB->isChecked() && (WiFi3_IP->text().isEmpty() || WiFi3_Port->text().isEmpty())) )
     {
-      QMessageBox mb( QMessageBox::Warning,
-                      tr("Port settings invalid!"),
-                      tr("Port must be a number and > 0!"),
-                      QMessageBox::Ok,
-                      this );
+      // IP address and port are required, when service is switched on!
+      QString info = QString(
+          tr( "<html>WiFi IPs or Ports entries are missing!"
+              "<br><br>Please add the missing items.</html>" ) );
 
-#ifdef ANDROID
+       messageBox( QMessageBox::Warning,
+                   tr( "WiFi data missing" ),
+                   info );
 
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-      mb.exec();
-      return false;
+       return false;
     }
 
-  conf->setGpsWlanIp1( curIp );
-  conf->setGpsWlanPort1( curPort );
-  conf->setGpsWlanPassword1( curPassword );
+  conf->setGpsWlanIp1( WiFi1_IP->text() );
+  conf->setGpsWlanPort1( WiFi1_Port->text() );
+  conf->setGpsWlanCB1( WiFi1CB->isChecked() );
 
-  if( oldIp != curIp || oldPort != curPort || oldPassword != curPassword )
+  conf->setGpsWlanIp2( WiFi2_IP->text() );
+  conf->setGpsWlanPort2( WiFi2_Port->text() );
+  conf->setGpsWlanCB2( WiFi2CB->isChecked() );
+
+  conf->setGpsWlanIp3( WiFi3_IP->text() );
+  conf->setGpsWlanPort3( WiFi3_Port->text() );
+  conf->setGpsWlanCB3( WiFi3CB->isChecked() );
+
+  if( ip1 != ip1n || ip2 != ip2n || ip3 != ip3n ||
+      port1 != port1n || port2 != port2n port3 != port3n ||
+      cb1 || cb1n || cb2 || cb2n || cb3 || cb3n || )
     {
       emit ipSettingsChanged();
     }

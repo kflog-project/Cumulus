@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2022 by Axel Pauli
+ **                   2012-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -172,6 +172,20 @@ static void nativeGpsStatus( JNIEnv * /*jniEnvironment*/,
     {
       GpsStatusEvent *ge = new GpsStatusEvent( status );
       QCoreApplication::postEvent( GpsNmea::gps, ge );
+    }
+}
+
+/**
+ * Gets the Android request to start resp. to stop WiFi connection at C++ side.
+ */
+static void nativeWifiRequest( JNIEnv * /*jniEnvironment*/,
+                               jobject /*myproxyobject*/,
+                               jint request )
+{
+  if( ! shutdown )
+    {
+      WifiEvent *we = new WifiEvent( request );
+      QCoreApplication::postEvent( MainWindow:MmainWindow(), we );
     }
 }
 
@@ -360,7 +374,8 @@ static JNINativeMethod methods[] = {
 	{"isRootWindow", "()Z", (bool *)isRootWindow},
 	{"nativeByteFromGps", "(B)V", (void *)nativeByteFromGps},
 	{"nativeBaroPressure", "(D)V", (void *)nativeBaroPressure},
-	{"nativeHttpsResponse", "(ILjava/lang/String;J)V", (void *)nativeHttpsResponse}
+	{"nativeHttpsResponse", "(ILjava/lang/String;J)V", (void *)nativeHttpsResponse},
+	{"nativeWifiRequest", "(I)V", (void *)nativeWifiRequest}
 };
 
 /**

@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- Cumulus common string definitions -->
-<!-- $Id: cumulus.xml 6446 2014-01-01 19:25:47Z axel $ -->
 <!-- For translation handling see here: http://developer.android.com/resources/tutorials/localization/index.html -->
 <resources>
- 	<string name="appDataFile">appData.zip</string>
-	<string name="addDataFile">addData.zip</string>
+  <string name="appDataFile">appData.zip</string>
+  <string name="addDataFile">addData.zip</string>
   <string name="baroSensor">Baro Sensor</string>  
   <string name="baroSensorMenu">Menu Baro Sensor</string>  
   <string name="baroSensorOn">Baro Sensor on</string>
@@ -17,7 +16,8 @@
 	<string name="gps">GPS</string>
 	<string name="gpsDeviceNo">No GPS receiver available!</string>
 	<string name="gpsGoto">Goto Settings Page to enable GPS receiver</string>
-	<string name="gpsBluetooth">Bluetooth GPS</string>
+        <string name="gpsBluetooth">Bluetooth GPS</string>
+        <string name="gpsWifi">WiFi GPS</string>
 	<string name="gpsInternal">Internal GPS</string>
 	<string name="gpsIoio">IOIO GPS</string>
 	<string name="gpsBtMenu">Menu GPS BT</string>

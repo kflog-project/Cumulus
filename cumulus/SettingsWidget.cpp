@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2023 by Axel Pauli
+ **                   2007-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -385,6 +385,9 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
 
       connect( page , SIGNAL(userGpsSwitchRequest()),
                GpsNmea::gps, SLOT(slot_userGpsSwitchRequest()) );
+
+      connect( page , SIGNAL(ipSettingsChanged()),
+               MainWindow::mainWindow(), SLOT( slotKRT2() ) );
 
       page->show();
       return;

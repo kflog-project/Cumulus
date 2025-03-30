@@ -104,6 +104,11 @@ MapConfig *_globalMapConfig = static_cast<MapConfig *> (0);
 MapView *_globalMapView = static_cast<MapView *> (0);
 
 /**
+ * KRT2 driver interface.
+ */
+KRT2 * MainWindow::m_krt2 = static_cast<KRT2 *> (0);
+
+/**
  * Contains the root window flag.
  */
 bool MainWindow::m_rootWindow = true;
@@ -209,6 +214,7 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
 #ifdef INTERNET
   m_liveTrackLogger(0),
 #endif
+  m_krt2Active(false),
   m_firstStartup( false )
 {
   _globalMainWindow = this;
@@ -2032,6 +2038,12 @@ void MainWindow::closeEvent( QCloseEvent* event )
           m_liveTrackLogger->slotFinishLogging();
         }
 
+      // Close KRT2 connection
+      if( m_krt2 != 0 )
+        {
+          delete m_krt2;
+        }
+
       if( deferredClose == true)
         {
           // Trigger a recall of this slot to check again for running
@@ -2734,6 +2746,89 @@ void MainWindow::slotReadconfig()
     }
 
   Map::instance->scheduleRedraw();
+
+  slotKRT2();
+}
+
+/**
+ * This slot is called to handle the KRT-2 connection interface.
+ */
+void MainWindow::slotKRT2()
+{
+  qDebug() << "MainWindow::slotKRT2()";
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString ip = conf->getGpsWlanIp3();
+  QString port = conf->getGpsWlanPort3();
+  bool active = GeneralConfig::instance()->getGpsWlanCB3();
+
+  if( active == true )
+    {
+      if( m_krt2 == 0 )
+	{
+	  // No KRT2 is active
+	  m_krt2 = new KRT2( this, ip, port );
+	}
+      else if( m_krt2Ip != ip || m_krt2Port != port )
+	{
+	  // IP data was changed
+	  m_krt2->close();
+	  m_krt2->deleteLater();
+	  m_krt2 = new KRT2( this, ip, port );
+	}
+    }
+  else // active is false
+    {
+      if( m_krt2 != 0 )
+	{
+	  m_krt2->close();
+	  m_krt2->deleteLater();
+	  m_krt2 = 0;
+	}
+    }
+
+  // store last configuration
+  m_krt2Ip = ip;
+  m_krt2Port = port;
+  m_krt2Active = active;
+}
+
+/**
+ * Handler for custom QEvents posted by the native JNI functions in
+ * jnisupport.cpp.
+ */
+bool MainWindow::event( QEvent *event )
+{
+  // Handles WiFi connect/disconnect request forwarded by the Android system
+  if( event->type() == QEvent::User + 8 )
+    {
+      qDebug() << "MainWindow() got WiFi event request" << we->requestInfo();
+
+      WifiEvent *we = static_cast<WifiEvent *>(event);
+
+      if( we->requestInfo() == 1 )
+        {
+          if( m_krt2 != 0 && GeneralConfig::instance()->getGpsWlanCB3() )
+            {
+              m_krt2->connect();
+            }
+        }
+      else if we->requestInfo() == 0 )
+        {
+          if( m_krt2 != 0 )
+            {
+              m_krt2->close();
+              m_krt2->deleteLater();
+              m_krt2 = 0;
+            }
+        }
+
+      return true;
+    }
+
+  // Calls the default event processing.
+  return QObject::event(event);
 }
 
 void MainWindow::slotGpsStatus( GpsNmea::GpsStatus status )

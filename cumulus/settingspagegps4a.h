@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2021 by Axel Pauli
+**   Copyright (c):  2012-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,12 +20,11 @@
  *
  * \brief GPS Configuration settings for Android.
  *
- * \date 2012-2021
+ * \date 2012-2025
  *
  */
 
-#ifndef SETTINGS_PAGE_GPS4A_H
-#define SETTINGS_PAGE_GPS4A_H
+#pragma once
 
 #include <QWidget>
 #include <QCheckBox>
@@ -106,13 +105,23 @@ class SettingsPageGPS4A : public QWidget
    */
   bool save();
 
+  /** Called to toggle the WiFi menu lines. */
+  void toggleWiFiMenu();
+
   QComboBox* GpsSource;
   QComboBox* PressureDevice;
   QComboBox* GpsAltitude;
   QCheckBox* saveNmeaData;
-  QLineEdit* wlanIpAddress;
-  QLineEdit* wlanPort;
-  QLineEdit* wlanPassword;
+  NumberEditor*  WiFi1_IP;
+  NumberEditor*  WiFi1_Port;
+  NumberEditor*  WiFi2_IP;
+  NumberEditor*  WiFi2_Port;
+  NumberEditor*  WiFi3_IP;
+  NumberEditor*  WiFi3_Port;
+  QCheckBox*     WiFi1CB;
+  QCheckBox*     WiFi2CB;
+  QCheckBox*     WiFi3CB;
+  QLabel*        label1;
+  QLabel*        label2;
+  QLabel*        label3;
 };
-
-#endif
