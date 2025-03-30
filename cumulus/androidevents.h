@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010 by Josua Dietze (digidietze@draisberghof.de)
- **                   2012-2022 by Axel Pauli
+ **                   2012-2025 by Axel Pauli
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@
  * \brief Android custom events, used by the JNI to report results from the
  * Java part.
  *
- * \date 2012-2022
+ * \date 2012-2025
  *
- * \version 1.5
+ * \version 1.6
  *
  */
 
@@ -257,4 +257,27 @@ class HttpsResponseEvent : public QEvent
 
   int m_errorCode;
   QString m_response;
+};
+
+/** Posted by the method jniWifiRequest */
+class WifiEvent : public QEvent
+{
+  public:
+
+  WifiEvent( const int request ) :
+    QEvent( (QEvent::Type) (QEvent::User + 8) ),
+    m_request(request)
+  {};
+
+  virtual ~WifiEvent() {};
+
+  void requestInfo( int& request )
+    {
+      request = m_request;
+      return;
+    };
+
+ private:
+
+  int m_request;
 };
