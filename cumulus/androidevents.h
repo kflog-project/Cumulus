@@ -273,7 +273,7 @@ class WifiEvent : public QEvent
 
   int requestInfo()
     {
-      return = m_request;
+      return m_request;
     };
 
  private:

@@ -37,7 +37,6 @@ KRT2::KRT2( QObject *parent, QString ip, QString port ) :
   m_socket(nullptr)
 {
   setObjectName( "KRT2" );
-  slotConnect();
 }
 
 KRT2::~KRT2()

@@ -287,7 +287,7 @@ protected:
 
   virtual void keyReleaseEvent( QKeyEvent* event );
 
-  virtual void bool event( QEvent *event );
+  virtual bool event( QEvent *event );
 
   /**
    * Redefinition of the resizeEvent.

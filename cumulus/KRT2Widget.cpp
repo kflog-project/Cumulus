@@ -29,10 +29,14 @@
  * \version 1.0
  */
 
-#include <QtWidgets>
+#include <QtGui>
+
+#ifdef QTSCROLLER
+#include <QtScroller>
+#endif
 
 #include "KRT2Widget.h"
-#include <HelpBrowser.h>
+#include "helpbrowser.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "MainWindow.h"
@@ -80,7 +84,18 @@ KRT2Widget::KRT2Widget( QWidget *parent, QString& header, QList<Frequency>& fqLi
   m_table->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
   m_table->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
+#ifdef ANDROID
+  QScrollBar* lvsb = m_table->verticalScrollBar();
+  lvsb->setStyleSheet( Layout::getCbSbStyle() );
+#endif
+
+#ifdef QSCROLLER
   QScroller::grabGesture( m_table->viewport(), QScroller::LeftMouseButtonGesture );
+#endif
+
+#ifdef QTSCROLLER
+  QtScroller::grabGesture( m_table->viewport(), QtScroller::LeftMouseButtonGesture );
+#endif
 
   QString style = "QTableView QTableCornerButton::section { background: gray }";
   m_table->setStyleSheet( style );
@@ -115,7 +130,12 @@ KRT2Widget::KRT2Widget( QWidget *parent, QString& header, QList<Frequency>& fqLi
   hHeader->setStretchLastSection( true );
   hHeader->setSortIndicator( 0, Qt::AscendingOrder );
   hHeader->setSortIndicatorShown( true );
+
+#if QT_VERSION >= 0x050000
   hHeader->setSectionsClickable( true );
+#else
+  hHeader->setClickable( true );
+#endif
 
   connect( hHeader, SIGNAL(sectionClicked(int)),
            this, SLOT(slot_HeaderClicked(int)) );

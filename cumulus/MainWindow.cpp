@@ -67,9 +67,9 @@
 #include "DownloadManager.h"
 #endif
 
-#ifdef ANDROID
-
 #include "androidevents.h"
+
+#ifdef ANDROID
 #include "jnisupport.h"
 
 #endif
@@ -2803,18 +2803,18 @@ bool MainWindow::event( QEvent *event )
   // Handles WiFi connect/disconnect request forwarded by the Android system
   if( event->type() == QEvent::User + 8 )
     {
-      qDebug() << "MainWindow() got WiFi event request" << we->requestInfo();
-
       WifiEvent *we = static_cast<WifiEvent *>(event);
+
+      qDebug() << "MainWindow() got WiFi event request" << we->requestInfo();
 
       if( we->requestInfo() == 1 )
         {
           if( m_krt2 != 0 && GeneralConfig::instance()->getGpsWlanCB3() )
             {
-              m_krt2->connect();
+              m_krt2->slotConnect();
             }
         }
-      else if we->requestInfo() == 0 )
+      else if( we->requestInfo() == 0 )
         {
           if( m_krt2 != 0 )
             {
