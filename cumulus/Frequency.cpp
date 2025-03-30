@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2018-2023 by Axel Pauli
+ **   Copyright (c):  2018-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -87,7 +87,7 @@ QString unitAsString( const quint8 unit )
  */
 bool Frequency::getMainFrequency( const QList<Frequency>& fqList, Frequency& fq )
 {
-  if( fqList.size() > 0.0 )
+  if( fqList.size() > 0 )
     {
       int i = 0;
       int fqlIdx = -1;
@@ -97,9 +97,9 @@ bool Frequency::getMainFrequency( const QList<Frequency>& fqList, Frequency& fq 
         {
           quint8 type = fqList.at(i).getType();
 
-          if( type == Frequency::Tower || type == Frequency::Info ||
+          if( type == Frequency::Tower || type == Frequency::AFIS ||
               type == Frequency::Radio || type == Frequency::Information ||
-              fqList.at(i).isPrimary() == true )
+              type == Frequency::Radar || fqList.at(i).isPrimary() == true )
             {
               fqlIdx = i;
               break;
@@ -109,8 +109,13 @@ bool Frequency::getMainFrequency( const QList<Frequency>& fqList, Frequency& fq 
       if( fqlIdx != -1  )
         {
           fq = fqList.at(i);
-          return true;
         }
+      else
+        {
+          fq = fqList.at(0);
+        }
+
+      return true;
     }
 
   return false;
@@ -129,8 +134,9 @@ void Frequency::loadTranslations()
   typeTranslations.insert( Frequency::FIS,  QObject::tr( "FIS" ) );
   typeTranslations.insert( Frequency::Gliding,  QObject::tr( "Gliding" ) );
   typeTranslations.insert( Frequency::Ground,  QObject::tr( "Ground" ) );
-  typeTranslations.insert( Frequency::Info,  QObject::tr( "Info" ) );
+  typeTranslations.insert( Frequency::Information,  QObject::tr( "Information" ) );
   typeTranslations.insert( Frequency::Multicom,  QObject::tr( "Multicom" ) );
+  typeTranslations.insert( Frequency::Unicom,  QObject::tr( "Uniicom" ) );
   typeTranslations.insert( Frequency::Radar,  QObject::tr( "Radar" ) );
   typeTranslations.insert( Frequency::Tower,  QObject::tr( "Tower" ) );
   typeTranslations.insert( Frequency::ATIS,  QObject::tr( "Atis" ) );
@@ -140,7 +146,7 @@ void Frequency::loadTranslations()
   typeTranslations.insert( Frequency::AWOS,  QObject::tr( "Awos" ) );
   typeTranslations.insert( Frequency::Lights,  QObject::tr( "Lights" ) );
   typeTranslations.insert( Frequency::VOLMET,  QObject::tr( "Volmet" ) );
-  typeTranslations.insert( Frequency::Information,  QObject::tr( "Information" ) );
+  typeTranslations.insert( Frequency::AFIS,  QObject::tr( "AFIS" ) );
   typeTranslations.insert( Frequency::Unknown,  QObject::tr( "Unknown" ) );
 }
 

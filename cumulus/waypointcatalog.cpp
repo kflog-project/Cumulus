@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2001      by Harald Maier
  **                   2002      by André Somers,
- **                   2008-2023 by Axel Pauli
+ **                   2008-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1740,7 +1740,7 @@ int WaypointCatalog::readCup( QString catalog, QList<Waypoint>* wpList )
             {
               freq.setValue( frequency );
               freq.setUnit( Frequency::MHz );
-              freq.setType( Frequency::Info );
+              freq.setType( Frequency::Radio );
               wp.addFrequency( freq );
             }
           else
@@ -2014,9 +2014,8 @@ bool WaypointCatalog::writeCup( const QString& catalog, QList<Waypoint>& wpList 
             {
               quint8 type = fqList[i].getType();
 
-              if( type == Frequency::Tower || type == Frequency::Info ||
-                  type == Frequency::Radio || type == Frequency::Information ||
-                  fqList[i].isPrimary() == true )
+              if( type == Frequency::Tower || type == Frequency::Radio ||
+                  type == Frequency::Information || fqList[i].isPrimary() == true )
                 {
                   fqlIdx = i;
                   break;

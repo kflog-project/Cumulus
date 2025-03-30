@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c):  2018-2023 by Axel Pauli
+ **   Copyright (c):  2018-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
  *
  * This class contains a frequency and its related type.
  *
- * \date 2018-2023
+ * \date 2018-2025
  *
  */
 
@@ -61,7 +61,7 @@ class Frequency
     FIS = 7,
     Gliding = 8,
     Ground = 9,
-    Info = 10,
+    Information = 10,
     Multicom = 11,
     Unicom = 12,
     Radar = 13,
@@ -73,7 +73,7 @@ class Frequency
     AWOS = 19,
     Lights = 20,
     VOLMET = 21,
-    Information = 22,
+    AFIS = 22,
     Unknown = 255
   };
 
