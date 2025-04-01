@@ -42,7 +42,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import android.annotation.SuppressLint;
+// import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -139,7 +139,7 @@ public class WebCommService
    * @return Result code of download action.
    * 
    */
-  @SuppressLint("SimpleDateFormat")
+  @SuppressWarnings("SimpleDateFormat")
   int downloadFile( String urlIn, String destinationIn )
   {
     Log.i("DownloadFile", "Entry URL: " + urlIn + ", Dest: " + destinationIn);
@@ -292,7 +292,6 @@ public class WebCommService
    * 
    * @return Result code and response text from the web server.
    */
-  @SuppressLint("TrulyRandom")
   public WebCommResult sendHttpsRequest( String urlIn, String urlParamsIn )
   {
     WebCommResult result = new WebCommResult();

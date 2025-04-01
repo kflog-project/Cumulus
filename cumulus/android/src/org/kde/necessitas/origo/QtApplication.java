@@ -38,7 +38,7 @@ import android.app.Application;
 
 public class QtApplication extends Application
 {
-  public final static String QtTAG = "Qt";
+  public final static String QtTAG = "QtApp";
   public static Object m_delegateObject = null;
   public static HashMap<String, ArrayList<Method>> m_delegateMethods = new HashMap<String, ArrayList<Method>>();
   public static Method dispatchKeyEvent = null;

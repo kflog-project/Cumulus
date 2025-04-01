@@ -35,6 +35,10 @@
 #include <QtScroller>
 #endif
 
+#ifdef ANDROID
+#define nullptr 0
+#endif
+
 #include "KRT2Widget.h"
 #include "helpbrowser.h"
 #include "generalconfig.h"

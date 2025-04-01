@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- Cumulus common string definitions for German -->
-<!-- $Id: cumulus.xml 6446 2014-01-01 19:25:47Z axel $ -->
+
 <resources>
   <string name="appDataFile">appData.zip</string>
   <string name="addDataFile">addData.zip</string>
@@ -17,6 +17,7 @@
   <string name="gpsDeviceNo">Kein GPS Empfänger verfügbar!</string>
   <string name="gpsGoto">Zur Konfigurationsseite gehen, um den GPS Empfänger zu aktivieren</string>
   <string name="gpsBluetooth">Bluetooth GPS</string>
+  <string name="gpsWifi">WiFi GPS</string>
   <string name="gpsInternal">Internes GPS</string>
   <string name="gpsIoio">IOIO GPS</string>
   <string name="gpsBtMenu">Menü GPS BT</string>

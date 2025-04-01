@@ -26,11 +26,15 @@ class KRT2 : public QObject
 {
   Q_OBJECT
 
-  KRT2() = delete;
-
  private:
 
   Q_DISABLE_COPY ( KRT2 )
+
+#ifndef ANDROID
+  KRT2() = delete;
+#else
+  KRT2(){};
+#endif
 
  public:
 

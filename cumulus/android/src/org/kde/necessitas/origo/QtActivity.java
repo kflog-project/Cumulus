@@ -161,6 +161,7 @@ public class QtActivity extends Activity
         loaderParams.putInt(NECESSITAS_API_LEVEL_KEY, NECESSITAS_API_LEVEL);
 
         // load and start QtLoader class
+        
         m_classLoader = new DexClassLoader(loaderParams.getString(DEX_PATH_KEY), // .jar/.apk files
                                            getDir("outdex", Context.MODE_PRIVATE).getAbsolutePath(), // directory where optimized DEX files should be written.
                                            loaderParams.containsKey(LIB_PATH_KEY) ? loaderParams.getString(LIB_PATH_KEY) : null, // libs folder (if exists)
@@ -172,7 +173,7 @@ public class QtActivity extends Activity
         Method perpareAppMethod = qtLoader.getClass().getMethod("loadApplication", Activity.class, ClassLoader.class, Bundle.class);
         
         if (!(Boolean) perpareAppMethod.invoke(qtLoader, this, m_classLoader, loaderParams))
-          throw new Exception("");
+          throw new Exception("QtActivity: qtLoader failed!");
 
         QtApplication.setQtActivityDelegate(qtLoader);
 
@@ -341,8 +342,7 @@ public class QtActivity extends Activity
 
             // It seems, that the application has just installed or the user has
             // removed all its data. In this case the Jar output directory must
-            // be
-            // cleared to prevent the usage of outdated data.
+            // be cleared to prevent the usage of outdated data.
             removeDirContent(jarDir);
           }
 

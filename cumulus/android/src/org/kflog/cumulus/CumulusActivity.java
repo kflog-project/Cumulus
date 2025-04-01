@@ -310,7 +310,6 @@ public class CumulusActivity extends QtActivity
   /**
    * A Handler that gets information back from other objects.
    */
-  @SuppressLint("HandlerLeak")
   private final Handler m_commHandler = new Handler()
     {
       @Override
@@ -1867,7 +1866,7 @@ public class CumulusActivity extends QtActivity
               gpsMenuItems.add(getString(R.string.gpsBluetooth));
             }
           
-          if ( m_wifiService == false )
+          if ( m_wiFiService == false )
 	        {
 	          gpsMenuItems.add(getString(R.string.gpsWifi));
 	        }

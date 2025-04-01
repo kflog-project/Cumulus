@@ -52,6 +52,12 @@ private:
 
   Q_DISABLE_COPY( KRT2Widget )
 
+#ifndef ANDROID
+  KRT2Widget() = delete;
+#else
+  KRT2Widget(){};
+#endif
+
 public:
 
   /**

@@ -2766,26 +2766,26 @@ void MainWindow::slotKRT2()
   if( active == true )
     {
       if( m_krt2 == 0 )
-	{
-	  // No KRT2 is active
-	  m_krt2 = new KRT2( this, ip, port );
-	}
+        {
+          // No KRT2 is active
+          m_krt2 = new KRT2( this, ip, port );
+        }
       else if( m_krt2Ip != ip || m_krt2Port != port )
-	{
-	  // IP data was changed
-	  m_krt2->close();
-	  m_krt2->deleteLater();
-	  m_krt2 = new KRT2( this, ip, port );
-	}
+        {
+          // IP data was changed
+          m_krt2->close();
+          m_krt2->deleteLater();
+          m_krt2 = new KRT2( this, ip, port );
+        }
     }
   else // active is false
     {
       if( m_krt2 != 0 )
-	{
-	  m_krt2->close();
-	  m_krt2->deleteLater();
-	  m_krt2 = 0;
-	}
+        {
+          m_krt2->close();
+          m_krt2->deleteLater();
+          m_krt2 = 0;
+        }
     }
 
   // store last configuration

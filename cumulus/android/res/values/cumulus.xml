@@ -16,8 +16,8 @@
 	<string name="gps">GPS</string>
 	<string name="gpsDeviceNo">No GPS receiver available!</string>
 	<string name="gpsGoto">Goto Settings Page to enable GPS receiver</string>
-        <string name="gpsBluetooth">Bluetooth GPS</string>
-        <string name="gpsWifi">WiFi GPS</string>
+  <string name="gpsBluetooth">Bluetooth GPS</string>
+  <string name="gpsWifi">WiFi GPS</string>
 	<string name="gpsInternal">Internal GPS</string>
 	<string name="gpsIoio">IOIO GPS</string>
 	<string name="gpsBtMenu">Menu GPS BT</string>

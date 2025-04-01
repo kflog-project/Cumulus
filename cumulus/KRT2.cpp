@@ -36,6 +36,7 @@ KRT2::KRT2( QObject *parent, QString ip, QString port ) :
   m_sychronized(false),
   m_socket(nullptr)
 {
+  qDebug() << "KRT2::KRT2() IP=" << ip << "Port=" << port;
   setObjectName( "KRT2" );
 }
 

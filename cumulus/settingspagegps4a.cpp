@@ -116,7 +116,7 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   topLayout->addWidget( PressureDevice, row++, 1);
 
   //----------------------------------------------------------------------------
-  hbox = new QHBoxLayout;
+  QHBoxLayout* hbox = new QHBoxLayout;
   hbox->setMargin( 0 );
 
   WiFi1CB = new QCheckBox( tr( "WiFi-1 IP : Port" ) );
@@ -353,6 +353,7 @@ void SettingsPageGPS4A::load()
 /** Called to toggle the WiFi menu lines. */
 void SettingsPageGPS4A::toggleWiFiMenu()
 {
+#if 0
   if( GpsDev->currentText().startsWith( "WiFi" ) == true )
     {
       WiFi1_IP->show();
@@ -383,6 +384,7 @@ void SettingsPageGPS4A::toggleWiFiMenu()
       label2->hide();
       label3->hide();
     }
+#endif
 }
 
 bool SettingsPageGPS4A::save()
@@ -436,7 +438,7 @@ bool SettingsPageGPS4A::save()
           tr( "<html>WiFi IPs or Ports entries are missing!"
               "<br><br>Please add the missing items.</html>" ) );
 
-       messageBox( QMessageBox::Warning,
+      QMessageBox( QMessageBox::Warning,
                    tr( "WiFi data missing" ),
                    info );
 
@@ -456,8 +458,8 @@ bool SettingsPageGPS4A::save()
   conf->setGpsWlanCB3( WiFi3CB->isChecked() );
 
   if( ip1 != ip1n || ip2 != ip2n || ip3 != ip3n ||
-      port1 != port1n || port2 != port2n port3 != port3n ||
-      cb1 || cb1n || cb2 || cb2n || cb3 || cb3n || )
+      port1 != port1n || port2 != port2n || port3 != port3n ||
+      cb1 != cb1n || cb2 != cb2n || cb3 != cb3n )
     {
       emit ipSettingsChanged();
     }

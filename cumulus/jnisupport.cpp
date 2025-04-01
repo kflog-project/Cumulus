@@ -185,7 +185,7 @@ static void nativeWifiRequest( JNIEnv * /*jniEnvironment*/,
   if( ! shutdown )
     {
       WifiEvent *we = new WifiEvent( request );
-      QCoreApplication::postEvent( MainWindow:MmainWindow(), we );
+      QCoreApplication::postEvent( MainWindow::mainWindow(), we );
     }
 }
 

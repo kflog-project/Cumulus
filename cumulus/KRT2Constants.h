@@ -15,35 +15,37 @@
  **
 ***********************************************************************/
 
-#include <cstdint>
-
 #pragma once
 
-  static constexpr uint8_t STX{0x02}; //!< Command start character.
-  static constexpr uint8_t ACK{0x06}; //!< Command acknowledged character.
-  static constexpr uint8_t NAK{0x15}; //!< Command not acknowledged character.
-  static constexpr uint8_t NO_RSP{0}; //!< No response received yet.
-  static constexpr uint8_t RCQ{'S'};  //!< Respond to connection query
+#ifdef ANDROID
+#define nullptr 0
+#endif
+
+#define STX 0x02 //!< Command start character.
+#define ACK 0x06 //!< Command acknowledged character.
+#define NAK 0x15 //!< Command not acknowledged character.
+#define NO_RSP 0 //!< No response received yet.
+#define RCQ 'S'  //!< Respond to connection query
 
   /** Unknown code, received once after power up, STX '8' */
-  static constexpr uint8_t UNKNOWN1{'8'};
-  static constexpr uint8_t SET_VOLUME{'A'};
-  static constexpr uint8_t LOW_BATTERY{'B'};
-  static constexpr uint8_t EXCHANGE_FREQUENCIES{'C'};
-  static constexpr uint8_t NO_LOW_BATTERY{'D'};
-  static constexpr uint8_t PLL_ERROR{'E'};
-  static constexpr uint8_t NO_PLL_ERROR{'F'};
-  static constexpr uint8_t RX{'J'};
-  static constexpr uint8_t TX{'K'};
-  static constexpr uint8_t TE{'L'};
-  static constexpr uint8_t RX_ON_ACTIVE_FREQUENCY{'M'};
-  static constexpr uint8_t DUAL_ON{'O'};
-  static constexpr uint8_t STANDBY_FREQUENCY{'R'};
-  static constexpr uint8_t ACTIVE_FREQUENCY{'U'};
-  static constexpr uint8_t NO_RX{'V'};
-  static constexpr uint8_t PLL_ERROR2{'W'};
-  static constexpr uint8_t NO_TX_RX{'Y'};
-  static constexpr uint8_t SET_FREQUENCY{'Z'};
-  static constexpr uint8_t DUAL_OFF{'o'};
-  static constexpr uint8_t NO_RX_ON_ACTIVE_FREQUENCY{'m'};
-  static constexpr uint8_t MAX_NAME_LENGTH = 8; //!< Max. radio station name length.
+#define UNKNOWN1 '8'
+#define SET_VOLUME 'A'
+#define LOW_BATTERY 'B'
+#define EXCHANGE_FREQUENCIES 'C'
+#define NO_LOW_BATTERY 'D'
+#define PLL_ERROR 'E'
+#define NO_PLL_ERROR 'F'
+#define RX 'J'
+#define TX 'K'
+#define TE 'L'
+#define RX_ON_ACTIVE_FREQUENCY 'M'
+#define DUAL_ON 'O'
+#define STANDBY_FREQUENCY 'R'
+#define ACTIVE_FREQUENCY 'U'
+#define NO_RX 'V'
+#define PLL_ERROR2 'W'
+#define NO_TX_RX 'Y'
+#define SET_FREQUENCY 'Z'
+#define DUAL_OFF 'o'
+#define NO_RX_ON_ACTIVE_FREQUENCY 'm'
+#define MAX_NAME_LENGTH 8 //!< Max. radio station name length.

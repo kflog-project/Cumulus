@@ -31,6 +31,8 @@
 #include <QComboBox>
 #include <QLineEdit>
 
+#include "numberEditor.h"
+
 class SettingsPageGPS4A : public QWidget
 {
   Q_OBJECT
