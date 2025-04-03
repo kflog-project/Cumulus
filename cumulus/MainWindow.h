@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2025 by Axel Pauli
+                        : (C) 2007-2021 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,7 +25,7 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2025
+ * \date 2002-2021
  *
  * \version 1.2
  */
@@ -55,7 +55,6 @@
 #include "mapinfobox.h"
 #include "waitscreen.h"
 #include "splash.h"
-#include "KRT2.h"
 
 #ifdef INTERNET
 #include "LiveTrack24Logger.h"
@@ -122,16 +121,6 @@ public:
   static MainWindow* mainWindow()
   {
     return _globalMainWindow;
-  };
-
-  /**
-   * Returns a pointer to the KRT2 class.
-   *
-   * \return A pointer to the krt2 driver instance.
-   */
-  static KRT2* krt2Driver()
-  {
-    return m_krt2;
   };
 
   static void setRootWindow( bool value)
@@ -233,11 +222,6 @@ public slots:
   void slotReadconfig();
 
   /**
-   * This slot is called to handle the KRT-2 connection interface.
-   */
-  void slotKRT2();
-
-  /**
    * Called if the status of the GPS changes, and controls the availability
    * of manual navigation.
    */
@@ -286,8 +270,6 @@ protected:
   virtual void keyPressEvent( QKeyEvent* event );
 
   virtual void keyReleaseEvent( QKeyEvent* event );
-
-  virtual bool event( QEvent *event );
 
   /**
    * Redefinition of the resizeEvent.
@@ -583,12 +565,6 @@ private:
   /** LiveTrack24 logger object. */
   LiveTrack24Logger* m_liveTrackLogger;
 #endif
-
-  // KRT-2 interface objects
-  static KRT2* m_krt2;
-  QString m_krt2Ip;
-  QString m_krt2Port;
-  bool m_krt2Active;
 
   /** A flag to indicate a first startup after the installation. */
   bool m_firstStartup;

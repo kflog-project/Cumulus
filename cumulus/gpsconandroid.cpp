@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2022 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2012-2025 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This program is free software; you can redistribute it and/or modify
  **   it under the terms of the GNU General Public License as published by
@@ -18,13 +18,15 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include <QtGui>
+#include <QtCore>
 
 #include "androidevents.h"
 #include "generalconfig.h"
 #include "gpsconandroid.h"
 #include "gpsnmea.h"
 #include "jnisupport.h"
+#include "TcpSocket.h"
+#include "KRT2.h"
 
 #ifdef FLARM
 #include "flarmbase.h"
@@ -32,19 +34,225 @@
 #endif
 
 // static members
+GpsConAndroid* GpsConAndroid::instance1 = 0;
+
 QByteArray GpsConAndroid::rcvBuffer;
 QMutex     GpsConAndroid::mutexRead;
 QMutex     GpsConAndroid::mutexWrite;
 QMutex     GpsConAndroid::mutexAction;
 
+TcpSocket* GpsConAndroid::m_xcvario = 0;
+QString    GpsConAndroid::m_xcvarioIp;
+QString    GpsConAndroid::m_xcvarioPort;
+bool       GpsConAndroid::m_xcvarioActive = false;
+
+TcpSocket* GpsConAndroid::m_xcgps = 0;
+QString    GpsConAndroid::m_xcgpsIp;
+QString    GpsConAndroid::m_xcgpsPort;
+bool       GpsConAndroid::m_xcgpsActive = false;
+
+KRT2*      GpsConAndroid::m_krt2 = 0;
+QString    GpsConAndroid::m_krt2Ip;
+QString    GpsConAndroid::m_krt2Port;
+bool       GpsConAndroid::m_krt2Active = false;
+bool       GpsConAndroid::m_wiFiRequest = false;
+
 GpsConAndroid::GpsConAndroid(QObject* parent) : QObject(parent)
 {
+  static short instances = 0;
+
   setObjectName( "GpsConAndroid" );
+
+  if( instances == 0 )
+    {
+      instances++;
+      instance1 = this;
+    }
 }
 
 GpsConAndroid::~GpsConAndroid()
 {
   // qDebug() << "~GpsConAndroid()";
+}
+
+bool GpsConAndroid::event(QEvent *event)
+{
+  // Handles WiFi request from the Android system
+  if( event->type() == QEvent::User + 8 )
+    {
+      qDebug() << "GpsConAndroid: WiFi event received";
+      WifiEvent *wifiEvent = static_cast<WifiEvent *>(event);
+      handleWiFiRequest( wifiEvent->requestInfo() );
+      return true;
+    }
+
+  // Calls the default event processing.
+  return QObject::event(event);
+}
+
+void GpsConAndroid::handleWiFiRequest( int request )
+{
+  qDebug() << "GpsConAndroid::handleWiFiRequest() request=" << request;
+  m_wiFiRequest = request;
+  slot_configChanged();
+}
+
+/**
+ * This slot is called, to handle configuration changes.
+ */
+void GpsConAndroid::slot_configChanged()
+{
+  slot_xcvario();
+  slot_xcgps();
+  slot_krt2();
+}
+
+/**
+ * This method is called to activate/deactivate the XCVario TCP connection interface.
+ */
+void GpsConAndroid::slot_xcvario()
+{
+  qDebug() << "GpsConAndroid::slot_xcvario()";
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString ip = conf->getGpsWlanIp1();
+  QString port = conf->getGpsWlanPort1();
+  bool active = GeneralConfig::instance()->getGpsWlanCB1();
+  const short channel = 0;
+
+  if( active == true && m_wiFiRequest == 1 )
+    {
+      if( m_xcvario == 0 )
+        {
+          // No socket is active
+          m_xcvario = new TcpSocket( 0, ip, port, channel );
+          connect( m_xcvario, SIGNAL( rxData(QByteArray, const short)),
+                   this, SLOT( slot_extractNmea( QByteArray, const short )) );
+        }
+      else if( m_xcvarioIp != ip || m_xcvarioPort != port )
+        {
+          // IP data was changed
+          m_xcvario->close();
+          m_xcvario->deleteLater();
+          m_xcvario = new TcpSocket( 0, ip, port, channel );
+          connect( m_xcvario, SIGNAL( rxData(QByteArray, const short)),
+                   this, SLOT( slot_extractNmea( QByteArray, const short )) );
+        }
+
+      m_xcvario->slotConnect();
+    }
+  else // active is false
+    {
+      if( m_xcvario != 0 )
+        {
+          m_xcvario->close();
+          m_xcvario->deleteLater();
+          m_xcvario = 0;
+        }
+    }
+
+  // store last configuration
+  m_xcvarioIp = ip;
+  m_xcvarioPort = port;
+  m_xcvarioActive = active;
+}
+
+/**
+ * This method is called to activate/deactivate the XCVario GPS TCP connection interface.
+ */
+void GpsConAndroid::slot_xcgps()
+{
+  qDebug() << "GpsConAndroid::slot_xcgps()";
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString ip = conf->getGpsWlanIp2();
+  QString port = conf->getGpsWlanPort2();
+  bool active = GeneralConfig::instance()->getGpsWlanCB2();
+  const short channel = 1;
+
+  if( active == true && m_wiFiRequest == 1 )
+    {
+      if( m_xcgps == 0 )
+        {
+          // No socket is active
+          m_xcgps = new TcpSocket( 0, ip, port, channel );
+          connect( m_xcgps, SIGNAL( rxData(QByteArray, const short)),
+                   this, SLOT( slot_extractNmea( QByteArray, const short )) );
+        }
+      else if( m_xcgpsIp != ip || m_xcgpsPort != port )
+        {
+          // IP data was changed
+          m_xcgps->close();
+          m_xcgps->deleteLater();
+          m_xcgps = new TcpSocket( 0, ip, port, channel );
+          connect( m_xcgps, SIGNAL( rxData(QByteArray, const short)),
+                   this, SLOT( slot_extractNmea( QByteArray, const short )) );
+        }
+
+      m_xcgps->slotConnect();
+    }
+  else // active is false
+    {
+      if( m_xcgps != 0 )
+        {
+          m_xcgps->close();
+          m_xcgps->deleteLater();
+          m_xcgps = 0;
+        }
+    }
+
+  // store last configuration
+  m_xcgpsIp = ip;
+  m_xcgpsPort = port;
+  m_xcgpsActive = active;
+}
+
+/**
+ * This slot is called to handle the KRT-2 connection interface.
+ */
+void GpsConAndroid::slot_krt2()
+{
+  qDebug() << "GpsConAndroid::slot_krt2()";
+
+  GeneralConfig *conf = GeneralConfig::instance();
+
+  QString ip = conf->getGpsWlanIp3();
+  QString port = conf->getGpsWlanPort3();
+  bool active = GeneralConfig::instance()->getGpsWlanCB3();
+
+  if( active == true && m_wiFiRequest == 1 )
+    {
+      if( m_krt2 == 0 )
+        {
+          // No KRT2 is active
+          m_krt2 = new KRT2( 0, ip, port );
+        }
+      else if( m_krt2Ip != ip || m_krt2Port != port )
+        {
+          // IP data was changed
+          m_krt2->close();
+          m_krt2->deleteLater();
+          m_krt2 = new KRT2( 0, ip, port );
+        }
+
+      m_krt2->slotConnect();
+    }
+  else // active is false
+    {
+      if( m_krt2 != 0 )
+        {
+          m_krt2->close();
+          m_krt2->deleteLater();
+          m_krt2 = 0;
+        }
+    }
+
+  // store last configuration
+  m_krt2Ip = ip;
+  m_krt2Port = port;
+  m_krt2Active = active;
 }
 
 bool GpsConAndroid::sndByte( const char byte )
@@ -138,8 +346,41 @@ bool GpsConAndroid::getByte( unsigned char* b, const int timeout )
   return false;
 }
 
+/**
+ * Extract a NMEA sentence from the data stream. Two rxBuffers (0, 1) are
+ * exist, to handle 2 streams separately.
+ */
+void GpsConAndroid::slot_extractNmea( QByteArray stream, const short rxBufIdx )
+{
+  // qDebug() << "GpsConAndroid::slot_extractNmea(): IDX=" << rxBufIdx;
+
+  static QByteArray srxBuffer[2];
+
+  if( rxBufIdx < 0 || rxBufIdx > 1 )
+    {
+      qDebug() << "GpsConAndroid::slot_extractNmea(): RX buffer index out of range";
+      return;
+    }
+
+  srxBuffer[rxBufIdx].append( stream );
+
+  while( srxBuffer[rxBufIdx].size() > 0 && srxBuffer[rxBufIdx].contains( "\n") == true )
+    {
+      QString s = srxBuffer[rxBufIdx].left( srxBuffer[rxBufIdx].indexOf( '\n' ) + 1 );
+
+      if( s.size() > 1 || ( s.size() == 1 && s.at(0) != QChar('\n') ) )
+        {
+          // XCVario send NL as alive sign. That must be filtered out.
+          forwardNmea( s );
+        }
+
+      srxBuffer[rxBufIdx].remove( 0, s.size() );
+    }
+}
+
 void GpsConAndroid::forwardNmea( QString& qnmea )
 {
+  // qDebug() << "GpsConAndroid::forwardNmea():" << qnmea;
   static QHash<QString, short> gpsKeys;
   static GeneralConfig* gci = 0;
   static bool init = false;

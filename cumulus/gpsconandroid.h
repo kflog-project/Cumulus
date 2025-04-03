@@ -25,20 +25,24 @@
  *
  * This class manages the GPS data transfer to and from the Android Java part.
  *
- * \date 2012-2015
+ * \date 2012-2025
  *
- * \version 1.1
+ * \version 1.2
  */
 
-#ifndef GPS_CON_ANDROID_H
-#define GPS_CON_ANDROID_H
+#pragma once
 
 #include <QObject>
 #include <QTime>
 
+#include "MainWindow.h"
+
 class QByteArray;
 class QMutex;
 class QString;
+class QEvent;
+class TcpSocket;
+class KRT2;
 
 class GpsConAndroid : public QObject
 {
@@ -46,14 +50,14 @@ class GpsConAndroid : public QObject
 
  private:
 
-  /**
-   * Constructor is private because this is a singleton class.
-   */
-  GpsConAndroid( QObject* parent=0 );
-
   Q_DISABLE_COPY( GpsConAndroid )
 
  public:
+
+  /**
+   * This is a singleton class.
+   */
+  GpsConAndroid( QObject* parent=0 );
 
   virtual ~GpsConAndroid();
 
@@ -62,9 +66,7 @@ class GpsConAndroid : public QObject
    */
   static GpsConAndroid* instance()
   {
-    static GpsConAndroid instance;
-
-    return &instance;
+    return instance1;
   };
 
   static void rcvByte( const char byte );
@@ -91,6 +93,56 @@ class GpsConAndroid : public QObject
    * GUI thread.
    */
   static void forwardNmea( QString& qnmea );
+
+  /**
+   * Handle WiFi request from the Andoid side.
+   *
+   * @param request 1=WiFi on, 0=WiFi off
+   */
+  void handleWiFiRequest( int request );
+
+  /**
+   * @return Returns the KRT2 instance.
+   */
+  KRT2* krt2Driver()
+  {
+    return m_krt2;
+  }
+
+ public slots:
+
+ /**
+  * Extract a NMEA sentence from the data stream. Two rxBuffers (0, 1) are
+  * exist, to handle 2 streams separately.
+  */
+ void slot_extractNmea( QByteArray stream, const short rxBufferIndex );
+
+ /**
+  * This slot is called, to handle configuration changes.
+  */
+ void slot_configChanged();
+
+  /**
+   * This method is called to activate/deactivate the KRT-2 TCP connection interface.
+   */
+  void slot_krt2();
+
+  /**
+   * This method is called to activate/deactivate the XCVario TCP connection interface.
+   */
+  void slot_xcvario();
+
+  /**
+   * This method is called to activate/deactivate the XCVario GPS TCP connection interface.
+   */
+  void slot_xcgps();
+
+ protected:
+
+   /** Add an event receiver, used by Android only. */
+   bool event(QEvent *event);
+
+ public:
 
 #ifdef FLARM
 
@@ -141,6 +193,9 @@ class GpsConAndroid : public QObject
 
  private:
 
+  /** Pointer to single instance. */
+  static GpsConAndroid* instance1;
+
   /** Receive buffer for GPS data from java part. */
   static QByteArray rcvBuffer;
 
@@ -155,6 +210,27 @@ class GpsConAndroid : public QObject
 
   /** Timeout control for Flarm IGC download. */
   QTime downloadTimeControl;
+
+  // XCVario TCP interface objects
+  static TcpSocket* m_xcvario;
+  static QString m_xcvarioIp;
+  static QString m_xcvarioPort;
+  static bool m_xcvarioActive;
+
+  // XCVario GPS TCP interface objects
+  static TcpSocket* m_xcgps;
+  static QString m_xcgpsIp;
+  static QString m_xcgpsPort;
+  static bool m_xcgpsActive;
+
+  // KRT-2 TCP interface objects
+  static KRT2* m_krt2;
+  static QString m_krt2Ip;
+  static QString m_krt2Port;
+  static bool m_krt2Active;
+
+  // store request of last Android WiFi command
+  static bool m_wiFiRequest;
 };
 
 /******************************************************************************/
@@ -230,4 +306,3 @@ class FlarmIgcFilesThread : public QThread
   QString m_flightData;
 };
 
-#endif

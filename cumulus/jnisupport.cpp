@@ -182,10 +182,11 @@ static void nativeWifiRequest( JNIEnv * /*jniEnvironment*/,
                                jobject /*myproxyobject*/,
                                jint request )
 {
+  qDebug() << "nativeWifiRequest:" << request;
   if( ! shutdown )
     {
       WifiEvent *we = new WifiEvent( request );
-      QCoreApplication::postEvent( MainWindow::mainWindow(), we );
+      QCoreApplication::postEvent( GpsConAndroid::instance(), we );
     }
 }
 

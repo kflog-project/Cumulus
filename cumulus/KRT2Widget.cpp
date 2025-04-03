@@ -36,7 +36,7 @@
 #endif
 
 #ifdef ANDROID
-#define nullptr 0
+#include "gpsconandroid.h"
 #endif
 
 #include "KRT2Widget.h"
@@ -371,7 +371,7 @@ void KRT2Widget::slot_CellClicked( int row, int column )
 
   float ff = m_table->item( row, 0 )->data(Qt::UserRole).toFloat();
 
-  KRT2* krt2 = MainWindow::krt2Driver();
+  KRT2* krt2 = GpsConAndroid::instance()->krt2Driver();
 
   QTableWidgetItem* item3 = m_table->item( row, 3 );
 
@@ -404,7 +404,7 @@ void KRT2Widget::slot_exchangeFrequency()
       return;
     }
 
-  KRT2* krt2 = MainWindow::krt2Driver();
+  KRT2* krt2 = GpsConAndroid::instance()->krt2Driver();
   krt2->exchangeFrequency();
 }
 
@@ -420,9 +420,9 @@ void KRT2Widget::slot_Help()
 
 bool KRT2Widget::checkKRT2Connection()
 {
-  KRT2* krt2 = MainWindow::krt2Driver();
+  KRT2* krt2 = GpsConAndroid::instance()->krt2Driver();
 
-  if( krt2 == nullptr )
+  if( krt2 == 0 )
     {
       return false;
     }

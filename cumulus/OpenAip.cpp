@@ -1273,7 +1273,7 @@ bool OpenAip::readAirspaces( QString fileName,
       as.setName( name );
       bool ok = true;
 
-      // iterate over the airfield object list
+      // iterate over the airspace object list
       for( QJsonObject::const_iterator it = object.begin(), end=object.end(); it != end; ++it )
         {
           // qDebug() << "Key: " << it.key() << "Val: " << it.value();

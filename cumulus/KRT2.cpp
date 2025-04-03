@@ -34,7 +34,7 @@ KRT2::KRT2( QObject *parent, QString ip, QString port ) :
   m_port(port),
   m_connected(false),
   m_sychronized(false),
-  m_socket(nullptr)
+  m_socket(0)
 {
   qDebug() << "KRT2::KRT2() IP=" << ip << "Port=" << port;
   setObjectName( "KRT2" );
@@ -43,7 +43,6 @@ KRT2::KRT2( QObject *parent, QString ip, QString port ) :
 KRT2::~KRT2()
 {
   qDebug() << "~KRT2() is called.";
-  close();
 }
 
 /**
@@ -53,7 +52,7 @@ void KRT2::close()
 {
   qDebug() << "KRT2::close() is called";
 
-  if( m_socket != nullptr )
+  if( m_socket != 0 )
     {
       if( m_socket->isOpen() )
         {
@@ -86,7 +85,7 @@ void KRT2::slotConnect()
                           m_socket->errorString() );
       m_socket->close();
       delete m_socket;
-      m_socket = nullptr;
+      m_socket = 0;
       m_connected = false;
 
       // Start retry timer for connection retry after 5s.
@@ -329,7 +328,7 @@ void KRT2::slotHandleRxData()
                 break;
 
               case '\n':
-        	// Alive from XCVario, can be ignored
+                // Alive from XCVario, can be ignored
                 rxBuffer.remove( 0 , 1 );
         	break;
 

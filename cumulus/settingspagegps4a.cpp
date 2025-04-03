@@ -31,6 +31,7 @@
 #include "gpsnmea.h"
 #include "helpbrowser.h"
 #include "layout.h"
+#include "MainWindow.h"
 #include "settingspagegps4a.h"
 
 SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
@@ -428,21 +429,29 @@ bool SettingsPageGPS4A::save()
   conf->setGpsWlanPort3( WiFi3_Port->text() );
   conf->setGpsWlanCB3( WiFi3CB->isChecked() );
 
-  if( (! WiFi1CB->isChecked() && ! WiFi2CB->isChecked() && ! WiFi3CB->isChecked()) ||
-      (WiFi1CB->isChecked() && (WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty())) ||
+  if( (WiFi1CB->isChecked() && (WiFi1_IP->text().isEmpty() || WiFi1_Port->text().isEmpty())) ||
       (WiFi2CB->isChecked() && (WiFi2_IP->text().isEmpty() || WiFi2_Port->text().isEmpty())) ||
       (WiFi3CB->isChecked() && (WiFi3_IP->text().isEmpty() || WiFi3_Port->text().isEmpty())) )
     {
+      qDebug() << "WiFi Fehlerbox sollte gezeigt werden.";
+
       // IP address and port are required, when service is switched on!
       QString info = QString(
-          tr( "<html>WiFi IPs or Ports entries are missing!"
+          tr( "<html>WiFi entry is activated but IP or Port are not set!"
               "<br><br>Please add the missing items.</html>" ) );
 
-      QMessageBox( QMessageBox::Warning,
-                   tr( "WiFi data missing" ),
-                   info );
+      QMessageBox mb( QMessageBox::Critical,
+                      tr("IP items missing"),
+                      info,
+                      QMessageBox::Ok,
+                      MainWindow::mainWindow() );
 
-       return false;
+      mb.show();
+      QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
+                                                                 MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
+      mb.move( pos );
+      mb.exec();
+      return false;
     }
 
   conf->setGpsWlanIp1( WiFi1_IP->text() );

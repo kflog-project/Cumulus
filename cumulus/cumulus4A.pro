@@ -247,6 +247,7 @@ HEADERS = \
     taskpointeditor.h \
     TaskPointSelectionList.h \
     taskpointtypes.h \
+    TcpSocket.h \
     ThermalPoint.h \
     time_cu.h \
     tpinfowidget.h \
@@ -387,6 +388,7 @@ SOURCES = \
     taskpoint.cpp \
     taskpointeditor.cpp \
     TaskPointSelectionList.cpp \
+    TcpSocket.cpp \
     ThermalPoint.cpp \
     time_cu.cpp \
     tpinfowidget.cpp \

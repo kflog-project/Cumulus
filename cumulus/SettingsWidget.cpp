@@ -65,6 +65,7 @@
 #include "SettingsPageGPS.h"
 #else
 #include "settingspagegps4a.h"
+#include "gpsconandroid.h"
 #endif
 
 // Menu labels
@@ -377,17 +378,17 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( page, SIGNAL(startNmeaLog()),
                GpsNmea::gps, SLOT(slot_openNmeaLogFile()) );
 
-      connect( page , SIGNAL(endNmeaLog()),
+      connect( page, SIGNAL(endNmeaLog()),
                GpsNmea::gps, SLOT(slot_closeNmeaLogFile()) );
 
-      connect( page , SIGNAL(newPressureDevice( const QString& )),
+      connect( page, SIGNAL(newPressureDevice( const QString& )),
                GpsNmea::gps, SLOT(slot_pressureDevice( const QString&)) );
 
-      connect( page , SIGNAL(userGpsSwitchRequest()),
+      connect( page, SIGNAL(userGpsSwitchRequest()),
                GpsNmea::gps, SLOT(slot_userGpsSwitchRequest()) );
 
-      connect( page , SIGNAL(ipSettingsChanged()),
-               MainWindow::mainWindow(), SLOT( slotKRT2() ) );
+      connect( page, SIGNAL(ipSettingsChanged()),
+               GpsConAndroid::instance(), SLOT( slot_configChanged() ) );
 
       page->show();
       return;

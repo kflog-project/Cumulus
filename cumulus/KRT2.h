@@ -20,8 +20,6 @@
 #include <QtCore>
 #include <QTcpSocket>
 
-class KRT2Thread;
-
 class KRT2 : public QObject
 {
   Q_OBJECT
@@ -29,12 +27,6 @@ class KRT2 : public QObject
  private:
 
   Q_DISABLE_COPY ( KRT2 )
-
-#ifndef ANDROID
-  KRT2() = delete;
-#else
-  KRT2(){};
-#endif
 
  public:
 
