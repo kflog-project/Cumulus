@@ -80,14 +80,14 @@ void TcpSocket::slotConnect()
 
       forwardDeviceError( QObject::tr("Cannot open device") + " " +
                           m_ip + ":" + m_port + ", " +
-                          m_socket->errorString() );
+                          m_socket->errorString(), false );
       m_socket->close();
       delete m_socket;
       m_socket = 0;
       m_connected = false;
 
-      // Start retry timer for connection retry after 5s.
-      QTimer::singleShot( 5000, this, SLOT(slotConnect()));
+      // Start retry timer for connection retry after 10s.
+      QTimer::singleShot( 10000, this, SLOT(slotConnect()));
       return;
     }
 

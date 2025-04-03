@@ -114,7 +114,7 @@ class KRT2 : public QObject
 
  signals:
 
-   void forwardDeviceError( QString error );
+   void forwardDeviceError( const QString& error, const bool sound );
 
   private:
 

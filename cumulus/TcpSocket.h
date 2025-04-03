@@ -78,7 +78,7 @@ class TcpSocket : public QObject
 
  signals:
 
-   void forwardDeviceError( QString error );
+   void forwardDeviceError( const QString& error, const bool sound );
 
    /**
     * Signal, that RX data has been read.

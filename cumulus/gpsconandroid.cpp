@@ -25,6 +25,7 @@
 #include "gpsconandroid.h"
 #include "gpsnmea.h"
 #include "jnisupport.h"
+#include "MainWindow.h"
 #include "TcpSocket.h"
 #include "KRT2.h"
 
@@ -129,6 +130,9 @@ void GpsConAndroid::slot_xcvario()
           m_xcvario = new TcpSocket( 0, ip, port, channel );
           connect( m_xcvario, SIGNAL( rxData(QByteArray, const short)),
                    this, SLOT( slot_extractNmea( QByteArray, const short )) );
+
+          connect( m_xcvario, SIGNAL( forwardDeviceError( const QString& error, const bool sound ) ),
+                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
         }
       else if( m_xcvarioIp != ip || m_xcvarioPort != port )
         {
@@ -138,6 +142,9 @@ void GpsConAndroid::slot_xcvario()
           m_xcvario = new TcpSocket( 0, ip, port, channel );
           connect( m_xcvario, SIGNAL( rxData(QByteArray, const short)),
                    this, SLOT( slot_extractNmea( QByteArray, const short )) );
+
+          connect( m_xcvario, SIGNAL( forwardDeviceError( const QString& error, const bool sound ) ),
+                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
         }
 
       m_xcvario->slotConnect();
@@ -180,6 +187,9 @@ void GpsConAndroid::slot_xcgps()
           m_xcgps = new TcpSocket( 0, ip, port, channel );
           connect( m_xcgps, SIGNAL( rxData(QByteArray, const short)),
                    this, SLOT( slot_extractNmea( QByteArray, const short )) );
+
+          connect( m_xcgps, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
+                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
         }
       else if( m_xcgpsIp != ip || m_xcgpsPort != port )
         {
@@ -189,6 +199,9 @@ void GpsConAndroid::slot_xcgps()
           m_xcgps = new TcpSocket( 0, ip, port, channel );
           connect( m_xcgps, SIGNAL( rxData(QByteArray, const short)),
                    this, SLOT( slot_extractNmea( QByteArray, const short )) );
+
+          connect( m_xcgps, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
+                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
         }
 
       m_xcgps->slotConnect();
@@ -228,6 +241,9 @@ void GpsConAndroid::slot_krt2()
         {
           // No KRT2 is active
           m_krt2 = new KRT2( 0, ip, port );
+
+          connect( m_krt2, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
+                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
         }
       else if( m_krt2Ip != ip || m_krt2Port != port )
         {
@@ -235,6 +251,9 @@ void GpsConAndroid::slot_krt2()
           m_krt2->close();
           m_krt2->deleteLater();
           m_krt2 = new KRT2( 0, ip, port );
+
+          connect( m_krt2, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
+                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
         }
 
       m_krt2->slotConnect();
