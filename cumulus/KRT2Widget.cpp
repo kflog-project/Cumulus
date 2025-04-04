@@ -442,6 +442,13 @@ int KRT2Widget::messageBox( QMessageBox::Icon icon,
   msgBox.setInformativeText( message );
   msgBox.setStandardButtons( buttons );
   msgBox.setDefaultButton( QMessageBox::Ok );
+  msgBox.show();
+
+#ifdef ANDROID
+  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - msgBox.width()/2,
+                                                             MainWindow::mainWindow()->height()/2 - msgBox.height()/2 ));
+  msgBox.move( pos );
+#endif
 
   return msgBox.exec();
 }

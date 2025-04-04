@@ -96,7 +96,6 @@ class TcpSocket : public QObject
   QString m_port;
   short m_channel;
   bool m_connected;
-  bool m_sychronized;
   QTcpSocket *m_socket;
 
   QQueue<QByteArray> m_txQueue;

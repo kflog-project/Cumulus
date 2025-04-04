@@ -14,8 +14,6 @@
  **   (at your option) any later version.
  **
  ***********************************************************************/
-#include <cmath>
-
 #include <QtCore>
 
 #include "generalconfig.h"
@@ -270,12 +268,11 @@ void KRT2::slotHandleRxData()
 
       if( read == 0 )
         {
-          qDebug() << "KRT2::handleRxData(): read " << read << " bytes.";
           return;
         }
       else if( read == -1 )
         {
-          qDebug() << "KRT2::handleRxData(): returned -1 -> Error";
+          qWarning() << "KRT2::handleRxData(): returned -1 -> Error";
           return;
         }
 

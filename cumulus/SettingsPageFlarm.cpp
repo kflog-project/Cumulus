@@ -7,7 +7,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018-2022 Axel Pauli
+**   Copyright (c): 2018-2025 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -841,8 +841,6 @@ void SettingsPageFlarm::slot_Timeout()
 bool SettingsPageFlarm::checkFlarmConnection()
 {
   const Flarm::FlarmStatus& status = Flarm::instance()->getFlarmStatus();
-
-  return true;
 
   QString text0 = tr("Flarm device not reachable!");
   QString text1 = tr("Error");

@@ -41,6 +41,7 @@ QByteArray GpsConAndroid::rcvBuffer;
 QMutex     GpsConAndroid::mutexRead;
 QMutex     GpsConAndroid::mutexWrite;
 QMutex     GpsConAndroid::mutexAction;
+QMutex     GpsConAndroid::mutexNmeaForward;
 
 TcpSocket* GpsConAndroid::m_xcvario = 0;
 QString    GpsConAndroid::m_xcvarioIp;
@@ -124,32 +125,28 @@ void GpsConAndroid::slot_xcvario()
 
   if( active == true && m_wiFiRequest == 1 )
     {
-      if( m_xcvario == 0 )
+      if( (m_xcvarioIp != ip || m_xcvarioPort != port) && m_xcvario != 0 )
         {
-          // No socket is active
-          m_xcvario = new TcpSocket( 0, ip, port, channel );
-          connect( m_xcvario, SIGNAL( rxData(QByteArray, const short)),
-                   this, SLOT( slot_extractNmea( QByteArray, const short )) );
-
-          connect( m_xcvario, SIGNAL( forwardDeviceError( const QString& error, const bool sound ) ),
-                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
-        }
-      else if( m_xcvarioIp != ip || m_xcvarioPort != port )
-        {
-          // IP data was changed
+          // IP data has been changed, close socket
           m_xcvario->close();
           m_xcvario->deleteLater();
+          m_xcvario = 0;
+        }
+
+      if( m_xcvario == 0 )
+        {
           m_xcvario = new TcpSocket( 0, ip, port, channel );
+
           connect( m_xcvario, SIGNAL( rxData(QByteArray, const short)),
                    this, SLOT( slot_extractNmea( QByteArray, const short )) );
 
-          connect( m_xcvario, SIGNAL( forwardDeviceError( const QString& error, const bool sound ) ),
+          connect( m_xcvario, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
                    MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
-        }
 
-      m_xcvario->slotConnect();
+          m_xcvario->slotConnect();
+        }
     }
-  else // active is false
+ else // active is false
     {
       if( m_xcvario != 0 )
         {
@@ -181,30 +178,26 @@ void GpsConAndroid::slot_xcgps()
 
   if( active == true && m_wiFiRequest == 1 )
     {
-      if( m_xcgps == 0 )
+      if( (m_xcgpsIp != ip || m_xcgpsPort != port) && m_xcgps != 0 )
         {
-          // No socket is active
-          m_xcgps = new TcpSocket( 0, ip, port, channel );
-          connect( m_xcgps, SIGNAL( rxData(QByteArray, const short)),
-                   this, SLOT( slot_extractNmea( QByteArray, const short )) );
-
-          connect( m_xcgps, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
-                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
-        }
-      else if( m_xcgpsIp != ip || m_xcgpsPort != port )
-        {
-          // IP data was changed
+          // IP data has been changed, close socket
           m_xcgps->close();
           m_xcgps->deleteLater();
+          m_xcgps = 0;
+        }
+
+      if( m_xcgps == 0 )
+        {
           m_xcgps = new TcpSocket( 0, ip, port, channel );
+
           connect( m_xcgps, SIGNAL( rxData(QByteArray, const short)),
                    this, SLOT( slot_extractNmea( QByteArray, const short )) );
 
           connect( m_xcgps, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
                    MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
-        }
 
-      m_xcgps->slotConnect();
+          m_xcgps->slotConnect();
+        }
     }
   else // active is false
     {
@@ -237,26 +230,23 @@ void GpsConAndroid::slot_krt2()
 
   if( active == true && m_wiFiRequest == 1 )
     {
-      if( m_krt2 == 0 )
+      if( (m_krt2Ip != ip || m_krt2Port != port) && m_krt2 != 0 )
         {
-          // No KRT2 is active
-          m_krt2 = new KRT2( 0, ip, port );
-
-          connect( m_krt2, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
-                   MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
-        }
-      else if( m_krt2Ip != ip || m_krt2Port != port )
-        {
-          // IP data was changed
+          // IP data has been changed, close socket
           m_krt2->close();
           m_krt2->deleteLater();
+          m_krt2 = 0;
+        }
+
+      if( m_krt2 == 0 )
+        {
           m_krt2 = new KRT2( 0, ip, port );
 
           connect( m_krt2, SIGNAL( forwardDeviceError( const QString&, const bool ) ),
                    MainWindow::mainWindow(), SLOT( slotNotification( const QString&, const bool ) ) );
-        }
 
-      m_krt2->slotConnect();
+          m_krt2->slotConnect();
+        }
     }
   else // active is false
     {
@@ -276,8 +266,16 @@ void GpsConAndroid::slot_krt2()
 
 bool GpsConAndroid::sndByte( const char byte )
 {
-  // Called to transfer a byte to the GPS port of the java part.
   QMutexLocker locker(&mutexWrite);
+
+  if( m_xcgps != 0 )
+    {
+      // Local socket is active
+      QByteArray ba( 1, byte );
+      return m_xcgps->send( ba );
+    }
+
+  // Called to transfer a byte to the GPS port of the java part.
   return jniByte2Gps( byte );
 }
 
@@ -285,6 +283,12 @@ bool GpsConAndroid::sndBytes( QByteArray& bytes )
 {
   // Called to transfer a byte stream to the GPS port of the java part.
   QMutexLocker locker(&mutexWrite);
+
+  if( m_xcgps != 0 )
+    {
+      // Local socket is active
+      return m_xcgps->send( bytes );
+    }
 
   bool ok = true;
 
@@ -373,27 +377,52 @@ void GpsConAndroid::slot_extractNmea( QByteArray stream, const short rxBufIdx )
 {
   // qDebug() << "GpsConAndroid::slot_extractNmea(): IDX=" << rxBufIdx;
 
-  static QByteArray srxBuffer[2];
+  static QByteArray srxBuffer;
 
   if( rxBufIdx < 0 || rxBufIdx > 1 )
     {
-      qDebug() << "GpsConAndroid::slot_extractNmea(): RX buffer index out of range";
+      qWarning() << "GpsConAndroid::slot_extractNmea(): RX buffer index out of range";
       return;
     }
 
-  srxBuffer[rxBufIdx].append( stream );
-
-  while( srxBuffer[rxBufIdx].size() > 0 && srxBuffer[rxBufIdx].contains( "\n") == true )
+  if( rxBufIdx == 0 )
     {
-      QString s = srxBuffer[rxBufIdx].left( srxBuffer[rxBufIdx].indexOf( '\n' ) + 1 );
+      srxBuffer.append( stream );
 
-      if( s.size() > 1 || ( s.size() == 1 && s.at(0) != QChar('\n') ) )
+      while( srxBuffer.size() > 0 )
         {
-          // XCVario send NL as alive sign. That must be filtered out.
-          forwardNmea( s );
+          int nlidx = srxBuffer.indexOf( '\n' );
+
+          if( nlidx >= 0 )
+            {
+              // Found a NL
+              QString s = srxBuffer.left( srxBuffer.indexOf( '\n' ) + 1 );
+
+              if( s.size() >= 1 && s.at(0) != QChar('\n') )
+                {
+                  // Channel 0 contains only XCVario NMEA
+                  forwardNmea( s );
+                }
+
+              // Ignore single NL
+              srxBuffer.remove( 0, s.size() );
+             }
+          else
+            {
+              break;
+            }
         }
 
-      srxBuffer[rxBufIdx].remove( 0, s.size() );
+      return;
+    }
+
+  if( rxBufIdx == 1 )
+    {
+      // Channel 1 is Flarm channel and must support single byte transfer.
+      for( int i=0; i < stream.size(); i++ )
+        {
+          rcvByte( stream.at(i) );
+        }
     }
 }
 
@@ -404,11 +433,19 @@ void GpsConAndroid::forwardNmea( QString& qnmea )
   static GeneralConfig* gci = 0;
   static bool init = false;
 
+  QMutexLocker locker(&mutexNmeaForward);
+
   if( init == false )
     {
       GpsNmea::getGpsMessageKeys( gpsKeys );
       gci = GeneralConfig::instance();
       init = true;
+    }
+
+  if( qnmea.size() > 0 && qnmea.at(0) == '\n' )
+    {
+      // ignore LFs send by XCVario as alive check.
+      return;
     }
 
   if( verifyCheckSum( qnmea.toLatin1().data() ) == false )
