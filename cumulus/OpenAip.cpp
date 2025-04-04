@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2023 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2025 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -1253,7 +1253,7 @@ bool OpenAip::readAirspaces( QString fileName,
 
   qDebug() << "Airspace Doc is a Json Array of size:" << array.size();
 
-  // step over the json array to extract the airfield objects
+  // step over the json array to extract the airspcace objects
   for( int i=0; i < array.size(); i++ )
     {
       QJsonObject object = array[i].toObject();

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2014 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,13 +25,10 @@
  * This widget shows the details of a waypoint together with some
  * command buttons for executing different actions.
  *
- * \date 2002-2014
- *
- * $Id$
+ * \date 2002-2025
  */
 
-#ifndef WP_INFO_WIDGET_H
-#define WP_INFO_WIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QTimer>
@@ -179,6 +176,11 @@ private slots:
    */
   void slot_edited( Waypoint& wp);
 
+  /**
+   * Opens the KRT2 dialog window.
+   */
+  void slot_openKRT2Dialog();
+
 private: // Private attributes
 
   /**
@@ -199,6 +201,7 @@ private: // Private attributes
   QPushButton* cmdArrival;
   QPushButton* cmdEdit;
   QPushButton* cmdDelete;
+  QPushButton* cmdKRT2;
 
   QShortcut* scClose;
 
@@ -230,4 +233,3 @@ private: // Private attributes
   bool m_editedWpIsTarget;
 };
 
-#endif

@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2024 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2014-2025 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -569,7 +569,7 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("4", BaseMapElement::Ctr);
       typeMap.insert("5", BaseMapElement::Tmz);
       typeMap.insert("6", BaseMapElement::Rmz);
-      typeMap.insert("7", BaseMapElement::Sua); // TMA
+      typeMap.insert("7", BaseMapElement::Ctr); // TMA
       typeMap.insert("8", BaseMapElement::Sua); // TRA
       typeMap.insert("9", BaseMapElement::Sua); // TSA
       typeMap.insert("10", BaseMapElement::AirFir);
@@ -596,6 +596,9 @@ AirspaceHelper::initializeAirspaceTypeMapping(const QString& mapFilePath)
       typeMap.insert("31", BaseMapElement::Sua); // TSA/TRA Feeding Route (TFR) (used in Poland)
       typeMap.insert("32", BaseMapElement::AirFir); // VFR Sector
       typeMap.insert("33", BaseMapElement::AirFir); // FIS Sector
+      typeMap.insert("34", BaseMapElement::Sua); // Lower Traffic Area (LTA)
+      typeMap.insert("35", BaseMapElement::Sua); // Upper Traffic Area (UTA)
+
     }
   else
     {

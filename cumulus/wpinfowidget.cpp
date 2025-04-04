@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2023 by Axel Pauli
+ **                   2008-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #include "gpsnmea.h"
 #include "generalconfig.h"
 #include "calculator.h"
+#include "KRT2Widget.h"
 #include "layout.h"
 #include "MainWindow.h"
 #include "mapconfig.h"
@@ -94,6 +95,11 @@ WPInfoWidget::WPInfoWidget( QWidget *parent ) :
   cmdHome->setFont(bfont);
   buttonrow2->addWidget(cmdHome);
   connect(cmdHome, SIGNAL(clicked()), SLOT(slot_setNewHome()));
+
+  cmdKRT2 = new QPushButton(tr("KRT2"), this);
+  cmdKRT2->setFont(bfont);
+  buttonrow2->addWidget(cmdKRT2);
+  connect(cmdKRT2, SIGNAL(clicked()), SLOT(slot_openKRT2Dialog()));
 
   cmdArrival = new QPushButton(tr("Arrival"), this);
   cmdArrival->setFont(bfont);
@@ -182,6 +188,15 @@ bool WPInfoWidget::showWP( int returnView, const Waypoint& wp )
   else
     {
       cmdAddWaypoint->setVisible( true );
+    }
+
+  if( m_wp.getFrequencyList().size() == 0 )
+    {
+      cmdKRT2->hide();
+    }
+  else
+    {
+      cmdKRT2->show();
     }
 
   // Reset home changed
@@ -542,6 +557,26 @@ void WPInfoWidget::writeText()
 void WPInfoWidget::slot_SwitchBack()
 {
   QWidget::close();
+}
+
+/**
+ * Opens the KRT2 dialog window.
+ */
+void WPInfoWidget::slot_openKRT2Dialog()
+{
+  qDebug() << "WPInfoWidget::slot_openKRT2Dialog()";
+
+  slot_KeepOpen();
+
+  QString header = m_wp.description;
+
+  if( !m_wp.icao.isEmpty() )
+    {
+      header += ", " + m_wp.icao;
+    }
+
+  KRT2Widget* krt2 = new KRT2Widget( this, header, m_wp.getFrequencyList() );
+  krt2->show();
 }
 
 /**

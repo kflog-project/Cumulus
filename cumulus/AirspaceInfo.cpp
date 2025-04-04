@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2023 by Axel Pauli
+**   Copyright (c): 2023-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -27,13 +27,18 @@
 #include "MainWindow.h"
 #include "AirspaceInfo.h"
 #include "generalconfig.h"
+#include "KRT2Widget.h"
+#include "layout.h"
+
+#include "MainWindow.h"
 
 const int vMargin = 5;
 const int hMargin = 5;
 
-AirspaceInfo::AirspaceInfo( QWidget* parent, QString& txt ) :
+AirspaceInfo::AirspaceInfo( QWidget* parent, QString& txt, QList<Airspace *>& asList ) :
   QFrame( parent ),
-  m_timerCount(0)
+  m_timerCount(0),
+  m_asList( asList )
 {
   setObjectName("AirspaceInfo");
   setWindowFlags( Qt::Tool );
@@ -82,6 +87,11 @@ AirspaceInfo::AirspaceInfo( QWidget* parent, QString& txt ) :
   buttonrow->addWidget(m_cmdStop);
   connect(m_cmdStop, SIGNAL(clicked()), this, SLOT(slot_Stop()));
 
+  m_cmdKRT2 = new QPushButton(tr("KRT2"), this);
+  m_cmdKRT2->setFont(bfont);
+  buttonrow->addWidget(m_cmdKRT2);
+  connect(m_cmdKRT2, SIGNAL(clicked()), SLOT(slot_openKRT2Dialog()));
+
   m_timer = new QTimer(this);
   connect(m_timer, SIGNAL(timeout()), this, SLOT(slot_Timeout()));
 
@@ -100,6 +110,22 @@ AirspaceInfo::AirspaceInfo( QWidget* parent, QString& txt ) :
     {
       //qDebug("PLAIN=%s", txt.latin1());
       doc->setPlainText( txt );
+    }
+
+  bool hideKrt2Button = true;
+
+  for( int i=0; i < m_asList.size(); i++ )
+    {
+      if( m_asList.at(i)->getFrequencyList().size() > 0 )
+        {
+          hideKrt2Button = false;
+          break;
+        }
+    }
+
+  if( hideKrt2Button == true )
+    {
+      m_cmdKRT2->hide();
     }
 
   // activate keyboard shortcuts for closing of widget
@@ -130,6 +156,36 @@ void AirspaceInfo::slot_Close()
   m_timer->stop();
   hide();
   QWidget::close();
+}
+
+/**
+ * Opens the KRT2 dialog window.
+ */
+void AirspaceInfo::slot_openKRT2Dialog()
+{
+  QString header = QString( tr("Airspace frequencies") );
+
+  QList<Frequency> fList;
+
+  for( int i=0; i < m_asList.size(); i++ )
+    {
+      if( m_asList.at(i)->getFrequencyList().size() > 0 )
+        {
+          QList<Frequency> fl = m_asList.at(i)->getFrequencyList();
+
+          for( int j=0; j < fl.size(); j++ )
+            {
+              fList.append( fl.at(j) );
+            }
+        }
+    }
+
+  if( fList.size() > 0 )
+    {
+      slot_Stop();
+      KRT2Widget* krt2 = new KRT2Widget( this, header, fList );
+      krt2->show();
+    }
 }
 
 void AirspaceInfo::mousePressEvent( QMouseEvent* )

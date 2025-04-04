@@ -8,7 +8,7 @@
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
  **   Modified:       2008      by Josua Dietze
- **                   2008-2023 by Axel Pauli
+ **                   2008-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -452,6 +452,14 @@ QString Airspace::getInfoString() const
       else
         {
           text += " " + name;
+        }
+
+      if( getIcaoClass() <=6 )
+        {
+          QString tmp = QString( QObject::tr("AS-") );
+          tmp.append( QChar(getIcaoClass() + 0x41 ) );
+          tmp.append( ": " );
+          text.insert( 0, tmp );
         }
 
       // Handle airspace frequency. Often it is already contained in the
