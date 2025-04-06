@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2023 by Axel Pauli
+**   Copyright (c):  2012-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -543,17 +543,18 @@ QString Layout::getCbSbStyle()
 
 QComboBox* Layout::getComboBox()
 {
-  QString cbStyle = "\
+  int sb = 14 * getIntScaledDensity();
+
+  QString cbStyle = QString( "\
       QComboBox::drop-down \
       {\
           border: 0px;\
       }\
-\
       QComboBox::down-arrow {\
           image: url(Resources/DropDownArrow.png);\
-          width: 14px;\
-          height: 14px;\
-      }";
+          width: %1px;\
+          height: %2px;\
+      }" ).arg(sb).arg(sb);
 
   QComboBox* cb = new QComboBox;
 
