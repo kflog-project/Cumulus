@@ -1281,7 +1281,7 @@ bool OpenAip::readAirspaces( QString fileName,
           if( it.key() == "type" )
             {
               // qDebug() << "AS-Name=" << name << "AS-Type=" << it.value();
-
+              as.setOpenAipType( it.value().toInt() );
               QString type = QString::number( it.value().toInt() );
 
               // Check, if we know this airspace type

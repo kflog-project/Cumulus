@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2005      by André Somers
- **                   2009-2023 by Axel Pauli
+ **                   2009-2025 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -431,6 +431,7 @@ void OpenAirParser::finishAirspace()
 
   Airspace* as = new Airspace( asName,
                                asType,
+                               255,  // OpenAip type is unknown
                                astPA,
                                asUpper, asUpperType,
                                asLower, asLowerType,

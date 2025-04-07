@@ -15,6 +15,7 @@
  **
  ***********************************************************************/
 
+#include <QtCore>
 #include <QPainterPath>
 
 #include "airspace.h"
@@ -24,8 +25,11 @@
 #include "mapconfig.h"
 #include "time_cu.h"
 
+QStringList Airspace::m_openAipTypeTranslater;
+
 Airspace::Airspace() :
   LineElement(),
+  m_openAipType(255),
   m_lLimitType(BaseMapElement::NotSet),
   m_uLimitType(BaseMapElement::NotSet),
   m_lastVConflict(none),
@@ -40,6 +44,7 @@ Airspace::Airspace() :
 
 Airspace::Airspace( QString name,
                     BaseMapElement::objectType oType,
+                    const quint8 openAipType,
                     QPolygon pP,
                     const float upper,
                     const BaseMapElement::elevationType uType,
@@ -51,6 +56,7 @@ Airspace::Airspace( QString name,
                     quint8 activity,
                     bool byNotam ) :
   LineElement(name, oType, pP, false, 0, country),
+  m_openAipType(openAipType),
   m_lLimitType(lType),
   m_uLimitType(uType),
   m_frequencyList(frequencyList),
@@ -122,6 +128,7 @@ Airspace* Airspace::createAirspaceObject()
   // container during parsing of airspace source file.
   Airspace* as = new Airspace( getName(),
                                getTypeID(),
+                               getOpenAipType(),
                                getProjectedPolygon(),
                                m_uLimit.getFeet(),
                                m_uLimitType,
@@ -376,6 +383,66 @@ QString Airspace::getTypeName (objectType type)
   }
 }
 
+/**
+ * Translate a numeric OpenAip airspace type to a string.
+ *
+ * @return type string.
+ */
+QString Airspace::getOpenAipTypeAsString( const quint8 openAipType ) const
+{
+ static bool firstCall = true;
+
+ if( firstCall == true )
+   {
+     firstCall = false;
+
+     // Load mapping data
+     m_openAipTypeTranslater  << "Other"
+                              << "Restricted"
+                              << "Danger"
+                              << "Prohibited"
+                              << "CTR"
+                              << "TMZ"
+                              << "RMZ"
+                              << "TMA"
+                              << "TRA"
+                              << "TSA"
+                              << "FIR"
+                              << "UIR"
+                              << "ADIZ"
+                              << "ATZ"
+                              << "MATZ"
+                              << "Airway"
+                              << "MTR"
+                              << "Alert Area"
+                              << "Warning Area"
+                              << "Protected Area"
+                              << "HTZ"
+                              << "Glider Sector"
+                              << "TRP"
+                              << "TIZ"
+                              << "TIA"
+                              << "MTA"
+                              << "CTA"
+                              << "ACC Sector"
+                              << "Sporting Activities"
+                              << "LAO Restriction"
+                              << "MRT"
+                              << "TSA/TRA FR"
+                              << "VFR Sector"
+                              << "FIS Sector"
+                              << "LTA"
+                              << "UTA";
+   }
+
+  if( openAipType+1 > m_openAipTypeTranslater.size() )
+    {
+      return QString( QObject::tr("UNK") );
+    }
+
+  return m_openAipTypeTranslater.at( openAipType );
+}
+
 QString Airspace::getInfoString() const
 {
   QString text, tempL, tempU;
@@ -459,6 +526,15 @@ QString Airspace::getInfoString() const
           QString tmp = QString( QObject::tr("AS-") );
           tmp.append( QChar(getIcaoClass() + 0x41 ) );
           tmp.append( ": " );
+
+          if( getOpenAipType() <= 36 )
+            {
+              // Append OpenAip airspace type as text
+              tmp.append( "(" );
+              tmp.append( getOpenAipTypeAsString( getOpenAipType() ) );
+              tmp.append( ") " );
+            }
+
           text.insert( 0, tmp );
         }
 

@@ -6,46 +6,47 @@
 </head>
 <body>
 
-	<table width="100%">
-		<tr>
-			<td></td>
-			<td align="center"><a href="cumulus.html">Anfang</a></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
-			<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
-			<td align="right"><a href="cumulus-settings-flarm.html">weiter</a></td>
-		</tr>
-	</table>
+  <table width="100%">
+  <tr>
+  <td></td>
+  <td align="center"><a href="cumulus.html">Anfang</a></td>
+  <td></td>
+  </tr>
+  <tr>
+  <td align="left"><a href="cumulus-settings-personal.html">zur&uuml;ck</a></td>
+  <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+  <td align="right"><a href="cumulus-settings-flarm.html">weiter</a></td>
+  </tr>
+  </table>
 
-	<h4 align="center">Einstellungen - GPS</h4>
+	<h3 align="center">Einstellungen - GPS</h3>
 
 	<p>W&auml;hlen Sie hier die Ger&auml;teschnittstelle aus, &uuml;ber die
-	   Cumulus die GPS Daten einlesen und verarbeiten soll.
+	   Cumulus die GPS Daten austauschen und verarbeiten soll. Unter Android
+     k&ouml;nnen sie hier nur WiFi Verbindungen definieren.
 	</p>
 
 	<h4>Allgemeines</h4>
 
 	<p>
-		Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die
-		Anzahl der empfangenen Satelliten, deren Signalst&auml;rke und die
-		empfangenen NMEA Datens&auml;tze sehen k&ouml;nnen. Diese
-		&Uuml;bersicht kann mit der <b>g</b> Taste, duch antippen des GPS
-		Status Indikators in der Statusleiste unten links oder &uuml;ber das 
-		<b>Men&uuml;/Einstellungen/Allgemein/GPS</b> ge&ouml;ffnet werden.
+  Cumulus stellt eine GPS Status&uuml;bersicht bereit, in der Sie die
+  Anzahl der empfangenen Satelliten, deren Signalst&auml;rke und die
+  empfangenen NMEA Datens&auml;tze sehen k&ouml;nnen. Diese
+  &Uuml;bersicht kann mit der <b>g</b> Taste, duch antippen des GPS
+  Status Indikators in der Statusleiste unten links oder &uuml;ber das 
+  <b>Men&uuml;/Einstellungen/Allgemein/GPS</b> ge&ouml;ffnet werden.
 	</p>
 
 	<p>
-		<b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer
-		g&uuml;ltigen Checksumme. Es kann ebenfalls einige propriet&auml;re
-		Datens&auml;tze verarbeiten, die von Ger&auml;ten wie, Cambridge,
-		Volkslogger, Flarm, LX oder XCVario angeboten werden. Solche Daten
-		sind Wind, barometrische H&ouml;he, Variometer, MacCready, Kollisions-
-		und Hindernisinformationen.
+	<b>Achtung!</b> Cumulus verarbeitet nur NMEA Datens&auml;tze mit einer
+	g&uuml;ltigen Checksumme. Es kann ebenfalls einige propriet&auml;re
+	Datens&auml;tze verarbeiten, die von Ger&auml;ten wie, Cambridge,
+	Volkslogger, Flarm, LX oder XCVario angeboten werden. Solche Daten
+	sind Wind, barometrische H&ouml;he, Variometer, MacCready, Kollisions-
+	und Hindernisinformationen.
 	</p>
 
-	<h5>GPS Quelle</h5>
+	<h4>GPS Quelle</h4>
 
 	Mit der Auswahlbox <i>GPS Quelle</i> wird bestimmt, von welchem System die
 	Standard GPS NMEA Datens&auml;tze verarbeitet werden sollen. Die folgende
@@ -61,7 +62,6 @@
 		<li>$GL GPS Glonass (Russland)
   
 		<li>$GN kombinierte GPS Systeme
-  
 	</ul>
   
   Standard ist <i>$GP GPS (USA)</i>. Wenn Sie eine andere Quelle verwenden
@@ -71,14 +71,17 @@
   <p>
   </p>
   
-  <h5>GPS Ger&auml;t</h5>
+  <h4>GPS Ger&auml;t</h4>
 
-	In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle
-	ausw&auml;hlen, &uuml;ber die die Verbindung zum GPS Empf&auml;nger
-	hergestellt werden soll:
-	
-	<p>
-  </p>
+    In der Combobox k&ouml;nnen Sie die Ger&auml;teschnittstelle
+    ausw&auml;hlen, &uuml;ber die die Verbindung zum GPS Empf&auml;nger
+    hergestellt werden soll. Wenn sie hier WiFi ausw&auml;hlen, werden ihnen
+    drei zus&auml;tzliche Zeilen weiter unten eingeblendet, über die man bis zu
+    drei WiFi Verbindungen definieren kann.
+    <br><br>
+    Unter Android sind diese drei Zeilen immer sichtbar. Daf&uuml;r
+    existiert die GPS Ger&auml;te Auswahlbox nicht.
+    <br><br>
   
   <table border="1" cellpadding="5">
     <tr>
@@ -90,37 +93,37 @@
       <th>/dev/ttyS[0...3]</th>
       <td>
         Serielle Schittstelle (RS232) wie bei einem FLARM Ger&auml;t
-				zu finden. Eine solche Schittstelle ben&ouml;tigt auch eine
-				Geschwindigkeitsangabe f&uuml;r die &Uuml;bertragung. Die NMEA
-				Standard &Uuml;bertragungsgeschwindigkeit betr&auml;gt 4800 bps,
-				kann bei Erfordernis aber auch h&ouml;her gew&auml;lht werden.
+      	zu finden. Eine solche Schittstelle ben&ouml;tigt auch eine
+      	Geschwindigkeitsangabe f&uuml;r die &Uuml;bertragung. Die NMEA
+      	Standard &Uuml;bertragungsgeschwindigkeit betr&auml;gt 4800 bps,
+      	kann bei Erfordernis aber auch h&ouml;her gew&auml;lht werden.
 
-				<p>
-			    <b>Achtung!</b> Bei Auswahl einer seriellen Schnittstelle wie <i>ttyS0</i>
-			    ist es unter Umst&auml;den auf einem Linux System wie Ubuntu noch
-			    erforderlich, dem Cumulus Benutzer die Linux Gruppe <i>dialout</i>
-			    zuzuweisen, damit er auf das serielle Ger&auml;t auch zugreifen darf.
-			    Das kann man mit folgenden Kommando tun:
-			    </p>
-			    
-				  <p>
-				  <i>sudo gpasswd --add &lt;cumulus_user&gt; dialout</i>
-				  </p>
-				  
+        <p>
+        <b>Achtung!</b> Bei Auswahl einer seriellen Schnittstelle wie <i>ttyS0</i>
+        ist es unter Umst&auml;den auf einem Linux System wie Ubuntu noch
+        erforderlich, dem Cumulus Benutzer die Linux Gruppe <i>dialout</i>
+        zuzuweisen, damit er auf das serielle Ger&auml;t auch zugreifen darf.
+        Das kann man mit folgenden Kommando tun:
+        </p>
+            
+        <p>
+        <i>sudo gpasswd --add &lt;cumulus_user&gt; dialout</i>
+        </p>
+        	  
        </td>
     </tr>
 
     <tr>
       <th>/dev/ttyUSB0</th>
       <td>
-          F&uuml;r eine USB Ger&auml;tekopplung oder einem USB-RS232 Adapter, falls
-          das GPS Ger&auml;t nur ein serielles Interface hat. <b>Beachte!</b>
-          Ein USB-RS232 Adapter ben&ouml;tigt auch eine Geschwindigkeitsangabe
-          f&uuml;r die &Uuml;bertragung.
-          <p>
-          <b>Achtung!</b> Bei einem USB Anschluss muss der USB Port des PDA den
-          OTG (On-the-go) Mode unterst&uuml;tzen.
-          </p>
+      F&uuml;r eine USB Ger&auml;tekopplung oder einem USB-RS232 Adapter, falls
+      das GPS Ger&auml;t nur ein serielles Interface hat. <b>Beachte!</b>
+      Ein USB-RS232 Adapter ben&ouml;tigt auch eine Geschwindigkeitsangabe
+      f&uuml;r die &Uuml;bertragung.
+      <p>
+      <b>Achtung!</b> Bei einem USB Anschluss muss der USB Port des PDA den
+      OTG (On-the-go) Mode unterst&uuml;tzen.
+      </p>
       </td>
     </tr>
 
@@ -139,25 +142,56 @@
 				angezeigt. Werden keine Ger&auml;te gefunden, so bleibt die Liste
 				leer und man kann das Men&uuml; nicht mit <i>Ok</i> verlassen.
 				<p>
-					Um eine bestehende Auswahlliste zu erneuren, kann man auf den
-					<i>Scan</i>	Knopf dr&uuml;cken. Dadurch wird eine erneute Suche
-					nach BT Ger&auml;ten gestartet.
+				Um eine bestehende Auswahlliste zu erneuren, kann man auf den
+				<i>Scan</i>	Knopf dr&uuml;cken. Dadurch wird eine erneute Suche
+				nach BT Ger&auml;ten gestartet.
 				</p>
+        Unter Android erreicht man die BT Auswahl &uuml;ber das Men&uuml;:
+        <br>br>
+        Einstellungen->Hardware->GPS->GPS ein->Bluetooth GPS
 			</td>
     </tr>
 
     <tr>
-      <th>WiFi 1, WiFi 2 oder WiFi 1+2</th>
+      <th>WiFi</th>
       <td>
         F&uuml;r eine Wifi Verbindung zu einem externen Ger&auml;t. Es
-        k&ouml;nnen ein oder zwei Kanäle benutzt werden. Pro Kanal sind
-        die IP Adresse und der Port anzugeben. Die Kopplung mit dem externen
-        Ger&auml; muss zuvor über das Betriebssystem erfolgen. Hier&uuml;ber
-        kann auch ein <i>XCVario</i> folgenderma&szlig;en angebunden werden:
+        k&ouml;nnen bis zu drei Verbindungen definiert werden. Pro Verbingung
+        sind die IP Adresse und der Port anzugeben. Die WiFi Kopplung mit dem externen
+        Ger&auml;t muss zuvor über das Betriebssystem erfolgen. Die Aktivierung
+        der definierten Schnittstelle erfolgt über die Checkbox auf der linken
+        Seite. Ist diese gecheckt, wird versucht eine TCP Verbindung dahin
+        aufzubauen. 
         <p>
-        WiFi-1 IP:Port 192.168.4.1:8880 (XCVario Daten)
-        <p>
-        WiFi-2 IP:Port 192.168.4.1:8881 (Flarm Daten)
+        Unter Android aktiviert man die ausgewählten WiFi Kan&auml;le &uuml;ber
+        das Men&uuml;:
+        <br><br>
+        Einstellungen->Hardware->GPS->GPS ein->WiFi GPS
+        <br><br>
+        Nachfolgend wird eine Kopplung mit einem XCVario beschrieben.
+        F&uuml;r weitere Informationen zur XCVario Anbindung siehe auch ins
+        <a href="https://xcvario.com/home/german-handbook">XCVario Handbuch</a>.
+      </td>
+    </tr>
+    
+    <tr>
+      <th>WiFi 1 XCVario</th>
+      <td>
+        IP:Port 192.168.4.1:8880 (XCVario Datenkanal)      
+      </td>
+    </tr>
+      
+    <tr>
+      <th>WiFi 2 XCVario</th>
+      <td>
+        IP:Port 192.168.4.1:8881 (Flarm Daten von XCVario S1) 
+      </td>
+    </tr>
+      
+    <tr>
+      <th>WiFi KRT2 XCVario</th>
+      <td>
+        IP:Port 192.168.4.1:8882 (KRT2 Funkger&auml;te Daten von XCVario S2)
       </td>
     </tr>
 
@@ -179,7 +213,7 @@
 		W&uuml;nschen ab. Das kann eventuell bei USB Ger&auml;ten erfoderlich sein.
 	</p>
 
-	<h5>H&ouml;henreferenz</h5>
+	<h4>H&ouml;henreferenz</h4>
 
 	Die Standardeinstellung ist GPS. Die meisten GPS Ger&auml;te liefern
 	die H&ouml;he auf den Meeresspiegel bezogen, als sogenanntes MSL (mean
@@ -271,7 +305,7 @@
     </tr>
 	</table>
 
-	<h5>Speichere NMEA Daten</h5>
+	<h4>Speichere NMEA Daten</h4>
 
 	Wenn die Option
 	<i>Speichere NMEA Daten</i> aktiviert ist, wird der empfangene NMEA
@@ -283,7 +317,7 @@
 	Wir empfehlen, diese Option nur zu Analysezwecken zu benutzen, da sie
 	auch die Leistungsf&auml;higkeit des Prozessors einschr&auml;nken kann.
   
-	<h5>Verarbeitete GPS Datens&auml;tze</h5>
+	<h4>Verarbeitete GPS Datens&auml;tze</h4>
 
 	Cumulus verarbeitet die folgenden NMEA und propriet&auml;ren
 	Datens&auml;tze:

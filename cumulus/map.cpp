@@ -225,12 +225,13 @@ void Map::p_displayAirspaceInfo(const QPoint& current)
   // @AP: replace long labels to small ones, otherwise the window is
   // sometimes to small for display whole line.
   // remove term Restricted, to display all info behind
+#if 0
   text.replace( QRegExp("Restricted "), "AR " );
   text.replace( QRegExp("Danger "), "AD " );
   text.replace( QRegExp("Prohibited "), "AP " );
   text.replace( QRegExp("AS-E low "), "AS-El " );
   text.replace( QRegExp("AS-E high "), "AS-Eh " );
-
+#endif
   box = new AirspaceInfo( this, text, asList );
   box->show();
 }

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
-**                   2009-2023 by Axel Pauli
+**                   2009-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -42,6 +42,8 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QRect>
+#include <QString>
+#include <QStringList>
 
 #include "altitude.h"
 #include "lineelement.h"
@@ -100,16 +102,20 @@ public:
    *
    * \param name The name of the airspace
    * \param oType The object type identifier.
+   * \param OpenAip type
    * \param pP The projected coordinates of the airspace as polygon.
    * \param upper The upper altitude limit of the airspace in feet
    * \param upperType The upper altitude reference
    * \param lower The lower altitude limit of the airspace in feet
    * \param lowerType The lower altitude reference
+   * \param frequencyList A list with the frequency objects
    * \param icaoClass openAIP ICAO class identifier
    * \param country The country as two letter code, where the airspace is located
   */
   Airspace( QString name,
-            BaseMapElement::objectType oType, QPolygon pP,
+            BaseMapElement::objectType oType,
+            const quint8 openAipType,
+            QPolygon pP,
             const float upper,
             const BaseMapElement::elevationType upperType,
             const float lower,
@@ -162,6 +168,23 @@ public:
    * the ownership about the returned object.
    */
   QPainterPath* createRegion();
+
+  quint8 getOpenAipType() const
+  {
+    return m_openAipType;
+  }
+
+  void setOpenAipType( const quint8 type )
+  {
+    m_openAipType = type;
+  }
+
+  /**
+   * Translate a numeric OpenAip airspace type to a string.
+   *
+   * @return type string.
+   */
+  QString getOpenAipTypeAsString( const quint8 openAipType ) const;
 
   /**
    * Sets the upper limit of the airspace.
@@ -439,6 +462,12 @@ private:
    * @see #getLowerL
    */
   Altitude m_lLimit;
+
+  /**
+   * Contains the OpenAip Airspace type.
+   */
+  quint8 m_openAipType;
+
   /**
    * Contains the type of the lower limit
    * @see #lLimit
@@ -491,6 +520,11 @@ private:
    * Flarm Alert Zone object.
    */
   FlarmBase::FlarmAlertZone m_flarmAlertZone;
+
+  /**
+   * OpenAip airspace type translater.
+   */
+  static QStringList m_openAipTypeTranslater;
 };
 
 /**

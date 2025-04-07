@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2009-2023 by Axel Pauli
+**                   2009-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -97,7 +97,7 @@
 #define FILE_VERSION_MAP_C      103
 
 // Version definition for compiled airspace files.
-#define FILE_VERSION_AIRSPACE_C 5
+#define FILE_VERSION_AIRSPACE_C 6
 
 // Version definition for compiled airfield files.
 #define FILE_VERSION_AIRFIELD_C 7
