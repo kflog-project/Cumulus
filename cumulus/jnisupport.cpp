@@ -183,6 +183,7 @@ static void nativeWifiRequest( JNIEnv * /*jniEnvironment*/,
                                jint request )
 {
   qDebug() << "nativeWifiRequest:" << request;
+
   if( ! shutdown )
     {
       WifiEvent *we = new WifiEvent( request );

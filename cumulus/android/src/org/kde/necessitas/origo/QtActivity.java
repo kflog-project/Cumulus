@@ -26,20 +26,19 @@
  */
 
 /**
+ * 2011-2025, Axel Pauli <kflog.cumulus@gmail.com>
+ *
  * This file was patched by Cumulus, to load all needed Qt stuff from the app
- * package and not from the Internet.
+ * package and not from the Internet. Only one QtIndustries dex file is now
+ * supported. It is added as simple jar library file and not as dexed file.
+ * That prevents the file copy process from the asset directory into the dex
+ * directory and the loading from it.
  * 
- * 2011-2014, Axel Pauli <kflog.cumulus@gmail.com>
- * 
- * $Id: QtActivity.java 5752 2013-01-16 12:37:26Z axel $
  */
 
 package org.kde.necessitas.origo;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +70,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
-import dalvik.system.DexClassLoader;
 
 //@ANDROID-11
 //QtCreator import android.app.Fragment;
@@ -88,10 +86,10 @@ public class QtActivity extends Activity
   private static final int NECESSITAS_API_LEVEL = 2;
 
   private static final String ERROR_CODE_KEY = "error.code";
-  @SuppressWarnings("unused")
-  private static final String ERROR_MESSAGE_KEY = "error.message";
+  // @SuppressWarnings("unused")
+  // private static final String ERROR_MESSAGE_KEY = "error.message";
   private static final String DEX_PATH_KEY = "dex.path";
-  private static final String LIB_PATH_KEY = "lib.path";
+  // private static final String LIB_PATH_KEY = "lib.path";
   private static final String LOADER_CLASS_NAME_KEY = "loader.class.name";
   private static final String NATIVE_LIBRARIES_KEY = "native.libraries";
   private static final String ENVIRONMENT_VARIABLES_KEY = "environment.variables";
@@ -133,7 +131,9 @@ public class QtActivity extends Activity
 
   //activity info object, used to access the libs and the strings
   private ActivityInfo m_activityInfo = null;
-  private DexClassLoader m_classLoader = null; // loader object
+  // private DexClassLoader m_classLoader = null; // loader object
+  private ClassLoader m_classLoader = null; // loader object
+  
 
   // this function is used to load and start the loader
   private void loadApplication(Bundle loaderParams)
@@ -160,13 +160,17 @@ public class QtActivity extends Activity
         loaderParams.putStringArrayList(BUNDLED_LIBRARIES_KEY, libs);
         loaderParams.putInt(NECESSITAS_API_LEVEL_KEY, NECESSITAS_API_LEVEL);
 
-        // load and start QtLoader class
-        
+        // Load and start QtLoader class. Dexed files are not more loaded.
+        // They are part of the package as simple jar file and handled by
+        // the system loader.
+/*        
         m_classLoader = new DexClassLoader(loaderParams.getString(DEX_PATH_KEY), // .jar/.apk files
                                            getDir("outdex", Context.MODE_PRIVATE).getAbsolutePath(), // directory where optimized DEX files should be written.
                                            loaderParams.containsKey(LIB_PATH_KEY) ? loaderParams.getString(LIB_PATH_KEY) : null, // libs folder (if exists)
                                            getClassLoader()); // parent loader
-
+*/
+        m_classLoader = getClassLoader();
+        
         @SuppressWarnings("rawtypes")
         Class loaderClass = m_classLoader.loadClass(loaderParams.getString(LOADER_CLASS_NAME_KEY)); // load QtLoader class
         Object qtLoader = loaderClass.newInstance(); // create an instance
@@ -291,7 +295,7 @@ public class QtActivity extends Activity
 
         // get directory /data/data/org.kflog.cumulus"
         final String dataDir = getApplicationInfo().dataDir + File.separator;
-        String qtJar = "";
+        // String qtJar = "";
         String androidLib = "";
 
         // There exists dependencies in library loading to the running Android
@@ -303,18 +307,9 @@ public class QtActivity extends Activity
         
         Log.d(QtApplication.QtTAG, "startApp, Android-API=" + apiVersion);
         
-        if (apiVersion > android.os.Build.VERSION_CODES.FROYO)
-          {
-            // All versions above Froyo
-            qtJar = "QtIndustrius-14.jar";
-            androidLib = "libandroid-9.so";
-          }
-        else
-          {
-            // All versions before Gingerbread
-            qtJar = "QtIndustrius-8.jar";
-            androidLib = "libandroid-8.so";
-          }
+        // All versions above Froyo are supported
+        // qtJar = "QtIndustrius-14.jar";
+        androidLib = "libandroid-9.so";
 
         Log.d(QtApplication.QtTAG, "startApp, dataDir=" + dataDir);
 
@@ -324,68 +319,11 @@ public class QtActivity extends Activity
         libraryList.add(dataDir + "lib/libQtXml.so");
         libraryList.add(dataDir + "lib/" + androidLib);
 
-        String jarDir = getDir("jar", Context.MODE_PRIVATE).getAbsolutePath();
-        String jarOut = jarDir + File.separator + qtJar;
-
-        Log.d(QtApplication.QtTAG, "startApp, jarDir=" + jarDir + ", jarOut=" + jarOut);
-
-        // Package version control install file name marker.
-        String pvcFileName = jarDir + File.separator + "pvc_" +
-                             String.valueOf(getPackageVersionCode());
-
-        File pvcFile = new File(pvcFileName);
-
-        if (!pvcFile.exists())
-          {
-            Log.d(QtApplication.QtTAG, "startApp, Version control file " +
-                                        pvcFileName + " does not exists!");
-
-            // It seems, that the application has just installed or the user has
-            // removed all its data. In this case the Jar output directory must
-            // be cleared to prevent the usage of outdated data.
-            removeDirContent(jarDir);
-          }
-
-        File jarFile = new File(jarOut);
-
-        if (pvcFile.exists() == false || jarFile.exists() == false ||
-            jarFile.isFile() == false || jarFile.length() == 0)
-          {
-            Log.d(QtApplication.QtTAG, "startApp, Jar file " + qtJar + " must be installed!");
-
-            // The Qt Jar file must be copied.
-            InputStream ips = getApplicationContext().getAssets().open(qtJar);
-
-            int size;
-            byte[] buffer = new byte[2048];
-
-            FileOutputStream fos = new FileOutputStream(jarOut);
-
-            while ((size = ips.read(buffer)) != -1)
-              {
-                fos.write(buffer, 0, size);
-              }
-
-            fos.flush();
-            fos.close();
-            ips.close();
-
-            try
-              {
-                // Store an install marker file
-                OutputStream out = new FileOutputStream(pvcFile);
-                out.close();
-              }
-            catch (Exception e)
-              {
-                Log.e(QtApplication.QtTAG, "PVC add file error: " + e.getMessage());
-              }
-          }
+        // String jarDir = getDir("jar", Context.MODE_PRIVATE).getAbsolutePath();
+        // String jarOut = jarDir + File.separator + qtJar;
+        // Log.d(QtApplication.QtTAG, "startApp, jarDir=" + jarDir + ", jarOut=" + jarOut);
 
         String dexPaths = new String();
-        String pathSeparator = System.getProperty("path.separator", ":");
-        dexPaths = pathSeparator + jarOut;
-
         Bundle loaderParams = new Bundle();
         loaderParams.putInt(ERROR_CODE_KEY, 0);
         loaderParams.putString(DEX_PATH_KEY, dexPaths);

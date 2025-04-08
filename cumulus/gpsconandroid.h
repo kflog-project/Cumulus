@@ -205,6 +205,9 @@ class GpsConAndroid : public QObject
   /** Thread synchronizer for write action. */
   static QMutex mutexWrite;
 
+  /** Thread synchronizer for read action. */
+  static QMutex mutexNmeaForward;
+
   /** Thread synchronizer for actions. */
   static QMutex mutexAction;
 

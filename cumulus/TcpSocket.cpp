@@ -22,7 +22,7 @@
 /**
  * TcpSocket device class.
  *
- * This class provides the interface to a TCP socket device..
+ * This class provides the interface to a TCP socket device.
  */
 
 TcpSocket::TcpSocket( QObject *parent, QString ip, QString port, short channel ) :
@@ -31,16 +31,17 @@ TcpSocket::TcpSocket( QObject *parent, QString ip, QString port, short channel )
   m_port(port),
   m_channel(channel),
   m_connected(false),
-  m_sychronized(false),
   m_socket(0)
 {
-  qDebug() << "TcpSocket::TcpSocket() IP=" << ip << "Port=" << port << channel;
+  qDebug() << "TcpSocket::TcpSocket() IP=" << ip << "Port=" << port << "channel=" << channel;
   setObjectName( "TcpSocket" );
 }
 
 TcpSocket::~TcpSocket()
 {
   qDebug() << "~TcpSocket() is called." << m_channel;
+  // Note, according to Qt documentation an open socket is automatically
+  // close from the destructor. Closing at at this point can lead to a core dump.
 }
 
 /**
@@ -48,13 +49,11 @@ TcpSocket::~TcpSocket()
  */
 void TcpSocket::close()
 {
-  qDebug() << "TcpSocket::close() is called" << m_channel;
-
   if( m_socket != 0 )
     {
       if( m_socket->isOpen() )
         {
-          qDebug() << "TcpSocket::close(): Stop running TcpSocket connection";
+          qDebug() << "TcpSocket::close(): closing connection" << m_channel;
           m_socket->flush();
           m_socket->close();
         }
@@ -74,7 +73,7 @@ void TcpSocket::slotConnect()
   if( m_socket->waitForConnected( 2000 ) == false )
     {
       // We wait 2s for the connection success
-      qCritical( ) << "TcpSocket::connect(): connection error"
+      qCritical() << "TcpSocket::connect(): connection error"
                    << m_ip << ":" << m_port << m_socket->error()
                    << m_socket->errorString();
 
@@ -90,6 +89,8 @@ void TcpSocket::slotConnect()
       QTimer::singleShot( 10000, this, SLOT(slotConnect()));
       return;
     }
+
+  qDebug() << "TCP socket connected at channel" << m_channel;
 
   m_connected = true;
 }
@@ -113,7 +114,7 @@ void TcpSocket::slotDisconnected()
  */
 bool TcpSocket::send( QByteArray& data )
 {
-  qDebug() << "TcpSocket::send() is called, m_connected=" << m_connected << data.toHex();
+  qDebug() << "TcpSocket::send(): channel=" << m_channel << "m_connected=" << m_connected << data.toHex();
 
   QMutexLocker locker( &mutex );
 
@@ -125,7 +126,7 @@ bool TcpSocket::send( QByteArray& data )
   int bytes = m_socket->write( data.data(), data.size() );
   m_socket->flush();
 
-  // qDebug() << "Bytes" << bytes << "written";
+  qDebug() << "Bytes" << bytes << "written";
 
   if( bytes == data.size() )
     {
@@ -140,29 +141,32 @@ bool TcpSocket::send( QByteArray& data )
  */
 void TcpSocket::slotHandleRxData()
 {
-  qDebug() << "TcpSocket::handleRxData() is called: " << m_channel;
+  // qDebug() << "TcpSocket::handleRxData() is called: " << m_channel << QThread::currentThreadId();
 
-  char buffer[128];
+  char buffer[512];
 
   while( true )
     {
       // read message data
       qint64 read = m_socket->read( buffer, sizeof( buffer ) );
 
+      // qDebug() << "TcpSocket::handleRxData(): read " << read << " bytes.";
+
       if( read == 0 )
         {
-          qDebug() << "TcpSocket::handleRxData(): read " << read << " bytes.";
           break;
         }
       else if( read == -1 )
         {
-          qDebug() << "TcpSocket::handleRxData(): returned -1 -> Error";
+          qWarning() << "TcpSocket::handleRxData(): returned -1 -> Error at channel" << m_channel;
           break;
         }
 
       rxBuffer.append( buffer, read );
-      // qDebug() << "TcpSocket::handleRxData():" << rxBuffer.toHex();
    }
+
+  // qDebug() << "TcpSocket::handleRxData() read data:" << rxBuffer.toHex();
+  // qDebug() << "TcpSocket::handleRxData() Channel=" << m_channel << "read size=" << rxBuffer.size() ;
 
   if( rxBuffer.size() > 0 )
     {

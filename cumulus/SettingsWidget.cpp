@@ -384,8 +384,11 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       connect( page, SIGNAL(newPressureDevice( const QString& )),
                GpsNmea::gps, SLOT(slot_pressureDevice( const QString&)) );
 
+#ifndef ANDROID
+      // user wants to switch on/off the GPS data processing.
       connect( page, SIGNAL(userGpsSwitchRequest()),
                GpsNmea::gps, SLOT(slot_userGpsSwitchRequest()) );
+#endif
 
       connect( page, SIGNAL(ipSettingsChanged()),
                GpsConAndroid::instance(), SLOT( slot_configChanged() ) );

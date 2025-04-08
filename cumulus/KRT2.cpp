@@ -14,8 +14,6 @@
  **   (at your option) any later version.
  **
  ***********************************************************************/
-#include <cmath>
-
 #include <QtCore>
 
 #include "generalconfig.h"
@@ -50,13 +48,13 @@ KRT2::~KRT2()
  */
 void KRT2::close()
 {
-  qDebug() << "KRT2::close() is called";
+  // qDebug() << "KRT2::close() is called";
 
   if( m_socket != 0 )
     {
       if( m_socket->isOpen() )
         {
-          qDebug() << "KRT2::close(): Stop running KRT2 connection";
+          qDebug() << "KRT2::close(): Stopping running KRT2 connection";
           m_socket->flush();
           m_socket->close();
         }
@@ -259,7 +257,7 @@ void KRT2::exchangeFrequency()
  */
 void KRT2::slotHandleRxData()
 {
-  qDebug() << "KRT2::handleRxData() is called: " << QThread::currentThreadId();
+  // qDebug() << "KRT2::handleRxData() is called: " << QThread::currentThreadId();
 
   char buffer[128];
 
@@ -270,12 +268,11 @@ void KRT2::slotHandleRxData()
 
       if( read == 0 )
         {
-          qDebug() << "KRT2::handleRxData(): read " << read << " bytes.";
           return;
         }
       else if( read == -1 )
         {
-          qDebug() << "KRT2::handleRxData(): returned -1 -> Error";
+          qWarning() << "KRT2::handleRxData(): returned -1 -> Error";
           return;
         }
 

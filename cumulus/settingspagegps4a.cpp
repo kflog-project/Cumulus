@@ -61,7 +61,7 @@ SettingsPageGPS4A::SettingsPageGPS4A(QWidget *parent) : QWidget(parent)
   contentLayout->addLayout(topLayout, 10);
 
   topLayout->addWidget(new QLabel(tr("GPS Source:")), row, 0);
-  GpsSource = new QComboBox(this);
+  GpsSource = Layout::getComboBox();
   topLayout->addWidget(GpsSource, row, 1);
 
   QListView* qlv = new QListView();
