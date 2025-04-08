@@ -114,7 +114,7 @@ void TcpSocket::slotDisconnected()
  */
 bool TcpSocket::send( QByteArray& data )
 {
-  qDebug() << "TcpSocket::send(): channel=" << m_channel << "m_connected=" << m_connected << data.toHex();
+  // qDebug() << "TcpSocket::send(): channel=" << m_channel << "m_connected=" << m_connected << data.toHex();
 
   QMutexLocker locker( &mutex );
 
