@@ -36,12 +36,12 @@
 #include <QTime>
 
 #include "MainWindow.h"
+#include "TcpSocket.h"
 
 class QByteArray;
 class QMutex;
 class QString;
 class QEvent;
-class TcpSocket;
 class KRT2;
 
 class GpsConAndroid : public QObject
@@ -102,9 +102,27 @@ class GpsConAndroid : public QObject
   void handleWiFiRequest( int request );
 
   /**
-   * @return Returns the KRT2 instance.
+   * Returns the WiFi request state from Android.
+   *
+   * @return true=WiFi on, false=Wifi off
    */
-  KRT2* krt2Driver()
+  static bool getWiFiRequest()
+  {
+    return m_wiFiRequest;
+  }
+
+  /**
+   * @return Returns the TCP GPS instance.
+   */
+  static TcpSocket* gpsDriver()
+  {
+    return m_xcgps;
+  }
+
+  /**
+   * @return Returns the TCP KRT2 instance.
+   */
+  static KRT2* krt2Driver()
   {
     return m_krt2;
   }

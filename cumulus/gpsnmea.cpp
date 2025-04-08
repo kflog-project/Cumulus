@@ -3034,6 +3034,21 @@ bool GpsNmea::sendSentence( const QString command )
       cmd += check;
     }
 
+  // Check, which connection should be used.
+  if( GpsConAndroid::getWiFiRequest() == true )
+    {
+      // WiFi connection is used
+      TcpSocket* gpsd = GpsConAndroid::gpsDriver();
+
+      if( gpsd != 0 )
+        {
+          QByteArray ba = command.toLatin1();
+          return gpsd->send( ba );
+        }
+
+      return false;
+    }
+
   // Forward command to the java part via jni
   return jniGpsCmd( cmd );
 }
