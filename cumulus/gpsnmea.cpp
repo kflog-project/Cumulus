@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2021 by Axel Pauli
+                               2008-2025 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -3042,7 +3042,7 @@ bool GpsNmea::sendSentence( const QString command )
 
       if( gpsd != 0 )
         {
-          QByteArray ba = command.toLatin1();
+          QByteArray ba = cmd.toLatin1();
           return gpsd->send( ba );
         }
 
