@@ -16,7 +16,7 @@
 
 	<h3 align="center">Einf&uuml;hrung</h3>
 
-	Um Cumulus sinnvoll nutzen zu k&ouml;nnen, sind ein PDA, ein
+	Um Cumulus sinnvoll nutzen zu k&ouml;nnen, sind ein mobiles Endger&auml;t, ein
 	GPS-Empf&auml;nger, die entsprechenden Karten und weitere
 	flugnavigatorische Daten erforderlich. Im Augenblick unterst&uuml;tzt
 	Cumulus die folgenden Ger&auml;te:
@@ -41,21 +41,21 @@
 	<dl>
 
 		<dt>
-			<b>PDA</b>
+			<b>Mobiles Endger&auml;t</b>
 		</dt>
 
 		<dd>
-			W&auml;hrend das Programm auf dem PDA l&auml;uft und Sie in Bewegung
-			sind, wird der Bildschirmschoner deaktiviert. Bewegen Sie
+			W&auml;hrend das Programm auf dem mobilen Endger&auml;t l&auml;uft und Sie
+      in Bewegung sind, wird der Bildschirmschoner deaktiviert. Bewegen Sie
 			sich langsamer, wird der Bildschirmschoner nach der von Ihnen
 			programmierten Zeit wieder aktiviert. Bewegen Sie sich wieder
 			schneller, wird er wieder deaktiviert. Die Geschwindigkeitsgrenze
 			kann im Men&uuml; <A
 				HREF="cumulus-settings-look-feel.html#Screensaver">
 				Einstellungen/Look&amp;Feel</A> eingestellt werden. <br> Weiterhin
-			ist es erforderlich den PDA bei l&auml;ngeren Betriebszeiten von
-			Cumulus mit einer externen Stromversorgung zu verbinden. Schalten Sie
-			vor dem Start unbedingt alle automatischen Sachen, wie WLAN
+			ist es erforderlich das mobile Endger&auml;t bei l&auml;ngeren
+      Betriebszeiten von Cumulus mit einer externen Stromversorgung zu verbinden.
+      Schalten Sie vor dem Start unbedingt alle automatischen Sachen, wie WLAN
 			Verbindungsversuche oder Suche nach Versionsaktualisierungen, aus.
 			Diese fressen unn&ouml;tig Resourcen und k&ouml;nnen Sie mit
 			Dialogboxen w&auml;hrend des Fluges nerven.
@@ -72,7 +72,7 @@
       das interne Men&uuml; von Cumulus. Dies betrifft vor allem den GPS
       Empf&auml;nger. Nach jeden Start von Cumulus m&uuml;ssen Sie
       diesen erneut einschalten! Der vorhergehende Zustand wird nicht
-      gespeichert.
+      gespeichert und auch nicht automatisch wieder aktiviert.
       </dd>
 
     <br>
@@ -114,7 +114,7 @@
       <li>
       <b>Android Ger&auml;te</b>
         <ul>
-          <li>Eingebautes GPS</li>
+          <li>Internes GPS</li>
           <li>Bluetooth</li>
           <li>WiFi</li>
         </ul>      
@@ -135,7 +135,7 @@
       <ul>
         <li>Serial-USB Adapter (nicht f&uuml;r Android)</li>
         <li>Serial-Bluetooth Adapter</li>
-        <li>WLAN TCP/IP client</li>
+        <li>WiFi TCP/IP client</li>
       </ul>      
     
       Beispiele f&uuml;r solche Adapter:
@@ -159,7 +159,7 @@
 				Einstellungen - GPS</a> in Cumulus aus. Lesen Sie im Handbuch Ihres GPS
 				Empf&auml;ngers nach, um die erforderlichen Daten zu erfahren. Viele
 				Ger&auml;te arbeiten mit folgenden Schnittstellen:
-			</p>
+      <p>
 
 			<ul>
 				<li><i>/dev/ttyS0</i> - RS232 serielles Ger&auml;t</li>
@@ -172,7 +172,7 @@
 			<p>
 				<b>Android:</b> Wenn Ihr Ger&auml;t bereits mit einem internen GPS
 				Empf&auml;nger ausger&uuml;stet ist, m&uuml;ssen Sie nichts weiter einstellen.
-				Externe GPS Empf&auml;nger sind nur mittels Bluetooth Funk koppelbar.
+				Externe GPS Empf&auml;nger sind nur mittels Bluetooth Funk oder WiFi koppelbar.
 				<b>Beachten Sie die folgende Ausnahme!</b> Nach jedem
 				Cumulus Start unter Android m&uuml;ssen Sie den GPS Empfang <b>per
 			  Hand selber aktivieren</b>. Dr&uuml;cken Sie dazu die Android
@@ -219,12 +219,9 @@
 		</dt>
 
 		<dd>
-			Cumulus benutzt die gleichen Karten wie <i>KFLog</i>, das KDE
-			Flugplanungs- und Auswerteprogramm. Laden Sie sich die
-			ben&ouml;tigten Karten, Luftr&auml;ume und Flugplatzdaten aus dem
-			Internet herunter und installieren Sie diese auf Ihrem PDA. Unter dem
-			Punkt <a href="cumulus-maps.html">Karten</a> finden Sie mehr
-			Informationen dazu. Flugpl&auml;tze und Landkarten werden auch
+			Cumulus benutzt die Landkarten vom ehemaligen <i>KFLog Projekt</i>.
+      Unter dem	Punkt <a href="cumulus-maps.html">Karten</a> finden Sie mehr
+			Informationen dazu. Flugpl&auml;tze, Punktdaten und Landkarten werden
 			automatisch durch Cumulus herunter geladen, wenn Sie diese Option
 			beim Programmstart erlauben.
 		</dd>
@@ -236,9 +233,9 @@
 
 		<dd>
 			Cumulus benutzt Wegpunkte f&uuml;r die Navigation. Sie k&ouml;nnen
-			Ihre Wegpunktdateien in Cumulus bearbeiten oder auch mit Hilfe von <i>KFLog</i>
-			auf Ihrem Arbeitsplatzrechner vorbereiten und sie dann auf ihren PDA
-			&uuml;bertragen. Unter dem Punkt <a href="cumulus-waypoints.html">Wegpunkte</a>
+			eigene Wegpunkt in Cumulus erstellen und bearbeiten oder auch Wegpunktdateien
+      aus dem Internet herunterladen. Unter dem Punkt
+      <a href="cumulus-waypoints.html">Wegpunkte</a>
 			finden Sie weitere Hinweise dazu.
 		</dd>
 
@@ -249,10 +246,8 @@
 
 		<dd>
 			Cumulus unterst&uuml;tzt auch die Definition von Flugaufgaben. Sie
-			k&ouml;nnen diese entweder auf dem PDA direkt erstellen oder auf dem
-			Arbeitsplatzrechner mit Hilfe von <i>KFLog</i> und sie
-			anschlie&szlig;end auf den PDA runter laden. Unter dem Punkt <a
-				href="cumulus-preflight-settings-task.html"> Fliegen
+			k&ouml;nnen diese direkt in Cumulus erstellen. Unter dem Punkt
+			<a href="cumulus-preflight-settings-task.html"> Fliegen
 				Einstellungen/Aufgabe</a> finden Sie weitere Hinweise dazu.
 		</dd>
 
