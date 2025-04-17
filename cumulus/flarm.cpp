@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2022 Axel Pauli
+**   Copyright (c): 2010-2025 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -346,6 +346,11 @@ bool Flarm::extractPflae(const QStringList& stringList)
       qWarning() << "$PFLAE contains too less parameters!"
                  << stringList.join(",");
       return false;
+    }
+  else
+    {
+      // Log the error message for later further processing.
+      qWarning() << "FLARM-Error: " << stringList.join(",");
     }
 
   m_flarmError.severity  = stringList[2];
