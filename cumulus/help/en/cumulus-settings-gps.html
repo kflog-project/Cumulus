@@ -28,15 +28,19 @@
 		the primary GPS device used by Cumulus for navigation. Please refer to
 		your GPS manual for these connection values. Cumulus can also accept
 		and process data from other peripherals such as Cambridge,
-		Volkslogger, Flarm or LX Navigation.</p>
+		Volkslogger, Flarm, LX Navigation and XCVario.</p>
 
 		<h4>Android Hints</h4>
 
-     Under Android this page is nearly empty. Please use the Android menu key
-		 and the GPS menu to switch on/off your desired GPS device. There are exist
-     different possibilities according to the provided hardware of your Android
-     device.
+     Under Android this page is nearly empty and shows always three possible
+     configuration items for WiFi connection via Tcp.
+     
+     Please use the Android menu key and the GPS menu to switch on/off your
+     desired GPS device. There are exist different possibilities according to the
+     provided hardware of your Android device.
           
+    <h4>GPS Connections</h4>
+    
      <ul>
        <li>
           Use of build-in GPS.
@@ -58,6 +62,22 @@
          with <b>OS release &lt; 4.1</b> you have to <b>switch on USB debugging</b> in the
          developer options. If the <b>OS release is &gt;= 4.1</b> <b>USB debugging
          must be switched off</b>. Otherwise you will never get a connection running.
+       </li>
+       
+       <li>
+         Connection establishment via a WiFi access point. You can define up to
+         three different connections. Per connection you have to configure the
+         IP address and the related port. The connection is marked for usage by
+         checking the check box at the left side. The WiFi pairing with the
+         external device must be executed via the OS before you can use these
+         Tcp interfaces under Cumulus. Under Android you have to activate the
+         usage of the WiFi channels via the menu:
+         <br><br>
+         Settings->Hardware->GPS->GPS on->WiFi GPS
+         <br><br>
+         Have also a look into the user guide of the
+         <a href="https://xcvario.com/docs-category/vario/">XCVario</a>
+         device for further information.
        </li>
      </ul>
   </p>
@@ -122,17 +142,22 @@
 		</tr>
 
     <tr>
-      <th>WiFi 1, WiFi 2 oder WiFi 1+2</th>
+      <th>WiFi-1, WiFi-2, WiFi-KRT2</th>
       <td>
-        for a WiFi connection to an external device. You can use up to two
+        for a WiFi connection to an external device. You can use up to three
         channels. Per channel you have to add an IP address and the related port.
-        The coupling to the external device have to be done by using the WLAN
-        manager of your OS. E.g. to connect to a XCVario you have to enter the
+        The coupling to the external device have to be done by using the WiFi
+        manager of your OS. E.g. to connect to an XCVario you have to enter the
         following values:
         <p>
-        WiFi-1 IP:Port 192.168.4.1:8880 (XCVario Data)
+        WiFi-1 IP:Port 192.168.4.1:8880 (XCVario data channel)
         <p>
-        WiFi-2 IP:Port 192.168.4.1:8881 (Flarm Data)
+        WiFi-2 IP:Port 192.168.4.1:8881 (Flarm data channel)
+        <p>
+        WiFi-KRT2 IP:Port 192.168.4.1:8882 (KRT2 radio channel)
+        <p>
+        The desired channel is activated by checking the check box.
+        <a href="cumulus-xcvario.html">See here</a> for further information.
        </td>
     </tr>
 
@@ -266,15 +291,6 @@
 
 	</table>
 	</p>
-
-	<h4>Sync Clock</h4>
-
-	If the option
-	<i>Sync Clock</i> is activated, Cumulus is able to synchronize the PDA
-	system clock to the GPStime, but this will only work, if Cumulus is
-	running as user <i>root</i>. On Android and the Nokia Internet tablets this
-	feature is available, because user processes are not normally running under the
-	root user.
 
 	<h4>Save NMEA Data</h4>
 
