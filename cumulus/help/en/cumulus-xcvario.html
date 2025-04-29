@@ -1,0 +1,94 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Cumulus XCVario</title>
+  <link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+  <table width="100%">
+    <tr>
+      <td align="left"><a href="cumulus-krt2.html">back</a></td>
+      <td align="center"><a href="cumulus.html">start</a></td>
+      <td align="right"><a href="cumulus-file-locations.html">next</a></td>
+    </tr>
+  </table>
+
+  <h3 align="center">XCVario pairing</h3>
+  
+  Cumulus can be paired via different interfaces with an XCVario device. 
+  Usually the interfaces Bluetooth or WiFi are used for this purpose. How to
+  setup such a pairing, look into the user guide of the
+  <a href="https://xcvario.com/docs-category/vario/">XCVario</a> devive.
+  
+  <h3> XCVario pairing via Bluetooth</h3>
+  
+  You can connect Cumulus via Bluetooth to an XCVario and exchange data via the
+  serial interface S1 of the XCVario device. Usually you will connect a Flarm
+  device at this serial interface. For usage you have to pair Cumulus with
+  the XCVario device. In the XCVario device you have to activate the routing
+  of S1 via Bluetooth.
+  
+  <h3>XCVario pairing via WiFi</h3>
+  
+  Via the WiFi interface you can establish a connection to an XCVario device
+  and exchange data via the interfaces S1, S2 and the internal data channel of
+  the XCVario. There are three Tcp ports available under the IP address 
+  <b>192.168.4.1</b>. A WiFi connection must be established from Cumulus to the
+  XCVario device, where the XCVario devive is working as a WiFi server. The
+  WiFi access point uses the name <b>XCVario-[nnnn]</b>. The related password
+  is <b>xcvario-21</b>.
+  <p>
+  <b>Note:</b> These connections will only work properly, if the interfaces
+  WLAN, BT, S1, S2 and the routing are setup correctly in the XCVario device.
+  Have a look into the user guide of the
+  <a href="https://xcvario.com/docs-category/vario/">XCVario</a> device.
+  
+  <p>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th colspan="3"><b>XCVario IP 192.168.4.1</b></th>
+    </tr>
+    <tr>
+      <th><b>Channel</b></th>
+      <th><b>Port</b></th>
+      <th><b>Description</b></th>
+    </tr>
+    <tr>
+      <td>WiFi-1</td>
+      <td>8880</td>
+      <td>
+          <b>XCVario</b> transmits sensor data according to the configured
+          NMEA protocol in the XCVario device.
+      </td>
+    </tr>
+     <tr>
+      <td>WiFi-2</td>
+      <td>8881</td>
+      <td><b>FLARM</b> at the serial interface S1-RS232. Cumulus evaluates these
+      data and can also send commands to the Flarm device. 
+      </td>
+    </tr>
+     <tr>
+      <td>WiFi-KRT2</td>
+      <td>8882</td>
+      <td><b>KRT2</b> radio device at the serial interface S2-RS232. Cumulus
+      can send frequencies to the radio to be setup as active or standby. The
+      serial interface S2 of the XCVario device has to be configured as 9600 baud,
+      8 data bits, without parity.
+      </td>
+    </tr>
+  </table>
+  
+   <p></p>
+    <table width="100%">
+      <tr>
+        <td align="left"><a href="cumulus-krt2.html">back</a></td>
+        <td align="center"><a href="cumulus.html">start</a></td>
+        <td align="right"><a href="cumulus-file-locations.html">next</a></td>
+      </tr>
+    </table>
+
+  </body>
+  </html>

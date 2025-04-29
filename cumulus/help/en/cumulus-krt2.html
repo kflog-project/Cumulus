@@ -1,0 +1,80 @@
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Cumulus KRT2</title>
+  <link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+  <table width="100%">
+    <tr>
+      <td align="left"><a href="cumulus-flarm.html">back</a></td>
+      <td align="center"><a href="cumulus.html">start</a></td>
+      <td align="right"><a href="cumulus-xcvario.html">next</a></td>
+    </tr>
+  </table>
+
+  <h3 align="center">KRT2 radio pairing</h3>
+
+  Cumulus can connect a radio device of type KRT2 via the WiFi interface
+  <i>WiFi-KRT2</i> and can transmit a frequency to be set on the radio.
+  Here I will describe the usage of an XCVario device for this purpose. The
+  XCVario device is working as a WiFi server and router for Cumulus. The KRT2
+  device is connected to the XCVario device via the serial interface S2. The
+  serial interface S2 of the XCVario has to be configured in the following way:
+
+  <br><br>
+  9600 baud, 8 bits, without parity
+  <br><br>
+  
+  The following IP parameters are to set at the
+  <a href="cumulus-settings-gps.html">GPS configuration page</a> at the item
+  <i>WiFi-KRT2</i>:
+  
+  <br><br>
+  192.168.4.1:8882
+  <br><br>
+  
+  In different windows, showing radio frequencies, you can see a button <i>KRT2</i>.
+  Pushing this button will open a new window. In a table all frequencies related
+  to the object, are to see. Every table entry has four columns.
+    <br><br>
+  <table border="1" cellpadding="5">
+    <tr>
+      <td><b>Frequency</b></td>
+      <td><b>Active</b></td>
+      <td><b>Standby</b></td>
+      <td><b>Call sign</b></td>
+    </tr>
+    <tr>
+      <td>Frequency to setup</td>
+      <td>Setup as Active</td>
+      <td>Setup as Standby</td>
+      <td>Radio call sign</td>
+    </tr>
+  </table>
+  
+  <br><br>
+  If you press the column <i>Active</i> or <i>Standby</i> the displayed
+  frequency is sent to the KRT2 radio device according to the chosen attribute.
+  <p>
+  A LED, located at the right lower side of the window, shows with green light 
+  an active connection to the radio device. A none active connection is signaled
+  by the LED with red light.
+  <p>
+    <b>Circle Button</b>
+  </p>
+  Pressing the circle button will swap the active and standby frequency at the
+  radio.
+   <p></p>
+    <table width="100%">
+      <tr>
+        <td align="left"><a href="cumulus-flarm.html">back</a></td>
+        <td align="center"><a href="cumulus.html">start</a></td>
+        <td align="right"><a href="cumulus-xcvario.html">next</a></td>
+      </tr>
+    </table>
+
+  </body>
+  </html>
