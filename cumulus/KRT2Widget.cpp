@@ -360,15 +360,6 @@ void KRT2Widget::slot_CellClicked( int row, int column )
       return;
     }
 
-  if( checkKRT2Connection() == false )
-    {
-      messageBox( QMessageBox::Warning,
-                  tr("KRT2 device not connected" ),
-                  "",
-                  QMessageBox::Close );
-      return;
-    }
-
   float ff = m_table->item( row, 0 )->data(Qt::UserRole).toFloat();
 
   KRT2* krt2 = GpsConAndroid::instance()->krt2Driver();
@@ -382,6 +373,24 @@ void KRT2Widget::slot_CellClicked( int row, int column )
       name = item3->text();
     }
 
+  if( column == 3 )
+    {
+      messageBox( QMessageBox::Information,
+                  name,
+                  tr("Radio call sign" ),
+                  QMessageBox::Close );
+      return;
+    }
+
+  if( checkKRT2Connection() == false )
+    {
+      messageBox( QMessageBox::Warning,
+                  tr("KRT2 device not connected" ),
+                  "",
+                  QMessageBox::Close );
+      return;
+    }
+
   if( column == 1 )
     {
       krt2->setActiveFrequency( ff, name );
@@ -389,13 +398,6 @@ void KRT2Widget::slot_CellClicked( int row, int column )
   else if( column == 2 )
     {
       krt2->setStandbyFrequency( ff, name );
-    }
-  else if( column == 3 )
-    {
-      messageBox( QMessageBox::Information,
-                  name,
-                  tr("Radio call sign" ),
-                  QMessageBox::Close );
     }
 }
 
