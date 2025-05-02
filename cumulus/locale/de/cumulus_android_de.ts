@@ -439,52 +439,52 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="../../flarm.cpp" line="1052"/>
+        <location filename="../../flarm.cpp" line="1057"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1055"/>
+        <location filename="../../flarm.cpp" line="1060"/>
         <source>Caution</source>
         <translation>Vorsicht</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1058"/>
+        <location filename="../../flarm.cpp" line="1063"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1061"/>
+        <location filename="../../flarm.cpp" line="1066"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1089"/>
+        <location filename="../../flarm.cpp" line="1094"/>
         <source>Object</source>
         <translation>Objekt</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1093"/>
+        <location filename="../../flarm.cpp" line="1098"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1095"/>
+        <location filename="../../flarm.cpp" line="1100"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1096"/>
+        <location filename="../../flarm.cpp" line="1101"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1101"/>
+        <location filename="../../flarm.cpp" line="1106"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1109"/>
+        <location filename="../../flarm.cpp" line="1114"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
@@ -994,7 +994,7 @@
         <translation>GPS Verbingung abgeschaltet durch Benutzer</translation>
     </message>
     <message>
-        <location filename="../../gpsnmea.cpp" line="3270"/>
+        <location filename="../../gpsnmea.cpp" line="3285"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -1205,15 +1205,14 @@
     </message>
     <message>
         <location filename="../../KRT2Widget.cpp" line="366"/>
-        <location filename="../../KRT2Widget.cpp" line="401"/>
+        <location filename="../../KRT2Widget.cpp" line="408"/>
         <source>KRT2 device not connected</source>
         <translation>KRT2 Gerät nicht verbunden</translation>
     </message>
     <message>
-        <location filename="../../KRT2Widget.cpp" line="367"/>
-        <location filename="../../KRT2Widget.cpp" line="402"/>
-        <source>No KRT2 connection</source>
-        <translation>Keine KRT2 Verbindung</translation>
+        <location filename="../../KRT2Widget.cpp" line="397"/>
+        <source>Radio call sign</source>
+        <translation>Rufzeichen:</translation>
     </message>
 </context>
 <context>
@@ -1749,55 +1748,55 @@
         <translation>Luftraum&amp;nbsp;Struktur</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3015"/>
-        <location filename="../../map.cpp" line="3070"/>
+        <location filename="../../map.cpp" line="3016"/>
+        <location filename="../../map.cpp" line="3071"/>
         <source>Zoom scale 1:%1</source>
         <translation>Zoom Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3525"/>
+        <location filename="../../map.cpp" line="3526"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3529"/>
+        <location filename="../../map.cpp" line="3530"/>
         <source>Alarm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3534"/>
-        <location filename="../../map.cpp" line="3703"/>
+        <location filename="../../map.cpp" line="3535"/>
+        <location filename="../../map.cpp" line="3704"/>
         <source>Airspace</source>
         <translation>Luftraum</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3545"/>
-        <location filename="../../map.cpp" line="3572"/>
-        <location filename="../../map.cpp" line="3725"/>
+        <location filename="../../map.cpp" line="3546"/>
+        <location filename="../../map.cpp" line="3573"/>
+        <location filename="../../map.cpp" line="3726"/>
         <source>Inside</source>
         <translation>Innerhalb</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3581"/>
-        <location filename="../../map.cpp" line="3609"/>
-        <location filename="../../map.cpp" line="3739"/>
+        <location filename="../../map.cpp" line="3582"/>
+        <location filename="../../map.cpp" line="3610"/>
+        <location filename="../../map.cpp" line="3740"/>
         <source>Very Near</source>
         <translation>Dicht</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3618"/>
-        <location filename="../../map.cpp" line="3645"/>
-        <location filename="../../map.cpp" line="3753"/>
+        <location filename="../../map.cpp" line="3619"/>
+        <location filename="../../map.cpp" line="3646"/>
+        <location filename="../../map.cpp" line="3754"/>
         <source>Near</source>
         <translation>Nahe</translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3703"/>
+        <location filename="../../map.cpp" line="3704"/>
         <source>Status</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../map.cpp" line="3713"/>
+        <location filename="../../map.cpp" line="3714"/>
         <source>No Airspace violation</source>
         <translation>Keine Luftraum Verletzung</translation>
     </message>
@@ -3675,108 +3674,113 @@ USB Stick eingeschoben?</translation>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../airspace.cpp" line="335"/>
+        <location filename="../../airspace.cpp" line="342"/>
         <source>AS-A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="337"/>
+        <location filename="../../airspace.cpp" line="344"/>
         <source>AS-B</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="339"/>
+        <location filename="../../airspace.cpp" line="346"/>
         <source>AS-C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="341"/>
+        <location filename="../../airspace.cpp" line="348"/>
         <source>AS-D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="343"/>
+        <location filename="../../airspace.cpp" line="350"/>
         <source>AS-E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="345"/>
+        <location filename="../../airspace.cpp" line="352"/>
         <source>Wave Window</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="347"/>
+        <location filename="../../airspace.cpp" line="354"/>
         <source>AS-F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="349"/>
+        <location filename="../../airspace.cpp" line="356"/>
         <source>Flarm</source>
         <translation>Flarm</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="351"/>
+        <location filename="../../airspace.cpp" line="358"/>
         <source>FIR</source>
         <translation>FIR</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="353"/>
+        <location filename="../../airspace.cpp" line="360"/>
         <source>AS-G</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="355"/>
+        <location filename="../../airspace.cpp" line="362"/>
         <source>Restricted</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="357"/>
+        <location filename="../../airspace.cpp" line="364"/>
         <source>Danger</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="359"/>
+        <location filename="../../airspace.cpp" line="366"/>
         <source>Prohibited</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="361"/>
+        <location filename="../../airspace.cpp" line="368"/>
         <source>CTR-C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="363"/>
+        <location filename="../../airspace.cpp" line="370"/>
         <source>CTR-D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="365"/>
+        <location filename="../../airspace.cpp" line="372"/>
         <source>CTR</source>
         <translation>CTR</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="367"/>
+        <location filename="../../airspace.cpp" line="374"/>
         <source>SUA</source>
         <translation>SUA</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="369"/>
+        <location filename="../../airspace.cpp" line="376"/>
         <source>RMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="371"/>
+        <location filename="../../airspace.cpp" line="378"/>
         <source>TMZ</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="373"/>
+        <location filename="../../airspace.cpp" line="380"/>
         <source>Glider Sector</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../../airspace.cpp" line="440"/>
+        <source>UNK</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../../Frequency.cpp" line="77"/>
-        <location filename="../../airspace.cpp" line="375"/>
+        <location filename="../../airspace.cpp" line="382"/>
         <location filename="../../flarmbase.cpp" line="163"/>
         <location filename="../../flighttask.cpp" line="47"/>
         <location filename="../../flighttask.cpp" line="71"/>
@@ -3902,24 +3906,24 @@ USB Stick eingeschoben?</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="404"/>
-        <location filename="../../airspace.cpp" line="414"/>
-        <location filename="../../airspace.cpp" line="432"/>
+        <location filename="../../airspace.cpp" line="471"/>
+        <location filename="../../airspace.cpp" line="481"/>
+        <location filename="../../airspace.cpp" line="499"/>
         <source>Unlimited</source>
         <translation>Unbegrenzt</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="459"/>
+        <location filename="../../airspace.cpp" line="526"/>
         <source>AS-</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="497"/>
+        <location filename="../../airspace.cpp" line="573"/>
         <source>always active</source>
         <translation>immer aktiv</translation>
     </message>
     <message>
-        <location filename="../../airspace.cpp" line="515"/>
+        <location filename="../../airspace.cpp" line="591"/>
         <source>active until </source>
         <translation>aktiv bis </translation>
     </message>
@@ -4588,7 +4592,7 @@ USB Stick eingeschoben?</translation>
         <translation>Drone</translation>
     </message>
     <message>
-        <location filename="../../KRT2.cpp" line="83"/>
+        <location filename="../../KRT2.cpp" line="81"/>
         <location filename="../../TcpSocket.cpp" line="80"/>
         <source>Cannot open device</source>
         <translation>Keine Verbindung zu</translation>
