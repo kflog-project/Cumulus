@@ -354,7 +354,7 @@ void KRT2Widget::slot_CellClicked( int row, int column )
   QTableWidgetItem* item = m_table->item( row, column );
 
   if( item == static_cast<QTableWidgetItem *>(0) || row < 0 ||
-      ( column != 1 && column != 2 ) )
+      column < 0 || column > 3 )
     {
       // Item can be a Null pointer, if a row has been removed.
       return;
@@ -364,7 +364,7 @@ void KRT2Widget::slot_CellClicked( int row, int column )
     {
       messageBox( QMessageBox::Warning,
                   tr("KRT2 device not connected" ),
-                  tr("No KRT2 connection"),
+                  "",
                   QMessageBox::Close );
       return;
     }
@@ -390,6 +390,13 @@ void KRT2Widget::slot_CellClicked( int row, int column )
     {
       krt2->setStandbyFrequency( ff, name );
     }
+  else if( column == 3 )
+    {
+      messageBox( QMessageBox::Information,
+                  name,
+                  tr("Radio call sign" ),
+                  QMessageBox::Close );
+    }
 }
 
 /** Called, to exchange the frequencies active/standby on the KRT2 radio. */
@@ -399,7 +406,7 @@ void KRT2Widget::slot_exchangeFrequency()
     {
       messageBox( QMessageBox::Warning,
                   tr("KRT2 device not connected" ),
-                  tr("No KRT2 connection"),
+                  "",
                   QMessageBox::Close );
       return;
     }
