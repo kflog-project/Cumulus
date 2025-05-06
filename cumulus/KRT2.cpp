@@ -14,6 +14,7 @@
  **   (at your option) any later version.
  **
  ***********************************************************************/
+#include <unistd.h>
 #include <QtCore>
 
 #include "generalconfig.h"
