@@ -26,7 +26,7 @@
  *
  * \date 2025
  *
- * \version 1.0
+ * \version 1.1
  */
 
 #include <QtGui>
@@ -40,6 +40,7 @@
 #endif
 
 #include "KRT2Widget.h"
+#include "CuMsgBox.h"
 #include "helpbrowser.h"
 #include "generalconfig.h"
 #include "layout.h"
@@ -373,7 +374,7 @@ void KRT2Widget::slot_CellClicked( int row, int column )
       name = item3->text();
     }
 
-  if( column == 3 )
+  if( column == 3 && name.size() > 0 )
     {
       messageBox( QMessageBox::Information,
                   name,
@@ -445,7 +446,7 @@ int KRT2Widget::messageBox( QMessageBox::Icon icon,
                             QString title,
                             QMessageBox::StandardButtons buttons )
 {
-  QMessageBox msgBox( this );
+  CuMsgBox msgBox( this );
   msgBox.setText( title );
   msgBox.setIcon( icon );
   msgBox.setInformativeText( message );
@@ -453,11 +454,7 @@ int KRT2Widget::messageBox( QMessageBox::Icon icon,
   msgBox.setDefaultButton( QMessageBox::Ok );
   msgBox.show();
 
-#ifdef ANDROID
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - msgBox.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - msgBox.height()/2 ));
-  msgBox.move( pos );
-#endif
+  Layout::centerWidget( MainWindow::mainWindow(), &msgBox );
 
   return msgBox.exec();
 }

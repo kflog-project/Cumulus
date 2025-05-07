@@ -24,7 +24,8 @@
  *
  * \brief Slight modification of a QMessagebox.
  *
- * This is a slight modification of a QMessageBox.
+ * This is a slight modification of a QMessageBox. Because Android draws the
+ * windows without a frame, a rectangle is drawn around the window borders.
  *
  * \date 2025
  *
@@ -45,4 +46,3 @@ protected:
 
   void paintEvent( QPaintEvent * event );
 };
-
