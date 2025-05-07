@@ -374,12 +374,16 @@ void KRT2Widget::slot_CellClicked( int row, int column )
       name = item3->text();
     }
 
-  if( column == 3 && name.size() > 0 )
+  if( column == 3 )
     {
-      messageBox( QMessageBox::Information,
-                  name,
-                  tr("Radio call sign" ),
-                  QMessageBox::Close );
+      if(  name.size() > 0 )
+        {
+          messageBox( QMessageBox::Information,
+                      name,
+                      tr("Radio call sign" ),
+                      QMessageBox::Close );
+        }
+
       return;
     }
 

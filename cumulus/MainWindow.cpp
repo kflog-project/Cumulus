@@ -42,6 +42,7 @@
 #include "aboutwidget.h"
 #include "airfield.h"
 #include "calculator.h"
+#include "CuMsgBox.h"
 #include "SettingsWidget.h"
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
@@ -979,7 +980,7 @@ void MainWindow::slotCreateApplicationWidgets()
 
   if( ! GeneralConfig::instance()->getAirspaceWarningEnabled() )
     {
-      QMessageBox mb(this);
+      CuMsgBox mb(this);
 
       mb.setWindowTitle( tr("Airspace Warnings") );
       mb.setIcon( QMessageBox::Warning );
@@ -1991,12 +1992,11 @@ void MainWindow::closeEvent( QCloseEvent* event )
 
   playSound("notify");
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Terminating?" ),
-                  tr( "Terminating Cumulus<br><b>Are you sure?</b>" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
+  CuMsgBox mb(this);
+  mb.setWindowTitle( tr( "Terminating?" ) );
+  mb.setIcon( QMessageBox::Question );
+  mb.setText( tr( "Terminating Cumulus<br><b>Are you sure?</b>" ) );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   mb.setDefaultButton( QMessageBox::No );
 
 #ifdef ANDROID

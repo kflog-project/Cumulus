@@ -1505,7 +1505,7 @@ void MapView::slot_gliderFlightDialog()
 
   // A dialog is not centered over the parent and not limited in
   // its size under Android. Therefore this must be done by our self.
-  gfDlg->setGeometry( (width() - ms.width()) / 2, (height() - ms.height()) / 2,
+  gfDlg->setGeometry( (width() - ms.width()) / 2, 20,
                        ms.width(), ms.height() );
 
 #endif

@@ -38,7 +38,7 @@ void CuMsgBox::paintEvent( QPaintEvent *event )
       return;
     }
 
-  // The whole window was drawn. We draw a rectangle now the borders.
+  // The whole window was drawn. We draw a rectangle now around the borders.
   QPainter painter( this );
 
   QPen pen( Qt::black );
