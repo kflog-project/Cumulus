@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2023 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2025 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -25,6 +25,7 @@
 #include "AirspaceHelper.h"
 #include "basemapelement.h"
 #include "calculator.h"
+#include "CuMsgBox.h"
 #include "datatypes.h"
 #include "filetools.h"
 #include "flighttask.h"
@@ -1785,21 +1786,14 @@ void MapContents::slotNetworkError()
   // A network error has occurred. We do report that to the user.
   QString msg = QString(tr("No connection to the Internet.<br><br>All downloads are canceled!"));
 
-  QMessageBox mb( QMessageBox::Warning,
-                  tr("Network Error"),
-                  msg,
-                  QMessageBox::Ok,
-                  MainWindow::mainWindow() );
-
-#ifdef ANDROID
-
+  CuMsgBox mb;
+  mb.setText( tr("Network Error") );
+  mb.setIcon( QMessageBox::Warning );
+  mb.setInformativeText( msg );
+  mb.setStandardButtons( QMessageBox::Ok );
+  mb.setDefaultButton( QMessageBox::Ok );
   mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
+  Layout::centerWidget( MainWindow::mainWindow(), &mb );
   mb.exec();
 }
 
@@ -1817,23 +1811,16 @@ bool MapContents::askUserForDownload()
 
   m_hasAskForDownload = true;
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Download missing Data?" ),
-                  tr( "Download missing Data from the Internet?" ) +
-                  QString("<p>") + tr("Active Internet connection is needed!"),
-                  QMessageBox::Yes | QMessageBox::No,
-                  MainWindow::mainWindow() );
-
+  CuMsgBox mb;
+  mb.setText( tr( "Download missing Data?" ) );
+  mb.setIcon( QMessageBox::Question );
+  mb.setInformativeText( tr( "Download missing Data from the Internet?" ) +
+                         QString("<p>") + tr("Active Internet connection is needed!") );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
   mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
+  Layout::centerWidget( MainWindow::mainWindow(), &mb );
+  mb.exec();
 
   if( mb.exec() == QMessageBox::Yes )
     {

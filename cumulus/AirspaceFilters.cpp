@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2020-2021 Axel Pauli
+**   Copyright (c): 2020-2025 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,6 +26,7 @@
 #endif
 
 #include "AirspaceFilters.h"
+#include "CuMsgBox.h"
 #include "layout.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
@@ -407,21 +408,15 @@ void AirspaceFilters::slot_DeleteRows()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete selected entries?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
+  CuMsgBox mb( this );
+  mb.setText( tr( "Delete?" ) );
+  mb.setIcon( QMessageBox::Question );
+  mb.setInformativeText( tr( "Delete selected entries?" ) );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
 
-#endif
+  Layout::centerWidget( this, &mb );
 
   if( mb.exec() == QMessageBox::No )
     {
@@ -492,17 +487,14 @@ void AirspaceFilters::slot_Ok()
 
             if( sl.size() != 3 )
               {
-                QMessageBox mb( QMessageBox::Warning,
-                                tr( "Filter definition incomplete" ),
-                                tr( "Expecting filter elements: <country>,<AS-Type>,<AS-Name>" ),
-                                QMessageBox::Ok,
-                                this );
-  #ifdef ANDROID
+                CuMsgBox mb( this );
+                mb.setText( tr( "Filter definition incomplete" ) );
+                mb.setIcon( QMessageBox::Warning );
+                mb.setInformativeText( tr( "Expecting filter elements: <country>,<AS-Type>,<AS-Name>" ) );
+                mb.setStandardButtons( QMessageBox::Ok );
+                mb.setDefaultButton( QMessageBox::Ok );
                 mb.show();
-                QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2,
-                                                 height()/2 - mb.height()/2 ));
-                mb.move( pos );
-  #endif
+                Layout::centerWidget( this, &mb );
                 mb.exec();
                 return;
               }

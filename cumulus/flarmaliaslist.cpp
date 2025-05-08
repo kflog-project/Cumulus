@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2025 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,6 +25,7 @@
 #include <QtScroller>
 #endif
 
+#include "CuMsgBox.h"
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
 #include "layout.h"
@@ -296,21 +297,15 @@ void FlarmAliasList::slot_DeleteRows()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete selected entries?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
+  CuMsgBox mb( this );
+  mb.setText( tr( "Delete?" ) );
+  mb.setIcon( QMessageBox::Question );
+  mb.setInformativeText( tr( "Delete selected entries?" ) );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
 
-#endif
+  Layout::centerWidget( this, &mb );
 
   if( mb.exec() == QMessageBox::No )
     {
@@ -368,17 +363,14 @@ void FlarmAliasList::slot_Ok()
             {
               if( list->item( i, j )->text().trimmed().isEmpty() )
                 {
-                  QMessageBox mb( QMessageBox::Warning,
-                                  tr( "Missing Entry" ),
-                                  tr( "Please fill out all fields!" ),
-                                  QMessageBox::Ok,
-                                  this );
-#ifdef ANDROID
+                  CuMsgBox mb( this );
+                  mb.setText( tr( "Missing Entry" ) );
+                  mb.setIcon( QMessageBox::Warning );
+                  mb.setInformativeText( tr( "Please fill out all fields!" ) );
+                  mb.setStandardButtons( QMessageBox::Ok );
+                  mb.setDefaultButton( QMessageBox::Ok );
                   mb.show();
-                  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2,
-                                                   height()/2 - mb.height()/2 ));
-                  mb.move( pos );
-#endif
+                  Layout::centerWidget( this, &mb );
                   mb.exec();
                   return;
                 }
