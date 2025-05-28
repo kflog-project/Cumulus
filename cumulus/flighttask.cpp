@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2021 by Axel Pauli
+**                   2007-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -118,10 +118,10 @@ void FlightTask::determineTaskType()
     {
       for( int loop = 0; loop < tpList.size(); loop++)
         {
-          // qDebug("distance: %f", tpList.at(loop)->distance);
+          // qDebug() << "distance" << loop << ":" << tpList.at(loop).distance;
           distance += tpList.at(loop).distance;
         }
-      // qDebug("Total Distance: %f", distance_total);
+      // qDebug() << "Total Distance:" << distance;
     }
 
   if( tpList.size() < 2 )
@@ -130,16 +130,27 @@ void FlightTask::determineTaskType()
       return;
     }
 
-  QPair<double, double> p =
-      MapCalc::distVinc( tpList[0].getWGSPositionPtr(),
-                         tpList[tpList.count()-1].getWGSPositionPtr() );
+  // Short distances should be calculated by using pythagoras formula. All
+  // other formulas can lead to nan (not a number), if distance is zero.
+  double dp =
+      MapCalc::distP( tpList[0].getWGSPositionPtr()->lat(),
+		      tpList[0].getWGSPositionPtr()->lon(),
+                      tpList[tpList.count()-1].getWGSPositionPtr()->lat(),
+		      tpList[tpList.count()-1].getWGSPositionPtr()->lon() );
 
-  if( p.first < 1.0 )
+  // qDebug() << "Entfernung Beginn-Ende:" << dp;
+
+  if( dp < 1.0 )
     {
       // Distance between start and finish point is lower as one km. We
       // check the FAI rules
       switch( tpList.count() )
         {
+	case 2:
+	  // two points only inside of distance of 1km -> unknown
+	  flightType = FlightTask::Unknown;
+	  break;
+
         case 3:
           // Zielrückkehr
           flightType = FlightTask::ZielR;
@@ -174,8 +185,8 @@ void FlightTask::determineTaskType()
           break;
 
         default:
-          // Vieleck
-          flightType = FlightTask::Vieleck;
+          // unknown
+          flightType = FlightTask::Unknown;
           break;
         }
     }
