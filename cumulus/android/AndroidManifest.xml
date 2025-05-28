@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 
-<manifest package="org.kflog.cumulus" android:versionCode="141"
+<manifest package="org.kflog.cumulus" android:versionCode="142"
 	android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android"
   android:versionName="5.43.1_AV7a_GB">
 	<supports-screens android:largeScreens="true"
