@@ -93,9 +93,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   QHBoxLayout* editrow = new QHBoxLayout;
   editrow->setSpacing(5 * Scaling);
   taskLayout->addLayout( editrow );
-  taskLayout->addSpacing( 10 );
+  taskLayout->addSpacing( 10 * Scaling);
 
   QLabel *label = new QLabel( tr("TAS"), this );
+  label->setAlignment( Qt::AlignCenter );
   editrow->addWidget(label);
 
   m_tas = new NumberEditor( this );
@@ -112,8 +113,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_tas->setSuffix( " " + Speed::getHorizontalUnitText() );
   m_tas->setMinimumWidth( msw );
   editrow->addWidget(m_tas);
+  editrow->addSpacing(10 * Scaling);
 
   label = new QLabel( tr("WD"), this );
+  label->setAlignment( Qt::AlignCenter );
   editrow->addWidget(label);
 
   m_windDirection = new NumberEditor( this );
@@ -129,8 +132,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windDirection->setSuffix( QString(Qt::Key_degree) );
   m_windDirection->setMinimumWidth( mdw );
   editrow->addWidget(m_windDirection);
+  editrow->addSpacing(10 * Scaling);
 
   label = new QLabel( tr("WS"), this );
+  label->setAlignment( Qt::AlignCenter );
   editrow->addWidget(label);
 
   m_windSpeed = new NumberEditor( this );
@@ -148,6 +153,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );
   editrow->addWidget(m_windSpeed);
+  editrow->addSpacing(10 * Scaling);
   editrow->addStretch(10);
 
   m_cmdNew = new QPushButton;
