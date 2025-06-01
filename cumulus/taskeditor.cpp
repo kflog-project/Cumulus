@@ -24,6 +24,7 @@
 #include <QtScroller>
 #endif
 
+#include "CuMsgBox.h"
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"
