@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2004-2025 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,14 +22,13 @@
  *
  * This dialog is the user interface for the variometer settings.
  *
- * \date 2004-2021
+ * \date 2004-2025
  *
- * \version 1.2
+ * \version 1.3
  *
  */
 
-#ifndef VARIO_MODE_DIALOG_H
-#define VARIO_MODE_DIALOG_H
+#pragma once
 
 #include <QDialog>
 #include <QTimer>
@@ -65,6 +64,8 @@ protected:
   virtual void showEvent(QShowEvent *);
 
   virtual void closeEvent( QCloseEvent *event );
+
+  virtual void paintEvent( QPaintEvent * event );
 
 private slots:
 
@@ -162,5 +163,3 @@ private:
   /** contains the current number of class instances */
   static int noOfInstances;
 };
-
-#endif

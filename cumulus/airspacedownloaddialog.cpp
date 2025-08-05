@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2015 Axel Pauli
+**   Copyright (c): 2010-2025 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -20,6 +20,7 @@
 #endif
 
 #include "airspacedownloaddialog.h"
+#include "CuMsgBox.h"
 #include "generalconfig.h"
 #include "layout.h"
 #include "MainWindow.h"
@@ -105,23 +106,16 @@ void AirspaceDownloadDialog::slotDownload()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Download openAIP files?"),
-                  tr( "Active Internet connection is needed!") +
-                  QString("<p>") + tr("Start download now?"),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
+  CuMsgBox mb( this );
+  mb.setText( tr( "Download openAIP files?") );
+  mb.setIcon( QMessageBox::Question );
+  mb.setInformativeText( tr( "Active Internet connection is needed!") +
+                         QString("<p>") + tr("Start download now?") );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
 
-#endif
+  Layout::centerWidget( MainWindow::mainWindow(), &mb );
 
   if( mb.exec() == QMessageBox::No )
     {
@@ -169,19 +163,15 @@ bool AirspaceDownloadDialog::checkCountryList( const QString& countries, QString
           continue;
         }
 
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Please check entries" ),
-                      tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
+      CuMsgBox mb( this );
+      mb.setText( tr( "Please check entries" ) );
+      mb.setIcon( QMessageBox::Warning );
+      mb.setInformativeText( tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!") );
+      mb.setStandardButtons( QMessageBox::Ok );
+      mb.setDefaultButton( QMessageBox::Ok );
       mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-      mb.move( pos );
 
-#endif
+      Layout::centerWidget( MainWindow::mainWindow(), &mb );
 
       mb.exec();
       countrylist.clear();

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2021 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,6 +24,7 @@
 #include <QtScroller>
 #endif
 
+#include "CuMsgBox.h"
 #include "distance.h"
 #include "flighttask.h"
 #include "generalconfig.h"
@@ -208,6 +209,9 @@ TaskEditor::TaskEditor( QWidget* parent,
   headlineLayout->addWidget( taskName, 5 );
   headlineLayout->addSpacing(10 * Scaling);
 
+  taskType = new QLabel( tr("Type:") );
+  totalLayout->addWidget( taskType, 1, 0, 1, 2 );
+
   defaultButton = new QPushButton;
   // defaultButton->setIcon(style->standardIcon(QStyle::SP_DialogResetButton));
   defaultButton->setIcon( QIcon(GeneralConfig::instance()->loadPixmap("clear-32.png")) );
@@ -225,7 +229,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   editButton->setToolTip(tr("Edit selected waypoint"));
 #endif
   headlineLayout->addWidget(editButton);
-  totalLayout->addWidget( taskList, 1, 0 );
+  totalLayout->addWidget( taskList, 2, 0 );
 
   // contains the task editor buttons
   QVBoxLayout* buttonLayout = new QVBoxLayout;
@@ -241,7 +245,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonLayout->addSpacing(10 * Scaling);
   buttonLayout->addWidget( delButton );
   buttonLayout->addStretch( 10 );
-  totalLayout->addLayout( buttonLayout, 1, 1 );
+  totalLayout->addLayout( buttonLayout, 2, 1 );
 
   // The access buttons to the lists are only shown, if the lists are not empty.
   if( _globalMapContents->getAirfieldList().size() > 0 ||
@@ -304,12 +308,12 @@ TaskEditor::TaskEditor( QWidget* parent,
            }
         }
 
-      totalLayout->addLayout( buttonLayout, 1, 2 );
+      totalLayout->addLayout( buttonLayout, 2, 2 );
     }
   else
     {
       QLabel* label = new QLabel( tr("No data\navailable") );
-      totalLayout->addWidget( label, 1, 2 );
+      totalLayout->addWidget( label, 2, 2 );
     }
 
   QLabel *titlePix = new QLabel(this);
@@ -326,7 +330,7 @@ TaskEditor::TaskEditor( QWidget* parent,
   buttonBox->addWidget(okButton, 1);
   buttonBox->addStretch(2);
   buttonBox->addWidget(titlePix);
-  totalLayout->addLayout(buttonBox, 0, 3, 2, 1);
+  totalLayout->addLayout(buttonBox, 0, 3, 3, 3 );
 
   if( editState == TaskEditor::edit )
     {
@@ -465,6 +469,9 @@ void TaskEditor::showTask()
                 " / " + task2Edit->getTaskDistanceString();
 
   setWindowTitle(txt);
+
+  // Show recognized task type
+  taskType->setText( tr("Type: ") + task2Edit->getTaskTypeString() );
 
   QList<TaskPoint> tmpList = task2Edit->getTpList();
 
@@ -727,21 +734,14 @@ void TaskEditor::slotAccept()
   // four task points are incomplete
   if ( tpList.count() < 2 )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                      tr( "Task Incomplete" ),
-                      tr( "Task needs at least a start and a finish point!" ),
-                      QMessageBox::Ok,
-                      this );
-
-    #ifdef ANDROID
-
+      CuMsgBox mb( this );
+      mb.setText( tr( "Task Incomplete" ) );
+      mb.setIcon( QMessageBox::Critical );
+      mb.setInformativeText( "Task needs at least a start and a finish point!" );
+      mb.setStandardButtons( QMessageBox::Ok );
+      mb.setDefaultButton( QMessageBox::Ok );
       mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
+      Layout::centerWidget( MainWindow::mainWindow(), &mb );
       mb.exec();
       return;
     }
@@ -752,21 +752,14 @@ void TaskEditor::slotAccept()
     {
       if( tpList[i].getWGSPositionRef() == tpList[i+1].getWGSPositionRef() )
         {
-          QMessageBox mb( QMessageBox::Critical,
-                          tr("Double points in order"),
-                          QString(tr("Points %1 and %2 have the same coordinates.\nPlease remove one of them!")).arg(i+1).arg(i+2),
-                          QMessageBox::Ok,
-                          this );
-
-#ifdef ANDROID
-
-          mb.show();
-          QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                           height()/2 - mb.height()/2 ));
-          mb.move( pos );
-
-#endif
-
+	  CuMsgBox mb( this );
+	  mb.setText( tr( "Double points in order" ) );
+	  mb.setIcon( QMessageBox::Critical );
+	  mb.setInformativeText( QString(tr("Points %1 and %2 have the same coordinates.\nPlease remove one of them!")).arg(i+1).arg(i+2) );
+	  mb.setStandardButtons( QMessageBox::Ok );
+	  mb.setDefaultButton( QMessageBox::Ok );
+	  mb.show();
+	  Layout::centerWidget( MainWindow::mainWindow(), &mb );
           mb.exec();
           return;
         }
@@ -777,21 +770,14 @@ void TaskEditor::slotAccept()
   // Check if the user has entered a task name
   if ( txt.length() == 0 )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                      tr("Name Missing"),
-                      tr("Enter a name for the task to save it"),
-                      QMessageBox::Ok,
-                      this );
-
-    #ifdef ANDROID
-
+      CuMsgBox mb( this );
+      mb.setText( tr( "Name Missing" ) );
+      mb.setIcon( QMessageBox::Critical );
+      mb.setInformativeText( "Enter a name for the task to save it" );
+      mb.setStandardButtons( QMessageBox::Ok );
+      mb.setDefaultButton( QMessageBox::Ok );
       mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
+      Layout::centerWidget( MainWindow::mainWindow(), &mb );
       mb.exec();
       return;
     }
@@ -802,20 +788,14 @@ void TaskEditor::slotAccept()
     {
       // Check if the task name does not conflict with existing onces.
       // The name must be unique in the task name space
-      QMessageBox mb( QMessageBox::Critical,
-                      tr( "Task name in use"),
-                      tr( "Task name in use." ) + "\n\n" + tr( "Overwrite existing task?" ),
-                      QMessageBox::Yes|QMessageBox::No,
-                      this );
-
-#ifdef ANDROID
-
+      CuMsgBox mb( this );
+      mb.setText( tr( "Task name in use" ) );
+      mb.setIcon( QMessageBox::Critical );
+      mb.setInformativeText( tr( "Task name in use." ) + "\n\n" + tr( "Overwrite existing task?" ) );
+      mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+      mb.setDefaultButton( QMessageBox::No );
       mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
+      Layout::centerWidget( MainWindow::mainWindow(), &mb );
 
       int ret = mb.exec();
 
@@ -1059,22 +1039,14 @@ void TaskEditor::setTaskPointFigureSchemas( QList<TaskPoint>& tpList,
 
 void TaskEditor::slotSetTaskPointsDefaultSchema()
 {
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Defaults?" ),
-                  tr( "Reset all TP schemas to default configuration values?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
+  CuMsgBox mb( this );
+  mb.setText( "Defaults?" );
+  mb.setIcon( QMessageBox::Question );
+  mb.setInformativeText( tr( "Reset all TP schemas to default configuration values?" ) );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
   mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
   mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
+  Layout::centerWidget( MainWindow::mainWindow(), &mb );
 
   if( mb.exec() == QMessageBox::Yes )
     {

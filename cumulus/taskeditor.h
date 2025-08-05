@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2008-2021 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,13 +24,12 @@
  * This class handles creation and modification of flight tasks in a
  * simple editor. The editor is realized as an own modal window.
  *
- * \date 2002-2018
+ * \date 2002-2025
  *
- * \version 1.4
+ * \version 1.5
  */
 
-#ifndef TaskEditor_H
-#define TaskEditor_H
+#pragma once
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -189,6 +188,9 @@ signals:
   /** name of current task */
   QLineEdit* taskName;
 
+  /** current task type */
+  QLabel* taskType;
+
   /** name of current edited task */
   QString editedTaskName;
 
@@ -230,5 +232,3 @@ signals:
   /** The list index of the last edited taskpoint. */
   int m_lastEditedTP;
 };
-
-#endif // TaskEditor_H

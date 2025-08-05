@@ -20,4 +20,4 @@
 
 #pragma once
 
-#define CU_VERSION "5.43.0"
+#define CU_VERSION "5.43.1"

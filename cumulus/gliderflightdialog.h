@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2021 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,13 +24,12 @@
  * This dialog handles the Mc, load balance and bug settings. It shall
  * enable a simple change also during flight.
  *
- * \date 2002-2021
+ * \date 2002-2025
  *
- * \version 1.2
+ * \version 1.3
  */
 
-#ifndef GLIDER_FLIGHT_DIALOG_H
-#define GLIDER_FLIGHT_DIALOG_H
+#pragma once
 
 #include <QCheckBox>
 #include <QDialog>
@@ -72,6 +71,8 @@ class GliderFlightDialog : public QDialog
   virtual bool eventFilter( QObject *o , QEvent *e );
 
   virtual void closeEvent( QCloseEvent *event );
+
+  virtual void paintEvent( QPaintEvent * event );
 
  private slots:
 
@@ -220,5 +221,3 @@ class GliderFlightDialog : public QDialog
   /** contains the current number of class instances */
   static int m_noOfInstances;
 };
-
-#endif

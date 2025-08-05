@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2022 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -949,4 +949,28 @@ void AltimeterDialog::slotSetQnh()
 void AltimeterDialog::slotElevationIsEdited()
 {
   m_timeout->stop();
+}
+
+void AltimeterDialog::paintEvent( QPaintEvent *event )
+{
+  // first draw parent
+  QDialog::paintEvent( event );
+
+  if( event->rect() != rect() )
+    {
+      // No the whole window is given
+      return;
+    }
+
+  // The whole window was drawn. We draw a rectangle now around the borders.
+  QPainter painter( this );
+
+  QPen pen( Qt::black );
+  int w = 3 * Layout::getIntScaledDensity();
+  pen.setWidth( w );
+  painter.setPen( pen );
+  painter.setBrush( Qt::NoBrush );
+
+  QRect rt( w/2, w/2, width() - w, height() - w );
+  painter.drawRect( rt );
 }

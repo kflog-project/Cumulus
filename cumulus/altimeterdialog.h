@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Voellm
-**                   2008-2022 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -23,12 +23,11 @@
  *
  * This dialog is the user interface for the altimeter settings.
  *
- * \date 2004-2022
+ * \date 2004-2025
  *
  */
 
-#ifndef ALTIMETER_DIALOG_H
-#define ALTIMETER_DIALOG_H
+#pragma once
 
 #include <QComboBox>
 #include <QCheckBox>
@@ -77,6 +76,8 @@ public:
   static int getQNH( const Altitude& altitude );
 
 protected:
+
+  virtual void paintEvent( QPaintEvent * event );
 
   /** User has pressed the ok button. */
   void accept();
@@ -255,5 +256,3 @@ signals:
    */
   void closingWidget();
 };
-
-#endif

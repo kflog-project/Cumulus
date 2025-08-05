@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2004-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2004-2025 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -388,4 +388,28 @@ void VarioModeDialog::slot_setTimer()
     {
       timer->start( m_timeout * 1000 );
     }
+}
+
+void VarioModeDialog::paintEvent( QPaintEvent *event )
+{
+  // first draw parent
+  QDialog::paintEvent( event );
+
+  if( event->rect() != rect() )
+    {
+      // No the whole window is given
+      return;
+    }
+
+  // The whole window was drawn. We draw a rectangle now around the borders.
+  QPainter painter( this );
+
+  QPen pen( Qt::black );
+  int w = 3 * Layout::getIntScaledDensity();
+  pen.setWidth( w );
+  painter.setPen( pen );
+  painter.setBrush( Qt::NoBrush );
+
+  QRect rt( w/2, w/2, width() - w, height() - w );
+  painter.drawRect( rt );
 }

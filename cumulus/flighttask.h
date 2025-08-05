@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2007-2021 by Axel Pauli
+**                   2007-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -30,8 +30,7 @@
  * \version 1.4
  */
 
-#ifndef FLIGHT_TASK_H
-#define FLIGHT_TASK_H
+#pragma once
 
 #include <QObject>
 #include <QString>
@@ -552,4 +551,3 @@ class FlightTask : public BaseMapElement
   QDateTime _taskEndTime;
 };
 
-#endif

@@ -142,6 +142,7 @@ HEADERS = \
     calculator.h \
     colordialog.h \
     CuLabel.h \
+    CuMsgBox.h \
     datatypes.h \
     distance.h \
     elevationcolorimage.h \
@@ -292,6 +293,7 @@ SOURCES = \
     calculator.cpp \
     colordialog.cpp \
     CuLabel.cpp \
+    CuMsgBox.cpp \
     distance.cpp \
     elevationcolorimage.cpp \
     filetools.cpp \

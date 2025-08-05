@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Eggert Ehmke
-**                   2008-2021 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
@@ -693,4 +693,28 @@ void GliderFlightDialog::startTimer()
     {
       timer->start(m_time * 1000);
     }
+}
+
+void GliderFlightDialog::paintEvent( QPaintEvent *event )
+{
+  // first draw parent
+  QDialog::paintEvent( event );
+
+  if( event->rect() != rect() )
+    {
+      // No the whole window is given
+      return;
+    }
+
+  // The whole window was drawn. We draw a rectangle now around the borders.
+  QPainter painter( this );
+
+  QPen pen( Qt::black );
+  int w = 3 * Layout::getIntScaledDensity();
+  pen.setWidth( w );
+  painter.setPen( pen );
+  painter.setBrush( Qt::NoBrush );
+
+  QRect rt( w/2, w/2, width() - w, height() - w );
+  painter.drawRect( rt );
 }
