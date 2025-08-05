@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2021 by Axel Pauli
+                        : (C) 2007-2025 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,9 +25,9 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2021
+ * \date 2002-2025
  *
- * \version 1.2
+ * \version 1.3
  */
 
 #pragma once
@@ -512,9 +512,6 @@ private:
   QAction* actionHelpAboutApp;
   QAction* actionHelpAboutQt;
   QAction* actionStartFlightTask;
-
-  /* shortcut to toggle the left map sidebar. */
-  QShortcut* scToggleMapSidebar;
 
   /* shortcut for exit application */
   QShortcut* scExit;
