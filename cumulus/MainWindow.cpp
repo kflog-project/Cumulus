@@ -1790,7 +1790,7 @@ void MainWindow::createActions()
 #endif
 
   actionToggleMapSidebar = new QAction( tr( "Map Info Boxes"), this );
-  actionToggleMapSidebar->setShortcut(Qt::Key_I);
+  actionToggleMapSidebar->setShortcut(Qt::Key_I + Qt::SHIFT);
   actionToggleMapSidebar->setCheckable(true);
   actionToggleMapSidebar->setChecked(true);
   addAction( actionToggleMapSidebar );
