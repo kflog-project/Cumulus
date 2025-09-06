@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  1999-2000 by Heiner Lamprecht, Florian Ehinger
-**                   2008-2015 by Axel Pauli
+**                   2008-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,9 +21,9 @@
  *
  * \brief This class provides the basic functions for the map display.
  *
- * \date 1999-2021
+ * \date 1999-2025
  *
- * \version 1.3
+ * \version 1.4
  *
  */
 
@@ -444,6 +444,7 @@ private:
                     const QString& name,        // name of point
                     const QPoint& dispP,        // projected point at the display
                     const WGSPoint& origP,      // WGS84 point
+                    const float elevation,      // elevation of point
                     const bool isLandable );    // is landable?
 
   /**

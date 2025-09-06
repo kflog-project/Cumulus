@@ -3052,7 +3052,8 @@ void MapContents::drawList( QPainter* targetP,
 
       for (int i = 0; i < airfieldList.size(); i++)
         {
-          if(  airfieldList[i].drawMapElement(targetP) && showAfLabels )
+          if(  airfieldList[i].drawMapElement(targetP) &&
+               ( showAfLabels ) )
             {
               // required and draw object is appended to the list
               drawnAfList.append( &airfieldList[i] );
@@ -3069,7 +3070,8 @@ void MapContents::drawList( QPainter* targetP,
 
       for (int i = 0; i < gliderfieldList.size(); i++)
         {
-          if( gliderfieldList[i].drawMapElement(targetP) && showAfLabels )
+          if( gliderfieldList[i].drawMapElement(targetP) &&
+              ( showAfLabels ) )
             {
               // required and draw object is appended to the list
               drawnAfList.append( &gliderfieldList[i] );
@@ -3086,7 +3088,8 @@ void MapContents::drawList( QPainter* targetP,
 
       for (int i = 0; i < outLandingList.size(); i++)
         {
-          if( outLandingList[i].drawMapElement(targetP) && showOlLabels )
+          if( outLandingList[i].drawMapElement(targetP) &&
+              ( showOlLabels ) )
             {
               // required and draw object is appended to the list
               drawnAfList.append( &outLandingList[i] );
@@ -3108,15 +3111,33 @@ void MapContents::drawList( QPainter* targetP,
 {
   if( radioList.isEmpty() ) return;
 
-  const bool showNaLabels = GeneralConfig::instance()->getMapShowNavAidsLabels();
+  const bool showInfo = GeneralConfig::instance()->getMapShowNavAidsLabels();
 
   showProgress2WaitScreen( tr("Drawing navaids") );
 
   for (int i = 0; i < radioList.size(); i++)
     {
-      if( radioList[i].drawMapElement( targetP ) && showNaLabels )
+      if( radioList[i].drawMapElement( targetP ) && showInfo )
         {
           drawnNaList.append( &radioList[i] );
+        }
+    }
+}
+
+void MapContents::drawList( QPainter* targetP,
+                            QList<ThermalPoint*> &drawnHsList )
+{
+  if( hotspotList.isEmpty() ) return;
+
+  const bool showInfo = GeneralConfig::instance()->getMapShowHotspotLabels();
+
+  showProgress2WaitScreen( tr("Drawing hotspots") );
+
+  for (int i = 0; i < hotspotList.size(); i++)
+    {
+      if( hotspotList[i].drawMapElement( targetP ) && showInfo )
+        {
+          drawnHsList.append( &hotspotList[i] );
         }
     }
 }

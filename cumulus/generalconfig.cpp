@@ -396,7 +396,9 @@ void GeneralConfig::load()
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
   _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
+  _mapShowHotspotLabels           = value( "ShowHotspotLabels", false ).toBool();
   _mapShowLabelsExtraInfo         = value( "ShowLabelsExtraInfo", false ).toBool();
+  _mapShowLabelsElevation         = value( "ShowLabelsElevation", false ).toBool();
   _mapShowRelBearingInfo          = value( "ShowRelBearingInfo", true ).toBool();
   _mapCurrentTask                 = value( "CurrentTask", "" ).toString();
 
@@ -884,7 +886,9 @@ void GeneralConfig::save()
   setValue( "LoadIsoLines", _mapLoadIsoLines );
   setValue( "ShowIsoLineBorders", _mapShowIsoLineBorders );
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
+  setValue( "ShowHotspotLabels", _mapShowHotspotLabels );
   setValue( "ShowLabelsExtraInfo", _mapShowLabelsExtraInfo );
+  setValue( "ShowLabelsElevation", _mapShowLabelsElevation );
   setValue( "ShowRelBearingInfo", _mapShowRelBearingInfo );
   setValue( "CurrentTask", _mapCurrentTask );
 

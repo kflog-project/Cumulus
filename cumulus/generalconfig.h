@@ -1503,6 +1503,17 @@ class GeneralConfig : protected QSettings
     _mapShowWaypointLabels = newValue;
   }
 
+  /** gets Map ShowHotspotLabels */
+  bool getMapShowHotspotLabels() const
+  {
+    return _mapShowHotspotLabels;
+  }
+  /** sets Map ShowHotspotLabels */
+  void setMapShowHotspotLabels(const bool newValue)
+  {
+    _mapShowHotspotLabels = newValue;
+  }
+
   /** gets Map ShowAirfieldLabels */
   bool getMapShowAirfieldLabels() const
   {
@@ -1567,6 +1578,17 @@ class GeneralConfig : protected QSettings
   void setMapShowLabelsExtraInfo(const bool newValue)
   {
     _mapShowLabelsExtraInfo = newValue;
+  }
+
+  /** gets Map ShowLabelsElevation */
+  bool getMapShowLabelsElevation() const
+  {
+    return _mapShowLabelsElevation;
+  }
+  /** sets Map ShowLabelsElevation */
+  void setMapShowLabelsElevation(const bool newValue)
+  {
+    _mapShowLabelsElevation = newValue;
   }
 
   /** gets Map LoadRoads */
@@ -3476,8 +3498,12 @@ class GeneralConfig : protected QSettings
   bool _mapShowIsoLineBorders;
   // Map ShowWaypointLabels
   bool _mapShowWaypointLabels;
+  // Map ShowHotspotLabels
+  bool _mapShowHotspotLabels;
   // Map ShowLabelsExtraInfo
   bool _mapShowLabelsExtraInfo;
+  // Map ShowLabelsElevation
+  bool _mapShowLabelsElevation;
   // Map ShowAirfieldLabels
   bool _mapShowAirfieldLabels;
   // Map ShowNavAidsLabels
