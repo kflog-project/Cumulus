@@ -27,7 +27,7 @@
  *
  * \date 2004-2025
  *
- * \version 1.16
+ * \version 1.17
  */
 
 #pragma once
@@ -87,7 +87,7 @@
 #define SoundPlayer "/usr/bin/aplay"
 
 // FlarmNet default URL
-#define FLARM_NET_URL "https://www.flarmnet.org/static/files/wfn/data.fln"
+#define FLARM_NET_URL "https://www.flarmnet.org/files/data.fln"
 
 class QTranslator;
 
