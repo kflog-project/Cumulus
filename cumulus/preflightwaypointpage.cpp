@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-2023 by Axel Pauli
+**   Copyright (c):  2011-2025 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -339,6 +339,9 @@ void PreFlightWaypointPage::save()
       _globalMapContents->getWaypointList().size() > 0 )
     {
       _globalMapContents->saveWaypointList();
+
+      // Trigger a redraw of the map.
+      emit waypointsAdded();
     }
 }
 
@@ -720,9 +723,6 @@ void PreFlightWaypointPage::slotImportFile()
   if( added )
     {
       m_fileLoaded = true;
-      _globalMapContents->saveWaypointList();
-      // Trigger a redraw of the map.
-      emit waypointsAdded();
     }
 
   QString result = QString("<html>") +
