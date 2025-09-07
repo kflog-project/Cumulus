@@ -26,6 +26,7 @@
 #endif
 
 #include "AirfieldSelectionList.h"
+#include "CuMsgBox.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "hwinfo.h"
@@ -592,25 +593,29 @@ void PreFlightWaypointPage::slotImportFile()
     {
       if( errorInfo.isEmpty() )
         {
-          QMessageBox mb( QMessageBox::Information,
-                          tr( "No entries read" ),
-                          tr("No waypoints read from file!") +
-                          "<br>" +
-                          tr("Maybe you should change the filter values?") +
-                          "</html>",
-                          QMessageBox::Ok,
-                          this );
+          CuMsgBox mb(this);
+
+          mb.setWindowTitle( tr("No entries read") );
+          mb.setIcon( QMessageBox::Information );
+          mb.setText( tr("No waypoints read from file!") +
+                         "<br>" +
+                         tr("Maybe you should change the filter values?") +
+                         "</html>" );
+          mb.setStandardButtons( QMessageBox::Ok );
+          mb.setDefaultButton( QMessageBox::Ok );
 
 					Layout::centerWidget( this, &mb );
 					mb.exec();
         }
       else
         {
-          QMessageBox mb( QMessageBox::Critical,
-                          tr("Error in file ") + QFileInfo( fName ).fileName(),
-                          errorInfo,
-                          QMessageBox::Ok,
-                          this );
+          CuMsgBox mb(this);
+
+          mb.setWindowTitle( tr("Error in file") );
+          mb.setIcon( QMessageBox::Critical );
+          mb.setText( tr("Error in file ") + QFileInfo( fName ).fileName() );
+          mb.setStandardButtons( QMessageBox::Ok );
+          mb.setDefaultButton( QMessageBox::Ok );
 
 					Layout::centerWidget( this, &mb );
           mb.exec();
@@ -619,17 +624,18 @@ void PreFlightWaypointPage::slotImportFile()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Continue?" ),
-                  QString("<html>") +
-                  QString(tr("%1 waypoints would be read.")).arg(wpCount) +
-                  "<br><br>" +
-                  tr("Continue loading?") +
-                  "</html>",
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  CuMsgBox mb(this);
 
-  mb.setDefaultButton( QMessageBox::No );
+  mb.setWindowTitle( tr("Error in file") );
+  mb.setIcon( QMessageBox::Question );
+  mb.setText( QString("<html>") +
+              QString(tr("%1 waypoints would be read.")).arg(wpCount) +
+              "<br><br>" +
+              tr("Continue loading?") +
+              "</html>" );
+  mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+  mb.setDefaultButton( QMessageBox::Yes );
+
   Layout::centerWidget( this, &mb );
 
   if( mb.exec() == QMessageBox::No )
@@ -659,13 +665,16 @@ void PreFlightWaypointPage::slotImportFile()
 
   if( memFree < MINIMUM_FREE_MEMORY )
     {
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Low on memory!" ),
-                      QString("<html>") +
-                      tr("Waypoint import failed due to low on memory!") +
-                      "</html>",
-                      QMessageBox::Ok,
-                      this );
+      CuMsgBox mb(this);
+
+      mb.setWindowTitle( tr("Low on memory!") );
+      mb.setIcon( QMessageBox::Critical );
+      mb.setText( QString("<html>") +
+                  QString("<html>") +
+                  tr("Waypoint import failed due to low on memory!") +
+                  "</html>" );
+      mb.setStandardButtons( QMessageBox::Ok );
+      mb.setDefaultButton( QMessageBox::Ok );
 
 		  Layout::centerWidget( this, &mb );
       mb.exec();
@@ -737,11 +746,13 @@ void PreFlightWaypointPage::slotImportFile()
 
   result += "</html>";
 
-  QMessageBox mb1( QMessageBox::Information,
-                   tr("Import Results"),
-                   result,
-                   QMessageBox::Ok,
-                   this );
+  CuMsgBox mb1(this);
+
+  mb1.setWindowTitle( tr("Import Results") );
+  mb1.setIcon( QMessageBox::Information );
+  mb1.setText( result );
+  mb1.setStandardButtons( QMessageBox::Ok );
+  mb1.setDefaultButton( QMessageBox::Ok );
 
   Layout::centerWidget( this, &mb1 );
   mb1.exec();
