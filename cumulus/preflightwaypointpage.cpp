@@ -334,14 +334,11 @@ void PreFlightWaypointPage::save()
   conf->setWaypointCenterReference( m_centerRef );
   conf->setWaypointAirfieldReference( m_airfieldSelection->text() );
 
-  if( ( m_waypointFileFormat != m_wpFileFormatBox->currentIndex() ||
-        m_fileLoaded == true ) &&
+  if( m_waypointFileFormat != m_wpFileFormatBox->currentIndex() &&
       _globalMapContents->getWaypointList().size() > 0 )
     {
+      // waypoints are saved in another format
       _globalMapContents->saveWaypointList();
-
-      // Trigger a redraw of the map.
-      emit waypointsAdded();
     }
 }
 
@@ -723,6 +720,11 @@ void PreFlightWaypointPage::slotImportFile()
   if( added )
     {
       m_fileLoaded = true;
+
+      // save loaded waypoints to file
+      _globalMapContents->saveWaypointList();
+      // Trigger a redraw of the map.
+      emit waypointsAdded();
     }
 
   QString result = QString("<html>") +
