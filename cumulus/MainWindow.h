@@ -27,7 +27,7 @@
  *
  * \date 2002-2025
  *
- * \version 1.3
+ * \version 1.5
  */
 
 #pragma once
@@ -375,9 +375,14 @@ private slots:
   void slotToggleWpLabels (bool toggle);
 
   /**
-   * Called if the extra label info displaying is actually toggled
+   * Called if the label displaying is actually toggled
    */
-  void slotToggleLabelsInfo (bool toggle);
+  void slotToggleHsLabels (bool toggle);
+
+  /**
+   * Called if the label elevation of a point is actually toggled
+   */
+  void slotToggleLabelsElevation (bool toggle);
 
   /**
    * Called if the trail drawing is toggled
@@ -498,7 +503,8 @@ private:
   QAction* actionToggleNaLabels;
   QAction* actionToggleTpLabels;
   QAction* actionToggleWpLabels;
-  QAction* actionToggleLabelsInfo;
+  QAction* actionToggleHsLabels;
+  QAction* actionToggleLabelsElevation;
   QAction* actionToggleLogging;
   QAction* actionToggleTrailDrawing;
 

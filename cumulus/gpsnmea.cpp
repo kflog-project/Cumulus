@@ -959,6 +959,8 @@ void GpsNmea::__ExtractGpgll( const QStringList& slst )
        type 1 or 9 update, null field when DGPS is not used
    14) Differential reference station ID, 0000-1023
    15) Checksum
+
+   Remark: Contains only the used satellites by the receiver.
 */
 void GpsNmea::__ExtractGpgga( const QStringList& slst )
 {

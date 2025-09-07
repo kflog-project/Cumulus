@@ -1657,7 +1657,7 @@ void Map::p_drawNavigationLayer()
 
   if( _globalMapMatrix->isSwitchScale() )
     {
-      _globalMapContents->drawList(&navP, MapContents::HotspotList, drawnSp );
+      _globalMapContents->drawList(&navP, drawnHs);
     }
 
   p_drawWaypoints(&navP, drawnWp);
