@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2025 by Axel Pauli
+                               2008-2026 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -208,7 +208,8 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$PFLAO", 27);
   gpsKeys.insert( "$PFLAQ", 28);
   gpsKeys.insert( "$PFLAX", 29);
-  gpsKeys.insert( "$ERROR", 30);
+  gpsKeys.insert( "$PFLAM", 30);
+  gpsKeys.insert( "$ERROR", 31);
 #endif
 
   // Only for test purposes
@@ -706,7 +707,11 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       Flarm::instance()->extractPflax( slst );
       return;
 
-    case 30: // $ERROR
+    case 30: // $PFLAX
+      Flarm::instance()->extractPflam( slst );
+      return;
+
+    case 31: // $ERROR
       Flarm::instance()->extractError( slst );
       return;
 

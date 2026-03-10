@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2025 Axel Pauli
+**   Copyright (c): 2010-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,6 +25,8 @@
 #include "generalconfig.h"
 #include "layout.h"
 #include "mapconfig.h"
+
+QHash<uint, QStringList> Flarm::m_datamap;
 
 Flarm::Flarm(QObject* parent) : QObject(parent), FlarmBase()
 {
@@ -849,6 +851,90 @@ bool Flarm::extractPflax(QStringList& stringList)
     }
 
   return false;
+}
+
+/**
+ * Extracts all items from the $PFLAM sentence sent by the Flarm device.
+ * @param stringList Flarm sentence $PFLAM as string list
+ * @return true if a valid value exists otherwise false
+ *
+ * 00: $PFLAM     // MSG Identifier
+ * 01: U          // RF message unsolicited
+ * 02: <IDType>   // 0=Randon ID, 1=24bit ICAO address, 2=fixed Flarm ID, empty Mode-C
+ * 03: <ID>       // 6-digit hex address
+ * 04: <MsgType>  // MSG Type
+ * 05: <Payload>  // UTF-8 two hexadecimal characters
+ */
+bool Flarm::extractPflam(QStringList& stringList)
+{
+  qDebug() << stringList;
+
+  if( stringList[0] != "$PFLAM" || stringList.size() < 2 )
+    {
+      // Checksum has to be ignored in counting.
+      qWarning("$PFLAM contains too less parameters!");
+      return false;
+    }
+
+  // Only unsolicited FR messages are processed
+  if( stringList[1] != "U" || stringList.size() < 6 || stringList[2] == "" )
+    {
+      // these messages are not of interest
+      return false;
+    }
+
+  bool ok;
+  uint fid = stringList[3].toUInt( &ok, 16);
+
+  if( ok == false )
+    {
+      return ok;
+    }
+
+  QStringList& entry = m_datamap[ fid ];
+
+  // 0: IDType
+  // 1: ID
+  // 2: AREG
+  // 3: PNAME
+  // 4: ATYPE
+  // 5: ACALL
+
+  if( entry.size() == 0 )
+    {
+      for( int i = 0; i < 6; ++i )
+        {
+          // create a list with 6 empty elements
+          entry << "";
+        }
+
+      entry[0] = stringList[2];
+      entry[1] = stringList[3];
+    }
+
+  QByteArray ba = QByteArray::fromHex( stringList[5].toLatin1() );
+
+  // process message type
+  if( stringList[4] == "AREG" )
+    {
+      entry[2] = QString( ba );
+    }
+  else if( stringList[4] == "PNAME" )
+    {
+      entry[3] = QString( ba );
+    }
+  else if( stringList[4] == "ATYPE" )
+    {
+      entry[4] = QString( ba );
+    }
+  else if( stringList[4] == "ACALL" )
+    {
+      entry[5] = QString( ba );
+    }
+
+  qDebug() << "FlarmMsgData=" << entry;
+
+  return true;
 }
 
 bool Flarm::extractError(QStringList& stringList)
