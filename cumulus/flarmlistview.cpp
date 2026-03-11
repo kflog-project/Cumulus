@@ -273,10 +273,10 @@ void FlarmListView::fillItemList( QString& object2Select )
              }
          }
 
-     if( aliasHash.contains( actfId ) )
+     if( aliasHash.contains( acft.ID.toUpper() ) )
        {
          // User alias definition is taken as replacement
-         actfId = aliasHash.value( actfId ).first;
+         actfId = aliasHash.value( acft.ID.toUpper() ).first;
        }
 
       // Add hash key as invisible column
@@ -284,7 +284,7 @@ void FlarmListView::fillItemList( QString& object2Select )
          << actfId
          << Distance::getText( distAcft, true, -1 )
          << vertical
-         << "";
+         << " ";
 
       if( acft.GroundSpeed != INT_MIN )
         {
@@ -313,9 +313,9 @@ void FlarmListView::fillItemList( QString& object2Select )
 
       QPixmap pixmap;
 
-      if( north == 0 && east == 0 )
+      if( north < 50 && east < 50 )
         {
-          // Special case Flarm object is above or below us. We draw a circle.
+          // Special case Flarm object is nearly above or below us. We draw a circle.
           MapConfig::createCircle( pixmap,
                                    iconSize,
                                    QColor(Qt::black),
@@ -361,12 +361,9 @@ void FlarmListView::resizeListColumns()
 {
   int count = list->columnCount();
 
-  for( int i = 0; i < count; i++ )
+  for (int i = 0; i < count; i++)
     {
-      if( i != 4 )
-        {
-          list->resizeColumnToContents( i );
-        }
+      list->resizeColumnToContents (i);
     }
 }
 
