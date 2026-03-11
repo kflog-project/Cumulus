@@ -6,12 +6,12 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2023 Axel Pauli
+**   Copyright (c): 2010-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   V1.2
+**   V1.3
 **
 ***********************************************************************/
 
@@ -76,7 +76,7 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   list->setSortingEnabled(false);
   list->setSelectionMode(QAbstractItemView::SingleSelection);
   list->setSelectionBehavior(QAbstractItemView::SelectRows);
-  list->setColumnCount(11);
+  list->setColumnCount(12);
   list->hideColumn(0);
   list->setFocusPolicy(Qt::StrongFocus);
 
@@ -92,6 +92,7 @@ FlarmListView::FlarmListView( QWidget *parent ) :
      << tr("CS")
      << tr("MHz")
      << tr("Type")
+     << tr("Pilot")
      << "";
 
   list->setHeaderLabels(sl);
@@ -107,6 +108,7 @@ FlarmListView::FlarmListView( QWidget *parent ) :
   headerItem->setTextAlignment( 7, Qt::AlignCenter );
   headerItem->setTextAlignment( 8, Qt::AlignCenter );
   headerItem->setTextAlignment( 9, Qt::AlignCenter );
+  headerItem->setTextAlignment( 10, Qt::AlignCenter );
 
   QFontMetrics qfm( font() );
   list->setColumnWidth( 4, qfm.height() );
@@ -233,36 +235,66 @@ void FlarmListView::fillItemList( QString& object2Select )
            climb += speed.getVerticalText( false, 1 );
          }
 
-       // Try tp map the Flarm Id to an alias name
+       // Try to map the Flarm Id to an alias name
        const QHash<QString, QPair<QString, bool> >& aliasHash =
            FlarmAliasList::getAliasHash();
 
        // Try to map the Flarm Id to an alias name
        QString actfId = acft.ID.toUpper();
-       bool look4Reg = true;
+       QStringList fdata;
+       fdata << "" << "" << "" << "" << "";
+       bool ok;
+       uint fid = acft.ID.toUInt( &ok, 16);
 
-       if( aliasHash.contains( actfId ) )
+       if( ok && Flarm::getAReg( fid ).size() > 0 )
          {
-           actfId = aliasHash.value( actfId ).first;
-           look4Reg = false;
+           // collected data reported by Flarm device as second variant
+           actfId = Flarm::getAReg( fid );
+
+           fdata[0] = actfId;
+           fdata[1] = Flarm::getAType( fid );
+           fdata[2] = Flarm::getACall( fid );
+           fdata[3] = ""; // Frequency
+           fdata[4] = Flarm::getPName( fid );
          }
 
-       // Try to load Flarmnet data
-       GeneralConfig *conf = GeneralConfig::instance();
-       QStringList fnd;
+      if (ok && GeneralConfig::instance ()->useFlarmNet () == true)
+        {
+          // Try to load Flarmnet data
+          QStringList fnd;
 
-       if( conf->useFlarmNet() == true )
-         {
-           bool ok;
-           uint fid = acft.ID.toUInt( &ok, 16);
-           ok = FlarmNet::getData( fid, fnd );
 
-           if( ok == true && look4Reg == true && fnd.at(0).size() > 0 )
-             {
-               // Kennzeichen instead of hex id
-               actfId = fnd.at(0);
-             }
-         }
+          if (FlarmNet::getData (fid, fnd) == true)
+            {
+              if (fdata.at (0).size () == 0 && fnd.at (0).size () > 0)
+                {
+                  // Kennzeichen instead of hex id
+                  actfId = fnd.at (0);
+                  fdata[0] = actfId;
+                }
+
+              if (fdata.at (1).size () == 0 && fnd.at (1).size () > 0)
+                {
+                  // aircraft type
+                  fdata[1] = fnd.at (1);
+                }
+
+              if (fdata.at (2).size () == 0 && fnd.at (2).size () > 0)
+                {
+                  // competition id
+                  fdata[2] = fnd.at (2);
+                }
+
+              // frequency
+              fdata[3] = fnd.at (3);
+            }
+        }
+
+     if( aliasHash.contains( actfId ) )
+       {
+         // User alias definition is taken as replacement
+         actfId = aliasHash.value( actfId ).first;
+       }
 
       // Add hash key as invisible column
       sl << it.key()
@@ -278,13 +310,11 @@ void FlarmListView::fillItemList( QString& object2Select )
 
       sl << climb;
 
-      if( fnd.size() == 4 )
-        {
-          // display other Flarm data e.g. Type, WKZ, Frequenz
-          ( fnd.at(2).size() > 0 ) ? sl << fnd.at(2) : sl << " ";
-          ( fnd.at(3).size() > 0 ) ? sl << fnd.at(3) : sl << " ";
-          ( fnd.at(1).size() > 0 ) ? sl << fnd.at(1) : sl << " ";
-        }
+      // display other Flarm data e.g. Type, WKZ, Frequenz, Pilot name
+      ( fdata.at(2).size() > 0 ) ? sl << fdata.at(2) : sl << " ";
+      ( fdata.at(3).size() > 0 ) ? sl << fdata.at(3) : sl << " ";
+      ( fdata.at(1).size() > 0 ) ? sl << fdata.at(1) : sl << " ";
+      ( fdata.at(4).size() > 0 ) ? sl << fdata.at(4) : sl << " ";
 
       QTreeWidgetItem* item = new QTreeWidgetItem( sl );
       item->setTextAlignment( 1, Qt::AlignLeft|Qt::AlignVCenter );
@@ -296,6 +326,7 @@ void FlarmListView::fillItemList( QString& object2Select )
       item->setTextAlignment( 7, Qt::AlignLeft|Qt::AlignVCenter );
       item->setTextAlignment( 8, Qt::AlignLeft|Qt::AlignVCenter );
       item->setTextAlignment( 9, Qt::AlignLeft|Qt::AlignVCenter );
+      item->setTextAlignment( 10, Qt::AlignLeft|Qt::AlignVCenter );
 
       QPixmap pixmap;
 

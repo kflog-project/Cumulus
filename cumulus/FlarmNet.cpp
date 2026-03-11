@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2023 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2023-2026 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -162,7 +162,7 @@ int FlarmNet::applyFilter( QString filter )
   // Set a global lock during execution to avoid calls in parallel.
   QMutexLocker locker( &m_mutex );
   QElapsedTimer t; t.start();
-  uint items = 0; // number of loaded items
+  uint items = 0; // number of count items
   bool start = true;
 
   // Check, which file the user wants to load.
@@ -201,8 +201,8 @@ int FlarmNet::applyFilter( QString filter )
       if( start == true )
         {
           // Magic id is expected
-          start = false;
           qDebug() << "FlarmNet magic" << line;
+          start = false;
           continue;
         }
 

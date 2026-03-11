@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers,
-                               2008-2025 by Axel Pauli
+                               2008-2026 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -232,12 +232,8 @@ void GpsNmea::getGpsMessageKeys( QHash<QString, short>& gpsKeys)
   gpsKeys.insert( "$PFLAO", 27);
   gpsKeys.insert( "$PFLAQ", 28);
   gpsKeys.insert( "$PFLAX", 29);
-  gpsKeys.insert( "$ERROR", 30);
-#endif
-
-#ifdef MAEMO5
-  gpsKeys.insert( "$MAEMO0", 40);
-  gpsKeys.insert( "$MAEMO1", 41);
+  gpsKeys.insert( "$PFLAM", 30);
+  gpsKeys.insert( "$ERROR", 31);
 #endif
 
   // Only for test purposes
@@ -317,7 +313,7 @@ void GpsNmea::createGpsConnection()
   QObject *gpsObject = 0;
 
   // We create only a GpsCon instance. The GPS daemon process will be started
-  // later. This is also valid hence Maemo5.
+  // later.
   QString callPath = GeneralConfig::instance()->getAppRoot() + "/bin";
 
   connector = new GpsCon(this, callPath.toLatin1().data());
@@ -747,24 +743,12 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       Flarm::instance()->extractPflax( slst );
       return;
 
-    case 30: // $ERROR
+    case 30: // $PFLAX
+      Flarm::instance()->extractPflam( slst );
+      return;
+
+    case 31: // $ERROR
       Flarm::instance()->extractError( slst );
-      return;
-
-#endif
-
-#ifdef MAEMO5
-
-    case 40:
-      // Handle sentences created by GPS Maemo Client process. These sentenceIns
-      // contain no checksum items.
-      __ExtractMaemo0( slst );
-      return;
-
-    case 41:
-      // Handle sentences created by GPS Maemo Client process. These sentenceIns
-      // contain no checksum items.
-      __ExtractMaemo1( slst );
       return;
 
 #endif
@@ -2501,269 +2485,6 @@ bool GpsNmea::__ExtractSatsInView(const QString& satcount)
 
   return true;
 }
-
-#ifdef MAEMO5
-
-/**
- * Extract proprietary sentence $MAEMO0. It is created by the GPS Maemo Client
- * and not all positions are always set. In such a case they are empty.
- */
-void GpsNmea::__ExtractMaemo0(const QStringList& slist)
-{
-  /**
-   * Definition of proprietary sentence $MAEMO0.
-   *
-   *  0) $MAEMO
-   *  1) Mode
-   *  2) Time stamp as unsigned integer, local time (Maemo4)
-   *  3) Ept
-   *  4) Latitude  in KFLog degrees
-   *  5) Longitude in KFLog degrees
-   *  6) Eph in m
-   *  7) Speed in m/s (Maemo4), km/h (Maemo5)
-   *  8) Eps
-   *  9) Track in degree 0...359
-   * 10) Epd
-   * 11) Altitude in meters
-   * 12) Epv
-   * 13) Climb
-   * 14) Epc
-   */
-
-  bool ok, ok1;
-
-  /*
-  Extract mode. Possible values can be:
-  LOCATION_GPS_DEVICE_MODE_NOT_SEEN The device has not seen a satellite yet. (Not used by Cumulus)
-  LOCATION_GPS_DEVICE_MODE_NO_FIX   The device has no fix.
-  LOCATION_GPS_DEVICE_MODE_2D       The device has latitude and longitude fix.
-  LOCATION_GPS_DEVICE_MODE_3D       The device has latitude, longitude, and altitude.
-  */
-
-#if 0
-
-  // @AP: This fix information stands sometimes in contradiction to the reported
-  // fix information in the $MAEMO1 sentence. Therefore I do ignore the information
-  // here. Otherwise we get a ping pong setting of fix ok or nok.
-  if( ! slist[1].isEmpty() )
-    {
-      int mode = slist[1].toInt( &ok );
-
-      if( ok )
-        {
-          _lastSatInfo.fixValidity = mode;
-
-          if( mode == LOCATION_GPS_DEVICE_MODE_3D )
-            {
-              fixOK( "Maemo0" );
-            }
-          else
-            {
-              fixNOK( "Maemo0" );
-            }
-        }
-    }
-
-#endif
-
-  // Extract time info. It is encoded in local seconds and is converted to UTC
-  if( ! slist[2].isEmpty() )
-    {
-      uint uintTime = slist[2].toUInt( &ok );
-
-      if( ok )
-        {
-          QDateTime local;
-          local.setTime_t( uintTime );
-
-          QDateTime utc;
-          utc = local.toUTC();
-
-          if( utc.isValid() )
-            {
-              _lastUtc = utc;
-              _lastTime = utc.time();
-              _lastDate = utc.date();
-              // qDebug() << _lastUtc.toString();
-            }
-        }
-    }
-
-  // Extract Latitude and Longitude. They are encoded in KFLog format.
-  if( ! slist[4].isEmpty() && ! slist[5].isEmpty() )
-    {
-      int lat = slist[4].toInt( &ok );
-      int lon = slist[5].toInt( &ok1 );
-
-      if( ok && ok1 )
-        {
-          QPoint res(lat, lon);
-
-          if( _lastCoord != res )
-            {
-              _lastCoord = res;
-              emit newPosition( _lastCoord );
-            }
-        }
-    }
-
-  // Extract Eph, horizontal position accuracy, encoded in m.
-  if( ! slist[6].isEmpty() )
-    {
-      // PDOP is handled in meters
-      double pdop = slist[6].toDouble( &ok );
-
-      if( ok == true && _lastSatInfo.fixAccuracy != pdop )
-        {
-          _lastSatInfo.fixAccuracy = static_cast<int>(rint(pdop));
-        }
-    }
-
-  // Extract Speed, encoded in m/s under Maemo4 in Km/h under Maemo5
-  if( ! slist[7].isEmpty() )
-    {
-      double dSpeed = slist[7].toDouble( &ok );
-
-      if( ok )
-        {
-          Speed speed;
-
-#ifdef MAEMO4
-          speed.setMps( dSpeed ); // m/s under Maemo4
-#else
-          speed.setKph( dSpeed );
-#endif
-
-          if( speed != _lastSpeed )
-            {
-              _lastSpeed = speed;
-              emit newSpeed( _lastSpeed );
-            }
-        }
-    }
-
-  // Extract track (heading) info.Track is encoded in degree 0...359.
-  if( ! slist[9].isEmpty() )
-    {
-      __ExtractHeading( slist[9] );
-    }
-
-  // Extract altitude info. Altitude is encoded in meters
-  if( ! slist[11].isEmpty() )
-    {
-      __ExtractAltitude( slist[11], "M" );
-    }
-
-  // Climb info not extracted at the moment!
-
-  // Do report a new fix, if the time has been changed. That must be the last
-  // action after the end of extraction.
-  if( _lastUtc != _lastRmcUtc )
-    {
-      /**
-       * The fix time has been changed and that is reported now.
-       * We do check the fix time only once in the $GPRMC sentence.
-       */
-      _lastRmcUtc = _lastUtc;
-      emit newFix( _lastRmcUtc );
-    }
-}
-
-/**
- * Extract proprietary sentence $MAEMO1.
- */
-void GpsNmea::__ExtractMaemo1(const QStringList& slist)
-{
-  /**
-   * Definition of proprietary sentence $MAEMO1.
-   *
-   *  0) $MAEMO1
-   *  1) Status
-   *  2) Satellites in view
-   *  3) Satellites in use
-   *  4) Satellite number
-   *  5) Elevation
-   *  6) Azimuth
-   *  7) Signal strength
-   *  8) Satellite in use
-   *  9) Repetition of 4-8 according to Satellites in view
-   */
-
-  // Store receive time of constellation in every case.
-  _lastSatInfo.constellationTime = _lastTime;
-
-  bool ok;
-
-  /**
-  Extract status, possible values are:
-  LOCATION_GPS_DEVICE_STATUS_NO_FIX   The device does not have a fix.
-  LOCATION_GPS_DEVICE_STATUS_FIX      The device has a fix.
-  */
-  if( ! slist[1].isEmpty() )
-    {
-      int status = slist[1].toInt( &ok );
-
-      if( ok )
-        {
-          if( status == LOCATION_GPS_DEVICE_STATUS_FIX  )
-            {
-              fixOK( "Maemo1" );
-            }
-          else
-            {
-              _lastSatInfo.fixValidity = LOCATION_GPS_DEVICE_MODE_NO_FIX;
-              fixNOK( "Maemo1" ) ;
-            }
-        }
-    }
-
-  // Extracts Satellites in view
-  if( ! slist[2].isEmpty() )
-    {
-      if( __ExtractSatsInView( slist[2] ) )
-        {
-          QString satsForFix;
-          sivInfoInternal.clear();
-
-          for( int i = 4; i <= slist.size() - 5; i +=5 )
-            {
-              __ExtractSatsInView( slist[i], slist[i+1], slist[i+2], slist[i+3] );
-
-              if( ! slist[i+4].isEmpty() && slist[i+4] != "0" )
-                {
-                  // Satellite is used for fix
-                  int sat =  slist[i].toInt( &ok );
-                  satsForFix += QString("%1").arg( sat, 2, 10, QChar('0') );
-                }
-            }
-
-          sivInfo = sivInfoInternal;
-
-          if( satsForFix != _lastSatInfo.constellation )
-            {
-              _lastSatInfo.constellation = satsForFix;
-              emit newSatConstellation( _lastSatInfo );
-            }
-
-          emit newSatInViewInfo( sivInfo );
-
-        }
-    }
-
-  // Extracts Satellites in use
-  if( ! slist[3].isEmpty() )
-    {
-      int satsInUse = slist[3].toInt( &ok );
-
-    if( ok )
-      {
-        _lastSatInfo.satsInUse = satsInUse;
-        emit newSatCount( _lastSatInfo );
-      }
-    }
-}
-
-#endif
 
 /** This slot is called by the external GPS receiver process to signal
  *  a connection lost to the GPS receiver or daemon. */

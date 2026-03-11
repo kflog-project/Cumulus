@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2023 Axel Pauli
+**   Copyright (c): 2010-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -162,18 +162,23 @@ void FlarmDisplay::createBackground()
 
       // Try to map the Flarm Id to an alias name
       QString actfId = selectedObject;
+      bool ok;
+      uint fid = selectedObject.toUInt( &ok, 16);
 
       if( aliasHash.contains( selectedObject) )
         {
           // Alias list is always the first choice
           actfId = aliasHash.value(selectedObject).first;
         }
+      else if( Flarm::getAReg( fid ).size() > 0 )
+        {
+          // aircraft call sign, reported by Flarm device
+          actfId = Flarm::getAReg( fid );
+        }
       else if( GeneralConfig::instance()->useFlarmNet() == true )
         {
-          // Flarmnet DB is the second choice
+          // Flarmnet DB is the third choice
           QStringList fnd;
-          bool ok;
-          uint fid = selectedObject.toUInt( &ok, 16);
           ok = FlarmNet::getData( fid, fnd );
 
           if( ok == true && fnd.at(0).size() > 0 )

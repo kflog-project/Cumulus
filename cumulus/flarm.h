@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2021 Axel Pauli
+**   Copyright (c): 2010-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,14 +22,14 @@
  *
  * This class parses Flarm sentences and provides the results to the caller.
  *
- * \date 2010-2021
+ * \date 2010-2026
  *
- * \version 1.5
+ * \version 1.6
  */
 
-#ifndef FLARM_H
-#define FLARM_H
+#pragma once
 
+#include <QHash>
 #include <QObject>
 #include <QString>
 #include <QTime>
@@ -66,6 +66,92 @@ class Flarm : public QObject, public FlarmBase
 
     return &instance;
   };
+
+  /**
+   * @return the Flarm Data Map.
+   */
+  static QHash<uint, QStringList>& datamap()
+  {
+    return m_datamap;
+  }
+
+  /**
+   * @return the ID type. 0=Random, 1=ICAO, 2=Flarm
+   */
+  static QString getIdType( uint flarmId )
+  {
+    if( m_datamap.contains( flarmId ) == false )
+      {
+        return QString();
+      }
+
+    return m_datamap[flarmId][0];
+  }
+
+  /**
+   * @return the sender identifier
+   */
+  static QString getId( uint flarmId )
+  {
+    if( m_datamap.contains( flarmId ) == false )
+      {
+        return QString();
+      }
+
+    return m_datamap[flarmId][1];
+  }
+
+  /**
+   * @return the aircraft registration sign
+   */
+  static QString getAReg( uint flarmId )
+  {
+    if( m_datamap.contains( flarmId ) == false )
+      {
+        return QString();
+      }
+
+    return m_datamap[flarmId][2];
+  }
+
+  /**
+   * @return the pilot name
+   */
+  static QString getPName( uint flarmId )
+  {
+    if( m_datamap.contains( flarmId ) == false )
+      {
+        return QString();
+      }
+
+    return m_datamap[flarmId][3];
+  }
+
+  /**
+   * @return the aircraft type
+   */
+  static QString getAType( uint flarmId )
+  {
+    if( m_datamap.contains( flarmId ) == false )
+      {
+        return QString();
+      }
+
+    return m_datamap[flarmId][4];
+  }
+
+  /**
+   * @return the aircraft callsign (CompId)
+   */
+  static QString getACall( uint flarmId )
+  {
+    if( m_datamap.contains( flarmId ) == false )
+      {
+        return QString();
+      }
+
+    return m_datamap[flarmId][5];
+  }
 
   /**
    * @param relativeBearing returns the relative bearing in degree from the
@@ -162,6 +248,13 @@ class Flarm : public QObject, public FlarmBase
   bool extractPflax(QStringList& stringList);
 
   /**
+   * Extracts all items from the $PFLAM sentence sent by the Flarm device.
+   * @param stringList Flarm sentence $PFLAM as string list
+   * @return true if a valid value exists otherwise false
+   */
+  bool extractPflam(QStringList& stringList);
+
+  /**
    * Extracts all items from the $ERROR sentence sent by the Flarm device.
    * @param stringList Flarm sentence $PFLAV as string list
    * @return true if a valid value exists otherwise false
@@ -253,6 +346,9 @@ class Flarm : public QObject, public FlarmBase
 
   /** Timer for data clearing. */
   QTimer* m_timer;
-};
 
-#endif /* FLARM_H */
+  /**
+   * A hash map containing received Flarm message data over $PFLAM,U
+   */
+  static QHash<uint, QStringList> m_datamap;
+};
