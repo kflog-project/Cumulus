@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2014-2017 by Axel Pauli
+**   Copyright (c):  2014-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -21,6 +21,7 @@
 #include "generalconfig.h"
 #include "calculator.h"
 #include "gpsnmea.h"
+#include "layout.h"
 
 PointListView::PointListView( ListWidgetParent* lwParent, QWidget *parent ) :
   QWidget( parent ),
@@ -170,25 +171,15 @@ void PointListView::slot_Home()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Set home site" ),
-                  tr( "Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
-                  tr("<br>Change can take<br>a few seconds and more."),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Set home site" ),
+                                tr( "Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                                tr("<br>Change can take<br>a few seconds and more."),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::Yes,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::Yes );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::Yes )
+  if( ret == QMessageBox::Yes )
     {
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );

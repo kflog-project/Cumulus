@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2012-2022 by Axel Pauli
+ **   Copyright (c): 2012-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1391,7 +1391,9 @@ void PreFlightFlarmPage::slotShowErrorText()
 
   if( error.errorText.isEmpty() )
     {
-      messageBox( QMessageBox::Information, tr("No error info available"), tr("Error Info") );
+      messageBox( QMessageBox::Information,
+                  tr("No error info available"),
+                  tr("Error Info") );
       return;
     }
 
@@ -1415,52 +1417,30 @@ void PreFlightFlarmPage::messageBox(  QMessageBox::Icon icon,
                                       QString message,
                                       QString title )
 {
-  QMessageBox mb( icon,
-                  title,
-                  message,
-                  QMessageBox::Ok,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  Layout::messageBox( icon,
+                      title,
+                      message,
+                      QMessageBox::Ok,
+                      QMessageBox::Ok,
+                      this );
 }
 
 void PreFlightFlarmPage::ask4RebootFlarm()
 {
-  QMessageBox mb( QMessageBox::Question,
-		  tr( "Reboot Flarm?"),
-		  tr( "To activate the new task, the Flarm must be rebooted!") +
-		  QString("<p>") + tr("Execute reboot now?") + "</p>",
-		  QMessageBox::Yes | QMessageBox::No,
-		  this );
-
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Reboot Flarm?"),
+                                tr( "To activate the new task, the Flarm must be rebooted!") +
+                                     QString("<p>") + tr("Execute reboot now?") + "</p>",
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
+  if( ret == QMessageBox::No )
     {
       return;
     }
 
   // Flarm reset command
   QByteArray ba("$PFLAR,0");
-
   GpsNmea::gps->sendSentence( ba );
 }
 

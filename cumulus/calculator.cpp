@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c): 2002      by André Somers
- **                  2008-2025 by Axel Pauli
+ **                  2008-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -33,6 +33,7 @@
 #include "altimeterdialog.h"
 #include "Atmosphere.h"
 #include "calculator.h"
+#include "CuMsgBox.h"
 #include "flarmbase.h"
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
@@ -390,22 +391,22 @@ void Calculator::slot_WaypointChange(Waypoint *newWp, bool userAction)
     {
       // A user action will overwrite a task point. That will stop the
       // automatic task point switch. We will notice the user about that fact.
-      QMessageBox mb( QMessageBox::Question,
-                      tr( "Replace current task point?" ),
-                      tr( "<html>"
-                          "A flight task is activated!<br>"
-                          "This selection will stop the automatic task point switch."
-                          "To avoid that make a selection from task menu."
-                          "<br>Do You really want to replace?"
-                          "</html>" ),
-                      QMessageBox::Yes | QMessageBox::No,
-                      QApplication::desktop() );
+      CuMsgBox mb( QApplication::desktop() );
+      mb.setText( tr( "Replace current task point?" ) );
+      mb.setIcon( QMessageBox::Question );
+      mb.setInformativeText( tr( "<html>"
+                                 "A flight task is activated!<br>"
+                                 "This selection will stop the automatic task point switch."
+                                 "To avoid that make a selection from task menu."
+                                 "<br>Do You really want to replace?"
+                                 "</html>" ) );
 
+      mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
       mb.setDefaultButton( QMessageBox::Yes );
+      mb.show();
 
 #ifdef ANDROID
 
-      mb.show();
       QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
                                                                  QApplication::desktop()->height()/2 - mb.height()/2 ) );
       mb.move( pos );
@@ -1981,22 +1982,21 @@ void Calculator::slot_startTask()
       if( targetWp->taskPointIndex != -1 &&
           targetWp->taskPointIndex != tp2Taken.getFlightTaskListIndex() )
         {
-          QMessageBox mb( QMessageBox::Question,
-                          tr( "Restart current task?" ),
-                          tr( "<html>"
-                              "A flight task is running!<br>"
-                              "This command will start the<br>"
-                              "task again at the beginning."
-                              "<br>Do You really want to restart?"
-                              "</html>" ),
-                          QMessageBox::Yes | QMessageBox::No,
-                          QApplication::desktop() );
-
+          CuMsgBox mb( QApplication::desktop() );
+          mb.setText( tr( "Restart current task?" ) );
+          mb.setIcon( QMessageBox::Question );
+          mb.setInformativeText( tr( "<html>"
+                                     "A flight task is running!<br>"
+                                     "This command will start the<br>"
+                                     "task again at the beginning."
+                                     "<br>Do You really want to restart?"
+                                      "</html>" ) );
+          mb.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
           mb.setDefaultButton( QMessageBox::Yes );
+          mb.show();
 
 #ifdef ANDROID
 
-          mb.show();
           QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - mb.width()/2,
                                                                      QApplication::desktop()->height()/2 - mb.height()/2 ) );
           mb.move( pos );

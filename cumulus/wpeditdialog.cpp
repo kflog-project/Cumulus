@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2008-2022 by Axel Pauli
+ **                   2008-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -251,75 +251,46 @@ bool WpEditDialog::checkWaypointData( Waypoint& wp )
 {
   if( wp.name.isEmpty() )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                      tr( "Name?" ),
-                      tr( "Please add\na waypoint\nname" ),
-                      QMessageBox::Ok,
-                      this );
+      Layout::messageBox( QMessageBox::Critical,
+                          tr( "Name?" ),
+                          tr( "Please add\na waypoint\nname" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
 
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
-      mb.exec();
       return false;
     }
 
   if( wp.description.isEmpty() )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                      tr( "Description?" ),
-                      tr( "Please add\na waypoint\ndescription" ),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
+      Layout::messageBox( QMessageBox::Critical,
+                          tr( "Description?" ),
+                          tr( "Please add\na waypoint\ndescription" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
       return false;
     }
 
   if( wp.wgsPoint == QPoint(0,0) )
-      {
-        QMessageBox mb( QMessageBox::Warning,
-                        tr( "Coordinates?" ),
-                        tr( "Waypoint coordinates not set, continue?" ),
-                        QMessageBox::Yes | QMessageBox::No,
-                        this );
+    {
+      int ret = Layout::messageBox( QMessageBox::Warning,
+                                    tr( "Coordinates?" ),
+                                    tr( "Waypoint coordinates not set, continue?" ),
+                                    QMessageBox::Yes | QMessageBox::No,
+                                    QMessageBox::No,
+                                    this );
 
-        mb.setDefaultButton( QMessageBox::No );
-
-  #ifdef ANDROID
-
-        mb.show();
-        QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                         height()/2 - mb.height()/2 ));
-        mb.move( pos );
-
-  #endif
-
-        if( mb.exec() == QMessageBox::Yes )
-          {
-            // yes was chosen, ignore warning
-            return true;
-          }
-        else
-          {
-            return false;
-          }
-      }
+      if( ret == QMessageBox::Yes )
+        {
+          // yes was chosen, ignore warning
+          return true;
+        }
+      else
+        {
+          return false;
+        }
+    }
 
   return true;
 }
@@ -335,22 +306,12 @@ bool WpEditDialog::isWaypointNameInList( QString& wpName )
   if( _globalMapContents->isInWaypointList( wpName ) )
     {
       // The waypoint name is already in use
-      QMessageBox mb( QMessageBox::Critical,
-                      tr( "Name Conflict" ),
-                      tr( "Please use another name\nfor your new waypoint" ),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
+      Layout::messageBox( QMessageBox::Critical,
+                          tr( "Name Conflict" ),
+                          tr( "Please use another name\nfor your new waypoint" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
       return true;
     }
 
@@ -365,4 +326,3 @@ void WpEditDialog::slotHelp()
   hb->setWindowState( windowState() );
   hb->setVisible( true );
 }
-

@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2018 Axel Pauli
+ **   Copyright (c): 2008-2026 Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -468,46 +468,27 @@ void SettingsPagePointData::slot_downloadOpenAip()
 
   if( ! checkCountryList(clist) )
     {
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Please check entries" ),
-                      tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
-                      QMessageBox::Ok,
-                      this );
+      Layout::messageBox( QMessageBox::Warning,
+                          tr( "Please check entries" ),
+                          tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
 
-#ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-      mb.exec();
       return;
     }
 
   conf->setOpenAipAirfieldCountries(openAipCountries);
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Download openAIP files?"),
-                  tr( "Active Internet connection is needed!") +
-                  QString("<p>") + tr("Start download now?"),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Download openAIP files?"),
+                                tr( "Active Internet connection is needed!") +
+                                QString("<p>") + tr("Start download now?"),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-
-  if( mb.exec() == QMessageBox::No )
+  if( ret == QMessageBox::No )
     {
       return;
     }

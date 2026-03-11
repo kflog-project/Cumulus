@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2012-2022 Axel Pauli
+**   Copyright (c): 2012-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -566,20 +566,10 @@ void FlarmLogbook::messageBox( QMessageBox::Icon icon,
                                    QString message,
                                    QString title )
 {
-  QMessageBox mb( icon,
-                  title,
-                  message,
-                  QMessageBox::Ok,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  Layout::messageBox( icon,
+                      title,
+                      message,
+                      QMessageBox::Ok,
+                      QMessageBox::Ok,
+                      this );
 }

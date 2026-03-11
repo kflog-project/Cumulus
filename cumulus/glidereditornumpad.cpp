@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by Eggert Ehmke
- **                   2008-2017 by Axel Pauli
+ **                   2008-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -25,6 +25,7 @@
 #endif
 
 #include "androidstyle.h"
+#include "CuMsgBox.h"
 #include "doubleNumberEditor.h"
 #include "generalconfig.h"
 #include "glidereditornumpad.h"
@@ -856,15 +857,16 @@ void GliderEditorNumPad::accept()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Critical,
-                  title,
-                  text,
-                  QMessageBox::Ok,
-                  this );
+  CuMsgBox mb( this );
+  mb.setText( title );
+  mb.setIcon( QMessageBox::Critical );
+  mb.setInformativeText( text );
+  mb.setStandardButtons( QMessageBox::Ok );
+  mb.setDefaultButton( QMessageBox::No );
+  mb.show();
 
 #ifdef ANDROID
 
-  mb.show();
   QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
   mb.move( pos );
 

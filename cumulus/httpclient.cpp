@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2022 Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c): 2010-2026 Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,6 +24,7 @@
 
 #include <QtNetwork>
 
+#include "CuMsgBox.h"
 #include "httpclient.h"
 #include "authdialog.h"
 #include "generalconfig.h"

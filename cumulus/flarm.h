@@ -32,13 +32,13 @@
 #include <QHash>
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <QTime>
+#include <QTimer>
 
 #include "flarmbase.h"
 
 class QPoint;
-class QStringList;
-class QTimer;
 
 class Flarm : public QObject, public FlarmBase
 {
@@ -85,72 +85,73 @@ class Flarm : public QObject, public FlarmBase
         return QString();
       }
 
-    return m_datamap[flarmId][0];
+    const QStringList sl = m_datamap.value(flarmId);
+    return sl[0];
   }
 
   /**
    * @return the sender identifier
    */
-  static QString getId( uint flarmId )
+  static QString getId( const uint flarmId )
   {
     if( m_datamap.contains( flarmId ) == false )
       {
         return QString();
       }
 
-    return m_datamap[flarmId][1];
+    return (m_datamap[flarmId])[1];
   }
 
   /**
    * @return the aircraft registration sign
    */
-  static QString getAReg( uint flarmId )
+  static QString getAReg( const uint flarmId )
   {
     if( m_datamap.contains( flarmId ) == false )
       {
         return QString();
       }
 
-    return m_datamap[flarmId][2];
+    return (m_datamap[flarmId])[2];
   }
 
   /**
    * @return the pilot name
    */
-  static QString getPName( uint flarmId )
+  static QString getPName( const uint flarmId )
   {
     if( m_datamap.contains( flarmId ) == false )
       {
         return QString();
       }
 
-    return m_datamap[flarmId][3];
+    return (m_datamap[flarmId])[3];
   }
 
   /**
    * @return the aircraft type
    */
-  static QString getAType( uint flarmId )
+  static QString getAType( const uint flarmId )
   {
     if( m_datamap.contains( flarmId ) == false )
       {
         return QString();
       }
 
-    return m_datamap[flarmId][4];
+    return (m_datamap[flarmId])[4];
   }
 
   /**
    * @return the aircraft callsign (CompId)
    */
-  static QString getACall( uint flarmId )
+  static QString getACall( const uint flarmId )
   {
     if( m_datamap.contains( flarmId ) == false )
       {
         return QString();
       }
 
-    return m_datamap[flarmId][5];
+    return (m_datamap[flarmId])[5];
   }
 
   /**

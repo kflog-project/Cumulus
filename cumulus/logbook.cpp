@@ -263,23 +263,14 @@ void Logbook::slot_DeleteRows()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete selected entries?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete?" ),
+                                tr( "Delete selected entries?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  if( ret == QMessageBox::No )
     {
       return;
     }
@@ -334,23 +325,14 @@ void Logbook::slot_DeleteAllRows()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete all entries?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete?" ),
+                                tr( "Delete all entries?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  if( ret == QMessageBox::No )
     {
       return;
     }

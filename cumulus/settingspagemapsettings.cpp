@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2023 by Axel Pauli
+**                   2008-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -293,27 +293,16 @@ void SettingsPageMapSettings::save()
 
   if( checkIsProjectionChanged() )
     {
-      QMessageBox mb( QMessageBox::Information,
-                      "Cumulus",
-                      tr( "<html>"
-                      "<b>Map projection was changed!</b><p>"
-                      "System update can take a few seconds and more!"
-                      "</html>" ),
-                      QMessageBox::Ok,
-                      this );
-
-#ifdef ANDROID
-
-      // Under Android the box must be moved into the center of the desktop screen.
-      // Note the box must be set as first to visible otherwise move will not work.
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-#endif
-
-      mb.exec();
-    }
+      Layout::messageBox( QMessageBox::Information,
+                          "Cumulus",
+                          tr( "<html>"
+                          "<b>Map projection was changed!</b><p>"
+                          "System update can take a few seconds and more!"
+                          "</html>" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
+   }
 
   // @AP: here we must take over the new user values at first.
   // After that we can store them.
@@ -387,25 +376,15 @@ void SettingsPageMapSettings::slot_installMaps()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Download Maps?"),
-                  tr( "Active Internet connection is needed!") +
-                  QString("<p>") + tr("Start download now?"),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Download Maps?"),
+                                tr( "Active Internet connection is needed!") +
+                                QString("<p>") + tr("Start download now?"),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  if( ret == QMessageBox::No )
     {
       return;
     }
@@ -458,13 +437,6 @@ void SettingsPageMapSettings::slot_openFileDialog()
           mapDirNew = fl.at(0);
         }
     }
-
-#if 0
-  QString mapDirNew = QFileDialog::getExistingDirectory( this,
-                                                         tr("Please select your map directory"),
-                                                         mapDirCurrent,
-                                                         QFileDialog::ShowDirsOnly );
-#endif
 
   if( mapDirNew.isEmpty() )
     {

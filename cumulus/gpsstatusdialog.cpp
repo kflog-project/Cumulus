@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c): 2003      by André Somers
-**                  2008-2021 by Axel Pauli
+**                  2008-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -26,6 +26,7 @@
 #include <QtScroller>
 #endif
 
+#include "CuMsgBox.h"
 #include "generalconfig.h"
 #include "gpsstatusdialog.h"
 #include "gpsnmea.h"
@@ -411,14 +412,16 @@ void GpsStatusDialog::slot_SaveNmeaData()
 
       if( ! file.open( QIODevice::Append | QIODevice::Text ) )
         {
-          QMessageBox mb( QMessageBox::Critical,
-                          tr( "Save failed" ),
-                          tr( "Cannot open file!" ),
-                          QMessageBox::Ok,
-                          this );
+          CuMsgBox mb( this );
+          mb.setText( tr( "Save failed" ) );
+          mb.setIcon( QMessageBox::Warning );
+          mb.setInformativeText( tr( "Cannot open file!" ) );
+          mb.setStandardButtons( QMessageBox::Ok );
+          mb.setDefaultButton( QMessageBox::Ok );
+          mb.show();
+
 #ifdef ANDROID
 
-          mb.show();
           QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
                                            height()/2 - mb.height()/2 ));
           mb.move( pos );

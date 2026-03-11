@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers,
-**                   2008-2025 by Axel Pauli
+**                   2008-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -477,24 +477,13 @@ void WpEditDialogPageAero::slot_save( Waypoint *wp )
 
 void WpEditDialogPageAero::reportRwyIdError( short rwyNo )
 {
-  QMessageBox mb( QMessageBox::Critical,
-                  tr( "RWY %1 ID error" ).arg(rwyNo),
-                  tr( "RWY %1: Excepting 01...36 [C, L, R]" ).arg( rwyNo ),
-                  QMessageBox::Ok,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  Layout::messageBox( QMessageBox::Critical,
+                      tr( "RWY %1 ID error" ).arg(rwyNo),
+                      tr( "RWY %1: Excepting 01...36 [C, L, R]" ).arg( rwyNo ),
+                      QMessageBox::Ok,
+                      QMessageBox::Ok,
+                      this );
 }
-
 
 /**
  * Checks all runway designators and only flags for correctness.

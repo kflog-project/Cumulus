@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2011-20122 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2011-2026 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -347,23 +347,14 @@ void SettingsPageAirspaceLoading::slot_DeleteRows()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete selected entries?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete?" ),
+                                tr( "Delete selected entries?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  if( ret == QMessageBox::No )
     {
       return;
     }

@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2014-2018 by Axel Pauli
+**   Copyright (c): 2014-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -415,23 +415,13 @@ void PreFlightCheckListPage::slotDeleteRows()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete selected entries?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete?" ),
+                                tr( "Delete selected entries?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
+  if( ret == QMessageBox::No )
     {
       return;
     }

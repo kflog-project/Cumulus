@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2012-2025 by Axel Pauli
+**   Copyright (c):  2012-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -19,6 +19,7 @@
 #include <QtWidgets>
 #endif
 
+#include "CuMsgBox.h"
 #include "layout.h"
 #include "MainWindow.h"
 
@@ -577,16 +578,16 @@ int Layout::messageBox( QMessageBox::Icon icon,
                         QMessageBox::StandardButton button,
                         QWidget *parent )
 {
-  QMessageBox msgBox( parent );
+  CuMsgBox msgBox( parent );
   msgBox.setText( text );
   msgBox.setIcon( icon );
   msgBox.setInformativeText( infoText );
   msgBox.setStandardButtons( buttons );
   msgBox.setDefaultButton( button );
+  msgBox.show();
 
 #ifdef ANDROID
   // Center messagebox over the root window.
-  msgBox.show();
   QPoint pos = QApplication::desktop()->mapToGlobal( QPoint( QApplication::desktop()->width()/2 - msgBox.width()/2,
                                                              QApplication::desktop()->height()/2 - msgBox.height()/2 ) );
   msgBox.move( pos );
