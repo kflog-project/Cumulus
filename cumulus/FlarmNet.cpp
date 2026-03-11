@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2023 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2023-2026 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.

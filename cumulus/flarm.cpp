@@ -914,7 +914,7 @@ bool Flarm::extractPflam(QStringList& stringList)
 
   QByteArray ba = QByteArray::fromHex( stringList[5].toLatin1() );
 
-  // process message type
+  // process message types
   if( stringList[4] == "AREG" )
     {
       entry[2] = QString( ba );
@@ -931,8 +931,13 @@ bool Flarm::extractPflam(QStringList& stringList)
     {
       entry[5] = QString( ba );
     }
+  else
+    {
+      qWarning( "Flarm::extractPflam: unknown message type '%s%' received!",
+                 stringList[4] );
+    }
 
-  qDebug() << "FlarmMsgData=" << entry;
+  // qDebug() << "FlarmMsgData=" << entry;
 
   return true;
 }

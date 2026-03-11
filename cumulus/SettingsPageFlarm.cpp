@@ -7,7 +7,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018-2023 Axel Pauli
+**   Copyright (c): 2018-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -221,6 +221,7 @@ void SettingsPageFlarm::loadTableItems()
           << "OBSTEXP;RO;ALL"
           << "IGCSER;RO;ALL"
           << "ID;RW;ALL"
+          << "LIC;RO;PF"
           << "NMEAOUT;RW;ALL"
           << "NMEAOUT1;RW;PF"
           << "NMEAOUT2;RW;PF"
@@ -254,6 +255,9 @@ void SettingsPageFlarm::loadTableItems()
           << "SAVE;WO;PF"
           << "LOAD;WO;PF"
           << "FFS;WO;PF"
+          << "MSG;RW;ALL"
+          << "ADSL;RW;PF"
+          << "ROLLOVER;RW;CF"
           << "VOL;RW;PF"
           << "PFLAR;WO;ALL"
           << "XPDR;RW;PF"
