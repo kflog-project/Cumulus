@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2008-2021 by Axel Pauli (kflog.cumulus@gmail.com)
+ **   Copyright (c): 2008-2026 by Axel Pauli (kflog.cumulus@gmail.com)
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -25,6 +25,7 @@
 #include <QtScroller>
 #endif
 
+#include "CuMsgBox.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
@@ -175,15 +176,17 @@ void HelpBrowser::showEvent( QShowEvent *event )
                  << helpFile
                  << "not accessible!";
 
-      QMessageBox mb( QMessageBox::Warning,
-                      tr( "Missing help file" ),
-                      tr("<html><b>The help file was not found.<br>"
-                         "Maybe it is not installed?</b></html>"),
-                      QMessageBox::Ok,
-                      this );
+      CuMsgBox mb( this );
+      mb.setText( tr( "Missing help file" ) );
+      mb.setIcon( QMessageBox::Warning );
+      mb.setInformativeText( tr("<html><b>The help file was not found.<br>"
+                                "Maybe it is not installed?</b></html>") );
+      mb.setStandardButtons( QMessageBox::Ok );
+      mb.setDefaultButton( QMessageBox::Ok );
+      mb.show();
+
 #ifdef ANDROID
 
-      mb.show();
       QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
                                        height()/2 - mb.height()/2 ));
       mb.move( pos );

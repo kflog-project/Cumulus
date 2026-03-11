@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2021 by Axel Pauli
+**                   2009-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -776,24 +776,13 @@ void PreFlightTaskPage::slotDeleteTask()
   QString id( selected->text(0) );
   QString taskName( selected->text(1).trimmed() );
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete Task?" ),
-                  tr( "Delete the selected task?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if ( mb.exec() != QMessageBox::Yes )
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete Task?" ),
+                                tr( "Delete the selected task?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
+  if ( ret != QMessageBox::Yes )
     {
       return;
     }
@@ -875,27 +864,17 @@ void PreFlightTaskPage::slotAccept()
 
   if( curTask && newTask && newTaskPassed )
     {
-      QMessageBox mb( QMessageBox::Question,
-                      tr( "Replace current task?" ),
-                      tr( "<html>"
-                          "Do you want to replace the current task?<br>"
-                          "A selected target is reset to task start."
-                          "</html>" ),
-                      QMessageBox::Yes | QMessageBox::No,
-                      this );
+      int ret = Layout::messageBox( QMessageBox::Question,
+                                    tr( "Replace current task?" ),
+                                    tr( "<html>"
+                                        "Do you want to replace the current task?<br>"
+                                        "A selected target is reset to task start."
+                                        "</html>" ),
+                                    QMessageBox::Yes | QMessageBox::No,
+                                    QMessageBox::No,
+                                    this );
 
-      mb.setDefaultButton( QMessageBox::No );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
-      if( mb.exec() != QMessageBox::Yes )
+      if( ret == QMessageBox::No )
         {
           // do nothing change
           delete newTask;
@@ -1007,21 +986,14 @@ void PreFlightTaskPage::slotImportTask()
 
   if( ft == nullptr )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                       tr("Error in file ") + QFileInfo( fName ).fileName(),
-                       errorInfo,
-                       QMessageBox::Ok,
-                       this );
-#ifdef ANDROID
-       mb.show();
-       QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                        height()/2 - mb.height()/2 ));
-       mb.move( pos );
-#endif
-       mb.exec();
-       return;
+      Layout::messageBox( QMessageBox::Critical,
+                          tr("Error in file ") + QFileInfo( fName ).fileName(),
+                          errorInfo,
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
+      return;
     }
 
   slotUpdateTaskList( ft );
 }
-

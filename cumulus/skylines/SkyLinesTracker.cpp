@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018 Axel Pauli
+**   Copyright (c): 2018-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -29,6 +29,7 @@
 #include <QtNetwork>
 
 #include "calculator.h"
+#include "layout.h"
 #include "MainWindow.h"
 #include "SkyLinesTracker.h"
 
@@ -532,20 +533,10 @@ void SkyLinesTracker::stopLiveTracking()
   // Inform the user about our decision.
   QString msg = QString(tr("<html>Your SkyLines user key is invalid!<br><br>Switching off service.</html>"));
 
-  QMessageBox mb( QMessageBox::Critical,
-                  tr("Login Error"),
-                  msg,
-                  QMessageBox::Ok,
-                  MainWindow::mainWindow() );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                             MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  Layout::messageBox( QMessageBox::Critical,
+                      tr("Login Error"),
+                      msg,
+                      QMessageBox::Ok,
+                      QMessageBox::Ok,
+                      MainWindow::mainWindow() );
 }

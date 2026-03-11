@@ -7,7 +7,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2018-2025 Axel Pauli
+**   Copyright (c): 2018-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -543,10 +543,13 @@ void SettingsPageFlarm::slot_CellClicked( int row, int column )
                           "<br><br>" +
                           tr("Continue ?");
           QString text1 = tr("Information");
-          int ret = messageBox( QMessageBox::Information,
-                                text0,
-                                text1,
-                                QMessageBox::Yes|QMessageBox::Cancel );
+
+          int ret = Layout::messageBox( QMessageBox::Information,
+                                        text0,
+                                        text1,
+                                        QMessageBox::Yes|QMessageBox::Cancel,
+                                        QMessageBox::Cancel,
+                                        this );
 
           if( ret == QMessageBox::Cancel )
             {
@@ -918,20 +921,11 @@ int SettingsPageFlarm::messageBox( QMessageBox::Icon icon,
                                    QString title,
                                    QMessageBox::StandardButtons buttons )
 {
-  QMessageBox mb( icon,
-                  title,
-                  message,
-                  buttons,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  return mb.exec();
+  int ret = Layout::messageBox( icon,
+                                title,
+                                message,
+                                buttons,
+                                QMessageBox::NoButton,
+                                this );
+  return ret;
 }

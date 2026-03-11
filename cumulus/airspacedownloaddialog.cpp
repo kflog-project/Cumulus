@@ -163,17 +163,12 @@ bool AirspaceDownloadDialog::checkCountryList( const QString& countries, QString
           continue;
         }
 
-      CuMsgBox mb( this );
-      mb.setText( tr( "Please check entries" ) );
-      mb.setIcon( QMessageBox::Warning );
-      mb.setInformativeText( tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!") );
-      mb.setStandardButtons( QMessageBox::Ok );
-      mb.setDefaultButton( QMessageBox::Ok );
-      mb.show();
-
-      Layout::centerWidget( MainWindow::mainWindow(), &mb );
-
-      mb.exec();
+      Layout::messageBox( QMessageBox::Warning,
+                          tr( "Please check entries" ),
+                          tr("Every openAIP country sign must consist of two letters!<br>Allowed separators are space and comma!"),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
       countrylist.clear();
       return false;
     }

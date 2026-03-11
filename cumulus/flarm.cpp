@@ -933,8 +933,8 @@ bool Flarm::extractPflam(QStringList& stringList)
     }
   else
     {
-      qWarning( "Flarm::extractPflam: unknown message type '%s%' received!",
-                 stringList[4] );
+      qWarning( "Flarm::extractPflam: unknown message type '%s' received!",
+                 stringList[4].toLatin1().data() );
     }
 
   // qDebug() << "FlarmMsgData=" << entry;

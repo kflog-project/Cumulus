@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright(c): 2012-2025 by Axel Pauli
+**   Copyright(c): 2012-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -440,17 +440,13 @@ bool SettingsPageGPS4A::save()
           tr( "<html>WiFi entry is activated but IP or Port are not set!"
               "<br><br>Please add the missing items.</html>" ) );
 
-      QMessageBox mb( QMessageBox::Critical,
-                      tr("IP items missing"),
-                      info,
-                      QMessageBox::Ok,
-                      MainWindow::mainWindow() );
+      Layout::messageBox( QMessageBox::Critical,
+                          tr("IP items missing"),
+                          info,
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          MainWindow::mainWindow() );
 
-      mb.show();
-      QPoint pos = MainWindow::mainWindow()->mapToGlobal(QPoint( MainWindow::mainWindow()->width()/2  - mb.width()/2,
-                                                                 MainWindow::mainWindow()->height()/2 - mb.height()/2 ));
-      mb.move( pos );
-      mb.exec();
       return false;
     }
 

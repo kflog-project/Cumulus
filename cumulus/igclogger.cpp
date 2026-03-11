@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sat Jul 20 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2022 by Axel Pauli
+                               2008-2026 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -25,6 +25,7 @@
 #include <QtCore>
 #include <QMessageBox>
 
+#include "CuMsgBox.h"
 #include "igclogger.h"
 #include "gpsnmea.h"
 #include "hwinfo.h"
