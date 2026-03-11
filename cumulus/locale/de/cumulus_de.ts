@@ -442,52 +442,52 @@
 <context>
     <name>Flarm</name>
     <message>
-        <location filename="../../flarm.cpp" line="1057"/>
+        <location filename="../../flarm.cpp" line="1148"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1060"/>
+        <location filename="../../flarm.cpp" line="1151"/>
         <source>Caution</source>
         <translation>Vorsicht</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1063"/>
+        <location filename="../../flarm.cpp" line="1154"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1066"/>
+        <location filename="../../flarm.cpp" line="1157"/>
         <source>Alarm</source>
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1094"/>
+        <location filename="../../flarm.cpp" line="1185"/>
         <source>Object</source>
         <translation>Objekt</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1098"/>
+        <location filename="../../flarm.cpp" line="1189"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1100"/>
+        <location filename="../../flarm.cpp" line="1191"/>
         <source>o&apos;clock</source>
         <translation>Uhr</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1101"/>
+        <location filename="../../flarm.cpp" line="1192"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1106"/>
+        <location filename="../../flarm.cpp" line="1197"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../../flarm.cpp" line="1114"/>
+        <location filename="../../flarm.cpp" line="1205"/>
         <source>Alias</source>
         <translation></translation>
     </message>
@@ -603,17 +603,22 @@
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="105"/>
+        <location filename="../../flarmlistview.cpp" line="79"/>
+        <source>Pilot</source>
+        <translation>Pilot</translation>
+    </message>
+    <message>
+        <location filename="../../flarmlistview.cpp" line="107"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="108"/>
+        <location filename="../../flarmlistview.cpp" line="110"/>
         <source>Select</source>
         <translation>Wählen</translation>
     </message>
     <message>
-        <location filename="../../flarmlistview.cpp" line="111"/>
+        <location filename="../../flarmlistview.cpp" line="113"/>
         <source>Unselect</source>
         <translation>Abwählen</translation>
     </message>
@@ -1018,12 +1023,12 @@
 <context>
     <name>GpsNmea</name>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2588"/>
+        <location filename="../../gpsnmea.cpp" line="2593"/>
         <source>GPS connection switched off by user</source>
         <translation>GPS Verbingung abgeschaltet durch Benutzer</translation>
     </message>
     <message>
-        <location filename="../../gpsnmea.cpp" line="2893"/>
+        <location filename="../../gpsnmea.cpp" line="2898"/>
         <source>System clock synchronized</source>
         <translation>Systemuhr synchronisiert</translation>
     </message>
@@ -1609,6 +1614,11 @@
         <translation>Fliegen</translation>
     </message>
     <message>
+        <location filename="../../MainWindow.cpp" line="2351"/>
+        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2026, The Cumulus-Team&lt;/html&gt;</source>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2026, Das Cumulus-Team&lt;/html&gt;</translation>
+    </message>
+    <message>
         <location filename="../../MainWindow.cpp" line="2369"/>
         <source>&lt;hml&gt;&lt;b&gt;Project Leader&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:kflog.cumulus&amp;#64;gmail.com&quot;&gt;kflog.cumulus&amp;#64;gmail.com&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Developers&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Developer, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Core-developer)&lt;br&gt;Eggert Ehmke (Core-developer)&lt;br&gt;Eckhard V&amp;ouml;llm (Developer, NMEA Simulator)&lt;br&gt;Josua Dietze (Developer)&lt;br&gt;Michael Enke (Developer)&lt;br&gt;Hendrik Hoeth (Developer)&lt;br&gt;Florian Ehinger (KFLog-developer)&lt;br&gt;Harald Maier (KFLog-developer)&lt;br&gt;Heiner Lamprecht (KFLog-developer)&lt;br&gt;Thomas Nielsen (KFLog-developer)&lt;/blockquote&gt;&lt;b&gt;Contributors&lt;/b&gt;&lt;blockquote&gt;Robin King (Help pages)&lt;br&gt;Peter Turczak (Code Optimizations)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Thanks to all, who have made available this software!&lt;br&gt;&lt;/html&gt;</source>
         <translation>&lt;hml&gt;&lt;b&gt;Projektleiter&lt;/b&gt;&lt;blockquote&gt;Axel Pauli &amp;lt;&lt;a href=&quot;mailto:axel&amp;#64;kflog.org&quot;&gt;axel&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;&lt;b&gt;Entwickler&lt;/b&gt;&lt;blockquote&gt;Axel Pauli (Entwickler, Maintainer)&lt;br&gt;Andr&amp;eacute; Somers (Kern-Entwickler)&lt;br&gt;Eggert Ehmke (Kern-Entwickler)&lt;br&gt;Eckhard V&amp;ouml;llm (Entwickler, NMEA Simulator)&lt;br&gt;Josua Dietze (Entwickler)&lt;br&gt;Michael Enke (Entwickler)&lt;br&gt;Hendrik Hoeth (Entwickler)&lt;br&gt;Florian Ehinger (KFLog-Entwickler)&lt;br&gt;Harald Maier (KFLog-Entwickler)&lt;br&gt;Heiner Lamprecht (KFLog-Entwickler)&lt;br&gt;Thomas Nielsen (KFLog-Entwickler)&lt;/blockquote&gt;&lt;b&gt;Mitwirkende&lt;/b&gt;&lt;blockquote&gt;Robin King (Hilfeseiten)&lt;br&gt;Peter Turczak (Kode Optimierung)&lt;br&gt;Hendrik M&amp;uuml;ller&lt;br&gt;Stephan Danner&lt;br&gt;Derrick Steed&lt;/blockquote&gt;&lt;b&gt;Server Sponsor&lt;/b&gt;&lt;blockquote&gt;Heiner Lamprecht &amp;lt;&lt;a href=&quot;mailto:heiner&amp;#64;kflog.org&quot;&gt;heiner&amp;#64;kflog.org&lt;/a&gt;&amp;gt;&lt;/blockquote&gt;Danke an alle, die geholfen haben, diese Software verfügbar zu machen!&lt;br&gt;&lt;/html&gt;</translation>
@@ -1759,11 +1769,6 @@
         <location filename="../../MainWindow.cpp" line="2162"/>
         <source>Nearest</source>
         <translation>Nächste</translation>
-    </message>
-    <message>
-        <location filename="../../MainWindow.cpp" line="2351"/>
-        <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2025, The Cumulus-Team&lt;/html&gt;</source>
-        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2025, Das Cumulus-Team&lt;/html&gt; {1,?} {2002-2025,?}</translation>
     </message>
     <message>
         <location filename="../../MainWindow.cpp" line="2355"/>
@@ -4788,100 +4793,100 @@ USB Stick eingeschoben?</translation>
         <translation>Hole alle Konfigurationsdaten vom FLARM.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="308"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="312"/>
         <source>Get</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="323"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="327"/>
         <source>Set</source>
         <translation>Set</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="439"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="443"/>
         <source>Enter item value</source>
         <translation>Wertzuweisung zu FLARM</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="440"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="444"/>
         <source>Flarm item value:</source>
         <translation>Flarm Wert:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="506"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="510"/>
         <source>Configuration item maybe unsupported by your FLARM!</source>
         <translation>Konfigurationselement wird von FLARM nicht ünterstützt!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="508"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="512"/>
         <source>Continue ?</source>
         <translation>Fortfahren?</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="509"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="513"/>
         <source>Information</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="526"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="530"/>
         <source>Configuration item has no value assigned!</source>
         <translation>Variablen Wertzuweisung ist leer!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="527"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="531"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="667"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="811"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="671"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="815"/>
         <source>Flarm device not reachable!</source>
         <translation>Flarm Gerät nicht erreichbar!</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="668"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="713"/>
-        <location filename="../../SettingsPageFlarm.cpp" line="812"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="672"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="717"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="816"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="707"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="711"/>
         <source>Command:</source>
         <translation>Kommando:</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="711"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="715"/>
         <source>rejected by Flarm with error.</source>
         <translation>abgewiesen durch FLARM mit Fehler.</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="727"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="731"/>
         <source>Type=</source>
         <translation>Typ=</translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="730"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="734"/>
         <source>ID=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="735"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="739"/>
         <source>Version=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="738"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="742"/>
         <source>Status=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="743"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="747"/>
         <source>Name=</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../../SettingsPageFlarm.cpp" line="748"/>
+        <location filename="../../SettingsPageFlarm.cpp" line="752"/>
         <source>Date=</source>
         <translation>Datum=</translation>
     </message>

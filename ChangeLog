@@ -18,6 +18,9 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[-] 2026-03-11 AP: Issue #177 fixed. Flarm message interface added to cumulus,
+                   to receive and display external Flarm data.
+
 [*] 2025-09-10 AP: Cumulus 5.43.2 released for Debian, Ubuntu and Android.
 
 [-] 2025-09-10 AP: Issue #176 fixed. Update FlarmNet download link.
