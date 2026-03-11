@@ -33,11 +33,11 @@
 #include <QObject>
 #include <QString>
 #include <QTime>
+#include <QStringList>
 
 #include "flarmbase.h"
 
 class QPoint;
-class QStringList;
 class QTimer;
 
 class Flarm : public QObject, public FlarmBase
