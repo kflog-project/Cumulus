@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2026 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -251,7 +251,7 @@ void GpsClient::processEvent( fd_set *fdMask )
   // WiFi socket 1
   if( sd1 != -1 && FD_ISSET( sd1, fdMask ) )
     {
-      if( readNmeaSocketData( so1, so1Data ) == false )
+      if( readNmeaSocketData( so1, so1Data, so1Buffer ) == false )
         {
           // Error occurred, we close the socket and try a reconnect.
           closeGps();
@@ -268,7 +268,7 @@ void GpsClient::processEvent( fd_set *fdMask )
   // WiFi socket 2
   if( sd2 != -1 && FD_ISSET( sd2, fdMask ) )
     {
-      if( readNmeaSocketData( so2, so2Data ) == false )
+      if( readNmeaSocketData( so2, so2Data, so2Buffer ) == false )
         {
           // Error occur red, we close the socket and try a reconnect.
           closeGps();
@@ -413,7 +413,8 @@ int GpsClient::writeGpsData( const char *sentence )
  * @return true=success / false=unsuccess
  */
 bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
-                                    QStringList& socketData )
+                                    QStringList& socketData,
+                                    QByteArray& socketBuffer )
 {
   char buffer[512];
   qint64 bytes = 0;
@@ -422,10 +423,12 @@ bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
   // of a Qt mainloop.
   socket->waitForReadyRead(0);
 
+  short loops = 5;
+
   do
     {
-      // read NMEA sentence, it ends with crlf
-      bytes = socket->readLine( buffer, 512 );
+      // read all data from the socket
+      bytes = socket->read( buffer, 512 );
 
       if( bytes <= 0 )
         {
@@ -433,39 +436,50 @@ bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
           break;
         }
 
-      // qDebug() << "SO_1 Data:" << buffer;
+      socketBuffer.append( buffer, bytes );
 
-      if( verifyCheckSum( buffer ) == false )
+      while( true )
         {
-          // ignore sentence with bad checksum
-          continue;
-        }
+          int idx = socketBuffer.indexOf( "\n" );
 
-      const char* pflau = "$PFLAU";
+          if( idx == -1 )
+            {
+              break;
+            }
 
-      // Look, if data from Flarm have been received. If yes remember fd.
-      if( strlen(buffer) > strlen(pflau) )
-        {
-          if( strncmp( buffer, pflau, strlen( pflau ) ) == 0 )
+          // extract NMEA sentence
+          QByteArray nmea = socketBuffer.left( idx + 1 );
+          socketBuffer.remove( 0, idx + 1 );
+
+          //qDebug() << socketBuffer;
+
+          if( verifyCheckSum( nmea.constData() ) == false )
+            {
+              // ignore sentence with bad checksum
+              continue;
+            }
+
+          // Look, if data from Flarm have been received. If yes remember fd.
+          if( nmea.contains( "$PFLAU" ) == true )
             {
               flarmFd = socket->socketDescriptor();
             }
+
+          // Forward sentence to the server, if checksum is ok and
+          // processing is desired.
+          // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
+          // AP 2018: we forward all sentences now.
+          if( forwardGpsData == true )
+            {
+              QByteArray ba;
+              ba.append( MSG_GPS_DATA );
+              ba.append( ' ' );
+              ba.append( nmea );
+              writeForwardMsg( ba.data() );
+            }
         }
 
-      // Forward sentence to the server, if checksum is ok and
-      // processing is desired.
-      // if( checkGpsMessageFilter( record ) == true && forwardGpsData == true )
-      // AP 2018: we forward all sentences now.
-      if( forwardGpsData == true )
-        {
-          QByteArray ba;
-          ba.append( MSG_GPS_DATA );
-          ba.append( ' ' );
-          ba.append( buffer );
-          writeForwardMsg( ba.data() );
-        }
-
-    }  while( bytes > 0 );
+    }  while( bytes > 0 && loops-- > 0 );
 
   if( bytes == -1 )
     {
@@ -917,6 +931,7 @@ void GpsClient::closeTcpSockets()
 
       delete so1;
       so1 = nullptr;
+      so1Buffer.clear();
     }
 
   if( so2 != nullptr )
@@ -928,6 +943,7 @@ void GpsClient::closeTcpSockets()
 
       delete so2;
       so2 = nullptr;
+      so2Buffer.clear();
     }
 }
 
@@ -1222,6 +1238,9 @@ void GpsClient::readServerMsg()
           so1Data.append( args[1] );
           so1Data.append( args[2] );
 
+          // clear socket receiver buffer
+          so1Buffer.clear();
+
           // remove the tty device name
           device.clear();
          }
@@ -1252,6 +1271,9 @@ void GpsClient::readServerMsg()
           // WiFi 2 save IP and port
           so2Data.append( args[3] );
           so2Data.append( args[4] );
+
+          // clear socket receiver buffer
+          so2Buffer.clear();
 
           // remove the tty device name
           device.clear();

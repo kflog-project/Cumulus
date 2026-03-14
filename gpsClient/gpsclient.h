@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2004-2022 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2004-2026 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This program is free software; you can redistribute it and/or modify
 **   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *
  * \author Axel Pauli
  *
- * \date 2004-2022
+ * \date 2004-2026
  *
  * \brief GPS client manager
  *
@@ -106,7 +106,8 @@ public:
    *
    * @return true=success / false=unsuccess
    */
-  bool readNmeaSocketData( QTcpSocket* socket, QStringList& socketData );
+  bool readNmeaSocketData( QTcpSocket* socket, QStringList& socketData,
+                           QByteArray& buffer );
 
   /**
    * Writes data to the connected GPS device.
@@ -261,6 +262,12 @@ public:
   char  databuffer[1024];
 
   int   dbsize;
+
+  // Buffer for socket 1
+  QByteArray so1Buffer;
+
+  // Buffer for socket 2
+  QByteArray so2Buffer;
 
   // file descriptor to TTY GPS device
   int fd;
