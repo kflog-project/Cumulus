@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>Cumulus Einstellungen</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">Anfang</a></td>
+				<td></td>
+			</tr>
+			<tr>
+        <td align="left"><a href="cumulus-settings-flarm.html">back</a></td>
+        <td align="center"><a href="cumulus-settings.html">overview</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 align="center">Settings - Flarm Database</h4>
+	
+  <p>The download button are only available, if Cumulus is not moving.</p>
+
+	<p>Cumulus may use database data in the Flarm display from FlarmNet and OGN
+     for Flarm objects, if it is configured in that way. To get more information
+     about that, please have a look at the webpages of:
+     <ul>
+      <li><a href="https://www.flarmnet.org">FlarmNet</a></li>
+      <li><a href="https://ddb.glidernet.org">OGN</a></li>      
+     </ul>
+  </p>
+	
+	<p>
+		The Flarm Database configuration window consists of the following elements:
+	</p>
+
+	<p><b>use Flarm Database</b>
+	
+	<p>
+	  If the checkbox is activated, data from FlarmNet and OGN will be used, if
+    they are installed in Cumulus, otherwise not.
+	</p>
+	
+  <p><b>Download FlarmNet URL</b>
+
+	<p>
+	  This entry shows the current used URL by Cumulus to download FlarmNet data.
+    Here you can adapt the URL, if it has been changed.
+	  <br><br><b>Note:</b> Cumulus can process only the FlarmNet file, which is
+	  provided for <i>XCSoar</i>.
+	</p>
+  
+  <p><b>Download OGN URL</b>
+
+  <p>
+    This entry shows the current used URL by Cumulus to download OGN data.
+    Here you can adapt the URL, if it has been changed.
+  </p>
+  
+  <p><b>Button Count</b>
+
+  <p>
+    If you press the <i>Count</i> button, you can test, how many database
+    records would be loaded by the defined filter.
+  </p>
+
+	<p><b>FlarmDB Filter</b>
+	
+	<p>
+    If you don't want to load the whole FlarmNet and OGN data by Cumulus during
+    run-time, you can define here, which subset of data should be loaded. A single
+    filter item is a substring of the airplane registration. If the filter item
+    matches the beginning of the registration sign during load, this database
+    record is loaded, otherwise not. You can define several filter items divided
+    by space or comma. Note, that the filter comparison works context sensitive.
+	</p>
+	
+	<p><b>Example:</b></p>
+	
+	<p>
+	If the filter item <i>D</i> is defined, all data records, which airplane
+	registration starts with <i>D</i> will be loaded. Airplane registrations
+  uses upper letters in the database.
+	</p>
+	
+  <p><b>Button Download</b>
+
+	<p>
+		If you press the <i>Download</i> button, Cumulus tries to download the
+		FlarmNet or OGN file by using the URL, defined to the right of the download
+    button. Preconditions	is, that an active Internet connection exists.
+	</p>
+
+  <p><b>Button Default</b>
+
+  <p>
+    If you press the <i>Default</i> button, all configuration items of
+    the window will be set to their default values. That means:
+  </p>
+  
+  <p>
+  <ul>
+  <li>The checkbox <i>use FlarmNet Data</i> is deactivated.</li>
+  <li>The URLs will be set to the value, stored internally in Cumulus.</li>
+  <li>All filter items are cleared.
+  </ul>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">Anfang</a></td>
+				<td></td>
+			</tr>
+			<tr>
+        <td align="left"><a href="cumulus-settings-flarm.html">back</a></td>
+        <td align="center"><a href="cumulus-settings.html">overview</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">next</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
