@@ -54,9 +54,13 @@
     Da sich die Datenmengen von FlarmNet und OGN &uuml;berschneiden, geht Cumulus
     folgenderma&szlig;en damit um. Zuerst werden die FlarmNet Daten gelesen und
     anschlie&szlig;end die OGN Daten. Die OGN Daten &uuml;berschreiben die
-    FlarmNet Daten, bis auf die Funkfrequenz, wenn die Ger&auml;kennung
-    gleich ist. Wurde für die Ger&auml;kennung ein Flarm Alias definiert, wird
-    dieser anstatt des Flugzeugkennzeichens verwendet.
+    FlarmNet Daten, bis auf die Funkfrequenz, wenn die Ger&auml;tekennung
+    gleich ist. Bei OGN werden beim Einlesen nur die Ger&auml;teadressen vom Type
+    'F' (Flarm) und 'I' (ICAO) gelesen. Alle 'O' Eintr&auml;ge werden ignoriert.
+  </p>
+   <p>
+    Wurde f&uuml;r die Ger&auml;tekennung ein Flarm Alias in Cumulus definiert,
+    wird dieser anstatt des Flugzeugkennzeichens verwendet.
   </p>
 	
   <p><b>Download FlarmNet URL</b>
@@ -123,7 +127,7 @@
   </p>
     <p>
     <ul>
-    <li>Die Checkbox <i>verwende FlarmNet Daten</i> wird deaktiviert.</li>
+    <li>Die Checkbox <i>verwende Flarm Datenbank</i> wird deaktiviert.</li>
     <li>Die URLs werden auf die in Cumulus hinterlegte URLs gesetzt.</li>
     <li>Alle Filterelemente werden gel&ouml;scht.
     </ul>
