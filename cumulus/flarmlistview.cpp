@@ -11,7 +11,7 @@
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
 **
-**   V1.3
+**   V1.4
 **
 ***********************************************************************/
 
@@ -30,7 +30,7 @@
 #include "flarmlistview.h"
 #include "flarmaliaslist.h"
 #include "flarm.h"
-#include "FlarmNet.h"
+#include "FlarmDB.h"
 #include "generalconfig.h"
 #include "distance.h"
 #include "altitude.h"
@@ -258,13 +258,12 @@ void FlarmListView::fillItemList( QString& object2Select )
            fdata[4] = Flarm::getPName( fid );
          }
 
-      if (ok && GeneralConfig::instance ()->useFlarmNet () == true)
+       if( ok && GeneralConfig::instance()->useFlarmDB() == true )
         {
           // Try to load Flarmnet data
           QStringList fnd;
 
-
-          if (FlarmNet::getData (fid, fnd) == true)
+           if( FlarmDB::getData( fid, fnd ) == true )
             {
               if( fdata.at(0).size () == 0 && fnd.at (0).size () > 0 )
                 {

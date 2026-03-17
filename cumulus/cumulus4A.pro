@@ -2,7 +2,7 @@
 # Cumulus Android project file for qmake
 #
 # Copyright (c): 2010 by Josua Dietze
-#                2012-2025 by Axel Pauli
+#                2012-2026 by Axel Pauli
 #
 # This file is distributed under the terms of the General Public
 # License. See the file COPYING for more information.
@@ -421,7 +421,7 @@ flarm {
     HEADERS += flarm.h \
                flarmaliaslist.h \
                flarmbase.h \
-               FlarmNet.h \
+               FlarmDB.h \
                flarmbincom.h \
                flarmbincomandroid.h \
                flarmcrc.h \
@@ -438,7 +438,7 @@ flarm {
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
                flarmbase.cpp \
-		           FlarmNet.cpp \
+		           FlarmDB.cpp \
                flarmbincom.cpp \
                flarmbincomandroid.cpp \
                flarmcrc.cpp \
@@ -450,7 +450,7 @@ flarm {
                preflightflarmpage.cpp \
                preflightflarmusbpage.cpp \
                SettingsPageFlarm.cpp \
-               SettingsPageFlarmNet.cpp
+               SettingsPageFlarmDB.cpp
                
     DEFINES += FLARM
 }

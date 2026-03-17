@@ -25,7 +25,6 @@
  *  and to initiate the load of the map and all other data.
  */
 
-#include <FlarmNet.h>
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
@@ -43,6 +42,7 @@
 #include "airfield.h"
 #include "calculator.h"
 #include "CuMsgBox.h"
+#include "FlarmDB.h"
 #include "SettingsWidget.h"
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
@@ -951,10 +951,10 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #ifdef FLARM
 
-  if( GeneralConfig::instance()->useFlarmNet() == true )
+  if( GeneralConfig::instance()->useFlarmDB() == true )
     {
       // load Flarm database from file.
-      FlarmNetThread* thread = new FlarmNetThread( 0 );
+      FlarmDBThread* thread = new FlarmDBThread( 0 );
       thread->start();
     }
 
