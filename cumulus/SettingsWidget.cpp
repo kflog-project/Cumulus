@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2002      by André Somers
- **                   2007-2025 by Axel Pauli
+ **                   2007-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -36,7 +36,7 @@
 
 #ifdef FLARM
 #include "SettingsPageFlarm.h"
-#include <SettingsPageFlarmNet.h>
+#include "SettingsPageFlarmDB.h"
 #endif
 
 #include "settingspageglider.h"
@@ -63,7 +63,7 @@
 #define AIRSPACES       "Airspaces"
 #ifdef FLARM
 #define FLARMCONF       "FLARM Configuration"
-#define FLARMNET        "FlarmNet"
+#define FLARMDB         "Flarm Database"
 #endif
 #define GLIDERS         "Gliders"
 #define GPS             "GPS"
@@ -98,7 +98,7 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
                   << tr("Airspaces")
 #ifdef FLARM
                   << tr("FLARM Configuration")
-                  << tr("FlarmNet")
+                  << tr("Flarm Database")
 #endif
                   << tr("Gliders")
                   << tr("GPS")
@@ -226,8 +226,8 @@ SettingsWidget::SettingsWidget( QWidget* parent ) :
     }
 
   item = new QTreeWidgetItem;
-  item->setText( 0, tr(FLARMNET) );
-  item->setData( 0, Qt::UserRole, FLARMNET );
+  item->setText( 0, tr(FLARMDB) );
+  item->setData( 0, Qt::UserRole, FLARMDB );
   m_setupTree->addTopLevelItem( item );
 
 #endif
@@ -495,9 +495,9 @@ void SettingsWidget::slotPageClicked( QTreeWidgetItem* item, int column )
       return;
     }
 
-  if( itemText == FLARMNET )
+  if( itemText == FLARMDB )
     {
-      SettingsPageFlarmNet* page = new SettingsPageFlarmNet( this );
+      SettingsPageFlarmDB* page = new SettingsPageFlarmDB( this );
       page->show();
       return;
     }

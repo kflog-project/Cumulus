@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by André Somers
-**                   2007-2025 by Axel Pauli
+**                   2007-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -25,9 +25,9 @@
  * configuration options. This class is a singleton class. Use the
  * static instance method to get a reference to the instance.
  *
- * \date 2004-2025
+ * \date 2004-2026
  *
- * \version 1.16
+ * \version 1.17
  */
 
 #pragma once
@@ -86,6 +86,12 @@
 
 // FlarmNet default URL
 #define FLARM_NET_URL "https://www.flarmnet.org/files/data.fln"
+
+// Flarm OGN default URL
+#define FLARM_OGN_URL "https://ddb.glidernet.org/download/?t=1"
+
+// Flarm OGN csv file name
+#define FLARM_OGN_FILE "ogn.csv"
 
 class QTranslator;
 
@@ -1955,28 +1961,40 @@ class GeneralConfig : protected QSettings
     _flarmNetUrl = newValue;
   }
 
-  /** Gets the FlarmNet Filter */
-  QString &getFlarmNetFilter()
+  /** Gets the Flarm OGN URL */
+  QString &getFlarmOGNUrl()
     {
-      return _flarmNetFilter;
+      return _flarmOGNUrl;
     }
 
-  /** Sets the FlarmNet Filter */
-  void setFlarmNetFilter( const QString newValue )
+  /** Sets the Flarm OGN URL */
+  void setFlarmOGNUrl( const QString newValue )
   {
-    _flarmNetFilter = newValue;
+    _flarmOGNUrl = newValue;
   }
 
-  /** Gets flag for FlarmNet usage. */
-  bool useFlarmNet() const
+  /** Gets the Flarm DB Filter */
+  QString &getFlarmDBFilter()
+    {
+      return _flarmDBFilter;
+    }
+
+  /** Sets the Flarm DB Filter */
+  void setFlarmDBFilter( const QString newValue )
   {
-    return _useFlarmNet;
+    _flarmDBFilter = newValue;
   }
 
-  /** sets flag for FlarmNet usage. */
-  void setUseFlarmNet(const bool newValue)
+  /** Gets flag for FlarmDB usage. */
+  bool useFlarmDB() const
   {
-    _useFlarmNet = newValue;
+    return _useFlarmDB;
+  }
+
+  /** sets flag for FlarmDB usage. */
+  void setUseFlarmDB(const bool newValue)
+  {
+    _useFlarmDB = newValue;
   }
 
   /** gets AirfieldDisplayTime */
@@ -3573,11 +3591,14 @@ class GeneralConfig : protected QSettings
   // FlarmNet URL
   QString _flarmNetUrl;
 
-  // FlarmNet Filter
-  QString _flarmNetFilter;
+  // Flarm OGN URL
+  QString _flarmOGNUrl;
 
-  // FlarmNet usage flag;
-  bool _useFlarmNet;
+  // FlarmDB Filter
+  QString _flarmDBFilter;
+
+  // FlarmDB usage flag;
+  bool _useFlarmDB;
 
   // AirfieldDisplayTime
   int _airfieldDisplayTime;

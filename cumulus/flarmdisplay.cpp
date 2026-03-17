@@ -13,6 +13,7 @@
 **
 ***********************************************************************/
 
+#include <FlarmDB.h>
 #include <cmath>
 
 #include <QtWidgets>
@@ -22,7 +23,6 @@
 #include "distance.h"
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
-#include "FlarmNet.h"
 #include "flarm.h"
 #include "layout.h"
 #include "mapconfig.h"
@@ -175,11 +175,11 @@ void FlarmDisplay::createBackground()
           // aircraft call sign, reported by Flarm device
           actfId = Flarm::getAReg( fid );
         }
-      else if( GeneralConfig::instance()->useFlarmNet() == true )
+      else if( GeneralConfig::instance()->useFlarmDB() == true )
         {
           // Flarmnet DB is the third choice
           QStringList fnd;
-          ok = FlarmNet::getData( fid, fnd );
+          ok = FlarmDB::getData( fid, fnd );
 
           if( ok == true && fnd.at(0).size() > 0 )
             {

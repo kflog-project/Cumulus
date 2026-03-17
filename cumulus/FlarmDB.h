@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   FlarmNet.h
+**   FlarmDB.h
 **
 **   Created on: 12.10.2023
 **
@@ -8,7 +8,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2023 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2023-2026 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -16,19 +16,20 @@
 ***********************************************************************/
 
 /**
- * \class FlarmNet
+ * \class FlarmDB
  *
  * \author Axel Pauli
  *
- * \brief Class for reading and accessing special data.
+ * \brief Class for reading and accessing Flarm datadase data.
  *
- * Class for reading and accessing special data.
+ * Class for reading and Flarm datadase data.
  *
  * \see https://www.flarmnet.org
+ * \see https://ddb.glidernet.org
  *
- * \date 2023
+ * \date 2023-2026
  *
- * \version 1.1
+ * \version 1.2
  */
 
 #pragma once
@@ -37,31 +38,39 @@
 #include <QMutex>
 #include <QString>
 
-class FlarmNet
+class FlarmDB
 {
   public:
 
   /**
    * Constructor
    */
-  FlarmNet()
+  FlarmDB()
   {
   };
 
   /**
    * Destructor
    */
-  virtual ~FlarmNet()
+  virtual ~FlarmDB()
   {
   };
 
   /**
-   * Loads data from a file into a hash dictionary.
+   * Loads data from a FlarmNet file into a hash dictionary.
    *
    * @returns The number of successfully loaded items
    *
    */
-  static int loadData();
+  static int loadFNData( QHash<uint, QString>& dict );
+
+  /**
+   * Loads data from an OGN file into a hash dictionary.
+   *
+   * @returns The number of successfully loaded items
+   *
+   */
+  static int loadOGNData( QHash<uint, QString>& dict );
 
   /**
    * unloads the data hash dictionary.
@@ -80,7 +89,7 @@ class FlarmNet
   static bool getData( int id, QStringList &data );
 
   /**
-   * Get number of FlarmNet records.
+   * Get number of FlarmDB records.
    */
   static int getRecords()
   {
@@ -88,11 +97,43 @@ class FlarmNet
   }
 
   /**
-   * Count filtered elements and return it.
+   * Count filtered elements and return them.
    */
-  static int applyFilter( QString filter );
+  static int applyFilter( QString& filter );
+
+  /**
+   * Return data dictionary
+   */
+  static QHash<uint, QString>& dictionary()
+  {
+    return m_datamap;
+  }
 
  private:
+
+  /**
+   * Check item for usage.
+   */
+  static bool checkFilter( QString& item )
+  {
+    if( filterList.size() > 0 )
+      {
+        // Check item for usage
+        for( int i=0; i < filterList.size(); i++ )
+          {
+            if( item.startsWith( filterList.at(i) ) == true )
+              {
+                return true;
+              }
+          }
+
+        return false;
+      }
+    else
+      {
+        return true;
+      }
+  }
 
   /**
    * A hash map containing data
@@ -101,6 +142,11 @@ class FlarmNet
 
   /** Mutex to ensure thread safety. */
   static QMutex m_mutex;
+
+  /**
+   * Filterlist
+   */
+  static QStringList filterList;
 };
 
 /******************************************************************************/
@@ -108,26 +154,26 @@ class FlarmNet
 #include <QThread>
 
 /**
-* \class FlarmNetThread
+* \class FlarmDBThread
 *
 * \author Axel Pauli
 *
 * \brief Class to read a data file in an extra thread.
 *
-* \date 2023
+* \date 2023-2026
 *
-* \version 1.0
+* \version 1.1
 */
 
-class FlarmNetThread : public QThread
+class FlarmDBThread : public QThread
 {
   Q_OBJECT
 
  public:
 
-  FlarmNetThread( QObject *parent=0 );
+  FlarmDBThread( QObject *parent=0 );
 
-  virtual ~FlarmNetThread();
+  virtual ~FlarmDBThread();
 
  protected:
 
