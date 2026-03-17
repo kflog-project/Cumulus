@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>Cumulus Einstellungen</title>
+<link rel="stylesheet" type="text/css" href="text.css">
+</head>
+
+<body>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">Anfang</a></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="left"><a href="cumulus-settings-flarm.html">zur&uuml;ck</a></td>
+				<td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+				<td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h4 align="center">Einstellungen - Flarm Datenbank</h4>
+	
+	<p>
+	  Die Download Kn&ouml;pfe sind nur verf&uuml;gbar, wenn Cumulus nicht
+	  in Bewegung ist.
+	</p>
+
+	<p>Cumulus kann Datenbankdaten von FlarmNet und OGN in der Flarmanzeige
+     f&uuml;r Flarm Objekte mit verwenden, wenn es hier so konfiguriert wird.
+     Um mehr dar&uuml;ber zu erfahren, schauen sie bitte auf die folgenden
+     Webseiten:
+     <ul>
+      <li><a href="https://www.flarmnet.org">FlarmNet</a></li>
+      <li><a href="https://ddb.glidernet.org">OGN</a></li>      
+     </ul>
+	 </p>
+	
+	<p>
+		Die Flarm Datenbank Seite besteht aus den folgenden Elementen:
+	</p>
+
+	<p><b>verwende Flarm Datenbank</b>
+	
+	<p>
+	  Wenn die Checkbox aktiviert ist, werden Daten von FlarmNet und OGN,
+    sofern sie zur Verf&uuml;gung stehen, verwendet. Im anderen Fall nicht.
+    Eine Verwendung setzt voraus, dass sie zuvor in Cumulus runtergeladen wurden.
+	</p>
+  
+  <p>
+    Da sich die Datenmengen von FlarmNet und OGN &uuml;berschneiden, geht Cumulus
+    folgenderma&szlig;en damit um. Zuerst werden die FlarmNet Daten gelesen und
+    anschlie&szlig;end die OGN Daten. Die OGN Daten &uuml;berschreiben die
+    FlarmNet Daten, bis auf die Funkfrequenz, wenn die Ger&auml;tekennung
+    gleich ist. Bei OGN werden beim Einlesen nur die Ger&auml;teadressen vom Type
+    'F' (Flarm) und 'I' (ICAO) gelesen. Alle 'O' Eintr&auml;ge werden ignoriert.
+  </p>
+   <p>
+    Wurde f&uuml;r die Ger&auml;tekennung ein Flarm Alias in Cumulus definiert,
+    wird dieser anstatt des Flugzeugkennzeichens verwendet.
+  </p>
+	
+  <p><b>Download FlarmNet URL</b>
+
+	<p>
+	  Dieser Eintrag verweist auf die aktuell benutzte URL, um FlarmNet Daten
+	  mittels Cumulus herunter zu laden. Falls die URL sich &auml;ndert, kann
+	  sie hier angepasst werden.
+	  <br><br><b>Beachte:</b> Cumulus kann nur die FlarmNet Datei <i>data.fln</i>,
+    die f&uuml;r <i>XCSoar</i> bereitgestellt wird, verarbeiten.
+	</p>
+	
+  <p><b>Download OGN URL</b>
+
+  <p>
+    Dieser Eintrag verweist auf die aktuell benutzte URL, um OGN Daten
+    mittels Cumulus herunter zu laden. Falls die URL sich &auml;ndert, kann
+    sie hier angepasst werden.
+  </p>
+
+  <p><b>Knopf Z&auml;hle</b>
+
+  <p>
+    Wenn man den Knopf <i>Z&auml;hle</i> bet&auml;tigt, kann man austesten, wie
+    das definierte Filter sich auf die Anzahl der geladenen Flarm Datens&auml;tze
+    auswirkt.
+  </p>
+
+  <p><b>FlarmDB Filter</b>
+	
+	<p>
+		Wenn man nicht die kompletten FlarmNet und OGN Daten laden m&ouml;chte,
+    da diese sehr umfangreich sein k&ouml;nnen, kann man durch die Definition
+    von Filterelementen diese einschr&auml;nken. Ein Filterelement besteht aus
+    einer Textkette und wird auf die Flugzeugkennzeichen angewendet. Es
+    k&ouml;nnen mehre Filterelemente getrennt durch Leerzeichen oder Komma hier
+    angegeben werden. Das Filterelement	wird mit dem Kennzeichenbeginn verglichen
+    und wenn es &uuml;bereinstimmt,	wird der Datensatz geladen. Beachte, dass
+    der Filtervergleich Kontext sensitiv arbeitet. D.h. Kennzeichenbuchstaben
+    sind in der Regel in den Datenbanken gro&szlig; geschrieben.
+	</p>
+	
+	<p><b>Beispiel:</b></p>
+	
+	<p>
+	Wenn als Filterelement <i>D</i> definiert wird, werden alle Datens&auml;tze,
+	deren Flugzeugkennzeichen mit <i>D</i> beginnt, geladen. Weitere Filterelemente
+  k&ouml;nnen getrennt duch Leerzeichen bzw. Komma hinzugef&uuml;gt werden.
+	</p>
+	
+  <p><b>Knopf Download</b>
+
+	<p>
+	  Wenn der Knopf <i>Download</i> bet&auml;tigt wird, versucht Cumulus mittels
+	  der definierten URL die FlarmNet bzw. OGN Datei herunter zu laden.
+	  Voraussetzung ist, dass eine Internetverbindung existiert.
+	</p>
+
+  <p><b>Knopf Standard</b>
+
+  <p>
+    Dr&uuml;ckt man den Knopf <i>Standard</i> werden die Konfigurationseinstellungen
+    dieses Fensters auf Standardwerte zur&uuml;gesetzt. D.h.
+  </p>
+    <p>
+    <ul>
+    <li>Die Checkbox <i>verwende Flarm Datenbank</i> wird deaktiviert.</li>
+    <li>Die URLs werden auf die in Cumulus hinterlegte URLs gesetzt.</li>
+    <li>Alle Filterelemente werden gel&ouml;scht.
+    </ul>
+
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td></td>
+				<td align="center"><a href="cumulus.html">Anfang</a></td>
+				<td></td>
+			</tr>
+			<tr>
+        <td align="left"><a href="cumulus-settings-flarm.html">zur&uuml;ck</a></td>
+        <td align="center"><a href="cumulus-settings.html">&Uuml;bersicht</a></td>
+        <td align="right"><a href="cumulus-settings-glider.html">weiter</a></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
