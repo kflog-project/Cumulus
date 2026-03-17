@@ -35,7 +35,7 @@ SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("Settings - FlarmNet") );
+  setWindowTitle( tr("Settings - Flarm Database") );
 
   if( parent )
     {
