@@ -18,6 +18,8 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2025-03-18 AP: Cumulus 5.44.0 released for Debian, Ubuntu and Android.
+
 [-] 2026-03-17 AP: Issue #178 fixed. Add OGN data usage to Flarm display.
 
 [-] 2026-03-11 AP: Issue #177 fixed. Flarm message interface added to cumulus,
