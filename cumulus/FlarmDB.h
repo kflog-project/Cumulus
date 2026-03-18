@@ -37,6 +37,7 @@
 #include <QHash>
 #include <QMutex>
 #include <QString>
+#include <QStringList>
 
 class FlarmDB
 {

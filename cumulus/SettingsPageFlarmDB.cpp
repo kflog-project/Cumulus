@@ -108,6 +108,9 @@ SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
   editFnFile = new QLineEdit( this );
   imh = (editFnFile->inputMethodHints() | Qt::ImhNoPredictiveText);
   editFnFile->setInputMethodHints(imh);
+  connect( editFnFile, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget( editFnFile, row, 0, 1, 3 );
   row++;
 
@@ -123,6 +126,9 @@ SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
   editOGNFile = new QLineEdit( this );
   imh = (editOGNFile->inputMethodHints() | Qt::ImhNoPredictiveText);
   editOGNFile->setInputMethodHints(imh);
+  connect( editOGNFile, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget( editOGNFile, row, 0, 1, 3 );
   row++;
 
@@ -141,6 +147,9 @@ SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
   editDBFilter = new QLineEdit( this );
   imh1 = (editDBFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
   editDBFilter->setInputMethodHints(imh1);
+  connect( editDBFilter, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget( editDBFilter, row, 0, 1, 3 );
   row++;
 
@@ -370,7 +379,7 @@ void SettingsPageFlarmDB::slotDownloadOGN()
   buttonDownloadFN->setEnabled( false );
   buttonDownloadOGN->setEnabled( false );
 
-  if( m_downloadManger == nullptr )
+  if( m_downloadManger == 0 )
     {
       m_downloadManger = new DownloadManager(this);
 
@@ -421,7 +430,7 @@ void SettingsPageFlarmDB::slotNetworkError()
   if( buttonDownloadFN->isEnabled() == false )
     {
       buttonDownloadFN->setEnabled( true );
-}
+    }
 
   if( buttonDownloadOGN->isEnabled() == false )
     {

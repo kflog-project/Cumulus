@@ -193,7 +193,7 @@ int FlarmDB::loadOGNData( QHash<uint, QString>& dict )
       // remove ' characters from the string
       line = line.remove( QChar( '\'' ) );
 
-      QStringList qsl = line.split( ",", Qt::KeepEmptyParts );
+      QStringList qsl = line.split( ",", QString::KeepEmptyParts );
 
       if( qsl.size() < 8 )
         {
@@ -240,7 +240,7 @@ int FlarmDB::loadOGNData( QHash<uint, QString>& dict )
           // Check for an old entry, if frequency is defined
           oldEntry = m_datamap[ did ];
 
-          QStringList qslOld = oldEntry.split( "|", Qt::KeepEmptyParts );
+          QStringList qslOld = oldEntry.split( "|", QString::KeepEmptyParts );
 
           if( qslOld.size() >= 4 && qslOld.at(3).isEmpty() == false )
             {
@@ -382,7 +382,7 @@ int FlarmDB::applyFilter( QString& filter )
       // remove ' characters from the string
       line = line.remove( QChar( '\'' ) );
 
-      QStringList qsl = line.split( ",", Qt::KeepEmptyParts );
+      QStringList qsl = line.split( ",", QString::KeepEmptyParts );
 
       if( qsl.size() < 8 )
         {
@@ -433,7 +433,7 @@ bool FlarmDB::getData( int id, QStringList &data )
   if( m_datamap.contains( id ) )
     {
       // List contains KZ, Type, WKZ, Frequenz. Unknown elements are empty.
-      data = m_datamap.value( id ).split( "|", Qt::KeepEmptyParts );
+      data = m_datamap.value( id ).split( "|", QString::KeepEmptyParts );
       return true;
     }
 

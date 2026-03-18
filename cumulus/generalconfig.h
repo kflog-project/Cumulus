@@ -3607,6 +3607,8 @@ class GeneralConfig : protected QSettings
   // FlarmDB usage flag;
   bool _useFlarmDB;
 
+  // sound player selected by user
+  QString _soundPlayer;
   // AirfieldDisplayTime
   int _airfieldDisplayTime;
   // AirspaceDisplayTime

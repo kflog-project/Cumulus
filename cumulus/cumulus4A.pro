@@ -433,7 +433,7 @@ flarm {
                preflightflarmpage.h \
                preflightflarmusbpage.h \
                SettingsPageFlarm.h \
-               SettingsPageFlarmNet.h
+               SettingsPageFlarmDB.h
 
     SOURCES += flarm.cpp \
                flarmaliaslist.cpp \
