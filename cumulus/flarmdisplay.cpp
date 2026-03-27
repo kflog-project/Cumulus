@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c): 2010-2023 Axel Pauli
+**   Copyright (c): 2010-2026 Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -22,7 +22,7 @@
 #include "distance.h"
 #include "flarmaliaslist.h"
 #include "flarmdisplay.h"
-#include "FlarmNet.h"
+#include "FlarmDB.h"
 #include "flarm.h"
 #include "layout.h"
 #include "mapconfig.h"
@@ -162,19 +162,24 @@ void FlarmDisplay::createBackground()
 
       // Try to map the Flarm Id to an alias name
       QString actfId = selectedObject;
+      bool ok;
+      uint fid = selectedObject.toUInt( &ok, 16);
 
       if( aliasHash.contains( selectedObject) )
         {
           // Alias list is always the first choice
           actfId = aliasHash.value(selectedObject).first;
         }
-      else if( GeneralConfig::instance()->useFlarmNet() == true )
+      else if( Flarm::getAReg( fid ).size() > 0 )
         {
-          // Flarmnet DB is the second choice
+          // aircraft call sign, reported by Flarm device
+          actfId = Flarm::getAReg( fid );
+        }
+      else if( GeneralConfig::instance()->useFlarmDB() == true )
+        {
+          // Flarmnet DB is the third choice
           QStringList fnd;
-          bool ok;
-          uint fid = selectedObject.toUInt( &ok, 16);
-          ok = FlarmNet::getData( fid, fnd );
+          ok = FlarmDB::getData( fid, fnd );
 
           if( ok == true && fnd.at(0).size() > 0 )
             {

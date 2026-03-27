@@ -1,12 +1,12 @@
 /***********************************************************************
 **
-**   SettingsPageFlarmNet.cpp
+**   SettingsPageFlarmDB.cpp
 **
 **   This file is part of Cumulus
 **
 ************************************************************************
 **
-**   Copyright (c):  2023 by Axel Pauli (kflog.cumulus@gmail.com)
+**   Copyright (c):  2023-2026 by Axel Pauli (kflog.cumulus@gmail.com)
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -24,15 +24,15 @@
 #endif
 
 #include "calculator.h"
-#include <FlarmNet.h>
-#include <SettingsPageFlarmNet.h>
+#include "FlarmDB.h"
+#include "SettingsPageFlarmDB.h"
 #include "generalconfig.h"
 #include "helpbrowser.h"
 #include "layout.h"
 #include "MainWindow.h"
 #include "whatsthat.h"
 
-SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
+SettingsPageFlarmDB::SettingsPageFlarmDB( QWidget *parent ) :
   QWidget(parent),
   fnUseStart(false),
   m_downloadManger(0),
@@ -40,11 +40,11 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   m_downloadDone(false),
   m_first(true)
 {
-  setObjectName("SettingsPageFlarmNet");
+  setObjectName("SettingsPageFlarmDB");
   setWindowFlags( Qt::Tool );
   setWindowModality( Qt::WindowModal );
   setAttribute(Qt::WA_DeleteOnClose);
-  setWindowTitle( tr("Settings - FlarmNet") );
+  setWindowTitle( tr("Settings - Flarm Database") );
 
   if( parent )
     {
@@ -93,23 +93,50 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
 
   int row=0;
 
-  useFlarmNet = new QCheckBox( tr("use FlarmNet data"), this );
-  useFlarmNet->setToolTip( tr("Check it for FlarmNet usage") );
-  topLayout->addWidget( useFlarmNet, row, 0, 1, 3 );
+  useFlarmDB = new QCheckBox( tr("use Flarm Database"), this );
+  useFlarmDB->setToolTip( tr("Check it for Flarm Database usage") );
+  topLayout->addWidget( useFlarmDB, row, 0, 1, 3 );
   row++;
 
-  topLayout->addWidget(new QLabel(tr("FlarmNet URL:"), this), row, 0);
+  buttonDownloadFN = new QPushButton( tr("Download"), this );
+  topLayout->addWidget( buttonDownloadFN, row, 0 );
+
+  topLayout->addWidget(new QLabel(tr("FlarmNet URL:"), this), row, 1);
   row++;
 
   Qt::InputMethodHints imh;
   editFnFile = new QLineEdit( this );
   imh = (editFnFile->inputMethodHints() | Qt::ImhNoPredictiveText);
   editFnFile->setInputMethodHints(imh);
+  connect( editFnFile, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
   topLayout->addWidget( editFnFile, row, 0, 1, 3 );
   row++;
 
-  fnFilterLabel = new QLabel( this );
-  topLayout->addWidget( fnFilterLabel, row, 0, 1, 2  );
+  topLayout->setRowMinimumHeight( row, 20 * Layout::getIntScaledDensity() );
+  row++;
+
+  buttonDownloadOGN = new QPushButton( tr("Download"), this );
+  topLayout->addWidget( buttonDownloadOGN, row, 0 );
+
+  topLayout->addWidget(new QLabel(tr("OGN URL:"), this), row, 1);
+  row++;
+
+  editOGNFile = new QLineEdit( this );
+  imh = (editOGNFile->inputMethodHints() | Qt::ImhNoPredictiveText);
+  editOGNFile->setInputMethodHints(imh);
+  connect( editOGNFile, SIGNAL(returnPressed()),
+           MainWindow::mainWindow(), SLOT(slotCloseSip()) );
+
+  topLayout->addWidget( editOGNFile, row, 0, 1, 3 );
+  row++;
+
+  topLayout->setRowMinimumHeight( row, 20 * Layout::getIntScaledDensity() );
+  row++;
+
+  dbFilterLabel = new QLabel( this );
+  topLayout->addWidget( dbFilterLabel, row, 0, 1, 2  );
   count = new QPushButton( tr("Count"), this );
   topLayout->addWidget( count, row, 2 );
   row++;
@@ -117,31 +144,28 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   connect( count, SIGNAL(clicked()), SLOT(slotCount()) );
 
   Qt::InputMethodHints imh1;
-  editFnFilter = new QLineEdit( this );
-  imh1 = (editFnFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
-  editFnFilter->setInputMethodHints(imh1);
-  topLayout->addWidget( editFnFilter, row, 0, 1, 3 );
-  row++;
-
-  connect( editFnFilter, SIGNAL(returnPressed()),
+  editDBFilter = new QLineEdit( this );
+  imh1 = (editDBFilter->inputMethodHints() | Qt::ImhNoPredictiveText);
+  editDBFilter->setInputMethodHints(imh1);
+  connect( editDBFilter, SIGNAL(returnPressed()),
            MainWindow::mainWindow(), SLOT(slotCloseSip()) );
 
-  buttonDownload = new QPushButton( tr("Download"), this );
-  topLayout->addWidget( buttonDownload, row, 0 );
+  topLayout->addWidget( editDBFilter, row, 0, 1, 3 );
+  row++;
 
-  info = new QLabel( this );
-  topLayout->addWidget( info, row, 1, 1, 2 );
+  topLayout->setRowStretch ( row, 10 );
+  topLayout->setColumnStretch( 1, 10 );
   row++;
 
   buttonReset = new QPushButton( tr("Defaults"), this );
   buttonReset->setToolTip( tr("Reset all to defaults") );
   topLayout->addWidget( buttonReset, row, 0 );
-  row++;
 
-  topLayout->setRowStretch ( row, 10 );
-  topLayout->setColumnStretch( 1, 10 );
+  info = new QLabel( this );
+  topLayout->addWidget( info, row, 1, 1, 2 );
 
-  connect( buttonDownload, SIGNAL(clicked()), SLOT(slotDownload()) );
+  connect( buttonDownloadFN, SIGNAL(clicked()), SLOT(slotDownloadFN()) );
+  connect( buttonDownloadOGN, SIGNAL(clicked()), SLOT(slotDownloadOGN()) );
   connect( buttonReset, SIGNAL(clicked()), SLOT(slotSetFactoryDefault()) );
 
   QPushButton *help = new QPushButton(this);
@@ -181,13 +205,13 @@ SettingsPageFlarmNet::SettingsPageFlarmNet( QWidget *parent ) :
   load();
 }
 
-SettingsPageFlarmNet::~SettingsPageFlarmNet()
+SettingsPageFlarmDB::~SettingsPageFlarmDB()
 {
 }
 
-void SettingsPageFlarmNet::slotHelp()
+void SettingsPageFlarmDB::slotHelp()
 {
-  QString file = "cumulus-settings-flarmnet.html";
+  QString file = "cumulus-settings-flarm-database.html";
 
   HelpBrowser *hb = new HelpBrowser( this, file );
   hb->resize( this->size() );
@@ -195,7 +219,7 @@ void SettingsPageFlarmNet::slotHelp()
   hb->setVisible( true );
 }
 
-void SettingsPageFlarmNet::slotAccept()
+void SettingsPageFlarmDB::slotAccept()
 {
   if( m_downloadIsRunning == true )
     {
@@ -203,8 +227,8 @@ void SettingsPageFlarmNet::slotAccept()
     }
 
   if( fnFileStart != editFnFile->text().trimmed() ||
-      fnFilterStart != editFnFilter->text().trimmed() ||
-      fnUseStart != useFlarmNet->isChecked() ||
+      fnFilterStart != editDBFilter->text().trimmed() ||
+      fnUseStart != useFlarmDB->isChecked() ||
       m_downloadDone == true )
     {
       save();
@@ -212,24 +236,24 @@ void SettingsPageFlarmNet::slotAccept()
       emit settingsChanged();
     }
 
-  if( useFlarmNet->isChecked() == true &&
-      ( fnUseStart != useFlarmNet->isChecked() ||
-        fnFilterStart != editFnFilter->text().trimmed() ||
+  if( useFlarmDB->isChecked() == true &&
+      ( fnUseStart != useFlarmDB->isChecked() ||
+        fnFilterStart != editDBFilter->text().trimmed() ||
         m_downloadDone == true ) )
     {
-      // reload database from file.
-      FlarmNetThread* thread = new FlarmNetThread( 0 );
+      // reload database from files.
+      FlarmDBThread* thread = new FlarmDBThread( 0 );
       thread->start();
     }
-  else if( useFlarmNet->isChecked() == false )
+  else if( useFlarmDB->isChecked() == false )
     {
-      FlarmNet::unloadData();
+      FlarmDB::unloadData();
     }
 
   QWidget::close();
 }
 
-void SettingsPageFlarmNet::slotReject()
+void SettingsPageFlarmDB::slotReject()
 {
   if( m_downloadIsRunning == true )
     {
@@ -239,53 +263,58 @@ void SettingsPageFlarmNet::slotReject()
   QWidget::close();
 }
 
-void SettingsPageFlarmNet::load()
+void SettingsPageFlarmDB::load()
 {
   GeneralConfig *conf = GeneralConfig::instance();
 
   editFnFile->setText( conf->getFlarmNetUrl() );
-  editFnFilter->setText( conf->getFlarmNetFilter() );
-  useFlarmNet->setChecked( conf->useFlarmNet() );
+  editOGNFile->setText( conf->getFlarmOGNUrl() );
+  editDBFilter->setText( conf->getFlarmDBFilter() );
+  useFlarmDB->setChecked( conf->useFlarmDB() );
 
   if( m_first == true )
     {
       m_first = false;
       fnFileStart = conf->getFlarmNetUrl().trimmed();
-      fnFilterStart = conf->getFlarmNetFilter().trimmed();
-      fnUseStart = conf->useFlarmNet();
+      fnFilterStart = conf->getFlarmDBFilter().trimmed();
+      fnUseStart = conf->useFlarmDB();
     }
 
   if( calculator->moving() == true )
     {
-      buttonDownload->setEnabled( false );
+      buttonDownloadFN->setEnabled( false );
+      buttonDownloadOGN->setEnabled( false );
     }
   else
     {
-      buttonDownload->setEnabled( true );
+      buttonDownloadFN->setEnabled( true );
+      buttonDownloadOGN->setEnabled( true );
     }
 
   setLoadedRecords();
 }
 
-void SettingsPageFlarmNet::save()
+void SettingsPageFlarmDB::save()
 {
   GeneralConfig *conf = GeneralConfig::instance();
   conf->setFlarmNetUrl( editFnFile->text().trimmed() );
-  conf->setFlarmNetFilter( editFnFilter->text().trimmed() );
-  conf->setUseFlarmNet( useFlarmNet->isChecked() );
+  conf->setFlarmOGNUrl( editOGNFile->text().trimmed() );
+  conf->setFlarmDBFilter( editDBFilter->text().trimmed() );
+  conf->setUseFlarmDB( useFlarmDB->isChecked() );
 }
 
-void SettingsPageFlarmNet::slotSetFactoryDefault()
+void SettingsPageFlarmDB::slotSetFactoryDefault()
 {
   GeneralConfig *conf = GeneralConfig::instance();
   conf->setFlarmNetUrl( FLARM_NET_URL );
-  conf->setFlarmNetFilter( "" );
-  conf->setUseFlarmNet( false );
+  conf->setFlarmOGNUrl( FLARM_OGN_URL );
+  conf->setFlarmDBFilter( "" );
+  conf->setUseFlarmDB( false );
   load();
   info->clear();
 }
 
-void SettingsPageFlarmNet::slotDownload()
+void SettingsPageFlarmDB::slotDownloadFN()
 {
   QString url = editFnFile->text().trimmed();
 
@@ -302,7 +331,8 @@ void SettingsPageFlarmNet::slotDownload()
 
   // set download marker, disable download button usage
   m_downloadIsRunning = true;
-  buttonDownload->setEnabled( false );
+  buttonDownloadFN->setEnabled( false );
+  buttonDownloadOGN->setEnabled( false );
 
   if( m_downloadManger == 0 )
     {
@@ -320,27 +350,72 @@ void SettingsPageFlarmNet::slotDownload()
 
   // Create download destination directories
   QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
-  dir.mkdir( "flarmNet");
+  dir.mkdir( "flarmDB");
   QString fileDb = QFileInfo( url.mid( 6 ) ).fileName();
-  QString destDb = dir.absolutePath() + "/flarmNet/" + fileDb;
+  QString destDb = dir.absolutePath() + "/flarmDB/" + fileDb;
 
-  info->setText( tr("Running") );
+  info->setText( tr("Download running") );
 
   m_downloadManger->downloadRequest( url, destDb, true );
 }
 
-void SettingsPageFlarmNet::slotFileDownloaded( QString& /* file */)
+void SettingsPageFlarmDB::slotDownloadOGN()
+{
+  QString url = editOGNFile->text().trimmed();
+
+  if( url.size() == 0 || url.startsWith( "https:") == false )
+    {
+      return;
+    }
+
+  if( m_downloadIsRunning == true )
+    {
+      // Do not allow multiple calls, if download is already running.
+      return;
+    }
+
+  // set download marker, disable download button usage
+  m_downloadIsRunning = true;
+  buttonDownloadFN->setEnabled( false );
+  buttonDownloadOGN->setEnabled( false );
+
+  if( m_downloadManger == 0 )
+    {
+      m_downloadManger = new DownloadManager(this);
+
+      connect( m_downloadManger, SIGNAL(finished( int, int )),
+               this, SLOT(slotDownloadsFinished( int, int )) );
+
+      connect( m_downloadManger, SIGNAL(networkError()),
+               this, SLOT(slotNetworkError()) );
+
+      connect( m_downloadManger, SIGNAL(fileDownloaded(QString&)),
+               this, SLOT(slotFileDownloaded(QString&)) );
+    }
+
+  // Create download destination directories
+  QDir dir( GeneralConfig::instance()->getUserDataDirectory() );
+  dir.mkdir( "flarmDB");
+  QString destDb = dir.absolutePath() + "/flarmDB/" + FLARM_OGN_FILE;
+
+  info->setText( tr("Download running") );
+
+  m_downloadManger->downloadRequest( url, destDb, true );
+
+}
+
+void SettingsPageFlarmDB::slotFileDownloaded( QString& file )
 {
   // we inform about the database file download, if database usage is desired.
-  if( useFlarmNet->isChecked() == true )
+  if( useFlarmDB->isChecked() == true )
     {
       m_downloadDone = true;
     }
 
-  info->setText( tr("Finished") );
+  info->setText( tr("Download finished") + ": " + file );
 }
 
-void SettingsPageFlarmNet::slotNetworkError()
+void SettingsPageFlarmDB::slotNetworkError()
 {
   // A network error has occurred. We delete the download manager to get faster
   // a new connection.
@@ -351,11 +426,20 @@ void SettingsPageFlarmNet::slotNetworkError()
   info->setText( msg );
 
   m_downloadIsRunning = false;
-  buttonDownload->setEnabled( true );
+
+  if( buttonDownloadFN->isEnabled() == false )
+    {
+      buttonDownloadFN->setEnabled( true );
+    }
+
+  if( buttonDownloadOGN->isEnabled() == false )
+    {
+      buttonDownloadOGN->setEnabled( true );
+    }
 }
 
-void SettingsPageFlarmNet::slotDownloadsFinished( int /* requests */,
-                                                  int errors )
+void SettingsPageFlarmDB::slotDownloadsFinished( int /* requests */,
+                                                 int errors )
 {
   if( errors != 0 )
     {
@@ -364,28 +448,36 @@ void SettingsPageFlarmNet::slotDownloadsFinished( int /* requests */,
     }
 
   m_downloadIsRunning = false;
-  buttonDownload->setEnabled( true );
+
+  if( buttonDownloadFN->isEnabled() == false )
+    {
+      buttonDownloadFN->setEnabled( true );
+    }
+
+  if( buttonDownloadOGN->isEnabled() == false )
+    {
+      buttonDownloadOGN->setEnabled( true );
+    }
 }
 /**
  * Set the loaded FlarmNet records.
  */
-void SettingsPageFlarmNet::setLoadedRecords()
+void SettingsPageFlarmDB::setLoadedRecords()
 {
-  int records = FlarmNet::getRecords();
-
-  fnFilterLabel->setText( tr("FlarmNet Filter - loaded elements") +
+  int records = FlarmDB::getRecords();
+  dbFilterLabel->setText( tr("FlarmDB Filter - loaded elements") +
 		          QString(": %1 ").arg( records ) );
 }
 /**
  * Slot to count filter items.
  */
-void SettingsPageFlarmNet::slotCount()
+void SettingsPageFlarmDB::slotCount()
 {
   ok->setEnabled( false );
   cancel->setEnabled( false );
-
-  int records = FlarmNet::applyFilter( editFnFilter->text().trimmed() );
-  fnFilterLabel->setText( tr("FlarmNet Filter - would load %1 elements").arg( records ) );
+  QString filter = editDBFilter->text().trimmed();
+  int records = FlarmDB::applyFilter( filter );
+  dbFilterLabel->setText( tr("FlarmDB Filter - would load %1 elements").arg( records ) );
 
   ok->setEnabled( true );
   cancel->setEnabled( true );

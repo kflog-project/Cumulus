@@ -78,18 +78,12 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       return -1;
     }
 
-  bool readOldVersion = false;
-
   QString wpName="";
   QString wpDescription="";
   QString wpICAO="";
   qint8 wpType;
   qint32 wpLatitude;
   qint32 wpLongitude;
-  qint8 wpLandable;
-  qint16 wpRunway;
-  qint16 wpLength;
-  qint8 wpSurface;
   QString wpComment="";
   quint8 wpImportance;
   QString wpCountry="";
@@ -98,11 +92,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
   qint8 fileType;
   quint16 fileFormat;
   qint32 wpListSize = 0;
-
-  // new variables from format version 3
-  float wpFrequency3;
-  float wpElevation3;
-  float wpLength3;
+  float wpElevation;
 
   // new element from format 6
   QList<Frequency> frequencyList;
@@ -150,6 +140,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
     }
 
   QDataStream in( &file );
+  in.setVersion( QDataStream::Qt_4_8 );
 
   //check if the file has the correct format
   in >> fileMagic;
@@ -172,30 +163,14 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
 
   in >> fileFormat;
 
-  if( fileFormat < WP_FILE_FORMAT_ID_6 )
-    {
-      // we have read an old version.
-      readOldVersion = true;
-    }
-
-  if( fileFormat < WP_FILE_FORMAT_ID_2 )
+  if( fileFormat != WP_FILE_FORMAT_ID_8 )
     {
       qWarning() << "Wrong waypoint file format! Read format Id"
                  << fileFormat
-                 << ". Expecting" << WP_FILE_FORMAT_ID_3 << ".";
+                 << ". Expecting" << WP_FILE_FORMAT_ID_8 << ".";
 
       file.close();
       return -1;
-    }
-
-  // from here on, we assume that the file has the correct format.
-  if( fileFormat < WP_FILE_FORMAT_ID_6 )
-    {
-      in.setVersion( QDataStream::Qt_4_7 );
-    }
-  else
-    {
-      in.setVersion( QDataStream::Qt_4_8 );
     }
 
   in >> wpListSize;
@@ -230,145 +205,15 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       in >> wpType;
       in >> wpLatitude;
       in >> wpLongitude;
-      in >> wpElevation3;
+      in >> wpElevation;
 
-      if( fileFormat < WP_FILE_FORMAT_ID_6 )
-        {
-          in >> wpFrequency3;
-        }
-      else
-        {
-          quint8 listSize;
-          in >> listSize;
-
-          for( int i = 0; i < (int) listSize; i++ )
-            {
-              float frequency;
-              in >> frequency;
-
-              if( fileFormat < WP_FILE_FORMAT_ID_8 )
-                {
-                  // Old type is set to unknown.
-                  QString type;
-                  in >> type;
-
-                  Frequency fre;
-                  fre.setValue( frequency );
-                  fre.setUnit( Frequency::MHz );
-                  fre.setType( Frequency::Unknown );
-                  frequencyList.append( fre );
-                }
-              else
-                {
-                  quint8 unit;
-                  quint8 type;
-                  QString userType;
-                  bool primary;
-                  bool publicUse;
-                  in >> unit;
-                  in >> type;
-                  ShortLoad(in, userType);
-                  in >> primary;
-                  in >> publicUse;
-
-                  Frequency freq = Frequency( frequency, unit, type, userType, primary, publicUse, "" );
-                  frequencyList.append( freq );
-                }
-            }
-        }
-
-      if( fileFormat < WP_FILE_FORMAT_ID_4 )
-        {
-          in >> wpLandable;
-          in >> wpRunway;
-
-          if( fileFormat < WP_FILE_FORMAT_ID_3 )
-            {
-              in >> wpLength;
-            }
-          else
-            {
-              in >> wpLength3;
-            }
-
-          in >> wpSurface;
-        }
+      Frequency::loadFrequencies( in, frequencyList );
 
       in >> wpComment;
       in >> wpImportance;
       in >> wpCountry;
 
-      if( fileFormat >= WP_FILE_FORMAT_ID_4 )
-        {
-          // The runway list has to be read
-          quint8 listSize;
-          QString name;
-          quint16 ilength;
-          float   flength;
-          quint16 iwidth;
-          float   fwidth;
-          quint16 heading;
-
-          bool alignedTrueNorth = false; // new in V 8
-          quint8 operations = Runway::Active; // new in V 8
-          quint8 turnDirection = Runway::Both;  // new in V 8
-          bool mainRunway = true; // new in V 8
-          bool takeOffOnly = false; // new in V 8
-          bool landingOnly = false; // new in V 8
-          quint8 surface = Runway::Unknown;
-
-          in >> listSize;
-
-          for( int i = 0; i < (int) listSize; i++ )
-            {
-              if( fileFormat >= WP_FILE_FORMAT_ID_7 )
-                {
-                  // read runway name
-                  ShortLoad(in, name);
-                }
-
-              if( fileFormat >= WP_FILE_FORMAT_ID_5 )
-                {
-                  in >> flength;
-                  in >> fwidth;
-                }
-              else
-                {
-                  in >> ilength;
-                  flength = static_cast<float>(ilength);
-                  in >> iwidth;
-                  fwidth = static_cast<float>(iwidth);
-                }
-
-              in >> heading;
-
-              if( fileFormat >= WP_FILE_FORMAT_ID_8 )
-                {
-                  in >> alignedTrueNorth;
-                  in >> operations;
-                  in >> turnDirection;
-                  in >> mainRunway;
-                  in >> takeOffOnly;
-                  in >> landingOnly;
-                }
-
-              in >> surface;
-
-              Runway rwy( name,
-                          flength,
-                          fwidth,
-                          heading,
-                          alignedTrueNorth,
-                          operations,
-                          turnDirection,
-                          mainRunway,
-                          takeOffOnly,
-                          landingOnly,
-                          surface );
-
-              rwyList.append( rwy );
-            }
-        }
+      Runway::loadRunways( in, rwyList );
 
       // Check filter, if type should be taken
       if( ! takeType( (enum BaseMapElement::objectType) wpType ) )
@@ -381,6 +226,7 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
       // Check radius filter
       if( ! takePoint( wgsp ) )
         {
+          // qDebug() << "Waypoint ignored by radius filter";
           // Distance is greater than the defined radius around the center point.
           continue;
         }
@@ -403,39 +249,17 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
           wp.priority = ( enum Waypoint::Priority ) wpImportance;
           wp.country = wpCountry;
           wp.wpListMember = true;
-          wp.elevation = wpElevation3;
+          wp.elevation = wpElevation;
 
-          if( fileFormat < WP_FILE_FORMAT_ID_6 )
+          // The read frequency list has to be assigned
+          if( frequencyList.size() )
             {
-              Frequency freq;
-              freq.setValue( wpFrequency3 );
-              wp.addFrequency( Frequency( freq ) );
-            }
-          else
-            {
-              // The read frequency list has to be assigned
               wp.frequencyList = frequencyList;
             }
 
-          if( fileFormat >= WP_FILE_FORMAT_ID_4 )
+          if( rwyList.size() )
             {
-              // We have a runway list
-              if( rwyList.size() )
-                {
-                  wp.rwyList = rwyList;
-                }
-            }
-          else
-            {
-              if ( wpRunway > 0 )
-                {
-                  // Runway heading must be > 0 to be a right runway.
-                  Runway rwy;
-                  rwy.setLength( wpLength3 );
-                  rwy.setSurface( wpSurface );
-                  rwy.setHeading( (wpRunway & 0xFF) * 10 );
-                  wp.rwyList.append( rwy );
-                }
+              wp.rwyList = rwyList;
             }
 
           wpList->append(wp);
@@ -443,12 +267,6 @@ int WaypointCatalog::readBinary( QString catalog, QList<Waypoint>* wpList )
     }
 
   file.close();
-
-  if( readOldVersion == true )
-    {
-      // create a new waypoint file in the changed format
-      writeBinary( catalog, *wpList );
-    }
 
   if( _showProgress )
     {
@@ -478,8 +296,15 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           QString oldFn = GeneralConfig::instance()->getUserDataDirectory() +
                           "/Cumulus_backup.kwp";
 
-          QFile::remove( oldFn );
-          QFile::rename( fName, oldFn );
+          if( QFile::remove( oldFn ) == false )
+            {
+              qWarning() << "Cannot remove file:" << oldFn;
+        }
+
+          if( QFile::rename( fName, oldFn ) == false )
+            {
+              qWarning() << "Cannot rename file:" << fName << "to" << oldFn;
+            }
         }
     }
 
@@ -541,6 +366,7 @@ bool WaypointCatalog::writeBinary( QString catalog, QList<Waypoint>& wpList )
           Runway::saveRunways( out, wp.rwyList );
        }
 
+      file.flush();
       file.close();
     }
   else

@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2004      by Eckhard Völlm
-**                   2008-2025 by Axel Pauli
+**                   2008-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.ListWidgetParent
@@ -651,25 +651,14 @@ void ReachpointListView::slot_Home()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Set home site" ),
-                  tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
-                  tr("<br>Change can take<br>a few seconds."),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
-  mb.setDefaultButton( QMessageBox::Yes );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::Yes )
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Set home site" ),
+                                tr("Use point<br><b>%1</b><br>as your home site?").arg(_wp->name) +
+                                tr("<br>Change can take<br>a few seconds."),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::Yes,
+                                this );
+  if( ret == QMessageBox::Yes )
     {
       // save new home position and elevation
       conf->setHomeCountryCode( _wp->country );

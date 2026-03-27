@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by André Somers
-**                   2008-2018 by Axel Pauli
+**                   2008-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -203,24 +203,14 @@ void SettingsPageGlider::slot_delete()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  tr( "Delete selected glider?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete?" ),
+                                tr( "Delete selected glider?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::Yes )
+  if( ret == QMessageBox::Yes )
     {
       m_list->slot_Deleted( glider );
     }

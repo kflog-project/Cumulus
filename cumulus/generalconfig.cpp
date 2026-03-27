@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2004      by André Somers
- **                   2007-2025 by Axel Pauli
+ **                   2007-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -396,7 +396,9 @@ void GeneralConfig::load()
   _mapShowTaskPointLabels         = value( "ShowTaskPointLabels", false ).toBool();
   _mapShowOutLandingLabels        = value( "ShowOutLandingLabels", false ).toBool();
   _mapShowWaypointLabels          = value( "ShowWaypointLabels", false ).toBool();
+  _mapShowHotspotLabels           = value( "ShowHotspotLabels", false ).toBool();
   _mapShowLabelsExtraInfo         = value( "ShowLabelsExtraInfo", false ).toBool();
+  _mapShowLabelsElevation         = value( "ShowLabelsElevation", false ).toBool();
   _mapShowRelBearingInfo          = value( "ShowRelBearingInfo", true ).toBool();
   _mapCurrentTask                 = value( "CurrentTask", "" ).toString();
 
@@ -586,9 +588,10 @@ void GeneralConfig::load()
   beginGroup("Flarm");
   _flarmAliasFileName      = value("AliasFileName", "cumulus-flarm.txt").toString();
   _flarmRadarDrawWindArrow = value("RadarDrawWindArrow", true).toBool();
-  _flarmNetUrl              = value( "DB-URL", FLARM_NET_URL ).toString();
-  _flarmNetFilter           = value( "DB-Filter", "" ).toString();
-  _useFlarmNet              = value( "DB-Usage", false ).toBool();
+  _flarmNetUrl             = value( "DB-NET-URL", FLARM_NET_URL ).toString();
+  _flarmOGNUrl             = value( "DB-OGN-URL", FLARM_OGN_URL ).toString();
+  _flarmDBFilter           = value( "DB-Filter", "" ).toString();
+  _useFlarmDB              = value( "DB-Usage", false ).toBool();
   endGroup();
 
   beginGroup("Units");
@@ -884,7 +887,9 @@ void GeneralConfig::save()
   setValue( "LoadIsoLines", _mapLoadIsoLines );
   setValue( "ShowIsoLineBorders", _mapShowIsoLineBorders );
   setValue( "ShowWaypointLabels", _mapShowWaypointLabels );
+  setValue( "ShowHotspotLabels", _mapShowHotspotLabels );
   setValue( "ShowLabelsExtraInfo", _mapShowLabelsExtraInfo );
+  setValue( "ShowLabelsElevation", _mapShowLabelsElevation );
   setValue( "ShowRelBearingInfo", _mapShowRelBearingInfo );
   setValue( "CurrentTask", _mapCurrentTask );
 
@@ -1076,8 +1081,9 @@ void GeneralConfig::save()
   beginGroup ("Flarm");
   setValue( "RadarDrawWindArrow", _flarmRadarDrawWindArrow );
   setValue( "DB-URL", _flarmNetUrl );
-  setValue( "DB-Filter", _flarmNetFilter );
-  setValue( "DB-Usage", _useFlarmNet );
+  setValue( "DB-OGN-URL", _flarmOGNUrl );
+  setValue( "DB-Filter", _flarmDBFilter );
+  setValue( "DB-Usage", _useFlarmDB );
   endGroup();
 
   beginGroup("Units");

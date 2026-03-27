@@ -1,7 +1,7 @@
 ################################################################################
 # Cumulus Flarm item help
 #
-# Copyright (c): 2018-2022 Axel Pauli <kflog.cumulus@gmail.com>
+# Copyright (c): 2018-2026 Axel Pauli <kflog.cumulus@gmail.com>
 #
 # This help file explains the single FLARM configuration items. It consists
 # of the configuration item enclosed in exclamation marks and the related
@@ -138,6 +138,14 @@ are possible:
 <tr><td>0xFFFFFF</td> <td>Constant and unique FLARM-ID</td></tr>
 <tr><td>0</td> <td>Random ID, new after each startup</td></tr>
 </table>
+</html>
+
+!LIC!
+
+<html>
+A list of all installed licenses. Each licence name <br>
+is followed the number 1. Items are separated by a<br>
+semicolon (;).
 </html>
 
 !NMEAOUT!
@@ -499,6 +507,55 @@ Force flight state change for 20 seconds. <br>
 <tr><td>1</td> <td>Forces device to be on ground</td></tr>
 <tr><td>2</td> <td>Forces device to be in flight</td></tr>
 </table>
+</html>
+
+!MSG!
+
+<html>
+Enables or disables the FLARM Messaging System. Messaging<br>
+allows the exchange of various types of data between aircraft<br>
+and/or ground stations. 
+
+<br>
+<table border="1" CELLPADDING="5">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>Disable Messaging completely</td></tr>
+<tr><td>1</td> <td>Enable transmission and reception of periodic messages.
+<tr><td>2</td> <td>Enable reception of standard messages (license required)</td></tr>
+<tr><td>4</td> <td>Enable reception of open messages (license required)</td></tr>
+</table>
+<br><br>
+Default value is 1. Configured value is a sum of selected options.
+</html>
+
+!ADSL!
+
+<html>
+Feature requires a license to be installed on the device.<br>
+Enables periodic transmission of ADS-L frames in addition<br>
+to standard FLARM anticollision communication (ADS-L Out).
+<br>
+<table border="1" CELLPADDING="5">
+<tr><th align="left">Value</th><th align="left">Description</th></tr>
+<tr><td>0</td> <td>ADS-L transmission disabled</td></tr>
+<tr><td>1</td> <td>ADS-L transmission enabled</td></tr>
+</table>
+</html>
+
+!ROLLOVER!
+
+<html>
+Legacy FLARM devices with old GPS receivers suffer from the<br>
+week-rollover issue2, resulting in a date around 19.6 years<br>
+in the past. Problem manifests in an incorrect date being<br>
+reported by $GPRMC NMEA messages and emission of incorrect<br>
+FLARM signals. The ROLLOVER parameter specifies how many<br>
+times these 19.6 years need to be added to the date reported<br>
+by the GPS receiver. While FLARM devices heuristically try<br>
+to select a correct rollover number, manual setting is<br>
+possible using this configuration parameter.
+<br><br>
+Decimal integer values from 0 to 4.
 </html>
 
 !VOL!

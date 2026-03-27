@@ -31,6 +31,7 @@
 #include "airspace.h"
 #include "AirspaceFilters.h"
 #include "AirspaceInfo.h"
+#include "altitude.h"
 #include "calculator.h"
 #include "MainWindow.h"
 #include "distance.h"
@@ -1641,7 +1642,7 @@ void Map::p_drawNavigationLayer()
   QList<Airfield*> drawnAf;
   QList<Waypoint*> drawnWp;
   QList<TaskPoint*> drawnTp;
-  QList<BaseMapElement*> drawnSp;
+  QList<ThermalPoint*> drawnHs;
   QPainter navP;
 
   navP.begin(&m_pixNavigationMap);
@@ -1656,7 +1657,7 @@ void Map::p_drawNavigationLayer()
 
   if( _globalMapMatrix->isSwitchScale() )
     {
-      _globalMapContents->drawList(&navP, MapContents::HotspotList, drawnSp );
+      _globalMapContents->drawList(&navP, drawnHs);
     }
 
   p_drawWaypoints(&navP, drawnWp);
@@ -1674,6 +1675,16 @@ void Map::p_drawNavigationLayer()
   if( useSmallIcons )
     {
       iconSize = 16 * Layout::getIntScaledDensity();
+    }
+
+  // task point labels have the priority against all other labels. They will be
+  // drawn at last.
+  for( int i = 0; i < drawnTp.size(); i++ )
+    {
+      QString corrString = WGSPoint::coordinateString( drawnTp[i]->getWGSPosition() );
+
+      // mark label as drawn
+      labelSet.insert( corrString );
     }
 
   // qDebug("Af=%d, WP=%d", drawnAf.size(), drawnWp.size() );
@@ -1698,7 +1709,8 @@ void Map::p_drawNavigationLayer()
                    drawnRp[i]->getWPName(),
                    drawnRp[i]->getMapPosition(),
                    drawnRp[i]->getWGSPosition(),
-                   true );
+                   drawnRp[i]->getElevation(),
+                   false );
     }
 
   // 2. draw all airfield, ... collected labels
@@ -1721,6 +1733,7 @@ void Map::p_drawNavigationLayer()
                    drawnAf[i]->getWPName(),
                    drawnAf[i]->getMapPosition(),
                    drawnAf[i]->getWGSPosition(),
+                   drawnAf[i]->getElevation(),
                    true );
     }
 
@@ -1751,29 +1764,31 @@ void Map::p_drawNavigationLayer()
                    drawnWp[i]->name,
                    _globalMapMatrix->map( drawnWp[i]->projPoint ),
                    drawnWp[i]->wgsPoint,
+                   drawnWp[i]->elevation,
                    isLandable );
     }
 
-  // Second draw all collected task point labels
+  // Second draw all collected hotspot point labels
+  for( int i = 0; i < drawnHs.size(); i++ )
+    {
+      p_drawLabel( &navP,
+                   iconSize / 2 + 3,
+                   drawnHs[i]->getWPName(),
+                   _globalMapMatrix->map( drawnHs[i]->getPosition() ),
+                   drawnHs[i]->getWGSPosition(),
+                   drawnHs[i]->getElevation(),
+                   false );
+      }
+
+  // Third draw all collected task point labels
   for( int i = 0; i < drawnTp.size(); i++ )
     {
-      QString corrString = WGSPoint::coordinateString( drawnTp[i]->getWGSPosition() );
-
-      if( labelSet.contains( corrString ) )
-        {
-          // A label with the same coordinates was already drawn
-          // We do ignore the repeated drawing.
-          continue;
-        }
-
-      // store label to be drawn
-      labelSet.insert( corrString );
-
       p_drawLabel( &navP,
                    iconSize / 2 + 3,
                    drawnTp[i]->getWPName(),
                    _globalMapMatrix->map( drawnTp[i]->getPosition() ),
                    drawnTp[i]->getWGSPosition(),
+                   drawnTp[i]->getElevation(),
                    false );
     }
 
@@ -1884,8 +1899,8 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
   QList<Waypoint>& wpList = _globalMapContents->getWaypointList();
 
   // load all configuration items once
-  const bool showWpLabels   = GeneralConfig::instance()->getMapShowWaypointLabels();
-  const bool useSmallIcons  = _globalMapConfig->useSmallIcons();
+  const bool showInfo      = GeneralConfig::instance()->getMapShowWaypointLabels();
+  const bool useSmallIcons = _globalMapConfig->useSmallIcons();
 
   // now step trough the waypoint list
   for( int i=0; i < wpList.count(); i++ )
@@ -2007,8 +2022,8 @@ void Map::p_drawWaypoints(QPainter* painter, QList<Waypoint*> &drawnWp)
 
     painter->drawPixmap( dispP.x() - xOffset, dispP.y() - yOffset, pm );
 
-    // Add the draw waypoint name to the list, if required by the user.
-    if( showWpLabels )
+    // Add the drawn waypoint name to the list, if required by the user.
+    if( showInfo )
       {
         drawnWp.append( &wpList[i] );
       }
@@ -2023,6 +2038,7 @@ void Map::p_drawLabel( QPainter* painter,
                        const QString& name,    // name of point
                        const QPoint& dispP,    // projected point at the display
                        const WGSPoint& origP,  // WGS84 point
+                       const float elevation,  // elevation of point
                        const bool isLandable ) // is landable?
 {
   // qDebug("LabelName=%s, xShift=%d", name.toLatin1().data(), xShift );
@@ -2030,6 +2046,9 @@ void Map::p_drawLabel( QPainter* painter,
     {
       return;
     }
+
+  // const bool drawLabelInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
+  const bool drawElevation = GeneralConfig::instance()->getMapShowLabelsElevation();
 
   // save the current painter, must be restored before return!!!
   painter->save();
@@ -2044,25 +2063,23 @@ void Map::p_drawLabel( QPainter* painter,
   QString labelText = name;
   Altitude alt = ReachableList::getArrivalAltitude( origP );
   QColor reachColor = ReachableList::getReachColor( origP );
+  Distance dist = ReachableList::getDistance( origP );
 
-  const bool drawLabelInfo = GeneralConfig::instance()->getMapShowLabelsExtraInfo();
-
-  if( drawLabelInfo )
+  // draw the name together with the additional information, if
+  // reachable distance is valid
+  if( isLandable == true && dist.isValid() )
     {
-      // draw the name together with the additional information
-      if( isLandable )
-        {
-          Distance dist = ReachableList::getDistance( origP );
-
-          if( dist.isValid() )
-            { // check if the distance is valid...
-              labelText += "\n" +
-              dist.getText( false, uint(0), uint(0) ) +
-              " / " +
-              alt.getText( false, 0 );
-            }
-        }
+      labelText += "\n" +
+               dist.getText( true, uint(0), uint(0) ) +
+               " / " + alt.getText( true, 0 );
     }
+
+  if( drawElevation == true && isLandable == false )
+    {
+      // draw point elevation, if point is not landable
+      labelText += "\n" +
+                   Altitude::getText( elevation, true, 0 );
+     }
 
   // Consider reachability during drawing.
   enum ReachablePoint::reachable reachable = ReachableList::getReachable( origP );

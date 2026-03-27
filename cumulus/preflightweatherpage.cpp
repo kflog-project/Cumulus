@@ -6,7 +6,7 @@
  **
  ************************************************************************
  **
- **   Copyright (c): 2013-2022 by Axel Pauli
+ **   Copyright (c): 2013-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -31,6 +31,7 @@
 #endif
 
 #include "generalconfig.h"
+#include "layout.h"
 #include "MainWindow.h"
 #include "preflightweatherpage.h"
 #include "speed.h"
@@ -845,23 +846,13 @@ void PreFlightWeatherPage::slotAddAirport()
 
   if( icao.size() != 4 )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                      tr( "Name?" ),
-                      tr( "Station name requires 4 characters!" ),
-                      QMessageBox::Ok,
-                      this );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
-      mb.exec();
-      return;
+      Layout::messageBox( QMessageBox::Critical,
+                          tr( "Name?" ),
+                          tr( "Station name requires 4 characters!" ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
+       return;
     }
 
   if( m_airportIcaoList.contains( icao ) )
@@ -897,23 +888,14 @@ void PreFlightWeatherPage::slotDeleteAirport()
       return;
     }
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete?" ),
-                  QString(tr( "Confirm delete of station %1" ).arg(item->getIcao())),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete?" ),
+                                QString(tr( "Confirm delete of station %1" ).arg(item->getIcao())),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
 
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2 - mb.width()/2, height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if( mb.exec() == QMessageBox::No )
+  if( ret == QMessageBox::No )
     {
       return;
     }
@@ -1149,21 +1131,12 @@ void PreFlightWeatherPage::slotNetworkError()
 
   QString msg = QString(tr("<html>Network error occurred!<br>Is the Internet connection down?</html>"));
 
-  QMessageBox mb( QMessageBox::Warning,
-                  tr("Network Error"),
-                  msg,
-                  QMessageBox::Ok,
-                  this );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = QPoint( width()/2  - mb.width()/2, height()/2 - mb.height()/2 );
-  mb.move( pos );
-
-#endif
-
-  mb.exec();
+  Layout::messageBox( QMessageBox::Warning,
+                      tr("Network Error"),
+                      msg,
+                      QMessageBox::Ok,
+                      QMessageBox::Ok,
+                      this );
 
   m_updateIsRunning = false;
   switchUpdateButtons( true );

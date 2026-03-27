@@ -1,6 +1,6 @@
 /***********************************************************************
 **
-**   SettingsPageFlarmNet.h
+**   SettingsPageFlarmDB.h
 **
 **   This file is part of Cumulus.
 **
@@ -14,15 +14,15 @@
 ***********************************************************************/
 
 /**
- * \class SettingsPageFlarmNet
+ * \class SettingsPageFlarmDB
  *
  * \author Axel Pauli
  *
  * \brief Configuration settings for a FlarmNet Database window
  *
- * \date 2023
+ * \date 2023-2026
  *
- * \version 1.0
+ * \version 1.1
  *
  */
 
@@ -36,19 +36,19 @@
 
 #include "DownloadManager.h"
 
-class SettingsPageFlarmNet : public QWidget
+class SettingsPageFlarmDB : public QWidget
 {
   Q_OBJECT
 
   private:
 
-  Q_DISABLE_COPY ( SettingsPageFlarmNet )
+  Q_DISABLE_COPY ( SettingsPageFlarmDB )
 
   public:
 
-  SettingsPageFlarmNet(QWidget *parent=0);
+  SettingsPageFlarmDB(QWidget *parent=0);
 
-  virtual ~SettingsPageFlarmNet();
+  virtual ~SettingsPageFlarmDB();
 
   signals:
 
@@ -80,9 +80,14 @@ class SettingsPageFlarmNet : public QWidget
   void slotReject();
 
   /**
-   * Called, if the Download button is pressed.
+   * Called, if the FlarmNet Download button is pressed.
    */
-  void slotDownload();
+  void slotDownloadFN();
+
+  /**
+   * Called, if the OGN Download button is pressed.
+   */
+  void slotDownloadOGN();
 
   /**
    * Slot for download manager.
@@ -117,17 +122,19 @@ class SettingsPageFlarmNet : public QWidget
    */
   void setLoadedRecords();
 
-  QCheckBox*   useFlarmNet;
+  QCheckBox*   useFlarmDB;
   QLineEdit*   editFnFile;
-  QLineEdit*   editFnFilter;
-  QPushButton* buttonDownload;
+  QLineEdit*   editOGNFile;
+  QLineEdit*   editDBFilter;
+  QPushButton* buttonDownloadFN;
+  QPushButton* buttonDownloadOGN;
   QPushButton* buttonReset;
   QPushButton *cancel;
   QPushButton *ok;
   QPushButton *count;
 
   QLabel*      info;
-  QLabel*      fnFilterLabel;
+  QLabel*      dbFilterLabel;
 
   /** save start values for change check. */
   bool fnUseStart;

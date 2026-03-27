@@ -290,6 +290,15 @@ class MapContents : public QObject
      * Draws all elements of a list into the painter.
      *
      * @param  targetP  The painter to draw the elements into
+     * @param  drawnHsList Add all drawn objects to this list
+     */
+    void drawList( QPainter* targetP,
+                   QList<ThermalPoint*> &drawnHsList );
+
+    /**
+     * Draws all elements of a list into the painter.
+     *
+     * @param  targetP  The painter to draw the elements into
      * @param  listID  The index of the list to be drawn
      * @param  drawnElements A list of drawn elements
      */

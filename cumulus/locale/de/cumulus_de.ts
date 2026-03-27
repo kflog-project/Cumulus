@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE" sourcelanguage="en_US">
+<TS version="2.0" language="de_DE" sourcelanguage="en_US">
 <context>
     <name>AboutWidget</name>
     <message>
@@ -267,7 +267,7 @@
     <message>
         <location filename="../../altimeterdialog.cpp" line="212"/>
         <source>Set your airfield elevation.</source>
-        <translation>Setze Flugplatzhöhe über NN</translation>
+        <translation>Setze Flugplatzhöhe über NN.</translation>
     </message>
     <message>
         <location filename="../../altimeterdialog.cpp" line="215"/>
@@ -541,37 +541,37 @@
     <message>
         <location filename="../../flarmlistview.cpp" line="87"/>
         <source>H-Dist</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="88"/>
         <source>V-Dist</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="89"/>
         <source>Trk</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="91"/>
         <source>CR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="92"/>
         <source>CS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="93"/>
         <source>MHz</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="94"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../../flarmlistview.cpp" line="121"/>
@@ -1522,7 +1522,7 @@
     <message>
         <location filename="../../mainwindow.cpp" line="2528"/>
         <source>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2023, The Cumulus-Team&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;Cumulus %1, &amp;copy; 2002-2022, Das Cumulus-Team&lt;/html&gt; {1,?} {2002-2023,?}</translation>
+        <translation>&lt;html&gt;Cumulus %1, &amp;copy; 2002-2025, Das Cumulus-Team&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../mainwindow.cpp" line="2546"/>
@@ -3202,27 +3202,27 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="213"/>
         <source>CUP</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="232"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern als</translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="233"/>
         <source>Save waypoints at another location as separate file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere Wegpunkte in einer anderen Datei.</translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="356"/>
         <source>Save as Binary file</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere als Binärdatei</translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="361"/>
         <source> Save as CUP file </source>
-        <translation type="unfinished"></translation>
+        <translation>Speichere als CUP Datei</translation>
     </message>
     <message>
         <location filename="../../preflightwaypointpage.cpp" line="487"/>
@@ -3695,7 +3695,7 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../airspace.cpp" line="367"/>
         <source>SUA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="369"/>
@@ -3727,112 +3727,112 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../Frequency.cpp" line="122"/>
         <source>Approach</source>
-        <translation type="unfinished"></translation>
+        <translation>Anflog</translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="123"/>
         <source>Apron</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorfeld</translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="124"/>
         <source>Arrival</source>
-        <translation type="unfinished">Ankunft</translation>
+        <translation>Ankunft</translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="125"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="126"/>
         <source>CTaf</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="127"/>
         <source>Delivery</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="128"/>
         <source>Departure</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="129"/>
         <source>FIS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="130"/>
         <source>Gliding</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="131"/>
         <source>Ground</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="132"/>
         <source>Info</source>
-        <translation type="unfinished">Info</translation>
+        <translation>Info</translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="133"/>
         <source>Multicom</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="134"/>
         <source>Radar</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="135"/>
         <source>Tower</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="136"/>
         <source>Atis</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="137"/>
         <source>Radio</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="138"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Sonstiges</translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="139"/>
         <source>Airmet</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="140"/>
         <source>Awos</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="141"/>
         <source>Lights</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="142"/>
         <source>Volmet</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../Frequency.cpp" line="143"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../airspace.cpp" line="404"/>
@@ -4196,32 +4196,32 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../runway.cpp" line="76"/>
         <source>Clay</source>
-        <translation type="unfinished"></translation>
+        <translation>Ton</translation>
     </message>
     <message>
         <location filename="../../runway.cpp" line="77"/>
         <source>Stone</source>
-        <translation type="unfinished"></translation>
+        <translation>Stein</translation>
     </message>
     <message>
         <location filename="../../runway.cpp" line="78"/>
         <source>Metal</source>
-        <translation type="unfinished"></translation>
+        <translation>Metall</translation>
     </message>
     <message>
         <location filename="../../runway.cpp" line="79"/>
         <source>Rubber</source>
-        <translation type="unfinished"></translation>
+        <translation>Gummi</translation>
     </message>
     <message>
         <location filename="../../runway.cpp" line="80"/>
         <source>Wood</source>
-        <translation type="unfinished"></translation>
+        <translation>Holz</translation>
     </message>
     <message>
         <location filename="../../runway.cpp" line="81"/>
         <source>Earth</source>
-        <translation type="unfinished"></translation>
+        <translation>Erde</translation>
     </message>
     <message>
         <location filename="../../gpscon.cpp" line="321"/>
@@ -4372,7 +4372,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="714"/>
         <location filename="../../OpenAip.cpp" line="1229"/>
         <source>Json parser error for file: </source>
-        <translation type="unfinished"></translation>
+        <translation>json Formatfehler in Datei:</translation>
     </message>
     <message>
         <location filename="../../OpenAip.cpp" line="134"/>
@@ -4381,7 +4381,7 @@ USB Stick eingeschoben?</translation>
         <location filename="../../OpenAip.cpp" line="724"/>
         <location filename="../../OpenAip.cpp" line="1239"/>
         <source>Json format error for file: </source>
-        <translation type="unfinished"></translation>
+        <translation>json Formatfehler in Datei:</translation>
     </message>
     <message>
         <location filename="../../OpenAip.cpp" line="1249"/>
@@ -4916,12 +4916,12 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../SettingsPageFlarm.cpp" line="542"/>
         <source>Configuration item maybe unsupported by your FLARM!</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurationselement nicht unterstüzt durch das FLARM!</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarm.cpp" line="544"/>
         <source>Continue ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fortfahren?</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarm.cpp" line="545"/>
@@ -4997,62 +4997,62 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="38"/>
         <source>Settings - FlarmNet</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen - FlarmNet</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="75"/>
         <source>use FlarmNet data</source>
-        <translation type="unfinished"></translation>
+        <translation>FlarmNet Daten benutzen</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="76"/>
         <source>Check it for FlarmNet usage</source>
-        <translation type="unfinished"></translation>
+        <translation>Anklicken für FlarmNet Benutzung</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="80"/>
         <source>FlarmNet URL:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="90"/>
         <source>FlarmNet Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="100"/>
         <source>Download</source>
-        <translation type="unfinished">Download</translation>
+        <translation>Download</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="107"/>
         <source>Defaults</source>
-        <translation type="unfinished">Standard</translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="108"/>
         <source>Reset all to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles rücksetzen auf Standard</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="287"/>
         <source>Running</source>
-        <translation type="unfinished"></translation>
+        <translation>in Arbeit</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="300"/>
         <source>Finished</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="310"/>
         <source>Network error. Check Internet connection!</source>
-        <translation type="unfinished"></translation>
+        <translation>Netzwerkfehler! Prüfe Internetverbingung!</translation>
     </message>
     <message>
         <location filename="../../SettingsPageFlarmNet.cpp" line="322"/>
         <source>Download error, check URL!</source>
-        <translation type="unfinished"></translation>
+        <translation>Download Fehler, prüfe URL!</translation>
     </message>
 </context>
 <context>
@@ -6338,12 +6338,12 @@ USB Stick eingeschoben?</translation>
     <message>
         <location filename="../../SettingsWidget.cpp" line="109"/>
         <source>FLARM Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>FLARM Konfiguration</translation>
     </message>
     <message>
         <location filename="../../SettingsWidget.cpp" line="110"/>
         <source>FlarmNet</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../SettingsWidget.cpp" line="112"/>
@@ -7197,7 +7197,7 @@ Bitte einen Punkt löschen!</translation>
     <message>
         <location filename="../../wpinfowidget.cpp" line="388"/>
         <source>Runway:</source>
-        <translation type="unfinished"></translation>
+        <translation>Landebahn:</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="389"/>
@@ -7207,42 +7207,42 @@ Bitte einen Punkt löschen!</translation>
     <message>
         <location filename="../../wpinfowidget.cpp" line="390"/>
         <source>L:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="402"/>
         <source>W:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="416"/>
         <source>open</source>
-        <translation type="unfinished"></translation>
+        <translation>offen</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="416"/>
         <source>closed</source>
-        <translation type="unfinished"></translation>
+        <translation>geschlossen</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="419"/>
         <source>both</source>
-        <translation type="unfinished">beide</translation>
+        <translation>beide</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="419"/>
         <source>one way</source>
-        <translation type="unfinished"></translation>
+        <translation>eine Richtung</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="422"/>
         <source>take off only</source>
-        <translation type="unfinished"></translation>
+        <translation>nue eine Richtung</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="426"/>
         <source>landing only</source>
-        <translation type="unfinished"></translation>
+        <translation>nur landen</translation>
     </message>
     <message>
         <location filename="../../wpinfowidget.cpp" line="477"/>
@@ -7526,17 +7526,17 @@ Namen für den neuen Wegpunkt</translation>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="192"/>
         <source>main RWY</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptlandebahn</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="196"/>
         <source>takeoff only</source>
-        <translation type="unfinished"></translation>
+        <translation>nur starten</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="200"/>
         <source>landing only</source>
-        <translation type="unfinished"></translation>
+        <translation>nur landen</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="248"/>
@@ -7567,27 +7567,27 @@ Namen für den neuen Wegpunkt</translation>
         <location filename="../../wpeditdialogpageaero.cpp" line="96"/>
         <location filename="../../wpeditdialogpageaero.cpp" line="116"/>
         <source>Runway %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Landebahn %1</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="97"/>
         <source>Check box to enable a new runway.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="134"/>
         <source>Runway designator 01...36 [L, C, R]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="149"/>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="161"/>
         <source>Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="178"/>
@@ -7597,17 +7597,17 @@ Namen für den neuen Wegpunkt</translation>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="266"/>
         <source>Set Runway length/width</source>
-        <translation type="unfinished"></translation>
+        <translation>Setze Landebahn Länge/Weite</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="482"/>
         <source>RWY %1 ID error</source>
-        <translation type="unfinished"></translation>
+        <translation>RWY %1 ID Fehler</translation>
     </message>
     <message>
         <location filename="../../wpeditdialogpageaero.cpp" line="483"/>
         <source>RWY %1: Excepting 01...36 [C, L, R]</source>
-        <translation type="unfinished"></translation>
+        <translation>RWY %1: Erwarte 01...36 [C, L, R]</translation>
     </message>
 </context>
 <context>

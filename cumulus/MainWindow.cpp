@@ -5,7 +5,7 @@
 
  copyright            : (C) 2002-2007 by André Somers
 
-                      : (C) 2007-2025 by Axel Pauli
+                      : (C) 2007-2026 by Axel Pauli
 
  maintainer           : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,7 +25,6 @@
  *  and to initiate the load of the map and all other data.
  */
 
-#include <FlarmNet.h>
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
@@ -43,6 +42,7 @@
 #include "airfield.h"
 #include "calculator.h"
 #include "CuMsgBox.h"
+#include "FlarmDB.h"
 #include "SettingsWidget.h"
 #include "generalconfig.h"
 #include "gliderlistwidget.h"
@@ -176,7 +176,8 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionToggleNaLabels(0),
   actionToggleTpLabels(0),
   actionToggleWpLabels(0),
-  actionToggleLabelsInfo(0),
+  actionToggleHsLabels(0),
+  actionToggleLabelsElevation(0),
   actionToggleLogging(0),
   actionToggleTrailDrawing(0),
   actionEnsureVisible(0),
@@ -189,7 +190,6 @@ MainWindow::MainWindow( Qt::WindowFlags flags ) :
   actionHelpAboutApp(0),
   actionHelpAboutQt(0),
   actionStartFlightTask(0),
-  scToggleMapSidebar(0),
   scExit(0),
   contextMenu(0),
   fileMenu(0),
@@ -951,10 +951,10 @@ void MainWindow::slotCreateApplicationWidgets()
 
 #ifdef FLARM
 
-  if( GeneralConfig::instance()->useFlarmNet() == true )
+  if( GeneralConfig::instance()->useFlarmDB() == true )
     {
       // load Flarm database from file.
-      FlarmNetThread* thread = new FlarmNetThread( 0 );
+      FlarmDBThread* thread = new FlarmDBThread( 0 );
       thread->start();
     }
 
@@ -1279,9 +1279,8 @@ void MainWindow::createContextMenu()
   labelSubMenu->addAction( actionToggleNaLabels );
   labelSubMenu->addAction( actionToggleTpLabels );
   labelSubMenu->addAction( actionToggleWpLabels );
-  labelSubMenu->addAction( actionToggleLabelsInfo );
-  labelMenu->addSeparator();
-
+  labelSubMenu->addAction( actionToggleHsLabels );
+  labelSubMenu->addAction( actionToggleLabelsElevation );
 #ifndef ANDROID
   labelMenu->addAction( actionToggleGps );
 #endif
@@ -1619,7 +1618,7 @@ void MainWindow::createActions()
   connect ( actionZoomOutZ, SIGNAL( triggered() ),
              Map::instance , SLOT( slotZoomOut() ) );
 
-  actionToggleAfLabels = new QAction ( tr( "Airfield" ), this);
+  actionToggleAfLabels = new QAction ( tr( "Airfields" ), this);
 #ifndef ANDROID
   actionToggleAfLabels->setShortcut(Qt::Key_A);
 #endif
@@ -1639,7 +1638,7 @@ void MainWindow::createActions()
   connect( actionToggleNaLabels, SIGNAL( toggled( bool ) ),
             this, SLOT( slotToggleNaLabels( bool ) ) );
 
-  actionToggleOlLabels = new QAction ( tr( "Outlanding" ), this);
+  actionToggleOlLabels = new QAction ( tr( "Outlandings" ), this);
 #ifndef ANDROID
   actionToggleOlLabels->setShortcut(Qt::Key_O);
 #endif
@@ -1650,7 +1649,7 @@ void MainWindow::createActions()
             this, SLOT( slotToggleOlLabels( bool ) ) );
 
 
-  actionToggleTpLabels = new QAction ( tr( "Taskpoint" ), this);
+  actionToggleTpLabels = new QAction ( tr( "Taskpoints" ), this);
 #ifndef ANDROID
   actionToggleTpLabels->setShortcut(Qt::Key_T);
 #endif
@@ -1660,7 +1659,7 @@ void MainWindow::createActions()
   connect( actionToggleTpLabels, SIGNAL( toggled( bool ) ),
             this, SLOT( slotToggleTpLabels( bool ) ) );
 
-  actionToggleWpLabels = new QAction ( tr( "Waypoint" ), this);
+  actionToggleWpLabels = new QAction ( tr( "Waypoints" ), this);
 #ifndef ANDROID
   actionToggleWpLabels->setShortcut(Qt::Key_W);
 #endif
@@ -1670,15 +1669,25 @@ void MainWindow::createActions()
   connect( actionToggleWpLabels, SIGNAL( toggled( bool ) ),
             this, SLOT( slotToggleWpLabels( bool ) ) );
 
-  actionToggleLabelsInfo = new QAction (  tr( "Extra Info" ), this);
+  actionToggleHsLabels = new QAction ( tr( "Hotspots" ), this);
 #ifndef ANDROID
-  actionToggleLabelsInfo->setShortcut(Qt::Key_E);
+  actionToggleHsLabels->setShortcut(Qt::Key_J);
 #endif
-  actionToggleLabelsInfo->setCheckable(true);
-  actionToggleLabelsInfo->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
-  addAction( actionToggleLabelsInfo );
-  connect( actionToggleLabelsInfo, SIGNAL( toggled( bool ) ),
-            this, SLOT( slotToggleLabelsInfo( bool ) ) );
+  actionToggleHsLabels->setCheckable(true);
+  actionToggleHsLabels->setChecked( GeneralConfig::instance()->getMapShowWaypointLabels() );
+  addAction( actionToggleHsLabels );
+  connect( actionToggleHsLabels, SIGNAL( toggled( bool ) ),
+            this, SLOT( slotToggleHsLabels( bool ) ) );
+
+  actionToggleLabelsElevation = new QAction (  tr( "Elevations" ), this);
+#ifndef ANDROID
+  actionToggleLabelsElevation->setShortcut(Qt::Key_E);
+#endif
+  actionToggleLabelsElevation->setCheckable(true);
+  actionToggleLabelsElevation->setChecked( GeneralConfig::instance()->getMapShowLabelsExtraInfo() );
+  addAction( actionToggleLabelsElevation );
+  connect( actionToggleLabelsElevation, SIGNAL( toggled( bool ) ),
+            this, SLOT( slotToggleLabelsElevation( bool ) ) );
 
   actionToggleLogging = new QAction( tr( "Logging" ), this );
 #ifndef ANDROID
@@ -1791,16 +1800,14 @@ void MainWindow::createActions()
 #endif
 
   actionToggleMapSidebar = new QAction( tr( "Map Info Boxes"), this );
+#ifndef ANDROID
+  actionToggleMapSidebar->setShortcut(Qt::Key_I + Qt::SHIFT);
+#endif
   actionToggleMapSidebar->setCheckable(true);
   actionToggleMapSidebar->setChecked(true);
   addAction( actionToggleMapSidebar );
   connect( actionToggleMapSidebar, SIGNAL( toggled( bool ) ),
            viewMap, SLOT( slot_showInfoBoxes(bool) ) );
-
-  scToggleMapSidebar = new QShortcut( this );
-  scToggleMapSidebar->setKey(Qt::Key_D);
-  connect( scToggleMapSidebar, SIGNAL( activated() ),
-           actionToggleMapSidebar, SLOT( toggle() ) );
 
   // Cumulus can be closed by using Escape key. This key is also as
   // hardware key available under Maemo.
@@ -1861,7 +1868,8 @@ void  MainWindow::toggleActions( const bool toggle )
   actionToggleNaLabels->setEnabled( toggle );
   actionToggleTpLabels->setEnabled( toggle );
   actionToggleWpLabels->setEnabled( toggle );
-  actionToggleLabelsInfo->setEnabled( toggle );
+  actionToggleHsLabels->setEnabled( toggle );
+  actionToggleLabelsElevation->setEnabled( toggle );
   actionToggleWindowSize->setEnabled( toggle );
   actionEnsureVisible->setEnabled( toggle );
   actionRemoveTarget->setEnabled( toggle );
@@ -1879,7 +1887,6 @@ void  MainWindow::toggleActions( const bool toggle )
 
   actionToggleLogging->setEnabled( toggle );
   actionNav2Home->setEnabled( toggle );
-  scToggleMapSidebar->setEnabled( toggle );
   scExit->setEnabled( toggle );
 
   if( toggle )
@@ -2202,14 +2209,21 @@ void MainWindow::slotToggleWpLabels( bool toggle )
   Map::instance->scheduleRedraw(Map::waypoints);
 }
 
-void MainWindow::slotToggleLabelsInfo( bool toggle )
+void MainWindow::slotToggleHsLabels( bool toggle )
 {
   // save configuration change
-  GeneralConfig::instance()->setMapShowLabelsExtraInfo( toggle );
+  GeneralConfig::instance()->setMapShowHotspotLabels( toggle );
+  GeneralConfig::instance()->save();
+  Map::instance->scheduleRedraw(Map::hotspots);
+}
+
+void MainWindow::slotToggleLabelsElevation( bool toggle )
+{
+  // save configuration change
+  GeneralConfig::instance()->setMapShowLabelsElevation( toggle );
   GeneralConfig::instance()->save();
   Map::instance->scheduleRedraw(Map::airfields);
 }
-
 
 void MainWindow::slotToggleWindowSize()
 {
@@ -2529,7 +2543,7 @@ void MainWindow::slotVersion()
   aw->setWindowTitle( tr( "About Cumulus") );
   aw->setHeaderIcon( GeneralConfig::instance()->loadPixmap("cumulus-desktop48x48.png") );
 
-  QString header( tr("<html>Cumulus %1, &copy; 2002-2025, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
+  QString header( tr("<html>Cumulus %1, &copy; 2002-2026, The Cumulus-Team</html>").arg( QCoreApplication::applicationVersion() ) );
 
   aw->setHeaderText( header );
 
@@ -2689,7 +2703,8 @@ void MainWindow::slotReadconfig()
   actionToggleOlLabels->setChecked( conf->getMapShowOutLandingLabels() );
   actionToggleTpLabels->setChecked( conf->getMapShowTaskPointLabels() );
   actionToggleWpLabels->setChecked( conf->getMapShowWaypointLabels() );
-  actionToggleLabelsInfo->setChecked( conf->getMapShowLabelsExtraInfo() );
+  actionToggleHsLabels->setChecked( conf->getMapShowHotspotLabels() );
+  actionToggleLabelsElevation->setChecked( conf->getMapShowLabelsElevation() );
   actionToggleTrailDrawing->setChecked( conf->getMapDrawTrail() );
 
   // configure reconnect of GPS receiver in case of process stop

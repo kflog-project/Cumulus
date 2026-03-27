@@ -7,7 +7,7 @@
 ************************************************************************
 **
 **   Copyright (c):  2002      by Heiner Lamprecht
-**                   2009-2021 by Axel Pauli
+**                   2009-2026 by Axel Pauli
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -93,9 +93,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   QHBoxLayout* editrow = new QHBoxLayout;
   editrow->setSpacing(5 * Scaling);
   taskLayout->addLayout( editrow );
-  taskLayout->addSpacing( 10 );
+  taskLayout->addSpacing( 10 * Scaling);
 
   QLabel *label = new QLabel( tr("TAS"), this );
+  label->setAlignment( Qt::AlignCenter );
   editrow->addWidget(label);
 
   m_tas = new NumberEditor( this );
@@ -112,8 +113,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_tas->setSuffix( " " + Speed::getHorizontalUnitText() );
   m_tas->setMinimumWidth( msw );
   editrow->addWidget(m_tas);
+  editrow->addSpacing(10 * Scaling);
 
   label = new QLabel( tr("WD"), this );
+  label->setAlignment( Qt::AlignCenter );
   editrow->addWidget(label);
 
   m_windDirection = new NumberEditor( this );
@@ -129,8 +132,10 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windDirection->setSuffix( QString(Qt::Key_degree) );
   m_windDirection->setMinimumWidth( mdw );
   editrow->addWidget(m_windDirection);
+  editrow->addSpacing(10 * Scaling);
 
   label = new QLabel( tr("WS"), this );
+  label->setAlignment( Qt::AlignCenter );
   editrow->addWidget(label);
 
   m_windSpeed = new NumberEditor( this );
@@ -148,6 +153,7 @@ PreFlightTaskPage::PreFlightTaskPage( QWidget* parent ) :
   m_windSpeed->setSuffix( " " + Speed::getWindUnitText() );
   m_windSpeed->setMinimumWidth( msw );
   editrow->addWidget(m_windSpeed);
+  editrow->addSpacing(10 * Scaling);
   editrow->addStretch(10);
 
   m_cmdNew = new QPushButton;
@@ -770,24 +776,13 @@ void PreFlightTaskPage::slotDeleteTask()
   QString id( selected->text(0) );
   QString taskName( selected->text(1).trimmed() );
 
-  QMessageBox mb( QMessageBox::Question,
-                  tr( "Delete Task?" ),
-                  tr( "Delete the selected task?" ),
-                  QMessageBox::Yes | QMessageBox::No,
-                  this );
-
-  mb.setDefaultButton( QMessageBox::No );
-
-#ifdef ANDROID
-
-  mb.show();
-  QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                   height()/2 - mb.height()/2 ));
-  mb.move( pos );
-
-#endif
-
-  if ( mb.exec() != QMessageBox::Yes )
+  int ret = Layout::messageBox( QMessageBox::Question,
+                                tr( "Delete Task?" ),
+                                tr( "Delete the selected task?" ),
+                                QMessageBox::Yes | QMessageBox::No,
+                                QMessageBox::No,
+                                this );
+  if ( ret != QMessageBox::Yes )
     {
       return;
     }
@@ -869,27 +864,17 @@ void PreFlightTaskPage::slotAccept()
 
   if( curTask && newTask && newTaskPassed )
     {
-      QMessageBox mb( QMessageBox::Question,
-                      tr( "Replace current task?" ),
-                      tr( "<html>"
-                          "Do you want to replace the current task?<br>"
-                          "A selected target is reset to task start."
-                          "</html>" ),
-                      QMessageBox::Yes | QMessageBox::No,
-                      this );
+      int ret = Layout::messageBox( QMessageBox::Question,
+                                    tr( "Replace current task?" ),
+                                    tr( "<html>"
+                                        "Do you want to replace the current task?<br>"
+                                        "A selected target is reset to task start."
+                                        "</html>" ),
+                                    QMessageBox::Yes | QMessageBox::No,
+                                    QMessageBox::No,
+                                    this );
 
-      mb.setDefaultButton( QMessageBox::No );
-
-    #ifdef ANDROID
-
-      mb.show();
-      QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                       height()/2 - mb.height()/2 ));
-      mb.move( pos );
-
-    #endif
-
-      if( mb.exec() != QMessageBox::Yes )
+      if( ret == QMessageBox::No )
         {
           // do nothing change
           delete newTask;
@@ -1001,21 +986,14 @@ void PreFlightTaskPage::slotImportTask()
 
   if( ft == nullptr )
     {
-      QMessageBox mb( QMessageBox::Critical,
-                       tr("Error in file ") + QFileInfo( fName ).fileName(),
-                       errorInfo,
-                       QMessageBox::Ok,
-                       this );
-#ifdef ANDROID
-       mb.show();
-       QPoint pos = mapToGlobal(QPoint( width()/2  - mb.width()/2,
-                                        height()/2 - mb.height()/2 ));
-       mb.move( pos );
-#endif
-       mb.exec();
-       return;
+      Layout::messageBox( QMessageBox::Critical,
+                          tr("Error in file ") + QFileInfo( fName ).fileName(),
+                          errorInfo,
+                          QMessageBox::Ok,
+                          QMessageBox::Ok,
+                          this );
+      return;
     }
 
   slotUpdateTaskList( ft );
 }
-

@@ -4,7 +4,7 @@
    begin                : Sun Jul 21 2002
 
    copyright            : (C) 2002      by André Somers
-                        : (C) 2007-2021 by Axel Pauli
+                        : (C) 2007-2025 by Axel Pauli
 
    email                : Axel Pauli <kflog.cumulus@gmail.com>
 
@@ -25,9 +25,9 @@
  * This class provides the main window of Cumulus. All needed stuff
  * is initialized and handled here.
  *
- * \date 2002-2021
+ * \date 2002-2025
  *
- * \version 1.2
+ * \version 1.5
  */
 
 #pragma once
@@ -375,9 +375,14 @@ private slots:
   void slotToggleWpLabels (bool toggle);
 
   /**
-   * Called if the extra label info displaying is actually toggled
+   * Called if the label displaying is actually toggled
    */
-  void slotToggleLabelsInfo (bool toggle);
+  void slotToggleHsLabels (bool toggle);
+
+  /**
+   * Called if the label elevation of a point is actually toggled
+   */
+  void slotToggleLabelsElevation (bool toggle);
 
   /**
    * Called if the trail drawing is toggled
@@ -498,7 +503,8 @@ private:
   QAction* actionToggleNaLabels;
   QAction* actionToggleTpLabels;
   QAction* actionToggleWpLabels;
-  QAction* actionToggleLabelsInfo;
+  QAction* actionToggleHsLabels;
+  QAction* actionToggleLabelsElevation;
   QAction* actionToggleLogging;
   QAction* actionToggleTrailDrawing;
 
@@ -512,9 +518,6 @@ private:
   QAction* actionHelpAboutApp;
   QAction* actionHelpAboutQt;
   QAction* actionStartFlightTask;
-
-  /* shortcut to toggle the left map sidebar. */
-  QShortcut* scToggleMapSidebar;
 
   /* shortcut for exit application */
   QShortcut* scExit;
