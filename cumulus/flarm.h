@@ -24,7 +24,7 @@
  *
  * \date 2010-2026
  *
- * \version 1.6
+ * \version 1.7
  */
 
 #pragma once
@@ -82,7 +82,7 @@ class Flarm : public QObject, public FlarmBase
   {
     if( m_datamap.contains( flarmId ) == false )
       {
-        return QString();
+        return QString("");
       }
 
     return m_datamap[flarmId][0];
@@ -95,7 +95,7 @@ class Flarm : public QObject, public FlarmBase
   {
     if( m_datamap.contains( flarmId ) == false )
       {
-        return QString();
+        return QString("");
       }
 
     return m_datamap[flarmId][1];
@@ -108,7 +108,7 @@ class Flarm : public QObject, public FlarmBase
   {
     if( m_datamap.contains( flarmId ) == false )
       {
-        return QString();
+        return QString("");
       }
 
     return m_datamap[flarmId][2];
@@ -121,7 +121,7 @@ class Flarm : public QObject, public FlarmBase
   {
     if( m_datamap.contains( flarmId ) == false )
       {
-        return QString();
+        return QString("");
       }
 
     return m_datamap[flarmId][3];
@@ -134,7 +134,7 @@ class Flarm : public QObject, public FlarmBase
   {
     if( m_datamap.contains( flarmId ) == false )
       {
-        return QString();
+        return QString("");
       }
 
     return m_datamap[flarmId][4];
@@ -147,7 +147,7 @@ class Flarm : public QObject, public FlarmBase
   {
     if( m_datamap.contains( flarmId ) == false )
       {
-        return QString();
+        return QString("");
       }
 
     return m_datamap[flarmId][5];
