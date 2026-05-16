@@ -294,10 +294,11 @@ void FlarmListView::fillItemList( QString& object2Select )
       sl << climb;
 
       // display other Flarm data e.g. Type, WKZ, Frequenz, Pilot name
-      ( fdata.at(2).size() > 0 ) ? sl << fdata.at(2) : sl << " ";
-      ( fdata.at(3).size() > 0 ) ? sl << fdata.at(3) : sl << " ";
-      ( fdata.at(1).size() > 0 ) ? sl << fdata.at(1) : sl << " ";
-      ( fdata.at(4).size() > 0 ) ? sl << fdata.at(4) : sl << " ";
+      // Note Flarm message interface can report data items as 'undefined'
+      ( fdata.at(2).size() > 0 && fdata.at(2) != "undefined" ) ? sl << fdata.at(2) : sl << " - ";
+      ( fdata.at(3).size() > 0 && fdata.at(3) != "undefined" ) ? sl << fdata.at(3) : sl << " - ";
+      ( fdata.at(1).size() > 0 && fdata.at(1) != "undefined" ) ? sl << fdata.at(1) : sl << " - ";
+      ( fdata.at(4).size() > 0 && fdata.at(4) != "undefined" ) ? sl << fdata.at(4) : sl << " - ";
 
       QTreeWidgetItem* item = new QTreeWidgetItem( sl );
       item->setTextAlignment( 1, Qt::AlignLeft|Qt::AlignVCenter );
