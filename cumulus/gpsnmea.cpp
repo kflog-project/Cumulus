@@ -300,6 +300,7 @@ void GpsNmea::resetDataObjects()
 
 #ifdef FLARM
   pflaaIsReceiving = false;
+  pflauIsReceiving = false;
   Flarm::reset();
   emit newFlarmCount( -1 );
 #endif
@@ -416,7 +417,7 @@ void GpsNmea::slot_sentence( const QString& sentenceIn )
       // Note, it is not checked before, if the connected device
       // is a Flarm. That maybe cause trouble.
       sendSentence( FLARM_NMEAOUT_INIT_CMD );
-      sleep(1);
+      sleep(2);
       // Ask the Flarm device for its type.
       sendSentence( FLARM_DEVTYPE_CMD );
     }
@@ -2570,6 +2571,12 @@ void GpsNmea::fixOK( const char* who )
   // restart timer for FIX supervision
   timeOutFix->start( FIX_TO );
 
+  if( pflauIsReceiving == true && QString( who ) != "PFLAU" )
+    {
+      // Report status only from PFLAU sentence.
+      return;
+    }
+
   if( _status != validFix )
     {
       _status = validFix;
@@ -2585,6 +2592,12 @@ void GpsNmea::fixNOK( const char* who )
 {
   // stop timer, will be activated again with the next available fix
   timeOutFix->stop();
+
+  if( pflauIsReceiving == true && QString( who ) != "PFLAU" )
+    {
+      // Report status only from PFLAU sentence.
+      return;
+    }
 
   if( _status == validFix )
     {

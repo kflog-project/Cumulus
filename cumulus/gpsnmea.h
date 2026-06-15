@@ -27,9 +27,9 @@
  * to the last know data. Furthermore it is managing the connection to a GPS
  * receiver connected by RS232, USB or to a Maemo GPS daemon process.
  *
- * \date 2002-2021
+ * \date 2002-2026
  *
- * \version 1.7
+ * \version 1.9
  */
 
 #pragma once
@@ -819,6 +819,9 @@ class GpsNmea : public QObject
 
     /** Flag to control begin and end of receiving PFLAA sentences. */
     bool pflaaIsReceiving;
+
+    /** Flag to check of receiving PFLAU sentences. */
+    bool pflauIsReceiving;
 
 #endif
 
