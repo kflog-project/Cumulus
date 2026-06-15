@@ -398,15 +398,17 @@ void GpsConAndroid::slot_extractNmea( QByteArray stream, const short rxBufIdx )
               // Found a NL
               QString s = srxBuffer.left( srxBuffer.indexOf( '\n' ) + 1 );
 
-              if( s.size() >= 1 && s.at(0) != QChar('\n') )
+              if( s.size() >= 1 && s.at(0) == QChar('\n') )
                 {
-                  // Channel 0 contains only XCVario NMEA
-                  forwardNmea( s );
+                  // Ignore single NL, send by XCVario as life sign in TCP mode
+                  srxBuffer.remove( 0, 1 );
+                  continue;
                 }
 
-              // Ignore single NL
+              // Channel 0 contains only XCVario NMEA
+              forwardNmea( s );
               srxBuffer.remove( 0, s.size() );
-             }
+            }
           else
             {
               break;

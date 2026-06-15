@@ -126,7 +126,7 @@ bool TcpSocket::send( QByteArray& data )
   int bytes = m_socket->write( data.data(), data.size() );
   m_socket->flush();
 
-  qDebug() << "Bytes" << bytes << "written";
+  qDebug() << "Ch:" << m_channel << bytes << "Bytes" << "written:" << data;
 
   if( bytes == data.size() )
     {
