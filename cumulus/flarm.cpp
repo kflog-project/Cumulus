@@ -342,6 +342,12 @@ bool Flarm::extractPflae(const QStringList& stringList)
      only, when it is necessary.
    */
 
+  if( stringList[0] == "$PFLAE" && stringList.size() == 2 )
+    {
+      // End of all PFLAE messages as $PFLAE,A,*
+      return true;
+    }
+
   if( stringList[0] != "$PFLAE" || stringList.size() < 4 )
     {
       // Checksum has to be ignored in counting.
