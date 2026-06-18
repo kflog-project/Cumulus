@@ -100,6 +100,8 @@ class KRT2 : public QObject
     */
    void slotConnect();
 
+   void slotConRequest();
+
  private slots:
 
   /**

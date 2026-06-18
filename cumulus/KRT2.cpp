@@ -94,12 +94,22 @@ void KRT2::slotConnect()
 
   m_connected = true;
   QByteArray data;
-  data.append( "!krt2" );
+  data.append( "S" );
 
   // Wait a little bit before write
   usleep( 250000 );
   send( data );
-  qDebug() << "KRT2::slotConnect(): sending !krt2";
+  qDebug() << "KRT2::slotConnect(): sending S ping";
+  QTimer::singleShot( 60000, this, SLOT(slotConRequest()));
+}
+
+void KRT2::slotConRequest()
+{
+  qDebug() << "KRT2::slotConRequest(): sending S ping";
+  QByteArray data;
+  data.append( "S" );
+  send( data );
+  QTimer::singleShot( 60000, this, SLOT(slotConRequest()));
 }
 
 /**
@@ -295,6 +305,7 @@ void KRT2::slotHandleRxData()
                   rxBuffer.remove( 0 , 1 );
                   break;
                 }
+                
               case RCQ:
                 {
                   // Respond to connection query.
