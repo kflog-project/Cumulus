@@ -18,11 +18,12 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
+[*] 2026-05-16 AP: Cumulus 5.44.1 released for Debian, Ubuntu and Android.
 
 [-] 2026-05-16 AP: Issue#179 fixed. Filter out undefined items from Flarm
                    Message Interface.
 
-[*] 2025-03-18 AP: Cumulus 5.44.0 released for Debian, Ubuntu and Android.
+[*] 2026-03-18 AP: Cumulus 5.44.0 released for Debian, Ubuntu and Android.
 
 [-] 2026-03-17 AP: Issue #178 fixed. Add OGN data usage to Flarm display.
 

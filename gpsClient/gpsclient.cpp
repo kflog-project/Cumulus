@@ -447,6 +447,13 @@ bool GpsClient::readNmeaSocketData( QTcpSocket* socket,
               break;
             }
 
+          if( socketBuffer.at(0) == QChar('\n') )
+            {
+              // Ignore single NL, send by XCVario as life sign in TCP mode
+              socketBuffer.remove( 0, 1 );
+              continue;
+            }
+
           // extract NMEA sentence
           QByteArray nmea = socketBuffer.left( idx + 1 );
           socketBuffer.remove( 0, idx + 1 );
@@ -995,7 +1002,8 @@ bool GpsClient::verifyCheckSum( const char *sentence )
   // with a dollar sign or an exclamation mark.
   if( sentence[0] != '$' && sentence[0] != '!' )
     {
-      qWarning() << "GpsClient::CheckSumError:" << sentence;
+      QByteArray ba( sentence );
+      qWarning() << "GpsClient::CheckSumError:" << ba.toHex() << sentence;
       badSentences++;
       return false;
     }

@@ -819,6 +819,9 @@ class GpsNmea : public QObject
     /** Flag to control begin and end of receiving PFLAA sentences. */
     bool pflaaIsReceiving;
 
+    /** Flag to check of receiving PFLAU sentences. */
+    bool pflauIsReceiving;
+
 #endif
 
     // number of created class instances
