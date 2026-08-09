@@ -437,7 +437,7 @@ void GeneralConfig::load()
   _openAipPoiFileList         = value("OpenAipFileList", QStringList(QString("All"))).toStringList();
   _openAipAirfieldCountries   = value("OpenAipAirfieldCountries", "" ).toString();
   // See https://www.openaip.net/docs for more info.
-  _openAipLink                = value("OpenAipLink", "https://storage.googleapis.com/download/storage/v1/b/29f98e10-a489-4c82-ae5e-489dbcd4912f/o/%1?alt=media").toByteArray();
+  _openAipLink                = value("OpenAipLink", "https://storage.openaip.net/openaip-system-exports/").toString();
   endGroup();
 
   beginGroup("List Display");
@@ -634,10 +634,7 @@ void GeneralConfig::load()
       _mapServerUrl = "https://raw.githubusercontent.com/kflog-project/MapConverting/master/Landscape/";
     }
 
-  if( _openAipLink == "9EEAi^^HHH]@A6?2:A]?6E^<7=@806IA@CE097uwab`987" )
-    {
-      _openAipLink = "https://storage.googleapis.com/download/storage/v1/b/29f98e10-a489-4c82-ae5e-489dbcd4912f/o/%1?alt=media";
-    }
+   _openAipLink = "https://storage.openaip.net/openaip-system-exports/";
 }
 
 void GeneralConfig::save()

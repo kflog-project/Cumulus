@@ -3388,7 +3388,7 @@ class GeneralConfig : protected QSettings
   QString _openAipAirfieldCountries;
 
   // openAIP link
-  QByteArray _openAipLink;
+  QString _openAipLink;
 
   // disclaimer version
   int _disclaimerVersion;

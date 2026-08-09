@@ -6,7 +6,7 @@
 **
 ************************************************************************
 **
-**   Copyright (c):  2013-2025 by Axel Pauli <kflog.cumulus@gmail.com>
+**   Copyright (c):  2013-2026 by Axel Pauli <kflog.cumulus@gmail.com>
 **
 **   This file is distributed under the terms of the General Public
 **   License. See the file COPYING for more information.
@@ -125,7 +125,9 @@ bool OpenAip::readSinglePoints( QString fileName,
       qWarning() << "OpenAip::readSinglePoints: file"
                  << "'" + fileName + "'"
                  << "Json parse error:"
-                 << error.errorString();
+                 << error.errorString()
+		 << "at position" << error.offset;
+
       return false;
     }
 
@@ -259,7 +261,9 @@ bool OpenAip::readNavAids( QString fileName,
       qWarning() << "OpenAip::readNavAids: file"
                  << "'" + fileName + "'"
                  << "Json parse error:"
-                 << error.errorString();
+                 << error.errorString()
+		 << "at position" << error.offset;
+
       return false;
     }
 
@@ -492,7 +496,9 @@ bool OpenAip::readHotspots( QString fileName,
       qWarning() << "OpenAip::readHotspots: file"
                  << "'" + fileName + "'"
                  << "Json parse error:"
-                 << error.errorString();
+                 << error.errorString()
+		 << "at position" << error.offset;
+
       return false;
     }
 
@@ -707,15 +713,14 @@ bool OpenAip::readAirfields( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << fileName << "Airfield Json Parse result:" << error.errorString();
-
   if( doc.isNull() == true )
     {
       errorInfo = QObject::tr("Json parser error for file: ") + fileName;
       qWarning() << "OpenAip::readAirfields: file"
                  << "'" + fileName + "'"
                  << "Json parse error:"
-                 << error.errorString();
+                 << error.errorString()
+                 << "at position" << error.offset;
       return false;
     }
 
@@ -1220,15 +1225,14 @@ bool OpenAip::readAirspaces( QString fileName,
   QJsonParseError error;
   QJsonDocument doc = QJsonDocument::fromJson( content.toUtf8(), &error );
 
-  qDebug() << fileName << "Airspaces Json Parse result:" << error.errorString();
-
   if( doc.isNull() == true )
     {
       errorInfo = QObject::tr("Json parser error for file: ") + fileName;
       qWarning() << "OpenAip::readAirspaces: file"
                  << "'" + fileName + "'"
                  << "Json parse error:"
-                 << error.errorString();
+                 << error.errorString()
+                 << "at position" << error.offset;
       return false;
     }
 
