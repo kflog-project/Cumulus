@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2000      by Heiner Lamprecht, Florian Ehinger
- **                   2008-2025 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2008-2026 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -1596,19 +1596,19 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
     {
       // Airports file name format: <country-code>_apt.json, example: de_apt.json
       QString file = openAipCountryList.at(i).toLower() + "_apt.json";
-      QString url  = urlPrefix.arg( file );
+      QString url  = urlPrefix + file;
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
       // Navaid file name format: <country-code>_nav.json, example: de_nav.json
       file = openAipCountryList.at(i).toLower() + "_nav.json";
-      url  = urlPrefix.arg( file );
+      url  = urlPrefix + file;
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
       // Hotspot file name format: <country-code>_hot.aip, example: de_hot.json
       file = openAipCountryList.at(i).toLower() + "_hot.json";
-      url  = urlPrefix.arg( file );
+      url  = urlPrefix + file;
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 
@@ -1616,13 +1616,13 @@ void MapContents::slotDownloadOpenAipPois( const QStringList& openAipCountryList
       // Curently not downloaded. Contains a lot of wind turbines
       // Ostacles file name format: <country-code>_obs.json, example: de_obs.json
       file = openAipCountryList.at(i).toLower() + "_obs.json";
-      url  = urlPrefix.arg( file );
+      url  = urlPrefix + file;
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
 #endif
       // Reporting points file name format: <country-code>_obs.json, example: de_rpp.json
       file = openAipCountryList.at(i).toLower() + "_rpp.json";
-      url  = urlPrefix.arg( file );
+      url  = urlPrefix + file;
       dest = destPrefix + file;
       m_downloadMangerOpenAipPois->downloadRequest( url, dest );
     }
@@ -1660,7 +1660,10 @@ void MapContents::slotDownloadAirspaces( const QStringList& openAipCountryList )
     {
       // File name format: <country-code>_asp.json, example: de_asp.json
       QString file = openAipCountryList.at(i).toLower() + "_asp.json";
-      QString url  = urlPrefix.arg( file );
+
+      qDebug() << "file:" << file;
+
+      QString url  = urlPrefix + file;
       QString dest = destPrefix + file;
       m_downloadMangerOpenAipAs->downloadRequest( url, dest );
     }
@@ -3037,7 +3040,7 @@ void MapContents::drawList( QPainter* targetP,
   // load all configuration items once
   const bool showAfLabels  = GeneralConfig::instance()->getMapShowAirfieldLabels();
   const bool showOlLabels  = GeneralConfig::instance()->getMapShowOutLandingLabels();
-#
+
   switch (listID)
     {
     case AirfieldList:
