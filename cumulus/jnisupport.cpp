@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2025 by Axel Pauli
+ **                   2012-2026 by Axel Pauli
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -59,6 +59,7 @@ static jmethodID m_openHardwareMenu   = 0;
 static jmethodID m_downloadFile       = 0;
 static jmethodID m_isRestarted        = 0;
 static jmethodID m_apiLevel           = 0;
+static jmethodID m_batteryStatus      = 0;
 
 // Shutdown flag to disable message transfer to the GUI. It is reset by the
 // MainWindow class.
@@ -602,6 +603,16 @@ bool initJni( JavaVM* vm, JNIEnv* env )
       return false;
     }
 
+  m_batteryStatus = env->GetMethodID( clazz,
+                                      "getBatteryStatus",
+                                      "()F");
+
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning() << "initJni: could not get ID of getBatteryStatus";
+      return false;
+    }
+
   return true;
 }
 
@@ -1057,6 +1068,32 @@ int jniGetApiLevel()
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniGetApiLevel: exception when calling Java method \"getApiLevel\"");
+      result = false;
+    }
+
+  jniDetachCurrentThread();
+  return result;
+}
+
+/**
+ * Gets the battery status from the Android activity.
+ *
+ * \return Android Battery Status
+ */
+float jniGetBatteryStatus()
+{
+  JNIEnv* env = 0;
+
+  if( !jniEnv( &env ) )
+    {
+      return false;
+    }
+
+  jfloat result = (jfloat) env->CallIntMethod( m_cumActObject,
+					       m_batteryStatus );
+  if ( isJavaExceptionOccured(env) )
+    {
+      qWarning("jniGetApiLevel: exception when calling Java method \"getBatteryStatus\"");
       result = false;
     }
 

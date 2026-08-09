@@ -7,7 +7,7 @@
  ************************************************************************
  **
  **   Copyright (c):  2010-2012 by Josua Dietze
- **                   2012-2025 by Axel Pauli <kflog.cumulus@gmail.com>
+ **                   2012-2026 by Axel Pauli <kflog.cumulus@gmail.com>
  **
  **   This file is distributed under the terms of the General Public
  **   License. See the file COPYING for more information.
@@ -98,9 +98,9 @@ import android.widget.Toast;
  * 
  * @email <kflog.cumulus@gmail.com>
  * 
- * @date 2012-2025
+ * @date 2012-2026
  * 
- * @version 1.13
+ * @version 1.14
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -819,6 +819,20 @@ public class CumulusActivity extends QtActivity
   synchronized public int getApiLevel()
   {
       return android.os.Build.VERSION.SDK_INT;
+  }
+  
+  /**
+   * Returns the current Android battery status
+   * 
+   * @return The current Android battery status as float percentage
+   */
+  synchronized public float getBatteryStatus()
+  {
+    int level = batteryStatus.getIntExtra( BatteryManager.EXTRA_LEVEL, -1 );
+    int scale = batteryStatus.getIntExtra( BatteryManager.EXTRA_SCALE, -1 );
+    float batteryPct = (level / (float) scale) * 100;
+    // batteryPct enthält nun den Ladestand in Prozent (z.B. 75.0)
+    return batteryPct;
   }
 
   @Override
