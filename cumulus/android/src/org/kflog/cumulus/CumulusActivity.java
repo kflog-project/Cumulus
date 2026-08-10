@@ -79,6 +79,7 @@ import android.location.LocationProvider;
 import android.media.AsyncPlayer;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -100,7 +101,7 @@ import android.widget.Toast;
  * 
  * @date 2012-2026
  * 
- * @version 1.14
+ * @version 1.15
  * 
  * @short This class handles the Cumulus activity live cycle.
  * 
@@ -828,11 +829,24 @@ public class CumulusActivity extends QtActivity
    */
   synchronized public float getBatteryStatus()
   {
-    int level = batteryStatus.getIntExtra( BatteryManager.EXTRA_LEVEL, -1 );
-    int scale = batteryStatus.getIntExtra( BatteryManager.EXTRA_SCALE, -1 );
-    float batteryPct = (level / (float) scale) * 100;
-    // batteryPct enthält nun den Ladestand in Prozent (z.B. 75.0)
-    return batteryPct;
+    IntentFilter ifilter = new IntentFilter( Intent.ACTION_BATTERY_CHANGED );
+    Intent batteryStatus = getApplicationContext().registerReceiver( null, ifilter );
+    
+    if( batteryStatus != null )
+    {   
+      int level = batteryStatus.getIntExtra( BatteryManager.EXTRA_LEVEL, -1 );
+      int scale = batteryStatus.getIntExtra( BatteryManager.EXTRA_SCALE, -1 );
+            
+      if( level != -1 && scale != -1 )
+      {
+        float batteryPct = (level / (float) scale) * 100;
+        // batteryPct enthält nun den Ladestand in Prozent (z.B. 75.0)
+        // Log.i( TAG, "Prozent=" + batteryPct );
+        return batteryPct;
+      }
+    }
+    
+    return (float) -1.0;
   }
 
   @Override

@@ -482,6 +482,8 @@ signals:
     QLabel* _statusPosition;
     /** reference to selected glider for status bar */
     QLabel* _statusGlider;
+    /** status battery icon */
+    QLabel* _statusBatteryIcon;
     /** reference to battery status */
     QLabel* _statusBattery;
     /** reference to status bar info */

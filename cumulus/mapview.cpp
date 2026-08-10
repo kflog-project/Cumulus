@@ -522,6 +522,15 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusGlider->setAlignment(Qt::AlignCenter);
   _statusbar->addWidget(_statusGlider);
 
+  _statusBatteryIcon = new QLabel(_statusbar);
+  _statusBatteryIcon->setFrameStyle( style );
+  _statusBatteryIcon->setLineWidth( lineWidth );
+  _statusBatteryIcon->setMargin( margin );
+  _statusBatteryIcon->setFont(fontSB);
+  _statusBatteryIcon->setAlignment(Qt::AlignCenter);
+  _statusBatteryIcon->setScaledContents( true );
+  _statusBatteryIcon->setPixmap( GeneralConfig::instance()->loadPixmap( "battery.png",
+                                                                        _statusbar->height() ) );
   _statusBattery = new QLabel(_statusbar);
   _statusBattery->setFrameStyle( style );
   _statusBattery->setLineWidth( lineWidth );
@@ -529,7 +538,7 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusBattery->setFont(fontSB);
   _statusBattery->setAlignment(Qt::AlignCenter);
   _statusBattery->setScaledContents( true );
-  _statusBattery->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "battery.png" ) ) );
+
   _statusBattery->setText( "?" );
   _statusbar->addWidget(_statusBattery);
 
@@ -1147,7 +1156,7 @@ void MapView::slot_batteryStatus()
     }
   else
     {
-      _statusBattery->setText( QString("%1%%").arg( bs, 0, 'f') );
+      _statusBattery->setText( QString("%1%").arg( bs, 0, 'f', 0 ) );
     }
 }
 

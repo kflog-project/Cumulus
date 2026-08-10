@@ -1089,8 +1089,8 @@ float jniGetBatteryStatus()
       return false;
     }
 
-  jfloat result = (jfloat) env->CallIntMethod( m_cumActObject,
-					       m_batteryStatus );
+  jfloat result = (jfloat) env->CallFloatMethod( m_cumActObject, m_batteryStatus );
+
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniGetApiLevel: exception when calling Java method \"getBatteryStatus\"");
