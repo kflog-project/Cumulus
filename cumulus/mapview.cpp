@@ -7,7 +7,7 @@
 
   copyright            : (C) 2002      by Andre Somers
                              2008      by Josua Dietze
-                             2008-2024 by Axel Pauli <kflog.cumulus@gmail.com>
+                             2008-2026 by Axel Pauli <kflog.cumulus@gmail.com>
 
  ***************************************************************************/
 
@@ -34,6 +34,7 @@
 #include "gpsstatusdialog.h"
 #include "igclogger.h"
 #include "interfaceelements.h"
+#include "jnisupport.h"
 #include "layout.h"
 #include "MainWindow.h"
 #include "mapcalc.h"
@@ -521,6 +522,17 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusGlider->setAlignment(Qt::AlignCenter);
   _statusbar->addWidget(_statusGlider);
 
+  _statusBattery = new QLabel(_statusbar);
+  _statusBattery->setFrameStyle( style );
+  _statusBattery->setLineWidth( lineWidth );
+  _statusBattery->setMargin( margin );
+  _statusBattery->setFont(fontSB);
+  _statusBattery->setAlignment(Qt::AlignCenter);
+  _statusBattery->setScaledContents( true );
+  _statusBattery->setIcon( QIcon( GeneralConfig::instance()->loadPixmap( "battery.png" ) ) );
+  _statusBattery->setText( "?" );
+  _statusbar->addWidget(_statusBattery);
+
   _statusInfo = new QLabel(_statusbar);
   _statusInfo->setFrameStyle( style );
   _statusInfo->setLineWidth( lineWidth );
@@ -535,6 +547,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   m_infoTimer->setInterval( 5000 );
   connect( m_infoTimer, SIGNAL(timeout()), this, SLOT(slot_flightTime()));
   m_infoTimer->start();
+
+  m_batteryTimer = new QTimer(this);
+  m_batteryTimer->setSingleShot( false );
+  m_batteryTimer->setInterval( 30000 );
+  connect( m_batteryTimer, SIGNAL(timeout()), this, SLOT(slot_batteryStatus()));
+  m_batteryTimer->start();
 
   topLayout->addWidget(_statusbar);
 
@@ -1115,6 +1133,22 @@ void MapView::slot_infoTimer()
 {
   // Clear message display.
   slot_info( "" );
+}
+
+
+/** Called to get the current battery status from the Android side. */
+void MapView::slot_batteryStatus()
+{
+  float bs = jniGetBatteryStatus();
+
+  if( bs == -1.0 )
+    {
+      _statusBattery->setText( "?" );
+    }
+  else
+    {
+      _statusBattery->setText( QString("%1%%").arg( bs, 0, 'f') );
+    }
 }
 
 /** This slot is called if the settings have been changed.

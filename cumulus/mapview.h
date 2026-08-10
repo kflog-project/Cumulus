@@ -3,7 +3,7 @@
                              -------------------
     begin                : Sun Jul 21 2002
     copyright            : (C) 2002      by André Somers
-                               2008-2024 by Axel Pauli
+                               2008-2026 by Axel Pauli
 
     email                : kflog.cumulus@gmail.com
 
@@ -372,6 +372,9 @@ class MapView : public QWidget
     /** Called to show the last status info again. */
     void slot_infoTimer();
 
+    /** Called to get the current battery status from the Android side. */
+    void slot_batteryStatus();
+
 #ifdef QSCROLLER1
     /** Process status changes during map drag and release. */
     void slot_scrollerStateChanged(QScroller::State new_s);
@@ -479,6 +482,8 @@ signals:
     QLabel* _statusPosition;
     /** reference to selected glider for status bar */
     QLabel* _statusGlider;
+    /** reference to battery status */
+    QLabel* _statusBattery;
     /** reference to status bar info */
     QLabel* _statusInfo;
     /** index of mode select button 0: MSL,  1: GND */
@@ -501,6 +506,8 @@ signals:
     QTimer* m_infoTimer;
     /** Last reported ETA value. */
     QTime m_lastEta;
+    /** Timer to ask for the battery status */
+    QTimer* m_batteryTimer;
 };
 
 #endif

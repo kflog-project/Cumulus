@@ -1068,7 +1068,7 @@ int jniGetApiLevel()
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniGetApiLevel: exception when calling Java method \"getApiLevel\"");
-      result = false;
+      result = 0;
     }
 
   jniDetachCurrentThread();
@@ -1094,7 +1094,7 @@ float jniGetBatteryStatus()
   if ( isJavaExceptionOccured(env) )
     {
       qWarning("jniGetApiLevel: exception when calling Java method \"getBatteryStatus\"");
-      result = false;
+      result = -1.0;
     }
 
   jniDetachCurrentThread();
