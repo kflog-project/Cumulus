@@ -526,11 +526,12 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusBatteryIcon->setFrameStyle( style );
   _statusBatteryIcon->setLineWidth( lineWidth );
   _statusBatteryIcon->setMargin( margin );
-  _statusBatteryIcon->setFont(fontSB);
+  // _statusBatteryIcon->setFont(fontSB);
   _statusBatteryIcon->setAlignment(Qt::AlignCenter);
   _statusBatteryIcon->setScaledContents( true );
-  _statusBatteryIcon->setPixmap( GeneralConfig::instance()->loadPixmap( "battery.png",
-                                                                        _statusbar->height() ) );
+  _statusBatteryIcon->setPixmap( GeneralConfig::instance()->loadPixmap( "battery.png", false );
+  _statusbar->addWidget(_statusBatteryIcon);
+
   _statusBattery = new QLabel(_statusbar);
   _statusBattery->setFrameStyle( style );
   _statusBattery->setLineWidth( lineWidth );
@@ -538,7 +539,6 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   _statusBattery->setFont(fontSB);
   _statusBattery->setAlignment(Qt::AlignCenter);
   _statusBattery->setScaledContents( true );
-
   _statusBattery->setText( "?" );
   _statusbar->addWidget(_statusBattery);
 
