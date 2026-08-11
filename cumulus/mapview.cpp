@@ -529,7 +529,9 @@ MapView::MapView(QWidget *parent) : QWidget(parent)
   // _statusBatteryIcon->setFont(fontSB);
   _statusBatteryIcon->setAlignment(Qt::AlignCenter);
   _statusBatteryIcon->setScaledContents( true );
-  _statusBatteryIcon->setPixmap( GeneralConfig::instance()->loadPixmap( "battery.png", false );
+  QPixmap pm( ":/icons/battery.png" );
+  QPixmap spm = pm.scaledToHeight( _statusbar->height() );
+  _statusBatteryIcon->setPixmap( spm );
   _statusbar->addWidget(_statusBatteryIcon);
 
   _statusBattery = new QLabel(_statusbar);
