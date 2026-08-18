@@ -18,7 +18,10 @@ Cumulus changelog
 #                                                                               #
 # Thank you Axel ;-))                                                           #
 #===============================================================================#
-[*] 2026-08-10 AP: Cumulus 5.44.2 released for Debian, Ubuntu and Android.
+[*] 2026-08-18 AP: Cumulus 5.44.2 released for Debian, Ubuntu and Android.
+
+[-] 2026-08-09 AP: Issue#181 fixed. Show Android battery status in Cumulus
+                   status line.
 
 [-] 2026-08-09 AP: Issue#180 fixed. Openaip has changed its download link
 
